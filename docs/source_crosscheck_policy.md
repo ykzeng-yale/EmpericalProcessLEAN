@@ -6,6 +6,15 @@ Every promoted theorem report should include three synchronized views:
 2. Markdown textbook line references.
 3. PDF screenshot path for the corresponding textbook passage.
 
+For VdV&W-derived theorem work, reports should use a side-by-side table with:
+
+- Lean realization: declaration name, file, kind, and formal role.
+- Markdown anchor: local markdown file and line range, with only a short public
+  excerpt or paraphrase.
+- PDF anchor: local screenshot path for the corresponding textbook passage.
+- Status/gap: exact theorem, proved layer, proof-carrying interface, or pending
+  primitive.
+
 Reports should distinguish:
 
 - exact formalization of a textbook theorem;
@@ -16,3 +25,6 @@ Reports should distinguish:
 Do not mark a theorem as the full textbook result until all primitives used in
 the textbook statement have Lean definitions and the theorem compiles from
 those definitions without `sorry`, `admit`, unreviewed `axiom`, or `unsafe`.
+
+Do not commit long textbook excerpts or screenshot/PDF assets to the public Git
+history. Those source files remain local-only review material.

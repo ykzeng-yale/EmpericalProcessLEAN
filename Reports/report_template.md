@@ -25,6 +25,11 @@ Describe the intended mathematical statement in reviewer-friendly language.
 | Object | Kind | Mathematical meaning | Textbook counterpart |
 | --- | --- | --- | --- |
 
+## Side-By-Side Source Cross-Check
+
+| Lean realization | Markdown textbook anchor | PDF screenshot anchor | Status and gap |
+| --- | --- | --- | --- |
+
 ## Dependencies
 
 | Dependency | Source | Role |

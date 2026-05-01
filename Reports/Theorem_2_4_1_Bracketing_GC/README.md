@@ -19,6 +19,12 @@ below.  The repository does **not** yet claim the full theorem
 | `endpoint_strong_law_ae_real` | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | proved from mathlib |
 | `finite_endpoint_strong_law_ae_real` | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | proved from mathlib |
 
+Detailed side-by-side audit table:
+
+```text
+Reports/Theorem_2_4_1_Bracketing_GC/definition_lemma_crosscheck.md
+```
+
 ## Textbook Source Anchors
 
 - Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md`, lines 963-984.

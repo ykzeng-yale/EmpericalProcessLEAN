@@ -79,6 +79,12 @@ The active theorem report is:
 Reports/Theorem_2_4_1_Bracketing_GC/
 ```
 
+The current status and remaining-work ledger through Theorem 2.4.1 is:
+
+```text
+docs/vdvw_to_2_4_1_formalization_status.md
+```
+
 ## Lean And Mathlib Base
 
 The project uses Lean through Lake.
