@@ -91,6 +91,7 @@ Current promoted declarations toward Theorem 2.4.1:
 | `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | proved epsilon/eventual deterministic bracketing route |
 | `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | proved countable decreasing-cover deterministic route |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers` | proved iid countable-cover almost-sure uniform convergence layer |
+| `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to a.s. pathwise uniform convergence theorem |
 
 Verification gate:
 
@@ -277,7 +278,7 @@ through 2.4.1 requires accounting for them.
 | 2.3.15 Theorem | `M2:818` | pointwise separable version Donsker equivalence | later roadmap |
 | 2.3.16 Proposition | `M2:857` | consistent lifting | later roadmap |
 | 2.3.17 Theorem | `M2:882` | separable modification | later roadmap |
-| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | target; primitive finite-bracketing, fixed-cover iid endpoint, and countable-cover routes proved, final `N_[]` theorem pending |
+| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | dependency-minimal primitive `N_[]` theorem proved in local pathwise interface; exact outer-probability GC wrapper pending |
 
 ## Dependency-Minimal Route To Theorem 2.4.1
 
@@ -296,8 +297,8 @@ Sections 2.1-2.3 to be formalized literally.  The dependency-minimal route is:
 | 8 | empirical average order for bracket endpoints | `M2:972-981` | done using finite sums |
 | 9 | endpoint empirical average SLLN | `M2:984` | done for fixed finite covers: `EndpointSamples.lean` |
 | 10 | build `FiniteBracketingEndpointRoute` from primitive brackets | `M2:972-984` | done from primitive cover plus endpoint/width assumptions |
-| 11 | decreasing-radius argument | `M2:984` | done for the dependency-minimal deterministic route; exact iid/`N_[]` theorem pending |
-| 12 | final exact theorem statement | `M2:970` | pending: construct countable covers from the `N_[]` finiteness hypothesis |
+| 11 | decreasing-radius argument | `M2:984` | done for the dependency-minimal deterministic and iid `N_[]` route |
+| 12 | final exact theorem statement | `M2:970` | dependency-minimal local theorem done; exact outer-probability GC wrapper pending |
 
 This route should reuse mathlib for measure/integration/probability and only
 build the empirical-process-specific layer locally.

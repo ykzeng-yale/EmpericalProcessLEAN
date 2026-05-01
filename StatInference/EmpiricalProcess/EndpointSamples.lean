@@ -45,7 +45,7 @@ theorem endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid
     [MeasurableSpace Ω] [MeasurableSpace Observation]
     {μ : Measure Ω} {P : Measure Observation}
     (X : ℕ -> Ω -> Observation) (statistic : Observation -> ℝ)
-    (hstat_measurable : Measurable statistic)
+    (hstat_aemeasurable : AEMeasurable statistic P)
     (hstat_integrable : Integrable statistic P)
     (hLaw : ∀ i, HasLaw (X i) P μ)
     (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X)) :
@@ -56,16 +56,24 @@ theorem endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid
             ∫ observation, statistic observation ∂ P)
         atTop (𝓝 0) := by
   let Y : ℕ -> Ω -> ℝ := fun i => statistic ∘ X i
+  have hstat_aemeasurable_map :
+      ∀ i, AEMeasurable statistic (Measure.map (X i) μ) := by
+    intro i
+    simpa [(hLaw i).map_eq] using hstat_aemeasurable
   have hint : Integrable (Y 0) μ := by
     have hmap : Integrable statistic (Measure.map (X 0) μ) := by
       simpa [(hLaw 0).map_eq] using hstat_integrable
     exact hmap.comp_aemeasurable (hLaw 0).aemeasurable
   have hindepY : Pairwise ((· ⟂ᵢ[μ] ·) on Y) := by
     intro i j hij
-    exact (hindep hij).comp hstat_measurable hstat_measurable
+    exact
+      (hindep hij).comp₀ (hLaw i).aemeasurable (hLaw j).aemeasurable
+        (hstat_aemeasurable_map i) (hstat_aemeasurable_map j)
   have hidentY : ∀ i, IdentDistrib (Y i) (Y 0) μ μ := by
     intro i
-    exact (HasLaw.identDistrib (hLaw i) (hLaw 0)).comp hstat_measurable
+    exact
+      (HasLaw.identDistrib (hLaw i) (hLaw 0)).comp_of_aemeasurable
+        (hstat_aemeasurable_map i)
   filter_upwards
     [endpoint_strong_law_ae_real Y hint hindepY hidentY]
     with ω hω
@@ -88,7 +96,7 @@ theorem endpoint_population_sub_empiricalAverage_tendsto_zero_ae_of_iid
     [MeasurableSpace Ω] [MeasurableSpace Observation]
     {μ : Measure Ω} {P : Measure Observation}
     (X : ℕ -> Ω -> Observation) (statistic : Observation -> ℝ)
-    (hstat_measurable : Measurable statistic)
+    (hstat_aemeasurable : AEMeasurable statistic P)
     (hstat_integrable : Integrable statistic P)
     (hLaw : ∀ i, HasLaw (X i) P μ)
     (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X)) :
@@ -100,7 +108,7 @@ theorem endpoint_population_sub_empiricalAverage_tendsto_zero_ae_of_iid
         atTop (𝓝 0) := by
   filter_upwards
     [endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid
-      X statistic hstat_measurable hstat_integrable hLaw hindep]
+      X statistic hstat_aemeasurable hstat_integrable hLaw hindep]
     with ω hω
   simpa using hω.neg
 
@@ -121,13 +129,7 @@ theorem endpoint_tendsto_ae_of_iid
       FiniteL1BracketCover (Bracket := Bracket) P indexClass classFun width)
     (X : ℕ -> Ω -> Observation)
     (hLaw : ∀ i, HasLaw (X i) P μ)
-    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
-    (h_lower_measurable :
-      ∀ bracketIndex,
-        Measurable (cover.cover.bracket bracketIndex).lower)
-    (h_upper_measurable :
-      ∀ bracketIndex,
-        Measurable (cover.cover.bracket bracketIndex).upper) :
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X)) :
     ∀ᵐ ω ∂μ, ∀ bracketIndex,
       Tendsto
         (fun n : ℕ =>
@@ -147,11 +149,11 @@ theorem endpoint_tendsto_ae_of_iid
   filter_upwards
     [endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid
       X (cover.cover.bracket bracketIndex).upper
-      (h_upper_measurable bracketIndex)
+      (cover.upper_integrable bracketIndex).aestronglyMeasurable.aemeasurable
       (cover.upper_integrable bracketIndex) hLaw hindep,
     endpoint_population_sub_empiricalAverage_tendsto_zero_ae_of_iid
       X (cover.cover.bracket bracketIndex).lower
-      (h_lower_measurable bracketIndex)
+      (cover.lower_integrable bracketIndex).aestronglyMeasurable.aemeasurable
       (cover.lower_integrable bracketIndex) hLaw hindep]
     with ω hupper hlower
   exact ⟨hupper, hlower⟩
@@ -171,20 +173,14 @@ theorem endpointRadius_tendsto_zero_ae_of_iid
       FiniteL1BracketCover (Bracket := Bracket) P indexClass classFun width)
     (X : ℕ -> Ω -> Observation)
     (hLaw : ∀ i, HasLaw (X i) P μ)
-    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
-    (h_lower_measurable :
-      ∀ bracketIndex,
-        Measurable (cover.cover.bracket bracketIndex).lower)
-    (h_upper_measurable :
-      ∀ bracketIndex,
-        Measurable (cover.cover.bracket bracketIndex).upper) :
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X)) :
     ∀ᵐ ω ∂μ,
       Tendsto
         (cover.endpointRadius (fun n => samplePath X ω n))
         atTop (𝓝 0) := by
   filter_upwards
     [cover.endpoint_tendsto_ae_of_iid
-      X hLaw hindep h_lower_measurable h_upper_measurable]
+      X hLaw hindep]
     with ω hω
   exact
     cover.endpointRadius_tendsto_zero_of_endpoint_tendsto
@@ -208,13 +204,7 @@ theorem exists_endpointRadius_ae_of_iid
       FiniteL1BracketCover (Bracket := Bracket) P indexClass classFun width)
     (X : ℕ -> Ω -> Observation)
     (hLaw : ∀ i, HasLaw (X i) P μ)
-    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
-    (h_lower_measurable :
-      ∀ bracketIndex,
-        Measurable (cover.cover.bracket bracketIndex).lower)
-    (h_upper_measurable :
-      ∀ bracketIndex,
-        Measurable (cover.cover.bracket bracketIndex).upper) :
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X)) :
     ∀ᵐ ω ∂μ,
       ∃ endpointRadius : ℕ -> ℝ,
         Tendsto endpointRadius atTop (𝓝 0) ∧
@@ -230,7 +220,7 @@ theorem exists_endpointRadius_ae_of_iid
               endpointRadius sampleSize) := by
   filter_upwards
     [cover.endpoint_tendsto_ae_of_iid
-      X hLaw hindep h_lower_measurable h_upper_measurable]
+      X hLaw hindep]
     with ω hω
   exact
     cover.exists_endpointRadius_of_endpoint_tendsto
@@ -262,13 +252,7 @@ theorem uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers
     (cover :
       ∀ scale,
         @FiniteL1BracketCover Observation Index (Bracket scale)
-          (finiteBracket scale) _ P indexClass classFun (width scale))
-    (h_lower_measurable :
-      ∀ scale (bracketIndex : Bracket scale),
-        Measurable ((cover scale).cover.bracket bracketIndex).lower)
-    (h_upper_measurable :
-      ∀ scale (bracketIndex : Bracket scale),
-        Measurable ((cover scale).cover.bracket bracketIndex).upper) :
+          (finiteBracket scale) _ P indexClass classFun (width scale)) :
     ∀ᵐ ω ∂μ,
       UniformDeviationTendstoZeroOn indexClass
         (fun index => populationRiskOfFunction P (classFun index))
@@ -294,8 +278,6 @@ theorem uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers
     exact
       (cover scale).endpoint_tendsto_ae_of_iid
         X hLaw hindep
-        (h_lower_measurable scale)
-        (h_upper_measurable scale)
   filter_upwards [h_all_endpoints] with ω hω
   exact
     (CountablePrimitiveFiniteBracketingGCRoute.ofFiniteCoverSequenceAndEndpointTendsto
@@ -304,5 +286,71 @@ theorem uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers
       Bracket finiteBracket width h_width_tendsto cover
       (fun scale bracketIndex => (hω scale bracketIndex).1)
       (fun scale bracketIndex => (hω scale bracketIndex).2)).uniformDeviationTendstoZeroOn
+
+/--
+Primitive finite `L1(P)` bracketing numbers at every positive radius imply
+almost-sure pathwise uniform empirical-deviation convergence for iid
+observations.
+
+This is the dependency-minimal Lean theorem corresponding to the direct
+bracketing proof of VdV&W Theorem 2.4.1, stated in the local
+`UniformDeviationTendstoZeroOn` interface rather than the book's outer
+probability language.
+-/
+theorem uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {μ : Measure Ω} {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (X : ℕ -> Ω -> Observation)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
+    (h_bracketing :
+      ∀ epsilon, 0 < epsilon ->
+        l1BracketingNumber P indexClass classFun epsilon < ⊤) :
+    ∀ᵐ ω ∂μ,
+      UniformDeviationTendstoZeroOn indexClass
+        (fun index => populationRiskOfFunction P (classFun index))
+        (fun sampleSize index =>
+          empiricalAverage (samplePath X ω sampleSize) (classFun index)) := by
+  classical
+  let width : ℕ -> ℝ := fun scale => 1 / ((scale : ℝ) + 1)
+  have h_width_pos : ∀ scale, 0 < width scale := by
+    intro scale
+    dsimp [width]
+    positivity
+  have h_width_tendsto : Tendsto width atTop (𝓝 0) := by
+    simpa [width] using
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+  have h_exists :
+      ∀ scale,
+        ∃ (Bracket : Type),
+          ∃ (_finite : Fintype Bracket),
+            Nonempty
+              (@FiniteL1BracketCover Observation Index Bracket _ _
+                P indexClass classFun (width scale)) := by
+    intro scale
+    exact
+      exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top
+        (h_bracketing (width scale) (h_width_pos scale))
+  let Bracket : ℕ -> Type := fun scale => Classical.choose (h_exists scale)
+  let finiteBracket : ∀ scale, Fintype (Bracket scale) := by
+    intro scale
+    exact Classical.choose (Classical.choose_spec (h_exists scale))
+  have h_cover_nonempty :
+      ∀ scale,
+        Nonempty
+          (@FiniteL1BracketCover Observation Index (Bracket scale)
+            (finiteBracket scale) _ P indexClass classFun (width scale)) := by
+    intro scale
+    exact Classical.choose_spec (Classical.choose_spec (h_exists scale))
+  let cover :
+      ∀ scale,
+        @FiniteL1BracketCover Observation Index (Bracket scale)
+          (finiteBracket scale) _ P indexClass classFun (width scale) :=
+    fun scale => Classical.choice (h_cover_nonempty scale)
+  exact
+    uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers
+      X hLaw hindep Bracket finiteBracket width h_width_tendsto cover
 
 end StatInference

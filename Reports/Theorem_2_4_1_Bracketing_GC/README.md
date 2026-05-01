@@ -5,7 +5,9 @@ Processes*, Theorem 2.4.1.
 
 Current Lean status: partially formalized, proof-complete for the layers listed
 below.  The repository does **not** yet claim the full theorem
-`N_[](ε, F, L1(P)) < ∞ for every ε > 0 -> F is Glivenko-Cantelli`.
+in VdV&W's exact outer-probability terminology, but it now proves the
+dependency-minimal theorem from primitive `N_[]` finiteness to almost-sure
+pathwise uniform deviation convergence in the local interface.
 
 ## Proved Lean Layers
 
@@ -31,6 +33,7 @@ below.  The repository does **not** yet claim the full theorem
 | `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto`, `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | epsilon/eventual deterministic bracketing layer from finite covers and endpoint convergence |
 | `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | `StatInference/EmpiricalProcess/BracketingCountable.lean` | countable decreasing finite-cover route |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers` | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid countable-cover almost-sure uniform convergence layer |
+| `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | `StatInference/EmpiricalProcess/EndpointSamples.lean` | primitive `N_[]` to a.s. pathwise uniform convergence theorem |
 
 Detailed side-by-side audit table:
 
@@ -61,11 +64,12 @@ The proved Lean code currently supplies:
 6. iid sample-path endpoint convergence for a fixed finite bracket cover;
 7. endpoint convergence to one finite endpoint-radius sequence;
 8. a proof-carrying finite-bracketing route into the current GC interface;
-9. countable/decreasing finite-cover assembly with iid endpoint SLLNs.
+9. countable/decreasing finite-cover assembly with iid endpoint SLLNs;
+10. cover selection from primitive `l1BracketingNumber ε < ⊤` at the sequence
+    of radii `1 / (n + 1)`.
 
 The next primitive layers needed for the literal textbook theorem are:
 
-1. construct the countable cover sequence from the primitive hypothesis
-   `l1BracketingNumber ε < ⊤` for every `ε > 0`;
-2. state the final textbook theorem with the chosen convergence mode and
-   endpoint measurability assumptions.
+1. define the exact outer-probability / outer-a.s. GC wrapper used in the book;
+2. connect the local pathwise `UniformDeviationTendstoZeroOn` theorem to that
+   wrapper with the chosen convergence mode.

@@ -57,9 +57,10 @@ the closest textbook step, the markdown source, and the PDF screenshot.
 | `FiniteL1BracketCover.empiricalDeviationBoundOn_of_endpoint_bounds` | theorem | primitive cover gives one-sample bracket deviation bound | proved bridge to deterministic bracket theorem |
 | `FiniteL1BracketCover.empiricalDeviationSequenceOn_of_endpoint_bounds` | theorem | primitive cover gives sequence-level deviation bound | proved bridge |
 | `FiniteL1BracketCover.toFiniteBracketingEndpointRoute` | construction | primitive cover becomes existing finite endpoint route | proved bridge to existing route |
-| `UniformDeviationTendstoZeroOn` / `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto` / `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` / `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn_ofFiniteCoversAndEndpointTendsto` | definition/theorem | epsilon/eventual deterministic bracketing argument from finite covers and endpoint convergence | proved layer; final `N_[]` theorem pending |
+| `UniformDeviationTendstoZeroOn` / `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto` / `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` / `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn_ofFiniteCoversAndEndpointTendsto` | definition/theorem | epsilon/eventual deterministic bracketing argument from finite covers and endpoint convergence | proved deterministic route layer |
 | `CountablePrimitiveFiniteBracketingGCRoute` / `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | structure/theorem | countable decreasing finite-cover route | proved deterministic countable-scale layer |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers` | theorem | iid endpoint SLLNs over countably many finite covers imply pathwise uniform convergence | proved almost-sure countable-cover layer |
+| `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | theorem | finite `L1(P)` bracketing numbers at every positive radius imply a.s. pathwise uniform deviation convergence | proved dependency-minimal Theorem 2.4.1 layer in the local convergence interface |
 
 ## Screenshot
 
