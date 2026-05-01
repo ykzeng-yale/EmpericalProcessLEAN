@@ -65,6 +65,7 @@ of this repository.
 | `StatInference/EmpiricalProcess/BracketingCountable.lean` | countable decreasing finite-cover route | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid sample-path endpoint SLLN bridge for finite bracket covers | compiled, no proof holes |
+| `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | local almost-sure pathwise GC wrapper for the primitive bracketing theorem | compiled, no proof holes |
 
 Current promoted declarations toward Theorem 2.4.1:
 
@@ -92,6 +93,10 @@ Current promoted declarations toward Theorem 2.4.1:
 | `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | proved countable decreasing-cover deterministic route |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers` | proved iid countable-cover almost-sure uniform convergence layer |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to a.s. pathwise uniform convergence theorem |
+| `AlmostSureUniformDeviationTendstoZeroOn` | proved/compiled named ordinary a.s. pathwise uniform LLN convergence mode |
+| `VdVWAlmostSureGlivenkoCantelliClass` | proved/compiled local GC wrapper structure for iid observation processes |
+| `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to named a.s. pathwise convergence wrapper |
+| `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | proved local a.s. pathwise Glivenko-Cantelli conclusion from primitive `N_[]` |
 
 Verification gate:
 
@@ -278,7 +283,7 @@ through 2.4.1 requires accounting for them.
 | 2.3.15 Theorem | `M2:818` | pointwise separable version Donsker equivalence | later roadmap |
 | 2.3.16 Proposition | `M2:857` | consistent lifting | later roadmap |
 | 2.3.17 Theorem | `M2:882` | separable modification | later roadmap |
-| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | dependency-minimal primitive `N_[]` theorem proved in local pathwise interface; exact outer-probability GC wrapper pending |
+| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | dependency-minimal primitive `N_[]` theorem proved and packaged as local a.s. pathwise GC wrapper; exact outer-probability machinery pending |
 
 ## Dependency-Minimal Route To Theorem 2.4.1
 
@@ -298,7 +303,7 @@ Sections 2.1-2.3 to be formalized literally.  The dependency-minimal route is:
 | 9 | endpoint empirical average SLLN | `M2:984` | done for fixed finite covers: `EndpointSamples.lean` |
 | 10 | build `FiniteBracketingEndpointRoute` from primitive brackets | `M2:972-984` | done from primitive cover plus endpoint/width assumptions |
 | 11 | decreasing-radius argument | `M2:984` | done for the dependency-minimal deterministic and iid `N_[]` route |
-| 12 | final exact theorem statement | `M2:970` | dependency-minimal local theorem done; exact outer-probability GC wrapper pending |
+| 12 | final exact theorem statement | `M2:970` | local a.s. pathwise GC wrapper done; exact outer-probability/measurable-cover machinery pending |
 
 This route should reuse mathlib for measure/integration/probability and only
 build the empirical-process-specific layer locally.
@@ -346,4 +351,11 @@ For Definition 2.1.6 the current screenshot anchor is:
 Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png
 ```
 
-Both screenshot files are local-only review assets and are ignored by Git.
+For the GC definition in the uniform LLN introduction the current screenshot
+anchor is:
+
+```text
+Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png
+```
+
+These screenshot files are local-only review assets and are ignored by Git.

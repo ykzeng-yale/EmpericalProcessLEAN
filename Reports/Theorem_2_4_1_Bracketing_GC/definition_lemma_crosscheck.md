@@ -8,6 +8,7 @@ Source screenshot anchor:
 ```text
 Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png
 Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png
+Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png
 ```
 
 The screenshot and markdown/PDF files are local-only review assets and are
@@ -51,6 +52,7 @@ ignored by Git.
 | `CountablePrimitiveFiniteBracketingGCRoute`, `CountablePrimitiveFiniteBracketingGCRoute.ofFiniteCoverSequenceAndEndpointTendsto`, `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn`, `StatInference/EmpiricalProcess/BracketingCountable.lean`, countable decreasing finite-cover route | Theorem 2.4.1 proof fixes arbitrarily small bracket radii and lets the radius decrease, markdown `..._101-200.md:970-984` | theorem screenshot | Proved deterministic countable-scale route: finite covers with widths tending to zero and endpoint convergence imply uniform deviation convergence |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers`, `StatInference/EmpiricalProcess/EndpointSamples.lean`, iid countable-cover route | Theorem 2.4.1 proof combines endpoint SLLNs with decreasing bracket radii, markdown `..._101-200.md:984` | theorem screenshot | Proved almost-sure pathwise uniform deviation convergence from iid observations and countably many finite primitive covers whose widths tend to zero |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top`, `StatInference/EmpiricalProcess/EndpointSamples.lean`, primitive bracketing-number theorem | Theorem 2.4.1 statement `N_[](ε, F, L1(P)) < ∞` for every positive `ε` and proof by decreasing radii, markdown `..._101-200.md:970-984` | theorem screenshot | Proved dependency-minimal theorem from primitive `l1BracketingNumber` to a.s. pathwise `UniformDeviationTendstoZeroOn`; exact outer-probability/book GC wrapper still pending |
+| `AlmostSureUniformDeviationTendstoZeroOn`, `VdVWAlmostSureGlivenkoCantelliClass`, `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top`, `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top`, `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`, local almost-sure GC wrapper | GC definition says uniform LLN convergence in outer probability or outer almost surely defines a Glivenko-Cantelli class, markdown `..._1-100.md:1828-1834`; Theorem 2.4.1 conclusion, markdown `..._101-200.md:970-984` | `Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png`; theorem screenshot | Proved local almost-sure pathwise GC wrapper from primitive `N_[]` theorem; literal VdV&W outer-probability and measurable-cover machinery remains pending |
 
 ## Pending Primitive Cross-Checks
 
@@ -59,7 +61,7 @@ complete.
 
 | Pending Lean target | Markdown anchor | Screenshot needed |
 | --- | --- | --- |
-| exact outer-probability / outer-a.s. `Glivenko-Cantelli` wrapper matching the book's Chapter 2 terminology | Theorem 2.4.1 and GC definition, `..._101-200.md:970-984`, `..._1-100.md:1834` | theorem screenshot |
+| exact outer-probability / outer-a.s. machinery matching the book's Chapter 1 terminology | Theorem 2.4.1 and GC definition, `..._101-200.md:970-984`, `..._1-100.md:1828-1834` | theorem screenshot and `Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png` |
 
 ## Promotion Rule
 

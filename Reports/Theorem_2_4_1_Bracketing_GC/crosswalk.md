@@ -12,6 +12,8 @@ the closest textbook step, the markdown source, and the PDF screenshot.
 | Markdown upper deviation inequality | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:974-981` |
 | Markdown endpoint SLLN sentence | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:984` |
 | PDF screenshot | `Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png` |
+| Markdown GC definition | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1828-1834` |
+| GC definition PDF screenshot | `Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png` |
 | Markdown bracketing definition | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1895` |
 | Definition 2.1.6 PDF screenshot | `Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png` |
 
@@ -61,6 +63,10 @@ the closest textbook step, the markdown source, and the PDF screenshot.
 | `CountablePrimitiveFiniteBracketingGCRoute` / `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | structure/theorem | countable decreasing finite-cover route | proved deterministic countable-scale layer |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers` | theorem | iid endpoint SLLNs over countably many finite covers imply pathwise uniform convergence | proved almost-sure countable-cover layer |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | theorem | finite `L1(P)` bracketing numbers at every positive radius imply a.s. pathwise uniform deviation convergence | proved dependency-minimal Theorem 2.4.1 layer in the local convergence interface |
+| `AlmostSureUniformDeviationTendstoZeroOn` | definition | almost-sure version of the uniform LLN convergence used to call a class Glivenko-Cantelli | local a.s. pathwise interface; not literal outer probability |
+| `VdVWAlmostSureGlivenkoCantelliClass` | structure | packages iid law/independence assumptions and the GC conclusion for a function class | proved wrapper target for the dependency-minimal route |
+| `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | theorem | primitive `N_[]` hypothesis implies almost-sure pathwise uniform-deviation convergence | proved by applying the primitive bracketing-number theorem |
+| `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | theorem | finite `L1(P)` bracketing numbers imply the class is Glivenko-Cantelli | proved as local a.s. pathwise GC wrapper; exact outer-probability machinery pending |
 
 ## Screenshot
 

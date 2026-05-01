@@ -29,6 +29,7 @@ and minimal deterministic support:
 | `StatInference/EmpiricalProcess/BracketingCountable.lean` | countable decreasing finite-cover route |
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib |
 | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid sample-path endpoint SLLN bridge for finite bracket covers |
+| `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | local almost-sure pathwise GC wrapper for the primitive bracketing theorem |
 
 Old local non-empirical-process theorem experiments are not part of this clean
 repo.  The current tracked Lean library has no `sorry`, `admit`, `axiom`, or
@@ -54,18 +55,20 @@ The table below is only the active direct-proof anchor subset.
 
 | Textbook item | Markdown anchor | Current Lean status |
 | --- | --- | --- |
+| GC definition for uniform LLN | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1828-1834` | local ordinary a.s. pathwise wrapper formalized; literal outer-probability machinery pending |
 | Definition 2.1.5, covering numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1894` | only abstract proof-carrying interface exists |
 | Definition 2.1.6, bracketing numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1895` | primitive bracket, epsilon-bracket, finite-cover, and numeric `N_[]` layers formalized |
 | Chapter 2.4 intro | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:963-969` | reflected in roadmap only |
-| Theorem 2.4.1 statement | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:970` | dependency-minimal primitive `N_[]` theorem proved in local a.s. pathwise interface; exact outer-probability GC wording pending |
+| Theorem 2.4.1 statement | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:970` | dependency-minimal primitive `N_[]` theorem proved and packaged as local a.s. pathwise GC wrapper; exact outer-probability GC wording pending |
 | Theorem 2.4.1 proof, finite brackets and endpoint inequality | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:972-981` | deterministic bracketing theorem proved |
 | Theorem 2.4.1 proof, endpoint SLLN and decreasing radius | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:984` | endpoint SLLN wrapper, iid sample-path bridge, finite endpoint-radius bridge, and countable/decreasing-scale assembly proved |
 | Example 2.4.2, empirical CDF brackets | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:985` | pending example formalization |
 
-Current screenshot anchor:
+Current screenshot anchors:
 
 ```text
 Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png
+Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png
 ```
 
 ## What Is Already Proved Toward Theorem 2.4.1
@@ -98,9 +101,13 @@ The following are compiled Lean declarations with no proof holes:
 | `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | countable decreasing-cover deterministic route |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers` | iid observations plus countably many finite covers imply a.s. pathwise uniform deviation convergence |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | primitive `N_[]` finiteness at every positive radius implies a.s. pathwise uniform deviation convergence |
+| `AlmostSureUniformDeviationTendstoZeroOn` | names the ordinary a.s. pathwise uniform LLN convergence mode used by the local GC wrapper |
+| `VdVWAlmostSureGlivenkoCantelliClass` | packages iid law/independence assumptions and the local GC conclusion |
+| `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | converts primitive `N_[]` finiteness into the named a.s. convergence wrapper |
+| `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | packages the primitive bracketing theorem as a local a.s. pathwise Glivenko-Cantelli conclusion |
 
 This is now the dependency-minimal finite-bracketing theorem in the local
-pathwise interface.  It is not yet the exact book statement in VdV&W's
+pathwise GC interface.  It is not yet the exact book statement in VdV&W's
 outer-probability / outer-a.s. `Glivenko-Cantelli` terminology.
 
 ## Dependency-Minimal Remaining Work For Theorem 2.4.1
@@ -122,7 +129,7 @@ These are the missing primitives and lemmas on the direct proof path.
 | 11 | endpoint convergence to route fields | proof line 984 | done: `finiteEndpointRadius`, `FiniteL1BracketCover.endpointRadius`, and route constructor from endpoint convergence |
 | 12 | construct `FiniteBracketingEndpointRoute` | proof lines 972-984 | done from primitive finite `L1(P)` cover plus endpoint/width assumptions |
 | 13 | decreasing-radius argument | proof line 984 | done for the dependency-minimal deterministic and iid countable-cover routes |
-| 14 | final textbook theorem | Theorem 2.4.1 statement | dependency-minimal local theorem done: `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top`; exact outer-probability GC wrapper pending |
+| 14 | final textbook theorem | Theorem 2.4.1 statement | local a.s. pathwise GC wrapper done: `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top`; exact outer-probability/measurable-cover machinery pending |
 
 ## Full Textbook-Order Work Before 2.4.1
 

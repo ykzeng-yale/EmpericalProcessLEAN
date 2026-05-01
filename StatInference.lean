@@ -9,3 +9,4 @@ import StatInference.EmpiricalProcess.BracketingPrimitive
 import StatInference.EmpiricalProcess.BracketingCountable
 import StatInference.EmpiricalProcess.EndpointStrongLaw
 import StatInference.EmpiricalProcess.EndpointSamples
+import StatInference.EmpiricalProcess.GlivenkoCantelli
