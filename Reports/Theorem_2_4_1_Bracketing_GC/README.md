@@ -18,6 +18,13 @@ below.  The repository does **not** yet claim the full theorem
 | `FiniteBracketingEndpointRoute.toGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/Bracketing.lean` | proof-carrying conversion |
 | `endpoint_strong_law_ae_real` | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | proved from mathlib |
 | `finite_endpoint_strong_law_ae_real` | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | proved from mathlib |
+| `FunctionBracket`, `MemFunctionBracket`, `l1BracketWidth`, `IsL1EpsilonBracket` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive bracketing definitions |
+| `FiniteBracketCover`, `FiniteL1BracketCover` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | finite primitive cover definitions |
+| `FiniteL1BracketCoverAtCard`, `HasFiniteL1BracketingNumber` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | explicit-cardinality finite bracketing witness |
+| `l1BracketingNumber`, `exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive numeric `N_[]` and finite-cover bridge |
+| `FiniteL1BracketCover.empiricalDeviationBoundOn_of_endpoint_bounds` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive cover-to-deviation theorem |
+| `FiniteL1BracketCover.toFiniteBracketingEndpointRoute` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive cover-to-route construction |
+| `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | epsilon/eventual deterministic bracketing layer |
 
 Detailed side-by-side audit table:
 
@@ -28,7 +35,9 @@ Reports/Theorem_2_4_1_Bracketing_GC/definition_lemma_crosscheck.md
 ## Textbook Source Anchors
 
 - Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md`, lines 963-984.
+- Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md`, line 1895 for Definition 2.1.6.
 - PDF screenshot: `Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png`.
+- PDF screenshot: `Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png`.
 
 These source assets are local-only review material and are intentionally
 excluded from the public Git history.
@@ -40,14 +49,14 @@ The proved Lean code currently supplies:
 1. the deterministic bracketing inequality;
 2. the sequence-level deterministic handoff;
 3. endpoint strong-law wrappers for finitely many real-valued endpoints;
-4. a proof-carrying finite-bracketing route into the current GC interface.
+4. primitive function brackets, `L1(P)` width, epsilon brackets, and finite
+   primitive cover witnesses;
+5. primitive cover-to-deviation and primitive cover-to-route constructors;
+6. a proof-carrying finite-bracketing route into the current GC interface.
 
 The next primitive layers needed for the literal textbook theorem are:
 
-1. define function brackets `[l, u]` over measurable functions;
-2. define `L1(P)` bracket width as an integral or `L1` norm;
-3. define `N_[](ε, F, L1(P))`;
-4. prove that finite bracketing number gives a finite endpoint family;
-5. connect empirical averages from actual samples to endpoint empirical risks;
-6. combine finite endpoint strong laws with the deterministic bracketing route;
-7. choose a decreasing radius sequence to remove the fixed `ε`.
+1. construct endpoint convergence assumptions from actual iid samples and
+   mathlib SLLN for each finite cover;
+2. combine finite endpoint strong laws with the primitive bracketing route;
+3. state the final textbook theorem with the chosen convergence mode.

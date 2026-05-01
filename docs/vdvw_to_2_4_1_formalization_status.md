@@ -25,6 +25,7 @@ and minimal deterministic support:
 | `StatInference/EmpiricalProcess/Preservation.lean` | projection/subclass preservation lemmas |
 | `StatInference/EmpiricalProcess/Complexity.lean` | proof-carrying complexity interfaces |
 | `StatInference/EmpiricalProcess/Bracketing.lean` | deterministic bracketing inequality and route to GC |
+| `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive brackets, `L1(P)` width, finite covers, and primitive cover-to-route theorems |
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib |
 
 Old local non-empirical-process theorem experiments are not part of this clean
@@ -78,6 +79,14 @@ The following are compiled Lean declarations with no proof holes:
 | `FiniteBracketingEndpointRoute.toGlivenkoCantelliClass` | converts a verified route into `GlivenkoCantelliClass` |
 | `endpoint_strong_law_ae_real` | wraps mathlib strong law for one endpoint |
 | `finite_endpoint_strong_law_ae_real` | finite endpoint family strong-law handoff |
+| `FunctionBracket`, `MemFunctionBracket`, `l1BracketWidth`, `IsL1EpsilonBracket` | primitive Definition 2.1.6 bracket vocabulary |
+| `FiniteBracketCover`, `FiniteL1BracketCover` | finite primitive cover witnesses with integrability and width evidence |
+| `FiniteL1BracketCoverAtCard`, `HasFiniteL1BracketingNumber` | explicit-cardinality finite bracketing witness layer |
+| `l1BracketingNumber`, `exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top` | primitive numeric `N_[] : ℕ∞` and finite-cover bridge |
+| `FiniteL1BracketCover.empiricalDeviationBoundOn_of_endpoint_bounds` | one-sample primitive-cover deviation bound |
+| `FiniteL1BracketCover.empiricalDeviationSequenceOn_of_endpoint_bounds` | sequence-level primitive-cover deviation bound |
+| `FiniteL1BracketCover.toFiniteBracketingEndpointRoute` | primitive cover constructor into the existing finite endpoint route |
+| `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | epsilon/eventual deterministic route from primitive finite covers |
 
 This is not yet the exact theorem
 `N_[](eps, F, L1(P)) < infinity for every eps > 0 -> F is Glivenko-Cantelli`.
@@ -89,19 +98,19 @@ These are the missing primitives and lemmas on the direct proof path.
 | Order | Missing item | Textbook source | Lean target shape |
 | --- | --- | --- | --- |
 | 1 | measurable real function class | Theorem 2.4.1 statement | represent `F : Set (Omega -> Real)` with endpoint/function measurability assumptions |
-| 2 | pointwise bracket `[l, u]` | Definition 2.1.6 | `FunctionBracket`, `MemFunctionBracket`, pointwise `l x <= f x <= u x` |
-| 3 | epsilon bracket | Definition 2.1.6 | bracket plus width bound `< eps` |
-| 4 | `L1(P)` bracket width | Definition 2.1.6 and Theorem 2.4.1 | define width as the integral of `|u x - l x|`, or simplify to the integral of `u x - l x` under pointwise order |
-| 5 | finite bracket cover | Definition 2.1.6 | finite indexed family of brackets whose union covers the class |
-| 6 | primitive bracketing number `N_[]` | Definition 2.1.6 | minimal finite cardinality or `WithTop Nat` value with existence theorem |
-| 7 | finite bracketing hypothesis to cover witness | Theorem 2.4.1 statement | from `N_[](eps, F, L1(P)) < infinity` obtain finite brackets with width `< eps` |
-| 8 | population order lemmas | proof lines 972-981 | integrate pointwise bracket inequalities to get `P l <= P f <= P u` |
-| 9 | empirical order lemmas | proof lines 972-981 | finite-sample averages preserve pointwise bracket inequalities |
-| 10 | endpoint empirical averages | proof line 984 | instantiate endpoint SLLN with `X i omega = u (sample i omega)` and lower endpoints |
-| 11 | endpoint convergence to route fields | proof line 984 | produce endpoint radius tending to zero for all finite endpoints |
-| 12 | construct `FiniteBracketingEndpointRoute` | proof lines 972-984 | connect primitive bracket cover to the existing deterministic route |
-| 13 | decreasing-radius argument | proof line 984 | turn fixed `eps` theorem into exact GC conclusion |
-| 14 | final textbook theorem | Theorem 2.4.1 statement | state exact convergence mode and measurability/outer-probability assumptions |
+| 2 | pointwise bracket `[l, u]` | Definition 2.1.6 | done: `FunctionBracket`, `MemFunctionBracket` |
+| 3 | epsilon bracket | Definition 2.1.6 | done: `IsL1EpsilonBracket` |
+| 4 | `L1(P)` bracket width | Definition 2.1.6 and Theorem 2.4.1 | done: `l1BracketWidth` as integral of `abs (u - l)` |
+| 5 | finite bracket cover | Definition 2.1.6 | done: `FiniteBracketCover`, `FiniteL1BracketCover` |
+| 6 | primitive bracketing number `N_[]` | Definition 2.1.6 | done: `l1BracketingNumber : ℕ∞` with finite case from least `Nat.find` cardinality |
+| 7 | finite bracketing hypothesis to cover witness | Theorem 2.4.1 statement | done: `exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top` |
+| 8 | population order lemmas | proof lines 972-981 | done using mathlib `integral_mono` |
+| 9 | empirical order lemmas | proof lines 972-981 | done using finite sums |
+| 10 | endpoint empirical averages | proof line 984 | partially done: endpoint vocabulary exists; iid-sample SLLN connection still pending |
+| 11 | endpoint convergence to route fields | proof line 984 | pending: produce endpoint radius tending to zero from finite endpoint SLLNs |
+| 12 | construct `FiniteBracketingEndpointRoute` | proof lines 972-984 | done from primitive finite `L1(P)` cover plus endpoint/width assumptions |
+| 13 | decreasing-radius argument | proof line 984 | partially done: `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` proves epsilon/eventual deterministic version |
+| 14 | final textbook theorem | Theorem 2.4.1 statement | pending: state exact convergence mode and measurability/outer-probability assumptions |
 
 ## Full Textbook-Order Work Before 2.4.1
 

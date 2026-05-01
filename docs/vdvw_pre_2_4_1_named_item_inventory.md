@@ -61,6 +61,7 @@ of this repository.
 | `StatInference/EmpiricalProcess/Preservation.lean` | subclass/projection preservation | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/Complexity.lean` | abstract covering/bracketing/VC certificates | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/Bracketing.lean` | deterministic bracket inequality and route | compiled, no proof holes |
+| `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive brackets, `L1(P)` width, finite covers, and primitive cover-to-route theorems | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib | compiled, no proof holes |
 
 Current promoted declarations toward Theorem 2.4.1:
@@ -74,6 +75,12 @@ Current promoted declarations toward Theorem 2.4.1:
 | `FiniteBracketingEndpointRoute.toGlivenkoCantelliClass` | proved route-to-GC conversion |
 | `endpoint_strong_law_ae_real` | proved wrapper around mathlib SLLN |
 | `finite_endpoint_strong_law_ae_real` | proved finite endpoint SLLN handoff |
+| `FunctionBracket`, `MemFunctionBracket`, `l1BracketWidth`, `IsL1EpsilonBracket` | proved/compiled primitive bracketing vocabulary for Definition 2.1.6 |
+| `FiniteBracketCover`, `FiniteL1BracketCover` | proved/compiled finite primitive cover witnesses |
+| `FiniteL1BracketCoverAtCard`, `HasFiniteL1BracketingNumber` | proved/compiled explicit-cardinality finite bracketing witness layer |
+| `l1BracketingNumber`, `exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top` | proved/compiled primitive numeric `N_[] : ℕ∞` and finite-cover bridge |
+| `FiniteL1BracketCover.toFiniteBracketingEndpointRoute` | proved primitive-cover constructor into the existing endpoint route |
+| `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | proved epsilon/eventual deterministic bracketing route |
 
 Verification gate:
 
@@ -232,7 +239,7 @@ through 2.4.1 requires accounting for them.
 | 2.1.3 Example | `M1:1870` | empirical distribution function | later roadmap example |
 | 2.1.4 Example | `M1:1879` | empirical process indexed by sets | later roadmap example |
 | 2.1.5 Definition | `M1:1894` | covering numbers and entropy | abstract local certificate exists; primitive exact definition pending |
-| 2.1.6 Definition | `M1:1895` | bracketing numbers and entropy with bracketing | pending primitive; direct dependency for 2.4.1 |
+| 2.1.6 Definition | `M1:1895` | bracketing numbers and entropy with bracketing | primitive bracket, width, epsilon-bracket, finite-cover, and numeric `N_[]` layers exist; entropy/logarithm still pending |
 | 2.1.10 Example | `M2:160` | process indexed by arbitrary set as function class | later roadmap |
 | 2.1.11 Proposition | `M2:169` | Donsker criterion for dual unit ball of `L_p` | later roadmap |
 | 2.2.1 Lemma | `M2:229` | Orlicz tail-to-norm bound | later roadmap; not needed for direct 2.4.1 proof |
@@ -270,16 +277,16 @@ Sections 2.1-2.3 to be formalized literally.  The dependency-minimal route is:
 | Order | Needed Lean item | Source anchor | Status |
 | --- | --- | --- | --- |
 | 1 | real-valued measurable function class over a probability space | `M2:970` | pending primitive |
-| 2 | pointwise bracket `[l, u]` and membership | `M1:1895` | pending primitive |
-| 3 | epsilon bracket in `L1(P)` width | `M1:1895`, `M2:970` | pending primitive |
-| 4 | finite bracket cover | `M1:1895`, `M2:972` | pending primitive |
-| 5 | bracketing number `N_[]` or equivalent finite-existence predicate | `M1:1895` | pending primitive |
-| 6 | construct endpoints from a finite bracket cover | `M2:972-984` | pending primitive |
-| 7 | population integral order for bracket endpoints | `M2:972-981` | pending; use mathlib `integral_mono` |
-| 8 | empirical average order for bracket endpoints | `M2:972-981` | pending; use finite sums |
+| 2 | pointwise bracket `[l, u]` and membership | `M1:1895` | done: `FunctionBracket`, `MemFunctionBracket` |
+| 3 | epsilon bracket in `L1(P)` width | `M1:1895`, `M2:970` | done: `l1BracketWidth`, `IsL1EpsilonBracket` |
+| 4 | finite bracket cover | `M1:1895`, `M2:972` | done: `FiniteBracketCover`, `FiniteL1BracketCover` |
+| 5 | bracketing number `N_[]` or equivalent finite-existence predicate | `M1:1895` | done: `l1BracketingNumber : ℕ∞` and finite-existence witness |
+| 6 | construct endpoints from a finite bracket cover | `M2:972-984` | partially done by primitive cover-to-route theorem; endpoint convergence from iid samples pending |
+| 7 | population integral order for bracket endpoints | `M2:972-981` | done using mathlib `integral_mono` |
+| 8 | empirical average order for bracket endpoints | `M2:972-981` | done using finite sums |
 | 9 | endpoint empirical average SLLN | `M2:984` | local wrapper exists; needs connection to samples/functions |
-| 10 | build `FiniteBracketingEndpointRoute` from primitive brackets | `M2:972-984` | pending |
-| 11 | decreasing-radius argument | `M2:984` | partly represented by existing route-to-GC theorem; exact primitive theorem pending |
+| 10 | build `FiniteBracketingEndpointRoute` from primitive brackets | `M2:972-984` | done from primitive cover plus endpoint/width assumptions |
+| 11 | decreasing-radius argument | `M2:984` | partially done by `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn`; exact `N_[]` theorem pending |
 | 12 | final exact theorem statement | `M2:970` | pending |
 
 This route should reuse mathlib for measure/integration/probability and only

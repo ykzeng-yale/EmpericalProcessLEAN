@@ -185,6 +185,19 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   in `StatInference/EmpiricalProcess/Bracketing.lean`.
 - `FiniteBracketingEndpointRoute.toGlivenkoCantelliClass`
   in `StatInference/EmpiricalProcess/Bracketing.lean`.
+- `FunctionBracket`, `MemFunctionBracket`, `l1BracketWidth`, and
+  `IsL1EpsilonBracket`
+  in `StatInference/EmpiricalProcess/BracketingPrimitive.lean`.
+- `FiniteBracketCover`, `FiniteL1BracketCover`, and
+  `FiniteL1BracketCover.toFiniteBracketingEndpointRoute`
+  in `StatInference/EmpiricalProcess/BracketingPrimitive.lean`.
+- `FiniteL1BracketCoverAtCard` and `HasFiniteL1BracketingNumber`
+  in `StatInference/EmpiricalProcess/BracketingPrimitive.lean`.
+- `l1BracketingNumber` and
+  `exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top`
+  in `StatInference/EmpiricalProcess/BracketingPrimitive.lean`.
+- `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn`
+  in `StatInference/EmpiricalProcess/BracketingPrimitive.lean`.
 - `endpoint_strong_law_ae_real`
   in `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`.
 - `finite_endpoint_strong_law_ae_real`
@@ -198,22 +211,16 @@ primitive bracketing numbers.
 ## Remaining Gap For Theorem 2.4.1
 
 Before marking VdV&W Theorem 2.4.1 fully formalized, the repository still needs
-the following primitive layers:
+the following remaining layers:
 
-1. Define function brackets `[l, u]` over measurable real-valued functions.
-2. Define bracket membership pointwise as `l <= f <= u`.
-3. Define `L1(P)` bracket width using mathlib integrals or `L1` norms.
-4. Define the finite bracketing number `N_[](eps, F, L1(P))`.
-5. Prove that finite bracketing number gives a finite endpoint family.
-6. Connect empirical averages from actual samples to endpoint empirical risks.
-7. Combine finite endpoint strong laws with the deterministic bracketing route.
-8. Run the decreasing-radius argument to remove the fixed radius.
-9. State and prove the final theorem in the exact VdV&W shape, with explicit
+1. Connect actual iid sample processes to endpoint empirical averages.
+2. Combine finite endpoint strong laws with the primitive bracketing route.
+3. State and prove the final theorem in the exact VdV&W shape, with explicit
    convergence mode and measurability/integrability assumptions.
 
-The next Lean work should focus on items 1--5 first.  Those are the missing
-definitions and finite-construction lemmas between the textbook hypothesis and
-the currently proved endpoint route.
+The next Lean work should focus on item 1 first.  That is now the missing
+probabilistic bridge between mathlib's endpoint strong law and the currently
+proved primitive finite-cover route.
 
 ## Progressive VdV&W Formalization Roadmap
 
@@ -299,6 +306,7 @@ The proof-hole scan should return no matches.
 - Current source-audited focus is VdV&W Theorem 2.4.1.
 - The comprehensive pre-2.4.1 inventory now covers Chapter 1 and Chapter 2
   through the theorem, not only Section 2.
-- Deterministic bracketing inequality and finite endpoint strong-law wrappers
-  are proved.
+- Deterministic bracketing inequality, primitive bracket/finite-cover layer,
+  primitive cover-to-route bridge, and finite endpoint strong-law wrappers are
+  proved.
 - The full theorem from primitive `N_[]` definitions remains the next target.
