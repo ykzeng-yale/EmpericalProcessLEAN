@@ -1,0 +1,20 @@
+.DS_Store
+.lake
+.lake/
+.elan/
+build/
+*.olean
+*.ilean
+*.c
+*.o
+*.so
+*.dylib
+*.dll
+*.tmp
+*.log
+
+# Local source material used for human cross-checking.
+# Do not publish copyrighted textbook conversions or screenshots.
+Textbooks/Vaart1996/Markdown/*.md
+Textbooks/Vaart1996/PDF/*.pdf
+Textbooks/Vaart1996/Screenshots/*.png
