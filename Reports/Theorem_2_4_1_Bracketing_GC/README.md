@@ -29,6 +29,8 @@ below.  The repository does **not** yet claim the full theorem
 | `FiniteL1BracketCover.empiricalDeviationBoundOn_of_endpoint_bounds` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive cover-to-deviation theorem |
 | `FiniteL1BracketCover.toFiniteBracketingEndpointRoute` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive cover-to-route construction |
 | `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto`, `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | epsilon/eventual deterministic bracketing layer from finite covers and endpoint convergence |
+| `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | `StatInference/EmpiricalProcess/BracketingCountable.lean` | countable decreasing finite-cover route |
+| `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers` | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid countable-cover almost-sure uniform convergence layer |
 
 Detailed side-by-side audit table:
 
@@ -58,10 +60,12 @@ The proved Lean code currently supplies:
 5. primitive cover-to-deviation and primitive cover-to-route constructors;
 6. iid sample-path endpoint convergence for a fixed finite bracket cover;
 7. endpoint convergence to one finite endpoint-radius sequence;
-8. a proof-carrying finite-bracketing route into the current GC interface.
+8. a proof-carrying finite-bracketing route into the current GC interface;
+9. countable/decreasing finite-cover assembly with iid endpoint SLLNs.
 
 The next primitive layers needed for the literal textbook theorem are:
 
-1. combine fixed-cover iid endpoint SLLNs over a decreasing/countable
-   bracketing scale;
-2. state the final textbook theorem with the chosen convergence mode.
+1. construct the countable cover sequence from the primitive hypothesis
+   `l1BracketingNumber ε < ⊤` for every `ε > 0`;
+2. state the final textbook theorem with the chosen convergence mode and
+   endpoint measurability assumptions.

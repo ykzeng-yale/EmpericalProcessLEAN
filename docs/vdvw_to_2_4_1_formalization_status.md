@@ -26,6 +26,7 @@ and minimal deterministic support:
 | `StatInference/EmpiricalProcess/Complexity.lean` | proof-carrying complexity interfaces |
 | `StatInference/EmpiricalProcess/Bracketing.lean` | deterministic bracketing inequality and route to GC |
 | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive brackets, `L1(P)` width, finite covers, and primitive cover-to-route theorems |
+| `StatInference/EmpiricalProcess/BracketingCountable.lean` | countable decreasing finite-cover route |
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib |
 | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid sample-path endpoint SLLN bridge for finite bracket covers |
 
@@ -56,9 +57,9 @@ The table below is only the active direct-proof anchor subset.
 | Definition 2.1.5, covering numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1894` | only abstract proof-carrying interface exists |
 | Definition 2.1.6, bracketing numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1895` | primitive bracket, epsilon-bracket, finite-cover, and numeric `N_[]` layers formalized |
 | Chapter 2.4 intro | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:963-969` | reflected in roadmap only |
-| Theorem 2.4.1 statement | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:970` | primitive finite-bracketing and fixed-cover iid endpoint layers proved; final countable/decreasing-cover theorem pending |
+| Theorem 2.4.1 statement | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:970` | primitive finite-bracketing, fixed-cover iid endpoint, and countable/decreasing-cover route layers proved; final `N_[]`-hypothesis theorem pending |
 | Theorem 2.4.1 proof, finite brackets and endpoint inequality | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:972-981` | deterministic bracketing theorem proved |
-| Theorem 2.4.1 proof, endpoint SLLN and decreasing radius | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:984` | endpoint SLLN wrapper, iid sample-path bridge, and finite endpoint-radius bridge proved; countable/decreasing-scale assembly pending |
+| Theorem 2.4.1 proof, endpoint SLLN and decreasing radius | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:984` | endpoint SLLN wrapper, iid sample-path bridge, finite endpoint-radius bridge, and countable/decreasing-scale assembly proved |
 | Example 2.4.2, empirical CDF brackets | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:985` | pending example formalization |
 
 Current screenshot anchor:
@@ -94,6 +95,8 @@ The following are compiled Lean declarations with no proof holes:
 | `FiniteL1BracketCover.toFiniteBracketingEndpointRoute` | primitive cover constructor into the existing finite endpoint route |
 | `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto` | route constructor from finite covers and endpoint convergence |
 | `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | epsilon/eventual deterministic route from primitive finite covers |
+| `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | countable decreasing-cover deterministic route |
+| `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers` | iid observations plus countably many finite covers imply a.s. pathwise uniform deviation convergence |
 
 This is not yet the exact theorem
 `N_[](eps, F, L1(P)) < infinity for every eps > 0 -> F is Glivenko-Cantelli`.
@@ -116,8 +119,8 @@ These are the missing primitives and lemmas on the direct proof path.
 | 10 | endpoint empirical averages | proof line 984 | done for fixed finite covers: `EndpointSamples.lean` connects iid samples to endpoint empirical averages |
 | 11 | endpoint convergence to route fields | proof line 984 | done: `finiteEndpointRadius`, `FiniteL1BracketCover.endpointRadius`, and route constructor from endpoint convergence |
 | 12 | construct `FiniteBracketingEndpointRoute` | proof lines 972-984 | done from primitive finite `L1(P)` cover plus endpoint/width assumptions |
-| 13 | decreasing-radius argument | proof line 984 | done for the dependency-minimal deterministic route: `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` |
-| 14 | final textbook theorem | Theorem 2.4.1 statement | pending: assemble countable/decreasing bracketing covers and state exact convergence mode/measurability assumptions |
+| 13 | decreasing-radius argument | proof line 984 | done for the dependency-minimal deterministic and iid countable-cover routes |
+| 14 | final textbook theorem | Theorem 2.4.1 statement | pending: construct countable covers from `∀ ε > 0, l1BracketingNumber ε < ⊤` and state exact convergence mode/measurability assumptions |
 
 ## Full Textbook-Order Work Before 2.4.1
 

@@ -1,4 +1,4 @@
-import StatInference.EmpiricalProcess.BracketingPrimitive
+import StatInference.EmpiricalProcess.BracketingCountable
 import StatInference.EmpiricalProcess.EndpointStrongLaw
 
 /-!
@@ -239,5 +239,70 @@ theorem exists_endpointRadius_ae_of_iid
       (fun bracketIndex => (hω bracketIndex).2)
 
 end FiniteL1BracketCover
+
+/--
+Countably many finite primitive covers with widths tending to zero imply
+almost-sure pathwise uniform deviation convergence for iid observations.
+
+This is the probabilistic countable-scale handoff needed before deriving a
+final theorem directly from finite bracketing numbers.
+-/
+theorem uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {μ : Measure Ω} {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (X : ℕ -> Ω -> Observation)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
+    (Bracket : ℕ -> Type*)
+    (finiteBracket : ∀ scale, Fintype (Bracket scale))
+    (width : ℕ -> ℝ)
+    (h_width_tendsto : Tendsto width atTop (𝓝 0))
+    (cover :
+      ∀ scale,
+        @FiniteL1BracketCover Observation Index (Bracket scale)
+          (finiteBracket scale) _ P indexClass classFun (width scale))
+    (h_lower_measurable :
+      ∀ scale (bracketIndex : Bracket scale),
+        Measurable ((cover scale).cover.bracket bracketIndex).lower)
+    (h_upper_measurable :
+      ∀ scale (bracketIndex : Bracket scale),
+        Measurable ((cover scale).cover.bracket bracketIndex).upper) :
+    ∀ᵐ ω ∂μ,
+      UniformDeviationTendstoZeroOn indexClass
+        (fun index => populationRiskOfFunction P (classFun index))
+        (fun sampleSize index =>
+          empiricalAverage (samplePath X ω sampleSize) (classFun index)) := by
+  have h_all_endpoints :
+      ∀ᵐ ω ∂μ, ∀ scale, ∀ bracketIndex,
+        Tendsto
+          (fun n : ℕ =>
+            empiricalAverage (samplePath X ω n)
+                ((cover scale).cover.bracket bracketIndex).upper -
+              ((cover scale).cover.bracket bracketIndex).upperIntegral P)
+          atTop (𝓝 0) ∧
+        Tendsto
+          (fun n : ℕ =>
+            ((cover scale).cover.bracket bracketIndex).lowerIntegral P -
+              empiricalAverage (samplePath X ω n)
+                ((cover scale).cover.bracket bracketIndex).lower)
+          atTop (𝓝 0) := by
+    refine ae_all_iff.2 ?_
+    intro scale
+    letI := finiteBracket scale
+    exact
+      (cover scale).endpoint_tendsto_ae_of_iid
+        X hLaw hindep
+        (h_lower_measurable scale)
+        (h_upper_measurable scale)
+  filter_upwards [h_all_endpoints] with ω hω
+  exact
+    (CountablePrimitiveFiniteBracketingGCRoute.ofFiniteCoverSequenceAndEndpointTendsto
+      (μ := P) (indexClass := indexClass) (classFun := classFun)
+      (samples := fun n => samplePath X ω n)
+      Bracket finiteBracket width h_width_tendsto cover
+      (fun scale bracketIndex => (hω scale bracketIndex).1)
+      (fun scale bracketIndex => (hω scale bracketIndex).2)).uniformDeviationTendstoZeroOn
 
 end StatInference

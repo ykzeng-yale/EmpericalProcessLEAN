@@ -62,6 +62,7 @@ of this repository.
 | `StatInference/EmpiricalProcess/Complexity.lean` | abstract covering/bracketing/VC certificates | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/Bracketing.lean` | deterministic bracket inequality and route | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive brackets, `L1(P)` width, finite covers, and primitive cover-to-route theorems | compiled, no proof holes |
+| `StatInference/EmpiricalProcess/BracketingCountable.lean` | countable decreasing finite-cover route | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid sample-path endpoint SLLN bridge for finite bracket covers | compiled, no proof holes |
 
@@ -88,6 +89,8 @@ Current promoted declarations toward Theorem 2.4.1:
 | `FiniteL1BracketCover.toFiniteBracketingEndpointRoute` | proved primitive-cover constructor into the existing endpoint route |
 | `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto` | proved route constructor from finite covers and endpoint convergence |
 | `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | proved epsilon/eventual deterministic bracketing route |
+| `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | proved countable decreasing-cover deterministic route |
+| `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers` | proved iid countable-cover almost-sure uniform convergence layer |
 
 Verification gate:
 
@@ -274,7 +277,7 @@ through 2.4.1 requires accounting for them.
 | 2.3.15 Theorem | `M2:818` | pointwise separable version Donsker equivalence | later roadmap |
 | 2.3.16 Proposition | `M2:857` | consistent lifting | later roadmap |
 | 2.3.17 Theorem | `M2:882` | separable modification | later roadmap |
-| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | target; primitive finite-bracketing and fixed-cover iid endpoint routes proved, final GC theorem pending |
+| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | target; primitive finite-bracketing, fixed-cover iid endpoint, and countable-cover routes proved, final `N_[]` theorem pending |
 
 ## Dependency-Minimal Route To Theorem 2.4.1
 
@@ -294,7 +297,7 @@ Sections 2.1-2.3 to be formalized literally.  The dependency-minimal route is:
 | 9 | endpoint empirical average SLLN | `M2:984` | done for fixed finite covers: `EndpointSamples.lean` |
 | 10 | build `FiniteBracketingEndpointRoute` from primitive brackets | `M2:972-984` | done from primitive cover plus endpoint/width assumptions |
 | 11 | decreasing-radius argument | `M2:984` | done for the dependency-minimal deterministic route; exact iid/`N_[]` theorem pending |
-| 12 | final exact theorem statement | `M2:970` | pending |
+| 12 | final exact theorem statement | `M2:970` | pending: construct countable covers from the `N_[]` finiteness hypothesis |
 
 This route should reuse mathlib for measure/integration/probability and only
 build the empirical-process-specific layer locally.

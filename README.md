@@ -203,34 +203,38 @@ Proved declarations toward VdV&W Theorem 2.4.1:
 - `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto` and
   `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn`
   in `StatInference/EmpiricalProcess/BracketingPrimitive.lean`.
+- `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn`
+  in `StatInference/EmpiricalProcess/BracketingCountable.lean`.
 - `endpoint_strong_law_ae_real`
   in `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`.
 - `finite_endpoint_strong_law_ae_real`
   in `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`.
 - `samplePath`, `endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid`,
-  and `FiniteL1BracketCover.exists_endpointRadius_ae_of_iid`
+  `FiniteL1BracketCover.exists_endpointRadius_ae_of_iid`, and
+  `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers`
   in `StatInference/EmpiricalProcess/EndpointSamples.lean`.
 
 These prove the deterministic bracket-comparison route, the finite endpoint
 strong-law wrapper, the fixed-cover iid sample-path endpoint bridge, and the
-endpoint-convergence-to-radius bridge.  They are real Lean proofs, not
-placeholders, but they are still theorem layers rather than the complete
-textbook theorem stated from primitive bracketing numbers.
+endpoint-convergence-to-radius bridge, including a countable decreasing-cover
+route.  They are real Lean proofs, not placeholders, but they are still theorem
+layers rather than the complete textbook theorem stated from primitive
+bracketing numbers.
 
 ## Remaining Gap For Theorem 2.4.1
 
 Before marking VdV&W Theorem 2.4.1 fully formalized, the repository still needs
 the following remaining layers:
 
-1. Combine fixed-cover iid endpoint SLLNs over a decreasing/countable
-   bracketing scale.
-2. Feed that countable-scale construction into the primitive route.
+1. Construct a countable decreasing cover sequence from
+   `l1BracketingNumber ε < ⊤` for every `ε > 0`.
+2. Feed that selected cover sequence into the countable-cover iid theorem.
 3. State and prove the final theorem in the exact VdV&W shape, with explicit
    convergence mode and measurability/integrability assumptions.
 
-The next Lean work should focus on item 1 first.  The fixed-cover
-probabilistic bridge is now proved; the remaining issue is assembling the
-countable/decreasing bracket scales needed for the final theorem statement.
+The next Lean work should focus on item 1 first.  The fixed-cover and
+countable-cover probabilistic bridges are now proved; the remaining issue is
+selecting those covers from the primitive bracketing-number hypothesis.
 
 ## Progressive VdV&W Formalization Roadmap
 

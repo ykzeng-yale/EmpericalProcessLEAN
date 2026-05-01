@@ -6,5 +6,6 @@ import StatInference.EmpiricalProcess.Preservation
 import StatInference.EmpiricalProcess.Complexity
 import StatInference.EmpiricalProcess.Bracketing
 import StatInference.EmpiricalProcess.BracketingPrimitive
+import StatInference.EmpiricalProcess.BracketingCountable
 import StatInference.EmpiricalProcess.EndpointStrongLaw
 import StatInference.EmpiricalProcess.EndpointSamples

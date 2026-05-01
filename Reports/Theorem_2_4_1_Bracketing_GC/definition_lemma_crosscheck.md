@@ -48,6 +48,8 @@ ignored by Git.
 | `FiniteL1BracketCover.empiricalDeviationSequenceOn_of_endpoint_bounds`, `StatInference/EmpiricalProcess/BracketingPrimitive.lean`, sequence-level primitive cover-to-deviation theorem | Same inequality across `n`, markdown `..._101-200.md:974-984` | theorem screenshot | Proved sequence-level primitive handoff |
 | `FiniteL1BracketCover.toFiniteBracketingEndpointRoute`, `StatInference/EmpiricalProcess/BracketingPrimitive.lean`, constructor into existing route | Finite bracket cover plus endpoint control used in proof, markdown `..._101-200.md:972-984` | theorem screenshot | Proved connector from primitive cover to `FiniteBracketingEndpointRoute` |
 | `UniformDeviationTendstoZeroOn`, `PrimitiveFiniteBracketingGCRoute`, `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto`, `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn`, `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn_ofFiniteCoversAndEndpointTendsto`, `StatInference/EmpiricalProcess/BracketingPrimitive.lean`, epsilon/eventual deterministic bracketing route | Final epsilon argument in proof after fixed finite cover and endpoint convergence, markdown `..._101-200.md:984` | theorem screenshot | Proved pathwise deterministic epsilon/eventual layer from finite covers and endpoint convergence; still not the full outer-a.s. textbook theorem from `N_[]` |
+| `CountablePrimitiveFiniteBracketingGCRoute`, `CountablePrimitiveFiniteBracketingGCRoute.ofFiniteCoverSequenceAndEndpointTendsto`, `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn`, `StatInference/EmpiricalProcess/BracketingCountable.lean`, countable decreasing finite-cover route | Theorem 2.4.1 proof fixes arbitrarily small bracket radii and lets the radius decrease, markdown `..._101-200.md:970-984` | theorem screenshot | Proved deterministic countable-scale route: finite covers with widths tending to zero and endpoint convergence imply uniform deviation convergence |
+| `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers`, `StatInference/EmpiricalProcess/EndpointSamples.lean`, iid countable-cover route | Theorem 2.4.1 proof combines endpoint SLLNs with decreasing bracket radii, markdown `..._101-200.md:984` | theorem screenshot | Proved almost-sure pathwise uniform deviation convergence from iid observations and countably many finite primitive covers whose widths tend to zero |
 
 ## Pending Primitive Cross-Checks
 
@@ -56,7 +58,7 @@ complete.
 
 | Pending Lean target | Markdown anchor | Screenshot needed |
 | --- | --- | --- |
-| combine fixed finite-cover iid endpoint SLLNs over a decreasing/countable bracketing scale | Theorem 2.4.1 proof endpoint SLLN and decreasing radius, `..._101-200.md:984` | theorem screenshot |
+| construct the decreasing/countable cover sequence from the primitive hypothesis `l1BracketingNumber ε < ⊤` for every `ε > 0` | Theorem 2.4.1 statement and proof, `..._101-200.md:970-984` | theorem screenshot |
 | final finite-bracketing GC theorem | Theorem 2.4.1, `..._101-200.md:970-984` | `Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png` |
 
 ## Promotion Rule
