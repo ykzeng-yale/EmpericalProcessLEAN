@@ -53,11 +53,11 @@ The table below is only the active direct-proof anchor subset.
 | Textbook item | Markdown anchor | Current Lean status |
 | --- | --- | --- |
 | Definition 2.1.5, covering numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1894` | only abstract proof-carrying interface exists |
-| Definition 2.1.6, bracketing numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1895` | not yet formalized as primitive `N_[]` |
+| Definition 2.1.6, bracketing numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1895` | primitive bracket, epsilon-bracket, finite-cover, and numeric `N_[]` layers formalized |
 | Chapter 2.4 intro | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:963-969` | reflected in roadmap only |
-| Theorem 2.4.1 statement | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:970` | deterministic proof layers only |
+| Theorem 2.4.1 statement | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:970` | primitive finite-bracketing route layers proved; final iid/SLLN-to-theorem statement pending |
 | Theorem 2.4.1 proof, finite brackets and endpoint inequality | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:972-981` | deterministic bracketing theorem proved |
-| Theorem 2.4.1 proof, endpoint SLLN and decreasing radius | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:984` | endpoint SLLN wrapper proved; final construction pending |
+| Theorem 2.4.1 proof, endpoint SLLN and decreasing radius | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:984` | endpoint SLLN wrapper and finite endpoint-radius bridge proved; actual iid sample instantiation pending |
 | Example 2.4.2, empirical CDF brackets | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:985` | pending example formalization |
 
 Current screenshot anchor:
@@ -83,9 +83,12 @@ The following are compiled Lean declarations with no proof holes:
 | `FiniteBracketCover`, `FiniteL1BracketCover` | finite primitive cover witnesses with integrability and width evidence |
 | `FiniteL1BracketCoverAtCard`, `HasFiniteL1BracketingNumber` | explicit-cardinality finite bracketing witness layer |
 | `l1BracketingNumber`, `exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top` | primitive numeric `N_[] : ℕ∞` and finite-cover bridge |
+| `finiteEndpointRadius`, `exists_endpointRadius_of_finite_endpoint_tendsto` | finite endpoint convergence produces one vanishing endpoint-radius sequence |
+| `FiniteL1BracketCover.endpointRadius`, `FiniteL1BracketCover.exists_endpointRadius_of_endpoint_tendsto` | primitive-cover endpoint-radius bridge |
 | `FiniteL1BracketCover.empiricalDeviationBoundOn_of_endpoint_bounds` | one-sample primitive-cover deviation bound |
 | `FiniteL1BracketCover.empiricalDeviationSequenceOn_of_endpoint_bounds` | sequence-level primitive-cover deviation bound |
 | `FiniteL1BracketCover.toFiniteBracketingEndpointRoute` | primitive cover constructor into the existing finite endpoint route |
+| `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto` | route constructor from finite covers and endpoint convergence |
 | `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | epsilon/eventual deterministic route from primitive finite covers |
 
 This is not yet the exact theorem
@@ -106,10 +109,10 @@ These are the missing primitives and lemmas on the direct proof path.
 | 7 | finite bracketing hypothesis to cover witness | Theorem 2.4.1 statement | done: `exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top` |
 | 8 | population order lemmas | proof lines 972-981 | done using mathlib `integral_mono` |
 | 9 | empirical order lemmas | proof lines 972-981 | done using finite sums |
-| 10 | endpoint empirical averages | proof line 984 | partially done: endpoint vocabulary exists; iid-sample SLLN connection still pending |
-| 11 | endpoint convergence to route fields | proof line 984 | pending: produce endpoint radius tending to zero from finite endpoint SLLNs |
+| 10 | endpoint empirical averages | proof line 984 | partially done: endpoint vocabulary and finite endpoint-radius bridge exist; iid-sample SLLN connection still pending |
+| 11 | endpoint convergence to route fields | proof line 984 | done: `finiteEndpointRadius`, `FiniteL1BracketCover.endpointRadius`, and route constructor from endpoint convergence |
 | 12 | construct `FiniteBracketingEndpointRoute` | proof lines 972-984 | done from primitive finite `L1(P)` cover plus endpoint/width assumptions |
-| 13 | decreasing-radius argument | proof line 984 | partially done: `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` proves epsilon/eventual deterministic version |
+| 13 | decreasing-radius argument | proof line 984 | done for the dependency-minimal deterministic route: `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` |
 | 14 | final textbook theorem | Theorem 2.4.1 statement | pending: state exact convergence mode and measurability/outer-probability assumptions |
 
 ## Full Textbook-Order Work Before 2.4.1

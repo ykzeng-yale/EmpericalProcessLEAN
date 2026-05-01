@@ -47,10 +47,14 @@ the closest textbook step, the markdown source, and the PDF screenshot.
 | `finiteL1BracketingNumberCard` / `l1BracketingNumber` | noncomputable definitions | minimal numeric bracketing number, with infinite value when no finite cover exists | primitive numeric `N_[]` layer |
 | `hasFinite_of_l1BracketingNumber_lt_top` / `exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top` | theorems | finite numeric `N_[]` gives a finite bracket cover | proved bridge from theorem hypothesis to cover witness |
 | `exists_finiteL1BracketCover_of_hasFiniteL1BracketingNumber` | theorem | finite bracketing-number witness gives a finite cover | proved witness-to-cover bridge |
+| `finiteEndpointRadius` / `finiteEndpointRadius_tendsto_zero` | definition/theorem | finitely many endpoint LLNs produce one vanishing endpoint-error radius | proved finite-family convergence bridge using mathlib finite-sum convergence |
+| `upper_endpoint_error_le_finiteEndpointRadius` / `lower_endpoint_error_le_finiteEndpointRadius` | theorems | the endpoint-radius bound controls each bracket endpoint error | proved finite-sum domination lemmas |
+| `exists_endpointRadius_of_finite_endpoint_tendsto` | theorem | endpoint convergence supplies the route's endpoint-radius fields | proved generic endpoint-radius existence bridge |
+| `FiniteL1BracketCover.endpointRadius` and endpoint-radius lemmas | definitions/theorems | specialize finite endpoint convergence to primitive `L1(P)` bracket covers | proved primitive-cover bridge |
 | `FiniteL1BracketCover.empiricalDeviationBoundOn_of_endpoint_bounds` | theorem | primitive cover gives one-sample bracket deviation bound | proved bridge to deterministic bracket theorem |
 | `FiniteL1BracketCover.empiricalDeviationSequenceOn_of_endpoint_bounds` | theorem | primitive cover gives sequence-level deviation bound | proved bridge |
 | `FiniteL1BracketCover.toFiniteBracketingEndpointRoute` | construction | primitive cover becomes existing finite endpoint route | proved bridge to existing route |
-| `UniformDeviationTendstoZeroOn` / `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | definition/theorem | epsilon/eventual deterministic bracketing argument | proved layer; final `N_[]` theorem pending |
+| `UniformDeviationTendstoZeroOn` / `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto` / `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` / `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn_ofFiniteCoversAndEndpointTendsto` | definition/theorem | epsilon/eventual deterministic bracketing argument from finite covers and endpoint convergence | proved layer; final `N_[]` theorem pending |
 
 ## Screenshot
 

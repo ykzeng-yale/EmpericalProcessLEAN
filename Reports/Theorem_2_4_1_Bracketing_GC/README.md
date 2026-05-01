@@ -22,9 +22,11 @@ below.  The repository does **not** yet claim the full theorem
 | `FiniteBracketCover`, `FiniteL1BracketCover` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | finite primitive cover definitions |
 | `FiniteL1BracketCoverAtCard`, `HasFiniteL1BracketingNumber` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | explicit-cardinality finite bracketing witness |
 | `l1BracketingNumber`, `exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive numeric `N_[]` and finite-cover bridge |
+| `finiteEndpointRadius`, `exists_endpointRadius_of_finite_endpoint_tendsto` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | finite endpoint convergence to one vanishing endpoint radius |
+| `FiniteL1BracketCover.endpointRadius`, `FiniteL1BracketCover.exists_endpointRadius_of_endpoint_tendsto` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive-cover endpoint-radius bridge |
 | `FiniteL1BracketCover.empiricalDeviationBoundOn_of_endpoint_bounds` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive cover-to-deviation theorem |
 | `FiniteL1BracketCover.toFiniteBracketingEndpointRoute` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive cover-to-route construction |
-| `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | epsilon/eventual deterministic bracketing layer |
+| `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto`, `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | epsilon/eventual deterministic bracketing layer from finite covers and endpoint convergence |
 
 Detailed side-by-side audit table:
 
@@ -52,11 +54,11 @@ The proved Lean code currently supplies:
 4. primitive function brackets, `L1(P)` width, epsilon brackets, and finite
    primitive cover witnesses;
 5. primitive cover-to-deviation and primitive cover-to-route constructors;
-6. a proof-carrying finite-bracketing route into the current GC interface.
+6. endpoint convergence to one finite endpoint-radius sequence;
+7. a proof-carrying finite-bracketing route into the current GC interface.
 
 The next primitive layers needed for the literal textbook theorem are:
 
 1. construct endpoint convergence assumptions from actual iid samples and
    mathlib SLLN for each finite cover;
-2. combine finite endpoint strong laws with the primitive bracketing route;
-3. state the final textbook theorem with the chosen convergence mode.
+2. state the final textbook theorem with the chosen convergence mode.

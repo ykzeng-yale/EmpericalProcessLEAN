@@ -196,17 +196,22 @@ Proved declarations toward VdV&W Theorem 2.4.1:
 - `l1BracketingNumber` and
   `exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top`
   in `StatInference/EmpiricalProcess/BracketingPrimitive.lean`.
-- `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn`
+- `finiteEndpointRadius`, `exists_endpointRadius_of_finite_endpoint_tendsto`,
+  `FiniteL1BracketCover.endpointRadius`, and
+  `FiniteL1BracketCover.exists_endpointRadius_of_endpoint_tendsto`
+  in `StatInference/EmpiricalProcess/BracketingPrimitive.lean`.
+- `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto` and
+  `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn`
   in `StatInference/EmpiricalProcess/BracketingPrimitive.lean`.
 - `endpoint_strong_law_ae_real`
   in `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`.
 - `finite_endpoint_strong_law_ae_real`
   in `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`.
 
-These prove the deterministic bracket-comparison route and the finite endpoint
-strong-law route.  They are real Lean proofs, not placeholders, but they are
-still theorem layers rather than the complete textbook theorem stated from
-primitive bracketing numbers.
+These prove the deterministic bracket-comparison route, the finite endpoint
+strong-law wrapper, and the endpoint-convergence-to-radius bridge.  They are
+real Lean proofs, not placeholders, but they are still theorem layers rather
+than the complete textbook theorem stated from primitive bracketing numbers.
 
 ## Remaining Gap For Theorem 2.4.1
 
@@ -214,7 +219,8 @@ Before marking VdV&W Theorem 2.4.1 fully formalized, the repository still needs
 the following remaining layers:
 
 1. Connect actual iid sample processes to endpoint empirical averages.
-2. Combine finite endpoint strong laws with the primitive bracketing route.
+2. Instantiate the finite endpoint strong law for every endpoint in each
+   finite bracket cover and feed it into the primitive route.
 3. State and prove the final theorem in the exact VdV&W shape, with explicit
    convergence mode and measurability/integrability assumptions.
 

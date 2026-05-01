@@ -79,7 +79,10 @@ Current promoted declarations toward Theorem 2.4.1:
 | `FiniteBracketCover`, `FiniteL1BracketCover` | proved/compiled finite primitive cover witnesses |
 | `FiniteL1BracketCoverAtCard`, `HasFiniteL1BracketingNumber` | proved/compiled explicit-cardinality finite bracketing witness layer |
 | `l1BracketingNumber`, `exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top` | proved/compiled primitive numeric `N_[] : ℕ∞` and finite-cover bridge |
+| `finiteEndpointRadius`, `exists_endpointRadius_of_finite_endpoint_tendsto` | proved finite endpoint convergence to one vanishing endpoint-radius sequence |
+| `FiniteL1BracketCover.endpointRadius`, `FiniteL1BracketCover.exists_endpointRadius_of_endpoint_tendsto` | proved primitive-cover endpoint-radius bridge |
 | `FiniteL1BracketCover.toFiniteBracketingEndpointRoute` | proved primitive-cover constructor into the existing endpoint route |
+| `PrimitiveFiniteBracketingGCRoute.ofFiniteCoversAndEndpointTendsto` | proved route constructor from finite covers and endpoint convergence |
 | `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | proved epsilon/eventual deterministic bracketing route |
 
 Verification gate:
@@ -267,7 +270,7 @@ through 2.4.1 requires accounting for them.
 | 2.3.15 Theorem | `M2:818` | pointwise separable version Donsker equivalence | later roadmap |
 | 2.3.16 Proposition | `M2:857` | consistent lifting | later roadmap |
 | 2.3.17 Theorem | `M2:882` | separable modification | later roadmap |
-| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | target; deterministic endpoint route proved, primitive theorem pending |
+| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | target; primitive finite-bracketing route proved, final iid/GC theorem pending |
 
 ## Dependency-Minimal Route To Theorem 2.4.1
 
@@ -281,12 +284,12 @@ Sections 2.1-2.3 to be formalized literally.  The dependency-minimal route is:
 | 3 | epsilon bracket in `L1(P)` width | `M1:1895`, `M2:970` | done: `l1BracketWidth`, `IsL1EpsilonBracket` |
 | 4 | finite bracket cover | `M1:1895`, `M2:972` | done: `FiniteBracketCover`, `FiniteL1BracketCover` |
 | 5 | bracketing number `N_[]` or equivalent finite-existence predicate | `M1:1895` | done: `l1BracketingNumber : ℕ∞` and finite-existence witness |
-| 6 | construct endpoints from a finite bracket cover | `M2:972-984` | partially done by primitive cover-to-route theorem; endpoint convergence from iid samples pending |
+| 6 | construct endpoints from a finite bracket cover | `M2:972-984` | done for primitive covers; endpoint convergence from iid samples pending |
 | 7 | population integral order for bracket endpoints | `M2:972-981` | done using mathlib `integral_mono` |
 | 8 | empirical average order for bracket endpoints | `M2:972-981` | done using finite sums |
 | 9 | endpoint empirical average SLLN | `M2:984` | local wrapper exists; needs connection to samples/functions |
 | 10 | build `FiniteBracketingEndpointRoute` from primitive brackets | `M2:972-984` | done from primitive cover plus endpoint/width assumptions |
-| 11 | decreasing-radius argument | `M2:984` | partially done by `PrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn`; exact `N_[]` theorem pending |
+| 11 | decreasing-radius argument | `M2:984` | done for the dependency-minimal deterministic route; exact iid/`N_[]` theorem pending |
 | 12 | final exact theorem statement | `M2:970` | pending |
 
 This route should reuse mathlib for measure/integration/probability and only

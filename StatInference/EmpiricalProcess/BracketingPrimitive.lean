@@ -418,6 +418,213 @@ theorem exists_finiteL1BracketCover_of_l1BracketingNumber_lt_top
   exists_finiteL1BracketCover_of_hasFiniteL1BracketingNumber
     (hasFinite_of_l1BracketingNumber_lt_top hfinite_number)
 
+/--
+One finite endpoint radius that dominates all upper and lower endpoint
+empirical-deviation errors.
+-/
+noncomputable def finiteEndpointRadius {Bracket : Type*} [Fintype Bracket]
+    (lowerPopulation upperPopulation : Bracket -> ℝ)
+    (lowerEmpirical upperEmpirical : ℕ -> Bracket -> ℝ) : ℕ -> ℝ :=
+  fun sampleSize =>
+    ∑ bracketIndex,
+      (|upperEmpirical sampleSize bracketIndex -
+          upperPopulation bracketIndex| +
+        |lowerPopulation bracketIndex -
+          lowerEmpirical sampleSize bracketIndex|)
+
+/-- If every finite endpoint error tends to zero, the finite endpoint radius vanishes. -/
+theorem finiteEndpointRadius_tendsto_zero {Bracket : Type*}
+    [Fintype Bracket]
+    (lowerPopulation upperPopulation : Bracket -> ℝ)
+    (lowerEmpirical upperEmpirical : ℕ -> Bracket -> ℝ)
+    (h_upper :
+      ∀ bracketIndex,
+        Tendsto
+          (fun sampleSize =>
+            upperEmpirical sampleSize bracketIndex -
+              upperPopulation bracketIndex)
+          atTop (𝓝 0))
+    (h_lower :
+      ∀ bracketIndex,
+        Tendsto
+          (fun sampleSize =>
+            lowerPopulation bracketIndex -
+              lowerEmpirical sampleSize bracketIndex)
+          atTop (𝓝 0)) :
+    Tendsto
+      (finiteEndpointRadius lowerPopulation upperPopulation
+        lowerEmpirical upperEmpirical)
+      atTop (𝓝 0) := by
+  classical
+  have hsum :
+      Tendsto
+        (fun sampleSize =>
+          ∑ bracketIndex ∈ (Finset.univ : Finset Bracket),
+            (|upperEmpirical sampleSize bracketIndex -
+                upperPopulation bracketIndex| +
+              |lowerPopulation bracketIndex -
+                lowerEmpirical sampleSize bracketIndex|))
+        atTop (𝓝 (∑ _bracketIndex ∈ (Finset.univ : Finset Bracket), (0 : ℝ))) := by
+    refine
+      tendsto_finsetSum (Finset.univ : Finset Bracket)
+        (x := atTop)
+        (f :=
+          fun bracketIndex sampleSize =>
+            (|upperEmpirical sampleSize bracketIndex -
+                upperPopulation bracketIndex| +
+              |lowerPopulation bracketIndex -
+                lowerEmpirical sampleSize bracketIndex|))
+        (a := fun _bracketIndex => (0 : ℝ)) ?_
+    intro bracketIndex _hmem
+    have hupper_abs :
+        Tendsto
+          (fun sampleSize =>
+            |upperEmpirical sampleSize bracketIndex -
+              upperPopulation bracketIndex|)
+          atTop (𝓝 0) := by
+      simpa using (h_upper bracketIndex).abs
+    have hlower_abs :
+        Tendsto
+          (fun sampleSize =>
+            |lowerPopulation bracketIndex -
+              lowerEmpirical sampleSize bracketIndex|)
+          atTop (𝓝 0) := by
+      simpa using (h_lower bracketIndex).abs
+    simpa using hupper_abs.add hlower_abs
+  simpa [finiteEndpointRadius] using hsum
+
+/-- Each upper endpoint empirical-deviation error is bounded by the finite radius. -/
+theorem upper_endpoint_error_le_finiteEndpointRadius {Bracket : Type*}
+    [Fintype Bracket]
+    (lowerPopulation upperPopulation : Bracket -> ℝ)
+    (lowerEmpirical upperEmpirical : ℕ -> Bracket -> ℝ)
+    (sampleSize : ℕ) (bracketIndex : Bracket) :
+    upperEmpirical sampleSize bracketIndex - upperPopulation bracketIndex ≤
+      finiteEndpointRadius lowerPopulation upperPopulation
+        lowerEmpirical upperEmpirical sampleSize := by
+  classical
+  have hterm_nonneg :
+      ∀ candidate ∈ (Finset.univ : Finset Bracket),
+        0 ≤
+          (|upperEmpirical sampleSize candidate -
+              upperPopulation candidate| +
+            |lowerPopulation candidate -
+              lowerEmpirical sampleSize candidate|) := by
+    intro candidate _hmem
+    positivity
+  have hterm_le_sum :
+      (|upperEmpirical sampleSize bracketIndex -
+          upperPopulation bracketIndex| +
+        |lowerPopulation bracketIndex -
+          lowerEmpirical sampleSize bracketIndex|) ≤
+        ∑ candidate ∈ (Finset.univ : Finset Bracket),
+          (|upperEmpirical sampleSize candidate -
+              upperPopulation candidate| +
+            |lowerPopulation candidate -
+              lowerEmpirical sampleSize candidate|) := by
+    exact Finset.single_le_sum hterm_nonneg (Finset.mem_univ bracketIndex)
+  have habs_le_term :
+      |upperEmpirical sampleSize bracketIndex -
+          upperPopulation bracketIndex| ≤
+        |upperEmpirical sampleSize bracketIndex -
+          upperPopulation bracketIndex| +
+          |lowerPopulation bracketIndex -
+            lowerEmpirical sampleSize bracketIndex| := by
+    exact le_add_of_nonneg_right (abs_nonneg _)
+  exact
+    (le_abs_self
+        (upperEmpirical sampleSize bracketIndex -
+          upperPopulation bracketIndex)).trans
+      (habs_le_term.trans (by simpa [finiteEndpointRadius] using hterm_le_sum))
+
+/-- Each lower endpoint empirical-deviation error is bounded by the finite radius. -/
+theorem lower_endpoint_error_le_finiteEndpointRadius {Bracket : Type*}
+    [Fintype Bracket]
+    (lowerPopulation upperPopulation : Bracket -> ℝ)
+    (lowerEmpirical upperEmpirical : ℕ -> Bracket -> ℝ)
+    (sampleSize : ℕ) (bracketIndex : Bracket) :
+    lowerPopulation bracketIndex - lowerEmpirical sampleSize bracketIndex ≤
+      finiteEndpointRadius lowerPopulation upperPopulation
+        lowerEmpirical upperEmpirical sampleSize := by
+  classical
+  have hterm_nonneg :
+      ∀ candidate ∈ (Finset.univ : Finset Bracket),
+        0 ≤
+          (|upperEmpirical sampleSize candidate -
+              upperPopulation candidate| +
+            |lowerPopulation candidate -
+              lowerEmpirical sampleSize candidate|) := by
+    intro candidate _hmem
+    positivity
+  have hterm_le_sum :
+      (|upperEmpirical sampleSize bracketIndex -
+          upperPopulation bracketIndex| +
+        |lowerPopulation bracketIndex -
+          lowerEmpirical sampleSize bracketIndex|) ≤
+        ∑ candidate ∈ (Finset.univ : Finset Bracket),
+          (|upperEmpirical sampleSize candidate -
+              upperPopulation candidate| +
+            |lowerPopulation candidate -
+              lowerEmpirical sampleSize candidate|) := by
+    exact Finset.single_le_sum hterm_nonneg (Finset.mem_univ bracketIndex)
+  have habs_le_term :
+      |lowerPopulation bracketIndex -
+          lowerEmpirical sampleSize bracketIndex| ≤
+        |upperEmpirical sampleSize bracketIndex -
+          upperPopulation bracketIndex| +
+          |lowerPopulation bracketIndex -
+            lowerEmpirical sampleSize bracketIndex| := by
+    exact le_add_of_nonneg_left (abs_nonneg _)
+  exact
+    (le_abs_self
+        (lowerPopulation bracketIndex -
+          lowerEmpirical sampleSize bracketIndex)).trans
+      (habs_le_term.trans (by simpa [finiteEndpointRadius] using hterm_le_sum))
+
+/--
+Finite endpoint convergence supplies the endpoint-radius fields needed by the
+bracketing route.
+-/
+theorem exists_endpointRadius_of_finite_endpoint_tendsto {Bracket : Type*}
+    [Fintype Bracket]
+    (lowerPopulation upperPopulation : Bracket -> ℝ)
+    (lowerEmpirical upperEmpirical : ℕ -> Bracket -> ℝ)
+    (h_upper :
+      ∀ bracketIndex,
+        Tendsto
+          (fun sampleSize =>
+            upperEmpirical sampleSize bracketIndex -
+              upperPopulation bracketIndex)
+          atTop (𝓝 0))
+    (h_lower :
+      ∀ bracketIndex,
+        Tendsto
+          (fun sampleSize =>
+            lowerPopulation bracketIndex -
+              lowerEmpirical sampleSize bracketIndex)
+          atTop (𝓝 0)) :
+    ∃ endpointRadius : ℕ -> ℝ,
+      Tendsto endpointRadius atTop (𝓝 0) ∧
+        (∀ sampleSize bracketIndex,
+          upperEmpirical sampleSize bracketIndex -
+              upperPopulation bracketIndex ≤
+            endpointRadius sampleSize) ∧
+        (∀ sampleSize bracketIndex,
+          lowerPopulation bracketIndex -
+              lowerEmpirical sampleSize bracketIndex ≤
+            endpointRadius sampleSize) := by
+  refine
+    ⟨finiteEndpointRadius lowerPopulation upperPopulation
+        lowerEmpirical upperEmpirical,
+      ?_, ?_, ?_⟩
+  · exact finiteEndpointRadius_tendsto_zero
+      lowerPopulation upperPopulation lowerEmpirical upperEmpirical
+      h_upper h_lower
+  · exact upper_endpoint_error_le_finiteEndpointRadius
+      lowerPopulation upperPopulation lowerEmpirical upperEmpirical
+  · exact lower_endpoint_error_le_finiteEndpointRadius
+      lowerPopulation upperPopulation lowerEmpirical upperEmpirical
+
 namespace FiniteL1BracketCover
 
 /-- Endpoint lower population integrals for a primitive finite bracket cover. -/
@@ -467,6 +674,150 @@ noncomputable def upperEmpirical {Observation : Type u} {Index : Type v}
   fun sampleSize bracketIndex =>
     empiricalAverage (samples sampleSize)
       (cover.cover.bracket bracketIndex).upper
+
+/-- A canonical finite endpoint radius for a primitive finite bracket cover. -/
+noncomputable def endpointRadius {Observation : Type u} {Index : Type v}
+    {Bracket : Type w} [Fintype Bracket] [MeasurableSpace Observation]
+    {μ : Measure Observation} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {width : ℝ}
+    (cover :
+      FiniteL1BracketCover (Bracket := Bracket) μ indexClass classFun width)
+    (samples : ∀ sampleSize, SampleAt Observation sampleSize) :
+    ℕ -> ℝ :=
+  finiteEndpointRadius cover.lowerPopulation cover.upperPopulation
+    (cover.lowerEmpirical samples) (cover.upperEmpirical samples)
+
+/--
+Endpoint convergence for every bracket in a finite primitive cover implies
+that the canonical finite endpoint radius tends to zero.
+-/
+theorem endpointRadius_tendsto_zero_of_endpoint_tendsto
+    {Observation : Type u} {Index : Type v} {Bracket : Type w}
+    [Fintype Bracket] [MeasurableSpace Observation]
+    {μ : Measure Observation} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {width : ℝ}
+    (cover :
+      FiniteL1BracketCover (Bracket := Bracket) μ indexClass classFun width)
+    (samples : ∀ sampleSize, SampleAt Observation sampleSize)
+    (h_upper :
+      ∀ bracketIndex,
+        Tendsto
+          (fun sampleSize =>
+            empiricalAverage (samples sampleSize)
+                (cover.cover.bracket bracketIndex).upper -
+              (cover.cover.bracket bracketIndex).upperIntegral μ)
+          atTop (𝓝 0))
+    (h_lower :
+      ∀ bracketIndex,
+        Tendsto
+          (fun sampleSize =>
+            (cover.cover.bracket bracketIndex).lowerIntegral μ -
+              empiricalAverage (samples sampleSize)
+                (cover.cover.bracket bracketIndex).lower)
+          atTop (𝓝 0)) :
+    Tendsto (cover.endpointRadius samples) atTop (𝓝 0) := by
+  refine
+    finiteEndpointRadius_tendsto_zero
+      cover.lowerPopulation cover.upperPopulation
+      (cover.lowerEmpirical samples) (cover.upperEmpirical samples)
+      ?_ ?_
+  · intro bracketIndex
+    simpa [FiniteL1BracketCover.upperEmpirical,
+      FiniteL1BracketCover.upperPopulation] using h_upper bracketIndex
+  · intro bracketIndex
+    simpa [FiniteL1BracketCover.lowerEmpirical,
+      FiniteL1BracketCover.lowerPopulation] using h_lower bracketIndex
+
+/-- The canonical endpoint radius bounds every upper endpoint error in the cover. -/
+theorem upper_endpoint_error_le_endpointRadius
+    {Observation : Type u} {Index : Type v} {Bracket : Type w}
+    [Fintype Bracket] [MeasurableSpace Observation]
+    {μ : Measure Observation} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {width : ℝ}
+    (cover :
+      FiniteL1BracketCover (Bracket := Bracket) μ indexClass classFun width)
+    (samples : ∀ sampleSize, SampleAt Observation sampleSize)
+    (sampleSize : ℕ) (bracketIndex : Bracket) :
+    empiricalAverage (samples sampleSize)
+        (cover.cover.bracket bracketIndex).upper -
+        (cover.cover.bracket bracketIndex).upperIntegral μ ≤
+      cover.endpointRadius samples sampleSize := by
+  simpa [FiniteL1BracketCover.endpointRadius,
+    FiniteL1BracketCover.upperEmpirical,
+    FiniteL1BracketCover.upperPopulation] using
+    (upper_endpoint_error_le_finiteEndpointRadius
+      cover.lowerPopulation cover.upperPopulation
+      (cover.lowerEmpirical samples) (cover.upperEmpirical samples)
+      sampleSize bracketIndex)
+
+/-- The canonical endpoint radius bounds every lower endpoint error in the cover. -/
+theorem lower_endpoint_error_le_endpointRadius
+    {Observation : Type u} {Index : Type v} {Bracket : Type w}
+    [Fintype Bracket] [MeasurableSpace Observation]
+    {μ : Measure Observation} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {width : ℝ}
+    (cover :
+      FiniteL1BracketCover (Bracket := Bracket) μ indexClass classFun width)
+    (samples : ∀ sampleSize, SampleAt Observation sampleSize)
+    (sampleSize : ℕ) (bracketIndex : Bracket) :
+    (cover.cover.bracket bracketIndex).lowerIntegral μ -
+        empiricalAverage (samples sampleSize)
+          (cover.cover.bracket bracketIndex).lower ≤
+      cover.endpointRadius samples sampleSize := by
+  simpa [FiniteL1BracketCover.endpointRadius,
+    FiniteL1BracketCover.lowerEmpirical,
+    FiniteL1BracketCover.lowerPopulation] using
+    (lower_endpoint_error_le_finiteEndpointRadius
+      cover.lowerPopulation cover.upperPopulation
+      (cover.lowerEmpirical samples) (cover.upperEmpirical samples)
+      sampleSize bracketIndex)
+
+/--
+Endpoint convergence for a finite primitive cover supplies an endpoint radius
+and both endpoint-bound fields.
+-/
+theorem exists_endpointRadius_of_endpoint_tendsto
+    {Observation : Type u} {Index : Type v} {Bracket : Type w}
+    [Fintype Bracket] [MeasurableSpace Observation]
+    {μ : Measure Observation} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {width : ℝ}
+    (cover :
+      FiniteL1BracketCover (Bracket := Bracket) μ indexClass classFun width)
+    (samples : ∀ sampleSize, SampleAt Observation sampleSize)
+    (h_upper :
+      ∀ bracketIndex,
+        Tendsto
+          (fun sampleSize =>
+            empiricalAverage (samples sampleSize)
+                (cover.cover.bracket bracketIndex).upper -
+              (cover.cover.bracket bracketIndex).upperIntegral μ)
+          atTop (𝓝 0))
+    (h_lower :
+      ∀ bracketIndex,
+        Tendsto
+          (fun sampleSize =>
+            (cover.cover.bracket bracketIndex).lowerIntegral μ -
+              empiricalAverage (samples sampleSize)
+                (cover.cover.bracket bracketIndex).lower)
+          atTop (𝓝 0)) :
+    ∃ endpointRadius : ℕ -> ℝ,
+      Tendsto endpointRadius atTop (𝓝 0) ∧
+        (∀ sampleSize bracketIndex,
+          empiricalAverage (samples sampleSize)
+              (cover.cover.bracket bracketIndex).upper -
+              (cover.cover.bracket bracketIndex).upperIntegral μ ≤
+            endpointRadius sampleSize) ∧
+        (∀ sampleSize bracketIndex,
+          (cover.cover.bracket bracketIndex).lowerIntegral μ -
+              empiricalAverage (samples sampleSize)
+                (cover.cover.bracket bracketIndex).lower ≤
+            endpointRadius sampleSize) := by
+  refine
+    ⟨cover.endpointRadius samples,
+      cover.endpointRadius_tendsto_zero_of_endpoint_tendsto
+        samples h_upper h_lower,
+      cover.upper_endpoint_error_le_endpointRadius samples,
+      cover.lower_endpoint_error_le_endpointRadius samples⟩
 
 /--
 One-sample empirical-deviation bound produced by a primitive finite `L1(P)`
@@ -736,6 +1087,65 @@ structure PrimitiveFiniteBracketingGCRoute
 namespace PrimitiveFiniteBracketingGCRoute
 
 /--
+Build a primitive finite-bracketing GC route from finite covers at every
+positive width and endpoint convergence for every bracket endpoint.
+-/
+noncomputable def ofFiniteCoversAndEndpointTendsto
+    {Observation : Type u} {Index : Type v}
+    [MeasurableSpace Observation] {μ : Measure Observation}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    {samples : ∀ sampleSize, SampleAt Observation sampleSize}
+    (Bracket : (width : ℝ) -> 0 < width -> Type w)
+    (finiteBracket : ∀ width hwidth, Fintype (Bracket width hwidth))
+    (cover :
+      ∀ width hwidth,
+        @FiniteL1BracketCover Observation Index (Bracket width hwidth)
+          (finiteBracket width hwidth) _ μ indexClass classFun width)
+    (h_upper :
+      ∀ width hwidth (bracketIndex : Bracket width hwidth),
+        Tendsto
+          (fun sampleSize =>
+            empiricalAverage (samples sampleSize)
+                ((cover width hwidth).cover.bracket bracketIndex).upper -
+              ((cover width hwidth).cover.bracket bracketIndex).upperIntegral μ)
+          atTop (𝓝 0))
+    (h_lower :
+      ∀ width hwidth (bracketIndex : Bracket width hwidth),
+        Tendsto
+          (fun sampleSize =>
+            ((cover width hwidth).cover.bracket bracketIndex).lowerIntegral μ -
+              empiricalAverage (samples sampleSize)
+                ((cover width hwidth).cover.bracket bracketIndex).lower)
+          atTop (𝓝 0)) :
+    PrimitiveFiniteBracketingGCRoute μ indexClass classFun samples where
+  Bracket := Bracket
+  finiteBracket := finiteBracket
+  cover := cover
+  endpointRadius := by
+    intro width hwidth
+    letI := finiteBracket width hwidth
+    exact (cover width hwidth).endpointRadius samples
+  endpoint_tendsto_zero := by
+    intro width hwidth
+    letI := finiteBracket width hwidth
+    exact
+      (cover width hwidth).endpointRadius_tendsto_zero_of_endpoint_tendsto
+        samples (h_upper width hwidth) (h_lower width hwidth)
+  upper_endpoint_bound := by
+    intro width hwidth sampleSize bracketIndex
+    letI := finiteBracket width hwidth
+    exact
+      (cover width hwidth).upper_endpoint_error_le_endpointRadius
+        samples sampleSize bracketIndex
+  lower_endpoint_bound := by
+    intro width hwidth sampleSize bracketIndex
+    letI := finiteBracket width hwidth
+    exact
+      (cover width hwidth).lower_endpoint_error_le_endpointRadius
+        samples sampleSize bracketIndex
+
+/--
 Primitive finite bracketing route implies pathwise uniform deviation
 convergence to zero.
 
@@ -784,6 +1194,46 @@ theorem uniformDeviationTendstoZeroOn
     dsimp [width] at h_endpoint_lt ⊢
     linarith
   exact le_trans hdev hradius
+
+/--
+Finite covers at every positive width plus endpoint convergence imply
+pathwise uniform deviation convergence to zero.
+-/
+theorem uniformDeviationTendstoZeroOn_ofFiniteCoversAndEndpointTendsto
+    {Observation : Type u} {Index : Type v}
+    [MeasurableSpace Observation] {μ : Measure Observation}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    {samples : ∀ sampleSize, SampleAt Observation sampleSize}
+    (Bracket : (width : ℝ) -> 0 < width -> Type w)
+    (finiteBracket : ∀ width hwidth, Fintype (Bracket width hwidth))
+    (cover :
+      ∀ width hwidth,
+        @FiniteL1BracketCover Observation Index (Bracket width hwidth)
+          (finiteBracket width hwidth) _ μ indexClass classFun width)
+    (h_upper :
+      ∀ width hwidth (bracketIndex : Bracket width hwidth),
+        Tendsto
+          (fun sampleSize =>
+            empiricalAverage (samples sampleSize)
+                ((cover width hwidth).cover.bracket bracketIndex).upper -
+              ((cover width hwidth).cover.bracket bracketIndex).upperIntegral μ)
+          atTop (𝓝 0))
+    (h_lower :
+      ∀ width hwidth (bracketIndex : Bracket width hwidth),
+        Tendsto
+          (fun sampleSize =>
+            ((cover width hwidth).cover.bracket bracketIndex).lowerIntegral μ -
+              empiricalAverage (samples sampleSize)
+                ((cover width hwidth).cover.bracket bracketIndex).lower)
+          atTop (𝓝 0)) :
+    UniformDeviationTendstoZeroOn indexClass
+      (fun index => populationRiskOfFunction μ (classFun index))
+      (fun sampleSize index =>
+        empiricalAverage (samples sampleSize) (classFun index)) :=
+  (ofFiniteCoversAndEndpointTendsto
+    (μ := μ) (indexClass := indexClass) (classFun := classFun)
+    (samples := samples) Bracket finiteBracket cover h_upper h_lower).uniformDeviationTendstoZeroOn
 
 end PrimitiveFiniteBracketingGCRoute
 
