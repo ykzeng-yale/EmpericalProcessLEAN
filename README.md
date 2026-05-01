@@ -1,131 +1,260 @@
 # EmpericalProcessLEAN
 
-This repository is the Lean formalization workspace for empirical process
-theory from van der Vaart and Wellner, *Weak Convergence and Empirical
-Processes*.  The local working copy is intended to live at:
-
-```text
-/Users/yukang/Desktop/AI for Math/EmpericalProcessLEAN
-```
-
-The GitHub remote is:
+Public repository:
 
 ```text
 https://github.com/ykzeng-yale/EmpericalProcessLEAN
 ```
 
-The project goal is progressive, source-audited formalization of the textbook:
-each promoted theorem should compile in Lean and be accompanied by a report
-that lets a human reviewer compare the Lean statement with the original
-markdown extraction and the corresponding PDF screenshot.
+Local working copy:
+
+```text
+/Users/yukang/Desktop/AI for Math/EmpericalProcessLEAN
+```
+
+This is the clean Lean/textbook workspace for progressively formalizing
+empirical process theory from van der Vaart and Wellner, *Weak Convergence and
+Empirical Processes*.
+
+The long-run target is a source-audited, bottom-up Lean library for the
+empirical-process results needed in theoretical statistics and theoretical ML:
+Glivenko-Cantelli classes, bracketing, finite approximation, empirical
+deviation bounds, Donsker-level interfaces, and downstream consistency
+theorems.  We rely on mathlib for foundational mathematics such as real
+analysis, topology, measure theory, probability, filters, finite sums, and
+available limit theorems.  We do not treat the empirical-process-specific
+theory as an assumption: any missing definition, lemma, or theorem needed for
+the VdV&W route should be built and proved locally.
 
 ## Scope
 
-This is intentionally a Lean/textbook repository only.
+This repository is intentionally limited to:
 
-Included:
+- Lean library files for empirical process and adjacent statistical inference
+  formalization.
+- Local-source manifests for the VdV&W markdown/PDF/screenshot materials.
+- Theorem proof reports that cross-check Lean declarations against textbook
+  markdown and PDF screenshots.
+- Build files for a reproducible Lean/mathlib environment.
 
-- Lean library files needed for the formalization work.
-- local-only VdV&W source anchors for markdown, PDF, and theorem screenshots;
-- theorem proof reports with Lean/textbook/PDF cross-checks.
-
-Excluded:
+This repository intentionally excludes:
 
 - agent orchestration code;
-- training, RL, or benchmark-generation pipelines;
+- training, RL, DPO, GRPO, or benchmark-generation pipelines;
 - AXLE wrappers, API keys, or external prover-service glue;
-- `AI-Statistician` application code, tests, and blueprint machinery.
+- `AI-Statistician` application code, tests, and blueprint machinery;
 - copyrighted textbook PDF/markdown/screenshot assets from the public Git
-  history.  They may exist in the local working tree for review, but are
-  ignored by Git.
+  history.
+
+The actual textbook PDF, markdown conversion, and screenshots may exist in the
+local working tree for private review, but they are ignored by Git.
 
 ## Repository Layout
 
-- `StatInference/`: Lean library.  The active development area is
-  `StatInference/EmpiricalProcess/`.
-- `StatInference.lean`: top-level Lean import file.
-- `Textbooks/Vaart1996/`: local-source manifest and ignored local assets.
-  The markdown conversion, PDF files, and theorem screenshots are used for
-  human review locally but are not committed to the public repository.
-- `Reports/`: one report folder per fully proved theorem or proved theorem
-  layer.
-- `docs/source_crosscheck_policy.md`: policy for theorem reports.
+```text
+StatInference/
+  Asymptotics/          generic asymptotic interfaces
+  EmpiricalProcess/     active VdV&W formalization layer
+  Estimator/            downstream estimator interfaces
+  Causal/               later causal/statistical inference interfaces
+  Semiparametric/       later influence-function interfaces
+  Examples/             concrete theorem chains
+Reports/
+  Theorem_2_4_1_Bracketing_GC/
+Textbooks/
+  Vaart1996/
+docs/
+lakefile.lean
+lake-manifest.json
+lean-toolchain
+```
 
-## Open-Source Lean Base
+The active development area is currently:
 
-The project uses Lean and mathlib through Lake.
+```text
+StatInference/EmpiricalProcess/
+```
 
-- Lean toolchain: `leanprover/lean4:v4.30.0-rc2`.
-- Primary dependency: `mathlib` from
-  `https://github.com/leanprover-community/mathlib4.git`.
-- The pinned mathlib revision is recorded in `lake-manifest.json`.
-
-Current status: mathlib supplies the general foundations we need for the next
-steps: real analysis, topology, filters, measure theory, probability, finite
-types, sums, and the strong law wrapper used in
-`StatInference/EmpiricalProcess/EndpointStrongLaw.lean`.
-
-There is not currently a ready-made mathlib theorem in this repository that
-states VdV&W Theorem 2.4.1 directly as
-`N_[](ε, F, L1(P)) < ∞` for every positive `ε` implies
-Glivenko-Cantelli.  The missing empirical-process-specific primitives are
-being built locally in `StatInference/EmpiricalProcess/`.
-
-## Current Formalization Target
-
-The active target is VdV&W Theorem 2.4.1:
-
-> finite `L1(P)` bracketing numbers for every positive radius imply that the
-> class is Glivenko-Cantelli.
-
-Current Lean status: the repository proves theorem layers used by the textbook
-proof, but does not yet claim the full textbook theorem from primitive
-`N_[]` definitions.
-
-Proved layers, with no `sorry`:
-
-- `empiricalDeviationBoundOn_of_bracket_endpoint_bounds`
-  in `StatInference/EmpiricalProcess/Bracketing.lean`;
-- `empiricalDeviationSequenceOn_of_bracket_endpoint_bounds`
-  in `StatInference/EmpiricalProcess/Bracketing.lean`;
-- `bracketingGlivenkoCantelliClass_of_endpoint_and_width_tendsto_zero`
-  in `StatInference/EmpiricalProcess/Bracketing.lean`;
-- `FiniteBracketingEndpointRoute.toGlivenkoCantelliClass`
-  in `StatInference/EmpiricalProcess/Bracketing.lean`;
-- `endpoint_strong_law_ae_real`
-  in `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`;
-- `finite_endpoint_strong_law_ae_real`
-  in `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`.
-
-Remaining work before marking Theorem 2.4.1 fully formalized:
-
-- define function brackets `[l, u]` over measurable functions;
-- define `L1(P)` bracket width using mathlib integrals or `L1` norms;
-- define the finite bracketing number `N_[](ε, F, L1(P))`;
-- prove that finite bracketing number gives a finite endpoint family;
-- connect empirical averages from actual samples to endpoint empirical risks;
-- combine finite endpoint strong laws with the deterministic bracketing route;
-- package the final theorem in the exact textbook shape, with explicit
-  convergence mode and measurability assumptions.
-
-## Theorem Report Rule
-
-Every newly promoted theorem or theorem layer gets a report folder under
-`Reports/`.  Each report must contain:
-
-- Lean declaration name, file path, and proof status;
-- every new definition, lemma, structure, or theorem introduced for the proof;
-- local markdown source path and line range from the textbook extraction;
-- local PDF source path and local screenshot path for the corresponding
-  textbook passage;
-- a gap note saying whether this is the exact textbook theorem or a proved
-  layer used toward it.
-
-The active report is:
+The active theorem report is:
 
 ```text
 Reports/Theorem_2_4_1_Bracketing_GC/
 ```
+
+## Lean And Mathlib Base
+
+The project uses Lean through Lake.
+
+- Lean toolchain: `leanprover/lean4:v4.30.0-rc2`.
+- Primary dependency: `mathlib`.
+- The pinned mathlib revision is recorded in `lake-manifest.json`.
+
+Current mathlib foundations used or expected:
+
+- real ordered algebra and inequalities;
+- filters and `Tendsto`;
+- topology;
+- measure theory and integration;
+- probability measures;
+- finite types and finite sums;
+- available strong-law infrastructure.
+
+There is not currently a ready-made mathlib theorem in this repository that
+states VdV&W Theorem 2.4.1 directly as a bracketing-number Glivenko-Cantelli
+theorem.  The missing empirical-process-specific layer is being built locally.
+
+## Source Audit Policy
+
+Every promoted theorem or theorem layer must have a report under `Reports/`.
+Each report should include:
+
+1. Lean declaration name, file path, and proof status.
+2. Every new definition, lemma, structure, or theorem introduced for that
+   proof.
+3. Local markdown source path and line range from the textbook extraction.
+4. Local PDF source path and local screenshot path for the corresponding
+   textbook passage.
+5. A gap note saying whether the Lean declaration is the exact textbook theorem
+   or a proved layer toward it.
+
+The source material is local-only:
+
+```text
+Textbooks/Vaart1996/Markdown/
+Textbooks/Vaart1996/PDF/
+Textbooks/Vaart1996/Screenshots/
+```
+
+These paths are intentionally ignored by Git so the public repository remains a
+Lean library plus source-audit metadata, not a redistribution of the textbook.
+
+## Current Formalization Target
+
+The current target is VdV&W Theorem 2.4.1:
+
+```text
+finite L1(P) bracketing numbers at every positive radius
+  -> the function class is Glivenko-Cantelli
+```
+
+The textbook proof has the following formalization shape:
+
+1. Fix a positive bracket radius.
+2. Choose finitely many brackets covering the class.
+3. For each function in the class, compare its empirical-population deviation
+   against the deviation of the bracket endpoints plus the bracket width.
+4. Use the strong law for the finitely many endpoint functions.
+5. Repeat the lower-bound argument.
+6. Let the bracket radius decrease to zero.
+
+The repository currently proves source-audited theorem layers used by this
+proof.  It does not yet claim the final primitive theorem from the bracketing
+number `N_[]`.
+
+## Current Proved Layers
+
+All promoted Lean code currently builds with no `sorry`, `admit`, `axiom`, or
+`unsafe` in the `StatInference` sources.
+
+Proved declarations toward VdV&W Theorem 2.4.1:
+
+- `empiricalDeviationBoundOn_of_bracket_endpoint_bounds`
+  in `StatInference/EmpiricalProcess/Bracketing.lean`.
+- `empiricalDeviationSequenceOn_of_bracket_endpoint_bounds`
+  in `StatInference/EmpiricalProcess/Bracketing.lean`.
+- `bracketingGlivenkoCantelliClass_of_endpoint_and_width_tendsto_zero`
+  in `StatInference/EmpiricalProcess/Bracketing.lean`.
+- `FiniteBracketingEndpointRoute.toGlivenkoCantelliClass`
+  in `StatInference/EmpiricalProcess/Bracketing.lean`.
+- `endpoint_strong_law_ae_real`
+  in `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`.
+- `finite_endpoint_strong_law_ae_real`
+  in `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`.
+
+These prove the deterministic bracket-comparison route and the finite endpoint
+strong-law route.  They are real Lean proofs, not placeholders, but they are
+still theorem layers rather than the complete textbook theorem stated from
+primitive bracketing numbers.
+
+## Remaining Gap For Theorem 2.4.1
+
+Before marking VdV&W Theorem 2.4.1 fully formalized, the repository still needs
+the following primitive layers:
+
+1. Define function brackets `[l, u]` over measurable real-valued functions.
+2. Define bracket membership pointwise as `l <= f <= u`.
+3. Define `L1(P)` bracket width using mathlib integrals or `L1` norms.
+4. Define the finite bracketing number `N_[](eps, F, L1(P))`.
+5. Prove that finite bracketing number gives a finite endpoint family.
+6. Connect empirical averages from actual samples to endpoint empirical risks.
+7. Combine finite endpoint strong laws with the deterministic bracketing route.
+8. Run the decreasing-radius argument to remove the fixed radius.
+9. State and prove the final theorem in the exact VdV&W shape, with explicit
+   convergence mode and measurability/integrability assumptions.
+
+The next Lean work should focus on items 1--5 first.  Those are the missing
+definitions and finite-construction lemmas between the textbook hypothesis and
+the currently proved endpoint route.
+
+## Progressive VdV&W Formalization Roadmap
+
+The intended path is not to translate the whole book linearly in one pass.  The
+working strategy is bottom-up and theorem-driven:
+
+### Stage A: Core empirical process interfaces
+
+- empirical averages and empirical measures;
+- population expectations/risks;
+- uniform empirical deviations;
+- Glivenko-Cantelli class interfaces;
+- finite endpoint and finite-class reductions.
+
+### Stage B: Bracketing GC route
+
+- brackets and bracket membership;
+- `L1(P)` bracket widths;
+- bracketing numbers;
+- VdV&W Theorem 2.4.1;
+- examples such as indicator intervals and other finite-bracketing classes.
+
+### Stage C: Entropy and maximal-inequality route
+
+- covering numbers and entropy interfaces;
+- symmetrization;
+- maximal inequalities;
+- random entropy GC theorem;
+- reusable finite approximation lemmas.
+
+### Stage D: Donsker-level interfaces
+
+- empirical-process weak convergence interfaces;
+- stochastic equicontinuity;
+- bracketing entropy Donsker theorem;
+- covering entropy Donsker theorem;
+- measurable/separable variants where needed.
+
+### Stage E: Downstream statistical learning and inference
+
+- ERM and M-estimation consistency from uniform convergence;
+- Z-estimator and asymptotic linearity interfaces;
+- influence-function and semiparametric interfaces;
+- causal/statistical examples once the empirical-process backbone is strong.
+
+Each stage should produce Lean declarations plus theorem reports.  A theorem is
+only "promoted" when it compiles, is free of proof holes, and has a source
+crosswalk.
+
+## Promotion Gate
+
+A theorem or lemma is promoted only if:
+
+- `lake build` succeeds;
+- the declaration has no `sorry`, `admit`, `axiom`, or `unsafe`;
+- introduced assumptions are explicit and non-vacuous where possible;
+- the theorem is linked to a markdown/PDF source anchor when it is textbook
+  derived;
+- the report distinguishes exact textbook formalization from intermediate
+  formal proof layers.
 
 ## Verification
 
@@ -136,7 +265,22 @@ lake build
 rg -n "\\bsorry\\b|\\badmit\\b|\\baxiom\\b|unsafe" StatInference StatInference.lean
 ```
 
-Expected status for promoted Lean sources:
+Current expected result:
 
-- `lake build` completes successfully;
-- the proof-hole scan returns no matches.
+```text
+Build completed successfully.
+```
+
+The proof-hole scan should return no matches.
+
+## Current Status Summary
+
+- Repository created and pushed to GitHub.
+- Agent/training/AXLE machinery removed from scope.
+- Local Vaart markdown/PDF/screenshot assets are available for private review
+  but ignored by Git.
+- Lean library currently builds.
+- Current source-audited focus is VdV&W Theorem 2.4.1.
+- Deterministic bracketing inequality and finite endpoint strong-law wrappers
+  are proved.
+- The full theorem from primitive `N_[]` definitions remains the next target.
