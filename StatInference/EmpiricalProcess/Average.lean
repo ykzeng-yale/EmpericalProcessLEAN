@@ -1,5 +1,4 @@
 import StatInference.EmpiricalProcess.Basic
-import StatInference.Estimator.Basic
 
 /-!
 # Empirical averages and empirical risk notation
@@ -15,6 +14,14 @@ namespace StatInference
 open scoped BigOperators
 
 universe u v
+
+/-- The type of samples of a fixed size `n`. -/
+abbrev SampleAt (Observation : Type u) (n : ℕ) : Type u :=
+  Fin n -> Observation
+
+/-- Empirical risk over a sample-size-indexed family of sample spaces. -/
+structure IndexedEmpiricalRisk (Sample : ℕ -> Type u) (Candidate : Type v) where
+  risk : ∀ n, Sample n -> Candidate -> ℝ
 
 /-- Empirical average of a real-valued statistic over a fixed-size sample. -/
 noncomputable def empiricalAverage {Observation : Type u} {n : ℕ}

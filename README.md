@@ -30,8 +30,8 @@ the VdV&W route should be built and proved locally.
 
 This repository is intentionally limited to:
 
-- Lean library files for empirical process and adjacent statistical inference
-  formalization.
+- Lean library files for empirical process formalization and the minimal local
+  support lemmas imported by that formalization.
 - Local-source manifests for the VdV&W markdown/PDF/screenshot materials.
 - Theorem proof reports that cross-check Lean declarations against textbook
   markdown and PDF screenshots.
@@ -43,6 +43,8 @@ This repository intentionally excludes:
 - training, RL, DPO, GRPO, or benchmark-generation pipelines;
 - AXLE wrappers, API keys, or external prover-service glue;
 - `AI-Statistician` application code, tests, and blueprint machinery;
+- old local non-empirical-process theorem-development modules from estimator,
+  causal, semiparametric, benchmark, or example directions;
 - copyrighted textbook PDF/markdown/screenshot assets from the public Git
   history.
 
@@ -53,12 +55,8 @@ local working tree for private review, but they are ignored by Git.
 
 ```text
 StatInference/
-  Asymptotics/          generic asymptotic interfaces
+  Asymptotics/          minimal deterministic support lemmas
   EmpiricalProcess/     active VdV&W formalization layer
-  Estimator/            downstream estimator interfaces
-  Causal/               later causal/statistical inference interfaces
-  Semiparametric/       later influence-function interfaces
-  Examples/             concrete theorem chains
 Reports/
   Theorem_2_4_1_Bracketing_GC/
 Textbooks/
@@ -233,12 +231,9 @@ working strategy is bottom-up and theorem-driven:
 - covering entropy Donsker theorem;
 - measurable/separable variants where needed.
 
-### Stage E: Downstream statistical learning and inference
-
-- ERM and M-estimation consistency from uniform convergence;
-- Z-estimator and asymptotic linearity interfaces;
-- influence-function and semiparametric interfaces;
-- causal/statistical examples once the empirical-process backbone is strong.
+Downstream estimator, semiparametric, or causal applications are intentionally
+out of the current public Lean tree until the empirical-process backbone is
+strong enough to support them cleanly.
 
 Each stage should produce Lean declarations plus theorem reports.  A theorem is
 only "promoted" when it compiles, is free of proof holes, and has a source
