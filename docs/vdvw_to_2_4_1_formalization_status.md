@@ -4,6 +4,13 @@ This document records the current Lean base, the textbook anchors through
 VdV&W Theorem 2.4.1, and the remaining formalization needed before the repo can
 claim the full textbook theorem.
 
+The comprehensive named-item inventory for every Chapter 1 and Chapter 2 item
+through Theorem 2.4.1 is maintained in:
+
+```text
+docs/vdvw_pre_2_4_1_named_item_inventory.md
+```
+
 ## Current Verified Lean Base
 
 Tracked Lean files are intentionally restricted to the empirical-process core
@@ -20,6 +27,10 @@ and minimal deterministic support:
 | `StatInference/EmpiricalProcess/Bracketing.lean` | deterministic bracketing inequality and route to GC |
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib |
 
+Old local non-empirical-process theorem experiments are not part of this clean
+repo.  The current tracked Lean library has no `sorry`, `admit`, `axiom`, or
+`unsafe` in `StatInference`.
+
 Current verification gate:
 
 ```bash
@@ -33,6 +44,10 @@ Expected result: build succeeds and the proof-hole scan returns no matches.
 
 The local markdown/PDF/screenshot assets are ignored by Git but available for
 private review in `Textbooks/Vaart1996/`.
+
+The full inventory through Theorem 2.4.1 contains 102 named items: 70 in
+Chapter 1, 31 in Chapter 2 before Theorem 2.4.1, and Theorem 2.4.1 itself.
+The table below is only the active direct-proof anchor subset.
 
 | Textbook item | Markdown anchor | Current Lean status |
 | --- | --- | --- |
@@ -91,11 +106,17 @@ These are the missing primitives and lemmas on the direct proof path.
 ## Full Textbook-Order Work Before 2.4.1
 
 If the goal is literal coverage of every named item before Theorem 2.4.1, the
-repo also needs the named material in Sections 2.1-2.3. This is separate from
-the dependency-minimal proof of Theorem 2.4.1.
+repo also needs the named material in Chapter 1 and Sections 2.1-2.3. This is
+separate from the dependency-minimal proof of Theorem 2.4.1.
 
 | Section | Named content before 2.4.1 | Current status |
 | --- | --- | --- |
+| 1.2 | outer probabilities, measurable covers, outer/inner Fubini | not formalized locally; mathlib measure/Fubini foundations reusable but VdV&W outer layer missing |
+| 1.3 | weak convergence of arbitrary maps, asymptotic measurability/tightness, Portmanteau/Prohorov | mathlib measure-level weak convergence and Portmanteau/Prokhorov foundations exist; VdV&W arbitrary-map wrappers pending |
+| 1.4 | product weak convergence, asymptotic independence, Slutsky | not formalized locally |
+| 1.5-1.7 | `l_infty(T)`, tightness/equicontinuity, separability, ball measurability, Suslin examples | not formalized locally |
+| 1.8 | Hilbert-space weak convergence material | not formalized locally |
+| 1.9-1.12 | convergence in outer probability, extended continuous mapping, uniform integrability, bounded Lipschitz metric | not formalized locally |
 | 2.1 | empirical-process examples, covering numbers, bracketing numbers, Donsker overview examples/proposition | only empirical-process interfaces and averages exist |
 | 2.2 | Orlicz norm lemmas, covering/packing definition, chaining maximal inequality, Hoeffding/Bernstein inequalities | not formalized locally |
 | 2.3 | symmetrization, measurable classes, separability/lifting, Donsker separable modification results | not formalized locally |
@@ -103,6 +124,14 @@ the dependency-minimal proof of Theorem 2.4.1.
 Theorem 2.4.1 itself uses Definition 2.1.6 and the real-valued strong law
 directly; it does not require the maximal inequalities or symmetrization
 machinery from Sections 2.2-2.3.
+
+Pinned mathlib already supplies large parts of the mathematical foundation:
+measure theory, probability measures, integration, product/Fubini theorems,
+`L1`/`Lp` infrastructure, weak convergence of measures, Portmanteau-related
+results, Prokhorov-related files, iid/independence primitives, and a real strong
+law.  It does not appear to contain VdV&W's empirical-process-specific
+bracketing-number Glivenko-Cantelli theorem or the exact outer-probability
+formalism needed to mirror every Chapter 1 statement.
 
 ## Report Requirement
 

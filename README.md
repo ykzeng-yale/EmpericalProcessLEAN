@@ -85,6 +85,13 @@ The current status and remaining-work ledger through Theorem 2.4.1 is:
 docs/vdvw_to_2_4_1_formalization_status.md
 ```
 
+The comprehensive inventory of every named VdV&W item through Theorem 2.4.1,
+including the pinned mathlib reuse audit, is:
+
+```text
+docs/vdvw_pre_2_4_1_named_item_inventory.md
+```
+
 ## Lean And Mathlib Base
 
 The project uses Lean through Lake.
@@ -106,6 +113,8 @@ Current mathlib foundations used or expected:
 There is not currently a ready-made mathlib theorem in this repository that
 states VdV&W Theorem 2.4.1 directly as a bracketing-number Glivenko-Cantelli
 theorem.  The missing empirical-process-specific layer is being built locally.
+The local inventory currently tracks 7993 pinned mathlib Lean files, including
+1870 files under `MeasureTheory`, `Probability`, `Topology`, and `Analysis`.
 
 ## Source Audit Policy
 
@@ -154,6 +163,12 @@ The textbook proof has the following formalization shape:
 The repository currently proves source-audited theorem layers used by this
 proof.  It does not yet claim the final primitive theorem from the bracketing
 number `N_[]`.
+
+The full textbook-order target through Theorem 2.4.1 is larger than the direct
+proof path: Chapter 1's weak-convergence and outer-probability foundations,
+then Sections 2.1-2.3, then the 2.4.1 bracketing theorem.  The direct route to
+2.4.1 will reuse mathlib foundations first and build only the missing
+empirical-process primitives locally.
 
 ## Current Proved Layers
 
@@ -282,6 +297,8 @@ The proof-hole scan should return no matches.
   but ignored by Git.
 - Lean library currently builds.
 - Current source-audited focus is VdV&W Theorem 2.4.1.
+- The comprehensive pre-2.4.1 inventory now covers Chapter 1 and Chapter 2
+  through the theorem, not only Section 2.
 - Deterministic bracketing inequality and finite endpoint strong-law wrappers
   are proved.
 - The full theorem from primitive `N_[]` definitions remains the next target.

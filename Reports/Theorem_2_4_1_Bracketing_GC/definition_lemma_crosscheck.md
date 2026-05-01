@@ -7,6 +7,7 @@ Source screenshot anchor:
 
 ```text
 Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png
+Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png
 ```
 
 The screenshot and markdown/PDF files are local-only review assets and are
@@ -36,10 +37,10 @@ complete.
 
 | Pending Lean target | Markdown anchor | Screenshot needed |
 | --- | --- | --- |
-| primitive function bracket and membership | Definition 2.1.6, `..._1-100.md:1895` | add local screenshot for Definition 2.1.6 |
-| epsilon bracket and bracketing number `N_[]` | Definition 2.1.6, `..._1-100.md:1895` | add local screenshot for Definition 2.1.6 |
-| exact `L1(P)` width | Definition 2.1.6 plus Theorem 2.4.1, `..._101-200.md:970-984` | existing Theorem 2.4.1 screenshot plus Definition 2.1.6 screenshot |
-| final finite-bracketing GC theorem | Theorem 2.4.1, `..._101-200.md:970-984` | existing Theorem 2.4.1 screenshot |
+| primitive function bracket and membership | Definition 2.1.6, `..._1-100.md:1895` | `Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png` |
+| epsilon bracket and bracketing number `N_[]` | Definition 2.1.6, `..._1-100.md:1895` | `Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png` |
+| exact `L1(P)` width | Definition 2.1.6 plus Theorem 2.4.1, `..._101-200.md:970-984` | `Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png` and `Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png` |
+| final finite-bracketing GC theorem | Theorem 2.4.1, `..._101-200.md:970-984` | `Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png` |
 
 ## Promotion Rule
 
