@@ -63,6 +63,7 @@ of this repository.
 | `StatInference/EmpiricalProcess/Bracketing.lean` | deterministic bracket inequality and route | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive brackets, `L1(P)` width, finite covers, and primitive cover-to-route theorems | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib | compiled, no proof holes |
+| `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid sample-path endpoint SLLN bridge for finite bracket covers | compiled, no proof holes |
 
 Current promoted declarations toward Theorem 2.4.1:
 
@@ -75,6 +76,9 @@ Current promoted declarations toward Theorem 2.4.1:
 | `FiniteBracketingEndpointRoute.toGlivenkoCantelliClass` | proved route-to-GC conversion |
 | `endpoint_strong_law_ae_real` | proved wrapper around mathlib SLLN |
 | `finite_endpoint_strong_law_ae_real` | proved finite endpoint SLLN handoff |
+| `samplePath`, `empiricalAverage_samplePath_eq_range_sum` | proved sample-path and empirical-average/range-sum bridge |
+| `endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid` | proved iid endpoint SLLN for sample-path empirical averages |
+| `FiniteL1BracketCover.endpoint_tendsto_ae_of_iid`, `FiniteL1BracketCover.exists_endpointRadius_ae_of_iid` | proved fixed-cover iid endpoint convergence and endpoint-radius bridge |
 | `FunctionBracket`, `MemFunctionBracket`, `l1BracketWidth`, `IsL1EpsilonBracket` | proved/compiled primitive bracketing vocabulary for Definition 2.1.6 |
 | `FiniteBracketCover`, `FiniteL1BracketCover` | proved/compiled finite primitive cover witnesses |
 | `FiniteL1BracketCoverAtCard`, `HasFiniteL1BracketingNumber` | proved/compiled explicit-cardinality finite bracketing witness layer |
@@ -270,7 +274,7 @@ through 2.4.1 requires accounting for them.
 | 2.3.15 Theorem | `M2:818` | pointwise separable version Donsker equivalence | later roadmap |
 | 2.3.16 Proposition | `M2:857` | consistent lifting | later roadmap |
 | 2.3.17 Theorem | `M2:882` | separable modification | later roadmap |
-| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | target; primitive finite-bracketing route proved, final iid/GC theorem pending |
+| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | target; primitive finite-bracketing and fixed-cover iid endpoint routes proved, final GC theorem pending |
 
 ## Dependency-Minimal Route To Theorem 2.4.1
 
@@ -284,10 +288,10 @@ Sections 2.1-2.3 to be formalized literally.  The dependency-minimal route is:
 | 3 | epsilon bracket in `L1(P)` width | `M1:1895`, `M2:970` | done: `l1BracketWidth`, `IsL1EpsilonBracket` |
 | 4 | finite bracket cover | `M1:1895`, `M2:972` | done: `FiniteBracketCover`, `FiniteL1BracketCover` |
 | 5 | bracketing number `N_[]` or equivalent finite-existence predicate | `M1:1895` | done: `l1BracketingNumber : ℕ∞` and finite-existence witness |
-| 6 | construct endpoints from a finite bracket cover | `M2:972-984` | done for primitive covers; endpoint convergence from iid samples pending |
+| 6 | construct endpoints from a finite bracket cover | `M2:972-984` | done for primitive covers and fixed-cover iid endpoint convergence |
 | 7 | population integral order for bracket endpoints | `M2:972-981` | done using mathlib `integral_mono` |
 | 8 | empirical average order for bracket endpoints | `M2:972-981` | done using finite sums |
-| 9 | endpoint empirical average SLLN | `M2:984` | local wrapper exists; needs connection to samples/functions |
+| 9 | endpoint empirical average SLLN | `M2:984` | done for fixed finite covers: `EndpointSamples.lean` |
 | 10 | build `FiniteBracketingEndpointRoute` from primitive brackets | `M2:972-984` | done from primitive cover plus endpoint/width assumptions |
 | 11 | decreasing-radius argument | `M2:984` | done for the dependency-minimal deterministic route; exact iid/`N_[]` theorem pending |
 | 12 | final exact theorem statement | `M2:970` | pending |

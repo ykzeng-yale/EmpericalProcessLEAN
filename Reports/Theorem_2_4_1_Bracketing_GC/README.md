@@ -18,6 +18,8 @@ below.  The repository does **not** yet claim the full theorem
 | `FiniteBracketingEndpointRoute.toGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/Bracketing.lean` | proof-carrying conversion |
 | `endpoint_strong_law_ae_real` | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | proved from mathlib |
 | `finite_endpoint_strong_law_ae_real` | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | proved from mathlib |
+| `samplePath`, `endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid` | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid sample-path endpoint SLLN bridge |
+| `FiniteL1BracketCover.endpoint_tendsto_ae_of_iid`, `FiniteL1BracketCover.exists_endpointRadius_ae_of_iid` | `StatInference/EmpiricalProcess/EndpointSamples.lean` | fixed-cover iid endpoint convergence bridge |
 | `FunctionBracket`, `MemFunctionBracket`, `l1BracketWidth`, `IsL1EpsilonBracket` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive bracketing definitions |
 | `FiniteBracketCover`, `FiniteL1BracketCover` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | finite primitive cover definitions |
 | `FiniteL1BracketCoverAtCard`, `HasFiniteL1BracketingNumber` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | explicit-cardinality finite bracketing witness |
@@ -54,11 +56,12 @@ The proved Lean code currently supplies:
 4. primitive function brackets, `L1(P)` width, epsilon brackets, and finite
    primitive cover witnesses;
 5. primitive cover-to-deviation and primitive cover-to-route constructors;
-6. endpoint convergence to one finite endpoint-radius sequence;
-7. a proof-carrying finite-bracketing route into the current GC interface.
+6. iid sample-path endpoint convergence for a fixed finite bracket cover;
+7. endpoint convergence to one finite endpoint-radius sequence;
+8. a proof-carrying finite-bracketing route into the current GC interface.
 
 The next primitive layers needed for the literal textbook theorem are:
 
-1. construct endpoint convergence assumptions from actual iid samples and
-   mathlib SLLN for each finite cover;
+1. combine fixed-cover iid endpoint SLLNs over a decreasing/countable
+   bracketing scale;
 2. state the final textbook theorem with the chosen convergence mode.

@@ -7,3 +7,4 @@ import StatInference.EmpiricalProcess.Complexity
 import StatInference.EmpiricalProcess.Bracketing
 import StatInference.EmpiricalProcess.BracketingPrimitive
 import StatInference.EmpiricalProcess.EndpointStrongLaw
+import StatInference.EmpiricalProcess.EndpointSamples

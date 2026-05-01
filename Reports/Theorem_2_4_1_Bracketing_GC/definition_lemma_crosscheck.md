@@ -29,6 +29,7 @@ ignored by Git.
 | `FiniteBracketingEndpointRoute.toGlivenkoCantelliClass`, `StatInference/EmpiricalProcess/Bracketing.lean`, construction | GC conclusion from route and vanishing radii, markdown `..._101-200.md:984` | same screenshot | Proved route-to-GC conversion |
 | `endpoint_strong_law_ae_real`, `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`, theorem | "strong law of large numbers for real variables", markdown `..._101-200.md:984` | same screenshot | Proved wrapper around mathlib SLLN |
 | `finite_endpoint_strong_law_ae_real`, `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`, theorem | finitely many endpoint functions, markdown `..._101-200.md:972-984` | same screenshot | Proved finite-family endpoint SLLN |
+| `samplePath`, `empiricalAverage_samplePath_eq_range_sum`, `endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid`, `endpoint_population_sub_empiricalAverage_tendsto_zero_ae_of_iid`, `FiniteL1BracketCover.endpoint_tendsto_ae_of_iid`, `FiniteL1BracketCover.endpointRadius_tendsto_zero_ae_of_iid`, `FiniteL1BracketCover.exists_endpointRadius_ae_of_iid`, `StatInference/EmpiricalProcess/EndpointSamples.lean`, iid sample-path endpoint SLLN bridge | Theorem 2.4.1 proof applies the strong law to finitely many bracket endpoints, markdown `..._101-200.md:984` | same theorem screenshot | Proved fixed-cover iid sample-path bridge from mathlib SLLN to primitive endpoint empirical averages; final countable/decreasing-cover theorem still pending |
 | `FunctionBracket`, `StatInference/EmpiricalProcess/BracketingPrimitive.lean`, primitive bracket endpoint structure | Definition 2.1.6 bracket `[l, u]`, markdown `..._1-100.md:1895` | `Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png` | Proved/compiled primitive object layer; not the final theorem |
 | `FunctionBracket.Mem`, `MemFunctionBracket`, `StatInference/EmpiricalProcess/BracketingPrimitive.lean`, pointwise bracket-membership predicate | Definition 2.1.6 functions satisfying `l <= f <= u`, markdown `..._1-100.md:1895` | same Definition 2.1.6 screenshot | Proved/compiled primitive membership layer |
 | `FunctionBracket.lowerIntegral`, `FunctionBracket.upperIntegral`, `populationRiskOfFunction`, `StatInference/EmpiricalProcess/BracketingPrimitive.lean`, population integral definitions | Theorem 2.4.1 proof uses `P f`, `P l`, and `P u`, markdown `..._101-200.md:970-981` | theorem screenshot | Proved/compiled integral vocabulary using mathlib Bochner integral |
@@ -55,7 +56,7 @@ complete.
 
 | Pending Lean target | Markdown anchor | Screenshot needed |
 | --- | --- | --- |
-| construct endpoint convergence assumptions from actual iid samples and mathlib SLLN for each finite cover | Theorem 2.4.1 proof endpoint SLLN, `..._101-200.md:984` | theorem screenshot |
+| combine fixed finite-cover iid endpoint SLLNs over a decreasing/countable bracketing scale | Theorem 2.4.1 proof endpoint SLLN and decreasing radius, `..._101-200.md:984` | theorem screenshot |
 | final finite-bracketing GC theorem | Theorem 2.4.1, `..._101-200.md:970-984` | `Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png` |
 
 ## Promotion Rule
