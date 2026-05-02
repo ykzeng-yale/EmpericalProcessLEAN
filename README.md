@@ -302,6 +302,9 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `SuppliedERealHalfLineGrid.l1BracketingNumber_lt_top`,
   `SuppliedERealHalfLineGrid.l1BracketingNumber_lt_top_forall`
   in `StatInference/EmpiricalProcess/RealHalfLine.lean`.
+- `vdVW_realHalfLine_outerAlmostSureGlivenkoCantelli_of_suppliedERealHalfLineGrids`
+  and `vdVW_realHalfLine_glivenkoCantelli_of_suppliedERealHalfLineGrids`
+  in `StatInference/EmpiricalProcess/RealHalfLineGC.lean`.
 
 These prove the deterministic bracket-comparison route, the finite endpoint
 strong-law wrapper, the fixed-cover iid sample-path endpoint bridge, and the
@@ -312,8 +315,9 @@ new Example 2.4.2 layer proves the pointwise and `L1(P)` facts for real
 half-line indicator brackets, adds `EReal` endpoint brackets for `-∞`/`∞`,
 proves the extended-open-cell width identity, and connects supplied finite
 real or extended-real grids to the primitive bracketing-number witness,
-including the all-positive-radius handoff needed by Theorem 2.4.1;
-construction of the distribution grid is still pending.
+including the all-positive-radius handoff needed by Theorem 2.4.1 and the
+conditional half-line Glivenko-Cantelli corollary from supplied grids;
+construction of the distribution-dependent grid is still pending.
 They are real Lean proofs, not placeholders.
 
 ## Current Chapter 1-2 Gap
@@ -426,5 +430,5 @@ The proof-hole scan should return no matches.
 - The direct dependency-minimal Theorem 2.4.1 route from primitive `N_[]`
   definitions is proved;
   the next targets are Chapter 1 arbitrary-map infrastructure,
-  distribution-dependent grid construction for Example 2.4.2, the remaining
-  endpoint/GC corollary work, and the next Chapter 2 GC/bracketing results.
+  distribution-dependent grid construction for Example 2.4.2, the exact
+  empirical-CDF example report, and the next Chapter 2 GC/bracketing results.

@@ -13,3 +13,4 @@ import StatInference.EmpiricalProcess.OuterExpectation
 import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.OuterProbabilityExpectation
 import StatInference.EmpiricalProcess.RealHalfLine
+import StatInference.EmpiricalProcess.RealHalfLineGC

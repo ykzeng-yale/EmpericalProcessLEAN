@@ -88,7 +88,7 @@ The table below is only the active direct-proof anchor subset.
 | Theorem 2.4.1 statement | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:970` | proved as `vdVW_theorem_2_4_1_glivenkoCantelli` via the outer-a.s. branch |
 | Theorem 2.4.1 proof, finite brackets and endpoint inequality | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:972-981` | deterministic bracketing theorem proved |
 | Theorem 2.4.1 proof, endpoint SLLN and decreasing radius | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:984` | endpoint SLLN wrapper, iid sample-path bridge, finite endpoint-radius bridge, and countable/decreasing-scale assembly proved |
-| Example 2.4.2, empirical CDF brackets | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:985` | pending example formalization |
+| Example 2.4.2, empirical CDF brackets | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:985` | local-layer: real and extended-real half-line bracket membership, endpoint integrability, `L1(P)` width identities, supplied finite-grid bridges, all-positive-radius `N_[] < ∞` handoff, and conditional GC corollary from supplied grids; distribution-dependent grid existence and exact example report remain pending |
 
 Current screenshot anchors:
 
@@ -98,6 +98,7 @@ Textbooks/Vaart1996/Screenshots/vdvw_lemma_1_2_1_pdf_page_6.png
 Textbooks/Vaart1996/Screenshots/vdvw_definition_1_10_1_pdf_page_72.png
 Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png
 Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png
+Textbooks/Vaart1996/Screenshots/vdvw_example_2_4_2_pdf_page_138.png
 ```
 
 ## What Is Already Proved Toward Theorem 2.4.1
