@@ -30,6 +30,31 @@ This blueprint tracks theorem-level items first.  Definitions are promoted as
 primitives whenever a theorem needs them.  Examples should receive reports
 after the theorem infrastructure they use is compiled.
 
+## Prioritization Policy
+
+The inventory below is comprehensive, but it is not a strict implementation
+queue.  Some Chapter 1 results are global weak-convergence or whole-book
+infrastructure theorems.  Those items should be audited and reused from
+mathlib when possible, but they do not block the current empirical-process
+main line unless a later VdV&W theorem depends on their exact arbitrary-map
+form.
+
+Current priority is dependency-driven:
+
+1. keep the already proved Theorem 2.4.1 route verified;
+2. finish only the Chapter 1 primitives that are directly needed for outer
+   probability, measurable-cover, and empirical-process measurability layers;
+3. proceed through Chapter 2 bracketing, covering, measurable-class, and
+   symmetrization results in textbook order;
+4. defer broad Chapter 1 weak-convergence, tightness, product-space, and
+   stochastic-process theorems until they become necessary for Donsker-level
+   results or another concrete theorem target.
+
+When a deferred Chapter 1 item is needed, it should be promoted with the same
+standard as every other theorem: exact Lean statement, no proof holes, local
+mathlib search first, and one theorem report only after the exact theorem or
+lemma is fully proved.
+
 ## Existing Lean Coverage Conclusion
 
 Pinned mathlib is the authority for reusable foundations in this repository.

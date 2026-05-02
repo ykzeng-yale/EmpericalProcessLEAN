@@ -17,6 +17,20 @@ The broader Chapter 1-2 theorem-level blueprint after Theorem 2.4.1 is:
 docs/vdvw_chapter1_2_formalization_blueprint.md
 ```
 
+## Chapter 1 Dependency Policy
+
+The Chapter 1 inventory is intentionally broad.  Several items there are
+whole-book weak-convergence or stochastic-process infrastructure theorems.
+They should remain audited in the blueprint, but they are not automatically
+blocking for the current empirical-process formalization path.
+
+For near-term work, Chapter 1 is formalized only when it directly supports a
+concrete target such as outer probability, measurable covers, empirical-process
+measurability, Theorem 2.4.1, Example 2.4.2, or the next Chapter 2
+bracketing/GC result.  Broader arbitrary-map weak-convergence and tightness
+theorems are deferred until a Donsker-level or other explicit theorem target
+requires them.
+
 ## Current Verified Lean Base
 
 Tracked Lean files are intentionally restricted to the empirical-process core
