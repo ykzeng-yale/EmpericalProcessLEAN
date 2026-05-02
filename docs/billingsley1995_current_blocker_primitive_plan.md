@@ -48,12 +48,13 @@ Local searches found reusable APIs in:
 - `StatInference/EmpiricalProcess/BallSigma.lean`
 - `StatInference/EmpiricalProcess/RealHalfLine.lean`
 - `StatInference/ProbabilityMeasure/ProductMeasure.lean`
+- `StatInference/ProbabilityMeasure/BorelCantelli.lean`
 
 ## Primitive Sequence
 
 1. Keep the Section 25 Billingsley weak-convergence wrappers compiling.
-2. Keep the finite-dimensional process-law and product/Fubini wrappers
-   compiling.
+2. Keep the finite-dimensional process-law, product/Fubini, and
+   Borel-Cantelli wrappers compiling.
 3. Add a precise Section 25 theorem candidate to the inventory:
    bounded-continuous test functions, open/closed Portmanteau directions,
    continuous mapping, or tightness/Prokhorov.

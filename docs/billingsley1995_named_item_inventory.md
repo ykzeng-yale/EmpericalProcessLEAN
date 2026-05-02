@@ -27,7 +27,7 @@ parallel inventories.
 | Item | Source anchor | Status | Lean target |
 | --- | --- | --- | --- |
 | Section 3 extension/pi-lambda/monotone-class machinery | `_1-121.md` near Section 3 start | mathlib-foundation | future Billingsley pi-lambda wrappers over `MeasureTheory.PiSystem` |
-| Section 4 Borel-Cantelli and zero-one laws | `_1-121.md` near Section 4 start | mathlib-foundation | future wrappers over mathlib Borel-Cantelli APIs |
+| Section 4 Borel-Cantelli and zero-one laws | `_1-121.md` near Section 4 start | local-wrapper/mathlib-foundation | first and second Borel-Cantelli wrappers over mathlib are available; exact Billingsley Theorems 4.3/4.4 reports, source screenshots, and zero-one-law coverage remain pending |
 | Theorem 6.1 simple strong law | `_1-121.md` near Theorem 6.1 | mathlib-foundation | possible wrapper over `ProbabilityTheory.strong_law_ae_real` |
 | Sections 15-16 integration and limit theorems | `_122-242.md` near Section 16 start | priority-local | tail/UI wrappers for VdV&W Theorem 2.4.3 |
 | Section 18 product measure/Fubini | `_243-363.md` near Section 18 start | priority-local | finite-product Fubini wrappers for symmetrization |

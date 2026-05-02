@@ -60,6 +60,7 @@ finite-dimensional distributions, and Prokhorov-style arguments.
 Initial Lean module:
 
 - `StatInference/ProbabilityMeasure/Basic.lean`
+- `StatInference/ProbabilityMeasure/BorelCantelli.lean`
 - `StatInference/ProbabilityMeasure/WeakConvergence.lean`
 - `StatInference/ProbabilityMeasure/FiniteDimensional.lean`
 - `StatInference/ProbabilityMeasure/ProductMeasure.lean`
@@ -91,6 +92,7 @@ Current compiled wrappers:
   limit wrappers
 - product probability measure, Tonelli/Fubini, and independent-product
   expectation wrappers
+- first and second Borel-Cantelli wrappers
 
 ### Lane B: Integration, tails, and uniform integrability
 
@@ -143,6 +145,8 @@ inequalities.
 
 Near-term declarations:
 
+- Borel-Cantelli wrappers: started in
+  `StatInference/ProbabilityMeasure/BorelCantelli.lean`.
 - Billingsley wrappers around `strong_law_ae_real` where they stabilize source
   anchors.
 - Rademacher PMF/has-law/iid construction primitives for Theorem 2.4.3.
