@@ -1230,4 +1230,21 @@ theorem VdVWOuterExpectation_eq_lintegral_eventIndicator_setCover
   VdVWOuterExpectation_eq_lintegral_cover
     (VdVWMeasurableSetCover.toEventIndicatorCover cover)
 
+/--
+The indicator of any measurable set cover integrates to the outer measure of
+the original event.
+
+This is the direct integral form of the VdV&W Lemma 1.2.3(ii) equality
+`E 1_{B*} = P(B*) = P*(B)`.
+-/
+theorem lintegral_eventIndicator_setCover_eq_measure
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
+    {event : Set Ω} (cover : VdVWMeasurableSetCover μ event) :
+    (∫⁻ ω, VdVWEventIndicator cover.toSet ω ∂μ) = μ event := by
+  change
+    (∫⁻ ω, cover.toSet.indicator (fun _ => (1 : ℝ≥0∞)) ω ∂μ) =
+      μ event
+  rw [← cover.measure_eq]
+  simpa [Pi.one_apply] using lintegral_indicator_one cover.measurable_toSet
+
 end StatInference
