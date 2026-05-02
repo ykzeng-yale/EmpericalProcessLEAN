@@ -54,6 +54,82 @@ noncomputable def vdVWWeightedClassSupremum
   ⨆ index, ⨆ (_ : index ∈ indexClass),
     |vdVWWeightedSampleSum classFun weights index sample|
 
+/--
+The value set whose supremum is represented by
+`vdVWWeightedClassSupremum`.  This set-level form makes boundedness and
+subset arguments explicit, avoiding hidden `ℝ` supremum fallback conventions.
+-/
+def vdVWWeightedClassValueSet
+    {Observation : Type u} {Index : Type v}
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {n : ℕ} (weights : Fin n -> ℝ)
+    (sample : Fin n -> Observation) : Set ℝ :=
+  {value | ∃ index, index ∈ indexClass ∧
+    value = |vdVWWeightedSampleSum classFun weights index sample|}
+
+/-- A class member contributes its absolute weighted sum to the value set. -/
+theorem abs_vdVWWeightedSampleSum_mem_valueSet
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} (weights : Fin n -> ℝ)
+    (sample : Fin n -> Observation) {index : Index}
+    (hindex : index ∈ indexClass) :
+    |vdVWWeightedSampleSum classFun weights index sample| ∈
+      vdVWWeightedClassValueSet indexClass classFun weights sample :=
+  ⟨index, hindex, rfl⟩
+
+/-- Value sets are monotone under subclass inclusion. -/
+theorem vdVWWeightedClassValueSet_mono
+    {Observation : Type u} {Index : Type v}
+    {smaller larger : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hsubset : smaller ⊆ larger)
+    {n : ℕ} (weights : Fin n -> ℝ)
+    (sample : Fin n -> Observation) :
+    vdVWWeightedClassValueSet smaller classFun weights sample ⊆
+      vdVWWeightedClassValueSet larger classFun weights sample := by
+  intro value hvalue
+  rcases hvalue with ⟨index, hindex, rfl⟩
+  exact abs_vdVWWeightedSampleSum_mem_valueSet weights sample (hsubset hindex)
+
+/-- Weighted class suprema are nonnegative, including mathlib's empty-class case. -/
+theorem vdVWWeightedClassSupremum_nonneg
+    {Observation : Type u} {Index : Type v}
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {n : ℕ} (weights : Fin n -> ℝ)
+    (sample : Fin n -> Observation) :
+    0 ≤ vdVWWeightedClassSupremum indexClass classFun weights sample := by
+  unfold vdVWWeightedClassSupremum
+  exact Real.iSup_nonneg fun index =>
+    Real.iSup_nonneg fun _ : index ∈ indexClass =>
+      abs_nonneg (vdVWWeightedSampleSum classFun weights index sample)
+
+/--
+A bounded weighted value set bounds the corresponding inner supremum range
+used by `vdVWWeightedClassSupremum`.
+-/
+theorem bddAbove_vdVWWeightedClassSupremum_range_of_valueSet
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} (weights : Fin n -> ℝ)
+    (sample : Fin n -> Observation)
+    (hbdd :
+      BddAbove (vdVWWeightedClassValueSet indexClass classFun weights sample)) :
+    BddAbove
+      (Set.range fun candidate : Index =>
+        ⨆ (_ : candidate ∈ indexClass),
+          |vdVWWeightedSampleSum classFun weights candidate sample|) := by
+  rcases hbdd with ⟨upper, hupper⟩
+  refine ⟨max upper 0, ?_⟩
+  intro value hvalue
+  rcases hvalue with ⟨index, rfl⟩
+  apply Real.iSup_le
+  · intro hindex
+    exact le_trans
+      (hupper
+        (abs_vdVWWeightedSampleSum_mem_valueSet weights sample hindex))
+      (le_max_left upper 0)
+  · exact le_max_right upper 0
+
 /-- Coordinate measurability of all functions in a class. -/
 def VdVWClassCoordinateMeasurable
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
@@ -138,6 +214,97 @@ theorem tendsto_abs_vdVWWeightedSampleSum_of_pointwise
     (tendsto_vdVWWeightedSampleSum_of_pointwise weights sample hlim)
 
 /--
+The finite weighted term for a pointwise limit lies below the weighted
+supremum over the approximating subclass.
+-/
+theorem abs_vdVWWeightedSampleSum_le_classSupremum_of_pointwise
+    {Observation : Type u} {Index : Type v}
+    {classFun : Index -> Observation -> ℝ} {n : ℕ}
+    (weights : Fin n -> ℝ) (sample : Fin n -> Observation)
+    {subclass : Set Index} {approx : ℕ -> Index} {index : Index}
+    (hbounded :
+      BddAbove
+        (Set.range fun candidate : Index =>
+          ⨆ (_ : candidate ∈ subclass),
+            |vdVWWeightedSampleSum classFun weights candidate sample|))
+    (hmem : ∀ m, approx m ∈ subclass)
+    (hlim :
+      ∀ x : Observation,
+        Tendsto (fun m => classFun (approx m) x) atTop
+          (𝓝 (classFun index x))) :
+    |vdVWWeightedSampleSum classFun weights index sample| ≤
+      vdVWWeightedClassSupremum subclass classFun weights sample := by
+  apply le_of_tendsto'
+    (tendsto_abs_vdVWWeightedSampleSum_of_pointwise weights sample hlim)
+  intro m
+  unfold vdVWWeightedClassSupremum
+  refine le_ciSup_of_le hbounded (approx m) ?_
+  simp [ciSup_pos (hmem m)]
+
+/--
+Weighted class suprema are monotone under class inclusion once the larger
+class has a bounded inner-supremum range.
+-/
+theorem vdVWWeightedClassSupremum_le_of_subset_of_bddAbove
+    {Observation : Type u} {Index : Type v}
+    {smaller larger : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hsubset : smaller ⊆ larger)
+    {n : ℕ} (weights : Fin n -> ℝ)
+    (sample : Fin n -> Observation)
+    (hbounded :
+      BddAbove
+        (Set.range fun candidate : Index =>
+          ⨆ (_ : candidate ∈ larger),
+            |vdVWWeightedSampleSum classFun weights candidate sample|)) :
+    vdVWWeightedClassSupremum smaller classFun weights sample ≤
+      vdVWWeightedClassSupremum larger classFun weights sample := by
+  have hnonneg :
+      0 ≤ vdVWWeightedClassSupremum larger classFun weights sample :=
+    vdVWWeightedClassSupremum_nonneg larger classFun weights sample
+  unfold vdVWWeightedClassSupremum
+  apply Real.iSup_le
+  · intro index
+    apply Real.iSup_le
+    · intro hsmall
+      refine le_ciSup_of_le hbounded index ?_
+      have hbddInner :
+          BddAbove
+            (Set.range fun _ : index ∈ larger =>
+              |vdVWWeightedSampleSum classFun weights index sample|) := by
+        exact ⟨|vdVWWeightedSampleSum classFun weights index sample|, by
+          intro value hvalue
+          rcases hvalue with ⟨_, rfl⟩
+          rfl⟩
+      exact le_ciSup_of_le hbddInner (hsubset hsmall) le_rfl
+    · exact hnonneg
+  · exact hnonneg
+
+/--
+A pointwise limit term is below every upper bound for the approximating
+subclass value set.
+-/
+theorem abs_vdVWWeightedSampleSum_le_of_pointwise_of_valueSet_upperBound
+    {Observation : Type u} {Index : Type v}
+    {classFun : Index -> Observation -> ℝ} {n : ℕ}
+    (weights : Fin n -> ℝ) (sample : Fin n -> Observation)
+    {subclass : Set Index} {approx : ℕ -> Index} {index : Index}
+    {upper : ℝ}
+    (hupper :
+      ∀ value ∈ vdVWWeightedClassValueSet subclass classFun weights sample,
+        value ≤ upper)
+    (hmem : ∀ m, approx m ∈ subclass)
+    (hlim :
+      ∀ x : Observation,
+        Tendsto (fun m => classFun (approx m) x) atTop
+          (𝓝 (classFun index x))) :
+    |vdVWWeightedSampleSum classFun weights index sample| ≤ upper := by
+  apply le_of_tendsto'
+    (tendsto_abs_vdVWWeightedSampleSum_of_pointwise weights sample hlim)
+  intro m
+  exact hupper _
+    (abs_vdVWWeightedSampleSum_mem_valueSet weights sample (hmem m))
+
+/--
 A countable coordinate-measurable class is `P`-measurable.
 
 This is the Lean counterpart of the standard pointwise-measurable/countable
@@ -198,6 +365,138 @@ structure VdVWPointwiseApproximableByCountableSubclass
           ∀ x : Observation,
             Tendsto (fun m => classFun (approx m) x) atTop
               (𝓝 (classFun index x))
+
+/--
+Pointwise approximability transfers boundedness of the weighted value set from
+the countable subclass to the original class.
+-/
+theorem bddAbove_vdVWWeightedClassValueSet_of_pointwiseApproximable
+    {Observation : Type u} {Index : Type v}
+    {indexClass subclass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    (happrox :
+      VdVWPointwiseApproximableByCountableSubclass
+        indexClass subclass classFun)
+    {n : ℕ} (weights : Fin n -> ℝ)
+    (sample : Fin n -> Observation)
+    (hbdd :
+      BddAbove (vdVWWeightedClassValueSet subclass classFun weights sample)) :
+    BddAbove (vdVWWeightedClassValueSet indexClass classFun weights sample) := by
+  rcases hbdd with ⟨upper, hupper⟩
+  refine ⟨upper, ?_⟩
+  intro value hvalue
+  rcases hvalue with ⟨index, hindex, rfl⟩
+  rcases happrox.approximates index hindex with ⟨approx, hmem, hlim⟩
+  exact
+    abs_vdVWWeightedSampleSum_le_of_pointwise_of_valueSet_upperBound
+      weights sample hupper hmem hlim
+
+/--
+Pointwise approximability gives the reverse supremum inequality whenever the
+approximating subclass has a bounded inner-supremum range.
+-/
+theorem vdVWWeightedClassSupremum_le_of_pointwiseApproximable_of_bddAbove
+    {Observation : Type u} {Index : Type v}
+    {indexClass subclass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    (happrox :
+      VdVWPointwiseApproximableByCountableSubclass
+        indexClass subclass classFun)
+    {n : ℕ} (weights : Fin n -> ℝ)
+    (sample : Fin n -> Observation)
+    (hbounded :
+      BddAbove
+        (Set.range fun candidate : Index =>
+          ⨆ (_ : candidate ∈ subclass),
+            |vdVWWeightedSampleSum classFun weights candidate sample|)) :
+    vdVWWeightedClassSupremum indexClass classFun weights sample ≤
+      vdVWWeightedClassSupremum subclass classFun weights sample := by
+  have hnonneg :
+      0 ≤ vdVWWeightedClassSupremum subclass classFun weights sample :=
+    vdVWWeightedClassSupremum_nonneg subclass classFun weights sample
+  unfold vdVWWeightedClassSupremum
+  apply Real.iSup_le
+  · intro index
+    apply Real.iSup_le
+    · intro hindex
+      rcases happrox.approximates index hindex with ⟨approx, hmem, hlim⟩
+      exact
+        abs_vdVWWeightedSampleSum_le_classSupremum_of_pointwise
+          weights sample hbounded hmem hlim
+    · exact hnonneg
+  · exact hnonneg
+
+/--
+Bounded pointwise approximability identifies one finite weighted supremum over
+the original class with the supremum over the countable subclass.
+-/
+theorem vdVWWeightedClassSupremum_eq_of_pointwiseApproximable_of_bddAbove
+    {Observation : Type u} {Index : Type v}
+    {indexClass subclass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    (happrox :
+      VdVWPointwiseApproximableByCountableSubclass
+        indexClass subclass classFun)
+    {n : ℕ} (weights : Fin n -> ℝ)
+    (sample : Fin n -> Observation)
+    (hbdd :
+      BddAbove (vdVWWeightedClassValueSet subclass classFun weights sample)) :
+    vdVWWeightedClassSupremum indexClass classFun weights sample =
+      vdVWWeightedClassSupremum subclass classFun weights sample := by
+  apply le_antisymm
+  · have hboundedSubclass :
+        BddAbove
+          (Set.range fun candidate : Index =>
+            ⨆ (_ : candidate ∈ subclass),
+              |vdVWWeightedSampleSum classFun weights candidate sample|) :=
+      bddAbove_vdVWWeightedClassSupremum_range_of_valueSet
+        weights sample hbdd
+    exact
+      vdVWWeightedClassSupremum_le_of_pointwiseApproximable_of_bddAbove
+        happrox weights sample hboundedSubclass
+  · have hbddIndex :
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass classFun weights sample) :=
+      bddAbove_vdVWWeightedClassValueSet_of_pointwiseApproximable
+        happrox weights sample hbdd
+    have hboundedIndex :
+        BddAbove
+          (Set.range fun candidate : Index =>
+            ⨆ (_ : candidate ∈ indexClass),
+              |vdVWWeightedSampleSum classFun weights candidate sample|) :=
+      bddAbove_vdVWWeightedClassSupremum_range_of_valueSet
+        weights sample hbddIndex
+    exact
+      vdVWWeightedClassSupremum_le_of_subset_of_bddAbove
+        happrox.subset weights sample hboundedIndex
+
+/--
+Bounded pointwise approximability is a proof-carrying route from the literal
+Example 2.3.4 pointwise approximation hypothesis to equality of all finite
+weighted suprema `(2.3.2)`.
+
+The extra boundedness hypothesis is explicit because the current Lean
+realization uses real-valued conditional suprema.
+-/
+theorem VdVWPointwiseApproximableByCountableSubclass.to_pointwiseSupremumSeparable_of_bddAbove
+    {Observation : Type u} {Index : Type v}
+    {indexClass subclass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    (happrox :
+      VdVWPointwiseApproximableByCountableSubclass
+        indexClass subclass classFun)
+    (hbdd :
+      ∀ (n : ℕ) (weights : Fin n -> ℝ)
+        (sample : Fin n -> Observation),
+        BddAbove (vdVWWeightedClassValueSet subclass classFun weights sample)) :
+    VdVWPointwiseSupremumSeparable indexClass subclass classFun where
+  subset := happrox.subset
+  countable := happrox.countable
+  supremum_eq := by
+    intro n weights sample
+    exact
+      vdVWWeightedClassSupremum_eq_of_pointwiseApproximable_of_bddAbove
+        happrox weights sample (hbdd n weights sample)
 
 /--
 If the weighted supremum over a class is realized by a countable measurable
