@@ -1,5 +1,6 @@
 import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
 import Mathlib.MeasureTheory.Measure.MeasureSpace
+import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
 
 /-!
 # VdV&W outer expectation and measurable-cover primitives
@@ -237,6 +238,54 @@ theorem VdVWOuterExpectation_eventIndicator_eq_measure
         (fun ω hω => by
           have h_majorizes := U.majorizes ω
           simpa [VdVWEventIndicator, hω] using h_majorizes)
+
+/--
+VdV&W inner probability of an arbitrary event.
+
+For probability measures this is the textbook formula
+`1 - P* (eventᶜ)`.  The definition uses `μ univ` rather than `1` so the same
+primitive also applies to finite measures.
+-/
+noncomputable def VdVWInnerProbability {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) (event : Set Ω) : ℝ≥0∞ :=
+  μ Set.univ - μ eventᶜ
+
+/--
+Complement identity behind VdV&W Lemma 1.2.3(i): inner probability plus the
+outer measure of the complement is the total mass.
+-/
+theorem VdVWInnerProbability_add_outerMeasure_compl
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) (event : Set Ω) :
+    VdVWInnerProbability μ event + μ eventᶜ = μ Set.univ := by
+  rw [VdVWInnerProbability]
+  exact tsub_add_cancel_of_le (measure_mono (Set.subset_univ eventᶜ))
+
+/-- Probability-space specialization of the complement identity. -/
+theorem VdVWInnerProbability_add_outerMeasure_compl_eq_one
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (event : Set Ω) :
+    VdVWInnerProbability μ event + μ eventᶜ = 1 := by
+  simpa using VdVWInnerProbability_add_outerMeasure_compl μ event
+
+/--
+On null-measurable events, VdV&W inner probability agrees with the ordinary
+mathlib measure.
+-/
+theorem VdVWInnerProbability_eq_measure_of_nullMeasurable
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    {event : Set Ω} (hevent : NullMeasurableSet event μ) :
+    VdVWInnerProbability μ event = μ event := by
+  rw [VdVWInnerProbability]
+  exact
+    (ENNReal.eq_sub_of_add_eq (measure_ne_top μ eventᶜ)
+      (measure_add_measure_compl₀ hevent)).symm
+
+/-- Measurable-event specialization of the inner-probability identity. -/
+theorem VdVWInnerProbability_eq_measure_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    {event : Set Ω} (hevent : MeasurableSet event) :
+    VdVWInnerProbability μ event = μ event :=
+  VdVWInnerProbability_eq_measure_of_nullMeasurable μ hevent.nullMeasurableSet
 
 /--
 For a finite measure, the measurable hull of an event is a measurable cover of

@@ -125,7 +125,7 @@ quotes; the anchor is the authoritative local source location.
 | --- | --- | --- | --- |
 | 1.2.1 | Lemma | `..._1-100.md:372` | local-layer |
 | 1.2.2 | Lemma | `..._1-100.md:389` | pending-local |
-| 1.2.3 | Lemma | `..._1-100.md:438` | local-layer |
+| 1.2.3 | Lemma | `..._1-100.md:438` | local-layer: outer/inner event probability |
 | 1.2.4 | Lemma | `..._1-100.md:446` | pending-local |
 | 1.2.5 | Lemma | `..._1-100.md:467` | mathlib-foundation |
 | 1.2.6 | Lemma | `..._1-100.md:480` | mathlib-foundation, pending VdV&W outer wrapper |
@@ -282,8 +282,9 @@ quotes; the anchor is the authoritative local source location.
 
 ## Priority Order
 
-1. Finish Chapter 1.2 arbitrary-map outer expectation/inner probability,
-   including exact measurable-cover and Fubini-compatible statements.
+1. Finish Chapter 1.2 arbitrary-map outer expectation/inner probability:
+   lower measurable covers, inner expectation, exact Lemma 1.2.3(iii), and
+   Fubini-compatible statements.
 2. Finish Chapter 1.3-1.10 arbitrary-map weak convergence wrappers by
    bridging to mathlib Portmanteau, Prokhorov, `TendstoInMeasure`, and
    `TendstoInDistribution`.
