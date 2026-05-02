@@ -172,6 +172,66 @@ def VdVWUniformDeviationBadEvent
     ¬ EmpiricalDeviationBoundOn indexClass populationRisk
       (empiricalRisk ω sampleSize) tolerance}
 
+/--
+For a countable index class, fixed-sample bad-event null measurability follows
+from null measurability of the coordinate bad events.
+-/
+theorem vdVWUniformDeviationBadEvent_nullMeasurableSet_of_countable_of_coordinate
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    {μ : Measure Ω} {indexClass : Set Index}
+    {populationRisk : Index -> ℝ}
+    {empiricalRisk : Ω -> ℕ -> Index -> ℝ}
+    {tolerance : ℝ} {sampleSize : ℕ}
+    (h_count : indexClass.Countable)
+    (h_coordinate :
+      ∀ index ∈ indexClass,
+        NullMeasurableSet
+          {ω |
+            tolerance <
+              |empiricalRisk ω sampleSize index - populationRisk index|} μ) :
+    NullMeasurableSet
+      (VdVWUniformDeviationBadEvent indexClass populationRisk
+        empiricalRisk tolerance sampleSize) μ := by
+  have hbad_eq :
+      VdVWUniformDeviationBadEvent indexClass populationRisk
+        empiricalRisk tolerance sampleSize =
+        ⋃ index ∈ indexClass,
+          {ω |
+            tolerance <
+              |empiricalRisk ω sampleSize index - populationRisk index|} := by
+    ext ω
+    simp [VdVWUniformDeviationBadEvent, EmpiricalDeviationBoundOn,
+      not_forall, Classical.not_imp, not_le]
+  rw [hbad_eq]
+  exact NullMeasurableSet.biUnion h_count h_coordinate
+
+/--
+For a countable index class, coordinate a.e.-measurability implies fixed-sample
+bad-event null measurability.
+-/
+theorem vdVWUniformDeviationBadEvent_nullMeasurableSet_of_countable_of_aemeasurable_coordinate
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    {μ : Measure Ω} {indexClass : Set Index}
+    {populationRisk : Index -> ℝ}
+    {empiricalRisk : Ω -> ℕ -> Index -> ℝ}
+    {tolerance : ℝ} {sampleSize : ℕ}
+    (h_count : indexClass.Countable)
+    (h_coordinate :
+      ∀ index ∈ indexClass,
+        AEMeasurable
+          (fun ω =>
+            |empiricalRisk ω sampleSize index - populationRisk index|) μ) :
+    NullMeasurableSet
+      (VdVWUniformDeviationBadEvent indexClass populationRisk
+        empiricalRisk tolerance sampleSize) μ := by
+  apply
+    vdVWUniformDeviationBadEvent_nullMeasurableSet_of_countable_of_coordinate
+      (h_count := h_count)
+  intro index hindex
+  simpa using
+    (h_coordinate index hindex).nullMeasurableSet_preimage
+      (measurableSet_Ioi : MeasurableSet (Set.Ioi tolerance))
+
 /-- Event that some bad uniform-deviation sample size occurs after `start`. -/
 def VdVWUniformDeviationBadTailEvent
     {Ω : Type u} {Index : Type v} (indexClass : Set Index)
@@ -430,6 +490,35 @@ theorem vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_
       h_bad_null)
 
 /--
+For a countable class, coordinate a.e.-measurability is enough to use the
+finite-measure direct outer-probability bridge.
+-/
+theorem vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_coordinate
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {indexClass : Set Index}
+    {populationRisk : Index -> ℝ}
+    {empiricalRisk : Ω -> ℕ -> Index -> ℝ}
+    (h_outer_as :
+      VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ indexClass
+        populationRisk empiricalRisk)
+    (h_count : indexClass.Countable)
+    (h_coordinate :
+      ∀ sampleSize index, index ∈ indexClass ->
+        AEMeasurable
+          (fun ω =>
+            |empiricalRisk ω sampleSize index - populationRisk index|) μ) :
+    VdVWOuterProbabilityUniformDeviationTendstoZeroOn μ indexClass
+      populationRisk empiricalRisk :=
+  vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_isFiniteMeasure_of_nullMeasurable_badEvent
+    h_outer_as
+    (by
+      intro _tolerance _htolerance sampleSize
+      exact
+        vdVWUniformDeviationBadEvent_nullMeasurableSet_of_countable_of_aemeasurable_coordinate
+          (h_count := h_count)
+          (fun index hindex => h_coordinate sampleSize index hindex))
+
+/--
 The local a.s. pathwise convergence predicate implies the explicit
 outer-almost-sure VdV&W predicate.
 -/
@@ -637,6 +726,35 @@ theorem vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_nullMeasurable_ba
     (vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top
       X hLaw hindep h_bracketing)
     h_bad_null
+
+/--
+VdV&W Theorem 2.4.1 in the direct outer-probability convergence mode for a
+countable index class with coordinate a.e.-measurable empirical deviations.
+-/
+theorem vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_coordinate
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (X : ℕ -> Ω -> Observation)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
+    (h_bracketing :
+      ∀ epsilon, 0 < epsilon ->
+        l1BracketingNumber P indexClass classFun epsilon < ⊤)
+    (h_count : indexClass.Countable)
+    (h_coordinate :
+      ∀ sampleSize index, index ∈ indexClass ->
+        AEMeasurable
+          (fun ω =>
+            |empiricalAverage (samplePath X ω sampleSize) (classFun index) -
+              populationRiskOfFunction P (classFun index)|) μ) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass μ P indexClass classFun X :=
+  vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_coordinate
+    (vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top
+      X hLaw hindep h_bracketing)
+    h_count
+    h_coordinate
 
 /--
 VdV&W Theorem 2.4.1 in the book-style `P`-Glivenko-Cantelli predicate.

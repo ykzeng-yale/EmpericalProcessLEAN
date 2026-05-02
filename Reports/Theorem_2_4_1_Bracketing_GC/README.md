@@ -46,6 +46,8 @@ compatibility work.
 | `VdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn`, `vdVWOuterProbabilityUniformDeviationTailTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | conditional route from outer-a.s. convergence to direct outer-probability convergence under tail-continuity |
 | `vdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn_of_isFiniteMeasure_of_nullMeasurable_badEvent`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_isFiniteMeasure_of_nullMeasurable_badEvent` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | derives the direct outer-probability branch from outer-a.s. convergence under finite-measure and fixed-bad-event null-measurability assumptions |
 | `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_nullMeasurable_badEvent` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | Theorem 2.4.1 in the direct outer-probability mode under the null-measurable bad-event bridge |
+| `vdVWUniformDeviationBadEvent_nullMeasurableSet_of_countable_of_coordinate`, `vdVWUniformDeviationBadEvent_nullMeasurableSet_of_countable_of_aemeasurable_coordinate` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | derives fixed bad-event null measurability from countable-index coordinate measurability |
+| `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_coordinate`, `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_coordinate` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | direct outer-probability Theorem 2.4.1 for countable classes with coordinate a.e.-measurable deviations |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | Theorem 2.4.1 packaged into the book-style GC predicate through the outer-a.s. branch |
 
 Detailed side-by-side audit table:
@@ -101,12 +103,16 @@ The proved Lean code currently supplies:
     measure gives the needed tail-continuity condition by mathlib continuity
     from above;
 18. a direct outer-probability version of Theorem 2.4.1 under that
-    null-measurable bad-event bridge.
+    null-measurable bad-event bridge;
+19. a countable-class bridge deriving fixed bad-event null measurability from
+    coordinate a.e.-measurability;
+20. a direct outer-probability version of Theorem 2.4.1 for countable classes
+    with coordinate a.e.-measurable empirical deviations.
 
 The remaining compatibility layers are not needed for the outer-a.s. proof of
 Theorem 2.4.1, but they are needed for broader Chapter 1 coverage:
 
-1. deriving fixed bad-event null measurability from concrete measurability
+1. deriving coordinate a.e.-measurability from concrete measurability
    assumptions on the empirical process and function class;
 2. VdV&W measurable covers, outer expectation, and arbitrary-map convergence
    infrastructure for full textbook-order formalization.

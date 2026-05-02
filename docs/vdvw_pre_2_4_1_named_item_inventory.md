@@ -109,6 +109,8 @@ Current promoted declarations toward Theorem 2.4.1:
 | `VdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn`, `vdVWOuterProbabilityUniformDeviationTailTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup` | proved conditional tail-continuity route from outer-a.s. convergence to direct outer-probability convergence |
 | `vdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn_of_isFiniteMeasure_of_nullMeasurable_badEvent`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_isFiniteMeasure_of_nullMeasurable_badEvent` | proved finite-measure/null-measurable bridge from outer-a.s. convergence to direct outer-probability convergence |
 | `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_nullMeasurable_badEvent` | proved direct outer-probability Theorem 2.4.1 under fixed bad-event null-measurability |
+| `vdVWUniformDeviationBadEvent_nullMeasurableSet_of_countable_of_coordinate`, `vdVWUniformDeviationBadEvent_nullMeasurableSet_of_countable_of_aemeasurable_coordinate` | proved countable-class bridge from coordinate measurability to fixed bad-event null measurability |
+| `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_coordinate`, `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_coordinate` | proved direct outer-probability Theorem 2.4.1 for countable classes with coordinate a.e.-measurable deviations |
 | `VdVWPGlivenkoCantelliClass` | proved/compiled book-style GC predicate with outer-probability or outer-a.s. branches |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | proved VdV&W Theorem 2.4.1 into the book-style GC predicate |
 
