@@ -33,8 +33,8 @@ This repository is intentionally limited to:
 - Lean library files for empirical process formalization and the minimal local
   support lemmas imported by that formalization.
 - Local-source manifests for the VdV&W markdown/PDF/screenshot materials.
-- Theorem proof reports that cross-check Lean declarations against textbook
-  markdown and PDF screenshots.
+- Theorem proof reports that cross-check fully proved textbook theorem/lemma
+  declarations against textbook markdown and PDF screenshots.
 - Build files for a reproducible Lean/mathlib environment.
 
 This repository intentionally excludes:
@@ -125,8 +125,10 @@ The local inventory currently tracks 7993 pinned mathlib Lean files, including
 
 ## Source Audit Policy
 
-Every promoted theorem or theorem layer must have a report under `Reports/`.
-Each report should include:
+Every exact textbook theorem or lemma that is fully proved in Lean must have a
+report under `Reports/`.  Intermediate proof layers and compatibility wrappers
+are tracked in `docs/` or the active blueprint until the exact textbook item is
+complete.  Each report should include:
 
 1. Lean declaration name, file path, and proof status.
 2. Every new definition, lemma, structure, or theorem introduced for that
@@ -134,8 +136,7 @@ Each report should include:
 3. Local markdown source path and line range from the textbook extraction.
 4. Local PDF source path and local screenshot path for the corresponding
    textbook passage.
-5. A gap note saying whether the Lean declaration is the exact textbook theorem
-   or a proved layer toward it.
+5. A gap note saying what broader textbook-order compatibility work remains.
 
 The source material is local-only:
 
@@ -258,7 +259,7 @@ remaining gap is comprehensive Chapter 1-2 coverage:
 3. Chapter 2 covering/packing, Orlicz, symmetrization, measurable-class,
    entropy, VC, Donsker, multiplier, bracketing CLT, and maximal-inequality
    theorems;
-4. one source-audited report per promoted theorem or theorem layer.
+4. one source-audited report per fully proved exact textbook theorem or lemma.
 
 The active blueprint for this is
 `docs/vdvw_chapter1_2_formalization_blueprint.md`.
@@ -304,8 +305,9 @@ Downstream estimator, semiparametric, or causal applications are intentionally
 out of the current public Lean tree until the empirical-process backbone is
 strong enough to support them cleanly.
 
-Each stage should produce Lean declarations plus theorem reports.  A theorem is
-only "promoted" when it compiles, is free of proof holes, and has a source
+Each stage should produce Lean declarations.  Theorem reports are created only
+when an exact textbook theorem or lemma is complete.  A theorem is only
+"promoted" when it compiles, is free of proof holes, and has a source
 crosswalk.
 
 ## Promotion Gate
@@ -317,8 +319,8 @@ A theorem or lemma is promoted only if:
 - introduced assumptions are explicit and non-vacuous where possible;
 - the theorem is linked to a markdown/PDF source anchor when it is textbook
   derived;
-- the report distinguishes exact textbook formalization from intermediate
-  formal proof layers.
+- intermediate theorem layers are recorded in status docs until absorbed into
+  an exact theorem/lemma report.
 
 ## Verification
 

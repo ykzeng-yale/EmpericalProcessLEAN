@@ -1,6 +1,7 @@
 import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
 import Mathlib.MeasureTheory.Measure.MeasureSpace
 import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
+import Mathlib.MeasureTheory.Order.Lattice
 
 /-!
 # VdV&W outer expectation and measurable-cover primitives
@@ -123,6 +124,32 @@ def ofMeasurable {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
   majorizes := fun _ => le_rfl
   minimal_ae := fun _ _ h_majorizes => h_majorizes
 
+/--
+Supremum algebra for nonnegative measurable covers.
+
+This is the nonnegative cover-interface counterpart of the VdV&W Lemma 1.2.2
+identity `(S ∨ T)* = S* ∨ T*`.
+-/
+def sup {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (US : VdVWMeasurableCover μ S)
+    (UT : VdVWMeasurableCover μ T) :
+    VdVWMeasurableCover μ (fun ω => S ω ⊔ T ω) where
+  toFun := fun ω => US ω ⊔ UT ω
+  measurable_toFun := US.measurable_toFun.sup UT.measurable_toFun
+  majorizes := fun ω => sup_le_sup (US.majorizes ω) (UT.majorizes ω)
+  minimal_ae := by
+    intro U hU h_majorizes
+    have hS : ∀ᵐ ω ∂μ, S ω ≤ U ω :=
+      h_majorizes.mono fun _ hω => le_trans le_sup_left hω
+    have hT : ∀ᵐ ω ∂μ, T ω ≤ U ω :=
+      h_majorizes.mono fun _ hω => le_trans le_sup_right hω
+    have hUS : ∀ᵐ ω ∂μ, US ω ≤ U ω :=
+      US.minimal_ae U hU hS
+    have hUT : ∀ᵐ ω ∂μ, UT ω ≤ U ω :=
+      UT.minimal_ae U hU hT
+    filter_upwards [hUS, hUT] with ω hUSω hUTω
+    exact sup_le hUSω hUTω
+
 end VdVWMeasurableCover
 
 /--
@@ -155,6 +182,19 @@ theorem VdVWOuterExpectation_eq_lintegral_of_cover_ofMeasurable
       ∫⁻ ω, (VdVWMeasurableCover.ofMeasurable μ hT : Ω -> ℝ≥0∞) ω ∂μ :=
   VdVWOuterExpectation_eq_lintegral_cover
     (VdVWMeasurableCover.ofMeasurable μ hT)
+
+/--
+The supremum cover realizes the nonnegative outer expectation of a pointwise
+supremum.
+-/
+theorem VdVWOuterExpectation_eq_lintegral_sup_cover
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (US : VdVWMeasurableCover μ S)
+    (UT : VdVWMeasurableCover μ T) :
+    VdVWOuterExpectation μ (fun ω => S ω ⊔ T ω) =
+      ∫⁻ ω, US ω ⊔ UT ω ∂μ :=
+  VdVWOuterExpectation_eq_lintegral_cover
+    (VdVWMeasurableCover.sup US UT)
 
 /-- Nonnegative indicator of an arbitrary event. -/
 noncomputable def VdVWEventIndicator {Ω : Type u} (event : Set Ω) : Ω -> ℝ≥0∞ :=

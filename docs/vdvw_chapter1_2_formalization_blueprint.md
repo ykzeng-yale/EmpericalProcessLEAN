@@ -88,8 +88,10 @@ Therefore the status convention is:
 
 ## Report Contract For Every Promoted Theorem
 
-Every theorem-level item must have exactly one theorem report folder once it
-is promoted as exact or as an intentionally scoped theorem layer.
+Every theorem-level item must have exactly one theorem report folder once its
+exact textbook statement is fully formalized in Lean.  Intermediate proof
+layers and intentionally scoped compatibility wrappers should update this
+blueprint or another status document, not `Reports/`.
 
 Recommended folder naming:
 
@@ -101,7 +103,7 @@ Each folder must contain:
 
 | File | Required content |
 | --- | --- |
-| `README.md` | theorem status, exact/layer classification, verification command |
+| `README.md` | theorem status, exact-statement classification, verification command |
 | `crosswalk.md` | Lean realization vs markdown anchor vs PDF screenshot anchor |
 | `definition_lemma_crosscheck.md` | every new local definition/lemma/structure/theorem introduced beyond mathlib |
 
@@ -124,7 +126,7 @@ quotes; the anchor is the authoritative local source location.
 | Item | Kind | Anchor | Current audit status |
 | --- | --- | --- | --- |
 | 1.2.1 | Lemma | `..._1-100.md:372` | local-layer |
-| 1.2.2 | Lemma | `..._1-100.md:389` | pending-local |
+| 1.2.2 | Lemma | `..._1-100.md:389` | local-layer: nonnegative sup-cover algebra |
 | 1.2.3 | Lemma | `..._1-100.md:438` | local-layer: outer/inner event probability |
 | 1.2.4 | Lemma | `..._1-100.md:446` | pending-local |
 | 1.2.5 | Lemma | `..._1-100.md:467` | mathlib-foundation |
@@ -305,9 +307,10 @@ Every heartbeat or continuation run for this blueprint should:
 1. inspect git status, recent declarations, reports, and this blueprint;
 2. identify the next pending item by priority, not only by file locality;
 3. search pinned mathlib before introducing a primitive;
-4. implement one concrete Lean proof/report step or document a precise blocker;
+4. implement one concrete Lean proof step or document a precise blocker;
 5. run the smallest relevant `lake env lean ...` check after Lean edits;
 6. run `lake build` after substantive promoted theorem edits;
 7. scan tracked Lean sources for `sorry`, `admit`, `axiom`, and `unsafe`;
-8. update or create exactly one theorem report when a theorem layer is promoted;
+8. create or update a theorem report only when an exact textbook theorem or
+   lemma is fully proved; otherwise update blueprint/status docs only;
 9. keep textbook assets and credentials local-only.
