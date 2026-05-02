@@ -41,4 +41,23 @@ theorem VdVWOuterAlmostSure_iff_outerExpectation_exceptional_eq_zero
   rw [VdVWOuterAlmostSure,
     VdVWOuterProbability_eq_outerExpectation_eventIndicator]
 
+/--
+Markov-style outer-probability bound using a supplied measurable cover.
+
+This is a Chapter 1.2 bridge from the VdV&W outer-probability notation to the
+nonnegative outer-expectation/measurable-cover layer.
+-/
+theorem VdVWOuterProbability_lt_le_outerExpectation_div_cover
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (U : VdVWMeasurableCover μ T)
+    {epsilon : ℝ≥0∞} (hepsilon_ne_zero : epsilon ≠ 0)
+    (hepsilon_ne_top : epsilon ≠ ∞) :
+    VdVWOuterProbability μ {ω | epsilon < T ω} ≤
+      VdVWOuterExpectation μ T / epsilon := by
+  rw [VdVWOuterProbability, VdVWOuterExpectation_eq_lintegral_cover U]
+  exact
+    (measure_mono fun ω hω => (le_of_lt hω).trans (U.majorizes ω)).trans
+      (meas_ge_le_lintegral_div U.measurable_toFun.aemeasurable
+        hepsilon_ne_zero hepsilon_ne_top)
+
 end StatInference

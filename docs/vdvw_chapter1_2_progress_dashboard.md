@@ -26,18 +26,20 @@ docs/vdvw_current_blocker_primitive_plan.md
 
 ## Global Theorem-Level Inventory
 
-The Chapter 1-2 theorem-level extraction currently has 156 items.
+The Chapter 1-2 theorem-level extraction currently has 157 items after the
+Chapter 1 re-audit restored the missing Theorem 1.10.4 inventory row.
 
 ```text
-local-exact       1 / 156  [#-----------------------------]
-local-layer       8 / 156  [#-----------------------------]
-mathlib-found.   21 / 156  [####--------------------------]
-pending-local   126 / 156  [########################------]
+local-exact       1 / 157  [#-----------------------------]
+local-layer       8 / 157  [#-----------------------------]
+mathlib-found.   11 / 157  [##----------------------------]
+deferred-ch1     37 / 157  [#######-----------------------]
+pending-local   104 / 157  [####################----------]
 ```
 
-The bars are inventory bars, not effort estimates.  A `pending-local` item may
-be deferred if it is broad Chapter 1 infrastructure rather than a dependency of
-the current empirical-process target.
+The bars are inventory tags, not effort estimates.  Some deferred rows also
+record mathlib foundations, and a row is promoted out of `deferred` only when a
+concrete theorem target needs its exact VdV&W statement.
 
 Examples/addenda are tracked separately from this theorem-level inventory and
 are no longer a main-line blocker.  The existing Example 2.3.4 and Example
@@ -94,9 +96,9 @@ outer-a.s./outer-probability GC wrappers.
 
 | Textbook area | Current local Lean layer | Remaining gap before exact textbook item |
 | --- | --- | --- |
-| Lemma 1.2.1 | Nonnegative outer/inner expectation and measurable-cover interfaces | Full extended-real measurable-cover existence theorem. |
-| Lemma 1.2.2 | Nonnegative cover algebra: sup, add majorant, product majorant, two-sided constant addition equality, finite-measurable addition equality, threshold indicators, two-sided measurable infimum equality | Full signed extended-real clauses, subtraction, absolute value, and stronger addition/product equality cases. |
-| Lemma 1.2.3 | Nonnegative event indicator bridges for outer/inner probability, explicit measurable event-cover existence, arbitrary measurable set covers with integral equality, direct `toMeasurable` hull integral equality, complement-set-cover lower covers, direct complement-cover inner-probability equalities, outer-probability/outer-expectation bridge, and two-sided complement identities | Remaining extended-real and full measurable-set-cover clauses. |
+| Lemma 1.2.1 | Nonnegative outer/inner expectation and measurable-cover interfaces, plus monotonicity of nonnegative outer and inner expectation | Full extended-real measurable-cover existence theorem. |
+| Lemma 1.2.2 | Nonnegative cover algebra: sup, add majorant, product majorant, two-sided constant addition equality, finite-measurable addition equality, threshold indicators, tail-product cover-majorant for envelope-tail terms, two-sided measurable infimum equality | Full signed extended-real clauses, subtraction, absolute value, and stronger addition/product equality cases. |
+| Lemma 1.2.3 | Nonnegative event indicator bridges for outer/inner probability, event-indicator monotonicity, explicit measurable event-cover existence, arbitrary measurable set covers with integral equality, direct `toMeasurable` hull integral equality, complement-set-cover lower covers, direct complement-cover inner-probability equalities, outer-probability/outer-expectation bridge, Markov-style outer-probability bound via supplied measurable cover, and two-sided complement identities | Remaining extended-real and full measurable-set-cover clauses. |
 | Definition 1.10.1 | Outer-probability convergence primitives and common-domain `TendstoInMeasure` bridge | Broader arbitrary-map API. |
 | Lemma 1.10.2 | Measurable common-domain weak-convergence bridge | Full VdV&W arbitrary-map/measurable-cover version. |
 | Definition 2.1.5 / Theorem 2.4.3 setup | `vdVWCoveringNumber` wrapper over mathlib `Metric.externalCoveringNumber`, explicit finite closed-ball cover witnesses, finite-number handoff, monotonicity, packing comparison wrappers, deterministic empirical `L1(P_n)` distance/finite-covering-number interface, random sample-path empirical covering-number wrapper, outer-probability `o_P^*(n)` entropy condition, `F_M` truncated-class/envelope interface, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, and deterministic Rademacher-sign specialization for Theorem 2.4.3 | Iid Rademacher construction, full Orlicz/Hoeffding proof of the finite-center maximal bound, symmetrization/truncation, envelope-tail, and final convergence handoffs remain pending before the exact textbook theorem. |

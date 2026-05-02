@@ -19,11 +19,12 @@ Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1
 Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_201-300.md
 ```
 
-The Chapter 1-2 extraction contains 226 named items:
+The Chapter 1-2 extraction contains 227 named items after the Chapter 1
+re-audit restored the missing Theorem 1.10.4 inventory row:
 
 | Bucket | Count |
 | --- | ---: |
-| theorem-level items: lemmas, theorems, propositions, corollaries | 156 |
+| theorem-level items: lemmas, theorems, propositions, corollaries | 157 |
 | definitions | 8 |
 | examples and addenda | 62 |
 
@@ -57,6 +58,13 @@ When a deferred Chapter 1 item is needed, it should be promoted with the same
 standard as every other theorem: exact Lean statement, no proof holes, local
 mathlib search first, and one theorem report only after the exact theorem or
 lemma is fully proved.
+
+Later-dependent Chapter 1 overview results may be marked as deferred, and
+temporary `sorry` sketches may be used only as uncommitted planning artifacts.
+Tracked/promoted Lean progress should remain proof-hole-free.  Self-contained
+Chapter 1 building blocks for outer probability, measurable covers,
+measurability, and empirical-process bounds should be formalized and proved
+locally when they unblock Chapter 2 theorem work.
 
 Examples and addenda should be formalized only when they directly support the
 Chapter 1-2 empirical-process theorem line.  After the existing Example 2.3.4
@@ -121,6 +129,8 @@ Therefore the status convention is:
 | `local-layer` | compiled local theorem layer exists, but the exact textbook theorem still has pending compatibility primitives |
 | `mathlib-foundation` | mathlib has major reusable foundations, but not the exact VdV&W theorem |
 | `pending-local` | no exact local proof yet; build local primitives and proof |
+| `deferred` | audited, but not a near-term blocker unless a concrete theorem target depends on it |
+| `deferred-example` | example/addendum intentionally skipped for now because it needs domain-heavy external formalization |
 
 ## Definitions To Track As Primitive Dependencies
 
@@ -174,53 +184,54 @@ quotes; the anchor is the authoritative local source location.
 
 | Item | Kind | Anchor | Current audit status |
 | --- | --- | --- | --- |
-| 1.2.1 | Lemma | `..._1-100.md:372` | local-layer: nonnegative outer/inner expectation and cover interfaces |
-| 1.2.2 | Lemma | `..._1-100.md:389` | local-layer: nonnegative sup/add/inf/product, two-sided constant addition equality, finite-measurable addition equality, threshold-indicator, and two-sided measurable infimum equality cover algebra |
-| 1.2.3 | Lemma | `..._1-100.md:438` | local-layer: outer/inner event probability, explicit measurable event-cover existence, arbitrary measurable set cover to event-indicator cover with integral equality, direct `toMeasurable` hull integral equality, complement-set-cover lower cover, direct complement-cover inner-probability equalities, outer-probability/outer-expectation bridge, inner-expectation indicator equality, and two-sided complement identities |
-| 1.2.4 | Lemma | `..._1-100.md:446` | pending-local |
-| 1.2.5 | Lemma | `..._1-100.md:467` | mathlib-foundation |
-| 1.2.6 | Lemma | `..._1-100.md:480` | mathlib-foundation, pending VdV&W outer wrapper |
-| 1.2.7 | Lemma | `..._1-100.md:492` | mathlib-foundation, pending VdV&W outer wrapper |
-| 1.3.1 | Lemma | `..._1-100.md:575` | mathlib-foundation |
-| 1.3.2 | Lemma | `..._1-100.md:582` | mathlib-foundation |
-| 1.3.4 | Theorem | `..._1-100.md:606` | mathlib-foundation, pending arbitrary-map wrapper |
-| 1.3.6 | Theorem | `..._1-100.md:650` | mathlib-foundation, pending arbitrary-map wrapper |
-| 1.3.8 | Lemma | `..._1-100.md:678` | pending-local |
-| 1.3.9 | Theorem | `..._1-100.md:688` | mathlib-foundation, pending arbitrary-map wrapper |
-| 1.3.10 | Theorem | `..._1-100.md:756` | pending-local |
-| 1.3.12 | Lemma | `..._1-100.md:768` | mathlib-foundation |
-| 1.3.13 | Lemma | `..._1-100.md:778` | pending-local |
-| 1.4.1 | Lemma | `..._1-100.md:848` | mathlib-foundation |
-| 1.4.2 | Lemma | `..._1-100.md:849` | mathlib-foundation, pending local wrapper |
-| 1.4.3 | Lemma | `..._1-100.md:857` | pending-local |
-| 1.4.4 | Lemma | `..._1-100.md:858` | pending-local |
-| 1.4.5 | Corollary | `..._1-100.md:878` | pending-local |
-| 1.4.8 | Theorem | `..._1-100.md:910` | pending-local |
-| 1.5.2 | Lemma | `..._1-100.md:932` | pending-local |
-| 1.5.3 | Lemma | `..._1-100.md:933` | pending-local |
-| 1.5.4 | Theorem | `..._1-100.md:934` | pending-local |
-| 1.5.6 | Theorem | `..._1-100.md:958` | pending-local |
-| 1.5.7 | Theorem | `..._1-100.md:987` | pending-local |
-| 1.5.9 | Lemma | `..._1-100.md:1044` | pending-local |
-| 1.6.1 | Theorem | `..._1-100.md:1117` | pending-local |
-| 1.7.1 | Lemma | `..._1-100.md:1156` | pending-local |
-| 1.7.2 | Theorem | `..._1-100.md:1157` | pending-local |
-| 1.8.1 | Lemma | `..._1-100.md:1234` | mathlib-foundation, pending VdV&W wrapper |
-| 1.8.2 | Lemma | `..._1-100.md:1245` | pending-local |
-| 1.8.3 | Lemma | `..._1-100.md:1246` | mathlib-foundation, pending local wrapper |
-| 1.8.4 | Theorem | `..._1-100.md:1247` | mathlib-foundation, pending local wrapper |
-| 1.9.2 | Lemma | `..._1-100.md:1304` | local-layer |
-| 1.9.3 | Lemma | `..._1-100.md:1308` | local-layer |
-| 1.9.5 | Theorem | `..._1-100.md:1328` | mathlib-foundation, pending VdV&W wrapper |
+| 1.2.1 | Lemma | `..._1-100.md:372` | local-layer: nonnegative outer/inner expectation and cover interfaces, including monotonicity of outer and inner expectation |
+| 1.2.2 | Lemma | `..._1-100.md:389` | local-layer: nonnegative sup/add/inf/product, two-sided constant addition equality, finite-measurable addition equality, threshold-indicator, tail-product cover-majorant, and two-sided measurable infimum equality cover algebra |
+| 1.2.3 | Lemma | `..._1-100.md:438` | local-layer: outer/inner event probability, event-indicator monotonicity, explicit measurable event-cover existence, arbitrary measurable set cover to event-indicator cover with integral equality, direct `toMeasurable` hull integral equality, complement-set-cover lower cover, direct complement-cover inner-probability equalities, outer-probability/outer-expectation bridge, Markov-style outer-probability bound via supplied measurable cover, inner-expectation indicator equality, and two-sided complement identities |
+| 1.2.4 | Lemma | `..._1-100.md:446` | pending-local; self-contained dominated-cover infrastructure, promote after the active 1.2.1-1.2.3 layers |
+| 1.2.5 | Lemma | `..._1-100.md:467` | deferred; mathlib-foundation/perfect-map product-space roadmap, promote only if representation/perfect-map machinery becomes active |
+| 1.2.6 | Lemma | `..._1-100.md:480` | promote-soon; mathlib Fubini foundation exists, pending VdV&W outer wrapper for Chapter 2.3/2.4.3 symmetrization |
+| 1.2.7 | Lemma | `..._1-100.md:492` | promote-soon; mathlib Fubini foundation exists, pending VdV&W outer wrapper for product outer expectations |
+| 1.3.1 | Lemma | `..._1-100.md:575` | deferred; classical topology/measure foundation available in mathlib, wrap only when consumed |
+| 1.3.2 | Lemma | `..._1-100.md:582` | deferred; classical topology/measure foundation available in mathlib, wrap only when consumed |
+| 1.3.4 | Theorem | `..._1-100.md:606` | deferred; mathlib has weak-convergence foundations, exact arbitrary-map wrapper not active |
+| 1.3.6 | Theorem | `..._1-100.md:650` | deferred; mathlib has continuous-mapping/weak-convergence foundations, exact arbitrary-map wrapper not active |
+| 1.3.8 | Lemma | `..._1-100.md:678` | deferred; broad Hoffmann-Jørgensen arbitrary-map weak-convergence infrastructure |
+| 1.3.9 | Theorem | `..._1-100.md:688` | deferred; mathlib Portmanteau/Prokhorov foundations available, exact arbitrary-map wrapper not active |
+| 1.3.10 | Theorem | `..._1-100.md:756` | deferred; broad arbitrary-map weak-convergence infrastructure |
+| 1.3.12 | Lemma | `..._1-100.md:768` | deferred; classical foundation available in mathlib, wrap only when consumed |
+| 1.3.13 | Lemma | `..._1-100.md:778` | deferred; broad arbitrary-map weak-convergence infrastructure |
+| 1.4.1 | Lemma | `..._1-100.md:848` | deferred; product weak-convergence foundation, wrap only for an active joint-convergence target |
+| 1.4.2 | Lemma | `..._1-100.md:849` | deferred; mathlib-foundation, pending local wrapper only if product weak convergence becomes active |
+| 1.4.3 | Lemma | `..._1-100.md:857` | deferred; product weak-convergence roadmap |
+| 1.4.4 | Lemma | `..._1-100.md:858` | deferred; product weak-convergence roadmap |
+| 1.4.5 | Corollary | `..._1-100.md:878` | deferred; Slutsky/product-space roadmap |
+| 1.4.8 | Theorem | `..._1-100.md:910` | deferred; asymptotic independence/product-space roadmap |
+| 1.5.2 | Lemma | `..._1-100.md:932` | deferred; `l_infty(T)`/Donsker tightness roadmap |
+| 1.5.3 | Lemma | `..._1-100.md:933` | deferred; `l_infty(T)`/Donsker tightness roadmap |
+| 1.5.4 | Theorem | `..._1-100.md:934` | deferred; tightness roadmap, promote around Donsker/pre-Gaussian work |
+| 1.5.6 | Theorem | `..._1-100.md:958` | deferred; tightness roadmap, promote around Donsker/pre-Gaussian work |
+| 1.5.7 | Theorem | `..._1-100.md:987` | deferred; tightness roadmap, promote around Donsker/pre-Gaussian work |
+| 1.5.9 | Lemma | `..._1-100.md:1044` | deferred; tightness/equicontinuity roadmap |
+| 1.6.1 | Theorem | `..._1-100.md:1117` | deferred; stochastic-process tightness roadmap |
+| 1.7.1 | Lemma | `..._1-100.md:1156` | deferred; ball sigma-field/measurability roadmap |
+| 1.7.2 | Theorem | `..._1-100.md:1157` | deferred; ball sigma-field/measurability roadmap, harvest only predicates needed for `P`-measurable classes |
+| 1.8.1 | Lemma | `..._1-100.md:1234` | deferred; Hilbert-space foundation, promote for Hilbert CLT targets |
+| 1.8.2 | Lemma | `..._1-100.md:1245` | deferred; Hilbert-space special theory |
+| 1.8.3 | Lemma | `..._1-100.md:1246` | deferred; mathlib-foundation, promote for Hilbert-space weak-convergence targets |
+| 1.8.4 | Theorem | `..._1-100.md:1247` | deferred; mathlib-foundation, promote for Hilbert-space weak-convergence targets |
+| 1.9.2 | Lemma | `..._1-100.md:1304` | local-layer; scoped convergence-mode building block |
+| 1.9.3 | Lemma | `..._1-100.md:1308` | local-layer; scoped convergence-mode building block |
+| 1.9.5 | Theorem | `..._1-100.md:1328` | mathlib-foundation, pending scoped VdV&W wrapper when active |
 | 1.9.6 | Theorem | `..._1-100.md:1354` | local-layer |
 | 1.10.2 | Lemma | `..._1-100.md:1409` | local-layer for measurable common-domain part |
-| 1.10.3 | Theorem | `..._1-100.md:1420` | pending-local |
-| 1.10.12 | Proposition | `..._1-100.md:1554` | pending-local |
-| 1.11.1 | Theorem | `..._1-100.md:1630` | mathlib-foundation, pending VdV&W wrapper |
-| 1.11.3 | Theorem | `..._1-100.md:1674` | pending-local |
-| 1.12.1 | Theorem | `..._1-100.md:1706` | pending-local |
-| 1.12.2 | Theorem | `..._1-100.md:1718` | pending-local |
-| 1.12.4 | Theorem | `..._1-100.md:1751` | mathlib-foundation, pending local wrapper |
+| 1.10.3 | Theorem | `..._1-100.md:1420` | deferred; almost-sure representation theorem, promote only for representation route |
+| 1.10.4 | Theorem | `..._1-100.md:1434` | deferred; nonmeasurable almost-sure representation theorem, newly audited missing inventory row |
+| 1.10.12 | Proposition | `..._1-100.md:1554` | deferred; Borel measurable approximants/representation roadmap |
+| 1.11.1 | Theorem | `..._1-100.md:1630` | deferred; mathlib-foundation, extended continuous-mapping wrapper only when active |
+| 1.11.3 | Theorem | `..._1-100.md:1674` | deferred; refined mapping and integrability roadmap |
+| 1.12.1 | Theorem | `..._1-100.md:1706` | deferred; uniformity over bounded equicontinuous test classes |
+| 1.12.2 | Theorem | `..._1-100.md:1718` | deferred; bounded-Lipschitz determining-class roadmap |
+| 1.12.4 | Theorem | `..._1-100.md:1751` | deferred; mathlib-foundation, bounded-Lipschitz metric wrapper only when active |
 | 2.1.11 | Proposition | `..._101-200.md:169` | pending-local |
 | 2.2.1 | Lemma | `..._101-200.md:229` | pending-local |
 | 2.2.2 | Lemma | `..._101-200.md:246` | pending-local |
@@ -333,7 +344,7 @@ quotes; the anchor is the authoritative local source location.
 
 ## Examples And Addenda Frontier
 
-Examples and addenda are tracked separately from the 156 theorem-level items
+Examples and addenda are tracked separately from the 157 theorem-level items
 above, so they do not change the theorem-level dashboard counts.
 
 | Item | Kind | Anchor | Current audit status |
@@ -346,9 +357,10 @@ above, so they do not change the theorem-level dashboard counts.
 1. Finish Chapter 1.2 arbitrary-map outer expectation/inner probability:
    extended-real compatibility, remaining exact Lemma 1.2.3 clauses beyond
    the nonnegative indicator equality, and Fubini-compatible statements.
-2. Finish Chapter 1.3-1.10 arbitrary-map weak convergence wrappers by
-   bridging to mathlib Portmanteau, Prokhorov, `TendstoInMeasure`, and
-   `TendstoInDistribution`.
+2. Promote Chapter 1.3-1.10 arbitrary-map weak-convergence wrappers only when
+   demanded by an active theorem target; otherwise keep broad wrappers
+   deferred while recording reusable mathlib foundations such as Portmanteau,
+   Prokhorov, `TendstoInMeasure`, and `TendstoInDistribution`.
 3. Promote Chapter 2 primitive infrastructure: covering/packing semimetric
    numbers, `P`-measurable classes, Orlicz norms, and separability wrappers.
    Definition 2.1.5 now has a local covering-number primitive layer,

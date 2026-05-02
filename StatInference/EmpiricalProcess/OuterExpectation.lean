@@ -82,6 +82,20 @@ theorem VdVWOuterExpectation_eq_lintegral_of_measurable
     intro U
     exact lintegral_mono U.majorizes
 
+/-- VdV&W nonnegative outer expectation is monotone in the map. -/
+theorem VdVWOuterExpectation_mono
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (hST : ∀ ω, S ω ≤ T ω) :
+    VdVWOuterExpectation μ S ≤ VdVWOuterExpectation μ T := by
+  dsimp [VdVWOuterExpectation]
+  refine le_iInf ?_
+  intro U
+  let US : VdVWMeasurableMajorant μ S :=
+    { toFun := U
+      measurable_toFun := U.measurable_toFun
+      majorizes := fun ω => le_trans (hST ω) (U.majorizes ω) }
+  exact iInf_le_of_le US le_rfl
+
 /--
 A measurable minorant of an arbitrary nonnegative map.
 
@@ -139,6 +153,20 @@ theorem VdVWInnerExpectation_eq_lintegral_of_measurable
            measurable_toFun := hT
            minorizes := fun _ => le_rfl } :
           VdVWMeasurableMinorant μ T)
+
+/-- VdV&W nonnegative inner expectation is monotone in the map. -/
+theorem VdVWInnerExpectation_mono
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (hST : ∀ ω, S ω ≤ T ω) :
+    VdVWInnerExpectation μ S ≤ VdVWInnerExpectation μ T := by
+  dsimp [VdVWInnerExpectation]
+  refine iSup_le ?_
+  intro L
+  let LT : VdVWMeasurableMinorant μ T :=
+    { toFun := L
+      measurable_toFun := L.measurable_toFun
+      minorizes := fun ω => le_trans (L.minorizes ω) (hST ω) }
+  exact le_iSup_of_le LT le_rfl
 
 /--
 A proof-carrying nonnegative lower measurable cover, or maximal measurable
@@ -632,6 +660,34 @@ theorem VdVWOuterExpectation_le_lintegral_mul_cover
 noncomputable def VdVWEventIndicator {Ω : Type u} (event : Set Ω) : Ω -> ℝ≥0∞ :=
   event.indicator fun _ => 1
 
+/-- Event indicators are monotone under set inclusion. -/
+theorem VdVWEventIndicator_mono
+    {Ω : Type u} {event₁ event₂ : Set Ω} (hsubset : event₁ ⊆ event₂) :
+    VdVWEventIndicator event₁ ≤ VdVWEventIndicator event₂ := by
+  intro ω
+  by_cases hω₁ : ω ∈ event₁
+  · have hω₂ : ω ∈ event₂ := hsubset hω₁
+    simp [VdVWEventIndicator, hω₁, hω₂]
+  · by_cases hω₂ : ω ∈ event₂
+    · simp [VdVWEventIndicator, hω₁, hω₂]
+    · simp [VdVWEventIndicator, hω₁, hω₂]
+
+/-- Outer expectations of event indicators are monotone under set inclusion. -/
+theorem VdVWOuterExpectation_eventIndicator_mono
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {event₁ event₂ : Set Ω} (hsubset : event₁ ⊆ event₂) :
+    VdVWOuterExpectation μ (VdVWEventIndicator event₁) ≤
+      VdVWOuterExpectation μ (VdVWEventIndicator event₂) :=
+  VdVWOuterExpectation_mono (VdVWEventIndicator_mono hsubset)
+
+/-- Inner expectations of event indicators are monotone under set inclusion. -/
+theorem VdVWInnerExpectation_eventIndicator_mono
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {event₁ event₂ : Set Ω} (hsubset : event₁ ⊆ event₂) :
+    VdVWInnerExpectation μ (VdVWEventIndicator event₁) ≤
+      VdVWInnerExpectation μ (VdVWEventIndicator event₂) :=
+  VdVWInnerExpectation_mono (VdVWEventIndicator_mono hsubset)
+
 namespace VdVWMeasurableCover
 
 /--
@@ -721,6 +777,23 @@ theorem VdVWOuterExpectation_thresholdIndicator_eq_measure_cover_threshold
       μ {ω | c < U ω}
   simpa [Pi.one_apply] using
     lintegral_indicator_one (measurableSet_lt measurable_const U.measurable_toFun)
+
+/--
+Tail-product outer-expectation bound from a measurable cover.
+
+This is the nonnegative Chapter 1.2 cover-majorant bridge behind later
+envelope-tail terms such as `P^* F{F > M}` in Theorem 2.4.3.
+-/
+theorem VdVWOuterExpectation_tailProduct_le_lintegral_tail_cover
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (U : VdVWMeasurableCover μ T) (c : ℝ≥0∞) :
+    VdVWOuterExpectation μ
+        (fun ω => T ω * VdVWEventIndicator {ω | c < T ω} ω) ≤
+      ∫⁻ ω, U ω *
+        (VdVWMeasurableCover.thresholdIndicatorCover U c : Ω -> ℝ≥0∞) ω ∂μ :=
+  VdVWOuterExpectation_le_lintegral_majorant
+    (VdVWMeasurableCover.mulMajorant U
+      (VdVWMeasurableCover.thresholdIndicatorCover U c))
 
 /--
 A measurable cover of an arbitrary event.

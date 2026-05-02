@@ -17,6 +17,12 @@ large compiled local layer and may be useful later, but it should not block the
 main theorem-line queue unless a later theorem explicitly needs this exact
 example.
 
+Broad Chapter 1 weak-convergence, tightness, product-space, and
+stochastic-process results are also doc-level deferrals unless a concrete
+current theorem needs them.  Do not add committed `sorry` placeholders for
+these deferred items; promote them only as proof-hole-free Lean statements when
+they become active blockers.
+
 ## Active Main-Line Primitive Sequence
 
 Textbook anchor: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and
@@ -152,6 +158,15 @@ additional example closures:
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
+
+   Status: the Chapter 1.2 nonnegative tail-product cover-majorant bridge is
+   implemented as
+   `VdVWOuterExpectation_tailProduct_le_lintegral_tail_cover`.  This is a
+   reusable outer-expectation layer for envelope tails.  The companion
+   Markov-style outer-probability bridge
+   `VdVWOuterProbability_lt_le_outerExpectation_div_cover` is also compiled.
+   The full Theorem 2.4.3 symmetrization/truncation argument and real-valued
+   `P^* F{F > M}` convergence handoff remain pending.
 6. Final convergence handoff: from the random entropy condition to convergence
    in outer mean, then use the stated martingale/Lemma 2.4.5 route for almost
    sure convergence.  Do not report Theorem 2.4.3 until these components are

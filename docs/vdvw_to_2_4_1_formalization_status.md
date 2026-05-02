@@ -24,6 +24,13 @@ whole-book weak-convergence or stochastic-process infrastructure theorems.
 They should remain audited in the blueprint, but they are not automatically
 blocking for the current empirical-process formalization path.
 
+Chapter 1 items whose statements are only overview/roadmap material, or whose
+usable theorem statements need later Chapter 2-3 definitions, can be parked as
+deferred planning items.  Any temporary `sorry` sketches for those items should
+stay out of committed verified Lean.  Self-contained Chapter 1 building blocks
+needed for outer probability, measurable covers, measurability, and empirical
+process bounds should continue to be proved locally without proof holes.
+
 For near-term work, Chapter 1 is formalized only when it directly supports a
 concrete target such as outer probability, measurable covers, empirical-process
 measurability, Theorem 2.4.1, Example 2.4.2, or the next Chapter 2
@@ -141,7 +148,7 @@ The following are compiled Lean declarations with no proof holes:
 | `VdVWAlmostSureGlivenkoCantelliClass` | packages iid law/independence assumptions and the local GC conclusion |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | converts primitive `N_[]` finiteness into the named a.s. convergence wrapper |
 | `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | packages the primitive bracketing theorem as a local a.s. pathwise Glivenko-Cantelli conclusion |
-| `VdVWOuterProbability`, `VdVWOuterAlmostSure` | formalize outer probability of arbitrary events and outer-a.s. truth using mathlib's outer-measure semantics for `Measure` |
+| `VdVWOuterProbability`, `VdVWOuterAlmostSure`, `VdVWOuterProbability_lt_le_outerExpectation_div_cover` | formalize outer probability of arbitrary events and outer-a.s. truth using mathlib's outer-measure semantics for `Measure`, plus a Markov-style outer-probability bound from a supplied measurable cover |
 | `VdVWConvergesInOuterProbabilityConst`, `VdVWConvergesInOuterProbability` | generic VdV&W outer-probability convergence primitives for varying-space constant limits and common-domain limits |
 | `vdVWConvergesInOuterProbability_of_tendstoInMeasure` | bridge from mathlib `TendstoInMeasure` to the common-domain VdV&W outer-probability predicate |
 | `tendstoInMeasure_of_vdVWConvergesInOuterProbability` | bridge from the common-domain VdV&W outer-probability predicate to mathlib `TendstoInMeasure` |

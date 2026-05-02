@@ -442,6 +442,10 @@ A theorem or lemma is promoted only if:
 - introduced assumptions are explicit and non-vacuous where possible;
 - the theorem is linked to a markdown/PDF source anchor when it is textbook
   derived;
+
+Deferred or skipped textbook items are tracked in docs only; they should not be
+represented by committed Lean declarations containing `sorry`, `admit`,
+`axiom`, or `unsafe`.
 - intermediate theorem layers are recorded in status docs until absorbed into
   an exact theorem/lemma report.
 
