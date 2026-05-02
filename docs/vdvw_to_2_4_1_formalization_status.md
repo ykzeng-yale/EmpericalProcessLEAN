@@ -110,14 +110,17 @@ The following are compiled Lean declarations with no proof holes:
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | converts primitive `N_[]` finiteness into outer-a.s. uniform deviation convergence |
 | `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | VdV&W Theorem 2.4.1 in the outer-a.s. convergence mode |
 | `VdVWOuterProbabilityUniformDeviationTendstoZeroOn`, `VdVWOuterProbabilityPGlivenkoCantelliClass` | outer-probability convergence-mode predicates |
+| `VdVWOuterProbabilityUniformDeviationTailTendstoZeroOn`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_tail` | tail-event sufficient condition for the direct outer-probability branch |
 | `VdVWPGlivenkoCantelliClass` | book-style GC predicate: outer probability or outer almost surely |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | VdV&W Theorem 2.4.1 packaged into the book-style GC predicate |
 
 This is now the dependency-minimal finite-bracketing theorem in the local
 pathwise, outer-a.s., and book-style GC interfaces.  The final book-style
 predicate is proved through the outer-a.s. branch used by the textbook proof.
-The direct outer-probability branch and broader Chapter 1 arbitrary-map
-machinery remain future compatibility work.
+A tail-event sufficient condition for the direct outer-probability branch is
+also proved.  Deriving that tail condition from outer-a.s. convergence requires
+additional measurability or continuity-from-above assumptions and remains
+future compatibility work with broader Chapter 1 arbitrary-map machinery.
 
 ## Dependency-Minimal Remaining Work For Theorem 2.4.1
 
@@ -138,7 +141,7 @@ These are the missing primitives and lemmas on the direct proof path.
 | 11 | endpoint convergence to route fields | proof line 984 | done: `finiteEndpointRadius`, `FiniteL1BracketCover.endpointRadius`, and route constructor from endpoint convergence |
 | 12 | construct `FiniteBracketingEndpointRoute` | proof lines 972-984 | done from primitive finite `L1(P)` cover plus endpoint/width assumptions |
 | 13 | decreasing-radius argument | proof line 984 | done for the dependency-minimal deterministic and iid countable-cover routes |
-| 14 | final textbook theorem | Theorem 2.4.1 statement | done as book-style GC predicate: `vdVW_theorem_2_4_1_glivenkoCantelli`; direct outer-probability branch pending |
+| 14 | final textbook theorem | Theorem 2.4.1 statement | done as book-style GC predicate: `vdVW_theorem_2_4_1_glivenkoCantelli`; tail-event bridge for direct outer probability proved |
 
 ## Full Textbook-Order Work Before 2.4.1
 

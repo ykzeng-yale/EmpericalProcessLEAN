@@ -99,6 +99,58 @@ def VdVWOuterProbabilityUniformDeviationTendstoZeroOn
       atTop (𝓝 0)
 
 /--
+Tail-event form of outer-probability control for the uniform law.
+
+For each positive tolerance, the outer probability that some future sample size
+violates the uniform empirical-deviation bound after `start` tends to zero as
+`start -> ∞`.
+-/
+def VdVWOuterProbabilityUniformDeviationTailTendstoZeroOn
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    (μ : Measure Ω) (indexClass : Set Index)
+    (populationRisk : Index -> ℝ)
+    (empiricalRisk : Ω -> ℕ -> Index -> ℝ) : Prop :=
+  ∀ tolerance > 0,
+    Tendsto
+      (fun start : ℕ =>
+        VdVWOuterProbability μ
+          {ω |
+            ∃ sampleSize ≥ start,
+              ¬ EmpiricalDeviationBoundOn indexClass populationRisk
+                (empiricalRisk ω sampleSize) tolerance})
+      atTop (𝓝 0)
+
+/--
+Tail-event outer-probability control implies one-time outer-probability
+convergence.
+
+This is the deterministic bridge needed before proving the direct
+outer-probability branch from stronger tail or measurability hypotheses.
+-/
+theorem vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_tail
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    {μ : Measure Ω} {indexClass : Set Index}
+    {populationRisk : Index -> ℝ}
+    {empiricalRisk : Ω -> ℕ -> Index -> ℝ}
+    (h_tail :
+      VdVWOuterProbabilityUniformDeviationTailTendstoZeroOn μ indexClass
+        populationRisk empiricalRisk) :
+    VdVWOuterProbabilityUniformDeviationTendstoZeroOn μ indexClass
+      populationRisk empiricalRisk := by
+  intro tolerance htolerance
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
+      (h_tail tolerance htolerance) (fun sampleSize => (zero_le :
+        (0 : ℝ≥0∞) ≤
+          VdVWOuterProbability μ
+            {ω |
+              ¬ EmpiricalDeviationBoundOn indexClass populationRisk
+                (empiricalRisk ω sampleSize) tolerance})) ?_
+  intro sampleSize
+  dsimp [VdVWOuterProbability]
+  exact measure_mono (fun ω hω => ⟨sampleSize, le_rfl, hω⟩)
+
+/--
 The local a.s. pathwise convergence predicate implies the explicit
 outer-almost-sure VdV&W predicate.
 -/

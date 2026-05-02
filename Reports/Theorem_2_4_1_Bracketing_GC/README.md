@@ -40,6 +40,7 @@ compatibility work.
 | `VdVWOuterProbability`, `VdVWOuterAlmostSure`, `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | explicit VdV&W outer-a.s. convergence-mode primitives |
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top`, `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | exact Theorem 2.4.1 conclusion in the outer-a.s. mode |
 | `VdVWOuterProbabilityUniformDeviationTendstoZeroOn`, `VdVWOuterProbabilityPGlivenkoCantelliClass`, `VdVWPGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | book-style GC predicate with outer-probability or outer-a.s. branches |
+| `VdVWOuterProbabilityUniformDeviationTailTendstoZeroOn`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_tail` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | tail-event sufficient condition for the direct outer-probability branch |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | Theorem 2.4.1 packaged into the book-style GC predicate through the outer-a.s. branch |
 
 Detailed side-by-side audit table:
@@ -81,11 +82,14 @@ The proved Lean code currently supplies:
     convergence mode used in the proof of Theorem 2.4.1;
 13. a book-style `P`-Glivenko-Cantelli predicate whose branches are outer
     probability and outer-a.s., with Theorem 2.4.1 proved through the
-    outer-a.s. branch.
+    outer-a.s. branch;
+14. a tail-event bridge proving that vanishing outer probability of future
+    bad-event tails implies one-time outer-probability convergence.
 
 The remaining compatibility layers are not needed for the outer-a.s. proof of
 Theorem 2.4.1, but they are needed for broader Chapter 1 coverage:
 
-1. direct derivation of the outer-probability branch from the outer-a.s. theorem;
+1. direct derivation of the tail-event condition from outer-a.s. convergence
+   under suitable measurability or continuity-from-above assumptions;
 2. VdV&W measurable covers, outer expectation, and arbitrary-map convergence
    infrastructure for full textbook-order formalization.

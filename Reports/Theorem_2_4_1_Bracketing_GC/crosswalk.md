@@ -72,6 +72,7 @@ the closest textbook step, the markdown source, and the PDF screenshot.
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | theorem | finite `L1(P)` bracketing numbers imply outer-a.s. uniform deviation convergence | proved by converting the local a.s. theorem through `ae_iff` |
 | `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | theorem | VdV&W Theorem 2.4.1, using the proof's outer-a.s. convergence mode | proved exact theorem statement for the dependency-minimal primitive route |
 | `VdVWOuterProbabilityUniformDeviationTendstoZeroOn` / `VdVWOuterProbabilityPGlivenkoCantelliClass` | definitions | uniform LLN convergence in outer probability | convergence-mode primitive added; direct branch proof is future work |
+| `VdVWOuterProbabilityUniformDeviationTailTendstoZeroOn` / `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_tail` | definition/theorem | tail-event sufficient condition for outer-probability convergence | proved bridge from vanishing future-tail outer probabilities to the direct outer-probability branch |
 | `VdVWPGlivenkoCantelliClass` | definition | book phrase "in outer probability or outer almost surely" | exact book-style predicate with both branches |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | theorem | finite `L1(P)` bracketing numbers imply `P`-Glivenko-Cantelli | proved through the outer-a.s. branch |
 
