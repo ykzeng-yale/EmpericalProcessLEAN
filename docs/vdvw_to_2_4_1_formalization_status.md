@@ -82,7 +82,7 @@ The table below is only the active direct-proof anchor subset.
 | Definition 1.10.1, convergence in outer probability to a constant | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1406` | generic constant-limit and common-domain outer-probability primitives formalized; common-domain equivalence with mathlib `TendstoInMeasure` proved; uniform-deviation predicates and conditional tail-continuity bridge formalized |
 | Lemma 1.10.2, outer probability versus weak convergence | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1408-1417` | measurable common-domain version of part (ii) proved using mathlib convergence in distribution |
 | GC definition for uniform LLN | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1828-1834` | book-style predicate formalized with outer-probability and outer-a.s. branches |
-| Definition 2.1.5, covering numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1894` | only abstract proof-carrying interface exists |
+| Definition 2.1.5, covering numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1894` | local-layer: `vdVWCoveringNumber` wraps mathlib external covering numbers, with explicit finite-cover witnesses and slack note for open vs closed balls |
 | Definition 2.1.6, bracketing numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1895` | primitive bracket, epsilon-bracket, finite-cover, and numeric `N_[]` layers formalized |
 | Chapter 2.4 intro | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:963-969` | reflected in roadmap only |
 | Theorem 2.4.1 statement | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:970` | proved as `vdVW_theorem_2_4_1_glivenkoCantelli` via the outer-a.s. branch |
@@ -229,7 +229,7 @@ separate from the dependency-minimal proof of Theorem 2.4.1.
 | 1.5-1.7 | `l_infty(T)`, tightness/equicontinuity, separability, ball measurability, Suslin examples | not formalized locally |
 | 1.8 | Hilbert-space weak convergence material | not formalized locally |
 | 1.9-1.12 | convergence in outer probability, extended continuous mapping, uniform integrability, bounded Lipschitz metric | not formalized locally |
-| 2.1 | empirical-process examples, covering numbers, bracketing numbers, Donsker overview examples/proposition | only empirical-process interfaces and averages exist |
+| 2.1 | empirical-process examples, covering numbers, bracketing numbers, Donsker overview examples/proposition | empirical-process interfaces, averages, primitive bracketing numbers, and a local covering-number primitive exist; Donsker overview examples/proposition remain pending |
 | 2.2 | Orlicz norm lemmas, covering/packing definition, chaining maximal inequality, Hoeffding/Bernstein inequalities | not formalized locally |
 | 2.3 | symmetrization, measurable classes, separability/lifting, Donsker separable modification results | not formalized locally |
 

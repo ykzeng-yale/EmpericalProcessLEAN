@@ -91,6 +91,7 @@ outer-a.s./outer-probability GC wrappers.
 | Lemma 1.2.3 | Nonnegative event indicator bridges for outer/inner probability, explicit measurable event-cover existence, arbitrary measurable set covers with integral equality, direct `toMeasurable` hull integral equality, complement-set-cover lower covers, direct complement-cover inner-probability equalities, outer-probability/outer-expectation bridge, and two-sided complement identities | Remaining extended-real and full measurable-set-cover clauses. |
 | Definition 1.10.1 | Outer-probability convergence primitives and common-domain `TendstoInMeasure` bridge | Broader arbitrary-map API. |
 | Lemma 1.10.2 | Measurable common-domain weak-convergence bridge | Full VdV&W arbitrary-map/measurable-cover version. |
+| Definition 2.1.5 | `vdVWCoveringNumber` wrapper over mathlib `Metric.externalCoveringNumber`, explicit finite closed-ball cover witnesses, finite-number handoff, monotonicity, and packing comparison wrappers | Exact open-ball norm convention needs radius-slack wrappers when a theorem requires literal `< epsilon` balls. |
 | Definition 2.1.6 | Primitive brackets, finite covers, `L1(P)` width, and numeric `l1BracketingNumber` | Entropy/logarithm refinements are not the current target. |
 | Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint/width identities, adjacent-endpoint grid handoff, supplied finite-grid bridges, one-cell base grid for radii above total mass, all-positive-radius `N_[] < ∞` handoff, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids | Distribution-dependent finite grid and exact empirical-CDF example report. |
 
@@ -101,6 +102,7 @@ DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
 ONGOING    Example 2.4.2: distribution-dependent grid after conditional EReal-grid GC handoff.
 NEXT       Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
+READY      Definition 2.1.5 covering-number primitive for Theorem 2.4.3 setup.
 DEFERRED   Broad Chapter 1 weak-convergence/tightness/process machinery until needed.
 ```
 

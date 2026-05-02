@@ -375,7 +375,8 @@ working strategy is bottom-up and theorem-driven:
 
 ### Stage C: Entropy and maximal-inequality route
 
-- covering numbers and entropy interfaces;
+- covering numbers and entropy interfaces, starting from
+  `vdVWCoveringNumber` as a wrapper around mathlib external covering numbers;
 - symmetrization;
 - maximal inequalities;
 - random entropy GC theorem;
