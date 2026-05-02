@@ -382,6 +382,69 @@ theorem VdVWInnerProbability_eq_measure_of_measurable
   VdVWInnerProbability_eq_measure_of_nullMeasurable μ hevent.nullMeasurableSet
 
 /--
+Event-level lower measurable indicator.
+
+For an event `B`, this is the concrete nonnegative version of `(1_B)_*`:
+the indicator of the complement of a measurable cover of `Bᶜ`.
+-/
+noncomputable def VdVWEventLowerIndicator {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) (event : Set Ω) : Ω -> ℝ≥0∞ :=
+  VdVWEventIndicator (toMeasurable μ eventᶜ)ᶜ
+
+/-- The event-level lower indicator is measurable. -/
+theorem measurable_vdVWEventLowerIndicator
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) (event : Set Ω) :
+    Measurable (VdVWEventLowerIndicator μ event) :=
+  measurable_const.indicator (measurableSet_toMeasurable μ eventᶜ).compl
+
+/-- The event-level lower indicator is pointwise below the raw event indicator. -/
+theorem VdVWEventLowerIndicator_le_eventIndicator
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) (event : Set Ω) :
+    VdVWEventLowerIndicator μ event ≤ VdVWEventIndicator event := by
+  intro ω
+  by_cases hω : ω ∈ (toMeasurable μ eventᶜ)ᶜ
+  · have h_event : ω ∈ event := by
+      by_contra h_not_event
+      exact hω (subset_toMeasurable μ eventᶜ h_not_event)
+    simp [VdVWEventLowerIndicator, VdVWEventIndicator, hω, h_event]
+  · simp [VdVWEventLowerIndicator, VdVWEventIndicator, hω]
+
+/--
+Integral of the event-level lower indicator realizes the inner probability in
+the finite-measure setting.
+-/
+theorem lintegral_vdVWEventLowerIndicator_eq_innerProbability
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    (event : Set Ω) :
+    (∫⁻ ω, VdVWEventLowerIndicator μ event ω ∂μ) =
+      VdVWInnerProbability μ event := by
+  rw [VdVWEventLowerIndicator, VdVWEventIndicator]
+  change
+    (∫⁻ ω,
+      ((toMeasurable μ eventᶜ)ᶜ.indicator (1 : Ω -> ℝ≥0∞)) ω ∂μ) =
+      VdVWInnerProbability μ event
+  rw [lintegral_indicator_one (measurableSet_toMeasurable μ eventᶜ).compl]
+  rw [VdVWInnerProbability,
+    measure_compl (measurableSet_toMeasurable μ eventᶜ)
+      (measure_ne_top μ (toMeasurable μ eventᶜ)),
+    measure_toMeasurable]
+
+/--
+Event-indicator complement identity for VdV&W Lemma 1.2.3(iii):
+the upper indicator of `B` plus the lower indicator of `Bᶜ` is `1`.
+-/
+theorem VdVWEventIndicator_cover_add_lower_compl
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) (event : Set Ω) :
+    (fun ω =>
+      VdVWEventIndicator (toMeasurable μ event) ω +
+        VdVWEventLowerIndicator μ eventᶜ ω) =
+      fun _ => (1 : ℝ≥0∞) := by
+  funext ω
+  by_cases hω : ω ∈ toMeasurable μ event
+  · simp [VdVWEventLowerIndicator, VdVWEventIndicator, hω]
+  · simp [VdVWEventLowerIndicator, VdVWEventIndicator, hω]
+
+/--
 For a finite measure, the measurable hull of an event is a measurable cover of
 the event indicator.
 
