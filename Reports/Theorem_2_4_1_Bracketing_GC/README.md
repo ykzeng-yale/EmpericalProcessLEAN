@@ -39,6 +39,8 @@ compatibility work.
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top`, `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | primitive `N_[]` theorem packaged as local a.s. pathwise Glivenko-Cantelli conclusion |
 | `VdVWOuterProbability`, `VdVWOuterAlmostSure`, `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | explicit VdV&W outer-a.s. convergence-mode primitives |
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top`, `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | exact Theorem 2.4.1 conclusion in the outer-a.s. mode |
+| `VdVWOuterProbabilityUniformDeviationTendstoZeroOn`, `VdVWOuterProbabilityPGlivenkoCantelliClass`, `VdVWPGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | book-style GC predicate with outer-probability or outer-a.s. branches |
+| `vdVW_theorem_2_4_1_glivenkoCantelli` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | Theorem 2.4.1 packaged into the book-style GC predicate through the outer-a.s. branch |
 
 Detailed side-by-side audit table:
 
@@ -76,11 +78,14 @@ The proved Lean code currently supplies:
     of radii `1 / (n + 1)`;
 11. a local almost-sure pathwise GC wrapper for the primitive `N_[]` theorem;
 12. an explicit outer-a.s. `P`-Glivenko-Cantelli theorem matching the
-    convergence mode used in the proof of Theorem 2.4.1.
+    convergence mode used in the proof of Theorem 2.4.1;
+13. a book-style `P`-Glivenko-Cantelli predicate whose branches are outer
+    probability and outer-a.s., with Theorem 2.4.1 proved through the
+    outer-a.s. branch.
 
 The remaining compatibility layers are not needed for the outer-a.s. proof of
 Theorem 2.4.1, but they are needed for broader Chapter 1 coverage:
 
-1. outer-probability convergence mode for the same theorem statement;
+1. direct derivation of the outer-probability branch from the outer-a.s. theorem;
 2. VdV&W measurable covers, outer expectation, and arbitrary-map convergence
    infrastructure for full textbook-order formalization.

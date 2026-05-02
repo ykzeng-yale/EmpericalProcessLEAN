@@ -55,11 +55,11 @@ The table below is only the active direct-proof anchor subset.
 
 | Textbook item | Markdown anchor | Current Lean status |
 | --- | --- | --- |
-| GC definition for uniform LLN | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1828-1834` | outer-a.s. `P`-Glivenko-Cantelli wrapper formalized; outer-probability convergence alternative pending |
+| GC definition for uniform LLN | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1828-1834` | book-style predicate formalized with outer-probability and outer-a.s. branches |
 | Definition 2.1.5, covering numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1894` | only abstract proof-carrying interface exists |
 | Definition 2.1.6, bracketing numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1895` | primitive bracket, epsilon-bracket, finite-cover, and numeric `N_[]` layers formalized |
 | Chapter 2.4 intro | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:963-969` | reflected in roadmap only |
-| Theorem 2.4.1 statement | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:970` | proved as `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` in the outer-a.s. convergence mode |
+| Theorem 2.4.1 statement | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:970` | proved as `vdVW_theorem_2_4_1_glivenkoCantelli` via the outer-a.s. branch |
 | Theorem 2.4.1 proof, finite brackets and endpoint inequality | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:972-981` | deterministic bracketing theorem proved |
 | Theorem 2.4.1 proof, endpoint SLLN and decreasing radius | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:984` | endpoint SLLN wrapper, iid sample-path bridge, finite endpoint-radius bridge, and countable/decreasing-scale assembly proved |
 | Example 2.4.2, empirical CDF brackets | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:985` | pending example formalization |
@@ -109,11 +109,14 @@ The following are compiled Lean declarations with no proof holes:
 | `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | exact outer-a.s. uniform LLN and `P`-Glivenko-Cantelli predicates |
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | converts primitive `N_[]` finiteness into outer-a.s. uniform deviation convergence |
 | `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | VdV&W Theorem 2.4.1 in the outer-a.s. convergence mode |
+| `VdVWOuterProbabilityUniformDeviationTendstoZeroOn`, `VdVWOuterProbabilityPGlivenkoCantelliClass` | outer-probability convergence-mode predicates |
+| `VdVWPGlivenkoCantelliClass` | book-style GC predicate: outer probability or outer almost surely |
+| `vdVW_theorem_2_4_1_glivenkoCantelli` | VdV&W Theorem 2.4.1 packaged into the book-style GC predicate |
 
 This is now the dependency-minimal finite-bracketing theorem in the local
-pathwise and outer-a.s. GC interfaces.  The theorem is proved in the
-outer-a.s. convergence mode used by the textbook proof.  The separate
-outer-probability convergence alternative and broader Chapter 1 arbitrary-map
+pathwise, outer-a.s., and book-style GC interfaces.  The final book-style
+predicate is proved through the outer-a.s. branch used by the textbook proof.
+The direct outer-probability branch and broader Chapter 1 arbitrary-map
 machinery remain future compatibility work.
 
 ## Dependency-Minimal Remaining Work For Theorem 2.4.1
@@ -135,7 +138,7 @@ These are the missing primitives and lemmas on the direct proof path.
 | 11 | endpoint convergence to route fields | proof line 984 | done: `finiteEndpointRadius`, `FiniteL1BracketCover.endpointRadius`, and route constructor from endpoint convergence |
 | 12 | construct `FiniteBracketingEndpointRoute` | proof lines 972-984 | done from primitive finite `L1(P)` cover plus endpoint/width assumptions |
 | 13 | decreasing-radius argument | proof line 984 | done for the dependency-minimal deterministic and iid countable-cover routes |
-| 14 | final textbook theorem | Theorem 2.4.1 statement | done in outer-a.s. mode: `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli`; outer-probability alternative pending |
+| 14 | final textbook theorem | Theorem 2.4.1 statement | done as book-style GC predicate: `vdVW_theorem_2_4_1_glivenkoCantelli`; direct outer-probability branch pending |
 
 ## Full Textbook-Order Work Before 2.4.1
 

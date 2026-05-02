@@ -15,7 +15,7 @@ event.
 
 namespace StatInference
 
-open MeasureTheory ProbabilityTheory
+open MeasureTheory ProbabilityTheory Filter
 
 open scoped ENNReal Topology Function
 
@@ -78,6 +78,27 @@ def VdVWOuterAlmostSureUniformDeviationTendstoZeroOn
       UniformDeviationTendstoZeroOn indexClass populationRisk (empiricalRisk ω))
 
 /--
+VdV&W convergence in outer probability for the uniform law of large numbers
+over a class.
+
+For every positive tolerance, the outer probability of the event that the
+uniform empirical-deviation bound fails tends to zero.
+-/
+def VdVWOuterProbabilityUniformDeviationTendstoZeroOn
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    (μ : Measure Ω) (indexClass : Set Index)
+    (populationRisk : Index -> ℝ)
+    (empiricalRisk : Ω -> ℕ -> Index -> ℝ) : Prop :=
+  ∀ tolerance > 0,
+    Tendsto
+      (fun sampleSize : ℕ =>
+        VdVWOuterProbability μ
+          {ω |
+            ¬ EmpiricalDeviationBoundOn indexClass populationRisk
+              (empiricalRisk ω sampleSize) tolerance})
+      atTop (𝓝 0)
+
+/--
 The local a.s. pathwise convergence predicate implies the explicit
 outer-almost-sure VdV&W predicate.
 -/
@@ -129,6 +150,35 @@ def VdVWOuterAlmostSurePGlivenkoCantelliClass
     (fun index => populationRiskOfFunction P (classFun index))
     (fun ω sampleSize index =>
       empiricalAverage (samplePath X ω sampleSize) (classFun index))
+
+/--
+VdV&W outer-probability `P`-Glivenko-Cantelli predicate for a chosen iid
+observation process.
+-/
+def VdVWOuterProbabilityPGlivenkoCantelliClass
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    (μ : Measure Ω) (P : Measure Observation)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (X : ℕ -> Ω -> Observation) : Prop :=
+  VdVWOuterProbabilityUniformDeviationTendstoZeroOn μ indexClass
+    (fun index => populationRiskOfFunction P (classFun index))
+    (fun ω sampleSize index =>
+      empiricalAverage (samplePath X ω sampleSize) (classFun index))
+
+/--
+Book-style `P`-Glivenko-Cantelli predicate: the uniform law holds either in
+outer probability or outer almost surely, matching the phrasing in the
+empirical-process introduction.
+-/
+def VdVWPGlivenkoCantelliClass
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    (μ : Measure Ω) (P : Measure Observation)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (X : ℕ -> Ω -> Observation) : Prop :=
+  VdVWOuterProbabilityPGlivenkoCantelliClass μ P indexClass classFun X ∨
+    VdVWOuterAlmostSurePGlivenkoCantelliClass μ P indexClass classFun X
 
 /--
 Primitive finite `L1(P)` bracketing numbers at every positive radius imply the
@@ -221,5 +271,27 @@ theorem vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli
     VdVWOuterAlmostSurePGlivenkoCantelliClass μ P indexClass classFun X :=
   vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top
     X hLaw hindep h_bracketing
+
+/--
+VdV&W Theorem 2.4.1 in the book-style `P`-Glivenko-Cantelli predicate.
+
+The proof enters the predicate through the outer-a.s. branch, exactly as the
+textbook proof establishes.
+-/
+theorem vdVW_theorem_2_4_1_glivenkoCantelli
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {μ : Measure Ω} {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (X : ℕ -> Ω -> Observation)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
+    (h_bracketing :
+      ∀ epsilon, 0 < epsilon ->
+        l1BracketingNumber P indexClass classFun epsilon < ⊤) :
+    VdVWPGlivenkoCantelliClass μ P indexClass classFun X :=
+  Or.inr
+    (vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli
+      X hLaw hindep h_bracketing)
 
 end StatInference

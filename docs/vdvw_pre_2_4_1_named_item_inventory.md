@@ -101,6 +101,9 @@ Current promoted declarations toward Theorem 2.4.1:
 | `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | proved/compiled exact outer-a.s. uniform LLN and GC predicates |
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to outer-a.s. uniform deviation convergence |
 | `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | proved VdV&W Theorem 2.4.1 in the outer-a.s. convergence mode |
+| `VdVWOuterProbabilityUniformDeviationTendstoZeroOn`, `VdVWOuterProbabilityPGlivenkoCantelliClass` | proved/compiled outer-probability convergence-mode predicates |
+| `VdVWPGlivenkoCantelliClass` | proved/compiled book-style GC predicate with outer-probability or outer-a.s. branches |
+| `vdVW_theorem_2_4_1_glivenkoCantelli` | proved VdV&W Theorem 2.4.1 into the book-style GC predicate |
 
 Verification gate:
 
@@ -287,7 +290,7 @@ through 2.4.1 requires accounting for them.
 | 2.3.15 Theorem | `M2:818` | pointwise separable version Donsker equivalence | later roadmap |
 | 2.3.16 Proposition | `M2:857` | consistent lifting | later roadmap |
 | 2.3.17 Theorem | `M2:882` | separable modification | later roadmap |
-| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | proved as `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` in the outer-a.s. convergence mode; outer-probability alternative pending |
+| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | proved as `vdVW_theorem_2_4_1_glivenkoCantelli` into the book-style predicate; direct outer-probability branch pending |
 
 ## Dependency-Minimal Route To Theorem 2.4.1
 
@@ -307,7 +310,7 @@ Sections 2.1-2.3 to be formalized literally.  The dependency-minimal route is:
 | 9 | endpoint empirical average SLLN | `M2:984` | done for fixed finite covers: `EndpointSamples.lean` |
 | 10 | build `FiniteBracketingEndpointRoute` from primitive brackets | `M2:972-984` | done from primitive cover plus endpoint/width assumptions |
 | 11 | decreasing-radius argument | `M2:984` | done for the dependency-minimal deterministic and iid `N_[]` route |
-| 12 | final exact theorem statement | `M2:970` | done in outer-a.s. mode: `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli`; outer-probability alternative pending |
+| 12 | final exact theorem statement | `M2:970` | done as book-style predicate: `vdVW_theorem_2_4_1_glivenkoCantelli`; direct outer-probability branch pending |
 
 This route should reuse mathlib for measure/integration/probability and only
 build the empirical-process-specific layer locally.

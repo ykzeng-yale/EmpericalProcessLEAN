@@ -54,6 +54,7 @@ ignored by Git.
 | `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top`, `StatInference/EmpiricalProcess/EndpointSamples.lean`, primitive bracketing-number theorem | Theorem 2.4.1 statement `N_[](ε, F, L1(P)) < ∞` for every positive `ε` and proof by decreasing radii, markdown `..._101-200.md:970-984` | theorem screenshot | Proved dependency-minimal theorem from primitive `l1BracketingNumber` to a.s. pathwise `UniformDeviationTendstoZeroOn` |
 | `AlmostSureUniformDeviationTendstoZeroOn`, `VdVWAlmostSureGlivenkoCantelliClass`, `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top`, `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top`, `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`, local almost-sure GC wrapper | GC definition says uniform LLN convergence in outer probability or outer almost surely defines a Glivenko-Cantelli class, markdown `..._1-100.md:1828-1834`; Theorem 2.4.1 conclusion, markdown `..._101-200.md:970-984` | `Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png`; theorem screenshot | Proved ordinary a.s. pathwise GC wrapper from primitive `N_[]` theorem |
 | `VdVWOuterProbability`, `VdVWOuterAlmostSure`, `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass`, `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top`, `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli`, `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`, exact outer-a.s. theorem layer | The GC definition permits convergence outer almost surely, markdown `..._1-100.md:1828-1834`; Theorem 2.4.1 proof concludes the limsup is zero almost surely after decreasing radii, markdown `..._101-200.md:970-984` | `Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png`; theorem screenshot | Proved exact Theorem 2.4.1 in the outer-a.s. convergence mode; outer-probability convergence alternative and full Chapter 1 arbitrary-map infrastructure remain future work |
+| `VdVWOuterProbabilityUniformDeviationTendstoZeroOn`, `VdVWOuterProbabilityPGlivenkoCantelliClass`, `VdVWPGlivenkoCantelliClass`, `vdVW_theorem_2_4_1_glivenkoCantelli`, `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`, book-style GC predicate | The GC definition uses the phrase "in outer probability or outer almost surely", markdown `..._1-100.md:1828-1834`; Theorem 2.4.1 proves the GC conclusion, markdown `..._101-200.md:970-984` | `Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png`; theorem screenshot | Proved Theorem 2.4.1 into the book-style disjunctive GC predicate using the outer-a.s. branch; direct proof of the outer-probability branch remains future work |
 
 ## Pending Primitive Cross-Checks
 
@@ -62,7 +63,7 @@ complete.
 
 | Pending Lean target | Markdown anchor | Screenshot needed |
 | --- | --- | --- |
-| outer-probability convergence-mode theorem and full Chapter 1 arbitrary-map machinery | GC definition and Chapter 1 convergence sections | additional screenshots for those Chapter 1 definitions |
+| direct derivation of the outer-probability branch and full Chapter 1 arbitrary-map machinery | GC definition and Chapter 1 convergence sections | additional screenshots for those Chapter 1 definitions |
 
 ## Promotion Rule
 
