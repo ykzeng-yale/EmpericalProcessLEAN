@@ -687,6 +687,18 @@ noncomputable def ofToMeasurable {Ω : Type u} [MeasurableSpace Ω]
   subset_event := subset_toMeasurable μ event
   measure_eq := measure_toMeasurable event
 
+/--
+Existence clause for VdV&W Lemma 1.2.3(ii): every event has a measurable
+superset with the same outer measure.
+-/
+theorem exists_measurableSet_superset_measure_eq {Ω : Type u}
+    [MeasurableSpace Ω] (μ : Measure Ω) (event : Set Ω) :
+    ∃ coverSet : Set Ω,
+      MeasurableSet coverSet ∧ event ⊆ coverSet ∧ μ coverSet = μ event := by
+  exact
+    ⟨toMeasurable μ event, measurableSet_toMeasurable μ event,
+      subset_toMeasurable μ event, measure_toMeasurable event⟩
+
 /-- The indicator of a measurable event cover is a measurable majorant. -/
 noncomputable def indicatorMajorant {Ω : Type u} [MeasurableSpace Ω]
     {μ : Measure Ω} {event : Set Ω}
