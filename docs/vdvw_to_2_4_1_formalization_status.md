@@ -55,6 +55,7 @@ The table below is only the active direct-proof anchor subset.
 
 | Textbook item | Markdown anchor | Current Lean status |
 | --- | --- | --- |
+| Section 1.2 outer integrals and Lemma 1.2.1 measurable cover | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:356-388` | nonnegative `ℝ≥0∞` outer-expectation and proof-carrying measurable-cover primitive layer formalized; extended-real existence theorem remains pending |
 | Definition 1.10.1, convergence in outer probability to a constant | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1406` | generic constant-limit and common-domain outer-probability primitives formalized; common-domain equivalence with mathlib `TendstoInMeasure` proved; uniform-deviation predicates and conditional tail-continuity bridge formalized |
 | Lemma 1.10.2, outer probability versus weak convergence | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1408-1417` | measurable common-domain version of part (ii) proved using mathlib convergence in distribution |
 | GC definition for uniform LLN | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1828-1834` | book-style predicate formalized with outer-probability and outer-a.s. branches |
@@ -70,6 +71,7 @@ Current screenshot anchors:
 
 ```text
 Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png
+Textbooks/Vaart1996/Screenshots/vdvw_lemma_1_2_1_pdf_page_6.png
 Textbooks/Vaart1996/Screenshots/vdvw_definition_1_10_1_pdf_page_72.png
 Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png
 Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png
@@ -105,6 +107,8 @@ The following are compiled Lean declarations with no proof holes:
 | `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | countable decreasing-cover deterministic route |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers` | iid observations plus countably many finite covers imply a.s. pathwise uniform deviation convergence |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | primitive `N_[]` finiteness at every positive radius implies a.s. pathwise uniform deviation convergence |
+| `VdVWMeasurableMajorant`, `VdVWOuterExpectation`, `VdVWMeasurableCover` | nonnegative Chapter 1.2 outer-expectation and measurable-cover primitive layer |
+| `VdVWOuterExpectation_eq_lintegral_of_measurable`, `VdVWOuterExpectation_eq_lintegral_cover` | nonnegative outer expectation is realized by measurable maps and supplied minimal measurable covers |
 | `AlmostSureUniformDeviationTendstoZeroOn` | names the ordinary a.s. pathwise uniform LLN convergence mode used by the local GC wrapper |
 | `VdVWAlmostSureGlivenkoCantelliClass` | packages iid law/independence assumptions and the local GC conclusion |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | converts primitive `N_[]` finiteness into the named a.s. convergence wrapper |
@@ -193,7 +197,7 @@ separate from the dependency-minimal proof of Theorem 2.4.1.
 
 | Section | Named content before 2.4.1 | Current status |
 | --- | --- | --- |
-| 1.2 | outer probabilities, measurable covers, outer/inner Fubini | not formalized locally; mathlib measure/Fubini foundations reusable but VdV&W outer layer missing |
+| 1.2 | outer probabilities, measurable covers, outer/inner Fubini | nonnegative outer-expectation/measurable-cover primitive layer exists; exact extended-real existence theorem, inner expectation, and Fubini variants remain pending |
 | 1.3 | weak convergence of arbitrary maps, asymptotic measurability/tightness, Portmanteau/Prohorov | mathlib measure-level weak convergence and Portmanteau/Prokhorov foundations exist; VdV&W arbitrary-map wrappers pending |
 | 1.4 | product weak convergence, asymptotic independence, Slutsky | not formalized locally |
 | 1.5-1.7 | `l_infty(T)`, tightness/equicontinuity, separability, ball measurability, Suslin examples | not formalized locally |

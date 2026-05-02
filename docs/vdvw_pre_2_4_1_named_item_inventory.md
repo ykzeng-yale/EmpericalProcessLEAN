@@ -93,6 +93,8 @@ Current promoted declarations toward Theorem 2.4.1:
 | `CountablePrimitiveFiniteBracketingGCRoute.uniformDeviationTendstoZeroOn` | proved countable decreasing-cover deterministic route |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers` | proved iid countable-cover almost-sure uniform convergence layer |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to a.s. pathwise uniform convergence theorem |
+| `VdVWMeasurableMajorant`, `VdVWOuterExpectation`, `VdVWMeasurableCover` | proved/compiled nonnegative Chapter 1.2 outer-expectation and measurable-cover primitive layer |
+| `VdVWOuterExpectation_eq_lintegral_of_measurable`, `VdVWOuterExpectation_eq_lintegral_cover` | proved nonnegative outer-expectation realization lemmas for measurable maps and supplied minimal measurable covers |
 | `AlmostSureUniformDeviationTendstoZeroOn` | proved/compiled named ordinary a.s. pathwise uniform LLN convergence mode |
 | `VdVWAlmostSureGlivenkoCantelliClass` | proved/compiled local GC wrapper structure for iid observation processes |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to named a.s. pathwise convergence wrapper |
@@ -199,7 +201,7 @@ through 2.4.1 requires accounting for them.
 
 | Item | Anchor | Topic | Current status |
 | --- | --- | --- | --- |
-| 1.2.1 Lemma | `M1:372` | measurable cover function | pending primitive; no exact outer expectation layer locally |
+| 1.2.1 Lemma | `M1:372` | measurable cover function | local layer exists: nonnegative outer-expectation primitives and proof-carrying measurable-cover realization theorem; exact extended-real cover existence remains pending |
 | 1.2.2 Lemma | `M1:389` | a.s. rules for arbitrary maps | pending primitive; needs outer/inner probability framework |
 | 1.2.3 Lemma | `M1:438` | outer measure of subsets | pending primitive; mathlib outer measure exists but VdV&W wrapper missing |
 | 1.2.4 Lemma | `M1:446` | dominated family measurable cover | pending primitive |
