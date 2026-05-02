@@ -413,6 +413,96 @@ theorem VdVWOuterExpectation_le_lintegral_mul_cover
 noncomputable def VdVWEventIndicator {Ω : Type u} (event : Set Ω) : Ω -> ℝ≥0∞ :=
   event.indicator fun _ => 1
 
+namespace VdVWMeasurableCover
+
+/--
+Threshold-indicator cover algebra for nonnegative measurable covers.
+
+This is the nonnegative counterpart of VdV&W Lemma 1.2.2(vi):
+`(1_{T > c})* = 1_{T* > c}`.  The threshold event uses `c < T` because
+the maps here take values in `ℝ≥0∞`.
+-/
+noncomputable def thresholdIndicatorCover
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (U : VdVWMeasurableCover μ T) (c : ℝ≥0∞) :
+    VdVWMeasurableCover μ (VdVWEventIndicator {ω | c < T ω}) where
+  toFun := VdVWEventIndicator {ω | c < U ω}
+  measurable_toFun :=
+    measurable_const.indicator (measurableSet_lt measurable_const U.measurable_toFun)
+  majorizes := by
+    intro ω
+    by_cases hT : c < T ω
+    · have hU : c < U ω := lt_of_lt_of_le hT (U.majorizes ω)
+      simp [VdVWEventIndicator, hT, hU]
+    · simp [VdVWEventIndicator, hT]
+  minimal_ae := by
+    classical
+    intro V hV h_majorizes
+    let low : Set Ω := {ω | V ω < 1}
+    let W : Ω -> ℝ≥0∞ := low.piecewise (fun ω => U ω ⊓ c) (fun ω => U ω)
+    have hlow_meas : MeasurableSet low :=
+      measurableSet_lt hV measurable_const
+    have hW_meas : Measurable W := by
+      exact (U.measurable_toFun.inf measurable_const).piecewise hlow_meas U.measurable_toFun
+    have hW_majorizes : ∀ᵐ ω ∂μ, T ω ≤ W ω := by
+      filter_upwards [h_majorizes] with ω hV_majorizes
+      by_cases hlow : ω ∈ low
+      · have hnot_threshold : ¬ c < T ω := by
+          intro hthreshold
+          have hone_le : (1 : ℝ≥0∞) ≤ V ω := by
+            simpa [VdVWEventIndicator, hthreshold] using hV_majorizes
+          exact not_lt_of_ge hone_le hlow
+        have hT_le_c : T ω ≤ c := not_lt.mp hnot_threshold
+        have hT_le_U : T ω ≤ U ω := U.majorizes ω
+        have hT_le_inf : T ω ≤ U ω ⊓ c := le_inf hT_le_U hT_le_c
+        simpa [W, low, hlow] using hT_le_inf
+      · have hT_le_U : T ω ≤ U ω := U.majorizes ω
+        simpa [W, low, hlow] using hT_le_U
+    have hU_le_W : ∀ᵐ ω ∂μ, U ω ≤ W ω :=
+      U.minimal_ae W hW_meas hW_majorizes
+    filter_upwards [hU_le_W] with ω hU_le_Wω
+    by_cases hthreshold : c < U ω
+    · have hnot_low : ω ∉ low := by
+        intro hlow
+        have hU_le_inf : U ω ≤ U ω ⊓ c := by
+          simpa [W, low, hlow] using hU_le_Wω
+        have hU_le_c : U ω ≤ c := le_trans hU_le_inf inf_le_right
+        exact not_lt_of_ge hU_le_c hthreshold
+      have hone_le : (1 : ℝ≥0∞) ≤ V ω := not_lt.mp hnot_low
+      simpa [VdVWEventIndicator, hthreshold] using hone_le
+    · simp [VdVWEventIndicator, hthreshold]
+
+end VdVWMeasurableCover
+
+/--
+The threshold-indicator cover realizes the nonnegative outer expectation of a
+threshold event.
+-/
+theorem VdVWOuterExpectation_eq_lintegral_thresholdIndicatorCover
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (U : VdVWMeasurableCover μ T) (c : ℝ≥0∞) :
+    VdVWOuterExpectation μ (VdVWEventIndicator {ω | c < T ω}) =
+      ∫⁻ ω,
+        (VdVWMeasurableCover.thresholdIndicatorCover U c : Ω -> ℝ≥0∞) ω ∂μ :=
+  VdVWOuterExpectation_eq_lintegral_cover
+    (VdVWMeasurableCover.thresholdIndicatorCover U c)
+
+/--
+Nonnegative VdV&W Lemma 1.2.2(vi) probability form:
+the outer probability of `{T > c}` is the measure of `{T* > c}`.
+-/
+theorem VdVWOuterExpectation_thresholdIndicator_eq_measure_cover_threshold
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (U : VdVWMeasurableCover μ T) (c : ℝ≥0∞) :
+    VdVWOuterExpectation μ (VdVWEventIndicator {ω | c < T ω}) =
+      μ {ω | c < U ω} := by
+  rw [VdVWOuterExpectation_eq_lintegral_thresholdIndicatorCover U c]
+  change
+    (∫⁻ ω, ({ω | c < U ω}.indicator (fun _ => (1 : ℝ≥0∞)) ω) ∂μ) =
+      μ {ω | c < U ω}
+  simpa [Pi.one_apply] using
+    lintegral_indicator_one (measurableSet_lt measurable_const U.measurable_toFun)
+
 /--
 A measurable cover of an arbitrary event.
 
