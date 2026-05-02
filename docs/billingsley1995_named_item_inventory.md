@@ -28,7 +28,7 @@ parallel inventories.
 | --- | --- | --- | --- |
 | Sections 3/10-14 generated sigma-fields, pi-lambda, extension/uniqueness, and measurable maps | `_1-121.md:1318,1476,1488`; `_122-242.md:1799,1804,1809,1924,2020,2033,2296,2329,2470,2564,2583` | local-layer/mathlib-foundation | `StatInference/ProbabilityMeasure/GeneratedSigma.lean` wraps mathlib generated measurable spaces, pi-systems, and measure extensionality; exact Billingsley theorem reports remain pending |
 | Section 4 Borel-Cantelli and zero-one laws | `_1-121.md` near Section 4 start | local-wrapper/mathlib-foundation | first and second Borel-Cantelli wrappers over mathlib are available; exact Billingsley Theorems 4.3/4.4 reports, source screenshots, and zero-one-law coverage remain pending |
-| Theorem 6.1 simple strong law | `_1-121.md` near Theorem 6.1 | mathlib-foundation | possible wrapper over `ProbabilityTheory.strong_law_ae_real` |
+| Theorem 6.1 simple strong law and Section 22 iid strong law | `_1-121.md:2946-2953`; `_243-363.md:1810,1820,1884` | local-wrapper/mathlib-foundation | `StatInference/ProbabilityMeasure/StrongLaw.lean` wraps `ProbabilityTheory.strong_law_ae_real` for Billingsley source crosswalks and endpoint/empirical-average support; exact Billingsley theorem reports remain pending |
 | Sections 15-16 integration and limit theorems | `_122-242.md` near Section 16 start | priority-local | tail/UI wrappers for VdV&W Theorem 2.4.3 |
 | Section 18 product measure/Fubini | `_243-363.md` near Section 18 start | priority-local | finite-product Fubini wrappers for symmetrization |
 | Section 20 random variables/distributions | `_243-363.md` near Section 20 start | local-wrapper candidate | distribution and convergence-in-probability wrappers |

@@ -54,12 +54,13 @@ Local searches found reusable APIs in:
 - `StatInference/ProbabilityMeasure/ProductMeasure.lean`
 - `StatInference/ProbabilityMeasure/BorelCantelli.lean`
 - `StatInference/ProbabilityMeasure/GeneratedSigma.lean`
+- `StatInference/ProbabilityMeasure/StrongLaw.lean`
 
 ## Primitive Sequence
 
 1. Keep the Section 25 Billingsley weak-convergence wrappers compiling.
 2. Keep the finite-dimensional process-law, product/Fubini, and
-   Borel-Cantelli/generated-sigma wrappers compiling.
+   Borel-Cantelli/generated-sigma/strong-law wrappers compiling.
 3. Add a precise Section 25 theorem candidate to the inventory:
    bounded-continuous test functions, open/closed Portmanteau directions,
    continuous mapping, or tightness/Prokhorov.
@@ -82,6 +83,12 @@ of:
 
 - a Billingsley Section 25 exact theorem candidate wrapping an already proved
   mathlib/local weak-convergence implication; or
+- an empirical-distribution support wrapper in
+  `StatInference/EmpiricalProcess/RealHalfLineGC.lean`:
+  first prove `∫ x, realHalfLineIndicator c x ∂P = ProbabilityTheory.cdf P c`
+  from `integral_indicator_one` and `ProbabilityTheory.cdf_eq_real`, then wrap
+  `endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid` as
+  `realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid`; or
 - a Section 16 tail-control primitive in the empirical-process files that
   directly unlocks `StatInference/EmpiricalProcess/Theorem243.lean`.
 

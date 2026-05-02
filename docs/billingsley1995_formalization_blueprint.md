@@ -65,6 +65,7 @@ Initial Lean module:
 - `StatInference/ProbabilityMeasure/FiniteDimensional.lean`
 - `StatInference/ProbabilityMeasure/GeneratedSigma.lean`
 - `StatInference/ProbabilityMeasure/ProductMeasure.lean`
+- `StatInference/ProbabilityMeasure/StrongLaw.lean`
 
 Reuse audit:
 
@@ -96,6 +97,8 @@ Current compiled wrappers:
 - first and second Borel-Cantelli wrappers
 - generated sigma-field, generator-measurability, pi-system, and
   finite/probability measure extensionality wrappers
+- real-valued strong-law, centered strong-law, and finite-family centered
+  strong-law wrappers
 
 ### Lane B: Integration, tails, and uniform integrability
 
@@ -150,8 +153,8 @@ Near-term declarations:
 
 - Borel-Cantelli wrappers: started in
   `StatInference/ProbabilityMeasure/BorelCantelli.lean`.
-- Billingsley wrappers around `strong_law_ae_real` where they stabilize source
-  anchors.
+- Strong-law wrappers around `strong_law_ae_real`: started in
+  `StatInference/ProbabilityMeasure/StrongLaw.lean`.
 - Rademacher PMF/has-law/iid construction primitives for Theorem 2.4.3.
 - Borel-Cantelli wrappers only when needed for an exact theorem route.
 

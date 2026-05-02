@@ -1,5 +1,5 @@
 import StatInference.EmpiricalProcess.Bracketing
-import Mathlib.Probability.StrongLaw
+import StatInference.ProbabilityMeasure.StrongLaw
 
 /-!
 # Endpoint strong-law wrappers
@@ -33,12 +33,7 @@ theorem endpoint_strong_law_ae_real
         (fun n : ℕ =>
           (∑ i ∈ Finset.range n, X i ω) / n - μ[X 0])
         atTop (𝓝 0) := by
-  filter_upwards [ProbabilityTheory.strong_law_ae_real X hint hindep hident]
-    with ω hω
-  have hconst :
-      Tendsto (fun _ : ℕ => μ[X 0]) atTop (𝓝 μ[X 0]) :=
-    tendsto_const_nhds
-  simpa using hω.sub hconst
+  exact ProbabilityMeasure.centeredStrongLaw_ae_real X hint hindep hident
 
 /--
 Finite-family endpoint strong law.
@@ -63,10 +58,6 @@ theorem finite_endpoint_strong_law_ae_real
           (∑ i ∈ Finset.range n, X endpoint i ω) / n -
             μ[X endpoint 0])
         atTop (𝓝 0) := by
-  classical
-  exact ae_all_iff.2
-    (fun endpoint =>
-      endpoint_strong_law_ae_real (X endpoint) (hint endpoint)
-        (hindep endpoint) (hident endpoint))
+  exact ProbabilityMeasure.finite_centeredStrongLaw_ae_real X hint hindep hident
 
 end StatInference
