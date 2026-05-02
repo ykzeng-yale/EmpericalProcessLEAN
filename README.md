@@ -99,6 +99,12 @@ The Chapter 1-2 theorem-level blueprint and gap audit is:
 docs/vdvw_chapter1_2_formalization_blueprint.md
 ```
 
+The visual progress dashboard for Chapter 1-2 is:
+
+```text
+docs/vdvw_chapter1_2_progress_dashboard.md
+```
+
 ## Lean And Mathlib Base
 
 The project uses Lean through Lake.
