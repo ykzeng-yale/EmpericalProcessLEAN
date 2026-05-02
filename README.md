@@ -246,6 +246,9 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `tendstoInDistribution_of_vdVWConvergesInOuterProbability`, and
   `vdVW_theorem_2_4_1_glivenkoCantelli`
   in `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`.
+- `VdVWOuterProbability_eq_outerExpectation_eventIndicator` and
+  `VdVWOuterAlmostSure_iff_outerExpectation_exceptional_eq_zero`
+  in `StatInference/EmpiricalProcess/OuterProbabilityExpectation.lean`.
 - `VdVWMeasurableMajorant`, `VdVWOuterExpectation`,
   `VdVWMeasurableCover`, `VdVWOuterExpectation_eq_lintegral_cover`,
   `VdVWMeasurableCover.addOfMeasurableLeft`,
