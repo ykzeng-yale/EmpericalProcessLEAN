@@ -335,6 +335,8 @@ additional example closures:
    vdVWTheorem243_abs_tail_le_of_hasSubgaussianMGF
    vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF
    vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF_of_pos
+   vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF
+   vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF_of_pos
    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
    ```
 
@@ -354,9 +356,12 @@ additional example closures:
    Hoeffding sub-Gaussian bound, and uses mathlib's iid existence theorem to
    produce finitely many iid real-valued signs together with measurability,
    laws, independence, sub-Gaussian marginals, probability-space structure, and
-   almost-sure sign-vector support.  It deliberately does not yet convert the
-   finite-center tails into the finite-center `psi_2`/Hoeffding maximal
-   expectation predicate.
+   almost-sure sign-vector support.  The newest finite-supremum layer proves
+   that the finite supremum of absolute sub-Gaussian center variables is
+   integrable, both from a `Nonempty (Fin cardinality)` typeclass and from the
+   explicit positive-cardinality proof exposed by empirical-cover witnesses.
+   It deliberately does not yet convert the finite-center tails into the
+   finite-center `psi_2`/Hoeffding maximal expectation predicate.
 
    Search correction: the current
    `VdVWTheorem243RademacherFiniteCenterHoeffdingBound` is a deterministic
@@ -368,7 +373,13 @@ additional example closures:
    `HasSubgaussianMGF.const_mul`,
    `HasSubgaussianMGF.sum_of_iIndepFun`,
    `HasSubgaussianMGF.measure_ge_le`,
+   `HasSubgaussianMGF.integrable`,
    `HasSubgaussianMGF.neg`,
+   `Integrable.abs`,
+   `integrable_finsetSum`,
+   `AEMeasurable.iSup`,
+   `Finite.le_ciSup`,
+   `Finset.single_le_sum`,
    `MeasureTheory.measureReal_union_le`,
    `MeasureTheory.measureReal_iUnion_fintype_le`,
    `exists_eq_ciSup_of_finite`,
@@ -389,11 +400,11 @@ additional example closures:
    `hasSubgaussianMGF_of_mem_Icc`, and
    `ProbabilityTheory.exists_hasLaw_indepFun`; no reusable Orlicz/`psi_2`
    API was found.  The probabilistic one-center sub-Gaussian bridge,
-   variance-proxy arithmetic, and finite-center tail/union-bound layer are now
-   compiled; the iid Rademacher-sign construction is now compiled as well.
-   The next theorem-line primitive is the tail-to-Orlicz/maximal expectation
-   conversion, followed by specialization of that bound to the truncated
-   centers.
+   variance-proxy arithmetic, finite-center tail/union-bound layer, iid
+   Rademacher-sign construction, and finite-center supremum integrability layer
+   are now compiled.  The next theorem-line primitive is the sharp
+   tail-to-Orlicz/maximal expectation bound, followed by specialization of that
+   bound to the truncated centers.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -411,12 +422,12 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: prove or primitive-register the tail-to-Orlicz/maximal
-expectation conversion needed for the finite-center Hoeffding/maximal bound,
-using the compiled finite-center tail/union-bound layer and the newly compiled
-iid Rademacher construction.  Then specialize that bound to truncated centers
-with `vdVWTheorem243_truncated_varianceProxy_le`, and move to the
-symmetrization/truncation and envelope-tail handoffs.
+Next exact edit: prove or primitive-register the sharp tail-to-Orlicz/maximal
+expectation bound needed for the finite-center Hoeffding/maximal bound, using
+the compiled finite-center tail/union-bound layer, iid Rademacher construction,
+and finite-center supremum integrability layer.  Then specialize that bound to
+truncated centers with `vdVWTheorem243_truncated_varianceProxy_le`, and move to
+the symmetrization/truncation and envelope-tail handoffs.
 
 ## Parked Example-Specific Blocker
 

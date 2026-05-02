@@ -907,6 +907,67 @@ theorem vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF_of_pos
       X hX hepsilon
 
 /--
+The finite supremum of absolute sub-Gaussian center variables is integrable.
+
+This is a preparatory maximal-inequality layer for the expectation/Orlicz step:
+it makes the random finite-center supremum an honest integrable random
+variable before the sharper `sqrt(log #G)` bound is proved.
+-/
+theorem vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {cardinality : ℕ} [Nonempty (Fin cardinality)]
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0}
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ) :
+    Integrable (fun ω =>
+      ⨆ centerIndex : Fin cardinality, |X centerIndex ω|) μ := by
+  have hcenter_integrable :
+      ∀ centerIndex : Fin cardinality,
+        Integrable (fun ω => |X centerIndex ω|) μ := by
+    intro centerIndex
+    exact (hX centerIndex).integrable.abs
+  have hsum_integrable :
+      Integrable (fun ω =>
+        ∑ centerIndex : Fin cardinality, |X centerIndex ω|) μ := by
+    exact integrable_finsetSum Finset.univ
+      (fun centerIndex _hcenterIndex => hcenter_integrable centerIndex)
+  have hsup_aestronglyMeasurable :
+      AEStronglyMeasurable
+        (fun ω => ⨆ centerIndex : Fin cardinality, |X centerIndex ω|) μ := by
+    exact
+      (AEMeasurable.iSup fun centerIndex =>
+        (hcenter_integrable centerIndex).aemeasurable).aestronglyMeasurable
+  refine Integrable.mono' hsum_integrable hsup_aestronglyMeasurable ?_
+  refine ae_of_all μ ?_
+  intro ω
+  have hsup_nonneg :
+      0 ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|) := by
+    exact
+      (abs_nonneg (X (Classical.arbitrary (Fin cardinality)) ω)).trans
+        (Finite.le_ciSup
+          (fun centerIndex : Fin cardinality => |X centerIndex ω|)
+          (Classical.arbitrary (Fin cardinality)))
+  rw [Real.norm_eq_abs, abs_of_nonneg hsup_nonneg]
+  exact ciSup_le fun centerIndex =>
+    Finset.single_le_sum (f := fun i : Fin cardinality => |X i ω|)
+      (fun i _hi => abs_nonneg (X i ω)) (Finset.mem_univ centerIndex)
+
+/--
+The finite-center supremum integrability handoff from an explicit positive
+cardinality proof.
+-/
+theorem vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF_of_pos
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0}
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ) :
+    Integrable (fun ω =>
+      ⨆ centerIndex : Fin cardinality, |X centerIndex ω|) μ := by
+  haveI : Nonempty (Fin cardinality) := ⟨⟨0, hcardinality⟩⟩
+  exact
+    vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF
+      X hX
+
+/--
 Book-facing predicate for the finite-center Hoeffding/Orlicz step after
 specializing the weighted sums to fixed Rademacher signs.
 
