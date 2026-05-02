@@ -271,6 +271,24 @@ theorem vdVWBoundedDist_measurable_iff_dist
   · intro hdist
     exact hdist.div (measurable_const.add hdist)
 
+/-- Bounded distance to a fixed center is measurable for the VdV&W open-ball sigma-field. -/
+theorem vdVWBoundedDist_measurable_openBallSigma
+    {S : Type u} [PseudoMetricSpace S] (s : S) :
+    @Measurable S ℝ (VdVWOpenBallMeasurableSpace S) (borel ℝ)
+      (fun x => vdVWBoundedDist x s) := by
+  letI : MeasurableSpace S := VdVWOpenBallMeasurableSpace S
+  change Measurable fun x : S => vdVWBoundedDist x s
+  exact (vdVWBoundedDist_measurable_iff_dist (X := fun x : S => x) (s := s)).2
+    (vdVW_dist_measurable_openBallSigma s)
+
+/-- Bounded distance to a fixed center is measurable for the VdV&W closed-ball sigma-field. -/
+theorem vdVWBoundedDist_measurable_closedBallSigma
+    {S : Type u} [PseudoMetricSpace S] (s : S) :
+    @Measurable S ℝ (VdVWClosedBallMeasurableSpace S) (borel ℝ)
+      (fun x => vdVWBoundedDist x s) := by
+  rw [vdVWClosedBallMeasurableSpace_eq_openBallMeasurableSpace]
+  exact vdVWBoundedDist_measurable_openBallSigma s
+
 /--
 An open ball is a countable union of strict sublevel sets of distances to any
 fixed dense sequence.  This is the separability step behind the VdV&W

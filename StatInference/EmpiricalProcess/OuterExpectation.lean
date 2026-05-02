@@ -544,6 +544,13 @@ instance {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
       (fun _ => Ω -> EReal) where
   coe U := U.toFun
 
+/-- The measurable cover inherits the recorded lower bound from the target. -/
+theorem lower_le_cover {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> EReal} {lower upper : ℝ}
+    (U : VdVWBoundedERealMeasurableCover μ T lower upper) (ω : Ω) :
+    (lower : EReal) ≤ U ω :=
+  le_trans (U.lower_le_target ω) (U.majorizes ω)
+
 /-- A measurable bounded `EReal` map is its own bounded measurable cover. -/
 def ofMeasurable {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
     {T : Ω -> EReal} {lower upper : ℝ} (hT : Measurable T)

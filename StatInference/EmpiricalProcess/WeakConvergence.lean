@@ -120,6 +120,21 @@ def VdVWProbabilityMeasuresTight
   IsTightMeasureSet {((μ : ProbabilityMeasure S) : Measure S) | μ ∈ A}
 
 /--
+A singleton family of probability measures is tight on complete separable
+metric-type spaces.
+
+This is the local VdV&W tightness wrapper around mathlib's singleton tightness
+theorem for finite measures.
+-/
+theorem vdVWProbabilityMeasuresTight_singleton
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    [IsCompletelyPseudoMetrizableSpace S] [SecondCountableTopology S] [BorelSpace S]
+    (μ : ProbabilityMeasure S) :
+    VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) := by
+  simpa [VdVWProbabilityMeasuresTight] using
+    (isTightMeasureSet_singleton (μ := (μ : Measure S)))
+
+/--
 Compact-set characterization of the VdV&W-local probability-measure tightness
 wrapper.
 -/

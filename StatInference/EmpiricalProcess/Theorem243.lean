@@ -667,6 +667,93 @@ theorem vdVWTheorem243_truncated_varianceProxy_le
         abs_vdVWTruncatedClassFun_le_M henvelope hM_nonneg hcenter (sample i)))
 
 /--
+Two-sided tail bound for a sub-Gaussian real random variable.
+
+This is the local absolute-value tail bridge needed before the finite-center
+Hoeffding/Orlicz maximal layer in Theorem 2.4.3.  Mathlib supplies the
+one-sided Chernoff bound as `HasSubgaussianMGF.measure_ge_le`; the absolute
+tail is a union bound over `X` and `-X`.
+-/
+theorem vdVWTheorem243_abs_tail_le_of_hasSubgaussianMGF
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {X : Ω -> ℝ} {c : ℝ≥0} {epsilon : ℝ}
+    (hX : HasSubgaussianMGF X c μ) (hepsilon : 0 ≤ epsilon) :
+    μ.real {ω | epsilon ≤ |X ω|} ≤
+      2 * Real.exp (-(epsilon ^ 2) / (2 * (c : ℝ))) := by
+  have hsubset :
+      {ω | epsilon ≤ |X ω|} ⊆
+        ({ω | epsilon ≤ X ω} ∪ {ω | epsilon ≤ -X ω}) := by
+    intro ω hω
+    have hω_abs : epsilon ≤ |X ω| := by
+      simpa using hω
+    rcases (le_abs.mp hω_abs) with hpos | hneg
+    · exact Or.inl hpos
+    · exact Or.inr hneg
+  calc
+    μ.real {ω | epsilon ≤ |X ω|}
+        ≤ μ.real ({ω | epsilon ≤ X ω} ∪ {ω | epsilon ≤ -X ω}) := by
+          exact measureReal_mono hsubset
+    _ ≤ μ.real {ω | epsilon ≤ X ω} + μ.real {ω | epsilon ≤ -X ω} := by
+          exact measureReal_union_le _ _
+    _ ≤ Real.exp (-(epsilon ^ 2) / (2 * (c : ℝ))) +
+        Real.exp (-(epsilon ^ 2) / (2 * (c : ℝ))) := by
+          exact
+            add_le_add (hX.measure_ge_le hepsilon)
+              ((hX.neg).measure_ge_le hepsilon)
+    _ = 2 * Real.exp (-(epsilon ^ 2) / (2 * (c : ℝ))) := by
+          ring
+
+/--
+Finite-center union-bound tail layer for Theorem 2.4.3.
+
+If each center process is sub-Gaussian with the same variance proxy, then the
+tail probability of the finite supremum of absolute center sums is bounded by
+the number of centers times the one-center two-sided tail bound.
+-/
+theorem vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} [Nonempty (Fin cardinality)]
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0} {epsilon : ℝ}
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ)
+    (hepsilon : 0 ≤ epsilon) :
+    μ.real {ω | epsilon ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)} ≤
+      (cardinality : ℝ) *
+        (2 * Real.exp (-(epsilon ^ 2) / (2 * (c : ℝ)))) := by
+  have hsubset :
+      {ω | epsilon ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)} ⊆
+        (⋃ centerIndex : Fin cardinality, {ω | epsilon ≤ |X centerIndex ω|}) := by
+    intro ω hω
+    have hω_sup :
+        epsilon ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|) := by
+      simpa using hω
+    obtain ⟨centerIndex, hcenterIndex⟩ :
+        ∃ centerIndex : Fin cardinality,
+          |X centerIndex ω| =
+            ⨆ centerIndex : Fin cardinality, |X centerIndex ω| :=
+      exists_eq_ciSup_of_finite
+    exact Set.mem_iUnion.mpr
+      ⟨centerIndex, by simpa [← hcenterIndex] using hω_sup⟩
+  calc
+    μ.real {ω | epsilon ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)}
+        ≤ μ.real
+          (⋃ centerIndex : Fin cardinality,
+            {ω | epsilon ≤ |X centerIndex ω|}) := by
+          exact measureReal_mono hsubset
+    _ ≤ ∑ centerIndex : Fin cardinality,
+        μ.real {ω | epsilon ≤ |X centerIndex ω|} := by
+          exact measureReal_iUnion_fintype_le _
+    _ ≤ ∑ _centerIndex : Fin cardinality,
+        2 * Real.exp (-(epsilon ^ 2) / (2 * (c : ℝ))) := by
+          apply Finset.sum_le_sum
+          intro centerIndex _hcenterIndex
+          exact
+            vdVWTheorem243_abs_tail_le_of_hasSubgaussianMGF
+              (hX centerIndex) hepsilon
+    _ = (cardinality : ℝ) *
+        (2 * Real.exp (-(epsilon ^ 2) / (2 * (c : ℝ)))) := by
+          simp [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+
+/--
 Book-facing predicate for the finite-center Hoeffding/Orlicz step after
 specializing the weighted sums to fixed Rademacher signs.
 

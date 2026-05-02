@@ -319,6 +319,8 @@ additional example closures:
    vdVWTheorem243_oneCenter_rademacher_subGaussian_bridge
    vdVWTheorem243_varianceProxy_real_le_of_abs_le
    vdVWTheorem243_truncated_varianceProxy_le
+   vdVWTheorem243_abs_tail_le_of_hasSubgaussianMGF
+   vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF
    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
    ```
 
@@ -328,9 +330,12 @@ additional example closures:
    `HasSubgaussianMGF.const_mul` and `HasSubgaussianMGF.sum_of_iIndepFun`.  It
    also proves the deterministic variance-proxy arithmetic and its
    truncated-envelope specialization, bounding the `NNReal` sub-Gaussian proxy
-   by `M^2 / n`.  It deliberately does not yet construct iid Rademacher signs
-   or prove the finite-center `psi_2`/Hoeffding maximal predicate
-   probabilistically.
+   by `M^2 / n`.  The newest tail layer converts mathlib's one-sided
+   `HasSubgaussianMGF.measure_ge_le` into a two-sided absolute-value tail
+   bound and then into a finite-center union bound for the supremum over a
+   nonempty `Fin cardinality` net.  It deliberately does not yet construct iid
+   Rademacher signs or convert these tails into the finite-center
+   `psi_2`/Hoeffding maximal expectation predicate.
 
    Search correction: the current
    `VdVWTheorem243RademacherFiniteCenterHoeffdingBound` is a deterministic
@@ -342,15 +347,19 @@ additional example closures:
    `HasSubgaussianMGF.const_mul`,
    `HasSubgaussianMGF.sum_of_iIndepFun`,
    `HasSubgaussianMGF.measure_ge_le`,
+   `HasSubgaussianMGF.neg`,
+   `MeasureTheory.measureReal_union_le`,
+   `MeasureTheory.measureReal_iUnion_fintype_le`,
+   `exists_eq_ciSup_of_finite`,
    `measure_sum_ge_le_of_iIndepFun`,
    `measure_sum_range_ge_le_of_iIndepFun`,
    `hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero`,
    `hasSubgaussianMGF_of_mem_Icc`, and
    `ProbabilityTheory.exists_hasLaw_indepFun`; no reusable Orlicz/`psi_2`
-   API was found.  The probabilistic one-center sub-Gaussian bridge and
-   variance-proxy arithmetic are now compiled; the next theorem-line primitive
-   is a probabilistic finite-center tail/maximal bound plus the iid
-   Rademacher-sign construction.
+   API was found.  The probabilistic one-center sub-Gaussian bridge,
+   variance-proxy arithmetic, and finite-center tail/union-bound layer are now
+   compiled; the next theorem-line primitives are the iid Rademacher-sign
+   construction and the tail-to-Orlicz/maximal expectation conversion.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -368,10 +377,12 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: prove or primitive-register the finite-center probabilistic
-Hoeffding/maximal bound from the one-center sub-Gaussian bridge and compiled
-variance-proxy layer, including iid Rademacher-sign construction; then move to
-the symmetrization/truncation and envelope-tail handoffs.
+Next exact edit: construct or primitive-register iid Rademacher signs in the
+current `Fin n` sample-index form, specialize the compiled finite-center
+tail/union-bound layer to the truncated centers using the variance-proxy bound,
+and then prove or primitive-register the tail-to-Orlicz/maximal expectation
+conversion needed for the finite-center Hoeffding/maximal bound.  After that,
+move to the symmetrization/truncation and envelope-tail handoffs.
 
 ## Parked Example-Specific Blocker
 
@@ -393,7 +404,7 @@ Pinned/local Lean sources searched before adding new primitives:
 
 | Source | Local path | Useful APIs found |
 | --- | --- | --- |
-| pinned mathlib | `.lake/packages/mathlib/Mathlib` | `Metric.externalCoveringNumber`, `Metric.coveringNumber`, `Metric.IsCover`, `externalCoveringNumber_mono_set`, `Set.indicator`, `Measurable.indicator`, `measurableSet_le`, `Asymptotics.IsLittleO`, `MeasureTheory.TendstoInMeasure`, `Real.log`, `Real.log_nonneg`, `Real.log_natCast_nonneg`, `Real.sqrt`, `Real.sqrt_nonneg`, `ENat.toNat`, `ENat.map`, `WithTop.untopD`, `PMF.bernoulli`, `ProbabilityTheory.exists_hasLaw_indepFun`, `Kernel.HasSubgaussianMGF`, `HasSubgaussianMGF`, `hasSubgaussianMGF_of_mem_Icc`, `hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero`, `measure_sum_range_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_hasCondSubgaussianMGF`, `eLpNorm`, `eLpNorm_one_eq_lintegral_enorm`, `eLpNorm_add_le`, `eLpNorm_sum_le`, plus previous Example 2.4.2 APIs: `ProbabilityTheory.cdf`, `ProbabilityTheory.measure_cdf`, `ProbabilityTheory.cdf_eq_real`, `ProbabilityTheory.tendsto_cdf_atBot`, `ProbabilityTheory.tendsto_cdf_atTop`, `StieltjesFunction.measure_Ioo`, `measure_Iio`, `measure_Ioi`, `tendsto_measure_Iic_atTop`, `tendsto_measure_Ici_atBot`, `Measure.real`, `measureReal_mono`, `Fin.cases`, `Fin.lastCases`, `Fin.snoc`, `Fin.cons`, `Fin.eq_castSucc_or_eq_last` |
+| pinned mathlib | `.lake/packages/mathlib/Mathlib` | `Metric.externalCoveringNumber`, `Metric.coveringNumber`, `Metric.IsCover`, `externalCoveringNumber_mono_set`, `Set.indicator`, `Measurable.indicator`, `measurableSet_le`, `Asymptotics.IsLittleO`, `MeasureTheory.TendstoInMeasure`, `Real.log`, `Real.log_nonneg`, `Real.log_natCast_nonneg`, `Real.sqrt`, `Real.sqrt_nonneg`, `ENat.toNat`, `ENat.map`, `WithTop.untopD`, `PMF.bernoulli`, `ProbabilityTheory.exists_hasLaw_indepFun`, `Kernel.HasSubgaussianMGF`, `HasSubgaussianMGF`, `HasSubgaussianMGF.neg`, `HasSubgaussianMGF.measure_ge_le`, `hasSubgaussianMGF_of_mem_Icc`, `hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero`, `measure_sum_range_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_hasCondSubgaussianMGF`, `MeasureTheory.measureReal_union_le`, `MeasureTheory.measureReal_iUnion_fintype_le`, `exists_eq_ciSup_of_finite`, `eLpNorm`, `eLpNorm_one_eq_lintegral_enorm`, `eLpNorm_add_le`, `eLpNorm_sum_le`, plus previous Example 2.4.2 APIs: `ProbabilityTheory.cdf`, `ProbabilityTheory.measure_cdf`, `ProbabilityTheory.cdf_eq_real`, `ProbabilityTheory.tendsto_cdf_atBot`, `ProbabilityTheory.tendsto_cdf_atTop`, `StieltjesFunction.measure_Ioo`, `measure_Iio`, `measure_Ioi`, `tendsto_measure_Iic_atTop`, `tendsto_measure_Ici_atBot`, `Measure.real`, `measureReal_mono`, `Fin.cases`, `Fin.lastCases`, `Fin.snoc`, `Fin.cons`, `Fin.eq_castSucc_or_eq_last` |
 | pinned packages | `.lake/packages/{aesop,batteries,proofwidgets,LeanSearchClient,Qq,Cli,plausible,importGraph}` | tactic/support libraries, no empirical-CDF bracketing theorem and no VdV&W-style Orlicz maximal theorem found |
 | local AI-Statistician checkout | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician` | older/high-level Rademacher and empirical-process certificate interfaces only; no exact VdV&W half-line quantile grid theorem and no reusable Theorem 2.4.3 Orlicz/Hoeffding proof |
 | local empirical blueprint worktree | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician/.worktrees/empirical-blueprint` | high-level empirical-process certificates; no reusable measure-theoretic quantile grid proof, iid Rademacher construction, or finite-center maximal proof |
