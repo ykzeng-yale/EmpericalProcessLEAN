@@ -2,6 +2,7 @@ import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.MeasureTheory.Group.Arithmetic
 import Mathlib.MeasureTheory.Measure.NullMeasurable
+import Mathlib.Topology.Order.OrderClosed
 
 /-!
 # `P`-measurable classes
@@ -20,8 +21,8 @@ mathlib this completion-measurability condition is expressed as
 
 namespace StatInference
 
-open MeasureTheory
-open scoped BigOperators
+open MeasureTheory Filter
+open scoped BigOperators Topology
 
 universe u v
 
@@ -99,6 +100,44 @@ theorem measurable_abs_vdVWWeightedSampleSum
     (measurable_vdVWWeightedSampleSum weights hmeas)
 
 /--
+Pointwise convergence of class functions implies convergence of every finite
+weighted sample sum.
+-/
+theorem tendsto_vdVWWeightedSampleSum_of_pointwise
+    {Observation : Type u} {Index : Type v}
+    {classFun : Index -> Observation -> ℝ} {n : ℕ}
+    (weights : Fin n -> ℝ) (sample : Fin n -> Observation)
+    {approx : ℕ -> Index} {index : Index}
+    (hlim :
+      ∀ x : Observation,
+        Tendsto (fun m => classFun (approx m) x) atTop
+          (𝓝 (classFun index x))) :
+    Tendsto
+      (fun m => vdVWWeightedSampleSum classFun weights (approx m) sample)
+      atTop
+      (𝓝 (vdVWWeightedSampleSum classFun weights index sample)) := by
+  simpa [vdVWWeightedSampleSum] using
+    tendsto_finsetSum Finset.univ fun i _hi =>
+      (hlim (sample i)).const_mul (weights i)
+
+/-- Absolute-value version of `tendsto_vdVWWeightedSampleSum_of_pointwise`. -/
+theorem tendsto_abs_vdVWWeightedSampleSum_of_pointwise
+    {Observation : Type u} {Index : Type v}
+    {classFun : Index -> Observation -> ℝ} {n : ℕ}
+    (weights : Fin n -> ℝ) (sample : Fin n -> Observation)
+    {approx : ℕ -> Index} {index : Index}
+    (hlim :
+      ∀ x : Observation,
+        Tendsto (fun m => classFun (approx m) x) atTop
+          (𝓝 (classFun index x))) :
+    Tendsto
+      (fun m => |vdVWWeightedSampleSum classFun weights (approx m) sample|)
+      atTop
+      (𝓝 |vdVWWeightedSampleSum classFun weights index sample|) :=
+  continuous_abs.tendsto _ |>.comp
+    (tendsto_vdVWWeightedSampleSum_of_pointwise weights sample hlim)
+
+/--
 A countable coordinate-measurable class is `P`-measurable.
 
 This is the Lean counterpart of the standard pointwise-measurable/countable
@@ -117,5 +156,78 @@ theorem VdVWPMeasurableClass.of_countable_of_measurable
     (Measurable.biSup indexClass hcount fun index hindex =>
       measurable_abs_vdVWWeightedSampleSum weights (hmeas index hindex)
     ).nullMeasurable
+
+/--
+Proof-carrying form of the separability handoff used after VdV&W
+Example 2.3.4.
+
+The subclass is countable and gives the same weighted suprema `(2.3.2)` as
+the original class.  The separate pointwise-dense hypothesis of the textbook
+can be promoted to this equality in a later exact Example 2.3.4 theorem.
+-/
+structure VdVWPointwiseSupremumSeparable
+    {Observation : Type u} {Index : Type v}
+    (indexClass subclass : Set Index)
+    (classFun : Index -> Observation -> ℝ) : Prop where
+  subset : subclass ⊆ indexClass
+  countable : subclass.Countable
+  supremum_eq :
+    ∀ (n : ℕ) (weights : Fin n -> ℝ)
+      (sample : Fin n -> Observation),
+      vdVWWeightedClassSupremum indexClass classFun weights sample =
+        vdVWWeightedClassSupremum subclass classFun weights sample
+
+/--
+Literal pointwise-dense countable-subclass hypothesis from VdV&W
+Example 2.3.4.
+
+This is intentionally kept separate from `VdVWPointwiseSupremumSeparable`.
+The hard analytic bridge still to promote is that this pointwise convergence
+hypothesis preserves every finite weighted supremum `(2.3.2)`.
+-/
+structure VdVWPointwiseApproximableByCountableSubclass
+    {Observation : Type u} {Index : Type v}
+    (indexClass subclass : Set Index)
+    (classFun : Index -> Observation -> ℝ) : Prop where
+  subset : subclass ⊆ indexClass
+  countable : subclass.Countable
+  approximates :
+    ∀ index, index ∈ indexClass ->
+      ∃ approx : ℕ -> Index,
+        (∀ m, approx m ∈ subclass) ∧
+          ∀ x : Observation,
+            Tendsto (fun m => classFun (approx m) x) atTop
+              (𝓝 (classFun index x))
+
+/--
+If the weighted supremum over a class is realized by a countable measurable
+subclass, then the original class is `P`-measurable.
+
+This is the formal handoff behind the sentence after Example 2.3.4: once the
+supremum over `F` equals the supremum over `G`, measurability follows from the
+countable subclass.
+-/
+theorem VdVWPMeasurableClass.of_pointwiseSupremumSeparable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} {indexClass subclass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    (hsep : VdVWPointwiseSupremumSeparable indexClass subclass classFun)
+    (hmeas : VdVWClassCoordinateMeasurable subclass classFun) :
+    VdVWPMeasurableClass P indexClass classFun := by
+  intro n weights
+  have hsub :
+      NullMeasurable
+        (fun sample : Fin n -> Observation =>
+          vdVWWeightedClassSupremum subclass classFun weights sample)
+        (vdVWProductMeasure P n) :=
+    VdVWPMeasurableClass.of_countable_of_measurable
+      hsep.countable hmeas n weights
+  have hfun :
+      (fun sample : Fin n -> Observation =>
+        vdVWWeightedClassSupremum indexClass classFun weights sample) =
+      (fun sample : Fin n -> Observation =>
+        vdVWWeightedClassSupremum subclass classFun weights sample) :=
+    funext fun sample => hsep.supremum_eq n weights sample
+  simpa [hfun] using hsub
 
 end StatInference

@@ -33,13 +33,14 @@ be deferred if it is broad Chapter 1 infrastructure rather than a dependency of
 the current empirical-process target.
 
 Examples/addenda are tracked separately from this theorem-level inventory.
-The current examples/addenda frontier has one compiled local layer: Example
-2.4.2 half-line bracket membership, width, extended-real endpoint brackets,
-extended-open-cell endpoint/width identities, adjacent-endpoint grid handoff,
-supplied finite-grid bridges, the one-cell base grid for radii above total
-mass, all-positive-radius `N_[] < ∞` handoff, the conditional half-line GC
-corollary from supplied grids, and the conditional half-line GC corollary from
-adjacent endpoint grids.
+The current examples/addenda frontier has two compiled local layers: Example
+2.3.4 pointwise/countable-subclass convergence helpers and supremum-equality
+handoff to `P`-measurability, and Example 2.4.2 half-line bracket membership, width,
+extended-real endpoint brackets, extended-open-cell endpoint/width identities,
+adjacent-endpoint grid handoff, supplied finite-grid bridges, the one-cell base
+grid for radii above total mass, all-positive-radius `N_[] < ∞` handoff, the
+conditional half-line GC corollary from supplied grids, and the conditional
+half-line GC corollary from adjacent endpoint grids.
 
 ## Chapter Split
 
@@ -96,7 +97,7 @@ outer-a.s./outer-probability GC wrappers.
 | Definition 2.1.5 | `vdVWCoveringNumber` wrapper over mathlib `Metric.externalCoveringNumber`, explicit finite closed-ball cover witnesses, finite-number handoff, monotonicity, and packing comparison wrappers | Exact open-ball norm convention needs radius-slack wrappers when a theorem requires literal `< epsilon` balls. |
 | Definition 2.1.6 | Primitive brackets, finite covers, `L1(P)` width, and numeric `l1BracketingNumber` | Entropy/logarithm refinements are not the current target. |
 | Definition 2.2.3 | Semimetric whole-space covering/packing wrappers `vdVWSemimetricCoveringNumber` and `vdVWSemimetricPackingNumber`, finite-cover handoff, and `N <= D <= N(epsilon/2)` comparison layer | Entropy/logarithm wrappers and exact open-ball convention remain pending. |
-| Definition 2.3.3 | Product measure `P^n`, display `(2.3.2)` weighted sample sums and class suprema, `NullMeasurable` predicate for measurability on the completion, and countable coordinate-measurable constructor | Pointwise-measurable separability route and source screenshot for future theorem reports. |
+| Definition 2.3.3 | Product measure `P^n`, display `(2.3.2)` weighted sample sums and class suprema, `NullMeasurable` predicate for measurability on the completion, countable coordinate-measurable constructor, pointwise-to-weighted-sum convergence helpers, and proof-carrying countable-subclass supremum-equality handoff | Exact proof that the textbook pointwise convergence hypothesis implies all weighted-supremum equalities, plus source screenshot for future theorem reports. |
 | Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint/width identities, adjacent-endpoint grid handoff, supplied finite-grid bridges, one-cell base grid for radii above total mass, all-positive-radius `N_[] < ∞` handoff, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids | Distribution-dependent finite grid and exact empirical-CDF example report. |
 
 ## Near-Term Frontier

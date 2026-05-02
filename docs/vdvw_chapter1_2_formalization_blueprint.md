@@ -315,6 +315,7 @@ above, so they do not change the theorem-level dashboard counts.
 
 | Item | Kind | Anchor | Current audit status |
 | --- | --- | --- | --- |
+| 2.3.4 | Example | `..._101-200.md:630` | local-layer: pointwise/countable-subclass predicates, pointwise-to-weighted-sum convergence helpers, and the proof-carrying supremum-equality handoff to `P`-measurability; pending exact theorem that the textbook pointwise convergence hypothesis implies equality of all weighted suprema `(2.3.2)` |
 | 2.4.2 | Example | `..._101-200.md:985` | local-layer: real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint identities and width identity, adjacent-endpoint grid handoff, supplied finite-grid bridges to the primitive bracketing-number witness, one-cell base grid for radii above total mass, all-positive-radius handoff to the Theorem 2.4.1 `N_[] < ∞` hypothesis, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids; pending distribution-dependent grid existence and exact empirical-CDF example report |
 
 ## Priority Order
