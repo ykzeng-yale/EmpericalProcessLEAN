@@ -29,6 +29,7 @@ and minimal deterministic support:
 | `StatInference/EmpiricalProcess/BracketingCountable.lean` | countable decreasing finite-cover route |
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib |
 | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid sample-path endpoint SLLN bridge for finite bracket covers |
+| `StatInference/EmpiricalProcess/OuterExpectation.lean` | Chapter 1.2 nonnegative outer-expectation and measurable-cover primitives |
 | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | generic outer-probability convergence primitives and local/outer GC wrappers for the primitive bracketing theorem |
 
 Old local non-empirical-process theorem experiments are not part of this clean
@@ -56,7 +57,7 @@ The table below is only the active direct-proof anchor subset.
 | Textbook item | Markdown anchor | Current Lean status |
 | --- | --- | --- |
 | Section 1.2 outer integrals and Lemma 1.2.1 measurable cover | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:356-388` | nonnegative `ℝ≥0∞` outer-expectation and proof-carrying measurable-cover primitive layer formalized; extended-real existence theorem remains pending |
-| Lemma 1.2.3, outer probabilities as outer integrals | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:438-445` | nonnegative indicator version proved: `VdVWOuterExpectation_eventIndicator_eq_measure` |
+| Lemma 1.2.3, outer probabilities as outer integrals | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:438-445` | nonnegative indicator version proved: `VdVWOuterExpectation_eventIndicator_eq_measure`; finite-measure event-indicator measurable-cover bridge proved: `VdVWMeasurableCover.eventIndicatorOfToMeasurable` |
 | Definition 1.10.1, convergence in outer probability to a constant | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1406` | generic constant-limit and common-domain outer-probability primitives formalized; common-domain equivalence with mathlib `TendstoInMeasure` proved; uniform-deviation predicates and conditional tail-continuity bridge formalized |
 | Lemma 1.10.2, outer probability versus weak convergence | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1408-1417` | measurable common-domain version of part (ii) proved using mathlib convergence in distribution |
 | GC definition for uniform LLN | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1828-1834` | book-style predicate formalized with outer-probability and outer-a.s. branches |
@@ -111,6 +112,7 @@ The following are compiled Lean declarations with no proof holes:
 | `VdVWMeasurableMajorant`, `VdVWOuterExpectation`, `VdVWMeasurableCover` | nonnegative Chapter 1.2 outer-expectation and measurable-cover primitive layer |
 | `VdVWOuterExpectation_eq_lintegral_of_measurable`, `VdVWOuterExpectation_eq_lintegral_cover` | nonnegative outer expectation is realized by measurable maps and supplied minimal measurable covers |
 | `VdVWEventIndicator`, `VdVWMeasurableSetCover`, `VdVWOuterExpectation_eventIndicator_eq_measure` | Lemma 1.2.3(i) nonnegative indicator bridge: outer probability as outer expectation |
+| `VdVWMeasurableCover.eventIndicatorOfToMeasurable`, `VdVWOuterExpectation_eq_lintegral_eventIndicatorCover` | finite-measure event-indicator measurable-cover bridge using mathlib `toMeasurable` |
 | `AlmostSureUniformDeviationTendstoZeroOn` | names the ordinary a.s. pathwise uniform LLN convergence mode used by the local GC wrapper |
 | `VdVWAlmostSureGlivenkoCantelliClass` | packages iid law/independence assumptions and the local GC conclusion |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | converts primitive `N_[]` finiteness into the named a.s. convergence wrapper |

@@ -1,4 +1,5 @@
 import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
+import Mathlib.MeasureTheory.Measure.MeasureSpace
 
 /-!
 # VdV&W outer expectation and measurable-cover primitives
@@ -236,5 +237,68 @@ theorem VdVWOuterExpectation_eventIndicator_eq_measure
         (fun ω hω => by
           have h_majorizes := U.majorizes ω
           simpa [VdVWEventIndicator, hω] using h_majorizes)
+
+/--
+For a finite measure, the measurable hull of an event is a measurable cover of
+the event indicator.
+
+This is the nonnegative indicator version of the measurable-set-cover part of
+VdV&W Lemma 1.2.3.  The finite-measure assumption is natural for the textbook
+probability-space setting and lets mathlib's `Measure.measure_toMeasurable_inter`
+transfer measurable subevent tests from the hull back to the original event.
+-/
+noncomputable def VdVWMeasurableCover.eventIndicatorOfToMeasurable
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    (event : Set Ω) :
+    VdVWMeasurableCover μ (VdVWEventIndicator event) where
+  toFun := VdVWEventIndicator (toMeasurable μ event)
+  measurable_toFun :=
+    measurable_const.indicator (measurableSet_toMeasurable μ event)
+  majorizes := by
+    intro ω
+    by_cases hω : ω ∈ event
+    · simp [VdVWEventIndicator, hω, subset_toMeasurable μ event hω]
+    · simp [VdVWEventIndicator, hω]
+  minimal_ae := by
+    intro U hU h_majorizes
+    let low : Set Ω := {ω | U ω < 1}
+    have hlow_meas : MeasurableSet low := measurableSet_lt hU measurable_const
+    have h_event_low_zero : μ (event ∩ low) = 0 := by
+      have hbad_zero :
+          μ {ω | ¬ VdVWEventIndicator event ω ≤ U ω} = 0 :=
+        ae_iff.mp h_majorizes
+      refine measure_mono_null ?_ hbad_zero
+      intro ω hω
+      change ¬ VdVWEventIndicator event ω ≤ U ω
+      simpa [VdVWEventIndicator, hω.1, low] using not_le.mpr hω.2
+    have h_hull_low_zero : μ (toMeasurable μ event ∩ low) = 0 := by
+      rw [Measure.measure_toMeasurable_inter hlow_meas (measure_ne_top μ event),
+        h_event_low_zero]
+    refine ae_iff.mpr ?_
+    refine measure_mono_null ?_ h_hull_low_zero
+    intro ω hω
+    by_cases hmem : ω ∈ toMeasurable μ event
+    · refine ⟨hmem, ?_⟩
+      have hnot_one : ¬ (1 : ℝ≥0∞) ≤ U ω := by
+        simpa [VdVWEventIndicator, hmem] using hω
+      exact lt_of_not_ge hnot_one
+    · exfalso
+      have hle : VdVWEventIndicator (toMeasurable μ event) ω ≤ U ω := by
+        simp [VdVWEventIndicator, hmem]
+      exact hω hle
+
+/--
+The finite-measure event-indicator measurable cover realizes the already
+proved outer-expectation value.
+-/
+theorem VdVWOuterExpectation_eq_lintegral_eventIndicatorCover
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    (event : Set Ω) :
+    VdVWOuterExpectation μ (VdVWEventIndicator event) =
+      ∫⁻ ω,
+        (VdVWMeasurableCover.eventIndicatorOfToMeasurable μ event : Ω -> ℝ≥0∞)
+          ω ∂μ :=
+  VdVWOuterExpectation_eq_lintegral_cover
+    (VdVWMeasurableCover.eventIndicatorOfToMeasurable μ event)
 
 end StatInference

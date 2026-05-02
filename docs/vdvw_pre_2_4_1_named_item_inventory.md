@@ -65,6 +65,7 @@ of this repository.
 | `StatInference/EmpiricalProcess/BracketingCountable.lean` | countable decreasing finite-cover route | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid sample-path endpoint SLLN bridge for finite bracket covers | compiled, no proof holes |
+| `StatInference/EmpiricalProcess/OuterExpectation.lean` | Chapter 1.2 nonnegative outer-expectation and measurable-cover primitives | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | generic outer-probability convergence primitives and local/outer GC wrappers for the primitive bracketing theorem | compiled, no proof holes |
 
 Current promoted declarations toward Theorem 2.4.1:
@@ -96,6 +97,7 @@ Current promoted declarations toward Theorem 2.4.1:
 | `VdVWMeasurableMajorant`, `VdVWOuterExpectation`, `VdVWMeasurableCover` | proved/compiled nonnegative Chapter 1.2 outer-expectation and measurable-cover primitive layer |
 | `VdVWOuterExpectation_eq_lintegral_of_measurable`, `VdVWOuterExpectation_eq_lintegral_cover` | proved nonnegative outer-expectation realization lemmas for measurable maps and supplied minimal measurable covers |
 | `VdVWEventIndicator`, `VdVWMeasurableSetCover`, `VdVWOuterExpectation_eventIndicator_eq_measure` | proved nonnegative Lemma 1.2.3(i) indicator bridge: outer probability as outer expectation |
+| `VdVWMeasurableCover.eventIndicatorOfToMeasurable`, `VdVWOuterExpectation_eq_lintegral_eventIndicatorCover` | proved finite-measure event-indicator measurable-cover bridge for Lemma 1.2.3 |
 | `AlmostSureUniformDeviationTendstoZeroOn` | proved/compiled named ordinary a.s. pathwise uniform LLN convergence mode |
 | `VdVWAlmostSureGlivenkoCantelliClass` | proved/compiled local GC wrapper structure for iid observation processes |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to named a.s. pathwise convergence wrapper |
@@ -204,7 +206,7 @@ through 2.4.1 requires accounting for them.
 | --- | --- | --- | --- |
 | 1.2.1 Lemma | `M1:372` | measurable cover function | local layer exists: nonnegative outer-expectation primitives and proof-carrying measurable-cover realization theorem; exact extended-real cover existence remains pending |
 | 1.2.2 Lemma | `M1:389` | a.s. rules for arbitrary maps | pending primitive; needs outer/inner probability framework |
-| 1.2.3 Lemma | `M1:438` | outer measure of subsets | local layer exists: nonnegative indicator bridge `P*(B)=E*1_B`; remaining inner-probability and measurable-set-cover identities pending |
+| 1.2.3 Lemma | `M1:438` | outer measure of subsets | local layer exists: nonnegative indicator bridge `P*(B)=E*1_B` and finite-measure event-indicator measurable-cover realization; remaining inner-probability and full extended-real measurable-set-cover identities pending |
 | 1.2.4 Lemma | `M1:446` | dominated family measurable cover | pending primitive |
 | 1.2.5 Lemma | `M1:467` | perfect coordinate projection | later roadmap; product probability and map foundations in mathlib |
 | 1.2.6 Lemma | `M1:480` | outer/inner Fubini inequalities | later roadmap; Fubini foundation in mathlib, outer wrapper missing |

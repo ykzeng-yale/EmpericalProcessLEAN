@@ -40,6 +40,7 @@ machinery remains future compatibility work.
 | `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | `StatInference/EmpiricalProcess/EndpointSamples.lean` | primitive `N_[]` to a.s. pathwise uniform convergence theorem |
 | `VdVWMeasurableMajorant`, `VdVWOuterExpectation`, `VdVWMeasurableCover`, `VdVWOuterExpectation_eq_lintegral_cover` | `StatInference/EmpiricalProcess/OuterExpectation.lean` | Chapter 1.2 nonnegative outer-expectation and measurable-cover primitive layer |
 | `VdVWEventIndicator`, `VdVWMeasurableSetCover`, `VdVWOuterExpectation_eventIndicator_eq_measure` | `StatInference/EmpiricalProcess/OuterExpectation.lean` | Lemma 1.2.3(i) nonnegative indicator bridge: outer probability as outer expectation |
+| `VdVWMeasurableCover.eventIndicatorOfToMeasurable`, `VdVWOuterExpectation_eq_lintegral_eventIndicatorCover` | `StatInference/EmpiricalProcess/OuterExpectation.lean` | Lemma 1.2.3 finite-measure event-indicator measurable-cover bridge |
 | `AlmostSureUniformDeviationTendstoZeroOn`, `VdVWAlmostSureGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | local almost-sure pathwise GC wrapper definitions |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top`, `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | primitive `N_[]` theorem packaged as local a.s. pathwise Glivenko-Cantelli conclusion |
 | `VdVWOuterProbability`, `VdVWOuterAlmostSure`, `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | explicit VdV&W outer-a.s. convergence-mode primitives |
@@ -104,7 +105,8 @@ The proved Lean code currently supplies:
 11. a nonnegative outer-expectation and measurable-cover primitive layer
     matching the Chapter 1.2 direction needed for later arbitrary-map work;
 12. a nonnegative indicator bridge proving the Lemma 1.2.3(i) identity that
-    outer probability is a special case of outer expectation;
+    outer probability is a special case of outer expectation, plus a
+    finite-measure measurable-cover realization for event indicators;
 13. a local almost-sure pathwise GC wrapper for the primitive `N_[]` theorem;
 14. generic outer-probability convergence primitives matching Definition
     1.10.1, plus a two-way bridge with mathlib `TendstoInMeasure`;
