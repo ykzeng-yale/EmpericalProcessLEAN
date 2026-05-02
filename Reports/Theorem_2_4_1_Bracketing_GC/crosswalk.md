@@ -13,6 +13,7 @@ the closest textbook step, the markdown source, and the PDF screenshot.
 | Markdown endpoint SLLN sentence | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:984` |
 | PDF screenshot | `Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png` |
 | Markdown outer expectation and measurable cover | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:356-388` |
+| Markdown outer probability as outer expectation | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:438-445` |
 | Lemma 1.2.1 PDF screenshot | `Textbooks/Vaart1996/Screenshots/vdvw_lemma_1_2_1_pdf_page_6.png` |
 | Markdown GC definition | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1828-1834` |
 | GC definition PDF screenshot | `Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png` |
@@ -69,6 +70,7 @@ the closest textbook step, the markdown source, and the PDF screenshot.
 | `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | theorem | finite `L1(P)` bracketing numbers at every positive radius imply a.s. pathwise uniform deviation convergence | proved dependency-minimal Theorem 2.4.1 layer in the local convergence interface |
 | `VdVWMeasurableMajorant` / `VdVWOuterExpectation` / `VdVWMeasurableCover` | structure/definition | Section 1.2 outer expectation as an infimum over measurable majorants and Lemma 1.2.1 measurable cover vocabulary | proved nonnegative `ℝ≥0∞` primitive layer; existence of covers for arbitrary maps remains pending |
 | `VdVWOuterExpectation_eq_lintegral_of_measurable` / `VdVWOuterExpectation_eq_lintegral_cover` | theorems | measurable maps and minimal measurable covers realize the outer expectation | proved using mathlib `lintegral_mono`, `lintegral_mono_ae`, and `iInf` order lemmas |
+| `VdVWEventIndicator` / `VdVWMeasurableSetCover` / `VdVWOuterExpectation_eventIndicator_eq_measure` | definition/structure/theorem | Lemma 1.2.3(i): outer probabilities are special cases of outer integrals | proved nonnegative indicator version using mathlib `toMeasurable`, `measure_toMeasurable`, and Markov's `meas_le_lintegral₀` |
 | `AlmostSureUniformDeviationTendstoZeroOn` | definition | almost-sure version of the uniform LLN convergence used to call a class Glivenko-Cantelli | local a.s. pathwise interface; not literal outer probability |
 | `VdVWAlmostSureGlivenkoCantelliClass` | structure | packages iid law/independence assumptions and the GC conclusion for a function class | proved wrapper target for the dependency-minimal route |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | theorem | primitive `N_[]` hypothesis implies almost-sure pathwise uniform-deviation convergence | proved by applying the primitive bracketing-number theorem |

@@ -1,4 +1,4 @@
-import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
+import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
 
 /-!
 # VdV&W outer expectation and measurable-cover primitives
@@ -153,5 +153,88 @@ theorem VdVWOuterExpectation_eq_lintegral_of_cover_ofMeasurable
       ∫⁻ ω, (VdVWMeasurableCover.ofMeasurable μ hT : Ω -> ℝ≥0∞) ω ∂μ :=
   VdVWOuterExpectation_eq_lintegral_cover
     (VdVWMeasurableCover.ofMeasurable μ hT)
+
+/-- Nonnegative indicator of an arbitrary event. -/
+noncomputable def VdVWEventIndicator {Ω : Type u} (event : Set Ω) : Ω -> ℝ≥0∞ :=
+  event.indicator fun _ => 1
+
+/--
+A measurable cover of an arbitrary event.
+
+This is the event-level counterpart of `VdVWMeasurableCover`: a measurable
+superset with the same outer measure as the original event.
+-/
+structure VdVWMeasurableSetCover {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) (event : Set Ω) where
+  toSet : Set Ω
+  measurable_toSet : MeasurableSet toSet
+  subset_event : event ⊆ toSet
+  measure_eq : μ toSet = μ event
+
+namespace VdVWMeasurableSetCover
+
+instance {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {event : Set Ω} :
+    CoeSort (VdVWMeasurableSetCover μ event) (Set Ω) where
+  coe cover := cover.toSet
+
+/--
+Mathlib's `toMeasurable` supplies an event-level measurable cover.
+
+This is the local VdV&W wrapper around mathlib's `measurableSet_toMeasurable`,
+`subset_toMeasurable`, and `measure_toMeasurable`.
+-/
+noncomputable def ofToMeasurable {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) (event : Set Ω) :
+    VdVWMeasurableSetCover μ event where
+  toSet := toMeasurable μ event
+  measurable_toSet := measurableSet_toMeasurable μ event
+  subset_event := subset_toMeasurable μ event
+  measure_eq := measure_toMeasurable event
+
+/-- The indicator of a measurable event cover is a measurable majorant. -/
+noncomputable def indicatorMajorant {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {event : Set Ω}
+    (cover : VdVWMeasurableSetCover μ event) :
+    VdVWMeasurableMajorant μ (VdVWEventIndicator event) where
+  toFun := cover.toSet.indicator fun _ => 1
+  measurable_toFun := measurable_const.indicator cover.measurable_toSet
+  majorizes := by
+    intro ω
+    by_cases hω : ω ∈ event
+    · simp [VdVWEventIndicator, hω, cover.subset_event hω]
+    · simp [VdVWEventIndicator, hω]
+
+end VdVWMeasurableSetCover
+
+/--
+VdV&W Lemma 1.2.3(i), nonnegative indicator form: outer probability is a
+special case of nonnegative outer expectation.
+
+Mathlib measures already evaluate arbitrary events by outer measure, so the
+right-hand side is `μ event`.
+-/
+theorem VdVWOuterExpectation_eventIndicator_eq_measure
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) (event : Set Ω) :
+    VdVWOuterExpectation μ (VdVWEventIndicator event) = μ event := by
+  refine le_antisymm ?upper ?lower
+  · let cover := VdVWMeasurableSetCover.ofToMeasurable μ event
+    refine
+      (VdVWOuterExpectation_le_lintegral_majorant
+        (VdVWMeasurableSetCover.indicatorMajorant cover)).trans_eq ?_
+    dsimp [VdVWMeasurableSetCover.indicatorMajorant, cover]
+    change
+      ∫⁻ ω, (toMeasurable μ event).indicator (1 : Ω -> ℝ≥0∞) ω ∂μ =
+        μ event
+    rw [lintegral_indicator_one (measurableSet_toMeasurable μ event),
+      measure_toMeasurable]
+  · dsimp [VdVWOuterExpectation]
+    refine le_iInf ?_
+    intro U
+    exact
+      meas_le_lintegral₀ U.measurable_toFun.aemeasurable
+        (fun ω hω => by
+          have h_majorizes := U.majorizes ω
+          simpa [VdVWEventIndicator, hω] using h_majorizes)
 
 end StatInference

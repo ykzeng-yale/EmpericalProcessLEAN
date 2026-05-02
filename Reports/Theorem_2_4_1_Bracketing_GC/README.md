@@ -39,6 +39,7 @@ machinery remains future compatibility work.
 | `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers` | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid countable-cover almost-sure uniform convergence layer |
 | `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | `StatInference/EmpiricalProcess/EndpointSamples.lean` | primitive `N_[]` to a.s. pathwise uniform convergence theorem |
 | `VdVWMeasurableMajorant`, `VdVWOuterExpectation`, `VdVWMeasurableCover`, `VdVWOuterExpectation_eq_lintegral_cover` | `StatInference/EmpiricalProcess/OuterExpectation.lean` | Chapter 1.2 nonnegative outer-expectation and measurable-cover primitive layer |
+| `VdVWEventIndicator`, `VdVWMeasurableSetCover`, `VdVWOuterExpectation_eventIndicator_eq_measure` | `StatInference/EmpiricalProcess/OuterExpectation.lean` | Lemma 1.2.3(i) nonnegative indicator bridge: outer probability as outer expectation |
 | `AlmostSureUniformDeviationTendstoZeroOn`, `VdVWAlmostSureGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | local almost-sure pathwise GC wrapper definitions |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top`, `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | primitive `N_[]` theorem packaged as local a.s. pathwise Glivenko-Cantelli conclusion |
 | `VdVWOuterProbability`, `VdVWOuterAlmostSure`, `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | explicit VdV&W outer-a.s. convergence-mode primitives |
@@ -69,6 +70,7 @@ Reports/Theorem_2_4_1_Bracketing_GC/definition_lemma_crosscheck.md
 
 - Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md`, lines 963-984.
 - Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md`, lines 356-388 for Section 1.2 outer integrals and Lemma 1.2.1.
+- Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md`, lines 438-445 for Lemma 1.2.3.
 - Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md`, lines 1828-1834 for the GC definition.
 - Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md`, line 1406 for Definition 1.10.1.
 - Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md`, lines 1408-1417 for Lemma 1.10.2.
@@ -101,38 +103,40 @@ The proved Lean code currently supplies:
     of radii `1 / (n + 1)`;
 11. a nonnegative outer-expectation and measurable-cover primitive layer
     matching the Chapter 1.2 direction needed for later arbitrary-map work;
-12. a local almost-sure pathwise GC wrapper for the primitive `N_[]` theorem;
-13. generic outer-probability convergence primitives matching Definition
+12. a nonnegative indicator bridge proving the Lemma 1.2.3(i) identity that
+    outer probability is a special case of outer expectation;
+13. a local almost-sure pathwise GC wrapper for the primitive `N_[]` theorem;
+14. generic outer-probability convergence primitives matching Definition
     1.10.1, plus a two-way bridge with mathlib `TendstoInMeasure`;
-14. an explicit outer-a.s. `P`-Glivenko-Cantelli theorem matching the
+15. an explicit outer-a.s. `P`-Glivenko-Cantelli theorem matching the
     convergence mode used in the proof of Theorem 2.4.1;
-15. a book-style `P`-Glivenko-Cantelli predicate whose branches are outer
+16. a book-style `P`-Glivenko-Cantelli predicate whose branches are outer
     probability and outer-a.s., with Theorem 2.4.1 proved through the
     outer-a.s. branch;
-16. a tail-event bridge proving that vanishing outer probability of future
+17. a tail-event bridge proving that vanishing outer probability of future
     bad-event tails implies one-time outer-probability convergence;
-17. a conditional route from outer-a.s. convergence to the direct
+18. a conditional route from outer-a.s. convergence to the direct
     outer-probability branch, assuming tail outer probabilities converge to
     the outer probability of the bad-infinitely-often event;
-18. a proof that fixed bad-event null measurability plus finite sample-space
+19. a proof that fixed bad-event null measurability plus finite sample-space
     measure gives the needed tail-continuity condition by mathlib continuity
     from above;
-19. a direct outer-probability version of Theorem 2.4.1 under that
+20. a direct outer-probability version of Theorem 2.4.1 under that
     null-measurable bad-event bridge;
-20. a countable-class bridge deriving fixed bad-event null measurability from
+21. a countable-class bridge deriving fixed bad-event null measurability from
     coordinate a.e.-measurability;
-21. a direct outer-probability version of Theorem 2.4.1 for countable classes
+22. a direct outer-probability version of Theorem 2.4.1 for countable classes
     with coordinate a.e.-measurable empirical deviations;
-22. a mathlib measurability bridge from empirical-risk coordinate
+23. a mathlib measurability bridge from empirical-risk coordinate
     a.e.-measurability to coordinate empirical-deviation a.e.-measurability;
-23. a direct outer-probability version of Theorem 2.4.1 for countable classes
+24. a direct outer-probability version of Theorem 2.4.1 for countable classes
     with a.e.-measurable empirical-average coordinates;
-24. a finite-sum bridge proving sample-path empirical averages are
+25. a finite-sum bridge proving sample-path empirical averages are
     a.e.-measurable from concrete a.e.-measurable samples and measurable class
     functions;
-25. a direct outer-probability version of Theorem 2.4.1 for countable classes
+26. a direct outer-probability version of Theorem 2.4.1 for countable classes
     under those concrete sample/function measurability assumptions;
-26. a stronger direct outer-probability version for countable classes where
+27. a stronger direct outer-probability version for countable classes where
     the existing `HasLaw` assumptions supply sample a.e.-measurability and
     only class-function measurability is added.
 
