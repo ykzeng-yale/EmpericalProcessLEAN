@@ -310,6 +310,50 @@ def infMajorant {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
   majorizes := fun ω => inf_le_inf (US.majorizes ω) (UT.majorizes ω)
 
 /--
+Infimum cover algebra when the left map is measurable.
+
+This is the nonnegative counterpart of the equality clause in VdV&W
+Lemma 1.2.2(ix): if `S` is measurable, then `(S ∧ T)* = S ∧ T*`.
+-/
+def infOfMeasurableLeft {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (hS : Measurable S)
+    (UT : VdVWMeasurableCover μ T) :
+    VdVWMeasurableCover μ (fun ω => S ω ⊓ T ω) where
+  toFun := fun ω => S ω ⊓ UT ω
+  measurable_toFun := hS.inf UT.measurable_toFun
+  majorizes := fun ω => inf_le_inf le_rfl (UT.majorizes ω)
+  minimal_ae := by
+    intro V hV h_majorizes
+    let low : Set Ω := {ω | V ω < S ω}
+    let W : Ω -> ℝ≥0∞ := low.piecewise V UT
+    have hlow_meas : MeasurableSet low :=
+      measurableSet_lt hV hS
+    have hW_meas : Measurable W :=
+      hV.piecewise hlow_meas UT.measurable_toFun
+    have hW_majorizes : ∀ᵐ ω ∂μ, T ω ≤ W ω := by
+      filter_upwards [h_majorizes] with ω hV_majorizes
+      by_cases hlow : ω ∈ low
+      · have hV_lt_S : V ω < S ω := hlow
+        have hT_le_V : T ω ≤ V ω := by
+          by_contra hnot
+          have hV_lt_T : V ω < T ω := lt_of_not_ge hnot
+          have hV_lt_inf : V ω < S ω ⊓ T ω :=
+            lt_inf_iff.mpr ⟨hV_lt_S, hV_lt_T⟩
+          exact not_lt_of_ge hV_majorizes hV_lt_inf
+        simpa [W, low, hlow] using hT_le_V
+      · have hT_le_UT : T ω ≤ UT ω := UT.majorizes ω
+        simpa [W, low, hlow] using hT_le_UT
+    have hUT_le_W : ∀ᵐ ω ∂μ, UT ω ≤ W ω :=
+      UT.minimal_ae W hW_meas hW_majorizes
+    filter_upwards [hUT_le_W] with ω hUT_le_Wω
+    by_cases hlow : ω ∈ low
+    · have hUT_le_V : UT ω ≤ V ω := by
+        simpa [W, low, hlow] using hUT_le_Wω
+      exact le_trans inf_le_right hUT_le_V
+    · have hS_le_V : S ω ≤ V ω := not_lt.mp hlow
+      exact le_trans inf_le_left hS_le_V
+
+/--
 Multiplicative majorant algebra for nonnegative measurable covers.
 
 This is the nonnegative positive-sign skeleton behind the product clauses in
@@ -395,6 +439,19 @@ theorem VdVWOuterExpectation_le_lintegral_inf_cover
       ∫⁻ ω, US ω ⊓ UT ω ∂μ :=
   VdVWOuterExpectation_le_lintegral_majorant
     (VdVWMeasurableCover.infMajorant US UT)
+
+/--
+If the left map is measurable, the pointwise infimum with the cover of the
+right map realizes the nonnegative outer expectation.
+-/
+theorem VdVWOuterExpectation_eq_lintegral_inf_cover_of_left_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (hS : Measurable S)
+    (UT : VdVWMeasurableCover μ T) :
+    VdVWOuterExpectation μ (fun ω => S ω ⊓ T ω) =
+      ∫⁻ ω, S ω ⊓ UT ω ∂μ :=
+  VdVWOuterExpectation_eq_lintegral_cover
+    (VdVWMeasurableCover.infOfMeasurableLeft hS UT)
 
 /--
 The product cover majorant bounds the nonnegative outer expectation of a
