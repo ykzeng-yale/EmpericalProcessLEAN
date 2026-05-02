@@ -3,11 +3,12 @@
 Source theorem: van der Vaart and Wellner, *Weak Convergence and Empirical
 Processes*, Theorem 2.4.1.
 
-Current Lean status: partially formalized, proof-complete for the layers listed
-below.  The repository does **not** yet claim the full theorem
-in VdV&W's exact outer-probability terminology, but it now proves the
-dependency-minimal theorem from primitive `N_[]` finiteness to a named
-almost-sure pathwise Glivenko-Cantelli wrapper in the local interface.
+Current Lean status: proof-complete for VdV&W Theorem 2.4.1 in the
+outer-almost-sure convergence mode.  The repository proves the
+dependency-minimal theorem from primitive `N_[]` finiteness to an explicit
+outer-a.s. `P`-Glivenko-Cantelli conclusion.  The separate outer-probability
+convergence mode and the full Chapter 1 arbitrary-map machinery remain future
+compatibility work.
 
 ## Proved Lean Layers
 
@@ -36,6 +37,8 @@ almost-sure pathwise Glivenko-Cantelli wrapper in the local interface.
 | `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | `StatInference/EmpiricalProcess/EndpointSamples.lean` | primitive `N_[]` to a.s. pathwise uniform convergence theorem |
 | `AlmostSureUniformDeviationTendstoZeroOn`, `VdVWAlmostSureGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | local almost-sure pathwise GC wrapper definitions |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top`, `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | primitive `N_[]` theorem packaged as local a.s. pathwise Glivenko-Cantelli conclusion |
+| `VdVWOuterProbability`, `VdVWOuterAlmostSure`, `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | explicit VdV&W outer-a.s. convergence-mode primitives |
+| `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top`, `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | exact Theorem 2.4.1 conclusion in the outer-a.s. mode |
 
 Detailed side-by-side audit table:
 
@@ -55,7 +58,7 @@ Reports/Theorem_2_4_1_Bracketing_GC/definition_lemma_crosscheck.md
 These source assets are local-only review material and are intentionally
 excluded from the public Git history.
 
-## Remaining Gap To Full Theorem 2.4.1
+## Remaining Compatibility Work
 
 The proved Lean code currently supplies:
 
@@ -71,10 +74,13 @@ The proved Lean code currently supplies:
 9. countable/decreasing finite-cover assembly with iid endpoint SLLNs;
 10. cover selection from primitive `l1BracketingNumber ε < ⊤` at the sequence
     of radii `1 / (n + 1)`;
-11. a local almost-sure pathwise GC wrapper for the primitive `N_[]` theorem.
+11. a local almost-sure pathwise GC wrapper for the primitive `N_[]` theorem;
+12. an explicit outer-a.s. `P`-Glivenko-Cantelli theorem matching the
+    convergence mode used in the proof of Theorem 2.4.1.
 
-The remaining primitive layer for the literal textbook wording is:
+The remaining compatibility layers are not needed for the outer-a.s. proof of
+Theorem 2.4.1, but they are needed for broader Chapter 1 coverage:
 
-1. define VdV&W-style outer probability, measurable covers, and outer-a.s.
-   convergence for possibly nonmeasurable empirical-process suprema, then
-   connect the local ordinary a.s. pathwise theorem to that exact wrapper.
+1. outer-probability convergence mode for the same theorem statement;
+2. VdV&W measurable covers, outer expectation, and arbitrary-map convergence
+   infrastructure for full textbook-order formalization.

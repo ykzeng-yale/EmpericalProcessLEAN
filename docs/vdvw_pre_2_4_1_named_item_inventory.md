@@ -97,6 +97,10 @@ Current promoted declarations toward Theorem 2.4.1:
 | `VdVWAlmostSureGlivenkoCantelliClass` | proved/compiled local GC wrapper structure for iid observation processes |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to named a.s. pathwise convergence wrapper |
 | `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | proved local a.s. pathwise Glivenko-Cantelli conclusion from primitive `N_[]` |
+| `VdVWOuterProbability`, `VdVWOuterAlmostSure` | proved/compiled outer probability and outer-a.s. event primitives |
+| `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | proved/compiled exact outer-a.s. uniform LLN and GC predicates |
+| `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to outer-a.s. uniform deviation convergence |
+| `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | proved VdV&W Theorem 2.4.1 in the outer-a.s. convergence mode |
 
 Verification gate:
 
@@ -283,7 +287,7 @@ through 2.4.1 requires accounting for them.
 | 2.3.15 Theorem | `M2:818` | pointwise separable version Donsker equivalence | later roadmap |
 | 2.3.16 Proposition | `M2:857` | consistent lifting | later roadmap |
 | 2.3.17 Theorem | `M2:882` | separable modification | later roadmap |
-| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | dependency-minimal primitive `N_[]` theorem proved and packaged as local a.s. pathwise GC wrapper; exact outer-probability machinery pending |
+| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | proved as `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` in the outer-a.s. convergence mode; outer-probability alternative pending |
 
 ## Dependency-Minimal Route To Theorem 2.4.1
 
@@ -292,7 +296,7 @@ Sections 2.1-2.3 to be formalized literally.  The dependency-minimal route is:
 
 | Order | Needed Lean item | Source anchor | Status |
 | --- | --- | --- | --- |
-| 1 | real-valued measurable function class over a probability space | `M2:970` | pending primitive |
+| 1 | real-valued measurable function class over a probability space | `M2:970` | represented by `classFun : Index -> Observation -> ℝ`; integrability/measurability evidence is carried by primitive `FiniteL1BracketCover` witnesses |
 | 2 | pointwise bracket `[l, u]` and membership | `M1:1895` | done: `FunctionBracket`, `MemFunctionBracket` |
 | 3 | epsilon bracket in `L1(P)` width | `M1:1895`, `M2:970` | done: `l1BracketWidth`, `IsL1EpsilonBracket` |
 | 4 | finite bracket cover | `M1:1895`, `M2:972` | done: `FiniteBracketCover`, `FiniteL1BracketCover` |
@@ -303,7 +307,7 @@ Sections 2.1-2.3 to be formalized literally.  The dependency-minimal route is:
 | 9 | endpoint empirical average SLLN | `M2:984` | done for fixed finite covers: `EndpointSamples.lean` |
 | 10 | build `FiniteBracketingEndpointRoute` from primitive brackets | `M2:972-984` | done from primitive cover plus endpoint/width assumptions |
 | 11 | decreasing-radius argument | `M2:984` | done for the dependency-minimal deterministic and iid `N_[]` route |
-| 12 | final exact theorem statement | `M2:970` | local a.s. pathwise GC wrapper done; exact outer-probability/measurable-cover machinery pending |
+| 12 | final exact theorem statement | `M2:970` | done in outer-a.s. mode: `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli`; outer-probability alternative pending |
 
 This route should reuse mathlib for measure/integration/probability and only
 build the empirical-process-specific layer locally.

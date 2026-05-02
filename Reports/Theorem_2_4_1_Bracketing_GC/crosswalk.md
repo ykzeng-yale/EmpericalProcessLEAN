@@ -66,7 +66,11 @@ the closest textbook step, the markdown source, and the PDF screenshot.
 | `AlmostSureUniformDeviationTendstoZeroOn` | definition | almost-sure version of the uniform LLN convergence used to call a class Glivenko-Cantelli | local a.s. pathwise interface; not literal outer probability |
 | `VdVWAlmostSureGlivenkoCantelliClass` | structure | packages iid law/independence assumptions and the GC conclusion for a function class | proved wrapper target for the dependency-minimal route |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | theorem | primitive `N_[]` hypothesis implies almost-sure pathwise uniform-deviation convergence | proved by applying the primitive bracketing-number theorem |
-| `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | theorem | finite `L1(P)` bracketing numbers imply the class is Glivenko-Cantelli | proved as local a.s. pathwise GC wrapper; exact outer-probability machinery pending |
+| `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | theorem | finite `L1(P)` bracketing numbers imply the class is Glivenko-Cantelli | proved as ordinary a.s. pathwise GC wrapper |
+| `VdVWOuterProbability` / `VdVWOuterAlmostSure` | definitions | outer probability of arbitrary events and outer-a.s. truth | exact convergence-mode primitive for the nonmeasurable exceptional event |
+| `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn` / `VdVWOuterAlmostSurePGlivenkoCantelliClass` | definitions | uniform LLN convergence in the outer-a.s. GC sense | exact outer-a.s. GC target |
+| `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | theorem | finite `L1(P)` bracketing numbers imply outer-a.s. uniform deviation convergence | proved by converting the local a.s. theorem through `ae_iff` |
+| `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | theorem | VdV&W Theorem 2.4.1, using the proof's outer-a.s. convergence mode | proved exact theorem statement for the dependency-minimal primitive route |
 
 ## Screenshot
 
