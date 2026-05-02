@@ -151,7 +151,7 @@ quotes; the anchor is the authoritative local source location.
 | Item | Kind | Anchor | Current audit status |
 | --- | --- | --- | --- |
 | 1.2.1 | Lemma | `..._1-100.md:372` | local-layer: nonnegative outer/inner expectation and cover interfaces |
-| 1.2.2 | Lemma | `..._1-100.md:389` | local-layer: nonnegative sup/add/inf/product, two-sided constant addition equality, threshold-indicator, and two-sided measurable infimum equality cover algebra |
+| 1.2.2 | Lemma | `..._1-100.md:389` | local-layer: nonnegative sup/add/inf/product, two-sided constant addition equality, finite-measurable addition equality, threshold-indicator, and two-sided measurable infimum equality cover algebra |
 | 1.2.3 | Lemma | `..._1-100.md:438` | local-layer: outer/inner event probability, explicit measurable event-cover existence, arbitrary measurable set cover to event-indicator cover with integral equality, complement-set-cover lower cover, inner-expectation indicator equality, and two-sided complement identities |
 | 1.2.4 | Lemma | `..._1-100.md:446` | pending-local |
 | 1.2.5 | Lemma | `..._1-100.md:467` | mathlib-foundation |

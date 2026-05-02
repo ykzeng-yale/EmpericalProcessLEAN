@@ -248,6 +248,10 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   in `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`.
 - `VdVWMeasurableMajorant`, `VdVWOuterExpectation`,
   `VdVWMeasurableCover`, `VdVWOuterExpectation_eq_lintegral_cover`,
+  `VdVWMeasurableCover.addOfMeasurableLeft`,
+  `VdVWMeasurableCover.addOfMeasurableRight`,
+  `VdVWOuterExpectation_eq_lintegral_add_cover_of_left_measurable_finite`,
+  `VdVWOuterExpectation_eq_lintegral_add_cover_of_right_measurable_finite`,
   `VdVWOuterExpectation_eventIndicator_eq_measure`, and
   `VdVWMeasurableSetCover.exists_measurableSet_superset_measure_eq`,
   `VdVWMeasurableSetCover.toEventIndicatorCover`,

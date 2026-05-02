@@ -340,6 +340,48 @@ def addConstRight {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
   simpa [add_comm] using (VdVWMeasurableCover.addConstLeft c UT)
 
 /--
+Addition by a finite measurable nonnegative map preserves nonnegative
+measurable covers on the left.
+
+This is a guarded nonnegative version of the equality case in VdV&W
+Lemma 1.2.2(i): if `S` is measurable and finite pointwise, then the cover of
+`S + T` is `S + T*`.  The pointwise finiteness guard keeps `ℝ≥0∞`
+subtraction well-defined in the proof.
+-/
+def addOfMeasurableLeft {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (hS : Measurable S) (hS_ne_top : ∀ ω, S ω ≠ ∞)
+    (UT : VdVWMeasurableCover μ T) :
+    VdVWMeasurableCover μ (fun ω => S ω + T ω) where
+  toFun := fun ω => S ω + UT ω
+  measurable_toFun := hS.add UT.measurable_toFun
+  majorizes := fun ω => add_le_add le_rfl (UT.majorizes ω)
+  minimal_ae := by
+    intro V hV h_majorizes
+    let W : Ω -> ℝ≥0∞ := fun ω => V ω - S ω
+    have hW_meas : Measurable W :=
+      measurable_sub.comp (hV.prodMk hS)
+    have hW_majorizes : ∀ᵐ ω ∂μ, T ω ≤ W ω := by
+      filter_upwards [h_majorizes] with ω hω
+      exact ENNReal.le_sub_of_add_le_left (hS_ne_top ω) hω
+    have hUT_le_W : ∀ᵐ ω ∂μ, UT ω ≤ W ω :=
+      UT.minimal_ae W hW_meas hW_majorizes
+    filter_upwards [h_majorizes, hUT_le_W] with ω h_majorizesω hUT_le_Wω
+    have hS_le_V : S ω ≤ V ω := by
+      exact le_trans le_self_add h_majorizesω
+    exact (ENNReal.le_sub_iff_add_le_left (hS_ne_top ω) hS_le_V).mp hUT_le_Wω
+
+/--
+Addition by a finite measurable nonnegative map preserves nonnegative
+measurable covers on the right.
+-/
+def addOfMeasurableRight {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (US : VdVWMeasurableCover μ S)
+    (hT : Measurable T) (hT_ne_top : ∀ ω, T ω ≠ ∞) :
+    VdVWMeasurableCover μ (fun ω => S ω + T ω) := by
+  simpa [add_comm] using
+    (VdVWMeasurableCover.addOfMeasurableLeft hT hT_ne_top US)
+
+/--
 Infimum majorant algebra for nonnegative measurable covers.
 
 This is the nonnegative cover-interface version of the easy inequality in
@@ -506,6 +548,33 @@ theorem VdVWOuterExpectation_eq_lintegral_add_const_cover
       ∫⁻ ω, UT ω + c ∂μ := by
   simpa [add_comm] using
     (VdVWOuterExpectation_eq_lintegral_const_add_cover c UT)
+
+/--
+The finite-measurable-left addition cover realizes the nonnegative outer
+expectation of `S + T`.
+-/
+theorem VdVWOuterExpectation_eq_lintegral_add_cover_of_left_measurable_finite
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (hS : Measurable S) (hS_ne_top : ∀ ω, S ω ≠ ∞)
+    (UT : VdVWMeasurableCover μ T) :
+    VdVWOuterExpectation μ (fun ω => S ω + T ω) =
+      ∫⁻ ω, S ω + UT ω ∂μ :=
+  VdVWOuterExpectation_eq_lintegral_cover
+    (VdVWMeasurableCover.addOfMeasurableLeft hS hS_ne_top UT)
+
+/--
+The finite-measurable-right addition cover realizes the nonnegative outer
+expectation of `S + T`.
+-/
+theorem VdVWOuterExpectation_eq_lintegral_add_cover_of_right_measurable_finite
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (US : VdVWMeasurableCover μ S)
+    (hT : Measurable T) (hT_ne_top : ∀ ω, T ω ≠ ∞) :
+    VdVWOuterExpectation μ (fun ω => S ω + T ω) =
+      ∫⁻ ω, US ω + T ω ∂μ := by
+  simpa [add_comm] using
+    (VdVWOuterExpectation_eq_lintegral_add_cover_of_left_measurable_finite
+      hT hT_ne_top US)
 
 /--
 The infimum cover majorant bounds the nonnegative outer expectation of a

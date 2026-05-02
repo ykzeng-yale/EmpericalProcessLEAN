@@ -78,7 +78,7 @@ outer-a.s./outer-probability GC wrappers.
 | Textbook area | Current local Lean layer | Remaining gap before exact textbook item |
 | --- | --- | --- |
 | Lemma 1.2.1 | Nonnegative outer/inner expectation and measurable-cover interfaces | Full extended-real measurable-cover existence theorem. |
-| Lemma 1.2.2 | Nonnegative cover algebra: sup, add majorant, product majorant, two-sided constant addition equality, threshold indicators, two-sided measurable infimum equality | Full signed extended-real clauses, subtraction, absolute value, and stronger addition/product equality cases. |
+| Lemma 1.2.2 | Nonnegative cover algebra: sup, add majorant, product majorant, two-sided constant addition equality, finite-measurable addition equality, threshold indicators, two-sided measurable infimum equality | Full signed extended-real clauses, subtraction, absolute value, and stronger addition/product equality cases. |
 | Lemma 1.2.3 | Nonnegative event indicator bridges for outer/inner probability, explicit measurable event-cover existence, arbitrary measurable set covers with integral equality, complement-set-cover lower covers, and two-sided complement identities | Remaining extended-real and full measurable-set-cover clauses. |
 | Definition 1.10.1 | Outer-probability convergence primitives and common-domain `TendstoInMeasure` bridge | Broader arbitrary-map API. |
 | Lemma 1.10.2 | Measurable common-domain weak-convergence bridge | Full VdV&W arbitrary-map/measurable-cover version. |
