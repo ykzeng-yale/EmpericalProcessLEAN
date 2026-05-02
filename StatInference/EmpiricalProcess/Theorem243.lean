@@ -798,6 +798,27 @@ theorem vdVWTheorem243_truncated_varianceProxy_le
         abs_vdVWTruncatedClassFun_le_M henvelope hM_nonneg hcenter (sample i)))
 
 /--
+Monotonicity of the sub-Gaussian variance proxy.
+
+Mathlib supplies the `HasSubgaussianMGF` API used below, but not this local
+proxy-monotonicity wrapper in the pinned version.  It lets the Theorem 2.4.3
+route promote center-specific truncated proxies to a common finite-net proxy.
+-/
+theorem vdVWTheorem243_hasSubgaussianMGF_mono
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {X : Ω -> ℝ} {c d : ℝ≥0}
+    (hX : HasSubgaussianMGF X c μ) (hcd : c ≤ d) :
+    HasSubgaussianMGF X d μ := by
+  refine ⟨hX.integrable_exp_mul, ?_⟩
+  intro t
+  have hcd_real : (c : ℝ) ≤ (d : ℝ) := by
+    exact_mod_cast hcd
+  have hquad_nonneg : 0 ≤ t ^ 2 / 2 := by positivity
+  have hproxy : (c : ℝ) * t ^ 2 / 2 ≤ (d : ℝ) * t ^ 2 / 2 := by
+    nlinarith [mul_le_mul_of_nonneg_right hcd_real hquad_nonneg]
+  exact (hX.mgf_le t).trans (Real.exp_le_exp.mpr hproxy)
+
+/--
 Two-sided tail bound for a sub-Gaussian real random variable.
 
 This is the local absolute-value tail bridge needed before the finite-center
@@ -966,6 +987,85 @@ theorem vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF_of_
   exact
     vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF
       X hX
+
+/--
+Expected finite-center supremum appearing in the maximal-inequality step of
+VdV&W Theorem 2.4.3.
+-/
+noncomputable def vdVWTheorem243FiniteCenterExpectedSupremum
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
+    {cardinality : ℕ} (X : Fin cardinality -> Ω -> ℝ) : ℝ :=
+  ∫ ω, ⨆ centerIndex : Fin cardinality, |X centerIndex ω| ∂μ
+
+/-- The finite-center expected supremum is nonnegative for a nonempty net. -/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_nonneg
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {cardinality : ℕ} [Nonempty (Fin cardinality)]
+    (X : Fin cardinality -> Ω -> ℝ) :
+    0 ≤ vdVWTheorem243FiniteCenterExpectedSupremum μ X := by
+  unfold vdVWTheorem243FiniteCenterExpectedSupremum
+  apply integral_nonneg
+  intro ω
+  exact
+    (abs_nonneg (X (Classical.arbitrary (Fin cardinality)) ω)).trans
+      (Finite.le_ciSup (fun centerIndex : Fin cardinality => |X centerIndex ω|)
+        (Classical.arbitrary (Fin cardinality)))
+
+/--
+An almost-sure upper bound on the finite-center supremum implies the same
+upper bound on its expectation.
+
+This is the deterministic expectation handoff used after the later
+tail-to-expectation/Orlicz maximal inequality supplies the a.e. bound.
+-/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_of_ae_le
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} (X : Fin cardinality -> Ω -> ℝ) {upper : ℝ}
+    (hintegrable :
+      Integrable (fun ω =>
+        ⨆ centerIndex : Fin cardinality, |X centerIndex ω|) μ)
+    (hupper : ∀ᵐ ω ∂μ,
+      (⨆ centerIndex : Fin cardinality, |X centerIndex ω|) ≤ upper) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤ upper := by
+  unfold vdVWTheorem243FiniteCenterExpectedSupremum
+  have hconst : Integrable (fun _ : Ω => upper) μ := integrable_const upper
+  have hmono := integral_mono_ae hintegrable hconst hupper
+  simpa using hmono
+
+/--
+Sub-Gaussian-center specialization of the finite-center expected-supremum
+handoff.
+-/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_of_hasSubgaussianMGF_of_ae_le
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} [Nonempty (Fin cardinality)]
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0} {upper : ℝ}
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ)
+    (hupper : ∀ᵐ ω ∂μ,
+      (⨆ centerIndex : Fin cardinality, |X centerIndex ω|) ≤ upper) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤ upper := by
+  exact
+    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_ae_le X
+      (vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF
+        X hX)
+      hupper
+
+/--
+Positive-cardinality version of the sub-Gaussian expected-supremum handoff.
+-/
+theorem
+    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_hasSubgaussianMGF_of_pos_of_ae_le
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0} {upper : ℝ}
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ)
+    (hupper : ∀ᵐ ω ∂μ,
+      (⨆ centerIndex : Fin cardinality, |X centerIndex ω|) ≤ upper) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤ upper := by
+  haveI : Nonempty (Fin cardinality) := ⟨⟨0, hcardinality⟩⟩
+  exact
+    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_hasSubgaussianMGF_of_ae_le
+      X hX hupper
 
 /--
 Book-facing predicate for the finite-center Hoeffding/Orlicz step after

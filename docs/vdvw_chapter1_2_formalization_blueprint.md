@@ -274,7 +274,7 @@ quotes; the anchor is the authoritative local source location.
 | 2.3.16 | Proposition | `..._101-200.md:857` | pending-local |
 | 2.3.17 | Theorem | `..._101-200.md:882` | pending-local |
 | 2.4.1 | Theorem | `..._101-200.md:970` | local-exact |
-| 2.4.3 | Theorem | `..._101-200.md:988` | local-layer; Definition 2.1.5 covering primitive, fixed-sample empirical `L1(P_n)` distance/covering-number interface, nonempty empirical-cover positive-cardinality bridge, random empirical covering-number sequence, outer-probability `o_P^*(n)` entropy wrapper, `F_M` truncated-class/envelope interface, Definition 2.3.3 `P`-measurable primitive, deterministic finite-cover supremum-bound layers, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, deterministic Rademacher-sign specialization, one-center random Rademacher sub-Gaussian bridge, variance-proxy arithmetic, finite-center sub-Gaussian tail/union-bound layer, iid real-valued Rademacher-sign construction, and finite-center supremum integrability layer now available; exact theorem still pending sharp tail-to-Orlicz/maximal expectation bound, specialization to truncated centers, symmetrization/truncation, envelope-tail, and final convergence handoffs |
+| 2.4.3 | Theorem | `..._101-200.md:988` | local-layer; Definition 2.1.5 covering primitive, fixed-sample empirical `L1(P_n)` distance/covering-number interface, nonempty empirical-cover positive-cardinality bridge, random empirical covering-number sequence, outer-probability `o_P^*(n)` entropy wrapper, `F_M` truncated-class/envelope interface, Definition 2.3.3 `P`-measurable primitive, deterministic finite-cover supremum-bound layers, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, deterministic Rademacher-sign specialization, one-center random Rademacher sub-Gaussian bridge, variance-proxy arithmetic, sub-Gaussian proxy monotonicity, finite-center sub-Gaussian tail/union-bound layer, iid real-valued Rademacher-sign construction, finite-center supremum integrability layer, and expected finite-center supremum handoff now available; exact theorem still pending sharp tail-to-Orlicz/maximal expectation bound, specialization to truncated centers, symmetrization/truncation, envelope-tail, and final convergence handoffs |
 | 2.4.5 | Lemma | `..._101-200.md:1022` | pending-local |
 | 2.5.2 | Theorem | `..._101-200.md:1106` | pending-local |
 | 2.5.6 | Theorem | `..._101-200.md:1204` | pending-local |
@@ -394,11 +394,14 @@ above, so they do not change the theorem-level dashboard counts.
    maximal/Hoeffding-scale handoff layer, and the deterministic
    Rademacher-sign specialization and one-center sub-Gaussian bridge are now
    available, and the nonempty empirical-cover positive-cardinality bridge,
-   truncated-envelope variance-proxy arithmetic, finite-center sub-Gaussian
-   tail/union-bound layer, iid real-valued Rademacher-sign construction, and
-   finite-center supremum integrability layer are now compiled.  The next
-   frontier is proving or primitive-registering the sharp
-   tail-to-Orlicz/maximal expectation conversion used in Theorem 2.4.3,
+   truncated-envelope variance-proxy arithmetic, sub-Gaussian proxy
+   monotonicity, finite-center sub-Gaussian tail/union-bound layer, iid
+   real-valued Rademacher-sign construction, finite-center supremum
+   integrability layer, and expected finite-center supremum handoff are now
+   compiled.  The next frontier is proving or
+   primitive-registering the sharp tail-to-expectation/maximal expectation
+   conversion using mathlib's layer-cake APIs, packaging it as the VdV&W
+   `psi_2`/Hoeffding maximal layer if no exact Orlicz API appears,
    specializing it to truncated centers, then symmetrization/truncation and the
    envelope-tail handoff.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
