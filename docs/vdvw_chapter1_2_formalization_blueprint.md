@@ -307,6 +307,15 @@ quotes; the anchor is the authoritative local source location.
 | 2.14.28 | Lemma | `..._201-300.md:2289` | pending-local |
 | 2.14.32 | Lemma | `..._201-300.md:2491` | pending-local |
 
+## Examples And Addenda Frontier
+
+Examples and addenda are tracked separately from the 156 theorem-level items
+above, so they do not change the theorem-level dashboard counts.
+
+| Item | Kind | Anchor | Current audit status |
+| --- | --- | --- | --- |
+| 2.4.2 | Example | `..._101-200.md:985` | local-layer: real half-line indicator bracket membership, endpoint integrability, and `L1(P)` width identity; pending finite distribution grid, full finite bracketing number statement, GC corollary, and exact example report |
+
 ## Priority Order
 
 1. Finish Chapter 1.2 arbitrary-map outer expectation/inner probability:
@@ -317,7 +326,9 @@ quotes; the anchor is the authoritative local source location.
    `TendstoInDistribution`.
 3. Promote Chapter 2 primitive infrastructure: covering/packing semimetric
    numbers, `P`-measurable classes, Orlicz norms, and separability wrappers.
-4. Move from the completed Theorem 2.4.1 to Example 2.4.2 and Theorem 2.4.3.
+4. Continue Example 2.4.2 from the completed half-line bracket layer to the
+   finite distribution grid and full finite bracketing-number statement, then
+   move to Theorem 2.4.3.
 5. Formalize Sections 2.2-2.3 inequalities and symmetrization before using
    them for later entropy/Donsker results.
 6. Formalize VC/entropy Sections 2.5-2.8 using mathlib shattering foundations

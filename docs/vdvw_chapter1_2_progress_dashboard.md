@@ -32,6 +32,10 @@ The bars are inventory bars, not effort estimates.  A `pending-local` item may
 be deferred if it is broad Chapter 1 infrastructure rather than a dependency of
 the current empirical-process target.
 
+Examples/addenda are tracked separately from this theorem-level inventory.
+The current examples/addenda frontier has one compiled local layer: Example
+2.4.2 half-line bracket membership and width.
+
 ## Chapter Split
 
 | Chapter | Total theorem-level items | local-exact | local-layer | mathlib-foundation | pending-local |
@@ -51,7 +55,7 @@ flowchart LR
   OP["Outer probability / a.s. / measurability bridges<br/>local-layer"]
   BR["Definition 2.1.6 bracketing number<br/>local-layer"]
   T241["Theorem 2.4.1 finite bracketing GC<br/>local-exact"]
-  E242["Example 2.4.2 empirical CDF brackets<br/>next"]
+  E242["Example 2.4.2 empirical CDF brackets<br/>local-layer"]
   T243["Theorem 2.4.3 next bracketing/GC result<br/>next"]
   GCH1["Broad Chapter 1 weak convergence and tightness<br/>deferred until needed"]
 
@@ -83,13 +87,14 @@ outer-a.s./outer-probability GC wrappers.
 | Definition 1.10.1 | Outer-probability convergence primitives and common-domain `TendstoInMeasure` bridge | Broader arbitrary-map API. |
 | Lemma 1.10.2 | Measurable common-domain weak-convergence bridge | Full VdV&W arbitrary-map/measurable-cover version. |
 | Definition 2.1.6 | Primitive brackets, finite covers, `L1(P)` width, and numeric `l1BracketingNumber` | Entropy/logarithm refinements are not the current target. |
+| Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, and `L1(P)` width identity | Finite distribution grid, full finite bracketing number statement, GC corollary, and exact example report. |
 
 ## Near-Term Frontier
 
 ```text
 DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
-NEXT       Example 2.4.2: empirical CDF / half-line bracketing.
+ONGOING    Example 2.4.2: half-line bracket membership and width layer.
 NEXT       Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
 DEFERRED   Broad Chapter 1 weak-convergence/tightness/process machinery until needed.
 ```

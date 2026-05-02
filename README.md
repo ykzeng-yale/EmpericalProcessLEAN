@@ -271,13 +271,22 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `VdVWInnerExpectation_eventIndicator_add_outerExpectation_compl`, and
   `VdVWInnerExpectation_eventIndicator_add_outerExpectation_compl_eq_one`
   in `StatInference/EmpiricalProcess/OuterExpectation.lean`.
+- `realHalfLineIndicator`, `realOpenHalfLineIndicator`,
+  `realHalfLineBracket`, `realHalfLineBracket_mem_indicator_of_le_lt`,
+  `integrable_realHalfLineIndicator`,
+  `integrable_realOpenHalfLineIndicator`,
+  `abs_realHalfLineBracket_endpoint_gap_eq_indicator_Ioo`, and
+  `realHalfLineBracket_l1Width_eq_measureReal_Ioo`
+  in `StatInference/EmpiricalProcess/RealHalfLine.lean`.
 
 These prove the deterministic bracket-comparison route, the finite endpoint
 strong-law wrapper, the fixed-cover iid sample-path endpoint bridge, and the
 endpoint-convergence-to-radius bridge, including a countable decreasing-cover
 route, the primitive `N_[]` hypothesis theorem, VdV&W-style outer probability
-and outer-a.s. wrappers, and the book-style Theorem 2.4.1 predicate.  They are
-real Lean proofs, not placeholders.
+and outer-a.s. wrappers, and the book-style Theorem 2.4.1 predicate.  The
+new Example 2.4.2 layer proves the pointwise and `L1(P)` facts for real
+half-line indicator brackets; the finite distribution grid is still pending.
+They are real Lean proofs, not placeholders.
 
 ## Current Chapter 1-2 Gap
 
@@ -388,5 +397,6 @@ The proof-hole scan should return no matches.
   proved.
 - The direct dependency-minimal Theorem 2.4.1 route from primitive `N_[]`
   definitions is proved;
-  the next targets are Chapter 1 arbitrary-map infrastructure and the next
-  Chapter 2 GC/bracketing results.
+  the next targets are Chapter 1 arbitrary-map infrastructure, the remaining
+  finite-grid layer for Example 2.4.2, and the next Chapter 2 GC/bracketing
+  results.
