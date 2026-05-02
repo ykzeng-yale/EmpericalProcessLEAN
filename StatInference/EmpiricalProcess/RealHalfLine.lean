@@ -107,4 +107,83 @@ theorem realHalfLineBracket_l1Width_eq_measureReal_Ioo
   rw [abs_realHalfLineBracket_endpoint_gap_eq_indicator_Ioo hab]
   exact integral_indicator_one measurableSet_Ioo
 
+/--
+A supplied finite real grid for half-line brackets.
+
+This is a proof-carrying finite-grid layer for VdV&W Example 2.4.2.  It does
+not yet construct the textbook grid from an arbitrary distribution; it records
+exactly the data needed to turn such a grid into the primitive local
+bracketing-number witness.
+-/
+structure SuppliedRealHalfLineGrid
+    (μ : Measure ℝ) (epsilon : ℝ) (cardinality : ℕ) where
+  left : Fin cardinality -> ℝ
+  right : Fin cardinality -> ℝ
+  bracketOf : ℝ -> Fin cardinality
+  left_lt_right : ∀ bracketIndex, left bracketIndex < right bracketIndex
+  left_le_index : ∀ c, left (bracketOf c) ≤ c
+  index_lt_right : ∀ c, c < right (bracketOf c)
+  cell_width_lt :
+    ∀ bracketIndex, μ.real (Set.Ioo (left bracketIndex) (right bracketIndex)) < epsilon
+
+namespace SuppliedRealHalfLineGrid
+
+/--
+A supplied finite real grid yields an explicit-cardinality finite `L1(P)`
+bracket cover for the half-line indicator class.
+-/
+noncomputable def toFiniteL1BracketCoverAtCard
+    {μ : Measure ℝ} [IsFiniteMeasure μ]
+    {epsilon : ℝ} {cardinality : ℕ}
+    (grid : SuppliedRealHalfLineGrid μ epsilon cardinality) :
+    FiniteL1BracketCoverAtCard μ Set.univ realHalfLineIndicator
+      epsilon cardinality where
+  bracket := fun bracketIndex =>
+    realHalfLineBracket (grid.left bracketIndex) (grid.right bracketIndex)
+  bracketOf := fun c _ => grid.bracketOf c
+  mem_bracket := by
+    intro c _hc
+    exact
+      realHalfLineBracket_mem_indicator_of_le_lt
+        (grid.left_le_index c) (grid.index_lt_right c)
+  width_lt := by
+    intro bracketIndex
+    dsimp [IsL1EpsilonBracket, l1BracketWidth]
+    rw [realHalfLineBracket_l1Width_eq_measureReal_Ioo μ
+      (grid.left_lt_right bracketIndex)]
+    exact grid.cell_width_lt bracketIndex
+  lower_integrable := by
+    intro bracketIndex
+    exact integrable_realHalfLineIndicator μ (grid.left bracketIndex)
+  upper_integrable := by
+    intro bracketIndex
+    exact integrable_realOpenHalfLineIndicator μ (grid.right bracketIndex)
+  function_integrable := by
+    intro c _hc
+    exact integrable_realHalfLineIndicator μ c
+
+/--
+A supplied finite real grid proves finiteness of the primitive local
+`L1(P)` bracketing-number witness.
+-/
+theorem hasFiniteL1BracketingNumber
+    {μ : Measure ℝ} [IsFiniteMeasure μ]
+    {epsilon : ℝ} {cardinality : ℕ}
+    (grid : SuppliedRealHalfLineGrid μ epsilon cardinality) :
+    HasFiniteL1BracketingNumber μ Set.univ realHalfLineIndicator epsilon := by
+  exact ⟨cardinality, ⟨grid.toFiniteL1BracketCoverAtCard⟩⟩
+
+/--
+A supplied finite real grid makes the numeric primitive bracketing number
+finite.
+-/
+theorem l1BracketingNumber_lt_top
+    {μ : Measure ℝ} [IsFiniteMeasure μ]
+    {epsilon : ℝ} {cardinality : ℕ}
+    (grid : SuppliedRealHalfLineGrid μ epsilon cardinality) :
+    l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
+  l1BracketingNumber_lt_top_of_hasFinite grid.hasFiniteL1BracketingNumber
+
+end SuppliedRealHalfLineGrid
+
 end StatInference

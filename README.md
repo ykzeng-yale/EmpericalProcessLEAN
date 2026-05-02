@@ -276,7 +276,10 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `integrable_realHalfLineIndicator`,
   `integrable_realOpenHalfLineIndicator`,
   `abs_realHalfLineBracket_endpoint_gap_eq_indicator_Ioo`, and
-  `realHalfLineBracket_l1Width_eq_measureReal_Ioo`
+  `realHalfLineBracket_l1Width_eq_measureReal_Ioo`,
+  `SuppliedRealHalfLineGrid.toFiniteL1BracketCoverAtCard`,
+  `SuppliedRealHalfLineGrid.hasFiniteL1BracketingNumber`, and
+  `SuppliedRealHalfLineGrid.l1BracketingNumber_lt_top`
   in `StatInference/EmpiricalProcess/RealHalfLine.lean`.
 
 These prove the deterministic bracket-comparison route, the finite endpoint
@@ -285,7 +288,9 @@ endpoint-convergence-to-radius bridge, including a countable decreasing-cover
 route, the primitive `N_[]` hypothesis theorem, VdV&W-style outer probability
 and outer-a.s. wrappers, and the book-style Theorem 2.4.1 predicate.  The
 new Example 2.4.2 layer proves the pointwise and `L1(P)` facts for real
-half-line indicator brackets; the finite distribution grid is still pending.
+half-line indicator brackets and connects a supplied finite grid to the
+primitive bracketing-number witness; construction of the distribution grid is
+still pending.
 They are real Lean proofs, not placeholders.
 
 ## Current Chapter 1-2 Gap
@@ -397,6 +402,6 @@ The proof-hole scan should return no matches.
   proved.
 - The direct dependency-minimal Theorem 2.4.1 route from primitive `N_[]`
   definitions is proved;
-  the next targets are Chapter 1 arbitrary-map infrastructure, the remaining
-  finite-grid layer for Example 2.4.2, and the next Chapter 2 GC/bracketing
-  results.
+  the next targets are Chapter 1 arbitrary-map infrastructure,
+  distribution-dependent grid construction for Example 2.4.2, the remaining
+  endpoint/GC corollary work, and the next Chapter 2 GC/bracketing results.
