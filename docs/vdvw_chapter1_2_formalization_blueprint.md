@@ -243,7 +243,7 @@ quotes; the anchor is the authoritative local source location.
 | 2.3.16 | Proposition | `..._101-200.md:857` | pending-local |
 | 2.3.17 | Theorem | `..._101-200.md:882` | pending-local |
 | 2.4.1 | Theorem | `..._101-200.md:970` | local-exact |
-| 2.4.3 | Theorem | `..._101-200.md:988` | local-layer; Definition 2.1.5 covering primitive, fixed-sample empirical `L1(P_n)` distance/covering-number interface, random empirical covering-number sequence, outer-probability `o_P^*(n)` entropy wrapper, `F_M` truncated-class/envelope interface, Definition 2.3.3 `P`-measurable primitive, deterministic finite-cover supremum-bound layers, fixed-sample empirical-net inequality `(2.4.4)`, and finite-center maximal/Hoeffding-scale handoff layer now available; exact theorem still pending proof of the Orlicz/Hoeffding finite-center maximal bound, symmetrization/truncation, envelope-tail, and final convergence handoffs |
+| 2.4.3 | Theorem | `..._101-200.md:988` | local-layer; Definition 2.1.5 covering primitive, fixed-sample empirical `L1(P_n)` distance/covering-number interface, random empirical covering-number sequence, outer-probability `o_P^*(n)` entropy wrapper, `F_M` truncated-class/envelope interface, Definition 2.3.3 `P`-measurable primitive, deterministic finite-cover supremum-bound layers, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, and deterministic Rademacher-sign specialization now available; exact theorem still pending iid Rademacher construction, proof of the Orlicz/Hoeffding finite-center maximal bound, symmetrization/truncation, envelope-tail, and final convergence handoffs |
 | 2.4.5 | Lemma | `..._101-200.md:1022` | pending-local |
 | 2.5.2 | Theorem | `..._101-200.md:1106` | pending-local |
 | 2.5.6 | Theorem | `..._101-200.md:1204` | pending-local |
@@ -356,10 +356,12 @@ above, so they do not change the theorem-level dashboard counts.
    Definition 2.3.3 now has a deterministic finite-cover supremum bound for
    display `(2.3.2)`; the fixed-sample and random empirical `L1(P_n)`
    covering-number/entropy interfaces, the `F_M` truncated-class/envelope
-   interface, the fixed-sample net inequality `(2.4.4)`, and the finite-center
-   maximal/Hoeffding-scale handoff layer are now available.  The next frontier
-   is proving the Orlicz/Hoeffding finite-center maximal bound used in Theorem
-   2.4.3, then symmetrization/truncation and the envelope-tail handoff.
+   interface, the fixed-sample net inequality `(2.4.4)`, the finite-center
+   maximal/Hoeffding-scale handoff layer, and the deterministic
+   Rademacher-sign specialization are now available.  The next frontier is
+   constructing iid Rademacher signs and proving the Orlicz/Hoeffding
+   finite-center maximal bound used in Theorem 2.4.3, then
+   symmetrization/truncation and the envelope-tail handoff.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

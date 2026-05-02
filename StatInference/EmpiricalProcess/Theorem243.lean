@@ -438,6 +438,111 @@ theorem
       cover hweights hepsilon_nonneg
       (vdVWTheorem243HoeffdingCenterScale_nonneg n hM_nonneg) hmaximal
 
+/-!
+## Rademacher-sign specialization
+-/
+
+/--
+A deterministic sign vector with the support of Rademacher signs.
+
+The later probability layer will realize this predicate from an iid
+Rademacher law.  This local layer records only the fixed-sign algebra needed
+to connect the textbook display to the empirical-net handoff.
+-/
+def VdVWRademacherSignVector {n : ℕ} (sign : Fin n -> ℝ) : Prop :=
+  ∀ i, sign i = -1 ∨ sign i = 1
+
+/-- Rademacher sign vectors are uniformly bounded by one in absolute value. -/
+theorem VdVWRademacherSignVector.abs_le_one
+    {n : ℕ} {sign : Fin n -> ℝ}
+    (hsign : VdVWRademacherSignVector sign) :
+    ∀ i, |sign i| ≤ 1 := by
+  intro i
+  rcases hsign i with hneg | hpos
+  · simp [hneg]
+  · simp [hpos]
+
+/--
+The deterministic weights `epsilon_i / n` appearing in the Rademacher average
+in the proof of Theorem 2.4.3.
+-/
+noncomputable def vdVWRademacherWeights {n : ℕ} (sign : Fin n -> ℝ) : Fin n -> ℝ :=
+  fun i => (n : ℝ)⁻¹ * sign i
+
+/--
+If the supplied signs are bounded by one, the Rademacher weights satisfy the
+`1 / n` absolute-weight condition required by the deterministic net inequality.
+-/
+theorem abs_vdVWRademacherWeights_le_inv_card
+    {n : ℕ} {sign : Fin n -> ℝ}
+    (hsign : ∀ i, |sign i| ≤ 1) :
+    ∀ i, |vdVWRademacherWeights sign i| ≤ (n : ℝ)⁻¹ := by
+  intro i
+  unfold vdVWRademacherWeights
+  have hinv_nonneg : 0 ≤ (n : ℝ)⁻¹ :=
+    inv_nonneg.mpr (Nat.cast_nonneg n)
+  rw [abs_mul, abs_of_nonneg hinv_nonneg]
+  simpa using mul_le_mul_of_nonneg_left (hsign i) hinv_nonneg
+
+/-- Rademacher sign vectors yield admissible deterministic weights. -/
+theorem abs_vdVWRademacherWeights_le_inv_card_of_signVector
+    {n : ℕ} {sign : Fin n -> ℝ}
+    (hsign : VdVWRademacherSignVector sign) :
+    ∀ i, |vdVWRademacherWeights sign i| ≤ (n : ℝ)⁻¹ :=
+  abs_vdVWRademacherWeights_le_inv_card
+    (VdVWRademacherSignVector.abs_le_one hsign)
+
+/--
+Book-facing predicate for the finite-center Hoeffding/Orlicz step after
+specializing the weighted sums to fixed Rademacher signs.
+
+The next probabilistic primitive must prove this predicate from a genuine iid
+Rademacher construction plus mathlib's sub-Gaussian/Hoeffding APIs.
+-/
+def VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) {cardinality : ℕ}
+    (center : Fin cardinality -> Index)
+    (sign : Fin n -> ℝ) (M : ℝ) : Prop :=
+  VdVWTheorem243FiniteCenterMaximalBound sample classFun center
+    (vdVWRademacherWeights sign) (vdVWTheorem243HoeffdingCenterScale n M)
+
+/--
+Rademacher-sign specialization of the finite empirical-net Hoeffding handoff.
+
+This closes the deterministic passage from fixed signs to the current
+`VdVWTheorem243FiniteCenterMaximalBound` blocker; it still assumes the
+finite-center Hoeffding/Orlicz predicate and does not claim the probabilistic
+construction of iid signs.
+-/
+theorem
+    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon M : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality)
+    (sign : Fin n -> ℝ)
+    (hsign : VdVWRademacherSignVector sign)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hM_nonneg : 0 ≤ M)
+    (hmaximal :
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample classFun
+        cover.center sign M) :
+    vdVWWeightedClassSupremum indexClass classFun (vdVWRademacherWeights sign)
+        sample ≤
+      vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M + epsilon := by
+  exact
+    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_finiteEmpiricalL1CoverAtCard
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (epsilon := epsilon) (M := M) cover
+      (abs_vdVWRademacherWeights_le_inv_card_of_signVector hsign)
+      hepsilon_nonneg hM_nonneg
+      (by
+        simpa [VdVWTheorem243RademacherFiniteCenterHoeffdingBound] using hmaximal)
+
 /--
 Common-domain VdV&W stochastic little-o in outer probability.
 

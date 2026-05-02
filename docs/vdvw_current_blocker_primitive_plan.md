@@ -130,6 +130,25 @@ additional example closures:
    Lemma 2.2.2 `psi_2` maximal inequality.  Search pinned mathlib for
    `SubGaussian`, `Hoeffding`, `Orlicz`, `eLpNorm`, and finite supremum
    inequalities before introducing local primitives.
+
+   Status: the deterministic fixed-Rademacher-sign specialization is now
+   implemented as a compiled local layer in
+   `StatInference/EmpiricalProcess/Theorem243.lean`:
+
+   ```lean
+   VdVWRademacherSignVector
+   VdVWRademacherSignVector.abs_le_one
+   vdVWRademacherWeights
+   abs_vdVWRademacherWeights_le_inv_card
+   abs_vdVWRademacherWeights_le_inv_card_of_signVector
+   VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+   vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
+   ```
+
+   This closes the deterministic passage from fixed signs `epsilon_i` to the
+   existing finite-net/Hoeffding-scale handoff.  It deliberately does not yet
+   construct iid Rademacher signs or prove the `psi_2`/Hoeffding maximal
+   predicate probabilistically.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -138,11 +157,12 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: prove or primitive-register the finite-center
-Orlicz/Hoeffding maximal bound required by
-`VdVWTheorem243FiniteCenterMaximalBound`, reusing pinned mathlib
-`HasSubgaussianMGF`, Hoeffding, `eLpNorm`, and finite-union/maximal APIs where
-possible.
+Next exact edit: construct or primitive-register the iid Rademacher probability
+space/sign process and prove the probabilistic finite-center
+Orlicz/Hoeffding maximal bound
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound`, reusing pinned mathlib
+`PMF.bernoulli`, `exists_hasLaw_indepFun`, `HasSubgaussianMGF`, Hoeffding,
+`eLpNorm`, and finite-union/maximal APIs where possible.
 
 ## Parked Example-Specific Blocker
 
@@ -166,8 +186,8 @@ Pinned/local Lean sources searched before adding new primitives:
 | --- | --- | --- |
 | pinned mathlib | `.lake/packages/mathlib/Mathlib` | `Metric.externalCoveringNumber`, `Metric.coveringNumber`, `Metric.IsCover`, `externalCoveringNumber_mono_set`, `Set.indicator`, `Measurable.indicator`, `measurableSet_le`, `Asymptotics.IsLittleO`, `MeasureTheory.TendstoInMeasure`, `Real.log`, `Real.log_nonneg`, `Real.log_natCast_nonneg`, `Real.sqrt`, `Real.sqrt_nonneg`, `ENat.toNat`, `ENat.map`, `WithTop.untopD`, `PMF.bernoulli`, `ProbabilityTheory.exists_hasLaw_indepFun`, `Kernel.HasSubgaussianMGF`, `HasSubgaussianMGF`, `hasSubgaussianMGF_of_mem_Icc`, `hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero`, `measure_sum_range_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_hasCondSubgaussianMGF`, `eLpNorm`, `eLpNorm_one_eq_lintegral_enorm`, `eLpNorm_add_le`, `eLpNorm_sum_le`, plus previous Example 2.4.2 APIs: `ProbabilityTheory.cdf`, `ProbabilityTheory.measure_cdf`, `ProbabilityTheory.cdf_eq_real`, `ProbabilityTheory.tendsto_cdf_atBot`, `ProbabilityTheory.tendsto_cdf_atTop`, `StieltjesFunction.measure_Ioo`, `measure_Iio`, `measure_Ioi`, `tendsto_measure_Iic_atTop`, `tendsto_measure_Ici_atBot`, `Measure.real`, `measureReal_mono`, `Fin.cases`, `Fin.lastCases`, `Fin.snoc`, `Fin.cons`, `Fin.eq_castSucc_or_eq_last` |
 | pinned packages | `.lake/packages/{aesop,batteries,proofwidgets,LeanSearchClient,Qq,Cli,plausible,importGraph}` | tactic/support libraries, no empirical-CDF bracketing theorem and no VdV&W-style Orlicz maximal theorem found |
-| local AI-Statistician checkout | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician` | older/high-level empirical-process interfaces only; no exact VdV&W half-line quantile grid theorem and no reusable Theorem 2.4.3 Orlicz/Hoeffding proof |
-| local empirical blueprint worktree | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician/.worktrees/empirical-blueprint` | high-level empirical-process certificates; no reusable measure-theoretic quantile grid proof or finite-center maximal proof |
+| local AI-Statistician checkout | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician` | older/high-level Rademacher and empirical-process certificate interfaces only; no exact VdV&W half-line quantile grid theorem and no reusable Theorem 2.4.3 Orlicz/Hoeffding proof |
+| local empirical blueprint worktree | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician/.worktrees/empirical-blueprint` | high-level empirical-process certificates; no reusable measure-theoretic quantile grid proof, iid Rademacher construction, or finite-center maximal proof |
 | local Aristotle download | `/Users/yukang/Downloads/2ee0bdf3-d67d-4ce3-ac7e-b87dfe7f9455_aristotle` | no relevant empirical-process/CDF partition layer found |
 
 No direct open-source Lean theorem was found that states VdV&W Example 2.4.2
