@@ -30,9 +30,9 @@ The Chapter 1-2 theorem-level extraction currently has 156 items.
 
 ```text
 local-exact       1 / 156  [#-----------------------------]
-local-layer       7 / 156  [#-----------------------------]
+local-layer       8 / 156  [#-----------------------------]
 mathlib-found.   21 / 156  [####--------------------------]
-pending-local   127 / 156  [########################------]
+pending-local   126 / 156  [########################------]
 ```
 
 The bars are inventory bars, not effort estimates.  A `pending-local` item may
@@ -50,7 +50,7 @@ deferred unless a theorem target needs them.
 | Chapter | Total theorem-level items | local-exact | local-layer | mathlib-foundation | pending-local |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Chapter 1 | 47 | 0 | 7 | 17 | 23 |
-| Chapter 2 | 109 | 1 | 0 | 4 | 104 |
+| Chapter 2 | 109 | 1 | 1 | 4 | 103 |
 
 Chapter 1 has more infrastructure layers than exact completions because many
 statements are whole-book weak-convergence/tightness machinery.  Chapter 2 has
@@ -99,7 +99,7 @@ outer-a.s./outer-probability GC wrappers.
 | Lemma 1.2.3 | Nonnegative event indicator bridges for outer/inner probability, explicit measurable event-cover existence, arbitrary measurable set covers with integral equality, direct `toMeasurable` hull integral equality, complement-set-cover lower covers, direct complement-cover inner-probability equalities, outer-probability/outer-expectation bridge, and two-sided complement identities | Remaining extended-real and full measurable-set-cover clauses. |
 | Definition 1.10.1 | Outer-probability convergence primitives and common-domain `TendstoInMeasure` bridge | Broader arbitrary-map API. |
 | Lemma 1.10.2 | Measurable common-domain weak-convergence bridge | Full VdV&W arbitrary-map/measurable-cover version. |
-| Definition 2.1.5 / Theorem 2.4.3 setup | `vdVWCoveringNumber` wrapper over mathlib `Metric.externalCoveringNumber`, explicit finite closed-ball cover witnesses, finite-number handoff, monotonicity, packing comparison wrappers, deterministic empirical `L1(P_n)` distance/finite-covering-number interface, random sample-path empirical covering-number wrapper, outer-probability `o_P^*(n)` entropy condition, and `F_M` truncated-class/envelope interface for Theorem 2.4.3 | Deterministic fixed-sample net inequality `(2.4.4)` remains pending. |
+| Definition 2.1.5 / Theorem 2.4.3 setup | `vdVWCoveringNumber` wrapper over mathlib `Metric.externalCoveringNumber`, explicit finite closed-ball cover witnesses, finite-number handoff, monotonicity, packing comparison wrappers, deterministic empirical `L1(P_n)` distance/finite-covering-number interface, random sample-path empirical covering-number wrapper, outer-probability `o_P^*(n)` entropy condition, `F_M` truncated-class/envelope interface, and fixed-sample empirical-net inequality `(2.4.4)` layer for Theorem 2.4.3 | Maximal-inequality/Orlicz connection, symmetrization/truncation, envelope-tail, and final convergence handoffs remain pending before the exact textbook theorem. |
 | Definition 2.1.6 | Primitive brackets, finite covers, `L1(P)` width, and numeric `l1BracketingNumber` | Entropy/logarithm refinements are not the current target. |
 | Definition 2.2.3 | Semimetric whole-space covering/packing wrappers `vdVWSemimetricCoveringNumber` and `vdVWSemimetricPackingNumber`, finite-cover handoff, and `N <= D <= N(epsilon/2)` comparison layer | Entropy/logarithm wrappers and exact open-ball convention remain pending. |
 | Definition 2.3.3 / Example 2.3.4 | Product measure `P^n`, display `(2.3.2)` weighted sample sums and class suprema, `NullMeasurable` predicate for measurability on the completion, countable coordinate-measurable constructor, pointwise-to-weighted-sum convergence helpers, value-set/boundedness infrastructure for real suprema, bounded pointwise-approximability-to-supremum-equality bridge, deterministic finite-cover supremum bound for Theorem 2.4.3, and proof-carrying countable-subclass supremum-equality handoff | The theorem-relevant deterministic finite-cover handoff is available; exact example-only supremum equality is deferred unless needed by Theorem 2.4.3. |
@@ -111,7 +111,7 @@ outer-a.s./outer-probability GC wrappers.
 DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
 ONGOING    Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
-READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy and F_M truncation interfaces for Theorem 2.4.3 setup.
+READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, F_M truncation interfaces, and fixed-sample empirical-net inequality (2.4.4) layer for Theorem 2.4.3 setup.
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED-EXAMPLE Example 2.4.2 exact quantile-grid closure and empirical-CDF report unless a theorem needs it.

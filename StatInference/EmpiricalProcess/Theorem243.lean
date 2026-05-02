@@ -19,7 +19,7 @@ both without making the lower-level covering file depend on sample paths.
 namespace StatInference
 
 open MeasureTheory Filter
-open scoped ENNReal Topology
+open scoped BigOperators ENNReal Topology
 
 universe u v w
 
@@ -132,6 +132,115 @@ theorem VdVWClassCoordinateMeasurable.truncate
       (vdVWTruncatedClassFun classFun envelope M) := by
   intro index hindex
   exact measurable_vdVWTruncatedClassFun (hclass index hindex) henvelope
+
+/-!
+## Fixed-sample empirical net handoff
+-/
+
+/--
+If all sample weights have absolute value at most `1 / n`, then the difference
+between two weighted sample sums is controlled by their empirical `L1(P_n)`
+distance.
+
+This is the deterministic algebraic core behind the finite-net display
+`(2.4.4)` in the proof of VdV&W Theorem 2.4.3.
+-/
+theorem abs_vdVWWeightedSampleSum_sub_le_empiricalL1Distance_of_abs_weight_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ}
+    {weights : Fin n -> ℝ}
+    (hweights : ∀ i, |weights i| ≤ (n : ℝ)⁻¹)
+    (index center : Index) :
+    |vdVWWeightedSampleSum classFun weights index sample -
+        vdVWWeightedSampleSum classFun weights center sample| ≤
+      empiricalL1Distance sample (classFun index) (classFun center) := by
+  unfold vdVWWeightedSampleSum empiricalL1Distance empiricalAverage
+  have hsub :
+      (∑ i : Fin n, weights i * classFun index (sample i)) -
+          (∑ i : Fin n, weights i * classFun center (sample i)) =
+        ∑ i : Fin n,
+          weights i *
+            (classFun index (sample i) - classFun center (sample i)) := by
+    rw [← Finset.sum_sub_distrib]
+    exact Finset.sum_congr rfl fun i _hi => by ring
+  rw [hsub]
+  calc
+    |∑ i : Fin n,
+        weights i * (classFun index (sample i) - classFun center (sample i))|
+        ≤
+      ∑ i : Fin n,
+        |weights i * (classFun index (sample i) - classFun center (sample i))| := by
+        simpa using
+          (Finset.abs_sum_le_sum_abs
+            (fun i : Fin n =>
+              weights i *
+                (classFun index (sample i) - classFun center (sample i)))
+            (Finset.univ : Finset (Fin n)))
+    _ =
+      ∑ i : Fin n,
+        |weights i| * |classFun index (sample i) - classFun center (sample i)| := by
+        simp [abs_mul]
+    _ ≤
+      ∑ i : Fin n,
+        (n : ℝ)⁻¹ * |classFun index (sample i) - classFun center (sample i)| := by
+        exact Finset.sum_le_sum fun i _hi =>
+          mul_le_mul_of_nonneg_right (hweights i) (abs_nonneg _)
+    _ =
+      (∑ i : Fin n, |classFun index (sample i) - classFun center (sample i)|) /
+        (n : ℝ) := by
+        rw [← Finset.mul_sum, inv_mul_eq_div]
+
+/--
+Finite empirical `L1(P_n)` nets control the VdV&W weighted class supremum once
+the finitely many net-center sums are controlled.
+
+This specializes the earlier finite-metric-cover supremum handoff to the
+random empirical metric used in VdV&W Theorem 2.4.3, display `(2.4.4)`.
+-/
+theorem vdVWWeightedClassSupremum_le_upper_add_of_finiteEmpiricalL1CoverAtCard
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon upper : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality)
+    {weights : Fin n -> ℝ}
+    (hweights : ∀ i, |weights i| ≤ (n : ℝ)⁻¹)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hupper_nonneg : 0 ≤ upper)
+    (hupper :
+      ∀ centerIndex : Fin cardinality,
+        |vdVWWeightedSampleSum classFun weights (cover.center centerIndex) sample| ≤
+          upper) :
+    vdVWWeightedClassSupremum indexClass classFun weights sample ≤
+      upper + epsilon := by
+  have htarget_nonneg : 0 ≤ upper + epsilon :=
+    add_nonneg hupper_nonneg hepsilon_nonneg
+  unfold vdVWWeightedClassSupremum
+  apply Real.iSup_le
+  · intro index
+    apply Real.iSup_le
+    · intro hindex
+      let centerIndex := cover.centerOf index hindex
+      let targetSum := vdVWWeightedSampleSum classFun weights index sample
+      let centerSum :=
+        vdVWWeightedSampleSum classFun weights (cover.center centerIndex) sample
+      have hdecomp : centerSum + (targetSum - centerSum) = targetSum := by ring
+      have hcontrol : |targetSum - centerSum| ≤ epsilon := by
+        exact
+          (abs_vdVWWeightedSampleSum_sub_le_empiricalL1Distance_of_abs_weight_le
+            (sample := sample) (classFun := classFun) hweights index
+            (cover.center centerIndex)).trans
+            (cover.dist_le index hindex)
+      calc
+        |targetSum| = |centerSum + (targetSum - centerSum)| :=
+          (congrArg abs hdecomp).symm
+        _ ≤ |centerSum| + |targetSum - centerSum| :=
+          abs_add_le centerSum (targetSum - centerSum)
+        _ ≤ upper + epsilon := add_le_add (hupper centerIndex) hcontrol
+    · exact htarget_nonneg
+  · exact htarget_nonneg
 
 /--
 Common-domain VdV&W stochastic little-o in outer probability.

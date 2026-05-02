@@ -87,8 +87,20 @@ additional example closures:
    Remaining Step 1 work: add the outer-integrability/envelope-tail handoff
    `P^* F{F > M}` when the proof reaches the symmetrization/truncation layer.
 2. Deterministic fixed-sample net inequality `(2.4.4)` for a finite empirical
-   `L1(P_n)` net.  Reuse the existing Definition 2.3.3 weighted-supremum and
-   deterministic finite-cover supremum-bound layer before adding new APIs.
+   `L1(P_n)` net.
+
+   Status: implemented as a compiled local layer in
+   `StatInference/EmpiricalProcess/Theorem243.lean`:
+
+   ```lean
+   abs_vdVWWeightedSampleSum_sub_le_empiricalL1Distance_of_abs_weight_le
+   vdVWWeightedClassSupremum_le_upper_add_of_finiteEmpiricalL1CoverAtCard
+   ```
+
+   The proof reuses the Definition 2.3.3 weighted-supremum infrastructure and
+   the fixed-sample `FiniteEmpiricalL1CoverAtCard` primitive.  It searches and
+   uses pinned mathlib finite-sum APIs including `Finset.abs_sum_le_sum_abs`,
+   `Finset.sum_sub_distrib`, `Finset.sum_le_sum`, and `Finset.mul_sum`.
 3. Orlicz/maximal-inequality layer: connect the finite net display to
    Lemma 2.2.2 and the `psi_2`/Hoeffding bound used in the proof.  Search
    pinned mathlib for `SubGaussian`, `Hoeffding`, `Orlicz`, `eLpNorm`, and
@@ -101,8 +113,9 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: connect finite empirical covers to the fixed-sample net
-inequality `(2.4.4)`.
+Next exact edit: connect the fixed-sample net display `(2.4.4)` to the
+Orlicz/maximal-inequality layer, reusing pinned mathlib
+`SubGaussian`/Hoeffding/`eLpNorm` APIs where possible.
 
 ## Parked Example-Specific Blocker
 
