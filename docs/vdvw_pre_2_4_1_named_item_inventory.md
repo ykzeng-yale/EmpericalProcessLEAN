@@ -113,6 +113,8 @@ Current promoted declarations toward Theorem 2.4.1:
 | `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_coordinate`, `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_coordinate` | proved direct outer-probability Theorem 2.4.1 for countable classes with coordinate a.e.-measurable deviations |
 | `vdVWCoordinateDeviation_aemeasurable_of_empiricalRisk`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalRisk` | proved empirical-risk a.e.-measurability bridge into the countable direct outer-probability theorem layer |
 | `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_empiricalAverage` | proved direct outer-probability Theorem 2.4.1 for countable classes with a.e.-measurable empirical-average coordinates |
+| `empiricalAverage_samplePath_aemeasurable_of_coordinate`, `empiricalAverage_samplePath_aemeasurable_of_sample_aemeasurable`, `empiricalAverage_samplePath_aemeasurable_of_hasLaw` | proved finite sample-path empirical-average a.e.-measurability from coordinate/sample a.e.-measurability, `HasLaw`, and measurable statistics |
+| `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_sample_aemeasurable_of_classFun_measurable`, `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_classFun_measurable` | proved direct outer-probability Theorem 2.4.1 for countable classes with concrete sample/function measurability, including the stronger `HasLaw` plus measurable class-function form |
 | `VdVWPGlivenkoCantelliClass` | proved/compiled book-style GC predicate with outer-probability or outer-a.s. branches |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | proved VdV&W Theorem 2.4.1 into the book-style GC predicate |
 
@@ -301,7 +303,7 @@ through 2.4.1 requires accounting for them.
 | 2.3.15 Theorem | `M2:818` | pointwise separable version Donsker equivalence | later roadmap |
 | 2.3.16 Proposition | `M2:857` | consistent lifting | later roadmap |
 | 2.3.17 Theorem | `M2:882` | separable modification | later roadmap |
-| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | proved as `vdVW_theorem_2_4_1_glivenkoCantelli` into the book-style predicate; tail-event bridge and countable empirical-average corollary for direct outer probability proved |
+| 2.4.1 Theorem | `M2:970` | finite `L1(P)` bracketing numbers imply Glivenko-Cantelli | proved as `vdVW_theorem_2_4_1_glivenkoCantelli` into the book-style predicate; tail-event bridge and countable direct outer-probability corollary from `HasLaw` plus measurable class functions proved |
 
 ## Dependency-Minimal Route To Theorem 2.4.1
 
@@ -321,7 +323,7 @@ Sections 2.1-2.3 to be formalized literally.  The dependency-minimal route is:
 | 9 | endpoint empirical average SLLN | `M2:984` | done for fixed finite covers: `EndpointSamples.lean` |
 | 10 | build `FiniteBracketingEndpointRoute` from primitive brackets | `M2:972-984` | done from primitive cover plus endpoint/width assumptions |
 | 11 | decreasing-radius argument | `M2:984` | done for the dependency-minimal deterministic and iid `N_[]` route |
-| 12 | final exact theorem statement | `M2:970` | done as book-style predicate: `vdVW_theorem_2_4_1_glivenkoCantelli`; tail-event bridge and countable empirical-average corollary for direct outer probability proved |
+| 12 | final exact theorem statement | `M2:970` | done as book-style predicate: `vdVW_theorem_2_4_1_glivenkoCantelli`; tail-event bridge and countable direct outer-probability corollary from `HasLaw` plus measurable class functions proved |
 
 This route should reuse mathlib for measure/integration/probability and only
 build the empirical-process-specific layer locally.

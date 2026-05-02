@@ -24,6 +24,7 @@ machinery remains future compatibility work.
 | `endpoint_strong_law_ae_real` | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | proved from mathlib |
 | `finite_endpoint_strong_law_ae_real` | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | proved from mathlib |
 | `samplePath`, `endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid` | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid sample-path endpoint SLLN bridge |
+| `empiricalAverage_samplePath_aemeasurable_of_coordinate`, `empiricalAverage_samplePath_aemeasurable_of_sample_aemeasurable`, `empiricalAverage_samplePath_aemeasurable_of_hasLaw` | `StatInference/EmpiricalProcess/EndpointSamples.lean` | sample-path empirical-average a.e.-measurability bridge |
 | `FiniteL1BracketCover.endpoint_tendsto_ae_of_iid`, `FiniteL1BracketCover.exists_endpointRadius_ae_of_iid` | `StatInference/EmpiricalProcess/EndpointSamples.lean` | fixed-cover iid endpoint convergence bridge |
 | `FunctionBracket`, `MemFunctionBracket`, `l1BracketWidth`, `IsL1EpsilonBracket` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive bracketing definitions |
 | `FiniteBracketCover`, `FiniteL1BracketCover` | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | finite primitive cover definitions |
@@ -52,6 +53,8 @@ machinery remains future compatibility work.
 | `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_coordinate`, `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_coordinate` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | direct outer-probability Theorem 2.4.1 for countable classes with coordinate a.e.-measurable deviations |
 | `vdVWCoordinateDeviation_aemeasurable_of_empiricalRisk`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalRisk` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | derives coordinate deviation a.e.-measurability from empirical-risk coordinate a.e.-measurability and uses it in the countable direct outer-probability branch |
 | `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_empiricalAverage` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | direct outer-probability Theorem 2.4.1 for countable classes with a.e.-measurable empirical-average coordinates |
+| `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_sample_aemeasurable_of_classFun_measurable` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | direct outer-probability Theorem 2.4.1 for countable classes with a.e.-measurable samples and measurable class functions |
+| `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_classFun_measurable` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | direct outer-probability Theorem 2.4.1 for countable classes with measurable class functions; sample a.e.-measurability comes from `HasLaw` |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | Theorem 2.4.1 packaged into the book-style GC predicate through the outer-a.s. branch |
 
 Detailed side-by-side audit table:
@@ -115,12 +118,20 @@ The proved Lean code currently supplies:
 21. a mathlib measurability bridge from empirical-risk coordinate
     a.e.-measurability to coordinate empirical-deviation a.e.-measurability;
 22. a direct outer-probability version of Theorem 2.4.1 for countable classes
-    with a.e.-measurable empirical-average coordinates.
+    with a.e.-measurable empirical-average coordinates;
+23. a finite-sum bridge proving sample-path empirical averages are
+    a.e.-measurable from concrete a.e.-measurable samples and measurable class
+    functions;
+24. a direct outer-probability version of Theorem 2.4.1 for countable classes
+    under those concrete sample/function measurability assumptions;
+25. a stronger direct outer-probability version for countable classes where
+    the existing `HasLaw` assumptions supply sample a.e.-measurability and
+    only class-function measurability is added.
 
 The remaining compatibility layers are not needed for the outer-a.s. proof of
 Theorem 2.4.1, but they are needed for broader Chapter 1 coverage:
 
-1. deriving empirical-risk or empirical-average a.e.-measurability from
-   concrete measurability assumptions on the sample process and function class;
+1. extending the concrete measurability bridge from countable classes to the
+   broader Chapter 1 measurable-cover and arbitrary-map setting;
 2. VdV&W measurable covers, outer expectation, and arbitrary-map convergence
    infrastructure for full textbook-order formalization.

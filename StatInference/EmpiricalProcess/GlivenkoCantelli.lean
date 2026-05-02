@@ -827,6 +827,60 @@ theorem vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aeme
     h_empirical
 
 /--
+VdV&W Theorem 2.4.1 in the direct outer-probability convergence mode for a
+countable index class with a.e.-measurable samples and measurable class
+functions.
+-/
+theorem vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_sample_aemeasurable_of_classFun_measurable
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (X : ℕ -> Ω -> Observation)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
+    (h_bracketing :
+      ∀ epsilon, 0 < epsilon ->
+        l1BracketingNumber P indexClass classFun epsilon < ⊤)
+    (h_count : indexClass.Countable)
+    (hX : ∀ i, AEMeasurable (X i) μ)
+    (h_classFun :
+      ∀ index, index ∈ indexClass -> Measurable (classFun index)) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass μ P indexClass classFun X :=
+  vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_empiricalAverage
+    X hLaw hindep h_bracketing h_count
+    (fun sampleSize index hindex =>
+      empiricalAverage_samplePath_aemeasurable_of_sample_aemeasurable
+        X (classFun index) sampleSize (fun i _hi => hX i)
+        (h_classFun index hindex))
+
+/--
+VdV&W Theorem 2.4.1 in the direct outer-probability convergence mode for a
+countable index class with measurable class functions.  The `HasLaw`
+assumptions already provide a.e.-measurability of the sample coordinates.
+-/
+theorem vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_classFun_measurable
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (X : ℕ -> Ω -> Observation)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
+    (h_bracketing :
+      ∀ epsilon, 0 < epsilon ->
+        l1BracketingNumber P indexClass classFun epsilon < ⊤)
+    (h_count : indexClass.Countable)
+    (h_classFun :
+      ∀ index, index ∈ indexClass -> Measurable (classFun index)) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass μ P indexClass classFun X :=
+  vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_empiricalAverage
+    X hLaw hindep h_bracketing h_count
+    (fun sampleSize index hindex =>
+      empiricalAverage_samplePath_aemeasurable_of_hasLaw
+        X (classFun index) sampleSize hLaw (h_classFun index hindex))
+
+/--
 VdV&W Theorem 2.4.1 in the book-style `P`-Glivenko-Cantelli predicate.
 
 The proof enters the predicate through the outer-a.s. branch, exactly as the

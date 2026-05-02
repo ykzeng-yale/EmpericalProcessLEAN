@@ -131,6 +131,11 @@ The following are compiled Lean declarations with no proof holes:
 | `vdVWCoordinateDeviation_aemeasurable_of_empiricalRisk` | empirical-risk coordinate a.e.-measurability implies coordinate empirical-deviation a.e.-measurability |
 | `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalRisk` | outer-a.s. convergence implies direct outer-probability convergence for countable classes with a.e.-measurable empirical-risk coordinates |
 | `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_empiricalAverage` | VdV&W Theorem 2.4.1 in the direct outer-probability mode for countable classes with a.e.-measurable empirical-average coordinates |
+| `empiricalAverage_samplePath_aemeasurable_of_coordinate` | finite sample-path empirical averages are a.e.-measurable from coordinate a.e.-measurability |
+| `empiricalAverage_samplePath_aemeasurable_of_sample_aemeasurable` | finite sample-path empirical averages are a.e.-measurable from a.e.-measurable samples and a measurable statistic |
+| `empiricalAverage_samplePath_aemeasurable_of_hasLaw` | finite sample-path empirical averages are a.e.-measurable from `HasLaw` and a measurable statistic |
+| `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_sample_aemeasurable_of_classFun_measurable` | VdV&W Theorem 2.4.1 in the direct outer-probability mode for countable classes with a.e.-measurable samples and measurable class functions |
+| `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_classFun_measurable` | VdV&W Theorem 2.4.1 in the direct outer-probability mode for countable classes with measurable class functions, using `HasLaw` for sample a.e.-measurability |
 | `VdVWPGlivenkoCantelliClass` | book-style GC predicate: outer probability or outer almost surely |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | VdV&W Theorem 2.4.1 packaged into the book-style GC predicate |
 
@@ -148,11 +153,12 @@ null-measurability from countability of the class and coordinate
 a.e.-measurability, packages that into a direct outer-probability Theorem
 2.4.1 layer for countable classes, and proves the mathlib bridge from
 empirical-risk coordinate a.e.-measurability to coordinate empirical-deviation
-a.e.-measurability.  The latest promoted corollary states the countable direct
-outer-probability theorem using a.e.-measurable empirical-average coordinates.
-Deriving those empirical-risk or empirical-average a.e.-measurability
-hypotheses from concrete function-class/sample-process assumptions remains
-future compatibility work with broader Chapter 1 arbitrary-map machinery.
+a.e.-measurability.  The latest promoted corollary derives the countable direct
+outer-probability theorem from measurable class functions; the existing
+`HasLaw` assumptions already supply sample-coordinate a.e.-measurability.
+Extending this countable concrete bridge to VdV&W measurable-cover and
+arbitrary-map hypotheses remains future compatibility work with broader
+Chapter 1 machinery.
 
 ## Dependency-Minimal Remaining Work For Theorem 2.4.1
 
@@ -173,7 +179,7 @@ These are the missing primitives and lemmas on the direct proof path.
 | 11 | endpoint convergence to route fields | proof line 984 | done: `finiteEndpointRadius`, `FiniteL1BracketCover.endpointRadius`, and route constructor from endpoint convergence |
 | 12 | construct `FiniteBracketingEndpointRoute` | proof lines 972-984 | done from primitive finite `L1(P)` cover plus endpoint/width assumptions |
 | 13 | decreasing-radius argument | proof line 984 | done for the dependency-minimal deterministic and iid countable-cover routes |
-| 14 | final textbook theorem | Theorem 2.4.1 statement | done as book-style GC predicate: `vdVW_theorem_2_4_1_glivenkoCantelli`; direct outer-probability theorem also proved under fixed bad-event null-measurability, for countable classes under coordinate a.e.-measurability, and for countable classes under empirical-average a.e.-measurability |
+| 14 | final textbook theorem | Theorem 2.4.1 statement | done as book-style GC predicate: `vdVW_theorem_2_4_1_glivenkoCantelli`; direct outer-probability theorem also proved under fixed bad-event null-measurability, for countable classes under coordinate/empirical-average a.e.-measurability, for countable classes under concrete sample/function measurability, and in the stronger countable form where `HasLaw` plus measurable class functions supplies empirical-average measurability |
 
 ## Full Textbook-Order Work Before 2.4.1
 

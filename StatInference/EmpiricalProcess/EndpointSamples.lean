@@ -37,6 +37,55 @@ theorem empiricalAverage_samplePath_eq_range_sum
   rw [Fin.sum_univ_eq_sum_range (fun i => statistic (X i ω)) n]
 
 /--
+Empirical averages along a sample path are a.e.-measurable if every finite
+coordinate in that average is a.e.-measurable after applying the statistic.
+-/
+theorem empiricalAverage_samplePath_aemeasurable_of_coordinate
+    {Ω : Type u} {Observation : Type v} [MeasurableSpace Ω]
+    {μ : Measure Ω} (X : ℕ -> Ω -> Observation)
+    (statistic : Observation -> ℝ) (n : ℕ)
+    (h_coordinate :
+      ∀ i, i < n -> AEMeasurable (fun ω => statistic (X i ω)) μ) :
+    AEMeasurable
+      (fun ω => empiricalAverage (samplePath X ω n) statistic) μ := by
+  simpa [empiricalAverage_samplePath_eq_range_sum] using
+    ((Finset.range n).aemeasurable_fun_sum
+      (fun i hi => h_coordinate i (Finset.mem_range.mp hi))).div_const
+      (n : ℝ)
+
+/--
+Empirical averages along a sample path are a.e.-measurable when the observation
+coordinates are a.e.-measurable and the statistic is measurable.
+-/
+theorem empiricalAverage_samplePath_aemeasurable_of_sample_aemeasurable
+    {Ω : Type u} {Observation : Type v}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {μ : Measure Ω} (X : ℕ -> Ω -> Observation)
+    (statistic : Observation -> ℝ) (n : ℕ)
+    (hX : ∀ i, i < n -> AEMeasurable (X i) μ)
+    (hstatistic : Measurable statistic) :
+    AEMeasurable
+      (fun ω => empiricalAverage (samplePath X ω n) statistic) μ :=
+  empiricalAverage_samplePath_aemeasurable_of_coordinate X statistic n
+    (fun i hi => hstatistic.comp_aemeasurable (hX i hi))
+
+/--
+Empirical averages along a sample path are a.e.-measurable under law
+assumptions and a measurable statistic.
+-/
+theorem empiricalAverage_samplePath_aemeasurable_of_hasLaw
+    {Ω : Type u} {Observation : Type v}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {μ : Measure Ω} {P : Measure Observation}
+    (X : ℕ -> Ω -> Observation) (statistic : Observation -> ℝ) (n : ℕ)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hstatistic : Measurable statistic) :
+    AEMeasurable
+      (fun ω => empiricalAverage (samplePath X ω n) statistic) μ :=
+  empiricalAverage_samplePath_aemeasurable_of_sample_aemeasurable
+    X statistic n (fun i _hi => (hLaw i).aemeasurable) hstatistic
+
+/--
 Almost-sure endpoint convergence for empirical averages along an iid
 observation process.
 -/
