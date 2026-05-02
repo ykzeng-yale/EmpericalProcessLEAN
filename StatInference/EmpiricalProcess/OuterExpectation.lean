@@ -2,6 +2,7 @@ import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
 import Mathlib.MeasureTheory.Measure.MeasureSpace
 import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
+import Mathlib.MeasureTheory.Constructions.BorelSpace.Real
 import Mathlib.MeasureTheory.Order.Lattice
 
 /-!
@@ -511,6 +512,84 @@ noncomputable def mulMajorant {Ω : Type u} [MeasurableSpace Ω] {μ : Measure �
   majorizes := fun ω => mul_le_mul' (US.majorizes ω) (UT.majorizes ω)
 
 end VdVWMeasurableCover
+
+/--
+A bounded extended-real measurable cover.
+
+This is a proof-carrying primitive for later Chapter 1.2 work with arbitrary
+`EReal`-valued maps.  It intentionally records only the reusable cover data:
+the target and cover are bounded by the supplied endpoints, the cover is a
+measurable pointwise majorant, and it is minimal among measurable a.e.
+majorants.  Existence for arbitrary maps is kept separate.
+-/
+structure VdVWBoundedERealMeasurableCover {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) (T : Ω -> EReal) (lower upper : ℝ) where
+  toFun : Ω -> EReal
+  measurable_toFun : Measurable toFun
+  majorizes : ∀ ω, T ω ≤ toFun ω
+  lower_le_target : ∀ ω, (lower : EReal) ≤ T ω
+  target_le_upper : ∀ ω, T ω ≤ (upper : EReal)
+  cover_le_upper : ∀ ω, toFun ω ≤ (upper : EReal)
+  minimal_ae :
+    ∀ U : Ω -> EReal,
+      Measurable U ->
+      (∀ᵐ ω ∂μ, T ω ≤ U ω) ->
+      ∀ᵐ ω ∂μ, toFun ω ≤ U ω
+
+namespace VdVWBoundedERealMeasurableCover
+
+instance {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> EReal} {lower upper : ℝ} :
+    CoeFun (VdVWBoundedERealMeasurableCover μ T lower upper)
+      (fun _ => Ω -> EReal) where
+  coe U := U.toFun
+
+/-- A measurable bounded `EReal` map is its own bounded measurable cover. -/
+def ofMeasurable {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
+    {T : Ω -> EReal} {lower upper : ℝ} (hT : Measurable T)
+    (hlower : ∀ ω, (lower : EReal) ≤ T ω)
+    (hupper : ∀ ω, T ω ≤ (upper : EReal)) :
+    VdVWBoundedERealMeasurableCover μ T lower upper where
+  toFun := T
+  measurable_toFun := hT
+  majorizes := fun _ => le_rfl
+  lower_le_target := hlower
+  target_le_upper := hupper
+  cover_le_upper := hupper
+  minimal_ae := fun _ _ h_majorizes => h_majorizes
+
+/--
+Nonnegative bounded `EReal` covers descend to the existing nonnegative
+`ℝ≥0∞` measurable-cover interface.
+
+This is the main bridge primitive: it transfers minimality through the
+order-embedding of nonnegative `EReal` values into `ℝ≥0∞`, using mathlib's
+`EReal.toENNReal` measurability API.
+-/
+noncomputable def toNonnegativeCover {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {T : Ω -> EReal} {upper : ℝ}
+    (U : VdVWBoundedERealMeasurableCover μ T 0 upper) :
+    VdVWMeasurableCover μ (fun ω => (T ω).toENNReal) where
+  toFun := fun ω => (U ω).toENNReal
+  measurable_toFun := U.measurable_toFun.ereal_toENNReal
+  majorizes := fun ω => EReal.toENNReal_le_toENNReal (U.majorizes ω)
+  minimal_ae := by
+    intro V hV h_majorizes
+    have h_majorizes_ereal : ∀ᵐ ω ∂μ, T ω ≤ (V ω : EReal) := by
+      filter_upwards [h_majorizes] with ω hω
+      have hcoe : ((T ω).toENNReal : EReal) ≤ (V ω : EReal) :=
+        EReal.coe_ennreal_le_coe_ennreal_iff.mpr hω
+      simpa [EReal.coe_toENNReal (U.lower_le_target ω)] using hcoe
+    have hU_le_V : ∀ᵐ ω ∂μ, U ω ≤ (V ω : EReal) :=
+      U.minimal_ae (fun ω => (V ω : EReal)) hV.coe_ereal_ennreal h_majorizes_ereal
+    filter_upwards [hU_le_V] with ω hω
+    have hU_nonneg : (0 : EReal) ≤ U ω :=
+      le_trans (U.lower_le_target ω) (U.majorizes ω)
+    have hcoe : ((U ω).toENNReal : EReal) ≤ (V ω : EReal) := by
+      simpa [EReal.coe_toENNReal hU_nonneg] using hω
+    exact EReal.coe_ennreal_le_coe_ennreal_iff.mp hcoe
+
+end VdVWBoundedERealMeasurableCover
 
 /--
 If a nonnegative measurable cover is supplied, its integral realizes the

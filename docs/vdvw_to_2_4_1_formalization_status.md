@@ -50,15 +50,21 @@ and minimal deterministic support:
 | `StatInference/EmpiricalProcess/Finite.lean` | finite-union and finite-class deviation certificates |
 | `StatInference/EmpiricalProcess/Preservation.lean` | projection/subclass preservation lemmas |
 | `StatInference/EmpiricalProcess/Complexity.lean` | proof-carrying complexity interfaces |
+| `StatInference/EmpiricalProcess/CoveringPrimitive.lean` | Chapter 2.1 covering-number, empirical `L1(P_n)`, semimetric covering/packing, and finite-cover witness primitives |
 | `StatInference/EmpiricalProcess/Bracketing.lean` | deterministic bracketing inequality and route to GC |
 | `StatInference/EmpiricalProcess/BracketingPrimitive.lean` | primitive brackets, `L1(P)` width, finite covers, and primitive cover-to-route theorems |
 | `StatInference/EmpiricalProcess/BracketingCountable.lean` | countable decreasing finite-cover route |
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib |
 | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid sample-path endpoint SLLN bridge for finite bracket covers |
-| `StatInference/EmpiricalProcess/OuterExpectation.lean` | Chapter 1.2 nonnegative outer-expectation, measurable-cover primitives, and measurable real signed positive/negative bridge |
-| `StatInference/EmpiricalProcess/WeakConvergence.lean` | Chapter 1.3/1.11 mathlib-backed weak-convergence and continuous-mapping wrappers |
-| `StatInference/EmpiricalProcess/BallSigma.lean` | Chapter 1.7 open/closed ball sigma-field, Borel equality, and dense-sequence distance-coordinate measurability wrappers |
+| `StatInference/EmpiricalProcess/OuterExpectation.lean` | Chapter 1.2 nonnegative outer-expectation, measurable-cover primitives, measurable real signed positive/negative bridge, and bounded `EReal` cover bridge |
+| `StatInference/EmpiricalProcess/OuterProbabilityExpectation.lean` | Chapter 1.2 outer-probability, outer-a.s., and outer-expectation tail/Markov bridge primitives |
+| `StatInference/EmpiricalProcess/WeakConvergence.lean` | Chapter 1.3/1.11 mathlib-backed weak-convergence, bounded-Lipschitz, Levy-Prokhorov, continuous-mapping, product, and FDD wrappers |
+| `StatInference/EmpiricalProcess/BallSigma.lean` | Chapter 1.7 open/closed ball sigma-field, Borel equality, dense-sequence distance-coordinate, and bounded distance-coordinate measurability wrappers |
 | `StatInference/EmpiricalProcess/HilbertGaussian.lean` | Chapter 1.8 Hilbert/L2/Gaussian mathlib-backed foundation wrappers |
+| `StatInference/EmpiricalProcess/PMeasurable.lean` | Chapter 2.3 product-measure, `P`-measurable class, weighted sample-sum, and finite-cover supremum-bound primitives |
+| `StatInference/EmpiricalProcess/RealHalfLine.lean` | Example 2.4.2 reusable half-line bracket, endpoint, CDF/Stieltjes, and grid primitives |
+| `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Conditional half-line Glivenko-Cantelli corollaries from supplied endpoint grids |
+| `StatInference/EmpiricalProcess/Theorem243.lean` | Theorem 2.4.3 covering, truncation, fixed-sample net, finite-center handoff, Rademacher sub-Gaussian, and variance-proxy layers |
 | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | generic outer-probability convergence primitives and local/outer GC wrappers for the primitive bracketing theorem |
 
 Old local non-empirical-process theorem experiments are not part of this clean
@@ -162,15 +168,16 @@ The following are compiled Lean declarations with no proof holes:
 | `tendstoInMeasure_of_vdVWConvergesInOuterProbability` | bridge from the common-domain VdV&W outer-probability predicate to mathlib `TendstoInMeasure` |
 | `vdVWConvergesInOuterProbability_iff_tendstoInMeasure` | common-domain equivalence between VdV&W outer-probability convergence and mathlib convergence in measure |
 | `tendstoInDistribution_of_vdVWConvergesInOuterProbability` | measurable common-domain version of Lemma 1.10.2(ii): outer-probability convergence implies convergence in distribution |
-| `VdVWWeakConvergenceProbabilityMeasures`, `vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto` | measure-level VdV&W weak-convergence wrapper and bounded-continuous integral characterization, proved by pinned mathlib |
+| `VdVWWeakConvergenceProbabilityMeasures`, `vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto`, `vdVWWeakConvergenceProbabilityMeasures_iff_forall_bounded_lipschitz_integral_tendsto`, `vdVWWeakConvergenceProbabilityMeasures_iff_levyProkhorov_tendsto`, `vdVWWeakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero` | measure-level VdV&W weak-convergence wrapper and bounded-continuous, bounded-Lipschitz, and Levy-Prokhorov characterizations, proved by pinned mathlib |
 | `VdVWWeakConvergenceProbabilityMeasures.limsup_measure_closed_le`, `VdVWWeakConvergenceProbabilityMeasures.le_liminf_measure_open` | measure-level Portmanteau closed/open implications wrapped from pinned mathlib |
 | `VdVWProbabilityMeasuresTight`, `vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le`, `VdVWProbabilityMeasuresTight.isCompact_closure` | probability-measure tightness and Prokhorov compact-closure foundations wrapped from pinned mathlib |
 | `VdVWWeakConvergenceProbabilityMeasures.map_continuous`, `vdVWTendstoInDistribution_continuous_comp` | mathlib-backed continuous mapping wrappers for probability laws and convergence in distribution |
 | `VdVWWeakConvergenceProbabilityMeasures.prod`, `VdVWWeakConvergenceProbabilityMeasures.pi`, `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict` | mathlib-backed product-law weak-convergence wrappers and finite-coordinate/FDD forward wrapper for Chapter 1.4 |
 | `vdVWTendstoInDistribution_prodMk_of_tendstoInMeasure_const` | measurable common-domain Slutsky/product convergence wrapper for Section 1.4 |
-| `VdVWOpenBallSets`, `VdVWOpenBallMeasurableSpace`, `VdVWClosedBallSets`, `VdVWClosedBallMeasurableSpace`, `vdVWOpenBallSets_isTopologicalBasis`, `vdVW_ball_eq_iUnion_rat_closedBall`, `vdVW_closedBall_eq_iInter_rat_ball`, `vdVWClosedBallMeasurableSpace_eq_openBallMeasurableSpace`, `vdVWBorel_eq_openBallMeasurableSpace`, `vdVWBorel_eq_closedBallMeasurableSpace`, `vdVWOpenBall_measurableSet`, `vdVWClosedBall_measurableSet` | mathlib-backed open/closed ball sigma-field and Borel equality wrappers for Chapter 1.7 |
+| `VdVWOpenBallSets`, `VdVWOpenBallMeasurableSpace`, `VdVWClosedBallSets`, `VdVWClosedBallMeasurableSpace`, `vdVWOpenBallSets_isTopologicalBasis`, `vdVW_ball_eq_iUnion_rat_closedBall`, `vdVW_closedBall_eq_iInter_rat_ball`, `vdVWClosedBallMeasurableSpace_eq_openBallMeasurableSpace`, `vdVWBorel_eq_openBallMeasurableSpace`, `vdVWOpenBall_measurableSet`, `vdVWClosedBall_measurableSet`, `vdVWBoundedDist_measurable_iff_dist`, `vdVWBorelMeasurable_iff_forall_denseSeq_boundedDist_measurable` | mathlib-backed open/closed ball sigma-field, Borel equality, and bounded/dense distance-coordinate wrappers for Chapter 1.7 |
 | `vdVWHilbertSpace_of_complete_innerProductSpace`, `vdVWL2_hilbertSpace`, `vdVWL2_inner_def`, `vdVWHilbertDualRepresentative`, `vdVWHilbertDualRepresentation`, `vdVWHasGaussianLaw_inner`, `vdVWGaussianProcess_eval` | mathlib-backed Hilbert/L2/Gaussian-process foundation wrappers for Section 1.8 |
-| `vdVWTheorem243_oneCenter_rademacher_subGaussian_bridge` | one-center random Rademacher weighted sum is sub-Gaussian, using mathlib `HasSubgaussianMGF` APIs for the Theorem 2.4.3 Hoeffding/Orlicz layer |
+| `VdVWBoundedERealMeasurableCover`, `VdVWBoundedERealMeasurableCover.ofMeasurable`, `VdVWBoundedERealMeasurableCover.toNonnegativeCover` | bounded extended-real measurable-cover primitive and nonnegative-cover bridge for Chapter 1.2 exactness work |
+| `vdVWTheorem243_oneCenter_rademacher_subGaussian_bridge`, `vdVWTheorem243_varianceProxy_real_le_of_abs_le`, `vdVWTheorem243_truncated_varianceProxy_le` | one-center random Rademacher weighted sum is sub-Gaussian and its truncated-envelope variance proxy is bounded by `M^2 / n`, using mathlib `HasSubgaussianMGF` and finite-sum arithmetic APIs for the Theorem 2.4.3 Hoeffding/maximal layer |
 | `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | exact outer-a.s. uniform LLN and `P`-Glivenko-Cantelli predicates |
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | converts primitive `N_[]` finiteness into outer-a.s. uniform deviation convergence |
 | `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | VdV&W Theorem 2.4.1 in the outer-a.s. convergence mode |
@@ -254,10 +261,10 @@ separate from the dependency-minimal proof of Theorem 2.4.1.
 | 1.4 | product weak convergence, finite-coordinate projections, asymptotic independence, Slutsky | local measure-level product-law and FDD-forward wrappers proved; exact arbitrary-map/asymptotic-independence and FDD-converse statements pending |
 | 1.5-1.7 | `l_infty(T)`, tightness/equicontinuity, separability, ball measurability, Suslin examples | open/closed ball sigma/Borel foundation and separable dense-sequence distance-coordinate criterion now formalized; `l_infty`, tightness/equicontinuity, arbitrary-map/asymptotic-measurability, and Suslin/example material pending |
 | 1.8 | Hilbert-space weak convergence material | Hilbert/L2/Gaussian mathlib-backed foundation wrappers now formalized; exact Hilbert tightness/asymptotic-measurability and functional-CLT/process results pending |
-| 1.9-1.12 | convergence in outer probability, extended continuous mapping, uniform integrability, bounded Lipschitz metric | not formalized locally |
+| 1.9-1.12 | convergence in outer probability, extended continuous mapping, uniform integrability, bounded Lipschitz metric | common-domain outer-probability/TendstoInMeasure bridges, measurable common-domain distribution bridge, continuous-mapping wrappers, bounded-Lipschitz weak-convergence criterion, and Levy-Prokhorov distance wrappers are formalized; arbitrary-map/asymptotic-measurability, uniform integrability, and broader nonmeasurable-cover variants remain pending |
 | 2.1 | empirical-process examples, covering numbers, bracketing numbers, Donsker overview examples/proposition | empirical-process interfaces, averages, primitive bracketing numbers, and a local covering-number primitive exist; Donsker overview examples/proposition remain pending |
 | 2.2 | Orlicz norm lemmas, covering/packing definition, chaining maximal inequality, Hoeffding/Bernstein inequalities | covering/packing primitive layer exists; Orlicz norm lemmas, chaining maximal inequality, and exact Hoeffding/Bernstein wrappers remain pending |
-| 2.3 | symmetrization, measurable classes, separability/lifting, Donsker separable modification results | not formalized locally |
+| 2.3 | symmetrization, measurable classes, separability/lifting, Donsker separable modification results | product measure, weighted sample sums/suprema, `P`-measurable class predicate, countable coordinate-measurable constructor, pointwise-to-weighted-sum helpers, and deterministic finite-cover supremum bound are formalized; symmetrization, separability/lifting, and Donsker separable modification results remain pending |
 
 Theorem 2.4.1 itself uses Definition 2.1.6 and the real-valued strong law
 directly; it does not require the maximal inequalities or symmetrization

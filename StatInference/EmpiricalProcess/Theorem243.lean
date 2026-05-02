@@ -541,6 +541,74 @@ theorem vdVWTheorem243_oneCenter_rademacher_subGaussian_bridge
     mul_assoc, mul_left_comm, mul_comm] using hsum
 
 /--
+The variance proxy of one weighted center is bounded by `M^2 / n` whenever
+all sampled center values are bounded by `M` in absolute value.
+
+This is the deterministic arithmetic layer needed after the one-center
+Rademacher sub-Gaussian bridge.
+-/
+theorem vdVWTheorem243_varianceProxy_real_le_of_abs_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ}
+    {center : Index} {M : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hbound : ∀ i : Fin n, |classFun center (sample i)| ≤ M) :
+    (∑ i : Fin n, (((n : ℝ)⁻¹ * classFun center (sample i)) ^ 2)) ≤
+      M ^ 2 / (n : ℝ) := by
+  by_cases hn : n = 0
+  · subst n
+    simp
+  · have hn_cast : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hn
+    calc
+      (∑ i : Fin n, (((n : ℝ)⁻¹ * classFun center (sample i)) ^ 2))
+          ≤ ∑ _i : Fin n, ((n : ℝ)⁻¹ ^ 2 * M ^ 2) := by
+            apply Finset.sum_le_sum
+            intro i _hi
+            have hf_sq_le : (classFun center (sample i)) ^ 2 ≤ M ^ 2 := by
+              have hsq_abs : |classFun center (sample i)| ^ 2 ≤ M ^ 2 :=
+                (sq_le_sq₀ (abs_nonneg _) hM_nonneg).2 (hbound i)
+              simpa [sq_abs] using hsq_abs
+            rw [mul_pow]
+            exact mul_le_mul_of_nonneg_left hf_sq_le (sq_nonneg ((n : ℝ)⁻¹))
+      _ = (n : ℝ) * ((n : ℝ)⁻¹ ^ 2 * M ^ 2) := by
+            simp [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+              nsmul_eq_mul]
+      _ = M ^ 2 / (n : ℝ) := by
+            field_simp [hn_cast]
+
+/--
+For a truncated class `F_M`, the one-center Rademacher sub-Gaussian variance
+proxy is bounded by the book-scale `M^2 / n`.
+-/
+theorem vdVWTheorem243_truncated_varianceProxy_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    {center : Index} (hcenter : center ∈ indexClass) :
+    (∑ i : Fin n,
+        (NNReal.mk
+            (((n : ℝ)⁻¹ *
+              vdVWTruncatedClassFun classFun envelope M center (sample i)) ^ 2)
+            (sq_nonneg
+              ((n : ℝ)⁻¹ *
+                vdVWTruncatedClassFun classFun envelope M center (sample i))) *
+          (1 : ℝ≥0))) ≤
+      NNReal.mk (M ^ 2 / (n : ℝ))
+        (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)) := by
+  rw [← NNReal.coe_le_coe]
+  simpa [NNReal.coe_sum] using
+    (vdVWTheorem243_varianceProxy_real_le_of_abs_le
+      (sample := sample)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (center := center) hM_nonneg
+      (fun i =>
+        abs_vdVWTruncatedClassFun_le_M henvelope hM_nonneg hcenter (sample i)))
+
+/--
 Book-facing predicate for the finite-center Hoeffding/Orlicz step after
 specializing the weighted sums to fixed Rademacher signs.
 

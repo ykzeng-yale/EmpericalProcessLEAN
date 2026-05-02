@@ -207,6 +207,70 @@ theorem vdVW_dist_measurable_openBallSigma
     rw [hpre]
     exact MeasurableSet.empty
 
+/-- Bounded real transform of a metric distance. -/
+noncomputable def vdVWBoundedDist {S : Type u} [PseudoMetricSpace S] (x s : S) : ℝ :=
+  dist x s / (1 + dist x s)
+
+/-- The bounded distance transform is nonnegative. -/
+theorem vdVWBoundedDist_nonneg
+    {S : Type u} [PseudoMetricSpace S] (x s : S) :
+    0 ≤ vdVWBoundedDist x s := by
+  unfold vdVWBoundedDist
+  exact div_nonneg dist_nonneg (by linarith [dist_nonneg (x := x) (y := s)])
+
+/-- The bounded distance transform is strictly below one. -/
+theorem vdVWBoundedDist_lt_one
+    {S : Type u} [PseudoMetricSpace S] (x s : S) :
+    vdVWBoundedDist x s < 1 := by
+  unfold vdVWBoundedDist
+  rw [div_lt_one]
+  · linarith
+  · linarith [dist_nonneg (x := x) (y := s)]
+
+/--
+Strict sublevel sets of the bounded distance transform recover strict distance
+sublevels.
+-/
+theorem vdVWBoundedDist_lt_iff_dist_lt
+    {S : Type u} [PseudoMetricSpace S] {x s : S} {r : ℝ} (hr : 0 < r) :
+    vdVWBoundedDist x s < r / (1 + r) ↔ dist x s < r := by
+  unfold vdVWBoundedDist
+  have hdpos : 0 < 1 + dist x s := by
+    linarith [dist_nonneg (x := x) (y := s)]
+  have hrpos : 0 < 1 + r := by linarith
+  rw [div_lt_div_iff₀ hdpos hrpos]
+  constructor <;> intro h <;> linarith
+
+/--
+Measurability of a distance coordinate is equivalent to measurability of its
+bounded transform.
+-/
+theorem vdVWBoundedDist_measurable_iff_dist
+    {Ω : Type v} [MeasurableSpace Ω]
+    {S : Type u} [PseudoMetricSpace S] {X : Ω → S} {s : S} :
+    Measurable (fun ω => vdVWBoundedDist (X ω) s) ↔
+      Measurable fun ω => dist (X ω) s := by
+  constructor
+  · intro hbounded
+    refine measurable_of_Iio ?_
+    intro r
+    by_cases hr : 0 < r
+    · have hpre :
+          (fun ω => dist (X ω) s) ⁻¹' Set.Iio r =
+            (fun ω => vdVWBoundedDist (X ω) s) ⁻¹' Set.Iio (r / (1 + r)) := by
+        ext ω
+        exact (vdVWBoundedDist_lt_iff_dist_lt (x := X ω) (s := s) hr).symm
+      rw [hpre]
+      exact hbounded measurableSet_Iio
+    · have hrle : r ≤ 0 := le_of_not_gt hr
+      have hpre : (fun ω => dist (X ω) s) ⁻¹' Set.Iio r = (∅ : Set Ω) := by
+        ext ω
+        simp [Set.mem_Iio, not_lt.mpr (le_trans hrle dist_nonneg)]
+      rw [hpre]
+      exact MeasurableSet.empty
+  · intro hdist
+    exact hdist.div (measurable_const.add hdist)
+
 /--
 An open ball is a countable union of strict sublevel sets of distances to any
 fixed dense sequence.  This is the separability step behind the VdV&W
@@ -280,6 +344,37 @@ theorem vdVW_measurable_closedBallSigma_iff_dist_denseSeq
   rw [vdVWClosedBallMeasurableSpace_eq_openBallMeasurableSpace]
   exact vdVW_measurable_openBallSigma_iff_dist_denseSeq hdense
 
+/--
+For any dense sequence, measurability into the VdV&W open-ball sigma-field is
+equivalent to measurability of all bounded distance coordinates to that
+sequence.
+-/
+theorem vdVW_measurable_openBallSigma_iff_boundedDist_denseSeq
+    {Ω : Type v} [MeasurableSpace Ω]
+    {S : Type u} [PseudoMetricSpace S] {denseSeq : ℕ → S}
+    (hdense : DenseRange denseSeq) {X : Ω → S} :
+    @Measurable Ω S _ (VdVWOpenBallMeasurableSpace S) X ↔
+      ∀ n : ℕ, Measurable fun ω => vdVWBoundedDist (X ω) (denseSeq n) := by
+  rw [vdVW_measurable_openBallSigma_iff_dist_denseSeq hdense]
+  constructor
+  · intro hcoord n
+    exact (vdVWBoundedDist_measurable_iff_dist (X := X) (s := denseSeq n)).2 (hcoord n)
+  · intro hcoord n
+    exact (vdVWBoundedDist_measurable_iff_dist (X := X) (s := denseSeq n)).1 (hcoord n)
+
+/--
+Closed-ball measurability has the same bounded distance-coordinate
+characterization, because the open-ball and closed-ball sigma-fields agree.
+-/
+theorem vdVW_measurable_closedBallSigma_iff_boundedDist_denseSeq
+    {Ω : Type v} [MeasurableSpace Ω]
+    {S : Type u} [PseudoMetricSpace S] {denseSeq : ℕ → S}
+    (hdense : DenseRange denseSeq) {X : Ω → S} :
+    @Measurable Ω S _ (VdVWClosedBallMeasurableSpace S) X ↔
+      ∀ n : ℕ, Measurable fun ω => vdVWBoundedDist (X ω) (denseSeq n) := by
+  rw [vdVWClosedBallMeasurableSpace_eq_openBallMeasurableSpace]
+  exact vdVW_measurable_openBallSigma_iff_boundedDist_denseSeq hdense
+
 /-- Canonical dense-sequence version of the open-ball distance criterion. -/
 theorem vdVWOpenBallMeasurable_iff_forall_denseSeq_dist_measurable
     {Ω : Type v} [MeasurableSpace Ω]
@@ -295,6 +390,22 @@ theorem vdVWClosedBallMeasurable_iff_forall_denseSeq_dist_measurable
     @Measurable Ω S _ (VdVWClosedBallMeasurableSpace S) X ↔
       ∀ n : ℕ, Measurable fun ω => dist (X ω) (denseSeq S n) :=
   vdVW_measurable_closedBallSigma_iff_dist_denseSeq (denseRange_denseSeq S)
+
+/-- Canonical dense-sequence version of the open-ball bounded distance criterion. -/
+theorem vdVWOpenBallMeasurable_iff_forall_denseSeq_boundedDist_measurable
+    {Ω : Type v} [MeasurableSpace Ω]
+    {S : Type u} [PseudoMetricSpace S] [SeparableSpace S] [Nonempty S] {X : Ω → S} :
+    @Measurable Ω S _ (VdVWOpenBallMeasurableSpace S) X ↔
+      ∀ n : ℕ, Measurable fun ω => vdVWBoundedDist (X ω) (denseSeq S n) :=
+  vdVW_measurable_openBallSigma_iff_boundedDist_denseSeq (denseRange_denseSeq S)
+
+/-- Canonical dense-sequence version of the closed-ball bounded distance criterion. -/
+theorem vdVWClosedBallMeasurable_iff_forall_denseSeq_boundedDist_measurable
+    {Ω : Type v} [MeasurableSpace Ω]
+    {S : Type u} [PseudoMetricSpace S] [SeparableSpace S] [Nonempty S] {X : Ω → S} :
+    @Measurable Ω S _ (VdVWClosedBallMeasurableSpace S) X ↔
+      ∀ n : ℕ, Measurable fun ω => vdVWBoundedDist (X ω) (denseSeq S n) :=
+  vdVW_measurable_closedBallSigma_iff_boundedDist_denseSeq (denseRange_denseSeq S)
 
 /--
 In a separable pseudometric Borel space, ordinary Borel measurability is
@@ -321,5 +432,23 @@ theorem vdVWBorelMeasurable_iff_forall_denseSeq_dist_measurable
     change @Measurable Ω S _ (inferInstance : MeasurableSpace S) X
     rw [hEq]
     exact hopen
+
+/--
+In a separable pseudometric Borel space, ordinary Borel measurability is
+equivalent to measurability of all canonical bounded dense-sequence distance
+coordinates.
+-/
+theorem vdVWBorelMeasurable_iff_forall_denseSeq_boundedDist_measurable
+    {Ω : Type v} [MeasurableSpace Ω]
+    {S : Type u} [PseudoMetricSpace S] [MeasurableSpace S] [BorelSpace S]
+    [SeparableSpace S] [Nonempty S] {X : Ω → S} :
+    Measurable X ↔
+      ∀ n : ℕ, Measurable fun ω => vdVWBoundedDist (X ω) (denseSeq S n) := by
+  rw [vdVWBorelMeasurable_iff_forall_denseSeq_dist_measurable]
+  constructor
+  · intro hcoord n
+    exact (vdVWBoundedDist_measurable_iff_dist (X := X) (s := denseSeq S n)).2 (hcoord n)
+  · intro hcoord n
+    exact (vdVWBoundedDist_measurable_iff_dist (X := X) (s := denseSeq S n)).1 (hcoord n)
 
 end StatInference

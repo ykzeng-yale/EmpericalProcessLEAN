@@ -53,6 +53,26 @@ theorem vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto
   exact ProbabilityMeasure.tendsto_iff_forall_integral_tendsto
 
 /--
+VdV&W bounded-Lipschitz test-function criterion for measure-level weak
+convergence.
+
+The boundedness hypothesis is the mathlib one: the real-valued test function
+has bounded range diameter.  This is a proof-hole-free wrapper around the
+pinned portmanteau API.
+-/
+theorem vdVWWeakConvergenceProbabilityMeasures_iff_forall_bounded_lipschitz_integral_tendsto
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoEMetricSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι} [l.IsCountablyGenerated]
+    {μ : ProbabilityMeasure S} :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ ↔
+      ∀ f : S → ℝ, (∃ C : ℝ, ∀ x y, dist (f x) (f y) ≤ C) →
+        (∃ L, LipschitzWith L f) →
+          Tendsto (fun i => ∫ s, f s ∂(μs i : Measure S)) l
+            (𝓝 (∫ s, f s ∂(μ : Measure S))) := by
+  exact MeasureTheory.tendsto_iff_forall_lipschitz_integral_tendsto
+
+/--
 Portmanteau closed-set implication for the measure-level VdV&W weak convergence
 wrapper.
 
@@ -134,6 +154,43 @@ theorem VdVWProbabilityMeasuresTight.isCompact_closure
     (hA : VdVWProbabilityMeasuresTight A) :
     IsCompact (closure A) := by
   exact isCompact_closure_of_isTightMeasureSet hA
+
+/--
+Levy-Prokhorov characterization of the measure-level weak-convergence wrapper
+on separable pseudometric spaces.
+
+This packages mathlib's homeomorphism between probability measures with their
+weak-convergence topology and the Levy-Prokhorov metric topology.
+-/
+theorem vdVWWeakConvergenceProbabilityMeasures_iff_levyProkhorov_tendsto
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoMetricSpace S]
+    [OpensMeasurableSpace S] [SeparableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S} :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ ↔
+      Tendsto (fun i => LevyProkhorov.ofMeasure (μs i)) l
+        (𝓝 (LevyProkhorov.ofMeasure μ)) := by
+  exact (LevyProkhorov.probabilityMeasureHomeomorph (Ω := S)).isEmbedding.tendsto_nhds_iff
+
+/--
+Levy-Prokhorov distance-to-zero form of measure-level weak convergence on
+separable pseudometric spaces.
+-/
+theorem vdVWWeakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoMetricSpace S]
+    [OpensMeasurableSpace S] [SeparableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S} :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ ↔
+      Tendsto (fun i => levyProkhorovDist (μs i : Measure S) (μ : Measure S)) l (𝓝 0) := by
+  change Tendsto μs l (𝓝 μ) ↔ _
+  rw [(LevyProkhorov.probabilityMeasureHomeomorph (Ω := S)).isEmbedding.tendsto_nhds_iff]
+  simpa [LevyProkhorov.dist_probabilityMeasure_def] using
+    (tendsto_iff_dist_tendsto_zero :
+      Tendsto (fun i => LevyProkhorov.ofMeasure (μs i)) l
+        (𝓝 (LevyProkhorov.ofMeasure μ)) ↔
+      Tendsto (fun i => dist (LevyProkhorov.ofMeasure (μs i))
+        (LevyProkhorov.ofMeasure μ)) l (𝓝 0))
 
 /--
 Measure-level continuous mapping theorem.

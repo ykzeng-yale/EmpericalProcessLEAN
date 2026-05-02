@@ -317,6 +317,8 @@ additional example closures:
    abs_vdVWRademacherWeights_le_inv_card_of_signVector
    VdVWTheorem243RademacherFiniteCenterHoeffdingBound
    vdVWTheorem243_oneCenter_rademacher_subGaussian_bridge
+   vdVWTheorem243_varianceProxy_real_le_of_abs_le
+   vdVWTheorem243_truncated_varianceProxy_le
    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
    ```
 
@@ -324,8 +326,11 @@ additional example closures:
    existing finite-net/Hoeffding-scale handoff, and proves the one-center
    random Rademacher weighted sum is sub-Gaussian using mathlib's
    `HasSubgaussianMGF.const_mul` and `HasSubgaussianMGF.sum_of_iIndepFun`.  It
-   deliberately does not yet construct iid Rademacher signs or prove the
-   finite-center `psi_2`/Hoeffding maximal predicate probabilistically.
+   also proves the deterministic variance-proxy arithmetic and its
+   truncated-envelope specialization, bounding the `NNReal` sub-Gaussian proxy
+   by `M^2 / n`.  It deliberately does not yet construct iid Rademacher signs
+   or prove the finite-center `psi_2`/Hoeffding maximal predicate
+   probabilistically.
 
    Search correction: the current
    `VdVWTheorem243RademacherFiniteCenterHoeffdingBound` is a deterministic
@@ -342,9 +347,10 @@ additional example closures:
    `hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero`,
    `hasSubgaussianMGF_of_mem_Icc`, and
    `ProbabilityTheory.exists_hasLaw_indepFun`; no reusable Orlicz/`psi_2`
-   API was found.  The probabilistic one-center sub-Gaussian bridge is now
-   compiled; the next theorem-line primitive is the arithmetic bound on its
-   variance proxy, followed by the finite-center maximal bound.
+   API was found.  The probabilistic one-center sub-Gaussian bridge and
+   variance-proxy arithmetic are now compiled; the next theorem-line primitive
+   is a probabilistic finite-center tail/maximal bound plus the iid
+   Rademacher-sign construction.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -362,10 +368,10 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: use the one-center sub-Gaussian bridge to prove the
-variance-proxy arithmetic under the truncated envelope bound, then replace or
-refine the deterministic finite-center Hoeffding predicate with a probabilistic
-finite-center Orlicz/maximal bound.
+Next exact edit: prove or primitive-register the finite-center probabilistic
+Hoeffding/maximal bound from the one-center sub-Gaussian bridge and compiled
+variance-proxy layer, including iid Rademacher-sign construction; then move to
+the symmetrization/truncation and envelope-tail handoffs.
 
 ## Parked Example-Specific Blocker
 
