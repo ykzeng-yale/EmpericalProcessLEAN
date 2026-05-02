@@ -213,19 +213,19 @@ quotes; the anchor is the authoritative local source location.
 | 1.2.7 | Lemma | `..._1-100.md:492` | promote-soon; mathlib Fubini foundation exists, pending VdV&W outer wrapper for product outer expectations |
 | 1.3.1 | Lemma | `..._1-100.md:575` | foundation-lane/mathlib-foundation: classical topology/measure lemma, wrap or restate from pinned mathlib before claiming any gap |
 | 1.3.2 | Lemma | `..._1-100.md:582` | foundation-lane/mathlib-foundation: classical topology/measure lemma, wrap or restate from pinned mathlib before claiming any gap |
-| 1.3.4 | Theorem | `..._1-100.md:606` | foundation-lane/mathlib-foundation: weak convergence of probability measures via `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto` wrapped locally; exact Portmanteau arbitrary-map version needs local outer-expectation wrapper |
+| 1.3.4 | Theorem | `..._1-100.md:606` | local-layer/mathlib-foundation: weak convergence of probability measures via `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto` plus Portmanteau closed/open implications wrapped locally; exact arbitrary-map outer-expectation version remains pending |
 | 1.3.6 | Theorem | `..._1-100.md:650` | local-layer/mathlib-foundation: continuous map pushforward and `TendstoInDistribution` continuous-composition wrappers proved; arbitrary-map cover layer still pending |
 | 1.3.8 | Lemma | `..._1-100.md:678` | blocked-vdvw: Hoffmann-Jørgensen arbitrary-map weak-convergence infrastructure; missing exact local arbitrary-map/asymptotic-measurability primitive |
-| 1.3.9 | Theorem | `..._1-100.md:688` | foundation-lane/mathlib-foundation: Portmanteau/Prokhorov/tightness foundations exist in mathlib; build exact measure-level VdV&W wrapper before arbitrary-map extension |
+| 1.3.9 | Theorem | `..._1-100.md:688` | local-layer/mathlib-foundation: probability-measure tightness wrapper, compact-set characterization, and Prokhorov compact-closure wrapper proved over mathlib; exact arbitrary-map/asymptotic-tightness extension remains pending |
 | 1.3.10 | Theorem | `..._1-100.md:756` | blocked-vdvw: exact nonmeasurable/arbitrary-map weak-convergence layer missing; measure-level mathlib route still to be wrapped separately |
 | 1.3.12 | Lemma | `..._1-100.md:768` | foundation-lane/mathlib-foundation: classical foundation available in pinned mathlib, pending local restatement/wrapper |
 | 1.3.13 | Lemma | `..._1-100.md:778` | blocked-vdvw: arbitrary-map/asymptotic-measurability infrastructure missing after mathlib search |
-| 1.4.1 | Lemma | `..._1-100.md:848` | foundation-lane/mathlib-foundation: product weak-convergence/projection foundations, pending exact joint-convergence wrapper |
-| 1.4.2 | Lemma | `..._1-100.md:849` | foundation-lane/mathlib-foundation: product-measure and finite-dimensional-law APIs exist, pending local wrapper |
-| 1.4.3 | Lemma | `..._1-100.md:857` | foundation-lane: product weak-convergence wrapper target over mathlib product/projection APIs |
-| 1.4.4 | Lemma | `..._1-100.md:858` | foundation-lane: product weak-convergence wrapper target over mathlib product/projection APIs |
+| 1.4.1 | Lemma | `..._1-100.md:848` | foundation-lane/mathlib-foundation: audit found product/Pi Borel-space and finite-coordinate restriction APIs; pending exact VdV&W product-space wrapper |
+| 1.4.2 | Lemma | `..._1-100.md:849` | foundation-lane/mathlib-foundation: audit found product-law, projective-limit, and finite-dimensional-law APIs; exact nonnegative Lipschitz product-test uniqueness not found |
+| 1.4.3 | Lemma | `..._1-100.md:857` | foundation-lane/mathlib-foundation: wrap `ProbabilityMeasure.continuous_prod`/`continuous_pi` under `VdVWWeakConvergenceProbabilityMeasures` before arbitrary-map extension |
+| 1.4.4 | Lemma | `..._1-100.md:858` | foundation-lane/mathlib-foundation: finite-coordinate projection direction can reuse `Finset.continuous_restrict` plus weak-convergence map wrapper; converse FDD iff theorem still missing |
 | 1.4.5 | Corollary | `..._1-100.md:878` | local-layer/mathlib-foundation: measurable common-domain Slutsky/product convergence wrapper proved; exact VdV&W product/arbitrary-map criterion still pending |
-| 1.4.8 | Theorem | `..._1-100.md:910` | foundation-lane: asymptotic-independence/product-space theorem target; needs local definition of asymptotic independence plus product weak-convergence wrappers |
+| 1.4.8 | Theorem | `..._1-100.md:910` | foundation-lane/mathlib-foundation: projective-limit/FDD law equality APIs exist, but no exact weak-convergence iff-over-FDD theorem found; needs local product/FDD convergence primitive |
 | 1.5.2 | Lemma | `..._1-100.md:932` | foundation-lane: `l_infty(T)`/separability primitive target; mathlib has tightness/Prokhorov but local bounded-function-space API is still needed |
 | 1.5.3 | Lemma | `..._1-100.md:933` | foundation-lane: `l_infty(T)`/Donsker tightness primitive target, local bounded-function-space API needed |
 | 1.5.4 | Theorem | `..._1-100.md:934` | foundation-lane/mathlib-foundation: tightness theorem target using mathlib `IsTightMeasureSet`/Prokhorov plus local `l_infty(T)` wrappers |
@@ -233,12 +233,12 @@ quotes; the anchor is the authoritative local source location.
 | 1.5.7 | Theorem | `..._1-100.md:987` | foundation-lane: pre-Gaussian/Donsker tightness theorem target; mathlib Gaussian foundations exist, local process wrapper needed |
 | 1.5.9 | Lemma | `..._1-100.md:1044` | foundation-lane: tightness/equicontinuity wrapper target, local semimetric/process primitive needed |
 | 1.6.1 | Theorem | `..._1-100.md:1117` | foundation-lane: stochastic-process tightness target; requires local stochastic-process/l_infty API over mathlib tightness |
-| 1.7.1 | Lemma | `..._1-100.md:1156` | foundation-lane: ball sigma-field/measurability theorem target; search mathlib measurable-space/topology APIs before local primitive |
-| 1.7.2 | Theorem | `..._1-100.md:1157` | foundation-lane: ball sigma-field/measurability theorem target for `P`-measurable classes, not an example skip |
-| 1.8.1 | Lemma | `..._1-100.md:1234` | foundation-lane/mathlib-foundation: Hilbert-space foundation over mathlib inner-product/Hilbert APIs |
-| 1.8.2 | Lemma | `..._1-100.md:1245` | foundation-lane: Hilbert-space special theory; mathlib Hilbert basis/l2 APIs to be reused |
-| 1.8.3 | Lemma | `..._1-100.md:1246` | foundation-lane/mathlib-foundation: Hilbert/Gaussian foundation, pending exact VdV&W wrapper |
-| 1.8.4 | Theorem | `..._1-100.md:1247` | foundation-lane/mathlib-foundation: Hilbert weak-convergence/Gaussian wrapper target, not skipped |
+| 1.7.1 | Lemma | `..._1-100.md:1156` | foundation-lane/mathlib-foundation: audit found Borel generation, metric-ball measurability, separability, and basis APIs; next exact local primitive is a ball sigma-field wrapper plus Borel equality proof |
+| 1.7.2 | Theorem | `..._1-100.md:1157` | foundation-lane/mathlib-foundation: audit found distance-measurability and `Metric.PiNatEmbed` scaffolding plus local `P`-measurable class route; exact VdV&W distance-coordinate statement still needs local wrapper |
+| 1.8.1 | Lemma | `..._1-100.md:1234` | foundation-lane/mathlib-foundation: audit found `InnerProductSpace`, `HilbertSpace`, `MeasureTheory.Lp`, and `L2` inner-product-space APIs; pending exact local wrapper |
+| 1.8.2 | Lemma | `..._1-100.md:1245` | foundation-lane/mathlib-foundation: audit found Hilbert/L2 and dual APIs; pending exact VdV&W Hilbert wrapper |
+| 1.8.3 | Lemma | `..._1-100.md:1246` | foundation-lane/mathlib-foundation: audit found `IsGaussian`, `HasGaussianLaw`, `IsGaussianProcess`, real/multivariate Gaussian APIs, and scalar CLT; no Brownian-bridge/pre-Gaussian full theorem found |
+| 1.8.4 | Theorem | `..._1-100.md:1247` | foundation-lane/mathlib-foundation: Hilbert weak-convergence/Gaussian wrapper target over mathlib Gaussian-process and Hilbert APIs; exact functional-CLT/P-Donsker statement still needs local primitives |
 | 1.9.2 | Lemma | `..._1-100.md:1304` | local-layer; scoped convergence-mode building block |
 | 1.9.3 | Lemma | `..._1-100.md:1308` | local-layer; scoped convergence-mode building block |
 | 1.9.5 | Theorem | `..._1-100.md:1328` | mathlib-foundation, pending scoped VdV&W wrapper when active |

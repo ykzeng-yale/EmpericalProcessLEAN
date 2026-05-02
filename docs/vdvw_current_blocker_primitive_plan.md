@@ -51,10 +51,107 @@ these items; promoted Lean statements must be proof-hole-free.
 Current correction layer: `StatInference/EmpiricalProcess/WeakConvergence.lean`
 now compiles mathlib-backed VdV&W-local wrappers for measure-level weak
 convergence, bounded-continuous integral characterization, continuous mapping,
-and measurable common-domain Slutsky/product convergence.  This closes the
-"mathlib exists but not named locally" part for those Chapter 1 foundations;
-the exact arbitrary-map/nonmeasurable outer-expectation extensions remain
-separate blockers.
+Portmanteau closed/open implications, probability-measure tightness, Prokhorov
+compact-closure, and measurable common-domain Slutsky/product convergence.  This
+closes the "mathlib exists but not named locally" part for those Chapter 1
+foundations; the exact arbitrary-map/nonmeasurable outer-expectation extensions
+remain separate blockers.
+
+Search record for the Portmanteau/tightness correction layer:
+
+- searched local declarations for `VdVWWeakConvergenceProbabilityMeasures`,
+  `Portmanteau`, `IsTightMeasureSet`, `Prokhorov`, and `LevyProkhorov`;
+- searched pinned mathlib files
+  `Mathlib/MeasureTheory/Measure/Portmanteau.lean`,
+  `Mathlib/MeasureTheory/Measure/Tight.lean`,
+  `Mathlib/MeasureTheory/Measure/Prokhorov.lean`, and
+  `Mathlib/MeasureTheory/Measure/LevyProkhorovMetric.lean`;
+- reused `ProbabilityMeasure.limsup_measure_closed_le_of_tendsto`,
+  `ProbabilityMeasure.le_liminf_measure_open_of_tendsto`,
+  `IsTightMeasureSet`,
+  `isTightMeasureSet_iff_exists_isCompact_measure_compl_le`, and
+  `isCompact_closure_of_isTightMeasureSet`;
+- no new primitive was introduced for these measure-level foundations; the
+  remaining blockers are the exact VdV&W arbitrary-map/nonmeasurable and
+  asymptotic-measurability extensions.
+
+Search record for the Chapter 1 Hilbert/Gaussian foundation lane:
+
+- searched local `StatInference`, pinned mathlib, pinned Lake support packages,
+  and the recorded local open-source Lean checkouts for `HilbertSpace`,
+  `InnerProductSpace`, `Gaussian`, `HasGaussianLaw`, `IsGaussianProcess`,
+  `CentralLimitTheorem`, `BrownianBridge`, `PreGaussian`, and `Donsker`;
+- reusable mathlib foundations found:
+  `InnerProductSpace`, `HilbertSpace`, `InnerProductSpace.toDual`,
+  `MeasureTheory.Lp`, the `L2` inner-product-space instance,
+  `ProbabilityTheory.gaussianReal`,
+  `ProbabilityTheory.IsGaussian`, `ProbabilityTheory.HasGaussianLaw`,
+  `ProbabilityTheory.IsGaussianProcess`, `ProbabilityTheory.stdGaussian`,
+  `ProbabilityTheory.multivariateGaussian`, `HasGaussianLaw.map`,
+  `HasGaussianLaw.add`, `HasGaussianLaw.sum`,
+  `IsGaussianProcess.hasGaussianLaw_eval`, and the scalar CLT theorems
+  `ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum` and
+  `ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub`;
+- no exact pinned theorem was found for Brownian bridge, functional CLT,
+  `P`-pre-Gaussian classes, or a full VdV&W `P`-Donsker theorem.  The next
+  Lean step for Section 1.8 should therefore be mathlib-backed wrappers around
+  Hilbert/L2/Gaussian-process foundations, not a docs-only skip.
+
+Search record for the Chapter 1 ball-sigma/measurability foundation lane:
+
+- searched local `StatInference`, pinned mathlib, pinned Lake support packages,
+  and the recorded local open-source Lean checkouts for `BallSigmaField`,
+  `borel`, `generateFrom`, metric balls, distance measurability, separability,
+  and VdV&W Lemma 1.7.1/Theorem 1.7.2 keywords;
+- reusable mathlib/local foundations found:
+  `borel`, `borel_eq_generateFrom_of_subbasis`,
+  `TopologicalSpace.IsTopologicalBasis.borel_eq_generateFrom`,
+  `borel_eq_generateFrom_isClosed`, `OpensMeasurableSpace`, `BorelSpace`,
+  `IsOpen.measurableSet`, `IsClosed.measurableSet`, `Metric.ball`,
+  `Metric.closedBall`, `measurableSet_ball`, `measurableSet_closedBall`,
+  `measurable_dist`, `Measurable.dist`, `SeparableSpace`,
+  `exists_countable_dense`, `denseSeq`, `SecondCountableTopology`,
+  `Metric.PiNatEmbed.distDenseSeq`, `Metric.PiNatEmbed.continuous_distDenseSeq`,
+  `Metric.PiNatEmbed.injective_distDenseSeq`,
+  `Metric.PiNatEmbed.continuous_distDenseSeq_inv`, and the local
+  `VdVWPMeasurableClass`/pointwise-supremum separability route;
+- no exact pinned theorem was found for a named VdV&W ball sigma-field, open-ball
+  sigma equals closed-ball sigma, ball sigma equals Borel in separable metric
+  spaces, or the exact distance-coordinate characterization of arbitrary-map
+  ball measurability.  The next Lean step for Section 1.7 should therefore
+  define a local ball sigma-field and prove the Borel equality using
+  `IsTopologicalBasis.borel_eq_generateFrom`, rather than treating 1.7 as
+  deferred.
+
+Search record for the Chapter 1 product/FDD foundation lane:
+
+- searched local `StatInference`, pinned mathlib, pinned Lake support packages,
+  and the recorded local open-source Lean checkouts for product spaces,
+  product laws, product weak convergence, finite-dimensional laws, projective
+  limits, and VdV&W Section 1.4 keywords;
+- reusable mathlib/local foundations found:
+  `MeasurableSpace.prod`, `Prod.instMeasurableSpace`, `generateFrom_prod`,
+  `pi_le_borel_pi`, `prod_le_borel_prod`, `Pi.borelSpace`,
+  `Prod.borelSpace`, `Finset.continuous_restrict`,
+  `ProbabilityMeasure.prod`, `ProbabilityMeasure.map_prod_map`,
+  `ProbabilityMeasure.continuous_prod`, `ProbabilityMeasure.pi`,
+  `ProbabilityMeasure.continuous_pi`, `HasLaw`, `IndepFun.hasLaw_prod`,
+  `iIndepFun.hasLaw_pi`, `IdentDistrib.prodMk`, `IdentDistrib.pi`,
+  `IsProjectiveMeasureFamily`, `IsProjectiveLimit`,
+  `IsProjectiveLimit.unique`, `isProjectiveLimit_map`,
+  `map_eq_iff_forall_finset_map_restrict_eq`, and
+  `identDistrib_iff_forall_finset_identDistrib`;
+- directly reusable local wrappers already include
+  `VdVWWeakConvergenceProbabilityMeasures.map_continuous`,
+  `vdVWTendstoInDistribution_prodMk_of_tendstoInMeasure_const`, and
+  `vdVWProductMeasure`;
+- no exact theorem was found for VdV&W 1.4.2 product-measure uniqueness from
+  nonnegative Lipschitz product tests, 1.4.5 arbitrary-net product weak
+  convergence, or 1.4.8 weak convergence iff all finite-dimensional
+  distributions converge.  The next Lean step for Section 1.4 should wrap
+  `ProbabilityMeasure.continuous_prod`/`continuous_pi` under
+  `VdVWWeakConvergenceProbabilityMeasures`, then build finite-coordinate
+  projection wrappers via `Finset.continuous_restrict`.
 
 ## Active Main-Line Primitive Sequence
 

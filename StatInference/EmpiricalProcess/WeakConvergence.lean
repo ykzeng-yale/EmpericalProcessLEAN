@@ -1,5 +1,6 @@
 import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
 import Mathlib.MeasureTheory.Measure.ProbabilityMeasure
+import Mathlib.MeasureTheory.Measure.Prokhorov
 
 /-!
 # Weak-convergence foundation wrappers
@@ -48,6 +49,89 @@ theorem vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto
         Tendsto (fun i => ∫ s, f s ∂(μs i : Measure S)) l
           (𝓝 (∫ s, f s ∂(μ : Measure S))) := by
   exact ProbabilityMeasure.tendsto_iff_forall_integral_tendsto
+
+/--
+Portmanteau closed-set implication for the measure-level VdV&W weak convergence
+wrapper.
+
+This is the pinned-mathlib implication `(T) -> (C)` for probability measures.
+The exact arbitrary-map/outer-probability Portmanteau theorem remains a
+separate VdV&W-specific layer.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.limsup_measure_closed_le
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S] [HasOuterApproxClosed S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    {F : Set S} (hF : IsClosed F) :
+    (l.limsup fun i => (μs i : Measure S) F) ≤ (μ : Measure S) F := by
+  exact ProbabilityMeasure.limsup_measure_closed_le_of_tendsto h hF
+
+/--
+Portmanteau open-set implication for the measure-level VdV&W weak convergence
+wrapper.
+
+This is the pinned-mathlib implication `(T) -> (O)` for probability measures.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.le_liminf_measure_open
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S] [HasOuterApproxClosed S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    {G : Set S} (hG : IsOpen G) :
+    (μ : Measure S) G ≤ l.liminf fun i => (μs i : Measure S) G := by
+  exact ProbabilityMeasure.le_liminf_measure_open_of_tendsto h hG
+
+/--
+Tightness of a family of probability measures, expressed through mathlib's
+`IsTightMeasureSet` on the underlying measures.
+
+This names the measure-level foundation used by VdV&W Prokhorov/tightness
+statements.  Stochastic-process asymptotic tightness of arbitrary maps is a
+separate local primitive.
+-/
+def VdVWProbabilityMeasuresTight
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    (A : Set (ProbabilityMeasure S)) : Prop :=
+  IsTightMeasureSet {((μ : ProbabilityMeasure S) : Measure S) | μ ∈ A}
+
+/--
+Compact-set characterization of the VdV&W-local probability-measure tightness
+wrapper.
+-/
+theorem vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    {A : Set (ProbabilityMeasure S)} :
+    VdVWProbabilityMeasuresTight A ↔
+      ∀ ε, 0 < ε ->
+        ∃ K : Set S, IsCompact K ∧
+          ∀ μ : ProbabilityMeasure S, μ ∈ A -> (μ : Measure S) (Kᶜ) ≤ ε := by
+  constructor
+  · intro h ε hε
+    rcases
+        (isTightMeasureSet_iff_exists_isCompact_measure_compl_le.mp h) ε hε with
+      ⟨K, hK, hKμ⟩
+    exact ⟨K, hK, fun μ hμA => hKμ (μ : Measure S) ⟨μ, hμA, rfl⟩⟩
+  · intro h
+    refine isTightMeasureSet_iff_exists_isCompact_measure_compl_le.mpr ?_
+    intro ε hε
+    rcases h ε hε with ⟨K, hK, hKμ⟩
+    refine ⟨K, hK, ?_⟩
+    rintro ν ⟨μ, hμA, rfl⟩
+    exact hKμ μ hμA
+
+/--
+Measure-level Prokhorov compactness wrapper: the closure of a tight family of
+probability measures is compact.
+-/
+theorem VdVWProbabilityMeasuresTight.isCompact_closure
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S] [T2Space S]
+    [BorelSpace S] {A : Set (ProbabilityMeasure S)}
+    (hA : VdVWProbabilityMeasuresTight A) :
+    IsCompact (closure A) := by
+  exact isCompact_closure_of_isTightMeasureSet hA
 
 /--
 Measure-level continuous mapping theorem.

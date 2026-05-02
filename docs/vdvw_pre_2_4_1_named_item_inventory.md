@@ -164,9 +164,9 @@ Targeted search found these reusable foundations.
 | measurable spaces, Borel spaces, measures | `Mathlib/MeasureTheory/MeasurableSpace/*`, `Mathlib/MeasureTheory/Measure/*` | use directly |
 | probability measures | `Mathlib/MeasureTheory/Measure/ProbabilityMeasure.lean` | use `ProbabilityMeasure`, `IsProbabilityMeasure`, coercion to `Measure` |
 | finite measures and weak convergence topology | `Mathlib/MeasureTheory/Measure/FiniteMeasure.lean` | use finite-measure topology and integral characterizations |
-| local VdV&W weak convergence wrappers | `StatInference/EmpiricalProcess/WeakConvergence.lean` | compiled measure-level probability-law weak convergence, bounded-continuous integral characterization, continuous mapping, and measurable Slutsky/product wrappers |
-| Portmanteau style weak convergence | `Mathlib/MeasureTheory/Measure/Portmanteau.lean` | use directly for measure-level weak convergence when matching Chapter 1; local Portmanteau wrapper still pending |
-| Prokhorov-related measure theory | `Mathlib/MeasureTheory/Measure/Prokhorov.lean`, `LevyProkhorovMetric.lean` | likely reusable; still needs mapping to VdV&W outer-probability nets |
+| local VdV&W weak convergence wrappers | `StatInference/EmpiricalProcess/WeakConvergence.lean` | compiled measure-level probability-law weak convergence, bounded-continuous integral characterization, Portmanteau closed/open implications, tightness/Prokhorov wrappers, continuous mapping, and measurable Slutsky/product wrappers |
+| Portmanteau style weak convergence | `Mathlib/MeasureTheory/Measure/Portmanteau.lean` | reused directly through local measure-level Portmanteau wrappers; arbitrary-map/outer-expectation version remains pending |
+| Prokhorov-related measure theory | `Mathlib/MeasureTheory/Measure/Prokhorov.lean`, `LevyProkhorovMetric.lean` | reused for probability-measure tightness and compact closure; VdV&W outer-probability/asymptotic-tightness nets still need local primitives |
 | convergence in distribution | `Mathlib/MeasureTheory/Function/ConvergenceInDistribution.lean` | reusable for measurable random variables |
 | Bochner integrals and order monotonicity | `Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`, `Set.lean` | use `integral_mono`, `integral_mono_ae`, `setIntegral_mono` |
 | product integrals and Fubini | `Mathlib/MeasureTheory/Integral/Prod.lean`, `Pi.lean` | use for Chapter 1 product/Fubini material |
@@ -222,11 +222,11 @@ through 2.4.1 requires accounting for them.
 | 1.3.1 Lemma | `M1:575` | Borel sigma field from bounded continuous functions | mathlib foundation likely reusable; exact statement pending |
 | 1.3.2 Lemma | `M1:582` | pre-tightness, separability, tightness | mathlib foundation plus local VdV&W statement pending |
 | 1.3.3 Definition | `M1:585` | weak convergence of arbitrary maps | local-layer/mathlib-foundation: measure-level probability-law wrapper and bounded-continuous integral characterization compiled; exact arbitrary-map outer-expectation primitive pending |
-| 1.3.4 Theorem | `M1:606` | Portmanteau | mathlib foundation exists; arbitrary-map/outer version pending |
+| 1.3.4 Theorem | `M1:606` | Portmanteau | local-layer/mathlib-foundation: closed/open implications proved for probability measures; arbitrary-map/outer version pending |
 | 1.3.6 Theorem | `M1:650` | continuous mapping theorem | local-layer/mathlib-foundation: continuous map pushforward and `TendstoInDistribution` continuous-composition wrappers compiled; VdV&W arbitrary-map version pending |
 | 1.3.7 Definition | `M1:661` | asymptotic measurability | pending primitive |
 | 1.3.8 Lemma | `M1:678` | weak convergence implies asymptotic measurability/tightness relation | pending primitive |
-| 1.3.9 Theorem | `M1:688` | Prohorov theorem | mathlib foundation exists; VdV&W net/sequence arbitrary-map version pending |
+| 1.3.9 Theorem | `M1:688` | Prohorov theorem | local-layer/mathlib-foundation: probability-measure tightness compact-characterization and compact-closure wrappers proved; VdV&W net/sequence arbitrary-map version pending |
 | 1.3.10 Theorem | `M1:756` | weak convergence in subspaces | later roadmap |
 | 1.3.11 Example | `M1:759` | weak convergence of discrete measures | later roadmap |
 | 1.3.12 Lemma | `M1:768` | finite Borel measure uniqueness | mathlib finite-measure foundations reusable; exact statement pending |
