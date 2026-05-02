@@ -44,6 +44,8 @@ compatibility work.
 | `VdVWOuterProbabilityUniformDeviationTailTendstoZeroOn`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_tail` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | tail-event sufficient condition for the direct outer-probability branch |
 | `VdVWUniformDeviationBadEvent`, `VdVWUniformDeviationBadTailEvent`, `VdVWUniformDeviationBadInfinitelyOftenEvent`, `vdVWUniformDeviationBadInfinitelyOften_subset_not_tendsto` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | bad-event vocabulary and limsup-to-failure implication |
 | `VdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn`, `vdVWOuterProbabilityUniformDeviationTailTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | conditional route from outer-a.s. convergence to direct outer-probability convergence under tail-continuity |
+| `vdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn_of_isFiniteMeasure_of_nullMeasurable_badEvent`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_isFiniteMeasure_of_nullMeasurable_badEvent` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | derives the direct outer-probability branch from outer-a.s. convergence under finite-measure and fixed-bad-event null-measurability assumptions |
+| `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_nullMeasurable_badEvent` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | Theorem 2.4.1 in the direct outer-probability mode under the null-measurable bad-event bridge |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | Theorem 2.4.1 packaged into the book-style GC predicate through the outer-a.s. branch |
 
 Detailed side-by-side audit table:
@@ -94,12 +96,17 @@ The proved Lean code currently supplies:
     bad-event tails implies one-time outer-probability convergence;
 16. a conditional route from outer-a.s. convergence to the direct
     outer-probability branch, assuming tail outer probabilities converge to
-    the outer probability of the bad-infinitely-often event.
+    the outer probability of the bad-infinitely-often event;
+17. a proof that fixed bad-event null measurability plus finite sample-space
+    measure gives the needed tail-continuity condition by mathlib continuity
+    from above;
+18. a direct outer-probability version of Theorem 2.4.1 under that
+    null-measurable bad-event bridge.
 
 The remaining compatibility layers are not needed for the outer-a.s. proof of
 Theorem 2.4.1, but they are needed for broader Chapter 1 coverage:
 
-1. direct derivation of the tail-event condition from outer-a.s. convergence
-   under suitable measurability or continuity-from-above assumptions;
+1. deriving fixed bad-event null measurability from concrete measurability
+   assumptions on the empirical process and function class;
 2. VdV&W measurable covers, outer expectation, and arbitrary-map convergence
    infrastructure for full textbook-order formalization.

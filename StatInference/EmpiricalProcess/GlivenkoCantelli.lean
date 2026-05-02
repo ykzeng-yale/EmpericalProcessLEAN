@@ -262,6 +262,63 @@ def VdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn
             populationRisk empiricalRisk tolerance)))
 
 /--
+Fixed-sample null measurability gives tail-event continuity from above.
+
+This is the standard measurable-events bridge missing from the purely outer
+formulation: the future bad-event tails are decreasing countable unions of
+null-measurable fixed-sample bad events, so finite-measure continuity from
+above applies.
+-/
+theorem vdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn_of_isFiniteMeasure_of_nullMeasurable_badEvent
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {indexClass : Set Index}
+    {populationRisk : Index -> ℝ}
+    {empiricalRisk : Ω -> ℕ -> Index -> ℝ}
+    (h_bad_null :
+      ∀ tolerance, 0 < tolerance ->
+        ∀ sampleSize,
+          NullMeasurableSet
+            (VdVWUniformDeviationBadEvent indexClass populationRisk
+              empiricalRisk tolerance sampleSize) μ) :
+    VdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn μ indexClass
+      populationRisk empiricalRisk := by
+  intro tolerance htolerance
+  let tail : ℕ -> Set Ω := fun start =>
+    VdVWUniformDeviationBadTailEvent indexClass populationRisk
+      empiricalRisk tolerance start
+  have htail_null : ∀ start, NullMeasurableSet (tail start) μ := by
+    intro start
+    have htail_eq :
+        tail start =
+          ⋃ sampleSize ∈ Set.Ici start,
+            VdVWUniformDeviationBadEvent indexClass populationRisk
+              empiricalRisk tolerance sampleSize := by
+      ext ω
+      simp [tail, VdVWUniformDeviationBadTailEvent, Set.mem_Ici]
+    rw [htail_eq]
+    exact
+      NullMeasurableSet.biUnion (Set.to_countable (Set.Ici start))
+        (fun sampleSize _ => h_bad_null tolerance htolerance sampleSize)
+  have htail_antitone : Antitone tail := by
+    intro start finish hle ω hω
+    rcases hω with ⟨sampleSize, hsampleSize, hbad⟩
+    exact ⟨sampleSize, le_trans hle hsampleSize, hbad⟩
+  have hfinite : ∃ start, μ (tail start) ≠ ∞ :=
+    ⟨0, measure_ne_top μ (tail 0)⟩
+  have htail_inter :
+      (⋂ start : ℕ, tail start) =
+        VdVWUniformDeviationBadInfinitelyOftenEvent indexClass
+          populationRisk empiricalRisk tolerance := by
+    ext ω
+    simp [tail, VdVWUniformDeviationBadTailEvent,
+      VdVWUniformDeviationBadInfinitelyOftenEvent]
+  have htendsto :
+      Tendsto (μ ∘ tail) atTop (𝓝 (μ (⋂ start : ℕ, tail start))) :=
+    tendsto_measure_iInter_atTop htail_null htail_antitone hfinite
+  simpa [Function.comp_def, tail, VdVWOuterProbability, htail_inter] using
+    htendsto
+
+/--
 Outer-a.s. pathwise convergence plus continuity of bad-tail outer
 probabilities at the limsup event gives tail-event outer-probability control.
 -/
@@ -346,6 +403,31 @@ theorem vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_
   vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_tail
     (vdVWOuterProbabilityUniformDeviationTailTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup
       h_outer_as h_tail_limsup)
+
+/--
+Outer-a.s. convergence implies the direct outer-probability branch when the
+sample-space measure is finite and every fixed bad event is null-measurable.
+-/
+theorem vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_isFiniteMeasure_of_nullMeasurable_badEvent
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {indexClass : Set Index}
+    {populationRisk : Index -> ℝ}
+    {empiricalRisk : Ω -> ℕ -> Index -> ℝ}
+    (h_outer_as :
+      VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ indexClass
+        populationRisk empiricalRisk)
+    (h_bad_null :
+      ∀ tolerance, 0 < tolerance ->
+        ∀ sampleSize,
+          NullMeasurableSet
+            (VdVWUniformDeviationBadEvent indexClass populationRisk
+              empiricalRisk tolerance sampleSize) μ) :
+    VdVWOuterProbabilityUniformDeviationTendstoZeroOn μ indexClass
+      populationRisk empiricalRisk :=
+  vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup
+    h_outer_as
+    (vdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn_of_isFiniteMeasure_of_nullMeasurable_badEvent
+      h_bad_null)
 
 /--
 The local a.s. pathwise convergence predicate implies the explicit
@@ -520,6 +602,41 @@ theorem vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli
     VdVWOuterAlmostSurePGlivenkoCantelliClass μ P indexClass classFun X :=
   vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top
     X hLaw hindep h_bracketing
+
+/--
+VdV&W Theorem 2.4.1 in the direct outer-probability convergence mode, under
+the standard finite-measure and fixed bad-event null-measurability bridge.
+
+The bracketing proof supplies the outer-a.s. zero-limsup conclusion.  The
+additional null-measurability hypothesis lets mathlib's continuity from above
+turn that conclusion into the one-time outer-probability convergence branch.
+-/
+theorem vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_nullMeasurable_badEvent
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (X : ℕ -> Ω -> Observation)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
+    (h_bracketing :
+      ∀ epsilon, 0 < epsilon ->
+        l1BracketingNumber P indexClass classFun epsilon < ⊤)
+    (h_bad_null :
+      ∀ tolerance, 0 < tolerance ->
+        ∀ sampleSize,
+          NullMeasurableSet
+            (VdVWUniformDeviationBadEvent indexClass
+              (fun index => populationRiskOfFunction P (classFun index))
+              (fun ω sampleSize index =>
+                empiricalAverage (samplePath X ω sampleSize)
+                  (classFun index))
+              tolerance sampleSize) μ) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass μ P indexClass classFun X :=
+  vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_isFiniteMeasure_of_nullMeasurable_badEvent
+    (vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top
+      X hLaw hindep h_bracketing)
+    h_bad_null
 
 /--
 VdV&W Theorem 2.4.1 in the book-style `P`-Glivenko-Cantelli predicate.

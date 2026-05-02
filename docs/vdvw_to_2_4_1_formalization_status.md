@@ -121,6 +121,9 @@ The following are compiled Lean declarations with no proof holes:
 | `VdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn` | tail outer-probabilities converge to the outer probability of the bad-limsup event |
 | `vdVWOuterProbabilityUniformDeviationTailTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup` | outer-a.s. convergence plus tail-limsup continuity gives vanishing future-tail outer probabilities |
 | `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup` | same hypotheses give the direct outer-probability convergence branch |
+| `vdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn_of_isFiniteMeasure_of_nullMeasurable_badEvent` | finite-measure continuity from above gives the tail-limsup condition from fixed bad-event null measurability |
+| `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_isFiniteMeasure_of_nullMeasurable_badEvent` | outer-a.s. convergence implies direct outer-probability convergence under fixed bad-event null measurability |
+| `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_nullMeasurable_badEvent` | VdV&W Theorem 2.4.1 in the direct outer-probability mode under the null-measurable bad-event bridge |
 | `VdVWPGlivenkoCantelliClass` | book-style GC predicate: outer probability or outer almost surely |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | VdV&W Theorem 2.4.1 packaged into the book-style GC predicate |
 
@@ -131,9 +134,12 @@ A tail-event sufficient condition for the direct outer-probability branch is
 also proved.  The repo now additionally proves a conditional conversion from
 outer-a.s. convergence to the direct outer-probability branch, assuming the
 future-tail outer probabilities converge to the outer probability of the
-bad-infinitely-often event.  Deriving that tail-continuity condition from
-measurability or measurable-cover hypotheses remains future compatibility work
-with broader Chapter 1 arbitrary-map machinery.
+bad-infinitely-often event.  It also proves that this tail-continuity condition
+follows from fixed bad-event null measurability and finite sample-space measure,
+using mathlib's continuity from above.  Deriving fixed bad-event
+null-measurability from concrete function-class/sample-process measurability
+remains future compatibility work with broader Chapter 1 arbitrary-map
+machinery.
 
 ## Dependency-Minimal Remaining Work For Theorem 2.4.1
 
@@ -154,7 +160,7 @@ These are the missing primitives and lemmas on the direct proof path.
 | 11 | endpoint convergence to route fields | proof line 984 | done: `finiteEndpointRadius`, `FiniteL1BracketCover.endpointRadius`, and route constructor from endpoint convergence |
 | 12 | construct `FiniteBracketingEndpointRoute` | proof lines 972-984 | done from primitive finite `L1(P)` cover plus endpoint/width assumptions |
 | 13 | decreasing-radius argument | proof line 984 | done for the dependency-minimal deterministic and iid countable-cover routes |
-| 14 | final textbook theorem | Theorem 2.4.1 statement | done as book-style GC predicate: `vdVW_theorem_2_4_1_glivenkoCantelli`; tail-event and conditional tail-continuity bridges for direct outer probability proved |
+| 14 | final textbook theorem | Theorem 2.4.1 statement | done as book-style GC predicate: `vdVW_theorem_2_4_1_glivenkoCantelli`; direct outer-probability theorem also proved under fixed bad-event null-measurability and finite-measure assumptions |
 
 ## Full Textbook-Order Work Before 2.4.1
 
