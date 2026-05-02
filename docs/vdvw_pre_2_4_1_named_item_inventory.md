@@ -5,9 +5,10 @@ Wellner up to and including Theorem 2.4.1.  It records the local textbook
 anchors, the currently verified Lean base, the reusable pinned mathlib layer,
 and the definitions/lemmas that still need to be built locally.
 
-The public repository should not copy long textbook passages or commit the PDF,
-markdown extraction, or screenshots.  This document therefore uses local path
-anchors and short paraphrases only.
+The public repository should not copy long textbook passages.  The textbook
+PDF, markdown extraction, and screenshots under `Textbooks/Vaart1996/` are
+intentionally tracked source-audit anchors per user request, and this document
+uses local path anchors and short paraphrases only.
 
 ## Scope
 

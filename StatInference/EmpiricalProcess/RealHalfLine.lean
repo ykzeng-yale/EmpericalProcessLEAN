@@ -420,7 +420,84 @@ structure SuppliedERealHalfLineGrid
     ∀ bracketIndex, μ.real (eRealOpenCell (left bracketIndex)
       (right bracketIndex)) < epsilon
 
+/--
+A supplied finite extended-real endpoint grid for half-line brackets.
+
+This records the textbook-style adjacent endpoints
+`t₀, ..., t_m` and a proof that every real cutoff lies in one adjacent cell.
+Constructing such endpoint data from an arbitrary distribution is the next
+substantive step for Example 2.4.2.
+-/
+structure SuppliedERealHalfLineEndpointGrid
+    (μ : Measure ℝ) (epsilon : ℝ) (cellCount : ℕ) where
+  endpoint : Fin (cellCount + 1) -> EReal
+  bracketOf : ℝ -> Fin cellCount
+  left_lt_right :
+    ∀ cell : Fin cellCount, endpoint (Fin.castSucc cell) < endpoint (Fin.succ cell)
+  left_le_index :
+    ∀ c : ℝ, endpoint (Fin.castSucc (bracketOf c)) ≤ (c : EReal)
+  index_lt_right :
+    ∀ c : ℝ, (c : EReal) < endpoint (Fin.succ (bracketOf c))
+  cell_width_lt :
+    ∀ cell : Fin cellCount, μ.real (eRealOpenCell (endpoint (Fin.castSucc cell))
+      (endpoint (Fin.succ cell))) < epsilon
+
+namespace SuppliedERealHalfLineEndpointGrid
+
+/--
+A supplied adjacent-endpoint grid yields the more primitive supplied-grid
+structure used by the bracketing-number layer.
+-/
+def toSuppliedERealHalfLineGrid
+    {μ : Measure ℝ} {epsilon : ℝ} {cellCount : ℕ}
+    (grid : SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) :
+    SuppliedERealHalfLineGrid μ epsilon cellCount where
+  left := fun cell => grid.endpoint (Fin.castSucc cell)
+  right := fun cell => grid.endpoint (Fin.succ cell)
+  bracketOf := grid.bracketOf
+  left_lt_right := grid.left_lt_right
+  left_le_index := grid.left_le_index
+  index_lt_right := grid.index_lt_right
+  cell_width_lt := grid.cell_width_lt
+
+end SuppliedERealHalfLineEndpointGrid
+
 namespace SuppliedERealHalfLineGrid
+
+/--
+The one-cell extended grid `(-∞, ∞)`.
+
+This is the base case for the distribution-dependent grid construction in
+Example 2.4.2: if the total mass is already below the requested radius, one
+bracket covers the whole half-line class.
+-/
+noncomputable def singleCell
+    (μ : Measure ℝ) {epsilon : ℝ} (hwidth : μ.real Set.univ < epsilon) :
+    SuppliedERealHalfLineGrid μ epsilon 1 where
+  left := fun _ => ⊥
+  right := fun _ => ⊤
+  bracketOf := fun _ => 0
+  left_lt_right := by
+    intro _bracketIndex
+    simp
+  left_le_index := by
+    intro _c
+    simp
+  index_lt_right := by
+    intro _c
+    simp
+  cell_width_lt := by
+    intro _bracketIndex
+    rwa [eRealOpenCell_bot_top]
+
+/--
+If the requested radius exceeds the total mass, the one-cell extended grid is
+a supplied finite grid.
+-/
+theorem exists_singleCell_of_measureReal_univ_lt
+    (μ : Measure ℝ) {epsilon : ℝ} (hwidth : μ.real Set.univ < epsilon) :
+    ∃ cardinality, Nonempty (SuppliedERealHalfLineGrid μ epsilon cardinality) :=
+  ⟨1, ⟨singleCell μ hwidth⟩⟩
 
 /--
 A supplied extended-real grid yields an explicit-cardinality finite `L1(P)`
@@ -477,6 +554,42 @@ theorem l1BracketingNumber_lt_top
     (grid : SuppliedERealHalfLineGrid μ epsilon cardinality) :
     l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
   l1BracketingNumber_lt_top_of_hasFinite grid.hasFiniteL1BracketingNumber
+
+namespace SuppliedERealHalfLineEndpointGrid
+
+/--
+A supplied adjacent-endpoint grid proves finiteness of the primitive local
+`L1(P)` bracketing-number witness.
+-/
+theorem hasFiniteL1BracketingNumber
+    {μ : Measure ℝ} [IsFiniteMeasure μ]
+    {epsilon : ℝ} {cellCount : ℕ}
+    (grid : SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) :
+    HasFiniteL1BracketingNumber μ Set.univ realHalfLineIndicator epsilon :=
+  grid.toSuppliedERealHalfLineGrid.hasFiniteL1BracketingNumber
+
+/--
+A supplied adjacent-endpoint grid makes the numeric primitive bracketing number
+finite.
+-/
+theorem l1BracketingNumber_lt_top
+    {μ : Measure ℝ} [IsFiniteMeasure μ]
+    {epsilon : ℝ} {cellCount : ℕ}
+    (grid : SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) :
+    l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
+  grid.toSuppliedERealHalfLineGrid.l1BracketingNumber_lt_top
+
+end SuppliedERealHalfLineEndpointGrid
+
+/--
+If the requested radius exceeds the total mass, the half-line class has finite
+primitive `L1(P)` bracketing number at that radius.
+-/
+theorem l1BracketingNumber_lt_top_of_measureReal_univ_lt
+    {μ : Measure ℝ} [IsFiniteMeasure μ]
+    {epsilon : ℝ} (hwidth : μ.real Set.univ < epsilon) :
+    l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
+  (singleCell μ hwidth).l1BracketingNumber_lt_top
 
 /--
 Uniform finite-grid existence at every positive radius yields the primitive

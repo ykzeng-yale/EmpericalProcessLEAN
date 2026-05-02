@@ -88,7 +88,7 @@ The table below is only the active direct-proof anchor subset.
 | Theorem 2.4.1 statement | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:970` | proved as `vdVW_theorem_2_4_1_glivenkoCantelli` via the outer-a.s. branch |
 | Theorem 2.4.1 proof, finite brackets and endpoint inequality | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:972-981` | deterministic bracketing theorem proved |
 | Theorem 2.4.1 proof, endpoint SLLN and decreasing radius | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:984` | endpoint SLLN wrapper, iid sample-path bridge, finite endpoint-radius bridge, and countable/decreasing-scale assembly proved |
-| Example 2.4.2, empirical CDF brackets | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:985` | local-layer: real and extended-real half-line bracket membership, endpoint integrability, `L1(P)` width identities, supplied finite-grid bridges, all-positive-radius `N_[] < ∞` handoff, and conditional GC corollary from supplied grids; distribution-dependent grid existence and exact example report remain pending |
+| Example 2.4.2, empirical CDF brackets | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:985` | local-layer: real and extended-real half-line bracket membership, endpoint integrability, `L1(P)` width identities, adjacent-endpoint grid handoff, supplied finite-grid bridges, one-cell base grid for radii above total mass, all-positive-radius `N_[] < ∞` handoff, and conditional GC corollary from supplied grids; distribution-dependent grid existence and exact example report remain pending |
 
 Current screenshot anchors:
 
@@ -249,8 +249,11 @@ outer-probability and arbitrary-map formalism is still pending.
 
 ## Report Requirement
 
-Every newly completed theorem or theorem layer derived from VdV&W must add a
-report under `Reports/`. The report must include a side-by-side cross-check:
+Every exact VdV&W textbook theorem or lemma fully proved in Lean must add a
+report under `Reports/`. Intermediate theorem layers and proof-carrying
+interfaces are tracked in this status document, the active blueprint, or the
+dashboard until an exact textbook item is complete. A formal report must
+include a side-by-side cross-check:
 
 | Required column | Meaning |
 | --- | --- |
@@ -259,5 +262,7 @@ report under `Reports/`. The report must include a side-by-side cross-check:
 | PDF screenshot anchor | local screenshot path for the corresponding textbook passage |
 | Status/gap | exact theorem, proved layer, proof-carrying interface, or pending primitive |
 
-Long textbook excerpts and screenshots remain local-only review material and
-should not be committed to the public repository.
+Long textbook excerpts should not be copied into public docs.  The requested
+textbook markdown/PDF/screenshot source anchors under `Textbooks/Vaart1996/`
+are intentionally tracked; generated report PDFs remain local build artifacts
+unless explicitly reviewed for publication.

@@ -2,11 +2,11 @@
 
 This folder records the local source layout used for human source checks.
 
-The actual textbook PDF, markdown conversion, and screenshot files are kept in
-the local working tree for review but are ignored by Git and not published to
-the public repository.
+The textbook PDF, markdown conversion, and screenshot files are intentionally
+tracked as source-audit anchors because the user explicitly requested that the
+public textbook assets be included in this repository.
 
-Expected local-only paths:
+Expected source-audit paths:
 
 - `Textbooks/Vaart1996/PDF/`
 - `Textbooks/Vaart1996/Markdown/`

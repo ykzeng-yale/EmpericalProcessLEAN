@@ -15,17 +15,10 @@ For VdV&W-derived theorem work, reports should use a side-by-side table with:
 - Status/gap: exact theorem, proved layer, proof-carrying interface, or pending
   primitive.
 
-Reports should distinguish:
-
-- exact formalization of a textbook theorem;
-- proved theorem layer used by a textbook proof;
-- proof-carrying interface;
-- pending primitive definition or lemma.
-
-Use exactly one report folder for each exact textbook theorem once it is
-promoted.  If intermediate theorem layers are promoted first, they may have
-their own report folders, but the later exact-theorem report must link to those
-layer reports and must not silently duplicate or replace them.
+Use exactly one report folder for each exact textbook theorem or lemma once it
+is promoted.  Intermediate theorem layers, proof-carrying interfaces, and
+pending primitive definitions should be tracked in the active blueprint,
+dashboard, or theorem-status docs rather than receiving formal report folders.
 
 Do not mark a theorem as the full textbook result until all primitives used in
 the textbook statement have Lean definitions and the theorem compiles from
