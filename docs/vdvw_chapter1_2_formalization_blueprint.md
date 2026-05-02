@@ -205,7 +205,7 @@ quotes; the anchor is the authoritative local source location.
 | Item | Kind | Anchor | Current audit status |
 | --- | --- | --- | --- |
 | 1.2.1 | Lemma | `..._1-100.md:372` | local-layer: nonnegative outer/inner expectation and cover interfaces, including monotonicity of outer and inner expectation |
-| 1.2.2 | Lemma | `..._1-100.md:389` | local-layer: nonnegative sup/add/inf/product, two-sided constant addition equality, finite-measurable addition equality, threshold-indicator, tail-product cover-majorant, and two-sided measurable infimum equality cover algebra |
+| 1.2.2 | Lemma | `..._1-100.md:389` | local-layer: nonnegative sup/add/inf/product, two-sided constant addition equality, finite-measurable addition equality, threshold-indicator, tail-product cover-majorant, two-sided measurable infimum equality cover algebra, and measurable integrable real signed positive/negative bridge |
 | 1.2.3 | Lemma | `..._1-100.md:438` | local-layer: outer/inner event probability, event-indicator monotonicity, explicit measurable event-cover existence, arbitrary measurable set cover to event-indicator cover with integral equality, direct `toMeasurable` hull integral equality, complement-set-cover lower cover, direct complement-cover inner-probability equalities, outer-probability/outer-expectation bridge, Markov-style outer-probability bound via supplied measurable cover, inner-expectation indicator equality, and two-sided complement identities |
 | 1.2.4 | Lemma | `..._1-100.md:446` | pending-local; self-contained dominated-cover infrastructure, promote after the active 1.2.1-1.2.3 layers |
 | 1.2.5 | Lemma | `..._1-100.md:467` | blocked-vdvw: product/perfect-map measurable-cover transfer; mathlib has product and measurable-space foundations but no exact local VdV&W perfect-map wrapper yet |
@@ -233,12 +233,12 @@ quotes; the anchor is the authoritative local source location.
 | 1.5.7 | Theorem | `..._1-100.md:987` | foundation-lane: pre-Gaussian/Donsker tightness theorem target; mathlib Gaussian foundations exist, local process wrapper needed |
 | 1.5.9 | Lemma | `..._1-100.md:1044` | foundation-lane: tightness/equicontinuity wrapper target, local semimetric/process primitive needed |
 | 1.6.1 | Theorem | `..._1-100.md:1117` | foundation-lane: stochastic-process tightness target; requires local stochastic-process/l_infty API over mathlib tightness |
-| 1.7.1 | Lemma | `..._1-100.md:1156` | foundation-lane/mathlib-foundation: audit found Borel generation, metric-ball measurability, separability, and basis APIs; next exact local primitive is a ball sigma-field wrapper plus Borel equality proof |
+| 1.7.1 | Lemma | `..._1-100.md:1156` | local-layer/mathlib-foundation: open-ball and closed-ball sigma-field wrappers, open-ball topological basis, rational open/closed ball bridges, open-ball/closed-ball sigma equality, Borel equality, and generator measurability proved in `BallSigma.lean`; exact distance-coordinate and arbitrary-map clauses pending |
 | 1.7.2 | Theorem | `..._1-100.md:1157` | foundation-lane/mathlib-foundation: audit found distance-measurability and `Metric.PiNatEmbed` scaffolding plus local `P`-measurable class route; exact VdV&W distance-coordinate statement still needs local wrapper |
-| 1.8.1 | Lemma | `..._1-100.md:1234` | foundation-lane/mathlib-foundation: audit found `InnerProductSpace`, `HilbertSpace`, `MeasureTheory.Lp`, and `L2` inner-product-space APIs; pending exact local wrapper |
-| 1.8.2 | Lemma | `..._1-100.md:1245` | foundation-lane/mathlib-foundation: audit found Hilbert/L2 and dual APIs; pending exact VdV&W Hilbert wrapper |
-| 1.8.3 | Lemma | `..._1-100.md:1246` | foundation-lane/mathlib-foundation: audit found `IsGaussian`, `HasGaussianLaw`, `IsGaussianProcess`, real/multivariate Gaussian APIs, and scalar CLT; no Brownian-bridge/pre-Gaussian full theorem found |
-| 1.8.4 | Theorem | `..._1-100.md:1247` | foundation-lane/mathlib-foundation: Hilbert weak-convergence/Gaussian wrapper target over mathlib Gaussian-process and Hilbert APIs; exact functional-CLT/P-Donsker statement still needs local primitives |
+| 1.8.1 | Lemma | `..._1-100.md:1234` | local-layer/mathlib-foundation: `HilbertGaussian.lean` wraps complete inner-product spaces as Hilbert spaces, `L2` Hilbert space, and `L2` inner product |
+| 1.8.2 | Lemma | `..._1-100.md:1245` | local-layer/mathlib-foundation: Frechet-Riesz continuous-dual representative and evaluation identity wrapped in `HilbertGaussian.lean` |
+| 1.8.3 | Lemma | `..._1-100.md:1246` | local-layer/mathlib-foundation: Gaussian inner-coordinate maps and Gaussian-process coordinate laws wrapped in `HilbertGaussian.lean`; no Brownian-bridge/pre-Gaussian full theorem found |
+| 1.8.4 | Theorem | `..._1-100.md:1247` | foundation-lane/mathlib-foundation: Hilbert/Gaussian foundations are wrapped; exact functional-CLT/P-Donsker statement still needs local stochastic-process primitives |
 | 1.9.2 | Lemma | `..._1-100.md:1304` | local-layer; scoped convergence-mode building block |
 | 1.9.3 | Lemma | `..._1-100.md:1308` | local-layer; scoped convergence-mode building block |
 | 1.9.5 | Theorem | `..._1-100.md:1328` | mathlib-foundation, pending scoped VdV&W wrapper when active |
@@ -274,7 +274,7 @@ quotes; the anchor is the authoritative local source location.
 | 2.3.16 | Proposition | `..._101-200.md:857` | pending-local |
 | 2.3.17 | Theorem | `..._101-200.md:882` | pending-local |
 | 2.4.1 | Theorem | `..._101-200.md:970` | local-exact |
-| 2.4.3 | Theorem | `..._101-200.md:988` | local-layer; Definition 2.1.5 covering primitive, fixed-sample empirical `L1(P_n)` distance/covering-number interface, random empirical covering-number sequence, outer-probability `o_P^*(n)` entropy wrapper, `F_M` truncated-class/envelope interface, Definition 2.3.3 `P`-measurable primitive, deterministic finite-cover supremum-bound layers, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, and deterministic Rademacher-sign specialization now available; exact theorem still pending iid Rademacher construction, proof of the Orlicz/Hoeffding finite-center maximal bound, symmetrization/truncation, envelope-tail, and final convergence handoffs |
+| 2.4.3 | Theorem | `..._101-200.md:988` | local-layer; Definition 2.1.5 covering primitive, fixed-sample empirical `L1(P_n)` distance/covering-number interface, random empirical covering-number sequence, outer-probability `o_P^*(n)` entropy wrapper, `F_M` truncated-class/envelope interface, Definition 2.3.3 `P`-measurable primitive, deterministic finite-cover supremum-bound layers, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, deterministic Rademacher-sign specialization, and one-center random Rademacher sub-Gaussian bridge now available; exact theorem still pending iid Rademacher construction, variance-proxy arithmetic, probabilistic finite-center Orlicz/Hoeffding maximal bound, symmetrization/truncation, envelope-tail, and final convergence handoffs |
 | 2.4.5 | Lemma | `..._101-200.md:1022` | pending-local |
 | 2.5.2 | Theorem | `..._101-200.md:1106` | pending-local |
 | 2.5.6 | Theorem | `..._101-200.md:1204` | pending-local |
@@ -392,9 +392,10 @@ above, so they do not change the theorem-level dashboard counts.
    covering-number/entropy interfaces, the `F_M` truncated-class/envelope
    interface, the fixed-sample net inequality `(2.4.4)`, the finite-center
    maximal/Hoeffding-scale handoff layer, and the deterministic
-   Rademacher-sign specialization are now available.  The next frontier is
-   constructing iid Rademacher signs and proving the Orlicz/Hoeffding
-   finite-center maximal bound used in Theorem 2.4.3, then
+   Rademacher-sign specialization and one-center sub-Gaussian bridge are now
+   available.  The next frontier is constructing iid Rademacher signs, proving
+   the variance-proxy arithmetic and Orlicz/Hoeffding finite-center maximal
+   bound used in Theorem 2.4.3, then
    symmetrization/truncation and the envelope-tail handoff.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the

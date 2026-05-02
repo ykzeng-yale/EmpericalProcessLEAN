@@ -1,3 +1,4 @@
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
 import Mathlib.MeasureTheory.Measure.MeasureSpace
 import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
@@ -81,6 +82,21 @@ theorem VdVWOuterExpectation_eq_lintegral_of_measurable
     refine le_iInf ?_
     intro U
     exact lintegral_mono U.majorizes
+
+/--
+For a measurable integrable real-valued map, the signed difference of the
+VdV&W nonnegative outer expectations of its positive and negative parts is
+the ordinary Bochner integral.
+-/
+theorem VdVWOuterExpectation_posPart_sub_negPart_eq_integral_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {f : Ω -> ℝ} (hf_meas : Measurable f) (hf_int : Integrable f μ) :
+    ENNReal.toReal (VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (f ω))) -
+        ENNReal.toReal (VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (-f ω))) =
+      ∫ ω, f ω ∂μ := by
+  rw [VdVWOuterExpectation_eq_lintegral_of_measurable hf_meas.ennreal_ofReal,
+    VdVWOuterExpectation_eq_lintegral_of_measurable hf_meas.neg.ennreal_ofReal]
+  exact (integral_eq_lintegral_pos_part_sub_lintegral_neg_part hf_int).symm
 
 /-- VdV&W nonnegative outer expectation is monotone in the map. -/
 theorem VdVWOuterExpectation_mono

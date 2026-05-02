@@ -165,6 +165,8 @@ Targeted search found these reusable foundations.
 | probability measures | `Mathlib/MeasureTheory/Measure/ProbabilityMeasure.lean` | use `ProbabilityMeasure`, `IsProbabilityMeasure`, coercion to `Measure` |
 | finite measures and weak convergence topology | `Mathlib/MeasureTheory/Measure/FiniteMeasure.lean` | use finite-measure topology and integral characterizations |
 | local VdV&W weak convergence wrappers | `StatInference/EmpiricalProcess/WeakConvergence.lean` | compiled measure-level probability-law weak convergence, bounded-continuous integral characterization, Portmanteau closed/open implications, tightness/Prokhorov wrappers, continuous mapping, product-law weak convergence, finite-coordinate/FDD forward direction, and measurable Slutsky/product wrappers |
+| local VdV&W ball sigma-field wrappers | `StatInference/EmpiricalProcess/BallSigma.lean` | compiled open/closed ball sigma-field definitions, open-ball topological basis, rational open/closed ball bridges, open/closed ball sigma equality, Borel equality, and generator measurability |
+| local VdV&W Hilbert/Gaussian wrappers | `StatInference/EmpiricalProcess/HilbertGaussian.lean` | compiled Hilbert, L2, Frechet-Riesz, Gaussian inner-coordinate, and Gaussian-process coordinate foundation wrappers |
 | Portmanteau style weak convergence | `Mathlib/MeasureTheory/Measure/Portmanteau.lean` | reused directly through local measure-level Portmanteau wrappers; arbitrary-map/outer-expectation version remains pending |
 | Prokhorov-related measure theory | `Mathlib/MeasureTheory/Measure/Prokhorov.lean`, `LevyProkhorovMetric.lean` | reused for probability-measure tightness and compact closure; VdV&W outer-probability/asymptotic-tightness nets still need local primitives |
 | convergence in distribution | `Mathlib/MeasureTheory/Function/ConvergenceInDistribution.lean` | reusable for measurable random variables |
@@ -249,15 +251,15 @@ through 2.4.1 requires accounting for them.
 | 1.5.9 Lemma | `M1:1044` | tight maps in `l_infty` and semimetrics | later roadmap |
 | 1.5.10 Example | `M1:1059` | Gaussian process definition/example | later roadmap |
 | 1.6.1 Theorem | `M1:1117` | restrictions on countable unions of index sets | later roadmap |
-| 1.7.1 Lemma | `M1:1156` | ball measurable functions and asymptotic measurability | later roadmap |
+| 1.7.1 Lemma | `M1:1156` | ball measurable functions and asymptotic measurability | local-layer/mathlib-foundation: open/closed ball sigma-fields and Borel equality compiled; distance-coordinate and arbitrary-map clauses pending |
 | 1.7.2 Theorem | `M1:1157` | ball-measurable separable random elements | later roadmap |
 | 1.7.3 Example | `M1:1178` | cadlag functions | later roadmap |
 | 1.7.4 Example | `M1:1179` | pointwise separable processes | later roadmap; relevant to Section 2.3 |
 | 1.7.5 Example | `M1:1190` | measurable processes with Suslin index set | later roadmap; relevant to Section 2.3 |
-| 1.8.1 Lemma | `M1:1234` | Hilbert-space tightness | later roadmap |
-| 1.8.2 Lemma | `M1:1245` | Hilbert-space asymptotic measurability | later roadmap |
-| 1.8.3 Lemma | `M1:1246` | Hilbert-space law equality | later roadmap |
-| 1.8.4 Theorem | `M1:1247` | Hilbert-space convergence criterion | later roadmap |
+| 1.8.1 Lemma | `M1:1234` | Hilbert-space tightness | local foundation wrappers compiled; exact tightness theorem pending stochastic-process primitives |
+| 1.8.2 Lemma | `M1:1245` | Hilbert-space asymptotic measurability | local Frechet-Riesz/Hilbert wrappers compiled; exact asymptotic-measurability theorem pending |
+| 1.8.3 Lemma | `M1:1246` | Hilbert-space law equality | local Gaussian-coordinate wrappers compiled; exact law-equality/process theorem pending |
+| 1.8.4 Theorem | `M1:1247` | Hilbert-space convergence criterion | local Hilbert/Gaussian foundations compiled; exact convergence criterion pending |
 | 1.8.5 Example | `M1:1258` | Hilbert-space CLT | later roadmap |
 | 1.8.6 Example | `M1:1268` | Anderson-Darling statistic | later roadmap |
 | 1.9.1 Definition | `M1:1292` | stochastic convergence notation around arbitrary maps | common-domain outer-probability primitive formalized; full theorem suite pending |

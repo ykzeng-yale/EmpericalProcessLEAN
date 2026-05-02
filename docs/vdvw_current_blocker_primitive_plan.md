@@ -75,6 +75,20 @@ Search record for the Portmanteau/tightness correction layer:
   remaining blockers are the exact VdV&W arbitrary-map/nonmeasurable and
   asymptotic-measurability extensions.
 
+Search record for the Chapter 1.2 measurable signed bridge:
+
+- searched local `StatInference` for `VdVWOuterExpectation`,
+  `VdVWOuterExpectation_eq_lintegral_of_measurable`, signed expectation, positive
+  part, and negative part primitives;
+- searched pinned mathlib for `ENNReal.ofReal`, `Measurable.ennreal_ofReal`,
+  `Integrable`, and the signed Bochner split theorem
+  `integral_eq_lintegral_pos_part_sub_lintegral_neg_part`;
+- proved the self-contained measurable integrable real case as
+  `VdVWOuterExpectation_posPart_sub_negPart_eq_integral_of_measurable` by
+  reducing both nonnegative outer expectations to lintegrals.  The remaining
+  blocker is not this measurable real case; it is the full VdV&W arbitrary-map
+  signed extended-real measurable-cover API.
+
 Search record for the Chapter 1 Hilbert/Gaussian foundation lane:
 
 - searched local `StatInference`, pinned mathlib, pinned Lake support packages,
@@ -93,9 +107,13 @@ Search record for the Chapter 1 Hilbert/Gaussian foundation lane:
   `ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum` and
   `ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub`;
 - no exact pinned theorem was found for Brownian bridge, functional CLT,
-  `P`-pre-Gaussian classes, or a full VdV&W `P`-Donsker theorem.  The next
-  Lean step for Section 1.8 should therefore be mathlib-backed wrappers around
-  Hilbert/L2/Gaussian-process foundations, not a docs-only skip.
+  `P`-pre-Gaussian classes, or a full VdV&W `P`-Donsker theorem;
+- compiled local wrappers now exist in `HilbertGaussian.lean` for
+  complete-inner-product Hilbert spaces, `L2` Hilbert spaces, `L2` inner
+  product, Frechet-Riesz dual representatives, Gaussian inner-coordinate maps,
+  and Gaussian-process coordinate laws.  The remaining Section 1.8 blocker is
+  the exact stochastic-process/Hilbert tightness and functional-CLT layer, not
+  these basic Hilbert/Gaussian foundations.
 
 Search record for the Chapter 1 ball-sigma/measurability foundation lane:
 
@@ -115,13 +133,20 @@ Search record for the Chapter 1 ball-sigma/measurability foundation lane:
   `Metric.PiNatEmbed.injective_distDenseSeq`,
   `Metric.PiNatEmbed.continuous_distDenseSeq_inv`, and the local
   `VdVWPMeasurableClass`/pointwise-supremum separability route;
-- no exact pinned theorem was found for a named VdV&W ball sigma-field, open-ball
-  sigma equals closed-ball sigma, ball sigma equals Borel in separable metric
-  spaces, or the exact distance-coordinate characterization of arbitrary-map
-  ball measurability.  The next Lean step for Section 1.7 should therefore
-  define a local ball sigma-field and prove the Borel equality using
-  `IsTopologicalBasis.borel_eq_generateFrom`, rather than treating 1.7 as
-  deferred.
+- no exact pinned theorem was found for a named VdV&W ball sigma-field or the
+  exact distance-coordinate characterization of arbitrary-map ball
+  measurability.  The compiled local `BallSigma.lean` layer now closes the
+  open/closed ball sigma-field part with `VdVWClosedBallSets`,
+  `VdVWClosedBallMeasurableSpace`, rational open/closed ball bridge lemmas,
+  open-ball/closed-ball sigma equality, and Borel equality for the closed-ball
+  sigma field.  The remaining Section 1.7 blocker is the distance-coordinate
+  and arbitrary-map/asymptotic-measurability layer.
+- a follow-up search confirmed that no exact theorem was found for
+  `Measurable X ↔ ∀ n, Measurable fun ω => dist (X ω) (denseSeq S n)`.  The
+  reusable route is through `measurable_dist`, `Measurable.dist`,
+  `measurableSet_lt`, `Measurable.lt`, `denseSeq`, `denseRange_denseSeq`,
+  `Metric.PiNatEmbed.distDenseSeq`, `measurable_pi_iff`, and the local
+  `VdVWPMeasurableClass`/pointwise-separable helpers.
 
 Search record for the Chapter 1 product/FDD foundation lane:
 
@@ -271,8 +296,9 @@ additional example closures:
    `SubGaussian`, `Hoeffding`, `Orlicz`, `eLpNorm`, and finite supremum
    inequalities before introducing local primitives.
 
-   Status: the deterministic fixed-Rademacher-sign specialization is now
-   implemented as a compiled local layer in
+   Status: the deterministic fixed-Rademacher-sign specialization and first
+   probabilistic one-center bridge are now implemented as compiled local layers
+   in
    `StatInference/EmpiricalProcess/Theorem243.lean`:
 
    ```lean
@@ -282,13 +308,35 @@ additional example closures:
    abs_vdVWRademacherWeights_le_inv_card
    abs_vdVWRademacherWeights_le_inv_card_of_signVector
    VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+   vdVWTheorem243_oneCenter_rademacher_subGaussian_bridge
    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
    ```
 
    This closes the deterministic passage from fixed signs `epsilon_i` to the
-   existing finite-net/Hoeffding-scale handoff.  It deliberately does not yet
-   construct iid Rademacher signs or prove the `psi_2`/Hoeffding maximal
-   predicate probabilistically.
+   existing finite-net/Hoeffding-scale handoff, and proves the one-center
+   random Rademacher weighted sum is sub-Gaussian using mathlib's
+   `HasSubgaussianMGF.const_mul` and `HasSubgaussianMGF.sum_of_iIndepFun`.  It
+   deliberately does not yet construct iid Rademacher signs or prove the
+   finite-center `psi_2`/Hoeffding maximal predicate probabilistically.
+
+   Search correction: the current
+   `VdVWTheorem243RademacherFiniteCenterHoeffdingBound` is a deterministic
+   pointwise predicate for a fixed sign vector.  The textbook display uses an
+   expectation/Orlicz bound over random Rademacher signs, so the next proof
+   should not try to prove that deterministic predicate directly from
+   Hoeffding.  Pinned mathlib provides
+   `ProbabilityTheory.HasSubgaussianMGF`,
+   `HasSubgaussianMGF.const_mul`,
+   `HasSubgaussianMGF.sum_of_iIndepFun`,
+   `HasSubgaussianMGF.measure_ge_le`,
+   `measure_sum_ge_le_of_iIndepFun`,
+   `measure_sum_range_ge_le_of_iIndepFun`,
+   `hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero`,
+   `hasSubgaussianMGF_of_mem_Icc`, and
+   `ProbabilityTheory.exists_hasLaw_indepFun`; no reusable Orlicz/`psi_2`
+   API was found.  The probabilistic one-center sub-Gaussian bridge is now
+   compiled; the next theorem-line primitive is the arithmetic bound on its
+   variance proxy, followed by the finite-center maximal bound.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -306,12 +354,10 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: construct or primitive-register the iid Rademacher probability
-space/sign process and prove the probabilistic finite-center
-Orlicz/Hoeffding maximal bound
-`VdVWTheorem243RademacherFiniteCenterHoeffdingBound`, reusing pinned mathlib
-`PMF.bernoulli`, `exists_hasLaw_indepFun`, `HasSubgaussianMGF`, Hoeffding,
-`eLpNorm`, and finite-union/maximal APIs where possible.
+Next exact edit: use the one-center sub-Gaussian bridge to prove the
+variance-proxy arithmetic under the truncated envelope bound, then replace or
+refine the deterministic finite-center Hoeffding predicate with a probabilistic
+finite-center Orlicz/maximal bound.
 
 ## Parked Example-Specific Blocker
 

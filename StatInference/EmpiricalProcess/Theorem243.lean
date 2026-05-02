@@ -1,4 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Probability.Moments.SubGaussian
 import StatInference.EmpiricalProcess.CoveringPrimitive
 import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.PMeasurable
@@ -18,8 +19,8 @@ both without making the lower-level covering file depend on sample paths.
 
 namespace StatInference
 
-open MeasureTheory Filter
-open scoped BigOperators ENNReal Topology
+open MeasureTheory Filter ProbabilityTheory
+open scoped BigOperators ENNReal NNReal Topology
 
 universe u v w
 
@@ -491,6 +492,53 @@ theorem abs_vdVWRademacherWeights_le_inv_card_of_signVector
     ∀ i, |vdVWRademacherWeights sign i| ≤ (n : ℝ)⁻¹ :=
   abs_vdVWRademacherWeights_le_inv_card
     (VdVWRademacherSignVector.abs_le_one hsign)
+
+/--
+One-center sub-Gaussian bridge for the random Rademacher-weighted sum.
+
+This is the probabilistic replacement layer needed before the finite-center
+Hoeffding/Orlicz maximal bound in Theorem 2.4.3.  It uses mathlib's
+sub-Gaussian MGF API rather than the deterministic fixed-sign predicate below.
+-/
+theorem vdVWTheorem243_oneCenter_rademacher_subGaussian_bridge
+    {Ω : Type u} [MeasurableSpace Ω]
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    (μ : Measure Ω)
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ)
+    (center : Index)
+    (sign : Fin n -> Ω -> ℝ)
+    (hindep : iIndepFun sign μ)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μ) :
+    HasSubgaussianMGF
+      (fun ω =>
+        vdVWWeightedSampleSum classFun
+          (vdVWRademacherWeights (fun i : Fin n => sign i ω)) center sample)
+      (∑ i : Fin n,
+        (NNReal.mk (((n : ℝ)⁻¹ * classFun center (sample i)) ^ 2)
+            (sq_nonneg ((n : ℝ)⁻¹ * classFun center (sample i))) *
+          (1 : ℝ≥0))) μ := by
+  let coeff : Fin n -> ℝ := fun i => (n : ℝ)⁻¹ * classFun center (sample i)
+  have hindep_scaled :
+      iIndepFun (fun i : Fin n => (fun x : ℝ => coeff i * x) ∘ sign i) μ := by
+    exact hindep.comp
+      (fun i x => coeff i * x)
+      (fun i => measurable_const_mul (coeff i))
+  have hsubG_scaled :
+      ∀ i ∈ (Finset.univ : Finset (Fin n)),
+        HasSubgaussianMGF (((fun x : ℝ => coeff i * x) ∘ sign i))
+          (NNReal.mk ((coeff i) ^ 2) (sq_nonneg (coeff i)) * (1 : ℝ≥0)) μ := by
+    intro i _hi
+    simpa [coeff, Function.comp_apply] using (hsubG i).const_mul (coeff i)
+  have hsum :
+      HasSubgaussianMGF
+        (fun ω => ∑ i ∈ (Finset.univ : Finset (Fin n)),
+          (((fun x : ℝ => coeff i * x) ∘ sign i) ω))
+        (∑ i ∈ (Finset.univ : Finset (Fin n)),
+          (NNReal.mk ((coeff i) ^ 2) (sq_nonneg (coeff i)) * (1 : ℝ≥0))) μ := by
+    exact HasSubgaussianMGF.sum_of_iIndepFun hindep_scaled hsubG_scaled
+  simpa [coeff, vdVWWeightedSampleSum, vdVWRademacherWeights,
+    mul_assoc, mul_left_comm, mul_comm] using hsum
 
 /--
 Book-facing predicate for the finite-center Hoeffding/Orlicz step after
