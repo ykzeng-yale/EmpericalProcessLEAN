@@ -34,10 +34,10 @@ parallel inventories.
 | Section 20 random variables/distributions | `_243-363.md` near Section 20 start | local-wrapper candidate | distribution and convergence-in-probability wrappers |
 | Theorem 20.6 empirical CDF Glivenko-Cantelli | `_243-363.md` near Theorem 20.6 | priority-local | connect half-line endpoint SLLN to Billingsley statement |
 | Section 22 sums of independent random variables | `_243-363.md` near Section 22 start | priority-local | Rademacher iid/sign and finite maximal inequality lane |
-| Section 25 weak convergence | `_243-363.md` near Section 25 start | local-wrapper | `StatInference/Billingsley/WeakConvergence.lean` |
+| Section 25 weak convergence | `_243-363.md` near Section 25 start | local-wrapper | `StatInference/ProbabilityMeasure/WeakConvergence.lean` |
 | Theorem 25.8 Portmanteau-style equivalences | `_243-363.md` near Theorem 25.8 | local-wrapper candidate | extend current one-way/open-closed/test-function wrappers to exact theorem |
 | Theorem 25.10 tightness/subsequence compactness on `R` | `_243-363.md` near Theorem 25.10 | mathlib-foundation | Prokhorov/tightness wrapper; real-line exactness pending |
-| Sections 36-38 process laws and separability | `_485-608.md` Sections 36-38 | local-wrapper | `StatInference/Billingsley/FiniteDimensional.lean`; broader separability interfaces pending |
+| Sections 36-38 process laws and separability | `_485-608.md` Sections 36-38 | local-wrapper | `StatInference/ProbabilityMeasure/FiniteDimensional.lean`; broader separability interfaces pending |
 
 ## Deferred Examples And Applications
 

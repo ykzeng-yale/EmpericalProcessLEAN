@@ -5,8 +5,9 @@ checked at the start of each automation run before selecting a proof target.
 
 ## Current Blocker
 
-The Billingsley lane now has source materials and a first compiled namespace,
-but it does not yet have an exact source-audited Billingsley theorem report.
+The Billingsley lane now has source materials and compiled content-based Lean
+modules under `StatInference/ProbabilityMeasure/`, but it does not yet have an
+exact source-audited Billingsley theorem report.
 The blocker is selecting a theorem whose statement can be made both:
 
 - faithful to the textbook source; and

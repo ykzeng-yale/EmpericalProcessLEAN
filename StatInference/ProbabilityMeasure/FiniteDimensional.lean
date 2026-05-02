@@ -1,15 +1,16 @@
 import Mathlib.Probability.Process.FiniteDimensionalLaws
 
 /-!
-# Billingsley finite-dimensional process-law wrappers
+# Finite-dimensional process-law wrappers
 
-This module records the Billingsley-facing finite-dimensional distribution
-foundation for stochastic processes.  The proof authority is mathlib's
-`Probability.Process.FiniteDimensionalLaws` API.
+This module records a content-based finite-dimensional distribution foundation
+for stochastic processes.  The proof authority is mathlib's
+`Probability.Process.FiniteDimensionalLaws` API, with source-crosswalk value for
+textbook process-law statements.
 -/
 
 namespace StatInference
-namespace Billingsley
+namespace ProbabilityMeasure
 
 open MeasureTheory ProbabilityTheory
 
@@ -41,7 +42,7 @@ theorem processLaw_isProjectiveLimit
 /--
 Two process laws are equal iff all finite-dimensional distributions are equal.
 
-This is the Billingsley-facing wrapper for the finite-dimensional-distribution
+This is the probability-measure wrapper for the finite-dimensional-distribution
 uniqueness principle used before broader process-space weak convergence.
 -/
 theorem processLaw_eq_iff_forall_finiteDimensional_eq [IsFiniteMeasure P]
@@ -88,5 +89,5 @@ theorem processLaw_eq_of_forall_ae_eq [IsFiniteMeasure P]
     P.map (fun ω => fun t => X t ω) = P.map (fun ω => fun t => Y t ω) := by
   exact ProbabilityTheory.map_eq_of_forall_ae_eq hX hY h
 
-end Billingsley
+end ProbabilityMeasure
 end StatInference

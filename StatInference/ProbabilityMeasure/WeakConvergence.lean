@@ -1,20 +1,20 @@
 import StatInference.EmpiricalProcess.WeakConvergence
 
 /-!
-# Billingsley weak-convergence wrappers
+# Probability-measure weak-convergence wrappers
 
-This module starts a Billingsley-specific naming layer for *Probability and
-Measure*, especially Chapter 5, Section 25.  The proof authority is pinned
-mathlib, usually through the existing `StatInference.EmpiricalProcess`
-weak-convergence wrappers already used by the empirical-process lane.
+This module provides a content-based probability-measure foundation layer for
+textbook weak-convergence work, especially Section 25-style material.  The proof
+authority is pinned mathlib, usually through the
+existing `StatInference.EmpiricalProcess` weak-convergence wrappers already
+used by the empirical-process lane.
 
 The declarations here are intentionally theorem-report neutral: they are
-compiled local wrappers, not yet source-audited exact Billingsley theorem
-reports.
+compiled local wrappers, not yet source-audited exact textbook theorem reports.
 -/
 
 namespace StatInference
-namespace Billingsley
+namespace ProbabilityMeasure
 
 open Filter MeasureTheory ProbabilityTheory TopologicalSpace
 
@@ -23,7 +23,7 @@ open scoped BoundedContinuousFunction Topology
 universe u v w x
 
 /--
-Billingsley Section 25 weak convergence of probability measures.
+Textbook-style weak convergence of probability measures.
 
 This is the measure-level topology on probability measures, matching the
 already proved local VdV&W wrapper and mathlib's `ProbabilityMeasure` topology.
@@ -36,7 +36,7 @@ def WeakConvergenceProbabilityMeasures
   StatInference.VdVWWeakConvergenceProbabilityMeasures μs l μ
 
 /--
-Billingsley weak convergence tested by bounded continuous real functions.
+Weak convergence tested by bounded continuous real functions.
 
 This wraps mathlib's probability-measure integral characterization through the
 local empirical-process weak-convergence layer.
@@ -53,7 +53,7 @@ theorem weakConvergence_iff_forall_integral_tendsto
   exact StatInference.vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto
 
 /--
-Billingsley/Portmanteau bounded-Lipschitz test-function criterion, in the
+Portmanteau bounded-Lipschitz test-function criterion, in the
 metric-space form already supplied by mathlib.
 -/
 theorem weakConvergence_iff_forall_bounded_lipschitz_integral_tendsto
@@ -69,7 +69,7 @@ theorem weakConvergence_iff_forall_bounded_lipschitz_integral_tendsto
   exact
     StatInference.vdVWWeakConvergenceProbabilityMeasures_iff_forall_bounded_lipschitz_integral_tendsto
 
-/-- Closed-set Portmanteau implication for Billingsley weak convergence. -/
+/-- Closed-set Portmanteau implication for probability-measure weak convergence. -/
 theorem WeakConvergenceProbabilityMeasures.limsup_measure_closed_le
     {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
     [OpensMeasurableSpace S] [HasOuterApproxClosed S]
@@ -80,7 +80,7 @@ theorem WeakConvergenceProbabilityMeasures.limsup_measure_closed_le
     (l.limsup fun i => (μs i : Measure S) F) ≤ (μ : Measure S) F := by
   exact StatInference.VdVWWeakConvergenceProbabilityMeasures.limsup_measure_closed_le h hF
 
-/-- Open-set Portmanteau implication for Billingsley weak convergence. -/
+/-- Open-set Portmanteau implication for probability-measure weak convergence. -/
 theorem WeakConvergenceProbabilityMeasures.le_liminf_measure_open
     {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
     [OpensMeasurableSpace S] [HasOuterApproxClosed S]
@@ -92,7 +92,7 @@ theorem WeakConvergenceProbabilityMeasures.le_liminf_measure_open
   exact StatInference.VdVWWeakConvergenceProbabilityMeasures.le_liminf_measure_open h hG
 
 /--
-Billingsley tightness of probability measures, backed by mathlib's
+Tightness of probability measures, backed by mathlib's
 `IsTightMeasureSet` via the local empirical-process wrapper.
 -/
 def ProbabilityMeasuresTight
@@ -100,7 +100,7 @@ def ProbabilityMeasuresTight
     (A : Set (ProbabilityMeasure S)) : Prop :=
   StatInference.VdVWProbabilityMeasuresTight A
 
-/-- Compact-set characterization of Billingsley tightness. -/
+/-- Compact-set characterization of probability-measure tightness. -/
 theorem probabilityMeasuresTight_iff_exists_compact_measure_compl_le
     {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
     {A : Set (ProbabilityMeasure S)} :
@@ -119,7 +119,7 @@ theorem ProbabilityMeasuresTight.isCompact_closure
   exact StatInference.VdVWProbabilityMeasuresTight.isCompact_closure hA
 
 /--
-Levy-Prokhorov characterization of Billingsley weak convergence on separable
+Levy-Prokhorov characterization of weak convergence on separable
 pseudometric spaces.
 -/
 theorem weakConvergence_iff_levyProkhorov_tendsto
@@ -132,7 +132,7 @@ theorem weakConvergence_iff_levyProkhorov_tendsto
         (𝓝 (LevyProkhorov.ofMeasure μ)) := by
   exact StatInference.vdVWWeakConvergenceProbabilityMeasures_iff_levyProkhorov_tendsto
 
-/-- Levy-Prokhorov distance-to-zero form of Billingsley weak convergence. -/
+/-- Levy-Prokhorov distance-to-zero form of weak convergence. -/
 theorem weakConvergence_iff_levyProkhorovDist_tendsto_zero
     {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoMetricSpace S]
     [OpensMeasurableSpace S] [SeparableSpace S]
@@ -142,7 +142,7 @@ theorem weakConvergence_iff_levyProkhorovDist_tendsto_zero
       Tendsto (fun i => levyProkhorovDist (μs i : Measure S) (μ : Measure S)) l (𝓝 0) := by
   exact StatInference.vdVWWeakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero
 
-/-- Billingsley continuous mapping theorem for probability measures. -/
+/-- Continuous mapping theorem for probability measures. -/
 theorem WeakConvergenceProbabilityMeasures.map_continuous
     {S : Type u} {T : Type v} {ι : Type w}
     [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
@@ -201,7 +201,7 @@ theorem WeakConvergenceProbabilityMeasures.finiteDimensionalRestrict
   exact StatInference.VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict hμ s
 
 /--
-Billingsley continuous mapping theorem for convergence in distribution of
+Continuous mapping theorem for convergence in distribution of
 measurable random variables.
 -/
 theorem tendstoInDistribution_continuous_comp
@@ -221,7 +221,7 @@ theorem tendstoInDistribution_continuous_comp
   StatInference.vdVWTendstoInDistribution_continuous_comp h hg
 
 /--
-Billingsley/Slutsky product theorem for a convergence-in-distribution term and
+Slutsky product theorem for a convergence-in-distribution term and
 a same-domain convergence-in-probability term to a constant.
 -/
 theorem tendstoInDistribution_prodMk_of_tendstoInMeasure_const
@@ -244,5 +244,5 @@ theorem tendstoInDistribution_prodMk_of_tendstoInMeasure_const
   StatInference.vdVWTendstoInDistribution_prodMk_of_tendstoInMeasure_const
     hXZ hY hY_meas
 
-end Billingsley
+end ProbabilityMeasure
 end StatInference

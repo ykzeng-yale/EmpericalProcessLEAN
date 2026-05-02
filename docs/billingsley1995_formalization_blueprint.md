@@ -1,7 +1,10 @@
 # Billingsley 1995 Probability and Measure Formalization Blueprint
 
-This document starts the Billingsley support lane for the Lean formalization in
-`StatInference/`.  The lane is meant to serve two goals:
+This document starts the Billingsley source-audit lane for the Lean
+formalization in `StatInference/`.  The Lean code for reusable probability and
+measure foundations lives in the content-based folder
+`StatInference/ProbabilityMeasure/`, while Billingsley remains the source
+crosswalk name.  The lane is meant to serve two goals:
 
 1. Formalize Billingsley, *Probability and Measure*, from source-audited local
    PDF/Markdown materials.
@@ -56,8 +59,9 @@ finite-dimensional distributions, and Prokhorov-style arguments.
 
 Initial Lean module:
 
-- `StatInference/Billingsley/WeakConvergence.lean`
-- `StatInference/Billingsley/FiniteDimensional.lean`
+- `StatInference/ProbabilityMeasure/Basic.lean`
+- `StatInference/ProbabilityMeasure/WeakConvergence.lean`
+- `StatInference/ProbabilityMeasure/FiniteDimensional.lean`
 
 Reuse audit:
 
@@ -71,8 +75,8 @@ Reuse audit:
 
 Current compiled wrappers:
 
-- `StatInference.Billingsley.WeakConvergenceProbabilityMeasures`
-- `StatInference.Billingsley.ProbabilityMeasuresTight`
+- `StatInference.ProbabilityMeasure.WeakConvergenceProbabilityMeasures`
+- `StatInference.ProbabilityMeasure.ProbabilityMeasuresTight`
 - bounded-continuous and bounded-Lipschitz integral criteria
 - open/closed-set Portmanteau implications
 - Levy-Prokhorov criteria
@@ -177,7 +181,7 @@ starting with broad stochastic-process foundations.
 Near-term wrappers:
 
 - cylinder finite-dimensional law equality: started in
-  `StatInference/Billingsley/FiniteDimensional.lean`.
+  `StatInference/ProbabilityMeasure/FiniteDimensional.lean`.
 - finite-coordinate restriction and product-process vocabulary.
 - separability interfaces only after a concrete empirical-process theorem needs
   them.
@@ -209,7 +213,7 @@ block the empirical-process foundation route.
 The first Billingsley-specific blocker is not a missing theorem in mathlib; it
 is project organization and source alignment.  The immediate route is:
 
-1. Keep `StatInference/Billingsley/WeakConvergence.lean` compiling.
+1. Keep `StatInference/ProbabilityMeasure/WeakConvergence.lean` compiling.
 2. Add Section 25 source anchors and exact theorem candidates in the inventory.
 3. Select one exact Billingsley theorem whose statement can be made source-exact
    with existing mathlib/local APIs, likely a Section 25 weak-convergence

@@ -60,7 +60,7 @@ Git.
 ```text
 StatInference/
   Asymptotics/          minimal deterministic support lemmas
-  Billingsley/          probability and measure support wrappers
+  ProbabilityMeasure/   probability-measure and process-law support wrappers
   EmpiricalProcess/     active VdV&W formalization layer
 Reports/
   Theorem_2_4_1_Bracketing_GC/
@@ -195,7 +195,7 @@ finite L1(P) bracketing numbers at every positive radius
 
 The current target is now broader: progressively formalize VdV&W Chapter 1 and
 Chapter 2 theorem-level results, while also developing Billingsley probability
-and measure wrappers under `StatInference/Billingsley/` when they supply
+and measure wrappers under `StatInference/ProbabilityMeasure/` when they supply
 reusable foundations for outer expectation, measurability, weak convergence,
 tightness, product/Fubini, independence, strong laws, and empirical CDF
 arguments.  Mathlib foundations should be reused whenever available; missing

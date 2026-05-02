@@ -1,0 +1,2 @@
+import StatInference.ProbabilityMeasure.FiniteDimensional
+import StatInference.ProbabilityMeasure.WeakConvergence
