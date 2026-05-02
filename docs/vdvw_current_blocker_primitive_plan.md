@@ -67,9 +67,25 @@ additional example closures:
    VdVWTheorem243EmpiricalEntropyConditionForAllEpsilon
    ```
 
-   Remaining Step 1 work: instantiate these interfaces with the truncated class
-   `F_M`, the envelope/integrability hypotheses, and the finite empirical nets
-   used in the deterministic inequality `(2.4.4)`.
+   The truncated-class/envelope interface is implemented in
+   `StatInference/EmpiricalProcess/Theorem243.lean`:
+
+   ```lean
+   VdVWClassEnvelope
+   vdVWTruncatedClassFun
+   vdVWTruncatedClassFun_eq_of_envelope_le
+   vdVWTruncatedClassFun_eq_zero_of_lt_envelope
+   abs_vdVWTruncatedClassFun_le_abs
+   abs_vdVWTruncatedClassFun_le_envelope
+   abs_vdVWTruncatedClassFun_le_M
+   measurable_vdVWTruncatedClassFun
+   VdVWClassCoordinateMeasurable.truncate
+   VdVWTheorem243TruncatedEntropyCondition
+   VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM
+   ```
+
+   Remaining Step 1 work: add the outer-integrability/envelope-tail handoff
+   `P^* F{F > M}` when the proof reaches the symmetrization/truncation layer.
 2. Deterministic fixed-sample net inequality `(2.4.4)` for a finite empirical
    `L1(P_n)` net.  Reuse the existing Definition 2.3.3 weighted-supremum and
    deterministic finite-cover supremum-bound layer before adding new APIs.
@@ -85,8 +101,8 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: define the truncated class/envelope interface for `F_M`, then
-connect finite empirical covers to the fixed-sample net inequality `(2.4.4)`.
+Next exact edit: connect finite empirical covers to the fixed-sample net
+inequality `(2.4.4)`.
 
 ## Parked Example-Specific Blocker
 
@@ -108,7 +124,7 @@ Pinned/local Lean sources searched before adding new primitives:
 
 | Source | Local path | Useful APIs found |
 | --- | --- | --- |
-| pinned mathlib | `.lake/packages/mathlib/Mathlib` | `Metric.externalCoveringNumber`, `Metric.coveringNumber`, `Metric.IsCover`, `externalCoveringNumber_mono_set`, `Asymptotics.IsLittleO`, `MeasureTheory.TendstoInMeasure`, `Real.log`, `Real.log_nonneg`, `Real.log_natCast_nonneg`, `ENat.toNat`, `ENat.map`, `WithTop.untopD`, `HasSubgaussianMGF`, `hasSubgaussianMGF_of_mem_Icc`, `measure_sum_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_hasCondSubgaussianMGF`, `eLpNorm`, `eLpNorm_one_eq_lintegral_enorm`, plus previous Example 2.4.2 APIs: `ProbabilityTheory.cdf`, `ProbabilityTheory.measure_cdf`, `ProbabilityTheory.cdf_eq_real`, `ProbabilityTheory.tendsto_cdf_atBot`, `ProbabilityTheory.tendsto_cdf_atTop`, `StieltjesFunction.measure_Ioo`, `measure_Iio`, `measure_Ioi`, `tendsto_measure_Iic_atTop`, `tendsto_measure_Ici_atBot`, `Measure.real`, `measureReal_mono`, `Fin.cases`, `Fin.lastCases`, `Fin.snoc`, `Fin.cons`, `Fin.eq_castSucc_or_eq_last` |
+| pinned mathlib | `.lake/packages/mathlib/Mathlib` | `Metric.externalCoveringNumber`, `Metric.coveringNumber`, `Metric.IsCover`, `externalCoveringNumber_mono_set`, `Set.indicator`, `Measurable.indicator`, `measurableSet_le`, `Asymptotics.IsLittleO`, `MeasureTheory.TendstoInMeasure`, `Real.log`, `Real.log_nonneg`, `Real.log_natCast_nonneg`, `ENat.toNat`, `ENat.map`, `WithTop.untopD`, `HasSubgaussianMGF`, `hasSubgaussianMGF_of_mem_Icc`, `measure_sum_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_hasCondSubgaussianMGF`, `eLpNorm`, `eLpNorm_one_eq_lintegral_enorm`, plus previous Example 2.4.2 APIs: `ProbabilityTheory.cdf`, `ProbabilityTheory.measure_cdf`, `ProbabilityTheory.cdf_eq_real`, `ProbabilityTheory.tendsto_cdf_atBot`, `ProbabilityTheory.tendsto_cdf_atTop`, `StieltjesFunction.measure_Ioo`, `measure_Iio`, `measure_Ioi`, `tendsto_measure_Iic_atTop`, `tendsto_measure_Ici_atBot`, `Measure.real`, `measureReal_mono`, `Fin.cases`, `Fin.lastCases`, `Fin.snoc`, `Fin.cons`, `Fin.eq_castSucc_or_eq_last` |
 | pinned packages | `.lake/packages/{aesop,batteries,proofwidgets,LeanSearchClient,Qq,Cli,plausible,importGraph}` | tactic/support libraries, no empirical-CDF bracketing theorem found |
 | local AI-Statistician checkout | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician` | older empirical-process interfaces only; no exact VdV&W half-line quantile grid theorem |
 | local empirical blueprint worktree | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician/.worktrees/empirical-blueprint` | high-level empirical-process certificates; no reusable measure-theoretic quantile grid proof |
