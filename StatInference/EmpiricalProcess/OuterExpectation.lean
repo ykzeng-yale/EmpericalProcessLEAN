@@ -83,6 +83,137 @@ theorem VdVWOuterExpectation_eq_lintegral_of_measurable
     exact lintegral_mono U.majorizes
 
 /--
+A measurable minorant of an arbitrary nonnegative map.
+
+This is the family over which the VdV&W nonnegative inner expectation takes
+the supremum: measurable `L` with `L <= T`.
+-/
+structure VdVWMeasurableMinorant {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) (T : Ω -> ℝ≥0∞) where
+  toFun : Ω -> ℝ≥0∞
+  measurable_toFun : Measurable toFun
+  minorizes : ∀ ω, toFun ω ≤ T ω
+
+namespace VdVWMeasurableMinorant
+
+instance {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} :
+    CoeFun (VdVWMeasurableMinorant μ T) (fun _ => Ω -> ℝ≥0∞) where
+  coe L := L.toFun
+
+end VdVWMeasurableMinorant
+
+/--
+VdV&W nonnegative inner expectation.
+
+For nonnegative maps, this is the supremum of the integrals of measurable
+minorants.  This is the nonnegative counterpart of `E_* T`.
+-/
+noncomputable def VdVWInnerExpectation {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) (T : Ω -> ℝ≥0∞) : ℝ≥0∞ :=
+  ⨆ L : VdVWMeasurableMinorant μ T, ∫⁻ ω, L ω ∂μ
+
+/-- Every measurable minorant is bounded above by the inner expectation. -/
+theorem lintegral_minorant_le_VdVWInnerExpectation
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (L : VdVWMeasurableMinorant μ T) :
+    (∫⁻ ω, L ω ∂μ) ≤ VdVWInnerExpectation μ T :=
+  le_iSup (fun L : VdVWMeasurableMinorant μ T => ∫⁻ ω, L ω ∂μ) L
+
+/--
+For a measurable nonnegative map, VdV&W inner expectation reduces to the
+ordinary mathlib Lebesgue integral.
+-/
+theorem VdVWInnerExpectation_eq_lintegral_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (hT : Measurable T) :
+    VdVWInnerExpectation μ T = ∫⁻ ω, T ω ∂μ := by
+  refine le_antisymm ?upper ?lower
+  · dsimp [VdVWInnerExpectation]
+    refine iSup_le ?_
+    intro L
+    exact lintegral_mono L.minorizes
+  · exact
+      lintegral_minorant_le_VdVWInnerExpectation
+        ({ toFun := T
+           measurable_toFun := hT
+           minorizes := fun _ => le_rfl } :
+          VdVWMeasurableMinorant μ T)
+
+/--
+A proof-carrying nonnegative lower measurable cover, or maximal measurable
+minorant.
+
+The lower cover is pointwise below `T` and is almost surely above every
+measurable minorant that is below `T` almost surely.
+-/
+structure VdVWMeasurableLowerCover {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) (T : Ω -> ℝ≥0∞) where
+  toFun : Ω -> ℝ≥0∞
+  measurable_toFun : Measurable toFun
+  minorizes : ∀ ω, toFun ω ≤ T ω
+  maximal_ae :
+    ∀ L : Ω -> ℝ≥0∞,
+      Measurable L ->
+      (∀ᵐ ω ∂μ, L ω ≤ T ω) ->
+      ∀ᵐ ω ∂μ, L ω ≤ toFun ω
+
+namespace VdVWMeasurableLowerCover
+
+instance {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} :
+    CoeFun (VdVWMeasurableLowerCover μ T) (fun _ => Ω -> ℝ≥0∞) where
+  coe L := L.toFun
+
+/-- A lower measurable cover is in particular a measurable minorant. -/
+def toMinorant {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (L : VdVWMeasurableLowerCover μ T) :
+    VdVWMeasurableMinorant μ T where
+  toFun := L
+  measurable_toFun := L.measurable_toFun
+  minorizes := L.minorizes
+
+/-- A measurable map is its own lower measurable cover. -/
+def ofMeasurable {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
+    {T : Ω -> ℝ≥0∞} (hT : Measurable T) :
+    VdVWMeasurableLowerCover μ T where
+  toFun := T
+  measurable_toFun := hT
+  minorizes := fun _ => le_rfl
+  maximal_ae := fun _ _ h_minorizes => h_minorizes
+
+end VdVWMeasurableLowerCover
+
+/--
+If a nonnegative lower measurable cover is supplied, its integral realizes the
+VdV&W inner expectation.
+-/
+theorem VdVWInnerExpectation_eq_lintegral_lowerCover
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (L : VdVWMeasurableLowerCover μ T) :
+    VdVWInnerExpectation μ T = ∫⁻ ω, L ω ∂μ := by
+  refine le_antisymm ?upper ?lower
+  · dsimp [VdVWInnerExpectation]
+    refine iSup_le ?_
+    intro V
+    exact
+      lintegral_mono_ae
+        (L.maximal_ae V V.measurable_toFun (ae_of_all μ V.minorizes))
+  · exact
+      lintegral_minorant_le_VdVWInnerExpectation
+        (VdVWMeasurableLowerCover.toMinorant L)
+
+/-- The lower-cover theorem specializes to the measurable-map theorem. -/
+theorem VdVWInnerExpectation_eq_lintegral_of_lowerCover_ofMeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (hT : Measurable T) :
+    VdVWInnerExpectation μ T =
+      ∫⁻ ω,
+        (VdVWMeasurableLowerCover.ofMeasurable μ hT : Ω -> ℝ≥0∞) ω ∂μ :=
+  VdVWInnerExpectation_eq_lintegral_lowerCover
+    (VdVWMeasurableLowerCover.ofMeasurable μ hT)
+
+/--
 A proof-carrying nonnegative measurable cover, or minimal measurable majorant.
 
 The cover is pointwise above `T` and is almost surely below every measurable
@@ -428,6 +559,28 @@ theorem lintegral_vdVWEventLowerIndicator_eq_innerProbability
     measure_compl (measurableSet_toMeasurable μ eventᶜ)
       (measure_ne_top μ (toMeasurable μ eventᶜ)),
     measure_toMeasurable]
+
+/-- The event-level lower indicator is a measurable minorant of the event indicator. -/
+noncomputable def VdVWMeasurableMinorant.eventLowerIndicator
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) (event : Set Ω) :
+    VdVWMeasurableMinorant μ (VdVWEventIndicator event) where
+  toFun := VdVWEventLowerIndicator μ event
+  measurable_toFun := measurable_vdVWEventLowerIndicator μ event
+  minorizes := VdVWEventLowerIndicator_le_eventIndicator μ event
+
+/--
+The event inner probability is bounded by the nonnegative inner expectation of
+the event indicator.
+-/
+theorem VdVWInnerProbability_le_innerExpectation_eventIndicator
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    (event : Set Ω) :
+    VdVWInnerProbability μ event ≤
+      VdVWInnerExpectation μ (VdVWEventIndicator event) := by
+  rw [← lintegral_vdVWEventLowerIndicator_eq_innerProbability μ event]
+  exact
+    lintegral_minorant_le_VdVWInnerExpectation
+      (VdVWMeasurableMinorant.eventLowerIndicator μ event)
 
 /--
 Event-indicator complement identity for VdV&W Lemma 1.2.3(iii):
