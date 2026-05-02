@@ -126,7 +126,7 @@ quotes; the anchor is the authoritative local source location.
 | Item | Kind | Anchor | Current audit status |
 | --- | --- | --- | --- |
 | 1.2.1 | Lemma | `..._1-100.md:372` | local-layer |
-| 1.2.2 | Lemma | `..._1-100.md:389` | local-layer: nonnegative sup-cover algebra |
+| 1.2.2 | Lemma | `..._1-100.md:389` | local-layer: nonnegative sup/add/inf cover algebra |
 | 1.2.3 | Lemma | `..._1-100.md:438` | local-layer: outer/inner event probability |
 | 1.2.4 | Lemma | `..._1-100.md:446` | pending-local |
 | 1.2.5 | Lemma | `..._1-100.md:467` | mathlib-foundation |

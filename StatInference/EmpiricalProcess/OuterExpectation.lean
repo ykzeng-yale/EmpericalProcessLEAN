@@ -150,6 +150,34 @@ def sup {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
     filter_upwards [hUS, hUT] with ω hUSω hUTω
     exact sup_le hUSω hUTω
 
+/--
+Additive majorant algebra for nonnegative measurable covers.
+
+This is the nonnegative cover-interface version of the easy inequality in
+VdV&W Lemma 1.2.2(i): `(S + T)* <= S* + T*`.
+-/
+def addMajorant {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (US : VdVWMeasurableCover μ S)
+    (UT : VdVWMeasurableCover μ T) :
+    VdVWMeasurableMajorant μ (fun ω => S ω + T ω) where
+  toFun := fun ω => US ω + UT ω
+  measurable_toFun := US.measurable_toFun.add UT.measurable_toFun
+  majorizes := fun ω => add_le_add (US.majorizes ω) (UT.majorizes ω)
+
+/--
+Infimum majorant algebra for nonnegative measurable covers.
+
+This is the nonnegative cover-interface version of the easy inequality in
+VdV&W Lemma 1.2.2(ix): `(S ∧ T)* <= S* ∧ T*`.
+-/
+def infMajorant {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (US : VdVWMeasurableCover μ S)
+    (UT : VdVWMeasurableCover μ T) :
+    VdVWMeasurableMajorant μ (fun ω => S ω ⊓ T ω) where
+  toFun := fun ω => US ω ⊓ UT ω
+  measurable_toFun := US.measurable_toFun.inf UT.measurable_toFun
+  majorizes := fun ω => inf_le_inf (US.majorizes ω) (UT.majorizes ω)
+
 end VdVWMeasurableCover
 
 /--
@@ -195,6 +223,32 @@ theorem VdVWOuterExpectation_eq_lintegral_sup_cover
       ∫⁻ ω, US ω ⊔ UT ω ∂μ :=
   VdVWOuterExpectation_eq_lintegral_cover
     (VdVWMeasurableCover.sup US UT)
+
+/--
+The additive cover majorant bounds the nonnegative outer expectation of a
+pointwise sum.
+-/
+theorem VdVWOuterExpectation_le_lintegral_add_cover
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (US : VdVWMeasurableCover μ S)
+    (UT : VdVWMeasurableCover μ T) :
+    VdVWOuterExpectation μ (fun ω => S ω + T ω) ≤
+      ∫⁻ ω, US ω + UT ω ∂μ :=
+  VdVWOuterExpectation_le_lintegral_majorant
+    (VdVWMeasurableCover.addMajorant US UT)
+
+/--
+The infimum cover majorant bounds the nonnegative outer expectation of a
+pointwise infimum.
+-/
+theorem VdVWOuterExpectation_le_lintegral_inf_cover
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (US : VdVWMeasurableCover μ S)
+    (UT : VdVWMeasurableCover μ T) :
+    VdVWOuterExpectation μ (fun ω => S ω ⊓ T ω) ≤
+      ∫⁻ ω, US ω ⊓ UT ω ∂μ :=
+  VdVWOuterExpectation_le_lintegral_majorant
+    (VdVWMeasurableCover.infMajorant US UT)
 
 /-- Nonnegative indicator of an arbitrary event. -/
 noncomputable def VdVWEventIndicator {Ω : Type u} (event : Set Ω) : Ω -> ℝ≥0∞ :=
