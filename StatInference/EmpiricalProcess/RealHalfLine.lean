@@ -2,7 +2,10 @@ import StatInference.EmpiricalProcess.BracketingPrimitive
 import Mathlib.Data.EReal.Basic
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 import Mathlib.MeasureTheory.Integral.Bochner.Set
+import Mathlib.MeasureTheory.Measure.Real
+import Mathlib.MeasureTheory.Measure.TightNormed
 import Mathlib.Topology.Instances.EReal.Lemmas
+import Mathlib.Topology.Order.Bornology
 
 /-!
 # Real half-line brackets
@@ -299,6 +302,52 @@ theorem measureReal_eRealOpenCell_bot_top
     μ.real (eRealOpenCell ⊥ ⊤) = μ.real Set.univ := by
   rw [eRealOpenCell_bot_top]
 
+/--
+Finite Borel measures on the real line have finite real cutpoints with
+arbitrarily small lower and upper tails.
+
+This is the first distribution-dependent ingredient for the endpoint-grid
+construction in VdV&W Example 2.4.2.
+-/
+theorem exists_real_tails_lt_of_isFiniteMeasure
+    (μ : Measure ℝ) [IsFiniteMeasure μ] {epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ a b : ℝ, μ.real (Set.Iio a) < epsilon ∧ μ.real (Set.Ioi b) < epsilon := by
+  have hdelta_pos : 0 < ENNReal.ofReal (epsilon / 2) :=
+    ENNReal.ofReal_pos.mpr (half_pos hepsilon)
+  have hTight : IsTightMeasureSet ({μ} : Set (Measure ℝ)) :=
+    isTightMeasureSet_singleton (μ := μ)
+  rcases
+      (isTightMeasureSet_iff_exists_isCompact_measure_compl_le.mp hTight)
+        (ENNReal.ofReal (epsilon / 2)) hdelta_pos with
+    ⟨K, hKcompact, hKmeasure⟩
+  let a : ℝ := sInf K
+  let b : ℝ := sSup K
+  refine ⟨a, b, ?_, ?_⟩
+  · have hsubset : Set.Iio a ⊆ Kᶜ := by
+      intro x hx hxK
+      have hxIcc : x ∈ Set.Icc (sInf K) (sSup K) :=
+        hKcompact.isBounded.subset_Icc_sInf_sSup hxK
+      exact (not_le_of_gt hx) hxIcc.1
+    have hle : μ.real (Set.Iio a) ≤ (ENNReal.ofReal (epsilon / 2)).toReal := by
+      calc
+        μ.real (Set.Iio a) ≤ μ.real Kᶜ := measureReal_mono hsubset
+        _ ≤ (ENNReal.ofReal (epsilon / 2)).toReal :=
+          ENNReal.toReal_mono ENNReal.ofReal_ne_top (hKmeasure μ rfl)
+    rw [ENNReal.toReal_ofReal (by linarith : 0 ≤ epsilon / 2)] at hle
+    linarith
+  · have hsubset : Set.Ioi b ⊆ Kᶜ := by
+      intro x hx hxK
+      have hxIcc : x ∈ Set.Icc (sInf K) (sSup K) :=
+        hKcompact.isBounded.subset_Icc_sInf_sSup hxK
+      exact (not_le_of_gt hx) hxIcc.2
+    have hle : μ.real (Set.Ioi b) ≤ (ENNReal.ofReal (epsilon / 2)).toReal := by
+      calc
+        μ.real (Set.Ioi b) ≤ μ.real Kᶜ := measureReal_mono hsubset
+        _ ≤ (ENNReal.ofReal (epsilon / 2)).toReal :=
+          ENNReal.toReal_mono ENNReal.ofReal_ne_top (hKmeasure μ rfl)
+    rw [ENNReal.toReal_ofReal (by linarith : 0 ≤ epsilon / 2)] at hle
+    linarith
+
 /-- Finite extended endpoints recover the ordinary closed half-line indicator. -/
 theorem eRealClosedHalfLineIndicator_coe (c : ℝ) :
     eRealClosedHalfLineIndicator (c : EReal) = realHalfLineIndicator c := by
@@ -523,6 +572,44 @@ theorem exists_of_le_epsilon
   exact ⟨cellCount, gridNonempty.map fun grid => grid.of_le_epsilon hsmall⟩
 
 /--
+Lift a strictly increasing finite real endpoint sequence to an extended-real
+adjacent-endpoint grid.
+
+This is the compact-core assembly layer for Example 2.4.2; the infinite tails
+are handled by adjoining `⊥` and `⊤` in separate constructors.
+-/
+def ofFiniteRealEndpoints
+    {μ : Measure ℝ} {epsilon : ℝ} {cellCount : ℕ}
+    (endpoint : Fin (cellCount + 1) -> ℝ)
+    (hendpoint_strictMono : StrictMono endpoint)
+    (bracketOf : ℝ -> Fin cellCount)
+    (left_le_index :
+      ∀ c : ℝ, endpoint (Fin.castSucc (bracketOf c)) ≤ c)
+    (index_lt_right :
+      ∀ c : ℝ, c < endpoint (Fin.succ (bracketOf c)))
+    (cell_width_lt :
+      ∀ cell : Fin cellCount,
+        μ.real (Set.Ioo (endpoint (Fin.castSucc cell))
+          (endpoint (Fin.succ cell))) < epsilon) :
+    SuppliedERealHalfLineEndpointGrid μ epsilon cellCount where
+  endpoint := fun endpointIndex => (endpoint endpointIndex : EReal)
+  bracketOf := bracketOf
+  left_lt_right := by
+    intro cell
+    exact EReal.coe_lt_coe_iff.mpr
+      (hendpoint_strictMono
+        (show Fin.castSucc cell < Fin.succ cell from Fin.castSucc_lt_succ))
+  left_le_index := by
+    intro c
+    exact EReal.coe_le_coe (left_le_index c)
+  index_lt_right := by
+    intro c
+    exact EReal.coe_lt_coe_iff.mpr (index_lt_right c)
+  cell_width_lt := by
+    intro cell
+    simpa [measureReal_eRealOpenCell_coe_coe] using cell_width_lt cell
+
+/--
 The one-cell textbook-style extended endpoint grid `-∞ < ∞`.
 
 This is the endpoint-grid analogue of `SuppliedERealHalfLineGrid.singleCell`;
@@ -558,6 +645,66 @@ theorem exists_singleCell_of_measureReal_univ_lt
     (μ : Measure ℝ) {epsilon : ℝ} (hwidth : μ.real Set.univ < epsilon) :
     ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) :=
   ⟨1, ⟨singleCell μ hwidth⟩⟩
+
+/--
+The three-cell textbook-style endpoint grid
+`-∞ < a < b < ∞`.
+
+This packages the simplest nontrivial finite endpoint grid: a lower tail, a
+bounded middle cell, and an upper tail.
+-/
+noncomputable def threeCell
+    (μ : Measure ℝ) {epsilon a b : ℝ}
+    (hab : a < b)
+    (hleft : μ.real (Set.Iio a) < epsilon)
+    (hmiddle : μ.real (Set.Ioo a b) < epsilon)
+    (hright : μ.real (Set.Ioi b) < epsilon) :
+    SuppliedERealHalfLineEndpointGrid μ epsilon 3 where
+  endpoint := fun endpointIndex =>
+    if endpointIndex = 0 then (⊥ : EReal)
+    else if endpointIndex = 1 then (a : EReal)
+    else if endpointIndex = 2 then (b : EReal)
+    else ⊤
+  bracketOf := fun c =>
+    if _hca : c < a then 0 else if _hcb : c < b then 1 else 2
+  left_lt_right := by
+    intro cell
+    fin_cases cell <;> simp [hab]
+  left_le_index := by
+    intro c
+    by_cases hca : c < a
+    · simp [hca]
+    · by_cases hcb : c < b
+      · have hac : a ≤ c := le_of_not_gt hca
+        simp [hca, hcb, hac]
+      · have hbc : b ≤ c := le_of_not_gt hcb
+        simp [hca, hcb, hbc]
+  index_lt_right := by
+    intro c
+    by_cases hca : c < a
+    · simp [hca]
+    · by_cases hcb : c < b
+      · simp [hca, hcb]
+      · simp [hca, hcb]
+  cell_width_lt := by
+    intro cell
+    fin_cases cell
+    · simpa [measureReal_eRealOpenCell_bot_coe] using hleft
+    · simpa [measureReal_eRealOpenCell_coe_coe] using hmiddle
+    · simpa [measureReal_eRealOpenCell_coe_top] using hright
+
+/--
+Three real cutpoints satisfying the lower-tail, middle-cell, and upper-tail
+width bounds give a supplied adjacent-endpoint grid.
+-/
+theorem exists_threeCell
+    (μ : Measure ℝ) {epsilon a b : ℝ}
+    (hab : a < b)
+    (hleft : μ.real (Set.Iio a) < epsilon)
+    (hmiddle : μ.real (Set.Ioo a b) < epsilon)
+    (hright : μ.real (Set.Ioi b) < epsilon) :
+    ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) :=
+  ⟨3, ⟨threeCell μ hab hleft hmiddle hright⟩⟩
 
 /--
 To prove endpoint-grid existence for every positive radius, it is enough to
@@ -739,6 +886,19 @@ theorem l1BracketingNumber_lt_top_of_measureReal_univ_lt
     {epsilon : ℝ} (hwidth : μ.real Set.univ < epsilon) :
     l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
   (singleCell μ hwidth).l1BracketingNumber_lt_top
+
+/--
+Three real cutpoints satisfying the lower-tail, middle-cell, and upper-tail
+width bounds give finite primitive `L1(P)` bracketing number.
+-/
+theorem l1BracketingNumber_lt_top_of_threeCell
+    {μ : Measure ℝ} [IsFiniteMeasure μ] {epsilon a b : ℝ}
+    (hab : a < b)
+    (hleft : μ.real (Set.Iio a) < epsilon)
+    (hmiddle : μ.real (Set.Ioo a b) < epsilon)
+    (hright : μ.real (Set.Ioi b) < epsilon) :
+    l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
+  (threeCell μ hab hleft hmiddle hright).l1BracketingNumber_lt_top
 
 /--
 Uniform supplied adjacent-endpoint grids yield the primitive bracketing-number
