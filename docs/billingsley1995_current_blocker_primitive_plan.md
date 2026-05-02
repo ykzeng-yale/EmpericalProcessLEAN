@@ -29,6 +29,8 @@ Pinned mathlib searches found reusable APIs in:
 - `MeasureTheory.Function.ConvergenceInMeasure`
 - `MeasureTheory.Function.ConvergenceInDistribution`
 - `MeasureTheory.PiSystem`
+- `MeasureTheory.Measure.Typeclasses.Finite`
+- `MeasureTheory.MeasurableSpace.Pi`
 - `MeasureTheory.Measure.Prod`
 - `MeasureTheory.Constructions.Pi`
 - `Probability.ProductMeasure`
@@ -47,14 +49,17 @@ Local searches found reusable APIs in:
 - `StatInference/EmpiricalProcess/Theorem243.lean`
 - `StatInference/EmpiricalProcess/BallSigma.lean`
 - `StatInference/EmpiricalProcess/RealHalfLine.lean`
+- `StatInference/ProbabilityMeasure/WeakConvergence.lean`
+- `StatInference/ProbabilityMeasure/FiniteDimensional.lean`
 - `StatInference/ProbabilityMeasure/ProductMeasure.lean`
 - `StatInference/ProbabilityMeasure/BorelCantelli.lean`
+- `StatInference/ProbabilityMeasure/GeneratedSigma.lean`
 
 ## Primitive Sequence
 
 1. Keep the Section 25 Billingsley weak-convergence wrappers compiling.
 2. Keep the finite-dimensional process-law, product/Fubini, and
-   Borel-Cantelli wrappers compiling.
+   Borel-Cantelli/generated-sigma wrappers compiling.
 3. Add a precise Section 25 theorem candidate to the inventory:
    bounded-continuous test functions, open/closed Portmanteau directions,
    continuous mapping, or tightness/Prokhorov.

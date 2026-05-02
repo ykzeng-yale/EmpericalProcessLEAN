@@ -13,7 +13,8 @@ mathlib searches and local primitives whenever possible.
   rather than an author-named folder.
 - First modules: `StatInference/ProbabilityMeasure/WeakConvergence.lean`,
   `StatInference/ProbabilityMeasure/FiniteDimensional.lean`,
-  `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
+  `StatInference/ProbabilityMeasure/ProductMeasure.lean`,
+  `StatInference/ProbabilityMeasure/GeneratedSigma.lean`, and
   `StatInference/ProbabilityMeasure/BorelCantelli.lean`, re-exported by
   `StatInference/ProbabilityMeasure/Basic.lean`.
 - Formal theorem reports: none yet.
@@ -28,7 +29,7 @@ mathlib searches and local primitives whenever possible.
 | Sections 15-16 integration/tails/UI | priority-local | pending | Highest near-term value for VdV&W Theorem 2.4.3 envelope-tail and truncation handoffs. |
 | Section 18 product/Fubini | local-wrapper | `StatInference/ProbabilityMeasure/ProductMeasure.lean` | Product probability measures, Tonelli/Fubini, and finite independent-product expectation wrappers started. |
 | Sections 4/6/20/22 independence, Borel-Cantelli, SLLN | local-wrapper/mathlib-foundation | `StatInference/ProbabilityMeasure/BorelCantelli.lean`; `EndpointStrongLaw.lean` nearby | Mathlib-backed first/second Borel-Cantelli wrappers are available for tail-event arguments; they are content-based local wrappers, not exact Billingsley theorem reports. Independence/zero-one-law propagation and Billingsley SLLN wrappers remain mathlib-foundation/pending until needed by an exact theorem route. |
-| Sections 3/10-14 sigma-fields and measurable maps | mathlib-foundation | `BallSigma.lean`, `RealHalfLine.lean` nearby | Generated sigma-field, pi-lambda, Borel, and ball/half-line APIs are mostly mathlib-covered. |
+| Sections 3/10-14 sigma-fields and measurable maps | local-layer/mathlib-foundation | `StatInference/ProbabilityMeasure/GeneratedSigma.lean`; `BallSigma.lean`, `RealHalfLine.lean` nearby | GeneratedSigma wrappers now pin Billingsley generated-sigma-field anchors over mathlib's generated measurable-space API; pi-lambda, uniqueness/extension, measurable-map, and pushforward machinery remain mathlib-backed support wrappers, with no exact Billingsley theorem report yet. |
 | Sections 36-38 process laws/cylinders/separability | local-wrapper | `StatInference/ProbabilityMeasure/FiniteDimensional.lean` | Started finite-dimensional law wrappers over mathlib; defer broad path-space theory until needed. |
 | Examples/applications | deferred-example | none | Defer domain-heavy applications unless a nearby theorem route requires them. |
 
@@ -44,6 +45,8 @@ High-value mathlib files already searched:
 - `.lake/packages/mathlib/Mathlib/MeasureTheory/Function/ConvergenceInDistribution.lean`
 - `.lake/packages/mathlib/Mathlib/MeasureTheory/Function/ConvergenceInMeasure.lean`
 - `.lake/packages/mathlib/Mathlib/MeasureTheory/PiSystem.lean`
+- `.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `.lake/packages/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Pi.lean`
 - `.lake/packages/mathlib/Mathlib/Probability/StrongLaw.lean`
 - `.lake/packages/mathlib/Mathlib/Probability/BorelCantelli.lean`
 - `.lake/packages/mathlib/Mathlib/Probability/Independence/Basic.lean`

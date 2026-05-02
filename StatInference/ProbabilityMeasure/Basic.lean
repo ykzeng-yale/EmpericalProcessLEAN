@@ -1,4 +1,5 @@
 import StatInference.ProbabilityMeasure.BorelCantelli
 import StatInference.ProbabilityMeasure.FiniteDimensional
+import StatInference.ProbabilityMeasure.GeneratedSigma
 import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.WeakConvergence

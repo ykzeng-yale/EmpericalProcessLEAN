@@ -63,6 +63,7 @@ Initial Lean module:
 - `StatInference/ProbabilityMeasure/BorelCantelli.lean`
 - `StatInference/ProbabilityMeasure/WeakConvergence.lean`
 - `StatInference/ProbabilityMeasure/FiniteDimensional.lean`
+- `StatInference/ProbabilityMeasure/GeneratedSigma.lean`
 - `StatInference/ProbabilityMeasure/ProductMeasure.lean`
 
 Reuse audit:
@@ -93,6 +94,8 @@ Current compiled wrappers:
 - product probability measure, Tonelli/Fubini, and independent-product
   expectation wrappers
 - first and second Borel-Cantelli wrappers
+- generated sigma-field, generator-measurability, pi-system, and
+  finite/probability measure extensionality wrappers
 
 ### Lane B: Integration, tails, and uniform integrability
 
@@ -168,9 +171,14 @@ mapping language needed across the project.
 
 Near-term wrappers:
 
-- Billingsley-style pi-lambda uniqueness/extensionality wrappers.
-- monotone-class and Dynkin-system aliases only when they reduce proof friction.
-- generated Borel sigma-field wrappers for half-lines and metric balls.
+- Generated-sigma utility wrappers around `MeasurableSpace.generateFrom`,
+  `measurable_generateFrom`, `generateFrom_le`, finite-measure uniqueness on
+  pi-systems, and probability-measure extensionality.
+- Pi-system/Dynkin helpers over `Mathlib.MeasureTheory.PiSystem` only when
+  needed for measure uniqueness or source-crosswalk proof friction.
+- Generated Borel sigma-field wrappers for half-lines and metric balls.
+- Treat this as support infrastructure until an exact Billingsley statement is
+  selected, source-anchored, proved, and reported.
 
 Search anchors:
 
