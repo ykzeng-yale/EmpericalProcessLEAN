@@ -295,6 +295,7 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `measureReal_eRealOpenCell_coe_top`,
   `measureReal_eRealOpenCell_bot_top`,
   `measureReal_Ioo_eq_cdf_leftLim_sub`,
+  `measureReal_Ioo_lt_of_cdf_leftLim_sub_lt`,
   `exists_real_tails_lt_of_isFiniteMeasure`,
   `eRealHalfLineBracket_mem_realIndicator_of_le_lt`,
   `abs_eRealHalfLineBracket_endpoint_gap_eq_indicator_openCell`,
@@ -308,7 +309,9 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `SuppliedERealHalfLineEndpointGrid.ofFiniteRealEndpoints`,
   `SuppliedERealHalfLineEndpointGrid.threeCell`,
   `SuppliedERealHalfLineEndpointGrid.exists_threeCell`,
+  `SuppliedERealHalfLineEndpointGrid.exists_threeCell_of_cdf_leftLim_sub_lt`,
   `SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top_of_threeCell`,
+  `SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top_of_threeCell_cdf_leftLim_sub_lt`,
   `SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top_forall`,
   `SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top_forall_of_exists_le_measureReal_univ`,
   `SuppliedERealHalfLineEndpointGrid.exists_suppliedERealHalfLineGrid_of_forall`,
@@ -337,8 +340,9 @@ and outer-a.s. wrappers, and the book-style Theorem 2.4.1 predicate.  The
 new Example 2.4.2 layer proves the pointwise and `L1(P)` facts for real
 half-line indicator brackets, adds `EReal` endpoint brackets for `-∞`/`∞`,
 proves the extended-open-cell width identity and the probability-measure
-CDF/Stieltjes open-cell identity, and connects supplied finite real or
-extended-real grids to the primitive bracketing-number witness,
+CDF/Stieltjes open-cell identity, packages CDF increment bounds as middle-cell
+width bounds for three-cell endpoint grids, and connects supplied finite real
+or extended-real grids to the primitive bracketing-number witness,
 including the all-positive-radius handoff needed by Theorem 2.4.1 and the
 conditional half-line Glivenko-Cantelli corollary from supplied grids;
 it also proves the adjacent-endpoint grid handoff, the endpoint-grid

@@ -37,13 +37,15 @@ The current examples/addenda frontier has two compiled local layers: Example
 2.3.4 pointwise/countable-subclass convergence helpers and supremum-equality
 handoff to `P`-measurability, and Example 2.4.2 half-line bracket membership, width,
 extended-real endpoint brackets, extended-open-cell endpoint/width identities,
-probability-measure CDF/Stieltjes open-cell identity, finite-measure real-tail
+probability-measure CDF/Stieltjes open-cell identity and CDF-increment
+middle-cell handoffs, finite-measure real-tail
 cutpoints, adjacent-endpoint grid handoff, supplied
 finite-grid bridges, the one-cell base
 grid and one-cell adjacent-endpoint base grid for radii above total mass,
 radius-monotonicity helpers for supplied real/extended/adjacent-endpoint grids,
 finite-real-endpoint assembly constructor,
 three-cell endpoint-grid constructor from supplied tail/middle width bounds,
+three-cell CDF-increment handoff,
 reduction of full endpoint-grid existence to the nontrivial range
 `0 < epsilon <= μ.real univ`, direct nontrivial-range handoffs to
 primitive-grid existence and all-positive-radius `N_[] < ∞`, the
@@ -106,7 +108,7 @@ outer-a.s./outer-probability GC wrappers.
 | Definition 2.1.6 | Primitive brackets, finite covers, `L1(P)` width, and numeric `l1BracketingNumber` | Entropy/logarithm refinements are not the current target. |
 | Definition 2.2.3 | Semimetric whole-space covering/packing wrappers `vdVWSemimetricCoveringNumber` and `vdVWSemimetricPackingNumber`, finite-cover handoff, and `N <= D <= N(epsilon/2)` comparison layer | Entropy/logarithm wrappers and exact open-ball convention remain pending. |
 | Definition 2.3.3 / Example 2.3.4 | Product measure `P^n`, display `(2.3.2)` weighted sample sums and class suprema, `NullMeasurable` predicate for measurability on the completion, countable coordinate-measurable constructor, pointwise-to-weighted-sum convergence helpers, value-set/boundedness infrastructure for real suprema, bounded pointwise-approximability-to-supremum-equality bridge, deterministic finite-cover supremum bound for Theorem 2.4.3, and proof-carrying countable-subclass supremum-equality handoff | Exact proof that the textbook pointwise convergence hypothesis implies all weighted-supremum equalities without extra boundedness assumptions, plus source screenshot for future theorem reports. |
-| Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint/width identities, probability-measure CDF/Stieltjes open-cell identity, finite-measure real-tail cutpoints, adjacent-endpoint grid handoff, supplied finite-grid bridges, one-cell base grid and one-cell adjacent-endpoint base grid for radii above total mass, radius-monotonicity helpers for supplied real/extended/adjacent-endpoint grids, finite-real-endpoint assembly constructor, three-cell endpoint-grid constructor from supplied tail/middle width bounds, reduction of full endpoint-grid existence, primitive-grid existence, and bracketing-number finiteness to `0 < epsilon <= μ.real univ`, all-positive-radius `N_[] < ∞` handoff, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids | Distribution-dependent middle-cell finite partition in the nontrivial radius range and exact empirical-CDF example report. |
+| Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint/width identities, probability-measure CDF/Stieltjes open-cell identity and CDF-increment-to-middle-width handoffs, finite-measure real-tail cutpoints, adjacent-endpoint grid handoff, supplied finite-grid bridges, one-cell base grid and one-cell adjacent-endpoint base grid for radii above total mass, radius-monotonicity helpers for supplied real/extended/adjacent-endpoint grids, finite-real-endpoint assembly constructor, three-cell endpoint-grid constructor from supplied tail/middle width bounds and CDF increment bounds, reduction of full endpoint-grid existence, primitive-grid existence, and bracketing-number finiteness to `0 < epsilon <= μ.real univ`, all-positive-radius `N_[] < ∞` handoff, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids | Distribution-dependent middle-cell finite partition in the nontrivial radius range and exact empirical-CDF example report. |
 
 ## Near-Term Frontier
 

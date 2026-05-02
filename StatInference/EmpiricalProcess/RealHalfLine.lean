@@ -332,6 +332,20 @@ theorem measureReal_Ioo_eq_cdf_leftLim_sub
             (sub_nonneg.mpr ((ProbabilityTheory.cdf μ).mono.le_leftLim hab))
 
 /--
+An interval CDF left-limit increment bound gives the corresponding real
+open-cell measure bound.
+-/
+theorem measureReal_Ioo_lt_of_cdf_leftLim_sub_lt
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] {epsilon a b : ℝ}
+    (hab : a < b)
+    (hcdf :
+      Function.leftLim (ProbabilityTheory.cdf μ) b -
+        ProbabilityTheory.cdf μ a < epsilon) :
+    μ.real (Set.Ioo a b) < epsilon := by
+  rw [measureReal_Ioo_eq_cdf_leftLim_sub μ hab]
+  exact hcdf
+
+/--
 Finite Borel measures on the real line have finite real cutpoints with
 arbitrarily small lower and upper tails.
 
@@ -736,6 +750,22 @@ theorem exists_threeCell
   ⟨3, ⟨threeCell μ hab hleft hmiddle hright⟩⟩
 
 /--
+CDF increment bounds can supply the middle width in the three-cell
+endpoint-grid constructor.
+-/
+theorem exists_threeCell_of_cdf_leftLim_sub_lt
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] {epsilon a b : ℝ}
+    (hab : a < b)
+    (hleft : μ.real (Set.Iio a) < epsilon)
+    (hmiddle :
+      Function.leftLim (ProbabilityTheory.cdf μ) b -
+        ProbabilityTheory.cdf μ a < epsilon)
+    (hright : μ.real (Set.Ioi b) < epsilon) :
+    ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) :=
+  exists_threeCell μ hab hleft
+    (measureReal_Ioo_lt_of_cdf_leftLim_sub_lt μ hab hmiddle) hright
+
+/--
 To prove endpoint-grid existence for every positive radius, it is enough to
 construct grids in the nontrivial range below the total mass.  Larger radii
 are handled by the one-cell endpoint grid.
@@ -928,6 +958,22 @@ theorem l1BracketingNumber_lt_top_of_threeCell
     (hright : μ.real (Set.Ioi b) < epsilon) :
     l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
   (threeCell μ hab hleft hmiddle hright).l1BracketingNumber_lt_top
+
+/--
+CDF increment bounds can supply the middle width in the three-cell primitive
+bracketing-number handoff.
+-/
+theorem l1BracketingNumber_lt_top_of_threeCell_cdf_leftLim_sub_lt
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] {epsilon a b : ℝ}
+    (hab : a < b)
+    (hleft : μ.real (Set.Iio a) < epsilon)
+    (hmiddle :
+      Function.leftLim (ProbabilityTheory.cdf μ) b -
+        ProbabilityTheory.cdf μ a < epsilon)
+    (hright : μ.real (Set.Ioi b) < epsilon) :
+    l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
+  l1BracketingNumber_lt_top_of_threeCell hab hleft
+    (measureReal_Ioo_lt_of_cdf_leftLim_sub_lt μ hab hmiddle) hright
 
 /--
 Uniform supplied adjacent-endpoint grids yield the primitive bracketing-number
