@@ -555,6 +555,8 @@ theorem l1BracketingNumber_lt_top
     l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
   l1BracketingNumber_lt_top_of_hasFinite grid.hasFiniteL1BracketingNumber
 
+end SuppliedERealHalfLineGrid
+
 namespace SuppliedERealHalfLineEndpointGrid
 
 /--
@@ -579,7 +581,38 @@ theorem l1BracketingNumber_lt_top
     l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
   grid.toSuppliedERealHalfLineGrid.l1BracketingNumber_lt_top
 
+/--
+Uniform supplied adjacent-endpoint grids yield the primitive bracketing-number
+hypothesis needed by VdV&W Theorem 2.4.1.
+-/
+theorem l1BracketingNumber_lt_top_forall
+    {μ : Measure ℝ} [IsFiniteMeasure μ]
+    (endpointGridExists :
+      ∀ epsilon, 0 < epsilon ->
+        ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount)) :
+    ∀ epsilon, 0 < epsilon ->
+      l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ := by
+  intro epsilon hepsilon
+  rcases endpointGridExists epsilon hepsilon with ⟨cellCount, gridNonempty⟩
+  exact gridNonempty.elim fun grid => grid.l1BracketingNumber_lt_top
+
+/--
+Uniform supplied adjacent-endpoint grids yield uniform supplied primitive grids.
+-/
+theorem exists_suppliedERealHalfLineGrid_of_forall
+    {μ : Measure ℝ}
+    (endpointGridExists :
+      ∀ epsilon, 0 < epsilon ->
+        ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount)) :
+    ∀ epsilon, 0 < epsilon ->
+      ∃ cardinality, Nonempty (SuppliedERealHalfLineGrid μ epsilon cardinality) := by
+  intro epsilon hepsilon
+  rcases endpointGridExists epsilon hepsilon with ⟨cellCount, gridNonempty⟩
+  exact ⟨cellCount, gridNonempty.map fun grid => grid.toSuppliedERealHalfLineGrid⟩
+
 end SuppliedERealHalfLineEndpointGrid
+
+namespace SuppliedERealHalfLineGrid
 
 /--
 If the requested radius exceeds the total mass, the half-line class has finite

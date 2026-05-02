@@ -301,6 +301,8 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `SuppliedERealHalfLineEndpointGrid.toSuppliedERealHalfLineGrid`,
   `SuppliedERealHalfLineEndpointGrid.hasFiniteL1BracketingNumber`,
   `SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top`,
+  `SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top_forall`,
+  `SuppliedERealHalfLineEndpointGrid.exists_suppliedERealHalfLineGrid_of_forall`,
   `SuppliedERealHalfLineGrid.singleCell`,
   `SuppliedERealHalfLineGrid.exists_singleCell_of_measureReal_univ_lt`,
   `SuppliedERealHalfLineGrid.toFiniteL1BracketCoverAtCard`,
@@ -309,8 +311,10 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `SuppliedERealHalfLineGrid.l1BracketingNumber_lt_top_of_measureReal_univ_lt`,
   `SuppliedERealHalfLineGrid.l1BracketingNumber_lt_top_forall`
   in `StatInference/EmpiricalProcess/RealHalfLine.lean`.
-- `vdVW_realHalfLine_outerAlmostSureGlivenkoCantelli_of_suppliedERealHalfLineGrids`
-  and `vdVW_realHalfLine_glivenkoCantelli_of_suppliedERealHalfLineGrids`
+- `vdVW_realHalfLine_outerAlmostSureGlivenkoCantelli_of_suppliedERealHalfLineGrids`,
+  `vdVW_realHalfLine_glivenkoCantelli_of_suppliedERealHalfLineGrids`,
+  `vdVW_realHalfLine_outerAlmostSureGlivenkoCantelli_of_suppliedERealHalfLineEndpointGrids`,
+  and `vdVW_realHalfLine_glivenkoCantelli_of_suppliedERealHalfLineEndpointGrids`
   in `StatInference/EmpiricalProcess/RealHalfLineGC.lean`.
 
 These prove the deterministic bracket-comparison route, the finite endpoint
@@ -324,8 +328,9 @@ proves the extended-open-cell width identity, and connects supplied finite
 real or extended-real grids to the primitive bracketing-number witness,
 including the all-positive-radius handoff needed by Theorem 2.4.1 and the
 conditional half-line Glivenko-Cantelli corollary from supplied grids;
-it also proves the adjacent-endpoint grid handoff and the one-cell base case
-for radii above the total mass.
+it also proves the adjacent-endpoint grid handoff, the endpoint-grid
+conditional GC corollary, and the one-cell base case for radii above the total
+mass.
 Construction of the general distribution-dependent grid is still pending.
 They are real Lean proofs, not placeholders.
 

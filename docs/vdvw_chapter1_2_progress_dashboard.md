@@ -37,8 +37,9 @@ The current examples/addenda frontier has one compiled local layer: Example
 2.4.2 half-line bracket membership, width, extended-real endpoint brackets,
 extended-open-cell endpoint/width identities, adjacent-endpoint grid handoff,
 supplied finite-grid bridges, the one-cell base grid for radii above total
-mass, all-positive-radius `N_[] < ∞` handoff, and the conditional half-line GC
-corollary from supplied grids.
+mass, all-positive-radius `N_[] < ∞` handoff, the conditional half-line GC
+corollary from supplied grids, and the conditional half-line GC corollary from
+adjacent endpoint grids.
 
 ## Chapter Split
 
@@ -91,7 +92,7 @@ outer-a.s./outer-probability GC wrappers.
 | Definition 1.10.1 | Outer-probability convergence primitives and common-domain `TendstoInMeasure` bridge | Broader arbitrary-map API. |
 | Lemma 1.10.2 | Measurable common-domain weak-convergence bridge | Full VdV&W arbitrary-map/measurable-cover version. |
 | Definition 2.1.6 | Primitive brackets, finite covers, `L1(P)` width, and numeric `l1BracketingNumber` | Entropy/logarithm refinements are not the current target. |
-| Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint/width identities, adjacent-endpoint grid handoff, supplied finite-grid bridges, one-cell base grid for radii above total mass, all-positive-radius `N_[] < ∞` handoff, and conditional half-line GC corollary from supplied grids | Distribution-dependent finite grid and exact empirical-CDF example report. |
+| Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint/width identities, adjacent-endpoint grid handoff, supplied finite-grid bridges, one-cell base grid for radii above total mass, all-positive-radius `N_[] < ∞` handoff, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids | Distribution-dependent finite grid and exact empirical-CDF example report. |
 
 ## Near-Term Frontier
 

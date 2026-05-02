@@ -41,6 +41,29 @@ theorem vdVW_realHalfLine_outerAlmostSureGlivenkoCantelli_of_suppliedERealHalfLi
     (SuppliedERealHalfLineGrid.l1BracketingNumber_lt_top_forall gridExists)
 
 /--
+Conditional outer-a.s. Glivenko-Cantelli corollary from supplied adjacent
+extended-real endpoint grids.
+
+This is closer to the textbook grid notation in Example 2.4.2 than the
+primitive supplied-grid interface.
+-/
+theorem vdVW_realHalfLine_outerAlmostSureGlivenkoCantelli_of_suppliedERealHalfLineEndpointGrids
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsFiniteMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
+    (endpointGridExists :
+      ∀ epsilon, 0 < epsilon ->
+        ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid P epsilon cellCount)) :
+    VdVWOuterAlmostSurePGlivenkoCantelliClass μ P Set.univ
+      realHalfLineIndicator X :=
+  vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli
+    X hLaw hindep
+    (SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top_forall
+      endpointGridExists)
+
+/--
 Conditional book-style Glivenko-Cantelli corollary for the real half-line
 indicator class.
 
@@ -61,5 +84,28 @@ theorem vdVW_realHalfLine_glivenkoCantelli_of_suppliedERealHalfLineGrids
   vdVW_theorem_2_4_1_glivenkoCantelli
     X hLaw hindep
     (SuppliedERealHalfLineGrid.l1BracketingNumber_lt_top_forall gridExists)
+
+/--
+Conditional book-style Glivenko-Cantelli corollary from supplied adjacent
+extended-real endpoint grids.
+
+Once the distribution-dependent endpoint grid from Example 2.4.2 is
+constructed at every positive radius, the half-line class inherits the local
+book-style Glivenko-Cantelli predicate.
+-/
+theorem vdVW_realHalfLine_glivenkoCantelli_of_suppliedERealHalfLineEndpointGrids
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsFiniteMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
+    (endpointGridExists :
+      ∀ epsilon, 0 < epsilon ->
+        ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid P epsilon cellCount)) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator X :=
+  vdVW_theorem_2_4_1_glivenkoCantelli
+    X hLaw hindep
+    (SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top_forall
+      endpointGridExists)
 
 end StatInference
