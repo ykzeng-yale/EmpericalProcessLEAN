@@ -21,6 +21,8 @@ Reports/VdVW_<item-number>_<short_slug>/
   README.md
   crosswalk.md
   definition_lemma_crosscheck.md
+  source_screenshots.md
+  report.pdf              # local-only compiled artifact, ignored by Git
 ```
 
 Each report must include:
@@ -30,19 +32,24 @@ Each report must include:
   mathlib for that proof.
 - Local markdown path and line range for the corresponding textbook passage.
 - Local PDF screenshot path for the corresponding passage.
+- Embedded screenshot image references in `source_screenshots.md`; these must
+  point to the exact local screenshot files used for human review.
 - Dependency list separating reused mathlib declarations from local
   declarations.
 - Gap note saying whether the result is exact textbook formalization and what
   broader textbook-order compatibility work remains.
+- A locally compiled `report.pdf` that includes the real screenshot images.
+  This PDF is ignored by Git because it embeds local textbook-derived assets.
 
 Promotion gate:
 
 ```bash
 lake build
 rg -n "\\bsorry\\b|\\badmit\\b|\\baxiom\\b|unsafe" . -g '*.lean' -g '!.lake/**'
+scripts/compile_report_pdf.sh Reports/VdVW_<item-number>_<short_slug>
 ```
 
-Both commands must pass before a report marks a theorem as proved.
+All commands must pass before a report marks a theorem as proved.
 
 Local textbook assets under `Textbooks/Vaart1996/` are review anchors only and
 must not be committed to public Git history.

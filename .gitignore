@@ -13,6 +13,11 @@ build/
 *.tmp
 *.log
 
+# Locally compiled theorem reports can embed copyrighted textbook screenshots.
+# Keep them out of the public repository; tracked markdown stores only anchors.
+Reports/**/report.pdf
+Reports/**/report_build/
+
 # Local source material used for human cross-checking.
 # Do not publish copyrighted textbook conversions or screenshots.
 Textbooks/Vaart1996/Markdown/*.md

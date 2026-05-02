@@ -136,7 +136,12 @@ complete.  Each report should include:
 3. Local markdown source path and line range from the textbook extraction.
 4. Local PDF source path and local screenshot path for the corresponding
    textbook passage.
-5. A gap note saying what broader textbook-order compatibility work remains.
+5. `source_screenshots.md` with the real local screenshot images embedded for
+   visual review.
+6. A locally compiled `report.pdf` generated from the report markdown and the
+   embedded screenshots.  This artifact is ignored by Git because it contains
+   textbook-derived images.
+7. A gap note saying what broader textbook-order compatibility work remains.
 
 The source material is local-only:
 
@@ -148,6 +153,8 @@ Textbooks/Vaart1996/Screenshots/
 
 These paths are intentionally ignored by Git so the public repository remains a
 Lean library plus source-audit metadata, not a redistribution of the textbook.
+Compiled report PDFs that embed screenshots are also local-only artifacts and
+are ignored by Git.
 
 ## Current Formalization Target
 
