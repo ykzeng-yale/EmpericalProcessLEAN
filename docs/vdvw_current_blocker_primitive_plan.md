@@ -339,6 +339,9 @@ additional example closures:
    vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF
    vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF_of_pos
    vdVWTheorem243FiniteCenterExpectedSupremum
+   vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail
+   vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail_of_hasSubgaussianMGF
+   vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail_of_hasSubgaussianMGF_of_pos
    vdVWTheorem243FiniteCenterExpectedSupremum_nonneg
    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_ae_le
    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_hasSubgaussianMGF_of_ae_le
@@ -369,13 +372,15 @@ additional example closures:
    that the finite supremum of absolute sub-Gaussian center variables is
    integrable, both from a `Nonempty (Fin cardinality)` typeclass and from the
    explicit positive-cardinality proof exposed by empirical-cover witnesses.
-   The newest expected-supremum handoff defines the finite-center expectation,
-   proves its nonnegativity for nonempty nets, and converts an almost-sure
-   upper bound into the corresponding expectation bound using
-   `integral_nonneg`, `integral_mono_ae`, `integrable_const`, and the compiled
-   finite-supremum integrability layer.  It deliberately does not yet prove the
-   sharp tail-to-Orlicz/maximal expectation inequality that supplies such an
-   upper bound at the textbook scale.
+   The expected-supremum handoff defines the finite-center expectation, proves
+   its nonnegativity for nonempty nets, converts an almost-sure upper bound
+   into the corresponding expectation bound using `integral_nonneg`,
+   `integral_mono_ae`, `integrable_const`, and the compiled finite-supremum
+   integrability layer, and now exposes layer-cake tail-integral
+   representations via `Integrable.integral_eq_integral_meas_le`, including
+   the positive-cardinality handoff used by empirical-cover witnesses.  It
+   deliberately does not yet prove the sharp tail-to-Orlicz/maximal expectation
+   inequality at the textbook scale.
 
    Search correction: the current
    `VdVWTheorem243RademacherFiniteCenterHoeffdingBound` is a deterministic
@@ -419,19 +424,20 @@ additional example closures:
    `integral_mono_ae`,
    `integrable_const`, and
    `ProbabilityTheory.exists_hasLaw_indepFun`.  The pinned layer-cake API
-   also provides a concrete route for the next tail-to-expectation step:
+   provides the route through
    `MeasureTheory.lintegral_eq_lintegral_meas_le`,
    `MeasureTheory.lintegral_eq_lintegral_meas_lt`,
    `MeasureTheory.Integrable.integral_eq_integral_meas_le`, and
    `MeasureTheory.Integrable.integral_eq_integral_meas_lt` in
-   `Mathlib.MeasureTheory.Integral.Layercake`.  No reusable Orlicz/`psi_2`
-   API was found.  The probabilistic one-center sub-Gaussian bridge,
-   variance-proxy arithmetic, finite-center tail/union-bound layer, iid
-   Rademacher-sign construction, and finite-center supremum integrability layer
-   are now compiled, and the expected-supremum handoff from an a.e. supremum
-   bound to an expectation bound is compiled.  The next theorem-line primitive
-   is the sharp tail-to-Orlicz/maximal expectation bound, followed by
-   specialization of that bound to the truncated centers.
+   `Mathlib.MeasureTheory.Integral.Layercake`; a small local layer-cake support
+   lemma is now compiled for the tail-to-expectation step.  No reusable
+   Orlicz/`psi_2` API was found.  The probabilistic one-center sub-Gaussian
+   bridge, variance-proxy arithmetic, finite-center tail/union-bound layer,
+   iid Rademacher-sign construction, finite-center supremum integrability
+   layer, expected-supremum handoff, and layer-cake tail-integral support are
+   now compiled.  The sharp tail-to-Orlicz/maximal expectation bound itself
+   remains pending, followed by specialization of that bound to the truncated
+   centers.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -449,8 +455,8 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: import/use `Mathlib.MeasureTheory.Integral.Layercake` to prove
-or primitive-register the sharp tail-to-expectation/maximal expectation bound
+Next exact edit: use the compiled layer-cake support lemma to prove or
+primitive-register the sharp tail-to-expectation/maximal expectation bound
 needed for the finite-center Hoeffding/maximal bound, using the compiled
 finite-center tail/union-bound layer, iid Rademacher construction,
 finite-center supremum integrability layer, and expected-supremum handoff.

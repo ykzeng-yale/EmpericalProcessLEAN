@@ -1,4 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.MeasureTheory.Integral.Layercake
 import Mathlib.Probability.HasLawExists
 import Mathlib.Probability.IdentDistrib
 import Mathlib.Probability.Moments.SubGaussian
@@ -996,6 +997,66 @@ noncomputable def vdVWTheorem243FiniteCenterExpectedSupremum
     {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
     {cardinality : ℕ} (X : Fin cardinality -> Ω -> ℝ) : ℝ :=
   ∫ ω, ⨆ centerIndex : Fin cardinality, |X centerIndex ω| ∂μ
+
+/--
+Layer-cake representation of the expected finite-center supremum.
+
+This is the exact tail-probability bridge needed before substituting the
+compiled finite-center sub-Gaussian tail bound.
+-/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {cardinality : ℕ} [Nonempty (Fin cardinality)]
+    (X : Fin cardinality -> Ω -> ℝ)
+    (hintegrable :
+      Integrable (fun ω =>
+        ⨆ centerIndex : Fin cardinality, |X centerIndex ω|) μ) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X =
+      ∫ t in Set.Ioi (0 : ℝ),
+        μ.real {ω | t ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)} := by
+  unfold vdVWTheorem243FiniteCenterExpectedSupremum
+  have hnonneg :
+      0 ≤ᵐ[μ] fun ω =>
+        ⨆ centerIndex : Fin cardinality, |X centerIndex ω| := by
+    exact ae_of_all μ fun ω =>
+      (abs_nonneg (X (Classical.arbitrary (Fin cardinality)) ω)).trans
+        (Finite.le_ciSup
+          (fun centerIndex : Fin cardinality => |X centerIndex ω|)
+          (Classical.arbitrary (Fin cardinality)))
+  exact hintegrable.integral_eq_integral_meas_le hnonneg
+
+/--
+Sub-Gaussian-center specialization of the layer-cake representation.
+-/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail_of_hasSubgaussianMGF
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {cardinality : ℕ} [Nonempty (Fin cardinality)]
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0}
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X =
+      ∫ t in Set.Ioi (0 : ℝ),
+        μ.real {ω | t ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)} := by
+  exact
+    vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail X
+      (vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF
+        X hX)
+
+/--
+Positive-cardinality version of the sub-Gaussian layer-cake representation.
+-/
+theorem
+    vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail_of_hasSubgaussianMGF_of_pos
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0}
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X =
+      ∫ t in Set.Ioi (0 : ℝ),
+        μ.real {ω | t ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)} := by
+  haveI : Nonempty (Fin cardinality) := ⟨⟨0, hcardinality⟩⟩
+  exact
+    vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail_of_hasSubgaussianMGF
+      X hX
 
 /-- The finite-center expected supremum is nonnegative for a nonempty net. -/
 theorem vdVWTheorem243FiniteCenterExpectedSupremum_nonneg
