@@ -22,6 +22,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 | `mathlib-foundation` | Pinned mathlib has reusable foundations, but the exact VdV&W statement is not locally proved. |
 | `pending-local` | No exact local Lean proof yet. |
 | `deferred` | Audited, but not a near-term blocker unless a concrete empirical-process theorem depends on it. |
+| `deferred-example` | Example/addendum intentionally skipped for now because it needs external-domain formalization outside the current Chapter 1-2 main line. |
 
 ## Global Theorem-Level Inventory
 

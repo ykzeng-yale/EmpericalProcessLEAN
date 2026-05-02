@@ -56,6 +56,12 @@ standard as every other theorem: exact Lean statement, no proof holes, local
 mathlib search first, and one theorem report only after the exact theorem or
 lemma is fully proved.
 
+Examples and addenda should be formalized when they directly support the
+Chapter 1-2 empirical-process main line.  If an example would require a large
+external-domain formalization outside the VdV&W Chapter 1-2 scope, mark it as
+`deferred-example` with a concrete reason and the missing external theory
+instead of blocking nearby theorem-level progress.
+
 The active frontier blocker is pinned separately in:
 
 ```text
