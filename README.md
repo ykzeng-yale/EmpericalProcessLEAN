@@ -107,6 +107,12 @@ The visual progress dashboard for Chapter 1-2 is:
 docs/vdvw_chapter1_2_progress_dashboard.md
 ```
 
+The current blocker/primitives register for the active frontier is:
+
+```text
+docs/vdvw_current_blocker_primitive_plan.md
+```
+
 ## Lean And Mathlib Base
 
 The project uses Lean through Lake.

@@ -1,0 +1,182 @@
+# VdV&W Current Blocker Primitive Plan
+
+Status date: 2026-05-02.
+
+This file pins down the active blocker and the primitive Lean declarations
+needed to close it.  It is not a theorem report.  A formal report is created
+only after the exact textbook item is fully proved with no proof holes.
+
+## Active Blocker
+
+Current target: Example 2.4.2, empirical CDF half-line class.
+
+The proved local layer already turns supplied extended-real endpoint grids into
+finite `L1(P)` bracketing-number witnesses and then into the conditional
+half-line Glivenko-Cantelli result.  The remaining blocker is:
+
+```text
+Build the distribution-dependent finite middle partition / quantile cutpoints
+for a probability measure on R, then append finite lower and upper tails to
+obtain an unconditional SuppliedERealHalfLineEndpointGrid.
+```
+
+## Reuse Audit
+
+Pinned/local Lean sources searched before adding new primitives:
+
+| Source | Local path | Useful APIs found |
+| --- | --- | --- |
+| pinned mathlib | `.lake/packages/mathlib/Mathlib` | `ProbabilityTheory.cdf`, `ProbabilityTheory.measure_cdf`, `ProbabilityTheory.cdf_eq_real`, `ProbabilityTheory.tendsto_cdf_atBot`, `ProbabilityTheory.tendsto_cdf_atTop`, `StieltjesFunction.measure_Ioo`, `measure_Iio`, `measure_Ioi`, `tendsto_measure_Iic_atTop`, `tendsto_measure_Ici_atBot`, `Measure.real`, `measureReal_mono`, `Fin.cases`, `Fin.lastCases`, `Fin.snoc`, `Fin.cons`, `Fin.eq_castSucc_or_eq_last` |
+| pinned packages | `.lake/packages/{aesop,batteries,proofwidgets,LeanSearchClient,Qq,Cli,plausible,importGraph}` | tactic/support libraries, no empirical-CDF bracketing theorem found |
+| local AI-Statistician checkout | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician` | older empirical-process interfaces only; no exact VdV&W half-line quantile grid theorem |
+| local empirical blueprint worktree | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician/.worktrees/empirical-blueprint` | high-level empirical-process certificates; no reusable measure-theoretic quantile grid proof |
+| local Aristotle download | `/Users/yukang/Downloads/2ee0bdf3-d67d-4ce3-ac7e-b87dfe7f9455_aristotle` | no relevant empirical-process/CDF partition layer found |
+
+No direct open-source Lean theorem was found that states VdV&W Example 2.4.2
+or the needed finite CDF-increment partition for arbitrary real probability
+measures.  Reuse should therefore keep leaning on pinned mathlib's CDF,
+Stieltjes, measure, and `Fin` tuple APIs.
+
+## Local Lean Source Access
+
+The project has local searchable access to the pinned Lake dependency store
+through `.lake/packages`, including `mathlib`, `aesop`, `batteries`,
+`proofwidgets`, `LeanSearchClient`, `Qq`, `Cli`, `plausible`, and
+`importGraph`.  The package revisions are fixed by `lake-manifest.json`, so
+proof work should treat those local checkouts as the authoritative API surface.
+
+The current audit also checked nearby local open-source Lean workspaces under
+`/Users/yukang/Desktop` and `/Users/yukang/Downloads`, including the
+AI-Statistician checkout, its empirical-blueprint worktree, and the local
+Aristotle download.  A broader `/Users/yukang` filesystem search can hit macOS
+protected directories, but the targeted Lean source locations relevant to this
+project are readable and searchable with `rg`/`find -L`.
+
+Before adding a primitive for this blocker, search at least:
+
+```text
+.lake/packages/mathlib/Mathlib
+.lake/packages/batteries/Batteries
+/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician
+/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician/.worktrees/empirical-blueprint
+/Users/yukang/Downloads/2ee0bdf3-d67d-4ce3-ac7e-b87dfe7f9455_aristotle
+```
+
+Record any useful APIs found here before re-proving a shared measure-theory,
+CDF, finite-index, or integration lemma locally.
+
+## Primitive Lemma Sequence
+
+### 1. Tail-Appending Endpoint Constructor
+
+Add a constructor around the existing real compact-core grid:
+
+```lean
+noncomputable def SuppliedERealHalfLineEndpointGrid.withRealTails
+    {μ : Measure ℝ} {epsilon : ℝ} {middleCells : ℕ}
+    (endpoint : Fin (middleCells + 1) -> ℝ)
+    (hendpoint_strictMono : StrictMono endpoint)
+    (hleftTail : μ.real (Set.Iio (endpoint 0)) < epsilon)
+    (hrightTail : μ.real (Set.Ioi (endpoint (Fin.last middleCells))) < epsilon)
+    (bracketOfMiddle : ℝ -> Fin middleCells)
+    (left_le_middle : ...)
+    (middle_lt_right : ...)
+    (middle_width_lt : ∀ cell, μ.real (Set.Ioo ... ...) < epsilon) :
+    SuppliedERealHalfLineEndpointGrid μ epsilon (middleCells + 2)
+```
+
+Preferred API route: use `Fin.cons` for the lower `⊥` endpoint and `Fin.snoc`
+for the upper `⊤` endpoint; use `Fin.cases`, `Fin.lastCases`,
+`Fin.snoc_castSucc`, `Fin.snoc_last`, and `Fin.succ_last` for simplification.
+
+### 2. Bounded Middle Partition Interface
+
+First prove a proof-carrying interface, not yet quantile existence:
+
+```lean
+structure SuppliedRealMiddleCDFPartition
+    (μ : Measure ℝ) (epsilon a b : ℝ) (middleCells : ℕ) where
+  endpoint : Fin (middleCells + 1) -> ℝ
+  strictMono : StrictMono endpoint
+  left_eq : endpoint 0 = a
+  right_eq : endpoint (Fin.last middleCells) = b
+  bracketOf : ∀ c : ℝ, a ≤ c -> c < b -> Fin middleCells
+  left_le : ...
+  lt_right : ...
+  cdf_increment_lt :
+    ∀ cell,
+      Function.leftLim (ProbabilityTheory.cdf μ) (endpoint (Fin.succ cell)) -
+        ProbabilityTheory.cdf μ (endpoint (Fin.castSucc cell)) < epsilon
+```
+
+Then use the already proved
+`measureReal_Ioo_lt_of_cdf_leftLim_sub_lt` to get the middle `L1(P)` widths.
+
+### 3. Middle Partition To Endpoint Grid
+
+Combine the partition interface with finite tail cutpoints:
+
+```lean
+theorem exists_endpointGrid_of_realMiddleCDFPartition
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] {epsilon a b : ℝ}
+    (hleftTail : μ.real (Set.Iio a) < epsilon)
+    (hrightTail : μ.real (Set.Ioi b) < epsilon)
+    (partition : SuppliedRealMiddleCDFPartition μ epsilon a b middleCells) :
+    ∃ cellCount, Nonempty
+      (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount)
+```
+
+This is the clean bridge from quantile work to the existing bracketing-number
+and GC handoffs.
+
+### 4. Quantile / Cutpoint Existence
+
+Prove the actual distribution-dependent finite partition theorem:
+
+```lean
+theorem exists_realMiddleCDFPartition
+    (μ : Measure ℝ) [IsProbabilityMeasure μ]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) (hab : a < b) :
+    ∃ middleCells, Nonempty
+      (SuppliedRealMiddleCDFPartition μ epsilon a b middleCells)
+```
+
+Likely proof route:
+
+1. Use `ProbabilityTheory.cdf` monotonicity and boundedness in `[0,1]`.
+2. Choose `N : ℕ` with `1 / (N + 1 : ℝ) < epsilon`.
+3. Define cut levels in CDF space and choose real cutpoints by `sInf` of
+   level sets `{x | level ≤ cdf μ x}` or an equivalent proof-carrying
+   primitive.
+4. Use monotonicity and `Function.leftLim` to prove adjacent open-cell
+   increments are below `epsilon`.
+5. Keep atoms safe by using open cells and the Stieltjes `leftLim` identity.
+
+This is the only hard mathematical blocker left for Example 2.4.2.
+
+### 5. Unconditional Example 2.4.2 Handoff
+
+After steps 1-4:
+
+```lean
+theorem exists_suppliedERealHalfLineEndpointGrid_probability
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] :
+    ∀ epsilon, 0 < epsilon ->
+      ∃ cellCount, Nonempty
+        (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount)
+```
+
+Then the existing declarations already give:
+
+```lean
+SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top_forall
+vdVW_realHalfLine_glivenkoCantelli_of_suppliedERealHalfLineEndpointGrids
+```
+
+That closes the Lean side needed for the exact Example 2.4.2 theorem report.
+
+## Automation Rule
+
+Every heartbeat should check this file before choosing a new primitive.  If a
+mathlib or local-code search finds a reusable theorem for one of the steps
+above, update this file and reuse that theorem rather than duplicating it.

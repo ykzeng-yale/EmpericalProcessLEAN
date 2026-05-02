@@ -7,6 +7,12 @@ human-facing monitor for what is proved, what is in progress, and what remains.
 
 Status snapshot date: 2026-05-02.
 
+Active blocker/primitives register:
+
+```text
+docs/vdvw_current_blocker_primitive_plan.md
+```
+
 ## Status Legend
 
 | Status | Meaning |
@@ -122,6 +128,10 @@ READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED   Broad Chapter 1 weak-convergence/tightness/process machinery until needed.
 ```
+
+The exact current blocker and the next primitive declarations are maintained
+in `docs/vdvw_current_blocker_primitive_plan.md`; this dashboard should not be
+used as the only source for choosing the next low-level proof target.
 
 ## Verification Monitor
 

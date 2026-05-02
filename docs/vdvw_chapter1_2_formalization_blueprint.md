@@ -56,6 +56,18 @@ standard as every other theorem: exact Lean statement, no proof holes, local
 mathlib search first, and one theorem report only after the exact theorem or
 lemma is fully proved.
 
+The active frontier blocker is pinned separately in:
+
+```text
+docs/vdvw_current_blocker_primitive_plan.md
+```
+
+Every proof heartbeat should inspect that file before introducing a new
+primitive.  As of 2026-05-02, the blocker is Example 2.4.2's
+distribution-dependent finite middle partition / quantile cutpoint layer for
+real probability measures, after the already compiled half-line grid,
+tail-cutpoint, CDF/Stieltjes, and conditional GC handoffs.
+
 ## Existing Lean Coverage Conclusion
 
 Pinned mathlib is the authority for reusable foundations in this repository.
