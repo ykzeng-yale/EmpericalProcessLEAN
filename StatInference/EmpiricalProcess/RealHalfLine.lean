@@ -460,6 +460,43 @@ def toSuppliedERealHalfLineGrid
   index_lt_right := grid.index_lt_right
   cell_width_lt := grid.cell_width_lt
 
+/--
+The one-cell textbook-style extended endpoint grid `-∞ < ∞`.
+
+This is the endpoint-grid analogue of `SuppliedERealHalfLineGrid.singleCell`;
+it is the base case for Example 2.4.2 when the requested radius is larger
+than the total mass.
+-/
+noncomputable def singleCell
+    (μ : Measure ℝ) {epsilon : ℝ} (hwidth : μ.real Set.univ < epsilon) :
+    SuppliedERealHalfLineEndpointGrid μ epsilon 1 where
+  endpoint := fun endpointIndex =>
+    if endpointIndex = 0 then (⊥ : EReal) else ⊤
+  bracketOf := fun _ => 0
+  left_lt_right := by
+    intro cell
+    fin_cases cell
+    simp
+  left_le_index := by
+    intro _c
+    simp
+  index_lt_right := by
+    intro _c
+    simp
+  cell_width_lt := by
+    intro cell
+    fin_cases cell
+    simp [eRealOpenCell_bot_top, hwidth]
+
+/--
+If the requested radius exceeds the total mass, the one-cell endpoint grid is
+a supplied finite adjacent-endpoint grid.
+-/
+theorem exists_singleCell_of_measureReal_univ_lt
+    (μ : Measure ℝ) {epsilon : ℝ} (hwidth : μ.real Set.univ < epsilon) :
+    ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) :=
+  ⟨1, ⟨singleCell μ hwidth⟩⟩
+
 end SuppliedERealHalfLineEndpointGrid
 
 namespace SuppliedERealHalfLineGrid
@@ -580,6 +617,16 @@ theorem l1BracketingNumber_lt_top
     (grid : SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) :
     l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
   grid.toSuppliedERealHalfLineGrid.l1BracketingNumber_lt_top
+
+/--
+If the requested radius exceeds the total mass, the half-line class has finite
+primitive `L1(P)` bracketing number via the one-cell endpoint grid.
+-/
+theorem l1BracketingNumber_lt_top_of_measureReal_univ_lt
+    {μ : Measure ℝ} [IsFiniteMeasure μ]
+    {epsilon : ℝ} (hwidth : μ.real Set.univ < epsilon) :
+    l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
+  (singleCell μ hwidth).l1BracketingNumber_lt_top
 
 /--
 Uniform supplied adjacent-endpoint grids yield the primitive bracketing-number
