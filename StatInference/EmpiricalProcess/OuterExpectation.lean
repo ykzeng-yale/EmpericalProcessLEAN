@@ -700,6 +700,56 @@ noncomputable def indicatorMajorant {Ω : Type u} [MeasurableSpace Ω]
     · simp [VdVWEventIndicator, hω, cover.subset_event hω]
     · simp [VdVWEventIndicator, hω]
 
+/--
+An arbitrary measurable set cover of an event induces the measurable cover of
+the event indicator.
+
+This is the nonnegative indicator version of the VdV&W Lemma 1.2.3(ii) clause:
+if `B*` is measurable, contains `B`, and has measure `P* B`, then
+`1_{B*}` is the measurable cover of `1_B`.
+-/
+noncomputable def toEventIndicatorCover {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {event : Set Ω}
+    (cover : VdVWMeasurableSetCover μ event) :
+    VdVWMeasurableCover μ (VdVWEventIndicator event) where
+  toFun := VdVWEventIndicator cover.toSet
+  measurable_toFun := measurable_const.indicator cover.measurable_toSet
+  majorizes := by
+    intro ω
+    by_cases hω : ω ∈ event
+    · simp [VdVWEventIndicator, hω, cover.subset_event hω]
+    · simp [VdVWEventIndicator, hω]
+  minimal_ae := by
+    intro U hU h_majorizes
+    let low : Set Ω := {ω | U ω < 1}
+    have hlow_meas : MeasurableSet low := measurableSet_lt hU measurable_const
+    have h_event_low_zero : μ (event ∩ low) = 0 := by
+      have hbad_zero :
+          μ {ω | ¬ VdVWEventIndicator event ω ≤ U ω} = 0 :=
+        ae_iff.mp h_majorizes
+      refine measure_mono_null ?_ hbad_zero
+      intro ω hω
+      change ¬ VdVWEventIndicator event ω ≤ U ω
+      simpa [VdVWEventIndicator, hω.1, low] using not_le.mpr hω.2
+    have h_cover_low_zero : μ (cover.toSet ∩ low) = 0 := by
+      have h_inter_eq :
+          μ (event ∩ low) = μ (cover.toSet ∩ low) :=
+        Measure.measure_inter_eq_of_measure_eq hlow_meas cover.measure_eq.symm
+          cover.subset_event (measure_ne_top μ event)
+      exact h_inter_eq.symm.trans h_event_low_zero
+    refine ae_iff.mpr ?_
+    refine measure_mono_null ?_ h_cover_low_zero
+    intro ω hω
+    by_cases hmem : ω ∈ cover.toSet
+    · refine ⟨hmem, ?_⟩
+      have hnot_one : ¬ (1 : ℝ≥0∞) ≤ U ω := by
+        simpa [VdVWEventIndicator, hmem] using hω
+      exact lt_of_not_ge hnot_one
+    · exfalso
+      have hle : VdVWEventIndicator cover.toSet ω ≤ U ω := by
+        simp [VdVWEventIndicator, hmem]
+      exact hω hle
+
 end VdVWMeasurableSetCover
 
 /--
@@ -948,6 +998,34 @@ theorem VdVWOuterExpectation_eventIndicator_add_innerExpectation_compl_eq_one
     VdVWOuterExpectation_eventIndicator_add_innerExpectation_compl μ event
 
 /--
+Symmetric expectation-level complement identity behind VdV&W Lemma 1.2.3(iii).
+
+The nonnegative inner expectation of `1_B` plus the nonnegative outer
+expectation of `1_{Bᶜ}` is the total mass.
+-/
+theorem VdVWInnerExpectation_eventIndicator_add_outerExpectation_compl
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    (event : Set Ω) :
+    VdVWInnerExpectation μ (VdVWEventIndicator event) +
+      VdVWOuterExpectation μ (VdVWEventIndicator eventᶜ) =
+        μ Set.univ := by
+  rw [VdVWInnerExpectation_eventIndicator_eq_innerProbability,
+    VdVWOuterExpectation_eventIndicator_eq_measure]
+  exact VdVWInnerProbability_add_outerMeasure_compl μ event
+
+/--
+Probability-space specialization of the symmetric expectation-level
+complement identity.
+-/
+theorem VdVWInnerExpectation_eventIndicator_add_outerExpectation_compl_eq_one
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (event : Set Ω) :
+    VdVWInnerExpectation μ (VdVWEventIndicator event) +
+      VdVWOuterExpectation μ (VdVWEventIndicator eventᶜ) = 1 := by
+  simpa using
+    VdVWInnerExpectation_eventIndicator_add_outerExpectation_compl μ event
+
+/--
 Event-indicator complement identity for VdV&W Lemma 1.2.3(iii):
 the upper indicator of `B` plus the lower indicator of `Bᶜ` is `1`.
 -/
@@ -1024,5 +1102,17 @@ theorem VdVWOuterExpectation_eq_lintegral_eventIndicatorCover
           ω ∂μ :=
   VdVWOuterExpectation_eq_lintegral_cover
     (VdVWMeasurableCover.eventIndicatorOfToMeasurable μ event)
+
+/--
+The event-indicator measurable cover induced by any measurable set cover
+realizes the outer expectation.
+-/
+theorem VdVWOuterExpectation_eq_lintegral_eventIndicator_setCover
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    {event : Set Ω} (cover : VdVWMeasurableSetCover μ event) :
+    VdVWOuterExpectation μ (VdVWEventIndicator event) =
+      ∫⁻ ω, VdVWEventIndicator cover.toSet ω ∂μ :=
+  VdVWOuterExpectation_eq_lintegral_cover
+    (VdVWMeasurableSetCover.toEventIndicatorCover cover)
 
 end StatInference

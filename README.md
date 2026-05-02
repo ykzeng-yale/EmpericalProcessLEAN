@@ -249,7 +249,11 @@ Proved declarations toward VdV&W Theorem 2.4.1:
 - `VdVWMeasurableMajorant`, `VdVWOuterExpectation`,
   `VdVWMeasurableCover`, `VdVWOuterExpectation_eq_lintegral_cover`,
   `VdVWOuterExpectation_eventIndicator_eq_measure`, and
-  `VdVWMeasurableCover.eventIndicatorOfToMeasurable`
+  `VdVWMeasurableSetCover.toEventIndicatorCover`,
+  `VdVWOuterExpectation_eq_lintegral_eventIndicator_setCover`,
+  `VdVWMeasurableCover.eventIndicatorOfToMeasurable`,
+  `VdVWInnerExpectation_eventIndicator_add_outerExpectation_compl`, and
+  `VdVWInnerExpectation_eventIndicator_add_outerExpectation_compl_eq_one`
   in `StatInference/EmpiricalProcess/OuterExpectation.lean`.
 
 These prove the deterministic bracket-comparison route, the finite endpoint
