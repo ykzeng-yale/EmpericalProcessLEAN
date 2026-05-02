@@ -14,7 +14,8 @@ Local working copy:
 
 This is the clean Lean/textbook workspace for progressively formalizing
 empirical process theory from van der Vaart and Wellner, *Weak Convergence and
-Empirical Processes*.
+Empirical Processes*, with a parallel Billingsley probability/measure support
+lane for the measure-theoretic foundations used by the empirical-process route.
 
 The long-run target is a source-audited, bottom-up Lean library for the
 empirical-process results needed in theoretical statistics and theoretical ML:
@@ -49,15 +50,17 @@ This repository intentionally excludes:
   development files.
 
 The textbook PDF, markdown conversion, and selected screenshots live under
-`Textbooks/Vaart1996/` as source-audit anchors because the user explicitly
-requested that these public textbook assets be included.  Generated report PDFs
-remain local build artifacts and are ignored by Git.
+`Textbooks/Vaart1996/` and `Textbooks/Billingsley1995/` as source-audit anchors
+because the user explicitly requested that these public textbook assets be
+included.  Generated report PDFs remain local build artifacts and are ignored by
+Git.
 
 ## Repository Layout
 
 ```text
 StatInference/
   Asymptotics/          minimal deterministic support lemmas
+  Billingsley/          probability and measure support wrappers
   EmpiricalProcess/     active VdV&W formalization layer
 Reports/
   Theorem_2_4_1_Bracketing_GC/
@@ -113,6 +116,15 @@ The current blocker/primitives register for the active frontier is:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
+The Billingsley probability/measure support lane is tracked in:
+
+```text
+docs/billingsley1995_formalization_blueprint.md
+docs/billingsley1995_named_item_inventory.md
+docs/billingsley1995_progress_dashboard.md
+docs/billingsley1995_current_blocker_primitive_plan.md
+```
+
 ## Lean And Mathlib Base
 
 The project uses Lean through Lake.
@@ -163,6 +175,8 @@ The source material is tracked under:
 Textbooks/Vaart1996/Markdown/
 Textbooks/Vaart1996/PDF/
 Textbooks/Vaart1996/Screenshots/
+Textbooks/Billingsley1995/Markdown/
+Textbooks/Billingsley1995/PDF/
 ```
 
 These paths are intentional source-audit anchors for cross-checking Lean
@@ -179,10 +193,13 @@ finite L1(P) bracketing numbers at every positive radius
   -> the function class is Glivenko-Cantelli
 ```
 
-The current target is now broader: progressively formalize Chapter 1 and
-Chapter 2 theorem-level results, using mathlib foundations where available and
-building VdV&W-specific empirical-process primitives locally when not
-available.
+The current target is now broader: progressively formalize VdV&W Chapter 1 and
+Chapter 2 theorem-level results, while also developing Billingsley probability
+and measure wrappers under `StatInference/Billingsley/` when they supply
+reusable foundations for outer expectation, measurability, weak convergence,
+tightness, product/Fubini, independence, strong laws, and empirical CDF
+arguments.  Mathlib foundations should be reused whenever available; missing
+book-specific primitives should be built locally.
 
 The completed Theorem 2.4.1 proof has the following formalization shape:
 

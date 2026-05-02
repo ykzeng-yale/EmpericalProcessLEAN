@@ -6,7 +6,8 @@ Every promoted theorem report should include three synchronized views:
 2. Markdown textbook line references.
 3. PDF screenshot path for the corresponding textbook passage.
 
-For VdV&W-derived theorem work, reports should use a side-by-side table with:
+For textbook-derived theorem work, including VdV&W and Billingsley, reports
+should use a side-by-side table with:
 
 - Lean realization: declaration name, file, kind, and formal role.
 - Markdown anchor: local markdown file and line range, with only a short public
@@ -26,5 +27,5 @@ those definitions without `sorry`, `admit`, unreviewed `axiom`, or `unsafe`.
 
 Do not commit long quoted textbook excerpts into reports or docs.  The requested
 textbook markdown/PDF/screenshot source anchors under `Textbooks/Vaart1996/`
-may be tracked, while generated report PDFs remain local artifacts unless
-explicitly reviewed for publication.
+and `Textbooks/Billingsley1995/` may be tracked, while generated report PDFs
+remain local artifacts unless explicitly reviewed for publication.

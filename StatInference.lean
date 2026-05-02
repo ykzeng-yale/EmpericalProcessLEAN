@@ -1,4 +1,5 @@
 import StatInference.Asymptotics.Basic
+import StatInference.Billingsley
 import StatInference.EmpiricalProcess.Basic
 import StatInference.EmpiricalProcess.Average
 import StatInference.EmpiricalProcess.Finite
