@@ -110,7 +110,7 @@ Therefore the status convention is:
 | 2.1.5 covering numbers | `..._1-100.md:1894` | local-layer: `vdVWCoveringNumber` wraps mathlib `Metric.externalCoveringNumber`, with explicit finite-cover witnesses and closed-ball/open-ball slack documented |
 | 2.1.6 bracketing numbers | `..._1-100.md:1895` | local-layer with primitive `l1BracketingNumber` |
 | 2.2.3 covering and packing numbers for semimetrics | `..._101-200.md:292` | local-layer: `vdVWSemimetricCoveringNumber`, `vdVWSemimetricPackingNumber`, finite-cover handoff, and mathlib covering-packing inequalities |
-| 2.3.3 `P`-measurable class | `..._101-200.md:627` | pending-local |
+| 2.3.3 `P`-measurable class | `..._101-200.md:627` | local-layer: product measure `P^n`, display `(2.3.2)` weighted supremum, completion/null-measurability predicate, and countable coordinate-measurable constructor formalized |
 
 ## Report Contract For Every Promoted Theorem
 
@@ -220,7 +220,7 @@ quotes; the anchor is the authoritative local source location.
 | 2.3.16 | Proposition | `..._101-200.md:857` | pending-local |
 | 2.3.17 | Theorem | `..._101-200.md:882` | pending-local |
 | 2.4.1 | Theorem | `..._101-200.md:970` | local-exact |
-| 2.4.3 | Theorem | `..._101-200.md:988` | pending-local; Definition 2.1.5 covering primitive layer now available |
+| 2.4.3 | Theorem | `..._101-200.md:988` | pending-local; Definition 2.1.5 covering primitive and Definition 2.3.3 `P`-measurable primitive layers now available |
 | 2.4.5 | Lemma | `..._101-200.md:1022` | pending-local |
 | 2.5.2 | Theorem | `..._101-200.md:1106` | pending-local |
 | 2.5.6 | Theorem | `..._101-200.md:1204` | pending-local |

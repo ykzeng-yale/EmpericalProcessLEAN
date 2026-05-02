@@ -304,7 +304,7 @@ through 2.4.1 requires accounting for them.
 | 2.2.11 Lemma | `M2:466` | Bernstein inequality, moment condition | later roadmap |
 | 2.2.12 Example | `M2:485` | process tightness by increment bounds | later roadmap |
 | 2.3.1 Lemma | `M2:572` | symmetrization | later roadmap; not needed for direct 2.4.1 proof |
-| 2.3.3 Definition | `M2:627` | measurable class | pending primitive if exact outer-probability theorem statement is used |
+| 2.3.3 Definition | `M2:627` | measurable class | local-layer: product measure, weighted supremum display `(2.3.2)`, completion/null-measurability predicate, and countable coordinate-measurable constructor formalized |
 | 2.3.4 Example | `M2:630` | pointwise measurable classes | later roadmap |
 | 2.3.5 Example | `M2:637` | Suslin-index measurable classes | later roadmap |
 | 2.3.6 Lemma | `M2:650` | expectation bound for independent mean-zero processes | later roadmap |

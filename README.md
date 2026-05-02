@@ -378,6 +378,8 @@ working strategy is bottom-up and theorem-driven:
 - covering numbers and entropy interfaces, starting from
   `vdVWCoveringNumber` and semimetric covering/packing wrappers around
   mathlib external covering and packing numbers;
+- VdV&W `P`-measurable class primitive, starting from product measures,
+  display `(2.3.2)` weighted suprema, and a countable measurable constructor;
 - symmetrization;
 - maximal inequalities;
 - random entropy GC theorem;
