@@ -34,7 +34,8 @@ the current empirical-process target.
 
 Examples/addenda are tracked separately from this theorem-level inventory.
 The current examples/addenda frontier has one compiled local layer: Example
-2.4.2 half-line bracket membership, width, and supplied finite-grid bridge.
+2.4.2 half-line bracket membership, width, extended-real endpoint brackets,
+extended-open-cell width, and supplied finite-grid bridges.
 
 ## Chapter Split
 
@@ -87,14 +88,14 @@ outer-a.s./outer-probability GC wrappers.
 | Definition 1.10.1 | Outer-probability convergence primitives and common-domain `TendstoInMeasure` bridge | Broader arbitrary-map API. |
 | Lemma 1.10.2 | Measurable common-domain weak-convergence bridge | Full VdV&W arbitrary-map/measurable-cover version. |
 | Definition 2.1.6 | Primitive brackets, finite covers, `L1(P)` width, and numeric `l1BracketingNumber` | Entropy/logarithm refinements are not the current target. |
-| Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, and supplied finite-grid bridge to the primitive bracketing-number witness | Distribution-dependent finite grid, ±∞ endpoint treatment, GC corollary, and exact example report. |
+| Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell width identity, and supplied finite-grid bridges to the primitive bracketing-number witness | Distribution-dependent finite grid, GC corollary, and exact example report. |
 
 ## Near-Term Frontier
 
 ```text
 DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
-ONGOING    Example 2.4.2: distribution-dependent grid, ±∞ endpoints, and GC corollary after supplied bridge.
+ONGOING    Example 2.4.2: distribution-dependent grid and GC corollary after EReal supplied bridge.
 NEXT       Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
 DEFERRED   Broad Chapter 1 weak-convergence/tightness/process machinery until needed.
 ```

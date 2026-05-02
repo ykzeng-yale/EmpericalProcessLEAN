@@ -279,7 +279,18 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `realHalfLineBracket_l1Width_eq_measureReal_Ioo`,
   `SuppliedRealHalfLineGrid.toFiniteL1BracketCoverAtCard`,
   `SuppliedRealHalfLineGrid.hasFiniteL1BracketingNumber`, and
-  `SuppliedRealHalfLineGrid.l1BracketingNumber_lt_top`
+  `SuppliedRealHalfLineGrid.l1BracketingNumber_lt_top`,
+  `eRealClosedHalfLineIndicator`,
+  `eRealOpenHalfLineIndicator`,
+  `eRealHalfLineBracket`,
+  `eRealOpenCell`,
+  `measurableSet_eRealOpenCell`,
+  `eRealHalfLineBracket_mem_realIndicator_of_le_lt`,
+  `abs_eRealHalfLineBracket_endpoint_gap_eq_indicator_openCell`,
+  `eRealHalfLineBracket_l1Width_eq_measureReal_openCell`,
+  `SuppliedERealHalfLineGrid.toFiniteL1BracketCoverAtCard`,
+  `SuppliedERealHalfLineGrid.hasFiniteL1BracketingNumber`, and
+  `SuppliedERealHalfLineGrid.l1BracketingNumber_lt_top`
   in `StatInference/EmpiricalProcess/RealHalfLine.lean`.
 
 These prove the deterministic bracket-comparison route, the finite endpoint
@@ -288,9 +299,10 @@ endpoint-convergence-to-radius bridge, including a countable decreasing-cover
 route, the primitive `N_[]` hypothesis theorem, VdV&W-style outer probability
 and outer-a.s. wrappers, and the book-style Theorem 2.4.1 predicate.  The
 new Example 2.4.2 layer proves the pointwise and `L1(P)` facts for real
-half-line indicator brackets and connects a supplied finite grid to the
-primitive bracketing-number witness; construction of the distribution grid is
-still pending.
+half-line indicator brackets, adds `EReal` endpoint brackets for `-∞`/`∞`,
+proves the extended-open-cell width identity, and connects supplied finite
+real or extended-real grids to the primitive bracketing-number witness;
+construction of the distribution grid is still pending.
 They are real Lean proofs, not placeholders.
 
 ## Current Chapter 1-2 Gap

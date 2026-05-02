@@ -314,7 +314,7 @@ above, so they do not change the theorem-level dashboard counts.
 
 | Item | Kind | Anchor | Current audit status |
 | --- | --- | --- | --- |
-| 2.4.2 | Example | `..._101-200.md:985` | local-layer: real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, and supplied finite-grid bridge to the primitive bracketing-number witness; pending distribution-dependent grid existence, ±∞ endpoint treatment, GC corollary, and exact example report |
+| 2.4.2 | Example | `..._101-200.md:985` | local-layer: real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell width identity, and supplied finite-grid bridges to the primitive bracketing-number witness; pending distribution-dependent grid existence, GC corollary, and exact example report |
 
 ## Priority Order
 
@@ -326,10 +326,10 @@ above, so they do not change the theorem-level dashboard counts.
    `TendstoInDistribution`.
 3. Promote Chapter 2 primitive infrastructure: covering/packing semimetric
    numbers, `P`-measurable classes, Orlicz norms, and separability wrappers.
-4. Continue Example 2.4.2 from the supplied finite-grid bridge to the
-   distribution-dependent grid existence theorem, ±∞ endpoint treatment, full
-   finite bracketing-number statement, and GC corollary, then move to Theorem
-   2.4.3.
+4. Continue Example 2.4.2 from the extended-real supplied-grid bridge and
+   endpoint-cell width identity to the distribution-dependent grid existence
+   theorem, full finite bracketing-number statement, and GC corollary, then
+   move to Theorem 2.4.3.
 5. Formalize Sections 2.2-2.3 inequalities and symmetrization before using
    them for later entropy/Donsker results.
 6. Formalize VC/entropy Sections 2.5-2.8 using mathlib shattering foundations
