@@ -41,7 +41,8 @@ machinery remains future compatibility work.
 | `AlmostSureUniformDeviationTendstoZeroOn`, `VdVWAlmostSureGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | local almost-sure pathwise GC wrapper definitions |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top`, `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | primitive `N_[]` theorem packaged as local a.s. pathwise Glivenko-Cantelli conclusion |
 | `VdVWOuterProbability`, `VdVWOuterAlmostSure`, `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | explicit VdV&W outer-a.s. convergence-mode primitives |
-| `VdVWConvergesInOuterProbabilityConst`, `VdVWConvergesInOuterProbability`, `vdVWConvergesInOuterProbability_of_tendstoInMeasure` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | generic Definition 1.10.1 outer-probability convergence primitives and mathlib bridge |
+| `VdVWConvergesInOuterProbabilityConst`, `VdVWConvergesInOuterProbability`, `vdVWConvergesInOuterProbability_of_tendstoInMeasure`, `tendstoInMeasure_of_vdVWConvergesInOuterProbability`, `vdVWConvergesInOuterProbability_iff_tendstoInMeasure` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | generic Definition 1.10.1 outer-probability convergence primitives and mathlib convergence-in-measure equivalence |
+| `tendstoInDistribution_of_vdVWConvergesInOuterProbability` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | common-domain measurable version of Lemma 1.10.2(ii): outer-probability convergence implies convergence in distribution |
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top`, `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | exact Theorem 2.4.1 conclusion in the outer-a.s. mode |
 | `VdVWOuterProbabilityUniformDeviationTendstoZeroOn`, `VdVWOuterProbabilityPGlivenkoCantelliClass`, `VdVWPGlivenkoCantelliClass` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | book-style GC predicate with outer-probability or outer-a.s. branches |
 | `VdVWOuterProbabilityUniformDeviationTailTendstoZeroOn`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_tail` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | tail-event sufficient condition for the direct outer-probability branch |
@@ -68,10 +69,12 @@ Reports/Theorem_2_4_1_Bracketing_GC/definition_lemma_crosscheck.md
 - Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md`, lines 963-984.
 - Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md`, lines 1828-1834 for the GC definition.
 - Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md`, line 1406 for Definition 1.10.1.
+- Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md`, lines 1408-1417 for Lemma 1.10.2.
 - Markdown: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md`, line 1895 for Definition 2.1.6.
 - PDF screenshot: `Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png`.
 - PDF screenshot: `Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png`.
 - PDF screenshot: `Textbooks/Vaart1996/Screenshots/vdvw_definition_1_10_1_pdf_page_72.png`.
+- PDF screenshot: `Textbooks/Vaart1996/Screenshots/vdvw_definition_1_10_1_pdf_page_72.png` for the surrounding Lemma 1.10.2 page.
 - PDF screenshot: `Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png`.
 
 These source assets are local-only review material and are intentionally
@@ -95,7 +98,7 @@ The proved Lean code currently supplies:
     of radii `1 / (n + 1)`;
 11. a local almost-sure pathwise GC wrapper for the primitive `N_[]` theorem;
 12. generic outer-probability convergence primitives matching Definition
-    1.10.1, plus a bridge from mathlib `TendstoInMeasure`;
+    1.10.1, plus a two-way bridge with mathlib `TendstoInMeasure`;
 13. an explicit outer-a.s. `P`-Glivenko-Cantelli theorem matching the
     convergence mode used in the proof of Theorem 2.4.1;
 14. a book-style `P`-Glivenko-Cantelli predicate whose branches are outer

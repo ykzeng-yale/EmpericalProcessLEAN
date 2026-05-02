@@ -1,5 +1,5 @@
 import StatInference.EmpiricalProcess.EndpointSamples
-import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
+import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
 
 /-!
 # Glivenko-Cantelli wrappers
@@ -104,6 +104,74 @@ theorem vdVWConvergesInOuterProbability_of_tendstoInMeasure
   intro i
   dsimp [VdVWOuterProbability]
   exact measure_mono (fun ω hω => by simpa using (le_of_lt hω))
+
+/--
+The VdV&W common-domain outer-probability predicate implies mathlib
+`TendstoInMeasure`.
+
+The proof bridges the textbook strict event `epsilon < dist` to mathlib's
+non-strict event `epsilon <= dist` by using `epsilon / 2`.
+-/
+theorem tendstoInMeasure_of_vdVWConvergesInOuterProbability
+    {Ω : Type u} {ι : Type w} {D : Type v}
+    [MeasurableSpace Ω] [PseudoMetricSpace D]
+    {μ : Measure Ω} {X : ι -> Ω -> D} {l : Filter ι}
+    {limit : Ω -> D}
+    (h : VdVWConvergesInOuterProbability μ X l limit) :
+    MeasureTheory.TendstoInMeasure μ X l limit := by
+  rw [MeasureTheory.tendstoInMeasure_iff_dist]
+  intro ε hε
+  have hhalf_pos : 0 < ε / 2 := half_pos hε
+  have hhalf :
+      Tendsto
+        (fun i =>
+          VdVWOuterProbability μ
+            {ω | ε / 2 < dist (X i ω) (limit ω)})
+        l (𝓝 0) :=
+    h (ε / 2) hhalf_pos
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hhalf
+      (fun _ => (zero_le : (0 : ℝ≥0∞) ≤ _)) ?_
+  intro i
+  dsimp [VdVWOuterProbability]
+  refine measure_mono ?_
+  intro ω hω
+  exact (half_lt_self hε).trans_le hω
+
+/--
+For common-domain maps, the VdV&W outer-probability predicate is equivalent to
+mathlib convergence in measure.
+-/
+theorem vdVWConvergesInOuterProbability_iff_tendstoInMeasure
+    {Ω : Type u} {ι : Type w} {D : Type v}
+    [MeasurableSpace Ω] [PseudoMetricSpace D]
+    {μ : Measure Ω} {X : ι -> Ω -> D} {l : Filter ι}
+    {limit : Ω -> D} :
+    VdVWConvergesInOuterProbability μ X l limit ↔
+      MeasureTheory.TendstoInMeasure μ X l limit :=
+  ⟨tendstoInMeasure_of_vdVWConvergesInOuterProbability,
+    vdVWConvergesInOuterProbability_of_tendstoInMeasure⟩
+
+/--
+Common-domain measurable version of VdV&W Lemma 1.10.2(ii): convergence in
+outer probability implies convergence in distribution.
+
+This theorem reuses mathlib's convergence-in-measure to convergence-in-
+distribution bridge after translating the VdV&W strict outer-probability
+predicate to `TendstoInMeasure`.
+-/
+theorem tendstoInDistribution_of_vdVWConvergesInOuterProbability
+    {Ω : Type u} {ι : Type w} {D : Type v}
+    [MeasurableSpace Ω] [MeasurableSpace D]
+    [SeminormedAddCommGroup D] [SecondCountableTopology D] [BorelSpace D]
+    {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {X : ι -> Ω -> D} {l : Filter ι} [l.NeBot] [l.IsCountablyGenerated]
+    {limit : Ω -> D}
+    (h : VdVWConvergesInOuterProbability μ X l limit)
+    (hX : ∀ i, AEMeasurable (X i) μ) :
+    MeasureTheory.TendstoInDistribution X l limit (fun _ => μ) μ :=
+  (tendstoInMeasure_of_vdVWConvergesInOuterProbability h).tendstoInDistribution
+    hX
 
 /-- Ordinary mathlib a.e. truth implies the explicit VdV&W outer-a.s. form. -/
 theorem vdVWOuterAlmostSure_of_ae {Ω : Type u} [MeasurableSpace Ω]

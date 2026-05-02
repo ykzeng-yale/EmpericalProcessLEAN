@@ -55,7 +55,8 @@ The table below is only the active direct-proof anchor subset.
 
 | Textbook item | Markdown anchor | Current Lean status |
 | --- | --- | --- |
-| Definition 1.10.1, convergence in outer probability to a constant | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1406` | generic constant-limit and common-domain outer-probability primitives formalized; uniform-deviation predicates and conditional tail-continuity bridge formalized |
+| Definition 1.10.1, convergence in outer probability to a constant | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1406` | generic constant-limit and common-domain outer-probability primitives formalized; common-domain equivalence with mathlib `TendstoInMeasure` proved; uniform-deviation predicates and conditional tail-continuity bridge formalized |
+| Lemma 1.10.2, outer probability versus weak convergence | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1408-1417` | measurable common-domain version of part (ii) proved using mathlib convergence in distribution |
 | GC definition for uniform LLN | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1828-1834` | book-style predicate formalized with outer-probability and outer-a.s. branches |
 | Definition 2.1.5, covering numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1894` | only abstract proof-carrying interface exists |
 | Definition 2.1.6, bracketing numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1895` | primitive bracket, epsilon-bracket, finite-cover, and numeric `N_[]` layers formalized |
@@ -111,6 +112,9 @@ The following are compiled Lean declarations with no proof holes:
 | `VdVWOuterProbability`, `VdVWOuterAlmostSure` | formalize outer probability of arbitrary events and outer-a.s. truth using mathlib's outer-measure semantics for `Measure` |
 | `VdVWConvergesInOuterProbabilityConst`, `VdVWConvergesInOuterProbability` | generic VdV&W outer-probability convergence primitives for varying-space constant limits and common-domain limits |
 | `vdVWConvergesInOuterProbability_of_tendstoInMeasure` | bridge from mathlib `TendstoInMeasure` to the common-domain VdV&W outer-probability predicate |
+| `tendstoInMeasure_of_vdVWConvergesInOuterProbability` | bridge from the common-domain VdV&W outer-probability predicate to mathlib `TendstoInMeasure` |
+| `vdVWConvergesInOuterProbability_iff_tendstoInMeasure` | common-domain equivalence between VdV&W outer-probability convergence and mathlib convergence in measure |
+| `tendstoInDistribution_of_vdVWConvergesInOuterProbability` | measurable common-domain version of Lemma 1.10.2(ii): outer-probability convergence implies convergence in distribution |
 | `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | exact outer-a.s. uniform LLN and `P`-Glivenko-Cantelli predicates |
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | converts primitive `N_[]` finiteness into outer-a.s. uniform deviation convergence |
 | `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | VdV&W Theorem 2.4.1 in the outer-a.s. convergence mode |

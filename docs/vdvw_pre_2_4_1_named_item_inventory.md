@@ -100,6 +100,8 @@ Current promoted declarations toward Theorem 2.4.1:
 | `VdVWOuterProbability`, `VdVWOuterAlmostSure` | proved/compiled outer probability and outer-a.s. event primitives |
 | `VdVWConvergesInOuterProbabilityConst`, `VdVWConvergesInOuterProbability` | proved/compiled generic Definition 1.10.1-style outer-probability convergence primitives |
 | `vdVWConvergesInOuterProbability_of_tendstoInMeasure` | proved bridge from mathlib `TendstoInMeasure` to the VdV&W common-domain outer-probability predicate |
+| `tendstoInMeasure_of_vdVWConvergesInOuterProbability`, `vdVWConvergesInOuterProbability_iff_tendstoInMeasure` | proved the reverse bridge and equivalence between common-domain VdV&W outer-probability convergence and mathlib convergence in measure |
+| `tendstoInDistribution_of_vdVWConvergesInOuterProbability` | proved measurable common-domain version of Lemma 1.10.2(ii), using mathlib convergence in distribution |
 | `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | proved/compiled exact outer-a.s. uniform LLN and GC predicates |
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to outer-a.s. uniform deviation convergence |
 | `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | proved VdV&W Theorem 2.4.1 in the outer-a.s. convergence mode |
