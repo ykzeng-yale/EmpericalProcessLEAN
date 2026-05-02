@@ -47,11 +47,13 @@ Local searches found reusable APIs in:
 - `StatInference/EmpiricalProcess/Theorem243.lean`
 - `StatInference/EmpiricalProcess/BallSigma.lean`
 - `StatInference/EmpiricalProcess/RealHalfLine.lean`
+- `StatInference/ProbabilityMeasure/ProductMeasure.lean`
 
 ## Primitive Sequence
 
 1. Keep the Section 25 Billingsley weak-convergence wrappers compiling.
-2. Keep the finite-dimensional process-law wrappers compiling.
+2. Keep the finite-dimensional process-law and product/Fubini wrappers
+   compiling.
 3. Add a precise Section 25 theorem candidate to the inventory:
    bounded-continuous test functions, open/closed Portmanteau directions,
    continuous mapping, or tightness/Prokhorov.
@@ -59,7 +61,10 @@ Local searches found reusable APIs in:
    the exact theorem declaration first, then the report.
 5. In parallel, push Section 16/18 support for VdV&W Theorem 2.4.3:
    envelope-tail, truncation-error, finite-product/Fubini, and independent-copy
-   wrappers.
+   wrappers.  The content-based Section 18 wrapper layer has started in
+   `StatInference/ProbabilityMeasure/ProductMeasure.lean`; the remaining work
+   is to specialize it to the exact finite-product/independent-copy shapes used
+   by symmetrization.
 6. Defer examples requiring unrelated number theory, Markov chains, martingales,
    Brownian path theory, or Fourier analysis unless a concrete theorem needs
    them.

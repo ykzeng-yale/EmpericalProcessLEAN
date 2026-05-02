@@ -62,6 +62,7 @@ Initial Lean module:
 - `StatInference/ProbabilityMeasure/Basic.lean`
 - `StatInference/ProbabilityMeasure/WeakConvergence.lean`
 - `StatInference/ProbabilityMeasure/FiniteDimensional.lean`
+- `StatInference/ProbabilityMeasure/ProductMeasure.lean`
 
 Reuse audit:
 
@@ -88,6 +89,8 @@ Current compiled wrappers:
   identically distributed
 - projective finite-dimensional distribution family and process-law projective
   limit wrappers
+- product probability measure, Tonelli/Fubini, and independent-product
+  expectation wrappers
 
 ### Lane B: Integration, tails, and uniform integrability
 
@@ -122,6 +125,8 @@ Near-term declarations:
 - `vdVW_lintegral_pi_fin_eq_iterated_nonnegative`
 - `vdVW_integral_pi_fin_eq_iterated_integrable`
 - `vdVW_expectation_independent_copy_swap`
+- content-based wrappers started in
+  `StatInference/ProbabilityMeasure/ProductMeasure.lean`
 
 Search anchors:
 

@@ -13,6 +13,7 @@ mathlib searches and local primitives whenever possible.
   rather than an author-named folder.
 - First modules: `StatInference/ProbabilityMeasure/WeakConvergence.lean`,
   `StatInference/ProbabilityMeasure/FiniteDimensional.lean`, and
+  `StatInference/ProbabilityMeasure/ProductMeasure.lean`, re-exported by
   `StatInference/ProbabilityMeasure/Basic.lean`.
 - Formal theorem reports: none yet.
 - Proof-hole policy: no Billingsley report until the exact textbook statement
@@ -24,7 +25,7 @@ mathlib searches and local primitives whenever possible.
 | --- | --- | --- | --- |
 | Section 25 weak convergence and tightness | local-wrapper | `StatInference/ProbabilityMeasure/WeakConvergence.lean` | Reuses mathlib and local VdV&W wrappers for probability-measure weak convergence, tightness, Portmanteau, Levy-Prokhorov, continuous mapping, products, FDD restriction, and Slutsky. |
 | Sections 15-16 integration/tails/UI | priority-local | pending | Highest near-term value for VdV&W Theorem 2.4.3 envelope-tail and truncation handoffs. |
-| Section 18 product/Fubini | priority-local | pending | Needed for symmetrization and iid independent-copy arguments. |
+| Section 18 product/Fubini | local-wrapper | `StatInference/ProbabilityMeasure/ProductMeasure.lean` | Product probability measures, Tonelli/Fubini, and finite independent-product expectation wrappers started. |
 | Sections 4/6/20/22 independence, Borel-Cantelli, SLLN | mathlib-foundation | `EndpointStrongLaw.lean` nearby | Mathlib has strong laws, independence, and Borel-Cantelli APIs; add Billingsley wrappers only when they unblock exact items. |
 | Sections 3/10-14 sigma-fields and measurable maps | mathlib-foundation | `BallSigma.lean`, `RealHalfLine.lean` nearby | Generated sigma-field, pi-lambda, Borel, and ball/half-line APIs are mostly mathlib-covered. |
 | Sections 36-38 process laws/cylinders/separability | local-wrapper | `StatInference/ProbabilityMeasure/FiniteDimensional.lean` | Started finite-dimensional law wrappers over mathlib; defer broad path-space theory until needed. |
