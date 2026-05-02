@@ -832,6 +832,55 @@ theorem exists_endpointGrid_of_realMiddleCDFPartition
     ⟨ofMiddleCDFPartitionWithTails hleftTail hrightTail partition⟩⟩
 
 /--
+Uniform bounded middle CDF partitions imply full endpoint-grid existence at
+every positive radius.
+
+Finite tails are supplied by tightness of finite Borel measures on `ℝ`; the
+tail cutpoints are widened to ensure a strictly ordered bounded middle
+interval.
+-/
+theorem exists_forall_of_forall_realMiddleCDFPartition
+    (μ : Measure ℝ) [IsProbabilityMeasure μ]
+    (middlePartitionExists :
+      ∀ {epsilon a b : ℝ}, 0 < epsilon -> a < b ->
+        ∃ middleCells, Nonempty
+          (SuppliedRealMiddleCDFPartition μ epsilon a b middleCells)) :
+    ∀ epsilon, 0 < epsilon ->
+      ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) := by
+  intro epsilon hepsilon
+  rcases exists_real_tails_lt_of_isFiniteMeasure μ hepsilon with
+    ⟨a, b, hleftTail, hrightTail⟩
+  let lower : ℝ := min a b - 1
+  let upper : ℝ := max a b + 1
+  have hlower_le_a : lower ≤ a := by
+    dsimp [lower]
+    have hmin : min a b ≤ a := min_le_left a b
+    linarith
+  have hb_le_upper : b ≤ upper := by
+    dsimp [upper]
+    have hmax : b ≤ max a b := le_max_right a b
+    linarith
+  have hleftTail' : μ.real (Set.Iio lower) < epsilon := by
+    have hsubset : Set.Iio lower ⊆ Set.Iio a := by
+      intro x hx
+      exact lt_of_lt_of_le hx hlower_le_a
+    exact lt_of_le_of_lt (measureReal_mono hsubset) hleftTail
+  have hrightTail' : μ.real (Set.Ioi upper) < epsilon := by
+    have hsubset : Set.Ioi upper ⊆ Set.Ioi b := by
+      intro x hx
+      exact lt_of_le_of_lt hb_le_upper hx
+    exact lt_of_le_of_lt (measureReal_mono hsubset) hrightTail
+  have hlower_lt_upper : lower < upper := by
+    dsimp [lower, upper]
+    have hle : min a b ≤ max a b :=
+      le_trans (min_le_left a b) (le_max_left a b)
+    linarith
+  rcases middlePartitionExists hepsilon hlower_lt_upper with
+    ⟨middleCells, partitionNonempty⟩
+  exact partitionNonempty.elim fun partition =>
+    exists_endpointGrid_of_realMiddleCDFPartition μ hleftTail' hrightTail' partition
+
+/--
 The one-cell textbook-style extended endpoint grid `-∞ < ∞`.
 
 This is the endpoint-grid analogue of `SuppliedERealHalfLineGrid.singleCell`;

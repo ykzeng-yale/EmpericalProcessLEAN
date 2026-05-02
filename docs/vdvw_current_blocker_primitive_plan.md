@@ -191,7 +191,21 @@ This is the only hard mathematical blocker left for Example 2.4.2.
 
 ### 5. Unconditional Example 2.4.2 Handoff
 
-After steps 1-4:
+Status: partially implemented as a compiled reduction theorem in
+`StatInference/EmpiricalProcess/RealHalfLine.lean`.
+
+Declaration:
+
+```lean
+SuppliedERealHalfLineEndpointGrid.exists_forall_of_forall_realMiddleCDFPartition
+```
+
+This theorem proves that finite tail cutpoints plus bounded middle partition
+existence on every strict bounded interval imply full endpoint-grid existence
+for every positive radius.  The remaining missing theorem is therefore exactly
+the middle partition existence theorem in Step 4.
+
+After Step 4, the final endpoint-grid statement is:
 
 ```lean
 theorem exists_suppliedERealHalfLineEndpointGrid_probability
