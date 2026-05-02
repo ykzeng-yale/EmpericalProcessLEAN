@@ -301,10 +301,14 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `SuppliedERealHalfLineEndpointGrid.toSuppliedERealHalfLineGrid`,
   `SuppliedERealHalfLineEndpointGrid.hasFiniteL1BracketingNumber`,
   `SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top`,
+  `SuppliedERealHalfLineEndpointGrid.of_le_epsilon`,
+  `SuppliedERealHalfLineEndpointGrid.exists_of_le_epsilon`,
   `SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top_forall`,
   `SuppliedERealHalfLineEndpointGrid.exists_suppliedERealHalfLineGrid_of_forall`,
   `SuppliedERealHalfLineGrid.singleCell`,
   `SuppliedERealHalfLineGrid.exists_singleCell_of_measureReal_univ_lt`,
+  `SuppliedERealHalfLineGrid.of_le_epsilon`,
+  `SuppliedERealHalfLineGrid.exists_of_le_epsilon`,
   `SuppliedERealHalfLineGrid.toFiniteL1BracketCoverAtCard`,
   `SuppliedERealHalfLineGrid.hasFiniteL1BracketingNumber`, and
   `SuppliedERealHalfLineGrid.l1BracketingNumber_lt_top`,
@@ -329,9 +333,12 @@ real or extended-real grids to the primitive bracketing-number witness,
 including the all-positive-radius handoff needed by Theorem 2.4.1 and the
 conditional half-line Glivenko-Cantelli corollary from supplied grids;
 it also proves the adjacent-endpoint grid handoff, the endpoint-grid
-conditional GC corollary, and the one-cell base case for radii above the total
-mass.
-Construction of the general distribution-dependent grid is still pending.
+conditional GC corollary, one-cell base cases for radii above the total mass,
+and radius-monotonicity helpers for supplied real, extended-real, and
+adjacent-endpoint grids.  It also reduces full positive-radius endpoint-grid
+existence to the nontrivial range `0 < epsilon <= μ.real Set.univ`.
+Construction of the general distribution-dependent grid in that nontrivial
+range is still pending.
 They are real Lean proofs, not placeholders.
 
 ## Current Chapter 1-2 Gap

@@ -131,6 +131,37 @@ structure SuppliedRealHalfLineGrid
 namespace SuppliedRealHalfLineGrid
 
 /--
+A supplied real half-line grid at a smaller radius is also a supplied grid at
+any larger radius.
+-/
+def of_le_epsilon
+    {μ : Measure ℝ} {epsilon smallerEpsilon : ℝ} {cardinality : ℕ}
+    (grid : SuppliedRealHalfLineGrid μ smallerEpsilon cardinality)
+    (hsmall : smallerEpsilon ≤ epsilon) :
+    SuppliedRealHalfLineGrid μ epsilon cardinality where
+  left := grid.left
+  right := grid.right
+  bracketOf := grid.bracketOf
+  left_lt_right := grid.left_lt_right
+  left_le_index := grid.left_le_index
+  index_lt_right := grid.index_lt_right
+  cell_width_lt := fun bracketIndex =>
+    lt_of_lt_of_le (grid.cell_width_lt bracketIndex) hsmall
+
+/--
+Finite real-grid existence is monotone in the requested radius.
+-/
+theorem exists_of_le_epsilon
+    {μ : Measure ℝ} {epsilon smallerEpsilon : ℝ}
+    (hsmall : smallerEpsilon ≤ epsilon)
+    (gridExists :
+      ∃ cardinality, Nonempty
+        (SuppliedRealHalfLineGrid μ smallerEpsilon cardinality)) :
+    ∃ cardinality, Nonempty (SuppliedRealHalfLineGrid μ epsilon cardinality) := by
+  rcases gridExists with ⟨cardinality, gridNonempty⟩
+  exact ⟨cardinality, gridNonempty.map fun grid => grid.of_le_epsilon hsmall⟩
+
+/--
 A supplied finite real grid yields an explicit-cardinality finite `L1(P)`
 bracket cover for the half-line indicator class.
 -/
@@ -461,6 +492,37 @@ def toSuppliedERealHalfLineGrid
   cell_width_lt := grid.cell_width_lt
 
 /--
+A supplied adjacent-endpoint grid at a smaller radius is also a supplied
+adjacent-endpoint grid at any larger radius.
+-/
+def of_le_epsilon
+    {μ : Measure ℝ} {epsilon smallerEpsilon : ℝ} {cellCount : ℕ}
+    (grid : SuppliedERealHalfLineEndpointGrid μ smallerEpsilon cellCount)
+    (hsmall : smallerEpsilon ≤ epsilon) :
+    SuppliedERealHalfLineEndpointGrid μ epsilon cellCount where
+  endpoint := grid.endpoint
+  bracketOf := grid.bracketOf
+  left_lt_right := grid.left_lt_right
+  left_le_index := grid.left_le_index
+  index_lt_right := grid.index_lt_right
+  cell_width_lt := fun cell =>
+    lt_of_lt_of_le (grid.cell_width_lt cell) hsmall
+
+/--
+Finite adjacent-endpoint grid existence is monotone in the requested radius.
+-/
+theorem exists_of_le_epsilon
+    {μ : Measure ℝ} {epsilon smallerEpsilon : ℝ}
+    (hsmall : smallerEpsilon ≤ epsilon)
+    (gridExists :
+      ∃ cellCount, Nonempty
+        (SuppliedERealHalfLineEndpointGrid μ smallerEpsilon cellCount)) :
+    ∃ cellCount, Nonempty
+      (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) := by
+  rcases gridExists with ⟨cellCount, gridNonempty⟩
+  exact ⟨cellCount, gridNonempty.map fun grid => grid.of_le_epsilon hsmall⟩
+
+/--
 The one-cell textbook-style extended endpoint grid `-∞ < ∞`.
 
 This is the endpoint-grid analogue of `SuppliedERealHalfLineGrid.singleCell`;
@@ -497,9 +559,59 @@ theorem exists_singleCell_of_measureReal_univ_lt
     ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) :=
   ⟨1, ⟨singleCell μ hwidth⟩⟩
 
+/--
+To prove endpoint-grid existence for every positive radius, it is enough to
+construct grids in the nontrivial range below the total mass.  Larger radii
+are handled by the one-cell endpoint grid.
+-/
+theorem exists_forall_of_exists_le_measureReal_univ
+    {μ : Measure ℝ}
+    (endpointGridExists_le_total :
+      ∀ epsilon, 0 < epsilon -> epsilon ≤ μ.real Set.univ ->
+        ∃ cellCount, Nonempty
+          (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount)) :
+    ∀ epsilon, 0 < epsilon ->
+      ∃ cellCount, Nonempty
+        (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) := by
+  intro epsilon hepsilon
+  by_cases hwidth : μ.real Set.univ < epsilon
+  · exact exists_singleCell_of_measureReal_univ_lt μ hwidth
+  · exact endpointGridExists_le_total epsilon hepsilon (le_of_not_gt hwidth)
+
 end SuppliedERealHalfLineEndpointGrid
 
 namespace SuppliedERealHalfLineGrid
+
+/--
+A supplied extended-real grid at a smaller radius is also a supplied grid at
+any larger radius.
+-/
+def of_le_epsilon
+    {μ : Measure ℝ} {epsilon smallerEpsilon : ℝ} {cardinality : ℕ}
+    (grid : SuppliedERealHalfLineGrid μ smallerEpsilon cardinality)
+    (hsmall : smallerEpsilon ≤ epsilon) :
+    SuppliedERealHalfLineGrid μ epsilon cardinality where
+  left := grid.left
+  right := grid.right
+  bracketOf := grid.bracketOf
+  left_lt_right := grid.left_lt_right
+  left_le_index := grid.left_le_index
+  index_lt_right := grid.index_lt_right
+  cell_width_lt := fun bracketIndex =>
+    lt_of_lt_of_le (grid.cell_width_lt bracketIndex) hsmall
+
+/--
+Finite extended-real grid existence is monotone in the requested radius.
+-/
+theorem exists_of_le_epsilon
+    {μ : Measure ℝ} {epsilon smallerEpsilon : ℝ}
+    (hsmall : smallerEpsilon ≤ epsilon)
+    (gridExists :
+      ∃ cardinality, Nonempty
+        (SuppliedERealHalfLineGrid μ smallerEpsilon cardinality)) :
+    ∃ cardinality, Nonempty (SuppliedERealHalfLineGrid μ epsilon cardinality) := by
+  rcases gridExists with ⟨cardinality, gridNonempty⟩
+  exact ⟨cardinality, gridNonempty.map fun grid => grid.of_le_epsilon hsmall⟩
 
 /--
 The one-cell extended grid `(-∞, ∞)`.
