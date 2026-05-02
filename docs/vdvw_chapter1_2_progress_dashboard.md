@@ -39,25 +39,11 @@ The bars are inventory bars, not effort estimates.  A `pending-local` item may
 be deferred if it is broad Chapter 1 infrastructure rather than a dependency of
 the current empirical-process target.
 
-Examples/addenda are tracked separately from this theorem-level inventory.
-The current examples/addenda frontier has two compiled local layers: Example
-2.3.4 pointwise/countable-subclass convergence helpers and supremum-equality
-handoff to `P`-measurability, and Example 2.4.2 half-line bracket membership, width,
-extended-real endpoint brackets, extended-open-cell endpoint/width identities,
-probability-measure CDF/Stieltjes open-cell identity and CDF-increment
-middle-cell handoffs, finite-measure real-tail
-cutpoints, adjacent-endpoint grid handoff, supplied
-finite-grid bridges, the one-cell base
-grid and one-cell adjacent-endpoint base grid for radii above total mass,
-radius-monotonicity helpers for supplied real/extended/adjacent-endpoint grids,
-finite-real-endpoint assembly constructor,
-three-cell endpoint-grid constructor from supplied tail/middle width bounds,
-three-cell CDF-increment handoff,
-reduction of full endpoint-grid existence to the nontrivial range
-`0 < epsilon <= μ.real univ`, direct nontrivial-range handoffs to
-primitive-grid existence and all-positive-radius `N_[] < ∞`, the
-conditional half-line GC corollary from supplied grids, and the conditional
-half-line GC corollary from adjacent endpoint grids.
+Examples/addenda are tracked separately from this theorem-level inventory and
+are no longer a main-line blocker.  The existing Example 2.3.4 and Example
+2.4.2 compiled local layers remain reusable infrastructure, but exact example
+reports and remaining example-specific external/domain-heavy closures are
+deferred unless a theorem target needs them.
 
 ## Chapter Split
 
@@ -79,7 +65,7 @@ flowchart LR
   PM["Definition 2.3.3 P-measurable class<br/>local-layer"]
   BR["Definition 2.1.6 bracketing number<br/>local-layer"]
   T241["Theorem 2.4.1 finite bracketing GC<br/>local-exact"]
-  E242["Example 2.4.2 empirical CDF brackets<br/>local-layer"]
+  E242["Example 2.4.2 empirical CDF brackets<br/>deferred-example local-layer"]
   T243["Theorem 2.4.3 next bracketing/GC result<br/>next"]
   GCH1["Broad Chapter 1 weak convergence and tightness<br/>deferred until needed"]
 
@@ -87,8 +73,10 @@ flowchart LR
   OP --> T241
   PM --> T243
   BR --> T241
+  BR --> T243
+  T241 -. proof pattern .-> T243
   T241 --> E242
-  E242 --> T243
+  E242 -. not blocking theorem line .-> T243
   GCH1 -. audited but not blocking .-> T241
 ```
 
@@ -114,19 +102,19 @@ outer-a.s./outer-probability GC wrappers.
 | Definition 2.1.5 | `vdVWCoveringNumber` wrapper over mathlib `Metric.externalCoveringNumber`, explicit finite closed-ball cover witnesses, finite-number handoff, monotonicity, and packing comparison wrappers | Exact open-ball norm convention needs radius-slack wrappers when a theorem requires literal `< epsilon` balls. |
 | Definition 2.1.6 | Primitive brackets, finite covers, `L1(P)` width, and numeric `l1BracketingNumber` | Entropy/logarithm refinements are not the current target. |
 | Definition 2.2.3 | Semimetric whole-space covering/packing wrappers `vdVWSemimetricCoveringNumber` and `vdVWSemimetricPackingNumber`, finite-cover handoff, and `N <= D <= N(epsilon/2)` comparison layer | Entropy/logarithm wrappers and exact open-ball convention remain pending. |
-| Definition 2.3.3 / Example 2.3.4 | Product measure `P^n`, display `(2.3.2)` weighted sample sums and class suprema, `NullMeasurable` predicate for measurability on the completion, countable coordinate-measurable constructor, pointwise-to-weighted-sum convergence helpers, value-set/boundedness infrastructure for real suprema, bounded pointwise-approximability-to-supremum-equality bridge, deterministic finite-cover supremum bound for Theorem 2.4.3, and proof-carrying countable-subclass supremum-equality handoff | Exact proof that the textbook pointwise convergence hypothesis implies all weighted-supremum equalities without extra boundedness assumptions, plus source screenshot for future theorem reports. |
-| Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint/width identities, probability-measure CDF/Stieltjes open-cell identity and CDF-increment-to-middle-width handoffs, finite-measure real-tail cutpoints, adjacent-endpoint grid handoff, supplied finite-grid bridges, one-cell base grid and one-cell adjacent-endpoint base grid for radii above total mass, radius-monotonicity helpers for supplied real/extended/adjacent-endpoint grids, finite-real-endpoint assembly constructor, three-cell endpoint-grid constructor from supplied tail/middle width bounds and CDF increment bounds, bounded-middle CDF partition interface `SuppliedRealMiddleCDFPartition` with adjacent-endpoint strictness and open-cell width handoff, tail-appending endpoint constructor and endpoint-grid existence handoff from a supplied middle partition, reduction from uniform bounded middle partitions to full endpoint-grid existence, primitive-grid existence, and bracketing-number finiteness to `0 < epsilon <= μ.real univ`, all-positive-radius `N_[] < ∞` handoff, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids | Distribution-dependent bounded middle CDF/quantile partition existence and exact empirical-CDF example report. |
+| Definition 2.3.3 / Example 2.3.4 | Product measure `P^n`, display `(2.3.2)` weighted sample sums and class suprema, `NullMeasurable` predicate for measurability on the completion, countable coordinate-measurable constructor, pointwise-to-weighted-sum convergence helpers, value-set/boundedness infrastructure for real suprema, bounded pointwise-approximability-to-supremum-equality bridge, deterministic finite-cover supremum bound for Theorem 2.4.3, and proof-carrying countable-subclass supremum-equality handoff | The theorem-relevant deterministic finite-cover handoff is available; exact example-only supremum equality is deferred unless needed by Theorem 2.4.3. |
+| Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint/width identities, probability-measure CDF/Stieltjes open-cell identity and CDF-increment-to-middle-width handoffs, finite-measure real-tail cutpoints, adjacent-endpoint grid handoff, supplied finite-grid bridges, one-cell base grid and one-cell adjacent-endpoint base grid for radii above total mass, radius-monotonicity helpers for supplied real/extended/adjacent-endpoint grids, finite-real-endpoint assembly constructor, three-cell endpoint-grid constructor from supplied tail/middle width bounds and CDF increment bounds, bounded-middle CDF partition interface `SuppliedRealMiddleCDFPartition` with adjacent-endpoint strictness and open-cell width handoff, tail-appending endpoint constructor and endpoint-grid existence handoff from a supplied middle partition, reduction from uniform bounded middle partitions to full endpoint-grid existence, primitive-grid existence, and bracketing-number finiteness to `0 < epsilon <= μ.real univ`, all-positive-radius `N_[] < ∞` handoff, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids | Deferred example-specific blocker: distribution-dependent bounded middle CDF/quantile partition existence and exact empirical-CDF example report. |
 
 ## Near-Term Frontier
 
 ```text
 DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
-ONGOING    Example 2.4.2: distribution-dependent middle-cell partition in the nontrivial radius range after tail cutpoints and conditional EReal-grid GC handoff.
-NEXT       Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
+ONGOING    Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
 READY      Definition 2.1.5 covering-number primitive for Theorem 2.4.3 setup.
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
+DEFERRED-EXAMPLE Example 2.4.2 exact quantile-grid closure and empirical-CDF report unless a theorem needs it.
 DEFERRED   Broad Chapter 1 weak-convergence/tightness/process machinery until needed.
 ```
 

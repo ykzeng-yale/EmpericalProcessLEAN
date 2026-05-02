@@ -477,7 +477,9 @@ The proof-hole scan should return no matches.
   primitive cover-to-route bridge, and finite endpoint strong-law wrappers are
   proved.
 - The direct dependency-minimal Theorem 2.4.1 route from primitive `N_[]`
-  definitions is proved;
-  the next targets are Chapter 1 arbitrary-map infrastructure,
-  distribution-dependent grid construction for Example 2.4.2, the exact
-  empirical-CDF example report, and the next Chapter 2 GC/bracketing results.
+  definitions is proved.
+- Current priority is now theorem-line formalization: Chapter 1 primitives only
+  where needed for empirical-process measurability/outer probability, then
+  Chapter 2 GC/bracketing results such as Theorem 2.4.3.  Example-specific
+  closures, including the remaining Example 2.4.2 quantile-grid report, are
+  deferred unless a main theorem later requires their exact statement.

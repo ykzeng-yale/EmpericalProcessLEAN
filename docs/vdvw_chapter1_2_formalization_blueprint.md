@@ -28,8 +28,10 @@ The Chapter 1-2 extraction contains 226 named items:
 | examples and addenda | 62 |
 
 This blueprint tracks theorem-level items first.  Definitions are promoted as
-primitives whenever a theorem needs them.  Examples should receive reports
-after the theorem infrastructure they use is compiled.
+primitives whenever a theorem needs them.  Examples and addenda are now
+non-blocking: keep already compiled example layers available as reusable
+infrastructure, but do not spend main proof time on exact example reports or
+domain-heavy example closures unless a later theorem explicitly needs them.
 
 ## Prioritization Policy
 
@@ -56,11 +58,13 @@ standard as every other theorem: exact Lean statement, no proof holes, local
 mathlib search first, and one theorem report only after the exact theorem or
 lemma is fully proved.
 
-Examples and addenda should be formalized when they directly support the
-Chapter 1-2 empirical-process main line.  If an example would require a large
-external-domain formalization outside the VdV&W Chapter 1-2 scope, mark it as
-`deferred-example` with a concrete reason and the missing external theory
-instead of blocking nearby theorem-level progress.
+Examples and addenda should be formalized only when they directly support the
+Chapter 1-2 empirical-process theorem line.  After the existing Example 2.3.4
+and Example 2.4.2 local layers, example-specific exact reports and remaining
+domain-heavy closures are deferred by default.  If an example would require a
+large external-domain formalization outside the VdV&W Chapter 1-2 theorem
+scope, mark it as `deferred-example` with a concrete reason and the missing
+external theory instead of blocking nearby theorem-level progress.
 
 The active frontier blocker is pinned separately in:
 
@@ -69,10 +73,11 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Every proof heartbeat should inspect that file before introducing a new
-primitive.  As of 2026-05-02, the blocker is Example 2.4.2's
-distribution-dependent finite middle partition / quantile cutpoint layer for
-real probability measures, after the already compiled half-line grid,
-tail-cutpoint, CDF/Stieltjes, and conditional GC handoffs.
+primitive.  As of 2026-05-02, the example-specific Example 2.4.2
+distribution-dependent finite middle partition / quantile cutpoint layer is
+parked as a deferred example blocker.  The active main-line frontier is
+Theorem 2.4.3 and the theorem-level Chapter 2 bracketing/measurable-class
+primitives it requires.
 
 ## Existing Lean Coverage Conclusion
 
@@ -333,8 +338,8 @@ above, so they do not change the theorem-level dashboard counts.
 
 | Item | Kind | Anchor | Current audit status |
 | --- | --- | --- | --- |
-| 2.3.4 | Example | `..._101-200.md:630` | local-layer: pointwise/countable-subclass predicates, pointwise-to-weighted-sum convergence helpers, value-set/boundedness infrastructure for the real supremum display, bounded pointwise-approximability-to-supremum-equality bridge, deterministic finite-cover supremum bound, and the proof-carrying supremum-equality handoff to `P`-measurability; pending exact theorem that the textbook pointwise convergence hypothesis implies equality of all weighted suprema `(2.3.2)` without extra boundedness assumptions |
-| 2.4.2 | Example | `..._101-200.md:985` | local-layer: real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint identities and width identity, probability-measure CDF/Stieltjes open-cell identity and CDF-increment-to-middle-width handoffs, finite-measure real-tail cutpoint lemma, adjacent-endpoint grid handoff, supplied finite-grid bridges to the primitive bracketing-number witness, one-cell base grid and one-cell adjacent-endpoint base grid for radii above total mass, radius-monotonicity helpers for supplied real/extended/adjacent-endpoint grids, finite-real-endpoint assembly constructor, three-cell endpoint-grid constructor from supplied lower-tail/middle-cell/upper-tail width bounds and CDF increment bounds, bounded-middle CDF partition interface `SuppliedRealMiddleCDFPartition` with adjacent-endpoint strictness and open-cell width handoff, tail-appending endpoint constructor and endpoint-grid existence handoff from a supplied middle partition, reduction from uniform bounded middle partitions to full endpoint-grid existence, primitive-grid existence, and bracketing-number finiteness to the nontrivial range `epsilon <= μ.real univ`, all-positive-radius handoff to the Theorem 2.4.1 `N_[] < ∞` hypothesis, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids; pending distribution-dependent bounded middle CDF/quantile partition existence and exact empirical-CDF example report |
+| 2.3.4 | Example | `..._101-200.md:630` | deferred-example local-layer: pointwise/countable-subclass predicates, pointwise-to-weighted-sum convergence helpers, value-set/boundedness infrastructure for the real supremum display, bounded pointwise-approximability-to-supremum-equality bridge, deterministic finite-cover supremum bound, and the proof-carrying supremum-equality handoff to `P`-measurability; exact example closure is deferred unless needed by a theorem |
+| 2.4.2 | Example | `..._101-200.md:985` | deferred-example local-layer: real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint identities and width identity, probability-measure CDF/Stieltjes open-cell identity and CDF-increment-to-middle-width handoffs, finite-measure real-tail cutpoint lemma, adjacent-endpoint grid handoff, supplied finite-grid bridges to the primitive bracketing-number witness, one-cell base grid and one-cell adjacent-endpoint base grid for radii above total mass, radius-monotonicity helpers for supplied real/extended/adjacent-endpoint grids, finite-real-endpoint assembly constructor, three-cell endpoint-grid constructor from supplied lower-tail/middle-cell/upper-tail width bounds and CDF increment bounds, bounded-middle CDF partition interface `SuppliedRealMiddleCDFPartition` with adjacent-endpoint strictness and open-cell width handoff, tail-appending endpoint constructor and endpoint-grid existence handoff from a supplied middle partition, reduction from uniform bounded middle partitions to full endpoint-grid existence, primitive-grid existence, and bracketing-number finiteness to the nontrivial range `epsilon <= μ.real univ`, all-positive-radius handoff to the Theorem 2.4.1 `N_[] < ∞` hypothesis, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids; distribution-dependent bounded middle CDF/quantile partition and exact empirical-CDF report are deferred unless needed by a theorem |
 
 ## Priority Order
 
@@ -351,13 +356,10 @@ above, so they do not change the theorem-level dashboard counts.
    Definition 2.3.3 now has a deterministic finite-cover supremum bound for
    display `(2.3.2)`; the next covering frontier is entropy/logarithm wrappers
    and the random `L1(P_n)` specialization needed by Theorem 2.4.3.
-4. Continue Example 2.4.2 from the nontrivial-radius endpoint-grid existence
-   theorem `0 < epsilon <= μ.real univ` to the full distribution-dependent
-   grid existence theorem and exact empirical-CDF example report; the
-   nontrivial-range reduction now already feeds primitive-grid existence and
-   bracketing-number finiteness, and the probability-measure CDF/Stieltjes
-   open-cell identity plus CDF-increment middle-cell handoffs are available for
-   the middle-cell partition proof.  Then move to Theorem 2.4.3.
+4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
+   and CDF/Stieltjes layers remain available if a theorem needs them, but the
+   main line now moves directly to Theorem 2.4.3 and its Chapter 2
+   bracketing/measurable-class prerequisites.
 5. Formalize Sections 2.2-2.3 inequalities and symmetrization before using
    them for later entropy/Donsker results.
 6. Formalize VC/entropy Sections 2.5-2.8 using mathlib shattering foundations

@@ -8,7 +8,49 @@ only after the exact textbook item is fully proved with no proof holes.
 
 ## Active Blocker
 
-Current target: Example 2.4.2, empirical CDF half-line class.
+Current main-line target: Theorem 2.4.3 and the Chapter 2
+bracketing/measurable-class primitives it needs.
+
+Policy update: exact example closures are deferred by default.  The Example
+2.4.2 empirical-CDF quantile-grid blocker below is preserved because it has a
+large compiled local layer and may be useful later, but it should not block the
+main theorem-line queue unless a later theorem explicitly needs this exact
+example.
+
+## Active Main-Line Primitive Sequence
+
+Textbook anchor: `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and
+Emperical Process_101-200.md:988`.
+
+Theorem 2.4.3 should be developed through theorem-level primitives, not through
+additional example closures:
+
+1. Statement interfaces for the theorem: `P`-measurable class, envelope,
+   truncated class `F_M = {x | f x * 1{F x <= M}}`, outer integrability
+   `P^* F < ∞`, and the random empirical `L1(P_n)` covering-number condition
+   `log N(epsilon, F_M, L1(P_n)) = o_P^*(n)`.
+2. Deterministic fixed-sample net inequality `(2.4.4)` for a finite empirical
+   `L1(P_n)` net.  Reuse the existing Definition 2.3.3 weighted-supremum and
+   deterministic finite-cover supremum-bound layer before adding new APIs.
+3. Orlicz/maximal-inequality layer: connect the finite net display to
+   Lemma 2.2.2 and the `psi_2`/Hoeffding bound used in the proof.  Search
+   pinned mathlib for `SubGaussian`, `Hoeffding`, `Orlicz`, `eLpNorm`, and
+   finite supremum inequalities before introducing local primitives.
+4. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
+   Fubini-compatible outer expectation, and the envelope-tail bound
+   `P^* F{F > M}`.
+5. Final convergence handoff: from the random entropy condition to convergence
+   in outer mean, then use the stated martingale/Lemma 2.4.5 route for almost
+   sure convergence.  Do not report Theorem 2.4.3 until these components are
+   exact and compile without proof holes.
+
+Next exact edit: audit local declarations for the random empirical
+`L1(P_n)` covering-number interface and add the smallest theorem-level
+primitive needed for Step 1 or Step 2.
+
+## Parked Example-Specific Blocker
+
+Deferred target: Example 2.4.2, empirical CDF half-line class.
 
 The proved local layer already turns supplied extended-real endpoint grids into
 finite `L1(P)` bracketing-number witnesses and then into the conditional
