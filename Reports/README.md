@@ -39,7 +39,8 @@ Each report must include:
 - Gap note saying whether the result is exact textbook formalization and what
   broader textbook-order compatibility work remains.
 - A locally compiled `report.pdf` that includes the real screenshot images.
-  This PDF is ignored by Git because it embeds local textbook-derived assets.
+  This generated PDF is ignored by Git unless explicitly reviewed for
+  publication.
 
 Promotion gate:
 
@@ -52,4 +53,6 @@ scripts/compile_report_pdf.sh Reports/VdVW_<item-number>_<short_slug>
 All commands must pass before a report marks a theorem as proved.
 
 Local textbook assets under `Textbooks/Vaart1996/` are review anchors only and
-must not be committed to public Git history.
+are intentionally tracked source-audit anchors in this repository.  Generated
+report PDFs remain local build artifacts unless explicitly reviewed for
+publication.

@@ -31,5 +31,7 @@ Do not mark a theorem as the full textbook result until all primitives used in
 the textbook statement have Lean definitions and the theorem compiles from
 those definitions without `sorry`, `admit`, unreviewed `axiom`, or `unsafe`.
 
-Do not commit long textbook excerpts or screenshot/PDF assets to the public Git
-history. Those source files remain local-only review material.
+Do not commit long quoted textbook excerpts into reports or docs.  The requested
+textbook markdown/PDF/screenshot source anchors under `Textbooks/Vaart1996/`
+may be tracked, while generated report PDFs remain local artifacts unless
+explicitly reviewed for publication.

@@ -220,6 +220,54 @@ theorem measurableSet_eRealOpenCell (a b : EReal) :
   change MeasurableSet (((fun x : ℝ => (x : EReal)) ⁻¹' Set.Ioo a b))
   exact continuous_coe_real_ereal.measurable measurableSet_Ioo
 
+/-- Finite extended endpoints recover the ordinary real open interval cell. -/
+theorem eRealOpenCell_coe_coe (a b : ℝ) :
+    eRealOpenCell (a : EReal) (b : EReal) = Set.Ioo a b := by
+  ext x
+  simp [eRealOpenCell]
+
+/-- A left endpoint `-∞` and finite right endpoint recover an open lower half-line. -/
+theorem eRealOpenCell_bot_coe (b : ℝ) :
+    eRealOpenCell ⊥ (b : EReal) = Set.Iio b := by
+  ext x
+  simp [eRealOpenCell]
+
+/-- A finite left endpoint and right endpoint `∞` recover an open upper half-line. -/
+theorem eRealOpenCell_coe_top (a : ℝ) :
+    eRealOpenCell (a : EReal) ⊤ = Set.Ioi a := by
+  ext x
+  simp [eRealOpenCell]
+
+/-- The extended-open cell `(-∞, ∞)` is all of `ℝ`. -/
+theorem eRealOpenCell_bot_top :
+    eRealOpenCell ⊥ ⊤ = Set.univ := by
+  ext x
+  simp [eRealOpenCell]
+
+/-- Finite extended endpoints recover the ordinary real open interval measure. -/
+theorem measureReal_eRealOpenCell_coe_coe
+    (μ : Measure ℝ) (a b : ℝ) :
+    μ.real (eRealOpenCell (a : EReal) (b : EReal)) = μ.real (Set.Ioo a b) := by
+  rw [eRealOpenCell_coe_coe]
+
+/-- A left endpoint `-∞` and finite right endpoint recover the open lower half-line measure. -/
+theorem measureReal_eRealOpenCell_bot_coe
+    (μ : Measure ℝ) (b : ℝ) :
+    μ.real (eRealOpenCell ⊥ (b : EReal)) = μ.real (Set.Iio b) := by
+  rw [eRealOpenCell_bot_coe]
+
+/-- A finite left endpoint and right endpoint `∞` recover the open upper half-line measure. -/
+theorem measureReal_eRealOpenCell_coe_top
+    (μ : Measure ℝ) (a : ℝ) :
+    μ.real (eRealOpenCell (a : EReal) ⊤) = μ.real (Set.Ioi a) := by
+  rw [eRealOpenCell_coe_top]
+
+/-- The extended-open cell `(-∞, ∞)` has the measure of the whole line. -/
+theorem measureReal_eRealOpenCell_bot_top
+    (μ : Measure ℝ) :
+    μ.real (eRealOpenCell ⊥ ⊤) = μ.real Set.univ := by
+  rw [eRealOpenCell_bot_top]
+
 /-- Finite extended endpoints recover the ordinary closed half-line indicator. -/
 theorem eRealClosedHalfLineIndicator_coe (c : ℝ) :
     eRealClosedHalfLineIndicator (c : EReal) = realHalfLineIndicator c := by
@@ -429,6 +477,21 @@ theorem l1BracketingNumber_lt_top
     (grid : SuppliedERealHalfLineGrid μ epsilon cardinality) :
     l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
   l1BracketingNumber_lt_top_of_hasFinite grid.hasFiniteL1BracketingNumber
+
+/--
+Uniform finite-grid existence at every positive radius yields the primitive
+bracketing-number hypothesis needed by VdV&W Theorem 2.4.1.
+-/
+theorem l1BracketingNumber_lt_top_forall
+    {μ : Measure ℝ} [IsFiniteMeasure μ]
+    (gridExists :
+      ∀ epsilon, 0 < epsilon ->
+        ∃ cardinality, Nonempty (SuppliedERealHalfLineGrid μ epsilon cardinality)) :
+    ∀ epsilon, 0 < epsilon ->
+      l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ := by
+  intro epsilon hepsilon
+  rcases gridExists epsilon hepsilon with ⟨cardinality, gridNonempty⟩
+  exact gridNonempty.elim fun grid => grid.l1BracketingNumber_lt_top
 
 end SuppliedERealHalfLineGrid
 

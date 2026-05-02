@@ -105,5 +105,5 @@ the closest textbook step, the markdown source, and the PDF screenshot.
 
 ## Screenshot
 
-The screenshot path above is local-only review material and is intentionally
-excluded from the public Git history.
+The screenshot path above points to a tracked source-audit anchor under
+`Textbooks/Vaart1996/`.

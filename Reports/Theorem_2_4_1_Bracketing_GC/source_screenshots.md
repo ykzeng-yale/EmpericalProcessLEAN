@@ -1,8 +1,8 @@
 # Source Screenshots
 
-These screenshots are local-only review anchors and are not committed as image
-assets.  The compiled local `report.pdf` embeds the actual images from these
-paths for human source checking.
+These screenshots are tracked source-audit anchors under `Textbooks/Vaart1996/`.
+The compiled local `report.pdf` embeds the actual images from these paths for
+human source checking.
 
 ## Theorem 2.4.1
 

@@ -5,8 +5,9 @@ source-audited Lean formalization of Chapters 1 and 2 of van der Vaart and
 Wellner, *Weak Convergence and Empirical Processes*.
 
 The public repository must remain a Lean library plus audit metadata.  The
-textbook markdown, PDF, and screenshots are local-only review assets under
-`Textbooks/Vaart1996/` and must not be committed.
+textbook markdown, PDF, and selected screenshots under `Textbooks/Vaart1996/`
+are intentionally tracked source-audit anchors, per user request; generated
+report PDFs remain untracked build artifacts.
 
 ## Audit Scope
 
@@ -314,7 +315,7 @@ above, so they do not change the theorem-level dashboard counts.
 
 | Item | Kind | Anchor | Current audit status |
 | --- | --- | --- | --- |
-| 2.4.2 | Example | `..._101-200.md:985` | local-layer: real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell width identity, and supplied finite-grid bridges to the primitive bracketing-number witness; pending distribution-dependent grid existence, GC corollary, and exact example report |
+| 2.4.2 | Example | `..._101-200.md:985` | local-layer: real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint identities and width identity, supplied finite-grid bridges to the primitive bracketing-number witness, and all-positive-radius handoff to the Theorem 2.4.1 `N_[] < ∞` hypothesis; pending distribution-dependent grid existence, GC corollary, and exact example report |
 
 ## Priority Order
 
@@ -350,4 +351,6 @@ Every heartbeat or continuation run for this blueprint should:
 7. scan tracked Lean sources for `sorry`, `admit`, `axiom`, and `unsafe`;
 8. create or update a theorem report only when an exact textbook theorem or
    lemma is fully proved; otherwise update blueprint/status docs only;
-9. keep textbook assets and credentials local-only.
+9. keep credentials out of Git; treat generated report PDFs as local-only
+   artifacts while allowing the requested textbook source anchors under
+   `Textbooks/Vaart1996/`.

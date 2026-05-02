@@ -391,4 +391,5 @@ anchor is:
 Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png
 ```
 
-These screenshot files are local-only review assets and are ignored by Git.
+These screenshot files are tracked source-audit anchors under
+`Textbooks/Vaart1996/`.

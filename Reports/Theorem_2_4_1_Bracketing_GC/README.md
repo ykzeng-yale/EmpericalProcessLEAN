@@ -83,8 +83,8 @@ Reports/Theorem_2_4_1_Bracketing_GC/definition_lemma_crosscheck.md
 - PDF screenshot: `Textbooks/Vaart1996/Screenshots/vdvw_definition_1_10_1_pdf_page_72.png` for the surrounding Lemma 1.10.2 page.
 - PDF screenshot: `Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png`.
 
-These source assets are local-only review material and are intentionally
-excluded from the public Git history.
+These source assets are tracked source-audit anchors under
+`Textbooks/Vaart1996/`.
 
 ## Remaining Compatibility Work
 

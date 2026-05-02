@@ -45,11 +45,13 @@ This repository intentionally excludes:
 - `AI-Statistician` application code, tests, and blueprint machinery;
 - old local non-empirical-process theorem-development modules from estimator,
   causal, semiparametric, benchmark, or example directions;
-- copyrighted textbook PDF/markdown/screenshot assets from the public Git
-  history.
+- agent secrets, generated model-training artifacts, and unrelated theorem
+  development files.
 
-The actual textbook PDF, markdown conversion, and screenshots may exist in the
-local working tree for private review, but they are ignored by Git.
+The textbook PDF, markdown conversion, and selected screenshots live under
+`Textbooks/Vaart1996/` as source-audit anchors because the user explicitly
+requested that these public textbook assets be included.  Generated report PDFs
+remain local build artifacts and are ignored by Git.
 
 ## Repository Layout
 
@@ -149,7 +151,7 @@ complete.  Each report should include:
    textbook-derived images.
 7. A gap note saying what broader textbook-order compatibility work remains.
 
-The source material is local-only:
+The source material is tracked under:
 
 ```text
 Textbooks/Vaart1996/Markdown/
@@ -157,10 +159,9 @@ Textbooks/Vaart1996/PDF/
 Textbooks/Vaart1996/Screenshots/
 ```
 
-These paths are intentionally ignored by Git so the public repository remains a
-Lean library plus source-audit metadata, not a redistribution of the textbook.
-Compiled report PDFs that embed screenshots are also local-only artifacts and
-are ignored by Git.
+These paths are intentional source-audit anchors for cross-checking Lean
+formalizations against the textbook.  Compiled report PDFs that embed
+screenshots remain generated artifacts and are ignored by Git.
 
 ## Current Formalization Target
 
@@ -285,12 +286,21 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `eRealHalfLineBracket`,
   `eRealOpenCell`,
   `measurableSet_eRealOpenCell`,
+  `eRealOpenCell_coe_coe`,
+  `eRealOpenCell_bot_coe`,
+  `eRealOpenCell_coe_top`,
+  `eRealOpenCell_bot_top`,
+  `measureReal_eRealOpenCell_coe_coe`,
+  `measureReal_eRealOpenCell_bot_coe`,
+  `measureReal_eRealOpenCell_coe_top`,
+  `measureReal_eRealOpenCell_bot_top`,
   `eRealHalfLineBracket_mem_realIndicator_of_le_lt`,
   `abs_eRealHalfLineBracket_endpoint_gap_eq_indicator_openCell`,
   `eRealHalfLineBracket_l1Width_eq_measureReal_openCell`,
   `SuppliedERealHalfLineGrid.toFiniteL1BracketCoverAtCard`,
   `SuppliedERealHalfLineGrid.hasFiniteL1BracketingNumber`, and
-  `SuppliedERealHalfLineGrid.l1BracketingNumber_lt_top`
+  `SuppliedERealHalfLineGrid.l1BracketingNumber_lt_top`,
+  `SuppliedERealHalfLineGrid.l1BracketingNumber_lt_top_forall`
   in `StatInference/EmpiricalProcess/RealHalfLine.lean`.
 
 These prove the deterministic bracket-comparison route, the finite endpoint
@@ -301,7 +311,8 @@ and outer-a.s. wrappers, and the book-style Theorem 2.4.1 predicate.  The
 new Example 2.4.2 layer proves the pointwise and `L1(P)` facts for real
 half-line indicator brackets, adds `EReal` endpoint brackets for `-∞`/`∞`,
 proves the extended-open-cell width identity, and connects supplied finite
-real or extended-real grids to the primitive bracketing-number witness;
+real or extended-real grids to the primitive bracketing-number witness,
+including the all-positive-radius handoff needed by Theorem 2.4.1;
 construction of the distribution grid is still pending.
 They are real Lean proofs, not placeholders.
 
@@ -402,8 +413,8 @@ The proof-hole scan should return no matches.
 
 - Repository created and pushed to GitHub.
 - Agent/training/AXLE machinery removed from scope.
-- Local Vaart markdown/PDF/screenshot assets are available for private review
-  but ignored by Git.
+- Vaart markdown/PDF/screenshot assets are tracked under `Textbooks/Vaart1996/`
+  as source-audit anchors.
 - Lean library currently builds.
 - Current source-audited focus has expanded to Chapter 1-2 theorem-level
   formalization.

@@ -13,8 +13,8 @@ Textbooks/Vaart1996/Screenshots/vdvw_definition_1_10_1_pdf_page_72.png
 Textbooks/Vaart1996/Screenshots/vdvw_lemma_1_2_1_pdf_page_6.png
 ```
 
-The screenshot and markdown/PDF files are local-only review assets and are
-ignored by Git.
+The screenshot and markdown/PDF files are tracked source-audit anchors under
+`Textbooks/Vaart1996/`.
 
 ## Cross-Check Table
 

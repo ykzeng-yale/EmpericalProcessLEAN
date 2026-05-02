@@ -50,7 +50,8 @@ scripts/compile_report_pdf.sh Reports/VdVW_<item-number>_<short_slug>
 ```
 
 The generated `report.pdf` must visually include the real textbook screenshot
-images.  It is intentionally ignored by Git.
+images.  It is a generated artifact and is ignored by Git unless explicitly
+reviewed for publication.
 
 ## Dependencies
 

@@ -67,8 +67,8 @@ Expected result: build succeeds and the proof-hole scan returns no matches.
 
 ## Textbook Anchors
 
-The local markdown/PDF/screenshot assets are ignored by Git but available for
-private review in `Textbooks/Vaart1996/`.
+The markdown/PDF/screenshot assets are tracked source-audit anchors under
+`Textbooks/Vaart1996/`.
 
 The full inventory through Theorem 2.4.1 contains 102 named items: 70 in
 Chapter 1, 31 in Chapter 2 before Theorem 2.4.1, and Theorem 2.4.1 itself.
