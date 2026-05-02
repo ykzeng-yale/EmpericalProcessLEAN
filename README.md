@@ -260,6 +260,9 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `lintegral_eventIndicator_complSetCover_eq_innerProbability`,
   `VdVWOuterExpectation_eq_lintegral_eventIndicator_setCover`,
   `lintegral_eventIndicator_setCover_eq_measure`,
+  `lintegral_eventIndicator_toMeasurable_eq_measure`,
+  `measure_compl_toMeasurable_compl_eq_innerProbability`,
+  `measure_compl_setCover_eq_innerProbability`,
   `VdVWEventIndicator_setCover_add_compl`,
   `VdVWMeasurableCover.eventIndicatorOfToMeasurable`,
   `VdVWInnerExpectation_eventIndicator_add_outerExpectation_compl`, and
@@ -380,6 +383,7 @@ The proof-hole scan should return no matches.
 - Deterministic bracketing inequality, primitive bracket/finite-cover layer,
   primitive cover-to-route bridge, and finite endpoint strong-law wrappers are
   proved.
-- The full Theorem 2.4.1 route from primitive `N_[]` definitions is proved;
+- The direct dependency-minimal Theorem 2.4.1 route from primitive `N_[]`
+  definitions is proved;
   the next targets are Chapter 1 arbitrary-map infrastructure and the next
   Chapter 2 GC/bracketing results.

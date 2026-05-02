@@ -1316,4 +1316,64 @@ theorem lintegral_eventIndicator_setCover_eq_measure
   rw [← cover.measure_eq]
   simpa [Pi.one_apply] using lintegral_indicator_one cover.measurable_toSet
 
+/--
+The `toMeasurable` hull gives the direct integral realization of the outer
+measure of an event.
+
+This is the concrete hull version of the VdV&W Lemma 1.2.3(ii) equality
+`E 1_{B*} = P*(B)`.
+-/
+theorem lintegral_eventIndicator_toMeasurable_eq_measure
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) (event : Set Ω) :
+    (∫⁻ ω, VdVWEventIndicator (toMeasurable μ event) ω ∂μ) = μ event := by
+  calc
+    (∫⁻ ω, VdVWEventIndicator (toMeasurable μ event) ω ∂μ) =
+        μ (toMeasurable μ event) := by
+      change
+        (∫⁻ ω,
+          (toMeasurable μ event).indicator (fun _ => (1 : ℝ≥0∞)) ω ∂μ) =
+          μ (toMeasurable μ event)
+      simpa only [Pi.one_apply] using
+        lintegral_indicator_one (measurableSet_toMeasurable μ event)
+    _ = μ event := measure_toMeasurable event
+
+/--
+The complement of the `toMeasurable` hull of `eventᶜ` has measure equal to
+the inner probability of `event`.
+
+This is the event-set version of the VdV&W Lemma 1.2.3(iii) identity
+`P_* B = P((Bᶜ)*ᶜ)`.
+-/
+theorem measure_compl_toMeasurable_compl_eq_innerProbability
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    (event : Set Ω) :
+    μ (toMeasurable μ eventᶜ)ᶜ = VdVWInnerProbability μ event := by
+  rw [VdVWInnerProbability,
+    measure_compl (measurableSet_toMeasurable μ eventᶜ)
+      (measure_ne_top μ (toMeasurable μ eventᶜ)),
+    measure_toMeasurable]
+
+/--
+The complement of any measurable cover of `eventᶜ` has measure equal to the
+inner probability of `event`.
+
+This is the arbitrary-set-cover version of the VdV&W Lemma 1.2.3(iii)
+identity `P_* B = P((Bᶜ)*ᶜ)`.
+-/
+theorem measure_compl_setCover_eq_innerProbability
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    {event : Set Ω} (coverCompl : VdVWMeasurableSetCover μ eventᶜ) :
+    μ coverCompl.toSetᶜ = VdVWInnerProbability μ event := by
+  calc
+    μ coverCompl.toSetᶜ =
+        ∫⁻ ω, VdVWEventIndicator coverCompl.toSetᶜ ω ∂μ := by
+      change
+        μ coverCompl.toSetᶜ =
+          ∫⁻ ω,
+            coverCompl.toSetᶜ.indicator (fun _ => (1 : ℝ≥0∞)) ω ∂μ
+      simpa [Pi.one_apply] using
+        (lintegral_indicator_one coverCompl.measurable_toSet.compl).symm
+    _ = VdVWInnerProbability μ event :=
+      lintegral_eventIndicator_complSetCover_eq_innerProbability μ coverCompl
+
 end StatInference
