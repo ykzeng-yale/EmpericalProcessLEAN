@@ -251,7 +251,11 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `VdVWOuterExpectation_eventIndicator_eq_measure`, and
   `VdVWMeasurableSetCover.exists_measurableSet_superset_measure_eq`,
   `VdVWMeasurableSetCover.toEventIndicatorCover`,
+  `VdVWMeasurableSetCover.complToEventIndicatorLowerCover`,
+  `VdVWInnerExpectation_eq_lintegral_eventIndicator_complSetCover`,
+  `lintegral_eventIndicator_complSetCover_eq_innerProbability`,
   `VdVWOuterExpectation_eq_lintegral_eventIndicator_setCover`,
+  `VdVWEventIndicator_setCover_add_compl`,
   `VdVWMeasurableCover.eventIndicatorOfToMeasurable`,
   `VdVWInnerExpectation_eventIndicator_add_outerExpectation_compl`, and
   `VdVWInnerExpectation_eventIndicator_add_outerExpectation_compl_eq_one`
