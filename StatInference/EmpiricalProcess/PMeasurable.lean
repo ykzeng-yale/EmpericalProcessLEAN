@@ -3,6 +3,7 @@ import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.MeasureTheory.Group.Arithmetic
 import Mathlib.MeasureTheory.Measure.NullMeasurable
 import Mathlib.Topology.Order.OrderClosed
+import StatInference.EmpiricalProcess.CoveringPrimitive
 
 /-!
 # `P`-measurable classes
@@ -22,7 +23,7 @@ mathlib this completion-measurability condition is expressed as
 namespace StatInference
 
 open MeasureTheory Filter
-open scoped BigOperators Topology
+open scoped BigOperators Topology NNReal
 
 universe u v
 
@@ -102,6 +103,54 @@ theorem vdVWWeightedClassSupremum_nonneg
   exact Real.iSup_nonneg fun index =>
     Real.iSup_nonneg fun _ : index ∈ indexClass =>
       abs_nonneg (vdVWWeightedSampleSum classFun weights index sample)
+
+/--
+A deterministic finite-cover bound for the weighted supremum in VdV&W display
+`(2.3.2)`.
+
+This is the finite-discretization handoff needed for later Chapter 2
+covering-number bounds: once every class member is controlled by its finite
+cover center, it is enough to bound the finitely many center sums.
+-/
+theorem vdVWWeightedClassSupremum_le_upper_add_of_finiteMetricCover
+    {Observation : Type u} {Index : Type v} [PseudoEMetricSpace Index]
+    {indexClass : Set Index} {epsilon : ℝ≥0} {cardinality : ℕ}
+    (cover : FiniteMetricCoverAtCard indexClass epsilon cardinality)
+    {classFun : Index -> Observation -> ℝ} {n : ℕ}
+    (weights : Fin n -> ℝ) (sample : Fin n -> Observation) {upper : ℝ}
+    (hupper_nonneg : 0 ≤ upper)
+    (hupper :
+      ∀ centerIndex : Fin cardinality,
+        |vdVWWeightedSampleSum classFun weights (cover.center centerIndex) sample| ≤
+          upper)
+    (hcontrol :
+      ∀ index hindex,
+        |vdVWWeightedSampleSum classFun weights index sample -
+          vdVWWeightedSampleSum classFun weights
+            (cover.center (cover.centerOf index hindex)) sample| ≤
+          (epsilon : ℝ)) :
+    vdVWWeightedClassSupremum indexClass classFun weights sample ≤
+      upper + (epsilon : ℝ) := by
+  have htarget_nonneg : 0 ≤ upper + (epsilon : ℝ) :=
+    add_nonneg hupper_nonneg (NNReal.coe_nonneg epsilon)
+  unfold vdVWWeightedClassSupremum
+  apply Real.iSup_le
+  · intro index
+    apply Real.iSup_le
+    · intro hindex
+      let centerIndex := cover.centerOf index hindex
+      let targetSum := vdVWWeightedSampleSum classFun weights index sample
+      let centerSum :=
+        vdVWWeightedSampleSum classFun weights (cover.center centerIndex) sample
+      have hdecomp : centerSum + (targetSum - centerSum) = targetSum := by ring
+      calc
+        |targetSum| = |centerSum + (targetSum - centerSum)| :=
+          (congrArg abs hdecomp).symm
+        _ ≤ |centerSum| + |targetSum - centerSum| :=
+          abs_add_le centerSum (targetSum - centerSum)
+        _ ≤ upper + (epsilon : ℝ) := add_le_add (hupper centerIndex) (hcontrol index hindex)
+    · exact htarget_nonneg
+  · exact htarget_nonneg
 
 /--
 A bounded weighted value set bounds the corresponding inner supremum range

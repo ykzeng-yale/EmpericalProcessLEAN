@@ -23,9 +23,9 @@ The Chapter 1-2 theorem-level extraction currently has 156 items.
 
 ```text
 local-exact       1 / 156  [#-----------------------------]
-local-layer       9 / 156  [##----------------------------]
+local-layer       7 / 156  [#-----------------------------]
 mathlib-found.   21 / 156  [####--------------------------]
-pending-local   125 / 156  [########################------]
+pending-local   127 / 156  [########################------]
 ```
 
 The bars are inventory bars, not effort estimates.  A `pending-local` item may
@@ -53,7 +53,7 @@ half-line GC corollary from adjacent endpoint grids.
 | Chapter | Total theorem-level items | local-exact | local-layer | mathlib-foundation | pending-local |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Chapter 1 | 47 | 0 | 7 | 17 | 23 |
-| Chapter 2 | 109 | 1 | 2 | 4 | 102 |
+| Chapter 2 | 109 | 1 | 0 | 4 | 104 |
 
 Chapter 1 has more infrastructure layers than exact completions because many
 statements are whole-book weak-convergence/tightness machinery.  Chapter 2 has
@@ -103,7 +103,7 @@ outer-a.s./outer-probability GC wrappers.
 | Definition 2.1.5 | `vdVWCoveringNumber` wrapper over mathlib `Metric.externalCoveringNumber`, explicit finite closed-ball cover witnesses, finite-number handoff, monotonicity, and packing comparison wrappers | Exact open-ball norm convention needs radius-slack wrappers when a theorem requires literal `< epsilon` balls. |
 | Definition 2.1.6 | Primitive brackets, finite covers, `L1(P)` width, and numeric `l1BracketingNumber` | Entropy/logarithm refinements are not the current target. |
 | Definition 2.2.3 | Semimetric whole-space covering/packing wrappers `vdVWSemimetricCoveringNumber` and `vdVWSemimetricPackingNumber`, finite-cover handoff, and `N <= D <= N(epsilon/2)` comparison layer | Entropy/logarithm wrappers and exact open-ball convention remain pending. |
-| Definition 2.3.3 / Example 2.3.4 | Product measure `P^n`, display `(2.3.2)` weighted sample sums and class suprema, `NullMeasurable` predicate for measurability on the completion, countable coordinate-measurable constructor, pointwise-to-weighted-sum convergence helpers, value-set/boundedness infrastructure for real suprema, bounded pointwise-approximability-to-supremum-equality bridge, and proof-carrying countable-subclass supremum-equality handoff | Exact proof that the textbook pointwise convergence hypothesis implies all weighted-supremum equalities without extra boundedness assumptions, plus source screenshot for future theorem reports. |
+| Definition 2.3.3 / Example 2.3.4 | Product measure `P^n`, display `(2.3.2)` weighted sample sums and class suprema, `NullMeasurable` predicate for measurability on the completion, countable coordinate-measurable constructor, pointwise-to-weighted-sum convergence helpers, value-set/boundedness infrastructure for real suprema, bounded pointwise-approximability-to-supremum-equality bridge, deterministic finite-cover supremum bound for Theorem 2.4.3, and proof-carrying countable-subclass supremum-equality handoff | Exact proof that the textbook pointwise convergence hypothesis implies all weighted-supremum equalities without extra boundedness assumptions, plus source screenshot for future theorem reports. |
 | Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint/width identities, finite-measure real-tail cutpoints, adjacent-endpoint grid handoff, supplied finite-grid bridges, one-cell base grid and one-cell adjacent-endpoint base grid for radii above total mass, radius-monotonicity helpers for supplied real/extended/adjacent-endpoint grids, finite-real-endpoint assembly constructor, three-cell endpoint-grid constructor from supplied tail/middle width bounds, reduction of full endpoint-grid existence to `0 < epsilon <= μ.real univ`, all-positive-radius `N_[] < ∞` handoff, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids | Distribution-dependent middle-cell finite partition in the nontrivial radius range and exact empirical-CDF example report. |
 
 ## Near-Term Frontier
@@ -115,7 +115,7 @@ ONGOING    Example 2.4.2: distribution-dependent middle-cell partition in the no
 NEXT       Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
 READY      Definition 2.1.5 covering-number primitive for Theorem 2.4.3 setup.
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
-READY      Definition 2.3.3 P-measurable class primitive, countable constructor, and bounded Example 2.3.4 handoff.
+READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED   Broad Chapter 1 weak-convergence/tightness/process machinery until needed.
 ```
 

@@ -394,7 +394,8 @@ working strategy is bottom-up and theorem-driven:
   `vdVWCoveringNumber` and semimetric covering/packing wrappers around
   mathlib external covering and packing numbers;
 - VdV&W `P`-measurable class primitive, starting from product measures,
-  display `(2.3.2)` weighted suprema, and a countable measurable constructor;
+  display `(2.3.2)` weighted suprema, a countable measurable constructor, and
+  deterministic finite-cover supremum bounds for the Theorem 2.4.3 route;
 - symmetrization;
 - maximal inequalities;
 - random entropy GC theorem;
