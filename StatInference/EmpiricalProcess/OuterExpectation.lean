@@ -296,6 +296,39 @@ def addMajorant {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
   majorizes := fun ω => add_le_add (US.majorizes ω) (UT.majorizes ω)
 
 /--
+Addition by a constant preserves nonnegative measurable covers.
+
+This is a proved equality case for the additive clause in VdV&W
+Lemma 1.2.2(i): when one summand is the measurable constant `c`, the cover of
+`c + T` is `c + T*`.  The proof splits off the `c = ∞` case and otherwise
+uses mathlib's `ℝ≥0∞` subtraction API to test arbitrary measurable majorants
+against `V - c`.
+-/
+def addConstLeft {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (c : ℝ≥0∞) (UT : VdVWMeasurableCover μ T) :
+    VdVWMeasurableCover μ (fun ω => c + T ω) where
+  toFun := fun ω => c + UT ω
+  measurable_toFun := measurable_const.add UT.measurable_toFun
+  majorizes := fun ω => add_le_add le_rfl (UT.majorizes ω)
+  minimal_ae := by
+    intro V hV h_majorizes
+    by_cases hc_top : c = ∞
+    · filter_upwards [h_majorizes] with ω hω
+      simpa [hc_top] using hω
+    · let W : Ω -> ℝ≥0∞ := fun ω => V ω - c
+      have hW_meas : Measurable W :=
+        (ENNReal.continuous_sub_right c).measurable.comp hV
+      have hW_majorizes : ∀ᵐ ω ∂μ, T ω ≤ W ω := by
+        filter_upwards [h_majorizes] with ω hω
+        exact ENNReal.le_sub_of_add_le_left hc_top hω
+      have hUT_le_W : ∀ᵐ ω ∂μ, UT ω ≤ W ω :=
+        UT.minimal_ae W hW_meas hW_majorizes
+      filter_upwards [h_majorizes, hUT_le_W] with ω h_majorizesω hUT_le_Wω
+      have hc_le_V : c ≤ V ω := by
+        exact le_trans le_self_add h_majorizesω
+      exact (ENNReal.le_sub_iff_add_le_left hc_top hc_le_V).mp hUT_le_Wω
+
+/--
 Infimum majorant algebra for nonnegative measurable covers.
 
 This is the nonnegative cover-interface version of the easy inequality in
@@ -426,6 +459,18 @@ theorem VdVWOuterExpectation_le_lintegral_add_cover
       ∫⁻ ω, US ω + UT ω ∂μ :=
   VdVWOuterExpectation_le_lintegral_majorant
     (VdVWMeasurableCover.addMajorant US UT)
+
+/--
+The constant-left addition cover realizes the nonnegative outer expectation
+of `c + T`.
+-/
+theorem VdVWOuterExpectation_eq_lintegral_const_add_cover
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (c : ℝ≥0∞) (UT : VdVWMeasurableCover μ T) :
+    VdVWOuterExpectation μ (fun ω => c + T ω) =
+      ∫⁻ ω, c + UT ω ∂μ :=
+  VdVWOuterExpectation_eq_lintegral_cover
+    (VdVWMeasurableCover.addConstLeft c UT)
 
 /--
 The infimum cover majorant bounds the nonnegative outer expectation of a

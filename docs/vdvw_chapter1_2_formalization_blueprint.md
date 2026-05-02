@@ -126,7 +126,7 @@ quotes; the anchor is the authoritative local source location.
 | Item | Kind | Anchor | Current audit status |
 | --- | --- | --- | --- |
 | 1.2.1 | Lemma | `..._1-100.md:372` | local-layer: nonnegative outer/inner expectation and cover interfaces |
-| 1.2.2 | Lemma | `..._1-100.md:389` | local-layer: nonnegative sup/add/inf/product, threshold-indicator, and measurable-left inf-equality cover algebra |
+| 1.2.2 | Lemma | `..._1-100.md:389` | local-layer: nonnegative sup/add/inf/product, constant-left addition equality, threshold-indicator, and measurable-left inf-equality cover algebra |
 | 1.2.3 | Lemma | `..._1-100.md:438` | local-layer: outer/inner event probability, event lower-indicator lower cover, and inner-expectation indicator equality |
 | 1.2.4 | Lemma | `..._1-100.md:446` | pending-local |
 | 1.2.5 | Lemma | `..._1-100.md:467` | mathlib-foundation |
