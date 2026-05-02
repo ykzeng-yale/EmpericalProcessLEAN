@@ -232,6 +232,23 @@ theorem vdVWUniformDeviationBadEvent_nullMeasurableSet_of_countable_of_aemeasura
     (h_coordinate index hindex).nullMeasurableSet_preimage
       (measurableSet_Ioi : MeasurableSet (Set.Ioi tolerance))
 
+/--
+Mathlib measurability bridge from empirical-risk coordinates to absolute
+empirical-deviation coordinates.
+-/
+theorem vdVWCoordinateDeviation_aemeasurable_of_empiricalRisk
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    {μ : Measure Ω} {populationRisk : Index -> ℝ}
+    {empiricalRisk : Ω -> ℕ -> Index -> ℝ}
+    {sampleSize : ℕ} {index : Index}
+    (h_empirical :
+      AEMeasurable (fun ω => empiricalRisk ω sampleSize index) μ) :
+    AEMeasurable
+      (fun ω =>
+        |empiricalRisk ω sampleSize index - populationRisk index|) μ := by
+  simpa [Real.norm_eq_abs] using
+    (h_empirical.sub aemeasurable_const).norm
+
 /-- Event that some bad uniform-deviation sample size occurs after `start`. -/
 def VdVWUniformDeviationBadTailEvent
     {Ω : Type u} {Index : Type v} (indexClass : Set Index)
@@ -519,6 +536,30 @@ theorem vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_
           (fun index hindex => h_coordinate sampleSize index hindex))
 
 /--
+For a countable class, coordinate a.e.-measurability of the empirical-risk
+coordinates is enough to use the finite-measure direct outer-probability bridge.
+-/
+theorem vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalRisk
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {indexClass : Set Index}
+    {populationRisk : Index -> ℝ}
+    {empiricalRisk : Ω -> ℕ -> Index -> ℝ}
+    (h_outer_as :
+      VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ indexClass
+        populationRisk empiricalRisk)
+    (h_count : indexClass.Countable)
+    (h_empirical :
+      ∀ sampleSize index, index ∈ indexClass ->
+        AEMeasurable (fun ω => empiricalRisk ω sampleSize index) μ) :
+    VdVWOuterProbabilityUniformDeviationTendstoZeroOn μ indexClass
+      populationRisk empiricalRisk :=
+  vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_coordinate
+    h_outer_as h_count
+    (fun sampleSize index hindex =>
+      vdVWCoordinateDeviation_aemeasurable_of_empiricalRisk
+        (h_empirical sampleSize index hindex))
+
+/--
 The local a.s. pathwise convergence predicate implies the explicit
 outer-almost-sure VdV&W predicate.
 -/
@@ -755,6 +796,35 @@ theorem vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aeme
       X hLaw hindep h_bracketing)
     h_count
     h_coordinate
+
+/--
+VdV&W Theorem 2.4.1 in the direct outer-probability convergence mode for a
+countable index class with a.e.-measurable empirical-average coordinates.
+-/
+theorem vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_empiricalAverage
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (X : ℕ -> Ω -> Observation)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X))
+    (h_bracketing :
+      ∀ epsilon, 0 < epsilon ->
+        l1BracketingNumber P indexClass classFun epsilon < ⊤)
+    (h_count : indexClass.Countable)
+    (h_empirical :
+      ∀ sampleSize index, index ∈ indexClass ->
+        AEMeasurable
+          (fun ω =>
+            empiricalAverage (samplePath X ω sampleSize)
+              (classFun index)) μ) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass μ P indexClass classFun X :=
+  vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalRisk
+    (vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top
+      X hLaw hindep h_bracketing)
+    h_count
+    h_empirical
 
 /--
 VdV&W Theorem 2.4.1 in the book-style `P`-Glivenko-Cantelli predicate.

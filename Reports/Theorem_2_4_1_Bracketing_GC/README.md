@@ -4,11 +4,13 @@ Source theorem: van der Vaart and Wellner, *Weak Convergence and Empirical
 Processes*, Theorem 2.4.1.
 
 Current Lean status: proof-complete for VdV&W Theorem 2.4.1 in the
-outer-almost-sure convergence mode.  The repository proves the
-dependency-minimal theorem from primitive `N_[]` finiteness to an explicit
-outer-a.s. `P`-Glivenko-Cantelli conclusion.  The separate outer-probability
-convergence mode and the full Chapter 1 arbitrary-map machinery remain future
-compatibility work.
+outer-almost-sure convergence mode and in the book-style disjunctive
+Glivenko-Cantelli predicate.  The repository proves the dependency-minimal
+theorem from primitive `N_[]` finiteness to an explicit outer-a.s.
+`P`-Glivenko-Cantelli conclusion, and also proves direct outer-probability
+corollaries under measurable-bad-event hypotheses, including a countable-class
+empirical-average measurability bridge.  The full Chapter 1 arbitrary-map
+machinery remains future compatibility work.
 
 ## Proved Lean Layers
 
@@ -48,6 +50,8 @@ compatibility work.
 | `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_nullMeasurable_badEvent` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | Theorem 2.4.1 in the direct outer-probability mode under the null-measurable bad-event bridge |
 | `vdVWUniformDeviationBadEvent_nullMeasurableSet_of_countable_of_coordinate`, `vdVWUniformDeviationBadEvent_nullMeasurableSet_of_countable_of_aemeasurable_coordinate` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | derives fixed bad-event null measurability from countable-index coordinate measurability |
 | `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_coordinate`, `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_coordinate` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | direct outer-probability Theorem 2.4.1 for countable classes with coordinate a.e.-measurable deviations |
+| `vdVWCoordinateDeviation_aemeasurable_of_empiricalRisk`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalRisk` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | derives coordinate deviation a.e.-measurability from empirical-risk coordinate a.e.-measurability and uses it in the countable direct outer-probability branch |
+| `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_empiricalAverage` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | direct outer-probability Theorem 2.4.1 for countable classes with a.e.-measurable empirical-average coordinates |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | Theorem 2.4.1 packaged into the book-style GC predicate through the outer-a.s. branch |
 
 Detailed side-by-side audit table:
@@ -107,12 +111,16 @@ The proved Lean code currently supplies:
 19. a countable-class bridge deriving fixed bad-event null measurability from
     coordinate a.e.-measurability;
 20. a direct outer-probability version of Theorem 2.4.1 for countable classes
-    with coordinate a.e.-measurable empirical deviations.
+    with coordinate a.e.-measurable empirical deviations;
+21. a mathlib measurability bridge from empirical-risk coordinate
+    a.e.-measurability to coordinate empirical-deviation a.e.-measurability;
+22. a direct outer-probability version of Theorem 2.4.1 for countable classes
+    with a.e.-measurable empirical-average coordinates.
 
 The remaining compatibility layers are not needed for the outer-a.s. proof of
 Theorem 2.4.1, but they are needed for broader Chapter 1 coverage:
 
-1. deriving coordinate a.e.-measurability from concrete measurability
-   assumptions on the empirical process and function class;
+1. deriving empirical-risk or empirical-average a.e.-measurability from
+   concrete measurability assumptions on the sample process and function class;
 2. VdV&W measurable covers, outer expectation, and arbitrary-map convergence
    infrastructure for full textbook-order formalization.

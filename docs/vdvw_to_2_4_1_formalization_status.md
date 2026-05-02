@@ -128,6 +128,9 @@ The following are compiled Lean declarations with no proof holes:
 | `vdVWUniformDeviationBadEvent_nullMeasurableSet_of_countable_of_aemeasurable_coordinate` | coordinate a.e.-measurability implies fixed bad-event null measurability for countable classes |
 | `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_coordinate` | outer-a.s. convergence implies direct outer-probability convergence for countable classes with coordinate a.e.-measurable deviations |
 | `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_coordinate` | VdV&W Theorem 2.4.1 in the direct outer-probability mode for countable classes with coordinate a.e.-measurable deviations |
+| `vdVWCoordinateDeviation_aemeasurable_of_empiricalRisk` | empirical-risk coordinate a.e.-measurability implies coordinate empirical-deviation a.e.-measurability |
+| `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalRisk` | outer-a.s. convergence implies direct outer-probability convergence for countable classes with a.e.-measurable empirical-risk coordinates |
+| `vdVW_theorem_2_4_1_outerProbabilityGlivenkoCantelli_of_countable_of_aemeasurable_empiricalAverage` | VdV&W Theorem 2.4.1 in the direct outer-probability mode for countable classes with a.e.-measurable empirical-average coordinates |
 | `VdVWPGlivenkoCantelliClass` | book-style GC predicate: outer probability or outer almost surely |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | VdV&W Theorem 2.4.1 packaged into the book-style GC predicate |
 
@@ -142,10 +145,14 @@ bad-infinitely-often event.  It also proves that this tail-continuity condition
 follows from fixed bad-event null measurability and finite sample-space measure,
 using mathlib's continuity from above.  It further derives fixed bad-event
 null-measurability from countability of the class and coordinate
-a.e.-measurability, and packages that into a direct outer-probability Theorem
-2.4.1 layer for countable classes.  Deriving coordinate a.e.-measurability
-from concrete function-class/sample-process assumptions remains future
-compatibility work with broader Chapter 1 arbitrary-map machinery.
+a.e.-measurability, packages that into a direct outer-probability Theorem
+2.4.1 layer for countable classes, and proves the mathlib bridge from
+empirical-risk coordinate a.e.-measurability to coordinate empirical-deviation
+a.e.-measurability.  The latest promoted corollary states the countable direct
+outer-probability theorem using a.e.-measurable empirical-average coordinates.
+Deriving those empirical-risk or empirical-average a.e.-measurability
+hypotheses from concrete function-class/sample-process assumptions remains
+future compatibility work with broader Chapter 1 arbitrary-map machinery.
 
 ## Dependency-Minimal Remaining Work For Theorem 2.4.1
 
@@ -166,7 +173,7 @@ These are the missing primitives and lemmas on the direct proof path.
 | 11 | endpoint convergence to route fields | proof line 984 | done: `finiteEndpointRadius`, `FiniteL1BracketCover.endpointRadius`, and route constructor from endpoint convergence |
 | 12 | construct `FiniteBracketingEndpointRoute` | proof lines 972-984 | done from primitive finite `L1(P)` cover plus endpoint/width assumptions |
 | 13 | decreasing-radius argument | proof line 984 | done for the dependency-minimal deterministic and iid countable-cover routes |
-| 14 | final textbook theorem | Theorem 2.4.1 statement | done as book-style GC predicate: `vdVW_theorem_2_4_1_glivenkoCantelli`; direct outer-probability theorem also proved under fixed bad-event null-measurability, and for countable classes under coordinate a.e.-measurability |
+| 14 | final textbook theorem | Theorem 2.4.1 statement | done as book-style GC predicate: `vdVW_theorem_2_4_1_glivenkoCantelli`; direct outer-probability theorem also proved under fixed bad-event null-measurability, for countable classes under coordinate a.e.-measurability, and for countable classes under empirical-average a.e.-measurability |
 
 ## Full Textbook-Order Work Before 2.4.1
 
