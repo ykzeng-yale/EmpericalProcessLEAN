@@ -583,6 +583,76 @@ theorem VdVWInnerProbability_le_innerExpectation_eventIndicator
       (VdVWMeasurableMinorant.eventLowerIndicator μ event)
 
 /--
+For finite measures, the event-level lower indicator is the lower measurable
+cover of the raw event indicator.
+
+The proof uses mathlib's `toMeasurable` hull and
+`measure_toMeasurable_inter`: if a measurable minorant is positive on the
+measurable hull of `eventᶜ`, then it is positive on `eventᶜ` up to a null set,
+contradicting the minorant hypothesis.
+-/
+noncomputable def VdVWMeasurableLowerCover.eventIndicatorOfToMeasurableCompl
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    (event : Set Ω) :
+    VdVWMeasurableLowerCover μ (VdVWEventIndicator event) where
+  toFun := VdVWEventLowerIndicator μ event
+  measurable_toFun := measurable_vdVWEventLowerIndicator μ event
+  minorizes := VdVWEventLowerIndicator_le_eventIndicator μ event
+  maximal_ae := by
+    intro L hL h_minorizes
+    let coverCompl : Set Ω := toMeasurable μ eventᶜ
+    let positive : Set Ω := {ω | 0 < L ω}
+    have hpositive_meas : MeasurableSet positive :=
+      measurableSet_lt measurable_const hL
+    have hbad_zero :
+        μ {ω | ¬ L ω ≤ VdVWEventIndicator event ω} = 0 :=
+      ae_iff.mp h_minorizes
+    have h_event_compl_positive_zero : μ (eventᶜ ∩ positive) = 0 := by
+      refine measure_mono_null ?_ hbad_zero
+      intro ω hω
+      change ¬ L ω ≤ VdVWEventIndicator event ω
+      have hnot_event : ω ∉ event := hω.1
+      have hpos : 0 < L ω := hω.2
+      simpa [VdVWEventIndicator, hnot_event] using not_le.mpr hpos
+    have h_cover_positive_zero : μ (coverCompl ∩ positive) = 0 := by
+      change μ (toMeasurable μ eventᶜ ∩ positive) = 0
+      rw [Measure.measure_toMeasurable_inter hpositive_meas (measure_ne_top μ eventᶜ)]
+      exact h_event_compl_positive_zero
+    have h_not_cover_positive : ∀ᵐ ω ∂μ, ω ∉ coverCompl ∩ positive := by
+      refine ae_iff.mpr ?_
+      simpa [coverCompl] using h_cover_positive_zero
+    filter_upwards [h_minorizes, h_not_cover_positive] with ω hL_minorizes hω_not_cover_positive
+    by_cases hcover : ω ∈ coverCompl
+    · have hnot_positive : ¬ 0 < L ω := by
+        intro hpositive
+        exact hω_not_cover_positive ⟨hcover, hpositive⟩
+      have hL_zero : L ω ≤ 0 := not_lt.mp hnot_positive
+      simpa [VdVWEventLowerIndicator, VdVWEventIndicator, coverCompl, hcover]
+        using hL_zero
+    · have hnot_event_compl : ω ∉ eventᶜ := by
+        intro hω_event_compl
+        exact hcover (subset_toMeasurable μ eventᶜ hω_event_compl)
+      have h_event : ω ∈ event := by
+        simpa using hnot_event_compl
+      have hL_one : L ω ≤ 1 := by
+        simpa [VdVWEventIndicator, h_event] using hL_minorizes
+      simpa [VdVWEventLowerIndicator, VdVWEventIndicator, coverCompl, hcover]
+        using hL_one
+
+/--
+VdV&W Lemma 1.2.3(iii), nonnegative indicator form: the inner expectation of
+an arbitrary event indicator is the inner probability of the event.
+-/
+theorem VdVWInnerExpectation_eventIndicator_eq_innerProbability
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    (event : Set Ω) :
+    VdVWInnerExpectation μ (VdVWEventIndicator event) =
+      VdVWInnerProbability μ event := by
+  rw [VdVWInnerExpectation_eq_lintegral_lowerCover
+    (VdVWMeasurableLowerCover.eventIndicatorOfToMeasurableCompl μ event)]
+  exact lintegral_vdVWEventLowerIndicator_eq_innerProbability μ event
+
+/--
 Event-indicator complement identity for VdV&W Lemma 1.2.3(iii):
 the upper indicator of `B` plus the lower indicator of `Bᶜ` is `1`.
 -/
