@@ -3,11 +3,16 @@
 This directory holds source-audit reports for promoted VdV&W formalization
 work.
 
-Use one report folder per textbook theorem when the exact theorem is promoted.
-Use one report folder per theorem layer only when the layer is intentionally
-promoted before the exact theorem.  When the exact theorem is later proved,
-the exact theorem report must link back to the layer report instead of
-duplicating it silently.
+Use one report folder per textbook theorem or lemma only after the exact
+statement has been fully formalized in Lean: all primitives in the textbook
+statement have Lean counterparts, every local definition/lemma needed by the
+proof is included, the final theorem compiles, and the proof-hole scan is
+clean.
+
+Intermediate proof layers, proof-carrying interfaces, and partial compatibility
+wrappers should be tracked in `docs/` or the active blueprint, not as formal
+theorem reports.  When the exact theorem is later proved, its report should
+include those intermediate declarations in the dependency/cross-check table.
 
 Required folder shape:
 
@@ -27,8 +32,8 @@ Each report must include:
 - Local PDF screenshot path for the corresponding passage.
 - Dependency list separating reused mathlib declarations from local
   declarations.
-- Gap note saying whether the result is exact textbook formalization,
-  a theorem layer, a proof-carrying interface, or still pending.
+- Gap note saying whether the result is exact textbook formalization and what
+  broader textbook-order compatibility work remains.
 
 Promotion gate:
 
