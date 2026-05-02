@@ -99,7 +99,7 @@ Current promoted declarations toward Theorem 2.4.1:
 | `VdVWMeasurableCover.sup`, `VdVWMeasurableCover.addMajorant`, `VdVWMeasurableCover.infMajorant`, `VdVWMeasurableCover.mulMajorant` | proved nonnegative Lemma 1.2.2 cover-algebra layers for pointwise sup, sum, inf, and product majorants |
 | `VdVWMeasurableCover.addConstLeft`, `VdVWMeasurableCover.addConstRight`, `VdVWOuterExpectation_eq_lintegral_const_add_cover`, `VdVWOuterExpectation_eq_lintegral_add_const_cover` | proved nonnegative Lemma 1.2.2(i) equality layer when either summand is a constant: `(c + T)* = c + T*` and `(T + c)* = T* + c` |
 | `VdVWMeasurableCover.thresholdIndicatorCover`, `VdVWOuterExpectation_thresholdIndicator_eq_measure_cover_threshold` | proved nonnegative Lemma 1.2.2(vi) threshold-indicator layer: the cover of `1_{T>c}` is `1_{T*>c}` |
-| `VdVWMeasurableCover.infOfMeasurableLeft`, `VdVWOuterExpectation_eq_lintegral_inf_cover_of_left_measurable` | proved nonnegative Lemma 1.2.2(ix) equality layer when the left map is measurable: `(S ∧ T)* = S ∧ T*` |
+| `VdVWMeasurableCover.infOfMeasurableLeft`, `VdVWMeasurableCover.infOfMeasurableRight`, `VdVWOuterExpectation_eq_lintegral_inf_cover_of_left_measurable`, `VdVWOuterExpectation_eq_lintegral_inf_cover_of_right_measurable` | proved nonnegative Lemma 1.2.2(ix) equality layer when either map is measurable: `(S ∧ T)* = S ∧ T*` and `(S ∧ T)* = S* ∧ T` |
 | `VdVWEventIndicator`, `VdVWMeasurableSetCover`, `VdVWOuterExpectation_eventIndicator_eq_measure` | proved nonnegative Lemma 1.2.3(i) indicator bridge: outer probability as outer expectation |
 | `VdVWMeasurableCover.eventIndicatorOfToMeasurable`, `VdVWOuterExpectation_eq_lintegral_eventIndicatorCover` | proved finite-measure event-indicator measurable-cover bridge for Lemma 1.2.3 |
 | `VdVWMeasurableLowerCover.eventIndicatorOfToMeasurableCompl`, `VdVWInnerExpectation_eventIndicator_eq_innerProbability` | proved finite-measure nonnegative Lemma 1.2.3 inner indicator bridge: inner probability as inner expectation |
@@ -210,7 +210,7 @@ through 2.4.1 requires accounting for them.
 | Item | Anchor | Topic | Current status |
 | --- | --- | --- | --- |
 | 1.2.1 Lemma | `M1:372` | measurable cover function | local layer exists: nonnegative outer-expectation primitives and proof-carrying measurable-cover realization theorem; exact extended-real cover existence remains pending |
-| 1.2.2 Lemma | `M1:389` | a.s. rules for arbitrary maps | local layer exists: nonnegative sup/add/inf/product, two-sided constant addition equality, threshold-indicator, and measurable-left inf-equality cover algebra; exact extended-real signed clauses, subtraction, absolute value, and remaining equality cases remain pending |
+| 1.2.2 Lemma | `M1:389` | a.s. rules for arbitrary maps | local layer exists: nonnegative sup/add/inf/product, two-sided constant addition equality, threshold-indicator, and two-sided measurable infimum equality cover algebra; exact extended-real signed clauses, subtraction, absolute value, and remaining equality cases remain pending |
 | 1.2.3 Lemma | `M1:438` | outer measure of subsets | local layer exists: nonnegative indicator bridges `P*(B)=E*1_B` and `P_*(B)=E_*1_B`, plus finite-measure event-indicator upper/lower measurable-cover realizations; full extended-real measurable-set-cover identities pending |
 | 1.2.4 Lemma | `M1:446` | dominated family measurable cover | pending primitive |
 | 1.2.5 Lemma | `M1:467` | perfect coordinate projection | later roadmap; product probability and map foundations in mathlib |

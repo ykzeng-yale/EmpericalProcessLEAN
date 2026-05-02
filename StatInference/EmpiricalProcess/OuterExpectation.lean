@@ -398,6 +398,18 @@ def infOfMeasurableLeft {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
       exact le_trans inf_le_left hS_le_V
 
 /--
+Infimum cover algebra when the right map is measurable.
+
+This is the symmetric nonnegative counterpart of the equality clause in
+VdV&W Lemma 1.2.2(ix): if `T` is measurable, then `(S ∧ T)* = S* ∧ T`.
+-/
+def infOfMeasurableRight {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (US : VdVWMeasurableCover μ S)
+    (hT : Measurable T) :
+    VdVWMeasurableCover μ (fun ω => S ω ⊓ T ω) := by
+  simpa [inf_comm] using (VdVWMeasurableCover.infOfMeasurableLeft hT US)
+
+/--
 Multiplicative majorant algebra for nonnegative measurable covers.
 
 This is the nonnegative positive-sign skeleton behind the product clauses in
@@ -520,6 +532,19 @@ theorem VdVWOuterExpectation_eq_lintegral_inf_cover_of_left_measurable
       ∫⁻ ω, S ω ⊓ UT ω ∂μ :=
   VdVWOuterExpectation_eq_lintegral_cover
     (VdVWMeasurableCover.infOfMeasurableLeft hS UT)
+
+/--
+If the right map is measurable, the pointwise infimum with the cover of the
+left map realizes the nonnegative outer expectation.
+-/
+theorem VdVWOuterExpectation_eq_lintegral_inf_cover_of_right_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (US : VdVWMeasurableCover μ S)
+    (hT : Measurable T) :
+    VdVWOuterExpectation μ (fun ω => S ω ⊓ T ω) =
+      ∫⁻ ω, US ω ⊓ T ω ∂μ := by
+  simpa [inf_comm] using
+    (VdVWOuterExpectation_eq_lintegral_inf_cover_of_left_measurable hT US)
 
 /--
 The product cover majorant bounds the nonnegative outer expectation of a
