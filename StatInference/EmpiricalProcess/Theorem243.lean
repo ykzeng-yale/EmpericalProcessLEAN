@@ -111,6 +111,64 @@ theorem abs_vdVWTruncatedClassFun_le_M
         henvelope hindex observation).trans hle
   · simpa [vdVWTruncatedClassFun, hle] using hM
 
+/--
+The truncation error is supported on the envelope tail `{F > M}` and is
+bounded there by the envelope.
+
+This is the deterministic pointwise handoff behind the later
+`P^* F {F > M}` term in the proof of VdV&W Theorem 2.4.3.
+-/
+theorem abs_classFun_sub_vdVWTruncatedClassFun_le_envelope_tail
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    {index : Index} (hindex : index ∈ indexClass)
+    (observation : Observation) :
+    |classFun index observation -
+        vdVWTruncatedClassFun classFun envelope M index observation| ≤
+      Set.indicator {x | M < envelope x} envelope observation := by
+  by_cases htail : M < envelope observation
+  · have hzero :
+        vdVWTruncatedClassFun classFun envelope M index observation = 0 :=
+      vdVWTruncatedClassFun_eq_zero_of_lt_envelope
+        classFun envelope M index htail
+    simpa [Set.indicator, htail, hzero] using
+      henvelope.bound index hindex observation
+  · have hle : envelope observation ≤ M := le_of_not_gt htail
+    have heq :
+        vdVWTruncatedClassFun classFun envelope M index observation =
+          classFun index observation :=
+      vdVWTruncatedClassFun_eq_of_envelope_le classFun envelope M index hle
+    simp [Set.indicator, htail, heq]
+
+/-- The same truncation-tail bound with the subtraction order reversed. -/
+theorem abs_vdVWTruncatedClassFun_sub_classFun_le_envelope_tail
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    {index : Index} (hindex : index ∈ indexClass)
+    (observation : Observation) :
+    |vdVWTruncatedClassFun classFun envelope M index observation -
+        classFun index observation| ≤
+      Set.indicator {x | M < envelope x} envelope observation := by
+  simpa [abs_sub_comm] using
+    (abs_classFun_sub_vdVWTruncatedClassFun_le_envelope_tail
+      henvelope hindex observation)
+
+/-- The real-valued envelope-tail indicator is nonnegative. -/
+theorem envelope_tail_indicator_nonneg
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (observation : Observation) :
+    0 ≤ Set.indicator {x | M < envelope x} envelope observation := by
+  by_cases htail : M < envelope observation
+  · simpa [Set.indicator, htail] using henvelope.nonneg observation
+  · simp [Set.indicator, htail]
+
 /-- Measurability of the truncated class member follows from measurability of `f` and `F`. -/
 theorem measurable_vdVWTruncatedClassFun
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
