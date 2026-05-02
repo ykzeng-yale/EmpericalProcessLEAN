@@ -1,5 +1,8 @@
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Probability.HasLawExists
+import Mathlib.Probability.IdentDistrib
 import Mathlib.Probability.Moments.SubGaussian
+import Mathlib.Probability.ProbabilityMassFunction.Integrals
 import StatInference.EmpiricalProcess.CoveringPrimitive
 import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.PMeasurable
@@ -501,6 +504,96 @@ theorem
 ## Rademacher-sign specialization
 -/
 
+/-- The fair Bernoulli PMF used to generate textbook Rademacher signs. -/
+noncomputable def vdVWRademacherBoolPMF : PMF Bool :=
+  PMF.bernoulli (1 / 2 : ℝ≥0) (by norm_num)
+
+/-- The Bool-to-real sign map sending the Bernoulli outcome to `±1`. -/
+def vdVWBoolToRademacherSign (b : Bool) : ℝ :=
+  cond b (1 : ℝ) (-1)
+
+/-- The probability law of the fair Bernoulli source for Rademacher signs. -/
+noncomputable def vdVWRademacherBoolLaw : Measure Bool :=
+  vdVWRademacherBoolPMF.toMeasure
+
+instance : IsProbabilityMeasure vdVWRademacherBoolLaw := by
+  unfold vdVWRademacherBoolLaw vdVWRademacherBoolPMF
+  infer_instance
+
+/-- The Bool-to-real Rademacher sign map is measurable. -/
+theorem measurable_vdVWBoolToRademacherSign :
+    Measurable vdVWBoolToRademacherSign := by
+  fun_prop
+
+/-- The Bool-to-real Rademacher sign has support contained in `{−1, 1}`. -/
+theorem vdVWBoolToRademacherSign_eq_neg_one_or_one (b : Bool) :
+    vdVWBoolToRademacherSign b = -1 ∨ vdVWBoolToRademacherSign b = 1 := by
+  cases b <;> simp [vdVWBoolToRademacherSign]
+
+/-- The Bool-to-real Rademacher sign is bounded by one in absolute value. -/
+theorem abs_vdVWBoolToRademacherSign_le_one (b : Bool) :
+    |vdVWBoolToRademacherSign b| ≤ 1 := by
+  rcases vdVWBoolToRademacherSign_eq_neg_one_or_one b with hneg | hpos
+  · simp [hneg]
+  · simp [hpos]
+
+/-- The fair Bool-to-real Rademacher sign has mean zero. -/
+theorem integral_vdVWBoolToRademacherSign_eq_zero :
+    ∫ b, vdVWBoolToRademacherSign b ∂vdVWRademacherBoolLaw = 0 := by
+  unfold vdVWRademacherBoolLaw
+  rw [PMF.integral_eq_sum]
+  norm_num [vdVWRademacherBoolPMF, vdVWBoolToRademacherSign,
+    PMF.bernoulli_apply]
+
+/-- The pushed-forward real-valued Rademacher PMF on `{−1, 1}`. -/
+noncomputable def vdVWRademacherPMF : PMF ℝ :=
+  PMF.map vdVWBoolToRademacherSign vdVWRademacherBoolPMF
+
+/-- The real-valued Rademacher probability law on `{−1, 1}`. -/
+noncomputable def vdVWRademacherLaw : Measure ℝ :=
+  vdVWRademacherPMF.toMeasure
+
+instance : IsProbabilityMeasure vdVWRademacherLaw := by
+  unfold vdVWRademacherLaw vdVWRademacherPMF
+  infer_instance
+
+/-- The Bool-to-real sign map has the real-valued Rademacher law. -/
+theorem vdVWBoolToRademacherSign_hasLaw :
+    HasLaw vdVWBoolToRademacherSign vdVWRademacherLaw
+      vdVWRademacherBoolLaw := by
+  refine ⟨measurable_vdVWBoolToRademacherSign.aemeasurable, ?_⟩
+  exact PMF.toMeasure_map (p := vdVWRademacherBoolPMF)
+    (f := vdVWBoolToRademacherSign) measurable_vdVWBoolToRademacherSign
+
+/--
+The canonical fair Bool-to-real Rademacher sign is sub-Gaussian with variance
+proxy `1`.
+
+This closes the one-dimensional law needed before the finite iid construction
+for the Rademacher signs in VdV&W Theorem 2.4.3.
+-/
+theorem vdVWBoolToRademacherSign_hasSubgaussianMGF :
+    HasSubgaussianMGF vdVWBoolToRademacherSign 1 vdVWRademacherBoolLaw := by
+  have hmeas : AEMeasurable vdVWBoolToRademacherSign vdVWRademacherBoolLaw :=
+    measurable_vdVWBoolToRademacherSign.aemeasurable
+  have hbound : ∀ᵐ b ∂vdVWRademacherBoolLaw,
+      vdVWBoolToRademacherSign b ∈ Set.Icc (-1 : ℝ) 1 := by
+    exact ae_of_all _ (fun b => by
+      cases b <;> simp [vdVWBoolToRademacherSign])
+  have hzero : ∫ b, vdVWBoolToRademacherSign b ∂vdVWRademacherBoolLaw = 0 :=
+    integral_vdVWBoolToRademacherSign_eq_zero
+  have h := hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero
+    (X := vdVWBoolToRademacherSign) (μ := vdVWRademacherBoolLaw)
+    (a := (-1 : ℝ)) (b := 1) hmeas hbound hzero
+  convert h using 1
+  norm_num
+
+/-- The identity map under the real-valued Rademacher law is sub-Gaussian. -/
+theorem id_vdVWRademacherLaw_hasSubgaussianMGF :
+    HasSubgaussianMGF id 1 vdVWRademacherLaw := by
+  exact vdVWBoolToRademacherSign_hasSubgaussianMGF.congr_identDistrib
+    (vdVWBoolToRademacherSign_hasLaw.identDistrib HasLaw.id)
+
 /--
 A deterministic sign vector with the support of Rademacher signs.
 
@@ -510,6 +603,44 @@ to connect the textbook display to the empirical-net handoff.
 -/
 def VdVWRademacherSignVector {n : ℕ} (sign : Fin n -> ℝ) : Prop :=
   ∀ i, sign i = -1 ∨ sign i = 1
+
+/--
+Existence of finitely many iid real-valued Rademacher signs.
+
+This is the probability-space construction needed before the random-sign
+Hoeffding/maximal layer in VdV&W Theorem 2.4.3.  It is built from mathlib's
+`exists_iid` theorem for the fair Bool law, pushed through the Bool-to-real
+sign map with `HasLaw.comp` and `iIndepFun.comp`.
+-/
+theorem exists_iid_vdVWRademacherSigns (n : ℕ) :
+    ∃ Ω : Type, ∃ _ : MeasurableSpace Ω, ∃ P : Measure Ω,
+      ∃ sign : Fin n -> Ω -> ℝ,
+        (∀ i, Measurable (sign i)) ∧
+        (∀ i, HasLaw (sign i) vdVWRademacherLaw P) ∧
+        iIndepFun sign P ∧ IsProbabilityMeasure P ∧
+        (∀ i, HasSubgaussianMGF (sign i) 1 P) ∧
+        (∀ᵐ ω ∂P, VdVWRademacherSignVector (fun i => sign i ω)) := by
+  obtain ⟨Ω, mΩ, P, boolSign, hmeas, hlaw, hindep, hprob⟩ :=
+    ProbabilityTheory.exists_iid (Fin n) vdVWRademacherBoolLaw
+  letI : MeasurableSpace Ω := mΩ
+  let sign : Fin n -> Ω -> ℝ :=
+    fun i => vdVWBoolToRademacherSign ∘ boolSign i
+  refine ⟨Ω, mΩ, P, sign, ?_, ?_, ?_, hprob, ?_, ?_⟩
+  · intro i
+    exact measurable_vdVWBoolToRademacherSign.comp (hmeas i)
+  · intro i
+    exact vdVWBoolToRademacherSign_hasLaw.comp (hlaw i)
+  · exact hindep.comp (fun _ => vdVWBoolToRademacherSign)
+      (fun _ => measurable_vdVWBoolToRademacherSign)
+  · intro i
+    have hident :
+        IdentDistrib vdVWBoolToRademacherSign (sign i)
+          vdVWRademacherBoolLaw P :=
+      vdVWBoolToRademacherSign_hasLaw.identDistrib
+        (vdVWBoolToRademacherSign_hasLaw.comp (hlaw i))
+    exact vdVWBoolToRademacherSign_hasSubgaussianMGF.congr_identDistrib hident
+  · exact ae_of_all _ (fun ω i =>
+      vdVWBoolToRademacherSign_eq_neg_one_or_one (boolSign i ω))
 
 /-- Rademacher sign vectors are uniformly bounded by one in absolute value. -/
 theorem VdVWRademacherSignVector.abs_le_one

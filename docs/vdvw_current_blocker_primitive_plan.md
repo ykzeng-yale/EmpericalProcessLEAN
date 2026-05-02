@@ -310,6 +310,19 @@ additional example closures:
    `StatInference/EmpiricalProcess/Theorem243.lean`:
 
    ```lean
+   vdVWRademacherBoolPMF
+   vdVWBoolToRademacherSign
+   vdVWRademacherBoolLaw
+   measurable_vdVWBoolToRademacherSign
+   vdVWBoolToRademacherSign_eq_neg_one_or_one
+   abs_vdVWBoolToRademacherSign_le_one
+   integral_vdVWBoolToRademacherSign_eq_zero
+   vdVWRademacherPMF
+   vdVWRademacherLaw
+   vdVWBoolToRademacherSign_hasLaw
+   vdVWBoolToRademacherSign_hasSubgaussianMGF
+   id_vdVWRademacherLaw_hasSubgaussianMGF
+   exists_iid_vdVWRademacherSigns
    VdVWRademacherSignVector
    VdVWRademacherSignVector.abs_le_one
    vdVWRademacherWeights
@@ -335,10 +348,15 @@ additional example closures:
    `HasSubgaussianMGF.measure_ge_le` into a two-sided absolute-value tail
    bound and then into a finite-center union bound for the supremum over a
    nonempty `Fin cardinality` net, with a companion wrapper from the explicit
-   proof `0 < cardinality` that empirical-cover witnesses expose.  It
-   deliberately does not yet construct iid Rademacher signs or convert these
-   tails into the finite-center `psi_2`/Hoeffding maximal expectation
-   predicate.
+   proof `0 < cardinality` that empirical-cover witnesses expose.  The newest
+   iid layer constructs the fair Bool Bernoulli law, pushes it through the
+   Bool-to-real sign map to a real Rademacher law, proves its zero-mean
+   Hoeffding sub-Gaussian bound, and uses mathlib's iid existence theorem to
+   produce finitely many iid real-valued signs together with measurability,
+   laws, independence, sub-Gaussian marginals, probability-space structure, and
+   almost-sure sign-vector support.  It deliberately does not yet convert the
+   finite-center tails into the finite-center `psi_2`/Hoeffding maximal
+   expectation predicate.
 
    Search correction: the current
    `VdVWTheorem243RademacherFiniteCenterHoeffdingBound` is a deterministic
@@ -357,13 +375,25 @@ additional example closures:
    `FiniteEmpiricalL1CoverAtCard.centerOf`,
    `measure_sum_ge_le_of_iIndepFun`,
    `measure_sum_range_ge_le_of_iIndepFun`,
+   `PMF.bernoulli`,
+   `PMF.map`,
+   `PMF.toMeasure.isProbabilityMeasure`,
+   `PMF.integral_eq_sum`,
+   `PMF.bernoulli_apply`,
+   `PMF.toMeasure_map`,
+   `ProbabilityTheory.exists_iid`,
+   `ProbabilityTheory.HasLaw.comp`,
+   `ProbabilityTheory.HasLaw.identDistrib`,
+   `ProbabilityTheory.iIndepFun.comp`,
    `hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero`,
    `hasSubgaussianMGF_of_mem_Icc`, and
    `ProbabilityTheory.exists_hasLaw_indepFun`; no reusable Orlicz/`psi_2`
    API was found.  The probabilistic one-center sub-Gaussian bridge,
    variance-proxy arithmetic, and finite-center tail/union-bound layer are now
-   compiled; the next theorem-line primitives are the iid Rademacher-sign
-   construction and the tail-to-Orlicz/maximal expectation conversion.
+   compiled; the iid Rademacher-sign construction is now compiled as well.
+   The next theorem-line primitive is the tail-to-Orlicz/maximal expectation
+   conversion, followed by specialization of that bound to the truncated
+   centers.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -381,12 +411,12 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: construct or primitive-register iid Rademacher signs in the
-current `Fin n` sample-index form, specialize the compiled finite-center
-tail/union-bound layer to the truncated centers using the variance-proxy bound,
-and then prove or primitive-register the tail-to-Orlicz/maximal expectation
-conversion needed for the finite-center Hoeffding/maximal bound.  After that,
-move to the symmetrization/truncation and envelope-tail handoffs.
+Next exact edit: prove or primitive-register the tail-to-Orlicz/maximal
+expectation conversion needed for the finite-center Hoeffding/maximal bound,
+using the compiled finite-center tail/union-bound layer and the newly compiled
+iid Rademacher construction.  Then specialize that bound to truncated centers
+with `vdVWTheorem243_truncated_varianceProxy_le`, and move to the
+symmetrization/truncation and envelope-tail handoffs.
 
 ## Parked Example-Specific Blocker
 
