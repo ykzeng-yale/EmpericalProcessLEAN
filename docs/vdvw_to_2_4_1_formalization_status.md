@@ -162,6 +162,7 @@ The following are compiled Lean declarations with no proof holes:
 | `VdVWWeakConvergenceProbabilityMeasures.limsup_measure_closed_le`, `VdVWWeakConvergenceProbabilityMeasures.le_liminf_measure_open` | measure-level Portmanteau closed/open implications wrapped from pinned mathlib |
 | `VdVWProbabilityMeasuresTight`, `vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le`, `VdVWProbabilityMeasuresTight.isCompact_closure` | probability-measure tightness and Prokhorov compact-closure foundations wrapped from pinned mathlib |
 | `VdVWWeakConvergenceProbabilityMeasures.map_continuous`, `vdVWTendstoInDistribution_continuous_comp` | mathlib-backed continuous mapping wrappers for probability laws and convergence in distribution |
+| `VdVWWeakConvergenceProbabilityMeasures.prod`, `VdVWWeakConvergenceProbabilityMeasures.pi`, `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict` | mathlib-backed product-law weak-convergence wrappers and finite-coordinate/FDD forward wrapper for Chapter 1.4 |
 | `vdVWTendstoInDistribution_prodMk_of_tendstoInMeasure_const` | measurable common-domain Slutsky/product convergence wrapper for Section 1.4 |
 | `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | exact outer-a.s. uniform LLN and `P`-Glivenko-Cantelli predicates |
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | converts primitive `N_[]` finiteness into outer-a.s. uniform deviation convergence |
@@ -243,7 +244,7 @@ separate from the dependency-minimal proof of Theorem 2.4.1.
 | --- | --- | --- |
 | 1.2 | outer probabilities, measurable covers, outer/inner Fubini | nonnegative outer-expectation/measurable-cover primitive layer exists; exact extended-real existence theorem, inner expectation, and Fubini variants remain pending |
 | 1.3 | weak convergence of arbitrary maps, asymptotic measurability/tightness, Portmanteau/Prohorov | mathlib measure-level weak convergence and Portmanteau/Prokhorov foundations exist; VdV&W arbitrary-map wrappers pending |
-| 1.4 | product weak convergence, asymptotic independence, Slutsky | not formalized locally |
+| 1.4 | product weak convergence, finite-coordinate projections, asymptotic independence, Slutsky | local measure-level product-law and FDD-forward wrappers proved; exact arbitrary-map/asymptotic-independence and FDD-converse statements pending |
 | 1.5-1.7 | `l_infty(T)`, tightness/equicontinuity, separability, ball measurability, Suslin examples | not formalized locally |
 | 1.8 | Hilbert-space weak convergence material | not formalized locally |
 | 1.9-1.12 | convergence in outer probability, extended continuous mapping, uniform integrability, bounded Lipschitz metric | not formalized locally |

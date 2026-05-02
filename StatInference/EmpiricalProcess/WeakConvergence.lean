@@ -1,4 +1,6 @@
 import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
+import Mathlib.MeasureTheory.Measure.FiniteMeasurePi
+import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
 import Mathlib.MeasureTheory.Measure.ProbabilityMeasure
 import Mathlib.MeasureTheory.Measure.Prokhorov
 
@@ -13,7 +15,7 @@ measure-level or measurable-random-variable version.
 
 namespace StatInference
 
-open Filter MeasureTheory ProbabilityTheory
+open Filter MeasureTheory ProbabilityTheory TopologicalSpace
 
 open scoped BoundedContinuousFunction Topology
 
@@ -152,6 +154,69 @@ theorem VdVWWeakConvergenceProbabilityMeasures.map_continuous
       (fun i => (μs i).map hg.measurable.aemeasurable) l
       (μ.map hg.measurable.aemeasurable) := by
   exact ProbabilityMeasure.tendsto_map_of_tendsto_of_continuous μs μ h hg
+
+/--
+Binary product-law weak convergence.
+
+This is the measure-level product-space foundation for VdV&W Section 1.4,
+proved by mathlib's continuity of the product-probability-measure map.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.prod
+    {S : Type u} {T : Type v} {ι : Type w}
+    [MeasurableSpace S] [TopologicalSpace S] [SecondCountableTopology S]
+    [PseudoMetrizableSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [SecondCountableTopology T]
+    [PseudoMetrizableSpace T] [OpensMeasurableSpace T]
+    {μs : ι -> ProbabilityMeasure S} {νs : ι -> ProbabilityMeasure T}
+    {l : Filter ι} {μ : ProbabilityMeasure S} {ν : ProbabilityMeasure T}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    (hν : VdVWWeakConvergenceProbabilityMeasures νs l ν) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun i => (μs i).prod (νs i)) l (μ.prod ν) := by
+  have hp : Tendsto (fun i => (μs i, νs i)) l (𝓝 (μ, ν)) :=
+    hμ.prodMk_nhds hν
+  exact ProbabilityMeasure.continuous_prod.tendsto (μ, ν) |>.comp hp
+
+/--
+Finite product-law weak convergence.
+
+This wraps mathlib's continuity of the finite product probability-measure map.
+It is the finite-coordinate product-law foundation used before the full
+finite-dimensional-distribution criterion is developed.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.pi
+    {J : Type u} [Fintype J] {S : J -> Type v} {ι : Type w}
+    [∀ j, MeasurableSpace (S j)] [∀ j, TopologicalSpace (S j)]
+    [∀ j, SecondCountableTopology (S j)] [∀ j, PseudoMetrizableSpace (S j)]
+    [∀ j, OpensMeasurableSpace (S j)]
+    {μs : ι -> (j : J) -> ProbabilityMeasure (S j)}
+    {l : Filter ι} {μ : (j : J) -> ProbabilityMeasure (S j)}
+    (hμ : ∀ j, VdVWWeakConvergenceProbabilityMeasures (fun n => μs n j) l (μ j)) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun n => ProbabilityMeasure.pi (μs n)) l (ProbabilityMeasure.pi μ) := by
+  have hp : Tendsto μs l (𝓝 μ) := tendsto_pi_nhds.mpr hμ
+  exact ProbabilityMeasure.continuous_pi.tendsto μ |>.comp hp
+
+/--
+Finite-dimensional restriction of a weakly convergent process law.
+
+This is the forward FDD direction: weak convergence of laws on a product space
+implies weak convergence of every finite-coordinate restriction.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict
+    {I : Type u} {S : I -> Type v} {ι : Type w}
+    [∀ i, MeasurableSpace (S i)] [∀ i, TopologicalSpace (S i)]
+    [∀ i, OpensMeasurableSpace (S i)]
+    [MeasurableSpace ((i : I) -> S i)] [OpensMeasurableSpace ((i : I) -> S i)]
+    {μs : ι -> ProbabilityMeasure ((i : I) -> S i)}
+    {l : Filter ι} {μ : ProbabilityMeasure ((i : I) -> S i)}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    (s : Finset I)
+    [MeasurableSpace ((i : s) -> S i)] [BorelSpace ((i : s) -> S i)] :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun n => (μs n).map ((Finset.continuous_restrict s).measurable.aemeasurable)) l
+      (μ.map ((Finset.continuous_restrict s).measurable.aemeasurable)) := by
+  exact hμ.map_continuous (Finset.continuous_restrict s)
 
 /--
 Measurable-random-variable continuous mapping theorem for convergence in

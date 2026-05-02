@@ -222,10 +222,10 @@ quotes; the anchor is the authoritative local source location.
 | 1.3.13 | Lemma | `..._1-100.md:778` | blocked-vdvw: arbitrary-map/asymptotic-measurability infrastructure missing after mathlib search |
 | 1.4.1 | Lemma | `..._1-100.md:848` | foundation-lane/mathlib-foundation: audit found product/Pi Borel-space and finite-coordinate restriction APIs; pending exact VdV&W product-space wrapper |
 | 1.4.2 | Lemma | `..._1-100.md:849` | foundation-lane/mathlib-foundation: audit found product-law, projective-limit, and finite-dimensional-law APIs; exact nonnegative Lipschitz product-test uniqueness not found |
-| 1.4.3 | Lemma | `..._1-100.md:857` | foundation-lane/mathlib-foundation: wrap `ProbabilityMeasure.continuous_prod`/`continuous_pi` under `VdVWWeakConvergenceProbabilityMeasures` before arbitrary-map extension |
-| 1.4.4 | Lemma | `..._1-100.md:858` | foundation-lane/mathlib-foundation: finite-coordinate projection direction can reuse `Finset.continuous_restrict` plus weak-convergence map wrapper; converse FDD iff theorem still missing |
+| 1.4.3 | Lemma | `..._1-100.md:857` | local-layer/mathlib-foundation: binary and finite product-law weak-convergence wrappers proved as `VdVWWeakConvergenceProbabilityMeasures.prod` and `.pi`; arbitrary-map/asymptotic-tightness extension pending |
+| 1.4.4 | Lemma | `..._1-100.md:858` | local-layer/mathlib-foundation: finite-coordinate projection/FDD forward wrapper proved as `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict`; converse FDD iff theorem still missing |
 | 1.4.5 | Corollary | `..._1-100.md:878` | local-layer/mathlib-foundation: measurable common-domain Slutsky/product convergence wrapper proved; exact VdV&W product/arbitrary-map criterion still pending |
-| 1.4.8 | Theorem | `..._1-100.md:910` | foundation-lane/mathlib-foundation: projective-limit/FDD law equality APIs exist, but no exact weak-convergence iff-over-FDD theorem found; needs local product/FDD convergence primitive |
+| 1.4.8 | Theorem | `..._1-100.md:910` | foundation-lane/mathlib-foundation: FDD forward direction now wrapped for weak convergence; projective-limit/FDD law equality APIs exist, but no exact weak-convergence iff-over-FDD converse theorem found |
 | 1.5.2 | Lemma | `..._1-100.md:932` | foundation-lane: `l_infty(T)`/separability primitive target; mathlib has tightness/Prokhorov but local bounded-function-space API is still needed |
 | 1.5.3 | Lemma | `..._1-100.md:933` | foundation-lane: `l_infty(T)`/Donsker tightness primitive target, local bounded-function-space API needed |
 | 1.5.4 | Theorem | `..._1-100.md:934` | foundation-lane/mathlib-foundation: tightness theorem target using mathlib `IsTightMeasureSet`/Prokhorov plus local `l_infty(T)` wrappers |

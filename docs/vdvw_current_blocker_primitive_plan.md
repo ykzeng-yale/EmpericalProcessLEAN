@@ -143,15 +143,19 @@ Search record for the Chapter 1 product/FDD foundation lane:
   `identDistrib_iff_forall_finset_identDistrib`;
 - directly reusable local wrappers already include
   `VdVWWeakConvergenceProbabilityMeasures.map_continuous`,
+  `VdVWWeakConvergenceProbabilityMeasures.prod`,
+  `VdVWWeakConvergenceProbabilityMeasures.pi`,
+  `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict`,
   `vdVWTendstoInDistribution_prodMk_of_tendstoInMeasure_const`, and
   `vdVWProductMeasure`;
 - no exact theorem was found for VdV&W 1.4.2 product-measure uniqueness from
   nonnegative Lipschitz product tests, 1.4.5 arbitrary-net product weak
-  convergence, or 1.4.8 weak convergence iff all finite-dimensional
-  distributions converge.  The next Lean step for Section 1.4 should wrap
-  `ProbabilityMeasure.continuous_prod`/`continuous_pi` under
-  `VdVWWeakConvergenceProbabilityMeasures`, then build finite-coordinate
-  projection wrappers via `Finset.continuous_restrict`.
+  convergence, or the converse direction of 1.4.8 weak convergence iff all
+  finite-dimensional distributions converge.  The measure-level product-law
+  wrappers over `ProbabilityMeasure.continuous_prod`/`continuous_pi` and the
+  finite-coordinate projection wrapper over `Finset.continuous_restrict` are
+  now compiled; the remaining Section 1.4 proof work is the exact VdV&W
+  arbitrary-map/asymptotic-independence layer and the FDD converse.
 
 ## Active Main-Line Primitive Sequence
 

@@ -164,7 +164,7 @@ Targeted search found these reusable foundations.
 | measurable spaces, Borel spaces, measures | `Mathlib/MeasureTheory/MeasurableSpace/*`, `Mathlib/MeasureTheory/Measure/*` | use directly |
 | probability measures | `Mathlib/MeasureTheory/Measure/ProbabilityMeasure.lean` | use `ProbabilityMeasure`, `IsProbabilityMeasure`, coercion to `Measure` |
 | finite measures and weak convergence topology | `Mathlib/MeasureTheory/Measure/FiniteMeasure.lean` | use finite-measure topology and integral characterizations |
-| local VdV&W weak convergence wrappers | `StatInference/EmpiricalProcess/WeakConvergence.lean` | compiled measure-level probability-law weak convergence, bounded-continuous integral characterization, Portmanteau closed/open implications, tightness/Prokhorov wrappers, continuous mapping, and measurable Slutsky/product wrappers |
+| local VdV&W weak convergence wrappers | `StatInference/EmpiricalProcess/WeakConvergence.lean` | compiled measure-level probability-law weak convergence, bounded-continuous integral characterization, Portmanteau closed/open implications, tightness/Prokhorov wrappers, continuous mapping, product-law weak convergence, finite-coordinate/FDD forward direction, and measurable Slutsky/product wrappers |
 | Portmanteau style weak convergence | `Mathlib/MeasureTheory/Measure/Portmanteau.lean` | reused directly through local measure-level Portmanteau wrappers; arbitrary-map/outer-expectation version remains pending |
 | Prokhorov-related measure theory | `Mathlib/MeasureTheory/Measure/Prokhorov.lean`, `LevyProkhorovMetric.lean` | reused for probability-measure tightness and compact closure; VdV&W outer-probability/asymptotic-tightness nets still need local primitives |
 | convergence in distribution | `Mathlib/MeasureTheory/Function/ConvergenceInDistribution.lean` | reusable for measurable random variables |
@@ -233,12 +233,12 @@ through 2.4.1 requires accounting for them.
 | 1.3.13 Lemma | `M1:778` | asymptotic measurability via separating subalgebra | later roadmap |
 | 1.4.1 Lemma | `M1:848` | product Borel sigma field | mathlib foundation likely reusable |
 | 1.4.2 Lemma | `M1:849` | product measure uniqueness via test functions | mathlib foundation plus local statement pending |
-| 1.4.3 Lemma | `M1:857` | asymptotic tightness and products | later roadmap |
-| 1.4.4 Lemma | `M1:858` | asymptotic measurability and products | later roadmap |
+| 1.4.3 Lemma | `M1:857` | asymptotic tightness and products | local-layer/mathlib-foundation: measure-level binary and finite product-law weak-convergence wrappers compiled; asymptotic-tightness/arbitrary-map version pending |
+| 1.4.4 Lemma | `M1:858` | asymptotic measurability and products | local-layer/mathlib-foundation: finite-coordinate/FDD forward wrapper compiled; asymptotic-measurability and FDD converse pending |
 | 1.4.5 Corollary | `M1:878` | product weak convergence criterion | local-layer/mathlib-foundation: measurable common-domain Slutsky/product convergence wrapper compiled; exact product/arbitrary-map criterion pending |
 | 1.4.6 Example | `M1:883` | asymptotic independence | later roadmap |
 | 1.4.7 Example | `M1:892` | Slutsky lemma | mathlib/topology foundations reusable; VdV&W statement pending |
-| 1.4.8 Theorem | `M1:910` | finite-dimensional projections | mathlib product/projection foundations reusable; exact statement pending |
+| 1.4.8 Theorem | `M1:910` | finite-dimensional projections | local-layer/mathlib-foundation: FDD forward direction compiled via finite-coordinate restriction; exact weak-convergence iff-over-FDD converse pending |
 | 1.5.1 Example | `M1:927` | continuous functions as subspace of `l_infty` | later roadmap |
 | 1.5.2 Lemma | `M1:932` | asymptotic measurability by coordinates | later roadmap |
 | 1.5.3 Lemma | `M1:933` | law equality from marginals | later roadmap |
