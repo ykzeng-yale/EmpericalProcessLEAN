@@ -282,6 +282,24 @@ theorem exists_center {Observation : Type u} {Index : Type v} {n : ℕ}
   · exact cover.center_mem (cover.centerOf index hindex)
   · exact cover.dist_le index hindex
 
+/--
+A supplied empirical cover of a nonempty class has positive cardinality.
+
+This packages the `centerOf` field as the positivity bridge needed by
+finite-center maximal and tail bounds that use a nonempty `Fin cardinality`
+index type.
+-/
+theorem cardinality_pos_of_nonempty {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality)
+    (hindexClass : ∃ index, index ∈ indexClass) :
+    0 < cardinality := by
+  rcases hindexClass with ⟨index, hindex⟩
+  exact lt_of_le_of_lt (Nat.zero_le _) (cover.centerOf index hindex).isLt
+
 end FiniteEmpiricalL1CoverAtCard
 
 /-- Finite empirical `L1(P_n)` covering hypothesis in witness form. -/

@@ -754,6 +754,28 @@ theorem vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF
           simp [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
 
 /--
+Finite-center sub-Gaussian tail bound from an explicit positivity proof for
+the net cardinality.
+
+Empirical-cover witnesses usually expose `0 < cardinality`, not a typeclass
+instance.  This wrapper makes that handoff explicit and leaves the genuinely
+empty-net case to a separate branch.
+-/
+theorem vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF_of_pos
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0} {epsilon : ℝ}
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ)
+    (hepsilon : 0 ≤ epsilon) :
+    μ.real {ω | epsilon ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)} ≤
+      (cardinality : ℝ) *
+        (2 * Real.exp (-(epsilon ^ 2) / (2 * (c : ℝ)))) := by
+  haveI : Nonempty (Fin cardinality) := ⟨⟨0, hcardinality⟩⟩
+  exact
+    vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF
+      X hX hepsilon
+
+/--
 Book-facing predicate for the finite-center Hoeffding/Orlicz step after
 specializing the weighted sums to fixed Rademacher signs.
 

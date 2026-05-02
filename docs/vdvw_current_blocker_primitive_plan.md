@@ -321,6 +321,7 @@ additional example closures:
    vdVWTheorem243_truncated_varianceProxy_le
    vdVWTheorem243_abs_tail_le_of_hasSubgaussianMGF
    vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF
+   vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF_of_pos
    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
    ```
 
@@ -333,9 +334,11 @@ additional example closures:
    by `M^2 / n`.  The newest tail layer converts mathlib's one-sided
    `HasSubgaussianMGF.measure_ge_le` into a two-sided absolute-value tail
    bound and then into a finite-center union bound for the supremum over a
-   nonempty `Fin cardinality` net.  It deliberately does not yet construct iid
-   Rademacher signs or convert these tails into the finite-center
-   `psi_2`/Hoeffding maximal expectation predicate.
+   nonempty `Fin cardinality` net, with a companion wrapper from the explicit
+   proof `0 < cardinality` that empirical-cover witnesses expose.  It
+   deliberately does not yet construct iid Rademacher signs or convert these
+   tails into the finite-center `psi_2`/Hoeffding maximal expectation
+   predicate.
 
    Search correction: the current
    `VdVWTheorem243RademacherFiniteCenterHoeffdingBound` is a deterministic
@@ -351,6 +354,7 @@ additional example closures:
    `MeasureTheory.measureReal_union_le`,
    `MeasureTheory.measureReal_iUnion_fintype_le`,
    `exists_eq_ciSup_of_finite`,
+   `FiniteEmpiricalL1CoverAtCard.centerOf`,
    `measure_sum_ge_le_of_iIndepFun`,
    `measure_sum_range_ge_le_of_iIndepFun`,
    `hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero`,
