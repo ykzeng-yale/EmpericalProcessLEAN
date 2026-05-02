@@ -921,6 +921,33 @@ theorem VdVWInnerExpectation_eventIndicator_eq_innerProbability
   exact lintegral_vdVWEventLowerIndicator_eq_innerProbability μ event
 
 /--
+Expectation-level complement identity behind VdV&W Lemma 1.2.3(iii).
+
+The nonnegative outer expectation of `1_B` plus the nonnegative inner
+expectation of `1_{Bᶜ}` is the total mass.
+-/
+theorem VdVWOuterExpectation_eventIndicator_add_innerExpectation_compl
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsFiniteMeasure μ]
+    (event : Set Ω) :
+    VdVWOuterExpectation μ (VdVWEventIndicator event) +
+      VdVWInnerExpectation μ (VdVWEventIndicator eventᶜ) =
+        μ Set.univ := by
+  rw [VdVWOuterExpectation_eventIndicator_eq_measure,
+    VdVWInnerExpectation_eventIndicator_eq_innerProbability]
+  simpa [add_comm] using VdVWInnerProbability_add_outerMeasure_compl μ eventᶜ
+
+/--
+Probability-space specialization of the expectation-level complement identity.
+-/
+theorem VdVWOuterExpectation_eventIndicator_add_innerExpectation_compl_eq_one
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (event : Set Ω) :
+    VdVWOuterExpectation μ (VdVWEventIndicator event) +
+      VdVWInnerExpectation μ (VdVWEventIndicator eventᶜ) = 1 := by
+  simpa using
+    VdVWOuterExpectation_eventIndicator_add_innerExpectation_compl μ event
+
+/--
 Event-indicator complement identity for VdV&W Lemma 1.2.3(iii):
 the upper indicator of `B` plus the lower indicator of `Bᶜ` is `1`.
 -/

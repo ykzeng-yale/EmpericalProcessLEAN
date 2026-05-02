@@ -103,6 +103,7 @@ Current promoted declarations toward Theorem 2.4.1:
 | `VdVWEventIndicator`, `VdVWMeasurableSetCover`, `VdVWOuterExpectation_eventIndicator_eq_measure` | proved nonnegative Lemma 1.2.3(i) indicator bridge: outer probability as outer expectation |
 | `VdVWMeasurableCover.eventIndicatorOfToMeasurable`, `VdVWOuterExpectation_eq_lintegral_eventIndicatorCover` | proved finite-measure event-indicator measurable-cover bridge for Lemma 1.2.3 |
 | `VdVWMeasurableLowerCover.eventIndicatorOfToMeasurableCompl`, `VdVWInnerExpectation_eventIndicator_eq_innerProbability` | proved finite-measure nonnegative Lemma 1.2.3 inner indicator bridge: inner probability as inner expectation |
+| `VdVWOuterExpectation_eventIndicator_add_innerExpectation_compl`, `VdVWOuterExpectation_eventIndicator_add_innerExpectation_compl_eq_one` | proved nonnegative Lemma 1.2.3 complement-expectation identity: `E* 1_B + E_* 1_{Bᶜ}` is total mass, and is `1` for probabilities |
 | `AlmostSureUniformDeviationTendstoZeroOn` | proved/compiled named ordinary a.s. pathwise uniform LLN convergence mode |
 | `VdVWAlmostSureGlivenkoCantelliClass` | proved/compiled local GC wrapper structure for iid observation processes |
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to named a.s. pathwise convergence wrapper |
@@ -211,7 +212,7 @@ through 2.4.1 requires accounting for them.
 | --- | --- | --- | --- |
 | 1.2.1 Lemma | `M1:372` | measurable cover function | local layer exists: nonnegative outer-expectation primitives and proof-carrying measurable-cover realization theorem; exact extended-real cover existence remains pending |
 | 1.2.2 Lemma | `M1:389` | a.s. rules for arbitrary maps | local layer exists: nonnegative sup/add/inf/product, two-sided constant addition equality, threshold-indicator, and two-sided measurable infimum equality cover algebra; exact extended-real signed clauses, subtraction, absolute value, and remaining equality cases remain pending |
-| 1.2.3 Lemma | `M1:438` | outer measure of subsets | local layer exists: nonnegative indicator bridges `P*(B)=E*1_B` and `P_*(B)=E_*1_B`, plus finite-measure event-indicator upper/lower measurable-cover realizations; full extended-real measurable-set-cover identities pending |
+| 1.2.3 Lemma | `M1:438` | outer measure of subsets | local layer exists: nonnegative indicator bridges `P*(B)=E*1_B` and `P_*(B)=E_*1_B`, complement-expectation identity, plus finite-measure event-indicator upper/lower measurable-cover realizations; full extended-real measurable-set-cover identities pending |
 | 1.2.4 Lemma | `M1:446` | dominated family measurable cover | pending primitive |
 | 1.2.5 Lemma | `M1:467` | perfect coordinate projection | later roadmap; product probability and map foundations in mathlib |
 | 1.2.6 Lemma | `M1:480` | outer/inner Fubini inequalities | later roadmap; Fubini foundation in mathlib, outer wrapper missing |

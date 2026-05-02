@@ -79,7 +79,7 @@ outer-a.s./outer-probability GC wrappers.
 | --- | --- | --- |
 | Lemma 1.2.1 | Nonnegative outer/inner expectation and measurable-cover interfaces | Full extended-real measurable-cover existence theorem. |
 | Lemma 1.2.2 | Nonnegative cover algebra: sup, add majorant, product majorant, two-sided constant addition equality, threshold indicators, two-sided measurable infimum equality | Full signed extended-real clauses, subtraction, absolute value, and stronger addition/product equality cases. |
-| Lemma 1.2.3 | Nonnegative event indicator bridges for outer/inner probability and finite-measure event covers | Remaining extended-real and measurable-set-cover clauses. |
+| Lemma 1.2.3 | Nonnegative event indicator bridges for outer/inner probability, complement-expectation identity, and finite-measure event covers | Remaining extended-real and measurable-set-cover clauses. |
 | Definition 1.10.1 | Outer-probability convergence primitives and common-domain `TendstoInMeasure` bridge | Broader arbitrary-map API. |
 | Lemma 1.10.2 | Measurable common-domain weak-convergence bridge | Full VdV&W arbitrary-map/measurable-cover version. |
 | Definition 2.1.6 | Primitive brackets, finite covers, `L1(P)` width, and numeric `l1BracketingNumber` | Entropy/logarithm refinements are not the current target. |
@@ -106,10 +106,10 @@ rg -n "\bsorry\b|\badmit\b|\baxiom\b|unsafe" . -g '*.lean' -g '!.lake/**'
 No matches.
 ```
 
-The last pushed proof-layer commit at the time of this dashboard is:
+For the latest pushed proof-layer commit, use:
 
 ```text
-2fe370c Add VdVW right measurable inf cover equality
+git log --oneline -5
 ```
 
 ## Report Monitor
