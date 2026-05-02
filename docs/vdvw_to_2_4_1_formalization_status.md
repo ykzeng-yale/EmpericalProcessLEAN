@@ -11,6 +11,12 @@ through Theorem 2.4.1 is maintained in:
 docs/vdvw_pre_2_4_1_named_item_inventory.md
 ```
 
+The broader Chapter 1-2 theorem-level blueprint after Theorem 2.4.1 is:
+
+```text
+docs/vdvw_chapter1_2_formalization_blueprint.md
+```
+
 ## Current Verified Lean Base
 
 Tracked Lean files are intentionally restricted to the empirical-process core

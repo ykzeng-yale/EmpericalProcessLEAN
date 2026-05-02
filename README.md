@@ -59,6 +59,7 @@ StatInference/
   EmpiricalProcess/     active VdV&W formalization layer
 Reports/
   Theorem_2_4_1_Bracketing_GC/
+  VdVW_<item-number>_<short_slug>/
 Textbooks/
   Vaart1996/
 docs/
@@ -90,6 +91,12 @@ including the pinned mathlib reuse audit, is:
 
 ```text
 docs/vdvw_pre_2_4_1_named_item_inventory.md
+```
+
+The Chapter 1-2 theorem-level blueprint and gap audit is:
+
+```text
+docs/vdvw_chapter1_2_formalization_blueprint.md
 ```
 
 ## Lean And Mathlib Base
@@ -143,14 +150,20 @@ Lean library plus source-audit metadata, not a redistribution of the textbook.
 
 ## Current Formalization Target
 
-The current target is VdV&W Theorem 2.4.1:
+The first major target, VdV&W Theorem 2.4.1, is now proved in the local
+book-style Glivenko-Cantelli predicate:
 
 ```text
 finite L1(P) bracketing numbers at every positive radius
   -> the function class is Glivenko-Cantelli
 ```
 
-The textbook proof has the following formalization shape:
+The current target is now broader: progressively formalize Chapter 1 and
+Chapter 2 theorem-level results, using mathlib foundations where available and
+building VdV&W-specific empirical-process primitives locally when not
+available.
+
+The completed Theorem 2.4.1 proof has the following formalization shape:
 
 1. Fix a positive bracket radius.
 2. Choose finitely many brackets covering the class.
@@ -160,9 +173,8 @@ The textbook proof has the following formalization shape:
 5. Repeat the lower-bound argument.
 6. Let the bracket radius decrease to zero.
 
-The repository currently proves source-audited theorem layers used by this
-proof.  It does not yet claim the final primitive theorem from the bracketing
-number `N_[]`.
+The repository proves source-audited theorem layers used by this proof and the
+final primitive theorem from the bracketing number `N_[]`.
 
 The full textbook-order target through Theorem 2.4.1 is larger than the direct
 proof path: Chapter 1's weak-convergence and outer-probability foundations,
@@ -214,27 +226,42 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `uniformDeviationTendstoZeroOn_ae_of_iid_countable_covers`,
   `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top`
   in `StatInference/EmpiricalProcess/EndpointSamples.lean`.
+- `VdVWOuterProbability`, `VdVWOuterAlmostSure`,
+  `VdVWConvergesInOuterProbabilityConst`,
+  `vdVWConvergesInOuterProbability_iff_tendstoInMeasure`,
+  `tendstoInDistribution_of_vdVWConvergesInOuterProbability`, and
+  `vdVW_theorem_2_4_1_glivenkoCantelli`
+  in `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`.
+- `VdVWMeasurableMajorant`, `VdVWOuterExpectation`,
+  `VdVWMeasurableCover`, `VdVWOuterExpectation_eq_lintegral_cover`,
+  `VdVWOuterExpectation_eventIndicator_eq_measure`, and
+  `VdVWMeasurableCover.eventIndicatorOfToMeasurable`
+  in `StatInference/EmpiricalProcess/OuterExpectation.lean`.
 
 These prove the deterministic bracket-comparison route, the finite endpoint
 strong-law wrapper, the fixed-cover iid sample-path endpoint bridge, and the
 endpoint-convergence-to-radius bridge, including a countable decreasing-cover
-route and the primitive `N_[]` hypothesis theorem in the local a.s. pathwise
-interface.  They are real Lean proofs, not placeholders.  The remaining gap is
-the exact VdV&W outer-probability / outer-a.s. `Glivenko-Cantelli`
-terminology.
+route, the primitive `N_[]` hypothesis theorem, VdV&W-style outer probability
+and outer-a.s. wrappers, and the book-style Theorem 2.4.1 predicate.  They are
+real Lean proofs, not placeholders.
 
-## Remaining Gap For Theorem 2.4.1
+## Current Chapter 1-2 Gap
 
-Before marking VdV&W Theorem 2.4.1 fully formalized, the repository still needs
-the following remaining layers:
+The remaining project gap is no longer the direct proof of Theorem 2.4.1.  The
+remaining gap is comprehensive Chapter 1-2 coverage:
 
-1. Define the exact outer-probability / outer-a.s. GC wrapper used by VdV&W.
-2. Connect the local a.s. pathwise theorem to that wrapper.
-3. Decide whether the public-facing theorem should expose iid observations
-   explicitly or package them inside a `P`-Glivenko-Cantelli class predicate.
+1. exact Chapter 1 arbitrary-map outer expectation, inner probability,
+   measurable cover, and Fubini-compatible machinery;
+2. exact arbitrary-map weak-convergence wrappers around mathlib Portmanteau,
+   Prokhorov, convergence-in-measure, convergence-in-distribution, continuous
+   mapping, and Slutsky foundations;
+3. Chapter 2 covering/packing, Orlicz, symmetrization, measurable-class,
+   entropy, VC, Donsker, multiplier, bracketing CLT, and maximal-inequality
+   theorems;
+4. one source-audited report per promoted theorem or theorem layer.
 
-The next Lean work should focus on item 1 first.  The finite-bracketing proof
-itself is now complete in the local pathwise interface.
+The active blueprint for this is
+`docs/vdvw_chapter1_2_formalization_blueprint.md`.
 
 ## Progressive VdV&W Formalization Roadmap
 
@@ -317,10 +344,13 @@ The proof-hole scan should return no matches.
 - Local Vaart markdown/PDF/screenshot assets are available for private review
   but ignored by Git.
 - Lean library currently builds.
-- Current source-audited focus is VdV&W Theorem 2.4.1.
-- The comprehensive pre-2.4.1 inventory now covers Chapter 1 and Chapter 2
-  through the theorem, not only Section 2.
+- Current source-audited focus has expanded to Chapter 1-2 theorem-level
+  formalization.
+- The Chapter 1-2 blueprint lists all 156 theorem-level items extracted from
+  the local markdown and classifies current coverage.
 - Deterministic bracketing inequality, primitive bracket/finite-cover layer,
   primitive cover-to-route bridge, and finite endpoint strong-law wrappers are
   proved.
-- The full theorem from primitive `N_[]` definitions remains the next target.
+- The full Theorem 2.4.1 route from primitive `N_[]` definitions is proved;
+  the next targets are Chapter 1 arbitrary-map infrastructure and the next
+  Chapter 2 GC/bracketing results.

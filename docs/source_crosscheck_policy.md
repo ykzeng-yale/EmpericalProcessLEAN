@@ -22,6 +22,11 @@ Reports should distinguish:
 - proof-carrying interface;
 - pending primitive definition or lemma.
 
+Use exactly one report folder for each exact textbook theorem once it is
+promoted.  If intermediate theorem layers are promoted first, they may have
+their own report folders, but the later exact-theorem report must link to those
+layer reports and must not silently duplicate or replace them.
+
 Do not mark a theorem as the full textbook result until all primitives used in
 the textbook statement have Lean definitions and the theorem compiles from
 those definitions without `sorry`, `admit`, unreviewed `axiom`, or `unsafe`.
