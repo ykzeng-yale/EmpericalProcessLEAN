@@ -69,7 +69,18 @@ CDF, finite-index, or integration lemma locally.
 
 ### 1. Tail-Appending Endpoint Constructor
 
-Add a constructor around the existing real compact-core grid:
+Status: implemented as a compiled local primitive in
+`StatInference/EmpiricalProcess/RealHalfLine.lean`.
+
+Declarations:
+
+```lean
+SuppliedERealHalfLineEndpointGrid.endpointWithRealTails
+SuppliedERealHalfLineEndpointGrid.ofMiddleCDFPartitionWithTails
+```
+
+The implemented constructor appends `⊥` and `⊤` around the existing real
+compact-core grid:
 
 ```lean
 noncomputable def SuppliedERealHalfLineEndpointGrid.withRealTails
@@ -88,6 +99,8 @@ noncomputable def SuppliedERealHalfLineEndpointGrid.withRealTails
 Preferred API route: use `Fin.cons` for the lower `⊥` endpoint and `Fin.snoc`
 for the upper `⊤` endpoint; use `Fin.cases`, `Fin.lastCases`,
 `Fin.snoc_castSucc`, `Fin.snoc_last`, and `Fin.succ_last` for simplification.
+The compiled proof uses this route, plus `Fin.castSucc_succ` for the middle
+and upper-tail adjacent endpoint simplifications.
 
 ### 2. Bounded Middle Partition Interface
 
@@ -127,7 +140,16 @@ that handoff.
 
 ### 3. Middle Partition To Endpoint Grid
 
-Combine the partition interface with finite tail cutpoints:
+Status: implemented as a compiled local theorem in
+`StatInference/EmpiricalProcess/RealHalfLine.lean`.
+
+Declaration:
+
+```lean
+SuppliedERealHalfLineEndpointGrid.exists_endpointGrid_of_realMiddleCDFPartition
+```
+
+This combines the partition interface with finite tail cutpoints:
 
 ```lean
 theorem exists_endpointGrid_of_realMiddleCDFPartition

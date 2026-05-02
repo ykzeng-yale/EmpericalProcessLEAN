@@ -708,6 +708,130 @@ def ofFiniteRealEndpoints
     simpa [measureReal_eRealOpenCell_coe_coe] using cell_width_lt cell
 
 /--
+Adjoin `⊥` and `⊤` around a finite real endpoint sequence.
+
+For `middleCells = m`, this builds the endpoint tuple
+`⊥, t₀, ..., t_m, ⊤`, indexed as a tuple of length `m + 3`.
+-/
+noncomputable def endpointWithRealTails
+    {middleCells : ℕ} (endpoint : Fin (middleCells + 1) -> ℝ) :
+    Fin (middleCells + 3) -> EReal :=
+  Fin.cons (⊥ : EReal)
+    (Fin.snoc (fun i : Fin (middleCells + 1) => (endpoint i : EReal)) ⊤)
+
+/--
+Adjoin lower and upper tail cells around a supplied bounded middle CDF
+partition.
+
+This is the endpoint-grid assembly layer for VdV&W Example 2.4.2: lower tail,
+all bounded middle cells, and upper tail become one extended-real adjacent
+endpoint grid.
+-/
+noncomputable def ofMiddleCDFPartitionWithTails
+    {μ : Measure ℝ} [IsProbabilityMeasure μ]
+    {epsilon a b : ℝ} {middleCells : ℕ}
+    (hleftTail : μ.real (Set.Iio a) < epsilon)
+    (hrightTail : μ.real (Set.Ioi b) < epsilon)
+    (partition : SuppliedRealMiddleCDFPartition μ epsilon a b middleCells) :
+    SuppliedERealHalfLineEndpointGrid μ epsilon (middleCells + 2) where
+  endpoint := endpointWithRealTails partition.endpoint
+  bracketOf := fun c =>
+    if hca : c < a then 0
+    else if hcb : c < b then
+      Fin.succ (Fin.castSucc (partition.bracketOf c (le_of_not_gt hca) hcb))
+    else Fin.last (middleCells + 1)
+  left_lt_right := by
+    intro cell
+    refine Fin.cases ?llrZero ?llrRest cell
+    · simp [endpointWithRealTails, partition.left_eq]
+    · intro rest
+      refine Fin.lastCases ?llrLast ?llrMiddle rest
+      · rw [endpointWithRealTails]
+        rw [Fin.castSucc_succ]
+        rw [Fin.cons_succ]
+        rw [Fin.snoc_castSucc]
+        simp [partition.right_eq]
+      · intro middleCell
+        dsimp [endpointWithRealTails]
+        rw [Fin.cons_succ]
+        rw [Fin.cons_succ]
+        rw [← Fin.castSucc_succ middleCell]
+        rw [Fin.snoc_castSucc]
+        rw [Fin.snoc_castSucc]
+        exact EReal.coe_lt_coe_iff.mpr
+          (partition.endpoint_left_lt_right middleCell)
+  left_le_index := by
+    intro c
+    by_cases hca : c < a
+    · simp [hca, endpointWithRealTails]
+    · by_cases hcb : c < b
+      · dsimp [endpointWithRealTails]
+        simp [hca, hcb]
+        exact partition.left_le_index c (le_of_not_gt hca) hcb
+      · have hbc : b ≤ c := le_of_not_gt hcb
+        have hidx : Fin.castSucc (Fin.last (middleCells + 1)) =
+            Fin.castSucc (Fin.succ (Fin.last middleCells)) := by
+          ext
+          simp
+        dsimp [endpointWithRealTails]
+        simp [hca, hcb]
+        rw [hidx]
+        rw [Fin.castSucc_succ]
+        rw [Fin.cons_succ]
+        rw [Fin.snoc_castSucc]
+        rw [partition.right_eq]
+        exact EReal.coe_le_coe hbc
+  index_lt_right := by
+    intro c
+    by_cases hca : c < a
+    · simp [hca, endpointWithRealTails, partition.left_eq]
+    · by_cases hcb : c < b
+      · dsimp [endpointWithRealTails]
+        simp [hca, hcb]
+        rw [← Fin.castSucc_succ
+          (partition.bracketOf c (le_of_not_gt hca) hcb)]
+        rw [Fin.snoc_castSucc]
+        exact EReal.coe_lt_coe_iff.mpr
+          (partition.index_lt_right c (le_of_not_gt hca) hcb)
+      · simp [hca, hcb, endpointWithRealTails]
+  cell_width_lt := by
+    intro cell
+    refine Fin.cases ?cwZero ?cwRest cell
+    · simp [endpointWithRealTails, partition.left_eq,
+        measureReal_eRealOpenCell_bot_coe, hleftTail]
+    · intro rest
+      refine Fin.lastCases ?cwLast ?cwMiddle rest
+      · rw [endpointWithRealTails]
+        rw [Fin.castSucc_succ]
+        rw [Fin.cons_succ]
+        rw [Fin.snoc_castSucc]
+        simpa [partition.right_eq, measureReal_eRealOpenCell_coe_top] using
+          hrightTail
+      · intro middleCell
+        dsimp [endpointWithRealTails]
+        rw [Fin.cons_succ]
+        rw [Fin.cons_succ]
+        rw [← Fin.castSucc_succ middleCell]
+        rw [Fin.snoc_castSucc]
+        rw [Fin.snoc_castSucc]
+        simpa [measureReal_eRealOpenCell_coe_coe] using
+          (partition.cell_width_lt middleCell)
+
+/--
+Tail bounds plus a supplied bounded middle CDF partition give finite
+extended-real adjacent endpoint-grid existence.
+-/
+theorem exists_endpointGrid_of_realMiddleCDFPartition
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] {epsilon a b : ℝ}
+    {middleCells : ℕ}
+    (hleftTail : μ.real (Set.Iio a) < epsilon)
+    (hrightTail : μ.real (Set.Ioi b) < epsilon)
+    (partition : SuppliedRealMiddleCDFPartition μ epsilon a b middleCells) :
+    ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount) :=
+  ⟨middleCells + 2,
+    ⟨ofMiddleCDFPartitionWithTails hleftTail hrightTail partition⟩⟩
+
+/--
 The one-cell textbook-style extended endpoint grid `-∞ < ∞`.
 
 This is the endpoint-grid analogue of `SuppliedERealHalfLineGrid.singleCell`;
