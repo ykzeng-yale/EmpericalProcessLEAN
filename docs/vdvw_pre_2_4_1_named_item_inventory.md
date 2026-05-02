@@ -96,6 +96,7 @@ Current promoted declarations toward Theorem 2.4.1:
 | `uniformDeviationTendstoZeroOn_ae_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to a.s. pathwise uniform convergence theorem |
 | `VdVWMeasurableMajorant`, `VdVWOuterExpectation`, `VdVWMeasurableCover` | proved/compiled nonnegative Chapter 1.2 outer-expectation and measurable-cover primitive layer |
 | `VdVWOuterExpectation_eq_lintegral_of_measurable`, `VdVWOuterExpectation_eq_lintegral_cover` | proved nonnegative outer-expectation realization lemmas for measurable maps and supplied minimal measurable covers |
+| `VdVWMeasurableCover.sup`, `VdVWMeasurableCover.addMajorant`, `VdVWMeasurableCover.infMajorant`, `VdVWMeasurableCover.mulMajorant` | proved nonnegative Lemma 1.2.2 cover-algebra layers for pointwise sup, sum, inf, and product majorants |
 | `VdVWEventIndicator`, `VdVWMeasurableSetCover`, `VdVWOuterExpectation_eventIndicator_eq_measure` | proved nonnegative Lemma 1.2.3(i) indicator bridge: outer probability as outer expectation |
 | `VdVWMeasurableCover.eventIndicatorOfToMeasurable`, `VdVWOuterExpectation_eq_lintegral_eventIndicatorCover` | proved finite-measure event-indicator measurable-cover bridge for Lemma 1.2.3 |
 | `VdVWMeasurableLowerCover.eventIndicatorOfToMeasurableCompl`, `VdVWInnerExpectation_eventIndicator_eq_innerProbability` | proved finite-measure nonnegative Lemma 1.2.3 inner indicator bridge: inner probability as inner expectation |
@@ -206,7 +207,7 @@ through 2.4.1 requires accounting for them.
 | Item | Anchor | Topic | Current status |
 | --- | --- | --- | --- |
 | 1.2.1 Lemma | `M1:372` | measurable cover function | local layer exists: nonnegative outer-expectation primitives and proof-carrying measurable-cover realization theorem; exact extended-real cover existence remains pending |
-| 1.2.2 Lemma | `M1:389` | a.s. rules for arbitrary maps | pending primitive; needs outer/inner probability framework |
+| 1.2.2 Lemma | `M1:389` | a.s. rules for arbitrary maps | local layer exists: nonnegative sup/add/inf/product cover algebra; exact extended-real signed clauses, subtraction, absolute value, and equality cases remain pending |
 | 1.2.3 Lemma | `M1:438` | outer measure of subsets | local layer exists: nonnegative indicator bridges `P*(B)=E*1_B` and `P_*(B)=E_*1_B`, plus finite-measure event-indicator upper/lower measurable-cover realizations; full extended-real measurable-set-cover identities pending |
 | 1.2.4 Lemma | `M1:446` | dominated family measurable cover | pending primitive |
 | 1.2.5 Lemma | `M1:467` | perfect coordinate projection | later roadmap; product probability and map foundations in mathlib |

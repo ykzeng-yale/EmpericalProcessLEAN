@@ -309,6 +309,21 @@ def infMajorant {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
   measurable_toFun := US.measurable_toFun.inf UT.measurable_toFun
   majorizes := fun ω => inf_le_inf (US.majorizes ω) (UT.majorizes ω)
 
+/--
+Multiplicative majorant algebra for nonnegative measurable covers.
+
+This is the nonnegative positive-sign skeleton behind the product clauses in
+VdV&W Lemma 1.2.2(iv)-(v): if `S <= S*` and `T <= T*`, then
+`S * T <= S* * T*`.
+-/
+noncomputable def mulMajorant {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (US : VdVWMeasurableCover μ S)
+    (UT : VdVWMeasurableCover μ T) :
+    VdVWMeasurableMajorant μ (fun ω => S ω * T ω) where
+  toFun := fun ω => US ω * UT ω
+  measurable_toFun := US.measurable_toFun.mul UT.measurable_toFun
+  majorizes := fun ω => mul_le_mul' (US.majorizes ω) (UT.majorizes ω)
+
 end VdVWMeasurableCover
 
 /--
@@ -380,6 +395,19 @@ theorem VdVWOuterExpectation_le_lintegral_inf_cover
       ∫⁻ ω, US ω ⊓ UT ω ∂μ :=
   VdVWOuterExpectation_le_lintegral_majorant
     (VdVWMeasurableCover.infMajorant US UT)
+
+/--
+The product cover majorant bounds the nonnegative outer expectation of a
+pointwise product.
+-/
+theorem VdVWOuterExpectation_le_lintegral_mul_cover
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {S T : Ω -> ℝ≥0∞} (US : VdVWMeasurableCover μ S)
+    (UT : VdVWMeasurableCover μ T) :
+    VdVWOuterExpectation μ (fun ω => S ω * T ω) ≤
+      ∫⁻ ω, US ω * UT ω ∂μ :=
+  VdVWOuterExpectation_le_lintegral_majorant
+    (VdVWMeasurableCover.mulMajorant US UT)
 
 /-- Nonnegative indicator of an arbitrary event. -/
 noncomputable def VdVWEventIndicator {Ω : Type u} (event : Set Ω) : Ω -> ℝ≥0∞ :=
