@@ -139,14 +139,22 @@ Search record for the Chapter 1 ball-sigma/measurability foundation lane:
   open/closed ball sigma-field part with `VdVWClosedBallSets`,
   `VdVWClosedBallMeasurableSpace`, rational open/closed ball bridge lemmas,
   open-ball/closed-ball sigma equality, and Borel equality for the closed-ball
-  sigma field.  The remaining Section 1.7 blocker is the distance-coordinate
-  and arbitrary-map/asymptotic-measurability layer.
+  sigma field.
 - a follow-up search confirmed that no exact theorem was found for
   `Measurable X ↔ ∀ n, Measurable fun ω => dist (X ω) (denseSeq S n)`.  The
-  reusable route is through `measurable_dist`, `Measurable.dist`,
-  `measurableSet_lt`, `Measurable.lt`, `denseSeq`, `denseRange_denseSeq`,
-  `Metric.PiNatEmbed.distDenseSeq`, `measurable_pi_iff`, and the local
-  `VdVWPMeasurableClass`/pointwise-separable helpers.
+  reusable route is through `measurableSet_lt`, `measurable_of_Iio`,
+  `denseSeq`, `denseRange_denseSeq`, `DenseRange.exists_dist_lt`,
+  `Metric.PiNatEmbed.distDenseSeq`, and the local ball-sigma constructors.
+  This route is now compiled as
+  `vdVW_dist_measurable_openBallSigma`,
+  `vdVW_ball_eq_iUnion_denseSeq_dist_sublevel`,
+  `vdVW_measurable_openBallSigma_iff_dist_denseSeq`,
+  `vdVW_measurable_closedBallSigma_iff_dist_denseSeq`,
+  `vdVWOpenBallMeasurable_iff_forall_denseSeq_dist_measurable`,
+  `vdVWClosedBallMeasurable_iff_forall_denseSeq_dist_measurable`, and
+  `vdVWBorelMeasurable_iff_forall_denseSeq_dist_measurable`.  The remaining
+  Section 1.7 blocker is the exact VdV&W arbitrary-map/asymptotic-measurability
+  layer, not the separable distance-coordinate criterion.
 
 Search record for the Chapter 1 product/FDD foundation lane:
 

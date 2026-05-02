@@ -165,7 +165,7 @@ Targeted search found these reusable foundations.
 | probability measures | `Mathlib/MeasureTheory/Measure/ProbabilityMeasure.lean` | use `ProbabilityMeasure`, `IsProbabilityMeasure`, coercion to `Measure` |
 | finite measures and weak convergence topology | `Mathlib/MeasureTheory/Measure/FiniteMeasure.lean` | use finite-measure topology and integral characterizations |
 | local VdV&W weak convergence wrappers | `StatInference/EmpiricalProcess/WeakConvergence.lean` | compiled measure-level probability-law weak convergence, bounded-continuous integral characterization, Portmanteau closed/open implications, tightness/Prokhorov wrappers, continuous mapping, product-law weak convergence, finite-coordinate/FDD forward direction, and measurable Slutsky/product wrappers |
-| local VdV&W ball sigma-field wrappers | `StatInference/EmpiricalProcess/BallSigma.lean` | compiled open/closed ball sigma-field definitions, open-ball topological basis, rational open/closed ball bridges, open/closed ball sigma equality, Borel equality, and generator measurability |
+| local VdV&W ball sigma-field wrappers | `StatInference/EmpiricalProcess/BallSigma.lean` | compiled open/closed ball sigma-field definitions, open-ball topological basis, rational open/closed ball bridges, open/closed ball sigma equality, Borel equality, generator measurability, and separable dense-sequence distance-coordinate measurability iff |
 | local VdV&W Hilbert/Gaussian wrappers | `StatInference/EmpiricalProcess/HilbertGaussian.lean` | compiled Hilbert, L2, Frechet-Riesz, Gaussian inner-coordinate, and Gaussian-process coordinate foundation wrappers |
 | Portmanteau style weak convergence | `Mathlib/MeasureTheory/Measure/Portmanteau.lean` | reused directly through local measure-level Portmanteau wrappers; arbitrary-map/outer-expectation version remains pending |
 | Prokhorov-related measure theory | `Mathlib/MeasureTheory/Measure/Prokhorov.lean`, `LevyProkhorovMetric.lean` | reused for probability-measure tightness and compact closure; VdV&W outer-probability/asymptotic-tightness nets still need local primitives |
@@ -251,8 +251,8 @@ through 2.4.1 requires accounting for them.
 | 1.5.9 Lemma | `M1:1044` | tight maps in `l_infty` and semimetrics | later roadmap |
 | 1.5.10 Example | `M1:1059` | Gaussian process definition/example | later roadmap |
 | 1.6.1 Theorem | `M1:1117` | restrictions on countable unions of index sets | later roadmap |
-| 1.7.1 Lemma | `M1:1156` | ball measurable functions and asymptotic measurability | local-layer/mathlib-foundation: open/closed ball sigma-fields and Borel equality compiled; distance-coordinate and arbitrary-map clauses pending |
-| 1.7.2 Theorem | `M1:1157` | ball-measurable separable random elements | later roadmap |
+| 1.7.1 Lemma | `M1:1156` | ball measurable functions and asymptotic measurability | local-layer/mathlib-foundation: open/closed ball sigma-fields, Borel equality, and separable dense-sequence distance-coordinate criterion compiled; arbitrary-map/asymptotic clauses pending |
+| 1.7.2 Theorem | `M1:1157` | ball-measurable separable random elements | local-layer/mathlib-foundation: Borel/open-ball/closed-ball dense-sequence distance-coordinate equivalences compiled; exact arbitrary-map separability statement pending |
 | 1.7.3 Example | `M1:1178` | cadlag functions | later roadmap |
 | 1.7.4 Example | `M1:1179` | pointwise separable processes | later roadmap; relevant to Section 2.3 |
 | 1.7.5 Example | `M1:1190` | measurable processes with Suslin index set | later roadmap; relevant to Section 2.3 |

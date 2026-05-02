@@ -1,4 +1,5 @@
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Metric
+import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 
 /-!
 # Ball sigma-field foundation wrappers
@@ -15,7 +16,7 @@ open MeasureTheory TopologicalSpace
 
 open scoped Topology
 
-universe u
+universe u v
 
 /-- The family of all positive-radius open metric balls. -/
 def VdVWOpenBallSets (S : Type u) [PseudoMetricSpace S] : Set (Set S) :=
@@ -178,5 +179,147 @@ theorem vdVWBorel_eq_closedBallMeasurableSpace
       vdVWBorel_eq_openBallMeasurableSpace
     _ = VdVWClosedBallMeasurableSpace S :=
       vdVWClosedBallMeasurableSpace_eq_openBallMeasurableSpace.symm
+
+/--
+Distance to a fixed center is measurable for the VdV&W open-ball sigma-field.
+
+This avoids assuming the domain is already Borel-measurable; it is the forward
+direction needed for the Chapter 1.7 distance-coordinate characterization.
+-/
+theorem vdVW_dist_measurable_openBallSigma
+    {S : Type u} [PseudoMetricSpace S] (s : S) :
+    @Measurable S ℝ (VdVWOpenBallMeasurableSpace S) (borel ℝ)
+      (fun x => dist x s) := by
+  letI : MeasurableSpace S := VdVWOpenBallMeasurableSpace S
+  change Measurable fun x : S => dist x s
+  refine measurable_of_Iio ?_
+  intro r
+  by_cases hr : 0 < r
+  · have hpre : (fun x : S => dist x s) ⁻¹' Set.Iio r = Metric.ball s r := by
+      ext x
+      simp [Metric.mem_ball, dist_comm]
+    rw [hpre]
+    exact vdVWOpenBall_measurableSet hr
+  · have hrle : r ≤ 0 := le_of_not_gt hr
+    have hpre : (fun x : S => dist x s) ⁻¹' Set.Iio r = (∅ : Set S) := by
+      ext x
+      simp [Set.mem_Iio, not_lt.mpr (le_trans hrle dist_nonneg)]
+    rw [hpre]
+    exact MeasurableSet.empty
+
+/--
+An open ball is a countable union of strict sublevel sets of distances to any
+fixed dense sequence.  This is the separability step behind the VdV&W
+Chapter 1.7 distance-coordinate criterion.
+-/
+theorem vdVW_ball_eq_iUnion_denseSeq_dist_sublevel
+    {S : Type u} [PseudoMetricSpace S] {denseSeq : ℕ → S}
+    (hdense : DenseRange denseSeq) (x : S) (r : ℝ) :
+    Metric.ball x r =
+      Set.iUnion fun n : ℕ =>
+        {y : S | dist y (denseSeq n) < r - dist (denseSeq n) x} := by
+  ext y
+  constructor
+  · intro hy
+    have hyr : dist y x < r := by
+      simpa [Metric.mem_ball] using hy
+    have hpos : 0 < (r - dist y x) / 2 := by
+      linarith
+    rcases hdense.exists_dist_lt y hpos with ⟨n, hn⟩
+    refine Set.mem_iUnion.mpr ⟨n, ?_⟩
+    have htri : dist (denseSeq n) x ≤ dist (denseSeq n) y + dist y x :=
+      dist_triangle (denseSeq n) y x
+    have htri' : dist (denseSeq n) x ≤ dist y (denseSeq n) + dist y x := by
+      simpa [dist_comm] using htri
+    have htwice : 2 * dist y (denseSeq n) + dist y x < r := by
+      linarith
+    have hsum : dist y (denseSeq n) + dist (denseSeq n) x < r := by
+      linarith
+    show dist y (denseSeq n) < r - dist (denseSeq n) x
+    linarith
+  · intro hy
+    rcases Set.mem_iUnion.mp hy with ⟨n, hn⟩
+    have htri : dist y x ≤ dist y (denseSeq n) + dist (denseSeq n) x :=
+      dist_triangle y (denseSeq n) x
+    have hsub : dist y (denseSeq n) < r - dist (denseSeq n) x := hn
+    have : dist y x < r := by
+      linarith
+    simpa [Metric.mem_ball] using this
+
+/--
+For any dense sequence, measurability into the VdV&W open-ball sigma-field is
+equivalent to measurability of all distance coordinates to that sequence.
+-/
+theorem vdVW_measurable_openBallSigma_iff_dist_denseSeq
+    {Ω : Type v} [MeasurableSpace Ω]
+    {S : Type u} [PseudoMetricSpace S] {denseSeq : ℕ → S}
+    (hdense : DenseRange denseSeq) {X : Ω → S} :
+    @Measurable Ω S _ (VdVWOpenBallMeasurableSpace S) X ↔
+      ∀ n : ℕ, Measurable fun ω => dist (X ω) (denseSeq n) := by
+  constructor
+  · intro hX n
+    exact (vdVW_dist_measurable_openBallSigma (denseSeq n)).comp hX
+  · intro hcoord
+    refine measurable_generateFrom ?_
+    intro U hU
+    rcases hU with ⟨x, r, _hr, rfl⟩
+    rw [vdVW_ball_eq_iUnion_denseSeq_dist_sublevel hdense x r]
+    simpa [Set.preimage_iUnion] using
+      (MeasurableSet.iUnion fun n => measurableSet_lt (hcoord n) measurable_const)
+
+/--
+Closed-ball measurability has the same distance-coordinate characterization,
+because the open-ball and closed-ball sigma-fields agree.
+-/
+theorem vdVW_measurable_closedBallSigma_iff_dist_denseSeq
+    {Ω : Type v} [MeasurableSpace Ω]
+    {S : Type u} [PseudoMetricSpace S] {denseSeq : ℕ → S}
+    (hdense : DenseRange denseSeq) {X : Ω → S} :
+    @Measurable Ω S _ (VdVWClosedBallMeasurableSpace S) X ↔
+      ∀ n : ℕ, Measurable fun ω => dist (X ω) (denseSeq n) := by
+  rw [vdVWClosedBallMeasurableSpace_eq_openBallMeasurableSpace]
+  exact vdVW_measurable_openBallSigma_iff_dist_denseSeq hdense
+
+/-- Canonical dense-sequence version of the open-ball distance criterion. -/
+theorem vdVWOpenBallMeasurable_iff_forall_denseSeq_dist_measurable
+    {Ω : Type v} [MeasurableSpace Ω]
+    {S : Type u} [PseudoMetricSpace S] [SeparableSpace S] [Nonempty S] {X : Ω → S} :
+    @Measurable Ω S _ (VdVWOpenBallMeasurableSpace S) X ↔
+      ∀ n : ℕ, Measurable fun ω => dist (X ω) (denseSeq S n) :=
+  vdVW_measurable_openBallSigma_iff_dist_denseSeq (denseRange_denseSeq S)
+
+/-- Canonical dense-sequence version of the closed-ball distance criterion. -/
+theorem vdVWClosedBallMeasurable_iff_forall_denseSeq_dist_measurable
+    {Ω : Type v} [MeasurableSpace Ω]
+    {S : Type u} [PseudoMetricSpace S] [SeparableSpace S] [Nonempty S] {X : Ω → S} :
+    @Measurable Ω S _ (VdVWClosedBallMeasurableSpace S) X ↔
+      ∀ n : ℕ, Measurable fun ω => dist (X ω) (denseSeq S n) :=
+  vdVW_measurable_closedBallSigma_iff_dist_denseSeq (denseRange_denseSeq S)
+
+/--
+In a separable pseudometric Borel space, ordinary Borel measurability is
+equivalent to measurability of all canonical dense-sequence distance
+coordinates.
+-/
+theorem vdVWBorelMeasurable_iff_forall_denseSeq_dist_measurable
+    {Ω : Type v} [MeasurableSpace Ω]
+    {S : Type u} [PseudoMetricSpace S] [MeasurableSpace S] [BorelSpace S]
+    [SeparableSpace S] [Nonempty S] {X : Ω → S} :
+    Measurable X ↔
+      ∀ n : ℕ, Measurable fun ω => dist (X ω) (denseSeq S n) := by
+  constructor
+  · intro hX n
+    exact hX.dist measurable_const
+  · intro hcoord
+    have hopen : @Measurable Ω S _ (VdVWOpenBallMeasurableSpace S) X :=
+      (vdVWOpenBallMeasurable_iff_forall_denseSeq_dist_measurable (X := X)).2 hcoord
+    have hEq : (inferInstance : MeasurableSpace S) = VdVWOpenBallMeasurableSpace S := by
+      calc
+        (inferInstance : MeasurableSpace S) = borel S := BorelSpace.measurable_eq
+        _ = VdVWOpenBallMeasurableSpace S :=
+          vdVWBorel_eq_openBallMeasurableSpace (S := S)
+    change @Measurable Ω S _ (inferInstance : MeasurableSpace S) X
+    rw [hEq]
+    exact hopen
 
 end StatInference
