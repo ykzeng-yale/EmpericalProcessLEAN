@@ -21,7 +21,9 @@ docs/vdvw_current_blocker_primitive_plan.md
 | `local-layer` | A compiled local proof layer exists, but the exact textbook item still has compatibility gaps. |
 | `mathlib-foundation` | Pinned mathlib has reusable foundations, but the exact VdV&W statement is not locally proved. |
 | `pending-local` | No exact local Lean proof yet. |
-| `deferred` | Audited, but not a near-term blocker unless a concrete empirical-process theorem depends on it. |
+| `foundation-lane` | Fundamental Chapter 1 item with a concrete mathlib-wrapper or local-primitive route. |
+| `blocked-vdvw` | Exact VdV&W statement needs a missing arbitrary-map/nonmeasurable/perfect-map/representation primitive. |
+| `deferred` | Audited and intentionally outside the current theorem line, with a recorded reason; not a substitute for mathlib search. |
 | `deferred-example` | Example/addendum intentionally skipped for now because it needs external-domain formalization outside the current Chapter 1-2 main line. |
 
 ## Global Theorem-Level Inventory
@@ -30,16 +32,19 @@ The Chapter 1-2 theorem-level extraction currently has 157 items after the
 Chapter 1 re-audit restored the missing Theorem 1.10.4 inventory row.
 
 ```text
-local-exact       1 / 157  [#-----------------------------]
-local-layer       8 / 157  [#-----------------------------]
-mathlib-found.   11 / 157  [##----------------------------]
-deferred-ch1     37 / 157  [#######-----------------------]
-pending-local   104 / 157  [####################----------]
+local-exact        1 / 157  [#-----------------------------]
+local-layer       11 / 157  [##----------------------------]
+mathlib-found.    11 / 157  [##----------------------------]
+ch1 foundation    25 / 157  [#####-------------------------]
+blocked-vdvw       7 / 157  [#-----------------------------]
+pending-local    101 / 157  [###################-----------]
 ```
 
-The bars are inventory tags, not effort estimates.  Some deferred rows also
-record mathlib foundations, and a row is promoted out of `deferred` only when a
-concrete theorem target needs its exact VdV&W statement.
+The bars are inventory tags, not effort estimates.  The Chapter 1 foundation
+lane is not a skip bucket: those rows should be formalized as mathlib-backed
+wrappers or local primitive proofs.  Only `blocked-vdvw` records a genuine
+missing exact VdV&W arbitrary-map/nonmeasurable/perfect-map/representation
+primitive after local and pinned mathlib search.
 
 Examples/addenda are tracked separately from this theorem-level inventory and
 are no longer a main-line blocker.  The existing Example 2.3.4 and Example
@@ -51,12 +56,13 @@ deferred unless a theorem target needs them.
 
 | Chapter | Total theorem-level items | local-exact | local-layer | mathlib-foundation | pending-local |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Chapter 1 | 47 | 0 | 7 | 17 | 23 |
+| Chapter 1 | 47 | 0 | 10 | 17 | 20 |
 | Chapter 2 | 109 | 1 | 1 | 4 | 103 |
 
 Chapter 1 has more infrastructure layers than exact completions because many
-statements are whole-book weak-convergence/tightness machinery.  Chapter 2 has
-the current exact theorem milestone, Theorem 2.4.1.
+statements are foundational weak-convergence/tightness/product/Hilbert
+theorems that need mathlib-backed VdV&W wrappers or local primitives.  Chapter
+2 has the current exact theorem milestone, Theorem 2.4.1.
 
 ## Main Formalization Path
 
@@ -69,7 +75,7 @@ flowchart LR
   T241["Theorem 2.4.1 finite bracketing GC<br/>local-exact"]
   E242["Example 2.4.2 empirical CDF brackets<br/>deferred-example local-layer"]
   T243["Theorem 2.4.3 next bracketing/GC result<br/>next"]
-  GCH1["Broad Chapter 1 weak convergence and tightness<br/>deferred until needed"]
+  GCH1["Chapter 1 weak convergence and tightness<br/>foundation-lane wrappers"]
 
   C12 --> OP
   OP --> T241
@@ -99,6 +105,7 @@ outer-a.s./outer-probability GC wrappers.
 | Lemma 1.2.1 | Nonnegative outer/inner expectation and measurable-cover interfaces, plus monotonicity of nonnegative outer and inner expectation | Full extended-real measurable-cover existence theorem. |
 | Lemma 1.2.2 | Nonnegative cover algebra: sup, add majorant, product majorant, two-sided constant addition equality, finite-measurable addition equality, threshold indicators, tail-product cover-majorant for envelope-tail terms, two-sided measurable infimum equality | Full signed extended-real clauses, subtraction, absolute value, and stronger addition/product equality cases. |
 | Lemma 1.2.3 | Nonnegative event indicator bridges for outer/inner probability, event-indicator monotonicity, explicit measurable event-cover existence, arbitrary measurable set covers with integral equality, direct `toMeasurable` hull integral equality, complement-set-cover lower covers, direct complement-cover inner-probability equalities, outer-probability/outer-expectation bridge, Markov-style outer-probability bound via supplied measurable cover, and two-sided complement identities | Remaining extended-real and full measurable-set-cover clauses. |
+| Definition 1.3.3 / Theorem 1.3.6 / Section 1.4 Slutsky | Measure-level weak convergence of probability measures, bounded-continuous integral characterization, continuous-map pushforward, convergence-in-distribution continuous mapping, and measurable common-domain Slutsky/product convergence wrappers in `WeakConvergence.lean` | Full VdV&W arbitrary-map/nonmeasurable outer-expectation and asymptotic-measurability versions remain separate blocked primitives. |
 | Definition 1.10.1 | Outer-probability convergence primitives and common-domain `TendstoInMeasure` bridge | Broader arbitrary-map API. |
 | Lemma 1.10.2 | Measurable common-domain weak-convergence bridge | Full VdV&W arbitrary-map/measurable-cover version. |
 | Definition 2.1.5 / Theorem 2.4.3 setup | `vdVWCoveringNumber` wrapper over mathlib `Metric.externalCoveringNumber`, explicit finite closed-ball cover witnesses, finite-number handoff, monotonicity, packing comparison wrappers, deterministic empirical `L1(P_n)` distance/finite-covering-number interface, random sample-path empirical covering-number wrapper, outer-probability `o_P^*(n)` entropy condition, `F_M` truncated-class/envelope interface, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, and deterministic Rademacher-sign specialization for Theorem 2.4.3 | Iid Rademacher construction, full Orlicz/Hoeffding proof of the finite-center maximal bound, symmetrization/truncation, envelope-tail, and final convergence handoffs remain pending before the exact textbook theorem. |
@@ -117,7 +124,8 @@ READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random e
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED-EXAMPLE Example 2.4.2 exact quantile-grid closure and empirical-CDF report unless a theorem needs it.
-DEFERRED   Broad Chapter 1 weak-convergence/tightness/process machinery until needed.
+FOUNDATION Chapter 1 weak-convergence/tightness/product/Hilbert wrappers are real proof targets.
+BLOCKED    Exact arbitrary-map/nonmeasurable/representation layers need new primitives.
 ```
 
 The exact current blocker and the next primitive declarations are maintained

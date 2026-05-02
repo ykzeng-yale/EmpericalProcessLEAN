@@ -19,24 +19,23 @@ docs/vdvw_chapter1_2_formalization_blueprint.md
 
 ## Chapter 1 Dependency Policy
 
-The Chapter 1 inventory is intentionally broad.  Several items there are
-whole-book weak-convergence or stochastic-process infrastructure theorems.
-They should remain audited in the blueprint, but they are not automatically
-blocking for the current empirical-process formalization path.
+The Chapter 1 inventory is intentionally broad, and much of it is fundamental
+weak-convergence or stochastic-process infrastructure.  These items should not
+be treated as skipped.  The current policy is to split them into:
 
-Chapter 1 items whose statements are only overview/roadmap material, or whose
-usable theorem statements need later Chapter 2-3 definitions, can be parked as
-deferred planning items.  Any temporary `sorry` sketches for those items should
-stay out of committed verified Lean.  Self-contained Chapter 1 building blocks
-needed for outer probability, measurable covers, measurability, and empirical
-process bounds should continue to be proved locally without proof holes.
+1. self-contained Chapter 1 building blocks to prove locally without proof
+   holes;
+2. classical measure/topology results that should be wrapped from pinned
+   mathlib under VdV&W-local names;
+3. exact VdV&W arbitrary-map, nonmeasurable, perfect-map, or representation
+   statements that require a precisely recorded missing primitive.
 
-For near-term work, Chapter 1 is formalized only when it directly supports a
-concrete target such as outer probability, measurable covers, empirical-process
-measurability, Theorem 2.4.1, Example 2.4.2, or the next Chapter 2
-bracketing/GC result.  Broader arbitrary-map weak-convergence and tightness
-theorems are deferred until a Donsker-level or other explicit theorem target
-requires them.
+Any temporary `sorry` sketches for planning should stay out of committed
+verified Lean.  Promoted Chapter 1 Lean code remains proof-hole-free.  The
+current `StatInference.EmpiricalProcess.WeakConvergence` module starts the
+mathlib-backed foundation lane for measure-level weak convergence and
+continuous mapping; the broader arbitrary-map outer-expectation layer remains a
+separate blocker.
 
 ## Current Verified Lean Base
 
@@ -57,6 +56,7 @@ and minimal deterministic support:
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib |
 | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid sample-path endpoint SLLN bridge for finite bracket covers |
 | `StatInference/EmpiricalProcess/OuterExpectation.lean` | Chapter 1.2 nonnegative outer-expectation and measurable-cover primitives |
+| `StatInference/EmpiricalProcess/WeakConvergence.lean` | Chapter 1.3/1.11 mathlib-backed weak-convergence and continuous-mapping wrappers |
 | `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | generic outer-probability convergence primitives and local/outer GC wrappers for the primitive bracketing theorem |
 
 Old local non-empirical-process theorem experiments are not part of this clean
@@ -86,6 +86,8 @@ The table below is only the active direct-proof anchor subset.
 | Section 1.2 outer integrals and Lemma 1.2.1 measurable cover | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:356-388` | nonnegative `ℝ≥0∞` outer-expectation and proof-carrying measurable-cover primitive layer formalized; extended-real existence theorem remains pending |
 | Lemma 1.2.2, measurable-cover algebra | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:389-437` | nonnegative sup/add/inf/product cover algebra proved; two-sided constant addition equality proved as `VdVWMeasurableCover.addConstLeft` and `VdVWMeasurableCover.addConstRight`; nonnegative threshold-indicator clause proved as `VdVWMeasurableCover.thresholdIndicatorCover` and `VdVWOuterExpectation_thresholdIndicator_eq_measure_cover_threshold`; two-sided measurable infimum equality proved as `VdVWMeasurableCover.infOfMeasurableLeft` and `VdVWMeasurableCover.infOfMeasurableRight`; full signed extended-real statement remains pending |
 | Lemma 1.2.3, outer probabilities as outer integrals | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:438-445` | nonnegative indicator version proved: `VdVWOuterExpectation_eventIndicator_eq_measure`; finite-measure event-indicator measurable-cover bridge proved: `VdVWMeasurableCover.eventIndicatorOfToMeasurable`; inner indicator equality proved: `VdVWMeasurableLowerCover.eventIndicatorOfToMeasurableCompl` and `VdVWInnerExpectation_eventIndicator_eq_innerProbability`; complement-expectation identity proved as `VdVWOuterExpectation_eventIndicator_add_innerExpectation_compl` |
+| Definition 1.3.3, weak convergence | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:585` | measure-level probability-law wrapper proved as `VdVWWeakConvergenceProbabilityMeasures`; exact arbitrary-map/outer-expectation definition remains a separate primitive |
+| Theorem 1.3.6 / Theorem 1.11.1, continuous mapping | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:650,1630` | fixed continuous-map, measurable law-level wrappers proved as `VdVWWeakConvergenceProbabilityMeasures.map_continuous` and `vdVWTendstoInDistribution_continuous_comp`; varying-map/nonmeasurable VdV&W formulations remain pending |
 | Definition 1.10.1, convergence in outer probability to a constant | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1406` | generic constant-limit and common-domain outer-probability primitives formalized; common-domain equivalence with mathlib `TendstoInMeasure` proved; uniform-deviation predicates and conditional tail-continuity bridge formalized |
 | Lemma 1.10.2, outer probability versus weak convergence | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1408-1417` | measurable common-domain version of part (ii) proved using mathlib convergence in distribution |
 | GC definition for uniform LLN | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1828-1834` | book-style predicate formalized with outer-probability and outer-a.s. branches |
@@ -154,6 +156,9 @@ The following are compiled Lean declarations with no proof holes:
 | `tendstoInMeasure_of_vdVWConvergesInOuterProbability` | bridge from the common-domain VdV&W outer-probability predicate to mathlib `TendstoInMeasure` |
 | `vdVWConvergesInOuterProbability_iff_tendstoInMeasure` | common-domain equivalence between VdV&W outer-probability convergence and mathlib convergence in measure |
 | `tendstoInDistribution_of_vdVWConvergesInOuterProbability` | measurable common-domain version of Lemma 1.10.2(ii): outer-probability convergence implies convergence in distribution |
+| `VdVWWeakConvergenceProbabilityMeasures`, `vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto` | measure-level VdV&W weak-convergence wrapper and bounded-continuous integral characterization, proved by pinned mathlib |
+| `VdVWWeakConvergenceProbabilityMeasures.map_continuous`, `vdVWTendstoInDistribution_continuous_comp` | mathlib-backed continuous mapping wrappers for probability laws and convergence in distribution |
+| `vdVWTendstoInDistribution_prodMk_of_tendstoInMeasure_const` | measurable common-domain Slutsky/product convergence wrapper for Section 1.4 |
 | `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | exact outer-a.s. uniform LLN and `P`-Glivenko-Cantelli predicates |
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | converts primitive `N_[]` finiteness into outer-a.s. uniform deviation convergence |
 | `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | VdV&W Theorem 2.4.1 in the outer-a.s. convergence mode |

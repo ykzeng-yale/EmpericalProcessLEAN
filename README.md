@@ -379,6 +379,11 @@ remaining gap is comprehensive Chapter 1-2 coverage:
    theorems;
 4. one source-audited report per fully proved exact textbook theorem or lemma.
 
+The measure-level weak-convergence, continuous-mapping, and common-domain
+Slutsky pieces have started moving out of this gap through
+`StatInference/EmpiricalProcess/WeakConvergence.lean`; the remaining blocker is
+the exact VdV&W arbitrary-map/nonmeasurable outer-expectation layer.
+
 The active blueprint for this is
 `docs/vdvw_chapter1_2_formalization_blueprint.md`.
 
@@ -475,15 +480,17 @@ The proof-hole scan should return no matches.
 - Lean library currently builds.
 - Current source-audited focus has expanded to Chapter 1-2 theorem-level
   formalization.
-- The Chapter 1-2 blueprint lists all 156 theorem-level items extracted from
+- The Chapter 1-2 blueprint lists all 157 theorem-level items extracted from
   the local markdown and classifies current coverage.
 - Deterministic bracketing inequality, primitive bracket/finite-cover layer,
   primitive cover-to-route bridge, and finite endpoint strong-law wrappers are
   proved.
 - The direct dependency-minimal Theorem 2.4.1 route from primitive `N_[]`
   definitions is proved.
-- Current priority is now theorem-line formalization: Chapter 1 primitives only
-  where needed for empirical-process measurability/outer probability, then
-  Chapter 2 GC/bracketing results such as Theorem 2.4.3.  Example-specific
-  closures, including the remaining Example 2.4.2 quantile-grid report, are
-  deferred unless a main theorem later requires their exact statement.
+- Current priority is theorem-line formalization without skipping fundamental
+  Chapter 1 foundations: self-contained Chapter 1 primitives are proved
+  locally; weak-convergence, tightness, product-space, Hilbert, and
+  bounded-Lipschitz results are routed through pinned mathlib wrappers or
+  recorded as precise missing VdV&W primitives.  Example-specific closures,
+  including the remaining Example 2.4.2 quantile-grid report, are deferred
+  unless a main theorem later requires their exact statement.

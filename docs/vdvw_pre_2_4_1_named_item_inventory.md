@@ -164,7 +164,8 @@ Targeted search found these reusable foundations.
 | measurable spaces, Borel spaces, measures | `Mathlib/MeasureTheory/MeasurableSpace/*`, `Mathlib/MeasureTheory/Measure/*` | use directly |
 | probability measures | `Mathlib/MeasureTheory/Measure/ProbabilityMeasure.lean` | use `ProbabilityMeasure`, `IsProbabilityMeasure`, coercion to `Measure` |
 | finite measures and weak convergence topology | `Mathlib/MeasureTheory/Measure/FiniteMeasure.lean` | use finite-measure topology and integral characterizations |
-| Portmanteau style weak convergence | `Mathlib/MeasureTheory/Measure/Portmanteau.lean` | use directly for measure-level weak convergence when matching Chapter 1 |
+| local VdV&W weak convergence wrappers | `StatInference/EmpiricalProcess/WeakConvergence.lean` | compiled measure-level probability-law weak convergence, bounded-continuous integral characterization, continuous mapping, and measurable Slutsky/product wrappers |
+| Portmanteau style weak convergence | `Mathlib/MeasureTheory/Measure/Portmanteau.lean` | use directly for measure-level weak convergence when matching Chapter 1; local Portmanteau wrapper still pending |
 | Prokhorov-related measure theory | `Mathlib/MeasureTheory/Measure/Prokhorov.lean`, `LevyProkhorovMetric.lean` | likely reusable; still needs mapping to VdV&W outer-probability nets |
 | convergence in distribution | `Mathlib/MeasureTheory/Function/ConvergenceInDistribution.lean` | reusable for measurable random variables |
 | Bochner integrals and order monotonicity | `Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`, `Set.lean` | use `integral_mono`, `integral_mono_ae`, `setIntegral_mono` |
@@ -220,9 +221,9 @@ through 2.4.1 requires accounting for them.
 | 1.2.7 Lemma | `M1:492` | Lipschitz Fubini equality | later roadmap; mathlib Fubini and integrability foundations reusable |
 | 1.3.1 Lemma | `M1:575` | Borel sigma field from bounded continuous functions | mathlib foundation likely reusable; exact statement pending |
 | 1.3.2 Lemma | `M1:582` | pre-tightness, separability, tightness | mathlib foundation plus local VdV&W statement pending |
-| 1.3.3 Definition | `M1:585` | weak convergence of arbitrary maps | pending primitive; mathlib has measure-level weak convergence |
+| 1.3.3 Definition | `M1:585` | weak convergence of arbitrary maps | local-layer/mathlib-foundation: measure-level probability-law wrapper and bounded-continuous integral characterization compiled; exact arbitrary-map outer-expectation primitive pending |
 | 1.3.4 Theorem | `M1:606` | Portmanteau | mathlib foundation exists; arbitrary-map/outer version pending |
-| 1.3.6 Theorem | `M1:650` | continuous mapping theorem | mathlib/topology foundation exists; VdV&W arbitrary-map version pending |
+| 1.3.6 Theorem | `M1:650` | continuous mapping theorem | local-layer/mathlib-foundation: continuous map pushforward and `TendstoInDistribution` continuous-composition wrappers compiled; VdV&W arbitrary-map version pending |
 | 1.3.7 Definition | `M1:661` | asymptotic measurability | pending primitive |
 | 1.3.8 Lemma | `M1:678` | weak convergence implies asymptotic measurability/tightness relation | pending primitive |
 | 1.3.9 Theorem | `M1:688` | Prohorov theorem | mathlib foundation exists; VdV&W net/sequence arbitrary-map version pending |
@@ -234,7 +235,7 @@ through 2.4.1 requires accounting for them.
 | 1.4.2 Lemma | `M1:849` | product measure uniqueness via test functions | mathlib foundation plus local statement pending |
 | 1.4.3 Lemma | `M1:857` | asymptotic tightness and products | later roadmap |
 | 1.4.4 Lemma | `M1:858` | asymptotic measurability and products | later roadmap |
-| 1.4.5 Corollary | `M1:878` | product weak convergence criterion | later roadmap |
+| 1.4.5 Corollary | `M1:878` | product weak convergence criterion | local-layer/mathlib-foundation: measurable common-domain Slutsky/product convergence wrapper compiled; exact product/arbitrary-map criterion pending |
 | 1.4.6 Example | `M1:883` | asymptotic independence | later roadmap |
 | 1.4.7 Example | `M1:892` | Slutsky lemma | mathlib/topology foundations reusable; VdV&W statement pending |
 | 1.4.8 Theorem | `M1:910` | finite-dimensional projections | mathlib product/projection foundations reusable; exact statement pending |

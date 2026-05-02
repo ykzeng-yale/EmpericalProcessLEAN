@@ -12,6 +12,7 @@ import StatInference.EmpiricalProcess.BracketingCountable
 import StatInference.EmpiricalProcess.EndpointStrongLaw
 import StatInference.EmpiricalProcess.EndpointSamples
 import StatInference.EmpiricalProcess.OuterExpectation
+import StatInference.EmpiricalProcess.WeakConvergence
 import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.Theorem243
 import StatInference.EmpiricalProcess.OuterProbabilityExpectation

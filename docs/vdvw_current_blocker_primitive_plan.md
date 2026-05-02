@@ -17,11 +17,22 @@ large compiled local layer and may be useful later, but it should not block the
 main theorem-line queue unless a later theorem explicitly needs this exact
 example.
 
-Broad Chapter 1 weak-convergence, tightness, product-space, and
-stochastic-process results are also doc-level deferrals unless a concrete
-current theorem needs them.  Do not add committed `sorry` placeholders for
-these deferred items; promote them only as proof-hole-free Lean statements when
-they become active blockers.
+Chapter 1 weak-convergence, tightness, product-space, stochastic-process, and
+Hilbert results are fundamental foundation-lane work, not a skip bucket.  For
+each such item, first search pinned mathlib and local Lean code, then either
+wrap/prove the mathlib-backed statement or record the precise missing VdV&W
+primitive.  Only exact arbitrary-map, nonmeasurable, perfect-map, or
+representation statements with no available local/mathlib theorem should be
+marked `blocked-vdvw`.  Do not add committed `sorry` placeholders for any of
+these items; promoted Lean statements must be proof-hole-free.
+
+Current correction layer: `StatInference/EmpiricalProcess/WeakConvergence.lean`
+now compiles mathlib-backed VdV&W-local wrappers for measure-level weak
+convergence, bounded-continuous integral characterization, continuous mapping,
+and measurable common-domain Slutsky/product convergence.  This closes the
+"mathlib exists but not named locally" part for those Chapter 1 foundations;
+the exact arbitrary-map/nonmeasurable outer-expectation extensions remain
+separate blockers.
 
 ## Active Main-Line Primitive Sequence
 
