@@ -13,6 +13,7 @@ import StatInference.EmpiricalProcess.EndpointStrongLaw
 import StatInference.EmpiricalProcess.EndpointSamples
 import StatInference.EmpiricalProcess.OuterExpectation
 import StatInference.EmpiricalProcess.GlivenkoCantelli
+import StatInference.EmpiricalProcess.Theorem243
 import StatInference.EmpiricalProcess.OuterProbabilityExpectation
 import StatInference.EmpiricalProcess.RealHalfLine
 import StatInference.EmpiricalProcess.RealHalfLineGC
