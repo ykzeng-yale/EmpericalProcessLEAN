@@ -91,7 +91,18 @@ for the upper `⊤` endpoint; use `Fin.cases`, `Fin.lastCases`,
 
 ### 2. Bounded Middle Partition Interface
 
-First prove a proof-carrying interface, not yet quantile existence:
+Status: implemented as a compiled local primitive in
+`StatInference/EmpiricalProcess/RealHalfLine.lean`.
+
+Declarations:
+
+```lean
+SuppliedRealMiddleCDFPartition
+SuppliedRealMiddleCDFPartition.endpoint_left_lt_right
+SuppliedRealMiddleCDFPartition.cell_width_lt
+```
+
+This proof-carrying interface is not yet quantile existence:
 
 ```lean
 structure SuppliedRealMiddleCDFPartition
@@ -111,6 +122,8 @@ structure SuppliedRealMiddleCDFPartition
 
 Then use the already proved
 `measureReal_Ioo_lt_of_cdf_leftLim_sub_lt` to get the middle `L1(P)` widths.
+The compiled theorem `SuppliedRealMiddleCDFPartition.cell_width_lt` performs
+that handoff.
 
 ### 3. Middle Partition To Endpoint Grid
 

@@ -346,6 +346,61 @@ theorem measureReal_Ioo_lt_of_cdf_leftLim_sub_lt
   exact hcdf
 
 /--
+A proof-carrying bounded middle CDF partition for the empirical-CDF
+half-line class.
+
+This is the local primitive needed before the full quantile/cutpoint
+existence proof for VdV&W Example 2.4.2. It records a finite real endpoint
+sequence on a bounded interval `[a, b]`, a selector putting every
+`c ∈ [a, b)` into an adjacent endpoint cell, and CDF increment bounds for the
+open cells. The infinite lower and upper tails are added by later endpoint
+grid constructors.
+-/
+structure SuppliedRealMiddleCDFPartition
+    (μ : Measure ℝ) (epsilon a b : ℝ) (middleCells : ℕ) where
+  endpoint : Fin (middleCells + 1) -> ℝ
+  strictMono : StrictMono endpoint
+  left_eq : endpoint 0 = a
+  right_eq : endpoint (Fin.last middleCells) = b
+  bracketOf : ∀ c : ℝ, a ≤ c -> c < b -> Fin middleCells
+  left_le_index :
+    ∀ c hleft hright,
+      endpoint (Fin.castSucc (bracketOf c hleft hright)) ≤ c
+  index_lt_right :
+    ∀ c hleft hright,
+      c < endpoint (Fin.succ (bracketOf c hleft hright))
+  cdf_increment_lt :
+    ∀ cell : Fin middleCells,
+      Function.leftLim (ProbabilityTheory.cdf μ) (endpoint (Fin.succ cell)) -
+        ProbabilityTheory.cdf μ (endpoint (Fin.castSucc cell)) < epsilon
+
+namespace SuppliedRealMiddleCDFPartition
+
+/-- Adjacent endpoints in a supplied middle partition are strictly ordered. -/
+theorem endpoint_left_lt_right
+    {μ : Measure ℝ} {epsilon a b : ℝ} {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition μ epsilon a b middleCells)
+    (cell : Fin middleCells) :
+    partition.endpoint (Fin.castSucc cell) < partition.endpoint (Fin.succ cell) :=
+  partition.strictMono Fin.castSucc_lt_succ
+
+/--
+The CDF increment field of a supplied middle partition gives the real measure
+width bound for the corresponding open interval cell.
+-/
+theorem cell_width_lt
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] {epsilon a b : ℝ} {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition μ epsilon a b middleCells)
+    (cell : Fin middleCells) :
+    μ.real (Set.Ioo (partition.endpoint (Fin.castSucc cell))
+      (partition.endpoint (Fin.succ cell))) < epsilon :=
+  measureReal_Ioo_lt_of_cdf_leftLim_sub_lt μ
+    (partition.endpoint_left_lt_right cell)
+    (partition.cdf_increment_lt cell)
+
+end SuppliedRealMiddleCDFPartition
+
+/--
 Finite Borel measures on the real line have finite real cutpoints with
 arbitrarily small lower and upper tails.
 
