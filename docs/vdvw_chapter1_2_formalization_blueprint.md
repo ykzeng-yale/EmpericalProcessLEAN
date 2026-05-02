@@ -101,6 +101,15 @@ primitives it requires.
 Pinned mathlib is the authority for reusable foundations in this repository.
 The current pinned dependency is the one in `lake-manifest.json`.
 
+Search-before-defining is mandatory.  Before adding any local definition,
+primitive lemma, theorem wrapper, or proof-carrying structure, search local
+`StatInference`, pinned `.lake/packages/mathlib/Mathlib`, relevant pinned Lake
+support packages, and the local open-source Lean checkouts recorded in
+`docs/vdvw_current_blocker_primitive_plan.md`.  If the result affects the
+design, record the searched names/patterns, reusable APIs found, missing APIs
+that create a blocker, and the reason a new local primitive is still needed.
+Do not mark a theorem `blocked-vdvw` until that search has been done.
+
 Targeted search of pinned mathlib found reusable foundations for:
 
 | VdV&W need | Pinned mathlib foundation |

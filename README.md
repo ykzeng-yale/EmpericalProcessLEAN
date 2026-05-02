@@ -384,6 +384,13 @@ Slutsky pieces have started moving out of this gap through
 `StatInference/EmpiricalProcess/WeakConvergence.lean`; the remaining blocker is
 the exact VdV&W arbitrary-map/nonmeasurable outer-expectation layer.
 
+For every new proof step, the repo policy is search-first: inspect local
+`StatInference`, pinned `.lake/packages/mathlib/Mathlib`, relevant pinned Lake
+support packages, and the local open-source Lean checkouts recorded in the
+current blocker plan before adding a new primitive.  If the search affects the
+design, record the APIs found or not found and why the local primitive is
+necessary.
+
 The active blueprint for this is
 `docs/vdvw_chapter1_2_formalization_blueprint.md`.
 

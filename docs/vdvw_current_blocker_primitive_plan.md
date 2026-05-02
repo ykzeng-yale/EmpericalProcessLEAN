@@ -6,6 +6,28 @@ This file pins down the active blocker and the primitive Lean declarations
 needed to close it.  It is not a theorem report.  A formal report is created
 only after the exact textbook item is fully proved with no proof holes.
 
+## Mandatory Search-First Gate
+
+Every proof or formalization step must search before introducing a local
+definition, primitive lemma, theorem wrapper, or proof-carrying structure.  The
+search is part of the proof work, not optional bookkeeping.
+
+Minimum search scope for each new target:
+
+1. local project declarations under `StatInference`;
+2. pinned mathlib under `.lake/packages/mathlib/Mathlib`;
+3. relevant pinned Lake support packages under `.lake/packages`;
+4. recorded local open-source Lean checkouts listed near the end of this file
+   when the topic is measure theory, probability, weak convergence, empirical
+   processes, or asymptotic statistics.
+
+The run must record the useful search results in this blocker register,
+blueprint, dashboard, or theorem report before committing if the search affects
+the design.  The record should include searched names/patterns, reusable APIs
+found, APIs not found when absence creates a blocker, and why a new local
+primitive is still needed.  A theorem should be marked `blocked-vdvw` only
+after this search fails to find a reusable exact or adaptable Lean theorem.
+
 ## Active Blocker
 
 Current main-line target: Theorem 2.4.3 and the Chapter 2
