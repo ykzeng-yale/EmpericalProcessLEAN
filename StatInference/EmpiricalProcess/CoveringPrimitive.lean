@@ -1,4 +1,5 @@
 import Mathlib.Topology.MetricSpace.CoveringNumbers
+import StatInference.EmpiricalProcess.Average
 
 /-!
 # Primitive covering numbers
@@ -19,7 +20,7 @@ namespace StatInference
 open EMetric Metric Set
 open scoped ENNReal NNReal
 
-universe u
+universe u v
 
 /--
 VdV&W-style external covering number.
@@ -138,6 +139,243 @@ theorem vdVWCoveringNumber_mono_set
     (hsubset : target ⊆ larger) :
     vdVWCoveringNumber epsilon target ≤ vdVWCoveringNumber epsilon larger := by
   exact Metric.externalCoveringNumber_mono_set hsubset
+
+/-!
+## Deterministic empirical `L1(P_n)` covering numbers
+
+Theorem 2.4.3 uses the random covering number
+`N(epsilon, F_M, L1(P_n))`.  The definitions in this section provide the
+fixed-sample surface: once a random sample path is fixed, `P_n` is just the
+finite empirical average over that sample.
+-/
+
+/-- Empirical `L1(P_n)` distance between two real-valued functions on a fixed sample. -/
+noncomputable def empiricalL1Distance {Observation : Type u} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (f g : Observation -> ℝ) : ℝ :=
+  empiricalAverage sample fun observation => |f observation - g observation|
+
+/-- Empirical `L1(P_n)` distances are nonnegative. -/
+theorem empiricalL1Distance_nonneg {Observation : Type u} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (f g : Observation -> ℝ) :
+    0 ≤ empiricalL1Distance sample f g := by
+  unfold empiricalL1Distance empiricalAverage
+  exact div_nonneg
+    (Finset.sum_nonneg fun i _hi => abs_nonneg (f (sample i) - g (sample i)))
+    (Nat.cast_nonneg n)
+
+/-- The empirical `L1(P_n)` distance from a function to itself is zero. -/
+theorem empiricalL1Distance_self {Observation : Type u} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (f : Observation -> ℝ) :
+    empiricalL1Distance sample f f = 0 := by
+  simp [empiricalL1Distance, empiricalAverage]
+
+/-- Empirical `L1(P_n)` distance is symmetric. -/
+theorem empiricalL1Distance_comm {Observation : Type u} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (f g : Observation -> ℝ) :
+    empiricalL1Distance sample f g =
+      empiricalL1Distance sample g f := by
+  unfold empiricalL1Distance empiricalAverage
+  congr 1
+  exact Finset.sum_congr rfl fun i _hi => abs_sub_comm (f (sample i)) (g (sample i))
+
+/-- Empirical `L1(P_n)` distance satisfies the triangle inequality. -/
+theorem empiricalL1Distance_triangle {Observation : Type u} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (f g h : Observation -> ℝ) :
+    empiricalL1Distance sample f h ≤
+      empiricalL1Distance sample f g + empiricalL1Distance sample g h := by
+  unfold empiricalL1Distance empiricalAverage
+  have hsum :
+      (∑ i : Fin n, |f (sample i) - h (sample i)|) ≤
+        ∑ i : Fin n,
+          (|f (sample i) - g (sample i)| +
+            |g (sample i) - h (sample i)|) := by
+    exact Finset.sum_le_sum fun i _hi => by
+      have hdecomp :
+          f (sample i) - h (sample i) =
+            (f (sample i) - g (sample i)) +
+              (g (sample i) - h (sample i)) := by
+        ring
+      rw [hdecomp]
+      exact abs_add_le _ _
+  calc
+    (∑ i : Fin n, |f (sample i) - h (sample i)|) / (n : ℝ)
+        ≤
+      (∑ i : Fin n,
+          (|f (sample i) - g (sample i)| +
+            |g (sample i) - h (sample i)|)) / (n : ℝ) :=
+        div_le_div_of_nonneg_right hsum (Nat.cast_nonneg n)
+    _ =
+      (∑ i : Fin n, |f (sample i) - g (sample i)|) / (n : ℝ) +
+        (∑ i : Fin n, |g (sample i) - h (sample i)|) / (n : ℝ) := by
+        rw [Finset.sum_add_distrib]
+        ring
+
+/--
+An explicit finite empirical `L1(P_n)` net over a class.
+
+Centers are required to belong to the target class, matching the finite net
+`G ⊂ F_M` used in the proof of VdV&W Theorem 2.4.3.
+-/
+structure FiniteEmpiricalL1CoverAtCard {Observation : Type u} {Index : Type v}
+    {n : ℕ} (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (epsilon : ℝ) (cardinality : ℕ) where
+  center : Fin cardinality -> Index
+  center_mem : ∀ centerIndex, center centerIndex ∈ indexClass
+  centerOf : ∀ index, index ∈ indexClass -> Fin cardinality
+  dist_le :
+    ∀ index hindex,
+      empiricalL1Distance sample (classFun index)
+        (classFun (center (centerOf index hindex))) ≤ epsilon
+
+namespace FiniteEmpiricalL1CoverAtCard
+
+/-- The finite center set of a supplied empirical `L1(P_n)` net. -/
+def centerSet {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality) :
+    Set Index :=
+  Set.range cover.center
+
+/-- The supplied empirical-net center set is finite. -/
+theorem finite_centerSet {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality) :
+    cover.centerSet.Finite :=
+  Set.finite_range cover.center
+
+/-- The supplied empirical-net centers lie in the target class. -/
+theorem centerSet_subset {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality) :
+    cover.centerSet ⊆ indexClass := by
+  intro index hindex
+  rcases hindex with ⟨centerIndex, rfl⟩
+  exact cover.center_mem centerIndex
+
+/-- Every target index has a supplied empirical-net center within `epsilon`. -/
+theorem exists_center {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality)
+    {index : Index} (hindex : index ∈ indexClass) :
+    ∃ center, center ∈ cover.centerSet ∧ center ∈ indexClass ∧
+      empiricalL1Distance sample (classFun index) (classFun center) ≤ epsilon := by
+  refine ⟨cover.center (cover.centerOf index hindex), ?_, ?_, ?_⟩
+  · exact ⟨cover.centerOf index hindex, rfl⟩
+  · exact cover.center_mem (cover.centerOf index hindex)
+  · exact cover.dist_le index hindex
+
+end FiniteEmpiricalL1CoverAtCard
+
+/-- Finite empirical `L1(P_n)` covering hypothesis in witness form. -/
+def HasFiniteEmpiricalL1Cover {Observation : Type u} {Index : Type v}
+    {n : ℕ} (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (epsilon : ℝ) : Prop :=
+  ∃ cardinality : ℕ,
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality)
+
+/-- The least supplied finite empirical `L1(P_n)` cover cardinality. -/
+noncomputable def finiteEmpiricalL1CoveringNumberCard
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon) : ℕ :=
+  by
+    classical
+    exact Nat.find hfinite
+
+/--
+The deterministic empirical `L1(P_n)` covering number.
+
+If a finite empirical `epsilon`-net exists, this is the least supplied
+cardinality, coerced to `ℕ∞`; otherwise it is `⊤`.
+-/
+noncomputable def empiricalL1CoveringNumber
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (epsilon : ℝ) : ℕ∞ :=
+  by
+    classical
+    exact
+      if hfinite :
+          HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon then
+        (finiteEmpiricalL1CoveringNumberCard hfinite : ℕ∞)
+      else
+        ⊤
+
+/-- In the finite case, the empirical covering number is the `Nat.find` cardinality. -/
+theorem empiricalL1CoveringNumber_eq_find
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon =
+      (finiteEmpiricalL1CoveringNumberCard hfinite : ℕ∞) := by
+  classical
+  simp [empiricalL1CoveringNumber, hfinite]
+
+/-- The minimizing empirical cover cardinality has an explicit supplied cover. -/
+theorem empiricalL1CoveringNumber_find_spec
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        (finiteEmpiricalL1CoveringNumberCard hfinite)) :=
+  by
+    classical
+    simpa [finiteEmpiricalL1CoveringNumberCard] using Nat.find_spec hfinite
+
+/-- A finite empirical-cover witness makes the numeric covering number finite. -/
+theorem empiricalL1CoveringNumber_lt_top_of_hasFinite
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon < ⊤ := by
+  rw [empiricalL1CoveringNumber_eq_find hfinite]
+  exact WithTop.coe_lt_top (finiteEmpiricalL1CoveringNumberCard hfinite)
+
+/-- If the numeric empirical covering number is finite, a finite witness exists. -/
+theorem hasFinite_of_empiricalL1CoveringNumber_lt_top
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hfinite_number :
+      empiricalL1CoveringNumber sample indexClass classFun epsilon < ⊤) :
+    HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon := by
+  by_contra hnot
+  have htop :
+      empiricalL1CoveringNumber sample indexClass classFun epsilon = ⊤ := by
+    classical
+    simp [empiricalL1CoveringNumber, hnot]
+  rw [htop] at hfinite_number
+  exact (lt_irrefl (⊤ : ℕ∞)) hfinite_number
 
 /-- The external covering number is bounded by the internal mathlib covering number. -/
 theorem vdVWCoveringNumber_le_internalCoveringNumber

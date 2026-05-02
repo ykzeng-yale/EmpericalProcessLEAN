@@ -29,6 +29,33 @@ additional example closures:
    truncated class `F_M = {x | f x * 1{F x <= M}}`, outer integrability
    `P^* F < ∞`, and the random empirical `L1(P_n)` covering-number condition
    `log N(epsilon, F_M, L1(P_n)) = o_P^*(n)`.
+
+   Status: first fixed-sample empirical covering interface is implemented in
+   `StatInference/EmpiricalProcess/CoveringPrimitive.lean`:
+
+   ```lean
+   empiricalL1Distance
+   empiricalL1Distance_nonneg
+   empiricalL1Distance_self
+   empiricalL1Distance_comm
+   empiricalL1Distance_triangle
+   FiniteEmpiricalL1CoverAtCard
+   FiniteEmpiricalL1CoverAtCard.centerSet
+   FiniteEmpiricalL1CoverAtCard.finite_centerSet
+   FiniteEmpiricalL1CoverAtCard.centerSet_subset
+   FiniteEmpiricalL1CoverAtCard.exists_center
+   HasFiniteEmpiricalL1Cover
+   finiteEmpiricalL1CoveringNumberCard
+   empiricalL1CoveringNumber
+   empiricalL1CoveringNumber_eq_find
+   empiricalL1CoveringNumber_find_spec
+   empiricalL1CoveringNumber_lt_top_of_hasFinite
+   hasFinite_of_empiricalL1CoveringNumber_lt_top
+   ```
+
+   Remaining Step 1 work: add the random-sample/path wrapper for
+   `n ↦ empiricalL1CoveringNumber (samplePath X ω n) ...` and the
+   outer-probability little-o condition.
 2. Deterministic fixed-sample net inequality `(2.4.4)` for a finite empirical
    `L1(P_n)` net.  Reuse the existing Definition 2.3.3 weighted-supremum and
    deterministic finite-cover supremum-bound layer before adding new APIs.
@@ -44,9 +71,10 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: audit local declarations for the random empirical
-`L1(P_n)` covering-number interface and add the smallest theorem-level
-primitive needed for Step 1 or Step 2.
+Next exact edit: define the random empirical covering-number sequence and a
+book-facing outer-probability little-o wrapper for
+`log N(epsilon, F_M, L1(P_n)) = o_P^*(n)`, then connect finite empirical
+covers to the fixed-sample net inequality `(2.4.4)`.
 
 ## Parked Example-Specific Blocker
 
@@ -68,7 +96,7 @@ Pinned/local Lean sources searched before adding new primitives:
 
 | Source | Local path | Useful APIs found |
 | --- | --- | --- |
-| pinned mathlib | `.lake/packages/mathlib/Mathlib` | `ProbabilityTheory.cdf`, `ProbabilityTheory.measure_cdf`, `ProbabilityTheory.cdf_eq_real`, `ProbabilityTheory.tendsto_cdf_atBot`, `ProbabilityTheory.tendsto_cdf_atTop`, `StieltjesFunction.measure_Ioo`, `measure_Iio`, `measure_Ioi`, `tendsto_measure_Iic_atTop`, `tendsto_measure_Ici_atBot`, `Measure.real`, `measureReal_mono`, `Fin.cases`, `Fin.lastCases`, `Fin.snoc`, `Fin.cons`, `Fin.eq_castSucc_or_eq_last` |
+| pinned mathlib | `.lake/packages/mathlib/Mathlib` | `Metric.externalCoveringNumber`, `Metric.coveringNumber`, `Metric.IsCover`, `externalCoveringNumber_mono_set`, `HasSubgaussianMGF`, `hasSubgaussianMGF_of_mem_Icc`, `measure_sum_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_hasCondSubgaussianMGF`, `eLpNorm`, `eLpNorm_one_eq_lintegral_enorm`, plus previous Example 2.4.2 APIs: `ProbabilityTheory.cdf`, `ProbabilityTheory.measure_cdf`, `ProbabilityTheory.cdf_eq_real`, `ProbabilityTheory.tendsto_cdf_atBot`, `ProbabilityTheory.tendsto_cdf_atTop`, `StieltjesFunction.measure_Ioo`, `measure_Iio`, `measure_Ioi`, `tendsto_measure_Iic_atTop`, `tendsto_measure_Ici_atBot`, `Measure.real`, `measureReal_mono`, `Fin.cases`, `Fin.lastCases`, `Fin.snoc`, `Fin.cons`, `Fin.eq_castSucc_or_eq_last` |
 | pinned packages | `.lake/packages/{aesop,batteries,proofwidgets,LeanSearchClient,Qq,Cli,plausible,importGraph}` | tactic/support libraries, no empirical-CDF bracketing theorem found |
 | local AI-Statistician checkout | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician` | older empirical-process interfaces only; no exact VdV&W half-line quantile grid theorem |
 | local empirical blueprint worktree | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician/.worktrees/empirical-blueprint` | high-level empirical-process certificates; no reusable measure-theoretic quantile grid proof |
