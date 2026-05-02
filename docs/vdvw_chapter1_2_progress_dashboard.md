@@ -23,9 +23,9 @@ The Chapter 1-2 theorem-level extraction currently has 156 items.
 
 ```text
 local-exact       1 / 156  [#-----------------------------]
-local-layer       7 / 156  [#-----------------------------]
+local-layer       8 / 156  [##----------------------------]
 mathlib-found.   21 / 156  [####--------------------------]
-pending-local   127 / 156  [########################------]
+pending-local   126 / 156  [########################------]
 ```
 
 The bars are inventory bars, not effort estimates.  A `pending-local` item may
@@ -46,7 +46,7 @@ adjacent endpoint grids.
 | Chapter | Total theorem-level items | local-exact | local-layer | mathlib-foundation | pending-local |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Chapter 1 | 47 | 0 | 7 | 17 | 23 |
-| Chapter 2 | 109 | 1 | 0 | 4 | 104 |
+| Chapter 2 | 109 | 1 | 1 | 4 | 103 |
 
 Chapter 1 has more infrastructure layers than exact completions because many
 statements are whole-book weak-convergence/tightness machinery.  Chapter 2 has
@@ -93,6 +93,7 @@ outer-a.s./outer-probability GC wrappers.
 | Lemma 1.10.2 | Measurable common-domain weak-convergence bridge | Full VdV&W arbitrary-map/measurable-cover version. |
 | Definition 2.1.5 | `vdVWCoveringNumber` wrapper over mathlib `Metric.externalCoveringNumber`, explicit finite closed-ball cover witnesses, finite-number handoff, monotonicity, and packing comparison wrappers | Exact open-ball norm convention needs radius-slack wrappers when a theorem requires literal `< epsilon` balls. |
 | Definition 2.1.6 | Primitive brackets, finite covers, `L1(P)` width, and numeric `l1BracketingNumber` | Entropy/logarithm refinements are not the current target. |
+| Definition 2.2.3 | Semimetric whole-space covering/packing wrappers `vdVWSemimetricCoveringNumber` and `vdVWSemimetricPackingNumber`, finite-cover handoff, and `N <= D <= N(epsilon/2)` comparison layer | Entropy/logarithm wrappers and exact open-ball convention remain pending. |
 | Example 2.4.2 | Real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint/width identities, adjacent-endpoint grid handoff, supplied finite-grid bridges, one-cell base grid for radii above total mass, all-positive-radius `N_[] < ∞` handoff, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids | Distribution-dependent finite grid and exact empirical-CDF example report. |
 
 ## Near-Term Frontier
@@ -103,6 +104,7 @@ ONGOING    Chapter 1.2 local cover/probability layers needed by empirical proces
 ONGOING    Example 2.4.2: distribution-dependent grid after conditional EReal-grid GC handoff.
 NEXT       Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
 READY      Definition 2.1.5 covering-number primitive for Theorem 2.4.3 setup.
+READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 DEFERRED   Broad Chapter 1 weak-convergence/tightness/process machinery until needed.
 ```
 

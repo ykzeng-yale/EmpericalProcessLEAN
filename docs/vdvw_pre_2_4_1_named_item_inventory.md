@@ -288,13 +288,13 @@ through 2.4.1 requires accounting for them.
 | --- | --- | --- | --- |
 | 2.1.3 Example | `M1:1870` | empirical distribution function | later roadmap example |
 | 2.1.4 Example | `M1:1879` | empirical process indexed by sets | later roadmap example |
-| 2.1.5 Definition | `M1:1894` | covering numbers and entropy | abstract local certificate exists; primitive exact definition pending |
+| 2.1.5 Definition | `M1:1894` | covering numbers and entropy | local-layer: `vdVWCoveringNumber` wraps mathlib external covering numbers; entropy/logarithm and open-ball exactness pending |
 | 2.1.6 Definition | `M1:1895` | bracketing numbers and entropy with bracketing | primitive bracket, width, epsilon-bracket, finite-cover, and numeric `N_[]` layers exist; entropy/logarithm still pending |
 | 2.1.10 Example | `M2:160` | process indexed by arbitrary set as function class | later roadmap |
 | 2.1.11 Proposition | `M2:169` | Donsker criterion for dual unit ball of `L_p` | later roadmap |
 | 2.2.1 Lemma | `M2:229` | Orlicz tail-to-norm bound | later roadmap; not needed for direct 2.4.1 proof |
 | 2.2.2 Lemma | `M2:246` | Orlicz norm of maximum | later roadmap |
-| 2.2.3 Definition | `M2:292` | covering/packing numbers for semimetric spaces | later roadmap; local primitive pending |
+| 2.2.3 Definition | `M2:292-300` | covering/packing numbers for semimetric spaces | local-layer: semimetric covering/packing wrappers, comparison inequalities, and total-boundedness-to-finiteness direction; entropy/logarithm and open-ball exactness pending |
 | 2.2.4 Theorem | `M2:301` | chaining/maximal inequality | later roadmap |
 | 2.2.5 Corollary | `M2:314` | maximal inequality corollary | later roadmap |
 | 2.2.7 Lemma | `M2:372` | Hoeffding inequality for Rademacher sums | mathlib sub-Gaussian/Hoeffding foundation exists; exact statement pending |

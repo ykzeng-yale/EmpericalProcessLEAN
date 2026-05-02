@@ -109,7 +109,7 @@ Therefore the status convention is:
 | 1.10.1 convergence in outer probability to a constant | `..._1-100.md:1406` | local-layer |
 | 2.1.5 covering numbers | `..._1-100.md:1894` | local-layer: `vdVWCoveringNumber` wraps mathlib `Metric.externalCoveringNumber`, with explicit finite-cover witnesses and closed-ball/open-ball slack documented |
 | 2.1.6 bracketing numbers | `..._1-100.md:1895` | local-layer with primitive `l1BracketingNumber` |
-| 2.2.3 covering and packing numbers for semimetrics | `..._101-200.md:292` | pending-local |
+| 2.2.3 covering and packing numbers for semimetrics | `..._101-200.md:292` | local-layer: `vdVWSemimetricCoveringNumber`, `vdVWSemimetricPackingNumber`, finite-cover handoff, and mathlib covering-packing inequalities |
 | 2.3.3 `P`-measurable class | `..._101-200.md:627` | pending-local |
 
 ## Report Contract For Every Promoted Theorem
@@ -327,9 +327,10 @@ above, so they do not change the theorem-level dashboard counts.
    `TendstoInDistribution`.
 3. Promote Chapter 2 primitive infrastructure: covering/packing semimetric
    numbers, `P`-measurable classes, Orlicz norms, and separability wrappers.
-   Definition 2.1.5 now has a local covering-number primitive layer; the next
-   covering frontier is the semimetric packing/entropy layer in Definition
-   2.2.3 and the random `L1(P_n)` specialization needed by Theorem 2.4.3.
+   Definition 2.1.5 now has a local covering-number primitive layer, and
+   Definition 2.2.3 now has semimetric covering/packing wrappers; the next
+   covering frontier is entropy/logarithm wrappers and the random `L1(P_n)`
+   specialization needed by Theorem 2.4.3.
 4. Continue Example 2.4.2 from the extended-real supplied-grid bridge and
    conditional GC handoff to the distribution-dependent grid existence theorem
    and exact empirical-CDF example report, then move to Theorem 2.4.3.

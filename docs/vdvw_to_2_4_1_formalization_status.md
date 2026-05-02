@@ -84,6 +84,7 @@ The table below is only the active direct-proof anchor subset.
 | GC definition for uniform LLN | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1828-1834` | book-style predicate formalized with outer-probability and outer-a.s. branches |
 | Definition 2.1.5, covering numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1894` | local-layer: `vdVWCoveringNumber` wraps mathlib external covering numbers, with explicit finite-cover witnesses and slack note for open vs closed balls |
 | Definition 2.1.6, bracketing numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1895` | primitive bracket, epsilon-bracket, finite-cover, and numeric `N_[]` layers formalized |
+| Definition 2.2.3, semimetric covering and packing numbers | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:292-300` | local-layer: `vdVWSemimetricCoveringNumber`, `vdVWSemimetricPackingNumber`, `N <= D <= N(epsilon/2)`, and total-boundedness-to-finiteness direction formalized; entropy/logarithm wrappers pending |
 | Chapter 2.4 intro | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:963-969` | reflected in roadmap only |
 | Theorem 2.4.1 statement | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:970` | proved as `vdVW_theorem_2_4_1_glivenkoCantelli` via the outer-a.s. branch |
 | Theorem 2.4.1 proof, finite brackets and endpoint inequality | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_101-200.md:972-981` | deterministic bracketing theorem proved |
@@ -230,7 +231,7 @@ separate from the dependency-minimal proof of Theorem 2.4.1.
 | 1.8 | Hilbert-space weak convergence material | not formalized locally |
 | 1.9-1.12 | convergence in outer probability, extended continuous mapping, uniform integrability, bounded Lipschitz metric | not formalized locally |
 | 2.1 | empirical-process examples, covering numbers, bracketing numbers, Donsker overview examples/proposition | empirical-process interfaces, averages, primitive bracketing numbers, and a local covering-number primitive exist; Donsker overview examples/proposition remain pending |
-| 2.2 | Orlicz norm lemmas, covering/packing definition, chaining maximal inequality, Hoeffding/Bernstein inequalities | not formalized locally |
+| 2.2 | Orlicz norm lemmas, covering/packing definition, chaining maximal inequality, Hoeffding/Bernstein inequalities | covering/packing primitive layer exists; Orlicz norm lemmas, chaining maximal inequality, and exact Hoeffding/Bernstein wrappers remain pending |
 | 2.3 | symmetrization, measurable classes, separability/lifting, Donsker separable modification results | not formalized locally |
 
 Theorem 2.4.1 itself uses Definition 2.1.6 and the real-valued strong law
