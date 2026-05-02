@@ -1,4 +1,5 @@
 import StatInference.EmpiricalProcess.EndpointSamples
+import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
 
 /-!
 # Glivenko-Cantelli wrappers
@@ -40,6 +41,69 @@ zero", and it does not require the exceptional set to be measurable.
 def VdVWOuterAlmostSure {Ω : Type u} [MeasurableSpace Ω]
     (μ : Measure Ω) (predicate : Ω -> Prop) : Prop :=
   VdVWOuterProbability μ {ω | ¬ predicate ω} = 0
+
+/--
+VdV&W Definition 1.10.1, specialized to convergence in outer probability to a
+constant while allowing the sample spaces to vary with the directed index.
+
+The textbook writes the event as `d (X_i, c) > epsilon`; the Lean predicate
+uses the equivalent strict comparison `epsilon < dist (X_i omega) c`.
+-/
+def VdVWConvergesInOuterProbabilityConst
+    {ι : Type w} {D : Type v} [PseudoMetricSpace D]
+    (Ω : ι -> Type u) (mΩ : (i : ι) -> MeasurableSpace (Ω i))
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i))
+    (X : (i : ι) -> Ω i -> D) (l : Filter ι) (c : D) : Prop :=
+  ∀ ε > 0,
+    Tendsto
+      (fun i =>
+        @VdVWOuterProbability (Ω i) (mΩ i) (μ i)
+          {ω | ε < dist (X i ω) c})
+      l (𝓝 0)
+
+/--
+Common-domain convergence in outer probability.
+
+This is the Definition 1.9/1.10 shape used when all maps live on one sample
+space and converge to a possibly nonconstant limit map.
+-/
+def VdVWConvergesInOuterProbability
+    {Ω : Type u} {ι : Type w} {D : Type v}
+    [MeasurableSpace Ω] [PseudoMetricSpace D]
+    (μ : Measure Ω) (X : ι -> Ω -> D) (l : Filter ι)
+    (limit : Ω -> D) : Prop :=
+  ∀ ε > 0,
+    Tendsto
+      (fun i =>
+        VdVWOuterProbability μ {ω | ε < dist (X i ω) (limit ω)})
+      l (𝓝 0)
+
+/--
+Mathlib convergence in measure implies the corresponding VdV&W outer
+probability convergence for a common sample space.
+
+This bridge reuses mathlib's `TendstoInMeasure` API and only changes the event
+from `epsilon <= dist` to the textbook's strict `epsilon < dist`.
+-/
+theorem vdVWConvergesInOuterProbability_of_tendstoInMeasure
+    {Ω : Type u} {ι : Type w} {D : Type v}
+    [MeasurableSpace Ω] [PseudoMetricSpace D]
+    {μ : Measure Ω} {X : ι -> Ω -> D} {l : Filter ι}
+    {limit : Ω -> D}
+    (h : MeasureTheory.TendstoInMeasure μ X l limit) :
+    VdVWConvergesInOuterProbability μ X l limit := by
+  intro ε hε
+  have hle :
+      Tendsto (fun i => μ {ω | ε ≤ dist (X i ω) (limit ω)})
+        l (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_dist).mp h ε hε
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hle
+      (fun i => (zero_le : (0 : ℝ≥0∞) ≤ VdVWOuterProbability μ
+        {ω | ε < dist (X i ω) (limit ω)})) ?_
+  intro i
+  dsimp [VdVWOuterProbability]
+  exact measure_mono (fun ω hω => by simpa using (le_of_lt hω))
 
 /-- Ordinary mathlib a.e. truth implies the explicit VdV&W outer-a.s. form. -/
 theorem vdVWOuterAlmostSure_of_ae {Ω : Type u} [MeasurableSpace Ω]
@@ -98,6 +162,61 @@ def VdVWOuterProbabilityUniformDeviationTendstoZeroOn
               (empiricalRisk ω sampleSize) tolerance})
       atTop (𝓝 0)
 
+/-- Bad event for a fixed sample size and tolerance. -/
+def VdVWUniformDeviationBadEvent
+    {Ω : Type u} {Index : Type v} (indexClass : Set Index)
+    (populationRisk : Index -> ℝ)
+    (empiricalRisk : Ω -> ℕ -> Index -> ℝ)
+    (tolerance : ℝ) (sampleSize : ℕ) : Set Ω :=
+  {ω |
+    ¬ EmpiricalDeviationBoundOn indexClass populationRisk
+      (empiricalRisk ω sampleSize) tolerance}
+
+/-- Event that some bad uniform-deviation sample size occurs after `start`. -/
+def VdVWUniformDeviationBadTailEvent
+    {Ω : Type u} {Index : Type v} (indexClass : Set Index)
+    (populationRisk : Index -> ℝ)
+    (empiricalRisk : Ω -> ℕ -> Index -> ℝ)
+    (tolerance : ℝ) (start : ℕ) : Set Ω :=
+  {ω |
+    ∃ sampleSize ≥ start,
+      ω ∈
+        VdVWUniformDeviationBadEvent indexClass populationRisk
+          empiricalRisk tolerance sampleSize}
+
+/-- Event that bad uniform-deviation sample sizes occur infinitely often. -/
+def VdVWUniformDeviationBadInfinitelyOftenEvent
+    {Ω : Type u} {Index : Type v} (indexClass : Set Index)
+    (populationRisk : Index -> ℝ)
+    (empiricalRisk : Ω -> ℕ -> Index -> ℝ)
+    (tolerance : ℝ) : Set Ω :=
+  {ω |
+    ∀ start,
+      ∃ sampleSize ≥ start,
+        ω ∈
+          VdVWUniformDeviationBadEvent indexClass populationRisk
+            empiricalRisk tolerance sampleSize}
+
+/--
+If bad uniform-deviation events occur infinitely often at one positive
+tolerance, then pathwise uniform convergence to zero fails.
+-/
+theorem vdVWUniformDeviationBadInfinitelyOften_subset_not_tendsto
+    {Ω : Type u} {Index : Type v}
+    {indexClass : Set Index} {populationRisk : Index -> ℝ}
+    {empiricalRisk : Ω -> ℕ -> Index -> ℝ}
+    {tolerance : ℝ} (htolerance : 0 < tolerance) :
+    VdVWUniformDeviationBadInfinitelyOftenEvent indexClass populationRisk
+        empiricalRisk tolerance ⊆
+      {ω |
+        ¬ UniformDeviationTendstoZeroOn indexClass populationRisk
+          (empiricalRisk ω)} := by
+  intro ω hbad hconverges
+  rcases eventually_atTop.1 (hconverges tolerance htolerance) with
+    ⟨start, hstart⟩
+  rcases hbad start with ⟨sampleSize, hsampleSize, hbad_sample⟩
+  exact hbad_sample (hstart sampleSize hsampleSize)
+
 /--
 Tail-event form of outer-probability control for the uniform law.
 
@@ -114,11 +233,68 @@ def VdVWOuterProbabilityUniformDeviationTailTendstoZeroOn
     Tendsto
       (fun start : ℕ =>
         VdVWOuterProbability μ
-          {ω |
-            ∃ sampleSize ≥ start,
-              ¬ EmpiricalDeviationBoundOn indexClass populationRisk
-                (empiricalRisk ω sampleSize) tolerance})
+          (VdVWUniformDeviationBadTailEvent indexClass populationRisk
+            empiricalRisk tolerance start))
       atTop (𝓝 0)
+
+/--
+Tail-event outer probabilities converge to the outer probability of the
+bad-infinitely-often event.
+
+This is the continuity-from-above style hypothesis needed to turn outer-a.s.
+control into direct outer-probability control.
+-/
+def VdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    (μ : Measure Ω) (indexClass : Set Index)
+    (populationRisk : Index -> ℝ)
+    (empiricalRisk : Ω -> ℕ -> Index -> ℝ) : Prop :=
+  ∀ tolerance > 0,
+    Tendsto
+      (fun start : ℕ =>
+        VdVWOuterProbability μ
+          (VdVWUniformDeviationBadTailEvent indexClass populationRisk
+            empiricalRisk tolerance start))
+      atTop
+      (𝓝
+        (VdVWOuterProbability μ
+          (VdVWUniformDeviationBadInfinitelyOftenEvent indexClass
+            populationRisk empiricalRisk tolerance)))
+
+/--
+Outer-a.s. pathwise convergence plus continuity of bad-tail outer
+probabilities at the limsup event gives tail-event outer-probability control.
+-/
+theorem vdVWOuterProbabilityUniformDeviationTailTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    {μ : Measure Ω} {indexClass : Set Index}
+    {populationRisk : Index -> ℝ}
+    {empiricalRisk : Ω -> ℕ -> Index -> ℝ}
+    (h_outer_as :
+      VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ indexClass
+        populationRisk empiricalRisk)
+    (h_tail_limsup :
+      VdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn μ indexClass
+        populationRisk empiricalRisk) :
+    VdVWOuterProbabilityUniformDeviationTailTendstoZeroOn μ indexClass
+      populationRisk empiricalRisk := by
+  intro tolerance htolerance
+  have hbad_null :
+      VdVWOuterProbability μ
+        (VdVWUniformDeviationBadInfinitelyOftenEvent indexClass
+          populationRisk empiricalRisk tolerance) = 0 := by
+    exact
+      measure_mono_null
+        (vdVWUniformDeviationBadInfinitelyOften_subset_not_tendsto
+          (indexClass := indexClass) (populationRisk := populationRisk)
+          (empiricalRisk := empiricalRisk) htolerance)
+        h_outer_as
+  have hbad_null' :
+      μ (VdVWUniformDeviationBadInfinitelyOftenEvent indexClass
+          populationRisk empiricalRisk tolerance) = 0 := by
+    simpa [VdVWOuterProbability] using hbad_null
+  simpa [VdVWOuterProbability, hbad_null'] using
+    h_tail_limsup tolerance htolerance
 
 /--
 Tail-event outer-probability control implies one-time outer-probability
@@ -149,6 +325,27 @@ theorem vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_tail
   intro sampleSize
   dsimp [VdVWOuterProbability]
   exact measure_mono (fun ω hω => ⟨sampleSize, le_rfl, hω⟩)
+
+/--
+Outer-a.s. convergence plus bad-tail continuity gives the direct
+outer-probability convergence branch.
+-/
+theorem vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    {μ : Measure Ω} {indexClass : Set Index}
+    {populationRisk : Index -> ℝ}
+    {empiricalRisk : Ω -> ℕ -> Index -> ℝ}
+    (h_outer_as :
+      VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ indexClass
+        populationRisk empiricalRisk)
+    (h_tail_limsup :
+      VdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn μ indexClass
+        populationRisk empiricalRisk) :
+    VdVWOuterProbabilityUniformDeviationTendstoZeroOn μ indexClass
+      populationRisk empiricalRisk :=
+  vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_tail
+    (vdVWOuterProbabilityUniformDeviationTailTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup
+      h_outer_as h_tail_limsup)
 
 /--
 The local a.s. pathwise convergence predicate implies the explicit

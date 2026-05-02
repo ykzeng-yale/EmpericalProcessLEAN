@@ -65,7 +65,7 @@ of this repository.
 | `StatInference/EmpiricalProcess/BracketingCountable.lean` | countable decreasing finite-cover route | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/EndpointStrongLaw.lean` | endpoint SLLN wrappers from mathlib | compiled, no proof holes |
 | `StatInference/EmpiricalProcess/EndpointSamples.lean` | iid sample-path endpoint SLLN bridge for finite bracket covers | compiled, no proof holes |
-| `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | local almost-sure pathwise GC wrapper for the primitive bracketing theorem | compiled, no proof holes |
+| `StatInference/EmpiricalProcess/GlivenkoCantelli.lean` | generic outer-probability convergence primitives and local/outer GC wrappers for the primitive bracketing theorem | compiled, no proof holes |
 
 Current promoted declarations toward Theorem 2.4.1:
 
@@ -98,11 +98,15 @@ Current promoted declarations toward Theorem 2.4.1:
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to named a.s. pathwise convergence wrapper |
 | `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | proved local a.s. pathwise Glivenko-Cantelli conclusion from primitive `N_[]` |
 | `VdVWOuterProbability`, `VdVWOuterAlmostSure` | proved/compiled outer probability and outer-a.s. event primitives |
+| `VdVWConvergesInOuterProbabilityConst`, `VdVWConvergesInOuterProbability` | proved/compiled generic Definition 1.10.1-style outer-probability convergence primitives |
+| `vdVWConvergesInOuterProbability_of_tendstoInMeasure` | proved bridge from mathlib `TendstoInMeasure` to the VdV&W common-domain outer-probability predicate |
 | `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn`, `VdVWOuterAlmostSurePGlivenkoCantelliClass` | proved/compiled exact outer-a.s. uniform LLN and GC predicates |
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | proved primitive `N_[]` to outer-a.s. uniform deviation convergence |
 | `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | proved VdV&W Theorem 2.4.1 in the outer-a.s. convergence mode |
 | `VdVWOuterProbabilityUniformDeviationTendstoZeroOn`, `VdVWOuterProbabilityPGlivenkoCantelliClass` | proved/compiled outer-probability convergence-mode predicates |
 | `VdVWOuterProbabilityUniformDeviationTailTendstoZeroOn`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_tail` | proved tail-event sufficient condition for outer-probability convergence |
+| `VdVWUniformDeviationBadEvent`, `VdVWUniformDeviationBadTailEvent`, `VdVWUniformDeviationBadInfinitelyOftenEvent`, `vdVWUniformDeviationBadInfinitelyOften_subset_not_tendsto` | proved bad-event vocabulary and infinitely-often-failure implication |
+| `VdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn`, `vdVWOuterProbabilityUniformDeviationTailTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup`, `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup` | proved conditional tail-continuity route from outer-a.s. convergence to direct outer-probability convergence |
 | `VdVWPGlivenkoCantelliClass` | proved/compiled book-style GC predicate with outer-probability or outer-a.s. branches |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | proved VdV&W Theorem 2.4.1 into the book-style GC predicate |
 
@@ -233,13 +237,13 @@ through 2.4.1 requires accounting for them.
 | 1.8.4 Theorem | `M1:1247` | Hilbert-space convergence criterion | later roadmap |
 | 1.8.5 Example | `M1:1258` | Hilbert-space CLT | later roadmap |
 | 1.8.6 Example | `M1:1268` | Anderson-Darling statistic | later roadmap |
-| 1.9.1 Definition | `M1:1292` | stochastic convergence notation around arbitrary maps | pending primitive if exact textbook notation is needed |
+| 1.9.1 Definition | `M1:1292` | stochastic convergence notation around arbitrary maps | common-domain outer-probability primitive formalized; full theorem suite pending |
 | 1.9.2 Lemma | `M1:1304` | stochastic convergence implication | later roadmap |
 | 1.9.3 Lemma | `M1:1308` | stochastic convergence implication | later roadmap |
 | 1.9.5 Theorem | `M1:1328` | continuous mapping for convergence in probability | later roadmap |
 | 1.9.6 Theorem | `M1:1354` | equivalent formulations of convergence in probability/distribution context | later roadmap |
-| 1.10.1 Definition | `M1:1406` | convergence in outer probability | pending primitive; important for exact empirical-process wording |
-| 1.10.2 Lemma | `M1:1409` | outer-probability comparison lemmas | pending primitive |
+| 1.10.1 Definition | `M1:1406` | convergence in outer probability | generic constant-limit and common-domain primitives formalized; full arbitrary-map API still being expanded |
+| 1.10.2 Lemma | `M1:1409` | outer-probability comparison lemmas | pending weak-convergence/closed-set layer |
 | 1.10.3 Theorem | `M1:1420` | a.s. representations | later roadmap |
 | 1.10.5 Addendum | `M1:1437` | representation refinement | later roadmap |
 | 1.10.6 Example | `M1:1441` | empirical process representation | later roadmap; conceptually relevant |

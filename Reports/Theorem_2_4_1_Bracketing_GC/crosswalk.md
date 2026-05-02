@@ -14,6 +14,8 @@ the closest textbook step, the markdown source, and the PDF screenshot.
 | PDF screenshot | `Textbooks/Vaart1996/Screenshots/vdvw_theorem_2_4_1_excerpt_page_137.png` |
 | Markdown GC definition | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1828-1834` |
 | GC definition PDF screenshot | `Textbooks/Vaart1996/Screenshots/vdvw_gc_definition_pdf_page_96.png` |
+| Markdown outer-probability definition | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1406` |
+| Definition 1.10.1 PDF screenshot | `Textbooks/Vaart1996/Screenshots/vdvw_definition_1_10_1_pdf_page_72.png` |
 | Markdown bracketing definition | `Textbooks/Vaart1996/Markdown/Vaart 1996 Weak Convergence and Emperical Process_1-100.md:1895` |
 | Definition 2.1.6 PDF screenshot | `Textbooks/Vaart1996/Screenshots/vdvw_definition_2_1_6_pdf_page_98.png` |
 
@@ -68,11 +70,18 @@ the closest textbook step, the markdown source, and the PDF screenshot.
 | `almostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | theorem | primitive `N_[]` hypothesis implies almost-sure pathwise uniform-deviation convergence | proved by applying the primitive bracketing-number theorem |
 | `vdVWAlmostSureGlivenkoCantelliClass_of_iid_l1BracketingNumber_lt_top` | theorem | finite `L1(P)` bracketing numbers imply the class is Glivenko-Cantelli | proved as ordinary a.s. pathwise GC wrapper |
 | `VdVWOuterProbability` / `VdVWOuterAlmostSure` | definitions | outer probability of arbitrary events and outer-a.s. truth | exact convergence-mode primitive for the nonmeasurable exceptional event |
+| `VdVWConvergesInOuterProbabilityConst` | definition | Definition 1.10.1 convergence in outer probability to a constant for an arbitrary net of maps | generic varying-sample-space primitive proved/compiled |
+| `VdVWConvergesInOuterProbability` | definition | common-domain convergence in outer probability | generic nonconstant-limit primitive proved/compiled |
+| `vdVWConvergesInOuterProbability_of_tendstoInMeasure` | theorem | measurable common-domain convergence in measure implies the VdV&W outer-probability predicate | proved using mathlib `MeasureTheory.TendstoInMeasure` |
 | `VdVWOuterAlmostSureUniformDeviationTendstoZeroOn` / `VdVWOuterAlmostSurePGlivenkoCantelliClass` | definitions | uniform LLN convergence in the outer-a.s. GC sense | exact outer-a.s. GC target |
 | `vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_iid_l1BracketingNumber_lt_top` | theorem | finite `L1(P)` bracketing numbers imply outer-a.s. uniform deviation convergence | proved by converting the local a.s. theorem through `ae_iff` |
 | `vdVW_theorem_2_4_1_outerAlmostSureGlivenkoCantelli` | theorem | VdV&W Theorem 2.4.1, using the proof's outer-a.s. convergence mode | proved exact theorem statement for the dependency-minimal primitive route |
 | `VdVWOuterProbabilityUniformDeviationTendstoZeroOn` / `VdVWOuterProbabilityPGlivenkoCantelliClass` | definitions | uniform LLN convergence in outer probability | convergence-mode primitive added; direct branch proof is future work |
 | `VdVWOuterProbabilityUniformDeviationTailTendstoZeroOn` / `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_tail` | definition/theorem | tail-event sufficient condition for outer-probability convergence | proved bridge from vanishing future-tail outer probabilities to the direct outer-probability branch |
+| `VdVWUniformDeviationBadEvent` / `VdVWUniformDeviationBadTailEvent` / `VdVWUniformDeviationBadInfinitelyOftenEvent` | definitions | positive-distance bad events and limsup bad event behind Definition 1.10.1 style convergence | proved event vocabulary for the direct outer-probability branch |
+| `vdVWUniformDeviationBadInfinitelyOften_subset_not_tendsto` | theorem | infinitely many tolerance failures contradict convergence to zero | proved pathwise limsup-to-failure implication |
+| `VdVWOuterProbabilityUniformDeviationTailTendstoLimsupOn` | definition | continuity-from-above style bridge from future bad-event tails to the limsup bad event | conditional primitive; not asserted automatically |
+| `vdVWOuterProbabilityUniformDeviationTailTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup` / `vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_tail_tendsto_limsup` | theorems | outer-a.s. zero limsup plus tail continuity gives the direct outer-probability branch | proved conditional route; remaining work is deriving tail continuity from measurable-cover hypotheses |
 | `VdVWPGlivenkoCantelliClass` | definition | book phrase "in outer probability or outer almost surely" | exact book-style predicate with both branches |
 | `vdVW_theorem_2_4_1_glivenkoCantelli` | theorem | finite `L1(P)` bracketing numbers imply `P`-Glivenko-Cantelli | proved through the outer-a.s. branch |
 
