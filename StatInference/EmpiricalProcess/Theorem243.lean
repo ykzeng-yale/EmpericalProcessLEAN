@@ -242,6 +242,202 @@ theorem vdVWWeightedClassSupremum_le_upper_add_of_finiteEmpiricalL1CoverAtCard
     · exact htarget_nonneg
   · exact htarget_nonneg
 
+/-!
+## Finite-center maximal-inequality handoff
+-/
+
+/--
+The finite weighted supremum over the empirical-net centers, the formal
+counterpart of the finite class `G` in display `(2.4.4)`.
+-/
+noncomputable def vdVWFiniteCenterWeightedSupremum
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) {cardinality : ℕ}
+    (center : Fin cardinality -> Index)
+    (weights : Fin n -> ℝ) : ℝ :=
+  ⨆ centerIndex : Fin cardinality,
+    |vdVWWeightedSampleSum classFun weights (center centerIndex) sample|
+
+/-- The finite-center weighted supremum is nonnegative. -/
+theorem vdVWFiniteCenterWeightedSupremum_nonneg
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) {cardinality : ℕ}
+    (center : Fin cardinality -> Index)
+    (weights : Fin n -> ℝ) :
+    0 ≤ vdVWFiniteCenterWeightedSupremum sample classFun center weights := by
+  unfold vdVWFiniteCenterWeightedSupremum
+  exact Real.iSup_nonneg fun centerIndex =>
+    abs_nonneg (vdVWWeightedSampleSum classFun weights (center centerIndex) sample)
+
+/-- Each center sum is bounded by the finite-center weighted supremum. -/
+theorem abs_vdVWWeightedSampleSum_center_le_finiteCenterWeightedSupremum
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {cardinality : ℕ}
+    (center : Fin cardinality -> Index)
+    (weights : Fin n -> ℝ) (centerIndex : Fin cardinality) :
+    |vdVWWeightedSampleSum classFun weights (center centerIndex) sample| ≤
+      vdVWFiniteCenterWeightedSupremum sample classFun center weights := by
+  unfold vdVWFiniteCenterWeightedSupremum
+  have hbdd :
+      BddAbove
+        (Set.range fun centerIndex : Fin cardinality =>
+          |vdVWWeightedSampleSum classFun weights (center centerIndex) sample|) :=
+    Finite.bddAbove_range _
+  exact le_ciSup hbdd centerIndex
+
+/--
+Empirical `L1(P_n)` nets reduce the full weighted class supremum to the
+finite-center weighted supremum plus the net radius.
+
+This is the deterministic fixed-sample version of the finite-class `G`
+handoff in VdV&W display `(2.4.4)`.
+-/
+theorem
+    vdVWWeightedClassSupremum_le_finiteCenterWeightedSupremum_add_of_finiteEmpiricalL1CoverAtCard
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality)
+    {weights : Fin n -> ℝ}
+    (hweights : ∀ i, |weights i| ≤ (n : ℝ)⁻¹)
+    (hepsilon_nonneg : 0 ≤ epsilon) :
+    vdVWWeightedClassSupremum indexClass classFun weights sample ≤
+      vdVWFiniteCenterWeightedSupremum sample classFun cover.center weights +
+        epsilon := by
+  exact
+    vdVWWeightedClassSupremum_le_upper_add_of_finiteEmpiricalL1CoverAtCard
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (epsilon := epsilon)
+      (upper := vdVWFiniteCenterWeightedSupremum sample classFun cover.center weights)
+      cover hweights hepsilon_nonneg
+      (vdVWFiniteCenterWeightedSupremum_nonneg sample classFun cover.center weights)
+      (abs_vdVWWeightedSampleSum_center_le_finiteCenterWeightedSupremum cover.center weights)
+
+/--
+The book-shaped maximal-inequality upper bound for a finite empirical net:
+`sqrt(1 + log #G)` times a supplied center scale.
+
+The later Orlicz/Hoeffding layer is responsible for proving the supplied center
+scale, for example the conditional `psi_2`/Hoeffding scale in the proof of
+VdV&W Theorem 2.4.3.
+-/
+noncomputable def vdVWTheorem243FiniteNetMaximalUpper
+    (cardinality : ℕ) (centerScale : ℝ) : ℝ :=
+  Real.sqrt (1 + Real.log ((cardinality : ℝ) + 1)) * centerScale
+
+/-- The finite-net maximal upper bound is nonnegative when the center scale is. -/
+theorem vdVWTheorem243FiniteNetMaximalUpper_nonneg
+    (cardinality : ℕ) {centerScale : ℝ}
+    (hcenterScale_nonneg : 0 ≤ centerScale) :
+    0 ≤ vdVWTheorem243FiniteNetMaximalUpper cardinality centerScale := by
+  unfold vdVWTheorem243FiniteNetMaximalUpper
+  exact mul_nonneg (Real.sqrt_nonneg _) hcenterScale_nonneg
+
+/--
+Proof-carrying output of the finite-center maximal-inequality step.
+
+This records that every supplied net center is bounded by the
+`sqrt(1 + log #G)` maximal-inequality expression.  The exact Orlicz and
+Hoeffding proof of this predicate is the next theorem-line layer.
+-/
+def VdVWTheorem243FiniteCenterMaximalBound
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) {cardinality : ℕ}
+    (center : Fin cardinality -> Index)
+    (weights : Fin n -> ℝ) (centerScale : ℝ) : Prop :=
+  ∀ centerIndex : Fin cardinality,
+    |vdVWWeightedSampleSum classFun weights (center centerIndex) sample| ≤
+      vdVWTheorem243FiniteNetMaximalUpper cardinality centerScale
+
+/--
+The finite-center maximal-inequality output plugs into the empirical-net
+display `(2.4.4)`.
+
+This is still a local theorem layer, not the exact Theorem 2.4.3: it assumes
+the maximal-inequality center bound and only performs the deterministic
+finite-net handoff.
+-/
+theorem
+    vdVWWeightedClassSupremum_le_finiteNetMaximalUpper_add_of_finiteEmpiricalL1CoverAtCard
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon centerScale : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality)
+    {weights : Fin n -> ℝ}
+    (hweights : ∀ i, |weights i| ≤ (n : ℝ)⁻¹)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hcenterScale_nonneg : 0 ≤ centerScale)
+    (hmaximal :
+      VdVWTheorem243FiniteCenterMaximalBound sample classFun cover.center weights
+        centerScale) :
+    vdVWWeightedClassSupremum indexClass classFun weights sample ≤
+      vdVWTheorem243FiniteNetMaximalUpper cardinality centerScale + epsilon := by
+  exact
+    vdVWWeightedClassSupremum_le_upper_add_of_finiteEmpiricalL1CoverAtCard
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (epsilon := epsilon)
+      (upper := vdVWTheorem243FiniteNetMaximalUpper cardinality centerScale)
+      cover hweights hepsilon_nonneg
+      (vdVWTheorem243FiniteNetMaximalUpper_nonneg cardinality hcenterScale_nonneg)
+      hmaximal
+
+/-- The Hoeffding center scale appearing after the `psi_2` step in Theorem 2.4.3. -/
+noncomputable def vdVWTheorem243HoeffdingCenterScale (n : ℕ) (M : ℝ) : ℝ :=
+  Real.sqrt (6 / (n : ℝ)) * M
+
+/-- The Hoeffding center scale is nonnegative for nonnegative envelopes. -/
+theorem vdVWTheorem243HoeffdingCenterScale_nonneg
+    (n : ℕ) {M : ℝ} (hM_nonneg : 0 ≤ M) :
+    0 ≤ vdVWTheorem243HoeffdingCenterScale n M := by
+  unfold vdVWTheorem243HoeffdingCenterScale
+  exact mul_nonneg (Real.sqrt_nonneg _) hM_nonneg
+
+/-- The combined finite-net upper bound after the Hoeffding scale is supplied. -/
+noncomputable def vdVWTheorem243FiniteNetHoeffdingUpper
+    (cardinality n : ℕ) (M : ℝ) : ℝ :=
+  vdVWTheorem243FiniteNetMaximalUpper cardinality
+    (vdVWTheorem243HoeffdingCenterScale n M)
+
+/--
+Hoeffding-scale specialization of the finite-center maximal handoff for
+Theorem 2.4.3.
+
+The remaining probabilistic work is to prove the `hmaximal` hypothesis from
+Rademacher signs, Orlicz/`psi_2`, and mathlib's sub-Gaussian/Hoeffding APIs.
+-/
+theorem
+    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_finiteEmpiricalL1CoverAtCard
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon M : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality)
+    {weights : Fin n -> ℝ}
+    (hweights : ∀ i, |weights i| ≤ (n : ℝ)⁻¹)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hM_nonneg : 0 ≤ M)
+    (hmaximal :
+      VdVWTheorem243FiniteCenterMaximalBound sample classFun cover.center weights
+        (vdVWTheorem243HoeffdingCenterScale n M)) :
+    vdVWWeightedClassSupremum indexClass classFun weights sample ≤
+      vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M + epsilon := by
+  exact
+    vdVWWeightedClassSupremum_le_finiteNetMaximalUpper_add_of_finiteEmpiricalL1CoverAtCard
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (epsilon := epsilon)
+      (centerScale := vdVWTheorem243HoeffdingCenterScale n M)
+      cover hweights hepsilon_nonneg
+      (vdVWTheorem243HoeffdingCenterScale_nonneg n hM_nonneg) hmaximal
+
 /--
 Common-domain VdV&W stochastic little-o in outer probability.
 
