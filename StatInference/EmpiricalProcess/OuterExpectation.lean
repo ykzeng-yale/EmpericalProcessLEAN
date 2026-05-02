@@ -329,6 +329,17 @@ def addConstLeft {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
       exact (ENNReal.le_sub_iff_add_le_left hc_top hc_le_V).mp hUT_le_Wω
 
 /--
+Right addition by a constant preserves nonnegative measurable covers.
+
+This is the symmetric constant case of the additive clause in VdV&W
+Lemma 1.2.2(i), obtained from `addConstLeft` by commutativity.
+-/
+def addConstRight {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (UT : VdVWMeasurableCover μ T) (c : ℝ≥0∞) :
+    VdVWMeasurableCover μ (fun ω => T ω + c) := by
+  simpa [add_comm] using (VdVWMeasurableCover.addConstLeft c UT)
+
+/--
 Infimum majorant algebra for nonnegative measurable covers.
 
 This is the nonnegative cover-interface version of the easy inequality in
@@ -471,6 +482,18 @@ theorem VdVWOuterExpectation_eq_lintegral_const_add_cover
       ∫⁻ ω, c + UT ω ∂μ :=
   VdVWOuterExpectation_eq_lintegral_cover
     (VdVWMeasurableCover.addConstLeft c UT)
+
+/--
+The constant-right addition cover realizes the nonnegative outer expectation
+of `T + c`.
+-/
+theorem VdVWOuterExpectation_eq_lintegral_add_const_cover
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (UT : VdVWMeasurableCover μ T) (c : ℝ≥0∞) :
+    VdVWOuterExpectation μ (fun ω => T ω + c) =
+      ∫⁻ ω, UT ω + c ∂μ := by
+  simpa [add_comm] using
+    (VdVWOuterExpectation_eq_lintegral_const_add_cover c UT)
 
 /--
 The infimum cover majorant bounds the nonnegative outer expectation of a
