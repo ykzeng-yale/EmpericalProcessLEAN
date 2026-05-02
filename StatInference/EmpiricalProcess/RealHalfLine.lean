@@ -4,6 +4,7 @@ import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.MeasureTheory.Measure.Real
 import Mathlib.MeasureTheory.Measure.TightNormed
+import Mathlib.Probability.CDF
 import Mathlib.Topology.Instances.EReal.Lemmas
 import Mathlib.Topology.Order.Bornology
 
@@ -301,6 +302,34 @@ theorem measureReal_eRealOpenCell_bot_top
     (μ : Measure ℝ) :
     μ.real (eRealOpenCell ⊥ ⊤) = μ.real Set.univ := by
   rw [eRealOpenCell_bot_top]
+
+/--
+For a probability measure on the real line, the real mass of an open interval
+is the left-limit CDF increment.
+
+This is the CDF/Stieltjes bridge needed for the distribution-dependent
+finite-partition step in VdV&W Example 2.4.2.
+-/
+theorem measureReal_Ioo_eq_cdf_leftLim_sub
+    (μ : Measure ℝ) [IsProbabilityMeasure μ] {a b : ℝ} (hab : a < b) :
+    μ.real (Set.Ioo a b) =
+      Function.leftLim (ProbabilityTheory.cdf μ) b - ProbabilityTheory.cdf μ a := by
+  have hmeasure :
+      ((ProbabilityTheory.cdf μ).measure (Set.Ioo a b)).toReal =
+        μ.real (Set.Ioo a b) := by
+    rw [measureReal_def, ProbabilityTheory.measure_cdf]
+  calc
+    μ.real (Set.Ioo a b)
+        = ((ProbabilityTheory.cdf μ).measure (Set.Ioo a b)).toReal :=
+          hmeasure.symm
+    _ = (ENNReal.ofReal
+          (Function.leftLim (ProbabilityTheory.cdf μ) b -
+            ProbabilityTheory.cdf μ a)).toReal := by
+          rw [StieltjesFunction.measure_Ioo]
+    _ = Function.leftLim (ProbabilityTheory.cdf μ) b -
+          ProbabilityTheory.cdf μ a :=
+          ENNReal.toReal_ofReal
+            (sub_nonneg.mpr ((ProbabilityTheory.cdf μ).mono.le_leftLim hab))
 
 /--
 Finite Borel measures on the real line have finite real cutpoints with
@@ -916,6 +945,21 @@ theorem l1BracketingNumber_lt_top_forall
   exact gridNonempty.elim fun grid => grid.l1BracketingNumber_lt_top
 
 /--
+It is enough to build adjacent-endpoint grids in the nontrivial range
+`epsilon <= μ.real univ` to get the primitive bracketing-number hypothesis at
+every positive radius.
+-/
+theorem l1BracketingNumber_lt_top_forall_of_exists_le_measureReal_univ
+    {μ : Measure ℝ} [IsFiniteMeasure μ]
+    (endpointGridExists_le_total :
+      ∀ epsilon, 0 < epsilon -> epsilon ≤ μ.real Set.univ ->
+        ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount)) :
+    ∀ epsilon, 0 < epsilon ->
+      l1BracketingNumber μ Set.univ realHalfLineIndicator epsilon < ⊤ :=
+  l1BracketingNumber_lt_top_forall
+    (exists_forall_of_exists_le_measureReal_univ endpointGridExists_le_total)
+
+/--
 Uniform supplied adjacent-endpoint grids yield uniform supplied primitive grids.
 -/
 theorem exists_suppliedERealHalfLineGrid_of_forall
@@ -928,6 +972,20 @@ theorem exists_suppliedERealHalfLineGrid_of_forall
   intro epsilon hepsilon
   rcases endpointGridExists epsilon hepsilon with ⟨cellCount, gridNonempty⟩
   exact ⟨cellCount, gridNonempty.map fun grid => grid.toSuppliedERealHalfLineGrid⟩
+
+/--
+The nontrivial-range adjacent-endpoint grid construction also yields uniform
+primitive supplied extended-real grids.
+-/
+theorem exists_suppliedERealHalfLineGrid_of_exists_le_measureReal_univ
+    {μ : Measure ℝ}
+    (endpointGridExists_le_total :
+      ∀ epsilon, 0 < epsilon -> epsilon ≤ μ.real Set.univ ->
+        ∃ cellCount, Nonempty (SuppliedERealHalfLineEndpointGrid μ epsilon cellCount)) :
+    ∀ epsilon, 0 < epsilon ->
+      ∃ cardinality, Nonempty (SuppliedERealHalfLineGrid μ epsilon cardinality) :=
+  exists_suppliedERealHalfLineGrid_of_forall
+    (exists_forall_of_exists_le_measureReal_univ endpointGridExists_le_total)
 
 end SuppliedERealHalfLineEndpointGrid
 

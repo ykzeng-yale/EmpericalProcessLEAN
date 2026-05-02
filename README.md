@@ -294,6 +294,7 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `measureReal_eRealOpenCell_bot_coe`,
   `measureReal_eRealOpenCell_coe_top`,
   `measureReal_eRealOpenCell_bot_top`,
+  `measureReal_Ioo_eq_cdf_leftLim_sub`,
   `exists_real_tails_lt_of_isFiniteMeasure`,
   `eRealHalfLineBracket_mem_realIndicator_of_le_lt`,
   `abs_eRealHalfLineBracket_endpoint_gap_eq_indicator_openCell`,
@@ -309,7 +310,9 @@ Proved declarations toward VdV&W Theorem 2.4.1:
   `SuppliedERealHalfLineEndpointGrid.exists_threeCell`,
   `SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top_of_threeCell`,
   `SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top_forall`,
+  `SuppliedERealHalfLineEndpointGrid.l1BracketingNumber_lt_top_forall_of_exists_le_measureReal_univ`,
   `SuppliedERealHalfLineEndpointGrid.exists_suppliedERealHalfLineGrid_of_forall`,
+  `SuppliedERealHalfLineEndpointGrid.exists_suppliedERealHalfLineGrid_of_exists_le_measureReal_univ`,
   `SuppliedERealHalfLineGrid.singleCell`,
   `SuppliedERealHalfLineGrid.exists_singleCell_of_measureReal_univ_lt`,
   `SuppliedERealHalfLineGrid.of_le_epsilon`,
@@ -333,8 +336,9 @@ route, the primitive `N_[]` hypothesis theorem, VdV&W-style outer probability
 and outer-a.s. wrappers, and the book-style Theorem 2.4.1 predicate.  The
 new Example 2.4.2 layer proves the pointwise and `L1(P)` facts for real
 half-line indicator brackets, adds `EReal` endpoint brackets for `-∞`/`∞`,
-proves the extended-open-cell width identity, and connects supplied finite
-real or extended-real grids to the primitive bracketing-number witness,
+proves the extended-open-cell width identity and the probability-measure
+CDF/Stieltjes open-cell identity, and connects supplied finite real or
+extended-real grids to the primitive bracketing-number witness,
 including the all-positive-radius handoff needed by Theorem 2.4.1 and the
 conditional half-line Glivenko-Cantelli corollary from supplied grids;
 it also proves the adjacent-endpoint grid handoff, the endpoint-grid
@@ -343,8 +347,9 @@ and radius-monotonicity helpers for supplied real, extended-real, and
 adjacent-endpoint grids.  It adds finite-measure real-tail cutpoints, a
 finite-real-endpoint assembly constructor, a three-cell endpoint-grid
 constructor from supplied lower-tail, middle-cell, and upper-tail width bounds,
-and reduces full positive-radius endpoint-grid existence to the nontrivial
-range `0 < epsilon <= μ.real Set.univ`.
+and reduces full positive-radius endpoint-grid existence, primitive-grid
+existence, and bracketing-number finiteness to the nontrivial range
+`0 < epsilon <= μ.real Set.univ`.
 Construction of the general distribution-dependent grid in that nontrivial
 range is still pending.
 They are real Lean proofs, not placeholders.

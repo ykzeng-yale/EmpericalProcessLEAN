@@ -316,7 +316,7 @@ above, so they do not change the theorem-level dashboard counts.
 | Item | Kind | Anchor | Current audit status |
 | --- | --- | --- | --- |
 | 2.3.4 | Example | `..._101-200.md:630` | local-layer: pointwise/countable-subclass predicates, pointwise-to-weighted-sum convergence helpers, value-set/boundedness infrastructure for the real supremum display, bounded pointwise-approximability-to-supremum-equality bridge, deterministic finite-cover supremum bound, and the proof-carrying supremum-equality handoff to `P`-measurability; pending exact theorem that the textbook pointwise convergence hypothesis implies equality of all weighted suprema `(2.3.2)` without extra boundedness assumptions |
-| 2.4.2 | Example | `..._101-200.md:985` | local-layer: real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint identities and width identity, finite-measure real-tail cutpoint lemma, adjacent-endpoint grid handoff, supplied finite-grid bridges to the primitive bracketing-number witness, one-cell base grid and one-cell adjacent-endpoint base grid for radii above total mass, radius-monotonicity helpers for supplied real/extended/adjacent-endpoint grids, finite-real-endpoint assembly constructor, three-cell endpoint-grid constructor from supplied lower-tail/middle-cell/upper-tail width bounds, reduction of all-positive endpoint-grid existence to the nontrivial range `epsilon <= μ.real univ`, all-positive-radius handoff to the Theorem 2.4.1 `N_[] < ∞` hypothesis, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids; pending distribution-dependent middle-cell finite partition in the nontrivial range and exact empirical-CDF example report |
+| 2.4.2 | Example | `..._101-200.md:985` | local-layer: real half-line indicator bracket membership, endpoint integrability, `L1(P)` width identity, extended-real endpoint indicators/brackets for `-∞`/`∞`, extended-open-cell endpoint identities and width identity, probability-measure CDF/Stieltjes open-cell identity, finite-measure real-tail cutpoint lemma, adjacent-endpoint grid handoff, supplied finite-grid bridges to the primitive bracketing-number witness, one-cell base grid and one-cell adjacent-endpoint base grid for radii above total mass, radius-monotonicity helpers for supplied real/extended/adjacent-endpoint grids, finite-real-endpoint assembly constructor, three-cell endpoint-grid constructor from supplied lower-tail/middle-cell/upper-tail width bounds, reduction of all-positive endpoint-grid existence, primitive-grid existence, and bracketing-number finiteness to the nontrivial range `epsilon <= μ.real univ`, all-positive-radius handoff to the Theorem 2.4.1 `N_[] < ∞` hypothesis, conditional half-line GC corollary from supplied grids, and conditional half-line GC corollary from adjacent endpoint grids; pending distribution-dependent middle-cell finite partition in the nontrivial range and exact empirical-CDF example report |
 
 ## Priority Order
 
@@ -335,8 +335,11 @@ above, so they do not change the theorem-level dashboard counts.
    and the random `L1(P_n)` specialization needed by Theorem 2.4.3.
 4. Continue Example 2.4.2 from the nontrivial-radius endpoint-grid existence
    theorem `0 < epsilon <= μ.real univ` to the full distribution-dependent
-   grid existence theorem and exact empirical-CDF example report, then move to
-   Theorem 2.4.3.
+   grid existence theorem and exact empirical-CDF example report; the
+   nontrivial-range reduction now already feeds primitive-grid existence and
+   bracketing-number finiteness, and the probability-measure CDF/Stieltjes
+   open-cell identity is available for the middle-cell partition proof.  Then
+   move to Theorem 2.4.3.
 5. Formalize Sections 2.2-2.3 inequalities and symmetrization before using
    them for later entropy/Donsker results.
 6. Formalize VC/entropy Sections 2.5-2.8 using mathlib shattering foundations
