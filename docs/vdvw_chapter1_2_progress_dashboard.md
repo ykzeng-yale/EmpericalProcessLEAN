@@ -320,6 +320,10 @@ The remaining blockers are the large-`M` tail-choice convergence handoff from
 the fixed-`M` truncated process to the untruncated process, plus deriving the selected diagonal
 log-cardinality/log-ratio inputs or a stronger selected finite-net tail/UI
 condition from the book assumptions, then final assembly.
+The large-`M` handoff itself is now compiled as
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_centered_truncated`,
+closing the fixed-`M`-to-untruncated convergence blocker under the honest
+forall-fixed-`M` convergence hypothesis.
 The product-integrated symmetrization route now also has the composed
 random-cover finite-net integral bridge
 `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
@@ -330,8 +334,8 @@ random-cover finite-net integral bridge
 DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
 ONGOING    Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
-READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, F_M truncation interfaces, countable/measurable-cardinality selectors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, bounded varying-domain real-tail-to-mean wrapper, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound/inverse-radius consumers, selected-cardinality equality-transport arbitrary-radius/inverse-radius consumers, all-radius covering-domination selectors, selected inverse-radius finite-cover constructor, inverse-radius entropy side-condition package, package-level inverse-radius entropy mean projections, selected finite-cover and selected inverse-radius all-radius finite-net mean projections, explicit variable-domain tail/UI mean bridge and bounded-tail adapters, generic outer-probability perturbation, deterministic untruncation perturbation inequalities, empirical envelope-tail expectation/Markov bridges, untruncation bad-event probability split, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
-NEXT       Prove the large-M tail-choice convergence handoff from fixed-M centered-truncated convergence to untruncated centered convergence; in parallel derive selected diagonal log-cardinality/log-ratio or stronger selected finite-net tail/UI inputs from book assumptions.
+READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, F_M truncation interfaces, countable/measurable-cardinality selectors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, bounded varying-domain real-tail-to-mean wrapper, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound/inverse-radius consumers, selected-cardinality equality-transport arbitrary-radius/inverse-radius consumers, all-radius covering-domination selectors, selected inverse-radius finite-cover constructor, inverse-radius entropy side-condition package, package-level inverse-radius entropy mean projections, selected finite-cover and selected inverse-radius all-radius finite-net mean projections, explicit variable-domain tail/UI mean bridge and bounded-tail adapters, generic outer-probability perturbation, deterministic untruncation perturbation inequalities, empirical envelope-tail expectation/Markov bridges, untruncation bad-event probability split, large-M untruncation convergence handoff, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
+NEXT       Compose the large-M untruncation handoff with fixed-M selected-inverse-radius entropy consumers; in parallel derive selected diagonal log-cardinality/log-ratio or stronger selected finite-net tail/UI inputs from book assumptions.
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED-EXAMPLE Example 2.4.2 exact quantile-grid closure and empirical-CDF report unless a theorem needs it.

@@ -1150,23 +1150,27 @@ choosing `M` with population envelope-tail integral at most `epsilon / 3`, the
 untruncated bad event is bounded by the fixed-`M` truncated bad event plus the
 empirical envelope-tail Markov bound.
 
-Next exact edit: use the compiled probability split,
-`VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`,
-the ordinary real tail cutoff
+The large-`M` untruncation convergence handoff is now compiled as
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_centered_truncated`.
+It uses the probability split, the ordinary real envelope-tail cutoff
 `StatInference.ProbabilityMeasure.integral_indicator_tail_lt_tendsto_zero_of_integrable`,
-and the existing fixed-`M` centered truncated convergence consumers to derive
-`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_centered_truncated`
-under the honest fixed-`M` convergence hypothesis.  The proof must choose a
-large `M` from the integrable envelope-tail convergence before sending
-`n -> infinity`; fixed finite `M` alone leaves a nonzero tail and is not enough.
-In parallel, the remaining theorem-assumption task is still to derive the selected diagonal
+and `ENNReal.tendsto_nhds_zero` to choose `M` before sending `n -> infinity`.
+This closes the fixed-`M`-to-untruncated blocker under the honest hypothesis
+that every fixed truncation level already has centered-truncated convergence.
+
+Next exact edit: compose this untruncated handoff with the existing fixed-`M`
+centered-truncated convergence consumers, especially
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedInvRadiusEntropy`,
+to get a theorem-facing untruncated selected-inverse-radius consumer under
+`∀ M` fixed-`M` entropy/cover/integrability side conditions.  In parallel, the
+remaining theorem-assumption task is still to derive the selected diagonal
 log-cardinality/log-ratio inputs, or a stronger selected finite-net tail/UI
 condition, from the book entropy hypotheses.  The finite-cover domination,
 terminal selected-cardinality equality, measurability transport, fixed-`M`
 centered-truncated consumers, selected inverse-radius entropy side-condition
 package, selected inverse-radius finite-net mean projections, finite-net
-tail/UI adapters, and
-symmetrization/product finite-net route are already compiled.
+tail/UI adapters, and symmetrization/product finite-net route are already
+compiled.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

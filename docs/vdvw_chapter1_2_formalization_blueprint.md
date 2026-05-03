@@ -531,8 +531,11 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWOuterProbability_untruncated_centered_bad_le_truncated_add_empiricalTail`,
    and
    `VdVWOuterProbability_untruncated_centered_bad_le_truncated_add_tailIntegral`.
-   The next proof step is the large-`M` tail-choice convergence handoff from
-   fixed-`M` centered-truncated convergence to untruncated centered convergence.
+   The large-`M` tail-choice convergence handoff is now compiled as
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_centered_truncated`.
+   The next proof step is composing this handoff with the fixed-`M`
+   selected-inverse-radius entropy consumers, then discharging the selected
+   diagonal entropy/tail/UI assumptions from the book hypotheses.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
