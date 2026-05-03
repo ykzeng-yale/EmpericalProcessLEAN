@@ -423,6 +423,27 @@ theorem empiricalL1CoveringNumber_eq_find
   classical
   simp [empiricalL1CoveringNumber, hfinite]
 
+/--
+The least finite empirical-cover cardinality is bounded by any supplied finite
+upper bound on the numeric empirical covering number.
+-/
+theorem finiteEmpiricalL1CoveringNumberCard_le_of_empiricalL1CoveringNumber_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon)
+    (hcovering_le :
+      empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+        (cardinality : ℕ∞)) :
+    finiteEmpiricalL1CoveringNumberCard hfinite ≤ cardinality := by
+  have hfind_le_card_enat :
+      (finiteEmpiricalL1CoveringNumberCard hfinite : ℕ∞) ≤
+        (cardinality : ℕ∞) := by
+    rwa [empiricalL1CoveringNumber_eq_find hfinite] at hcovering_le
+  exact_mod_cast hfind_le_card_enat
+
 /-- The minimizing empirical cover cardinality has an explicit supplied cover. -/
 theorem empiricalL1CoveringNumber_find_spec
     {Observation : Type u} {Index : Type v} {n : ℕ}
@@ -899,7 +920,9 @@ theorem exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le
     rwa [empiricalL1CoveringNumber_eq_find hfinite] at hcovering_le
   have hfind_le_card :
       finiteEmpiricalL1CoveringNumberCard hfinite ≤ cardinality := by
-    exact_mod_cast hfind_le_card_enat
+    exact
+      finiteEmpiricalL1CoveringNumberCard_le_of_empiricalL1CoveringNumber_le
+        hfinite hcovering_le
   exact
     hfind_cover.elim fun cover =>
       ⟨cover.pad_cardinality hindexClass hfind_le_card⟩
