@@ -677,9 +677,10 @@ additional example closures:
    projection, sample-cover/sample-dependent-cardinality product-a.e.
    finite-net bridges, random empirical-cover product random-sign handoff,
    selected random-cover expected-maximal handoff, and product-integrated
-   random-cover finite-net expected-maximal bound are now compiled; the valid
-   next target is the product outer-expectation projection for the
-   expectation-level route, and then proving entropy-to-convergence.
+   random-cover finite-net expected-maximal bound are now compiled, as is the
+   product outer-expectation projection
+   `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`;
+   the valid next target is proving entropy-to-convergence.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -820,8 +821,9 @@ Search record for the symmetrization precursor package:
   `vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_randomEmpiricalL1CoverAtCard_of_pos`,
   and product-integrated random-cover finite-net bound
   `integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`
-  are compiled.  The next valid target is the product outer-expectation
-  projection for this expectation-level route, then entropy-to-convergence. The
+  are compiled, along with product outer-expectation projection
+  `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
+  The next valid target is entropy-to-convergence. The
   supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
   still packages the fixed-sample finite-net consequence when such a supplied
@@ -854,10 +856,10 @@ sample-cover/sample-dependent-cardinality product-a.e. finite-net bridges,
 random empirical-cover cardinality
 witness handoff, random empirical-cover product random-sign handoff,
 selected-cover expected-maximal handoff, product-integrated random-cover
-finite-net expected-maximal bound, and a.e./null-measurable cover constructors,
-are closed.  Next prove the product outer-expectation projection for the
-expectation-level finite-net route, then entropy-to-convergence and final
-Theorem 2.4.3 handoffs.
+finite-net expected-maximal bound, product outer-expectation projection for the
+expectation-level finite-net route, and a.e./null-measurable cover
+constructors, are closed.  Next prove entropy-to-convergence and final Theorem
+2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

@@ -262,9 +262,10 @@ Local searches found reusable APIs in:
    empirical-cover witness is now consumed by the expectation-level finite-net
    handoff
    `integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
-   The next target is the product outer-expectation projection for that route
-   and then the entropy-to-convergence handoff, not another fixed-sample
-   pointwise comparison.
+   The product outer-expectation projection for that route is compiled as
+   `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
+   The next target is the entropy-to-convergence handoff, not another
+   fixed-sample pointwise comparison or product-a.e. Hoeffding predicate.
    The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
@@ -279,9 +280,8 @@ Local searches found reusable APIs in:
 The next high-value proof step is the theorem-specific Section 18/entropy
 assembly for VdV&W Theorem 2.4.3:
 
-- prove the product outer-expectation projection for the expectation-level
-  sample-path-cover handoff selected by `vdVWRandomEmpiricalL1CoverAtCard`,
-  then prove the entropy-to-convergence handoff;
+- prove the entropy-to-convergence handoff from the random-cardinality
+  Hoeffding upper and the compiled product outer-expectation projection;
 - if that assembly exposes only a.e.-measurable or null-measurable random
   targets, use `VdVWMeasurableCover.ofAEMeasurable` or
   `VdVWMeasurableCover.ofNullMeasurable_ofReal` rather than adding another
@@ -422,11 +422,12 @@ selected-cover handoff
 `vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_randomEmpiricalL1CoverAtCard_of_pos`,
 and the product-integrated random-cover finite-net bound
 `integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
+It also proves the product outer-expectation projection
+`VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
 It also proves the
 supplied-`hphi_id` finite-net projection
 `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
-The next proof target is the product outer-expectation projection for this
-product-integrated expected-maximal route and then entropy-to-convergence; a
-fixed-sample pointwise comparison or product-a.e. finite-center Hoeffding
-predicate should not be pursued. Do not add another product surface unless that
-assembly exposes a sharper missing API.
+The next proof target is entropy-to-convergence for this product-integrated
+expected-maximal route; a fixed-sample pointwise comparison or product-a.e.
+finite-center Hoeffding predicate should not be pursued. Do not add another
+product surface unless that assembly exposes a sharper missing API.

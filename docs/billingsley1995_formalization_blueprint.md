@@ -366,8 +366,8 @@ is project organization and source alignment.  The immediate route is:
 For direct empirical-process impact, the dependency override is now active:
 the next proof lane should prioritize the VdV&W Theorem 2.4.3 product random-sign
 assembly after the compiled random empirical-cover witness and expectation-level
-finite-net handoffs: prove the product outer-expectation projection for the
-expected-maximal route, and then prove entropy-to-convergence, after the
+finite-net handoffs: the product outer-expectation projection for the
+expected-maximal route is compiled, so next prove entropy-to-convergence after the
 compiled integrated
 product-sample/Rademacher sign-symmetry comparison, product-space
 measurable-cover outer-expectation bridge, and supplied product-space finite-net

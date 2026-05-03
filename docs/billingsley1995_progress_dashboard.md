@@ -178,10 +178,10 @@ Concrete next edits:
    supplied product-space a.e. finite-net projection, sample-cover
    product-a.e. finite-net bridge, and random empirical-cover product random-sign
    handoff, selected random-cover expected-maximal handoff, and
-   product-integrated random-cover finite-net expected-maximal bound.  The
-   latest empirical-process frontier is proving the product outer-expectation
-   projection for that expectation-level route, and then
-   entropy-to-convergence.
+   product-integrated random-cover finite-net expected-maximal bound, plus the
+   product outer-expectation projection
+   `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
+   The latest empirical-process frontier is entropy-to-convergence.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.
