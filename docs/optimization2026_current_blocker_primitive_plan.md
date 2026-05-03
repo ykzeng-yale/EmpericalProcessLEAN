@@ -55,10 +55,13 @@ both:
   differentiability or finite-dimensional matrix design.
 
 The best aggressive target is Theorem 3.4 function-value convergence of
-gradient descent.  Its first atomic target is Lemma 3.5 discrete Gronwall,
-followed by Lemma 3.1 descent lemma.  Lemma 3.5 is preferred first because it
-is a deterministic recursion theorem over real sequences and does not depend
-on Frechet derivatives, ODE modeling, or matrix APIs.
+gradient descent.  Its first atomic target, Lemma 3.5 discrete Gronwall, now
+has a compiled zero-based finite-sum local-layer theorem:
+`discreteGronwall_sum_le` and `discreteGronwall_sum_le_of_pos` in
+`StatInference/Optimization/DiscreteGronwall.lean`.  The source display is
+1-based, so a source-shaped wrapper is still useful but not mathematically
+blocking.  The next substantive target is Lemma 3.1 descent lemma, followed by
+the Theorem 3.4 supplied-interface assembly.
 
 ## Search-First Record
 
@@ -76,6 +79,18 @@ Pinned mathlib searches should prioritize:
 - finite sums/products and geometric-series lemmas
 - matrix PSD/Loewner order/eigenvalue/operator-norm APIs
 
+Current discrete-Gronwall search result: no local `StatInference` recurrence
+or geometric helper matched Chewi Lemma 3.5.  Mathlib has the reusable
+product/Ico recurrence theorems `discrete_gronwall_prod_general`,
+`discrete_gronwall`, and `discrete_gronwall_Ico` in
+`Mathlib.Analysis.ODE.DiscreteGronwall`.  The compiled local theorem is the
+Chewi power/range display specialization used by the Chapter 3 route.  Useful
+support APIs include `Finset.sum_range_succ`, `Finset.mul_sum`,
+`Finset.sum_congr`, `Finset.sum_Ico_eq_sum_range`, `Finset.sum_range_reflect`,
+`pow_succ`, `omega`, and `ring`/`nlinarith`; later Theorem 3.4 denominator work
+should reuse mathlib `geom_sum_*` APIs rather than adding custom
+geometric-series lemmas.
+
 Local searches should prioritize:
 
 - `StatInference/Optimization/Basic.lean`
@@ -87,13 +102,13 @@ Local searches should prioritize:
 
 1. Keep `StatInference/Optimization/Basic.lean` compiling and imported by
    `StatInference.lean`.
-2. Add `StatInference/Optimization/DiscreteGronwall.lean` for Chewi Lemma 3.5.
-   Keep the theorem statement close to the source: if `u_{n+1} <= A u_n + B_n`
-   with `A > 0`, prove the finite unrolled bound used by Theorem 3.4.
-3. Add the smallest sequence/geometric-sum helper needed for Lemma 3.5, after
-   searching mathlib for existing geometric-sum and finite-sum APIs.
-4. Add `StatInference/Optimization/GradientDescent.lean` only after Lemma 3.5
-   compiles, and prove Lemma 3.1 from `SmoothWithGradientOn`.
+2. Keep `StatInference/Optimization/DiscreteGronwall.lean` compiling.  It now
+   proves the zero-based finite-sum form of Chewi Lemma 3.5.  Add a 1-based
+   source-display wrapper only if it is lightweight.
+3. Use mathlib geometric-series APIs for the denominator simplification in
+   Theorem 3.4; do not create local geometric-series helpers unless forced.
+4. Add `StatInference/Optimization/GradientDescent.lean` and prove Lemma 3.1
+   from `SmoothWithGradientOn` or a mathlib-gradient bridge.
 5. Prove the first source-exact report candidate only after the exact theorem
    declaration compiles and source screenshots are captured.
 
@@ -118,11 +133,12 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.IsGradientDescentTrajectory`
 - `StatInference.Optimization.HasLipschitzGradientOn`
 - `StatInference.Optimization.gradientStep`
+- `StatInference.Optimization.discreteGronwall_sum_le`
+- `StatInference.Optimization.discreteGronwall_sum_le_of_pos`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next automation target: pursue Chewi Theorem 3.4 aggressively by first proving
-Chewi Lemma 3.5 discrete Gronwall in a new
-`StatInference/Optimization/DiscreteGronwall.lean` module, then proving Lemma
-3.1 descent lemma from `SmoothWithGradientOn`, and only then assembling the
+Next automation target: pursue Chewi Theorem 3.4 aggressively by either adding
+the 1-based source-display wrapper for Lemma 3.5 if cheap, or moving directly
+to Lemma 3.1 descent lemma from `SmoothWithGradientOn`, then assembling the
 Theorem 3.4 supplied-interface convergence wrapper.
