@@ -1275,21 +1275,37 @@ convert future finite-grid/packing cardinality estimates
 log-cardinality bounds consumed by the selected fixed-radius tail package.
 This removes the real-log arithmetic part of the current blocker.
 
+2026-05-03 `/goal` update: the internal-cover adapter is now compiled in
+`StatInference/EmpiricalProcess/CoveringPrimitive.lean`.  Search used local
+`FiniteEmpiricalL1CoverAtCard`/`empiricalL1CoveringNumber` declarations and
+pinned mathlib APIs `Metric.IsCover`, `Metric.coveringNumber`,
+`Metric.minimalCover`, `Metric.finite_minimalCover`,
+`Metric.minimalCover_subset`, and `Metric.isCover_minimalCover`.  The new
+proof-carrying declarations are
+`empiricalL1CoveringNumber_le_of_coverAtCard`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_centerSet`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_centerSet_card_le`,
+`empiricalL1CoveringNumber_le_of_finite_centerSet`,
+`empiricalL1CoveringNumber_le_of_finite_centerSet_card_le`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_metric_isCover`,
+`empiricalL1CoveringNumber_le_of_metric_isCover`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_metric_minimalCover`, and
+`empiricalL1CoveringNumber_le_of_metric_minimalCover`.  This closes the
+missing local adapter from finite internal metric centers to empirical
+`L1(P_n)` cover witnesses, under the honest compatibility hypothesis
+`edist index center <= radius -> empiricalL1Distance ... <= epsilon`.
+
 Next exact edit: prove the selected finite-net tail-expectation/UI condition
 from the textbook entropy hypothesis by supplying the remaining geometric
-cardinality estimate.  Search found reusable mathlib internal-cover APIs
-`Metric.coveringNumber`, `Metric.minimalCover`,
-`Metric.maximalSeparatedSet`, and packing comparisons in
-`Mathlib.Topology.MetricSpace.CoveringNumbers`, but no existing local adapter
-from those internal metric covers to `FiniteEmpiricalL1CoverAtCard` for the
-empirical `L1(P_n)` pseudometric.  The next proof-facing primitive should
-equip each fixed sample/class image with the induced empirical L1 semimetric,
-use mathlib internal covers or maximal separated sets to keep centers inside
-the class, enumerate the finite center set as `Fin cardinality -> Index`, and
-then feed the new `base ^ n` log-cardinality arithmetic lemmas.  If this
-adapter/geometric packing route blocks, record the precise additional
-book-level uniform-integrability/tail-expectation condition needed to keep the
-final Theorem 2.4.3 statement honest.
+cardinality estimate.  The adapter gap is now closed; the remaining proof work
+is to instantiate or construct the empirical `L1(P_n)` pseudometric geometry,
+prove the compatibility estimate for the chosen internal covers/maximal
+separated sets, bound the resulting finite center cardinality by a usable
+`base ^ n` expression or by the selected fixed-radius entropy input, and feed
+the terminal log-cardinality arithmetic lemmas.  If this geometric packing
+route blocks, record the precise additional book-level
+uniform-integrability/tail-expectation condition needed to keep the final
+Theorem 2.4.3 statement honest.
 The remaining analytic gap is no longer selected-cardinality measurability/log
 convergence under countability, nor the fixed-`M`/untruncated consumer
 composition, nor a missing tail/UI consumer, nor converting a deterministic

@@ -582,12 +582,20 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le_pow`
    now convert future `base ^ n` finite-grid/packing cardinality estimates
    into the normalized log-cardinality bound required by the selected
-   fixed-radius tail route.  The next proof step is therefore the geometric
-   adapter: bridge mathlib internal metric covers or maximal separated sets
-   for the empirical `L1(P_n)` pseudometric to the local
-   `FiniteEmpiricalL1CoverAtCard` structure, whose centers must lie in the
-   class.  If this cannot be proved from the textbook assumptions, state the
-   exact additional theorem-level side condition honestly.
+   fixed-radius tail route.  The finite-center-set and mathlib internal-cover
+   adapter layer is now compiled in `CoveringPrimitive.lean` through
+   `nonempty_finiteEmpiricalL1CoverAtCard_of_finite_centerSet`,
+   `empiricalL1CoveringNumber_le_of_finite_centerSet`,
+   `nonempty_finiteEmpiricalL1CoverAtCard_of_metric_isCover`,
+   `empiricalL1CoveringNumber_le_of_metric_isCover`,
+   `nonempty_finiteEmpiricalL1CoverAtCard_of_metric_minimalCover`, and
+   `empiricalL1CoveringNumber_le_of_metric_minimalCover`.  The next proof step
+   is therefore the geometric/cardinality instantiation: build or select the
+   empirical `L1(P_n)` pseudometric cover, prove the compatibility estimate
+   from its `edist` balls to the local empirical distance bound, and feed the
+   resulting cardinality estimate into the selected fixed-radius tail route.
+   If this cannot be proved from the textbook assumptions, state the exact
+   additional theorem-level side condition honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

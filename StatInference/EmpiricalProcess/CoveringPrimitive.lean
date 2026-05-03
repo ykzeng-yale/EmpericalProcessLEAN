@@ -458,6 +458,35 @@ theorem empiricalL1CoveringNumber_find_spec
     classical
     simpa [finiteEmpiricalL1CoveringNumberCard] using Nat.find_spec hfinite
 
+/--
+Any explicit fixed-cardinality empirical cover bounds the numeric empirical
+covering number.
+
+This is the forward handoff from proof-carrying finite nets back to the
+`ℕ∞`-valued entropy displays used in VdV&W.
+-/
+theorem empiricalL1CoveringNumber_le_of_coverAtCard
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (hcover :
+      Nonempty
+        (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+          cardinality)) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  classical
+  let hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon :=
+    ⟨cardinality, hcover⟩
+  have hcard :
+      finiteEmpiricalL1CoveringNumberCard hfinite ≤ cardinality := by
+    simpa [finiteEmpiricalL1CoveringNumberCard] using
+      (Nat.find_min' hfinite hcover)
+  rw [empiricalL1CoveringNumber_eq_find hfinite]
+  exact_mod_cast hcard
+
 /-- A finite empirical-cover witness makes the numeric covering number finite. -/
 theorem empiricalL1CoveringNumber_lt_top_of_hasFinite
     {Observation : Type u} {Index : Type v} {n : ℕ}
@@ -526,6 +555,240 @@ theorem nonempty_finiteEmpiricalL1CoverAtCard_iff_exists_centers
          center_mem := hcenter_mem
          centerOf := centerOf
          dist_le := hdist }⟩
+
+/--
+Enumerate a finite internal empirical-net center set as a
+`FiniteEmpiricalL1CoverAtCard`.
+
+This is the set-level adapter needed for later bridges from mathlib internal
+metric covers or maximal separated sets: once a finite set of indices lies in
+the class and covers every class member in empirical `L1(P_n)`, it can be
+converted to the local proof-carrying finite-net structure whose centers are
+indexed by `Fin`.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_finite_centerSet
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass centerSet : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hcenter_finite : centerSet.Finite)
+    (hcenter_subset : centerSet ⊆ indexClass)
+    (hcover :
+      ∀ index, index ∈ indexClass ->
+        ∃ center, center ∈ centerSet ∧
+          empiricalL1Distance sample (classFun index) (classFun center) ≤
+            epsilon) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        hcenter_finite.toFinset.card) := by
+  classical
+  let center : Fin hcenter_finite.toFinset.card -> Index :=
+    fun centerIndex =>
+      ((hcenter_finite.toFinset.equivFin).symm centerIndex).1
+  let centerOf :
+      ∀ index, index ∈ indexClass -> Fin hcenter_finite.toFinset.card :=
+    fun index hindex =>
+      hcenter_finite.toFinset.equivFin
+        ⟨Classical.choose (hcover index hindex),
+          (hcenter_finite.mem_toFinset).2
+            (Classical.choose_spec (hcover index hindex)).1⟩
+  have hcenter_mem : ∀ centerIndex, center centerIndex ∈ indexClass := by
+    intro centerIndex
+    have hmem_finset :
+        (((hcenter_finite.toFinset.equivFin).symm centerIndex).1 : Index) ∈
+          hcenter_finite.toFinset :=
+      ((hcenter_finite.toFinset.equivFin).symm centerIndex).2
+    exact hcenter_subset ((hcenter_finite.mem_toFinset).1 hmem_finset)
+  have hdist :
+      ∀ index hindex,
+        empiricalL1Distance sample (classFun index)
+          (classFun (center (centerOf index hindex))) ≤ epsilon := by
+    intro index hindex
+    have hchosen := Classical.choose_spec (hcover index hindex)
+    have hcenter_eq :
+        center (centerOf index hindex) =
+          Classical.choose (hcover index hindex) := by
+      simp [center, centerOf]
+    simpa [hcenter_eq] using hchosen.2
+  exact
+    ⟨{ center := center
+       center_mem := hcenter_mem
+       centerOf := centerOf
+       dist_le := hdist }⟩
+
+/--
+Padded-cardinality form of
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_centerSet`.
+
+This is useful after a geometric packing or grid argument gives only an upper
+bound on the finite center-set cardinality.  The padding uses a supplied
+nonempty class member, matching the existing `pad_cardinality` bridge.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_finite_centerSet_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass centerSet : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (hcenter_finite : centerSet.Finite)
+    (hcenter_subset : centerSet ⊆ indexClass)
+    (hcover :
+      ∀ index, index ∈ indexClass ->
+        ∃ center, center ∈ centerSet ∧
+          empiricalL1Distance sample (classFun index) (classFun center) ≤
+            epsilon)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le : hcenter_finite.toFinset.card ≤ cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  exact
+    (nonempty_finiteEmpiricalL1CoverAtCard_of_finite_centerSet
+      hcenter_finite hcenter_subset hcover).elim fun cover =>
+      ⟨cover.pad_cardinality hindexClass hcard_le⟩
+
+/--
+A finite internal center set also bounds the numeric empirical covering number.
+-/
+theorem empiricalL1CoveringNumber_le_of_finite_centerSet
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass centerSet : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hcenter_finite : centerSet.Finite)
+    (hcenter_subset : centerSet ⊆ indexClass)
+    (hcover :
+      ∀ index, index ∈ indexClass ->
+        ∃ center, center ∈ centerSet ∧
+          empiricalL1Distance sample (classFun index) (classFun center) ≤
+            epsilon) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (hcenter_finite.toFinset.card : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_coverAtCard
+      (nonempty_finiteEmpiricalL1CoverAtCard_of_finite_centerSet
+        hcenter_finite hcenter_subset hcover)
+
+/--
+Cardinality-padded finite-center-set bound for the numeric empirical covering
+number.
+-/
+theorem empiricalL1CoveringNumber_le_of_finite_centerSet_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass centerSet : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (hcenter_finite : centerSet.Finite)
+    (hcenter_subset : centerSet ⊆ indexClass)
+    (hcover :
+      ∀ index, index ∈ indexClass ->
+        ∃ center, center ∈ centerSet ∧
+          empiricalL1Distance sample (classFun index) (classFun center) ≤
+            epsilon)
+    (hcard_le : hcenter_finite.toFinset.card ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    (empiricalL1CoveringNumber_le_of_finite_centerSet
+      hcenter_finite hcenter_subset hcover).trans (by exact_mod_cast hcard_le)
+
+/--
+Convert a mathlib internal metric cover into a local empirical `L1(P_n)` cover
+through a supplied compatibility bound.
+
+The metric cover supplies centers in `centerSet`; the `hdist` hypothesis is the
+problem-specific bridge from the index semimetric to empirical `L1(P_n)`.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_metric_isCover
+    {Observation : Type u} {Index : Type v} [PseudoEMetricSpace Index] {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass centerSet : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ} {radius : ℝ≥0}
+    (hcenter_finite : centerSet.Finite)
+    (hcenter_subset : centerSet ⊆ indexClass)
+    (hmetric_cover : Metric.IsCover radius indexClass centerSet)
+    (hdist :
+      ∀ index center, index ∈ indexClass -> center ∈ centerSet ->
+        edist index center ≤ radius ->
+          empiricalL1Distance sample (classFun index) (classFun center) ≤
+            epsilon) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        hcenter_finite.toFinset.card) := by
+  refine
+    nonempty_finiteEmpiricalL1CoverAtCard_of_finite_centerSet
+      hcenter_finite hcenter_subset ?_
+  intro index hindex
+  obtain ⟨center, hcenter, hdist_metric⟩ := hmetric_cover hindex
+  exact ⟨center, hcenter, hdist index center hindex hcenter hdist_metric⟩
+
+/--
+Numeric empirical-covering bound induced by a mathlib internal metric cover and
+a compatibility estimate with empirical `L1(P_n)`.
+-/
+theorem empiricalL1CoveringNumber_le_of_metric_isCover
+    {Observation : Type u} {Index : Type v} [PseudoEMetricSpace Index] {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass centerSet : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ} {radius : ℝ≥0}
+    (hcenter_finite : centerSet.Finite)
+    (hcenter_subset : centerSet ⊆ indexClass)
+    (hmetric_cover : Metric.IsCover radius indexClass centerSet)
+    (hdist :
+      ∀ index center, index ∈ indexClass -> center ∈ centerSet ->
+        edist index center ≤ radius ->
+          empiricalL1Distance sample (classFun index) (classFun center) ≤
+            epsilon) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (hcenter_finite.toFinset.card : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_coverAtCard
+      (nonempty_finiteEmpiricalL1CoverAtCard_of_metric_isCover
+        hcenter_finite hcenter_subset hmetric_cover hdist)
+
+/--
+Use mathlib's finite minimal internal cover as a local empirical-net witness.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_metric_minimalCover
+    {Observation : Type u} {Index : Type v} [PseudoEMetricSpace Index] {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ} {radius : ℝ≥0}
+    (hcovering_finite : Metric.coveringNumber radius indexClass ≠ ⊤)
+    (hdist :
+      ∀ index center, index ∈ indexClass ->
+        center ∈ Metric.minimalCover radius indexClass ->
+          edist index center ≤ radius ->
+            empiricalL1Distance sample (classFun index) (classFun center) ≤
+              epsilon) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        (Metric.finite_minimalCover (ε := radius)
+          (A := indexClass)).toFinset.card) := by
+  exact
+    nonempty_finiteEmpiricalL1CoverAtCard_of_metric_isCover
+      (Metric.finite_minimalCover (ε := radius) (A := indexClass))
+      (Metric.minimalCover_subset (ε := radius) (A := indexClass))
+      (Metric.isCover_minimalCover (ε := radius) (A := indexClass)
+        hcovering_finite)
+      hdist
+
+/--
+Numeric empirical-covering bound induced by mathlib's finite minimal internal
+metric cover and a compatibility estimate with empirical `L1(P_n)`.
+-/
+theorem empiricalL1CoveringNumber_le_of_metric_minimalCover
+    {Observation : Type u} {Index : Type v} [PseudoEMetricSpace Index] {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ} {radius : ℝ≥0}
+    (hcovering_finite : Metric.coveringNumber radius indexClass ≠ ⊤)
+    (hdist :
+      ∀ index center, index ∈ indexClass ->
+        center ∈ Metric.minimalCover radius indexClass ->
+          edist index center ≤ radius ->
+            empiricalL1Distance sample (classFun index) (classFun center) ≤
+              epsilon) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      ((Metric.finite_minimalCover (ε := radius)
+        (A := indexClass)).toFinset.card : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_coverAtCard
+      (nonempty_finiteEmpiricalL1CoverAtCard_of_metric_minimalCover
+        hcovering_finite hdist)
 
 /--
 Fixed-cardinality cover-existence events are measurable for countable classes
