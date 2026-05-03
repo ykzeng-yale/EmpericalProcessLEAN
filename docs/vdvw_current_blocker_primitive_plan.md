@@ -595,12 +595,31 @@ additional example closures:
    is now compiled as
    `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`,
    and the envelope-bounded pair split is compiled as
-   `vdVWWeightedClassSupremum_truncated_pairDifference_le_add`.  The remaining
+   `vdVWWeightedClassSupremum_truncated_pairDifference_le_add`.  The finite
+   product-coordinate projection wrapper
+   `probability_pi_prod_coordinates_measurePreserving` and VdV&W specializations
+   `measurePreserving_vdVWProductMeasure_prod_to_original_ghost`,
+   `measurePreserving_vdVWProductMeasure_prod_to_original`, and
+   `measurePreserving_vdVWProductMeasure_prod_to_ghost` are now compiled, along
+   with the expectation-level monotonicity lifts
+   `integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
+   and
+   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd`,
+   plus the same-weight variant
+   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd_same_weights`
+   using `vdVWWeightedSampleSum_neg_weights` and
+   `vdVWWeightedClassSupremum_neg_weights`, and the projected two-coordinate
+   expectation bound
+   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`.
+   The random-sign side now also has
+   `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`.
+   The remaining
    supplied-`hphi_id` projection into the random-sign finite-net bound is
    compiled as
    `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
-   The remaining comparison work is to prove `hphi_id` itself from
-   product-sample projection/sign-symmetry and measurable-cover
+   Search refined the remaining comparison: the fixed-sample pointwise
+   `hphi_id` target is too strong, so the valid next target is an integrated
+   product-sample comparison using Rademacher sign-symmetry and measurable-cover
    outer-expectation assembly.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
@@ -686,12 +705,26 @@ Search record for the symmetrization precursor package:
   `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
   and the envelope-bounded split
   `vdVWWeightedClassSupremum_truncated_pairDifference_le_add` are now compiled
-  as well, and
+  as well.  The product-coordinate projection layer is also compiled as
+  `probability_pi_prod_coordinates_measurePreserving`,
+  `measurePreserving_vdVWProductMeasure_prod_to_original_ghost`,
+  `measurePreserving_vdVWProductMeasure_prod_to_original`, and
+  `measurePreserving_vdVWProductMeasure_prod_to_ghost`; the same-weight
+  integrated pair split is compiled using the deterministic sign-flip lemmas
+  `vdVWWeightedSampleSum_neg_weights` and
+  `vdVWWeightedClassSupremum_neg_weights`, and its projected same-law
+  consequence
+  `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`
+  is compiled.  The Rademacher-weight sign-negation bridge
+  `vdVWWeightedClassSupremum_rademacherWeights_neg_sign` is compiled as well.
+  A follow-up search found the
+  fixed-sample pointwise `hphi_id` target is too strong; the next valid target
+  is integrated over the product sample.  The supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
   now packages the finite-net consequence once the theorem-local `hphi_id`
   comparison is supplied.  The final comparison can consume the precursor
-  directly after the remaining product-sample projection/sign-symmetry and
-  cover steps prove `hphi_id`.
+  directly after the remaining sign-symmetry and cover steps prove the
+  integrated `hphi_id` bridge.
 
 Next exact edit: continue the theorem-specific symmetrization/truncation layer
 for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
@@ -707,11 +740,14 @@ symmetrization precursor package and finite product-sample weighted-sum
 mean-zero bridge, plus the random-sign expected-maximal and outer-expectation
 finite-net projections, the bounded-value-set class-member-to-supremum bridge
 plus uniform-bound value-set boundedness bridge, the fixed-sample `Phi(x)=x`
-ghost-copy comparison, the envelope-bounded pair split, and the
-supplied-`hphi_id` finite-net projection, are closed.  Next prove `hphi_id`
-itself from product-sample projection/sign-symmetry and measurable-cover
-outer-expectation comparison, then entropy-to-convergence and final Theorem
-2.4.3 handoffs.
+ghost-copy comparison, the envelope-bounded pair split, the finite
+product-coordinate projection wrapper and VdV&W specializations, the
+expectation-level integral lifts including the same-weight pair-split rewrite,
+the projected two-coordinate expectation bound, the deterministic
+Rademacher-weight sign-negation bridge, and the supplied-`hphi_id` finite-net
+projection, are closed.  Next prove the integrated product-sample `hphi_id`
+comparison from sign-symmetry and measurable-cover outer-expectation
+comparison, then entropy-to-convergence and final Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

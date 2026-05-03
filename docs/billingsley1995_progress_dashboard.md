@@ -124,6 +124,16 @@ Concrete next edits:
    `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
    and the envelope-bounded split
    `vdVWWeightedClassSupremum_truncated_pairDifference_le_add` are now compiled.
+   The finite product-coordinate projection wrapper
+   `probability_pi_prod_coordinates_measurePreserving`, its VdV&W specialization
+   `measurePreserving_vdVWProductMeasure_prod_to_original_ghost`, the one-sided
+   projections `measurePreserving_vdVWProductMeasure_prod_to_original` and
+   `measurePreserving_vdVWProductMeasure_prod_to_ghost`, and the expectation-level
+   integral lifts for the centered ghost-copy comparison and envelope-bounded
+   pair split are now compiled, including the projected two-coordinate bound
+   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`.
+   The theorem-local random-sign side also has
+   `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`.
    The supplied-`hphi_id` projection to the random-sign finite-net
    Hoeffding-scale bound is also compiled as
    `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
@@ -134,9 +144,10 @@ Concrete next edits:
    support.  The log-radius-to-Hoeffding scale comparison and proof-carrying
    symmetrization precursor package and finite product-sample weighted-sum
    mean-zero bridge, the fixed-sample `Phi(x)=x` ghost-copy comparison, and the
+   finite product-coordinate projection, expectation-level integral lifts, and
    supplied-`hphi_id` finite-net projection are now compiled; the latest
-   empirical-process frontier is proving `hphi_id` itself via the
-   product-sample/random-sign outer-expectation assembly,
+   empirical-process frontier is proving the valid integrated product-sample
+   `hphi_id` bridge via the remaining random-sign outer-expectation assembly,
    entropy-to-convergence, and final assembly.  Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.

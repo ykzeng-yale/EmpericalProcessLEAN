@@ -194,12 +194,31 @@ Local searches found reusable APIs in:
    as
    `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`,
    and the envelope-bounded pair split is packaged as
-   `vdVWWeightedClassSupremum_truncated_pairDifference_le_add`.  The remaining
+   `vdVWWeightedClassSupremum_truncated_pairDifference_le_add`.  The finite
+   product-coordinate projection wrapper
+   `probability_pi_prod_coordinates_measurePreserving`, VdV&W specializations
+   `measurePreserving_vdVWProductMeasure_prod_to_original_ghost`,
+   `measurePreserving_vdVWProductMeasure_prod_to_original`, and
+   `measurePreserving_vdVWProductMeasure_prod_to_ghost` are now compiled, along
+   with the expectation-level monotonicity lifts
+   `integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
+   and
+   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd`,
+   plus the same-weight variant
+   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd_same_weights`
+   using `vdVWWeightedSampleSum_neg_weights` and
+   `vdVWWeightedClassSupremum_neg_weights`, and the projected
+   expectation-level consequence
+   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`.
+   The random-sign side also now has
+   `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`.
+   The remaining
    hphi-to-Hoeffding projection after a supplied `Phi(x)=x` comparison is
    packaged as
    `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
-   The remaining work is to prove the `hphi_id` comparison itself by lifting
-   these ingredients through product-sample projection/sign-symmetry and
+   Search refined the target: a pointwise fixed-sample `hphi_id` comparison is
+   too strong; the next valid target is an integrated product-sample comparison
+   that lifts these ingredients through Rademacher sign-symmetry and
    measurable-cover outer-expectation APIs into the compiled random-sign bound.
    The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
@@ -249,10 +268,20 @@ of:
   compiled, and the fixed-original-sample `Phi(x)=x` ghost-copy comparison is
   now available as
   `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`.
+  The finite product-coordinate projection wrapper
+  `probability_pi_prod_coordinates_measurePreserving` and VdV&W specializations
+  `measurePreserving_vdVWProductMeasure_prod_to_original_ghost`,
+  `measurePreserving_vdVWProductMeasure_prod_to_original`, and
+  `measurePreserving_vdVWProductMeasure_prod_to_ghost` are now compiled, as are
+  the expectation-level integral lifts for the centered ghost-copy comparison,
+  the envelope-bounded pair split, and the same-weight second-coordinate
+  rewrite, plus the two-to-one original-sample expectation projection
+  `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`.
   The supplied-`hphi_id` projection to the Hoeffding finite-net bound is also
-  compiled, so next prove `hphi_id` itself through the pair-difference split,
-  product-sample projection, sign-symmetry, and supplied-cover outer-expectation
-  APIs.  Only add a new `StatInference/ProbabilityMeasure`
+  compiled.  Next prove the valid integrated product-sample `hphi_id` comparison
+  through Rademacher sign-symmetry and supplied-cover outer-expectation APIs;
+  do not target the false fixed-sample pointwise comparison.  Only add a new
+  `StatInference/ProbabilityMeasure`
   product wrapper if this assembly exposes a genuinely reusable gap beyond the
   existing
   `probability_integral_prod_fst`, `probability_integral_prod_snd`,
@@ -291,8 +320,26 @@ proves the fixed-sample centered supremum-to-ghost-pair expectation handoff
 `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
 and the envelope-bounded split
 `vdVWWeightedClassSupremum_truncated_pairDifference_le_add`, plus the
+finite product-coordinate projection wrapper
+`probability_pi_prod_coordinates_measurePreserving`, the VdV&W projection
+specializations `measurePreserving_vdVWProductMeasure_prod_to_original_ghost`,
+`measurePreserving_vdVWProductMeasure_prod_to_original`, and
+`measurePreserving_vdVWProductMeasure_prod_to_ghost`,
+and the expectation-level integral lifts
+`integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
+and
+`integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd`,
+plus the same-weight variant
+`integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd_same_weights`.
+It also proves the projected pair-difference expectation bound
+`integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`
+and the Rademacher-weight sign-negation bridge
+`vdVWWeightedClassSupremum_rademacherWeights_neg_sign`. It also proves the
 supplied-`hphi_id` finite-net projection
 `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
-The next proof target is the actual `hphi_id` product-sample/random-sign
-outer-expectation comparison.  Do not add another product surface unless that
-assembly exposes a sharper missing API.
+The next proof target is the integrated product-sample `hphi_id` random-sign
+outer-expectation comparison, now narrowed past the fixed-sample,
+integral-lift, product-projection/Fubini, pair-split, and deterministic
+sign-negation pieces; a fixed-sample pointwise comparison should not be
+pursued.  Do not add another product surface unless that assembly exposes a
+sharper missing API.

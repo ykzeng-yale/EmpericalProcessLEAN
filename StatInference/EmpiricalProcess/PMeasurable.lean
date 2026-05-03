@@ -33,6 +33,13 @@ noncomputable def vdVWProductMeasure {Observation : Type u}
     Measure (Fin n -> Observation) :=
   Measure.pi fun _ : Fin n => P
 
+instance instIsProbabilityMeasure_vdVWProductMeasure
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] (n : ℕ) :
+    IsProbabilityMeasure (vdVWProductMeasure P n) := by
+  unfold vdVWProductMeasure
+  infer_instance
+
 /-- The weighted finite sample sum appearing in VdV&W display `(2.3.2)`. -/
 noncomputable def vdVWWeightedSampleSum {Observation : Type u} {Index : Type v}
     (classFun : Index -> Observation -> ℝ) {n : ℕ}
@@ -103,6 +110,35 @@ theorem vdVWWeightedClassSupremum_nonneg
   exact Real.iSup_nonneg fun index =>
     Real.iSup_nonneg fun _ : index ∈ indexClass =>
       abs_nonneg (vdVWWeightedSampleSum classFun weights index sample)
+
+/-- Flipping every weight negates each weighted sample sum. -/
+theorem vdVWWeightedSampleSum_neg_weights
+    {Observation : Type u} {Index : Type v}
+    {classFun : Index -> Observation -> ℝ} {n : ℕ}
+    (weights : Fin n -> ℝ) (index : Index)
+    (sample : Fin n -> Observation) :
+    vdVWWeightedSampleSum classFun (fun i : Fin n => -weights i) index sample =
+      -vdVWWeightedSampleSum classFun weights index sample := by
+  unfold vdVWWeightedSampleSum
+  rw [← Finset.sum_neg_distrib]
+  exact Finset.sum_congr rfl fun i _hi => by ring
+
+/--
+The weighted class supremum is invariant under flipping all weights, since it
+takes absolute values of the weighted sums.
+-/
+theorem vdVWWeightedClassSupremum_neg_weights
+    {Observation : Type u} {Index : Type v}
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {n : ℕ} (weights : Fin n -> ℝ)
+    (sample : Fin n -> Observation) :
+    vdVWWeightedClassSupremum indexClass classFun (fun i : Fin n => -weights i)
+        sample =
+      vdVWWeightedClassSupremum indexClass classFun weights sample := by
+  unfold vdVWWeightedClassSupremum
+  congr with index
+  congr with hindex
+  rw [vdVWWeightedSampleSum_neg_weights, abs_neg]
 
 /--
 A deterministic finite-cover bound for the weighted supremum in VdV&W display

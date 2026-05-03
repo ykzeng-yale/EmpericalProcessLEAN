@@ -214,6 +214,15 @@ Near-term declarations:
   `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`,
   and the envelope-bounded split
   `vdVWWeightedClassSupremum_truncated_pairDifference_le_add`, plus the
+  finite product-coordinate projection wrapper
+  `probability_pi_prod_coordinates_measurePreserving`, its VdV&W
+  specializations `measurePreserving_vdVWProductMeasure_prod_to_original_ghost`,
+  `measurePreserving_vdVWProductMeasure_prod_to_original`, and
+  `measurePreserving_vdVWProductMeasure_prod_to_ghost`, deterministic
+  weight sign-flip invariance, and the expectation-level integral lifts for the
+  fixed-sample ghost comparison and envelope-bounded pair split, including
+  `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`,
+  plus the theorem-local Rademacher negated-sign bridge and the
   supplied-`hphi_id` finite-net projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
 
@@ -342,6 +351,8 @@ is project organization and source alignment.  The immediate route is:
 
 For direct empirical-process impact, the dependency override is now active:
 the next proof lane should prioritize the VdV&W Theorem 2.4.3
-product/Fubini-compatible `Phi(x)=x` symmetrization inequality before new
-Billingsley Section 25 work, unless no empirical-process probability/measure
-dependency is blocked.
+integrated product-sample `hphi_id` random-sign outer-expectation comparison,
+now past the fixed-sample, integral-lift, product-projection/Fubini,
+same-weight pair split, and deterministic sign-negation pieces,
+before new Billingsley Section 25 work unless no empirical-process
+probability/measure dependency is blocked.
