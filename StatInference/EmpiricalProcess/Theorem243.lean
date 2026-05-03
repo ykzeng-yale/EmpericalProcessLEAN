@@ -1303,6 +1303,174 @@ theorem
         hcardinality X hX (le_of_lt (lt_of_le_of_lt hr ht))
 
 /--
+Weighted Gaussian-tail integral over `(r, ∞)`.
+
+This is the calculus primitive behind the Mills-type tail bound used in the
+finite-center maximal step.  The proof uses mathlib's improper-integral FTC
+`integral_Ioi_of_hasDerivAt_of_tendsto'`.
+-/
+theorem vdVWTheorem243_integral_mul_exp_neg_mul_sq_Ioi_eq
+    {b r : ℝ} (hb : 0 < b) :
+    (∫ t in Set.Ioi r, t * Real.exp (-b * t ^ 2)) =
+      Real.exp (-b * r ^ 2) / (2 * b) := by
+  have hb_ne : b ≠ 0 := ne_of_gt hb
+  have hderiv :
+      ∀ x ∈ Set.Ici r,
+        HasDerivAt
+          (fun y : ℝ => -((2 * b)⁻¹) * Real.exp (-b * y ^ 2))
+          (x * Real.exp (-b * x ^ 2)) x := by
+    intro x _hx
+    convert
+      (((hasDerivAt_pow 2 x).const_mul (-b)).exp.const_mul (-((2 * b)⁻¹)))
+      using 1
+    field_simp [hb_ne]
+    ring
+  have htendsto :
+      Tendsto (fun y : ℝ => -((2 * b)⁻¹) * Real.exp (-b * y ^ 2))
+        atTop (𝓝 (-((2 * b)⁻¹) * 0)) := by
+    refine Tendsto.const_mul _ ?_
+    exact
+      (Real.tendsto_exp_atBot).comp
+        ((tendsto_pow_atTop two_ne_zero).const_mul_atTop_of_neg
+          (neg_lt_zero.mpr hb))
+  have h :=
+    integral_Ioi_of_hasDerivAt_of_tendsto'
+      (a := r)
+      (f := fun y : ℝ => -((2 * b)⁻¹) * Real.exp (-b * y ^ 2))
+      (f' := fun y : ℝ => y * Real.exp (-b * y ^ 2))
+      (m := -((2 * b)⁻¹) * 0) hderiv
+      (integrable_mul_exp_neg_mul_sq hb).integrableOn htendsto
+  rw [h]
+  field_simp [hb_ne]
+  ring
+
+/--
+Mills-type deterministic Gaussian-tail bound in the normalized
+`exp (-b t^2)` form.
+-/
+theorem vdVWTheorem243_integral_exp_neg_mul_sq_Ioi_le_mills
+    {b r : ℝ} (hb : 0 < b) (hr : 0 < r) :
+    (∫ t in Set.Ioi r, Real.exp (-b * t ^ 2)) ≤
+      (1 / (2 * b * r)) * Real.exp (-b * r ^ 2) := by
+  have hb_ne : b ≠ 0 := ne_of_gt hb
+  have hr_ne : r ≠ 0 := ne_of_gt hr
+  have hbaseInt :
+      IntegrableOn (fun t : ℝ => Real.exp (-b * t ^ 2)) (Set.Ioi r) volume := by
+    exact (integrable_exp_neg_mul_sq hb).integrableOn
+  have hmulRestrict :
+      Integrable (fun t : ℝ => t * Real.exp (-b * t ^ 2))
+        (volume.restrict (Set.Ioi r)) :=
+    (integrable_mul_exp_neg_mul_sq hb).integrableOn
+  have hweightedInt :
+      IntegrableOn (fun t : ℝ => (t / r) * Real.exp (-b * t ^ 2))
+        (Set.Ioi r) volume := by
+    change
+      Integrable (fun t : ℝ => (t / r) * Real.exp (-b * t ^ 2))
+        (volume.restrict (Set.Ioi r))
+    convert hmulRestrict.const_mul r⁻¹ using 1
+    ext t
+    field_simp [hr_ne]
+  calc
+    (∫ t in Set.Ioi r, Real.exp (-b * t ^ 2))
+        ≤ ∫ t in Set.Ioi r, (t / r) * Real.exp (-b * t ^ 2) := by
+          refine setIntegral_mono_on hbaseInt hweightedInt measurableSet_Ioi ?_
+          intro t ht
+          have hle : 1 ≤ t / r := by
+            calc
+              1 = r / r := by field_simp [hr_ne]
+              _ ≤ t / r := div_le_div_of_nonneg_right (le_of_lt ht) hr.le
+          exact le_mul_of_one_le_left (Real.exp_pos _).le hle
+    _ = r⁻¹ * (∫ t in Set.Ioi r, t * Real.exp (-b * t ^ 2)) := by
+          have hcongr :
+              (∫ t in Set.Ioi r, (t / r) * Real.exp (-b * t ^ 2)) =
+                ∫ t in Set.Ioi r,
+                  r⁻¹ * (t * Real.exp (-b * t ^ 2)) := by
+            refine setIntegral_congr_fun measurableSet_Ioi ?_
+            intro t _ht
+            field_simp [hr_ne]
+          rw [hcongr]
+          rw [integral_const_mul]
+    _ = (1 / (2 * b * r)) * Real.exp (-b * r ^ 2) := by
+          rw [vdVWTheorem243_integral_mul_exp_neg_mul_sq_Ioi_eq hb]
+          field_simp [hb_ne, hr_ne]
+
+/--
+Mills-type deterministic Gaussian-tail bound in the VdV&W sub-Gaussian
+normalization `exp (-(t^2)/(2c))`.
+-/
+theorem vdVWTheorem243_integral_subGaussian_exp_tail_le_mills
+    {c r : ℝ} (hc : 0 < c) (hr : 0 < r) :
+    (∫ t in Set.Ioi r, Real.exp (-(t ^ 2) / (2 * c))) ≤
+      (c / r) * Real.exp (-(r ^ 2) / (2 * c)) := by
+  have hb : 0 < (2 * c)⁻¹ := inv_pos.mpr (mul_pos zero_lt_two hc)
+  have hc_ne : c ≠ 0 := ne_of_gt hc
+  have h :=
+    vdVWTheorem243_integral_exp_neg_mul_sq_Ioi_le_mills
+      (b := (2 * c)⁻¹) (r := r) hb hr
+  convert h using 1 <;> field_simp [hc_ne]
+
+/--
+Mills-type bound for the finite-center sub-Gaussian tail majorant.
+-/
+theorem vdVWTheorem243_integral_finiteCenter_subGaussian_tail_le_mills
+    {cardinality : ℕ} {c : ℝ≥0} {r : ℝ}
+    (hc : 0 < (c : ℝ)) (hr : 0 < r) :
+    (∫ t in Set.Ioi r,
+        (cardinality : ℝ) * (2 * Real.exp (-(t ^ 2) / (2 * (c : ℝ))))) ≤
+      (cardinality : ℝ) *
+        (2 * ((c : ℝ) / r * Real.exp (-(r ^ 2) / (2 * (c : ℝ))))) := by
+  have hmills :=
+    vdVWTheorem243_integral_subGaussian_exp_tail_le_mills
+      (c := (c : ℝ)) (r := r) hc hr
+  have hcoef_nonneg : 0 ≤ (cardinality : ℝ) * 2 := by positivity
+  calc
+    (∫ t in Set.Ioi r,
+        (cardinality : ℝ) * (2 * Real.exp (-(t ^ 2) / (2 * (c : ℝ)))))
+        = ((cardinality : ℝ) * 2) *
+            (∫ t in Set.Ioi r, Real.exp (-(t ^ 2) / (2 * (c : ℝ)))) := by
+          have hcongr :
+              (∫ t in Set.Ioi r,
+                (cardinality : ℝ) *
+                  (2 * Real.exp (-(t ^ 2) / (2 * (c : ℝ))))) =
+                ∫ t in Set.Ioi r,
+                  ((cardinality : ℝ) * 2) *
+                    Real.exp (-(t ^ 2) / (2 * (c : ℝ))) := by
+            refine setIntegral_congr_fun measurableSet_Ioi ?_
+            intro t _ht
+            ring
+          rw [hcongr]
+          rw [integral_const_mul]
+    _ ≤ ((cardinality : ℝ) * 2) *
+          ((c : ℝ) / r * Real.exp (-(r ^ 2) / (2 * (c : ℝ)))) := by
+          exact mul_le_mul_of_nonneg_left hmills hcoef_nonneg
+    _ = (cardinality : ℝ) *
+          (2 * ((c : ℝ) / r * Real.exp (-(r ^ 2) / (2 * (c : ℝ))))) := by
+          ring
+
+/--
+Finite-center expected-supremum bound after the split radius and the
+Mills-type tail estimate.
+
+The next layer chooses a logarithmic radius and simplifies the right hand side
+to the textbook `sqrt(log #G)` finite-maximal scale.
+-/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_bound
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0} {r : ℝ}
+    (hc : 0 < (c : ℝ)) (hr : 0 < r)
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤
+      r + (cardinality : ℝ) *
+        (2 * ((c : ℝ) / r * Real.exp (-(r ^ 2) / (2 * (c : ℝ))))) := by
+  exact
+    (vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_integral_subGaussian_tail_bound
+      hcardinality X hc hr.le hX).trans
+      (add_le_add le_rfl
+        (vdVWTheorem243_integral_finiteCenter_subGaussian_tail_le_mills
+          (cardinality := cardinality) (c := c) hc hr))
+
+/--
 Closed-form value of the finite-center sub-Gaussian tail majorant over
 `(0, ∞)`.
 -/

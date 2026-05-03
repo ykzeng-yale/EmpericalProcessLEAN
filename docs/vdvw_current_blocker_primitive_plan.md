@@ -352,6 +352,11 @@ additional example closures:
    vdVWTheorem243FiniteCenterExpectedSupremum_le_subGaussian_tail_closedForm
    vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_integral_tail_bound
    vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_integral_subGaussian_tail_bound
+   vdVWTheorem243_integral_mul_exp_neg_mul_sq_Ioi_eq
+   vdVWTheorem243_integral_exp_neg_mul_sq_Ioi_le_mills
+   vdVWTheorem243_integral_subGaussian_exp_tail_le_mills
+   vdVWTheorem243_integral_finiteCenter_subGaussian_tail_le_mills
+   vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_bound
    integral_abs_classFun_sub_vdVWTruncatedClassFun_le_envelope_tail
    vdVWTheorem243FiniteCenterExpectedSupremum_nonneg
    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_ae_le
@@ -455,11 +460,12 @@ additional example closures:
    iid Rademacher-sign construction, finite-center supremum integrability
    layer, expected-supremum handoff, layer-cake tail-integral support,
    Gaussian-tail integrability/evaluation, coarse closed-form expectation
-   bound, split-at-radius tail-to-expectation bound, and ordinary measurable
+   bound, split-at-radius tail-to-expectation bound, Mills-type Gaussian-tail
+   estimate, finite-center Mills expectation bound, and ordinary measurable
    truncation-tail integral bridge are now compiled.  The remaining
-   Mills/logarithmic Gaussian-tail estimate is the next blocker before the
-   textbook tail-to-Orlicz/maximal expectation scale, followed by
-   specialization of that bound to the truncated centers.
+   logarithmic-radius simplification is the next blocker before the textbook
+   tail-to-Orlicz/maximal expectation scale, followed by specialization of
+   that bound to the truncated centers.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -477,10 +483,10 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: prove a Mills-style deterministic tail estimate for
-`integral_{(r,∞)} exp(-t^2/(2c))` under `0 < c` and `0 < r`, then choose the
-logarithmic radius to sharpen the split-at-radius expectation bound to the
-textbook finite-maximal scale.  Then package this as the VdV&W
+Next exact edit: choose the logarithmic radius
+`sqrt (2 * c * (1 + log cardinality))` or a nearby Lean-friendly variant, then
+simplify `vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_bound`
+to the textbook finite-maximal scale.  Then package this as the VdV&W
 `psi_2`/Hoeffding maximal layer if no exact Orlicz API appears, specialize
 that bound to truncated centers with
 `vdVWTheorem243_truncated_varianceProxy_le`, and move to the
