@@ -665,6 +665,46 @@ theorem integral_vdVWTruncatedClassFun_productCopy_pairDifference_eq_zero
       (f := vdVWTruncatedClassFun classFun envelope M index)
       htruncIntegrable
 
+/--
+Finite product-sample weighted sums of a centered product-copy pair difference
+have mean zero.
+
+This is the sample-level Fubini bridge needed before the final
+`Phi(x)=x` symmetrization inequality: each coordinate contributes an
+independent centered copy-difference, and a finite weighted sum preserves the
+zero expectation.
+-/
+theorem integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M : ℝ} {index : Index} {n : ℕ}
+    (weights : Fin n -> ℝ)
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) P) :
+    ∫ sample : SampleAt (Observation × Observation) n,
+        vdVWWeightedSampleSum
+          (fun index : Index => fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.1 -
+              vdVWTruncatedClassFun classFun envelope M index z.2)
+          weights index sample ∂(vdVWProductMeasure (P.prod P) n) =
+      0 := by
+  simpa [SampleAt, vdVWProductMeasure, vdVWWeightedSampleSum] using
+    (StatInference.ProbabilityMeasure.probability_pi_integral_weighted_sum_eq_zero
+      (P := fun _ : Fin n =>
+        (⟨P.prod P, inferInstance⟩ :
+          MeasureTheory.ProbabilityMeasure (Observation × Observation)))
+      (f := fun _ : Fin n => fun z : Observation × Observation =>
+        vdVWTruncatedClassFun classFun envelope M index z.1 -
+          vdVWTruncatedClassFun classFun envelope M index z.2)
+      (weights := weights)
+      (fun _ =>
+        integrable_vdVWTruncatedClassFun_pairDifference
+          (P := P) (index := index) htruncIntegrable)
+      (fun _ =>
+        integral_vdVWTruncatedClassFun_productCopy_pairDifference_eq_zero
+          (P := P) (index := index) htruncIntegrable))
+
 /-!
 ## Fixed-sample empirical net handoff
 -/
@@ -2779,6 +2819,15 @@ structure VdVWTheorem243SymmetrizationPrecursor
           vdVWTruncatedClassFun classFun envelope M index z.1 -
             vdVWTruncatedClassFun classFun envelope M index z.2 ∂(P.prod P) =
         0
+  productSample_pairDifference_weightedSum_mean_zero :
+    ∀ index, index ∈ indexClass -> ∀ weights : Fin n -> ℝ,
+      ∫ productSample : SampleAt (Observation × Observation) n,
+          vdVWWeightedSampleSum
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            weights index productSample ∂(vdVWProductMeasure (P.prod P) n) =
+        0
   randomSign_finiteNet_ae :
     ∀ᵐ ω ∂μ,
       vdVWWeightedClassSupremum indexClass
@@ -2837,6 +2886,7 @@ theorem VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover
       productSample_coordinates_laws_indep := ?_
       pairDifference_integrable := ?_
       pairDifference_mean_zero := ?_
+      productSample_pairDifference_weightedSum_mean_zero := ?_
       randomSign_finiteNet_ae := ?_
       randomSign_expectedMaximal := ?_ }
   · intro index hindex
@@ -2855,6 +2905,10 @@ theorem VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover
     exact
       integral_vdVWTruncatedClassFun_productCopy_pairDifference_eq_zero
         (P := P) (htruncIntegrable index hindex)
+  · intro index hindex weights
+    exact
+      integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero
+        (P := P) (index := index) weights (htruncIntegrable index hindex)
   · exact
       ae_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSigns
         (cover := cover) (sign := sign) hsign hepsilon_nonneg hM_pos.le hmaximal

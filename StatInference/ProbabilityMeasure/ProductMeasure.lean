@@ -1,4 +1,5 @@
 import Mathlib.MeasureTheory.Integral.Prod
+import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
 import Mathlib.Probability.HasLaw
 import Mathlib.Probability.Independence.Integration
@@ -17,7 +18,7 @@ namespace ProbabilityMeasure
 
 open MeasureTheory ProbabilityTheory
 
-open scoped ENNReal MeasureTheory
+open scoped BigOperators ENNReal MeasureTheory
 
 universe u v w
 
@@ -176,6 +177,109 @@ theorem probability_pi_independent_mapped_coordinates_with_joint_law
     hind.hasLaw_pi hcoordLaw
   exact ⟨by simpa [μ] using hcoordLaw, by simpa [μ] using hind,
     by simpa [μ] using hjoint⟩
+
+/--
+Finite-product expectation of a weighted coordinatewise sum.
+
+This is the reusable finite-`Pi` Fubini bridge used when a symmetrization
+argument integrates empirical sums over an independent product sample.
+-/
+theorem probability_pi_integral_weighted_sum
+    {ι : Type w} [Fintype ι]
+    {α : ι -> Type u} [∀ i, MeasurableSpace (α i)]
+    (P : (i : ι) -> MeasureTheory.ProbabilityMeasure (α i))
+    {f : (i : ι) -> α i -> ℝ} {weights : ι -> ℝ}
+    (hf : ∀ i, Integrable (f i) (P i : Measure (α i))) :
+    ∫ sample : (i : ι) -> α i,
+        (∑ i : ι, weights i * f i (sample i))
+          ∂(Measure.pi fun i => (P i : Measure (α i))) =
+      ∑ i : ι, weights i * ∫ x, f i x ∂(P i : Measure (α i)) := by
+  let μ : (i : ι) -> Measure (α i) := fun i => (P i : Measure (α i))
+  have hterm :
+      ∀ i ∈ (Finset.univ : Finset ι),
+        Integrable
+          (fun sample : (j : ι) -> α j => weights i * f i (sample i))
+          (Measure.pi μ) := by
+    intro i _hi
+    have hcomp :
+        Integrable (fun sample : (j : ι) -> α j => f i (sample i))
+          (Measure.pi μ) := by
+      simpa [Function.comp_def, μ] using
+        (MeasureTheory.integrable_comp_eval (μ := μ) (i := i) (hf i))
+    exact hcomp.const_mul (weights i)
+  calc
+    ∫ sample : (i : ι) -> α i,
+        (∑ i : ι, weights i * f i (sample i)) ∂(Measure.pi μ)
+        = ∑ i : ι,
+            ∫ sample : (j : ι) -> α j,
+              weights i * f i (sample i) ∂(Measure.pi μ) := by
+          simpa using
+            (integral_finsetSum (μ := Measure.pi μ)
+              (s := Finset.univ)
+              (f := fun i sample => weights i * f i (sample i)) hterm)
+    _ = ∑ i : ι, weights i * ∫ x, f i x ∂(P i : Measure (α i)) := by
+          refine Finset.sum_congr rfl ?_
+          intro i _hi
+          calc
+            ∫ sample : (j : ι) -> α j,
+                weights i * f i (sample i) ∂(Measure.pi μ)
+                = weights i *
+                    ∫ sample : (j : ι) -> α j,
+                      f i (sample i) ∂(Measure.pi μ) := by
+                  rw [integral_const_mul]
+            _ = weights i * ∫ x, f i x ∂(P i : Measure (α i)) := by
+                  rw [MeasureTheory.integral_comp_eval
+                    (μ := μ) (i := i) (hf i).aestronglyMeasurable]
+
+/--
+Finite-product weighted sums have mean zero when every coordinate summand has
+mean zero.
+-/
+theorem probability_pi_integral_weighted_sum_eq_zero
+    {ι : Type w} [Fintype ι]
+    {α : ι -> Type u} [∀ i, MeasurableSpace (α i)]
+    (P : (i : ι) -> MeasureTheory.ProbabilityMeasure (α i))
+    {f : (i : ι) -> α i -> ℝ} {weights : ι -> ℝ}
+    (hf : ∀ i, Integrable (f i) (P i : Measure (α i)))
+    (hzero : ∀ i, ∫ x, f i x ∂(P i : Measure (α i)) = 0) :
+    ∫ sample : (i : ι) -> α i,
+        (∑ i : ι, weights i * f i (sample i))
+          ∂(Measure.pi fun i => (P i : Measure (α i))) =
+      0 := by
+  rw [probability_pi_integral_weighted_sum P hf]
+  exact Finset.sum_eq_zero fun i _hi => by simp [hzero i]
+
+/--
+Finite-product weighted sums of product-copy pair differences have mean zero.
+
+This packages the common symmetrization pattern over `(P × P)^n`: each
+coordinate contributes a centered difference of two independent copies, and
+finite linearity preserves the zero expectation.
+-/
+theorem probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero
+    {α : Type u} [MeasurableSpace α]
+    (P : MeasureTheory.ProbabilityMeasure α) {n : ℕ}
+    {f : α -> ℝ} (weights : Fin n -> ℝ)
+    (hf : Integrable f (P : Measure α)) :
+    ∫ sample : Fin n -> α × α,
+        (∑ i : Fin n, weights i * (f (sample i).1 - f (sample i).2))
+          ∂(Measure.pi fun _ : Fin n =>
+            ((P : Measure α).prod (P : Measure α))) =
+      0 := by
+  simpa using
+    (probability_pi_integral_weighted_sum_eq_zero
+      (P := fun _ : Fin n =>
+        (⟨(P : Measure α).prod (P : Measure α), inferInstance⟩ :
+          MeasureTheory.ProbabilityMeasure (α × α)))
+      (f := fun _ : Fin n => fun z : α × α => f z.1 - f z.2)
+      (weights := weights)
+      (fun _ =>
+        (MeasureTheory.integrable_comp_fst (μ := (P : Measure α))
+          (ν := (P : Measure α)) hf).sub
+          (MeasureTheory.integrable_comp_snd (μ := (P : Measure α))
+            (ν := (P : Measure α)) hf))
+      (fun _ =>
+        probability_integral_prod_fst_sub_snd_eq_zero (μ := P) (f := f) hf))
 
 /-- Tonelli's theorem for an `ℝ≥0∞`-valued function on a product space. -/
 theorem lintegral_prod

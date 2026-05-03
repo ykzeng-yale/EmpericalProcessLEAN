@@ -567,9 +567,14 @@ additional example closures:
    file now packages these pieces as
    `VdVWTheorem243SymmetrizationPrecursor` with constructor
    `VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover`.  The
-   remaining Theorem 2.4.3 blocker is now the final product/Fubini
+   finite product-sample weighted-sum mean-zero bridge is also compiled as
+   `probability_pi_integral_weighted_sum`,
+   `probability_pi_integral_weighted_sum_eq_zero`, and the VdV&W specialization
+   `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`.
+   The remaining Theorem 2.4.3 blocker is now the final product/Fubini
    symmetrization inequality and entropy-to-convergence assembly, not the
-   finite-net Rademacher/Hoeffding maximal scale.
+   finite-net Rademacher/Hoeffding maximal scale or the finite sample
+   mean-zero bridge.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -627,9 +632,9 @@ Search record for the symmetrization precursor package:
   `Measure.pi_map_pi`;
 - the practical route for Theorem 2.4.3 remains the theorem-local
   `Phi(x)=x` linear/Fubini argument rather than a general Jensen wrapper.
-  The useful missing primitive exposed by this search is a finite
-  product-sample mean-zero bridge for empirical averages over `(P.prod P)^n`,
-  or the theorem-specific specialization to truncated pair differences.
+  The useful missing primitive exposed by this search is now compiled as the
+  finite product-sample weighted-sum mean-zero bridge over `(P.prod P)^n` and
+  the theorem-specific specialization to truncated pair differences.
 
 Next exact edit: continue the theorem-specific symmetrization/truncation layer
 for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
@@ -641,11 +646,10 @@ wrappers, proof-carrying mapped truncated-class product-copy
 law/independence wrapper, finite-`Pi` sample-coordinate laws/independence,
 fixed-index product-copy mean-zero bridge, a.e. random-sign finite-net handoff,
 finite-empirical-cover expected maximal bound, and the proof-carrying
-symmetrization precursor package are closed.  Next prove the finite
-product-sample mean-zero bridge if the final assembly needs it, then assemble
-the product/Fubini-compatible symmetrization inequality targeted to the
-`Phi(x)=x` case and connect it to entropy-to-convergence and final
-Theorem 2.4.3 handoffs.
+symmetrization precursor package and finite product-sample weighted-sum
+mean-zero bridge are closed.  Next assemble the product/Fubini-compatible
+symmetrization inequality targeted to the `Phi(x)=x` case and connect it to
+entropy-to-convergence and final Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
@@ -653,9 +657,11 @@ APIs found and used are `ProbabilityTheory.iIndepFun_pi`,
 `ProbabilityTheory.iIndepFun.hasLaw_pi`,
 `MeasureTheory.measurePreserving_eval`, and `MeasureTheory.Measure.pi_map_pi`.
 These now support `probability_pi_map_mapped_coordinates_eq`,
-`probability_pi_independent_mapped_coordinates_with_joint_law`, and the
-VdV&W-facing
-`vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`.
+`probability_pi_independent_mapped_coordinates_with_joint_law`,
+`probability_pi_integral_weighted_sum`,
+`probability_pi_integral_weighted_sum_eq_zero`, and the VdV&W-facing
+`vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep` plus
+`integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`.
 
 ## Parked Example-Specific Blocker
 

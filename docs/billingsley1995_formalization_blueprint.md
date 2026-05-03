@@ -194,9 +194,13 @@ Near-term declarations:
   `probability_prod_independent_mapped_copies_with_joint_law`, finite-`Pi`
   wrapper `probability_pi_map_mapped_coordinates_eq`, finite-`Pi`
   law/independence wrapper
-  `probability_pi_independent_mapped_coordinates_with_joint_law`, and the
-  VdV&W specialization
-  `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`.
+  `probability_pi_independent_mapped_coordinates_with_joint_law`, finite-`Pi`
+  weighted-sum expectation/mean-zero wrappers
+  `probability_pi_integral_weighted_sum` and
+  `probability_pi_integral_weighted_sum_eq_zero`, and the VdV&W
+  specializations `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`
+  and
+  `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`.
 
 Search anchors:
 
@@ -321,5 +325,8 @@ is project organization and source alignment.  The immediate route is:
 4. Only after the exact statement compiles, create a formal report with PDF
    screenshots.
 
-For direct empirical-process impact, the next proof lane should also add
-Billingsley Section 16 tail-control wrappers feeding VdV&W Theorem 2.4.3.
+For direct empirical-process impact, the dependency override is now active:
+the next proof lane should prioritize the VdV&W Theorem 2.4.3
+product/Fubini-compatible `Phi(x)=x` symmetrization inequality before new
+Billingsley Section 25 work, unless no empirical-process probability/measure
+dependency is blocked.

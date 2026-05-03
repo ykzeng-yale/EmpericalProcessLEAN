@@ -158,10 +158,14 @@ Local searches found reusable APIs in:
    `probability_prod_independent_mapped_copies_with_joint_law`, which packages
    measurable mapped-coordinate marginal laws, joint product law, and
    independence.  It also now includes finite-`Pi` mapped-coordinate wrappers
-   `probability_pi_map_mapped_coordinates_eq` and
-   `probability_pi_independent_mapped_coordinates_with_joint_law`; the VdV&W
-   side specializes these as
+   `probability_pi_map_mapped_coordinates_eq`,
+   `probability_pi_independent_mapped_coordinates_with_joint_law`,
+   `probability_pi_integral_weighted_sum`, and
+   `probability_pi_integral_weighted_sum_eq_zero`; the VdV&W side specializes
+   these as
    `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`.
+   It also specializes the finite weighted-sum expectation bridge as
+   `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`.
    The VdV&W side now packages these product-copy, finite-`Pi`, mean-zero,
    random-sign, and finite-cover expected-maximal components as
    `VdVWTheorem243SymmetrizationPrecursor` with constructor
@@ -208,18 +212,21 @@ of:
   while adding only nonmeasurable/arbitrary-cover variants if the exact
   Theorem 2.4.3 assembly requires them; or
 - the next Section 18 independent-copy/symmetrization specialization after the
-  compiled `VdVWTheorem243SymmetrizationPrecursor` package: prove a finite
-  product-sample mean-zero bridge over `(P.prod P)^n` if needed, then assemble
-  the product/Fubini-compatible `Phi(x)=x` symmetrization inequality.  Only add
-  a new `StatInference/ProbabilityMeasure` product wrapper if this assembly
-  exposes a genuinely reusable gap beyond the existing
+  compiled `VdVWTheorem243SymmetrizationPrecursor` package: the finite
+  product-sample weighted-sum mean-zero bridge over `(P.prod P)^n` is now
+  compiled, so next assemble the product/Fubini-compatible `Phi(x)=x`
+  symmetrization inequality.  Only add a new `StatInference/ProbabilityMeasure`
+  product wrapper if this assembly exposes a genuinely reusable gap beyond the
+  existing
   `probability_integral_prod_fst`, `probability_integral_prod_snd`,
   `probability_integral_prod_mul`,
   `probability_integral_prod_fst_sub_snd_eq_zero`,
   `probability_prod_independent_self_copies`,
   `probability_prod_independent_mapped_copies_with_joint_law`,
-  `probability_pi_map_mapped_coordinates_eq`, and
-  `probability_pi_independent_mapped_coordinates_with_joint_law` APIs.
+  `probability_pi_map_mapped_coordinates_eq`,
+  `probability_pi_independent_mapped_coordinates_with_joint_law`,
+  `probability_pi_integral_weighted_sum`, and
+  `probability_pi_integral_weighted_sum_eq_zero` APIs.
 
 The deciding rule is dependency value: if Theorem 2.4.3 is blocked on a tail,
 Fubini, independent-copy, or outer-expectation primitive, prefer that over a
@@ -234,8 +241,11 @@ product primitive did not need to stay binary.  Since
 content-based Section 18/20 support layer now includes finite-`Pi`
 mapped-coordinate wrappers using `ProbabilityTheory.iIndepFun_pi`,
 `iIndepFun.hasLaw_pi`, `MeasureTheory.measurePreserving_eval`, and
-`Measure.pi_map_pi`.  These are now consumed by the VdV&W
-`VdVWTheorem243SymmetrizationPrecursor` package.  The next proof target is the
-finite product-sample mean-zero bridge if required by the final
-product/Fubini-compatible symmetrization inequality, not another product
-surface unless that assembly exposes a sharper missing API.
+`Measure.pi_map_pi`, plus finite weighted-sum expectation and mean-zero
+wrappers using `MeasureTheory.integrable_comp_eval`,
+`MeasureTheory.integral_comp_eval`, `MeasureTheory.integral_finsetSum`, and
+`MeasureTheory.integral_const_mul`.  These are now consumed by the VdV&W
+`VdVWTheorem243SymmetrizationPrecursor` package and by the theorem-local
+pair-difference weighted-sum mean-zero specialization.  The next proof target
+is the full product/Fubini-compatible `Phi(x)=x` symmetrization inequality, not
+another product surface unless that assembly exposes a sharper missing API.
