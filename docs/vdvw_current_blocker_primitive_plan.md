@@ -572,10 +572,36 @@ additional example closures:
    `probability_pi_integral_weighted_sum_eq_zero`,
    `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`, and the VdV&W specialization
    `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`.
+   The fixed-original-sample conditional ghost-copy identity is also compiled as
+   `probability_pi_integral_weighted_sum_const_sub` and the VdV&W specialization
+   `integral_vdVWTruncatedClassFun_productSample_const_sub_eq`.
+   The random-sign finite-net side also now has the compiled projections
+   `VdVWTheorem243SymmetrizationPrecursor.randomSign_expectedMaximal_le` and
+   `VdVWTheorem243SymmetrizationPrecursor.randomSign_outerExpectation_le_finiteNetHoeffdingUpper_add`,
+   the latter using the generic supplied-cover/a.e.-constant outer-expectation
+   bridge `VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal`.
    The remaining Theorem 2.4.3 blocker is now the final product/Fubini
-   symmetrization inequality and entropy-to-convergence assembly, not the
-   finite-net Rademacher/Hoeffding maximal scale or the finite sample
-   mean-zero bridge.
+   symmetrization comparison from the centered truncated empirical supremum to
+   the random-sign weighted supremum, followed by entropy-to-convergence
+   assembly; it is not the finite-net Rademacher/Hoeffding maximal scale, the
+   random-sign outer-expectation finite-net handoff, or the finite sample
+   mean-zero bridge.  A deterministic pointwise class-member-to-supremum
+   bridge is also available as
+   `abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove` for
+   bounded `vdVWWeightedClassValueSet`s, with
+   `bddAbove_vdVWWeightedClassValueSet_of_uniform_bound` giving boundedness
+   from a pointwise uniform class bound.  These support the next supremum
+   comparison step.  The fixed-sample `Phi(x)=x` ghost-copy comparison itself
+   is now compiled as
+   `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`,
+   and the envelope-bounded pair split is compiled as
+   `vdVWWeightedClassSupremum_truncated_pairDifference_le_add`.  The remaining
+   supplied-`hphi_id` projection into the random-sign finite-net bound is
+   compiled as
+   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
+   The remaining comparison work is to prove `hphi_id` itself from
+   product-sample projection/sign-symmetry and measurable-cover
+   outer-expectation assembly.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -595,6 +621,10 @@ additional example closures:
    the VdV&W measurable-envelope conversions are now compiled as
    `lintegral_envelope_tail_lt_tendsto_zero_of_integrable` and
    `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`.
+   A reusable nonnegative outer-expectation projection
+   `VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal` is also compiled for
+   supplied measurable covers with an a.e. real constant bound, and is consumed
+   by the precursor random-sign finite-net outer-expectation projection.
    The full Theorem 2.4.3 symmetrization/truncation argument remains pending;
    nonmeasurable/arbitrary-cover envelope-tail variants should only be added
    if that final assembly genuinely needs them.
@@ -637,7 +667,31 @@ Search record for the symmetrization precursor package:
   generic product-copy finite weighted-sum mean-zero bridge
   `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero` over
   `(P.prod P)^n` and
-  the theorem-specific specialization to truncated pair differences.
+  the theorem-specific specialization to truncated pair differences.  The
+  conditional ghost-copy search also exposed the compiled
+  `probability_pi_integral_weighted_sum_const_sub` /
+  `integral_vdVWTruncatedClassFun_productSample_const_sub_eq` route for
+  integrating over only the ghost sample with the original sample fixed.
+  Follow-up
+  local search found no completed `Phi(x)=x` comparison, but did identify the
+  supplied-cover route through `VdVWOuterExpectation_mono`,
+  `VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal`,
+  `HasLaw.integral_comp`, `IdentDistrib.integral_eq`, `integral_mono_ae`,
+  finite `Measure.pi`/product Fubini APIs, and the local deterministic
+  supremum bridge
+  `abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove` together
+  with `bddAbove_vdVWWeightedClassValueSet_of_uniform_bound`.  The
+  theorem-local random-sign expected-maximal and outer-expectation projections
+  are now compiled.  The fixed-sample `Phi(x)=x` comparison
+  `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
+  and the envelope-bounded split
+  `vdVWWeightedClassSupremum_truncated_pairDifference_le_add` are now compiled
+  as well, and
+  `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
+  now packages the finite-net consequence once the theorem-local `hphi_id`
+  comparison is supplied.  The final comparison can consume the precursor
+  directly after the remaining product-sample projection/sign-symmetry and
+  cover steps prove `hphi_id`.
 
 Next exact edit: continue the theorem-specific symmetrization/truncation layer
 for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
@@ -650,9 +704,14 @@ law/independence wrapper, finite-`Pi` sample-coordinate laws/independence,
 fixed-index product-copy mean-zero bridge, a.e. random-sign finite-net handoff,
 finite-empirical-cover expected maximal bound, and the proof-carrying
 symmetrization precursor package and finite product-sample weighted-sum
-mean-zero bridge are closed.  Next assemble the product/Fubini-compatible
-symmetrization inequality targeted to the `Phi(x)=x` case and connect it to
-entropy-to-convergence and final Theorem 2.4.3 handoffs.
+mean-zero bridge, plus the random-sign expected-maximal and outer-expectation
+finite-net projections, the bounded-value-set class-member-to-supremum bridge
+plus uniform-bound value-set boundedness bridge, the fixed-sample `Phi(x)=x`
+ghost-copy comparison, the envelope-bounded pair split, and the
+supplied-`hphi_id` finite-net projection, are closed.  Next prove `hphi_id`
+itself from product-sample projection/sign-symmetry and measurable-cover
+outer-expectation comparison, then entropy-to-convergence and final Theorem
+2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
@@ -663,10 +722,12 @@ These now support `probability_pi_map_mapped_coordinates_eq`,
 `probability_pi_independent_mapped_coordinates_with_joint_law`,
 `probability_pi_integral_weighted_sum`,
 `probability_pi_integral_weighted_sum_eq_zero`,
+`probability_pi_integral_weighted_sum_const_sub`,
 `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`, and the
 VdV&W-facing `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`
 plus
-`integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`.
+`integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`
+and `integral_vdVWTruncatedClassFun_productSample_const_sub_eq`.
 
 ## Parked Example-Specific Blocker
 

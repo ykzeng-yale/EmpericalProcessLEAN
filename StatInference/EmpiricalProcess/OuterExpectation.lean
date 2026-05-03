@@ -630,6 +630,29 @@ theorem VdVWOuterExpectation_eq_lintegral_of_cover_ofMeasurable
     (VdVWMeasurableCover.ofMeasurable μ hT)
 
 /--
+If a real-valued nonnegative target has a measurable cover and is almost
+surely bounded by a constant, its VdV&W outer expectation is bounded by that
+constant under a probability measure.
+-/
+theorem VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {f : Ω -> ℝ} {C : ℝ}
+    (U : VdVWMeasurableCover μ (fun ω => ENNReal.ofReal (f ω)))
+    (hbound : ∀ᵐ ω ∂μ, f ω ≤ C) :
+    VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (f ω)) ≤
+      ENNReal.ofReal C := by
+  rw [VdVWOuterExpectation_eq_lintegral_cover U]
+  have hcover_le :
+      ∀ᵐ ω ∂μ, U ω ≤ ENNReal.ofReal C :=
+    U.minimal_ae (fun _ : Ω => ENNReal.ofReal C) measurable_const
+      (hbound.mono fun _ hω => ENNReal.ofReal_le_ofReal hω)
+  calc
+    ∫⁻ ω, U ω ∂μ ≤ ∫⁻ _ω : Ω, ENNReal.ofReal C ∂μ := by
+      exact lintegral_mono_ae hcover_le
+    _ = ENNReal.ofReal C := by
+      simp [lintegral_const]
+
+/--
 The supremum cover realizes the nonnegative outer expectation of a pointwise
 supremum.
 -/

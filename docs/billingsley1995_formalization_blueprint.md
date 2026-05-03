@@ -161,6 +161,9 @@ Current compiled wrappers:
   `lintegral_envelope_tail_lt_tendsto_zero_of_integrable` and
   `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`
   in `StatInference/EmpiricalProcess/Theorem243.lean`
+- supplied-cover/a.e.-constant outer-expectation handoff
+  `VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal`, now consumed by the
+  Theorem 2.4.3 random-sign finite-net outer-expectation projection
 - source-crosswalk support for Billingsley Sections 15-16 integration/tail
   language, not an exact Billingsley theorem report
 
@@ -199,10 +202,20 @@ Near-term declarations:
   `probability_pi_integral_weighted_sum` and
   `probability_pi_integral_weighted_sum_eq_zero`, product-copy weighted-sum
   mean-zero wrapper
-  `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`, and the VdV&W
+  `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`, conditional
+  ghost-copy Fubini wrapper `probability_pi_integral_weighted_sum_const_sub`,
+  and the VdV&W
   specializations `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`
   and
-  `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`.
+  `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`,
+  plus the fixed-original-sample specialization
+  `integral_vdVWTruncatedClassFun_productSample_const_sub_eq`, the fixed-sample
+  `Phi(x)=x` ghost-copy comparison
+  `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`,
+  and the envelope-bounded split
+  `vdVWWeightedClassSupremum_truncated_pairDifference_le_add`, plus the
+  supplied-`hphi_id` finite-net projection
+  `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
 
 Search anchors:
 

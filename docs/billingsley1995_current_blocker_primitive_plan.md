@@ -144,6 +144,11 @@ Local searches found reusable APIs in:
    outer-expectation envelope-tail convergence handoffs
    `lintegral_envelope_tail_lt_tendsto_zero_of_integrable` and
    `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`.
+   The same outer-expectation support lane now also has the generic
+   probability-measure handoff
+   `VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal`, which turns a
+   supplied measurable cover plus an a.e. real constant bound into an
+   `ENNReal.ofReal` outer-expectation bound.
    This is support infrastructure, not a source-exact Billingsley Sections
    15-16 report. The
    content-based Section 18
@@ -163,17 +168,40 @@ Local searches found reusable APIs in:
    `probability_pi_integral_weighted_sum`, and
    `probability_pi_integral_weighted_sum_eq_zero`, plus the product-copy
    weighted-sum mean-zero wrapper
-   `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`; the VdV&W side specializes
+   `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero` and the
+   conditional ghost-copy Fubini identity
+   `probability_pi_integral_weighted_sum_const_sub`; the VdV&W side specializes
    these as
    `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`.
    It also specializes the finite weighted-sum expectation bridge as
-   `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`.
+   `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`,
+   and the fixed-original-sample conditional identity as
+   `integral_vdVWTruncatedClassFun_productSample_const_sub_eq`.
    The VdV&W side now packages these product-copy, finite-`Pi`, mean-zero,
    random-sign, and finite-cover expected-maximal components as
    `VdVWTheorem243SymmetrizationPrecursor` with constructor
    `VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover`.  The
-   remaining work is to turn this precursor into the exact
-   finite-product/independent-copy symmetrization inequality.  The reusable Rademacher-sign layer has started in
+   precursor now also exposes the theorem-local projections
+   `VdVWTheorem243SymmetrizationPrecursor.randomSign_expectedMaximal_le` and
+   `VdVWTheorem243SymmetrizationPrecursor.randomSign_outerExpectation_le_finiteNetHoeffdingUpper_add`.
+   A deterministic supremum split
+   `vdVWWeightedClassSupremum_pairDifference_le_add` and the bounded-value-set
+   class-member bridge
+   `abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove`, with
+   boundedness supplied by
+   `bddAbove_vdVWWeightedClassValueSet_of_uniform_bound`, are also compiled.
+   The fixed-original-sample `Phi(x)=x` ghost-copy comparison is now compiled
+   as
+   `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`,
+   and the envelope-bounded pair split is packaged as
+   `vdVWWeightedClassSupremum_truncated_pairDifference_le_add`.  The remaining
+   hphi-to-Hoeffding projection after a supplied `Phi(x)=x` comparison is
+   packaged as
+   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
+   The remaining work is to prove the `hphi_id` comparison itself by lifting
+   these ingredients through product-sample projection/sign-symmetry and
+   measurable-cover outer-expectation APIs into the compiled random-sign bound.
+   The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
    one-dimensional law, deterministic sign vectors, and finite iid sign
@@ -211,13 +239,20 @@ of:
   `StatInference/EmpiricalProcess/Theorem243.lean`,
   especially `lintegral_envelope_tail_lt_tendsto_zero_of_integrable` and
   `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`,
+  plus the supplied-cover/a.e.-constant handoff
+  `VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal`,
   while adding only nonmeasurable/arbitrary-cover variants if the exact
   Theorem 2.4.3 assembly requires them; or
 - the next Section 18 independent-copy/symmetrization specialization after the
   compiled `VdVWTheorem243SymmetrizationPrecursor` package: the finite
   product-sample weighted-sum mean-zero bridge over `(P.prod P)^n` is now
-  compiled, so next assemble the product/Fubini-compatible `Phi(x)=x`
-  symmetrization inequality.  Only add a new `StatInference/ProbabilityMeasure`
+  compiled, and the fixed-original-sample `Phi(x)=x` ghost-copy comparison is
+  now available as
+  `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`.
+  The supplied-`hphi_id` projection to the Hoeffding finite-net bound is also
+  compiled, so next prove `hphi_id` itself through the pair-difference split,
+  product-sample projection, sign-symmetry, and supplied-cover outer-expectation
+  APIs.  Only add a new `StatInference/ProbabilityMeasure`
   product wrapper if this assembly exposes a genuinely reusable gap beyond the
   existing
   `probability_integral_prod_fst`, `probability_integral_prod_snd`,
@@ -229,7 +264,8 @@ of:
   `probability_pi_independent_mapped_coordinates_with_joint_law`,
   `probability_pi_integral_weighted_sum`,
   `probability_pi_integral_weighted_sum_eq_zero`, and
-  `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero` APIs.
+  `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`, and
+  `probability_pi_integral_weighted_sum_const_sub` APIs.
 
 The deciding rule is dependency value: if Theorem 2.4.3 is blocked on a tail,
 Fubini, independent-copy, or outer-expectation primitive, prefer that over a
@@ -248,7 +284,15 @@ mapped-coordinate wrappers using `ProbabilityTheory.iIndepFun_pi`,
 wrappers using `MeasureTheory.integrable_comp_eval`,
 `MeasureTheory.integral_comp_eval`, `MeasureTheory.integral_finsetSum`, and
 `MeasureTheory.integral_const_mul`.  These are now consumed by the VdV&W
-`VdVWTheorem243SymmetrizationPrecursor` package and by the theorem-local
-pair-difference weighted-sum mean-zero specialization.  The next proof target
-is the full product/Fubini-compatible `Phi(x)=x` symmetrization inequality, not
-another product surface unless that assembly exposes a sharper missing API.
+`VdVWTheorem243SymmetrizationPrecursor` package, by the theorem-local
+pair-difference weighted-sum mean-zero specialization, and by the conditional
+ghost-copy identity with a fixed original sample.  The VdV&W file now also
+proves the fixed-sample centered supremum-to-ghost-pair expectation handoff
+`vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
+and the envelope-bounded split
+`vdVWWeightedClassSupremum_truncated_pairDifference_le_add`, plus the
+supplied-`hphi_id` finite-net projection
+`VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
+The next proof target is the actual `hphi_id` product-sample/random-sign
+outer-expectation comparison.  Do not add another product surface unless that
+assembly exposes a sharper missing API.

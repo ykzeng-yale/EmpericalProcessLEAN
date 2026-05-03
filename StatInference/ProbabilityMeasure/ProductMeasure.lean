@@ -179,6 +179,32 @@ theorem probability_pi_independent_mapped_coordinates_with_joint_law
     by simpa [μ] using hjoint⟩
 
 /--
+Splitting every coordinate of a finite product of binary product probability
+spaces sends `∏ i (Pᵢ × Qᵢ)` to `(∏ i Pᵢ) × (∏ i Qᵢ)`.
+
+This is the finite-product projection wrapper needed when an
+independent-copy argument moves between a sample of product-coordinate pairs
+and a pair of independent samples.
+-/
+theorem probability_pi_prod_coordinates_measurePreserving
+    {ι : Type w} [Fintype ι]
+    {α : Type u} [MeasurableSpace α]
+    {β : Type v} [MeasurableSpace β]
+    (P : ι -> MeasureTheory.ProbabilityMeasure α)
+    (Q : ι -> MeasureTheory.ProbabilityMeasure β) :
+    MeasurePreserving
+      (fun sample : ι -> α × β =>
+        (fun i : ι => (sample i).1, fun i : ι => (sample i).2))
+      (Measure.pi fun i : ι => ((P i : Measure α).prod (Q i : Measure β)))
+      ((Measure.pi fun i : ι => (P i : Measure α)).prod
+        (Measure.pi fun i : ι => (Q i : Measure β))) := by
+  simpa [MeasurableEquiv.arrowProdEquivProdArrow] using
+    (MeasureTheory.measurePreserving_arrowProdEquivProdArrow
+      α β ι
+      (fun i : ι => (P i : Measure α))
+      (fun i : ι => (Q i : Measure β)))
+
+/--
 Finite-product expectation of a weighted coordinatewise sum.
 
 This is the reusable finite-`Pi` Fubini bridge used when a symmetrization
@@ -230,6 +256,39 @@ theorem probability_pi_integral_weighted_sum
             _ = weights i * ∫ x, f i x ∂(P i : Measure (α i)) := by
                   rw [MeasureTheory.integral_comp_eval
                     (μ := μ) (i := i) (hf i).aestronglyMeasurable]
+
+/--
+Finite-product expectation of a weighted ghost-copy difference with the first
+sample held fixed.
+
+This is the conditional finite-`Pi` Fubini identity used in symmetrization:
+integrating only over the ghost sample replaces each ghost coordinate by its
+mean while leaving the fixed coordinate value untouched.
+-/
+theorem probability_pi_integral_weighted_sum_const_sub
+    {ι : Type w} [Fintype ι]
+    {α : ι -> Type u} [∀ i, MeasurableSpace (α i)]
+    (P : (i : ι) -> MeasureTheory.ProbabilityMeasure (α i))
+    {f : (i : ι) -> α i -> ℝ} {weights : ι -> ℝ}
+    (fixedSample : (i : ι) -> α i)
+    (hf : ∀ i, Integrable (f i) (P i : Measure (α i))) :
+    ∫ ghostSample : (i : ι) -> α i,
+        (∑ i : ι, weights i * (f i (fixedSample i) - f i (ghostSample i)))
+          ∂(Measure.pi fun i => (P i : Measure (α i))) =
+      ∑ i : ι,
+        weights i * (f i (fixedSample i) - ∫ x, f i x ∂(P i : Measure (α i))) := by
+  let g : (i : ι) -> α i -> ℝ :=
+    fun i x => f i (fixedSample i) - f i x
+  have hg : ∀ i, Integrable (g i) (P i : Measure (α i)) := by
+    intro i
+    exact (integrable_const (f i (fixedSample i))).sub (hf i)
+  rw [probability_pi_integral_weighted_sum P (f := g) (weights := weights) hg]
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  congr 1
+  unfold g
+  rw [integral_sub (integrable_const (f i (fixedSample i))) (hf i)]
+  simp
 
 /--
 Finite-product weighted sums have mean zero when every coordinate summand has

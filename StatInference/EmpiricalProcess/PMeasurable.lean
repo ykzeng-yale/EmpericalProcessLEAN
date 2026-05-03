@@ -179,6 +179,68 @@ theorem bddAbove_vdVWWeightedClassSupremum_range_of_valueSet
       (le_max_left upper 0)
   · exact le_max_right upper 0
 
+/--
+A class member's absolute weighted sum is bounded by the class supremum once
+the associated value set is bounded above.
+-/
+theorem abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} {weights : Fin n -> ℝ} {sample : Fin n -> Observation}
+    (hbdd :
+      BddAbove (vdVWWeightedClassValueSet indexClass classFun weights sample))
+    {index : Index} (hindex : index ∈ indexClass) :
+    |vdVWWeightedSampleSum classFun weights index sample| ≤
+      vdVWWeightedClassSupremum indexClass classFun weights sample := by
+  unfold vdVWWeightedClassSupremum
+  have hbdd_range :
+      BddAbove
+        (Set.range fun candidate : Index =>
+          ⨆ (_ : candidate ∈ indexClass),
+            |vdVWWeightedSampleSum classFun weights candidate sample|) :=
+    bddAbove_vdVWWeightedClassSupremum_range_of_valueSet weights sample hbdd
+  calc
+    |vdVWWeightedSampleSum classFun weights index sample|
+        = ⨆ (_ : index ∈ indexClass),
+            |vdVWWeightedSampleSum classFun weights index sample| := by
+          symm
+          simp [hindex]
+    _ ≤ ⨆ candidate : Index, ⨆ (_ : candidate ∈ indexClass),
+          |vdVWWeightedSampleSum classFun weights candidate sample| :=
+        le_ciSup hbdd_range index
+
+/--
+A pointwise uniform bound on every class member gives boundedness of the
+finite weighted value set.
+-/
+theorem bddAbove_vdVWWeightedClassValueSet_of_uniform_bound
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} (weights : Fin n -> ℝ) (sample : Fin n -> Observation)
+    {bound : ℝ}
+    (hbound :
+      ∀ index, index ∈ indexClass -> ∀ observation,
+        |classFun index observation| ≤ bound) :
+    BddAbove (vdVWWeightedClassValueSet indexClass classFun weights sample) := by
+  refine ⟨∑ i : Fin n, |weights i| * bound, ?_⟩
+  intro value hvalue
+  rcases hvalue with ⟨index, hindex, rfl⟩
+  calc
+    |vdVWWeightedSampleSum classFun weights index sample|
+        = |∑ i : Fin n, weights i * classFun index (sample i)| := by
+          rfl
+    _ ≤ ∑ i : Fin n, |weights i * classFun index (sample i)| := by
+          simpa using
+            (Finset.abs_sum_le_sum_abs
+              (fun i : Fin n => weights i * classFun index (sample i))
+              (Finset.univ : Finset (Fin n)))
+    _ = ∑ i : Fin n, |weights i| * |classFun index (sample i)| := by
+          simp [abs_mul]
+    _ ≤ ∑ i : Fin n, |weights i| * bound := by
+          exact Finset.sum_le_sum fun i _hi =>
+            mul_le_mul_of_nonneg_left
+              (hbound index hindex (sample i)) (abs_nonneg (weights i))
+
 /-- Coordinate measurability of all functions in a class. -/
 def VdVWClassCoordinateMeasurable
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
