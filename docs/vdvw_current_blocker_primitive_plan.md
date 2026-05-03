@@ -1189,17 +1189,32 @@ and deterministic all-radius log-ratio bound; these are stronger than the
 textbook fixed-positive-radius `o_P^*(n)` entropy hypothesis unless an
 additional uniform/diagonal entropy theorem is proved.
 
-Next exact edit: stop adding inverse-radius packaging unless a proof consumes
-it.  Either prove the faithful textbook fixed-radius route, where for every
-fixed `η > 0` the finite-net term vanishes and the final radius error is made
-small only after choosing `η`, or prove a genuine uniform/diagonal entropy or
-selected finite-net tail/UI theorem from the book hypotheses.  If neither
-route closes after Lean attempts, record the precise theorem shape as the
-current Theorem 2.4.3 blocker.  The finite-cover domination, terminal
+The faithful fixed-radius route is now compiled.  The arithmetic chooser
+`exists_pos_radius_eventually_two_mul_ofReal_add_div_le_of_forall_tendsto_zero`
+selects a fixed positive radius after the final outer-probability tolerance.
+The fixed-`M` theorem
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_integral_finiteNetHoeffdingUpper_tendsto_zero`
+proves centered-truncated convergence from fixed-radius finite-net mean
+convergence for every `η > 0`.  The bounded log-cardinality feeder
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_div_bound`
+connects that consumer to the existing fixed-radius entropy-to-Hoeffding-mean
+machinery, and the untruncated handoff
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_div_bound`
+composes it with the large-`M` envelope-tail truncation removal.
+
+Next exact edit: consume the new fixed-radius route from the actual book
+entropy hypothesis, rather than returning to inverse-radius packaging.  The
+remaining explicit inputs are measurable selected/finite cover cardinalities
+and either deterministic normalized log-cardinality bounds or a sharper
+finite-net tail/UI/dominated-convergence theorem that derives the fixed-radius
+finite-net mean convergence from `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each
+fixed `η`.  If direct derivation from the textbook hypothesis remains blocked,
+record the exact missing tail/UI theorem shape and move to the next
+Theorem 2.4.3 assembly input.  The finite-cover domination, terminal
 selected-cardinality equality, measurability transport, fixed-`M`
-centered-truncated consumers, inverse-radius side-condition packages, finite-net
-tail/UI adapters, untruncation handoffs, and symmetrization/product finite-net
-route are already compiled.
+centered-truncated consumers, inverse-radius side-condition packages,
+fixed-radius consumers, finite-net tail/UI adapters, untruncation handoffs, and
+symmetrization/product finite-net route are already compiled.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

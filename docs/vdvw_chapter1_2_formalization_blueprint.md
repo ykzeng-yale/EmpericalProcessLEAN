@@ -542,10 +542,17 @@ above, so they do not change the theorem-level dashboard counts.
    are also compiled.  The all-radius selected-truncated bridge
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_invRadiusEntropy_logCardinality_div_bound`
    is compiled as well, but it still keeps the inverse-radius diagonal selected
-   log convergence and log-ratio assumptions explicit.  The next proof step is
-   therefore the faithful fixed-radius textbook handoff, or a genuine
-   uniform/diagonal entropy or selected finite-net tail/UI theorem from the
-   book assumptions, followed by final Theorem 2.4.3 assembly.
+   log convergence and log-ratio assumptions explicit.  The faithful
+   fixed-radius alternative is now compiled through
+   `exists_pos_radius_eventually_two_mul_ofReal_add_div_le_of_forall_tendsto_zero`,
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_integral_finiteNetHoeffdingUpper_tendsto_zero`,
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_div_bound`, and
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_div_bound`.
+   The next proof step is therefore to consume this fixed-radius route from
+   the actual book entropy hypotheses by deriving measurable selected/finite
+   cover cardinalities and fixed-radius finite-net mean/log-bound inputs, or
+   to record the precise missing finite-net tail/UI theorem needed for final
+   Theorem 2.4.3 assembly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
