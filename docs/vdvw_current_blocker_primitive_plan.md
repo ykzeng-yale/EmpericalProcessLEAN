@@ -1249,7 +1249,10 @@ side-condition structure
 consumer
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero`
 now keep the fixed-radius cover domination, entropy convergence,
-finite-net-upper integrability, and tail/UI inputs together.  The fixed-`M`
+finite-net-upper integrability, and tail/UI inputs together.  The constructor
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_bound`
+now proves this tail/UI package from a deterministic normalized log-cardinality
+bound by reusing the bounded finite-net Hoeffding route.  The fixed-`M`
 and untruncated theorem-facing consumers
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_fixedRadius_tailExpectation`
 and
@@ -1262,14 +1265,19 @@ now compose that tail/UI route with the main symmetrization and large-`M`
 envelope-tail handoffs without re-threading four separate analytic fields.
 
 Next exact edit: prove the selected finite-net tail-expectation/UI condition
-from the textbook entropy hypothesis, or record the precise additional
-book-level condition needed to make the final Theorem 2.4.3 statement honest.
+from the textbook entropy hypothesis by first proving a deterministic
+normalized log-cardinality bound, likely from a finite value-grid cover for
+bounded truncated functions on the empirical sample, or record the precise
+additional book-level condition needed to make the final Theorem 2.4.3
+statement honest.
 The remaining analytic gap is no longer selected-cardinality measurability/log
 convergence under countability, nor the fixed-`M`/untruncated consumer
-composition, nor a missing tail/UI consumer; it is deriving the tail/UI
-condition from `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η`, or
-showing that an explicit uniform-integrability/tail-expectation input must be
-part of the current Lean theorem interface.
+composition, nor a missing tail/UI consumer, nor converting a deterministic
+log-ratio bound into tail/UI; it is deriving such a deterministic log-ratio
+bound, or a genuinely stronger tail/UI theorem, from
+`log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η`, or showing that an
+explicit uniform-integrability/tail-expectation input must be part of the
+current Lean theorem interface.
 The finite-cover domination, terminal selected-cardinality equality,
 measurability transport, fixed-`M` centered-truncated consumers,
 inverse-radius and fixed-radius consumers, finite-net tail/UI adapters,

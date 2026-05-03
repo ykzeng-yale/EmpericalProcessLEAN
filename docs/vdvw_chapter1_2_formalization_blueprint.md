@@ -570,14 +570,16 @@ above, so they do not change the theorem-level dashboard counts.
    `integral_finiteNetHoeffdingUpper_tendsto_zero_of_forall_pos_selected_truncated_fixedRadius_tailExpectation`,
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions`,
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero`,
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_bound`,
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_fixedRadius_tailExpectation`,
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_fixedRadius_tailExpectation`,
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedFixedRadiusTailSideConditions`,
    and
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedFixedRadiusTailSideConditions`.
-   The next proof step is therefore to derive that tail/UI side condition from
-   the textbook entropy hypothesis, or to state the exact additional
-   theorem-level side condition honestly.
+   The next proof step is therefore to derive the deterministic normalized
+   log-cardinality bound needed by this route, likely from a finite value-grid
+   cover for bounded truncated functions on each empirical sample, or to state
+   the exact additional theorem-level side condition honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

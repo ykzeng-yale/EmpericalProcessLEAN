@@ -10367,6 +10367,189 @@ theorem
       (hlog eta heta) hM_pos (hK_nonneg eta heta) (hbound eta heta)
 
 /--
+Build the selected fixed-radius tail/UI package from a deterministic
+normalized log-cardinality bound.
+
+This discharges the package's integrability and tail-expectation fields by
+the existing bounded finite-net Hoeffding route.  It is useful when the
+book-facing entropy condition is accompanied by a real deterministic bound on
+`log(cardinality) / n`; proving such a bound from a finite value-grid cover is
+the remaining theorem-specific analytic input.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ} {K : ℝ -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hM_pos : 0 < M)
+    (hK_nonneg : ∀ eta, 0 < eta -> 0 ≤ K eta)
+    (hbound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        Real.log ((cardinality eta n sample n : ℝ) + 1) /
+            (n : ℝ) ≤ K eta) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  classical
+  refine
+    { coveringNumber_le := hcovering_all
+      log_cardinality_div_converges := hlog
+      finiteNetUpperIntegrable := ?_
+      finiteNetUpper_tailExpectation := ?_ }
+  · intro eta heta n
+    let selectedCardinality :
+        (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+      vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (cardinality := cardinality) X hcovering_all heta
+    let hfinite :
+        ∀ n (sample : SampleAt Observation n) m,
+          HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+            (vdVWTruncatedClassFun classFun envelope M) eta :=
+      hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (coverRadius := fun _ : ℕ => eta)
+        (cardinality := cardinality) X hcovering_all
+        (by intro _; exact heta)
+    have hmeas_selected :
+        ∀ n,
+          Measurable fun sample : SampleAt Observation n =>
+            selectedCardinality n sample n := by
+      have hmeas :
+          ∀ n,
+            Measurable fun sample : SampleAt Observation n =>
+              finiteEmpiricalL1CoveringNumberCard (hfinite n sample n) :=
+        measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M)
+          (coverRadius := fun _ : ℕ => eta)
+          X hX_samplePath hfinite hclass henvelope_meas
+      simpa [selectedCardinality,
+        vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard]
+        using hmeas
+    have hcovering_eta :
+        ∀ n,
+          VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+            (vdVWTruncatedClassFun classFun envelope M) eta
+            (cardinality eta n) :=
+      hcovering_all eta heta
+    have hselected_bound :
+        ∀ n (sample : SampleAt Observation n),
+          vdVWLogEmpiricalL1CoveringCardinality (selectedCardinality n)
+              sample n / (n : ℝ) ≤ K eta := by
+      have hraw :
+          ∀ n (sample : SampleAt Observation n),
+            vdVWLogEmpiricalL1CoveringCardinality
+                (fun sample m =>
+                  finiteEmpiricalL1CoveringNumberCard (hfinite n sample m))
+                sample n / (n : ℝ) ≤ K eta :=
+        vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath
+          (indexClass := indexClass)
+          (classFun := vdVWTruncatedClassFun classFun envelope M)
+          (coverRadius := fun _ : ℕ => eta)
+          (cardinality := fun n => cardinality eta n)
+          (K := K eta) X hcovering_eta hfinite (hbound eta heta)
+      simpa [selectedCardinality,
+        vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard]
+        using hraw
+    have hupperBound :
+        ∀ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+              (selectedCardinality n sample n) n M ≤
+            Real.sqrt (6 * (1 + K eta)) * M :=
+      (vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le
+        (M := M) (K := K eta) (cardinality := selectedCardinality)
+        hM_pos.le (hK_nonneg eta heta) hselected_bound n)
+    simpa [selectedCardinality] using
+      (integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality_bound
+        (μ := vdVWProductMeasure P n)
+        (M := M) (C := Real.sqrt (6 * (1 + K eta)) * M)
+        (cardinality := selectedCardinality n)
+        (hmeas_selected n) hupperBound hM_pos.le)
+  · intro eta heta
+    let selectedCardinality :
+        (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+      vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (cardinality := cardinality) X hcovering_all heta
+    let hfinite :
+        ∀ n (sample : SampleAt Observation n) m,
+          HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+            (vdVWTruncatedClassFun classFun envelope M) eta :=
+      hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (coverRadius := fun _ : ℕ => eta)
+        (cardinality := cardinality) X hcovering_all
+        (by intro _; exact heta)
+    have hcovering_eta :
+        ∀ n,
+          VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+            (vdVWTruncatedClassFun classFun envelope M) eta
+            (cardinality eta n) :=
+      hcovering_all eta heta
+    have hselected_bound :
+        ∀ n (sample : SampleAt Observation n),
+          vdVWLogEmpiricalL1CoveringCardinality (selectedCardinality n)
+              sample n / (n : ℝ) ≤ K eta := by
+      have hraw :
+          ∀ n (sample : SampleAt Observation n),
+            vdVWLogEmpiricalL1CoveringCardinality
+                (fun sample m =>
+                  finiteEmpiricalL1CoveringNumberCard (hfinite n sample m))
+                sample n / (n : ℝ) ≤ K eta :=
+        vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath
+          (indexClass := indexClass)
+          (classFun := vdVWTruncatedClassFun classFun envelope M)
+          (coverRadius := fun _ : ℕ => eta)
+          (cardinality := fun n => cardinality eta n)
+          (K := K eta) X hcovering_eta hfinite (hbound eta heta)
+      simpa [selectedCardinality,
+        vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard]
+        using hraw
+    have hupperBound :
+        ∀ n (sample : SampleAt Observation n),
+          vdVWTheorem243FiniteNetHoeffdingUpper
+              (selectedCardinality n sample n) n M ≤
+            Real.sqrt (6 * (1 + K eta)) * M :=
+      vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le
+        (M := M) (K := K eta) (cardinality := selectedCardinality)
+        hM_pos.le (hK_nonneg eta heta) hselected_bound
+    have hC_nonneg :
+        0 ≤ Real.sqrt (6 * (1 + K eta)) * M :=
+      mul_nonneg (Real.sqrt_nonneg _) hM_pos.le
+    exact
+      finiteNetHoeffdingUpper_tailExpectation_condition_of_bound
+        (P := P) (M := M) (C := Real.sqrt (6 * (1 + K eta)) * M)
+        (cardinality := selectedCardinality) hC_nonneg hupperBound
+
+/--
 Fixed-radius finite-net mean convergence for the selected least truncated
 empirical-cover cardinality from an explicit tail-expectation/UI condition.
 
