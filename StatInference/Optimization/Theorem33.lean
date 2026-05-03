@@ -76,5 +76,37 @@ theorem gradientStep_dist_contract_of_strongMonotone_cocoercive
     rw [mul_pow, Real.sq_sqrt hfactor_nonneg]
     exact hsquare)
 
+/--
+Chewi Theorem 3.3, squared-distance form, deriving the gradient monotonicity
+input from the first-order lower-model form of Proposition 1.6.
+-/
+theorem gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_cocoercive
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha h : ℝ} {x y : E}
+    (hfirst : FirstOrderStrongConvexOn C f grad alpha)
+    (hcoco : GradientStepCocoerciveOn C grad h)
+    (hh_nonneg : 0 ≤ h)
+    (hx : x ∈ C) (hy : y ∈ C) :
+    ‖gradientDescentStep grad h y - gradientDescentStep grad h x‖ ^ (2 : ℕ) ≤
+      (1 - alpha * h) * ‖y - x‖ ^ (2 : ℕ) :=
+  gradientStep_sqdist_contract_of_strongMonotone_cocoercive
+    hfirst.stronglyMonotoneGradientOn hcoco hh_nonneg hx hy
+
+/--
+Chewi Theorem 3.3, norm form, deriving the gradient monotonicity input from
+the first-order lower-model form of Proposition 1.6.
+-/
+theorem gradientStep_dist_contract_of_firstOrderStrongConvexOn_cocoercive
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha h : ℝ} {x y : E}
+    (hfirst : FirstOrderStrongConvexOn C f grad alpha)
+    (hcoco : GradientStepCocoerciveOn C grad h)
+    (hh_nonneg : 0 ≤ h)
+    (hfactor_nonneg : 0 ≤ 1 - alpha * h)
+    (hx : x ∈ C) (hy : y ∈ C) :
+    ‖gradientDescentStep grad h y - gradientDescentStep grad h x‖ ≤
+      Real.sqrt (1 - alpha * h) * ‖y - x‖ :=
+  gradientStep_dist_contract_of_strongMonotone_cocoercive
+    hfirst.stronglyMonotoneGradientOn hcoco hh_nonneg
+    hfactor_nonneg hx hy
+
 end Optimization
 end StatInference

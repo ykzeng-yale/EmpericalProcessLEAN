@@ -68,6 +68,9 @@ compiled local layers:
 - Theorem 3.3 contraction has squared-distance and norm-form wrappers in
   `StatInference/Optimization/Theorem33.lean`, from the supplied
   `StronglyMonotoneGradientOn` and `GradientStepCocoerciveOn` interfaces.
+  It also has wrappers deriving gradient monotonicity from the supplied
+  first-order lower-model form `FirstOrderStrongConvexOn`; the remaining
+  supplied input is Exercise 3.1 co-coercivity.
 
 The positive-`alpha` closed-form Theorem 3.4 function-value denominator now
 compiles.  The assembly layer in
@@ -84,10 +87,12 @@ that lower model plus Lemma 3.1, and feeds a gradient-descent trajectory into
 the weighted finite-sum/final-value bounds.  The descent lemma also now
 derives monotonicity of function values along GD trajectories, removing the
 last supplied monotone-gap assumption from the positive-`alpha` and
-`alpha = 0` closed-form wrappers.  Next choices are the full
-Exercise 3.1 co-coercivity derivation, the segment-strong-convexity plus
-differentiability bridge for Proposition 1.6, or source-audited report
-packaging for the supplied-interface Theorem 3.3/3.4 layers.
+`alpha = 0` closed-form wrappers.  The Proposition 1.6 `(1.4) => (1.5)`
+swap-and-add bridge from `FirstOrderStrongConvexOn` to
+`StronglyMonotoneGradientOn` now compiles.  Next choices are the full Exercise
+3.1 co-coercivity derivation, the segment-strong-convexity plus
+differentiability bridge to `FirstOrderStrongConvexOn`, or source-audited
+report packaging for the supplied-interface Theorem 3.3/3.4 layers.
 
 ## Search-First Record
 
@@ -151,6 +156,17 @@ The one-step recurrence proof uses `norm_sub_sq_real`, `real_inner_comm`,
 segment-strong-convexity plus differentiability bridge remains a later exact
 Proposition 1.6 target.
 
+Current Proposition 1.6 monotonicity bridge result: the implication
+`(1.4) => (1.5)` now compiles locally as
+`FirstOrderStrongConvexOn.stronglyMonotoneGradientOn`.  The proof follows the
+textbook's swap-and-add argument directly, using two applications of
+`FirstOrderStrongConvexOn.lower_model`, `norm_sub_rev`, `inner_neg_right`,
+`inner_sub_left`, `ring`, and `nlinarith`.  Mathlib has one-dimensional
+convex-derivative monotonicity lemmas in `Analysis/Convex/Deriv.lean` and
+gradient/fderiv bridges in `Analysis/Calculus/Gradient/Basic.lean`, but no
+ready multidimensional theorem matching the local supplied first-order
+interface.
+
 Current Theorem 3.3 contraction search result: mathlib provides the norm-square
 expansion `norm_sub_sq_real` and the square-root/order helpers
 `sq_le_sq₀`, `Real.sq_sqrt`, and `Real.sqrt_nonneg`, but neither pinned
@@ -161,7 +177,9 @@ source-shaped supplied interfaces `StronglyMonotoneGradientOn` and
 `GradientStepCocoerciveOn`, expands the square with `smul_sub`,
 `norm_sub_sq_real`, `real_inner_smul_right`, `norm_smul`, and
 `Real.norm_eq_abs`, then closes the contraction with `nlinarith` and
-`sq_le_sq₀`.
+`sq_le_sq₀`.  Theorem 3.3 also has wrappers from
+`FirstOrderStrongConvexOn` plus `GradientStepCocoerciveOn`, so the only
+remaining supplied input for that path is Exercise 3.1 co-coercivity.
 
 Local searches should prioritize:
 
@@ -228,8 +246,11 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.functionValue_antitone_of_smoothWithGradientOn`
 - `StatInference.Optimization.StronglyMonotoneGradientOn`
 - `StatInference.Optimization.GradientStepCocoerciveOn`
+- `StatInference.Optimization.FirstOrderStrongConvexOn.stronglyMonotoneGradientOn`
 - `StatInference.Optimization.gradientStep_sqdist_contract_of_strongMonotone_cocoercive`
 - `StatInference.Optimization.gradientStep_dist_contract_of_strongMonotone_cocoercive`
+- `StatInference.Optimization.gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_cocoercive`
+- `StatInference.Optimization.gradientStep_dist_contract_of_firstOrderStrongConvexOn_cocoercive`
 - `StatInference.Optimization.weightedSumBound_of_gronwall_negative_forcing`
 - `StatInference.Optimization.weightedFinalGap_le_weightedGapSum`
 - `StatInference.Optimization.geometricWeights_sum_eq_geom_sum`
@@ -254,8 +275,8 @@ Latest verified local frontier after lane creation:
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
 Next manual goal target: choose the fastest source-faithful completion path for
-Chapter 3.  Likely options are deriving Exercise 3.1 co-coercivity for the
-Theorem 3.3 contraction layer, source-exact supplied-interface report
-packaging for Theorem 3.3/3.4, or the differentiability bridge from segment
-`StrongConvexOn` to `FirstOrderStrongConvexOn` /
-`StronglyMonotoneGradientOn` for Proposition 1.6 fidelity.
+Chapter 3.  The highest-value next proof target is deriving Exercise 3.1
+co-coercivity for the Theorem 3.3 contraction layer.  Other viable options are
+source-exact supplied-interface report packaging for Theorem 3.3/3.4, or the
+differentiability bridge from segment `StrongConvexOn` to
+`FirstOrderStrongConvexOn` for full Proposition 1.6 fidelity.

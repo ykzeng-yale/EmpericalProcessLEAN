@@ -153,10 +153,12 @@ Near-term exact candidates:
 3. Theorem 3.3 contraction of gradient descent as a supplied-interface
    theorem.  `StatInference/Optimization/Theorem33.lean` now compiles the
    squared-distance and norm contraction forms from the source-shaped
-   `StronglyMonotoneGradientOn` and `GradientStepCocoerciveOn` interfaces.
-   Remaining exact-source work is deriving those supplied interfaces from
-   Proposition 1.6 and Exercise 3.1 under differentiability/smoothness
-   assumptions.
+   `StronglyMonotoneGradientOn` and `GradientStepCocoerciveOn` interfaces,
+   plus wrappers deriving gradient monotonicity from
+   `FirstOrderStrongConvexOn` via the textbook's Proposition 1.6
+   `(1.4) => (1.5)` swap-and-add argument.  Remaining exact-source work is
+   deriving Exercise 3.1 co-coercivity and, later, deriving the supplied
+   first-order lower model from segment strong convexity plus differentiability.
 4. Theorem 3.4 as a supplied-interface convergence theorem.  The next layer
    now compiles in `StatInference/Optimization/Theorem34.lean`: it assumes the
    one-step recurrence (3.1), uses the compiled Gronwall theorem for the
