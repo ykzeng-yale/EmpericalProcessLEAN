@@ -1223,13 +1223,27 @@ coordinate-measurable truncated classes now discharge the selected
 cardinality-measurability input through existing `Nat.find` cover-event
 measurability.
 
-Next exact edit: consume the new selected fixed-radius finite-net mean route in
-the fixed-`M` and untruncated Theorem 2.4.3 consumers, or replace its
-deterministic normalized log-cardinality bound by a sharper finite-net
-tail/UI/dominated-convergence theorem.  The remaining analytic gap is no
-longer selected-cardinality measurability/log convergence under countability;
-it is deriving the deterministic bound or tail/UI condition from the textbook
-entropy hypothesis `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η`.
+The selected fixed-radius route now feeds the theorem consumers directly.  The
+positive-radius selector
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard` and
+covering domination wrapper
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.selected_truncated_positiveRadius_of_forAllRadius_samplePath`
+let downstream handoffs use one `eta ↦ cardinality eta` process while keeping
+only positive radii theorem-relevant.  The fixed-`M` consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_fixedRadius_logCardinality_div_bound`
+and untruncated consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_fixedRadius_logCardinality_div_bound`
+compose selected fixed-radius finite-net mean convergence with the existing
+fixed-`M` and large-`M` envelope-tail routes.
+
+Next exact edit: replace the remaining deterministic normalized
+log-cardinality bound in the selected fixed-radius route by a sharper
+finite-net tail/UI/dominated-convergence theorem, or record the precise
+book-level extra condition needed for that replacement.  The remaining
+analytic gap is no longer selected-cardinality measurability/log convergence
+under countability, nor the fixed-`M`/untruncated consumer composition; it is
+deriving the deterministic bound or tail/UI condition from the textbook entropy
+hypothesis `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η`.
 The finite-cover domination, terminal selected-cardinality equality,
 measurability transport, fixed-`M` centered-truncated consumers,
 inverse-radius and fixed-radius consumers, finite-net tail/UI adapters,

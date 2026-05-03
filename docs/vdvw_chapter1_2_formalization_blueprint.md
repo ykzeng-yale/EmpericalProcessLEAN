@@ -559,10 +559,16 @@ above, so they do not change the theorem-level dashboard counts.
    `integral_finiteNetHoeffdingUpper_tendsto_zero_of_selected_truncated_fixedRadius_logCardinality_div_bound`
    and
    `integral_finiteNetHoeffdingUpper_tendsto_zero_of_forall_pos_selected_truncated_fixedRadius_logCardinality_div_bound`.
-   The next proof step is therefore to feed this selected fixed-radius route
-   into the fixed-`M` and untruncated consumers, or to record/prove the sharper
-   finite-net tail/UI theorem needed to remove the remaining deterministic
-   normalized log-cardinality bound.
+   It now also feeds the theorem-facing consumers through
+   `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard`,
+   `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.selected_truncated_positiveRadius_of_forAllRadius_samplePath`,
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_fixedRadius_logCardinality_div_bound`,
+   and
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_fixedRadius_logCardinality_div_bound`.
+   The next proof step is therefore to record/prove the sharper finite-net
+   tail/UI theorem needed to remove the remaining deterministic normalized
+   log-cardinality bound, or to state the exact additional theorem-level side
+   condition honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
