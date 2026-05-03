@@ -1644,6 +1644,28 @@ theorem VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills_le
       (cardinality := cardinality) hcardinality X hc hX).trans hupper
 
 /--
+Hoeffding-upper specialization of the expected finite-center maximal handoff.
+
+This leaves the analytic scale comparison as an explicit hypothesis while
+placing the result in the VdV&W finite-net display notation.
+-/
+theorem
+    VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills_le_finiteNetHoeffdingUpper
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality n : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0} {M : ℝ}
+    (hc : 0 < (c : ℝ))
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ)
+    (hscale :
+      vdVWTheorem243LogRadiusMillsUpper cardinality c ≤
+        vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M) :
+    VdVWTheorem243FiniteCenterExpectedMaximalBound μ X
+      (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M) := by
+  exact
+    VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills_le
+      (cardinality := cardinality) hcardinality X hc hX hscale
+
+/--
 Truncated-center specialization of the expected finite-center maximal layer
 for random Rademacher signs.
 
@@ -1743,6 +1765,73 @@ theorem
       cover.center
       cover.center_mem
       sign hindep hsubG hproxy_pos
+
+/--
+The common sub-Gaussian proxy for truncated Rademacher centers is positive
+under the explicit book-side assumptions `0 < n` and `0 < M`.
+-/
+theorem vdVWTheorem243_truncated_commonProxy_pos
+    {n : ℕ} {M : ℝ} (hn : 0 < n) (hM_pos : 0 < M) :
+    0 <
+      (NNReal.mk (M ^ 2 / (n : ℝ))
+        (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)) : ℝ) := by
+  rw [NNReal.coe_mk]
+  exact div_pos (sq_pos_of_pos hM_pos) (by exact_mod_cast hn)
+
+/--
+Proof-carrying arithmetic handoff from the compiled log-radius Mills upper to
+the VdV&W finite-net Hoeffding display scale.
+
+The exact remaining arithmetic target is to prove this predicate from the
+explicit assumptions on `cardinality`, `n`, and `M`; until then this isolates
+the only scale comparison still needed by the Theorem 2.4.3 maximal layer.
+-/
+def VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale
+    (cardinality n : ℕ) (M : ℝ) : Prop :=
+  vdVWTheorem243LogRadiusMillsUpper cardinality
+      (NNReal.mk (M ^ 2 / (n : ℝ))
+        (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n))) ≤
+    vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M
+
+/--
+Finite-empirical-cover expected maximal bound at the VdV&W finite-net
+Hoeffding display scale, assuming only the isolated scale-comparison handoff.
+
+This packages all probabilistic and empirical-cover work proved so far; the
+remaining blocker is the real-arithmetic proof of
+`VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale`.
+-/
+theorem
+    vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hn : 0 < n)
+    (hM_pos : 0 < M)
+    (sign : Fin n -> Ω -> ℝ)
+    (hindep : iIndepFun sign μ)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μ)
+    (hscale :
+      VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale cardinality n M) :
+    VdVWTheorem243FiniteCenterExpectedMaximalBound μ
+      (fun centerIndex : Fin cardinality =>
+        fun ω =>
+          vdVWWeightedSampleSum
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+            (cover.center centerIndex) sample)
+      (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M) := by
+  exact
+    (vdVWTheorem243_truncated_rademacher_expectedMaximalBound_of_finiteEmpiricalL1CoverAtCard
+      cover hindexClass_nonempty henvelope hM_pos.le sign hindep hsubG
+      (vdVWTheorem243_truncated_commonProxy_pos hn hM_pos)).trans hscale
 
 /--
 Closed-form value of the finite-center sub-Gaussian tail majorant over

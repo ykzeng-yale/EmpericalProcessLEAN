@@ -217,7 +217,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.3.6 | Theorem | `..._1-100.md:650` | local-layer/mathlib-foundation: continuous map pushforward and `TendstoInDistribution` continuous-composition wrappers proved; arbitrary-map cover layer still pending |
 | 1.3.8 | Lemma | `..._1-100.md:678` | blocked-vdvw: Hoffmann-Jørgensen arbitrary-map weak-convergence infrastructure; missing exact local arbitrary-map/asymptotic-measurability primitive |
 | 1.3.9 | Theorem | `..._1-100.md:688` | local-layer/mathlib-foundation: probability-measure tightness wrapper, compact-set characterization, and Prokhorov compact-closure wrapper proved over mathlib; exact arbitrary-map/asymptotic-tightness extension remains pending |
-| 1.3.10 | Theorem | `..._1-100.md:756` | blocked-vdvw: exact nonmeasurable/arbitrary-map weak-convergence layer missing; measure-level mathlib route still to be wrapped separately |
+| 1.3.10 | Theorem | `..._1-100.md:756` | blocked-vdvw: exact nonmeasurable/arbitrary-map weak-convergence layer missing; measure-level weak-convergence/Portmanteau/tightness wrappers are already local, so the remaining gap is the exact arbitrary-map extension |
 | 1.3.12 | Lemma | `..._1-100.md:768` | foundation-lane/mathlib-foundation: classical foundation available in pinned mathlib, pending local restatement/wrapper |
 | 1.3.13 | Lemma | `..._1-100.md:778` | blocked-vdvw: arbitrary-map/asymptotic-measurability infrastructure missing after mathlib search |
 | 1.4.1 | Lemma | `..._1-100.md:848` | foundation-lane/mathlib-foundation: audit found product/Pi Borel-space and finite-coordinate restriction APIs; pending exact VdV&W product-space wrapper |

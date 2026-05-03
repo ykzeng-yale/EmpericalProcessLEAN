@@ -374,6 +374,17 @@ additional example closures:
    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_hasSubgaussianMGF_of_ae_le
    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_hasSubgaussianMGF_of_pos_of_ae_le
    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
+   vdVWTheorem243LogRadiusMillsUpper
+   vdVWTheorem243LogRadiusMillsUpper_nonneg
+   VdVWTheorem243FiniteCenterExpectedMaximalBound
+   VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills
+   VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills_le
+   VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills_le_finiteNetHoeffdingUpper
+   vdVWTheorem243_truncated_rademacher_expectedMaximalBound
+   vdVWTheorem243_truncated_rademacher_expectedMaximalBound_of_finiteEmpiricalL1CoverAtCard
+   vdVWTheorem243_truncated_commonProxy_pos
+   VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale
+   vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard
    ```
 
    This closes the deterministic passage from fixed signs `epsilon_i` to the
@@ -486,9 +497,14 @@ additional example closures:
    handoffs remain in the empirical-process files.  Search found no reusable
    Orlicz/`psi_2` API and no reusable ProbabilityMeasure-level finite-class
    maximal theorem; the VdV&W maximal packaging should remain local in
-   `Theorem243.lean`.  The remaining blocker is the constant/scale comparison
-   from the compiled log-radius Mills upper to the VdV&W
-   tail-to-Orlicz/Hoeffding display scale.
+   `Theorem243.lean`.  The latest local layer proves positivity of the common
+   truncated proxy `M^2/n` from `0 < n` and `0 < M`, isolates the remaining
+   real-arithmetic comparison as
+   `VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale`, and packages the
+   finite-empirical-cover expected maximal bound at
+   `vdVWTheorem243FiniteNetHoeffdingUpper` assuming exactly that handoff.
+   The remaining blocker is now the proof of this named scale-comparison
+   predicate, not any missing Rademacher/tail-integral infrastructure.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -506,12 +522,28 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: prove the constant/scale comparison from
-`vdVWTheorem243LogRadiusMillsUpper cardinality (M^2/n)` to the current
-`vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M` display, under explicit
-positive `n` and `M` assumptions or an equivalent supplied arithmetic
-handoff.  Then move to the symmetrization/truncation and outer envelope-tail
-handoffs.
+Search record for the scale-comparison handoff:
+
+- searched local `StatInference` for existing `LogRadiusMillsUpper`,
+  `FiniteNetHoeffdingUpper`, `ExpectedMaximalBound`, `HoeffdingScale`, and
+  scale handoff declarations;
+- searched pinned mathlib for `Real.sqrt`, `sqrt_mul`, `sqrt_div`,
+  `le_sqrt_of_sq_le`, `sqrt_le_left`, `sq_le_sq`, `sq_le_sq₀`,
+  `Real.log_nonneg`, `Real.log_natCast_nonneg`, `Real.exp_le_exp`,
+  `exp_one_gt_two`, and `exp_one_gt_d9`;
+- no exact reusable theorem was found for the whole comparison
+  `vdVWTheorem243LogRadiusMillsUpper cardinality (M^2/n) ≤
+  vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M`.  The reusable
+  arithmetic pieces are enough to make this a focused real-inequality proof,
+  so the handoff is now named and consumed by the maximal layer instead of
+  hidden as an informal assumption.
+
+Next exact edit: prove
+`VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale cardinality n M` from
+explicit positive-cardinality, positive-`n`, and positive-`M` assumptions,
+likely using `exp_one_gt_two`/`exp_one_gt_d9`, log monotonicity, and a
+nonnegative squaring argument.  Then move to the symmetrization/truncation and
+outer envelope-tail handoffs.
 
 ## Parked Example-Specific Blocker
 
