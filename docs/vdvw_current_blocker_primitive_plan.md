@@ -910,11 +910,12 @@ Search record for the symmetrization precursor package:
   `integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality_bound`,
   plus the measurable-cardinality finite-net mean consumer
   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`,
-  are also compiled.  The next valid target is the analytic input this exposes:
-  supply the measurable-cardinality and boundedness/uniform-integrability or
-  dominated-convergence hypotheses that turn the entropy route into the real
-  integrated Hoeffding-plus-radius mean convergence, together with the
-  empirical-cover radius convergence input.
+  are also compiled.  The fixed-`M` centered-truncated convergence consumer
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_bounded`
+  now composes these pieces under explicit measurable-cardinality,
+  boundedness/uniform-integrability, and empirical-cover radius convergence
+  hypotheses.  The next valid target is proving or supplying those analytic
+  side conditions from the book entropy route.
   Search record: local `StatInference` and pinned mathlib searches for
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
   `tendsto_integral_of_L1`, `TendstoInMeasure`, and
@@ -973,10 +974,11 @@ expectation wrapper, variable-domain bounded outer-probability-to-mean bridge,
 variable-domain entropy-to-Hoeffding bridge, finite-net mean consumer,
 measurable-cardinality finite-net mean consumer, random finite-net upper
 measurability/integrability packaging, and bounded entropy-to-integrated-mean
-consumer are closed. Next supply the measurable-cardinality, boundedness/UI or
-dominated-convergence input, and cover-radius convergence needed to derive the
-vanishing real integrated upper from the entropy hypotheses, then assemble the
-final Theorem 2.4.3 handoffs.
+consumer, plus the fixed-`M` bounded entropy/measurable-cardinality convergence
+consumer, are closed. Next derive or supply the measurable-cardinality,
+boundedness/UI or dominated-convergence input, and cover-radius convergence
+needed by that consumer from the entropy hypotheses, then assemble the final
+Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
