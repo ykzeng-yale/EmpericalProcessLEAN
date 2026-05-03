@@ -8443,6 +8443,84 @@ theorem
         simpa using tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
 
 /--
+The inverse-radius entropy package plus a deterministic normalized
+log-cardinality bound supplies convergence of the ordinary finite-net
+Hoeffding upper mean.
+
+This is the side-condition-structure projection form of
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`.
+-/
+theorem
+    VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M K : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243FixedMInvRadiusEntropySideConditions P X indexClass
+        classFun envelope M cardinality)
+    (hM_pos : 0 < M)
+    (hK_nonneg : 0 ≤ K)
+    (hlog_div_bound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ) ≤ K) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            (cardinality n sample n) n M ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound
+      (P := P) (M := M) (K := K) (cardinality := cardinality)
+      hentropy.log_cardinality_div_converges hM_pos hK_nonneg
+      hentropy.cardinality_measurable hlog_div_bound
+
+/--
+The inverse-radius entropy package plus a deterministic normalized
+log-cardinality bound supplies the real integrated finite-net-plus-radius
+convergence consumed by the fixed-`M` Markov handoff.
+
+The radius selector is fixed to `1 / (n + 1)`, so the deterministic radius
+convergence is discharged internally.
+-/
+theorem
+    VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_logCardinality_div_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M K : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243FixedMInvRadiusEntropySideConditions P X indexClass
+        classFun envelope M cardinality)
+    (hM_pos : 0 < M)
+    (hK_nonneg : 0 ≤ K)
+    (hlog_div_bound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ) ≤ K) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M +
+            1 / ((n : ℝ) + 1) ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound
+      (P := P) (M := M) (K := K)
+      (coverRadius := fun n : ℕ => 1 / ((n : ℝ) + 1))
+      (cardinality := cardinality) hentropy.log_cardinality_div_converges
+      hM_pos hK_nonneg hentropy.cardinality_measurable hlog_div_bound
+      (by
+        simpa using tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+
+/--
 Fixed-`M` centered-truncated convergence handoff from the integrated random
 finite-net bound.
 

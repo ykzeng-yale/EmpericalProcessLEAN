@@ -1052,6 +1052,12 @@ Search record for the symmetrization precursor package:
   is compiled as well.  The fixed-`M` handoff from that package and a
   deterministic selected log-ratio bound is compiled as
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`.
+  The same side-condition package now also projects directly to the ordinary
+  finite-net and finite-net-plus-inverse-radius mean convergence conclusions
+  via
+  `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_bound`
+  and
+  `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_logCardinality_div_bound`.
   Follow-up search found no ready
   variable-domain `UniformIntegrable`/Vitali API; pinned mathlib's
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
