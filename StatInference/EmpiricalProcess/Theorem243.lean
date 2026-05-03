@@ -5473,6 +5473,115 @@ theorem VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite_sampl
       (X n) (hfinite n)
 
 /--
+The terminal coordinate of the minimal random empirical-cover cardinality
+process is measurable for countable classes of class-coordinate-measurable
+functions.
+
+The `hX_samplePath` rewrite is exactly the terminal-sample condition used by
+the fixed-`M` Theorem 2.4.3 consumers.
+-/
+theorem
+    measurable_terminal_minimalRandomEmpiricalL1CoveringNumberCard_of_countable_of_measurable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index] {n : ℕ} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (X : ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath : ∀ sample : SampleAt Observation n,
+      samplePath X sample n = sample)
+    (hfinite :
+      ∀ sample : SampleAt Observation n, ∀ m,
+        HasFiniteEmpiricalL1Cover (samplePath X sample m) indexClass
+          classFun epsilon)
+    (hclass : ∀ index, index ∈ indexClass -> Measurable (classFun index)) :
+    Measurable fun sample : SampleAt Observation n =>
+      finiteEmpiricalL1CoveringNumberCard (hfinite sample n) := by
+  let hfinite_terminal :
+      ∀ sample : SampleAt Observation n,
+        HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon := by
+    intro sample
+    simpa [hX_samplePath sample] using hfinite sample n
+  have hmeas :
+      Measurable fun sample : SampleAt Observation n =>
+        finiteEmpiricalL1CoveringNumberCard (hfinite_terminal sample) :=
+    measurable_finiteEmpiricalL1CoveringNumberCard_of_countable_of_measurable
+      hfinite_terminal hclass
+  have hpointwise :
+      (fun sample : SampleAt Observation n =>
+        finiteEmpiricalL1CoveringNumberCard (hfinite sample n)) =
+        (fun sample : SampleAt Observation n =>
+          finiteEmpiricalL1CoveringNumberCard (hfinite_terminal sample)) := by
+    funext sample
+    exact
+      finiteEmpiricalL1CoveringNumberCard_congr_sample
+        (sample := samplePath X sample n) (sample' := sample)
+        (hX_samplePath sample) (hfinite sample n) (hfinite_terminal sample)
+  rw [hpointwise]
+  exact hmeas
+
+/--
+Selected minimal random empirical-cover cardinalities are measurable at the
+terminal sample size for every `n`.
+
+Use this with
+`cardinality n sample m = finiteEmpiricalL1CoveringNumberCard (hfinite n sample m)`
+to discharge the `hcardinality` input of the fixed-`M` consumers.
+-/
+theorem
+    measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index] {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {coverRadius : ℕ -> ℝ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hfinite :
+      ∀ n (sample : SampleAt Observation n) m,
+        HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+          classFun (coverRadius n))
+    (hclass : ∀ index, index ∈ indexClass -> Measurable (classFun index)) :
+    ∀ n,
+      Measurable fun sample : SampleAt Observation n =>
+        finiteEmpiricalL1CoveringNumberCard (hfinite n sample n) := by
+  intro n
+  exact
+    measurable_terminal_minimalRandomEmpiricalL1CoveringNumberCard_of_countable_of_measurable
+      (X n) (hX_samplePath n) (hfinite n) hclass
+
+/--
+Selected minimal random empirical-cover cardinalities for truncated classes are
+measurable at the terminal sample size under the usual theorem-facing
+coordinate-measurability hypotheses.
+-/
+theorem
+    measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index] {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M : ℝ} {coverRadius : ℕ -> ℝ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hfinite :
+      ∀ n (sample : SampleAt Observation n) m,
+        HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (coverRadius n))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope) :
+    ∀ n,
+      Measurable fun sample : SampleAt Observation n =>
+        finiteEmpiricalL1CoveringNumberCard (hfinite n sample n) := by
+  exact
+    measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (coverRadius := coverRadius) X hX_samplePath hfinite
+      (fun index hindex =>
+        measurable_vdVWTruncatedClassFun (hclass index hindex)
+          henvelope_meas)
+
+/--
 The random empirical covering-number domination supplies concrete finite
 empirical-cover witnesses at the same random cardinality.
 
