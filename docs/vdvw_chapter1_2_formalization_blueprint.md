@@ -576,10 +576,18 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedFixedRadiusTailSideConditions`,
    and
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedFixedRadiusTailSideConditions`.
-   The next proof step is therefore to derive the deterministic normalized
-   log-cardinality bound needed by this route, likely from a finite value-grid
-   cover for bounded truncated functions on each empirical sample, or to state
-   the exact additional theorem-level side condition honestly.
+   The terminal product-grid arithmetic handoffs
+   `vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_succ_terminal_le_pow`
+   and
+   `vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le_pow`
+   now convert future `base ^ n` finite-grid/packing cardinality estimates
+   into the normalized log-cardinality bound required by the selected
+   fixed-radius tail route.  The next proof step is therefore the geometric
+   adapter: bridge mathlib internal metric covers or maximal separated sets
+   for the empirical `L1(P_n)` pseudometric to the local
+   `FiniteEmpiricalL1CoverAtCard` structure, whose centers must lie in the
+   class.  If this cannot be proved from the textbook assumptions, state the
+   exact additional theorem-level side condition honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
