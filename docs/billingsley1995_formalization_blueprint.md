@@ -463,13 +463,16 @@ is available for arbitrary deterministic shrinking cover radii, while
 specializes that consumer to `1 / ((n : ℝ) + 1)`.
 `VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
 packages inverse-radius selected finite covers and measurability once diagonal
-selected log convergence is supplied. The packaged fixed-`M` consumer
+selected log convergence is supplied, and
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_eq_selected_truncated`
+does the same for an externally named cardinality after terminal equality with
+the selected truncated minimal process is supplied. The packaged fixed-`M`
+consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`
 then uses those side conditions with the deterministic selected log-ratio
-bound. Next feed the theorem
-entropy hypotheses into one of those consumers past the now-closed
-covering-domination/finite-witness handoff, then supply the remaining selected
-terminal equality, diagonal selected log-cardinality convergence, and
+bound. Next feed the theorem entropy hypotheses into this package past the
+now-closed covering-domination/finite-witness handoff, then supply diagonal
+selected log-cardinality convergence and
 deterministic normalized log-cardinality bound or a genuine varying-domain tail/UI
 replacement to turn the entropy hypotheses into the required real integrated
 upper. Search confirms pinned mathlib's UI/Vitali/DCT tools are fixed-domain,
