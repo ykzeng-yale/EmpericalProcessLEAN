@@ -1077,11 +1077,28 @@ Search record for the symmetrization precursor package:
    `tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_tailExpectation_nonneg`,
    specialized to finite-net Hoeffding means as
    `integral_finiteNetHoeffdingUpper_tendsto_zero_of_tailExpectation_convergesInOuterProbabilityConst`.
-   The remaining theorem input is proving the corresponding selected finite-net
-   tail-expectation condition from book assumptions, or continuing to use the
-   deterministic selected log-ratio bound route.  The best Billingsley source
-   fallback for a stronger UI theorem is Theorem 25.12/UI, but no report should
-   be created unless an exact theorem is proved and the source screenshots/report
+   The bounded-tail/UI adapter route is now also compiled:
+   `tailExpectation_condition_of_eventual_bound`,
+   `finiteNetHoeffdingUpper_tailExpectation_condition_of_eventual_bound`,
+   `finiteNetHoeffdingUpper_tailExpectation_condition_of_bound`,
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_bounded_tailExpectation_convergesInOuterProbabilityConst`,
+   `VdVWTheorem243SelectedInvRadiusEntropySideConditions.finiteNetHoeffdingUpper_tailExpectation`,
+   `VdVWTheorem243SelectedInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero_of_tailExpectation`,
+   `VdVWTheorem243SelectedInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_tailExpectation`,
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_invRadiusFiniteCovers_tailExpectation`,
+   and
+   `integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_invRadiusFiniteCovers_tailExpectation`.
+   Search also found no existing local/mathlib perturbation theorem for
+   varying-domain `VdVWConvergesInOuterProbabilityConst`; the compiled local
+   replacement is
+   `VdVWConvergesInOuterProbabilityConst_zero_of_eventual_dist_le_add_errors`,
+   which is the next untruncation support lemma.  The remaining theorem input is
+   now not the tail/UI adapter itself; it is proving the selected diagonal
+   log-cardinality convergence and deterministic selected log-ratio bound from
+   the book assumptions, or proving a genuinely stronger selected finite-net
+   tail/UI theorem from those assumptions.  The best Billingsley source fallback
+   for a stronger UI theorem is Theorem 25.12/UI, but no report should be
+   created unless an exact theorem is proved and the source screenshots/report
    PDF are compiled.
   A radius-monotonicity search found mathlib
   `Metric.externalCoveringNumber_anti`, `Metric.coveringNumber_anti`, and local
@@ -1097,16 +1114,20 @@ Search record for the symmetrization precursor package:
   comparison is available, but the theorem-line route should remain
   product-integrated.
 
-Next exact edit: prove theorem-facing inputs for one of the two compiled
-analytic routes.  Route A is diagonal normalized log-cardinality convergence
-plus deterministic selected log-ratio bound for the selected minimal empirical
-cover at radius `1 / (n + 1)`.  Route B is the selected finite-net
-tail-expectation condition needed by
-`integral_finiteNetHoeffdingUpper_tendsto_zero_of_tailExpectation_convergesInOuterProbabilityConst`.
-After either route feeds fixed-`M` centered-truncated convergence, move to
-untruncation via the envelope-tail `P^* F{F > M}` layer and final Theorem
-2.4.3 assembly.  The finite-cover domination, terminal selected-cardinality
-equality, measurability transport, fixed-`M` centered-truncated consumers, and
+Next exact edit: start the untruncation batch.  First prove deterministic
+truncation-perturbation inequalities comparing the untruncated centered
+weighted supremum to the fixed-`M` centered-truncated supremum plus empirical
+and population envelope-tail errors.  Then use
+`VdVWConvergesInOuterProbabilityConst_zero_of_eventual_dist_le_add_errors`,
+`VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`,
+and the envelope-tail Markov bridges to derive
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_centered_truncated`
+under the honest fixed-`M` convergence hypothesis.  In parallel, the remaining
+theorem-assumption task is still to derive the selected diagonal
+log-cardinality/log-ratio inputs, or a stronger selected finite-net tail/UI
+condition, from the book entropy hypotheses.  The finite-cover domination,
+terminal selected-cardinality equality, measurability transport, fixed-`M`
+centered-truncated consumers, finite-net tail/UI adapters, and
 symmetrization/product finite-net route are already compiled.
 
 Search note for the finite product layer: the finite-sample route can use

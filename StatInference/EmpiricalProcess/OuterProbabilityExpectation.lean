@@ -348,6 +348,121 @@ theorem
         hi
 
 /--
+A uniform deterministic bound supplies the variable-domain tail-expectation
+condition used by the explicit UI route below.
+
+This is the small support lemma that keeps later empirical-process finite-net
+arguments honest: boundedness is a sufficient tail/UI input, but it is recorded
+as such instead of being hidden inside a fixed-domain Vitali theorem.
+-/
+theorem tailExpectation_condition_of_eventual_bound
+    {ι : Type v} {Ω : ι -> Type u}
+    [(i : ι) -> MeasurableSpace (Ω i)]
+    (μ : (i : ι) -> Measure (Ω i))
+    {l : Filter ι} {Y : (i : ι) -> Ω i -> ℝ} {C : ℝ}
+    (hC_nonneg : 0 ≤ C)
+    (hY_le : ∀ᶠ i in l, ∀ ω : Ω i, Y i ω ≤ C) :
+    ∀ ε > 0, ∃ R, 0 ≤ R ∧
+      ∀ᶠ i in l,
+        ∫ ω,
+          Set.indicator {ω' : Ω i | R < Y i ω'} (Y i) ω ∂(μ i) ≤ ε := by
+  intro ε hε_pos
+  refine ⟨C, hC_nonneg, ?_⟩
+  filter_upwards [hY_le] with i hi
+  have hzero :
+      (fun ω : Ω i =>
+        Set.indicator {ω' : Ω i | C < Y i ω'} (Y i) ω) =
+        fun _ => 0 := by
+    funext ω
+    have hnot : ¬ C < Y i ω := not_lt_of_ge (hi ω)
+    simp [Set.indicator, hnot]
+  rw [hzero]
+  simpa using hε_pos.le
+
+/--
+A varying-domain perturbation rule for convergence in outer probability to
+zero.
+
+If `X_i` is eventually bounded in distance by two real error processes
+`Y_i + Z_i`, and both errors converge to zero in VdV&W outer probability, then
+`X_i` converges to zero as well.  This is the local replacement for the
+missing VdV&W arbitrary-map perturbation API needed by the Theorem 2.4.3
+untruncation step.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst_zero_of_eventual_dist_le_add_errors
+    {ι : Type v} {Ω : ι -> Type u}
+    [(i : ι) -> MeasurableSpace (Ω i)]
+    (μ : (i : ι) -> Measure (Ω i))
+    {l : Filter ι} {X Y Z : (i : ι) -> Ω i -> ℝ}
+    (hY :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ Y l
+        (0 : ℝ))
+    (hZ :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ Z l
+        (0 : ℝ))
+    (hbound :
+      ∀ᶠ i in l, ∀ ω : Ω i, dist (X i ω) (0 : ℝ) ≤ Y i ω + Z i ω) :
+    VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ X l
+      (0 : ℝ) := by
+  intro ε hε
+  have hε2 : 0 < ε / 2 := half_pos hε
+  have hYt := hY (ε / 2) hε2
+  have hZt := hZ (ε / 2) hε2
+  have hsum :
+      Tendsto
+        (fun i =>
+          @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω | ε / 2 < dist (Y i ω) (0 : ℝ)} +
+            @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω | ε / 2 < dist (Z i ω) (0 : ℝ)})
+        l (𝓝 0) := by
+    simpa using hYt.add hZt
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0) from
+        tendsto_const_nhds)
+      hsum
+      (Eventually.of_forall fun _ => bot_le)
+      ?_
+  filter_upwards [hbound] with i hi
+  calc
+    @VdVWOuterProbability (Ω i) inferInstance (μ i)
+        {ω | ε < dist (X i ω) (0 : ℝ)}
+        ≤ @VdVWOuterProbability (Ω i) inferInstance (μ i)
+            ({ω | ε / 2 < dist (Y i ω) (0 : ℝ)} ∪
+              {ω | ε / 2 < dist (Z i ω) (0 : ℝ)}) := by
+            dsimp [VdVWOuterProbability]
+            refine measure_mono ?_
+            intro ω hω
+            by_cases hYbad : ε / 2 < dist (Y i ω) (0 : ℝ)
+            · exact Or.inl hYbad
+            · refine Or.inr ?_
+              by_contra hZbad
+              have hXlt : ε < dist (X i ω) (0 : ℝ) := by simpa using hω
+              have hYle : Y i ω ≤ ε / 2 := by
+                calc
+                  Y i ω ≤ |Y i ω| := le_abs_self _
+                  _ = dist (Y i ω) (0 : ℝ) := by
+                        rw [Real.dist_eq, sub_zero]
+                  _ ≤ ε / 2 := le_of_not_gt hYbad
+              have hZle : Z i ω ≤ ε / 2 := by
+                calc
+                  Z i ω ≤ |Z i ω| := le_abs_self _
+                  _ = dist (Z i ω) (0 : ℝ) := by
+                        rw [Real.dist_eq, sub_zero]
+                  _ ≤ ε / 2 := le_of_not_gt hZbad
+              have hXle : dist (X i ω) (0 : ℝ) ≤ Y i ω + Z i ω :=
+                hi ω
+              linarith
+    _ ≤ @VdVWOuterProbability (Ω i) inferInstance (μ i)
+            {ω | ε / 2 < dist (Y i ω) (0 : ℝ)} +
+          @VdVWOuterProbability (Ω i) inferInstance (μ i)
+            {ω | ε / 2 < dist (Z i ω) (0 : ℝ)} := by
+            dsimp [VdVWOuterProbability]
+            exact measure_union_le _ _
+
+/--
 Variable-domain tail-expectation convergence in outer probability implies
 ordinary mean convergence for nonnegative real processes.
 
