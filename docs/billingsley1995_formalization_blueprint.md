@@ -227,6 +227,7 @@ Near-term declarations:
   and
   `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`,
   plus the theorem-local Rademacher negated-sign bridge and the
+  integrated product-pair sign-symmetry/random-sign averaging comparison, and
   supplied-`hphi_id` finite-net projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
 
@@ -355,8 +356,9 @@ is project organization and source alignment.  The immediate route is:
 
 For direct empirical-process impact, the dependency override is now active:
 the next proof lane should prioritize the VdV&W Theorem 2.4.3
-integrated product-sample `hphi_id` random-sign outer-expectation comparison,
-now past the fixed-sample, integral-lift, product-projection/Fubini,
-same-weight pair split, and deterministic sign-negation pieces,
-before new Billingsley Section 25 work unless no empirical-process
-probability/measure dependency is blocked.
+measurable-cover/outer-expectation transfer from the compiled integrated
+product-sample/Rademacher sign-symmetry comparison to the theorem-local
+`hphi_id` finite-net projection, now past the fixed-sample, integral-lift,
+product-projection/Fubini, same-weight pair split, deterministic sign-negation,
+and ordinary random-sign averaging pieces, before new Billingsley Section 25
+work unless no empirical-process probability/measure dependency is blocked.

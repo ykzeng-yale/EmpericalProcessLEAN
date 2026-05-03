@@ -2250,6 +2250,492 @@ theorem vdVWWeightedClassSupremum_rademacherWeights_neg_sign
       (vdVWRademacherWeights sign) sample
 
 /--
+Coordinatewise product-pair swap determined by a deterministic Rademacher sign
+vector.
+
+Coordinates with sign `-1` are swapped; coordinates with sign `1` are left in
+place.  This is the finite-product symmetry used to insert Rademacher signs
+into the product-copy pair-difference expectation.
+-/
+noncomputable def vdVWRademacherProductSampleSignSwap
+    {Observation : Type u} {n : ℕ} (sign : Fin n -> ℝ) :
+    SampleAt (Observation × Observation) n ->
+      SampleAt (Observation × Observation) n :=
+  fun sample i =>
+    if sign i = -1 then ((sample i).2, (sample i).1) else sample i
+
+/--
+The coordinatewise sign-swap map preserves `(P.prod P)^n`.
+
+This is a theorem-local product-measure symmetry: each coordinate is either
+the identity map or the binary product swap, both measure-preserving under
+`P.prod P`, and finite products preserve measure-preserving coordinate maps.
+-/
+theorem measurePreserving_vdVWProductMeasure_rademacherProductSampleSignSwap
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ}
+    (sign : Fin n -> ℝ) :
+    MeasurePreserving
+      (vdVWRademacherProductSampleSignSwap (Observation := Observation) sign)
+      (vdVWProductMeasure (P.prod P) n)
+      (vdVWProductMeasure (P.prod P) n) := by
+  let coordSwap : Fin n -> Observation × Observation -> Observation × Observation :=
+    fun i z => if sign i = -1 then (z.2, z.1) else z
+  have hcoord :
+      ∀ i : Fin n,
+        MeasurePreserving (coordSwap i) (P.prod P) (P.prod P) := by
+    intro i
+    by_cases hneg : sign i = -1
+    · simpa [coordSwap, hneg] using
+        (Measure.measurePreserving_swap (μ := P) (ν := P))
+    · simpa [coordSwap, hneg] using
+        (MeasurePreserving.id (P.prod P))
+  simpa [vdVWProductMeasure, vdVWRademacherProductSampleSignSwap, coordSwap]
+    using
+      (MeasureTheory.measurePreserving_pi
+        (μ := fun _ : Fin n => P.prod P)
+        (ν := fun _ : Fin n => P.prod P)
+        (f := coordSwap) hcoord)
+
+/--
+After the product-pair sign-swap, the constant `1 / n` pair-difference sum is
+the same deterministic expression as the Rademacher-weighted pair-difference
+sum before the swap.
+-/
+theorem vdVWWeightedSampleSum_pairDifference_constWeights_signSwap
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {classFun : Index -> Observation -> ℝ}
+    (sign : Fin n -> ℝ) (hsign : VdVWRademacherSignVector sign)
+    (index : Index) (sample : SampleAt (Observation × Observation) n) :
+    vdVWWeightedSampleSum
+        (fun index : Index => fun z : Observation × Observation =>
+          classFun index z.1 - classFun index z.2)
+        (fun _ : Fin n => (n : ℝ)⁻¹) index
+        (vdVWRademacherProductSampleSignSwap sign sample) =
+      vdVWWeightedSampleSum
+        (fun index : Index => fun z : Observation × Observation =>
+          classFun index z.1 - classFun index z.2)
+        (vdVWRademacherWeights sign) index sample := by
+  unfold vdVWWeightedSampleSum vdVWRademacherWeights
+    vdVWRademacherProductSampleSignSwap
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  rcases hsign i with hneg | hpos
+  · simp [hneg]
+    ring
+  · have hnot : sign i ≠ -1 := by
+      intro hneg
+      linarith
+    have hswap :
+        (if sign i = -1 then ((sample i).2, (sample i).1) else sample i) =
+          sample i := by
+      exact if_neg hnot
+    rw [hswap]
+    simp [hpos]
+
+/--
+The product-pair sign-swap turns the constant-weight pair-difference supremum
+into the Rademacher-weighted pair-difference supremum pointwise.
+-/
+theorem vdVWWeightedClassSupremum_pairDifference_constWeights_signSwap
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (sign : Fin n -> ℝ) (hsign : VdVWRademacherSignVector sign)
+    (sample : SampleAt (Observation × Observation) n) :
+    vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun z : Observation × Observation =>
+          classFun index z.1 - classFun index z.2)
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+        (vdVWRademacherProductSampleSignSwap sign sample) =
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun z : Observation × Observation =>
+          classFun index z.1 - classFun index z.2)
+        (vdVWRademacherWeights sign) sample := by
+  unfold vdVWWeightedClassSupremum
+  congr with index
+  congr with hindex
+  rw [vdVWWeightedSampleSum_pairDifference_constWeights_signSwap
+    (classFun := classFun) sign hsign index sample]
+
+/--
+Product-pair sign symmetry for the pair-difference supremum expectation.
+
+For every deterministic Rademacher sign vector, the expectation of the
+constant-weight product-copy pair-difference supremum equals the expectation
+with Rademacher weights.  This is the integrated sign-symmetry step needed
+before averaging over random signs.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_pairDifference_constWeights_eq_rademacherWeights
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} (sign : Fin n -> ℝ)
+    (hsign : VdVWRademacherSignVector sign)
+    (hconstPairSupIntegrable :
+      Integrable
+        (fun sample : SampleAt (Observation × Observation) n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              classFun index z.1 - classFun index z.2)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        (vdVWProductMeasure (P.prod P) n)) :
+    ∫ sample : SampleAt (Observation × Observation) n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            classFun index z.1 - classFun index z.2)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        ∂(vdVWProductMeasure (P.prod P) n) =
+      ∫ sample : SampleAt (Observation × Observation) n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            classFun index z.1 - classFun index z.2)
+          (vdVWRademacherWeights sign) sample
+        ∂(vdVWProductMeasure (P.prod P) n) := by
+  let constPairSup : SampleAt (Observation × Observation) n -> ℝ :=
+    fun sample =>
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun z : Observation × Observation =>
+          classFun index z.1 - classFun index z.2)
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample
+  let signedPairSup : SampleAt (Observation × Observation) n -> ℝ :=
+    fun sample =>
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun z : Observation × Observation =>
+          classFun index z.1 - classFun index z.2)
+        (vdVWRademacherWeights sign) sample
+  have hcomp :
+      ∫ sample : SampleAt (Observation × Observation) n,
+          constPairSup
+            (vdVWRademacherProductSampleSignSwap sign sample)
+          ∂(vdVWProductMeasure (P.prod P) n) =
+        ∫ sample : SampleAt (Observation × Observation) n,
+          constPairSup sample ∂(vdVWProductMeasure (P.prod P) n) := by
+    simpa [constPairSup, Function.comp_def] using
+      ((measurePreserving_vdVWProductMeasure_rademacherProductSampleSignSwap
+        (P := P) sign).hasLaw.integral_comp
+          (f := constPairSup) hconstPairSupIntegrable.aestronglyMeasurable)
+  have hpoint :
+      (fun sample : SampleAt (Observation × Observation) n =>
+          constPairSup
+            (vdVWRademacherProductSampleSignSwap sign sample)) =
+        signedPairSup := by
+    funext sample
+    exact
+      vdVWWeightedClassSupremum_pairDifference_constWeights_signSwap
+        (indexClass := indexClass) (classFun := classFun) sign hsign sample
+  rw [hpoint] at hcomp
+  exact hcomp.symm
+
+/--
+Integrated `Phi(x)=x` symmetrization after inserting a deterministic
+Rademacher sign vector.
+
+This composes the centered-to-product-copy comparison with the
+product-coordinate sign symmetry and the two-coordinate pair split.  The next
+step is to average this deterministic sign-vector result over the random
+Rademacher signs and package the result as a measurable-cover outer-expectation
+bound.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_rademacher_truncated_original
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ} {n : ℕ}
+    (sign : Fin n -> ℝ) (hsign : VdVWRademacherSignVector sign)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hpairSupIntegrable :
+      ∀ sample : SampleAt Observation n,
+        Integrable
+          (fun ghostSample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (sample i, ghostSample i)))
+          (vdVWProductMeasure P n))
+    (hcenteredSupIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        (vdVWProductMeasure P n))
+    (hghostExpectationIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          ∫ ghostSample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (sample i, ghostSample i))
+              ∂(vdVWProductMeasure P n))
+        (vdVWProductMeasure P n))
+    (hsplitSupIntegrable :
+      Integrable
+        (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+        ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)))
+    (hsampleSupIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights sign) sample)
+        (vdVWProductMeasure P n)) :
+    ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        ∂(vdVWProductMeasure P n) ≤
+      2 *
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights sign) sample
+          ∂(vdVWProductMeasure P n) := by
+  let pairDifferenceClassFun : Index -> Observation × Observation -> ℝ :=
+    fun index z =>
+      vdVWTruncatedClassFun classFun envelope M index z.1 -
+        vdVWTruncatedClassFun classFun envelope M index z.2
+  let splitSup : SampleAt Observation n × SampleAt Observation n -> ℝ :=
+    fun splitSample =>
+      vdVWWeightedClassSupremum indexClass pairDifferenceClassFun
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+        (fun i : Fin n => (splitSample.1 i, splitSample.2 i))
+  have hproductPairSupIntegrable_const :
+      Integrable
+        (fun productSample : SampleAt (Observation × Observation) n =>
+          vdVWWeightedClassSupremum indexClass pairDifferenceClassFun
+            (fun _ : Fin n => (n : ℝ)⁻¹) productSample)
+        (vdVWProductMeasure (P.prod P) n) := by
+    simpa [splitSup, pairDifferenceClassFun, Function.comp_def] using
+      (measurePreserving_vdVWProductMeasure_prod_to_original_ghost
+        (P := P) (n := n)).integrable_comp_of_integrable
+          hsplitSupIntegrable
+  have hproductPairSupIntegrable_sign :
+      Integrable
+        (fun productSample : SampleAt (Observation × Observation) n =>
+          vdVWWeightedClassSupremum indexClass pairDifferenceClassFun
+            (vdVWRademacherWeights sign) productSample)
+        (vdVWProductMeasure (P.prod P) n) := by
+    have hcomp :
+        Integrable
+          (fun productSample : SampleAt (Observation × Observation) n =>
+            vdVWWeightedClassSupremum indexClass pairDifferenceClassFun
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (vdVWRademacherProductSampleSignSwap sign productSample))
+          (vdVWProductMeasure (P.prod P) n) := by
+      simpa [Function.comp_def] using
+        (measurePreserving_vdVWProductMeasure_rademacherProductSampleSignSwap
+          (P := P) sign).integrable_comp_of_integrable
+            hproductPairSupIntegrable_const
+    simpa [pairDifferenceClassFun,
+      vdVWWeightedClassSupremum_pairDifference_constWeights_signSwap
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M) sign hsign]
+      using hcomp
+  calc
+    ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        ∂(vdVWProductMeasure P n)
+        ≤
+          ∫ productSample : SampleAt (Observation × Observation) n,
+            vdVWWeightedClassSupremum indexClass pairDifferenceClassFun
+              (fun _ : Fin n => (n : ℝ)⁻¹) productSample
+            ∂(vdVWProductMeasure (P.prod P) n) := by
+          simpa [pairDifferenceClassFun] using
+            (integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifference
+              (P := P) (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M)
+              (weights := fun _ : Fin n => (n : ℝ)⁻¹)
+              henvelope hM_nonneg htruncIntegrable hpairSupIntegrable
+              hcenteredSupIntegrable hghostExpectationIntegrable
+              hsplitSupIntegrable)
+    _ =
+          ∫ productSample : SampleAt (Observation × Observation) n,
+            vdVWWeightedClassSupremum indexClass pairDifferenceClassFun
+              (vdVWRademacherWeights sign) productSample
+            ∂(vdVWProductMeasure (P.prod P) n) := by
+          simpa [pairDifferenceClassFun] using
+            (integral_vdVWWeightedClassSupremum_pairDifference_constWeights_eq_rademacherWeights
+              (P := P) (indexClass := indexClass)
+              (classFun := vdVWTruncatedClassFun classFun envelope M)
+              sign hsign hproductPairSupIntegrable_const)
+    _ ≤
+          2 *
+            ∫ sample : SampleAt Observation n,
+              vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights sign) sample
+              ∂(vdVWProductMeasure P n) := by
+          simpa [pairDifferenceClassFun] using
+            (integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original
+              (P := P) (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M)
+              (weights := vdVWRademacherWeights sign)
+              henvelope hM_nonneg hproductPairSupIntegrable_sign
+              hsampleSupIntegrable)
+
+/--
+Integrated `Phi(x)=x` symmetrization averaged over random Rademacher signs.
+
+The deterministic sign-vector comparison holds for almost every random sign
+realization.  Integrating that inequality over the auxiliary sign probability
+space gives the random-sign version needed before the remaining measurable
+cover/outer-expectation transfer.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ} {n : ℕ}
+    (sign : Fin n -> Ω -> ℝ)
+    (hsign_ae :
+      ∀ᵐ ω ∂μ, VdVWRademacherSignVector (fun i : Fin n => sign i ω))
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hpairSupIntegrable :
+      ∀ sample : SampleAt Observation n,
+        Integrable
+          (fun ghostSample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (sample i, ghostSample i)))
+          (vdVWProductMeasure P n))
+    (hcenteredSupIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        (vdVWProductMeasure P n))
+    (hghostExpectationIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          ∫ ghostSample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (sample i, ghostSample i))
+              ∂(vdVWProductMeasure P n))
+        (vdVWProductMeasure P n))
+    (hsplitSupIntegrable :
+      Integrable
+        (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+        ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)))
+    (hsampleSupIntegrable :
+      ∀ ω : Ω,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample)
+          (vdVWProductMeasure P n))
+    (hrandomIntegralIntegrable :
+      Integrable
+        (fun ω : Ω =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample
+            ∂(vdVWProductMeasure P n))
+        μ) :
+    ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        ∂(vdVWProductMeasure P n) ≤
+      2 *
+        ∫ ω : Ω,
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample
+            ∂(vdVWProductMeasure P n) ∂μ := by
+  let centeredIntegral : ℝ :=
+    ∫ sample : SampleAt Observation n,
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          vdVWTruncatedClassFun classFun envelope M index observation -
+            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample ∂(vdVWProductMeasure P n)
+  let randomIntegral : Ω -> ℝ :=
+    fun ω =>
+      ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample
+        ∂(vdVWProductMeasure P n)
+  have hpoint :
+      ∀ᵐ ω ∂μ, centeredIntegral ≤ 2 * randomIntegral ω :=
+    hsign_ae.mono fun ω hsign =>
+      integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_rademacher_truncated_original
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M)
+        (sign := fun i : Fin n => sign i ω) hsign henvelope hM_nonneg
+        htruncIntegrable hpairSupIntegrable hcenteredSupIntegrable
+        hghostExpectationIntegrable hsplitSupIntegrable
+        (hsampleSupIntegrable ω)
+  have hconstIntegrable : Integrable (fun _ω : Ω => centeredIntegral) μ :=
+    integrable_const centeredIntegral
+  have hscaledIntegrable : Integrable (fun ω : Ω => 2 * randomIntegral ω) μ :=
+    hrandomIntegralIntegrable.const_mul 2
+  have hmono :
+      ∫ _ω : Ω, centeredIntegral ∂μ ≤
+        ∫ ω : Ω, 2 * randomIntegral ω ∂μ :=
+    integral_mono_ae hconstIntegrable hscaledIntegrable hpoint
+  have hleft :
+      (∫ _ω : Ω, centeredIntegral ∂μ) = centeredIntegral := by
+    simp [centeredIntegral]
+  have hright :
+      (∫ ω : Ω, 2 * randomIntegral ω ∂μ) =
+        2 * ∫ ω : Ω, randomIntegral ω ∂μ := by
+    rw [integral_const_mul]
+  simpa [centeredIntegral, randomIntegral, hleft, hright] using hmono
+
+/--
 If the supplied signs are bounded by one, the Rademacher weights satisfy the
 `1 / n` absolute-weight condition required by the deterministic net inequality.
 -/

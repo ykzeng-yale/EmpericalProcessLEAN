@@ -580,12 +580,13 @@ additional example closures:
    `VdVWTheorem243SymmetrizationPrecursor.randomSign_outerExpectation_le_finiteNetHoeffdingUpper_add`,
    the latter using the generic supplied-cover/a.e.-constant outer-expectation
    bridge `VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal`.
-   The remaining Theorem 2.4.3 blocker is now the final product/Fubini
-   symmetrization comparison from the centered truncated empirical supremum to
-   the random-sign weighted supremum, followed by entropy-to-convergence
+   The remaining Theorem 2.4.3 blocker is now the measurable-cover
+   outer-expectation transfer from the integrated random-sign symmetrization
+   comparison to the finite-net projection, followed by entropy-to-convergence
    assembly; it is not the finite-net Rademacher/Hoeffding maximal scale, the
-   random-sign outer-expectation finite-net handoff, or the finite sample
-   mean-zero bridge.  A deterministic pointwise class-member-to-supremum
+   random-sign outer-expectation finite-net handoff, the finite sample
+   mean-zero bridge, or the ordinary integrated product/sign-symmetry layer.
+   A deterministic pointwise class-member-to-supremum
    bridge is also available as
    `abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove` for
    bounded `vdVWWeightedClassValueSet`s, with
@@ -618,15 +619,20 @@ additional example closures:
    Their direct composition is compiled as
    `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`.
    The random-sign side now also has
-   `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`.
+   `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`,
+   `measurePreserving_vdVWProductMeasure_rademacherProductSampleSignSwap`,
+   `integral_vdVWWeightedClassSupremum_pairDifference_constWeights_eq_rademacherWeights`,
+   `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_rademacher_truncated_original`,
+   and
+   `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
    The remaining
    supplied-`hphi_id` projection into the random-sign finite-net bound is
    compiled as
    `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
    Search refined the remaining comparison: the fixed-sample pointwise
-   `hphi_id` target is too strong, so the valid next target is an integrated
-   product-sample comparison using Rademacher sign-symmetry and measurable-cover
-   outer-expectation assembly.
+   `hphi_id` target is too strong, and the ordinary integrated product-sample
+   comparison using Rademacher sign-symmetry is now compiled; the valid next
+   target is the measurable-cover outer-expectation assembly.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -726,15 +732,21 @@ Search record for the symmetrization precursor package:
   and the composed centered-to-two-truncated-expectation handoff
   `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`
   are compiled as well.  The Rademacher-weight sign-negation bridge
-  `vdVWWeightedClassSupremum_rademacherWeights_neg_sign` is compiled as well.
+  `vdVWWeightedClassSupremum_rademacherWeights_neg_sign` is compiled as well,
+  along with the coordinatewise product-pair sign-swap measure-preserving
+  wrapper, deterministic pair-difference sign-swap identities, the product-pair
+  integrated sign-symmetry identity
+  `integral_vdVWWeightedClassSupremum_pairDifference_constWeights_eq_rademacherWeights`,
+  and the random-sign integrated averaging comparison
+  `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
   A follow-up search found the
   fixed-sample pointwise `hphi_id` target is too strong; the next valid target
-  is integrated over the product sample.  The supplied projection
+  is the supplied-cover outer-expectation transfer.  The supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
   now packages the finite-net consequence once the theorem-local `hphi_id`
   comparison is supplied.  The final comparison can consume the precursor
-  directly after the remaining sign-symmetry and cover steps prove the
-  integrated `hphi_id` bridge.
+  directly after the remaining cover step proves the outer-expectation
+  `hphi_id` bridge.
 
 Next exact edit: continue the theorem-specific symmetrization/truncation layer
 for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
@@ -754,10 +766,11 @@ ghost-copy comparison, the envelope-bounded pair split, the finite
 product-coordinate projection wrapper and VdV&W specializations, the
 expectation-level integral lifts including the same-weight pair-split rewrite,
 the projected two-coordinate expectation bound, the deterministic
-Rademacher-weight sign-negation bridge, and the supplied-`hphi_id` finite-net
-projection, are closed.  Next prove the integrated product-sample `hphi_id`
-comparison from sign-symmetry and measurable-cover outer-expectation
-comparison, then entropy-to-convergence and final Theorem 2.4.3 handoffs.
+Rademacher-weight sign-negation bridge, the integrated product-pair
+sign-symmetry/random-sign averaging comparison, and the supplied-`hphi_id`
+finite-net projection, are closed.  Next prove the measurable-cover
+outer-expectation comparison needed for the theorem-local `hphi_id` bridge,
+then entropy-to-convergence and final Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

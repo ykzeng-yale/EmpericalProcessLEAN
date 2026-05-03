@@ -217,15 +217,22 @@ Local searches found reusable APIs in:
    Their direct composition is also compiled as
    `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`.
    The random-sign side also now has
-   `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`.
+   `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`, the
+   coordinatewise product-pair sign-swap
+   `measurePreserving_vdVWProductMeasure_rademacherProductSampleSignSwap`,
+   deterministic pair-difference sign-swap identities, the integrated
+   sign-symmetry identity
+   `integral_vdVWWeightedClassSupremum_pairDifference_constWeights_eq_rademacherWeights`,
+   and the averaged random-sign comparison
+   `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
    The remaining
    hphi-to-Hoeffding projection after a supplied `Phi(x)=x` comparison is
    packaged as
    `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
    Search refined the target: a pointwise fixed-sample `hphi_id` comparison is
-   too strong; the next valid target is an integrated product-sample comparison
-   that lifts these ingredients through Rademacher sign-symmetry and
-   measurable-cover outer-expectation APIs into the compiled random-sign bound.
+   too strong; the next valid target is the measurable-cover/outer-expectation
+   transfer from the newly compiled integrated random-sign comparison into the
+   compiled random-sign finite-net bound.
    The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
@@ -284,9 +291,12 @@ of:
   rewrite, plus the two-to-one original-sample expectation projection
   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`.
   The supplied-`hphi_id` projection to the Hoeffding finite-net bound is also
-  compiled.  Next prove the valid integrated product-sample `hphi_id` comparison
-  through Rademacher sign-symmetry and supplied-cover outer-expectation APIs;
-  do not target the false fixed-sample pointwise comparison.  Only add a new
+  compiled, and the ordinary integrated product/Rademacher sign-symmetry layer
+  is compiled through
+  `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
+  Next prove the measurable-cover/outer-expectation transfer needed to turn
+  that integrated random-sign comparison into the theorem-local `hphi_id`
+  bound; do not target the false fixed-sample pointwise comparison.  Only add a new
   `StatInference/ProbabilityMeasure`
   product wrapper if this assembly exposes a genuinely reusable gap beyond the
   existing
@@ -347,11 +357,17 @@ and their composed centered-to-two-truncated-expectation handoff
 `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`
 and the Rademacher-weight sign-negation bridge
 `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`. It also proves the
+coordinatewise product-pair sign-swap measure-preserving wrapper, deterministic
+pair-difference sign-swap identities, the integrated product-pair sign-symmetry
+identity
+`integral_vdVWWeightedClassSupremum_pairDifference_constWeights_eq_rademacherWeights`,
+and the random-sign integrated averaging comparison
+`integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
+It also proves the
 supplied-`hphi_id` finite-net projection
 `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
-The next proof target is the integrated product-sample `hphi_id` random-sign
-outer-expectation comparison, now narrowed past the fixed-sample,
-integral-lift, product-projection/Fubini, pair-split, and deterministic
-sign-negation pieces; a fixed-sample pointwise comparison should not be
-pursued.  Do not add another product surface unless that assembly exposes a
-sharper missing API.
+The next proof target is the measurable-cover/outer-expectation transfer from
+the integrated random-sign comparison to the theorem-local `hphi_id` finite-net
+projection, followed by entropy-to-convergence; a fixed-sample pointwise
+comparison should not be pursued.  Do not add another product surface unless
+that assembly exposes a sharper missing API.
