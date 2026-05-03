@@ -10,11 +10,11 @@ the Chapter 1.2 event-indicator outer-expectation layer.
 
 namespace StatInference
 
-open MeasureTheory
+open MeasureTheory Filter
 
-open scoped ENNReal
+open scoped ENNReal Topology
 
-universe u
+universe u v
 
 /--
 VdV&W outer probability is the nonnegative outer expectation of the event
@@ -59,5 +59,67 @@ theorem VdVWOuterProbability_lt_le_outerExpectation_div_cover
     (measure_mono fun ω hω => (le_of_lt hω).trans (U.majorizes ω)).trans
       (meas_ge_le_lintegral_div U.measurable_toFun.aemeasurable
         hepsilon_ne_zero hepsilon_ne_top)
+
+/--
+Markov-style convergence bridge from vanishing nonnegative outer expectation
+to convergence in outer probability.
+
+The theorem is stated for nonnegative real-valued processes so that the
+measurable covers needed by the outer-expectation side are exactly the
+`ENNReal.ofReal` covers used in the Theorem 2.4.3 finite-net assembly.
+-/
+theorem
+    VdVWConvergesInOuterProbability_zero_of_outerExpectation_tendsto_zero_ofReal
+    {Ω : Type u} {ι : Type v} [MeasurableSpace Ω] {μ : Measure Ω}
+    {l : Filter ι} {Y : ι -> Ω -> ℝ}
+    (hY_nonneg : ∀ i ω, 0 ≤ Y i ω)
+    (U :
+      ∀ i, VdVWMeasurableCover μ (fun ω => ENNReal.ofReal (Y i ω)))
+    (hE :
+      Tendsto
+        (fun i =>
+          VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (Y i ω)))
+        l (𝓝 0)) :
+    VdVWConvergesInOuterProbability μ Y l (fun _ => 0) := by
+  intro epsilon hepsilon
+  have hupper :
+      Tendsto
+        (fun i =>
+          VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (Y i ω)) /
+            ENNReal.ofReal epsilon)
+        l (𝓝 0) := by
+    have hdiv :
+        Tendsto
+          (fun i =>
+            VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (Y i ω)) /
+              ENNReal.ofReal epsilon)
+          l (𝓝 (0 / ENNReal.ofReal epsilon)) :=
+      ENNReal.Tendsto.div_const hE
+        (Or.inr (ENNReal.ofReal_ne_zero_iff.mpr hepsilon))
+    simpa using hdiv
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0) from
+        tendsto_const_nhds)
+      hupper
+      (Eventually.of_forall fun _ => bot_le)
+      ?_
+  exact Eventually.of_forall fun i => by
+    calc
+      VdVWOuterProbability μ {ω | epsilon < dist (Y i ω) 0}
+          =
+        VdVWOuterProbability μ
+          {ω | ENNReal.ofReal epsilon < ENNReal.ofReal (Y i ω)} := by
+            congr 1
+            ext ω
+            simp only [Set.mem_setOf_eq]
+            rw [Real.dist_eq, sub_zero, abs_of_nonneg (hY_nonneg i ω),
+              ENNReal.ofReal_lt_ofReal_iff_of_nonneg hepsilon.le]
+      _ ≤
+        VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (Y i ω)) /
+          ENNReal.ofReal epsilon :=
+            VdVWOuterProbability_lt_le_outerExpectation_div_cover (U i)
+              (ENNReal.ofReal_ne_zero_iff.mpr hepsilon)
+              ENNReal.ofReal_ne_top
 
 end StatInference

@@ -746,9 +746,12 @@ Search record for the entropy-to-Hoeffding-scale algebra:
   `vdVWTheorem243FiniteNetHoeffdingUpper_sq`,
   `vdVWTheorem243FiniteNetHoeffdingUpper_eq_logCardinality`,
   `vdVWTheorem243FiniteNetHoeffdingUpper_sq_eq_logCardinality`, and
-  `tendsto_sqrt_one_add_mul_sqrt_six_div_of_div_tendsto_zero`, using
-  `tendsto_one_div_atTop_nhds_zero_nat`, `Tendsto.add`,
-  `Tendsto.const_mul`, `Real.continuous_sqrt`, and `Real.sqrt_mul`;
+  `tendsto_sqrt_one_add_mul_sqrt_six_div_of_div_tendsto_zero`, plus the
+  pointwise finite-net notation bridge
+  `tendsto_finiteNetHoeffdingUpper_of_logCardinality_div_tendsto_zero`,
+  using `tendsto_one_div_atTop_nhds_zero_nat`, `Tendsto.add`,
+  `Tendsto.const_mul`, `Real.continuous_sqrt`, `Real.sqrt_mul`, and the
+  random log-cardinality rewrite;
 - also compiled
   `VdVWTheorem243TruncatedEntropyCondition.fixed_of_forAllEpsilonM`, which
   projects the book-facing all-`M`, all-`epsilon` entropy hypothesis to the
@@ -847,7 +850,20 @@ Search record for the symmetrization precursor package:
   `integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`
   are compiled, along with product outer-expectation projection
   `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
-  The next valid target is entropy-to-convergence. The
+  Their direct composition with the product-integrated symmetrization bound is
+  compiled as
+  `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
+  The entropy-to-Hoeffding-scale outer-probability handoff is compiled as
+  `vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbability_zero_of_logCardinality_littleO_n`,
+  with shifted-display and fixed/all-entropy consumers
+  `vdVWTheorem243FiniteNetHoeffdingUpper_add_convergesInOuterProbability_epsilon_of_logCardinality_littleO_n`,
+  `VdVWTheorem243TruncatedEntropyCondition.finiteNetHoeffdingUpper_convergesInOuterProbability_zero`,
+  and
+  `VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM.finiteNetHoeffdingUpper_convergesInOuterProbability_zero`.
+  The generic Markov bridge
+  `VdVWConvergesInOuterProbability_zero_of_outerExpectation_tendsto_zero_ofReal`
+  is also compiled. The next valid target is fixed-`M` truncated convergence.
+  The
   supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
   still packages the fixed-sample finite-net consequence when such a supplied
@@ -884,11 +900,14 @@ finite-net expected-maximal bound, product outer-expectation projection for the
 expectation-level finite-net route, and a.e./null-measurable cover
 constructors, plus the finite-net Hoeffding upper nonnegativity/square
 expansion, random log-cardinality rewrite/square expansion, deterministic
-`L_n / n -> 0` to Hoeffding-scale convergence helper, and fixed all-entropy
-projection, are closed.  Next prove the outer-probability continuous-mapping
-handoff from `log_cardinality_littleO_n` to random-cardinality
-Hoeffding-scale convergence, then combine it with the product outer-expectation
-projection for the final Theorem 2.4.3 handoffs.
+`L_n / n -> 0` to Hoeffding-scale convergence helper, pointwise finite-net
+notation bridge, stochastic outer-probability entropy-to-Hoeffding-scale
+handoff, shifted-display convergence, fixed/all-entropy consumers, and the
+Markov outer-expectation-to-outer-probability bridge, plus the composed
+centered-truncated integral finite-net bound, are closed.  Next prove the
+fixed-`M` truncated convergence handoff from this integral bound and the needed
+mean convergence/dominated-convergence hypothesis, then assemble the final
+Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
@@ -927,7 +946,7 @@ Pinned/local Lean sources searched before adding new primitives:
 | Source | Local path | Useful APIs found |
 | --- | --- | --- |
 | pinned mathlib | `.lake/packages/mathlib/Mathlib` | `Metric.externalCoveringNumber`, `Metric.coveringNumber`, `Metric.IsCover`, `externalCoveringNumber_mono_set`, `Set.indicator`, `Measurable.indicator`, `measurableSet_le`, `Asymptotics.IsLittleO`, `MeasureTheory.TendstoInMeasure`, `Real.log`, `Real.log_nonneg`, `Real.log_natCast_nonneg`, `Real.sqrt`, `Real.sqrt_nonneg`, `ENat.toNat`, `ENat.map`, `WithTop.untopD`, `PMF.bernoulli`, `ProbabilityTheory.exists_hasLaw_indepFun`, `Kernel.HasSubgaussianMGF`, `HasSubgaussianMGF`, `HasSubgaussianMGF.neg`, `HasSubgaussianMGF.measure_ge_le`, `hasSubgaussianMGF_of_mem_Icc`, `hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero`, `measure_sum_range_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_hasCondSubgaussianMGF`, `MeasureTheory.measureReal_union_le`, `MeasureTheory.measureReal_iUnion_fintype_le`, `exists_eq_ciSup_of_finite`, `eLpNorm`, `eLpNorm_one_eq_lintegral_enorm`, `eLpNorm_add_le`, `eLpNorm_sum_le`, plus previous Example 2.4.2 APIs: `ProbabilityTheory.cdf`, `ProbabilityTheory.measure_cdf`, `ProbabilityTheory.cdf_eq_real`, `ProbabilityTheory.tendsto_cdf_atBot`, `ProbabilityTheory.tendsto_cdf_atTop`, `StieltjesFunction.measure_Ioo`, `measure_Iio`, `measure_Ioi`, `tendsto_measure_Iic_atTop`, `tendsto_measure_Ici_atBot`, `Measure.real`, `measureReal_mono`, `Fin.cases`, `Fin.lastCases`, `Fin.snoc`, `Fin.cons`, `Fin.eq_castSucc_or_eq_last` |
-| local ProbabilityMeasure lane | `StatInference/ProbabilityMeasure` | Billingsley/probability-measure wrappers now available for generated sigma fields and pi-system uniqueness (`GeneratedSigma`, `generatedSigma_measurableSet_of_mem`, `generatedSigma_le`, `measurable_generatedSigma`, `measure_ext_of_generate_finite`, `probabilityMeasure_ext_of_generate_finite_toMeasure`, `probabilityMeasure_ext_of_generate_finite`, `isPiSystem_pi`, `pi_generatedSigma_eq`), weak convergence/Portmanteau including continuity-set, closed-set converse, and pi-system convergence wrappers, product/Fubini including self-copy and mapped-coordinate joint-law independence, FDDs, Borel-Cantelli, tails including ordinary dominated-convergence tail cutoff, strong laws, and reusable iid Rademacher signs. These are reusable for Chapter 1 generated-sigma/FDD/product-law foundations and later symmetrization support, but they do not close VdV&W arbitrary-map/asymptotic-measurability or the current Theorem 2.4.3 symmetrization/truncation, VdV&W-specific outer envelope-tail handoff, entropy-to-convergence, and final assembly blockers. |
+| local ProbabilityMeasure lane | `StatInference/ProbabilityMeasure` | Billingsley/probability-measure wrappers now available for generated sigma fields and pi-system uniqueness (`GeneratedSigma`, `generatedSigma_measurableSet_of_mem`, `generatedSigma_le`, `measurable_generatedSigma`, `measure_ext_of_generate_finite`, `probabilityMeasure_ext_of_generate_finite_toMeasure`, `probabilityMeasure_ext_of_generate_finite`, `isPiSystem_pi`, `pi_generatedSigma_eq`), weak convergence/Portmanteau including continuity-set, closed-set converse, and pi-system convergence wrappers, product/Fubini including self-copy and mapped-coordinate joint-law independence, FDDs, Borel-Cantelli, tails including ordinary dominated-convergence tail cutoff, strong laws, and reusable iid Rademacher signs. These are reusable for Chapter 1 generated-sigma/FDD/product-law foundations and later symmetrization support, but they do not close VdV&W arbitrary-map/asymptotic-measurability or the remaining Theorem 2.4.3 fixed-`M` truncated convergence and final assembly blockers. |
 | pinned packages | `.lake/packages/{aesop,batteries,proofwidgets,LeanSearchClient,Qq,Cli,plausible,importGraph}` | tactic/support libraries, no empirical-CDF bracketing theorem and no VdV&W-style Orlicz maximal theorem found |
 | local AI-Statistician checkout | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician` | older/high-level Rademacher and empirical-process certificate interfaces only; no exact VdV&W half-line quantile grid theorem and no reusable Theorem 2.4.3 Orlicz/Hoeffding proof |
 | local empirical blueprint worktree | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician/.worktrees/empirical-blueprint` | high-level empirical-process certificates; no reusable measure-theoretic quantile grid proof, iid Rademacher construction, or finite-center maximal proof |

@@ -181,11 +181,17 @@ Concrete next edits:
    product-integrated random-cover finite-net expected-maximal bound, plus the
    product outer-expectation projection
    `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
+   The direct product-integrated centered-truncated composition is now compiled
+   as
+   `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
    The finite-net Hoeffding upper now also has nonnegativity, square-expansion,
    random log-cardinality rewrite/square-expansion, deterministic
-   `L_n / n -> 0` to Hoeffding-scale convergence, and fixed all-entropy
-   projection helpers. The latest empirical-process frontier is the
-   outer-probability entropy-to-Hoeffding-scale convergence handoff.
+   `L_n / n -> 0` to Hoeffding-scale convergence, pointwise finite-net notation
+   convergence, the stochastic outer-probability entropy-to-Hoeffding-scale
+   handoff, shifted-display convergence, and fixed/all-entropy projection
+   helpers. The latest empirical-process frontier is fixed-`M` truncated
+   convergence from the product outer-expectation projection plus the Markov
+   outer-expectation-to-outer-probability bridge.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.

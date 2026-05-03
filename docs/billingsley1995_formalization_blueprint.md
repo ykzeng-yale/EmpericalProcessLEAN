@@ -238,7 +238,9 @@ Near-term declarations:
   sample-dependent-cardinality product-a.e. finite-net bridges, and
   empirical-cover cardinality witness handoffs, plus the
   supplied-`hphi_id` finite-net projection
-  `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
+  `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`,
+  and the product-integrated centered-truncated finite-net composition
+  `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
 
 Search anchors:
 
@@ -368,8 +370,8 @@ the next proof lane should prioritize the VdV&W Theorem 2.4.3 product random-sig
 assembly after the compiled random empirical-cover witness and expectation-level
 finite-net handoffs: the product outer-expectation projection for the
 expected-maximal route and deterministic entropy/Hoeffding-scale algebra are
-compiled, so next prove the outer-probability entropy-to-Hoeffding-scale
-convergence handoff after the compiled integrated
+compiled, and the stochastic entropy-to-Hoeffding-scale handoff is now closed,
+so next assemble fixed-`M` truncated convergence after the compiled integrated
 product-sample/Rademacher sign-symmetry comparison, product-space
 measurable-cover outer-expectation bridge, and supplied product-space finite-net
 projection, now past the fixed-sample, integral-lift, product-projection/Fubini,

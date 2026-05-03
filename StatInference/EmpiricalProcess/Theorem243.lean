@@ -5793,6 +5793,234 @@ theorem
   simpa [randomSup, houter] using ENNReal.ofReal_le_ofReal hintegral_le
 
 /--
+Composed product-integrated symmetrization and random empirical-cover
+finite-net projection.
+
+This is the expectation-level bridge after the random-cover expected-maximal
+route: the centered truncated empirical supremum is bounded by twice the
+sample-integral of the random Hoeffding finite-net upper.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    {cardinality : SampleAt Observation n -> ℕ -> ℕ}
+    (X : ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath : ∀ sample : SampleAt Observation n,
+      samplePath X sample n = sample)
+    (hcovering_le :
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hn : 0 < n)
+    (hM_pos : 0 < M)
+    (sign : Fin n -> Ωsign -> ℝ)
+    (hsign :
+      ∀ᵐ ω ∂μsign, VdVWRademacherSignVector (fun i : Fin n => sign i ω))
+    (hindep : iIndepFun sign μsign)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μsign)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hpairSupIntegrable :
+      ∀ sample : SampleAt Observation n,
+        Integrable
+          (fun ghostSample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (sample i, ghostSample i)))
+          (vdVWProductMeasure P n))
+    (hcenteredSupIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        (vdVWProductMeasure P n))
+    (hghostExpectationIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          ∫ ghostSample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (sample i, ghostSample i))
+              ∂(vdVWProductMeasure P n))
+        (vdVWProductMeasure P n))
+    (hsplitSupIntegrable :
+      Integrable
+        (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+        ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)))
+    (hsampleSupIntegrable :
+      ∀ ω : Ωsign,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample)
+          (vdVWProductMeasure P n))
+    (hrandomIntegralIntegrable :
+      Integrable
+        (fun ω : Ωsign =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample
+            ∂(vdVWProductMeasure P n))
+        μsign)
+    (U : VdVWMeasurableCover (μsign.prod (vdVWProductMeasure P n))
+      (fun z : Ωsign × SampleAt Observation n => ENNReal.ofReal
+        (vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2)))
+    (hproductSupIntegrable :
+      Integrable
+        (fun z : Ωsign × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2)
+        (μsign.prod (vdVWProductMeasure P n)))
+    (hsignSupIntegrable :
+      ∀ sample : SampleAt Observation n,
+        Integrable
+          (fun ωsign =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign i ωsign)) sample)
+          μsign)
+    (hfiniteCenterSupIntegrable :
+      ∀ sample : SampleAt Observation n,
+        Integrable
+          (fun ωsign =>
+            vdVWFiniteCenterWeightedSupremum sample
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRandomEmpiricalL1CoverAtCard X hcovering_le hindexClass
+                sample n).center
+              (vdVWRademacherWeights (fun i : Fin n => sign i ωsign)))
+          μsign)
+    (hupperIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWTheorem243FiniteNetHoeffdingUpper (cardinality sample n) n M +
+            epsilon)
+        (vdVWProductMeasure P n)) :
+    ENNReal.ofReal
+        (∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n)) ≤
+      (2 : ℝ≥0∞) *
+        ENNReal.ofReal
+          (∫ sample : SampleAt Observation n,
+            vdVWTheorem243FiniteNetHoeffdingUpper (cardinality sample n) n M +
+              epsilon ∂(vdVWProductMeasure P n)) := by
+  have hsymm :
+      ENNReal.ofReal
+          (∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n)) ≤
+        (2 : ℝ≥0∞) *
+          VdVWOuterExpectation (μsign.prod (vdVWProductMeasure P n))
+            (fun z : Ωsign × SampleAt Observation n => ENNReal.ofReal
+              (vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2)) := by
+    exact
+      integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original
+        (μ := μsign) (P := P) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M)
+        (n := n) sign hsign henvelope hM_pos.le htruncIntegrable
+        hpairSupIntegrable hcenteredSupIntegrable hghostExpectationIntegrable
+        hsplitSupIntegrable hsampleSupIntegrable hrandomIntegralIntegrable U
+  have houter :
+      VdVWOuterExpectation (μsign.prod (vdVWProductMeasure P n))
+          (fun z : Ωsign × SampleAt Observation n => ENNReal.ofReal
+            (vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2)) ≤
+        ENNReal.ofReal
+          (∫ sample : SampleAt Observation n,
+            vdVWTheorem243FiniteNetHoeffdingUpper (cardinality sample n) n M +
+              epsilon ∂(vdVWProductMeasure P n)) := by
+    have UsamplePath :
+        VdVWMeasurableCover (μsign.prod (vdVWProductMeasure P n))
+          (fun z : Ωsign × SampleAt Observation n =>
+            ENNReal.ofReal
+              (vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (fun i : Fin n => sign i z.1))
+                (samplePath X z.2 n))) := by
+      simpa [hX_samplePath] using U
+    have hproductSupIntegrable_samplePath :
+        Integrable
+          (fun z : Ωsign × SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign i z.1))
+              (samplePath X z.2 n))
+          (μsign.prod (vdVWProductMeasure P n)) := by
+      simpa [hX_samplePath] using hproductSupIntegrable
+    have hsignSupIntegrable_samplePath :
+        ∀ sample : SampleAt Observation n,
+          Integrable
+            (fun ωsign =>
+              vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (fun i : Fin n => sign i ωsign))
+                (samplePath X sample n))
+            μsign := by
+      intro sample
+      simpa [hX_samplePath sample] using hsignSupIntegrable sample
+    have hfiniteCenterSupIntegrable_samplePath :
+        ∀ sample : SampleAt Observation n,
+          Integrable
+            (fun ωsign =>
+              vdVWFiniteCenterWeightedSupremum (samplePath X sample n)
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRandomEmpiricalL1CoverAtCard X hcovering_le hindexClass
+                  sample n).center
+                (vdVWRademacherWeights (fun i : Fin n => sign i ωsign)))
+            μsign := by
+      intro sample
+      simpa [hX_samplePath sample] using hfiniteCenterSupIntegrable sample
+    simpa [hX_samplePath] using
+      (VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal
+        (ν := vdVWProductMeasure P n) X hcovering_le hindexClass henvelope hn
+        hM_pos sign UsamplePath hsign hindep hsubG hepsilon_nonneg
+        hproductSupIntegrable_samplePath hsignSupIntegrable_samplePath
+        hfiniteCenterSupIntegrable_samplePath hupperIntegrable)
+  exact hsymm.trans
+    (by
+      simpa [mul_comm] using
+        (mul_le_mul_right houter (2 : ℝ≥0∞)))
+
+/--
 Random empirical-cover witnesses feed the product random-sign finite-net
 handoff.
 
@@ -5959,6 +6187,214 @@ theorem tendsto_sqrt_one_add_mul_sqrt_six_div_of_div_tendsto_zero
   exact Tendsto.congr' hrewrite hscaled
 
 /--
+Pointwise deterministic form of the entropy-to-Hoeffding-scale step for a
+sample-dependent empirical-cover cardinality.
+
+This packages the analytic core in the exact finite-net notation used by the
+random empirical entropy hypothesis.
+-/
+theorem tendsto_finiteNetHoeffdingUpper_of_logCardinality_div_tendsto_zero
+    {Ω : Type u} (cardinality : Ω -> ℕ -> ℕ) (ω : Ω) (M : ℝ)
+    (hdiv :
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLogEmpiricalL1CoveringCardinality cardinality ω n / (n : ℝ))
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun n : ℕ =>
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M)
+      atTop (𝓝 0) := by
+  have hcore :
+      Tendsto
+        (fun n : ℕ =>
+          Real.sqrt (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n) *
+            (Real.sqrt (6 / (n : ℝ)) * M))
+        atTop (𝓝 0) :=
+    tendsto_sqrt_one_add_mul_sqrt_six_div_of_div_tendsto_zero
+      (fun n : ℕ => vdVWLogEmpiricalL1CoveringCardinality cardinality ω n)
+      M
+      (fun n => vdVWLogEmpiricalL1CoveringCardinality_nonneg cardinality ω n)
+      hdiv
+  refine Tendsto.congr' ?_ hcore
+  exact Eventually.of_forall fun n =>
+    (vdVWTheorem243FiniteNetHoeffdingUpper_eq_logCardinality
+      cardinality ω n M).symm
+
+/--
+Outer-probability entropy-to-Hoeffding-scale convergence.
+
+The random entropy hypothesis controls `log(cardinality_n) / n` in outer
+probability.  This theorem is the stochastic transport step needed after the
+compiled random-cover finite-net expected-maximal bound.
+-/
+theorem
+    vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbability_zero_of_logCardinality_littleO_n
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {cardinality : Ω -> ℕ -> ℕ} {M : ℝ}
+    (hlog :
+      VdVWOuterProbabilityLittleO_n μ
+        (vdVWLogEmpiricalL1CoveringCardinality cardinality))
+    (hM_pos : 0 < M) :
+    VdVWConvergesInOuterProbability μ
+      (fun n ω =>
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M)
+      atTop (fun _ => 0) := by
+  intro epsilon hepsilon
+  set delta : ℝ := epsilon ^ 2 / (12 * M ^ 2) with hdelta_def
+  have hdelta_pos : 0 < delta := by
+    have hden_pos : 0 < 12 * M ^ 2 :=
+      mul_pos (by norm_num) (sq_pos_of_pos hM_pos)
+    simpa [delta, hdelta_def] using
+      div_pos (sq_pos_of_pos hepsilon) hden_pos
+  have hlog_tend :
+      Tendsto
+        (fun n : ℕ =>
+          VdVWOuterProbability μ
+            {ω | delta <
+              dist
+                (vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+                  (n : ℝ))
+                0})
+        atTop (𝓝 0) := by
+    simpa [VdVWOuterProbabilityLittleO_n,
+      VdVWOuterProbabilityLittleOAtTop] using hlog delta hdelta_pos
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (𝓝 0) from
+        tendsto_const_nhds)
+      hlog_tend
+      (Eventually.of_forall fun _ => by exact bot_le)
+      ?_
+  have hsmall :
+      ∀ᶠ n : ℕ in atTop, (6 * M ^ 2) / (n : ℝ) < epsilon ^ 2 / 2 := by
+    have htend :
+        Tendsto (fun n : ℕ => (6 * M ^ 2) / (n : ℝ))
+          atTop (𝓝 0) :=
+      tendsto_const_div_atTop_nhds_zero_nat (6 * M ^ 2)
+    exact htend.eventually
+      (eventually_lt_nhds (half_pos (sq_pos_of_pos hepsilon)))
+  filter_upwards [eventually_gt_atTop (0 : ℕ), hsmall] with n hn hsmall_n
+  dsimp [VdVWOuterProbability]
+  refine measure_mono ?_
+  intro ω hω
+  have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hupper_nonneg :
+      0 ≤ vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M :=
+    vdVWTheorem243FiniteNetHoeffdingUpper_nonneg (cardinality ω n) n
+      hM_pos.le
+  have hupper_gt :
+      epsilon < vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M := by
+    simpa [Real.dist_eq, abs_of_nonneg hupper_nonneg] using hω
+  have hsquare_gt :
+      epsilon ^ 2 <
+        (vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M) ^ 2 :=
+    (sq_lt_sq₀ hepsilon.le hupper_nonneg).2 hupper_gt
+  have hL_nonneg :
+      0 ≤ vdVWLogEmpiricalL1CoveringCardinality cardinality ω n :=
+    vdVWLogEmpiricalL1CoveringCardinality_nonneg cardinality ω n
+  have hsplit :
+      epsilon ^ 2 <
+        (6 * M ^ 2) / (n : ℝ) +
+          (6 * M ^ 2) *
+            (vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+              (n : ℝ)) := by
+    have hsquare :=
+      vdVWTheorem243FiniteNetHoeffdingUpper_sq_eq_logCardinality
+        cardinality ω n M
+    rw [hsquare] at hsquare_gt
+    have hrewrite :
+        (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n) *
+            (6 / (n : ℝ)) * M ^ 2 =
+          (6 * M ^ 2) / (n : ℝ) +
+            (6 * M ^ 2) *
+              (vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+                (n : ℝ)) := by
+      ring
+    simpa [hrewrite] using hsquare_gt
+  have hhalf_lt :
+      epsilon ^ 2 / 2 <
+        (6 * M ^ 2) *
+          (vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+            (n : ℝ)) := by
+    nlinarith [hsplit, hsmall_n]
+  have hcoef_pos : 0 < 6 * M ^ 2 :=
+    mul_pos (by norm_num) (sq_pos_of_pos hM_pos)
+  have hdelta_lt :
+      delta <
+        vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+          (n : ℝ) := by
+    have hdelta_eq :
+        delta = (epsilon ^ 2 / 2) / (6 * M ^ 2) := by
+      rw [hdelta_def]
+      ring
+    calc
+      delta = (epsilon ^ 2 / 2) / (6 * M ^ 2) := hdelta_eq
+      _ < ((6 * M ^ 2) *
+            (vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+              (n : ℝ))) / (6 * M ^ 2) :=
+          div_lt_div_of_pos_right hhalf_lt hcoef_pos
+      _ = vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+          (n : ℝ) := by
+          field_simp [hcoef_pos.ne']
+  have hL_div_nonneg :
+      0 ≤ vdVWLogEmpiricalL1CoveringCardinality cardinality ω n / (n : ℝ) :=
+    div_nonneg hL_nonneg hn_pos.le
+  change
+    delta <
+      dist
+        (vdVWLogEmpiricalL1CoveringCardinality cardinality ω n / (n : ℝ)) 0
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg hL_div_nonneg]
+  exact hdelta_lt
+
+/--
+Entropy-to-convergence in the exact shifted display used after the finite-net
+Hoeffding bound: the random upper bound plus a fixed approximation radius
+converges in outer probability to that radius.
+-/
+theorem
+    vdVWTheorem243FiniteNetHoeffdingUpper_add_convergesInOuterProbability_epsilon_of_logCardinality_littleO_n
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {cardinality : Ω -> ℕ -> ℕ} {M epsilon : ℝ}
+    (hlog :
+      VdVWOuterProbabilityLittleO_n μ
+        (vdVWLogEmpiricalL1CoveringCardinality cardinality))
+    (hM_pos : 0 < M) :
+    VdVWConvergesInOuterProbability μ
+      (fun n ω =>
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M +
+          epsilon)
+      atTop (fun _ => epsilon) := by
+  have hupper :
+      VdVWConvergesInOuterProbability μ
+        (fun n ω =>
+          vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M)
+        atTop (fun _ => 0) :=
+    vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbability_zero_of_logCardinality_littleO_n
+      hlog hM_pos
+  intro eta heta
+  have hsets :
+      (fun n : ℕ =>
+        VdVWOuterProbability μ
+          {ω |
+            eta <
+              dist
+                (vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M +
+                  epsilon)
+                epsilon}) =
+        fun n : ℕ =>
+          VdVWOuterProbability μ
+            {ω |
+              eta <
+                dist
+                  (vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M)
+                  0} := by
+    funext n
+    congr 1
+    ext ω
+    simp [add_comm]
+  simpa [hsets] using hupper eta heta
+
+/--
 Fixed-`epsilon` random empirical entropy condition for Theorem 2.4.3.
 
 The field `coveringNumber_le` records a finite-cardinality domination of
@@ -6039,5 +6475,53 @@ theorem VdVWTheorem243TruncatedEntropyCondition.fixed_of_forAllEpsilonM
     VdVWTheorem243TruncatedEntropyCondition μ X indexClass classFun envelope
       M epsilon (cardinality M epsilon) :=
   hentropy M hM epsilon hepsilon
+
+/--
+Fixed truncated entropy hypotheses imply the random Hoeffding upper converges
+to zero in outer probability.
+-/
+theorem
+    VdVWTheorem243TruncatedEntropyCondition.finiteNetHoeffdingUpper_convergesInOuterProbability_zero
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] {μ : Measure Ω}
+    {X : ℕ -> Ω -> Observation} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M epsilon : ℝ} {cardinality : Ω -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243TruncatedEntropyCondition μ X indexClass classFun envelope
+        M epsilon cardinality)
+    (hM_pos : 0 < M) :
+    VdVWConvergesInOuterProbability μ
+      (fun n ω =>
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M)
+      atTop (fun _ => 0) := by
+  exact
+    vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbability_zero_of_logCardinality_littleO_n
+      hentropy.log_cardinality_littleO_n hM_pos
+
+/--
+Book-facing all-radius/all-truncation entropy hypotheses imply the fixed
+random Hoeffding upper convergence needed by the final Theorem 2.4.3 assembly.
+-/
+theorem
+    VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM.finiteNetHoeffdingUpper_convergesInOuterProbability_zero
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] {μ : Measure Ω}
+    {X : ℕ -> Ω -> Observation} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {cardinality : ℝ -> ℝ -> Ω -> ℕ -> ℕ}
+    {M epsilon : ℝ} (hM_pos : 0 < M) (hepsilon_pos : 0 < epsilon)
+    (hentropy :
+      VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM μ X indexClass
+        classFun envelope cardinality) :
+    VdVWConvergesInOuterProbability μ
+      (fun n ω =>
+        vdVWTheorem243FiniteNetHoeffdingUpper
+          (cardinality M epsilon ω n) n M)
+      atTop (fun _ => 0) := by
+  exact
+    (VdVWTheorem243TruncatedEntropyCondition.fixed_of_forAllEpsilonM
+      hM_pos hepsilon_pos hentropy).finiteNetHoeffdingUpper_convergesInOuterProbability_zero
+      hM_pos
 
 end StatInference

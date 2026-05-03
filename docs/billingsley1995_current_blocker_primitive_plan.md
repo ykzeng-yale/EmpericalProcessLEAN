@@ -269,11 +269,20 @@ Local searches found reusable APIs in:
    `vdVWTheorem243FiniteNetHoeffdingUpper_sq`,
    `vdVWTheorem243FiniteNetHoeffdingUpper_eq_logCardinality`,
    `vdVWTheorem243FiniteNetHoeffdingUpper_sq_eq_logCardinality`,
-   `tendsto_sqrt_one_add_mul_sqrt_six_div_of_div_tendsto_zero`, and
+   `tendsto_sqrt_one_add_mul_sqrt_six_div_of_div_tendsto_zero`,
+   `tendsto_finiteNetHoeffdingUpper_of_logCardinality_div_tendsto_zero`, and
    `VdVWTheorem243TruncatedEntropyCondition.fixed_of_forAllEpsilonM`.
-   The next target is the outer-probability entropy-to-Hoeffding-scale
-   convergence handoff, not another fixed-sample pointwise comparison or
-   product-a.e. Hoeffding predicate.
+   The stochastic entropy-to-Hoeffding-scale handoff is now also compiled as
+   `vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbability_zero_of_logCardinality_littleO_n`,
+   with shifted-display and fixed/all-entropy consumers
+   `vdVWTheorem243FiniteNetHoeffdingUpper_add_convergesInOuterProbability_epsilon_of_logCardinality_littleO_n`,
+   `VdVWTheorem243TruncatedEntropyCondition.finiteNetHoeffdingUpper_convergesInOuterProbability_zero`,
+   and
+   `VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM.finiteNetHoeffdingUpper_convergesInOuterProbability_zero`.
+   The next target is fixed-`M` truncated convergence from the product
+   outer-expectation projection plus the new Markov convergence bridge, not
+   another fixed-sample pointwise comparison or product-a.e. Hoeffding
+   predicate.
    The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
@@ -288,10 +297,12 @@ Local searches found reusable APIs in:
 The next high-value proof step is the theorem-specific Section 18/entropy
 assembly for VdV&W Theorem 2.4.3:
 
-- prove the outer-probability entropy-to-Hoeffding-scale convergence handoff
-  from `log_cardinality_littleO_n`, using the compiled random-cardinality
-  Hoeffding upper algebra and the compiled product outer-expectation
-  projection;
+- assemble fixed-`M` truncated centered-supremum convergence from
+  `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`,
+  the composed centered-truncated integral finite-net bridge
+  `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`,
+  the compiled random-cardinality Hoeffding upper convergence, and
+  `VdVWConvergesInOuterProbability_zero_of_outerExpectation_tendsto_zero_ofReal`;
 - if that assembly exposes only a.e.-measurable or null-measurable random
   targets, use `VdVWMeasurableCover.ofAEMeasurable` or
   `VdVWMeasurableCover.ofNullMeasurable_ofReal` rather than adding another
@@ -434,10 +445,16 @@ and the product-integrated random-cover finite-net bound
 `integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
 It also proves the product outer-expectation projection
 `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
+The composed product-integrated centered-truncated finite-net bridge is also
+compiled as
+`integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
 It also proves the
 supplied-`hphi_id` finite-net projection
 `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
-The next proof target is entropy-to-convergence for this product-integrated
-expected-maximal route; a fixed-sample pointwise comparison or product-a.e.
-finite-center Hoeffding predicate should not be pursued. Do not add another
-product surface unless that assembly exposes a sharper missing API.
+The entropy-to-Hoeffding-scale outer-probability handoff is now compiled for
+the product-integrated expected-maximal route, including fixed/all-entropy
+consumers.  The next proof target is fixed-`M` truncated convergence from the
+product outer-expectation projection and Markov convergence bridge; a
+fixed-sample pointwise comparison or product-a.e. finite-center Hoeffding
+predicate should not be pursued. Do not add another product surface unless
+that assembly exposes a sharper missing API.
