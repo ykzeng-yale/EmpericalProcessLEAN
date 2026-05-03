@@ -1429,6 +1429,52 @@ theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_bound
           (cardinality := cardinality) (c := c) hc hr))
 
 /--
+Finite-center expected-supremum bound after a supplied logarithmic-radius
+small-tail condition.
+
+The condition
+`(cardinality : ℝ) * exp (-(r^2)/(2c)) <= 1` is the exact deterministic
+algebraic obligation discharged by the later logarithmic choice of `r`.
+-/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_simplified
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0} {r : ℝ}
+    (hc : 0 < (c : ℝ)) (hr : 0 < r)
+    (hsmall :
+      (cardinality : ℝ) *
+        Real.exp (-(r ^ 2) / (2 * (c : ℝ))) ≤ 1)
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤
+      r + 2 * (c : ℝ) / r := by
+  have hcoef_nonneg : 0 ≤ 2 * (c : ℝ) / r := by
+    exact div_nonneg (mul_nonneg zero_le_two hc.le) hr.le
+  have htail :
+      (cardinality : ℝ) *
+        (2 * ((c : ℝ) / r * Real.exp (-(r ^ 2) / (2 * (c : ℝ))))) ≤
+        2 * (c : ℝ) / r := by
+    calc
+      (cardinality : ℝ) *
+          (2 * ((c : ℝ) / r * Real.exp (-(r ^ 2) / (2 * (c : ℝ)))))
+          = (2 * (c : ℝ) / r) *
+              ((cardinality : ℝ) *
+                Real.exp (-(r ^ 2) / (2 * (c : ℝ)))) := by
+              ring
+      _ ≤ (2 * (c : ℝ) / r) * 1 := by
+              exact mul_le_mul_of_nonneg_left hsmall hcoef_nonneg
+      _ = 2 * (c : ℝ) / r := by ring
+  have htail' :
+      r +
+          (cardinality : ℝ) *
+            (2 * ((c : ℝ) / r * Real.exp (-(r ^ 2) / (2 * (c : ℝ))))) ≤
+        r + 2 * (c : ℝ) / r := by
+    simpa [add_comm, add_left_comm, add_assoc] using add_le_add_left htail r
+  exact
+    (vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_bound
+      hcardinality X hc hr hX).trans
+      htail'
+
+/--
 Closed-form value of the finite-center sub-Gaussian tail majorant over
 `(0, ∞)`.
 -/

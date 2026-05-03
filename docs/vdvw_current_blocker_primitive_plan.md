@@ -357,6 +357,7 @@ additional example closures:
    vdVWTheorem243_integral_subGaussian_exp_tail_le_mills
    vdVWTheorem243_integral_finiteCenter_subGaussian_tail_le_mills
    vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_bound
+   vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_simplified
    integral_abs_classFun_sub_vdVWTruncatedClassFun_le_envelope_tail
    vdVWTheorem243FiniteCenterExpectedSupremum_nonneg
    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_ae_le
@@ -461,15 +462,17 @@ additional example closures:
    layer, expected-supremum handoff, layer-cake tail-integral support,
    Gaussian-tail integrability/evaluation, coarse closed-form expectation
    bound, split-at-radius tail-to-expectation bound, Mills-type Gaussian-tail
-   estimate, finite-center Mills expectation bound, and ordinary measurable
-   truncation-tail integral bridge are now compiled.  The theorem-specific
+   estimate, finite-center Mills expectation bound, supplied small-tail Mills
+   simplification, and ordinary measurable truncation-tail integral bridge are
+   now compiled.  The theorem-specific
    expected-supremum layer now routes its reusable layer-cake,
    tail-integral-monotonicity, and split-at-radius probability bounds through
    `StatInference/ProbabilityMeasure/Tail.lean`; VdV&W-specific empirical,
    Mills, outer-expectation, and truncation handoffs remain in the
-   empirical-process files.  The remaining logarithmic-radius simplification
-   is the next blocker before the textbook tail-to-Orlicz/maximal expectation
-   scale, followed by specialization of that bound to the truncated centers.
+   empirical-process files.  The remaining logarithmic-radius choice and
+   algebraic discharge of the supplied small-tail condition is the next
+   blocker before the textbook tail-to-Orlicz/maximal expectation scale,
+   followed by specialization of that bound to the truncated centers.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -489,10 +492,11 @@ additional example closures:
 
 Next exact edit: choose the logarithmic radius
 `sqrt (2 * c * (1 + log cardinality))` or a nearby Lean-friendly variant, then
-simplify `vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_bound`
-to the textbook finite-maximal scale.  Then package this as the VdV&W
-`psi_2`/Hoeffding maximal layer if no exact Orlicz API appears, specialize
-that bound to truncated centers with
+instantiate
+`vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_simplified` by
+proving `(cardinality : ℝ) * exp (-(r^2)/(2c)) <= 1`.  Then package the
+resulting bound as the VdV&W `psi_2`/Hoeffding maximal layer if no exact Orlicz
+API appears, specialize that bound to truncated centers with
 `vdVWTheorem243_truncated_varianceProxy_le`, and move to the
 symmetrization/truncation and outer envelope-tail handoffs.
 
