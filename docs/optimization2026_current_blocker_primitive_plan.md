@@ -65,10 +65,14 @@ layers:
   `SmoothWithGradientOn.upper_model`, including the source-shaped
   `h <= 1 / beta` corollary under `0 < beta`.
 
-The next substantive blocker is Theorem 3.4 supplied-interface assembly:
-prove or supply the one-step recurrence (3.1), combine it with the compiled
-discrete Gronwall layer, and then close the weighted-sum and closed-denominator
-function-value bounds.
+The next substantive blocker is the remaining Theorem 3.4 supplied-interface
+assembly.  The first assembly layer now compiles in
+`StatInference/Optimization/Theorem34.lean`: it proves the weighted finite-sum
+bound from the supplied one-step recurrence (3.1), including a source-indexed
+one-based display, plus a monotone-gap weighted lower-bound helper.  The next
+tasks are to prove a first-order strong-convexity bridge that supplies (3.1),
+and to close the geometric denominator corollaries for the final function-value
+bound.
 
 ## Search-First Record
 
@@ -108,6 +112,17 @@ available through `HasGradientAt`, `gradient`, `hasGradientAt_iff_hasFDerivAt`,
 and `HasLipschitzGradientOn`, but it is not needed for the supplied-gradient
 Lemma 3.1 layer.
 
+Current Theorem 3.4 assembly search result: the weighted finite-sum step needs
+only algebra after applying `discreteGronwall_sum_le`.  Useful APIs are
+`Finset.mul_sum`, `Finset.sum_congr`, `Finset.sum_Ico_eq_sum_range`,
+`sub_nonneg`/`le_of_sub_nonneg`, and `nlinarith`.  For the next closed
+denominator layer, use `Finset.sum_range_reflect`, `geom_sum_mul_neg`,
+`mul_neg_geom_sum`, `geom_sum_eq`, `geom_sum_Ico'`, and `geom_sum_inv`.
+For the one-step recurrence (3.1), neither local `StrongConvexOn` nor mathlib
+`StrongConvexOn` currently provides a ready first-order gradient lower-model
+bridge; prefer adding a supplied first-order strong-convexity interface before
+attempting the full segment-to-gradient theorem.
+
 Local searches should prioritize:
 
 - `StatInference/Optimization/Basic.lean`
@@ -129,8 +144,8 @@ Local searches should prioritize:
    `beta * h <= 1` and source-shaped `h <= 1 / beta` versions.
 5. Add a bounded Theorem 3.4 assembly layer.  First prefer a supplied-interface
    theorem that assumes the one-step recurrence (3.1) and monotonicity from
-   Lemma 3.1, then use `discreteGronwall_sum_le`/the one-based wrapper for the
-   weighted finite-sum bound.
+   Lemma 3.1.  The weighted finite-sum and monotone-gap weighted lower-bound
+   helpers now compile in `Theorem34.lean`.
 6. Prove the first source-exact report candidate only after the exact theorem
    declaration compiles and source screenshots are captured.
 
@@ -161,11 +176,16 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.discreteGronwall_one_based_sum_le_of_pos`
 - `StatInference.Optimization.descentLemma_of_smoothWithGradientOn`
 - `StatInference.Optimization.descentLemma_of_smoothWithGradientOn_of_le_inv`
+- `StatInference.Optimization.weightedSumBound_of_gronwall_negative_forcing`
+- `StatInference.Optimization.weightedFinalGap_le_weightedGapSum`
+- `StatInference.Optimization.chewi34_weighted_sum_bound_of_one_step`
+- `StatInference.Optimization.chewi34_weighted_sum_bound_one_based_of_one_step`
+- `StatInference.Optimization.chewi34_weighted_final_gap_le_weighted_gap_sum`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next automation target: pursue Chewi Theorem 3.4 aggressively by adding a
-supplied-interface assembly module.  Start with the weighted-sum bound obtained
-from the one-step recurrence (3.1) and compiled discrete Gronwall; then prove
-the monotone-gap weighted lower bound and the closed denominator corollary
-using mathlib geometric-series APIs.
+Next automation target: pursue Chewi Theorem 3.4 aggressively by either
+adding the supplied first-order strong-convexity interface and proving the
+one-step recurrence (3.1), or by closing the geometric denominator corollary
+from the compiled weighted-sum/monotone-gap inequalities.  Use the scouts'
+mathlib geometric-series APIs before adding local algebra.

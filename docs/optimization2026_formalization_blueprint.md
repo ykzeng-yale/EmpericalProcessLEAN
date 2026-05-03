@@ -149,9 +149,12 @@ Near-term exact candidates:
    `StatInference/Optimization/GradientDescent.lean`, including the source
    step-size corollary `h <= 1 / beta` under `0 < beta`.
 3. Theorem 3.4 as a supplied-interface convergence theorem.  The next layer
-   should assume or prove the one-step recurrence (3.1), use the compiled
-   Gronwall theorem for the weighted finite-sum bound, and defer the closed
-   denominator simplification to mathlib geometric-series APIs.
+   now compiles in `StatInference/Optimization/Theorem34.lean`: it assumes the
+   one-step recurrence (3.1), uses the compiled Gronwall theorem for the
+   weighted finite-sum bound, provides the source-indexed one-based display,
+   and adds the monotone-gap weighted lower-bound helper.  Remaining work is
+   the first-order strong-convexity bridge for (3.1) and the closed denominator
+   simplification via mathlib geometric-series APIs.
 
 ### Lane D: Later textbook expansion
 
