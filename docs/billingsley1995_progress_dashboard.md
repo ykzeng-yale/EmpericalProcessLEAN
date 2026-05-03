@@ -83,10 +83,11 @@ Concrete next edits:
    `StatInference/ProbabilityMeasure/Tail.lean` compiling, and add only
    VdV&W-specific handoffs directly to the empirical-process files.
 2. Check the current VdV&W Theorem 2.4.3 blocker before adding Billingsley
-   support.  The latest empirical-process frontier is the named
-   `VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale` real scale-comparison
-   predicate; do not add new Billingsley tail/Fubini wrappers unless that proof
-   or the next symmetrization/truncation step needs them.
+   support.  The log-radius-to-Hoeffding scale comparison is now proved; the
+   latest empirical-process frontier is symmetrization/truncation, outer
+   envelope-tail control, entropy-to-convergence, and final assembly.  Do not
+   add new Billingsley tail/Fubini wrappers unless one of those steps needs
+   reusable probability/measure support.
 3. If no empirical-process dependency is blocked on Billingsley support, pick
    one Section 25 theorem candidate already close to mathlib/local APIs and
    formalize the exact wrapper statement before creating any report.

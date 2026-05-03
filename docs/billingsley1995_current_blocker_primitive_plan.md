@@ -41,11 +41,12 @@ The blocker is selecting a theorem whose statement can be made both:
 The best current candidate family is Section 25 weak convergence and
 Portmanteau/tightness wrappers, while Section 16/18 support should stay
 dependency-driven by the current VdV&W Theorem 2.4.3 route.  As of the latest
-merged empirical-process progress, the active VdV&W blocker is the named real
-scale-comparison predicate
-`VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale`; Billingsley support should
-only add reusable probability/measure wrappers if that comparison or the next
-symmetrization/truncation step actually needs them.
+merged empirical-process progress, the log-radius-to-Hoeffding scale comparison
+is proved.  The active VdV&W blockers are now the theorem-specific
+symmetrization/truncation layer, the outer envelope-tail handoff, and
+entropy-to-convergence/final assembly.  Billingsley support should only add
+reusable probability/measure wrappers if those steps need tail, product/Fubini,
+independent-copy, or outer-expectation infrastructure.
 
 ## Search-First Record
 
