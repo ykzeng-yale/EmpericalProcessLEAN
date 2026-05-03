@@ -282,13 +282,15 @@ is available for arbitrary deterministic shrinking cover radii, and
 specializes it to `1 / ((n : ℝ) + 1)`, while
 `VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
 packages the selected inverse-radius side conditions except for the supplied
-diagonal selected log convergence.  The fixed-`M` consumer
+diagonal selected log convergence, and
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_eq_selected_truncated`
+does the same for an externally named cardinality once terminal equality with
+the selected truncated minimal process is supplied.  The fixed-`M` consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`
 now consumes that package plus the deterministic selected log-ratio bound.  The
-next blocker is feeding theorem
-entropy hypotheses into one of those consumers past the now-closed
-covering-domination/finite-witness step: selected terminal equality, diagonal
-selected log-cardinality convergence, and a deterministic normalized
+next blocker is feeding theorem entropy hypotheses into this package past the
+now-closed covering-domination/finite-witness step: diagonal selected
+log-cardinality convergence and a deterministic normalized
 log-cardinality bound or genuine varying-domain tail/UI replacement.  Pinned
 mathlib UI/Vitali/DCT APIs are fixed-domain, so the deterministic bound remains
 the practical route unless a new explicit varying-domain tail-expectation
