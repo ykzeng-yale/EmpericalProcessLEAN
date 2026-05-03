@@ -1158,15 +1158,20 @@ and `ENNReal.tendsto_nhds_zero` to choose `M` before sending `n -> infinity`.
 This closes the fixed-`M`-to-untruncated blocker under the honest hypothesis
 that every fixed truncation level already has centered-truncated convergence.
 
-Next exact edit: compose this untruncated handoff with the existing fixed-`M`
-centered-truncated convergence consumers, especially
-`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedInvRadiusEntropy`,
-to get a theorem-facing untruncated selected-inverse-radius consumer under
-`∀ M` fixed-`M` entropy/cover/integrability side conditions.  In parallel, the
-remaining theorem-assumption task is still to derive the selected diagonal
-log-cardinality/log-ratio inputs, or a stronger selected finite-net tail/UI
-condition, from the book entropy hypotheses.  The finite-cover domination,
-terminal selected-cardinality equality, measurability transport, fixed-`M`
+The selected inverse-radius composition is now compiled as
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedInvRadiusEntropy`.
+This theorem feeds the fixed-`M` selected inverse-radius entropy consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedInvRadiusEntropy`
+into the large-`M` untruncation handoff, under `∀ M, 0 < M -> ...` selected
+entropy/cover/integrability side conditions.  The large-`M` handoff was
+strengthened to require fixed-`M` convergence only for positive truncation
+levels, matching the actual `M -> infinity` proof.
+
+Next exact edit: derive the selected diagonal log-cardinality/log-ratio inputs,
+or a stronger selected finite-net tail/UI condition, from the book entropy
+hypotheses, then use the untruncated selected inverse-radius consumer for the
+final Theorem 2.4.3 assembly.  The finite-cover domination, terminal
+selected-cardinality equality, measurability transport, fixed-`M`
 centered-truncated consumers, selected inverse-radius entropy side-condition
 package, selected inverse-radius finite-net mean projections, finite-net
 tail/UI adapters, and symmetrization/product finite-net route are already
