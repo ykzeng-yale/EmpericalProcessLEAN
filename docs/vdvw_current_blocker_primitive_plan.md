@@ -877,9 +877,24 @@ Search record for the symmetrization precursor package:
   `tendsto_two_mul_ofReal_zero_of_tendsto_zero` and theorem-specific real mean
   consumer
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`
-  are also compiled.  The next valid target is the analytic input this exposes:
-  the real integrated Hoeffding-plus-radius upper must tend to zero, likely
-  through a uniform-integrability or dominated-convergence bridge.
+  are also compiled.  The deterministic covering-radius part is now separated by
+  `tendsto_integral_finiteNetHoeffdingUpper_add_coverRadius_of_tendsto_integral_finiteNetHoeffdingUpper`,
+  and the theorem-facing fixed-`M` consumer
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_and_coverRadius_tendsto_zero`
+  reduces the bundled real mean input to two assumptions: the finite-net
+  Hoeffding upper mean tends to zero and the chosen empirical-cover radius tends
+  to zero.  The next valid target is the analytic input this exposes: prove the
+  finite-net Hoeffding upper mean convergence from the entropy hypothesis,
+  likely through a variable-domain bounded-convergence/uniform-integrability
+  bridge.
+  Search record: local `StatInference` and pinned mathlib searches for
+  `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
+  `tendsto_integral_of_L1`, `TendstoInMeasure`, and
+  `VdVWConvergesInOuterProbabilityConst` found fixed-domain mathlib Vitali/L1
+  APIs and the local common-domain
+  `vdVWConvergesInOuterProbability_iff_tendstoInMeasure`, but no ready theorem
+  converting variable-domain `SampleAt Observation n` convergence in outer
+  probability plus boundedness/UI into convergence of expectations.
   The
   supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
@@ -923,10 +938,11 @@ handoff, shifted-display convergence, fixed/all-entropy consumers, and the
 Markov outer-expectation-to-outer-probability bridge, plus the composed
 centered-truncated integral finite-net bound, variable-domain Markov bridges,
 fixed-`M` centered-truncated convergence handoff under an explicit vanishing
-integrated Hoeffding-plus-radius hypothesis, and its real-mean convergence
-consumer, are closed.  Next prove that vanishing real integrated upper from the
-entropy hypotheses plus any required uniform-integrability/dominated-convergence
-input, then assemble the final Theorem 2.4.3 handoffs.
+integrated Hoeffding-plus-radius hypothesis, its real-mean convergence consumer,
+and the split finite-net-mean/cover-radius fixed-`M` consumer, are closed.  Next
+prove finite-net Hoeffding upper mean convergence from the entropy hypotheses
+plus a variable-domain bounded-convergence/uniform-integrability primitive, then
+assemble the final Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

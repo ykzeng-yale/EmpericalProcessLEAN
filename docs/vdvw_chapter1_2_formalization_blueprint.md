@@ -467,10 +467,11 @@ above, so they do not change the theorem-level dashboard counts.
    `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
    The outer-probability entropy-to-Hoeffding-scale handoff, fixed/all-entropy
    consumers, fixed-`M` centered-truncated convergence handoff under a
-   vanishing integrated Hoeffding-plus-radius hypothesis, and real-mean
-   convergence consumer are now compiled.  The next frontier is proving that
-   real integrated upper from entropy plus any required
-   uniform-integrability/dominated-convergence input, then final assembly.
+   vanishing integrated Hoeffding-plus-radius hypothesis, real-mean convergence
+   consumer, and split finite-net-mean/cover-radius fixed-`M` consumer are now
+   compiled.  The next frontier is proving finite-net Hoeffding upper mean
+   convergence from entropy plus a variable-domain
+   bounded-convergence/uniform-integrability input, then final assembly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
