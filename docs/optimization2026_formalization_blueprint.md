@@ -174,6 +174,11 @@ Near-term exact candidates:
    a supplied assumption.  Remaining work is source-audited theorem packaging
    and, later, the full segment-strong-convexity plus differentiability bridge
    for Proposition 1.6.
+5. Theorem 3.6 convergence under PL.  `StatInference/Optimization/Theorem36.lean`
+   now compiles a source-shaped PL interface, the one-step PL gap recurrence
+   from Lemma 3.1, a scalar nonnegative-factor recurrence unrolling, and the
+   source step-size wrapper for `h <= 1 / beta`.  Remaining main-text Chapter
+   3 work is Theorem 3.7 and source-audited report packaging.
 
 ### Lane D: Later textbook expansion
 

@@ -99,6 +99,13 @@ source-audited packaging for Theorem 3.3/3.4, continuing to main-text Theorems
 3.6/3.7, or the segment-strong-convexity plus differentiability bridge to
 `FirstOrderStrongConvexOn`.
 
+Theorem 3.6 under PL now compiles in
+`StatInference/Optimization/Theorem36.lean`.  It adds
+`PolyakLojasiewiczOn`, proves the one-step function-gap recurrence from Lemma
+3.1 plus PL, unrolls a nonnegative scalar recurrence with the existing
+`discreteGronwall_sum_le`, and provides a source-shaped wrapper for
+`h <= 1 / beta`.
+
 ## Search-First Record
 
 Pinned mathlib searches should prioritize:
@@ -248,6 +255,7 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.StrongConvexOn`
 - `StatInference.Optimization.ChewiConvexOn`
 - `StatInference.Optimization.SmoothWithGradientOn`
+- `StatInference.Optimization.PolyakLojasiewiczOn`
 - `StatInference.Optimization.gradientDescentStep`
 - `StatInference.Optimization.IsGradientDescentTrajectory`
 - `StatInference.Optimization.HasLipschitzGradientOn`
@@ -292,12 +300,18 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi34_final_gap_le_geometric_denominator_of_firstOrderStrongConvexOn_of_descent`
 - `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn_of_descent`
+- `StatInference.Optimization.oneStepGap_le_of_polyakLojasiewiczOn`
+- `StatInference.Optimization.oneStepGap_le_of_polyakLojasiewiczOn_of_le_inv`
+- `StatInference.Optimization.gapRecurrence_of_polyakLojasiewiczOn`
+- `StatInference.Optimization.scalarRecurrence_le_pow`
+- `StatInference.Optimization.chewi36_gap_le_of_polyakLojasiewiczOn`
+- `StatInference.Optimization.chewi36_gap_le_of_polyakLojasiewiczOn_of_le_inv`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
 Next manual goal target: continue main-text Chapter 3 and defer exercise
 proofs.  Highest-value options are source-exact supplied-interface report
-packaging for Theorem 3.3/3.4, moving to main-text Theorem 3.6/3.7 with
-minimal new PL/gradient-norm interfaces, or the differentiability bridge from
+packaging for Theorem 3.3/3.4, moving to main-text Theorem 3.7 with a
+minimal gradient-norm/telescoping layer, or the differentiability bridge from
 segment `StrongConvexOn` to `FirstOrderStrongConvexOn` for full Proposition
 1.6 fidelity.
