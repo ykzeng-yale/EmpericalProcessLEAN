@@ -302,10 +302,17 @@ The bounded-to-tail/UI adapter route is now compiled as
 `tailExpectation_condition_of_eventual_bound` and the finite-net/selected
 specializations through
 `integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_invRadiusFiniteCovers_tailExpectation`.
-The untruncation perturbation substrate is also compiled as
+The untruncation perturbation substrate is compiled as
 `VdVWConvergesInOuterProbabilityConst_zero_of_eventual_dist_le_add_errors`.
-The remaining blockers are deterministic truncation-perturbation inequalities
-for the untruncated centered process, plus deriving the selected diagonal
+The deterministic untruncation perturbation inequalities are now also compiled:
+weighted sample truncation, empirical-average truncation, population integral
+truncation, fixed-index centered truncation, and supremum-level centered
+truncation are closed.  The empirical envelope-tail expectation/Markov route is
+compiled through
+`VdVWOuterExpectation_empiricalEnvelopeTail_eq_ofReal_integral_tail` and
+`VdVWOuterProbability_empiricalEnvelopeTail_gt_le_integral_tail_div`.
+The remaining blockers are the fixed-`M`-to-untruncated convergence handoff
+using these tail bridges, plus deriving the selected diagonal
 log-cardinality/log-ratio inputs or a stronger selected finite-net tail/UI
 condition from the book assumptions, then final assembly.
 The product-integrated symmetrization route now also has the composed
@@ -318,8 +325,8 @@ random-cover finite-net integral bridge
 DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
 ONGOING    Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
-READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, F_M truncation interfaces, countable/measurable-cardinality selectors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, bounded varying-domain real-tail-to-mean wrapper, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound/inverse-radius consumers, selected-cardinality equality-transport arbitrary-radius/inverse-radius consumers, all-radius covering-domination selectors, selected inverse-radius finite-cover constructor, inverse-radius entropy side-condition package, package-level inverse-radius entropy mean projections, selected finite-cover and selected inverse-radius all-radius finite-net mean projections, explicit variable-domain tail/UI mean bridge and bounded-tail adapters, generic outer-probability perturbation, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
-NEXT       Prove untruncation perturbation inequalities and the fixed-M-to-untruncated handoff; in parallel derive selected diagonal log-cardinality/log-ratio or stronger selected finite-net tail/UI inputs from book assumptions.
+READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, F_M truncation interfaces, countable/measurable-cardinality selectors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, bounded varying-domain real-tail-to-mean wrapper, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound/inverse-radius consumers, selected-cardinality equality-transport arbitrary-radius/inverse-radius consumers, all-radius covering-domination selectors, selected inverse-radius finite-cover constructor, inverse-radius entropy side-condition package, package-level inverse-radius entropy mean projections, selected finite-cover and selected inverse-radius all-radius finite-net mean projections, explicit variable-domain tail/UI mean bridge and bounded-tail adapters, generic outer-probability perturbation, deterministic untruncation perturbation inequalities, empirical envelope-tail expectation/Markov bridges, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
+NEXT       Prove the fixed-M-to-untruncated convergence handoff using the new deterministic perturbation and envelope-tail bridges; in parallel derive selected diagonal log-cardinality/log-ratio or stronger selected finite-net tail/UI inputs from book assumptions.
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED-EXAMPLE Example 2.4.2 exact quantile-grid closure and empirical-CDF report unless a theorem needs it.

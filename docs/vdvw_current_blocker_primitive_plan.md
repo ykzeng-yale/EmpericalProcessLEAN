@@ -1123,13 +1123,26 @@ Search record for the symmetrization precursor package:
   comparison is available, but the theorem-line route should remain
   product-integrated.
 
-Next exact edit: start the untruncation batch.  First prove deterministic
-truncation-perturbation inequalities comparing the untruncated centered
-weighted supremum to the fixed-`M` centered-truncated supremum plus empirical
-and population envelope-tail errors.  Then use
+The deterministic untruncation perturbation batch is now compiled.  The new
+Theorem 2.4.3-facing declarations are
+`abs_vdVWWeightedSampleSum_classFun_sub_truncated_le_weightedEnvelopeTail`,
+`abs_vdVWWeightedSampleSum_classFun_sub_truncated_le_empiricalEnvelopeTail`,
+`abs_integral_classFun_sub_integral_truncated_le_integral_envelope_tail`,
+`abs_vdVWWeightedSampleSum_centered_classFun_sub_centered_truncated_le_empiricalEnvelopeTail_add_integral`,
+and
+`vdVWWeightedClassSupremum_centered_classFun_le_centered_truncated_add_empiricalEnvelopeTail_add_integral`.
+The empirical envelope-tail expectation/Markov bridge is also compiled through
+`measurable_empiricalAverage_envelope_tail`,
+`integrable_empiricalAverage_envelope_tail`,
+`integral_empiricalAverage_envelope_tail_eq_integral_envelope_tail`,
+`VdVWOuterExpectation_empiricalEnvelopeTail_eq_ofReal_integral_tail`, and
+`VdVWOuterProbability_empiricalEnvelopeTail_gt_le_integral_tail_div`.
+
+Next exact edit: use the compiled deterministic supremum perturbation,
 `VdVWConvergesInOuterProbabilityConst_zero_of_eventual_dist_le_add_errors`,
 `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`,
-and the envelope-tail Markov bridges to derive
+the new empirical-tail Markov bridge, and the existing fixed-`M` centered
+truncated convergence consumers to derive
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_centered_truncated`
 under the honest fixed-`M` convergence hypothesis.  In parallel, the remaining
 theorem-assumption task is still to derive the selected diagonal

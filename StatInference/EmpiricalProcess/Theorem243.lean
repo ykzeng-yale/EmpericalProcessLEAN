@@ -418,6 +418,641 @@ theorem integral_abs_classFun_sub_vdVWTruncatedClassFun_le_envelope_tail
     abs_classFun_sub_vdVWTruncatedClassFun_le_envelope_tail
       henvelope hindex x
 
+/--
+Weighted empirical sums change by at most the weighted envelope tail after
+the `F_M` truncation.
+
+This is the deterministic sample-level perturbation needed for the
+untruncation step in VdV&W Theorem 2.4.3.
+-/
+theorem abs_vdVWWeightedSampleSum_classFun_sub_truncated_le_weightedEnvelopeTail
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    {index : Index} (hindex : index ∈ indexClass)
+    (weights : Fin n -> ℝ) :
+    |vdVWWeightedSampleSum classFun weights index sample -
+        vdVWWeightedSampleSum (vdVWTruncatedClassFun classFun envelope M)
+          weights index sample| ≤
+      ∑ i : Fin n, |weights i| *
+        Set.indicator {x | M < envelope x} envelope (sample i) := by
+  unfold vdVWWeightedSampleSum
+  have hsub :
+      (∑ i : Fin n, weights i * classFun index (sample i)) -
+          (∑ i : Fin n,
+            weights i *
+              vdVWTruncatedClassFun classFun envelope M index (sample i)) =
+        ∑ i : Fin n,
+          weights i *
+            (classFun index (sample i) -
+              vdVWTruncatedClassFun classFun envelope M index (sample i)) := by
+    rw [← Finset.sum_sub_distrib]
+    exact Finset.sum_congr rfl fun i _hi => by ring
+  rw [hsub]
+  calc
+    |∑ i : Fin n,
+        weights i *
+          (classFun index (sample i) -
+            vdVWTruncatedClassFun classFun envelope M index (sample i))|
+        ≤
+      ∑ i : Fin n,
+        |weights i *
+          (classFun index (sample i) -
+            vdVWTruncatedClassFun classFun envelope M index (sample i))| := by
+        simpa using
+          (Finset.abs_sum_le_sum_abs
+            (fun i : Fin n =>
+              weights i *
+                (classFun index (sample i) -
+                  vdVWTruncatedClassFun classFun envelope M index (sample i)))
+            (Finset.univ : Finset (Fin n)))
+    _ =
+      ∑ i : Fin n,
+        |weights i| *
+          |classFun index (sample i) -
+            vdVWTruncatedClassFun classFun envelope M index (sample i)| := by
+        simp [abs_mul]
+    _ ≤
+      ∑ i : Fin n, |weights i| *
+        Set.indicator {x | M < envelope x} envelope (sample i) := by
+        exact Finset.sum_le_sum fun i _hi =>
+          mul_le_mul_of_nonneg_left
+            (abs_classFun_sub_vdVWTruncatedClassFun_le_envelope_tail
+              henvelope hindex (sample i))
+            (abs_nonneg (weights i))
+
+/--
+Empirical-average specialization of the weighted truncation perturbation
+bound for the weights `1 / n`.
+-/
+theorem abs_vdVWWeightedSampleSum_classFun_sub_truncated_le_empiricalEnvelopeTail
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    {index : Index} (hindex : index ∈ indexClass) :
+    |vdVWWeightedSampleSum classFun (fun _ : Fin n => (n : ℝ)⁻¹) index sample -
+        vdVWWeightedSampleSum (vdVWTruncatedClassFun classFun envelope M)
+          (fun _ : Fin n => (n : ℝ)⁻¹) index sample| ≤
+      empiricalAverage sample
+        (fun x => Set.indicator {y | M < envelope y} envelope x) := by
+  have hweighted :=
+    abs_vdVWWeightedSampleSum_classFun_sub_truncated_le_weightedEnvelopeTail
+      (sample := sample) (M := M) henvelope hindex
+      (fun _ : Fin n => (n : ℝ)⁻¹)
+  refine hweighted.trans_eq ?_
+  unfold empiricalAverage
+  have hnonneg : 0 ≤ (n : ℝ)⁻¹ :=
+    inv_nonneg.mpr (Nat.cast_nonneg n)
+  calc
+    ∑ i : Fin n,
+        |(n : ℝ)⁻¹| *
+          Set.indicator {x | M < envelope x} envelope (sample i)
+        =
+      ∑ i : Fin n,
+        (n : ℝ)⁻¹ *
+          Set.indicator {x | M < envelope x} envelope (sample i) := by
+        simp [abs_of_nonneg hnonneg]
+    _ =
+      (n : ℝ)⁻¹ *
+        ∑ i : Fin n,
+          Set.indicator {x | M < envelope x} envelope (sample i) := by
+        rw [Finset.mul_sum]
+    _ =
+      (∑ i : Fin n,
+          Set.indicator {x | M < envelope x} envelope (sample i)) /
+        (n : ℝ) := by
+        rw [inv_mul_eq_div]
+
+/--
+Population means change by at most the ordinary envelope-tail integral after
+the `F_M` truncation.
+
+This is the deterministic population-side perturbation paired with the
+empirical tail term in the untruncation step.
+-/
+theorem abs_integral_classFun_sub_integral_truncated_le_integral_envelope_tail
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {μ : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    {index : Index} (hindex : index ∈ indexClass)
+    (hclass : Measurable (classFun index))
+    (henv : Measurable envelope)
+    (hclassIntegrable : Integrable (classFun index) μ)
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) μ)
+    (htailIntegrable :
+      Integrable (Set.indicator {x | M < envelope x} envelope) μ) :
+    |(∫ x, classFun index x ∂μ) -
+        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂μ| ≤
+      ∫ x, Set.indicator {x | M < envelope x} envelope x ∂μ := by
+  have hsubIntegral :
+      ∫ x, classFun index x -
+          vdVWTruncatedClassFun classFun envelope M index x ∂μ =
+        (∫ x, classFun index x ∂μ) -
+          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂μ := by
+    exact integral_sub hclassIntegrable htruncIntegrable
+  rw [← hsubIntegral]
+  exact
+    (abs_integral_le_integral_abs.trans
+      (integral_abs_classFun_sub_vdVWTruncatedClassFun_le_envelope_tail
+        (μ := μ) henvelope hindex hclass henv htailIntegrable))
+
+/--
+Fixed-index centered empirical sums are perturbed by the empirical envelope
+tail plus the population envelope-tail integral.
+
+This is the deterministic index-level inequality feeding the final
+untruncation of VdV&W Theorem 2.4.3.
+-/
+theorem
+    abs_vdVWWeightedSampleSum_centered_classFun_sub_centered_truncated_le_empiricalEnvelopeTail_add_integral
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {μ : Measure Observation} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    {index : Index} (hindex : index ∈ indexClass)
+    (hn : 0 < n)
+    (hclass : Measurable (classFun index))
+    (henv : Measurable envelope)
+    (hclassIntegrable : Integrable (classFun index) μ)
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) μ)
+    (htailIntegrable :
+      Integrable (Set.indicator {x | M < envelope x} envelope) μ) :
+    |vdVWWeightedSampleSum
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂μ)
+        (fun _ : Fin n => (n : ℝ)⁻¹) index sample -
+      vdVWWeightedSampleSum
+        (fun index : Index => fun observation : Observation =>
+          vdVWTruncatedClassFun classFun envelope M index observation -
+            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂μ)
+        (fun _ : Fin n => (n : ℝ)⁻¹) index sample| ≤
+      empiricalAverage sample
+        (fun x => Set.indicator {y | M < envelope y} envelope x) +
+      ∫ x, Set.indicator {y | M < envelope y} envelope x ∂μ := by
+  let trunc : Index -> Observation -> ℝ :=
+    vdVWTruncatedClassFun classFun envelope M
+  let sampleDiff :=
+    vdVWWeightedSampleSum classFun (fun _ : Fin n => (n : ℝ)⁻¹) index sample -
+      vdVWWeightedSampleSum trunc (fun _ : Fin n => (n : ℝ)⁻¹) index sample
+  let meanDiff :=
+    (∫ x, classFun index x ∂μ) - ∫ x, trunc index x ∂μ
+  have hn_cast : (n : ℝ) ≠ 0 :=
+    Nat.cast_ne_zero.mpr (Nat.ne_of_gt hn)
+  have hsumWeights : (∑ _i : Fin n, (n : ℝ)⁻¹) = 1 := by
+    calc
+      (∑ _i : Fin n, (n : ℝ)⁻¹)
+          = (n : ℝ) * (n : ℝ)⁻¹ := by
+            simp [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+              nsmul_eq_mul]
+      _ = 1 := by
+            field_simp [hn_cast]
+  have hdecomp :
+      vdVWWeightedSampleSum
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂μ)
+          (fun _ : Fin n => (n : ℝ)⁻¹) index sample -
+        vdVWWeightedSampleSum
+          (fun index : Index => fun observation : Observation =>
+            trunc index observation - ∫ x, trunc index x ∂μ)
+          (fun _ : Fin n => (n : ℝ)⁻¹) index sample =
+        sampleDiff - meanDiff := by
+    unfold sampleDiff meanDiff trunc vdVWWeightedSampleSum
+    set w : ℝ := (n : ℝ)⁻¹
+    set A : ℝ := ∫ x, classFun index x ∂μ
+    set B : ℝ :=
+      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂μ
+    have hconst :
+        (∑ i : Fin n, w * (A - B)) = A - B := by
+      calc
+        (∑ i : Fin n, w * (A - B))
+            = (∑ _i : Fin n, w) * (A - B) := by
+              rw [Finset.sum_mul]
+        _ = A - B := by
+              have hsumw : (∑ _i : Fin n, w) = 1 := by
+                simpa [w] using hsumWeights
+              rw [hsumw]
+              ring
+    have hsample :
+        (∑ i : Fin n,
+            w *
+              (classFun index (sample i) -
+                vdVWTruncatedClassFun classFun envelope M index (sample i))) =
+          (∑ i : Fin n, w * classFun index (sample i)) -
+            ∑ i : Fin n,
+              w * vdVWTruncatedClassFun classFun envelope M index (sample i) := by
+      rw [← Finset.sum_sub_distrib]
+      exact Finset.sum_congr rfl fun i _hi => by ring
+    calc
+      (∑ i : Fin n, w * (classFun index (sample i) - A)) -
+          (∑ i : Fin n,
+            w * (vdVWTruncatedClassFun classFun envelope M index (sample i) - B))
+          =
+        ∑ i : Fin n,
+          (w * (classFun index (sample i) - A) -
+            w * (vdVWTruncatedClassFun classFun envelope M index (sample i) - B)) := by
+            rw [← Finset.sum_sub_distrib]
+      _ =
+        ∑ i : Fin n,
+          (w *
+              (classFun index (sample i) -
+                vdVWTruncatedClassFun classFun envelope M index (sample i)) -
+            w * (A - B)) := by
+            exact Finset.sum_congr rfl fun i _hi => by ring
+      _ =
+        (∑ i : Fin n,
+          w *
+            (classFun index (sample i) -
+              vdVWTruncatedClassFun classFun envelope M index (sample i))) -
+          ∑ i : Fin n, w * (A - B) := by
+            rw [Finset.sum_sub_distrib]
+      _ =
+        (∑ i : Fin n,
+          w *
+            (classFun index (sample i) -
+              vdVWTruncatedClassFun classFun envelope M index (sample i))) -
+          (A - B) := by
+            rw [hconst]
+      _ =
+        ((∑ i : Fin n, w * classFun index (sample i)) -
+          ∑ i : Fin n,
+            w * vdVWTruncatedClassFun classFun envelope M index (sample i)) -
+          (A - B) := by
+            rw [hsample]
+  have hsampleTail :
+      |sampleDiff| ≤
+        empiricalAverage sample
+          (fun x => Set.indicator {y | M < envelope y} envelope x) := by
+    exact
+      abs_vdVWWeightedSampleSum_classFun_sub_truncated_le_empiricalEnvelopeTail
+        (sample := sample) (M := M) henvelope hindex
+  have hmeanTail :
+      |meanDiff| ≤
+        ∫ x, Set.indicator {y | M < envelope y} envelope x ∂μ := by
+    simpa [meanDiff, trunc] using
+      abs_integral_classFun_sub_integral_truncated_le_integral_envelope_tail
+        (μ := μ) (M := M) henvelope hindex hclass henv hclassIntegrable
+        htruncIntegrable htailIntegrable
+  rw [hdecomp]
+  have htriangle : |sampleDiff - meanDiff| ≤ |sampleDiff| + |meanDiff| := by
+    simpa using (abs_sub_le sampleDiff 0 meanDiff)
+  exact htriangle.trans (add_le_add hsampleTail hmeanTail)
+
+/--
+Supremum-level deterministic untruncation perturbation for the centered
+empirical process.
+
+For fixed `M`, the untruncated centered weighted supremum is controlled by the
+centered `F_M` supremum plus empirical and population envelope-tail errors.
+This is the pointwise inequality needed before applying outer-probability
+perturbation in the final Theorem 2.4.3 assembly.
+-/
+theorem
+    vdVWWeightedClassSupremum_centered_classFun_le_centered_truncated_add_empiricalEnvelopeTail_add_integral
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {μ : Measure Observation} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hn : 0 < n)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) μ)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) μ)
+    (htailIntegrable :
+      Integrable (Set.indicator {x | M < envelope x} envelope) μ)
+    (hbdd_truncated :
+      BddAbove
+        (vdVWWeightedClassValueSet indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂μ)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)) :
+    vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂μ)
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample ≤
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          vdVWTruncatedClassFun classFun envelope M index observation -
+            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂μ)
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample +
+      empiricalAverage sample
+        (fun x => Set.indicator {y | M < envelope y} envelope x) +
+      ∫ x, Set.indicator {y | M < envelope y} envelope x ∂μ := by
+  let truncCentered : Index -> Observation -> ℝ :=
+    fun index observation =>
+      vdVWTruncatedClassFun classFun envelope M index observation -
+        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂μ
+  let origCentered : Index -> Observation -> ℝ :=
+    fun index observation =>
+      classFun index observation - ∫ x, classFun index x ∂μ
+  let empiricalTail :=
+    empiricalAverage sample
+      (fun x => Set.indicator {y | M < envelope y} envelope x)
+  let populationTail :=
+    ∫ x, Set.indicator {y | M < envelope y} envelope x ∂μ
+  let truncSup :=
+    vdVWWeightedClassSupremum indexClass truncCentered
+      (fun _ : Fin n => (n : ℝ)⁻¹) sample
+  have hempiricalTail_nonneg : 0 ≤ empiricalTail := by
+    unfold empiricalTail empiricalAverage
+    exact div_nonneg
+      (Finset.sum_nonneg fun i _hi =>
+        envelope_tail_indicator_nonneg henvelope (sample i))
+      (Nat.cast_nonneg n)
+  have hpopulationTail_nonneg : 0 ≤ populationTail := by
+    unfold populationTail
+    exact integral_nonneg fun x =>
+      envelope_tail_indicator_nonneg henvelope x
+  have hupper_nonneg :
+      0 ≤ truncSup + empiricalTail + populationTail :=
+    add_nonneg
+      (add_nonneg
+        (vdVWWeightedClassSupremum_nonneg indexClass truncCentered
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        hempiricalTail_nonneg)
+      hpopulationTail_nonneg
+  unfold vdVWWeightedClassSupremum
+  apply Real.iSup_le
+  · intro index
+    apply Real.iSup_le
+    · intro hindex
+      let origSum :=
+        vdVWWeightedSampleSum origCentered (fun _ : Fin n => (n : ℝ)⁻¹)
+          index sample
+      let truncSum :=
+        vdVWWeightedSampleSum truncCentered (fun _ : Fin n => (n : ℝ)⁻¹)
+          index sample
+      have htruncAbs :
+          |truncSum| ≤ truncSup := by
+        exact
+          abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove
+            (indexClass := indexClass) (classFun := truncCentered)
+            (weights := fun _ : Fin n => (n : ℝ)⁻¹) (sample := sample)
+            hbdd_truncated hindex
+      have hperturb :
+          |origSum - truncSum| ≤ empiricalTail + populationTail := by
+        unfold origSum truncSum origCentered truncCentered empiricalTail populationTail
+        exact
+          abs_vdVWWeightedSampleSum_centered_classFun_sub_centered_truncated_le_empiricalEnvelopeTail_add_integral
+            (μ := μ) (sample := sample) (M := M) henvelope hindex hn
+            (hclass index hindex) henv (hclassIntegrable index hindex)
+            (htruncIntegrable index hindex) htailIntegrable
+      have hdecomp : truncSum + (origSum - truncSum) = origSum := by
+        ring
+      calc
+        |origSum| = |truncSum + (origSum - truncSum)| :=
+          (congrArg abs hdecomp).symm
+        _ ≤ |truncSum| + |origSum - truncSum| :=
+          abs_add_le truncSum (origSum - truncSum)
+        _ ≤ truncSup + (empiricalTail + populationTail) :=
+          add_le_add htruncAbs hperturb
+        _ = truncSup + empiricalTail + populationTail := by
+          ring
+    · simpa [truncSup, empiricalTail, populationTail, truncCentered] using hupper_nonneg
+  · simpa [truncSup, empiricalTail, populationTail, truncCentered] using hupper_nonneg
+
+/-- Measurability of the empirical envelope-tail average. -/
+theorem measurable_empiricalAverage_envelope_tail
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henv : Measurable envelope) :
+    Measurable fun sample : SampleAt Observation n =>
+      empiricalAverage sample
+        (fun x => Set.indicator {y | M < envelope y} envelope x) := by
+  have htailSet : MeasurableSet {y | M < envelope y} :=
+    measurableSet_lt measurable_const henv
+  have htail :
+      Measurable (fun x => Set.indicator {y | M < envelope y} envelope x) :=
+    henv.indicator htailSet
+  unfold empiricalAverage
+  exact
+    (Finset.measurable_fun_sum Finset.univ fun i _hi =>
+      htail.comp (measurable_pi_apply i)).div_const (n : ℝ)
+
+/-- Integrability of the empirical envelope-tail average under a product law. -/
+theorem integrable_empiricalAverage_envelope_tail
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (htailIntegrable :
+      Integrable (Set.indicator {x | M < envelope x} envelope) P) :
+    Integrable
+      (fun sample : SampleAt Observation n =>
+        empiricalAverage sample
+          (fun x => Set.indicator {y | M < envelope y} envelope x))
+      (vdVWProductMeasure P n) := by
+  let tail : Observation -> ℝ :=
+    fun x => Set.indicator {y | M < envelope y} envelope x
+  have hcomp :
+      ∀ i : Fin n,
+        Integrable (fun sample : SampleAt Observation n => tail (sample i))
+          (vdVWProductMeasure P n) := by
+    intro i
+    simpa [SampleAt, vdVWProductMeasure, tail, Function.comp_def] using
+      (MeasureTheory.integrable_comp_eval
+        (μ := fun _ : Fin n => P) (i := i) htailIntegrable)
+  unfold empiricalAverage
+  exact
+    (MeasureTheory.integrable_finsetSum (s := Finset.univ)
+      (f := fun i (sample : SampleAt Observation n) => tail (sample i))
+      (fun i _hi => hcomp i)).div_const
+      (n : ℝ)
+
+/--
+The expected empirical envelope-tail average equals the population
+envelope-tail integral for positive sample sizes.
+-/
+theorem integral_empiricalAverage_envelope_tail_eq_integral_envelope_tail
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hn : 0 < n)
+    (htailIntegrable :
+      Integrable (Set.indicator {x | M < envelope x} envelope) P) :
+    ∫ sample : SampleAt Observation n,
+        empiricalAverage sample
+          (fun x => Set.indicator {y | M < envelope y} envelope x)
+        ∂(vdVWProductMeasure P n) =
+      ∫ x, Set.indicator {y | M < envelope y} envelope x ∂P := by
+  let tail : Observation -> ℝ :=
+    fun x => Set.indicator {y | M < envelope y} envelope x
+  have hn_cast : (n : ℝ) ≠ 0 :=
+    Nat.cast_ne_zero.mpr (Nat.ne_of_gt hn)
+  have hsumWeights : (∑ _i : Fin n, (n : ℝ)⁻¹) = 1 := by
+    calc
+      (∑ _i : Fin n, (n : ℝ)⁻¹)
+          = (n : ℝ) * (n : ℝ)⁻¹ := by
+            simp [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+              nsmul_eq_mul]
+      _ = 1 := by
+            field_simp [hn_cast]
+  have hweighted :
+      ∫ sample : SampleAt Observation n,
+          (∑ i : Fin n, (n : ℝ)⁻¹ * tail (sample i))
+          ∂(vdVWProductMeasure P n) =
+        ∑ i : Fin n, (n : ℝ)⁻¹ * ∫ x, tail x ∂P := by
+    simpa [SampleAt, vdVWProductMeasure, tail] using
+      (StatInference.ProbabilityMeasure.probability_pi_integral_weighted_sum
+        (P := fun _ : Fin n =>
+          (⟨P, inferInstance⟩ :
+            MeasureTheory.ProbabilityMeasure Observation))
+        (f := fun _ : Fin n => tail)
+        (weights := fun _ : Fin n => (n : ℝ)⁻¹)
+        (fun _ => htailIntegrable))
+  calc
+    ∫ sample : SampleAt Observation n,
+        empiricalAverage sample
+          (fun x => Set.indicator {y | M < envelope y} envelope x)
+        ∂(vdVWProductMeasure P n)
+        =
+      ∫ sample : SampleAt Observation n,
+          (∑ i : Fin n, (n : ℝ)⁻¹ * tail (sample i))
+        ∂(vdVWProductMeasure P n) := by
+        congr 1
+        funext sample
+        unfold empiricalAverage tail
+        symm
+        rw [← Finset.mul_sum, inv_mul_eq_div]
+    _ = ∑ i : Fin n, (n : ℝ)⁻¹ * ∫ x, tail x ∂P := hweighted
+    _ = ∫ x, tail x ∂P := by
+        calc
+          (∑ i : Fin n, (n : ℝ)⁻¹ * ∫ x, tail x ∂P)
+              = (∑ _i : Fin n, (n : ℝ)⁻¹) *
+                  ∫ x, tail x ∂P := by
+                rw [Finset.sum_mul]
+          _ = ∫ x, tail x ∂P := by
+                rw [hsumWeights]
+                ring
+
+/--
+Outer expectation of the empirical envelope-tail average is the ordinary
+population envelope-tail integral.
+-/
+theorem VdVWOuterExpectation_empiricalEnvelopeTail_eq_ofReal_integral_tail
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hn : 0 < n)
+    (henv : Measurable envelope)
+    (henvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (htailIntegrable :
+      Integrable (Set.indicator {x | M < envelope x} envelope) P) :
+    VdVWOuterExpectation (vdVWProductMeasure P n)
+        (fun sample : SampleAt Observation n =>
+          ENNReal.ofReal
+            (empiricalAverage sample
+              (fun x => Set.indicator {y | M < envelope y} envelope x))) =
+      ENNReal.ofReal
+        (∫ x, Set.indicator {y | M < envelope y} envelope x ∂P) := by
+  let empiricalTail : SampleAt Observation n -> ℝ :=
+    fun sample =>
+      empiricalAverage sample
+        (fun x => Set.indicator {y | M < envelope y} envelope x)
+  have hemp_meas : Measurable empiricalTail := by
+    simpa [empiricalTail] using
+      measurable_empiricalAverage_envelope_tail
+        (n := n) (M := M) henv
+  have hemp_int :
+      Integrable empiricalTail (vdVWProductMeasure P n) := by
+    simpa [empiricalTail] using
+      integrable_empiricalAverage_envelope_tail
+        (P := P) (n := n) (M := M) htailIntegrable
+  have hemp_nonneg :
+      ∀ᵐ sample ∂(vdVWProductMeasure P n), 0 ≤ empiricalTail sample := by
+    exact ae_of_all _ fun sample => by
+      unfold empiricalTail empiricalAverage
+      exact div_nonneg
+        (Finset.sum_nonneg fun i _hi => by
+          by_cases htail : M < envelope (sample i)
+          · simpa [Set.indicator, htail] using henvelope_nonneg (sample i)
+          · simp [Set.indicator, htail])
+        (Nat.cast_nonneg n)
+  have houter :
+      VdVWOuterExpectation (vdVWProductMeasure P n)
+          (fun sample : SampleAt Observation n =>
+            ENNReal.ofReal (empiricalTail sample)) =
+        ENNReal.ofReal
+          (∫ sample : SampleAt Observation n, empiricalTail sample
+            ∂(vdVWProductMeasure P n)) := by
+    exact
+      VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg
+        (VdVWMeasurableCover.ofMeasurable (vdVWProductMeasure P n)
+          hemp_meas.ennreal_ofReal)
+        hemp_int hemp_nonneg
+  rw [houter]
+  congr 1
+  simpa [empiricalTail] using
+    integral_empiricalAverage_envelope_tail_eq_integral_envelope_tail
+      (P := P) (n := n) (M := M) hn htailIntegrable
+
+/--
+Markov outer-probability control for the empirical envelope-tail average.
+-/
+theorem VdVWOuterProbability_empiricalEnvelopeTail_gt_le_integral_tail_div
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    (hn : 0 < n)
+    (hepsilon : 0 < epsilon)
+    (henv : Measurable envelope)
+    (henvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (htailIntegrable :
+      Integrable (Set.indicator {x | M < envelope x} envelope) P) :
+    VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          ENNReal.ofReal epsilon <
+            ENNReal.ofReal
+              (empiricalAverage sample
+                (fun x => Set.indicator {y | M < envelope y} envelope x))} ≤
+      ENNReal.ofReal
+        (∫ x, Set.indicator {y | M < envelope y} envelope x ∂P) /
+        ENNReal.ofReal epsilon := by
+  let empiricalTail : SampleAt Observation n -> ℝ :=
+    fun sample =>
+      empiricalAverage sample
+        (fun x => Set.indicator {y | M < envelope y} envelope x)
+  have hemp_meas : Measurable empiricalTail := by
+    simpa [empiricalTail] using
+      measurable_empiricalAverage_envelope_tail
+        (n := n) (M := M) henv
+  calc
+    VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          ENNReal.ofReal epsilon < ENNReal.ofReal (empiricalTail sample)}
+        ≤
+      VdVWOuterExpectation (vdVWProductMeasure P n)
+          (fun sample : SampleAt Observation n =>
+            ENNReal.ofReal (empiricalTail sample)) /
+        ENNReal.ofReal epsilon := by
+        exact
+          VdVWOuterProbability_lt_le_outerExpectation_div_cover
+            (VdVWMeasurableCover.ofMeasurable (vdVWProductMeasure P n)
+              hemp_meas.ennreal_ofReal)
+            (ENNReal.ofReal_ne_zero_iff.mpr hepsilon) ENNReal.ofReal_ne_top
+    _ =
+      ENNReal.ofReal
+          (∫ x, Set.indicator {y | M < envelope y} envelope x ∂P) /
+        ENNReal.ofReal epsilon := by
+        rw [
+          VdVWOuterExpectation_empiricalEnvelopeTail_eq_ofReal_integral_tail
+            (P := P) (n := n) (M := M) hn henv henvelope_nonneg
+            htailIntegrable]
+
 /-- Coordinate measurability is preserved by the `F_M` truncation. -/
 theorem VdVWClassCoordinateMeasurable.truncate
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
