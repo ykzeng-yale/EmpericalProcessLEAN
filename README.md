@@ -62,6 +62,7 @@ StatInference/
   Asymptotics/          minimal deterministic support lemmas
   ProbabilityMeasure/   probability-measure and process-law support wrappers
   EmpiricalProcess/     active VdV&W formalization layer
+  Optimization/         Chewi optimization formalization layer
 Reports/
   Theorem_2_4_1_Bracketing_GC/
   VdVW_<item-number>_<short_slug>/
@@ -125,6 +126,14 @@ docs/billingsley1995_progress_dashboard.md
 docs/billingsley1995_current_blocker_primitive_plan.md
 ```
 
+The Chewi optimization lane is tracked in:
+
+```text
+docs/optimization2026_formalization_blueprint.md
+docs/optimization2026_progress_dashboard.md
+docs/optimization2026_current_blocker_primitive_plan.md
+```
+
 Recurring proof automations should be treated as mutable proof-state
 orchestration.  After any automation run verifies new Lean declarations,
 narrows a blocker, merges another agent's work, or changes the next atomic
@@ -183,6 +192,7 @@ Textbooks/Vaart1996/PDF/
 Textbooks/Vaart1996/Screenshots/
 Textbooks/Billingsley1995/Markdown/
 Textbooks/Billingsley1995/PDF/
+Textbooks/Optimization2026/
 ```
 
 These paths are intentional source-audit anchors for cross-checking Lean
@@ -204,8 +214,11 @@ Chapter 2 theorem-level results, while also developing Billingsley probability
 and measure wrappers under `StatInference/ProbabilityMeasure/` when they supply
 reusable foundations for outer expectation, measurability, weak convergence,
 tightness, product/Fubini, independence, strong laws, and empirical CDF
-arguments.  Mathlib foundations should be reused whenever available; missing
-book-specific primitives should be built locally.
+arguments.  A parallel Chewi optimization lane under
+`StatInference/Optimization/` is now starting with convexity, smoothness,
+gradient descent, and discrete Gronwall foundations.  Mathlib foundations
+should be reused whenever available; missing book-specific primitives should be
+built locally.
 
 The completed Theorem 2.4.1 proof has the following formalization shape:
 
