@@ -3,4 +3,5 @@ import StatInference.ProbabilityMeasure.FiniteDimensional
 import StatInference.ProbabilityMeasure.GeneratedSigma
 import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.StrongLaw
+import StatInference.ProbabilityMeasure.Tail
 import StatInference.ProbabilityMeasure.WeakConvergence

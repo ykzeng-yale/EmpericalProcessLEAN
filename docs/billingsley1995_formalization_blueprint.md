@@ -66,6 +66,7 @@ Initial Lean module:
 - `StatInference/ProbabilityMeasure/GeneratedSigma.lean`
 - `StatInference/ProbabilityMeasure/ProductMeasure.lean`
 - `StatInference/ProbabilityMeasure/StrongLaw.lean`
+- `StatInference/ProbabilityMeasure/Tail.lean`
 
 Reuse audit:
 
@@ -100,6 +101,9 @@ Current compiled wrappers:
   finite/probability measure extensionality wrappers
 - real-valued strong-law, centered strong-law, and finite-family centered
   strong-law wrappers
+- layer-cake, tail-integral monotonicity, split-at-radius probability tail,
+  and extended-nonnegative Markov wrappers in
+  `StatInference/ProbabilityMeasure/Tail.lean`
 - fixed-endpoint empirical-distribution/CDF support wrappers in
   `StatInference/EmpiricalProcess/RealHalfLineGC.lean`, including the
   fixed-endpoint almost-sure, convergence-in-probability/`TendstoInMeasure`,
@@ -110,22 +114,28 @@ Current compiled wrappers:
 Billingsley Sections 15-16 supply the tail and integration-to-the-limit
 language needed for VdV&W Theorem 2.4.3.
 
-Near-term empirical-process targets:
+Current compiled wrappers:
 
-- envelope tail handoff for outer expectation:
-  `vdVWOuterExpectation_envelopeTail_le_lintegral_tail_cover`
-- truncation error control:
-  `vdVWOuterExpectation_truncationError_le_envelopeTail`
-- outer-expectation algebra:
-  additivity bounds, scalar multiplication bounds, and pointwise domination
-  handoffs.
+- layer-cake tail-integral wrappers over
+  `Mathlib.MeasureTheory.Integral.Layercake`
+- measurable/nonnegative tail-integral support wrappers for empirical-process
+  truncation and envelope-tail handoffs
+- a split-at-radius probability tail bound for nonnegative integrable random
+  variables
+- extended-nonnegative Markov tail wrappers over
+  `Mathlib.MeasureTheory.Integral.Lebesgue.Markov`
+- source-crosswalk support for Billingsley Sections 15-16 integration/tail
+  language, not an exact Billingsley theorem report
 
 Search anchors:
 
 - mathlib dominated convergence and uniform integrability APIs
+- `Mathlib.MeasureTheory.Integral.Layercake`
+- `Mathlib.MeasureTheory.Integral.Lebesgue.Markov`
 - local `StatInference/EmpiricalProcess/OuterExpectation.lean`
 - local `StatInference/EmpiricalProcess/OuterProbabilityExpectation.lean`
 - local `StatInference/EmpiricalProcess/Theorem243.lean`
+- local `StatInference/ProbabilityMeasure/Tail.lean`
 
 ### Lane C: Product measure, Fubini, and independent copies
 

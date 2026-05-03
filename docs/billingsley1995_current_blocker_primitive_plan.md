@@ -28,6 +28,8 @@ Pinned mathlib searches found reusable APIs in:
 - `MeasureTheory.Measure.LevyProkhorovMetric`
 - `MeasureTheory.Function.ConvergenceInMeasure`
 - `MeasureTheory.Function.ConvergenceInDistribution`
+- `MeasureTheory.Integral.Layercake`
+- `MeasureTheory.Integral.Lebesgue.Markov`
 - `MeasureTheory.PiSystem`
 - `MeasureTheory.Measure.Typeclasses.Finite`
 - `MeasureTheory.MeasurableSpace.Pi`
@@ -55,6 +57,7 @@ Local searches found reusable APIs in:
 - `StatInference/ProbabilityMeasure/BorelCantelli.lean`
 - `StatInference/ProbabilityMeasure/GeneratedSigma.lean`
 - `StatInference/ProbabilityMeasure/StrongLaw.lean`
+- `StatInference/ProbabilityMeasure/Tail.lean`
 
 ## Primitive Sequence
 
@@ -67,8 +70,14 @@ Local searches found reusable APIs in:
 4. If an exact Section 25 theorem requires only packaging existing APIs, create
    the exact theorem declaration first, then the report.
 5. In parallel, push Section 16/18 support for VdV&W Theorem 2.4.3:
-   envelope-tail, truncation-error, finite-product/Fubini, and independent-copy
-   wrappers.  The content-based Section 18 wrapper layer has started in
+   envelope-tail, truncation-error, layer-cake/tail-integral,
+   finite-product/Fubini, and independent-copy wrappers. The content-based
+   Section 16 wrapper layer has started in
+   `StatInference/ProbabilityMeasure/Tail.lean`; it packages mathlib
+   layer-cake, tail-integral monotonicity, split-at-radius, and Markov APIs for
+   downstream empirical-process use. This is support infrastructure, not a
+   source-exact Billingsley Sections 15-16 report. The content-based Section 18
+   wrapper layer has started in
    `StatInference/ProbabilityMeasure/ProductMeasure.lean`; it now includes
    product-coordinate marginal projection and separated product-expectation
    identities for binary product probability spaces.  The remaining work is to
@@ -97,8 +106,11 @@ of:
   probability. This is not a source-exact formalization of Billingsley Theorem
   20.6; the remaining exact Theorem 20.6 route is the uniform-in-`x` statement,
   likely via the finite-grid route; or
-- a Section 16 tail-control primitive in the empirical-process files that
-  directly unlocks `StatInference/EmpiricalProcess/Theorem243.lean`; or
+- the next Section 16 tail-control specialization needed by
+  `StatInference/EmpiricalProcess/Theorem243.lean`, using the compiled
+  `StatInference/ProbabilityMeasure/Tail.lean` layer-cake/tail wrappers where
+  the statement is reusable, and keeping VdV&W-specific outer-expectation
+  handoffs in the empirical-process files; or
 - the next Section 18 independent-copy specialization using
   `probability_integral_prod_fst`, `probability_integral_prod_snd`, and
   `probability_integral_prod_mul` to erase unused product coordinates in the
