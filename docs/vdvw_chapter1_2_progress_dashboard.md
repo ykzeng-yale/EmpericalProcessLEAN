@@ -187,10 +187,11 @@ finite cardinality process also has the domination wrapper
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite`. The
 countable-class cover-event route is now compiled as
 `nonempty_finiteEmpiricalL1CoverAtCard_iff_exists_centers`,
+`measurable_empiricalL1Distance_of_measurable`,
 `measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`,
 `measurable_empiricalL1CoveringNumber_of_countable`, and
-`measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`, conditional on
-measurability of the pairwise empirical-distance processes. The
+`measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`, plus measurable
+class specializations. The
 deterministic finite-net log-bound suppliers
 `vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le`,
 `vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le`,
@@ -199,9 +200,10 @@ and
 `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
 plus the fixed-`M` centered-truncated consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
-are also compiled. The remaining blocker is supplying measurable cardinality
-from those cover events, the deterministic normalized log-cardinality bound or
-a genuine bounded/UI replacement, and a shrinking deterministic
+are also compiled. The remaining blocker is instantiating selected
+minimal-cardinality measurability under countability or selection hypotheses,
+supplying the deterministic normalized log-cardinality bound or a genuine
+bounded/UI replacement, and a shrinking deterministic
 `coverRadius -> 0` diagonal selection from the all-radius entropy route, then final
 assembly.
 The product-integrated symmetrization route now also has the composed

@@ -960,16 +960,16 @@ Search record for the symmetrization precursor package:
   cardinality domination wrapper, and the deterministic normalized
   log-cardinality bound suppliers.  The countable-class route now also has the
   witness-free characterization
-  `nonempty_finiteEmpiricalL1CoverAtCard_iff_exists_centers`, the measurable
-  event wrapper `measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`, and
-  the direct composed wrappers
-  `measurable_empiricalL1CoveringNumber_of_countable` and
-  `measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`, conditional on
-  measurability of the pairwise empirical-distance processes.  The theorem
-  route still needs pairwise empirical-distance measurability to instantiate
-  that countable route, or a sharper finite/selected-center event lemma for the
-  actual theorem class, plus either the deterministic log-ratio bound input or
-  a genuine bounded/UI replacement, and the diagonal cover-radius selector.
+  `nonempty_finiteEmpiricalL1CoverAtCard_iff_exists_centers`, the pairwise
+  distance bridge `measurable_empiricalL1Distance_of_measurable`, the measurable
+  event wrapper `measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`, the
+  direct wrappers `measurable_empiricalL1CoveringNumber_of_countable` and
+  `measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`, and their
+  measurable-class specializations.  The theorem route still needs a countable
+  selected class with finite empirical covers, or a sharper finite/selected-center
+  event lemma for the actual theorem class, plus either the deterministic
+  log-ratio bound input or a genuine bounded/UI replacement, and the diagonal
+  cover-radius selector.
   Follow-up search found no ready
   variable-domain `UniformIntegrable`/Vitali API; the practical alternatives are
   keeping deterministic boundedness or adding a new explicit variable-domain
@@ -1025,12 +1025,13 @@ measurable-cardinality finite-net mean consumer, random finite-net upper
 measurability/integrability packaging, and bounded entropy-to-integrated-mean
 consumer, plus the fixed-`M` bounded entropy/measurable-cardinality convergence
 consumer, inverse-radius consumer, cover-event-to-covering-number measurability
-abstraction, least finite-cardinality measurability wrapper, and minimal
-finite-cardinality domination wrapper, are closed. Next instantiate
-fixed-cardinality cover-event measurability for the selected minimal finite
-cardinality route, derive or supply the deterministic log-ratio bound or genuine
-bounded/UI replacement, prove the diagonal shrinking cover-radius selector, and
-then assemble the final Theorem 2.4.3 handoffs.
+  abstraction, least finite-cardinality measurability wrapper, minimal
+  finite-cardinality domination wrapper, pairwise empirical-distance measurability
+  bridge, and countable covering-number/cardinality wrappers, are closed. Next
+  instantiate the selected minimal finite cardinality route under a countability
+  or selection hypothesis, derive or supply the deterministic log-ratio bound or
+  genuine bounded/UI replacement, prove the diagonal shrinking cover-radius
+  selector, and then assemble the final Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

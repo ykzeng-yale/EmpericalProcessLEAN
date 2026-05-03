@@ -5439,13 +5439,38 @@ theorem VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite
     (hfinite :
       ∀ ω n,
         HasFiniteEmpiricalL1Cover (samplePath X ω n) indexClass classFun
-  epsilon) :
+          epsilon) :
     VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass classFun
       epsilon
       (fun ω n => finiteEmpiricalL1CoveringNumberCard (hfinite ω n)) := by
   intro ω n
   simp [vdVWRandomEmpiricalL1CoveringNumber,
     empiricalL1CoveringNumber_eq_find (hfinite ω n)]
+
+/--
+Sample-path form of the minimal finite empirical-cover cardinality domination.
+
+This is the direct supplier for theorem-facing cardinality processes of shape
+`(n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ`.
+-/
+theorem VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {coverRadius : ℕ -> ℝ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hfinite :
+      ∀ n (sample : SampleAt Observation n) m,
+        HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+          classFun (coverRadius n)) :
+    ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun (coverRadius n)
+        (fun sample m =>
+          finiteEmpiricalL1CoveringNumberCard (hfinite n sample m)) := by
+  intro n
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite
+      (X n) (hfinite n)
 
 /--
 The random empirical covering-number domination supplies concrete finite

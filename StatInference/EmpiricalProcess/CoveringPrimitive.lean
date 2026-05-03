@@ -376,6 +376,21 @@ noncomputable def finiteEmpiricalL1CoveringNumberCard
     classical
     exact Nat.find hfinite
 
+/-- The least finite empirical-cover cardinality is invariant under sample equality. -/
+theorem finiteEmpiricalL1CoveringNumberCard_congr_sample
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample sample' : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hsample : sample = sample')
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon)
+    (hfinite' :
+      HasFiniteEmpiricalL1Cover sample' indexClass classFun epsilon) :
+    finiteEmpiricalL1CoveringNumberCard hfinite =
+      finiteEmpiricalL1CoveringNumberCard hfinite' := by
+  subst hsample
+  simp [finiteEmpiricalL1CoveringNumberCard]
+
 /--
 The deterministic empirical `L1(P_n)` covering number.
 
@@ -505,9 +520,10 @@ theorem measurableSet_finiteEmpiricalL1CoverAtCard_of_countable
     {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
     (cardinality : ℕ)
     (hdist :
-      ∀ index center,
-        Measurable fun sample : SampleAt Observation n =>
-          empiricalL1Distance sample (classFun index) (classFun center)) :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          Measurable fun sample : SampleAt Observation n =>
+            empiricalL1Distance sample (classFun index) (classFun center)) :
     MeasurableSet
       {sample : SampleAt Observation n |
         Nonempty
@@ -551,7 +567,9 @@ theorem measurableSet_finiteEmpiricalL1CoverAtCard_of_countable
           rw [hset]
           exact
             MeasurableSet.iUnion fun centerIndex =>
-              measurableSet_le (hdist index (center centerIndex))
+              measurableSet_le
+                (hdist index hindex (center centerIndex)
+                  (hcenter_mem centerIndex))
                 measurable_const
         · have hset :
               {sample : SampleAt Observation n |
@@ -602,16 +620,16 @@ theorem measurableSet_finiteEmpiricalL1CoverAtCard_of_countable_of_measurable
     [Countable Index] {n : ℕ} {indexClass : Set Index}
     {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
     (cardinality : ℕ)
-    (hclass : ∀ index, Measurable (classFun index)) :
+    (hclass : ∀ index, index ∈ indexClass -> Measurable (classFun index)) :
     MeasurableSet
       {sample : SampleAt Observation n |
         Nonempty
           (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
             cardinality)} :=
   measurableSet_finiteEmpiricalL1CoverAtCard_of_countable cardinality
-    (fun index center =>
+    (fun index hindex center hcenter =>
       measurable_empiricalL1Distance_of_measurable
-        (hclass index) (hclass center))
+        (hclass index hindex) (hclass center hcenter))
 
 /--
 Measurability of the empirical `L1(P_n)` covering number from measurable
@@ -767,24 +785,46 @@ theorem measurable_finiteEmpiricalL1CoveringNumberCard_of_cover_event_measurable
       hfinite hcover
 
 /--
-The empirical `L1(P_n)` covering number is measurable for countable classes of
-measurable functions.
+For countable classes, pairwise empirical-distance measurability makes the
+empirical `L1(P_n)` covering number measurable.
 -/
 theorem measurable_empiricalL1CoveringNumber_of_countable
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
     [Countable Index] {n : ℕ} {indexClass : Set Index}
     {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
-    (hclass : ∀ index, Measurable (classFun index)) :
+    (hdist :
+      ∀ index center,
+        Measurable fun sample : SampleAt Observation n =>
+          empiricalL1Distance sample (classFun index) (classFun center)) :
+    Measurable fun sample : SampleAt Observation n =>
+      empiricalL1CoveringNumber sample indexClass classFun epsilon := by
+  exact
+    measurable_empiricalL1CoveringNumber_of_cover_event_measurable
+      (fun cardinality =>
+        measurableSet_finiteEmpiricalL1CoverAtCard_of_countable cardinality
+          (fun index _hindex center _hcenter => hdist index center))
+
+/--
+The empirical `L1(P_n)` covering number is measurable for countable classes of
+measurable functions.
+-/
+theorem measurable_empiricalL1CoveringNumber_of_countable_of_measurable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    [Countable Index] {n : ℕ} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hclass : ∀ index, index ∈ indexClass -> Measurable (classFun index)) :
     Measurable fun sample : SampleAt Observation n =>
       empiricalL1CoveringNumber sample indexClass classFun epsilon :=
   measurable_empiricalL1CoveringNumber_of_cover_event_measurable
     (fun cardinality =>
-      measurableSet_finiteEmpiricalL1CoverAtCard_of_countable_of_measurable
-        cardinality hclass)
+      measurableSet_finiteEmpiricalL1CoverAtCard_of_countable cardinality
+        (fun index hindex center hcenter =>
+          measurable_empiricalL1Distance_of_measurable
+            (hclass index hindex) (hclass center hcenter)))
 
 /--
-The least finite empirical-cover cardinality is measurable for countable classes
-of measurable functions, once every sample has a finite empirical cover.
+For countable classes with finite empirical covers, pairwise empirical-distance
+measurability makes the least finite cover cardinality measurable.
 -/
 theorem measurable_finiteEmpiricalL1CoveringNumberCard_of_countable
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
@@ -793,14 +833,40 @@ theorem measurable_finiteEmpiricalL1CoveringNumberCard_of_countable
     (hfinite :
       ∀ sample : SampleAt Observation n,
         HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon)
-    (hclass : ∀ index, Measurable (classFun index)) :
+    (hdist :
+      ∀ index center,
+        Measurable fun sample : SampleAt Observation n =>
+          empiricalL1Distance sample (classFun index) (classFun center)) :
+    Measurable fun sample : SampleAt Observation n =>
+      finiteEmpiricalL1CoveringNumberCard (hfinite sample) := by
+  exact
+    measurable_finiteEmpiricalL1CoveringNumberCard_of_cover_event_measurable
+      hfinite
+      (fun cardinality =>
+        measurableSet_finiteEmpiricalL1CoverAtCard_of_countable cardinality
+          (fun index _hindex center _hcenter => hdist index center))
+
+/--
+The least finite empirical-cover cardinality is measurable for countable classes
+of measurable functions, once every sample has a finite empirical cover.
+-/
+theorem measurable_finiteEmpiricalL1CoveringNumberCard_of_countable_of_measurable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    [Countable Index] {n : ℕ} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hfinite :
+      ∀ sample : SampleAt Observation n,
+        HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon)
+    (hclass : ∀ index, index ∈ indexClass -> Measurable (classFun index)) :
     Measurable fun sample : SampleAt Observation n =>
       finiteEmpiricalL1CoveringNumberCard (hfinite sample) :=
   measurable_finiteEmpiricalL1CoveringNumberCard_of_cover_event_measurable
     hfinite
     (fun cardinality =>
-      measurableSet_finiteEmpiricalL1CoverAtCard_of_countable_of_measurable
-        cardinality hclass)
+      measurableSet_finiteEmpiricalL1CoverAtCard_of_countable cardinality
+        (fun index hindex center hcenter =>
+          measurable_empiricalL1Distance_of_measurable
+            (hclass index hindex) (hclass center hcenter)))
 
 /--
 A finite upper bound on the numeric empirical covering number produces an

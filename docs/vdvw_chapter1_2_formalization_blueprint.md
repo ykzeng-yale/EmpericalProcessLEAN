@@ -486,8 +486,12 @@ above, so they do not change the theorem-level dashboard counts.
    `measurable_finiteEmpiricalL1CoveringNumberCard_of_cover_event_measurable`,
    the minimal finite cardinality domination wrapper
    `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite`, and the
-   countable fixed-cardinality cover-event wrapper
-   `measurableSet_finiteEmpiricalL1CoverAtCard_of_countable` are compiled.  The
+   countable-class route
+   `nonempty_finiteEmpiricalL1CoverAtCard_iff_exists_centers`,
+   `measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`,
+   `measurable_empiricalL1CoveringNumber_of_countable`,
+   `measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`, plus the
+   measurable-member convenience wrappers, are compiled.  The
    deterministic finite-net log-bound suppliers
    `vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le`,
    `vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le`,
@@ -496,11 +500,12 @@ above, so they do not change the theorem-level dashboard counts.
    `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
    plus the fixed-`M` centered-truncated consumer
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
-   are now compiled as well.  The next frontier is deriving/supplying diagonal
-   entropy/cardinality hypotheses for the inverse-radius route, pairwise
-   empirical-distance measurability to instantiate the countable cover-event
-   wrapper, and the boundedness/UI or dominated-convergence input, then final
-   assembly.
+   are now compiled as well.  The next frontier is feeding the countable
+   minimal-cardinality route into the selected random empirical-cover
+   cardinality where the theorem class is countable/measurable, supplying a
+   deterministic normalized log-cardinality bound or genuine boundedness/UI
+   input from entropy, and proving a diagonal shrinking empirical-cover radius
+   selector from the all-radius entropy hypothesis, then final assembly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

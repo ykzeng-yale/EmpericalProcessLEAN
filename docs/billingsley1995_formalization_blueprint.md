@@ -399,11 +399,16 @@ compiled. The covering primitive layer also now has
 `measurable_empiricalL1CoveringNumber_of_cover_event_measurable` and
 `measurable_finiteEmpiricalL1CoveringNumberCard_of_cover_event_measurable`,
 reducing empirical covering-number and least finite-cardinality measurability
-to fixed-cardinality cover-event measurability; proving those events under
-countable or finite center-selection hypotheses is the next
-measurable-cardinality route. The theorem-local minimal finite cardinality
+to fixed-cardinality cover-event measurability. The theorem-local minimal finite
+cardinality
 process also has
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite`. The
+countable-class fixed-cardinality cover-event route is compiled as
+`nonempty_finiteEmpiricalL1CoverAtCard_iff_exists_centers`,
+`measurable_empiricalL1Distance_of_measurable`,
+`measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`,
+`measurable_empiricalL1CoveringNumber_of_countable`, and
+`measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`. The
 deterministic finite-net log-bound suppliers
 `vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le`,
 `vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le`,
@@ -412,11 +417,11 @@ and
 `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
 plus the fixed-`M` centered-truncated consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
-are also compiled. Next prove countable/finite fixed-cardinality cover-event
-measurability, then supply a deterministic normalized log-cardinality bound or
-a genuine boundedness/UI replacement and prove a diagonal shrinking cover
-radius selector to turn the entropy hypotheses into the required real
-integrated upper, now past the
+are also compiled. Next instantiate the selected minimal-cardinality route under
+a countability or selection hypothesis, then supply a deterministic normalized
+log-cardinality bound or a genuine boundedness/UI replacement and prove a
+diagonal shrinking cover radius selector to turn the entropy hypotheses into the
+required real integrated upper, now past the
 fixed-sample,
 integral-lift, product-projection/Fubini, same-weight pair split, deterministic
 sign-negation, ordinary random-sign averaging, product-cover, sample-cover,

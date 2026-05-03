@@ -306,10 +306,12 @@ Local searches found reusable APIs in:
 The next high-value proof step is the theorem-specific Section 18/entropy
 assembly for VdV&W Theorem 2.4.3:
 
-- prove the fixed-cardinality empirical-cover event measurability needed by the
-  minimal selected-cardinality route, starting with countable or finite
-  center-selection hypotheses and reusing
-  `measurable_finiteEmpiricalL1CoveringNumberCard_of_cover_event_measurable`;
+- instantiate the compiled countable-class minimal-cardinality route
+  (`measurable_empiricalL1Distance_of_measurable`,
+  `measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`, and
+  `measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`) under the
+  selected class countability/finite-cover hypotheses, or prove the needed
+  finite/selected-center event lemma for an uncountable class;
 - then supply the deterministic normalized log-cardinality bound or a genuine
   variable-domain UI replacement and prove the diagonal shrinking
   `coverRadius -> 0` selector from the all-radius entropy route;
@@ -494,7 +496,13 @@ For arbitrary uncountable index classes, that fixed-cardinality event remains
 the real measurable-selection input; countable or finite center-selection
 hypotheses are the next plausible route. The minimal finite cardinality process
 also has
-`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite`. The
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite`, and the
+countable-class fixed-cardinality cover-event route is compiled as
+`nonempty_finiteEmpiricalL1CoverAtCard_iff_exists_centers`,
+`measurable_empiricalL1Distance_of_measurable`,
+`measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`,
+`measurable_empiricalL1CoveringNumber_of_countable`, and
+`measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`. The
 deterministic finite-net log-bound suppliers
 `vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le`,
 `vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le`,
@@ -503,10 +511,10 @@ and
 `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
 plus the fixed-`M` centered-truncated consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
-are also compiled. The next proof target is proving countable/finite
-fixed-cardinality cover-event measurability, then supplying the deterministic
-normalized log-cardinality bound or a genuine variable-domain boundedness/UI
-replacement from the entropy hypotheses and proving a diagonal shrinking cover
-radius selector, not a fixed-sample pointwise comparison or product-a.e.
-finite-center Hoeffding predicate. Do not add
+are also compiled. The next proof target is proving pairwise
+empirical-distance measurability for countable classes, then supplying the
+deterministic normalized log-cardinality bound or a genuine variable-domain
+boundedness/UI replacement from the entropy hypotheses and proving a diagonal
+shrinking cover-radius selector, not a fixed-sample pointwise comparison or
+product-a.e. finite-center Hoeffding predicate. Do not add
 another product surface unless that assembly exposes a sharper missing API.
