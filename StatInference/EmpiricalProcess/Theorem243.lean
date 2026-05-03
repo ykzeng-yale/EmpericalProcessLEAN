@@ -4723,6 +4723,209 @@ theorem
       cover (fun i : Fin n => sign i ω) hsignω hepsilon_nonneg hM_nonneg hmaxω
 
 /--
+Expectation-level random-sign finite-net handoff for a fixed empirical cover.
+
+This is the version compatible with the compiled sub-Gaussian/Hoeffding stack:
+it consumes the expected finite-center maximal bound, rather than the stronger
+pointwise finite-center Hoeffding predicate.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_expectedMaximal
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon M : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality)
+    (sign : Fin n -> Ω -> ℝ)
+    (hsign : ∀ᵐ ω ∂μ, VdVWRademacherSignVector (fun i : Fin n => sign i ω))
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hsupIntegrable :
+      Integrable
+        (fun ω =>
+          vdVWWeightedClassSupremum indexClass classFun
+            (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample)
+        μ)
+    (hcenterSupIntegrable :
+      Integrable
+        (fun ω =>
+          vdVWFiniteCenterWeightedSupremum sample classFun cover.center
+            (vdVWRademacherWeights (fun i : Fin n => sign i ω)))
+        μ)
+    (hexpected :
+      VdVWTheorem243FiniteCenterExpectedMaximalBound μ
+        (fun centerIndex : Fin cardinality =>
+          fun ω =>
+            vdVWWeightedSampleSum classFun
+              (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+              (cover.center centerIndex) sample)
+        (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M)) :
+    ∫ ω,
+        vdVWWeightedClassSupremum indexClass classFun
+          (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample ∂μ ≤
+      vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M + epsilon := by
+  let centerSup : Ω -> ℝ :=
+    fun ω =>
+      vdVWFiniteCenterWeightedSupremum sample classFun cover.center
+        (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+  have hpoint :
+      ∀ᵐ ω ∂μ,
+        vdVWWeightedClassSupremum indexClass classFun
+            (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample ≤
+          centerSup ω + epsilon := by
+    filter_upwards [hsign] with ω hsignω
+    exact
+      vdVWWeightedClassSupremum_le_finiteCenterWeightedSupremum_add_of_finiteEmpiricalL1CoverAtCard
+        (sample := sample) (indexClass := indexClass) (classFun := classFun)
+        (epsilon := epsilon) cover
+        (abs_vdVWRademacherWeights_le_inv_card_of_signVector hsignω)
+        hepsilon_nonneg
+  have hmono :
+      ∫ ω,
+          vdVWWeightedClassSupremum indexClass classFun
+            (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample ∂μ ≤
+        ∫ ω, centerSup ω + epsilon ∂μ :=
+    integral_mono_ae hsupIntegrable
+      (hcenterSupIntegrable.add (integrable_const epsilon)) hpoint
+  have hcenter_le :
+      ∫ ω, centerSup ω ∂μ ≤
+        vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M := by
+    change
+      (∫ ω,
+        vdVWFiniteCenterWeightedSupremum sample classFun cover.center
+          (vdVWRademacherWeights (fun i : Fin n => sign i ω)) ∂μ) ≤
+        vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M
+    simpa [centerSup, vdVWFiniteCenterWeightedSupremum,
+      VdVWTheorem243FiniteCenterExpectedMaximalBound,
+      vdVWTheorem243FiniteCenterExpectedSupremum] using hexpected
+  calc
+    ∫ ω,
+        vdVWWeightedClassSupremum indexClass classFun
+          (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample ∂μ
+        ≤ ∫ ω, centerSup ω + epsilon ∂μ := hmono
+    _ = ∫ ω, centerSup ω ∂μ + epsilon := by
+          have hconst : (∫ _ : Ω, epsilon ∂μ) = epsilon := by
+            simp
+          rw [integral_add hcenterSupIntegrable (integrable_const epsilon),
+            hconst]
+    _ ≤ vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M + epsilon := by
+          have h := add_le_add_right hcenter_le epsilon
+          simpa [add_comm] using h
+
+/--
+Product-integrated random-sign finite-net handoff from expected-maximal bounds.
+
+This is the sample-integrated analogue of
+`integral_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_expectedMaximal`.
+It keeps the empirical-cover cardinality sample-dependent, so the later entropy
+layer can control the sample integral of the displayed finite-net upper.
+-/
+theorem
+    integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_expectedMaximal
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} [MeasurableSpace Observation]
+    {Index : Type w} {n : ℕ}
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon M : ℝ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+          (cardinality sample))
+    (sign : Fin n -> Ω -> ℝ)
+    (hsign : ∀ᵐ ω ∂μ, VdVWRademacherSignVector (fun i : Fin n => sign i ω))
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hproductSupIntegrable :
+      Integrable
+        (fun z : Ω × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass classFun
+            (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2)
+        (μ.prod (vdVWProductMeasure P n)))
+    (hsupIntegrable :
+      ∀ sample : SampleAt Observation n,
+        Integrable
+          (fun ω =>
+            vdVWWeightedClassSupremum indexClass classFun
+              (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample)
+          μ)
+    (hcenterSupIntegrable :
+      ∀ sample : SampleAt Observation n,
+        Integrable
+          (fun ω =>
+            vdVWFiniteCenterWeightedSupremum sample classFun
+              (cover sample).center
+              (vdVWRademacherWeights (fun i : Fin n => sign i ω)))
+          μ)
+    (hupperIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWTheorem243FiniteNetHoeffdingUpper (cardinality sample) n M +
+            epsilon)
+        (vdVWProductMeasure P n))
+    (hexpected :
+      ∀ sample : SampleAt Observation n,
+        VdVWTheorem243FiniteCenterExpectedMaximalBound μ
+          (fun centerIndex : Fin (cardinality sample) =>
+            fun ω =>
+              vdVWWeightedSampleSum classFun
+                (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+                ((cover sample).center centerIndex) sample)
+          (vdVWTheorem243FiniteNetHoeffdingUpper (cardinality sample) n M)) :
+    ∫ z : Ω × SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass classFun
+          (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2
+        ∂(μ.prod (vdVWProductMeasure P n)) ≤
+      ∫ sample : SampleAt Observation n,
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality sample) n M +
+          epsilon
+        ∂(vdVWProductMeasure P n) := by
+  let randomSup : Ω -> SampleAt Observation n -> ℝ :=
+    fun ω sample =>
+      vdVWWeightedClassSupremum indexClass classFun
+        (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample
+  let upper : SampleAt Observation n -> ℝ :=
+    fun sample =>
+      vdVWTheorem243FiniteNetHoeffdingUpper (cardinality sample) n M + epsilon
+  have hinnerIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          ∫ ω : Ω, randomSup ω sample ∂μ)
+        (vdVWProductMeasure P n) := by
+    simpa [randomSup] using hproductSupIntegrable.integral_prod_right
+  have hinner_le :
+      ∀ᵐ sample : SampleAt Observation n ∂(vdVWProductMeasure P n),
+        (∫ ω : Ω, randomSup ω sample ∂μ) ≤ upper sample := by
+    exact ae_of_all _ fun sample => by
+      simpa [randomSup, upper] using
+        (integral_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_expectedMaximal
+          (cover := cover sample) (sign := sign) hsign hepsilon_nonneg
+          (hsupIntegrable sample) (hcenterSupIntegrable sample)
+          (hexpected sample))
+  calc
+    ∫ z : Ω × SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass classFun
+          (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2
+        ∂(μ.prod (vdVWProductMeasure P n))
+        =
+      ∫ sample : SampleAt Observation n,
+        ∫ ω : Ω, randomSup ω sample ∂μ
+        ∂(vdVWProductMeasure P n) := by
+          simpa [randomSup] using
+            (MeasureTheory.integral_prod_symm
+              (fun z : Ω × SampleAt Observation n => randomSup z.1 z.2)
+              hproductSupIntegrable)
+    _ ≤ ∫ sample : SampleAt Observation n, upper sample
+          ∂(vdVWProductMeasure P n) :=
+        integral_mono_ae hinnerIntegrable hupperIntegrable hinner_le
+    _ =
+      ∫ sample : SampleAt Observation n,
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality sample) n M +
+          epsilon
+        ∂(vdVWProductMeasure P n) := by
+          simp [upper]
+
+/--
 Product-space version of the random-sign finite-net handoff.
 
 This is the bridge needed when the original sample is also random: a

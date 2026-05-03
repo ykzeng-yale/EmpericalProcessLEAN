@@ -364,9 +364,10 @@ is project organization and source alignment.  The immediate route is:
    screenshots.
 
 For direct empirical-process impact, the dependency override is now active:
-the next proof lane should prioritize consuming the VdV&W Theorem 2.4.3 random
-empirical-cover witness handoff in the product random-sign assembly, proving the
-product-a.e. finite-center Hoeffding predicate for the chosen covers, and then
+the next proof lane should prioritize the VdV&W Theorem 2.4.3 product random-sign
+assembly after the compiled random empirical-cover witness handoff: prove the
+product-a.e. finite-center Hoeffding predicate for the chosen covers or replace
+that handoff with one using the existing expected-maximal API, and then prove
 entropy-to-convergence, after the compiled integrated
 product-sample/Rademacher sign-symmetry comparison, product-space
 measurable-cover outer-expectation bridge, and supplied product-space finite-net

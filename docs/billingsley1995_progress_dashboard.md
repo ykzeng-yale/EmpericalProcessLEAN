@@ -178,7 +178,8 @@ Concrete next edits:
    supplied product-space a.e. finite-net projection, sample-cover
    product-a.e. finite-net bridge, and random empirical-cover product random-sign
    handoff.  The latest empirical-process frontier is proving the product-a.e.
-   finite-center Hoeffding predicate for the chosen covers and then
+   finite-center Hoeffding predicate for the chosen covers, or replacing that
+   handoff with one that consumes the existing expected-maximal API, and then
    entropy-to-convergence.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
