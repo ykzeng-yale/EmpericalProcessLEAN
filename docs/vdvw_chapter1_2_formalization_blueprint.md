@@ -96,6 +96,30 @@ parked as a deferred example blocker.  The active main-line frontier is
 Theorem 2.4.3 and the theorem-level Chapter 2 bracketing/measurable-class
 primitives it requires.
 
+## Automation Prompt Maintenance
+
+The recurring VdV&W proof automation is part of the proof process and should
+not drift into a stale status summary.  At the end of every automation run that
+proves, refines, blocks, commits, or pushes a theorem-line layer, update the
+automation prompt itself to reflect the verified current state.  The updated
+prompt should be short enough to stay usable, and must include:
+
+1. the latest pushed commit and the exact new Lean declarations or doc-only
+   blocker refinement from that run;
+2. the single next atomic proof target and the dependency order after it;
+3. the current search-first scope, including local `StatInference`, pinned
+   mathlib, and `StatInference/ProbabilityMeasure` reuse;
+4. the verification gate: focused Lean check, `lake build` for substantive
+   theorem edits, proof-hole scan, diff check, secret scan, then commit/push
+   only verified progress;
+5. any active blocker that must stay explicit rather than hidden as an
+   informal assumption.
+
+The automation should also update this blueprint, the dashboard, or
+`docs/vdvw_current_blocker_primitive_plan.md` whenever the next target changes
+or a blocker is narrowed.  Do not churn the prompt for cosmetic wording-only
+changes, and do not create formal reports for intermediate layers.
+
 ## Existing Lean Coverage Conclusion
 
 Pinned mathlib is the authority for reusable foundations in this repository.
@@ -217,7 +241,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.3.6 | Theorem | `..._1-100.md:650` | local-layer/mathlib-foundation: continuous map pushforward and `TendstoInDistribution` continuous-composition wrappers proved; arbitrary-map cover layer still pending |
 | 1.3.8 | Lemma | `..._1-100.md:678` | blocked-vdvw: Hoffmann-Jørgensen arbitrary-map weak-convergence infrastructure; missing exact local arbitrary-map/asymptotic-measurability primitive |
 | 1.3.9 | Theorem | `..._1-100.md:688` | local-layer/mathlib-foundation: probability-measure tightness wrapper, compact-set characterization, and Prokhorov compact-closure wrapper proved over mathlib; exact arbitrary-map/asymptotic-tightness extension remains pending |
-| 1.3.10 | Theorem | `..._1-100.md:756` | blocked-vdvw: exact nonmeasurable/arbitrary-map weak-convergence layer missing; measure-level mathlib route still to be wrapped separately |
+| 1.3.10 | Theorem | `..._1-100.md:756` | blocked-vdvw: exact nonmeasurable/arbitrary-map weak-convergence layer missing; measure-level weak-convergence/Portmanteau/tightness wrappers are already local, so the remaining gap is the exact arbitrary-map extension |
 | 1.3.12 | Lemma | `..._1-100.md:768` | foundation-lane/mathlib-foundation: classical foundation available in pinned mathlib, pending local restatement/wrapper |
 | 1.3.13 | Lemma | `..._1-100.md:778` | blocked-vdvw: arbitrary-map/asymptotic-measurability infrastructure missing after mathlib search |
 | 1.4.1 | Lemma | `..._1-100.md:848` | foundation-lane/mathlib-foundation: audit found product/Pi Borel-space and finite-coordinate restriction APIs; pending exact VdV&W product-space wrapper |
@@ -274,7 +298,7 @@ quotes; the anchor is the authoritative local source location.
 | 2.3.16 | Proposition | `..._101-200.md:857` | pending-local |
 | 2.3.17 | Theorem | `..._101-200.md:882` | pending-local |
 | 2.4.1 | Theorem | `..._101-200.md:970` | local-exact |
-| 2.4.3 | Theorem | `..._101-200.md:988` | local-layer; Definition 2.1.5 covering primitive, fixed-sample empirical `L1(P_n)` distance/covering-number interface, nonempty empirical-cover positive-cardinality bridge, random empirical covering-number sequence, outer-probability `o_P^*(n)` entropy wrapper, `F_M` truncated-class/envelope interface plus ordinary measurable truncation-tail integral bridge, Definition 2.3.3 `P`-measurable primitive, deterministic finite-cover supremum-bound layers, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, deterministic Rademacher-sign specialization, one-center random Rademacher sub-Gaussian bridge, variance-proxy arithmetic, sub-Gaussian proxy monotonicity, finite-center sub-Gaussian tail/union-bound layer, iid real-valued Rademacher-sign construction, finite-center supremum integrability layer, expected finite-center supremum handoff, layer-cake tail-integral monotonicity, Gaussian-tail integrability/evaluation, coarse closed-form expectation bound, split-at-radius tail-to-expectation bound, Mills-type Gaussian-tail estimate, finite-center Mills expectation bound, and supplied small-tail Mills simplification now available; exact theorem still pending logarithmic-radius maximal expectation instantiation, specialization to truncated centers, symmetrization/truncation, outer envelope-tail, and final convergence handoffs |
+| 2.4.3 | Theorem | `..._101-200.md:988` | local-layer; Definition 2.1.5 covering primitive, fixed-sample empirical `L1(P_n)` distance/covering-number interface, nonempty empirical-cover positive-cardinality bridge, random empirical covering-number sequence, outer-probability `o_P^*(n)` entropy wrapper, `F_M` truncated-class/envelope interface plus ordinary measurable truncation-tail integral bridge, Definition 2.3.3 `P`-measurable primitive, deterministic finite-cover supremum-bound layers, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, deterministic Rademacher-sign specialization, one-center random Rademacher sub-Gaussian bridge, variance-proxy arithmetic, sub-Gaussian proxy monotonicity, finite-center sub-Gaussian tail/union-bound layer, iid real-valued Rademacher-sign construction, finite-center supremum integrability layer, expected finite-center supremum handoff, layer-cake tail-integral monotonicity, Gaussian-tail integrability/evaluation, coarse closed-form expectation bound, split-at-radius tail-to-expectation bound, Mills-type Gaussian-tail estimate, finite-center Mills expectation bound, supplied small-tail Mills simplification, logarithmic-radius expected-maximal packaging, and truncated Rademacher finite-cover expected-maximal specialization now available; exact theorem still pending constant/scale comparison to the VdV&W Hoeffding display, symmetrization/truncation, outer envelope-tail, and final convergence handoffs |
 | 2.4.5 | Lemma | `..._101-200.md:1022` | pending-local |
 | 2.5.2 | Theorem | `..._101-200.md:1106` | pending-local |
 | 2.5.6 | Theorem | `..._101-200.md:1204` | pending-local |
@@ -402,14 +426,15 @@ above, so they do not change the theorem-level dashboard counts.
    exact Gaussian-tail integral evaluation, coarse closed-form finite-center
    expectation bound, split-at-radius tail-to-expectation bound, Mills-type
    Gaussian-tail estimate, finite-center Mills expectation bound, supplied
-   small-tail Mills simplification, and ordinary measurable truncation-tail
-   integral bridge are now compiled.  The next frontier is proving the
-   logarithmic-radius arithmetic that discharges the supplied small-tail
-   condition and turns the Mills bound into the textbook maximal-expectation
-   scale, packaging it as the
-   VdV&W `psi_2`/Hoeffding maximal layer if no exact Orlicz API appears,
-   specializing it to truncated centers, then symmetrization/truncation and
-   the outer envelope-tail handoff.
+   small-tail Mills simplification,
+   logarithmic-radius positivity/square/exponential-factor arithmetic, the
+   finite-center logarithmic-radius Mills expectation bound, a proof-carrying
+   expected finite-center maximal-bound predicate, the log-radius Mills upper
+   wrapper, the truncated Rademacher expected-maximal specialization, its
+   finite-empirical-cover version, and ordinary measurable truncation-tail
+   integral bridge are now compiled.  The next frontier is the constant/scale
+   comparison from this Mills upper to the VdV&W `psi_2`/Hoeffding display
+   scale, then symmetrization/truncation and the outer envelope-tail handoff.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

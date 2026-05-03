@@ -28,6 +28,22 @@ found, APIs not found when absence creates a blocker, and why a new local
 primitive is still needed.  A theorem should be marked `blocked-vdvw` only
 after this search fails to find a reusable exact or adaptable Lean theorem.
 
+## Adaptive Automation Prompt Rule
+
+Every recurring proof run should finish by checking whether the automation
+prompt itself is now stale.  If the run verified new Lean declarations, pushed
+a commit, narrowed a blocker, or changed the next atomic proof target, update
+the automation prompt to match this file and the dashboard before ending the
+run.  The refreshed prompt should name the latest verified commit, the exact
+closed declarations or blocker refinement, the next proof target, and the
+verification/search gates.  This keeps future runs aligned with the current
+proof state instead of replaying old instructions.
+
+Do not update the automation prompt for wording-only churn.  Do update it when
+an old prompt would point at a solved target, omit a newly discovered reusable
+API, or hide a genuine blocker such as the current Theorem 2.4.3 scale
+comparison.
+
 ## Active Blocker
 
 Current main-line target: Theorem 2.4.3 and the Chapter 2
@@ -114,6 +130,17 @@ Search record for the Chapter 1 Hilbert/Gaussian foundation lane:
   and Gaussian-process coordinate laws.  The remaining Section 1.8 blocker is
   the exact stochastic-process/Hilbert tightness and functional-CLT layer, not
   these basic Hilbert/Gaussian foundations.
+- follow-up `ell_infty(T)` search found the pinned mathlib substrate
+  `ℓ^∞(T, ℝ)` / `lp (fun _ : T => ℝ) ∞` in
+  `Mathlib.Analysis.Normed.Lp.lpSpace`, with reusable names `Memℓp`,
+  `memℓp_infty_iff`, `memℓp_infty`, `Memℓp.bddAbove`,
+  `lp.norm_eq_ciSup`, `lp.norm_apply_le_norm`, `lp.norm_le_of_forall_le`,
+  `lp.evalCLM`, `lp.uniformContinuous_coe`, and `lp.completeSpace`.  This is
+  safe future substrate for a local `VdVWEllInfty` bounded-function-space
+  wrapper, but it does not itself prove VdV&W separability, process tightness,
+  asymptotic measurability, or Donsker conclusions.  `PiLp` is useful only for
+  finite-coordinate/FDD blocks because its normed product API requires a
+  finite index type.
 
 Search record for the Chapter 1 ball-sigma/measurability foundation lane:
 
@@ -364,6 +391,17 @@ additional example closures:
    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_hasSubgaussianMGF_of_ae_le
    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_hasSubgaussianMGF_of_pos_of_ae_le
    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
+   vdVWTheorem243LogRadiusMillsUpper
+   vdVWTheorem243LogRadiusMillsUpper_nonneg
+   VdVWTheorem243FiniteCenterExpectedMaximalBound
+   VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills
+   VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills_le
+   VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills_le_finiteNetHoeffdingUpper
+   vdVWTheorem243_truncated_rademacher_expectedMaximalBound
+   vdVWTheorem243_truncated_rademacher_expectedMaximalBound_of_finiteEmpiricalL1CoverAtCard
+   vdVWTheorem243_truncated_commonProxy_pos
+   VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale
+   vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard
    ```
 
    This closes the deterministic passage from fixed signs `epsilon_i` to the
@@ -463,16 +501,28 @@ additional example closures:
    Gaussian-tail integrability/evaluation, coarse closed-form expectation
    bound, split-at-radius tail-to-expectation bound, Mills-type Gaussian-tail
    estimate, finite-center Mills expectation bound, supplied small-tail Mills
-   simplification, and ordinary measurable truncation-tail integral bridge are
-   now compiled.  The theorem-specific
+   simplification, logarithmic-radius
+   positivity/square/exponential-factor arithmetic, finite-center
+   logarithmic-radius Mills expectation bound, log-radius Mills upper wrapper,
+   proof-carrying expected finite-center maximal-bound predicate, truncated
+   Rademacher expected-maximal specialization, finite-empirical-cover
+   expected-maximal wrapper, and ordinary measurable truncation-tail integral
+   bridge are now compiled.  The theorem-specific
    expected-supremum layer now routes its reusable layer-cake,
    tail-integral-monotonicity, and split-at-radius probability bounds through
    `StatInference/ProbabilityMeasure/Tail.lean`; VdV&W-specific empirical,
-   Mills, outer-expectation, and truncation handoffs remain in the
-   empirical-process files.  The remaining logarithmic-radius choice and
-   algebraic discharge of the supplied small-tail condition is the next
-   blocker before the textbook tail-to-Orlicz/maximal expectation scale,
-   followed by specialization of that bound to the truncated centers.
+   Mills, logarithmic-radius arithmetic, outer-expectation, and truncation
+   handoffs remain in the empirical-process files.  Search found no reusable
+   Orlicz/`psi_2` API and no reusable ProbabilityMeasure-level finite-class
+   maximal theorem; the VdV&W maximal packaging should remain local in
+   `Theorem243.lean`.  The latest local layer proves positivity of the common
+   truncated proxy `M^2/n` from `0 < n` and `0 < M`, isolates the remaining
+   real-arithmetic comparison as
+   `VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale`, and packages the
+   finite-empirical-cover expected maximal bound at
+   `vdVWTheorem243FiniteNetHoeffdingUpper` assuming exactly that handoff.
+   The remaining blocker is now the proof of this named scale-comparison
+   predicate, not any missing Rademacher/tail-integral infrastructure.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -490,15 +540,28 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: choose the logarithmic radius
-`sqrt (2 * c * (1 + log cardinality))` or a nearby Lean-friendly variant, then
-instantiate
-`vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_simplified` by
-proving `(cardinality : ℝ) * exp (-(r^2)/(2c)) <= 1`.  Then package the
-resulting bound as the VdV&W `psi_2`/Hoeffding maximal layer if no exact Orlicz
-API appears, specialize that bound to truncated centers with
-`vdVWTheorem243_truncated_varianceProxy_le`, and move to the
-symmetrization/truncation and outer envelope-tail handoffs.
+Search record for the scale-comparison handoff:
+
+- searched local `StatInference` for existing `LogRadiusMillsUpper`,
+  `FiniteNetHoeffdingUpper`, `ExpectedMaximalBound`, `HoeffdingScale`, and
+  scale handoff declarations;
+- searched pinned mathlib for `Real.sqrt`, `sqrt_mul`, `sqrt_div`,
+  `le_sqrt_of_sq_le`, `sqrt_le_left`, `sq_le_sq`, `sq_le_sq₀`,
+  `Real.log_nonneg`, `Real.log_natCast_nonneg`, `Real.exp_le_exp`,
+  `exp_one_gt_two`, and `exp_one_gt_d9`;
+- no exact reusable theorem was found for the whole comparison
+  `vdVWTheorem243LogRadiusMillsUpper cardinality (M^2/n) ≤
+  vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M`.  The reusable
+  arithmetic pieces are enough to make this a focused real-inequality proof,
+  so the handoff is now named and consumed by the maximal layer instead of
+  hidden as an informal assumption.
+
+Next exact edit: prove
+`VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale cardinality n M` from
+explicit positive-cardinality, positive-`n`, and positive-`M` assumptions,
+likely using `exp_one_gt_two`/`exp_one_gt_d9`, log monotonicity, and a
+nonnegative squaring argument.  Then move to the symmetrization/truncation and
+outer envelope-tail handoffs.
 
 ## Parked Example-Specific Blocker
 

@@ -1475,6 +1475,411 @@ theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_simplifie
       htail'
 
 /--
+The logarithmic split radius used after the finite-center Mills bound is
+strictly positive.
+
+The harmless `1 + log cardinality` offset avoids a zero radius when the finite
+net has one center, so the Mills factor `c / r` remains meaningful.
+-/
+theorem vdVWTheorem243_logRadius_pos
+    {cardinality : ℕ} (hcardinality : 0 < cardinality) {c : ℝ≥0}
+    (hc : 0 < (c : ℝ)) :
+    0 <
+      Real.sqrt
+        (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ))) := by
+  have hcardinality_one : (1 : ℝ) ≤ (cardinality : ℝ) := by
+    exact_mod_cast Nat.succ_le_of_lt hcardinality
+  have hlog_nonneg : 0 ≤ Real.log (cardinality : ℝ) :=
+    Real.log_nonneg hcardinality_one
+  have hlog_pos : 0 < 1 + Real.log (cardinality : ℝ) := by
+    nlinarith
+  have harg_pos :
+      0 < 2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)) := by
+    positivity
+  exact Real.sqrt_pos.mpr harg_pos
+
+/--
+Square identity for the logarithmic split radius.
+-/
+theorem vdVWTheorem243_logRadius_sq_div
+    {cardinality : ℕ} (hcardinality : 0 < cardinality) {c : ℝ≥0}
+    (hc : 0 < (c : ℝ)) :
+    let r : ℝ :=
+      Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)))
+    r ^ 2 / (2 * (c : ℝ)) = 1 + Real.log (cardinality : ℝ) := by
+  dsimp
+  have hcardinality_one : (1 : ℝ) ≤ (cardinality : ℝ) := by
+    exact_mod_cast Nat.succ_le_of_lt hcardinality
+  have hlog_nonneg : 0 ≤ Real.log (cardinality : ℝ) :=
+    Real.log_nonneg hcardinality_one
+  have harg_nonneg :
+      0 ≤ 2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)) := by
+    positivity
+  rw [Real.sq_sqrt harg_nonneg]
+  field_simp [ne_of_gt hc]
+
+/--
+Exponential factor after choosing the logarithmic split radius.
+-/
+theorem vdVWTheorem243_logRadius_exp_factor_eq
+    {cardinality : ℕ} (hcardinality : 0 < cardinality) {c : ℝ≥0}
+    (hc : 0 < (c : ℝ)) :
+    let r : ℝ :=
+      Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)))
+    Real.exp (-(r ^ 2) / (2 * (c : ℝ))) =
+      Real.exp (-1) / (cardinality : ℝ) := by
+  dsimp
+  have hsq :=
+    vdVWTheorem243_logRadius_sq_div
+      (cardinality := cardinality) (c := c) hcardinality hc
+  have hcardinality_pos : 0 < (cardinality : ℝ) := by
+    exact_mod_cast hcardinality
+  have hcardinality_ne : (cardinality : ℝ) ≠ 0 := ne_of_gt hcardinality_pos
+  have hneg :
+      -(Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ))) ^ 2) /
+          (2 * (c : ℝ)) =
+        -(1 + Real.log (cardinality : ℝ)) := by
+    rw [neg_div, hsq]
+  calc
+    Real.exp
+        (-(Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ))) ^ 2) /
+          (2 * (c : ℝ)))
+        = Real.exp (-(1 + Real.log (cardinality : ℝ))) := by rw [hneg]
+    _ = Real.exp (-1 + -Real.log (cardinality : ℝ)) := by ring_nf
+    _ = Real.exp (-1) * Real.exp (-Real.log (cardinality : ℝ)) := by
+          rw [Real.exp_add]
+    _ = Real.exp (-1) * (Real.exp (Real.log (cardinality : ℝ)))⁻¹ := by
+          have hlogNeg :
+              Real.exp (-Real.log (cardinality : ℝ)) =
+                (Real.exp (Real.log (cardinality : ℝ)))⁻¹ := by
+            rw [Real.exp_neg]
+          rw [hlogNeg]
+    _ = Real.exp (-1) / (cardinality : ℝ) := by
+          rw [Real.exp_log hcardinality_pos]
+          rw [div_eq_mul_inv]
+
+/--
+The finite-center Mills factor at the logarithmic split radius.
+-/
+theorem vdVWTheorem243_logRadius_mills_factor_eq
+    {cardinality : ℕ} (hcardinality : 0 < cardinality) {c : ℝ≥0}
+    (hc : 0 < (c : ℝ)) :
+    let r : ℝ :=
+      Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)))
+    (cardinality : ℝ) *
+        (2 * ((c : ℝ) / r *
+          Real.exp (-(r ^ 2) / (2 * (c : ℝ))))) =
+      2 * Real.exp (-1) * ((c : ℝ) / r) := by
+  dsimp
+  have hcardinality_pos : 0 < (cardinality : ℝ) := by
+    exact_mod_cast hcardinality
+  have hcardinality_ne : (cardinality : ℝ) ≠ 0 := ne_of_gt hcardinality_pos
+  have hr_ne :
+      Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ))) ≠ 0 :=
+    ne_of_gt
+      (vdVWTheorem243_logRadius_pos
+        (cardinality := cardinality) (c := c) hcardinality hc)
+  rw [vdVWTheorem243_logRadius_exp_factor_eq
+      (cardinality := cardinality) (c := c) hcardinality hc]
+  field_simp [hcardinality_ne, hr_ne]
+
+/--
+Finite-center expected-supremum bound after choosing the logarithmic split
+radius.
+
+This is the arithmetic bridge from the Mills tail estimate to the textbook
+finite-maximal `sqrt(log #G)` scale.  A later layer can relax the harmless
+`1 + log #G` offset into the chosen VdV&W display constant.
+-/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_logRadius_mills_bound
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0}
+    (hc : 0 < (c : ℝ))
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ) :
+    let r : ℝ :=
+      Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)))
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤
+      r + 2 * Real.exp (-1) * ((c : ℝ) / r) := by
+  dsimp
+  have hraw :=
+    vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_bound
+      (cardinality := cardinality) hcardinality X
+      (c := c)
+      (r := Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ))))
+      hc
+      (vdVWTheorem243_logRadius_pos
+        (cardinality := cardinality) (c := c) hcardinality hc)
+      hX
+  have hfactor :=
+    vdVWTheorem243_logRadius_mills_factor_eq
+      (cardinality := cardinality) (c := c) hcardinality hc
+  exact hraw.trans_eq (by rw [hfactor])
+
+/--
+The explicit finite-center maximal expectation scale produced by the
+logarithmic split-radius plus Mills estimate.
+
+This packages the analytic tail calculation as a reusable book-facing upper
+bound before it is converted into the later `psi_2`/Hoeffding notation.
+-/
+noncomputable def vdVWTheorem243LogRadiusMillsUpper
+    (cardinality : ℕ) (c : ℝ≥0) : ℝ :=
+  let r : ℝ :=
+    Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)))
+  r + 2 * Real.exp (-1) * ((c : ℝ) / r)
+
+/-- The logarithmic-radius Mills upper is nonnegative. -/
+theorem vdVWTheorem243LogRadiusMillsUpper_nonneg
+    (cardinality : ℕ) (c : ℝ≥0) :
+    0 ≤ vdVWTheorem243LogRadiusMillsUpper cardinality c := by
+  unfold vdVWTheorem243LogRadiusMillsUpper
+  exact add_nonneg (Real.sqrt_nonneg _)
+    (mul_nonneg
+      (mul_nonneg zero_le_two (Real.exp_pos _).le)
+      (div_nonneg c.property (Real.sqrt_nonneg _)))
+
+/--
+Proof-carrying expected finite-center maximal bound.
+
+Unlike `VdVWTheorem243FiniteCenterMaximalBound`, this is an expectation-level
+probabilistic maximal layer.  It is the correct target for the tail-integral
+and sub-Gaussian route before later deterministic finite-net handoffs are
+applied to sample-path displays.
+-/
+def VdVWTheorem243FiniteCenterExpectedMaximalBound
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
+    {cardinality : ℕ} (X : Fin cardinality -> Ω -> ℝ)
+    (upper : ℝ) : Prop :=
+  vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤ upper
+
+/--
+The log-radius Mills upper proves the expected finite-center maximal bound
+for a finite family of sub-Gaussian centers.
+-/
+theorem VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0}
+    (hc : 0 < (c : ℝ))
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ) :
+    VdVWTheorem243FiniteCenterExpectedMaximalBound μ X
+      (vdVWTheorem243LogRadiusMillsUpper cardinality c) := by
+  unfold VdVWTheorem243FiniteCenterExpectedMaximalBound
+  simpa [vdVWTheorem243LogRadiusMillsUpper] using
+    vdVWTheorem243FiniteCenterExpectedSupremum_le_logRadius_mills_bound
+      (cardinality := cardinality) hcardinality X hc hX
+
+/--
+If the logarithmic Mills upper is dominated by a chosen book-scale finite-net
+upper, the expected finite-center maximal bound holds at that book scale.
+
+The next layer supplies this domination for the VdV&W `psi_2`/Hoeffding scale
+and then specializes the sub-Gaussian proxy using the truncated envelope bound.
+-/
+theorem VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills_le
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0} {upper : ℝ}
+    (hc : 0 < (c : ℝ))
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ)
+    (hupper : vdVWTheorem243LogRadiusMillsUpper cardinality c ≤ upper) :
+    VdVWTheorem243FiniteCenterExpectedMaximalBound μ X upper := by
+  exact
+    (VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills
+      (cardinality := cardinality) hcardinality X hc hX).trans hupper
+
+/--
+Hoeffding-upper specialization of the expected finite-center maximal handoff.
+
+This leaves the analytic scale comparison as an explicit hypothesis while
+placing the result in the VdV&W finite-net display notation.
+-/
+theorem
+    VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills_le_finiteNetHoeffdingUpper
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality n : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0} {M : ℝ}
+    (hc : 0 < (c : ℝ))
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ)
+    (hscale :
+      vdVWTheorem243LogRadiusMillsUpper cardinality c ≤
+        vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M) :
+    VdVWTheorem243FiniteCenterExpectedMaximalBound μ X
+      (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M) := by
+  exact
+    VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills_le
+      (cardinality := cardinality) hcardinality X hc hX hscale
+
+/--
+Truncated-center specialization of the expected finite-center maximal layer
+for random Rademacher signs.
+
+This is the first theorem-level bridge from the abstract finite-center
+sub-Gaussian maximal bound back to the VdV&W truncated class `F_M`.
+-/
+theorem vdVWTheorem243_truncated_rademacher_expectedMaximalBound
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    (sample : SampleAt Observation n)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (center : Fin cardinality -> Index)
+    (hcenter : ∀ centerIndex, center centerIndex ∈ indexClass)
+    (sign : Fin n -> Ω -> ℝ)
+    (hindep : iIndepFun sign μ)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μ)
+    (hproxy_pos :
+      0 <
+        (NNReal.mk (M ^ 2 / (n : ℝ))
+          (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)) : ℝ)) :
+    VdVWTheorem243FiniteCenterExpectedMaximalBound μ
+      (fun centerIndex : Fin cardinality =>
+        fun ω =>
+          vdVWWeightedSampleSum
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+            (center centerIndex) sample)
+      (vdVWTheorem243LogRadiusMillsUpper cardinality
+        (NNReal.mk (M ^ 2 / (n : ℝ))
+          (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)))) := by
+  refine
+    VdVWTheorem243FiniteCenterExpectedMaximalBound.of_logRadius_mills
+      (cardinality := cardinality) hcardinality
+      (X := fun centerIndex : Fin cardinality =>
+        fun ω =>
+          vdVWWeightedSampleSum
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+            (center centerIndex) sample)
+      (c := NNReal.mk (M ^ 2 / (n : ℝ))
+        (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)))
+      hproxy_pos ?_
+  intro centerIndex
+  exact
+    vdVWTheorem243_hasSubgaussianMGF_mono
+      (vdVWTheorem243_oneCenter_rademacher_subGaussian_bridge
+        μ sample (vdVWTruncatedClassFun classFun envelope M)
+        (center centerIndex) sign hindep hsubG)
+      (vdVWTheorem243_truncated_varianceProxy_le
+        (sample := sample) henvelope hM_nonneg (hcenter centerIndex))
+
+/--
+Finite-empirical-cover version of the truncated Rademacher expected maximal
+bound.
+
+This packages the previous centerwise result with the positive-cardinality and
+center-membership data carried by `FiniteEmpiricalL1CoverAtCard`.
+-/
+theorem
+    vdVWTheorem243_truncated_rademacher_expectedMaximalBound_of_finiteEmpiricalL1CoverAtCard
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    (sign : Fin n -> Ω -> ℝ)
+    (hindep : iIndepFun sign μ)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μ)
+    (hproxy_pos :
+      0 <
+        (NNReal.mk (M ^ 2 / (n : ℝ))
+          (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)) : ℝ)) :
+    VdVWTheorem243FiniteCenterExpectedMaximalBound μ
+      (fun centerIndex : Fin cardinality =>
+        fun ω =>
+          vdVWWeightedSampleSum
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+            (cover.center centerIndex) sample)
+      (vdVWTheorem243LogRadiusMillsUpper cardinality
+        (NNReal.mk (M ^ 2 / (n : ℝ))
+          (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)))) := by
+  exact
+    vdVWTheorem243_truncated_rademacher_expectedMaximalBound
+      (sample := sample) henvelope hM_nonneg
+      (cover.cardinality_pos_of_nonempty hindexClass_nonempty)
+      cover.center
+      cover.center_mem
+      sign hindep hsubG hproxy_pos
+
+/--
+The common sub-Gaussian proxy for truncated Rademacher centers is positive
+under the explicit book-side assumptions `0 < n` and `0 < M`.
+-/
+theorem vdVWTheorem243_truncated_commonProxy_pos
+    {n : ℕ} {M : ℝ} (hn : 0 < n) (hM_pos : 0 < M) :
+    0 <
+      (NNReal.mk (M ^ 2 / (n : ℝ))
+        (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)) : ℝ) := by
+  rw [NNReal.coe_mk]
+  exact div_pos (sq_pos_of_pos hM_pos) (by exact_mod_cast hn)
+
+/--
+Proof-carrying arithmetic handoff from the compiled log-radius Mills upper to
+the VdV&W finite-net Hoeffding display scale.
+
+The exact remaining arithmetic target is to prove this predicate from the
+explicit assumptions on `cardinality`, `n`, and `M`; until then this isolates
+the only scale comparison still needed by the Theorem 2.4.3 maximal layer.
+-/
+def VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale
+    (cardinality n : ℕ) (M : ℝ) : Prop :=
+  vdVWTheorem243LogRadiusMillsUpper cardinality
+      (NNReal.mk (M ^ 2 / (n : ℝ))
+        (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n))) ≤
+    vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M
+
+/--
+Finite-empirical-cover expected maximal bound at the VdV&W finite-net
+Hoeffding display scale, assuming only the isolated scale-comparison handoff.
+
+This packages all probabilistic and empirical-cover work proved so far; the
+remaining blocker is the real-arithmetic proof of
+`VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale`.
+-/
+theorem
+    vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hn : 0 < n)
+    (hM_pos : 0 < M)
+    (sign : Fin n -> Ω -> ℝ)
+    (hindep : iIndepFun sign μ)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μ)
+    (hscale :
+      VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale cardinality n M) :
+    VdVWTheorem243FiniteCenterExpectedMaximalBound μ
+      (fun centerIndex : Fin cardinality =>
+        fun ω =>
+          vdVWWeightedSampleSum
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+            (cover.center centerIndex) sample)
+      (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M) := by
+  exact
+    (vdVWTheorem243_truncated_rademacher_expectedMaximalBound_of_finiteEmpiricalL1CoverAtCard
+      cover hindexClass_nonempty henvelope hM_pos.le sign hindep hsubG
+      (vdVWTheorem243_truncated_commonProxy_pos hn hM_pos)).trans hscale
+
+/--
 Closed-form value of the finite-center sub-Gaussian tail majorant over
 `(0, ∞)`.
 -/
