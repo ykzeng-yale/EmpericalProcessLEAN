@@ -118,6 +118,65 @@ theorem probability_prod_independent_mapped_copies_with_joint_law
       (X := X) (Y := Y) hX hY
   exact ⟨hXLaw, hYLaw, hInd.hasLaw_prod hXLaw hYLaw, hInd⟩
 
+/--
+Mapping every coordinate of a finite product probability measure commutes with
+taking the finite product.
+-/
+theorem probability_pi_map_mapped_coordinates_eq
+    {ι : Type w} [Fintype ι]
+    {α : ι -> Type u} [∀ i, MeasurableSpace (α i)]
+    {β : ι -> Type v} [∀ i, MeasurableSpace (β i)]
+    (P : (i : ι) -> MeasureTheory.ProbabilityMeasure (α i))
+    {X : (i : ι) -> α i -> β i}
+    (hX : ∀ i, Measurable (X i)) :
+    (Measure.pi fun i => (P i : Measure (α i))).map
+        (fun sample : (j : ι) -> α j => fun i => X i (sample i)) =
+      Measure.pi fun i => ((P i : Measure (α i)).map (X i)) := by
+  exact Measure.pi_map_pi (fun i => (hX i).aemeasurable)
+
+/--
+Finite-product coordinate maps are independent, with their coordinate laws and
+joint product law.
+
+This is the finite-`Pi` version of the mapped-coordinate product-copy handoff.
+It is the reusable support layer for iid sample spaces such as
+`SampleAt Observation n = Fin n -> Observation`.
+-/
+theorem probability_pi_independent_mapped_coordinates_with_joint_law
+    {ι : Type w} [Fintype ι]
+    {α : ι -> Type u} [∀ i, MeasurableSpace (α i)]
+    {β : ι -> Type v} [∀ i, MeasurableSpace (β i)]
+    (P : (i : ι) -> MeasureTheory.ProbabilityMeasure (α i))
+    {X : (i : ι) -> α i -> β i}
+    (hX : ∀ i, Measurable (X i)) :
+    (∀ i,
+      HasLaw (fun sample : (∀ i, α i) => X i (sample i))
+        (((P i : Measure (α i)).map (X i)))
+        (Measure.pi fun i => (P i : Measure (α i)))) ∧
+      iIndepFun (fun i => fun sample : (∀ i, α i) => X i (sample i))
+        (Measure.pi fun i => (P i : Measure (α i))) ∧
+      HasLaw (fun sample : (∀ i, α i) => fun i => X i (sample i))
+        (Measure.pi fun i => ((P i : Measure (α i)).map (X i)))
+        (Measure.pi fun i => (P i : Measure (α i))) := by
+  let μ : (i : ι) -> Measure (α i) := fun i => (P i : Measure (α i))
+  have hcoordLaw : ∀ i,
+      HasLaw (fun sample : (∀ i, α i) => X i (sample i))
+        ((μ i).map (X i)) (Measure.pi μ) := by
+    intro i
+    exact HasLaw.comp (Y := X i) (ν := (μ i).map (X i))
+      ⟨(hX i).aemeasurable, rfl⟩ (MeasureTheory.measurePreserving_eval μ i).hasLaw
+  have hind :
+      iIndepFun (fun i => fun sample : (∀ i, α i) => X i (sample i))
+        (Measure.pi μ) := by
+    exact ProbabilityTheory.iIndepFun_pi
+      (μ := μ) (X := X) (fun i => (hX i).aemeasurable)
+  have hjoint :
+      HasLaw (fun sample : (∀ i, α i) => fun i => X i (sample i))
+        (Measure.pi fun i => (μ i).map (X i)) (Measure.pi μ) :=
+    hind.hasLaw_pi hcoordLaw
+  exact ⟨by simpa [μ] using hcoordLaw, by simpa [μ] using hind,
+    by simpa [μ] using hjoint⟩
+
 /-- Tonelli's theorem for an `ℝ≥0∞`-valued function on a product space. -/
 theorem lintegral_prod
     {α : Type u} [MeasurableSpace α] {β : Type v} [MeasurableSpace β]

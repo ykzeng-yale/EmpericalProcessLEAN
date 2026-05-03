@@ -298,7 +298,7 @@ quotes; the anchor is the authoritative local source location.
 | 2.3.16 | Proposition | `..._101-200.md:857` | pending-local |
 | 2.3.17 | Theorem | `..._101-200.md:882` | pending-local |
 | 2.4.1 | Theorem | `..._101-200.md:970` | local-exact |
-| 2.4.3 | Theorem | `..._101-200.md:988` | local-layer; Definition 2.1.5 covering primitive, fixed-sample empirical `L1(P_n)` distance/covering-number interface, nonempty empirical-cover positive-cardinality bridge, random empirical covering-number sequence, outer-probability `o_P^*(n)` entropy wrapper, `F_M` truncated-class/envelope interface plus ordinary measurable truncation-tail integral bridge, Definition 2.3.3 `P`-measurable primitive, deterministic finite-cover supremum-bound layers, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, deterministic Rademacher-sign specialization, one-center random Rademacher sub-Gaussian bridge, variance-proxy arithmetic, sub-Gaussian proxy monotonicity, finite-center sub-Gaussian tail/union-bound layer, iid real-valued Rademacher-sign construction, finite-center supremum integrability layer, expected finite-center supremum handoff, layer-cake tail-integral monotonicity, Gaussian-tail integrability/evaluation, coarse closed-form expectation bound, split-at-radius tail-to-expectation bound, Mills-type Gaussian-tail estimate, finite-center Mills expectation bound, supplied small-tail Mills simplification, logarithmic-radius expected-maximal packaging, truncated Rademacher finite-cover expected-maximal specialization, and log-radius-to-Hoeffding scale comparison now available; exact theorem still pending symmetrization/truncation, outer envelope-tail, entropy-to-convergence, and final convergence handoffs |
+| 2.4.3 | Theorem | `..._101-200.md:988` | local-layer; Definition 2.1.5 covering primitive, fixed-sample empirical `L1(P_n)` distance/covering-number interface, nonempty empirical-cover positive-cardinality bridge, random empirical covering-number sequence, outer-probability `o_P^*(n)` entropy wrapper, `F_M` truncated-class/envelope interface plus ordinary measurable truncation-tail integral bridge, measurable-integrable outer/lintegral envelope-tail convergence, Definition 2.3.3 `P`-measurable primitive, deterministic finite-cover supremum-bound layers, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, deterministic Rademacher-sign specialization, one-center random Rademacher sub-Gaussian bridge, variance-proxy arithmetic, sub-Gaussian proxy monotonicity, finite-center sub-Gaussian tail/union-bound layer, iid real-valued Rademacher-sign construction, finite-center supremum integrability layer, expected finite-center supremum handoff, layer-cake tail-integral monotonicity, finite-`Pi` mapped-coordinate product wrappers, Gaussian-tail integrability/evaluation, coarse closed-form expectation bound, split-at-radius tail-to-expectation bound, Mills-type Gaussian-tail estimate, finite-center Mills expectation bound, supplied small-tail Mills simplification, logarithmic-radius expected-maximal packaging, truncated Rademacher finite-cover expected-maximal specialization, log-radius-to-Hoeffding scale comparison, and finite-sample truncated-coordinate law/independence now available; exact theorem still pending product/Fubini symmetrization assembly, entropy-to-convergence, and final convergence handoffs |
 | 2.4.5 | Lemma | `..._101-200.md:1022` | pending-local |
 | 2.5.2 | Theorem | `..._101-200.md:1106` | pending-local |
 | 2.5.6 | Theorem | `..._101-200.md:1204` | pending-local |
@@ -432,12 +432,14 @@ above, so they do not change the theorem-level dashboard counts.
    expected finite-center maximal-bound predicate, the log-radius Mills upper
    wrapper, the truncated Rademacher expected-maximal specialization, its
    finite-empirical-cover version, ordinary measurable truncation-tail
-   integral bridge, the log-radius-to-Hoeffding scale comparison, mapped
-   truncated-class product-copy law/independence, fixed-index product-copy
+   integral bridge, measurable-integrable outer/lintegral envelope-tail
+   convergence, the log-radius-to-Hoeffding scale comparison, mapped
+   truncated-class product-copy law/independence, finite-sample mapped
+   truncated-coordinate laws/independence, fixed-index product-copy
    mean-zero, and a.e. random Rademacher-sign finite-net handoff are now
    compiled.  The next frontier is full theorem-specific
-   symmetrization/truncation assembly, then the outer envelope-tail handoff,
-   entropy-to-convergence, and final assembly.
+   product/Fubini symmetrization assembly, then entropy-to-convergence and
+   final assembly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

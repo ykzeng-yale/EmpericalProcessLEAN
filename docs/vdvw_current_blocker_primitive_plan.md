@@ -291,6 +291,8 @@ additional example closures:
    VdVWOuterExpectation_envelope_tail_le_lintegral_tail_cover
    VdVWOuterProbability_envelope_tail_gt_le_outerExpectation_div
    VdVWOuterExpectation_envelope_tail_eq_lintegral_tail_of_measurable
+   lintegral_envelope_tail_lt_tendsto_zero_of_integrable
+   VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable
    measurable_vdVWTruncatedClassFun
    VdVWClassCoordinateMeasurable.truncate
    VdVWPMeasurableClass.truncate_of_countable_of_coordinate
@@ -300,6 +302,7 @@ additional example closures:
    vdVWTheorem243_productCopy_fst_snd_indep
    vdVWTheorem243_productCopy_fst_snd_identDistrib
    integrable_vdVWTruncatedClassFun_pairDifference
+   vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep
    VdVWTheorem243TruncatedEntropyCondition
    VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM
    ```
@@ -310,12 +313,16 @@ additional example closures:
    `VdVWPMeasurableClass.of_countable_of_measurable`, adds a measurable
    product-copy pair-difference integrand for fixed truncated class members,
    and closes the real-valued envelope-tail outer-expectation/probability
-   bridge through the existing Chapter 1.2 cover-majorant and Markov layers.
+   bridge through the existing Chapter 1.2 cover-majorant and Markov layers,
+   including measurable-integrable lintegral and outer-expectation convergence
+   of `F 1{F > M}` as `M -> ∞`.
    It also reuses the Billingsley/ProbabilityMeasure product-self-copy wrapper
    to give VdVW-facing `P.prod P` first/second-coordinate law, independence,
    identical-distribution wrappers, and fixed truncated pair-difference
-   integrability.  Remaining Step 1 work: plug these gates into the full
-   product/Fubini-compatible symmetrization inequality.
+   integrability, and it specializes the new finite-`Pi` mapped-coordinate
+   product wrapper to sample-coordinate truncated class functions.  Remaining
+   Step 1 work: plug these gates into the full product/Fubini-compatible
+   symmetrization inequality.
 2. Deterministic fixed-sample net inequality `(2.4.4)` for a finite empirical
    `L1(P_n)` net.
 
@@ -573,10 +580,13 @@ additional example closures:
    `VdVWOuterExpectation_envelope_tail_eq_lintegral_tail_of_measurable`.
    The reusable Billingsley/ProbabilityMeasure tail wrapper
    `integral_indicator_tail_lt_tendsto_zero_of_integrable` now proves the
-   ordinary real upper-tail cutoff convergence by dominated convergence.  The
-   full Theorem 2.4.3 symmetrization/truncation argument and the
-   VdV&W-specific conversion from this ordinary tail cutoff into the required
-   outer-expectation/lintegral envelope-tail convergence remain pending.
+   ordinary real upper-tail cutoff convergence by dominated convergence, and
+   the VdV&W measurable-envelope conversions are now compiled as
+   `lintegral_envelope_tail_lt_tendsto_zero_of_integrable` and
+   `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`.
+   The full Theorem 2.4.3 symmetrization/truncation argument remains pending;
+   nonmeasurable/arbitrary-cover envelope-tail variants should only be added
+   if that final assembly genuinely needs them.
 6. Final convergence handoff: from the random entropy condition to convergence
    in outer mean, then use the stated martingale/Lemma 2.4.5 route for almost
    sure convergence.  Do not report Theorem 2.4.3 until these components are
@@ -604,23 +614,24 @@ Next exact edit: continue the theorem-specific symmetrization/truncation layer
 for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
 truncated pair-difference measurability/integrability, real-valued
 envelope-tail outer-expectation/probability handoffs, generic ordinary tail
-cutoff convergence, `P.prod P` coordinate law/independence/identical-
-distribution wrappers, proof-carrying mapped truncated-class product-copy
-law/independence wrapper, fixed-index product-copy mean-zero bridge, and
-a.e. random-sign finite-net handoff are closed.  Next assemble these into the
-product/Fubini-compatible symmetrization inequality targeted to the
-`Phi(x)=x` case, then connect the ordinary tail cutoff to the VdV&W-specific
-outer/lintegral envelope-tail convergence handoff.
+cutoff convergence, measurable-integrable outer/lintegral envelope-tail
+convergence, `P.prod P` coordinate law/independence/identical-distribution
+wrappers, proof-carrying mapped truncated-class product-copy
+law/independence wrapper, finite-`Pi` sample-coordinate laws/independence,
+fixed-index product-copy mean-zero bridge, and a.e. random-sign finite-net
+handoff are closed.  Next assemble these into the product/Fubini-compatible
+symmetrization inequality targeted to the `Phi(x)=x` case, then connect that
+bound to the entropy-to-convergence and final Theorem 2.4.3 handoffs.
 
-Search note for the next product layer: the finite-sample route can use
+Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
-APIs found are `ProbabilityTheory.iIndepFun_pi`,
+APIs found and used are `ProbabilityTheory.iIndepFun_pi`,
 `ProbabilityTheory.iIndepFun.hasLaw_pi`,
-`ProbabilityTheory.iIndepFun_iff_hasLaw_pi_pi`,
-`MeasureTheory.measurePreserving_eval`, `MeasureTheory.Measure.pi_map_eval`,
-and `MeasureTheory.Measure.pi_map_pi`; this should support a future
-`SampleAt`/`vdVWProductMeasure` independent-copy wrapper if the symmetrization
-assembly needs finite-sample coordinate laws directly.
+`MeasureTheory.measurePreserving_eval`, and `MeasureTheory.Measure.pi_map_pi`.
+These now support `probability_pi_map_mapped_coordinates_eq`,
+`probability_pi_independent_mapped_coordinates_with_joint_law`, and the
+VdV&W-facing
+`vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`.
 
 ## Parked Example-Specific Blocker
 

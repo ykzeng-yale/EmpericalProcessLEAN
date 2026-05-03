@@ -276,6 +276,99 @@ theorem VdVWOuterExpectation_envelope_tail_eq_lintegral_tail_of_measurable
     ((henv_meas.ennreal_ofReal).indicator htailSet)]
   rw [lintegral_indicator htailSet]
 
+/--
+For a measurable integrable nonnegative envelope, the ordinary `ℝ≥0∞`
+lintegral of the upper envelope tail tends to zero.
+
+This is the VdV&W-facing conversion of the reusable Billingsley DCT tail
+cutoff into the lintegral form used by the outer-expectation handoff.
+-/
+theorem lintegral_envelope_tail_lt_tendsto_zero_of_integrable
+    {Observation : Type u} [MeasurableSpace Observation]
+    {μ : Measure Observation} {envelope : Observation -> ℝ}
+    (henv_meas : Measurable envelope)
+    (henv_integrable : Integrable envelope μ)
+    (henv_nonneg : ∀ x, 0 ≤ envelope x) :
+    Tendsto
+      (fun M : ℝ =>
+        ∫⁻ x in {y | M < envelope y}, ENNReal.ofReal (envelope x) ∂μ)
+      atTop (nhds 0) := by
+  have htailReal :
+      Tendsto
+        (fun M : ℝ =>
+          ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂μ)
+        atTop (nhds 0) :=
+    StatInference.ProbabilityMeasure.integral_indicator_tail_lt_tendsto_zero_of_integrable
+      (μ := μ) (X := envelope) henv_integrable
+  have htailENN := ENNReal.tendsto_ofReal htailReal
+  have hrewrite :
+      (fun M : ℝ =>
+          ENNReal.ofReal
+            (∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂μ)) =
+        fun M : ℝ =>
+          ∫⁻ x in {y | M < envelope y}, ENNReal.ofReal (envelope x) ∂μ := by
+    funext M
+    let tailSet : Set Observation := {y | M < envelope y}
+    have htailSet : MeasurableSet tailSet :=
+      measurableSet_lt measurable_const henv_meas
+    have htailIntegrable :
+        Integrable (Set.indicator tailSet envelope) μ :=
+      henv_integrable.indicator htailSet
+    have htailNonneg :
+        0 ≤ᵐ[μ] (Set.indicator tailSet envelope) := by
+      exact ae_of_all μ fun x => by
+        by_cases hx : x ∈ tailSet <;> simp [Set.indicator, hx, henv_nonneg x]
+    calc
+      ENNReal.ofReal
+          (∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂μ)
+          = ∫⁻ x, ENNReal.ofReal (Set.indicator tailSet envelope x) ∂μ := by
+              exact
+                MeasureTheory.ofReal_integral_eq_lintegral_ofReal
+                  htailIntegrable htailNonneg
+      _ = ∫⁻ x, tailSet.indicator (fun x => ENNReal.ofReal (envelope x)) x ∂μ := by
+              congr 1
+              funext x
+              by_cases hx : x ∈ tailSet <;> simp [Set.indicator, hx]
+      _ = ∫⁻ x in tailSet, ENNReal.ofReal (envelope x) ∂μ := by
+              rw [lintegral_indicator htailSet]
+  simpa [ENNReal.ofReal_zero, hrewrite] using htailENN
+
+/--
+For a measurable integrable nonnegative envelope, the VdV&W outer expectation
+of the envelope-tail term tends to zero as the truncation level goes to
+infinity.
+
+This closes the measurable-envelope tail-convergence handoff needed after the
+generic Billingsley DCT tail cutoff.
+-/
+theorem VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable
+    {Observation : Type u} [MeasurableSpace Observation]
+    {μ : Measure Observation} {envelope : Observation -> ℝ}
+    (henv_meas : Measurable envelope)
+    (henv_integrable : Integrable envelope μ)
+    (henv_nonneg : ∀ x, 0 ≤ envelope x) :
+    Tendsto
+      (fun M : ℝ =>
+        VdVWOuterExpectation μ
+          (fun x => ENNReal.ofReal
+            (Set.indicator {y | M < envelope y} envelope x)))
+      atTop (nhds 0) := by
+  have hlin :=
+    lintegral_envelope_tail_lt_tendsto_zero_of_integrable
+      (μ := μ) (envelope := envelope) henv_meas henv_integrable henv_nonneg
+  have hrewrite :
+      (fun M : ℝ =>
+        VdVWOuterExpectation μ
+          (fun x => ENNReal.ofReal
+            (Set.indicator {y | M < envelope y} envelope x))) =
+      fun M : ℝ =>
+        ∫⁻ x in {y | M < envelope y}, ENNReal.ofReal (envelope x) ∂μ := by
+    funext M
+    exact
+      VdVWOuterExpectation_envelope_tail_eq_lintegral_tail_of_measurable
+        (μ := μ) (envelope := envelope) (M := M) henv_meas
+  simpa [hrewrite] using hlin
+
 /-- Measurability of the truncated class member follows from measurability of `f` and `F`. -/
 theorem measurable_vdVWTruncatedClassFun
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
@@ -475,6 +568,48 @@ theorem vdVWTheorem243_productCopy_truncatedClassFun_laws_indep
       (X := vdVWTruncatedClassFun classFun envelope M index)
       (Y := vdVWTruncatedClassFun classFun envelope M index)
       htruncMeas htruncMeas)
+
+/--
+On the finite sample product space `P^n`, a fixed truncated class member
+evaluated at each sample coordinate has the expected coordinate laws, joint
+product law, and coordinate independence.
+
+This is the finite-`Pi` product-law specialization needed when the
+symmetrization route works directly with `SampleAt Observation n`.
+-/
+theorem vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope : Measurable envelope)
+    {index : Index} (hindex : index ∈ indexClass) (n : ℕ) :
+    (∀ i : Fin n,
+      HasLaw
+        (fun sample : SampleAt Observation n =>
+          vdVWTruncatedClassFun classFun envelope M index (sample i))
+        (P.map (vdVWTruncatedClassFun classFun envelope M index))
+        (vdVWProductMeasure P n)) ∧
+      iIndepFun
+        (fun i : Fin n => fun sample : SampleAt Observation n =>
+          vdVWTruncatedClassFun classFun envelope M index (sample i))
+        (vdVWProductMeasure P n) ∧
+      HasLaw
+        (fun sample : SampleAt Observation n => fun i : Fin n =>
+          vdVWTruncatedClassFun classFun envelope M index (sample i))
+        (Measure.pi fun _ : Fin n =>
+          P.map (vdVWTruncatedClassFun classFun envelope M index))
+        (vdVWProductMeasure P n) := by
+  have htruncMeas :
+      Measurable (vdVWTruncatedClassFun classFun envelope M index) :=
+    measurable_vdVWTruncatedClassFun (hclass index hindex) henvelope
+  simpa [vdVWProductMeasure, SampleAt] using
+    (StatInference.ProbabilityMeasure.probability_pi_independent_mapped_coordinates_with_joint_law
+      (P := fun _ : Fin n =>
+        (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation))
+      (X := fun _ : Fin n => vdVWTruncatedClassFun classFun envelope M index)
+      (fun _ => htruncMeas))
 
 /--
 If a fixed truncated class member is integrable under `P`, then its

@@ -54,11 +54,14 @@ The best current candidate family is Section 25 weak convergence and
 Portmanteau/tightness wrappers, while Section 16/18 support should stay
 dependency-driven by the current VdV&W Theorem 2.4.3 route.  As of the latest
 merged empirical-process progress, the log-radius-to-Hoeffding scale comparison
-is proved.  The active VdV&W blockers are now the theorem-specific
-symmetrization/truncation layer, the outer envelope-tail handoff, and
-entropy-to-convergence/final assembly.  Billingsley support should only add
-reusable probability/measure wrappers if those steps need tail, product/Fubini,
-independent-copy, or outer-expectation infrastructure.
+is proved, finite-`Pi` mapped-coordinate product laws are available, and the
+measurable-integrable envelope-tail convergence handoff is compiled locally in
+the empirical-process file.  The active VdV&W blockers are now the
+theorem-specific product/Fubini symmetrization assembly, entropy-to-convergence,
+and final assembly, with nonmeasurable/arbitrary-cover envelope-tail variants
+left only if the theorem assembly forces them.  Billingsley support should only
+add reusable probability/measure wrappers if those steps need tail,
+product/Fubini, independent-copy, or outer-expectation infrastructure.
 
 ## Search-First Record
 
@@ -137,9 +140,12 @@ Local searches found reusable APIs in:
    dominated-convergence upper-tail cutoff APIs for
    downstream empirical-process use. `StatInference/EmpiricalProcess/Theorem243.lean`
    now consumes these generic wrappers for its finite-center expected-supremum
-   tail layer while keeping VdV&W-specific outer-expectation/truncation
-   handoffs local to the empirical-process files. This is support
-   infrastructure, not a source-exact Billingsley Sections 15-16 report. The
+   tail layer and proves the VdV&W-specific measurable-integrable lintegral and
+   outer-expectation envelope-tail convergence handoffs
+   `lintegral_envelope_tail_lt_tendsto_zero_of_integrable` and
+   `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`.
+   This is support infrastructure, not a source-exact Billingsley Sections
+   15-16 report. The
    content-based Section 18
    wrapper layer has started in
    `StatInference/ProbabilityMeasure/ProductMeasure.lean`; it now includes
@@ -151,8 +157,13 @@ Local searches found reusable APIs in:
    coordinates as independent copies with common law `P`, and
    `probability_prod_independent_mapped_copies_with_joint_law`, which packages
    measurable mapped-coordinate marginal laws, joint product law, and
-   independence. The remaining work is to specialize these wrappers to the
-   exact finite-product/independent-copy shapes used by symmetrization.  The reusable Rademacher-sign layer has started in
+   independence.  It also now includes finite-`Pi` mapped-coordinate wrappers
+   `probability_pi_map_mapped_coordinates_eq` and
+   `probability_pi_independent_mapped_coordinates_with_joint_law`; the VdV&W
+   side specializes these as
+   `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`.
+   The remaining work is to assemble these wrappers into the exact
+   finite-product/independent-copy symmetrization inequality.  The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
    one-dimensional law, deterministic sign vectors, and finite iid sign
@@ -186,18 +197,21 @@ of:
   probability. This is not a source-exact formalization of Billingsley Theorem
   20.6; the remaining exact Theorem 20.6 route is the uniform-in-`x` statement,
   likely via the finite-grid route; or
-- the next Section 16 tail-control specialization needed by
-  `StatInference/EmpiricalProcess/Theorem243.lean`, using the compiled
-  `StatInference/ProbabilityMeasure/Tail.lean` layer-cake/tail/DCT cutoff
-  wrappers where the statement is reusable, and keeping VdV&W-specific
-  outer-expectation and lintegral handoffs in the empirical-process files; or
-- the next Section 18 independent-copy specialization using
+- consume the compiled Section 16 tail-control specializations in
+  `StatInference/EmpiricalProcess/Theorem243.lean`,
+  especially `lintegral_envelope_tail_lt_tendsto_zero_of_integrable` and
+  `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`,
+  while adding only nonmeasurable/arbitrary-cover variants if the exact
+  Theorem 2.4.3 assembly requires them; or
+- the next Section 18 independent-copy/symmetrization specialization using
   `probability_integral_prod_fst`, `probability_integral_prod_snd`, and
   `probability_integral_prod_mul`, plus
   `probability_integral_prod_fst_sub_snd_eq_zero`,
   `probability_prod_independent_self_copies` and
-  `probability_prod_independent_mapped_copies_with_joint_law`, to erase unused
-  product coordinates, expose ghost-copy independence, and carry mapped
+  `probability_prod_independent_mapped_copies_with_joint_law`, plus the
+  finite-`Pi` wrappers `probability_pi_map_mapped_coordinates_eq` and
+  `probability_pi_independent_mapped_coordinates_with_joint_law`, to erase
+  unused product coordinates, expose ghost-copy independence, and carry mapped
   sample/sign statistics in the symmetrization route.
 
 The deciding rule is dependency value: if Theorem 2.4.3 is blocked on a tail,
@@ -206,10 +220,13 @@ cosmetic Billingsley report.  Otherwise, select a narrow Section 25 theorem
 candidate whose proof is already mostly present in mathlib/local wrappers and
 move it toward an exact source-audited Billingsley statement.
 
-Finite-sample product note: local/mathlib search shows that the next reusable
-product primitive does not need to stay binary.  Since
+Finite-sample product note: local/mathlib search showed that the reusable
+product primitive did not need to stay binary.  Since
 `SampleAt Observation n` is `Fin n -> Observation` and
-`vdVWProductMeasure P n` is `Measure.pi fun _ : Fin n => P`, the next
-content-based Section 18/20 support target can be a finite-`Pi`
-mapped-coordinate wrapper using `ProbabilityTheory.iIndepFun_pi`,
-`iIndepFun.hasLaw_pi`, and `MeasureTheory.measurePreserving_eval`.
+`vdVWProductMeasure P n` is `Measure.pi fun _ : Fin n => P`, the compiled
+content-based Section 18/20 support layer now includes finite-`Pi`
+mapped-coordinate wrappers using `ProbabilityTheory.iIndepFun_pi`,
+`iIndepFun.hasLaw_pi`, `MeasureTheory.measurePreserving_eval`, and
+`Measure.pi_map_pi`.  The next proof target is to use these wrappers in the
+product/Fubini-compatible symmetrization inequality, not to add another product
+surface unless that assembly exposes a sharper missing API.

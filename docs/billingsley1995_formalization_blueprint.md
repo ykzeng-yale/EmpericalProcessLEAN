@@ -120,7 +120,9 @@ Current compiled wrappers:
   expectation wrappers, including product-coordinate marginal projection and
   separated product-expectation identities, mean-zero product-copy difference,
   a binary independent self-copy handoff under `P.prod P`, and
-  mapped-coordinate marginal/joint-law plus independence handoff
+  mapped-coordinate marginal/joint-law plus independence handoff, plus
+  finite-`Pi` mapped-coordinate law and independence wrappers for finite sample
+  coordinates
 - first and second Borel-Cantelli wrappers
 - generated sigma-field, generator-measurability, pi-system, and
   finite/probability measure extensionality wrappers
@@ -155,6 +157,10 @@ Current compiled wrappers:
   `Mathlib.MeasureTheory.Integral.Lebesgue.Markov`
 - dominated-convergence upper-tail cutoff wrapper
   `integral_indicator_tail_lt_tendsto_zero_of_integrable`
+- VdV&W-facing measurable-integrable envelope-tail convergence handoffs
+  `lintegral_envelope_tail_lt_tendsto_zero_of_integrable` and
+  `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`
+  in `StatInference/EmpiricalProcess/Theorem243.lean`
 - source-crosswalk support for Billingsley Sections 15-16 integration/tail
   language, not an exact Billingsley theorem report
 
@@ -184,8 +190,13 @@ Near-term declarations:
   product-coordinate integral projection and separated product-expectation
   wrappers for independent-copy arguments, mean-zero difference wrapper
   `probability_integral_prod_fst_sub_snd_eq_zero`, binary self-copy wrapper
-  `probability_prod_independent_self_copies`, and mapped-coordinate wrapper
-  `probability_prod_independent_mapped_copies_with_joint_law`.
+  `probability_prod_independent_self_copies`, mapped-coordinate wrapper
+  `probability_prod_independent_mapped_copies_with_joint_law`, finite-`Pi`
+  wrapper `probability_pi_map_mapped_coordinates_eq`, finite-`Pi`
+  law/independence wrapper
+  `probability_pi_independent_mapped_coordinates_with_joint_law`, and the
+  VdV&W specialization
+  `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`.
 
 Search anchors:
 
