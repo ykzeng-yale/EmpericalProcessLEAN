@@ -73,12 +73,15 @@ Pinned mathlib searches found reusable APIs in:
 - `MeasureTheory.Function.ConvergenceInDistribution`
 - `MeasureTheory.Integral.Layercake`
 - `MeasureTheory.Integral.Lebesgue.Markov`
+- `MeasureTheory.Integral.DominatedConvergence`
+- `MeasureTheory.Function.UniformIntegrable`
 - `MeasureTheory.PiSystem`
 - `MeasureTheory.Measure.Typeclasses.Finite`
 - `MeasureTheory.MeasurableSpace.Pi`
 - `MeasureTheory.Measure.Prod`
 - `MeasureTheory.Constructions.Pi`
 - `Probability.ProductMeasure`
+- `Probability.HasLaw`
 - `Probability.Process.FiniteDimensionalLaws`
 - `Probability.StrongLaw`
 - `Probability.BorelCantelli`
@@ -126,7 +129,8 @@ Local searches found reusable APIs in:
    The content-based
    Section 16 wrapper layer has started in
    `StatInference/ProbabilityMeasure/Tail.lean`; it packages mathlib
-   layer-cake, tail-integral monotonicity, split-at-radius, and Markov APIs for
+   layer-cake, tail-integral monotonicity, split-at-radius, Markov, and
+   dominated-convergence upper-tail cutoff APIs for
    downstream empirical-process use. `StatInference/EmpiricalProcess/Theorem243.lean`
    now consumes these generic wrappers for its finite-center expected-supremum
    tail layer while keeping VdV&W-specific outer-expectation/truncation
@@ -138,9 +142,11 @@ Local searches found reusable APIs in:
    product-coordinate marginal projection and separated product-expectation
    identities for binary product probability spaces, plus
    `probability_prod_independent_self_copies`, which packages the two product
-   coordinates as independent copies with common law `P`. The remaining work is
-   to specialize these wrappers to the exact finite-product/independent-copy
-   shapes used by symmetrization.  The reusable Rademacher-sign layer has started in
+   coordinates as independent copies with common law `P`, and
+   `probability_prod_independent_mapped_copies_with_joint_law`, which packages
+   measurable mapped-coordinate marginal laws, joint product law, and
+   independence. The remaining work is to specialize these wrappers to the
+   exact finite-product/independent-copy shapes used by symmetrization.  The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
    one-dimensional law, deterministic sign vectors, and finite iid sign
@@ -176,14 +182,16 @@ of:
   likely via the finite-grid route; or
 - the next Section 16 tail-control specialization needed by
   `StatInference/EmpiricalProcess/Theorem243.lean`, using the compiled
-  `StatInference/ProbabilityMeasure/Tail.lean` layer-cake/tail wrappers where
-  the statement is reusable, and keeping VdV&W-specific outer-expectation
-  handoffs in the empirical-process files; or
+  `StatInference/ProbabilityMeasure/Tail.lean` layer-cake/tail/DCT cutoff
+  wrappers where the statement is reusable, and keeping VdV&W-specific
+  outer-expectation and lintegral handoffs in the empirical-process files; or
 - the next Section 18 independent-copy specialization using
   `probability_integral_prod_fst`, `probability_integral_prod_snd`, and
   `probability_integral_prod_mul`, plus
-  `probability_prod_independent_self_copies`, to erase unused product
-  coordinates and expose ghost-copy independence in the symmetrization route.
+  `probability_prod_independent_self_copies` and
+  `probability_prod_independent_mapped_copies_with_joint_law`, to erase unused
+  product coordinates, expose ghost-copy independence, and carry mapped
+  sample/sign statistics in the symmetrization route.
 
 The deciding rule is dependency value: if Theorem 2.4.3 is blocked on a tail,
 Fubini, independent-copy, or outer-expectation primitive, prefer that over a

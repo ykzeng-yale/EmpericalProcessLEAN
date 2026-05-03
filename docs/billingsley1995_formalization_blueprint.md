@@ -118,15 +118,17 @@ Current compiled wrappers:
   limit wrappers
 - product probability measure, Tonelli/Fubini, and independent-product
   expectation wrappers, including product-coordinate marginal projection and
-  separated product-expectation identities, plus a binary independent
-  self-copy handoff under `P.prod P`
+  separated product-expectation identities, a binary independent self-copy
+  handoff under `P.prod P`, and mapped-coordinate marginal/joint-law plus
+  independence handoff
 - first and second Borel-Cantelli wrappers
 - generated sigma-field, generator-measurability, pi-system, and
   finite/probability measure extensionality wrappers
 - real-valued strong-law, centered strong-law, and finite-family centered
   strong-law wrappers
 - layer-cake, tail-integral monotonicity, split-at-radius probability tail,
-  and extended-nonnegative Markov wrappers in
+  extended-nonnegative Markov, and dominated-convergence upper-tail cutoff
+  wrappers in
   `StatInference/ProbabilityMeasure/Tail.lean`
 - fair Bool and real Rademacher laws, zero mean, sub-Gaussian support,
   deterministic sign-vector support, and finite iid real-valued Rademacher
@@ -151,6 +153,8 @@ Current compiled wrappers:
   variables
 - extended-nonnegative Markov tail wrappers over
   `Mathlib.MeasureTheory.Integral.Lebesgue.Markov`
+- dominated-convergence upper-tail cutoff wrapper
+  `integral_indicator_tail_lt_tendsto_zero_of_integrable`
 - source-crosswalk support for Billingsley Sections 15-16 integration/tail
   language, not an exact Billingsley theorem report
 
@@ -178,8 +182,9 @@ Near-term declarations:
 - content-based wrappers started in
   `StatInference/ProbabilityMeasure/ProductMeasure.lean`, including
   product-coordinate integral projection and separated product-expectation
-  wrappers for independent-copy arguments.  The current binary self-copy
-  wrapper is `probability_prod_independent_self_copies`.
+  wrappers for independent-copy arguments, binary self-copy wrapper
+  `probability_prod_independent_self_copies`, and mapped-coordinate wrapper
+  `probability_prod_independent_mapped_copies_with_joint_law`.
 
 Search anchors:
 

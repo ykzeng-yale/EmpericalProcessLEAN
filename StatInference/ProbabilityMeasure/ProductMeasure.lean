@@ -76,6 +76,48 @@ theorem probability_prod_independent_self_copies
         (μ := (P : Measure α)) (ν := (P : Measure α))
         (X := id) (Y := id) measurable_id measurable_id)
 
+/--
+Measurable functions of the two product coordinates are independent, with
+their marginal laws and joint product law.
+
+This is the reusable Billingsley Section 18 / empirical-process symmetrization
+handoff for replacing abstract independent copies by concrete product-space
+coordinates and then mapping those coordinates through measurable statistics.
+-/
+theorem probability_prod_independent_mapped_copies_with_joint_law
+    {α : Type u} [MeasurableSpace α]
+    {β : Type v} [MeasurableSpace β]
+    {γ : Type w} [MeasurableSpace γ]
+    {δ : Type*} [MeasurableSpace δ]
+    (P : MeasureTheory.ProbabilityMeasure α)
+    (Q : MeasureTheory.ProbabilityMeasure β)
+    {X : α -> γ} {Y : β -> δ}
+    (hX : Measurable X) (hY : Measurable Y) :
+    HasLaw (fun z : α × β => X z.1) ((P : Measure α).map X)
+        ((P : Measure α).prod (Q : Measure β)) ∧
+      HasLaw (fun z : α × β => Y z.2) ((Q : Measure β).map Y)
+        ((P : Measure α).prod (Q : Measure β)) ∧
+      HasLaw (fun z : α × β => (X z.1, Y z.2))
+        (((P : Measure α).map X).prod ((Q : Measure β).map Y))
+        ((P : Measure α).prod (Q : Measure β)) ∧
+      (fun z : α × β => X z.1) ⟂ᵢ[((P : Measure α).prod (Q : Measure β))]
+        (fun z : α × β => Y z.2) := by
+  let hXLaw : HasLaw (fun z : α × β => X z.1) ((P : Measure α).map X)
+      ((P : Measure α).prod (Q : Measure β)) :=
+    HasLaw.comp (Y := X) (ν := (P : Measure α).map X)
+      ⟨hX.aemeasurable, rfl⟩ MeasureTheory.measurePreserving_fst.hasLaw
+  let hYLaw : HasLaw (fun z : α × β => Y z.2) ((Q : Measure β).map Y)
+      ((P : Measure α).prod (Q : Measure β)) :=
+    HasLaw.comp (Y := Y) (ν := (Q : Measure β).map Y)
+      ⟨hY.aemeasurable, rfl⟩ MeasureTheory.measurePreserving_snd.hasLaw
+  let hInd :
+      (fun z : α × β => X z.1) ⟂ᵢ[((P : Measure α).prod (Q : Measure β))]
+        (fun z : α × β => Y z.2) :=
+    ProbabilityTheory.indepFun_prod
+      (μ := (P : Measure α)) (ν := (Q : Measure β))
+      (X := X) (Y := Y) hX hY
+  exact ⟨hXLaw, hYLaw, hInd.hasLaw_prod hXLaw hYLaw, hInd⟩
+
 /-- Tonelli's theorem for an `ℝ≥0∞`-valued function on a product space. -/
 theorem lintegral_prod
     {α : Type u} [MeasurableSpace α] {β : Type v} [MeasurableSpace β]
