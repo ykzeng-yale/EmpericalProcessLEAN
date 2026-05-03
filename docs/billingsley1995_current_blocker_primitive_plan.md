@@ -508,8 +508,12 @@ countable-class fixed-cardinality cover-event route is compiled as
 `measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`,
 `measurable_empiricalL1CoveringNumber_of_countable`, and
 `measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`. The selected
-minimal-cardinality measurability wrappers for countable/truncated classes are
-compiled as well. The
+minimal-cardinality measurability wrappers
+`measurable_terminal_minimalRandomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`,
+`measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable`,
+and
+`measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable`
+are compiled as well. The
 deterministic finite-net log-bound suppliers
 `vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le`,
 `vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le`,
