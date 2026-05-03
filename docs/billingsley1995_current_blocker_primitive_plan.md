@@ -89,10 +89,12 @@ of:
   closed half-line indicator integral with `ProbabilityTheory.cdf`, and
   `realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid` repackages
   the endpoint empirical-average SLLN as pointwise empirical-CDF convergence
-  for a fixed endpoint. This is not a source-exact formalization of
-  Billingsley Theorem 20.6; the next exact edit is either the fixed-endpoint
-  convergence-in-probability/outer-probability corollary or the uniform
-  finite-grid route; or
+  for a fixed endpoint. The fixed-endpoint
+  convergence-in-probability/`TendstoInMeasure` wrapper and the corresponding
+  VdV&W outer-probability wrapper record the same fixed-endpoint consequence in
+  probability. This is not a source-exact formalization of Billingsley Theorem
+  20.6; the remaining exact Theorem 20.6 route is the uniform-in-`x` statement,
+  likely via the finite-grid route; or
 - a Section 16 tail-control primitive in the empirical-process files that
   directly unlocks `StatInference/EmpiricalProcess/Theorem243.lean`.
 

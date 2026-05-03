@@ -100,7 +100,9 @@ Current compiled wrappers:
 - real-valued strong-law, centered strong-law, and finite-family centered
   strong-law wrappers
 - fixed-endpoint empirical-distribution/CDF support wrappers in
-  `StatInference/EmpiricalProcess/RealHalfLineGC.lean`
+  `StatInference/EmpiricalProcess/RealHalfLineGC.lean`, including the
+  fixed-endpoint almost-sure, convergence-in-probability/`TendstoInMeasure`,
+  and VdV&W outer-probability handoffs
 
 ### Lane B: Integration, tails, and uniform integrability
 
@@ -158,7 +160,10 @@ Near-term declarations:
 - Strong-law wrappers around `strong_law_ae_real`: started in
   `StatInference/ProbabilityMeasure/StrongLaw.lean`.
 - Fixed-endpoint empirical-distribution wrappers: started in
-  `StatInference/EmpiricalProcess/RealHalfLineGC.lean`.
+  `StatInference/EmpiricalProcess/RealHalfLineGC.lean`; the
+  convergence-in-probability/`TendstoInMeasure` and outer-probability wrappers
+  are fixed-endpoint corollaries of the pointwise support layer, not a
+  Theorem 20.6 report.
 - Rademacher PMF/has-law/iid construction primitives for Theorem 2.4.3.
 - Borel-Cantelli wrappers only when needed for an exact theorem route.
 

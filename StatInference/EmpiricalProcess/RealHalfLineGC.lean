@@ -65,6 +65,67 @@ theorem realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid
   simpa [hIntegral] using hω
 
 /--
+Pointwise empirical-distribution convergence in probability for one closed
+half-line.
+
+This repackages the fixed-endpoint almost-sure statement through mathlib's
+`TendstoInMeasure`, the local common-domain form of convergence in
+probability.
+-/
+theorem realHalfLine_empiricalAverage_sub_cdf_tendstoInMeasure_zero_of_iid
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X)) :
+    MeasureTheory.TendstoInMeasure μ
+      (fun n ω =>
+        empiricalAverage (samplePath X ω n) (realHalfLineIndicator c) -
+          ProbabilityTheory.cdf P c)
+      atTop (fun _ => 0) := by
+  letI : IsProbabilityMeasure μ := (hLaw 0).isProbabilityMeasure
+  have hIndicator_measurable : Measurable (realHalfLineIndicator c) := by
+    simpa [realHalfLineIndicator] using
+      (measurable_const.indicator measurableSet_Iic : Measurable (realHalfLineIndicator c))
+  have h_aestrongly :
+      ∀ n,
+        AEStronglyMeasurable
+          (fun ω =>
+            empiricalAverage (samplePath X ω n) (realHalfLineIndicator c) -
+              ProbabilityTheory.cdf P c) μ := by
+    intro n
+    exact
+      ((empiricalAverage_samplePath_aemeasurable_of_hasLaw
+        X (realHalfLineIndicator c) n hLaw hIndicator_measurable).sub
+          aemeasurable_const).aestronglyMeasurable
+  exact
+    MeasureTheory.tendstoInMeasure_of_tendsto_ae h_aestrongly
+      (realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid
+        X c hLaw hindep)
+
+/--
+Fixed-endpoint empirical-distribution convergence in the local VdV&W outer
+probability vocabulary.
+
+This is still a pointwise support layer, not the uniform-in-`x`
+Glivenko-Cantelli conclusion of Billingsley's Theorem 20.6.
+-/
+theorem realHalfLine_empiricalAverage_sub_cdf_convergesInOuterProbability_of_iid
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X)) :
+    VdVWConvergesInOuterProbability μ
+      (fun n ω =>
+        empiricalAverage (samplePath X ω n) (realHalfLineIndicator c) -
+          ProbabilityTheory.cdf P c)
+      atTop (fun _ => 0) :=
+  vdVWConvergesInOuterProbability_of_tendstoInMeasure
+    (realHalfLine_empiricalAverage_sub_cdf_tendstoInMeasure_zero_of_iid
+      X c hLaw hindep)
+
+/--
 Conditional outer-a.s. Glivenko-Cantelli corollary for the real half-line
 indicator class.
 
