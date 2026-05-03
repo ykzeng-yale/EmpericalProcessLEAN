@@ -432,6 +432,51 @@ theorem vdVWTheorem243_productCopy_fst_snd_identDistrib
     (vdVWTheorem243_productCopy_snd_hasLaw P)
 
 /--
+Mapped truncated class values on the two product coordinates have the expected
+marginal laws, joint product law, and independence.
+
+This is the product-copy law package needed before the symmetrization proof
+can move from raw sample copies to fixed truncated class statistics.
+-/
+theorem vdVWTheorem243_productCopy_truncatedClassFun_laws_indep
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope : Measurable envelope)
+    {index : Index} (hindex : index ∈ indexClass) :
+    HasLaw
+        (fun z : Observation × Observation =>
+          vdVWTruncatedClassFun classFun envelope M index z.1)
+        (P.map (vdVWTruncatedClassFun classFun envelope M index)) (P.prod P) ∧
+      HasLaw
+        (fun z : Observation × Observation =>
+          vdVWTruncatedClassFun classFun envelope M index z.2)
+        (P.map (vdVWTruncatedClassFun classFun envelope M index)) (P.prod P) ∧
+      HasLaw
+        (fun z : Observation × Observation =>
+          (vdVWTruncatedClassFun classFun envelope M index z.1,
+            vdVWTruncatedClassFun classFun envelope M index z.2))
+        ((P.map (vdVWTruncatedClassFun classFun envelope M index)).prod
+          (P.map (vdVWTruncatedClassFun classFun envelope M index)))
+        (P.prod P) ∧
+      (fun z : Observation × Observation =>
+          vdVWTruncatedClassFun classFun envelope M index z.1) ⟂ᵢ[P.prod P]
+        (fun z : Observation × Observation =>
+          vdVWTruncatedClassFun classFun envelope M index z.2) := by
+  have htruncMeas :
+      Measurable (vdVWTruncatedClassFun classFun envelope M index) :=
+    measurable_vdVWTruncatedClassFun (hclass index hindex) henvelope
+  simpa using
+    (StatInference.ProbabilityMeasure.probability_prod_independent_mapped_copies_with_joint_law
+      (P := (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation))
+      (Q := (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation))
+      (X := vdVWTruncatedClassFun classFun envelope M index)
+      (Y := vdVWTruncatedClassFun classFun envelope M index)
+      htruncMeas htruncMeas)
+
+/--
 If a fixed truncated class member is integrable under `P`, then its
 product-copy pair difference is integrable under `P × P`.
 
@@ -460,6 +505,30 @@ theorem integrable_vdVWTruncatedClassFun_pairDifference
       (MeasureTheory.measurePreserving_snd (μ := P) (ν := P)).integrable_comp_of_integrable
         htruncIntegrable
   exact hfst.sub hsnd
+
+/--
+The product-copy pair difference of a fixed integrable truncated class member
+has mean zero under `P × P`.
+
+This is the centered ghost-copy/Fubini bridge used in the
+`Phi(x)=x` symmetrization route for Theorem 2.4.3.
+-/
+theorem integral_vdVWTruncatedClassFun_productCopy_pairDifference_eq_zero
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M : ℝ} {index : Index}
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) P) :
+    ∫ z : Observation × Observation,
+        vdVWTruncatedClassFun classFun envelope M index z.1 -
+          vdVWTruncatedClassFun classFun envelope M index z.2 ∂(P.prod P) =
+      0 := by
+  exact
+    StatInference.ProbabilityMeasure.probability_integral_prod_fst_sub_snd_eq_zero
+      (μ := (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation))
+      (f := vdVWTruncatedClassFun classFun envelope M index)
+      htruncIntegrable
 
 /-!
 ## Fixed-sample empirical net handoff
@@ -2466,6 +2535,40 @@ theorem
       hepsilon_nonneg hM_nonneg
       (by
         simpa [VdVWTheorem243RademacherFiniteCenterHoeffdingBound] using hmaximal)
+
+/--
+Random Rademacher signs give the finite-net Hoeffding handoff almost surely
+whenever the sign-vector support and finite-center Hoeffding predicate hold
+almost surely.
+
+This is the probability-facing wrapper around the deterministic sign-vector
+handoff above; the remaining theorem-line work is to prove the `hmaximal`
+event from iid Rademacher signs and sub-Gaussian/Hoeffding bounds.
+-/
+theorem
+    ae_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSigns
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon M : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality)
+    (sign : Fin n -> Ω -> ℝ)
+    (hsign : ∀ᵐ ω ∂μ, VdVWRademacherSignVector (fun i : Fin n => sign i ω))
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hM_nonneg : 0 ≤ M)
+    (hmaximal : ∀ᵐ ω ∂μ,
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample classFun
+        cover.center (fun i : Fin n => sign i ω) M) :
+    ∀ᵐ ω ∂μ,
+      vdVWWeightedClassSupremum indexClass classFun
+          (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample ≤
+        vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M + epsilon := by
+  filter_upwards [hsign, hmaximal] with ω hsignω hmaxω
+  exact
+    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
+      cover (fun i : Fin n => sign i ω) hsignω hepsilon_nonneg hM_nonneg hmaxω
 
 /--
 Common-domain VdV&W stochastic little-o in outer probability.

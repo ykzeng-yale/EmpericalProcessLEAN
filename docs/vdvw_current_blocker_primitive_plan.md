@@ -552,9 +552,12 @@ additional example closures:
    `VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale.of_pos`.  It also
    packages the finite-empirical-cover expected maximal bound directly at
    `vdVWTheorem243FiniteNetHoeffdingUpper` under explicit positive `n` and
-   `M` assumptions.  The remaining Theorem 2.4.3 blocker is now the
-   symmetrization/truncation and outer envelope-tail layer, not the finite-net
-   Rademacher/Hoeffding maximal scale.
+   `M` assumptions.  The latest product/Fubini local layer also packages
+   mapped truncated-class product-copy laws/independence, mean-zero fixed-index
+   pair differences, and an a.e. random-sign finite-net handoff.  The remaining
+   Theorem 2.4.3 blocker is now the full symmetrization/truncation assembly and
+   outer envelope-tail layer, not the finite-net Rademacher/Hoeffding maximal
+   scale.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -602,14 +605,22 @@ for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
 truncated pair-difference measurability/integrability, real-valued
 envelope-tail outer-expectation/probability handoffs, generic ordinary tail
 cutoff convergence, `P.prod P` coordinate law/independence/identical-
-distribution wrappers, and proof-carrying product-coordinate/map independence
-wrappers are closed.  Next build the product/Fubini-compatible symmetrization
-interface targeted to the `Phi(x)=x` case, reusing
-`StatInference/ProbabilityMeasure/ProductMeasure.lean`,
-`probability_prod_independent_mapped_copies_with_joint_law`, the reusable
-`StatInference/ProbabilityMeasure/Rademacher.lean` signs where possible, the
-existing Theorem243 Rademacher construction as needed, and the finite
-empirical-cover Hoeffding expected-maximal wrapper.
+distribution wrappers, proof-carrying mapped truncated-class product-copy
+law/independence wrapper, fixed-index product-copy mean-zero bridge, and
+a.e. random-sign finite-net handoff are closed.  Next assemble these into the
+product/Fubini-compatible symmetrization inequality targeted to the
+`Phi(x)=x` case, then connect the ordinary tail cutoff to the VdV&W-specific
+outer/lintegral envelope-tail convergence handoff.
+
+Search note for the next product layer: the finite-sample route can use
+mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
+APIs found are `ProbabilityTheory.iIndepFun_pi`,
+`ProbabilityTheory.iIndepFun.hasLaw_pi`,
+`ProbabilityTheory.iIndepFun_iff_hasLaw_pi_pi`,
+`MeasureTheory.measurePreserving_eval`, `MeasureTheory.Measure.pi_map_eval`,
+and `MeasureTheory.Measure.pi_map_pi`; this should support a future
+`SampleAt`/`vdVWProductMeasure` independent-copy wrapper if the symmetrization
+assembly needs finite-sample coordinate laws directly.
 
 ## Parked Example-Specific Blocker
 

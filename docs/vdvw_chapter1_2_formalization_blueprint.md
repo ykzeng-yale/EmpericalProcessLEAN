@@ -432,9 +432,11 @@ above, so they do not change the theorem-level dashboard counts.
    expected finite-center maximal-bound predicate, the log-radius Mills upper
    wrapper, the truncated Rademacher expected-maximal specialization, its
    finite-empirical-cover version, ordinary measurable truncation-tail
-   integral bridge, and the log-radius-to-Hoeffding scale comparison are now
-   compiled.  The next frontier is theorem-specific
-   symmetrization/truncation, then the outer envelope-tail handoff,
+   integral bridge, the log-radius-to-Hoeffding scale comparison, mapped
+   truncated-class product-copy law/independence, fixed-index product-copy
+   mean-zero, and a.e. random Rademacher-sign finite-net handoff are now
+   compiled.  The next frontier is full theorem-specific
+   symmetrization/truncation assembly, then the outer envelope-tail handoff,
    entropy-to-convergence, and final assembly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the

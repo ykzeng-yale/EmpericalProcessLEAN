@@ -210,6 +210,44 @@ theorem probability_integral_prod_fst
       (μ := (μ : Measure α)) (ν := (ν : Measure β)) f)
 
 /--
+On `P × P`, the two product-coordinate copies of an integrable function have
+zero mean difference.
+
+This is the small Fubini bridge used by symmetrization: the ghost copy can
+replace the marginal expectation because the two coordinate expectations
+cancel exactly.
+-/
+theorem probability_integral_prod_fst_sub_snd_eq_zero
+    {α : Type u} [MeasurableSpace α]
+    {E : Type w} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (μ : MeasureTheory.ProbabilityMeasure α) (f : α -> E)
+    (hf : Integrable f (μ : Measure α)) :
+    ∫ z, f z.1 - f z.2 ∂((μ : Measure α).prod (μ : Measure α)) = 0 := by
+  have hfst :
+      Integrable (fun z : α × α => f z.1)
+        ((μ : Measure α).prod (μ : Measure α)) := by
+    simpa [Function.comp_def] using
+      (MeasureTheory.measurePreserving_fst
+        (μ := (μ : Measure α)) (ν := (μ : Measure α))).integrable_comp_of_integrable
+        hf
+  have hsnd :
+      Integrable (fun z : α × α => f z.2)
+        ((μ : Measure α).prod (μ : Measure α)) := by
+    simpa [Function.comp_def] using
+      (MeasureTheory.measurePreserving_snd
+        (μ := (μ : Measure α)) (ν := (μ : Measure α))).integrable_comp_of_integrable
+        hf
+  calc
+    ∫ z, f z.1 - f z.2 ∂((μ : Measure α).prod (μ : Measure α))
+        = (∫ z, f z.1 ∂((μ : Measure α).prod (μ : Measure α))) -
+            ∫ z, f z.2 ∂((μ : Measure α).prod (μ : Measure α)) := by
+          exact integral_sub hfst hsnd
+    _ = (∫ x, f x ∂(μ : Measure α)) - ∫ x, f x ∂(μ : Measure α) := by
+          rw [probability_integral_prod_fst μ μ f,
+            probability_integral_prod_snd μ μ f]
+    _ = 0 := sub_self _
+
+/--
 Product expectation for separated scalar functions under a product probability
 measure.
 

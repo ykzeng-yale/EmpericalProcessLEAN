@@ -118,9 +118,9 @@ Current compiled wrappers:
   limit wrappers
 - product probability measure, Tonelli/Fubini, and independent-product
   expectation wrappers, including product-coordinate marginal projection and
-  separated product-expectation identities, a binary independent self-copy
-  handoff under `P.prod P`, and mapped-coordinate marginal/joint-law plus
-  independence handoff
+  separated product-expectation identities, mean-zero product-copy difference,
+  a binary independent self-copy handoff under `P.prod P`, and
+  mapped-coordinate marginal/joint-law plus independence handoff
 - first and second Borel-Cantelli wrappers
 - generated sigma-field, generator-measurability, pi-system, and
   finite/probability measure extensionality wrappers
@@ -182,7 +182,8 @@ Near-term declarations:
 - content-based wrappers started in
   `StatInference/ProbabilityMeasure/ProductMeasure.lean`, including
   product-coordinate integral projection and separated product-expectation
-  wrappers for independent-copy arguments, binary self-copy wrapper
+  wrappers for independent-copy arguments, mean-zero difference wrapper
+  `probability_integral_prod_fst_sub_snd_eq_zero`, binary self-copy wrapper
   `probability_prod_independent_self_copies`, and mapped-coordinate wrapper
   `probability_prod_independent_mapped_copies_with_joint_law`.
 

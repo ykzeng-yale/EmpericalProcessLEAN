@@ -82,6 +82,10 @@ Pinned mathlib searches found reusable APIs in:
 - `MeasureTheory.Constructions.Pi`
 - `Probability.ProductMeasure`
 - `Probability.HasLaw`
+- `Probability.iIndepFun_pi`
+- `MeasureTheory.measurePreserving_eval`
+- `MeasureTheory.Measure.pi_map_eval`
+- `MeasureTheory.Measure.pi_map_pi`
 - `Probability.Process.FiniteDimensionalLaws`
 - `Probability.StrongLaw`
 - `Probability.BorelCantelli`
@@ -141,6 +145,8 @@ Local searches found reusable APIs in:
    `StatInference/ProbabilityMeasure/ProductMeasure.lean`; it now includes
    product-coordinate marginal projection and separated product-expectation
    identities for binary product probability spaces, plus
+   `probability_integral_prod_fst_sub_snd_eq_zero`, which packages the
+   mean-zero difference of two coordinate copies of an integrable function,
    `probability_prod_independent_self_copies`, which packages the two product
    coordinates as independent copies with common law `P`, and
    `probability_prod_independent_mapped_copies_with_joint_law`, which packages
@@ -188,6 +194,7 @@ of:
 - the next Section 18 independent-copy specialization using
   `probability_integral_prod_fst`, `probability_integral_prod_snd`, and
   `probability_integral_prod_mul`, plus
+  `probability_integral_prod_fst_sub_snd_eq_zero`,
   `probability_prod_independent_self_copies` and
   `probability_prod_independent_mapped_copies_with_joint_law`, to erase unused
   product coordinates, expose ghost-copy independence, and carry mapped
@@ -198,3 +205,11 @@ Fubini, independent-copy, or outer-expectation primitive, prefer that over a
 cosmetic Billingsley report.  Otherwise, select a narrow Section 25 theorem
 candidate whose proof is already mostly present in mathlib/local wrappers and
 move it toward an exact source-audited Billingsley statement.
+
+Finite-sample product note: local/mathlib search shows that the next reusable
+product primitive does not need to stay binary.  Since
+`SampleAt Observation n` is `Fin n -> Observation` and
+`vdVWProductMeasure P n` is `Measure.pi fun _ : Fin n => P`, the next
+content-based Section 18/20 support target can be a finite-`Pi`
+mapped-coordinate wrapper using `ProbabilityTheory.iIndepFun_pi`,
+`iIndepFun.hasLaw_pi`, and `MeasureTheory.measurePreserving_eval`.
