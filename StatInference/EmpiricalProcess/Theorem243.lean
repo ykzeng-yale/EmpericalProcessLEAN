@@ -1053,6 +1053,325 @@ theorem VdVWOuterProbability_empiricalEnvelopeTail_gt_le_integral_tail_div
             (P := P) (n := n) (M := M) hn henv henvelope_nonneg
             htailIntegrable]
 
+/--
+Bad-event inclusion for the final Theorem 2.4.3 untruncation step.
+
+If the population envelope tail is at most `epsilon / 3`, then a large
+untruncated centered supremum forces either a large fixed-`M` truncated
+centered supremum or a large empirical envelope-tail average.
+-/
+theorem vdVWTheorem243_untruncated_centered_badEvent_subset_truncated_or_empiricalTail
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hn : 0 < n)
+    (hepsilon : 0 < epsilon)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (htailIntegrable :
+      Integrable (Set.indicator {x | M < envelope x} envelope) P)
+    (hbdd_truncated :
+      ∀ sample : SampleAt Observation n,
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hpopulationTail_le :
+      ∫ x, Set.indicator {y | M < envelope y} envelope x ∂P ≤
+        epsilon / 3) :
+    {sample : SampleAt Observation n |
+      epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample) 0} ⊆
+      {sample : SampleAt Observation n |
+        epsilon / 3 <
+          dist
+            (vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample) 0} ∪
+      {sample : SampleAt Observation n |
+        ENNReal.ofReal (epsilon / 3) <
+          ENNReal.ofReal
+            (empiricalAverage sample
+              (fun x => Set.indicator {y | M < envelope y} envelope x))} := by
+  intro sample hbad
+  let origCentered : Index -> Observation -> ℝ :=
+    fun index observation =>
+      classFun index observation - ∫ x, classFun index x ∂P
+  let truncCentered : Index -> Observation -> ℝ :=
+    fun index observation =>
+      vdVWTruncatedClassFun classFun envelope M index observation -
+        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P
+  let empiricalTail : ℝ :=
+    empiricalAverage sample
+      (fun x => Set.indicator {y | M < envelope y} envelope x)
+  let populationTail : ℝ :=
+    ∫ x, Set.indicator {y | M < envelope y} envelope x ∂P
+  let untruncatedSup : ℝ :=
+    vdVWWeightedClassSupremum indexClass origCentered
+      (fun _ : Fin n => (n : ℝ)⁻¹) sample
+  let truncatedSup : ℝ :=
+    vdVWWeightedClassSupremum indexClass truncCentered
+      (fun _ : Fin n => (n : ℝ)⁻¹) sample
+  by_cases htrunc_bad : epsilon / 3 < dist truncatedSup 0
+  · left
+    simpa [truncatedSup, truncCentered] using htrunc_bad
+  · right
+    by_contra hemp_bad
+    have hthird_nonneg : 0 ≤ epsilon / 3 := by linarith
+    have hemp_le : empiricalTail ≤ epsilon / 3 := by
+      by_contra hnot
+      have hemp_gt : epsilon / 3 < empiricalTail := lt_of_not_ge hnot
+      exact hemp_bad
+        ((ENNReal.ofReal_lt_ofReal_iff_of_nonneg hthird_nonneg).mpr
+          hemp_gt)
+    have htrunc_nonneg : 0 ≤ truncatedSup :=
+      vdVWWeightedClassSupremum_nonneg indexClass truncCentered
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample
+    have htrunc_le : truncatedSup ≤ epsilon / 3 := by
+      have hdist_le : dist truncatedSup 0 ≤ epsilon / 3 := le_of_not_gt htrunc_bad
+      simpa [truncatedSup, Real.dist_eq, sub_zero, abs_of_nonneg htrunc_nonneg]
+        using hdist_le
+    have huntruncated_nonneg : 0 ≤ untruncatedSup :=
+      vdVWWeightedClassSupremum_nonneg indexClass origCentered
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample
+    have hbad_real : epsilon < untruncatedSup := by
+      simpa [untruncatedSup, origCentered, Real.dist_eq, sub_zero,
+        abs_of_nonneg huntruncated_nonneg] using hbad
+    have hupper :
+        untruncatedSup ≤ truncatedSup + empiricalTail + populationTail := by
+      simpa [untruncatedSup, truncatedSup, origCentered, truncCentered,
+        empiricalTail, populationTail] using
+        vdVWWeightedClassSupremum_centered_classFun_le_centered_truncated_add_empiricalEnvelopeTail_add_integral
+          (μ := P) (sample := sample) (M := M) henvelope hn hclass henv
+          hclassIntegrable htruncIntegrable htailIntegrable
+          (hbdd_truncated sample)
+    have hpop_le : populationTail ≤ epsilon / 3 := by
+      simpa [populationTail] using hpopulationTail_le
+    linarith
+
+/--
+Outer-probability union bound for the Theorem 2.4.3 untruncation bad event.
+-/
+theorem VdVWOuterProbability_untruncated_centered_bad_le_truncated_add_empiricalTail
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hn : 0 < n)
+    (hepsilon : 0 < epsilon)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (htailIntegrable :
+      Integrable (Set.indicator {x | M < envelope x} envelope) P)
+    (hbdd_truncated :
+      ∀ sample : SampleAt Observation n,
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hpopulationTail_le :
+      ∫ x, Set.indicator {y | M < envelope y} envelope x ∂P ≤
+        epsilon / 3) :
+    VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  classFun index observation - ∫ x, classFun index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) 0} ≤
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon / 3 <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) 0} +
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          ENNReal.ofReal (epsilon / 3) <
+            ENNReal.ofReal
+              (empiricalAverage sample
+                (fun x => Set.indicator {y | M < envelope y} envelope x))} := by
+  calc
+    VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  classFun index observation - ∫ x, classFun index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) 0}
+        ≤
+      (vdVWProductMeasure P n)
+        ({sample : SampleAt Observation n |
+          epsilon / 3 <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) 0} ∪
+        {sample : SampleAt Observation n |
+          ENNReal.ofReal (epsilon / 3) <
+            ENNReal.ofReal
+              (empiricalAverage sample
+                (fun x => Set.indicator {y | M < envelope y} envelope x))}) := by
+        exact measure_mono
+          (vdVWTheorem243_untruncated_centered_badEvent_subset_truncated_or_empiricalTail
+            (P := P) (n := n) (M := M) (epsilon := epsilon)
+            henvelope hn hepsilon hclass henv hclassIntegrable
+            htruncIntegrable htailIntegrable hbdd_truncated
+            hpopulationTail_le)
+    _ ≤
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon / 3 <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) 0} +
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          ENNReal.ofReal (epsilon / 3) <
+            ENNReal.ofReal
+              (empiricalAverage sample
+                (fun x => Set.indicator {y | M < envelope y} envelope x))} := by
+        exact measure_union_le _ _
+
+/--
+Markov-tail version of the untruncation outer-probability split.
+
+This is the theorem-facing bridge that lets the final proof choose `M` using
+the envelope-tail integral and then send `n -> infinity` through the fixed-`M`
+truncated convergence hypothesis.
+-/
+theorem VdVWOuterProbability_untruncated_centered_bad_le_truncated_add_tailIntegral
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hn : 0 < n)
+    (hepsilon : 0 < epsilon)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (htailIntegrable :
+      Integrable (Set.indicator {x | M < envelope x} envelope) P)
+    (hbdd_truncated :
+      ∀ sample : SampleAt Observation n,
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hpopulationTail_le :
+      ∫ x, Set.indicator {y | M < envelope y} envelope x ∂P ≤
+        epsilon / 3) :
+    VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  classFun index observation - ∫ x, classFun index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) 0} ≤
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon / 3 <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) 0} +
+      ENNReal.ofReal
+        (∫ x, Set.indicator {y | M < envelope y} envelope x ∂P) /
+        ENNReal.ofReal (epsilon / 3) := by
+  have hthird_pos : 0 < epsilon / 3 := by linarith
+  calc
+    VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  classFun index observation - ∫ x, classFun index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) 0}
+        ≤
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon / 3 <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) 0} +
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          ENNReal.ofReal (epsilon / 3) <
+            ENNReal.ofReal
+              (empiricalAverage sample
+                (fun x => Set.indicator {y | M < envelope y} envelope x))} := by
+        exact
+          VdVWOuterProbability_untruncated_centered_bad_le_truncated_add_empiricalTail
+            (P := P) (n := n) (M := M) (epsilon := epsilon)
+            henvelope hn hepsilon hclass henv hclassIntegrable
+            htruncIntegrable htailIntegrable hbdd_truncated
+            hpopulationTail_le
+    _ ≤
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon / 3 <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) 0} +
+      ENNReal.ofReal
+        (∫ x, Set.indicator {y | M < envelope y} envelope x ∂P) /
+        ENNReal.ofReal (epsilon / 3) := by
+        exact add_le_add_right
+          (VdVWOuterProbability_empiricalEnvelopeTail_gt_le_integral_tail_div
+            (P := P) (n := n) (M := M) hn hthird_pos henv
+            henvelope.nonneg htailIntegrable)
+          _
+
 /-- Coordinate measurability is preserved by the `F_M` truncation. -/
 theorem VdVWClassCoordinateMeasurable.truncate
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]

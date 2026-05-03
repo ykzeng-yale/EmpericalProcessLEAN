@@ -525,6 +525,14 @@ above, so they do not change the theorem-level dashboard counts.
    diagonal shrinking-radius selected log-cardinality convergence and
    deterministic normalized log-cardinality bound, or a genuine variable-domain
    boundedness/UI input, then final assembly.
+   The untruncation side now has compiled deterministic and probabilistic
+   bridges through
+   `vdVWTheorem243_untruncated_centered_badEvent_subset_truncated_or_empiricalTail`,
+   `VdVWOuterProbability_untruncated_centered_bad_le_truncated_add_empiricalTail`,
+   and
+   `VdVWOuterProbability_untruncated_centered_bad_le_truncated_add_tailIntegral`.
+   The next proof step is the large-`M` tail-choice convergence handoff from
+   fixed-`M` centered-truncated convergence to untruncated centered convergence.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

@@ -1138,14 +1138,28 @@ The empirical envelope-tail expectation/Markov bridge is also compiled through
 `VdVWOuterExpectation_empiricalEnvelopeTail_eq_ofReal_integral_tail`, and
 `VdVWOuterProbability_empiricalEnvelopeTail_gt_le_integral_tail_div`.
 
-Next exact edit: use the compiled deterministic supremum perturbation,
-`VdVWConvergesInOuterProbabilityConst_zero_of_eventual_dist_le_add_errors`,
+The first untruncation probability split is now compiled as a theorem-facing
+batch:
+`vdVWTheorem243_untruncated_centered_badEvent_subset_truncated_or_empiricalTail`,
+`VdVWOuterProbability_untruncated_centered_bad_le_truncated_add_empiricalTail`,
+and
+`VdVWOuterProbability_untruncated_centered_bad_le_truncated_add_tailIntegral`.
+These declarations convert the deterministic supremum perturbation into the
+exact bad-event union/Markov estimate needed by the textbook proof: after
+choosing `M` with population envelope-tail integral at most `epsilon / 3`, the
+untruncated bad event is bounded by the fixed-`M` truncated bad event plus the
+empirical envelope-tail Markov bound.
+
+Next exact edit: use the compiled probability split,
 `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`,
-the new empirical-tail Markov bridge, and the existing fixed-`M` centered
-truncated convergence consumers to derive
+the ordinary real tail cutoff
+`StatInference.ProbabilityMeasure.integral_indicator_tail_lt_tendsto_zero_of_integrable`,
+and the existing fixed-`M` centered truncated convergence consumers to derive
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_centered_truncated`
-under the honest fixed-`M` convergence hypothesis.  In parallel, the remaining
-theorem-assumption task is still to derive the selected diagonal
+under the honest fixed-`M` convergence hypothesis.  The proof must choose a
+large `M` from the integrable envelope-tail convergence before sending
+`n -> infinity`; fixed finite `M` alone leaves a nonzero tail and is not enough.
+In parallel, the remaining theorem-assumption task is still to derive the selected diagonal
 log-cardinality/log-ratio inputs, or a stronger selected finite-net tail/UI
 condition, from the book entropy hypotheses.  The finite-cover domination,
 terminal selected-cardinality equality, measurability transport, fixed-`M`
