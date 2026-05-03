@@ -1180,15 +1180,26 @@ bounds with the large-`M` untruncation handoff.  This closes the side-condition
 packaging surface without pretending that the book fixed-radius entropy
 hypothesis implies the shrinking-radius diagonal selected entropy input.
 
-Next exact edit: derive the selected diagonal log-cardinality/log-ratio inputs,
-or a stronger selected finite-net tail/UI condition, from the book entropy
-hypotheses, then use the untruncated selected inverse-radius consumer for the
-final Theorem 2.4.3 assembly.  The finite-cover domination, terminal
+The all-radius selected-truncated composition is now also compiled as
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_invRadiusEntropy_logCardinality_div_bound`.
+It starts from all-positive-radius truncated finite-cover domination and builds
+the selected inverse-radius fixed-`M` packages internally.  The remaining
+explicit assumptions are exactly the honest diagonal selected log convergence
+and deterministic all-radius log-ratio bound; these are stronger than the
+textbook fixed-positive-radius `o_P^*(n)` entropy hypothesis unless an
+additional uniform/diagonal entropy theorem is proved.
+
+Next exact edit: stop adding inverse-radius packaging unless a proof consumes
+it.  Either prove the faithful textbook fixed-radius route, where for every
+fixed `η > 0` the finite-net term vanishes and the final radius error is made
+small only after choosing `η`, or prove a genuine uniform/diagonal entropy or
+selected finite-net tail/UI theorem from the book hypotheses.  If neither
+route closes after Lean attempts, record the precise theorem shape as the
+current Theorem 2.4.3 blocker.  The finite-cover domination, terminal
 selected-cardinality equality, measurability transport, fixed-`M`
-centered-truncated consumers, selected inverse-radius entropy side-condition
-package, selected inverse-radius finite-net mean projections, finite-net
-tail/UI adapters, and symmetrization/product finite-net route are already
-compiled.
+centered-truncated consumers, inverse-radius side-condition packages, finite-net
+tail/UI adapters, untruncation handoffs, and symmetrization/product finite-net
+route are already compiled.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

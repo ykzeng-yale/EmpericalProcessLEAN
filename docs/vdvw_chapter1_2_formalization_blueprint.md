@@ -539,9 +539,13 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_selected_truncated`
    and the non-selected untruncated inverse-radius/log-bound consumer
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_invRadiusEntropy_logCardinality_div_bound`
-   are also compiled.  The next proof step is discharging the selected
-   diagonal entropy/tail/UI assumptions from the book hypotheses, then final
-   Theorem 2.4.3 assembly.
+   are also compiled.  The all-radius selected-truncated bridge
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_invRadiusEntropy_logCardinality_div_bound`
+   is compiled as well, but it still keeps the inverse-radius diagonal selected
+   log convergence and log-ratio assumptions explicit.  The next proof step is
+   therefore the faithful fixed-radius textbook handoff, or a genuine
+   uniform/diagonal entropy or selected finite-net tail/UI theorem from the
+   book assumptions, followed by final Theorem 2.4.3 assembly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
