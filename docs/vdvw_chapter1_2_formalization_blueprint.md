@@ -479,10 +479,17 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_bounded`
    plus the canonical inverse-radius variant
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_bounded_invRadius`
-   are now compiled.  The next frontier is deriving/supplying the diagonal
-   entropy/cardinality hypotheses for that inverse-radius route, plus
-   measurable cardinality and boundedness/UI or dominated-convergence, then
-   final assembly.
+   are now compiled.  The packaged inverse-radius entropy side-condition layer
+   `VdVWTheorem243FixedMInvRadiusEntropySideConditions`,
+   `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero`,
+   `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero`,
+   and
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_bounded`
+   is also compiled.  It packages the selected inverse-radius covers,
+   diagonal log-cardinality convergence, and measurable cardinality, while
+   leaving the finite-net boundedness/UI assumption explicit.  The next
+   frontier is proving/supplying that boundedness/UI or a variable-domain
+   tail-expectation replacement, then final assembly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

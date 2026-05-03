@@ -921,11 +921,20 @@ Search record for the symmetrization precursor package:
   also compiles and discharges the deterministic radius convergence for
   `coverRadius n = 1 / ((n : ℝ) + 1)` using mathlib's
   `tendsto_one_div_add_atTop_nhds_zero_nat`.
-  The next valid target is proving or supplying the remaining analytic side
-  conditions from the book entropy route: diagonal variable-domain entropy for
-  that chosen radius, measurable cardinality, and deterministic boundedness or
-  a genuine variable-domain uniform-integrability/dominated-convergence
-  replacement.
+  The packaged inverse-radius side-condition layer
+  `VdVWTheorem243FixedMInvRadiusEntropySideConditions`,
+  `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero`,
+  `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero`,
+  and
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_bounded`
+  now compiles as well.  It packages the selected inverse-radius cover,
+  diagonal log-cardinality convergence, and measurable cardinality, while
+  deliberately keeping the deterministic finite-net upper bound as an explicit
+  boundedness/UI assumption.  The next valid target is deriving or supplying
+  the remaining unclosed analytic side condition from the book route:
+  deterministic boundedness, a variable-domain tail-UI replacement, or a
+  sharper finite-net upper estimate strong enough to make the ordinary means
+  converge.
   Search record: local `StatInference` and pinned mathlib searches for
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
   `tendsto_integral_of_L1`, `TendstoInMeasure`, and
@@ -936,9 +945,14 @@ Search record for the symmetrization precursor package:
   finite-net upper measurability/integrability packaging from measurable
   cardinality, but the theorem route still needs measurable cardinality and the
   bounded/UI hypothesis for the random finite-net upper.  Follow-up search
-  found no ready variable-domain `UniformIntegrable`/Vitali API; the practical
-  alternatives are keeping deterministic boundedness or adding a new explicit
-  variable-domain tail-expectation/UI primitive.  A `Nat.find` measurability
+  found no ready variable-domain `UniformIntegrable`/Vitali API.  A follow-up
+  probability-measure/API search found only fixed-domain
+  `MeasureTheory.UnifIntegrable`/`UniformIntegrable`,
+  `tendsto_Lp_finite_of_tendstoInMeasure`, `tendsto_integral_of_L1`, and
+  fixed-measure dominated-convergence APIs; local `ProbabilityMeasure/Tail.lean`
+  supplies reusable layer-cake/tail bounds but no variable-domain Vitali theorem.
+  The practical alternatives are keeping deterministic boundedness or adding a
+  new explicit variable-domain tail-expectation/UI primitive.  A `Nat.find` measurability
   route exists via `Nat.measurable_find`, but it would require measurable
   fibers for `FiniteEmpiricalL1CoverAtCard`, which are not available for the
   current arbitrary-index class setup, so the theorem route should keep the
@@ -993,12 +1007,12 @@ variable-domain entropy-to-Hoeffding bridge, finite-net mean consumer,
 measurable-cardinality finite-net mean consumer, random finite-net upper
 measurability/integrability packaging, and bounded entropy-to-integrated-mean
 consumer, plus the fixed-`M` bounded entropy/measurable-cardinality convergence
-consumer, are closed. Next derive or supply the measurable-cardinality,
-boundedness/UI or dominated-convergence input, and cover-radius convergence
-needed by that consumer from the entropy hypotheses; the canonical
-inverse-radius wrapper already closes the deterministic radius-convergence
-piece, so the next proof should target diagonal entropy/cardinality and
-boundedness/UI.  Then assemble the final Theorem 2.4.3 handoffs.
+consumer and its inverse-radius entropy side-condition wrapper, are closed.
+The canonical inverse-radius wrapper closes the deterministic
+radius-convergence piece, and the side-condition structure packages diagonal
+entropy/cardinality.  The next proof should target the finite-net upper
+boundedness/UI assumption or a variable-domain tail-expectation substitute.
+Then assemble the final Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
