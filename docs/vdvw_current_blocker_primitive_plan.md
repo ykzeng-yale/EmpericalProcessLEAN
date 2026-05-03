@@ -461,15 +461,18 @@ additional example closures:
    layer, expected-supremum handoff, layer-cake tail-integral support,
    Gaussian-tail integrability/evaluation, coarse closed-form expectation
    bound, split-at-radius tail-to-expectation bound, Mills-type Gaussian-tail
-   estimate, finite-center Mills expectation bound, and ordinary measurable
+   estimate, finite-center Mills expectation bound, logarithmic-radius
+   positivity/square/exponential-factor arithmetic, finite-center
+   logarithmic-radius Mills expectation bound, and ordinary measurable
    truncation-tail integral bridge are now compiled.  The theorem-specific
    expected-supremum layer now routes its reusable layer-cake,
    tail-integral-monotonicity, and split-at-radius probability bounds through
    `StatInference/ProbabilityMeasure/Tail.lean`; VdV&W-specific empirical,
-   Mills, outer-expectation, and truncation handoffs remain in the
-   empirical-process files.  The remaining logarithmic-radius simplification
-   is the next blocker before the textbook tail-to-Orlicz/maximal expectation
-   scale, followed by specialization of that bound to the truncated centers.
+   Mills, logarithmic-radius arithmetic, outer-expectation, and truncation
+   handoffs remain in the empirical-process files.  The remaining blocker is
+   packaging the compiled logarithmic-radius Mills bound as the VdV&W
+   tail-to-Orlicz/maximal expectation scale, followed by specialization of
+   that bound to the truncated centers.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -487,12 +490,10 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: choose the logarithmic radius
-`sqrt (2 * c * (1 + log cardinality))` or a nearby Lean-friendly variant, then
-simplify `vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_bound`
-to the textbook finite-maximal scale.  Then package this as the VdV&W
-`psi_2`/Hoeffding maximal layer if no exact Orlicz API appears, specialize
-that bound to truncated centers with
+Next exact edit: package
+`vdVWTheorem243FiniteCenterExpectedSupremum_le_logRadius_mills_bound` as the
+VdV&W `psi_2`/Hoeffding maximal layer if no exact Orlicz API appears,
+specialize that bound to truncated centers with
 `vdVWTheorem243_truncated_varianceProxy_le`, and move to the
 symmetrization/truncation and outer envelope-tail handoffs.
 

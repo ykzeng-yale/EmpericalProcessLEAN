@@ -1429,6 +1429,148 @@ theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_bound
           (cardinality := cardinality) (c := c) hc hr))
 
 /--
+The logarithmic split radius used after the finite-center Mills bound is
+strictly positive.
+
+The harmless `1 + log cardinality` offset avoids a zero radius when the finite
+net has one center, so the Mills factor `c / r` remains meaningful.
+-/
+theorem vdVWTheorem243_logRadius_pos
+    {cardinality : ℕ} (hcardinality : 0 < cardinality) {c : ℝ≥0}
+    (hc : 0 < (c : ℝ)) :
+    0 <
+      Real.sqrt
+        (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ))) := by
+  have hcardinality_one : (1 : ℝ) ≤ (cardinality : ℝ) := by
+    exact_mod_cast Nat.succ_le_of_lt hcardinality
+  have hlog_nonneg : 0 ≤ Real.log (cardinality : ℝ) :=
+    Real.log_nonneg hcardinality_one
+  have hlog_pos : 0 < 1 + Real.log (cardinality : ℝ) := by
+    nlinarith
+  have harg_pos :
+      0 < 2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)) := by
+    positivity
+  exact Real.sqrt_pos.mpr harg_pos
+
+/--
+Square identity for the logarithmic split radius.
+-/
+theorem vdVWTheorem243_logRadius_sq_div
+    {cardinality : ℕ} (hcardinality : 0 < cardinality) {c : ℝ≥0}
+    (hc : 0 < (c : ℝ)) :
+    let r : ℝ :=
+      Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)))
+    r ^ 2 / (2 * (c : ℝ)) = 1 + Real.log (cardinality : ℝ) := by
+  dsimp
+  have hcardinality_one : (1 : ℝ) ≤ (cardinality : ℝ) := by
+    exact_mod_cast Nat.succ_le_of_lt hcardinality
+  have hlog_nonneg : 0 ≤ Real.log (cardinality : ℝ) :=
+    Real.log_nonneg hcardinality_one
+  have harg_nonneg :
+      0 ≤ 2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)) := by
+    positivity
+  rw [Real.sq_sqrt harg_nonneg]
+  field_simp [ne_of_gt hc]
+
+/--
+Exponential factor after choosing the logarithmic split radius.
+-/
+theorem vdVWTheorem243_logRadius_exp_factor_eq
+    {cardinality : ℕ} (hcardinality : 0 < cardinality) {c : ℝ≥0}
+    (hc : 0 < (c : ℝ)) :
+    let r : ℝ :=
+      Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)))
+    Real.exp (-(r ^ 2) / (2 * (c : ℝ))) =
+      Real.exp (-1) / (cardinality : ℝ) := by
+  dsimp
+  have hsq :=
+    vdVWTheorem243_logRadius_sq_div
+      (cardinality := cardinality) (c := c) hcardinality hc
+  have hcardinality_pos : 0 < (cardinality : ℝ) := by
+    exact_mod_cast hcardinality
+  have hcardinality_ne : (cardinality : ℝ) ≠ 0 := ne_of_gt hcardinality_pos
+  have hneg :
+      -(Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ))) ^ 2) /
+          (2 * (c : ℝ)) =
+        -(1 + Real.log (cardinality : ℝ)) := by
+    rw [neg_div, hsq]
+  calc
+    Real.exp
+        (-(Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ))) ^ 2) /
+          (2 * (c : ℝ)))
+        = Real.exp (-(1 + Real.log (cardinality : ℝ))) := by rw [hneg]
+    _ = Real.exp (-1 + -Real.log (cardinality : ℝ)) := by ring_nf
+    _ = Real.exp (-1) * Real.exp (-Real.log (cardinality : ℝ)) := by
+          rw [Real.exp_add]
+    _ = Real.exp (-1) * (Real.exp (Real.log (cardinality : ℝ)))⁻¹ := by
+          have hlogNeg :
+              Real.exp (-Real.log (cardinality : ℝ)) =
+                (Real.exp (Real.log (cardinality : ℝ)))⁻¹ := by
+            rw [Real.exp_neg]
+          rw [hlogNeg]
+    _ = Real.exp (-1) / (cardinality : ℝ) := by
+          rw [Real.exp_log hcardinality_pos]
+          rw [div_eq_mul_inv]
+
+/--
+The finite-center Mills factor at the logarithmic split radius.
+-/
+theorem vdVWTheorem243_logRadius_mills_factor_eq
+    {cardinality : ℕ} (hcardinality : 0 < cardinality) {c : ℝ≥0}
+    (hc : 0 < (c : ℝ)) :
+    let r : ℝ :=
+      Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)))
+    (cardinality : ℝ) *
+        (2 * ((c : ℝ) / r *
+          Real.exp (-(r ^ 2) / (2 * (c : ℝ))))) =
+      2 * Real.exp (-1) * ((c : ℝ) / r) := by
+  dsimp
+  have hcardinality_pos : 0 < (cardinality : ℝ) := by
+    exact_mod_cast hcardinality
+  have hcardinality_ne : (cardinality : ℝ) ≠ 0 := ne_of_gt hcardinality_pos
+  have hr_ne :
+      Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ))) ≠ 0 :=
+    ne_of_gt
+      (vdVWTheorem243_logRadius_pos
+        (cardinality := cardinality) (c := c) hcardinality hc)
+  rw [vdVWTheorem243_logRadius_exp_factor_eq
+      (cardinality := cardinality) (c := c) hcardinality hc]
+  field_simp [hcardinality_ne, hr_ne]
+
+/--
+Finite-center expected-supremum bound after choosing the logarithmic split
+radius.
+
+This is the arithmetic bridge from the Mills tail estimate to the textbook
+finite-maximal `sqrt(log #G)` scale.  A later layer can relax the harmless
+`1 + log #G` offset into the chosen VdV&W display constant.
+-/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_logRadius_mills_bound
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0}
+    (hc : 0 < (c : ℝ))
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ) :
+    let r : ℝ :=
+      Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)))
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤
+      r + 2 * Real.exp (-1) * ((c : ℝ) / r) := by
+  dsimp
+  have hraw :=
+    vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_mills_bound
+      (cardinality := cardinality) hcardinality X
+      (c := c)
+      (r := Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ))))
+      hc
+      (vdVWTheorem243_logRadius_pos
+        (cardinality := cardinality) (c := c) hcardinality hc)
+      hX
+  have hfactor :=
+    vdVWTheorem243_logRadius_mills_factor_eq
+      (cardinality := cardinality) (c := c) hcardinality hc
+  exact hraw.trans_eq (by rw [hfactor])
+
+/--
 Closed-form value of the finite-center sub-Gaussian tail majorant over
 `(0, ∞)`.
 -/

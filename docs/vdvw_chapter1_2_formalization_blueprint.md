@@ -401,13 +401,13 @@ above, so they do not change the theorem-level dashboard counts.
    layer-cake tail-integral monotonicity, Gaussian-tail integrability,
    exact Gaussian-tail integral evaluation, coarse closed-form finite-center
    expectation bound, split-at-radius tail-to-expectation bound, Mills-type
-   Gaussian-tail estimate, finite-center Mills expectation bound, and ordinary
+   Gaussian-tail estimate, finite-center Mills expectation bound,
+   logarithmic-radius positivity/square/exponential-factor arithmetic, the
+   finite-center logarithmic-radius Mills expectation bound, and ordinary
    measurable truncation-tail integral bridge are now compiled.  The next
-   frontier is proving the logarithmic-radius arithmetic that turns the Mills
-   bound into the textbook maximal-expectation scale, packaging it as the
-   VdV&W `psi_2`/Hoeffding maximal layer if no exact Orlicz API appears,
-   specializing it to truncated centers, then symmetrization/truncation and
-   the outer envelope-tail handoff.
+   frontier is packaging this as the VdV&W `psi_2`/Hoeffding maximal layer if
+   no exact Orlicz API appears, specializing it to truncated centers, then
+   symmetrization/truncation and the outer envelope-tail handoff.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
