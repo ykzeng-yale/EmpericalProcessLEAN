@@ -227,7 +227,15 @@ Near-term declarations:
   and
   `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`,
   plus the theorem-local Rademacher negated-sign bridge and the
-  integrated product-pair sign-symmetry/random-sign averaging comparison, and
+  integrated product-pair sign-symmetry/random-sign averaging comparison,
+  reusable supplied-cover integral equality
+  `VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg`,
+  a.e./null-measurable cover constructors
+  `VdVWMeasurableCover.ofAEMeasurable` and
+  `VdVWMeasurableCover.ofNullMeasurable_ofReal`,
+  product-integrated measurable-cover outer-expectation bridge, and
+  supplied product-space a.e. finite-net projection, sample-cover product-a.e.
+  finite-net bridge, and empirical-cover cardinality witness handoffs, plus the
   supplied-`hphi_id` finite-net projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
 
@@ -355,10 +363,14 @@ is project organization and source alignment.  The immediate route is:
    screenshots.
 
 For direct empirical-process impact, the dependency override is now active:
-the next proof lane should prioritize the VdV&W Theorem 2.4.3
-measurable-cover/outer-expectation transfer from the compiled integrated
-product-sample/Rademacher sign-symmetry comparison to the theorem-local
-`hphi_id` finite-net projection, now past the fixed-sample, integral-lift,
-product-projection/Fubini, same-weight pair split, deterministic sign-negation,
-and ordinary random-sign averaging pieces, before new Billingsley Section 25
-work unless no empirical-process probability/measure dependency is blocked.
+the next proof lane should prioritize consuming the VdV&W Theorem 2.4.3 random
+empirical-cover witness handoff in the product random-sign assembly, proving the
+product-a.e. finite-center Hoeffding predicate for the chosen covers, and then
+entropy-to-convergence, after the compiled integrated
+product-sample/Rademacher sign-symmetry comparison, product-space
+measurable-cover outer-expectation bridge, and supplied product-space finite-net
+projection, now past the fixed-sample, integral-lift, product-projection/Fubini,
+same-weight pair split, deterministic sign-negation, ordinary random-sign
+averaging, product-cover, sample-cover, and empirical-cover witness pieces,
+before new Billingsley Section 25 work unless no empirical-process
+probability/measure dependency is blocked.

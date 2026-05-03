@@ -140,20 +140,43 @@ Concrete next edits:
    `integral_vdVWWeightedClassSupremum_pairDifference_constWeights_eq_rademacherWeights`,
    and
    `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
+   The reusable bridge
+   `VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg` is also
+   compiled for ordinary-integral-to-outer-expectation handoffs.
+   The cover API now also has `VdVWMeasurableCover.ofAEMeasurable` and
+   `VdVWMeasurableCover.ofNullMeasurable_ofReal` for a.e.-measurable and
+   null-measurable random targets.
+   The product-integrated cover bridge is also compiled as
+   `VdVWOuterExpectation_prod_hphi_id_of_integral_integral_le` and
+   `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`.
+   The supplied product-space a.e. finite-net projection is compiled as
+   `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`.
+   The sample-cover product-a.e. finite-net bridge
+   `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`
+   is also compiled for supplied sample-indexed empirical covers and a
+   product-a.e. finite-center Hoeffding predicate.
+   The empirical-cover cardinality side now also has
+   `FiniteEmpiricalL1CoverAtCard.pad_cardinality`,
+   `exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le`, and
+   `finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality`.
    The supplied-`hphi_id` projection to the random-sign finite-net
    Hoeffding-scale bound is also compiled as
    `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
    Add another probability-measure product wrapper only if the final
-   measurable-cover/outer-expectation transfer exposes a reusable missing API.
+   product-integrated finite-net projection exposes a reusable missing API.
 4. Check the current VdV&W Theorem 2.4.3 blocker before adding Billingsley
    support.  The log-radius-to-Hoeffding scale comparison and proof-carrying
    symmetrization precursor package and finite product-sample weighted-sum
    mean-zero bridge, the fixed-sample `Phi(x)=x` ghost-copy comparison, and the
    finite product-coordinate projection, expectation-level integral lifts, and
-   supplied-`hphi_id` finite-net projection are now compiled, as is the ordinary
-   integrated product-sample/Rademacher sign-symmetry comparison; the latest
-   empirical-process frontier is proving the remaining measurable-cover
-   outer-expectation transfer, entropy-to-convergence, and final assembly.
+   supplied-`hphi_id` finite-net projection are now compiled, as are the
+   ordinary integrated product-sample/Rademacher sign-symmetry comparison, the
+   product-integrated measurable-cover outer-expectation handoff, and the
+   supplied product-space a.e. finite-net projection, and sample-cover
+   product-a.e. finite-net bridge.  The latest empirical-process frontier is
+   consuming the random empirical-cover witness handoff in the product
+   random-sign assembly, proving the product-a.e. finite-center Hoeffding
+   predicate for the chosen covers, and proving entropy-to-convergence.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.

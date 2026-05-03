@@ -149,6 +149,10 @@ Local searches found reusable APIs in:
    `VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal`, which turns a
    supplied measurable cover plus an a.e. real constant bound into an
    `ENNReal.ofReal` outer-expectation bound.
+   The cover API also now has `VdVWMeasurableCover.ofAEMeasurable` and
+   `VdVWMeasurableCover.ofNullMeasurable_ofReal`, so future random targets that
+   are only a.e.-measurable or null-measurable can still supply the required
+   VdV&W measurable cover.
    This is support infrastructure, not a source-exact Billingsley Sections
    15-16 report. The
    content-based Section 18
@@ -225,14 +229,36 @@ Local searches found reusable APIs in:
    `integral_vdVWWeightedClassSupremum_pairDifference_constWeights_eq_rademacherWeights`,
    and the averaged random-sign comparison
    `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
+   The reusable outer-expectation equality
+   `VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg`
+   turns an integrable nonnegative real target with a supplied measurable cover
+   into its ordinary `ofReal` expectation.
+   The product-integrated measurable-cover bridge
+   `VdVWOuterExpectation_prod_hphi_id_of_integral_integral_le` and its VdV&W
+   specialization
+   `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`
+   are also compiled, as is the supplied product-space finite-net projection
+   `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`.
+   The sample-cover product-a.e. finite-net bridge
+   `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`
+   is also compiled for supplied sample-indexed empirical covers and a
+   product-a.e. finite-center Hoeffding predicate.
+   The empirical-cover cardinality side now has
+   `FiniteEmpiricalL1CoverAtCard.pad_cardinality`,
+   `exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le`, and
+   `finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality`,
+   which turn finite upper bounds on empirical covering numbers into concrete
+   finite-cover witnesses at the supplied cardinality.
    The remaining
    hphi-to-Hoeffding projection after a supplied `Phi(x)=x` comparison is
    packaged as
    `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
    Search refined the target: a pointwise fixed-sample `hphi_id` comparison is
-   too strong; the next valid target is the measurable-cover/outer-expectation
-   transfer from the newly compiled integrated random-sign comparison into the
-   compiled random-sign finite-net bound.
+   too strong; the valid cover transfer is product-integrated over signs and
+   samples.  The next target is consuming the random empirical-cover witness
+   handoff inside the product random-sign assembly, proving the product-a.e.
+   finite-center Hoeffding predicate for the chosen covers, and then proving the
+   entropy-to-convergence handoff, not another fixed-sample pointwise comparison.
    The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
@@ -244,38 +270,27 @@ Local searches found reusable APIs in:
 
 ## Next Exact Lean Edit
 
-After the weak-convergence naming layer, the next high-value proof step is one
-of:
+The next high-value proof step is the theorem-specific Section 18/entropy
+assembly for VdV&W Theorem 2.4.3:
 
-- integrate the generic
-  `StatInference/ProbabilityMeasure/Rademacher.lean` iid/sign-vector layer into
-  the VdV&W Theorem 2.4.3 symmetrization route, replacing theorem-local
-  duplication only when the refactor is small and Lean verifies; or
-- a Billingsley Section 25 exact theorem candidate wrapping an already proved
+- consume
+  `finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality`
+  together with
+  `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`
+  to build the product random-sign finite-net bound from the random empirical
+  covering-number/cardinality hypothesis; then prove the entropy-to-convergence
+  handoff;
+- if that assembly exposes only a.e.-measurable or null-measurable random
+  targets, use `VdVWMeasurableCover.ofAEMeasurable` or
+  `VdVWMeasurableCover.ofNullMeasurable_ofReal` rather than adding another
+  supplied-cover wrapper;
+- if no empirical-process dependency is blocked on Billingsley support, move to
+  the Billingsley Section 25 exact theorem candidate wrapping an already proved
   mathlib/local weak-convergence implication, with Theorem 25.8
   bounded-continuous and continuity-set directions as the current best
-  source-audited candidate; or
-- the empirical-distribution support wrapper in
-  `StatInference/EmpiricalProcess/RealHalfLineGC.lean`, now available as a
-  local support layer: `realHalfLineIndicator_integral_eq_cdf` identifies the
-  closed half-line indicator integral with `ProbabilityTheory.cdf`, and
-  `realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid` repackages
-  the endpoint empirical-average SLLN as pointwise empirical-CDF convergence
-  for a fixed endpoint. The fixed-endpoint
-  convergence-in-probability/`TendstoInMeasure` wrapper and the corresponding
-  VdV&W outer-probability wrapper record the same fixed-endpoint consequence in
-  probability. This is not a source-exact formalization of Billingsley Theorem
-  20.6; the remaining exact Theorem 20.6 route is the uniform-in-`x` statement,
-  likely via the finite-grid route; or
-- consume the compiled Section 16 tail-control specializations in
-  `StatInference/EmpiricalProcess/Theorem243.lean`,
-  especially `lintegral_envelope_tail_lt_tendsto_zero_of_integrable` and
-  `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`,
-  plus the supplied-cover/a.e.-constant handoff
-  `VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal`,
-  while adding only nonmeasurable/arbitrary-cover variants if the exact
-  Theorem 2.4.3 assembly requires them; or
-- the next Section 18 independent-copy/symmetrization specialization after the
+  source-audited candidate.
+
+The closed Section 18 independent-copy/symmetrization surface includes the
   compiled `VdVWTheorem243SymmetrizationPrecursor` package: the finite
   product-sample weighted-sum mean-zero bridge over `(P.prod P)^n` is now
   compiled, and the fixed-original-sample `Phi(x)=x` ghost-copy comparison is
@@ -294,9 +309,17 @@ of:
   compiled, and the ordinary integrated product/Rademacher sign-symmetry layer
   is compiled through
   `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
-  Next prove the measurable-cover/outer-expectation transfer needed to turn
-  that integrated random-sign comparison into the theorem-local `hphi_id`
-  bound; do not target the false fixed-sample pointwise comparison.  Only add a new
+  The reusable cover-integral bridge
+  `VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg` is
+  available for future ordinary-integral-to-outer-expectation transfers.
+  The product-integrated cover transfer is compiled as
+  `VdVWOuterExpectation_prod_hphi_id_of_integral_integral_le` and
+  `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`.
+  The supplied product-space a.e. finite-net projection
+  `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`
+  is also compiled, along with the sample-cover product-a.e. finite-net bridge
+  `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`.
+  Do not target the false fixed-sample pointwise comparison. Only add a new
   `StatInference/ProbabilityMeasure`
   product wrapper if this assembly exposes a genuinely reusable gap beyond the
   existing
@@ -363,11 +386,30 @@ identity
 `integral_vdVWWeightedClassSupremum_pairDifference_constWeights_eq_rademacherWeights`,
 and the random-sign integrated averaging comparison
 `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
+It also proves the reusable bridge
+`VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg`, which
+handles ordinary real integral equalities for integrable nonnegative targets
+with supplied VdV&W measurable covers.
+It also proves `VdVWMeasurableCover.ofAEMeasurable` and
+`VdVWMeasurableCover.ofNullMeasurable_ofReal` for a.e.-measurable and
+null-measurable random targets.
+It also proves the product-integrated measurable-cover bridge
+`VdVWOuterExpectation_prod_hphi_id_of_integral_integral_le` and the specialized
+outer-expectation handoff
+`integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`.
+It also proves the supplied product-space finite-net projection
+`integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`.
+It also proves the sample-cover product-a.e. finite-net bridge
+`ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`.
+It also proves the empirical-cover cardinality witness handoffs
+`FiniteEmpiricalL1CoverAtCard.pad_cardinality`,
+`exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le`, and
+`finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality`.
 It also proves the
 supplied-`hphi_id` finite-net projection
 `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
-The next proof target is the measurable-cover/outer-expectation transfer from
-the integrated random-sign comparison to the theorem-local `hphi_id` finite-net
-projection, followed by entropy-to-convergence; a fixed-sample pointwise
-comparison should not be pursued.  Do not add another product surface unless
-that assembly exposes a sharper missing API.
+The next proof target is consuming those witness handoffs in the product
+random-sign assembly, proving the product-a.e. finite-center Hoeffding
+predicate for the chosen covers, and then entropy-to-convergence; a fixed-sample
+pointwise comparison should not be pursued. Do not add another product surface
+unless that assembly exposes a sharper missing API.

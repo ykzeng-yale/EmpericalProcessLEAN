@@ -580,12 +580,27 @@ additional example closures:
    `VdVWTheorem243SymmetrizationPrecursor.randomSign_outerExpectation_le_finiteNetHoeffdingUpper_add`,
    the latter using the generic supplied-cover/a.e.-constant outer-expectation
    bridge `VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal`.
-   The remaining Theorem 2.4.3 blocker is now the measurable-cover
-   outer-expectation transfer from the integrated random-sign symmetrization
-   comparison to the finite-net projection, followed by entropy-to-convergence
-   assembly; it is not the finite-net Rademacher/Hoeffding maximal scale, the
-   random-sign outer-expectation finite-net handoff, the finite sample
-   mean-zero bridge, or the ordinary integrated product/sign-symmetry layer.
+   The measurable-cover API also now includes
+   `VdVWMeasurableCover.ofAEMeasurable` and
+   `VdVWMeasurableCover.ofNullMeasurable_ofReal` for a.e.-measurable and
+   null-measurable random targets.
+   The product-integrated measurable-cover outer-expectation transfer from the
+   integrated random-sign symmetrization comparison is now compiled.  The
+   supplied product-space finite-net projection is now compiled, as is the
+   sample-cover product-a.e. finite-net bridge
+   `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`.
+   The empirical-cover cardinality side now has
+   `FiniteEmpiricalL1CoverAtCard.pad_cardinality`,
+   `exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le`, and
+   `finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality`.
+   The remaining Theorem 2.4.3 blocker is consuming this witness handoff in the
+   product random-sign assembly, proving the product-a.e. finite-center
+   Hoeffding predicate for the chosen covers, and proving the
+   entropy-to-convergence assembly; it is not the finite-net
+   Rademacher/Hoeffding maximal scale, the fixed-sample random-sign
+   outer-expectation finite-net handoff, the finite sample mean-zero bridge, the
+   ordinary integrated product/sign-symmetry layer, or a fixed-sample pointwise
+   `hphi_id` comparison.
    A deterministic pointwise class-member-to-supremum
    bridge is also available as
    `abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove` for
@@ -625,14 +640,39 @@ additional example closures:
    `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_rademacher_truncated_original`,
    and
    `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
+   The generic cover/integral bridge
+   `VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg` is
+   compiled for supplied-cover ordinary expectation conversions.
+   The a.e./null-measurable constructors
+   `VdVWMeasurableCover.ofAEMeasurable` and
+   `VdVWMeasurableCover.ofNullMeasurable_ofReal` are compiled for random
+   targets that are not strictly measurable.
+   The product-integrated cover bridge is compiled as
+   `VdVWOuterExpectation_prod_hphi_id_of_integral_integral_le` and
+   `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`.
+   The supplied product-space a.e. finite-net projection is compiled as
+   `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`.
+   The sample-cover product-space finite-net bridge
+   `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`
+   is compiled for the case where each sample has a finite empirical cover and
+   the finite-center Hoeffding predicate holds product-a.e.
+   The finite-cover/cardinality witness handoffs
+   `FiniteEmpiricalL1CoverAtCard.pad_cardinality`,
+   `exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le`, and
+   `finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality`
+   are compiled.
    The remaining
    supplied-`hphi_id` projection into the random-sign finite-net bound is
    compiled as
    `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
    Search refined the remaining comparison: the fixed-sample pointwise
    `hphi_id` target is too strong, and the ordinary integrated product-sample
-   comparison using Rademacher sign-symmetry is now compiled; the valid next
-   target is the measurable-cover outer-expectation assembly.
+   comparison plus product-cover transfer, supplied product-space finite-net
+   projection, and sample-cover product-a.e. finite-net bridge are now
+   compiled; the valid next target is consuming the random empirical-cover
+   witness handoff in the product random-sign assembly, proving the
+   product-a.e. finite-center Hoeffding predicate for the chosen covers, and
+   proving entropy-to-convergence.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -739,14 +779,35 @@ Search record for the symmetrization precursor package:
   `integral_vdVWWeightedClassSupremum_pairDifference_constWeights_eq_rademacherWeights`,
   and the random-sign integrated averaging comparison
   `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
-  A follow-up search found the
+  The generic cover/integral equality
+  `VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg` is also
+  compiled for supplied measurable covers of integrable nonnegative real targets.
+  The cover constructors `VdVWMeasurableCover.ofAEMeasurable` and
+  `VdVWMeasurableCover.ofNullMeasurable_ofReal` are compiled for random targets
+  supplied only as a.e.-measurable or null-measurable.
+  The product-integrated measurable-cover bridge
+  `VdVWOuterExpectation_prod_hphi_id_of_integral_integral_le` and its VdV&W
+  specialization
+  `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`
+  are compiled.  The supplied product-space finite-net projection
+  `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`
+  is compiled as well, along with the sample-cover product-a.e. finite-net
+  bridge
+  `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`.
+  The random empirical-cover cardinality bridge
+  `finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality`
+  is compiled on top of
+  `exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le` and
+  `FiniteEmpiricalL1CoverAtCard.pad_cardinality`.  A follow-up search found the
   fixed-sample pointwise `hphi_id` target is too strong; the next valid target
-  is the supplied-cover outer-expectation transfer.  The supplied projection
+  is consuming those witnesses in the product random-sign assembly, proving the
+  product-a.e. finite-center Hoeffding predicate for the chosen covers, and
+  proving entropy-to-convergence.  The
+  supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
-  now packages the finite-net consequence once the theorem-local `hphi_id`
-  comparison is supplied.  The final comparison can consume the precursor
-  directly after the remaining cover step proves the outer-expectation
-  `hphi_id` bridge.
+  still packages the fixed-sample finite-net consequence when such a supplied
+  comparison is available, but the theorem-line route should remain
+  product-integrated.
 
 Next exact edit: continue the theorem-specific symmetrization/truncation layer
 for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
@@ -768,8 +829,12 @@ expectation-level integral lifts including the same-weight pair-split rewrite,
 the projected two-coordinate expectation bound, the deterministic
 Rademacher-weight sign-negation bridge, the integrated product-pair
 sign-symmetry/random-sign averaging comparison, and the supplied-`hphi_id`
-finite-net projection, are closed.  Next prove the measurable-cover
-outer-expectation comparison needed for the theorem-local `hphi_id` bridge,
+finite-net projection, plus the product-integrated measurable-cover
+outer-expectation bridge, supplied product-space finite-net projection, and
+sample-cover product-a.e. finite-net bridge, plus the random empirical-cover
+cardinality witness handoff and a.e./null-measurable cover constructors, are
+closed.  Next consume those witnesses in the product random-sign assembly,
+prove the product-a.e. finite-center Hoeffding predicate for the chosen covers,
 then entropy-to-convergence and final Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
