@@ -65,16 +65,24 @@ layers:
   `SmoothWithGradientOn.upper_model`, including the source-shaped
   `h <= 1 / beta` corollary under `0 < beta`.
 
-The next substantive blocker is the remaining closed-form Theorem 3.4
-function-value denominator.  The first assembly layer now compiles in
+The positive-`alpha` closed-form Theorem 3.4 function-value denominator now
+compiles.  The assembly layer in
 `StatInference/Optimization/Theorem34.lean`: it proves the weighted finite-sum
 bound from the supplied one-step recurrence (3.1), including a source-indexed
-one-based display, plus a monotone-gap weighted lower-bound helper.  The
+one-based display, plus a monotone-gap weighted lower-bound helper, finite
+denominator corollaries, and the closed geometric denominator corollary
+matching (3.2) under `0 < alpha`, `0 < h`, and `0 < 1 - alpha * h`, and the
+`alpha = 0` limiting-value denominator bound
+`‖x₀ - x⋆‖² / (2 h N)`.  The
 first-order supplied strong-convexity bridge now also compiles: it adds
 `FirstOrderStrongConvexOn`, proves the one-step recurrence (3.1)/(3.3) from
 that lower model plus Lemma 3.1, and feeds a gradient-descent trajectory into
-the weighted finite-sum bound.  The next task is to close the geometric
-denominator corollaries for the final function-value bound.
+the weighted finite-sum/final-value bounds.  The descent lemma also now
+derives monotonicity of function values along GD trajectories, removing the
+last supplied monotone-gap assumption from the positive-`alpha` and
+`alpha = 0` closed-form wrappers.  Next choices are the full
+segment-strong-convexity plus differentiability bridge for Proposition 1.6, or
+source-audited report packaging for the supplied-interface Theorem 3.4 layer.
 
 ## Search-First Record
 
@@ -117,9 +125,14 @@ Lemma 3.1 layer.
 Current Theorem 3.4 assembly search result: the weighted finite-sum step needs
 only algebra after applying `discreteGronwall_sum_le`.  Useful APIs are
 `Finset.mul_sum`, `Finset.sum_congr`, `Finset.sum_Ico_eq_sum_range`,
-`sub_nonneg`/`le_of_sub_nonneg`, and `nlinarith`.  For the next closed
-denominator layer, use `Finset.sum_range_reflect`, `geom_sum_mul_neg`,
-`mul_neg_geom_sum`, `geom_sum_eq`, `geom_sum_Ico'`, and `geom_sum_inv`.
+`sub_nonneg`/`le_of_sub_nonneg`, and `nlinarith`.  The closed positive-`alpha`
+denominator layer reuses `Finset.sum_range_reflect`, `geom_sum_pos`,
+`geom_sum_Ico'`, `pow_lt_one₀`, `le_div_iff₀`, and `field_simp`; no local
+geometric-series foundation was added.  The monotone-gap assumption can be
+derived from `descentLemma_of_smoothWithGradientOn` plus
+`antitone_nat_of_succ_le`.  The `alpha = 0` branch reuses mathlib
+`one_geom_sum`/`simp` for the finite sum of unit weights, then specializes the
+same finite-denominator theorem.
 For the one-step recurrence (3.1), neither local `StrongConvexOn` nor mathlib
 `StrongConvexOn` currently provides a ready first-order gradient lower-model
 bridge; prefer adding a supplied first-order strong-convexity interface before
@@ -147,17 +160,20 @@ Local searches should prioritize:
 2. Keep `StatInference/Optimization/DiscreteGronwall.lean` compiling.  It now
    proves both the zero-based finite-sum form and the source-shaped one-based
    display form of Chewi Lemma 3.5.
-3. Use mathlib geometric-series APIs for the denominator simplification in
-   Theorem 3.4; do not create local geometric-series helpers unless forced.
+3. Keep the mathlib-geometric denominator simplification in Theorem 3.4
+   compiling.  It uses local source-shaped wrappers around mathlib
+   `sum_range_reflect`/`geom_sum_Ico'`/`geom_sum_pos`, not a duplicate
+   geometric-series foundation.
 4. Keep `StatInference/Optimization/GradientDescent.lean` compiling.  It now
    proves Chewi Lemma 3.1 from `SmoothWithGradientOn`, with both
-   `beta * h <= 1` and source-shaped `h <= 1 / beta` versions.
+   `beta * h <= 1` and source-shaped `h <= 1 / beta` versions, and derives
+   antitonicity of function values along GD trajectories.
 5. Add a bounded Theorem 3.4 assembly layer.  First prefer a supplied-interface
-   theorem that assumes the one-step recurrence (3.1) and monotonicity from
-   Lemma 3.1.  The weighted finite-sum and monotone-gap weighted lower-bound
-   helpers now compile in `Theorem34.lean`, and the first-order supplied
-   strong-convexity bridge supplies the one-step recurrence for GD
-   trajectories.
+   theorem that assumes the one-step recurrence (3.1), then derive monotonicity
+   from Lemma 3.1 where possible.  The weighted finite-sum, finite
+   denominator, positive-`alpha` closed denominator, `alpha = 0` limiting
+   denominator, and first-order supplied strong-convexity trajectory wrappers
+   now compile in `Theorem34.lean`.
 6. Prove the first source-exact report candidate only after the exact theorem
    declaration compiles and source screenshots are captured.
 
@@ -189,19 +205,31 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.discreteGronwall_one_based_sum_le_of_pos`
 - `StatInference.Optimization.descentLemma_of_smoothWithGradientOn`
 - `StatInference.Optimization.descentLemma_of_smoothWithGradientOn_of_le_inv`
+- `StatInference.Optimization.functionValue_antitone_of_smoothWithGradientOn`
 - `StatInference.Optimization.weightedSumBound_of_gronwall_negative_forcing`
 - `StatInference.Optimization.weightedFinalGap_le_weightedGapSum`
+- `StatInference.Optimization.geometricWeights_sum_eq_geom_sum`
+- `StatInference.Optimization.geometricWeights_sum_pos`
+- `StatInference.Optimization.geometricWeights_sum_eq_div`
+- `StatInference.Optimization.geometricWeights_sum_one`
 - `StatInference.Optimization.chewi34_weighted_sum_bound_of_one_step`
 - `StatInference.Optimization.chewi34_weighted_sum_bound_one_based_of_one_step`
 - `StatInference.Optimization.chewi34_weighted_final_gap_le_weighted_gap_sum`
+- `StatInference.Optimization.chewi34_final_gap_le_weighted_denominator_of_one_step`
+- `StatInference.Optimization.chewi34_final_gap_le_geometric_denominator_of_one_step`
+- `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_one_step`
 - `StatInference.Optimization.oneStepRecurrence_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi34_weighted_sum_bound_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi34_weighted_sum_bound_one_based_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi34_final_gap_le_weighted_denominator_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi34_final_gap_le_geometric_denominator_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi34_final_gap_le_geometric_denominator_of_firstOrderStrongConvexOn_of_descent`
+- `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn_of_descent`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next automation target: pursue Chewi Theorem 3.4 aggressively by closing the
-geometric denominator corollary from the compiled weighted-sum and monotone-gap
-inequalities.  Use the scouts' mathlib geometric-series APIs before adding
-local algebra, especially `Finset.sum_range_reflect`, `geom_sum_mul_neg`, and
-`geom_sum_pos`.
+Next manual goal target: choose the fastest source-faithful completion path for
+Theorem 3.4.  Likely options are a source-exact supplied-interface report for
+Theorem 3.4, or the differentiability bridge from segment `StrongConvexOn` to
+`FirstOrderStrongConvexOn` for Proposition 1.6 fidelity.
