@@ -71,14 +71,16 @@ compiles.  The assembly layer in
 bound from the supplied one-step recurrence (3.1), including a source-indexed
 one-based display, plus a monotone-gap weighted lower-bound helper, finite
 denominator corollaries, and the closed geometric denominator corollary
-matching (3.2) under `0 < alpha`, `0 < h`, and `0 < 1 - alpha * h`.  The
+matching (3.2) under `0 < alpha`, `0 < h`, and `0 < 1 - alpha * h`, and the
+`alpha = 0` limiting-value denominator bound
+`‖x₀ - x⋆‖² / (2 h N)`.  The
 first-order supplied strong-convexity bridge now also compiles: it adds
 `FirstOrderStrongConvexOn`, proves the one-step recurrence (3.1)/(3.3) from
 that lower model plus Lemma 3.1, and feeds a gradient-descent trajectory into
 the weighted finite-sum/final-value bounds.  The descent lemma also now
 derives monotonicity of function values along GD trajectories, removing the
-last supplied monotone-gap assumption from the positive-`alpha` closed-form
-wrapper.  Next choices are the `alpha = 0` limiting-value theorem, the full
+last supplied monotone-gap assumption from the positive-`alpha` and
+`alpha = 0` closed-form wrappers.  Next choices are the full
 segment-strong-convexity plus differentiability bridge for Proposition 1.6, or
 source-audited report packaging for the supplied-interface Theorem 3.4 layer.
 
@@ -128,7 +130,9 @@ denominator layer reuses `Finset.sum_range_reflect`, `geom_sum_pos`,
 `geom_sum_Ico'`, `pow_lt_one₀`, `le_div_iff₀`, and `field_simp`; no local
 geometric-series foundation was added.  The monotone-gap assumption can be
 derived from `descentLemma_of_smoothWithGradientOn` plus
-`antitone_nat_of_succ_le`.
+`antitone_nat_of_succ_le`.  The `alpha = 0` branch reuses mathlib
+`one_geom_sum`/`simp` for the finite sum of unit weights, then specializes the
+same finite-denominator theorem.
 For the one-step recurrence (3.1), neither local `StrongConvexOn` nor mathlib
 `StrongConvexOn` currently provides a ready first-order gradient lower-model
 bridge; prefer adding a supplied first-order strong-convexity interface before
@@ -167,8 +171,9 @@ Local searches should prioritize:
 5. Add a bounded Theorem 3.4 assembly layer.  First prefer a supplied-interface
    theorem that assumes the one-step recurrence (3.1), then derive monotonicity
    from Lemma 3.1 where possible.  The weighted finite-sum, finite
-   denominator, positive-`alpha` closed denominator, and first-order supplied
-   strong-convexity trajectory wrappers now compile in `Theorem34.lean`.
+   denominator, positive-`alpha` closed denominator, `alpha = 0` limiting
+   denominator, and first-order supplied strong-convexity trajectory wrappers
+   now compile in `Theorem34.lean`.
 6. Prove the first source-exact report candidate only after the exact theorem
    declaration compiles and source screenshots are captured.
 
@@ -206,22 +211,25 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.geometricWeights_sum_eq_geom_sum`
 - `StatInference.Optimization.geometricWeights_sum_pos`
 - `StatInference.Optimization.geometricWeights_sum_eq_div`
+- `StatInference.Optimization.geometricWeights_sum_one`
 - `StatInference.Optimization.chewi34_weighted_sum_bound_of_one_step`
 - `StatInference.Optimization.chewi34_weighted_sum_bound_one_based_of_one_step`
 - `StatInference.Optimization.chewi34_weighted_final_gap_le_weighted_gap_sum`
 - `StatInference.Optimization.chewi34_final_gap_le_weighted_denominator_of_one_step`
 - `StatInference.Optimization.chewi34_final_gap_le_geometric_denominator_of_one_step`
+- `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_one_step`
 - `StatInference.Optimization.oneStepRecurrence_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi34_weighted_sum_bound_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi34_weighted_sum_bound_one_based_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi34_final_gap_le_weighted_denominator_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi34_final_gap_le_geometric_denominator_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi34_final_gap_le_geometric_denominator_of_firstOrderStrongConvexOn_of_descent`
+- `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn_of_descent`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
 Next manual goal target: choose the fastest source-faithful completion path for
-Theorem 3.4.  Likely options are the `alpha = 0` limiting-value corollary from
-the finite denominator, a source-exact supplied-interface report for the
-positive-`alpha` theorem, or the differentiability bridge from segment
-`StrongConvexOn` to `FirstOrderStrongConvexOn` for Proposition 1.6 fidelity.
+Theorem 3.4.  Likely options are a source-exact supplied-interface report for
+Theorem 3.4, or the differentiability bridge from segment `StrongConvexOn` to
+`FirstOrderStrongConvexOn` for Proposition 1.6 fidelity.

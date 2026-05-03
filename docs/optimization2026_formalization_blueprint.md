@@ -155,12 +155,13 @@ Near-term exact candidates:
    one-step recurrence (3.1), uses the compiled Gronwall theorem for the
    weighted finite-sum bound, provides the source-indexed one-based display,
    adds the monotone-gap weighted lower-bound helper, proves the finite and
-   positive-`alpha` closed geometric denominator corollaries, and proves the
-   one-step recurrence from the supplied first-order strong-convexity lower
-   model plus Lemma 3.1.  A final wrapper derives monotonicity from the descent
-   lemma rather than taking it as a supplied assumption.  Remaining work is the
-   `alpha = 0` limiting display and, later, the full
-   segment-strong-convexity plus differentiability bridge for Proposition 1.6.
+   positive-`alpha` closed geometric denominator corollaries, proves the
+   `alpha = 0` limiting display, and proves the one-step recurrence from the
+   supplied first-order strong-convexity lower model plus Lemma 3.1.  Final
+   wrappers derive monotonicity from the descent lemma rather than taking it as
+   a supplied assumption.  Remaining work is source-audited theorem packaging
+   and, later, the full segment-strong-convexity plus differentiability bridge
+   for Proposition 1.6.
 
 ### Lane D: Later textbook expansion
 
