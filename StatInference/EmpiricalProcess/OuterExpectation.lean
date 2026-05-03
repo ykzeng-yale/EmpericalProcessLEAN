@@ -301,6 +301,65 @@ def ofMeasurable {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
   minimal_ae := fun _ _ h_majorizes => h_majorizes
 
 /--
+An a.e.-measurable nonnegative map has a VdV&W measurable cover.
+
+The measurable modification `hT.mk T` only agrees with `T` almost surely, so
+the cover is set to `∞` on a measurable hull of the disagreement set.  This
+keeps the cover pointwise above `T` while preserving the usual a.e. minimality.
+-/
+noncomputable def ofAEMeasurable {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) {T : Ω -> ℝ≥0∞} (hT : AEMeasurable T μ) :
+    VdVWMeasurableCover μ T where
+  toFun := by
+    classical
+    exact fun ω =>
+      if ω ∈ toMeasurable μ {ω | T ω ≠ hT.mk T ω} then ∞ else hT.mk T ω
+  measurable_toFun := by
+    classical
+    exact
+      Measurable.ite (measurableSet_toMeasurable μ {ω | T ω ≠ hT.mk T ω})
+        measurable_const hT.measurable_mk
+  majorizes := by
+    classical
+    intro ω
+    by_cases hω : ω ∈ toMeasurable μ {ω | T ω ≠ hT.mk T ω}
+    · simp [hω]
+    · have hnot_bad : ω ∉ {ω | T ω ≠ hT.mk T ω} :=
+        fun hbad => hω (subset_toMeasurable μ {ω | T ω ≠ hT.mk T ω} hbad)
+      have heq : T ω = hT.mk T ω := by
+        by_contra hne
+        exact hnot_bad hne
+      simp [hω, heq]
+  minimal_ae := by
+    classical
+    intro U hU h_majorizes
+    let bad : Set Ω := {ω | T ω ≠ hT.mk T ω}
+    let hull : Set Ω := toMeasurable μ bad
+    have hbad_zero : μ bad = 0 := by
+      have h_eq : ∀ᵐ ω ∂μ, T ω = hT.mk T ω := hT.ae_eq_mk
+      simpa [bad] using (ae_iff.mp h_eq)
+    have hhull_zero : μ hull = 0 := by
+      change μ (toMeasurable μ bad) = 0
+      rw [measure_toMeasurable bad, hbad_zero]
+    have hnot_hull_ae : ∀ᵐ ω ∂μ, ω ∉ hull := by
+      apply ae_iff.mpr
+      simpa using hhull_zero
+    filter_upwards [h_majorizes, hnot_hull_ae] with ω hle hnot_hull
+    have hnot_bad : ω ∉ bad :=
+      fun hbad => hnot_hull (subset_toMeasurable μ bad hbad)
+    have heq : T ω = hT.mk T ω := by
+      by_contra hne
+      exact hnot_bad hne
+    change (if ω ∈ hull then ∞ else hT.mk T ω) ≤ U ω
+    simp [hnot_hull, ← heq, hle]
+
+/-- Real-valued null-measurable targets give covers after coercion to `ℝ≥0∞`. -/
+noncomputable def ofNullMeasurable_ofReal {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) {f : Ω -> ℝ} (hf : NullMeasurable f μ) :
+    VdVWMeasurableCover μ (fun ω => ENNReal.ofReal (f ω)) :=
+  VdVWMeasurableCover.ofAEMeasurable μ hf.aemeasurable.ennreal_ofReal
+
+/--
 Supremum algebra for nonnegative measurable covers.
 
 This is the nonnegative cover-interface counterpart of the VdV&W Lemma 1.2.2
@@ -628,6 +687,77 @@ theorem VdVWOuterExpectation_eq_lintegral_of_cover_ofMeasurable
       ∫⁻ ω, (VdVWMeasurableCover.ofMeasurable μ hT : Ω -> ℝ≥0∞) ω ∂μ :=
   VdVWOuterExpectation_eq_lintegral_cover
     (VdVWMeasurableCover.ofMeasurable μ hT)
+
+/--
+If a real-valued nonnegative target has a measurable cover and is almost
+surely bounded by a constant, its VdV&W outer expectation is bounded by that
+constant under a probability measure.
+-/
+theorem VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {f : Ω -> ℝ} {C : ℝ}
+    (U : VdVWMeasurableCover μ (fun ω => ENNReal.ofReal (f ω)))
+    (hbound : ∀ᵐ ω ∂μ, f ω ≤ C) :
+    VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (f ω)) ≤
+      ENNReal.ofReal C := by
+  rw [VdVWOuterExpectation_eq_lintegral_cover U]
+  have hcover_le :
+      ∀ᵐ ω ∂μ, U ω ≤ ENNReal.ofReal C :=
+    U.minimal_ae (fun _ : Ω => ENNReal.ofReal C) measurable_const
+      (hbound.mono fun _ hω => ENNReal.ofReal_le_ofReal hω)
+  calc
+    ∫⁻ ω, U ω ∂μ ≤ ∫⁻ _ω : Ω, ENNReal.ofReal C ∂μ := by
+      exact lintegral_mono_ae hcover_le
+    _ = ENNReal.ofReal C := by
+      simp [lintegral_const]
+
+/--
+For an integrable nonnegative real-valued target, a supplied VdV&W measurable
+cover realizes the ordinary expectation.
+
+This is the expectation-level bridge needed when a theorem first proves an
+ordinary integral inequality and only later packages the right-hand side as a
+nonnegative VdV&W outer expectation.
+-/
+theorem VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {f : Ω -> ℝ}
+    (U : VdVWMeasurableCover μ (fun ω => ENNReal.ofReal (f ω)))
+    (hf_int : Integrable f μ) (hf_nonneg : ∀ᵐ ω ∂μ, 0 ≤ f ω) :
+    VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (f ω)) =
+      ENNReal.ofReal (∫ ω, f ω ∂μ) := by
+  rw [VdVWOuterExpectation_eq_lintegral_cover U]
+  have htarget_eq :
+      (∫⁻ ω, ENNReal.ofReal (f ω) ∂μ) =
+        ENNReal.ofReal (∫ ω, f ω ∂μ) := by
+    exact (MeasureTheory.ofReal_integral_eq_lintegral_ofReal hf_int hf_nonneg).symm
+  refine le_antisymm ?upper ?lower
+  · have hmk_majorizes :
+        ∀ᵐ ω ∂μ,
+          ENNReal.ofReal (f ω) ≤
+            ENNReal.ofReal (hf_int.aestronglyMeasurable.mk f ω) := by
+      filter_upwards [hf_int.aestronglyMeasurable.ae_eq_mk] with ω hω
+      rw [hω]
+    have hU_le_mk :
+        ∀ᵐ ω ∂μ,
+          U ω ≤ ENNReal.ofReal (hf_int.aestronglyMeasurable.mk f ω) :=
+      U.minimal_ae
+        (fun ω => ENNReal.ofReal (hf_int.aestronglyMeasurable.mk f ω))
+        (hf_int.aestronglyMeasurable.stronglyMeasurable_mk.measurable.ennreal_ofReal)
+        hmk_majorizes
+    calc
+      ∫⁻ ω, U ω ∂μ
+          ≤ ∫⁻ ω, ENNReal.ofReal (hf_int.aestronglyMeasurable.mk f ω) ∂μ :=
+            lintegral_mono_ae hU_le_mk
+      _ = ∫⁻ ω, ENNReal.ofReal (f ω) ∂μ := by
+            refine lintegral_congr_ae ?_
+            filter_upwards [hf_int.aestronglyMeasurable.ae_eq_mk] with ω hω
+            rw [hω]
+      _ = ENNReal.ofReal (∫ ω, f ω ∂μ) := htarget_eq
+  · calc
+      ENNReal.ofReal (∫ ω, f ω ∂μ)
+          = ∫⁻ ω, ENNReal.ofReal (f ω) ∂μ := htarget_eq.symm
+      _ ≤ ∫⁻ ω, U ω ∂μ := lintegral_mono U.majorizes
 
 /--
 The supremum cover realizes the nonnegative outer expectation of a pointwise

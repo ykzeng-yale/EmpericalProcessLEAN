@@ -54,11 +54,14 @@ The best current candidate family is Section 25 weak convergence and
 Portmanteau/tightness wrappers, while Section 16/18 support should stay
 dependency-driven by the current VdV&W Theorem 2.4.3 route.  As of the latest
 merged empirical-process progress, the log-radius-to-Hoeffding scale comparison
-is proved.  The active VdV&W blockers are now the theorem-specific
-symmetrization/truncation layer, the outer envelope-tail handoff, and
-entropy-to-convergence/final assembly.  Billingsley support should only add
-reusable probability/measure wrappers if those steps need tail, product/Fubini,
-independent-copy, or outer-expectation infrastructure.
+is proved, finite-`Pi` mapped-coordinate product laws are available, and the
+measurable-integrable envelope-tail convergence handoff is compiled locally in
+the empirical-process file.  The active VdV&W blockers are now the
+theorem-specific product/Fubini symmetrization assembly, entropy-to-convergence,
+and final assembly, with nonmeasurable/arbitrary-cover envelope-tail variants
+left only if the theorem assembly forces them.  Billingsley support should only
+add reusable probability/measure wrappers if those steps need tail,
+product/Fubini, independent-copy, or outer-expectation infrastructure.
 
 ## Search-First Record
 
@@ -82,6 +85,10 @@ Pinned mathlib searches found reusable APIs in:
 - `MeasureTheory.Constructions.Pi`
 - `Probability.ProductMeasure`
 - `Probability.HasLaw`
+- `Probability.iIndepFun_pi`
+- `MeasureTheory.measurePreserving_eval`
+- `MeasureTheory.Measure.pi_map_eval`
+- `MeasureTheory.Measure.pi_map_pi`
 - `Probability.Process.FiniteDimensionalLaws`
 - `Probability.StrongLaw`
 - `Probability.BorelCantelli`
@@ -133,20 +140,141 @@ Local searches found reusable APIs in:
    dominated-convergence upper-tail cutoff APIs for
    downstream empirical-process use. `StatInference/EmpiricalProcess/Theorem243.lean`
    now consumes these generic wrappers for its finite-center expected-supremum
-   tail layer while keeping VdV&W-specific outer-expectation/truncation
-   handoffs local to the empirical-process files. This is support
-   infrastructure, not a source-exact Billingsley Sections 15-16 report. The
+   tail layer and proves the VdV&W-specific measurable-integrable lintegral and
+   outer-expectation envelope-tail convergence handoffs
+   `lintegral_envelope_tail_lt_tendsto_zero_of_integrable` and
+   `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`.
+   The same outer-expectation support lane now also has the generic
+   probability-measure handoff
+   `VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal`, which turns a
+   supplied measurable cover plus an a.e. real constant bound into an
+   `ENNReal.ofReal` outer-expectation bound.
+   The cover API also now has `VdVWMeasurableCover.ofAEMeasurable` and
+   `VdVWMeasurableCover.ofNullMeasurable_ofReal`, so future random targets that
+   are only a.e.-measurable or null-measurable can still supply the required
+   VdV&W measurable cover.
+   This is support infrastructure, not a source-exact Billingsley Sections
+   15-16 report. The
    content-based Section 18
    wrapper layer has started in
    `StatInference/ProbabilityMeasure/ProductMeasure.lean`; it now includes
    product-coordinate marginal projection and separated product-expectation
    identities for binary product probability spaces, plus
+   `probability_integral_prod_fst_sub_snd_eq_zero`, which packages the
+   mean-zero difference of two coordinate copies of an integrable function,
    `probability_prod_independent_self_copies`, which packages the two product
    coordinates as independent copies with common law `P`, and
    `probability_prod_independent_mapped_copies_with_joint_law`, which packages
    measurable mapped-coordinate marginal laws, joint product law, and
-   independence. The remaining work is to specialize these wrappers to the
-   exact finite-product/independent-copy shapes used by symmetrization.  The reusable Rademacher-sign layer has started in
+   independence.  It also now includes finite-`Pi` mapped-coordinate wrappers
+   `probability_pi_map_mapped_coordinates_eq`,
+   `probability_pi_independent_mapped_coordinates_with_joint_law`,
+   `probability_pi_integral_weighted_sum`, and
+   `probability_pi_integral_weighted_sum_eq_zero`, plus the product-copy
+   weighted-sum mean-zero wrapper
+   `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero` and the
+   conditional ghost-copy Fubini identity
+   `probability_pi_integral_weighted_sum_const_sub`; the VdV&W side specializes
+   these as
+   `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`.
+   It also specializes the finite weighted-sum expectation bridge as
+   `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`,
+   and the fixed-original-sample conditional identity as
+   `integral_vdVWTruncatedClassFun_productSample_const_sub_eq`.
+   The VdV&W side now packages these product-copy, finite-`Pi`, mean-zero,
+   random-sign, and finite-cover expected-maximal components as
+   `VdVWTheorem243SymmetrizationPrecursor` with constructor
+   `VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover`.  The
+   precursor now also exposes the theorem-local projections
+   `VdVWTheorem243SymmetrizationPrecursor.randomSign_expectedMaximal_le` and
+   `VdVWTheorem243SymmetrizationPrecursor.randomSign_outerExpectation_le_finiteNetHoeffdingUpper_add`.
+   A deterministic supremum split
+   `vdVWWeightedClassSupremum_pairDifference_le_add` and the bounded-value-set
+   class-member bridge
+   `abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove`, with
+   boundedness supplied by
+   `bddAbove_vdVWWeightedClassValueSet_of_uniform_bound`, are also compiled.
+   The fixed-original-sample `Phi(x)=x` ghost-copy comparison is now compiled
+   as
+   `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`,
+   and the envelope-bounded pair split is packaged as
+   `vdVWWeightedClassSupremum_truncated_pairDifference_le_add`.  The finite
+   product-coordinate projection wrapper
+   `probability_pi_prod_coordinates_measurePreserving`, VdV&W specializations
+   `measurePreserving_vdVWProductMeasure_prod_to_original_ghost`,
+   `measurePreserving_vdVWProductMeasure_prod_to_original`, and
+   `measurePreserving_vdVWProductMeasure_prod_to_ghost` are now compiled, along
+   with the expectation-level monotonicity lifts
+   `integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
+   and the Fubini/projection identity
+   `integral_integral_vdVWWeightedClassSupremum_pairDifference_eq_integral_productSample`,
+   yielding
+   `integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifference`,
+   and
+   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd`,
+   plus the same-weight variant
+   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd_same_weights`
+   using `vdVWWeightedSampleSum_neg_weights` and
+   `vdVWWeightedClassSupremum_neg_weights`, and the projected
+   expectation-level consequence
+   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`.
+   Their direct composition is also compiled as
+   `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`.
+   The random-sign side also now has
+   `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`, the
+   coordinatewise product-pair sign-swap
+   `measurePreserving_vdVWProductMeasure_rademacherProductSampleSignSwap`,
+   deterministic pair-difference sign-swap identities, the integrated
+   sign-symmetry identity
+   `integral_vdVWWeightedClassSupremum_pairDifference_constWeights_eq_rademacherWeights`,
+   and the averaged random-sign comparison
+   `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
+   The reusable outer-expectation equality
+   `VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg`
+   turns an integrable nonnegative real target with a supplied measurable cover
+   into its ordinary `ofReal` expectation.
+   The product-integrated measurable-cover bridge
+   `VdVWOuterExpectation_prod_hphi_id_of_integral_integral_le` and its VdV&W
+   specialization
+   `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`
+   are also compiled, as is the supplied product-space finite-net projection
+   `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`.
+   The sample-cover product-a.e. finite-net bridges
+   `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`
+   and
+   `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleDependentCovers_rademacherSigns`
+   are also compiled for supplied sample-indexed empirical covers, including
+   the sample-dependent cardinality shape needed by random empirical entropy,
+   and a product-a.e. finite-center Hoeffding predicate.
+   The empirical-cover cardinality side now has
+   `FiniteEmpiricalL1CoverAtCard.pad_cardinality`,
+   `exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le`, and
+   `finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality`,
+   which turn finite upper bounds on empirical covering numbers into concrete
+   finite-cover witnesses at the supplied cardinality.
+   The remaining
+   hphi-to-Hoeffding projection after a supplied `Phi(x)=x` comparison is
+   packaged as
+   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
+   Search refined the target: a pointwise fixed-sample `hphi_id` comparison and
+   product-a.e. finite-center Hoeffding predicate are too strong; the valid
+   cover transfer is product-integrated over signs and samples.  The random
+   empirical-cover witness is now consumed by the expectation-level finite-net
+   handoff
+   `integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
+   The product outer-expectation projection for that route is compiled as
+   `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
+   The entropy/Hoeffding-scale algebra now also has
+   `vdVWTheorem243FiniteNetHoeffdingUpper_nonneg`,
+   `vdVWTheorem243FiniteNetHoeffdingUpper_sq`,
+   `vdVWTheorem243FiniteNetHoeffdingUpper_eq_logCardinality`,
+   `vdVWTheorem243FiniteNetHoeffdingUpper_sq_eq_logCardinality`,
+   `tendsto_sqrt_one_add_mul_sqrt_six_div_of_div_tendsto_zero`, and
+   `VdVWTheorem243TruncatedEntropyCondition.fixed_of_forAllEpsilonM`.
+   The next target is the outer-probability entropy-to-Hoeffding-scale
+   convergence handoff, not another fixed-sample pointwise comparison or
+   product-a.e. Hoeffding predicate.
+   The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
    one-dimensional law, deterministic sign vectors, and finite iid sign
@@ -157,44 +285,159 @@ Local searches found reusable APIs in:
 
 ## Next Exact Lean Edit
 
-After the weak-convergence naming layer, the next high-value proof step is one
-of:
+The next high-value proof step is the theorem-specific Section 18/entropy
+assembly for VdV&W Theorem 2.4.3:
 
-- integrate the generic
-  `StatInference/ProbabilityMeasure/Rademacher.lean` iid/sign-vector layer into
-  the VdV&W Theorem 2.4.3 symmetrization route, replacing theorem-local
-  duplication only when the refactor is small and Lean verifies; or
-- a Billingsley Section 25 exact theorem candidate wrapping an already proved
+- prove the outer-probability entropy-to-Hoeffding-scale convergence handoff
+  from `log_cardinality_littleO_n`, using the compiled random-cardinality
+  Hoeffding upper algebra and the compiled product outer-expectation
+  projection;
+- if that assembly exposes only a.e.-measurable or null-measurable random
+  targets, use `VdVWMeasurableCover.ofAEMeasurable` or
+  `VdVWMeasurableCover.ofNullMeasurable_ofReal` rather than adding another
+  supplied-cover wrapper;
+- if no empirical-process dependency is blocked on Billingsley support, move to
+  the Billingsley Section 25 exact theorem candidate wrapping an already proved
   mathlib/local weak-convergence implication, with Theorem 25.8
   bounded-continuous and continuity-set directions as the current best
-  source-audited candidate; or
-- the empirical-distribution support wrapper in
-  `StatInference/EmpiricalProcess/RealHalfLineGC.lean`, now available as a
-  local support layer: `realHalfLineIndicator_integral_eq_cdf` identifies the
-  closed half-line indicator integral with `ProbabilityTheory.cdf`, and
-  `realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid` repackages
-  the endpoint empirical-average SLLN as pointwise empirical-CDF convergence
-  for a fixed endpoint. The fixed-endpoint
-  convergence-in-probability/`TendstoInMeasure` wrapper and the corresponding
-  VdV&W outer-probability wrapper record the same fixed-endpoint consequence in
-  probability. This is not a source-exact formalization of Billingsley Theorem
-  20.6; the remaining exact Theorem 20.6 route is the uniform-in-`x` statement,
-  likely via the finite-grid route; or
-- the next Section 16 tail-control specialization needed by
-  `StatInference/EmpiricalProcess/Theorem243.lean`, using the compiled
-  `StatInference/ProbabilityMeasure/Tail.lean` layer-cake/tail/DCT cutoff
-  wrappers where the statement is reusable, and keeping VdV&W-specific
-  outer-expectation and lintegral handoffs in the empirical-process files; or
-- the next Section 18 independent-copy specialization using
-  `probability_integral_prod_fst`, `probability_integral_prod_snd`, and
-  `probability_integral_prod_mul`, plus
-  `probability_prod_independent_self_copies` and
-  `probability_prod_independent_mapped_copies_with_joint_law`, to erase unused
-  product coordinates, expose ghost-copy independence, and carry mapped
-  sample/sign statistics in the symmetrization route.
+  source-audited candidate.
+
+The closed Section 18 independent-copy/symmetrization surface includes the
+  compiled `VdVWTheorem243SymmetrizationPrecursor` package: the finite
+  product-sample weighted-sum mean-zero bridge over `(P.prod P)^n` is now
+  compiled, and the fixed-original-sample `Phi(x)=x` ghost-copy comparison is
+  now available as
+  `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`.
+  The finite product-coordinate projection wrapper
+  `probability_pi_prod_coordinates_measurePreserving` and VdV&W specializations
+  `measurePreserving_vdVWProductMeasure_prod_to_original_ghost`,
+  `measurePreserving_vdVWProductMeasure_prod_to_original`, and
+  `measurePreserving_vdVWProductMeasure_prod_to_ghost` are now compiled, as are
+  the expectation-level integral lifts for the centered ghost-copy comparison,
+  the envelope-bounded pair split, and the same-weight second-coordinate
+  rewrite, plus the two-to-one original-sample expectation projection
+  `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`.
+  The supplied-`hphi_id` projection to the Hoeffding finite-net bound is also
+  compiled, and the ordinary integrated product/Rademacher sign-symmetry layer
+  is compiled through
+  `integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
+  The reusable cover-integral bridge
+  `VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg` is
+  available for future ordinary-integral-to-outer-expectation transfers.
+  The product-integrated cover transfer is compiled as
+  `VdVWOuterExpectation_prod_hphi_id_of_integral_integral_le` and
+  `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`.
+  The supplied product-space a.e. finite-net projection
+  `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`
+  is also compiled, along with the sample-cover product-a.e. finite-net bridges
+  `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`
+  and
+  `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleDependentCovers_rademacherSigns`.
+  Do not target the false fixed-sample pointwise comparison. Only add a new
+  `StatInference/ProbabilityMeasure`
+  product wrapper if this assembly exposes a genuinely reusable gap beyond the
+  existing
+  `probability_integral_prod_fst`, `probability_integral_prod_snd`,
+  `probability_integral_prod_mul`,
+  `probability_integral_prod_fst_sub_snd_eq_zero`,
+  `probability_prod_independent_self_copies`,
+  `probability_prod_independent_mapped_copies_with_joint_law`,
+  `probability_pi_map_mapped_coordinates_eq`,
+  `probability_pi_independent_mapped_coordinates_with_joint_law`,
+  `probability_pi_integral_weighted_sum`,
+  `probability_pi_integral_weighted_sum_eq_zero`, and
+  `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`, and
+  `probability_pi_integral_weighted_sum_const_sub` APIs.
 
 The deciding rule is dependency value: if Theorem 2.4.3 is blocked on a tail,
 Fubini, independent-copy, or outer-expectation primitive, prefer that over a
 cosmetic Billingsley report.  Otherwise, select a narrow Section 25 theorem
 candidate whose proof is already mostly present in mathlib/local wrappers and
 move it toward an exact source-audited Billingsley statement.
+
+Finite-sample product note: local/mathlib search showed that the reusable
+product primitive did not need to stay binary.  Since
+`SampleAt Observation n` is `Fin n -> Observation` and
+`vdVWProductMeasure P n` is `Measure.pi fun _ : Fin n => P`, the compiled
+content-based Section 18/20 support layer now includes finite-`Pi`
+mapped-coordinate wrappers using `ProbabilityTheory.iIndepFun_pi`,
+`iIndepFun.hasLaw_pi`, `MeasureTheory.measurePreserving_eval`, and
+`Measure.pi_map_pi`, plus finite weighted-sum expectation and mean-zero
+wrappers using `MeasureTheory.integrable_comp_eval`,
+`MeasureTheory.integral_comp_eval`, `MeasureTheory.integral_finsetSum`, and
+`MeasureTheory.integral_const_mul`.  These are now consumed by the VdV&W
+`VdVWTheorem243SymmetrizationPrecursor` package, by the theorem-local
+pair-difference weighted-sum mean-zero specialization, and by the conditional
+ghost-copy identity with a fixed original sample.  The VdV&W file now also
+proves the fixed-sample centered supremum-to-ghost-pair expectation handoff
+`vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
+and the envelope-bounded split
+`vdVWWeightedClassSupremum_truncated_pairDifference_le_add`, plus the
+finite product-coordinate projection wrapper
+`probability_pi_prod_coordinates_measurePreserving`, the VdV&W projection
+specializations `measurePreserving_vdVWProductMeasure_prod_to_original_ghost`,
+`measurePreserving_vdVWProductMeasure_prod_to_original`, and
+`measurePreserving_vdVWProductMeasure_prod_to_ghost`,
+and the expectation-level integral lifts
+`integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
+and the Fubini/product-projection identity
+`integral_integral_vdVWWeightedClassSupremum_pairDifference_eq_integral_productSample`,
+giving
+`integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifference`,
+and
+`integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd`,
+plus the same-weight variant
+`integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd_same_weights`.
+It also proves the projected pair-difference expectation bound
+`integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`
+and their composed centered-to-two-truncated-expectation handoff
+`integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`
+and the Rademacher-weight sign-negation bridge
+`vdVWWeightedClassSupremum_rademacherWeights_neg_sign`. It also proves the
+coordinatewise product-pair sign-swap measure-preserving wrapper, deterministic
+pair-difference sign-swap identities, the integrated product-pair sign-symmetry
+identity
+`integral_vdVWWeightedClassSupremum_pairDifference_constWeights_eq_rademacherWeights`,
+and the random-sign integrated averaging comparison
+`integral_vdVWWeightedClassSupremum_centered_const_le_two_integral_randomSign_truncated_original`.
+It also proves the reusable bridge
+`VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg`, which
+handles ordinary real integral equalities for integrable nonnegative targets
+with supplied VdV&W measurable covers.
+It also proves `VdVWMeasurableCover.ofAEMeasurable` and
+`VdVWMeasurableCover.ofNullMeasurable_ofReal` for a.e.-measurable and
+null-measurable random targets.
+It also proves the product-integrated measurable-cover bridge
+`VdVWOuterExpectation_prod_hphi_id_of_integral_integral_le` and the specialized
+outer-expectation handoff
+`integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`.
+It also proves the supplied product-space finite-net projection
+`integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`.
+It also proves the sample-cover product-a.e. finite-net bridges
+`ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`
+and
+`ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleDependentCovers_rademacherSigns`.
+It also proves the empirical-cover cardinality witness handoffs
+`FiniteEmpiricalL1CoverAtCard.pad_cardinality`,
+`exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le`, and
+`finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality`.
+It also proves
+`ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_rademacherSigns`,
+which consumes the random empirical-cover witness in the product random-sign
+finite-net handoff.
+It also proves the selected-cover projections
+`vdVWRandomEmpiricalL1CoverAtCard_center_mem` and
+`vdVWRandomEmpiricalL1CoverAtCard_cardinality_pos`, the expected-maximal
+selected-cover handoff
+`vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_randomEmpiricalL1CoverAtCard_of_pos`,
+and the product-integrated random-cover finite-net bound
+`integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
+It also proves the product outer-expectation projection
+`VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
+It also proves the
+supplied-`hphi_id` finite-net projection
+`VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
+The next proof target is entropy-to-convergence for this product-integrated
+expected-maximal route; a fixed-sample pointwise comparison or product-a.e.
+finite-center Hoeffding predicate should not be pursued. Do not add another
+product surface unless that assembly exposes a sharper missing API.

@@ -118,9 +118,11 @@ Current compiled wrappers:
   limit wrappers
 - product probability measure, Tonelli/Fubini, and independent-product
   expectation wrappers, including product-coordinate marginal projection and
-  separated product-expectation identities, a binary independent self-copy
-  handoff under `P.prod P`, and mapped-coordinate marginal/joint-law plus
-  independence handoff
+  separated product-expectation identities, mean-zero product-copy difference,
+  a binary independent self-copy handoff under `P.prod P`, and
+  mapped-coordinate marginal/joint-law plus independence handoff, plus
+  finite-`Pi` mapped-coordinate law and independence wrappers for finite sample
+  coordinates
 - first and second Borel-Cantelli wrappers
 - generated sigma-field, generator-measurability, pi-system, and
   finite/probability measure extensionality wrappers
@@ -155,6 +157,13 @@ Current compiled wrappers:
   `Mathlib.MeasureTheory.Integral.Lebesgue.Markov`
 - dominated-convergence upper-tail cutoff wrapper
   `integral_indicator_tail_lt_tendsto_zero_of_integrable`
+- VdV&W-facing measurable-integrable envelope-tail convergence handoffs
+  `lintegral_envelope_tail_lt_tendsto_zero_of_integrable` and
+  `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`
+  in `StatInference/EmpiricalProcess/Theorem243.lean`
+- supplied-cover/a.e.-constant outer-expectation handoff
+  `VdVWOuterExpectation_le_of_cover_ae_le_const_ofReal`, now consumed by the
+  Theorem 2.4.3 random-sign finite-net outer-expectation projection
 - source-crosswalk support for Billingsley Sections 15-16 integration/tail
   language, not an exact Billingsley theorem report
 
@@ -182,9 +191,54 @@ Near-term declarations:
 - content-based wrappers started in
   `StatInference/ProbabilityMeasure/ProductMeasure.lean`, including
   product-coordinate integral projection and separated product-expectation
-  wrappers for independent-copy arguments, binary self-copy wrapper
-  `probability_prod_independent_self_copies`, and mapped-coordinate wrapper
-  `probability_prod_independent_mapped_copies_with_joint_law`.
+  wrappers for independent-copy arguments, mean-zero difference wrapper
+  `probability_integral_prod_fst_sub_snd_eq_zero`, binary self-copy wrapper
+  `probability_prod_independent_self_copies`, mapped-coordinate wrapper
+  `probability_prod_independent_mapped_copies_with_joint_law`, finite-`Pi`
+  wrapper `probability_pi_map_mapped_coordinates_eq`, finite-`Pi`
+  law/independence wrapper
+  `probability_pi_independent_mapped_coordinates_with_joint_law`, finite-`Pi`
+  weighted-sum expectation/mean-zero wrappers
+  `probability_pi_integral_weighted_sum` and
+  `probability_pi_integral_weighted_sum_eq_zero`, product-copy weighted-sum
+  mean-zero wrapper
+  `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`, conditional
+  ghost-copy Fubini wrapper `probability_pi_integral_weighted_sum_const_sub`,
+  and the VdV&W
+  specializations `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`
+  and
+  `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`,
+  plus the fixed-original-sample specialization
+  `integral_vdVWTruncatedClassFun_productSample_const_sub_eq`, the fixed-sample
+  `Phi(x)=x` ghost-copy comparison
+  `vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`,
+  and the envelope-bounded split
+  `vdVWWeightedClassSupremum_truncated_pairDifference_le_add`, plus the
+  finite product-coordinate projection wrapper
+  `probability_pi_prod_coordinates_measurePreserving`, its VdV&W
+  specializations `measurePreserving_vdVWProductMeasure_prod_to_original_ghost`,
+  `measurePreserving_vdVWProductMeasure_prod_to_original`, and
+  `measurePreserving_vdVWProductMeasure_prod_to_ghost`, deterministic
+  weight sign-flip invariance, and the expectation-level integral lifts for the
+  fixed-sample ghost comparison and envelope-bounded pair split, including
+  `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`,
+  `integral_integral_vdVWWeightedClassSupremum_pairDifference_eq_integral_productSample`,
+  `integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifference`,
+  and
+  `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`,
+  plus the theorem-local Rademacher negated-sign bridge and the
+  integrated product-pair sign-symmetry/random-sign averaging comparison,
+  reusable supplied-cover integral equality
+  `VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg`,
+  a.e./null-measurable cover constructors
+  `VdVWMeasurableCover.ofAEMeasurable` and
+  `VdVWMeasurableCover.ofNullMeasurable_ofReal`,
+  product-integrated measurable-cover outer-expectation bridge, and
+  supplied product-space a.e. finite-net projection, sample-cover and
+  sample-dependent-cardinality product-a.e. finite-net bridges, and
+  empirical-cover cardinality witness handoffs, plus the
+  supplied-`hphi_id` finite-net projection
+  `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
 
 Search anchors:
 
@@ -309,5 +363,18 @@ is project organization and source alignment.  The immediate route is:
 4. Only after the exact statement compiles, create a formal report with PDF
    screenshots.
 
-For direct empirical-process impact, the next proof lane should also add
-Billingsley Section 16 tail-control wrappers feeding VdV&W Theorem 2.4.3.
+For direct empirical-process impact, the dependency override is now active:
+the next proof lane should prioritize the VdV&W Theorem 2.4.3 product random-sign
+assembly after the compiled random empirical-cover witness and expectation-level
+finite-net handoffs: the product outer-expectation projection for the
+expected-maximal route and deterministic entropy/Hoeffding-scale algebra are
+compiled, so next prove the outer-probability entropy-to-Hoeffding-scale
+convergence handoff after the compiled integrated
+product-sample/Rademacher sign-symmetry comparison, product-space
+measurable-cover outer-expectation bridge, and supplied product-space finite-net
+projection, now past the fixed-sample, integral-lift, product-projection/Fubini,
+same-weight pair split, deterministic sign-negation, ordinary random-sign
+averaging, product-cover, sample-cover, sample-dependent-cardinality cover, and
+empirical-cover witness pieces,
+before new Billingsley Section 25 work unless no empirical-process
+probability/measure dependency is blocked.

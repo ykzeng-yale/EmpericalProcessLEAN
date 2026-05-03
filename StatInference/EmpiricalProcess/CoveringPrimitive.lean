@@ -300,6 +300,46 @@ theorem cardinality_pos_of_nonempty {Observation : Type u} {Index : Type v} {n :
   rcases hindexClass with ⟨index, hindex⟩
   exact lt_of_le_of_lt (Nat.zero_le _) (cover.centerOf index hindex).isLt
 
+/--
+Pad a supplied empirical cover to any larger cardinality.
+
+The extra slots are filled with an arbitrary class member, so this is only
+available for nonempty classes.  This bridges least-cardinality `Nat.find`
+covers to externally supplied cardinality bounds.
+-/
+noncomputable def pad_cardinality {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality largerCardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hle : cardinality ≤ largerCardinality) :
+    FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+      largerCardinality := by
+  classical
+  let baseIndex : Index := hindexClass.choose
+  have hbaseIndex : baseIndex ∈ indexClass := hindexClass.choose_spec
+  refine
+    { center := fun centerIndex =>
+        if hlt : (centerIndex : ℕ) < cardinality then
+          cover.center ⟨centerIndex, hlt⟩
+        else
+          baseIndex
+      center_mem := ?_
+      centerOf := fun index hindex => Fin.castLE hle (cover.centerOf index hindex)
+      dist_le := ?_ }
+  · intro centerIndex
+    by_cases hlt : (centerIndex : ℕ) < cardinality
+    · simp [hlt, cover.center_mem]
+    · simp [hlt, hbaseIndex]
+  · intro index hindex
+    have hlt :
+        ((Fin.castLE hle (cover.centerOf index hindex) :
+          Fin largerCardinality) : ℕ) < cardinality := by
+      exact (cover.centerOf index hindex).isLt
+    simpa [hlt] using cover.dist_le index hindex
+
 end FiniteEmpiricalL1CoverAtCard
 
 /-- Finite empirical `L1(P_n)` covering hypothesis in witness form. -/
@@ -394,6 +434,42 @@ theorem hasFinite_of_empiricalL1CoveringNumber_lt_top
     simp [empiricalL1CoveringNumber, hnot]
   rw [htop] at hfinite_number
   exact (lt_irrefl (⊤ : ℕ∞)) hfinite_number
+
+/--
+A finite upper bound on the numeric empirical covering number produces an
+explicit empirical-cover witness at that supplied cardinality.
+
+This is the cardinality handoff needed when the entropy hypothesis bounds
+`N(epsilon, F, L1(P_n))` by a finite deterministic or random cardinality.
+-/
+theorem exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (hcovering_le :
+      empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+        (cardinality : ℕ∞))
+    (hindexClass : ∃ index, index ∈ indexClass) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  have hfinite_number :
+      empiricalL1CoveringNumber sample indexClass classFun epsilon < ⊤ :=
+    lt_of_le_of_lt hcovering_le (WithTop.coe_lt_top cardinality)
+  let hfinite :=
+    hasFinite_of_empiricalL1CoveringNumber_lt_top hfinite_number
+  have hfind_cover := empiricalL1CoveringNumber_find_spec hfinite
+  have hfind_le_card_enat :
+      (finiteEmpiricalL1CoveringNumberCard hfinite : ℕ∞) ≤
+        (cardinality : ℕ∞) := by
+    rwa [empiricalL1CoveringNumber_eq_find hfinite] at hcovering_le
+  have hfind_le_card :
+      finiteEmpiricalL1CoveringNumberCard hfinite ≤ cardinality := by
+    exact_mod_cast hfind_le_card_enat
+  exact
+    hfind_cover.elim fun cover =>
+      ⟨cover.pad_cardinality hindexClass hfind_le_card⟩
 
 /-- The external covering number is bounded by the internal mathlib covering number. -/
 theorem vdVWCoveringNumber_le_internalCoveringNumber
