@@ -1,5 +1,6 @@
 import Mathlib.MeasureTheory.Integral.Prod
 import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
+import Mathlib.Probability.HasLaw
 import Mathlib.Probability.Independence.Integration
 
 /-!
@@ -50,6 +51,30 @@ theorem probability_map_prod_map
     (μ.map hf.aemeasurable).prod (ν.map hg.aemeasurable)
       = (μ.prod ν).map (hf.prodMap hg).aemeasurable := by
   exact MeasureTheory.ProbabilityMeasure.map_prod_map μ ν hf hg
+
+/--
+The two coordinates on `P × P` are independent copies with common law `P`.
+
+This is the product-space handoff used by symmetrization arguments: instead of
+constructing an abstract ghost sample, one can work on the binary product
+probability space and use the coordinate projections.
+-/
+theorem probability_prod_independent_self_copies
+    {α : Type u} [MeasurableSpace α]
+    (P : MeasureTheory.ProbabilityMeasure α) :
+    HasLaw (fun z : α × α => z.1) (P : Measure α)
+        ((P : Measure α).prod (P : Measure α)) ∧
+      HasLaw (fun z : α × α => z.2) (P : Measure α)
+        ((P : Measure α).prod (P : Measure α)) ∧
+      (fun z : α × α => z.1) ⟂ᵢ[((P : Measure α).prod (P : Measure α))]
+        (fun z : α × α => z.2) := by
+  refine ⟨?_, ?_, ?_⟩
+  · exact MeasureTheory.measurePreserving_fst.hasLaw
+  · exact MeasureTheory.measurePreserving_snd.hasLaw
+  · simpa using
+      (ProbabilityTheory.indepFun_prod
+        (μ := (P : Measure α)) (ν := (P : Measure α))
+        (X := id) (Y := id) measurable_id measurable_id)
 
 /-- Tonelli's theorem for an `ℝ≥0∞`-valued function on a product space. -/
 theorem lintegral_prod

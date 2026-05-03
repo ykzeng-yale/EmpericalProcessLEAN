@@ -16,7 +16,8 @@ The refreshed prompt should name:
 
 - the latest pushed commit and the exact new declarations or blocker
   refinement;
-- the single next atomic proof target and the dependency order after it;
+- a primary theorem/proof target plus the highest-value parallel support
+  targets, with dependency order after them;
 - the search-first scope: pinned mathlib, local `StatInference`, and existing
   `StatInference/ProbabilityMeasure` wrappers;
 - the verification gate: focused `lake env lean`, targeted `lake build` for
@@ -27,6 +28,17 @@ The refreshed prompt should name:
 Do not update the prompt for wording-only churn.  Do update it whenever the old
 prompt would send the next heartbeat toward a solved target, omit a newly
 proved dependency, or hide the current blocker.
+
+## Throughput Policy
+
+The Billingsley heartbeat should be aggressive proof work, not a one-wrapper
+drip feed.  Each run should try to close a primary theorem/proof target and, in
+parallel, prepare adjacent support that can be checked independently: mathlib
+API discovery, local dependency reuse, source anchors, verification/report
+policy, and one bounded Lean/doc worker when safe.  A small primitive is
+acceptable only when it is the fastest verified dependency for the active proof
+route or when the exact theorem target is blocked and the blocker is recorded
+precisely.
 
 ## Current Blocker
 
@@ -124,9 +136,11 @@ Local searches found reusable APIs in:
    wrapper layer has started in
    `StatInference/ProbabilityMeasure/ProductMeasure.lean`; it now includes
    product-coordinate marginal projection and separated product-expectation
-   identities for binary product probability spaces.  The remaining work is to
-   specialize these wrappers to the exact finite-product/independent-copy shapes
-   used by symmetrization.  The reusable Rademacher-sign layer has started in
+   identities for binary product probability spaces, plus
+   `probability_prod_independent_self_copies`, which packages the two product
+   coordinates as independent copies with common law `P`. The remaining work is
+   to specialize these wrappers to the exact finite-product/independent-copy
+   shapes used by symmetrization.  The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
    one-dimensional law, deterministic sign vectors, and finite iid sign
@@ -167,8 +181,9 @@ of:
   handoffs in the empirical-process files; or
 - the next Section 18 independent-copy specialization using
   `probability_integral_prod_fst`, `probability_integral_prod_snd`, and
-  `probability_integral_prod_mul` to erase unused product coordinates in the
-  symmetrization route.
+  `probability_integral_prod_mul`, plus
+  `probability_prod_independent_self_copies`, to erase unused product
+  coordinates and expose ghost-copy independence in the symmetrization route.
 
 The deciding rule is dependency value: if Theorem 2.4.3 is blocked on a tail,
 Fubini, independent-copy, or outer-expectation primitive, prefer that over a
