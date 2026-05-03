@@ -238,12 +238,13 @@ used as the only source for choosing the next low-level proof target.
 
 ## Verification Monitor
 
-Latest focused verification includes the finite-net log-bound helper layer
-after merge frontier `ef5490a`.
+Latest targeted verification includes the selected terminal/truncated
+minimal-cardinality measurability layer and the Theorem 2.4.3 theorem module
+on 2026-05-03.
 
 ```text
 lake build StatInference.EmpiricalProcess.Theorem243
-Build completed successfully.
+Build completed successfully (8392 jobs).
 
 git ls-files '*.lean' ':!.lake/*' | xargs rg -n --color never -e '\b(sorry|admit|axiom|unsafe)\b'
 No matches.
