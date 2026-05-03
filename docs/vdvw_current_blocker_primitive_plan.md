@@ -675,11 +675,11 @@ additional example closures:
    `hphi_id` target is too strong, and the ordinary integrated product-sample
    comparison plus product-cover transfer, supplied product-space finite-net
    projection, sample-cover/sample-dependent-cardinality product-a.e.
-   finite-net bridges, and random empirical-cover product random-sign handoff
-   are now compiled; the valid next target is proving the product-a.e.
-   finite-center Hoeffding predicate for the chosen covers, or replacing that
-   handoff with one that consumes the existing expected-maximal API, and then
-   proving entropy-to-convergence.
+   finite-net bridges, random empirical-cover product random-sign handoff,
+   selected random-cover expected-maximal handoff, and product-integrated
+   random-cover finite-net expected-maximal bound are now compiled; the valid
+   next target is the product outer-expectation projection for the
+   expectation-level route, and then proving entropy-to-convergence.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -813,9 +813,15 @@ Search record for the symmetrization precursor package:
   is compiled as well.  A follow-up search found the fixed-sample pointwise
   `hphi_id` target is too strong, and the Hoeffding/log-radius stack currently
   supplies expected-maximal bounds rather than the pointwise finite-center
-  predicate.  The next valid target is proving that product-a.e. predicate for
-  the selected random empirical covers or replacing the handoff with an
-  expectation-level version, then proving entropy-to-convergence.  The
+  predicate.  The selected random empirical-cover projections
+  `vdVWRandomEmpiricalL1CoverAtCard_center_mem` and
+  `vdVWRandomEmpiricalL1CoverAtCard_cardinality_pos`, selected-cover
+  expected-maximal handoff
+  `vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_randomEmpiricalL1CoverAtCard_of_pos`,
+  and product-integrated random-cover finite-net bound
+  `integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`
+  are compiled.  The next valid target is the product outer-expectation
+  projection for this expectation-level route, then entropy-to-convergence. The
   supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
   still packages the fixed-sample finite-net consequence when such a supplied
@@ -846,10 +852,11 @@ finite-net projection, plus the product-integrated measurable-cover
 outer-expectation bridge, supplied product-space finite-net projection,
 sample-cover/sample-dependent-cardinality product-a.e. finite-net bridges,
 random empirical-cover cardinality
-witness handoff, random empirical-cover product random-sign handoff, and
-a.e./null-measurable cover constructors, are closed.  Next prove the product-a.e.
-finite-center Hoeffding predicate for the chosen covers or refactor that handoff
-to consume the expected-maximal API, then entropy-to-convergence and final
+witness handoff, random empirical-cover product random-sign handoff,
+selected-cover expected-maximal handoff, product-integrated random-cover
+finite-net expected-maximal bound, and a.e./null-measurable cover constructors,
+are closed.  Next prove the product outer-expectation projection for the
+expectation-level finite-net route, then entropy-to-convergence and final
 Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use

@@ -5400,6 +5400,329 @@ noncomputable def vdVWRandomEmpiricalL1CoverAtCard
     (finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality
       X hcovering_le hindexClass ω n)
 
+/-- Centers of the chosen random empirical cover remain in the target class. -/
+theorem vdVWRandomEmpiricalL1CoverAtCard_center_mem
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    (X : ℕ -> Ω -> Observation) {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : Ω -> ℕ -> ℕ}
+    (hcovering_le :
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass classFun
+        epsilon cardinality)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (ω : Ω) (n : ℕ) (centerIndex : Fin (cardinality ω n)) :
+    (vdVWRandomEmpiricalL1CoverAtCard X hcovering_le hindexClass ω n).center
+        centerIndex ∈ indexClass :=
+  (vdVWRandomEmpiricalL1CoverAtCard X hcovering_le hindexClass ω n).center_mem
+    centerIndex
+
+/-- The chosen random empirical cover has positive cardinality for nonempty classes. -/
+theorem vdVWRandomEmpiricalL1CoverAtCard_cardinality_pos
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    (X : ℕ -> Ω -> Observation) {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : Ω -> ℕ -> ℕ}
+    (hcovering_le :
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass classFun
+        epsilon cardinality)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (ω : Ω) (n : ℕ) :
+    0 < cardinality ω n :=
+  by
+    rcases hindexClass with ⟨index, hindex⟩
+    exact
+      lt_of_le_of_lt (Nat.zero_le _)
+        ((vdVWRandomEmpiricalL1CoverAtCard X hcovering_le
+            ⟨index, hindex⟩ ω n).centerOf index hindex).isLt
+
+/--
+Selected random empirical covers inherit the expected-maximal Hoeffding-scale
+bound.
+
+This packages the noncomputable witness chosen from the random covering-number
+domination into the expectation-level maximal API.  It is the replacement for
+trying to prove the stronger product-a.e. finite-center Hoeffding predicate for
+the selected centers.
+-/
+theorem
+    vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_randomEmpiricalL1CoverAtCard_of_pos
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Ωsample : Type x} {Observation : Type v} {Index : Type w} {n : ℕ}
+    (X : ℕ -> Ωsample -> Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    {cardinality : Ωsample -> ℕ -> ℕ}
+    (hcovering_le :
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hn : 0 < n)
+    (hM_pos : 0 < M)
+    (sign : Fin n -> Ωsign -> ℝ)
+    (hindep : iIndepFun sign μsign)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μsign)
+    (ωsample : Ωsample) :
+    VdVWTheorem243FiniteCenterExpectedMaximalBound μsign
+      (fun centerIndex : Fin (cardinality ωsample n) =>
+        fun ωsign =>
+          vdVWWeightedSampleSum
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i ωsign))
+            ((vdVWRandomEmpiricalL1CoverAtCard X hcovering_le hindexClass
+                ωsample n).center centerIndex)
+            (samplePath X ωsample n))
+      (vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ωsample n) n M) := by
+  exact
+    vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard_of_pos
+      (vdVWRandomEmpiricalL1CoverAtCard X hcovering_le hindexClass ωsample n)
+      hindexClass henvelope hn hM_pos sign hindep hsubG
+
+/--
+Product-integrated random empirical-cover finite-net handoff from the
+expected-maximal route.
+
+The selected cover and its sample-dependent cardinality come from the random
+empirical entropy witness.  The right-hand side is now the random Hoeffding
+upper whose convergence is controlled by the entropy condition.
+-/
+theorem
+    integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Ωsample : Type x} [MeasurableSpace Ωsample] {ν : Measure Ωsample}
+    [SFinite ν]
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    (X : ℕ -> Ωsample -> Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    {cardinality : Ωsample -> ℕ -> ℕ}
+    (hcovering_le :
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hn : 0 < n)
+    (hM_pos : 0 < M)
+    (sign : Fin n -> Ωsign -> ℝ)
+    (hsign :
+      ∀ᵐ ω ∂μsign, VdVWRademacherSignVector (fun i : Fin n => sign i ω))
+    (hindep : iIndepFun sign μsign)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μsign)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hproductSupIntegrable :
+      Integrable
+        (fun z : Ωsign × Ωsample =>
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i z.1))
+            (samplePath X z.2 n))
+        (μsign.prod ν))
+    (hsupIntegrable :
+      ∀ ωsample : Ωsample,
+        Integrable
+          (fun ωsign =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign i ωsign))
+              (samplePath X ωsample n))
+          μsign)
+    (hcenterSupIntegrable :
+      ∀ ωsample : Ωsample,
+        Integrable
+          (fun ωsign =>
+            vdVWFiniteCenterWeightedSupremum (samplePath X ωsample n)
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRandomEmpiricalL1CoverAtCard X hcovering_le hindexClass
+                ωsample n).center
+              (vdVWRademacherWeights (fun i : Fin n => sign i ωsign)))
+          μsign)
+    (hupperIntegrable :
+      Integrable
+        (fun ωsample : Ωsample =>
+          vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ωsample n) n M +
+            epsilon)
+        ν) :
+    ∫ z : Ωsign × Ωsample,
+        vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights (fun i : Fin n => sign i z.1))
+          (samplePath X z.2 n) ∂(μsign.prod ν) ≤
+      ∫ ωsample : Ωsample,
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ωsample n) n M +
+          epsilon ∂ν := by
+  let randomSup : Ωsign -> Ωsample -> ℝ :=
+    fun ωsign ωsample =>
+      vdVWWeightedClassSupremum indexClass
+        (vdVWTruncatedClassFun classFun envelope M)
+        (vdVWRademacherWeights (fun i : Fin n => sign i ωsign))
+        (samplePath X ωsample n)
+  let upper : Ωsample -> ℝ :=
+    fun ωsample =>
+      vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ωsample n) n M +
+        epsilon
+  have hinnerIntegrable :
+      Integrable
+        (fun ωsample : Ωsample =>
+          ∫ ωsign : Ωsign, randomSup ωsign ωsample ∂μsign)
+        ν := by
+    simpa [randomSup] using hproductSupIntegrable.integral_prod_right
+  have hinner_le :
+      ∀ᵐ ωsample : Ωsample ∂ν,
+        (∫ ωsign : Ωsign, randomSup ωsign ωsample ∂μsign) ≤
+          upper ωsample := by
+    exact ae_of_all _ fun ωsample => by
+      simpa [randomSup, upper] using
+        (integral_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_expectedMaximal
+          (cover :=
+            vdVWRandomEmpiricalL1CoverAtCard X hcovering_le hindexClass
+              ωsample n)
+          (sign := sign) hsign hepsilon_nonneg
+          (hsupIntegrable ωsample) (hcenterSupIntegrable ωsample)
+          (vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_randomEmpiricalL1CoverAtCard_of_pos
+            X hcovering_le hindexClass henvelope hn hM_pos sign hindep hsubG
+            ωsample))
+  calc
+    ∫ z : Ωsign × Ωsample,
+        vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights (fun i : Fin n => sign i z.1))
+          (samplePath X z.2 n) ∂(μsign.prod ν)
+        =
+      ∫ ωsample : Ωsample,
+        ∫ ωsign : Ωsign, randomSup ωsign ωsample ∂μsign ∂ν := by
+          simpa [randomSup] using
+            (MeasureTheory.integral_prod_symm
+              (fun z : Ωsign × Ωsample => randomSup z.1 z.2)
+              hproductSupIntegrable)
+    _ ≤ ∫ ωsample : Ωsample, upper ωsample ∂ν :=
+        integral_mono_ae hinnerIntegrable hupperIntegrable hinner_le
+    _ =
+      ∫ ωsample : Ωsample,
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ωsample n) n M +
+          epsilon ∂ν := by
+          simp [upper]
+
+/--
+Product outer-expectation projection for the random empirical-cover
+expected-maximal route.
+
+This is the expectation-level replacement for the stronger product-a.e.
+finite-center Hoeffding predicate: once the product-integrated finite-net
+bound is proved, a supplied measurable cover converts the left-hand ordinary
+integral into the VdV&W nonnegative outer expectation.
+-/
+theorem
+    VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Ωsample : Type x} [MeasurableSpace Ωsample] {ν : Measure Ωsample}
+    [SFinite ν]
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    (X : ℕ -> Ωsample -> Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    {cardinality : Ωsample -> ℕ -> ℕ}
+    (hcovering_le :
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hn : 0 < n)
+    (hM_pos : 0 < M)
+    (sign : Fin n -> Ωsign -> ℝ)
+    (U : VdVWMeasurableCover (μsign.prod ν)
+      (fun z : Ωsign × Ωsample =>
+        ENNReal.ofReal
+          (vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i z.1))
+            (samplePath X z.2 n))))
+    (hsign :
+      ∀ᵐ ω ∂μsign, VdVWRademacherSignVector (fun i : Fin n => sign i ω))
+    (hindep : iIndepFun sign μsign)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μsign)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hproductSupIntegrable :
+      Integrable
+        (fun z : Ωsign × Ωsample =>
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i z.1))
+            (samplePath X z.2 n))
+        (μsign.prod ν))
+    (hsupIntegrable :
+      ∀ ωsample : Ωsample,
+        Integrable
+          (fun ωsign =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign i ωsign))
+              (samplePath X ωsample n))
+          μsign)
+    (hcenterSupIntegrable :
+      ∀ ωsample : Ωsample,
+        Integrable
+          (fun ωsign =>
+            vdVWFiniteCenterWeightedSupremum (samplePath X ωsample n)
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRandomEmpiricalL1CoverAtCard X hcovering_le hindexClass
+                ωsample n).center
+              (vdVWRademacherWeights (fun i : Fin n => sign i ωsign)))
+          μsign)
+    (hupperIntegrable :
+      Integrable
+        (fun ωsample : Ωsample =>
+          vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ωsample n) n M +
+            epsilon)
+        ν) :
+    VdVWOuterExpectation (μsign.prod ν)
+      (fun z : Ωsign × Ωsample =>
+        ENNReal.ofReal
+          (vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i z.1))
+            (samplePath X z.2 n))) ≤
+      ENNReal.ofReal
+        (∫ ωsample : Ωsample,
+          vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ωsample n) n M +
+            epsilon ∂ν) := by
+  let randomSup : Ωsign × Ωsample -> ℝ :=
+    fun z =>
+      vdVWWeightedClassSupremum indexClass
+        (vdVWTruncatedClassFun classFun envelope M)
+        (vdVWRademacherWeights (fun i : Fin n => sign i z.1))
+        (samplePath X z.2 n)
+  have hnonneg : 0 ≤ᵐ[μsign.prod ν] randomSup := by
+    exact ae_of_all _ fun z =>
+      vdVWWeightedClassSupremum_nonneg indexClass
+        (vdVWTruncatedClassFun classFun envelope M)
+        (vdVWRademacherWeights (fun i : Fin n => sign i z.1))
+        (samplePath X z.2 n)
+  have houter :
+      VdVWOuterExpectation (μsign.prod ν)
+          (fun z : Ωsign × Ωsample =>
+            ENNReal.ofReal (randomSup z)) =
+        ENNReal.ofReal
+          (∫ z : Ωsign × Ωsample, randomSup z ∂(μsign.prod ν)) := by
+    exact
+      VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg
+        (μ := μsign.prod ν) U
+        (by simpa [randomSup] using hproductSupIntegrable)
+        hnonneg
+  have hintegral_le :
+      ∫ z : Ωsign × Ωsample, randomSup z ∂(μsign.prod ν) ≤
+        ∫ ωsample : Ωsample,
+          vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ωsample n) n M +
+            epsilon ∂ν := by
+    simpa [randomSup] using
+      (integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal
+        X hcovering_le hindexClass henvelope hn hM_pos sign hsign hindep hsubG
+        hepsilon_nonneg hproductSupIntegrable hsupIntegrable
+        hcenterSupIntegrable hupperIntegrable)
+  simpa [randomSup, houter] using ENNReal.ofReal_le_ofReal hintegral_le
+
 /--
 Random empirical-cover witnesses feed the product random-sign finite-net
 handoff.

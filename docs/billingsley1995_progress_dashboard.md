@@ -177,9 +177,10 @@ Concrete next edits:
    product-integrated measurable-cover outer-expectation handoff, and the
    supplied product-space a.e. finite-net projection, sample-cover
    product-a.e. finite-net bridge, and random empirical-cover product random-sign
-   handoff.  The latest empirical-process frontier is proving the product-a.e.
-   finite-center Hoeffding predicate for the chosen covers, or replacing that
-   handoff with one that consumes the existing expected-maximal API, and then
+   handoff, selected random-cover expected-maximal handoff, and
+   product-integrated random-cover finite-net expected-maximal bound.  The
+   latest empirical-process frontier is proving the product outer-expectation
+   projection for that expectation-level route, and then
    entropy-to-convergence.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
