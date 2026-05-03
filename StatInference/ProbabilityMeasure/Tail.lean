@@ -146,6 +146,66 @@ theorem probability_integral_le_radius_add_integral_tail_bound
           (∫ t in Set.Ioi r, tail t) := hsplit
     _ ≤ r + ∫ t in Set.Ioi r, tailBound t := add_le_add hleft hright
 
+/--
+Bounded expectation controlled by one tail probability.
+
+For a probability measure, if `X ≤ C`, then
+`E X ≤ r + C * P(r < X)` for every nonnegative threshold `r`.
+-/
+theorem probability_integral_le_threshold_add_bound_mul_tail
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {X : Ω -> ℝ} {r C : ℝ}
+    (hr : 0 ≤ r)
+    (hX_meas : Measurable X) (hX_integrable : Integrable X μ)
+    (hX_le : ∀ ω, X ω ≤ C) :
+    ∫ ω, X ω ∂μ ≤ r + C * μ.real {ω : Ω | r < X ω} := by
+  let event : Set Ω := {ω : Ω | r < X ω}
+  have hevent : MeasurableSet event :=
+    measurableSet_lt measurable_const hX_meas
+  have hsplit :
+      ∫ ω, X ω ∂μ =
+        ∫ ω in event, X ω ∂μ + ∫ ω in eventᶜ, X ω ∂μ := by
+    simpa [add_comm] using (integral_add_compl hevent hX_integrable).symm
+  have htail :
+      ∫ ω in event, X ω ∂μ ≤ ∫ ω in event, (fun _ : Ω => C) ω ∂μ := by
+    refine setIntegral_mono_on hX_integrable.integrableOn
+      (integrableOn_const (measure_ne_top μ event)) hevent ?_
+    intro ω _
+    exact hX_le ω
+  have htail_eval :
+      ∫ ω in event, (fun _ : Ω => C) ω ∂μ = μ.real event * C := by
+    simp [smul_eq_mul, mul_comm]
+  have htail_le :
+      ∫ ω in event, X ω ∂μ ≤ C * μ.real event := by
+    calc
+      ∫ ω in event, X ω ∂μ ≤ ∫ ω in event, (fun _ : Ω => C) ω ∂μ := htail
+      _ = μ.real event * C := htail_eval
+      _ = C * μ.real event := by ring
+  have hcompl :
+      ∫ ω in eventᶜ, X ω ∂μ ≤ ∫ ω in eventᶜ, (fun _ : Ω => r) ω ∂μ := by
+    refine setIntegral_mono_on hX_integrable.integrableOn
+      (integrableOn_const (measure_ne_top μ eventᶜ)) hevent.compl ?_
+    intro ω hω
+    exact le_of_not_gt hω
+  have hcompl_eval :
+      ∫ ω in eventᶜ, (fun _ : Ω => r) ω ∂μ = μ.real eventᶜ * r := by
+    simp [smul_eq_mul, mul_comm]
+  have hcompl_le :
+      ∫ ω in eventᶜ, X ω ∂μ ≤ r := by
+    calc
+      ∫ ω in eventᶜ, X ω ∂μ ≤
+          ∫ ω in eventᶜ, (fun _ : Ω => r) ω ∂μ := hcompl
+      _ = μ.real eventᶜ * r := hcompl_eval
+      _ ≤ 1 * r := by
+          exact mul_le_mul_of_nonneg_right measureReal_le_one hr
+      _ = r := by ring
+  calc
+    ∫ ω, X ω ∂μ =
+        ∫ ω in event, X ω ∂μ + ∫ ω in eventᶜ, X ω ∂μ := hsplit
+    _ ≤ C * μ.real event + r := add_le_add htail_le hcompl_le
+    _ = r + C * μ.real {ω : Ω | r < X ω} := by
+        simp [event, add_comm]
+
 /-- Markov tail bound for extended nonnegative random variables. -/
 theorem measure_tail_le_lintegral_div
     {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}

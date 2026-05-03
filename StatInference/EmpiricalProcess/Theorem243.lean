@@ -6106,6 +6106,64 @@ theorem vdVWTheorem243FiniteNetHoeffdingUpper_sq_eq_logCardinality
   simpa [vdVWLogEmpiricalL1CoveringCardinality] using
     vdVWTheorem243FiniteNetHoeffdingUpper_sq (cardinality ω n) n M
 
+/-- Measurability of the real logarithmic cardinality process from a measurable
+finite cardinality process. -/
+theorem measurable_vdVWLogEmpiricalL1CoveringCardinality_of_measurable_cardinality
+    {Ω : Type u} [MeasurableSpace Ω] {cardinality : Ω -> ℕ -> ℕ} {n : ℕ}
+    (hcardinality : Measurable fun ω : Ω => cardinality ω n) :
+    Measurable fun ω : Ω =>
+      vdVWLogEmpiricalL1CoveringCardinality cardinality ω n := by
+  unfold vdVWLogEmpiricalL1CoveringCardinality
+  have hcast : Measurable fun ω : Ω => ((cardinality ω n : ℕ) : ℝ) := by
+    exact (measurable_of_countable (fun k : ℕ => (k : ℝ))).comp hcardinality
+  exact Real.measurable_log.comp (hcast.add measurable_const)
+
+/-- Measurability of the random finite-net Hoeffding upper from a measurable
+finite cardinality process. -/
+theorem measurable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality
+    {Ω : Type u} [MeasurableSpace Ω] {cardinality : Ω -> ℕ -> ℕ} {n : ℕ}
+    (hcardinality : Measurable fun ω : Ω => cardinality ω n) (M : ℝ) :
+    Measurable fun ω : Ω =>
+      vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M := by
+  convert
+    (show Measurable fun ω : Ω =>
+      Real.sqrt (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n) *
+        (Real.sqrt (6 / (n : ℝ)) * M) from by
+        have hlog :
+            Measurable fun ω : Ω =>
+              vdVWLogEmpiricalL1CoveringCardinality cardinality ω n :=
+          measurable_vdVWLogEmpiricalL1CoveringCardinality_of_measurable_cardinality
+            hcardinality
+        exact ((hlog.const_add 1).sqrt).mul measurable_const) using 1
+
+/-- A deterministic bound makes the measurable finite-net Hoeffding upper
+integrable over any finite measure. -/
+theorem
+    integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality_bound
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {cardinality : Ω -> ℕ -> ℕ} {n : ℕ} {M C : ℝ}
+    (hcardinality : Measurable fun ω : Ω => cardinality ω n)
+    (hbound :
+      ∀ ω : Ω,
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M ≤ C)
+    (hM_nonneg : 0 ≤ M) :
+    Integrable
+      (fun ω : Ω =>
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M) μ := by
+  have hmeas :
+      Measurable fun ω : Ω =>
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M :=
+    measurable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality
+      hcardinality M
+  refine ⟨hmeas.aestronglyMeasurable, ?_⟩
+  exact HasFiniteIntegral.of_bounded (C := max C 0)
+    (Eventually.of_forall fun ω => by
+      rw [Real.norm_eq_abs,
+        abs_of_nonneg
+          (vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+            (cardinality ω n) n hM_nonneg)]
+      exact (hbound ω).trans (le_max_left C 0))
+
 /--
 Deterministic analytic core of the entropy-to-Hoeffding-scale convergence
 step.
@@ -6525,6 +6583,158 @@ theorem
       hM_pos
 
 /--
+Variable-domain entropy-to-Hoeffding-scale convergence for canonical product
+sample spaces.
+
+This is the diagonal form needed by the integrated finite-net route: the
+sample space is `SampleAt Observation n`, so the supplied log-cardinality
+process already lives on a varying domain.
+-/
+theorem
+    vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ} {M : ℝ}
+    (hlog :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+        atTop (0 : ℝ))
+    (hM_pos : 0 < M) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWTheorem243FiniteNetHoeffdingUpper
+          (cardinality n sample n) n M)
+      atTop (0 : ℝ) := by
+  intro epsilon hepsilon
+  set delta : ℝ := epsilon ^ 2 / (12 * M ^ 2) with hdelta_def
+  have hdelta_pos : 0 < delta := by
+    have hden_pos : 0 < 12 * M ^ 2 :=
+      mul_pos (by norm_num) (sq_pos_of_pos hM_pos)
+    simpa [delta, hdelta_def] using
+      div_pos (sq_pos_of_pos hepsilon) hden_pos
+  have hlog_tend :
+      Tendsto
+        (fun n : ℕ =>
+          VdVWOuterProbability (vdVWProductMeasure P n)
+            {sample : SampleAt Observation n |
+              delta <
+                dist
+                  (vdVWLogEmpiricalL1CoveringCardinality
+                      (cardinality n) sample n /
+                    (n : ℝ))
+                  0})
+        atTop (𝓝 0) := by
+    simpa using hlog delta hdelta_pos
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (𝓝 0) from
+        tendsto_const_nhds)
+      hlog_tend
+      (Eventually.of_forall fun _ => by exact bot_le)
+      ?_
+  have hsmall :
+      ∀ᶠ n : ℕ in atTop, (6 * M ^ 2) / (n : ℝ) < epsilon ^ 2 / 2 := by
+    have htend :
+        Tendsto (fun n : ℕ => (6 * M ^ 2) / (n : ℝ))
+          atTop (𝓝 0) :=
+      tendsto_const_div_atTop_nhds_zero_nat (6 * M ^ 2)
+    exact htend.eventually
+      (eventually_lt_nhds (half_pos (sq_pos_of_pos hepsilon)))
+  filter_upwards [eventually_gt_atTop (0 : ℕ), hsmall] with n hn hsmall_n
+  dsimp [VdVWOuterProbability]
+  refine measure_mono ?_
+  intro sample hsample
+  have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hupper_nonneg :
+      0 ≤ vdVWTheorem243FiniteNetHoeffdingUpper
+        (cardinality n sample n) n M :=
+    vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+      (cardinality n sample n) n hM_pos.le
+  have hupper_gt :
+      epsilon <
+        vdVWTheorem243FiniteNetHoeffdingUpper
+          (cardinality n sample n) n M := by
+    simpa [Real.dist_eq, abs_of_nonneg hupper_nonneg] using hsample
+  have hsquare_gt :
+      epsilon ^ 2 <
+        (vdVWTheorem243FiniteNetHoeffdingUpper
+          (cardinality n sample n) n M) ^ 2 :=
+    (sq_lt_sq₀ hepsilon.le hupper_nonneg).2 hupper_gt
+  have hL_nonneg :
+      0 ≤ vdVWLogEmpiricalL1CoveringCardinality
+        (cardinality n) sample n :=
+    vdVWLogEmpiricalL1CoveringCardinality_nonneg (cardinality n) sample n
+  have hsplit :
+      epsilon ^ 2 <
+        (6 * M ^ 2) / (n : ℝ) +
+          (6 * M ^ 2) *
+            (vdVWLogEmpiricalL1CoveringCardinality
+                (cardinality n) sample n /
+              (n : ℝ)) := by
+    have hsquare :=
+      vdVWTheorem243FiniteNetHoeffdingUpper_sq_eq_logCardinality
+        (cardinality n) sample n M
+    rw [hsquare] at hsquare_gt
+    have hrewrite :
+        (1 + vdVWLogEmpiricalL1CoveringCardinality
+              (cardinality n) sample n) *
+            (6 / (n : ℝ)) * M ^ 2 =
+          (6 * M ^ 2) / (n : ℝ) +
+            (6 * M ^ 2) *
+              (vdVWLogEmpiricalL1CoveringCardinality
+                  (cardinality n) sample n /
+                (n : ℝ)) := by
+      ring
+    simpa [hrewrite] using hsquare_gt
+  have hhalf_lt :
+      epsilon ^ 2 / 2 <
+        (6 * M ^ 2) *
+          (vdVWLogEmpiricalL1CoveringCardinality
+              (cardinality n) sample n /
+            (n : ℝ)) := by
+    nlinarith [hsplit, hsmall_n]
+  have hcoef_pos : 0 < 6 * M ^ 2 :=
+    mul_pos (by norm_num) (sq_pos_of_pos hM_pos)
+  have hdelta_lt :
+      delta <
+        vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+          (n : ℝ) := by
+    have hdelta_eq :
+        delta = (epsilon ^ 2 / 2) / (6 * M ^ 2) := by
+      rw [hdelta_def]
+      ring
+    calc
+      delta = (epsilon ^ 2 / 2) / (6 * M ^ 2) := hdelta_eq
+      _ < ((6 * M ^ 2) *
+            (vdVWLogEmpiricalL1CoveringCardinality
+                (cardinality n) sample n /
+              (n : ℝ))) / (6 * M ^ 2) :=
+          div_lt_div_of_pos_right hhalf_lt hcoef_pos
+      _ = vdVWLogEmpiricalL1CoveringCardinality
+            (cardinality n) sample n / (n : ℝ) := by
+          field_simp [hcoef_pos.ne']
+  have hL_div_nonneg :
+      0 ≤ vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+          (n : ℝ) :=
+    div_nonneg hL_nonneg hn_pos.le
+  change
+    delta <
+      dist
+        (vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+          (n : ℝ))
+        0
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg hL_div_nonneg]
+  exact hdelta_lt
+
+/--
 Real-valued convergence of a mean upper bound implies convergence of the
 `ENNReal.ofReal` display used by the outer-expectation Markov bridge.
 -/
@@ -6542,6 +6752,364 @@ theorem tendsto_two_mul_ofReal_zero_of_tendsto_zero
         (𝓝 ((2 : ℝ≥0∞) * ENNReal.ofReal (0 : ℝ))) :=
     ENNReal.Tendsto.const_mul hbound_ofReal (Or.inr (by simp))
   simpa using hmul
+
+/--
+Bounded variable-domain convergence of the random finite-net Hoeffding upper
+implies convergence of its ordinary real mean.
+
+This isolates the analytic finite-net mean input from the deterministic
+covering-radius term used by the final fixed-`M` consumer.
+-/
+theorem
+    integral_finiteNetHoeffdingUpper_tendsto_zero_of_bounded_convergesInOuterProbabilityConst
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {M C : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hupperConv :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            (cardinality n sample n) n M)
+        atTop (0 : ℝ))
+    (hupperMeasurable :
+      ∀ n,
+        Measurable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M))
+    (hupperIntegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M)
+          (vdVWProductMeasure P n))
+    (hupperBound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality n sample n) n M ≤
+          C)
+    (hM_nonneg : 0 ≤ M) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            (cardinality n sample n) n M ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun _ : ℕ => inferInstance)
+      hupperConv hupperMeasurable hupperIntegrable
+      (fun n sample =>
+        vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+          (cardinality n sample n) n hM_nonneg)
+      hupperBound
+
+/--
+Bounded variable-domain convergence of the random finite-net Hoeffding upper
+implies the real integrated Hoeffding-plus-radius mean convergence consumed by
+the fixed-`M` Markov handoff.
+
+The boundedness hypothesis is explicit: the entropy condition currently gives
+outer-probability convergence of the random Hoeffding scale, while convergence
+of the ordinary means needs a boundedness/uniform-integrability input.
+-/
+theorem
+    integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_bounded_convergesInOuterProbabilityConst
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {M C : ℝ} {coverRadius : ℕ -> ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hupperConv :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            (cardinality n sample n) n M)
+        atTop (0 : ℝ))
+    (hupperMeasurable :
+      ∀ n,
+        Measurable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M))
+    (hupperIntegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M)
+          (vdVWProductMeasure P n))
+    (hupperBound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality n sample n) n M ≤
+          C)
+    (hM_nonneg : 0 ≤ M)
+    (hcoverRadius_tendsto_zero :
+      Tendsto coverRadius atTop (𝓝 0)) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M +
+            coverRadius n ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  have hupperMean :
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) := by
+    exact
+      integral_finiteNetHoeffdingUpper_tendsto_zero_of_bounded_convergesInOuterProbabilityConst
+        (P := P) (M := M) (C := C) (cardinality := cardinality)
+        hupperConv hupperMeasurable hupperIntegrable hupperBound hM_nonneg
+  have hsum :
+      Tendsto
+        (fun n : ℕ =>
+          (∫ sample : SampleAt Observation n,
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M ∂(vdVWProductMeasure P n)) +
+            coverRadius n)
+        atTop (𝓝 0) := by
+    simpa using hupperMean.add hcoverRadius_tendsto_zero
+  refine Tendsto.congr' ?_ hsum
+  refine Eventually.of_forall ?_
+  intro n
+  have hconst :
+      Integrable (fun _ : SampleAt Observation n => coverRadius n)
+        (vdVWProductMeasure P n) :=
+    integrable_const _
+  dsimp
+  symm
+  change
+    (∫ sample : SampleAt Observation n,
+        (fun sample : SampleAt Observation n =>
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            (cardinality n sample n) n M) sample +
+          (fun _ : SampleAt Observation n => coverRadius n) sample
+        ∂(vdVWProductMeasure P n)) =
+      (∫ sample : SampleAt Observation n,
+        vdVWTheorem243FiniteNetHoeffdingUpper
+          (cardinality n sample n) n M ∂(vdVWProductMeasure P n)) +
+        coverRadius n
+  rw [integral_add (hupperIntegrable n) hconst]
+  simp [integral_const, smul_eq_mul]
+
+/--
+Bounded variable-domain entropy convergence implies convergence of the ordinary
+finite-net Hoeffding upper mean.
+
+This is the theorem-line finite-net mean handoff before adding the deterministic
+empirical-cover radius.
+-/
+theorem
+    integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {M C : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hlog :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+        atTop (0 : ℝ))
+    (hM_pos : 0 < M)
+    (hupperMeasurable :
+      ∀ n,
+        Measurable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M))
+    (hupperIntegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M)
+          (vdVWProductMeasure P n))
+    (hupperBound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality n sample n) n M ≤
+          C) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            (cardinality n sample n) n M ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_finiteNetHoeffdingUpper_tendsto_zero_of_bounded_convergesInOuterProbabilityConst
+      (P := P) (M := M) (C := C) (cardinality := cardinality)
+      (vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero
+        hlog hM_pos)
+      hupperMeasurable hupperIntegrable hupperBound hM_pos.le
+
+/--
+Entropy-to-finite-net-mean convergence with the routine measurability and
+integrability obligations discharged from a measurable cardinality process and
+a deterministic bound.
+-/
+theorem
+    integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {M C : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hlog :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+        atTop (0 : ℝ))
+    (hM_pos : 0 < M)
+    (hcardinality :
+      ∀ n,
+        Measurable fun sample : SampleAt Observation n => cardinality n sample n)
+    (hupperBound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality n sample n) n M ≤
+          C) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            (cardinality n sample n) n M ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded
+      (P := P) (M := M) (C := C) (cardinality := cardinality)
+      hlog hM_pos
+      (fun n =>
+        measurable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality
+          (hcardinality n) M)
+      (fun n =>
+        integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality_bound
+          (μ := vdVWProductMeasure P n) (hcardinality n) (hupperBound n)
+          hM_pos.le)
+      hupperBound
+
+/--
+Bounded variable-domain entropy convergence implies the real integrated
+Hoeffding-plus-radius mean convergence consumed by the fixed-`M` handoff.
+
+This is the current theorem-line analytic bridge with the needed
+uniform-integrability input stated as a deterministic bound.
+-/
+theorem
+    integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {M C : ℝ} {coverRadius : ℕ -> ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hlog :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+        atTop (0 : ℝ))
+    (hM_pos : 0 < M)
+    (hupperMeasurable :
+      ∀ n,
+        Measurable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M))
+    (hupperIntegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M)
+          (vdVWProductMeasure P n))
+    (hupperBound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality n sample n) n M ≤
+          C)
+    (hcoverRadius_tendsto_zero :
+      Tendsto coverRadius atTop (𝓝 0)) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M +
+            coverRadius n ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_bounded_convergesInOuterProbabilityConst
+      (P := P) (M := M) (C := C) (coverRadius := coverRadius)
+      (cardinality := cardinality)
+      (vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero
+        hlog hM_pos)
+      hupperMeasurable hupperIntegrable hupperBound hM_pos.le
+      hcoverRadius_tendsto_zero
+
+/--
+Entropy-to-integrated-mean convergence with the routine measurability and
+integrability obligations discharged from a measurable cardinality process and
+a deterministic finite-net bound.
+-/
+theorem
+    integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {M C : ℝ} {coverRadius : ℕ -> ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hlog :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+        atTop (0 : ℝ))
+    (hM_pos : 0 < M)
+    (hcardinality :
+      ∀ n,
+        Measurable fun sample : SampleAt Observation n => cardinality n sample n)
+    (hupperBound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality n sample n) n M ≤
+          C)
+    (hcoverRadius_tendsto_zero :
+      Tendsto coverRadius atTop (𝓝 0)) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M +
+            coverRadius n ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded
+      (P := P) (M := M) (C := C) (coverRadius := coverRadius)
+      (cardinality := cardinality) hlog hM_pos
+      (fun n =>
+        measurable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality
+          (hcardinality n) M)
+      (fun n =>
+        integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality_bound
+          (μ := vdVWProductMeasure P n) (hcardinality n) (hupperBound n)
+          hM_pos.le)
+      hupperBound hcoverRadius_tendsto_zero
 
 /--
 Fixed-`M` centered-truncated convergence handoff from the integrated random

@@ -375,8 +375,29 @@ and the fixed-`M` centered-truncated convergence handoff is now compiled under
 an explicit vanishing integrated Hoeffding-plus-radius hypothesis, with a
 real-mean consumer available through
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`.
-Next prove that real integrated upper from the entropy hypotheses plus any
-required uniform-integrability or dominated-convergence input, now past the
+The reusable bounded-tail expectation wrapper
+`probability_integral_le_threshold_add_bound_mul_tail`, the variable-domain
+bounded outer-probability-to-mean bridge
+`tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg`,
+and the theorem-local finite-net mean consumer
+`integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`
+with pure finite-net mean form
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`
+are compiled. The variable-domain entropy-to-Hoeffding bridge
+`vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero`
+and bounded entropy-to-integrated-mean consumer
+`integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
+with pure finite-net mean form
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
+and measurable-cardinality finite-net mean form
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`
+and radius-added measurable-cardinality integrated-mean consumer
+`integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`
+are compiled as well. The finite-net upper measurability/integrability
+packaging lemmas from measurable cardinality and a deterministic bound are also
+compiled. Next prove measurable cardinality plus boundedness/uniform-integrability
+input and select a shrinking deterministic cover radius to turn the entropy
+hypotheses into the required real integrated upper, now past the
 fixed-sample,
 integral-lift, product-projection/Fubini, same-weight pair split, deterministic
 sign-negation, ordinary random-sign averaging, product-cover, sample-cover,

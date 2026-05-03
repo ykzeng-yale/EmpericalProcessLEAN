@@ -195,6 +195,28 @@ Concrete next edits:
    bridges, `tendsto_two_mul_ofReal_zero_of_tendsto_zero`, and the
    real-mean consumer
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`.
+   The probability-measure tail lane now also has
+   `probability_integral_le_threshold_add_bound_mul_tail`, and the VdV&W side
+   has
+   `tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg`
+   plus
+   `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`,
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`,
+   `vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero`,
+   and
+   `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
+   plus
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
+   plus
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`;
+   the radius-added measurable-cardinality integrated-mean consumer
+   `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`
+   is also compiled;
+   the finite-net upper measurability/integrability packaging lemmas from
+   measurable cardinality and a deterministic bound are also compiled;
+   the next blocker is supplying measurable cardinality plus
+   boundedness/uniform-integrability input and a shrinking deterministic
+   cover-radius selection from the entropy hypotheses.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.
