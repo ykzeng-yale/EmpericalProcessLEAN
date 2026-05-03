@@ -96,6 +96,30 @@ parked as a deferred example blocker.  The active main-line frontier is
 Theorem 2.4.3 and the theorem-level Chapter 2 bracketing/measurable-class
 primitives it requires.
 
+## Automation Prompt Maintenance
+
+The recurring VdV&W proof automation is part of the proof process and should
+not drift into a stale status summary.  At the end of every automation run that
+proves, refines, blocks, commits, or pushes a theorem-line layer, update the
+automation prompt itself to reflect the verified current state.  The updated
+prompt should be short enough to stay usable, and must include:
+
+1. the latest pushed commit and the exact new Lean declarations or doc-only
+   blocker refinement from that run;
+2. the single next atomic proof target and the dependency order after it;
+3. the current search-first scope, including local `StatInference`, pinned
+   mathlib, and `StatInference/ProbabilityMeasure` reuse;
+4. the verification gate: focused Lean check, `lake build` for substantive
+   theorem edits, proof-hole scan, diff check, secret scan, then commit/push
+   only verified progress;
+5. any active blocker that must stay explicit rather than hidden as an
+   informal assumption.
+
+The automation should also update this blueprint, the dashboard, or
+`docs/vdvw_current_blocker_primitive_plan.md` whenever the next target changes
+or a blocker is narrowed.  Do not churn the prompt for cosmetic wording-only
+changes, and do not create formal reports for intermediate layers.
+
 ## Existing Lean Coverage Conclusion
 
 Pinned mathlib is the authority for reusable foundations in this repository.

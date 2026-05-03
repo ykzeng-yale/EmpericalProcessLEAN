@@ -28,6 +28,22 @@ found, APIs not found when absence creates a blocker, and why a new local
 primitive is still needed.  A theorem should be marked `blocked-vdvw` only
 after this search fails to find a reusable exact or adaptable Lean theorem.
 
+## Adaptive Automation Prompt Rule
+
+Every recurring proof run should finish by checking whether the automation
+prompt itself is now stale.  If the run verified new Lean declarations, pushed
+a commit, narrowed a blocker, or changed the next atomic proof target, update
+the automation prompt to match this file and the dashboard before ending the
+run.  The refreshed prompt should name the latest verified commit, the exact
+closed declarations or blocker refinement, the next proof target, and the
+verification/search gates.  This keeps future runs aligned with the current
+proof state instead of replaying old instructions.
+
+Do not update the automation prompt for wording-only churn.  Do update it when
+an old prompt would point at a solved target, omit a newly discovered reusable
+API, or hide a genuine blocker such as the current Theorem 2.4.3 scale
+comparison.
+
 ## Active Blocker
 
 Current main-line target: Theorem 2.4.3 and the Chapter 2
