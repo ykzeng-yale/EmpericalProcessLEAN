@@ -328,6 +328,13 @@ The selected inverse-radius untruncated composition is now compiled as
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedInvRadiusEntropy`,
 and the large-`M` handoff only needs positive fixed-`M` convergence, matching
 the chosen truncation levels.
+The selected side-condition constructor
+`VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_selected_truncated`
+and the non-selected untruncated inverse-radius/log-bound consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_invRadiusEntropy_logCardinality_div_bound`
+are also compiled, so both selected and externally packaged inverse-radius
+routes now feed the large-`M` untruncation layer under honest diagonal
+entropy/log-bound assumptions.
 The product-integrated symmetrization route now also has the composed
 random-cover finite-net integral bridge
 `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
@@ -338,8 +345,8 @@ random-cover finite-net integral bridge
 DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
 ONGOING    Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
-READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, F_M truncation interfaces, countable/measurable-cardinality selectors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, bounded varying-domain real-tail-to-mean wrapper, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound/inverse-radius consumers, selected-cardinality equality-transport arbitrary-radius/inverse-radius consumers, all-radius covering-domination selectors, selected inverse-radius finite-cover constructor, inverse-radius entropy side-condition package, package-level inverse-radius entropy mean projections, selected finite-cover and selected inverse-radius all-radius finite-net mean projections, explicit variable-domain tail/UI mean bridge and bounded-tail adapters, generic outer-probability perturbation, deterministic untruncation perturbation inequalities, empirical envelope-tail expectation/Markov bridges, untruncation bad-event probability split, large-M untruncation convergence handoff, untruncated selected inverse-radius consumer, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
-NEXT       Derive selected diagonal log-cardinality/log-ratio or stronger selected finite-net tail/UI inputs from book assumptions, then use the untruncated selected inverse-radius consumer for final Theorem 2.4.3 assembly.
+READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, F_M truncation interfaces, countable/measurable-cardinality selectors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, bounded varying-domain real-tail-to-mean wrapper, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound/inverse-radius consumers, selected-cardinality equality-transport arbitrary-radius/inverse-radius consumers, all-radius covering-domination selectors, selected inverse-radius finite-cover constructor, selected side-condition constructor, inverse-radius entropy side-condition package, package-level inverse-radius entropy mean projections, selected finite-cover and selected inverse-radius all-radius finite-net mean projections, explicit variable-domain tail/UI mean bridge and bounded-tail adapters, generic outer-probability perturbation, deterministic untruncation perturbation inequalities, empirical envelope-tail expectation/Markov bridges, untruncation bad-event probability split, large-M untruncation convergence handoff, untruncated selected and non-selected inverse-radius consumers, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
+NEXT       Derive selected diagonal log-cardinality/log-ratio or stronger selected finite-net tail/UI inputs from book assumptions, then use the untruncated inverse-radius consumers for final Theorem 2.4.3 assembly.
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED-EXAMPLE Example 2.4.2 exact quantile-grid closure and empirical-CDF report unless a theorem needs it.

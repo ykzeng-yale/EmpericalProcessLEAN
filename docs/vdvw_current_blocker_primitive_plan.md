@@ -1167,6 +1167,19 @@ entropy/cover/integrability side conditions.  The large-`M` handoff was
 strengthened to require fixed-`M` convergence only for positive truncation
 levels, matching the actual `M -> infinity` proof.
 
+The selected side-condition constructor and the non-selected untruncated
+inverse-radius/log-bound route are now compiled.  The selected constructor
+`VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_selected_truncated`
+builds the selected least-cardinality inverse-radius package from all-positive
+radius finite-cover domination, diagonal selected log-cardinality convergence,
+and a deterministic all-radius normalized log bound.  The final-facing
+consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_invRadiusEntropy_logCardinality_div_bound`
+composes fixed-`M` inverse-radius entropy packages and normalized log-ratio
+bounds with the large-`M` untruncation handoff.  This closes the side-condition
+packaging surface without pretending that the book fixed-radius entropy
+hypothesis implies the shrinking-radius diagonal selected entropy input.
+
 Next exact edit: derive the selected diagonal log-cardinality/log-ratio inputs,
 or a stronger selected finite-net tail/UI condition, from the book entropy
 hypotheses, then use the untruncated selected inverse-radius consumer for the
