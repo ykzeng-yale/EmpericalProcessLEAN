@@ -183,12 +183,14 @@ Near-term exact candidates:
 5. Theorem 3.6 convergence under PL.  `StatInference/Optimization/Theorem36.lean`
    now compiles a source-shaped PL interface, the one-step PL gap recurrence
    from Lemma 3.1, a scalar nonnegative-factor recurrence unrolling, and the
-   source step-size wrapper for `h <= 1 / beta`.  Remaining main-text Chapter
-   3 work is Theorem 3.7 and source-audited report packaging.
-6. Theorem 3.7 gradient-norm/stationary point convergence.  This is the active
-   main-text proof target.  Reuse the compiled descent lemma, prove the
-   telescope/finite-average layer over `Finset.range N`, and avoid Chapter 3
-   exercise proof derivations during this main-text pass.
+   source step-size wrapper for `h <= 1 / beta`.
+6. Theorem 3.7 gradient-norm/stationary point convergence.
+   `StatInference/Optimization/Theorem37.lean` now compiles the existential
+   source-faithful form over `n < N`.  It reuses the compiled descent lemma,
+   proves the telescope/finite-average layer over `Finset.range N`, converts
+   the squared bound with `Real.le_sqrt_of_sq_le`, and avoids Chapter 3
+   exercise proof derivations.  Remaining work is optional literal finite-min
+   display packaging and source-audited theorem reporting.
 
 ### Lane D: Later textbook expansion
 

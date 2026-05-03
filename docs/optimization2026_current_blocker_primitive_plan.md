@@ -50,11 +50,12 @@ runs.
 
 Current manual objective: aggressively formalize and prove the main theorem
 content of Sinho Chewi's Optimization 2026 notes in Lean under
-`StatInference/Optimization`, continuing from the latest pushed frontier
-`c8280cf` (`Add Chewi theorem 3.6 PL convergence layer`).  Search existing
-mathlib and local `StatInference` APIs first, prove the next highest-leverage
-main-text theorem layer, verify with focused `lake env lean`, targeted
-`lake build StatInference`, proof-hole and secret scans, update this route
+`StatInference/Optimization`, continuing from the verified Theorem 3.7
+gradient-norm layer in `StatInference/Optimization/Theorem37.lean`.  Search
+existing mathlib and local `StatInference` APIs first, prove the next
+highest-leverage main-text theorem layer, verify with focused
+`lake env lean`, targeted `lake build StatInference`, proof-hole and secret
+scans, update this route
 state, and commit/push clean verified progress.  Skip exercise proofs until
 the main textbook theorem lane is covered; exercise statements may be used as
 supplied interfaces only when they directly unblock a main-text theorem.
@@ -64,7 +65,7 @@ supplied interfaces only when they directly unblock a main-text theorem.
 The Chewi lane has source materials and a compiled content-based Lean namespace
 under `StatInference/Optimization/`, but it does not yet have an exact
 source-audited Optimization theorem report.  Main-text Chapter 3 now has a
-strong reusable spine through Theorem 3.6:
+strong reusable spine through Theorem 3.7's existential gradient-norm form:
 
 - Lemma 3.5 discrete Gronwall has both zero-based finite-sum and source-shaped
   one-based display wrappers in `StatInference/Optimization/DiscreteGronwall.lean`.
@@ -113,14 +114,15 @@ Theorem 3.6 under PL also compiles in
 `discreteGronwall_sum_le`, and provides a source-shaped wrapper for
 `h <= 1 / beta`.
 
-The active blocker is now main-text Theorem 3.7, the gradient-norm/stationary
-point guarantee.  It should be proved from the compiled descent lemma and a
-finite telescoping/average argument, with no dependency on Chapter 3
-exercises.  If the exact finite `min` expression is expensive, first compile a
-source-faithful existential wrapper over `n < N`, then package the finite-min
-form after the required `Finset` API search.  In parallel, source-audited
-report packaging for the already compiled Chapter 3 main-text theorem layers
-remains a high-value non-proof task.
+Theorem 3.7 now compiles in `StatInference/Optimization/Theorem37.lean` in the
+source-faithful existential form over `n < N`.  It proves the one-step
+squared-gradient decrease from Lemma 3.1, telescopes the finite sum, applies a
+finite average/existence principle, and provides the source-shaped
+`h <= 1 / beta` wrapper.  It has no dependency on Chapter 3 exercises.  The
+remaining Theorem 3.7 packaging work is the exact finite `min` display, if we
+want a literal source-form declaration; otherwise the next high-value tasks are
+source-audited Chapter 3 report packaging and the segment-strong-convexity plus
+differentiability bridge to `FirstOrderStrongConvexOn`.
 
 ## Search-First Record
 
@@ -220,6 +222,14 @@ itself from convexity plus smoothness or from the shifted-function/descent
 lemma is recorded as an exercise-pass task and should not block main-text
 formalization.
 
+Current Theorem 3.7 search result: local `GradientDescent.lean` already
+supplies the descent lemma and GD trajectory interface.  Mathlib supplies the
+finite telescope as `Finset.sum_range_sub`, the finite average/existence step
+as `Finset.exists_le_of_sum_le` with `Finset.nonempty_range_iff`, and the
+square-root conversion as `Real.le_sqrt_of_sq_le`.  The local theorem layer
+only adds Chewi-shaped wrappers around these APIs; it does not duplicate a
+finite-sum or minimum foundation.
+
 Local searches should prioritize:
 
 - `StatInference/Optimization/Basic.lean`
@@ -251,7 +261,12 @@ Local searches should prioritize:
    denominator, positive-`alpha` closed denominator, `alpha = 0` limiting
    denominator, and first-order supplied strong-convexity trajectory wrappers
    now compile in `Theorem34.lean`.
-7. Prove the first source-exact report candidate only after the exact theorem
+7. Keep `StatInference/Optimization/Theorem36.lean` and
+   `StatInference/Optimization/Theorem37.lean` compiling.  Theorem 3.6 gives
+   PL convergence; Theorem 3.7 gives the main-text gradient-norm guarantee in
+   existential form from the descent lemma, finite telescoping, and finite
+   average APIs.
+8. Prove the first source-exact report candidate only after the exact theorem
    declaration compiles and source screenshots are captured.
 
 ## Verification Gate
@@ -322,12 +337,19 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.scalarRecurrence_le_pow`
 - `StatInference.Optimization.chewi36_gap_le_of_polyakLojasiewiczOn`
 - `StatInference.Optimization.chewi36_gap_le_of_polyakLojasiewiczOn_of_le_inv`
+- `StatInference.Optimization.sum_range_sub_succ`
+- `StatInference.Optimization.gradient_sq_step_le_drop_of_smoothWithGradientOn`
+- `StatInference.Optimization.gradient_sq_step_le_drop_of_trajectory`
+- `StatInference.Optimization.chewi37_gradient_sq_sum_bound`
+- `StatInference.Optimization.exists_le_average_of_sum_le`
+- `StatInference.Optimization.chewi37_exists_grad_sq_le`
+- `StatInference.Optimization.chewi37_exists_grad_norm_le`
+- `StatInference.Optimization.chewi37_exists_grad_norm_le_of_le_inv`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal target: prove main-text Theorem 3.7 with a minimal
-gradient-norm/telescoping layer and continue deferring exercise proofs.
-Secondary high-value options are source-exact supplied-interface report
-packaging for Theorem 3.3/3.4/3.6 or, after Theorem 3.7, the
-differentiability bridge from segment `StrongConvexOn` to
-`FirstOrderStrongConvexOn` for full Proposition 1.6 fidelity.
+Next manual goal target: package the exact finite-min display for main-text
+Theorem 3.7 if lightweight; otherwise move to source-exact supplied-interface
+report packaging for Theorem 3.3/3.4/3.6/3.7 or to the differentiability
+bridge from segment `StrongConvexOn` to `FirstOrderStrongConvexOn` for full
+Proposition 1.6 fidelity.  Continue deferring exercise proofs.
