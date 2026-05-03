@@ -1202,19 +1202,39 @@ machinery, and the untruncated handoff
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_div_bound`
 composes it with the large-`M` envelope-tail truncation removal.
 
-Next exact edit: consume the new fixed-radius route from the actual book
-entropy hypothesis, rather than returning to inverse-radius packaging.  The
-remaining explicit inputs are measurable selected/finite cover cardinalities
-and either deterministic normalized log-cardinality bounds or a sharper
-finite-net tail/UI/dominated-convergence theorem that derives the fixed-radius
-finite-net mean convergence from `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each
-fixed `η`.  If direct derivation from the textbook hypothesis remains blocked,
-record the exact missing tail/UI theorem shape and move to the next
-Theorem 2.4.3 assembly input.  The finite-cover domination, terminal
-selected-cardinality equality, measurability transport, fixed-`M`
-centered-truncated consumers, inverse-radius side-condition packages,
-fixed-radius consumers, finite-net tail/UI adapters, untruncation handoffs, and
-symmetrization/product finite-net route are already compiled.
+The selected fixed-radius route is now compiled as well.  The monotone
+outer-probability bridge
+`VdVWConvergesInOuterProbabilityConst_zero_of_nonneg_le` transfers convergence
+from a pointwise larger nonnegative process.  The selected fixed-radius
+cardinality wrappers
+`vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard` and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.selected_truncated_fixedRadius_of_forAllRadius_samplePath`
+build the least finite empirical cover at each fixed radius.  The log
+convergence bridge
+`vdVWLogEmpiricalL1CoveringCardinality_selected_fixedRadius_div_convergesInOuterProbabilityConst_zero_of_forAllRadius_samplePath`
+derives selected normalized-log convergence from the book-facing finite-valued
+fixed-radius entropy envelope, and
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_selected_truncated_fixedRadius_logCardinality_div_bound`
+and
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_forall_pos_selected_truncated_fixedRadius_logCardinality_div_bound`
+turn that into selected fixed-radius finite-net mean convergence when a
+deterministic normalized log-cardinality bound is supplied.  Countable
+coordinate-measurable truncated classes now discharge the selected
+cardinality-measurability input through existing `Nat.find` cover-event
+measurability.
+
+Next exact edit: consume the new selected fixed-radius finite-net mean route in
+the fixed-`M` and untruncated Theorem 2.4.3 consumers, or replace its
+deterministic normalized log-cardinality bound by a sharper finite-net
+tail/UI/dominated-convergence theorem.  The remaining analytic gap is no
+longer selected-cardinality measurability/log convergence under countability;
+it is deriving the deterministic bound or tail/UI condition from the textbook
+entropy hypothesis `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η`.
+The finite-cover domination, terminal selected-cardinality equality,
+measurability transport, fixed-`M` centered-truncated consumers,
+inverse-radius and fixed-radius consumers, finite-net tail/UI adapters,
+untruncation handoffs, and symmetrization/product finite-net route are already
+compiled.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

@@ -266,6 +266,44 @@ theorem
       mΩ μ hY_nonneg U hE
 
 /--
+Nonnegative variable-domain convergence in outer probability is monotone.
+
+If `0 <= X_i <= Y_i` eventually pointwise and `Y_i -> 0` in outer
+probability, then `X_i -> 0` in outer probability.  This is a small
+Theorem 2.4.3 support primitive for replacing an externally supplied empirical
+cover cardinality by the selected least finite-cover cardinality.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst_zero_of_nonneg_le
+    {ι : Type v} {Ω : ι -> Type u}
+    (mΩ : (i : ι) -> MeasurableSpace (Ω i))
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i))
+    {l : Filter ι} {X Y : (i : ι) -> Ω i -> ℝ}
+    (hX_nonneg : ∀ i (ω : Ω i), 0 ≤ X i ω)
+    (hXY : ∀ᶠ i in l, ∀ ω : Ω i, X i ω ≤ Y i ω)
+    (hY :
+      VdVWConvergesInOuterProbabilityConst Ω mΩ μ Y l (0 : ℝ)) :
+    VdVWConvergesInOuterProbabilityConst Ω mΩ μ X l (0 : ℝ) := by
+  intro epsilon hepsilon
+  have hY_epsilon := hY epsilon hepsilon
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0) from
+        tendsto_const_nhds)
+      hY_epsilon
+      (Eventually.of_forall fun _ => bot_le)
+      ?_
+  filter_upwards [hXY] with i hXY_i
+  dsimp [VdVWOuterProbability]
+  refine measure_mono ?_
+  intro ω hω
+  have hX_lt : epsilon < X i ω := by
+    simpa [Real.dist_eq, sub_zero, abs_of_nonneg (hX_nonneg i ω)] using hω
+  have hY_lt : epsilon < Y i ω := lt_of_lt_of_le hX_lt (hXY_i ω)
+  have hY_abs : epsilon < |Y i ω| := lt_of_lt_of_le hY_lt (le_abs_self _)
+  simpa [Real.dist_eq, sub_zero] using hY_abs
+
+/--
 Bounded nonnegative convergence in varying-domain outer probability implies
 ordinary mean convergence.
 

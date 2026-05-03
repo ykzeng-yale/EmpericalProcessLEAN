@@ -548,11 +548,21 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_integral_finiteNetHoeffdingUpper_tendsto_zero`,
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_div_bound`, and
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_div_bound`.
-   The next proof step is therefore to consume this fixed-radius route from
-   the actual book entropy hypotheses by deriving measurable selected/finite
-   cover cardinalities and fixed-radius finite-net mean/log-bound inputs, or
-   to record the precise missing finite-net tail/UI theorem needed for final
-   Theorem 2.4.3 assembly.
+   The selected fixed-radius route is now compiled through the monotone
+   outer-probability bridge
+   `VdVWConvergesInOuterProbabilityConst_zero_of_nonneg_le`, the selected
+   fixed-radius cardinality wrapper
+   `vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard`, selected
+   normalized-log convergence
+   `vdVWLogEmpiricalL1CoveringCardinality_selected_fixedRadius_div_convergesInOuterProbabilityConst_zero_of_forAllRadius_samplePath`,
+   and the selected finite-net mean handoffs
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_selected_truncated_fixedRadius_logCardinality_div_bound`
+   and
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_forall_pos_selected_truncated_fixedRadius_logCardinality_div_bound`.
+   The next proof step is therefore to feed this selected fixed-radius route
+   into the fixed-`M` and untruncated consumers, or to record/prove the sharper
+   finite-net tail/UI theorem needed to remove the remaining deterministic
+   normalized log-cardinality bound.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
