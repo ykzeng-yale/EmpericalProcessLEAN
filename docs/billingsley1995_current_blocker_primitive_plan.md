@@ -161,7 +161,9 @@ Local searches found reusable APIs in:
    `probability_pi_map_mapped_coordinates_eq`,
    `probability_pi_independent_mapped_coordinates_with_joint_law`,
    `probability_pi_integral_weighted_sum`, and
-   `probability_pi_integral_weighted_sum_eq_zero`; the VdV&W side specializes
+   `probability_pi_integral_weighted_sum_eq_zero`, plus the product-copy
+   weighted-sum mean-zero wrapper
+   `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`; the VdV&W side specializes
    these as
    `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`.
    It also specializes the finite weighted-sum expectation bridge as
@@ -225,8 +227,9 @@ of:
   `probability_prod_independent_mapped_copies_with_joint_law`,
   `probability_pi_map_mapped_coordinates_eq`,
   `probability_pi_independent_mapped_coordinates_with_joint_law`,
-  `probability_pi_integral_weighted_sum`, and
-  `probability_pi_integral_weighted_sum_eq_zero` APIs.
+  `probability_pi_integral_weighted_sum`,
+  `probability_pi_integral_weighted_sum_eq_zero`, and
+  `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero` APIs.
 
 The deciding rule is dependency value: if Theorem 2.4.3 is blocked on a tail,
 Fubini, independent-copy, or outer-expectation primitive, prefer that over a

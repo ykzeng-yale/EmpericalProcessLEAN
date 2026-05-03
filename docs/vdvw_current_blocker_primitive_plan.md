@@ -569,7 +569,8 @@ additional example closures:
    `VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover`.  The
    finite product-sample weighted-sum mean-zero bridge is also compiled as
    `probability_pi_integral_weighted_sum`,
-   `probability_pi_integral_weighted_sum_eq_zero`, and the VdV&W specialization
+   `probability_pi_integral_weighted_sum_eq_zero`,
+   `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`, and the VdV&W specialization
    `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`.
    The remaining Theorem 2.4.3 blocker is now the final product/Fubini
    symmetrization inequality and entropy-to-convergence assembly, not the
@@ -633,7 +634,9 @@ Search record for the symmetrization precursor package:
 - the practical route for Theorem 2.4.3 remains the theorem-local
   `Phi(x)=x` linear/Fubini argument rather than a general Jensen wrapper.
   The useful missing primitive exposed by this search is now compiled as the
-  finite product-sample weighted-sum mean-zero bridge over `(P.prod P)^n` and
+  generic product-copy finite weighted-sum mean-zero bridge
+  `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero` over
+  `(P.prod P)^n` and
   the theorem-specific specialization to truncated pair differences.
 
 Next exact edit: continue the theorem-specific symmetrization/truncation layer
@@ -659,8 +662,10 @@ APIs found and used are `ProbabilityTheory.iIndepFun_pi`,
 These now support `probability_pi_map_mapped_coordinates_eq`,
 `probability_pi_independent_mapped_coordinates_with_joint_law`,
 `probability_pi_integral_weighted_sum`,
-`probability_pi_integral_weighted_sum_eq_zero`, and the VdV&W-facing
-`vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep` plus
+`probability_pi_integral_weighted_sum_eq_zero`,
+`probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`, and the
+VdV&W-facing `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`
+plus
 `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`.
 
 ## Parked Example-Specific Blocker

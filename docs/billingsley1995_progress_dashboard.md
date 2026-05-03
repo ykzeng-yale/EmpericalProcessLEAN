@@ -105,7 +105,8 @@ Concrete next edits:
    finite-`Pi` wrappers `probability_pi_map_mapped_coordinates_eq`,
    `probability_pi_independent_mapped_coordinates_with_joint_law`,
    `probability_pi_integral_weighted_sum`, and
-   `probability_pi_integral_weighted_sum_eq_zero`.  The VdV&W side now
+   `probability_pi_integral_weighted_sum_eq_zero`, plus
+   `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`.  The VdV&W side now
    consumes these through `VdVWTheorem243SymmetrizationPrecursor` and
    `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`;
    add another probability-measure product wrapper only if the final

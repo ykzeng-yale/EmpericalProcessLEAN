@@ -690,20 +690,10 @@ theorem integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_
           weights index sample ∂(vdVWProductMeasure (P.prod P) n) =
       0 := by
   simpa [SampleAt, vdVWProductMeasure, vdVWWeightedSampleSum] using
-    (StatInference.ProbabilityMeasure.probability_pi_integral_weighted_sum_eq_zero
-      (P := fun _ : Fin n =>
-        (⟨P.prod P, inferInstance⟩ :
-          MeasureTheory.ProbabilityMeasure (Observation × Observation)))
-      (f := fun _ : Fin n => fun z : Observation × Observation =>
-        vdVWTruncatedClassFun classFun envelope M index z.1 -
-          vdVWTruncatedClassFun classFun envelope M index z.2)
-      (weights := weights)
-      (fun _ =>
-        integrable_vdVWTruncatedClassFun_pairDifference
-          (P := P) (index := index) htruncIntegrable)
-      (fun _ =>
-        integral_vdVWTruncatedClassFun_productCopy_pairDifference_eq_zero
-          (P := P) (index := index) htruncIntegrable))
+    (StatInference.ProbabilityMeasure.probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero
+      (P := (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation))
+      (f := vdVWTruncatedClassFun classFun envelope M index)
+      weights htruncIntegrable)
 
 /-!
 ## Fixed-sample empirical net handoff

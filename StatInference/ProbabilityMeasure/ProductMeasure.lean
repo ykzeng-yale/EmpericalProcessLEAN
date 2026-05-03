@@ -249,38 +249,6 @@ theorem probability_pi_integral_weighted_sum_eq_zero
   rw [probability_pi_integral_weighted_sum P hf]
   exact Finset.sum_eq_zero fun i _hi => by simp [hzero i]
 
-/--
-Finite-product weighted sums of product-copy pair differences have mean zero.
-
-This packages the common symmetrization pattern over `(P × P)^n`: each
-coordinate contributes a centered difference of two independent copies, and
-finite linearity preserves the zero expectation.
--/
-theorem probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero
-    {α : Type u} [MeasurableSpace α]
-    (P : MeasureTheory.ProbabilityMeasure α) {n : ℕ}
-    {f : α -> ℝ} (weights : Fin n -> ℝ)
-    (hf : Integrable f (P : Measure α)) :
-    ∫ sample : Fin n -> α × α,
-        (∑ i : Fin n, weights i * (f (sample i).1 - f (sample i).2))
-          ∂(Measure.pi fun _ : Fin n =>
-            ((P : Measure α).prod (P : Measure α))) =
-      0 := by
-  simpa using
-    (probability_pi_integral_weighted_sum_eq_zero
-      (P := fun _ : Fin n =>
-        (⟨(P : Measure α).prod (P : Measure α), inferInstance⟩ :
-          MeasureTheory.ProbabilityMeasure (α × α)))
-      (f := fun _ : Fin n => fun z : α × α => f z.1 - f z.2)
-      (weights := weights)
-      (fun _ =>
-        (MeasureTheory.integrable_comp_fst (μ := (P : Measure α))
-          (ν := (P : Measure α)) hf).sub
-          (MeasureTheory.integrable_comp_snd (μ := (P : Measure α))
-            (ν := (P : Measure α)) hf))
-      (fun _ =>
-        probability_integral_prod_fst_sub_snd_eq_zero (μ := P) (f := f) hf))
-
 /-- Tonelli's theorem for an `ℝ≥0∞`-valued function on a product space. -/
 theorem lintegral_prod
     {α : Type u} [MeasurableSpace α] {β : Type v} [MeasurableSpace β]
@@ -409,6 +377,53 @@ theorem probability_integral_prod_fst_sub_snd_eq_zero
           rw [probability_integral_prod_fst μ μ f,
             probability_integral_prod_snd μ μ f]
     _ = 0 := sub_self _
+
+/--
+Finite-product weighted sums of product-copy pair differences have mean zero.
+
+This packages the common symmetrization pattern over `(P × P)^n`: each
+coordinate contributes a centered difference of two independent copies, and
+finite linearity preserves the zero expectation.
+-/
+theorem probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero
+    {α : Type u} [MeasurableSpace α]
+    (P : MeasureTheory.ProbabilityMeasure α) {n : ℕ}
+    {f : α -> ℝ} (weights : Fin n -> ℝ)
+    (hf : Integrable f (P : Measure α)) :
+    ∫ sample : Fin n -> α × α,
+        (∑ i : Fin n, weights i * (f (sample i).1 - f (sample i).2))
+          ∂(Measure.pi fun _ : Fin n =>
+            ((P : Measure α).prod (P : Measure α))) =
+      0 := by
+  have hpairIntegrable :
+      Integrable
+        (fun z : α × α => f z.1 - f z.2)
+        ((P : Measure α).prod (P : Measure α)) := by
+    have hfst :
+        Integrable (fun z : α × α => f z.1)
+          ((P : Measure α).prod (P : Measure α)) := by
+      simpa [Function.comp_def] using
+        (MeasureTheory.measurePreserving_fst
+          (μ := (P : Measure α)) (ν := (P : Measure α))).integrable_comp_of_integrable
+          hf
+    have hsnd :
+        Integrable (fun z : α × α => f z.2)
+          ((P : Measure α).prod (P : Measure α)) := by
+      simpa [Function.comp_def] using
+        (MeasureTheory.measurePreserving_snd
+          (μ := (P : Measure α)) (ν := (P : Measure α))).integrable_comp_of_integrable
+          hf
+    exact hfst.sub hsnd
+  simpa using
+    (probability_pi_integral_weighted_sum_eq_zero
+      (P := fun _ : Fin n =>
+        (⟨(P : Measure α).prod (P : Measure α), inferInstance⟩ :
+          MeasureTheory.ProbabilityMeasure (α × α)))
+      (f := fun _ : Fin n => fun z : α × α => f z.1 - f z.2)
+      (weights := weights)
+      (fun _ => hpairIntegrable)
+      (fun _ =>
+        probability_integral_prod_fst_sub_snd_eq_zero (μ := P) (f := f) hf))
 
 /--
 Product expectation for separated scalar functions under a product probability

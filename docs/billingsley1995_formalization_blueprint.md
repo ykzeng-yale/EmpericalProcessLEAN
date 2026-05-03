@@ -197,7 +197,9 @@ Near-term declarations:
   `probability_pi_independent_mapped_coordinates_with_joint_law`, finite-`Pi`
   weighted-sum expectation/mean-zero wrappers
   `probability_pi_integral_weighted_sum` and
-  `probability_pi_integral_weighted_sum_eq_zero`, and the VdV&W
+  `probability_pi_integral_weighted_sum_eq_zero`, product-copy weighted-sum
+  mean-zero wrapper
+  `probability_pi_integral_prod_fst_sub_snd_weighted_sum_eq_zero`, and the VdV&W
   specializations `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`
   and
   `integral_vdVWTruncatedClassFun_productSample_pairDifference_weightedSum_eq_zero`.
