@@ -593,7 +593,12 @@ minimal-cardinality process. The packaged
 consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`
 then uses those side conditions plus a deterministic selected log-ratio bound
-to discharge fixed-`M` centered-truncated convergence. The next proof target is
+to discharge fixed-`M` centered-truncated convergence.  The same package now
+also has finite-net mean projections
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_bound`
+and
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_logCardinality_div_bound`.
+The next proof target is
 no longer the finite-witness handoff for an all-radius entropy hypothesis; it
 is feeding diagonal selected log-cardinality convergence plus the
 deterministic normalized log-cardinality bound or a genuine variable-domain

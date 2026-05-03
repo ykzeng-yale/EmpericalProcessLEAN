@@ -470,7 +470,12 @@ the selected truncated minimal process is supplied. The packaged fixed-`M`
 consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`
 then uses those side conditions with the deterministic selected log-ratio
-bound. Next feed the theorem entropy hypotheses into this package past the
+bound. The side-condition package also now exposes the finite-net mean and
+finite-net-plus-inverse-radius mean projections
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_bound`
+and
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_logCardinality_div_bound`.
+Next feed the theorem entropy hypotheses into this package past the
 now-closed covering-domination/finite-witness handoff, then supply diagonal
 selected log-cardinality convergence and
 deterministic normalized log-cardinality bound or a genuine varying-domain tail/UI
