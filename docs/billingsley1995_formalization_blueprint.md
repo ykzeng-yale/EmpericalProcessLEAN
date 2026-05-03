@@ -93,7 +93,8 @@ Current compiled wrappers:
 - projective finite-dimensional distribution family and process-law projective
   limit wrappers
 - product probability measure, Tonelli/Fubini, and independent-product
-  expectation wrappers
+  expectation wrappers, including product-coordinate marginal projection and
+  separated product-expectation identities
 - first and second Borel-Cantelli wrappers
 - generated sigma-field, generator-measurability, pi-system, and
   finite/probability measure extensionality wrappers
@@ -138,7 +139,9 @@ Near-term declarations:
 - `vdVW_integral_pi_fin_eq_iterated_integrable`
 - `vdVW_expectation_independent_copy_swap`
 - content-based wrappers started in
-  `StatInference/ProbabilityMeasure/ProductMeasure.lean`
+  `StatInference/ProbabilityMeasure/ProductMeasure.lean`, including
+  product-coordinate integral projection and separated product-expectation
+  wrappers for independent-copy arguments
 
 Search anchors:
 
@@ -146,6 +149,11 @@ Search anchors:
 - `Mathlib.MeasureTheory.Constructions.Pi`
 - `Mathlib.Probability.ProductMeasure`
 - local `StatInference/EmpiricalProcess/Theorem243.lean`
+
+Source-crosswalk note: Billingsley Section 18 supplies product measure and
+Fubini/Tonelli machinery.  Independence-as-product-law and product-expectation
+formulas are sourced later in Sections 20-21, so Section 18 wrappers should not
+be reported as exact independence theorems without those anchors.
 
 ### Lane D: Independence, Borel-Cantelli, and strong laws
 

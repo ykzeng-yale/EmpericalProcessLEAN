@@ -69,9 +69,11 @@ Local searches found reusable APIs in:
 5. In parallel, push Section 16/18 support for VdV&W Theorem 2.4.3:
    envelope-tail, truncation-error, finite-product/Fubini, and independent-copy
    wrappers.  The content-based Section 18 wrapper layer has started in
-   `StatInference/ProbabilityMeasure/ProductMeasure.lean`; the remaining work
-   is to specialize it to the exact finite-product/independent-copy shapes used
-   by symmetrization.
+   `StatInference/ProbabilityMeasure/ProductMeasure.lean`; it now includes
+   product-coordinate marginal projection and separated product-expectation
+   identities for binary product probability spaces.  The remaining work is to
+   specialize these wrappers to the exact finite-product/independent-copy shapes
+   used by symmetrization.
 6. Defer examples requiring unrelated number theory, Markov chains, martingales,
    Brownian path theory, or Fourier analysis unless a concrete theorem needs
    them.
@@ -96,7 +98,11 @@ of:
   20.6; the remaining exact Theorem 20.6 route is the uniform-in-`x` statement,
   likely via the finite-grid route; or
 - a Section 16 tail-control primitive in the empirical-process files that
-  directly unlocks `StatInference/EmpiricalProcess/Theorem243.lean`.
+  directly unlocks `StatInference/EmpiricalProcess/Theorem243.lean`; or
+- the next Section 18 independent-copy specialization using
+  `probability_integral_prod_fst`, `probability_integral_prod_snd`, and
+  `probability_integral_prod_mul` to erase unused product coordinates in the
+  symmetrization route.
 
 The deciding rule is dependency value: if Theorem 2.4.3 is blocked on a tail or
 Fubini primitive, prefer that over a cosmetic Billingsley report.

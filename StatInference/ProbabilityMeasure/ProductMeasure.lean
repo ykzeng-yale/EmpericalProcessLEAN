@@ -107,6 +107,61 @@ theorem integral_integral_swap
     ∫ x, ∫ y, f x y ∂ν ∂μ = ∫ y, ∫ x, f x y ∂μ ∂ν := by
   exact MeasureTheory.integral_integral_swap hf
 
+/--
+In a product of probability spaces, a function of the second coordinate
+integrates to its marginal expectation.
+
+This is the finite-product/Fubini shape used when a later empirical-process
+argument conditions on one coordinate and integrates out an independent copy.
+-/
+theorem probability_integral_prod_snd
+    {α : Type u} [MeasurableSpace α] {β : Type v} [MeasurableSpace β]
+    {E : Type w} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (μ : MeasureTheory.ProbabilityMeasure α)
+    (ν : MeasureTheory.ProbabilityMeasure β)
+    (f : β -> E) :
+    ∫ z, f z.2 ∂((μ : Measure α).prod (ν : Measure β)) =
+      ∫ y, f y ∂(ν : Measure β) := by
+  simpa using
+    (MeasureTheory.integral_fun_snd
+      (μ := (μ : Measure α)) (ν := (ν : Measure β)) f)
+
+/--
+In a product of probability spaces, a function of the first coordinate
+integrates to its marginal expectation.
+-/
+theorem probability_integral_prod_fst
+    {α : Type u} [MeasurableSpace α] {β : Type v} [MeasurableSpace β]
+    {E : Type w} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (μ : MeasureTheory.ProbabilityMeasure α)
+    (ν : MeasureTheory.ProbabilityMeasure β)
+    (f : α -> E) :
+    ∫ z, f z.1 ∂((μ : Measure α).prod (ν : Measure β)) =
+      ∫ x, f x ∂(μ : Measure α) := by
+  simpa using
+    (MeasureTheory.integral_fun_fst
+      (μ := (μ : Measure α)) (ν := (ν : Measure β)) f)
+
+/--
+Product expectation for separated scalar functions under a product probability
+measure.
+
+This is the product-space version of the independent expectation factorization
+used by symmetrization and independent-copy handoffs.
+-/
+theorem probability_integral_prod_mul
+    {α : Type u} [MeasurableSpace α] {β : Type v} [MeasurableSpace β]
+    {𝕜 : Type w} [RCLike 𝕜]
+    (μ : MeasureTheory.ProbabilityMeasure α)
+    (ν : MeasureTheory.ProbabilityMeasure β)
+    (f : α -> 𝕜) (g : β -> 𝕜) :
+    ∫ z, f z.1 * g z.2 ∂((μ : Measure α).prod (ν : Measure β)) =
+      (∫ x, f x ∂(μ : Measure α)) *
+        ∫ y, g y ∂(ν : Measure β) := by
+  exact
+    MeasureTheory.integral_prod_mul
+      (μ := (μ : Measure α)) (ν := (ν : Measure β)) f g
+
 /-- Product of expectations for two independent scalar random variables. -/
 theorem indepFun_integral_mul_eq_mul_integral
     {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] {mΩ : MeasurableSpace Ω}
