@@ -15,6 +15,27 @@ The Billingsley lane should stay search-first: before adding a primitive, search
 pinned mathlib under `.lake/packages/mathlib`, then search nearby
 `StatInference/EmpiricalProcess` modules for an existing proof-carrying wrapper.
 
+## Automation Prompt Maintenance
+
+The recurring Billingsley/probability-measure automation is an active
+orchestration tool, not a static checklist.  At the end of every automation run
+that proves, blocks, merges, commits, or pushes a theorem-line or reusable
+probability-measure layer, refresh the live automation prompt so the next
+heartbeat starts from the verified current frontier.
+
+The prompt update should be driven by:
+
+1. `docs/billingsley1995_current_blocker_primitive_plan.md`;
+2. `docs/billingsley1995_progress_dashboard.md`;
+3. the current VdV&W blocker plan when the Billingsley lane is supplying
+   empirical-process dependencies;
+4. the latest pushed commit and verified Lean declarations.
+
+Each refreshed prompt should name one next atomic proof target, the dependency
+order after it, the required mathlib/local searches, and the verification/report
+gate.  This avoids replaying stale broad instructions after another agent has
+already moved the frontier.
+
 ## Local Sources
 
 - Markdown chunks:

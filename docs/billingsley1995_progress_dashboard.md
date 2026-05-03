@@ -22,6 +22,9 @@ mathlib searches and local primitives whenever possible.
 - Formal theorem reports: none yet.
 - Proof-hole policy: no Billingsley report until the exact textbook statement
   compiles with no `sorry`, `admit`, unreviewed `axiom`, or `unsafe`.
+- Automation policy: each heartbeat that changes the verified proof frontier
+  must refresh the live automation prompt from the blocker plan and dashboard
+  before ending the run.
 
 ## Coverage By Lane
 
@@ -69,16 +72,25 @@ High-value local files:
 ## Current Active Target
 
 Near-term target: use Billingsley Section 16 and Section 18 as a probability
-support lane for VdV&W Theorem 2.4.3.
+support lane for VdV&W Theorem 2.4.3 when a reusable measure/probability
+primitive is actually needed; otherwise move a narrow Section 25
+weak-convergence/Portmanteau/tightness wrapper toward an exact source-audited
+Billingsley theorem candidate.
 
 Concrete next edits:
 
 1. Keep the probability-measure integration-tail wrapper module
    `StatInference/ProbabilityMeasure/Tail.lean` compiling, and add only
    VdV&W-specific handoffs directly to the empirical-process files.
-2. Prove the envelope-tail handoff for outer expectation using existing
-   measurable cover and nonnegative outer-expectation APIs.
-3. Add a source-crosswalk note in this dashboard before any exact theorem
+2. Check the current VdV&W Theorem 2.4.3 blocker before adding Billingsley
+   support.  The latest empirical-process frontier is the named
+   `VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale` real scale-comparison
+   predicate; do not add new Billingsley tail/Fubini wrappers unless that proof
+   or the next symmetrization/truncation step needs them.
+3. If no empirical-process dependency is blocked on Billingsley support, pick
+   one Section 25 theorem candidate already close to mathlib/local APIs and
+   formalize the exact wrapper statement before creating any report.
+4. Add a source-crosswalk note in this dashboard before any exact theorem
    report is created.
 
 ## Report Gate

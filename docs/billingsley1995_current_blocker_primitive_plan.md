@@ -3,6 +3,31 @@
 This file is the active blocker register for the Billingsley lane.  It should be
 checked at the start of each automation run before selecting a proof target.
 
+## Adaptive Automation Prompt Rule
+
+The recurring Billingsley/probability-measure heartbeat is part of the proof
+state.  Every automation run should finish by checking whether its live prompt
+is stale relative to this file, the dashboard, and the latest verified commit.
+If the run proves a Lean declaration, narrows a blocker, merges another
+agent's work, changes the next atomic target, or records a material mathlib or
+local-code search result, update the automation prompt before ending the run.
+
+The refreshed prompt should name:
+
+- the latest pushed commit and the exact new declarations or blocker
+  refinement;
+- the single next atomic proof target and the dependency order after it;
+- the search-first scope: pinned mathlib, local `StatInference`, and existing
+  `StatInference/ProbabilityMeasure` wrappers;
+- the verification gate: focused `lake env lean`, targeted `lake build` for
+  promoted theorem layers, proof-hole scan, and secret scan;
+- the report gate: no Billingsley report without an exact source-matched
+  theorem/lemma, screenshots, and local report compilation.
+
+Do not update the prompt for wording-only churn.  Do update it whenever the old
+prompt would send the next heartbeat toward a solved target, omit a newly
+proved dependency, or hide the current blocker.
+
 ## Current Blocker
 
 The Billingsley lane now has source materials and compiled content-based Lean
@@ -14,8 +39,13 @@ The blocker is selecting a theorem whose statement can be made both:
 - immediately useful to the empirical-process route.
 
 The best current candidate family is Section 25 weak convergence and
-Portmanteau/tightness wrappers, followed by Section 16 tail-control lemmas for
-VdV&W Theorem 2.4.3.
+Portmanteau/tightness wrappers, while Section 16/18 support should stay
+dependency-driven by the current VdV&W Theorem 2.4.3 route.  As of the latest
+merged empirical-process progress, the active VdV&W blocker is the named real
+scale-comparison predicate
+`VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale`; Billingsley support should
+only add reusable probability/measure wrappers if that comparison or the next
+symmetrization/truncation step actually needs them.
 
 ## Search-First Record
 
@@ -120,5 +150,8 @@ of:
   `probability_integral_prod_mul` to erase unused product coordinates in the
   symmetrization route.
 
-The deciding rule is dependency value: if Theorem 2.4.3 is blocked on a tail or
-Fubini primitive, prefer that over a cosmetic Billingsley report.
+The deciding rule is dependency value: if Theorem 2.4.3 is blocked on a tail,
+Fubini, independent-copy, or outer-expectation primitive, prefer that over a
+cosmetic Billingsley report.  Otherwise, select a narrow Section 25 theorem
+candidate whose proof is already mostly present in mathlib/local wrappers and
+move it toward an exact source-audited Billingsley statement.

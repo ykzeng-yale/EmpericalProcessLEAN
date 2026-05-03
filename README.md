@@ -125,6 +125,12 @@ docs/billingsley1995_progress_dashboard.md
 docs/billingsley1995_current_blocker_primitive_plan.md
 ```
 
+Recurring proof automations should be treated as mutable proof-state
+orchestration.  After any automation run verifies new Lean declarations,
+narrows a blocker, merges another agent's work, or changes the next atomic
+target, refresh the live automation prompt from the relevant blocker plan and
+dashboard before ending the run.
+
 ## Lean And Mathlib Base
 
 The project uses Lean through Lake.
