@@ -347,4 +347,140 @@ theorem
           (hY_meas i) (hY_integrable i) (hY_le i))
         hi
 
+/--
+Variable-domain tail-expectation convergence in outer probability implies
+ordinary mean convergence for nonnegative real processes.
+
+This is the varying-sample-space replacement for a fixed-domain Vitali/UI
+argument.  The tail-expectation condition is explicit: after a large cutoff,
+the expectations of the upper tails are eventually uniformly small.
+-/
+theorem
+    tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_tailExpectation_nonneg
+    {ι : Type v} {Ω : ι -> Type u}
+    [(i : ι) -> MeasurableSpace (Ω i)]
+    (μ : (i : ι) -> Measure (Ω i))
+    (hμ_prob : ∀ i, IsProbabilityMeasure (μ i))
+    {l : Filter ι} {Y : (i : ι) -> Ω i -> ℝ}
+    (hY :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ Y l
+        (0 : ℝ))
+    (hY_meas : ∀ i, Measurable (Y i))
+    (hY_integrable : ∀ i, Integrable (Y i) (μ i))
+    (hY_nonneg : ∀ i (ω : Ω i), 0 ≤ Y i ω)
+    (hTail :
+      ∀ ε > 0, ∃ R, 0 ≤ R ∧
+        ∀ᶠ i in l,
+          ∫ ω, Set.indicator {ω' : Ω i | R < Y i ω'} (Y i) ω ∂(μ i) ≤ ε) :
+    Tendsto (fun i => ∫ ω, Y i ω ∂(μ i)) l (𝓝 0) := by
+  rw [tendsto_order]
+  constructor
+  · intro a ha
+    exact Eventually.of_forall fun i =>
+      lt_of_lt_of_le ha
+        (integral_nonneg (μ := μ i) fun ω => hY_nonneg i ω)
+  · intro a ha
+    set η : ℝ := a / 4 with hη_def
+    have hη_pos : 0 < η := by
+      rw [hη_def]
+      linarith
+    have hη_nonneg : 0 ≤ η := hη_pos.le
+    obtain ⟨R, hR_nonneg, htail_eventually⟩ := hTail η hη_pos
+    let probTail : ι -> ℝ := fun i => (μ i).real {ω : Ω i | η < Y i ω}
+    have hprob_enn :
+        Tendsto
+          (fun i =>
+            @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω : Ω i | η < Y i ω})
+          l (𝓝 0) := by
+      have hdist :
+          (fun i =>
+            @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω : Ω i | η < Y i ω}) =
+          (fun i =>
+            @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω : Ω i | η < dist (Y i ω) (0 : ℝ)}) := by
+        funext i
+        congr 1
+        ext ω
+        simp only [Set.mem_setOf_eq]
+        rw [Real.dist_eq, sub_zero, abs_of_nonneg (hY_nonneg i ω)]
+      simpa [hdist] using hY η hη_pos
+    have hprob_real : Tendsto probTail l (𝓝 0) := by
+      have htoReal :
+          Tendsto
+            (fun i =>
+              ENNReal.toReal
+                (@VdVWOuterProbability (Ω i) inferInstance (μ i)
+                  {ω : Ω i | η < Y i ω}))
+            l (𝓝 0) :=
+        (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hprob_enn
+      simpa [probTail, VdVWOuterProbability, measureReal_def] using htoReal
+    have hbody_prob_small :
+        ∀ᶠ i in l, R * probTail i < η :=
+      (hprob_real.const_mul R).eventually
+        (eventually_lt_nhds (by simpa [η] using hη_pos))
+    filter_upwards [htail_eventually, hbody_prob_small] with i htail_i hprob_i
+    haveI : IsProbabilityMeasure (μ i) := hμ_prob i
+    let tailSet : Set (Ω i) := {ω : Ω i | R < Y i ω}
+    let body : Ω i -> ℝ := Set.indicator tailSetᶜ (Y i)
+    have htailSet : MeasurableSet tailSet :=
+      measurableSet_lt measurable_const (hY_meas i)
+    have hbody_meas : Measurable body :=
+      (hY_meas i).indicator htailSet.compl
+    have hbody_integrable : Integrable body (μ i) :=
+      (hY_integrable i).indicator htailSet.compl
+    have hbody_le : ∀ ω, body ω ≤ R := by
+      intro ω
+      by_cases hω : ω ∈ tailSetᶜ
+      · have hnot : ¬ R < Y i ω := by
+          simpa [tailSet] using hω
+        simpa [body, Set.indicator_of_mem hω] using le_of_not_gt hnot
+      · simpa [body, Set.indicator_of_notMem hω] using hR_nonneg
+    have hbody_tail_subset :
+        {ω : Ω i | η < body ω} ⊆ {ω : Ω i | η < Y i ω} := by
+      intro ω hω
+      by_cases hmem : ω ∈ tailSetᶜ
+      · simpa [body, Set.indicator_of_mem hmem] using hω
+      · have hzero : body ω = 0 := by
+          simp [body, Set.indicator_of_notMem hmem]
+        have hlt_body : η < body ω := by
+          simpa using hω
+        rw [hzero] at hlt_body
+        exact (not_lt_of_ge hη_nonneg hlt_body).elim
+    have hbody_prob_le :
+        (μ i).real {ω : Ω i | η < body ω} ≤ probTail i :=
+      measureReal_mono hbody_tail_subset
+    have hbody_bound :
+        ∫ ω, body ω ∂(μ i) < a / 2 := by
+      have hraw :
+          ∫ ω, body ω ∂(μ i) ≤
+            η + R * (μ i).real {ω : Ω i | η < body ω} :=
+        _root_.StatInference.ProbabilityMeasure.probability_integral_le_threshold_add_bound_mul_tail
+          (μ := μ i) (X := body) (r := η) (C := R) hη_nonneg
+          hbody_meas hbody_integrable hbody_le
+      have hmul :
+          R * (μ i).real {ω : Ω i | η < body ω} ≤ R * probTail i :=
+        mul_le_mul_of_nonneg_left hbody_prob_le hR_nonneg
+      have hlt :
+          η + R * (μ i).real {ω : Ω i | η < body ω} < a / 2 := by
+        rw [hη_def]
+        nlinarith [hmul, hprob_i]
+      exact lt_of_le_of_lt hraw hlt
+    have htail_part_le :
+        ∫ ω in tailSet, Y i ω ∂(μ i) ≤ η := by
+      rw [← integral_indicator htailSet]
+      simpa [tailSet, η] using htail_i
+    have hbody_part_eq :
+        ∫ ω in tailSetᶜ, Y i ω ∂(μ i) = ∫ ω, body ω ∂(μ i) := by
+      rw [← integral_indicator htailSet.compl]
+    have hsplit :
+        ∫ ω, Y i ω ∂(μ i) =
+          ∫ ω in tailSet, Y i ω ∂(μ i) +
+            ∫ ω in tailSetᶜ, Y i ω ∂(μ i) := by
+      simpa [add_comm] using (integral_add_compl htailSet (hY_integrable i)).symm
+    rw [hsplit, hbody_part_eq]
+    rw [hη_def] at htail_part_le
+    nlinarith [htail_part_le, hbody_bound]
+
 end StatInference

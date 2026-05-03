@@ -7974,6 +7974,73 @@ theorem
       hupperBound
 
 /--
+Tail-expectation/UI variable-domain convergence of the random finite-net
+Hoeffding upper implies convergence of its ordinary real mean.
+
+This is the non-bounded alternative to
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`.
+The tail-expectation assumption is explicit and varies over the product sample
+spaces `SampleAt Observation n`.
+-/
+theorem
+    integral_finiteNetHoeffdingUpper_tendsto_zero_of_tailExpectation_convergesInOuterProbabilityConst
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {M : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hupperConv :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            (cardinality n sample n) n M)
+        atTop (0 : ℝ))
+    (hupperMeasurable :
+      ∀ n,
+        Measurable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M))
+    (hupperIntegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M)
+          (vdVWProductMeasure P n))
+    (hM_nonneg : 0 ≤ M)
+    (hTail :
+      ∀ ε > 0, ∃ R, 0 ≤ R ∧
+        ∀ᶠ n in atTop,
+          ∫ sample : SampleAt Observation n,
+            Set.indicator
+              {sample' : SampleAt Observation n |
+                R <
+                  vdVWTheorem243FiniteNetHoeffdingUpper
+                    (cardinality n sample' n) n M}
+              (fun sample' : SampleAt Observation n =>
+                vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality n sample' n) n M)
+              sample ∂(vdVWProductMeasure P n) ≤ ε) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            (cardinality n sample n) n M ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_tailExpectation_nonneg
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun _ : ℕ => inferInstance)
+      hupperConv hupperMeasurable hupperIntegrable
+      (fun n sample =>
+        vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+          (cardinality n sample n) n hM_nonneg)
+      hTail
+
+/--
 Bounded variable-domain convergence of the random finite-net Hoeffding upper
 implies the real integrated Hoeffding-plus-radius mean convergence consumed by
 the fixed-`M` Markov handoff.
@@ -8519,6 +8586,287 @@ theorem
       hM_pos hK_nonneg hentropy.cardinality_measurable hlog_div_bound
       (by
         simpa using tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+
+/--
+The deterministic normalized log-ratio bound in the selected inverse-radius
+package gives a uniform deterministic bound for the finite-net Hoeffding
+upper.
+-/
+theorem
+    VdVWTheorem243SelectedInvRadiusEntropySideConditions.finiteNetHoeffdingUpper_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M K : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hselected :
+      VdVWTheorem243SelectedInvRadiusEntropySideConditions P X indexClass
+        classFun envelope M K cardinality)
+    (hM_nonneg : 0 ≤ M)
+    (hK_nonneg : 0 ≤ K) :
+    ∀ n (sample : SampleAt Observation n),
+      vdVWTheorem243FiniteNetHoeffdingUpper (cardinality n sample n) n M ≤
+        Real.sqrt (6 * (1 + K)) * M :=
+  vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le
+    hM_nonneg hK_nonneg hselected.log_cardinality_div_bound
+
+/--
+Selected inverse-radius side conditions make the finite-net Hoeffding upper
+integrable on every product sample space.
+-/
+theorem
+    VdVWTheorem243SelectedInvRadiusEntropySideConditions.integrable_finiteNetHoeffdingUpper
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M K : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hselected :
+      VdVWTheorem243SelectedInvRadiusEntropySideConditions P X indexClass
+        classFun envelope M K cardinality)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_nonneg : 0 ≤ M)
+    (hK_nonneg : 0 ≤ K) :
+    ∀ n,
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            (cardinality n sample n) n M)
+        (vdVWProductMeasure P n) := by
+  intro n
+  have hfixed :
+      VdVWTheorem243FixedMInvRadiusEntropySideConditions P X indexClass
+        classFun envelope M cardinality :=
+    hselected.toFixedMInvRadiusEntropySideConditions hX_samplePath hclass
+      henvelope_meas
+  exact
+    integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality_bound
+      (μ := vdVWProductMeasure P n) (hfixed.cardinality_measurable n)
+      ((hselected.finiteNetHoeffdingUpper_bound hM_nonneg hK_nonneg) n)
+      hM_nonneg
+
+/--
+The selected inverse-radius entropy package supplies convergence of the
+ordinary finite-net Hoeffding upper mean.
+
+This is the selected-cardinality analogue of
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_bound`:
+the terminal selected-cardinality equality supplies measurability, while the
+package's deterministic log-ratio bound supplies the boundedness/UI input.
+-/
+theorem
+    VdVWTheorem243SelectedInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M K : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hselected :
+      VdVWTheorem243SelectedInvRadiusEntropySideConditions P X indexClass
+        classFun envelope M K cardinality)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hK_nonneg : 0 ≤ K) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            (cardinality n sample n) n M ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  have hfixed :
+      VdVWTheorem243FixedMInvRadiusEntropySideConditions P X indexClass
+        classFun envelope M cardinality :=
+    hselected.toFixedMInvRadiusEntropySideConditions hX_samplePath hclass
+      henvelope_meas
+  exact
+    hfixed.integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_bound
+      hM_pos hK_nonneg hselected.log_cardinality_div_bound
+
+/--
+The selected inverse-radius entropy package supplies convergence of the
+finite-net Hoeffding upper mean plus the canonical radius `1 / (n + 1)`.
+
+This is the mean-convergence input consumed directly by the fixed-`M`
+centered-truncated Markov handoff.
+-/
+theorem
+    VdVWTheorem243SelectedInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M K : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hselected :
+      VdVWTheorem243SelectedInvRadiusEntropySideConditions P X indexClass
+        classFun envelope M K cardinality)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hK_nonneg : 0 ≤ K) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M +
+            1 / ((n : ℝ) + 1) ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  have hfixed :
+      VdVWTheorem243FixedMInvRadiusEntropySideConditions P X indexClass
+        classFun envelope M cardinality :=
+    hselected.toFixedMInvRadiusEntropySideConditions hX_samplePath hclass
+      henvelope_meas
+  exact
+    hfixed.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_logCardinality_div_bound
+      hM_pos hK_nonneg hselected.log_cardinality_div_bound
+
+/--
+Finite empirical covers at radius `1 / (n + 1)` plus the diagonal selected
+entropy inputs imply convergence of the finite-net Hoeffding upper mean.
+
+This composes the selected finite-cover constructor with the selected
+mean-projection package, so later theorem assembly can consume finite-cover
+witnesses without rebuilding the side-condition structure manually.
+-/
+theorem
+    integral_finiteNetHoeffdingUpper_tendsto_zero_of_invRadiusFiniteCovers
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M K : ℝ}
+    (hfinite :
+      ∀ n (sample : SampleAt Observation n) m,
+        HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (1 / ((n : ℝ) + 1)))
+    (hlog :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWLogEmpiricalL1CoveringCardinality
+              (fun sample m =>
+                finiteEmpiricalL1CoveringNumberCard (hfinite n sample m))
+              sample n /
+            (n : ℝ))
+        atTop (0 : ℝ))
+    (hlog_div_bound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWLogEmpiricalL1CoveringCardinality
+            (fun sample m =>
+              finiteEmpiricalL1CoveringNumberCard (hfinite n sample m))
+            sample n /
+          (n : ℝ) ≤ K)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hK_nonneg : 0 ≤ K) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            (finiteEmpiricalL1CoveringNumberCard (hfinite n sample n)) n M
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  have hselected :
+      VdVWTheorem243SelectedInvRadiusEntropySideConditions P X indexClass
+        classFun envelope M K
+        (fun n sample m =>
+          finiteEmpiricalL1CoveringNumberCard (hfinite n sample m)) :=
+    VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_invRadiusFiniteCovers
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M) (K := K)
+      hfinite hlog hlog_div_bound
+  exact
+    hselected.integral_finiteNetHoeffdingUpper_tendsto_zero
+      hX_samplePath hclass henvelope_meas hM_pos hK_nonneg
+
+/--
+Finite empirical covers at radius `1 / (n + 1)` plus the diagonal selected
+entropy inputs imply convergence of the finite-net Hoeffding upper mean plus
+the canonical inverse radius.
+-/
+theorem
+    integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_invRadiusFiniteCovers
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M K : ℝ}
+    (hfinite :
+      ∀ n (sample : SampleAt Observation n) m,
+        HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (1 / ((n : ℝ) + 1)))
+    (hlog :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWLogEmpiricalL1CoveringCardinality
+              (fun sample m =>
+                finiteEmpiricalL1CoveringNumberCard (hfinite n sample m))
+              sample n /
+            (n : ℝ))
+        atTop (0 : ℝ))
+    (hlog_div_bound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWLogEmpiricalL1CoveringCardinality
+            (fun sample m =>
+              finiteEmpiricalL1CoveringNumberCard (hfinite n sample m))
+            sample n /
+          (n : ℝ) ≤ K)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hK_nonneg : 0 ≤ K) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+              (finiteEmpiricalL1CoveringNumberCard (hfinite n sample n)) n M +
+            1 / ((n : ℝ) + 1) ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  have hselected :
+      VdVWTheorem243SelectedInvRadiusEntropySideConditions P X indexClass
+        classFun envelope M K
+        (fun n sample m =>
+          finiteEmpiricalL1CoveringNumberCard (hfinite n sample m)) :=
+    VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_invRadiusFiniteCovers
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M) (K := K)
+      hfinite hlog hlog_div_bound
+  exact
+    hselected.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero
+      hX_samplePath hclass henvelope_meas hM_pos hK_nonneg
 
 /--
 Fixed-`M` centered-truncated convergence handoff from the integrated random

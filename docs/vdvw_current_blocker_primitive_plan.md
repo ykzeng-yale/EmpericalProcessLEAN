@@ -1058,15 +1058,31 @@ Search record for the symmetrization precursor package:
   `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_bound`
   and
   `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_logCardinality_div_bound`.
+  The selected package now has the corresponding direct projections
+  `VdVWTheorem243SelectedInvRadiusEntropySideConditions.finiteNetHoeffdingUpper_bound`,
+  `VdVWTheorem243SelectedInvRadiusEntropySideConditions.integrable_finiteNetHoeffdingUpper`,
+  `VdVWTheorem243SelectedInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero`,
+  and
+  `VdVWTheorem243SelectedInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero`.
+  The finite-cover constructor route also has direct mean consumers
+  `integral_finiteNetHoeffdingUpper_tendsto_zero_of_invRadiusFiniteCovers`
+  and
+  `integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_invRadiusFiniteCovers`.
   Follow-up search found no ready
   variable-domain `UniformIntegrable`/Vitali API; pinned mathlib's
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
   `tendstoInMeasure_iff_tendsto_Lp_finite`, and dominated-convergence APIs are
-   fixed-domain.  The practical alternatives are keeping deterministic
-   boundedness/log-ratio control or adding a new explicit variable-domain
-   tail-expectation/UI primitive.  The best Billingsley source fallback for that
-   latter route is Theorem 25.12/UI, but no report should be created unless an
-   exact theorem is proved and the source screenshots/report PDF are compiled.
+   fixed-domain.  The compiled replacement route is now the explicit
+   variable-domain tail-expectation/UI bridge
+   `tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_tailExpectation_nonneg`,
+   specialized to finite-net Hoeffding means as
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_tailExpectation_convergesInOuterProbabilityConst`.
+   The remaining theorem input is proving the corresponding selected finite-net
+   tail-expectation condition from book assumptions, or continuing to use the
+   deterministic selected log-ratio bound route.  The best Billingsley source
+   fallback for a stronger UI theorem is Theorem 25.12/UI, but no report should
+   be created unless an exact theorem is proved and the source screenshots/report
+   PDF are compiled.
   A radius-monotonicity search found mathlib
   `Metric.externalCoveringNumber_anti`, `Metric.coveringNumber_anti`, and local
   `vdVWCoveringNumber_anti`, but this direction does not derive an upper bound
@@ -1081,13 +1097,16 @@ Search record for the symmetrization precursor package:
   comparison is available, but the theorem-line route should remain
   product-integrated.
 
-Next exact edit: attack the analytic side of the selected inverse-radius route.
-Either prove a theorem-facing diagonal normalized log-cardinality convergence
-and deterministic selected log-ratio bound for the selected minimal empirical
-cover at radius `1 / (n + 1)`, or formalize a precise varying-domain
-tail-expectation/UI primitive strong enough to replace that deterministic
-bound.  The finite-cover domination, terminal selected-cardinality equality,
-measurability transport, fixed-`M` centered-truncated consumers, and
+Next exact edit: prove theorem-facing inputs for one of the two compiled
+analytic routes.  Route A is diagonal normalized log-cardinality convergence
+plus deterministic selected log-ratio bound for the selected minimal empirical
+cover at radius `1 / (n + 1)`.  Route B is the selected finite-net
+tail-expectation condition needed by
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_tailExpectation_convergesInOuterProbabilityConst`.
+After either route feeds fixed-`M` centered-truncated convergence, move to
+untruncation via the envelope-tail `P^* F{F > M}` layer and final Theorem
+2.4.3 assembly.  The finite-cover domination, terminal selected-cardinality
+equality, measurability transport, fixed-`M` centered-truncated consumers, and
 symmetrization/product finite-net route are already compiled.
 
 Search note for the finite product layer: the finite-sample route can use
