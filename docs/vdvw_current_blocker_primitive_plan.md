@@ -920,29 +920,60 @@ Search record for the symmetrization precursor package:
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_bounded_invRadius`
   also compiles and discharges the deterministic radius convergence for
   `coverRadius n = 1 / ((n : ℝ) + 1)` using mathlib's
-  `tendsto_one_div_add_atTop_nhds_zero_nat`.
-  The next valid target is proving or supplying the remaining analytic side
-  conditions from the book entropy route: diagonal variable-domain entropy for
-  that chosen radius, measurable cardinality, and deterministic boundedness or
-  a genuine variable-domain uniform-integrability/dominated-convergence
-  replacement.
+  `tendsto_one_div_add_atTop_nhds_zero_nat`.  The covering primitive layer now
+  also has
+  `measurable_empiricalL1CoveringNumber_of_cover_event_measurable`, which
+  reduces measurability of the empirical covering number to measurability of
+  each fixed-cardinality cover-existence event, and
+  `measurable_finiteEmpiricalL1CoveringNumberCard_of_cover_event_measurable`,
+  which applies mathlib's `measurable_find` to the least finite cover
+  cardinality.  The theorem-local random covering interface also has
+  `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite` for the
+  minimal finite cardinality process.  This records the precise measurable
+  cardinality split: countable or finite center-selection assumptions can feed
+  fixed-cardinality cover events, while arbitrary uncountable index classes
+  still need a measurable selection/separability hypothesis.
+  The deterministic finite-net log-bound suppliers
+  `vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le`,
+  `vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le`,
+  `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
+  and
+  `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
+  plus the fixed-`M` centered-truncated consumer
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
+  are also compiled.  The next valid target is the analytic/selection input
+  this exposes: supply measurable cardinality and a deterministic normalized
+  log-cardinality bound, or a genuine variable-domain
+  uniform-integrability/dominated-convergence replacement, then prove a
+  diagonal shrinking empirical-cover radius selector from the all-radius
+  entropy hypothesis and instantiate the inverse-radius route.
   Search record: local `StatInference` and pinned mathlib searches for
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
   `tendsto_integral_of_L1`, `TendstoInMeasure`, and
   `VdVWConvergesInOuterProbabilityConst` found fixed-domain mathlib Vitali/L1
   APIs and the local common-domain
   `vdVWConvergesInOuterProbability_iff_tendstoInMeasure`; this run added the
-  variable-domain bounded nonnegative outer-probability-to-mean bridge and the
+  variable-domain bounded nonnegative outer-probability-to-mean bridge, the
   finite-net upper measurability/integrability packaging from measurable
-  cardinality, but the theorem route still needs measurable cardinality and the
-  bounded/UI hypothesis for the random finite-net upper.  Follow-up search
-  found no ready variable-domain `UniformIntegrable`/Vitali API; the practical
-  alternatives are keeping deterministic boundedness or adding a new explicit
-  variable-domain tail-expectation/UI primitive.  A `Nat.find` measurability
-  route exists via `Nat.measurable_find`, but it would require measurable
-  fibers for `FiniteEmpiricalL1CoverAtCard`, which are not available for the
-  current arbitrary-index class setup, so the theorem route should keep the
-  explicit measurable-cardinality assumption.
+  cardinality, the cover-event-to-covering-number measurability abstraction,
+  the least finite-cardinality measurability wrapper, the minimal finite
+  cardinality domination wrapper, and the deterministic normalized
+  log-cardinality bound suppliers.  The countable-class route now also has the
+  witness-free characterization
+  `nonempty_finiteEmpiricalL1CoverAtCard_iff_exists_centers`, the measurable
+  event wrapper `measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`, and
+  the direct composed wrappers
+  `measurable_empiricalL1CoveringNumber_of_countable` and
+  `measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`, conditional on
+  measurability of the pairwise empirical-distance processes.  The theorem
+  route still needs pairwise empirical-distance measurability to instantiate
+  that countable route, or a sharper finite/selected-center event lemma for the
+  actual theorem class, plus either the deterministic log-ratio bound input or
+  a genuine bounded/UI replacement, and the diagonal cover-radius selector.
+  Follow-up search found no ready
+  variable-domain `UniformIntegrable`/Vitali API; the practical alternatives are
+  keeping deterministic boundedness or adding a new explicit variable-domain
+  tail-expectation/UI primitive.
   The
   supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
@@ -993,12 +1024,13 @@ variable-domain entropy-to-Hoeffding bridge, finite-net mean consumer,
 measurable-cardinality finite-net mean consumer, random finite-net upper
 measurability/integrability packaging, and bounded entropy-to-integrated-mean
 consumer, plus the fixed-`M` bounded entropy/measurable-cardinality convergence
-consumer, are closed. Next derive or supply the measurable-cardinality,
-boundedness/UI or dominated-convergence input, and cover-radius convergence
-needed by that consumer from the entropy hypotheses; the canonical
-inverse-radius wrapper already closes the deterministic radius-convergence
-piece, so the next proof should target diagonal entropy/cardinality and
-boundedness/UI.  Then assemble the final Theorem 2.4.3 handoffs.
+consumer, inverse-radius consumer, cover-event-to-covering-number measurability
+abstraction, least finite-cardinality measurability wrapper, and minimal
+finite-cardinality domination wrapper, are closed. Next instantiate
+fixed-cardinality cover-event measurability for the selected minimal finite
+cardinality route, derive or supply the deterministic log-ratio bound or genuine
+bounded/UI replacement, prove the diagonal shrinking cover-radius selector, and
+then assemble the final Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

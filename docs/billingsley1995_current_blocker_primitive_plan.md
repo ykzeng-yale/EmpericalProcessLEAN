@@ -56,10 +56,11 @@ dependency-driven by the current VdV&W Theorem 2.4.3 route.  As of the latest
 merged empirical-process progress, the log-radius-to-Hoeffding scale comparison
 is proved, finite-`Pi` mapped-coordinate product laws are available, and the
 measurable-integrable envelope-tail convergence handoff is compiled locally in
-the empirical-process file.  The active VdV&W blocker is now the
-boundedness/uniform-integrability input needed to turn the entropy-driven
-finite-net Hoeffding outer-probability convergence into the integrated
-Hoeffding-plus-radius mean convergence consumed by the fixed-`M`
+the empirical-process file.  The active VdV&W blocker is now measurable
+cardinality, a deterministic normalized log-cardinality bound or genuine
+boundedness/UI replacement, and a shrinking cover-radius selection needed to
+turn the entropy-driven finite-net Hoeffding outer-probability convergence into
+the integrated Hoeffding-plus-radius mean convergence consumed by the fixed-`M`
 centered-truncated convergence handoff, then final assembly.  Nonmeasurable or
 arbitrary-cover envelope-tail variants remain out of scope unless the theorem
 assembly forces them.  Billingsley support should only add reusable
@@ -305,26 +306,13 @@ Local searches found reusable APIs in:
 The next high-value proof step is the theorem-specific Section 18/entropy
 assembly for VdV&W Theorem 2.4.3:
 
-- prove the real integrated Hoeffding-plus-radius upper tends to zero, using
-  the new bounded/UI-style bridges
-  `probability_integral_le_threshold_add_bound_mul_tail`,
-  `tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg`,
-  and
-  `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`,
-  pure finite-net mean consumer
-  `integral_finiteNetHoeffdingUpper_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`,
-  plus the variable-domain entropy-to-Hoeffding bridge
-  `vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero`
-  and bounded entropy-to-integrated-mean consumer
-  `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`,
-  with pure finite-net mean form
-  `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`,
-  and measurable-cardinality finite-net mean form
-  `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`,
-  the compiled fixed-`M` centered-truncated convergence consumer
-  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`
-  and the generic real-to-`ENNReal.ofReal` handoff
-  `tendsto_two_mul_ofReal_zero_of_tendsto_zero`;
+- prove the fixed-cardinality empirical-cover event measurability needed by the
+  minimal selected-cardinality route, starting with countable or finite
+  center-selection hypotheses and reusing
+  `measurable_finiteEmpiricalL1CoveringNumberCard_of_cover_event_measurable`;
+- then supply the deterministic normalized log-cardinality bound or a genuine
+  variable-domain UI replacement and prove the diagonal shrinking
+  `coverRadius -> 0` selector from the all-radius entropy route;
 - if that assembly exposes only a.e.-measurable or null-measurable random
   targets, use `VdVWMeasurableCover.ofAEMeasurable` or
   `VdVWMeasurableCover.ofNullMeasurable_ofReal` rather than adding another
@@ -497,8 +485,28 @@ and radius-added measurable-cardinality integrated-mean consumer
 `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`
 are now compiled as well. The finite-net upper measurability/integrability
 packaging lemmas from measurable cardinality and a deterministic bound are also
-compiled. The next proof target is supplying measurable cardinality plus
-variable-domain boundedness/UI input from the entropy hypotheses and selecting
-a shrinking deterministic cover radius, not a fixed-sample pointwise comparison
-or product-a.e. finite-center Hoeffding predicate. Do not add another product
-surface unless that assembly exposes a sharper missing API.
+compiled. The covering primitive layer also now has
+`measurable_empiricalL1CoveringNumber_of_cover_event_measurable` and
+`measurable_finiteEmpiricalL1CoveringNumberCard_of_cover_event_measurable`,
+which reduce empirical covering-number and least finite-cardinality
+measurability to measurability of each fixed-cardinality cover-existence event.
+For arbitrary uncountable index classes, that fixed-cardinality event remains
+the real measurable-selection input; countable or finite center-selection
+hypotheses are the next plausible route. The minimal finite cardinality process
+also has
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite`. The
+deterministic finite-net log-bound suppliers
+`vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le`,
+`vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le`,
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
+and
+`integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
+plus the fixed-`M` centered-truncated consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
+are also compiled. The next proof target is proving countable/finite
+fixed-cardinality cover-event measurability, then supplying the deterministic
+normalized log-cardinality bound or a genuine variable-domain boundedness/UI
+replacement from the entropy hypotheses and proving a diagonal shrinking cover
+radius selector, not a fixed-sample pointwise comparison or product-a.e.
+finite-center Hoeffding predicate. Do not add
+another product surface unless that assembly exposes a sharper missing API.
