@@ -417,11 +417,12 @@ and
 `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
 plus the fixed-`M` centered-truncated consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
-are also compiled. Next instantiate the selected minimal-cardinality route under
-a countability or selection hypothesis, then supply a deterministic normalized
-log-cardinality bound or a genuine boundedness/UI replacement and prove a
-diagonal shrinking cover radius selector to turn the entropy hypotheses into the
-required real integrated upper, now past the
+are also compiled, and the selected minimal-cardinality measurability wrappers
+for countable/truncated classes are now available. Next feed the theorem
+entropy/finite-cover hypotheses into those wrappers, then supply a deterministic
+normalized log-cardinality bound or a genuine boundedness/UI replacement and
+prove a diagonal shrinking cover radius selector to turn the entropy hypotheses
+into the required real integrated upper, now past the
 fixed-sample,
 integral-lift, product-projection/Fubini, same-weight pair split, deterministic
 sign-negation, ordinary random-sign averaging, product-cover, sample-cover,

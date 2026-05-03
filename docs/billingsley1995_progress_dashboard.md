@@ -235,12 +235,14 @@ Concrete next edits:
    and
    `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
    plus the fixed-`M` centered-truncated consumer
-   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
-   are also compiled;
-   the next blocker is instantiating the selected minimal-cardinality route under
-   a countability or selection hypothesis, then supplying a deterministic
-   normalized log-cardinality bound or a genuine boundedness/UI replacement and a
-   diagonal shrinking cover-radius selector from the entropy hypotheses.
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
+are also compiled;
+the selected minimal-cardinality measurability wrappers for countable/truncated
+classes are now compiled as well.  The next blocker is feeding the theorem
+entropy/finite-cover hypotheses into those wrappers, then supplying a
+deterministic normalized log-cardinality bound or a genuine boundedness/UI
+replacement and a diagonal shrinking cover-radius selector from the entropy
+hypotheses.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.

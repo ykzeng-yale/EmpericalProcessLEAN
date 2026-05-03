@@ -965,11 +965,17 @@ Search record for the symmetrization precursor package:
   event wrapper `measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`, the
   direct wrappers `measurable_empiricalL1CoveringNumber_of_countable` and
   `measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`, and their
-  measurable-class specializations.  The theorem route still needs a countable
-  selected class with finite empirical covers, or a sharper finite/selected-center
-  event lemma for the actual theorem class, plus either the deterministic
-  log-ratio bound input or a genuine bounded/UI replacement, and the diagonal
-  cover-radius selector.
+  measurable-class specializations.  The theorem-facing selected
+  minimal-cardinality measurability wrappers
+  `measurable_terminal_minimalRandomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`,
+  `measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable`,
+  and
+  `measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable`
+  are compiled as well.  The theorem route still needs a countable selected class
+  with finite empirical covers, or a sharper finite/selected-center event lemma
+  for the actual theorem class, plus either the deterministic log-ratio bound
+  input or a genuine bounded/UI replacement, and the diagonal cover-radius
+  selector.
   Follow-up search found no ready
   variable-domain `UniformIntegrable`/Vitali API; the practical alternatives are
   keeping deterministic boundedness or adding a new explicit variable-domain
@@ -1027,11 +1033,12 @@ consumer, plus the fixed-`M` bounded entropy/measurable-cardinality convergence
 consumer, inverse-radius consumer, cover-event-to-covering-number measurability
   abstraction, least finite-cardinality measurability wrapper, minimal
   finite-cardinality domination wrapper, pairwise empirical-distance measurability
-  bridge, and countable covering-number/cardinality wrappers, are closed. Next
-  instantiate the selected minimal finite cardinality route under a countability
-  or selection hypothesis, derive or supply the deterministic log-ratio bound or
-  genuine bounded/UI replacement, prove the diagonal shrinking cover-radius
-  selector, and then assemble the final Theorem 2.4.3 handoffs.
+  bridge, countable covering-number/cardinality wrappers, and theorem-facing
+  selected-cardinality measurability wrappers for countable/truncated classes,
+  are closed. Next feed the theorem entropy/finite-cover hypotheses into those
+  wrappers, derive or supply the deterministic log-ratio bound or genuine
+  bounded/UI replacement, prove the diagonal shrinking cover-radius selector, and
+  then assemble the final Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

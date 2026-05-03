@@ -191,7 +191,13 @@ countable-class cover-event route is now compiled as
 `measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`,
 `measurable_empiricalL1CoveringNumber_of_countable`, and
 `measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`, plus measurable
-class specializations. The
+class specializations. The theorem-facing selected minimal-cardinality
+measurability wrappers
+`measurable_terminal_minimalRandomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`,
+`measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable`,
+and
+`measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable`
+are also compiled. The
 deterministic finite-net log-bound suppliers
 `vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le`,
 `vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le`,
@@ -200,9 +206,10 @@ and
 `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
 plus the fixed-`M` centered-truncated consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
-are also compiled. The remaining blocker is instantiating selected
-minimal-cardinality measurability under countability or selection hypotheses,
-supplying the deterministic normalized log-cardinality bound or a genuine
+are also compiled. The remaining blocker is feeding the selected
+minimal-cardinality measurability wrappers with the theorem's countable/truncated
+finite-cover hypotheses, supplying the deterministic normalized log-cardinality
+bound or a genuine
 bounded/UI replacement, and a shrinking deterministic
 `coverRadius -> 0` diagonal selection from the all-radius entropy route, then final
 assembly.
@@ -217,7 +224,7 @@ DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
 ONGOING    Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
 READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, random empirical-cover cardinality witness handoff, nonempty-cover positive-cardinality handoff, F_M truncation interfaces, countable truncated-class P-measurability bridge, a.e./null-measurable cover constructors, truncated product-copy pair-difference measurability/integrability, P.prod P coordinate law/independence/identical-distribution wrappers, mapped truncated-class product-copy law/independence wrapper, finite-sample mapped-coordinate laws/independence wrapper, fixed-index product-copy mean-zero bridge, finite product-sample weighted-sum mean-zero bridge, conditional fixed-original-sample ghost-copy identity, fixed-sample Phi=x ghost-copy comparison, pair-difference supremum split, envelope-bounded pair split, finite product-coordinate projection and expectation-level integral lifts, Fubini/product-projection centered handoff, composed centered-to-two-truncated-expectation handoff, product-pair sign-symmetry and random-sign integrated averaging, random-sign expected-maximal and outer-expectation projections, supplied-hphi finite-net projection, product-integrated cover/projection handoff, sample-cover and sample-dependent-cardinality product-a.e. finite-net bridges, real-valued envelope-tail outer-expectation/probability bridge, ordinary truncation-tail integral bridge, measurable-integrable outer/lintegral envelope-tail convergence, fixed-sample empirical-net inequality (2.4.4), finite-center maximal/Hoeffding-scale handoff layer, deterministic and a.e. random Rademacher-sign finite-net specializations, one-center sub-Gaussian bridge, variance-proxy arithmetic, sub-Gaussian proxy monotonicity, finite-center tail/union-bound layer, iid real-valued Rademacher-sign construction, finite-center supremum integrability, expected finite-center supremum handoff, layer-cake tail-integral monotonicity, generic ordinary dominated-convergence tail cutoff, bounded-tail expectation wrapper, product self-copy, mapped-coordinate joint-law independence wrappers, finite-Pi mapped-coordinate product wrappers, finite-Pi weighted-sum expectation wrappers, generic product-copy weighted-sum mean-zero wrapper, generic conditional ghost-copy finite-Pi Fubini wrapper, Gaussian-tail integrability/evaluation, coarse closed-form expectation bound, split-at-radius tail-to-expectation bound, Mills-type finite-center expectation layers, logarithmic-radius arithmetic, finite-center logarithmic-radius Mills expectation bound, expected maximal-bound packaging, truncated Rademacher expected-maximal specialization, finite-empirical-cover expected-maximal wrapper, common-proxy positivity, proved log-radius-to-Hoeffding scale comparison, Hoeffding-scale expected-maximal wrapper under explicit positivity, finite-net Hoeffding upper nonnegativity/square/log-cardinality rewrites, finite-net upper measurability/integrability packaging, deterministic `L_n / n -> 0` to Hoeffding-scale convergence helper, pointwise finite-net notation convergence bridge, stochastic entropy-to-Hoeffding convergence, variable-domain entropy-to-Hoeffding convergence, shifted-display and fixed/all-entropy Hoeffding convergence consumers, Markov outer-expectation-to-outer-probability bridge, variable-domain bounded outer-probability-to-mean bridge, variable-domain fixed-M centered-truncated convergence handoff under a vanishing integrated finite-net upper, bounded fixed-M and deterministic log-bound fixed-M consumers, cover-event-to-covering-number measurability reduction, real-mean fixed-M convergence consumer, bounded entropy-to-finite-net mean consumer, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
-NEXT       Feed countable empirical-cover measurability into the selected-cardinality route where applicable; otherwise prove the needed finite/selected-center event lemma, selected log-ratio bound, and shrinking cover-radius diagonal selection, then final Theorem 2.4.3 assembly.
+NEXT       Feed theorem entropy/finite-cover hypotheses into the selected-cardinality measurability wrappers; otherwise prove the needed finite/selected-center event lemma, selected log-ratio bound, and shrinking cover-radius diagonal selection, then final Theorem 2.4.3 assembly.
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED-EXAMPLE Example 2.4.2 exact quantile-grid closure and empirical-CDF report unless a theorem needs it.
