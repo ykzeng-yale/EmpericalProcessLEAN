@@ -27,3 +27,4 @@ import StatInference.Optimization.DiscreteGronwall
 import StatInference.Optimization.GradientDescent
 import StatInference.Optimization.Theorem33
 import StatInference.Optimization.Theorem34
+import StatInference.Optimization.Theorem36

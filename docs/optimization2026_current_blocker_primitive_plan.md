@@ -41,23 +41,30 @@ acceptable only when it is the fastest verified dependency for the active proof
 route or when the exact theorem target is blocked and the blocker is recorded
 precisely.
 
+## Manual Goal Prompt
+
+The active app-level `/goal` text is immutable in the current tool surface
+except for marking the goal complete.  Since the full textbook formalization is
+not complete, this document is the live replacement prompt for manual goal
+runs.
+
+Current manual objective: aggressively formalize and prove the main theorem
+content of Sinho Chewi's Optimization 2026 notes in Lean under
+`StatInference/Optimization`, continuing from the latest pushed frontier
+`c8280cf` (`Add Chewi theorem 3.6 PL convergence layer`).  Search existing
+mathlib and local `StatInference` APIs first, prove the next highest-leverage
+main-text theorem layer, verify with focused `lake env lean`, targeted
+`lake build StatInference`, proof-hole and secret scans, update this route
+state, and commit/push clean verified progress.  Skip exercise proofs until
+the main textbook theorem lane is covered; exercise statements may be used as
+supplied interfaces only when they directly unblock a main-text theorem.
+
 ## Current Blocker
 
-The Chewi lane now has source materials and an initial compiled content-based
-Lean module under `StatInference/Optimization/`, but it does not yet have an
-exact source-audited Optimization theorem report.
-
-The blocker is selecting and proving the first theorem whose statement can be
-both:
-
-- faithful to the textbook source; and
-- low-risk enough to compile quickly without overcommitting to a fragile
-  differentiability or finite-dimensional matrix design.
-
-The best aggressive target is Theorem 3.4 function-value convergence of
-gradient descent, while Theorem 3.3 contraction now has a reusable compiled
-supplied-interface layer.  The first Chapter 3 atomic dependencies now have
-compiled local layers:
+The Chewi lane has source materials and a compiled content-based Lean namespace
+under `StatInference/Optimization/`, but it does not yet have an exact
+source-audited Optimization theorem report.  Main-text Chapter 3 now has a
+strong reusable spine through Theorem 3.6:
 
 - Lemma 3.5 discrete Gronwall has both zero-based finite-sum and source-shaped
   one-based display wrappers in `StatInference/Optimization/DiscreteGronwall.lean`.
@@ -98,6 +105,22 @@ until after the main textbook lane is covered.  Next choices are main-text
 source-audited packaging for Theorem 3.3/3.4, continuing to main-text Theorems
 3.6/3.7, or the segment-strong-convexity plus differentiability bridge to
 `FirstOrderStrongConvexOn`.
+
+Theorem 3.6 under PL also compiles in
+`StatInference/Optimization/Theorem36.lean`.  It adds
+`PolyakLojasiewiczOn`, proves the one-step function-gap recurrence from Lemma
+3.1 plus PL, unrolls a nonnegative scalar recurrence with the existing
+`discreteGronwall_sum_le`, and provides a source-shaped wrapper for
+`h <= 1 / beta`.
+
+The active blocker is now main-text Theorem 3.7, the gradient-norm/stationary
+point guarantee.  It should be proved from the compiled descent lemma and a
+finite telescoping/average argument, with no dependency on Chapter 3
+exercises.  If the exact finite `min` expression is expensive, first compile a
+source-faithful existential wrapper over `n < N`, then package the finite-min
+form after the required `Finset` API search.  In parallel, source-audited
+report packaging for the already compiled Chapter 3 main-text theorem layers
+remains a high-value non-proof task.
 
 ## Search-First Record
 
@@ -248,6 +271,7 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.StrongConvexOn`
 - `StatInference.Optimization.ChewiConvexOn`
 - `StatInference.Optimization.SmoothWithGradientOn`
+- `StatInference.Optimization.PolyakLojasiewiczOn`
 - `StatInference.Optimization.gradientDescentStep`
 - `StatInference.Optimization.IsGradientDescentTrajectory`
 - `StatInference.Optimization.HasLipschitzGradientOn`
@@ -292,12 +316,18 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi34_final_gap_le_geometric_denominator_of_firstOrderStrongConvexOn_of_descent`
 - `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn_of_descent`
+- `StatInference.Optimization.oneStepGap_le_of_polyakLojasiewiczOn`
+- `StatInference.Optimization.oneStepGap_le_of_polyakLojasiewiczOn_of_le_inv`
+- `StatInference.Optimization.gapRecurrence_of_polyakLojasiewiczOn`
+- `StatInference.Optimization.scalarRecurrence_le_pow`
+- `StatInference.Optimization.chewi36_gap_le_of_polyakLojasiewiczOn`
+- `StatInference.Optimization.chewi36_gap_le_of_polyakLojasiewiczOn_of_le_inv`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal target: continue main-text Chapter 3 and defer exercise
-proofs.  Highest-value options are source-exact supplied-interface report
-packaging for Theorem 3.3/3.4, moving to main-text Theorem 3.6/3.7 with
-minimal new PL/gradient-norm interfaces, or the differentiability bridge from
-segment `StrongConvexOn` to `FirstOrderStrongConvexOn` for full Proposition
-1.6 fidelity.
+Next manual goal target: prove main-text Theorem 3.7 with a minimal
+gradient-norm/telescoping layer and continue deferring exercise proofs.
+Secondary high-value options are source-exact supplied-interface report
+packaging for Theorem 3.3/3.4/3.6 or, after Theorem 3.7, the
+differentiability bridge from segment `StrongConvexOn` to
+`FirstOrderStrongConvexOn` for full Proposition 1.6 fidelity.

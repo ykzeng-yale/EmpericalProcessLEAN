@@ -96,6 +96,15 @@ def SmoothWithGradientOn (C : Set E) (f : E -> ℝ) (grad : E -> E)
         f y ≤ f x + inner ℝ (grad x) (y - x) +
           (beta / 2) * ‖y - x‖ ^ (2 : ℕ)
 
+/--
+Chewi Definition 2.5, Polyak-Lojasiewicz inequality with a supplied gradient
+oracle and reference value `fstar`.
+-/
+def PolyakLojasiewiczOn (C : Set E) (f : E -> ℝ) (grad : E -> E)
+    (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    2 * alpha * (f x - fstar) ≤ ‖grad x‖ ^ (2 : ℕ)
+
 /-- Gradient descent one-step map with an explicit gradient oracle. -/
 def gradientDescentStep (grad : E -> E) (h : ℝ) (x : E) : E :=
   x - h • grad x
@@ -257,6 +266,14 @@ theorem SmoothWithGradientOn.upper_model {C : Set E} {f : E -> ℝ}
     f y ≤ f x + inner ℝ (grad x) (y - x) +
       (beta / 2) * ‖y - x‖ ^ (2 : ℕ) :=
   h.2.2 hx hy
+
+omit [InnerProductSpace ℝ E] in
+theorem PolyakLojasiewiczOn.gradient_sq_lower {C : Set E} {f : E -> ℝ}
+    {grad : E -> E} {alpha fstar : ℝ}
+    (h : PolyakLojasiewiczOn C f grad alpha fstar)
+    {x : E} (hx : x ∈ C) :
+    2 * alpha * (f x - fstar) ≤ ‖grad x‖ ^ (2 : ℕ) :=
+  h hx
 
 theorem IsGradientDescentTrajectory.succ {grad : E -> E} {h : ℝ}
     {x : ℕ -> E} (hx : IsGradientDescentTrajectory grad h x)
