@@ -214,9 +214,39 @@ Concrete next edits:
    is also compiled;
    the finite-net upper measurability/integrability packaging lemmas from
    measurable cardinality and a deterministic bound are also compiled;
-   the next blocker is supplying measurable cardinality plus
-   boundedness/uniform-integrability input and a shrinking deterministic
-   cover-radius selection from the entropy hypotheses.
+   the covering primitive measurability abstractions
+   `measurable_empiricalL1CoveringNumber_of_cover_event_measurable` and
+   `measurable_finiteEmpiricalL1CoveringNumberCard_of_cover_event_measurable`
+   are compiled, reducing empirical covering-number and least finite-cardinality
+   measurability to fixed-cardinality cover-event measurability under explicit
+   selection hypotheses, with
+   `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite`
+   providing the minimal finite-cardinality domination process; the countable
+   fixed-cardinality cover-event route is also compiled as
+   `nonempty_finiteEmpiricalL1CoverAtCard_iff_exists_centers`,
+   `measurable_empiricalL1Distance_of_measurable`,
+   `measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`,
+   `measurable_empiricalL1CoveringNumber_of_countable`, and
+   `measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`;
+   the deterministic finite-net log-bound suppliers
+   `vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le`,
+   `vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le`,
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
+   and
+   `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
+   plus the fixed-`M` centered-truncated consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
+are also compiled;
+the selected minimal-cardinality measurability wrappers
+`measurable_terminal_minimalRandomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`,
+`measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable`,
+and
+`measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable`
+are now compiled as well.  The next blocker is feeding the theorem
+entropy/finite-cover hypotheses into those wrappers, then supplying a
+deterministic normalized log-cardinality bound or a genuine boundedness/UI
+replacement and a diagonal shrinking cover-radius selector from the entropy
+hypotheses.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.
