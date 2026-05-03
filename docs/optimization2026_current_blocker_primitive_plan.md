@@ -69,8 +69,9 @@ compiled local layers:
   `StatInference/Optimization/Theorem33.lean`, from the supplied
   `StronglyMonotoneGradientOn` and `GradientStepCocoerciveOn` interfaces.
   It also has wrappers deriving gradient monotonicity from the supplied
-  first-order lower-model form `FirstOrderStrongConvexOn`; the remaining
-  supplied input is Exercise 3.1 co-coercivity.
+  first-order lower-model form `FirstOrderStrongConvexOn`, and wrappers using
+  the source-shaped Exercise 3.1 display `(3.5)` as `GradientCocoerciveOn`
+  together with `h <= 1 / beta`.
 
 The positive-`alpha` closed-form Theorem 3.4 function-value denominator now
 compiles.  The assembly layer in
@@ -89,10 +90,14 @@ derives monotonicity of function values along GD trajectories, removing the
 last supplied monotone-gap assumption from the positive-`alpha` and
 `alpha = 0` closed-form wrappers.  The Proposition 1.6 `(1.4) => (1.5)`
 swap-and-add bridge from `FirstOrderStrongConvexOn` to
-`StronglyMonotoneGradientOn` now compiles.  Next choices are the full Exercise
-3.1 co-coercivity derivation, the segment-strong-convexity plus
-differentiability bridge to `FirstOrderStrongConvexOn`, or source-audited
-report packaging for the supplied-interface Theorem 3.3/3.4 layers.
+`StronglyMonotoneGradientOn` now compiles.  The source-shaped Exercise 3.1
+display `(3.5)` also compiles as `GradientCocoerciveOn`, and it supplies the
+h-scaled Theorem 3.3 co-coercivity condition under `0 < beta`, `0 <= h`, and
+`h <= 1 / beta`.  Per the current route decision, exercise proofs are deferred
+until after the main textbook lane is covered.  Next choices are main-text
+source-audited packaging for Theorem 3.3/3.4, continuing to main-text Theorems
+3.6/3.7, or the segment-strong-convexity plus differentiability bridge to
+`FirstOrderStrongConvexOn`.
 
 ## Search-First Record
 
@@ -178,8 +183,19 @@ source-shaped supplied interfaces `StronglyMonotoneGradientOn` and
 `norm_sub_sq_real`, `real_inner_smul_right`, `norm_smul`, and
 `Real.norm_eq_abs`, then closes the contraction with `nlinarith` and
 `sq_le_sq₀`.  Theorem 3.3 also has wrappers from
-`FirstOrderStrongConvexOn` plus `GradientStepCocoerciveOn`, so the only
-remaining supplied input for that path is Exercise 3.1 co-coercivity.
+`FirstOrderStrongConvexOn` plus `GradientStepCocoerciveOn`.
+
+Current Exercise 3.1 co-coercivity interface result: the source display (3.5)
+now compiles as `GradientCocoerciveOn`.  The bridge
+`GradientCocoerciveOn.stepCocoerciveOn_of_le_inv` converts it to
+`GradientStepCocoerciveOn` under the source step-size condition
+`h <= 1 / beta`; the proof uses `real_inner_comm`, positivity of the squared
+norm, `mul_le_mul_of_nonneg_left`, `mul_le_mul_of_nonneg_right`, `field_simp`,
+and `nlinarith`.  Theorem 3.3 now has source-step wrappers from
+`FirstOrderStrongConvexOn` plus `GradientCocoerciveOn`.  Deriving (3.5)
+itself from convexity plus smoothness or from the shifted-function/descent
+lemma is recorded as an exercise-pass task and should not block main-text
+formalization.
 
 Local searches should prioritize:
 
@@ -245,12 +261,17 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.descentLemma_of_smoothWithGradientOn_of_le_inv`
 - `StatInference.Optimization.functionValue_antitone_of_smoothWithGradientOn`
 - `StatInference.Optimization.StronglyMonotoneGradientOn`
+- `StatInference.Optimization.GradientCocoerciveOn`
+- `StatInference.Optimization.GradientCocoerciveOn.stepCocoerciveOn`
+- `StatInference.Optimization.GradientCocoerciveOn.stepCocoerciveOn_of_le_inv`
 - `StatInference.Optimization.GradientStepCocoerciveOn`
 - `StatInference.Optimization.FirstOrderStrongConvexOn.stronglyMonotoneGradientOn`
 - `StatInference.Optimization.gradientStep_sqdist_contract_of_strongMonotone_cocoercive`
 - `StatInference.Optimization.gradientStep_dist_contract_of_strongMonotone_cocoercive`
 - `StatInference.Optimization.gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_cocoercive`
 - `StatInference.Optimization.gradientStep_dist_contract_of_firstOrderStrongConvexOn_cocoercive`
+- `StatInference.Optimization.gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_gradientCocoerciveOn`
+- `StatInference.Optimization.gradientStep_dist_contract_of_firstOrderStrongConvexOn_gradientCocoerciveOn`
 - `StatInference.Optimization.weightedSumBound_of_gronwall_negative_forcing`
 - `StatInference.Optimization.weightedFinalGap_le_weightedGapSum`
 - `StatInference.Optimization.geometricWeights_sum_eq_geom_sum`
@@ -274,9 +295,9 @@ Latest verified local frontier after lane creation:
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal target: choose the fastest source-faithful completion path for
-Chapter 3.  The highest-value next proof target is deriving Exercise 3.1
-co-coercivity for the Theorem 3.3 contraction layer.  Other viable options are
-source-exact supplied-interface report packaging for Theorem 3.3/3.4, or the
-differentiability bridge from segment `StrongConvexOn` to
-`FirstOrderStrongConvexOn` for full Proposition 1.6 fidelity.
+Next manual goal target: continue main-text Chapter 3 and defer exercise
+proofs.  Highest-value options are source-exact supplied-interface report
+packaging for Theorem 3.3/3.4, moving to main-text Theorem 3.6/3.7 with
+minimal new PL/gradient-norm interfaces, or the differentiability bridge from
+segment `StrongConvexOn` to `FirstOrderStrongConvexOn` for full Proposition
+1.6 fidelity.

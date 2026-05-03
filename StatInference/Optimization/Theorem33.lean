@@ -108,5 +108,44 @@ theorem gradientStep_dist_contract_of_firstOrderStrongConvexOn_cocoercive
     hfirst.stronglyMonotoneGradientOn hcoco hh_nonneg
     hfactor_nonneg hx hy
 
+/--
+Chewi Theorem 3.3, squared-distance form, using Proposition 1.6 `(1.4) =>
+(1.5)` and Exercise 3.1 equation (3.5) with the source step-size condition.
+-/
+theorem gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_gradientCocoerciveOn
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {alpha beta h : ℝ} {x y : E}
+    (hfirst : FirstOrderStrongConvexOn C f grad alpha)
+    (hcoco : GradientCocoerciveOn C grad beta)
+    (hbeta_pos : 0 < beta)
+    (hh_nonneg : 0 ≤ h)
+    (hstep_size : h ≤ 1 / beta)
+    (hx : x ∈ C) (hy : y ∈ C) :
+    ‖gradientDescentStep grad h y - gradientDescentStep grad h x‖ ^ (2 : ℕ) ≤
+      (1 - alpha * h) * ‖y - x‖ ^ (2 : ℕ) :=
+  gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_cocoercive
+    hfirst (hcoco.stepCocoerciveOn_of_le_inv hbeta_pos hh_nonneg hstep_size)
+    hh_nonneg hx hy
+
+/--
+Chewi Theorem 3.3, norm form, using Proposition 1.6 `(1.4) => (1.5)` and
+Exercise 3.1 equation (3.5) with the source step-size condition.
+-/
+theorem gradientStep_dist_contract_of_firstOrderStrongConvexOn_gradientCocoerciveOn
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {alpha beta h : ℝ} {x y : E}
+    (hfirst : FirstOrderStrongConvexOn C f grad alpha)
+    (hcoco : GradientCocoerciveOn C grad beta)
+    (hbeta_pos : 0 < beta)
+    (hh_nonneg : 0 ≤ h)
+    (hstep_size : h ≤ 1 / beta)
+    (hfactor_nonneg : 0 ≤ 1 - alpha * h)
+    (hx : x ∈ C) (hy : y ∈ C) :
+    ‖gradientDescentStep grad h y - gradientDescentStep grad h x‖ ≤
+      Real.sqrt (1 - alpha * h) * ‖y - x‖ :=
+  gradientStep_dist_contract_of_firstOrderStrongConvexOn_cocoercive
+    hfirst (hcoco.stepCocoerciveOn_of_le_inv hbeta_pos hh_nonneg hstep_size)
+    hh_nonneg hfactor_nonneg hx hy
+
 end Optimization
 end StatInference

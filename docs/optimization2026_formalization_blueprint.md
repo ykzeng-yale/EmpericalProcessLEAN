@@ -156,9 +156,12 @@ Near-term exact candidates:
    `StronglyMonotoneGradientOn` and `GradientStepCocoerciveOn` interfaces,
    plus wrappers deriving gradient monotonicity from
    `FirstOrderStrongConvexOn` via the textbook's Proposition 1.6
-   `(1.4) => (1.5)` swap-and-add argument.  Remaining exact-source work is
-   deriving Exercise 3.1 co-coercivity and, later, deriving the supplied
-   first-order lower model from segment strong convexity plus differentiability.
+   `(1.4) => (1.5)` swap-and-add argument.  It also compiles source-step
+   wrappers from Exercise 3.1 display `(3.5)` as `GradientCocoerciveOn`
+   under `h <= 1 / beta`.  The derivation of (3.5) itself is deferred to the
+   later exercise pass; for the main-text lane, continue with report packaging,
+   main-text Theorems 3.6/3.7, or deriving the supplied first-order lower model
+   from segment strong convexity plus differentiability.
 4. Theorem 3.4 as a supplied-interface convergence theorem.  The next layer
    now compiles in `StatInference/Optimization/Theorem34.lean`: it assumes the
    one-step recurrence (3.1), uses the compiled Gronwall theorem for the
