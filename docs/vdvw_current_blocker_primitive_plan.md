@@ -963,16 +963,22 @@ Search record for the symmetrization precursor package:
   `hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath`,
   and the countable truncated measurability transport is packaged as
   `measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable_of_covering_le`.
-  The next valid target is
-  now one layer later: the theorem-facing consumer
+  The theorem-facing consumer
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
   discharges `hcardinality` from equality with the selected truncated
-  minimal-cardinality process.  The remaining analytic/selection inputs are the
-  inverse-radius finite-cover domination, terminal equality for the selected
-  process, and the normalized
-  log-cardinality convergence plus deterministic bound or a genuine
-  variable-domain uniform-integrability/dominated-convergence replacement from
-  the all-radius entropy hypothesis.
+  minimal-cardinality process.  The selected package
+  `VdVWTheorem243SelectedInvRadiusEntropySideConditions`, its projection
+  `VdVWTheorem243SelectedInvRadiusEntropySideConditions.toFixedMInvRadiusEntropySideConditions`,
+  its finite-cover constructor
+  `VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_invRadiusFiniteCovers`,
+  and the compact fixed-`M` convergence consumer
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedInvRadiusEntropy`
+  are compiled as well.  This closes the selected finite-cover domination and
+  terminal selected-cardinality equality plumbing.  The next valid target is
+  one layer later: supply diagonal shrinking-radius selected log-cardinality
+  convergence plus a deterministic normalized log-ratio bound, or prove a
+  genuine variable-domain uniform-integrability/dominated-convergence
+  replacement.
   Search record: local `StatInference` and pinned mathlib searches for
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
   `tendsto_integral_of_L1`, `TendstoInMeasure`, and
@@ -997,11 +1003,12 @@ Search record for the symmetrization precursor package:
   `measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable`,
   and
   `measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable`
-  are compiled as well.  The theorem route still needs a countable selected class
-  with finite empirical covers, or a sharper finite/selected-center event lemma
-  for the actual theorem class, plus either the deterministic log-ratio bound
-  input or a genuine bounded/UI replacement, and the diagonal cover-radius
-  selector.
+  are compiled as well.  The theorem route can now package a countable selected
+  class with finite empirical covers through
+  `VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_invRadiusFiniteCovers`.
+  The remaining non-plumbing inputs are the selected diagonal log convergence
+  and either the deterministic log-ratio bound input or a genuine bounded/UI
+  replacement.
   Follow-up search found no ready
   variable-domain `UniformIntegrable`/Vitali API; the practical alternatives are
   keeping deterministic boundedness or adding a new explicit variable-domain
@@ -1011,6 +1018,13 @@ Search record for the symmetrization precursor package:
   `tendsto_Lp_finite_of_tendstoInMeasure`, `tendsto_integral_of_L1`, and
   fixed-measure dominated-convergence APIs; local `ProbabilityMeasure/Tail.lean`
   supplies reusable layer-cake/tail bounds but no variable-domain Vitali theorem.
+  A radius-monotonicity search found mathlib
+  `Metric.externalCoveringNumber_anti`, `Metric.coveringNumber_anti`, and local
+  `vdVWCoveringNumber_anti`, but this direction does not derive an upper bound
+  for the shrinking radius `1/(n+1)` from fixed positive-radius entropy:
+  eventually `1/(n+1) ≤ ε`, so antitonicity gives
+  `N(ε) ≤ N(1/(n+1))`, not the needed upper bound on the selected diagonal
+  covering number.
   The
   supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`

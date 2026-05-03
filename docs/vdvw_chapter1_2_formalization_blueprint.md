@@ -511,11 +511,17 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_bounded`
    is also compiled.  It packages selected inverse-radius covers, diagonal
    log-cardinality convergence, and measurable cardinality while leaving the
-   finite-net boundedness/UI assumption explicit.  The next frontier is feeding
-   theorem entropy/finite-cover hypotheses into the selected-cardinality and
-   inverse-radius side-condition wrappers, supplying a deterministic normalized
-   log-cardinality bound or genuine boundedness/UI input from entropy, then
-   final assembly.
+   finite-net boundedness/UI assumption explicit.  The selected inverse-radius
+   package `VdVWTheorem243SelectedInvRadiusEntropySideConditions`, finite-cover
+   constructor
+   `VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_invRadiusFiniteCovers`,
+   fixed-package projection, and compact fixed-`M` convergence consumer
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedInvRadiusEntropy`
+   are also compiled, closing finite-cover domination and terminal equality for
+   the selected minimal-cardinality route.  The next frontier is supplying the
+   diagonal shrinking-radius selected log-cardinality convergence and
+   deterministic normalized log-cardinality bound, or a genuine variable-domain
+   boundedness/UI input, then final assembly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
