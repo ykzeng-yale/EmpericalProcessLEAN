@@ -1839,6 +1839,141 @@ def VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale
         (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n))) ≤
     vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M
 
+/-- Elementary bound used in the finite-net scale comparison. -/
+theorem vdVWTheorem243_exp_neg_one_le_half :
+    Real.exp (-1) ≤ (1 / 2 : ℝ) := by
+  have h2raw := Real.add_one_le_exp (1 : ℝ)
+  have h2 : (2 : ℝ) ≤ Real.exp 1 := by
+    norm_num at h2raw ⊢
+    exact h2raw
+  rw [Real.exp_neg]
+  simpa [one_div] using one_div_le_one_div_of_le (by norm_num : (0 : ℝ) < 2) h2
+
+/--
+The logarithmic radius based on `cardinality` is bounded by the finite-net
+display radius based on `cardinality + 1`.
+-/
+theorem vdVWTheorem243_logRadius_log_le_succ
+    {cardinality : ℕ} (hcardinality : 0 < cardinality) :
+    1 + Real.log (cardinality : ℝ) ≤
+      1 + Real.log ((cardinality : ℝ) + 1) := by
+  have hcpos : 0 < (cardinality : ℝ) := by exact_mod_cast hcardinality
+  have hcle : (cardinality : ℝ) ≤ (cardinality : ℝ) + 1 := by linarith
+  linarith [Real.log_le_log hcpos hcle]
+
+/--
+The compiled log-radius Mills upper is dominated by the VdV&W finite-net
+Hoeffding display scale under the explicit positive assumptions on the net
+cardinality, sample size, and truncation level.
+-/
+theorem VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale.of_pos
+    {cardinality n : ℕ} {M : ℝ}
+    (hcardinality : 0 < cardinality) (hn : 0 < n) (hM_pos : 0 < M) :
+    VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale cardinality n M := by
+  unfold VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale
+  let c : ℝ≥0 :=
+    NNReal.mk (M ^ 2 / (n : ℝ))
+      (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n))
+  let a : ℝ := 1 + Real.log (cardinality : ℝ)
+  let b : ℝ := 1 + Real.log ((cardinality : ℝ) + 1)
+  let r : ℝ := Real.sqrt (2 * (c : ℝ) * a)
+  have hc : 0 < (c : ℝ) := by
+    dsimp [c]
+    exact vdVWTheorem243_truncated_commonProxy_pos hn hM_pos
+  have hc_nonneg : 0 ≤ (c : ℝ) := le_of_lt hc
+  have hcardinality_one : (1 : ℝ) ≤ (cardinality : ℝ) := by
+    exact_mod_cast Nat.succ_le_of_lt hcardinality
+  have ha_nonneg : 0 ≤ a := by
+    dsimp [a]
+    have hlog : 0 ≤ Real.log (cardinality : ℝ) :=
+      Real.log_nonneg hcardinality_one
+    linarith
+  have ha_one : 1 ≤ a := by
+    dsimp [a]
+    have hlog : 0 ≤ Real.log (cardinality : ℝ) :=
+      Real.log_nonneg hcardinality_one
+    linarith
+  have hb_nonneg : 0 ≤ b := by
+    dsimp [b]
+    have hge : (1 : ℝ) ≤ (cardinality : ℝ) + 1 := by
+      have hc0 : 0 ≤ (cardinality : ℝ) := by exact_mod_cast Nat.zero_le cardinality
+      linarith
+    have hlog : 0 ≤ Real.log ((cardinality : ℝ) + 1) :=
+      Real.log_nonneg hge
+    linarith
+  have hab : a ≤ b := by
+    dsimp [a, b]
+    exact vdVWTheorem243_logRadius_log_le_succ hcardinality
+  have hr_pos : 0 < r := by
+    dsimp [r, a, c]
+    exact vdVWTheorem243_logRadius_pos
+      (cardinality := cardinality)
+      (c := NNReal.mk (M ^ 2 / (n : ℝ))
+        (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)))
+      hcardinality hc
+  have hr_nonneg : 0 ≤ r := le_of_lt hr_pos
+  have hr_sq : r ^ 2 = 2 * (c : ℝ) * a := by
+    dsimp [r]
+    rw [Real.sq_sqrt]
+    positivity
+  have hc_div_r_le : (c : ℝ) / r ≤ r / 2 := by
+    rw [div_le_iff₀ hr_pos]
+    calc
+      (c : ℝ) ≤ (c : ℝ) * a := by nlinarith
+      _ = r / 2 * r := by
+        calc
+          (c : ℝ) * a = r ^ 2 / 2 := by
+            rw [hr_sq]
+            ring
+          _ = r / 2 * r := by ring
+  have hmills_le : 2 * Real.exp (-1) * ((c : ℝ) / r) ≤ r / 2 := by
+    have he : 2 * Real.exp (-1) ≤ (1 : ℝ) := by
+      nlinarith [vdVWTheorem243_exp_neg_one_le_half]
+    have hdiv_nonneg : 0 ≤ (c : ℝ) / r := div_nonneg hc_nonneg hr_nonneg
+    calc
+      2 * Real.exp (-1) * ((c : ℝ) / r) ≤ 1 * ((c : ℝ) / r) := by
+        exact mul_le_mul_of_nonneg_right he hdiv_nonneg
+      _ = (c : ℝ) / r := by ring
+      _ ≤ r / 2 := hc_div_r_le
+  have hlog_le :
+      vdVWTheorem243LogRadiusMillsUpper cardinality c ≤ (3 / 2) * r := by
+    unfold vdVWTheorem243LogRadiusMillsUpper
+    dsimp [r, a]
+    calc
+      Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ))) +
+          2 * Real.exp (-1) *
+            ((c : ℝ) /
+              Real.sqrt (2 * (c : ℝ) * (1 + Real.log (cardinality : ℝ)))) ≤
+          r + r / 2 := by
+        dsimp [r, a] at hmills_le ⊢
+        nlinarith
+      _ = (3 / 2) * r := by ring
+  have hthree_le :
+      (3 / 2 : ℝ) * r ≤ vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M := by
+    have hleft_nonneg : 0 ≤ (3 / 2 : ℝ) * r := by positivity
+    have hright_nonneg :
+        0 ≤ vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M :=
+      vdVWTheorem243FiniteNetMaximalUpper_nonneg cardinality
+        (vdVWTheorem243HoeffdingCenterScale_nonneg n hM_pos.le)
+    rw [← sq_le_sq₀ hleft_nonneg hright_nonneg]
+    have hnreal_pos : 0 < (n : ℝ) := by exact_mod_cast hn
+    have h6div_nonneg : 0 ≤ 6 / (n : ℝ) := div_nonneg (by norm_num) hnreal_pos.le
+    calc
+      ((3 / 2 : ℝ) * r) ^ 2 = (9 / 2) * (c : ℝ) * a := by
+        rw [mul_pow, hr_sq]
+        ring
+      _ ≤ 6 * (c : ℝ) * b := by
+        nlinarith
+      _ = (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M) ^ 2 := by
+        unfold vdVWTheorem243FiniteNetHoeffdingUpper
+        unfold vdVWTheorem243FiniteNetMaximalUpper
+        unfold vdVWTheorem243HoeffdingCenterScale
+        dsimp [b, c]
+        rw [mul_pow, mul_pow, Real.sq_sqrt hb_nonneg, Real.sq_sqrt h6div_nonneg]
+        dsimp [c, b]
+        field_simp [ne_of_gt hnreal_pos]
+  exact hlog_le.trans hthree_le
+
 /--
 Finite-empirical-cover expected maximal bound at the VdV&W finite-net
 Hoeffding display scale, assuming only the isolated scale-comparison handoff.
@@ -1878,6 +2013,44 @@ theorem
     (vdVWTheorem243_truncated_rademacher_expectedMaximalBound_of_finiteEmpiricalL1CoverAtCard
       cover hindexClass_nonempty henvelope hM_pos.le sign hindep hsubG
       (vdVWTheorem243_truncated_commonProxy_pos hn hM_pos)).trans hscale
+
+/--
+Finite-empirical-cover expected maximal bound at the VdV&W finite-net
+Hoeffding display scale under explicit positive sample-size and truncation
+assumptions.
+
+This closes the scale-comparison hypothesis in the preceding handoff.
+-/
+theorem
+    vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard_of_pos
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hn : 0 < n)
+    (hM_pos : 0 < M)
+    (sign : Fin n -> Ω -> ℝ)
+    (hindep : iIndepFun sign μ)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μ) :
+    VdVWTheorem243FiniteCenterExpectedMaximalBound μ
+      (fun centerIndex : Fin cardinality =>
+        fun ω =>
+          vdVWWeightedSampleSum
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+            (cover.center centerIndex) sample)
+      (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M) := by
+  exact
+    vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard
+      cover hindexClass_nonempty henvelope hn hM_pos sign hindep hsubG
+      (VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale.of_pos
+        (cover.cardinality_pos_of_nonempty hindexClass_nonempty) hn hM_pos)
 
 /--
 Closed-form value of the finite-center sub-Gaussian tail majorant over
