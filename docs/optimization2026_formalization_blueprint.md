@@ -141,10 +141,17 @@ Near-term exact candidates:
 
 1. Lemma 3.5 discrete Gronwall as a standalone deterministic sequence lemma.
    The zero-based power/range display specialization is compiled in
-   `StatInference/Optimization/DiscreteGronwall.lean`; mathlib's product/Ico
-   forms remain the reusable foundation.
-2. Lemma 3.1 descent lemma from the smooth upper-model interface.
-3. Theorem 3.4 as a supplied-interface convergence theorem.
+   `StatInference/Optimization/DiscreteGronwall.lean`, and the source-shaped
+   one-based display wrapper is also compiled; mathlib's product/Ico forms
+   remain the reusable foundation.
+2. Lemma 3.1 descent lemma from the smooth upper-model interface.  The local
+   supplied-gradient version is compiled in
+   `StatInference/Optimization/GradientDescent.lean`, including the source
+   step-size corollary `h <= 1 / beta` under `0 < beta`.
+3. Theorem 3.4 as a supplied-interface convergence theorem.  The next layer
+   should assume or prove the one-step recurrence (3.1), use the compiled
+   Gronwall theorem for the weighted finite-sum bound, and defer the closed
+   denominator simplification to mathlib geometric-series APIs.
 
 ### Lane D: Later textbook expansion
 
