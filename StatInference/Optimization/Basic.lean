@@ -39,6 +39,22 @@ def ChewiConvexOn (C : Set E) (f : E -> ℝ) : Prop :=
   StrongConvexOn C f 0
 
 /--
+First-order strong-convexity lower model, Chewi Proposition 1.6 / equation
+(1.4), represented with an explicit gradient oracle.
+
+This is intentionally a supplied interface for now: mathlib and the local
+segment definition do not currently provide a ready general Hilbert-space
+bridge from segment strong convexity plus differentiability to this
+first-order form.
+-/
+def FirstOrderStrongConvexOn (C : Set E) (f : E -> ℝ) (grad : E -> E)
+    (alpha : ℝ) : Prop :=
+  Convex ℝ C ∧
+    ∀ ⦃x⦄, x ∈ C -> ∀ ⦃y⦄, y ∈ C ->
+      f x + inner ℝ (grad x) (y - x) +
+        (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) ≤ f y
+
+/--
 Chewi Definition 1.12, represented by the usual quadratic upper model with an
 explicit gradient oracle.  Later exact smoothness equivalences can connect this
 to Frechet derivatives and gradient Lipschitzness.
@@ -73,6 +89,20 @@ theorem StrongConvexOn.segment_ineq {C : Set E} {f : E -> ℝ}
       (1 - t) * f x + t * f y -
         (alpha / 2) * t * (1 - t) * ‖y - x‖ ^ (2 : ℕ) :=
   h.2 hx hy ht
+
+theorem FirstOrderStrongConvexOn.convex_set {C : Set E} {f : E -> ℝ}
+    {grad : E -> E} {alpha : ℝ}
+    (h : FirstOrderStrongConvexOn C f grad alpha) :
+    Convex ℝ C :=
+  h.1
+
+theorem FirstOrderStrongConvexOn.lower_model {C : Set E} {f : E -> ℝ}
+    {grad : E -> E} {alpha : ℝ}
+    (h : FirstOrderStrongConvexOn C f grad alpha)
+    {x y : E} (hx : x ∈ C) (hy : y ∈ C) :
+    f x + inner ℝ (grad x) (y - x) +
+      (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) ≤ f y :=
+  h.2 hx hy
 
 theorem SmoothWithGradientOn.convex_set {C : Set E} {f : E -> ℝ}
     {grad : E -> E} {beta : ℝ}

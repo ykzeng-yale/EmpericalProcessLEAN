@@ -88,6 +88,7 @@ Current compiled surface:
 
 - `StatInference.Optimization.StrongConvexOn`
 - `StatInference.Optimization.ChewiConvexOn`
+- `StatInference.Optimization.FirstOrderStrongConvexOn`
 - `StatInference.Optimization.SmoothWithGradientOn`
 - `StatInference.Optimization.gradientDescentStep`
 - `StatInference.Optimization.IsGradientDescentTrajectory`
@@ -152,9 +153,11 @@ Near-term exact candidates:
    now compiles in `StatInference/Optimization/Theorem34.lean`: it assumes the
    one-step recurrence (3.1), uses the compiled Gronwall theorem for the
    weighted finite-sum bound, provides the source-indexed one-based display,
-   and adds the monotone-gap weighted lower-bound helper.  Remaining work is
-   the first-order strong-convexity bridge for (3.1) and the closed denominator
-   simplification via mathlib geometric-series APIs.
+   adds the monotone-gap weighted lower-bound helper, and proves the one-step
+   recurrence from the supplied first-order strong-convexity lower model plus
+   Lemma 3.1.  Remaining work is the closed denominator simplification via
+   mathlib geometric-series APIs, and later the full segment-strong-convexity
+   plus differentiability bridge for Proposition 1.6.
 
 ### Lane D: Later textbook expansion
 
