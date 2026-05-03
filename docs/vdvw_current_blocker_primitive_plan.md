@@ -456,7 +456,12 @@ additional example closures:
    layer, expected-supremum handoff, layer-cake tail-integral support,
    Gaussian-tail integrability/evaluation, coarse closed-form expectation
    bound, split-at-radius tail-to-expectation bound, and ordinary measurable
-   truncation-tail integral bridge are now compiled.  The remaining
+   truncation-tail integral bridge are now compiled.  The theorem-specific
+   expected-supremum layer now routes its reusable layer-cake,
+   tail-integral-monotonicity, and split-at-radius probability bounds through
+   `StatInference/ProbabilityMeasure/Tail.lean`; VdV&W-specific empirical,
+   outer-expectation, and truncation handoffs remain in the empirical-process
+   files.  The remaining
    Mills/logarithmic Gaussian-tail estimate is the next blocker before the
    textbook tail-to-Orlicz/maximal expectation scale, followed by
    specialization of that bound to the truncated centers.
