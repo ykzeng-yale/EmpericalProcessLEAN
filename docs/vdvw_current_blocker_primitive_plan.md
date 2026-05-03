@@ -942,8 +942,9 @@ Search record for the symmetrization precursor package:
   plus the fixed-`M` centered-truncated consumer
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
   are also compiled.  The next valid target is the analytic/selection input
-  this exposes: supply measurable cardinality and a deterministic normalized
-  log-cardinality bound, or a genuine variable-domain
+  this exposes: feed theorem finite-cover hypotheses into the selected
+  terminal/truncated cardinality measurability wrappers and supply a
+  deterministic normalized log-cardinality bound, or a genuine variable-domain
   uniform-integrability/dominated-convergence replacement, then prove a
   diagonal shrinking empirical-cover radius selector from the all-radius
   entropy hypothesis and instantiate the inverse-radius route.

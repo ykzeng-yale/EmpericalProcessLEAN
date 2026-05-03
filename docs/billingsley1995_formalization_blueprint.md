@@ -418,7 +418,11 @@ and
 plus the fixed-`M` centered-truncated consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
 are also compiled, and the selected minimal-cardinality measurability wrappers
-for countable/truncated classes are now available. Next feed the theorem
+`measurable_terminal_minimalRandomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`,
+`measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable`,
+and
+`measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable`
+are now available. Next feed the theorem
 entropy/finite-cover hypotheses into those wrappers, then supply a deterministic
 normalized log-cardinality bound or a genuine boundedness/UI replacement and
 prove a diagonal shrinking cover radius selector to turn the entropy hypotheses
