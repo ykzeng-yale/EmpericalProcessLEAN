@@ -609,8 +609,12 @@ additional example closures:
    and
    `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`,
    with measurable cardinality, deterministic boundedness/UI, and
-   `coverRadius -> 0` supplied explicitly.  The remaining Theorem 2.4.3 blocker
-   is supplying those hypotheses from the entropy route, then final assembly;
+   `coverRadius -> 0` supplied explicitly.  The selected inverse-radius
+   all-radius route now packages the selected cardinality and finite-net mean
+   consequences under explicit diagonal selected log convergence plus a
+   deterministic all-radius log bound.  The remaining Theorem 2.4.3 blocker
+   is deriving or supplying those two hypotheses from the entropy route, or a
+   genuinely varying-domain UI replacement, then final assembly;
    it is not the finite-net Rademacher/Hoeffding maximal scale,
    the fixed-sample random-sign outer-expectation finite-net handoff, the finite
    sample mean-zero bridge, the ordinary integrated product/sign-symmetry layer,
@@ -691,9 +695,14 @@ additional example closures:
    random-cover finite-net expected-maximal bound are now compiled, as is the
    product outer-expectation projection
    `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`;
-   the valid next target is proving the integrated Hoeffding-plus-radius upper
-   tends to zero, or proving the smallest uniform-integrability/dominated
-   convergence bridge that supplies it.
+   the selected inverse-radius entropy-to-mean projections are now compiled as
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_selected_truncated_invRadiusEntropy_logCardinality_div_bound`
+   and
+   `integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_selected_truncated_invRadiusEntropy_logCardinality_div_bound`.
+   The valid next target is deriving or supplying the diagonal selected
+   log-cardinality convergence and deterministic all-radius log-ratio bound
+   they require, or proving a genuinely varying-domain UI/dominated-convergence
+   bridge strong enough to replace that deterministic boundedness input.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -1102,11 +1111,14 @@ analytic routes.  Route A is diagonal normalized log-cardinality convergence
 plus deterministic selected log-ratio bound for the selected minimal empirical
 cover at radius `1 / (n + 1)`.  Route B is the selected finite-net
 tail-expectation condition needed by
-`integral_finiteNetHoeffdingUpper_tendsto_zero_of_tailExpectation_convergesInOuterProbabilityConst`.
-After either route feeds fixed-`M` centered-truncated convergence, move to
-untruncation via the envelope-tail `P^* F{F > M}` layer and final Theorem
-2.4.3 assembly.  The finite-cover domination, terminal selected-cardinality
-equality, measurability transport, fixed-`M` centered-truncated consumers, and
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_tailExpectation_convergesInOuterProbabilityConst`,
+or a precise varying-domain UI primitive strong enough to replace the
+deterministic bound.  After either route feeds fixed-`M` centered-truncated
+convergence, move to untruncation via the envelope-tail `P^* F{F > M}` layer
+and final Theorem 2.4.3 assembly.  The finite-cover domination, terminal
+selected-cardinality equality, measurability transport, selected inverse-radius
+entropy side-condition package, selected inverse-radius finite-net mean
+projections, fixed-`M` centered-truncated consumers, and
 symmetrization/product finite-net route are already compiled.
 
 Search note for the finite product layer: the finite-sample route can use

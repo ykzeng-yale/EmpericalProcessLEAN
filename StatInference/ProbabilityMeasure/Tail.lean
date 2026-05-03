@@ -17,9 +17,9 @@ namespace StatInference
 namespace ProbabilityMeasure
 
 open MeasureTheory Filter
-open scoped ENNReal
+open scoped ENNReal Topology
 
-universe u
+universe u v
 
 /-- Layer-cake / tail-probability formula with strict real tail events. -/
 theorem integral_eq_integral_tail_lt
@@ -205,6 +205,63 @@ theorem probability_integral_le_threshold_add_bound_mul_tail
     _ ≤ C * μ.real event + r := add_le_add htail_le hcompl_le
     _ = r + C * μ.real {ω : Ω | r < X ω} := by
         simp [event, add_comm]
+
+/--
+Varying-domain bounded nonnegative mean convergence from vanishing ordinary
+tail probabilities.
+
+This is a probability-measure version of the bounded part of the empirical
+process outer-probability-to-mean bridge: once every process is measurable,
+nonnegative, and uniformly bounded by a deterministic constant, it is enough
+to show that every fixed positive tail probability tends to zero.
+-/
+theorem tendsto_integral_of_tendsto_measureReal_tail_zero_of_bounded_nonneg
+    {ι : Type v} {Ω : ι -> Type u}
+    [(i : ι) -> MeasurableSpace (Ω i)]
+    (μ : (i : ι) -> Measure (Ω i))
+    (hμ_prob : ∀ i, IsProbabilityMeasure (μ i))
+    {l : Filter ι} {X : (i : ι) -> Ω i -> ℝ} {C : ℝ}
+    (h_tail :
+      ∀ r > 0,
+        Tendsto (fun i => (μ i).real {ω : Ω i | r < X i ω}) l (𝓝 0))
+    (hX_meas : ∀ i, Measurable (X i))
+    (hX_nonneg : ∀ i (ω : Ω i), 0 ≤ X i ω)
+    (hX_le : ∀ i (ω : Ω i), X i ω ≤ C) :
+    Tendsto (fun i => ∫ ω, X i ω ∂(μ i)) l (𝓝 0) := by
+  rw [tendsto_order]
+  constructor
+  · intro a ha
+    exact Eventually.of_forall fun i =>
+      lt_of_lt_of_le ha
+        (integral_nonneg (μ := μ i) fun ω => hX_nonneg i ω)
+  · intro a ha
+    set r : ℝ := a / 2 with hr_def
+    have hr_pos : 0 < r := by
+      rw [hr_def]
+      linarith
+    have hr_nonneg : 0 ≤ r := hr_pos.le
+    have hbound_tend :
+        Tendsto
+          (fun i => r + C * (μ i).real {ω : Ω i | r < X i ω})
+          l (𝓝 r) := by
+      simpa using tendsto_const_nhds.add ((h_tail r hr_pos).const_mul C)
+    have heventually_bound :
+        ∀ᶠ i in l,
+          r + C * (μ i).real {ω : Ω i | r < X i ω} < a :=
+      hbound_tend.eventually (eventually_lt_nhds (by linarith))
+    filter_upwards [heventually_bound] with i hi
+    haveI : IsProbabilityMeasure (μ i) := hμ_prob i
+    have hX_integrable : Integrable (X i) (μ i) := by
+      refine Integrable.of_bound (hX_meas i).aestronglyMeasurable |C| ?_
+      exact ae_of_all _ fun ω => by
+        rw [Real.norm_of_nonneg (hX_nonneg i ω)]
+        exact (hX_le i ω).trans (le_abs_self C)
+    exact
+      lt_of_le_of_lt
+        (probability_integral_le_threshold_add_bound_mul_tail
+          (μ := μ i) (X := X i) (r := r) (C := C) hr_nonneg
+          (hX_meas i) hX_integrable (hX_le i))
+        hi
 
 /-- Markov tail bound for extended nonnegative random variables. -/
 theorem measure_tail_le_lintegral_div

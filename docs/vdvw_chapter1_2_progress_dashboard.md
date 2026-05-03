@@ -285,13 +285,21 @@ also now expose the ordinary finite-net and finite-net-plus-inverse-radius
 mean convergence consequences directly from the side-condition package and the
 same deterministic selected log-ratio bound. The selected package and finite
 cover constructor now expose matching direct finite-net mean projections, and
-the explicit varying-domain tail/UI bridge
+the selected inverse-radius all-radius route has the named selected
+cardinality `vdVWSelectedTruncatedInvRadiusEmpiricalL1CoveringNumberCard` plus
+direct selected mean projections
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_selected_truncated_invRadiusEntropy_logCardinality_div_bound`
+and
+`integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_selected_truncated_invRadiusEntropy_logCardinality_div_bound`.
+The explicit varying-domain tail bridge
 `tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_tailExpectation_nonneg`
 is compiled with the Theorem 2.4.3 specialization
-`integral_finiteNetHoeffdingUpper_tendsto_zero_of_tailExpectation_convergesInOuterProbabilityConst`.
-The remaining blocker is proving either the selected diagonal
-log-cardinality/log-ratio inputs or the selected finite-net tail-expectation
-condition from the book assumptions, then final assembly.
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_tailExpectation_convergesInOuterProbabilityConst`,
+and the probability support lane also has
+`tendsto_integral_of_tendsto_measureReal_tail_zero_of_bounded_nonneg` for the
+bounded real-tail route. The remaining blocker is proving either the selected
+diagonal log-cardinality/log-ratio inputs or the selected finite-net
+tail-expectation/UI condition from the book assumptions, then final assembly.
 The product-integrated symmetrization route now also has the composed
 random-cover finite-net integral bridge
 `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
@@ -302,8 +310,8 @@ random-cover finite-net integral bridge
 DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
 ONGOING    Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
-READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, F_M truncation interfaces, countable/measurable-cardinality selectors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound/inverse-radius consumers, selected-cardinality equality-transport arbitrary-radius/inverse-radius consumers, all-radius covering-domination selectors, selected inverse-radius finite-cover constructor, package-level inverse-radius entropy mean projections, selected finite-net mean projections, explicit variable-domain tail/UI mean bridge, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
-NEXT       Prove selected diagonal log-cardinality/log-ratio inputs or selected finite-net tail-expectation from book assumptions, then untruncate and assemble final Theorem 2.4.3.
+READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, F_M truncation interfaces, countable/measurable-cardinality selectors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, bounded varying-domain real-tail-to-mean wrapper, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound/inverse-radius consumers, selected-cardinality equality-transport arbitrary-radius/inverse-radius consumers, all-radius covering-domination selectors, selected inverse-radius finite-cover constructor, inverse-radius entropy side-condition package, package-level inverse-radius entropy mean projections, selected finite-cover and selected inverse-radius all-radius finite-net mean projections, explicit variable-domain tail-expectation bridge, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
+NEXT       Prove selected diagonal log-cardinality/log-ratio inputs or selected finite-net tail-expectation/UI from book assumptions, then untruncate and assemble final Theorem 2.4.3.
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED-EXAMPLE Example 2.4.2 exact quantile-grid closure and empirical-CDF report unless a theorem needs it.
