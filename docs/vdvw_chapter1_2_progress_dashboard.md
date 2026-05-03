@@ -258,12 +258,15 @@ process, and
 `VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
 packages inverse-radius selected side conditions once diagonal selected log
 convergence is supplied, and
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_eq_selected_truncated`
+does the same for externally named cardinalities after terminal equality with
+the selected truncated minimal process is supplied, while
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`
 consumes that package plus a deterministic selected log-ratio bound. The
 remaining blocker is feeding diagonal selected
 log-cardinality convergence and a deterministic selected log-ratio bound or
 genuine varying-domain tail/UI replacement from the all-radius entropy route
-into that consumer, then final assembly.
+into that package, then final assembly.
 The product-integrated symmetrization route now also has the composed
 random-cover finite-net integral bridge
 `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
