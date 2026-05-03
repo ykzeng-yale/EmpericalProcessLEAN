@@ -290,6 +290,11 @@ additional example closures:
    VdVWClassCoordinateMeasurable.truncate
    VdVWPMeasurableClass.truncate_of_countable_of_coordinate
    measurable_vdVWTruncatedClassFun_pairDifference
+   vdVWTheorem243_productCopy_fst_hasLaw
+   vdVWTheorem243_productCopy_snd_hasLaw
+   vdVWTheorem243_productCopy_fst_snd_indep
+   vdVWTheorem243_productCopy_fst_snd_identDistrib
+   integrable_vdVWTruncatedClassFun_pairDifference
    VdVWTheorem243TruncatedEntropyCondition
    VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM
    ```
@@ -301,7 +306,10 @@ additional example closures:
    product-copy pair-difference integrand for fixed truncated class members,
    and closes the real-valued envelope-tail outer-expectation/probability
    bridge through the existing Chapter 1.2 cover-majorant and Markov layers.
-   Remaining Step 1 work: plug these gates into the full
+   It also reuses the Billingsley/ProbabilityMeasure product-self-copy wrapper
+   to give VdVW-facing `P.prod P` first/second-coordinate law, independence,
+   identical-distribution wrappers, and fixed truncated pair-difference
+   integrability.  Remaining Step 1 work: plug these gates into the full
    product/Fubini-compatible symmetrization inequality.
 2. Deterministic fixed-sample net inequality `(2.4.4)` for a finite empirical
    `L1(P_n)` net.
@@ -582,14 +590,14 @@ Search record for the scale-comparison handoff:
 
 Next exact edit: continue the theorem-specific symmetrization/truncation layer
 for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
-truncated pair-difference measurability, and real-valued envelope-tail
-outer-expectation/probability handoffs are closed.  Next add proof-carrying
-independent-copy/product-space wrappers for the `P.prod P` coordinates and use
-them to begin the product/Fubini-compatible symmetrization interface targeted
-to the `Phi(x)=x` case, reusing
-`StatInference/ProbabilityMeasure/ProductMeasure.lean`, the existing
-Rademacher law/construction, and the finite empirical-cover Hoeffding
-expected-maximal wrapper.
+truncated pair-difference measurability/integrability, real-valued
+envelope-tail outer-expectation/probability handoffs, and `P.prod P`
+coordinate law/independence/identical-distribution wrappers are closed.  Next
+begin the product/Fubini-compatible symmetrization interface targeted to the
+`Phi(x)=x` case, reusing `StatInference/ProbabilityMeasure/ProductMeasure.lean`,
+the reusable `StatInference/ProbabilityMeasure/Rademacher.lean` signs where
+possible, the existing Theorem243 Rademacher construction as needed, and the
+finite empirical-cover Hoeffding expected-maximal wrapper.
 
 ## Parked Example-Specific Blocker
 

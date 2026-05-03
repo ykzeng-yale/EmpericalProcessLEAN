@@ -8,6 +8,7 @@ import StatInference.EmpiricalProcess.CoveringPrimitive
 import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.OuterProbabilityExpectation
 import StatInference.EmpiricalProcess.PMeasurable
+import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.Tail
 
 /-!
@@ -379,6 +380,86 @@ theorem measurable_vdVWTruncatedClassFun_pairDifference
         measurable_fst).sub
       ((measurable_vdVWTruncatedClassFun (hclass index hindex) henvelope).comp
         measurable_snd)
+
+/--
+The first coordinate on the product sample space is an independent copy with
+law `P`.
+-/
+theorem vdVWTheorem243_productCopy_fst_hasLaw
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] :
+    HasLaw (fun z : Observation × Observation => z.1) P (P.prod P) := by
+  have hcopies :=
+    StatInference.ProbabilityMeasure.probability_prod_independent_self_copies
+      (P := (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation))
+  simpa using hcopies.1
+
+/--
+The second coordinate on the product sample space is an independent copy with
+law `P`.
+-/
+theorem vdVWTheorem243_productCopy_snd_hasLaw
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] :
+    HasLaw (fun z : Observation × Observation => z.2) P (P.prod P) := by
+  have hcopies :=
+    StatInference.ProbabilityMeasure.probability_prod_independent_self_copies
+      (P := (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation))
+  simpa using hcopies.2.1
+
+/--
+The two coordinate copies on `P × P` are independent.
+-/
+theorem vdVWTheorem243_productCopy_fst_snd_indep
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] :
+    (fun z : Observation × Observation => z.1) ⟂ᵢ[P.prod P]
+      (fun z : Observation × Observation => z.2) := by
+  have hcopies :=
+    StatInference.ProbabilityMeasure.probability_prod_independent_self_copies
+      (P := (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation))
+  simpa using hcopies.2.2
+
+/--
+The two coordinate copies on `P × P` are identically distributed.
+-/
+theorem vdVWTheorem243_productCopy_fst_snd_identDistrib
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] :
+    IdentDistrib (fun z : Observation × Observation => z.1)
+      (fun z : Observation × Observation => z.2) (P.prod P) (P.prod P) := by
+  exact (vdVWTheorem243_productCopy_fst_hasLaw P).identDistrib
+    (vdVWTheorem243_productCopy_snd_hasLaw P)
+
+/--
+If a fixed truncated class member is integrable under `P`, then its
+product-copy pair difference is integrable under `P × P`.
+
+This is the fixed-index integrability gate before applying Fubini in the
+Theorem 2.4.3 symmetrization route.
+-/
+theorem integrable_vdVWTruncatedClassFun_pairDifference
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M : ℝ} {index : Index}
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) P) :
+    Integrable
+      (fun z : Observation × Observation =>
+        vdVWTruncatedClassFun classFun envelope M index z.1 -
+          vdVWTruncatedClassFun classFun envelope M index z.2)
+      (P.prod P) := by
+  let f : Observation -> ℝ := vdVWTruncatedClassFun classFun envelope M index
+  have hfst : Integrable (fun z : Observation × Observation => f z.1) (P.prod P) := by
+    simpa [Function.comp_def, f] using
+      (MeasureTheory.measurePreserving_fst (μ := P) (ν := P)).integrable_comp_of_integrable
+        htruncIntegrable
+  have hsnd : Integrable (fun z : Observation × Observation => f z.2) (P.prod P) := by
+    simpa [Function.comp_def, f] using
+      (MeasureTheory.measurePreserving_snd (μ := P) (ν := P)).integrable_comp_of_integrable
+        htruncIntegrable
+  exact hfst.sub hsnd
 
 /-!
 ## Fixed-sample empirical net handoff
