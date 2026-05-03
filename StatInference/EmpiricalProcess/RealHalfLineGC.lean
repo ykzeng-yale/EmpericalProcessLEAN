@@ -1,4 +1,5 @@
 import StatInference.EmpiricalProcess.GlivenkoCantelli
+import StatInference.EmpiricalProcess.EndpointSamples
 import StatInference.EmpiricalProcess.RealHalfLine
 
 /-!
@@ -11,11 +12,57 @@ from an arbitrary distribution is still a separate task.
 
 namespace StatInference
 
-open MeasureTheory ProbabilityTheory Set
+open MeasureTheory ProbabilityTheory Set Filter
 
-open scoped Function
+open scoped Function Topology
 
 universe u
+
+/--
+The population integral of a closed half-line indicator is the CDF value at
+that endpoint.
+
+This is the pointwise bridge between Billingsley's empirical distribution
+function notation and the local half-line indicator class.
+-/
+theorem realHalfLineIndicator_integral_eq_cdf
+    (P : Measure ℝ) [IsProbabilityMeasure P] (c : ℝ) :
+    (∫ x, realHalfLineIndicator c x ∂P) = ProbabilityTheory.cdf P c := by
+  calc
+    (∫ x, realHalfLineIndicator c x ∂P) = P.real (Set.Iic c) := by
+      simp [realHalfLineIndicator]
+    _ = ProbabilityTheory.cdf P c :=
+      (ProbabilityTheory.cdf_eq_real P c).symm
+
+/--
+Pointwise empirical-distribution convergence for one closed half-line.
+
+For iid real observations with law `P`, the sample average of
+`1{(-∞, c]}` converges almost surely to `F(c)`.
+-/
+theorem realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, HasLaw (X i) P μ)
+    (hindep : Pairwise ((· ⟂ᵢ[μ] ·) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          empiricalAverage (samplePath X ω n) (realHalfLineIndicator c) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) := by
+  have hInt : Integrable (realHalfLineIndicator c) P :=
+    integrable_realHalfLineIndicator P c
+  have hIntegral :
+      (∫ x, realHalfLineIndicator c x ∂P) = ProbabilityTheory.cdf P c :=
+    realHalfLineIndicator_integral_eq_cdf P c
+  filter_upwards
+    [endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid
+      X (realHalfLineIndicator c)
+      hInt.aestronglyMeasurable.aemeasurable hInt hLaw hindep]
+    with ω hω
+  simpa [hIntegral] using hω
 
 /--
 Conditional outer-a.s. Glivenko-Cantelli corollary for the real half-line

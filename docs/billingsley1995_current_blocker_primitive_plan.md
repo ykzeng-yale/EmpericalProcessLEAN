@@ -83,12 +83,16 @@ of:
 
 - a Billingsley Section 25 exact theorem candidate wrapping an already proved
   mathlib/local weak-convergence implication; or
-- an empirical-distribution support wrapper in
-  `StatInference/EmpiricalProcess/RealHalfLineGC.lean`:
-  first prove `∫ x, realHalfLineIndicator c x ∂P = ProbabilityTheory.cdf P c`
-  from `integral_indicator_one` and `ProbabilityTheory.cdf_eq_real`, then wrap
-  `endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid` as
-  `realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid`; or
+- the empirical-distribution support wrapper in
+  `StatInference/EmpiricalProcess/RealHalfLineGC.lean`, now available as a
+  local support layer: `realHalfLineIndicator_integral_eq_cdf` identifies the
+  closed half-line indicator integral with `ProbabilityTheory.cdf`, and
+  `realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid` repackages
+  the endpoint empirical-average SLLN as pointwise empirical-CDF convergence
+  for a fixed endpoint. This is not a source-exact formalization of
+  Billingsley Theorem 20.6; the next exact edit is either the fixed-endpoint
+  convergence-in-probability/outer-probability corollary or the uniform
+  finite-grid route; or
 - a Section 16 tail-control primitive in the empirical-process files that
   directly unlocks `StatInference/EmpiricalProcess/Theorem243.lean`.
 

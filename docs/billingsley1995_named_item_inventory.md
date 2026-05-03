@@ -32,7 +32,7 @@ parallel inventories.
 | Sections 15-16 integration and limit theorems | `_122-242.md` near Section 16 start | priority-local | tail/UI wrappers for VdV&W Theorem 2.4.3 |
 | Section 18 product measure/Fubini | `_243-363.md` near Section 18 start | priority-local | finite-product Fubini wrappers for symmetrization |
 | Section 20 random variables/distributions | `_243-363.md` near Section 20 start | local-wrapper candidate | distribution and convergence-in-probability wrappers |
-| Theorem 20.6 empirical CDF Glivenko-Cantelli | `_243-363.md` near Theorem 20.6 | priority-local | connect half-line endpoint SLLN to Billingsley statement |
+| Theorem 20.6 empirical CDF Glivenko-Cantelli | `_243-363.md:1310,1312,1316,1320,1322,1330,1334,1342,1346` | local-wrapper/source-crosswalk | `StatInference/EmpiricalProcess/RealHalfLineGC.lean` contains pointwise CDF/empirical-average wrappers connecting Billingsley's empirical distribution function formula `(20.42)` for a fixed closed half-line to the local `realHalfLineIndicator` class. This is not yet a source-exact formalization of Billingsley Theorem 20.6; the uniform-in-`x` theorem remains pending. |
 | Section 22 sums of independent random variables | `_243-363.md` near Section 22 start | priority-local | Rademacher iid/sign and finite maximal inequality lane |
 | Section 25 weak convergence | `_243-363.md` near Section 25 start | local-wrapper | `StatInference/ProbabilityMeasure/WeakConvergence.lean` |
 | Theorem 25.8 Portmanteau-style equivalences | `_243-363.md` near Theorem 25.8 | local-wrapper candidate | extend current one-way/open-closed/test-function wrappers to exact theorem |
