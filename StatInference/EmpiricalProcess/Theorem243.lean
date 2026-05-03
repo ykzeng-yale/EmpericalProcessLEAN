@@ -29,7 +29,7 @@ namespace StatInference
 open MeasureTheory Filter ProbabilityTheory
 open scoped BigOperators ENNReal NNReal Topology
 
-universe u v w
+universe u v w x
 
 /-!
 ## Envelope and truncation interface
@@ -5173,6 +5173,76 @@ theorem
         epsilon (cardinality ω n)) :=
   exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le
     (hcovering_le ω n) hindexClass
+
+/--
+Choose a finite empirical-cover witness from a random covering-number
+cardinality domination.
+
+This is intentionally noncomputable: the theorem route only needs centers with
+the recorded cardinality, not a canonical covering algorithm.
+-/
+noncomputable def vdVWRandomEmpiricalL1CoverAtCard
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    (X : ℕ -> Ω -> Observation) {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : Ω -> ℕ -> ℕ}
+    (hcovering_le :
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass classFun
+        epsilon cardinality)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (ω : Ω) (n : ℕ) :
+    FiniteEmpiricalL1CoverAtCard (samplePath X ω n) indexClass classFun
+      epsilon (cardinality ω n) :=
+  Classical.choice
+    (finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality
+      X hcovering_le hindexClass ω n)
+
+/--
+Random empirical-cover witnesses feed the product random-sign finite-net
+handoff.
+
+The original sample is represented by a sample path `X` on a second probability
+space.  The selected cover has the sample-dependent random cardinality supplied
+by the empirical entropy hypothesis.
+-/
+theorem
+    ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_rademacherSigns
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {Ωsample : Type x}
+    [MeasurableSpace Ωsample] {μsign : Measure Ωsign} {ν : Measure Ωsample}
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    (X : ℕ -> Ωsample -> Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon M : ℝ} {cardinality : Ωsample -> ℕ -> ℕ}
+    (hcovering_le :
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass classFun
+        epsilon cardinality)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (sign : Fin n -> Ωsign -> ℝ)
+    (hsign :
+      ∀ᵐ ω ∂μsign, VdVWRademacherSignVector (fun i : Fin n => sign i ω))
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hM_nonneg : 0 ≤ M)
+    (hmaximal :
+      ∀ᵐ z : Ωsign × Ωsample ∂μsign.prod ν,
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (samplePath X z.2 n) classFun
+          (vdVWRandomEmpiricalL1CoverAtCard X hcovering_le hindexClass z.2 n).center
+          (fun i : Fin n => sign i z.1) M) :
+    ∀ᵐ z : Ωsign × Ωsample ∂μsign.prod ν,
+      vdVWWeightedClassSupremum indexClass classFun
+          (vdVWRademacherWeights (fun i : Fin n => sign i z.1))
+          (samplePath X z.2 n) ≤
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality z.2 n) n M +
+          epsilon := by
+  have hsign_prod :
+      ∀ᵐ z : Ωsign × Ωsample ∂μsign.prod ν,
+        VdVWRademacherSignVector (fun i : Fin n => sign i z.1) :=
+    (MeasureTheory.Measure.quasiMeasurePreserving_fst (μ := μsign) (ν := ν)).ae hsign
+  filter_upwards [hsign_prod, hmaximal] with z hsignz hmaxz
+  exact
+    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
+      (vdVWRandomEmpiricalL1CoverAtCard X hcovering_le hindexClass z.2 n)
+      (fun i : Fin n => sign i z.1) hsignz hepsilon_nonneg hM_nonneg hmaxz
 
 /-- The finite real logarithm used for a supplied empirical-cover cardinality. -/
 noncomputable def vdVWLogEmpiricalL1CoveringCardinality

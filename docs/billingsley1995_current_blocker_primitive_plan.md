@@ -239,10 +239,13 @@ Local searches found reusable APIs in:
    `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`
    are also compiled, as is the supplied product-space finite-net projection
    `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`.
-   The sample-cover product-a.e. finite-net bridge
+   The sample-cover product-a.e. finite-net bridges
    `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`
-   is also compiled for supplied sample-indexed empirical covers and a
-   product-a.e. finite-center Hoeffding predicate.
+   and
+   `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleDependentCovers_rademacherSigns`
+   are also compiled for supplied sample-indexed empirical covers, including
+   the sample-dependent cardinality shape needed by random empirical entropy,
+   and a product-a.e. finite-center Hoeffding predicate.
    The empirical-cover cardinality side now has
    `FiniteEmpiricalL1CoverAtCard.pad_cardinality`,
    `exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le`, and
@@ -255,10 +258,11 @@ Local searches found reusable APIs in:
    `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
    Search refined the target: a pointwise fixed-sample `hphi_id` comparison is
    too strong; the valid cover transfer is product-integrated over signs and
-   samples.  The next target is consuming the random empirical-cover witness
-   handoff inside the product random-sign assembly, proving the product-a.e.
-   finite-center Hoeffding predicate for the chosen covers, and then proving the
-   entropy-to-convergence handoff, not another fixed-sample pointwise comparison.
+   samples.  The random empirical-cover witness is now consumed by
+   `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_rademacherSigns`.
+   The next target is proving the product-a.e. finite-center Hoeffding predicate
+   for those chosen covers, and then proving the entropy-to-convergence handoff,
+   not another fixed-sample pointwise comparison.
    The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
@@ -276,7 +280,7 @@ assembly for VdV&W Theorem 2.4.3:
 - consume
   `finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality`
   together with
-  `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`
+  `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleDependentCovers_rademacherSigns`
   to build the product random-sign finite-net bound from the random empirical
   covering-number/cardinality hypothesis; then prove the entropy-to-convergence
   handoff;
@@ -317,8 +321,10 @@ The closed Section 18 independent-copy/symmetrization surface includes the
   `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`.
   The supplied product-space a.e. finite-net projection
   `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`
-  is also compiled, along with the sample-cover product-a.e. finite-net bridge
-  `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`.
+  is also compiled, along with the sample-cover product-a.e. finite-net bridges
+  `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`
+  and
+  `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleDependentCovers_rademacherSigns`.
   Do not target the false fixed-sample pointwise comparison. Only add a new
   `StatInference/ProbabilityMeasure`
   product wrapper if this assembly exposes a genuinely reusable gap beyond the
@@ -399,12 +405,18 @@ outer-expectation handoff
 `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`.
 It also proves the supplied product-space finite-net projection
 `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`.
-It also proves the sample-cover product-a.e. finite-net bridge
-`ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`.
+It also proves the sample-cover product-a.e. finite-net bridges
+`ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`
+and
+`ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleDependentCovers_rademacherSigns`.
 It also proves the empirical-cover cardinality witness handoffs
 `FiniteEmpiricalL1CoverAtCard.pad_cardinality`,
 `exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le`, and
 `finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality`.
+It also proves
+`ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_rademacherSigns`,
+which consumes the random empirical-cover witness in the product random-sign
+finite-net handoff.
 It also proves the
 supplied-`hphi_id` finite-net projection
 `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.

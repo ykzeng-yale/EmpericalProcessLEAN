@@ -234,8 +234,9 @@ Near-term declarations:
   `VdVWMeasurableCover.ofAEMeasurable` and
   `VdVWMeasurableCover.ofNullMeasurable_ofReal`,
   product-integrated measurable-cover outer-expectation bridge, and
-  supplied product-space a.e. finite-net projection, sample-cover product-a.e.
-  finite-net bridge, and empirical-cover cardinality witness handoffs, plus the
+  supplied product-space a.e. finite-net projection, sample-cover and
+  sample-dependent-cardinality product-a.e. finite-net bridges, and
+  empirical-cover cardinality witness handoffs, plus the
   supplied-`hphi_id` finite-net projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
 
@@ -371,6 +372,7 @@ product-sample/Rademacher sign-symmetry comparison, product-space
 measurable-cover outer-expectation bridge, and supplied product-space finite-net
 projection, now past the fixed-sample, integral-lift, product-projection/Fubini,
 same-weight pair split, deterministic sign-negation, ordinary random-sign
-averaging, product-cover, sample-cover, and empirical-cover witness pieces,
+averaging, product-cover, sample-cover, sample-dependent-cardinality cover, and
+empirical-cover witness pieces,
 before new Billingsley Section 25 work unless no empirical-process
 probability/measure dependency is blocked.

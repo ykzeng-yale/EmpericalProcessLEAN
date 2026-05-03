@@ -151,10 +151,13 @@ Concrete next edits:
    `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_outerExpectation_prod_randomSign_truncated_original`.
    The supplied product-space a.e. finite-net projection is compiled as
    `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae`.
-   The sample-cover product-a.e. finite-net bridge
+   The sample-cover product-a.e. finite-net bridges
    `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleCovers_rademacherSigns`
-   is also compiled for supplied sample-indexed empirical covers and a
-   product-a.e. finite-center Hoeffding predicate.
+   and
+   `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_sampleDependentCovers_rademacherSigns`
+   are also compiled for supplied sample-indexed empirical covers, including
+   sample-dependent cardinalities, and a product-a.e. finite-center Hoeffding
+   predicate.
    The empirical-cover cardinality side now also has
    `FiniteEmpiricalL1CoverAtCard.pad_cardinality`,
    `exists_finiteEmpiricalL1CoverAtCard_of_empiricalL1CoveringNumber_le`, and
@@ -172,11 +175,11 @@ Concrete next edits:
    supplied-`hphi_id` finite-net projection are now compiled, as are the
    ordinary integrated product-sample/Rademacher sign-symmetry comparison, the
    product-integrated measurable-cover outer-expectation handoff, and the
-   supplied product-space a.e. finite-net projection, and sample-cover
-   product-a.e. finite-net bridge.  The latest empirical-process frontier is
-   consuming the random empirical-cover witness handoff in the product
-   random-sign assembly, proving the product-a.e. finite-center Hoeffding
-   predicate for the chosen covers, and proving entropy-to-convergence.
+   supplied product-space a.e. finite-net projection, sample-cover
+   product-a.e. finite-net bridge, and random empirical-cover product random-sign
+   handoff.  The latest empirical-process frontier is proving the product-a.e.
+   finite-center Hoeffding predicate for the chosen covers and then
+   entropy-to-convergence.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.
