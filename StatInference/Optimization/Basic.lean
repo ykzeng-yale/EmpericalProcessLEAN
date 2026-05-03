@@ -55,6 +55,26 @@ def FirstOrderStrongConvexOn (C : Set E) (f : E -> ℝ) (grad : E -> E)
         (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) ≤ f y
 
 /--
+Chewi Proposition 1.6 / equation (1.5), represented directly as monotonicity
+of the supplied gradient oracle.
+
+This supplied interface is separated from `FirstOrderStrongConvexOn` because
+Theorem 3.3 uses the gradient monotonicity form directly.
+-/
+def StronglyMonotoneGradientOn (C : Set E) (grad : E -> E)
+    (alpha : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C -> ∀ ⦃y⦄, y ∈ C ->
+    alpha * ‖y - x‖ ^ (2 : ℕ) ≤ inner ℝ (grad y - grad x) (y - x)
+
+/--
+Chewi Exercise 3.1 / equation (3.5), specialized to the scaled inequality
+needed in the proof of Theorem 3.3.
+-/
+def GradientStepCocoerciveOn (C : Set E) (grad : E -> E) (h : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C -> ∀ ⦃y⦄, y ∈ C ->
+    h * ‖grad y - grad x‖ ^ (2 : ℕ) ≤ inner ℝ (y - x) (grad y - grad x)
+
+/--
 Chewi Definition 1.12, represented by the usual quadratic upper model with an
 explicit gradient oracle.  Later exact smoothness equivalences can connect this
 to Frechet derivatives and gradient Lipschitzness.
@@ -103,6 +123,21 @@ theorem FirstOrderStrongConvexOn.lower_model {C : Set E} {f : E -> ℝ}
     f x + inner ℝ (grad x) (y - x) +
       (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) ≤ f y :=
   h.2 hx hy
+
+theorem StronglyMonotoneGradientOn.inner_lower {C : Set E}
+    {grad : E -> E} {alpha : ℝ}
+    (h : StronglyMonotoneGradientOn C grad alpha)
+    {x y : E} (hx : x ∈ C) (hy : y ∈ C) :
+    alpha * ‖y - x‖ ^ (2 : ℕ) ≤ inner ℝ (grad y - grad x) (y - x) :=
+  h hx hy
+
+theorem GradientStepCocoerciveOn.inner_lower {C : Set E}
+    {grad : E -> E} {hstep : ℝ}
+    (h : GradientStepCocoerciveOn C grad hstep)
+    {x y : E} (hx : x ∈ C) (hy : y ∈ C) :
+    hstep * ‖grad y - grad x‖ ^ (2 : ℕ) ≤
+      inner ℝ (y - x) (grad y - grad x) :=
+  h hx hy
 
 theorem SmoothWithGradientOn.convex_set {C : Set E} {f : E -> ℝ}
     {grad : E -> E} {beta : ℝ}

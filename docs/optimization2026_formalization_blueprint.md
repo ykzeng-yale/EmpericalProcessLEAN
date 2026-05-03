@@ -150,7 +150,14 @@ Near-term exact candidates:
    `StatInference/Optimization/GradientDescent.lean`, including the source
    step-size corollary `h <= 1 / beta` under `0 < beta`, and the
    function-value antitonicity lemma for GD trajectories.
-3. Theorem 3.4 as a supplied-interface convergence theorem.  The next layer
+3. Theorem 3.3 contraction of gradient descent as a supplied-interface
+   theorem.  `StatInference/Optimization/Theorem33.lean` now compiles the
+   squared-distance and norm contraction forms from the source-shaped
+   `StronglyMonotoneGradientOn` and `GradientStepCocoerciveOn` interfaces.
+   Remaining exact-source work is deriving those supplied interfaces from
+   Proposition 1.6 and Exercise 3.1 under differentiability/smoothness
+   assumptions.
+4. Theorem 3.4 as a supplied-interface convergence theorem.  The next layer
    now compiles in `StatInference/Optimization/Theorem34.lean`: it assumes the
    one-step recurrence (3.1), uses the compiled Gronwall theorem for the
    weighted finite-sum bound, provides the source-indexed one-based display,
