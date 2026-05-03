@@ -1,5 +1,6 @@
 import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.OuterExpectation
+import StatInference.ProbabilityMeasure.Tail
 
 /-!
 # Bridges between VdV&W outer probability and outer expectation
@@ -263,5 +264,87 @@ theorem
   exact
     VdVWConvergesInOuterProbabilityConst_zero_of_outerExpectation_tendsto_zero_ofReal
       mΩ μ hY_nonneg U hE
+
+/--
+Bounded nonnegative convergence in varying-domain outer probability implies
+ordinary mean convergence.
+
+This is a uniform-integrability-style bridge for bounded nonnegative real
+processes.  It is intentionally stated with an explicit deterministic bound:
+outer-probability convergence alone is not enough to force convergence of
+expectations.
+-/
+theorem
+    tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg
+    {ι : Type v} {Ω : ι -> Type u}
+    [(i : ι) -> MeasurableSpace (Ω i)]
+    (μ : (i : ι) -> Measure (Ω i))
+    (hμ_prob : ∀ i, IsProbabilityMeasure (μ i))
+    {l : Filter ι} {Y : (i : ι) -> Ω i -> ℝ} {C : ℝ}
+    (hY :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ Y l
+        (0 : ℝ))
+    (hY_meas : ∀ i, Measurable (Y i))
+    (hY_integrable : ∀ i, Integrable (Y i) (μ i))
+    (hY_nonneg : ∀ i (ω : Ω i), 0 ≤ Y i ω)
+    (hY_le : ∀ i (ω : Ω i), Y i ω ≤ C) :
+    Tendsto (fun i => ∫ ω, Y i ω ∂(μ i)) l (𝓝 0) := by
+  rw [tendsto_order]
+  constructor
+  · intro a ha
+    exact Eventually.of_forall fun i =>
+      lt_of_lt_of_le ha
+        (integral_nonneg (μ := μ i) fun ω => hY_nonneg i ω)
+  · intro a ha
+    set r : ℝ := a / 2 with hr_def
+    have hr_pos : 0 < r := by
+      rw [hr_def]
+      linarith
+    have hr_nonneg : 0 ≤ r := hr_pos.le
+    let tail : ι -> ℝ :=
+      fun i => (μ i).real {ω : Ω i | r < Y i ω}
+    have htail_enn :
+        Tendsto
+          (fun i =>
+            @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω : Ω i | r < Y i ω})
+          l (𝓝 0) := by
+      have hdist :
+          (fun i =>
+            @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω : Ω i | r < Y i ω}) =
+          (fun i =>
+            @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω : Ω i | r < dist (Y i ω) (0 : ℝ)}) := by
+        funext i
+        congr 1
+        ext ω
+        simp only [Set.mem_setOf_eq]
+        rw [Real.dist_eq, sub_zero, abs_of_nonneg (hY_nonneg i ω)]
+      simpa [hdist] using hY r hr_pos
+    have htail_real : Tendsto tail l (𝓝 0) := by
+      have htoReal :
+          Tendsto
+            (fun i =>
+              ENNReal.toReal
+                (@VdVWOuterProbability (Ω i) inferInstance (μ i)
+                  {ω : Ω i | r < Y i ω}))
+            l (𝓝 0) :=
+        (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp htail_enn
+      simpa [tail, VdVWOuterProbability, measureReal_def] using htoReal
+    have hbound_tend :
+        Tendsto (fun i => r + C * tail i) l (𝓝 r) := by
+      simpa using tendsto_const_nhds.add (htail_real.const_mul C)
+    have heventually_bound :
+        ∀ᶠ i in l, r + C * tail i < a :=
+      hbound_tend.eventually (eventually_lt_nhds (by linarith))
+    filter_upwards [heventually_bound] with i hi
+    haveI : IsProbabilityMeasure (μ i) := hμ_prob i
+    exact
+      lt_of_le_of_lt
+        (_root_.StatInference.ProbabilityMeasure.probability_integral_le_threshold_add_bound_mul_tail
+          (μ := μ i) (X := Y i) (r := r) (C := C) hr_nonneg
+          (hY_meas i) (hY_integrable i) (hY_le i))
+        hi
 
 end StatInference

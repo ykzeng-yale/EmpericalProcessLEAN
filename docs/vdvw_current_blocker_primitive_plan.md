@@ -603,13 +603,18 @@ additional example closures:
    blocker for selected random empirical covers: the expectation-level
    random-cover route and product outer-expectation projection are compiled.
    The entropy-to-Hoeffding outer-probability and Markov cover bridges are now
-   compiled.  The remaining Theorem 2.4.3 blocker is the integrated
-   Hoeffding-plus-radius mean convergence needed by the fixed-`M`
-   centered-truncated convergence handoff; it is not the finite-net
-   Rademacher/Hoeffding maximal scale, the fixed-sample random-sign
-   outer-expectation finite-net handoff, the finite sample mean-zero bridge, the
-   ordinary integrated product/sign-symmetry layer, or a fixed-sample pointwise
-   `hphi_id` comparison.
+   compiled.  The bounded variable-domain route to the real integrated
+   Hoeffding-plus-radius mean convergence is also compiled through
+   `vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero`
+   and
+   `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`,
+   with measurable cardinality, deterministic boundedness/UI, and
+   `coverRadius -> 0` supplied explicitly.  The remaining Theorem 2.4.3 blocker
+   is supplying those hypotheses from the entropy route, then final assembly;
+   it is not the finite-net Rademacher/Hoeffding maximal scale,
+   the fixed-sample random-sign outer-expectation finite-net handoff, the finite
+   sample mean-zero bridge, the ordinary integrated product/sign-symmetry layer,
+   or a fixed-sample pointwise `hphi_id` comparison.
    A deterministic pointwise class-member-to-supremum
    bridge is also available as
    `abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove` for
@@ -883,18 +888,42 @@ Search record for the symmetrization precursor package:
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_and_coverRadius_tendsto_zero`
   reduces the bundled real mean input to two assumptions: the finite-net
   Hoeffding upper mean tends to zero and the chosen empirical-cover radius tends
-  to zero.  The next valid target is the analytic input this exposes: prove the
-  finite-net Hoeffding upper mean convergence from the entropy hypothesis,
-  likely through a variable-domain bounded-convergence/uniform-integrability
-  bridge.
+  to zero.  The bounded-tail expectation wrapper
+  `probability_integral_le_threshold_add_bound_mul_tail`, the variable-domain
+  bounded outer-probability-to-mean bridge
+  `tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg`,
+  and the finite-net mean consumer
+  `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`
+  plus the pure finite-net mean consumer
+  `integral_finiteNetHoeffdingUpper_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`
+  are also compiled.  The variable-domain entropy-to-Hoeffding bridge
+  `vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero`
+  and the bounded entropy-to-integrated-mean consumer
+  `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
+  with pure finite-net mean form
+  `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
+  are now compiled as well.  The random finite-net upper measurability and
+  integrability packaging lemmas
+  `measurable_vdVWLogEmpiricalL1CoveringCardinality_of_measurable_cardinality`,
+  `measurable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality`,
+  and
+  `integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality_bound`,
+  plus the measurable-cardinality finite-net mean consumer
+  `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`,
+  are also compiled.  The next valid target is the analytic input this exposes:
+  supply the measurable-cardinality and boundedness/uniform-integrability or
+  dominated-convergence hypotheses that turn the entropy route into the real
+  integrated Hoeffding-plus-radius mean convergence, together with the
+  empirical-cover radius convergence input.
   Search record: local `StatInference` and pinned mathlib searches for
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
   `tendsto_integral_of_L1`, `TendstoInMeasure`, and
   `VdVWConvergesInOuterProbabilityConst` found fixed-domain mathlib Vitali/L1
   APIs and the local common-domain
-  `vdVWConvergesInOuterProbability_iff_tendstoInMeasure`, but no ready theorem
-  converting variable-domain `SampleAt Observation n` convergence in outer
-  probability plus boundedness/UI into convergence of expectations.
+  `vdVWConvergesInOuterProbability_iff_tendstoInMeasure`; this run added the
+  variable-domain bounded nonnegative outer-probability-to-mean bridge, but the
+  theorem route still needs measurable cardinality and the bounded/UI
+  hypothesis for the random finite-net upper.
   The
   supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
@@ -939,10 +968,15 @@ Markov outer-expectation-to-outer-probability bridge, plus the composed
 centered-truncated integral finite-net bound, variable-domain Markov bridges,
 fixed-`M` centered-truncated convergence handoff under an explicit vanishing
 integrated Hoeffding-plus-radius hypothesis, its real-mean convergence consumer,
-and the split finite-net-mean/cover-radius fixed-`M` consumer, are closed.  Next
-prove finite-net Hoeffding upper mean convergence from the entropy hypotheses
-plus a variable-domain bounded-convergence/uniform-integrability primitive, then
-assemble the final Theorem 2.4.3 handoffs.
+the split finite-net-mean/cover-radius fixed-`M` consumer, bounded-tail
+expectation wrapper, variable-domain bounded outer-probability-to-mean bridge,
+variable-domain entropy-to-Hoeffding bridge, finite-net mean consumer,
+measurable-cardinality finite-net mean consumer, random finite-net upper
+measurability/integrability packaging, and bounded entropy-to-integrated-mean
+consumer are closed. Next supply the measurable-cardinality, boundedness/UI or
+dominated-convergence input, and cover-radius convergence needed to derive the
+vanishing real integrated upper from the entropy hypotheses, then assemble the
+final Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

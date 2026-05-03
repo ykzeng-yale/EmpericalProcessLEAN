@@ -57,7 +57,9 @@ merged empirical-process progress, the log-radius-to-Hoeffding scale comparison
 is proved, finite-`Pi` mapped-coordinate product laws are available, and the
 measurable-integrable envelope-tail convergence handoff is compiled locally in
 the empirical-process file.  The active VdV&W blocker is now the
-integrated Hoeffding-plus-radius mean convergence needed after the fixed-`M`
+boundedness/uniform-integrability input needed to turn the entropy-driven
+finite-net Hoeffding outer-probability convergence into the integrated
+Hoeffding-plus-radius mean convergence consumed by the fixed-`M`
 centered-truncated convergence handoff, then final assembly.  Nonmeasurable or
 arbitrary-cover envelope-tail variants remain out of scope unless the theorem
 assembly forces them.  Billingsley support should only add reusable
@@ -304,6 +306,19 @@ The next high-value proof step is the theorem-specific Section 18/entropy
 assembly for VdV&W Theorem 2.4.3:
 
 - prove the real integrated Hoeffding-plus-radius upper tends to zero, using
+  the new bounded/UI-style bridges
+  `probability_integral_le_threshold_add_bound_mul_tail`,
+  `tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg`,
+  and
+  `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`,
+  pure finite-net mean consumer
+  `integral_finiteNetHoeffdingUpper_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`,
+  plus the variable-domain entropy-to-Hoeffding bridge
+  `vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero`
+  and bounded entropy-to-integrated-mean consumer
+  `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`,
+  with pure finite-net mean form
+  `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`,
   the compiled fixed-`M` centered-truncated convergence consumer
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`
   and the generic real-to-`ENNReal.ofReal` handoff
@@ -459,8 +474,23 @@ supplied-`hphi_id` finite-net projection
 The entropy-to-Hoeffding-scale outer-probability handoff is now compiled for
 the product-integrated expected-maximal route, including fixed/all-entropy
 consumers.  The variable-domain Markov bridges and fixed-`M`
-centered-truncated convergence handoff are also compiled.  The next proof
-target is the integrated Hoeffding-plus-radius mean convergence input exposed
-by that handoff; a fixed-sample pointwise comparison or product-a.e.
-finite-center Hoeffding predicate should not be pursued. Do not add another
-product surface unless that assembly exposes a sharper missing API.
+centered-truncated convergence handoff are also compiled.  The bounded
+outer-probability-to-mean bridge and finite-net mean consumer are now compiled
+as
+`tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg`
+and
+`integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`.
+The pure finite-net mean form
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`
+is also compiled.
+The variable-domain entropy-to-Hoeffding bridge
+`vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero`
+and bounded entropy-to-integrated-mean consumer
+`integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
+with pure finite-net mean form
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
+are now compiled as well. The next proof target is supplying measurable
+cardinality plus variable-domain boundedness/UI input from the entropy
+hypotheses, not a fixed-sample pointwise comparison or product-a.e.
+finite-center Hoeffding predicate. Do not add another product surface unless
+that assembly exposes a sharper missing API.
