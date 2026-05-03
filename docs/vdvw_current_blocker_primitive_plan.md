@@ -1236,14 +1236,30 @@ and untruncated consumer
 compose selected fixed-radius finite-net mean convergence with the existing
 fixed-`M` and large-`M` envelope-tail routes.
 
-Next exact edit: replace the remaining deterministic normalized
-log-cardinality bound in the selected fixed-radius route by a sharper
-finite-net tail/UI/dominated-convergence theorem, or record the precise
-book-level extra condition needed for that replacement.  The remaining
-analytic gap is no longer selected-cardinality measurability/log convergence
-under countability, nor the fixed-`M`/untruncated consumer composition; it is
-deriving the deterministic bound or tail/UI condition from the textbook entropy
-hypothesis `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η`.
+The selected fixed-radius tail/UI route is also compiled.  The finite-net mean
+handoffs
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_selected_truncated_fixedRadius_tailExpectation`
+and
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_forall_pos_selected_truncated_fixedRadius_tailExpectation`
+use the same selected log-convergence and selected measurability facts, but
+replace the deterministic normalized log bound by an explicit varying-domain
+tail-expectation condition for the selected Hoeffding upper.  The fixed-`M`
+and untruncated theorem-facing consumers
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_fixedRadius_tailExpectation`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_fixedRadius_tailExpectation`
+now compose that tail/UI route with the main symmetrization and large-`M`
+envelope-tail handoffs.
+
+Next exact edit: prove the selected finite-net tail-expectation/UI condition
+from the textbook entropy hypothesis, or record the precise additional
+book-level condition needed to make the final Theorem 2.4.3 statement honest.
+The remaining analytic gap is no longer selected-cardinality measurability/log
+convergence under countability, nor the fixed-`M`/untruncated consumer
+composition, nor a missing tail/UI consumer; it is deriving the tail/UI
+condition from `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η`, or
+showing that an explicit uniform-integrability/tail-expectation input must be
+part of the current Lean theorem interface.
 The finite-cover domination, terminal selected-cardinality equality,
 measurability transport, fixed-`M` centered-truncated consumers,
 inverse-radius and fixed-radius consumers, finite-net tail/UI adapters,
