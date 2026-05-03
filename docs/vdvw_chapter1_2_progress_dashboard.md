@@ -165,6 +165,8 @@ with pure finite-net mean form
 `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
 and measurable-cardinality consumer
 `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`
+and radius-added measurable-cardinality consumer
+`integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`
 are compiled as well. The random finite-net upper measurability/integrability
 packaging lemmas
 `measurable_vdVWLogEmpiricalL1CoveringCardinality_of_measurable_cardinality`,
@@ -175,7 +177,8 @@ are also compiled.  The fixed-`M` centered-truncated consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_bounded`
 now composes these pieces under explicit measurable-cardinality,
 boundedness/UI, and `coverRadius -> 0` hypotheses. The remaining blocker is
-deriving or supplying those hypotheses from the book entropy route, then final
+deriving or supplying those hypotheses, including a shrinking deterministic
+cover-radius selection, from the book all-radius entropy route, then final
 assembly.
 The product-integrated symmetrization route now also has the composed
 random-cover finite-net integral bridge

@@ -206,10 +206,17 @@ Concrete next edits:
    and
    `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
    plus
-   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`;
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
+   plus
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`;
+   the radius-added measurable-cardinality integrated-mean consumer
+   `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`
+   is also compiled;
+   the finite-net upper measurability/integrability packaging lemmas from
+   measurable cardinality and a deterministic bound are also compiled;
    the next blocker is supplying measurable cardinality plus
-   boundedness/uniform-integrability input needed to use that mean bridge from
-   the entropy hypotheses.
+   boundedness/uniform-integrability input and a shrinking deterministic
+   cover-radius selection from the entropy hypotheses.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.

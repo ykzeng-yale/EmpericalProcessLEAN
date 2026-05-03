@@ -389,9 +389,15 @@ and bounded entropy-to-integrated-mean consumer
 `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
 with pure finite-net mean form
 `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
-are compiled as well. Next prove measurable cardinality plus
-boundedness/uniform-integrability input that turns the entropy hypotheses into
-the required real integrated upper, now past the
+and measurable-cardinality finite-net mean form
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`
+and radius-added measurable-cardinality integrated-mean consumer
+`integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`
+are compiled as well. The finite-net upper measurability/integrability
+packaging lemmas from measurable cardinality and a deterministic bound are also
+compiled. Next prove measurable cardinality plus boundedness/uniform-integrability
+input and select a shrinking deterministic cover radius to turn the entropy
+hypotheses into the required real integrated upper, now past the
 fixed-sample,
 integral-lift, product-projection/Fubini, same-weight pair split, deterministic
 sign-negation, ordinary random-sign averaging, product-cover, sample-cover,

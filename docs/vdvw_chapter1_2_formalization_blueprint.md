@@ -472,13 +472,15 @@ above, so they do not change the theorem-level dashboard counts.
    expectation wrapper, variable-domain bounded outer-probability-to-mean
    bridge, variable-domain entropy-to-Hoeffding bridge, finite-net mean
    consumer, pure finite-net mean consumer, bounded entropy-to-integrated-mean
-   consumer, pure bounded entropy-to-finite-net mean consumer,
-   measurable-cardinality finite-net mean consumer, and the fixed-`M`
+   consumer, pure bounded entropy-to-finite-net mean consumer, random finite-net
+   upper measurability/integrability packaging, measurable-cardinality
+   finite-net mean and integrated-mean consumers, and the fixed-`M`
    centered-truncated convergence consumer
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_bounded`
    are now compiled.  The next frontier is deriving/supplying measurable
-   cardinality, boundedness/UI or dominated-convergence, and cover-radius
-   convergence hypotheses from the book entropy route, then final assembly.
+   cardinality, boundedness/UI or dominated-convergence, and a shrinking
+   deterministic empirical-cover radius from the book all-radius entropy route,
+   then final assembly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

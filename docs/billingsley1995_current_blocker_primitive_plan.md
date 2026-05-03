@@ -319,6 +319,8 @@ assembly for VdV&W Theorem 2.4.3:
   `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`,
   with pure finite-net mean form
   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`,
+  and measurable-cardinality finite-net mean form
+  `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`,
   the compiled fixed-`M` centered-truncated convergence consumer
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`
   and the generic real-to-`ENNReal.ofReal` handoff
@@ -489,8 +491,14 @@ and bounded entropy-to-integrated-mean consumer
 `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
 with pure finite-net mean form
 `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded`
-are now compiled as well. The next proof target is supplying measurable
-cardinality plus variable-domain boundedness/UI input from the entropy
-hypotheses, not a fixed-sample pointwise comparison or product-a.e.
-finite-center Hoeffding predicate. Do not add another product surface unless
-that assembly exposes a sharper missing API.
+and measurable-cardinality finite-net mean form
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`
+and radius-added measurable-cardinality integrated-mean consumer
+`integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`
+are now compiled as well. The finite-net upper measurability/integrability
+packaging lemmas from measurable cardinality and a deterministic bound are also
+compiled. The next proof target is supplying measurable cardinality plus
+variable-domain boundedness/UI input from the entropy hypotheses and selecting
+a shrinking deterministic cover radius, not a fixed-sample pointwise comparison
+or product-a.e. finite-center Hoeffding predicate. Do not add another product
+surface unless that assembly exposes a sharper missing API.

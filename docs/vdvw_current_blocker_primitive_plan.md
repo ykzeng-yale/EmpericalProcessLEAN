@@ -910,21 +910,26 @@ Search record for the symmetrization precursor package:
   `integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_measurable_cardinality_bound`,
   plus the measurable-cardinality finite-net mean consumer
   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`,
+  and the radius-added measurable-cardinality consumer
+  `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_bounded_of_measurable_cardinality`,
   are also compiled.  The fixed-`M` centered-truncated convergence consumer
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_bounded`
   now composes these pieces under explicit measurable-cardinality,
   boundedness/uniform-integrability, and empirical-cover radius convergence
   hypotheses.  The next valid target is proving or supplying those analytic
-  side conditions from the book entropy route.
+  side conditions from the book all-radius entropy route, including choosing a
+  shrinking deterministic empirical-cover radius such as
+  `coverRadius n = ((n + 1 : ℕ) : ℝ)⁻¹`.
   Search record: local `StatInference` and pinned mathlib searches for
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
   `tendsto_integral_of_L1`, `TendstoInMeasure`, and
   `VdVWConvergesInOuterProbabilityConst` found fixed-domain mathlib Vitali/L1
   APIs and the local common-domain
   `vdVWConvergesInOuterProbability_iff_tendstoInMeasure`; this run added the
-  variable-domain bounded nonnegative outer-probability-to-mean bridge, but the
-  theorem route still needs measurable cardinality and the bounded/UI
-  hypothesis for the random finite-net upper.
+  variable-domain bounded nonnegative outer-probability-to-mean bridge and the
+  finite-net upper measurability/integrability packaging from measurable
+  cardinality, but the theorem route still needs measurable cardinality and the
+  bounded/UI hypothesis for the random finite-net upper.
   The
   supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
