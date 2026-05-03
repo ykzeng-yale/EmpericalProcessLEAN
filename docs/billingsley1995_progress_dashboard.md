@@ -282,7 +282,10 @@ is available for arbitrary deterministic shrinking cover radii, and
 specializes it to `1 / ((n : ℝ) + 1)`, while
 `VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
 packages the selected inverse-radius side conditions except for the supplied
-diagonal selected log convergence.  The next blocker is feeding theorem
+diagonal selected log convergence.  The fixed-`M` consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`
+now consumes that package plus the deterministic selected log-ratio bound.  The
+next blocker is feeding theorem
 entropy hypotheses into one of those consumers past the now-closed
 covering-domination/finite-witness step: selected terminal equality, diagonal
 selected log-cardinality convergence, and a deterministic normalized

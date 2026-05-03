@@ -257,7 +257,10 @@ packages the terminal selected equality for the least finite-cover cardinality
 process, and
 `VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
 packages inverse-radius selected side conditions once diagonal selected log
-convergence is supplied. The remaining blocker is feeding diagonal selected
+convergence is supplied, and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`
+consumes that package plus a deterministic selected log-ratio bound. The
+remaining blocker is feeding diagonal selected
 log-cardinality convergence and a deterministic selected log-ratio bound or
 genuine varying-domain tail/UI replacement from the all-radius entropy route
 into that consumer, then final assembly.

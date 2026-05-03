@@ -585,11 +585,17 @@ inverse-radius specialization
 is compiled as well, and
 `VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
 packages inverse-radius selected finite covers, measurable terminal
-cardinality, and supplied diagonal selected log convergence. The next proof
-target is no longer the finite-witness
-handoff for an all-radius entropy hypothesis; it is the selected terminal
-equality/log-ratio assembly for the arbitrary-radius or inverse-radius selected
-consumer, especially diagonal selected log-cardinality convergence plus the
+cardinality, and supplied diagonal selected log convergence, while
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_eq_selected_truncated`
+builds the same side-condition package for an externally named cardinality
+once its terminal value is identified with the selected truncated
+minimal-cardinality process. The packaged
+consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`
+then uses those side conditions plus a deterministic selected log-ratio bound
+to discharge fixed-`M` centered-truncated convergence. The next proof target is
+no longer the finite-witness handoff for an all-radius entropy hypothesis; it
+is feeding diagonal selected log-cardinality convergence plus the
 deterministic normalized log-cardinality bound or a genuine variable-domain
 boundedness/UI replacement from the entropy hypotheses, not a fixed-sample
 pointwise comparison or product-a.e. finite-center Hoeffding predicate. Search

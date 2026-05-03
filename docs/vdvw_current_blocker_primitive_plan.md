@@ -1030,7 +1030,9 @@ Search record for the symmetrization precursor package:
   cover-radius selector, all-radius covering projection, finite-witness
   handoff, selected log-bound transfer, and
   `VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
-  side-condition packaging are now compiled.
+  side-condition packaging are now compiled.  The fixed-`M` handoff from that
+  package and a deterministic selected log-ratio bound is compiled as
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`.
   Follow-up search found no ready
   variable-domain `UniformIntegrable`/Vitali API; pinned mathlib's
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
