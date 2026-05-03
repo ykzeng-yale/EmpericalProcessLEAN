@@ -1126,6 +1126,86 @@ theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_integral_tail_bound
   · exact (ae_restrict_mem measurableSet_Ioi).mono fun t ht => hbound t ht
 
 /--
+Split-at-radius tail-integral handoff for the finite-center expected supremum.
+
+For `0 <= r`, the interval `(0, r]` contributes at most `r` because every
+tail probability is at most one.  The remaining contribution can then be
+controlled by any supplied tail majorant over `(r, ∞)`.
+-/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_integral_tail_bound
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} [Nonempty (Fin cardinality)]
+    (X : Fin cardinality -> Ω -> ℝ) {tailBound : ℝ -> ℝ} {r : ℝ}
+    (hr : 0 ≤ r)
+    (hintegrable :
+      Integrable (fun ω =>
+        ⨆ centerIndex : Fin cardinality, |X centerIndex ω|) μ)
+    (hboundIntegrable : IntegrableOn tailBound (Set.Ioi r) volume)
+    (hbound : ∀ t ∈ Set.Ioi r,
+      μ.real {ω | t ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)} ≤
+        tailBound t) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤
+      r + ∫ t in Set.Ioi r, tailBound t := by
+  let tail : ℝ -> ℝ := fun t =>
+    μ.real {ω | t ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)}
+  have htailMeasurable : Measurable tail := by
+    refine Antitone.measurable ?_
+    intro s t hst
+    exact measureReal_mono (fun ω hω => le_trans hst hω)
+  have htailAEStrongly : AEStronglyMeasurable tail volume :=
+    htailMeasurable.aestronglyMeasurable
+  have htailLeftIntegrable : IntegrableOn tail (Set.Ioc (0 : ℝ) r) volume := by
+    refine Measure.integrableOn_of_bounded
+      (μ := volume) (s := Set.Ioc (0 : ℝ) r) (M := 1)
+      measure_Ioc_lt_top.ne htailAEStrongly ?_
+    refine Eventually.of_forall fun t => ?_
+    rw [Real.norm_of_nonneg measureReal_nonneg]
+    exact measureReal_le_one
+  have htailRightIntegrable : IntegrableOn tail (Set.Ioi r) volume := by
+    refine Integrable.mono' hboundIntegrable htailAEStrongly.restrict ?_
+    exact (ae_restrict_mem measurableSet_Ioi).mono fun t ht => by
+      rw [Real.norm_of_nonneg measureReal_nonneg]
+      exact hbound t ht
+  have hsplit :
+      (∫ t in Set.Ioi (0 : ℝ), tail t) =
+        (∫ t in Set.Ioc (0 : ℝ) r, tail t) +
+          (∫ t in Set.Ioi r, tail t) := by
+    have hU : Set.Ioc (0 : ℝ) r ∪ Set.Ioi r = Set.Ioi (0 : ℝ) :=
+      Set.Ioc_union_Ioi_eq_Ioi hr
+    have h := setIntegral_union (μ := volume) (f := tail)
+      (s := Set.Ioc (0 : ℝ) r) (t := Set.Ioi r)
+      (Set.Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi
+      htailLeftIntegrable htailRightIntegrable
+    rwa [hU] at h
+  have hleft : (∫ t in Set.Ioc (0 : ℝ) r, tail t) ≤ r := by
+    calc
+      (∫ t in Set.Ioc (0 : ℝ) r, tail t)
+          ≤ ∫ _t in Set.Ioc (0 : ℝ) r, (1 : ℝ) := by
+              refine setIntegral_mono_on htailLeftIntegrable
+                (integrableOn_const measure_Ioc_lt_top.ne) measurableSet_Ioc ?_
+              intro t _ht
+              exact measureReal_le_one
+      _ = volume.real (Set.Ioc (0 : ℝ) r) := by
+              rw [setIntegral_one_eq_measureReal]
+      _ = r := by
+              rw [Real.volume_real_Ioc_of_le hr]
+              ring
+  have hright :
+      (∫ t in Set.Ioi r, tail t) ≤ ∫ t in Set.Ioi r, tailBound t := by
+    refine setIntegral_mono_on htailRightIntegrable hboundIntegrable
+      measurableSet_Ioi ?_
+    intro t ht
+    exact hbound t ht
+  calc
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X
+        = ∫ t in Set.Ioi (0 : ℝ), tail t := by
+            rw [vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail
+              X hintegrable]
+    _ = (∫ t in Set.Ioc (0 : ℝ) r, tail t) +
+          (∫ t in Set.Ioi r, tail t) := hsplit
+    _ ≤ r + ∫ t in Set.Ioi r, tailBound t := add_le_add hleft hright
+
+/--
 Finite-center sub-Gaussian specialization of the tail-integral upper bound.
 
 The remaining maximal-inequality work is to discharge the Gaussian-tail
@@ -1186,6 +1266,41 @@ theorem vdVWTheorem243_subGaussian_tail_bound_integrable
   convert hbaseRestrict.const_mul ((cardinality : ℝ) * 2) using 1
   ext t
   ring_nf
+
+/--
+Split-at-radius finite-center sub-Gaussian expectation bound.
+
+This is the next theorem-line bridge toward the VdV&W logarithmic
+Hoeffding/Orlicz maximal bound: after choosing a logarithmic radius, only the
+Gaussian tail integral over `(r, ∞)` remains.
+-/
+theorem
+    vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_integral_subGaussian_tail_bound
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0} {r : ℝ}
+    (hc : 0 < (c : ℝ)) (hr : 0 ≤ r)
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤
+      r + ∫ t in Set.Ioi r,
+        (cardinality : ℝ) * (2 * Real.exp (-(t ^ 2) / (2 * (c : ℝ)))) := by
+  haveI : Nonempty (Fin cardinality) := ⟨⟨0, hcardinality⟩⟩
+  refine
+    vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_integral_tail_bound
+      X hr
+      (vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF
+        X hX)
+      ?_ ?_
+  · exact
+      (vdVWTheorem243_subGaussian_tail_bound_integrable
+        (cardinality := cardinality) (c := c) hc).mono_set
+        (by
+          intro t ht
+          exact lt_of_le_of_lt hr ht)
+  · intro t ht
+    exact
+      vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF_of_pos
+        hcardinality X hX (le_of_lt (lt_of_le_of_lt hr ht))
 
 /--
 Closed-form value of the finite-center sub-Gaussian tail majorant over
