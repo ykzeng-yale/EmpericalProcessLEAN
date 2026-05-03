@@ -300,6 +300,8 @@ additional example closures:
    vdVWTheorem243_productCopy_fst_snd_indep
    vdVWTheorem243_productCopy_fst_snd_identDistrib
    integrable_vdVWTruncatedClassFun_pairDifference
+   vdVWTheorem243_truncated_productCopy_mapped_hasLaw_indep
+   integral_vdVWTruncatedClassFun_pairDifference_eq_zero
    VdVWTheorem243TruncatedEntropyCondition
    VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM
    ```
@@ -314,8 +316,12 @@ additional example closures:
    It also reuses the Billingsley/ProbabilityMeasure product-self-copy wrapper
    to give VdVW-facing `P.prod P` first/second-coordinate law, independence,
    identical-distribution wrappers, and fixed truncated pair-difference
-   integrability.  Remaining Step 1 work: plug these gates into the full
-   product/Fubini-compatible symmetrization inequality.
+   integrability.  The latest local layer specializes the reusable mapped-copy
+   product wrapper to fixed truncated class members, proving marginal laws,
+   joint law, independence, and the zero product expectation of the fixed
+   truncated pair difference by product projection/Fubini integral wrappers.
+   Remaining Step 1 work: plug these gates into the full product/Fubini-
+   compatible symmetrization inequality.
 2. Deterministic fixed-sample net inequality `(2.4.4)` for a finite empirical
    `L1(P_n)` net.
 
@@ -602,9 +608,12 @@ for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
 truncated pair-difference measurability/integrability, real-valued
 envelope-tail outer-expectation/probability handoffs, generic ordinary tail
 cutoff convergence, `P.prod P` coordinate law/independence/identical-
-distribution wrappers, and proof-carrying product-coordinate/map independence
-wrappers are closed.  Next build the product/Fubini-compatible symmetrization
-interface targeted to the `Phi(x)=x` case, reusing
+distribution wrappers, proof-carrying product-coordinate/map independence
+wrappers, and the zero-mean fixed truncated pair-difference Fubini gate are
+closed.  Next build the finite-center `Phi(x)=x` product/Fubini symmetrization
+interface itself: define or package the centered finite-center supremum and the
+product-pair-difference finite-center supremum, then prove the ordinary
+expectation handoff from centered terms to independent-copy differences.  Reuse
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`,
 `probability_prod_independent_mapped_copies_with_joint_law`, the reusable
 `StatInference/ProbabilityMeasure/Rademacher.lean` signs where possible, the

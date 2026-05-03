@@ -461,6 +461,88 @@ theorem integrable_vdVWTruncatedClassFun_pairDifference
         htruncIntegrable
   exact hfst.sub hsnd
 
+/--
+Mapped product-copy laws and independence for a fixed truncated class member.
+
+This specializes the reusable product-map independence wrapper to the
+truncated functions used in Theorem 2.4.3.  It is the law/independence gate for
+the `Phi(x)=x` product-space symmetrization layer.
+-/
+theorem vdVWTheorem243_truncated_productCopy_mapped_hasLaw_indep
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope : Measurable envelope)
+    {index : Index} (hindex : index ∈ indexClass) :
+    let f : Observation -> ℝ := vdVWTruncatedClassFun classFun envelope M index
+    HasLaw (fun z : Observation × Observation => f z.1) (P.map f) (P.prod P) ∧
+      HasLaw (fun z : Observation × Observation => f z.2) (P.map f) (P.prod P) ∧
+      HasLaw (fun z : Observation × Observation => (f z.1, f z.2))
+        ((P.map f).prod (P.map f)) (P.prod P) ∧
+      (fun z : Observation × Observation => f z.1) ⟂ᵢ[P.prod P]
+        (fun z : Observation × Observation => f z.2) := by
+  let f : Observation -> ℝ := vdVWTruncatedClassFun classFun envelope M index
+  have hf : Measurable f := by
+    simpa [f] using
+      measurable_vdVWTruncatedClassFun (hclass index hindex) henvelope
+  have h :=
+    StatInference.ProbabilityMeasure.probability_prod_independent_mapped_copies_with_joint_law
+      (P := (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation))
+      (Q := (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation))
+      (X := f) (Y := f) hf hf
+  simpa [f] using h
+
+/--
+The product-copy pair difference of a fixed truncated class member has mean
+zero under `P × P`.
+
+This is the Fubini/projection-integral gate needed before turning independent
+copy differences into the centered terms in the `Phi(x)=x` symmetrization
+route.
+-/
+theorem integral_vdVWTruncatedClassFun_pairDifference_eq_zero
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M : ℝ} {index : Index}
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) P) :
+    ∫ z : Observation × Observation,
+        (vdVWTruncatedClassFun classFun envelope M index z.1 -
+          vdVWTruncatedClassFun classFun envelope M index z.2) ∂(P.prod P) = 0 := by
+  let f : Observation -> ℝ := vdVWTruncatedClassFun classFun envelope M index
+  have hfst : Integrable (fun z : Observation × Observation => f z.1) (P.prod P) := by
+    simpa [Function.comp_def, f] using
+      (MeasureTheory.measurePreserving_fst (μ := P) (ν := P)).integrable_comp_of_integrable
+        htruncIntegrable
+  have hsnd : Integrable (fun z : Observation × Observation => f z.2) (P.prod P) := by
+    simpa [Function.comp_def, f] using
+      (MeasureTheory.measurePreserving_snd (μ := P) (ν := P)).integrable_comp_of_integrable
+        htruncIntegrable
+  have hfst_int :
+      ∫ z : Observation × Observation, f z.1 ∂(P.prod P) =
+        ∫ x, f x ∂P := by
+    simpa using
+      StatInference.ProbabilityMeasure.probability_integral_prod_fst
+        (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation)
+        (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation)
+        f
+  have hsnd_int :
+      ∫ z : Observation × Observation, f z.2 ∂(P.prod P) =
+        ∫ x, f x ∂P := by
+    simpa using
+      StatInference.ProbabilityMeasure.probability_integral_prod_snd
+        (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation)
+        (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation)
+        f
+  rw [show (fun z : Observation × Observation =>
+        vdVWTruncatedClassFun classFun envelope M index z.1 -
+          vdVWTruncatedClassFun classFun envelope M index z.2) =
+        fun z : Observation × Observation => f z.1 - f z.2 by rfl]
+  rw [integral_sub hfst hsnd, hfst_int, hsnd_int, sub_self]
+
 /-!
 ## Fixed-sample empirical net handoff
 -/
