@@ -87,5 +87,41 @@ theorem descentLemma_of_smoothWithGradientOn_of_le_inv {C : Set E} {f : E -> ℝ
     linarith
   exact descentLemma_of_smoothWithGradientOn hsmooth hx hstep_mem hh_nonneg hbeta_step
 
+/--
+Along a gradient-descent trajectory satisfying the descent-lemma step-size
+condition, function values are nonincreasing.
+-/
+theorem functionValue_antitone_of_smoothWithGradientOn
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {beta h : ℝ} {x : ℕ -> E}
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (htraj : IsGradientDescentTrajectory grad h x)
+    (hmem : ∀ n, x n ∈ C)
+    (hh_nonneg : 0 ≤ h)
+    (hbeta_step : beta * h ≤ 1) :
+    Antitone fun n => f (x n) := by
+  refine antitone_nat_of_succ_le ?_
+  intro n
+  have hstep_eq : x (n + 1) = gradientDescentStep grad h (x n) :=
+    htraj.succ n
+  have hstep_mem : gradientDescentStep grad h (x n) ∈ C := by
+    rw [← hstep_eq]
+    exact hmem (n + 1)
+  have hdescent :
+      f (gradientDescentStep grad h (x n)) - f (x n) ≤
+        -(h / 2) * ‖grad (x n)‖ ^ (2 : ℕ) :=
+    descentLemma_of_smoothWithGradientOn hsmooth (hmem n) hstep_mem
+      hh_nonneg hbeta_step
+  have hrhs_nonpos :
+      -(h / 2) * ‖grad (x n)‖ ^ (2 : ℕ) ≤ 0 := by
+    exact mul_nonpos_of_nonpos_of_nonneg
+      (by nlinarith : -(h / 2) ≤ 0)
+      (sq_nonneg ‖grad (x n)‖)
+  have hdiff_nonpos :
+      f (gradientDescentStep grad h (x n)) - f (x n) ≤ 0 :=
+    hdescent.trans hrhs_nonpos
+  rw [hstep_eq]
+  nlinarith
+
 end Optimization
 end StatInference

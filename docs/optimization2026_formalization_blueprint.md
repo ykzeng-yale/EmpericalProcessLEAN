@@ -148,16 +148,19 @@ Near-term exact candidates:
 2. Lemma 3.1 descent lemma from the smooth upper-model interface.  The local
    supplied-gradient version is compiled in
    `StatInference/Optimization/GradientDescent.lean`, including the source
-   step-size corollary `h <= 1 / beta` under `0 < beta`.
+   step-size corollary `h <= 1 / beta` under `0 < beta`, and the
+   function-value antitonicity lemma for GD trajectories.
 3. Theorem 3.4 as a supplied-interface convergence theorem.  The next layer
    now compiles in `StatInference/Optimization/Theorem34.lean`: it assumes the
    one-step recurrence (3.1), uses the compiled Gronwall theorem for the
    weighted finite-sum bound, provides the source-indexed one-based display,
-   adds the monotone-gap weighted lower-bound helper, and proves the one-step
-   recurrence from the supplied first-order strong-convexity lower model plus
-   Lemma 3.1.  Remaining work is the closed denominator simplification via
-   mathlib geometric-series APIs, and later the full segment-strong-convexity
-   plus differentiability bridge for Proposition 1.6.
+   adds the monotone-gap weighted lower-bound helper, proves the finite and
+   positive-`alpha` closed geometric denominator corollaries, and proves the
+   one-step recurrence from the supplied first-order strong-convexity lower
+   model plus Lemma 3.1.  A final wrapper derives monotonicity from the descent
+   lemma rather than taking it as a supplied assumption.  Remaining work is the
+   `alpha = 0` limiting display and, later, the full
+   segment-strong-convexity plus differentiability bridge for Proposition 1.6.
 
 ### Lane D: Later textbook expansion
 
