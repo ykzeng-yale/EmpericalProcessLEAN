@@ -197,7 +197,18 @@ measurability wrappers
 `measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable`,
 and
 `measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable`
-are also compiled. The
+are also compiled, together with the equality-transport wrappers
+`measurable_cardinality_at_sampleSize_of_eq_selected_randomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`
+and
+`measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable`.
+The covering domination-to-finiteness bridges
+`hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality`
+and
+`hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath`,
+plus
+`measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable_of_covering_le`,
+are also compiled.
+The
 deterministic finite-net log-bound suppliers
 `vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le`,
 `vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le`,
@@ -206,10 +217,9 @@ and
 `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
 plus the fixed-`M` centered-truncated consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
-are also compiled. The inverse-radius variant
-`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_bounded_invRadius`
-discharges the deterministic `coverRadius -> 0` side condition for
-`coverRadius n = 1 / (n + 1)`. The side-condition package
+and its inverse-radius specialization
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound_invRadius`
+are also compiled. The side-condition package
 `VdVWTheorem243FixedMInvRadiusEntropySideConditions` and consumers
 `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero`,
 `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero`,
@@ -217,10 +227,15 @@ and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_bounded`
 also package the selected inverse-radius cover, diagonal log-cardinality
 convergence, and measurable cardinality while keeping finite-net boundedness/UI
-explicit. The remaining blocker is feeding theorem entropy/finite-cover
-hypotheses into the selected-cardinality and inverse-radius side-condition
-wrappers, then supplying the deterministic normalized log-cardinality bound or
-a genuine bounded/UI replacement for final assembly.
+explicit. The theorem-facing selected-cardinality consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
+is compiled as well; it discharges the measurable-cardinality input from
+equality with the selected truncated minimal empirical-cover cardinality. The
+remaining blocker is feeding the inverse-radius finite-cover domination,
+selected terminal equality, normalized log-cardinality
+convergence, and deterministic log-ratio bound or genuine bounded/UI
+replacement from the all-radius entropy route into that consumer, then final
+assembly.
 The product-integrated symmetrization route now also has the composed
 random-cover finite-net integral bridge
 `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
@@ -231,8 +246,8 @@ random-cover finite-net integral bridge
 DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
 ONGOING    Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
-READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, random empirical-cover cardinality witness handoff, nonempty-cover positive-cardinality handoff, F_M truncation interfaces, countable truncated-class P-measurability bridge, selected-cardinality measurability wrappers, deterministic log-bound finite-net mean consumers, variable-domain fixed-M centered-truncated convergence handoffs including bounded, inverse-radius, deterministic log-bound, and packaged inverse-radius entropy consumers, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
-NEXT       Feed theorem entropy/finite-cover hypotheses into the selected-cardinality and inverse-radius side-condition wrappers; derive the selected log-ratio bound or a genuine bounded/UI replacement, then final Theorem 2.4.3 assembly.
+READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, random empirical-cover cardinality witness handoff, nonempty-cover positive-cardinality handoff, F_M truncation interfaces, countable truncated-class P-measurability bridge, a.e./null-measurable cover constructors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound and inverse-radius consumers, selected-cardinality equality-transport inverse-radius consumer, packaged inverse-radius entropy side-condition consumers, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
+NEXT       Feed theorem entropy/finite-cover hypotheses into the selected-cardinality equality-transport inverse-radius consumer; otherwise prove the needed finite/selected-center event lemma, selected log-ratio bound, or genuine UI replacement, then final Theorem 2.4.3 assembly.
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED-EXAMPLE Example 2.4.2 exact quantile-grid closure and empirical-CDF report unless a theorem needs it.
@@ -246,12 +261,13 @@ used as the only source for choosing the next low-level proof target.
 
 ## Verification Monitor
 
-Latest focused verification includes the finite-net log-bound helper layer
-after merge frontier `ef5490a`.
+Latest targeted verification includes the selected terminal/truncated
+minimal-cardinality measurability layer and the Theorem 2.4.3 theorem module
+on 2026-05-03.
 
 ```text
 lake build StatInference.EmpiricalProcess.Theorem243
-Build completed successfully.
+Build completed successfully (8392 jobs).
 
 git ls-files '*.lean' ':!.lake/*' | xargs rg -n --color never -e '\b(sorry|admit|axiom|unsafe)\b'
 No matches.

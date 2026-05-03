@@ -941,20 +941,38 @@ Search record for the symmetrization precursor package:
   `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
   plus the fixed-`M` centered-truncated consumer
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
-  are also compiled.  The packaged inverse-radius side-condition layer
+  are also compiled, and the inverse-radius specialization
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound_invRadius`
+  discharges the canonical `coverRadius n = 1 / ((n : ℝ) + 1)` convergence.
+  The packaged inverse-radius side-condition layer
   `VdVWTheorem243FixedMInvRadiusEntropySideConditions`,
   `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero`,
   `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero`,
   and
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_bounded`
-  now compiles as well.  It packages the selected inverse-radius cover,
-  diagonal log-cardinality convergence, and measurable cardinality, while
-  keeping the deterministic finite-net upper bound as an explicit
-  boundedness/UI assumption.  The next valid target is the analytic/selection
-  input this exposes: feed theorem entropy/finite-cover hypotheses into the
-  selected-cardinality and inverse-radius side-condition wrappers, then supply
-  a deterministic normalized log-cardinality bound or a genuine variable-domain
-  uniform-integrability/dominated-convergence replacement.
+  also compiles.  It packages the selected inverse-radius cover, diagonal
+  log-cardinality convergence, and measurable cardinality, while keeping the
+  deterministic finite-net upper bound as an explicit boundedness/UI assumption.
+  The selected-cardinality measurability route now also has equality-transport
+  wrappers
+  `measurable_cardinality_at_sampleSize_of_eq_selected_randomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`
+  and
+  `measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable`
+  for externally named theorem cardinality processes.  The finite-cover witness
+  input can now be derived directly from covering-number domination by
+  `hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath`,
+  and the countable truncated measurability transport is packaged as
+  `measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable_of_covering_le`.
+  The next valid target is
+  now one layer later: the theorem-facing consumer
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
+  discharges `hcardinality` from equality with the selected truncated
+  minimal-cardinality process.  The remaining analytic/selection inputs are the
+  inverse-radius finite-cover domination, terminal equality for the selected
+  process, and the normalized
+  log-cardinality convergence plus deterministic bound or a genuine
+  variable-domain uniform-integrability/dominated-convergence replacement from
+  the all-radius entropy hypothesis.
   Search record: local `StatInference` and pinned mathlib searches for
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
   `tendsto_integral_of_L1`, `TendstoInMeasure`, and
