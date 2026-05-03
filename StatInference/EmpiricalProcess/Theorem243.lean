@@ -7935,6 +7935,148 @@ theorem
   simpa [vdVWLogEmpiricalL1CoveringCardinality] using hbound n sample
 
 /--
+Terminal log-cardinality bound from a product-type cardinality estimate.
+
+This is the arithmetic handoff needed after a future finite-grid or packing
+argument proves `cardinality + 1 ≤ base ^ n` for the empirical cover selected
+at the sample size.
+-/
+theorem
+    vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_succ_terminal_le_pow
+    {Observation : Type v}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {base : ℕ}
+    (hbase_one : 1 ≤ base)
+    (hterminal_succ_le :
+      ∀ n (sample : SampleAt Observation n),
+        cardinality n sample n + 1 ≤ base ^ n) :
+    ∀ n (sample : SampleAt Observation n),
+      vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+          (n : ℝ) ≤ Real.log (base : ℝ) := by
+  intro n sample
+  by_cases hn : n = 0
+  · subst n
+    have hbase_ge_one_real : (1 : ℝ) ≤ (base : ℝ) := by
+      exact_mod_cast hbase_one
+    have hlog_nonneg : 0 ≤ Real.log (base : ℝ) :=
+      Real.log_nonneg hbase_ge_one_real
+    simpa using hlog_nonneg
+  · have hn_pos_nat : 0 < n := Nat.pos_of_ne_zero hn
+    have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_pos_nat
+    rw [div_le_iff₀ hn_pos]
+    unfold vdVWLogEmpiricalL1CoveringCardinality
+    have harg_pos : 0 < ((cardinality n sample n : ℝ) + 1) := by
+      have hnonneg :
+          (0 : ℝ) ≤ (cardinality n sample n : ℝ) :=
+        Nat.cast_nonneg _
+      linarith
+    have harg_le_pow :
+        ((cardinality n sample n : ℝ) + 1) ≤ (base : ℝ) ^ n := by
+      have hnat :
+          cardinality n sample n + 1 ≤ base ^ n :=
+        hterminal_succ_le n sample
+      have hcast :
+          ((cardinality n sample n + 1 : ℕ) : ℝ) ≤
+            ((base ^ n : ℕ) : ℝ) := by
+        exact_mod_cast hnat
+      simpa [Nat.cast_add, Nat.cast_one, Nat.cast_pow] using hcast
+    have hlog_le :
+        Real.log ((cardinality n sample n : ℝ) + 1) ≤
+          Real.log ((base : ℝ) ^ n) :=
+      Real.log_le_log harg_pos harg_le_pow
+    calc
+      Real.log ((cardinality n sample n : ℝ) + 1)
+          ≤ Real.log ((base : ℝ) ^ n) := hlog_le
+      _ = (n : ℝ) * Real.log (base : ℝ) := Real.log_pow (base : ℝ) n
+      _ = Real.log (base : ℝ) * (n : ℝ) := by ring
+
+/--
+Terminal log-cardinality bound from the more common estimate
+`cardinality ≤ base ^ n`.
+
+The extra `+ 1` inside `vdVWLogEmpiricalL1CoveringCardinality` is absorbed by
+the harmless constant `Real.log (2 * (base + 1))`.  This is useful for a
+finite-grid or packing argument whose natural output is a pure `base ^ n`
+bound on the number of centers.
+-/
+theorem
+    vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le_pow
+    {Observation : Type v}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {base : ℕ}
+    (hbase_pos : 0 < base)
+    (hterminal_le :
+      ∀ n (sample : SampleAt Observation n),
+        cardinality n sample n ≤ base ^ n) :
+    ∀ n (sample : SampleAt Observation n),
+      vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+          (n : ℝ) ≤ Real.log (2 * ((base : ℝ) + 1)) := by
+  intro n sample
+  by_cases hn : n = 0
+  · subst n
+    have harg_ge_one : (1 : ℝ) ≤ 2 * ((base : ℝ) + 1) := by
+      have hbase_nonneg : (0 : ℝ) ≤ (base : ℝ) := Nat.cast_nonneg _
+      nlinarith
+    have hlog_nonneg : 0 ≤ Real.log (2 * ((base : ℝ) + 1)) :=
+      Real.log_nonneg harg_ge_one
+    simpa using hlog_nonneg
+  · have hn_pos_nat : 0 < n := Nat.pos_of_ne_zero hn
+    have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_pos_nat
+    rw [div_le_iff₀ hn_pos]
+    unfold vdVWLogEmpiricalL1CoveringCardinality
+    have hcard_arg_pos : 0 < ((cardinality n sample n : ℝ) + 1) := by
+      have hnonneg :
+          (0 : ℝ) ≤ (cardinality n sample n : ℝ) :=
+        Nat.cast_nonneg _
+      linarith
+    have hbase_real_nonneg : (0 : ℝ) ≤ (base : ℝ) := Nat.cast_nonneg _
+    have hbase_le_base_add_one :
+        (base : ℝ) ≤ (base : ℝ) + 1 := by linarith
+    have hbase_pow_le :
+        (base : ℝ) ^ n ≤ ((base : ℝ) + 1) ^ n :=
+      pow_le_pow_left₀ hbase_real_nonneg hbase_le_base_add_one n
+    have hone_le_pow :
+        (1 : ℝ) ≤ ((base : ℝ) + 1) ^ n :=
+      one_le_pow₀ (by linarith : (1 : ℝ) ≤ (base : ℝ) + 1)
+    have hcard_le_pow :
+        (cardinality n sample n : ℝ) ≤ (base : ℝ) ^ n := by
+      exact_mod_cast hterminal_le n sample
+    have harg_le :
+        ((cardinality n sample n : ℝ) + 1) ≤
+          2 * (((base : ℝ) + 1) ^ n) := by
+      nlinarith
+    have hlog_le :
+        Real.log ((cardinality n sample n : ℝ) + 1) ≤
+          Real.log (2 * (((base : ℝ) + 1) ^ n)) :=
+      Real.log_le_log hcard_arg_pos harg_le
+    have htwo_ne : (2 : ℝ) ≠ 0 := by norm_num
+    have hbase_add_pow_ne : ((base : ℝ) + 1) ^ n ≠ 0 := by positivity
+    have hlog_prod :
+        Real.log (2 * (((base : ℝ) + 1) ^ n)) =
+          Real.log (2 : ℝ) + (n : ℝ) * Real.log ((base : ℝ) + 1) := by
+      rw [Real.log_mul htwo_ne hbase_add_pow_ne, Real.log_pow]
+    have htarget_rewrite :
+        Real.log (2 * ((base : ℝ) + 1)) * (n : ℝ) =
+          (n : ℝ) * Real.log (2 : ℝ) +
+            (n : ℝ) * Real.log ((base : ℝ) + 1) := by
+      have hbase_add_ne : ((base : ℝ) + 1) ≠ 0 := by positivity
+      rw [Real.log_mul htwo_ne hbase_add_ne]
+      ring
+    have hlog2_nonneg : 0 ≤ Real.log (2 : ℝ) :=
+      Real.log_nonneg (by norm_num)
+    have hn_ge_one : (1 : ℝ) ≤ (n : ℝ) := by
+      exact_mod_cast hn_pos_nat
+    calc
+      Real.log ((cardinality n sample n : ℝ) + 1)
+          ≤ Real.log (2 * (((base : ℝ) + 1) ^ n)) := hlog_le
+      _ = Real.log (2 : ℝ) +
+            (n : ℝ) * Real.log ((base : ℝ) + 1) := hlog_prod
+      _ ≤ (n : ℝ) * Real.log (2 : ℝ) +
+            (n : ℝ) * Real.log ((base : ℝ) + 1) := by nlinarith
+      _ = Real.log (2 * ((base : ℝ) + 1)) * (n : ℝ) :=
+        htarget_rewrite.symm
+
+/--
 Transfer a normalized terminal log-cardinality bound from an external
 finite-valued cardinality process to a pointwise smaller selected process.
 -/
