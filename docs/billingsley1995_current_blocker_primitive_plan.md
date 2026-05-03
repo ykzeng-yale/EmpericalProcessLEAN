@@ -75,8 +75,12 @@ Local searches found reusable APIs in:
    Section 16 wrapper layer has started in
    `StatInference/ProbabilityMeasure/Tail.lean`; it packages mathlib
    layer-cake, tail-integral monotonicity, split-at-radius, and Markov APIs for
-   downstream empirical-process use. This is support infrastructure, not a
-   source-exact Billingsley Sections 15-16 report. The content-based Section 18
+   downstream empirical-process use. `StatInference/EmpiricalProcess/Theorem243.lean`
+   now consumes these generic wrappers for its finite-center expected-supremum
+   tail layer while keeping VdV&W-specific outer-expectation/truncation
+   handoffs local to the empirical-process files. This is support
+   infrastructure, not a source-exact Billingsley Sections 15-16 report. The
+   content-based Section 18
    wrapper layer has started in
    `StatInference/ProbabilityMeasure/ProductMeasure.lean`; it now includes
    product-coordinate marginal projection and separated product-expectation

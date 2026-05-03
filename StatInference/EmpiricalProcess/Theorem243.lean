@@ -1,6 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
-import Mathlib.MeasureTheory.Integral.Layercake
 import Mathlib.Probability.HasLawExists
 import Mathlib.Probability.IdentDistrib
 import Mathlib.Probability.Moments.SubGaussian
@@ -8,6 +7,7 @@ import Mathlib.Probability.ProbabilityMassFunction.Integrals
 import StatInference.EmpiricalProcess.CoveringPrimitive
 import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.PMeasurable
+import StatInference.ProbabilityMeasure.Tail
 
 /-!
 # VdV&W Theorem 2.4.3 primitives
@@ -1062,7 +1062,7 @@ theorem vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail
         (Finite.le_ciSup
           (fun centerIndex : Fin cardinality => |X centerIndex ω|)
           (Classical.arbitrary (Fin cardinality)))
-  exact hintegrable.integral_eq_integral_meas_le hnonneg
+  exact ProbabilityMeasure.integral_eq_integral_tail_le hintegrable hnonneg
 
 /--
 Sub-Gaussian-center specialization of the layer-cake representation.
@@ -1116,14 +1116,18 @@ theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_integral_tail_bound
         tailBound t) :
     vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤
       ∫ t in Set.Ioi (0 : ℝ), tailBound t := by
-  rw [vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail X hintegrable]
-  refine integral_mono_of_nonneg
-    (μ := volume.restrict (Set.Ioi (0 : ℝ)))
-    (f := fun t => μ.real
-      {ω | t ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)})
-    (g := tailBound) ?_ hboundIntegrable ?_
-  · exact Eventually.of_forall fun _ => measureReal_nonneg
-  · exact (ae_restrict_mem measurableSet_Ioi).mono fun t ht => hbound t ht
+  unfold vdVWTheorem243FiniteCenterExpectedSupremum
+  have hnonneg :
+      0 ≤ᵐ[μ] fun ω =>
+        ⨆ centerIndex : Fin cardinality, |X centerIndex ω| := by
+    exact ae_of_all μ fun ω =>
+      (abs_nonneg (X (Classical.arbitrary (Fin cardinality)) ω)).trans
+        (Finite.le_ciSup
+          (fun centerIndex : Fin cardinality => |X centerIndex ω|)
+          (Classical.arbitrary (Fin cardinality)))
+  exact
+    ProbabilityMeasure.integral_le_integral_tail_bound
+      hintegrable hnonneg hboundIntegrable hbound
 
 /--
 Split-at-radius tail-integral handoff for the finite-center expected supremum.
@@ -1146,64 +1150,18 @@ theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_radius_add_integral_tail_b
         tailBound t) :
     vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤
       r + ∫ t in Set.Ioi r, tailBound t := by
-  let tail : ℝ -> ℝ := fun t =>
-    μ.real {ω | t ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)}
-  have htailMeasurable : Measurable tail := by
-    refine Antitone.measurable ?_
-    intro s t hst
-    exact measureReal_mono (fun ω hω => le_trans hst hω)
-  have htailAEStrongly : AEStronglyMeasurable tail volume :=
-    htailMeasurable.aestronglyMeasurable
-  have htailLeftIntegrable : IntegrableOn tail (Set.Ioc (0 : ℝ) r) volume := by
-    refine Measure.integrableOn_of_bounded
-      (μ := volume) (s := Set.Ioc (0 : ℝ) r) (M := 1)
-      measure_Ioc_lt_top.ne htailAEStrongly ?_
-    refine Eventually.of_forall fun t => ?_
-    rw [Real.norm_of_nonneg measureReal_nonneg]
-    exact measureReal_le_one
-  have htailRightIntegrable : IntegrableOn tail (Set.Ioi r) volume := by
-    refine Integrable.mono' hboundIntegrable htailAEStrongly.restrict ?_
-    exact (ae_restrict_mem measurableSet_Ioi).mono fun t ht => by
-      rw [Real.norm_of_nonneg measureReal_nonneg]
-      exact hbound t ht
-  have hsplit :
-      (∫ t in Set.Ioi (0 : ℝ), tail t) =
-        (∫ t in Set.Ioc (0 : ℝ) r, tail t) +
-          (∫ t in Set.Ioi r, tail t) := by
-    have hU : Set.Ioc (0 : ℝ) r ∪ Set.Ioi r = Set.Ioi (0 : ℝ) :=
-      Set.Ioc_union_Ioi_eq_Ioi hr
-    have h := setIntegral_union (μ := volume) (f := tail)
-      (s := Set.Ioc (0 : ℝ) r) (t := Set.Ioi r)
-      (Set.Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi
-      htailLeftIntegrable htailRightIntegrable
-    rwa [hU] at h
-  have hleft : (∫ t in Set.Ioc (0 : ℝ) r, tail t) ≤ r := by
-    calc
-      (∫ t in Set.Ioc (0 : ℝ) r, tail t)
-          ≤ ∫ _t in Set.Ioc (0 : ℝ) r, (1 : ℝ) := by
-              refine setIntegral_mono_on htailLeftIntegrable
-                (integrableOn_const measure_Ioc_lt_top.ne) measurableSet_Ioc ?_
-              intro t _ht
-              exact measureReal_le_one
-      _ = volume.real (Set.Ioc (0 : ℝ) r) := by
-              rw [setIntegral_one_eq_measureReal]
-      _ = r := by
-              rw [Real.volume_real_Ioc_of_le hr]
-              ring
-  have hright :
-      (∫ t in Set.Ioi r, tail t) ≤ ∫ t in Set.Ioi r, tailBound t := by
-    refine setIntegral_mono_on htailRightIntegrable hboundIntegrable
-      measurableSet_Ioi ?_
-    intro t ht
-    exact hbound t ht
-  calc
-    vdVWTheorem243FiniteCenterExpectedSupremum μ X
-        = ∫ t in Set.Ioi (0 : ℝ), tail t := by
-            rw [vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail
-              X hintegrable]
-    _ = (∫ t in Set.Ioc (0 : ℝ) r, tail t) +
-          (∫ t in Set.Ioi r, tail t) := hsplit
-    _ ≤ r + ∫ t in Set.Ioi r, tailBound t := add_le_add hleft hright
+  unfold vdVWTheorem243FiniteCenterExpectedSupremum
+  have hnonneg :
+      0 ≤ᵐ[μ] fun ω =>
+        ⨆ centerIndex : Fin cardinality, |X centerIndex ω| := by
+    exact ae_of_all μ fun ω =>
+      (abs_nonneg (X (Classical.arbitrary (Fin cardinality)) ω)).trans
+        (Finite.le_ciSup
+          (fun centerIndex : Fin cardinality => |X centerIndex ω|)
+          (Classical.arbitrary (Fin cardinality)))
+  exact
+    ProbabilityMeasure.probability_integral_le_radius_add_integral_tail_bound
+      hr hintegrable hnonneg hboundIntegrable hbound
 
 /--
 Finite-center sub-Gaussian specialization of the tail-integral upper bound.

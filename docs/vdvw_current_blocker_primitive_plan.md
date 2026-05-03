@@ -462,10 +462,14 @@ additional example closures:
    Gaussian-tail integrability/evaluation, coarse closed-form expectation
    bound, split-at-radius tail-to-expectation bound, Mills-type Gaussian-tail
    estimate, finite-center Mills expectation bound, and ordinary measurable
-   truncation-tail integral bridge are now compiled.  The remaining
-   logarithmic-radius simplification is the next blocker before the textbook
-   tail-to-Orlicz/maximal expectation scale, followed by specialization of
-   that bound to the truncated centers.
+   truncation-tail integral bridge are now compiled.  The theorem-specific
+   expected-supremum layer now routes its reusable layer-cake,
+   tail-integral-monotonicity, and split-at-radius probability bounds through
+   `StatInference/ProbabilityMeasure/Tail.lean`; VdV&W-specific empirical,
+   Mills, outer-expectation, and truncation handoffs remain in the
+   empirical-process files.  The remaining logarithmic-radius simplification
+   is the next blocker before the textbook tail-to-Orlicz/maximal expectation
+   scale, followed by specialization of that bound to the truncated centers.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
