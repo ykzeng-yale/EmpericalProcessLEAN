@@ -189,15 +189,21 @@ Concrete next edits:
    `L_n / n -> 0` to Hoeffding-scale convergence, pointwise finite-net notation
    convergence, the stochastic outer-probability entropy-to-Hoeffding-scale
    handoff, shifted-display convergence, and fixed/all-entropy projection
-   helpers. The latest empirical-process frontier is the real integrated
-   Hoeffding-plus-radius mean convergence input exposed by the compiled
-   fixed-`M` centered-truncated convergence handoff, variable-domain Markov
-   bridges, `tendsto_two_mul_ofReal_zero_of_tendsto_zero`, and the
-   real-mean consumer
-   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`.
+   helpers. The latest empirical-process frontier is the selected
+   inverse-radius entropy-to-mean route: the named selected cardinality
+   `vdVWSelectedTruncatedInvRadiusEmpiricalL1CoveringNumberCard` and mean
+   projections
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_selected_truncated_invRadiusEntropy_logCardinality_div_bound`
+   and
+   `integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_selected_truncated_invRadiusEntropy_logCardinality_div_bound`
+   compose the selected finite-cover/measurability route with deterministic
+   all-radius log bounds. The remaining blocker is still the genuine diagonal
+   selected log convergence plus deterministic log-ratio boundedness, or a
+   valid varying-domain UI replacement.
    The probability-measure tail lane now also has
-   `probability_integral_le_threshold_add_bound_mul_tail`, and the VdV&W side
-   has
+   `probability_integral_le_threshold_add_bound_mul_tail` and
+   `tendsto_integral_of_tendsto_measureReal_tail_zero_of_bounded_nonneg`, and
+   the VdV&W side has
    `tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg`
    plus
    `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`,

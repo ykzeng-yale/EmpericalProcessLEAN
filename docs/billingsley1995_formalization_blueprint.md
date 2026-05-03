@@ -366,18 +366,24 @@ is project organization and source alignment.  The immediate route is:
    screenshots.
 
 For direct empirical-process impact, the dependency override is now active:
-the next proof lane should prioritize the VdV&W Theorem 2.4.3 product random-sign
-assembly after the compiled random empirical-cover witness and expectation-level
-finite-net handoffs: the product outer-expectation projection for the
-expected-maximal route and deterministic entropy/Hoeffding-scale algebra are
-compiled, and the stochastic entropy-to-Hoeffding-scale handoff is now closed,
-and the fixed-`M` centered-truncated convergence handoff is now compiled under
-an explicit vanishing integrated Hoeffding-plus-radius hypothesis, with a
-real-mean consumer available through
-`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`.
+the next proof lane should prioritize the remaining VdV&W Theorem 2.4.3
+selected entropy assembly.  The product random-sign and expected-maximal
+finite-net handoffs are compiled, as are the deterministic
+entropy/Hoeffding-scale algebra, the stochastic entropy-to-Hoeffding-scale
+handoff, and the fixed-`M` centered-truncated convergence handoff.  The
+selected inverse-radius route now has
+`vdVWSelectedTruncatedInvRadiusEmpiricalL1CoveringNumberCard` and the mean
+projections
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_selected_truncated_invRadiusEntropy_logCardinality_div_bound`
+and
+`integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_selected_truncated_invRadiusEntropy_logCardinality_div_bound`; the unsolved input is the
+diagonal selected log convergence plus deterministic all-radius log bound, or a
+valid varying-domain UI replacement.
 The reusable bounded-tail expectation wrapper
-`probability_integral_le_threshold_add_bound_mul_tail`, the variable-domain
-bounded outer-probability-to-mean bridge
+`probability_integral_le_threshold_add_bound_mul_tail`, the probability-measure
+tail-to-mean primitive
+`tendsto_integral_of_tendsto_measureReal_tail_zero_of_bounded_nonneg`, the
+variable-domain bounded outer-probability-to-mean bridge
 `tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg`,
 and the theorem-local finite-net mean consumer
 `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_bounded_convergesInOuterProbabilityConst`
@@ -475,14 +481,17 @@ finite-net-plus-inverse-radius mean projections
 `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero_of_logCardinality_div_bound`
 and
 `VdVWTheorem243FixedMInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_logCardinality_div_bound`.
-Next feed the theorem entropy hypotheses into this package past the
-now-closed covering-domination/finite-witness handoff, then supply diagonal
-selected log-cardinality convergence and
-deterministic normalized log-cardinality bound or a genuine varying-domain tail/UI
-replacement to turn the entropy hypotheses into the required real integrated
-upper. Search confirms pinned mathlib's UI/Vitali/DCT tools are fixed-domain,
-so the deterministic bound is still the practical path unless a new
-varying-domain tail-expectation bridge is proved. The route is now past the
+The selected inverse-radius all-radius route now also has
+`vdVWSelectedTruncatedInvRadiusEmpiricalL1CoveringNumberCard` and direct
+finite-net mean projections
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_selected_truncated_invRadiusEntropy_logCardinality_div_bound`
+and
+`integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_selected_truncated_invRadiusEntropy_logCardinality_div_bound`.
+Next supply diagonal selected log-cardinality convergence and deterministic
+normalized log-cardinality bound, or a genuine varying-domain tail/UI
+replacement. Search confirms pinned mathlib's UI/Vitali/DCT tools are
+fixed-domain, so the deterministic bound is still the practical path unless a
+new varying-domain tail-expectation bridge is proved. The route is now past the
 fixed-sample,
 integral-lift, product-projection/Fubini, same-weight pair split, deterministic
 sign-negation, ordinary random-sign averaging, product-cover, sample-cover,

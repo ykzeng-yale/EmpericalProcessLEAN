@@ -62,10 +62,11 @@ classes, including the `F_M` truncated class.  The active VdV&W blocker is now
 feeding those selected-cardinality wrappers with the theorem's diagonal
 selected log-cardinality convergence and a deterministic normalized
 log-cardinality bound or genuine boundedness/UI replacement.  The
-covering-domination, finite-witness, and inverse-radius shrinking-radius
-plumbing is already compiled; the remaining analytic work is turning the
-entropy hypotheses into the integrated Hoeffding-plus-radius mean convergence
-consumed by the fixed-`M` centered-truncated convergence handoff, then final
+covering-domination, finite-witness, inverse-radius shrinking-radius plumbing,
+selected cardinality naming, and selected inverse-radius finite-net mean
+projections are already compiled; the remaining analytic work is deriving or
+supplying the diagonal selected log convergence and deterministic log-ratio/UI
+input consumed by the fixed-`M` centered-truncated handoff, then final
 assembly.  Nonmeasurable or arbitrary-cover envelope-tail variants remain out
 of scope unless the theorem assembly forces them.  Billingsley support should
 only add reusable probability/measure wrappers if those steps need tail,
@@ -294,8 +295,16 @@ Local searches found reusable APIs in:
    `tendsto_two_mul_ofReal_zero_of_tendsto_zero` plus
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`
    repackage the consumer under an ordinary real mean convergence hypothesis.
-   The next target is proving that real integrated upper, not another
-   fixed-sample pointwise comparison or product-a.e. Hoeffding predicate.
+   The selected inverse-radius all-radius entropy route now also has the
+   named selected cardinality
+   `vdVWSelectedTruncatedInvRadiusEmpiricalL1CoveringNumberCard` and mean
+   projections
+   `integral_finiteNetHoeffdingUpper_tendsto_zero_of_selected_truncated_invRadiusEntropy_logCardinality_div_bound`
+   and
+   `integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero_of_selected_truncated_invRadiusEntropy_logCardinality_div_bound`.
+   These still require the genuine diagonal selected log convergence plus a
+   deterministic all-radius normalized log bound; no entropy-only pointwise
+   bound or varying-domain UI replacement has been found.
    The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
@@ -310,16 +319,12 @@ Local searches found reusable APIs in:
 The next high-value proof step is the theorem-specific Section 18/entropy
 assembly for VdV&W Theorem 2.4.3:
 
-- feed the theorem finite-cover hypotheses into the compiled countable-class
-  selected minimal-cardinality route
-  (`measurable_empiricalL1Distance_of_measurable`,
-  `measurableSet_finiteEmpiricalL1CoverAtCard_of_countable`, and
-  `measurable_finiteEmpiricalL1CoveringNumberCard_of_countable`, plus
-  `measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable`
-  and the equality-transport wrapper
-  `measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable`),
-  or prove the needed finite/selected-center event lemma for an uncountable
-  class;
+- derive or supply the diagonal selected inverse-radius log-cardinality
+  convergence for
+  `vdVWSelectedTruncatedInvRadiusEmpiricalL1CoveringNumberCard`, together with
+  a deterministic all-radius normalized log bound, then compose the selected
+  finite-net mean projections into the packaged fixed-`M` centered-truncated
+  consumer;
 - use
   `hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath`
   and
@@ -335,10 +340,10 @@ assembly for VdV&W Theorem 2.4.3:
 - the theorem-facing wrapper
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
   already discharges the measurable-cardinality input from equality with the
-  selected truncated minimal empirical-cover cardinality, so the remaining
-  inputs are inverse-radius covering domination, selected finite-cover
-  witnesses/equality, normalized log-cardinality convergence, and the
-  deterministic log-ratio/UI condition;
+  selected truncated minimal empirical-cover cardinality, and the new selected
+  inverse-radius mean wrappers discharge the integrated finite-net input once
+  the diagonal selected log convergence and deterministic log-ratio condition
+  are supplied;
 - if that assembly exposes only a.e.-measurable or null-measurable random
   targets, use `VdVWMeasurableCover.ofAEMeasurable` or
   `VdVWMeasurableCover.ofNullMeasurable_ofReal` rather than adding another
