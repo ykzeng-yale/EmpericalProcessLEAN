@@ -67,6 +67,15 @@ def StronglyMonotoneGradientOn (C : Set E) (grad : E -> E)
     alpha * ‖y - x‖ ^ (2 : ℕ) ≤ inner ℝ (grad y - grad x) (y - x)
 
 /--
+Chewi Exercise 3.1 / equation (3.5), represented in its source orientation.
+This is the unscaled co-coercivity estimate used to supply Theorem 3.3.
+-/
+def GradientCocoerciveOn (C : Set E) (grad : E -> E) (beta : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C -> ∀ ⦃y⦄, y ∈ C ->
+    ‖grad y - grad x‖ ^ (2 : ℕ) ≤
+      beta * inner ℝ (grad y - grad x) (y - x)
+
+/--
 Chewi Exercise 3.1 / equation (3.5), specialized to the scaled inequality
 needed in the proof of Theorem 3.3.
 -/
@@ -166,6 +175,60 @@ theorem StronglyMonotoneGradientOn.inner_lower {C : Set E}
     {x y : E} (hx : x ∈ C) (hy : y ∈ C) :
     alpha * ‖y - x‖ ^ (2 : ℕ) ≤ inner ℝ (grad y - grad x) (y - x) :=
   h hx hy
+
+theorem GradientCocoerciveOn.norm_sq_le {C : Set E}
+    {grad : E -> E} {beta : ℝ}
+    (h : GradientCocoerciveOn C grad beta)
+    {x y : E} (hx : x ∈ C) (hy : y ∈ C) :
+    ‖grad y - grad x‖ ^ (2 : ℕ) ≤
+      beta * inner ℝ (grad y - grad x) (y - x) :=
+  h hx hy
+
+theorem GradientCocoerciveOn.stepCocoerciveOn {C : Set E}
+    {grad : E -> E} {beta hstep : ℝ}
+    (h : GradientCocoerciveOn C grad beta)
+    (hbeta_pos : 0 < beta)
+    (hh_nonneg : 0 ≤ hstep)
+    (hbeta_step : beta * hstep ≤ 1) :
+    GradientStepCocoerciveOn C grad hstep := by
+  intro x hx y hy
+  have hbase :
+      ‖grad y - grad x‖ ^ (2 : ℕ) ≤
+        beta * inner ℝ (y - x) (grad y - grad x) := by
+    simpa [real_inner_comm] using h.norm_sq_le hx hy
+  have hinner_nonneg :
+      0 ≤ inner ℝ (y - x) (grad y - grad x) := by
+    have hnorm_nonneg : 0 ≤ ‖grad y - grad x‖ ^ (2 : ℕ) :=
+      sq_nonneg _
+    nlinarith
+  have hmul :
+      hstep * ‖grad y - grad x‖ ^ (2 : ℕ) ≤
+        hstep * (beta * inner ℝ (y - x) (grad y - grad x)) :=
+    mul_le_mul_of_nonneg_left hbase hh_nonneg
+  have hscale :
+      hstep * (beta * inner ℝ (y - x) (grad y - grad x)) ≤
+        inner ℝ (y - x) (grad y - grad x) := by
+    have hbeta_step' : hstep * beta ≤ 1 := by
+      nlinarith
+    have hmul_inner :=
+      mul_le_mul_of_nonneg_right hbeta_step' hinner_nonneg
+    nlinarith
+  exact hmul.trans hscale
+
+theorem GradientCocoerciveOn.stepCocoerciveOn_of_le_inv {C : Set E}
+    {grad : E -> E} {beta hstep : ℝ}
+    (h : GradientCocoerciveOn C grad beta)
+    (hbeta_pos : 0 < beta)
+    (hh_nonneg : 0 ≤ hstep)
+    (hstep_size : hstep ≤ 1 / beta) :
+    GradientStepCocoerciveOn C grad hstep := by
+  have hbeta_step : beta * hstep ≤ 1 := by
+    have hmul : beta * hstep ≤ beta * (1 / beta) :=
+      mul_le_mul_of_nonneg_left hstep_size hbeta_pos.le
+    have hcancel : beta * (1 / beta) = 1 := by
+      field_simp [hbeta_pos.ne']
+    linarith
+  exact h.stepCocoerciveOn hbeta_pos hh_nonneg hbeta_step
 
 theorem GradientStepCocoerciveOn.inner_lower {C : Set E}
     {grad : E -> E} {hstep : ℝ}
