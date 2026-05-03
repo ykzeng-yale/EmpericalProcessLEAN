@@ -941,13 +941,21 @@ Search record for the symmetrization precursor package:
   `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
   plus the fixed-`M` centered-truncated consumer
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
-  are also compiled.  The next valid target is the analytic/selection input
-  this exposes: feed theorem finite-cover hypotheses into the selected
-  terminal/truncated cardinality measurability wrappers and supply a
-  deterministic normalized log-cardinality bound, or a genuine variable-domain
-  uniform-integrability/dominated-convergence replacement, then prove a
-  diagonal shrinking empirical-cover radius selector from the all-radius
-  entropy hypothesis and instantiate the inverse-radius route.
+  are also compiled, and the inverse-radius specialization
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound_invRadius`
+  discharges the canonical `coverRadius n = 1 / ((n : ℝ) + 1)` convergence.
+  The selected-cardinality measurability route now also has equality-transport
+  wrappers
+  `measurable_cardinality_at_sampleSize_of_eq_selected_randomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`
+  and
+  `measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable`
+  for externally named theorem cardinality processes.  The next valid target is
+  the analytic/selection input this exposes: feed theorem finite-cover
+  hypotheses into the selected terminal/truncated cardinality measurability
+  wrappers and supply a deterministic normalized log-cardinality bound, or a
+  genuine variable-domain uniform-integrability/dominated-convergence
+  replacement, then instantiate the all-radius entropy route at the
+  inverse-radius consumer.
   Search record: local `StatInference` and pinned mathlib searches for
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
   `tendsto_integral_of_L1`, `TendstoInMeasure`, and

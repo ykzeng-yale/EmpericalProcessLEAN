@@ -242,11 +242,17 @@ the selected minimal-cardinality measurability wrappers
 `measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable`,
 and
 `measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable`
-are now compiled as well.  The next blocker is feeding the theorem
-entropy/finite-cover hypotheses into those wrappers, then supplying a
-deterministic normalized log-cardinality bound or a genuine boundedness/UI
-replacement and a diagonal shrinking cover-radius selector from the entropy
-hypotheses.
+are now compiled as well, together with equality-transport wrappers
+`measurable_cardinality_at_sampleSize_of_eq_selected_randomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`
+and
+`measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable`
+for externally named cardinality processes.  The deterministic log-bound route
+also has the inverse-radius fixed-`M` consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound_invRadius`.
+The next blocker is feeding the theorem entropy/finite-cover hypotheses into
+those wrappers, then supplying a deterministic normalized log-cardinality bound
+or a genuine boundedness/UI replacement and instantiating the all-radius entropy
+route at the inverse-radius consumer.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.

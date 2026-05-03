@@ -197,7 +197,11 @@ measurability wrappers
 `measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable`,
 and
 `measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable`
-are also compiled. The
+are also compiled, together with the equality-transport wrappers
+`measurable_cardinality_at_sampleSize_of_eq_selected_randomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`
+and
+`measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable`.
+The
 deterministic finite-net log-bound suppliers
 `vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le`,
 `vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le`,
@@ -206,12 +210,14 @@ and
 `integral_finiteNetHoeffdingUpper_add_tendsto_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_of_measurable_cardinality_logCardinality_div_bound`,
 plus the fixed-`M` centered-truncated consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
+and its inverse-radius specialization
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound_invRadius`
 are also compiled. The remaining blocker is feeding the selected
 minimal-cardinality measurability wrappers with the theorem's countable/truncated
 finite-cover hypotheses, supplying the deterministic normalized log-cardinality
 bound or a genuine
-bounded/UI replacement, and a shrinking deterministic
-`coverRadius -> 0` diagonal selection from the all-radius entropy route, then final
+bounded/UI replacement, and instantiating the all-radius entropy route at the
+deterministic inverse-radius consumer, then final
 assembly.
 The product-integrated symmetrization route now also has the composed
 random-cover finite-net integral bridge
