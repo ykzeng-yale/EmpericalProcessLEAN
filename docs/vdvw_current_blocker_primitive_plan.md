@@ -963,16 +963,38 @@ Search record for the symmetrization precursor package:
   `hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath`,
   and the countable truncated measurability transport is packaged as
   `measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable_of_covering_le`.
+  All-positive-radius covering domination can now be specialized by
+  `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.coverRadius_of_forAllRadius_samplePath`,
+  with inverse-radius form
+  `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.invRadius_of_forAllRadius_samplePath`.
+  The same all-radius-to-chosen-radius step supplies finite empirical-cover
+  witnesses through `hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath`
+  and `hasFiniteEmpiricalL1Cover_invRadius_of_forAllRadius_samplePath`.
+  For externally supplied finite cardinality processes, the selected least
+  finite-cover cardinality is bounded by the supplied process via
+  `finiteEmpiricalL1CoveringNumberCard_le_of_empiricalL1CoveringNumber_le`
+  and
+  `finiteEmpiricalL1CoveringNumberCard_terminal_le_of_covering_le_samplePath`.
+  The normalized selected log-cardinality bound can then be transferred from
+  the external bound by
+  `vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le` and
+  `vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath`.
+  The selected least finite-cardinality process also has
+  `finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`,
+  which supplies the terminal equality proof needed by the selected-cardinality
+  consumers when `cardinality` is chosen to be the minimal finite empirical
+  cover cardinality itself.
   The next valid target is
   now one layer later: the theorem-facing consumer
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated`
+  handles arbitrary deterministic shrinking cover radii, while
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
-  discharges `hcardinality` from equality with the selected truncated
-  minimal-cardinality process.  The remaining analytic/selection inputs are the
-  inverse-radius finite-cover domination, terminal equality for the selected
-  process, and the normalized
-  log-cardinality convergence plus deterministic bound or a genuine
-  variable-domain uniform-integrability/dominated-convergence replacement from
-  the all-radius entropy hypothesis.
+  specializes it to `1 / ((n : ℝ) + 1)` and discharges `hcardinality` from
+  equality with the selected truncated minimal-cardinality process.  The
+  remaining analytic inputs are the diagonal normalized log-cardinality
+  convergence plus deterministic bound, or a genuine variable-domain
+  uniform-integrability/dominated-convergence replacement from the all-radius
+  entropy hypothesis.
   Search record: local `StatInference` and pinned mathlib searches for
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
   `tendsto_integral_of_L1`, `TendstoInMeasure`, and
@@ -997,20 +1019,20 @@ Search record for the symmetrization precursor package:
   `measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable`,
   and
   `measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable`
-  are compiled as well.  The theorem route still needs a countable selected class
-  with finite empirical covers, or a sharper finite/selected-center event lemma
-  for the actual theorem class, plus either the deterministic log-ratio bound
-  input or a genuine bounded/UI replacement, and the diagonal cover-radius
-  selector.
+  are compiled as well.  The theorem route still needs diagonal selected
+  log-cardinality convergence, plus either the deterministic selected
+  log-ratio bound input or a genuine bounded/UI replacement.  The
+  cover-radius selector, all-radius covering projection, finite-witness
+  handoff, and selected log-bound transfer are now compiled.
   Follow-up search found no ready
-  variable-domain `UniformIntegrable`/Vitali API; the practical alternatives are
-  keeping deterministic boundedness or adding a new explicit variable-domain
-  tail-expectation/UI primitive.
-  A follow-up probability-measure/API search found only fixed-domain
-  `MeasureTheory.UnifIntegrable`/`UniformIntegrable`,
-  `tendsto_Lp_finite_of_tendstoInMeasure`, `tendsto_integral_of_L1`, and
-  fixed-measure dominated-convergence APIs; local `ProbabilityMeasure/Tail.lean`
-  supplies reusable layer-cake/tail bounds but no variable-domain Vitali theorem.
+  variable-domain `UniformIntegrable`/Vitali API; pinned mathlib's
+  `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
+  `tendstoInMeasure_iff_tendsto_Lp_finite`, and dominated-convergence APIs are
+  fixed-domain.  The practical alternatives are keeping deterministic
+  boundedness/log-ratio control or adding a new explicit variable-domain
+  tail-expectation/UI primitive.  The best Billingsley source fallback for that
+  latter route is Theorem 25.12/UI, but no report should be created unless an
+  exact theorem is proved and the source screenshots/report PDF are compiled.
   The
   supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
