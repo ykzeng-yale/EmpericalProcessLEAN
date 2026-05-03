@@ -180,7 +180,10 @@ Search record for the Chapter 1 product/FDD foundation lane:
   `VdVWWeakConvergenceProbabilityMeasures.pi`,
   `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict`,
   `vdVWTendstoInDistribution_prodMk_of_tendstoInMeasure_const`, and
-  `vdVWProductMeasure`;
+  `vdVWProductMeasure`; the empirical-process lane also now has
+  `vdVW148_processLaw_ext_of_forall_finiteDimensional_eq` and
+  `vdVW148_identDistrib_of_forall_finiteDimensional_identDistrib` as
+  uniqueness-only FDD wrappers over the local ProbabilityMeasure foundation;
 - no exact theorem was found for VdV&W 1.4.2 product-measure uniqueness from
   nonnegative Lipschitz product tests, 1.4.5 arbitrary-net product weak
   convergence, or the converse direction of 1.4.8 weak convergence iff all
@@ -342,6 +345,12 @@ additional example closures:
    vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail
    vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail_of_hasSubgaussianMGF
    vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail_of_hasSubgaussianMGF_of_pos
+   vdVWTheorem243FiniteCenterExpectedSupremum_le_integral_tail_bound
+   vdVWTheorem243FiniteCenterExpectedSupremum_le_integral_subGaussian_tail_bound
+   vdVWTheorem243_subGaussian_tail_bound_integrable
+   vdVWTheorem243_integral_subGaussian_tail_bound_eq
+   vdVWTheorem243FiniteCenterExpectedSupremum_le_subGaussian_tail_closedForm
+   integral_abs_classFun_sub_vdVWTruncatedClassFun_le_envelope_tail
    vdVWTheorem243FiniteCenterExpectedSupremum_nonneg
    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_ae_le
    vdVWTheorem243FiniteCenterExpectedSupremum_le_of_hasSubgaussianMGF_of_ae_le
@@ -376,11 +385,17 @@ additional example closures:
    its nonnegativity for nonempty nets, converts an almost-sure upper bound
    into the corresponding expectation bound using `integral_nonneg`,
    `integral_mono_ae`, `integrable_const`, and the compiled finite-supremum
-   integrability layer, and now exposes layer-cake tail-integral
-   representations via `Integrable.integral_eq_integral_meas_le`, including
-   the positive-cardinality handoff used by empirical-cover witnesses.  It
-   deliberately does not yet prove the sharp tail-to-Orlicz/maximal expectation
-   inequality at the textbook scale.
+   integrability layer, exposes layer-cake tail-integral representations via
+   `Integrable.integral_eq_integral_meas_le`, proves a monotone tail-bound
+   integral handoff, proves integrability and exact evaluation of the
+   sub-Gaussian Gaussian majorant using
+   `integrable_exp_neg_mul_sq`, `integral_const_mul`, and
+   `integral_gaussian_Ioi`, and derives the coarse closed-form expectation
+   bound `(cardinality : ℝ) * sqrt (2 * pi * c)`.  The truncation lane also
+   now has the ordinary measurable integral bridge from
+   `|f - f_M|` to `F 1{F > M}`.  This deliberately does not yet prove the
+   sharp split/log tail-to-Orlicz/maximal expectation inequality at the
+   textbook scale.
 
    Search correction: the current
    `VdVWTheorem243RademacherFiniteCenterHoeffdingBound` is a deterministic
@@ -429,15 +444,19 @@ additional example closures:
    `MeasureTheory.lintegral_eq_lintegral_meas_lt`,
    `MeasureTheory.Integrable.integral_eq_integral_meas_le`, and
    `MeasureTheory.Integrable.integral_eq_integral_meas_lt` in
-   `Mathlib.MeasureTheory.Integral.Layercake`; a small local layer-cake support
-   lemma is now compiled for the tail-to-expectation step.  No reusable
+   `Mathlib.MeasureTheory.Integral.Layercake`; the Gaussian-integral search
+   found `integrable_exp_neg_mul_sq` and `integral_gaussian_Ioi` in
+   `Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral`, both now
+   used by compiled local lemmas.  No reusable
    Orlicz/`psi_2` API was found.  The probabilistic one-center sub-Gaussian
    bridge, variance-proxy arithmetic, finite-center tail/union-bound layer,
    iid Rademacher-sign construction, finite-center supremum integrability
-   layer, expected-supremum handoff, and layer-cake tail-integral support are
-   now compiled.  The sharp tail-to-Orlicz/maximal expectation bound itself
-   remains pending, followed by specialization of that bound to the truncated
-   centers.
+   layer, expected-supremum handoff, layer-cake tail-integral support,
+   Gaussian-tail integrability/evaluation, coarse closed-form expectation
+   bound, and ordinary measurable truncation-tail integral bridge are now
+   compiled.  The sharp split-at-radius tail-to-Orlicz/maximal expectation
+   bound itself remains pending, followed by specialization of that bound to
+   the truncated centers.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -455,15 +474,14 @@ additional example closures:
    sure convergence.  Do not report Theorem 2.4.3 until these components are
    exact and compile without proof holes.
 
-Next exact edit: use the compiled layer-cake support lemma to prove or
-primitive-register the sharp tail-to-expectation/maximal expectation bound
-needed for the finite-center Hoeffding/maximal bound, using the compiled
-finite-center tail/union-bound layer, iid Rademacher construction,
-finite-center supremum integrability layer, and expected-supremum handoff.
+Next exact edit: prove the split-at-radius tail-to-expectation bound
+`E sup_i |X_i| <= r + integral_{(r,∞)} tailBound` for `0 <= r`, then use a
+Mills-style deterministic tail estimate to sharpen the current coarse
+`cardinality * sqrt c` bound to the textbook logarithmic finite-maximal scale.
 Then package this as the VdV&W `psi_2`/Hoeffding maximal layer if no exact
 Orlicz API appears, specialize that bound to truncated centers with
 `vdVWTheorem243_truncated_varianceProxy_le`, and move to the
-symmetrization/truncation and envelope-tail handoffs.
+symmetrization/truncation and outer envelope-tail handoffs.
 
 ## Parked Example-Specific Blocker
 
@@ -486,7 +504,7 @@ Pinned/local Lean sources searched before adding new primitives:
 | Source | Local path | Useful APIs found |
 | --- | --- | --- |
 | pinned mathlib | `.lake/packages/mathlib/Mathlib` | `Metric.externalCoveringNumber`, `Metric.coveringNumber`, `Metric.IsCover`, `externalCoveringNumber_mono_set`, `Set.indicator`, `Measurable.indicator`, `measurableSet_le`, `Asymptotics.IsLittleO`, `MeasureTheory.TendstoInMeasure`, `Real.log`, `Real.log_nonneg`, `Real.log_natCast_nonneg`, `Real.sqrt`, `Real.sqrt_nonneg`, `ENat.toNat`, `ENat.map`, `WithTop.untopD`, `PMF.bernoulli`, `ProbabilityTheory.exists_hasLaw_indepFun`, `Kernel.HasSubgaussianMGF`, `HasSubgaussianMGF`, `HasSubgaussianMGF.neg`, `HasSubgaussianMGF.measure_ge_le`, `hasSubgaussianMGF_of_mem_Icc`, `hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero`, `measure_sum_range_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_hasCondSubgaussianMGF`, `MeasureTheory.measureReal_union_le`, `MeasureTheory.measureReal_iUnion_fintype_le`, `exists_eq_ciSup_of_finite`, `eLpNorm`, `eLpNorm_one_eq_lintegral_enorm`, `eLpNorm_add_le`, `eLpNorm_sum_le`, plus previous Example 2.4.2 APIs: `ProbabilityTheory.cdf`, `ProbabilityTheory.measure_cdf`, `ProbabilityTheory.cdf_eq_real`, `ProbabilityTheory.tendsto_cdf_atBot`, `ProbabilityTheory.tendsto_cdf_atTop`, `StieltjesFunction.measure_Ioo`, `measure_Iio`, `measure_Ioi`, `tendsto_measure_Iic_atTop`, `tendsto_measure_Ici_atBot`, `Measure.real`, `measureReal_mono`, `Fin.cases`, `Fin.lastCases`, `Fin.snoc`, `Fin.cons`, `Fin.eq_castSucc_or_eq_last` |
-| local ProbabilityMeasure lane | `StatInference/ProbabilityMeasure` | Billingsley/probability-measure wrappers now available for generated sigma fields and pi-system uniqueness (`GeneratedSigma`, `generatedSigma_measurableSet_of_mem`, `generatedSigma_le`, `measurable_generatedSigma`, `measure_ext_of_generate_finite`, `probabilityMeasure_ext_of_generate_finite_toMeasure`, `isPiSystem_pi`, `pi_generatedSigma_eq`), weak convergence, product/Fubini, FDDs, and Borel-Cantelli.  These are reusable for Chapter 1 generated-sigma/FDD/product-law foundations and later symmetrization support, but they do not close VdV&W arbitrary-map/asymptotic-measurability or the Theorem 2.4.3 maximal-expectation blocker. |
+| local ProbabilityMeasure lane | `StatInference/ProbabilityMeasure` | Billingsley/probability-measure wrappers now available for generated sigma fields and pi-system uniqueness (`GeneratedSigma`, `generatedSigma_measurableSet_of_mem`, `generatedSigma_le`, `measurable_generatedSigma`, `measure_ext_of_generate_finite`, `probabilityMeasure_ext_of_generate_finite_toMeasure`, `probabilityMeasure_ext_of_generate_finite`, `isPiSystem_pi`, `pi_generatedSigma_eq`), weak convergence, product/Fubini, FDDs, and Borel-Cantelli.  These are reusable for Chapter 1 generated-sigma/FDD/product-law foundations and later symmetrization support, but they do not close VdV&W arbitrary-map/asymptotic-measurability or the Theorem 2.4.3 maximal-expectation blocker. |
 | pinned packages | `.lake/packages/{aesop,batteries,proofwidgets,LeanSearchClient,Qq,Cli,plausible,importGraph}` | tactic/support libraries, no empirical-CDF bracketing theorem and no VdV&W-style Orlicz maximal theorem found |
 | local AI-Statistician checkout | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician` | older/high-level Rademacher and empirical-process certificate interfaces only; no exact VdV&W half-line quantile grid theorem and no reusable Theorem 2.4.3 Orlicz/Hoeffding proof |
 | local empirical blueprint worktree | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician/.worktrees/empirical-blueprint` | high-level empirical-process certificates; no reusable measure-theoretic quantile grid proof, iid Rademacher construction, or finite-center maximal proof |

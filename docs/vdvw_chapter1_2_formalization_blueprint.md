@@ -225,7 +225,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.4.3 | Lemma | `..._1-100.md:857` | local-layer/mathlib-foundation: binary and finite product-law weak-convergence wrappers proved as `VdVWWeakConvergenceProbabilityMeasures.prod` and `.pi`; arbitrary-map/asymptotic-tightness extension pending |
 | 1.4.4 | Lemma | `..._1-100.md:858` | local-layer/mathlib-foundation: finite-coordinate projection/FDD forward wrapper proved as `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict`; converse FDD iff theorem still missing |
 | 1.4.5 | Corollary | `..._1-100.md:878` | local-layer/mathlib-foundation: measurable common-domain Slutsky/product convergence wrapper proved; exact VdV&W product/arbitrary-map criterion still pending |
-| 1.4.8 | Theorem | `..._1-100.md:910` | foundation-lane/mathlib-foundation: FDD forward direction now wrapped for weak convergence; projective-limit/FDD law equality APIs exist, but no exact weak-convergence iff-over-FDD converse theorem found |
+| 1.4.8 | Theorem | `..._1-100.md:910` | foundation-lane/mathlib-foundation: FDD forward direction now wrapped for weak convergence; process-law and `IdentDistrib` uniqueness-only FDD wrappers are compiled in `FiniteDimensional.lean`; projective-limit/FDD law equality APIs exist, but no exact weak-convergence iff-over-FDD converse theorem found |
 | 1.5.2 | Lemma | `..._1-100.md:932` | foundation-lane: `l_infty(T)`/separability primitive target; mathlib has tightness/Prokhorov but local bounded-function-space API is still needed |
 | 1.5.3 | Lemma | `..._1-100.md:933` | foundation-lane: `l_infty(T)`/Donsker tightness primitive target, local bounded-function-space API needed |
 | 1.5.4 | Theorem | `..._1-100.md:934` | foundation-lane/mathlib-foundation: tightness theorem target using mathlib `IsTightMeasureSet`/Prokhorov plus local `l_infty(T)` wrappers |
@@ -274,7 +274,7 @@ quotes; the anchor is the authoritative local source location.
 | 2.3.16 | Proposition | `..._101-200.md:857` | pending-local |
 | 2.3.17 | Theorem | `..._101-200.md:882` | pending-local |
 | 2.4.1 | Theorem | `..._101-200.md:970` | local-exact |
-| 2.4.3 | Theorem | `..._101-200.md:988` | local-layer; Definition 2.1.5 covering primitive, fixed-sample empirical `L1(P_n)` distance/covering-number interface, nonempty empirical-cover positive-cardinality bridge, random empirical covering-number sequence, outer-probability `o_P^*(n)` entropy wrapper, `F_M` truncated-class/envelope interface, Definition 2.3.3 `P`-measurable primitive, deterministic finite-cover supremum-bound layers, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, deterministic Rademacher-sign specialization, one-center random Rademacher sub-Gaussian bridge, variance-proxy arithmetic, sub-Gaussian proxy monotonicity, finite-center sub-Gaussian tail/union-bound layer, iid real-valued Rademacher-sign construction, finite-center supremum integrability layer, expected finite-center supremum handoff, and layer-cake tail-integral support now available; exact theorem still pending sharp tail-to-Orlicz/maximal expectation bound, specialization to truncated centers, symmetrization/truncation, envelope-tail, and final convergence handoffs |
+| 2.4.3 | Theorem | `..._101-200.md:988` | local-layer; Definition 2.1.5 covering primitive, fixed-sample empirical `L1(P_n)` distance/covering-number interface, nonempty empirical-cover positive-cardinality bridge, random empirical covering-number sequence, outer-probability `o_P^*(n)` entropy wrapper, `F_M` truncated-class/envelope interface plus ordinary measurable truncation-tail integral bridge, Definition 2.3.3 `P`-measurable primitive, deterministic finite-cover supremum-bound layers, fixed-sample empirical-net inequality `(2.4.4)`, finite-center maximal/Hoeffding-scale handoff layer, deterministic Rademacher-sign specialization, one-center random Rademacher sub-Gaussian bridge, variance-proxy arithmetic, sub-Gaussian proxy monotonicity, finite-center sub-Gaussian tail/union-bound layer, iid real-valued Rademacher-sign construction, finite-center supremum integrability layer, expected finite-center supremum handoff, layer-cake tail-integral monotonicity, Gaussian-tail integrability/evaluation, and coarse closed-form expectation bound now available; exact theorem still pending sharp split/log maximal expectation bound, specialization to truncated centers, symmetrization/truncation, outer envelope-tail, and final convergence handoffs |
 | 2.4.5 | Lemma | `..._101-200.md:1022` | pending-local |
 | 2.5.2 | Theorem | `..._101-200.md:1106` | pending-local |
 | 2.5.6 | Theorem | `..._101-200.md:1204` | pending-local |
@@ -397,14 +397,16 @@ above, so they do not change the theorem-level dashboard counts.
    truncated-envelope variance-proxy arithmetic, sub-Gaussian proxy
    monotonicity, finite-center sub-Gaussian tail/union-bound layer, iid
    real-valued Rademacher-sign construction, finite-center supremum
-   integrability layer, expected finite-center supremum handoff, and
-   layer-cake tail-integral support are now compiled.  The next frontier is
-   proving or
-   primitive-registering the sharp tail-to-expectation/maximal expectation
-   conversion using mathlib's layer-cake APIs, packaging it as the VdV&W
+   integrability layer, expected finite-center supremum handoff,
+   layer-cake tail-integral monotonicity, Gaussian-tail integrability,
+   exact Gaussian-tail integral evaluation, coarse closed-form finite-center
+   expectation bound, and ordinary measurable truncation-tail integral bridge
+   are now compiled.  The next frontier is proving or primitive-registering
+   the sharp split-at-radius tail-to-expectation/maximal expectation
+   conversion at the textbook logarithmic scale, packaging it as the VdV&W
    `psi_2`/Hoeffding maximal layer if no exact Orlicz API appears,
    specializing it to truncated centers, then symmetrization/truncation and the
-   envelope-tail handoff.
+   outer envelope-tail handoff.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

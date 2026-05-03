@@ -1,4 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import Mathlib.MeasureTheory.Integral.Layercake
 import Mathlib.Probability.HasLawExists
 import Mathlib.Probability.IdentDistrib
@@ -183,6 +184,44 @@ theorem measurable_vdVWTruncatedClassFun
     Measurable (vdVWTruncatedClassFun classFun envelope M index) := by
   unfold vdVWTruncatedClassFun
   exact hclass.indicator (measurableSet_le henvelope measurable_const)
+
+/--
+Ordinary measurable integral form of the truncation-tail bound.
+
+This is the real-valued measurable bridge behind the later outer-expectation
+term `P^* F {F > M}` in the proof of VdV&W Theorem 2.4.3.
+-/
+theorem integral_abs_classFun_sub_vdVWTruncatedClassFun_le_envelope_tail
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {μ : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    {index : Index} (hindex : index ∈ indexClass)
+    (hclass : Measurable (classFun index))
+    (henv : Measurable envelope)
+    (htailIntegrable :
+      Integrable (Set.indicator {x | M < envelope x} envelope) μ) :
+    ∫ x, |classFun index x -
+        vdVWTruncatedClassFun classFun envelope M index x| ∂μ ≤
+      ∫ x, Set.indicator {x | M < envelope x} envelope x ∂μ := by
+  let trunc : Observation -> ℝ :=
+    vdVWTruncatedClassFun classFun envelope M index
+  have hleftMeas :
+      Measurable (fun x => |classFun index x - trunc x|) := by
+    exact (hclass.sub (measurable_vdVWTruncatedClassFun hclass henv)).abs
+  have hleftIntegrable :
+      Integrable (fun x => |classFun index x - trunc x|) μ := by
+    refine Integrable.mono' htailIntegrable hleftMeas.aestronglyMeasurable ?_
+    exact ae_of_all μ fun x => by
+      rw [Real.norm_eq_abs]
+      rw [abs_of_nonneg (abs_nonneg _)]
+      exact
+        abs_classFun_sub_vdVWTruncatedClassFun_le_envelope_tail
+          henvelope hindex x
+  exact integral_mono hleftIntegrable htailIntegrable fun x =>
+    abs_classFun_sub_vdVWTruncatedClassFun_le_envelope_tail
+      henvelope hindex x
 
 /-- Coordinate measurability is preserved by the `F_M` truncation. -/
 theorem VdVWClassCoordinateMeasurable.truncate
@@ -1057,6 +1096,164 @@ theorem
   exact
     vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail_of_hasSubgaussianMGF
       X hX
+
+/--
+Tail-integral monotonicity handoff for the finite-center expected supremum.
+
+This packages the layer-cake representation with a supplied pointwise upper
+bound on the tail probabilities over `t > 0`.
+-/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_integral_tail_bound
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {cardinality : ℕ} [Nonempty (Fin cardinality)]
+    (X : Fin cardinality -> Ω -> ℝ) {tailBound : ℝ -> ℝ}
+    (hintegrable :
+      Integrable (fun ω =>
+        ⨆ centerIndex : Fin cardinality, |X centerIndex ω|) μ)
+    (hboundIntegrable : IntegrableOn tailBound (Set.Ioi (0 : ℝ)) volume)
+    (hbound : ∀ t ∈ Set.Ioi (0 : ℝ),
+      μ.real {ω | t ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)} ≤
+        tailBound t) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤
+      ∫ t in Set.Ioi (0 : ℝ), tailBound t := by
+  rw [vdVWTheorem243FiniteCenterExpectedSupremum_eq_integral_tail X hintegrable]
+  refine integral_mono_of_nonneg
+    (μ := volume.restrict (Set.Ioi (0 : ℝ)))
+    (f := fun t => μ.real
+      {ω | t ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)})
+    (g := tailBound) ?_ hboundIntegrable ?_
+  · exact Eventually.of_forall fun _ => measureReal_nonneg
+  · exact (ae_restrict_mem measurableSet_Ioi).mono fun t ht => hbound t ht
+
+/--
+Finite-center sub-Gaussian specialization of the tail-integral upper bound.
+
+The remaining maximal-inequality work is to discharge the Gaussian-tail
+integrability/evaluation and sharpen this display into the textbook
+Orlicz/Hoeffding bound.
+-/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_integral_subGaussian_tail_bound
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0}
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ)
+    (hboundIntegrable :
+      IntegrableOn
+        (fun t : ℝ =>
+          (cardinality : ℝ) * (2 * Real.exp (-(t ^ 2) / (2 * (c : ℝ)))))
+        (Set.Ioi (0 : ℝ)) volume) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤
+      ∫ t in Set.Ioi (0 : ℝ),
+        (cardinality : ℝ) * (2 * Real.exp (-(t ^ 2) / (2 * (c : ℝ)))) := by
+  haveI : Nonempty (Fin cardinality) := ⟨⟨0, hcardinality⟩⟩
+  exact
+    vdVWTheorem243FiniteCenterExpectedSupremum_le_integral_tail_bound X
+      (vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF
+        X hX)
+      hboundIntegrable
+      (fun t ht =>
+        vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF_of_pos
+          hcardinality X hX (le_of_lt ht))
+
+/--
+Integrability of the finite-center sub-Gaussian tail majorant.
+
+The assumption `0 < c` is necessary for this Gaussian majorant route; when
+`c = 0`, the displayed expression degenerates under Lean's total division.
+-/
+theorem vdVWTheorem243_subGaussian_tail_bound_integrable
+    {cardinality : ℕ} {c : ℝ≥0} (hc : 0 < (c : ℝ)) :
+    IntegrableOn
+      (fun t : ℝ =>
+        (cardinality : ℝ) * (2 * Real.exp (-(t ^ 2) / (2 * (c : ℝ)))))
+      (Set.Ioi (0 : ℝ)) volume := by
+  have hb : 0 < (2 * (c : ℝ))⁻¹ :=
+    inv_pos.mpr (mul_pos zero_lt_two hc)
+  have hbase :
+      Integrable (fun t : ℝ =>
+        Real.exp (-((2 * (c : ℝ))⁻¹) * t ^ 2)) :=
+    integrable_exp_neg_mul_sq hb
+  have hbaseRestrict :
+      Integrable (fun t : ℝ =>
+        Real.exp (-((2 * (c : ℝ))⁻¹) * t ^ 2))
+        (volume.restrict (Set.Ioi (0 : ℝ))) :=
+    hbase.restrict
+  change
+    Integrable
+      (fun t : ℝ =>
+        (cardinality : ℝ) * (2 * Real.exp (-(t ^ 2) / (2 * (c : ℝ)))))
+      (volume.restrict (Set.Ioi (0 : ℝ)))
+  convert hbaseRestrict.const_mul ((cardinality : ℝ) * 2) using 1
+  ext t
+  ring_nf
+
+/--
+Closed-form value of the finite-center sub-Gaussian tail majorant over
+`(0, ∞)`.
+-/
+theorem vdVWTheorem243_integral_subGaussian_tail_bound_eq
+    {cardinality : ℕ} {c : ℝ≥0} (hc : 0 < (c : ℝ)) :
+    (∫ t in Set.Ioi (0 : ℝ),
+        (cardinality : ℝ) *
+          (2 * Real.exp (-(t ^ 2) / (2 * (c : ℝ))))) =
+      (cardinality : ℝ) * Real.sqrt (2 * Real.pi * (c : ℝ)) := by
+  have _hc : 0 < (c : ℝ) := hc
+  have hprev :
+      (∫ t in Set.Ioi (0 : ℝ),
+          (cardinality : ℝ) *
+            (2 * Real.exp (-(t ^ 2) / (2 * (c : ℝ))))) =
+        (cardinality : ℝ) *
+          (2 * (Real.sqrt (Real.pi / ((2 * (c : ℝ))⁻¹)) / 2)) := by
+    calc
+      (∫ t in Set.Ioi (0 : ℝ),
+          (cardinality : ℝ) *
+            (2 * Real.exp (-(t ^ 2) / (2 * (c : ℝ)))))
+          = ∫ t in Set.Ioi (0 : ℝ),
+              ((cardinality : ℝ) * 2) *
+                Real.exp (-((2 * (c : ℝ))⁻¹) * t ^ 2) := by
+              refine setIntegral_congr_fun measurableSet_Ioi ?_
+              intro t _ht
+              ring_nf
+      _ = ((cardinality : ℝ) * 2) *
+            (∫ t in Set.Ioi (0 : ℝ),
+              Real.exp (-((2 * (c : ℝ))⁻¹) * t ^ 2)) := by
+              rw [integral_const_mul]
+      _ = (cardinality : ℝ) *
+            (2 * (Real.sqrt (Real.pi / ((2 * (c : ℝ))⁻¹)) / 2)) := by
+              rw [integral_gaussian_Ioi]
+              ring
+  rw [hprev]
+  congr 1
+  rw [div_inv_eq_mul]
+  ring_nf
+
+/--
+Closed-form finite-center expectation bound obtained from the compiled
+sub-Gaussian union tail and Gaussian integral.
+
+This is still a coarse `N * sqrt c` bound; the later textbook maximal
+inequality sharpens it by splitting the tail integral at a logarithmic radius.
+-/
+theorem vdVWTheorem243FiniteCenterExpectedSupremum_le_subGaussian_tail_closedForm
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {cardinality : ℕ} (hcardinality : 0 < cardinality)
+    (X : Fin cardinality -> Ω -> ℝ) {c : ℝ≥0}
+    (hc : 0 < (c : ℝ))
+    (hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ) :
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X ≤
+      (cardinality : ℝ) * Real.sqrt (2 * Real.pi * (c : ℝ)) := by
+  calc
+    vdVWTheorem243FiniteCenterExpectedSupremum μ X
+        ≤ ∫ t in Set.Ioi (0 : ℝ),
+            (cardinality : ℝ) *
+              (2 * Real.exp (-(t ^ 2) / (2 * (c : ℝ)))) :=
+          vdVWTheorem243FiniteCenterExpectedSupremum_le_integral_subGaussian_tail_bound
+            hcardinality X hX
+            (vdVWTheorem243_subGaussian_tail_bound_integrable
+              (cardinality := cardinality) (c := c) hc)
+    _ = (cardinality : ℝ) * Real.sqrt (2 * Real.pi * (c : ℝ)) :=
+          vdVWTheorem243_integral_subGaussian_tail_bound_eq
+            (cardinality := cardinality) (c := c) hc
 
 /-- The finite-center expected supremum is nonnegative for a nonempty net. -/
 theorem vdVWTheorem243FiniteCenterExpectedSupremum_nonneg

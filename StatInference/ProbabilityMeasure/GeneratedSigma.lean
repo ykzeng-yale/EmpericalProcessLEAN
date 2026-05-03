@@ -91,6 +91,21 @@ theorem probabilityMeasure_ext_of_generate_finite_toMeasure
   apply MeasureTheory.ProbabilityMeasure.toMeasure_injective
   exact MeasureTheory.ext_of_generate_finite C hΩ hC hμν (by simp)
 
+/--
+Probability-measure uniqueness from equality of probability values on a generating pi-system.
+This is the probability-value version of
+`probabilityMeasure_ext_of_generate_finite_toMeasure`.
+-/
+theorem probabilityMeasure_ext_of_generate_finite
+    {Ω : Type u} [mΩ : MeasurableSpace Ω]
+    (μ ν : MeasureTheory.ProbabilityMeasure Ω)
+    (C : Set (Set Ω)) (hΩ : mΩ = GeneratedSigma Ω C) (hC : IsPiSystem C)
+    (hμν : ∀ s ∈ C, μ s = ν s) :
+    μ = ν := by
+  exact probabilityMeasure_ext_of_generate_finite_toMeasure μ ν C hΩ hC fun s hs => by
+    simpa [MeasureTheory.ProbabilityMeasure.ennreal_coeFn_eq_coeFn_toMeasure] using
+      congr_arg (fun x : NNReal => (x : ENNReal)) (hμν s hs)
+
 /-- The measurable sets form a pi-system. -/
 theorem isPiSystem_measurableSet
     {Ω : Type u} [MeasurableSpace Ω] :
