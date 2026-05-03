@@ -97,5 +97,42 @@ theorem discreteGronwall_sum_le_of_pos {A : ℝ} (hA : 0 < A)
       ∑ n ∈ Finset.range N, A ^ (N - 1 - n) * B n :=
   discreteGronwall_sum_le hA.le u B N hrec
 
+/--
+Chewi Lemma 3.5 in the source's one-based display:
+
+`u_N <= A^N u_0 + sum_{n=1}^N A^(N-n) B_{n-1}`.
+
+This is a reindexing wrapper around `discreteGronwall_sum_le`.
+-/
+theorem discreteGronwall_one_based_sum_le {A : ℝ} (hA : 0 ≤ A)
+    (u B : ℕ -> ℝ) (N : ℕ)
+    (hrec : ∀ n, n < N -> u (n + 1) ≤ A * u n + B n) :
+    u N ≤ A ^ N * u 0 +
+      ∑ n ∈ Finset.Ico 1 (N + 1), A ^ (N - n) * B (n - 1) := by
+  have hmain := discreteGronwall_sum_le hA u B N hrec
+  have hsum :
+      (∑ n ∈ Finset.range N, A ^ (N - 1 - n) * B n) =
+        ∑ n ∈ Finset.Ico 1 (N + 1), A ^ (N - n) * B (n - 1) := by
+    rw [Finset.sum_Ico_eq_sum_range]
+    refine Finset.sum_congr ?_ ?_
+    · simp
+    · intro n hn
+      have hsub : N - (1 + n) = N - 1 - n := by
+        omega
+      rw [hsub]
+      simp
+  simpa [hsum] using hmain
+
+/--
+Strict-positive version matching the stated hypothesis of Chewi Lemma 3.5 and
+the source's one-based display.
+-/
+theorem discreteGronwall_one_based_sum_le_of_pos {A : ℝ} (hA : 0 < A)
+    (u B : ℕ -> ℝ) (N : ℕ)
+    (hrec : ∀ n, n < N -> u (n + 1) ≤ A * u n + B n) :
+    u N ≤ A ^ N * u 0 +
+      ∑ n ∈ Finset.Ico 1 (N + 1), A ^ (N - n) * B (n - 1) :=
+  discreteGronwall_one_based_sum_le hA.le u B N hrec
+
 end Optimization
 end StatInference

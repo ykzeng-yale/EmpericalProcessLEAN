@@ -24,7 +24,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 | --- | --- | --- | --- |
 | Chapter 1 convexity/smoothness foundations | local-layer/mathlib-foundation | `StatInference/Optimization/Basic.lean`; mathlib `StrongConvexOn`, `ConvexOn`, `gradient` | Initial interfaces for strong convexity, Chewi convexity, smooth upper models, gradient-descent steps, mathlib-gradient Lipschitzness, and GD trajectories compile as the intended surface for Definition 1.5, Definition 1.12, and Chapter 3. Prefer mathlib's `StrongConvexOn`, `ConvexOn`, and `gradient` APIs for exact derivative-heavy theorem routes. |
 | Chapter 2 gradient flow | pending-local | none | Reuse mathlib `Analysis/ODE/Gronwall.lean`; exact gradient-flow modeling still needs a choice of differentiability/ODE interface. |
-| Chapter 3 smooth gradient descent | local-layer | `gradientDescentStep`, `IsGradientDescentTrajectory`, `DiscreteGronwall.lean` | First deterministic GD trajectory interface is available. The zero-based finite-sum version of Chewi Lemma 3.5 discrete Gronwall is now compiled as `discreteGronwall_sum_le` and `discreteGronwall_sum_le_of_pos`; next target is either the source-shaped 1-based wrapper or Lemma 3.1 descent lemma from the smooth upper-model interface. |
+| Chapter 3 smooth gradient descent | local-layer | `gradientDescentStep`, `IsGradientDescentTrajectory`, `DiscreteGronwall.lean`, `GradientDescent.lean` | First deterministic GD trajectory interface is available. Chewi Lemma 3.5 now has zero-based and source-shaped one-based compiled wrappers, and Chewi Lemma 3.1 is compiled from the smooth upper-model interface. Next target is a supplied-interface Theorem 3.4 assembly layer. |
 | Chapter 4 lower bounds | pending-local | none | Requires oracle/gradient-span interfaces and finite-dimensional Euclidean/matrix support. |
 | Chapters 5-11 deterministic algorithms | pending-local | none | Acceleration, nonsmooth optimization, Frank-Wolfe, proximal methods, Fenchel duality, mirror methods, and alternating minimization should wait until the basic convex/smooth/GD layer is stable. |
 | Chapter 12 stochastic optimization | pending-local | none | Should reuse `StatInference/ProbabilityMeasure` and empirical-process probability wrappers where possible. |
@@ -70,13 +70,17 @@ reports quickly:
 
 1. Extend `StatInference/Optimization/Basic.lean` only when the next theorem
    needs a primitive.
-2. Add the source-shaped 1-based display wrapper for Lemma 3.5 if it remains
-   lightweight; otherwise use the compiled zero-based theorem directly.
-3. Prove Lemma 3.1 descent lemma from `SmoothWithGradientOn`.
-4. Package the first source-exact report only after an exact Chewi lemma or
+2. Keep the compiled source-shaped one-based display wrapper for Lemma 3.5
+   available for source-audited use, while using the zero-based theorem when it
+   is algebraically easier.
+3. Keep the compiled Lemma 3.1 descent layer available from
+   `SmoothWithGradientOn`.
+4. Add a supplied-interface Theorem 3.4 assembly module: weighted finite-sum
+   bound first, then monotone-gap and geometric-denominator corollaries.
+5. Package the first source-exact report only after an exact Chewi lemma or
    theorem statement compiles and screenshots are captured.
 
-The first atomic proof target is partially closed: the zero-based version of
-Lemma 3.5 is compiled and immediately usable for Theorem 3.4.  The remaining
-choice is whether to add a cosmetic source-shaped 1-based wrapper before
-moving to Lemma 3.1.
+The first atomic proof targets are closed as local layers: Lemma 3.5 and Lemma
+3.1 both have compiled theorem declarations.  The remaining Chapter 3 blocker
+is Theorem 3.4 assembly from the one-step recurrence, monotonic descent, and
+finite/geometric sums.

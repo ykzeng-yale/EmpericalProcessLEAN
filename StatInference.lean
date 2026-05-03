@@ -24,3 +24,4 @@ import StatInference.EmpiricalProcess.RealHalfLine
 import StatInference.EmpiricalProcess.RealHalfLineGC
 import StatInference.Optimization.Basic
 import StatInference.Optimization.DiscreteGronwall
+import StatInference.Optimization.GradientDescent
