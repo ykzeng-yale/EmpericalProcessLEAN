@@ -249,10 +249,19 @@ and
 for externally named cardinality processes.  The deterministic log-bound route
 also has the inverse-radius fixed-`M` consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound_invRadius`.
-The next blocker is feeding the theorem entropy/finite-cover hypotheses into
-those wrappers, then supplying a deterministic normalized log-cardinality bound
-or a genuine boundedness/UI replacement and instantiating the all-radius entropy
-route at the inverse-radius consumer.
+The covering-domination finite-witness bridges
+`hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath`
+and
+`measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable_of_covering_le`
+are available for theorem entropy hypotheses.
+The theorem-facing selected-cardinality consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
+now composes these pieces and discharges measurable cardinality from equality
+with the selected truncated minimal empirical-cover cardinality.  The next
+blocker is feeding theorem entropy/finite-cover hypotheses into that consumer:
+inverse-radius covering domination, selected terminal equality, normalized
+log-cardinality convergence, and a deterministic normalized
+log-cardinality bound or genuine boundedness/UI replacement.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.

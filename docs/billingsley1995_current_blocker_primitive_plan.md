@@ -319,10 +319,23 @@ assembly for VdV&W Theorem 2.4.3:
   `measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable`),
   or prove the needed finite/selected-center event lemma for an uncountable
   class;
+- use
+  `hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath`
+  and
+  `measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable_of_covering_le`
+  when the entropy hypothesis already supplies finite-valued covering-number
+  domination;
 - then supply the deterministic normalized log-cardinality bound or a genuine
   variable-domain UI replacement and instantiate the all-radius entropy route
   at the inverse-radius fixed-`M` consumer
   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound_invRadius`;
+- the theorem-facing wrapper
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
+  already discharges the measurable-cardinality input from equality with the
+  selected truncated minimal empirical-cover cardinality, so the remaining
+  inputs are inverse-radius covering domination, selected finite-cover
+  witnesses/equality, normalized log-cardinality convergence, and the
+  deterministic log-ratio/UI condition;
 - if that assembly exposes only a.e.-measurable or null-measurable random
   targets, use `VdVWMeasurableCover.ofAEMeasurable` or
   `VdVWMeasurableCover.ofNullMeasurable_ofReal` rather than adding another
@@ -520,6 +533,11 @@ are compiled as well, together with equality-transport wrappers
 `measurable_cardinality_at_sampleSize_of_eq_selected_randomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`
 and
 `measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable`.
+The covering-domination finite-witness bridges
+`hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath`
+and
+`measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable_of_covering_le`
+are compiled for theorem entropy hypotheses.
 The
 deterministic finite-net log-bound suppliers
 `vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le`,
@@ -531,10 +549,11 @@ plus the fixed-`M` centered-truncated consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound`
 and its inverse-radius specialization
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound_invRadius`
-are also compiled. The next proof target is feeding theorem entropy/finite-cover
-hypotheses into the selected-cardinality measurability wrappers, then supplying
-the deterministic normalized log-cardinality bound or a genuine variable-domain
-boundedness/UI replacement from the entropy hypotheses and instantiating the
-all-radius entropy route at the inverse-radius consumer, not a fixed-sample
-pointwise comparison or product-a.e. finite-center Hoeffding predicate. Do not add
+are also compiled. The theorem-facing selected-cardinality consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
+is compiled as well. The next proof target is feeding theorem entropy/finite-cover
+hypotheses into that consumer, then supplying the deterministic normalized
+log-cardinality bound or a genuine variable-domain boundedness/UI replacement
+from the entropy hypotheses, not a fixed-sample pointwise comparison or
+product-a.e. finite-center Hoeffding predicate. Do not add
 another product surface unless that assembly exposes a sharper missing API.

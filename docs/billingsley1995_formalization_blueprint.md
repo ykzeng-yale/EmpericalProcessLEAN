@@ -428,11 +428,18 @@ are now available, together with the equality-transport wrappers
 `measurable_cardinality_at_sampleSize_of_eq_selected_randomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`
 and
 `measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable`.
-Next feed the theorem
-entropy/finite-cover hypotheses into those wrappers, then supply a deterministic
-normalized log-cardinality bound or a genuine boundedness/UI replacement and
-instantiate the all-radius entropy route at the inverse-radius consumer to turn
-the entropy hypotheses into the required real integrated upper, now past the
+The covering-domination finite-witness route is packaged by
+`hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath`
+and
+`measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable_of_covering_le`.
+The theorem-facing selected-cardinality consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
+now composes these pieces and discharges measurable cardinality from equality
+with the selected truncated minimal empirical-cover cardinality. Next feed the
+theorem entropy/finite-cover hypotheses into that consumer, then supply the
+remaining deterministic normalized log-cardinality bound or a genuine
+boundedness/UI replacement to turn the entropy hypotheses into the required real
+integrated upper, now past the
 fixed-sample,
 integral-lift, product-projection/Fubini, same-weight pair split, deterministic
 sign-negation, ordinary random-sign averaging, product-cover, sample-cover,
