@@ -477,10 +477,12 @@ above, so they do not change the theorem-level dashboard counts.
    finite-net mean and integrated-mean consumers, and the fixed-`M`
    centered-truncated convergence consumer
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_bounded`
-   are now compiled.  The next frontier is deriving/supplying measurable
-   cardinality, boundedness/UI or dominated-convergence, and a shrinking
-   deterministic empirical-cover radius from the book all-radius entropy route,
-   then final assembly.
+   plus the canonical inverse-radius variant
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_bounded_invRadius`
+   are now compiled.  The next frontier is deriving/supplying the diagonal
+   entropy/cardinality hypotheses for that inverse-radius route, plus
+   measurable cardinality and boundedness/UI or dominated-convergence, then
+   final assembly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
