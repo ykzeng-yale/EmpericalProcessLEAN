@@ -597,9 +597,11 @@ additional example closures:
    `finiteEmpiricalL1CoverAtCard_of_randomEmpiricalL1CoveringNumber_le_cardinality`.
    The random empirical-cover witness is now consumed by
    `ae_prod_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_rademacherSigns`.
-   The remaining Theorem 2.4.3 blocker is proving the product-a.e. finite-center
-   Hoeffding predicate for the selected random empirical covers, and proving the
-   entropy-to-convergence assembly; it is not the finite-net
+   The product-a.e. finite-center Hoeffding route is no longer the active
+   blocker for selected random empirical covers: the expectation-level
+   random-cover route and product outer-expectation projection are compiled.
+   The remaining Theorem 2.4.3 blocker is the entropy-to-convergence assembly;
+   it is not the finite-net
    Rademacher/Hoeffding maximal scale, the fixed-sample random-sign
    outer-expectation finite-net handoff, the finite sample mean-zero bridge, the
    ordinary integrated product/sign-symmetry layer, or a fixed-sample pointwise
@@ -730,6 +732,26 @@ Search record for the scale-comparison handoff:
   `sq_le_sq₀`, `div_le_iff₀`, and `field_simp`/`nlinarith` for the final
   nonnegative square comparison.
 
+Search record for the entropy-to-Hoeffding-scale algebra:
+
+- searched local `StatInference` and pinned mathlib for `Tendsto`, `sqrt`,
+  `Real.log_nonneg`, `ENNReal.ofReal`, stochastic little-o, and
+  random-cardinality coercion helpers;
+- no packaged outer-probability continuous-mapping theorem was found for the
+  exact map `L_n ↦ sqrt(1 + L_n) * sqrt(6 / n) * M`;
+- compiled the theorem-local deterministic helpers
+  `vdVWTheorem243FiniteNetHoeffdingUpper_nonneg`,
+  `vdVWTheorem243FiniteNetHoeffdingUpper_sq`,
+  `vdVWTheorem243FiniteNetHoeffdingUpper_eq_logCardinality`,
+  `vdVWTheorem243FiniteNetHoeffdingUpper_sq_eq_logCardinality`, and
+  `tendsto_sqrt_one_add_mul_sqrt_six_div_of_div_tendsto_zero`, using
+  `tendsto_one_div_atTop_nhds_zero_nat`, `Tendsto.add`,
+  `Tendsto.const_mul`, `Real.continuous_sqrt`, and `Real.sqrt_mul`;
+- also compiled
+  `VdVWTheorem243TruncatedEntropyCondition.fixed_of_forAllEpsilonM`, which
+  projects the book-facing all-`M`, all-`epsilon` entropy hypothesis to the
+  fixed truncated entropy condition needed by the next assembly theorem.
+
 Search record for the symmetrization precursor package:
 
 - searched local `StatInference` for product/Fubini, `HasLaw`,
@@ -858,8 +880,13 @@ witness handoff, random empirical-cover product random-sign handoff,
 selected-cover expected-maximal handoff, product-integrated random-cover
 finite-net expected-maximal bound, product outer-expectation projection for the
 expectation-level finite-net route, and a.e./null-measurable cover
-constructors, are closed.  Next prove entropy-to-convergence and final Theorem
-2.4.3 handoffs.
+constructors, plus the finite-net Hoeffding upper nonnegativity/square
+expansion, random log-cardinality rewrite/square expansion, deterministic
+`L_n / n -> 0` to Hoeffding-scale convergence helper, and fixed all-entropy
+projection, are closed.  Next prove the outer-probability continuous-mapping
+handoff from `log_cardinality_littleO_n` to random-cardinality
+Hoeffding-scale convergence, then combine it with the product outer-expectation
+projection for the final Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

@@ -264,8 +264,16 @@ Local searches found reusable APIs in:
    `integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
    The product outer-expectation projection for that route is compiled as
    `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
-   The next target is the entropy-to-convergence handoff, not another
-   fixed-sample pointwise comparison or product-a.e. Hoeffding predicate.
+   The entropy/Hoeffding-scale algebra now also has
+   `vdVWTheorem243FiniteNetHoeffdingUpper_nonneg`,
+   `vdVWTheorem243FiniteNetHoeffdingUpper_sq`,
+   `vdVWTheorem243FiniteNetHoeffdingUpper_eq_logCardinality`,
+   `vdVWTheorem243FiniteNetHoeffdingUpper_sq_eq_logCardinality`,
+   `tendsto_sqrt_one_add_mul_sqrt_six_div_of_div_tendsto_zero`, and
+   `VdVWTheorem243TruncatedEntropyCondition.fixed_of_forAllEpsilonM`.
+   The next target is the outer-probability entropy-to-Hoeffding-scale
+   convergence handoff, not another fixed-sample pointwise comparison or
+   product-a.e. Hoeffding predicate.
    The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
@@ -280,8 +288,10 @@ Local searches found reusable APIs in:
 The next high-value proof step is the theorem-specific Section 18/entropy
 assembly for VdV&W Theorem 2.4.3:
 
-- prove the entropy-to-convergence handoff from the random-cardinality
-  Hoeffding upper and the compiled product outer-expectation projection;
+- prove the outer-probability entropy-to-Hoeffding-scale convergence handoff
+  from `log_cardinality_littleO_n`, using the compiled random-cardinality
+  Hoeffding upper algebra and the compiled product outer-expectation
+  projection;
 - if that assembly exposes only a.e.-measurable or null-measurable random
   targets, use `VdVWMeasurableCover.ofAEMeasurable` or
   `VdVWMeasurableCover.ofNullMeasurable_ofReal` rather than adding another

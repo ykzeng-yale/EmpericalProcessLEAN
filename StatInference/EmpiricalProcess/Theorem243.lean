@@ -2039,6 +2039,42 @@ noncomputable def vdVWTheorem243FiniteNetHoeffdingUpper
   vdVWTheorem243FiniteNetMaximalUpper cardinality
     (vdVWTheorem243HoeffdingCenterScale n M)
 
+/-- The finite-net Hoeffding upper bound is nonnegative for nonnegative envelopes. -/
+theorem vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+    (cardinality n : ℕ) {M : ℝ} (hM_nonneg : 0 ≤ M) :
+    0 ≤ vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M := by
+  exact
+    vdVWTheorem243FiniteNetMaximalUpper_nonneg cardinality
+      (vdVWTheorem243HoeffdingCenterScale_nonneg n hM_nonneg)
+
+/--
+Square form of the finite-net Hoeffding upper.
+
+This is the deterministic algebraic bridge used by the entropy-to-convergence
+route: the random part appears only through the logarithmic cardinality factor.
+-/
+theorem vdVWTheorem243FiniteNetHoeffdingUpper_sq
+    (cardinality n : ℕ) (M : ℝ) :
+    (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M) ^ 2 =
+      (1 + Real.log ((cardinality : ℝ) + 1)) *
+        (6 / (n : ℝ)) * M ^ 2 := by
+  have hlog_nonneg :
+      0 ≤ 1 + Real.log ((cardinality : ℝ) + 1) := by
+    have hge : (1 : ℝ) ≤ (cardinality : ℝ) + 1 := by
+      have hcard_nonneg : (0 : ℝ) ≤ cardinality := by exact_mod_cast Nat.zero_le cardinality
+      linarith
+    have hlog : 0 ≤ Real.log ((cardinality : ℝ) + 1) :=
+      Real.log_nonneg hge
+    linarith
+  have hscale_nonneg : 0 ≤ 6 / (n : ℝ) :=
+    div_nonneg (by norm_num) (Nat.cast_nonneg n)
+  unfold vdVWTheorem243FiniteNetHoeffdingUpper
+  unfold vdVWTheorem243FiniteNetMaximalUpper
+  unfold vdVWTheorem243HoeffdingCenterScale
+  rw [mul_pow, mul_pow, Real.sq_sqrt hlog_nonneg,
+    Real.sq_sqrt hscale_nonneg]
+  ring
+
 /--
 Hoeffding-scale specialization of the finite-center maximal handoff for
 Theorem 2.4.3.
@@ -5785,6 +5821,111 @@ theorem vdVWLogEmpiricalL1CoveringCardinality_nonneg
   linarith
 
 /--
+Rewrite the finite-net Hoeffding upper using the random log-cardinality process
+recorded in the empirical entropy hypothesis.
+-/
+theorem vdVWTheorem243FiniteNetHoeffdingUpper_eq_logCardinality
+    {Ω : Type u} (cardinality : Ω -> ℕ -> ℕ) (ω : Ω) (n : ℕ) (M : ℝ) :
+    vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M =
+      Real.sqrt (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n) *
+        (Real.sqrt (6 / (n : ℝ)) * M) := by
+  simp [vdVWTheorem243FiniteNetHoeffdingUpper,
+    vdVWTheorem243FiniteNetMaximalUpper, vdVWTheorem243HoeffdingCenterScale,
+    vdVWLogEmpiricalL1CoveringCardinality]
+
+/--
+Square form of the random finite-net Hoeffding upper in terms of the entropy
+log-cardinality process.
+-/
+theorem vdVWTheorem243FiniteNetHoeffdingUpper_sq_eq_logCardinality
+    {Ω : Type u} (cardinality : Ω -> ℕ -> ℕ) (ω : Ω) (n : ℕ) (M : ℝ) :
+    (vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M) ^ 2 =
+      (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n) *
+        (6 / (n : ℝ)) * M ^ 2 := by
+  simpa [vdVWLogEmpiricalL1CoveringCardinality] using
+    vdVWTheorem243FiniteNetHoeffdingUpper_sq (cardinality ω n) n M
+
+/--
+Deterministic analytic core of the entropy-to-Hoeffding-scale convergence
+step.
+
+If a nonnegative logarithmic cardinality process satisfies `L_n / n -> 0`,
+then the Hoeffding scale
+`sqrt(1 + L_n) * sqrt(6 / n) * M` tends to zero.
+-/
+theorem tendsto_sqrt_one_add_mul_sqrt_six_div_of_div_tendsto_zero
+    (L : ℕ -> ℝ) (M : ℝ)
+    (hL_nonneg : ∀ n, 0 ≤ L n)
+    (hL_div : Tendsto (fun n : ℕ => L n / (n : ℝ)) atTop (𝓝 0)) :
+    Tendsto
+      (fun n : ℕ =>
+        Real.sqrt (1 + L n) * (Real.sqrt (6 / (n : ℝ)) * M))
+      atTop (𝓝 0) := by
+  have h_one_div :
+      Tendsto (fun n : ℕ => (1 : ℝ) / (n : ℝ)) atTop (𝓝 0) :=
+    tendsto_one_div_atTop_nhds_zero_nat
+  have hsum :
+      Tendsto (fun n : ℕ => (1 + L n) / (n : ℝ)) atTop (𝓝 0) := by
+    have hrewrite :
+        (fun n : ℕ => (1 + L n) / (n : ℝ)) =ᶠ[atTop]
+          (fun n : ℕ => (1 : ℝ) / (n : ℝ) + L n / (n : ℝ)) := by
+      filter_upwards [eventually_gt_atTop (0 : ℕ)] with n hn
+      have hn_ne : (n : ℝ) ≠ 0 := by
+        exact_mod_cast (Nat.ne_of_gt hn)
+      field_simp [hn_ne]
+    have hsum_right :
+        Tendsto
+          (fun n : ℕ => (1 : ℝ) / (n : ℝ) + L n / (n : ℝ))
+          atTop (𝓝 0) := by
+      simpa using h_one_div.add hL_div
+    exact Tendsto.congr' hrewrite.symm hsum_right
+  have hinside :
+      Tendsto
+        (fun n : ℕ => (1 + L n) * (6 / (n : ℝ)))
+        atTop (𝓝 0) := by
+    have hrewrite :
+        (fun n : ℕ => (1 + L n) * (6 / (n : ℝ))) =
+          (fun n : ℕ => 6 * ((1 + L n) / (n : ℝ))) := by
+      funext n
+      ring
+    have hright :
+        Tendsto (fun n : ℕ => 6 * ((1 + L n) / (n : ℝ)))
+          atTop (𝓝 0) := by
+      simpa using hsum.const_mul 6
+    exact
+      Tendsto.congr'
+        (Eventually.of_forall fun n => by
+          exact congrFun hrewrite n |>.symm)
+        hright
+  have hsqrt :
+      Tendsto
+        (fun n : ℕ => Real.sqrt ((1 + L n) * (6 / (n : ℝ))))
+        atTop (𝓝 0) := by
+    simpa [Real.sqrt_zero] using
+      (Real.continuous_sqrt.tendsto 0).comp hinside
+  have hscaled :
+      Tendsto
+        (fun n : ℕ =>
+          Real.sqrt ((1 + L n) * (6 / (n : ℝ))) * M)
+        atTop (𝓝 0) := by
+    simpa using hsqrt.mul tendsto_const_nhds
+  have hrewrite :
+      (fun n : ℕ =>
+          Real.sqrt ((1 + L n) * (6 / (n : ℝ))) * M) =ᶠ[atTop]
+        (fun n : ℕ =>
+          Real.sqrt (1 + L n) * (Real.sqrt (6 / (n : ℝ)) * M)) := by
+    refine Eventually.of_forall ?_
+    intro n
+    have hfirst_nonneg : 0 ≤ 1 + L n := by
+      linarith [hL_nonneg n]
+    change
+      Real.sqrt ((1 + L n) * (6 / (n : ℝ))) * M =
+        Real.sqrt (1 + L n) * (Real.sqrt (6 / (n : ℝ)) * M)
+    rw [Real.sqrt_mul hfirst_nonneg]
+    ring
+  exact Tendsto.congr' hrewrite hscaled
+
+/--
 Fixed-`epsilon` random empirical entropy condition for Theorem 2.4.3.
 
 The field `coveringNumber_le` records a finite-cardinality domination of
@@ -5847,5 +5988,23 @@ def VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM
   ∀ M > 0, ∀ epsilon > 0,
     VdVWTheorem243TruncatedEntropyCondition μ X indexClass classFun envelope
       M epsilon (cardinality M epsilon)
+
+/--
+Projection from the book-facing all-positive-radius/truncation entropy
+hypothesis to one fixed truncated empirical entropy condition.
+-/
+theorem VdVWTheorem243TruncatedEntropyCondition.fixed_of_forAllEpsilonM
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] {μ : Measure Ω}
+    {X : ℕ -> Ω -> Observation} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {cardinality : ℝ -> ℝ -> Ω -> ℕ -> ℕ}
+    {M epsilon : ℝ} (hM : 0 < M) (hepsilon : 0 < epsilon)
+    (hentropy :
+      VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM μ X indexClass
+        classFun envelope cardinality) :
+    VdVWTheorem243TruncatedEntropyCondition μ X indexClass classFun envelope
+      M epsilon (cardinality M epsilon) :=
+  hentropy M hM epsilon hepsilon
 
 end StatInference
