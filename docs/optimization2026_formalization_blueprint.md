@@ -37,6 +37,12 @@ dependency order after it, the required mathlib/local searches, and the
 verification/report gate.  This avoids replaying stale broad instructions after
 another agent has already moved the frontier.
 
+The recurring automation is currently paused while this thread runs under a
+manual `/goal`.  The current app-level goal objective text cannot be edited
+directly in this tool surface unless the goal is complete, so
+`docs/optimization2026_current_blocker_primitive_plan.md` carries the live
+replacement prompt for manual runs.
+
 ## Local Sources
 
 - Markdown source:
@@ -179,6 +185,10 @@ Near-term exact candidates:
    from Lemma 3.1, a scalar nonnegative-factor recurrence unrolling, and the
    source step-size wrapper for `h <= 1 / beta`.  Remaining main-text Chapter
    3 work is Theorem 3.7 and source-audited report packaging.
+6. Theorem 3.7 gradient-norm/stationary point convergence.  This is the active
+   main-text proof target.  Reuse the compiled descent lemma, prove the
+   telescope/finite-average layer over `Finset.range N`, and avoid Chapter 3
+   exercise proof derivations during this main-text pass.
 
 ### Lane D: Later textbook expansion
 
