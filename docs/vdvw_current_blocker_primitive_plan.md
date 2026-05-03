@@ -1243,13 +1243,23 @@ and
 `integral_finiteNetHoeffdingUpper_tendsto_zero_of_forall_pos_selected_truncated_fixedRadius_tailExpectation`
 use the same selected log-convergence and selected measurability facts, but
 replace the deterministic normalized log bound by an explicit varying-domain
-tail-expectation condition for the selected Hoeffding upper.  The fixed-`M`
+tail-expectation condition for the selected Hoeffding upper.  The packaged
+side-condition structure
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions` and its analytic
+consumer
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.integral_finiteNetHoeffdingUpper_tendsto_zero`
+now keep the fixed-radius cover domination, entropy convergence,
+finite-net-upper integrability, and tail/UI inputs together.  The fixed-`M`
 and untruncated theorem-facing consumers
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_fixedRadius_tailExpectation`
 and
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_fixedRadius_tailExpectation`
+remain available, and the packaged consumers
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedFixedRadiusTailSideConditions`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedFixedRadiusTailSideConditions`
 now compose that tail/UI route with the main symmetrization and large-`M`
-envelope-tail handoffs.
+envelope-tail handoffs without re-threading four separate analytic fields.
 
 Next exact edit: prove the selected finite-net tail-expectation/UI condition
 from the textbook entropy hypothesis, or record the precise additional
