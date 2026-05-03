@@ -22,9 +22,9 @@ This dashboard tracks the Chewi optimization formalization lane for
 
 | Lane | Status | Current Lean anchor | Notes |
 | --- | --- | --- | --- |
-| Chapter 1 convexity/smoothness foundations | local-layer/mathlib-foundation | `StatInference/Optimization/Basic.lean`; mathlib `StrongConvexOn`, `ConvexOn`, `gradient` | Initial interfaces for strong convexity, Chewi convexity, smooth upper models, gradient-descent steps, mathlib-gradient Lipschitzness, and GD trajectories compile as the intended surface for Definition 1.5, Definition 1.12, and Chapter 3. Prefer mathlib's `StrongConvexOn`, `ConvexOn`, and `gradient` APIs for exact derivative-heavy theorem routes. |
+| Chapter 1 convexity/smoothness foundations | local-layer/mathlib-foundation | `StatInference/Optimization/Basic.lean`; mathlib `StrongConvexOn`, `ConvexOn`, `gradient` | Initial interfaces for strong convexity, Chewi convexity, smooth upper models, gradient-descent steps, first-order lower models, strong gradient monotonicity, step co-coercivity, mathlib-gradient Lipschitzness, and GD trajectories compile as the intended surface for Definition 1.5, Definition 1.12, Proposition 1.6, Exercise 3.1, and Chapter 3. The Proposition 1.6 `(1.4) => (1.5)` bridge from `FirstOrderStrongConvexOn` to `StronglyMonotoneGradientOn` now compiles. Prefer mathlib's `StrongConvexOn`, `ConvexOn`, and `gradient` APIs for exact derivative-heavy theorem routes. |
 | Chapter 2 gradient flow | pending-local | none | Reuse mathlib `Analysis/ODE/Gronwall.lean`; exact gradient-flow modeling still needs a choice of differentiability/ODE interface. |
-| Chapter 3 smooth gradient descent | local-layer | `gradientDescentStep`, `IsGradientDescentTrajectory`, `DiscreteGronwall.lean`, `GradientDescent.lean`, `Theorem34.lean` | First deterministic GD trajectory interface is available. Chewi Lemma 3.5 now has zero-based and source-shaped one-based compiled wrappers, Chewi Lemma 3.1 is compiled from the smooth upper-model interface, GD function values are antitone under the descent step-size condition, and Theorem 3.4 positive-`alpha` plus `alpha = 0` denominator bounds compile from the first-order strong-convexity supplied interface. Next target is source-audited report packaging or the Proposition 1.6 bridge. |
+| Chapter 3 smooth gradient descent | local-layer | `gradientDescentStep`, `IsGradientDescentTrajectory`, `DiscreteGronwall.lean`, `GradientDescent.lean`, `Theorem33.lean`, `Theorem34.lean` | First deterministic GD trajectory interface is available. Chewi Lemma 3.5 now has zero-based and source-shaped one-based compiled wrappers, Chewi Lemma 3.1 is compiled from the smooth upper-model interface, GD function values are antitone under the descent step-size condition, Theorem 3.3 contraction compiles in squared and norm forms from either supplied gradient monotonicity or the supplied first-order lower model plus co-coercivity, and Theorem 3.4 positive-`alpha` plus `alpha = 0` denominator bounds compile from the first-order strong-convexity supplied interface. Next target is deriving Exercise 3.1 co-coercivity or source-audited report packaging. |
 | Chapter 4 lower bounds | pending-local | none | Requires oracle/gradient-span interfaces and finite-dimensional Euclidean/matrix support. |
 | Chapters 5-11 deterministic algorithms | pending-local | none | Acceleration, nonsmooth optimization, Frank-Wolfe, proximal methods, Fenchel duality, mirror methods, and alternating minimization should wait until the basic convex/smooth/GD layer is stable. |
 | Chapter 12 stochastic optimization | pending-local | none | Should reuse `StatInference/ProbabilityMeasure` and empirical-process probability wrappers where possible. |
@@ -75,19 +75,26 @@ reports quickly:
    is algebraically easier.
 3. Keep the compiled Lemma 3.1 descent layer available from
    `SmoothWithGradientOn`.
-4. Keep the supplied-interface Theorem 3.4 assembly module compiling:
+4. Keep the compiled Theorem 3.3 supplied-interface contraction layer
+   available from `StronglyMonotoneGradientOn` and
+   `GradientStepCocoerciveOn`.  The Proposition 1.6 `(1.4) => (1.5)`
+   gradient-monotonicity bridge now compiles from `FirstOrderStrongConvexOn`;
+   Exercise 3.1 co-coercivity is the remaining Theorem 3.3 supplied input.
+5. Keep the supplied-interface Theorem 3.4 assembly module compiling:
    weighted finite-sum bound, monotone-gap lower bound, finite-denominator
    corollary, positive-`alpha` closed geometric denominator corollary,
    `alpha = 0` limiting corollary, and wrappers deriving monotonicity from
    Lemma 3.1.  The first-order supplied lower-model interface supplies
    recurrence (3.1) for GD trajectories.
-5. Package the first source-exact report only after an exact Chewi lemma or
+6. Package the first source-exact report only after an exact Chewi lemma or
    theorem statement compiles and screenshots are captured.
 
 The first atomic proof targets are closed as local layers: Lemma 3.5 and Lemma
-3.1 both have compiled theorem declarations, and Theorem 3.4 now has a
-compiled supplied weighted-sum assembly layer, a first-order recurrence bridge,
+3.1 both have compiled theorem declarations, Theorem 3.3 now has compiled
+supplied-interface squared and norm contraction declarations plus
+first-order-lower-model wrappers, and Theorem 3.4 now has a compiled supplied
+weighted-sum assembly layer, a first-order recurrence bridge,
 finite-denominator bounds, and both the positive-`alpha` and `alpha = 0`
 closed forms of the source's function-value bound.  The remaining Chapter 3
-choices are source-audited report packaging or the full
-segment-strong-convexity/differentiability bridge.
+choices are source-audited report packaging, the Exercise 3.1 co-coercivity
+derivation, or the full segment-strong-convexity/differentiability bridge.

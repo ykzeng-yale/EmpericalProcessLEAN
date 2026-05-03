@@ -55,6 +55,26 @@ def FirstOrderStrongConvexOn (C : Set E) (f : E -> ℝ) (grad : E -> E)
         (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) ≤ f y
 
 /--
+Chewi Proposition 1.6 / equation (1.5), represented directly as monotonicity
+of the supplied gradient oracle.
+
+This supplied interface is separated from `FirstOrderStrongConvexOn` because
+Theorem 3.3 uses the gradient monotonicity form directly.
+-/
+def StronglyMonotoneGradientOn (C : Set E) (grad : E -> E)
+    (alpha : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C -> ∀ ⦃y⦄, y ∈ C ->
+    alpha * ‖y - x‖ ^ (2 : ℕ) ≤ inner ℝ (grad y - grad x) (y - x)
+
+/--
+Chewi Exercise 3.1 / equation (3.5), specialized to the scaled inequality
+needed in the proof of Theorem 3.3.
+-/
+def GradientStepCocoerciveOn (C : Set E) (grad : E -> E) (h : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C -> ∀ ⦃y⦄, y ∈ C ->
+    h * ‖grad y - grad x‖ ^ (2 : ℕ) ≤ inner ℝ (y - x) (grad y - grad x)
+
+/--
 Chewi Definition 1.12, represented by the usual quadratic upper model with an
 explicit gradient oracle.  Later exact smoothness equivalences can connect this
 to Frechet derivatives and gradient Lipschitzness.
@@ -103,6 +123,57 @@ theorem FirstOrderStrongConvexOn.lower_model {C : Set E} {f : E -> ℝ}
     f x + inner ℝ (grad x) (y - x) +
       (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) ≤ f y :=
   h.2 hx hy
+
+/--
+Chewi Proposition 1.6, implication `(1.4) => (1.5)`: swapping the
+first-order lower model and adding gives strong monotonicity of the supplied
+gradient oracle.
+-/
+theorem FirstOrderStrongConvexOn.stronglyMonotoneGradientOn
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha : ℝ}
+    (h : FirstOrderStrongConvexOn C f grad alpha) :
+    StronglyMonotoneGradientOn C grad alpha := by
+  intro x hx y hy
+  let d : E := y - x
+  have hxy :
+      f x + inner ℝ (grad x) d +
+        (alpha / 2) * ‖d‖ ^ (2 : ℕ) ≤ f y := by
+    simpa [d] using h.lower_model hx hy
+  have hyx :
+      f y + inner ℝ (grad y) (x - y) +
+        (alpha / 2) * ‖d‖ ^ (2 : ℕ) ≤ f x := by
+    simpa [d, norm_sub_rev] using h.lower_model hy hx
+  have hsum :
+      inner ℝ (grad x) d + inner ℝ (grad y) (x - y) +
+        alpha * ‖d‖ ^ (2 : ℕ) ≤ 0 := by
+    nlinarith
+  have hinner :
+      inner ℝ (grad x) d + inner ℝ (grad y) (x - y) =
+        -inner ℝ (grad y - grad x) d := by
+    have hsub : x - y = -d := by
+      simp [d]
+    rw [hsub, inner_neg_right, inner_sub_left]
+    ring
+  have hmono :
+      alpha * ‖d‖ ^ (2 : ℕ) ≤ inner ℝ (grad y - grad x) d := by
+    rw [hinner] at hsum
+    nlinarith
+  simpa [d] using hmono
+
+theorem StronglyMonotoneGradientOn.inner_lower {C : Set E}
+    {grad : E -> E} {alpha : ℝ}
+    (h : StronglyMonotoneGradientOn C grad alpha)
+    {x y : E} (hx : x ∈ C) (hy : y ∈ C) :
+    alpha * ‖y - x‖ ^ (2 : ℕ) ≤ inner ℝ (grad y - grad x) (y - x) :=
+  h hx hy
+
+theorem GradientStepCocoerciveOn.inner_lower {C : Set E}
+    {grad : E -> E} {hstep : ℝ}
+    (h : GradientStepCocoerciveOn C grad hstep)
+    {x y : E} (hx : x ∈ C) (hy : y ∈ C) :
+    hstep * ‖grad y - grad x‖ ^ (2 : ℕ) ≤
+      inner ℝ (y - x) (grad y - grad x) :=
+  h hx hy
 
 theorem SmoothWithGradientOn.convex_set {C : Set E} {f : E -> ℝ}
     {grad : E -> E} {beta : ℝ}
