@@ -1,6 +1,6 @@
 # VdV&W Current Blocker Primitive Plan
 
-Status date: 2026-05-02.
+Status date: 2026-05-03.
 
 This file pins down the active blocker and the primitive Lean declarations
 needed to close it.  It is not a theorem report.  A formal report is created
@@ -212,6 +212,11 @@ Search record for the Chapter 1 product/FDD foundation lane:
   `vdVW148_processLaw_ext_of_forall_finiteDimensional_eq` and
   `vdVW148_identDistrib_of_forall_finiteDimensional_identDistrib` as
   uniqueness-only FDD wrappers over the local ProbabilityMeasure foundation;
+  the Billingsley/ProbabilityMeasure support lane also provides
+  `probability_prod_independent_self_copies`,
+  `probability_prod_independent_mapped_copies_with_joint_law`, and
+  `integral_indicator_tail_lt_tendsto_zero_of_integrable` for the current
+  product-copy symmetrization and envelope-tail convergence route;
 - no exact theorem was found for VdV&W 1.4.2 product-measure uniqueness from
   nonnegative Lipschitz product tests, 1.4.5 arbitrary-net product weak
   convergence, or the converse direction of 1.4.8 weak convergence iff all
@@ -563,8 +568,12 @@ additional example closures:
    `VdVWOuterProbability_envelope_tail_gt_le_outerExpectation_div`, and the
    measurable-envelope case reduces to an ordinary tail-set lintegral via
    `VdVWOuterExpectation_envelope_tail_eq_lintegral_tail_of_measurable`.
-   The full Theorem 2.4.3 symmetrization/truncation argument and convergence
-   of these envelope-tail terms as `M -> ∞` remain pending.
+   The reusable Billingsley/ProbabilityMeasure tail wrapper
+   `integral_indicator_tail_lt_tendsto_zero_of_integrable` now proves the
+   ordinary real upper-tail cutoff convergence by dominated convergence.  The
+   full Theorem 2.4.3 symmetrization/truncation argument and the
+   VdV&W-specific conversion from this ordinary tail cutoff into the required
+   outer-expectation/lintegral envelope-tail convergence remain pending.
 6. Final convergence handoff: from the random entropy condition to convergence
    in outer mean, then use the stated martingale/Lemma 2.4.5 route for almost
    sure convergence.  Do not report Theorem 2.4.3 until these components are
@@ -591,13 +600,16 @@ Search record for the scale-comparison handoff:
 Next exact edit: continue the theorem-specific symmetrization/truncation layer
 for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
 truncated pair-difference measurability/integrability, real-valued
-envelope-tail outer-expectation/probability handoffs, and `P.prod P`
-coordinate law/independence/identical-distribution wrappers are closed.  Next
-begin the product/Fubini-compatible symmetrization interface targeted to the
-`Phi(x)=x` case, reusing `StatInference/ProbabilityMeasure/ProductMeasure.lean`,
-the reusable `StatInference/ProbabilityMeasure/Rademacher.lean` signs where
-possible, the existing Theorem243 Rademacher construction as needed, and the
-finite empirical-cover Hoeffding expected-maximal wrapper.
+envelope-tail outer-expectation/probability handoffs, generic ordinary tail
+cutoff convergence, `P.prod P` coordinate law/independence/identical-
+distribution wrappers, and proof-carrying product-coordinate/map independence
+wrappers are closed.  Next build the product/Fubini-compatible symmetrization
+interface targeted to the `Phi(x)=x` case, reusing
+`StatInference/ProbabilityMeasure/ProductMeasure.lean`,
+`probability_prod_independent_mapped_copies_with_joint_law`, the reusable
+`StatInference/ProbabilityMeasure/Rademacher.lean` signs where possible, the
+existing Theorem243 Rademacher construction as needed, and the finite
+empirical-cover Hoeffding expected-maximal wrapper.
 
 ## Parked Example-Specific Blocker
 
@@ -620,7 +632,7 @@ Pinned/local Lean sources searched before adding new primitives:
 | Source | Local path | Useful APIs found |
 | --- | --- | --- |
 | pinned mathlib | `.lake/packages/mathlib/Mathlib` | `Metric.externalCoveringNumber`, `Metric.coveringNumber`, `Metric.IsCover`, `externalCoveringNumber_mono_set`, `Set.indicator`, `Measurable.indicator`, `measurableSet_le`, `Asymptotics.IsLittleO`, `MeasureTheory.TendstoInMeasure`, `Real.log`, `Real.log_nonneg`, `Real.log_natCast_nonneg`, `Real.sqrt`, `Real.sqrt_nonneg`, `ENat.toNat`, `ENat.map`, `WithTop.untopD`, `PMF.bernoulli`, `ProbabilityTheory.exists_hasLaw_indepFun`, `Kernel.HasSubgaussianMGF`, `HasSubgaussianMGF`, `HasSubgaussianMGF.neg`, `HasSubgaussianMGF.measure_ge_le`, `hasSubgaussianMGF_of_mem_Icc`, `hasSubgaussianMGF_of_mem_Icc_of_integral_eq_zero`, `measure_sum_range_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_iIndepFun`, `measure_sum_ge_le_of_hasCondSubgaussianMGF`, `MeasureTheory.measureReal_union_le`, `MeasureTheory.measureReal_iUnion_fintype_le`, `exists_eq_ciSup_of_finite`, `eLpNorm`, `eLpNorm_one_eq_lintegral_enorm`, `eLpNorm_add_le`, `eLpNorm_sum_le`, plus previous Example 2.4.2 APIs: `ProbabilityTheory.cdf`, `ProbabilityTheory.measure_cdf`, `ProbabilityTheory.cdf_eq_real`, `ProbabilityTheory.tendsto_cdf_atBot`, `ProbabilityTheory.tendsto_cdf_atTop`, `StieltjesFunction.measure_Ioo`, `measure_Iio`, `measure_Ioi`, `tendsto_measure_Iic_atTop`, `tendsto_measure_Ici_atBot`, `Measure.real`, `measureReal_mono`, `Fin.cases`, `Fin.lastCases`, `Fin.snoc`, `Fin.cons`, `Fin.eq_castSucc_or_eq_last` |
-| local ProbabilityMeasure lane | `StatInference/ProbabilityMeasure` | Billingsley/probability-measure wrappers now available for generated sigma fields and pi-system uniqueness (`GeneratedSigma`, `generatedSigma_measurableSet_of_mem`, `generatedSigma_le`, `measurable_generatedSigma`, `measure_ext_of_generate_finite`, `probabilityMeasure_ext_of_generate_finite_toMeasure`, `probabilityMeasure_ext_of_generate_finite`, `isPiSystem_pi`, `pi_generatedSigma_eq`), weak convergence/Portmanteau including continuity-set, closed-set converse, and pi-system convergence wrappers, product/Fubini, FDDs, Borel-Cantelli, tails, strong laws, and reusable iid Rademacher signs. These are reusable for Chapter 1 generated-sigma/FDD/product-law foundations and later symmetrization support, but they do not close VdV&W arbitrary-map/asymptotic-measurability or the current Theorem 2.4.3 symmetrization/truncation, outer envelope-tail, entropy-to-convergence, and final assembly blockers. |
+| local ProbabilityMeasure lane | `StatInference/ProbabilityMeasure` | Billingsley/probability-measure wrappers now available for generated sigma fields and pi-system uniqueness (`GeneratedSigma`, `generatedSigma_measurableSet_of_mem`, `generatedSigma_le`, `measurable_generatedSigma`, `measure_ext_of_generate_finite`, `probabilityMeasure_ext_of_generate_finite_toMeasure`, `probabilityMeasure_ext_of_generate_finite`, `isPiSystem_pi`, `pi_generatedSigma_eq`), weak convergence/Portmanteau including continuity-set, closed-set converse, and pi-system convergence wrappers, product/Fubini including self-copy and mapped-coordinate joint-law independence, FDDs, Borel-Cantelli, tails including ordinary dominated-convergence tail cutoff, strong laws, and reusable iid Rademacher signs. These are reusable for Chapter 1 generated-sigma/FDD/product-law foundations and later symmetrization support, but they do not close VdV&W arbitrary-map/asymptotic-measurability or the current Theorem 2.4.3 symmetrization/truncation, VdV&W-specific outer envelope-tail handoff, entropy-to-convergence, and final assembly blockers. |
 | pinned packages | `.lake/packages/{aesop,batteries,proofwidgets,LeanSearchClient,Qq,Cli,plausible,importGraph}` | tactic/support libraries, no empirical-CDF bracketing theorem and no VdV&W-style Orlicz maximal theorem found |
 | local AI-Statistician checkout | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician` | older/high-level Rademacher and empirical-process certificate interfaces only; no exact VdV&W half-line quantile grid theorem and no reusable Theorem 2.4.3 Orlicz/Hoeffding proof |
 | local empirical blueprint worktree | `/Users/yukang/Desktop/AI for Math/Codex/AI-Statistician/.worktrees/empirical-blueprint` | high-level empirical-process certificates; no reusable measure-theoretic quantile grid proof, iid Rademacher construction, or finite-center maximal proof |

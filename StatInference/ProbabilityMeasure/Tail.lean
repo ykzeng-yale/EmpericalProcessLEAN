@@ -1,5 +1,6 @@
 import Mathlib.MeasureTheory.Integral.Layercake
 import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
+import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 /-!
 # Tail and layer-cake wrappers
@@ -15,7 +16,7 @@ source-exact Billingsley theorem reports.
 namespace StatInference
 namespace ProbabilityMeasure
 
-open MeasureTheory
+open MeasureTheory Filter
 open scoped ENNReal
 
 universe u
@@ -155,6 +156,62 @@ theorem measure_tail_le_lintegral_div
   exact
     MeasureTheory.meas_ge_le_lintegral_div hX_measurable
       h_epsilon_ne_zero h_epsilon_ne_top
+
+/--
+Dominated-convergence tail cutoff: the ordinary integral of the upper-tail
+indicator of an integrable real random variable vanishes as the cutoff tends to
+infinity.
+
+This is the reusable Section 16 support lemma needed by empirical-process
+envelope truncation: once an envelope is integrable, its measurable upper-tail
+ordinary integral has no residual mass at infinity.
+-/
+theorem integral_indicator_tail_lt_tendsto_zero_of_integrable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} {X : Ω -> ℝ}
+    (hX_integrable : Integrable X μ) :
+    Tendsto
+      (fun M : ℝ => ∫ ω, Set.indicator {ω : Ω | M < X ω} X ω ∂μ)
+      atTop (nhds 0) := by
+  have hlim :
+      ∀ᵐ ω ∂μ,
+        Tendsto
+          (fun M : ℝ => Set.indicator {ω' : Ω | M < X ω'} X ω)
+          atTop (nhds (0 : ℝ)) := by
+    refine ae_of_all μ ?_
+    intro ω
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [eventually_ge_atTop (X ω)] with M hM
+    rw [Set.indicator_of_notMem]
+    exact not_lt.mpr hM
+  have hmeas :
+      ∀ᶠ M in (atTop : Filter ℝ),
+        AEStronglyMeasurable
+          (fun ω => Set.indicator {ω' : Ω | M < X ω'} X ω) μ := by
+    refine Eventually.of_forall ?_
+    intro M
+    exact hX_integrable.aestronglyMeasurable.indicator₀
+      (nullMeasurableSet_lt
+        (aemeasurable_const : AEMeasurable (fun _ : Ω => M) μ)
+        hX_integrable.aemeasurable)
+  have hbound :
+      ∀ᶠ M in (atTop : Filter ℝ),
+        ∀ᵐ ω ∂μ,
+          ‖Set.indicator {ω' : Ω | M < X ω'} X ω‖ ≤ ‖X ω‖ := by
+    refine Eventually.of_forall ?_
+    intro M
+    refine ae_of_all μ ?_
+    intro ω
+    by_cases hω : M < X ω
+    · change ‖(if ω ∈ {ω' : Ω | M < X ω'} then X ω else 0)‖ ≤ ‖X ω‖
+      simp [hω]
+    · change ‖(if ω ∈ {ω' : Ω | M < X ω'} then X ω else 0)‖ ≤ ‖X ω‖
+      simp [hω]
+  simpa using
+    (MeasureTheory.tendsto_integral_filter_of_dominated_convergence
+      (μ := μ) (G := ℝ) (bound := fun ω => ‖X ω‖)
+      (F := fun M ω => Set.indicator {ω' : Ω | M < X ω'} X ω)
+      (f := fun _ => (0 : ℝ))
+      hmeas hbound hX_integrable.norm hlim)
 
 end ProbabilityMeasure
 end StatInference
