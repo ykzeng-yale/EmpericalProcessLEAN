@@ -59,17 +59,18 @@ measurable-integrable envelope-tail convergence handoff is compiled locally in
 the empirical-process file.  The selected terminal minimal-cardinality
 measurability route is now closed for countable class-coordinate-measurable
 classes, including the `F_M` truncated class.  The active VdV&W blocker is now
-feeding those selected-cardinality wrappers with the theorem's finite-cover
-hypotheses, a deterministic normalized log-cardinality bound or genuine
-boundedness/UI replacement, and a shrinking cover-radius selection needed to
-turn the entropy-driven finite-net Hoeffding outer-probability convergence into
-the integrated Hoeffding-plus-radius mean convergence consumed by the fixed-`M`
-centered-truncated convergence handoff, then final assembly.  Nonmeasurable or
-arbitrary-cover envelope-tail variants remain out of scope unless the theorem
-assembly forces them.  Billingsley support should only add reusable
-probability/measure wrappers if those steps need tail, product/Fubini,
-independent-copy, uniform-integrability, dominated-convergence, or
-outer-expectation infrastructure.
+feeding those selected-cardinality wrappers with the theorem's diagonal
+selected log-cardinality convergence and a deterministic normalized
+log-cardinality bound or genuine boundedness/UI replacement.  The
+covering-domination, finite-witness, and inverse-radius shrinking-radius
+plumbing is already compiled; the remaining analytic work is turning the
+entropy hypotheses into the integrated Hoeffding-plus-radius mean convergence
+consumed by the fixed-`M` centered-truncated convergence handoff, then final
+assembly.  Nonmeasurable or arbitrary-cover envelope-tail variants remain out
+of scope unless the theorem assembly forces them.  Billingsley support should
+only add reusable probability/measure wrappers if those steps need tail,
+product/Fubini, independent-copy, uniform-integrability, dominated-convergence,
+or outer-expectation infrastructure.
 
 ## Search-First Record
 
@@ -553,6 +554,14 @@ cardinality is bounded by any dominating numeric empirical covering number via
 `finiteEmpiricalL1CoveringNumberCard_le_of_empiricalL1CoveringNumber_le` and
 the terminal sample-path wrapper
 `finiteEmpiricalL1CoveringNumberCard_terminal_le_of_covering_le_samplePath`.
+The resulting normalized selected log-cardinality bound is transported by
+`vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le`, with
+the selected empirical-cover version
+`vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath`.
+The all-radius and inverse-radius theorem-facing versions are
+`vdVWLogEmpiricalL1CoveringCardinality_selected_coverRadius_terminal_div_le_of_forAllRadius_samplePath`
+and
+`vdVWLogEmpiricalL1CoveringCardinality_selected_invRadius_terminal_div_le_of_forAllRadius_samplePath`.
 The selected-minimal process now also has the terminal equality helper
 `finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`,
 which packages the `hcardinality_eq` proof when the theorem chooses
@@ -573,14 +582,24 @@ are also compiled. The theorem-facing selected-cardinality consumer
 is compiled for arbitrary deterministic shrinking cover radii, and its
 inverse-radius specialization
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
-is compiled as well. The next proof target is no longer the finite-witness
-handoff for an all-radius entropy hypothesis; it is the selected terminal
-equality/log-ratio assembly for the arbitrary-radius or inverse-radius selected
-consumer, especially the deterministic normalized log-cardinality bound or a
-genuine variable-domain boundedness/UI replacement from the entropy hypotheses,
-not a fixed-sample pointwise comparison or product-a.e. finite-center Hoeffding
-predicate. Search has confirmed that pinned mathlib's `UniformIntegrable`,
-`UnifIntegrable`, Vitali, and dominated-convergence APIs are fixed-domain; a
-true replacement would need an explicit varying-domain tail-expectation/UI
-bridge. Do not add another product surface unless that assembly exposes a
-sharper missing API.
+is compiled as well, and
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
+packages inverse-radius selected finite covers, measurable terminal
+cardinality, and supplied diagonal selected log convergence, while
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_eq_selected_truncated`
+builds the same side-condition package for an externally named cardinality
+once its terminal value is identified with the selected truncated
+minimal-cardinality process. The packaged
+consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`
+then uses those side conditions plus a deterministic selected log-ratio bound
+to discharge fixed-`M` centered-truncated convergence. The next proof target is
+no longer the finite-witness handoff for an all-radius entropy hypothesis; it
+is feeding diagonal selected log-cardinality convergence plus the
+deterministic normalized log-cardinality bound or a genuine variable-domain
+boundedness/UI replacement from the entropy hypotheses, not a fixed-sample
+pointwise comparison or product-a.e. finite-center Hoeffding predicate. Search
+has confirmed that pinned mathlib's `UniformIntegrable`, `UnifIntegrable`,
+Vitali, and dominated-convergence APIs are fixed-domain; a true replacement
+would need an explicit varying-domain tail-expectation/UI bridge. Do not add
+another product surface unless that assembly exposes a sharper missing API.

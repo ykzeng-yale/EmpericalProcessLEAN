@@ -991,6 +991,15 @@ Search record for the symmetrization precursor package:
   `finiteEmpiricalL1CoveringNumberCard_le_of_empiricalL1CoveringNumber_le`
   and
   `finiteEmpiricalL1CoveringNumberCard_terminal_le_of_covering_le_samplePath`.
+  The normalized selected log-cardinality bound can then be transferred from
+  the external bound by
+  `vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le` and
+  `vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath`.
+  The all-radius and inverse-radius selected-log transfer forms
+  `vdVWLogEmpiricalL1CoveringCardinality_selected_coverRadius_terminal_div_le_of_forAllRadius_samplePath`
+  and
+  `vdVWLogEmpiricalL1CoveringCardinality_selected_invRadius_terminal_div_le_of_forAllRadius_samplePath`
+  are compiled as well.
   The selected least finite-cardinality process also has
   `finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`,
   which supplies the terminal equality proof needed by the selected-cardinality
@@ -1029,24 +1038,29 @@ Search record for the symmetrization precursor package:
   `measurable_selected_randomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable_of_measurable`,
   and
   `measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_countable`
-  are compiled as well.  The theorem route can now package a countable selected
-  class with finite empirical covers through
-  `VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_invRadiusFiniteCovers`.
-  The remaining non-plumbing inputs are the selected diagonal log convergence
-  and either the deterministic log-ratio bound input or a genuine bounded/UI
-  replacement.
-  Follow-up search found no ready variable-domain `UniformIntegrable`/Vitali
-  API; pinned mathlib's `MeasureTheory.UnifIntegrable`,
-  `UniformIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
-  `tendstoInMeasure_iff_tendsto_Lp_finite`, `tendsto_integral_of_L1`, and
-  dominated-convergence APIs are fixed-domain.  Local
-  `ProbabilityMeasure/Tail.lean` supplies reusable layer-cake/tail bounds but
-  no variable-domain Vitali theorem.  The practical alternatives are keeping
-  deterministic boundedness/log-ratio control or adding a new explicit
-  variable-domain tail-expectation/UI primitive.  The best Billingsley source
-  fallback for that latter route is Theorem 25.12/UI, but no report should be
-  created unless an exact theorem is proved and the source screenshots/report
-  PDF are compiled.
+  are compiled as well.  The theorem route still needs diagonal selected
+  log-cardinality convergence, plus either the deterministic selected
+  log-ratio bound input or a genuine bounded/UI replacement.  The
+  cover-radius selector, all-radius covering projection, finite-witness
+  handoff, selected log-bound transfer, and
+  `VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_invRadiusFiniteCovers`
+  selected inverse-radius package are now compiled.  The
+  `VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
+  side-condition packaging are now compiled.  The external-cardinality
+  equality-transport constructor
+  `VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_eq_selected_truncated`
+  is compiled as well.  The fixed-`M` handoff from that package and a
+  deterministic selected log-ratio bound is compiled as
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`.
+  Follow-up search found no ready
+  variable-domain `UniformIntegrable`/Vitali API; pinned mathlib's
+  `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
+  `tendstoInMeasure_iff_tendsto_Lp_finite`, and dominated-convergence APIs are
+   fixed-domain.  The practical alternatives are keeping deterministic
+   boundedness/log-ratio control or adding a new explicit variable-domain
+   tail-expectation/UI primitive.  The best Billingsley source fallback for that
+   latter route is Theorem 25.12/UI, but no report should be created unless an
+   exact theorem is proved and the source screenshots/report PDF are compiled.
   A radius-monotonicity search found mathlib
   `Metric.externalCoveringNumber_anti`, `Metric.coveringNumber_anti`, and local
   `vdVWCoveringNumber_anti`, but this direction does not derive an upper bound

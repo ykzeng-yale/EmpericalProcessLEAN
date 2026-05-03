@@ -254,10 +254,33 @@ with finite-witness forms
 and selected-cardinality domination helpers
 `finiteEmpiricalL1CoveringNumberCard_le_of_empiricalL1CoveringNumber_le` and
 `finiteEmpiricalL1CoveringNumberCard_terminal_le_of_covering_le_samplePath`,
+with selected log-bound transfer helpers
+`vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le` and
+`vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath`,
+all-radius/inverse-radius selected log-bound transfers
+`vdVWLogEmpiricalL1CoveringCardinality_selected_coverRadius_terminal_div_le_of_forAllRadius_samplePath`
+and
+`vdVWLogEmpiricalL1CoveringCardinality_selected_invRadius_terminal_div_le_of_forAllRadius_samplePath`,
 while
 `finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`
 packages the terminal selected equality for the least finite-cover cardinality
-process.
+process, and
+`VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_invRadiusFiniteCovers`
+packages the theorem-facing selected inverse-radius side conditions from finite
+empirical covers once diagonal selected log convergence and deterministic
+log-ratio control are supplied.
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
+packages inverse-radius selected side conditions once diagonal selected log
+convergence is supplied, and
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_eq_selected_truncated`
+does the same for externally named cardinalities after terminal equality with
+the selected truncated minimal process is supplied, while
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`
+consumes that package plus a deterministic selected log-ratio bound. The
+remaining blocker is feeding diagonal selected
+log-cardinality convergence and a deterministic selected log-ratio bound or
+genuine varying-domain tail/UI replacement from the all-radius entropy route
+into that package, then final assembly.
 The product-integrated symmetrization route now also has the composed
 random-cover finite-net integral bridge
 `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.

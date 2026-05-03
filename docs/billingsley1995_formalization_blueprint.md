@@ -444,6 +444,14 @@ For external finite cardinality processes, selected-cardinality domination is
 available as `finiteEmpiricalL1CoveringNumberCard_le_of_empiricalL1CoveringNumber_le`
 and terminal form
 `finiteEmpiricalL1CoveringNumberCard_terminal_le_of_covering_le_samplePath`.
+The associated selected log-ratio bound transfers through
+`vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le` and
+`vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath`.
+The all-radius/inverse-radius forms
+`vdVWLogEmpiricalL1CoveringCardinality_selected_coverRadius_terminal_div_le_of_forAllRadius_samplePath`
+and
+`vdVWLogEmpiricalL1CoveringCardinality_selected_invRadius_terminal_div_le_of_forAllRadius_samplePath`
+specialize that transfer to theorem entropy envelopes.
 The selected-minimal route now also has
 `finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`
 for the terminal equality required when the theorem chooses the least finite
@@ -452,11 +460,20 @@ The theorem-facing selected-cardinality consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated`
 is available for arbitrary deterministic shrinking cover radii, while
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
-specializes that consumer to `1 / ((n : ℝ) + 1)`. Next feed the theorem
-entropy hypotheses into one of those consumers past the now-closed
-covering-domination/finite-witness handoff, then supply the remaining selected
-terminal equality, normalized log-cardinality convergence, and deterministic
-normalized log-cardinality bound or a genuine varying-domain tail/UI
+specializes that consumer to `1 / ((n : ℝ) + 1)`.
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
+packages inverse-radius selected finite covers and measurability once diagonal
+selected log convergence is supplied, and
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_eq_selected_truncated`
+does the same for an externally named cardinality after terminal equality with
+the selected truncated minimal process is supplied. The packaged fixed-`M`
+consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound`
+then uses those side conditions with the deterministic selected log-ratio
+bound. Next feed the theorem entropy hypotheses into this package past the
+now-closed covering-domination/finite-witness handoff, then supply diagonal
+selected log-cardinality convergence and
+deterministic normalized log-cardinality bound or a genuine varying-domain tail/UI
 replacement to turn the entropy hypotheses into the required real integrated
 upper. Search confirms pinned mathlib's UI/Vitali/DCT tools are fixed-domain,
 so the deterministic bound is still the practical path unless a new
