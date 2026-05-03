@@ -72,6 +72,10 @@ Pinned mathlib searches found reusable APIs in:
 - `Probability.BorelCantelli`
 - `Probability.Independence.Basic`
 - `Probability.Independence.Integration`
+- `Probability.HasLawExists`
+- `Probability.IdentDistrib`
+- `Probability.Moments.SubGaussian`
+- `Probability.ProbabilityMassFunction.Integrals`
 
 Local searches found reusable APIs in:
 
@@ -89,10 +93,14 @@ Local searches found reusable APIs in:
 - `StatInference/ProbabilityMeasure/GeneratedSigma.lean`
 - `StatInference/ProbabilityMeasure/StrongLaw.lean`
 - `StatInference/ProbabilityMeasure/Tail.lean`
+- `StatInference/ProbabilityMeasure/Rademacher.lean`
 
 ## Primitive Sequence
 
-1. Keep the Section 25 Billingsley weak-convergence wrappers compiling.
+1. Keep the Section 25 Billingsley weak-convergence wrappers compiling,
+   including the bounded-continuous criterion, open/closed Portmanteau
+   directions, continuity-set convergence, closed-set converse, and pi-system
+   convergence criterion.
 2. Keep the finite-dimensional process-law, product/Fubini, and
    Borel-Cantelli/generated-sigma/strong-law wrappers compiling.
 3. Add a precise Section 25 theorem candidate to the inventory:
@@ -102,7 +110,8 @@ Local searches found reusable APIs in:
    the exact theorem declaration first, then the report.
 5. In parallel, push Section 16/18 support for VdV&W Theorem 2.4.3:
    envelope-tail, truncation-error, layer-cake/tail-integral,
-   finite-product/Fubini, and independent-copy wrappers. The content-based
+   finite-product/Fubini, iid Rademacher signs, and independent-copy wrappers.
+   The content-based
    Section 16 wrapper layer has started in
    `StatInference/ProbabilityMeasure/Tail.lean`; it packages mathlib
    layer-cake, tail-integral monotonicity, split-at-radius, and Markov APIs for
@@ -117,7 +126,11 @@ Local searches found reusable APIs in:
    product-coordinate marginal projection and separated product-expectation
    identities for binary product probability spaces.  The remaining work is to
    specialize these wrappers to the exact finite-product/independent-copy shapes
-   used by symmetrization.
+   used by symmetrization.  The reusable Rademacher-sign layer has started in
+   `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
+   Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
+   one-dimensional law, deterministic sign vectors, and finite iid sign
+   existence.
 6. Defer examples requiring unrelated number theory, Markov chains, martingales,
    Brownian path theory, or Fourier analysis unless a concrete theorem needs
    them.
@@ -127,8 +140,14 @@ Local searches found reusable APIs in:
 After the weak-convergence naming layer, the next high-value proof step is one
 of:
 
+- integrate the generic
+  `StatInference/ProbabilityMeasure/Rademacher.lean` iid/sign-vector layer into
+  the VdV&W Theorem 2.4.3 symmetrization route, replacing theorem-local
+  duplication only when the refactor is small and Lean verifies; or
 - a Billingsley Section 25 exact theorem candidate wrapping an already proved
-  mathlib/local weak-convergence implication; or
+  mathlib/local weak-convergence implication, with Theorem 25.8
+  bounded-continuous and continuity-set directions as the current best
+  source-audited candidate; or
 - the empirical-distribution support wrapper in
   `StatInference/EmpiricalProcess/RealHalfLineGC.lean`, now available as a
   local support layer: `realHalfLineIndicator_integral_eq_cdf` identifies the

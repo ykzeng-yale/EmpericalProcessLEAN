@@ -365,9 +365,11 @@ larger than the direct bracketing GC proof.
 
 ## Report Rule For Promoted Theorems
 
-Every newly completed theorem, lemma, structure, or definition derived from
-VdV&W must add or update a report under `Reports/`.  Each report must include a
-side-by-side table:
+Every newly completed exact textbook theorem or lemma derived from VdV&W must
+add or update a report under `Reports/`.  Intermediate definitions, structures,
+and local support lemmas should update this inventory, the blueprint, or the
+dashboard instead, unless they are promoted as part of an exact source-matched
+theorem/lemma report. Each report must include a side-by-side table:
 
 | Column | Required content |
 | --- | --- |

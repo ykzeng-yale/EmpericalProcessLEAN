@@ -2,6 +2,7 @@ import StatInference.ProbabilityMeasure.BorelCantelli
 import StatInference.ProbabilityMeasure.FiniteDimensional
 import StatInference.ProbabilityMeasure.GeneratedSigma
 import StatInference.ProbabilityMeasure.ProductMeasure
+import StatInference.ProbabilityMeasure.Rademacher
 import StatInference.ProbabilityMeasure.StrongLaw
 import StatInference.ProbabilityMeasure.Tail
 import StatInference.ProbabilityMeasure.WeakConvergence

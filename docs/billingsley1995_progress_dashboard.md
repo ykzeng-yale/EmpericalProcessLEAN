@@ -16,8 +16,9 @@ mathlib searches and local primitives whenever possible.
   `StatInference/ProbabilityMeasure/ProductMeasure.lean`,
   `StatInference/ProbabilityMeasure/GeneratedSigma.lean`, and
   `StatInference/ProbabilityMeasure/BorelCantelli.lean`,
-  `StatInference/ProbabilityMeasure/StrongLaw.lean`, and
-  `StatInference/ProbabilityMeasure/Tail.lean`, re-exported by
+  `StatInference/ProbabilityMeasure/StrongLaw.lean`,
+  `StatInference/ProbabilityMeasure/Tail.lean`, and
+  `StatInference/ProbabilityMeasure/Rademacher.lean`, re-exported by
   `StatInference/ProbabilityMeasure/Basic.lean`.
 - Formal theorem reports: none yet.
 - Proof-hole policy: no Billingsley report until the exact textbook statement
@@ -30,10 +31,10 @@ mathlib searches and local primitives whenever possible.
 
 | Lane | Status | Current Lean anchor | Notes |
 | --- | --- | --- | --- |
-| Section 25 weak convergence and tightness | local-wrapper | `StatInference/ProbabilityMeasure/WeakConvergence.lean` | Reuses mathlib and local VdV&W wrappers for probability-measure weak convergence, tightness, Portmanteau, Levy-Prokhorov, continuous mapping, products, FDD restriction, and Slutsky. |
+| Section 25 weak convergence and tightness | local-wrapper | `StatInference/ProbabilityMeasure/WeakConvergence.lean` | Reuses mathlib and local VdV&W wrappers for probability-measure weak convergence, tightness, Portmanteau, continuity-set convergence, closed-set converse, pi-system convergence, Levy-Prokhorov, continuous mapping, products, FDD restriction, and Slutsky. |
 | Sections 15-16 integration/tails/UI | local-wrapper | `StatInference/ProbabilityMeasure/Tail.lean`; `StatInference/EmpiricalProcess/OuterExpectation.lean`; `StatInference/EmpiricalProcess/Theorem243.lean` | Mathlib-backed layer-cake, tail-integral monotonicity, split-at-radius, and Markov wrappers are available for VdV&W Theorem 2.4.3 envelope-tail and truncation handoffs. These are content-based support wrappers, not exact Billingsley Sections 15-16 theorem reports. |
 | Section 18 product/Fubini | local-wrapper | `StatInference/ProbabilityMeasure/ProductMeasure.lean` | Product probability measures, Tonelli/Fubini, finite independent-product expectation wrappers, product-coordinate marginal projection, and separated product-expectation wrappers are available. These are content-based local wrappers over mathlib/local APIs for empirical-process independent-copy work, not exact Billingsley Section 18 theorem reports. |
-| Sections 4/6/20/22 independence, Borel-Cantelli, strong laws, empirical distribution | local-wrapper/mathlib-foundation | `StatInference/ProbabilityMeasure/BorelCantelli.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Mathlib-backed first/second Borel-Cantelli and strong-law wrappers are available for tail-event and endpoint empirical-average arguments. `RealHalfLineGC.lean` also contains local pointwise empirical-CDF support wrappers for fixed half-line endpoints, including fixed-endpoint convergence-in-probability/`TendstoInMeasure` and outer-probability handoffs. These are content-based support wrappers, not exact Billingsley theorem reports; Theorem 6.1 and the uniform empirical distribution function statement of Theorem 20.6 remain pending until source-matched statements are selected, proved, and reported. |
+| Sections 4/6/20/22 independence, Borel-Cantelli, strong laws, empirical distribution | local-wrapper/mathlib-foundation | `StatInference/ProbabilityMeasure/BorelCantelli.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/ProbabilityMeasure/Rademacher.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Mathlib-backed first/second Borel-Cantelli, strong-law, and finite iid Rademacher-sign wrappers are available for tail-event, endpoint empirical-average, and symmetrization arguments. `RealHalfLineGC.lean` also contains local pointwise empirical-CDF support wrappers for fixed half-line endpoints, including fixed-endpoint convergence-in-probability/`TendstoInMeasure` and outer-probability handoffs. These are content-based support wrappers, not exact Billingsley theorem reports; Theorem 6.1 and the uniform empirical distribution function statement of Theorem 20.6 remain pending until source-matched statements are selected, proved, and reported. |
 | Sections 3/10-14 sigma-fields and measurable maps | local-layer/mathlib-foundation | `StatInference/ProbabilityMeasure/GeneratedSigma.lean`; `BallSigma.lean`, `RealHalfLine.lean` nearby | GeneratedSigma wrappers now pin Billingsley generated-sigma-field anchors over mathlib's generated measurable-space API; pi-lambda, uniqueness/extension, measurable-map, and pushforward machinery remain mathlib-backed support wrappers, with no exact Billingsley theorem report yet. |
 | Sections 36-38 process laws/cylinders/separability | local-wrapper | `StatInference/ProbabilityMeasure/FiniteDimensional.lean` | Started finite-dimensional law wrappers over mathlib; defer broad path-space theory until needed. |
 | Examples/applications | deferred-example | none | Defer domain-heavy applications unless a nearby theorem route requires them. |
@@ -57,6 +58,10 @@ High-value mathlib files already searched:
 - `.lake/packages/mathlib/Mathlib/Probability/StrongLaw.lean`
 - `.lake/packages/mathlib/Mathlib/Probability/BorelCantelli.lean`
 - `.lake/packages/mathlib/Mathlib/Probability/Independence/Basic.lean`
+- `.lake/packages/mathlib/Mathlib/Probability/HasLawExists.lean`
+- `.lake/packages/mathlib/Mathlib/Probability/IdentDistrib.lean`
+- `.lake/packages/mathlib/Mathlib/Probability/Moments/SubGaussian.lean`
+- `.lake/packages/mathlib/Mathlib/Probability/ProbabilityMassFunction/Integrals.lean`
 - `.lake/packages/mathlib/Mathlib/Probability/Process/FiniteDimensionalLaws.lean`
 
 High-value local files:
@@ -82,16 +87,21 @@ Concrete next edits:
 1. Keep the probability-measure integration-tail wrapper module
    `StatInference/ProbabilityMeasure/Tail.lean` compiling, and add only
    VdV&W-specific handoffs directly to the empirical-process files.
-2. Check the current VdV&W Theorem 2.4.3 blocker before adding Billingsley
+2. Keep the new `StatInference/ProbabilityMeasure/Rademacher.lean` and
+   Section 25 Portmanteau wrappers compiling under
+   `StatInference/ProbabilityMeasure/Basic.lean`; use them as the reusable
+   surface for iid signs, continuity-set convergence, closed-set converse, and
+   pi-system convergence.
+3. Check the current VdV&W Theorem 2.4.3 blocker before adding Billingsley
    support.  The log-radius-to-Hoeffding scale comparison is now proved; the
    latest empirical-process frontier is symmetrization/truncation, outer
    envelope-tail control, entropy-to-convergence, and final assembly.  Do not
    add new Billingsley tail/Fubini wrappers unless one of those steps needs
    reusable probability/measure support.
-3. If no empirical-process dependency is blocked on Billingsley support, pick
-   one Section 25 theorem candidate already close to mathlib/local APIs and
-   formalize the exact wrapper statement before creating any report.
-4. Add a source-crosswalk note in this dashboard before any exact theorem
+4. If no empirical-process dependency is blocked on Billingsley support, pick
+   Billingsley Theorem 25.8 bounded-continuous/continuity-set slice as the next
+   exact source-audited wrapper candidate.
+5. Add a source-crosswalk note in this dashboard before any exact theorem
    report is created.
 
 ## Report Gate

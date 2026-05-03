@@ -88,6 +88,7 @@ Initial Lean module:
 - `StatInference/ProbabilityMeasure/ProductMeasure.lean`
 - `StatInference/ProbabilityMeasure/StrongLaw.lean`
 - `StatInference/ProbabilityMeasure/Tail.lean`
+- `StatInference/ProbabilityMeasure/Rademacher.lean`
 
 Reuse audit:
 
@@ -104,7 +105,8 @@ Current compiled wrappers:
 - `StatInference.ProbabilityMeasure.WeakConvergenceProbabilityMeasures`
 - `StatInference.ProbabilityMeasure.ProbabilityMeasuresTight`
 - bounded-continuous and bounded-Lipschitz integral criteria
-- open/closed-set Portmanteau implications
+- open/closed-set Portmanteau implications, continuity-set convergence,
+  closed-set converse, and pi-system convergence criterion
 - Levy-Prokhorov criteria
 - continuous mapping, product, finite product, and finite-dimensional
   restriction wrappers
@@ -125,6 +127,9 @@ Current compiled wrappers:
 - layer-cake, tail-integral monotonicity, split-at-radius probability tail,
   and extended-nonnegative Markov wrappers in
   `StatInference/ProbabilityMeasure/Tail.lean`
+- fair Bool and real Rademacher laws, zero mean, sub-Gaussian support,
+  deterministic sign-vector support, and finite iid real-valued Rademacher
+  signs in `StatInference/ProbabilityMeasure/Rademacher.lean`
 - fixed-endpoint empirical-distribution/CDF support wrappers in
   `StatInference/EmpiricalProcess/RealHalfLineGC.lean`, including the
   fixed-endpoint almost-sure, convergence-in-probability/`TendstoInMeasure`,
@@ -204,6 +209,10 @@ Near-term declarations:
   are fixed-endpoint corollaries of the pointwise support layer, not a
   Theorem 20.6 report.
 - Rademacher PMF/has-law/iid construction primitives for Theorem 2.4.3.
+  Reusable Billingsley/probability-measure versions now live in
+  `StatInference/ProbabilityMeasure/Rademacher.lean`; future VdV&W work should
+  import or bridge to this module when doing so does not create unnecessary
+  churn.
 - Borel-Cantelli wrappers only when needed for an exact theorem route.
 
 Search anchors:
@@ -213,6 +222,10 @@ Search anchors:
 - `Mathlib.MeasureTheory.OuterMeasure.BorelCantelli`
 - `Mathlib.Probability.Independence.Basic`
 - `Mathlib.Probability.Independence.Integration`
+- `Mathlib.Probability.HasLawExists`
+- `Mathlib.Probability.IdentDistrib`
+- `Mathlib.Probability.Moments.SubGaussian`
+- `Mathlib.Probability.ProbabilityMassFunction.Integrals`
 - local `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`
 
 ### Lane E: Measurable maps, generated sigma-fields, and pi-lambda tools

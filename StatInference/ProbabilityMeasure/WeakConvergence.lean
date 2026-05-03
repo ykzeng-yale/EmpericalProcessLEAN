@@ -92,6 +92,65 @@ theorem WeakConvergenceProbabilityMeasures.le_liminf_measure_open
   exact StatInference.VdVWWeakConvergenceProbabilityMeasures.le_liminf_measure_open h hG
 
 /--
+Continuity-set Portmanteau implication for probability-measure weak
+convergence.
+
+This is the Billingsley Section 25.8 `(i) -> (iii)` shape for ordinary
+Borel probability measures: sets whose frontier has zero limiting mass have
+convergent probabilities.
+-/
+theorem WeakConvergenceProbabilityMeasures.tendsto_measure_of_null_frontier
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S] [HasOuterApproxClosed S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h : WeakConvergenceProbabilityMeasures μs l μ)
+    {E : Set S} (hE : (μ : Measure S) (frontier E) = 0) :
+    Tendsto (fun i => (μs i : Measure S) E) l
+      (𝓝 ((μ : Measure S) E)) := by
+  exact
+    MeasureTheory.ProbabilityMeasure.tendsto_measure_of_null_frontier_of_tendsto'
+      h hE
+
+/--
+Closed-set Portmanteau converse for probability-measure weak convergence.
+
+This is the reverse direction to
+`WeakConvergenceProbabilityMeasures.limsup_measure_closed_le`, under the
+countably generated filter hypothesis used by mathlib's Portmanteau API.
+-/
+theorem weakConvergence_of_forall_isClosed_limsup_measure_le
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι} [l.IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (h : ∀ F : Set S, IsClosed F ->
+      l.limsup (fun i => (μs i : Measure S) F) ≤ (μ : Measure S) F) :
+    WeakConvergenceProbabilityMeasures μs l μ := by
+  exact MeasureTheory.tendsto_of_forall_isClosed_limsup_le' h
+
+/--
+Pi-system convergence criterion for probability-measure weak convergence.
+
+This packages mathlib's convergence-determining-class criterion in the
+Billingsley/ProbabilityMeasure namespace.  It is useful for Section 25
+source crosswalks and for finite-dimensional/cylinder event arguments.
+-/
+theorem weakConvergence_of_piSystem_tendsto
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [SecondCountableTopology S] [OpensMeasurableSpace S]
+    {C : Set (Set S)} (hC : IsPiSystem C)
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι} [l.IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (hmeas : ∀ s ∈ C, MeasurableSet s)
+    (hlocal :
+      ∀ u : Set S, IsOpen u -> ∀ x ∈ u,
+        ∃ s ∈ C, s ∈ 𝓝 x ∧ s ⊆ u)
+    (h : ∀ s ∈ C, Tendsto (fun i => μs i s) l (𝓝 (μ s))) :
+    WeakConvergenceProbabilityMeasures μs l μ := by
+  exact hC.tendsto_probabilityMeasure_of_tendsto_of_mem hmeas hlocal h
+
+/--
 Tightness of probability measures, backed by mathlib's
 `IsTightMeasureSet` via the local empirical-process wrapper.
 -/
