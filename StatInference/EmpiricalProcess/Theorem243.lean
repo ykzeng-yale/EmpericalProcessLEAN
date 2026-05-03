@@ -6,6 +6,7 @@ import Mathlib.Probability.Moments.SubGaussian
 import Mathlib.Probability.ProbabilityMassFunction.Integrals
 import StatInference.EmpiricalProcess.CoveringPrimitive
 import StatInference.EmpiricalProcess.GlivenkoCantelli
+import StatInference.EmpiricalProcess.OuterProbabilityExpectation
 import StatInference.EmpiricalProcess.PMeasurable
 import StatInference.ProbabilityMeasure.Tail
 
@@ -174,6 +175,106 @@ theorem envelope_tail_indicator_nonneg
   · simpa [Set.indicator, htail] using henvelope.nonneg observation
   · simp [Set.indicator, htail]
 
+/--
+Real envelope tails embedded in `ℝ≥0∞` agree with the nonnegative
+tail-product form used by the Chapter 1.2 outer-expectation cover algebra.
+-/
+theorem envelope_tail_ofReal_eq_tailProduct
+    {Observation : Type u} [MeasurableSpace Observation]
+    {envelope : Observation -> ℝ} {M : ℝ} (hM : 0 ≤ M) :
+    (fun x =>
+      ENNReal.ofReal (Set.indicator {y | M < envelope y} envelope x)) =
+      fun x =>
+        ENNReal.ofReal (envelope x) *
+          VdVWEventIndicator
+            {y | ENNReal.ofReal M < ENNReal.ofReal (envelope y)} x := by
+  funext x
+  by_cases htail : M < envelope x
+  · have htailENN :
+        ENNReal.ofReal M < ENNReal.ofReal (envelope x) :=
+      (ENNReal.ofReal_lt_ofReal_iff_of_nonneg hM).mpr htail
+    simp [Set.indicator, htail, htailENN, VdVWEventIndicator]
+  · have htailENN :
+        ¬ ENNReal.ofReal M < ENNReal.ofReal (envelope x) := by
+      intro h
+      exact htail ((ENNReal.ofReal_lt_ofReal_iff_of_nonneg hM).mp h)
+    simp [Set.indicator, htail, htailENN, VdVWEventIndicator]
+
+/--
+Outer-expectation envelope-tail handoff through a supplied measurable cover of
+the envelope.
+
+This is the local `P^* F {F > M}` bridge used by the Theorem 2.4.3
+truncation argument.
+-/
+theorem VdVWOuterExpectation_envelope_tail_le_lintegral_tail_cover
+    {Observation : Type u} [MeasurableSpace Observation]
+    {μ : Measure Observation}
+    {envelope : Observation -> ℝ} {M : ℝ} (hM : 0 ≤ M)
+    (U : VdVWMeasurableCover μ (fun x => ENNReal.ofReal (envelope x))) :
+    VdVWOuterExpectation μ
+        (fun x =>
+          ENNReal.ofReal
+            (Set.indicator {y | M < envelope y} envelope x)) ≤
+      ∫⁻ x, U x *
+        (VdVWMeasurableCover.thresholdIndicatorCover U (ENNReal.ofReal M) :
+          Observation -> ℝ≥0∞) x ∂μ := by
+  rw [envelope_tail_ofReal_eq_tailProduct (envelope := envelope) hM]
+  exact VdVWOuterExpectation_tailProduct_le_lintegral_tail_cover
+    U (ENNReal.ofReal M)
+
+/--
+Outer-probability Markov handoff for the real-valued envelope-tail term.
+-/
+theorem VdVWOuterProbability_envelope_tail_gt_le_outerExpectation_div
+    {Observation : Type u} [MeasurableSpace Observation]
+    {μ : Measure Observation}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} (hepsilon : 0 < epsilon)
+    (U : VdVWMeasurableCover μ
+      (fun x =>
+        ENNReal.ofReal
+          (Set.indicator {y | M < envelope y} envelope x))) :
+    VdVWOuterProbability μ
+        {x | ENNReal.ofReal epsilon <
+          ENNReal.ofReal
+            (Set.indicator {y | M < envelope y} envelope x)} ≤
+      VdVWOuterExpectation μ
+        (fun x =>
+          ENNReal.ofReal
+            (Set.indicator {y | M < envelope y} envelope x)) /
+          ENNReal.ofReal epsilon := by
+  exact VdVWOuterProbability_lt_le_outerExpectation_div_cover U
+    (ENNReal.ofReal_ne_zero_iff.mpr hepsilon) ENNReal.ofReal_ne_top
+
+/--
+If the envelope is measurable, the outer expectation of the envelope-tail term
+is the ordinary Lebesgue integral over the tail set.
+-/
+theorem VdVWOuterExpectation_envelope_tail_eq_lintegral_tail_of_measurable
+    {Observation : Type u} [MeasurableSpace Observation]
+    {μ : Measure Observation}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henv_meas : Measurable envelope) :
+    VdVWOuterExpectation μ
+        (fun x =>
+          ENNReal.ofReal
+            (Set.indicator {y | M < envelope y} envelope x)) =
+      ∫⁻ x in {y | M < envelope y},
+        ENNReal.ofReal (envelope x) ∂μ := by
+  let tailSet : Set Observation := {y | M < envelope y}
+  have htailSet : MeasurableSet tailSet :=
+    measurableSet_lt measurable_const henv_meas
+  have hfun :
+      (fun x =>
+        ENNReal.ofReal (Set.indicator tailSet envelope x)) =
+        tailSet.indicator (fun x => ENNReal.ofReal (envelope x)) := by
+    funext x
+    by_cases hx : x ∈ tailSet <;> simp [Set.indicator, hx]
+  rw [hfun]
+  rw [VdVWOuterExpectation_eq_lintegral_of_measurable
+    ((henv_meas.ennreal_ofReal).indicator htailSet)]
+  rw [lintegral_indicator htailSet]
+
 /-- Measurability of the truncated class member follows from measurability of `f` and `F`. -/
 theorem measurable_vdVWTruncatedClassFun
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
@@ -234,6 +335,50 @@ theorem VdVWClassCoordinateMeasurable.truncate
       (vdVWTruncatedClassFun classFun envelope M) := by
   intro index hindex
   exact measurable_vdVWTruncatedClassFun (hclass index hindex) henvelope
+
+/--
+Countable coordinate-measurable classes remain `P`-measurable after the
+`F_M` truncation.
+
+This is the Definition 2.3.3 measurability gate needed before applying
+symmetrization to the truncated class in Theorem 2.4.3.
+-/
+theorem VdVWPMeasurableClass.truncate_of_countable_of_coordinate
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M : ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope : Measurable envelope) :
+    VdVWPMeasurableClass P indexClass
+      (vdVWTruncatedClassFun classFun envelope M) := by
+  exact
+    VdVWPMeasurableClass.of_countable_of_measurable hcount
+      (hclass.truncate henvelope)
+
+/--
+The product-copy pair difference for a fixed truncated class member is
+measurable.
+
+This is the local measurable-integrand bridge needed before applying Fubini in
+the Theorem 2.4.3 symmetrization route.
+-/
+theorem measurable_vdVWTruncatedClassFun_pairDifference
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope : Measurable envelope)
+    {index : Index} (hindex : index ∈ indexClass) :
+    Measurable fun z : Observation × Observation =>
+      vdVWTruncatedClassFun classFun envelope M index z.1 -
+        vdVWTruncatedClassFun classFun envelope M index z.2 := by
+  exact
+    ((measurable_vdVWTruncatedClassFun (hclass index hindex) henvelope).comp
+        measurable_fst).sub
+      ((measurable_vdVWTruncatedClassFun (hclass index hindex) henvelope).comp
+        measurable_snd)
 
 /-!
 ## Fixed-sample empirical net handoff

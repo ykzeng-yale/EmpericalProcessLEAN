@@ -282,14 +282,27 @@ additional example closures:
    abs_vdVWTruncatedClassFun_le_abs
    abs_vdVWTruncatedClassFun_le_envelope
    abs_vdVWTruncatedClassFun_le_M
+   envelope_tail_ofReal_eq_tailProduct
+   VdVWOuterExpectation_envelope_tail_le_lintegral_tail_cover
+   VdVWOuterProbability_envelope_tail_gt_le_outerExpectation_div
+   VdVWOuterExpectation_envelope_tail_eq_lintegral_tail_of_measurable
    measurable_vdVWTruncatedClassFun
    VdVWClassCoordinateMeasurable.truncate
+   VdVWPMeasurableClass.truncate_of_countable_of_coordinate
+   measurable_vdVWTruncatedClassFun_pairDifference
    VdVWTheorem243TruncatedEntropyCondition
    VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM
    ```
 
-   Remaining Step 1 work: add the outer-integrability/envelope-tail handoff
-   `P^* F{F > M}` when the proof reaches the symmetrization/truncation layer.
+   The latest local layer closes the countable coordinate-measurable
+   Definition 2.3.3 gate for the truncated class by combining
+   `VdVWClassCoordinateMeasurable.truncate` with
+   `VdVWPMeasurableClass.of_countable_of_measurable`, adds a measurable
+   product-copy pair-difference integrand for fixed truncated class members,
+   and closes the real-valued envelope-tail outer-expectation/probability
+   bridge through the existing Chapter 1.2 cover-majorant and Markov layers.
+   Remaining Step 1 work: plug these gates into the full
+   product/Fubini-compatible symmetrization inequality.
 2. Deterministic fixed-sample net inequality `(2.4.4)` for a finite empirical
    `L1(P_n)` net.
 
@@ -535,12 +548,15 @@ additional example closures:
 
    Status: the Chapter 1.2 nonnegative tail-product cover-majorant bridge is
    implemented as
-   `VdVWOuterExpectation_tailProduct_le_lintegral_tail_cover`.  This is a
-   reusable outer-expectation layer for envelope tails.  The companion
-   Markov-style outer-probability bridge
-   `VdVWOuterProbability_lt_le_outerExpectation_div_cover` is also compiled.
-   The full Theorem 2.4.3 symmetrization/truncation argument and real-valued
-   `P^* F{F > M}` convergence handoff remain pending.
+   `VdVWOuterExpectation_tailProduct_le_lintegral_tail_cover`.  This is now
+   specialized to the real-valued envelope tail by
+   `VdVWOuterExpectation_envelope_tail_le_lintegral_tail_cover`; the companion
+   Markov-style outer-probability bridge is specialized by
+   `VdVWOuterProbability_envelope_tail_gt_le_outerExpectation_div`, and the
+   measurable-envelope case reduces to an ordinary tail-set lintegral via
+   `VdVWOuterExpectation_envelope_tail_eq_lintegral_tail_of_measurable`.
+   The full Theorem 2.4.3 symmetrization/truncation argument and convergence
+   of these envelope-tail terms as `M -> ∞` remain pending.
 6. Final convergence handoff: from the random entropy condition to convergence
    in outer mean, then use the stated martingale/Lemma 2.4.5 route for almost
    sure convergence.  Do not report Theorem 2.4.3 until these components are
@@ -564,14 +580,16 @@ Search record for the scale-comparison handoff:
   `sq_le_sq₀`, `div_le_iff₀`, and `field_simp`/`nlinarith` for the final
   nonnegative square comparison.
 
-Next exact edit: start the theorem-specific symmetrization/truncation layer
-for Theorem 2.4.3.  First add a proof-carrying product/Fubini-compatible
-symmetrization interface targeted to the `Phi(x)=x` case, reusing
-`VdVWPMeasurableClass`, `VdVWClassCoordinateMeasurable.truncate`,
-`StatInference/ProbabilityMeasure/ProductMeasure.lean`, and the existing
-Rademacher law/construction.  In parallel, build the real-valued
-`P^* F{F > M}` envelope-tail handoff from the existing outer-expectation
-tail-product cover-majorant and Markov-style outer-probability bridge.
+Next exact edit: continue the theorem-specific symmetrization/truncation layer
+for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
+truncated pair-difference measurability, and real-valued envelope-tail
+outer-expectation/probability handoffs are closed.  Next add proof-carrying
+independent-copy/product-space wrappers for the `P.prod P` coordinates and use
+them to begin the product/Fubini-compatible symmetrization interface targeted
+to the `Phi(x)=x` case, reusing
+`StatInference/ProbabilityMeasure/ProductMeasure.lean`, the existing
+Rademacher law/construction, and the finite empirical-cover Hoeffding
+expected-maximal wrapper.
 
 ## Parked Example-Specific Blocker
 
