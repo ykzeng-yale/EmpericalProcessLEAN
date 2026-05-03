@@ -56,12 +56,14 @@ dependency-driven by the current VdV&W Theorem 2.4.3 route.  As of the latest
 merged empirical-process progress, the log-radius-to-Hoeffding scale comparison
 is proved, finite-`Pi` mapped-coordinate product laws are available, and the
 measurable-integrable envelope-tail convergence handoff is compiled locally in
-the empirical-process file.  The active VdV&W blockers are now the
-theorem-specific product/Fubini symmetrization assembly, entropy-to-convergence,
-and final assembly, with nonmeasurable/arbitrary-cover envelope-tail variants
-left only if the theorem assembly forces them.  Billingsley support should only
-add reusable probability/measure wrappers if those steps need tail,
-product/Fubini, independent-copy, or outer-expectation infrastructure.
+the empirical-process file.  The active VdV&W blocker is now the
+integrated Hoeffding-plus-radius mean convergence needed after the fixed-`M`
+centered-truncated convergence handoff, then final assembly.  Nonmeasurable or
+arbitrary-cover envelope-tail variants remain out of scope unless the theorem
+assembly forces them.  Billingsley support should only add reusable
+probability/measure wrappers if those steps need tail, product/Fubini,
+independent-copy, uniform-integrability, dominated-convergence, or
+outer-expectation infrastructure.
 
 ## Search-First Record
 
@@ -279,10 +281,14 @@ Local searches found reusable APIs in:
    `VdVWTheorem243TruncatedEntropyCondition.finiteNetHoeffdingUpper_convergesInOuterProbability_zero`,
    and
    `VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM.finiteNetHoeffdingUpper_convergesInOuterProbability_zero`.
-   The next target is fixed-`M` truncated convergence from the product
-   outer-expectation projection plus the new Markov convergence bridge, not
-   another fixed-sample pointwise comparison or product-a.e. Hoeffding
-   predicate.
+   The variable-domain Markov bridges and fixed-`M` centered-truncated
+   convergence handoff is now compiled under an explicit vanishing integrated
+   Hoeffding-plus-radius `ℝ≥0∞` hypothesis, and
+   `tendsto_two_mul_ofReal_zero_of_tendsto_zero` plus
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`
+   repackage the consumer under an ordinary real mean convergence hypothesis.
+   The next target is proving that real integrated upper, not another
+   fixed-sample pointwise comparison or product-a.e. Hoeffding predicate.
    The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
@@ -297,12 +303,11 @@ Local searches found reusable APIs in:
 The next high-value proof step is the theorem-specific Section 18/entropy
 assembly for VdV&W Theorem 2.4.3:
 
-- assemble fixed-`M` truncated centered-supremum convergence from
-  `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`,
-  the composed centered-truncated integral finite-net bridge
-  `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`,
-  the compiled random-cardinality Hoeffding upper convergence, and
-  `VdVWConvergesInOuterProbability_zero_of_outerExpectation_tendsto_zero_ofReal`;
+- prove the real integrated Hoeffding-plus-radius upper tends to zero, using
+  the compiled fixed-`M` centered-truncated convergence consumer
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`
+  and the generic real-to-`ENNReal.ofReal` handoff
+  `tendsto_two_mul_ofReal_zero_of_tendsto_zero`;
 - if that assembly exposes only a.e.-measurable or null-measurable random
   targets, use `VdVWMeasurableCover.ofAEMeasurable` or
   `VdVWMeasurableCover.ofNullMeasurable_ofReal` rather than adding another
@@ -453,8 +458,9 @@ supplied-`hphi_id` finite-net projection
 `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
 The entropy-to-Hoeffding-scale outer-probability handoff is now compiled for
 the product-integrated expected-maximal route, including fixed/all-entropy
-consumers.  The next proof target is fixed-`M` truncated convergence from the
-product outer-expectation projection and Markov convergence bridge; a
-fixed-sample pointwise comparison or product-a.e. finite-center Hoeffding
-predicate should not be pursued. Do not add another product surface unless
-that assembly exposes a sharper missing API.
+consumers.  The variable-domain Markov bridges and fixed-`M`
+centered-truncated convergence handoff are also compiled.  The next proof
+target is the integrated Hoeffding-plus-radius mean convergence input exposed
+by that handoff; a fixed-sample pointwise comparison or product-a.e.
+finite-center Hoeffding predicate should not be pursued. Do not add another
+product surface unless that assembly exposes a sharper missing API.

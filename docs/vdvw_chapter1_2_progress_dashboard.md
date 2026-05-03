@@ -137,8 +137,15 @@ compiled as
 with shifted-display and fixed/all-entropy consumers, and
 `VdVWConvergesInOuterProbability_zero_of_outerExpectation_tendsto_zero_ofReal`
 now provides the Markov bridge from vanishing outer expectation to outer
-probability. The remaining blocker is fixed-`M` truncated convergence, then
-final assembly.
+probability, with variable-domain and supplied-bound variants added for the
+canonical product sample spaces. The fixed-`M` centered-truncated convergence
+handoff is compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_tendsto_zero`.
+The real-to-`ENNReal.ofReal` convergence bridge
+`tendsto_two_mul_ofReal_zero_of_tendsto_zero` and real-mean consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`
+are also compiled. The remaining blocker is proving the real integrated
+Hoeffding-plus-radius upper tends to zero, then final assembly.
 The product-integrated symmetrization route now also has the composed
 random-cover finite-net integral bridge
 `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
@@ -149,8 +156,8 @@ random-cover finite-net integral bridge
 DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
 ONGOING    Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
-READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, random empirical-cover cardinality witness handoff, nonempty-cover positive-cardinality handoff, F_M truncation interfaces, countable truncated-class P-measurability bridge, a.e./null-measurable cover constructors, truncated product-copy pair-difference measurability/integrability, P.prod P coordinate law/independence/identical-distribution wrappers, mapped truncated-class product-copy law/independence wrapper, finite-sample mapped-coordinate laws/independence wrapper, fixed-index product-copy mean-zero bridge, finite product-sample weighted-sum mean-zero bridge, conditional fixed-original-sample ghost-copy identity, fixed-sample Phi=x ghost-copy comparison, pair-difference supremum split, envelope-bounded pair split, finite product-coordinate projection and expectation-level integral lifts, Fubini/product-projection centered handoff, composed centered-to-two-truncated-expectation handoff, product-pair sign-symmetry and random-sign integrated averaging, random-sign expected-maximal and outer-expectation projections, supplied-hphi finite-net projection, product-integrated cover/projection handoff, sample-cover and sample-dependent-cardinality product-a.e. finite-net bridges, real-valued envelope-tail outer-expectation/probability bridge, ordinary truncation-tail integral bridge, measurable-integrable outer/lintegral envelope-tail convergence, fixed-sample empirical-net inequality (2.4.4), finite-center maximal/Hoeffding-scale handoff layer, deterministic and a.e. random Rademacher-sign finite-net specializations, one-center sub-Gaussian bridge, variance-proxy arithmetic, sub-Gaussian proxy monotonicity, finite-center tail/union-bound layer, iid Rademacher-sign construction, finite-center supremum integrability, expected finite-center supremum handoff, layer-cake tail-integral monotonicity, generic ordinary dominated-convergence tail cutoff, product self-copy, mapped-coordinate joint-law independence wrappers, finite-Pi mapped-coordinate product wrappers, finite-Pi weighted-sum expectation wrappers, generic product-copy weighted-sum mean-zero wrapper, generic conditional ghost-copy finite-Pi Fubini wrapper, Gaussian-tail integrability/evaluation, coarse closed-form expectation bound, split-at-radius tail-to-expectation bound, Mills-type finite-center expectation layers, logarithmic-radius arithmetic, finite-center logarithmic-radius Mills expectation bound, expected maximal-bound packaging, truncated Rademacher expected-maximal specialization, finite-empirical-cover expected-maximal wrapper, common-proxy positivity, proved log-radius-to-Hoeffding scale comparison, Hoeffding-scale expected-maximal wrapper under explicit positivity, finite-net Hoeffding upper nonnegativity/square/log-cardinality rewrites, deterministic `L_n / n -> 0` to Hoeffding-scale convergence helper, pointwise finite-net notation convergence bridge, stochastic entropy-to-Hoeffding convergence, shifted-display and fixed/all-entropy Hoeffding convergence consumers, Markov outer-expectation-to-outer-probability bridge, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
-NEXT       Fixed-`M` truncated convergence, then final Theorem 2.4.3 assembly.
+READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, random empirical-cover cardinality witness handoff, nonempty-cover positive-cardinality handoff, F_M truncation interfaces, countable truncated-class P-measurability bridge, a.e./null-measurable cover constructors, truncated product-copy pair-difference measurability/integrability, P.prod P coordinate law/independence/identical-distribution wrappers, mapped truncated-class product-copy law/independence wrapper, finite-sample mapped-coordinate laws/independence wrapper, fixed-index product-copy mean-zero bridge, finite product-sample weighted-sum mean-zero bridge, conditional fixed-original-sample ghost-copy identity, fixed-sample Phi=x ghost-copy comparison, pair-difference supremum split, envelope-bounded pair split, finite product-coordinate projection and expectation-level integral lifts, Fubini/product-projection centered handoff, composed centered-to-two-truncated-expectation handoff, product-pair sign-symmetry and random-sign integrated averaging, random-sign expected-maximal and outer-expectation projections, supplied-hphi finite-net projection, product-integrated cover/projection handoff, sample-cover and sample-dependent-cardinality product-a.e. finite-net bridges, real-valued envelope-tail outer-expectation/probability bridge, ordinary truncation-tail integral bridge, measurable-integrable outer/lintegral envelope-tail convergence, fixed-sample empirical-net inequality (2.4.4), finite-center maximal/Hoeffding-scale handoff layer, deterministic and a.e. random Rademacher-sign finite-net specializations, one-center sub-Gaussian bridge, variance-proxy arithmetic, sub-Gaussian proxy monotonicity, finite-center tail/union-bound layer, iid Rademacher-sign construction, finite-center supremum integrability, expected finite-center supremum handoff, layer-cake tail-integral monotonicity, generic ordinary dominated-convergence tail cutoff, product self-copy, mapped-coordinate joint-law independence wrappers, finite-Pi mapped-coordinate product wrappers, finite-Pi weighted-sum expectation wrappers, generic product-copy weighted-sum mean-zero wrapper, generic conditional ghost-copy finite-Pi Fubini wrapper, Gaussian-tail integrability/evaluation, coarse closed-form expectation bound, split-at-radius tail-to-expectation bound, Mills-type finite-center expectation layers, logarithmic-radius arithmetic, finite-center logarithmic-radius Mills expectation bound, expected maximal-bound packaging, truncated Rademacher expected-maximal specialization, finite-empirical-cover expected-maximal wrapper, common-proxy positivity, proved log-radius-to-Hoeffding scale comparison, Hoeffding-scale expected-maximal wrapper under explicit positivity, finite-net Hoeffding upper nonnegativity/square/log-cardinality rewrites, deterministic `L_n / n -> 0` to Hoeffding-scale convergence helper, pointwise finite-net notation convergence bridge, stochastic entropy-to-Hoeffding convergence, shifted-display and fixed/all-entropy Hoeffding convergence consumers, Markov outer-expectation-to-outer-probability bridge, variable-domain fixed-M centered-truncated convergence handoff under a vanishing integrated finite-net upper, real-mean fixed-M convergence consumer, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
+NEXT       Prove real integrated Hoeffding-plus-radius upper tends to zero, then final Theorem 2.4.3 assembly.
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED-EXAMPLE Example 2.4.2 exact quantile-grid closure and empirical-CDF report unless a theorem needs it.
@@ -164,14 +171,14 @@ used as the only source for choosing the next low-level proof target.
 
 ## Verification Monitor
 
-Latest focused verification includes the random-cover frontier through
-`3689130` plus the current local entropy/Hoeffding algebra helpers.
+Latest focused verification includes the entropy bridge commit `b68a377` plus
+the current local fixed-`M` centered-truncated convergence handoff.
 
 ```text
-lake build
+lake build StatInference.EmpiricalProcess.Theorem243
 Build completed successfully.
 
-rg -n "\bsorry\b|\badmit\b|\baxiom\b|unsafe" . -g '*.lean' -g '!.lake/**'
+git ls-files '*.lean' ':!.lake/*' | xargs rg -n --color never -e '\b(sorry|admit|axiom|unsafe)\b'
 No matches.
 ```
 

@@ -122,4 +122,146 @@ theorem
               (ENNReal.ofReal_ne_zero_iff.mpr hepsilon)
               ENNReal.ofReal_ne_top
 
+/--
+Markov-style convergence bridge with a supplied vanishing upper bound for the
+nonnegative outer expectations.
+-/
+theorem
+    VdVWConvergesInOuterProbability_zero_of_outerExpectation_le_tendsto_zero_ofReal
+    {Ω : Type u} {ι : Type v} [MeasurableSpace Ω] {μ : Measure Ω}
+    {l : Filter ι} {Y : ι -> Ω -> ℝ} {bound : ι -> ℝ≥0∞}
+    (hY_nonneg : ∀ i ω, 0 ≤ Y i ω)
+    (U :
+      ∀ i, VdVWMeasurableCover μ (fun ω => ENNReal.ofReal (Y i ω)))
+    (hE_le :
+      ∀ᶠ i in l,
+        VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (Y i ω)) ≤
+          bound i)
+    (hbound : Tendsto bound l (𝓝 0)) :
+    VdVWConvergesInOuterProbability μ Y l (fun _ => 0) := by
+  have hE :
+      Tendsto
+        (fun i =>
+          VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (Y i ω)))
+        l (𝓝 0) := by
+    exact
+      tendsto_of_tendsto_of_tendsto_of_le_of_le'
+        (show Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0) from
+          tendsto_const_nhds)
+        hbound
+        (Eventually.of_forall fun _ => bot_le)
+        hE_le
+  exact
+    VdVWConvergesInOuterProbability_zero_of_outerExpectation_tendsto_zero_ofReal
+      hY_nonneg U hE
+
+/--
+Varying-sample-space version of the Markov-style convergence bridge from
+vanishing nonnegative outer expectation to convergence in outer probability.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst_zero_of_outerExpectation_tendsto_zero_ofReal
+    {ι : Type v} {Ω : ι -> Type u}
+    (mΩ : (i : ι) -> MeasurableSpace (Ω i))
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i))
+    {l : Filter ι} {Y : (i : ι) -> Ω i -> ℝ}
+    (hY_nonneg : ∀ i (ω : Ω i), 0 ≤ Y i ω)
+    (U :
+      ∀ i,
+        @VdVWMeasurableCover (Ω i) (mΩ i) (μ i)
+          (fun ω => ENNReal.ofReal (Y i ω)))
+    (hE :
+      Tendsto
+        (fun i =>
+          @VdVWOuterExpectation (Ω i) (mΩ i) (μ i)
+            (fun ω => ENNReal.ofReal (Y i ω)))
+        l (𝓝 0)) :
+    VdVWConvergesInOuterProbabilityConst Ω mΩ μ Y l (0 : ℝ) := by
+  intro epsilon hepsilon
+  have hupper :
+      Tendsto
+        (fun i =>
+          @VdVWOuterExpectation (Ω i) (mΩ i) (μ i)
+              (fun ω => ENNReal.ofReal (Y i ω)) /
+            ENNReal.ofReal epsilon)
+        l (𝓝 0) := by
+    have hdiv :
+        Tendsto
+          (fun i =>
+            @VdVWOuterExpectation (Ω i) (mΩ i) (μ i)
+                (fun ω => ENNReal.ofReal (Y i ω)) /
+              ENNReal.ofReal epsilon)
+          l (𝓝 (0 / ENNReal.ofReal epsilon)) :=
+      ENNReal.Tendsto.div_const hE
+        (Or.inr (ENNReal.ofReal_ne_zero_iff.mpr hepsilon))
+    simpa using hdiv
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0) from
+        tendsto_const_nhds)
+      hupper
+      (Eventually.of_forall fun _ => bot_le)
+      ?_
+  exact Eventually.of_forall fun i => by
+    calc
+      @VdVWOuterProbability (Ω i) (mΩ i) (μ i)
+          {ω | epsilon < dist (Y i ω) 0}
+          =
+        @VdVWOuterProbability (Ω i) (mΩ i) (μ i)
+          {ω | ENNReal.ofReal epsilon < ENNReal.ofReal (Y i ω)} := by
+            congr 1
+            ext ω
+            simp only [Set.mem_setOf_eq]
+            rw [Real.dist_eq, sub_zero, abs_of_nonneg (hY_nonneg i ω),
+              ENNReal.ofReal_lt_ofReal_iff_of_nonneg hepsilon.le]
+      _ ≤
+        @VdVWOuterExpectation (Ω i) (mΩ i) (μ i)
+            (fun ω => ENNReal.ofReal (Y i ω)) /
+          ENNReal.ofReal epsilon :=
+            @VdVWOuterProbability_lt_le_outerExpectation_div_cover
+              (Ω i) (mΩ i) (μ i)
+              (fun ω => ENNReal.ofReal (Y i ω)) (U i)
+              (ENNReal.ofReal epsilon)
+              (ENNReal.ofReal_ne_zero_iff.mpr hepsilon)
+              ENNReal.ofReal_ne_top
+
+/--
+Varying-sample-space Markov bridge with a supplied vanishing upper bound for
+the nonnegative outer expectations.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst_zero_of_outerExpectation_le_tendsto_zero_ofReal
+    {ι : Type v} {Ω : ι -> Type u}
+    (mΩ : (i : ι) -> MeasurableSpace (Ω i))
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i))
+    {l : Filter ι} {Y : (i : ι) -> Ω i -> ℝ} {bound : ι -> ℝ≥0∞}
+    (hY_nonneg : ∀ i (ω : Ω i), 0 ≤ Y i ω)
+    (U :
+      ∀ i,
+        @VdVWMeasurableCover (Ω i) (mΩ i) (μ i)
+          (fun ω => ENNReal.ofReal (Y i ω)))
+    (hE_le :
+      ∀ᶠ i in l,
+        @VdVWOuterExpectation (Ω i) (mΩ i) (μ i)
+            (fun ω => ENNReal.ofReal (Y i ω)) ≤
+          bound i)
+    (hbound : Tendsto bound l (𝓝 0)) :
+    VdVWConvergesInOuterProbabilityConst Ω mΩ μ Y l (0 : ℝ) := by
+  have hE :
+      Tendsto
+        (fun i =>
+          @VdVWOuterExpectation (Ω i) (mΩ i) (μ i)
+            (fun ω => ENNReal.ofReal (Y i ω)))
+        l (𝓝 0) := by
+    exact
+      tendsto_of_tendsto_of_tendsto_of_le_of_le'
+        (show Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0) from
+          tendsto_const_nhds)
+        hbound
+        (Eventually.of_forall fun _ => bot_le)
+        hE_le
+  exact
+    VdVWConvergesInOuterProbabilityConst_zero_of_outerExpectation_tendsto_zero_ofReal
+      mΩ μ hY_nonneg U hE
+
 end StatInference

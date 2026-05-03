@@ -371,12 +371,16 @@ assembly after the compiled random empirical-cover witness and expectation-level
 finite-net handoffs: the product outer-expectation projection for the
 expected-maximal route and deterministic entropy/Hoeffding-scale algebra are
 compiled, and the stochastic entropy-to-Hoeffding-scale handoff is now closed,
-so next assemble fixed-`M` truncated convergence after the compiled integrated
-product-sample/Rademacher sign-symmetry comparison, product-space
-measurable-cover outer-expectation bridge, and supplied product-space finite-net
-projection, now past the fixed-sample, integral-lift, product-projection/Fubini,
-same-weight pair split, deterministic sign-negation, ordinary random-sign
-averaging, product-cover, sample-cover, sample-dependent-cardinality cover, and
-empirical-cover witness pieces,
+and the fixed-`M` centered-truncated convergence handoff is now compiled under
+an explicit vanishing integrated Hoeffding-plus-radius hypothesis, with a
+real-mean consumer available through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`.
+Next prove that real integrated upper from the entropy hypotheses plus any
+required uniform-integrability or dominated-convergence input, now past the
+fixed-sample,
+integral-lift, product-projection/Fubini, same-weight pair split, deterministic
+sign-negation, ordinary random-sign averaging, product-cover, sample-cover,
+sample-dependent-cardinality cover, empirical-cover witness, and variable-domain
+Markov pieces,
 before new Billingsley Section 25 work unless no empirical-process
 probability/measure dependency is blocked.

@@ -189,9 +189,12 @@ Concrete next edits:
    `L_n / n -> 0` to Hoeffding-scale convergence, pointwise finite-net notation
    convergence, the stochastic outer-probability entropy-to-Hoeffding-scale
    handoff, shifted-display convergence, and fixed/all-entropy projection
-   helpers. The latest empirical-process frontier is fixed-`M` truncated
-   convergence from the product outer-expectation projection plus the Markov
-   outer-expectation-to-outer-probability bridge.
+   helpers. The latest empirical-process frontier is the real integrated
+   Hoeffding-plus-radius mean convergence input exposed by the compiled
+   fixed-`M` centered-truncated convergence handoff, variable-domain Markov
+   bridges, `tendsto_two_mul_ofReal_zero_of_tendsto_zero`, and the
+   real-mean consumer
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.

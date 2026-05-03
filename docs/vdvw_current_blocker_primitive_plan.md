@@ -42,8 +42,8 @@ proof state instead of replaying old instructions.
 Do not update the automation prompt for wording-only churn.  Do update it when
 an old prompt would point at a solved target, omit a newly discovered reusable
 API, or hide a genuine blocker such as the current Theorem 2.4.3
-symmetrization/truncation, outer envelope-tail, entropy-to-convergence, or
-final assembly handoff.
+integrated-Hoeffding mean convergence, truncation/tail, or final assembly
+handoff.
 
 ## Active Blocker
 
@@ -602,8 +602,10 @@ additional example closures:
    The product-a.e. finite-center Hoeffding route is no longer the active
    blocker for selected random empirical covers: the expectation-level
    random-cover route and product outer-expectation projection are compiled.
-   The remaining Theorem 2.4.3 blocker is the entropy-to-convergence assembly;
-   it is not the finite-net
+   The entropy-to-Hoeffding outer-probability and Markov cover bridges are now
+   compiled.  The remaining Theorem 2.4.3 blocker is the integrated
+   Hoeffding-plus-radius mean convergence needed by the fixed-`M`
+   centered-truncated convergence handoff; it is not the finite-net
    Rademacher/Hoeffding maximal scale, the fixed-sample random-sign
    outer-expectation finite-net handoff, the finite sample mean-zero bridge, the
    ordinary integrated product/sign-symmetry layer, or a fixed-sample pointwise
@@ -684,7 +686,9 @@ additional example closures:
    random-cover finite-net expected-maximal bound are now compiled, as is the
    product outer-expectation projection
    `VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`;
-   the valid next target is proving entropy-to-convergence.
+   the valid next target is proving the integrated Hoeffding-plus-radius upper
+   tends to zero, or proving the smallest uniform-integrability/dominated
+   convergence bridge that supplies it.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -860,9 +864,22 @@ Search record for the symmetrization precursor package:
   `VdVWTheorem243TruncatedEntropyCondition.finiteNetHoeffdingUpper_convergesInOuterProbability_zero`,
   and
   `VdVWTheorem243TruncatedEntropyConditionForAllEpsilonM.finiteNetHoeffdingUpper_convergesInOuterProbability_zero`.
-  The generic Markov bridge
-  `VdVWConvergesInOuterProbability_zero_of_outerExpectation_tendsto_zero_ofReal`
-  is also compiled. The next valid target is fixed-`M` truncated convergence.
+  The generic Markov bridges
+  `VdVWConvergesInOuterProbability_zero_of_outerExpectation_tendsto_zero_ofReal`,
+  `VdVWConvergesInOuterProbability_zero_of_outerExpectation_le_tendsto_zero_ofReal`,
+  `VdVWConvergesInOuterProbabilityConst_zero_of_outerExpectation_tendsto_zero_ofReal`,
+  and
+  `VdVWConvergesInOuterProbabilityConst_zero_of_outerExpectation_le_tendsto_zero_ofReal`
+  are also compiled.  The theorem-specific fixed-`M` centered-truncated
+  convergence handoff is compiled as
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_tendsto_zero`.
+  The generic real-to-`ENNReal.ofReal` convergence bridge
+  `tendsto_two_mul_ofReal_zero_of_tendsto_zero` and theorem-specific real mean
+  consumer
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_integral_finiteNetHoeffdingUpper_add_real_tendsto_zero`
+  are also compiled.  The next valid target is the analytic input this exposes:
+  the real integrated Hoeffding-plus-radius upper must tend to zero, likely
+  through a uniform-integrability or dominated-convergence bridge.
   The
   supplied projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`
@@ -904,10 +921,12 @@ expansion, random log-cardinality rewrite/square expansion, deterministic
 notation bridge, stochastic outer-probability entropy-to-Hoeffding-scale
 handoff, shifted-display convergence, fixed/all-entropy consumers, and the
 Markov outer-expectation-to-outer-probability bridge, plus the composed
-centered-truncated integral finite-net bound, are closed.  Next prove the
-fixed-`M` truncated convergence handoff from this integral bound and the needed
-mean convergence/dominated-convergence hypothesis, then assemble the final
-Theorem 2.4.3 handoffs.
+centered-truncated integral finite-net bound, variable-domain Markov bridges,
+fixed-`M` centered-truncated convergence handoff under an explicit vanishing
+integrated Hoeffding-plus-radius hypothesis, and its real-mean convergence
+consumer, are closed.  Next prove that vanishing real integrated upper from the
+entropy hypotheses plus any required uniform-integrability/dominated-convergence
+input, then assemble the final Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
