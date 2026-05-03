@@ -131,7 +131,9 @@ Concrete next edits:
    `measurePreserving_vdVWProductMeasure_prod_to_ghost`, and the expectation-level
    integral lifts for the centered ghost-copy comparison and envelope-bounded
    pair split are now compiled, including the projected two-coordinate bound
-   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`.
+   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`
+   and the composed centered-to-two-truncated-expectation handoff
+   `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`.
    The theorem-local random-sign side also has
    `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`.
    The supplied-`hphi_id` projection to the random-sign finite-net

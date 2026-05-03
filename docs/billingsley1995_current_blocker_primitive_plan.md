@@ -202,6 +202,10 @@ Local searches found reusable APIs in:
    `measurePreserving_vdVWProductMeasure_prod_to_ghost` are now compiled, along
    with the expectation-level monotonicity lifts
    `integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
+   and the Fubini/projection identity
+   `integral_integral_vdVWWeightedClassSupremum_pairDifference_eq_integral_productSample`,
+   yielding
+   `integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifference`,
    and
    `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd`,
    plus the same-weight variant
@@ -210,6 +214,8 @@ Local searches found reusable APIs in:
    `vdVWWeightedClassSupremum_neg_weights`, and the projected
    expectation-level consequence
    `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`.
+   Their direct composition is also compiled as
+   `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`.
    The random-sign side also now has
    `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`.
    The remaining
@@ -327,12 +333,18 @@ specializations `measurePreserving_vdVWProductMeasure_prod_to_original_ghost`,
 `measurePreserving_vdVWProductMeasure_prod_to_ghost`,
 and the expectation-level integral lifts
 `integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
+and the Fubini/product-projection identity
+`integral_integral_vdVWWeightedClassSupremum_pairDifference_eq_integral_productSample`,
+giving
+`integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifference`,
 and
 `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd`,
 plus the same-weight variant
 `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd_same_weights`.
 It also proves the projected pair-difference expectation bound
 `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`
+and their composed centered-to-two-truncated-expectation handoff
+`integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`
 and the Rademacher-weight sign-negation bridge
 `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`. It also proves the
 supplied-`hphi_id` finite-net projection

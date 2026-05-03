@@ -1028,6 +1028,197 @@ theorem
           (hpairSupIntegrable sample))
 
 /--
+Fubini/projection identity for the product-sample pair-difference supremum.
+
+The fixed-sample `Phi(x)=x` comparison produces an iterated integral over an
+original sample and a ghost sample.  The finite-product projection map
+identifies this iterated expectation with the single expectation over
+`(P.prod P)^n`.
+-/
+theorem
+    integral_integral_vdVWWeightedClassSupremum_pairDifference_eq_integral_productSample
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ} {n : ℕ}
+    (weights : Fin n -> ℝ)
+    (hsplitSupIntegrable :
+      Integrable
+        (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            weights (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+        ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n))) :
+    ∫ sample : SampleAt Observation n,
+        ∫ ghostSample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            weights (fun i : Fin n => (sample i, ghostSample i))
+            ∂(vdVWProductMeasure P n) ∂(vdVWProductMeasure P n) =
+      ∫ productSample : SampleAt (Observation × Observation) n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.1 -
+              vdVWTruncatedClassFun classFun envelope M index z.2)
+          weights productSample ∂(vdVWProductMeasure (P.prod P) n) := by
+  let pairDifferenceClassFun : Index -> Observation × Observation -> ℝ :=
+    fun index z =>
+      vdVWTruncatedClassFun classFun envelope M index z.1 -
+        vdVWTruncatedClassFun classFun envelope M index z.2
+  let splitSup : SampleAt Observation n × SampleAt Observation n -> ℝ :=
+    fun splitSample =>
+      vdVWWeightedClassSupremum indexClass pairDifferenceClassFun weights
+        (fun i : Fin n => (splitSample.1 i, splitSample.2 i))
+  have hprojection :
+      ∫ productSample : SampleAt (Observation × Observation) n,
+          vdVWWeightedClassSupremum indexClass pairDifferenceClassFun
+            weights productSample ∂(vdVWProductMeasure (P.prod P) n) =
+        ∫ splitSample : SampleAt Observation n × SampleAt Observation n,
+          splitSup splitSample
+          ∂((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) := by
+    simpa [splitSup, pairDifferenceClassFun, Function.comp_def] using
+      ((measurePreserving_vdVWProductMeasure_prod_to_original_ghost
+        (P := P) (n := n)).hasLaw.integral_comp
+          (f := splitSup) hsplitSupIntegrable.aestronglyMeasurable)
+  have hfubini :
+      ∫ splitSample : SampleAt Observation n × SampleAt Observation n,
+          splitSup splitSample
+          ∂((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) =
+        ∫ sample : SampleAt Observation n,
+          ∫ ghostSample : SampleAt Observation n,
+            splitSup (sample, ghostSample)
+            ∂(vdVWProductMeasure P n) ∂(vdVWProductMeasure P n) := by
+    exact MeasureTheory.integral_prod splitSup hsplitSupIntegrable
+  calc
+    ∫ sample : SampleAt Observation n,
+        ∫ ghostSample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            weights (fun i : Fin n => (sample i, ghostSample i))
+            ∂(vdVWProductMeasure P n) ∂(vdVWProductMeasure P n)
+        =
+          ∫ splitSample : SampleAt Observation n × SampleAt Observation n,
+            splitSup splitSample
+            ∂((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) := by
+          simpa [splitSup, pairDifferenceClassFun] using hfubini.symm
+    _ =
+          ∫ productSample : SampleAt (Observation × Observation) n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              weights productSample ∂(vdVWProductMeasure (P.prod P) n) := by
+          simpa [pairDifferenceClassFun] using hprojection.symm
+
+/--
+Integrated `Phi(x)=x` comparison after projecting the iterated ghost-copy
+expectation to the single product-sample law `(P.prod P)^n`.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifference
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ} {n : ℕ}
+    (weights : Fin n -> ℝ)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hpairSupIntegrable :
+      ∀ sample : SampleAt Observation n,
+        Integrable
+          (fun ghostSample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              weights (fun i : Fin n => (sample i, ghostSample i)))
+          (vdVWProductMeasure P n))
+    (hcenteredSupIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            weights sample)
+        (vdVWProductMeasure P n))
+    (hghostExpectationIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          ∫ ghostSample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              weights (fun i : Fin n => (sample i, ghostSample i))
+              ∂(vdVWProductMeasure P n))
+        (vdVWProductMeasure P n))
+    (hsplitSupIntegrable :
+      Integrable
+        (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            weights (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+        ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n))) :
+    ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          weights sample ∂(vdVWProductMeasure P n) ≤
+      ∫ productSample : SampleAt (Observation × Observation) n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.1 -
+              vdVWTruncatedClassFun classFun envelope M index z.2)
+          weights productSample ∂(vdVWProductMeasure (P.prod P) n) := by
+  calc
+    ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          weights sample ∂(vdVWProductMeasure P n)
+        ≤
+          ∫ sample : SampleAt Observation n,
+            ∫ ghostSample : SampleAt Observation n,
+              vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index z.1 -
+                    vdVWTruncatedClassFun classFun envelope M index z.2)
+                weights (fun i : Fin n => (sample i, ghostSample i))
+                ∂(vdVWProductMeasure P n) ∂(vdVWProductMeasure P n) := by
+          exact
+            integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum
+              (P := P) (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (weights := weights)
+              henvelope hM_nonneg htruncIntegrable hpairSupIntegrable
+              hcenteredSupIntegrable hghostExpectationIntegrable
+    _ =
+          ∫ productSample : SampleAt (Observation × Observation) n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              weights productSample ∂(vdVWProductMeasure (P.prod P) n) := by
+          exact
+            integral_integral_vdVWWeightedClassSupremum_pairDifference_eq_integral_productSample
+              (P := P) (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (weights := weights)
+              hsplitSupIntegrable
+
+/--
 The weighted supremum of product-copy pair differences is bounded by the sum
 of the two coordinate suprema.
 
@@ -1442,6 +1633,138 @@ theorem
                 (vdVWTruncatedClassFun classFun envelope M) weights sample
               ∂(vdVWProductMeasure P n) := by
           ring
+
+/--
+Integrated `Phi(x)=x` comparison projected all the way back to the ordinary
+truncated-sample supremum expectation.
+
+This composes the fixed-sample ghost-copy comparison, the Fubini/projection
+identity from `(P^n × P^n)` to `(P × P)^n`, and the envelope-bounded
+pair-difference split.  The remaining symmetrization work is therefore the
+random-sign outer-expectation comparison for the ordinary truncated supremum.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ} {n : ℕ}
+    (weights : Fin n -> ℝ)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hpairSupIntegrable :
+      ∀ sample : SampleAt Observation n,
+        Integrable
+          (fun ghostSample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              weights (fun i : Fin n => (sample i, ghostSample i)))
+          (vdVWProductMeasure P n))
+    (hcenteredSupIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            weights sample)
+        (vdVWProductMeasure P n))
+    (hghostExpectationIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          ∫ ghostSample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              weights (fun i : Fin n => (sample i, ghostSample i))
+              ∂(vdVWProductMeasure P n))
+        (vdVWProductMeasure P n))
+    (hsplitSupIntegrable :
+      Integrable
+        (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            weights (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+        ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)))
+    (hsampleSupIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M) weights sample)
+        (vdVWProductMeasure P n)) :
+    ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          weights sample ∂(vdVWProductMeasure P n) ≤
+      2 *
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M) weights sample
+          ∂(vdVWProductMeasure P n) := by
+  let pairDifferenceClassFun : Index -> Observation × Observation -> ℝ :=
+    fun index z =>
+      vdVWTruncatedClassFun classFun envelope M index z.1 -
+        vdVWTruncatedClassFun classFun envelope M index z.2
+  let splitSup : SampleAt Observation n × SampleAt Observation n -> ℝ :=
+    fun splitSample =>
+      vdVWWeightedClassSupremum indexClass pairDifferenceClassFun weights
+        (fun i : Fin n => (splitSample.1 i, splitSample.2 i))
+  have hproductPairSupIntegrable :
+      Integrable
+        (fun productSample : SampleAt (Observation × Observation) n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            weights productSample)
+        (vdVWProductMeasure (P.prod P) n) := by
+    simpa [splitSup, pairDifferenceClassFun, Function.comp_def] using
+      (measurePreserving_vdVWProductMeasure_prod_to_original_ghost
+        (P := P) (n := n)).integrable_comp_of_integrable
+          hsplitSupIntegrable
+  calc
+    ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          weights sample ∂(vdVWProductMeasure P n)
+        ≤
+          ∫ productSample : SampleAt (Observation × Observation) n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              weights productSample ∂(vdVWProductMeasure (P.prod P) n) := by
+          exact
+            integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifference
+              (P := P) (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (weights := weights)
+              henvelope hM_nonneg htruncIntegrable hpairSupIntegrable
+              hcenteredSupIntegrable hghostExpectationIntegrable
+              hsplitSupIntegrable
+    _ ≤
+          2 *
+            ∫ sample : SampleAt Observation n,
+              vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M) weights sample
+              ∂(vdVWProductMeasure P n) := by
+          exact
+            integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original
+              (P := P) (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (weights := weights)
+              henvelope hM_nonneg hproductPairSupIntegrable
+              hsampleSupIntegrable
 
 /-!
 ## Fixed-sample empirical net handoff

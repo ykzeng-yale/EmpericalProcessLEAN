@@ -603,6 +603,10 @@ additional example closures:
    `measurePreserving_vdVWProductMeasure_prod_to_ghost` are now compiled, along
    with the expectation-level monotonicity lifts
    `integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifferenceSupremum`
+   and the Fubini/product-projection identity
+   `integral_integral_vdVWWeightedClassSupremum_pairDifference_eq_integral_productSample`,
+   yielding
+   `integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifference`,
    and
    `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_integral_fst_add_integral_snd`,
    plus the same-weight variant
@@ -611,6 +615,8 @@ additional example closures:
    `vdVWWeightedClassSupremum_neg_weights`, and the projected two-coordinate
    expectation bound
    `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`.
+   Their direct composition is compiled as
+   `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`.
    The random-sign side now also has
    `vdVWWeightedClassSupremum_rademacherWeights_neg_sign`.
    The remaining
@@ -715,7 +721,11 @@ Search record for the symmetrization precursor package:
   `vdVWWeightedClassSupremum_neg_weights`, and its projected same-law
   consequence
   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`
-  is compiled.  The Rademacher-weight sign-negation bridge
+  is compiled.  The integrated centered-to-product-sample projection
+  `integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifference`
+  and the composed centered-to-two-truncated-expectation handoff
+  `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`
+  are compiled as well.  The Rademacher-weight sign-negation bridge
   `vdVWWeightedClassSupremum_rademacherWeights_neg_sign` is compiled as well.
   A follow-up search found the
   fixed-sample pointwise `hphi_id` target is too strong; the next valid target

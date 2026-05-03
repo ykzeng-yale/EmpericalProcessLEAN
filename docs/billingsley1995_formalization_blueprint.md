@@ -222,6 +222,10 @@ Near-term declarations:
   weight sign-flip invariance, and the expectation-level integral lifts for the
   fixed-sample ghost comparison and envelope-bounded pair split, including
   `integral_vdVWWeightedClassSupremum_truncated_pairDifference_le_two_integral_original`,
+  `integral_integral_vdVWWeightedClassSupremum_pairDifference_eq_integral_productSample`,
+  `integral_vdVWWeightedClassSupremum_centered_le_integral_productSample_pairDifference`,
+  and
+  `integral_vdVWWeightedClassSupremum_centered_le_two_integral_truncated_original`,
   plus the theorem-local Rademacher negated-sign bridge and the
   supplied-`hphi_id` finite-net projection
   `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
