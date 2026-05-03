@@ -247,10 +247,17 @@ and selected-cardinality domination helpers
 with selected log-bound transfer helpers
 `vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le` and
 `vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath`,
+all-radius/inverse-radius selected log-bound transfers
+`vdVWLogEmpiricalL1CoveringCardinality_selected_coverRadius_terminal_div_le_of_forAllRadius_samplePath`
+and
+`vdVWLogEmpiricalL1CoveringCardinality_selected_invRadius_terminal_div_le_of_forAllRadius_samplePath`,
 while
 `finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`
 packages the terminal selected equality for the least finite-cover cardinality
-process. The remaining blocker is feeding diagonal selected
+process, and
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
+packages inverse-radius selected side conditions once diagonal selected log
+convergence is supplied. The remaining blocker is feeding diagonal selected
 log-cardinality convergence and a deterministic selected log-ratio bound or
 genuine varying-domain tail/UI replacement from the all-radius entropy route
 into that consumer, then final assembly.

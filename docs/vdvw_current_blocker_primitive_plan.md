@@ -979,6 +979,11 @@ Search record for the symmetrization precursor package:
   the external bound by
   `vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le` and
   `vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath`.
+  The all-radius and inverse-radius selected-log transfer forms
+  `vdVWLogEmpiricalL1CoveringCardinality_selected_coverRadius_terminal_div_le_of_forAllRadius_samplePath`
+  and
+  `vdVWLogEmpiricalL1CoveringCardinality_selected_invRadius_terminal_div_le_of_forAllRadius_samplePath`
+  are compiled as well.
   The selected least finite-cardinality process also has
   `finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`,
   which supplies the terminal equality proof needed by the selected-cardinality
@@ -1023,7 +1028,9 @@ Search record for the symmetrization precursor package:
   log-cardinality convergence, plus either the deterministic selected
   log-ratio bound input or a genuine bounded/UI replacement.  The
   cover-radius selector, all-radius covering projection, finite-witness
-  handoff, and selected log-bound transfer are now compiled.
+  handoff, selected log-bound transfer, and
+  `VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
+  side-condition packaging are now compiled.
   Follow-up search found no ready
   variable-domain `UniformIntegrable`/Vitali API; pinned mathlib's
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,

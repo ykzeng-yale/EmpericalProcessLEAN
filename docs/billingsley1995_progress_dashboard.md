@@ -268,6 +268,10 @@ finite cardinality process through
 The normalized selected log-cardinality bound can then be transported by
 `vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le` and
 `vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath`.
+All-radius and inverse-radius selected log-bound transfers are available as
+`vdVWLogEmpiricalL1CoveringCardinality_selected_coverRadius_terminal_div_le_of_forAllRadius_samplePath`
+and
+`vdVWLogEmpiricalL1CoveringCardinality_selected_invRadius_terminal_div_le_of_forAllRadius_samplePath`.
 `finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`
 now packages the terminal selected-cardinality equality when the final theorem
 chooses the least finite empirical-cover cardinality process itself.
@@ -275,7 +279,10 @@ The theorem-facing selected-cardinality consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated`
 is available for arbitrary deterministic shrinking cover radii, and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
-specializes it to `1 / ((n : ℝ) + 1)`.  The next blocker is feeding theorem
+specializes it to `1 / ((n : ℝ) + 1)`, while
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
+packages the selected inverse-radius side conditions except for the supplied
+diagonal selected log convergence.  The next blocker is feeding theorem
 entropy hypotheses into one of those consumers past the now-closed
 covering-domination/finite-witness step: selected terminal equality, diagonal
 selected log-cardinality convergence, and a deterministic normalized

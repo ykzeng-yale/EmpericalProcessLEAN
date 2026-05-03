@@ -447,6 +447,11 @@ and terminal form
 The associated selected log-ratio bound transfers through
 `vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le` and
 `vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath`.
+The all-radius/inverse-radius forms
+`vdVWLogEmpiricalL1CoveringCardinality_selected_coverRadius_terminal_div_le_of_forAllRadius_samplePath`
+and
+`vdVWLogEmpiricalL1CoveringCardinality_selected_invRadius_terminal_div_le_of_forAllRadius_samplePath`
+specialize that transfer to theorem entropy envelopes.
 The selected-minimal route now also has
 `finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`
 for the terminal equality required when the theorem chooses the least finite
@@ -455,7 +460,10 @@ The theorem-facing selected-cardinality consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated`
 is available for arbitrary deterministic shrinking cover radii, while
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
-specializes that consumer to `1 / ((n : ℝ) + 1)`. Next feed the theorem
+specializes that consumer to `1 / ((n : ℝ) + 1)`.
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
+packages inverse-radius selected finite covers and measurability once diagonal
+selected log convergence is supplied. Next feed the theorem
 entropy hypotheses into one of those consumers past the now-closed
 covering-domination/finite-witness handoff, then supply the remaining selected
 terminal equality, diagonal selected log-cardinality convergence, and

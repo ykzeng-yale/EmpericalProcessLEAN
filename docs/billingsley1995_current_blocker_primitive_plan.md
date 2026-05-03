@@ -558,6 +558,10 @@ The resulting normalized selected log-cardinality bound is transported by
 `vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le`, with
 the selected empirical-cover version
 `vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath`.
+The all-radius and inverse-radius theorem-facing versions are
+`vdVWLogEmpiricalL1CoveringCardinality_selected_coverRadius_terminal_div_le_of_forAllRadius_samplePath`
+and
+`vdVWLogEmpiricalL1CoveringCardinality_selected_invRadius_terminal_div_le_of_forAllRadius_samplePath`.
 The selected-minimal process now also has the terminal equality helper
 `finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`,
 which packages the `hcardinality_eq` proof when the theorem chooses
@@ -578,7 +582,11 @@ are also compiled. The theorem-facing selected-cardinality consumer
 is compiled for arbitrary deterministic shrinking cover radii, and its
 inverse-radius specialization
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
-is compiled as well. The next proof target is no longer the finite-witness
+is compiled as well, and
+`VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated`
+packages inverse-radius selected finite covers, measurable terminal
+cardinality, and supplied diagonal selected log convergence. The next proof
+target is no longer the finite-witness
 handoff for an all-radius entropy hypothesis; it is the selected terminal
 equality/log-ratio assembly for the arbitrary-radius or inverse-radius selected
 consumer, especially diagonal selected log-cardinality convergence plus the
