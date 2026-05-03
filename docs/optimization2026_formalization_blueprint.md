@@ -120,6 +120,7 @@ Source anchors:
 
 Search anchors:
 
+- `.lake/packages/mathlib/Mathlib/Analysis/ODE/DiscreteGronwall.lean`
 - `.lake/packages/mathlib/Mathlib/Analysis/ODE/Gronwall.lean`
 - mathlib differentiability and ODE APIs
 - local `StatInference/Asymptotics/Basic.lean`
@@ -139,6 +140,9 @@ Source anchors:
 Near-term exact candidates:
 
 1. Lemma 3.5 discrete Gronwall as a standalone deterministic sequence lemma.
+   The zero-based power/range display specialization is compiled in
+   `StatInference/Optimization/DiscreteGronwall.lean`; mathlib's product/Ico
+   forms remain the reusable foundation.
 2. Lemma 3.1 descent lemma from the smooth upper-model interface.
 3. Theorem 3.4 as a supplied-interface convergence theorem.
 
