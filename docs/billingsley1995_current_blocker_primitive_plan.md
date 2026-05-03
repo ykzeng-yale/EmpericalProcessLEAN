@@ -162,7 +162,11 @@ Local searches found reusable APIs in:
    `probability_pi_independent_mapped_coordinates_with_joint_law`; the VdV&W
    side specializes these as
    `vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep`.
-   The remaining work is to assemble these wrappers into the exact
+   The VdV&W side now packages these product-copy, finite-`Pi`, mean-zero,
+   random-sign, and finite-cover expected-maximal components as
+   `VdVWTheorem243SymmetrizationPrecursor` with constructor
+   `VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover`.  The
+   remaining work is to turn this precursor into the exact
    finite-product/independent-copy symmetrization inequality.  The reusable Rademacher-sign layer has started in
    `StatInference/ProbabilityMeasure/Rademacher.lean`; it packages the fair
    Bool law, real sign map, real Rademacher law, zero mean, sub-Gaussian
@@ -203,16 +207,19 @@ of:
   `VdVWOuterExpectation_envelope_tail_tendsto_zero_of_measurable_integrable`,
   while adding only nonmeasurable/arbitrary-cover variants if the exact
   Theorem 2.4.3 assembly requires them; or
-- the next Section 18 independent-copy/symmetrization specialization using
-  `probability_integral_prod_fst`, `probability_integral_prod_snd`, and
-  `probability_integral_prod_mul`, plus
+- the next Section 18 independent-copy/symmetrization specialization after the
+  compiled `VdVWTheorem243SymmetrizationPrecursor` package: prove a finite
+  product-sample mean-zero bridge over `(P.prod P)^n` if needed, then assemble
+  the product/Fubini-compatible `Phi(x)=x` symmetrization inequality.  Only add
+  a new `StatInference/ProbabilityMeasure` product wrapper if this assembly
+  exposes a genuinely reusable gap beyond the existing
+  `probability_integral_prod_fst`, `probability_integral_prod_snd`,
+  `probability_integral_prod_mul`,
   `probability_integral_prod_fst_sub_snd_eq_zero`,
-  `probability_prod_independent_self_copies` and
-  `probability_prod_independent_mapped_copies_with_joint_law`, plus the
-  finite-`Pi` wrappers `probability_pi_map_mapped_coordinates_eq` and
-  `probability_pi_independent_mapped_coordinates_with_joint_law`, to erase
-  unused product coordinates, expose ghost-copy independence, and carry mapped
-  sample/sign statistics in the symmetrization route.
+  `probability_prod_independent_self_copies`,
+  `probability_prod_independent_mapped_copies_with_joint_law`,
+  `probability_pi_map_mapped_coordinates_eq`, and
+  `probability_pi_independent_mapped_coordinates_with_joint_law` APIs.
 
 The deciding rule is dependency value: if Theorem 2.4.3 is blocked on a tail,
 Fubini, independent-copy, or outer-expectation primitive, prefer that over a
@@ -227,6 +234,8 @@ product primitive did not need to stay binary.  Since
 content-based Section 18/20 support layer now includes finite-`Pi`
 mapped-coordinate wrappers using `ProbabilityTheory.iIndepFun_pi`,
 `iIndepFun.hasLaw_pi`, `MeasureTheory.measurePreserving_eval`, and
-`Measure.pi_map_pi`.  The next proof target is to use these wrappers in the
-product/Fubini-compatible symmetrization inequality, not to add another product
+`Measure.pi_map_pi`.  These are now consumed by the VdV&W
+`VdVWTheorem243SymmetrizationPrecursor` package.  The next proof target is the
+finite product-sample mean-zero bridge if required by the final
+product/Fubini-compatible symmetrization inequality, not another product
 surface unless that assembly exposes a sharper missing API.

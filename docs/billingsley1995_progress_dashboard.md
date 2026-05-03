@@ -103,15 +103,17 @@ Concrete next edits:
    `probability_prod_independent_self_copies` and
    `probability_prod_independent_mapped_copies_with_joint_law`, plus the
    finite-`Pi` wrappers `probability_pi_map_mapped_coordinates_eq` and
-   `probability_pi_independent_mapped_coordinates_with_joint_law`, and use them
-   when the symmetrization route needs product-space ghost copies or
-   measurable statistics of finite sample coordinates.
+   `probability_pi_independent_mapped_coordinates_with_joint_law`.  The VdV&W
+   side now consumes these through `VdVWTheorem243SymmetrizationPrecursor`; add
+   another probability-measure product wrapper only if the final
+   product/Fubini symmetrization inequality exposes a reusable missing API.
 4. Check the current VdV&W Theorem 2.4.3 blocker before adding Billingsley
-   support.  The log-radius-to-Hoeffding scale comparison is now proved; the
-   latest empirical-process frontier is product/Fubini symmetrization assembly,
-   entropy-to-convergence, and final assembly.  Do not
-   add new Billingsley tail/Fubini wrappers unless one of those steps needs
-   reusable probability/measure support.
+   support.  The log-radius-to-Hoeffding scale comparison and proof-carrying
+   symmetrization precursor package are now compiled; the latest
+   empirical-process frontier is finite product-sample mean-zero if needed,
+   product/Fubini `Phi(x)=x` symmetrization inequality, entropy-to-convergence,
+   and final assembly.  Do not add new Billingsley tail/Fubini wrappers unless
+   one of those steps needs reusable probability/measure support.
 5. If no empirical-process dependency is blocked on Billingsley support, pick
    Billingsley Theorem 25.8 bounded-continuous/continuity-set slice as the next
    exact source-audited wrapper candidate.

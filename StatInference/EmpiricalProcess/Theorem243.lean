@@ -2706,6 +2706,163 @@ theorem
       cover (fun i : Fin n => sign i ω) hsignω hepsilon_nonneg hM_nonneg hmaxω
 
 /--
+Proof-carrying finite-sample symmetrization precursor for Theorem 2.4.3.
+
+This packages the product-copy laws, finite-product sample-coordinate laws,
+centered pair-difference facts, random-sign finite-net handoff, and the
+finite-cover expected-maximal bound that have already been proved locally.
+The remaining theorem-specific work is to turn this package into the final
+product/Fubini symmetrization inequality and then feed the entropy condition.
+-/
+structure VdVWTheorem243SymmetrizationPrecursor
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ]
+    {Observation : Type v} [MeasurableSpace Observation]
+    {Index : Type w} {n : ℕ}
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    (sample : SampleAt Observation n)
+    {indexClass : Set Index}
+    (classFun : Index -> Observation -> ℝ) (envelope : Observation -> ℝ)
+    (M epsilon : ℝ) {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality)
+    (sign : Fin n -> Ω -> ℝ) : Prop where
+  productCopy_laws_indep :
+    ∀ index, index ∈ indexClass ->
+      HasLaw
+          (fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.1)
+          (P.map (vdVWTruncatedClassFun classFun envelope M index)) (P.prod P) ∧
+        HasLaw
+          (fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.2)
+          (P.map (vdVWTruncatedClassFun classFun envelope M index)) (P.prod P) ∧
+        HasLaw
+          (fun z : Observation × Observation =>
+            (vdVWTruncatedClassFun classFun envelope M index z.1,
+              vdVWTruncatedClassFun classFun envelope M index z.2))
+          ((P.map (vdVWTruncatedClassFun classFun envelope M index)).prod
+            (P.map (vdVWTruncatedClassFun classFun envelope M index)))
+          (P.prod P) ∧
+        (fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.1) ⟂ᵢ[P.prod P]
+          (fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.2)
+  productSample_coordinates_laws_indep :
+    ∀ index, index ∈ indexClass ->
+      (∀ i : Fin n,
+        HasLaw
+          (fun samplePath : SampleAt Observation n =>
+            vdVWTruncatedClassFun classFun envelope M index (samplePath i))
+          (P.map (vdVWTruncatedClassFun classFun envelope M index))
+          (vdVWProductMeasure P n)) ∧
+        iIndepFun
+          (fun i : Fin n => fun samplePath : SampleAt Observation n =>
+            vdVWTruncatedClassFun classFun envelope M index (samplePath i))
+          (vdVWProductMeasure P n) ∧
+        HasLaw
+          (fun samplePath : SampleAt Observation n => fun i : Fin n =>
+            vdVWTruncatedClassFun classFun envelope M index (samplePath i))
+          (Measure.pi fun _ : Fin n =>
+            P.map (vdVWTruncatedClassFun classFun envelope M index))
+          (vdVWProductMeasure P n)
+  pairDifference_integrable :
+    ∀ index, index ∈ indexClass ->
+      Integrable
+        (fun z : Observation × Observation =>
+          vdVWTruncatedClassFun classFun envelope M index z.1 -
+            vdVWTruncatedClassFun classFun envelope M index z.2)
+        (P.prod P)
+  pairDifference_mean_zero :
+    ∀ index, index ∈ indexClass ->
+      ∫ z : Observation × Observation,
+          vdVWTruncatedClassFun classFun envelope M index z.1 -
+            vdVWTruncatedClassFun classFun envelope M index z.2 ∂(P.prod P) =
+        0
+  randomSign_finiteNet_ae :
+    ∀ᵐ ω ∂μ,
+      vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample ≤
+        vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M + epsilon
+  randomSign_expectedMaximal :
+    VdVWTheorem243FiniteCenterExpectedMaximalBound μ
+      (fun centerIndex : Fin cardinality =>
+        fun ω =>
+          vdVWWeightedSampleSum
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+            (cover.center centerIndex) sample)
+      (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M)
+
+/--
+Construct the finite-sample symmetrization precursor from the existing
+product-copy, random-sign, and finite-cover maximal layers.
+-/
+theorem VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} [MeasurableSpace Observation]
+    {Index : Type w} {n : ℕ}
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hn : 0 < n)
+    (hM_pos : 0 < M)
+    (sign : Fin n -> Ω -> ℝ)
+    (hsign : ∀ᵐ ω ∂μ, VdVWRademacherSignVector (fun i : Fin n => sign i ω))
+    (hindep : iIndepFun sign μ)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μ)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hmaximal : ∀ᵐ ω ∂μ,
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+        (vdVWTruncatedClassFun classFun envelope M) cover.center
+        (fun i : Fin n => sign i ω) M) :
+    VdVWTheorem243SymmetrizationPrecursor
+      (μ := μ) (P := P) (sample := sample) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (epsilon := epsilon) (cover := cover) (sign := sign) := by
+  refine
+    { productCopy_laws_indep := ?_
+      productSample_coordinates_laws_indep := ?_
+      pairDifference_integrable := ?_
+      pairDifference_mean_zero := ?_
+      randomSign_finiteNet_ae := ?_
+      randomSign_expectedMaximal := ?_ }
+  · intro index hindex
+    exact
+      vdVWTheorem243_productCopy_truncatedClassFun_laws_indep
+        (P := P) hclass henvelope_meas hindex
+  · intro index hindex
+    exact
+      vdVWTheorem243_productSample_truncatedClassFun_coordinates_laws_indep
+        (P := P) hclass henvelope_meas hindex n
+  · intro index hindex
+    exact
+      integrable_vdVWTruncatedClassFun_pairDifference
+        (P := P) (htruncIntegrable index hindex)
+  · intro index hindex
+    exact
+      integral_vdVWTruncatedClassFun_productCopy_pairDifference_eq_zero
+        (P := P) (htruncIntegrable index hindex)
+  · exact
+      ae_vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSigns
+        (cover := cover) (sign := sign) hsign hepsilon_nonneg hM_pos.le hmaximal
+  · exact
+      vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard_of_pos
+        cover hindexClass_nonempty henvelope hn hM_pos sign hindep hsubG
+
+/--
 Common-domain VdV&W stochastic little-o in outer probability.
 
 `VdVWOuterProbabilityLittleOAtTop μ process scale` means

@@ -440,6 +440,8 @@ additional example closures:
    VdVWTheorem243LogRadiusMillsUpperToHoeffdingScale.of_pos
    vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard
    vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard_of_pos
+   VdVWTheorem243SymmetrizationPrecursor
+   VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover
    ```
 
    This closes the deterministic passage from fixed signs `epsilon_i` to the
@@ -561,10 +563,13 @@ additional example closures:
    `vdVWTheorem243FiniteNetHoeffdingUpper` under explicit positive `n` and
    `M` assumptions.  The latest product/Fubini local layer also packages
    mapped truncated-class product-copy laws/independence, mean-zero fixed-index
-   pair differences, and an a.e. random-sign finite-net handoff.  The remaining
-   Theorem 2.4.3 blocker is now the full symmetrization/truncation assembly and
-   outer envelope-tail layer, not the finite-net Rademacher/Hoeffding maximal
-   scale.
+   pair differences, and an a.e. random-sign finite-net handoff.  The theorem
+   file now packages these pieces as
+   `VdVWTheorem243SymmetrizationPrecursor` with constructor
+   `VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover`.  The
+   remaining Theorem 2.4.3 blocker is now the final product/Fubini
+   symmetrization inequality and entropy-to-convergence assembly, not the
+   finite-net Rademacher/Hoeffding maximal scale.
 5. Symmetrization/truncation layer: formalize or bridge Lemma 2.3.1,
    Fubini-compatible outer expectation, and the envelope-tail bound
    `P^* F{F > M}`.
@@ -610,6 +615,22 @@ Search record for the scale-comparison handoff:
   `sq_le_sq₀`, `div_le_iff₀`, and `field_simp`/`nlinarith` for the final
   nonnegative square comparison.
 
+Search record for the symmetrization precursor package:
+
+- searched local `StatInference` for product/Fubini, `HasLaw`,
+  `IndepFun`/`iIndepFun`, pair-difference mean-zero, finite-center expected
+  maximal bounds, random Rademacher signs, and a.e. finite-net handoffs;
+- searched pinned mathlib for finite Jensen/convexity and product/Fubini APIs,
+  including `ConvexOn.map_sum_le`, `ConvexOn.map_integral_le`,
+  `MeasureTheory.integral_prod`, `ProbabilityTheory.iIndepFun_pi`,
+  `iIndepFun.hasLaw_pi`, `MeasureTheory.measurePreserving_eval`, and
+  `Measure.pi_map_pi`;
+- the practical route for Theorem 2.4.3 remains the theorem-local
+  `Phi(x)=x` linear/Fubini argument rather than a general Jensen wrapper.
+  The useful missing primitive exposed by this search is a finite
+  product-sample mean-zero bridge for empirical averages over `(P.prod P)^n`,
+  or the theorem-specific specialization to truncated pair differences.
+
 Next exact edit: continue the theorem-specific symmetrization/truncation layer
 for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
 truncated pair-difference measurability/integrability, real-valued
@@ -618,10 +639,13 @@ cutoff convergence, measurable-integrable outer/lintegral envelope-tail
 convergence, `P.prod P` coordinate law/independence/identical-distribution
 wrappers, proof-carrying mapped truncated-class product-copy
 law/independence wrapper, finite-`Pi` sample-coordinate laws/independence,
-fixed-index product-copy mean-zero bridge, and a.e. random-sign finite-net
-handoff are closed.  Next assemble these into the product/Fubini-compatible
-symmetrization inequality targeted to the `Phi(x)=x` case, then connect that
-bound to the entropy-to-convergence and final Theorem 2.4.3 handoffs.
+fixed-index product-copy mean-zero bridge, a.e. random-sign finite-net handoff,
+finite-empirical-cover expected maximal bound, and the proof-carrying
+symmetrization precursor package are closed.  Next prove the finite
+product-sample mean-zero bridge if the final assembly needs it, then assemble
+the product/Fubini-compatible symmetrization inequality targeted to the
+`Phi(x)=x` case and connect it to entropy-to-convergence and final
+Theorem 2.4.3 handoffs.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
