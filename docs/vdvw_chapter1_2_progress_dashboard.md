@@ -228,6 +228,9 @@ and
 also package the selected inverse-radius cover, diagonal log-cardinality
 convergence, and measurable cardinality while keeping finite-net boundedness/UI
 explicit. The theorem-facing selected-cardinality consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated`
+is compiled for arbitrary deterministic shrinking cover radii, and its
+inverse-radius specialization
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
 is compiled as well; it discharges the measurable-cardinality input from
 equality with the selected truncated minimal empirical-cover cardinality. The
@@ -241,6 +244,20 @@ are now compiled. The remaining blocker is no longer finite-cover domination or
 terminal equality; it is supplying the diagonal shrinking-radius log
 convergence and deterministic log-ratio/UI input needed by that selected
 package, then final assembly.
+All-positive-radius covering domination can now be projected by
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.coverRadius_of_forAllRadius_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.invRadius_of_forAllRadius_samplePath`,
+with finite-witness forms
+`hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath` and
+`hasFiniteEmpiricalL1Cover_invRadius_of_forAllRadius_samplePath`,
+and selected-cardinality domination helpers
+`finiteEmpiricalL1CoveringNumberCard_le_of_empiricalL1CoveringNumber_le` and
+`finiteEmpiricalL1CoveringNumberCard_terminal_le_of_covering_le_samplePath`,
+while
+`finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`
+packages the terminal selected equality for the least finite-cover cardinality
+process.
 The product-integrated symmetrization route now also has the composed
 random-cover finite-net integral bridge
 `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
@@ -251,8 +268,8 @@ random-cover finite-net integral bridge
 DONE       Theorem 2.4.1: finite L1(P) bracketing numbers imply GC.
 ONGOING    Chapter 1.2 local cover/probability layers needed by empirical processes.
 ONGOING    Theorem 2.4.3 and nearby Chapter 2 bracketing/GC results.
-READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, random empirical-cover cardinality witness handoff, nonempty-cover positive-cardinality handoff, F_M truncation interfaces, countable truncated-class P-measurability bridge, a.e./null-measurable cover constructors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound and inverse-radius consumers, selected-cardinality equality-transport inverse-radius consumer, selected inverse-radius finite-cover constructor, packaged inverse-radius entropy side-condition consumers, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
-NEXT       Supply or prove the diagonal shrinking-radius selected log-cardinality convergence and deterministic log-ratio bound/UI replacement for `VdVWTheorem243SelectedInvRadiusEntropySideConditions`, then final Theorem 2.4.3 assembly.
+READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, random empirical-cover cardinality witness handoff, nonempty-cover positive-cardinality handoff, F_M truncation interfaces, countable truncated-class P-measurability bridge, a.e./null-measurable cover constructors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound and inverse-radius consumers, selected-cardinality equality-transport arbitrary-radius/inverse-radius consumers, all-radius covering-domination selectors, selected inverse-radius finite-cover constructor, packaged inverse-radius entropy side-condition consumers, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
+NEXT       Supply diagonal normalized log-cardinality convergence plus deterministic selected log-ratio bound, or prove the explicit varying-domain tail/UI bridge, then assemble final Theorem 2.4.3.
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED-EXAMPLE Example 2.4.2 exact quantile-grid closure and empirical-CDF report unless a theorem needs it.

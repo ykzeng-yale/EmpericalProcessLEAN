@@ -5524,6 +5524,192 @@ theorem VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite_sampl
       (X n) (hfinite n)
 
 /--
+Specialize an all-positive-radius variable-domain empirical-cover domination
+hypothesis to any deterministic positive cover-radius selector.
+
+This is the covering-domination half of the later diagonal entropy route; the
+log-cardinality convergence and deterministic/UI mean bound remain separate
+inputs.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.coverRadius_of_forAllRadius_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {coverRadius : ℕ -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hcovering_all :
+      ∀ epsilon > 0, ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          classFun epsilon (cardinality epsilon n))
+    (hcoverRadius_pos : ∀ n, 0 < coverRadius n) :
+    ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun (coverRadius n) (cardinality (coverRadius n) n) := by
+  intro n
+  exact hcovering_all (coverRadius n) (hcoverRadius_pos n) n
+
+/--
+Inverse-radius specialization of
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.coverRadius_of_forAllRadius_samplePath`.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.invRadius_of_forAllRadius_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hcovering_all :
+      ∀ epsilon > 0, ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          classFun epsilon (cardinality epsilon n)) :
+    ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun (1 / ((n : ℝ) + 1))
+        (cardinality (1 / ((n : ℝ) + 1)) n) := by
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.coverRadius_of_forAllRadius_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (coverRadius := fun n : ℕ => 1 / ((n : ℝ) + 1))
+      (cardinality := cardinality) X hcovering_all (by intro n; positivity)
+
+/--
+All-positive-radius empirical-cover domination supplies finite empirical-cover
+witnesses along any deterministic positive radius selector.
+
+This is the finite-witness half of the diagonal entropy route after choosing a
+radius process.
+-/
+theorem
+    hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {coverRadius : ℕ -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hcovering_all :
+      ∀ epsilon > 0, ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          classFun epsilon (cardinality epsilon n))
+    (hcoverRadius_pos : ∀ n, 0 < coverRadius n) :
+    ∀ n (sample : SampleAt Observation n) m,
+      HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+        classFun (coverRadius n) := by
+  exact
+    hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (coverRadius := coverRadius)
+      (cardinality := fun n => cardinality (coverRadius n) n)
+      X
+      (VdVWRandomEmpiricalL1CoveringNumberLeCardinality.coverRadius_of_forAllRadius_samplePath
+        (indexClass := indexClass) (classFun := classFun)
+        (coverRadius := coverRadius) (cardinality := cardinality)
+        X hcovering_all hcoverRadius_pos)
+
+/--
+Inverse-radius finite empirical-cover witnesses from all-positive-radius
+empirical-cover domination.
+-/
+theorem
+    hasFiniteEmpiricalL1Cover_invRadius_of_forAllRadius_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hcovering_all :
+      ∀ epsilon > 0, ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          classFun epsilon (cardinality epsilon n)) :
+    ∀ n (sample : SampleAt Observation n) m,
+      HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+        classFun (1 / ((n : ℝ) + 1)) := by
+  exact
+    hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (coverRadius := fun n : ℕ => 1 / ((n : ℝ) + 1))
+      (cardinality := cardinality) X hcovering_all (by intro n; positivity)
+
+/--
+At the terminal sample size, the least finite empirical-cover cardinality is
+bounded by any finite-valued random cardinality process that dominates the
+numeric random empirical covering number.
+-/
+theorem
+    finiteEmpiricalL1CoveringNumberCard_terminal_le_of_covering_le_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {coverRadius : ℕ -> ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hcovering_le :
+      ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          classFun (coverRadius n) (cardinality n))
+    (hfinite :
+      ∀ n (sample : SampleAt Observation n) m,
+        HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+          classFun (coverRadius n)) :
+    ∀ n (sample : SampleAt Observation n),
+      finiteEmpiricalL1CoveringNumberCard (hfinite n sample n) ≤
+        cardinality n sample n := by
+  intro n sample
+  exact
+    finiteEmpiricalL1CoveringNumberCard_le_of_empiricalL1CoveringNumber_le
+      (hfinite n sample n)
+      (by
+        simpa [vdVWRandomEmpiricalL1CoveringNumber] using
+          hcovering_le n sample n)
+
+/--
+Terminal equality for the selected minimal finite empirical-cover cardinality
+when the covering-number domination is supplied by
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite_samplePath`.
+
+This packages the `hcardinality_eq` proof needed by the selected-cardinality
+consumers when the theorem chooses the cardinality process to be the least
+finite empirical-cover cardinality itself.
+-/
+theorem
+    finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {coverRadius : ℕ -> ℝ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hfinite :
+      ∀ n (sample : SampleAt Observation n) m,
+        HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+          classFun (coverRadius n)) :
+    ∀ n (sample : SampleAt Observation n),
+      finiteEmpiricalL1CoveringNumberCard (hfinite n sample n) =
+        finiteEmpiricalL1CoveringNumberCard
+          (hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath
+            (indexClass := indexClass) (classFun := classFun)
+            (coverRadius := coverRadius)
+            (cardinality := fun n sample m =>
+              finiteEmpiricalL1CoveringNumberCard (hfinite n sample m))
+            X
+            (VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite_samplePath
+              (indexClass := indexClass) (classFun := classFun)
+              (coverRadius := coverRadius) X hfinite)
+            n sample n) := by
+  intro n sample
+  exact
+    finiteEmpiricalL1CoveringNumberCard_congr_sample
+      (sample := samplePath (X n) sample n)
+      (sample' := samplePath (X n) sample n) rfl
+      (hfinite n sample n)
+      (hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath
+        (indexClass := indexClass) (classFun := classFun)
+        (coverRadius := coverRadius)
+        (cardinality := fun n sample m =>
+          finiteEmpiricalL1CoveringNumberCard (hfinite n sample m))
+        X
+        (VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_minimal_finite_samplePath
+          (indexClass := indexClass) (classFun := classFun)
+          (coverRadius := coverRadius) X hfinite)
+        n sample n)
+
+/--
 The terminal coordinate of the minimal random empirical-cover cardinality
 process is measurable for countable classes of class-coordinate-measurable
 functions.
@@ -6459,6 +6645,90 @@ theorem
           (n : ℝ) ≤ K := by
   intro n sample
   simpa [vdVWLogEmpiricalL1CoveringCardinality] using hbound n sample
+
+/--
+Transfer a normalized terminal log-cardinality bound from an external
+finite-valued cardinality process to a pointwise smaller selected process.
+-/
+theorem
+    vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le
+    {Observation : Type v}
+    {selectedCardinality cardinality :
+      (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {K : ℝ}
+    (hterminal_le :
+      ∀ n (sample : SampleAt Observation n),
+        selectedCardinality n sample n ≤ cardinality n sample n)
+    (hbound :
+      ∀ n (sample : SampleAt Observation n),
+        Real.log ((cardinality n sample n : ℝ) + 1) / (n : ℝ) ≤ K) :
+    ∀ n (sample : SampleAt Observation n),
+      vdVWLogEmpiricalL1CoveringCardinality
+          (selectedCardinality n) sample n / (n : ℝ) ≤ K := by
+  intro n sample
+  have hlog_le :
+      vdVWLogEmpiricalL1CoveringCardinality
+          (selectedCardinality n) sample n ≤
+        Real.log ((cardinality n sample n : ℝ) + 1) := by
+    unfold vdVWLogEmpiricalL1CoveringCardinality
+    have hselected_pos :
+        0 < ((selectedCardinality n sample n : ℝ) + 1) := by
+      have hnonneg :
+          (0 : ℝ) ≤ (selectedCardinality n sample n : ℝ) :=
+        Nat.cast_nonneg _
+      linarith
+    have harg_le :
+        ((selectedCardinality n sample n : ℝ) + 1) ≤
+          ((cardinality n sample n : ℝ) + 1) := by
+      have hcast :
+          (selectedCardinality n sample n : ℝ) ≤
+            (cardinality n sample n : ℝ) := by
+        exact_mod_cast hterminal_le n sample
+      linarith
+    exact Real.log_le_log hselected_pos harg_le
+  exact
+    (div_le_div_of_nonneg_right hlog_le (Nat.cast_nonneg n)).trans
+      (hbound n sample)
+
+/--
+Transfer a normalized terminal log-cardinality bound from a finite-valued
+random covering-number domination process to the selected least finite
+empirical-cover cardinality.
+-/
+theorem
+    vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {coverRadius : ℕ -> ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {K : ℝ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hcovering_le :
+      ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          classFun (coverRadius n) (cardinality n))
+    (hfinite :
+      ∀ n (sample : SampleAt Observation n) m,
+        HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+          classFun (coverRadius n))
+    (hbound :
+      ∀ n (sample : SampleAt Observation n),
+        Real.log ((cardinality n sample n : ℝ) + 1) / (n : ℝ) ≤ K) :
+    ∀ n (sample : SampleAt Observation n),
+      vdVWLogEmpiricalL1CoveringCardinality
+          (fun sample m =>
+            finiteEmpiricalL1CoveringNumberCard (hfinite n sample m))
+          sample n / (n : ℝ) ≤ K := by
+  exact
+    vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le
+      (selectedCardinality := fun n sample m =>
+        finiteEmpiricalL1CoveringNumberCard (hfinite n sample m))
+      (cardinality := cardinality)
+      (finiteEmpiricalL1CoveringNumberCard_terminal_le_of_covering_le_samplePath
+        (indexClass := indexClass) (classFun := classFun)
+        (coverRadius := coverRadius) (cardinality := cardinality)
+        X hcovering_le hfinite)
+      hbound
 
 /--
 Rewrite the finite-net Hoeffding upper using the random log-cardinality process
@@ -9271,6 +9541,222 @@ theorem
       (Ucentered := Ucentered)
       (hfiniteNetUpperIntegral_tendsto_zero :=
         hfiniteNetUpperIntegral_tendsto_zero)
+      (hcoverRadius_tendsto_zero := hcoverRadius_tendsto_zero)
+
+/--
+Fixed-`M` centered-truncated convergence with the terminal cardinality
+measurability discharged from equality with the selected minimal truncated
+empirical-cover cardinality, for an arbitrary deterministic shrinking cover
+radius.
+
+This is the selected-cardinality form needed by a later diagonal radius
+selector: once that selector supplies `coverRadius -> 0`, covering-number
+domination, log convergence, and a deterministic normalized log bound, the
+measurability input is transported from the selected least finite empirical
+cover at the terminal sample size.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M K : ℝ}
+    (coverRadius : ℕ -> ℝ)
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_le :
+      ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (coverRadius n)
+          (cardinality n))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (hK_nonneg : 0 ≤ K)
+    (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
+    (hsign :
+      ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
+        (fun i : Fin n => sign n i ω))
+    (hindep : ∀ n, iIndepFun (sign n) μsign)
+    (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign)
+    (hcoverRadius_nonneg : ∀ n, 0 ≤ coverRadius n)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hpairSupIntegrable :
+      ∀ n (sample : SampleAt Observation n),
+        Integrable
+          (fun ghostSample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (sample i, ghostSample i)))
+          (vdVWProductMeasure P n))
+    (hcenteredSupIntegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+          (vdVWProductMeasure P n))
+    (hghostExpectationIntegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            ∫ ghostSample : SampleAt Observation n,
+              vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index z.1 -
+                    vdVWTruncatedClassFun classFun envelope M index z.2)
+                (fun _ : Fin n => (n : ℝ)⁻¹)
+                (fun i : Fin n => (sample i, ghostSample i))
+                ∂(vdVWProductMeasure P n))
+          (vdVWProductMeasure P n))
+    (hsplitSupIntegrable :
+      ∀ n,
+        Integrable
+          (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+          ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)))
+    (hsampleSupIntegrable :
+      ∀ n (ω : Ωsign),
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i ω)) sample)
+          (vdVWProductMeasure P n))
+    (hrandomIntegralIntegrable :
+      ∀ n,
+        Integrable
+          (fun ω : Ωsign =>
+            ∫ sample : SampleAt Observation n,
+              vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (fun i : Fin n => sign n i ω)) sample
+              ∂(vdVWProductMeasure P n))
+          μsign)
+    (Urandom :
+      ∀ n, VdVWMeasurableCover (μsign.prod (vdVWProductMeasure P n))
+        (fun z : Ωsign × SampleAt Observation n => ENNReal.ofReal
+          (vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign n i z.1)) z.2)))
+    (hproductSupIntegrable :
+      ∀ n,
+        Integrable
+          (fun z : Ωsign × SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i z.1)) z.2)
+          (μsign.prod (vdVWProductMeasure P n)))
+    (hsignSupIntegrable :
+      ∀ n (sample : SampleAt Observation n),
+        Integrable
+          (fun ωsign =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)) sample)
+          μsign)
+    (hfiniteCenterSupIntegrable :
+      ∀ n (sample : SampleAt Observation n),
+        Integrable
+          (fun ωsign =>
+            vdVWFiniteCenterWeightedSupremum sample
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRandomEmpiricalL1CoverAtCard (X n) (hcovering_le n)
+                hindexClass sample n).center
+              (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)))
+          μsign)
+    (Ucentered :
+      ∀ n, VdVWMeasurableCover (vdVWProductMeasure P n)
+        (fun sample : SampleAt Observation n => ENNReal.ofReal
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hcardinality_eq :
+      ∀ n (sample : SampleAt Observation n),
+        cardinality n sample n =
+          finiteEmpiricalL1CoveringNumberCard
+            (hasFiniteEmpiricalL1Cover_of_randomEmpiricalL1CoveringNumber_le_cardinality_samplePath
+              (indexClass := indexClass)
+              (classFun := vdVWTruncatedClassFun classFun envelope M)
+              (coverRadius := coverRadius)
+              (cardinality := cardinality) X hcovering_le n sample n))
+    (hlog :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+        atTop (0 : ℝ))
+    (hlog_div_bound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ) ≤ K)
+    (hcoverRadius_tendsto_zero : Tendsto coverRadius atTop (𝓝 0)) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_measurable_cardinality_logCardinality_div_bound
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M) (K := K)
+      (coverRadius := coverRadius) (cardinality := cardinality) (X := X)
+      (hX_samplePath := hX_samplePath) (hcovering_le := hcovering_le)
+      (hindexClass := hindexClass) (henvelope := henvelope)
+      (hM_pos := hM_pos) (hK_nonneg := hK_nonneg)
+      (sign := sign) (hsign := hsign) (hindep := hindep)
+      (hsubG := hsubG)
+      (hcoverRadius_nonneg := hcoverRadius_nonneg)
+      (htruncIntegrable := htruncIntegrable)
+      (hpairSupIntegrable := hpairSupIntegrable)
+      (hcenteredSupIntegrable := hcenteredSupIntegrable)
+      (hghostExpectationIntegrable := hghostExpectationIntegrable)
+      (hsplitSupIntegrable := hsplitSupIntegrable)
+      (hsampleSupIntegrable := hsampleSupIntegrable)
+      (hrandomIntegralIntegrable := hrandomIntegralIntegrable)
+      (Urandom := Urandom) (hproductSupIntegrable := hproductSupIntegrable)
+      (hsignSupIntegrable := hsignSupIntegrable)
+      (hfiniteCenterSupIntegrable := hfiniteCenterSupIntegrable)
+      (Ucentered := Ucentered) (hlog := hlog)
+      (hcardinality :=
+        measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable_of_covering_le
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (coverRadius := coverRadius)
+          (cardinality := cardinality) X hX_samplePath hcovering_le hclass
+          henvelope_meas hcardinality_eq)
+      (hlog_div_bound := hlog_div_bound)
       (hcoverRadius_tendsto_zero := hcoverRadius_tendsto_zero)
 
 /--

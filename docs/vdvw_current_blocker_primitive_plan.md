@@ -979,6 +979,32 @@ Search record for the symmetrization precursor package:
   convergence plus a deterministic normalized log-ratio bound, or prove a
   genuine variable-domain uniform-integrability/dominated-convergence
   replacement.
+  All-positive-radius covering domination can now be specialized by
+  `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.coverRadius_of_forAllRadius_samplePath`,
+  with inverse-radius form
+  `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.invRadius_of_forAllRadius_samplePath`.
+  The same all-radius-to-chosen-radius step supplies finite empirical-cover
+  witnesses through `hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath`
+  and `hasFiniteEmpiricalL1Cover_invRadius_of_forAllRadius_samplePath`.
+  For externally supplied finite cardinality processes, the selected least
+  finite-cover cardinality is bounded by the supplied process via
+  `finiteEmpiricalL1CoveringNumberCard_le_of_empiricalL1CoveringNumber_le`
+  and
+  `finiteEmpiricalL1CoveringNumberCard_terminal_le_of_covering_le_samplePath`.
+  The selected least finite-cardinality process also has
+  `finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`,
+  which supplies the terminal equality proof needed by the selected-cardinality
+  consumers when `cardinality` is chosen to be the minimal finite empirical
+  cover cardinality itself.
+  The arbitrary-radius theorem-facing consumer
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated`
+  handles arbitrary deterministic shrinking cover radii, while
+  `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
+  specializes it to `1 / ((n : ℝ) + 1)` and discharges `hcardinality` from
+  equality with the selected truncated minimal-cardinality process.  The
+  remaining analytic inputs remain the diagonal normalized log-cardinality
+  convergence plus deterministic bound, or a genuine variable-domain
+  uniform-integrability/dominated-convergence replacement.
   Search record: local `StatInference` and pinned mathlib searches for
   `UniformIntegrable`, `UnifIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
   `tendsto_integral_of_L1`, `TendstoInMeasure`, and
@@ -1009,15 +1035,18 @@ Search record for the symmetrization precursor package:
   The remaining non-plumbing inputs are the selected diagonal log convergence
   and either the deterministic log-ratio bound input or a genuine bounded/UI
   replacement.
-  Follow-up search found no ready
-  variable-domain `UniformIntegrable`/Vitali API; the practical alternatives are
-  keeping deterministic boundedness or adding a new explicit variable-domain
-  tail-expectation/UI primitive.
-  A follow-up probability-measure/API search found only fixed-domain
-  `MeasureTheory.UnifIntegrable`/`UniformIntegrable`,
-  `tendsto_Lp_finite_of_tendstoInMeasure`, `tendsto_integral_of_L1`, and
-  fixed-measure dominated-convergence APIs; local `ProbabilityMeasure/Tail.lean`
-  supplies reusable layer-cake/tail bounds but no variable-domain Vitali theorem.
+  Follow-up search found no ready variable-domain `UniformIntegrable`/Vitali
+  API; pinned mathlib's `MeasureTheory.UnifIntegrable`,
+  `UniformIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
+  `tendstoInMeasure_iff_tendsto_Lp_finite`, `tendsto_integral_of_L1`, and
+  dominated-convergence APIs are fixed-domain.  Local
+  `ProbabilityMeasure/Tail.lean` supplies reusable layer-cake/tail bounds but
+  no variable-domain Vitali theorem.  The practical alternatives are keeping
+  deterministic boundedness/log-ratio control or adding a new explicit
+  variable-domain tail-expectation/UI primitive.  The best Billingsley source
+  fallback for that latter route is Theorem 25.12/UI, but no report should be
+  created unless an exact theorem is proved and the source screenshots/report
+  PDF are compiled.
   A radius-monotonicity search found mathlib
   `Metric.externalCoveringNumber_anti`, `Metric.coveringNumber_anti`, and local
   `vdVWCoveringNumber_anti`, but this direction does not derive an upper bound
@@ -1032,59 +1061,14 @@ Search record for the symmetrization precursor package:
   comparison is available, but the theorem-line route should remain
   product-integrated.
 
-Next exact edit: continue the theorem-specific symmetrization/truncation layer
-for Theorem 2.4.3.  The countable truncated-class `P`-measurability gate, fixed
-truncated pair-difference measurability/integrability, real-valued
-envelope-tail outer-expectation/probability handoffs, generic ordinary tail
-cutoff convergence, measurable-integrable outer/lintegral envelope-tail
-convergence, `P.prod P` coordinate law/independence/identical-distribution
-wrappers, proof-carrying mapped truncated-class product-copy
-law/independence wrapper, finite-`Pi` sample-coordinate laws/independence,
-fixed-index product-copy mean-zero bridge, a.e. random-sign finite-net handoff,
-finite-empirical-cover expected maximal bound, and the proof-carrying
-symmetrization precursor package and finite product-sample weighted-sum
-mean-zero bridge, plus the random-sign expected-maximal and outer-expectation
-finite-net projections, the bounded-value-set class-member-to-supremum bridge
-plus uniform-bound value-set boundedness bridge, the fixed-sample `Phi(x)=x`
-ghost-copy comparison, the envelope-bounded pair split, the finite
-product-coordinate projection wrapper and VdV&W specializations, the
-expectation-level integral lifts including the same-weight pair-split rewrite,
-the projected two-coordinate expectation bound, the deterministic
-Rademacher-weight sign-negation bridge, the integrated product-pair
-sign-symmetry/random-sign averaging comparison, and the supplied-`hphi_id`
-finite-net projection, plus the product-integrated measurable-cover
-outer-expectation bridge, supplied product-space finite-net projection,
-sample-cover/sample-dependent-cardinality product-a.e. finite-net bridges,
-random empirical-cover cardinality
-witness handoff, random empirical-cover product random-sign handoff,
-selected-cover expected-maximal handoff, product-integrated random-cover
-finite-net expected-maximal bound, product outer-expectation projection for the
-expectation-level finite-net route, and a.e./null-measurable cover
-constructors, plus the finite-net Hoeffding upper nonnegativity/square
-expansion, random log-cardinality rewrite/square expansion, deterministic
-`L_n / n -> 0` to Hoeffding-scale convergence helper, pointwise finite-net
-notation bridge, stochastic outer-probability entropy-to-Hoeffding-scale
-handoff, shifted-display convergence, fixed/all-entropy consumers, and the
-Markov outer-expectation-to-outer-probability bridge, plus the composed
-centered-truncated integral finite-net bound, variable-domain Markov bridges,
-fixed-`M` centered-truncated convergence handoff under an explicit vanishing
-integrated Hoeffding-plus-radius hypothesis, its real-mean convergence consumer,
-the split finite-net-mean/cover-radius fixed-`M` consumer, bounded-tail
-expectation wrapper, variable-domain bounded outer-probability-to-mean bridge,
-variable-domain entropy-to-Hoeffding bridge, finite-net mean consumer,
-measurable-cardinality finite-net mean consumer, random finite-net upper
-measurability/integrability packaging, and bounded entropy-to-integrated-mean
-consumer, plus the fixed-`M` bounded entropy/measurable-cardinality convergence
-consumer, inverse-radius consumer, cover-event-to-covering-number measurability
-  abstraction, least finite-cardinality measurability wrapper, minimal
-  finite-cardinality domination wrapper, pairwise empirical-distance measurability
-  bridge, countable covering-number/cardinality wrappers, and theorem-facing
-  selected-cardinality measurability wrappers for countable/truncated classes,
-  plus the inverse-radius entropy side-condition wrapper, are closed. Next feed
-  the theorem entropy/finite-cover hypotheses into those wrappers, derive or
-  supply the deterministic log-ratio bound or genuine bounded/UI replacement,
-  instantiate the inverse-radius side-condition package, and then assemble the
-  final Theorem 2.4.3 handoffs.
+Next exact edit: attack the analytic side of the selected inverse-radius route.
+Either prove a theorem-facing diagonal normalized log-cardinality convergence
+and deterministic selected log-ratio bound for the selected minimal empirical
+cover at radius `1 / (n + 1)`, or formalize a precise varying-domain
+tail-expectation/UI primitive strong enough to replace that deterministic
+bound.  The finite-cover domination, terminal selected-cardinality equality,
+measurability transport, fixed-`M` centered-truncated consumers, and
+symmetrization/product finite-net route are already compiled.
 
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant

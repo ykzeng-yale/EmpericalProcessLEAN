@@ -254,14 +254,32 @@ The covering-domination finite-witness bridges
 and
 `measurable_cardinality_at_sampleSize_of_eq_selected_truncatedRandomEmpiricalL1CoveringNumberCard_of_countable_of_covering_le`
 are available for theorem entropy hypotheses.
+The all-positive-radius covering-domination selector is packaged as
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.coverRadius_of_forAllRadius_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.invRadius_of_forAllRadius_samplePath`.
+The finite-cover witness side of the same specialization is now packaged as
+`hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath` and
+`hasFiniteEmpiricalL1Cover_invRadius_of_forAllRadius_samplePath`.
+The least selected cardinality can also be compared against any dominating
+finite cardinality process through
+`finiteEmpiricalL1CoveringNumberCard_le_of_empiricalL1CoveringNumber_le` and
+`finiteEmpiricalL1CoveringNumberCard_terminal_le_of_covering_le_samplePath`.
+`finiteEmpiricalL1CoveringNumberCard_terminal_eq_of_minimal_finite_samplePath`
+now packages the terminal selected-cardinality equality when the final theorem
+chooses the least finite empirical-cover cardinality process itself.
 The theorem-facing selected-cardinality consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated`
+is available for arbitrary deterministic shrinking cover radii, and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius`
-now composes these pieces and discharges measurable cardinality from equality
-with the selected truncated minimal empirical-cover cardinality.  The next
-blocker is feeding theorem entropy/finite-cover hypotheses into that consumer:
-inverse-radius covering domination, selected terminal equality, normalized
-log-cardinality convergence, and a deterministic normalized
-log-cardinality bound or genuine boundedness/UI replacement.
+specializes it to `1 / ((n : ℝ) + 1)`.  The next blocker is feeding theorem
+entropy hypotheses into one of those consumers past the now-closed
+covering-domination/finite-witness step: selected terminal equality,
+normalized log-cardinality convergence, and a deterministic normalized
+log-cardinality bound or genuine varying-domain tail/UI replacement.  Pinned
+mathlib UI/Vitali/DCT APIs are fixed-domain, so the deterministic bound remains
+the practical route unless a new explicit varying-domain tail-expectation
+bridge is proved.
    Do not add new Billingsley
    tail/Fubini wrappers unless one of those steps needs reusable
    probability/measure support.
