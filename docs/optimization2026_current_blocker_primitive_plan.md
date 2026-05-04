@@ -83,6 +83,12 @@ blocker for the whole-space differentiable case:
 - Lemma 1.10 minimizer uniqueness under mathlib `StrictConvexOn` compiles in
   `StatInference/Optimization/Minimizer.lean`, reusing
   `StrictConvexOn.eq_of_isMinOn`.
+- Chewi's segment `StrongConvexOn C f alpha` is now bridged both ways with
+  mathlib's root `_root_.StrongConvexOn C alpha f` via
+  `StrongConvexOn.to_mathlibStrongConvexOn`,
+  `StrongConvexOn.of_mathlibStrongConvexOn`, and
+  `strongConvexOn_iff_mathlibStrongConvexOn`; nonnegative strong convexity
+  and `ChewiConvexOn` also expose mathlib `ConvexOn`.
 - Positive local `StrongConvexOn` implies mathlib `StrictConvexOn`, so positive
   Chewi strong convexity plus minimizer existence gives an `∃!` minimizer.
 - Corollary 1.11-style wrappers compile for the supplied first-order lower
@@ -325,6 +331,17 @@ definition plus mathlib `HasGradientAt`.  It uses
 `le_of_tendsto`, `eventually_le_nhds`, `self_mem_nhdsWithin`, and
 `mul_le_mul_iff_of_pos_left`.
 
+Current Definition 1.5/root-API bridge result: mathlib's
+`Mathlib.Analysis.Convex.Strong` defines root `_root_.StrongConvexOn` as
+uniform convexity with modulus `fun r => alpha / 2 * r ^ 2`.  The local Chewi
+display (1.3) is equivalent after reindexing `a = 1 - t`, `b = t` and using
+`norm_sub_rev`; the compiled wrappers are
+`StrongConvexOn.to_mathlibStrongConvexOn`,
+`StrongConvexOn.of_mathlibStrongConvexOn`,
+`strongConvexOn_iff_mathlibStrongConvexOn`,
+`StrongConvexOn.convexOn`, and `ChewiConvexOn.convexOn`.  Future convexity
+routes should reuse these wrappers before opening local algebra.
+
 Current first-order recurrence bridge result: `FirstOrderStrongConvexOn` is a
 source-faithful version of Chewi Proposition 1.6 / equation (1.4), and on the
 whole space it is now derived from local segment strong convexity plus
@@ -510,6 +527,11 @@ Latest verified local frontier after lane creation:
 
 - `StatInference.Optimization.StrongConvexOn`
 - `StatInference.Optimization.ChewiConvexOn`
+- `StatInference.Optimization.StrongConvexOn.to_mathlibStrongConvexOn`
+- `StatInference.Optimization.StrongConvexOn.of_mathlibStrongConvexOn`
+- `StatInference.Optimization.strongConvexOn_iff_mathlibStrongConvexOn`
+- `StatInference.Optimization.StrongConvexOn.convexOn`
+- `StatInference.Optimization.ChewiConvexOn.convexOn`
 - `StatInference.Optimization.SmoothWithGradientOn`
 - `StatInference.Optimization.PolyakLojasiewiczOn`
 - `StatInference.Optimization.gradientDescentStep`

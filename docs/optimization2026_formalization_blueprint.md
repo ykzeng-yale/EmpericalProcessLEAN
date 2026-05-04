@@ -94,6 +94,11 @@ Current compiled surface:
 
 - `StatInference.Optimization.StrongConvexOn`
 - `StatInference.Optimization.ChewiConvexOn`
+- `StatInference.Optimization.StrongConvexOn.to_mathlibStrongConvexOn`
+- `StatInference.Optimization.StrongConvexOn.of_mathlibStrongConvexOn`
+- `StatInference.Optimization.strongConvexOn_iff_mathlibStrongConvexOn`
+- `StatInference.Optimization.StrongConvexOn.convexOn`
+- `StatInference.Optimization.ChewiConvexOn.convexOn`
 - `StatInference.Optimization.FirstOrderStrongConvexOn`
 - `StatInference.Optimization.SmoothWithGradientOn`
 - `StatInference.Optimization.gradientDescentStep`
@@ -151,8 +156,12 @@ Current compiled surface:
 
 Near-term exact candidates:
 
-1. Definition 1.4/1.5 wrappers against mathlib `Convex`/`ConvexOn` and
-   root-level mathlib `StrongConvexOn`.
+1. Use the compiled Definition 1.4/1.5 bridges
+   `StrongConvexOn.to_mathlibStrongConvexOn`,
+   `StrongConvexOn.of_mathlibStrongConvexOn`, and
+   `strongConvexOn_iff_mathlibStrongConvexOn` when later theorem routes want
+   mathlib's root `StrongConvexOn`/`ConvexOn` API; do not reprove this
+   equivalence.
 2. Source-audited packaging for Lemma 1.10 uniqueness of minimizer under
    strict convexity, now compiled via mathlib `StrictConvexOn.eq_of_isMinOn`.
 3. Corollary 1.11 existence/coercivity layer; uniqueness and gradient-zero

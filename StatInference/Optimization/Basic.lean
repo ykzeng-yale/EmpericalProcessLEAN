@@ -129,6 +129,78 @@ theorem StrongConvexOn.segment_ineq {C : Set E} {f : E -> ℝ}
         (alpha / 2) * t * (1 - t) * ‖y - x‖ ^ (2 : ℕ) :=
   h.2 hx hy ht
 
+/--
+Bridge from Chewi's segment strong-convexity display (1.3) to mathlib's
+root `StrongConvexOn` API.
+-/
+theorem StrongConvexOn.to_mathlibStrongConvexOn
+    {C : Set E} {f : E -> ℝ} {alpha : ℝ}
+    (h : StrongConvexOn C f alpha) :
+    _root_.StrongConvexOn C alpha f := by
+  refine ⟨h.convex_set, ?_⟩
+  intro x hx y hy a b ha hb hab
+  have hb_le_one : b ≤ 1 := by nlinarith
+  have hbIcc : b ∈ Icc (0 : ℝ) 1 := ⟨hb, hb_le_one⟩
+  have ha_eq : a = 1 - b := by nlinarith
+  have hseg := h.segment_ineq hx hy (t := b) hbIcc
+  have hrhs :
+      (1 - b) * f x + b * f y -
+          (alpha / 2) * b * (1 - b) * ‖y - x‖ ^ (2 : ℕ) =
+        a • f x + b • f y -
+          a * b * (alpha / 2 * ‖x - y‖ ^ (2 : ℕ)) := by
+    rw [ha_eq, norm_sub_rev]
+    ring
+  simpa [ha_eq, hrhs] using hseg
+
+/--
+Bridge from mathlib's root `StrongConvexOn` API back to Chewi's segment
+display (1.3).
+-/
+theorem StrongConvexOn.of_mathlibStrongConvexOn
+    {C : Set E} {f : E -> ℝ} {alpha : ℝ}
+    (h : _root_.StrongConvexOn C alpha f) :
+    StrongConvexOn C f alpha := by
+  refine ⟨h.1, ?_⟩
+  intro x hx y hy t ht
+  have hone_sub_nonneg : 0 ≤ 1 - t := by nlinarith [ht.2]
+  have hroot :=
+    h.2 hx hy hone_sub_nonneg ht.1 (by ring : (1 - t) + t = 1)
+  have hrhs :
+      (1 - t) • f x + t • f y -
+          (1 - t) * t * (alpha / 2 * ‖x - y‖ ^ (2 : ℕ)) =
+        (1 - t) * f x + t * f y -
+          (alpha / 2) * t * (1 - t) * ‖y - x‖ ^ (2 : ℕ) := by
+    rw [norm_sub_rev]
+    ring
+  exact hroot.trans_eq hrhs
+
+/-- Chewi's segment definition is definitionally equivalent to mathlib's root API. -/
+theorem strongConvexOn_iff_mathlibStrongConvexOn
+    {C : Set E} {f : E -> ℝ} {alpha : ℝ} :
+    StrongConvexOn C f alpha ↔ _root_.StrongConvexOn C alpha f :=
+  ⟨StrongConvexOn.to_mathlibStrongConvexOn,
+    StrongConvexOn.of_mathlibStrongConvexOn⟩
+
+/--
+Nonnegative Chewi strong convexity gives the ordinary mathlib convex-function
+API.
+-/
+theorem StrongConvexOn.convexOn
+    {C : Set E} {f : E -> ℝ} {alpha : ℝ}
+    (h : StrongConvexOn C f alpha) (halpha : 0 ≤ alpha) :
+    _root_.ConvexOn ℝ C f := by
+  exact h.to_mathlibStrongConvexOn.convexOn (by
+    intro r
+    positivity)
+
+/-- Chewi convexity (`alpha = 0`) gives mathlib `ConvexOn`. -/
+theorem ChewiConvexOn.convexOn {C : Set E} {f : E -> ℝ}
+    (h : ChewiConvexOn C f) :
+    _root_.ConvexOn ℝ C f := by
+  have hroot : _root_.StrongConvexOn C (0 : ℝ) f :=
+    h.to_mathlibStrongConvexOn
+  simpa using hroot
+
 theorem FirstOrderStrongConvexOn.convex_set {C : Set E} {f : E -> ℝ}
     {grad : E -> E} {alpha : ℝ}
     (h : FirstOrderStrongConvexOn C f grad alpha) :
