@@ -827,6 +827,16 @@ The theorem keeps row-wise filtrations explicit, so it avoids the false claim
 that the decreasing `Σ_n` family is already an increasing mathlib filtration.
 The only remaining Lemma 2.4.5 blocker is the reverse/cofiltration convergence
 theorem itself.
+2026-05-04 follow-up: the all-row package now feeds the theorem-facing
+consumer
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseCofiltrationHandoff`,
+using the named displays `vdVWLemma245CenteredEmpiricalSupremum` and
+`vdVWLemma245LeaveOneOutCenteredSupremum`.  This closes the local handoff from
+countable class/envelope hypotheses to the final a.e. centered-supremum
+convergence statement under one explicit reverse/cofiltration convergence
+primitive.  The remaining gap is still the mathematical reverse
+martingale/cofiltration convergence theorem for the decreasing
+permutation-symmetric `Σ_n` fields.
 
 ## Verification Monitor
 

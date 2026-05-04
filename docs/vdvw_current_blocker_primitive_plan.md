@@ -3287,3 +3287,18 @@ full-measure set, leaving the remaining exact blocker unchanged and sharper:
 prove the reverse/cofiltration convergence theorem that turns these
 row-wise conditional-expectation controls into a.e. convergence of the
 centered empirical supremum sequence itself.
+
+2026-05-04 follow-up: the final proof-facing consumer of that all-row package
+is now compiled as
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseCofiltrationHandoff`,
+with the display abbreviations
+`vdVWLemma245CenteredEmpiricalSupremum` and
+`vdVWLemma245LeaveOneOutCenteredSupremum`.  This removes the remaining local
+class/envelope/measurability plumbing from the final Lemma 2.4.5 statement:
+once a reverse/cofiltration convergence primitive turns the all-row
+conditional-expectation controls into a.e. convergence of the centered
+empirical supremum sequence, the theorem-facing handoff is immediate.  The
+remaining blocker is therefore exactly that reverse/cofiltration convergence
+primitive for the decreasing permutation-symmetric `Σ_n` fields; pinned
+mathlib searches found only ordinary `ℕ`-filtration martingale convergence,
+not a ready `ℕᵒᵈ` reverse/cofiltration convergence theorem.

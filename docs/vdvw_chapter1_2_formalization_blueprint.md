@@ -1114,6 +1114,11 @@ above, so they do not change the theorem-level dashboard counts.
    reverse-filtration convergence reduction for the decreasing
    permutation-symmetric `Σ_n` cofiltration, or an honest reindexing into a
    mathlib-compatible increasing filtration.
+   The theorem-facing consumer
+   `vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseCofiltrationHandoff`
+   now compiles as well, so the final local class/envelope/measurability
+   plumbing is closed once that reverse/cofiltration convergence primitive is
+   available.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
