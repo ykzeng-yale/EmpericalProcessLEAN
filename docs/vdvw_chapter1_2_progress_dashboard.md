@@ -796,12 +796,20 @@ declarations include `vdVWLeaveOneOutToLastPerm`,
 The remaining Lemma 2.4.5 work is now the measurable-cover/integrability and
 L1-boundedness instantiation of this reverse-comparison handoff, followed by
 the reverse-submartingale convergence reduction.
+2026-05-04 follow-up: the countable integrable-envelope instantiation is now
+compiled as
+`vdVW_condExp_reverseComparison_centered_uniformClassSupremum_le_lastLeaveOneOut_of_countable`.
+This discharges the comparison theorem's strong measurability, integrability,
+and bounded-value-set side conditions for centered empirical suprema under
+countability, coordinate measurability, and an integrable envelope.  Remaining
+Lemma 2.4.5 work is now the final reverse-submartingale convergence reduction
+and uniform L1/eLpNorm bound.
 
 ## Verification Monitor
 
 Latest targeted verification includes the Theorem 2.4.3 theorem module after
-the Lemma 2.4.5 leave-one-out transport, conditional-symmetry, and
-reverse-comparison handoff on 2026-05-04.
+the Lemma 2.4.5 countable integrable-envelope reverse-comparison consumer on
+2026-05-04.
 
 ```text
 lake env lean StatInference/EmpiricalProcess/Theorem243.lean

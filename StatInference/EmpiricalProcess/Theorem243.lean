@@ -4145,6 +4145,154 @@ theorem eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq
       (vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n)
 
 /--
+Countable integrable-envelope specialization of the Lemma 2.4.5
+leave-one-out reverse-comparison handoff for centered empirical suprema.
+
+This discharges the measurability, integrability, and samplewise bounded-value
+set hypotheses in
+`vdVW_condExp_reverseComparison_uniformClassSupremum_le_lastLeaveOneOut` from
+the standard countability, coordinate-measurability, and integrable-envelope
+assumptions.
+-/
+theorem
+    vdVW_condExp_reverseComparison_centered_uniformClassSupremum_le_lastLeaveOneOut_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {n : ℕ} (hn : 0 < n) :
+    (fun sequence : ℕ -> Observation =>
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P)
+        (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹)
+        (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)) ≤ᵐ[
+      vdVWInfiniteProductMeasure P]
+      (vdVWInfiniteProductMeasure P)[
+        (fun sequence : ℕ -> Observation =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            ((Fin.last n).removeNth
+              (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))) |
+        vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] := by
+  let centeredClassFun : Index -> Observation -> ℝ :=
+    fun index observation => classFun index observation - ∫ x, classFun index x ∂P
+  have hcentered_meas :
+      VdVWClassCoordinateMeasurable indexClass centeredClassFun := by
+    intro index hindex
+    exact (hclass index hindex).sub measurable_const
+  have hX_meas :
+      StronglyMeasurable[
+        vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)]
+        (fun sequence : ℕ -> Observation =>
+          vdVWWeightedClassSupremum indexClass centeredClassFun
+            (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹)
+            (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)) := by
+    exact
+      (measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable
+        (indexClass := indexClass) (classFun := centeredClassFun)
+        hcount hcentered_meas (n + 1)).stronglyMeasurable
+  have hX_int :
+      Integrable
+        (fun sequence : ℕ -> Observation =>
+          vdVWWeightedClassSupremum indexClass centeredClassFun
+            (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹)
+            (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))
+        (vdVWInfiniteProductMeasure P) := by
+    simpa [centeredClassFun] using
+      integrable_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hcount henvelope hclass henv_integrable
+        (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹)
+  have hY_base :
+      Integrable
+        (fun sequence : ℕ -> Observation =>
+          vdVWWeightedClassSupremum indexClass centeredClassFun
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            ((Fin.last n).removeNth
+              (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)))
+        (vdVWInfiniteProductMeasure P) := by
+    have hfirst :
+        Integrable
+          (fun sequence : ℕ -> Observation =>
+            vdVWWeightedClassSupremum indexClass centeredClassFun
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (vdVWFirstNSample (Observation := Observation) n sequence))
+          (vdVWInfiniteProductMeasure P) := by
+      simpa [centeredClassFun] using
+        integrable_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_of_countable
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) hcount henvelope hclass henv_integrable
+          (fun _ : Fin n => (n : ℝ)⁻¹)
+    convert hfirst using 1
+    funext sequence
+    congr 1
+    ext j
+    simp [Fin.removeNth, vdVWFirstNSample]
+  have hY_int :
+      ∀ omitted : Fin (n + 1),
+        Integrable
+          (fun sequence : ℕ -> Observation =>
+            vdVWWeightedClassSupremum indexClass centeredClassFun
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (omitted.removeNth
+                (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)))
+          (vdVWInfiniteProductMeasure P) := by
+    intro omitted
+    let permNat : Equiv.Perm ℕ :=
+      vdVWNatPermOfFin (vdVWLeaveOneOutToLastPerm omitted)
+    have hmp :
+        MeasurePreserving
+          (vdVWPermuteNatSequence (Observation := Observation) permNat)
+          (vdVWInfiniteProductMeasure P) (vdVWInfiniteProductMeasure P) :=
+      vdVWInfiniteProductMeasure_measurePreserving_permuteNatSequence
+        (Observation := Observation) P permNat
+    have hcomp :
+        Integrable
+          (fun sequence : ℕ -> Observation =>
+            vdVWWeightedClassSupremum indexClass centeredClassFun
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              ((Fin.last n).removeNth
+                (vdVWFirstNSample (Observation := Observation) (n + 1)
+                  (vdVWPermuteNatSequence
+                    (Observation := Observation) permNat sequence))))
+          (vdVWInfiniteProductMeasure P) := by
+      simpa [Function.comp_def, permNat] using
+        hmp.integrable_comp_of_integrable hY_base
+    convert hcomp using 1
+    funext sequence
+    exact
+      (vdVWWeightedClassSupremum_leaveOneOut_last_comp_natPermOfFin_eq
+        (Observation := Observation) indexClass centeredClassFun omitted sequence).symm
+  have hbdd :
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∀ omitted : Fin (n + 1),
+          BddAbove
+            (vdVWWeightedClassValueSet indexClass centeredClassFun
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (omitted.removeNth
+                (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))) := by
+    exact ae_of_all _ fun sequence omitted => by
+      simpa [centeredClassFun] using
+        bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (fun _ : Fin n => (n : ℝ)⁻¹)
+          (omitted.removeNth
+            (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))
+          henvelope hclass henv_integrable
+  simpa [centeredClassFun] using
+    vdVW_condExp_reverseComparison_uniformClassSupremum_le_lastLeaveOneOut
+      (Observation := Observation) P
+      (indexClass := indexClass) (classFun := centeredClassFun)
+      (n := n) hn hX_meas hX_int hY_int hbdd
+
+/--
 An integrable envelope supplies the varying-domain tail/UI condition for the
 untruncated centered empirical supremum with weights `1/n`.
 -/

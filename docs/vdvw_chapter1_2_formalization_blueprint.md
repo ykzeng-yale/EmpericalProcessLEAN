@@ -1090,6 +1090,12 @@ above, so they do not change the theorem-level dashboard counts.
    measurable-cover empirical supremum process, prove the required
    integrability/L1-boundedness inputs, and connect it to the
    reverse-submartingale convergence reduction.
+   The countable integrable-envelope instantiation is now compiled as
+   `vdVW_condExp_reverseComparison_centered_uniformClassSupremum_le_lastLeaveOneOut_of_countable`,
+   discharging strong measurability, integrability of all leave-one-out terms,
+   and bounded-value-set hypotheses for centered empirical suprema.  The
+   remaining Lemma 2.4.5 task is now the final reverse-submartingale
+   convergence reduction and its uniform L1/eLpNorm bound.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

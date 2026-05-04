@@ -3225,3 +3225,20 @@ bounded-value-set assumptions.  The remaining exact Lemma 2.4.5 blocker is now
 to instantiate those assumptions for the measurable-cover empirical supremum
 process and connect the comparison to the reverse-submartingale convergence
 and L1-boundedness route.
+
+2026-05-04 follow-up: the countable integrable-envelope instantiation of that
+reverse-comparison handoff is now compiled as
+`vdVW_condExp_reverseComparison_centered_uniformClassSupremum_le_lastLeaveOneOut_of_countable`.
+Search/reuse record: local code reused
+`measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
+`integrable_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_of_countable`,
+`vdVWInfiniteProductMeasure_measurePreserving_permuteNatSequence`,
+`bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope`, and the
+leave-one-out conditional-symmetry handoff above; no new primitive was needed.
+This discharges the strong measurability, integrability of all leave-one-out
+terms, and samplewise bounded-value-set assumptions under countability,
+coordinate measurability, and an integrable envelope.  The remaining exact
+Lemma 2.4.5 blocker is now the final reverse-submartingale convergence
+reduction: reindex the decreasing `Σ_n` comparison into the compiled
+conditional-expectation martingale convergence layer and prove the required
+uniform L1/eLpNorm bound from the finite-product transport.
