@@ -1238,10 +1238,24 @@ The infinite log bridge now also compiles:
 and
 `exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min`
 convert the exact geometric obstruction into the source log-quotient iteration
-lower bound with constant `(alpha/2) * ‖0 - x_*‖^2`.  Next direct Exercise
-4.2 step: prove/supply the concrete objective's `FirstOrderStrongConvexOn`
-package with the compiled coordinate gradient; this is now the only analytic
-input still missing from the infinite direct route.
+lower bound with constant `(alpha/2) * ‖0 - x_*‖^2`.  The concrete `ell^2`
+gradient oracle now also compiles:
+`exercise42Infinite_shiftForward_memℓp_two`,
+`exercise42Infinite_shiftBackwardZero_memℓp_two`,
+`exercise42Infinite_predecessor_memℓp_two`,
+`exercise42InfiniteChainGradient_memℓp_two`,
+`exercise42InfiniteChainGradientLp`,
+`exercise42InfiniteChainGradientLp_apply`,
+`exercise42InfiniteChainGradientLp_mem_prefixSubmodule`,
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder_concreteGradient`,
+and
+`exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min_concreteGradient`.
+Search-first result: this reuses mathlib/local `lp`, `Memℓp.add/sub/const_smul`,
+`lp.single`, `summable_nat_add_iff`, and existing prefix-support induction
+instead of inventing a new sequence space.  Next direct Exercise 4.2 step:
+prove the concrete objective's `FirstOrderStrongConvexOn` package for
+`exercise42InfiniteChainGradientLp`; the separate supplied coordinate-gradient
+hypothesis is no longer needed on the direct route.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
