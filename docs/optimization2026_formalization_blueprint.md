@@ -536,7 +536,14 @@ nonnegative/positive/less-than-one/power order lemmas compile, and
 `chewi45_gap_ge_geometricRatio_tail_of_gradientSpanTrajectory`, and
 `chewi45_not_near_min_of_geometricRatio_tail_lower_bound` turn a supplied
 geometric tail estimate for the hard-chain minimizer into the exact
-function-gap obstruction used by Exercise 4.2.
+function-gap obstruction used by Exercise 4.2.  The scalar root algebra behind
+that geometric vector now also compiles:
+`chewi45GeometricRatio_quadratic`, `chewi45GeometricRatio_recurrence`, and
+`chewi45GeometricRatio_pow_recurrence` prove the characteristic recurrence.
+The finite coordinate model `strongLowerBoundGeometricCandidate` and
+`strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_interior` verify
+that this vector satisfies the zero-gradient equation on every nonterminal
+interior coordinate when `kappa = beta / alpha`.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and

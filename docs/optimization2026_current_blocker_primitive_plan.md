@@ -994,9 +994,17 @@ plumbing: `chewi45GeometricRatio`,
 `strongLowerBoundChainObjective_gap_ge_geometric_tail_of_gradientSpanTrajectory`,
 `chewi45_gap_ge_geometricRatio_tail_of_gradientSpanTrajectory`, and
 `chewi45_not_near_min_of_geometricRatio_tail_lower_bound`.  Do not repeat the
-tail-to-gap assembly.  The next atomic target is the genuinely missing direct
-tail geometry: prove a zero-gradient geometric minimizer or a supplied
-finite/infinite-chain minimizer tail estimate giving
+tail-to-gap assembly.  The newest geometric-candidate algebra also compiles:
+`chewi45GeometricRatio_quadratic`, `chewi45GeometricRatio_recurrence`,
+`chewi45GeometricRatio_pow_recurrence`,
+`strongLowerBoundGeometricCandidate`, `strongLowerBoundGeometricCandidate_apply`,
+and `strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_interior`.
+Do not repeat the scalar characteristic-root algebra or the nonterminal
+interior-coordinate zero-gradient proof.  The next atomic target is the
+genuinely missing direct tail geometry: handle the terminal boundary/finite
+truncation issue, or switch to a true `ℓ²`/infinite-sequence model, to obtain
+a zero-gradient geometric minimizer or a supplied finite/infinite-chain
+minimizer tail estimate giving
 `coordinateTailSq d N xStar >= q^(2N) * ‖x 0 - xStar‖^2` for
 `q = (sqrt kappa - 1)/(sqrt kappa + 1)`, then convert the resulting
 geometric obstruction into the logarithmic iteration lower bound.  The

@@ -846,6 +846,112 @@ theorem chewi45GeometricRatio_pow_nonneg {kappa : ℝ}
     0 ≤ (chewi45GeometricRatio kappa) ^ n :=
   pow_nonneg (chewi45GeometricRatio_nonneg hkappa) n
 
+theorem chewi45GeometricRatio_quadratic {kappa : ℝ}
+    (hkappa : 1 < kappa) :
+    chewi45GeometricRatio kappa ^ (2 : ℕ) -
+        (2 + 4 / (kappa - 1)) * chewi45GeometricRatio kappa + 1 = 0 := by
+  let s : ℝ := Real.sqrt kappa
+  have hkappa_nonneg : 0 ≤ kappa := by linarith
+  have hs_sq : s ^ (2 : ℕ) = kappa := by
+    simpa [s] using Real.sq_sqrt hkappa_nonneg
+  have hden : s + 1 ≠ 0 := by
+    have hs_nonneg : 0 ≤ s := by
+      simp [s]
+    linarith
+  have hkden : kappa - 1 ≠ 0 := by linarith
+  change ((s - 1) / (s + 1)) ^ (2 : ℕ) -
+        (2 + 4 / (kappa - 1)) * ((s - 1) / (s + 1)) + 1 = 0
+  field_simp [hden, hkden]
+  nlinarith [hs_sq]
+
+theorem chewi45GeometricRatio_recurrence {kappa : ℝ}
+    (hkappa : 1 < kappa) :
+    (2 + 4 / (kappa - 1)) * chewi45GeometricRatio kappa =
+      chewi45GeometricRatio kappa ^ (2 : ℕ) + 1 := by
+  have h := chewi45GeometricRatio_quadratic hkappa
+  linarith
+
+theorem chewi45GeometricRatio_pow_recurrence {kappa : ℝ}
+    (hkappa : 1 < kappa) (n : ℕ) :
+    chewi45GeometricRatio kappa ^ (n + 2) -
+        (2 + 4 / (kappa - 1)) *
+          chewi45GeometricRatio kappa ^ (n + 1) +
+        chewi45GeometricRatio kappa ^ n = 0 := by
+  let q := chewi45GeometricRatio kappa
+  have hquad :
+      q ^ (2 : ℕ) - (2 + 4 / (kappa - 1)) * q + 1 = 0 := by
+    simpa [q] using chewi45GeometricRatio_quadratic hkappa
+  have hmul :
+      q ^ n * (q ^ (2 : ℕ) - (2 + 4 / (kappa - 1)) * q + 1) = 0 := by
+    rw [hquad, mul_zero]
+  change q ^ (n + 2) - (2 + 4 / (kappa - 1)) * q ^ (n + 1) + q ^ n = 0
+  rw [pow_add, pow_add, pow_two, pow_one]
+  ring_nf at hmul ⊢
+  exact hmul
+
+/--
+Finite-dimensional geometric vector used as the coordinate model for the
+direct Exercise 4.2 hard chain.
+-/
+noncomputable def strongLowerBoundGeometricCandidate (kappa : ℝ) (d : ℕ) :
+    EuclideanSpace ℝ (Fin d) :=
+  WithLp.toLp 2 fun i : Fin d =>
+    (chewi45GeometricRatio kappa) ^ (i.1 + 1)
+
+theorem strongLowerBoundGeometricCandidate_apply
+    (kappa : ℝ) (d : ℕ) (i : Fin d) :
+    strongLowerBoundGeometricCandidate kappa d i =
+      (chewi45GeometricRatio kappa) ^ (i.1 + 1) := by
+  simp [strongLowerBoundGeometricCandidate, PiLp.toLp_apply]
+
+theorem strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_interior
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d : ℕ} {i : Fin d} (hprev : 0 < i.1) (hnext : i.1 + 1 < d) :
+    strongLowerBoundChainGradient alpha beta d
+      (strongLowerBoundGeometricCandidate kappa d) i = 0 := by
+  let q := chewi45GeometricRatio kappa
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  have hgamma_ne : beta - alpha ≠ 0 := by linarith
+  have hkden : kappa - 1 ≠ 0 := by linarith
+  have hcoef :
+      4 / (kappa - 1) = 4 * alpha / (beta - alpha) := by
+    rw [hkappa]
+    field_simp [halpha_pos.ne', hgamma_ne]
+  have hrec :
+      q ^ (i.1 + 2) -
+          (2 + 4 * alpha / (beta - alpha)) * q ^ (i.1 + 1) +
+        q ^ i.1 = 0 := by
+    have h :=
+      chewi45GeometricRatio_pow_recurrence (kappa := kappa) hkappa_gt i.1
+    simpa [q, hcoef] using h
+  have hprev_exp : i.1 - 1 + 1 = i.1 := by omega
+  have hnext_exp : i.1 + 1 + 1 = i.1 + 2 := by omega
+  rw [strongLowerBoundChainGradient_apply]
+  simp [lowerBoundChainGradient, strongLowerBoundGeometricCandidate,
+    PiLp.toLp_apply, hprev, hnext, hprev_exp, hnext_exp]
+  have hrec_mul :
+      (beta - alpha) *
+          (2 * q ^ (i.1 + 1) - q ^ i.1 - q ^ (i.1 + 2)) +
+        4 * alpha * q ^ (i.1 + 1) = 0 := by
+    have hrec' :
+        2 * q ^ (i.1 + 1) - q ^ i.1 - q ^ (i.1 + 2) +
+            (4 * alpha / (beta - alpha)) * q ^ (i.1 + 1) = 0 := by
+      linarith [hrec]
+    field_simp [hgamma_ne] at hrec'
+    ring_nf at hrec' ⊢
+    exact hrec'
+  have hmain :
+      (beta - alpha) / 4 *
+            (2 * q ^ (i.1 + 1) - q ^ i.1 - q ^ (i.1 + 2)) +
+          alpha * q ^ (i.1 + 1) =
+        0 := by
+    field_simp
+    linarith [hrec_mul]
+  simpa [q, mul_assoc, mul_left_comm, mul_comm] using hmain
+
 /-- Squared coordinate tail beyond the source prefix subspace `V_N`. -/
 noncomputable def coordinateTailSq (d N : ℕ)
     (z : EuclideanSpace ℝ (Fin d)) : ℝ :=
