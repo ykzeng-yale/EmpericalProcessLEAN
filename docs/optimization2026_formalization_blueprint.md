@@ -388,6 +388,11 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.lowerBoundChain_edgeSquareSum_ge`
 - `StatInference.Optimization.lowerBoundChainObjective_ge_minValue`
 - `StatInference.Optimization.lowerBoundChainObjective_isMinOn_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChain_prefixEdge_sum_of_mem_coordinatePrefixSubmodule`
+- `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_ge_of_mem_coordinatePrefixSubmodule`
+- `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_le_full`
+- `StatInference.Optimization.lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`
+- `StatInference.Optimization.lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory`
 
 Search-first result for this lane: there was no local Chewi gradient-span
 formalization; mathlib's `Submodule.span`, `Submodule.subset_span`, and
@@ -405,10 +410,16 @@ gradient bridge, `‖x_*‖² ≤ d` estimate, minimizer-value theorem, finite
 telescoping identity, Cauchy edge-energy bound, global objective lower bound,
 and `IsMinOn` minimizer theorem for Theorem 4.4 now compile on top of this
 interface.  Search found and reused mathlib's `sq_sum_le_card_mul_sum_sq` for
-the Cauchy step, plus mathlib's `isMinOn_univ_iff` for the global minimizer
-wrapper.  The next Chapter 4 theorem route should turn the edge-difference
-bridge into a full objective-gradient/convexity package, prove `f_d = f_N` on
-`V_N`, and then formalize the final lower-bound gap estimate.
+the Cauchy step, mathlib's `isMinOn_univ_iff` for the global minimizer
+wrapper, and `Finset.sum_map` plus
+`Finset.sum_le_sum_of_subset_of_nonneg` to compare prefix edge energy with the
+full chain energy.  The source step `f_d = f_N` on `V_N` is now packaged as
+`lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
+`lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory` proves the main
+finite-dimensional gap estimate before choosing `d` as a multiple of `N`.
+The next Chapter 4 theorem route should turn the edge-difference bridge into a
+full objective-gradient/convexity package and add the source-shaped final
+parameter corollary, e.g. the `d = 2N + 1` gap lower bound.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 

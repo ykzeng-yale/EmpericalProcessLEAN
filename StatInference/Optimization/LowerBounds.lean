@@ -584,6 +584,136 @@ theorem lowerBoundChainObjective_isMinOn_lowerBoundChainMinimizer
   rw [lowerBoundChainObjective_lowerBoundChainMinimizer]
   exact lowerBoundChainObjective_ge_minValue hbeta d y
 
+/--
+If a point lies in the discovered-coordinate subspace `V_n`, then the first
+`n + 1` chain edges already telescope from boundary value `1` to `0`.
+-/
+theorem lowerBoundChain_prefixEdge_sum_of_mem_coordinatePrefixSubmodule
+    {n d : ℕ} (hnd : n ≤ d) {x : EuclideanSpace ℝ (Fin d)}
+    (hx : x ∈ coordinatePrefixSubmodule d n) :
+    (∑ k : Fin (n + 1), lowerBoundChainEdge d x ⟨k.1, by omega⟩) = -1 := by
+  have htel := finSum_forwardDifference n
+    (fun j : Fin (n + 2) => lowerBoundChainNode d x ⟨j.1, by omega⟩)
+  have hnode_end : lowerBoundChainNode d x ⟨n + 1, by omega⟩ = 0 := by
+    by_cases hnd_eq : n = d
+    · have hlast : n + 1 = d + 1 := by omega
+      simp [lowerBoundChainNode, hlast]
+    · have hnlt : n < d := lt_of_le_of_ne hnd hnd_eq
+      have hxcoord : x ⟨n, hnlt⟩ = 0 := hx ⟨n, hnlt⟩ le_rfl
+      simp [lowerBoundChainNode, hxcoord]
+  have htel' :
+      (∑ k : Fin (n + 1), lowerBoundChainEdge d x ⟨k.1, by omega⟩) =
+        lowerBoundChainNode d x ⟨n + 1, by omega⟩ -
+          lowerBoundChainNode d x ⟨0, by omega⟩ := by
+    simpa [lowerBoundChainEdge, Fin.val_last] using htel
+  rw [hnode_end] at htel'
+  simpa [lowerBoundChainNode] using htel'
+
+/--
+Cauchy lower bound for the first `n + 1` edge residuals of a point in `V_n`.
+-/
+theorem lowerBoundChain_prefixEdgeSquareSum_ge_of_mem_coordinatePrefixSubmodule
+    {n d : ℕ} (hnd : n ≤ d) {x : EuclideanSpace ℝ (Fin d)}
+    (hx : x ∈ coordinatePrefixSubmodule d n) :
+    (1 : ℝ) / ((n : ℝ) + 1) ≤
+      ∑ k : Fin (n + 1),
+        (lowerBoundChainEdge d x ⟨k.1, by omega⟩) ^ (2 : ℕ) := by
+  have hcs :
+      (∑ k : Fin (n + 1), lowerBoundChainEdge d x ⟨k.1, by omega⟩) ^
+          (2 : ℕ) ≤
+        ((n : ℝ) + 1) *
+          ∑ k : Fin (n + 1),
+            (lowerBoundChainEdge d x ⟨k.1, by omega⟩) ^ (2 : ℕ) := by
+    simpa [Finset.card_univ, Fintype.card_fin, Nat.cast_add, Nat.cast_one]
+      using
+        (sq_sum_le_card_mul_sum_sq (s := Finset.univ)
+          (f := fun k : Fin (n + 1) =>
+            lowerBoundChainEdge d x ⟨k.1, by omega⟩))
+  have hsquare :
+      (1 : ℝ) ≤
+        ((n : ℝ) + 1) *
+          ∑ k : Fin (n + 1),
+            (lowerBoundChainEdge d x ⟨k.1, by omega⟩) ^ (2 : ℕ) := by
+    simpa [lowerBoundChain_prefixEdge_sum_of_mem_coordinatePrefixSubmodule
+      hnd hx] using hcs
+  have hdenpos : 0 < (n : ℝ) + 1 := by positivity
+  exact (div_le_iff₀ hdenpos).mpr (by simpa [mul_comm] using hsquare)
+
+/-- The first `n + 1` edge-energy terms are bounded by the full chain energy. -/
+theorem lowerBoundChain_prefixEdgeSquareSum_le_full
+    {n d : ℕ} (hnd : n ≤ d) (x : EuclideanSpace ℝ (Fin d)) :
+    (∑ k : Fin (n + 1),
+        (lowerBoundChainEdge d x ⟨k.1, by omega⟩) ^ (2 : ℕ)) ≤
+      ∑ k : Fin (d + 1), (lowerBoundChainEdge d x k) ^ (2 : ℕ) := by
+  let emb : Fin (n + 1) ↪ Fin (d + 1) :=
+    { toFun := fun k => ⟨k.1, by omega⟩
+      inj' := by
+        intro a b hab
+        ext
+        exact congrArg (fun k : Fin (d + 1) => k.1) hab }
+  let g : Fin (d + 1) -> ℝ :=
+    fun k => (lowerBoundChainEdge d x k) ^ (2 : ℕ)
+  change (∑ k : Fin (n + 1), g (emb k)) ≤ ∑ k : Fin (d + 1), g k
+  rw [← Finset.sum_map (Finset.univ : Finset (Fin (n + 1))) emb g]
+  exact Finset.sum_le_sum_of_subset_of_nonneg (by simp)
+    (fun k _ _ => sq_nonneg (lowerBoundChainEdge d x k))
+
+/--
+The source step `f_d = f_n` on `V_n`, packaged as the lower bound it supplies:
+any point in `V_n` has full `d`-chain objective at least the `n`-chain minimum.
+-/
+theorem lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule
+    {beta : ℝ} (hbeta : 0 ≤ beta) {n d : ℕ} (hnd : n ≤ d)
+    {x : EuclideanSpace ℝ (Fin d)}
+    (hx : x ∈ coordinatePrefixSubmodule d n) :
+    beta / (8 * ((n : ℝ) + 1)) ≤
+      lowerBoundChainObjective beta d x := by
+  have hprefix :
+      (1 : ℝ) / ((n : ℝ) + 1) ≤
+        ∑ k : Fin (n + 1),
+          (lowerBoundChainEdge d x ⟨k.1, by omega⟩) ^ (2 : ℕ) :=
+    lowerBoundChain_prefixEdgeSquareSum_ge_of_mem_coordinatePrefixSubmodule
+      hnd hx
+  have hfull :
+      (1 : ℝ) / ((n : ℝ) + 1) ≤
+        ∑ k : Fin (d + 1), (lowerBoundChainEdge d x k) ^ (2 : ℕ) :=
+    hprefix.trans (lowerBoundChain_prefixEdgeSquareSum_le_full hnd x)
+  have hcoef : 0 ≤ beta / 8 := div_nonneg hbeta (by norm_num)
+  have hmul := mul_le_mul_of_nonneg_left hfull hcoef
+  have hdenpos : 0 < (n : ℝ) + 1 := by positivity
+  calc
+    beta / (8 * ((n : ℝ) + 1))
+        = (beta / 8) * (1 / ((n : ℝ) + 1)) := by
+            field_simp [hdenpos.ne']
+    _ ≤ (beta / 8) *
+          ∑ k : Fin (d + 1), (lowerBoundChainEdge d x k) ^ (2 : ℕ) := hmul
+    _ = lowerBoundChainObjective beta d x := by
+          rw [lowerBoundChainObjective]
+
+/--
+The main finite-dimensional gap estimate in Chewi Theorem 4.4 before choosing
+`d` as a multiple of `N`.
+-/
+theorem lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory
+    {beta : ℝ} (hbeta : 0 ≤ beta) {N d : ℕ} (hNd : N ≤ d)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory (lowerBoundChainGradient beta d) x) :
+    beta / (8 * ((N : ℝ) + 1)) -
+        beta / (8 * ((d : ℝ) + 1)) ≤
+      lowerBoundChainObjective beta d (x N) -
+        lowerBoundChainObjective beta d (lowerBoundChainMinimizer d) := by
+  have hxN : x N ∈ coordinatePrefixSubmodule d N :=
+    gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient
+      hx0 hspan N
+  have hprefix :
+      beta / (8 * ((N : ℝ) + 1)) ≤
+        lowerBoundChainObjective beta d (x N) :=
+    lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule
+      hbeta hNd hxN
+  rw [lowerBoundChainObjective_lowerBoundChainMinimizer]
+  linarith
+
 end CoordinatePrefix
 
 end Optimization
