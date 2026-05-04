@@ -510,4 +510,88 @@ theorem empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_const_fa
       (thresholds := thresholds) (C := C) hseparate
       (hproduct_real.trans hpow_bound)
 
+/--
+Arithmetic bridge: a polynomial real bound on a natural base gives a
+polynomial real bound on `base ^ k + 1`.
+-/
+theorem nat_pow_add_one_real_le_nat_poly_of_base_le
+    {base n a k : ℕ} {B : ℝ}
+    (hB_nonneg : 0 ≤ B)
+    (hbase_le : (base : ℝ) ≤ B * (((n + 1 : ℕ) : ℝ) ^ a)) :
+    (((base ^ k : ℕ) : ℝ) + 1) ≤
+      (B ^ k + 1) * (((n + 1 : ℕ) : ℝ) ^ (a * k)) := by
+  let sampleSize : ℝ := ((n + 1 : ℕ) : ℝ)
+  have hbase_nonneg : 0 ≤ (base : ℝ) := Nat.cast_nonneg _
+  have hsample_ge_one : 1 ≤ sampleSize := by
+    dsimp [sampleSize]
+    exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
+  have hsample_pow_nonneg : 0 ≤ sampleSize ^ a :=
+    pow_nonneg (by linarith : 0 ≤ sampleSize) a
+  have htarget_pow_ge_one : 1 ≤ sampleSize ^ (a * k) :=
+    one_le_pow₀ hsample_ge_one
+  have hpow_le :
+      ((base : ℝ) ^ k) ≤ (B * sampleSize ^ a) ^ k :=
+    pow_le_pow_left₀ hbase_nonneg hbase_le k
+  have hpow_rewrite :
+      (B * sampleSize ^ a) ^ k =
+        B ^ k * sampleSize ^ (a * k) := by
+    rw [mul_pow, pow_mul]
+  have hcast_pow :
+      ((base ^ k : ℕ) : ℝ) = (base : ℝ) ^ k := by
+    norm_num [Nat.cast_pow]
+  have hbase_pow_le :
+      ((base ^ k : ℕ) : ℝ) ≤ B ^ k * sampleSize ^ (a * k) := by
+    calc
+      ((base ^ k : ℕ) : ℝ) = (base : ℝ) ^ k := hcast_pow
+      _ ≤ (B * sampleSize ^ a) ^ k := hpow_le
+      _ = B ^ k * sampleSize ^ (a * k) := hpow_rewrite
+  have hBpow_nonneg : 0 ≤ B ^ k := pow_nonneg hB_nonneg k
+  have hmain :
+      ((base ^ k : ℕ) : ℝ) + 1 ≤
+        B ^ k * sampleSize ^ (a * k) + sampleSize ^ (a * k) := by
+    nlinarith
+  calc
+    ((base ^ k : ℕ) : ℝ) + 1
+        ≤ B ^ k * sampleSize ^ (a * k) + sampleSize ^ (a * k) := hmain
+    _ = (B ^ k + 1) * sampleSize ^ (a * k) := by ring
+
+/--
+If the common fixed-threshold cardinality bound itself has polynomial growth,
+then the threshold-count route supplies the Theorem 2.4.3 trace-cardinality
+polynomial shape.
+-/
+theorem empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_base_le_nat_poly
+    {Observation : Type u} {Index : Type v} {n a k : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {base : ℕ} {B : ℝ}
+    (hseparate :
+      ∀ index₁, index₁ ∈ indexClass ->
+        ∀ index₂, index₂ ∈ indexClass ->
+          (∀ threshold : {threshold // threshold ∈ thresholds},
+            thresholdTraceCode thresholds
+                (empiricalTrace sample classFun index₁) threshold =
+              thresholdTraceCode thresholds
+                (empiricalTrace sample classFun index₂) threshold) ->
+          empiricalTrace sample classFun index₁ =
+            empiricalTrace sample classFun index₂)
+    (hbase_pos : 0 < base) (hthresholds_card : thresholds.card ≤ k)
+    (hbase :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card ≤
+          base)
+    (hB_nonneg : 0 ≤ B)
+    (hbase_growth : (base : ℝ) ≤ B * (((n + 1 : ℕ) : ℝ) ^ a)) :
+    (((finite_empiricalTrace_image_of_thresholdTraceCode_separates hseparate).toFinset.card : ℝ) + 1) ≤
+      (B ^ k + 1) * (((n + 1 : ℕ) : ℝ) ^ (a * k)) := by
+  exact
+    empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_const_factor_card_le
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) (C := B ^ k + 1) (base := base) (k := k)
+      (d := a * k) hseparate hbase_pos hthresholds_card hbase
+      (nat_pow_add_one_real_le_nat_poly_of_base_le
+        (base := base) (n := n) (a := a) (k := k)
+        hB_nonneg hbase_growth)
+
 end StatInference
