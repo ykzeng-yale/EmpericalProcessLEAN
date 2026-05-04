@@ -121,6 +121,21 @@ computes the exact terminal residual via
 `strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_first`,
 `strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_not_last`, and
 `strongLowerBoundChainGradient_geometricCandidate_eq_terminal_residual`.
+The finite-correction layer now compiles as
+`chewi45GeometricRatio_finiteDenominator_pos`,
+`chewi45GeometricRatio_finiteDenominator_ne_zero`,
+`strongLowerBoundFiniteGeometricNode`,
+`strongLowerBoundFiniteGeometricNode_zero`,
+`strongLowerBoundFiniteGeometricNode_last`,
+`strongLowerBoundFiniteGeometricCandidate`,
+`strongLowerBoundFiniteGeometricCandidate_apply`,
+`strongLowerBoundFiniteGeometricNode_recurrence`,
+`strongLowerBoundChainGradient_finiteGeometricCandidate_eq_zero`,
+`chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate`, and
+`chewi45_not_near_min_of_finiteGeometricCandidate_tail_lower_bound`.  This
+settles the finite terminal-residual blocker; the next direct Theorem 4.5
+target is the corrected-candidate tail comparison and logarithmic
+iteration-count conversion.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains

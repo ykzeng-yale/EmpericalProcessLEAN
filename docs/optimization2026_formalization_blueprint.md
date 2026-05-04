@@ -550,6 +550,23 @@ handles the first coordinate when it is nonterminal,
 all nonterminal coordinates, and
 `strongLowerBoundChainGradient_geometricCandidate_eq_terminal_residual`
 computes the exact finite-truncation residual at the terminal coordinate.
+The finite correction route now compiles rather than remaining a blocker:
+`chewi45GeometricRatio_finiteDenominator_pos`,
+`chewi45GeometricRatio_finiteDenominator_ne_zero`,
+`strongLowerBoundFiniteGeometricNode`,
+`strongLowerBoundFiniteGeometricNode_zero`,
+`strongLowerBoundFiniteGeometricNode_last`,
+`strongLowerBoundFiniteGeometricCandidate`,
+`strongLowerBoundFiniteGeometricCandidate_apply`,
+`strongLowerBoundFiniteGeometricNode_recurrence`, and
+`strongLowerBoundChainGradient_finiteGeometricCandidate_eq_zero` prove that
+the finite corrected geometric vector exactly cancels the terminal residual
+and is a true zero-gradient point of the strongly-convex hard chain.  The
+concrete wrappers
+`chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate` and
+`chewi45_not_near_min_of_finiteGeometricCandidate_tail_lower_bound` reduce the
+remaining direct Theorem 4.5 route to the tail comparison and log/rate
+conversion.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and

@@ -1004,11 +1004,24 @@ The boundary-coordinate layer also now compiles:
 `strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_not_last`, and
 `strongLowerBoundChainGradient_geometricCandidate_eq_terminal_residual`.
 Do not repeat the scalar characteristic-root algebra, the nonterminal
-zero-gradient proof, or the exact terminal-residual computation.  The next
-atomic target is the genuinely missing direct tail geometry: cancel the
-verified terminal residual by adding a finite correction, or switch to a true
-`ℓ²`/infinite-sequence model, to obtain a zero-gradient geometric minimizer or
-a supplied finite/infinite-chain minimizer tail estimate giving
+zero-gradient proof, or the exact terminal-residual computation.  The finite
+correction route now also compiles:
+`chewi45GeometricRatio_finiteDenominator_pos`,
+`chewi45GeometricRatio_finiteDenominator_ne_zero`,
+`strongLowerBoundFiniteGeometricNode`,
+`strongLowerBoundFiniteGeometricNode_zero`,
+`strongLowerBoundFiniteGeometricNode_last`,
+`strongLowerBoundFiniteGeometricCandidate`,
+`strongLowerBoundFiniteGeometricCandidate_apply`,
+`strongLowerBoundFiniteGeometricNode_recurrence`, and
+`strongLowerBoundChainGradient_finiteGeometricCandidate_eq_zero` show that the
+corrected finite geometric vector is an exact zero-gradient point for the
+strongly-convex hard chain.  The concrete wrappers
+`chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate` and
+`chewi45_not_near_min_of_finiteGeometricCandidate_tail_lower_bound` remove the
+old supplied zero-gradient hypothesis.  The next atomic target is now the
+genuinely missing direct tail geometry: prove the finite corrected minimizer
+tail estimate giving
 `coordinateTailSq d N xStar >= q^(2N) * ‖x 0 - xStar‖^2` for
 `q = (sqrt kappa - 1)/(sqrt kappa + 1)`, then convert the resulting
 geometric obstruction into the logarithmic iteration lower bound.  The

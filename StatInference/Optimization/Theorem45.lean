@@ -1075,6 +1075,211 @@ theorem strongLowerBoundChainGradient_geometricCandidate_eq_terminal_residual
       nlinarith [hrec_mul]
     simpa [q, mul_assoc, mul_left_comm, mul_comm] using hmain
 
+/--
+The finite-chain correction denominator for the geometric hard instance is
+strictly positive.
+-/
+theorem chewi45GeometricRatio_finiteDenominator_pos {kappa : ℝ}
+    (hkappa : 1 < kappa) (d : ℕ) :
+    0 < 1 - (chewi45GeometricRatio kappa) ^ (2 * d + 2) := by
+  have hq_nonneg : 0 ≤ chewi45GeometricRatio kappa :=
+    chewi45GeometricRatio_nonneg hkappa.le
+  have hq_lt_one : chewi45GeometricRatio kappa < 1 :=
+    chewi45GeometricRatio_lt_one kappa
+  have hexp_ne : 2 * d + 2 ≠ 0 := by omega
+  have hpow_lt :
+      (chewi45GeometricRatio kappa) ^ (2 * d + 2) < 1 :=
+    pow_lt_one₀ hq_nonneg hq_lt_one hexp_ne
+  linarith
+
+/-- Nonzero form of `chewi45GeometricRatio_finiteDenominator_pos`. -/
+theorem chewi45GeometricRatio_finiteDenominator_ne_zero {kappa : ℝ}
+    (hkappa : 1 < kappa) (d : ℕ) :
+    1 - (chewi45GeometricRatio kappa) ^ (2 * d + 2) ≠ 0 :=
+  (chewi45GeometricRatio_finiteDenominator_pos hkappa d).ne'
+
+/--
+Corrected finite-dimensional geometric chain node.  It is the finite-interval
+solution of the characteristic recurrence with boundary values `z_0 = 1` and
+`z_{d+1} = 0`.
+-/
+noncomputable def strongLowerBoundFiniteGeometricNode
+    (kappa : ℝ) (d j : ℕ) : ℝ :=
+  let q := chewi45GeometricRatio kappa
+  (q ^ j - q ^ (2 * d + 2 - j)) / (1 - q ^ (2 * d + 2))
+
+/-- The corrected finite geometric node has the left boundary value `1`. -/
+theorem strongLowerBoundFiniteGeometricNode_zero {kappa : ℝ}
+    (hkappa : 1 < kappa) (d : ℕ) :
+    strongLowerBoundFiniteGeometricNode kappa d 0 = 1 := by
+  let q := chewi45GeometricRatio kappa
+  have hden : 1 - q ^ (2 * d + 2) ≠ 0 := by
+    simpa [q] using chewi45GeometricRatio_finiteDenominator_ne_zero hkappa d
+  change (q ^ 0 - q ^ (2 * d + 2 - 0)) /
+      (1 - q ^ (2 * d + 2)) = 1
+  rw [pow_zero, Nat.sub_zero]
+  exact div_self hden
+
+/-- The corrected finite geometric node has the right boundary value `0`. -/
+theorem strongLowerBoundFiniteGeometricNode_last
+    (kappa : ℝ) (d : ℕ) :
+    strongLowerBoundFiniteGeometricNode kappa d (d + 1) = 0 := by
+  have hsub : 2 * d + 2 - (d + 1) = d + 1 := by omega
+  simp [strongLowerBoundFiniteGeometricNode, hsub]
+
+/--
+Finite-dimensional corrected geometric vector for the direct Theorem 4.5 hard
+instance.  Coordinate `i` is the corrected node `z_{i+1}`.
+-/
+noncomputable def strongLowerBoundFiniteGeometricCandidate
+    (kappa : ℝ) (d : ℕ) : EuclideanSpace ℝ (Fin d) :=
+  WithLp.toLp 2 fun i : Fin d =>
+    strongLowerBoundFiniteGeometricNode kappa d (i.1 + 1)
+
+theorem strongLowerBoundFiniteGeometricCandidate_apply
+    (kappa : ℝ) (d : ℕ) (i : Fin d) :
+    strongLowerBoundFiniteGeometricCandidate kappa d i =
+      strongLowerBoundFiniteGeometricNode kappa d (i.1 + 1) := by
+  simp [strongLowerBoundFiniteGeometricCandidate, PiLp.toLp_apply]
+
+/--
+The corrected finite node satisfies the characteristic second-order recurrence
+wherever the three displayed nodes lie in the finite interval.
+-/
+theorem strongLowerBoundFiniteGeometricNode_recurrence {kappa : ℝ}
+    (hkappa : 1 < kappa) (d j : ℕ) (hj : j + 2 ≤ 2 * d + 2) :
+    strongLowerBoundFiniteGeometricNode kappa d (j + 2) -
+        (2 + 4 / (kappa - 1)) *
+          strongLowerBoundFiniteGeometricNode kappa d (j + 1) +
+      strongLowerBoundFiniteGeometricNode kappa d j =
+        0 := by
+  let q := chewi45GeometricRatio kappa
+  let D := 1 - q ^ (2 * d + 2)
+  let m := 2 * d + 2 - (j + 2)
+  have hD : D ≠ 0 := by
+    simpa [D, q] using chewi45GeometricRatio_finiteDenominator_ne_zero hkappa d
+  have hforward :
+      q ^ (j + 2) - (2 + 4 / (kappa - 1)) * q ^ (j + 1) +
+        q ^ j = 0 := by
+    simpa [q] using chewi45GeometricRatio_pow_recurrence hkappa j
+  have hmirror_rec :
+      q ^ (m + 2) - (2 + 4 / (kappa - 1)) * q ^ (m + 1) +
+        q ^ m = 0 := by
+    simpa [q] using chewi45GeometricRatio_pow_recurrence hkappa m
+  have hm0 : m + 2 = 2 * d + 2 - j := by omega
+  have hm1 : m + 1 = 2 * d + 2 - (j + 1) := by omega
+  have hm2 : m = 2 * d + 2 - (j + 2) := by rfl
+  rw [hm0, hm1, hm2] at hmirror_rec
+  have hmirror :
+      q ^ (2 * d + 2 - j) -
+          (2 + 4 / (kappa - 1)) *
+            q ^ (2 * d + 2 - (j + 1)) +
+        q ^ (2 * d + 2 - (j + 2)) =
+          0 := by
+    simpa [add_assoc] using hmirror_rec
+  change
+    (q ^ (j + 2) - q ^ (2 * d + 2 - (j + 2))) / D -
+        (2 + 4 / (kappa - 1)) *
+          ((q ^ (j + 1) - q ^ (2 * d + 2 - (j + 1))) / D) +
+      (q ^ j - q ^ (2 * d + 2 - j)) / D =
+        0
+  field_simp [hD]
+  nlinarith [hforward, hmirror]
+
+/--
+The corrected finite geometric vector is an exact zero-gradient point for the
+regularized finite hard chain.
+-/
+theorem strongLowerBoundChainGradient_finiteGeometricCandidate_eq_zero
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (d : ℕ) :
+    strongLowerBoundChainGradient alpha beta d
+      (strongLowerBoundFiniteGeometricCandidate kappa d) = 0 := by
+  ext i
+  let z := strongLowerBoundFiniteGeometricNode kappa d
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  have hgamma_ne : beta - alpha ≠ 0 := by linarith
+  have hcoef :
+      4 / (kappa - 1) = 4 * alpha / (beta - alpha) := by
+    rw [hkappa]
+    field_simp [halpha_pos.ne', hgamma_ne]
+  have hjbound : i.1 + 2 ≤ 2 * d + 2 := by omega
+  have hrec :
+      z (i.1 + 2) -
+          (2 + 4 * alpha / (beta - alpha)) * z (i.1 + 1) +
+        z i.1 =
+          0 := by
+    have h :=
+      strongLowerBoundFiniteGeometricNode_recurrence
+        (kappa := kappa) hkappa_gt d i.1 hjbound
+    simpa [z, hcoef] using h
+  have hrec_mul :
+      (beta - alpha) *
+          (2 * z (i.1 + 1) - z i.1 - z (i.1 + 2)) +
+        4 * alpha * z (i.1 + 1) =
+          0 := by
+    have hrec' :
+        2 * z (i.1 + 1) - z i.1 - z (i.1 + 2) +
+            (4 * alpha / (beta - alpha)) * z (i.1 + 1) = 0 := by
+      linarith [hrec]
+    field_simp [hgamma_ne] at hrec'
+    ring_nf at hrec' ⊢
+    exact hrec'
+  have hmain :
+      (beta - alpha) / 4 *
+            (2 * z (i.1 + 1) - z i.1 - z (i.1 + 2)) +
+          alpha * z (i.1 + 1) =
+        0 := by
+    field_simp
+    linarith [hrec_mul]
+  have hnode_zero : z 0 = 1 := by
+    simpa [z] using strongLowerBoundFiniteGeometricNode_zero hkappa_gt d
+  have hnode_last : z (d + 1) = 0 := by
+    simpa [z] using strongLowerBoundFiniteGeometricNode_last kappa d
+  rw [strongLowerBoundChainGradient_apply]
+  by_cases hprev : 0 < i.1
+  · by_cases hnext : i.1 + 1 < d
+    · have hprev_exp : i.1 - 1 + 1 = i.1 := by omega
+      have hnext_exp : i.1 + 1 + 1 = i.1 + 2 := by omega
+      simp [lowerBoundChainGradient, strongLowerBoundFiniteGeometricCandidate,
+        PiLp.toLp_apply, hprev, hnext, hprev_exp, hnext_exp]
+      simpa [z, mul_assoc, mul_left_comm, mul_comm] using hmain
+    · have hprev_exp : i.1 - 1 + 1 = i.1 := by omega
+      have hnext_node : z (i.1 + 2) = 0 := by
+        have hidx : i.1 + 2 = d + 1 := by omega
+        simpa [hidx] using hnode_last
+      have hmain' := hmain
+      rw [hnext_node] at hmain'
+      simp at hmain'
+      simp [lowerBoundChainGradient, strongLowerBoundFiniteGeometricCandidate,
+        PiLp.toLp_apply, hprev, hnext, hprev_exp]
+      simpa [z, mul_assoc, mul_left_comm, mul_comm] using hmain'
+  · have hfirst : i.1 = 0 := by omega
+    have hprev_node : z i.1 = 1 := by
+      simpa [hfirst] using hnode_zero
+    by_cases hnext : i.1 + 1 < d
+    · have hnext_exp : i.1 + 1 + 1 = i.1 + 2 := by omega
+      have hone_lt_d : 1 < d := by omega
+      have hmain' := hmain
+      rw [hprev_node] at hmain'
+      simp [hfirst] at hmain'
+      simp [lowerBoundChainGradient, strongLowerBoundFiniteGeometricCandidate,
+        PiLp.toLp_apply, hfirst, hone_lt_d]
+      simpa [z, mul_assoc, mul_left_comm, mul_comm] using hmain'
+    · have hnext_node : z (i.1 + 2) = 0 := by
+        have hidx : i.1 + 2 = d + 1 := by omega
+        simpa [hidx] using hnode_last
+      have hone_not_lt : ¬1 < d := by omega
+      have hmain' := hmain
+      rw [hprev_node, hnext_node] at hmain'
+      simp [hfirst] at hmain'
+      simp [lowerBoundChainGradient, strongLowerBoundFiniteGeometricCandidate,
+        PiLp.toLp_apply, hfirst, hone_not_lt]
+      simpa [z, mul_assoc, mul_left_comm, mul_comm] using hmain'
+
 /-- Squared coordinate tail beyond the source prefix subspace `V_N`. -/
 noncomputable def coordinateTailSq (d N : ℕ)
     (z : EuclideanSpace ℝ (Fin d)) : ℝ :=
@@ -1229,6 +1434,41 @@ theorem chewi45_gap_ge_geometricRatio_tail_of_gradientSpanTrajectory
     hx0 hspan hgrad_zero htail_ge
 
 /--
+Concrete finite-candidate version of the direct geometric-tail lower bound:
+the zero-gradient point is the corrected finite geometric vector, so the only
+remaining analytic input is the tail comparison.
+-/
+theorem chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d N : ℕ} {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (htail_ge :
+      (chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖x 0 - strongLowerBoundFiniteGeometricCandidate kappa d‖ ^
+            (2 : ℕ) ≤
+        coordinateTailSq d N
+          (strongLowerBoundFiniteGeometricCandidate kappa d)) :
+    (alpha / 2) *
+        ((chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖x 0 - strongLowerBoundFiniteGeometricCandidate kappa d‖ ^
+            (2 : ℕ)) ≤
+      strongLowerBoundChainObjective alpha beta d (x N) -
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) := by
+  have hgrad_zero :=
+    strongLowerBoundChainGradient_finiteGeometricCandidate_eq_zero
+      (alpha := alpha) (beta := beta) (kappa := kappa)
+      halpha_pos halpha_lt_beta hkappa d
+  exact chewi45_gap_ge_geometricRatio_tail_of_gradientSpanTrajectory
+    (alpha := alpha) (beta := beta) (kappa := kappa)
+    halpha_pos.le halpha_lt_beta.le (N := N)
+    (x := x) (xStar := strongLowerBoundFiniteGeometricCandidate kappa d)
+    hx0 hspan hgrad_zero htail_ge
+
+/--
 Contradiction form of the direct Exercise 4.2 obstruction: an iterate whose
 gap is at most `eps` cannot exist if `eps` lies below the geometric tail lower
 bound.
@@ -1266,6 +1506,44 @@ theorem chewi45_not_near_min_of_geometricRatio_tail_lower_bound
           strongLowerBoundChainObjective alpha beta d xStar ≤ eps := by
     linarith
   linarith
+
+/--
+Contradiction form with the concrete corrected finite geometric minimizer.
+This removes the supplied zero-gradient hypothesis from the previous wrapper.
+-/
+theorem chewi45_not_near_min_of_finiteGeometricCandidate_tail_lower_bound
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d N : ℕ} {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (htail_ge :
+      (chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖x 0 - strongLowerBoundFiniteGeometricCandidate kappa d‖ ^
+            (2 : ℕ) ≤
+        coordinateTailSq d N
+          (strongLowerBoundFiniteGeometricCandidate kappa d))
+    (hnear :
+      strongLowerBoundChainObjective alpha beta d (x N) ≤
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) + eps)
+    (heps_lt :
+      eps <
+        (alpha / 2) *
+          ((chewi45GeometricRatio kappa) ^ (2 * N) *
+            ‖x 0 - strongLowerBoundFiniteGeometricCandidate kappa d‖ ^
+              (2 : ℕ))) :
+    False := by
+  have hgrad_zero :=
+    strongLowerBoundChainGradient_finiteGeometricCandidate_eq_zero
+      (alpha := alpha) (beta := beta) (kappa := kappa)
+      halpha_pos halpha_lt_beta hkappa d
+  exact chewi45_not_near_min_of_geometricRatio_tail_lower_bound
+    (alpha := alpha) (beta := beta) (kappa := kappa) (eps := eps)
+    halpha_pos.le halpha_lt_beta.le (N := N)
+    (x := x) (xStar := strongLowerBoundFiniteGeometricCandidate kappa d)
+    hx0 hspan hgrad_zero htail_ge hnear heps_lt
 
 end Optimization
 end StatInference
