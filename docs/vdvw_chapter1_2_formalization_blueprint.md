@@ -815,7 +815,10 @@ above, so they do not change the theorem-level dashboard counts.
    `empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_card_le`
    then builds this vector code by applying coordinate quantizers to the
    empirical sample values and reduces equal-code closeness to the scalar
-   quantizer error condition.  The
+   quantizer error condition.  The decoder-error variant
+   `empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_decode_error_card_le`
+   is now the intended grid interface: it is enough to prove every sampled
+   value lies within `epsilon / 2` of its decoded representative.  The
    remaining theorem-facing work is the actual bounded quantization/grid code
    and the nontrivial VC/subgraph/grid cardinality estimate, not this finite
    product-code plumbing.

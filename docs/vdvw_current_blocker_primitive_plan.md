@@ -2331,3 +2331,27 @@ nontrivial VC/subgraph/grid cardinality estimate needed to turn this into
 Theorem 2.4.3 fixed-radius selected side conditions.  The remaining hard part
 is not vector-code construction; it is the geometric/cardinality estimate for
 arbitrary real-valued classes.
+
+2026-05-04 `/goal` update after decoder-error quantizer bridge:
+`CoveringPrimitive.lean` now adds the real triangle helper
+`abs_sub_le_of_abs_sub_decode_le_half` and the decoder-error empirical-cover
+consumers
+`nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_scalarQuantizer_decode_error_card_le`
+and
+`empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_decode_error_card_le`.
+These are the grid-friendly form of the scalar quantizer route: once every
+sampled value is within `epsilon / 2` of its decoded grid representative,
+equal quantizer codes imply pointwise `epsilon` closeness and hence an
+empirical `L1(P_n)` cover.
+
+Search record: local search found no existing decode-error bridge for
+quantized empirical covers.  The proof reused the compiled scalar-quantizer
+cover bridge and mathlib's real triangle inequality `abs_add_le`; no new
+probability or measurability primitive was required.
+
+Next exact theorem-facing edit: instantiate this decoder-error interface with
+a concrete finite grid for bounded truncated real values, most likely using a
+floor/rounding API or a supplied finite grid with a proof that every truncated
+sample value is within `epsilon / 2` of a decoded cell representative.  After
+that, prove or honestly package the VC/subgraph/grid cardinality estimate that
+keeps normalized log cardinalities negligible for Theorem 2.4.3.

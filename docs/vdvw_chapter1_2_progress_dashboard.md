@@ -379,6 +379,11 @@ matching finite-cover witness theorem.  The next target is therefore the real
 bounded grid/rounding instantiation and its VC/subgraph/grid count, not the
 abstract quantizer-to-cover reduction.
 
+2026-05-04 follow-up: the decoder-error grid interface is now also compiled as
+`empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_decode_error_card_le`.
+The next proof target should instantiate this with actual finite grid cells for
+bounded truncated values and then prove the theorem-facing cardinality bound.
+
 ## Verification Monitor
 
 Latest targeted verification includes the selected terminal/truncated

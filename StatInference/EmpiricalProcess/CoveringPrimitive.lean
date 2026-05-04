@@ -1558,6 +1558,118 @@ theorem empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_card_le
       hcard_le
 
 /--
+If two real values are both within `epsilon / 2` of a common decoded center,
+then they are within `epsilon` of each other.
+-/
+theorem abs_sub_le_of_abs_sub_decode_le_half
+    {x y center epsilon : ℝ}
+    (hx : |x - center| ≤ epsilon / 2)
+    (hy : |y - center| ≤ epsilon / 2) :
+    |x - y| ≤ epsilon := by
+  calc
+    |x - y| = |(x - center) + (center - y)| := by ring_nf
+    _ ≤ |x - center| + |center - y| := abs_add_le _ _
+    _ = |x - center| + |y - center| := by rw [abs_sub_comm center y]
+    _ ≤ epsilon / 2 + epsilon / 2 := add_le_add hx hy
+    _ = epsilon := by ring
+
+/--
+Padded-cardinality cover from a scalar quantizer plus a decoder-error bound.
+This is the grid-friendly form: once every sampled value is within
+`epsilon / 2` of its decoded grid representative, equal quantizer codes give
+the pointwise `epsilon`-closeness needed for an empirical `L1(P_n)` cover.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_scalarQuantizer_decode_error_card_le
+    {Observation : Type u} {Index : Type v} {CoordCode : Type*}
+    [DecidableEq CoordCode] {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (quantizer : Fin n -> ℝ -> CoordCode)
+    (decode : Fin n -> CoordCode -> ℝ)
+    (codeSets : Fin n -> Finset CoordCode)
+    (hquantizer_mem :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          quantizer sampleIndex (classFun index (sample sampleIndex)) ∈
+            codeSets sampleIndex)
+    (hdecode_close :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          |classFun index (sample sampleIndex) -
+            decode sampleIndex
+              (quantizer sampleIndex
+                (classFun index (sample sampleIndex)))| ≤ epsilon / 2)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le :
+      (∏ sampleIndex : Fin n, (codeSets sampleIndex).card) ≤ cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  exact
+    nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_scalarQuantizer_card_le
+      quantizer codeSets hquantizer_mem hepsilon_nonneg
+      (fun sampleIndex index hindex center hcenter hcode =>
+        by
+          have hcenter_close :
+              |classFun center (sample sampleIndex) -
+                decode sampleIndex
+                  (quantizer sampleIndex
+                    (classFun index (sample sampleIndex)))| ≤ epsilon / 2 := by
+            simpa [hcode] using hdecode_close center hcenter sampleIndex
+          exact
+            abs_sub_le_of_abs_sub_decode_le_half
+              (hdecode_close index hindex sampleIndex) hcenter_close)
+      hindexClass hcard_le
+
+/--
+Numeric empirical-covering-number bound from a scalar quantizer plus a
+decoder-error bound.
+-/
+theorem empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_decode_error_card_le
+    {Observation : Type u} {Index : Type v} {CoordCode : Type*}
+    [DecidableEq CoordCode] {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (quantizer : Fin n -> ℝ -> CoordCode)
+    (decode : Fin n -> CoordCode -> ℝ)
+    (codeSets : Fin n -> Finset CoordCode)
+    (hquantizer_mem :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          quantizer sampleIndex (classFun index (sample sampleIndex)) ∈
+            codeSets sampleIndex)
+    (hdecode_close :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          |classFun index (sample sampleIndex) -
+            decode sampleIndex
+              (quantizer sampleIndex
+                (classFun index (sample sampleIndex)))| ≤ epsilon / 2)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hcard_le :
+      (∏ sampleIndex : Fin n, (codeSets sampleIndex).card) ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_card_le
+      quantizer codeSets hquantizer_mem hepsilon_nonneg
+      (fun sampleIndex index hindex center hcenter hcode =>
+        by
+          have hcenter_close :
+              |classFun center (sample sampleIndex) -
+                decode sampleIndex
+                  (quantizer sampleIndex
+                    (classFun index (sample sampleIndex)))| ≤ epsilon / 2 := by
+            simpa [hcode] using hdecode_close center hcenter sampleIndex
+          exact
+            abs_sub_le_of_abs_sub_decode_le_half
+              (hdecode_close index hindex sampleIndex) hcenter_close)
+      hcard_le
+
+/--
 Padded-cardinality cover from a finite fixed-sample trace image.  Later
 combinatorial arguments can supply a terminal bound on the number of distinct
 traces and reuse this cover witness directly.
