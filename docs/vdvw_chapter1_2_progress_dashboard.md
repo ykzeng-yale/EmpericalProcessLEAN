@@ -748,6 +748,13 @@ seminorm transport for truncated and untruncated centered empirical suprema:
 `eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq`.
 Remaining work is the structural reverse/permutation-symmetric comparison
 over `Σ_n`, plus using these identities to discharge the L1-bound input.
+2026-05-04 follow-up: the deterministic leave-one-out part of Lemma 2.4.5 is
+now compiled: `sum_leaveOneOut_eq_nat_mul_sum`,
+`vdVWWeightedSampleSum_uniform_leaveOneOut_average_eq`, and
+`vdVWWeightedClassSupremum_uniform_le_leaveOneOutAverage`.  This closes the
+sample-path inequality before conditional expectations.  Remaining work is the
+conditional-expectation symmetry of the leave-one-out terms given `Σ_{n+1}`
+and the resulting reverse-submartingale comparison.
 
 ## Verification Monitor
 

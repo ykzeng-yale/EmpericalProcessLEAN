@@ -3142,6 +3142,198 @@ theorem adapted_vdVWPermutationSymmetricCofiltration_uniformClassSupremum_of_cou
       hcount hclass (OrderDual.ofDual n)
 
 /--
+Deterministic leave-one-out supremum step from the proof of VdV&W
+Lemma 2.4.5.  If every fixed class-member full-sample sum is bounded by the
+average of the leave-one-out empirical suprema, then the class supremum is
+bounded by the same average.
+
+The remaining theorem-specific work is the arithmetic identity proving the
+fixed-member hypothesis and the conditional-expectation symmetry argument.
+-/
+theorem vdVWWeightedClassSupremum_le_leaveOneOutAverage_of_forall_abs_le
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} (sample : SampleAt Observation (n + 1))
+    (hterm :
+      ∀ index, index ∈ indexClass ->
+        |vdVWWeightedSampleSum classFun
+          (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹) index sample| ≤
+          ((n + 1 : ℕ) : ℝ)⁻¹ *
+            ∑ omitted : Fin (n + 1),
+              vdVWWeightedClassSupremum indexClass classFun
+                (fun _ : Fin n => (n : ℝ)⁻¹)
+                (omitted.removeNth sample)) :
+    vdVWWeightedClassSupremum indexClass classFun
+      (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹) sample ≤
+      ((n + 1 : ℕ) : ℝ)⁻¹ *
+        ∑ omitted : Fin (n + 1),
+          vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (omitted.removeNth sample) := by
+  let upper : ℝ :=
+    ((n + 1 : ℕ) : ℝ)⁻¹ *
+      ∑ omitted : Fin (n + 1),
+        vdVWWeightedClassSupremum indexClass classFun
+          (fun _ : Fin n => (n : ℝ)⁻¹)
+          (omitted.removeNth sample)
+  have hupper_nonneg : 0 ≤ upper := by
+    dsimp [upper]
+    exact mul_nonneg (by positivity) <|
+      Finset.sum_nonneg fun omitted _homitted =>
+        vdVWWeightedClassSupremum_nonneg indexClass classFun
+          (fun _ : Fin n => (n : ℝ)⁻¹)
+          (omitted.removeNth sample)
+  unfold vdVWWeightedClassSupremum
+  refine Real.iSup_le ?_ hupper_nonneg
+  intro index
+  refine Real.iSup_le ?_ hupper_nonneg
+  intro hindex
+  simpa [upper] using hterm index hindex
+
+/--
+Each coordinate appears in exactly `n` of the `n + 1` leave-one-out samples.
+This is the finite arithmetic identity behind the leave-one-out step in
+VdV&W Lemma 2.4.5.
+-/
+theorem sum_leaveOneOut_eq_nat_mul_sum
+    {n : ℕ} (values : Fin (n + 1) -> ℝ) :
+    (∑ omitted : Fin (n + 1),
+        ∑ j : Fin n, values (omitted.succAbove j)) =
+      (n : ℝ) * ∑ i : Fin (n + 1), values i := by
+  let total : ℝ := ∑ i : Fin (n + 1), values i
+  have hleave :
+      ∀ omitted : Fin (n + 1),
+        (∑ j : Fin n, values (omitted.succAbove j)) =
+          total - values omitted := by
+    intro omitted
+    have hsum := Fin.sum_univ_succAbove values omitted
+    dsimp [total]
+    rw [hsum]
+    ring
+  calc
+    (∑ omitted : Fin (n + 1),
+        ∑ j : Fin n, values (omitted.succAbove j))
+        = ∑ omitted : Fin (n + 1), (total - values omitted) := by
+            exact Finset.sum_congr rfl fun omitted _homitted => hleave omitted
+    _ = ((n + 1 : ℕ) : ℝ) * total - total := by
+            simp [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ,
+              Fintype.card_fin, nsmul_eq_mul, total]
+    _ = (n : ℝ) * ∑ i : Fin (n + 1), values i := by
+            dsimp [total]
+            rw [Nat.cast_add, Nat.cast_one]
+            ring
+
+/--
+For a fixed class member, the average of the uniform leave-one-out empirical
+sums equals the full uniform empirical sum.  This is the arithmetic identity
+used before applying the triangle inequality and supremum bound in the proof
+of VdV&W Lemma 2.4.5.
+-/
+theorem vdVWWeightedSampleSum_uniform_leaveOneOut_average_eq
+    {Observation : Type u} {Index : Type v}
+    {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} (hn : 0 < n) (index : Index)
+    (sample : SampleAt Observation (n + 1)) :
+    ((n + 1 : ℕ) : ℝ)⁻¹ *
+        ∑ omitted : Fin (n + 1),
+          vdVWWeightedSampleSum classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹) index
+            (omitted.removeNth sample) =
+      vdVWWeightedSampleSum classFun
+        (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹) index sample := by
+  let values : Fin (n + 1) -> ℝ := fun i => classFun index (sample i)
+  have hdouble := sum_leaveOneOut_eq_nat_mul_sum values
+  have hn_ne : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.ne_of_gt hn)
+  have hn1_ne : ((n + 1 : ℕ) : ℝ) ≠ 0 := by positivity
+  unfold vdVWWeightedSampleSum
+  calc
+    ((n + 1 : ℕ) : ℝ)⁻¹ *
+        (∑ omitted : Fin (n + 1),
+          ∑ i : Fin n, (n : ℝ)⁻¹ * classFun index (omitted.removeNth sample i))
+        =
+      ((n + 1 : ℕ) : ℝ)⁻¹ *
+        ((n : ℝ)⁻¹ *
+          (∑ omitted : Fin (n + 1),
+            ∑ i : Fin n, values (omitted.succAbove i))) := by
+          simp [values, Fin.removeNth, Finset.mul_sum]
+    _ =
+      ((n + 1 : ℕ) : ℝ)⁻¹ *
+        ((n : ℝ)⁻¹ * ((n : ℝ) * ∑ i : Fin (n + 1), values i)) := by
+          rw [hdouble]
+    _ = ((n + 1 : ℕ) : ℝ)⁻¹ *
+        (∑ i : Fin (n + 1), values i) := by
+          field_simp [hn_ne]
+    _ = ∑ i : Fin (n + 1),
+        ((n + 1 : ℕ) : ℝ)⁻¹ * classFun index (sample i) := by
+          rw [Finset.mul_sum]
+
+/--
+Deterministic leave-one-out inequality for the uniform empirical class
+supremum.  This is the displayed convexity/triangle-inequality step in the
+proof of VdV&W Lemma 2.4.5 before taking conditional expectations.
+-/
+theorem vdVWWeightedClassSupremum_uniform_le_leaveOneOutAverage
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} (hn : 0 < n) (sample : SampleAt Observation (n + 1))
+    (hbdd :
+      ∀ omitted : Fin (n + 1),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (omitted.removeNth sample))) :
+    vdVWWeightedClassSupremum indexClass classFun
+      (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹) sample ≤
+      ((n + 1 : ℕ) : ℝ)⁻¹ *
+        ∑ omitted : Fin (n + 1),
+          vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (omitted.removeNth sample) := by
+  refine
+    vdVWWeightedClassSupremum_le_leaveOneOutAverage_of_forall_abs_le
+      (indexClass := indexClass) (classFun := classFun) sample ?_
+  intro index hindex
+  let coeff : ℝ := ((n + 1 : ℕ) : ℝ)⁻¹
+  let leaveSum : Fin (n + 1) -> ℝ := fun omitted =>
+    vdVWWeightedSampleSum classFun
+      (fun _ : Fin n => (n : ℝ)⁻¹) index (omitted.removeNth sample)
+  have hcoeff_nonneg : 0 ≤ coeff := by
+    dsimp [coeff]
+    positivity
+  have haverage :=
+    vdVWWeightedSampleSum_uniform_leaveOneOut_average_eq
+      (classFun := classFun) hn index sample
+  calc
+    |vdVWWeightedSampleSum classFun
+        (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹) index sample|
+        = |coeff * ∑ omitted : Fin (n + 1), leaveSum omitted| := by
+            rw [← haverage]
+    _ = coeff * |∑ omitted : Fin (n + 1), leaveSum omitted| := by
+            rw [abs_mul, abs_of_nonneg hcoeff_nonneg]
+    _ ≤ coeff * ∑ omitted : Fin (n + 1), |leaveSum omitted| := by
+            exact mul_le_mul_of_nonneg_left
+              (Finset.abs_sum_le_sum_abs leaveSum Finset.univ) hcoeff_nonneg
+    _ ≤ coeff *
+        ∑ omitted : Fin (n + 1),
+          vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (omitted.removeNth sample) := by
+            refine mul_le_mul_of_nonneg_left ?_ hcoeff_nonneg
+            refine Finset.sum_le_sum fun omitted _homitted => ?_
+            exact
+              abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove
+                (weights := fun _ : Fin n => (n : ℝ)⁻¹)
+                (sample := omitted.removeNth sample)
+                (hbdd omitted) hindex
+    _ =
+      ((n + 1 : ℕ) : ℝ)⁻¹ *
+        ∑ omitted : Fin (n + 1),
+          vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (omitted.removeNth sample) := by
+            rfl
+
+/--
 Countable centered truncated weighted class suprema are integrable under the
 empirical product law once fixed-index truncated functions are integrable.
 -/

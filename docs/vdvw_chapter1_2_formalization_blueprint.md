@@ -1047,7 +1047,14 @@ above, so they do not change the theorem-level dashboard counts.
    lifts for countable centered empirical suprema.  Thus the next work should
    not redo first-coordinate law/integrability/integral/seminorm transport,
    and should instead prove the structural
-   reverse/permutation-symmetric comparison itself, not
+   reverse/permutation-symmetric comparison itself.  The deterministic
+   leave-one-out algebra and sample-path inequality are also compiled as
+   `sum_leaveOneOut_eq_nat_mul_sum`,
+   `vdVWWeightedSampleSum_uniform_leaveOneOut_average_eq`, and
+   `vdVWWeightedClassSupremum_uniform_le_leaveOneOutAverage`; the next
+   Lemma 2.4.5 step is the conditional-expectation symmetry of the
+   leave-one-out terms given `Σ_{n+1}` and the resulting reverse-submartingale
+   comparison, not
    the finite permutation, generated-sigma, countable-supremum adaptedness,
    cover-shaped adaptedness, cofiltration substrate, or ordinary conditional
    expectation convergence substrate.

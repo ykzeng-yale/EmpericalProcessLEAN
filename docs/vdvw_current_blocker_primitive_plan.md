@@ -3122,3 +3122,21 @@ reverse-submartingale convergence step.  The remaining blocker is still the
 structural VdV&W comparison identifying or bounding the `Σ_n` process by the
 appropriate conditional expectations; first-sample law, integral, seminorm,
 and integrability transport should not be redone.
+
+2026-05-04 follow-up: the deterministic leave-one-out arithmetic and supremum
+step from the proof of Lemma 2.4.5 is now compiled.  Search/reuse record:
+pinned mathlib provides `Fin.removeNth` and `Fin.sum_univ_succAbove`; local
+`PMeasurable.lean` provides
+`abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove`.  New
+compiled declarations are
+`vdVWWeightedClassSupremum_le_leaveOneOutAverage_of_forall_abs_le`,
+`sum_leaveOneOut_eq_nat_mul_sum`,
+`vdVWWeightedSampleSum_uniform_leaveOneOut_average_eq`, and
+`vdVWWeightedClassSupremum_uniform_le_leaveOneOutAverage`.  This closes the
+sample-path convexity/triangle-inequality part of the textbook argument:
+`||P_{n+1}||_F` is bounded by the average of the `n`-sample leave-one-out
+suprema, under explicit bounded-value-set hypotheses for the leave-one-out
+suprema.  The remaining Lemma 2.4.5 blocker is now the probability side:
+prove the conditional-expectation symmetry of the leave-one-out terms given
+`Σ_{n+1}`, then combine it with this deterministic inequality to obtain the
+reverse-submartingale comparison.
