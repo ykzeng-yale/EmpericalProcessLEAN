@@ -25905,6 +25905,176 @@ theorem
         hindex_finite (Nat.succ_pos n) sequence
 
 /--
+Pathwise bridge from the named Lemma 2.4.5 centered supremum to the local
+uniform-deviation predicate for the canonical iid process.
+
+The only analytic input is convergence of the centered supremum to zero; the
+pointwise empirical deviations are dominated by that supremum via the existing
+bounded-value-set envelope bound.
+-/
+theorem
+    UniformDeviationTendstoZeroOn_of_vdVWLemma245CenteredEmpiricalSupremum_tendsto_zero_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {sequence : ℕ -> Observation}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hsup :
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0)) :
+    UniformDeviationTendstoZeroOn indexClass
+      (fun index => populationRiskOfFunction P (classFun index))
+      (fun sampleSize index =>
+        empiricalAverage
+          (samplePath (fun i sequence => sequence i) sequence sampleSize)
+          (classFun index)) := by
+  have hsup_all :
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence)
+        atTop (𝓝 0) :=
+    (tendsto_add_atTop_iff_nat
+      (f := fun n : ℕ =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence)
+      1).mp hsup
+  intro tolerance htolerance
+  have hsup_eventually_lt :
+      ∀ᶠ sampleSize : ℕ in atTop,
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun sampleSize sequence <
+          tolerance := by
+    simpa using
+      (Filter.Tendsto.eventually_lt hsup_all tendsto_const_nhds htolerance)
+  filter_upwards [hsup_eventually_lt, eventually_gt_atTop (0 : ℕ)] with
+    sampleSize hsup_lt hsampleSize_pos
+  intro index hindex
+  have hsample :
+      samplePath (fun i sequence => sequence i) sequence sampleSize =
+        vdVWFirstNSample (Observation := Observation) sampleSize sequence := by
+    funext i
+    rfl
+  have hsum_eq :=
+    vdVWWeightedSampleSum_centered_const_inv_eq_empiricalAverage_sub
+      (P := P) (classFun := classFun) hsampleSize_pos
+      (vdVWFirstNSample (Observation := Observation) sampleSize sequence) index
+  have hmember_le :
+      |empiricalAverage
+          (vdVWFirstNSample (Observation := Observation) sampleSize sequence)
+          (classFun index) -
+        populationRiskOfFunction P (classFun index)| ≤
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun sampleSize
+          sequence := by
+    rw [← hsum_eq]
+    simpa [vdVWLemma245CenteredEmpiricalSupremum] using
+      abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove
+        (indexClass := indexClass)
+        (classFun := fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P)
+        (weights := fun _ : Fin sampleSize => (sampleSize : ℝ)⁻¹)
+        (sample := vdVWFirstNSample (Observation := Observation) sampleSize sequence)
+        (bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope)
+          (fun _ : Fin sampleSize => (sampleSize : ℝ)⁻¹)
+          (vdVWFirstNSample (Observation := Observation) sampleSize sequence)
+          henvelope hclass henv_integrable)
+        hindex
+  have hmember_le_samplePath :
+      |empiricalAverage
+          (samplePath (fun i sequence => sequence i) sequence sampleSize)
+          (classFun index) -
+        populationRiskOfFunction P (classFun index)| ≤
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun sampleSize
+          sequence := by
+    simpa [hsample] using hmember_le
+  exact hmember_le_samplePath.trans (le_of_lt hsup_lt)
+
+/--
+Canonical finite-class almost-sure `P`-Glivenko-Cantelli record from the direct
+finite-class SLLN route.
+
+This packages coordinate laws, coordinate independence, and the pathwise
+uniform-deviation conclusion for the canonical infinite iid product space.
+-/
+theorem
+    VdVWAlmostSureGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    VdVWAlmostSureGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i) where
+  law := fun i => vdVWInfiniteProductMeasure_coordinate_hasLaw P i
+  independent := fun _i _j hij =>
+    (vdVWInfiniteProductMeasure_iIndepFun_coordinates P).indepFun hij
+  uniform_deviation_ae := by
+    have hsup :=
+      vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_zero_of_finite_indexClass_canonical_slln
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hindex_finite henvelope hclass henv_integrable
+    filter_upwards [hsup] with sequence hsequence
+    exact
+      UniformDeviationTendstoZeroOn_of_vdVWLemma245CenteredEmpiricalSupremum_tendsto_zero_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) henvelope hclass henv_integrable hsequence
+
+/--
+Canonical finite-class Theorem 2.4.3 almost-sure `P`-Glivenko-Cantelli
+endpoint from the direct finite-class SLLN route.
+-/
+theorem
+    VdVWOuterAlmostSurePGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterAlmostSurePGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i) := by
+  exact
+    vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_almostSure
+      (VdVWAlmostSureGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hindex_finite henvelope hclass henv_integrable).uniform_deviation_ae
+
+/--
+Canonical finite-class book-style `P`-Glivenko-Cantelli endpoint using the
+outer-a.s. branch supplied by the direct SLLN route.
+-/
+theorem
+    VdVWPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    VdVWPGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i) :=
+  Or.inr
+    (VdVWOuterAlmostSurePGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hindex_finite henvelope hclass henv_integrable)
+
+/--
 Canonical finite-class Lemma 2.4.5 a.s. zero consumer.
 
 This is the finite-index analogue of the full-subgraph bridge: the existing

@@ -973,3 +973,13 @@ and
 This is a theorem-facing closure for finite index classes: the remaining
 reverse/permutation-symmetric cofiltration blocker is now only needed for
 arbitrary/countable classes beyond the finite SLLN route.
+
+2026-05-04 follow-up: the direct finite-class SLLN route now reaches canonical
+book-style GC endpoints.  New compiled declarations are
+`UniformDeviationTendstoZeroOn_of_vdVWLemma245CenteredEmpiricalSupremum_tendsto_zero_canonical`,
+`VdVWAlmostSureGlivenkoCantelliClass_of_finite_indexClass_canonical_slln`,
+`VdVWOuterAlmostSurePGlivenkoCantelliClass_of_finite_indexClass_canonical_slln`,
+and `VdVWPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln`.
+This closes the finite-index outer-a.s. branch without the
+reverse/cofiltration assumption; arbitrary/countable classes still need the
+general reverse/permutation-symmetric theorem or another structural route.

@@ -3462,3 +3462,22 @@ This closes a genuine finite-class Lemma 2.4.5 endpoint from iid product-space
 SLLN plus a finite-sum supremum bound.  It does not solve the arbitrary-class
 VdV&W reverse/permutation-symmetric cofiltration theorem, which remains the
 main exact Lemma 2.4.5 blocker outside finite classes.
+
+2026-05-04 follow-up: the finite-class SLLN endpoint has now been consumed by
+canonical finite-class `P`-Glivenko-Cantelli endpoints.  New compiled
+declarations are
+`UniformDeviationTendstoZeroOn_of_vdVWLemma245CenteredEmpiricalSupremum_tendsto_zero_canonical`,
+`VdVWAlmostSureGlivenkoCantelliClass_of_finite_indexClass_canonical_slln`,
+`VdVWOuterAlmostSurePGlivenkoCantelliClass_of_finite_indexClass_canonical_slln`,
+and `VdVWPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln`.
+Search/reuse record: local `VdVWAlmostSureGlivenkoCantelliClass`,
+`VdVWOuterAlmostSurePGlivenkoCantelliClass`,
+`vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_almostSure`,
+`vdVWWeightedSampleSum_centered_const_inv_eq_empiricalAverage_sub`,
+`abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove`, and
+`bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope` supply the
+bridge; pinned mathlib supplies `tendsto_add_atTop_iff_nat` and
+`Filter.Tendsto.eventually_lt`.  This gives finite classes both the existing
+outer-probability/in-mean route and a direct outer-a.s. book-style GC branch.
+The remaining non-finite-class blocker remains the reverse/cofiltration
+convergence theorem or a different structural route that avoids it.
