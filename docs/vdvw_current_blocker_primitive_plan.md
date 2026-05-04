@@ -1507,10 +1507,26 @@ constructors; pinned mathlib supplied `HasSubgaussianMGF.integrable`,
 `MeasureTheory.integrable_finsetSum`, `Integrable.integral_prod_left`,
 `AEMeasurable.biSup`, and `VdVWMeasurableCover.ofAEMeasurable`.
 
+2026-05-03 follow-up `/goal` update after canonical iid-sign instantiation:
+the finite-class untruncated consumer is now available without caller-supplied
+auxiliary Rademacher signs.  New compiled declarations are
+`exists_common_iid_vdVWRademacherSigns`, a common countable iid
+Rademacher-sign probability space built from mathlib `ProbabilityTheory.exists_iid`,
+`HasLaw.comp`, `iIndepFun.comp`, `iIndepFun.precomp`, and sub-Gaussian
+identical-distribution transport, and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_iidRademacher`,
+which restricts the common signs to each `Fin n` and calls the finite-class
+consumer.  Search record: local `Theorem243.lean` already had the VdVW
+Bool-to-real Rademacher law, sub-Gaussian proof, and finite iid construction;
+`StatInference/ProbabilityMeasure/Rademacher.lean` has parallel reusable
+Billingsley-lane wrappers; pinned mathlib supplied `exists_iid` and
+`iIndepFun.precomp` for the countable-to-finite restriction.
+
 Current compact `/goal` execution prompt: continue VdV&W Chapters 1-2 in
 dependency order without repeating closed Theorem 2.4.3 finite-net,
 selected-fixed-radius, finite-class, integrability, centered-cover, and
-centered-supremum/pair/sample/random-sign product integrability, and
+centered-supremum/pair/sample/random-sign product integrability, canonical
+common iid Rademacher sign instantiation, and
 untruncation layers.  The active closure batch is the actual non-finite
 theorem handoff from textbook entropy assumptions to selected fixed-radius
 tail/UI or deterministic log-ratio inputs; if that blocks after Lean/search,
@@ -1519,7 +1535,9 @@ arbitrary-map/asymptotic-measurability primitive.
 
 Next exact edit: do not repeat the finite-class geometry/entropy/consumer
 bridge, finite-center integrability closure, centered-cover closure, or
-centered-supremum/pair/sample/random-sign product integrability closure.  The
+centered-supremum/pair/sample/random-sign product integrability closure, and
+do not ask theorem callers to provide iid Rademacher signs in the finite-class
+route.  The
 remaining Theorem 2.4.3 proof work is now either (1) prove the actual
 non-finite-class
 geometric packing/cardinality estimate for the chosen empirical internal

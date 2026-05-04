@@ -3880,6 +3880,45 @@ theorem exists_iid_vdVWRademacherSigns (n : ℕ) :
   · exact ae_of_all _ (fun ω i =>
       vdVWBoolToRademacherSign_eq_neg_one_or_one (boolSign i ω))
 
+/--
+Existence of a single probability space carrying countably many iid
+real-valued Rademacher signs.
+
+This is the common sign-space version needed to instantiate all finite-`n`
+Rademacher inputs in Theorem 2.4.3 from one auxiliary probability space.  It is
+the countable analogue of `exists_iid_vdVWRademacherSigns`, again obtained
+from mathlib's `exists_iid` for the fair Bool law and the Bool-to-real sign map.
+-/
+theorem exists_common_iid_vdVWRademacherSigns :
+    ∃ Ω : Type, ∃ _ : MeasurableSpace Ω, ∃ P : Measure Ω,
+      ∃ sign : ℕ -> Ω -> ℝ,
+        (∀ i, Measurable (sign i)) ∧
+        (∀ i, HasLaw (sign i) vdVWRademacherLaw P) ∧
+        iIndepFun sign P ∧ IsProbabilityMeasure P ∧
+        (∀ i, HasSubgaussianMGF (sign i) 1 P) ∧
+        (∀ᵐ ω ∂P, ∀ i, sign i ω = -1 ∨ sign i ω = 1) := by
+  obtain ⟨Ω, mΩ, P, boolSign, hmeas, hlaw, hindep, hprob⟩ :=
+    ProbabilityTheory.exists_iid ℕ vdVWRademacherBoolLaw
+  letI : MeasurableSpace Ω := mΩ
+  let sign : ℕ -> Ω -> ℝ :=
+    fun i => vdVWBoolToRademacherSign ∘ boolSign i
+  refine ⟨Ω, mΩ, P, sign, ?_, ?_, ?_, hprob, ?_, ?_⟩
+  · intro i
+    exact measurable_vdVWBoolToRademacherSign.comp (hmeas i)
+  · intro i
+    exact vdVWBoolToRademacherSign_hasLaw.comp (hlaw i)
+  · exact hindep.comp (fun _ => vdVWBoolToRademacherSign)
+      (fun _ => measurable_vdVWBoolToRademacherSign)
+  · intro i
+    have hident :
+        IdentDistrib vdVWBoolToRademacherSign (sign i)
+          vdVWRademacherBoolLaw P :=
+      vdVWBoolToRademacherSign_hasLaw.identDistrib
+        (vdVWBoolToRademacherSign_hasLaw.comp (hlaw i))
+    exact vdVWBoolToRademacherSign_hasSubgaussianMGF.congr_identDistrib hident
+  · exact ae_of_all _ (fun ω i =>
+      vdVWBoolToRademacherSign_eq_neg_one_or_one (boolSign i ω))
+
 /-- Rademacher sign vectors are uniformly bounded by one in absolute value. -/
 theorem VdVWRademacherSignVector.abs_le_one
     {n : ℕ} {sign : Fin n -> ℝ}
@@ -16535,6 +16574,74 @@ theorem
       (Ucentered := fun M n =>
         VdVWMeasurableCover.centered_truncated_of_countable_of_coordinate
           hindex_finite.countable hclass henv n)
+
+/--
+Untruncated centered convergence for finite nonempty classes with canonical
+iid Rademacher signs.
+
+This theorem removes the caller-facing auxiliary sign probability space from
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass`.
+The sign inputs are instantiated from
+`exists_common_iid_vdVWRademacherSigns` and then restricted to each finite
+sample size.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_iidRademacher
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hindex_finite : indexClass.Finite)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  obtain ⟨Ωsign, mΩsign, μsign, signNat, _hmeas, _hlaw,
+      hindepNat, hprob, hsubGNat, hsupportNat⟩ :=
+    exists_common_iid_vdVWRademacherSigns
+  letI : MeasurableSpace Ωsign := mΩsign
+  haveI : IsProbabilityMeasure μsign := hprob
+  let sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ :=
+    fun _n i => signNat (i : ℕ)
+  exact
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (X := X)
+      (hX_samplePath := hX_samplePath)
+      (hindex_finite := hindex_finite) (hindexClass := hindexClass)
+      (henvelope := henvelope) (hclass := hclass) (henv := henv)
+      (henv_integrable := henv_integrable)
+      (hclassIntegrable := hclassIntegrable)
+      (sign := sign)
+      (hsign := by
+        intro n
+        exact hsupportNat.mono (fun ω hω i => hω (i : ℕ)))
+      (hindep := by
+        intro n
+        simpa [sign] using
+          hindepNat.precomp (g := fun i : Fin n => (i : ℕ)) Fin.val_injective)
+      (hsubG := by
+        intro n i
+        simpa [sign] using hsubGNat (i : ℕ))
 
 /--
 Fixed-`M` centered-truncated convergence from entropy, measurable random

@@ -673,6 +673,11 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWMeasurableCover.truncated_rademacher_product_of_finite`, using
    mathlib `HasSubgaussianMGF.integrable`, `Integrable.mul_prod`, Fubini
    integrability, and finite `biSup` measurability.
+   The finite-class route also now has
+   `exists_common_iid_vdVWRademacherSigns` and
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_iidRademacher`,
+   so the final finite-class specialization no longer asks the caller for an
+   auxiliary Rademacher sign probability space.
    The next proof step is therefore the non-finite-class
    geometric/cardinality instantiation, or a final theorem-critical
    specialization consuming this finite-class untruncated consumer.
