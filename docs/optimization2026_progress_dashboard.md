@@ -245,6 +245,11 @@ The newest lower-bound form adds
 `chewi45_source_positiveLog_rate_le_of_finiteGeometricCandidate_near_min`,
 turning the source-window contradiction into the direct conclusion
 `sqrt(kappa) * log ((alpha/8)/eps) / 8 - 1 <= N`.
+The burn-in-or-rate wrapper
+`chewi45_source_positiveLog_burnin_or_rate_le_of_finiteGeometricCandidate_near_min`
+now removes the upfront half-gate assumption by proving the disjunction:
+either `N` is below the finite half-boundary gate, or the source rate lower
+bound holds.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains

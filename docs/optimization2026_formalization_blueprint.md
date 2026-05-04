@@ -690,6 +690,10 @@ The direct lower-bound theorem
 `chewi45_source_positiveLog_rate_le_of_finiteGeometricCandidate_near_min` now
 compiles, converting the source-window contradiction into the usable rate
 conclusion `sqrt(kappa) * log ((alpha/8)/eps) / 8 - 1 <= N`.
+The burn-in disjunction
+`chewi45_source_positiveLog_burnin_or_rate_le_of_finiteGeometricCandidate_near_min`
+also compiles, so the finite half-boundary gate is now packaged as an
+alternative rather than a mandatory input to the rate lower-bound theorem.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
