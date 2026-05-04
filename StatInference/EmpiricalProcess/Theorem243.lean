@@ -26410,6 +26410,59 @@ theorem
       (envelope := envelope) hindex_finite henvelope hclass henv_integrable)
 
 /--
+Canonical finite-class theorem package from the direct iid SLLN route.
+
+For genuinely finite classes, this gives the direct outer-probability
+`P`-GC endpoint, the direct outer-a.s. endpoint, the local book-style
+`P`-Glivenko-Cantelli predicate, and the named Lemma 2.4.5 centered-supremum
+a.s. zero conclusion.  It does not use the general reverse/cofiltration
+primitive and does not require a global `Countable Index` assumption.
+-/
+theorem
+    VdVWTheorem243_finite_indexClass_pGlivenkoCantelli_and_lemma245_canonical_slln
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWOuterAlmostSurePGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) := by
+  constructor
+  · exact
+      VdVWOuterProbabilityPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hindex_finite henvelope hclass henv_integrable
+  · constructor
+    · exact
+        VdVWOuterAlmostSurePGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) hindex_finite henvelope hclass henv_integrable
+    · constructor
+      · exact
+          VdVWPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) hindex_finite henvelope hclass henv_integrable
+      · exact
+          vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_zero_of_finite_indexClass_canonical_slln
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) hindex_finite henvelope hclass henv_integrable
+
+/--
 Canonical finite-class Lemma 2.4.5 a.s. zero consumer.
 
 This is the finite-index analogue of the full-subgraph bridge: the existing

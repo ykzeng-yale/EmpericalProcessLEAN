@@ -1029,3 +1029,13 @@ conclusion, and the Lemma 2.4.5 a.s. zero conclusion from the existing
 full-subgraph hypotheses plus the single named reverse/cofiltration primitive.
 The companion a.s. consumer is
 `vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_reverseCofiltrationHandoff`.
+
+2026-05-04 follow-up: the direct finite-class iid-SLLN route now has the
+package
+`VdVWTheorem243_finite_indexClass_pGlivenkoCantelli_and_lemma245_canonical_slln`.
+It gives the direct outer-probability endpoint, direct outer-a.s. endpoint,
+book-style `P`-GC predicate, and Lemma 2.4.5 a.s. zero endpoint without
+ambient countability, an inhabited observation type, or the reverse
+cofiltration primitive.  This is the clean finite-class closure; the
+non-finite arbitrary/countable route still depends on
+`VdVWLemma245ReverseCofiltrationHandoff`.

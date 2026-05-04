@@ -3545,3 +3545,15 @@ endpoint, the fixed-space outer-probability/Borel-Cantelli zero route, and the
 named reverse/cofiltration primitive.  Downstream assembly for the
 full-subgraph path now has one exposed missing hypothesis:
 `VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun`.
+
+2026-05-04 follow-up: the direct finite-class iid-SLLN route now has a single
+theorem-facing package
+`VdVWTheorem243_finite_indexClass_pGlivenkoCantelli_and_lemma245_canonical_slln`.
+It simultaneously returns the direct outer-probability `P`-GC endpoint, the
+direct outer-a.s. endpoint, the book-style `P`-GC predicate, and the named
+Lemma 2.4.5 centered-supremum a.s. zero conclusion.  This package uses only
+finite class membership, the envelope, coordinate measurability, and envelope
+integrability; it does not require `[Countable Index]`, `[Inhabited
+Observation]`, or the reverse/cofiltration primitive.  The arbitrary/countable
+non-finite route remains blocked exactly at
+`VdVWLemma245ReverseCofiltrationHandoff`.
