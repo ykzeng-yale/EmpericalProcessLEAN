@@ -641,6 +641,17 @@ The quotient-rate specialization now also compiles:
 and `chewi45_not_finiteGeometricCandidate_near_min_of_logQuotientRate_lt`.
 Thus the direct finite route only still needs the concrete dimension/exponent
 half-bound; the canonical rate algebra is closed.
+The standard `d = 2N+1` specialization now compiles as
+`chewi45_two_mul_add_one_boundary_exponent_eq`,
+`chewi45_iteration_count_ge_logQuotientRate_two_mul_add_one`, and
+`chewi45_not_finiteGeometricCandidate_near_min_of_logQuotientRate_lt_two_mul_add_one`.
+This removes the finite Nat bookkeeping; the direct finite route's remaining
+scalar input is the logarithmic half-bound at exponent `2(N+1)`.
+The half-boundary rate conversion now compiles as
+`chewi45_log_half_bound_of_logQuotient_iteration_lower_bound` and
+`chewi45_not_finiteGeometricCandidate_near_min_of_two_logQuotient_rates`,
+which packages the direct finite route using two explicit quotient-rate
+comparisons on `N`.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
