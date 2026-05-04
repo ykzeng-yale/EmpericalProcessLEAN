@@ -1340,14 +1340,29 @@ This closes the compatibility step from internal-cover `edist` balls in the
 empirical pseudometric to local empirical `L1(P_n)` cover witnesses with
 centers still in `indexClass`.
 
+2026-05-03 `/goal` update: the induced empirical-pseudometric covering-number
+bridge now feeds the selected fixed-radius tail/UI package directly.  The
+new compiled declarations in `StatInference/EmpiricalProcess/Theorem243.lean`
+are
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_empiricalL1Index_coveringNumber_le`,
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_empiricalL1Index_coveringNumber_le_samplePath`,
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_empiricalL1Index_coveringNumber_le_samplePath`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_empiricalL1Index_coveringNumber_le_terminal_pow`,
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_empiricalL1Index_coveringNumber_le_succ_terminal_pow`.
+Thus a future theorem only has to prove the geometric finite-cardinality
+estimate in the induced empirical pseudometric, plus the existing stochastic
+entropy convergence input; the random-cover domination and selected tail/UI
+handoff are now closed.
+
 Next exact edit: prove the selected finite-net tail-expectation/UI condition
 from the textbook entropy hypothesis by supplying the remaining geometric
 cardinality estimate.  The adapter and induced-pseudometric compatibility gaps
 are now closed; the remaining proof work is to prove a usable geometric bound
-for the chosen empirical internal cover/maximal separated set, for example a
-terminal estimate bounded by `base ^ n` that can feed the selected fixed-radius
-tail package.  The analytic package handoff from that estimate is now closed.
-If this geometric packing route blocks, record the precise additional
+for the chosen empirical internal cover/maximal separated set, for example
+`Metric.coveringNumber (⟨eta, _⟩ : ℝ≥0)
+  (EmpiricalL1Index.liftSet ...) <= base eta ^ n` at the terminal sample
+size.  If this geometric packing route blocks, record the precise additional
 book-level uniform-integrability/tail-expectation condition needed to keep the
 final Theorem 2.4.3 statement honest.
 The remaining analytic gap is no longer selected-cardinality measurability/log

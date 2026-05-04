@@ -602,8 +602,16 @@ above, so they do not change the theorem-level dashboard counts.
    `empiricalL1CoveringNumber_le_of_empiricalL1Index_coveringNumber_le`, so
    mathlib internal covers for the empirical `L1(P_n)` pseudometric now give
    local empirical-cover witnesses with centers in the class, and finite
-   internal-cover cardinality bounds can be consumed directly.  The next proof
-   step is therefore the geometric/cardinality instantiation.  The terminal
+   internal-cover cardinality bounds can be consumed directly.  The
+   sample-path random-cover bridge and selected fixed-radius tail-package
+   constructors are also compiled through
+   `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_empiricalL1Index_coveringNumber_le_samplePath`,
+   `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_empiricalL1Index_coveringNumber_le_samplePath`,
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_empiricalL1Index_coveringNumber_le_terminal_pow`,
+   and
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_empiricalL1Index_coveringNumber_le_succ_terminal_pow`.
+   The next proof step is therefore the geometric/cardinality instantiation.
+   The terminal
    power-bound constructors
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_terminal_le_pow`
    and
