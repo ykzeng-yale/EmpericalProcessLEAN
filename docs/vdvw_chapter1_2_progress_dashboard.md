@@ -600,6 +600,12 @@ and
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable_canonical`
 remove the auxiliary Rademacher sign-space and canonical sample-path process
 choices from this in-mean route.
+2026-05-04 follow-up: the deterministic tail-reduction bridge
+`vdVWWeightedClassSupremum_centered_invNat_le_empiricalAverage_envelope_add_integral`
+now compiles.  For positive sample sizes it bounds the centered `1/n`
+weighted supremum by the empirical envelope average plus `∫ envelope dP`.
+This narrows the remaining in-mean tail/UI blocker to a tail expectation
+theorem for empirical averages of a nonnegative integrable envelope.
 
 ## Verification Monitor
 

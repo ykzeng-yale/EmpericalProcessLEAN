@@ -2173,6 +2173,77 @@ theorem vdVWWeightedClassSupremum_centered_le_sum_abs_mul_envelope_add_integral
                   (μ := P) henvelope hclass henv_integrable hindex))
 
 /--
+For empirical weights `1/n`, the centered weighted supremum is controlled by
+the empirical envelope average plus the population envelope mean.
+-/
+theorem
+    vdVWWeightedClassSupremum_centered_invNat_le_empiricalAverage_envelope_add_integral
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {n : ℕ}
+    (hn : 0 < n) (sample : SampleAt Observation n)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    vdVWWeightedClassSupremum indexClass
+      (fun index : Index => fun observation : Observation =>
+        classFun index observation - ∫ x, classFun index x ∂P)
+      (fun _ : Fin n => (n : ℝ)⁻¹) sample ≤
+      empiricalAverage sample envelope + ∫ x, envelope x ∂P := by
+  have hdom :=
+    vdVWWeightedClassSupremum_centered_le_sum_abs_mul_envelope_add_integral
+      (P := P) (fun _ : Fin n => (n : ℝ)⁻¹) sample
+      henvelope hclass henv_integrable
+  have hn_cast : (n : ℝ) ≠ 0 :=
+    Nat.cast_ne_zero.mpr (Nat.ne_of_gt hn)
+  have hsumWeights : (∑ _i : Fin n, (n : ℝ)⁻¹) = 1 := by
+    calc
+      (∑ _i : Fin n, (n : ℝ)⁻¹)
+          = (n : ℝ) * (n : ℝ)⁻¹ := by
+            simp [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+              nsmul_eq_mul]
+      _ = 1 := by
+            field_simp [hn_cast]
+  refine hdom.trans_eq ?_
+  calc
+    (∑ i : Fin n, |(n : ℝ)⁻¹| *
+        (envelope (sample i) + ∫ x, envelope x ∂P))
+        =
+      ∑ i : Fin n, (n : ℝ)⁻¹ *
+        (envelope (sample i) + ∫ x, envelope x ∂P) := by
+        congr 1
+        ext i
+        rw [abs_of_nonneg]
+        positivity
+    _ =
+      (∑ i : Fin n, (n : ℝ)⁻¹ * envelope (sample i)) +
+        (∑ i : Fin n, (n : ℝ)⁻¹ * ∫ x, envelope x ∂P) := by
+        rw [← Finset.sum_add_distrib]
+        congr 1
+        ext i
+        ring
+    _ =
+      empiricalAverage sample envelope + ∫ x, envelope x ∂P := by
+        have hfirst :
+            (∑ i : Fin n, (n : ℝ)⁻¹ * envelope (sample i)) =
+              empiricalAverage sample envelope := by
+          unfold empiricalAverage
+          rw [← Finset.mul_sum, inv_mul_eq_div]
+        have hsecond :
+            (∑ i : Fin n, (n : ℝ)⁻¹ * ∫ x, envelope x ∂P) =
+              ∫ x, envelope x ∂P := by
+          calc
+            (∑ i : Fin n, (n : ℝ)⁻¹ * ∫ x, envelope x ∂P)
+                = (∑ _i : Fin n, (n : ℝ)⁻¹) *
+                    ∫ x, envelope x ∂P := by
+                  rw [Finset.sum_mul]
+            _ = ∫ x, envelope x ∂P := by
+                  rw [hsumWeights]
+                  ring
+        rw [hfirst, hsecond]
+
+/--
 Centered weighted-supremum convergence in outer probability upgrades to
 ordinary in-mean convergence under an explicit varying-domain tail/UI
 condition.

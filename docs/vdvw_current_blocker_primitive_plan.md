@@ -2843,9 +2843,14 @@ and
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable_canonical`
 now remove the auxiliary Rademacher sign-space and terminal sample-path process
 choices from this in-mean route.
+The deterministic tail-reduction bridge
+`vdVWWeightedClassSupremum_centered_invNat_le_empiricalAverage_envelope_add_integral`
+now specializes the sample-dependent envelope domination to empirical weights
+`1/n`, giving a pointwise bound by the empirical envelope average plus
+`∫ envelope dP` for every positive sample size.
 The remaining nontrivial analytic input for the current in-mean theorem layer
-is the varying-domain tail/UI condition for the centered supremum, not routine
-measurability or integrability.
+is the varying-domain tail/UI condition for that empirical-envelope-average
+upper bound, not routine measurability or integrability.
 
 Next exact theorem-facing edit: move from this proof layer toward the exact
 Theorem 2.4.3 statement by aligning the remaining structural full-subgraph
@@ -2856,3 +2861,8 @@ countable/envelope in-mean adapter are now available for the current
 full-subgraph route; do not recreate the derived integrability,
 measurable-cover, finite-product GC, countable measurability/integrability, or
 generic in-mean adapter witnesses.
+Next patchable tail/UI target: prove an empirical-average tail expectation
+bound for a nonnegative integrable envelope, e.g. an inequality of the form
+`∫ 1{K < empiricalAverage F} empiricalAverage F dP^n ≤
+2 * ∫ 1{K/2 < F} F dP` for `0 < n` and `0 < K`, then combine it with the
+new centered-supremum domination and the constant population envelope mean.

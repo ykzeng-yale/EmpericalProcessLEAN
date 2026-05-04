@@ -960,7 +960,12 @@ above, so they do not change the theorem-level dashboard counts.
    also remove the auxiliary sign-space and sample-path process plumbing from
    this in-mean route.
    The remaining in-mean side condition is the genuine varying-domain
-   tail/UI hypothesis for the centered supremum.
+   tail/UI hypothesis for the centered supremum.  The deterministic bridge
+   `vdVWWeightedClassSupremum_centered_invNat_le_empiricalAverage_envelope_add_integral`
+   now reduces the positive-sample-size tail estimate to the empirical
+   envelope average plus the population envelope mean; the next analytic
+   target is the empirical-average tail expectation bound for a nonnegative
+   integrable envelope.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
