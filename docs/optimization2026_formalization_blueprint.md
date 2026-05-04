@@ -620,6 +620,12 @@ and
 The positive form should be reused for the next iteration-count conversion:
 it packages the finite route as `(alpha/8) * q^(2*(N+1)) <= eps` from any
 `eps`-near iterate.
+The log-to-half bridge now compiles as
+`chewi45GeometricRatio_pow_le_half_of_nat_mul_log_le`,
+`chewi45_half_boundary_condition_of_log_exponent_le`, and
+`chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_log_exponent_le`.
+This turns the remaining finite dimension condition into the source-shaped
+log inequality `(M : Real) * log q <= log (1/2)`.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
