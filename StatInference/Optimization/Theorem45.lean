@@ -149,5 +149,93 @@ theorem chewi45_regularized_chain_interface_package
         (x := x)
         hx0 hspan⟩
 
+/-- Squared coordinate tail beyond the source prefix subspace `V_N`. -/
+noncomputable def coordinateTailSq (d N : ℕ)
+    (z : EuclideanSpace ℝ (Fin d)) : ℝ :=
+  Finset.sum (Finset.univ.filter (fun i : Fin d => N ≤ i.1))
+    (fun i : Fin d => (z i) ^ (2 : ℕ))
+
+/-- Coordinate-tail energy is nonnegative. -/
+theorem coordinateTailSq_nonneg (d N : ℕ)
+    (z : EuclideanSpace ℝ (Fin d)) :
+    0 ≤ coordinateTailSq d N z := by
+  unfold coordinateTailSq
+  exact Finset.sum_nonneg fun _ _ => sq_nonneg _
+
+/--
+If `x ∈ V_N`, then the squared distance from `x` to any `z` controls the
+tail energy of `z` outside `V_N`.
+-/
+theorem coordinateTailSq_le_sqdist_of_mem_coordinatePrefixSubmodule
+    {d N : ℕ} {x z : EuclideanSpace ℝ (Fin d)}
+    (hx : x ∈ coordinatePrefixSubmodule d N) :
+    coordinateTailSq d N z ≤ ‖x - z‖ ^ (2 : ℕ) := by
+  rw [EuclideanSpace.real_norm_sq_eq]
+  have htail_eq :
+      coordinateTailSq d N z =
+        Finset.sum (Finset.univ.filter (fun i : Fin d => N ≤ i.1))
+          (fun i : Fin d => ((x - z) i) ^ (2 : ℕ)) := by
+    unfold coordinateTailSq
+    refine Finset.sum_congr rfl ?_
+    intro i hi
+    have hNi : N ≤ i.1 := (Finset.mem_filter.mp hi).2
+    have hxi : x i = 0 := hx i hNi
+    simp [hxi]
+  rw [htail_eq]
+  exact Finset.sum_le_sum_of_subset_of_nonneg
+    (by exact Finset.filter_subset _ _)
+    (fun _ _ _ => sq_nonneg _)
+
+/--
+Tail-energy gap lower bound for the strongly-convex chain from a supplied
+zero-gradient minimizer candidate.
+-/
+theorem strongLowerBoundChainObjective_gap_ge_tailSq_of_gradient_eq_zero
+    {alpha beta : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (halpha_le_beta : alpha ≤ beta) {d N : ℕ}
+    {x xStar : EuclideanSpace ℝ (Fin d)}
+    (hx_prefix : x ∈ coordinatePrefixSubmodule d N)
+    (hgrad_zero : strongLowerBoundChainGradient alpha beta d xStar = 0) :
+    (alpha / 2) * coordinateTailSq d N xStar ≤
+      strongLowerBoundChainObjective alpha beta d x -
+        strongLowerBoundChainObjective alpha beta d xStar := by
+  have hfirst :=
+    strongLowerBoundChainObjective_firstOrderStrongConvexOn
+      (alpha := alpha) (beta := beta) halpha_le_beta d
+  have hmodel := hfirst.lower_model
+    (by simp : xStar ∈ Set.univ) (by simp : x ∈ Set.univ)
+  have htail_le :
+      coordinateTailSq d N xStar ≤ ‖x - xStar‖ ^ (2 : ℕ) :=
+    coordinateTailSq_le_sqdist_of_mem_coordinatePrefixSubmodule hx_prefix
+  have hmul :
+      (alpha / 2) * coordinateTailSq d N xStar ≤
+        (alpha / 2) * ‖x - xStar‖ ^ (2 : ℕ) := by
+    exact mul_le_mul_of_nonneg_left htail_le (by nlinarith)
+  simp [hgrad_zero] at hmodel
+  nlinarith
+
+/--
+Gradient-span version of the tail-energy gap bound.  The prefix membership is
+discharged by the compiled support induction for the strongly-convex chain.
+-/
+theorem strongLowerBoundChainObjective_gap_ge_tailSq_of_gradientSpanTrajectory
+    {alpha beta : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (halpha_le_beta : alpha ≤ beta) {d N : ℕ}
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {xStar : EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hgrad_zero : strongLowerBoundChainGradient alpha beta d xStar = 0) :
+    (alpha / 2) * coordinateTailSq d N xStar ≤
+      strongLowerBoundChainObjective alpha beta d (x N) -
+        strongLowerBoundChainObjective alpha beta d xStar := by
+  have hx_prefix :
+      x N ∈ coordinatePrefixSubmodule d N :=
+    gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_strongLowerBoundChainGradient
+      (x := x) hx0 hspan N
+  exact strongLowerBoundChainObjective_gap_ge_tailSq_of_gradient_eq_zero
+    halpha_nonneg halpha_le_beta hx_prefix hgrad_zero
+
 end Optimization
 end StatInference

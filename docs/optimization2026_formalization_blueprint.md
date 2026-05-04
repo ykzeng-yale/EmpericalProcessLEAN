@@ -493,7 +493,10 @@ The concrete Theorem 4.5 setup in `StatInference/Optimization/Theorem45.lean`
 now also compiles: it defines `strongLowerBoundChainObjective` and
 `strongLowerBoundChainGradient`, proves the `alpha`-strong-convex and
 `beta`-smooth supplied interfaces for `0 < alpha < beta`, and proves that
-gradient-span trajectories from zero remain in `V_n`.
+gradient-span trajectories from zero remain in `V_n`.  The newest witness
+layer defines `coordinateTailSq` and proves that a supplied zero-gradient
+minimizer candidate with tail beyond `V_N` forces a function gap for every
+gradient-span trajectory iterate `x_N`.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
