@@ -977,6 +977,12 @@ above, so they do not change the theorem-level dashboard counts.
    mean that the countable/envelope full-subgraph in-mean route no longer
    exposes the centered-supremum tail/UI, auxiliary sign-space, or terminal
    sample-path choices to callers.
+   The outer-probability and in-mean conclusions are now packaged together as
+   `VdVWTheorem243_fullSubgraph_integrable_outerProbabilityUniformDeviation_and_inMean`
+   and
+   `VdVWTheorem243_fullSubgraph_integrable_outerProbabilityUniformDeviation_and_inMean_canonical`.
+   These are theorem-facing assembly points under explicit full-subgraph
+   structural assumptions, not exact textbook reports.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

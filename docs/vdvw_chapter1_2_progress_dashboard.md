@@ -630,6 +630,16 @@ plumbing from the countable/envelope full-subgraph in-mean route.  The next
 closure is to package this with the existing uniform-deviation route and keep
 the remaining full-subgraph/entropy assumptions explicit before attacking the
 a.s./reverse-submartingale conclusion.
+2026-05-04 follow-up: that joint package is now compiled.  The new declarations
+`VdVWTheorem243_fullSubgraph_integrable_outerProbabilityUniformDeviation_and_inMean`
+and
+`VdVWTheorem243_fullSubgraph_integrable_outerProbabilityUniformDeviation_and_inMean_canonical`
+return both finite-product outer-probability uniform-deviation convergence and
+ordinary in-mean convergence of the centered weighted supremum under the
+current explicit full-subgraph structural assumptions.  This is still a
+theorem layer, not the exact textbook Theorem 2.4.3: remaining work is the
+structural entropy/trace-grid alignment and the a.s./reverse-submartingale
+conclusion.
 
 ## Verification Monitor
 

@@ -2904,3 +2904,16 @@ theorem-facing target is to package this in-mean convergence with the existing
 uniform-deviation outer-probability route and keep the remaining structural
 full-subgraph/entropy assumptions explicit, then continue to the
 almost-sure/reverse-submartingale part of Theorem 2.4.3.
+
+2026-05-04 follow-up: the outer-probability and in-mean conclusions are now
+jointly packaged for the full-subgraph route.  New compiled declarations are
+`VdVWTheorem243_fullSubgraph_integrable_outerProbabilityUniformDeviation_and_inMean`
+and
+`VdVWTheorem243_fullSubgraph_integrable_outerProbabilityUniformDeviation_and_inMean_canonical`.
+They consume the existing finite-product uniform-deviation theorem and the
+new no-tail in-mean theorem, so callers can obtain both current Theorem 2.4.3
+conclusions from one explicit full-subgraph structural hypothesis package.
+This remains a theorem layer, not an exact textbook report: the remaining
+main-line work is to align the structural full-subgraph/trace-grid assumption
+with the textbook entropy hypothesis or keep it honest as a side condition,
+then prove the almost-sure/reverse-submartingale conclusion.
