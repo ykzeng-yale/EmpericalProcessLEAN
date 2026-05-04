@@ -148,6 +148,88 @@ def PLGradientFlowLyapunovDifferentialEstimateRouteToQGOn
                 ‖grad (y t)‖ ^ (2 : ℕ) /
                   (2 * Real.sqrt (f (y t) - fstar)))
 
+/--
+Component-derivative route for Chewi's Lyapunov calculation.  It separates
+the two analytic facts used in the proof: the derivative of the norm term is
+bounded by the gradient norm, and the objective-gap derivative is the Lemma
+2.1 gradient-flow derivative.
+-/
+def PLGradientFlowLyapunovDerivativeComponentsRouteToQGOn
+    (C : Set E) (f : E -> ℝ) (grad : E -> E)
+    (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    ∃ xStar, ∃ y : ℝ -> E, ∃ normSlope : ℝ -> ℝ,
+      xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+        y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
+          ContinuousOn
+            (fun t =>
+              Real.sqrt (alpha / 2) * ‖y t - x‖ +
+                Real.sqrt (f (y t) - fstar))
+            (Set.Ici (0 : ℝ)) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t ∈ C) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            0 < f (y t) - fstar) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            HasDerivWithinAt (fun s => ‖y s - x‖) (normSlope t)
+              (interior (Set.Ici (0 : ℝ))) t) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            normSlope t ≤ ‖grad (y t)‖) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            HasDerivWithinAt (fun s => f (y s) - fstar)
+              (-(‖grad (y t)‖ ^ (2 : ℕ)))
+              (interior (Set.Ici (0 : ℝ))) t)
+
+/--
+Norm-derivative route for Chewi Proposition 2.7(2).  Compared with the
+component route, the objective-gap derivative is no longer supplied: it is
+recovered from the existing gradient-flow trajectory and gradient oracle.
+-/
+def PLGradientFlowLyapunovNormDerivativeRouteToQGOn
+    (C : Set E) (f : E -> ℝ) (grad : E -> E)
+    (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    ∃ xStar, ∃ y : ℝ -> E, ∃ normSlope : ℝ -> ℝ,
+      xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+        y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
+          IsGradientFlowTrajectory grad y ∧
+          ContinuousOn
+            (fun t =>
+              Real.sqrt (alpha / 2) * ‖y t - x‖ +
+                Real.sqrt (f (y t) - fstar))
+            (Set.Ici (0 : ℝ)) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t ∈ C) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            0 < f (y t) - fstar) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            HasDerivWithinAt (fun s => ‖y s - x‖) (normSlope t)
+              (interior (Set.Ici (0 : ℝ))) t) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            normSlope t ≤ ‖grad (y t)‖)
+
+/--
+Nonzero-displacement route for Chewi Proposition 2.7(2).  This is close to
+the displayed proof: the trajectory solves gradient flow, has positive
+objective gap on positive time, and the distance from the start is nonzero
+where the classical derivative of the norm is taken.
+-/
+def PLGradientFlowLyapunovNonzeroDisplacementRouteToQGOn
+    (C : Set E) (f : E -> ℝ) (grad : E -> E)
+    (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    ∃ xStar, ∃ y : ℝ -> E,
+      xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+        y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
+          IsGradientFlowTrajectory grad y ∧
+          ContinuousOn
+            (fun t =>
+              Real.sqrt (alpha / 2) * ‖y t - x‖ +
+                Real.sqrt (f (y t) - fstar))
+            (Set.Ici (0 : ℝ)) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t ∈ C) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            0 < f (y t) - fstar) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t - x ≠ 0)
+
 omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] in
 /--
 Scalar algebra in Chewi Proposition 2.7(2): under the PL lower bound,
@@ -328,6 +410,119 @@ theorem plGradientFlowLyapunovRouteToQGOn_of_derivativeRoute
 
 omit [InnerProductSpace ℝ E] in
 /--
+The separated norm/gap derivative estimates imply Chewi's displayed
+Lyapunov derivative upper bound.
+-/
+theorem plGradientFlowLyapunovDifferentialEstimateRouteToQGOn_of_derivativeComponentsRoute
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hroute :
+      PLGradientFlowLyapunovDerivativeComponentsRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovDifferentialEstimateRouteToQGOn
+      C f grad alpha fstar := by
+  intro x hx
+  rcases hroute hx with
+    ⟨xStar, y, normSlope, hxStar, hmin, hfxStar, hy0, hyconv,
+      hcont, hy_mem, hgap_pos, hnorm_deriv, hnorm_le, hgap_deriv⟩
+  refine ⟨xStar, y,
+    (fun t =>
+      Real.sqrt (alpha / 2) * normSlope t +
+        (-(‖grad (y t)‖ ^ (2 : ℕ))) /
+          (2 * Real.sqrt (f (y t) - fstar))),
+    hxStar, hmin, hfxStar, hy0, hyconv, hcont, hy_mem, hgap_pos, ?_, ?_⟩
+  · intro t ht
+    have hsqrt := (hgap_deriv t ht).sqrt (by nlinarith [hgap_pos t ht])
+    have hnorm' := (hnorm_deriv t ht).const_mul (Real.sqrt (alpha / 2))
+    simpa using hnorm'.add hsqrt
+  · intro t ht
+    have hcoef_nonneg : 0 ≤ Real.sqrt (alpha / 2) :=
+      Real.sqrt_nonneg _
+    have hmul :=
+      mul_le_mul_of_nonneg_left (hnorm_le t ht) hcoef_nonneg
+    ring_nf at hmul ⊢
+    linarith
+
+/--
+The gradient-flow trajectory supplies the objective-gap derivative component
+via the already compiled Lemma 2.1 calculus layer.
+-/
+theorem plGradientFlowLyapunovDerivativeComponentsRouteToQGOn_of_normDerivativeRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hroute :
+      PLGradientFlowLyapunovNormDerivativeRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovDerivativeComponentsRouteToQGOn
+      C f grad alpha fstar := by
+  intro x hx
+  rcases hroute hx with
+    ⟨xStar, y, normSlope, hxStar, hmin, hfxStar, hy0, hyconv,
+      hflow, hcont, hy_mem, hgap_pos, hnorm_deriv, hnorm_le⟩
+  refine ⟨xStar, y, normSlope, hxStar, hmin, hfxStar, hy0, hyconv,
+    hcont, hy_mem, hgap_pos, hnorm_deriv, hnorm_le, ?_⟩
+  intro t _ht
+  exact
+    (gradientFlow_gap_hasDerivAt (t := t) (fstar := fstar)
+      hgrad hflow).hasDerivWithinAt
+
+/--
+For a genuine gradient-flow trajectory, the classical derivative of
+`t ↦ ||y t - x||` away from zero is bounded by `||grad (y t)||`.  This proves
+the norm-derivative route from the nonzero-displacement route.
+-/
+theorem plGradientFlowLyapunovNormDerivativeRouteToQGOn_of_nonzeroDisplacementRoute
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hroute :
+      PLGradientFlowLyapunovNonzeroDisplacementRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovNormDerivativeRouteToQGOn
+      C f grad alpha fstar := by
+  intro x hx
+  rcases hroute hx with
+    ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv,
+      hflow, hcont, hy_mem, hgap_pos, hnonzero⟩
+  refine ⟨xStar, y,
+    (fun t =>
+      (2 * inner ℝ (y t - x) (-(grad (y t)))) /
+        (2 * Real.sqrt (‖y t - x‖ ^ (2 : ℕ)))),
+    hxStar, hmin, hfxStar, hy0, hyconv, hflow,
+    hcont, hy_mem, hgap_pos, ?_, ?_⟩
+  · intro t ht
+    have hdiff : HasDerivAt (fun s => y s - x) (-(grad (y t))) t := by
+      simpa using (hflow t).sub_const x
+    let D : Set ℝ := interior (Set.Ici (0 : ℝ))
+    have hsq := (hdiff.hasDerivWithinAt (s := D)).norm_sq
+    have hsq_ne : ‖y t - x‖ ^ (2 : ℕ) ≠ 0 :=
+      pow_ne_zero _ (norm_ne_zero_iff.mpr (hnonzero t ht))
+    have hsqrt := hsq.sqrt hsq_ne
+    convert hsqrt using 1
+    · ext s
+      exact (Real.sqrt_sq (norm_nonneg _)).symm
+  · intro t ht
+    have hnorm_pos : 0 < ‖y t - x‖ :=
+      norm_pos_iff.mpr (hnonzero t ht)
+    have hsqrt :
+        Real.sqrt (‖y t - x‖ ^ (2 : ℕ)) = ‖y t - x‖ :=
+      Real.sqrt_sq (norm_nonneg _)
+    change
+      (2 * inner ℝ (y t - x) (-(grad (y t)))) /
+          (2 * Real.sqrt (‖y t - x‖ ^ (2 : ℕ))) ≤
+        ‖grad (y t)‖
+    rw [hsqrt]
+    rw [div_le_iff₀ (by positivity : 0 < 2 * ‖y t - x‖)]
+    have hinner_le :
+        inner ℝ (y t - x) (-(grad (y t))) ≤
+          ‖y t - x‖ * ‖grad (y t)‖ := by
+      calc
+        inner ℝ (y t - x) (-(grad (y t))) ≤
+            ‖y t - x‖ * ‖-(grad (y t))‖ :=
+          real_inner_le_norm _ _
+        _ = ‖y t - x‖ * ‖grad (y t)‖ := by simp
+    nlinarith
+
+omit [InnerProductSpace ℝ E] in
+/--
 The differential estimate in Chewi's display, together with the PL
 inequality, supplies the nonpositive-derivative route.
 -/
@@ -374,6 +569,43 @@ theorem plGradientFlowLyapunovRouteToQGOn_of_differentialEstimateRoute
   plGradientFlowLyapunovRouteToQGOn_of_derivativeRoute
     (plGradientFlowLyapunovDerivativeRouteToQGOn_of_differentialEstimateRoute
       halpha hpl hroute)
+
+omit [InnerProductSpace ℝ E] in
+/--
+The component-derivative route plus PL gives the pointwise Lyapunov
+inequality used by the convergence route.
+-/
+theorem plGradientFlowLyapunovRouteToQGOn_of_derivativeComponentsRoute
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovDerivativeComponentsRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovRouteToQGOn C f alpha fstar :=
+  plGradientFlowLyapunovRouteToQGOn_of_differentialEstimateRoute
+    halpha hpl
+    (plGradientFlowLyapunovDifferentialEstimateRouteToQGOn_of_derivativeComponentsRoute
+      hroute)
+
+/--
+The norm-derivative route plus the gradient-flow calculus layer gives the
+pointwise Lyapunov inequality used by the convergence route.
+-/
+theorem plGradientFlowLyapunovRouteToQGOn_of_normDerivativeRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovNormDerivativeRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovRouteToQGOn C f alpha fstar :=
+  plGradientFlowLyapunovRouteToQGOn_of_derivativeComponentsRoute
+    halpha hpl
+    (plGradientFlowLyapunovDerivativeComponentsRouteToQGOn_of_normDerivativeRoute
+      hgrad hroute)
 
 omit [InnerProductSpace ℝ E] in
 /--
@@ -541,6 +773,65 @@ theorem quadraticGrowthOn_of_plGradientFlowLyapunovDifferentialEstimateRoute
   quadraticGrowthOn_of_plGradientFlowLyapunovDerivativeRoute halpha
     (plGradientFlowLyapunovDerivativeRouteToQGOn_of_differentialEstimateRoute
       halpha.le hpl hroute)
+
+omit [InnerProductSpace ℝ E] in
+/--
+Chewi Proposition 2.7, second implication, from separated norm/gap derivative
+components for the Lyapunov calculation.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovDerivativeComponentsRoute
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovDerivativeComponentsRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLyapunovDifferentialEstimateRoute
+    halpha hpl
+    (plGradientFlowLyapunovDifferentialEstimateRouteToQGOn_of_derivativeComponentsRoute
+      hroute)
+
+/--
+Chewi Proposition 2.7, second implication, from a gradient-flow trajectory,
+the norm-derivative bound in the proof, and convergence to a minimizer.  The
+objective-gap derivative is discharged by Lemma 2.1.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovNormDerivativeRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovNormDerivativeRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLyapunovDerivativeComponentsRoute
+    halpha hpl
+    (plGradientFlowLyapunovDerivativeComponentsRouteToQGOn_of_normDerivativeRoute
+      hgrad hroute)
+
+/--
+Chewi Proposition 2.7, second implication, from the gradient-flow trajectory,
+positive-gap/nonzero-displacement side conditions, and convergence to a
+minimizer.  Both derivative components in the displayed Lyapunov calculation
+are discharged from the trajectory.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovNonzeroDisplacementRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovNonzeroDisplacementRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLyapunovNormDerivativeRoute
+    hgrad halpha hpl
+    (plGradientFlowLyapunovNormDerivativeRouteToQGOn_of_nonzeroDisplacementRoute
+      hroute)
 
 end Optimization
 end StatInference
