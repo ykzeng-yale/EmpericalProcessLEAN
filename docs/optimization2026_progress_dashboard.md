@@ -218,6 +218,15 @@ The newest condition-number pass adds
 `chewi45_not_finiteGeometricCandidate_near_min_of_conditionNumber_rates`,
 moving the direct finite obstruction from raw quotient rates to
 `sqrt(kappa) +/- 1` rate gates.
+The newest constant-cleanup pass adds
+`chewi45_two_le_sqrt_of_four_le`,
+`chewi45_sqrt_add_one_le_three_halves_sqrt_of_four_le`,
+`chewi45_half_sqrt_le_sqrt_sub_one_of_four_le`,
+`chewi45_sqrt_add_one_rate_le_three_halves_sqrt_rate`,
+`chewi45_half_sqrt_rate_le_sqrt_sub_one_rate`, and
+`chewi45_not_finiteGeometricCandidate_near_min_of_sqrtKappa_rates`,
+so the direct finite obstruction now has pure `sqrt(kappa)` rate gates when
+`4 <= kappa`.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains

@@ -661,6 +661,15 @@ The condition-number comparison layer now compiles as
 `chewi45_not_finiteGeometricCandidate_near_min_of_conditionNumber_rates`.
 This replaces the raw quotient-rate obstruction by a
 `sqrt(kappa) +/- 1` condition-number-shaped obstruction.
+The constant-cleanup layer now compiles as
+`chewi45_two_le_sqrt_of_four_le`,
+`chewi45_sqrt_add_one_le_three_halves_sqrt_of_four_le`,
+`chewi45_half_sqrt_le_sqrt_sub_one_of_four_le`,
+`chewi45_sqrt_add_one_rate_le_three_halves_sqrt_rate`,
+`chewi45_half_sqrt_rate_le_sqrt_sub_one_rate`, and
+`chewi45_not_finiteGeometricCandidate_near_min_of_sqrtKappa_rates`,
+which packages the direct finite route using pure `sqrt(kappa)` constants
+under `4 <= kappa`.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and

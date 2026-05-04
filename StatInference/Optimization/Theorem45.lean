@@ -1116,6 +1116,53 @@ theorem chewi45_sqrt_sub_one_bound_le_logQuotientRate
     simpa [hleft, hright] using hquot
   simpa [L, S] using sub_le_sub_right hmain 1
 
+theorem chewi45_two_le_sqrt_of_four_le {kappa : ℝ}
+    (hkappa_four : 4 ≤ kappa) :
+    (2 : ℝ) ≤ Real.sqrt kappa := by
+  have hsq : (2 : ℝ) ^ (2 : ℕ) ≤ kappa := by
+    norm_num
+    exact hkappa_four
+  exact Real.le_sqrt_of_sq_le hsq
+
+theorem chewi45_sqrt_add_one_le_three_halves_sqrt_of_four_le
+    {kappa : ℝ} (hkappa_four : 4 ≤ kappa) :
+    Real.sqrt kappa + 1 ≤ (3 / 2 : ℝ) * Real.sqrt kappa := by
+  have hsqrt_two : (2 : ℝ) ≤ Real.sqrt kappa :=
+    chewi45_two_le_sqrt_of_four_le hkappa_four
+  nlinarith
+
+theorem chewi45_half_sqrt_le_sqrt_sub_one_of_four_le
+    {kappa : ℝ} (hkappa_four : 4 ≤ kappa) :
+    Real.sqrt kappa / 2 ≤ Real.sqrt kappa - 1 := by
+  have hsqrt_two : (2 : ℝ) ≤ Real.sqrt kappa :=
+    chewi45_two_le_sqrt_of_four_le hkappa_four
+  nlinarith
+
+theorem chewi45_sqrt_add_one_rate_le_three_halves_sqrt_rate
+    {A kappa : ℝ} (hkappa_four : 4 ≤ kappa) (hA_nonpos : A ≤ 0) :
+    -((Real.sqrt kappa + 1) * A) / 4 - 1 ≤
+      -(((3 / 2 : ℝ) * Real.sqrt kappa) * A) / 4 - 1 := by
+  have hle :
+      Real.sqrt kappa + 1 ≤ (3 / 2 : ℝ) * Real.sqrt kappa :=
+    chewi45_sqrt_add_one_le_three_halves_sqrt_of_four_le hkappa_four
+  have hmul :
+      ((3 / 2 : ℝ) * Real.sqrt kappa) * A ≤
+        (Real.sqrt kappa + 1) * A :=
+    mul_le_mul_of_nonpos_right hle hA_nonpos
+  nlinarith
+
+theorem chewi45_half_sqrt_rate_le_sqrt_sub_one_rate
+    {A kappa : ℝ} (hkappa_four : 4 ≤ kappa) (hA_nonpos : A ≤ 0) :
+    -((Real.sqrt kappa / 2) * A) / 4 - 1 ≤
+      -((Real.sqrt kappa - 1) * A) / 4 - 1 := by
+  have hle :
+      Real.sqrt kappa / 2 ≤ Real.sqrt kappa - 1 :=
+    chewi45_half_sqrt_le_sqrt_sub_one_of_four_le hkappa_four
+  have hmul :
+      (Real.sqrt kappa - 1) * A ≤ (Real.sqrt kappa / 2) * A :=
+    mul_le_mul_of_nonpos_right hle hA_nonpos
+  nlinarith
+
 theorem chewi45GeometricRatio_quadratic {kappa : ℝ}
     (hkappa : 1 < kappa) :
     chewi45GeometricRatio kappa ^ (2 : ℕ) -
@@ -2861,6 +2908,77 @@ theorem chewi45_not_finiteGeometricCandidate_near_min_of_conditionNumber_rates
       (alpha := alpha) (beta := beta) (kappa := kappa) (eps := eps)
       halpha_pos heps_pos halpha_lt_beta hkappa (N := N)
       hhalf_rate_le_N hN_lt_eps_rate (x := x) hx0 hspan hnear
+
+/--
+Textbook-shaped constant cleanup of the finite direct route.  Under
+`kappa >= 4`, the two condition-number gates can be expressed with pure
+`sqrt(kappa)` factors: `3/2 * sqrt(kappa)` for the finite half-boundary gate
+and `sqrt(kappa)/2` for the `eps` gate.
+-/
+theorem chewi45_not_finiteGeometricCandidate_near_min_of_sqrtKappa_rates
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha)
+    (hkappa_four : 4 ≤ kappa) (heps_le : eps ≤ alpha / 8) {N : ℕ}
+    (hhalf_sqrt_le_N :
+      -(((3 / 2 : ℝ) * Real.sqrt kappa) *
+            Real.log (1 / 2 : ℝ)) / 4 - 1 ≤
+        (N : ℝ))
+    (hN_lt_eps_sqrt :
+      (N : ℝ) <
+        -((Real.sqrt kappa / 2) *
+            Real.log (eps / (alpha / 8))) / 4 - 1)
+    {x : ℕ -> EuclideanSpace ℝ (Fin (2 * N + 1))}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta (2 * N + 1)) x)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta (2 * N + 1) (x N) ≤
+        strongLowerBoundChainObjective alpha beta (2 * N + 1)
+          (strongLowerBoundFiniteGeometricCandidate kappa (2 * N + 1)) +
+            eps) :
+    False := by
+  have hhalf_nonpos : Real.log (1 / 2 : ℝ) ≤ 0 := by
+    exact Real.log_nonpos (by norm_num : 0 ≤ (1 / 2 : ℝ))
+      (by norm_num : (1 / 2 : ℝ) ≤ 1)
+  have hhalf_condition_le_sqrt :
+      -((Real.sqrt kappa + 1) * Real.log (1 / 2 : ℝ)) / 4 - 1 ≤
+        -(((3 / 2 : ℝ) * Real.sqrt kappa) *
+            Real.log (1 / 2 : ℝ)) / 4 - 1 :=
+    chewi45_sqrt_add_one_rate_le_three_halves_sqrt_rate
+      (A := Real.log (1 / 2 : ℝ)) (kappa := kappa)
+      hkappa_four hhalf_nonpos
+  have hhalf_condition_le_N :
+      -((Real.sqrt kappa + 1) * Real.log (1 / 2 : ℝ)) / 4 - 1 ≤
+        (N : ℝ) :=
+    hhalf_condition_le_sqrt.trans hhalf_sqrt_le_N
+  have ha_pos : 0 < alpha / 8 := by positivity
+  have heps_ratio_nonneg : 0 ≤ eps / (alpha / 8) := by positivity
+  have heps_ratio_le_one : eps / (alpha / 8) ≤ 1 := by
+    rw [div_le_iff₀ ha_pos]
+    simpa using heps_le
+  have heps_log_nonpos :
+      Real.log (eps / (alpha / 8)) ≤ 0 :=
+    Real.log_nonpos heps_ratio_nonneg heps_ratio_le_one
+  have heps_sqrt_le_condition :
+      -((Real.sqrt kappa / 2) *
+          Real.log (eps / (alpha / 8))) / 4 - 1 ≤
+        -((Real.sqrt kappa - 1) *
+          Real.log (eps / (alpha / 8))) / 4 - 1 :=
+    chewi45_half_sqrt_rate_le_sqrt_sub_one_rate
+      (A := Real.log (eps / (alpha / 8))) (kappa := kappa)
+      hkappa_four heps_log_nonpos
+  have hN_lt_eps_condition :
+      (N : ℝ) <
+        -((Real.sqrt kappa - 1) *
+          Real.log (eps / (alpha / 8))) / 4 - 1 :=
+    hN_lt_eps_sqrt.trans_le heps_sqrt_le_condition
+  exact
+    chewi45_not_finiteGeometricCandidate_near_min_of_conditionNumber_rates
+      (alpha := alpha) (beta := beta) (kappa := kappa) (eps := eps)
+      halpha_pos heps_pos halpha_lt_beta hkappa heps_le (N := N)
+      hhalf_condition_le_N hN_lt_eps_condition
+      (x := x) hx0 hspan hnear
 
 end Optimization
 end StatInference
