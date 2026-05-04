@@ -185,6 +185,14 @@ The newest log bridge adds
 `chewi45_half_boundary_condition_of_log_exponent_le`, and
 `chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_log_exponent_le`.
 The finite route can now use `(M : Real) * log q <= log (1/2)` directly.
+The newest scalar/rate pass adds
+`chewi45_rate_le_iterations_of_log_chain`,
+`chewi45_iteration_count_ge_rate_of_geometric_eps_lower_bound`,
+`chewi45_iteration_count_ge_rate_of_finiteGeometricCandidate_log_near_min`,
+and `chewi45_not_finiteGeometricCandidate_near_min_of_log_rate_lt`.  This
+closes the algebraic conversion from the finite geometric near-min lower bound
+to an iteration lower bound once concrete source choices for `M`, `d`, and
+`rate` discharge the two log comparisons.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains

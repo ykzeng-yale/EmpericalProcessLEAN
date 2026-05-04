@@ -867,6 +867,60 @@ theorem chewi45GeometricRatio_pow_le_half_of_nat_mul_log_le
     simpa [q] using hlog
   exact (Real.log_le_log_iff hpow_pos hhalf_pos).mp hlogpow
 
+/--
+Scalar log bridge for the final Chewi 4.5 rate conversion.  When the log of
+the ratio is negative, comparing two doubled exponents reverses the order and
+turns the log-chain inequality into `rate <= N`.
+-/
+theorem chewi45_rate_le_iterations_of_log_chain
+    {L rate : ℝ} {N : ℕ} (hL_neg : L < 0)
+    (hchain :
+      (2 * ((N : ℝ) + 1)) * L ≤ (2 * (rate + 1)) * L) :
+    rate ≤ (N : ℝ) := by
+  have htwice :
+      2 * (rate + 1) ≤ 2 * ((N : ℝ) + 1) := by
+    exact (mul_le_mul_right_of_neg hL_neg).mp hchain
+  nlinarith
+
+/--
+Geometric lower-bound to iteration-count bridge.  If near-minimality forces
+`(alpha / 8) * q^(2(N+1)) <= eps`, and the target rate is chosen so that the
+same `eps` log-ratio lies below `2(rate+1) log q`, then the negative log of
+`0 < q < 1` gives `rate <= N`.
+-/
+theorem chewi45_iteration_count_ge_rate_of_geometric_eps_lower_bound
+    {alpha eps q rate : ℝ} {N : ℕ}
+    (halpha_pos : 0 < alpha) (heps_pos : 0 < eps)
+    (hq_pos : 0 < q) (hq_lt_one : q < 1)
+    (hgeo : (alpha / 8) * q ^ (2 * (N + 1)) ≤ eps)
+    (hrate_log :
+      Real.log (eps / (alpha / 8)) ≤
+        (2 * (rate + 1)) * Real.log q) :
+    rate ≤ (N : ℝ) := by
+  have ha_pos : 0 < alpha / 8 := by positivity
+  have hpow_pos : 0 < q ^ (2 * (N + 1)) := pow_pos hq_pos _
+  have heps_div_pos : 0 < eps / (alpha / 8) := div_pos heps_pos ha_pos
+  have hpow_le : q ^ (2 * (N + 1)) ≤ eps / (alpha / 8) := by
+    rw [le_div_iff₀ ha_pos]
+    simpa [mul_comm, mul_left_comm, mul_assoc] using hgeo
+  have hlog_le :
+      Real.log (q ^ (2 * (N + 1))) ≤
+        Real.log (eps / (alpha / 8)) :=
+    (Real.log_le_log_iff hpow_pos heps_div_pos).2 hpow_le
+  have hleft :
+      (2 * ((N : ℝ) + 1)) * Real.log q ≤
+        Real.log (eps / (alpha / 8)) := by
+    rw [Real.log_pow] at hlog_le
+    simpa [Nat.cast_mul, Nat.cast_add, Nat.cast_one,
+      mul_comm, mul_left_comm, mul_assoc] using hlog_le
+  have hchain :
+      (2 * ((N : ℝ) + 1)) * Real.log q ≤
+        (2 * (rate + 1)) * Real.log q :=
+    hleft.trans hrate_log
+  exact chewi45_rate_le_iterations_of_log_chain
+    (L := Real.log q) (rate := rate) (N := N)
+    (Real.log_neg hq_pos hq_lt_one) hchain
+
 theorem chewi45GeometricRatio_quadratic {kappa : ℝ}
     (hkappa : 1 < kappa) :
     chewi45GeometricRatio kappa ^ (2 : ℕ) -
@@ -2268,6 +2322,86 @@ theorem chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_log_ex
       (alpha := alpha) (beta := beta) (kappa := kappa) (eps := eps)
       halpha_pos halpha_lt_beta hkappa (N := N) (M := M)
       hN hM_le hM_half (x := x) hx0 hspan hnear
+
+/--
+Source-shaped finite-geometric rate wrapper for Chewi Theorem 4.5.  The
+finite construction supplies the half-boundary condition through `M`; the
+remaining scalar log comparison then converts the verified geometric
+near-minimality lower bound into `rate <= N`.
+-/
+theorem chewi45_iteration_count_ge_rate_of_finiteGeometricCandidate_log_near_min
+    {alpha beta kappa eps rate : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha)
+    {d N M : ℕ} (hN : N < d)
+    (hM_le : M ≤ 2 * d + 2 - 2 * (N + 1))
+    (hM_log :
+      (M : ℝ) * Real.log (chewi45GeometricRatio kappa) ≤
+        Real.log (1 / 2 : ℝ))
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta d (x N) ≤
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) + eps)
+    (hrate_log :
+      Real.log (eps / (alpha / 8)) ≤
+        (2 * (rate + 1)) * Real.log (chewi45GeometricRatio kappa)) :
+    rate ≤ (N : ℝ) := by
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  have hgeo :
+      (alpha / 8) *
+          (chewi45GeometricRatio kappa) ^ (2 * (N + 1)) ≤ eps :=
+    chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_log_exponent_le
+      (alpha := alpha) (beta := beta) (kappa := kappa) (eps := eps)
+      halpha_pos halpha_lt_beta hkappa (N := N) (M := M)
+      hN hM_le hM_log (x := x) hx0 hspan hnear
+  exact chewi45_iteration_count_ge_rate_of_geometric_eps_lower_bound
+    (alpha := alpha) (eps := eps) (q := chewi45GeometricRatio kappa)
+    (rate := rate) (N := N)
+    halpha_pos heps_pos
+    (chewi45GeometricRatio_pos hkappa_gt)
+    (chewi45GeometricRatio_lt_one kappa)
+    hgeo hrate_log
+
+/--
+Contradiction form of the finite-geometric log-rate wrapper: once the source
+dimension and scalar log comparisons are supplied, no `eps`-near gradient-span
+iterate can occur before the target rate.
+-/
+theorem chewi45_not_finiteGeometricCandidate_near_min_of_log_rate_lt
+    {alpha beta kappa eps rate : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha)
+    {d N M : ℕ} (hN : N < d)
+    (hM_le : M ≤ 2 * d + 2 - 2 * (N + 1))
+    (hM_log :
+      (M : ℝ) * Real.log (chewi45GeometricRatio kappa) ≤
+        Real.log (1 / 2 : ℝ))
+    (hN_lt_rate : (N : ℝ) < rate)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta d (x N) ≤
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) + eps)
+    (hrate_log :
+      Real.log (eps / (alpha / 8)) ≤
+        (2 * (rate + 1)) * Real.log (chewi45GeometricRatio kappa)) :
+    False := by
+  have hrate_le_N :=
+    chewi45_iteration_count_ge_rate_of_finiteGeometricCandidate_log_near_min
+      (alpha := alpha) (beta := beta) (kappa := kappa) (eps := eps)
+      (rate := rate)
+      halpha_pos heps_pos halpha_lt_beta hkappa (N := N) (M := M)
+      hN hM_le hM_log (x := x) hx0 hspan hnear hrate_log
+  linarith
 
 end Optimization
 end StatInference

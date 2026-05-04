@@ -1072,17 +1072,24 @@ The log-to-half bridge now compiles:
 `chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_log_exponent_le`.
 These replace the raw `q^M <= 1/2` assumption by the logarithmic sufficient
 condition `(M : Real) * log q <= log (1/2)`.
+The scalar log-rate conversion now also compiles:
+`chewi45_rate_le_iterations_of_log_chain`,
+`chewi45_iteration_count_ge_rate_of_geometric_eps_lower_bound`,
+`chewi45_iteration_count_ge_rate_of_finiteGeometricCandidate_log_near_min`,
+and `chewi45_not_finiteGeometricCandidate_near_min_of_log_rate_lt`.  These use
+mathlib `Real.log_le_log_iff`, `Real.log_pow`, `Real.log_neg`,
+`le_div_iff₀`, and `mul_le_mul_right_of_neg` to convert the verified finite
+geometric lower bound plus a supplied scalar log comparison into `rate <= N`.
 Search/source correction: Exercise 4.2 is stated for an infinite-dimensional
 `R^infty` chain, and scalar checks of the finite corrected truncation show the
 literal `q^(2N)` tail factor is approached from below rather than true for all
 finite `d` without extra slack.  The next atomic target is therefore either a
 dimension/log proof producing a convenient `M` with
-`(M : Real) * log q <= log (1/2)`, then convert
-`(alpha/8) * q^(2*(N+1)) <= eps` into an iteration lower bound; alternate
-route: a true `l^2`/infinite-sequence model where the exact Exercise 4.2 tail
-identity should hold.  Then convert the resulting
-geometric obstruction into the logarithmic iteration lower bound.  The
-reduction-route comparison
+`M <= 2*d+2-2*(N+1)` and `(M : Real) * log q <= log (1/2)`, plus a concrete
+source choice of `rate` satisfying
+`log (eps / (alpha/8)) <= 2*(rate+1)*log q`; alternate route: a true
+`l^2`/infinite-sequence model where the exact Exercise 4.2 tail identity
+should hold.  The reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` remains an alternate
 assembly target when concrete condition-number/log hypotheses make it faster.
 Search mathlib/local APIs for `Real.log` monotonicity, `Real.exp` inversions,

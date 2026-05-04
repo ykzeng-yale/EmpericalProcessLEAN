@@ -626,6 +626,14 @@ The log-to-half bridge now compiles as
 `chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_log_exponent_le`.
 This turns the remaining finite dimension condition into the source-shaped
 log inequality `(M : Real) * log q <= log (1/2)`.
+The scalar log-rate bridge now compiles as
+`chewi45_rate_le_iterations_of_log_chain`,
+`chewi45_iteration_count_ge_rate_of_geometric_eps_lower_bound`,
+`chewi45_iteration_count_ge_rate_of_finiteGeometricCandidate_log_near_min`,
+and `chewi45_not_finiteGeometricCandidate_near_min_of_log_rate_lt`.  The
+remaining source-shaped work is to choose `d`, `M`, and the concrete rate so
+the two supplied log comparisons hold; the finite obstruction itself already
+converts those comparisons into `rate <= N`.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
