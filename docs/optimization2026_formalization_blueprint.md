@@ -370,12 +370,48 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainNode`
 - `StatInference.Optimization.lowerBoundChainEdge`
+- `StatInference.Optimization.lowerBoundChainDirectionNode`
+- `StatInference.Optimization.lowerBoundChainDirectionEdge`
+- `StatInference.Optimization.lowerBoundChainEdge_sub`
+- `StatInference.Optimization.lowerBoundChainEdge_add_direction`
 - `StatInference.Optimization.finSum_forwardDifference`
 - `StatInference.Optimization.lowerBoundChainEdge_sum`
 - `StatInference.Optimization.lowerBoundChainObjective`
+- `StatInference.Optimization.lowerBoundChainObjective_add_direction`
+- `StatInference.Optimization.lowerBoundChainDirectionEnergy_nonneg`
+- `StatInference.Optimization.sq_sub_le_two_mul_sq_add_two_mul_sq`
+- `StatInference.Optimization.lowerBoundChain_directionNode_succ_sq_sum`
+- `StatInference.Optimization.lowerBoundChain_directionNode_sq_sum`
+- `StatInference.Optimization.lowerBoundChainDirectionEnergy_le_four_norm_sq`
+- `StatInference.Optimization.lowerBoundChain_sum_mul_directionNode_succ`
+- `StatInference.Optimization.lowerBoundChain_sum_mul_directionNode`
+- `StatInference.Optimization.lowerBoundChain_edge_direction_sum_eq_edgeDifference_sum`
+- `StatInference.Optimization.lowerBoundChainObjective_add_direction_ge_linear`
+- `StatInference.Optimization.lowerBoundChainObjective_ge_linear`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_add_direction`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_ge_linear`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_eq_objective_gap`
 - `StatInference.Optimization.lowerBoundChainGradient_eq_edgeDifference`
+- `StatInference.Optimization.inner_lowerBoundChainGradient_eq_edgeDifference_sum`
+- `StatInference.Optimization.inner_lowerBoundChainGradient_eq_edgeDirection_sum`
+- `StatInference.Optimization.lowerBoundChainObjective_add_direction_inner`
+- `StatInference.Optimization.lowerBoundChainObjective_add_direction_ge_inner`
+- `StatInference.Optimization.lowerBoundChainObjective_ge_inner`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_add_direction_inner`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_ge_inner`
+- `StatInference.Optimization.lowerBoundChainObjective_add_direction_le_smooth`
+- `StatInference.Optimization.lowerBoundChainObjective_le_smooth`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_add_direction_le_smooth`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_le_smooth`
+- `StatInference.Optimization.continuous_lowerBoundChainNode`
+- `StatInference.Optimization.continuous_lowerBoundChainEdge`
+- `StatInference.Optimization.continuous_lowerBoundChainObjective`
+- `StatInference.Optimization.continuous_lowerBoundChainTextbookObjective`
+- `StatInference.Optimization.lowerBoundChainObjective_firstOrderConvex`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_firstOrderConvex`
+- `StatInference.Optimization.lowerBoundChainObjective_smoothWithGradientOn`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_smoothWithGradientOn`
 - `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainMinimizer`
@@ -423,15 +459,32 @@ interface.  Search found and reused mathlib's `sq_sum_le_card_mul_sum_sq` for
 the Cauchy step, mathlib's `isMinOn_univ_iff` for the global minimizer
 wrapper, and `Finset.sum_map` plus
 `Finset.sum_le_sum_of_subset_of_nonneg` to compare prefix edge energy with the
-full chain energy.  The source step `f_d = f_N` on `V_N` is now packaged as
+full chain energy.  The objective-gradient/smoothness package now compiles:
+`lowerBoundChainDirectionNode` and `lowerBoundChainDirectionEdge` model
+homogeneous zero-boundary direction chains; `lowerBoundChainEdge_sub` and
+`lowerBoundChainEdge_add_direction` prove exact edge residual updates;
+`lowerBoundChainObjective_add_direction` gives the exact quadratic expansion;
+the nonnegative remainder gives edge-coordinate first-order lower models for
+both shifted and unshifted objectives; and
+`inner_lowerBoundChainGradient_eq_edgeDifference_sum` connects the compiled
+tridiagonal gradient to its coordinate inner-product sum.  The new
+summation-by-parts theorem
+`lowerBoundChain_edge_direction_sum_eq_edgeDifference_sum` proves the exact
+edge-work/gradient-work identity, and
+`lowerBoundChainDirectionEnergy_le_four_norm_sq` proves the finite-dimensional
+energy bound behind Chewi's displayed Hessian estimate.  Consequently both the
+shifted and unshifted objectives now have first-order convex lower-model
+wrappers and `SmoothWithGradientOn Set.univ` wrappers supplied by
+`lowerBoundChainGradient`.  The next missing step is source-report packaging
+or, if continuing theorem expansion before reporting, the nearby Chapter 4
+strongly-convex lower-bound Theorem 4.5 route.  The source step
+`f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
 `lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory` proves the main
 finite-dimensional gap estimate before choosing `d` as a multiple of `N`.
 The source-shaped `d = 2N + 1` specialization now compiles as
 `lowerBoundChainObjective_gap_ge_two_mul_add_one`, giving the clean
-`β / (16 * (N + 1))` lower bound.  The next Chapter 4 theorem route should
-turn the edge-difference bridge into a full objective-gradient/convexity
-package.  The shifted-chain objective is now connected to the exact unshifted
+`β / (16 * (N + 1))` lower bound.  The shifted-chain objective is now connected to the exact unshifted
 textbook display by `lowerBoundChainTextbookObjective`; its minimizer value is
 `-(β / 8) * (1 - 1 / (d + 1))`, and the finite-dimensional plus `d = 2N + 1`
 gap estimates have source-objective wrappers.  The textbook `(f_n)_*` step is

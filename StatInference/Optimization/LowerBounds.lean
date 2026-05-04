@@ -197,12 +197,285 @@ noncomputable def lowerBoundChainEdge (d : ℕ)
     lowerBoundChainNode d x ⟨k.1, by omega⟩
 
 /--
+Zero-boundary chain nodes for a direction vector.
+
+These are the homogeneous increments of the extended boundary chain
+`1, x[0], ..., x[d-1], 0`; both boundary nodes have directional increment `0`.
+-/
+noncomputable def lowerBoundChainDirectionNode (d : ℕ)
+    (v : EuclideanSpace ℝ (Fin d)) (j : Fin (d + 2)) : ℝ :=
+  if hzero : j.1 = 0 then
+    0
+  else if hlast : j.1 = d + 1 then
+    0
+  else
+    v ⟨j.1 - 1, by omega⟩
+
+/-- The homogeneous edge difference associated with a direction vector. -/
+noncomputable def lowerBoundChainDirectionEdge (d : ℕ)
+    (v : EuclideanSpace ℝ (Fin d)) (k : Fin (d + 1)) : ℝ :=
+  lowerBoundChainDirectionNode d v ⟨k.1 + 1, by omega⟩ -
+    lowerBoundChainDirectionNode d v ⟨k.1, by omega⟩
+
+/--
+Subtracting two chain edge residuals leaves exactly the homogeneous direction
+edge for the displacement.
+-/
+theorem lowerBoundChainEdge_sub (d : ℕ)
+    (x y : EuclideanSpace ℝ (Fin d)) (k : Fin (d + 1)) :
+    lowerBoundChainEdge d y k - lowerBoundChainEdge d x k =
+      lowerBoundChainDirectionEdge d (y - x) k := by
+  rcases k with ⟨k, hkbound⟩
+  by_cases hk0 : k = 0
+  · subst k
+    by_cases hd0 : d = 0
+    · subst hd0
+      simp [lowerBoundChainEdge, lowerBoundChainNode,
+        lowerBoundChainDirectionEdge, lowerBoundChainDirectionNode]
+    · simp [lowerBoundChainEdge, lowerBoundChainNode,
+        lowerBoundChainDirectionEdge, lowerBoundChainDirectionNode, hd0]
+  · by_cases hkd : k = d
+    · subst k
+      simp [lowerBoundChainEdge, lowerBoundChainNode,
+        lowerBoundChainDirectionEdge, lowerBoundChainDirectionNode, hk0]
+      ring_nf
+    · have hk_ne_last : k ≠ d + 1 := by omega
+      simp [lowerBoundChainEdge, lowerBoundChainNode,
+        lowerBoundChainDirectionEdge, lowerBoundChainDirectionNode, hk0,
+        hkd, hk_ne_last]
+      ring_nf
+
+/-- Edge residuals update additively along the homogeneous direction chain. -/
+theorem lowerBoundChainEdge_add_direction (d : ℕ)
+    (x v : EuclideanSpace ℝ (Fin d)) (k : Fin (d + 1)) :
+    lowerBoundChainEdge d (x + v) k =
+      lowerBoundChainEdge d x k + lowerBoundChainDirectionEdge d v k := by
+  have h := lowerBoundChainEdge_sub d x (x + v) k
+  have hv : x + v - x = v := by
+    ext i
+    simp
+  rw [hv] at h
+  linarith
+
+/--
 Chewi's tridiagonal lower-bound quadratic, written as the squared energy of
 the boundary chain `1, x_0, ..., x_{d-1}, 0`.
 -/
 noncomputable def lowerBoundChainObjective (beta : ℝ) (d : ℕ)
     (x : EuclideanSpace ℝ (Fin d)) : ℝ :=
   (beta / 8) * ∑ k : Fin (d + 1), (lowerBoundChainEdge d x k) ^ (2 : ℕ)
+
+/--
+Exact quadratic expansion of Chewi's shifted lower-bound objective along a
+direction.  This isolates the linear edge term and the homogeneous quadratic
+energy term.
+-/
+theorem lowerBoundChainObjective_add_direction
+    (beta : ℝ) (d : ℕ) (x v : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainObjective beta d (x + v) =
+      lowerBoundChainObjective beta d x +
+        (beta / 4) *
+          ∑ k : Fin (d + 1),
+            lowerBoundChainEdge d x k * lowerBoundChainDirectionEdge d v k +
+        (beta / 8) *
+          ∑ k : Fin (d + 1),
+            (lowerBoundChainDirectionEdge d v k) ^ (2 : ℕ) := by
+  simp_rw [lowerBoundChainObjective, lowerBoundChainEdge_add_direction]
+  simp_rw [add_sq]
+  rw [Finset.sum_add_distrib, Finset.sum_add_distrib]
+  have hcross :
+      (∑ k : Fin (d + 1),
+          2 * lowerBoundChainEdge d x k * lowerBoundChainDirectionEdge d v k) =
+        2 * ∑ k : Fin (d + 1),
+          lowerBoundChainEdge d x k * lowerBoundChainDirectionEdge d v k := by
+    simpa [mul_assoc] using
+      (Finset.mul_sum (s := Finset.univ)
+        (f := fun k : Fin (d + 1) =>
+          lowerBoundChainEdge d x k * lowerBoundChainDirectionEdge d v k)
+        (a := (2 : ℝ))).symm
+  rw [hcross]
+  ring_nf
+
+/-- The homogeneous chain-direction energy is nonnegative. -/
+theorem lowerBoundChainDirectionEnergy_nonneg (d : ℕ)
+    (v : EuclideanSpace ℝ (Fin d)) :
+    0 ≤ ∑ k : Fin (d + 1),
+      (lowerBoundChainDirectionEdge d v k) ^ (2 : ℕ) := by
+  exact Finset.sum_nonneg fun k _ =>
+    sq_nonneg (lowerBoundChainDirectionEdge d v k)
+
+/-- Scalar estimate used to bound the squared homogeneous chain differences. -/
+theorem sq_sub_le_two_mul_sq_add_two_mul_sq (a b : ℝ) :
+    (a - b) ^ (2 : ℕ) ≤ 2 * a ^ (2 : ℕ) + 2 * b ^ (2 : ℕ) := by
+  nlinarith [sq_nonneg (a + b)]
+
+/-- Forward direction nodes have squared sum equal to the coordinate norm square. -/
+theorem lowerBoundChain_directionNode_succ_sq_sum
+    (d : ℕ) (v : EuclideanSpace ℝ (Fin d)) :
+    (∑ k : Fin (d + 1),
+        (lowerBoundChainDirectionNode d v ⟨k.1 + 1, by omega⟩) ^ (2 : ℕ)) =
+      ∑ i : Fin d, (v i) ^ (2 : ℕ) := by
+  rw [Fin.sum_univ_castSucc]
+  simp [lowerBoundChainDirectionNode]
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  have hi_ne : i.1 ≠ d := by omega
+  simp [hi_ne]
+
+/-- Backward direction nodes have squared sum equal to the coordinate norm square. -/
+theorem lowerBoundChain_directionNode_sq_sum
+    (d : ℕ) (v : EuclideanSpace ℝ (Fin d)) :
+    (∑ k : Fin (d + 1),
+        (lowerBoundChainDirectionNode d v ⟨k.1, by omega⟩) ^ (2 : ℕ)) =
+      ∑ i : Fin d, (v i) ^ (2 : ℕ) := by
+  rw [Fin.sum_univ_succ]
+  simp [lowerBoundChainDirectionNode]
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  have hi_ne : i.1 ≠ d := by omega
+  simp [hi_ne]
+
+/--
+Uniform bound on the homogeneous chain-difference energy.  This is the
+finite-dimensional inequality behind Chewi's displayed `β`-smoothness estimate.
+-/
+theorem lowerBoundChainDirectionEnergy_le_four_norm_sq
+    (d : ℕ) (v : EuclideanSpace ℝ (Fin d)) :
+    (∑ k : Fin (d + 1),
+        (lowerBoundChainDirectionEdge d v k) ^ (2 : ℕ)) ≤
+      4 * ‖v‖ ^ (2 : ℕ) := by
+  have hpoint : ∀ k : Fin (d + 1),
+      (lowerBoundChainDirectionEdge d v k) ^ (2 : ℕ) ≤
+        2 *
+          (lowerBoundChainDirectionNode d v ⟨k.1 + 1, by omega⟩) ^ (2 : ℕ) +
+        2 *
+          (lowerBoundChainDirectionNode d v ⟨k.1, by omega⟩) ^ (2 : ℕ) := by
+    intro k
+    simpa [lowerBoundChainDirectionEdge] using
+      sq_sub_le_two_mul_sq_add_two_mul_sq
+        (lowerBoundChainDirectionNode d v ⟨k.1 + 1, by omega⟩)
+        (lowerBoundChainDirectionNode d v ⟨k.1, by omega⟩)
+  calc
+    (∑ k : Fin (d + 1),
+        (lowerBoundChainDirectionEdge d v k) ^ (2 : ℕ))
+        ≤ ∑ k : Fin (d + 1),
+            (2 *
+              (lowerBoundChainDirectionNode d v ⟨k.1 + 1, by omega⟩) ^ (2 : ℕ) +
+            2 *
+              (lowerBoundChainDirectionNode d v ⟨k.1, by omega⟩) ^ (2 : ℕ)) := by
+          exact Finset.sum_le_sum fun k _hk => hpoint k
+    _ =
+        2 * (∑ k : Fin (d + 1),
+          (lowerBoundChainDirectionNode d v ⟨k.1 + 1, by omega⟩) ^ (2 : ℕ)) +
+        2 * (∑ k : Fin (d + 1),
+          (lowerBoundChainDirectionNode d v ⟨k.1, by omega⟩) ^ (2 : ℕ)) := by
+          rw [Finset.sum_add_distrib]
+          rw [Finset.mul_sum, Finset.mul_sum]
+    _ = 4 * ∑ i : Fin d, (v i) ^ (2 : ℕ) := by
+          rw [lowerBoundChain_directionNode_succ_sq_sum,
+            lowerBoundChain_directionNode_sq_sum]
+          ring
+    _ = 4 * ‖v‖ ^ (2 : ℕ) := by
+          rw [EuclideanSpace.real_norm_sq_eq]
+
+/--
+Reindex the forward endpoint of the homogeneous direction chain: all interior
+direction nodes appear once and the final boundary contributes zero.
+-/
+theorem lowerBoundChain_sum_mul_directionNode_succ
+    (d : ℕ) (a : Fin (d + 1) -> ℝ)
+    (v : EuclideanSpace ℝ (Fin d)) :
+    (∑ k : Fin (d + 1),
+        a k * lowerBoundChainDirectionNode d v ⟨k.1 + 1, by omega⟩) =
+      ∑ i : Fin d, a ⟨i.1, by omega⟩ * v i := by
+  rw [Fin.sum_univ_castSucc]
+  simp [lowerBoundChainDirectionNode]
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  have hi_ne : i.1 ≠ d := by omega
+  simp [hi_ne]
+  left
+  congr 1
+
+/--
+Reindex the backward endpoint of the homogeneous direction chain: all interior
+direction nodes appear once and the initial boundary contributes zero.
+-/
+theorem lowerBoundChain_sum_mul_directionNode
+    (d : ℕ) (a : Fin (d + 1) -> ℝ)
+    (v : EuclideanSpace ℝ (Fin d)) :
+    (∑ k : Fin (d + 1),
+        a k * lowerBoundChainDirectionNode d v ⟨k.1, by omega⟩) =
+      ∑ i : Fin d, a ⟨i.1 + 1, by omega⟩ * v i := by
+  rw [Fin.sum_univ_succ]
+  simp [lowerBoundChainDirectionNode]
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  have hi_ne : i.1 ≠ d := by omega
+  simp [hi_ne]
+  left
+  congr 1
+
+/--
+Finite summation by parts for the lower-bound chain: edge-linear direction
+work equals the coordinate sum against adjacent edge differences.
+-/
+theorem lowerBoundChain_edge_direction_sum_eq_edgeDifference_sum
+    (d : ℕ) (x v : EuclideanSpace ℝ (Fin d)) :
+    (∑ k : Fin (d + 1),
+        lowerBoundChainEdge d x k * lowerBoundChainDirectionEdge d v k) =
+      ∑ i : Fin d,
+        (lowerBoundChainEdge d x ⟨i.1, by omega⟩ -
+          lowerBoundChainEdge d x ⟨i.1 + 1, by omega⟩) * v i := by
+  simp_rw [lowerBoundChainDirectionEdge, mul_sub]
+  rw [Finset.sum_sub_distrib]
+  rw [lowerBoundChain_sum_mul_directionNode_succ,
+    lowerBoundChain_sum_mul_directionNode]
+  rw [← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  ring
+
+/--
+First-order lower model for the shifted lower-bound quadratic along a
+displacement, expressed in edge coordinates.
+-/
+theorem lowerBoundChainObjective_add_direction_ge_linear
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ)
+    (x v : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainObjective beta d x +
+        (beta / 4) *
+          ∑ k : Fin (d + 1),
+            lowerBoundChainEdge d x k * lowerBoundChainDirectionEdge d v k ≤
+      lowerBoundChainObjective beta d (x + v) := by
+  have henergy_nonneg :
+      0 ≤ (beta / 8) *
+        ∑ k : Fin (d + 1),
+          (lowerBoundChainDirectionEdge d v k) ^ (2 : ℕ) := by
+    exact mul_nonneg (div_nonneg hbeta (by norm_num))
+      (lowerBoundChainDirectionEnergy_nonneg d v)
+  rw [lowerBoundChainObjective_add_direction]
+  linarith
+
+/--
+Two-point first-order lower model for the shifted lower-bound quadratic,
+written with the homogeneous direction edge of `y - x`.
+-/
+theorem lowerBoundChainObjective_ge_linear
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ)
+    (x y : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainObjective beta d x +
+        (beta / 4) *
+          ∑ k : Fin (d + 1),
+            lowerBoundChainEdge d x k *
+              lowerBoundChainDirectionEdge d (y - x) k ≤
+      lowerBoundChainObjective beta d y := by
+  have h := lowerBoundChainObjective_add_direction_ge_linear
+    hbeta d x (y - x)
+  have hxy : x + (y - x) = y := by
+    ext i
+    simp
+  simpa [hxy] using h
 
 /--
 Chewi's unshifted textbook lower-bound quadratic.
@@ -213,6 +486,36 @@ constant `beta / 8`, because the first boundary edge is `(x[1] - 1)^2`.
 noncomputable def lowerBoundChainTextbookObjective (beta : ℝ) (d : ℕ)
     (x : EuclideanSpace ℝ (Fin d)) : ℝ :=
   lowerBoundChainObjective beta d x - beta / 8
+
+/-- Exact direction expansion for Chewi's unshifted textbook objective. -/
+theorem lowerBoundChainTextbookObjective_add_direction
+    (beta : ℝ) (d : ℕ) (x v : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainTextbookObjective beta d (x + v) =
+      lowerBoundChainTextbookObjective beta d x +
+        (beta / 4) *
+          ∑ k : Fin (d + 1),
+            lowerBoundChainEdge d x k * lowerBoundChainDirectionEdge d v k +
+        (beta / 8) *
+          ∑ k : Fin (d + 1),
+            (lowerBoundChainDirectionEdge d v k) ^ (2 : ℕ) := by
+  rw [lowerBoundChainTextbookObjective, lowerBoundChainObjective_add_direction,
+    lowerBoundChainTextbookObjective]
+  ring
+
+/-- Two-point edge-coordinate lower model for Chewi's unshifted source objective. -/
+theorem lowerBoundChainTextbookObjective_ge_linear
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ)
+    (x y : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainTextbookObjective beta d x +
+        (beta / 4) *
+          ∑ k : Fin (d + 1),
+            lowerBoundChainEdge d x k *
+              lowerBoundChainDirectionEdge d (y - x) k ≤
+      lowerBoundChainTextbookObjective beta d y := by
+  rw [lowerBoundChainTextbookObjective, lowerBoundChainTextbookObjective]
+  have h := sub_le_sub_right (lowerBoundChainObjective_ge_linear hbeta d x y)
+    (beta / 8)
+  linarith
 
 /-- Gaps are unchanged by the constant shift from the source objective. -/
 theorem lowerBoundChainTextbookObjective_gap_eq_objective_gap
@@ -373,6 +676,239 @@ theorem lowerBoundChainGradient_eq_edgeDifference
         PiLp.toLp_apply, hi_zero, hd_eq]
       left
       ring_nf
+
+/--
+Coordinate-sum form of the inner product with Chewi's tridiagonal-chain
+gradient, using the adjacent edge-difference representation.
+-/
+theorem inner_lowerBoundChainGradient_eq_edgeDifference_sum
+    (beta : ℝ) (d : ℕ) (x v : EuclideanSpace ℝ (Fin d)) :
+    inner ℝ (lowerBoundChainGradient beta d x) v =
+      ∑ i : Fin d,
+        ((beta / 4) *
+          (lowerBoundChainEdge d x ⟨i.1, by omega⟩ -
+            lowerBoundChainEdge d x ⟨i.1 + 1, by omega⟩)) * v i := by
+  rw [lowerBoundChainGradient_eq_edgeDifference]
+  simp [PiLp.inner_apply, RCLike.inner_apply]
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  ring
+
+/--
+Exact objective-gradient bridge for the tridiagonal lower-bound quadratic:
+the edge-linear work in the quadratic expansion is the inner product with
+`lowerBoundChainGradient`.
+-/
+theorem inner_lowerBoundChainGradient_eq_edgeDirection_sum
+    (beta : ℝ) (d : ℕ) (x v : EuclideanSpace ℝ (Fin d)) :
+    inner ℝ (lowerBoundChainGradient beta d x) v =
+      (beta / 4) *
+        ∑ k : Fin (d + 1),
+          lowerBoundChainEdge d x k * lowerBoundChainDirectionEdge d v k := by
+  rw [inner_lowerBoundChainGradient_eq_edgeDifference_sum,
+    lowerBoundChain_edge_direction_sum_eq_edgeDifference_sum]
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  ring
+
+/-- Exact direction expansion using the actual chain-gradient inner product. -/
+theorem lowerBoundChainObjective_add_direction_inner
+    (beta : ℝ) (d : ℕ) (x v : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainObjective beta d (x + v) =
+      lowerBoundChainObjective beta d x +
+        inner ℝ (lowerBoundChainGradient beta d x) v +
+        (beta / 8) *
+          ∑ k : Fin (d + 1),
+            (lowerBoundChainDirectionEdge d v k) ^ (2 : ℕ) := by
+  rw [lowerBoundChainObjective_add_direction,
+    inner_lowerBoundChainGradient_eq_edgeDirection_sum]
+
+/--
+First-order lower model for the shifted lower-bound quadratic using its actual
+chain-gradient.
+-/
+theorem lowerBoundChainObjective_add_direction_ge_inner
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ)
+    (x v : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainObjective beta d x +
+        inner ℝ (lowerBoundChainGradient beta d x) v ≤
+      lowerBoundChainObjective beta d (x + v) := by
+  rw [inner_lowerBoundChainGradient_eq_edgeDirection_sum]
+  exact lowerBoundChainObjective_add_direction_ge_linear hbeta d x v
+
+/-- Two-point first-order lower model for the shifted objective. -/
+theorem lowerBoundChainObjective_ge_inner
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ)
+    (x y : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainObjective beta d x +
+        inner ℝ (lowerBoundChainGradient beta d x) (y - x) ≤
+      lowerBoundChainObjective beta d y := by
+  have h := lowerBoundChainObjective_add_direction_ge_inner
+    hbeta d x (y - x)
+  have hxy : x + (y - x) = y := by
+    ext i
+    simp
+  simpa [hxy] using h
+
+/-- Exact source-objective direction expansion using the actual chain-gradient. -/
+theorem lowerBoundChainTextbookObjective_add_direction_inner
+    (beta : ℝ) (d : ℕ) (x v : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainTextbookObjective beta d (x + v) =
+      lowerBoundChainTextbookObjective beta d x +
+        inner ℝ (lowerBoundChainGradient beta d x) v +
+        (beta / 8) *
+          ∑ k : Fin (d + 1),
+            (lowerBoundChainDirectionEdge d v k) ^ (2 : ℕ) := by
+  rw [lowerBoundChainTextbookObjective_add_direction,
+    inner_lowerBoundChainGradient_eq_edgeDirection_sum]
+
+/-- Two-point first-order lower model for Chewi's unshifted source objective. -/
+theorem lowerBoundChainTextbookObjective_ge_inner
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ)
+    (x y : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainTextbookObjective beta d x +
+        inner ℝ (lowerBoundChainGradient beta d x) (y - x) ≤
+      lowerBoundChainTextbookObjective beta d y := by
+  rw [inner_lowerBoundChainGradient_eq_edgeDirection_sum]
+  exact lowerBoundChainTextbookObjective_ge_linear hbeta d x y
+
+/-- Smooth upper model for the shifted lower-bound quadratic along a direction. -/
+theorem lowerBoundChainObjective_add_direction_le_smooth
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ)
+    (x v : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainObjective beta d (x + v) ≤
+      lowerBoundChainObjective beta d x +
+        inner ℝ (lowerBoundChainGradient beta d x) v +
+        (beta / 2) * ‖v‖ ^ (2 : ℕ) := by
+  have hcoef : 0 ≤ beta / 8 := div_nonneg hbeta (by norm_num)
+  have henergy := lowerBoundChainDirectionEnergy_le_four_norm_sq d v
+  have hrem :
+      (beta / 8) *
+          ∑ k : Fin (d + 1),
+            (lowerBoundChainDirectionEdge d v k) ^ (2 : ℕ) ≤
+        (beta / 8) * (4 * ‖v‖ ^ (2 : ℕ)) :=
+    mul_le_mul_of_nonneg_left henergy hcoef
+  rw [lowerBoundChainObjective_add_direction_inner]
+  nlinarith
+
+/-- Two-point smooth upper model for the shifted lower-bound quadratic. -/
+theorem lowerBoundChainObjective_le_smooth
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ)
+    (x y : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainObjective beta d y ≤
+      lowerBoundChainObjective beta d x +
+        inner ℝ (lowerBoundChainGradient beta d x) (y - x) +
+        (beta / 2) * ‖y - x‖ ^ (2 : ℕ) := by
+  have h := lowerBoundChainObjective_add_direction_le_smooth
+    hbeta d x (y - x)
+  have hxy : x + (y - x) = y := by
+    ext i
+    simp
+  simpa [hxy] using h
+
+/-- Smooth upper model for Chewi's unshifted source objective along a direction. -/
+theorem lowerBoundChainTextbookObjective_add_direction_le_smooth
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ)
+    (x v : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainTextbookObjective beta d (x + v) ≤
+      lowerBoundChainTextbookObjective beta d x +
+        inner ℝ (lowerBoundChainGradient beta d x) v +
+        (beta / 2) * ‖v‖ ^ (2 : ℕ) := by
+  rw [lowerBoundChainTextbookObjective, lowerBoundChainTextbookObjective]
+  have h := lowerBoundChainObjective_add_direction_le_smooth hbeta d x v
+  linarith
+
+/-- Two-point smooth upper model for Chewi's unshifted source objective. -/
+theorem lowerBoundChainTextbookObjective_le_smooth
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ)
+    (x y : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainTextbookObjective beta d y ≤
+      lowerBoundChainTextbookObjective beta d x +
+        inner ℝ (lowerBoundChainGradient beta d x) (y - x) +
+        (beta / 2) * ‖y - x‖ ^ (2 : ℕ) := by
+  have h := lowerBoundChainTextbookObjective_add_direction_le_smooth
+    hbeta d x (y - x)
+  have hxy : x + (y - x) = y := by
+    ext i
+    simp
+  simpa [hxy] using h
+
+/-- Each extended lower-bound chain node is continuous in the state vector. -/
+theorem continuous_lowerBoundChainNode (d : ℕ) (j : Fin (d + 2)) :
+    Continuous fun x : EuclideanSpace ℝ (Fin d) => lowerBoundChainNode d x j := by
+  unfold lowerBoundChainNode
+  by_cases hzero : j.1 = 0
+  · simpa [hzero] using
+      (continuous_const :
+        Continuous fun _x : EuclideanSpace ℝ (Fin d) => (1 : ℝ))
+  · by_cases hlast : j.1 = d + 1
+    · simpa [hlast] using
+        (continuous_const :
+          Continuous fun _x : EuclideanSpace ℝ (Fin d) => (0 : ℝ))
+    · simpa [hzero, hlast] using
+        (PiLp.continuous_apply (p := 2)
+          (β := fun _ : Fin d => ℝ) ⟨j.1 - 1, by omega⟩ :
+          Continuous fun x : EuclideanSpace ℝ (Fin d) =>
+            x ⟨j.1 - 1, by omega⟩)
+
+/-- Each lower-bound chain edge residual is continuous in the state vector. -/
+theorem continuous_lowerBoundChainEdge (d : ℕ) (k : Fin (d + 1)) :
+    Continuous fun x : EuclideanSpace ℝ (Fin d) => lowerBoundChainEdge d x k := by
+  unfold lowerBoundChainEdge
+  exact (continuous_lowerBoundChainNode d ⟨k.1 + 1, by omega⟩).sub
+    (continuous_lowerBoundChainNode d ⟨k.1, by omega⟩)
+
+/-- The shifted lower-bound quadratic is continuous. -/
+theorem continuous_lowerBoundChainObjective (beta : ℝ) (d : ℕ) :
+    Continuous (lowerBoundChainObjective beta d) := by
+  unfold lowerBoundChainObjective
+  exact continuous_const.mul
+    (continuous_finsetSum Finset.univ fun k _hk =>
+      (continuous_lowerBoundChainEdge d k).pow 2)
+
+/-- Chewi's unshifted source lower-bound quadratic is continuous. -/
+theorem continuous_lowerBoundChainTextbookObjective (beta : ℝ) (d : ℕ) :
+    Continuous (lowerBoundChainTextbookObjective beta d) := by
+  unfold lowerBoundChainTextbookObjective
+  exact (continuous_lowerBoundChainObjective beta d).sub continuous_const
+
+/-- Supplied-gradient convex lower model for the shifted lower-bound quadratic. -/
+theorem lowerBoundChainObjective_firstOrderConvex
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ) :
+    FirstOrderStrongConvexOn Set.univ
+      (lowerBoundChainObjective beta d) (lowerBoundChainGradient beta d) 0 := by
+  refine ⟨convex_univ, ?_⟩
+  intro x _hx y _hy
+  simpa using lowerBoundChainObjective_ge_inner hbeta d x y
+
+/-- Supplied-gradient convex lower model for Chewi's unshifted source objective. -/
+theorem lowerBoundChainTextbookObjective_firstOrderConvex
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ) :
+    FirstOrderStrongConvexOn Set.univ
+      (lowerBoundChainTextbookObjective beta d) (lowerBoundChainGradient beta d) 0 := by
+  refine ⟨convex_univ, ?_⟩
+  intro x _hx y _hy
+  simpa using lowerBoundChainTextbookObjective_ge_inner hbeta d x y
+
+/-- Supplied-gradient smoothness interface for the shifted lower-bound quadratic. -/
+theorem lowerBoundChainObjective_smoothWithGradientOn
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ) :
+    SmoothWithGradientOn Set.univ
+      (lowerBoundChainObjective beta d) (lowerBoundChainGradient beta d) beta := by
+  refine ⟨convex_univ, (continuous_lowerBoundChainObjective beta d).continuousOn, ?_⟩
+  intro x _hx y _hy
+  exact lowerBoundChainObjective_le_smooth hbeta d x y
+
+/-- Supplied-gradient smoothness interface for Chewi's unshifted source objective. -/
+theorem lowerBoundChainTextbookObjective_smoothWithGradientOn
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ) :
+    SmoothWithGradientOn Set.univ
+      (lowerBoundChainTextbookObjective beta d)
+      (lowerBoundChainGradient beta d) beta := by
+  refine ⟨convex_univ, (continuous_lowerBoundChainTextbookObjective beta d).continuousOn, ?_⟩
+  intro x _hx y _hy
+  exact lowerBoundChainTextbookObjective_le_smooth hbeta d x y
 
 /--
 The displayed support calculation in Chewi's proof of Theorem 4.4: if
