@@ -207,7 +207,10 @@ blocker for the whole-space differentiable case:
   `PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn` plus wrappers through
   `quadraticGrowthOn_of_plGradientFlowLyapunovNoMinimizerHitRoute` derive
   `(QG)` from convergence, feasible trajectory membership, no minimizer hit
-  on positive times, and nonzero displacement.
+  on positive times, and nonzero displacement.  The newest reference-minimizer
+  layer proves `minimizer_value_eq_of_reference_minimizer` and adds route/QG
+  wrappers ending in `_of_referenceMinimizer`, replacing the former global
+  minimizer-value invariant by one attained minimizer with value `fstar`.
 - Corollary 2.8 now compiles in `StatInference/Optimization/Theorem28.lean`:
   the integrated Lemma 2.1 identity, squared-gradient integral bound, average
   bound, interval lower-bound principle, and source square-root minimum form
@@ -447,7 +450,13 @@ continuous trajectory/gap data.  The scalar PL sign calculation is now local as
 `‖z‖ = sqrt (‖z‖^2)` away from `z = 0`.  `HasDerivAt.continuousOn` and
 `gradientFlow_gap_hasDerivAt` now discharge trajectory/gap continuity from the
 gradient-flow hypotheses.  `positive_gap_of_not_isMinOn` now removes the
-explicit positive-gap assumption once no minimizer hit is known.  The
+explicit positive-gap assumption once no minimizer hit is known.  Mathlib's
+`isMinOn_iff` is enough to prove the local invariant
+`minimizer_value_eq_of_reference_minimizer`: if one minimizer attains
+`fstar`, then every minimizer in the same feasible set has value `fstar`.
+The compiled `_of_referenceMinimizer` wrappers use this invariant to avoid
+passing a global minimizer-value axiom through the nontrivial-start and
+no-minimizer-hit QG routes.  The
 remaining proof step should discharge the no-minimizer-hit route itself:
 prove or supply gradient-flow convergence to a minimizer, feasible
 positive-time membership, no minimizer hit on positive times, and the
