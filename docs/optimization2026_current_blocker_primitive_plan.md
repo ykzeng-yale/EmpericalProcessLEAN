@@ -1140,14 +1140,26 @@ The source window nonemptiness comparisons also compile as
 `chewi45_source_positiveLog_half_gate_lt_eps_gate_of_four_le`, so a
 large-log assumption `3 * log 2 < log ((alpha/8)/eps)` can now be converted
 directly into the strict source-window ordering under `4 <= kappa`.
+The contradiction-to-lower-bound conversion now compiles as
+`chewi45_source_positiveLog_rate_le_of_finiteGeometricCandidate_near_min`:
+assuming the finite half-boundary gate and an `eps`-near gradient-span
+trajectory for the corrected finite geometric candidate, Lean derives
+`sqrt(kappa) * log ((alpha/8)/eps) / 8 - 1 <= N`.
+The burn-in-or-rate presentation now compiles as
+`chewi45_source_positiveLog_burnin_or_rate_le_of_finiteGeometricCandidate_near_min`:
+without assuming the finite half-boundary gate in advance, any such near-min
+trajectory either has `N < 3 * sqrt(kappa) * log 2 / 8 - 1` or satisfies the
+source rate lower bound above.
 Search/source correction: Exercise 4.2 is stated for an infinite-dimensional
 `R^infty` chain, and scalar checks of the finite corrected truncation show the
 literal `q^(2N)` tail factor is approached from below rather than true for all
 finite `d` without extra slack.  The next atomic target is therefore either a
-source-level theorem wrapper that packages an integer `N` inside this
-large-log source window for the `gtrsim sqrt(kappa) log(alpha||x0-x*||^2/eps)`
-statement, or a true `l^2`/infinite-sequence model where the exact Exercise
-4.2 tail identity should hold.  The reduction-route comparison
+source-level theorem wrapper that turns this burn-in disjunction into a
+clean textbook corollary under an explicit non-burn-in or large-log iteration
+regime for the `gtrsim sqrt(kappa) log(alpha||x0-x*||^2/eps)` statement, or a
+true
+`l^2`/infinite-sequence model where the exact Exercise 4.2 tail identity
+should hold.  The reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` remains an alternate
 assembly target when concrete condition-number/log hypotheses make it faster.
 Search mathlib/local APIs for `Real.log` monotonicity, `Real.exp` inversions,
