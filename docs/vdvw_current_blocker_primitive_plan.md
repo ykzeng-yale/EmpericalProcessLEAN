@@ -1391,16 +1391,27 @@ coordinate measurability now supplies the selected fixed-radius tail/UI
 package directly; it no longer needs a separate stochastic entropy hypothesis
 at this layer.
 
-Next exact edit: do not repeat the finite-class geometry bridge.  The remaining
-Theorem 2.4.3 proof work is now either (1) prove the actual non-finite-class
+2026-05-03 `/goal` update after consuming the finite-class package: the finite
+nonempty-class route now reaches untruncated centered convergence through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass`.
+This theorem packages the finite-class selected fixed-radius tail/UI side
+conditions for every positive truncation level and feeds them to the existing
+large-`M` untruncation handoff.  The remaining assumptions are exactly the
+current theorem-local measurability, envelope integrability, symmetrization,
+Rademacher, and finite-center integrability inputs; the entropy/tail package is
+no longer a separate assumption for finite classes.
+
+Next exact edit: do not repeat the finite-class geometry/entropy/consumer
+bridge.  The remaining Theorem 2.4.3 proof work is now either (1) prove the
+actual non-finite-class
 geometric packing/cardinality estimate for the chosen empirical internal
 cover/maximal separated set, for example
 `Metric.coveringNumber (⟨eta, _⟩ : ℝ≥0)
   (EmpiricalL1Index.liftSet ...) <= base eta ^ n` at the terminal sample
 size under the correct textbook structural assumptions, or (2) consume the
-finite-class selected fixed-radius package in a theorem-critical finite-class
-specialization if that is the next honest closure.  If the non-finite
-geometric packing route blocks, record the precise additional book-level structural or
+new finite-class untruncated consumer in a theorem-critical final finite-class
+statement if that is the next honest closure.  If the non-finite geometric
+packing route blocks, record the precise additional book-level structural or
 uniform-integrability/tail-expectation condition needed to keep the final
 Theorem 2.4.3 statement honest.
 The remaining analytic gap is no longer selected-cardinality measurability/log

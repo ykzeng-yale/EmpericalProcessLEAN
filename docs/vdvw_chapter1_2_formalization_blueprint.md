@@ -629,9 +629,12 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWConvergesInOuterProbabilityConst_zero_of_constant_logCardinality_div`,
    `vdVWLogEmpiricalL1CoveringCardinality_const_terminal_div_le_log`, and
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass`.
+   The finite-class package is now consumed by the untruncated theorem-facing
+   convergence declaration
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass`.
    The next proof step is therefore the non-finite-class
-   geometric/cardinality instantiation, or a theorem-critical finite-class
-   specialization consuming this package.
+   geometric/cardinality instantiation, or a final theorem-critical
+   specialization consuming this finite-class untruncated consumer.
    The terminal
    power-bound constructors
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_terminal_le_pow`
