@@ -1129,13 +1129,18 @@ The positive-log presentation layer now compiles:
 `chewi45_not_finiteGeometricCandidate_near_min_of_sqrtKappa_positiveLog_rates`.
 This rewrites the two `sqrt(kappa)` gates into source-facing
 `log 2` and `log ((alpha/8)/eps)` forms.
+The source-constant window wrapper now also compiles as
+`chewi45_not_finiteGeometricCandidate_near_min_of_source_positiveLog_window`;
+it multiplies out the gates to the textbook-facing constants
+`3 * sqrt(kappa) * log 2 / 8 - 1 <= N` and
+`N < sqrt(kappa) * log ((alpha/8)/eps) / 8 - 1`.
 Search/source correction: Exercise 4.2 is stated for an infinite-dimensional
 `R^infty` chain, and scalar checks of the finite corrected truncation show the
 literal `q^(2N)` tail factor is approached from below rather than true for all
 finite `d` without extra slack.  The next atomic target is therefore either a
-source-level theorem wrapper choosing or exposing universal constants for the
-`gtrsim sqrt(kappa) log(alpha||x0-x*||^2/eps)` statement, or a true
-`l^2`/infinite-sequence model where the exact Exercise 4.2 tail identity
+source-level theorem wrapper that packages nonempty/large-log parameter
+windows for the `gtrsim sqrt(kappa) log(alpha||x0-x*||^2/eps)` statement, or a
+true `l^2`/infinite-sequence model where the exact Exercise 4.2 tail identity
 should hold.  The reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` remains an alternate
 assembly target when concrete condition-number/log hypotheses make it faster.

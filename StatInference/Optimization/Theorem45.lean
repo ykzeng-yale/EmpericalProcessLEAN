@@ -3050,5 +3050,50 @@ theorem chewi45_not_finiteGeometricCandidate_near_min_of_sqrtKappa_positiveLog_r
       halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four heps_le
       (N := N) hhalf_old heps_old (x := x) hx0 hspan hnear
 
+/--
+Source-constant presentation of the direct finite Theorem 4.5 obstruction.
+This is the positive-log wrapper with the scalar coefficients multiplied out:
+the lower dimension-adequacy gate is `3 * sqrt(kappa) * log 2 / 8`, while
+the target accuracy gate is `sqrt(kappa) * log ((alpha/8)/eps) / 8`.
+-/
+theorem chewi45_not_finiteGeometricCandidate_near_min_of_source_positiveLog_window
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha)
+    (hkappa_four : 4 ≤ kappa) (heps_le : eps ≤ alpha / 8) {N : ℕ}
+    (hhalf_sqrt_le_N :
+      (3 * Real.sqrt kappa * Real.log (2 : ℝ)) / 8 - 1 ≤
+        (N : ℝ))
+    (hN_lt_eps_sqrt :
+      (N : ℝ) <
+        (Real.sqrt kappa * Real.log ((alpha / 8) / eps)) / 8 - 1)
+    {x : ℕ -> EuclideanSpace ℝ (Fin (2 * N + 1))}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta (2 * N + 1)) x)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta (2 * N + 1) (x N) ≤
+        strongLowerBoundChainObjective alpha beta (2 * N + 1)
+          (strongLowerBoundFiniteGeometricCandidate kappa (2 * N + 1)) +
+            eps) :
+    False := by
+  have hhalf_old :
+      (((3 / 2 : ℝ) * Real.sqrt kappa) *
+            Real.log (2 : ℝ)) / 4 - 1 ≤
+        (N : ℝ) := by
+    ring_nf at hhalf_sqrt_le_N ⊢
+    exact hhalf_sqrt_le_N
+  have heps_old :
+      (N : ℝ) <
+        ((Real.sqrt kappa / 2) *
+            Real.log ((alpha / 8) / eps)) / 4 - 1 := by
+    ring_nf at hN_lt_eps_sqrt ⊢
+    exact hN_lt_eps_sqrt
+  exact
+    chewi45_not_finiteGeometricCandidate_near_min_of_sqrtKappa_positiveLog_rates
+      (alpha := alpha) (beta := beta) (kappa := kappa) (eps := eps)
+      halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four heps_le
+      (N := N) hhalf_old heps_old (x := x) hx0 hspan hnear
+
 end Optimization
 end StatInference

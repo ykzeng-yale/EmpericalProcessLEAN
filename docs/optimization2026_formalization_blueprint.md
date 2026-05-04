@@ -676,6 +676,11 @@ The positive-log presentation layer now compiles as
 `chewi45_not_finiteGeometricCandidate_near_min_of_sqrtKappa_positiveLog_rates`,
 so the direct finite obstruction uses `log 2` and
 `log ((alpha/8)/eps)` instead of negative logs.
+The newest source-constant window wrapper compiles as
+`chewi45_not_finiteGeometricCandidate_near_min_of_source_positiveLog_window`,
+rewriting those two gates as the cleaner textbook-facing bounds
+`3 * sqrt(kappa) * log 2 / 8 - 1 <= N` and
+`N < sqrt(kappa) * log ((alpha/8)/eps) / 8 - 1`.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
