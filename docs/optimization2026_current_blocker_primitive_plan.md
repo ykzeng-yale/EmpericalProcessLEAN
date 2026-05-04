@@ -1252,10 +1252,22 @@ and
 `exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min_concreteGradient`.
 Search-first result: this reuses mathlib/local `lp`, `Memℓp.add/sub/const_smul`,
 `lp.single`, `summable_nat_add_iff`, and existing prefix-support induction
-instead of inventing a new sequence space.  Next direct Exercise 4.2 step:
-prove the concrete objective's `FirstOrderStrongConvexOn` package for
-`exercise42InfiniteChainGradientLp`; the separate supplied coordinate-gradient
-hypothesis is no longer needed on the direct route.
+instead of inventing a new sequence space.  The regularization bridge now
+also compiles:
+`exercise42InfiniteBaseChainObjective`,
+`exercise42InfiniteBaseChainGradient`,
+`exercise42InfiniteBaseChainGradientLp`,
+`exercise42InfiniteBaseChainGradientLp_apply`,
+`exercise42InfiniteChainObjective_eq_quadraticRegularizedAround`,
+`exercise42InfiniteChainGradientLp_eq_regularizedGradient`, and
+`exercise42InfiniteChainObjective_firstOrderStrongConvexOn_of_base`.
+This reuses `quadraticRegularizedAround_firstOrderStrongConvexOn_convex`
+instead of reproving the quadratic regularizer algebra in the infinite model.
+Next direct Exercise 4.2 step: prove
+`FirstOrderStrongConvexOn Set.univ (exercise42InfiniteBaseChainObjective
+(beta - alpha)) (exercise42InfiniteBaseChainGradientLp (beta - alpha)) 0`;
+the separate supplied coordinate-gradient hypothesis and the regularizer part
+are both discharged.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
