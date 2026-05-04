@@ -1096,6 +1096,15 @@ above, so they do not change the theorem-level dashboard counts.
    and bounded-value-set hypotheses for centered empirical suprema.  The
    remaining Lemma 2.4.5 task is now the final reverse-submartingale
    convergence reduction and its uniform L1/eLpNorm bound.
+   The uniform bound and row-comparison adapter are now compiled as
+   `integral_vdVWWeightedClassSupremum_centered_invNat_le_two_integral_envelope`,
+   `integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_invNat_le_two_integral_envelope`,
+   `eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_invNat_le_two_integral_envelope`,
+   and `vdVW_condExp_comparison_and_ae_tendsto_limitProcess_of_eLpNorm_le`.
+   The remaining Lemma 2.4.5 task is therefore narrowed to the actual
+   reverse-filtration convergence reduction for the decreasing
+   permutation-symmetric `Σ_n` cofiltration, or an honest reindexing into a
+   mathlib-compatible increasing filtration.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

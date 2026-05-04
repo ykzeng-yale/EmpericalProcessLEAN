@@ -804,12 +804,21 @@ and bounded-value-set side conditions for centered empirical suprema under
 countability, coordinate measurability, and an integrable envelope.  Remaining
 Lemma 2.4.5 work is now the final reverse-submartingale convergence reduction
 and uniform L1/eLpNorm bound.
+2026-05-04 follow-up: the uniform bound part is now compiled.  New
+declarations are
+`integral_vdVWWeightedClassSupremum_centered_invNat_le_two_integral_envelope`,
+`integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_invNat_le_two_integral_envelope`,
+`eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_invNat_le_two_integral_envelope`,
+and `vdVW_condExp_comparison_and_ae_tendsto_limitProcess_of_eLpNorm_le`.
+The remaining Lemma 2.4.5 work is now the actual reverse-filtration
+convergence reduction for the decreasing permutation-symmetric `Σ_n`
+cofiltration, not the envelope L1/eLpNorm estimate.
 
 ## Verification Monitor
 
 Latest targeted verification includes the Theorem 2.4.3 theorem module after
-the Lemma 2.4.5 countable integrable-envelope reverse-comparison consumer on
-2026-05-04.
+the Lemma 2.4.5 countable integrable-envelope reverse-comparison consumer and
+uniform L1/eLpNorm bound on 2026-05-04.
 
 ```text
 lake env lean StatInference/EmpiricalProcess/Theorem243.lean

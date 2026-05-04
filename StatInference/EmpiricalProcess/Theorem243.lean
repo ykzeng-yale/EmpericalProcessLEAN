@@ -170,6 +170,33 @@ theorem vdVW_condExp_ae_tendsto_limitProcess_of_eLpNorm_le
   exact (eLpNorm_one_condExp_le_eLpNorm (m := ℱ n) (μ := μ) g).trans hR
 
 /--
+Comparison plus conditional-expectation martingale convergence in the exact
+shape used by the Lemma 2.4.5 reverse-submartingale reduction: once an adapted
+row statistic is bounded by a conditional expectation of a terminal variable
+with an `L¹` bound, the comparison and the a.e. convergence of that conditional
+expectation hold on a common full-measure set.
+-/
+theorem vdVW_condExp_comparison_and_ae_tendsto_limitProcess_of_eLpNorm_le
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace Ω)}
+    [SigmaFiniteFiltration μ ℱ]
+    {X g : Ω -> ℝ} {k : ℕ} {R : ℝ≥0}
+    (hcomp : X ≤ᵐ[μ] μ[g | ℱ k])
+    (hR : eLpNorm g 1 μ ≤ R) :
+    ∀ᵐ ω ∂μ,
+      X ω ≤ μ[g | ℱ k] ω ∧
+        Tendsto (fun n => μ[g | ℱ n] ω) atTop
+          (𝓝 (ℱ.limitProcess (fun n => μ[g | ℱ n]) μ ω)) := by
+  have htend :
+      ∀ᵐ ω ∂μ,
+        Tendsto (fun n => μ[g | ℱ n] ω) atTop
+          (𝓝 (ℱ.limitProcess (fun n => μ[g | ℱ n]) μ ω)) :=
+    vdVW_condExp_ae_tendsto_limitProcess_of_eLpNorm_le
+      (μ := μ) (ℱ := ℱ) (g := g) (R := R) hR
+  filter_upwards [hcomp, htend] with ω hle ht
+  exact ⟨hle, ht⟩
+
+/--
 Conditional-expectation comparison bridge for the reverse-submartingale step in
 VdV&W Lemma 2.4.5.  If an adapted statistic `X` is bounded by an integrable
 upper statistic `Z`, and the conditional expectation of `Z` is identified with
@@ -4143,6 +4170,236 @@ theorem eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq
     eLpNorm_comp_measurePreserving
       (p := p) hfinite.aestronglyMeasurable
       (vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n)
+
+/--
+The finite-product `L¹` bound needed in the Lemma 2.4.5
+reverse-submartingale route: the expected centered empirical supremum is
+bounded by twice the envelope mean.
+-/
+theorem integral_vdVWWeightedClassSupremum_centered_invNat_le_two_integral_envelope
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {n : ℕ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hn : 0 < n) :
+    ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        ∂(vdVWProductMeasure P n) ≤
+      2 * ∫ x, envelope x ∂P := by
+  let centeredSup : SampleAt Observation n -> ℝ :=
+    fun sample =>
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P)
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample
+  let avg : SampleAt Observation n -> ℝ :=
+    fun sample => empiricalAverage sample envelope
+  let c : ℝ := ∫ x, envelope x ∂P
+  have hcentered_integrable :
+      Integrable centeredSup (vdVWProductMeasure P n) := by
+    simpa [centeredSup] using
+      integrable_vdVWWeightedClassSupremum_centered_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hcount henvelope hclass henv_integrable
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+  have havg_integrable : Integrable avg (vdVWProductMeasure P n) := by
+    simpa [avg] using
+      integrable_empiricalAverage (P := P) (n := n) henv_integrable
+  have hright_integrable :
+      Integrable (fun sample : SampleAt Observation n => avg sample + c)
+        (vdVWProductMeasure P n) :=
+    havg_integrable.add
+      (integrable_const c :
+        Integrable (fun _ : SampleAt Observation n => c) (vdVWProductMeasure P n))
+  have hpoint :
+      ∀ sample : SampleAt Observation n, centeredSup sample ≤ avg sample + c := by
+    intro sample
+    simpa [centeredSup, avg, c] using
+      vdVWWeightedClassSupremum_centered_invNat_le_empiricalAverage_envelope_add_integral
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hn sample henvelope hclass henv_integrable
+  have hintegral_le :
+      ∫ sample : SampleAt Observation n, centeredSup sample ∂(vdVWProductMeasure P n) ≤
+        ∫ sample : SampleAt Observation n, avg sample + c ∂(vdVWProductMeasure P n) :=
+    integral_mono hcentered_integrable hright_integrable hpoint
+  have hn_cast : (n : ℝ) ≠ 0 :=
+    Nat.cast_ne_zero.mpr (Nat.ne_of_gt hn)
+  have hsumWeights : (∑ _i : Fin n, (n : ℝ)⁻¹) = 1 := by
+    calc
+      (∑ _i : Fin n, (n : ℝ)⁻¹)
+          = (n : ℝ) * (n : ℝ)⁻¹ := by
+            simp [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+              nsmul_eq_mul]
+      _ = 1 := by
+            field_simp [hn_cast]
+  have havg_integral :
+      ∫ sample : SampleAt Observation n, avg sample ∂(vdVWProductMeasure P n) = c := by
+    have hweighted :
+        ∫ sample : SampleAt Observation n,
+            (∑ i : Fin n, (n : ℝ)⁻¹ * envelope (sample i))
+            ∂(vdVWProductMeasure P n) =
+          ∑ i : Fin n, (n : ℝ)⁻¹ * ∫ x, envelope x ∂P := by
+      simpa [SampleAt, vdVWProductMeasure] using
+        (StatInference.ProbabilityMeasure.probability_pi_integral_weighted_sum
+          (P := fun _ : Fin n =>
+            (⟨P, inferInstance⟩ :
+              MeasureTheory.ProbabilityMeasure Observation))
+          (f := fun _ : Fin n => envelope)
+          (weights := fun _ : Fin n => (n : ℝ)⁻¹)
+          (fun _ => henv_integrable))
+    calc
+      ∫ sample : SampleAt Observation n, avg sample ∂(vdVWProductMeasure P n)
+          =
+        ∫ sample : SampleAt Observation n,
+            (∑ i : Fin n, (n : ℝ)⁻¹ * envelope (sample i))
+            ∂(vdVWProductMeasure P n) := by
+              congr 1
+              ext sample
+              calc
+                avg sample = (∑ i : Fin n, envelope (sample i)) / (n : ℝ) := rfl
+                _ = (n : ℝ)⁻¹ * ∑ i : Fin n, envelope (sample i) := by
+                      rw [inv_mul_eq_div]
+                _ = ∑ i : Fin n, (n : ℝ)⁻¹ * envelope (sample i) := by
+                      rw [Finset.mul_sum]
+      _ = ∑ i : Fin n, (n : ℝ)⁻¹ * ∫ x, envelope x ∂P := hweighted
+      _ = c := by
+            rw [← Finset.sum_mul, hsumWeights]
+            simp [c]
+  calc
+    ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        ∂(vdVWProductMeasure P n)
+        = ∫ sample : SampleAt Observation n, centeredSup sample
+            ∂(vdVWProductMeasure P n) := rfl
+    _ ≤ ∫ sample : SampleAt Observation n, avg sample + c
+          ∂(vdVWProductMeasure P n) := hintegral_le
+    _ = (∫ sample : SampleAt Observation n, avg sample
+          ∂(vdVWProductMeasure P n)) + c := by
+          rw [integral_add havg_integrable
+            (integrable_const c :
+              Integrable (fun _ : SampleAt Observation n => c)
+                (vdVWProductMeasure P n))]
+          simp [c]
+    _ = 2 * ∫ x, envelope x ∂P := by
+          rw [havg_integral]
+          ring
+
+/--
+Infinite-product transport of the finite-product envelope `L¹` bound for the
+centered empirical supremum.  This is the uniform-integrability side input for
+the Lemma 2.4.5 reverse-submartingale convergence reduction.
+-/
+theorem
+    integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_invNat_le_two_integral_envelope
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {n : ℕ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hn : 0 < n) :
+    ∫ sequence : ℕ -> Observation,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹)
+          (vdVWFirstNSample (Observation := Observation) n sequence)
+        ∂(vdVWInfiniteProductMeasure P) ≤
+      2 * ∫ x, envelope x ∂P := by
+  rw [integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) hcount henvelope hclass henv_integrable
+    (fun _ : Fin n => (n : ℝ)⁻¹)]
+  exact
+    integral_vdVWWeightedClassSupremum_centered_invNat_le_two_integral_envelope
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable hn
+
+/--
+`L¹` seminorm form of the infinite-product envelope bound for the centered
+empirical supremum.  This is the exact `eLpNorm` input shape used by the
+conditional-expectation martingale convergence wrapper.
+-/
+theorem
+    eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_invNat_le_two_integral_envelope
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {n : ℕ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hn : 0 < n) :
+    eLpNorm
+      (fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹)
+          (vdVWFirstNSample (Observation := Observation) n sequence))
+      1 (vdVWInfiniteProductMeasure P) ≤
+      ENNReal.ofReal (2 * ∫ x, envelope x ∂P) := by
+  let infiniteSup : (ℕ -> Observation) -> ℝ :=
+    fun sequence =>
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P)
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+        (vdVWFirstNSample (Observation := Observation) n sequence)
+  have hintegrable :
+      Integrable infiniteSup (vdVWInfiniteProductMeasure P) := by
+    simpa [infiniteSup] using
+      integrable_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hcount henvelope hclass henv_integrable
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+  have hmem : MemLp infiniteSup 1 (vdVWInfiniteProductMeasure P) :=
+    memLp_one_iff_integrable.2 hintegrable
+  have hnonneg : ∀ sequence, 0 ≤ infiniteSup sequence := by
+    intro sequence
+    exact vdVWWeightedClassSupremum_nonneg indexClass
+      (fun index : Index => fun observation : Observation =>
+        classFun index observation - ∫ x, classFun index x ∂P)
+      (fun _ : Fin n => (n : ℝ)⁻¹)
+      (vdVWFirstNSample (Observation := Observation) n sequence)
+  have heq :
+      eLpNorm infiniteSup 1 (vdVWInfiniteProductMeasure P) =
+        ENNReal.ofReal
+          (∫ sequence, infiniteSup sequence ∂(vdVWInfiniteProductMeasure P)) := by
+    calc
+      eLpNorm infiniteSup 1 (vdVWInfiniteProductMeasure P)
+          =
+        ENNReal.ofReal
+          ((∫ sequence, ‖infiniteSup sequence‖ ^ (1 : ℝ≥0∞).toReal
+              ∂(vdVWInfiniteProductMeasure P)) ^ (1 : ℝ≥0∞).toReal⁻¹) := by
+            exact
+              MemLp.eLpNorm_eq_integral_rpow_norm
+                (f := infiniteSup) (p := 1)
+                one_ne_zero ENNReal.one_ne_top hmem
+      _ = ENNReal.ofReal
+          (∫ sequence, infiniteSup sequence ∂(vdVWInfiniteProductMeasure P)) := by
+            congr 1
+            simp only [ENNReal.toReal_one, inv_one, Real.rpow_one]
+            exact integral_congr_ae <| ae_of_all _ fun sequence => by
+              simp [Real.norm_eq_abs, abs_of_nonneg (hnonneg sequence)]
+  rw [heq]
+  exact ENNReal.ofReal_le_ofReal
+    (integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_invNat_le_two_integral_envelope
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable hn)
 
 /--
 Countable integrable-envelope specialization of the Lemma 2.4.5

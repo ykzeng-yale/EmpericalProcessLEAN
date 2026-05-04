@@ -3242,3 +3242,27 @@ Lemma 2.4.5 blocker is now the final reverse-submartingale convergence
 reduction: reindex the decreasing `Σ_n` comparison into the compiled
 conditional-expectation martingale convergence layer and prove the required
 uniform L1/eLpNorm bound from the finite-product transport.
+
+2026-05-04 follow-up: the uniform `L1`/`eLpNorm` side of that final
+Lemma 2.4.5 route is now compiled.  New declarations are
+`integral_vdVWWeightedClassSupremum_centered_invNat_le_two_integral_envelope`,
+`integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_invNat_le_two_integral_envelope`,
+and
+`eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_invNat_le_two_integral_envelope`.
+The same batch adds
+`vdVW_condExp_comparison_and_ae_tendsto_limitProcess_of_eLpNorm_le`, combining
+the conditional-expectation comparison with the existing martingale convergence
+wrapper on a common full-measure set.  Search/reuse record: local proofs reuse
+`vdVWWeightedClassSupremum_centered_invNat_le_empiricalAverage_envelope_add_integral`,
+`integrable_vdVWWeightedClassSupremum_centered_of_countable`,
+`integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq`,
+`integrable_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_of_countable`,
+and the ProbabilityMeasure finite-product weighted-sum expectation wrapper;
+mathlib supplies `MemLp.eLpNorm_eq_integral_rpow_norm`,
+`memLp_one_iff_integrable`, and `ENNReal.ofReal_le_ofReal`.  The remaining
+exact Lemma 2.4.5 blocker is now narrowed to the genuine reverse-filtration
+convergence reduction: either prove a reverse/cofiltration martingale
+convergence wrapper for the decreasing `Σ_n` process, or a valid reindexing
+from `vdVWPermutationSymmetricCofiltration : Filtration ℕᵒᵈ` into a
+mathlib-compatible increasing `Filtration ℕ` without losing the diagonal
+comparison.
