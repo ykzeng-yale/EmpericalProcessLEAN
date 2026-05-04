@@ -736,9 +736,15 @@ The newest smoothness bridge proves
 `exercise42InfiniteBaseChainObjective_add_direction_le_smooth`,
 `exercise42InfiniteBaseChainObjective_le_smooth`, and
 `exercise42InfiniteChainObjective_le_smooth`, giving the exact two-point
-smooth upper inequality for the concrete infinite hard-chain objective.  A
-full `SmoothWithGradientOn` wrapper now primarily needs continuity of this
-infinite objective, likely via a continuous quadratic-form/edge-map package.
+smooth upper inequality for the concrete infinite hard-chain objective.
+Continuity is now proved by squeezing the objective gap between the first-order
+lower model and the smooth upper model:
+`continuous_exercise42InfiniteBaseChainObjective` and
+`continuous_exercise42InfiniteChainObjective` compile, as do the full supplied
+smoothness wrappers
+`exercise42InfiniteBaseChainObjective_smoothWithGradientOn` and
+`exercise42InfiniteChainObjective_smoothWithGradientOn`.  Next package these
+interfaces with the opt-value rate obstruction for the Theorem 4.5 lane.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

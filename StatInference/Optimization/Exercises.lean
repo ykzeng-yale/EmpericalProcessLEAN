@@ -1437,6 +1437,96 @@ theorem exercise42InfiniteBaseChainObjective_firstOrderConvex
   simpa using h
 
 /--
+Continuity of the infinite convex base hard-chain objective.  The proof avoids
+separate continuity of the infinite edge-energy series: the first-order lower
+model and the smooth upper model squeeze the objective gap by a fixed
+linear-plus-quadratic function of `‖y - x‖`.
+-/
+theorem continuous_exercise42InfiniteBaseChainObjective
+    {gamma : ℝ} (hgamma : 0 ≤ gamma) :
+    Continuous (exercise42InfiniteBaseChainObjective gamma) := by
+  rw [continuous_iff_continuousAt]
+  intro x
+  let f := exercise42InfiniteBaseChainObjective gamma
+  let grad := exercise42InfiniteBaseChainGradientLp gamma
+  let gx := grad x
+  have hfirst := exercise42InfiniteBaseChainObjective_firstOrderConvex hgamma
+  have hgap_bound :
+      ∀ y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞),
+        ‖f y - f x‖ ≤
+          ‖gx‖ * ‖y - x‖ + (gamma / 2) * ‖y - x‖ ^ (2 : ℕ) := by
+    intro y
+    let r := ‖y - x‖
+    have hr_nonneg : 0 ≤ r := norm_nonneg _
+    have hquad_nonneg : 0 ≤ (gamma / 2) * r ^ (2 : ℕ) := by
+      have hrsq : 0 ≤ r ^ (2 : ℕ) := sq_nonneg _
+      nlinarith
+    have hupper := exercise42InfiniteBaseChainObjective_le_smooth hgamma x y
+    have hinner_le : inner ℝ gx (y - x) ≤ ‖gx‖ * r := by
+      simpa [gx, grad, r] using real_inner_le_norm gx (y - x)
+    have hdiff_upper :
+        f y - f x ≤ ‖gx‖ * r + (gamma / 2) * r ^ (2 : ℕ) := by
+      simpa [f, grad, gx, r] using
+        (by nlinarith [hupper, hinner_le] :
+          exercise42InfiniteBaseChainObjective gamma y -
+              exercise42InfiniteBaseChainObjective gamma x ≤
+            ‖gx‖ * r + (gamma / 2) * r ^ (2 : ℕ))
+    have hlower := hfirst.lower_model (x := x) (y := y) trivial trivial
+    have hlower' :
+        f x + inner ℝ gx (y - x) ≤ f y := by
+      simpa [f, grad, gx] using hlower
+    have hneg_inner_le : -inner ℝ gx (y - x) ≤ ‖gx‖ * r := by
+      have habs := abs_real_inner_le_norm gx (y - x)
+      exact (neg_le_abs _).trans (by simpa [r] using habs)
+    have hdiff_lower :
+        -(‖gx‖ * r + (gamma / 2) * r ^ (2 : ℕ)) ≤ f y - f x := by
+      nlinarith [hlower', hneg_inner_le, hquad_nonneg]
+    have habs :
+        |f y - f x| ≤
+          ‖gx‖ * r + (gamma / 2) * r ^ (2 : ℕ) :=
+      abs_le.mpr ⟨hdiff_lower, hdiff_upper⟩
+    simpa [Real.norm_eq_abs, r] using habs
+  rw [ContinuousAt, tendsto_iff_norm_sub_tendsto_zero]
+  have hnorm :
+      Tendsto
+        (fun y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) => ‖y - x‖)
+        (𝓝 x) (𝓝 0) := by
+    have hsub :
+        Tendsto
+          (fun y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) => y - x)
+          (𝓝 x) (𝓝 (x - x)) :=
+      tendsto_id.sub tendsto_const_nhds
+    simpa using hsub.norm
+  have hcontrol :
+      Tendsto
+        (fun y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) =>
+          ‖gx‖ * ‖y - x‖ + (gamma / 2) * ‖y - x‖ ^ (2 : ℕ))
+        (𝓝 x) (𝓝 0) := by
+    have hsq :
+        Tendsto
+          (fun y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) =>
+            ‖y - x‖ ^ (2 : ℕ))
+          (𝓝 x) (𝓝 0) := by
+      simpa using hnorm.pow (2 : ℕ)
+    simpa using
+      ((tendsto_const_nhds.mul hnorm).add
+        (tendsto_const_nhds.mul hsq))
+  exact squeeze_zero
+    (fun y => norm_nonneg (f y - f x))
+    hgap_bound hcontrol
+
+/-- Supplied-gradient smoothness interface for the infinite convex base chain. -/
+theorem exercise42InfiniteBaseChainObjective_smoothWithGradientOn
+    {gamma : ℝ} (hgamma : 0 ≤ gamma) :
+    SmoothWithGradientOn Set.univ
+      (exercise42InfiniteBaseChainObjective gamma)
+      (exercise42InfiniteBaseChainGradientLp gamma) gamma := by
+  refine ⟨convex_univ,
+    (continuous_exercise42InfiniteBaseChainObjective hgamma).continuousOn, ?_⟩
+  intro x _hx y _hy
+  exact exercise42InfiniteBaseChainObjective_le_smooth hgamma x y
+
+/--
 The strongly-convex infinite Exercise 4.2 objective is the convex base chain
 regularized by `(alpha / 2) * ‖x‖²`.
 -/
@@ -1497,6 +1587,43 @@ theorem exercise42InfiniteChainObjective_le_smooth
     exercise42InfiniteChainGradientLp_eq_regularizedGradient]
   simp [quadraticRegularizedAround, regularizedGradient, inner_add_left] at *
   nlinarith
+
+/-- Continuity of the concrete infinite strongly-convex hard-chain objective. -/
+theorem continuous_exercise42InfiniteChainObjective
+    {alpha beta : ℝ} (hgamma : 0 ≤ beta - alpha) :
+    Continuous (exercise42InfiniteChainObjective alpha beta) := by
+  have hbase :=
+    continuous_exercise42InfiniteBaseChainObjective
+      (gamma := beta - alpha) hgamma
+  have hquad :
+      Continuous
+        (fun x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) =>
+          (alpha / 2) *
+            ‖x - (0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞))‖ ^ (2 : ℕ)) := by
+    exact continuous_const.mul
+      (((continuous_id.sub continuous_const).norm).pow (2 : ℕ))
+  rw [exercise42InfiniteChainObjective_eq_quadraticRegularizedAround]
+  change Continuous
+    (fun x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) =>
+      exercise42InfiniteBaseChainObjective (beta - alpha) x +
+        (alpha / 2) *
+          ‖x - (0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞))‖ ^ (2 : ℕ))
+  exact hbase.add hquad
+
+/--
+Full supplied-gradient smoothness interface for the concrete infinite
+Exercise 4.2 hard-chain objective.
+-/
+theorem exercise42InfiniteChainObjective_smoothWithGradientOn
+    {alpha beta : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (hgamma : 0 ≤ beta - alpha) :
+    SmoothWithGradientOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta)
+      (exercise42InfiniteChainGradientLp alpha beta) beta := by
+  refine ⟨convex_univ,
+    (continuous_exercise42InfiniteChainObjective hgamma).continuousOn, ?_⟩
+  intro x _hx y _hy
+  exact exercise42InfiniteChainObjective_le_smooth halpha_nonneg hgamma x y
 
 /--
 Reduction of the remaining concrete first-order package to the convex base

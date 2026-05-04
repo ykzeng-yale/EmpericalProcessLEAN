@@ -1340,9 +1340,18 @@ The newest smoothness bridge also compiles:
 `exercise42InfiniteBaseChainObjective_add_direction_le_smooth`,
 `exercise42InfiniteBaseChainObjective_le_smooth`, and
 `exercise42InfiniteChainObjective_le_smooth`.  This proves the full two-point
-`beta`-smooth upper inequality for the concrete infinite hard-chain objective;
-the remaining step for a literal `SmoothWithGradientOn` package is continuity
-of the infinite objective (or an equivalent continuous quadratic-form wrapper).
+`beta`-smooth upper inequality for the concrete infinite hard-chain objective.
+The continuity blocker is now also closed: the compiled declarations
+`continuous_exercise42InfiniteBaseChainObjective`,
+`exercise42InfiniteBaseChainObjective_smoothWithGradientOn`,
+`continuous_exercise42InfiniteChainObjective`, and
+`exercise42InfiniteChainObjective_smoothWithGradientOn` give the full supplied
+`SmoothWithGradientOn Set.univ` interface for the infinite Exercise 4.2 hard
+instance.  Next direct step: package the first-order strong-convexity,
+smoothness, gradient-span support, optimum value, and opt-value rate theorem
+into a single Theorem 4.5-facing interface theorem; if this must live before
+`Theorem45.lean`, factor the infinite substrate out of `Exercises.lean` to
+avoid an import cycle.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,

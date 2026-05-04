@@ -422,8 +422,16 @@ smoothness bridge adds
 `exercise42InfiniteBaseChainObjective_add_direction_le_smooth`,
 `exercise42InfiniteBaseChainObjective_le_smooth`, and
 `exercise42InfiniteChainObjective_le_smooth`; the concrete infinite hard-chain
-now has the compiled two-point `beta`-smooth upper inequality, with continuity
-left as the blocker for a full `SmoothWithGradientOn` interface.  In
+now has the compiled two-point `beta`-smooth upper inequality.  The continuity
+blocker is also closed by `continuous_exercise42InfiniteBaseChainObjective`
+and `continuous_exercise42InfiniteChainObjective`, yielding the full supplied
+interfaces
+`exercise42InfiniteBaseChainObjective_smoothWithGradientOn` and
+`exercise42InfiniteChainObjective_smoothWithGradientOn`.  The next target is a
+single Theorem 4.5-facing package theorem combining first-order strong
+convexity, smoothness, gradient-span support, optimum value, and the opt-value
+rate obstruction, with a module split if direct import into `Theorem45.lean`
+is needed.  In
 parallel, specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.
