@@ -823,7 +823,10 @@ above, so they do not change the theorem-level dashboard counts.
    `empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_card_le`
    now instantiates this interface with `round (x / epsilon)` and decoder
    `epsilon * code`, leaving finite integer-code membership and cardinality
-   as the next inputs.  The
+   as the next inputs.  The interval-code bridge
+   `empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_interval_card_le`
+   now discharges membership in finite integer intervals once coordinatewise
+   lower/upper rounded-code bounds are supplied.  The
    remaining theorem-facing work is the actual bounded quantization/grid code
    and the nontrivial VC/subgraph/grid cardinality estimate, not this finite
    product-code plumbing.

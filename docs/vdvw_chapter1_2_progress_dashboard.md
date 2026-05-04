@@ -390,6 +390,12 @@ covers by
 The next target is finite integer-code interval membership/cardinality under
 bounded truncated values, then VC/subgraph/grid cardinality control.
 
+2026-05-04 follow-up: rounded-code membership in finite symmetric integer
+intervals is now compiled as
+`empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_interval_card_le`.
+Next target: derive the integer bounds from `|x| <= M` and bound the interval
+cardinalities/products.
+
 ## Verification Monitor
 
 Latest targeted verification includes the selected terminal/truncated

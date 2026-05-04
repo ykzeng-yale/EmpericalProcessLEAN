@@ -1758,6 +1758,83 @@ theorem empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_card_le
       hcard_le
 
 /--
+Padded-cardinality empirical cover from nearest-integer rounding when the
+rounded coordinate codes are known to lie in finite symmetric integer
+intervals.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_roundingQuantizer_interval_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (bound : Fin n -> ℤ)
+    (hepsilon_pos : 0 < epsilon)
+    (hround_lower :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          -bound sampleIndex ≤
+            round (classFun index (sample sampleIndex) / epsilon))
+    (hround_upper :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          round (classFun index (sample sampleIndex) / epsilon) ≤
+            bound sampleIndex)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le :
+      (∏ sampleIndex : Fin n,
+          (Finset.Icc (-bound sampleIndex) (bound sampleIndex)).card) ≤
+        cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  exact
+    nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_roundingQuantizer_card_le
+      (fun sampleIndex => Finset.Icc (-bound sampleIndex) (bound sampleIndex))
+      hepsilon_pos
+      (fun index hindex sampleIndex =>
+        Finset.mem_Icc.mpr
+          ⟨hround_lower index hindex sampleIndex,
+            hround_upper index hindex sampleIndex⟩)
+      hindexClass hcard_le
+
+/--
+Numeric empirical-covering-number bound from nearest-integer rounding and
+finite symmetric integer intervals for the coordinate codes.
+-/
+theorem empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_interval_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (bound : Fin n -> ℤ)
+    (hepsilon_pos : 0 < epsilon)
+    (hround_lower :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          -bound sampleIndex ≤
+            round (classFun index (sample sampleIndex) / epsilon))
+    (hround_upper :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          round (classFun index (sample sampleIndex) / epsilon) ≤
+            bound sampleIndex)
+    (hcard_le :
+      (∏ sampleIndex : Fin n,
+          (Finset.Icc (-bound sampleIndex) (bound sampleIndex)).card) ≤
+        cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_card_le
+      (fun sampleIndex => Finset.Icc (-bound sampleIndex) (bound sampleIndex))
+      hepsilon_pos
+      (fun index hindex sampleIndex =>
+        Finset.mem_Icc.mpr
+          ⟨hround_lower index hindex sampleIndex,
+            hround_upper index hindex sampleIndex⟩)
+      hcard_le
+
+/--
 Padded-cardinality cover from a finite fixed-sample trace image.  Later
 combinatorial arguments can supply a terminal bound on the number of distinct
 traces and reuse this cover witness directly.

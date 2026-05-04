@@ -2380,3 +2380,27 @@ when `|x| <= M`, then feeding the resulting finite interval/cardinality bound
 into the selected fixed-radius Theorem 2.4.3 side-condition package.  The
 remaining major theorem gap is still the VC/subgraph/grid cardinality control,
 not the nearest-integer rounding error.
+
+2026-05-04 `/goal` update after rounding interval-code bridge:
+`CoveringPrimitive.lean` now adds
+`nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_roundingQuantizer_interval_card_le`
+and
+`empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_interval_card_le`.
+These specialize the rounding quantizer route to coordinate code sets of the
+form `Finset.Icc (-bound i) (bound i)`: once lower and upper integer bounds
+for each rounded sample coordinate are supplied, finite code-set membership is
+discharged by `Finset.mem_Icc`, and the product of interval cardinalities feeds
+the empirical covering-number bound.
+
+Search record: local search found the compiled rounding quantizer bridge and
+mathlib interval membership/cardinality APIs around `Finset.Icc`; no local
+rounding-code interval membership theorem existed.  This step intentionally
+keeps the interval-cardinality product bound explicit because the next theorem
+must choose bounds from truncated-value envelopes and eventually improve the
+cardinality route using VC/subgraph structure.
+
+Next exact theorem-facing edit: prove the integer bounds for
+`round (x / epsilon)` from a real truncated-value bound such as `|x| <= M`, and
+then prove a usable bound on
+`(Finset.Icc (-B) B).card` or its finite-coordinate product.  This closes the
+plain bounded-grid part before the harder VC/subgraph cardinality refinement.
