@@ -1522,11 +1522,24 @@ Bool-to-real Rademacher law, sub-Gaussian proof, and finite iid construction;
 Billingsley-lane wrappers; pinned mathlib supplied `exists_iid` and
 `iIndepFun.precomp` for the countable-to-finite restriction.
 
+2026-05-03 follow-up `/goal` update after canonical finite-class sample-path
+instantiation: the finite-class route now also has
+`vdVWCanonicalSampleProcess`,
+`samplePath_vdVWCanonicalSampleProcess`, and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_canonical`.
+This removes caller-facing `X`/`hX_samplePath` plumbing from the finite-class
+iid-Rademacher consumer, at the honest cost of `[Inhabited Observation]` for
+irrelevant coordinates outside the terminal sample.  Search record: local
+`EndpointSamples.lean` shows `samplePath X sample n` only reads coordinates
+`< n`; local `Theorem243.lean` finite-class iid consumer supplies the target;
+no mathlib theorem is needed beyond ordinary `Fin` simplification.
+
 Current compact `/goal` execution prompt: continue VdV&W Chapters 1-2 in
 dependency order without repeating closed Theorem 2.4.3 finite-net,
 selected-fixed-radius, finite-class, integrability, centered-cover, and
 centered-supremum/pair/sample/random-sign product integrability, canonical
-common iid Rademacher sign instantiation, and
+common iid Rademacher sign instantiation, canonical finite-class sample-path
+instantiation, and
 untruncation layers.  The active closure batch is the actual non-finite
 theorem handoff from textbook entropy assumptions to selected fixed-radius
 tail/UI or deterministic log-ratio inputs; if that blocks after Lean/search,
@@ -1537,7 +1550,8 @@ Next exact edit: do not repeat the finite-class geometry/entropy/consumer
 bridge, finite-center integrability closure, centered-cover closure, or
 centered-supremum/pair/sample/random-sign product integrability closure, and
 do not ask theorem callers to provide iid Rademacher signs in the finite-class
-route.  The
+route or terminal sample-path plumbing in the canonical finite-class route.
+The
 remaining Theorem 2.4.3 proof work is now either (1) prove the actual
 non-finite-class
 geometric packing/cardinality estimate for the chosen empirical internal

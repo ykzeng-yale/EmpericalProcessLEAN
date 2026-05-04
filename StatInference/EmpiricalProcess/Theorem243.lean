@@ -16644,6 +16644,75 @@ theorem
         simpa [sign] using hsubGNat (i : ℕ))
 
 /--
+Canonical process whose first `n` coordinates reproduce a fixed sample of size
+`n`.
+
+The value outside the first `n` coordinates is irrelevant to `samplePath`; an
+`Inhabited` observation type supplies that dummy value.
+-/
+noncomputable def vdVWCanonicalSampleProcess
+    {Observation : Type v} [Inhabited Observation] (n : ℕ) :
+    ℕ -> SampleAt Observation n -> Observation :=
+  fun k sample => if h : k < n then sample ⟨k, h⟩ else default
+
+@[simp]
+theorem samplePath_vdVWCanonicalSampleProcess
+    {Observation : Type v} [Inhabited Observation]
+    (n : ℕ) (sample : SampleAt Observation n) :
+    samplePath (vdVWCanonicalSampleProcess n) sample n = sample := by
+  funext i
+  simp [samplePath, vdVWCanonicalSampleProcess, i.isLt]
+
+/--
+Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the
+canonical terminal sample-path process.
+
+Compared with
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_iidRademacher`,
+this removes the remaining caller-facing `X`/`samplePath` plumbing.  The only
+extra assumption is `[Inhabited Observation]`, used solely for coordinates of
+the auxiliary process outside the observed sample.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_iidRademacher
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      (X := fun _M n => vdVWCanonicalSampleProcess n)
+      (hX_samplePath := by
+        intro M n sample
+        exact samplePath_vdVWCanonicalSampleProcess n sample)
+      (hindex_finite := hindex_finite) (hindexClass := hindexClass)
+      (henvelope := henvelope) (hclass := hclass) (henv := henv)
+      (henv_integrable := henv_integrable)
+      (hclassIntegrable := hclassIntegrable)
+
+/--
 Fixed-`M` centered-truncated convergence from entropy, measurable random
 cardinalities, a bounded finite-net upper, and a vanishing empirical-cover
 radius.

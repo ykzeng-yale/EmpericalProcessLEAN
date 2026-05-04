@@ -678,6 +678,10 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_iidRademacher`,
    so the final finite-class specialization no longer asks the caller for an
    auxiliary Rademacher sign probability space.
+   It also has the canonical terminal sample-path wrapper
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_canonical`,
+   removing the remaining finite-class `X`/`samplePath` plumbing under the
+   honest `[Inhabited Observation]` dummy-coordinate assumption.
    The next proof step is therefore the non-finite-class
    geometric/cardinality instantiation, or a final theorem-critical
    specialization consuming this finite-class untruncated consumer.
