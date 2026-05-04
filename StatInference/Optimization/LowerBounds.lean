@@ -175,6 +175,36 @@ theorem coordinatePrefixSubmodule_eq_top_of_le {d n : ℕ} (hdn : d ≤ n) :
     exact (Nat.not_lt_of_ge (hdn.trans hi) i.2).elim
 
 /--
+Extended chain node values for Chewi's lower-bound quadratic.
+
+The boundary nodes are `z_0 = 1` and `z_{d+1} = 0`; the interior nodes are
+`z_{i+1} = x_i`.  This lets the objective be written as a uniform finite
+sum of squared edge differences.
+-/
+noncomputable def lowerBoundChainNode (d : ℕ)
+    (x : EuclideanSpace ℝ (Fin d)) (j : Fin (d + 2)) : ℝ :=
+  if hzero : j.1 = 0 then
+    1
+  else if hlast : j.1 = d + 1 then
+    0
+  else
+    x ⟨j.1 - 1, by omega⟩
+
+/-- The `k`th edge difference `z_{k+1} - z_k` in the lower-bound chain. -/
+noncomputable def lowerBoundChainEdge (d : ℕ)
+    (x : EuclideanSpace ℝ (Fin d)) (k : Fin (d + 1)) : ℝ :=
+  lowerBoundChainNode d x ⟨k.1 + 1, by omega⟩ -
+    lowerBoundChainNode d x ⟨k.1, by omega⟩
+
+/--
+Chewi's tridiagonal lower-bound quadratic, written as the squared energy of
+the boundary chain `1, x_0, ..., x_{d-1}, 0`.
+-/
+noncomputable def lowerBoundChainObjective (beta : ℝ) (d : ℕ)
+    (x : EuclideanSpace ℝ (Fin d)) : ℝ :=
+  (beta / 8) * ∑ k : Fin (d + 1), (lowerBoundChainEdge d x k) ^ (2 : ℕ)
+
+/--
 If every queried gradient through time `n` lies in `V_{n+1}`, then the
 gradient span through time `n` is contained in `V_{n+1}`.
 -/
@@ -378,6 +408,52 @@ theorem lowerBoundChainMinimizer_norm_sq_le_dim (d : ℕ) :
             lowerBoundChainMinimizer_coord_sq_le_one d i
     _ = (d : ℝ) := by
       simp [Finset.sum_const, nsmul_eq_mul]
+
+/--
+At Chewi's displayed minimizer, every extended chain node lies on the straight
+line from `1` to `0`.
+-/
+theorem lowerBoundChainNode_lowerBoundChainMinimizer
+    (d : ℕ) (j : Fin (d + 2)) :
+    lowerBoundChainNode d (lowerBoundChainMinimizer d) j =
+      1 - (j.1 : ℝ) / ((d : ℝ) + 1) := by
+  by_cases hzero : j.1 = 0
+  · simp [lowerBoundChainNode, hzero]
+  · by_cases hlast : j.1 = d + 1
+    · have hden : ((d : ℝ) + 1) ≠ 0 := by positivity
+      simp [lowerBoundChainNode, hlast]
+      field_simp [hden]
+      ring
+    · have hjpos : 1 ≤ j.1 := by omega
+      have hcast : (((j.1 - 1 : ℕ) : ℝ) + 1) = (j.1 : ℝ) := by
+        rw [Nat.cast_sub hjpos]
+        ring
+      simp [lowerBoundChainNode, lowerBoundChainMinimizer, hzero, hlast,
+        PiLp.toLp_apply]
+      rw [hcast]
+
+/-- Every edge difference at Chewi's displayed minimizer is `-1 / (d + 1)`. -/
+theorem lowerBoundChainEdge_lowerBoundChainMinimizer
+    (d : ℕ) (k : Fin (d + 1)) :
+    lowerBoundChainEdge d (lowerBoundChainMinimizer d) k =
+      -(1 / ((d : ℝ) + 1)) := by
+  have hden : ((d : ℝ) + 1) ≠ 0 := by positivity
+  unfold lowerBoundChainEdge
+  rw [lowerBoundChainNode_lowerBoundChainMinimizer,
+    lowerBoundChainNode_lowerBoundChainMinimizer]
+  simp
+  field_simp [hden]
+  ring
+
+/-- Exact value of Chewi's lower-bound quadratic at the displayed minimizer. -/
+theorem lowerBoundChainObjective_lowerBoundChainMinimizer
+    (beta : ℝ) (d : ℕ) :
+    lowerBoundChainObjective beta d (lowerBoundChainMinimizer d) =
+      beta / (8 * ((d : ℝ) + 1)) := by
+  have hden : ((d : ℝ) + 1) ≠ 0 := by positivity
+  simp [lowerBoundChainObjective, lowerBoundChainEdge_lowerBoundChainMinimizer,
+    Finset.sum_const, nsmul_eq_mul]
+  field_simp [hden]
 
 end CoordinatePrefix
 
