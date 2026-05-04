@@ -1263,6 +1263,16 @@ also compiles:
 `exercise42InfiniteChainObjective_firstOrderStrongConvexOn_of_base`.
 This reuses `quadraticRegularizedAround_firstOrderStrongConvexOn_convex`
 instead of reproving the quadratic regularizer algebra in the infinite model.
+The edge-energy substrate for the remaining convex base lower model now
+compiles:
+`exercise42InfiniteBaseChainEdge`,
+`exercise42InfiniteBaseChainDirectionEdge`,
+`exercise42InfiniteBaseChainEdgeSq_summable`,
+`exercise42InfiniteBaseChainDirectionEdgeSq_summable`,
+`exercise42InfiniteBaseChainEdge_add_direction`, and
+`exercise42InfiniteBaseChainObjective_eq_edge_tsum`.  This mirrors the finite
+`lowerBoundChainTextbookObjective_add_direction` route and reuses
+`summable_nat_add_iff` plus the existing infinite edge-square summability.
 Next direct Exercise 4.2 step: prove
 `FirstOrderStrongConvexOn Set.univ (exercise42InfiniteBaseChainObjective
 (beta - alpha)) (exercise42InfiniteBaseChainGradientLp (beta - alpha)) 0`;

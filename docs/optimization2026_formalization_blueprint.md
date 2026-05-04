@@ -672,7 +672,15 @@ primitive.  The regularization decomposition now also compiles through
 base-chain lower model
 `FirstOrderStrongConvexOn Set.univ (exercise42InfiniteBaseChainObjective
 (beta - alpha)) (exercise42InfiniteBaseChainGradientLp (beta - alpha)) 0`
-remains on this infinite Exercise 4.2 route.
+remains on this infinite Exercise 4.2 route.  The base-chain edge substrate
+now compiles as `exercise42InfiniteBaseChainEdge`,
+`exercise42InfiniteBaseChainDirectionEdge`,
+`exercise42InfiniteBaseChainEdgeSq_summable`,
+`exercise42InfiniteBaseChainDirectionEdgeSq_summable`,
+`exercise42InfiniteBaseChainEdge_add_direction`, and
+`exercise42InfiniteBaseChainObjective_eq_edge_tsum`, giving the infinite
+counterpart of the finite edge-energy representation before proving the full
+direction expansion.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,
