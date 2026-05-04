@@ -937,10 +937,28 @@ Latest verified local frontier after lane creation:
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal targets: discharge or sharply package the remaining
-nontrivial-start analytic input behind Proposition 2.7(2), and advance the
-new Chapter 4 gradient-span lane toward Theorem 4.4's finite-dimensional
-lower-bound construction.  The route
+Next manual goal targets: continue Chapter 4 Lemma 4.2 reductions toward the
+strongly-convex lower-bound Theorem 4.5, then decide whether to source-report
+Theorem 4.4 or finish the Theorem 4.5 reduction first.  The new
+`StatInference/Optimization/Reductions.lean` module already compiles
+`quadraticRegularizedAround`, `regularizedGradient`,
+`quadraticRegularizedAround_firstOrderStrongConvexOn`,
+`quadraticRegularizedAround_smoothWithGradientOn`,
+`le_quadraticRegularizedAround`,
+`quadraticRegularizedAround_near_min_le_base_add_penalty`,
+`quadraticRegularizedAround_near_min_gap_le_eps`,
+`regularization_penalty_le_of_norm_le`,
+`regularized_minimizer_dist_le_of_base_min`, and
+`regularized_smoothness_le_two_beta`.  Do not repeat these.  The next atomic
+target is the source-shaped Lemma 4.2 condition-number/complexity arithmetic:
+with `delta = eps / R^2`, `eps <= beta * R^2`, and `0 < R`, show the
+regularized problem is `delta`-strongly convex, `(beta + delta)`-smooth with
+`beta + delta <= 2 * beta`, and condition-number bounded by
+`2 * beta * R^2 / eps`; then use the compiled regularized-minimizer distance
+and epsilon-gap hooks to package the full reduction interface.
+
+Chapter 2 route context is still available but no longer the active target:
+The route
 `PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn -> QG` now compiles, so the
 remaining assumptions to attack are convergence to a minimizer, feasible
 positive-time trajectory membership, no minimizer hit on positive times, and

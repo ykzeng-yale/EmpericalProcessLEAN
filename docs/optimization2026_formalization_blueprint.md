@@ -477,7 +477,14 @@ shifted and unshifted objectives now have first-order convex lower-model
 wrappers and `SmoothWithGradientOn Set.univ` wrappers supplied by
 `lowerBoundChainGradient`.  The next missing step is source-report packaging
 or, if continuing theorem expansion before reporting, the nearby Chapter 4
-strongly-convex lower-bound Theorem 4.5 route.  The source step
+strongly-convex lower-bound Theorem 4.5 route.  The Lemma 4.2 regularization
+spine now compiles separately in `StatInference/Optimization/Reductions.lean`:
+`quadraticRegularizedAround`, `regularizedGradient`, first-order
+strong-convexity/smoothness parameter shifts, the source value-chain and
+epsilon-gap corollaries, the radius-to-penalty hook, the
+regularized-minimizer distance estimate, and `beta + delta <= 2 beta`.  Next
+source-shaped reduction work should add the condition-number/complexity wrapper
+and then connect Theorem 4.4 to Theorem 4.5.  The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
 `lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory` proves the main
