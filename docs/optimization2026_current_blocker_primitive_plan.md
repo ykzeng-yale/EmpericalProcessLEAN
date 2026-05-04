@@ -1044,14 +1044,29 @@ The concrete finite-boundary obstruction wrappers now also compile:
 `chewi45_not_near_min_of_finiteGeometricCandidate_boundary_lower_bound`.  They
 turn one corrected-candidate tail coordinate into a fully discharged finite
 gap lower bound with no supplied tail-comparison hypothesis.
+The finite slack/log stepping stone now also compiles:
+`chewi45_gap_ge_geometric_boundary_floor_of_finiteGeometricCandidate`,
+`chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate`, and
+`chewi45_not_near_min_of_finiteGeometricCandidate_half_boundary_lower_bound`.
+These package any lower floor on the finite-boundary correction factor, and in
+particular reduce the next concrete finite route to proving
+`q^(2*d+2-2*(N+1)) <= 1/2`, which gives the clean gap lower bound
+`(alpha/8) * q^(2*(N+1))`.
+The half-boundary monotonicity bridge now also compiles:
+`chewi45GeometricRatio_pow_le_half_of_exponent_le`,
+`chewi45_half_boundary_condition_of_exponent_le`, and
+`chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate_of_exponent_le`.
+These let the log/dimension proof establish `q^M <= 1/2` for any convenient
+smaller exponent `M <= 2*d+2-2*(N+1)` and then reuse the compiled finite gap
+bound.
 Search/source correction: Exercise 4.2 is stated for an infinite-dimensional
 `R^infty` chain, and scalar checks of the finite corrected truncation show the
 literal `q^(2N)` tail factor is approached from below rather than true for all
 finite `d` without extra slack.  The next atomic target is therefore either a
-finite-dimension slack/log comparison starting from the boundary obstruction,
-or a true `l^2`/infinite-sequence model where the exact Exercise 4.2 tail
-identity should hold.  Then convert the resulting geometric obstruction into
-the logarithmic iteration lower bound.  The
+dimension/log proof producing a convenient `M` with `q^M <= 1/2` plus
+iteration-count conversion, or a true `l^2`/infinite-sequence model where the
+exact Exercise 4.2 tail identity should hold.  Then convert the resulting
+geometric obstruction into the logarithmic iteration lower bound.  The
 reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` remains an alternate
 assembly target when concrete condition-number/log hypotheses make it faster.

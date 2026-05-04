@@ -163,6 +163,17 @@ The concrete finite-boundary gap obstruction also now compiles:
 This removes the supplied tail-comparison hypothesis for a finite slack
 statement; next is the log/slack comparison or the exact `l^2` Exercise 4.2
 model.
+The finite slack/log stepping stone now also compiles:
+`chewi45_gap_ge_geometric_boundary_floor_of_finiteGeometricCandidate`,
+`chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate`, and
+`chewi45_not_near_min_of_finiteGeometricCandidate_half_boundary_lower_bound`.
+The finite route is now narrowed to the dimension condition
+`q^(2*d+2-2*(N+1)) <= 1/2` plus the final logarithmic iteration conversion.
+The newest exponent-lifting pass adds
+`chewi45GeometricRatio_pow_le_half_of_exponent_le`,
+`chewi45_half_boundary_condition_of_exponent_le`, and
+`chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate_of_exponent_le`,
+so it is enough to prove `q^M <= 1/2` for any smaller available exponent.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains

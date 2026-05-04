@@ -1804,6 +1804,180 @@ theorem chewi45_gap_ge_geometric_boundary_of_finiteGeometricCandidate
   exact hscaled.trans htail
 
 /--
+Finite-boundary obstruction with a supplied lower floor for the boundary
+factor.  This separates the hard-chain proof from the later dimension/slack
+choice: any usable floor for
+`1 - q^(2d+2-2(N+1))` immediately yields a concrete gap lower bound.
+-/
+theorem chewi45_gap_ge_geometric_boundary_floor_of_finiteGeometricCandidate
+    {alpha beta kappa c : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (hc_nonneg : 0 ≤ c) {d N : ℕ} (hN : N < d)
+    (hfloor :
+      c ≤ 1 - (chewi45GeometricRatio kappa) ^
+        (2 * d + 2 - 2 * (N + 1)))
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x) :
+    (alpha / 2) *
+        (((chewi45GeometricRatio kappa) ^ (N + 1) * c) ^ (2 : ℕ)) ≤
+      strongLowerBoundChainObjective alpha beta d (x N) -
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) := by
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  have hqpow_nonneg :
+      0 ≤ (chewi45GeometricRatio kappa) ^ (N + 1) :=
+    chewi45GeometricRatio_pow_nonneg hkappa_gt.le (N + 1)
+  have hboundary_nonneg :
+      0 ≤ 1 - (chewi45GeometricRatio kappa) ^
+        (2 * d + 2 - 2 * (N + 1)) :=
+    hc_nonneg.trans hfloor
+  have hleft_nonneg :
+      0 ≤ (chewi45GeometricRatio kappa) ^ (N + 1) * c :=
+    mul_nonneg hqpow_nonneg hc_nonneg
+  have hright_nonneg :
+      0 ≤ (chewi45GeometricRatio kappa) ^ (N + 1) *
+        (1 - (chewi45GeometricRatio kappa) ^
+          (2 * d + 2 - 2 * (N + 1))) :=
+    mul_nonneg hqpow_nonneg hboundary_nonneg
+  have hbase :
+      (chewi45GeometricRatio kappa) ^ (N + 1) * c ≤
+        (chewi45GeometricRatio kappa) ^ (N + 1) *
+          (1 - (chewi45GeometricRatio kappa) ^
+            (2 * d + 2 - 2 * (N + 1))) :=
+    mul_le_mul_of_nonneg_left hfloor hqpow_nonneg
+  have hsquare :
+      (((chewi45GeometricRatio kappa) ^ (N + 1) * c) ^ (2 : ℕ)) ≤
+        (((chewi45GeometricRatio kappa) ^ (N + 1) *
+          (1 - (chewi45GeometricRatio kappa) ^
+            (2 * d + 2 - 2 * (N + 1)))) ^ (2 : ℕ)) :=
+    (sq_le_sq₀ hleft_nonneg hright_nonneg).2 hbase
+  have hcoef_nonneg : 0 ≤ alpha / 2 := by nlinarith
+  have hscaled :=
+    mul_le_mul_of_nonneg_left hsquare hcoef_nonneg
+  exact hscaled.trans
+    (chewi45_gap_ge_geometric_boundary_of_finiteGeometricCandidate
+      (alpha := alpha) (beta := beta) (kappa := kappa)
+      halpha_pos halpha_lt_beta hkappa (N := N) hN
+      (x := x) hx0 hspan)
+
+/--
+Half-boundary finite slack corollary.  If the terminal correction has decayed
+below `1/2`, the finite corrected minimizer gives the clean lower bound
+`(alpha/8) * q^(2(N+1))`.
+-/
+theorem chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d N : ℕ} (hN : N < d)
+    (hboundary_half :
+      (chewi45GeometricRatio kappa) ^
+          (2 * d + 2 - 2 * (N + 1)) ≤ (1 / 2 : ℝ))
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x) :
+    (alpha / 8) * (chewi45GeometricRatio kappa) ^ (2 * (N + 1)) ≤
+      strongLowerBoundChainObjective alpha beta d (x N) -
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) := by
+  have hfloor :
+      (1 / 2 : ℝ) ≤ 1 - (chewi45GeometricRatio kappa) ^
+        (2 * d + 2 - 2 * (N + 1)) := by
+    linarith
+  have hmain :=
+    chewi45_gap_ge_geometric_boundary_floor_of_finiteGeometricCandidate
+      (alpha := alpha) (beta := beta) (kappa := kappa) (c := (1 / 2 : ℝ))
+      halpha_pos halpha_lt_beta hkappa (by norm_num) (N := N) hN
+      hfloor (x := x) hx0 hspan
+  have hrewrite :
+      (alpha / 2) *
+          (((chewi45GeometricRatio kappa) ^ (N + 1) * (1 / 2 : ℝ)) ^
+            (2 : ℕ)) =
+        (alpha / 8) *
+          (chewi45GeometricRatio kappa) ^ (2 * (N + 1)) := by
+    calc
+      (alpha / 2) *
+          (((chewi45GeometricRatio kappa) ^ (N + 1) * (1 / 2 : ℝ)) ^
+            (2 : ℕ)) =
+          (alpha / 8) *
+            ((chewi45GeometricRatio kappa) ^ (N + 1) *
+              (chewi45GeometricRatio kappa) ^ (N + 1)) := by
+        ring
+      _ = (alpha / 8) *
+            (chewi45GeometricRatio kappa) ^ ((N + 1) + (N + 1)) := by
+        rw [← pow_add]
+      _ = (alpha / 8) *
+            (chewi45GeometricRatio kappa) ^ (2 * (N + 1)) := by
+        have hexp : (N + 1) + (N + 1) = 2 * (N + 1) := by
+          omega
+        rw [hexp]
+  rw [← hrewrite]
+  exact hmain
+
+/--
+For Chewi's ratio `q <= 1`, a half-bound proved at a smaller exponent remains
+true at every larger exponent.  This is the monotonicity bridge needed by the
+finite-dimensional slack route.
+-/
+theorem chewi45GeometricRatio_pow_le_half_of_exponent_le
+    {kappa : ℝ} (hkappa : 1 ≤ kappa) {m n : ℕ}
+    (hmn : m ≤ n)
+    (hm_half : (chewi45GeometricRatio kappa) ^ m ≤ (1 / 2 : ℝ)) :
+    (chewi45GeometricRatio kappa) ^ n ≤ (1 / 2 : ℝ) := by
+  have hq_nonneg : 0 ≤ chewi45GeometricRatio kappa :=
+    chewi45GeometricRatio_nonneg hkappa
+  have hq_le_one : chewi45GeometricRatio kappa ≤ 1 :=
+    chewi45GeometricRatio_le_one kappa
+  exact (pow_le_pow_of_le_one hq_nonneg hq_le_one hmn).trans hm_half
+
+/--
+Boundary-condition wrapper for the finite slack route: it is enough to prove
+`q^M <= 1/2` for any `M` below the available finite-boundary exponent.
+-/
+theorem chewi45_half_boundary_condition_of_exponent_le
+    {kappa : ℝ} (hkappa : 1 ≤ kappa) {d N M : ℕ}
+    (hM_le : M ≤ 2 * d + 2 - 2 * (N + 1))
+    (hM_half : (chewi45GeometricRatio kappa) ^ M ≤ (1 / 2 : ℝ)) :
+    (chewi45GeometricRatio kappa) ^
+        (2 * d + 2 - 2 * (N + 1)) ≤ (1 / 2 : ℝ) :=
+  chewi45GeometricRatio_pow_le_half_of_exponent_le
+    (kappa := kappa) hkappa hM_le hM_half
+
+/--
+Half-boundary gap bound with the boundary condition supplied at any smaller
+exponent `M`.  This is the form intended for the upcoming logarithmic
+dimension choice.
+-/
+theorem chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate_of_exponent_le
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d N M : ℕ} (hN : N < d)
+    (hM_le : M ≤ 2 * d + 2 - 2 * (N + 1))
+    (hM_half : (chewi45GeometricRatio kappa) ^ M ≤ (1 / 2 : ℝ))
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x) :
+    (alpha / 8) * (chewi45GeometricRatio kappa) ^ (2 * (N + 1)) ≤
+      strongLowerBoundChainObjective alpha beta d (x N) -
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) := by
+  have hkappa_ge : 1 ≤ kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta |>.le
+  have hboundary_half :=
+    chewi45_half_boundary_condition_of_exponent_le
+      (kappa := kappa) hkappa_ge hM_le hM_half
+  exact chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate
+    (alpha := alpha) (beta := beta) (kappa := kappa)
+    halpha_pos halpha_lt_beta hkappa (N := N) hN hboundary_half
+    (x := x) hx0 hspan
+
+/--
 Contradiction form of the direct Exercise 4.2 obstruction: an iterate whose
 gap is at most `eps` cannot exist if `eps` lies below the geometric tail lower
 bound.
@@ -1908,6 +2082,41 @@ theorem chewi45_not_near_min_of_finiteGeometricCandidate_boundary_lower_bound
     chewi45_gap_ge_geometric_boundary_of_finiteGeometricCandidate
       (alpha := alpha) (beta := beta) (kappa := kappa)
       halpha_pos halpha_lt_beta hkappa (N := N) hN
+      (x := x) hx0 hspan
+  have hgap_le :
+      strongLowerBoundChainObjective alpha beta d (x N) -
+          strongLowerBoundChainObjective alpha beta d
+            (strongLowerBoundFiniteGeometricCandidate kappa d) ≤ eps := by
+    linarith
+  linarith
+
+/--
+Contradiction form of the half-boundary finite slack corollary.
+-/
+theorem chewi45_not_near_min_of_finiteGeometricCandidate_half_boundary_lower_bound
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d N : ℕ} (hN : N < d)
+    (hboundary_half :
+      (chewi45GeometricRatio kappa) ^
+          (2 * d + 2 - 2 * (N + 1)) ≤ (1 / 2 : ℝ))
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta d (x N) ≤
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) + eps)
+    (heps_lt :
+      eps <
+        (alpha / 8) *
+          (chewi45GeometricRatio kappa) ^ (2 * (N + 1))) :
+    False := by
+  have hgap_ge :=
+    chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate
+      (alpha := alpha) (beta := beta) (kappa := kappa)
+      halpha_pos halpha_lt_beta hkappa (N := N) hN hboundary_half
       (x := x) hx0 hspan
   have hgap_le :
       strongLowerBoundChainObjective alpha beta d (x N) -

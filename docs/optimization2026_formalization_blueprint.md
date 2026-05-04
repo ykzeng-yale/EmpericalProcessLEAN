@@ -598,6 +598,21 @@ which discharge the tail lower-bound hypothesis by using the first unknown
 coordinate of the corrected finite minimizer.  The next finite route is a
 log/slack comparison from this explicit boundary factor; the exact
 source-display route still points to a true `l^2` model.
+The finite slack/log stepping stone now compiles as
+`chewi45_gap_ge_geometric_boundary_floor_of_finiteGeometricCandidate`,
+`chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate`, and
+`chewi45_not_near_min_of_finiteGeometricCandidate_half_boundary_lower_bound`.
+Reuse these for the finite route: it now suffices to prove the dimension
+condition `q^(2*d+2-2*(N+1)) <= 1/2` and then translate the resulting
+`(alpha/8) * q^(2*(N+1))` obstruction into the logarithmic iteration lower
+bound.
+The monotone-exponent bridge now compiles as
+`chewi45GeometricRatio_pow_le_half_of_exponent_le`,
+`chewi45_half_boundary_condition_of_exponent_le`, and
+`chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate_of_exponent_le`.
+So the next finite proof may target any convenient
+`M <= 2*d+2-2*(N+1)` with `q^M <= 1/2`, rather than the exact boundary
+exponent directly.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
