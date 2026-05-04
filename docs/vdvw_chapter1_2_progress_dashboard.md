@@ -575,6 +575,15 @@ and `VdVWOuterProbabilityUniformDeviationConstOn_of_finite_indexClass_canonical`
 The route now reaches the finite-product uniform-deviation conclusion under
 the full-subgraph/canonical and finite-class/canonical hypotheses, while the
 exact in-mean and a.s. textbook conclusions remain pending.
+2026-05-04 `/goal` follow-up: the finite-product uniform-deviation conclusion
+now also feeds the fixed infinite iid-process outer-probability GC predicate.
+New compiled declarations are
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_uniformDeviationConstOn_canonical`,
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical`,
+and `VdVWOuterProbabilityPGlivenkoCantelliClass_of_finite_indexClass_canonical`.
+The bridge uses `vdVWInfiniteProductMeasure_measurePreserving_firstNSample`
+and mathlib `Measure.le_map_apply`, so it works for arbitrary outer bad events
+without requiring measurable bad-event sets.
 2026-05-04 follow-up: the in-mean adapter layer has started.  New compiled
 declarations are
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`

@@ -2812,6 +2812,22 @@ reused mathlib `abs_integral_le_integral_abs`, `integral_mono`, and
 `Finset.abs_sum_le_sum_abs`, together with the local envelope and weighted
 sample-sum APIs.
 
+2026-05-04 `/goal` follow-up: the finite-product GC bridge now transfers to
+the fixed infinite iid sample-space predicate used by the local book-style
+`P`-Glivenko-Cantelli definition.  New compiled declarations are
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_uniformDeviationConstOn_canonical`,
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical`,
+and `VdVWOuterProbabilityPGlivenkoCantelliClass_of_finite_indexClass_canonical`.
+Search/reuse record: local `PMeasurable.lean` already had
+`vdVWFirstNSample`, `measurable_vdVWFirstNSample`, and
+`vdVWInfiniteProductMeasure_measurePreserving_firstNSample`; pinned mathlib
+`MeasureTheory/Measure/Map.lean` supplies `Measure.le_map_apply`, which gives
+the needed domination for arbitrary, possibly nonmeasurable, uniform-deviation
+bad events.  This closes the finite-product-to-fixed-iid outer-probability
+bridge without adding a measurability assumption.  Remaining Theorem 2.4.3
+work is still the exact general structural entropy/full-subgraph alignment and
+the almost-sure reverse/cofiltration Lemma 2.4.5 route.
+
 2026-05-04 follow-up: the first in-mean Theorem 2.4.3 adapter is now compiled.
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`
 specializes the existing varying-domain tail/UI mean theorem

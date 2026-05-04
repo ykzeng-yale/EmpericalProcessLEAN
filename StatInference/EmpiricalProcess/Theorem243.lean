@@ -2601,6 +2601,70 @@ def VdVWOuterProbabilityUniformDeviationConstOn
       atTop (𝓝 0)
 
 /--
+Finite-product outer-probability uniform-deviation convergence transfers to
+the canonical infinite iid process by projecting the first `n` coordinates.
+
+The key point is that `Measure.le_map_apply` works for arbitrary bad events,
+so this bridge does not add a measurability side condition on the uniform
+deviation event.
+-/
+theorem
+    VdVWOuterProbabilityPGlivenkoCantelliClass_of_uniformDeviationConstOn_canonical
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hconst : VdVWOuterProbabilityUniformDeviationConstOn P indexClass classFun) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i) := by
+  classical
+  intro tolerance htolerance
+  have hfinite := hconst tolerance htolerance
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (𝓝 0) from
+        tendsto_const_nhds)
+      hfinite
+      (Eventually.of_forall fun _ => bot_le)
+      ?_
+  refine Eventually.of_forall fun n => ?_
+  let badFinite : Set (SampleAt Observation n) :=
+    {sample : SampleAt Observation n |
+      ¬ EmpiricalDeviationBoundOn indexClass
+        (fun index => populationRiskOfFunction P (classFun index))
+        (fun index => empiricalAverage sample (classFun index))
+        tolerance}
+  have hpre :
+      {sequence : ℕ -> Observation |
+        ¬ EmpiricalDeviationBoundOn indexClass
+          (fun index => populationRiskOfFunction P (classFun index))
+          (fun index =>
+            empiricalAverage
+              (samplePath (fun i sequence => sequence i) sequence n)
+              (classFun index))
+          tolerance} =
+        (vdVWFirstNSample (Observation := Observation) n) ⁻¹' badFinite := by
+    ext sequence
+    have hsample :
+        samplePath (fun i sequence => sequence i) sequence n =
+          vdVWFirstNSample (Observation := Observation) n sequence := by
+      funext i
+      rfl
+    simp [badFinite, hsample]
+  dsimp [VdVWOuterProbability]
+  rw [hpre]
+  calc
+    (vdVWInfiniteProductMeasure P)
+        ((vdVWFirstNSample (Observation := Observation) n) ⁻¹' badFinite)
+        ≤
+          Measure.map (vdVWFirstNSample (Observation := Observation) n)
+            (vdVWInfiniteProductMeasure P) badFinite :=
+            Measure.le_map_apply (measurable_vdVWFirstNSample n).aemeasurable
+              badFinite
+    _ = (vdVWProductMeasure P n) badFinite := by
+          rw [(vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n).map_eq]
+
+/--
 For positive sample sizes, the centered `1/n` weighted sample sum is the
 empirical average minus the population mean.
 -/
@@ -24226,6 +24290,42 @@ theorem
         hvc hindexClass henvelope hclass henv henv_integrable
 
 /--
+Canonical full-subgraph Theorem 2.4.3 route as a fixed infinite iid-process
+outer-probability `P`-Glivenko-Cantelli statement.
+
+This consumes the finite-product conclusion through the first-coordinate
+projection bridge above, matching the fixed sample-space shape used in the
+book's process-level definitions.
+-/
+theorem
+    VdVWOuterProbabilityPGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i) := by
+  exact
+    VdVWOuterProbabilityPGlivenkoCantelliClass_of_uniformDeviationConstOn_canonical
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (VdVWOuterProbabilityUniformDeviationConstOn_of_fullSubgraph_integrable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable)
+
+/--
 Canonical full-subgraph Theorem 2.4.3 in-mean route.
 
 This removes the auxiliary Rademacher and sample-path choices from the
@@ -24514,6 +24614,34 @@ theorem
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
         henv_integrable
+
+/--
+Canonical finite-class Theorem 2.4.3 route as a fixed infinite iid-process
+outer-probability `P`-Glivenko-Cantelli statement.
+-/
+theorem
+    VdVWOuterProbabilityPGlivenkoCantelliClass_of_finite_indexClass_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i) := by
+  exact
+    VdVWOuterProbabilityPGlivenkoCantelliClass_of_uniformDeviationConstOn_canonical
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (VdVWOuterProbabilityUniformDeviationConstOn_of_finite_indexClass_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
+        henv_integrable)
 
 /--
 Canonical finite-class Theorem 2.4.3 in-mean route.

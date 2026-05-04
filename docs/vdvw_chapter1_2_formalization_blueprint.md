@@ -938,8 +938,16 @@ above, so they do not change the theorem-level dashboard counts.
    and `VdVWOuterProbabilityUniformDeviationConstOn_of_finite_indexClass_canonical`.
    The supporting boundedness lemma
    `bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope` uses
-   sample-dependent envelope values plus the envelope integral, so it does not
-   require a bounded envelope.
+   only the finite observed envelope values and `∫ envelope dP`, not a global
+   bounded-envelope hypothesis.  The finite-product conclusion now also
+   transfers to the fixed canonical iid sample space through
+   `VdVWOuterProbabilityPGlivenkoCantelliClass_of_uniformDeviationConstOn_canonical`,
+   consumed by
+   `VdVWOuterProbabilityPGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical`
+   and
+   `VdVWOuterProbabilityPGlivenkoCantelliClass_of_finite_indexClass_canonical`.
+   This uses the existing first-`n` coordinate law and mathlib
+   `Measure.le_map_apply`, so no measurable-bad-event assumption is introduced.
    The in-mean bridge has also started: the generic adapter
    `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`
    and the full-subgraph consumer
