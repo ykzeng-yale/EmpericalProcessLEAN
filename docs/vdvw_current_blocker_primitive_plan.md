@@ -2355,3 +2355,28 @@ floor/rounding API or a supplied finite grid with a proof that every truncated
 sample value is within `epsilon / 2` of a decoded cell representative.  After
 that, prove or honestly package the VC/subgraph/grid cardinality estimate that
 keeps normalized log cardinalities negligible for Theorem 2.4.3.
+
+2026-05-04 `/goal` update after nearest-integer rounding bridge:
+`CoveringPrimitive.lean` now imports mathlib's rounding API and adds
+`abs_sub_mul_round_div_le_half`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_roundingQuantizer_card_le`,
+and
+`empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_card_le`.
+The scalar quantizer is now concretely instantiated as
+`round (x / epsilon)` with decoder `epsilon * code`, and mathlib's nearest
+integer theorem proves the decoding error is at most `epsilon / 2`.
+
+Search record: pinned mathlib search found `round`, `round_eq`,
+`round_eq_iff`, and `abs_sub_round` in `Mathlib.Algebra.Order.Round`, plus
+floor/ceil support in `Mathlib.Algebra.Order.Floor.Ring`.  The proof reuses
+`abs_sub_round` and elementary field arithmetic to establish
+`|x - epsilon * round (x / epsilon)| <= epsilon / 2`.  No prior local theorem
+connected this rounding quantizer to empirical `L1(P_n)` covers.
+
+Next exact theorem-facing edit: prove finite code-set membership and a usable
+cardinality estimate for the integer rounding codes under bounded truncated
+values, e.g. by bounding `round (x / epsilon)` inside a finite integer interval
+when `|x| <= M`, then feeding the resulting finite interval/cardinality bound
+into the selected fixed-radius Theorem 2.4.3 side-condition package.  The
+remaining major theorem gap is still the VC/subgraph/grid cardinality control,
+not the nearest-integer rounding error.

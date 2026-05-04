@@ -1,4 +1,5 @@
 import Mathlib.Data.Fintype.Pi
+import Mathlib.Algebra.Order.Round
 import Mathlib.Topology.MetricSpace.CoveringNumbers
 import StatInference.EmpiricalProcess.Average
 
@@ -1667,6 +1668,93 @@ theorem empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_decode_error_
           exact
             abs_sub_le_of_abs_sub_decode_le_half
               (hdecode_close index hindex sampleIndex) hcenter_close)
+      hcard_le
+
+/--
+Rounding to the nearest multiple of a positive grid step has decoding error at
+most half the step.
+-/
+theorem abs_sub_mul_round_div_le_half
+    {x step : ℝ} (hstep_pos : 0 < step) :
+    |x - step * (round (x / step) : ℝ)| ≤ step / 2 := by
+  have hstep_ne : step ≠ 0 := ne_of_gt hstep_pos
+  calc
+    |x - step * (round (x / step) : ℝ)|
+        = |step * (x / step - (round (x / step) : ℝ))| := by
+          field_simp [hstep_ne]
+    _ = step * |x / step - (round (x / step) : ℝ)| := by
+      rw [abs_mul, abs_of_pos hstep_pos]
+    _ ≤ step * (1 / 2) :=
+      mul_le_mul_of_nonneg_left (abs_sub_round (x / step))
+        hstep_pos.le
+    _ = step / 2 := by ring
+
+/--
+Padded-cardinality empirical cover from coordinatewise nearest-integer
+rounding at grid step `epsilon`.  The finite code-set membership and product
+cardinality bound are kept explicit; the rounding decoding error is proved
+from mathlib's `Int.abs_sub_round`.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_roundingQuantizer_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (codeSets : Fin n -> Finset ℤ)
+    (hepsilon_pos : 0 < epsilon)
+    (hround_mem :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          round (classFun index (sample sampleIndex) / epsilon) ∈
+            codeSets sampleIndex)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le :
+      (∏ sampleIndex : Fin n, (codeSets sampleIndex).card) ≤ cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  exact
+    nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_scalarQuantizer_decode_error_card_le
+      (fun _sampleIndex x => round (x / epsilon))
+      (fun _sampleIndex code => epsilon * (code : ℝ))
+      codeSets hround_mem
+      (fun index hindex sampleIndex =>
+        abs_sub_mul_round_div_le_half
+          (x := classFun index (sample sampleIndex))
+          (step := epsilon) hepsilon_pos)
+      hepsilon_pos.le
+      hindexClass hcard_le
+
+/--
+Numeric empirical-covering-number bound from coordinatewise nearest-integer
+rounding at grid step `epsilon`.
+-/
+theorem empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (codeSets : Fin n -> Finset ℤ)
+    (hepsilon_pos : 0 < epsilon)
+    (hround_mem :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          round (classFun index (sample sampleIndex) / epsilon) ∈
+            codeSets sampleIndex)
+    (hcard_le :
+      (∏ sampleIndex : Fin n, (codeSets sampleIndex).card) ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_decode_error_card_le
+      (fun _sampleIndex x => round (x / epsilon))
+      (fun _sampleIndex code => epsilon * (code : ℝ))
+      codeSets hround_mem
+      (fun index hindex sampleIndex =>
+        abs_sub_mul_round_div_le_half
+          (x := classFun index (sample sampleIndex))
+          (step := epsilon) hepsilon_pos)
+      hepsilon_pos.le
       hcard_le
 
 /--

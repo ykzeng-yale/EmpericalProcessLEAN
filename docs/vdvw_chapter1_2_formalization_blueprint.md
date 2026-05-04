@@ -819,6 +819,11 @@ above, so they do not change the theorem-level dashboard counts.
    `empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_decode_error_card_le`
    is now the intended grid interface: it is enough to prove every sampled
    value lies within `epsilon / 2` of its decoded representative.  The
+   nearest-integer rounding bridge
+   `empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_card_le`
+   now instantiates this interface with `round (x / epsilon)` and decoder
+   `epsilon * code`, leaving finite integer-code membership and cardinality
+   as the next inputs.  The
    remaining theorem-facing work is the actual bounded quantization/grid code
    and the nontrivial VC/subgraph/grid cardinality estimate, not this finite
    product-code plumbing.

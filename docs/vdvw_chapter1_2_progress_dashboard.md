@@ -384,6 +384,12 @@ abstract quantizer-to-cover reduction.
 The next proof target should instantiate this with actual finite grid cells for
 bounded truncated values and then prove the theorem-facing cardinality bound.
 
+2026-05-04 follow-up: nearest-integer rounding is now connected to empirical
+covers by
+`empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_card_le`.
+The next target is finite integer-code interval membership/cardinality under
+bounded truncated values, then VC/subgraph/grid cardinality control.
+
 ## Verification Monitor
 
 Latest targeted verification includes the selected terminal/truncated
