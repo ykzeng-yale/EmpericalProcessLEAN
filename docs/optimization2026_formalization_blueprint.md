@@ -397,6 +397,7 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_ge_of_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_le_full`
 - `StatInference.Optimization.lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory`
 - `StatInference.Optimization.lowerBoundChainObjective_gap_ge_two_mul_add_one`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_ge_of_gradientSpanTrajectory`
@@ -432,7 +433,9 @@ turn the edge-difference bridge into a full objective-gradient/convexity
 package.  The shifted-chain objective is now connected to the exact unshifted
 textbook display by `lowerBoundChainTextbookObjective`; its minimizer value is
 `-(β / 8) * (1 - 1 / (d + 1))`, and the finite-dimensional plus `d = 2N + 1`
-gap estimates have source-objective wrappers.
+gap estimates have source-objective wrappers.  The textbook `(f_n)_*` step is
+also available directly as
+`lowerBoundChainTextbookObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 

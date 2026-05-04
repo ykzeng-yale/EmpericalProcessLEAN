@@ -202,6 +202,8 @@ the whole-space differentiable case:
   minimizer value
   `lowerBoundChainTextbookObjective_lowerBoundChainMinimizer`, global minimizer
   theorem `lowerBoundChainTextbookObjective_isMinOn_lowerBoundChainMinimizer`,
+  direct `(f_N)_*` lower-bound theorem
+  `lowerBoundChainTextbookObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`,
   and source-objective wrappers for the finite-dimensional and `d = 2N + 1`
   gap estimates.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
@@ -889,6 +891,7 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_ge_of_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_le_full`
 - `StatInference.Optimization.lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory`
 - `StatInference.Optimization.lowerBoundChainObjective_gap_ge_two_mul_add_one`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_ge_of_gradientSpanTrajectory`

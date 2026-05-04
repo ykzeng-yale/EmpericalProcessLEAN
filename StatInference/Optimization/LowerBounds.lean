@@ -742,6 +742,29 @@ theorem lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule
           rw [lowerBoundChainObjective]
 
 /--
+Unshifted source-objective version of the `f_d = f_n` on `V_n` lower bound:
+points in `V_n` are bounded below by the textbook value `(f_n)_*`.
+-/
+theorem lowerBoundChainTextbookObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule
+    {beta : ℝ} (hbeta : 0 ≤ beta) {n d : ℕ} (hnd : n ≤ d)
+    {x : EuclideanSpace ℝ (Fin d)}
+    (hx : x ∈ coordinatePrefixSubmodule d n) :
+    -(beta / 8) * (1 - 1 / ((n : ℝ) + 1)) ≤
+      lowerBoundChainTextbookObjective beta d x := by
+  have hshift :
+      beta / (8 * ((n : ℝ) + 1)) ≤ lowerBoundChainObjective beta d x :=
+    lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule
+      hbeta hnd hx
+  have hden : ((n : ℝ) + 1) ≠ 0 := by positivity
+  have hleft :
+      -(beta / 8) * (1 - 1 / ((n : ℝ) + 1)) =
+        beta / (8 * ((n : ℝ) + 1)) - beta / 8 := by
+    field_simp [hden]
+    ring
+  rw [hleft, lowerBoundChainTextbookObjective]
+  exact sub_le_sub_right hshift (beta / 8)
+
+/--
 The main finite-dimensional gap estimate in Chewi Theorem 4.4 before choosing
 `d` as a multiple of `N`.
 -/
