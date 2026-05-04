@@ -50,17 +50,18 @@ runs.
 
 Current manual objective: aggressively formalize and prove the main theorem
 content of Sinho Chewi's Optimization 2026 notes in Lean under
-`StatInference/Optimization`, continuing from the current Chapter 4
-Theorem 4.5 / Exercise 4.2 lower-bound frontier.  The compiled spine already
-covers Chapter 1 minimizer/first-order bridges, Chapter 2 gradient-flow
-interfaces, Chapter 3 gradient descent through the Theorem 3.7 support layer,
-Chapter 4 Definition 4.3/Theorem 4.4 gradient-span lower bounds, the finite
-Theorem 4.5 corrected-chain route, and the infinite Exercise 4.2 direct hard
-instance through the Theorem 4.5-facing package theorem.  The current route
-should now use or factor that package to finish a source-facing Theorem 4.5
-statement, then proceed aggressively to the next main-text theorem layer in
-Chapter 5.  Search existing mathlib and local `StatInference` APIs first,
-prove the next highest-leverage theorem layer, verify with focused
+`StatInference/Optimization`, continuing from the current Chapter 5
+acceleration/conjugate-gradient frontier.  The compiled spine already covers
+Chapter 1 minimizer/first-order bridges, Chapter 2 gradient-flow interfaces,
+Chapter 3 gradient descent through the Theorem 3.7 support layer, Chapter 4
+Definition 4.3/Theorem 4.4 gradient-span lower bounds, the finite Theorem 4.5
+corrected-chain route, and the infinite Exercise 4.2 direct hard instance
+through the Theorem 4.5-facing package theorem.  The current route should now
+build the Chapter 5 quadratic/CG layer: reuse the new quadratic objective
+oracle substrate, formalize the Krylov subspace and CG optimality interfaces,
+then push toward Lemma 5.1, Theorem 5.3 termination, and Theorem 5.4
+accelerated convergence.  Search existing mathlib and local `StatInference`
+APIs first, prove the next highest-leverage theorem layer, verify with focused
 `lake env lean`, targeted `lake build StatInference`, proof-hole and secret
 scans, update this route state, and commit/push clean verified progress.  Keep
 main-text theorem coverage as the priority; exercise statements and exercise
@@ -1376,6 +1377,33 @@ the newest witness layer also compiles `coordinateTailSq`,
 not repeat these.  The remaining missing theorem content is the logarithmic
 iteration-count/rate assembly or the direct Exercise 4.2 geometric tail
 argument, not the already solved Lemma 4.2 or obstruction bookkeeping.
+
+Chapter 5 current active target: the next aggressive lane is the quadratic
+case and conjugate-gradient method around markdown lines 950-1070.  The new
+module `StatInference/Optimization/ConjugateGradient.lean` starts the reusable
+quadratic substrate with `quadraticObjective`, `quadraticGradient`,
+`IsSelfAdjointOperator`, `QuadraticFormLowerBound`,
+`QuadraticFormUpperBound`, `quadraticGradient_eq_zero_iff`,
+`continuous_quadraticObjective`,
+`quadraticObjective_eq_model_add_quadratic`,
+`quadraticObjective_firstOrderStrongConvexOn`,
+`quadraticObjective_smoothWithGradientOn`,
+`quadraticObjective_oracle_package`, and
+`quadraticObjective_isMinOn_of_apply_eq`.  Search-first result: mathlib has
+continuous linear maps, `continuous_id.inner`, `Continuous.inner`,
+`real_inner_comm`, and self-adjoint/positive operator APIs under
+`Analysis/InnerProductSpace/Positive.lean`; the current substrate deliberately
+uses supplied quadratic-form bounds so it can reuse local
+`FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and minimizer wrappers
+without waiting for a full spectral theorem bridge.  Next target: define the
+Chapter 5 `A`-inner product/norm interface, Krylov subspaces
+`span {p0, A p0, ..., A^n p0}`, and a supplied CG-state recurrence/optimality
+interface strong enough to prove Lemma 5.1 and then Theorem 5.3.  For Theorem
+5.4, first package the textbook proof assumptions explicitly: CG descent
+comparison against one GD step, gradient orthogonality, finite sum of squared
+gradients, Cauchy-Schwarz, and the restart/halving argument.  Do not redo the
+Chapter 3 descent lemma, Chapter 4 gradient-span interfaces, or Chapter 4
+hard-instance packages.
 
 Chapter 2 route context is still available but no longer the active target:
 The route
