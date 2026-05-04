@@ -1059,13 +1059,21 @@ The half-boundary monotonicity bridge now also compiles:
 These let the log/dimension proof establish `q^M <= 1/2` for any convenient
 smaller exponent `M <= 2*d+2-2*(N+1)` and then reuse the compiled finite gap
 bound.
+The exponent-bridge near-minimality layer now also compiles:
+`chewi45_not_near_min_of_finiteGeometricCandidate_half_boundary_lower_bound_of_exponent_le`
+and
+`chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_exponent_le`.
+The latter is the preferred next input for iteration conversion: under the
+finite `M` half-bound, any `eps`-near iterate forces
+`(alpha/8) * q^(2*(N+1)) <= eps`.
 Search/source correction: Exercise 4.2 is stated for an infinite-dimensional
 `R^infty` chain, and scalar checks of the finite corrected truncation show the
 literal `q^(2N)` tail factor is approached from below rather than true for all
 finite `d` without extra slack.  The next atomic target is therefore either a
-dimension/log proof producing a convenient `M` with `q^M <= 1/2` plus
-iteration-count conversion, or a true `l^2`/infinite-sequence model where the
-exact Exercise 4.2 tail identity should hold.  Then convert the resulting
+dimension/log proof producing a convenient `M` with `q^M <= 1/2`, then convert
+`(alpha/8) * q^(2*(N+1)) <= eps` into an iteration lower bound; alternate route:
+a true `l^2`/infinite-sequence model where the exact Exercise 4.2 tail
+identity should hold.  Then convert the resulting
 geometric obstruction into the logarithmic iteration lower bound.  The
 reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` remains an alternate

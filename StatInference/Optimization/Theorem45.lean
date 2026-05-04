@@ -2125,5 +2125,74 @@ theorem chewi45_not_near_min_of_finiteGeometricCandidate_half_boundary_lower_bou
     linarith
   linarith
 
+/--
+Contradiction form of the half-boundary finite slack corollary, with the
+half-bound supplied at any smaller exponent `M`.  This is the final wrapper
+needed before proving the logarithmic power estimate.
+-/
+theorem chewi45_not_near_min_of_finiteGeometricCandidate_half_boundary_lower_bound_of_exponent_le
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d N M : ℕ} (hN : N < d)
+    (hM_le : M ≤ 2 * d + 2 - 2 * (N + 1))
+    (hM_half : (chewi45GeometricRatio kappa) ^ M ≤ (1 / 2 : ℝ))
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta d (x N) ≤
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) + eps)
+    (heps_lt :
+      eps <
+        (alpha / 8) *
+          (chewi45GeometricRatio kappa) ^ (2 * (N + 1))) :
+    False := by
+  have hgap_ge :=
+    chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate_of_exponent_le
+      (alpha := alpha) (beta := beta) (kappa := kappa)
+      halpha_pos halpha_lt_beta hkappa (N := N) (M := M)
+      hN hM_le hM_half (x := x) hx0 hspan
+  have hgap_le :
+      strongLowerBoundChainObjective alpha beta d (x N) -
+          strongLowerBoundChainObjective alpha beta d
+            (strongLowerBoundFiniteGeometricCandidate kappa d) ≤ eps := by
+    linarith
+  linarith
+
+/--
+Positive near-minimality form of the finite half-boundary obstruction with a
+smaller exponent `M`: any `eps`-near iterate must dominate the geometric
+finite-slack lower bound.
+-/
+theorem chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_exponent_le
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d N M : ℕ} (hN : N < d)
+    (hM_le : M ≤ 2 * d + 2 - 2 * (N + 1))
+    (hM_half : (chewi45GeometricRatio kappa) ^ M ≤ (1 / 2 : ℝ))
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta d (x N) ≤
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) + eps) :
+    (alpha / 8) *
+        (chewi45GeometricRatio kappa) ^ (2 * (N + 1)) ≤ eps := by
+  have hgap_ge :=
+    chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate_of_exponent_le
+      (alpha := alpha) (beta := beta) (kappa := kappa)
+      halpha_pos halpha_lt_beta hkappa (N := N) (M := M)
+      hN hM_le hM_half (x := x) hx0 hspan
+  have hgap_le :
+      strongLowerBoundChainObjective alpha beta d (x N) -
+          strongLowerBoundChainObjective alpha beta d
+            (strongLowerBoundFiniteGeometricCandidate kappa d) ≤ eps := by
+    linarith
+  exact hgap_ge.trans hgap_le
+
 end Optimization
 end StatInference

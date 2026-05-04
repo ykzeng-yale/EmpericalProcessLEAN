@@ -613,6 +613,13 @@ The monotone-exponent bridge now compiles as
 So the next finite proof may target any convenient
 `M <= 2*d+2-2*(N+1)` with `q^M <= 1/2`, rather than the exact boundary
 exponent directly.
+The near-minimality wrappers now compile as
+`chewi45_not_near_min_of_finiteGeometricCandidate_half_boundary_lower_bound_of_exponent_le`
+and
+`chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_exponent_le`.
+The positive form should be reused for the next iteration-count conversion:
+it packages the finite route as `(alpha/8) * q^(2*(N+1)) <= eps` from any
+`eps`-near iterate.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
