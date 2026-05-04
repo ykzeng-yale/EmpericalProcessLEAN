@@ -1516,10 +1516,32 @@ now started in `StatInference/Optimization/Theorem54.lean`.
 displayed descent-sum bound: any CG-like step competitive with the `1 / beta`
 gradient-descent trial step inherits the Lemma 3.1 telescoped squared-gradient
 bound `(1 / (2 * beta)) * sum ||grad x_n||^2 <= f x_0 - fstar`.
-Next target: package the second half of Theorem 5.4, namely gradient
-orthogonality plus Cauchy-Schwarz/strong-convexity radius to get
-`N * gap_N <= 2 * sqrt(kappa) * initial_gap`, then the restart/halving
-argument.  Do not redo Theorem 5.3's A-conjugacy induction, the Chapter 3
+The newest Theorem 5.4 packet adds
+`chewi54_gradient_sq_sum_le_two_beta_gap`,
+`chewi54_gap_sum_le_inner_gradient_sum`,
+`chewi54_gap_sum_le_norm_gradient_sum`,
+`norm_sq_sum_range_eq_sum_norm_sq_of_pairwise_orthogonal`,
+`norm_sum_range_le_sqrt_sum_norm_sq_of_pairwise_orthogonal`,
+`chewi54_gap_sum_le_sqrt_sum_norm_sq_mul_dist`,
+`chewi54_gap_sum_le_sqrt_product_bound`,
+`chewi54_gap_sum_le_sqrt_product_bound_of_competitive_step`,
+`chewi54_dist_initial_le_sqrt_gap_of_firstOrderStrongConvexOn`, and
+`chewi54_gap_sum_le_sqrt_product_bound_of_firstOrderStrongConvexOn`.
+The scalar/rate close-out now also compiles as
+`chewi54_sqrt_product_bound_le_conditioned_gap`,
+`chewi54_gap_sum_le_two_sqrt_condition_mul_gap_of_firstOrderStrongConvexOn`,
+and `chewi54_iteration_le_four_sqrt_condition_of_not_halved`.
+This proves the source pre-halving chain through
+`N * gap_N <= sqrt(2 * beta * initial_gap) *
+sqrt(2 * initial_gap / alpha)` from competitive steps, first-order strong
+convexity, gradient orthogonality, and the first-order/orthogonality gap
+comparison, simplifies it to the readable
+`N * gap_N <= 2 * sqrt(beta / alpha) * initial_gap`, and proves the halving
+algebra `gap_N >= gap_0 / 2 -> N <= 4 * sqrt(beta / alpha)`.  Next target:
+assemble a source-facing CG Theorem 5.4 wrapper by proving or packaging the
+competitive-step hypothesis, monotone-gap hypothesis, and first-order/
+orthogonality gap comparison from the displayed CG affine-minimizer/search-span
+interfaces.  Do not redo Theorem 5.3's A-conjugacy induction, the Chapter 3
 descent lemma, Chapter 4 gradient-span interfaces, or Chapter 4 hard-instance
 packages.
 

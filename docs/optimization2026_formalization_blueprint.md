@@ -1016,11 +1016,31 @@ The Theorem 5.4 lane now starts in
 `StatInference/Optimization/Theorem54.lean`:
 
 - `StatInference.Optimization.chewi54_gradient_sq_sum_bound_of_competitive_step`
+- `StatInference.Optimization.chewi54_gradient_sq_sum_le_two_beta_gap`
+- `StatInference.Optimization.chewi54_gap_sum_le_inner_gradient_sum`
+- `StatInference.Optimization.chewi54_gap_sum_le_norm_gradient_sum`
+- `StatInference.Optimization.norm_sq_sum_range_eq_sum_norm_sq_of_pairwise_orthogonal`
+- `StatInference.Optimization.norm_sum_range_le_sqrt_sum_norm_sq_of_pairwise_orthogonal`
+- `StatInference.Optimization.chewi54_gap_sum_le_sqrt_sum_norm_sq_mul_dist`
+- `StatInference.Optimization.chewi54_gap_sum_le_sqrt_product_bound`
+- `StatInference.Optimization.chewi54_gap_sum_le_sqrt_product_bound_of_competitive_step`
+- `StatInference.Optimization.chewi54_dist_initial_le_sqrt_gap_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi54_gap_sum_le_sqrt_product_bound_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi54_sqrt_product_bound_le_conditioned_gap`
+- `StatInference.Optimization.chewi54_gap_sum_le_two_sqrt_condition_mul_gap_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi54_iteration_le_four_sqrt_condition_of_not_halved`
 
 This compiles the source descent comparison against the `1 / beta` gradient
 step and telescopes the Lemma 3.1 decrease to the finite squared-gradient sum
-bound.  The next Theorem 5.4 target is the orthogonality/Cauchy-Schwarz
-estimate and the restart/halving conversion.
+bound.  The newest layer also proves the summed first-order/orthogonality
+inequality, Cauchy-Schwarz wrapper, finite Pythagoras identity for pairwise
+orthogonal gradients, strong-convexity radius estimate, and the source
+pre-halving product bound, then simplifies it to
+`2 * sqrt(beta / alpha) * initial_gap` and proves the restart/halving
+iteration-count conversion.  The next Theorem 5.4 target is a source-facing CG
+wrapper that derives the competitive-step, monotone-gap, and first-order/
+orthogonality hypotheses from the displayed affine-minimizer/search-span
+interfaces.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
