@@ -370,12 +370,23 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainNode`
 - `StatInference.Optimization.lowerBoundChainEdge`
+- `StatInference.Optimization.lowerBoundChainDirectionNode`
+- `StatInference.Optimization.lowerBoundChainDirectionEdge`
+- `StatInference.Optimization.lowerBoundChainEdge_sub`
+- `StatInference.Optimization.lowerBoundChainEdge_add_direction`
 - `StatInference.Optimization.finSum_forwardDifference`
 - `StatInference.Optimization.lowerBoundChainEdge_sum`
 - `StatInference.Optimization.lowerBoundChainObjective`
+- `StatInference.Optimization.lowerBoundChainObjective_add_direction`
+- `StatInference.Optimization.lowerBoundChainDirectionEnergy_nonneg`
+- `StatInference.Optimization.lowerBoundChainObjective_add_direction_ge_linear`
+- `StatInference.Optimization.lowerBoundChainObjective_ge_linear`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_add_direction`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_ge_linear`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_eq_objective_gap`
 - `StatInference.Optimization.lowerBoundChainGradient_eq_edgeDifference`
+- `StatInference.Optimization.inner_lowerBoundChainGradient_eq_edgeDifference_sum`
 - `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainMinimizer`
@@ -423,7 +434,19 @@ interface.  Search found and reused mathlib's `sq_sum_le_card_mul_sum_sq` for
 the Cauchy step, mathlib's `isMinOn_univ_iff` for the global minimizer
 wrapper, and `Finset.sum_map` plus
 `Finset.sum_le_sum_of_subset_of_nonneg` to compare prefix edge energy with the
-full chain energy.  The source step `f_d = f_N` on `V_N` is now packaged as
+full chain energy.  The objective-gradient/smoothness package has now started:
+`lowerBoundChainDirectionNode` and `lowerBoundChainDirectionEdge` model
+homogeneous zero-boundary direction chains; `lowerBoundChainEdge_sub` and
+`lowerBoundChainEdge_add_direction` prove exact edge residual updates;
+`lowerBoundChainObjective_add_direction` gives the exact quadratic expansion;
+the nonnegative remainder gives edge-coordinate first-order lower models for
+both shifted and unshifted objectives; and
+`inner_lowerBoundChainGradient_eq_edgeDifference_sum` connects the compiled
+tridiagonal gradient to its coordinate inner-product sum.  The next missing
+steps are the summation-by-parts identity equating the edge-linear term with
+`inner (lowerBoundChainGradient beta d x) v`, plus the uniform direction-energy
+upper bound needed for the source `β`-smoothness display.  The source step
+`f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
 `lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory` proves the main
 finite-dimensional gap estimate before choosing `d` as a multiple of `N`.

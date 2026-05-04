@@ -865,12 +865,23 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainNode`
 - `StatInference.Optimization.lowerBoundChainEdge`
+- `StatInference.Optimization.lowerBoundChainDirectionNode`
+- `StatInference.Optimization.lowerBoundChainDirectionEdge`
+- `StatInference.Optimization.lowerBoundChainEdge_sub`
+- `StatInference.Optimization.lowerBoundChainEdge_add_direction`
 - `StatInference.Optimization.lowerBoundChainObjective`
+- `StatInference.Optimization.lowerBoundChainObjective_add_direction`
+- `StatInference.Optimization.lowerBoundChainDirectionEnergy_nonneg`
+- `StatInference.Optimization.lowerBoundChainObjective_add_direction_ge_linear`
+- `StatInference.Optimization.lowerBoundChainObjective_ge_linear`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_add_direction`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_ge_linear`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_eq_objective_gap`
 - `StatInference.Optimization.finSum_forwardDifference`
 - `StatInference.Optimization.lowerBoundChainEdge_sum`
 - `StatInference.Optimization.lowerBoundChainGradient_eq_edgeDifference`
+- `StatInference.Optimization.inner_lowerBoundChainGradient_eq_edgeDifference_sum`
 - `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainMinimizer`
@@ -919,11 +930,20 @@ already compiled, so do not spend another run there unless strengthening the
 continuity hypotheses materially advances the analytic route.  For Chapter 4,
 reuse `LowerBounds.lean`'s single gradient-span/oracle model, the compiled
 `coordinatePrefixSubmodule` induction, and `lowerBoundChainGradient`
-support/minimizer/norm/objective-value/global-minimizer theorems.  Search mathlib
-basis/coordinate, matrix, PSD, derivative, smoothness, finite-sum telescoping,
-and Cauchy APIs before proving the full objective-gradient bridge,
-convex/smooth facts, or the final source-report packaging around the compiled
-Theorem 4.4 declarations.
+support/minimizer/norm/objective-value/global-minimizer theorems.  The current
+Chapter 4 algebra package now has zero-boundary direction nodes/edges, exact
+edge residual subtraction/addition, exact shifted and source-objective
+quadratic expansions, nonnegative quadratic remainders, edge-coordinate
+first-order lower models, and the coordinate-sum form of the inner product
+with `lowerBoundChainGradient`.  Next aggressive Chapter 4 blockers are:
+prove the summation-by-parts identity turning the edge-linear term into
+`inner ℝ (lowerBoundChainGradient beta d x) v`, prove the uniform
+direction-energy bound needed for the displayed Hessian/smoothness estimate,
+then package source convexity and `β`-smoothness for Theorem 4.4.  Search
+mathlib basis/coordinate, matrix, PSD, derivative, smoothness,
+finite-sum telescoping, and Cauchy APIs before proving the full
+objective-gradient bridge, convex/smooth facts, or the final source-report
+packaging around the compiled Theorem 4.4 declarations.
 Continue
 deferring exercise proofs except where an exercise statement is needed as a
 temporary interface for a main-text theorem; such exercise material belongs
