@@ -138,7 +138,12 @@ blocker for the whole-space differentiable case:
 - Corollary 2.8 now compiles in `StatInference/Optimization/Theorem28.lean`:
   the integrated Lemma 2.1 identity, squared-gradient integral bound, average
   bound, interval lower-bound principle, and source square-root minimum form
-  from an `IsMinOn` representative over `[0,t]`.
+  from an `IsMinOn` representative over `[0,t]`.  The compactness/continuity
+  bridge also now compiles: `chewi28_exists_grad_norm_le_of_continuousOn_norm`
+  discharges both the minimizer and interval-integrability hypotheses from
+  continuity of `s ↦ ‖grad (x s)‖` on `[0,t]`, and
+  `chewi28_exists_grad_norm_le_of_continuousOn_grad` derives that continuity
+  from the gradient-oracle trajectory.
 
 - Lemma 3.5 discrete Gronwall has both zero-based finite-sum and source-shaped
   one-based display wrappers in `StatInference/Optimization/DiscreteGronwall.lean`.
@@ -336,7 +341,10 @@ mathlib APIs for the remaining analytic route are `Filter.Tendsto`,
 `isCompact_Icc`.  The next proof step should discharge
 `PLGradientFlowLimitRouteToQGOn` from an explicit gradient-flow convergence
 and Lyapunov-monotonicity theorem, or instantiate Corollary 2.8's
-`IsMinOn` hypothesis from continuity on `[0,t]`.
+`IsMinOn` hypothesis from continuity on `[0,t]`.  The latter compactness step
+is now done using `isCompact_Icc.exists_isMinOn` and
+`ContinuousOn.intervalIntegrable_of_Icc`; future work should not rediscover
+that API.
 
 Current Exercise 3.1 co-coercivity interface result: the source display (3.5)
 now compiles as `GradientCocoerciveOn`.  The bridge
@@ -480,6 +488,9 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.chewi28_gradient_sq_average_bound`
 - `StatInference.Optimization.chewi28_interval_sq_lower_bound_le_average`
 - `StatInference.Optimization.chewi28_min_grad_norm_le_of_isMinOn`
+- `StatInference.Optimization.chewi28_exists_grad_norm_le_of_continuousOn`
+- `StatInference.Optimization.chewi28_exists_grad_norm_le_of_continuousOn_norm`
+- `StatInference.Optimization.chewi28_exists_grad_norm_le_of_continuousOn_grad`
 - `StatInference.Optimization.discreteGronwall_sum_le`
 - `StatInference.Optimization.discreteGronwall_sum_le_of_pos`
 - `StatInference.Optimization.discreteGronwall_one_based_sum_le`
@@ -557,7 +568,8 @@ Latest verified local frontier after lane creation:
 
 Next manual goal target: discharge the analytic hypothesis
 `PLGradientFlowLimitRouteToQGOn` from the book's gradient-flow convergence and
-Lyapunov monotonicity argument, or instantiate
-`chewi28_min_grad_norm_le_of_isMinOn` from compactness/continuity on `[0,t]`
-if that is faster.  Continue deferring exercise proofs except where an
+Lyapunov monotonicity argument.  The Corollary 2.8 compact-minimum and
+continuity/integrability bridge is already compiled, so do not spend another
+run there unless strengthening the continuity hypotheses materially advances
+the analytic route.  Continue deferring exercise proofs except where an
 exercise statement is needed as a temporary interface for a main-text theorem.

@@ -153,5 +153,71 @@ theorem chewi28_min_grad_norm_le_of_isMinOn
       hgrad hflow hstar_lower_t ht hint_grad hlower_sq
   exact Real.le_sqrt_of_sq_le hsq_bound
 
+/--
+Chewi Corollary 2.8, existence form.  Continuity of
+`s ↦ ||grad (x s)||` on the compact interval supplies the minimizing time in
+the textbook display `min_{s in [0,t]}`.
+-/
+theorem chewi28_exists_grad_norm_le_of_continuousOn
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {x : ℝ -> E} {fstar t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsGradientFlowTrajectory grad x)
+    (hstar_lower_t : fstar ≤ f (x t))
+    (ht : 0 < t)
+    (hint_grad : IntervalIntegrable
+      (fun s => ‖grad (x s)‖ ^ (2 : ℕ)) MeasureTheory.volume 0 t)
+    (hcont_norm : ContinuousOn (fun s => ‖grad (x s)‖)
+      (Set.Icc (0 : ℝ) t)) :
+    ∃ sMin ∈ Set.Icc (0 : ℝ) t,
+      ‖grad (x sMin)‖ ≤
+        Real.sqrt ((f (x 0) - fstar) / t) := by
+  rcases isCompact_Icc.exists_isMinOn (nonempty_Icc.mpr ht.le) hcont_norm
+    with ⟨sMin, hsMin, hmin⟩
+  exact ⟨sMin, hsMin,
+    chewi28_min_grad_norm_le_of_isMinOn
+      hgrad hflow hstar_lower_t ht hint_grad hsMin hmin⟩
+
+/--
+Chewi Corollary 2.8, existence form with the interval-integrability
+hypothesis discharged by continuity of `s ↦ ||grad (x s)||`.
+-/
+theorem chewi28_exists_grad_norm_le_of_continuousOn_norm
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {x : ℝ -> E} {fstar t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsGradientFlowTrajectory grad x)
+    (hstar_lower_t : fstar ≤ f (x t))
+    (ht : 0 < t)
+    (hcont_norm : ContinuousOn (fun s => ‖grad (x s)‖)
+      (Set.Icc (0 : ℝ) t)) :
+    ∃ sMin ∈ Set.Icc (0 : ℝ) t,
+      ‖grad (x sMin)‖ ≤
+        Real.sqrt ((f (x 0) - fstar) / t) := by
+  have hint_grad : IntervalIntegrable
+      (fun s => ‖grad (x s)‖ ^ (2 : ℕ)) MeasureTheory.volume 0 t :=
+    (hcont_norm.pow 2).intervalIntegrable_of_Icc ht.le
+  exact chewi28_exists_grad_norm_le_of_continuousOn
+    hgrad hflow hstar_lower_t ht hint_grad hcont_norm
+
+/--
+Chewi Corollary 2.8, existence form from continuity of the gradient-oracle
+trajectory.
+-/
+theorem chewi28_exists_grad_norm_le_of_continuousOn_grad
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {x : ℝ -> E} {fstar t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsGradientFlowTrajectory grad x)
+    (hstar_lower_t : fstar ≤ f (x t))
+    (ht : 0 < t)
+    (hcont_grad : ContinuousOn (fun s => grad (x s))
+      (Set.Icc (0 : ℝ) t)) :
+    ∃ sMin ∈ Set.Icc (0 : ℝ) t,
+      ‖grad (x sMin)‖ ≤
+        Real.sqrt ((f (x 0) - fstar) / t) :=
+  chewi28_exists_grad_norm_le_of_continuousOn_norm
+    hgrad hflow hstar_lower_t ht hcont_grad.norm
+
 end Optimization
 end StatInference

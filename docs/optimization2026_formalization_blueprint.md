@@ -194,6 +194,9 @@ Current compiled surface:
 - `StatInference.Optimization.chewi28_gradient_sq_average_bound`
 - `StatInference.Optimization.chewi28_interval_sq_lower_bound_le_average`
 - `StatInference.Optimization.chewi28_min_grad_norm_le_of_isMinOn`
+- `StatInference.Optimization.chewi28_exists_grad_norm_le_of_continuousOn`
+- `StatInference.Optimization.chewi28_exists_grad_norm_le_of_continuousOn_norm`
+- `StatInference.Optimization.chewi28_exists_grad_norm_le_of_continuousOn_grad`
 
 Near-term exact candidates:
 
@@ -203,8 +206,9 @@ Near-term exact candidates:
 2. Remove or discharge the interval-integrability assumptions in Theorem 2.4
    from the notes' `C²`/regular trajectory hypotheses if a clean mathlib
    continuity route is available.
-3. Instantiate Corollary 2.8's `IsMinOn` hypothesis from compactness and
-   continuity of `s ↦ ‖grad (x s)‖` on `[0,t]`.
+3. Strengthen the regularity bridge behind Corollary 2.8 only if needed for
+   the Proposition 2.7(2) analytic route; the compact-minimum and
+   continuity-to-integrability pieces already compile.
 
 ### Lane C: Discrete gradient descent and algorithmic rates
 
