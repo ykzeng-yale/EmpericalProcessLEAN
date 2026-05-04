@@ -326,5 +326,101 @@ theorem exercise42InfiniteGeometric_norm_sq {q : ℝ}
     norm_num [Real.rpow_natCast]
   rw [hleft, hnorm, htsum]
 
+/-- Infinite coordinate-tail energy for the `ell^2` Exercise 4.2 model. -/
+noncomputable def exercise42InfiniteTailSq
+    (z : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (N : ℕ) : ℝ :=
+  ∑' n : ℕ, ‖z (N + n)‖ ^ (2 : ℝ≥0∞).toReal
+
+/--
+Chewi Exercise 4.2 infinite-chain substrate: the shifted squared `L^2` terms
+of a nonnegative geometric profile form the shifted geometric series.
+-/
+theorem exercise42_geometric_l2_tail_term_eq {q : ℝ}
+    (hq_nonneg : 0 ≤ q) (N n : ℕ) :
+    ‖q ^ (N + n)‖ ^ (2 : ℝ≥0∞).toReal =
+      (q ^ (2 : ℕ)) ^ N * (q ^ (2 : ℕ)) ^ n := by
+  calc
+    ‖q ^ (N + n)‖ ^ (2 : ℝ≥0∞).toReal =
+        (q ^ (2 : ℕ)) ^ (N + n) :=
+      exercise42_geometric_l2_term_eq hq_nonneg (N + n)
+    _ = (q ^ (2 : ℕ)) ^ N * (q ^ (2 : ℕ)) ^ n := by
+      rw [pow_add]
+
+/--
+Exact infinite tail identity from Chewi Exercise 4.2: the `ell^2` tail of the
+pure geometric profile after `N` coordinates is
+`(q^2)^N * (1 - q^2)^{-1}`.
+-/
+theorem exercise42InfiniteGeometric_tailSq_eq {q : ℝ}
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) (N : ℕ) :
+    exercise42InfiniteTailSq
+        (exercise42InfiniteGeometric q hq_nonneg hq_lt_one) N =
+      (q ^ (2 : ℕ)) ^ N * (1 - q ^ (2 : ℕ))⁻¹ := by
+  have hq_sq_nonneg : 0 ≤ q ^ (2 : ℕ) := sq_nonneg q
+  have hq_sq_lt_one : q ^ (2 : ℕ) < 1 := by
+    have hq_sq_le_q : q ^ (2 : ℕ) ≤ q := by
+      rw [pow_two]
+      exact mul_le_of_le_one_right hq_nonneg hq_lt_one.le
+    exact lt_of_le_of_lt hq_sq_le_q hq_lt_one
+  have hgeom :
+      (∑' n : ℕ, (q ^ (2 : ℕ)) ^ n) =
+        (1 - q ^ (2 : ℕ))⁻¹ :=
+    tsum_geometric_of_lt_one hq_sq_nonneg hq_sq_lt_one
+  calc
+    exercise42InfiniteTailSq
+        (exercise42InfiniteGeometric q hq_nonneg hq_lt_one) N =
+        ∑' n : ℕ, (q ^ (2 : ℕ)) ^ N * (q ^ (2 : ℕ)) ^ n := by
+      unfold exercise42InfiniteTailSq
+      apply tsum_congr
+      intro n
+      simpa using exercise42_geometric_l2_tail_term_eq hq_nonneg N n
+    _ = (q ^ (2 : ℕ)) ^ N *
+        (∑' n : ℕ, (q ^ (2 : ℕ)) ^ n) := by
+      rw [tsum_mul_left]
+    _ = (q ^ (2 : ℕ)) ^ N * (1 - q ^ (2 : ℕ))⁻¹ := by
+      rw [hgeom]
+
+/--
+Source-shaped tail identity: for the pure geometric profile, the tail energy
+after `N` coordinates is `(q^2)^N` times the full squared norm.
+-/
+theorem exercise42InfiniteGeometric_tailSq_eq_pow_mul_norm_sq {q : ℝ}
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) (N : ℕ) :
+    exercise42InfiniteTailSq
+        (exercise42InfiniteGeometric q hq_nonneg hq_lt_one) N =
+      (q ^ (2 : ℕ)) ^ N *
+        ‖exercise42InfiniteGeometric q hq_nonneg hq_lt_one‖ ^ (2 : ℕ) := by
+  rw [exercise42InfiniteGeometric_tailSq_eq hq_nonneg hq_lt_one N,
+    exercise42InfiniteGeometric_norm_sq hq_nonneg hq_lt_one]
+
+/--
+Zero-start source form of Exercise 4.2's tail identity: the geometric tail is
+`(q^2)^N` times the squared distance from the initial point `0` to the
+geometric profile.
+-/
+theorem exercise42InfiniteGeometric_tailSq_eq_pow_mul_zero_dist_sq {q : ℝ}
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) (N : ℕ) :
+    exercise42InfiniteTailSq
+        (exercise42InfiniteGeometric q hq_nonneg hq_lt_one) N =
+      (q ^ (2 : ℕ)) ^ N *
+        ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+          exercise42InfiniteGeometric q hq_nonneg hq_lt_one‖ ^ (2 : ℕ) := by
+  rw [zero_sub, norm_neg,
+    exercise42InfiniteGeometric_tailSq_eq_pow_mul_norm_sq hq_nonneg hq_lt_one N]
+
+/--
+Inequality-shaped version for plugging the infinite Exercise 4.2 tail identity
+into the lower-bound obstruction.
+-/
+theorem exercise42InfiniteGeometric_pow_mul_zero_dist_sq_le_tailSq {q : ℝ}
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) (N : ℕ) :
+      (q ^ (2 : ℕ)) ^ N *
+        ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+          exercise42InfiniteGeometric q hq_nonneg hq_lt_one‖ ^ (2 : ℕ) ≤
+        exercise42InfiniteTailSq
+          (exercise42InfiniteGeometric q hq_nonneg hq_lt_one) N := by
+  rw [exercise42InfiniteGeometric_tailSq_eq_pow_mul_zero_dist_sq
+    hq_nonneg hq_lt_one N]
+
 end Optimization
 end StatInference

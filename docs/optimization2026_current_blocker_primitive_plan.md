@@ -1173,11 +1173,19 @@ The first true infinite-chain substrate now compiles in
 `lp.norm_rpow_eq_tsum`, `summable_geometric_of_lt_one`, and
 `tsum_geometric_of_lt_one` to prove that the nonnegative profile
 `n |-> q^n` is in `ell^2` and has squared norm `(1 - q^2)^{-1}` for
-`0 <= q < 1`.  Next direct Exercise 4.2 step: define the infinite
-tridiagonal hard-chain objective/gradient on this `lp` model, prove the
-geometric profile is the exact zero-gradient minimizer, then reuse the
-compiled tail-to-gap obstruction pattern to obtain the source geometric
-iteration lower bound without finite-boundary slack.
+`0 <= q < 1`.  The exact infinite tail identity also now compiles:
+`exercise42InfiniteTailSq`, `exercise42_geometric_l2_tail_term_eq`,
+`exercise42InfiniteGeometric_tailSq_eq`,
+`exercise42InfiniteGeometric_tailSq_eq_pow_mul_norm_sq`,
+`exercise42InfiniteGeometric_tailSq_eq_pow_mul_zero_dist_sq`, and
+`exercise42InfiniteGeometric_pow_mul_zero_dist_sq_le_tailSq` prove that the
+tail after `N` coordinates is `(q^2)^N` times the full squared norm, equivalently
+the zero-start squared distance.  This reused mathlib `tsum_mul_left` and
+`tsum_congr`; no new summability primitive was needed.  Next direct Exercise
+4.2 step: define the infinite tridiagonal hard-chain objective/gradient on this
+`lp` model, prove the geometric profile is the exact zero-gradient minimizer,
+then reuse the compiled tail-to-gap obstruction pattern to obtain the source
+geometric iteration lower bound without finite-boundary slack.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
