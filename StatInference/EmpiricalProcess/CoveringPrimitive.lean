@@ -1472,6 +1472,92 @@ theorem empiricalL1CoveringNumber_le_of_coordinate_pointwise_approx_code_card_le
         hcard_le)
 
 /--
+Padded-cardinality cover from a scalar quantizer applied coordinatewise to the
+empirical sample.  Equal vector codes reduce to equal coordinate quantizer
+codes, so the caller only has to prove the coordinatewise error bound for the
+scalar quantizer.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_scalarQuantizer_card_le
+    {Observation : Type u} {Index : Type v} {CoordCode : Type*}
+    [DecidableEq CoordCode] {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (quantizer : Fin n -> ℝ -> CoordCode)
+    (codeSets : Fin n -> Finset CoordCode)
+    (hquantizer_mem :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          quantizer sampleIndex (classFun index (sample sampleIndex)) ∈
+            codeSets sampleIndex)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hquantizer_close :
+      ∀ sampleIndex : Fin n,
+        ∀ index, index ∈ indexClass ->
+          ∀ center, center ∈ indexClass ->
+            quantizer sampleIndex (classFun index (sample sampleIndex)) =
+              quantizer sampleIndex (classFun center (sample sampleIndex)) ->
+            |classFun index (sample sampleIndex) -
+              classFun center (sample sampleIndex)| ≤ epsilon)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le :
+      (∏ sampleIndex : Fin n, (codeSets sampleIndex).card) ≤ cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  let code : Index -> Fin n -> CoordCode :=
+    fun index sampleIndex =>
+      quantizer sampleIndex (classFun index (sample sampleIndex))
+  exact
+    nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_pointwise_approx_code_card_le
+      code codeSets hquantizer_mem hepsilon_nonneg
+      (fun index hindex center hcenter hcode sampleIndex =>
+        hquantizer_close sampleIndex index hindex center hcenter
+          (congrFun hcode sampleIndex))
+      hindexClass hcard_le
+
+/--
+Numeric empirical-covering-number bound from a scalar quantizer applied
+coordinatewise to the empirical sample.
+-/
+theorem empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_card_le
+    {Observation : Type u} {Index : Type v} {CoordCode : Type*}
+    [DecidableEq CoordCode] {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (quantizer : Fin n -> ℝ -> CoordCode)
+    (codeSets : Fin n -> Finset CoordCode)
+    (hquantizer_mem :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          quantizer sampleIndex (classFun index (sample sampleIndex)) ∈
+            codeSets sampleIndex)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hquantizer_close :
+      ∀ sampleIndex : Fin n,
+        ∀ index, index ∈ indexClass ->
+          ∀ center, center ∈ indexClass ->
+            quantizer sampleIndex (classFun index (sample sampleIndex)) =
+              quantizer sampleIndex (classFun center (sample sampleIndex)) ->
+            |classFun index (sample sampleIndex) -
+              classFun center (sample sampleIndex)| ≤ epsilon)
+    (hcard_le :
+      (∏ sampleIndex : Fin n, (codeSets sampleIndex).card) ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  let code : Index -> Fin n -> CoordCode :=
+    fun index sampleIndex =>
+      quantizer sampleIndex (classFun index (sample sampleIndex))
+  exact
+    empiricalL1CoveringNumber_le_of_coordinate_pointwise_approx_code_card_le
+      code codeSets hquantizer_mem hepsilon_nonneg
+      (fun index hindex center hcenter hcode sampleIndex =>
+        hquantizer_close sampleIndex index hindex center hcenter
+          (congrFun hcode sampleIndex))
+      hcard_le
+
+/--
 Padded-cardinality cover from a finite fixed-sample trace image.  Later
 combinatorial arguments can supply a terminal bound on the number of distinct
 traces and reuse this cover witness directly.

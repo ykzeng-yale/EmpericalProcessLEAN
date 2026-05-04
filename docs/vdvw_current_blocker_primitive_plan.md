@@ -2308,3 +2308,26 @@ cardinality estimate strong enough for the fixed-radius Theorem 2.4.3
 side-condition package.  If that final cardinality estimate needs an additional
 structural hypothesis, record its exact theorem shape rather than folding it
 into a vague entropy assumption.
+
+2026-05-04 `/goal` update after scalar-quantizer empirical-cover bridge:
+`CoveringPrimitive.lean` now also adds
+`nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_scalarQuantizer_card_le`
+and
+`empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_card_le`.  These
+bridge the abstract coordinate-code layer to the intended bounded
+quantization/grid route: the vector code is now built from scalar coordinate
+quantizers applied to the empirical sample values, and equal vector codes reduce
+to the scalar equal-code absolute-error hypothesis at each coordinate.
+
+Search record: local searches found no existing scalar-quantizer-to-empirical
+cover theorem.  The proof reuses the compiled coordinate-code product bridge
+and pointwise approximate-code empirical-cover consumer; no additional mathlib
+API beyond function extensionality (`congrFun`) was required.
+
+Next exact theorem-facing edit: instantiate the scalar quantizer with an actual
+bounded grid/rounding construction for truncated real values, prove the
+coordinate absolute-error condition from the grid cells, and then supply the
+nontrivial VC/subgraph/grid cardinality estimate needed to turn this into
+Theorem 2.4.3 fixed-radius selected side conditions.  The remaining hard part
+is not vector-code construction; it is the geometric/cardinality estimate for
+arbitrary real-valued classes.

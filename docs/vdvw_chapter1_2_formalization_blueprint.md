@@ -811,6 +811,11 @@ above, so they do not change the theorem-level dashboard counts.
    `empiricalL1CoveringNumber_le_of_coordinate_pointwise_approx_code_card_le`
    now discharges the finite vector-code image and product-cardinality
    bookkeeping once each sample coordinate has a finite code set.  The
+   scalar-quantizer bridge
+   `empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_card_le`
+   then builds this vector code by applying coordinate quantizers to the
+   empirical sample values and reduces equal-code closeness to the scalar
+   quantizer error condition.  The
    remaining theorem-facing work is the actual bounded quantization/grid code
    and the nontrivial VC/subgraph/grid cardinality estimate, not this finite
    product-code plumbing.

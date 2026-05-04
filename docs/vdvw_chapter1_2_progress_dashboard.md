@@ -372,6 +372,13 @@ Theorem 2.4.3 quantized-grid target is the concrete bounded trace code plus
 the VC/subgraph/grid cardinality theorem strong enough to feed the fixed-radius
 side-condition package.
 
+2026-05-04 follow-up: the scalar-quantizer-to-coordinate-code cover bridge is
+also compiled as
+`empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_card_le` with the
+matching finite-cover witness theorem.  The next target is therefore the real
+bounded grid/rounding instantiation and its VC/subgraph/grid count, not the
+abstract quantizer-to-cover reduction.
+
 ## Verification Monitor
 
 Latest targeted verification includes the selected terminal/truncated
