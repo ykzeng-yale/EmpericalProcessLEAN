@@ -68,6 +68,75 @@ theorem thresholdTraceCode_empiricalTrace_eq_binaryTraceSet
   · simp [thresholdTraceCode, empiricalTrace, empiricalBinaryTraceSet,
       thresholdIndicatorClassFun, h]
 
+/--
+Equality of finite-threshold signatures is exactly pointwise equality of all
+threshold comparisons on the sample.
+-/
+theorem thresholdTraceCode_eq_iff_forall_threshold_sample
+    {n : ℕ} {thresholds : Finset ℝ}
+    {trace₁ trace₂ : Fin n -> ℝ} :
+    thresholdTraceCode thresholds trace₁ = thresholdTraceCode thresholds trace₂ ↔
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        ∀ sampleIndex : Fin n,
+          (threshold.1 < trace₁ sampleIndex ↔
+            threshold.1 < trace₂ sampleIndex) := by
+  classical
+  constructor
+  · intro hcode threshold sampleIndex
+    have hset :
+        thresholdTraceCode thresholds trace₁ threshold =
+          thresholdTraceCode thresholds trace₂ threshold :=
+      congrFun hcode threshold
+    have hmem :
+        sampleIndex ∈ thresholdTraceCode thresholds trace₁ threshold ↔
+          sampleIndex ∈ thresholdTraceCode thresholds trace₂ threshold := by
+      simpa using congrArg (fun s : Finset (Fin n) => sampleIndex ∈ s) hset
+    simpa [thresholdTraceCode] using hmem
+  · intro hpoint
+    funext threshold
+    ext sampleIndex
+    simpa [thresholdTraceCode] using hpoint threshold sampleIndex
+
+/--
+Pointwise threshold-comparison separation is enough to supply the finite-code
+separation hypothesis used by the threshold-cardinality handoffs.
+-/
+theorem thresholdTraceCode_separates_of_pointwise_thresholds_separate
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ}
+    (hpoint :
+      ∀ index₁, index₁ ∈ indexClass ->
+        ∀ index₂, index₂ ∈ indexClass ->
+          (∀ sampleIndex : Fin n,
+            ∀ threshold : {threshold // threshold ∈ thresholds},
+              (threshold.1 < classFun index₁ (sample sampleIndex) ↔
+                threshold.1 < classFun index₂ (sample sampleIndex))) ->
+          empiricalTrace sample classFun index₁ =
+            empiricalTrace sample classFun index₂) :
+    ∀ index₁, index₁ ∈ indexClass ->
+      ∀ index₂, index₂ ∈ indexClass ->
+        (∀ threshold : {threshold // threshold ∈ thresholds},
+          thresholdTraceCode thresholds
+              (empiricalTrace sample classFun index₁) threshold =
+            thresholdTraceCode thresholds
+              (empiricalTrace sample classFun index₂) threshold) ->
+        empiricalTrace sample classFun index₁ =
+          empiricalTrace sample classFun index₂ := by
+  intro index₁ hindex₁ index₂ hindex₂ hcode
+  apply hpoint index₁ hindex₁ index₂ hindex₂
+  intro sampleIndex threshold
+  have hcodeFun :
+      thresholdTraceCode thresholds (empiricalTrace sample classFun index₁) =
+        thresholdTraceCode thresholds (empiricalTrace sample classFun index₂) := by
+    funext threshold
+    exact hcode threshold
+  have hpointCode :=
+    (thresholdTraceCode_eq_iff_forall_threshold_sample.mp hcodeFun)
+      threshold sampleIndex
+  simpa [empiricalTrace] using hpointCode
+
 /-- Every realized empirical trace has a threshold code in the realized-code set. -/
 theorem thresholdTraceCode_mem_thresholdTraceCodeSet
     {Observation : Type u} {Index : Type v} {n : ℕ}
@@ -141,6 +210,29 @@ theorem finite_empiricalTrace_image_of_thresholdTraceCode_separates
         intro index hindex
         exact thresholdTraceCode_mem_thresholdTraceCodeSet hindex)
       (thresholdTraceCode_injOn_empiricalTrace_image_of_separates hseparate)
+
+/--
+Pointwise threshold-comparison separation gives a finite empirical trace image
+through the finite threshold-code layer.
+-/
+theorem finite_empiricalTrace_image_of_pointwise_thresholds_separate
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ}
+    (hpoint :
+      ∀ index₁, index₁ ∈ indexClass ->
+        ∀ index₂, index₂ ∈ indexClass ->
+          (∀ sampleIndex : Fin n,
+            ∀ threshold : {threshold // threshold ∈ thresholds},
+              (threshold.1 < classFun index₁ (sample sampleIndex) ↔
+                threshold.1 < classFun index₂ (sample sampleIndex))) ->
+          empiricalTrace sample classFun index₁ =
+            empiricalTrace sample classFun index₂) :
+    (empiricalTrace sample classFun '' indexClass).Finite := by
+  exact
+    finite_empiricalTrace_image_of_thresholdTraceCode_separates
+      (thresholdTraceCode_separates_of_pointwise_thresholds_separate hpoint)
 
 /--
 The cardinality of a trace image separated by finite threshold signatures is
@@ -249,6 +341,32 @@ theorem empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card
   (empiricalTrace_image_toFinset_card_le_thresholdTraceCodeSet_card hseparate).trans
     (thresholdTraceCodeSet_card_le_pi_binaryTraceSetFamily_card
       sample indexClass classFun thresholds)
+
+/--
+Pointwise threshold-comparison separation bounds the empirical trace-image
+cardinality by the product of the fixed-threshold binary trace-family
+cardinalities.
+-/
+theorem empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card_of_pointwise_thresholds_separate
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ}
+    (hpoint :
+      ∀ index₁, index₁ ∈ indexClass ->
+        ∀ index₂, index₂ ∈ indexClass ->
+          (∀ sampleIndex : Fin n,
+            ∀ threshold : {threshold // threshold ∈ thresholds},
+              (threshold.1 < classFun index₁ (sample sampleIndex) ↔
+                threshold.1 < classFun index₂ (sample sampleIndex))) ->
+          empiricalTrace sample classFun index₁ =
+            empiricalTrace sample classFun index₂) :
+    (finite_empiricalTrace_image_of_pointwise_thresholds_separate hpoint).toFinset.card ≤
+      ∏ threshold ∈ thresholds.attach,
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card :=
+  empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card
+    (thresholdTraceCode_separates_of_pointwise_thresholds_separate hpoint)
 
 /--
 Threshold-product cardinality estimates feed directly into the real
@@ -672,5 +790,42 @@ theorem empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_uniform_
       (B := ((d + 2 : ℕ) : ℝ)) (a := d) (k := k)
       hseparate hbase_pos hthresholds_card hbase
       (Nat.cast_nonneg _) hbase_growth
+
+/--
+Pointwise threshold separation, threshold-count, and uniform fixed-threshold
+VC/Sauer bounds give the same natural-polynomial empirical trace-cardinality
+bound.  This is the form expected from later subgraph/truncated-class geometry:
+the geometry only has to show that matching all threshold predicates on the
+sample identifies the realized trace.
+-/
+theorem empiricalTrace_image_card_add_one_real_le_of_pointwise_thresholds_separate_uniform_vc
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ}
+    (hpoint :
+      ∀ index₁, index₁ ∈ indexClass ->
+        ∀ index₂, index₂ ∈ indexClass ->
+          (∀ sampleIndex : Fin n,
+            ∀ threshold : {threshold // threshold ∈ thresholds},
+              (threshold.1 < classFun index₁ (sample sampleIndex) ↔
+                threshold.1 < classFun index₂ (sample sampleIndex))) ->
+          empiricalTrace sample classFun index₁ =
+            empiricalTrace sample classFun index₂)
+    (hthresholds_card : thresholds.card ≤ k)
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d) :
+    (((finite_empiricalTrace_image_of_thresholdTraceCode_separates
+      (thresholdTraceCode_separates_of_pointwise_thresholds_separate hpoint)).toFinset.card : ℝ) + 1) ≤
+      ((((d + 2 : ℕ) : ℝ) ^ k) + 1) *
+        (((n + 1 : ℕ) : ℝ) ^ (d * k)) := by
+  exact
+    empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_uniform_vc
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) (d := d) (k := k)
+      (thresholdTraceCode_separates_of_pointwise_thresholds_separate hpoint)
+      hthresholds_card hvc
 
 end StatInference

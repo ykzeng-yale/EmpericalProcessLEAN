@@ -759,7 +759,14 @@ above, so they do not change the theorem-level dashboard counts.
    uniform VC consumer
    `empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_uniform_vc`
    combines fixed-threshold Sauer bounds, separation, and a threshold-count
-   bound into the natural-polynomial trace-cardinality estimate.
+   bound into the natural-polynomial trace-cardinality estimate.  The
+   pointwise-threshold bridge
+   `thresholdTraceCode_eq_iff_forall_threshold_sample`,
+   `thresholdTraceCode_separates_of_pointwise_thresholds_separate`, and
+   `empiricalTrace_image_card_add_one_real_le_of_pointwise_thresholds_separate_uniform_vc`
+   now lets later geometry prove only samplewise threshold predicate
+   separation and then feed the same finite-image/product/uniform-VC
+   cardinality consumers.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
