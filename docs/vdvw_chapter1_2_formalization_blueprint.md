@@ -660,6 +660,19 @@ above, so they do not change the theorem-level dashboard counts.
    `integrable_vdVWWeightedClassSupremum_truncated_of_finite`,
    `integrable_vdVWWeightedClassSupremum_pairDifference_ghost_of_finite`, and
    `integrable_vdVWWeightedClassSupremum_pairDifference_split_of_finite`.
+   The finite-class consumer now also derives the remaining random-sign
+   product-space assumptions internally: sign-side Rademacher supremum
+   integrability, product-space Rademacher supremum integrability, the
+   product-space measurable cover, and the sign-side iterated-integral
+   integrability.  This is compiled through
+   `integrable_vdVWWeightedClassSupremum_of_finite_varying_weights`,
+   `integrable_vdVWWeightedClassSupremum_truncated_rademacher_sign_of_finite`,
+   `integrable_vdVWWeightedClassSupremum_truncated_rademacher_product_of_finite`,
+   `integrable_vdVWWeightedClassSupremum_truncated_rademacher_integral_of_finite`,
+   and
+   `VdVWMeasurableCover.truncated_rademacher_product_of_finite`, using
+   mathlib `HasSubgaussianMGF.integrable`, `Integrable.mul_prod`, Fubini
+   integrability, and finite `biSup` measurability.
    The next proof step is therefore the non-finite-class
    geometric/cardinality instantiation, or a final theorem-critical
    specialization consuming this finite-class untruncated consumer.

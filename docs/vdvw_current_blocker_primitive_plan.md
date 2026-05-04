@@ -1483,11 +1483,35 @@ supplies `MeasureTheory.integrable_comp_eval`,
 `Integrable.comp_snd`, `Integrable.integral_prod_left`, and
 `AEMeasurable.biSup`.
 
+2026-05-03 `/goal` update after the finite-class random-sign/product
+integrability closure: the remaining theorem-local finite-class
+Rademacher/product assumptions are now discharged internally.  New compiled
+helpers in `Theorem243.lean` are
+`integrable_vdVWWeightedClassSupremum_of_finite_varying_weights`,
+`integrable_vdVWWeightedClassSupremum_truncated_rademacher_sign_of_finite`,
+`integrable_vdVWWeightedClassSupremum_truncated_rademacher_product_of_finite`,
+`integrable_vdVWWeightedClassSupremum_truncated_rademacher_integral_of_finite`,
+and
+`VdVWMeasurableCover.truncated_rademacher_product_of_finite`.  Consequently
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass`
+no longer assumes the random-sign iterated-integral integrability,
+product-space Rademacher supremum measurable cover, product-space supremum
+integrability, or sign-side supremum integrability fields.  These now follow
+from finite `indexClass`, coordinate measurability, envelope measurability,
+ordinary class-member integrability, and the existing `HasSubgaussianMGF`
+sign hypotheses.  Search record for this edit: local
+`Theorem243.lean` supplied the weighted-sum/supremum displays, finite-class
+finite-sum domination, truncated-coordinate integrability, and measurable-cover
+constructors; pinned mathlib supplied `HasSubgaussianMGF.integrable`,
+`Integrable.mul_prod`, `MeasureTheory.integrable_comp_eval`,
+`MeasureTheory.integrable_finsetSum`, `Integrable.integral_prod_left`,
+`AEMeasurable.biSup`, and `VdVWMeasurableCover.ofAEMeasurable`.
+
 Current compact `/goal` execution prompt: continue VdV&W Chapters 1-2 in
 dependency order without repeating closed Theorem 2.4.3 finite-net,
 selected-fixed-radius, finite-class, integrability, centered-cover, and
-centered-supremum/pair/sample integrability, and untruncation layers.  The
-active closure batch is the actual non-finite
+centered-supremum/pair/sample/random-sign product integrability, and
+untruncation layers.  The active closure batch is the actual non-finite
 theorem handoff from textbook entropy assumptions to selected fixed-radius
 tail/UI or deterministic log-ratio inputs; if that blocks after Lean/search,
 move to a theorem-critical finite-class specialization or a precise Chapter 1
@@ -1495,7 +1519,7 @@ arbitrary-map/asymptotic-measurability primitive.
 
 Next exact edit: do not repeat the finite-class geometry/entropy/consumer
 bridge, finite-center integrability closure, centered-cover closure, or
-centered-supremum/pair/sample integrability closure.  The
+centered-supremum/pair/sample/random-sign product integrability closure.  The
 remaining Theorem 2.4.3 proof work is now either (1) prove the actual
 non-finite-class
 geometric packing/cardinality estimate for the chosen empirical internal
