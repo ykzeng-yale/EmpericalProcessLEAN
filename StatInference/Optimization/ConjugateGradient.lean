@@ -716,6 +716,39 @@ theorem IsCGDisplayedIteration.pairwise_residual_orthogonal
   h.to_isCGThreeTermRecurrence.pairwise_residual_orthogonal horth_prev
 
 /--
+Pointwise orthogonality against the generating directions extends to
+orthogonality against their span.
+-/
+theorem isOrthogonalToSubmodule_cgDirectionSubmodule_of_inner_direction_eq_zero
+    {r : E} {p : ℕ → E} {n : ℕ}
+    (horth : ∀ k, k ≤ n → inner ℝ r (p k) = 0) :
+    IsOrthogonalToSubmodule r (cgDirectionSubmodule p n) := by
+  intro y hy
+  induction hy using Submodule.span_induction with
+  | mem y hy =>
+      rcases hy with ⟨k, hk, rfl⟩
+      exact horth k hk
+  | zero =>
+      simp
+  | add x y _ _ hx hy =>
+      simp [inner_add_right, hx, hy]
+  | smul t x _ hx =>
+      simp [inner_smul_right, hx]
+
+/--
+Source-shaped CG orthogonality condition: if each new residual is orthogonal
+to every previous direction generator, it is orthogonal to the previous
+direction subspace.
+-/
+theorem orthogonalToPrevious_of_inner_directions_eq_zero
+    {r p : ℕ → E}
+    (horth : ∀ n k, k ≤ n → inner ℝ (r (n + 1)) (p k) = 0) :
+    ∀ n, IsOrthogonalToSubmodule (r (n + 1)) (cgDirectionSubmodule p n) := by
+  intro n
+  exact isOrthogonalToSubmodule_cgDirectionSubmodule_of_inner_direction_eq_zero
+    (horth n)
+
+/--
 Finite-dimensional counting core for Chewi Theorem 5.3: among the first
 `finrank ℝ E + 1` mutually orthogonal residuals, one must vanish.
 -/
@@ -809,6 +842,25 @@ theorem IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_orthogonalTo
   h.exists_quadraticObjective_isMinOn_of_pairwise_orthogonal
     hA_sym hlower halpha_nonneg hres0 hx
     (h.pairwise_residual_orthogonal horth_prev)
+
+/--
+Displayed-CG Theorem 5.3 wrapper from the scalar source condition
+`⟪r_{n+1}, p_k⟫ = 0` for all `k ≤ n`.
+-/
+theorem IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_inner_directions_eq_zero
+    [FiniteDimensional ℝ E] {A : E →L[ℝ] E} {b p0 : E}
+    {x r p : ℕ → E} {alpha : ℝ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (hlower : QuadraticFormLowerBound A alpha)
+    (halpha_nonneg : 0 ≤ alpha)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hx : ∀ n, x (n + 1) = x n + cgLineSearchCoeff A r p n • p n)
+    (horth : ∀ n k, k ≤ n → inner ℝ (r (n + 1)) (p k) = 0) :
+    ∃ n ≤ Module.finrank ℝ E, IsMinOn (quadraticObjective A b) Set.univ (x n) :=
+  h.exists_quadraticObjective_isMinOn_of_orthogonalToPrevious
+    hA_sym hlower halpha_nonneg hres0 hx
+    (orthogonalToPrevious_of_inner_directions_eq_zero horth)
 
 end Optimization
 end StatInference
