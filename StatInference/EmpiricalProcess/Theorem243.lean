@@ -10692,6 +10692,142 @@ theorem
         (cardinality := selectedCardinality) hC_nonneg hupperBound
 
 /--
+Build the selected fixed-radius tail/UI package from a terminal
+`cardinality <= base^n` geometric estimate.
+
+This is the theorem-facing consumer for finite-grid or packing arguments whose
+natural output bounds the number of empirical centers by an exponential in the
+sample size.  The existing terminal log-cardinality arithmetic supplies the
+deterministic bound required by
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_bound`.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_terminal_le_pow
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {base : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hM_pos : 0 < M)
+    (hbase_pos : ∀ eta, 0 < eta -> 0 < base eta)
+    (hterminal_le :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        cardinality eta n sample n ≤ (base eta) ^ n) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  refine
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (K := fun eta => Real.log (2 * ((base eta : ℝ) + 1)))
+      (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas hlog hM_pos
+      ?_ ?_
+  · intro eta _heta
+    have hbase_nonneg : (0 : ℝ) ≤ (base eta : ℝ) := Nat.cast_nonneg _
+    have harg_ge_one : (1 : ℝ) ≤ 2 * ((base eta : ℝ) + 1) := by
+      nlinarith
+    exact Real.log_nonneg harg_ge_one
+  · intro eta heta n sample
+    have hbound :=
+      vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le_pow
+        (Observation := Observation)
+        (cardinality := fun n => cardinality eta n)
+        (base := base eta) (hbase_pos eta heta) (hterminal_le eta heta)
+        n sample
+    simpa [vdVWLogEmpiricalL1CoveringCardinality] using hbound
+
+/--
+Build the selected fixed-radius tail/UI package from a terminal
+`cardinality + 1 <= base^n` geometric estimate.
+
+This sharper variant keeps the eventual deterministic logarithmic constant as
+`log base`, matching grid estimates that already absorb the `+1` used in the
+local log-cardinality display.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_succ_terminal_le_pow
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {base : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hM_pos : 0 < M)
+    (hbase_one : ∀ eta, 0 < eta -> 1 ≤ base eta)
+    (hterminal_succ_le :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        cardinality eta n sample n + 1 ≤ (base eta) ^ n) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  refine
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (K := fun eta => Real.log (base eta : ℝ))
+      (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas hlog hM_pos
+      ?_ ?_
+  · intro eta heta
+    exact
+      Real.log_nonneg
+        (by exact_mod_cast (hbase_one eta heta) :
+          (1 : ℝ) ≤ (base eta : ℝ))
+  · intro eta heta n sample
+    have hbound :=
+      vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_succ_terminal_le_pow
+        (Observation := Observation)
+        (cardinality := fun n => cardinality eta n)
+        (base := base eta) (hbase_one eta heta)
+        (hterminal_succ_le eta heta) n sample
+    simpa [vdVWLogEmpiricalL1CoveringCardinality] using hbound
+
+/--
 Fixed-radius finite-net mean convergence for the selected least truncated
 empirical-cover cardinality from an explicit tail-expectation/UI condition.
 
