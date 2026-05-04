@@ -1233,10 +1233,15 @@ The concrete source objective layer now compiles:
 The source display
 `((beta-alpha)/8) * (x[0]^2 + tsum (x[n]-x[n+1])^2 - 2*x[0]) +
 (alpha/2)*‖x‖^2` is now a reusable Lean objective on `ell^2`.
-Next direct Exercise 4.2 step: prove/supply the concrete objective's
-`FirstOrderStrongConvexOn` package with the compiled coordinate gradient, then
-convert the compiled geometric obstruction into the source logarithmic
-iteration lower bound without finite-boundary slack.
+The infinite log bridge now also compiles:
+`exercise42_iteration_count_ge_logQuotientRate_of_sq_geometric_eps_lower_bound`
+and
+`exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min`
+convert the exact geometric obstruction into the source log-quotient iteration
+lower bound with constant `(alpha/2) * ‖0 - x_*‖^2`.  Next direct Exercise
+4.2 step: prove/supply the concrete objective's `FirstOrderStrongConvexOn`
+package with the compiled coordinate gradient; this is now the only analytic
+input still missing from the infinite direct route.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,

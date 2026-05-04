@@ -1149,5 +1149,138 @@ theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrde
       (f := exercise42InfiniteChainObjective alpha beta) (grad := grad)
       halpha_pos halpha_lt_beta hkappa hfirst hgrad_apply hx0 hspan N
 
+/--
+Infinite Exercise 4.2 geometric lower-bound to iteration-count bridge.  This
+is the exact infinite analogue of the finite `alpha/8` log bridge, but keeps
+the source constant `C = (alpha/2)‖x_0-x_*‖^2` abstract.
+-/
+theorem exercise42_iteration_count_ge_logQuotientRate_of_sq_geometric_eps_lower_bound
+    {C eps q : ℝ} {N : ℕ}
+    (hC_pos : 0 < C) (heps_pos : 0 < eps)
+    (hq_pos : 0 < q) (hq_lt_one : q < 1)
+    (hgeo : C * (q ^ (2 : ℕ)) ^ N ≤ eps) :
+    Real.log (eps / C) / (2 * Real.log q) ≤ (N : ℝ) := by
+  have hq_sq_pos : 0 < q ^ (2 : ℕ) := pow_pos hq_pos _
+  have hpow_pos : 0 < (q ^ (2 : ℕ)) ^ N := pow_pos hq_sq_pos _
+  have heps_div_pos : 0 < eps / C := div_pos heps_pos hC_pos
+  have hpow_le : (q ^ (2 : ℕ)) ^ N ≤ eps / C := by
+    rw [le_div_iff₀ hC_pos]
+    simpa [mul_comm, mul_left_comm, mul_assoc] using hgeo
+  have hlog_le :
+      Real.log ((q ^ (2 : ℕ)) ^ N) ≤ Real.log (eps / C) :=
+    (Real.log_le_log_iff hpow_pos heps_div_pos).2 hpow_le
+  have hleft :
+      (N : ℝ) * (2 * Real.log q) ≤ Real.log (eps / C) := by
+    rw [Real.log_pow, Real.log_pow] at hlog_le
+    simpa [Nat.cast_ofNat, mul_comm, mul_left_comm, mul_assoc] using hlog_le
+  have htwo_log_neg : 2 * Real.log q < 0 := by
+    have hlog_neg : Real.log q < 0 := Real.log_neg hq_pos hq_lt_one
+    nlinarith
+  exact (div_le_iff_of_neg htwo_log_neg).2 hleft
+
+/--
+Concrete infinite Exercise 4.2 log-quotient lower bound.  Near-minimality for
+the concrete hard-chain objective, together with the first-order/gradient
+package, forces the source logarithmic iteration lower bound with the exact
+zero-start distance to the infinite geometric minimizer.
+-/
+theorem exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha)
+    (hfirst : FirstOrderStrongConvexOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta) grad alpha)
+    (hgrad_apply : ∀ y i,
+      grad y i = exercise42InfiniteChainGradient alpha beta y i)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory grad x) (N : ℕ)
+    (hnear :
+      exercise42InfiniteChainObjective alpha beta (x N) ≤
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)) + eps) :
+    Real.log
+        (eps /
+          ((alpha / 2) *
+            ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+              exercise42InfiniteGeometricMinimizer
+                (chewi45GeometricRatio kappa)
+                (chewi45GeometricRatio_nonneg (kappa := kappa)
+                  ((by
+                    rw [hkappa]
+                    exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                      1 < kappa).le))
+                (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ))) /
+          (2 * Real.log (chewi45GeometricRatio kappa)) ≤
+      (N : ℝ) := by
+  let q := chewi45GeometricRatio kappa
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  let hq_nonneg : 0 ≤ q :=
+    chewi45GeometricRatio_nonneg (kappa := kappa) hkappa_gt.le
+  let hq_lt_one : q < 1 := chewi45GeometricRatio_lt_one kappa
+  let z := exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one
+  let C : ℝ :=
+    (alpha / 2) *
+      ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) - z‖ ^ (2 : ℕ)
+  have hq_pos : 0 < q := chewi45GeometricRatio_pos hkappa_gt
+  have hq_sq_lt_one : q ^ (2 : ℕ) < 1 := by
+    nlinarith [sq_nonneg q, hq_pos, hq_lt_one]
+  have hdist_sq_pos :
+      0 <
+        ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) - z‖ ^ (2 : ℕ) := by
+    have hnorm_eq :
+        ‖z‖ ^ (2 : ℕ) = q ^ (2 : ℕ) * (1 - q ^ (2 : ℕ))⁻¹ := by
+      simpa [z, q, hq_nonneg, hq_lt_one] using
+        exercise42InfiniteGeometricMinimizer_norm_sq hq_nonneg hq_lt_one
+    have hden_pos : 0 < 1 - q ^ (2 : ℕ) := by
+      nlinarith
+    have hnorm_pos :
+        0 < q ^ (2 : ℕ) * (1 - q ^ (2 : ℕ))⁻¹ :=
+      mul_pos (pow_pos hq_pos _) (inv_pos.mpr hden_pos)
+    rw [zero_sub, norm_neg, hnorm_eq]
+    exact hnorm_pos
+  have hC_pos : 0 < C := by
+    dsimp [C]
+    exact mul_pos (by positivity) hdist_sq_pos
+  have hgap :=
+    exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder
+      (grad := grad) halpha_pos halpha_lt_beta hkappa
+      hfirst hgrad_apply (x := x) hx0 hspan N
+  have hgap_le :
+      exercise42InfiniteChainObjective alpha beta (x N) -
+          exercise42InfiniteChainObjective alpha beta z ≤ eps := by
+    have hnear' :
+        exercise42InfiniteChainObjective alpha beta (x N) ≤
+          eps + exercise42InfiniteChainObjective alpha beta z := by
+      simpa [z, q, hq_nonneg, hq_lt_one, add_comm] using hnear
+    exact sub_le_iff_le_add.mpr hnear'
+  have hgeo : C * (q ^ (2 : ℕ)) ^ N ≤ eps := by
+    calc
+      C * (q ^ (2 : ℕ)) ^ N =
+          (alpha / 2) *
+            ((q ^ (2 : ℕ)) ^ N *
+              ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) - z‖ ^ (2 : ℕ)) := by
+            simp [C]
+            ring
+      _ ≤ exercise42InfiniteChainObjective alpha beta (x N) -
+          exercise42InfiniteChainObjective alpha beta z := by
+            simpa [z, q, hq_nonneg, hq_lt_one] using hgap
+      _ ≤ eps := hgap_le
+  simpa [C, z, q, hq_nonneg, hq_lt_one] using
+    exercise42_iteration_count_ge_logQuotientRate_of_sq_geometric_eps_lower_bound
+      (C := C) (eps := eps) (q := q) (N := N)
+      hC_pos heps_pos hq_pos hq_lt_one hgeo
+
 end Optimization
 end StatInference

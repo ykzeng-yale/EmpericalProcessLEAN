@@ -331,9 +331,13 @@ The concrete source objective layer now compiles:
 `exercise42InfiniteChainObjective`,
 `exercise42InfiniteChainObjective_apply`, and
 `exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder`.
+The exact infinite log bridge now compiles as
+`exercise42_iteration_count_ge_logQuotientRate_of_sq_geometric_eps_lower_bound`
+and
+`exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min`.
 Next, prove/supply the concrete objective's `FirstOrderStrongConvexOn` package
-with the compiled coordinate gradient, then convert the obstruction into the
-logarithmic iteration-count statement.  In parallel, specialize the remaining
+with the compiled coordinate gradient; the geometric obstruction and
+log-quotient conversion are already available.  In parallel, specialize the remaining
 reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.  Search

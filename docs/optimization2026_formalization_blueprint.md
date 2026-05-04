@@ -643,8 +643,12 @@ package, followed by the source-shaped log-rate wrapper.  The concrete
 objective layer now compiles as `exercise42InfiniteChainEdgeSq_summable`,
 `exercise42InfiniteChainObjective`, `exercise42InfiniteChainObjective_apply`,
 and `exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder`;
-only the objective's first-order/gradient package and the log-rate wrapper
-remain on this infinite Exercise 4.2 route.
+the exact log-quotient conversion now compiles as
+`exercise42_iteration_count_ge_logQuotientRate_of_sq_geometric_eps_lower_bound`
+and
+`exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min`.
+Only the objective's first-order/gradient package remains on this infinite
+Exercise 4.2 route.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,
