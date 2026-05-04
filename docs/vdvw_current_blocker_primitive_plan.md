@@ -2089,12 +2089,16 @@ finite_empiricalTrace_image_of_thresholdTraceCode_separates
 empiricalTrace_image_toFinset_card_le_thresholdTraceCodeSet_card
 thresholdTraceCodeSet_card_le_pi_binaryTraceSetFamily_card
 empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card
+empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_product_bound
 ```
 
 These prove that finite threshold signatures, when they separate the realized
 real-valued traces, make the empirical trace image finite and bound its
 cardinality by the product of the individual fixed-threshold binary trace
-family cardinalities.
+family cardinalities.  The final declaration also converts any supplied
+product cardinality estimate into the real natural-polynomial
+`traceCard + 1 <= C * (n + 1)^d` shape consumed by the Theorem 2.4.3
+finite-trace entropy package.
 
 Search record: reused local fixed-threshold declarations in `SubgraphTraceVC`,
 the new finite-code bridge in `TraceCoding`, mathlib `Finset.pi`,
@@ -2103,9 +2107,8 @@ big-operator APIs from `Mathlib.Data.Fintype.BigOperators`.  No ready local or
 mathlib theorem gave the VdVW finite-threshold signature/product-cardinality
 bridge.
 
-Next exact theorem-facing edit: prove the quantitative product-to-polynomial
-or product-to-shifted-log-linear bound from fixed-threshold VC/Sauer bounds and
-the number of thresholds required for separation.  Equivalently, provide the
-maximal-separated/internal-cover cardinality theorem that bypasses threshold
-products and directly supplies the natural-polynomial trace bound consumed by
-Theorem 2.4.3.
+Next exact theorem-facing edit: derive the product cardinality estimate itself
+from fixed-threshold VC/Sauer bounds and the number of thresholds required for
+separation.  Equivalently, provide the maximal-separated/internal-cover
+cardinality theorem that bypasses threshold products and directly supplies the
+natural-polynomial trace bound consumed by Theorem 2.4.3.

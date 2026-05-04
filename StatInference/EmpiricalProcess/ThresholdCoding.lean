@@ -250,4 +250,45 @@ theorem empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card
     (thresholdTraceCodeSet_card_le_pi_binaryTraceSetFamily_card
       sample indexClass classFun thresholds)
 
+/--
+Threshold-product cardinality estimates feed directly into the real
+natural-polynomial trace-cardinality shape used by the Theorem 2.4.3 entropy
+constructors.
+-/
+theorem empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_product_bound
+    {Observation : Type u} {Index : Type v} {n d : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {C : ℝ}
+    (hseparate :
+      ∀ index₁, index₁ ∈ indexClass ->
+        ∀ index₂, index₂ ∈ indexClass ->
+          (∀ threshold : {threshold // threshold ∈ thresholds},
+            thresholdTraceCode thresholds
+                (empiricalTrace sample classFun index₁) threshold =
+              thresholdTraceCode thresholds
+                (empiricalTrace sample classFun index₂) threshold) ->
+          empiricalTrace sample classFun index₁ =
+            empiricalTrace sample classFun index₂)
+    (hproduct_bound :
+      (((∏ threshold ∈ thresholds.attach,
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card : ℕ) : ℝ) + 1) ≤
+        C * (((n + 1 : ℕ) : ℝ) ^ d)) :
+    (((finite_empiricalTrace_image_of_thresholdTraceCode_separates hseparate).toFinset.card : ℝ) + 1) ≤
+      C * (((n + 1 : ℕ) : ℝ) ^ d) := by
+  have htrace_le :
+      (finite_empiricalTrace_image_of_thresholdTraceCode_separates hseparate).toFinset.card ≤
+        ∏ threshold ∈ thresholds.attach,
+          (empiricalBinaryTraceSetFamily sample indexClass
+            (thresholdIndicatorClassFun classFun threshold.1)).card :=
+    empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card hseparate
+  have htrace_le_real :
+      (((finite_empiricalTrace_image_of_thresholdTraceCode_separates hseparate).toFinset.card : ℝ) + 1) ≤
+        ((∏ threshold ∈ thresholds.attach,
+          (empiricalBinaryTraceSetFamily sample indexClass
+            (thresholdIndicatorClassFun classFun threshold.1)).card : ℕ) : ℝ) + 1 := by
+    exact_mod_cast Nat.add_le_add_right htrace_le 1
+  exact htrace_le_real.trans hproduct_bound
+
 end StatInference

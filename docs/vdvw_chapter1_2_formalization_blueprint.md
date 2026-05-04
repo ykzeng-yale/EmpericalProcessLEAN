@@ -739,6 +739,11 @@ above, so they do not change the theorem-level dashboard counts.
    individual fixed-threshold binary trace families, and composes separation
    with the finite-code layer to obtain
    `empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card`.
+   The follow-on handoff
+   `empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_product_bound`
+   converts any supplied product cardinality estimate into the exact real
+   natural-polynomial trace-cardinality bound used by the Theorem 2.4.3
+   entropy constructors.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
