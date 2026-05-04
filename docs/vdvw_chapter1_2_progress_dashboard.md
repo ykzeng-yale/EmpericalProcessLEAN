@@ -991,3 +991,19 @@ The new bridge
 uses a finite intersection over `hindex_finite.toFinset`; the finite-class
 SLLN and canonical outer-a.s. GC endpoints now depend only on actual class
 finiteness plus the envelope/measurability assumptions.
+
+2026-05-04 follow-up: the finite-class canonical route now also exports the
+direct outer-probability endpoint without global `[Countable Index]`.  The
+new general bridge
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalAverage`
+converts an outer-a.s. `P`-GC proof plus countable empirical-risk
+a.e.-measurability into the outer-probability branch.  The theorem-facing
+finite-class consumer
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln`
+uses `hindex_finite.countable`,
+`empiricalAverage_samplePath_aemeasurable_of_hasLaw`, and the canonical
+coordinate law `vdVWInfiniteProductMeasure_coordinate_hasLaw`; the book-style
+`VdVWPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln` now enters
+through this outer-probability branch.  This closes another finite-class
+endpoint while leaving the arbitrary/countable-class reverse/cofiltration
+blocker unchanged.

@@ -26131,8 +26131,58 @@ theorem
         (envelope := envelope) hindex_finite henvelope hclass henv_integrable).uniform_deviation_ae
 
 /--
+Canonical finite-class Theorem 2.4.3 outer-probability `P`-Glivenko-Cantelli
+endpoint from the direct finite-class SLLN route.
+
+This is the outer-probability companion to the outer-a.s. endpoint above.  It
+uses finite countability only for the bad-event measurability bridge and gets
+empirical-average a.e.-measurability from the canonical coordinate laws, so no
+global `Countable Index` assumption is needed.
+-/
+theorem
+    VdVWOuterProbabilityPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i) := by
+  have h_empirical :
+      ∀ sampleSize index, index ∈ indexClass ->
+        AEMeasurable
+          (fun sequence : ℕ -> Observation =>
+            empiricalAverage
+              (samplePath (fun i sequence => sequence i) sequence sampleSize)
+              (classFun index))
+          (vdVWInfiniteProductMeasure P) := by
+    intro sampleSize index hindex
+    exact
+      empiricalAverage_samplePath_aemeasurable_of_hasLaw
+        (μ := vdVWInfiniteProductMeasure P) (P := P)
+        (fun i sequence => sequence i) (classFun index) sampleSize
+        (fun i => vdVWInfiniteProductMeasure_coordinate_hasLaw P i)
+        (hclass index hindex)
+  exact
+    VdVWOuterProbabilityPGlivenkoCantelliClass_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalAverage
+      (μ := vdVWInfiniteProductMeasure P)
+      (P := P)
+      (indexClass := indexClass)
+      (classFun := classFun)
+      (X := fun i sequence => sequence i)
+      (VdVWOuterAlmostSurePGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hindex_finite henvelope hclass henv_integrable)
+      hindex_finite.countable
+      h_empirical
+
+/--
 Canonical finite-class book-style `P`-Glivenko-Cantelli endpoint using the
-outer-a.s. branch supplied by the direct SLLN route.
+outer-probability branch supplied by the direct finite-class SLLN route.
 -/
 theorem
     VdVWPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
@@ -26147,8 +26197,8 @@ theorem
     VdVWPGlivenkoCantelliClass
       (vdVWInfiniteProductMeasure P) P indexClass classFun
       (fun i sequence => sequence i) :=
-  Or.inr
-    (VdVWOuterAlmostSurePGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
+  Or.inl
+    (VdVWOuterProbabilityPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
       (P := P) (indexClass := indexClass) (classFun := classFun)
       (envelope := envelope) hindex_finite henvelope hclass henv_integrable)
 

@@ -729,6 +729,30 @@ def VdVWOuterProbabilityPGlivenkoCantelliClass
       empiricalAverage (samplePath X ω sampleSize) (classFun index))
 
 /--
+Outer-a.s. `P`-Glivenko-Cantelli plus countable coordinate
+a.e.-measurability gives the direct outer-probability branch.
+-/
+theorem
+    VdVWOuterProbabilityPGlivenkoCantelliClass_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalAverage
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {X : ℕ -> Ω -> Observation}
+    (h_outer_as :
+      VdVWOuterAlmostSurePGlivenkoCantelliClass μ P indexClass classFun X)
+    (h_count : indexClass.Countable)
+    (h_empirical :
+      ∀ sampleSize index, index ∈ indexClass ->
+        AEMeasurable
+          (fun ω =>
+            empiricalAverage (samplePath X ω sampleSize)
+              (classFun index)) μ) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass μ P indexClass classFun X :=
+  vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalRisk
+    h_outer_as h_count h_empirical
+
+/--
 Book-style `P`-Glivenko-Cantelli predicate: the uniform law holds either in
 outer probability or outer almost surely, matching the phrasing in the
 empirical-process introduction.

@@ -3495,3 +3495,21 @@ inputs; local finite-set API `Set.Finite.toFinset` and `Finset.induction_on`
 replace the previous countable `ae_all_iff` route.  This is closer to the
 textbook finite-class case: finiteness of the class, not countability of the
 ambient index type, is now the relevant assumption.
+
+2026-05-04 follow-up: the finite-class canonical SLLN/GC route now also has
+the direct outer-probability `P`-Glivenko-Cantelli endpoint without a global
+`[Countable Index]` assumption.  New compiled declarations are
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalAverage`
+in `GlivenkoCantelli.lean`, and
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln`
+in `Theorem243.lean`; the book-style
+`VdVWPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln` now consumes
+the outer-probability branch directly.  Search/reuse record: local
+`vdVWOuterProbabilityUniformDeviationTendstoZeroOn_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalRisk`
+is the reusable bad-event bridge, finite class countability is supplied by
+`hindex_finite.countable`, and empirical-risk a.e.-measurability is supplied by
+`empiricalAverage_samplePath_aemeasurable_of_hasLaw` plus
+`vdVWInfiniteProductMeasure_coordinate_hasLaw`.  The remaining non-finite-class
+blocker is unchanged: exact arbitrary/countable-class Lemma 2.4.5 still needs
+the reverse/permutation-symmetric cofiltration theorem or a different
+structural route.
