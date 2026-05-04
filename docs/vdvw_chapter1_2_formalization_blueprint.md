@@ -905,7 +905,11 @@ above, so they do not change the theorem-level dashboard counts.
    product-space integrability, and sign-side supremum integrability fields are
    now also derived from countability, sub-Gaussian sign integrability,
    product-measure integrability/Fubini, and the countable product measurable
-   cover constructor.
+   cover constructor.  The theorem-facing wrapper
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable`
+   now consumes this constructor, so the full-subgraph route exposes only the
+   structural VC route, ordinary envelope/integrability/measurability
+   hypotheses, and Rademacher sign hypotheses.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

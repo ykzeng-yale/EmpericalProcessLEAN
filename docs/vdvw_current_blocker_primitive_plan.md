@@ -2748,10 +2748,16 @@ lemmas prove
 `integrable_vdVWWeightedClassSupremum_truncated_rademacher_product_of_countable`,
 and `VdVWMeasurableCover.truncated_rademacher_product_of_countable`.
 
-Next exact theorem-facing edit: use the simplified
-`VdVWTheorem243FullSubgraphSideConditions.of_integrable` constructor in the
-named Theorem 2.4.3 full-subgraph assembly, so the final theorem-facing
-statement no longer exposes the now-derived integrability/measurable-cover
-witnesses.  Remaining exact-textbook alignment still includes the structural
-VC/subgraph quantized-grid implication and any arbitrary-map/nonmeasurable
-measurability primitives needed by the exact VdV&W statement.
+2026-05-04 follow-up: the simplified constructor is now consumed by the
+theorem-facing assembly
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable`.
+This full-subgraph route no longer exposes the now-derived
+integrability/measurable-cover witnesses; it keeps only the structural
+full-subgraph VC route, envelope/measurability/integrability assumptions, and
+Rademacher sign hypotheses explicit.
+
+Next exact theorem-facing edit: move from this proof layer toward the exact
+Theorem 2.4.3 statement by aligning the remaining structural full-subgraph
+VC/grid assumption with the textbook entropy hypothesis, or else record the
+precise additional theorem-level side condition.  Do not recreate the derived
+integrability/measurable-cover witnesses.
