@@ -166,7 +166,10 @@ the whole-space differentiable case:
   displayed minimizer candidate also now compiles as
   `lowerBoundChainMinimizer`, with
   `lowerBoundChainGradient_lowerBoundChainMinimizer` proving that the
-  chain-gradient vanishes at it.
+  chain-gradient vanishes at it.  The source norm estimate also now compiles:
+  coordinate nonnegativity, coordinate upper bounds, coordinate square bounds,
+  and `lowerBoundChainMinimizer_norm_sq_le_dim` prove `‖x_*‖² ≤ d` using
+  mathlib's `EuclideanSpace.real_norm_sq_eq` and `Finset.sum_le_sum`.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -827,6 +830,10 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainMinimizer`
 - `StatInference.Optimization.lowerBoundChainGradient_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChainMinimizer_coord_nonneg`
+- `StatInference.Optimization.lowerBoundChainMinimizer_coord_le_one`
+- `StatInference.Optimization.lowerBoundChainMinimizer_coord_sq_le_one`
+- `StatInference.Optimization.lowerBoundChainMinimizer_norm_sq_le_dim`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
@@ -848,10 +855,10 @@ already compiled, so do not spend another run there unless strengthening the
 continuity hypotheses materially advances the analytic route.  For Chapter 4,
 reuse `LowerBounds.lean`'s single gradient-span/oracle model, the compiled
 `coordinatePrefixSubmodule` induction, and `lowerBoundChainGradient`
-support/minimizer theorems.  Search mathlib basis/coordinate, matrix, PSD, and
-smoothness APIs before connecting the oracle to the actual quadratic
-objective, proving convex/smooth facts, `f_d = f_N` on `V_N`, or
-minimizer-value estimates.
+support/minimizer/norm-estimate theorems.  Search mathlib basis/coordinate,
+matrix, PSD, and smoothness APIs before connecting the oracle to the actual
+quadratic objective, proving convex/smooth facts, `f_d = f_N` on `V_N`, or
+objective/minimizer-value estimates.
 Continue
 deferring exercise proofs except where an exercise statement is needed as a
 temporary interface for a main-text theorem; such exercise material belongs

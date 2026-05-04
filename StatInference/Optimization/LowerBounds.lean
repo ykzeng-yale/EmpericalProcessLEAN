@@ -337,6 +337,48 @@ theorem lowerBoundChainGradient_lowerBoundChainMinimizer
       ring_nf
       simp
 
+/-- Each coordinate of Chewi's displayed minimizer is nonnegative. -/
+theorem lowerBoundChainMinimizer_coord_nonneg (d : ℕ) (i : Fin d) :
+    0 ≤ lowerBoundChainMinimizer d i := by
+  have hdenpos : 0 < (d : ℝ) + 1 := by positivity
+  have hlt : (i.1 : ℝ) < (d : ℝ) := by exact_mod_cast i.2
+  have hfrac_le_one :
+      ((i.1 : ℝ) + 1) / ((d : ℝ) + 1) ≤ 1 := by
+    rw [div_le_one hdenpos]
+    nlinarith
+  simp [lowerBoundChainMinimizer, PiLp.toLp_apply]
+  nlinarith
+
+/-- Each coordinate of Chewi's displayed minimizer is at most one. -/
+theorem lowerBoundChainMinimizer_coord_le_one (d : ℕ) (i : Fin d) :
+    lowerBoundChainMinimizer d i ≤ 1 := by
+  have hfrac_nonneg :
+      0 ≤ ((i.1 : ℝ) + 1) / ((d : ℝ) + 1) := by positivity
+  simp [lowerBoundChainMinimizer, PiLp.toLp_apply]
+  nlinarith
+
+/-- The coordinates of Chewi's displayed minimizer have square at most one. -/
+theorem lowerBoundChainMinimizer_coord_sq_le_one (d : ℕ) (i : Fin d) :
+    (lowerBoundChainMinimizer d i) ^ (2 : ℕ) ≤ 1 := by
+  have hnonneg := lowerBoundChainMinimizer_coord_nonneg d i
+  have hle := lowerBoundChainMinimizer_coord_le_one d i
+  have hsquare :
+      (lowerBoundChainMinimizer d i) ^ (2 : ℕ) ≤ (1 : ℝ) ^ (2 : ℕ) :=
+    (sq_le_sq₀ hnonneg zero_le_one).2 hle
+  simpa using hsquare
+
+/-- Chewi's displayed minimizer satisfies the source estimate `‖x_*‖² ≤ d`. -/
+theorem lowerBoundChainMinimizer_norm_sq_le_dim (d : ℕ) :
+    ‖lowerBoundChainMinimizer d‖ ^ (2 : ℕ) ≤ (d : ℝ) := by
+  rw [EuclideanSpace.real_norm_sq_eq]
+  calc
+    (∑ i : Fin d, (lowerBoundChainMinimizer d i) ^ (2 : ℕ))
+        ≤ ∑ _i : Fin d, (1 : ℝ) := by
+          exact Finset.sum_le_sum fun i _hi =>
+            lowerBoundChainMinimizer_coord_sq_le_one d i
+    _ = (d : ℝ) := by
+      simp [Finset.sum_const, nsmul_eq_mul]
+
 end CoordinatePrefix
 
 end Optimization
