@@ -292,6 +292,72 @@ theorem bddAbove_vdVWWeightedClassValueSet_centered_truncated
         (lt_of_not_ge hM)
 
 /--
+A uniform pointwise class bound controls the weighted class supremum by the
+weighted sum of the bound.
+-/
+theorem vdVWWeightedClassSupremum_le_sum_abs_mul_bound_of_uniform_bound
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} (weights : Fin n -> ℝ) (sample : SampleAt Observation n)
+    {bound : ℝ} (hbound_nonneg : 0 ≤ bound)
+    (hbound :
+      ∀ index, index ∈ indexClass -> ∀ observation,
+        |classFun index observation| ≤ bound) :
+    vdVWWeightedClassSupremum indexClass classFun weights sample ≤
+      ∑ i : Fin n, |weights i| * bound := by
+  have hsum_nonneg :
+      0 ≤ ∑ i : Fin n, |weights i| * bound := by
+    exact Finset.sum_nonneg fun i _hi =>
+      mul_nonneg (abs_nonneg (weights i)) hbound_nonneg
+  unfold vdVWWeightedClassSupremum
+  refine Real.iSup_le ?_ hsum_nonneg
+  intro index
+  refine Real.iSup_le ?_ hsum_nonneg
+  intro hindex
+  calc
+    |vdVWWeightedSampleSum classFun weights index sample|
+        = |∑ i : Fin n, weights i * classFun index (sample i)| := by
+          rfl
+    _ ≤ ∑ i : Fin n, |weights i * classFun index (sample i)| := by
+          simpa using
+            (Finset.abs_sum_le_sum_abs
+              (fun i : Fin n => weights i * classFun index (sample i))
+              (Finset.univ : Finset (Fin n)))
+    _ = ∑ i : Fin n, |weights i| * |classFun index (sample i)| := by
+          simp [abs_mul]
+    _ ≤ ∑ i : Fin n, |weights i| * bound := by
+          exact Finset.sum_le_sum fun i _hi =>
+            mul_le_mul_of_nonneg_left
+              (hbound index hindex (sample i)) (abs_nonneg (weights i))
+
+/--
+The centered truncated class is uniformly bounded by `2 * max M 0` for all
+truncation levels.
+-/
+theorem abs_centered_vdVWTruncatedClassFun_le_two_mul_max_M_zero
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    {index : Index} (hindex : index ∈ indexClass)
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (observation : Observation) :
+    |vdVWTruncatedClassFun classFun envelope M index observation -
+        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P| ≤
+      2 * max M 0 := by
+  by_cases hM : 0 ≤ M
+  · simpa [max_eq_left hM] using
+      abs_centered_vdVWTruncatedClassFun_le_two_mul_M
+        henvelope hM hindex htruncIntegrable observation
+  · have hMneg : M < 0 := lt_of_not_ge hM
+    rw [vdVWTruncatedClassFun_eq_zero_of_neg henvelope hMneg index observation,
+      integral_vdVWTruncatedClassFun_eq_zero_of_neg
+        (P := P) henvelope hMneg index]
+    simp [max_eq_right (le_of_lt hMneg)]
+
+/--
 Canonical natural integer-grid radius for truncation level `M` and positive
 empirical-cover radius `eta`.
 -/
@@ -1970,6 +2036,67 @@ theorem measurable_vdVWWeightedClassSupremum_of_countable
   unfold vdVWWeightedClassSupremum
   exact Measurable.biSup indexClass hcount fun index hindex =>
     (hterm index hindex).abs
+
+/--
+Countable centered truncated weighted class suprema are integrable under the
+empirical product law once fixed-index truncated functions are integrable.
+-/
+theorem integrable_vdVWWeightedClassSupremum_centered_truncated_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    {n : ℕ} (weights : Fin n -> ℝ) :
+    Integrable
+      (fun sample : SampleAt Observation n =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          weights sample)
+      (vdVWProductMeasure P n) := by
+  let centeredClassFun : Index -> Observation -> ℝ :=
+    fun index observation =>
+      vdVWTruncatedClassFun classFun envelope M index observation -
+        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P
+  have hsup_meas :
+      AEStronglyMeasurable
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass centeredClassFun weights sample)
+        (vdVWProductMeasure P n) := by
+    exact
+      (measurable_vdVWWeightedClassSupremum_of_countable
+        hcount weights (fun sample : SampleAt Observation n => sample)
+        (fun index hindex =>
+          measurable_vdVWWeightedSampleSum weights
+            ((measurable_vdVWTruncatedClassFun
+              (hclass index hindex) henv).sub measurable_const))).aemeasurable.aestronglyMeasurable
+  have hconst :
+      Integrable
+        (fun _sample : SampleAt Observation n =>
+          ∑ i : Fin n, |weights i| * (2 * max M 0))
+        (vdVWProductMeasure P n) := by
+    exact integrable_const _
+  refine Integrable.mono' hconst hsup_meas ?_
+  refine ae_of_all _ ?_
+  intro sample
+  have hsup_nonneg :
+      0 ≤ vdVWWeightedClassSupremum indexClass centeredClassFun weights sample :=
+    vdVWWeightedClassSupremum_nonneg indexClass centeredClassFun weights sample
+  rw [Real.norm_eq_abs, abs_of_nonneg hsup_nonneg]
+  exact
+    vdVWWeightedClassSupremum_le_sum_abs_mul_bound_of_uniform_bound
+      weights sample (by positivity)
+      (fun index hindex observation =>
+        abs_centered_vdVWTruncatedClassFun_le_two_mul_max_M_zero
+          henvelope hindex (htruncIntegrable index hindex) observation)
 
 /--
 Finite truncated weighted class suprema are integrable under the empirical
@@ -19013,16 +19140,6 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
               (fun _ : Fin n => (n : ℝ)⁻¹)
               (fun i : Fin n => (sample i, ghostSample i)))
           (vdVWProductMeasure P n))
-    (hcenteredSupIntegrable :
-      ∀ M n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWWeightedClassSupremum indexClass
-              (fun index : Index => fun observation : Observation =>
-                vdVWTruncatedClassFun classFun envelope M index observation -
-                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
-              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
-          (vdVWProductMeasure P n))
     (hghostExpectationIntegrable :
       ∀ M n,
         Integrable
@@ -19116,7 +19233,17 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
           integrable_vdVWTruncatedClassFun_of_integrable
             (hclass index hindex) henv (hclassIntegrable index hindex))
   hpairSupIntegrable := hpairSupIntegrable
-  hcenteredSupIntegrable := hcenteredSupIntegrable
+  hcenteredSupIntegrable := by
+    intro M n
+    exact
+      integrable_vdVWWeightedClassSupremum_centered_truncated_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (Set.to_countable indexClass)
+        henvelope hclass henv
+        (fun index hindex =>
+          integrable_vdVWTruncatedClassFun_of_integrable
+            (hclass index hindex) henv (hclassIntegrable index hindex))
+        (fun _ : Fin n => (n : ℝ)⁻¹)
   hghostExpectationIntegrable := hghostExpectationIntegrable
   hsplitSupIntegrable := hsplitSupIntegrable
   hsampleSupIntegrable := hsampleSupIntegrable

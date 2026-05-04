@@ -894,7 +894,8 @@ above, so they do not change the theorem-level dashboard counts.
    truncated-function integrability field from ordinary class integrability and
    the centered truncated weighted-value-set boundedness field from the
    envelope/probability integral bounds; it also derives the centered
-   measurable-cover field from countability and coordinate measurability.
+   measurable-cover field and the centered supremum integrability field from
+   countability, coordinate measurability, and the centered truncation bound.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

@@ -506,6 +506,10 @@ truncated class identically zero.
 `Ucentered` from
 `VdVWMeasurableCover.centered_truncated_of_countable_of_coordinate`, using the
 countability of `Index` plus coordinate measurability.
+2026-05-04 follow-up: the constructor now also derives
+`hcenteredSupIntegrable`.  New supporting lemmas bound a weighted supremum from
+a uniform class bound and prove countable centered truncated supremum
+integrability under `P^n`.
 
 ## Verification Monitor
 

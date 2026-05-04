@@ -2698,7 +2698,17 @@ Search/reuse record: local `Theorem243.lean` already had
 mathlib `Set.to_countable` supplies the countability evidence from
 `[Countable Index]`.  No new primitive was needed for this centered cover.
 
+2026-05-04 follow-up: the constructor now also derives the package field
+`hcenteredSupIntegrable`.  Search/reuse record: local `Theorem243.lean` already
+had `measurable_vdVWWeightedClassSupremum_of_countable`,
+`measurable_vdVWWeightedSampleSum`, and centered truncation bounds; local
+`PMeasurable.lean` supplied `vdVWWeightedClassSupremum_nonneg`; mathlib supplied
+`Integrable.mono'` and `integrable_const`.  New local lemmas prove
+`vdVWWeightedClassSupremum_le_sum_abs_mul_bound_of_uniform_bound`,
+`abs_centered_vdVWTruncatedClassFun_le_two_mul_max_M_zero`, and
+`integrable_vdVWWeightedClassSupremum_centered_truncated_of_countable`.
+
 Next exact theorem-facing edit: reduce the remaining package fields only where
 there are genuine local lemmas to discharge them.  The main unresolved
-infinite-class fields are the centered/pair/split/random-sign supremum
-integrability and the random-sign/product measurable-cover witnesses.
+infinite-class fields are the pair/split/random-sign supremum integrability and
+the random-sign/product measurable-cover witnesses.
