@@ -952,6 +952,129 @@ theorem strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_interior
     linarith [hrec_mul]
   simpa [q, mul_assoc, mul_left_comm, mul_comm] using hmain
 
+theorem strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_first
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d : ℕ} {i : Fin d} (hfirst : i.1 = 0) (hnext : i.1 + 1 < d) :
+    strongLowerBoundChainGradient alpha beta d
+      (strongLowerBoundGeometricCandidate kappa d) i = 0 := by
+  let q := chewi45GeometricRatio kappa
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  have hgamma_ne : beta - alpha ≠ 0 := by linarith
+  have hcoef :
+      4 / (kappa - 1) = 4 * alpha / (beta - alpha) := by
+    rw [hkappa]
+    field_simp [halpha_pos.ne', hgamma_ne]
+  have hrec :
+      q ^ (0 + 2) -
+          (2 + 4 * alpha / (beta - alpha)) * q ^ (0 + 1) +
+        q ^ 0 = 0 := by
+    have h :=
+      chewi45GeometricRatio_pow_recurrence (kappa := kappa) hkappa_gt 0
+    simpa [q, hcoef] using h
+  have hnext_exp : i.1 + 1 + 1 = 2 := by omega
+  have hone_lt_d : 1 < d := by omega
+  rw [strongLowerBoundChainGradient_apply]
+  simp [lowerBoundChainGradient, strongLowerBoundGeometricCandidate,
+    PiLp.toLp_apply, hfirst, hone_lt_d]
+  have hrec_mul :
+      (beta - alpha) * (2 * q - 1 - q ^ (2 : ℕ)) +
+        4 * alpha * q = 0 := by
+    have hrec' :
+        2 * q - 1 - q ^ (2 : ℕ) +
+            (4 * alpha / (beta - alpha)) * q = 0 := by
+      norm_num at hrec
+      linarith [hrec]
+    field_simp [hgamma_ne] at hrec'
+    ring_nf at hrec' ⊢
+    exact hrec'
+  have hmain :
+      (beta - alpha) / 4 * (2 * q - 1 - q ^ (2 : ℕ)) +
+          alpha * q =
+        0 := by
+    field_simp
+    linarith [hrec_mul]
+  simpa [q, mul_assoc, mul_left_comm, mul_comm] using hmain
+
+theorem strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_not_last
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d : ℕ} {i : Fin d} (hnext : i.1 + 1 < d) :
+    strongLowerBoundChainGradient alpha beta d
+      (strongLowerBoundGeometricCandidate kappa d) i = 0 := by
+  by_cases hfirst : i.1 = 0
+  · exact strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_first
+      halpha_pos halpha_lt_beta hkappa hfirst hnext
+  · have hprev : 0 < i.1 := by omega
+    exact strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_interior
+      halpha_pos halpha_lt_beta hkappa hprev hnext
+
+theorem strongLowerBoundChainGradient_geometricCandidate_eq_terminal_residual
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d : ℕ} {i : Fin d} (hlast : i.1 + 1 = d) :
+    strongLowerBoundChainGradient alpha beta d
+      (strongLowerBoundGeometricCandidate kappa d) i =
+        ((beta - alpha) / 4) *
+          (chewi45GeometricRatio kappa) ^ (i.1 + 2) := by
+  let q := chewi45GeometricRatio kappa
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  have hgamma_ne : beta - alpha ≠ 0 := by linarith
+  have hcoef :
+      4 / (kappa - 1) = 4 * alpha / (beta - alpha) := by
+    rw [hkappa]
+    field_simp [halpha_pos.ne', hgamma_ne]
+  have hrec :
+      q ^ (i.1 + 2) -
+          (2 + 4 * alpha / (beta - alpha)) * q ^ (i.1 + 1) +
+        q ^ i.1 = 0 := by
+    have h :=
+      chewi45GeometricRatio_pow_recurrence (kappa := kappa) hkappa_gt i.1
+    simpa [q, hcoef] using h
+  have hrec_mul :
+      (beta - alpha) *
+          (2 * q ^ (i.1 + 1) - q ^ i.1 - q ^ (i.1 + 2)) +
+        4 * alpha * q ^ (i.1 + 1) = 0 := by
+    have hrec' :
+        2 * q ^ (i.1 + 1) - q ^ i.1 - q ^ (i.1 + 2) +
+            (4 * alpha / (beta - alpha)) * q ^ (i.1 + 1) = 0 := by
+      linarith [hrec]
+    field_simp [hgamma_ne] at hrec'
+    ring_nf at hrec' ⊢
+    exact hrec'
+  rw [strongLowerBoundChainGradient_apply]
+  by_cases hfirst : i.1 = 0
+  · have hnot_next : ¬i.1 + 1 < d := by omega
+    have hone_not_lt : ¬1 < d := by omega
+    simp [lowerBoundChainGradient, strongLowerBoundGeometricCandidate,
+      PiLp.toLp_apply, hfirst, hone_not_lt]
+    have hrec_mul0 :
+        (beta - alpha) * (2 * q - 1 - q ^ (2 : ℕ)) + 4 * alpha * q = 0 := by
+      simpa [hfirst] using hrec_mul
+    have hmain :
+        (beta - alpha) / 4 * (2 * q - 1) + alpha * q =
+          (beta - alpha) / 4 * q ^ (2 : ℕ) := by
+      field_simp
+      nlinarith [hrec_mul0]
+    simpa [q, hfirst, mul_assoc, mul_left_comm, mul_comm] using hmain
+  · have hprev : 0 < i.1 := by omega
+    have hnot_next : ¬i.1 + 1 < d := by omega
+    have hprev_exp : i.1 - 1 + 1 = i.1 := by omega
+    simp [lowerBoundChainGradient, strongLowerBoundGeometricCandidate,
+      PiLp.toLp_apply, hprev, hnot_next, hprev_exp]
+    have hmain :
+        (beta - alpha) / 4 *
+              (2 * q ^ (i.1 + 1) - q ^ i.1) +
+            alpha * q ^ (i.1 + 1) =
+          (beta - alpha) / 4 * q ^ (i.1 + 2) := by
+      field_simp
+      nlinarith [hrec_mul]
+    simpa [q, mul_assoc, mul_left_comm, mul_comm] using hmain
+
 /-- Squared coordinate tail beyond the source prefix subspace `V_N`. -/
 noncomputable def coordinateTailSq (d N : ℕ)
     (z : EuclideanSpace ℝ (Fin d)) : ℝ :=

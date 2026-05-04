@@ -543,7 +543,13 @@ that geometric vector now also compiles:
 The finite coordinate model `strongLowerBoundGeometricCandidate` and
 `strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_interior` verify
 that this vector satisfies the zero-gradient equation on every nonterminal
-interior coordinate when `kappa = beta / alpha`.
+interior coordinate when `kappa = beta / alpha`.  The boundary-coordinate
+algebra now also compiles: `strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_first`
+handles the first coordinate when it is nonterminal,
+`strongLowerBoundChainGradient_geometricCandidate_eq_zero_of_not_last` packages
+all nonterminal coordinates, and
+`strongLowerBoundChainGradient_geometricCandidate_eq_terminal_residual`
+computes the exact finite-truncation residual at the terminal coordinate.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
