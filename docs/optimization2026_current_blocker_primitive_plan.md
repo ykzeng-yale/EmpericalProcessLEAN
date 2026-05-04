@@ -1323,9 +1323,17 @@ value.  The public rate wrapper
 `exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient`
 now also compiles: its near-minimality hypothesis is exactly the source-shaped
 `f(x_N) <= f_* + eps`, while `hfstar` records that `f_*` is the geometric
-minimizer value.  Next direct Exercise 4.2 step: either remove the remaining
-`hfstar` bookkeeping by defining a local optimum-value abbreviation, or feed
-this exact source-shaped rate wrapper into the Theorem 4.5 lower-bound route.
+minimizer value.  The newest layer removes that bookkeeping by defining
+`exercise42InfiniteChainObjectiveMinValue` and proving
+`exercise42InfiniteChainObjectiveMinValue_le_concreteGradient`,
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_optValue_concreteGradient`,
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient`.
+The public Exercise 4.2 rate route can now state near-minimality directly
+against the named optimum value.  Next direct step: feed this opt-value package
+into the Theorem 4.5 lower-bound route, or factor the infinite Exercise 4.2
+substrate into a pre-`Theorem45` module if Theorem 4.5 itself must import it
+without a cycle.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,

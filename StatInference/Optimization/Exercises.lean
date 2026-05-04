@@ -1617,6 +1617,40 @@ theorem exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient
       (by intro y i; rfl)
 
 /--
+Canonical optimum value for the concrete infinite Exercise 4.2 hard-chain
+objective.  The proof arguments record the source condition-number relation
+used to certify that Chewi's geometric profile is admissible.
+-/
+noncomputable def exercise42InfiniteChainObjectiveMinValue
+    (alpha beta kappa : ℝ) (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha) : ℝ :=
+  exercise42InfiniteChainObjective alpha beta
+    (exercise42InfiniteGeometricMinimizer
+      (chewi45GeometricRatio kappa)
+      (chewi45GeometricRatio_nonneg (kappa := kappa)
+        ((by
+          rw [hkappa]
+          exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+            1 < kappa).le))
+      (chewi45GeometricRatio_lt_one kappa))
+
+/--
+The named Exercise 4.2 optimum value is below every concrete hard-chain value.
+-/
+theorem exercise42InfiniteChainObjectiveMinValue_le_concreteGradient
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteChainObjectiveMinValue
+        alpha beta kappa halpha_pos halpha_lt_beta hkappa ≤
+      exercise42InfiniteChainObjective alpha beta y := by
+  have hmin :=
+    exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient
+      halpha_pos halpha_lt_beta hkappa
+  rw [isMinOn_univ_iff] at hmin
+  simpa [exercise42InfiniteChainObjectiveMinValue] using hmin y
+
+/--
 First-order lower model at the infinite hard-chain minimizer.  This discharges
 the formerly supplied lower-model input from `FirstOrderStrongConvexOn` and the
 compiled zero-gradient coordinate formula.
@@ -2159,6 +2193,41 @@ theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minVa
       halpha_pos halpha_lt_beta hkappa hx0 hspan N
 
 /--
+Same source-display lower bound using the canonical Exercise 4.2 optimum-value
+abbreviation, avoiding a separate `hfstar` bookkeeping hypothesis.
+-/
+theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_optValue_concreteGradient
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ) :
+    (alpha / 2) *
+        ((chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^
+              (2 : ℕ)) ≤
+      exercise42InfiniteChainObjective alpha beta (x N) -
+        exercise42InfiniteChainObjectiveMinValue
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa := by
+  exact
+    exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minValue_concreteGradient
+      halpha_pos halpha_lt_beta hkappa
+      (fstar :=
+        exercise42InfiniteChainObjectiveMinValue
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa)
+      (by simp [exercise42InfiniteChainObjectiveMinValue])
+      hx0 hspan N
+
+/--
 Fully concrete infinite Exercise 4.2 log-quotient lower bound.  Near-minimality
 for the displayed hard-chain objective forces the source logarithmic iteration
 lower bound, with no remaining supplied first-order or gradient hypotheses.
@@ -2539,6 +2608,58 @@ theorem exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_conc
   exact
     exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale
       halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
+      hx0 hspan N hnear heps_le_initial
+
+/--
+Public Exercise 4.2 rate wrapper using the canonical optimum-value
+abbreviation, so the near-minimality hypothesis is directly
+`f(x_N) <= f_* + eps`.
+-/
+theorem exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha) (hkappa_four : 4 ≤ kappa)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ)
+    (hnear :
+      exercise42InfiniteChainObjective alpha beta (x N) ≤
+        exercise42InfiniteChainObjectiveMinValue
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa + eps)
+    (heps_le_initial :
+      eps ≤
+        (alpha / 2) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)) :
+    -((Real.sqrt kappa / 2) *
+        Real.log
+          (eps /
+            ((alpha / 2) *
+              ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+                exercise42InfiniteGeometricMinimizer
+                  (chewi45GeometricRatio kappa)
+                  (chewi45GeometricRatio_nonneg (kappa := kappa)
+                    ((by
+                      rw [hkappa]
+                      exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                        1 < kappa).le))
+                  (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)))) / 4 - 1 ≤
+      (N : ℝ) := by
+  exact
+    exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient
+      halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
+      (fstar :=
+        exercise42InfiniteChainObjectiveMinValue
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa)
+      (by simp [exercise42InfiniteChainObjectiveMinValue])
       hx0 hspan N hnear heps_le_initial
 
 end Optimization

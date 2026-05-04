@@ -406,9 +406,16 @@ renames the right side to the textbook `f(x_N)-f_*` shape through an `hfstar`
 identification.  The public rate wrapper
 `exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient`
 now accepts the source-shaped hypothesis `f(x_N) <= f_* + eps` and returns the
-compiled `sqrt(kappa)` iteration lower bound.  The next target is feeding this
-wrapper into the Theorem 4.5 condition-number/rate comparison or replacing the
-remaining `hfstar` parameter by a local optimum-value abbreviation.  In
+compiled `sqrt(kappa)` iteration lower bound.  The newest opt-value pass adds
+`exercise42InfiniteChainObjectiveMinValue`,
+`exercise42InfiniteChainObjectiveMinValue_le_concreteGradient`,
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_optValue_concreteGradient`,
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient`,
+so the public Exercise 4.2 route no longer exposes an `hfstar` equality
+hypothesis.  The next target is feeding this wrapper into the Theorem 4.5
+condition-number/rate comparison, or factoring the infinite Exercise 4.2
+substrate into a pre-`Theorem45` module if direct import is needed.  In
 parallel, specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.

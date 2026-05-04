@@ -721,9 +721,15 @@ the display to `f(x_N)-f_*`
 under an `hfstar` value identification.  The public rate wrapper
 `exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient`
 now combines the `f_*` near-minimality hypothesis with the already compiled
-`sqrt(kappa)` lower-bound statement.  Next is feeding that exact package into
-Theorem 4.5, or replacing the remaining `hfstar` value proof by a local
-optimum-value abbreviation.
+`sqrt(kappa)` lower-bound statement.  The newest opt-value layer defines
+`exercise42InfiniteChainObjectiveMinValue` and proves the named-value lower
+bound plus source-display/rate wrappers
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_optValue_concreteGradient`
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient`.
+Next is feeding that exact package into Theorem 4.5, or moving the infinite
+Exercise 4.2 substrate into a pre-`Theorem45` module to avoid import cycles
+for a direct Theorem 4.5 dependency.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,
