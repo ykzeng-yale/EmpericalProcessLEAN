@@ -50,17 +50,19 @@ runs.
 
 Current manual objective: aggressively formalize and prove the main theorem
 content of Sinho Chewi's Optimization 2026 notes in Lean under
-`StatInference/Optimization`, continuing from the Chapter 1/3 bridge frontier:
-minimizer uniqueness, Proposition 1.6's segment-strong-convexity to
-first-order lower-model bridge, and Theorem 3.3/3.4 wrappers from the actual
-Definition 1.5 `StrongConvexOn Set.univ` assumption.  Search existing mathlib
-and local `StatInference` APIs first, prove the next highest-leverage
-main-text theorem layer, verify with focused
-`lake env lean`, targeted `lake build StatInference`, proof-hole and secret
-scans, update this route
-state, and commit/push clean verified progress.  Skip exercise proofs until
-the main textbook theorem lane is covered; exercise statements may be used as
-supplied interfaces only when they directly unblock a main-text theorem.
+`StatInference/Optimization`, continuing from the Chapter 2 gradient-flow
+frontier and the existing Chapter 1/3 bridge frontier.  The current route
+should push Chapter 2 main-text theorem layers after the compiled
+gradient-flow calculus/exponential-decay batch: Theorem 2.4 denominator
+convergence, Proposition 2.7 main implications, and Corollary 2.8, while
+preserving the Chapter 3 theorem spine already compiled through Theorem 3.7.
+Search existing mathlib and local `StatInference` APIs first, prove the next
+highest-leverage main-text theorem layer, verify with focused `lake env lean`,
+targeted `lake build StatInference`, proof-hole and secret scans, update this
+route state, and commit/push clean verified progress.  Skip exercise proofs
+until the main textbook theorem lane is covered; exercise statements may be
+used as supplied interfaces only when they directly unblock a main-text
+theorem.
 
 ## Current Blocker
 
@@ -85,6 +87,28 @@ blocker for the whole-space differentiable case:
   argument.
 - Proposition 1.6 `(1.4) => (1.5)` already compiles as
   `FirstOrderStrongConvexOn.stronglyMonotoneGradientOn`.
+
+- Chapter 2 gradient-flow modeling now compiles in
+  `StatInference/Optimization/GradientFlow.lean` with the supplied ODE
+  interface `IsGradientFlowTrajectory grad x := ∀ t, HasDerivAt x
+  (-(grad (x t))) t`, matching the notes' decision not to prove
+  well-posedness.
+- Lemma 2.1 now compiles as `gradientFlow_value_hasDerivAt` and
+  `gradientFlow_gap_hasDerivAt`, with the nonpositive derivative scalar
+  helper `gradientFlow_value_deriv_nonpos`.
+- Theorem 2.2's proof spine now compiles: squared-distance derivative
+  identity, strong-monotonicity differential inequality, first-order and
+  whole-space `StrongConvexOn` plus `HasGradientAt` bridges, and weighted
+  exponential squared-distance contraction via
+  `chewi22_sqdist_weighted_le_of_*`.
+- The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
+  compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
+  `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
+  `scalarExpDecay_le_of_hasDerivAt_le`, reusing mathlib derivative
+  monotonicity rather than duplicating a full ODE library.
+- Corollary 2.6 under PL now compiles in weighted and source-shaped forms as
+  `chewi26_gap_weighted_le_of_polyakLojasiewiczOn` and
+  `chewi26_gap_le_exp_of_polyakLojasiewiczOn`.
 
 - Lemma 3.5 discrete Gronwall has both zero-based finite-sum and source-shaped
   one-based display wrappers in `StatInference/Optimization/DiscreteGronwall.lean`.
@@ -240,6 +264,22 @@ theorem also keeps the source-shaped supplied interfaces
 `FirstOrderStrongConvexOn` plus `GradientStepCocoerciveOn`, and whole-space
 wrappers from local `StrongConvexOn Set.univ` plus `HasGradientAt`.
 
+Current Chapter 2 gradient-flow search result: mathlib has the general
+continuous Gronwall API in `Mathlib.Analysis.ODE.Gronwall`, including
+`gronwallBound`, `le_gronwallBound_of_liminf_deriv_right_le`, and
+`norm_le_gronwallBound_of_norm_deriv_right_le`.  For the repeated Chewi
+special case `u' <= -c u`, the faster local route is the fully proved weighted
+monotonicity argument using `HasDerivAt.exp`, `HasDerivAt.mul`,
+`HasDerivAt.deriv`, and `antitone_of_deriv_nonpos`.  Gradient-flow calculus
+uses `HasGradientAt.hasFDerivAt`, `HasFDerivAt.comp_hasDerivAt`,
+`InnerProductSpace.toDual_apply_apply`, `HasDerivAt.norm_sq`,
+`inner_sub_right`, `inner_sub_left`, `inner_neg_right`,
+`real_inner_self_eq_norm_sq`, and `real_inner_comm`.  This search result
+changes the route: use the local exponential-decay wrapper for Theorem 2.2 and
+Corollary 2.6, and reserve full integral Gronwall APIs for Theorem 2.4's
+weighted-forcing denominator if the direct proof becomes longer than the
+mathlib bridge.
+
 Current Exercise 3.1 co-coercivity interface result: the source display (3.5)
 now compiles as `GradientCocoerciveOn`.  The bridge
 `GradientCocoerciveOn.stepCocoerciveOn_of_le_inv` converts it to
@@ -300,7 +340,11 @@ Local searches should prioritize:
    PL convergence; Theorem 3.7 gives the main-text gradient-norm guarantee in
    existential form from the descent lemma, finite telescoping, and finite
    average APIs.
-8. Prove the first source-exact report candidate only after the exact theorem
+8. Keep `StatInference/Optimization/GradientFlow.lean` compiling.  It now
+   proves Chewi Lemma 2.1's derivative identity, Theorem 2.2's
+   squared-distance exponential contraction layer, and Corollary 2.6's PL
+   exponential convergence through the local scalar exponential-decay wrapper.
+9. Prove the first source-exact report candidate only after the exact theorem
    declaration compiles and source screenshots are captured.
 
 ## Verification Gate
@@ -323,6 +367,26 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.PolyakLojasiewiczOn`
 - `StatInference.Optimization.gradientDescentStep`
 - `StatInference.Optimization.IsGradientDescentTrajectory`
+- `StatInference.Optimization.IsGradientFlowTrajectory`
+- `StatInference.Optimization.gradientFlow_value_hasDerivAt`
+- `StatInference.Optimization.gradientFlow_gap_hasDerivAt`
+- `StatInference.Optimization.gradientFlow_value_deriv_nonpos`
+- `StatInference.Optimization.gradientFlow_sqdist_hasDerivAt`
+- `StatInference.Optimization.gradientFlow_sqdist_deriv_le_of_stronglyMonotoneGradientOn`
+- `StatInference.Optimization.gradientFlow_sqdist_deriv_le_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.gradientFlow_sqdist_deriv_le_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.scalarExpWeighted_antitone_of_hasDerivAt_le`
+- `StatInference.Optimization.scalarExpWeighted_le_initial_of_hasDerivAt_le`
+- `StatInference.Optimization.scalarExpDecay_le_of_hasDerivAt_le`
+- `StatInference.Optimization.chewi22_sqdist_weighted_le_of_stronglyMonotoneGradientOn`
+- `StatInference.Optimization.chewi22_sqdist_weighted_le_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi22_sqdist_weighted_le_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.gradientFlow_sqdist_to_point_hasDerivAt`
+- `StatInference.Optimization.gradientFlow_sqdist_to_minimizer_deriv_le_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.gradientFlow_sqdist_to_minimizer_deriv_le_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.gradientFlow_gap_deriv_le_of_polyakLojasiewiczOn`
+- `StatInference.Optimization.chewi26_gap_weighted_le_of_polyakLojasiewiczOn`
+- `StatInference.Optimization.chewi26_gap_le_exp_of_polyakLojasiewiczOn`
 - `StatInference.Optimization.HasLipschitzGradientOn`
 - `StatInference.Optimization.gradientStep`
 - `StatInference.Optimization.FirstOrderStrongConvexOn`
@@ -402,8 +466,10 @@ Latest verified local frontier after lane creation:
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal target: source-exact main-text report packaging for the
-strongest compiled Chapter 3 declaration, or move aggressively into Chapter 2
-gradient-flow theorems using mathlib Gronwall/ODE APIs.  Continue deferring
-exercise proofs except where an exercise statement is needed as a temporary
-interface for a main-text theorem.
+Next manual goal target: close Chewi Theorem 2.4's function-value convergence
+denominator using the compiled distance-to-minimizer differential inequality,
+Lemma 2.1 monotonicity/gap machinery, and either the local weighted
+exponential-decay route or mathlib's integral Gronwall APIs.  Then continue
+with Proposition 2.7 and Corollary 2.8.  Continue deferring exercise proofs
+except where an exercise statement is needed as a temporary interface for a
+main-text theorem.

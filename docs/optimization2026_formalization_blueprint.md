@@ -141,6 +141,43 @@ Search anchors:
 - mathlib differentiability and ODE APIs
 - local `StatInference/Asymptotics/Basic.lean`
 
+Current compiled surface:
+
+- `StatInference.Optimization.IsGradientFlowTrajectory`
+- `StatInference.Optimization.gradientFlow_value_hasDerivAt`
+- `StatInference.Optimization.gradientFlow_gap_hasDerivAt`
+- `StatInference.Optimization.gradientFlow_value_deriv_nonpos`
+- `StatInference.Optimization.gradientFlow_sqdist_hasDerivAt`
+- `StatInference.Optimization.gradientFlow_sqdist_deriv_le_of_stronglyMonotoneGradientOn`
+- `StatInference.Optimization.gradientFlow_sqdist_deriv_le_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.gradientFlow_sqdist_deriv_le_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.scalarExpWeighted_antitone_of_hasDerivAt_le`
+- `StatInference.Optimization.scalarExpWeighted_le_initial_of_hasDerivAt_le`
+- `StatInference.Optimization.scalarExpDecay_le_of_hasDerivAt_le`
+- `StatInference.Optimization.chewi22_sqdist_weighted_le_of_stronglyMonotoneGradientOn`
+- `StatInference.Optimization.chewi22_sqdist_weighted_le_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi22_sqdist_weighted_le_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.gradientFlow_sqdist_to_point_hasDerivAt`
+- `StatInference.Optimization.gradientFlow_sqdist_to_minimizer_deriv_le_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.gradientFlow_sqdist_to_minimizer_deriv_le_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.gradientFlow_gap_deriv_le_of_polyakLojasiewiczOn`
+- `StatInference.Optimization.chewi26_gap_weighted_le_of_polyakLojasiewiczOn`
+- `StatInference.Optimization.chewi26_gap_le_exp_of_polyakLojasiewiczOn`
+
+Near-term exact candidates:
+
+1. Theorem 2.4 function-value convergence denominator.  The distance-to-
+   minimizer differential inequality is compiled; the remaining work is the
+   weighted-forcing/integral denominator step and the `alpha = 0` limiting
+   display.
+2. Theorem 2.2 norm-form contraction from the compiled squared-distance
+   weighted contraction, if the square-root/exponential algebra stays
+   lightweight.
+3. Proposition 2.7 main-text implications: strong convexity implies PL, and
+   PL implies quadratic growth, skipping exercises.
+4. Corollary 2.8 gradient-norm convergence, reusing Lemma 2.1 and a continuous
+   analog of the Chapter 3 finite-average/telescoping pattern.
+
 ### Lane C: Discrete gradient descent and algorithmic rates
 
 Source anchors:

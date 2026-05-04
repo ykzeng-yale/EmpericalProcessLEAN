@@ -29,7 +29,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 | Lane | Status | Current Lean anchor | Notes |
 | --- | --- | --- | --- |
 | Chapter 1 convexity/smoothness foundations | local-layer/mathlib-foundation | `StatInference/Optimization/Basic.lean`, `StatInference/Optimization/Minimizer.lean`; mathlib `StrongConvexOn`, `ConvexOn`, `StrictConvexOn`, `HasGradientAt` | Initial interfaces for strong convexity, Chewi convexity, smooth upper models, gradient-descent steps, first-order lower models, strong gradient monotonicity, Exercise 3.1 co-coercivity, PL, h-scaled step co-coercivity, mathlib-gradient Lipschitzness, and GD trajectories compile as the intended surface for Definition 1.5, Definition 1.12, Definition 2.5, Proposition 1.6, Exercise 3.1, and Chapter 3. Proposition 1.6 now has `(1.3) => (1.4)` on `Set.univ` from segment `StrongConvexOn` plus `HasGradientAt`, and `(1.4) => (1.5)` from `FirstOrderStrongConvexOn` to `StronglyMonotoneGradientOn`. Lemma 1.10 minimizer uniqueness and Corollary 1.11-style gradient-zero characterization wrappers compile in `Minimizer.lean`. Prefer mathlib's `StrongConvexOn`, `ConvexOn`, `StrictConvexOn`, and `gradient` APIs for exact derivative-heavy theorem routes. |
-| Chapter 2 gradient flow | pending-local | none | Reuse mathlib `Analysis/ODE/Gronwall.lean`; exact gradient-flow modeling still needs a choice of differentiability/ODE interface. |
+| Chapter 2 gradient flow | local-layer | `StatInference/Optimization/GradientFlow.lean` | Gradient-flow trajectory interface now compiles. Lemma 2.1 derivative identity and gap derivative compile from mathlib `HasGradientAt` plus chain rule. Theorem 2.2 has the squared-distance derivative identity, the strong-monotonicity differential inequality, and weighted exponential squared-distance contraction from supplied monotonicity, first-order strong convexity, and actual whole-space `StrongConvexOn` plus `HasGradientAt`. Corollary 2.6 has the PL differential inequality and source-shaped exponential function-gap convergence. The reusable scalar exponential-decay/Gronwall special case is proved locally via mathlib `antitone_of_deriv_nonpos`. Next Chapter 2 target is Theorem 2.4's function-value convergence denominator, then the remaining PL/QG Proposition 2.7 and Corollary 2.8 main-text layers. |
 | Chapter 3 smooth gradient descent | local-layer | `gradientDescentStep`, `IsGradientDescentTrajectory`, `DiscreteGronwall.lean`, `GradientDescent.lean`, `Theorem33.lean`, `Theorem34.lean`, `Theorem36.lean`, `Theorem37.lean` | First deterministic GD trajectory interface is available. Chewi Lemma 3.5 now has zero-based and source-shaped one-based compiled wrappers, Chewi Lemma 3.1 is compiled from the smooth upper-model interface, GD function values are antitone under the descent step-size condition, Theorem 3.3 contraction compiles in squared and norm forms from supplied gradient monotonicity, supplied first-order lower model, and actual whole-space segment `StrongConvexOn` plus `HasGradientAt` once Exercise 3.1 co-coercivity is supplied. Theorem 3.4 positive-`alpha` plus `alpha = 0` denominator bounds compile from the first-order model and from actual whole-space `StrongConvexOn` plus `HasGradientAt`. Theorem 3.6 PL convergence compiles from the descent lemma plus scalar recurrence, and Theorem 3.7 compiles in existential and finite-minimum gradient-norm forms from the descent lemma plus finite telescoping/average APIs. Next target should be source-audited report packaging for a strongest compiled main-text declaration or Chapter 2 gradient-flow expansion; exercise proofs are deferred. |
 | Chapter 4 lower bounds | pending-local | none | Requires oracle/gradient-span interfaces and finite-dimensional Euclidean/matrix support. |
 | Chapters 5-11 deterministic algorithms | pending-local | none | Acceleration, nonsmooth optimization, Frank-Wolfe, proximal methods, Fenchel duality, mirror methods, and alternating minimization should wait until the basic convex/smooth/GD layer is stable. |
@@ -67,15 +67,14 @@ High-value local files:
 
 ## Current Active Target
 
-Latest verified proof target: the Chapter 1-to-Chapter 3 bridge batch.
-`StatInference/Optimization/Minimizer.lean` proves Lemma 1.10-style minimizer
-uniqueness and Corollary 1.11-style gradient-zero characterization wrappers.
-`StatInference/Optimization/Basic.lean` proves Proposition 1.6 `(1.3) =>
-(1.4)` on `Set.univ` from local segment strong convexity plus mathlib
-`HasGradientAt`, and `(1.4) => (1.5)` was already available locally.  Theorem
-3.3 and Theorem 3.4 now expose wrappers from actual whole-space
-`StrongConvexOn` plus `HasGradientAt`, with Exercise 3.1 co-coercivity still
-kept as a deferred supplied interface for Theorem 3.3.
+Latest proof target: the aggressive Chapter 2 gradient-flow expansion.
+`StatInference/Optimization/GradientFlow.lean` now supplies the differentiable
+gradient-flow interface assumed in the notes, Lemma 2.1's derivative identity,
+Theorem 2.2's squared-distance calculus and exponential contraction layer, and
+Corollary 2.6's PL exponential function-gap convergence.  It reuses the
+Chapter 1 first-order/strong-monotonicity bridge and proves the scalar
+exponential-decay Gronwall special case with mathlib's derivative monotonicity
+API.
 
 Do not spend proof runs on Chapter 3 exercise derivations for now.  Exercise
 statements may remain supplied interfaces when they unblock main-text
@@ -96,7 +95,8 @@ Current compiled Chapter 3 spine:
 6. Theorem 3.7 gradient-norm convergence layer in existential and finite-min
    display forms.
 
-Next high-value tasks: prepare source-audited report packaging for a strongest
-compiled Chapter 3 main-text item, or move into Chapter 2 gradient-flow
-theorems with mathlib Gronwall/ODE reuse.  Do not spend proof runs on exercise
-derivations until the main theorem lane is covered.
+Next high-value task: close Chewi Theorem 2.4's function-value convergence
+denominator from the compiled distance-to-minimizer differential inequality
+and Lemma 2.1 monotonicity/weighted integral route, then continue Proposition
+2.7 main-text implications and Corollary 2.8.  Do not spend proof runs on
+exercise derivations until the main theorem lane is covered.
