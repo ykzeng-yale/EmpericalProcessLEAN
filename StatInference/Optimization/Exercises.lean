@@ -852,6 +852,85 @@ theorem exercise42InfiniteChainGradientLp_apply
       exercise42InfiniteChainGradient alpha beta x i :=
   rfl
 
+/-- Convex base part of the infinite hard-chain objective, before regularization. -/
+noncomputable def exercise42InfiniteBaseChainObjective (gamma : ℝ)
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) : ℝ :=
+  (gamma / 8) *
+    (x 0 ^ (2 : ℕ) +
+      (∑' n : ℕ, (x n - x (n + 1)) ^ (2 : ℕ)) -
+        2 * x 0)
+
+/-- Coordinate formula for the convex base hard-chain gradient. -/
+noncomputable def exercise42InfiniteBaseChainGradient (gamma : ℝ)
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (i : ℕ) : ℝ :=
+  (gamma / 4) *
+    (2 * x i - (if i = 0 then 1 else x (i - 1)) - x (i + 1))
+
+/-- Concrete `ell^2` gradient oracle for the convex base hard-chain objective. -/
+noncomputable def exercise42InfiniteBaseChainGradientLp (gamma : ℝ)
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) :=
+  exercise42InfiniteChainGradientLp 0 gamma x
+
+@[simp]
+theorem exercise42InfiniteBaseChainGradientLp_apply
+    (gamma : ℝ) (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (i : ℕ) :
+    exercise42InfiniteBaseChainGradientLp gamma x i =
+      exercise42InfiniteBaseChainGradient gamma x i := by
+  simp [exercise42InfiniteBaseChainGradientLp,
+    exercise42InfiniteBaseChainGradient, exercise42InfiniteChainGradient]
+
+/--
+The strongly-convex infinite Exercise 4.2 objective is the convex base chain
+regularized by `(alpha / 2) * ‖x‖²`.
+-/
+theorem exercise42InfiniteChainObjective_eq_quadraticRegularizedAround
+    (alpha beta : ℝ) :
+    exercise42InfiniteChainObjective alpha beta =
+      quadraticRegularizedAround
+        (exercise42InfiniteBaseChainObjective (beta - alpha)) alpha
+        (0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) := by
+  ext x
+  simp [exercise42InfiniteChainObjective, exercise42InfiniteBaseChainObjective,
+    quadraticRegularizedAround]
+
+/--
+The concrete hard-chain gradient oracle is the regularized gradient of the
+convex base hard-chain oracle.
+-/
+theorem exercise42InfiniteChainGradientLp_eq_regularizedGradient
+    (alpha beta : ℝ) :
+    exercise42InfiniteChainGradientLp alpha beta =
+      regularizedGradient
+        (exercise42InfiniteBaseChainGradientLp (beta - alpha)) alpha
+        (0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) := by
+  ext x i
+  simp only [regularizedGradient, exercise42InfiniteBaseChainGradientLp,
+    lp.coeFn_add, lp.coeFn_smul, lp.coeFn_sub, lp.coeFn_zero, Pi.add_apply,
+    Pi.smul_apply, Pi.sub_apply, Pi.zero_apply,
+    exercise42InfiniteChainGradientLp_apply]
+  simp [exercise42InfiniteChainGradient, sub_eq_add_neg]
+
+/--
+Reduction of the remaining concrete first-order package to the convex base
+chain lower model.
+-/
+theorem exercise42InfiniteChainObjective_firstOrderStrongConvexOn_of_base
+    {alpha beta : ℝ}
+    (hbase : FirstOrderStrongConvexOn Set.univ
+      (exercise42InfiniteBaseChainObjective (beta - alpha))
+      (exercise42InfiniteBaseChainGradientLp (beta - alpha)) 0) :
+    FirstOrderStrongConvexOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta)
+      (exercise42InfiniteChainGradientLp alpha beta) alpha := by
+  have hreg :=
+    quadraticRegularizedAround_firstOrderStrongConvexOn_convex
+      (delta := alpha)
+      (x0 := (0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)))
+      hbase
+  simpa [exercise42InfiniteChainObjective_eq_quadraticRegularizedAround,
+    exercise42InfiniteChainGradientLp_eq_regularizedGradient] using hreg
+
 /--
 The infinite hard-chain gradient expands prefix support by one coordinate.
 This is the infinite analogue of the finite support calculation behind

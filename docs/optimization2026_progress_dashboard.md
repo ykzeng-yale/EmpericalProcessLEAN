@@ -348,9 +348,18 @@ gradient is itself an `ell^2` oracle:
 and
 `exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min_concreteGradient`.
 This removes the supplied coordinate-gradient formula from the direct
-infinite Exercise 4.2 route.  Next, prove the concrete objective's
-`FirstOrderStrongConvexOn` package for `exercise42InfiniteChainGradientLp`;
-the geometric obstruction and log-quotient conversion are already available.
+infinite Exercise 4.2 route.  The newest regularization bridge adds
+`exercise42InfiniteBaseChainObjective`,
+`exercise42InfiniteBaseChainGradient`,
+`exercise42InfiniteBaseChainGradientLp`,
+`exercise42InfiniteBaseChainGradientLp_apply`,
+`exercise42InfiniteChainObjective_eq_quadraticRegularizedAround`,
+`exercise42InfiniteChainGradientLp_eq_regularizedGradient`, and
+`exercise42InfiniteChainObjective_firstOrderStrongConvexOn_of_base`.  Thus the
+remaining concrete first-order package is narrowed to the convex base chain
+lower model at parameter `0`; the quadratic regularizer is handled by the
+existing Lemma 4.2 reduction API.  The geometric obstruction and log-quotient
+conversion are already available.
 In parallel, specialize the remaining
 reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete

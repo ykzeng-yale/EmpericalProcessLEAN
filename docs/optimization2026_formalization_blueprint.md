@@ -660,9 +660,19 @@ and
 `exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min_concreteGradient`.
 This search-first step reused mathlib/local `Memℓp.add/sub/const_smul`,
 `lp.single`, and `summable_nat_add_iff` to avoid any new sequence-space
-primitive.  Only the objective's concrete `FirstOrderStrongConvexOn` package
-for `exercise42InfiniteChainGradientLp` remains on this infinite Exercise 4.2
-route.
+primitive.  The regularization decomposition now also compiles through
+`exercise42InfiniteBaseChainObjective`,
+`exercise42InfiniteBaseChainGradient`,
+`exercise42InfiniteBaseChainGradientLp`,
+`exercise42InfiniteBaseChainGradientLp_apply`,
+`exercise42InfiniteChainObjective_eq_quadraticRegularizedAround`,
+`exercise42InfiniteChainGradientLp_eq_regularizedGradient`, and
+`exercise42InfiniteChainObjective_firstOrderStrongConvexOn_of_base`, reusing
+`quadraticRegularizedAround_firstOrderStrongConvexOn_convex`.  Only the convex
+base-chain lower model
+`FirstOrderStrongConvexOn Set.univ (exercise42InfiniteBaseChainObjective
+(beta - alpha)) (exercise42InfiniteBaseChainGradientLp (beta - alpha)) 0`
+remains on this infinite Exercise 4.2 route.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,
