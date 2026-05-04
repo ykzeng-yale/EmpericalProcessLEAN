@@ -216,6 +216,22 @@ theorem vdVWTruncatedClassFun_eq_zero_of_neg
     exact (not_le_of_gt hM) ((henvelope.nonneg observation).trans hle)
   simp [vdVWTruncatedClassFun, hnot]
 
+/-- Every truncated class member is bounded by `max M 0`, uniformly in `M`. -/
+theorem abs_vdVWTruncatedClassFun_le_max_M_zero
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    {index : Index} (hindex : index ∈ indexClass)
+    (observation : Observation) :
+    |vdVWTruncatedClassFun classFun envelope M index observation| ≤ max M 0 := by
+  by_cases hM : 0 ≤ M
+  · simpa [max_eq_left hM] using
+      abs_vdVWTruncatedClassFun_le_M henvelope hM hindex observation
+  · have hMneg : M < 0 := lt_of_not_ge hM
+    rw [vdVWTruncatedClassFun_eq_zero_of_neg henvelope hMneg index observation]
+    simp [max_eq_right (le_of_lt hMneg)]
+
 /-- The population mean of a negative-level truncated class member is zero. -/
 theorem integral_vdVWTruncatedClassFun_eq_zero_of_neg
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
@@ -2133,6 +2149,62 @@ theorem integrable_vdVWWeightedClassSupremum_centered_truncated_of_countable
           henvelope hindex (htruncIntegrable index hindex) observation)
 
 /--
+Countable truncated weighted class suprema are integrable under the empirical
+product law, using only coordinate measurability and the uniform truncation
+bound.
+-/
+theorem integrable_vdVWWeightedClassSupremum_truncated_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    {n : ℕ} (weights : Fin n -> ℝ) :
+    Integrable
+      (fun sample : SampleAt Observation n =>
+        vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M) weights sample)
+      (vdVWProductMeasure P n) := by
+  have hsup_meas :
+      AEStronglyMeasurable
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M) weights sample)
+        (vdVWProductMeasure P n) := by
+    exact
+      (measurable_vdVWWeightedClassSupremum_of_countable
+        hcount weights (fun sample : SampleAt Observation n => sample)
+        (fun index hindex =>
+          measurable_vdVWWeightedSampleSum weights
+            (measurable_vdVWTruncatedClassFun
+              (hclass index hindex) henv))).aemeasurable.aestronglyMeasurable
+  have hconst :
+      Integrable
+        (fun _sample : SampleAt Observation n =>
+          ∑ i : Fin n, |weights i| * max M 0)
+        (vdVWProductMeasure P n) := by
+    exact integrable_const _
+  refine Integrable.mono' hconst hsup_meas ?_
+  refine ae_of_all _ ?_
+  intro sample
+  have hsup_nonneg :
+      0 ≤
+        vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M) weights sample :=
+    vdVWWeightedClassSupremum_nonneg indexClass
+      (vdVWTruncatedClassFun classFun envelope M) weights sample
+  rw [Real.norm_eq_abs, abs_of_nonneg hsup_nonneg]
+  exact
+    vdVWWeightedClassSupremum_le_sum_abs_mul_bound_of_uniform_bound
+      weights sample (by positivity)
+      (fun index hindex observation =>
+        abs_vdVWTruncatedClassFun_le_max_M_zero
+          henvelope hindex observation)
+
+/--
 Finite truncated weighted class suprema are integrable under the empirical
 product law when each original class member is integrable.
 -/
@@ -2326,6 +2398,81 @@ theorem integrable_vdVWWeightedClassSupremum_pairDifference_ghost_of_countable
   exact
     vdVWWeightedClassSupremum_le_sum_abs_mul_bound_of_uniform_bound
       weights (pairedSample ghostSample) (by positivity)
+      (fun index hindex z =>
+        abs_vdVWTruncatedClassFun_pairDifference_le_two_mul_max_M_zero
+          henvelope hindex z)
+
+/--
+For countable classes, the split product-copy pair-difference supremum is
+integrable on `P^n × P^n` under the uniform truncation bound.
+-/
+theorem integrable_vdVWWeightedClassSupremum_pairDifference_split_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    {n : ℕ} (weights : Fin n -> ℝ) :
+    Integrable
+      (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.1 -
+              vdVWTruncatedClassFun classFun envelope M index z.2)
+          weights (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+      ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) := by
+  let pairClassFun : Index -> Observation × Observation -> ℝ :=
+    fun index z =>
+      vdVWTruncatedClassFun classFun envelope M index z.1 -
+        vdVWTruncatedClassFun classFun envelope M index z.2
+  let pairedSample :
+      SampleAt Observation n × SampleAt Observation n ->
+        SampleAt (Observation × Observation) n :=
+    fun splitSample i => (splitSample.1 i, splitSample.2 i)
+  have hpairedSample_meas : Measurable pairedSample := by
+    exact measurable_pi_lambda _ fun i =>
+      ((measurable_pi_apply i).comp measurable_fst).prodMk
+        ((measurable_pi_apply i).comp measurable_snd)
+  have hsup_meas :
+      AEStronglyMeasurable
+        (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass pairClassFun weights
+            (pairedSample splitSample))
+        ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) := by
+    exact
+      (measurable_vdVWWeightedClassSupremum_of_countable
+        hcount weights pairedSample
+        (fun index hindex =>
+          have hpair_meas : Measurable (pairClassFun index) := by
+            dsimp [pairClassFun]
+            exact
+              ((measurable_vdVWTruncatedClassFun
+                (hclass index hindex) henv).comp measurable_fst).sub
+                ((measurable_vdVWTruncatedClassFun
+                  (hclass index hindex) henv).comp measurable_snd)
+          (measurable_vdVWWeightedSampleSum weights
+            hpair_meas).comp hpairedSample_meas)).aemeasurable.aestronglyMeasurable
+  have hconst :
+      Integrable
+        (fun _splitSample : SampleAt Observation n × SampleAt Observation n =>
+          ∑ i : Fin n, |weights i| * (2 * max M 0))
+        ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) := by
+    exact integrable_const _
+  refine Integrable.mono' hconst hsup_meas ?_
+  refine ae_of_all _ ?_
+  intro splitSample
+  have hsup_nonneg :
+      0 ≤ vdVWWeightedClassSupremum indexClass pairClassFun weights
+        (pairedSample splitSample) :=
+    vdVWWeightedClassSupremum_nonneg indexClass pairClassFun weights
+      (pairedSample splitSample)
+  rw [Real.norm_eq_abs, abs_of_nonneg hsup_nonneg]
+  exact
+    vdVWWeightedClassSupremum_le_sum_abs_mul_bound_of_uniform_bound
+      weights (pairedSample splitSample) (by positivity)
       (fun index hindex z =>
         abs_vdVWTruncatedClassFun_pairDifference_le_two_mul_max_M_zero
           henvelope hindex z)
@@ -19235,38 +19382,6 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
         (fun i : Fin n => sign n i ω))
     (hindep : ∀ n, iIndepFun (sign n) μsign)
     (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign)
-    (hghostExpectationIntegrable :
-      ∀ M n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            ∫ ghostSample : SampleAt Observation n,
-              vdVWWeightedClassSupremum indexClass
-                (fun index : Index => fun z : Observation × Observation =>
-                  vdVWTruncatedClassFun classFun envelope M index z.1 -
-                    vdVWTruncatedClassFun classFun envelope M index z.2)
-                (fun _ : Fin n => (n : ℝ)⁻¹)
-                (fun i : Fin n => (sample i, ghostSample i))
-                ∂(vdVWProductMeasure P n))
-          (vdVWProductMeasure P n))
-    (hsplitSupIntegrable :
-      ∀ M n,
-        Integrable
-          (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
-            vdVWWeightedClassSupremum indexClass
-              (fun index : Index => fun z : Observation × Observation =>
-                vdVWTruncatedClassFun classFun envelope M index z.1 -
-                  vdVWTruncatedClassFun classFun envelope M index z.2)
-              (fun _ : Fin n => (n : ℝ)⁻¹)
-              (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
-          ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)))
-    (hsampleSupIntegrable :
-      ∀ M n (ω : Ωsign),
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWWeightedClassSupremum indexClass
-              (vdVWTruncatedClassFun classFun envelope M)
-              (vdVWRademacherWeights (fun i : Fin n => sign n i ω)) sample)
-          (vdVWProductMeasure P n))
     (hrandomIntegralIntegrable :
       ∀ M n,
         Integrable
@@ -19345,9 +19460,38 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
           integrable_vdVWTruncatedClassFun_of_integrable
             (hclass index hindex) henv (hclassIntegrable index hindex))
         (fun _ : Fin n => (n : ℝ)⁻¹)
-  hghostExpectationIntegrable := hghostExpectationIntegrable
-  hsplitSupIntegrable := hsplitSupIntegrable
-  hsampleSupIntegrable := hsampleSupIntegrable
+  hghostExpectationIntegrable := by
+    intro M n
+    have hsplit :
+        Integrable
+          (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+          ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) :=
+      integrable_vdVWWeightedClassSupremum_pairDifference_split_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (Set.to_countable indexClass)
+        henvelope hclass henv (fun _ : Fin n => (n : ℝ)⁻¹)
+    simpa using hsplit.integral_prod_left
+  hsplitSupIntegrable := by
+    intro M n
+    exact
+      integrable_vdVWWeightedClassSupremum_pairDifference_split_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (Set.to_countable indexClass)
+        henvelope hclass henv (fun _ : Fin n => (n : ℝ)⁻¹)
+  hsampleSupIntegrable := by
+    intro M n ω
+    exact
+      integrable_vdVWWeightedClassSupremum_truncated_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (Set.to_countable indexClass)
+        henvelope hclass henv
+        (vdVWRademacherWeights (fun i : Fin n => sign n i ω))
   hrandomIntegralIntegrable := hrandomIntegralIntegrable
   Urandom := Urandom
   hproductSupIntegrable := hproductSupIntegrable

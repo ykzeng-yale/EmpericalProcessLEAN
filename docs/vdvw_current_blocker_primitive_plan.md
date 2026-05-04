@@ -2717,7 +2717,27 @@ measurability, product-coordinate measurable combinators, and
 `abs_vdVWTruncatedClassFun_pairDifference_le_two_mul_max_M_zero` and
 `integrable_vdVWWeightedClassSupremum_pairDifference_ghost_of_countable`.
 
+2026-05-04 follow-up: the constructor now also derives
+`hghostExpectationIntegrable`, `hsplitSupIntegrable`, and
+`hsampleSupIntegrable`.  Search/reuse record: local code already had
+`integrable_vdVWWeightedClassSupremum_pairDifference_ghost_of_countable`,
+`measurable_vdVWWeightedClassSupremum_of_countable`,
+`measurable_vdVWWeightedSampleSum`,
+`vdVWWeightedClassSupremum_le_sum_abs_mul_bound_of_uniform_bound`, and
+`vdVWRademacherWeights`; pinned mathlib supplied
+`MeasureTheory.Integrable.integral_prod_left`, `Integrable.mono'`,
+`integrable_const`, `measurable_pi_lambda`, `Measurable.prodMk`,
+`measurable_fst`, `measurable_snd`, and `measurable_pi_apply`.  New local
+lemmas prove `abs_vdVWTruncatedClassFun_le_max_M_zero`,
+`integrable_vdVWWeightedClassSupremum_truncated_of_countable`, and
+`integrable_vdVWWeightedClassSupremum_pairDifference_split_of_countable`.
+The ghost expectation is now a Fubini consequence of the split product-copy
+integrability theorem.
+
 Next exact theorem-facing edit: reduce the remaining package fields only where
 there are genuine local lemmas to discharge them.  The main unresolved
-infinite-class fields are the split/random-sign supremum integrability and the
-random-sign/product measurable-cover witnesses.
+infinite-class fields are now the random-sign iterated-integral/product-space
+integrability, product-space measurable-cover witness, and sign-side supremum
+integrability fields; these involve varying Rademacher weights over the sign
+space and should be reduced only with an honest countable/varying-weight
+measurability-integrability theorem, not by finite-class shortcuts.

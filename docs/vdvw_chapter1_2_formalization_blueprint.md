@@ -896,8 +896,12 @@ above, so they do not change the theorem-level dashboard counts.
    envelope/probability integral bounds; it also derives the centered
    measurable-cover field and the centered supremum integrability field from
    countability, coordinate measurability, and the centered truncation bound.
-   The ghost-copy pair-difference supremum integrability field is also derived
-   from countability and the uniform pair-difference truncation bound.
+   The ghost-copy pair-difference supremum integrability field, the split
+   product-copy pair-difference supremum integrability field, the ghost
+   iterated-expectation integrability field, and the sample-side Rademacher
+   supremum integrability field are also derived from countability, Fubini over
+   product measures, and the uniform all-level truncation/pair-difference
+   bounds.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

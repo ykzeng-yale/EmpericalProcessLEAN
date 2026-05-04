@@ -506,6 +506,14 @@ truncated class identically zero.
 `Ucentered` from
 `VdVWMeasurableCover.centered_truncated_of_countable_of_coordinate`, using the
 countability of `Index` plus coordinate measurability.
+2026-05-04 follow-up: the same constructor now also derives
+`hghostExpectationIntegrable`, `hsplitSupIntegrable`, and
+`hsampleSupIntegrable`.  The new countable split product-copy integrability
+lemma uses the uniform pair-difference truncation bound and countable supremum
+measurability, the ghost-expectation field follows by
+`Integrable.integral_prod_left`, and the sample-side Rademacher supremum
+integrability follows from the all-level truncated bound
+`abs_vdVWTruncatedClassFun_le_max_M_zero`.
 2026-05-04 follow-up: the constructor now also derives
 `hcenteredSupIntegrable`.  New supporting lemmas bound a weighted supremum from
 a uniform class bound and prove countable centered truncated supremum
