@@ -2248,5 +2248,124 @@ theorem exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGr
         (by simpa [A] using hlog_nonpos)
   nlinarith
 
+/-- The source initial geometric scale in the infinite Exercise 4.2 lower bound is positive. -/
+theorem exercise42InfiniteGeometricInitialScale_pos
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha) :
+    0 <
+      (alpha / 2) *
+        ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+          exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ) := by
+  let q := chewi45GeometricRatio kappa
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  let hq_nonneg : 0 ≤ q :=
+    chewi45GeometricRatio_nonneg (kappa := kappa) hkappa_gt.le
+  let hq_lt_one : q < 1 := chewi45GeometricRatio_lt_one kappa
+  let z := exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one
+  have hq_pos : 0 < q := chewi45GeometricRatio_pos hkappa_gt
+  have hq_sq_lt_one : q ^ (2 : ℕ) < 1 := by
+    nlinarith [sq_nonneg q, hq_pos, hq_lt_one]
+  have hdist_sq_pos :
+      0 <
+        ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) - z‖ ^ (2 : ℕ) := by
+    have hnorm_eq :
+        ‖z‖ ^ (2 : ℕ) = q ^ (2 : ℕ) * (1 - q ^ (2 : ℕ))⁻¹ := by
+      simpa [z, q, hq_nonneg, hq_lt_one] using
+        exercise42InfiniteGeometricMinimizer_norm_sq hq_nonneg hq_lt_one
+    have hden_pos : 0 < 1 - q ^ (2 : ℕ) := by
+      nlinarith
+    have hnorm_pos :
+        0 < q ^ (2 : ℕ) * (1 - q ^ (2 : ℕ))⁻¹ :=
+      mul_pos (pow_pos hq_pos _) (inv_pos.mpr hden_pos)
+    rw [zero_sub, norm_neg, hnorm_eq]
+    exact hnorm_pos
+  simpa [z, q, hq_nonneg, hq_lt_one] using
+    mul_pos (by positivity : 0 < alpha / 2) hdist_sq_pos
+
+/--
+Small-accuracy wrapper for the infinite Exercise 4.2 `sqrt(kappa)` rate:
+`eps <= (alpha/2)‖x_0-x_*‖²` discharges the logarithmic nonpositivity side
+condition in the source-rate theorem.
+-/
+theorem exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha) (hkappa_four : 4 ≤ kappa)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ)
+    (hnear :
+      exercise42InfiniteChainObjective alpha beta (x N) ≤
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)) + eps)
+    (heps_le_initial :
+      eps ≤
+        (alpha / 2) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)) :
+    -((Real.sqrt kappa / 2) *
+        Real.log
+          (eps /
+            ((alpha / 2) *
+              ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+                exercise42InfiniteGeometricMinimizer
+                  (chewi45GeometricRatio kappa)
+                  (chewi45GeometricRatio_nonneg (kappa := kappa)
+                    ((by
+                      rw [hkappa]
+                      exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                        1 < kappa).le))
+                  (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)))) / 4 - 1 ≤
+      (N : ℝ) := by
+  let C : ℝ :=
+    (alpha / 2) *
+      ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+        exercise42InfiniteGeometricMinimizer
+          (chewi45GeometricRatio kappa)
+          (chewi45GeometricRatio_nonneg (kappa := kappa)
+            ((by
+              rw [hkappa]
+              exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                1 < kappa).le))
+          (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)
+  have hC_pos : 0 < C := by
+    simpa [C] using
+      exercise42InfiniteGeometricInitialScale_pos
+        (alpha := alpha) (beta := beta) (kappa := kappa)
+        halpha_pos halpha_lt_beta hkappa
+  have hlog_nonpos : Real.log (eps / C) ≤ 0 := by
+    have hratio_nonneg : 0 ≤ eps / C := by positivity
+    have hratio_le_one : eps / C ≤ 1 := by
+      exact (div_le_iff₀ hC_pos).2 (by simpa [C] using heps_le_initial)
+    exact Real.log_nonpos hratio_nonneg hratio_le_one
+  simpa [C] using
+    exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient
+      halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
+      hx0 hspan N hnear hlog_nonpos
+
 end Optimization
 end StatInference

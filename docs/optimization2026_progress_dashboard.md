@@ -390,9 +390,12 @@ adds
 and
 `exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient`,
 reusing the existing Chewi 4.5 log-comparison lemmas to convert the exact
-log quotient into the `√κ` lower-bound shape.  The next target is discharging
-the remaining small-accuracy/log-nonpositive side condition from a source
-`eps <= (alpha/2) * ‖x_0 - x_*‖^2` hypothesis and packaging the concrete
+log quotient into the `√κ` lower-bound shape.  The small-accuracy side
+condition is now discharged by `exercise42InfiniteGeometricInitialScale_pos`
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale`,
+which convert `eps <= (alpha/2) * ‖x_0 - x_*‖^2` into the required
+log-nonpositive hypothesis.  The next target is packaging the concrete
 infinite Exercise 4.2 display, then feeding it into the Theorem 4.5
 condition-number/rate comparison.  In
 parallel, specialize the remaining reduction-route comparison

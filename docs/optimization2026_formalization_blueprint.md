@@ -705,10 +705,12 @@ and
 `exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient`
 now convert that exact quotient into the textbook's `sqrt(kappa)` lower-bound
 shape, reusing the existing Chewi 4.5 log-comparison lemmas.  Next is
-discharging the remaining small-accuracy/log-nonpositive side condition from
-the natural `eps <= (alpha/2) * ‖x_0-x_*‖^2` source hypothesis and packaging
-the result in the literal Exercise 4.2 display for use in the Theorem 4.5
-rate statement.
+packaging the result in the literal Exercise 4.2 display for use in the
+Theorem 4.5 rate statement.  The natural small-accuracy side condition is now
+handled by `exercise42InfiniteGeometricInitialScale_pos` and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale`,
+which derive the needed log-nonpositive hypothesis from
+`eps <= (alpha/2) * ‖x_0-x_*‖^2`.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

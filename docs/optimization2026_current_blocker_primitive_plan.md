@@ -1306,10 +1306,12 @@ and
 `exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient`.
 They reuse `chewi45_sqrt_sub_one_bound_le_logQuotientRate` and
 `chewi45_half_sqrt_rate_le_sqrt_sub_one_rate`, so no new real-log comparison
-primitive was introduced.  Next direct Exercise 4.2 step: discharge the
-remaining small-accuracy/log-nonpositive side condition from a source-shaped
-`eps <= (alpha/2) * ‖x_0 - x_*‖^2` hypothesis, then package the theorem in the
-literal display
+primitive was introduced.  The small-accuracy side condition is now discharged
+by `exercise42InfiniteGeometricInitialScale_pos` and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale`,
+which derive the needed `log(eps / scale) <= 0` from
+`eps <= (alpha/2) * ‖x_0 - x_*‖^2`.  Next direct Exercise 4.2 step: package
+the theorem in the literal display
 `f(x_N)-f_* >= (alpha/2) q^(2N) ‖x_0-x_*‖^2` and the derived
 `Ω(√κ log(alpha ‖x_0-x_*‖^2 / eps))` statement.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
