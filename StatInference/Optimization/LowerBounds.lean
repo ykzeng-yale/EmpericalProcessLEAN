@@ -204,6 +204,34 @@ noncomputable def lowerBoundChainObjective (beta : ℝ) (d : ℕ)
     (x : EuclideanSpace ℝ (Fin d)) : ℝ :=
   (beta / 8) * ∑ k : Fin (d + 1), (lowerBoundChainEdge d x k) ^ (2 : ℕ)
 
+/-- Telescoping sum for forward differences on a finite `Fin` chain. -/
+theorem finSum_forwardDifference (n : ℕ) (z : Fin (n + 2) -> ℝ) :
+    (∑ k : Fin (n + 1),
+        (z ⟨k.1 + 1, by omega⟩ - z ⟨k.1, by omega⟩)) =
+      z (Fin.last (n + 1)) - z 0 := by
+  induction n with
+  | zero =>
+      simp
+  | succ n ih =>
+      rw [Fin.sum_univ_castSucc]
+      have hcast :
+          (∑ k : Fin (n + 1),
+              (z ⟨(Fin.castSucc k).1 + 1, by omega⟩ -
+                z ⟨(Fin.castSucc k).1, by omega⟩)) =
+            z ⟨n + 1, by omega⟩ - z 0 := by
+        simpa [Fin.val_castSucc, Fin.val_last] using
+          ih (fun j : Fin (n + 2) => z (Fin.castSucc j))
+      rw [hcast]
+      simp [Fin.val_last]
+      congr
+
+/-- The edge residuals telescope from boundary value `1` to boundary value `0`. -/
+theorem lowerBoundChainEdge_sum (d : ℕ)
+    (x : EuclideanSpace ℝ (Fin d)) :
+    (∑ k : Fin (d + 1), lowerBoundChainEdge d x k) = -1 := by
+  have htel := finSum_forwardDifference d (fun j => lowerBoundChainNode d x j)
+  simpa [lowerBoundChainEdge, lowerBoundChainNode, Fin.val_last] using htel
+
 /--
 If every queried gradient through time `n` lies in `V_{n+1}`, then the
 gradient span through time `n` is contained in `V_{n+1}`.
@@ -503,6 +531,58 @@ theorem lowerBoundChainObjective_lowerBoundChainMinimizer
   simp [lowerBoundChainObjective, lowerBoundChainEdge_lowerBoundChainMinimizer,
     Finset.sum_const, nsmul_eq_mul]
   field_simp [hden]
+
+/--
+Cauchy's inequality applied to the boundary chain: the squared edge energy is at
+least the squared total drop divided by the number of edges.
+-/
+theorem lowerBoundChain_edgeSquareSum_ge (d : ℕ)
+    (x : EuclideanSpace ℝ (Fin d)) :
+    (1 : ℝ) / ((d : ℝ) + 1) ≤
+      ∑ k : Fin (d + 1), (lowerBoundChainEdge d x k) ^ (2 : ℕ) := by
+  have hcs :
+      (∑ k : Fin (d + 1), lowerBoundChainEdge d x k) ^ (2 : ℕ) ≤
+        ((d : ℝ) + 1) *
+          ∑ k : Fin (d + 1), (lowerBoundChainEdge d x k) ^ (2 : ℕ) := by
+    simpa [Finset.card_univ, Fintype.card_fin, Nat.cast_add, Nat.cast_one]
+      using
+        (sq_sum_le_card_mul_sum_sq (s := Finset.univ)
+          (f := fun k : Fin (d + 1) => lowerBoundChainEdge d x k))
+  have hsquare :
+      (1 : ℝ) ≤
+        ((d : ℝ) + 1) *
+          ∑ k : Fin (d + 1), (lowerBoundChainEdge d x k) ^ (2 : ℕ) := by
+    simpa [lowerBoundChainEdge_sum d x] using hcs
+  have hdenpos : 0 < (d : ℝ) + 1 := by positivity
+  exact (div_le_iff₀ hdenpos).mpr (by simpa [mul_comm] using hsquare)
+
+/-- Global lower bound for Chewi's shifted tridiagonal lower-bound objective. -/
+theorem lowerBoundChainObjective_ge_minValue {beta : ℝ} (hbeta : 0 ≤ beta)
+    (d : ℕ) (x : EuclideanSpace ℝ (Fin d)) :
+    beta / (8 * ((d : ℝ) + 1)) ≤
+      lowerBoundChainObjective beta d x := by
+  have henergy := lowerBoundChain_edgeSquareSum_ge d x
+  have hcoef : 0 ≤ beta / 8 := div_nonneg hbeta (by norm_num)
+  have hmul := mul_le_mul_of_nonneg_left henergy hcoef
+  have hdenpos : 0 < (d : ℝ) + 1 := by positivity
+  calc
+    beta / (8 * ((d : ℝ) + 1))
+        = (beta / 8) * (1 / ((d : ℝ) + 1)) := by
+            field_simp [hdenpos.ne']
+    _ ≤ (beta / 8) *
+          ∑ k : Fin (d + 1), (lowerBoundChainEdge d x k) ^ (2 : ℕ) := hmul
+    _ = lowerBoundChainObjective beta d x := by
+          rw [lowerBoundChainObjective]
+
+/-- Chewi's displayed chain point globally minimizes the shifted objective. -/
+theorem lowerBoundChainObjective_isMinOn_lowerBoundChainMinimizer
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ) :
+    IsMinOn (lowerBoundChainObjective beta d) Set.univ
+      (lowerBoundChainMinimizer d) := by
+  rw [isMinOn_univ_iff]
+  intro y
+  rw [lowerBoundChainObjective_lowerBoundChainMinimizer]
+  exact lowerBoundChainObjective_ge_minValue hbeta d y
 
 end CoordinatePrefix
 
