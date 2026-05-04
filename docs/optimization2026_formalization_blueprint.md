@@ -609,6 +609,11 @@ identity.  The search-first route reused mathlib `lp.coeFn_smul`,
 `lp.norm_const_smul`, and local `chewi45GeometricRatio_pow_recurrence`; no new
 recurrence theory was needed.  The supplied infinite tail-to-gap interface
 now also compiles: `exercise42InfinitePrefixSupported`,
+`exercise42InfinitePrefixSubmodule`,
+`mem_exercise42InfinitePrefixSubmodule_iff`,
+`exercise42InfinitePrefixSubmodule_mono`,
+`gradientSpanSubmodule_le_exercise42InfinitePrefixSubmodule`,
+`gradientSpanTrajectory_mem_exercise42InfinitePrefixSubmodule_of_grad_mem_next`,
 `exercise42InfiniteTailSq_le_sqdist_of_prefixSupported`,
 `exercise42Infinite_gap_ge_tailSq_of_lowerModel`, and
 `exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_lowerModel`
@@ -617,8 +622,29 @@ turn prefix support plus a supplied lower model at the minimizer into the exact
 reused `lp.norm_rpow_eq_tsum`, `Summable.sum_add_tsum_nat_add`, and
 nonnegative finite-sum decomposition; no local infinite-series comparison
 primitive was needed.  The next infinite-model step is the tridiagonal
-objective/lower-model package and prefix-support induction for gradient-span
-algorithms, then a source-shaped log-rate wrapper.
+objective/lower-model package at the shifted minimizer, then a source-shaped
+log-rate wrapper.  The gradient-span support induction now compiles for the
+supplied infinite hard-chain gradient oracle through
+`exercise42InfiniteChainGradient_mem_prefixSubmodule_of_apply`,
+`exercise42InfiniteGradientSpanTrajectory_mem_prefixSubmodule_of_apply`,
+`exercise42InfiniteGradientSpanTrajectory_prefixSupported_of_apply`, and
+`exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_lowerModel`.
+The lower-model route has also been tightened to first-order data:
+`exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply`,
+`exercise42InfiniteGeometricMinimizer_lowerModel_of_firstOrder`,
+`exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_firstOrder`,
+`exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_firstOrder`,
+and
+`exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_firstOrder`
+prove the geometric obstruction from `FirstOrderStrongConvexOn` plus the
+coordinate gradient formula.  The next infinite-model step is therefore the
+actual tridiagonal objective and its `FirstOrderStrongConvexOn`/gradient
+package, followed by the source-shaped log-rate wrapper.  The concrete
+objective layer now compiles as `exercise42InfiniteChainEdgeSq_summable`,
+`exercise42InfiniteChainObjective`, `exercise42InfiniteChainObjective_apply`,
+and `exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder`;
+only the objective's first-order/gradient package and the log-rate wrapper
+remain on this infinite Exercise 4.2 route.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

@@ -300,16 +300,41 @@ is the exact no-terminal-residual version of the finite corrected-chain
 algebra, reusing `lp.coeFn_smul`, `lp.norm_const_smul`, and the compiled
 `chewi45GeometricRatio_pow_recurrence`.  The supplied infinite tail-to-gap
 interface now compiles as `exercise42InfinitePrefixSupported`,
+`exercise42InfinitePrefixSubmodule`,
+`mem_exercise42InfinitePrefixSubmodule_iff`,
+`exercise42InfinitePrefixSubmodule_mono`,
+`gradientSpanSubmodule_le_exercise42InfinitePrefixSubmodule`,
+`gradientSpanTrajectory_mem_exercise42InfinitePrefixSubmodule_of_grad_mem_next`,
 `exercise42InfiniteTailSq_le_sqdist_of_prefixSupported`,
 `exercise42Infinite_gap_ge_tailSq_of_lowerModel`, and
 `exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_lowerModel`,
 using `lp.norm_rpow_eq_tsum`, `Summable.sum_add_tsum_nat_add`, and
 nonnegative finite-sum decomposition to get the exact
 `(alpha/2) * (q^2)^N * ‖0 - x_*‖^2` obstruction from a supplied lower model.
-Next, define the infinite tridiagonal hard-chain objective and prove/supply its
-lower model and prefix-support induction for gradient-span algorithms, then
-convert the obstruction into the logarithmic iteration-count statement.  In parallel,
-specialize the remaining reduction-route comparison
+The gradient-span support induction now compiles for the supplied infinite
+hard-chain gradient oracle via
+`exercise42InfiniteChainGradient_mem_prefixSubmodule_of_apply`,
+`exercise42InfiniteGradientSpanTrajectory_mem_prefixSubmodule_of_apply`,
+`exercise42InfiniteGradientSpanTrajectory_prefixSupported_of_apply`, and
+`exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_lowerModel`.
+The first-order lower-model bridge now compiles too:
+`exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply`,
+`exercise42InfiniteGeometricMinimizer_lowerModel_of_firstOrder`,
+`exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_firstOrder`,
+`exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_firstOrder`,
+and
+`exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_firstOrder`
+remove the ad hoc `hlower` premise once `FirstOrderStrongConvexOn` and the
+coordinate gradient formula are available.
+The concrete source objective layer now compiles:
+`exercise42InfiniteChainEdgeSq_summable`,
+`exercise42InfiniteChainObjective`,
+`exercise42InfiniteChainObjective_apply`, and
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder`.
+Next, prove/supply the concrete objective's `FirstOrderStrongConvexOn` package
+with the compiled coordinate gradient, then convert the obstruction into the
+logarithmic iteration-count statement.  In parallel, specialize the remaining
+reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.  Search
 mathlib/local APIs for `Real.log` monotonicity, `Real.exp` inversions,

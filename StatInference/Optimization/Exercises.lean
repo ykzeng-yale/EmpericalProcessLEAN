@@ -337,6 +337,94 @@ def exercise42InfinitePrefixSupported
     (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (N : ℕ) : Prop :=
   ∀ i : ℕ, N ≤ i -> x i = 0
 
+/-- Infinite prefix-support subspace used for Exercise 4.2 gradient-span runs. -/
+def exercise42InfinitePrefixSubmodule (N : ℕ) :
+    Submodule ℝ (lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) where
+  carrier := {x | exercise42InfinitePrefixSupported x N}
+  zero_mem' := by
+    intro i hi
+    rfl
+  add_mem' := by
+    intro x y hx hy i hi
+    change (x + y) i = 0
+    rw [show (x + y) i = x i + y i by rfl, hx i hi, hy i hi]
+    ring
+  smul_mem' := by
+    intro a x hx i hi
+    change (a • x) i = 0
+    rw [show (a • x) i = a * x i by rfl, hx i hi]
+    ring
+
+/-- Membership in the infinite prefix subspace is coordinate vanishing. -/
+theorem mem_exercise42InfinitePrefixSubmodule_iff
+    {x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)} {N : ℕ} :
+    x ∈ exercise42InfinitePrefixSubmodule N ↔
+      exercise42InfinitePrefixSupported x N :=
+  Iff.rfl
+
+/-- The infinite prefix subspaces are monotone in the prefix length. -/
+theorem exercise42InfinitePrefixSubmodule_mono {M N : ℕ} (hMN : M ≤ N) :
+    exercise42InfinitePrefixSubmodule M ≤
+      exercise42InfinitePrefixSubmodule N := by
+  intro x hx i hi
+  exact hx i (hMN.trans hi)
+
+/--
+If all queried gradients through time `n` lie in the next infinite prefix
+subspace, then their gradient span also lies there.
+-/
+theorem gradientSpanSubmodule_le_exercise42InfinitePrefixSubmodule
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)} {n : ℕ}
+    (hgrad : ∀ ⦃k : ℕ⦄, k ≤ n ->
+      grad (x k) ∈ exercise42InfinitePrefixSubmodule (n + 1)) :
+    gradientSpanSubmodule grad x n ≤
+      exercise42InfinitePrefixSubmodule (n + 1) := by
+  refine Submodule.span_le.mpr ?_
+  rintro v ⟨k, hk, rfl⟩
+  exact hgrad hk
+
+/--
+Infinite Exercise 4.2 gradient-span support induction: if the oracle gradient
+of a point in the `k`-prefix subspace lies in the `(k+1)`-prefix subspace, then
+every gradient-span iterate from `0` lies in its matching prefix subspace.
+-/
+theorem gradientSpanTrajectory_mem_exercise42InfinitePrefixSubmodule_of_grad_mem_next
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory grad x)
+    (hgrad : ∀ k, x k ∈ exercise42InfinitePrefixSubmodule k ->
+      grad (x k) ∈ exercise42InfinitePrefixSubmodule (k + 1)) :
+    ∀ n, x n ∈ exercise42InfinitePrefixSubmodule n := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      cases n with
+      | zero =>
+          simp [hx0, exercise42InfinitePrefixSubmodule,
+            exercise42InfinitePrefixSupported]
+      | succ n =>
+          have hspan_n :
+              x (n + 1) - x 0 ∈ gradientSpanSubmodule grad x n :=
+            mem_affineGradientSpan_iff.mp (hspan n)
+          have hle :
+              gradientSpanSubmodule grad x n ≤
+                exercise42InfinitePrefixSubmodule (n + 1) := by
+            refine gradientSpanSubmodule_le_exercise42InfinitePrefixSubmodule ?_
+            intro k hk
+            have hxk : x k ∈ exercise42InfinitePrefixSubmodule k :=
+              ih k (Nat.lt_succ_of_le hk)
+            exact exercise42InfinitePrefixSubmodule_mono
+              (Nat.succ_le_succ hk) (hgrad k hxk)
+          have hx_sub :
+              x (n + 1) - x 0 ∈
+                exercise42InfinitePrefixSubmodule (n + 1) :=
+            hle hspan_n
+          simpa [hx0] using hx_sub
+
 /--
 The infinite tail energy of `z` is bounded by the squared distance from any
 point whose coordinates vanish from `N` onward.
@@ -608,6 +696,58 @@ theorem exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_lowerModel
   exact hgap
 
 /--
+The source infinite chain edge-energy series in Exercise 4.2 is summable for
+every `ell^2` point.  This is the analytic substrate needed to state the
+displayed objective as a genuine infinite quadratic.
+-/
+theorem exercise42InfiniteChainEdgeSq_summable
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    Summable fun n : ℕ => (x n - x (n + 1)) ^ (2 : ℕ) := by
+  have hp : 0 < (2 : ℝ≥0∞).toReal := by norm_num
+  have hxnorm :
+      Summable fun n : ℕ => ‖x n‖ ^ (2 : ℕ) := by
+    have hx := (lp.memℓp x).summable hp
+    simpa using hx
+  have hxshift :
+      Summable fun n : ℕ => ‖x (n + 1)‖ ^ (2 : ℕ) := by
+    have hx :=
+      (summable_nat_add_iff
+        (f := fun n : ℕ => ‖x n‖ ^ (2 : ℕ)) 1).2 hxnorm
+    simpa [Nat.add_comm, Nat.succ_eq_add_one] using hx
+  refine Summable.of_nonneg_of_le
+    (fun n => sq_nonneg (x n - x (n + 1))) ?_
+    ((hxnorm.mul_left 2).add (hxshift.mul_left 2))
+  intro n
+  have h :=
+    sq_sub_le_two_mul_sq_add_two_mul_sq (x n) (x (n + 1))
+  simpa [Real.norm_eq_abs, sq_abs, mul_add] using h
+
+/--
+Concrete infinite strongly-convex hard-chain objective from Chewi Exercise 4.2,
+in zero-based coordinates:
+
+`((beta-alpha)/8) * (x₀² + ∑ (xₙ-xₙ₊₁)² - 2*x₀) + (alpha/2) * ‖x‖²`.
+-/
+noncomputable def exercise42InfiniteChainObjective (alpha beta : ℝ)
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) : ℝ :=
+  ((beta - alpha) / 8) *
+      (x 0 ^ (2 : ℕ) +
+        (∑' n : ℕ, (x n - x (n + 1)) ^ (2 : ℕ)) -
+          2 * x 0) +
+    (alpha / 2) * ‖x‖ ^ (2 : ℕ)
+
+/-- Unfolding form of the concrete infinite Exercise 4.2 hard-chain objective. -/
+theorem exercise42InfiniteChainObjective_apply
+    (alpha beta : ℝ) (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteChainObjective alpha beta x =
+      ((beta - alpha) / 8) *
+          (x 0 ^ (2 : ℕ) +
+            (∑' n : ℕ, (x n - x (n + 1)) ^ (2 : ℕ)) -
+              2 * x 0) +
+        (alpha / 2) * ‖x‖ ^ (2 : ℕ) :=
+  rfl
+
+/--
 Coordinate formula for the infinite strongly-convex hard-chain gradient in
 Chewi Exercise 4.2.  This is the infinite analogue of
 `strongLowerBoundChainGradient`, with no terminal boundary residual.
@@ -617,6 +757,101 @@ noncomputable def exercise42InfiniteChainGradient (alpha beta : ℝ)
   ((beta - alpha) / 4) *
       (2 * x i - (if i = 0 then 1 else x (i - 1)) - x (i + 1)) +
     alpha * x i
+
+/--
+The infinite hard-chain gradient expands prefix support by one coordinate.
+This is the infinite analogue of the finite support calculation behind
+Theorem 4.4/4.5.
+-/
+theorem exercise42InfiniteChainGradient_mem_prefixSubmodule_of_apply
+    {alpha beta : ℝ}
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hgrad_apply : ∀ y i,
+      grad y i = exercise42InfiniteChainGradient alpha beta y i)
+    {x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)} {N : ℕ}
+    (hx : x ∈ exercise42InfinitePrefixSubmodule N) :
+    grad x ∈ exercise42InfinitePrefixSubmodule (N + 1) := by
+  intro i hi
+  rw [hgrad_apply]
+  unfold exercise42InfiniteChainGradient
+  have hnot_first : ¬i = 0 := by omega
+  have hxi : x i = 0 := hx i (by omega)
+  have hxprev : x (i - 1) = 0 := hx (i - 1) (by omega)
+  have hxnext : x (i + 1) = 0 := hx (i + 1) (by omega)
+  simp [hnot_first, hxi, hxprev, hxnext]
+
+/--
+Prefix-support induction for Exercise 4.2 infinite hard-chain gradient-span
+trajectories, stated with a supplied `ell^2` oracle and coordinate formula.
+-/
+theorem exercise42InfiniteGradientSpanTrajectory_mem_prefixSubmodule_of_apply
+    {alpha beta : ℝ}
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hgrad_apply : ∀ y i,
+      grad y i = exercise42InfiniteChainGradient alpha beta y i)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory grad x) :
+    ∀ n, x n ∈ exercise42InfinitePrefixSubmodule n :=
+  gradientSpanTrajectory_mem_exercise42InfinitePrefixSubmodule_of_grad_mem_next
+    hx0 hspan
+    (fun _ hx =>
+      exercise42InfiniteChainGradient_mem_prefixSubmodule_of_apply
+        hgrad_apply hx)
+
+/-- Prop-valued form of the infinite hard-chain prefix-support induction. -/
+theorem exercise42InfiniteGradientSpanTrajectory_prefixSupported_of_apply
+    {alpha beta : ℝ}
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hgrad_apply : ∀ y i,
+      grad y i = exercise42InfiniteChainGradient alpha beta y i)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory grad x) (n : ℕ) :
+    exercise42InfinitePrefixSupported (x n) n :=
+  exercise42InfiniteGradientSpanTrajectory_mem_prefixSubmodule_of_apply
+    hgrad_apply hx0 hspan n
+
+/--
+Gradient-span version of the infinite Exercise 4.2 geometric obstruction.
+After the support induction has been discharged from the coordinate formula,
+only the supplied lower model at the geometric minimizer remains.
+-/
+theorem exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_lowerModel
+    {f : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) -> ℝ}
+    {alpha beta q : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1)
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hgrad_apply : ∀ y i,
+      grad y i = exercise42InfiniteChainGradient alpha beta y i)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory grad x) (N : ℕ)
+    (hlower :
+      f (exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one) +
+          (alpha / 2) *
+            ‖x N - exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one‖ ^
+              (2 : ℕ) ≤
+        f (x N)) :
+    (alpha / 2) *
+        ((q ^ (2 : ℕ)) ^ N *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one‖ ^
+              (2 : ℕ)) ≤
+      f (x N) -
+        f (exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one) := by
+  have hx_prefix :
+      exercise42InfinitePrefixSupported (x N) N :=
+    exercise42InfiniteGradientSpanTrajectory_prefixSupported_of_apply
+      hgrad_apply hx0 hspan N
+  exact
+    exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_lowerModel
+      (f := f) (alpha := alpha) halpha_nonneg hq_nonneg hq_lt_one
+      hx_prefix hlower
 
 /--
 The geometric profile with Chewi's ratio is the exact zero-gradient point of
@@ -695,6 +930,224 @@ theorem exercise42InfiniteChainGradient_geometricMinimizer_eq_zero_of_kappa
         rw [hkappa]
         exact (one_lt_div halpha_pos).2 halpha_lt_beta : 1 < kappa).le))
     (chewi45GeometricRatio_lt_one kappa) i
+
+/--
+Vector form of the infinite hard-chain zero-gradient calculation, for any
+supplied `ell^2` gradient oracle with the Chewi coordinate formula.
+-/
+theorem exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (hq_nonneg : 0 ≤ chewi45GeometricRatio kappa)
+    (hq_lt_one : chewi45GeometricRatio kappa < 1)
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hgrad_apply : ∀ y i,
+      grad y i = exercise42InfiniteChainGradient alpha beta y i) :
+    grad (exercise42InfiniteGeometricMinimizer
+      (chewi45GeometricRatio kappa) hq_nonneg hq_lt_one) = 0 := by
+  ext i
+  rw [hgrad_apply]
+  exact exercise42InfiniteChainGradient_geometricMinimizer_eq_zero
+    halpha_pos halpha_lt_beta hkappa hq_nonneg hq_lt_one i
+
+/--
+First-order lower model at the infinite hard-chain minimizer.  This discharges
+the formerly supplied lower-model input from `FirstOrderStrongConvexOn` and the
+compiled zero-gradient coordinate formula.
+-/
+theorem exercise42InfiniteGeometricMinimizer_lowerModel_of_firstOrder
+    {f : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) -> ℝ}
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (hq_nonneg : 0 ≤ chewi45GeometricRatio kappa)
+    (hq_lt_one : chewi45GeometricRatio kappa < 1)
+    (hfirst : FirstOrderStrongConvexOn Set.univ f grad alpha)
+    (hgrad_apply : ∀ y i,
+      grad y i = exercise42InfiniteChainGradient alpha beta y i)
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    f (exercise42InfiniteGeometricMinimizer
+        (chewi45GeometricRatio kappa) hq_nonneg hq_lt_one) +
+        (alpha / 2) *
+          ‖x - exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa) hq_nonneg hq_lt_one‖ ^ (2 : ℕ) ≤
+      f x := by
+  let z :=
+    exercise42InfiniteGeometricMinimizer
+      (chewi45GeometricRatio kappa) hq_nonneg hq_lt_one
+  have hgrad_zero : grad z = 0 :=
+    exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply
+      halpha_pos halpha_lt_beta hkappa hq_nonneg hq_lt_one hgrad_apply
+  have hmodel := hfirst.lower_model
+    (x := z) (y := x) (by simp) (by simp)
+  simpa [z, hgrad_zero] using hmodel
+
+/--
+Prefix-supported infinite Exercise 4.2 obstruction with the lower model
+obtained from the first-order strong-convexity interface.
+-/
+theorem exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_firstOrder
+    {f : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) -> ℝ}
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (hq_nonneg : 0 ≤ chewi45GeometricRatio kappa)
+    (hq_lt_one : chewi45GeometricRatio kappa < 1)
+    (hfirst : FirstOrderStrongConvexOn Set.univ f grad alpha)
+    (hgrad_apply : ∀ y i,
+      grad y i = exercise42InfiniteChainGradient alpha beta y i)
+    {x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)} {N : ℕ}
+    (hx : exercise42InfinitePrefixSupported x N) :
+    (alpha / 2) *
+        (((chewi45GeometricRatio kappa) ^ (2 : ℕ)) ^ N *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa) hq_nonneg hq_lt_one‖ ^
+              (2 : ℕ)) ≤
+      f x - f (exercise42InfiniteGeometricMinimizer
+        (chewi45GeometricRatio kappa) hq_nonneg hq_lt_one) := by
+  have hlower :=
+    exercise42InfiniteGeometricMinimizer_lowerModel_of_firstOrder
+      (f := f) (grad := grad)
+      halpha_pos halpha_lt_beta hkappa hq_nonneg hq_lt_one
+      hfirst hgrad_apply x
+  exact
+    exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_lowerModel
+      (f := f) (alpha := alpha)
+      halpha_pos.le hq_nonneg hq_lt_one hx hlower
+
+/--
+Gradient-span infinite Exercise 4.2 obstruction with the lower model discharged
+from `FirstOrderStrongConvexOn`, the hard-chain gradient formula, and the
+compiled prefix-support induction.
+-/
+theorem exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_firstOrder
+    {f : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) -> ℝ}
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (hq_nonneg : 0 ≤ chewi45GeometricRatio kappa)
+    (hq_lt_one : chewi45GeometricRatio kappa < 1)
+    (hfirst : FirstOrderStrongConvexOn Set.univ f grad alpha)
+    (hgrad_apply : ∀ y i,
+      grad y i = exercise42InfiniteChainGradient alpha beta y i)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory grad x) (N : ℕ) :
+    (alpha / 2) *
+        (((chewi45GeometricRatio kappa) ^ (2 : ℕ)) ^ N *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa) hq_nonneg hq_lt_one‖ ^
+              (2 : ℕ)) ≤
+      f (x N) - f (exercise42InfiniteGeometricMinimizer
+        (chewi45GeometricRatio kappa) hq_nonneg hq_lt_one) := by
+  have hx_prefix :
+      exercise42InfinitePrefixSupported (x N) N :=
+    exercise42InfiniteGradientSpanTrajectory_prefixSupported_of_apply
+      hgrad_apply hx0 hspan N
+  exact
+    exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_firstOrder
+      (f := f) (grad := grad)
+      halpha_pos halpha_lt_beta hkappa hq_nonneg hq_lt_one
+      hfirst hgrad_apply hx_prefix
+
+/--
+Source-shaped infinite Exercise 4.2 obstruction using Chewi's standard
+condition-number ratio, with the ratio positivity side conditions filled in.
+-/
+theorem exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_firstOrder
+    {f : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) -> ℝ}
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (hfirst : FirstOrderStrongConvexOn Set.univ f grad alpha)
+    (hgrad_apply : ∀ y i,
+      grad y i = exercise42InfiniteChainGradient alpha beta y i)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory grad x) (N : ℕ) :
+    (alpha / 2) *
+        (((chewi45GeometricRatio kappa) ^ (2 : ℕ)) ^ N *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^
+              (2 : ℕ)) ≤
+      f (x N) - f (exercise42InfiniteGeometricMinimizer
+        (chewi45GeometricRatio kappa)
+        (chewi45GeometricRatio_nonneg (kappa := kappa)
+          ((by
+            rw [hkappa]
+            exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+              1 < kappa).le))
+        (chewi45GeometricRatio_lt_one kappa)) := by
+  exact
+    exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_firstOrder
+      (f := f) (grad := grad)
+      halpha_pos halpha_lt_beta hkappa
+      (chewi45GeometricRatio_nonneg (kappa := kappa)
+        ((by
+          rw [hkappa]
+          exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+            1 < kappa).le))
+      (chewi45GeometricRatio_lt_one kappa)
+      hfirst hgrad_apply hx0 hspan N
+
+/--
+Concrete-objective wrapper for the infinite Exercise 4.2 obstruction.  Once
+the displayed objective is supplied/proved to satisfy the first-order
+strong-convexity interface with the compiled coordinate gradient, the exact
+geometric lower bound follows immediately for every gradient-span trajectory.
+-/
+theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (hfirst : FirstOrderStrongConvexOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta) grad alpha)
+    (hgrad_apply : ∀ y i,
+      grad y i = exercise42InfiniteChainGradient alpha beta y i)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory grad x) (N : ℕ) :
+    (alpha / 2) *
+        (((chewi45GeometricRatio kappa) ^ (2 : ℕ)) ^ N *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^
+              (2 : ℕ)) ≤
+      exercise42InfiniteChainObjective alpha beta (x N) -
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)) := by
+  exact
+    exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_firstOrder
+      (f := exercise42InfiniteChainObjective alpha beta) (grad := grad)
+      halpha_pos halpha_lt_beta hkappa hfirst hgrad_apply hx0 hspan N
 
 end Optimization
 end StatInference
