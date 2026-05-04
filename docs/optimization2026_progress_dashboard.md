@@ -157,6 +157,12 @@ The newest finite-boundary comparison layer adds
 `geometric_boundary_sq_le_finiteGeometricCandidate_coordinateTailSq`.  These
 are the next reusable tools for either a finite slack lower bound or the
 transition to the exact infinite-chain model.
+The concrete finite-boundary gap obstruction also now compiles:
+`chewi45_gap_ge_geometric_boundary_of_finiteGeometricCandidate` and
+`chewi45_not_near_min_of_finiteGeometricCandidate_boundary_lower_bound`.
+This removes the supplied tail-comparison hypothesis for a finite slack
+statement; next is the log/slack comparison or the exact `l^2` Exercise 4.2
+model.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains
