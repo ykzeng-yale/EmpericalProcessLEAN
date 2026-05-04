@@ -287,10 +287,21 @@ infinite tail layer also compiles as `exercise42InfiniteTailSq`,
 `exercise42InfiniteGeometric_tailSq_eq_pow_mul_zero_dist_sq`, and
 `exercise42InfiniteGeometric_pow_mul_zero_dist_sq_le_tailSq`, proving the
 source-shaped `(q^2)^N` tail-times-zero-distance identity by reusing
-`tsum_mul_left` and `tsum_congr`.  Next, define the infinite tridiagonal
-hard-chain objective/gradient on this `lp` model, prove the geometric profile
-is the exact zero-gradient minimizer, then convert the tail obstruction into
-the logarithmic iteration-count statement.  In parallel,
+`tsum_mul_left` and `tsum_congr`.  The shifted hard-chain minimizer and
+infinite gradient layer also compiles: `exercise42InfiniteGeometricMinimizer`,
+`exercise42InfiniteGeometricMinimizer_apply`,
+`exercise42InfiniteGeometricMinimizer_norm_sq`,
+`exercise42InfiniteGeometricMinimizer_tailSq_eq`,
+`exercise42InfiniteGeometricMinimizer_tailSq_eq_pow_mul_zero_dist_sq`,
+`exercise42InfiniteChainGradient`,
+`exercise42InfiniteChainGradient_geometricMinimizer_eq_zero`, and
+`exercise42InfiniteChainGradient_geometricMinimizer_eq_zero_of_kappa`.  This
+is the exact no-terminal-residual version of the finite corrected-chain
+algebra, reusing `lp.coeFn_smul`, `lp.norm_const_smul`, and the compiled
+`chewi45GeometricRatio_pow_recurrence`.  Next, define the infinite tridiagonal
+hard-chain objective or a supplied tail-to-gap interface on this `lp` model,
+then convert the tail obstruction into the logarithmic iteration-count
+statement.  In parallel,
 specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.  Search

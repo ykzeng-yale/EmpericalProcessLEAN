@@ -594,9 +594,22 @@ infinite-norm primitive was needed.  The tail-energy version now also compiles:
 `exercise42InfiniteGeometric_pow_mul_zero_dist_sq_le_tailSq`; these prove the
 exact source-shaped tail identity
 `tail_N = (q^2)^N * ‖0 - geometricProfile‖^2` using `tsum_mul_left` and
-`tsum_congr`.  The next infinite-model step is the tridiagonal
-objective/gradient and exact zero-gradient geometric minimizer, then a
-source-shaped tail-to-gap/log-rate wrapper.
+`tsum_congr`.  The shifted minimizer and no-terminal infinite-gradient layer
+now compiles too: `exercise42InfiniteGeometricMinimizer`,
+`exercise42InfiniteGeometricMinimizer_apply`,
+`exercise42InfiniteGeometricMinimizer_norm_sq`,
+`exercise42InfiniteGeometricMinimizer_tailSq_eq`,
+`exercise42InfiniteGeometricMinimizer_tailSq_eq_pow_mul_zero_dist_sq`,
+`exercise42InfiniteChainGradient`,
+`exercise42InfiniteChainGradient_geometricMinimizer_eq_zero`, and
+`exercise42InfiniteChainGradient_geometricMinimizer_eq_zero_of_kappa` prove
+that the Chewi-ratio profile `q^(n+1)` is the exact zero-gradient point of the
+infinite hard-chain gradient and has the required `(q^2)^N` tail-times-distance
+identity.  The search-first route reused mathlib `lp.coeFn_smul`,
+`lp.norm_const_smul`, and local `chewi45GeometricRatio_pow_recurrence`; no new
+recurrence theory was needed.  The next infinite-model step is the tridiagonal
+objective or supplied tail-to-gap interface, then a source-shaped
+tail-to-gap/log-rate wrapper.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

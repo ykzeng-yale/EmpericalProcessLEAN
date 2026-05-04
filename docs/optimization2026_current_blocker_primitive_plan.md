@@ -1181,11 +1181,25 @@ The first true infinite-chain substrate now compiles in
 `exercise42InfiniteGeometric_pow_mul_zero_dist_sq_le_tailSq` prove that the
 tail after `N` coordinates is `(q^2)^N` times the full squared norm, equivalently
 the zero-start squared distance.  This reused mathlib `tsum_mul_left` and
-`tsum_congr`; no new summability primitive was needed.  Next direct Exercise
-4.2 step: define the infinite tridiagonal hard-chain objective/gradient on this
-`lp` model, prove the geometric profile is the exact zero-gradient minimizer,
-then reuse the compiled tail-to-gap obstruction pattern to obtain the source
-geometric iteration lower bound without finite-boundary slack.
+`tsum_congr`; no new summability primitive was needed.  The actual shifted
+hard-chain minimizer profile now also compiles as
+`exercise42InfiniteGeometricMinimizer` with apply/norm/tail identities
+`exercise42InfiniteGeometricMinimizer_apply`,
+`exercise42InfiniteGeometricMinimizer_norm_sq`,
+`exercise42InfiniteGeometricMinimizer_tailSq_eq`, and
+`exercise42InfiniteGeometricMinimizer_tailSq_eq_pow_mul_zero_dist_sq`.
+The infinite no-terminal-residual gradient coordinate formula
+`exercise42InfiniteChainGradient` compiles, and
+`exercise42InfiniteChainGradient_geometricMinimizer_eq_zero` plus
+`exercise42InfiniteChainGradient_geometricMinimizer_eq_zero_of_kappa` prove the
+Chewi-ratio shifted profile is an exact zero-gradient point in every
+coordinate.  Search-first reuse: mathlib `lp.coeFn_smul`,
+`lp.norm_const_smul`, local `chewi45GeometricRatio_pow_recurrence`, and the
+finite Theorem 4.5 ratio algebra; no new recurrence primitive was introduced.
+Next direct Exercise 4.2 step: define the infinite tridiagonal hard-chain
+objective or a supplied tail-to-gap interface for this `lp` model, then reuse
+the compiled tail-to-gap obstruction pattern to obtain the source geometric
+iteration lower bound without finite-boundary slack.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
