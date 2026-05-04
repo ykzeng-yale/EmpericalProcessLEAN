@@ -746,7 +746,10 @@ above, so they do not change the theorem-level dashboard counts.
    entropy constructors.  The factorwise bridge
    `empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_factor_bound`
    now also converts per-threshold cardinality bounds plus a polynomial
-   estimate on their product into the same theorem-facing shape.
+   estimate on their product into the same theorem-facing shape.  The
+   common-base specialization
+   `empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_const_factor_bound`
+   reduces the product estimate to a bound on `base ^ thresholds.card`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
