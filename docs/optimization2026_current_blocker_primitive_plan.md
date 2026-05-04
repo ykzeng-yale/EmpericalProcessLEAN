@@ -1113,14 +1113,24 @@ Search-first result: reused mathlib `Real.log_le_sub_one_of_pos`,
 and local positivity/ratio facts.  The strongest direct finite obstruction is
 now phrased with `(sqrt kappa + 1)` for the finite half-boundary gate and
 `(sqrt kappa - 1)` for the `eps`-rate gate.
+The constant-cleanup layer now compiles:
+`chewi45_two_le_sqrt_of_four_le`,
+`chewi45_sqrt_add_one_le_three_halves_sqrt_of_four_le`,
+`chewi45_half_sqrt_le_sqrt_sub_one_of_four_le`,
+`chewi45_sqrt_add_one_rate_le_three_halves_sqrt_rate`,
+`chewi45_half_sqrt_rate_le_sqrt_sub_one_rate`, and
+`chewi45_not_finiteGeometricCandidate_near_min_of_sqrtKappa_rates`.
+Under `4 <= kappa`, the direct finite obstruction is now phrased using pure
+`sqrt(kappa)` gates: `3/2 * sqrt(kappa)` for the half-boundary gate and
+`sqrt(kappa)/2` for the `eps` gate.
 Search/source correction: Exercise 4.2 is stated for an infinite-dimensional
 `R^infty` chain, and scalar checks of the finite corrected truncation show the
 literal `q^(2N)` tail factor is approached from below rather than true for all
 finite `d` without extra slack.  The next atomic target is therefore either a
-constant-cleanup wrapper converting the `(sqrt kappa ± 1)` condition-number
-rates into a textbook `c * sqrt(kappa) * log(...)` lower bound under simple
-side conditions, or a true `l^2`/infinite-sequence model where the exact
-Exercise 4.2 tail identity should hold.  The reduction-route comparison
+final presentation wrapper rewriting the negative logs into positive
+`log((alpha/8)/eps)` / `log 2` factors and source-level constant names, or a
+true `l^2`/infinite-sequence model where the exact Exercise 4.2 tail identity
+should hold.  The reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` remains an alternate
 assembly target when concrete condition-number/log hypotheses make it faster.
 Search mathlib/local APIs for `Real.log` monotonicity, `Real.exp` inversions,
