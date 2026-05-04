@@ -3157,3 +3157,25 @@ expectations given the permutation-symmetric sigma-field `Σ_{n+1}` (or record
 the precise invariant-set/measure-preserving primitive needed), then instantiate
 the new reverse-comparison bridge with the existing deterministic
 `vdVWWeightedClassSupremum_uniform_le_leaveOneOutAverage`.
+
+2026-05-04 follow-up: the invariant-set and measure-preserving primitives
+needed for the remaining conditional-symmetry proof are now compiled in
+`PMeasurable.lean`.  Search/reuse record: pinned mathlib provided
+`MeasurableSpace.generateFrom_induction`,
+`MeasurableEquiv.piCongrLeft`, `MeasurableEquiv.piCongrLeft_apply_apply`,
+and `Measure.infinitePi_map_piCongrLeft`; local code reused
+`VdVWPermutationSymmetricGeneratorSet`, `VdVWPermutationSymmetricFrom`, and
+`vdVWInfiniteProductMeasure`.  New declarations are
+`preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetric`,
+`measurable_vdVWPermuteNatSequence_permutationSymmetric`,
+`vdVWNatCoordinatePermMeasurableEquiv`,
+`vdVWNatCoordinatePermMeasurableEquiv_apply_apply`,
+`vdVWNatCoordinatePermMeasurableEquiv_eq_vdVWPermuteNatSequence`,
+`vdVWInfiniteProductMeasure_measurePreserving_natCoordinatePerm`, and
+`vdVWInfiniteProductMeasure_measurePreserving_permuteNatSequence`.  These
+close the two structural ingredients for proving leave-one-out conditional
+symmetry: `Σ_n` sets are invariant under tail-fixing coordinate permutations,
+and `P^∞` is invariant under those permutations.  The next theorem-facing edit
+is to combine these with `ae_eq_condExp_of_forall_setIntegral_eq` or
+set-integral invariance to prove equality of the conditional expectations of
+the leave-one-out empirical-supremum cover terms given `Σ_{n+1}`.

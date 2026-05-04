@@ -233,6 +233,63 @@ def vdVWPermuteNatSequence {Observation : Type u}
     (perm : Equiv.Perm ℕ) (sequence : ℕ -> Observation) : ℕ -> Observation :=
   fun k => sequence (perm.symm k)
 
+/-- Infinite-coordinate permutation of the sample sequence space. -/
+noncomputable def vdVWNatCoordinatePermMeasurableEquiv
+    {Observation : Type u} [MeasurableSpace Observation]
+    (perm : Equiv.Perm ℕ) :
+    (ℕ -> Observation) ≃ᵐ (ℕ -> Observation) :=
+  MeasurableEquiv.piCongrLeft (fun _ : ℕ => Observation) perm
+
+/-- Coordinate display for `vdVWNatCoordinatePermMeasurableEquiv`. -/
+theorem vdVWNatCoordinatePermMeasurableEquiv_apply_apply
+    {Observation : Type u} [MeasurableSpace Observation]
+    (perm : Equiv.Perm ℕ) (sequence : ℕ -> Observation) (i : ℕ) :
+    vdVWNatCoordinatePermMeasurableEquiv perm sequence (perm i) = sequence i :=
+  by
+    simpa [vdVWNatCoordinatePermMeasurableEquiv] using
+      (MeasurableEquiv.piCongrLeft_apply_apply
+        (β := fun _ : ℕ => Observation) perm sequence i)
+
+/-- The measurable-equivalence display agrees with `vdVWPermuteNatSequence`. -/
+theorem vdVWNatCoordinatePermMeasurableEquiv_eq_vdVWPermuteNatSequence
+    {Observation : Type u} [MeasurableSpace Observation]
+    (perm : Equiv.Perm ℕ) :
+    (vdVWNatCoordinatePermMeasurableEquiv
+      (Observation := Observation) perm : (ℕ -> Observation) -> (ℕ -> Observation)) =
+      vdVWPermuteNatSequence perm := by
+  funext sequence k
+  have hcoord :=
+    vdVWNatCoordinatePermMeasurableEquiv_apply_apply
+      (Observation := Observation) perm sequence (perm.symm k)
+  simpa [vdVWPermuteNatSequence] using hcoord
+
+/-- The iid infinite product measure is invariant under coordinate permutations. -/
+theorem vdVWInfiniteProductMeasure_measurePreserving_natCoordinatePerm
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    (perm : Equiv.Perm ℕ) :
+    MeasurePreserving (vdVWNatCoordinatePermMeasurableEquiv
+      (Observation := Observation) perm)
+      (vdVWInfiniteProductMeasure P) (vdVWInfiniteProductMeasure P) := by
+  refine ⟨(vdVWNatCoordinatePermMeasurableEquiv
+      (Observation := Observation) perm).measurable, ?_⟩
+  simpa [vdVWInfiniteProductMeasure, vdVWNatCoordinatePermMeasurableEquiv] using
+    (Measure.infinitePi_map_piCongrLeft
+      (μ := fun _ : ℕ => P) (X := fun _ : ℕ => Observation) perm)
+
+/-- The iid infinite product measure is invariant under `vdVWPermuteNatSequence`. -/
+theorem vdVWInfiniteProductMeasure_measurePreserving_permuteNatSequence
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    (perm : Equiv.Perm ℕ) :
+    MeasurePreserving (vdVWPermuteNatSequence
+      (Observation := Observation) perm)
+      (vdVWInfiniteProductMeasure P) (vdVWInfiniteProductMeasure P) := by
+  simpa [vdVWNatCoordinatePermMeasurableEquiv_eq_vdVWPermuteNatSequence
+    (Observation := Observation) perm] using
+    (vdVWInfiniteProductMeasure_measurePreserving_natCoordinatePerm
+      (Observation := Observation) P perm)
+
 /-- A permutation fixing every coordinate from `n` onward maps `{0, ..., n-1}` into itself. -/
 theorem VdVWNatPermFixesFrom.image_lt
     {n : ℕ} {perm : Equiv.Perm ℕ}
@@ -359,6 +416,51 @@ theorem measurable_vdVWPermutationSymmetricMeasurableSpace_of_symmetric
   intro t ht
   exact MeasurableSpace.measurableSet_generateFrom
     ⟨statistic, hmeas, hsymm, t, ht, rfl⟩
+
+/--
+Every `Σ_n`-measurable set is invariant under coordinate permutations fixing
+the tail from `n` onward.
+
+This is the generated-sigma-field invariant-set primitive needed for the
+conditional-expectation symmetry step in VdV&W Lemma 2.4.5.
+-/
+theorem preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetric
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (perm : Equiv.Perm ℕ) (hfix : VdVWNatPermFixesFrom n perm)
+    {s : Set (ℕ -> Observation)}
+    (hs : MeasurableSet[vdVWPermutationSymmetricMeasurableSpace Observation n] s) :
+    vdVWPermuteNatSequence perm ⁻¹' s = s := by
+  let generator := VdVWPermutationSymmetricGeneratorSet Observation n
+  change MeasurableSet[MeasurableSpace.generateFrom generator] s at hs
+  refine
+    MeasurableSpace.generateFrom_induction generator
+      (fun t _ht => vdVWPermuteNatSequence perm ⁻¹' t = t) ?_ ?_ ?_ ?_ s hs
+  · intro t ht _hmeas_t
+    rcases ht with ⟨statistic, _hmeas_statistic, hsymm, target, _htarget, rfl⟩
+    ext sequence
+    simp [Set.mem_preimage, hsymm perm hfix sequence]
+  · simp
+  · intro t _ht hpre
+    ext sequence
+    simp [hpre]
+  · intro sets _hsets hpre
+    ext sequence
+    simp [hpre]
+
+/--
+Coordinate permutations fixing the tail are measurable maps from `Σ_n` to
+itself.  This is a direct consequence of the invariant-set theorem above.
+-/
+theorem measurable_vdVWPermuteNatSequence_permutationSymmetric
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (perm : Equiv.Perm ℕ) (hfix : VdVWNatPermFixesFrom n perm) :
+    Measurable[vdVWPermutationSymmetricMeasurableSpace Observation n,
+      vdVWPermutationSymmetricMeasurableSpace Observation n]
+      (vdVWPermuteNatSequence (Observation := Observation) perm) := by
+  intro s hs
+  rw [preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetric
+    (Observation := Observation) perm hfix hs]
+  exact hs
 
 /--
 Projecting the first `n` coordinates after an infinite permutation fixing the

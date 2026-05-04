@@ -1063,7 +1063,14 @@ above, so they do not change the theorem-level dashboard counts.
    leave-one-out terms under `Σ_{n+1}`, not the finite permutation,
    generated-sigma, countable-supremum adaptedness, cover-shaped adaptedness,
    cofiltration substrate, ordinary conditional expectation convergence
-   substrate, or generic conditional-expectation algebra.
+   substrate, or generic conditional-expectation algebra.  The generated-sigma
+   invariant-set and infinite-product measure-preserving ingredients are now
+   compiled as
+   `preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetric`,
+   `measurable_vdVWPermuteNatSequence_permutationSymmetric`, and
+   `vdVWInfiniteProductMeasure_measurePreserving_permuteNatSequence`; the next
+   patch should use these with set-integral/conditional-expectation uniqueness
+   to prove the leave-one-out conditional symmetry itself.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

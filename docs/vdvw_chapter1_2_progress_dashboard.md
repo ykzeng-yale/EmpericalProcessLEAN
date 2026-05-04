@@ -765,11 +765,22 @@ mathlib `condExp_of_stronglyMeasurable`, `condExp_mono`,
 the VdV&W-specific conditional symmetry theorem for the leave-one-out terms
 given `Σ_{n+1}`, then instantiation of the bridge with the existing
 deterministic leave-one-out supremum inequality.
+2026-05-04 follow-up: the two structural primitives for that conditional
+symmetry proof are now compiled in `PMeasurable.lean`: every `Σ_n`-measurable
+set is invariant under coordinate permutations fixing the tail from `n`
+onward, and the iid infinite product measure `P^∞` is invariant under
+coordinate permutations.  New declarations include
+`preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetric`,
+`measurable_vdVWPermuteNatSequence_permutationSymmetric`, and
+`vdVWInfiniteProductMeasure_measurePreserving_permuteNatSequence`.  Remaining
+work is the set-integral/conditional-expectation equality for the actual
+leave-one-out terms.
 
 ## Verification Monitor
 
 Latest targeted verification includes the Theorem 2.4.3 theorem module after
-the Lemma 2.4.5 conditional-expectation comparison bridge on 2026-05-04.
+the Lemma 2.4.5 conditional-expectation comparison bridge and the
+permutation-symmetric invariant-set/product-measure primitives on 2026-05-04.
 
 ```text
 lake env lean StatInference/EmpiricalProcess/Theorem243.lean
