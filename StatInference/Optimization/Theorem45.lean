@@ -3144,5 +3144,41 @@ theorem chewi45_not_finiteGeometricCandidate_near_min_of_source_positiveLog_wind
       halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four heps_le
       (N := N) hhalf_old heps_old (x := x) hx0 hspan hnear
 
+/--
+Lower-bound form of the source-positive-log finite Theorem 4.5 obstruction.
+For a near-minimizing gradient-span run satisfying the finite dimension gate,
+the source accuracy rate itself must be no larger than the iteration count.
+-/
+theorem chewi45_source_positiveLog_rate_le_of_finiteGeometricCandidate_near_min
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha)
+    (hkappa_four : 4 ≤ kappa) (heps_le : eps ≤ alpha / 8) {N : ℕ}
+    (hhalf_sqrt_le_N :
+      (3 * Real.sqrt kappa * Real.log (2 : ℝ)) / 8 - 1 ≤
+        (N : ℝ))
+    {x : ℕ -> EuclideanSpace ℝ (Fin (2 * N + 1))}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta (2 * N + 1)) x)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta (2 * N + 1) (x N) ≤
+        strongLowerBoundChainObjective alpha beta (2 * N + 1)
+          (strongLowerBoundFiniteGeometricCandidate kappa (2 * N + 1)) +
+            eps) :
+    (Real.sqrt kappa * Real.log ((alpha / 8) / eps)) / 8 - 1 ≤
+      (N : ℝ) := by
+  by_contra hnot
+  have hN_lt_eps_sqrt :
+      (N : ℝ) <
+        (Real.sqrt kappa * Real.log ((alpha / 8) / eps)) / 8 - 1 :=
+    not_le.mp hnot
+  exact
+    chewi45_not_finiteGeometricCandidate_near_min_of_source_positiveLog_window
+      (alpha := alpha) (beta := beta) (kappa := kappa) (eps := eps)
+      halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four heps_le
+      (N := N) hhalf_sqrt_le_N hN_lt_eps_sqrt
+      (x := x) hx0 hspan hnear
+
 end Optimization
 end StatInference

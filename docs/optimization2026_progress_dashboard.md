@@ -241,6 +241,10 @@ The source-window gate comparison layer now adds
 `chewi45_source_positiveLog_half_gate_lt_eps_gate_of_kappa_pos`, and
 `chewi45_source_positiveLog_half_gate_lt_eps_gate_of_four_le`, isolating the
 large-log condition needed for a nonempty Theorem 4.5 source window.
+The newest lower-bound form adds
+`chewi45_source_positiveLog_rate_le_of_finiteGeometricCandidate_near_min`,
+turning the source-window contradiction into the direct conclusion
+`sqrt(kappa) * log ((alpha/8)/eps) / 8 - 1 <= N`.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains

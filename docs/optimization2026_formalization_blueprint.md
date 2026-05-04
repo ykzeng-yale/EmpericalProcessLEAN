@@ -686,6 +686,10 @@ The accompanying gate comparison lemmas
 `chewi45_source_positiveLog_half_gate_lt_eps_gate_of_kappa_pos`, and
 `chewi45_source_positiveLog_half_gate_lt_eps_gate_of_four_le` now compile,
 so the large-log assumption can be reused without redoing scalar algebra.
+The direct lower-bound theorem
+`chewi45_source_positiveLog_rate_le_of_finiteGeometricCandidate_near_min` now
+compiles, converting the source-window contradiction into the usable rate
+conclusion `sqrt(kappa) * log ((alpha/8)/eps) / 8 - 1 <= N`.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
