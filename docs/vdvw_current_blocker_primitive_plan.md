@@ -3513,3 +3513,23 @@ is the reusable bad-event bridge, finite class countability is supplied by
 blocker is unchanged: exact arbitrary/countable-class Lemma 2.4.5 still needs
 the reverse/permutation-symmetric cofiltration theorem or a different
 structural route.
+
+2026-05-04 follow-up: the remaining arbitrary/countable-class Lemma 2.4.5
+reverse/cofiltration blocker is now registered as the named Lean proposition
+`VdVWLemma245ReverseCofiltrationHandoff`.  Search/reuse record: pinned mathlib
+has the forward `Filtration ℕ` martingale convergence stack
+`Submartingale.ae_tendsto_limitProcess`,
+`Submartingale.tendsto_eLpNorm_one_limitProcess`,
+`martingale_condExp`, `Integrable.uniformIntegrable_condExp_filtration`,
+and `tendsto_ae_condExp`; local `Theorem243.lean` already compiles the
+row-wise conditional-expectation comparison and limit-process handoffs over
+`Σ_{n+1}`.  No pinned mathlib theorem was found that directly turns the
+decreasing VdV&W permutation-symmetric fields into the exact reverse
+cofiltration convergence conclusion.  New compiled consumers
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_namedReverseCofiltrationHandoff`
+and
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseCofiltrationHandoff_of_outerProbability_invNat_geometric`
+show that, once this named primitive is proved and a fixed-space
+outer-probability endpoint is available, the a.s. zero conclusion follows.
+This is a precise blocker registration, not a proof of the missing reverse
+cofiltration theorem.

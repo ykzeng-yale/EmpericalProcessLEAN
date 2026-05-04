@@ -1007,3 +1007,16 @@ coordinate law `vdVWInfiniteProductMeasure_coordinate_hasLaw`; the book-style
 through this outer-probability branch.  This closes another finite-class
 endpoint while leaving the arbitrary/countable-class reverse/cofiltration
 blocker unchanged.
+
+2026-05-04 follow-up: the arbitrary/countable-class Lemma 2.4.5 reverse
+cofiltration gap is now exposed as the named Lean proposition
+`VdVWLemma245ReverseCofiltrationHandoff`.  The new consumers
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_namedReverseCofiltrationHandoff`
+and
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseCofiltrationHandoff_of_outerProbability_invNat_geometric`
+compose this primitive with the already-compiled row comparisons,
+martingale/limit-process wrappers, and fixed-space outer-probability
+Borel-Cantelli route.  Search confirmed that mathlib currently supplies the
+forward filtration martingale convergence APIs, but not the exact VdV&W
+reverse/permutation-symmetric cofiltration theorem.  Next real proof work is
+therefore the named primitive itself or a structural route that avoids it.

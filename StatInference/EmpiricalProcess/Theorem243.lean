@@ -5309,6 +5309,35 @@ theorem VdVWConvergesInOuterProbability_nat_succ
     (hprob ε hε).comp (tendsto_add_atTop_nat 1)
 
 /--
+The exact remaining VdV&W Lemma 2.4.5 reverse/cofiltration convergence
+primitive, registered as a named theorem-facing hypothesis.
+
+All local row-wise conditional-expectation comparison, measurability,
+integrability, and martingale convergence inputs are already compiled.  What
+is still missing for arbitrary/countable classes is precisely the textbook
+reverse/permutation-symmetric cofiltration step: the a.s. comparison with the
+conditional expectation over `Σ_{n+1}` must imply a.e. convergence of the
+centered empirical supremum to some finite limit.
+-/
+def VdVWLemma245ReverseCofiltrationHandoff
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ) : Prop :=
+  (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+    ∀ n, 0 < n ->
+      vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+        (vdVWInfiniteProductMeasure P)[
+          (fun sequence : ℕ -> Observation =>
+            vdVWLemma245LeaveOneOutCenteredSupremum P indexClass classFun n sequence) |
+          vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence) ->
+  ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+    ∃ limit : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 limit)
+
+/--
 Final Lemma 2.4.5 consumer for the already-compiled countable centered
 reverse-comparison rows.
 
@@ -5518,6 +5547,37 @@ theorem
     · exact Filter.Eventually.of_forall fun sequence hpos => (hn hpos).elim
   filter_upwards [ae_all_iff.2 hrow] with sequence hsequence n hn
   exact hsequence n hn
+
+/--
+Named-primitive form of the Lemma 2.4.5 reverse/cofiltration convergence
+consumer.
+
+This is definitionally the same handoff as
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseComparisonHandoff`,
+but it exposes the remaining textbook primitive as the named proposition
+`VdVWLemma245ReverseCofiltrationHandoff`.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_namedReverseCofiltrationHandoff
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hreverse :
+      VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      ∃ limit : ℝ,
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 limit) :=
+  vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseComparisonHandoff
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) hcount henvelope hclass henv_integrable hreverse
 
 /--
 Zero-limit Lemma 2.4.5 consumer after a Borel-Cantelli/subsequence step.
@@ -5817,6 +5877,40 @@ theorem
       (X := fun n sequence =>
         vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
       hprob hlimit
+
+/--
+Named-primitive form of the canonical zero-limit Lemma 2.4.5 consumer.
+
+After a fixed-space outer-probability endpoint is supplied, the only exposed
+arbitrary/countable-class hypothesis is the named reverse/cofiltration
+primitive `VdVWLemma245ReverseCofiltrationHandoff`.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseCofiltrationHandoff_of_outerProbability_invNat_geometric
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hprob :
+      VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+        (fun n sequence =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        atTop (fun _ => (0 : ℝ)))
+    (hreverse :
+      VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) :=
+  vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_outerProbability_invNat_geometric
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) hcount henvelope hclass henv_integrable hprob hreverse
 
 /--
 An integrable envelope supplies the varying-domain tail/UI condition for the
