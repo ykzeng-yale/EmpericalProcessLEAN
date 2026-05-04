@@ -782,7 +782,11 @@ above, so they do not change the theorem-level dashboard counts.
    now consumes that exact finite-value threshold route directly, defining the
    selected cardinality from the threshold-coded finite trace image and feeding
    the natural-polynomial threshold/VC bound into the fixed-radius tail/UI
-   package.
+   package.  The theorem-facing untruncated consumer
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_values_mem_thresholds_uniform_vc`
+   now composes this package with the large-`M` untruncation layer, so the
+   exact finite-value/discretized threshold route reaches centered untruncated
+   convergence under its explicit structural and integrability hypotheses.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

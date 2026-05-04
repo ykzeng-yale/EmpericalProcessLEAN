@@ -2187,11 +2187,28 @@ The selected fixed-radius package search reused
 and `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_trace_image_cardinality_bound_samplePath`;
 the direct threshold-to-package constructor did not previously exist.
 
+2026-05-04 `/goal` update after threshold-to-untruncated consumer:
+`Theorem243.lean` now also adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_values_mem_thresholds_uniform_vc`.
+This composes the finite-value threshold selected fixed-radius tail/UI package
+with the already compiled large-`M` untruncation consumer.  Consequently a
+finite/discretized threshold route now reaches the centered untruncated
+Theorem 2.4.3 conclusion under the existing measurable envelope, integrability,
+Rademacher, and product/Fubini hypotheses; it no longer stops at the selected
+side-condition package.
+
+Search record for this composition: reused the local declarations
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_values_mem_thresholds_uniform_vc`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedFixedRadiusTailSideConditions`.
+No new mathlib theorem was needed because the step is theorem plumbing between
+two compiled VdVW-local interfaces.
+
 Next exact theorem-facing edit: prove the actual coordinatewise
 finite-threshold value-separation and threshold-count assumptions from the
 subgraph/truncated-class geometry, or provide the
 maximal-separated/internal-cover cardinality theorem that bypasses threshold
 products and directly supplies the natural-polynomial trace bound consumed by
-Theorem 2.4.3.  The exact value-membership route is now closed but is too
-strong for arbitrary continuum-valued classes unless a finite/discretized trace
-hypothesis is supplied.
+Theorem 2.4.3.  The exact finite-value threshold route now reaches untruncated
+convergence, but it remains too strong for arbitrary continuum-valued classes
+unless a finite/discretized trace hypothesis is supplied.
