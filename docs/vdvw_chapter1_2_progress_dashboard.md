@@ -441,6 +441,13 @@ empirical-covering-number bridge from deterministic
 Next target: compose this package with the existing untruncated Theorem 2.4.3
 consumer and keep the remaining structural assumptions explicit.
 
+2026-05-04 follow-up: the integer-grid route now reaches the centered
+untruncated Theorem 2.4.3 convergence conclusion under explicit structural
+hypotheses via
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_abs_bound_vc`.
+Next target: reduce the explicit truncated-value integer bound and per-grid
+threshold VC assumptions to textbook-facing envelope/subgraph-VC hypotheses.
+
 ## Verification Monitor
 
 Latest targeted verification includes the selected terminal/truncated

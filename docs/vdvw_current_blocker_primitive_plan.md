@@ -2549,3 +2549,23 @@ integer-bound and threshold/subgraph VC hypotheses.  The remaining gap is now
 stating/proving those structural hypotheses from the exact textbook
 measurable/VC class assumptions, not connecting the grid cover to the
 Theorem 2.4.3 package.
+
+2026-05-04 `/goal` update after integer-grid untruncated consumer:
+`Theorem243.lean` now adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_abs_bound_vc`.
+This composes the concrete integer-grid selected fixed-radius package with the
+existing untruncation/symmetrization/Rademacher/Hoeffding/tail stack, yielding
+the centered untruncated Theorem 2.4.3 convergence conclusion under explicit
+for-all-positive-`M` structural assumptions: sampled truncated-class absolute
+boundedness by an integer multiple of each fixed radius and uniform VC control
+for all thresholds in the finite integer grid.
+
+Next exact theorem-facing edit: reduce these explicit structural assumptions
+to more textbook-facing hypotheses.  The likely next local lemmas are
+(1) a truncation/envelope bound showing
+`|F_M f(x)| <= M` or the appropriate integer-multiple radius bound, and
+(2) a class-level subgraph/VC assumption implying the per-grid-threshold
+`empiricalBinaryTraceSetFamily ... vcDim <= d` condition.  If those are not
+available from current definitions, introduce an honest theorem-facing
+structure for the VC-subgraph class assumption rather than overclaiming the
+full textbook entropy condition.

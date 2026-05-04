@@ -854,9 +854,11 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_vc`,
    after adding direct random-covering-number bridges from deterministic
    empirical-covering-number bounds.
-   The next structural inputs are the fixed-radius truncated-value absolute
-   boundedness hypotheses and the uniform threshold/subgraph VC condition
-   needed to feed the untruncated Theorem 2.4.3 consumer.
+   The untruncated theorem-facing consumer is now compiled as
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_abs_bound_vc`.
+   The next structural inputs are reductions from textbook-facing
+   envelope/truncation and VC-subgraph assumptions to its explicit
+   integer-bound and per-threshold VC hypotheses.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
