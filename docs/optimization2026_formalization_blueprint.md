@@ -393,6 +393,7 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_le_full`
 - `StatInference.Optimization.lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory`
+- `StatInference.Optimization.lowerBoundChainObjective_gap_ge_two_mul_add_one`
 
 Search-first result for this lane: there was no local Chewi gradient-span
 formalization; mathlib's `Submodule.span`, `Submodule.subset_span`, and
@@ -417,9 +418,12 @@ full chain energy.  The source step `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
 `lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory` proves the main
 finite-dimensional gap estimate before choosing `d` as a multiple of `N`.
-The next Chapter 4 theorem route should turn the edge-difference bridge into a
-full objective-gradient/convexity package and add the source-shaped final
-parameter corollary, e.g. the `d = 2N + 1` gap lower bound.
+The source-shaped `d = 2N + 1` specialization now compiles as
+`lowerBoundChainObjective_gap_ge_two_mul_add_one`, giving the clean
+`β / (16 * (N + 1))` lower bound.  The next Chapter 4 theorem route should
+turn the edge-difference bridge into a full objective-gradient/convexity
+package and connect the shifted-chain objective back to the exact textbook
+unshifted display if needed for report packaging.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 

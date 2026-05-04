@@ -714,6 +714,35 @@ theorem lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory
   rw [lowerBoundChainObjective_lowerBoundChainMinimizer]
   linarith
 
+/--
+Source-shaped Theorem 4.4 corollary from the common choice `d = 2N + 1`.
+-/
+theorem lowerBoundChainObjective_gap_ge_two_mul_add_one
+    {beta : ℝ} (hbeta : 0 ≤ beta) (N : ℕ)
+    {x : ℕ -> EuclideanSpace ℝ (Fin (2 * N + 1))}
+    (hx0 : x 0 = 0)
+    (hspan :
+      IsGradientSpanTrajectory (lowerBoundChainGradient beta (2 * N + 1)) x) :
+    beta / (16 * ((N : ℝ) + 1)) ≤
+      lowerBoundChainObjective beta (2 * N + 1) (x N) -
+        lowerBoundChainObjective beta (2 * N + 1)
+          (lowerBoundChainMinimizer (2 * N + 1)) := by
+  have hgap :=
+    lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory
+      (beta := beta) hbeta (N := N) (d := 2 * N + 1) (by omega)
+      hx0 hspan
+  have hleft :
+      beta / (8 * ((N : ℝ) + 1)) -
+          beta / (8 * (((2 * N + 1 : ℕ) : ℝ) + 1)) =
+        beta / (16 * ((N : ℝ) + 1)) := by
+    have hden : ((N : ℝ) + 1) ≠ 0 := by positivity
+    have hden2 : (((2 * N + 1 : ℕ) : ℝ) + 1) ≠ 0 := by positivity
+    field_simp [hden, hden2]
+    norm_num [Nat.cast_add, Nat.cast_mul]
+    ring
+  rw [← hleft]
+  exact hgap
+
 end CoordinatePrefix
 
 end Optimization
