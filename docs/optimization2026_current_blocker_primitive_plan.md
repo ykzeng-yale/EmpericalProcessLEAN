@@ -184,7 +184,17 @@ the whole-space differentiable case:
   `lowerBoundChainObjective_ge_minValue` proves the global objective lower
   bound for `0 ≤ β`, and
   `lowerBoundChainObjective_isMinOn_lowerBoundChainMinimizer` proves the
-  displayed chain point is an `IsMinOn` global minimizer.
+  displayed chain point is an `IsMinOn` global minimizer.  The source step
+  `f_d = f_N` on `V_N` is now packaged as a direct lower bound:
+  `lowerBoundChain_prefixEdge_sum_of_mem_coordinatePrefixSubmodule`,
+  `lowerBoundChain_prefixEdgeSquareSum_ge_of_mem_coordinatePrefixSubmodule`,
+  `lowerBoundChain_prefixEdgeSquareSum_le_full`, and
+  `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`
+  prove that a point in `V_N` has full `d`-chain objective at least the
+  `N`-chain minimum.  Then
+  `lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory` proves the main
+  finite-dimensional Theorem 4.4 gap estimate before the final `d ≍ N`
+  parameter choice.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -861,6 +871,11 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChain_edgeSquareSum_ge`
 - `StatInference.Optimization.lowerBoundChainObjective_ge_minValue`
 - `StatInference.Optimization.lowerBoundChainObjective_isMinOn_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChain_prefixEdge_sum_of_mem_coordinatePrefixSubmodule`
+- `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_ge_of_mem_coordinatePrefixSubmodule`
+- `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_le_full`
+- `StatInference.Optimization.lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`
+- `StatInference.Optimization.lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
@@ -885,7 +900,8 @@ reuse `LowerBounds.lean`'s single gradient-span/oracle model, the compiled
 support/minimizer/norm/objective-value/global-minimizer theorems.  Search mathlib
 basis/coordinate, matrix, PSD, derivative, smoothness, finite-sum telescoping,
 and Cauchy APIs before proving the full objective-gradient bridge,
-convex/smooth facts, `f_d = f_N` on `V_N`, or the lower-bound gap estimate.
+convex/smooth facts, or the final source-shaped `d = 2N + 1` lower-bound
+corollary.
 Continue
 deferring exercise proofs except where an exercise statement is needed as a
 temporary interface for a main-text theorem; such exercise material belongs
