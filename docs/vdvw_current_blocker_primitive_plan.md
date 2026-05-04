@@ -2962,9 +2962,14 @@ finite-`Pi` law wrappers but no coordinate-permutation action; pinned mathlib
 `vdVWFinCoordinatePermMeasurableEquiv`,
 `vdVWFinCoordinatePermMeasurableEquiv_apply_apply`,
 `vdVWProductMeasure_measurePreserving_finCoordinatePerm`, and
-`integral_vdVWProductMeasure_comp_finCoordinatePerm`.  These close the
-finite-product iid coordinate-permutation invariance needed for symmetric
-sample expressions.  The remaining blocker is not finite permutation
-invariance itself; it is the VdV&W decreasing permutation-symmetric sigma-field
-or adapted process, plus the reverse-submartingale inequality/convergence
-handoff that uses it.
+`integral_vdVWProductMeasure_comp_finCoordinatePerm`.  The same closure batch
+also proves the empirical-process consequences
+`vdVWWeightedSampleSum_finCoordinatePerm`,
+`vdVWWeightedSampleSum_uniform_finCoordinatePerm`, and
+`vdVWWeightedClassSupremum_uniform_finCoordinatePerm`, using mathlib
+`Equiv.sum_comp` for the finite reindexing.  These close the finite-product
+iid coordinate-permutation invariance needed for symmetric sample
+expressions and the uniform empirical supremum.  The remaining blocker is not
+finite permutation invariance itself; it is the VdV&W decreasing
+permutation-symmetric sigma-field or adapted process, plus the
+reverse-submartingale inequality/convergence handoff that uses it.

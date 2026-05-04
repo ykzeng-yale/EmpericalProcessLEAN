@@ -97,6 +97,46 @@ noncomputable def vdVWWeightedSampleSum {Observation : Type u} {Index : Type v}
   ∑ i : Fin n, weights i * classFun index (sample i)
 
 /--
+Finite-coordinate permutations preserve weighted sample sums after the
+corresponding inverse permutation of the weights.
+-/
+theorem vdVWWeightedSampleSum_finCoordinatePerm
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (classFun : Index -> Observation -> ℝ) {n : ℕ}
+    (weights : Fin n -> ℝ) (perm : Equiv.Perm (Fin n))
+    (index : Index) (sample : Fin n -> Observation) :
+    vdVWWeightedSampleSum classFun (fun i : Fin n => weights (perm.symm i))
+        index (vdVWFinCoordinatePermMeasurableEquiv perm sample) =
+      vdVWWeightedSampleSum classFun weights index sample := by
+  let g : Fin n -> ℝ := fun i =>
+    weights (perm.symm i) *
+      classFun index (vdVWFinCoordinatePermMeasurableEquiv perm sample i)
+  calc
+    vdVWWeightedSampleSum classFun (fun i : Fin n => weights (perm.symm i))
+        index (vdVWFinCoordinatePermMeasurableEquiv perm sample)
+        = ∑ i : Fin n, g i := rfl
+    _ = ∑ i : Fin n, g (perm i) := by
+          simpa using (Equiv.sum_comp perm g).symm
+    _ = vdVWWeightedSampleSum classFun weights index sample := by
+          simp [g, vdVWWeightedSampleSum,
+            vdVWFinCoordinatePermMeasurableEquiv_apply_apply]
+
+/-- Uniform empirical weights make each class-member sample sum permutation-invariant. -/
+theorem vdVWWeightedSampleSum_uniform_finCoordinatePerm
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (classFun : Index -> Observation -> ℝ) {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) (index : Index)
+    (sample : Fin n -> Observation) :
+    vdVWWeightedSampleSum classFun (fun _ : Fin n => (n : ℝ)⁻¹)
+        index (vdVWFinCoordinatePermMeasurableEquiv perm sample) =
+      vdVWWeightedSampleSum classFun (fun _ : Fin n => (n : ℝ)⁻¹)
+        index sample := by
+  simpa using
+    (vdVWWeightedSampleSum_finCoordinatePerm
+      (classFun := classFun) (weights := fun _ : Fin n => (n : ℝ)⁻¹)
+      perm index sample)
+
+/--
 The supremum over a class in VdV&W display `(2.3.2)`.
 
 For an empty class this follows mathlib's complete-lattice convention for
@@ -110,6 +150,23 @@ noncomputable def vdVWWeightedClassSupremum
     (sample : Fin n -> Observation) : ℝ :=
   ⨆ index, ⨆ (_ : index ∈ indexClass),
     |vdVWWeightedSampleSum classFun weights index sample|
+
+/--
+The uniform-weight finite-sample supremum in VdV&W display `(2.3.2)` is
+permutation-invariant.
+-/
+theorem vdVWWeightedClassSupremum_uniform_finCoordinatePerm
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {n : ℕ} (perm : Equiv.Perm (Fin n))
+    (sample : Fin n -> Observation) :
+    vdVWWeightedClassSupremum indexClass classFun
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample) =
+      vdVWWeightedClassSupremum indexClass classFun
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample := by
+  simp [vdVWWeightedClassSupremum,
+    vdVWWeightedSampleSum_uniform_finCoordinatePerm]
 
 /--
 The value set whose supremum is represented by

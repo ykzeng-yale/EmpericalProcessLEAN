@@ -999,7 +999,9 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWProductMeasure_measurePreserving_finCoordinatePerm`, and
    `integral_vdVWProductMeasure_comp_finCoordinatePerm`, reusing mathlib
    `MeasurableEquiv.piCongrLeft` and
-   `MeasureTheory.measurePreserving_piCongrLeft`.
+   `MeasureTheory.measurePreserving_piCongrLeft`; the uniform empirical
+   supremum is now permutation-invariant via
+   `vdVWWeightedClassSupremum_uniform_finCoordinatePerm`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

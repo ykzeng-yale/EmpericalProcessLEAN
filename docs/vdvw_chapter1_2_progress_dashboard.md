@@ -664,10 +664,15 @@ now compiled in `PMeasurable.lean`.  New declarations
 `vdVWProductMeasure_measurePreserving_finCoordinatePerm`, and
 `integral_vdVWProductMeasure_comp_finCoordinatePerm` reuse mathlib
 `MeasurableEquiv.piCongrLeft` and
-`MeasureTheory.measurePreserving_piCongrLeft`.  This removes finite-sample
-permutation invariance as a blocker for symmetric sample expressions; it does
-not yet construct the decreasing VdV&W symmetric sigma-fields or prove the
-reverse-submartingale handoff.
+`MeasureTheory.measurePreserving_piCongrLeft`.  The empirical-sum consequences
+`vdVWWeightedSampleSum_finCoordinatePerm`,
+`vdVWWeightedSampleSum_uniform_finCoordinatePerm`, and
+`vdVWWeightedClassSupremum_uniform_finCoordinatePerm` also compile, using
+mathlib `Equiv.sum_comp` for the finite reindexing.  This removes
+finite-sample permutation invariance as a blocker for symmetric sample
+expressions and uniform empirical suprema; it does not yet construct the
+decreasing VdV&W symmetric sigma-fields or prove the reverse-submartingale
+handoff.
 
 ## Verification Monitor
 
