@@ -510,6 +510,10 @@ countability of `Index` plus coordinate measurability.
 `hcenteredSupIntegrable`.  New supporting lemmas bound a weighted supremum from
 a uniform class bound and prove countable centered truncated supremum
 integrability under `P^n`.
+2026-05-04 follow-up: the constructor now also derives
+`hpairSupIntegrable`.  The new countable ghost-copy pair theorem uses the
+uniform `2*max M 0` pair-difference truncation bound plus countable supremum
+measurability.
 
 ## Verification Monitor
 

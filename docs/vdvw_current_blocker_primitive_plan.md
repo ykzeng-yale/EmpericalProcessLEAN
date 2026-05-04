@@ -2708,7 +2708,16 @@ had `measurable_vdVWWeightedClassSupremum_of_countable`,
 `abs_centered_vdVWTruncatedClassFun_le_two_mul_max_M_zero`, and
 `integrable_vdVWWeightedClassSupremum_centered_truncated_of_countable`.
 
+2026-05-04 follow-up: the constructor now also derives the package field
+`hpairSupIntegrable`.  Search/reuse record: local code already had the weighted
+supremum uniform-bound integrability pattern above, countable supremum
+measurability, product-coordinate measurable combinators, and
+`measurable_vdVWWeightedSampleSum`; mathlib supplied `measurable_pi_lambda` and
+`Measurable.prodMk`.  New local lemmas prove
+`abs_vdVWTruncatedClassFun_pairDifference_le_two_mul_max_M_zero` and
+`integrable_vdVWWeightedClassSupremum_pairDifference_ghost_of_countable`.
+
 Next exact theorem-facing edit: reduce the remaining package fields only where
 there are genuine local lemmas to discharge them.  The main unresolved
-infinite-class fields are the pair/split/random-sign supremum integrability and
-the random-sign/product measurable-cover witnesses.
+infinite-class fields are the split/random-sign supremum integrability and the
+random-sign/product measurable-cover witnesses.
