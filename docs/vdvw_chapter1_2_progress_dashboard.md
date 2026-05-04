@@ -591,6 +591,14 @@ with the current in-mean conclusion.  New compiled declarations are
 `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical`,
 and
 `VdVWTheorem243_finite_indexClass_pGlivenkoCantelli_and_inMean_canonical`.
+2026-05-04 `/goal` follow-up: the current in-mean centered-supremum
+conclusion now also has a fixed infinite-product form for the named Lemma
+2.4.5 statistic.  New compiled declarations are
+`integral_vdVWLemma245CenteredEmpiricalSupremum_eq`,
+`tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct`,
+`tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_fullSubgraph_integrable_canonical`,
+and
+`tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finite_indexClass_canonical`.
 2026-05-04 follow-up: the in-mean adapter layer has started.  New compiled
 declarations are
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`

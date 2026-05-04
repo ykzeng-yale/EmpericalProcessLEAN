@@ -4898,6 +4898,71 @@ noncomputable def vdVWLemma245LeaveOneOutCenteredSupremum
       (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))
 
 /--
+Integral transport for the Lemma 2.4.5 centered empirical supremum from the
+fixed infinite iid product space to the corresponding finite product space.
+-/
+theorem integral_vdVWLemma245CenteredEmpiricalSupremum_eq
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (n : ℕ) :
+    (∫ sequence : ℕ -> Observation,
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence
+        ∂(vdVWInfiniteProductMeasure P)) =
+      ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        ∂(vdVWProductMeasure P n) := by
+  simpa [vdVWLemma245CenteredEmpiricalSupremum] using
+    integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable
+      (fun _ : Fin n => (n : ℝ)⁻¹)
+
+/--
+Finite-product in-mean convergence of the centered empirical supremum
+transfers to the fixed infinite iid product space used by Lemma 2.4.5.
+-/
+theorem
+    tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hfinite :
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sequence : ℕ -> Observation,
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence
+          ∂(vdVWInfiniteProductMeasure P))
+      atTop (𝓝 0) := by
+  refine hfinite.congr' ?_
+  exact Eventually.of_forall fun n =>
+    (integral_vdVWLemma245CenteredEmpiricalSupremum_eq
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable n).symm
+
+/--
 Final Lemma 2.4.5 consumer for the already-compiled countable centered
 reverse-comparison rows.
 
@@ -24589,6 +24654,44 @@ theorem
         hvc hindexClass henvelope hclass henv henv_integrable
 
 /--
+Canonical full-subgraph Theorem 2.4.3 in-mean conclusion transported to the
+fixed infinite iid product space and the named Lemma 2.4.5 centered-supremum
+statistic.
+-/
+theorem
+    tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_fullSubgraph_integrable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sequence : ℕ -> Observation,
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence
+          ∂(vdVWInfiniteProductMeasure P))
+      atTop (𝓝 0) := by
+  exact
+    tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (Set.to_countable indexClass)
+      henvelope hclass henv_integrable
+      (integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable)
+
+/--
 Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the
 canonical terminal sample-path process.
 
@@ -24828,6 +24931,40 @@ theorem
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
         henv_integrable
+
+/--
+Canonical finite-class Theorem 2.4.3 in-mean conclusion transported to the
+fixed infinite iid product space and the named Lemma 2.4.5 centered-supremum
+statistic.
+-/
+theorem
+    tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finite_indexClass_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sequence : ℕ -> Observation,
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence
+          ∂(vdVWInfiniteProductMeasure P))
+      atTop (𝓝 0) := by
+  exact
+    tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (Set.to_countable indexClass)
+      henvelope hclass henv_integrable
+      (integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
+        henv_integrable)
 
 /--
 Fixed-`M` centered-truncated convergence from entropy, measurable random

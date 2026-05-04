@@ -957,6 +957,13 @@ above, so they do not change the theorem-level dashboard counts.
    return both the canonical fixed-iid `VdVWPGlivenkoCantelliClass` conclusion
    and the current in-mean centered-supremum conclusion under their respective
    structural hypotheses.
+   The same in-mean conclusion is now transported to the fixed infinite iid
+   product space and the named Lemma 2.4.5 statistic via
+   `integral_vdVWLemma245CenteredEmpiricalSupremum_eq`,
+   `tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct`,
+   `tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_fullSubgraph_integrable_canonical`,
+   and
+   `tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finite_indexClass_canonical`.
    The in-mean bridge has also started: the generic adapter
    `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`
    and the full-subgraph consumer

@@ -2842,6 +2842,20 @@ the current full-subgraph or finite-class hypotheses, not exact textbook
 Theorem 2.4.3: the remaining gap is still the general entropy/structural
 alignment plus the a.s. reverse-submartingale route.
 
+2026-05-04 `/goal` follow-up: the ordinary in-mean centered-supremum
+conclusion is now transported to the fixed infinite iid product space and the
+named Lemma 2.4.5 statistic.  New compiled declarations are
+`integral_vdVWLemma245CenteredEmpiricalSupremum_eq`,
+`tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct`,
+`tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_fullSubgraph_integrable_canonical`,
+and
+`tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finite_indexClass_canonical`.
+Search/reuse record: this reuses the existing first-`n` coordinate integral
+transport `integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq`
+and the already-compiled finite-product in-mean consumers.  It does not prove
+the a.s. Lemma 2.4.5 reverse/cofiltration convergence theorem, but it closes a
+fixed-space in-mean input for the same centered empirical supremum process.
+
 2026-05-04 follow-up: the first in-mean Theorem 2.4.3 adapter is now compiled.
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`
 specializes the existing varying-domain tail/UI mean theorem
