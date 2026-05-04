@@ -1898,6 +1898,136 @@ theorem
     _ = delta := by
         simp
 
+/--
+VdV&W outer-probability uniform-deviation convergence over the canonical
+finite product samples.
+
+This is the variable-sample-space analogue of
+`VdVWOuterProbabilityPGlivenkoCantelliClass`: sample size `n` lives on
+`SampleAt Observation n` with law `P^n`, so it matches the finite-product
+Theorem 2.4.3 proof layer rather than an already-built infinite canonical
+process.
+-/
+def VdVWOuterProbabilityUniformDeviationConstOn
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ) : Prop :=
+  ∀ tolerance > 0,
+    Tendsto
+      (fun n : ℕ =>
+        VdVWOuterProbability (vdVWProductMeasure P n)
+          {sample : SampleAt Observation n |
+            ¬ EmpiricalDeviationBoundOn indexClass
+              (fun index => populationRiskOfFunction P (classFun index))
+              (fun index => empiricalAverage sample (classFun index))
+              tolerance})
+      atTop (𝓝 0)
+
+/--
+For positive sample sizes, the centered `1/n` weighted sample sum is the
+empirical average minus the population mean.
+-/
+theorem vdVWWeightedSampleSum_centered_const_inv_eq_empiricalAverage_sub
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {classFun : Index -> Observation -> ℝ} {n : ℕ}
+    (hn : 0 < n) (sample : SampleAt Observation n) (index : Index) :
+    vdVWWeightedSampleSum
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P)
+        (fun _ : Fin n => (n : ℝ)⁻¹) index sample =
+      empiricalAverage sample (classFun index) -
+        populationRiskOfFunction P (classFun index) := by
+  have hn_ne : (n : ℝ) ≠ 0 := by
+    exact_mod_cast (ne_of_gt hn)
+  unfold vdVWWeightedSampleSum empiricalAverage populationRiskOfFunction
+  rw [← Finset.mul_sum, Finset.sum_sub_distrib]
+  simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+  field_simp [hn_ne]
+
+/--
+Centered weighted-supremum convergence implies the corresponding
+finite-product outer-probability Glivenko-Cantelli deviation statement.
+
+This is the theorem-facing bridge from the Theorem 2.4.3 centered supremum
+route to the book's uniform-deviation conclusion shape.  The bounded-value-set
+assumption is exactly what lets each fixed class member sit below the
+`vdVWWeightedClassSupremum` real supremum.
+-/
+theorem
+    VdVWOuterProbabilityUniformDeviationConstOn_of_centered_weightedSupremum
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hbdd_centered :
+      ∀ n (sample : SampleAt Observation n),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hcentered :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        atTop (0 : ℝ)) :
+    VdVWOuterProbabilityUniformDeviationConstOn P indexClass classFun := by
+  classical
+  intro tolerance htolerance
+  have hsup := hcentered tolerance htolerance
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (𝓝 0) from
+        tendsto_const_nhds)
+      hsup
+      (Eventually.of_forall fun _ => bot_le)
+      ?_
+  filter_upwards [eventually_gt_atTop (0 : ℕ)] with n hn
+  dsimp [VdVWOuterProbability]
+  refine measure_mono ?_
+  intro sample hbad
+  unfold EmpiricalDeviationBoundOn at hbad
+  push Not at hbad
+  rcases hbad with ⟨index, hindex, hbad_index⟩
+  have hsum_eq :=
+    vdVWWeightedSampleSum_centered_const_inv_eq_empiricalAverage_sub
+      (P := P) (classFun := classFun) hn sample index
+  have hmember_le :
+      |empiricalAverage sample (classFun index) -
+          populationRiskOfFunction P (classFun index)| ≤
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample := by
+    rw [← hsum_eq]
+    exact
+      abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove
+        (hbdd_centered n sample) hindex
+  have hsup_bad :
+      tolerance <
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample :=
+    lt_of_lt_of_le hbad_index hmember_le
+  have hsup_nonneg :
+      0 ≤
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample :=
+    vdVWWeightedClassSupremum_nonneg indexClass
+      (fun index : Index => fun observation : Observation =>
+        classFun index observation - ∫ x, classFun index x ∂P)
+      (fun _ : Fin n => (n : ℝ)⁻¹) sample
+  simpa [Real.dist_eq, sub_zero, abs_of_nonneg hsup_nonneg] using hsup_bad
+
 /-- Coordinate measurability is preserved by the `F_M` truncation. -/
 theorem VdVWClassCoordinateMeasurable.truncate
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]

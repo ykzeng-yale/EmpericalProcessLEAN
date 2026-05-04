@@ -925,6 +925,13 @@ above, so they do not change the theorem-level dashboard counts.
    from the envelope hypotheses.
    The proof-carrying `VdVWTheorem243FullSubgraphSideConditions` package no
    longer stores an `hclassIntegrable` field.
+   The centered untruncated convergence layer now also has a variable
+   finite-product GC-deviation bridge:
+   `VdVWOuterProbabilityUniformDeviationConstOn` and
+   `VdVWOuterProbabilityUniformDeviationConstOn_of_centered_weightedSupremum`.
+   This is the bridge from the current centered weighted-supremum proof layer
+   to the book's uniform-deviation conclusion shape over `SampleAt
+   Observation n`; it is not yet the exact in-mean/a.s. textbook theorem.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

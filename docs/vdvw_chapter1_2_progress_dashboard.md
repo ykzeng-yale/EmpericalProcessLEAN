@@ -554,18 +554,29 @@ integrability under `P^n`.
 `hpairSupIntegrable`.  The new countable ghost-copy pair theorem uses the
 uniform `2*max M 0` pair-difference truncation bound plus countable supremum
 measurability.
+2026-05-04 `/goal` follow-up: the Theorem 2.4.3 centered untruncated
+convergence layer now has a finite-product GC-deviation bridge.  New compiled
+declarations are `VdVWOuterProbabilityUniformDeviationConstOn`,
+`vdVWWeightedSampleSum_centered_const_inv_eq_empiricalAverage_sub`, and
+`VdVWOuterProbabilityUniformDeviationConstOn_of_centered_weightedSupremum`.
+This converts centered `1/n` weighted-supremum convergence over
+`SampleAt Observation n` into convergence of the usual uniform empirical
+deviation bad event on the same variable finite-product spaces.  It is still
+not the exact textbook Theorem 2.4.3 report: the remaining work is to align the
+book entropy/full-subgraph assumptions with the current side-condition route
+and then add the in-mean and almost-sure/reverse-submartingale conclusions.
 
 ## Verification Monitor
 
-Latest targeted verification includes the selected terminal/truncated
-minimal-cardinality measurability layer and the Theorem 2.4.3 theorem module
-on 2026-05-03.
+Latest targeted verification includes the Theorem 2.4.3 theorem module after
+the finite-product GC-deviation bridge on 2026-05-04.
 
 ```text
-lake build StatInference.EmpiricalProcess.Theorem243
-Build completed successfully (8392 jobs).
+lake env lean StatInference/EmpiricalProcess/Theorem243.lean
+lake build
+Build completed successfully (8426 jobs).
 
-git ls-files '*.lean' ':!.lake/*' | xargs rg -n --color never -e '\b(sorry|admit|axiom|unsafe)\b'
+rg -n '\b(sorry|admit|axiom|unsafe)\b' StatInference -g '*.lean'
 No matches.
 ```
 

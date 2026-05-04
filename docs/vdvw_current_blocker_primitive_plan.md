@@ -2783,8 +2783,24 @@ primitive still keeps explicit class integrability for direct users.
 ordinary member integrability internally whenever a lower-level direct
 primitive requires it.
 
+2026-05-04 `/goal` follow-up: `Theorem243.lean` now adds the theorem-facing
+finite-product uniform-deviation bridge from centered weighted-supremum
+convergence to a variable-domain Glivenko-Cantelli bad-event predicate:
+`VdVWOuterProbabilityUniformDeviationConstOn`,
+`vdVWWeightedSampleSum_centered_const_inv_eq_empiricalAverage_sub`, and
+`VdVWOuterProbabilityUniformDeviationConstOn_of_centered_weightedSupremum`.
+Search/reuse record: local `GlivenkoCantelli.lean` only supplied fixed-domain
+GC predicates, while the existing Theorem 2.4.3 convergence layer lives over
+the variable finite product spaces `SampleAt Observation n`; no exact reusable
+variable-domain GC predicate was found.  The bridge reuses
+`EmpiricalDeviationBoundOn`, `populationRiskOfFunction`,
+`empiricalAverage`, `VdVWConvergesInOuterProbabilityConst`,
+`abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove`, and
+`vdVWWeightedClassSupremum_nonneg`.
+
 Next exact theorem-facing edit: move from this proof layer toward the exact
 Theorem 2.4.3 statement by aligning the remaining structural full-subgraph
-VC/grid assumption with the textbook entropy hypothesis, or else record the
-precise additional theorem-level side condition.  Do not recreate the derived
-integrability/measurable-cover witnesses.
+VC/grid assumption with the textbook entropy hypothesis and then consume the
+new finite-product GC bridge.  The exact textbook theorem still needs the
+in-mean and almost-sure/reverse-submartingale conclusions; do not recreate the
+derived integrability/measurable-cover witnesses.
