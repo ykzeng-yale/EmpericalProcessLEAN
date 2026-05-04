@@ -1397,23 +1397,35 @@ direction spans, `IsCGKrylovRecurrence`, the Lemma 5.1 supplied-interface
 theorem `IsCGKrylovRecurrence.cgDirectionSubmodule_eq_krylovSubmodule`,
 `IsOrthogonalToSubmodule`, `IsCGResidualExactnessState`,
 `quadraticGradient_eq_zero_of_cgResidualExactnessState`, and
-`quadraticObjective_isMinOn_of_cgResidualExactnessState`.  Search-first result:
-mathlib has continuous linear maps, `continuous_id.inner`,
-`Continuous.inner`, `real_inner_comm`, `Function.iterate_succ_apply'`,
-`Submodule.span_induction`, `Submodule.span_mono`, and
-`Submodule.orthogonal` APIs; self-adjoint/positive operator APIs under
-`Analysis/InnerProductSpace/Positive.lean` should be searched before adding a
-future spectral bridge.  The current substrate deliberately uses supplied
-quadratic-form bounds so it can reuse local `FirstOrderStrongConvexOn`,
-`SmoothWithGradientOn`, and minimizer wrappers without waiting for a full
-spectral theorem bridge.  Next target: prove concrete CG recurrence fields
-from the displayed line-search and Gram-Schmidt formulas, then package
-Theorem 5.3 termination using finite-dimensional A-orthogonal nonzero
-directions.  For Theorem 5.4, first package the textbook proof assumptions
-explicitly: CG descent comparison against one GD step, gradient orthogonality,
-finite sum of squared gradients, Cauchy-Schwarz, and the restart/halving
-argument.  Do not redo the Chapter 3 descent lemma, Chapter 4 gradient-span
-interfaces, or Chapter 4 hard-instance packages.
+`quadraticObjective_isMinOn_of_cgResidualExactnessState`.  The newest
+three-term recurrence layer adds `IsCGThreeTermRecurrence`,
+`IsCGThreeTermRecurrence.residual_and_direction_mem_krylovSubmodule`,
+`IsCGThreeTermRecurrence.residual_mem_cgDirectionSubmodule`,
+`IsCGThreeTermRecurrence.apply_direction_mem_next`,
+`IsCGThreeTermRecurrence.to_isCGKrylovRecurrence`, and
+`IsCGThreeTermRecurrence.cgDirectionSubmodule_eq_krylovSubmodule`.  This
+bridges the source residual/direction updates
+`r_{n+1}=r_n+eta_n A p_n` and `p_{n+1}=r_{n+1}+gamma_n p_n` to Lemma 5.1's
+Krylov equality, assuming the line-search coefficient `eta_n` is nonzero.
+Search-first result: mathlib has continuous linear maps,
+`continuous_id.inner`, `Continuous.inner`, `real_inner_comm`,
+`Function.iterate_succ_apply'`, `Submodule.span_induction`,
+`Submodule.span_mono`, inverse scalar algebra via `smul_smul` and
+`inv_mul_cancel₀`, and `Submodule.orthogonal` APIs; self-adjoint/positive
+operator APIs under `Analysis/InnerProductSpace/Positive.lean` should be
+searched before adding a future spectral bridge.  The current substrate
+deliberately uses supplied quadratic-form bounds so it can reuse local
+`FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and minimizer wrappers
+without waiting for a full spectral theorem bridge.  Next target: define the
+source scalar formulas for `eta_n` and `gamma_n`, prove their nonzero
+denominators from positive `A`-norm/squared residual hypotheses, instantiate
+`IsCGThreeTermRecurrence` for the displayed line-search and Gram-Schmidt
+iteration, then package Theorem 5.3 termination using finite-dimensional
+A-orthogonal nonzero directions.  For Theorem 5.4, first package the textbook
+proof assumptions explicitly: CG descent comparison against one GD step,
+gradient orthogonality, finite sum of squared gradients, Cauchy-Schwarz, and
+the restart/halving argument.  Do not redo the Chapter 3 descent lemma,
+Chapter 4 gradient-span interfaces, or Chapter 4 hard-instance packages.
 
 Chapter 2 route context is still available but no longer the active target:
 The route

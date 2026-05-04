@@ -359,5 +359,116 @@ theorem quadraticObjective_isMinOn_of_cgResidualExactnessState
   exact quadraticObjective_isMinOn_of_apply_eq hA_sym hlower halpha_nonneg
     ((quadraticGradient_eq_zero_iff A b x).1 hgrad_zero)
 
+/--
+Source-shaped three-term CG recurrence interface.
+
+Here `r` is the residual sequence, `p` is the search-direction sequence,
+`eta` is the line-search coefficient in `r_{n+1} = r_n + eta_n A p_n`, and
+`gamma` is the direction-update coefficient in
+`p_{n+1} = r_{n+1} + gamma_n p_n`.
+-/
+structure IsCGThreeTermRecurrence (A : E →L[ℝ] E) (p0 : E)
+    (r p : ℕ → E) (eta gamma : ℕ → ℝ) : Prop where
+  residual_zero : r 0 = p0
+  direction_zero : p 0 = p0
+  residual_succ : ∀ n, r (n + 1) = r n + eta n • A (p n)
+  direction_succ : ∀ n, p (n + 1) = r (n + 1) + gamma n • p n
+  eta_ne_zero : ∀ n, eta n ≠ 0
+
+/-- The source three-term recurrence keeps residuals and directions in `K_n`. -/
+theorem IsCGThreeTermRecurrence.residual_and_direction_mem_krylovSubmodule
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E} {eta gamma : ℕ → ℝ}
+    (h : IsCGThreeTermRecurrence A p0 r p eta gamma) :
+    ∀ n, r n ∈ krylovSubmodule A p0 n ∧
+      p n ∈ krylovSubmodule A p0 n := by
+  intro n
+  induction n with
+  | zero =>
+      have hp0 : p0 ∈ krylovSubmodule A p0 0 :=
+        krylovVector_mem_krylovSubmodule A p0 (le_refl 0)
+      constructor
+      · simpa [h.residual_zero] using hp0
+      · simpa [h.direction_zero] using hp0
+  | succ n ih =>
+      rcases ih with ⟨hr, hp⟩
+      have hr_mono : r n ∈ krylovSubmodule A p0 (n + 1) :=
+        krylovSubmodule_mono A p0 (Nat.le_succ n) hr
+      have hp_mono : p n ∈ krylovSubmodule A p0 (n + 1) :=
+        krylovSubmodule_mono A p0 (Nat.le_succ n) hp
+      have hAp : A (p n) ∈ krylovSubmodule A p0 (n + 1) :=
+        continuousLinearMap_apply_mem_krylovSubmodule_succ A p0 hp
+      have hr_succ : r (n + 1) ∈ krylovSubmodule A p0 (n + 1) := by
+        rw [h.residual_succ n]
+        exact Submodule.add_mem _ hr_mono (Submodule.smul_mem _ (eta n) hAp)
+      have hp_succ : p (n + 1) ∈ krylovSubmodule A p0 (n + 1) := by
+        rw [h.direction_succ n]
+        exact Submodule.add_mem _ hr_succ (Submodule.smul_mem _ (gamma n) hp_mono)
+      exact ⟨hr_succ, hp_succ⟩
+
+/-- Residuals produced by the three-term recurrence lie in the direction span. -/
+theorem IsCGThreeTermRecurrence.residual_mem_cgDirectionSubmodule
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E} {eta gamma : ℕ → ℝ}
+    (h : IsCGThreeTermRecurrence A p0 r p eta gamma) (n : ℕ) :
+    r n ∈ cgDirectionSubmodule p n := by
+  induction n with
+  | zero =>
+      have hrp : r 0 = p 0 := h.residual_zero.trans h.direction_zero.symm
+      rw [hrp]
+      exact cgDirection_mem_cgDirectionSubmodule p 0
+  | succ n ih =>
+      have hp_succ : p (n + 1) ∈ cgDirectionSubmodule p (n + 1) :=
+        cgDirection_mem_cgDirectionSubmodule p (n + 1)
+      have hp_n : p n ∈ cgDirectionSubmodule p (n + 1) :=
+        cgDirectionSubmodule_mono p (Nat.le_succ n)
+          (cgDirection_mem_cgDirectionSubmodule p n)
+      have hres_eq : r (n + 1) = p (n + 1) - gamma n • p n := by
+        rw [h.direction_succ n]
+        abel
+      rw [hres_eq]
+      exact Submodule.sub_mem _ hp_succ (Submodule.smul_mem _ (gamma n) hp_n)
+
+/-- The source recurrence proves the source step `A p_n ∈ span {p₀,...,p_{n+1}}`. -/
+theorem IsCGThreeTermRecurrence.apply_direction_mem_next
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E} {eta gamma : ℕ → ℝ}
+    (h : IsCGThreeTermRecurrence A p0 r p eta gamma) (n : ℕ) :
+    A (p n) ∈ cgDirectionSubmodule p (n + 1) := by
+  have hr_succ : r (n + 1) ∈ cgDirectionSubmodule p (n + 1) :=
+    h.residual_mem_cgDirectionSubmodule (n + 1)
+  have hr_n : r n ∈ cgDirectionSubmodule p (n + 1) :=
+    cgDirectionSubmodule_mono p (Nat.le_succ n)
+      (h.residual_mem_cgDirectionSubmodule n)
+  have hdiff_mem : r (n + 1) - r n ∈ cgDirectionSubmodule p (n + 1) :=
+    Submodule.sub_mem _ hr_succ hr_n
+  have hdiff_eq : r (n + 1) - r n = eta n • A (p n) := by
+    rw [h.residual_succ n]
+    abel
+  have hscale : (eta n)⁻¹ • (eta n • A (p n)) = A (p n) := by
+    rw [smul_smul, inv_mul_cancel₀ (h.eta_ne_zero n), one_smul]
+  rw [← hscale, ← hdiff_eq]
+  exact Submodule.smul_mem _ (eta n)⁻¹ hdiff_mem
+
+/--
+The source three-term recurrence supplies the abstract Krylov recurrence
+interface used by Lemma 5.1.
+-/
+theorem IsCGThreeTermRecurrence.to_isCGKrylovRecurrence
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E} {eta gamma : ℕ → ℝ}
+    (h : IsCGThreeTermRecurrence A p0 r p eta gamma) :
+    IsCGKrylovRecurrence A p0 p where
+  base := h.direction_zero
+  direction_mem_krylov := fun n =>
+    (h.residual_and_direction_mem_krylovSubmodule n).2
+  apply_direction_mem_next := h.apply_direction_mem_next
+
+/--
+Chewi Lemma 5.1 from the source-shaped three-term recurrence:
+`span {p₀,...,p_n} = span {p₀, A p₀, ..., A^n p₀}`.
+-/
+theorem IsCGThreeTermRecurrence.cgDirectionSubmodule_eq_krylovSubmodule
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E} {eta gamma : ℕ → ℝ}
+    (h : IsCGThreeTermRecurrence A p0 r p eta gamma) (n : ℕ) :
+    cgDirectionSubmodule p n = krylovSubmodule A p0 n :=
+  h.to_isCGKrylovRecurrence.cgDirectionSubmodule_eq_krylovSubmodule n
+
 end Optimization
 end StatInference
