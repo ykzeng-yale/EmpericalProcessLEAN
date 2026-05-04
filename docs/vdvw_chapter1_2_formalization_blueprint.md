@@ -891,7 +891,9 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243FullSubgraphSideConditions.centered_untruncated_convergesInOuterProbabilityConst_zero`.
    The constructor
    `VdVWTheorem243FullSubgraphSideConditions.of_integrable` now discharges the
-   truncated-function integrability field from ordinary class integrability.
+   truncated-function integrability field from ordinary class integrability and
+   the centered truncated weighted-value-set boundedness field from the
+   envelope/probability integral bounds.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

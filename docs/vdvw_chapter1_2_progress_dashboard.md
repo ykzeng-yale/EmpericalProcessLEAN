@@ -498,6 +498,10 @@ It is data-carrying because it includes measurable-cover witnesses.
 `VdVWTheorem243FullSubgraphSideConditions.of_integrable` now derives
 `htruncIntegrable` from ordinary class integrability plus the measurable
 truncation/envelope data, reducing one explicit final side-condition field.
+2026-05-04 follow-up: the same constructor now also derives
+`hbdd_truncated`.  The new local lemmas prove that nonnegative truncation
+levels have centered bound `2*M`, while negative truncation levels make the
+truncated class identically zero.
 
 ## Verification Monitor
 

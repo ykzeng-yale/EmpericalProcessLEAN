@@ -2679,6 +2679,18 @@ derives the package field `htruncIntegrable` from `hclass`, `henv`, and
 `hclassIntegrable` using the existing lemma
 `integrable_vdVWTruncatedClassFun_of_integrable`.
 
+2026-05-04 follow-up: the same theorem-facing package constructor now also
+derives the package field `hbdd_truncated`.  Search/reuse record: local
+`PMeasurable.lean` already had
+`bddAbove_vdVWWeightedClassValueSet_of_uniform_bound`; local `Theorem243.lean`
+already had `abs_vdVWTruncatedClassFun_le_M`; pinned mathlib supplied
+`abs_integral_le_integral_abs`, `integral_mono`, and probability-measure
+`integral_const` simplification.  New local lemmas prove
+`abs_integral_vdVWTruncatedClassFun_le_M`,
+`abs_centered_vdVWTruncatedClassFun_le_two_mul_M`, nonnegative centered
+boundedness, negative-level truncation identity/zero integral, and the final
+all-level `bddAbove_vdVWWeightedClassValueSet_centered_truncated`.
+
 Next exact theorem-facing edit: reduce the remaining package fields only where
 there are genuine local lemmas to discharge them.  The main unresolved
 infinite-class fields are the centered/pair/split/random-sign supremum

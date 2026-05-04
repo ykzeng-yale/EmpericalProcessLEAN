@@ -120,6 +120,178 @@ theorem abs_vdVWTruncatedClassFun_le_M
   · simpa [vdVWTruncatedClassFun, hle] using hM
 
 /--
+For a probability law, the population mean of a nonnegative-level truncated
+class member is bounded by the truncation level.
+-/
+theorem abs_integral_vdVWTruncatedClassFun_le_M
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M) {index : Index} (hindex : index ∈ indexClass)
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) P) :
+    |∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P| ≤ M := by
+  calc
+    |∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P|
+        ≤ ∫ x, |vdVWTruncatedClassFun classFun envelope M index x| ∂P :=
+          abs_integral_le_integral_abs
+    _ ≤ ∫ _x : Observation, M ∂P := by
+          exact
+            integral_mono htruncIntegrable.abs (integrable_const M) fun x =>
+              abs_vdVWTruncatedClassFun_le_M henvelope hM hindex x
+    _ = M := by
+          simp
+
+/--
+The centered nonnegative-level truncated class is uniformly bounded by twice
+the truncation level.
+-/
+theorem abs_centered_vdVWTruncatedClassFun_le_two_mul_M
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M) {index : Index} (hindex : index ∈ indexClass)
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (observation : Observation) :
+    |vdVWTruncatedClassFun classFun envelope M index observation -
+        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P| ≤
+      2 * M := by
+  calc
+    |vdVWTruncatedClassFun classFun envelope M index observation -
+        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P|
+        ≤
+          |vdVWTruncatedClassFun classFun envelope M index observation| +
+            |∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P| :=
+          abs_sub _ _
+    _ ≤ M + M := by
+          exact add_le_add
+            (abs_vdVWTruncatedClassFun_le_M henvelope hM hindex observation)
+            (abs_integral_vdVWTruncatedClassFun_le_M
+              henvelope hM hindex htruncIntegrable)
+    _ = 2 * M := by ring
+
+/--
+For nonnegative truncation levels, centered truncated empirical value sets are
+bounded automatically from the envelope and truncated integrability.
+-/
+theorem bddAbove_vdVWWeightedClassValueSet_centered_truncated_of_nonneg
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {n : ℕ} (weights : Fin n -> ℝ) (sample : SampleAt Observation n)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P) :
+    BddAbove
+      (vdVWWeightedClassValueSet indexClass
+        (fun index : Index => fun observation : Observation =>
+          vdVWTruncatedClassFun classFun envelope M index observation -
+            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+        weights sample) := by
+  exact
+    bddAbove_vdVWWeightedClassValueSet_of_uniform_bound
+      weights sample (bound := 2 * M)
+      (fun index hindex observation =>
+        abs_centered_vdVWTruncatedClassFun_le_two_mul_M
+          henvelope hM hindex (htruncIntegrable index hindex) observation)
+
+/-- Negative truncation levels make the truncated class identically zero. -/
+theorem vdVWTruncatedClassFun_eq_zero_of_neg
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : M < 0) (index : Index) (observation : Observation) :
+    vdVWTruncatedClassFun classFun envelope M index observation = 0 := by
+  have hnot : ¬ envelope observation ≤ M := by
+    intro hle
+    exact (not_le_of_gt hM) ((henvelope.nonneg observation).trans hle)
+  simp [vdVWTruncatedClassFun, hnot]
+
+/-- The population mean of a negative-level truncated class member is zero. -/
+theorem integral_vdVWTruncatedClassFun_eq_zero_of_neg
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : M < 0) (index : Index) :
+    (∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) = 0 := by
+  have hfun :
+      (fun x : Observation =>
+        vdVWTruncatedClassFun classFun envelope M index x) = fun _ => 0 := by
+    funext x
+    exact vdVWTruncatedClassFun_eq_zero_of_neg henvelope hM index x
+  simp [hfun]
+
+/--
+For negative truncation levels, centered truncated empirical value sets are
+bounded because the truncated class is identically zero.
+-/
+theorem bddAbove_vdVWWeightedClassValueSet_centered_truncated_of_neg
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {n : ℕ} (weights : Fin n -> ℝ) (sample : SampleAt Observation n)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : M < 0) :
+    BddAbove
+      (vdVWWeightedClassValueSet indexClass
+        (fun index : Index => fun observation : Observation =>
+          vdVWTruncatedClassFun classFun envelope M index observation -
+            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+        weights sample) := by
+  exact
+    bddAbove_vdVWWeightedClassValueSet_of_uniform_bound
+      weights sample (bound := 0)
+      (fun index _hindex observation => by
+        rw [vdVWTruncatedClassFun_eq_zero_of_neg henvelope hM index observation,
+          integral_vdVWTruncatedClassFun_eq_zero_of_neg
+            (P := P) henvelope hM index]
+        simp)
+
+/--
+Centered truncated empirical value sets are bounded automatically from the
+envelope and truncated integrability, for every truncation level.
+-/
+theorem bddAbove_vdVWWeightedClassValueSet_centered_truncated
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {n : ℕ} (weights : Fin n -> ℝ) (sample : SampleAt Observation n)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P) :
+    BddAbove
+      (vdVWWeightedClassValueSet indexClass
+        (fun index : Index => fun observation : Observation =>
+          vdVWTruncatedClassFun classFun envelope M index observation -
+            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+        weights sample) := by
+  by_cases hM : 0 ≤ M
+  · exact
+      bddAbove_vdVWWeightedClassValueSet_centered_truncated_of_nonneg
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) weights sample henvelope hM
+        htruncIntegrable
+  · exact
+      bddAbove_vdVWWeightedClassValueSet_centered_truncated_of_neg
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) weights sample henvelope
+        (lt_of_not_ge hM)
+
+/--
 Canonical natural integer-grid radius for truncation level `M` and positive
 empirical-cover radius `eta`.
 -/
@@ -18830,14 +19002,6 @@ def VdVWTheorem243FullSubgraphSideConditions.of_integrable
         (fun i : Fin n => sign n i ω))
     (hindep : ∀ n, iIndepFun (sign n) μsign)
     (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign)
-    (hbdd_truncated :
-      ∀ M n (sample : SampleAt Observation n),
-        BddAbove
-          (vdVWWeightedClassValueSet indexClass
-            (fun index : Index => fun observation : Observation =>
-              vdVWTruncatedClassFun classFun envelope M index observation -
-                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
-            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
     (hpairSupIntegrable :
       ∀ M n (sample : SampleAt Observation n),
         Integrable
@@ -18949,7 +19113,16 @@ def VdVWTheorem243FullSubgraphSideConditions.of_integrable
     exact
       integrable_vdVWTruncatedClassFun_of_integrable
         (hclass index hindex) henv (hclassIntegrable index hindex)
-  hbdd_truncated := hbdd_truncated
+  hbdd_truncated := by
+    intro M n sample
+    exact
+      bddAbove_vdVWWeightedClassValueSet_centered_truncated
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M)
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample henvelope
+        (fun index hindex =>
+          integrable_vdVWTruncatedClassFun_of_integrable
+            (hclass index hindex) henv (hclassIntegrable index hindex))
   hpairSupIntegrable := hpairSupIntegrable
   hcenteredSupIntegrable := hcenteredSupIntegrable
   hghostExpectationIntegrable := hghostExpectationIntegrable
