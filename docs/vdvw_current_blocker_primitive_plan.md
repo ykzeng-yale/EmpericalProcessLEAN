@@ -2114,6 +2114,7 @@ coordinate_thresholds_separate_of_values_mem_thresholds
 thresholdTraceCode_separates_of_values_mem_thresholds
 finite_empiricalTrace_image_of_values_mem_thresholds
 empiricalTrace_image_card_add_one_real_le_of_values_mem_thresholds_uniform_vc
+VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_values_mem_thresholds_uniform_vc
 ```
 
 These prove that finite threshold signatures, when they separate the realized
@@ -2160,6 +2161,15 @@ This is useful for finite-valued/discretized traces and also documents why the
 non-finite textbook route still needs a genuine geometric or approximation
 argument rather than an exact finite threshold injection.
 
+The Theorem 2.4.3 selected fixed-radius constructor now consumes this exact
+finite-value threshold route directly.  It defines the selected cardinality as
+the threshold-coded finite trace-cardinality at each radius/sample size, proves
+random empirical covering domination from the finite trace image, and feeds the
+natural-polynomial threshold/VC bound into
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_nat_poly_bound`.
+Thus finite-valued/discretized threshold traces no longer need separate
+manual plumbing to enter the fixed-radius tail/UI package.
+
 Search record: reused local fixed-threshold declarations in `SubgraphTraceVC`,
 the new finite-code bridge in `TraceCoding`, mathlib `Finset.pi`,
 `Finset.card_pi`, `Finset.card_le_card_of_injOn`, and finite-product
@@ -2172,6 +2182,10 @@ and membership extensionality for the pointwise threshold bridge.  Searches for
 local/mathlib theorem giving this VdVW finite-threshold
 signature/product-cardinality, pointwise-separation,
 coordinatewise-separation, or value-membership separation bridge.
+The selected fixed-radius package search reused
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_nat_poly_bound`
+and `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_trace_image_cardinality_bound_samplePath`;
+the direct threshold-to-package constructor did not previously exist.
 
 Next exact theorem-facing edit: prove the actual coordinatewise
 finite-threshold value-separation and threshold-count assumptions from the

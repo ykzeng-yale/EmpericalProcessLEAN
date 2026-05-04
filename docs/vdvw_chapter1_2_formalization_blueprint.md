@@ -777,7 +777,12 @@ above, so they do not change the theorem-level dashboard counts.
    `empiricalTrace_image_card_add_one_real_le_of_values_mem_thresholds_uniform_vc`
    closes the special case where the threshold set contains every realized
    coordinate value; this is intentionally stronger than the general
-   continuum-valued textbook route.
+   continuum-valued textbook route.  The Theorem 2.4.3 package constructor
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_values_mem_thresholds_uniform_vc`
+   now consumes that exact finite-value threshold route directly, defining the
+   selected cardinality from the threshold-coded finite trace image and feeding
+   the natural-polynomial threshold/VC bound into the fixed-radius tail/UI
+   package.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
