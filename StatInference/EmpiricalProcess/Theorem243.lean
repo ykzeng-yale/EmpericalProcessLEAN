@@ -6634,6 +6634,90 @@ theorem
   simpa using hbridge
 
 /--
+Finite index classes give a random empirical covering-number domination by
+any finite cardinality process that dominates the class cardinality.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_indexClass_cardinality_bound
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    (X : ℕ -> Ω -> Observation) {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {radius : ℝ≥0}
+    {cardinality : Ω -> ℕ -> ℕ}
+    (hindex_finite : indexClass.Finite)
+    (hcardinality_dom :
+      ∀ ω n, hindex_finite.toFinset.card ≤ cardinality ω n)
+    (hindexClass : ∃ index, index ∈ indexClass) :
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass classFun
+      (radius : ℝ) cardinality := by
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_empiricalL1Index_coveringNumber_le
+      X (indexClass := indexClass) (classFun := classFun)
+      (radius := radius) (cardinality := cardinality)
+      (fun ω n =>
+        (empiricalL1Index_coveringNumber_le_indexClass_toFinset_card
+          (sample := samplePath X ω n) (indexClass := indexClass)
+          (classFun := classFun) (radius := radius) hindex_finite).trans
+          (by exact_mod_cast hcardinality_dom ω n))
+      hindexClass
+
+/--
+Sample-path finite-index-class version of
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_indexClass_cardinality_bound`.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_indexClass_cardinality_bound_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {radius : ℝ≥0}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hindex_finite : indexClass.Finite)
+    (hcardinality_dom :
+      ∀ n (sample : SampleAt Observation n) m,
+        hindex_finite.toFinset.card ≤ cardinality n sample m)
+    (hindexClass : ∃ index, index ∈ indexClass) :
+    ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun (radius : ℝ) (cardinality n) := by
+  intro n
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_indexClass_cardinality_bound
+      (X n) (indexClass := indexClass) (classFun := classFun)
+      (radius := radius) (cardinality := cardinality n)
+      hindex_finite (fun sample m => hcardinality_dom n sample m)
+      hindexClass
+
+/--
+All-positive-radius finite-index-class random empirical covering-number
+domination, ready for the fixed-radius Theorem 2.4.3 route.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_indexClass_cardinality_bound_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hindex_finite : indexClass.Finite)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        hindex_finite.toFinset.card ≤ cardinality eta n sample m)
+    (hindexClass : ∃ index, index ∈ indexClass) :
+    ∀ eta, 0 < eta -> ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun eta (cardinality eta n) := by
+  intro eta heta
+  have hbridge :
+      ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          classFun ((⟨eta, heta.le⟩ : ℝ≥0) : ℝ) (cardinality eta n) :=
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_indexClass_cardinality_bound_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (radius := (⟨eta, heta.le⟩ : ℝ≥0))
+      (cardinality := cardinality eta) X hindex_finite
+      (hcardinality_dom eta heta) hindexClass
+  simpa using hbridge
+
+/--
 A finite-valued domination of the random empirical covering number supplies
 the finite empirical-cover witness needed by the selected-cardinality route.
 -/
@@ -11044,6 +11128,128 @@ theorem
       (cardinality := cardinality) (base := base)
       hX_samplePath hcovering_all hclass henvelope_meas hlog hM_pos
       hbase_one hterminal_succ_le
+
+/--
+Finite-class geometric constructor for the selected fixed-radius tail/UI
+package, using a terminal `cardinality <= base^n` estimate.
+
+The empirical pseudometric covering-number input is discharged by the finite
+index-class bound
+`Metric.coveringNumber <= indexClass.card`; the caller only has to provide a
+random/deterministic cardinality process that dominates this finite class size
+and carries the entropy and tail/UI side conditions.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass_cardinality_bound_terminal_pow
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {base : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hindex_finite : indexClass.Finite)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        hindex_finite.toFinset.card ≤ cardinality eta n sample m)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hM_pos : 0 < M)
+    (hbase_pos : ∀ eta, 0 < eta -> 0 < base eta)
+    (hterminal_le :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        cardinality eta n sample n ≤ (base eta) ^ n) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  refine
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_empiricalL1Index_coveringNumber_le_terminal_pow
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (cardinality := cardinality) (base := base)
+      hX_samplePath ?_ hindexClass hclass henvelope_meas hlog hM_pos
+      hbase_pos hterminal_le
+  intro eta heta n sample m
+  exact
+    (empiricalL1Index_coveringNumber_le_indexClass_toFinset_card
+      (sample := samplePath (X n) sample m)
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (radius := (⟨eta, heta.le⟩ : ℝ≥0)) hindex_finite).trans
+      (by
+        exact_mod_cast hcardinality_dom eta heta n sample m)
+
+/--
+Finite-class geometric constructor for the selected fixed-radius tail/UI
+package, using a terminal `cardinality + 1 <= base^n` estimate.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass_cardinality_bound_succ_terminal_pow
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {base : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hindex_finite : indexClass.Finite)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        hindex_finite.toFinset.card ≤ cardinality eta n sample m)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hM_pos : 0 < M)
+    (hbase_one : ∀ eta, 0 < eta -> 1 ≤ base eta)
+    (hterminal_succ_le :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        cardinality eta n sample n + 1 ≤ (base eta) ^ n) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  refine
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_empiricalL1Index_coveringNumber_le_succ_terminal_pow
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (cardinality := cardinality) (base := base)
+      hX_samplePath ?_ hindexClass hclass henvelope_meas hlog hM_pos
+      hbase_one hterminal_succ_le
+  intro eta heta n sample m
+  exact
+    (empiricalL1Index_coveringNumber_le_indexClass_toFinset_card
+      (sample := samplePath (X n) sample m)
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (radius := (⟨eta, heta.le⟩ : ℝ≥0)) hindex_finite).trans
+      (by
+        exact_mod_cast hcardinality_dom eta heta n sample m)
 
 /--
 Fixed-radius finite-net mean convergence for the selected least truncated

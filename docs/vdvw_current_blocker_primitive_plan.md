@@ -1355,16 +1355,41 @@ estimate in the induced empirical pseudometric, plus the existing stochastic
 entropy convergence input; the random-cover domination and selected tail/UI
 handoff are now closed.
 
-Next exact edit: prove the selected finite-net tail-expectation/UI condition
-from the textbook entropy hypothesis by supplying the remaining geometric
-cardinality estimate.  The adapter and induced-pseudometric compatibility gaps
-are now closed; the remaining proof work is to prove a usable geometric bound
-for the chosen empirical internal cover/maximal separated set, for example
+2026-05-03 `/goal` update after the finite-class geometric pass: the reusable
+finite-class cardinality route is now compiled.  Mathlib APIs searched and
+used were `Metric.coveringNumber_le_encard_self`,
+`Metric.IsCover.coveringNumber_le_encard`,
+`Metric.coveringNumber_le_packingNumber`, `Metric.minimalCover`,
+`Metric.maximalSeparatedSet`, `Function.Injective.encard_image`,
+`Set.ncard_image_le`, and finite `encard`/`toFinset` coercions.  New compiled
+primitive declarations in `CoveringPrimitive.lean` are
+`EmpiricalL1Index.ofIndex_injective`,
+`EmpiricalL1Index.image_ofIndex_eq_liftSet`,
+`EmpiricalL1Index.encard_liftSet_eq`,
+`EmpiricalL1Index.finite_liftSet`,
+`empiricalL1Index_coveringNumber_le_indexClass_encard`,
+`empiricalL1Index_coveringNumber_le_indexClass_toFinset_card`, and
+`empiricalL1CoveringNumber_le_indexClass_toFinset_card`.  New theorem-facing
+declarations in `Theorem243.lean` are
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_indexClass_cardinality_bound`,
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_indexClass_cardinality_bound_samplePath`,
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_indexClass_cardinality_bound_samplePath`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass_cardinality_bound_terminal_pow`,
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass_cardinality_bound_succ_terminal_pow`.
+
+Next exact edit: do not repeat the finite-class geometry bridge.  The remaining
+Theorem 2.4.3 proof work is now either (1) prove the actual non-finite-class
+geometric packing/cardinality estimate for the chosen empirical internal
+cover/maximal separated set, for example
 `Metric.coveringNumber (⟨eta, _⟩ : ℝ≥0)
   (EmpiricalL1Index.liftSet ...) <= base eta ^ n` at the terminal sample
-size.  If this geometric packing route blocks, record the precise additional
-book-level uniform-integrability/tail-expectation condition needed to keep the
-final Theorem 2.4.3 statement honest.
+size under the correct textbook structural assumptions, or (2) consume the
+finite-class constructor in a theorem-critical finite-class specialization if
+that is the next honest closure.  If the non-finite geometric packing route
+blocks, record the precise additional book-level structural or
+uniform-integrability/tail-expectation condition needed to keep the final
+Theorem 2.4.3 statement honest.
 The remaining analytic gap is no longer selected-cardinality measurability/log
 convergence under countability, nor the fixed-`M`/untruncated consumer
 composition, nor a missing tail/UI consumer, nor converting a deterministic

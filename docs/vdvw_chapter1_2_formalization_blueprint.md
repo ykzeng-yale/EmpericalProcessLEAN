@@ -610,7 +610,23 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_empiricalL1Index_coveringNumber_le_terminal_pow`,
    and
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_empiricalL1Index_coveringNumber_le_succ_terminal_pow`.
-   The next proof step is therefore the geometric/cardinality instantiation.
+   The finite-class geometric/cardinality instantiation is now also compiled:
+   `EmpiricalL1Index.ofIndex_injective`,
+   `EmpiricalL1Index.image_ofIndex_eq_liftSet`,
+   `EmpiricalL1Index.encard_liftSet_eq`,
+   `EmpiricalL1Index.finite_liftSet`,
+   `empiricalL1Index_coveringNumber_le_indexClass_encard`,
+   `empiricalL1Index_coveringNumber_le_indexClass_toFinset_card`,
+   `empiricalL1CoveringNumber_le_indexClass_toFinset_card`,
+   `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_indexClass_cardinality_bound`,
+   `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_indexClass_cardinality_bound_samplePath`,
+   `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_indexClass_cardinality_bound_samplePath`,
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass_cardinality_bound_terminal_pow`,
+   and
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass_cardinality_bound_succ_terminal_pow`.
+   The next proof step is therefore the non-finite-class
+   geometric/cardinality instantiation, or a theorem-critical finite-class
+   specialization consuming this package.
    The terminal
    power-bound constructors
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_terminal_le_pow`
@@ -619,11 +635,11 @@ above, so they do not change the theorem-level dashboard counts.
    are also compiled, so a future estimate
    `cardinality eta n sample n <= base eta ^ n` or
    `cardinality eta n sample n + 1 <= base eta ^ n` now directly supplies the
-   selected fixed-radius tail/UI package.  What remains is the actual
-   geometric/cardinality estimate for the chosen empirical internal cover or
-   maximal separated set.  If this cannot be proved from the textbook
-   assumptions, state the exact additional theorem-level side condition
-   honestly.
+   selected fixed-radius tail/UI package.  What remains for the full
+   non-finite class route is the actual geometric/cardinality estimate for
+   the chosen empirical internal cover or maximal separated set.  If this
+   cannot be proved from the textbook assumptions, state the exact additional
+   theorem-level side condition honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

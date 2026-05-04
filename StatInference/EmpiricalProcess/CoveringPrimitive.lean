@@ -351,6 +351,49 @@ theorem empiricalL1Distance_le_coe_radius_of_edist_le
     simpa [edist_eq] using h
   exact (ENNReal.ofReal_le_ofReal_iff radius.2).1 hofReal
 
+@[simp]
+theorem ofIndex_injective {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} :
+    Function.Injective
+      (ofIndex (sample := sample) (classFun := classFun)) := by
+  intro index index' h
+  exact congrArg toIndex h
+
+@[simp]
+theorem image_ofIndex_eq_liftSet {Observation : Type u} {Index : Type v}
+    {n : ℕ} {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} (indexClass : Set Index) :
+    (ofIndex (sample := sample) (classFun := classFun)) '' indexClass =
+      liftSet (sample := sample) (classFun := classFun) indexClass := by
+  ext index
+  constructor
+  · rintro ⟨rawIndex, hrawIndex, rfl⟩
+    simpa [liftSet] using hrawIndex
+  · intro hindex
+    exact ⟨index.toIndex, hindex, by cases index; rfl⟩
+
+@[simp]
+theorem encard_liftSet_eq {Observation : Type u} {Index : Type v}
+    {n : ℕ} {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} (indexClass : Set Index) :
+    (liftSet (sample := sample) (classFun := classFun) indexClass).encard =
+      indexClass.encard := by
+  rw [← image_ofIndex_eq_liftSet (sample := sample) (classFun := classFun)
+    indexClass]
+  exact (ofIndex_injective (sample := sample)
+    (classFun := classFun)).encard_image indexClass
+
+theorem finite_liftSet {Observation : Type u} {Index : Type v}
+    {n : ℕ} {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {indexClass : Set Index}
+    (hindex_finite : indexClass.Finite) :
+    (liftSet (sample := sample) (classFun := classFun) indexClass).Finite := by
+  rw [← image_ofIndex_eq_liftSet (sample := sample) (classFun := classFun)
+    indexClass]
+  exact hindex_finite.image
+    (ofIndex (sample := sample) (classFun := classFun))
+
 end EmpiricalL1Index
 
 /--
@@ -1287,6 +1330,72 @@ theorem empiricalL1CoveringNumber_le_of_empiricalL1Index_coveringNumber_le
       (nonempty_finiteEmpiricalL1CoverAtCard_of_empiricalL1Index_coveringNumber_le
         (sample := sample) (indexClass := indexClass) (classFun := classFun)
         (radius := radius) hcovering_le hindexClass)
+
+/--
+The induced empirical internal covering number is bounded by the cardinality of
+the original index class.  This is the finite-class geometric input behind the
+current Theorem 2.4.3 fixed-radius route.
+-/
+theorem empiricalL1Index_coveringNumber_le_indexClass_encard
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {radius : ℝ≥0} :
+    Metric.coveringNumber radius
+        (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass) ≤
+      indexClass.encard := by
+  calc
+    Metric.coveringNumber radius
+        (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass) ≤
+      (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+        indexClass).encard :=
+        Metric.coveringNumber_le_encard_self
+          (ε := radius)
+          (A := EmpiricalL1Index.liftSet
+            (sample := sample) (classFun := classFun) indexClass)
+    _ = indexClass.encard := by
+        simp
+
+/--
+Finite-class form of
+`empiricalL1Index_coveringNumber_le_indexClass_encard`, with the bound written
+as the finite `toFinset` cardinality used by local empirical-cover packages.
+-/
+theorem empiricalL1Index_coveringNumber_le_indexClass_toFinset_card
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {radius : ℝ≥0}
+    (hindex_finite : indexClass.Finite) :
+    Metric.coveringNumber radius
+        (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass) ≤
+      (hindex_finite.toFinset.card : ℕ∞) := by
+  simpa [hindex_finite.encard_eq_coe_toFinset_card] using
+    empiricalL1Index_coveringNumber_le_indexClass_encard
+      (sample := sample) (indexClass := indexClass)
+      (classFun := classFun) (radius := radius)
+
+/--
+For finite nonempty classes, the local empirical `L1(P_n)` covering number is
+bounded by the class cardinality at every fixed sample and radius.
+-/
+theorem empiricalL1CoveringNumber_le_indexClass_toFinset_card
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {radius : ℝ≥0}
+    (hindex_finite : indexClass.Finite)
+    (hindexClass : ∃ index, index ∈ indexClass) :
+    empiricalL1CoveringNumber sample indexClass classFun (radius : ℝ) ≤
+      (hindex_finite.toFinset.card : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_empiricalL1Index_coveringNumber_le
+      (sample := sample) (indexClass := indexClass)
+      (classFun := classFun) (radius := radius)
+      (empiricalL1Index_coveringNumber_le_indexClass_toFinset_card
+        (sample := sample) (indexClass := indexClass)
+        (classFun := classFun) (radius := radius) hindex_finite)
+      hindexClass
 
 /--
 Fixed-cardinality cover-existence events are measurable for countable classes
