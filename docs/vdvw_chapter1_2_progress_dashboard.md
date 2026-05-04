@@ -813,6 +813,13 @@ and `vdVW_condExp_comparison_and_ae_tendsto_limitProcess_of_eLpNorm_le`.
 The remaining Lemma 2.4.5 work is now the actual reverse-filtration
 convergence reduction for the decreasing permutation-symmetric `Σ_n`
 cofiltration, not the envelope L1/eLpNorm estimate.
+2026-05-04 follow-up: the theorem-specific positive-`n` row handoff is also
+compiled as
+`vdVW_condExp_centered_reverseComparison_and_ae_tendsto_limitProcess_of_countable`.
+It consumes the centered leave-one-out comparison and the envelope `eLpNorm`
+bound through the generic conditional-expectation comparison/convergence
+adapter.  Remaining Lemma 2.4.5 work is now only the global
+reverse-filtration convergence/reindexing step.
 
 ## Verification Monitor
 

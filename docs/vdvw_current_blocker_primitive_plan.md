@@ -3266,3 +3266,13 @@ convergence wrapper for the decreasing `Σ_n` process, or a valid reindexing
 from `vdVWPermutationSymmetricCofiltration : Filtration ℕᵒᵈ` into a
 mathlib-compatible increasing `Filtration ℕ` without losing the diagonal
 comparison.
+
+2026-05-04 follow-up: the theorem-specific row handoff is now compiled as
+`vdVW_condExp_centered_reverseComparison_and_ae_tendsto_limitProcess_of_countable`.
+It combines the countable centered leave-one-out reverse comparison with the
+new envelope `eLpNorm` bound and the generic
+`vdVW_condExp_comparison_and_ae_tendsto_limitProcess_of_eLpNorm_le` adapter.
+This closes the positive-`n` row input for the final Lemma 2.4.5 proof.  The
+remaining blocker is not row integrability, conditional symmetry, or envelope
+boundedness; it is the global reverse-filtration convergence step over the
+decreasing permutation-symmetric sigma-fields `Σ_n`.

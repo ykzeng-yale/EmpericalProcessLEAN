@@ -4550,6 +4550,137 @@ theorem
       (n := n) hn hX_meas hX_int hY_int hbdd
 
 /--
+Row-wise Lemma 2.4.5 handoff for the centered empirical supremum: the
+countable leave-one-out reverse comparison and the envelope `L¹` bound feed a
+standard `ℕ`-indexed conditional-expectation convergence theorem on a common
+full-measure set.
+
+This is not the full reverse-submartingale lemma, because the exact VdV&W
+filtration is decreasing.  It is the compiled row input needed by the final
+reverse-filtration reindexing/cofiltration-convergence step.
+-/
+theorem
+    vdVW_condExp_centered_reverseComparison_and_ae_tendsto_limitProcess_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    [SigmaFiniteFiltration (vdVWInfiniteProductMeasure P) ℱ]
+    {n : ℕ} (hn : 0 < n)
+    (hSigma :
+      ℱ (n + 1) =
+        vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      (vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P)
+        (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹)
+        (vdVWFirstNSample (Observation := Observation) (n + 1) sequence) ≤
+      (vdVWInfiniteProductMeasure P)[
+        (fun sequence : ℕ -> Observation =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            ((Fin.last n).removeNth
+              (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))) |
+        ℱ (n + 1)] sequence) ∧
+      Tendsto
+        (fun m : ℕ =>
+          (vdVWInfiniteProductMeasure P)[
+            (fun sequence : ℕ -> Observation =>
+              vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  classFun index observation - ∫ x, classFun index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹)
+                ((Fin.last n).removeNth
+                  (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))) |
+            ℱ m] sequence)
+        atTop
+        (𝓝
+          (ℱ.limitProcess
+            (fun m sequence =>
+              (vdVWInfiniteProductMeasure P)[
+                (fun sequence : ℕ -> Observation =>
+                  vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      classFun index observation - ∫ x, classFun index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹)
+                    ((Fin.last n).removeNth
+                      (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))) |
+                ℱ m] sequence)
+            (vdVWInfiniteProductMeasure P) sequence)) := by
+  let g : (ℕ -> Observation) -> ℝ := fun sequence =>
+    vdVWWeightedClassSupremum indexClass
+      (fun index : Index => fun observation : Observation =>
+        classFun index observation - ∫ x, classFun index x ∂P)
+      (fun _ : Fin n => (n : ℝ)⁻¹)
+      ((Fin.last n).removeNth
+        (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))
+  have hcompSigma :
+      (fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹)
+          (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)) ≤ᵐ[
+        vdVWInfiniteProductMeasure P]
+        (vdVWInfiniteProductMeasure P)[g |
+          vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] := by
+    simpa [g] using
+      vdVW_condExp_reverseComparison_centered_uniformClassSupremum_le_lastLeaveOneOut_of_countable
+        (P := P) hcount henvelope hclass henv_integrable hn
+  have hcomp :
+      (fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹)
+          (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)) ≤ᵐ[
+        vdVWInfiniteProductMeasure P]
+        (vdVWInfiniteProductMeasure P)[g | ℱ (n + 1)] := by
+    simpa [hSigma] using hcompSigma
+  have hg_eq :
+      g =
+        fun sequence : ℕ -> Observation =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (vdVWFirstNSample (Observation := Observation) n sequence) := by
+    funext sequence
+    dsimp [g]
+    congr 1
+    ext j
+    simp [Fin.removeNth, vdVWFirstNSample]
+  have hR :
+      eLpNorm g 1 (vdVWInfiniteProductMeasure P) ≤
+        ENNReal.ofReal (2 * ∫ x, envelope x ∂P) := by
+    rw [hg_eq]
+    exact
+      eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_invNat_le_two_integral_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hcount henvelope hclass henv_integrable hn
+  simpa [g] using
+    vdVW_condExp_comparison_and_ae_tendsto_limitProcess_of_eLpNorm_le
+      (μ := vdVWInfiniteProductMeasure P) (ℱ := ℱ)
+      (X := fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹)
+          (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))
+      (g := g) (k := n + 1)
+      (R := (Real.toNNReal (2 * ∫ x, envelope x ∂P)))
+      hcomp (by
+        simpa [ENNReal.coe_nnreal_eq, ENNReal.coe_toNNReal] using hR)
+
+/--
 An integrable envelope supplies the varying-domain tail/UI condition for the
 untruncated centered empirical supremum with weights `1/n`.
 -/
