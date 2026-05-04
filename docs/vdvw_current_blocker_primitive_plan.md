@@ -2918,6 +2918,17 @@ main-line work is to align the structural full-subgraph/trace-grid assumption
 with the textbook entropy hypothesis or keep it honest as a side condition,
 then prove the almost-sure/reverse-submartingale conclusion.
 
+2026-05-04 follow-up: the finite-class canonical route now reaches the same
+two current Theorem 2.4.3 conclusions.  New compiled declarations are
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical`
+and
+`VdVWTheorem243_finite_indexClass_outerProbabilityUniformDeviation_and_inMean_canonical`.
+They reuse the finite-class canonical centered convergence, the generic
+in-mean tail/UI adapter, and the countable/envelope tail-expectation theorem,
+so finite-class callers no longer need a separate in-mean side condition.
+This remains a theorem layer: the exact textbook a.s. conclusion still depends
+on the Lemma 2.4.5 reverse/cofiltration convergence primitive.
+
 2026-05-04 follow-up: the first Lemma 2.4.5 martingale-convergence foundation
 wrapper is compiled.  Search record: local `StatInference` had no exact
 reverse-submartingale/permutation-symmetric filtration theorem; pinned mathlib

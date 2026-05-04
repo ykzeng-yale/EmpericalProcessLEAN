@@ -640,6 +640,14 @@ current explicit full-subgraph structural assumptions.  This is still a
 theorem layer, not the exact textbook Theorem 2.4.3: remaining work is the
 structural entropy/trace-grid alignment and the a.s./reverse-submartingale
 conclusion.
+2026-05-04 follow-up: the finite-class canonical route now also has the
+matching no-tail in-mean and paired conclusion package:
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical`
+and
+`VdVWTheorem243_finite_indexClass_outerProbabilityUniformDeviation_and_inMean_canonical`.
+This aligns finite classes with the current full-subgraph package for the
+outer-probability plus in-mean parts of Theorem 2.4.3; the almost-sure part
+still waits on Lemma 2.4.5 reverse/cofiltration convergence.
 2026-05-04 follow-up: the pinned-mathlib martingale-convergence substrate for
 Lemma 2.4.5 is now wrapped locally as
 `vdVW_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd`, using

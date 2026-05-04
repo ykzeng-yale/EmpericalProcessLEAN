@@ -24516,6 +24516,98 @@ theorem
         henv_integrable
 
 /--
+Canonical finite-class Theorem 2.4.3 in-mean route.
+
+The centered convergence is supplied by the finite-class canonical route; the
+ordinary measurability, integrability, and tail/UI inputs are discharged from
+the countable/envelope infrastructure.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (hcentered :=
+        VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_canonical
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
+          henv_integrable)
+      (fun n =>
+        measurable_vdVWWeightedClassSupremum_centered_of_countable
+          (P := P) (Set.to_countable indexClass) hclass
+          (fun _ : Fin n => (n : ℝ)⁻¹))
+      (fun n =>
+        integrable_vdVWWeightedClassSupremum_centered_of_countable
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (Set.to_countable indexClass)
+          henvelope hclass henv_integrable (fun _ : Fin n => (n : ℝ)⁻¹))
+      (centered_vdVWWeightedClassSupremum_tailExpectation_condition_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (Set.to_countable indexClass)
+        henvelope hclass henv henv_integrable)
+
+/--
+Canonical finite-class Theorem 2.4.3 route, packaged with both currently
+proved theorem-facing conclusions: finite-product outer-probability
+uniform-deviation convergence and ordinary in-mean convergence of the centered
+weighted supremum.
+-/
+theorem
+    VdVWTheorem243_finite_indexClass_outerProbabilityUniformDeviation_and_inMean_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterProbabilityUniformDeviationConstOn P indexClass classFun ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) := by
+  constructor
+  · exact
+      VdVWOuterProbabilityUniformDeviationConstOn_of_finite_indexClass_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
+        henv_integrable
+  · exact
+      integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
+        henv_integrable
+
+/--
 Fixed-`M` centered-truncated convergence from entropy, measurable random
 cardinalities, a bounded finite-net upper, and a vanishing empirical-cover
 radius.

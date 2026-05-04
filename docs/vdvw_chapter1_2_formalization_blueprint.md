@@ -1125,6 +1125,10 @@ above, so they do not change the theorem-level dashboard counts.
    permutation-symmetric fields `Σ_{n+1}`.  The remaining primitive should
    prove the reverse/cofiltration convergence from those comparisons, not add
    more ordinary-row filtration wrappers.
+   On the Theorem 2.4.3 convergence side, the finite-class canonical route now
+   also packages both current conclusions as
+   `VdVWTheorem243_finite_indexClass_outerProbabilityUniformDeviation_and_inMean_canonical`;
+   exact a.s. completion still depends on Lemma 2.4.5.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
