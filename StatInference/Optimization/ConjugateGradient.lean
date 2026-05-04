@@ -962,5 +962,31 @@ theorem IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_aOrthogonal
     hA_sym hlower halpha_nonneg hres0 hx
     (h.inner_residual_succ_directions_eq_zero_of_aOrthogonal haorth)
 
+/--
+Source branch in Chewi Theorem 5.3: if the displayed CG direction vanishes at
+`p_{n+1}` and the previous search directions are A-conjugate, then the next
+iterate is already a global minimizer.
+-/
+theorem IsCGDisplayedIteration.quadraticObjective_isMinOn_of_direction_succ_eq_zero_and_aOrthogonal
+    {A : E →L[ℝ] E} {b p0 : E} {x r p : ℕ → E} {alpha : ℝ} {n : ℕ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (hlower : QuadraticFormLowerBound A alpha)
+    (halpha_nonneg : 0 ≤ alpha)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hx : ∀ m, x (m + 1) = x m + cgLineSearchCoeff A r p m • p m)
+    (hpzero : p (n + 1) = 0)
+    (haorth : ∀ m k, k < m → aInner A (p k) (p m) = 0) :
+    IsMinOn (quadraticObjective A b) Set.univ (x (n + 1)) := by
+  have hres_grad :
+      r (n + 1) = quadraticGradient A b (x (n + 1)) :=
+    h.residual_eq_quadraticGradient_of_point_updates hres0 hx (n + 1)
+  have horth :
+      IsOrthogonalToSubmodule (r (n + 1)) (cgDirectionSubmodule p n) :=
+    isOrthogonalToSubmodule_cgDirectionSubmodule_of_inner_direction_eq_zero
+      (h.inner_residual_succ_directions_eq_zero_of_aOrthogonal haorth n)
+  exact quadraticObjective_isMinOn_of_direction_succ_eq_zero_and_orthogonal
+    hA_sym hlower halpha_nonneg hres_grad (h.direction_succ n) hpzero horth
+
 end Optimization
 end StatInference

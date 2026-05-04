@@ -1474,6 +1474,11 @@ and A-conjugacy pass proves
 `IsCGDisplayedIteration.inner_residual_succ_directions_eq_zero_of_aOrthogonal`,
 and
 `IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_aOrthogonal`.
+The exact zero-direction source branch also now compiles as
+`IsCGDisplayedIteration.quadraticObjective_isMinOn_of_direction_succ_eq_zero_and_aOrthogonal`:
+if `p_{n+1}=0`, then the A-conjugacy route gives orthogonality to
+`span {p_0,...,p_n}`, the residual-gradient bridge identifies
+`r_{n+1}=∇f(x_{n+1})`, and the next iterate is a global minimizer.
 Thus Theorem 5.3 is reduced from all scalar residual-direction equations to
 the textbook A-conjugacy condition
 `∀ n k, k < n → aInner A (p k) (p n) = 0`, plus the displayed point update and
