@@ -802,6 +802,50 @@ theorem chewi45_not_regularizedGradientSpan_near_min_of_sqrtKappa_log_rate_lt
       hbeta heps N heps_le hrate_le hx0 hspan hx_near hDelta_le
   linarith
 
+/--
+The geometric factor in the direct strongly-convex lower-bound route from
+Exercise 4.2.
+-/
+noncomputable def chewi45GeometricRatio (kappa : ℝ) : ℝ :=
+  (Real.sqrt kappa - 1) / (Real.sqrt kappa + 1)
+
+theorem chewi45GeometricRatio_nonneg {kappa : ℝ} (hkappa : 1 ≤ kappa) :
+    0 ≤ chewi45GeometricRatio kappa := by
+  have hsqrt_one : 1 ≤ Real.sqrt kappa := by
+    rw [← Real.sqrt_one]
+    exact Real.sqrt_le_sqrt hkappa
+  have hden_pos : 0 < Real.sqrt kappa + 1 := by
+    have hsqrt_nonneg : 0 ≤ Real.sqrt kappa := Real.sqrt_nonneg kappa
+    linarith
+  exact div_nonneg (sub_nonneg.mpr hsqrt_one) hden_pos.le
+
+theorem chewi45GeometricRatio_pos {kappa : ℝ} (hkappa : 1 < kappa) :
+    0 < chewi45GeometricRatio kappa := by
+  have hsqrt_one : 1 < Real.sqrt kappa := by
+    rw [← Real.sqrt_one]
+    exact Real.sqrt_lt_sqrt (by norm_num) hkappa
+  have hden_pos : 0 < Real.sqrt kappa + 1 := by
+    have hsqrt_nonneg : 0 ≤ Real.sqrt kappa := Real.sqrt_nonneg kappa
+    linarith
+  exact div_pos (sub_pos.mpr hsqrt_one) hden_pos
+
+theorem chewi45GeometricRatio_lt_one (kappa : ℝ) :
+    chewi45GeometricRatio kappa < 1 := by
+  have hden_pos : 0 < Real.sqrt kappa + 1 := by
+    have hsqrt_nonneg : 0 ≤ Real.sqrt kappa := Real.sqrt_nonneg kappa
+    linarith
+  rw [chewi45GeometricRatio, div_lt_iff₀ hden_pos]
+  linarith
+
+theorem chewi45GeometricRatio_le_one (kappa : ℝ) :
+    chewi45GeometricRatio kappa ≤ 1 :=
+  (chewi45GeometricRatio_lt_one kappa).le
+
+theorem chewi45GeometricRatio_pow_nonneg {kappa : ℝ}
+    (hkappa : 1 ≤ kappa) (n : ℕ) :
+    0 ≤ (chewi45GeometricRatio kappa) ^ n :=
+  pow_nonneg (chewi45GeometricRatio_nonneg hkappa) n
+
 /-- Squared coordinate tail beyond the source prefix subspace `V_N`. -/
 noncomputable def coordinateTailSq (d N : ℕ)
     (z : EuclideanSpace ℝ (Fin d)) : ℝ :=
@@ -889,6 +933,110 @@ theorem strongLowerBoundChainObjective_gap_ge_tailSq_of_gradientSpanTrajectory
       (x := x) hx0 hspan N
   exact strongLowerBoundChainObjective_gap_ge_tailSq_of_gradient_eq_zero
     halpha_nonneg halpha_le_beta hx_prefix hgrad_zero
+
+/--
+Direct geometric-tail lower bound for the strongly-convex lower-bound chain.
+This is the reusable core of the Exercise 4.2 route: once the minimizer's tail
+past `V_N` is bounded below by a geometric multiple of the initial squared
+distance, the function-value gap of every gradient-span iterate has the same
+geometric obstruction.
+-/
+theorem strongLowerBoundChainObjective_gap_ge_geometric_tail_of_gradientSpanTrajectory
+    {alpha beta q : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (halpha_le_beta : alpha ≤ beta) {d N : ℕ}
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {xStar : EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hgrad_zero : strongLowerBoundChainGradient alpha beta d xStar = 0)
+    (htail_ge :
+      q ^ (2 * N) * ‖x 0 - xStar‖ ^ (2 : ℕ) ≤
+        coordinateTailSq d N xStar) :
+    (alpha / 2) *
+        (q ^ (2 * N) * ‖x 0 - xStar‖ ^ (2 : ℕ)) ≤
+      strongLowerBoundChainObjective alpha beta d (x N) -
+        strongLowerBoundChainObjective alpha beta d xStar := by
+  have htail :=
+    strongLowerBoundChainObjective_gap_ge_tailSq_of_gradientSpanTrajectory
+      (alpha := alpha) (beta := beta)
+      halpha_nonneg halpha_le_beta (N := N)
+      (x := x) (xStar := xStar) hx0 hspan hgrad_zero
+  have hcoef_nonneg : 0 ≤ alpha / 2 := by nlinarith
+  have hscaled :
+      (alpha / 2) *
+          (q ^ (2 * N) * ‖x 0 - xStar‖ ^ (2 : ℕ)) ≤
+        (alpha / 2) * coordinateTailSq d N xStar :=
+    mul_le_mul_of_nonneg_left htail_ge hcoef_nonneg
+  exact hscaled.trans htail
+
+/--
+Source-shaped specialization of the direct Exercise 4.2 geometric obstruction
+using Chewi's displayed factor `(sqrt kappa - 1)/(sqrt kappa + 1)`.
+-/
+theorem chewi45_gap_ge_geometricRatio_tail_of_gradientSpanTrajectory
+    {alpha beta kappa : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (halpha_le_beta : alpha ≤ beta) {d N : ℕ}
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {xStar : EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hgrad_zero : strongLowerBoundChainGradient alpha beta d xStar = 0)
+    (htail_ge :
+      (chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖x 0 - xStar‖ ^ (2 : ℕ) ≤
+        coordinateTailSq d N xStar) :
+    (alpha / 2) *
+        ((chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖x 0 - xStar‖ ^ (2 : ℕ)) ≤
+      strongLowerBoundChainObjective alpha beta d (x N) -
+        strongLowerBoundChainObjective alpha beta d xStar := by
+  exact strongLowerBoundChainObjective_gap_ge_geometric_tail_of_gradientSpanTrajectory
+    (alpha := alpha) (beta := beta)
+    (q := chewi45GeometricRatio kappa)
+    halpha_nonneg halpha_le_beta (N := N)
+    (x := x) (xStar := xStar)
+    hx0 hspan hgrad_zero htail_ge
+
+/--
+Contradiction form of the direct Exercise 4.2 obstruction: an iterate whose
+gap is at most `eps` cannot exist if `eps` lies below the geometric tail lower
+bound.
+-/
+theorem chewi45_not_near_min_of_geometricRatio_tail_lower_bound
+    {alpha beta kappa eps : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (halpha_le_beta : alpha ≤ beta) {d N : ℕ}
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {xStar : EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hgrad_zero : strongLowerBoundChainGradient alpha beta d xStar = 0)
+    (htail_ge :
+      (chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖x 0 - xStar‖ ^ (2 : ℕ) ≤
+        coordinateTailSq d N xStar)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta d (x N) ≤
+        strongLowerBoundChainObjective alpha beta d xStar + eps)
+    (heps_lt :
+      eps <
+        (alpha / 2) *
+          ((chewi45GeometricRatio kappa) ^ (2 * N) *
+            ‖x 0 - xStar‖ ^ (2 : ℕ))) :
+    False := by
+  have hgap_ge :=
+    chewi45_gap_ge_geometricRatio_tail_of_gradientSpanTrajectory
+      (alpha := alpha) (beta := beta) (kappa := kappa)
+      halpha_nonneg halpha_le_beta (N := N)
+      (x := x) (xStar := xStar)
+      hx0 hspan hgrad_zero htail_ge
+  have hgap_le :
+      strongLowerBoundChainObjective alpha beta d (x N) -
+          strongLowerBoundChainObjective alpha beta d xStar ≤ eps := by
+    linarith
+  linarith
 
 end Optimization
 end StatInference

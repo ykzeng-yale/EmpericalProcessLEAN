@@ -528,7 +528,15 @@ wrappers `chewi45_iteration_count_ge_rate_of_regularizedGradientSpan_near_min`,
 and `chewi45_not_regularizedGradientSpan_near_min_of_sqrtKappa_log_rate_lt`
 now specialize this finite lower bound to an arbitrary rate and to the
 Chewi-shaped expression `c * sqrt(kappa) * log(ratio)`, with the remaining
-analytic comparison isolated as a separate hypothesis.
+analytic comparison isolated as a separate hypothesis.  The direct Exercise
+4.2 route has now started in the same theorem module: `chewi45GeometricRatio`
+records the displayed factor `(sqrt kappa - 1)/(sqrt kappa + 1)`, its
+nonnegative/positive/less-than-one/power order lemmas compile, and
+`strongLowerBoundChainObjective_gap_ge_geometric_tail_of_gradientSpanTrajectory`,
+`chewi45_gap_ge_geometricRatio_tail_of_gradientSpanTrajectory`, and
+`chewi45_not_near_min_of_geometricRatio_tail_lower_bound` turn a supplied
+geometric tail estimate for the hard-chain minimizer into the exact
+function-gap obstruction used by Exercise 4.2.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and

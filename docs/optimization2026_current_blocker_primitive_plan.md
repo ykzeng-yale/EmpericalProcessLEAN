@@ -986,13 +986,26 @@ source-shaped rate wrappers also compile:
 `chewi45_iteration_count_ge_sqrtKappa_log_rate_of_regularizedGradientSpan_near_min`,
 and `chewi45_not_regularizedGradientSpan_near_min_of_sqrtKappa_log_rate_lt`.
 Do not repeat the arbitrary-rate or `c * sqrt(kappa) * log(ratio)` wrapper.
-The next atomic target is the remaining comparison lemma:
-prove or specialize `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1`
-from concrete condition-number/log hypotheses, or close the direct Exercise
-4.2 geometric tail route.  Search mathlib/local APIs for `Real.log`
-monotonicity, `Real.exp` inversions, sqrt/order facts, finite geometric sums,
-recurrence solutions, and asymptotic iteration-count wrappers before
-introducing any new complexity primitive.
+The direct Exercise 4.2 route now also has compiled geometric-tail obstruction
+plumbing: `chewi45GeometricRatio`,
+`chewi45GeometricRatio_nonneg`, `chewi45GeometricRatio_pos`,
+`chewi45GeometricRatio_lt_one`, `chewi45GeometricRatio_le_one`,
+`chewi45GeometricRatio_pow_nonneg`,
+`strongLowerBoundChainObjective_gap_ge_geometric_tail_of_gradientSpanTrajectory`,
+`chewi45_gap_ge_geometricRatio_tail_of_gradientSpanTrajectory`, and
+`chewi45_not_near_min_of_geometricRatio_tail_lower_bound`.  Do not repeat the
+tail-to-gap assembly.  The next atomic target is the genuinely missing direct
+tail geometry: prove a zero-gradient geometric minimizer or a supplied
+finite/infinite-chain minimizer tail estimate giving
+`coordinateTailSq d N xStar >= q^(2N) * ‖x 0 - xStar‖^2` for
+`q = (sqrt kappa - 1)/(sqrt kappa + 1)`, then convert the resulting
+geometric obstruction into the logarithmic iteration lower bound.  The
+reduction-route comparison
+`c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` remains an alternate
+assembly target when concrete condition-number/log hypotheses make it faster.
+Search mathlib/local APIs for `Real.log` monotonicity, `Real.exp` inversions,
+sqrt/order facts, finite geometric sums, recurrence solutions, and asymptotic
+iteration-count wrappers before introducing any new complexity primitive.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
