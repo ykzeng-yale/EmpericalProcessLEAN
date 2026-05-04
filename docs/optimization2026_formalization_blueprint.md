@@ -677,10 +677,18 @@ now compiles as `exercise42InfiniteBaseChainEdge`,
 `exercise42InfiniteBaseChainDirectionEdge`,
 `exercise42InfiniteBaseChainEdgeSq_summable`,
 `exercise42InfiniteBaseChainDirectionEdgeSq_summable`,
+`exercise42InfiniteBaseChainEdgeLp`,
+`exercise42InfiniteBaseChainDirectionEdgeLp`,
+`exercise42InfiniteBaseChainEdge_mul_direction_summable`,
 `exercise42InfiniteBaseChainEdge_add_direction`, and
 `exercise42InfiniteBaseChainObjective_eq_edge_tsum`, giving the infinite
 counterpart of the finite edge-energy representation before proving the full
-direction expansion.
+direction expansion.  The expansion and lower edge-linear layer now also
+compiles as `exercise42InfiniteBaseChainObjective_add_direction`,
+`exercise42InfiniteBaseChainObjective_add_direction_ge_edge_linear`, and
+`exercise42InfiniteBaseChainObjective_ge_edge_linear`; next is the
+summation-by-parts identity connecting this edge-linear form to
+`inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) (y - x)`.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

@@ -1269,10 +1269,22 @@ compiles:
 `exercise42InfiniteBaseChainDirectionEdge`,
 `exercise42InfiniteBaseChainEdgeSq_summable`,
 `exercise42InfiniteBaseChainDirectionEdgeSq_summable`,
+`exercise42InfiniteBaseChainEdgeLp`,
+`exercise42InfiniteBaseChainEdgeLp_apply`,
+`exercise42InfiniteBaseChainDirectionEdgeLp`,
+`exercise42InfiniteBaseChainDirectionEdgeLp_apply`,
+`exercise42InfiniteBaseChainEdge_mul_direction_summable`,
 `exercise42InfiniteBaseChainEdge_add_direction`, and
-`exercise42InfiniteBaseChainObjective_eq_edge_tsum`.  This mirrors the finite
-`lowerBoundChainTextbookObjective_add_direction` route and reuses
-`summable_nat_add_iff` plus the existing infinite edge-square summability.
+`exercise42InfiniteBaseChainObjective_eq_edge_tsum`.  The exact direction
+expansion and nonnegative-remainder lower model also compile as
+`exercise42InfiniteBaseChainObjective_add_direction`,
+`exercise42InfiniteBaseChainObjective_add_direction_ge_edge_linear`, and
+`exercise42InfiniteBaseChainObjective_ge_edge_linear`.  This mirrors the
+finite `lowerBoundChainTextbookObjective_add_direction` route and reuses
+`summable_nat_add_iff`, `lp.summable_inner`, and the existing infinite
+edge-square summability.  Remaining analytic bridge: prove the summation by
+parts identity equating the edge-linear tsum with
+`inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) (y - x)`.
 Next direct Exercise 4.2 step: prove
 `FirstOrderStrongConvexOn Set.univ (exercise42InfiniteBaseChainObjective
 (beta - alpha)) (exercise42InfiniteBaseChainGradientLp (beta - alpha)) 0`;

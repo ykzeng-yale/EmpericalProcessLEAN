@@ -914,6 +914,57 @@ theorem exercise42InfiniteBaseChainDirectionEdgeSq_summable
       (f := fun n : ℕ =>
         (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) 1).1 htail
 
+/-- Edge residuals bundled as an `ell^2` element. -/
+noncomputable def exercise42InfiniteBaseChainEdgeLp
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) :=
+  ⟨exercise42InfiniteBaseChainEdge x, by
+    apply memℓp_gen
+    simpa [Real.norm_eq_abs, sq_abs, Real.rpow_natCast] using
+      exercise42InfiniteBaseChainEdgeSq_summable x⟩
+
+@[simp]
+theorem exercise42InfiniteBaseChainEdgeLp_apply
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (n : ℕ) :
+    exercise42InfiniteBaseChainEdgeLp x n =
+      exercise42InfiniteBaseChainEdge x n :=
+  rfl
+
+/-- Direction edge residuals bundled as an `ell^2` element. -/
+noncomputable def exercise42InfiniteBaseChainDirectionEdgeLp
+    (v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) :=
+  ⟨exercise42InfiniteBaseChainDirectionEdge v, by
+    apply memℓp_gen
+    simpa [Real.norm_eq_abs, sq_abs, Real.rpow_natCast] using
+      exercise42InfiniteBaseChainDirectionEdgeSq_summable v⟩
+
+@[simp]
+theorem exercise42InfiniteBaseChainDirectionEdgeLp_apply
+    (v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (n : ℕ) :
+    exercise42InfiniteBaseChainDirectionEdgeLp v n =
+      exercise42InfiniteBaseChainDirectionEdge v n :=
+  rfl
+
+/--
+The edge-direction product series is summable by mathlib's `ell^2`
+Cauchy-Schwarz summability.
+-/
+theorem exercise42InfiniteBaseChainEdge_mul_direction_summable
+    (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    Summable fun n : ℕ =>
+      exercise42InfiniteBaseChainEdge x n *
+        exercise42InfiniteBaseChainDirectionEdge v n := by
+  have h :
+      Summable fun n : ℕ =>
+        inner ℝ (exercise42InfiniteBaseChainEdgeLp x n)
+          (exercise42InfiniteBaseChainDirectionEdgeLp v n) :=
+    lp.summable_inner
+      (𝕜 := ℝ)
+      (exercise42InfiniteBaseChainEdgeLp x)
+      (exercise42InfiniteBaseChainDirectionEdgeLp v)
+  simpa [RCLike.inner_apply, mul_comm] using h
+
 /-- Edge residuals add the homogeneous direction residual under `x ↦ x + v`. -/
 theorem exercise42InfiniteBaseChainEdge_add_direction
     (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (n : ℕ) :
@@ -951,6 +1002,100 @@ theorem exercise42InfiniteBaseChainObjective_eq_edge_tsum
     simp [exercise42InfiniteBaseChainEdge]
   rw [exercise42InfiniteBaseChainObjective, hsum_eq]
   ring
+
+/--
+Exact infinite edge-energy expansion for the convex base hard-chain objective
+under a direction update.
+-/
+theorem exercise42InfiniteBaseChainObjective_add_direction
+    (gamma : ℝ) (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma (x + v) =
+      exercise42InfiniteBaseChainObjective gamma x +
+        (gamma / 4) *
+          (∑' n : ℕ,
+            exercise42InfiniteBaseChainEdge x n *
+              exercise42InfiniteBaseChainDirectionEdge v n) +
+        (gamma / 8) *
+          (∑' n : ℕ,
+            (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) := by
+  let e : ℕ -> ℝ := exercise42InfiniteBaseChainEdge x
+  let d : ℕ -> ℝ := exercise42InfiniteBaseChainDirectionEdge v
+  have he : Summable fun n : ℕ => e n ^ (2 : ℕ) :=
+    exercise42InfiniteBaseChainEdgeSq_summable x
+  have hd : Summable fun n : ℕ => d n ^ (2 : ℕ) :=
+    exercise42InfiniteBaseChainDirectionEdgeSq_summable v
+  have hed : Summable fun n : ℕ => e n * d n :=
+    exercise42InfiniteBaseChainEdge_mul_direction_summable x v
+  have htwoed : Summable fun n : ℕ => 2 * (e n * d n) :=
+    hed.mul_left 2
+  have hsum_expand :
+      (∑' n : ℕ, (exercise42InfiniteBaseChainEdge (x + v) n) ^ (2 : ℕ)) =
+        (∑' n : ℕ, e n ^ (2 : ℕ)) +
+          2 * (∑' n : ℕ, e n * d n) +
+            (∑' n : ℕ, d n ^ (2 : ℕ)) := by
+    calc
+      (∑' n : ℕ, (exercise42InfiniteBaseChainEdge (x + v) n) ^ (2 : ℕ)) =
+          ∑' n : ℕ, (e n ^ (2 : ℕ) + (2 * (e n * d n) + d n ^ (2 : ℕ))) := by
+        apply tsum_congr
+        intro n
+        rw [exercise42InfiniteBaseChainEdge_add_direction]
+        dsimp [e, d]
+        ring
+      _ = (∑' n : ℕ, e n ^ (2 : ℕ)) +
+            ∑' n : ℕ, (2 * (e n * d n) + d n ^ (2 : ℕ)) := by
+        rw [Summable.tsum_add he (htwoed.add hd)]
+      _ = (∑' n : ℕ, e n ^ (2 : ℕ)) +
+            ((∑' n : ℕ, 2 * (e n * d n)) +
+              ∑' n : ℕ, d n ^ (2 : ℕ)) := by
+        rw [Summable.tsum_add htwoed hd]
+      _ = (∑' n : ℕ, e n ^ (2 : ℕ)) +
+            2 * (∑' n : ℕ, e n * d n) +
+              (∑' n : ℕ, d n ^ (2 : ℕ)) := by
+        rw [tsum_mul_left]
+        ring
+  rw [exercise42InfiniteBaseChainObjective_eq_edge_tsum,
+    exercise42InfiniteBaseChainObjective_eq_edge_tsum, hsum_expand]
+  ring
+
+/--
+Infinite base-chain lower model in edge-linear form: the quadratic remainder
+in the direction expansion is nonnegative.
+-/
+theorem exercise42InfiniteBaseChainObjective_add_direction_ge_edge_linear
+    {gamma : ℝ} (hgamma : 0 ≤ gamma)
+    (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma x +
+        (gamma / 4) *
+          (∑' n : ℕ,
+            exercise42InfiniteBaseChainEdge x n *
+              exercise42InfiniteBaseChainDirectionEdge v n) ≤
+      exercise42InfiniteBaseChainObjective gamma (x + v) := by
+  have hdir_nonneg :
+      0 ≤
+        (∑' n : ℕ,
+          (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) :=
+    tsum_nonneg fun _ => sq_nonneg _
+  rw [exercise42InfiniteBaseChainObjective_add_direction]
+  have hcoef : 0 ≤ gamma / 8 := by positivity
+  nlinarith
+
+/-- Two-point edge-linear lower model for the infinite convex base hard chain. -/
+theorem exercise42InfiniteBaseChainObjective_ge_edge_linear
+    {gamma : ℝ} (hgamma : 0 ≤ gamma)
+    (x y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma x +
+        (gamma / 4) *
+          (∑' n : ℕ,
+            exercise42InfiniteBaseChainEdge x n *
+              exercise42InfiniteBaseChainDirectionEdge (y - x) n) ≤
+      exercise42InfiniteBaseChainObjective gamma y := by
+  have h :=
+    exercise42InfiniteBaseChainObjective_add_direction_ge_edge_linear
+      hgamma x (y - x)
+  have hxy : x + (y - x) = y := by
+    ext i
+    simp
+  simpa [hxy] using h
 
 /-- Concrete `ell^2` gradient oracle for the convex base hard-chain objective. -/
 noncomputable def exercise42InfiniteBaseChainGradientLp (gamma : ℝ)

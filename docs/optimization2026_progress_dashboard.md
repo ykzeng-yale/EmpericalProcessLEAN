@@ -363,10 +363,18 @@ existing Lemma 4.2 reduction API.  The newest edge substrate adds
 `exercise42InfiniteBaseChainDirectionEdge`,
 `exercise42InfiniteBaseChainEdgeSq_summable`,
 `exercise42InfiniteBaseChainDirectionEdgeSq_summable`,
+`exercise42InfiniteBaseChainEdgeLp`,
+`exercise42InfiniteBaseChainDirectionEdgeLp`,
+`exercise42InfiniteBaseChainEdge_mul_direction_summable`,
 `exercise42InfiniteBaseChainEdge_add_direction`, and
 `exercise42InfiniteBaseChainObjective_eq_edge_tsum`, setting up the infinite
-analogue of the finite edge-expansion proof.  The geometric obstruction and
-log-quotient conversion are already available.
+analogue of the finite edge-expansion proof.  The newest expansion pass adds
+`exercise42InfiniteBaseChainObjective_add_direction`,
+`exercise42InfiniteBaseChainObjective_add_direction_ge_edge_linear`, and
+`exercise42InfiniteBaseChainObjective_ge_edge_linear`; the remaining base-chain
+first-order blocker is the summation-by-parts bridge from the edge-linear tsum
+to the inner product with `exercise42InfiniteBaseChainGradientLp`.  The
+geometric obstruction and log-quotient conversion are already available.
 In parallel, specialize the remaining
 reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
