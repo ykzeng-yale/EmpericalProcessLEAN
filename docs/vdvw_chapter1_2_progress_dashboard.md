@@ -933,3 +933,20 @@ fixed-space outer-probability convergence of the centered empirical supremum
 with a Borel-Cantelli subsequence-selection theorem, then feed the resulting
 summable-bad-event subsequence or summable upper bound into the compiled
 zero-limit consumer.
+
+2026-05-04 `/goal` follow-up: the Borel-Cantelli subsequence-selection theorem
+from fixed-space outer-probability convergence is now compiled.  The main new
+declarations are
+`exists_subseq_bad_measure_le_of_vdVWConvergesInOuterProbability_zero`,
+`ae_tendsto_zero_of_ae_tendsto_limit_of_vdVWConvergesInOuterProbability_zero`,
+its canonical inverse-threshold/geometric-bound specialization, and the two
+Lemma 2.4.5 consumers
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_outerProbability`
+and
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_outerProbability_invNat_geometric`.
+So the zero-identification part is no longer blocked: once the
+reverse-comparison/cofiltration handoff supplies a.e. convergence to some
+finite limit and the fixed-space outer-probability endpoint is available, the
+centered empirical supremum converges a.e. to zero.  Remaining exact work is
+the reverse/cofiltration comparison theorem itself and the final wiring to the
+Theorem 2.4.3 outer-probability endpoint.

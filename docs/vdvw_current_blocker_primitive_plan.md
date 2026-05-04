@@ -3407,3 +3407,25 @@ theorem-facing edit: derive that summable subsequence/bound from the existing
 fixed-space outer-probability convergence of
 `vdVWLemma245CenteredEmpiricalSupremum`, or prove a direct Borel-Cantelli
 selection theorem from `VdVWConvergesInOuterProbability`.
+
+2026-05-04 `/goal` follow-up: the outer-probability subsequence-selection
+step is now compiled.  New theorem-facing declarations in `Theorem243.lean`
+are
+`exists_ge_bad_measure_le_of_vdVWConvergesInOuterProbability_zero`,
+`exists_subseq_bad_measure_le_of_vdVWConvergesInOuterProbability_zero`,
+`ae_tendsto_zero_of_ae_tendsto_limit_of_vdVWConvergesInOuterProbability_zero`,
+`ae_tendsto_zero_of_ae_tendsto_limit_of_vdVWConvergesInOuterProbability_zero_invNat_geometric`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_outerProbability`,
+and
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_outerProbability_invNat_geometric`.
+Search/reuse record: local `ProbabilityMeasure` first Borel-Cantelli remains
+the reusable a.e. eventual-not-member input; pinned mathlib supplies
+`ENNReal.pow_pos` and `ENNReal.tsum_geometric_add_one` for the canonical
+geometric allowance.  This closes the route
+`fixed-space outer-probability convergence to zero + reverse-comparison
+handoff to an a.e. finite limit => a.e. convergence to zero` for Lemma 2.4.5.
+The remaining exact Lemma 2.4.5 blocker is now sharper: prove/discharge the
+actual VdV&W reverse-comparison handoff from the permutation-symmetric
+reverse/cofiltration argument, then connect the existing Theorem 2.4.3
+fixed-space outer-probability convergence endpoints to this zero-limit
+consumer.
