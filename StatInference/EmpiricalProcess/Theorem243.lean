@@ -7489,6 +7489,95 @@ theorem
   simpa using hbridge
 
 /--
+Finite fixed-sample trace images give a random empirical covering-number
+domination by any finite cardinality process that dominates the trace count.
+
+This is the random-sample version of the deterministic trace-cover bridge in
+`CoveringPrimitive.lean`.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_trace_image_cardinality_bound
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    (X : ℕ -> Ω -> Observation) {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : Ω -> ℕ -> ℕ}
+    (htrace_finite :
+      ∀ ω n,
+        (empiricalTrace (samplePath X ω n) classFun '' indexClass).Finite)
+    (hcardinality_dom :
+      ∀ ω n,
+        (htrace_finite ω n).toFinset.card ≤ cardinality ω n)
+    (hepsilon_nonneg : 0 ≤ epsilon) :
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass classFun
+      epsilon cardinality := by
+  intro ω n
+  simpa [vdVWRandomEmpiricalL1CoveringNumber] using
+    (empiricalL1CoveringNumber_le_of_finite_trace_image_card_le
+      (sample := samplePath X ω n) (indexClass := indexClass)
+      (classFun := classFun) (epsilon := epsilon)
+      (cardinality := cardinality ω n)
+      (htrace_finite ω n) hepsilon_nonneg (hcardinality_dom ω n))
+
+/--
+Sample-path finite-trace version of
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_trace_image_cardinality_bound`.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_trace_image_cardinality_bound_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (htrace_finite :
+      ∀ n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X n) sample m) classFun ''
+          indexClass).Finite)
+    (hcardinality_dom :
+      ∀ n (sample : SampleAt Observation n) m,
+        (htrace_finite n sample m).toFinset.card ≤
+          cardinality n sample m)
+    (hepsilon_nonneg : 0 ≤ epsilon) :
+    ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun epsilon (cardinality n) := by
+  intro n
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_trace_image_cardinality_bound
+      (X n) (indexClass := indexClass) (classFun := classFun)
+      (epsilon := epsilon) (cardinality := cardinality n)
+      (fun sample m => htrace_finite n sample m)
+      (fun sample m => hcardinality_dom n sample m) hepsilon_nonneg
+
+/--
+All-positive-radius finite-trace random empirical covering-number domination,
+ready for the fixed-radius Theorem 2.4.3 route.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_trace_image_cardinality_bound_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (htrace_finite :
+      ∀ n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X n) sample m) classFun ''
+          indexClass).Finite)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        (htrace_finite n sample m).toFinset.card ≤
+          cardinality eta n sample m) :
+    ∀ eta, 0 < eta -> ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun eta (cardinality eta n) := by
+  intro eta heta
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_trace_image_cardinality_bound_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (epsilon := eta) (cardinality := cardinality eta) X
+      htrace_finite (hcardinality_dom eta heta) heta.le
+
+/--
 A finite-valued domination of the random empirical covering number supplies
 the finite empirical-cover witness needed by the selected-cardinality route.
 -/
@@ -11956,6 +12045,134 @@ theorem
       (indexClass := indexClass)
       (classFun := vdVWTruncatedClassFun classFun envelope M)
       (cardinality := cardinality) X hmetric_covering_le hindexClass
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_succ_terminal_le_pow
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (cardinality := cardinality) (base := base)
+      hX_samplePath hcovering_all hclass henvelope_meas hlog hM_pos
+      hbase_one hterminal_succ_le
+
+/--
+Finite-trace-image constructor for the selected fixed-radius tail/UI package,
+using a terminal `cardinality <= base^n` estimate.
+
+This is the direct theorem-facing consumer for VC/Sauer or finite-trace
+arguments: once the number of distinct truncated sample traces is bounded by a
+finite cardinality process, the deterministic trace-cover bridge supplies the
+empirical `L1(P_n)` cover and the existing fixed-radius tail/UI machinery
+takes over.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_terminal_pow
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {base : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (htrace_finite :
+      ∀ n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        (htrace_finite n sample m).toFinset.card ≤
+          cardinality eta n sample m)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hM_pos : 0 < M)
+    (hbase_pos : ∀ eta, 0 < eta -> 0 < base eta)
+    (hterminal_le :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        cardinality eta n sample n ≤ (base eta) ^ n) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  have hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n) :=
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_trace_image_cardinality_bound_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (cardinality := cardinality) X htrace_finite hcardinality_dom
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_terminal_le_pow
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (cardinality := cardinality) (base := base)
+      hX_samplePath hcovering_all hclass henvelope_meas hlog hM_pos
+      hbase_pos hterminal_le
+
+/--
+Sharper finite-trace-image constructor for the selected fixed-radius tail/UI
+package, using a terminal `cardinality + 1 <= base^n` estimate.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_succ_terminal_pow
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {base : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (htrace_finite :
+      ∀ n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        (htrace_finite n sample m).toFinset.card ≤
+          cardinality eta n sample m)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hM_pos : 0 < M)
+    (hbase_one : ∀ eta, 0 < eta -> 1 ≤ base eta)
+    (hterminal_succ_le :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        cardinality eta n sample n + 1 ≤ (base eta) ^ n) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  have hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n) :=
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_trace_image_cardinality_bound_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (cardinality := cardinality) X htrace_finite hcardinality_dom
   exact
     VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_succ_terminal_le_pow
       (P := P) (X := X) (indexClass := indexClass)

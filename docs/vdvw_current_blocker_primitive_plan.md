@@ -1615,6 +1615,33 @@ missing structural hypothesis before moving to the next Chapter 1
 arbitrary-map/asymptotic-measurability primitive needed by the exact textbook
 statement.
 
+2026-05-04 `/goal` update after finite-trace selected fixed-radius package
+closure: `StatInference/EmpiricalProcess/Theorem243.lean` now connects the
+fixed-sample trace-cover layer to the random empirical-cover and Theorem 2.4.3
+selected fixed-radius tail/UI packages.  New compiled declarations are
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_trace_image_cardinality_bound`,
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_trace_image_cardinality_bound_samplePath`,
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_trace_image_cardinality_bound_samplePath`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_terminal_pow`,
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_succ_terminal_pow`.
+Search record: local `VdVWRandomEmpiricalL1CoveringNumberLeCardinality`
+already had constructors from induced empirical internal-covering numbers and
+finite index classes; no finite-trace random-cover or selected fixed-radius
+constructor existed.  The new route uses the compiled `empiricalTrace` finite
+image cover lemmas plus the existing terminal `base^n` log-bound/tail/UI
+constructors.
+
+Important remaining gap: these finite-trace constructors still require the
+fixed-radius stochastic entropy field
+`vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n) sample n / n -> 0`
+in outer probability.  A terminal `cardinality <= base eta ^ n` bound only
+supplies boundedness/tail UI, not convergence to zero.  The next exact edit is
+therefore a theorem-facing trace-count/VC-Sauer/polynomial-cardinality route
+whose normalized log cardinality tends to zero, or a proof that the precise
+polynomial/VC assumption must be added as the honest interface for the current
+Lean theorem before full Theorem 2.4.3 assembly.
+
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
 APIs found and used are `ProbabilityTheory.iIndepFun_pi`,

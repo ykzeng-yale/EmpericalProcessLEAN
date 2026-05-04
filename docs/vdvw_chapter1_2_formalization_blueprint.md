@@ -698,9 +698,15 @@ above, so they do not change the theorem-level dashboard counts.
    `nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image`, so any
    finite trace-count, VC/Sauer, or discretization argument now directly
    produces a deterministic empirical `L1(P_n)` cover and covering-number
-   bound.  What remains for the full non-finite class route is the actual
-   geometric/cardinality estimate for the chosen empirical internal cover,
-   trace image, or maximal separated set.  If this
+   bound.  The corresponding Theorem 2.4.3 selected fixed-radius package
+   constructors are also compiled:
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_terminal_pow`
+   and
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_succ_terminal_pow`.
+   What remains for the full non-finite class route is the actual
+   geometric/cardinality estimate and normalized log-convergence proof for the
+   chosen empirical internal cover, trace image, VC/Sauer trace count, or
+   maximal separated set.  If this
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
