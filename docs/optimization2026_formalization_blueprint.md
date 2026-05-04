@@ -577,6 +577,20 @@ check: Exercise 4.2 is an infinite-dimensional `R^infty` construction; the
 finite corrected truncation solves the finite boundary problem exactly, but
 the literal textbook `q^(2N)` tail factor requires either dimension/slack
 bookkeeping or the true `l^2` model.
+The finite-boundary comparison layer now also compiles:
+`strongLowerBoundFiniteGeometricNode_nonneg`,
+`strongLowerBoundFiniteGeometricNode_le_geometric`,
+`geometric_mul_boundary_le_strongLowerBoundFiniteGeometricNode`,
+`strongLowerBoundFiniteGeometricCandidate_nonneg`,
+`strongLowerBoundFiniteGeometricCandidate_le_geometric`,
+`geometric_mul_boundary_le_strongLowerBoundFiniteGeometricCandidate`,
+`strongLowerBoundFiniteGeometricCandidate_sq_le_geometric_sq`,
+`geometric_boundary_sq_le_finiteGeometricCandidate_sq`,
+`coordinateTailSq_finiteGeometricCandidate_le_geometric`,
+`finiteGeometricCandidate_coordinate_sq_le_coordinateTailSq`, and
+`geometric_boundary_sq_le_finiteGeometricCandidate_coordinateTailSq`.  These
+are the reusable finite scalar upper/lower comparisons for the next slack
+proof; do not reopen the corrected-node recurrence algebra.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and

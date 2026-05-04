@@ -1128,6 +1128,91 @@ theorem strongLowerBoundFiniteGeometricNode_last
   simp [strongLowerBoundFiniteGeometricNode, hsub]
 
 /--
+The corrected finite geometric node is nonnegative on the finite interval
+`0, ..., d+1`.
+-/
+theorem strongLowerBoundFiniteGeometricNode_nonneg {kappa : ℝ}
+    (hkappa : 1 < kappa) {d j : ℕ} (hj : j ≤ d + 1) :
+    0 ≤ strongLowerBoundFiniteGeometricNode kappa d j := by
+  let q := chewi45GeometricRatio kappa
+  let L := 2 * d + 2
+  have hq_pos : 0 < q := by
+    simpa [q] using chewi45GeometricRatio_pos hkappa
+  have hq_lt_one : q < 1 := by
+    simpa [q] using chewi45GeometricRatio_lt_one kappa
+  have hD_pos : 0 < 1 - q ^ L := by
+    simpa [L, q] using chewi45GeometricRatio_finiteDenominator_pos hkappa d
+  have hpow_le : q ^ (L - j) ≤ q ^ j := by
+    exact (pow_le_pow_iff_right_of_lt_one₀ hq_pos hq_lt_one).2 (by omega)
+  change 0 ≤ (q ^ j - q ^ (L - j)) / (1 - q ^ L)
+  exact div_nonneg (sub_nonneg.mpr hpow_le) hD_pos.le
+
+/--
+The corrected finite node is bounded above by the pure geometric profile on
+the finite interval.  This is the scalar comparison that prevents finite
+truncation estimates from accidentally exceeding the infinite-chain profile.
+-/
+theorem strongLowerBoundFiniteGeometricNode_le_geometric {kappa : ℝ}
+    (hkappa : 1 < kappa) {d j : ℕ} (hj : j ≤ d + 1) :
+    strongLowerBoundFiniteGeometricNode kappa d j ≤
+      (chewi45GeometricRatio kappa) ^ j := by
+  let q := chewi45GeometricRatio kappa
+  let L := 2 * d + 2
+  have hq_pos : 0 < q := by
+    simpa [q] using chewi45GeometricRatio_pos hkappa
+  have hq_lt_one : q < 1 := by
+    simpa [q] using chewi45GeometricRatio_lt_one kappa
+  have hD_pos : 0 < 1 - q ^ L := by
+    simpa [L, q] using chewi45GeometricRatio_finiteDenominator_pos hkappa d
+  have hpow_le : q ^ (j + L) ≤ q ^ (L - j) := by
+    exact (pow_le_pow_iff_right_of_lt_one₀ hq_pos hq_lt_one).2 (by omega)
+  have hnum_le :
+      q ^ j - q ^ (L - j) ≤ q ^ j * (1 - q ^ L) := by
+    calc
+      q ^ j - q ^ (L - j) ≤ q ^ j - q ^ (j + L) := by
+        nlinarith
+      _ = q ^ j * (1 - q ^ L) := by
+        rw [pow_add]
+        ring
+  change (q ^ j - q ^ (L - j)) / (1 - q ^ L) ≤ q ^ j
+  rw [div_le_iff₀ hD_pos]
+  simpa [mul_comm, mul_left_comm, mul_assoc] using hnum_le
+
+/--
+Lower comparison between the corrected finite node and the pure geometric
+profile, retaining the finite-boundary correction factor.  This is the
+finite-dimensional replacement for the exact infinite-chain identity
+`z_j = q^j`.
+-/
+theorem geometric_mul_boundary_le_strongLowerBoundFiniteGeometricNode
+    {kappa : ℝ} (hkappa : 1 < kappa) {d j : ℕ} (hj : j ≤ d + 1) :
+    (chewi45GeometricRatio kappa) ^ j *
+        (1 - (chewi45GeometricRatio kappa) ^ (2 * d + 2 - 2 * j)) ≤
+      strongLowerBoundFiniteGeometricNode kappa d j := by
+  let q := chewi45GeometricRatio kappa
+  let L := 2 * d + 2
+  let r := L - 2 * j
+  have hq_nonneg : 0 ≤ q := by
+    simpa [q] using chewi45GeometricRatio_nonneg hkappa.le
+  have hD_pos : 0 < 1 - q ^ L := by
+    simpa [L, q] using chewi45GeometricRatio_finiteDenominator_pos hkappa d
+  have hD_le_one : 1 - q ^ L ≤ 1 := by
+    have hpow_nonneg : 0 ≤ q ^ L := pow_nonneg hq_nonneg L
+    linarith
+  have hr_le_one : q ^ r ≤ 1 := by
+    exact pow_le_one₀ (n := r) hq_nonneg (chewi45GeometricRatio_le_one kappa)
+  have hA_nonneg : 0 ≤ q ^ j * (1 - q ^ r) := by
+    exact mul_nonneg (pow_nonneg hq_nonneg j) (sub_nonneg.mpr hr_le_one)
+  have hsub : L - j = j + r := by omega
+  change q ^ j * (1 - q ^ (L - 2 * j)) ≤
+    (q ^ j - q ^ (L - j)) / (1 - q ^ L)
+  have hr_eq : L - 2 * j = r := by rfl
+  rw [hr_eq, hsub, pow_add]
+  rw [le_div_iff₀ hD_pos]
+  ring_nf
+  nlinarith [mul_le_of_le_one_right hA_nonneg hD_le_one]
+
+/--
 Finite-dimensional corrected geometric vector for the direct Theorem 4.5 hard
 instance.  Coordinate `i` is the corrected node `z_{i+1}`.
 -/
@@ -1141,6 +1226,75 @@ theorem strongLowerBoundFiniteGeometricCandidate_apply
     strongLowerBoundFiniteGeometricCandidate kappa d i =
       strongLowerBoundFiniteGeometricNode kappa d (i.1 + 1) := by
   simp [strongLowerBoundFiniteGeometricCandidate, PiLp.toLp_apply]
+
+/-- Coordinates of the corrected finite geometric candidate are nonnegative. -/
+theorem strongLowerBoundFiniteGeometricCandidate_nonneg {kappa : ℝ}
+    (hkappa : 1 < kappa) {d : ℕ} (i : Fin d) :
+    0 ≤ strongLowerBoundFiniteGeometricCandidate kappa d i := by
+  rw [strongLowerBoundFiniteGeometricCandidate_apply]
+  exact strongLowerBoundFiniteGeometricNode_nonneg hkappa (by omega)
+
+/--
+Coordinatewise comparison between the corrected finite geometric candidate
+and the pure geometric profile.
+-/
+theorem strongLowerBoundFiniteGeometricCandidate_le_geometric {kappa : ℝ}
+    (hkappa : 1 < kappa) {d : ℕ} (i : Fin d) :
+    strongLowerBoundFiniteGeometricCandidate kappa d i ≤
+      (chewi45GeometricRatio kappa) ^ (i.1 + 1) := by
+  rw [strongLowerBoundFiniteGeometricCandidate_apply]
+  exact strongLowerBoundFiniteGeometricNode_le_geometric hkappa (by omega)
+
+/--
+Coordinatewise lower comparison against the pure geometric profile with the
+finite-boundary correction factor.
+-/
+theorem geometric_mul_boundary_le_strongLowerBoundFiniteGeometricCandidate
+    {kappa : ℝ} (hkappa : 1 < kappa) {d : ℕ} (i : Fin d) :
+    (chewi45GeometricRatio kappa) ^ (i.1 + 1) *
+        (1 - (chewi45GeometricRatio kappa) ^
+          (2 * d + 2 - 2 * (i.1 + 1))) ≤
+      strongLowerBoundFiniteGeometricCandidate kappa d i := by
+  rw [strongLowerBoundFiniteGeometricCandidate_apply]
+  exact geometric_mul_boundary_le_strongLowerBoundFiniteGeometricNode
+    hkappa (by omega)
+
+/-- Squared-coordinate version of the finite-to-pure geometric comparison. -/
+theorem strongLowerBoundFiniteGeometricCandidate_sq_le_geometric_sq
+    {kappa : ℝ} (hkappa : 1 < kappa) {d : ℕ} (i : Fin d) :
+    (strongLowerBoundFiniteGeometricCandidate kappa d i) ^ (2 : ℕ) ≤
+      ((chewi45GeometricRatio kappa) ^ (i.1 + 1)) ^ (2 : ℕ) := by
+  exact (sq_le_sq₀
+    (strongLowerBoundFiniteGeometricCandidate_nonneg hkappa i)
+    (chewi45GeometricRatio_pow_nonneg hkappa.le (i.1 + 1))).2
+      (strongLowerBoundFiniteGeometricCandidate_le_geometric hkappa i)
+
+/-- Squared-coordinate version of the finite-boundary lower comparison. -/
+theorem geometric_boundary_sq_le_finiteGeometricCandidate_sq
+    {kappa : ℝ} (hkappa : 1 < kappa) {d : ℕ} (i : Fin d) :
+    ((chewi45GeometricRatio kappa) ^ (i.1 + 1) *
+        (1 - (chewi45GeometricRatio kappa) ^
+          (2 * d + 2 - 2 * (i.1 + 1)))) ^ (2 : ℕ) ≤
+      (strongLowerBoundFiniteGeometricCandidate kappa d i) ^ (2 : ℕ) := by
+  let q := chewi45GeometricRatio kappa
+  have hq_nonneg : 0 ≤ q := by
+    simpa [q] using chewi45GeometricRatio_nonneg hkappa.le
+  have hq_le_one : q ≤ 1 := by
+    simpa [q] using chewi45GeometricRatio_le_one kappa
+  have hfactor_nonneg :
+      0 ≤ q ^ (i.1 + 1) *
+        (1 - q ^ (2 * d + 2 - 2 * (i.1 + 1))) := by
+    have hpow_le_one :
+        q ^ (2 * d + 2 - 2 * (i.1 + 1)) ≤ 1 :=
+      pow_le_one₀
+        (n := 2 * d + 2 - 2 * (i.1 + 1)) hq_nonneg hq_le_one
+    exact mul_nonneg (pow_nonneg hq_nonneg _) (sub_nonneg.mpr hpow_le_one)
+  exact (sq_le_sq₀ hfactor_nonneg
+    (strongLowerBoundFiniteGeometricCandidate_nonneg hkappa i)).2
+      (by
+        simpa [q] using
+          geometric_mul_boundary_le_strongLowerBoundFiniteGeometricCandidate
+            hkappa i)
 
 /--
 The corrected finite node satisfies the characteristic second-order recurrence
@@ -1332,6 +1486,52 @@ theorem norm_zero_sub_sq_eq_coordinateTailSq_zero
     ‖(0 : EuclideanSpace ℝ (Fin d)) - z‖ ^ (2 : ℕ) =
       coordinateTailSq d 0 z := by
   rw [zero_sub, norm_neg, coordinateTailSq_zero_eq_norm_sq]
+
+/--
+Tail energy of the corrected finite geometric candidate is bounded above by
+the corresponding pure-geometric finite tail.
+-/
+theorem coordinateTailSq_finiteGeometricCandidate_le_geometric
+    {kappa : ℝ} (hkappa : 1 < kappa) (d N : ℕ) :
+    coordinateTailSq d N (strongLowerBoundFiniteGeometricCandidate kappa d) ≤
+      Finset.sum (Finset.univ.filter (fun i : Fin d => N ≤ i.1))
+        (fun i : Fin d =>
+          ((chewi45GeometricRatio kappa) ^ (i.1 + 1)) ^ (2 : ℕ)) := by
+  unfold coordinateTailSq
+  exact Finset.sum_le_sum fun i _ =>
+    strongLowerBoundFiniteGeometricCandidate_sq_le_geometric_sq hkappa i
+
+/--
+The first undiscovered coordinate contributes to the tail energy whenever it
+exists.  This packages the `V_N` tail lower bound in the form used by the
+lower-bound obstruction.
+-/
+theorem finiteGeometricCandidate_coordinate_sq_le_coordinateTailSq
+    {kappa : ℝ} (d N : ℕ) (hN : N < d) :
+    (strongLowerBoundFiniteGeometricCandidate kappa d ⟨N, hN⟩) ^
+        (2 : ℕ) ≤
+      coordinateTailSq d N (strongLowerBoundFiniteGeometricCandidate kappa d) :=
+  coordinate_sq_le_coordinateTailSq
+    (strongLowerBoundFiniteGeometricCandidate kappa d) (i := ⟨N, hN⟩) le_rfl
+
+/--
+Concrete one-coordinate lower bound for the corrected finite candidate tail.
+It is weak compared with the eventual full-tail comparison, but it is robust
+and keeps the finite-boundary correction factor explicit.
+-/
+theorem geometric_boundary_sq_le_finiteGeometricCandidate_coordinateTailSq
+    {kappa : ℝ} (hkappa : 1 < kappa) (d N : ℕ) (hN : N < d) :
+    ((chewi45GeometricRatio kappa) ^ (N + 1) *
+        (1 - (chewi45GeometricRatio kappa) ^
+          (2 * d + 2 - 2 * (N + 1)))) ^ (2 : ℕ) ≤
+      coordinateTailSq d N (strongLowerBoundFiniteGeometricCandidate kappa d) := by
+  have hcoord :=
+    geometric_boundary_sq_le_finiteGeometricCandidate_sq
+      (kappa := kappa) hkappa (d := d) ⟨N, hN⟩
+  have htail :=
+    finiteGeometricCandidate_coordinate_sq_le_coordinateTailSq
+      (kappa := kappa) d N hN
+  exact hcoord.trans htail
 
 /--
 If `x ∈ V_N`, then the squared distance from `x` to any `z` controls the
