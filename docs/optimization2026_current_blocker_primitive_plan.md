@@ -53,9 +53,10 @@ content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, continuing from the Chapter 2 gradient-flow
 frontier and the existing Chapter 1/3 bridge frontier.  The current route
 should push Chapter 2 main-text theorem layers after the compiled
-gradient-flow calculus/exponential-decay batch: Theorem 2.4's analytic
-interval-integral instantiation, Proposition 2.7 main implications, and
-Corollary 2.8, while preserving the Chapter 3 theorem spine already compiled
+gradient-flow calculus/exponential-decay batch: Proposition 2.7 main
+implications, Corollary 2.8, and eventual removal/discharge of Theorem 2.4's
+exposed interval-integrability assumptions from stronger regularity
+hypotheses, while preserving the Chapter 3 theorem spine already compiled
 through Theorem 3.7.  Search existing mathlib and local `StatInference` APIs
 first, prove the next highest-leverage main-text theorem layer, verify with
 focused `lake env lean`, targeted `lake build StatInference`, proof-hole and
@@ -106,8 +107,13 @@ blocker for the whole-space differentiable case:
 - Theorem 2.4 now has source-shaped positive-`alpha` and `alpha = 0`
   denominator assembly wrappers from a weighted Gronwall/integral lower-bound
   interface as `chewi24_gap_le_geometric_denominator_of_weighted_gap_bound`
-  and `chewi24_gap_le_alpha_zero_denominator_of_weighted_gap_bound`; the
-  remaining blocker is the analytic interval-integral instantiation.
+  and `chewi24_gap_le_alpha_zero_denominator_of_weighted_gap_bound`.  It also
+  now has the analytic interval-integral instantiation in both branches:
+  `chewi24_gap_le_geometric_denominator_of_firstOrderStrongConvexOn`,
+  `chewi24_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientAt`,
+  `chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn`, and
+  `chewi24_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradientAt`,
+  with interval-integrability hypotheses exposed.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -287,11 +293,15 @@ Corollary 2.6, and reserve full integral Gronwall APIs for Theorem 2.4's
 weighted-forcing denominator if the direct proof becomes longer than the
 mathlib bridge.  The Theorem 2.2 norm-form conversion reuses `sq_le_sq₀`,
 `Real.exp_add`, `Real.exp_nat_mul`, and positivity of `Real.exp`.  The Theorem
-2.4 denominator assembly now compiles without interval integrals; the remaining
-search target is the interval-integral lower-bound input using
-`intervalIntegral.integral_eq_sub_of_hasDerivAt`, `intervalIntegral.integral_mono_on`,
-`intervalIntegral.integral_const_mul`, and `integral_exp`/`integral_exp_mul_*`
-from `Mathlib.Analysis.SpecialFunctions.Integrals.Basic`.
+2.4 denominator assembly first compiled without interval integrals; the
+follow-up interval-integral instantiation now reuses
+`intervalIntegral.integral_eq_sub_of_hasDerivAt`,
+`intervalIntegral.integral_mono_on`, `intervalIntegral.integral_const_mul`,
+`intervalIntegral.integral_const`, `Continuous.intervalIntegrable`,
+`HasDerivAt.div_const`, and `fun_prop` for the exponential lower-bound
+integrand.  The remaining regularity task is to derive the exposed
+`IntervalIntegrable` assumptions from a clean `C²`/regular trajectory surface
+instead of passing them explicitly.
 
 Current Exercise 3.1 co-coercivity interface result: the source display (3.5)
 now compiles as `GradientCocoerciveOn`.  The bridge
@@ -401,6 +411,15 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.gradientFlow_sqdist_to_point_hasDerivAt`
 - `StatInference.Optimization.gradientFlow_sqdist_to_minimizer_deriv_le_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.gradientFlow_sqdist_to_minimizer_deriv_le_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.scalarWeightedGrowthIntegral_nonneg_of_hasDerivAt_le`
+- `StatInference.Optimization.weightedGrowthIntegral_lower_bound`
+- `StatInference.Optimization.scalarIntegral_nonneg_of_hasDerivAt_le`
+- `StatInference.Optimization.integral_lower_bound_of_monotone_gap`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_growth_bound`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_weighted_bound`
 - `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_weighted_bound`
 - `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_weighted_gap_bound`
@@ -487,8 +506,9 @@ Latest verified local frontier after lane creation:
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal target: close Chewi Theorem 2.4's analytic interval-integral
-instantiation for the weighted forcing lower bound, then continue with
-Proposition 2.7 and Corollary 2.8.  Continue deferring exercise proofs except
-where an exercise statement is needed as a temporary interface for a main-text
+Next manual goal target: Chewi Proposition 2.7 main-text implications,
+starting with strong convexity implies PL under a minimizer/gradient-zero
+interface, then the PL-to-quadratic-growth route used in the notes.  Continue
+with Corollary 2.8 afterward.  Continue deferring exercise proofs except where
+an exercise statement is needed as a temporary interface for a main-text
 theorem.

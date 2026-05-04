@@ -14,6 +14,7 @@ namespace Optimization
 
 open Set
 open scoped InnerProductSpace
+open scoped intervalIntegral
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
@@ -426,6 +427,383 @@ theorem gradientFlow_sqdist_to_minimizer_deriv_le_of_strongConvexOn_univ_hasGrad
     (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
       hstrong hgrad)
     (by simp) (by simp)
+
+/--
+Weighted-forcing Gronwall integral step used in Chewi Theorem 2.4.
+
+This is the integral form of the calculation
+`d/ds [exp(alpha*s) u(s)] <= -2 exp(alpha*s) gap(s)`.
+-/
+theorem scalarWeightedGrowthIntegral_nonneg_of_hasDerivAt_le
+    {u u' gap : ℝ -> ℝ} {alpha t : ℝ}
+    (ht : 0 ≤ t)
+    (hu : ∀ s, HasDerivAt u (u' s) s)
+    (hineq : ∀ s, s ∈ Set.Icc (0 : ℝ) t ->
+      u' s ≤ -alpha * u s - 2 * gap s)
+    (hu_t_nonneg : 0 ≤ u t)
+    (hint_deriv : IntervalIntegrable
+      (fun s => Real.exp (alpha * s) * alpha * u s +
+        Real.exp (alpha * s) * u' s) MeasureTheory.volume 0 t)
+    (hint_gap : IntervalIntegrable
+      (fun s => Real.exp (alpha * s) * gap s) MeasureTheory.volume 0 t) :
+    0 ≤ u 0 - 2 * ∫ s in (0 : ℝ)..t, Real.exp (alpha * s) * gap s := by
+  let z : ℝ -> ℝ := fun s => Real.exp (alpha * s) * u s
+  let z' : ℝ -> ℝ := fun s => Real.exp (alpha * s) * alpha * u s +
+    Real.exp (alpha * s) * u' s
+  have hderiv_z : ∀ s ∈ Set.uIcc (0 : ℝ) t, HasDerivAt z (z' s) s := by
+    intro s hs
+    have hexp : HasDerivAt (fun r : ℝ => Real.exp (alpha * r))
+        (Real.exp (alpha * s) * alpha) s := by
+      simpa [mul_comm, mul_left_comm, mul_assoc] using
+        ((hasDerivAt_id s).const_mul alpha).exp
+    simpa [z, z', mul_assoc] using hexp.mul (hu s)
+  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv_z hint_deriv
+  have hgap_const : IntervalIntegrable
+      (fun s => -2 * (Real.exp (alpha * s) * gap s))
+        MeasureTheory.volume 0 t :=
+    hint_gap.const_mul (-2)
+  have hmono :
+      ∫ s in (0 : ℝ)..t, z' s ≤
+        ∫ s in (0 : ℝ)..t, -2 * (Real.exp (alpha * s) * gap s) := by
+    refine intervalIntegral.integral_mono_on ht hint_deriv hgap_const ?_
+    intro s hs
+    have hi := hineq s hs
+    have hexp_nonneg : 0 ≤ Real.exp (alpha * s) := Real.exp_nonneg _
+    dsimp [z']
+    nlinarith
+  rw [hFTC] at hmono
+  have hconst :
+      (∫ s in (0 : ℝ)..t, -2 * (Real.exp (alpha * s) * gap s)) =
+        -2 * ∫ s in (0 : ℝ)..t, Real.exp (alpha * s) * gap s := by
+    rw [intervalIntegral.integral_const_mul]
+  rw [hconst] at hmono
+  have hmono' : Real.exp (alpha * t) * u t - u 0 ≤
+      -2 * ∫ s in (0 : ℝ)..t, Real.exp (alpha * s) * gap s := by
+    simpa [z] using hmono
+  have hz_nonneg : 0 ≤ Real.exp (alpha * t) * u t :=
+    mul_nonneg (Real.exp_nonneg _) hu_t_nonneg
+  nlinarith
+
+/--
+Monotone-gap lower bound for the weighted integral in Chewi Theorem 2.4.
+-/
+theorem weightedGrowthIntegral_lower_bound
+    {gap : ℝ -> ℝ} {alpha t finalGap : ℝ}
+    (halpha : 0 < alpha) (ht : 0 ≤ t)
+    (hmono : ∀ s, s ∈ Set.Icc (0 : ℝ) t -> finalGap ≤ gap s)
+    (hint_gap : IntervalIntegrable
+      (fun s => Real.exp (alpha * s) * gap s) MeasureTheory.volume 0 t) :
+    ((Real.exp (alpha * t) - 1) / alpha) * finalGap ≤
+      ∫ s in (0 : ℝ)..t, Real.exp (alpha * s) * gap s := by
+  let lower : ℝ -> ℝ := fun s => Real.exp (alpha * s) * finalGap
+  let F : ℝ -> ℝ := fun s => (Real.exp (alpha * s) / alpha) * finalGap
+  have hcont_lower : Continuous lower := by
+    dsimp [lower]
+    fun_prop
+  have hint_lower : IntervalIntegrable lower MeasureTheory.volume 0 t :=
+    hcont_lower.intervalIntegrable 0 t
+  have hderiv : ∀ s ∈ Set.uIcc (0 : ℝ) t, HasDerivAt F (lower s) s := by
+    intro s hs
+    have hexp : HasDerivAt (fun r : ℝ => Real.exp (alpha * r))
+        (Real.exp (alpha * s) * alpha) s := by
+      simpa [mul_comm, mul_left_comm, mul_assoc] using
+        ((hasDerivAt_id s).const_mul alpha).exp
+    have hdiv : HasDerivAt (fun r : ℝ => Real.exp (alpha * r) / alpha)
+        (Real.exp (alpha * s)) s := by
+      have h := hexp.div_const alpha
+      convert h using 1
+      field_simp [halpha.ne']
+    simpa [F, lower] using hdiv.mul_const finalGap
+  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint_lower
+  have hmono_int :
+      ∫ s in (0 : ℝ)..t, lower s ≤
+        ∫ s in (0 : ℝ)..t, Real.exp (alpha * s) * gap s := by
+    refine intervalIntegral.integral_mono_on ht hint_lower hint_gap ?_
+    intro s hs
+    exact mul_le_mul_of_nonneg_left (hmono s hs) (Real.exp_nonneg _)
+  have heval : (∫ s in (0 : ℝ)..t, lower s) =
+      ((Real.exp (alpha * t) - 1) / alpha) * finalGap := by
+    rw [hFTC]
+    dsimp [F]
+    field_simp [halpha.ne']
+    simp
+  rwa [heval] at hmono_int
+
+/--
+The `alpha = 0` forcing integral step used in Chewi Theorem 2.4.
+-/
+theorem scalarIntegral_nonneg_of_hasDerivAt_le
+    {u u' gap : ℝ -> ℝ} {t : ℝ}
+    (ht : 0 ≤ t)
+    (hu : ∀ s, HasDerivAt u (u' s) s)
+    (hineq : ∀ s, s ∈ Set.Icc (0 : ℝ) t -> u' s ≤ -2 * gap s)
+    (hu_t_nonneg : 0 ≤ u t)
+    (hint_deriv : IntervalIntegrable u' MeasureTheory.volume 0 t)
+    (hint_gap : IntervalIntegrable gap MeasureTheory.volume 0 t) :
+    0 ≤ u 0 - 2 * ∫ s in (0 : ℝ)..t, gap s := by
+  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt
+    (fun s hs => hu s) hint_deriv
+  have hgap_const : IntervalIntegrable (fun s => -2 * gap s)
+      MeasureTheory.volume 0 t :=
+    hint_gap.const_mul (-2)
+  have hmono :
+      ∫ s in (0 : ℝ)..t, u' s ≤
+        ∫ s in (0 : ℝ)..t, -2 * gap s := by
+    refine intervalIntegral.integral_mono_on ht hint_deriv hgap_const ?_
+    intro s hs
+    exact hineq s hs
+  rw [hFTC] at hmono
+  have hconst :
+      (∫ s in (0 : ℝ)..t, -2 * gap s) =
+        -2 * ∫ s in (0 : ℝ)..t, gap s := by
+    rw [intervalIntegral.integral_const_mul]
+  rw [hconst] at hmono
+  nlinarith
+
+/--
+The `alpha = 0` monotone-gap lower bound for Chewi Theorem 2.4.
+-/
+theorem integral_lower_bound_of_monotone_gap
+    {gap : ℝ -> ℝ} {t finalGap : ℝ}
+    (ht : 0 ≤ t)
+    (hmono : ∀ s, s ∈ Set.Icc (0 : ℝ) t -> finalGap ≤ gap s)
+    (hint_gap : IntervalIntegrable gap MeasureTheory.volume 0 t) :
+    t * finalGap ≤ ∫ s in (0 : ℝ)..t, gap s := by
+  have hconst_int : IntervalIntegrable (fun _ : ℝ => finalGap)
+      MeasureTheory.volume 0 t := by
+    simp
+  have hmono_int :
+      ∫ s in (0 : ℝ)..t, (fun _ : ℝ => finalGap) s ≤
+        ∫ s in (0 : ℝ)..t, gap s := by
+    refine intervalIntegral.integral_mono_on ht hconst_int hint_gap ?_
+    intro s hs
+    exact hmono s hs
+  have heval : (∫ s in (0 : ℝ)..t, (fun _ : ℝ => finalGap) s) =
+      t * finalGap := by
+    rw [intervalIntegral.integral_const]
+    simp
+  rwa [heval] at hmono_int
+
+/--
+Positive-`alpha` denominator algebra using the growth-weighted integral
+`∫ exp(alpha*s) gap(s)`.
+-/
+theorem chewi24_gap_le_geometric_denominator_of_growth_bound
+    {alpha t R finalGap J : ℝ}
+    (halpha : 0 < alpha) (ht : 0 < t)
+    (hweighted : 0 ≤ R - 2 * J)
+    (hlower : ((Real.exp (alpha * t) - 1) / alpha) * finalGap ≤ J) :
+    finalGap ≤ alpha / (2 * (Real.exp (alpha * t) - 1)) * R := by
+  have hexplt : 1 < Real.exp (alpha * t) := by
+    rw [← Real.exp_zero]
+    exact Real.exp_lt_exp.mpr (by nlinarith)
+  have hdenpos : 0 < Real.exp (alpha * t) - 1 := by nlinarith
+  have hDpos : 0 < (Real.exp (alpha * t) - 1) / alpha :=
+    div_pos hdenpos halpha
+  have htwoDpos : 0 < 2 * ((Real.exp (alpha * t) - 1) / alpha) := by
+    nlinarith
+  have hJ : 2 * J ≤ R := by nlinarith
+  have hgapJ :
+      2 * (((Real.exp (alpha * t) - 1) / alpha) * finalGap) ≤
+        2 * J := by
+    nlinarith
+  have hgap' :
+      (2 * ((Real.exp (alpha * t) - 1) / alpha)) * finalGap ≤ R := by
+    nlinarith
+  have hdiv : finalGap ≤
+      R / (2 * ((Real.exp (alpha * t) - 1) / alpha)) := by
+    rw [le_div_iff₀ htwoDpos]
+    simpa [mul_comm, mul_left_comm, mul_assoc] using hgap'
+  have halg : R / (2 * ((Real.exp (alpha * t) - 1) / alpha)) =
+      alpha / (2 * (Real.exp (alpha * t) - 1)) * R := by
+    field_simp [halpha.ne', hdenpos.ne']
+  exact hdiv.trans_eq halg
+
+/--
+Chewi Theorem 2.4, positive-`alpha` function-value convergence, with the
+remaining interval-integrability assumptions exposed.
+-/
+theorem chewi24_gap_le_geometric_denominator_of_firstOrderStrongConvexOn
+    [CompleteSpace E] {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {x : ℝ -> E} {xStar : E} {alpha t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsGradientFlowTrajectory grad x)
+    (hfirst : FirstOrderStrongConvexOn C f grad alpha)
+    (hxmem : ∀ s, s ∈ Set.Icc (0 : ℝ) t -> x s ∈ C)
+    (hxStar : xStar ∈ C)
+    (halpha : 0 < alpha) (ht : 0 < t)
+    (hint_deriv : IntervalIntegrable
+      (fun s =>
+        Real.exp (alpha * s) * alpha * ‖x s - xStar‖ ^ (2 : ℕ) +
+          Real.exp (alpha * s) *
+            (-2 * inner ℝ (x s - xStar) (grad (x s))))
+      MeasureTheory.volume 0 t)
+    (hint_gap : IntervalIntegrable
+      (fun s => Real.exp (alpha * s) * (f (x s) - f xStar))
+      MeasureTheory.volume 0 t) :
+    f (x t) - f xStar ≤
+      alpha / (2 * (Real.exp (alpha * t) - 1)) *
+        ‖x 0 - xStar‖ ^ (2 : ℕ) := by
+  let u : ℝ -> ℝ := fun s => ‖x s - xStar‖ ^ (2 : ℕ)
+  let u' : ℝ -> ℝ :=
+    fun s => -2 * inner ℝ (x s - xStar) (grad (x s))
+  let gap : ℝ -> ℝ := fun s => f (x s) - f xStar
+  have hu : ∀ s, HasDerivAt u (u' s) s := by
+    intro s
+    simpa [u, u'] using
+      gradientFlow_sqdist_to_point_hasDerivAt hflow (xStar := xStar) (t := s)
+  have hineq : ∀ s, s ∈ Set.Icc (0 : ℝ) t ->
+      u' s ≤ -alpha * u s - 2 * gap s := by
+    intro s hs
+    have h :=
+      gradientFlow_sqdist_to_minimizer_deriv_le_of_firstOrderStrongConvexOn
+        hfirst (hxmem s hs) hxStar
+    simpa [u, u', gap] using h
+  have hu_t_nonneg : 0 ≤ u t := by
+    dsimp [u]
+    exact sq_nonneg _
+  have hweighted : 0 ≤ u 0 -
+      2 * ∫ s in (0 : ℝ)..t, Real.exp (alpha * s) * gap s := by
+    simpa [u, u', gap] using
+      scalarWeightedGrowthIntegral_nonneg_of_hasDerivAt_le
+        (u := u) (u' := u') (gap := gap) (alpha := alpha) (t := t)
+        ht.le hu hineq hu_t_nonneg hint_deriv hint_gap
+  have hanti := gradientFlow_value_antitone hgrad hflow
+  have hlower :
+      ((Real.exp (alpha * t) - 1) / alpha) * (f (x t) - f xStar) ≤
+        ∫ s in (0 : ℝ)..t, Real.exp (alpha * s) * gap s := by
+    have hmono : ∀ s, s ∈ Set.Icc (0 : ℝ) t ->
+        f (x t) - f xStar ≤ gap s := by
+      intro s hs
+      have hle : f (x t) ≤ f (x s) := hanti hs.2
+      dsimp [gap]
+      nlinarith
+    simpa [gap] using
+      weightedGrowthIntegral_lower_bound
+        (gap := gap) (alpha := alpha) (t := t)
+        (finalGap := f (x t) - f xStar)
+        halpha ht.le hmono hint_gap
+  simpa [u, gap] using
+    chewi24_gap_le_geometric_denominator_of_growth_bound
+      (alpha := alpha) (t := t) (R := u 0)
+      (finalGap := f (x t) - f xStar)
+      (J := ∫ s in (0 : ℝ)..t, Real.exp (alpha * s) * gap s)
+      halpha ht hweighted hlower
+
+/--
+Chewi Theorem 2.4, positive-`alpha` convergence from whole-space segment
+strong convexity plus mathlib gradients, with interval-integrability exposed.
+-/
+theorem chewi24_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientAt
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {x : ℝ -> E} {xStar : E} {alpha t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsGradientFlowTrajectory grad x)
+    (hstrong : StrongConvexOn Set.univ f alpha)
+    (halpha : 0 < alpha) (ht : 0 < t)
+    (hint_deriv : IntervalIntegrable
+      (fun s =>
+        Real.exp (alpha * s) * alpha * ‖x s - xStar‖ ^ (2 : ℕ) +
+          Real.exp (alpha * s) *
+            (-2 * inner ℝ (x s - xStar) (grad (x s))))
+      MeasureTheory.volume 0 t)
+    (hint_gap : IntervalIntegrable
+      (fun s => Real.exp (alpha * s) * (f (x s) - f xStar))
+      MeasureTheory.volume 0 t) :
+    f (x t) - f xStar ≤
+      alpha / (2 * (Real.exp (alpha * t) - 1)) *
+        ‖x 0 - xStar‖ ^ (2 : ℕ) :=
+  chewi24_gap_le_geometric_denominator_of_firstOrderStrongConvexOn
+    hgrad hflow
+    (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
+      hstrong hgrad)
+    (by intro s hs; simp) (by simp) halpha ht hint_deriv hint_gap
+
+/--
+Chewi Theorem 2.4, `alpha = 0` function-value convergence, with the remaining
+interval-integrability assumptions exposed.
+-/
+theorem chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn
+    [CompleteSpace E] {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {x : ℝ -> E} {xStar : E} {t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsGradientFlowTrajectory grad x)
+    (hfirst : FirstOrderStrongConvexOn C f grad 0)
+    (hxmem : ∀ s, s ∈ Set.Icc (0 : ℝ) t -> x s ∈ C)
+    (hxStar : xStar ∈ C)
+    (ht : 0 < t)
+    (hint_deriv : IntervalIntegrable
+      (fun s => -2 * inner ℝ (x s - xStar) (grad (x s)))
+      MeasureTheory.volume 0 t)
+    (hint_gap : IntervalIntegrable
+      (fun s => f (x s) - f xStar) MeasureTheory.volume 0 t) :
+    f (x t) - f xStar ≤ ‖x 0 - xStar‖ ^ (2 : ℕ) / (2 * t) := by
+  let u : ℝ -> ℝ := fun s => ‖x s - xStar‖ ^ (2 : ℕ)
+  let u' : ℝ -> ℝ :=
+    fun s => -2 * inner ℝ (x s - xStar) (grad (x s))
+  let gap : ℝ -> ℝ := fun s => f (x s) - f xStar
+  have hu : ∀ s, HasDerivAt u (u' s) s := by
+    intro s
+    simpa [u, u'] using
+      gradientFlow_sqdist_to_point_hasDerivAt hflow (xStar := xStar) (t := s)
+  have hineq : ∀ s, s ∈ Set.Icc (0 : ℝ) t -> u' s ≤ -2 * gap s := by
+    intro s hs
+    have h :=
+      gradientFlow_sqdist_to_minimizer_deriv_le_of_firstOrderStrongConvexOn
+        hfirst (hxmem s hs) hxStar
+    simpa [u, u', gap] using h
+  have hu_t_nonneg : 0 ≤ u t := by
+    dsimp [u]
+    exact sq_nonneg _
+  have hweighted :
+      0 ≤ u 0 - 2 * ∫ s in (0 : ℝ)..t, gap s := by
+    simpa [u, u', gap] using
+      scalarIntegral_nonneg_of_hasDerivAt_le
+        (u := u) (u' := u') (gap := gap) (t := t)
+        ht.le hu hineq hu_t_nonneg hint_deriv hint_gap
+  have hanti := gradientFlow_value_antitone hgrad hflow
+  have hlower :
+      t * (f (x t) - f xStar) ≤
+        ∫ s in (0 : ℝ)..t, gap s := by
+    have hmono : ∀ s, s ∈ Set.Icc (0 : ℝ) t ->
+        f (x t) - f xStar ≤ gap s := by
+      intro s hs
+      have hle : f (x t) ≤ f (x s) := hanti hs.2
+      dsimp [gap]
+      nlinarith
+    simpa [gap] using
+      integral_lower_bound_of_monotone_gap
+        (gap := gap) (t := t) (finalGap := f (x t) - f xStar)
+        ht.le hmono hint_gap
+  have hweighted_final : 0 ≤ u 0 - 2 * t * (f (x t) - f xStar) := by
+    nlinarith
+  have hden : 0 < 2 * t := by nlinarith
+  rw [le_div_iff₀ hden]
+  dsimp [u] at hweighted_final
+  nlinarith
+
+/--
+Chewi Theorem 2.4, `alpha = 0` convergence from whole-space segment convexity
+plus mathlib gradients, with interval-integrability exposed.
+-/
+theorem chewi24_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradientAt
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {x : ℝ -> E} {xStar : E} {t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsGradientFlowTrajectory grad x)
+    (hstrong : StrongConvexOn Set.univ f 0)
+    (ht : 0 < t)
+    (hint_deriv : IntervalIntegrable
+      (fun s => -2 * inner ℝ (x s - xStar) (grad (x s)))
+      MeasureTheory.volume 0 t)
+    (hint_gap : IntervalIntegrable
+      (fun s => f (x s) - f xStar) MeasureTheory.volume 0 t) :
+    f (x t) - f xStar ≤ ‖x 0 - xStar‖ ^ (2 : ℕ) / (2 * t) :=
+  chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn
+    hgrad hflow
+    (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
+      hstrong hgrad)
+    (by intro s hs; simp) (by simp) ht hint_deriv hint_gap
 
 /--
 Chewi Theorem 2.4 positive-`alpha` denominator algebra after the weighted

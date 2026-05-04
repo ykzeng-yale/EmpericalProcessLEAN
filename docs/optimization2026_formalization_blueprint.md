@@ -164,6 +164,15 @@ Current compiled surface:
 - `StatInference.Optimization.gradientFlow_sqdist_to_point_hasDerivAt`
 - `StatInference.Optimization.gradientFlow_sqdist_to_minimizer_deriv_le_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.gradientFlow_sqdist_to_minimizer_deriv_le_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.scalarWeightedGrowthIntegral_nonneg_of_hasDerivAt_le`
+- `StatInference.Optimization.weightedGrowthIntegral_lower_bound`
+- `StatInference.Optimization.scalarIntegral_nonneg_of_hasDerivAt_le`
+- `StatInference.Optimization.integral_lower_bound_of_monotone_gap`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_growth_bound`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_weighted_bound`
 - `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_weighted_bound`
 - `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_weighted_gap_bound`
@@ -174,12 +183,11 @@ Current compiled surface:
 
 Near-term exact candidates:
 
-1. Theorem 2.4 analytic interval-integral instantiation.  The distance-to-
-   minimizer differential inequality and positive-`alpha`/`alpha = 0`
-   denominator algebra are compiled; the remaining work is deriving the
-   weighted Gronwall/integral lower-bound input from interval-integral APIs.
-2. Proposition 2.7 main-text implications: strong convexity implies PL, and
+1. Proposition 2.7 main-text implications: strong convexity implies PL, and
    PL implies quadratic growth, skipping exercises.
+2. Remove or discharge the interval-integrability assumptions in Theorem 2.4
+   from the notes' `C²`/regular trajectory hypotheses if a clean mathlib
+   continuity route is available.
 3. Corollary 2.8 gradient-norm convergence, reusing Lemma 2.1 and a continuous
    analog of the Chapter 3 finite-average/telescoping pattern.
 
