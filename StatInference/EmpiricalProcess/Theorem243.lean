@@ -18972,7 +18972,7 @@ Constructor for `VdVWTheorem243FullSubgraphSideConditions` that derives
 truncated-class integrability from the ordinary class integrability and the
 measurable envelope.
 -/
-def VdVWTheorem243FullSubgraphSideConditions.of_integrable
+noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
     {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
     [IsProbabilityMeasure μsign]
     {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
@@ -19086,15 +19086,7 @@ def VdVWTheorem243FullSubgraphSideConditions.of_integrable
             vdVWWeightedClassSupremum indexClass
               (vdVWTruncatedClassFun classFun envelope M)
               (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)) sample)
-          μsign)
-    (Ucentered :
-      ∀ M n, VdVWMeasurableCover (vdVWProductMeasure P n)
-        (fun sample : SampleAt Observation n => ENNReal.ofReal
-          (vdVWWeightedClassSupremum indexClass
-            (fun index : Index => fun observation : Observation =>
-              vdVWTruncatedClassFun classFun envelope M index observation -
-                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
-            (fun _ : Fin n => (n : ℝ)⁻¹) sample))) :
+          μsign) :
     VdVWTheorem243FullSubgraphSideConditions μsign P indexClass classFun
       envelope X vcDegree sign where
   hX_samplePath := hX_samplePath
@@ -19132,7 +19124,13 @@ def VdVWTheorem243FullSubgraphSideConditions.of_integrable
   Urandom := Urandom
   hproductSupIntegrable := hproductSupIntegrable
   hsignSupIntegrable := hsignSupIntegrable
-  Ucentered := Ucentered
+  Ucentered := by
+    intro M n
+    exact
+      VdVWMeasurableCover.centered_truncated_of_countable_of_coordinate
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (Set.to_countable indexClass)
+        hclass henv n
 
 /--
 Compact Theorem 2.4.3 full-subgraph side-condition consumer.

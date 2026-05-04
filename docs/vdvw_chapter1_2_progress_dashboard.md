@@ -502,6 +502,10 @@ truncation/envelope data, reducing one explicit final side-condition field.
 `hbdd_truncated`.  The new local lemmas prove that nonnegative truncation
 levels have centered bound `2*M`, while negative truncation levels make the
 truncated class identically zero.
+2026-05-04 follow-up: the constructor is now `noncomputable` and also derives
+`Ucentered` from
+`VdVWMeasurableCover.centered_truncated_of_countable_of_coordinate`, using the
+countability of `Index` plus coordinate measurability.
 
 ## Verification Monitor
 

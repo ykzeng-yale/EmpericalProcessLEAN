@@ -2691,7 +2691,14 @@ already had `abs_vdVWTruncatedClassFun_le_M`; pinned mathlib supplied
 boundedness, negative-level truncation identity/zero integral, and the final
 all-level `bddAbove_vdVWWeightedClassValueSet_centered_truncated`.
 
+2026-05-04 follow-up: `VdVWTheorem243FullSubgraphSideConditions.of_integrable`
+is now `noncomputable` and additionally derives the package field `Ucentered`.
+Search/reuse record: local `Theorem243.lean` already had
+`VdVWMeasurableCover.centered_truncated_of_countable_of_coordinate`; pinned
+mathlib `Set.to_countable` supplies the countability evidence from
+`[Countable Index]`.  No new primitive was needed for this centered cover.
+
 Next exact theorem-facing edit: reduce the remaining package fields only where
 there are genuine local lemmas to discharge them.  The main unresolved
 infinite-class fields are the centered/pair/split/random-sign supremum
-integrability and measurable-cover witnesses.
+integrability and the random-sign/product measurable-cover witnesses.
