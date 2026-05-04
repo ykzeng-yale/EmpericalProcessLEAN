@@ -934,6 +934,15 @@ Chapter 5 acceleration/conjugate-gradient expansion has now started in
 - `StatInference.Optimization.IsCGThreeTermRecurrence.apply_direction_mem_next`
 - `StatInference.Optimization.IsCGThreeTermRecurrence.to_isCGKrylovRecurrence`
 - `StatInference.Optimization.IsCGThreeTermRecurrence.cgDirectionSubmodule_eq_krylovSubmodule`
+- `StatInference.Optimization.cgLineSearchCoeff`
+- `StatInference.Optimization.cgDirectionUpdateCoeff`
+- `StatInference.Optimization.cgDirectionUpdateCoeff_denom_ne_zero`
+- `StatInference.Optimization.cgLineSearchCoeff_ne_zero`
+- `StatInference.Optimization.cgDirectionUpdateCoeff_ne_zero`
+- `StatInference.Optimization.IsCGDisplayedIteration`
+- `StatInference.Optimization.IsCGDisplayedIteration.to_isCGThreeTermRecurrence`
+- `StatInference.Optimization.IsCGDisplayedIteration.to_isCGKrylovRecurrence`
+- `StatInference.Optimization.IsCGDisplayedIteration.cgDirectionSubmodule_eq_krylovSubmodule`
 
 Source anchors are the quadratic display and linear-system minimizer claim at
 markdown lines 954-960, Lemma 5.1 at line 1005, Definition 5.2 at line 1015,
@@ -941,16 +950,18 @@ Theorem 5.3 at line 1033, and Theorem 5.4 at line 1037.  Search-first result:
 mathlib supplies continuous linear maps and inner-product continuity APIs,
 `real_inner_comm`, `Function.iterate_succ_apply'`,
 `Submodule.span_induction`, `Submodule.span_mono`, scalar inverse algebra via
-`smul_smul`/`inv_mul_cancel₀`, and submodule orthogonal complement APIs;
+`smul_smul`/`inv_mul_cancel₀`, coefficient nonzero APIs `div_ne_zero`,
+`neg_ne_zero`, `pow_ne_zero`, `norm_ne_zero_iff`, and submodule orthogonal
+complement APIs;
 self-adjoint/positive-operator APIs under
 `Analysis/InnerProductSpace/Positive.lean` should be searched before adding a
 future spectral bridge.  The current local substrate intentionally keeps
 Chewi's source hypotheses as supplied symmetry and quadratic-form bounds so it
 can reuse the existing `FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and
 minimizer packages immediately.  The three-term recurrence layer already
-derives `IsCGKrylovRecurrence` from the source update skeleton.  Next proof
-work should instantiate the scalar line-search/Gram-Schmidt coefficients and
-their nonzero denominator side conditions, then add the finite-dimensional
+derives `IsCGKrylovRecurrence` from the source update skeleton, and the
+displayed-coefficient layer now derives it from the literal residual and
+direction formulas.  Next proof work should add the finite-dimensional
 orthogonality/counting package for Theorem 5.3 and the descent/halving package
 for Theorem 5.4.
 

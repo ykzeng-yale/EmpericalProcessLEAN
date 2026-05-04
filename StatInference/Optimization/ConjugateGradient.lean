@@ -470,5 +470,94 @@ theorem IsCGThreeTermRecurrence.cgDirectionSubmodule_eq_krylovSubmodule
     cgDirectionSubmodule p n = krylovSubmodule A p0 n :=
   h.to_isCGKrylovRecurrence.cgDirectionSubmodule_eq_krylovSubmodule n
 
+/--
+Textbook CG residual line-search coefficient for the update
+`r_{n+1}=r_n+eta_n A p_n`.  This is the displayed coefficient
+`- ‖r_n‖² / <p_n, A p_n>`.
+-/
+noncomputable def cgLineSearchCoeff (A : E →L[ℝ] E)
+    (r p : ℕ → E) (n : ℕ) : ℝ :=
+  - (‖r n‖ ^ (2 : ℕ) / aNormSq A (p n))
+
+/--
+Textbook CG direction-update coefficient
+`‖r_{n+1}‖² / ‖r_n‖²`.
+-/
+noncomputable def cgDirectionUpdateCoeff (r : ℕ → E) (n : ℕ) : ℝ :=
+  ‖r (n + 1)‖ ^ (2 : ℕ) / ‖r n‖ ^ (2 : ℕ)
+
+omit [InnerProductSpace ℝ E] in
+/-- The denominator in `cgDirectionUpdateCoeff` is nonzero when the residual is nonzero. -/
+theorem cgDirectionUpdateCoeff_denom_ne_zero
+    (r : ℕ → E) (n : ℕ) (hr_ne : r n ≠ 0) :
+    ‖r n‖ ^ (2 : ℕ) ≠ 0 :=
+  pow_ne_zero (2 : ℕ) (norm_ne_zero_iff.mpr hr_ne)
+
+/-- Nonzero textbook line-search coefficient from nonzero residual and A-norm denominator. -/
+theorem cgLineSearchCoeff_ne_zero
+    (A : E →L[ℝ] E) (r p : ℕ → E) (n : ℕ)
+    (hr_ne : r n ≠ 0)
+    (hden_ne : aNormSq A (p n) ≠ 0) :
+    cgLineSearchCoeff A r p n ≠ 0 := by
+  unfold cgLineSearchCoeff
+  exact neg_ne_zero.mpr
+    (div_ne_zero (cgDirectionUpdateCoeff_denom_ne_zero r n hr_ne) hden_ne)
+
+omit [InnerProductSpace ℝ E] in
+/-- Nonzero direction-update coefficient when both adjacent residuals are nonzero. -/
+theorem cgDirectionUpdateCoeff_ne_zero
+    (r : ℕ → E) (n : ℕ)
+    (hr_succ_ne : r (n + 1) ≠ 0) (hr_ne : r n ≠ 0) :
+    cgDirectionUpdateCoeff r n ≠ 0 := by
+  unfold cgDirectionUpdateCoeff
+  exact div_ne_zero (cgDirectionUpdateCoeff_denom_ne_zero r (n + 1) hr_succ_ne)
+    (cgDirectionUpdateCoeff_denom_ne_zero r n hr_ne)
+
+/--
+Displayed CG residual/direction iteration from the textbook, with the currently
+exposed nonzero side conditions needed to invert the line-search coefficient.
+-/
+structure IsCGDisplayedIteration (A : E →L[ℝ] E) (p0 : E)
+    (r p : ℕ → E) : Prop where
+  residual_zero : r 0 = p0
+  direction_zero : p 0 = p0
+  residual_succ : ∀ n,
+    r (n + 1) = r n + cgLineSearchCoeff A r p n • A (p n)
+  direction_succ : ∀ n,
+    p (n + 1) = r (n + 1) + cgDirectionUpdateCoeff r n • p n
+  residual_ne_zero : ∀ n, r n ≠ 0
+  aNormSq_direction_ne_zero : ∀ n, aNormSq A (p n) ≠ 0
+
+/-- The displayed CG iteration supplies the source-shaped three-term recurrence. -/
+theorem IsCGDisplayedIteration.to_isCGThreeTermRecurrence
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E}
+    (h : IsCGDisplayedIteration A p0 r p) :
+    IsCGThreeTermRecurrence A p0 r p
+      (cgLineSearchCoeff A r p) (cgDirectionUpdateCoeff r) where
+  residual_zero := h.residual_zero
+  direction_zero := h.direction_zero
+  residual_succ := h.residual_succ
+  direction_succ := h.direction_succ
+  eta_ne_zero := fun n =>
+    cgLineSearchCoeff_ne_zero A r p n (h.residual_ne_zero n)
+      (h.aNormSq_direction_ne_zero n)
+
+/-- The displayed CG iteration supplies the abstract Krylov recurrence interface. -/
+theorem IsCGDisplayedIteration.to_isCGKrylovRecurrence
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E}
+    (h : IsCGDisplayedIteration A p0 r p) :
+    IsCGKrylovRecurrence A p0 p :=
+  h.to_isCGThreeTermRecurrence.to_isCGKrylovRecurrence
+
+/--
+Chewi Lemma 5.1 from the literal displayed residual and Gram-Schmidt
+coefficient formulas.
+-/
+theorem IsCGDisplayedIteration.cgDirectionSubmodule_eq_krylovSubmodule
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E}
+    (h : IsCGDisplayedIteration A p0 r p) (n : ℕ) :
+    cgDirectionSubmodule p n = krylovSubmodule A p0 n :=
+  h.to_isCGThreeTermRecurrence.cgDirectionSubmodule_eq_krylovSubmodule n
+
 end Optimization
 end StatInference
