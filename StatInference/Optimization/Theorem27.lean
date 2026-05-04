@@ -250,6 +250,24 @@ def PLGradientFlowLyapunovContinuousDataRouteToQGOn
             0 < f (y t) - fstar) ∧
           (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t - x ≠ 0)
 
+/--
+Side-condition route for Chewi Proposition 2.7(2).  Continuity of the
+trajectory and objective gap are not part of the data here; they are derived
+from the gradient-flow differentiability assumptions.
+-/
+def PLGradientFlowLyapunovSideConditionRouteToQGOn
+    (C : Set E) (f : E -> ℝ) (grad : E -> E)
+    (_alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    ∃ xStar, ∃ y : ℝ -> E,
+      xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+        y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
+          IsGradientFlowTrajectory grad y ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t ∈ C) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            0 < f (y t) - fstar) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t - x ≠ 0)
+
 omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] in
 /--
 Scalar algebra in Chewi Proposition 2.7(2): under the PL lower bound,
@@ -567,6 +585,35 @@ theorem plGradientFlowLyapunovNonzeroDisplacementRouteToQGOn_of_continuousDataRo
     (hnorm_cont.const_mul (Real.sqrt (alpha / 2))).add hgap_cont.sqrt
   exact ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv, hflow,
     hlyap_cont, hy_mem, hgap_pos, hnonzero⟩
+
+/--
+The gradient-flow differentiability assumptions give the trajectory and
+objective-gap continuity required by the continuous-data route.
+-/
+theorem plGradientFlowLyapunovContinuousDataRouteToQGOn_of_sideConditionRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hroute :
+      PLGradientFlowLyapunovSideConditionRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovContinuousDataRouteToQGOn
+      C f grad alpha fstar := by
+  intro x hx
+  rcases hroute hx with
+    ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv,
+      hflow, hy_mem, hgap_pos, hnonzero⟩
+  have hy_cont : ContinuousOn y (Set.Ici (0 : ℝ)) := by
+    exact HasDerivAt.continuousOn (s := Set.Ici (0 : ℝ))
+      (fun t _ht => hflow t)
+  have hgap_cont :
+      ContinuousOn (fun t => f (y t) - fstar) (Set.Ici (0 : ℝ)) := by
+    exact HasDerivAt.continuousOn (s := Set.Ici (0 : ℝ))
+      (fun t _ht =>
+        gradientFlow_gap_hasDerivAt (t := t) (fstar := fstar)
+          hgrad hflow)
+  exact ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv, hflow,
+    hy_cont, hgap_cont, hy_mem, hgap_pos, hnonzero⟩
 
 omit [InnerProductSpace ℝ E] in
 /--
@@ -898,6 +945,27 @@ theorem quadraticGrowthOn_of_plGradientFlowLyapunovContinuousDataRoute
     hgrad halpha hpl
     (plGradientFlowLyapunovNonzeroDisplacementRouteToQGOn_of_continuousDataRoute
       hroute)
+
+/--
+Chewi Proposition 2.7, second implication, from the remaining side-condition
+route: convergence to a minimizer, positive gap, and nonzero displacement on
+positive time.  Continuity and both derivative components are discharged by
+the preceding theorem layers.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovSideConditionRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovSideConditionRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLyapunovContinuousDataRoute
+    hgrad halpha hpl
+    (plGradientFlowLyapunovContinuousDataRouteToQGOn_of_sideConditionRoute
+      hgrad hroute)
 
 end Optimization
 end StatInference

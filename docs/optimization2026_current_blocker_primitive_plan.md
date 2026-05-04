@@ -165,7 +165,10 @@ blocker for the whole-space differentiable case:
   derivative of `‖x_t - x_0‖` when `x_t ≠ x_0`.  The continuity plumbing is
   also no longer opaque: `PLGradientFlowLyapunovContinuousDataRouteToQGOn`
   derives Lyapunov continuity from `ContinuousOn y (Ici 0)` and
-  `ContinuousOn (fun t => f (y t) - fstar) (Ici 0)`.
+  `ContinuousOn (fun t => f (y t) - fstar) (Ici 0)`.  The newest
+  `PLGradientFlowLyapunovSideConditionRouteToQGOn` goes one step further:
+  `HasDerivAt.continuousOn` plus `gradientFlow_gap_hasDerivAt` derive both
+  trajectory continuity and gap continuity from the gradient-flow hypotheses.
 - Corollary 2.8 now compiles in `StatInference/Optimization/Theorem28.lean`:
   the integrated Lemma 2.1 identity, squared-gradient integral bound, average
   bound, interval lower-bound principle, and source square-root minimum form
@@ -378,11 +381,12 @@ the supplied nonpositive derivative on `interior (Set.Ici 0)` to
 continuous trajectory/gap data.  The scalar PL sign calculation is now local as
 `plLyapunovDerivativeBound_nonpos`.  There is no direct mathlib
 `HasDerivWithinAt.norm`; the compiled route uses
-`‖z‖ = sqrt (‖z‖^2)` away from `z = 0`.  The remaining proof step should
-discharge `PLGradientFlowLyapunovContinuousDataRouteToQGOn` itself: prove or
-supply the gradient-flow convergence-to-minimizer input, continuity of the
-trajectory and objective gap on `[0,∞)`, positive gap on positive times, and
-the nonzero-displacement side condition needed for the classical norm
+`‖z‖ = sqrt (‖z‖^2)` away from `z = 0`.  `HasDerivAt.continuousOn` and
+`gradientFlow_gap_hasDerivAt` now discharge trajectory/gap continuity from the
+gradient-flow hypotheses.  The remaining proof step should discharge
+`PLGradientFlowLyapunovSideConditionRouteToQGOn` itself: prove or supply the
+gradient-flow convergence-to-minimizer input, positive gap on positive times,
+and the nonzero-displacement side condition needed for the classical norm
 derivative.
 The Corollary 2.8 compactness step is now done using
 `isCompact_Icc.exists_isMinOn` and `ContinuousOn.intervalIntegrable_of_Icc`;
@@ -532,6 +536,7 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.PLGradientFlowLyapunovNormDerivativeRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovNonzeroDisplacementRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovContinuousDataRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLyapunovSideConditionRouteToQGOn`
 - `StatInference.Optimization.plLyapunovDerivativeBound_nonpos`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
@@ -545,6 +550,7 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.plGradientFlowLyapunovDerivativeComponentsRouteToQGOn_of_normDerivativeRoute`
 - `StatInference.Optimization.plGradientFlowLyapunovNormDerivativeRouteToQGOn_of_nonzeroDisplacementRoute`
 - `StatInference.Optimization.plGradientFlowLyapunovNonzeroDisplacementRouteToQGOn_of_continuousDataRoute`
+- `StatInference.Optimization.plGradientFlowLyapunovContinuousDataRouteToQGOn_of_sideConditionRoute`
 - `StatInference.Optimization.plGradientFlowLyapunovRouteToQGOn_of_derivativeComponentsRoute`
 - `StatInference.Optimization.plGradientFlowLyapunovRouteToQGOn_of_normDerivativeRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovRoute`
@@ -559,6 +565,7 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNormDerivativeRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNonzeroDisplacementRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovContinuousDataRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovSideConditionRoute`
 - `StatInference.Optimization.gradientFlow_grad_sq_integral_eq_value_drop`
 - `StatInference.Optimization.chewi28_gradient_sq_integral_bound`
 - `StatInference.Optimization.chewi28_gradient_sq_average_bound`
@@ -643,13 +650,12 @@ Latest verified local frontier after lane creation:
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
 Next manual goal target: discharge the analytic hypothesis
-`PLGradientFlowLyapunovContinuousDataRouteToQGOn` by formalizing or cleanly
-supplying the gradient-flow convergence/minimizer interface, trajectory/gap
-continuity, positive-gap side condition, and nonzero-displacement side
-condition for Proposition 2.7(2).  The derivative-to-antitone bridge, PL
-scalar sign calculation, gap derivative, classical nonzero norm-derivative
-calculation, and Lyapunov-continuity wrapper are now compiled; do not repeat
-them.
+`PLGradientFlowLyapunovSideConditionRouteToQGOn` by formalizing or cleanly
+supplying the gradient-flow convergence/minimizer interface, positive-gap side
+condition, and nonzero-displacement side condition for Proposition 2.7(2).
+The derivative-to-antitone bridge, PL scalar sign calculation, gap derivative,
+classical nonzero norm-derivative calculation, trajectory/gap continuity, and
+Lyapunov-continuity wrapper are now compiled; do not repeat them.
 The Corollary 2.8 compact-minimum and continuity/integrability bridge is
 already compiled, so do not spend another run there unless strengthening the
 continuity hypotheses materially advances the analytic route.  Continue
