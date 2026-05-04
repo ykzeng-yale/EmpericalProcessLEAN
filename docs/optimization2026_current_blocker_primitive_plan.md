@@ -135,6 +135,11 @@ blocker for the whole-space differentiable case:
   is the witness form, and
   `quadraticGrowthOn_of_plGradientFlowLimitRoute` proves `(QG)` from the
   gradient-flow limit inequality Chewi uses after assuming flow convergence.
+  The next analytic bridge also now compiles:
+  `PLGradientFlowLyapunovRouteToQGOn` records the explicit book route with a
+  convergent flow and Lyapunov inequality, and
+  `quadraticGrowthOn_of_plGradientFlowLyapunovRoute` derives `(QG)` from it
+  via `Tendsto`, `eventually_ge_atTop`, and `le_of_tendsto`.
 - Corollary 2.8 now compiles in `StatInference/Optimization/Theorem28.lean`:
   the integrated Lemma 2.1 identity, squared-gradient integral bound, average
   bound, interval lower-bound principle, and source square-root minimum form
@@ -339,9 +344,9 @@ mathlib APIs for the remaining analytic route are `Filter.Tendsto`,
 `Real.hasDerivAt_sqrt`, `HasDerivAt.sqrt`, `HasDerivAt.norm_sq`,
 `IsCompact.exists_isMinOn`, `ContinuousOn.exists_isMinOn'`, and
 `isCompact_Icc`.  The next proof step should discharge
-`PLGradientFlowLimitRouteToQGOn` from an explicit gradient-flow convergence
-and Lyapunov-monotonicity theorem, or instantiate Corollary 2.8's
-`IsMinOn` hypothesis from continuity on `[0,t]`.  The latter compactness step
+`PLGradientFlowLyapunovRouteToQGOn` itself from PL: prove the derivative
+inequality for Chewi's Lyapunov function and connect it to a supplied or
+mathlib gradient-flow convergence theorem.  The Corollary 2.8 compactness step
 is now done using `isCompact_Icc.exists_isMinOn` and
 `ContinuousOn.intervalIntegrable_of_Icc`; future work should not rediscover
 that API.
@@ -477,12 +482,15 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.QuadraticGrowthOn`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn`
 - `StatInference.Optimization.PLGradientFlowLimitRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLyapunovRouteToQGOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovRoute`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn.quadraticGrowthOn`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovRoute`
 - `StatInference.Optimization.gradientFlow_grad_sq_integral_eq_value_drop`
 - `StatInference.Optimization.chewi28_gradient_sq_integral_bound`
 - `StatInference.Optimization.chewi28_gradient_sq_average_bound`
@@ -567,9 +575,11 @@ Latest verified local frontier after lane creation:
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
 Next manual goal target: discharge the analytic hypothesis
-`PLGradientFlowLimitRouteToQGOn` from the book's gradient-flow convergence and
-Lyapunov monotonicity argument.  The Corollary 2.8 compact-minimum and
-continuity/integrability bridge is already compiled, so do not spend another
-run there unless strengthening the continuity hypotheses materially advances
-the analytic route.  Continue deferring exercise proofs except where an
-exercise statement is needed as a temporary interface for a main-text theorem.
+`PLGradientFlowLyapunovRouteToQGOn` from PL by formalizing the Lyapunov
+monotonicity calculation in the proof of Proposition 2.7(2), plus a bounded
+gradient-flow convergence/minimizer interface if no mathlib theorem is ready.
+The Corollary 2.8 compact-minimum and continuity/integrability bridge is
+already compiled, so do not spend another run there unless strengthening the
+continuity hypotheses materially advances the analytic route.  Continue
+deferring exercise proofs except where an exercise statement is needed as a
+temporary interface for a main-text theorem.

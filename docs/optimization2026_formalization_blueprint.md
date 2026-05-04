@@ -109,12 +109,15 @@ Current compiled surface:
 - `StatInference.Optimization.QuadraticGrowthOn`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn`
 - `StatInference.Optimization.PLGradientFlowLimitRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLyapunovRouteToQGOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovRoute`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn.quadraticGrowthOn`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovRoute`
 
 Near-term exact candidates:
 
@@ -200,9 +203,10 @@ Current compiled surface:
 
 Near-term exact candidates:
 
-1. Discharge `PLGradientFlowLimitRouteToQGOn` from the notes'
-   gradient-flow convergence and Lyapunov monotonicity argument, completing
-   Proposition 2.7(2) without the supplied analytic limit hypothesis.
+1. Discharge `PLGradientFlowLyapunovRouteToQGOn` from PL by formalizing the
+   Lyapunov derivative calculation and connecting it to a gradient-flow
+   convergence/minimizer interface, completing Proposition 2.7(2) without the
+   supplied analytic route hypothesis.
 2. Remove or discharge the interval-integrability assumptions in Theorem 2.4
    from the notes' `C²`/regular trajectory hypotheses if a clean mathlib
    continuity route is available.

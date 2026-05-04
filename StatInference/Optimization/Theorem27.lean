@@ -11,7 +11,8 @@ inequality.  The first compiled block proves the source implication
 namespace StatInference
 namespace Optimization
 
-open Set
+open Set Filter
+open scoped Topology
 open scoped InnerProductSpace
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -53,6 +54,23 @@ def PLGradientFlowLimitRouteToQGOn (C : Set E) (f : E -> ℝ)
     ∃ xStar, xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
       Real.sqrt (alpha / 2) * ‖x - xStar‖ ≤
         Real.sqrt (f x - fstar)
+
+/--
+The more explicit Lyapunov-and-convergence route appearing in Chewi's proof
+of `PŁ => QG`.  For each starting point `x`, it supplies a convergent
+gradient-flow trajectory and the Lyapunov inequality
+`sqrt(alpha / 2) * ||x_t - x|| + sqrt(f(x_t) - fstar) <= sqrt(f(x)-fstar)`.
+-/
+def PLGradientFlowLyapunovRouteToQGOn (C : Set E) (f : E -> ℝ)
+    (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    ∃ xStar, ∃ y : ℝ -> E,
+      xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+        y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
+          (∀ t, 0 ≤ t ->
+            Real.sqrt (alpha / 2) * ‖y t - x‖ +
+                Real.sqrt (f (y t) - fstar) ≤
+              Real.sqrt (f x - fstar))
 
 /--
 Chewi Proposition 2.7, first implication, in first-order lower-model form:
@@ -144,6 +162,37 @@ theorem polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn
 
 omit [InnerProductSpace ℝ E] in
 /--
+The explicit Lyapunov-plus-convergence route implies the limit inequality
+interface used by the algebraic `(QG)` theorem.
+-/
+theorem plGradientFlowLimitRouteToQGOn_of_lyapunovRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (hroute : PLGradientFlowLyapunovRouteToQGOn C f alpha fstar) :
+    PLGradientFlowLimitRouteToQGOn C f alpha fstar := by
+  intro x hx
+  rcases hroute hx with
+    ⟨xStar, y, hxStar, hmin, hfxStar, _hy0, hyconv, hlyap⟩
+  let c : ℝ := Real.sqrt (alpha / 2)
+  let L : ℝ -> ℝ := fun t => c * ‖y t - x‖
+  have hnorm_tend : Tendsto (fun t => ‖y t - x‖) atTop
+      (𝓝 ‖xStar - x‖) := by
+    simpa using (hyconv.sub tendsto_const_nhds).norm
+  have hL_tend : Tendsto L atTop (𝓝 (c * ‖xStar - x‖)) := by
+    simpa [L] using tendsto_const_nhds.mul hnorm_tend
+  have hev : ∀ᶠ t : ℝ in atTop, L t ≤ Real.sqrt (f x - fstar) := by
+    filter_upwards [eventually_ge_atTop (0 : ℝ)] with t ht
+    have h := hlyap t ht
+    have hsqrt_nonneg : 0 ≤ Real.sqrt (f (y t) - fstar) :=
+      Real.sqrt_nonneg _
+    dsimp [L, c]
+    nlinarith
+  have hlimit : c * ‖xStar - x‖ ≤ Real.sqrt (f x - fstar) :=
+    le_of_tendsto hL_tend hev
+  refine ⟨xStar, hxStar, hmin, hfxStar, ?_⟩
+  simpa [c, norm_sub_rev] using hlimit
+
+omit [InnerProductSpace ℝ E] in
+/--
 The source infimum form of `(QG)` follows from the witness form.
 -/
 theorem QuadraticGrowthWitnessOn.quadraticGrowthOn
@@ -221,6 +270,19 @@ theorem quadraticGrowthOn_of_plGradientFlowLimitRoute
   (quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute
     (C := C) (f := f) (alpha := alpha) (fstar := fstar)
     halpha hroute).quadraticGrowthOn halpha.le
+
+omit [InnerProductSpace ℝ E] in
+/--
+Chewi Proposition 2.7, second implication, from the explicit
+Lyapunov-plus-convergence route in the notes.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (halpha : 0 < alpha)
+    (hroute : PLGradientFlowLyapunovRouteToQGOn C f alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLimitRoute
+    halpha (plGradientFlowLimitRouteToQGOn_of_lyapunovRoute hroute)
 
 end Optimization
 end StatInference
