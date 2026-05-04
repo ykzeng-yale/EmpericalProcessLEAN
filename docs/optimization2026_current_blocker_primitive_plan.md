@@ -226,8 +226,10 @@ blocker for the whole-space differentiable case:
   the source-shaped Exercise 3.1 display `(3.5)` as `GradientCocoerciveOn`
   together with `h <= 1 / beta`.  The newest wrappers discharge the
   first-order lower model from actual whole-space segment strong convexity plus
-  `HasGradientAt`, leaving Exercise 3.1 co-coercivity as the only exercise
-  interface in that Theorem 3.3 route.
+  `HasGradientAt`.  Exercise 3.1 itself now compiles in
+  `StatInference/Optimization/Exercises.lean` for the whole-space
+  smooth-convex route, removing the supplied co-coercivity input from the
+  corresponding Theorem 3.3 squared/norm wrappers.
 
 The positive-`alpha` closed-form Theorem 3.4 function-value denominator now
 compiles.  The assembly layer in
@@ -249,11 +251,11 @@ the first-order lower model from actual whole-space segment strong convexity
 plus `HasGradientAt`, giving closed-form `alpha > 0` and `alpha = 0` GD
 function-value convergence directly from Definition 1.5-style strong
 convexity assumptions.  The source-shaped Exercise 3.1
-display `(3.5)` also compiles as `GradientCocoerciveOn`, and it supplies the
-h-scaled Theorem 3.3 co-coercivity condition under `0 < beta`, `0 <= h`, and
-`h <= 1 / beta`.  Exercise statements/proofs may be added opportunistically
-in `StatInference/Optimization/Exercises.lean`, but they should not slow the
-main theorem lane.  Next choices are main-text
+display `(3.5)` now has a whole-space proof from convexity plus smoothness in
+`StatInference/Optimization/Exercises.lean`, and it supplies the h-scaled
+Theorem 3.3 co-coercivity condition under `0 < beta`, `0 <= h`, and
+`h <= 1 / beta`.  Exercise statements/proofs may be added opportunistically,
+but they should not slow the main theorem lane.  Next choices are main-text
 source-audited packaging for Theorem 3.3/3.4/3.7, Chapter 2 gradient-flow
 theorems, or the next main deterministic algorithm chapter.
 
@@ -438,17 +440,19 @@ The Corollary 2.8 compactness step is now done using
 `isCompact_Icc.exists_isMinOn` and `ContinuousOn.intervalIntegrable_of_Icc`;
 future work should not rediscover that API.
 
-Current Exercise 3.1 co-coercivity interface result: the source display (3.5)
-now compiles as `GradientCocoerciveOn`.  The bridge
-`GradientCocoerciveOn.stepCocoerciveOn_of_le_inv` converts it to
-`GradientStepCocoerciveOn` under the source step-size condition
-`h <= 1 / beta`; the proof uses `real_inner_comm`, positivity of the squared
-norm, `mul_le_mul_of_nonneg_left`, `mul_le_mul_of_nonneg_right`, `field_simp`,
-and `nlinarith`.  Theorem 3.3 now has source-step wrappers from
-`FirstOrderStrongConvexOn` plus `GradientCocoerciveOn`.  Deriving (3.5)
-itself from convexity plus smoothness or from the shifted-function/descent
-lemma is recorded as an exercise-pass task and should not block main-text
-formalization.
+Current Exercise 3.1 co-coercivity result: the whole-space source display
+(3.5) now compiles in `StatInference/Optimization/Exercises.lean` as
+`exercise31_gradientCocoerciveOn_univ_of_firstOrderStrongConvexOn_smooth`.
+The proof follows Chewi's hint by applying the smooth upper model to the two
+shifted objectives and adding the two half-gap estimates; the compiled helper
+is `exercise31_shifted_gap_lower_half_grad_diff_sq`.  The same file also
+provides Theorem 3.3 squared/norm contraction wrappers
+`exercise31_gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_smooth_univ`,
+`exercise31_gradientStep_dist_contract_of_firstOrderStrongConvexOn_smooth_univ`,
+`exercise31_gradientStep_sqdist_contract_of_strongConvexOn_univ_hasGradientAt_smooth`,
+and `exercise31_gradientStep_dist_contract_of_strongConvexOn_univ_hasGradientAt_smooth`.
+The older interface bridge `GradientCocoerciveOn.stepCocoerciveOn_of_le_inv`
+remains the reusable conversion from (3.5) to the h-scaled step inequality.
 
 Current Theorem 3.7 search result: local `GradientDescent.lean` already
 supplies the descent lemma and GD trajectory interface.  Mathlib supplies the
@@ -485,9 +489,10 @@ Local searches should prioritize:
    antitonicity of function values along GD trajectories.
 5. Keep `StatInference/Optimization/Theorem33.lean` compiling.  It proves
    Chewi Theorem 3.3 squared and norm contraction forms from supplied gradient
-   monotonicity and Exercise 3.1 co-coercivity interfaces, and from actual
-   whole-space `StrongConvexOn` plus `HasGradientAt` once co-coercivity is
-   supplied.
+   monotonicity and Exercise 3.1 co-coercivity interfaces.  The whole-space
+   smooth-convex Exercise 3.1 proof in `Exercises.lean` now discharges the
+   co-coercivity input for first-order and actual whole-space
+   `StrongConvexOn` plus `HasGradientAt` wrappers.
 6. Keep the Theorem 3.4 assembly layer compiling.  It has the weighted
    finite-sum, finite denominator, positive-`alpha` closed denominator,
    `alpha = 0` limiting denominator, first-order trajectory wrappers, and
@@ -672,6 +677,12 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.gradientStep_dist_contract_of_firstOrderStrongConvexOn_gradientCocoerciveOn`
 - `StatInference.Optimization.gradientStep_sqdist_contract_of_strongConvexOn_univ_hasGradientAt_gradientCocoerciveOn`
 - `StatInference.Optimization.gradientStep_dist_contract_of_strongConvexOn_univ_hasGradientAt_gradientCocoerciveOn`
+- `StatInference.Optimization.exercise31_shifted_gap_lower_half_grad_diff_sq`
+- `StatInference.Optimization.exercise31_gradientCocoerciveOn_univ_of_firstOrderStrongConvexOn_smooth`
+- `StatInference.Optimization.exercise31_gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_smooth_univ`
+- `StatInference.Optimization.exercise31_gradientStep_dist_contract_of_firstOrderStrongConvexOn_smooth_univ`
+- `StatInference.Optimization.exercise31_gradientStep_sqdist_contract_of_strongConvexOn_univ_hasGradientAt_smooth`
+- `StatInference.Optimization.exercise31_gradientStep_dist_contract_of_strongConvexOn_univ_hasGradientAt_smooth`
 - `StatInference.Optimization.StrongConvexOn.strictConvexOn`
 - `StatInference.Optimization.minimizer_unique_of_strictConvexOn`
 - `StatInference.Optimization.minimizer_unique_of_strongConvexOn`

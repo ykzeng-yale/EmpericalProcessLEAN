@@ -281,16 +281,16 @@ Near-term exact candidates:
    `StatInference/Optimization/GradientDescent.lean`, including the source
    step-size corollary `h <= 1 / beta` under `0 < beta`, and the
    function-value antitonicity lemma for GD trajectories.
-3. Theorem 3.3 contraction of gradient descent as a main-text theorem with
-   one exercise interface.  `StatInference/Optimization/Theorem33.lean`
-   now compiles the squared-distance and norm contraction forms from the
-   source-shaped `StronglyMonotoneGradientOn` and `GradientStepCocoerciveOn`
-   interfaces, plus wrappers deriving gradient monotonicity from
-   `FirstOrderStrongConvexOn` and from actual whole-space segment
-   `StrongConvexOn` plus `HasGradientAt`.  Exercise 3.1 display `(3.5)` still
-   supplies co-coercivity under `h <= 1 / beta`; proving (3.5) itself belongs
-   in `StatInference/Optimization/Exercises.lean` and may be handled
-   opportunistically when it advances theorem reuse.
+3. Theorem 3.3 contraction of gradient descent as a main-text theorem.
+   `StatInference/Optimization/Theorem33.lean` compiles the squared-distance
+   and norm contraction forms from the source-shaped
+   `StronglyMonotoneGradientOn` and `GradientStepCocoerciveOn` interfaces,
+   plus wrappers deriving gradient monotonicity from `FirstOrderStrongConvexOn`
+   and from actual whole-space segment `StrongConvexOn` plus `HasGradientAt`.
+   `StatInference/Optimization/Exercises.lean` now proves the whole-space
+   Exercise 3.1 co-coercivity display `(3.5)` from convexity plus
+   `SmoothWithGradientOn`, and provides Theorem 3.3 squared/norm wrappers with
+   the co-coercivity input discharged for the whole-space smooth-convex route.
 4. Theorem 3.4 as a convergence theorem from actual whole-space
    `StrongConvexOn` plus `HasGradientAt`.  `Theorem34.lean` assumes the
    one-step recurrence (3.1), uses the compiled Gronwall theorem for the
