@@ -174,6 +174,12 @@ The newest exponent-lifting pass adds
 `chewi45_half_boundary_condition_of_exponent_le`, and
 `chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate_of_exponent_le`,
 so it is enough to prove `q^M <= 1/2` for any smaller available exponent.
+The newest near-minimality pass adds
+`chewi45_not_near_min_of_finiteGeometricCandidate_half_boundary_lower_bound_of_exponent_le`
+and
+`chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_exponent_le`,
+so the finite route now has a direct `eps` lower-bound input for the final
+iteration/log conversion.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains
