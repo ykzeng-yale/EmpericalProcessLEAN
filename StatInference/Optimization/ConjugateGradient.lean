@@ -618,6 +618,104 @@ theorem quadraticObjective_isMinOn_of_direction_succ_eq_zero_and_orthogonal
     ((quadraticGradient_eq_zero_iff A b x).1 hgrad_zero)
 
 /--
+For a quadratic objective, the displayed point update induces the displayed
+residual-gradient update.
+-/
+theorem quadraticGradient_succ_of_point_step
+    {A : E →L[ℝ] E} {b : E} {x r p : ℕ → E} {eta : ℕ → ℝ} {n : ℕ}
+    (hres : r n = quadraticGradient A b (x n))
+    (hx : x (n + 1) = x n + eta n • p n) :
+    quadraticGradient A b (x (n + 1)) = r n + eta n • A (p n) := by
+  rw [hx]
+  calc
+    quadraticGradient A b (x n + eta n • p n)
+        = quadraticGradient A b (x n) + eta n • A (p n) := by
+      simp [quadraticGradient, map_add, map_smul, sub_eq_add_neg, add_assoc]
+      abel
+    _ = r n + eta n • A (p n) := by
+      rw [← hres]
+
+/--
+If the point update and residual update use the same coefficient, the residual
+continues to equal the quadratic gradient.
+-/
+theorem residual_succ_eq_quadraticGradient_of_point_and_residual_steps
+    {A : E →L[ℝ] E} {b : E} {x r p : ℕ → E} {eta : ℕ → ℝ} {n : ℕ}
+    (hres : r n = quadraticGradient A b (x n))
+    (hx : x (n + 1) = x n + eta n • p n)
+    (hr : r (n + 1) = r n + eta n • A (p n)) :
+    r (n + 1) = quadraticGradient A b (x (n + 1)) := by
+  rw [hr]
+  exact (quadraticGradient_succ_of_point_step hres hx).symm
+
+/--
+Inductive residual-gradient invariant for a run whose point and residual
+updates use the same coefficients.
+-/
+theorem residual_eq_quadraticGradient_of_point_and_residual_updates
+    {A : E →L[ℝ] E} {b : E} {x r p : ℕ → E} {eta : ℕ → ℝ}
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hx : ∀ n, x (n + 1) = x n + eta n • p n)
+    (hr : ∀ n, r (n + 1) = r n + eta n • A (p n)) :
+    ∀ n, r n = quadraticGradient A b (x n) := by
+  intro n
+  induction n with
+  | zero => exact hres0
+  | succ n ih =>
+      exact residual_succ_eq_quadraticGradient_of_point_and_residual_steps
+        ih (hx n) (hr n)
+
+/--
+For the displayed CG residual iteration, the point update propagates the
+identity `r_n = ∇f(x_n)` for the quadratic objective.
+-/
+theorem IsCGDisplayedIteration.residual_eq_quadraticGradient_of_point_updates
+    {A : E →L[ℝ] E} {b p0 : E} {x r p : ℕ → E}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hx : ∀ n, x (n + 1) = x n + cgLineSearchCoeff A r p n • p n) :
+    ∀ n, r n = quadraticGradient A b (x n) :=
+  residual_eq_quadraticGradient_of_point_and_residual_updates hres0 hx h.residual_succ
+
+/--
+If each new residual is orthogonal to the previous direction span, then the
+three-term recurrence has pairwise orthogonal residuals.
+-/
+theorem IsCGThreeTermRecurrence.pairwise_residual_orthogonal
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E} {eta gamma : ℕ → ℝ}
+    (h : IsCGThreeTermRecurrence A p0 r p eta gamma)
+    (horth_prev : ∀ n, IsOrthogonalToSubmodule (r (n + 1)) (cgDirectionSubmodule p n)) :
+    ∀ i j : ℕ, i ≠ j → inner ℝ (r i) (r j) = 0 := by
+  intro i j hij
+  rcases lt_or_gt_of_ne hij with hij_lt | hji_lt
+  · have hj_ne_zero : j ≠ 0 :=
+      Nat.ne_of_gt (lt_of_le_of_lt (Nat.zero_le i) hij_lt)
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hj_ne_zero
+    have hik : i ≤ k := Nat.lt_succ_iff.mp hij_lt
+    have hri_mem : r i ∈ cgDirectionSubmodule p k :=
+      cgDirectionSubmodule_mono p hik (h.residual_mem_cgDirectionSubmodule i)
+    have hzero : inner ℝ (r (k + 1)) (r i) = 0 :=
+      horth_prev k (r i) hri_mem
+    simpa [real_inner_comm] using hzero
+  · have hi_ne_zero : i ≠ 0 :=
+      Nat.ne_of_gt (lt_of_le_of_lt (Nat.zero_le j) hji_lt)
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hi_ne_zero
+    have hjk : j ≤ k := Nat.lt_succ_iff.mp hji_lt
+    have hrj_mem : r j ∈ cgDirectionSubmodule p k :=
+      cgDirectionSubmodule_mono p hjk (h.residual_mem_cgDirectionSubmodule j)
+    exact horth_prev k (r j) hrj_mem
+
+/--
+Displayed-CG version of the residual-orthogonality propagation lemma.
+-/
+theorem IsCGDisplayedIteration.pairwise_residual_orthogonal
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (horth_prev : ∀ n, IsOrthogonalToSubmodule (r (n + 1)) (cgDirectionSubmodule p n)) :
+    ∀ i j : ℕ, i ≠ j → inner ℝ (r i) (r j) = 0 :=
+  h.to_isCGThreeTermRecurrence.pairwise_residual_orthogonal horth_prev
+
+/--
 Finite-dimensional counting core for Chewi Theorem 5.3: among the first
 `finrank ℝ E + 1` mutually orthogonal residuals, one must vanish.
 -/
@@ -672,6 +770,45 @@ theorem exists_quadraticObjective_isMinOn_of_pairwise_orthogonal_residuals
     exact hr_zero
   exact quadraticObjective_isMinOn_of_apply_eq hA_sym hlower halpha_nonneg
     ((quadraticGradient_eq_zero_iff A b (x n)).1 hgrad_zero)
+
+/--
+Displayed-CG Theorem 5.3-facing wrapper: once residual orthogonality is
+available, the displayed point/residual iteration reaches a global minimizer
+within `finrank ℝ E` steps.
+-/
+theorem IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_pairwise_orthogonal
+    [FiniteDimensional ℝ E] {A : E →L[ℝ] E} {b p0 : E}
+    {x r p : ℕ → E} {alpha : ℝ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (hlower : QuadraticFormLowerBound A alpha)
+    (halpha_nonneg : 0 ≤ alpha)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hx : ∀ n, x (n + 1) = x n + cgLineSearchCoeff A r p n • p n)
+    (horth : ∀ i j : ℕ, i ≠ j → inner ℝ (r i) (r j) = 0) :
+    ∃ n ≤ Module.finrank ℝ E, IsMinOn (quadraticObjective A b) Set.univ (x n) :=
+  exists_quadraticObjective_isMinOn_of_pairwise_orthogonal_residuals
+    hA_sym hlower halpha_nonneg horth
+    (h.residual_eq_quadraticGradient_of_point_updates hres0 hx)
+
+/--
+Displayed-CG Theorem 5.3 wrapper from the source-shaped orthogonality
+invariant: each new residual is orthogonal to the previous direction span.
+-/
+theorem IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_orthogonalToPrevious
+    [FiniteDimensional ℝ E] {A : E →L[ℝ] E} {b p0 : E}
+    {x r p : ℕ → E} {alpha : ℝ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (hlower : QuadraticFormLowerBound A alpha)
+    (halpha_nonneg : 0 ≤ alpha)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hx : ∀ n, x (n + 1) = x n + cgLineSearchCoeff A r p n • p n)
+    (horth_prev : ∀ n, IsOrthogonalToSubmodule (r (n + 1)) (cgDirectionSubmodule p n)) :
+    ∃ n ≤ Module.finrank ℝ E, IsMinOn (quadraticObjective A b) Set.univ (x n) :=
+  h.exists_quadraticObjective_isMinOn_of_pairwise_orthogonal
+    hA_sym hlower halpha_nonneg hres0 hx
+    (h.pairwise_residual_orthogonal horth_prev)
 
 end Optimization
 end StatInference
