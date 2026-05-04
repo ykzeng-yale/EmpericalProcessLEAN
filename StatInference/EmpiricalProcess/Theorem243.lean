@@ -12756,6 +12756,51 @@ theorem
       hvc
 
 /--
+Selected fixed-radius integer-grid package from a uniform threshold/subgraph VC
+bound for the truncated class.
+
+This is the textbook-facing specialization of
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_vc`:
+instead of proving VC bounds separately for every grid threshold, it is enough
+to supply one uniform threshold/subgraph VC bound for all real thresholds.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_subgraph_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {vcDegree : ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hvc :
+      VdVWUniformThresholdVCSubgraphBound indexClass
+        (vdVWTruncatedClassFun classFun envelope M) vcDegree) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta _n _sample m =>
+        (((vcDegree + 2) * (m + 1) ^ vcDegree) ^
+          (2 * vdVWIntegerGridRadius M eta + 1))) := by
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (vcDegree := fun _eta => vcDegree)
+      hX_samplePath henvelope hclass henvelope_meas hM_pos
+      (by
+        intro eta _heta n sample m threshold
+        exact
+          hvc.empiricalBinaryTraceSetFamily_vcDim_le
+            (sample := samplePath (X n) sample m) threshold.1)
+
+/--
 Selected fixed-radius tail/UI package from finite-threshold value separation
 and uniform fixed-threshold VC/Sauer bounds.
 

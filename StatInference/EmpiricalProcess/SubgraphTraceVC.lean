@@ -55,6 +55,38 @@ theorem empiricalBinaryTraceSet_thresholdIndicatorClassFun_eq
   · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun, h]
 
 /--
+Uniform empirical VC bound for every fixed threshold subgraph of a real-valued
+class.
+
+This is the local theorem-facing version of the VC-subgraph input used by the
+Theorem 2.4.3 integer-grid route: every finite sample and every real threshold
+has threshold-indicator trace VC dimension at most `d`.
+-/
+def VdVWUniformThresholdVCSubgraphBound
+    {Observation : Type u} {Index : Type v}
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (d : ℕ) : Prop :=
+  ∀ {n : ℕ} (sample : SampleAt Observation n) (threshold : ℝ),
+    (empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun classFun threshold)).vcDim ≤ d
+
+/--
+The uniform threshold/subgraph VC predicate immediately supplies the
+samplewise fixed-threshold VC inequality used by the threshold-grid entropy
+route.
+-/
+theorem VdVWUniformThresholdVCSubgraphBound.empiricalBinaryTraceSetFamily_vcDim_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {d : ℕ}
+    (hvc : VdVWUniformThresholdVCSubgraphBound indexClass classFun d)
+    (threshold : ℝ) :
+    (empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun classFun threshold)).vcDim ≤ d :=
+  hvc sample threshold
+
+/--
 For a fixed threshold, the empirical trace image of the threshold-indicator
 class satisfies the Sauer polynomial bound whenever the realized threshold
 trace family has VC dimension at most `d`.

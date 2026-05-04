@@ -2601,3 +2601,17 @@ Next exact theorem-facing edit: reduce the remaining per-grid-threshold VC
 hypothesis to a textbook-facing subgraph/VC class assumption, then consume this
 canonical route in the final Theorem 2.4.3 handoff.  Do not add more
 integer-grid packaging unless the final assembly explicitly requires it.
+
+2026-05-04 follow-up: `SubgraphTraceVC.lean` now defines
+`VdVWUniformThresholdVCSubgraphBound`, a textbook-facing predicate requiring
+every finite sample and real threshold of a class to have threshold-indicator
+trace VC dimension bounded by a single `d`.  `Theorem243.lean` adds
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_subgraph_vc`,
+which uses that predicate to discharge the per-grid-threshold VC assumptions
+for the canonical selected fixed-radius package.
+
+Next exact theorem-facing edit: either add the matching untruncated consumer
+from `VdVWUniformThresholdVCSubgraphBound`, or consume the selected package
+directly in the final Theorem 2.4.3 assembly.  The remaining mathematical
+input is an honest proof or assumption that the textbook VC-subgraph condition
+implies `VdVWUniformThresholdVCSubgraphBound` for the truncated class.

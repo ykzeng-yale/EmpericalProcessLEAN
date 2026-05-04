@@ -467,6 +467,12 @@ The matching untruncated consumer
 is also compiled, so the remaining integer-grid route blocker is the
 textbook-facing reduction from subgraph/VC assumptions to the per-grid
 threshold VC hypothesis.
+2026-05-04 follow-up: `VdVWUniformThresholdVCSubgraphBound` now packages the
+uniform all-threshold empirical VC input, and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_subgraph_vc`
+feeds it into the canonical selected fixed-radius package.  Remaining gap:
+connect the actual textbook VC-subgraph condition for truncated classes to
+this uniform threshold predicate and consume it in the final untruncated route.
 
 ## Verification Monitor
 

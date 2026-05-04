@@ -869,6 +869,11 @@ above, so they do not change the theorem-level dashboard counts.
    is also compiled.  The next structural input is the reduction from
    textbook-facing VC-subgraph assumptions to the explicit per-threshold VC
    hypotheses.
+   The first reduction layer is now compiled as
+   `VdVWUniformThresholdVCSubgraphBound` plus
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_subgraph_vc`,
+   which turns one uniform all-threshold empirical VC predicate into the
+   canonical selected fixed-radius package.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
