@@ -755,7 +755,11 @@ above, so they do not change the theorem-level dashboard counts.
    reduces it further to a supplied bound on `base ^ k` when
    `thresholds.card <= k`.  The base-growth theorem
    `empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_base_le_nat_poly`
-   now proves that supplied bound from a polynomial estimate on `base`.
+   now proves that supplied bound from a polynomial estimate on `base`.  The
+   uniform VC consumer
+   `empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_uniform_vc`
+   combines fixed-threshold Sauer bounds, separation, and a threshold-count
+   bound into the natural-polynomial trace-cardinality estimate.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

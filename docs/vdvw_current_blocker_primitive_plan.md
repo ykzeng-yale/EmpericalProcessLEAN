@@ -2098,6 +2098,8 @@ threshold_binaryTraceSetFamily_product_card_le_const_pow_of_card_le
 empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_const_factor_card_le
 nat_pow_add_one_real_le_nat_poly_of_base_le
 empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_base_le_nat_poly
+threshold_binaryTraceSetFamily_card_le_vc_nat_poly
+empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_uniform_vc
 ```
 
 These prove that finite threshold signatures, when they separate the realized
@@ -2114,7 +2116,10 @@ every fixed-threshold binary trace family has the same VC/Sauer cardinality
 bound.  The threshold-count declarations reduce this target further to
 `base ^ k` under an explicit `thresholds.card <= k` assumption.  The
 base-growth declarations prove the required `base ^ k + 1` polynomial bound
-from a polynomial real bound on `base` itself.
+from a polynomial real bound on `base` itself.  The uniform-VC declarations
+derive that base from the fixed-threshold Sauer-Shelah wrapper, yielding the
+natural-polynomial trace bound from separation, threshold-count, and uniform
+fixed-threshold `vcDim <= d` assumptions.
 
 Search record: reused local fixed-threshold declarations in `SubgraphTraceVC`,
 the new finite-code bridge in `TraceCoding`, mathlib `Finset.pi`,
@@ -2123,9 +2128,8 @@ big-operator APIs from `Mathlib.Data.Fintype.BigOperators`.  No ready local or
 mathlib theorem gave the VdVW finite-threshold signature/product-cardinality
 bridge.
 
-Next exact theorem-facing edit: derive the common base/factor and finite
-threshold separation/count assumptions from the fixed-threshold VC/Sauer or
-subgraph geometry.  Equivalently, provide the
+Next exact theorem-facing edit: derive the finite-threshold separation/count
+assumptions from the actual subgraph/truncated-class geometry, or provide the
 maximal-separated/internal-cover cardinality theorem that bypasses threshold
 products and directly supplies the natural-polynomial trace bound consumed by
 Theorem 2.4.3.

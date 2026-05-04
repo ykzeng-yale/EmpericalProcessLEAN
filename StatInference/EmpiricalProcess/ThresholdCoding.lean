@@ -594,4 +594,83 @@ theorem empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_base_le_
         (base := base) (n := n) (a := a) (k := k)
         hB_nonneg hbase_growth)
 
+/--
+Sauer-Shelah supplies a common natural-polynomial cardinality bound for every
+fixed-threshold binary trace family under a uniform VC-dimension bound.
+-/
+theorem threshold_binaryTraceSetFamily_card_le_vc_nat_poly
+    {Observation : Type u} {Index : Type v} {n d : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {thresholds : Finset ℝ}
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d)
+    (threshold : {threshold // threshold ∈ thresholds}) :
+    (empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun classFun threshold.1)).card ≤
+      (d + 2) * (n + 1) ^ d := by
+  have hadd_one :
+      (empiricalBinaryTraceSetFamily sample indexClass
+        (thresholdIndicatorClassFun classFun threshold.1)).card + 1 ≤
+        (d + 2) * (n + 1) ^ d :=
+    vdVWSauerShelah_card_add_one_le_nat_poly_of_vcDim_le
+      (empiricalBinaryTraceSetFamily sample indexClass
+        (thresholdIndicatorClassFun classFun threshold.1))
+      (N := n) (d := d) (by simp) (hvc threshold)
+  exact (Nat.le_succ _).trans hadd_one
+
+/--
+Uniform fixed-threshold VC/Sauer bounds, finite threshold separation, and a
+threshold-count bound give the natural-polynomial empirical trace-cardinality
+shape needed by the Theorem 2.4.3 entropy route.
+-/
+theorem empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_uniform_vc
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ}
+    (hseparate :
+      ∀ index₁, index₁ ∈ indexClass ->
+        ∀ index₂, index₂ ∈ indexClass ->
+          (∀ threshold : {threshold // threshold ∈ thresholds},
+            thresholdTraceCode thresholds
+                (empiricalTrace sample classFun index₁) threshold =
+              thresholdTraceCode thresholds
+                (empiricalTrace sample classFun index₂) threshold) ->
+          empiricalTrace sample classFun index₁ =
+            empiricalTrace sample classFun index₂)
+    (hthresholds_card : thresholds.card ≤ k)
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d) :
+    (((finite_empiricalTrace_image_of_thresholdTraceCode_separates hseparate).toFinset.card : ℝ) + 1) ≤
+      ((((d + 2 : ℕ) : ℝ) ^ k) + 1) *
+        (((n + 1 : ℕ) : ℝ) ^ (d * k)) := by
+  let base : ℕ := (d + 2) * (n + 1) ^ d
+  have hbase_pos : 0 < base := by
+    dsimp [base]
+    exact Nat.mul_pos (Nat.succ_pos (d + 1)) (pow_pos (Nat.succ_pos n) d)
+  have hbase :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card ≤
+          base := by
+    intro threshold
+    exact threshold_binaryTraceSetFamily_card_le_vc_nat_poly
+      sample indexClass classFun hvc threshold
+  have hbase_growth :
+      (base : ℝ) ≤ ((d + 2 : ℕ) : ℝ) * (((n + 1 : ℕ) : ℝ) ^ d) := by
+    dsimp [base]
+    norm_num [Nat.cast_mul, Nat.cast_pow]
+  exact
+    empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_base_le_nat_poly
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) (base := base)
+      (B := ((d + 2 : ℕ) : ℝ)) (a := d) (k := k)
+      hseparate hbase_pos hthresholds_card hbase
+      (Nat.cast_nonneg _) hbase_growth
+
 end StatInference
