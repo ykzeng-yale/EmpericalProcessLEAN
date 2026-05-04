@@ -717,6 +717,20 @@ filtration over `ℕᵒᵈ`, with
 `adapted_vdVWPermutationSymmetricCofiltration_uniformClassSupremum_of_countable`.
 Remaining work is now the conditional-expectation/reverse-submartingale
 comparison and L1 boundedness handoff.
+2026-05-04 follow-up: the ordinary-filtration conditional-expectation
+martingale/UI/convergence handoff is now compiled.  New declarations
+`vdVW_condExp_submartingale`, `vdVW_condExp_uniformIntegrable_filtration`,
+`vdVW_condExp_ae_tendsto_limitProcess_of_integrable`,
+`vdVW_condExp_tendsto_eLpNorm_one_limitProcess_of_integrable`,
+`vdVW_condExp_ae_tendsto_condExp_iSup`,
+`vdVW_condExp_tendsto_eLpNorm_one_condExp_iSup`, and
+`vdVW_condExp_ae_tendsto_limitProcess_of_eLpNorm_le` wrap pinned mathlib
+`martingale_condExp`, conditional-expectation L1 contraction, UI, martingale
+convergence, and Levy upward convergence.  The remaining Lemma 2.4.5 gap is
+now the VdV&W-specific reverse/permutation-symmetric comparison from the
+decreasing `Σ_n` empirical-supremum covers into that ordinary conditional
+expectation framework, plus the terminal integrability/L1-bound discharge from
+the envelope assumptions.
 
 ## Verification Monitor
 

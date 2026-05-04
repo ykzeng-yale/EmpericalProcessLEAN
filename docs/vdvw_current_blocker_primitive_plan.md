@@ -3058,3 +3058,28 @@ This closes the adapted-process substrate for the countable uniform empirical
 supremum over decreasing `Σ_n`.  The next exact blocker is the
 conditional-expectation/reverse-submartingale comparison and L1-boundedness
 handoff needed to invoke `vdVW_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd`.
+
+2026-05-04 follow-up: the mathlib conditional-expectation martingale/UI/L1
+convergence layer for the Lemma 2.4.5 route is now compiled under VdV&W-local
+names.  Search record: local `StatInference` had no named VdV&W conditional
+expectation handoff; pinned mathlib provides `martingale_condExp`,
+`eLpNorm_one_condExp_le_eLpNorm`,
+`Integrable.uniformIntegrable_condExp_filtration`,
+`Submartingale.ae_tendsto_limitProcess_of_uniformIntegrable`,
+`Submartingale.tendsto_eLpNorm_one_limitProcess`, and the Levy upward
+theorems `tendsto_ae_condExp`/`tendsto_eLpNorm_condExp`.  New compiled
+declarations are `vdVW_condExp_submartingale`,
+`vdVW_condExp_uniformIntegrable_filtration`,
+`vdVW_condExp_ae_tendsto_limitProcess_of_integrable`,
+`vdVW_condExp_tendsto_eLpNorm_one_limitProcess_of_integrable`,
+`vdVW_condExp_ae_tendsto_condExp_iSup`,
+`vdVW_condExp_tendsto_eLpNorm_one_condExp_iSup`, and
+`vdVW_condExp_ae_tendsto_limitProcess_of_eLpNorm_le`.  These close the
+ordinary-filtration conditional-expectation martingale, UI, L1 contraction,
+a.e. convergence, L1 convergence, and terminal sigma-field identification
+substrates.  The remaining exact Lemma 2.4.5 blocker is now narrower:
+construct the VdV&W reverse/permutation-symmetric comparison that reindexes or
+compares the decreasing `Σ_n` empirical-supremum covers to this ordinary
+conditional-expectation martingale framework, then discharge the required
+integrable terminal variable or explicit finite L1 bound from the envelope
+hypotheses.

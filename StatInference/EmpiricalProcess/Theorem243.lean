@@ -56,6 +56,120 @@ theorem vdVW_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd
   hf.ae_tendsto_limitProcess hbdd
 
 /--
+Conditional expectations of a fixed real random variable along an ordinary
+mathlib filtration form the submartingale needed by the VdV&W Lemma 2.4.5
+route.
+
+The exact VdV&W reverse-submartingale step still has to reindex the decreasing
+permutation-symmetric sigma-fields into this ordinary-filtration shape.
+-/
+theorem vdVW_condExp_submartingale
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace Ω)}
+    [SigmaFiniteFiltration μ ℱ]
+    (g : Ω -> ℝ) :
+    Submartingale (fun n => μ[g | ℱ n]) ℱ μ :=
+  (martingale_condExp g ℱ μ).submartingale
+
+/--
+Conditional expectations of an integrable real random variable along a finite
+measure filtration are uniformly integrable.  This is the pinned-mathlib UI
+input used by the VdV&W reverse-submartingale/Lemma 2.4.5 route.
+-/
+theorem vdVW_condExp_uniformIntegrable_filtration
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace Ω)}
+    {g : Ω -> ℝ}
+    (hg : Integrable g μ) :
+    UniformIntegrable (fun n : ℕ => μ[g | ℱ n]) 1 μ :=
+  hg.uniformIntegrable_condExp_filtration
+
+/--
+Integrable terminal variables give almost-everywhere convergence of their
+conditional-expectation martingale to mathlib's `limitProcess`, via the
+uniform-integrability form of the martingale convergence theorem.
+-/
+theorem vdVW_condExp_ae_tendsto_limitProcess_of_integrable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace Ω)}
+    [SigmaFiniteFiltration μ ℱ]
+    {g : Ω -> ℝ}
+    (hg : Integrable g μ) :
+    ∀ᵐ ω ∂μ,
+      Tendsto (fun n => μ[g | ℱ n] ω) atTop
+        (𝓝 (ℱ.limitProcess (fun n => μ[g | ℱ n]) μ ω)) :=
+  (vdVW_condExp_submartingale (μ := μ) (ℱ := ℱ) g).ae_tendsto_limitProcess_of_uniformIntegrable
+    (vdVW_condExp_uniformIntegrable_filtration (μ := μ) (ℱ := ℱ) hg)
+
+/--
+The same integrability input gives `L¹` convergence of the conditional
+expectation martingale to `limitProcess`.
+-/
+theorem vdVW_condExp_tendsto_eLpNorm_one_limitProcess_of_integrable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace Ω)}
+    [SigmaFiniteFiltration μ ℱ]
+    {g : Ω -> ℝ}
+    (hg : Integrable g μ) :
+    Tendsto
+      (fun n =>
+        eLpNorm
+          ((fun ω => μ[g | ℱ n] ω) -
+            ℱ.limitProcess (fun n => μ[g | ℱ n]) μ) 1 μ)
+      atTop (𝓝 0) :=
+  (vdVW_condExp_submartingale (μ := μ) (ℱ := ℱ) g).tendsto_eLpNorm_one_limitProcess
+    (vdVW_condExp_uniformIntegrable_filtration (μ := μ) (ℱ := ℱ) hg)
+
+/--
+VdV&W-local name for the almost-everywhere Lévy upward theorem: conditional
+expectations along an increasing filtration converge to the conditional
+expectation with respect to the generated terminal sigma-field.
+-/
+theorem vdVW_condExp_ae_tendsto_condExp_iSup
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace Ω)}
+    [SigmaFiniteFiltration μ ℱ]
+    (g : Ω -> ℝ) :
+    ∀ᵐ ω ∂μ,
+      Tendsto (fun n => μ[g | ℱ n] ω) atTop
+        (𝓝 (μ[g | ⨆ n, ℱ n] ω)) :=
+  tendsto_ae_condExp (μ := μ) (ℱ := ℱ) g
+
+/--
+VdV&W-local `L¹` form of the Lévy upward theorem for conditional expectations.
+-/
+theorem vdVW_condExp_tendsto_eLpNorm_one_condExp_iSup
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace Ω)}
+    [SigmaFiniteFiltration μ ℱ]
+    (g : Ω -> ℝ) :
+    Tendsto
+      (fun n => eLpNorm (μ[g | ℱ n] - μ[g | ⨆ n, ℱ n]) 1 μ)
+      atTop (𝓝 0) :=
+  tendsto_eLpNorm_condExp (μ := μ) (ℱ := ℱ) g
+
+/--
+VdV&W Lemma 2.4.5 conditional-expectation convergence handoff: once the
+decreasing permutation-symmetric process has been reindexed as conditional
+expectations along an ordinary filtration, a single finite `L¹` bound on the
+terminal variable gives almost-everywhere convergence to mathlib's
+`limitProcess`.
+-/
+theorem vdVW_condExp_ae_tendsto_limitProcess_of_eLpNorm_le
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace Ω)}
+    [SigmaFiniteFiltration μ ℱ]
+    {g : Ω -> ℝ} {R : ℝ≥0}
+    (hR : eLpNorm g 1 μ ≤ R) :
+    ∀ᵐ ω ∂μ,
+      Tendsto (fun n => μ[g | ℱ n] ω) atTop
+        (𝓝 (ℱ.limitProcess (fun n => μ[g | ℱ n]) μ ω)) := by
+  refine vdVW_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd
+    (R := R) (hf := vdVW_condExp_submartingale (μ := μ) (ℱ := ℱ) g) ?_
+  intro n
+  exact (eLpNorm_one_condExp_le_eLpNorm (m := ℱ n) (μ := μ) g).trans hR
+
+/--
 VdV&W Lemma 2.4.5 exterior-cofiltration substrate on an infinite product
 sample space.
 

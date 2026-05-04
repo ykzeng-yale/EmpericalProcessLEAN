@@ -1021,13 +1021,27 @@ above, so they do not change the theorem-level dashboard counts.
    `adapted_vdVWPermutationSymmetricCofiltration_uniformClassSupremum_of_countable`
    proving the countable uniform empirical supremum process adapted to that
    cofiltration.
+   The ordinary-filtration conditional-expectation handoff is also now
+   compiled under VdV&W-local names:
+   `vdVW_condExp_submartingale`,
+   `vdVW_condExp_uniformIntegrable_filtration`,
+   `vdVW_condExp_ae_tendsto_limitProcess_of_integrable`,
+   `vdVW_condExp_tendsto_eLpNorm_one_limitProcess_of_integrable`,
+   `vdVW_condExp_ae_tendsto_condExp_iSup`,
+   `vdVW_condExp_tendsto_eLpNorm_one_condExp_iSup`, and
+   `vdVW_condExp_ae_tendsto_limitProcess_of_eLpNorm_le`.  These wrappers
+   reuse pinned mathlib conditional-expectation martingale, UI, L1 contraction,
+   martingale-convergence, and Levy upward-convergence APIs.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.  For Lemma 2.4.5, the next exact
-   primitive is now the conditional-expectation/reverse-submartingale
-   comparison and L1-boundedness handoff over decreasing `Σ_n`, not the
-   finite permutation, generated-sigma, countable-supremum adaptedness,
-   cover-shaped adaptedness, or cofiltration substrate.
+   primitive is now the VdV&W-specific reverse/permutation-symmetric comparison
+   that reindexes or compares the decreasing `Σ_n` empirical-supremum covers
+   to this ordinary conditional-expectation martingale framework, plus the
+   terminal integrability/L1-bound discharge from the envelope hypotheses, not
+   the finite permutation, generated-sigma, countable-supremum adaptedness,
+   cover-shaped adaptedness, cofiltration substrate, or ordinary conditional
+   expectation convergence substrate.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
