@@ -1389,21 +1389,31 @@ quadratic substrate with `quadraticObjective`, `quadraticGradient`,
 `quadraticObjective_firstOrderStrongConvexOn`,
 `quadraticObjective_smoothWithGradientOn`,
 `quadraticObjective_oracle_package`, and
-`quadraticObjective_isMinOn_of_apply_eq`.  Search-first result: mathlib has
-continuous linear maps, `continuous_id.inner`, `Continuous.inner`,
-`real_inner_comm`, and self-adjoint/positive operator APIs under
-`Analysis/InnerProductSpace/Positive.lean`; the current substrate deliberately
-uses supplied quadratic-form bounds so it can reuse local
-`FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and minimizer wrappers
-without waiting for a full spectral theorem bridge.  Next target: define the
-Chapter 5 `A`-inner product/norm interface, Krylov subspaces
-`span {p0, A p0, ..., A^n p0}`, and a supplied CG-state recurrence/optimality
-interface strong enough to prove Lemma 5.1 and then Theorem 5.3.  For Theorem
-5.4, first package the textbook proof assumptions explicitly: CG descent
-comparison against one GD step, gradient orthogonality, finite sum of squared
-gradients, Cauchy-Schwarz, and the restart/halving argument.  Do not redo the
-Chapter 3 descent lemma, Chapter 4 gradient-span interfaces, or Chapter 4
-hard-instance packages.
+`quadraticObjective_isMinOn_of_apply_eq`.  The newest pass adds the Chapter 5
+`A`-inner-product/Krylov substrate: `aInner`, `aNormSq`, `aInner_comm`,
+`aNormSq_nonneg_of_lowerBound`, `krylovVector`, `krylovSubmodule`,
+`cgDirectionSubmodule`, monotonicity and `A`-image lemmas for both Krylov and
+direction spans, `IsCGKrylovRecurrence`, the Lemma 5.1 supplied-interface
+theorem `IsCGKrylovRecurrence.cgDirectionSubmodule_eq_krylovSubmodule`,
+`IsOrthogonalToSubmodule`, `IsCGResidualExactnessState`,
+`quadraticGradient_eq_zero_of_cgResidualExactnessState`, and
+`quadraticObjective_isMinOn_of_cgResidualExactnessState`.  Search-first result:
+mathlib has continuous linear maps, `continuous_id.inner`,
+`Continuous.inner`, `real_inner_comm`, `Function.iterate_succ_apply'`,
+`Submodule.span_induction`, `Submodule.span_mono`, and
+`Submodule.orthogonal` APIs; self-adjoint/positive operator APIs under
+`Analysis/InnerProductSpace/Positive.lean` should be searched before adding a
+future spectral bridge.  The current substrate deliberately uses supplied
+quadratic-form bounds so it can reuse local `FirstOrderStrongConvexOn`,
+`SmoothWithGradientOn`, and minimizer wrappers without waiting for a full
+spectral theorem bridge.  Next target: prove concrete CG recurrence fields
+from the displayed line-search and Gram-Schmidt formulas, then package
+Theorem 5.3 termination using finite-dimensional A-orthogonal nonzero
+directions.  For Theorem 5.4, first package the textbook proof assumptions
+explicitly: CG descent comparison against one GD step, gradient orthogonality,
+finite sum of squared gradients, Cauchy-Schwarz, and the restart/halving
+argument.  Do not redo the Chapter 3 descent lemma, Chapter 4 gradient-span
+interfaces, or Chapter 4 hard-instance packages.
 
 Chapter 2 route context is still available but no longer the active target:
 The route
