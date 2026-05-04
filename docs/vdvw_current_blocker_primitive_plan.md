@@ -2072,3 +2072,40 @@ remaining non-finite real-valued route, either by a uniform finite-threshold /
 subgraph coding theorem that injectively codes bounded truncated traces into a
 polynomial-size finite code set, or by a maximal-separated/internal-cover
 cardinality theorem that directly supplies the natural-polynomial trace bound.
+
+## 2026-05-04 `/goal` update: finite-threshold signature product bridge
+
+`StatInference/EmpiricalProcess/ThresholdCoding.lean` adds the finite-threshold
+signature bridge after `TraceCoding`, `BinaryTraceVC`, and `SubgraphTraceVC`.
+New compiled declarations:
+
+```lean
+thresholdTraceCode
+thresholdTraceCodeSet
+thresholdTraceCode_empiricalTrace_eq_binaryTraceSet
+thresholdTraceCode_mem_thresholdTraceCodeSet
+thresholdTraceCode_injOn_empiricalTrace_image_of_separates
+finite_empiricalTrace_image_of_thresholdTraceCode_separates
+empiricalTrace_image_toFinset_card_le_thresholdTraceCodeSet_card
+thresholdTraceCodeSet_card_le_pi_binaryTraceSetFamily_card
+empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card
+```
+
+These prove that finite threshold signatures, when they separate the realized
+real-valued traces, make the empirical trace image finite and bound its
+cardinality by the product of the individual fixed-threshold binary trace
+family cardinalities.
+
+Search record: reused local fixed-threshold declarations in `SubgraphTraceVC`,
+the new finite-code bridge in `TraceCoding`, mathlib `Finset.pi`,
+`Finset.card_pi`, `Finset.card_le_card_of_injOn`, and finite-product
+big-operator APIs from `Mathlib.Data.Fintype.BigOperators`.  No ready local or
+mathlib theorem gave the VdVW finite-threshold signature/product-cardinality
+bridge.
+
+Next exact theorem-facing edit: prove the quantitative product-to-polynomial
+or product-to-shifted-log-linear bound from fixed-threshold VC/Sauer bounds and
+the number of thresholds required for separation.  Equivalently, provide the
+maximal-separated/internal-cover cardinality theorem that bypasses threshold
+products and directly supplies the natural-polynomial trace bound consumed by
+Theorem 2.4.3.

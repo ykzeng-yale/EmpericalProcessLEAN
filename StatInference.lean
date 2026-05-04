@@ -11,6 +11,7 @@ import StatInference.EmpiricalProcess.CoveringPrimitive
 import StatInference.EmpiricalProcess.TraceCoding
 import StatInference.EmpiricalProcess.BinaryTraceVC
 import StatInference.EmpiricalProcess.SubgraphTraceVC
+import StatInference.EmpiricalProcess.ThresholdCoding
 import StatInference.EmpiricalProcess.PMeasurable
 import StatInference.EmpiricalProcess.Bracketing
 import StatInference.EmpiricalProcess.BracketingPrimitive

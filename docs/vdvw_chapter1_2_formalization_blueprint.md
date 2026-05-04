@@ -147,7 +147,7 @@ Targeted search of pinned mathlib found reusable foundations for:
 | CLT foundations | `Probability.CentralLimitTheorem` |
 | tail inequalities | sub-Gaussian and Hoeffding infrastructure in `Probability.Moments.SubGaussian` |
 | `L_p`/integrability | `MemLp`, `eLpNorm`, Bochner/Lebesgue integrals |
-| VC combinatorics | `Combinatorics.SetFamily.Shatter`, `Finset.vcDim`, local `StatInference.EmpiricalProcess.VCSauer` Sauer/polynomial wrappers, `StatInference.EmpiricalProcess.TraceCoding` finite-code trace bridge, `StatInference.EmpiricalProcess.BinaryTraceVC` binary empirical-trace bridge, and `StatInference.EmpiricalProcess.SubgraphTraceVC` fixed-threshold subgraph bridge |
+| VC combinatorics | `Combinatorics.SetFamily.Shatter`, `Finset.vcDim`, local `StatInference.EmpiricalProcess.VCSauer` Sauer/polynomial wrappers, `StatInference.EmpiricalProcess.TraceCoding` finite-code trace bridge, `StatInference.EmpiricalProcess.BinaryTraceVC` binary empirical-trace bridge, `StatInference.EmpiricalProcess.SubgraphTraceVC` fixed-threshold subgraph bridge, and `StatInference.EmpiricalProcess.ThresholdCoding` finite-threshold signature/product-cardinality bridge |
 
 Targeted search did not find exact Lean statements for VdV&W-specific
 empirical-process objects such as:
@@ -734,7 +734,12 @@ above, so they do not change the theorem-level dashboard counts.
    coding of realized traces into a finite code set to a trace-image
    cardinality bound, with the polynomial real-cardinality handoff
    `empiricalTrace_image_card_add_one_real_le_of_finite_code_nat_poly`.
-   If the remaining structural estimate
+   The finite-threshold bridge `StatInference.EmpiricalProcess.ThresholdCoding`
+   now packages threshold signatures, proves they are realized by the
+   individual fixed-threshold binary trace families, and composes separation
+   with the finite-code layer to obtain
+   `empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card`.
+   If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
