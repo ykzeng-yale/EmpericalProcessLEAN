@@ -1001,7 +1001,10 @@ above, so they do not change the theorem-level dashboard counts.
    `MeasurableEquiv.piCongrLeft` and
    `MeasureTheory.measurePreserving_piCongrLeft`; the uniform empirical
    supremum is now permutation-invariant via
-   `vdVWWeightedClassSupremum_uniform_finCoordinatePerm`.
+   `vdVWWeightedClassSupremum_uniform_finCoordinatePerm`.  The infinite
+   first-`n` generator bridge is now compiled as
+   `VdVWFirstNPermutationSymmetric` and
+   `vdVWFirstNPermutationSymmetric_uniformClassSupremum`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

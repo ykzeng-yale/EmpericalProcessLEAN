@@ -673,6 +673,15 @@ finite-sample permutation invariance as a blocker for symmetric sample
 expressions and uniform empirical suprema; it does not yet construct the
 decreasing VdV&W symmetric sigma-fields or prove the reverse-submartingale
 handoff.
+2026-05-04 follow-up: the finite-to-infinite bridge for the Lemma 2.4.5
+generator shape is compiled.  New declarations `vdVWFirstNSample`,
+`measurable_vdVWFirstNSample`, `vdVWPermuteFirstN`,
+`VdVWFirstNPermutationSymmetric`, `vdVWFirstNSample_permuteFirstN`, and
+`vdVWFirstNPermutationSymmetric_uniformClassSupremum` show that the
+infinite-sequence statistic induced by the uniform empirical supremum is
+symmetric in the first `n` arguments.  Remaining work is the generated
+sigma-field `Σ_n`, its decreasing direction, adapted measurable-cover
+versions, and the reverse-submartingale handoff.
 
 ## Verification Monitor
 

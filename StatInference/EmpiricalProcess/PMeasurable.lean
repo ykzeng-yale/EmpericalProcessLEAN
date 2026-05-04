@@ -89,6 +89,49 @@ theorem integral_vdVWProductMeasure_comp_finCoordinatePerm
       ∫ sample : Fin n -> Observation, g sample ∂(vdVWProductMeasure P n) :=
   (vdVWProductMeasure_measurePreserving_finCoordinatePerm P perm).integral_comp' g
 
+/-- The first `n` coordinates of an infinite sample sequence. -/
+def vdVWFirstNSample {Observation : Type u} (n : ℕ)
+    (sequence : ℕ -> Observation) : Fin n -> Observation :=
+  fun i => sequence i
+
+/-- The first-`n` coordinate projection is measurable for product sigma-fields. -/
+theorem measurable_vdVWFirstNSample
+    {Observation : Type u} [MeasurableSpace Observation] (n : ℕ) :
+    Measurable (vdVWFirstNSample (Observation := Observation) n) := by
+  rw [measurable_pi_iff]
+  intro i
+  exact measurable_pi_apply (i : ℕ)
+
+/-- Permute the first `n` coordinates of an infinite sample sequence. -/
+def vdVWPermuteFirstN {Observation : Type u} {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) (sequence : ℕ -> Observation) :
+    ℕ -> Observation :=
+  fun k => if h : k < n then sequence (perm.symm ⟨k, h⟩) else sequence k
+
+/--
+The VdV&W first-`n` permutation-symmetry predicate for functions on infinite
+sample sequences.
+-/
+def VdVWFirstNPermutationSymmetric {Observation : Type u} (n : ℕ)
+    (statistic : (ℕ -> Observation) -> ℝ) : Prop :=
+  ∀ (perm : Equiv.Perm (Fin n)) (sequence : ℕ -> Observation),
+    statistic (vdVWPermuteFirstN perm sequence) = statistic sequence
+
+/--
+Projecting the first `n` coordinates after permuting an infinite sequence is
+the finite-coordinate permutation of the first-`n` sample.
+-/
+theorem vdVWFirstNSample_permuteFirstN
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) (sequence : ℕ -> Observation) :
+    vdVWFirstNSample n (vdVWPermuteFirstN perm sequence) =
+      vdVWFinCoordinatePermMeasurableEquiv perm (vdVWFirstNSample n sequence) := by
+  funext i
+  have hcoord :=
+    vdVWFinCoordinatePermMeasurableEquiv_apply_apply
+      (Observation := Observation) perm (vdVWFirstNSample n sequence) (perm.symm i)
+  simpa [vdVWFirstNSample, vdVWPermuteFirstN] using hcoord.symm
+
 /-- The weighted finite sample sum appearing in VdV&W display `(2.3.2)`. -/
 noncomputable def vdVWWeightedSampleSum {Observation : Type u} {Index : Type v}
     (classFun : Index -> Observation -> ℝ) {n : ℕ}
@@ -167,6 +210,31 @@ theorem vdVWWeightedClassSupremum_uniform_finCoordinatePerm
         (fun _ : Fin n => (n : ℝ)⁻¹) sample := by
   simp [vdVWWeightedClassSupremum,
     vdVWWeightedSampleSum_uniform_finCoordinatePerm]
+
+/--
+The infinite-sequence statistic induced by the uniform finite-sample class
+supremum is symmetric in the first `n` arguments, matching the generator shape
+of VdV&W Lemma 2.4.5.
+-/
+theorem vdVWFirstNPermutationSymmetric_uniformClassSupremum
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (n : ℕ) :
+    VdVWFirstNPermutationSymmetric n
+      (fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass classFun
+          (fun _ : Fin n => (n : ℝ)⁻¹) (vdVWFirstNSample n sequence)) := by
+  intro perm sequence
+  change
+    vdVWWeightedClassSupremum indexClass classFun
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+        (vdVWFirstNSample n (vdVWPermuteFirstN perm sequence)) =
+      vdVWWeightedClassSupremum indexClass classFun
+        (fun _ : Fin n => (n : ℝ)⁻¹) (vdVWFirstNSample n sequence)
+  rw [vdVWFirstNSample_permuteFirstN]
+  exact
+    vdVWWeightedClassSupremum_uniform_finCoordinatePerm
+      indexClass classFun perm (vdVWFirstNSample n sequence)
 
 /--
 The value set whose supremum is represented by
