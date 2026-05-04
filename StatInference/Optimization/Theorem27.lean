@@ -297,6 +297,25 @@ def PLGradientFlowLyapunovSideConditionRouteToQGOn
             0 < f (y t) - fstar) ∧
           (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t - x ≠ 0)
 
+/--
+Nontrivial-start side-condition route for Chewi Proposition 2.7(2).  This
+matches the proof split: already-minimizer starts are handled directly, while
+the positive-gap and nonzero-displacement assumptions are only requested for
+starts that are not minimizers.
+-/
+def PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn
+    (C : Set E) (f : E -> ℝ) (grad : E -> E)
+    (_alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C -> ¬ IsMinOn f C x ->
+    ∃ xStar, ∃ y : ℝ -> E,
+      xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+        y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
+          IsGradientFlowTrajectory grad y ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t ∈ C) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            0 < f (y t) - fstar) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t - x ≠ 0)
+
 omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] in
 /--
 Scalar algebra in Chewi Proposition 2.7(2): under the PL lower bound,
@@ -337,6 +356,130 @@ theorem plLyapunovDerivativeBound_nonpos
     rw [le_div_iff₀ hden_pos]
     nlinarith
   nlinarith
+
+/--
+Pointwise Lyapunov inequality from Chewi's side-condition data.  This is the
+calculus core reused by both the all-start and nontrivial-start routes:
+gradient-flow differentiability gives the gap derivative, nonzero
+displacement gives the norm derivative, and the PL scalar estimate makes the
+Lyapunov derivative nonpositive.
+-/
+theorem plGradientFlowLyapunov_inequality_of_sideConditionData
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    {x : E} {y : ℝ -> E}
+    (hy0 : y 0 = x)
+    (hflow : IsGradientFlowTrajectory grad y)
+    (hy_mem : ∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t ∈ C)
+    (hgap_pos : ∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+      0 < f (y t) - fstar)
+    (hnonzero : ∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t - x ≠ 0) :
+    ∀ t, 0 ≤ t ->
+      Real.sqrt (alpha / 2) * ‖y t - x‖ +
+          Real.sqrt (f (y t) - fstar) ≤
+        Real.sqrt (f x - fstar) := by
+  let D : Set ℝ := interior (Set.Ici (0 : ℝ))
+  let L : ℝ -> ℝ := fun t =>
+    Real.sqrt (alpha / 2) * ‖y t - x‖ +
+      Real.sqrt (f (y t) - fstar)
+  let normSlope : ℝ -> ℝ := fun t =>
+    (2 * inner ℝ (y t - x) (-(grad (y t)))) /
+      (2 * Real.sqrt (‖y t - x‖ ^ (2 : ℕ)))
+  let L' : ℝ -> ℝ := fun t =>
+    Real.sqrt (alpha / 2) * normSlope t +
+      (-(‖grad (y t)‖ ^ (2 : ℕ))) /
+        (2 * Real.sqrt (f (y t) - fstar))
+  have hy_cont : ContinuousOn y (Set.Ici (0 : ℝ)) := by
+    exact HasDerivAt.continuousOn (s := Set.Ici (0 : ℝ))
+      (fun t _ht => hflow t)
+  have hgap_cont :
+      ContinuousOn (fun t => f (y t) - fstar) (Set.Ici (0 : ℝ)) := by
+    exact HasDerivAt.continuousOn (s := Set.Ici (0 : ℝ))
+      (fun t _ht =>
+        gradientFlow_gap_hasDerivAt (t := t) (fstar := fstar)
+          hgrad hflow)
+  have hnorm_cont : ContinuousOn (fun t => ‖y t - x‖) (Set.Ici (0 : ℝ)) := by
+    exact (hy_cont.sub continuousOn_const).norm
+  have hcont : ContinuousOn L (Set.Ici (0 : ℝ)) := by
+    simpa [L] using
+      (hnorm_cont.const_mul (Real.sqrt (alpha / 2))).add hgap_cont.sqrt
+  have hnorm_deriv :
+      ∀ t, t ∈ D ->
+        HasDerivWithinAt (fun s => ‖y s - x‖) (normSlope t) D t := by
+    intro t ht
+    have hdiff : HasDerivAt (fun s => y s - x) (-(grad (y t))) t := by
+      simpa using (hflow t).sub_const x
+    have hsq := (hdiff.hasDerivWithinAt (s := D)).norm_sq
+    have hsq_ne : ‖y t - x‖ ^ (2 : ℕ) ≠ 0 :=
+      pow_ne_zero _ (norm_ne_zero_iff.mpr (hnonzero t ht))
+    have hsqrt := hsq.sqrt hsq_ne
+    convert hsqrt using 1
+    · ext s
+      exact (Real.sqrt_sq (norm_nonneg _)).symm
+  have hnorm_le : ∀ t, t ∈ D -> normSlope t ≤ ‖grad (y t)‖ := by
+    intro t ht
+    have hnorm_pos : 0 < ‖y t - x‖ :=
+      norm_pos_iff.mpr (hnonzero t ht)
+    have hsqrt :
+        Real.sqrt (‖y t - x‖ ^ (2 : ℕ)) = ‖y t - x‖ :=
+      Real.sqrt_sq (norm_nonneg _)
+    have hinner_le :
+        inner ℝ (y t - x) (-(grad (y t))) ≤
+          ‖y t - x‖ * ‖grad (y t)‖ := by
+      calc
+        inner ℝ (y t - x) (-(grad (y t))) ≤
+            ‖y t - x‖ * ‖-(grad (y t))‖ :=
+          real_inner_le_norm _ _
+        _ = ‖y t - x‖ * ‖grad (y t)‖ := by simp
+    dsimp [normSlope]
+    rw [hsqrt]
+    rw [div_le_iff₀ (by positivity : 0 < 2 * ‖y t - x‖)]
+    nlinarith
+  have hderiv : ∀ t, t ∈ D -> HasDerivWithinAt L (L' t) D t := by
+    intro t ht
+    have hgap_deriv :
+        HasDerivWithinAt (fun s => f (y s) - fstar)
+          (-(‖grad (y t)‖ ^ (2 : ℕ))) D t :=
+      (gradientFlow_gap_hasDerivAt (t := t) (fstar := fstar)
+        hgrad hflow).hasDerivWithinAt
+    have hsqrt := hgap_deriv.sqrt (by nlinarith [hgap_pos t ht])
+    have hnorm' := (hnorm_deriv t ht).const_mul (Real.sqrt (alpha / 2))
+    simpa [L, L'] using hnorm'.add hsqrt
+  have hderiv_nonpos : ∀ t, t ∈ D -> L' t ≤ 0 := by
+    intro t ht
+    have hpl_t :
+        2 * alpha * (f (y t) - fstar) ≤
+          ‖grad (y t)‖ ^ (2 : ℕ) :=
+      hpl (hy_mem t ht)
+    have hscalar :
+        Real.sqrt (alpha / 2) * ‖grad (y t)‖ -
+            ‖grad (y t)‖ ^ (2 : ℕ) /
+              (2 * Real.sqrt (f (y t) - fstar)) ≤ 0 :=
+      plLyapunovDerivativeBound_nonpos
+        halpha (hgap_pos t ht) (norm_nonneg _) hpl_t
+    have hcoef_nonneg : 0 ≤ Real.sqrt (alpha / 2) :=
+      Real.sqrt_nonneg _
+    have hmul :=
+      mul_le_mul_of_nonneg_left (hnorm_le t ht) hcoef_nonneg
+    have hbound :
+        L' t ≤
+          Real.sqrt (alpha / 2) * ‖grad (y t)‖ -
+            ‖grad (y t)‖ ^ (2 : ℕ) /
+              (2 * Real.sqrt (f (y t) - fstar)) := by
+      dsimp [L']
+      ring_nf at hmul ⊢
+      linarith
+    exact hbound.trans hscalar
+  have hanti : AntitoneOn L (Set.Ici (0 : ℝ)) :=
+    antitoneOn_of_hasDerivWithinAt_nonpos
+      (convex_Ici (0 : ℝ)) hcont hderiv hderiv_nonpos
+  intro t ht
+  have hle := hanti (by simp : (0 : ℝ) ∈ Set.Ici (0 : ℝ))
+    (show t ∈ Set.Ici (0 : ℝ) from ht) ht
+  simpa [L, hy0] using hle
 
 /--
 Chewi Proposition 2.7, first implication, in first-order lower-model form:
@@ -751,6 +894,30 @@ theorem plGradientFlowLyapunovRouteToQGOn_of_sideConditionRoute
         (plGradientFlowLyapunovContinuousDataRouteToQGOn_of_sideConditionRoute
           hgrad hroute)))
 
+/--
+Nontrivial-start side-condition route supplies the nontrivial-start Lyapunov
+inequality.  The pointwise helper avoids asking for positive-gap/nonzero
+displacement when the start is already a minimizer.
+-/
+theorem plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_sideConditionNonMinimizerRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovNonMinimizerRouteToQGOn C f alpha fstar := by
+  intro x hx hnot_min
+  rcases hroute hx hnot_min with
+    ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv,
+      hflow, hy_mem, hgap_pos, hnonzero⟩
+  refine ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv, ?_⟩
+  exact
+    plGradientFlowLyapunov_inequality_of_sideConditionData
+      hgrad halpha hpl hy0 hflow hy_mem hgap_pos hnonzero
+
 omit [InnerProductSpace ℝ E] in
 /--
 The explicit Lyapunov-plus-convergence route implies the limit inequality
@@ -850,6 +1017,27 @@ theorem plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute
     hmin_value
     (plGradientFlowLimitNonMinimizerRouteToQGOn_of_lyapunovNonMinimizerRoute
       hroute)
+
+/--
+The nontrivial-start side-condition route implies the full gradient-flow
+limit route after the already-minimizer branch is discharged by the
+minimizer-value invariant.
+-/
+theorem plGradientFlowLimitRouteToQGOn_of_sideConditionNonMinimizerRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hmin_value : ∀ ⦃z⦄, z ∈ C -> IsMinOn f C z -> f z = fstar)
+    (hroute :
+      PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLimitRouteToQGOn C f alpha fstar :=
+  plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute
+    hmin_value
+    (plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_sideConditionNonMinimizerRoute
+      hgrad halpha hpl hroute)
 
 /--
 The remaining side-condition route implies the gradient-flow limit inequality
@@ -970,6 +1158,26 @@ theorem quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNonMinimizerRoute
       hmin_value hroute)
 
 /--
+Witness form of Chewi Proposition 2.7(2) from the nontrivial-start
+side-condition route.  This is the current closest source-shaped interface:
+the Lyapunov side conditions are only needed away from minimizer starts.
+-/
+theorem quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hmin_value : ∀ ⦃z⦄, z ∈ C -> IsMinOn f C z -> f z = fstar)
+    (hroute :
+      PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthWitnessOn C f alpha fstar :=
+  quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute halpha
+    (plGradientFlowLimitRouteToQGOn_of_sideConditionNonMinimizerRoute
+      hgrad halpha.le hpl hmin_value hroute)
+
+/--
 Witness form of Chewi Proposition 2.7(2) from the remaining side-condition
 route.  This is useful for combining the nontrivial-flow case with a separate
 trivial minimizer-start case.
@@ -1033,6 +1241,24 @@ theorem quadraticGrowthOn_of_plGradientFlowLyapunovNonMinimizerRoute
   (quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNonMinimizerRoute
     (C := C) (f := f) (alpha := alpha) (fstar := fstar)
     halpha hmin_value hroute).quadraticGrowthOn halpha.le
+
+/--
+Chewi Proposition 2.7, second implication, in source infimum form, from the
+nontrivial-start side-condition route.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hmin_value : ∀ ⦃z⦄, z ∈ C -> IsMinOn f C z -> f z = fstar)
+    (hroute :
+      PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  (quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRoute
+    hgrad halpha hpl hmin_value hroute).quadraticGrowthOn halpha.le
 
 omit [InnerProductSpace ℝ E] in
 /--
