@@ -517,7 +517,12 @@ prove the regularized oracle support invariant, and
 `chewi45_two_mul_add_one_lower_bound_le_eps_of_regularizedGradientSpan_near_min`,
 and `chewi45_not_regularizedGradientSpan_near_min_of_eps_lt_two_mul_add_one_bound`
 give the concrete `d = 2N + 1` obstruction `beta / (16 * (N + 1)) <= eps`
-and its contradiction form.
+and its contradiction form.  The finite rate wrapper now also compiles:
+`chewi45_iteration_count_ge_of_two_mul_add_one_lower_bound` converts the
+obstruction to `beta / (16 * eps) - 1 <= N`, and
+`chewi45_iteration_count_ge_of_regularizedGradientSpan_near_min` plus
+`chewi45_not_regularizedGradientSpan_near_min_of_iteration_count_lt` package
+that conclusion for the regularized gradient-span run.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and

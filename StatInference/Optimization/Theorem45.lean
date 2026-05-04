@@ -554,6 +554,115 @@ theorem chewi45_not_regularizedGradientSpan_near_min_of_eps_lt_two_mul_add_one_b
       hx0 hspan hx_near hDelta_le
   linarith
 
+/--
+Iteration-count form of the `d = 2N + 1` obstruction: the lower-bound
+inequality `beta / (16 (N + 1)) <= eps` implies
+`beta / (16 eps) - 1 <= N`.
+-/
+theorem chewi45_iteration_count_ge_of_two_mul_add_one_lower_bound
+    {beta eps : ℝ} (heps : 0 < eps) (N : ℕ)
+    (hle : beta / (16 * ((N : ℝ) + 1)) ≤ eps) :
+    beta / (16 * eps) - 1 ≤ (N : ℝ) := by
+  have hdenN : 0 < 16 * ((N : ℝ) + 1) := by positivity
+  have hmul :
+      beta ≤ eps * (16 * ((N : ℝ) + 1)) :=
+    (div_le_iff₀ hdenN).mp hle
+  have hden_eps : 0 < 16 * eps := by positivity
+  have hdiv :
+      beta / (16 * eps) ≤ (N : ℝ) + 1 := by
+    rw [div_le_iff₀ hden_eps]
+    nlinarith
+  linarith
+
+/--
+Full regularized-chain near-minimizer obstruction in iteration-count form.
+If the regularized lower-bound chain is optimized to `eps / 2` accuracy by a
+gradient-span trajectory by time `N`, then `N` must satisfy the corresponding
+finite lower bound.
+-/
+theorem chewi45_iteration_count_ge_of_regularizedGradientSpan_near_min
+    {beta eps : ℝ} (hbeta : 0 ≤ beta) (heps : 0 < eps) (N : ℕ)
+    (heps_le :
+      eps ≤ beta * (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+    {x : ℕ -> EuclideanSpace ℝ (Fin (2 * N + 1))}
+    {xDelta : EuclideanSpace ℝ (Fin (2 * N + 1))}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (regularizedGradient
+        (lowerBoundChainGradient beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))) x)
+    (hx_near :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) (x N) ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta + eps / 2)
+    (hDelta_le :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))
+        (lowerBoundChainMinimizer (2 * N + 1))) :
+    beta / (16 * eps) - 1 ≤ (N : ℝ) := by
+  have hle :=
+    chewi45_two_mul_add_one_lower_bound_le_eps_of_regularizedGradientSpan_near_min
+      (beta := beta) (eps := eps) hbeta heps N heps_le
+      hx0 hspan hx_near hDelta_le
+  exact chewi45_iteration_count_ge_of_two_mul_add_one_lower_bound
+    heps N hle
+
+/--
+Contradiction form of the iteration-count lower bound: a regularized
+gradient-span trajectory cannot reach the stated near-minimum condition by
+time `N` when `N < beta / (16 eps) - 1`.
+-/
+theorem chewi45_not_regularizedGradientSpan_near_min_of_iteration_count_lt
+    {beta eps : ℝ} (hbeta : 0 ≤ beta) (heps : 0 < eps) (N : ℕ)
+    (heps_le :
+      eps ≤ beta * (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+    (hN_lt : (N : ℝ) < beta / (16 * eps) - 1)
+    {x : ℕ -> EuclideanSpace ℝ (Fin (2 * N + 1))}
+    {xDelta : EuclideanSpace ℝ (Fin (2 * N + 1))}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (regularizedGradient
+        (lowerBoundChainGradient beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))) x)
+    (hx_near :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) (x N) ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta + eps / 2)
+    (hDelta_le :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))
+        (lowerBoundChainMinimizer (2 * N + 1))) :
+    False := by
+  have hge :=
+    chewi45_iteration_count_ge_of_regularizedGradientSpan_near_min
+      (beta := beta) (eps := eps) hbeta heps N heps_le
+      hx0 hspan hx_near hDelta_le
+  linarith
+
 /-- Squared coordinate tail beyond the source prefix subspace `V_N`. -/
 noncomputable def coordinateTailSq (d N : ℕ)
     (z : EuclideanSpace ℝ (Fin d)) : ℝ :=
