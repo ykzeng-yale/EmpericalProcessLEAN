@@ -1299,10 +1299,19 @@ objective.  The no-supplied-interface geometric/log wrappers now compile as
 `exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_concreteGradient`
 and
 `exercise42InfiniteChainObjective_logQuotientRate_le_near_min_concreteGradient`.
-Next direct Exercise 4.2 step: simplify/package the concrete log-quotient
-statement into the textbook's preferred `Ω(√κ log(...))` lower-bound form,
-using the existing Chewi 4.5 condition-number/log comparison lemmas rather
-than redoing the infinite first-order or gradient algebra.
+The newest source-rate wrappers convert this exact quotient into the
+textbook-shaped square-root condition-number form:
+`exercise42InfiniteChainObjective_sqrtSubOneLogRate_le_near_min_concreteGradient`
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient`.
+They reuse `chewi45_sqrt_sub_one_bound_le_logQuotientRate` and
+`chewi45_half_sqrt_rate_le_sqrt_sub_one_rate`, so no new real-log comparison
+primitive was introduced.  Next direct Exercise 4.2 step: discharge the
+remaining small-accuracy/log-nonpositive side condition from a source-shaped
+`eps <= (alpha/2) * ‖x_0 - x_*‖^2` hypothesis, then package the theorem in the
+literal display
+`f(x_N)-f_* >= (alpha/2) q^(2N) ‖x_0-x_*‖^2` and the derived
+`Ω(√κ log(alpha ‖x_0-x_*‖^2 / eps))` statement.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,

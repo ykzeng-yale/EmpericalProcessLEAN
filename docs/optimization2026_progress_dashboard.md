@@ -384,10 +384,17 @@ and
 `exercise42InfiniteChainObjective_logQuotientRate_le_near_min_concreteGradient`.
 Search-first result: reused mathlib `lp.inner_eq_tsum`, `lp.summable_inner`,
 `Summable.tendsto_atTop_zero`, `tendsto_add_atTop_nat`, and the finite
-`LowerBounds.lean` summation-by-parts pattern.  The next target is
-source-shaped packaging of the concrete infinite log-quotient statement into
-the textbook's preferred Theorem/Exercise 4.2 lower-bound display, then
-feeding it into the Theorem 4.5 condition-number/rate comparison.  In
+`LowerBounds.lean` summation-by-parts pattern.  The newest source-rate pass
+adds
+`exercise42InfiniteChainObjective_sqrtSubOneLogRate_le_near_min_concreteGradient`
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient`,
+reusing the existing Chewi 4.5 log-comparison lemmas to convert the exact
+log quotient into the `√κ` lower-bound shape.  The next target is discharging
+the remaining small-accuracy/log-nonpositive side condition from a source
+`eps <= (alpha/2) * ‖x_0 - x_*‖^2` hypothesis and packaging the concrete
+infinite Exercise 4.2 display, then feeding it into the Theorem 4.5
+condition-number/rate comparison.  In
 parallel, specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.
