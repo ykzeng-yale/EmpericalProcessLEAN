@@ -959,15 +959,21 @@ Chapter 5 acceleration/conjugate-gradient expansion has now started in
 - `StatInference.Optimization.isOrthogonalToSubmodule_cgDirectionSubmodule_of_inner_direction_eq_zero`
 - `StatInference.Optimization.orthogonalToPrevious_of_inner_directions_eq_zero`
 - `StatInference.Optimization.IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_inner_directions_eq_zero`
+- `StatInference.Optimization.inner_residual_succ_direction_eq_zero_of_inner_residual_direction_eq_norm_sq`
+- `StatInference.Optimization.IsCGDisplayedIteration.inner_residual_direction_eq_norm_sq`
+- `StatInference.Optimization.IsCGDisplayedIteration.inner_residual_succ_direction_self_eq_zero`
+- `StatInference.Optimization.IsCGDisplayedIteration.inner_residual_succ_directions_eq_zero_of_aOrthogonal`
+- `StatInference.Optimization.IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_aOrthogonal`
 
 Source anchors are the quadratic display and linear-system minimizer claim at
 markdown lines 954-960, Lemma 5.1 at line 1005, Definition 5.2 at line 1015,
 Theorem 5.3 at line 1033, and Theorem 5.4 at line 1037.  Search-first result:
 mathlib supplies continuous linear maps and inner-product continuity APIs,
-`real_inner_comm`, `Function.iterate_succ_apply'`,
+`real_inner_comm`, `real_inner_smul_left`, `Function.iterate_succ_apply'`,
 `Submodule.span_induction`, `Submodule.span_mono`, scalar inverse algebra via
 `smul_smul`/`inv_mul_cancel₀`, coefficient nonzero APIs `div_ne_zero`,
-`neg_ne_zero`, `pow_ne_zero`, `norm_ne_zero_iff`, finite-dimensional
+`neg_ne_zero`, `pow_ne_zero`, `norm_ne_zero_iff`, `field_simp`, `ring`,
+Nat split APIs `Nat.lt_or_eq_of_le` and `Nat.lt_succ_of_le`, finite-dimensional
 bilinear-form APIs `LinearMap.BilinForm.linearIndependent_of_iIsOrtho`,
 `LinearIndependent.fintype_card_le_finrank`, `innerₗ`, and submodule
 orthogonal complement APIs;
@@ -987,10 +993,13 @@ finite-dimensional minimizer wrapper.  The orthogonality propagation layer
 now reduces pairwise residual orthogonality to the source-shaped invariant
 that each new residual is orthogonal to the previous direction span; the
 scalar-orthogonality layer reduces that invariant to the generated-direction
-equations `inner ℝ (r (n+1)) (p k)=0` for `k≤n`.  Next proof work should
-derive/package those scalar equations from CG optimality/line-search
-conditions, then close the exact Theorem 5.3 wrapper and move to the
-descent/halving package for Theorem 5.4.
+equations `inner ℝ (r (n+1)) (p k)=0` for `k≤n`; and the latest line-search
+layer proves the same-index equation from the displayed coefficient, then
+upgrades an A-conjugacy hypothesis on search directions to all scalar
+residual-direction equations.  Next proof work should prove or sharply package
+that A-conjugacy condition from Chewi's direction-update coefficient /
+Gram-Schmidt calculation, then close the exact Theorem 5.3 wrapper and move
+to the descent/halving package for Theorem 5.4.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 

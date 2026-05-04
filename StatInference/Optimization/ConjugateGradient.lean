@@ -561,6 +561,87 @@ theorem IsCGDisplayedIteration.cgDirectionSubmodule_eq_krylovSubmodule
   h.to_isCGThreeTermRecurrence.cgDirectionSubmodule_eq_krylovSubmodule n
 
 /--
+The displayed line-search coefficient makes the next residual orthogonal to
+the current search direction, provided the current direction has the expected
+projection identity `⟪r_n, p_n⟫ = ‖r_n‖²`.
+-/
+theorem inner_residual_succ_direction_eq_zero_of_inner_residual_direction_eq_norm_sq
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E} {n : ℕ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hinner : inner ℝ (r n) (p n) = ‖r n‖ ^ (2 : ℕ)) :
+    inner ℝ (r (n + 1)) (p n) = 0 := by
+  rw [h.residual_succ n, inner_add_left, real_inner_smul_left, hinner]
+  have hAp : inner ℝ (A (p n)) (p n) = aNormSq A (p n) := by
+    rw [real_inner_comm]
+    rfl
+  rw [hAp]
+  unfold cgLineSearchCoeff
+  field_simp [h.aNormSq_direction_ne_zero n]
+  ring
+
+/--
+In the displayed CG iteration, each search direction has residual projection
+`⟪r_n, p_n⟫ = ‖r_n‖²`.
+-/
+theorem IsCGDisplayedIteration.inner_residual_direction_eq_norm_sq
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E}
+    (h : IsCGDisplayedIteration A p0 r p) :
+    ∀ n, inner ℝ (r n) (p n) = ‖r n‖ ^ (2 : ℕ) := by
+  intro n
+  induction n with
+  | zero =>
+      rw [h.residual_zero, h.direction_zero]
+      simp
+  | succ n ih =>
+      have horth :
+          inner ℝ (r (n + 1)) (p n) = 0 :=
+        inner_residual_succ_direction_eq_zero_of_inner_residual_direction_eq_norm_sq
+          h ih
+      rw [h.direction_succ n, inner_add_right, inner_smul_right, horth]
+      simp
+
+/--
+Same-index scalar orthogonality from the displayed Chewi line-search rule:
+`⟪r_{n+1}, p_n⟫ = 0`.
+-/
+theorem IsCGDisplayedIteration.inner_residual_succ_direction_self_eq_zero
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E}
+    (h : IsCGDisplayedIteration A p0 r p) (n : ℕ) :
+    inner ℝ (r (n + 1)) (p n) = 0 :=
+  inner_residual_succ_direction_eq_zero_of_inner_residual_direction_eq_norm_sq
+    h (h.inner_residual_direction_eq_norm_sq n)
+
+/--
+A-conjugacy of the displayed search directions upgrades the same-index
+line-search orthogonality to the full scalar source invariant
+`⟪r_{n+1}, p_k⟫ = 0` for all `k ≤ n`.
+-/
+theorem IsCGDisplayedIteration.inner_residual_succ_directions_eq_zero_of_aOrthogonal
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (haorth : ∀ n k, k < n → aInner A (p k) (p n) = 0) :
+    ∀ n k, k ≤ n → inner ℝ (r (n + 1)) (p k) = 0 := by
+  intro n
+  induction n with
+  | zero =>
+      intro k hk
+      have hk0 : k = 0 := Nat.eq_zero_of_le_zero hk
+      subst k
+      exact h.inner_residual_succ_direction_self_eq_zero 0
+  | succ n ih =>
+      intro k hk
+      rcases Nat.lt_or_eq_of_le hk with hlt | rfl
+      · have hk_le : k ≤ n := Nat.lt_succ_iff.mp hlt
+        have hprev : inner ℝ (r (n + 1)) (p k) = 0 := ih k hk_le
+        have hAorth : inner ℝ (A (p (n + 1))) (p k) = 0 := by
+          simpa [aInner, real_inner_comm] using
+            haorth (n + 1) k (Nat.lt_succ_of_le hk_le)
+        rw [h.residual_succ (n + 1), inner_add_left, real_inner_smul_left,
+          hprev, hAorth]
+        simp
+      · exact h.inner_residual_succ_direction_self_eq_zero (n + 1)
+
+/--
 If the displayed direction update has `p_{n+1}=0`, then the next residual
 already belongs to the previous direction span `span {p₀,...,p_n}`.
 -/
@@ -861,6 +942,25 @@ theorem IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_inner_direct
   h.exists_quadraticObjective_isMinOn_of_orthogonalToPrevious
     hA_sym hlower halpha_nonneg hres0 hx
     (orthogonalToPrevious_of_inner_directions_eq_zero horth)
+
+/--
+Displayed-CG Theorem 5.3 wrapper from the textbook A-conjugacy condition on
+the search directions.
+-/
+theorem IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_aOrthogonal
+    [FiniteDimensional ℝ E] {A : E →L[ℝ] E} {b p0 : E}
+    {x r p : ℕ → E} {alpha : ℝ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (hlower : QuadraticFormLowerBound A alpha)
+    (halpha_nonneg : 0 ≤ alpha)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hx : ∀ n, x (n + 1) = x n + cgLineSearchCoeff A r p n • p n)
+    (haorth : ∀ n k, k < n → aInner A (p k) (p n) = 0) :
+    ∃ n ≤ Module.finrank ℝ E, IsMinOn (quadraticObjective A b) Set.univ (x n) :=
+  h.exists_quadraticObjective_isMinOn_of_inner_directions_eq_zero
+    hA_sym hlower halpha_nonneg hres0 hx
+    (h.inner_residual_succ_directions_eq_zero_of_aOrthogonal haorth)
 
 end Optimization
 end StatInference
