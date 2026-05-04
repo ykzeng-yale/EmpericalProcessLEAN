@@ -403,9 +403,12 @@ rewriting `(q^2)^N` to `q^(2N)`.  The newest wrapper
 geometric profile as a concrete global minimizer, and
 `exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minValue_concreteGradient`
 renames the right side to the textbook `f(x_N)-f_*` shape through an `hfstar`
-identification.  The next target is feeding this display into the Theorem 4.5
-condition-number/rate comparison or packaging a single Exercise 4.2 theorem
-whose public hypotheses mention `f_*`.  In
+identification.  The public rate wrapper
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient`
+now accepts the source-shaped hypothesis `f(x_N) <= f_* + eps` and returns the
+compiled `sqrt(kappa)` iteration lower bound.  The next target is feeding this
+wrapper into the Theorem 4.5 condition-number/rate comparison or replacing the
+remaining `hfstar` parameter by a local optimum-value abbreviation.  In
 parallel, specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.

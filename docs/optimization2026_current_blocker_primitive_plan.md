@@ -1319,10 +1319,13 @@ rewriting `(q^2)^N` to `q^(2N)` with `pow_mul` and `omega`.  The follow-up
 `exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minValue_concreteGradient`
 now names the optimum value as `fstar`, giving the textbook-shaped right side
 `f(x_N)-f_*` once `hfstar` identifies `fstar` with the geometric minimizer
-value.  Next direct Exercise 4.2 step: feed this display into the already
-derived `Ω(√κ log(alpha ‖x_0-x_*‖^2 / eps))` statement, or package a single
-fully source-shaped theorem whose hypotheses mention `f_*` rather than the
-geometric point.
+value.  The public rate wrapper
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient`
+now also compiles: its near-minimality hypothesis is exactly the source-shaped
+`f(x_N) <= f_* + eps`, while `hfstar` records that `f_*` is the geometric
+minimizer value.  Next direct Exercise 4.2 step: either remove the remaining
+`hfstar` bookkeeping by defining a local optimum-value abbreviation, or feed
+this exact source-shaped rate wrapper into the Theorem 4.5 lower-bound route.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,

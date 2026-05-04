@@ -2483,5 +2483,63 @@ theorem exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGr
       halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
       hx0 hspan N hnear hlog_nonpos
 
+/--
+Source-shaped Exercise 4.2 rate wrapper with the optimum value named `fstar`.
+This exposes the near-minimality hypothesis in the textbook form
+`f(x_N) <= f_* + eps`.
+-/
+theorem exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient
+    {alpha beta kappa eps fstar : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha) (hkappa_four : 4 ≤ kappa)
+    (hfstar :
+      fstar =
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)))
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ)
+    (hnear :
+      exercise42InfiniteChainObjective alpha beta (x N) ≤ fstar + eps)
+    (heps_le_initial :
+      eps ≤
+        (alpha / 2) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)) :
+    -((Real.sqrt kappa / 2) *
+        Real.log
+          (eps /
+            ((alpha / 2) *
+              ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+                exercise42InfiniteGeometricMinimizer
+                  (chewi45GeometricRatio kappa)
+                  (chewi45GeometricRatio_nonneg (kappa := kappa)
+                    ((by
+                      rw [hkappa]
+                      exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                        1 < kappa).le))
+                  (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)))) / 4 - 1 ≤
+      (N : ℝ) := by
+  subst fstar
+  exact
+    exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale
+      halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
+      hx0 hspan N hnear heps_le_initial
+
 end Optimization
 end StatInference

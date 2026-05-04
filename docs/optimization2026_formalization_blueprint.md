@@ -718,9 +718,12 @@ global minimizer
 (`exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient`) and rename
 the display to `f(x_N)-f_*`
 (`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minValue_concreteGradient`)
-under an `hfstar` value identification.  Next is a single public Exercise 4.2
-theorem combining the `f_*` display with the already compiled `sqrt(kappa)`
-rate statement, or feeding that exact package into Theorem 4.5.
+under an `hfstar` value identification.  The public rate wrapper
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient`
+now combines the `f_*` near-minimality hypothesis with the already compiled
+`sqrt(kappa)` lower-bound statement.  Next is feeding that exact package into
+Theorem 4.5, or replacing the remaining `hfstar` value proof by a local
+optimum-value abbreviation.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,
