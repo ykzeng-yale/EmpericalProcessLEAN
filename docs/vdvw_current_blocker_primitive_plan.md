@@ -1670,6 +1670,28 @@ deterministic rate hypothesis
 available, the selected fixed-radius tail/UI package and untruncated
 Theorem 2.4.3 consumers no longer need a separate stochastic entropy proof.
 
+2026-05-04 `/goal` update after log-linear/polynomial-rate package closure:
+`StatInference/EmpiricalProcess/Theorem243.lean` now also has the concrete
+asymptotic arithmetic and package constructors for polynomial or VC/Sauer
+growth once it is expressed as a log-linear trace-count bound.  New compiled
+declarations are `tendsto_log_nat_div_atTop_nhds_zero`,
+`tendsto_const_add_mul_log_nat_div_atTop_nhds_zero`,
+`const_add_mul_log_nat_div_le_const_add`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_log_linear_bound`,
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_log_linear`.
+Search record: pinned mathlib's `Real.isLittleO_log_id_atTop` and
+`Asymptotics.IsLittleO.natCast_atTop` give `log n / n -> 0`; local selected
+fixed-radius package constructors supply the theorem-facing tail/UI handoff.
+
+Remaining blocker is now the actual combinatorial theorem, not analytic
+asymptotics: prove a finite trace/VC/Sauer/polynomial cardinality estimate of
+the form
+`Real.log ((cardinality eta n sample n : ℝ) + 1) <= offset eta + degree eta * Real.log (n : ℝ)`
+with nonnegative `offset` and `degree`, or state the exact additional
+structural assumption needed for this estimate.  That estimate will feed the
+compiled log-linear finite-trace constructor directly.
+
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
 APIs found and used are `ProbabilityTheory.iIndepFun_pi`,

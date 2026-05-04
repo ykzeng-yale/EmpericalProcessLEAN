@@ -9062,6 +9062,69 @@ theorem
         intro n hn sample
         simpa [vdVWLogEmpiricalL1CoveringCardinality] using hn sample))
 
+/-- The basic deterministic rate `log n / n -> 0`. -/
+theorem tendsto_log_nat_div_atTop_nhds_zero :
+    Tendsto (fun n : ℕ => Real.log (n : ℝ) / (n : ℝ)) atTop (𝓝 0) := by
+  simpa [id] using
+    (Asymptotics.IsLittleO.natCast_atTop
+      Real.isLittleO_log_id_atTop).tendsto_div_nhds_zero
+
+/--
+The deterministic log-linear rate `(A + D log n) / n` tends to zero.
+
+This is the asymptotic arithmetic behind polynomial/VC trace growth:
+`C * n^d` becomes `log C + d log n`, and normalizing by `n` kills both
+terms.
+-/
+theorem tendsto_const_add_mul_log_nat_div_atTop_nhds_zero (A D : ℝ) :
+    Tendsto
+      (fun n : ℕ => (A + D * Real.log (n : ℝ)) / (n : ℝ))
+      atTop (𝓝 0) := by
+  have hA :
+      Tendsto (fun n : ℕ => A / (n : ℝ)) atTop (𝓝 0) :=
+    tendsto_const_div_atTop_nhds_zero_nat A
+  have hlog :
+      Tendsto (fun n : ℕ => Real.log (n : ℝ) / (n : ℝ))
+        atTop (𝓝 0) :=
+    tendsto_log_nat_div_atTop_nhds_zero
+  have hD :
+      Tendsto (fun n : ℕ => D * (Real.log (n : ℝ) / (n : ℝ)))
+        atTop (𝓝 0) := by
+    simpa using hlog.const_mul D
+  convert hA.add hD using 1
+  · ext n
+    ring_nf
+  · ring_nf
+
+/--
+If `A,D >= 0`, then `(A + D log n) / n` is uniformly bounded by `A + D`.
+
+The `n=0` case is harmless because real division by zero is zero in Lean; for
+positive `n`, use `log n <= n`.
+-/
+theorem const_add_mul_log_nat_div_le_const_add {A D : ℝ}
+    (hA_nonneg : 0 ≤ A) (hD_nonneg : 0 ≤ D) :
+    ∀ n : ℕ,
+      (A + D * Real.log (n : ℝ)) / (n : ℝ) ≤ A + D := by
+  intro n
+  by_cases hn : n = 0
+  · subst n
+    simp
+    linarith
+  · have hn_pos_nat : 0 < n := Nat.pos_of_ne_zero hn
+    have hn_pos : (0 : ℝ) < (n : ℝ) := by
+      exact_mod_cast hn_pos_nat
+    have hn_one : (1 : ℝ) ≤ (n : ℝ) := by
+      exact_mod_cast hn_pos_nat
+    rw [div_le_iff₀ hn_pos]
+    have hlog_le : Real.log (n : ℝ) ≤ (n : ℝ) :=
+      Real.log_le_self (Nat.cast_nonneg n)
+    have hDlog_le : D * Real.log (n : ℝ) ≤ D * (n : ℝ) :=
+      mul_le_mul_of_nonneg_left hlog_le hD_nonneg
+    have hA_le : A ≤ A * (n : ℝ) := by
+      nlinarith
+    nlinarith
+
 /--
 The normalized logarithm of a constant finite cardinality is bounded by its
 own logarithm at every sample size.
@@ -11995,6 +12058,128 @@ theorem
       (K := K) (rate := rate) (cardinality := cardinality)
       hX_samplePath hcovering_all hclass henvelope_meas hrate_tendsto
       hM_pos hK_nonneg hrate_le_K hlog_rate_bound
+
+/--
+Build the selected fixed-radius tail/UI package from a log-linear
+cardinality estimate.
+
+A polynomial bound `cardinality <= C eta * n ^ d eta` should feed this
+constructor after rewriting to
+`log(cardinality + 1) <= offset eta + degree eta * log n`.  The theorem
+derives both the stochastic entropy field and the deterministic bounded
+tail/UI input from the log-linear rate.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_log_linear_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {offset degree : ℝ -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hoffset_nonneg : ∀ eta, 0 < eta -> 0 ≤ offset eta)
+    (hdegree_nonneg : ∀ eta, 0 < eta -> 0 ≤ degree eta)
+    (hM_pos : 0 < M)
+    (hlog_linear_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        Real.log ((cardinality eta n sample n : ℝ) + 1) ≤
+          offset eta + degree eta * Real.log (n : ℝ)) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  let rate : ℝ -> ℕ -> ℝ :=
+    fun eta n =>
+      (offset eta + degree eta * Real.log (n : ℝ)) / (n : ℝ)
+  refine
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_tendsto_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (K := fun eta => offset eta + degree eta) (rate := rate)
+      (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas ?_ hM_pos
+      ?_ ?_ ?_
+  · intro eta _heta
+    simpa [rate] using
+      tendsto_const_add_mul_log_nat_div_atTop_nhds_zero
+        (offset eta) (degree eta)
+  · intro eta heta
+    exact add_nonneg (hoffset_nonneg eta heta) (hdegree_nonneg eta heta)
+  · intro eta heta n
+    simpa [rate] using
+      const_add_mul_log_nat_div_le_const_add
+        (hoffset_nonneg eta heta) (hdegree_nonneg eta heta) n
+  · intro eta heta n sample
+    exact
+      div_le_div_of_nonneg_right
+        (hlog_linear_bound eta heta n sample) (Nat.cast_nonneg n)
+
+/--
+Finite-trace-image selected fixed-radius package from a log-linear trace-count
+estimate.
+
+This is the current theorem-facing bridge for a future Sauer/VC or polynomial
+trace-count proof: finite trace images give the empirical covers, and the
+log-linear count supplies the stochastic entropy and tail/UI side conditions.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_log_linear
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {offset degree : ℝ -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (htrace_finite :
+      ∀ n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        (htrace_finite n sample m).toFinset.card ≤
+          cardinality eta n sample m)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hoffset_nonneg : ∀ eta, 0 < eta -> 0 ≤ offset eta)
+    (hdegree_nonneg : ∀ eta, 0 < eta -> 0 ≤ degree eta)
+    (hM_pos : 0 < M)
+    (hlog_linear_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        Real.log ((cardinality eta n sample n : ℝ) + 1) ≤
+          offset eta + degree eta * Real.log (n : ℝ)) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  have hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n) :=
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_trace_image_cardinality_bound_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (cardinality := cardinality) X htrace_finite hcardinality_dom
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_log_linear_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (offset := offset) (degree := degree) (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas
+      hoffset_nonneg hdegree_nonneg hM_pos hlog_linear_bound
 
 /--
 Build the selected fixed-radius tail/UI package from a terminal

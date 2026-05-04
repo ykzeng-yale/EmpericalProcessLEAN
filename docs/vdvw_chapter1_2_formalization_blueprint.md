@@ -709,10 +709,16 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_tendsto_bound`,
    and
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_logCardinality_div_tendsto_bound`.
+   The concrete log-linear/polynomial-rate layer is also compiled via
+   `tendsto_log_nat_div_atTop_nhds_zero`,
+   `tendsto_const_add_mul_log_nat_div_atTop_nhds_zero`,
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_log_linear_bound`,
+   and
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_log_linear`.
    What remains for the full non-finite class route is the actual
-   geometric/cardinality estimate and deterministic normalized log-rate proof
-   for the chosen empirical internal cover, trace image, VC/Sauer trace count,
-   or maximal separated set.  If this
+   geometric/cardinality estimate in log-linear form for the chosen empirical
+   internal cover, trace image, VC/Sauer trace count, or maximal separated
+   set.  If this
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
