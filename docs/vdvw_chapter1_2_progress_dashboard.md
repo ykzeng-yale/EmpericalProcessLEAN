@@ -514,6 +514,12 @@ measurability, the ghost-expectation field follows by
 `Integrable.integral_prod_left`, and the sample-side Rademacher supremum
 integrability follows from the all-level truncated bound
 `abs_vdVWTruncatedClassFun_le_max_M_zero`.
+2026-05-04 follow-up: the constructor now also derives the remaining
+random-sign block: `hrandomIntegralIntegrable`, `Urandom`,
+`hproductSupIntegrable`, and `hsignSupIntegrable`.  The countable
+Rademacher-product integrability lemmas reuse `HasSubgaussianMGF.integrable`,
+product integrability/Fubini, and the countable supremum measurability pattern;
+the product measurable cover follows from `VdVWMeasurableCover.ofAEMeasurable`.
 2026-05-04 follow-up: the constructor now also derives
 `hcenteredSupIntegrable`.  New supporting lemmas bound a weighted supremum from
 a uniform class bound and prove countable centered truncated supremum

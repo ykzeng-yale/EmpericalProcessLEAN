@@ -4571,6 +4571,91 @@ theorem
       (fun _ωsign : Ωsign => sample) hsup_meas hterm
 
 /--
+For countable classes, a fixed-sample Rademacher-weighted truncated supremum is
+integrable over the sign probability space under the uniform truncation bound.
+-/
+theorem
+    integrable_vdVWWeightedClassSupremum_truncated_rademacher_sign_of_countable
+    {Ωsign : Type x} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    {n : ℕ} (sign : Fin n -> Ωsign -> ℝ)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μsign)
+    (sample : SampleAt Observation n) :
+    Integrable
+      (fun ωsign : Ωsign =>
+        vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights (fun i : Fin n => sign i ωsign)) sample)
+      μsign := by
+  let weights : Ωsign -> Fin n -> ℝ :=
+    fun ωsign => vdVWRademacherWeights (fun i : Fin n => sign i ωsign)
+  have hterm :
+      ∀ index, index ∈ indexClass ->
+        Integrable
+          (fun ωsign : Ωsign =>
+            vdVWWeightedSampleSum
+              (vdVWTruncatedClassFun classFun envelope M)
+              (weights ωsign) index sample)
+          μsign := by
+    intro index _hindex
+    unfold vdVWWeightedSampleSum
+    exact
+      MeasureTheory.integrable_finsetSum (s := Finset.univ)
+        (f := fun i (ωsign : Ωsign) =>
+          weights ωsign i *
+            vdVWTruncatedClassFun classFun envelope M index (sample i))
+        (fun i _hi => by
+          simpa [weights, vdVWRademacherWeights, mul_assoc] using
+            (((hsubG i).integrable.const_mul ((n : ℝ)⁻¹)).mul_const
+              (vdVWTruncatedClassFun classFun envelope M index (sample i))))
+  have hsup_meas :
+      AEStronglyMeasurable
+        (fun ωsign : Ωsign =>
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (weights ωsign) sample)
+        μsign := by
+    unfold vdVWWeightedClassSupremum
+    exact
+      (AEMeasurable.biSup indexClass hcount
+        (fun index hindex =>
+          (hterm index hindex).aemeasurable.abs)).aestronglyMeasurable
+  have hdominant :
+      Integrable
+        (fun ωsign : Ωsign =>
+          ∑ i : Fin n, |weights ωsign i| * max M 0) μsign := by
+    exact
+      MeasureTheory.integrable_finsetSum (s := Finset.univ)
+        (f := fun i (ωsign : Ωsign) =>
+          |weights ωsign i| * max M 0)
+        (fun i _hi => by
+          simpa [weights, vdVWRademacherWeights] using
+            (((hsubG i).integrable.const_mul ((n : ℝ)⁻¹)).abs.mul_const
+              (max M 0)))
+  refine Integrable.mono' hdominant hsup_meas ?_
+  refine ae_of_all _ ?_
+  intro ωsign
+  have hsup_nonneg :
+      0 ≤
+        vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (weights ωsign) sample :=
+    vdVWWeightedClassSupremum_nonneg indexClass
+      (vdVWTruncatedClassFun classFun envelope M)
+      (weights ωsign) sample
+  rw [Real.norm_eq_abs, abs_of_nonneg hsup_nonneg]
+  exact
+    vdVWWeightedClassSupremum_le_sum_abs_mul_bound_of_uniform_bound
+      (weights ωsign) sample (by positivity)
+      (fun index hindex observation =>
+        abs_vdVWTruncatedClassFun_le_max_M_zero
+          henvelope hindex observation)
+
+/--
 For finite classes, the product-space Rademacher-weighted truncated supremum is
 integrable on the auxiliary sign space times the empirical product space.
 -/
@@ -4652,6 +4737,122 @@ theorem
       hsup_meas hterm
 
 /--
+For countable classes, the product-space Rademacher-weighted truncated
+supremum is integrable on the auxiliary sign space times the empirical product
+space.
+-/
+theorem
+    integrable_vdVWWeightedClassSupremum_truncated_rademacher_product_of_countable
+    {Ωsign : Type x} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    {n : ℕ} (sign : Fin n -> Ωsign -> ℝ)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μsign) :
+    Integrable
+      (fun z : Ωsign × SampleAt Observation n =>
+        vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2)
+      (μsign.prod (vdVWProductMeasure P n)) := by
+  let weights : Ωsign × SampleAt Observation n -> Fin n -> ℝ :=
+    fun z => vdVWRademacherWeights (fun i : Fin n => sign i z.1)
+  let sample : Ωsign × SampleAt Observation n -> SampleAt Observation n :=
+    fun z => z.2
+  have hterm :
+      ∀ index, index ∈ indexClass ->
+        Integrable
+          (fun z : Ωsign × SampleAt Observation n =>
+            vdVWWeightedSampleSum
+              (vdVWTruncatedClassFun classFun envelope M)
+              (weights z) index (sample z))
+          (μsign.prod (vdVWProductMeasure P n)) := by
+    intro index hindex
+    have htrunc :
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P :=
+      integrable_vdVWTruncatedClassFun_of_integrable
+        (hclass index hindex) henv (hclassIntegrable index hindex)
+    unfold vdVWWeightedSampleSum
+    exact
+      MeasureTheory.integrable_finsetSum (s := Finset.univ)
+        (f := fun i (z : Ωsign × SampleAt Observation n) =>
+          weights z i *
+            vdVWTruncatedClassFun classFun envelope M index (sample z i))
+        (fun i _hi => by
+          have hsign_int :
+              Integrable (fun ωsign : Ωsign =>
+                (n : ℝ)⁻¹ * sign i ωsign) μsign :=
+            (hsubG i).integrable.const_mul ((n : ℝ)⁻¹)
+          have hcoord :
+              Integrable
+                (fun sample : SampleAt Observation n =>
+                  vdVWTruncatedClassFun classFun envelope M index
+                    (sample i))
+                (vdVWProductMeasure P n) := by
+            simpa [SampleAt, vdVWProductMeasure, Function.comp_def] using
+              (MeasureTheory.integrable_comp_eval
+                (μ := fun _ : Fin n => P) (i := i) htrunc)
+          simpa [weights, sample, vdVWRademacherWeights, mul_assoc] using
+            hsign_int.mul_prod hcoord)
+  have hsup_meas :
+      AEStronglyMeasurable
+        (fun z : Ωsign × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (weights z) (sample z))
+        (μsign.prod (vdVWProductMeasure P n)) := by
+    unfold vdVWWeightedClassSupremum
+    exact
+      (AEMeasurable.biSup indexClass hcount
+        (fun index hindex =>
+          (hterm index hindex).aemeasurable.abs)).aestronglyMeasurable
+  have hdominant :
+      Integrable
+        (fun z : Ωsign × SampleAt Observation n =>
+          ∑ i : Fin n, |weights z i| * max M 0)
+        (μsign.prod (vdVWProductMeasure P n)) := by
+    exact
+      MeasureTheory.integrable_finsetSum (s := Finset.univ)
+        (f := fun i (z : Ωsign × SampleAt Observation n) =>
+          |weights z i| * max M 0)
+        (fun i _hi => by
+          have hsign_abs :
+              Integrable
+                (fun ωsign : Ωsign =>
+                  |(n : ℝ)⁻¹ * sign i ωsign| * max M 0) μsign := by
+            exact
+              (((hsubG i).integrable.const_mul ((n : ℝ)⁻¹)).abs.mul_const
+                (max M 0))
+          simpa [weights, vdVWRademacherWeights] using
+            hsign_abs.comp_fst (vdVWProductMeasure P n))
+  refine Integrable.mono' hdominant hsup_meas ?_
+  refine ae_of_all _ ?_
+  intro z
+  have hsup_nonneg :
+      0 ≤
+        vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (weights z) (sample z) :=
+    vdVWWeightedClassSupremum_nonneg indexClass
+      (vdVWTruncatedClassFun classFun envelope M)
+      (weights z) (sample z)
+  rw [Real.norm_eq_abs, abs_of_nonneg hsup_nonneg]
+  exact
+    vdVWWeightedClassSupremum_le_sum_abs_mul_bound_of_uniform_bound
+      (weights z) (sample z) (by positivity)
+      (fun index hindex observation =>
+        abs_vdVWTruncatedClassFun_le_max_M_zero
+          henvelope hindex observation)
+
+/--
 For finite classes, the sign-side integral of the sample supremum is
 integrable.  This is a direct Fubini consequence of the product-space
 integrability lemma above.
@@ -4714,6 +4915,38 @@ noncomputable def
     ((integrable_vdVWWeightedClassSupremum_truncated_rademacher_product_of_finite
       (μsign := μsign) (P := P) hindex_finite hclass henvelope
       hclassIntegrable sign hsubG).aemeasurable.ennreal_ofReal)
+
+/--
+Countable classes provide the product-space measurable cover for the
+Rademacher-weighted truncated supremum.
+-/
+noncomputable def
+    VdVWMeasurableCover.truncated_rademacher_product_of_countable
+    {Ωsign : Type x} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    {n : ℕ} (sign : Fin n -> Ωsign -> ℝ)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μsign) :
+    VdVWMeasurableCover (μsign.prod (vdVWProductMeasure P n))
+      (fun z : Ωsign × SampleAt Observation n => ENNReal.ofReal
+        (vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2)) :=
+  VdVWMeasurableCover.ofAEMeasurable
+    (μsign.prod (vdVWProductMeasure P n))
+    ((integrable_vdVWWeightedClassSupremum_truncated_rademacher_product_of_countable
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      hcount henvelope hclass henv hclassIntegrable sign hsubG).aemeasurable.ennreal_ofReal)
 
 /-- Negating all Rademacher signs leaves the weighted class supremum unchanged. -/
 theorem vdVWWeightedClassSupremum_rademacherWeights_neg_sign
@@ -19381,39 +19614,7 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
       ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
         (fun i : Fin n => sign n i ω))
     (hindep : ∀ n, iIndepFun (sign n) μsign)
-    (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign)
-    (hrandomIntegralIntegrable :
-      ∀ M n,
-        Integrable
-          (fun ω : Ωsign =>
-            ∫ sample : SampleAt Observation n,
-              vdVWWeightedClassSupremum indexClass
-                (vdVWTruncatedClassFun classFun envelope M)
-                (vdVWRademacherWeights (fun i : Fin n => sign n i ω)) sample
-              ∂(vdVWProductMeasure P n))
-          μsign)
-    (Urandom :
-      ∀ M n, VdVWMeasurableCover (μsign.prod (vdVWProductMeasure P n))
-        (fun z : Ωsign × SampleAt Observation n => ENNReal.ofReal
-          (vdVWWeightedClassSupremum indexClass
-            (vdVWTruncatedClassFun classFun envelope M)
-            (vdVWRademacherWeights (fun i : Fin n => sign n i z.1)) z.2)))
-    (hproductSupIntegrable :
-      ∀ M n,
-        Integrable
-          (fun z : Ωsign × SampleAt Observation n =>
-            vdVWWeightedClassSupremum indexClass
-              (vdVWTruncatedClassFun classFun envelope M)
-              (vdVWRademacherWeights (fun i : Fin n => sign n i z.1)) z.2)
-          (μsign.prod (vdVWProductMeasure P n)))
-    (hsignSupIntegrable :
-      ∀ M n (sample : SampleAt Observation n),
-        Integrable
-          (fun ωsign =>
-            vdVWWeightedClassSupremum indexClass
-              (vdVWTruncatedClassFun classFun envelope M)
-              (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)) sample)
-          μsign) :
+    (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign) :
     VdVWTheorem243FullSubgraphSideConditions μsign P indexClass classFun
       envelope X vcDegree sign where
   hX_samplePath := hX_samplePath
@@ -19492,10 +19693,44 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
         (envelope := envelope) (M := M) (Set.to_countable indexClass)
         henvelope hclass henv
         (vdVWRademacherWeights (fun i : Fin n => sign n i ω))
-  hrandomIntegralIntegrable := hrandomIntegralIntegrable
-  Urandom := Urandom
-  hproductSupIntegrable := hproductSupIntegrable
-  hsignSupIntegrable := hsignSupIntegrable
+  hrandomIntegralIntegrable := by
+    intro M n
+    have hproduct :
+        Integrable
+          (fun z : Ωsign × SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i z.1)) z.2)
+          (μsign.prod (vdVWProductMeasure P n)) :=
+      integrable_vdVWWeightedClassSupremum_truncated_rademacher_product_of_countable
+        (μsign := μsign) (P := P) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M)
+        (Set.to_countable indexClass) henvelope hclass henv
+        hclassIntegrable (sign n) (hsubG n)
+    simpa using hproduct.integral_prod_left
+  Urandom := by
+    intro M n
+    exact
+      VdVWMeasurableCover.truncated_rademacher_product_of_countable
+        (μsign := μsign) (P := P) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M)
+        (Set.to_countable indexClass) henvelope hclass henv
+        hclassIntegrable (sign n) (hsubG n)
+  hproductSupIntegrable := by
+    intro M n
+    exact
+      integrable_vdVWWeightedClassSupremum_truncated_rademacher_product_of_countable
+        (μsign := μsign) (P := P) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M)
+        (Set.to_countable indexClass) henvelope hclass henv
+        hclassIntegrable (sign n) (hsubG n)
+  hsignSupIntegrable := by
+    intro M n sample
+    exact
+      integrable_vdVWWeightedClassSupremum_truncated_rademacher_sign_of_countable
+        (μsign := μsign) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M)
+        (Set.to_countable indexClass) henvelope (sign n) (hsubG n) sample
   Ucentered := by
     intro M n
     exact

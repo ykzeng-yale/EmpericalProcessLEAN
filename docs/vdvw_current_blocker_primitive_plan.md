@@ -2734,10 +2734,24 @@ lemmas prove `abs_vdVWTruncatedClassFun_le_max_M_zero`,
 The ghost expectation is now a Fubini consequence of the split product-copy
 integrability theorem.
 
-Next exact theorem-facing edit: reduce the remaining package fields only where
-there are genuine local lemmas to discharge them.  The main unresolved
-infinite-class fields are now the random-sign iterated-integral/product-space
-integrability, product-space measurable-cover witness, and sign-side supremum
-integrability fields; these involve varying Rademacher weights over the sign
-space and should be reduced only with an honest countable/varying-weight
-measurability-integrability theorem, not by finite-class shortcuts.
+2026-05-04 follow-up: the same constructor now also derives
+`hrandomIntegralIntegrable`, `Urandom`, `hproductSupIntegrable`, and
+`hsignSupIntegrable`.  Search/reuse record: local code already had the finite
+Rademacher varying-weight pattern, the countable supremum measurability
+pattern, `integrable_vdVWTruncatedClassFun_of_integrable`,
+`integrable_vdVWWeightedClassSupremum_truncated_of_countable`, and
+`VdVWMeasurableCover.ofAEMeasurable`; pinned mathlib supplied
+`HasSubgaussianMGF.integrable`, `Integrable.mul_prod`, `Integrable.comp_fst`,
+`Integrable.integral_prod_left`, and finite-sum integrability.  New local
+lemmas prove
+`integrable_vdVWWeightedClassSupremum_truncated_rademacher_sign_of_countable`,
+`integrable_vdVWWeightedClassSupremum_truncated_rademacher_product_of_countable`,
+and `VdVWMeasurableCover.truncated_rademacher_product_of_countable`.
+
+Next exact theorem-facing edit: use the simplified
+`VdVWTheorem243FullSubgraphSideConditions.of_integrable` constructor in the
+named Theorem 2.4.3 full-subgraph assembly, so the final theorem-facing
+statement no longer exposes the now-derived integrability/measurable-cover
+witnesses.  Remaining exact-textbook alignment still includes the structural
+VC/subgraph quantized-grid implication and any arbitrary-map/nonmeasurable
+measurability primitives needed by the exact VdV&W statement.

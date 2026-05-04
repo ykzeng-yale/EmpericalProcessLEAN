@@ -901,7 +901,11 @@ above, so they do not change the theorem-level dashboard counts.
    iterated-expectation integrability field, and the sample-side Rademacher
    supremum integrability field are also derived from countability, Fubini over
    product measures, and the uniform all-level truncation/pair-difference
-   bounds.
+   bounds.  The random-sign iterated-integral, product-space measurable-cover,
+   product-space integrability, and sign-side supremum integrability fields are
+   now also derived from countability, sub-Gaussian sign integrability,
+   product-measure integrability/Fubini, and the countable product measurable
+   cover constructor.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
