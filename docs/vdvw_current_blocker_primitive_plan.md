@@ -2798,9 +2798,24 @@ variable-domain GC predicate was found.  The bridge reuses
 `abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove`, and
 `vdVWWeightedClassSupremum_nonneg`.
 
+2026-05-04 follow-up: the finite-product GC bridge is now consumed by the
+full-subgraph and finite-class Theorem 2.4.3 routes.  New compiled declarations
+are `abs_integral_classFun_le_integral_envelope`,
+`bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope`,
+`VdVWOuterProbabilityUniformDeviationConstOn_of_fullSubgraph_integrable`,
+`VdVWOuterProbabilityUniformDeviationConstOn_of_fullSubgraph_integrable_canonical`,
+and `VdVWOuterProbabilityUniformDeviationConstOn_of_finite_indexClass_canonical`.
+The key new boundedness lemma is sample-dependent: it uses the finitely many
+envelope values along `SampleAt Observation n` plus
+`∫ envelope dP`, so it does not assume a globally bounded envelope.  Search
+reused mathlib `abs_integral_le_integral_abs`, `integral_mono`, and
+`Finset.abs_sum_le_sum_abs`, together with the local envelope and weighted
+sample-sum APIs.
+
 Next exact theorem-facing edit: move from this proof layer toward the exact
 Theorem 2.4.3 statement by aligning the remaining structural full-subgraph
-VC/grid assumption with the textbook entropy hypothesis and then consume the
-new finite-product GC bridge.  The exact textbook theorem still needs the
-in-mean and almost-sure/reverse-submartingale conclusions; do not recreate the
-derived integrability/measurable-cover witnesses.
+VC/grid assumption with the textbook entropy hypothesis, then add the
+in-mean and almost-sure/reverse-submartingale conclusions.  The finite-product
+GC outer-probability conclusion is now available for the current full-subgraph
+and finite-class routes; do not recreate the derived integrability,
+measurable-cover, or finite-product GC witnesses.

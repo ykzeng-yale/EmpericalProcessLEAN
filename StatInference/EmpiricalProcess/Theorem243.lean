@@ -2028,6 +2028,85 @@ theorem
       (fun _ : Fin n => (n : ℝ)⁻¹) sample
   simpa [Real.dist_eq, sub_zero, abs_of_nonneg hsup_nonneg] using hsup_bad
 
+/-- An integrable envelope bounds the absolute population mean of each class member. -/
+theorem abs_integral_classFun_le_integral_envelope
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {μ : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope μ)
+    {index : Index} (hindex : index ∈ indexClass) :
+    |∫ x, classFun index x ∂μ| ≤ ∫ x, envelope x ∂μ := by
+  have hclass_integrable :
+      Integrable (classFun index) μ :=
+    integrable_classFun_of_integrable_envelope
+      (μ := μ) henvelope hclass henv_integrable hindex
+  calc
+    |∫ x, classFun index x ∂μ|
+        ≤ ∫ x, |classFun index x| ∂μ :=
+          abs_integral_le_integral_abs
+    _ ≤ ∫ x, envelope x ∂μ :=
+      integral_mono hclass_integrable.abs henv_integrable fun x =>
+        henvelope.bound index hindex x
+
+/--
+On each finite sample, an integrable envelope gives boundedness of the
+untruncated centered weighted value set.  The bound is sample-dependent through
+the finitely many envelope values, so no globally bounded envelope is required.
+-/
+theorem bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {n : ℕ}
+    (weights : Fin n -> ℝ) (sample : SampleAt Observation n)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    BddAbove
+      (vdVWWeightedClassValueSet indexClass
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P)
+        weights sample) := by
+  refine ⟨∑ i : Fin n, |weights i| *
+      (envelope (sample i) + ∫ x, envelope x ∂P), ?_⟩
+  intro value hvalue
+  rcases hvalue with ⟨index, hindex, rfl⟩
+  calc
+    |vdVWWeightedSampleSum
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P)
+        weights index sample|
+        = |∑ i : Fin n,
+            weights i * (classFun index (sample i) -
+              ∫ x, classFun index x ∂P)| := by
+          rfl
+    _ ≤ ∑ i : Fin n,
+          |weights i * (classFun index (sample i) -
+            ∫ x, classFun index x ∂P)| := by
+          simpa using
+            (Finset.abs_sum_le_sum_abs
+              (fun i : Fin n => weights i * (classFun index (sample i) -
+                ∫ x, classFun index x ∂P))
+              (Finset.univ : Finset (Fin n)))
+    _ = ∑ i : Fin n,
+          |weights i| * |classFun index (sample i) -
+            ∫ x, classFun index x ∂P| := by
+          simp [abs_mul]
+    _ ≤ ∑ i : Fin n, |weights i| *
+          (envelope (sample i) + ∫ x, envelope x ∂P) := by
+          refine Finset.sum_le_sum fun i _hi => ?_
+          refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg (weights i))
+          exact
+            (abs_sub (classFun index (sample i))
+              (∫ x, classFun index x ∂P)).trans
+              (add_le_add
+                (henvelope.bound index hindex (sample i))
+                (abs_integral_classFun_le_integral_envelope
+                  (μ := P) henvelope hclass henv_integrable hindex))
+
 /-- Coordinate measurability is preserved by the `F_M` truncation. -/
 theorem VdVWClassCoordinateMeasurable.truncate
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
@@ -19993,6 +20072,61 @@ theorem
           henv_integrable hsign hindep hsubG)
 
 /--
+Full-subgraph integrable Theorem 2.4.3 route, expressed as finite-product
+outer-probability uniform-deviation convergence.
+
+This consumes the centered untruncated convergence theorem through
+`VdVWOuterProbabilityUniformDeviationConstOn_of_centered_weightedSupremum`.
+It is still a theorem-facing proof layer, not the exact textbook in-mean/a.s.
+statement.
+-/
+theorem
+    VdVWOuterProbabilityUniformDeviationConstOn_of_fullSubgraph_integrable
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
+    (hsign :
+      ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
+        (fun i : Fin n => sign n i ω))
+    (hindep : ∀ n, iIndepFun (sign n) μsign)
+    (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign) :
+    VdVWOuterProbabilityUniformDeviationConstOn P indexClass classFun := by
+  refine
+    VdVWOuterProbabilityUniformDeviationConstOn_of_centered_weightedSupremum
+      (P := P) (indexClass := indexClass) (classFun := classFun) ?_ ?_
+  · intro n sample
+    exact
+      bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        henvelope hclass henv_integrable
+  · exact
+      VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable
+        (μsign := μsign) (P := P) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (X := X)
+        (vcDegree := vcDegree) hX_samplePath hvc hindexClass
+        henvelope hclass henv henv_integrable sign hsign hindep hsubG
+
+/--
 Full-subgraph integrable Theorem 2.4.3 route with the auxiliary Rademacher
 sign space instantiated from a common iid real-valued Rademacher sequence.
 -/
@@ -20831,6 +20965,46 @@ theorem
       (henv_integrable := henv_integrable)
 
 /--
+Canonical full-subgraph Theorem 2.4.3 route, expressed as finite-product
+outer-probability uniform-deviation convergence.
+
+This removes the auxiliary Rademacher and sample-path choices from the
+finite-product GC bridge.
+-/
+theorem
+    VdVWOuterProbabilityUniformDeviationConstOn_of_fullSubgraph_integrable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterProbabilityUniformDeviationConstOn P indexClass classFun := by
+  refine
+    VdVWOuterProbabilityUniformDeviationConstOn_of_centered_weightedSupremum
+      (P := P) (indexClass := indexClass) (classFun := classFun) ?_ ?_
+  · intro n sample
+    exact
+      bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        henvelope hclass henv_integrable
+  · exact
+      VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable
+
+/--
 Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the
 canonical terminal sample-path process.
 
@@ -20874,6 +21048,39 @@ theorem
       (hindex_finite := hindex_finite) (hindexClass := hindexClass)
       (henvelope := henvelope) (hclass := hclass) (henv := henv)
       (henv_integrable := henv_integrable)
+
+/--
+Canonical finite-class Theorem 2.4.3 route, expressed as finite-product
+outer-probability uniform-deviation convergence.
+-/
+theorem
+    VdVWOuterProbabilityUniformDeviationConstOn_of_finite_indexClass_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterProbabilityUniformDeviationConstOn P indexClass classFun := by
+  refine
+    VdVWOuterProbabilityUniformDeviationConstOn_of_centered_weightedSupremum
+      (P := P) (indexClass := indexClass) (classFun := classFun) ?_ ?_
+  · intro n sample
+    exact
+      bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        henvelope hclass henv_integrable
+  · exact
+      VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
+        henv_integrable
 
 /--
 Fixed-`M` centered-truncated convergence from entropy, measurable random

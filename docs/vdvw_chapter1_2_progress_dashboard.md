@@ -565,6 +565,16 @@ deviation bad event on the same variable finite-product spaces.  It is still
 not the exact textbook Theorem 2.4.3 report: the remaining work is to align the
 book entropy/full-subgraph assumptions with the current side-condition route
 and then add the in-mean and almost-sure/reverse-submartingale conclusions.
+2026-05-04 follow-up: the finite-product GC-deviation bridge is now consumed by
+the current full-subgraph and finite-class routes.  New compiled declarations
+are `abs_integral_classFun_le_integral_envelope`,
+`bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope`,
+`VdVWOuterProbabilityUniformDeviationConstOn_of_fullSubgraph_integrable`,
+`VdVWOuterProbabilityUniformDeviationConstOn_of_fullSubgraph_integrable_canonical`,
+and `VdVWOuterProbabilityUniformDeviationConstOn_of_finite_indexClass_canonical`.
+The route now reaches the finite-product uniform-deviation conclusion under
+the full-subgraph/canonical and finite-class/canonical hypotheses, while the
+exact in-mean and a.s. textbook conclusions remain pending.
 
 ## Verification Monitor
 

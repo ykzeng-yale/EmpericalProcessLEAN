@@ -932,6 +932,14 @@ above, so they do not change the theorem-level dashboard counts.
    This is the bridge from the current centered weighted-supremum proof layer
    to the book's uniform-deviation conclusion shape over `SampleAt
    Observation n`; it is not yet the exact in-mean/a.s. textbook theorem.
+   The bridge is now consumed by the full-subgraph and finite-class routes via
+   `VdVWOuterProbabilityUniformDeviationConstOn_of_fullSubgraph_integrable`,
+   `VdVWOuterProbabilityUniformDeviationConstOn_of_fullSubgraph_integrable_canonical`,
+   and `VdVWOuterProbabilityUniformDeviationConstOn_of_finite_indexClass_canonical`.
+   The supporting boundedness lemma
+   `bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope` uses
+   sample-dependent envelope values plus the envelope integral, so it does not
+   require a bounded envelope.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
