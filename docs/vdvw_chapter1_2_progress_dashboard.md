@@ -490,6 +490,10 @@ so the VC/subgraph-to-threshold direction is now formalized.
 is compiled.  Next target: package this as the named final Theorem 2.4.3
 side-condition theorem while keeping remaining measurability/integrability and
 Rademacher assumptions explicit.
+2026-05-04 follow-up: that package is now compiled as
+`VdVWTheorem243FullSubgraphSideConditions`, with consumer
+`VdVWTheorem243FullSubgraphSideConditions.centered_untruncated_convergesInOuterProbabilityConst_zero`.
+It is data-carrying because it includes measurable-cover witnesses.
 
 ## Verification Monitor
 

@@ -2658,3 +2658,17 @@ side-condition theorem around this consumer, grouping the still-explicit
 measurability, integrability, Rademacher, sample-path, and envelope
 assumptions honestly.  Do not add further VC/grid wrappers unless final
 assembly exposes a type mismatch.
+
+2026-05-04 follow-up: `Theorem243.lean` now adds the data-carrying structure
+`VdVWTheorem243FullSubgraphSideConditions` and compact consumer
+`VdVWTheorem243FullSubgraphSideConditions.centered_untruncated_convergesInOuterProbabilityConst_zero`.
+The structure groups the full lifted-subgraph VC input, sample-path identity,
+envelope/measurability/integrability assumptions, Rademacher sign hypotheses,
+and the remaining measurable-cover witnesses needed by the current proof.
+
+Next exact theorem-facing edit: reduce fields of
+`VdVWTheorem243FullSubgraphSideConditions` where existing local lemmas already
+derive them, especially truncated-function integrability and any finite/finitely
+measurable supremum cases, while keeping genuinely infinite-class
+measurability/integrability assumptions explicit.  Exact textbook completion
+still requires replacing or justifying the remaining side-condition fields.

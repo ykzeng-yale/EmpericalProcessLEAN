@@ -886,6 +886,9 @@ above, so they do not change the theorem-level dashboard counts.
    The direct untruncated consumer from the lifted full-subgraph VC predicate is
    now compiled as
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`.
+   The current compact assembly point is
+   `VdVWTheorem243FullSubgraphSideConditions` with consumer
+   `VdVWTheorem243FullSubgraphSideConditions.centered_untruncated_convergesInOuterProbabilityConst_zero`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
