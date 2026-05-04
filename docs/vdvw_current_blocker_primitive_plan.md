@@ -2672,3 +2672,14 @@ derive them, especially truncated-function integrability and any finite/finitely
 measurable supremum cases, while keeping genuinely infinite-class
 measurability/integrability assumptions explicit.  Exact textbook completion
 still requires replacing or justifying the remaining side-condition fields.
+
+2026-05-04 follow-up: `Theorem243.lean` now adds
+`VdVWTheorem243FullSubgraphSideConditions.of_integrable`, a constructor that
+derives the package field `htruncIntegrable` from `hclass`, `henv`, and
+`hclassIntegrable` using the existing lemma
+`integrable_vdVWTruncatedClassFun_of_integrable`.
+
+Next exact theorem-facing edit: reduce the remaining package fields only where
+there are genuine local lemmas to discharge them.  The main unresolved
+infinite-class fields are the centered/pair/split/random-sign supremum
+integrability and measurable-cover witnesses.

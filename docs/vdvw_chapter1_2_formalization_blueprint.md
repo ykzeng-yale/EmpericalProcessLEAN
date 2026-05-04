@@ -889,6 +889,9 @@ above, so they do not change the theorem-level dashboard counts.
    The current compact assembly point is
    `VdVWTheorem243FullSubgraphSideConditions` with consumer
    `VdVWTheorem243FullSubgraphSideConditions.centered_untruncated_convergesInOuterProbabilityConst_zero`.
+   The constructor
+   `VdVWTheorem243FullSubgraphSideConditions.of_integrable` now discharges the
+   truncated-function integrability field from ordinary class integrability.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

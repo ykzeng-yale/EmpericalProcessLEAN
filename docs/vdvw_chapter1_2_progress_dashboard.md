@@ -494,6 +494,10 @@ Rademacher assumptions explicit.
 `VdVWTheorem243FullSubgraphSideConditions`, with consumer
 `VdVWTheorem243FullSubgraphSideConditions.centered_untruncated_convergesInOuterProbabilityConst_zero`.
 It is data-carrying because it includes measurable-cover witnesses.
+2026-05-04 follow-up: constructor
+`VdVWTheorem243FullSubgraphSideConditions.of_integrable` now derives
+`htruncIntegrable` from ordinary class integrability plus the measurable
+truncation/envelope data, reducing one explicit final side-condition field.
 
 ## Verification Monitor
 
