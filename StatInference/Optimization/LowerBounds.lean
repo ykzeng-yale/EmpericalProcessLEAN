@@ -287,6 +287,56 @@ theorem gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainG
     hx0 hspan (fun _ hxk =>
       lowerBoundChainGradient_mem_coordinatePrefixSubmodule hxk)
 
+/--
+The source minimizer candidate for the tridiagonal chain system:
+`x_*[k] = 1 - k / (d + 1)` in one-based coordinates.
+-/
+noncomputable def lowerBoundChainMinimizer (d : ℕ) :
+    EuclideanSpace ℝ (Fin d) :=
+  WithLp.toLp 2 fun i : Fin d =>
+    1 - ((i.1 : ℝ) + 1) / ((d : ℝ) + 1)
+
+/-- The tridiagonal chain-gradient vanishes at Chewi's displayed minimizer. -/
+theorem lowerBoundChainGradient_lowerBoundChainMinimizer
+    (beta : ℝ) (d : ℕ) :
+    lowerBoundChainGradient beta d (lowerBoundChainMinimizer d) = 0 := by
+  ext i
+  have hden : ((d : ℝ) + 1) ≠ 0 := by positivity
+  by_cases hprev : 0 < i.1
+  · have hprev_cast : (((i.1 - 1 : ℕ) : ℝ) + 1) = (i.1 : ℝ) := by
+      have hle : 1 ≤ i.1 := hprev
+      rw [Nat.cast_sub hle]
+      ring
+    by_cases hnext : i.1 + 1 < d
+    · simp [lowerBoundChainGradient, lowerBoundChainMinimizer, PiLp.toLp_apply,
+        hprev, hnext]
+      field_simp [hden]
+      ring_nf
+      simp
+    · have hi_eq : i.1 + 1 = d := by omega
+      have hi_cast : (i.1 : ℝ) + 1 = (d : ℝ) := by
+        exact_mod_cast hi_eq
+      simp [lowerBoundChainGradient, lowerBoundChainMinimizer, PiLp.toLp_apply,
+        hprev, hnext]
+      rw [hi_cast]
+      field_simp [hden]
+      ring_nf
+      right
+      nlinarith
+  · have hi_zero : i.1 = 0 := by omega
+    by_cases hnext : i.1 + 1 < d
+    · have hnext_one : 1 < d := by omega
+      simp [lowerBoundChainGradient, lowerBoundChainMinimizer, PiLp.toLp_apply,
+        hi_zero, hnext_one]
+      field_simp [hden]
+      ring_nf
+      simp
+    · have hd_eq : d = 1 := by omega
+      simp [lowerBoundChainGradient, lowerBoundChainMinimizer, PiLp.toLp_apply,
+        hi_zero, hd_eq]
+      ring_nf
+      simp
+
 end CoordinatePrefix
 
 end Optimization

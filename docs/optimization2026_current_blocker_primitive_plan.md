@@ -162,7 +162,11 @@ the whole-space differentiable case:
   `lowerBoundChainGradient_mem_coordinatePrefixSubmodule` proves
   `x ∈ V_k -> grad x ∈ V_{k+1}`, and
   `gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
-  assembles the zero-start gradient-span induction for this oracle.
+  assembles the zero-start gradient-span induction for this oracle.  The
+  displayed minimizer candidate also now compiles as
+  `lowerBoundChainMinimizer`, with
+  `lowerBoundChainGradient_lowerBoundChainMinimizer` proving that the
+  chain-gradient vanishes at it.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -821,6 +825,8 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
+- `StatInference.Optimization.lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChainGradient_lowerBoundChainMinimizer`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
@@ -841,10 +847,11 @@ The Corollary 2.8 compact-minimum and continuity/integrability bridge is
 already compiled, so do not spend another run there unless strengthening the
 continuity hypotheses materially advances the analytic route.  For Chapter 4,
 reuse `LowerBounds.lean`'s single gradient-span/oracle model, the compiled
-`coordinatePrefixSubmodule` induction, and `lowerBoundChainGradient` support
-theorem.  Search mathlib basis/coordinate, matrix, PSD, and smoothness APIs
-before connecting the oracle to the actual quadratic objective, proving
-convex/smooth facts, `f_d = f_N` on `V_N`, or minimizer-value estimates.
+`coordinatePrefixSubmodule` induction, and `lowerBoundChainGradient`
+support/minimizer theorems.  Search mathlib basis/coordinate, matrix, PSD, and
+smoothness APIs before connecting the oracle to the actual quadratic
+objective, proving convex/smooth facts, `f_d = f_N` on `V_N`, or
+minimizer-value estimates.
 Continue
 deferring exercise proofs except where an exercise statement is needed as a
 temporary interface for a main-text theorem; such exercise material belongs
