@@ -1460,7 +1460,13 @@ pass adds `IsCGThreeTermRecurrence.pairwise_residual_orthogonal`,
 `IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_orthogonalToPrevious`:
 the source-shaped invariant that each new residual is orthogonal to the
 previous direction span now implies the pairwise residual orthogonality needed
-for the finite-dimensional Theorem 5.3 wrapper.
+for the finite-dimensional Theorem 5.3 wrapper.  The latest scalar
+orthogonality pass adds
+`isOrthogonalToSubmodule_cgDirectionSubmodule_of_inner_direction_eq_zero`,
+`orthogonalToPrevious_of_inner_directions_eq_zero`, and
+`IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_inner_directions_eq_zero`,
+so it is now enough to prove the scalar source equations
+`inner ℝ (r (n+1)) (p k) = 0` for every `k ≤ n`.
 Search-first result: mathlib has continuous linear maps,
 `continuous_id.inner`, `Continuous.inner`, `real_inner_comm`,
 `Function.iterate_succ_apply'`, `Submodule.span_induction`,
@@ -1476,9 +1482,9 @@ searched before adding a future spectral bridge.  The current substrate
 deliberately uses supplied quadratic-form bounds so it can reuse local
 `FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and minimizer wrappers
 without waiting for a full spectral theorem bridge.  Next target: derive or
-package `∀ n, IsOrthogonalToSubmodule (r (n+1)) (cgDirectionSubmodule p n)`
-from the CG optimality/line-search conditions, then state the exact Theorem
-5.3 termination wrapper.  For Theorem 5.4, first package the textbook proof
+package the scalar equations `inner ℝ (r (n+1)) (p k) = 0` from the CG
+optimality/line-search conditions, then state the exact Theorem 5.3
+termination wrapper.  For Theorem 5.4, first package the textbook proof
 assumptions explicitly: CG descent comparison against one GD step, gradient
 orthogonality, finite sum of squared gradients, Cauchy-Schwarz, and the
 restart/halving argument.  Do not redo the Chapter 3 descent lemma, Chapter 4

@@ -956,6 +956,9 @@ Chapter 5 acceleration/conjugate-gradient expansion has now started in
 - `StatInference.Optimization.IsCGThreeTermRecurrence.pairwise_residual_orthogonal`
 - `StatInference.Optimization.IsCGDisplayedIteration.pairwise_residual_orthogonal`
 - `StatInference.Optimization.IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_orthogonalToPrevious`
+- `StatInference.Optimization.isOrthogonalToSubmodule_cgDirectionSubmodule_of_inner_direction_eq_zero`
+- `StatInference.Optimization.orthogonalToPrevious_of_inner_directions_eq_zero`
+- `StatInference.Optimization.IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_inner_directions_eq_zero`
 
 Source anchors are the quadratic display and linear-system minimizer claim at
 markdown lines 954-960, Lemma 5.1 at line 1005, Definition 5.2 at line 1015,
@@ -982,8 +985,10 @@ Theorem 5.3.  The point-update bridge now derives the residual-gradient
 invariant from the displayed point and residual updates and feeds the
 finite-dimensional minimizer wrapper.  The orthogonality propagation layer
 now reduces pairwise residual orthogonality to the source-shaped invariant
-that each new residual is orthogonal to the previous direction span.  Next
-proof work should derive/package that invariant from CG optimality/line-search
+that each new residual is orthogonal to the previous direction span; the
+scalar-orthogonality layer reduces that invariant to the generated-direction
+equations `inner ℝ (r (n+1)) (p k)=0` for `k≤n`.  Next proof work should
+derive/package those scalar equations from CG optimality/line-search
 conditions, then close the exact Theorem 5.3 wrapper and move to the
 descent/halving package for Theorem 5.4.
 
