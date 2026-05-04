@@ -921,6 +921,42 @@ theorem chewi45_iteration_count_ge_rate_of_geometric_eps_lower_bound
     (L := Real.log q) (rate := rate) (N := N)
     (Real.log_neg hq_pos hq_lt_one) hchain
 
+/--
+The canonical log-quotient rate discharges the scalar log comparison by
+equality.  This keeps the final Theorem 4.5 wrappers from carrying a redundant
+`hrate_log` hypothesis.
+-/
+theorem chewi45_logQuotientRate_log_comparison
+    {A L : ℝ} (hL : L ≠ 0) :
+    A ≤ (2 * (A / (2 * L) - 1 + 1)) * L := by
+  have htwoL : 2 * L ≠ 0 := by
+    exact mul_ne_zero two_ne_zero hL
+  have hcalc : (2 * (A / (2 * L) - 1 + 1)) * L = A := by
+    field_simp [htwoL]
+    ring
+  exact le_of_eq hcalc.symm
+
+/--
+Concrete log-quotient form of the geometric lower-bound bridge.  The bound is
+written with the exact quotient that makes
+`log(eps/(alpha/8)) = 2(rate+1) log q`.
+-/
+theorem chewi45_iteration_count_ge_logQuotientRate_of_geometric_eps_lower_bound
+    {alpha eps q : ℝ} {N : ℕ}
+    (halpha_pos : 0 < alpha) (heps_pos : 0 < eps)
+    (hq_pos : 0 < q) (hq_lt_one : q < 1)
+    (hgeo : (alpha / 8) * q ^ (2 * (N + 1)) ≤ eps) :
+    Real.log (eps / (alpha / 8)) / (2 * Real.log q) - 1 ≤
+      (N : ℝ) := by
+  have hlog_ne : Real.log q ≠ 0 :=
+    (Real.log_neg hq_pos hq_lt_one).ne
+  exact chewi45_iteration_count_ge_rate_of_geometric_eps_lower_bound
+    (alpha := alpha) (eps := eps) (q := q)
+    (rate := Real.log (eps / (alpha / 8)) / (2 * Real.log q) - 1)
+    (N := N) halpha_pos heps_pos hq_pos hq_lt_one hgeo
+    (chewi45_logQuotientRate_log_comparison
+      (A := Real.log (eps / (alpha / 8))) (L := Real.log q) hlog_ne)
+
 theorem chewi45GeometricRatio_quadratic {kappa : ℝ}
     (hkappa : 1 < kappa) :
     chewi45GeometricRatio kappa ^ (2 : ℕ) -
@@ -2401,6 +2437,80 @@ theorem chewi45_not_finiteGeometricCandidate_near_min_of_log_rate_lt
       (rate := rate)
       halpha_pos heps_pos halpha_lt_beta hkappa (N := N) (M := M)
       hN hM_le hM_log (x := x) hx0 hspan hnear hrate_log
+  linarith
+
+/--
+Canonical log-quotient form of the finite-geometric Theorem 4.5 wrapper.  It
+uses the compiled finite obstruction and the scalar quotient identity, so the
+only remaining source choices are the finite exponent `M` and its logarithmic
+half-boundary proof.
+-/
+theorem chewi45_iteration_count_ge_logQuotientRate_of_finiteGeometricCandidate_log_near_min
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha)
+    {d N M : ℕ} (hN : N < d)
+    (hM_le : M ≤ 2 * d + 2 - 2 * (N + 1))
+    (hM_log :
+      (M : ℝ) * Real.log (chewi45GeometricRatio kappa) ≤
+        Real.log (1 / 2 : ℝ))
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta d (x N) ≤
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) + eps) :
+    Real.log (eps / (alpha / 8)) /
+          (2 * Real.log (chewi45GeometricRatio kappa)) - 1 ≤
+      (N : ℝ) := by
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  have hgeo :
+      (alpha / 8) *
+          (chewi45GeometricRatio kappa) ^ (2 * (N + 1)) ≤ eps :=
+    chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_log_exponent_le
+      (alpha := alpha) (beta := beta) (kappa := kappa) (eps := eps)
+      halpha_pos halpha_lt_beta hkappa (N := N) (M := M)
+      hN hM_le hM_log (x := x) hx0 hspan hnear
+  exact chewi45_iteration_count_ge_logQuotientRate_of_geometric_eps_lower_bound
+    (alpha := alpha) (eps := eps) (q := chewi45GeometricRatio kappa)
+    (N := N) halpha_pos heps_pos
+    (chewi45GeometricRatio_pos hkappa_gt)
+    (chewi45GeometricRatio_lt_one kappa) hgeo
+
+/--
+Contradiction form of the canonical log-quotient finite-geometric wrapper.
+-/
+theorem chewi45_not_finiteGeometricCandidate_near_min_of_logQuotientRate_lt
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha)
+    {d N M : ℕ} (hN : N < d)
+    (hM_le : M ≤ 2 * d + 2 - 2 * (N + 1))
+    (hM_log :
+      (M : ℝ) * Real.log (chewi45GeometricRatio kappa) ≤
+        Real.log (1 / 2 : ℝ))
+    (hN_lt_rate :
+      (N : ℝ) <
+        Real.log (eps / (alpha / 8)) /
+            (2 * Real.log (chewi45GeometricRatio kappa)) - 1)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta d (x N) ≤
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) + eps) :
+    False := by
+  have hrate_le_N :=
+    chewi45_iteration_count_ge_logQuotientRate_of_finiteGeometricCandidate_log_near_min
+      (alpha := alpha) (beta := beta) (kappa := kappa) (eps := eps)
+      halpha_pos heps_pos halpha_lt_beta hkappa (N := N) (M := M)
+      hN hM_le hM_log (x := x) hx0 hspan hnear
   linarith
 
 end Optimization

@@ -193,6 +193,12 @@ and `chewi45_not_finiteGeometricCandidate_near_min_of_log_rate_lt`.  This
 closes the algebraic conversion from the finite geometric near-min lower bound
 to an iteration lower bound once concrete source choices for `M`, `d`, and
 `rate` discharge the two log comparisons.
+The newest quotient-rate pass adds
+`chewi45_logQuotientRate_log_comparison`,
+`chewi45_iteration_count_ge_logQuotientRate_of_geometric_eps_lower_bound`,
+`chewi45_iteration_count_ge_logQuotientRate_of_finiteGeometricCandidate_log_near_min`,
+and `chewi45_not_finiteGeometricCandidate_near_min_of_logQuotientRate_lt`,
+removing the scalar `hrate_log` assumption for the canonical quotient rate.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains

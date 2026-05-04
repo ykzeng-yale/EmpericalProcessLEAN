@@ -634,6 +634,13 @@ and `chewi45_not_finiteGeometricCandidate_near_min_of_log_rate_lt`.  The
 remaining source-shaped work is to choose `d`, `M`, and the concrete rate so
 the two supplied log comparisons hold; the finite obstruction itself already
 converts those comparisons into `rate <= N`.
+The quotient-rate specialization now also compiles:
+`chewi45_logQuotientRate_log_comparison`,
+`chewi45_iteration_count_ge_logQuotientRate_of_geometric_eps_lower_bound`,
+`chewi45_iteration_count_ge_logQuotientRate_of_finiteGeometricCandidate_log_near_min`,
+and `chewi45_not_finiteGeometricCandidate_near_min_of_logQuotientRate_lt`.
+Thus the direct finite route only still needs the concrete dimension/exponent
+half-bound; the canonical rate algebra is closed.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
