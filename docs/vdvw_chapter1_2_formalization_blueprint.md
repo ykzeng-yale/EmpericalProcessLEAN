@@ -856,9 +856,13 @@ above, so they do not change the theorem-level dashboard counts.
    empirical-covering-number bounds.
    The untruncated theorem-facing consumer is now compiled as
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_abs_bound_vc`.
-   The next structural inputs are reductions from textbook-facing
-   envelope/truncation and VC-subgraph assumptions to its explicit
-   integer-bound and per-threshold VC hypotheses.
+   The selected fixed-radius package now also has the envelope-bound constructor
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_bound_vc`,
+   replacing sampled absolute boundedness by `abs_vdVWTruncatedClassFun_le_M`
+   and the arithmetic condition `M <= bound * eta`.
+   The next structural inputs are the matching untruncated wrapper and the
+   reduction from textbook-facing VC-subgraph assumptions to the explicit
+   per-threshold VC hypotheses.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

@@ -12631,6 +12631,63 @@ theorem
       hconstant_ge_one hM_pos hpoly_bound
 
 /--
+Selected fixed-radius tail/UI package from the integer-grid route, with the
+sampled absolute bound discharged by the truncated-envelope bound.
+
+The only remaining arithmetic input is that the chosen natural grid radius is
+large enough for the fixed truncation level and empirical-cover radius:
+`M <= ((bound eta : ℤ) : ℝ) * eta`.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_bound_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {bound : ℝ -> ℕ} {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hbound :
+      ∀ eta, 0 < eta -> M ≤ ((bound eta : ℤ) : ℝ) * eta)
+    (hvc :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ threshold : {threshold // threshold ∈
+            integerMultipleThresholdGrid eta (bound eta : ℤ)},
+          (empiricalBinaryTraceSetFamily (samplePath (X n) sample m)
+            indexClass
+            (thresholdIndicatorClassFun
+              (vdVWTruncatedClassFun classFun envelope M) threshold.1)).vcDim ≤
+            vcDegree eta) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta _n _sample m =>
+        (((vcDegree eta + 2) * (m + 1) ^ vcDegree eta) ^
+          (2 * bound eta + 1))) := by
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (bound := bound) (vcDegree := vcDegree)
+      hX_samplePath
+      (by
+        intro eta heta n sample m index hindex sampleIndex
+        exact
+          (abs_vdVWTruncatedClassFun_le_M
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M)
+            henvelope hM_pos.le hindex
+            ((samplePath (X n) sample m) sampleIndex)).trans
+            (hbound eta heta))
+      hclass henvelope_meas hM_pos hvc
+
+/--
 Selected fixed-radius tail/UI package from finite-threshold value separation
 and uniform fixed-threshold VC/Sauer bounds.
 

@@ -448,6 +448,14 @@ hypotheses via
 Next target: reduce the explicit truncated-value integer bound and per-grid
 threshold VC assumptions to textbook-facing envelope/subgraph-VC hypotheses.
 
+2026-05-04 follow-up: the selected fixed-radius package now has an
+envelope-bound constructor,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_bound_vc`.
+It reuses `abs_vdVWTruncatedClassFun_le_M`, so the sampled absolute-bound
+field is replaced by the arithmetic domination `M <= bound * eta`.  Next
+target: add the matching untruncated consumer and then reduce threshold VC to
+a textbook-facing subgraph/VC class condition.
+
 ## Verification Monitor
 
 Latest targeted verification includes the selected terminal/truncated

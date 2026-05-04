@@ -2569,3 +2569,17 @@ to more textbook-facing hypotheses.  The likely next local lemmas are
 available from current definitions, introduce an honest theorem-facing
 structure for the VC-subgraph class assumption rather than overclaiming the
 full textbook entropy condition.
+
+2026-05-04 `/goal` update after envelope-bound integer-grid package:
+`Theorem243.lean` now adds
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_bound_vc`.
+This discharges the sampled absolute-boundedness input of the integer-grid
+selected fixed-radius package from the existing theorem
+`abs_vdVWTruncatedClassFun_le_M` plus the simple arithmetic condition
+`M <= ((bound eta : ℤ) : ℝ) * eta`.
+
+Next exact theorem-facing edit: add the corresponding centered untruncated
+consumer that uses this envelope-bound package, so callers need only provide
+the integer-radius domination and per-grid-threshold VC hypotheses.  After
+that, reduce the remaining VC hypothesis to a textbook-facing subgraph/VC
+class assumption.
