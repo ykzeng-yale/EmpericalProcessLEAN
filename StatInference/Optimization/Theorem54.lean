@@ -568,6 +568,39 @@ theorem gradientDescentStep_mem_cgAffineSpan_of_mem
   simpa [gradientDescentStep, sub_eq_add_neg, add_assoc, add_left_comm,
     add_comm] using hmem
 
+/--
+First-order convexity plus orthogonality to the affine direction subspace gives
+the constrained minimizer property over `x₀ + span {p₀, ..., pₙ}`.
+-/
+theorem firstOrderStrongConvexOn_isMinOn_cgAffineSpan_of_orthogonal
+    {f : E -> ℝ} {grad : E -> E} {alpha : ℝ}
+    {x0 x : E} {p : ℕ -> E} {n : ℕ}
+    (hfirst : FirstOrderStrongConvexOn Set.univ f grad alpha)
+    (halpha_nonneg : 0 ≤ alpha)
+    (hx_feas : x ∈ cgAffineSpan x0 p n)
+    (horth : IsOrthogonalToSubmodule (grad x) (cgDirectionSubmodule p n)) :
+    IsMinOn f (cgAffineSpan x0 p n) x := by
+  refine isMinOn_iff.mpr ?_
+  intro y hy
+  have hxS : x - x0 ∈ cgDirectionSubmodule p n :=
+    mem_cgAffineSpan_iff.mp hx_feas
+  have hyS : y - x0 ∈ cgDirectionSubmodule p n :=
+    mem_cgAffineSpan_iff.mp hy
+  have hdiff : y - x ∈ cgDirectionSubmodule p n := by
+    have hsub : (y - x0) - (x - x0) ∈ cgDirectionSubmodule p n :=
+      Submodule.sub_mem _ hyS hxS
+    have hdiff_eq : y - x = (y - x0) - (x - x0) := by
+      abel
+    rw [hdiff_eq]
+    exact hsub
+  have horth_inner : inner ℝ (grad x) (y - x) = 0 :=
+    horth (y - x) hdiff
+  have hmodel := hfirst.lower_model (x := x) (y := y) (by simp) (by simp)
+  have hquad_nonneg : 0 ≤ (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) :=
+    mul_nonneg (by nlinarith) (sq_nonneg _)
+  rw [horth_inner] at hmodel
+  nlinarith
+
 /-- Displayed CG point updates give `x_n - x_0 ∈ span {p_0, ..., p_n}`. -/
 theorem IsCGDisplayedIteration.point_sub_initial_mem_cgDirectionSubmodule
     {A : E →L[ℝ] E} {p0 : E} {x r p : ℕ -> E}
@@ -662,6 +695,44 @@ theorem IsCGDisplayedIteration.quadraticGradient_pairwise_orthogonal
   have hrj := h.residual_eq_quadraticGradient_of_point_updates hres0 hpoint j
   rw [← hri, ← hrj]
   exact hpair i j hij
+
+/--
+Displayed CG point/residual updates imply the affine minimization property
+over the current direction span.  This is the formal version of the source
+sentence `x_{n+1} = argmin_{x_0 + K_n} f`.
+-/
+theorem IsCGDisplayedIteration.isMinOn_cgAffineSpan_of_point_updates
+    {A : E →L[ℝ] E} {b p0 : E} {x r p : ℕ -> E} {alpha : ℝ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (hfirst :
+      FirstOrderStrongConvexOn Set.univ (quadraticObjective A b)
+        (quadraticGradient A b) alpha)
+    (halpha_nonneg : 0 ≤ alpha)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hpoint : ∀ n, x (n + 1) =
+      x n + cgLineSearchCoeff A r p n • p n) :
+    ∀ n, IsMinOn (quadraticObjective A b) (cgAffineSpan (x 0) p n)
+      (x (n + 1)) := by
+  intro n
+  have hfeas :
+      x (n + 1) ∈ cgAffineSpan (x 0) p n :=
+    mem_cgAffineSpan_iff.mpr
+      (h.point_succ_sub_initial_mem_cgDirectionSubmodule hpoint n)
+  have horth_prev :
+      ∀ m, IsOrthogonalToSubmodule (r (m + 1)) (cgDirectionSubmodule p m) :=
+    orthogonalToPrevious_of_inner_directions_eq_zero
+      (h.inner_residual_succ_directions_eq_zero hA_sym)
+  have hres_eq :=
+    h.residual_eq_quadraticGradient_of_point_updates hres0 hpoint (n + 1)
+  have horth_grad :
+      IsOrthogonalToSubmodule
+        (quadraticGradient A b (x (n + 1))) (cgDirectionSubmodule p n) := by
+    intro y hy
+    rw [← hres_eq]
+    exact horth_prev n y hy
+  exact firstOrderStrongConvexOn_isMinOn_cgAffineSpan_of_orthogonal
+    hfirst halpha_nonneg hfeas horth_grad
 
 /--
 Source-facing CG competitive-step extraction: if `x_{n+1}` minimizes over the
@@ -927,6 +998,42 @@ theorem IsCGDisplayedIteration.chewi54_accelerated_bound_of_cgAffineMinimizer
   exact chewi54_accelerated_bound_of_cgAffineMinimizer_univ
     hsmooth hfirst hgrad_zero hfstar hmin hx_span hgrad_span
     horth_disp hgrad_orth hbeta_pos halpha_pos
+
+/--
+Displayed-CG Theorem 5.4 rate wrapper from point/residual updates alone.  The
+affine minimization property is derived from residual orthogonality and the
+first-order strong-convexity lower model, so the theorem no longer assumes the
+`argmin` property separately.
+-/
+theorem IsCGDisplayedIteration.chewi54_accelerated_bound_of_point_updates
+    {A : E →L[ℝ] E} {b p0 xStar : E} {x r p : ℕ -> E}
+    {fstar alpha beta : ℝ} {N : ℕ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (hsmooth :
+      SmoothWithGradientOn Set.univ (quadraticObjective A b)
+        (quadraticGradient A b) beta)
+    (hfirst :
+      FirstOrderStrongConvexOn Set.univ (quadraticObjective A b)
+        (quadraticGradient A b) alpha)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hpoint : ∀ n, x (n + 1) =
+      x n + cgLineSearchCoeff A r p n • p n)
+    (hgrad_zero : quadraticGradient A b xStar = 0)
+    (hfstar : fstar = quadraticObjective A b xStar)
+    (hbeta_pos : 0 < beta)
+    (halpha_pos : 0 < alpha) :
+    (N : ℝ) * (quadraticObjective A b (x N) - fstar) ≤
+      2 * Real.sqrt (beta / alpha) *
+        (quadraticObjective A b (x 0) - fstar) := by
+  have hmin :
+      ∀ n, IsMinOn (quadraticObjective A b) (cgAffineSpan (x 0) p n)
+        (x (n + 1)) :=
+    h.isMinOn_cgAffineSpan_of_point_updates
+      hA_sym hfirst halpha_pos.le hres0 hpoint
+  exact h.chewi54_accelerated_bound_of_cgAffineMinimizer
+    hA_sym hsmooth hfirst hres0 hpoint hmin hgrad_zero hfstar
+    hbeta_pos halpha_pos
 
 end Optimization
 end StatInference

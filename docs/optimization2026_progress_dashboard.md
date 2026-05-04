@@ -87,11 +87,16 @@ bridges, the source-facing wrappers
 `chewi54_accelerated_bound_of_cgAffineMinimizer_univ`, plus displayed-CG
 bridges for point-update search-span membership, residual-gradient membership,
 displacement orthogonality, pairwise gradient orthogonality, and
-`IsCGDisplayedIteration.chewi54_accelerated_bound_of_cgAffineMinimizer`.
-The next aggressive step is to derive or package the remaining affine `IsMinOn`
-property over `x_0 + span {p_0, ..., p_n}`.  Do not replay Chapter 3 GD
-convergence or Chapter 4 hard-instance setup unless a Chapter 5 proof
-explicitly depends on one of those compiled declarations.
+`IsCGDisplayedIteration.chewi54_accelerated_bound_of_cgAffineMinimizer`; the
+affine minimization property is now derived as
+`IsCGDisplayedIteration.isMinOn_cgAffineSpan_of_point_updates`, giving
+`IsCGDisplayedIteration.chewi54_accelerated_bound_of_point_updates`.
+The next aggressive step is source-facing endpoint packaging for Theorem 5.4:
+convert the halving bound into the logarithmic iteration-count statement, or
+source-audit the polynomial/Chebyshev alternative proof before moving to
+Theorem 5.8.  Do not replay Chapter 3 GD convergence or Chapter 4 hard-instance
+setup unless a Chapter 5 proof explicitly depends on one of those compiled
+declarations.
 
 Recently completed Chapter 4 context: The
 `StatInference/Optimization/Reductions.lean` module compiles the quadratic

@@ -1047,6 +1047,9 @@ The Theorem 5.4 lane now starts in
 - `StatInference.Optimization.chewi54_accelerated_bound_of_cgAffineMinimizer`
 - `StatInference.Optimization.chewi54_accelerated_bound_of_cgAffineMinimizer_univ`
 - `StatInference.Optimization.IsCGDisplayedIteration.chewi54_accelerated_bound_of_cgAffineMinimizer`
+- `StatInference.Optimization.firstOrderStrongConvexOn_isMinOn_cgAffineSpan_of_orthogonal`
+- `StatInference.Optimization.IsCGDisplayedIteration.isMinOn_cgAffineSpan_of_point_updates`
+- `StatInference.Optimization.IsCGDisplayedIteration.chewi54_accelerated_bound_of_point_updates`
 
 This compiles the source descent comparison against the `1 / beta` gradient
 step and telescopes the Lemma 3.1 decrease to the finite squared-gradient sum
@@ -1061,8 +1064,12 @@ and derives the competitive-step, monotone-gap, first-order/orthogonality, and
 lower-optimum hypotheses.  The newest displayed-CG bridge discharges the
 point-update search-span membership, residual-gradient membership,
 displacement orthogonality, and pairwise gradient orthogonality from
-`IsCGDisplayedIteration`.  The next Theorem 5.4 target is the remaining affine
-`IsMinOn` property over `x_0 + span {p_0, ..., p_n}`.
+`IsCGDisplayedIteration`.  The affine minimization property over
+`x_0 + span {p_0, ..., p_n}` is now derived from the same displayed-CG
+orthogonality plus the first-order strong-convexity lower model.  The next
+Theorem 5.4 target is source-facing endpoint packaging: turn the halving
+algebra into the logarithmic iteration-count statement, or source-audit the
+polynomial/Chebyshev alternative proof before moving to Theorem 5.8.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
