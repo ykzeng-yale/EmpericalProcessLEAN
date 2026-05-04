@@ -1466,14 +1466,27 @@ orthogonality pass adds
 `orthogonalToPrevious_of_inner_directions_eq_zero`, and
 `IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_inner_directions_eq_zero`,
 so it is now enough to prove the scalar source equations
-`inner ℝ (r (n+1)) (p k) = 0` for every `k ≤ n`.
+`inner ℝ (r (n+1)) (p k) = 0` for every `k ≤ n`.  The newest line-search
+and A-conjugacy pass proves
+`inner_residual_succ_direction_eq_zero_of_inner_residual_direction_eq_norm_sq`,
+`IsCGDisplayedIteration.inner_residual_direction_eq_norm_sq`,
+`IsCGDisplayedIteration.inner_residual_succ_direction_self_eq_zero`,
+`IsCGDisplayedIteration.inner_residual_succ_directions_eq_zero_of_aOrthogonal`,
+and
+`IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_aOrthogonal`.
+Thus Theorem 5.3 is reduced from all scalar residual-direction equations to
+the textbook A-conjugacy condition
+`∀ n k, k < n → aInner A (p k) (p n) = 0`, plus the displayed point update and
+nonzero denominator side conditions already exposed by `IsCGDisplayedIteration`.
 Search-first result: mathlib has continuous linear maps,
 `continuous_id.inner`, `Continuous.inner`, `real_inner_comm`,
+`real_inner_smul_left`,
 `Function.iterate_succ_apply'`, `Submodule.span_induction`,
 `Submodule.span_mono`, inverse scalar algebra via `smul_smul` and
 `inv_mul_cancel₀`, coefficient nonzero APIs `div_ne_zero`, `neg_ne_zero`,
-`pow_ne_zero`, and `norm_ne_zero_iff`, finite-dimensional orthogonal-family
-APIs `LinearMap.BilinForm.linearIndependent_of_iIsOrtho`,
+`pow_ne_zero`, `norm_ne_zero_iff`, `field_simp`, and `ring`, Nat split APIs
+`Nat.lt_or_eq_of_le` and `Nat.lt_succ_of_le`, finite-dimensional
+orthogonal-family APIs `LinearMap.BilinForm.linearIndependent_of_iIsOrtho`,
 `LinearIndependent.fintype_card_le_finrank`, and `innerₗ`, and
 `Submodule.orthogonal` APIs;
 self-adjoint/positive
@@ -1481,10 +1494,11 @@ operator APIs under `Analysis/InnerProductSpace/Positive.lean` should be
 searched before adding a future spectral bridge.  The current substrate
 deliberately uses supplied quadratic-form bounds so it can reuse local
 `FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and minimizer wrappers
-without waiting for a full spectral theorem bridge.  Next target: derive or
-package the scalar equations `inner ℝ (r (n+1)) (p k) = 0` from the CG
-optimality/line-search conditions, then state the exact Theorem 5.3
-termination wrapper.  For Theorem 5.4, first package the textbook proof
+without waiting for a full spectral theorem bridge.  Next target: prove or
+sharply package the A-conjugacy condition from Chewi's direction-update
+coefficient / Gram-Schmidt line-search calculation, then state the exact
+Theorem 5.3 termination wrapper with only textbook displayed hypotheses and
+localized non-stopping side conditions.  For Theorem 5.4, first package the textbook proof
 assumptions explicitly: CG descent comparison against one GD step, gradient
 orthogonality, finite sum of squared gradients, Cauchy-Schwarz, and the
 restart/halving argument.  Do not redo the Chapter 3 descent lemma, Chapter 4
