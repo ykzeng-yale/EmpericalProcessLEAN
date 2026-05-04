@@ -291,4 +291,75 @@ theorem empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_product_
     exact_mod_cast Nat.add_le_add_right htrace_le 1
   exact htrace_le_real.trans hproduct_bound
 
+/--
+Factorwise cardinality bounds for the fixed-threshold binary trace families
+produce the corresponding product bound.
+-/
+theorem threshold_binaryTraceSetFamily_product_card_le_of_forall_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (thresholds : Finset ℝ)
+    (bound : {threshold // threshold ∈ thresholds} -> ℕ)
+    (hbound :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card ≤
+          bound threshold) :
+    (∏ threshold ∈ thresholds.attach,
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card) ≤
+      ∏ threshold ∈ thresholds.attach, bound threshold :=
+  Finset.prod_le_prod' fun threshold _hthreshold => hbound threshold
+
+/--
+Per-threshold cardinality bounds plus a polynomial estimate on their product
+feed the threshold-coded empirical trace image into the Theorem 2.4.3
+natural-polynomial entropy shape.
+-/
+theorem empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_factor_bound
+    {Observation : Type u} {Index : Type v} {n d : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {C : ℝ}
+    (bound : {threshold // threshold ∈ thresholds} -> ℕ)
+    (hseparate :
+      ∀ index₁, index₁ ∈ indexClass ->
+        ∀ index₂, index₂ ∈ indexClass ->
+          (∀ threshold : {threshold // threshold ∈ thresholds},
+            thresholdTraceCode thresholds
+                (empiricalTrace sample classFun index₁) threshold =
+              thresholdTraceCode thresholds
+                (empiricalTrace sample classFun index₂) threshold) ->
+          empiricalTrace sample classFun index₁ =
+            empiricalTrace sample classFun index₂)
+    (hfactor_bound :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card ≤
+          bound threshold)
+    (hbound_product :
+      (((∏ threshold ∈ thresholds.attach, bound threshold : ℕ) : ℝ) + 1) ≤
+        C * (((n + 1 : ℕ) : ℝ) ^ d)) :
+    (((finite_empiricalTrace_image_of_thresholdTraceCode_separates hseparate).toFinset.card : ℝ) + 1) ≤
+      C * (((n + 1 : ℕ) : ℝ) ^ d) := by
+  have hproduct_nat :
+      (∏ threshold ∈ thresholds.attach,
+          (empiricalBinaryTraceSetFamily sample indexClass
+            (thresholdIndicatorClassFun classFun threshold.1)).card) ≤
+        ∏ threshold ∈ thresholds.attach, bound threshold :=
+    threshold_binaryTraceSetFamily_product_card_le_of_forall_card_le
+      sample indexClass classFun thresholds bound hfactor_bound
+  have hproduct_real :
+      (((∏ threshold ∈ thresholds.attach,
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card : ℕ) : ℝ) + 1) ≤
+        ((∏ threshold ∈ thresholds.attach, bound threshold : ℕ) : ℝ) + 1 := by
+    exact_mod_cast Nat.add_le_add_right hproduct_nat 1
+  exact
+    empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_product_bound
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) (C := C) hseparate
+      (hproduct_real.trans hbound_product)
+
 end StatInference

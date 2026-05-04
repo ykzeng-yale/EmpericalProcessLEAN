@@ -743,7 +743,10 @@ above, so they do not change the theorem-level dashboard counts.
    `empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_product_bound`
    converts any supplied product cardinality estimate into the exact real
    natural-polynomial trace-cardinality bound used by the Theorem 2.4.3
-   entropy constructors.
+   entropy constructors.  The factorwise bridge
+   `empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_factor_bound`
+   now also converts per-threshold cardinality bounds plus a polynomial
+   estimate on their product into the same theorem-facing shape.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

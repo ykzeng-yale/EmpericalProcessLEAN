@@ -2090,6 +2090,8 @@ empiricalTrace_image_toFinset_card_le_thresholdTraceCodeSet_card
 thresholdTraceCodeSet_card_le_pi_binaryTraceSetFamily_card
 empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card
 empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_product_bound
+threshold_binaryTraceSetFamily_product_card_le_of_forall_card_le
+empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_factor_bound
 ```
 
 These prove that finite threshold signatures, when they separate the realized
@@ -2098,7 +2100,9 @@ cardinality by the product of the individual fixed-threshold binary trace
 family cardinalities.  The final declaration also converts any supplied
 product cardinality estimate into the real natural-polynomial
 `traceCard + 1 <= C * (n + 1)^d` shape consumed by the Theorem 2.4.3
-finite-trace entropy package.
+finite-trace entropy package.  The factorwise declarations additionally turn
+per-threshold cardinality bounds into the required product estimate before
+using the same theorem-facing handoff.
 
 Search record: reused local fixed-threshold declarations in `SubgraphTraceVC`,
 the new finite-code bridge in `TraceCoding`, mathlib `Finset.pi`,
@@ -2107,8 +2111,9 @@ big-operator APIs from `Mathlib.Data.Fintype.BigOperators`.  No ready local or
 mathlib theorem gave the VdVW finite-threshold signature/product-cardinality
 bridge.
 
-Next exact theorem-facing edit: derive the product cardinality estimate itself
-from fixed-threshold VC/Sauer bounds and the number of thresholds required for
-separation.  Equivalently, provide the maximal-separated/internal-cover
-cardinality theorem that bypasses threshold products and directly supplies the
-natural-polynomial trace bound consumed by Theorem 2.4.3.
+Next exact theorem-facing edit: derive usable per-threshold factors from the
+fixed-threshold VC/Sauer bound, and prove the resulting product of factors has
+the required polynomial or shifted-log-linear growth under the finite-threshold
+separation assumptions.  Equivalently, provide the maximal-separated/internal
+cover cardinality theorem that bypasses threshold products and directly
+supplies the natural-polynomial trace bound consumed by Theorem 2.4.3.
