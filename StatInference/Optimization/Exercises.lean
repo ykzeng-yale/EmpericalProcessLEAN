@@ -6,6 +6,7 @@ import StatInference.Optimization.Theorem33
 import StatInference.Optimization.Theorem34
 import StatInference.Optimization.Theorem36
 import StatInference.Optimization.Theorem37
+import StatInference.Optimization.Theorem45
 
 /-!
 # Chewi Optimization Exercises
@@ -421,6 +422,171 @@ theorem exercise42InfiniteGeometric_pow_mul_zero_dist_sq_le_tailSq {q : ℝ}
           (exercise42InfiniteGeometric q hq_nonneg hq_lt_one) N := by
   rw [exercise42InfiniteGeometric_tailSq_eq_pow_mul_zero_dist_sq
     hq_nonneg hq_lt_one N]
+
+/--
+The actual infinite hard-chain minimizer profile for Exercise 4.2 has
+coordinates `q^(n+1)`, matching the source boundary value `1` in the first
+gradient coordinate.
+-/
+noncomputable def exercise42InfiniteGeometricMinimizer (q : ℝ)
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) :
+    lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) :=
+  q • exercise42InfiniteGeometric q hq_nonneg hq_lt_one
+
+@[simp]
+theorem exercise42InfiniteGeometricMinimizer_apply {q : ℝ}
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) (n : ℕ) :
+    exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one n =
+      q ^ (n + 1) := by
+  rw [exercise42InfiniteGeometricMinimizer, lp.coeFn_smul]
+  simp [exercise42InfiniteGeometric_apply, pow_succ, mul_comm]
+
+/-- Squared norm of the shifted geometric hard-chain minimizer profile. -/
+theorem exercise42InfiniteGeometricMinimizer_norm_sq {q : ℝ}
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) :
+    ‖exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one‖ ^ (2 : ℕ) =
+      q ^ (2 : ℕ) * (1 - q ^ (2 : ℕ))⁻¹ := by
+  let z := exercise42InfiniteGeometric q hq_nonneg hq_lt_one
+  have hp : (2 : ℝ≥0∞) ≠ 0 := by norm_num
+  calc
+    ‖exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one‖ ^ (2 : ℕ) =
+        (‖q‖ * ‖z‖) ^ (2 : ℕ) := by
+      rw [exercise42InfiniteGeometricMinimizer, lp.norm_const_smul hp]
+    _ = q ^ (2 : ℕ) * ‖z‖ ^ (2 : ℕ) := by
+      rw [Real.norm_of_nonneg hq_nonneg]
+      ring
+    _ = q ^ (2 : ℕ) * (1 - q ^ (2 : ℕ))⁻¹ := by
+      rw [exercise42InfiniteGeometric_norm_sq hq_nonneg hq_lt_one]
+
+/--
+Exact infinite tail identity for the shifted hard-chain minimizer profile:
+the tail after `N` coordinates is the pure geometric tail starting at `N+1`.
+-/
+theorem exercise42InfiniteGeometricMinimizer_tailSq_eq {q : ℝ}
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) (N : ℕ) :
+    exercise42InfiniteTailSq
+        (exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one) N =
+      (q ^ (2 : ℕ)) ^ (N + 1) * (1 - q ^ (2 : ℕ))⁻¹ := by
+  calc
+    exercise42InfiniteTailSq
+        (exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one) N =
+        exercise42InfiniteTailSq
+          (exercise42InfiniteGeometric q hq_nonneg hq_lt_one) (N + 1) := by
+      unfold exercise42InfiniteTailSq
+      apply tsum_congr
+      intro n
+      have hidx : N + n + 1 = N + 1 + n := by omega
+      simp [exercise42InfiniteGeometricMinimizer_apply, hidx]
+    _ = (q ^ (2 : ℕ)) ^ (N + 1) * (1 - q ^ (2 : ℕ))⁻¹ := by
+      rw [exercise42InfiniteGeometric_tailSq_eq hq_nonneg hq_lt_one (N + 1)]
+
+/--
+Source-shaped shifted-profile tail identity: the tail after `N` coordinates is
+`(q^2)^N` times the squared zero-start distance to the exact infinite
+hard-chain minimizer.
+-/
+theorem exercise42InfiniteGeometricMinimizer_tailSq_eq_pow_mul_zero_dist_sq
+    {q : ℝ} (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) (N : ℕ) :
+    exercise42InfiniteTailSq
+        (exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one) N =
+      (q ^ (2 : ℕ)) ^ N *
+        ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+          exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one‖ ^
+            (2 : ℕ) := by
+  rw [zero_sub, norm_neg,
+    exercise42InfiniteGeometricMinimizer_tailSq_eq hq_nonneg hq_lt_one N,
+    exercise42InfiniteGeometricMinimizer_norm_sq hq_nonneg hq_lt_one]
+  rw [pow_succ]
+  ring
+
+/--
+Coordinate formula for the infinite strongly-convex hard-chain gradient in
+Chewi Exercise 4.2.  This is the infinite analogue of
+`strongLowerBoundChainGradient`, with no terminal boundary residual.
+-/
+noncomputable def exercise42InfiniteChainGradient (alpha beta : ℝ)
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (i : ℕ) : ℝ :=
+  ((beta - alpha) / 4) *
+      (2 * x i - (if i = 0 then 1 else x (i - 1)) - x (i + 1)) +
+    alpha * x i
+
+/--
+The geometric profile with Chewi's ratio is the exact zero-gradient point of
+the infinite hard chain.  This is the no-terminal-residual version of the
+finite corrected-chain algebra.
+-/
+theorem exercise42InfiniteChainGradient_geometricMinimizer_eq_zero
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (hq_nonneg : 0 ≤ chewi45GeometricRatio kappa)
+    (hq_lt_one : chewi45GeometricRatio kappa < 1) (i : ℕ) :
+    exercise42InfiniteChainGradient alpha beta
+        (exercise42InfiniteGeometricMinimizer
+          (chewi45GeometricRatio kappa) hq_nonneg hq_lt_one) i = 0 := by
+  let q := chewi45GeometricRatio kappa
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  have hgamma_ne : beta - alpha ≠ 0 := by linarith
+  have hcoef :
+      4 / (kappa - 1) = 4 * alpha / (beta - alpha) := by
+    rw [hkappa]
+    field_simp [halpha_pos.ne', hgamma_ne]
+  have hrec :
+      q ^ (i + 2) -
+          (2 + 4 * alpha / (beta - alpha)) * q ^ (i + 1) +
+        q ^ i = 0 := by
+    have h :=
+      chewi45GeometricRatio_pow_recurrence (kappa := kappa) hkappa_gt i
+    simpa [q, hcoef] using h
+  have hrec_mul :
+      (beta - alpha) *
+          (2 * q ^ (i + 1) - q ^ i - q ^ (i + 2)) +
+        4 * alpha * q ^ (i + 1) = 0 := by
+    have hrec' :
+        2 * q ^ (i + 1) - q ^ i - q ^ (i + 2) +
+            (4 * alpha / (beta - alpha)) * q ^ (i + 1) = 0 := by
+      linarith [hrec]
+    field_simp [hgamma_ne] at hrec'
+    ring_nf at hrec' ⊢
+    exact hrec'
+  have hmain :
+      (beta - alpha) / 4 *
+            (2 * q ^ (i + 1) - q ^ i - q ^ (i + 2)) +
+          alpha * q ^ (i + 1) =
+        0 := by
+    field_simp
+    linarith [hrec_mul]
+  by_cases hfirst : i = 0
+  · simp [exercise42InfiniteChainGradient,
+      exercise42InfiniteGeometricMinimizer_apply, q, hfirst] at hmain ⊢
+    simpa [mul_assoc, mul_left_comm, mul_comm] using hmain
+  · have hprev_exp : i - 1 + 1 = i := by omega
+    have hnext_exp : i + 1 + 1 = i + 2 := by omega
+    simp [exercise42InfiniteChainGradient,
+      exercise42InfiniteGeometricMinimizer_apply, hfirst, hprev_exp,
+      hnext_exp]
+    simpa [mul_assoc, mul_left_comm, mul_comm] using hmain
+
+/-- Source-shaped wrapper using the standard positivity facts for Chewi's ratio. -/
+theorem exercise42InfiniteChainGradient_geometricMinimizer_eq_zero_of_kappa
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha) (i : ℕ) :
+    exercise42InfiniteChainGradient alpha beta
+        (exercise42InfiniteGeometricMinimizer
+          (chewi45GeometricRatio kappa)
+          (chewi45GeometricRatio_nonneg (kappa := kappa)
+            ((by
+              rw [hkappa]
+              exact (one_lt_div halpha_pos).2 halpha_lt_beta : 1 < kappa).le))
+          (chewi45GeometricRatio_lt_one kappa)) i = 0 :=
+  exercise42InfiniteChainGradient_geometricMinimizer_eq_zero
+    halpha_pos halpha_lt_beta hkappa
+    (chewi45GeometricRatio_nonneg (kappa := kappa)
+      ((by
+        rw [hkappa]
+        exact (one_lt_div halpha_pos).2 halpha_lt_beta : 1 < kappa).le))
+    (chewi45GeometricRatio_lt_one kappa) i
 
 end Optimization
 end StatInference
