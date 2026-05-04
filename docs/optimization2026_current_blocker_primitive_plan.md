@@ -173,7 +173,12 @@ the whole-space differentiable case:
   actual lower-bound quadratic now compiles as `lowerBoundChainObjective`,
   modeled by extended boundary nodes `1, x_0, ..., x_{d-1}, 0`; the exact
   displayed minimizer value compiles as
-  `lowerBoundChainObjective_lowerBoundChainMinimizer`.
+  `lowerBoundChainObjective_lowerBoundChainMinimizer`.  The algebraic
+  objective-gradient bridge now starts with
+  `lowerBoundChainGradient_eq_edgeDifference`, which rewrites the tridiagonal
+  gradient as `β/4` times adjacent chain-edge residual differences.  Search
+  found mathlib's `sq_sum_le_card_mul_sum_sq` as the likely Cauchy ingredient
+  for the next global objective lower-bound layer.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -833,6 +838,7 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChainNode`
 - `StatInference.Optimization.lowerBoundChainEdge`
 - `StatInference.Optimization.lowerBoundChainObjective`
+- `StatInference.Optimization.lowerBoundChainGradient_eq_edgeDifference`
 - `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainMinimizer`
@@ -866,9 +872,9 @@ continuity hypotheses materially advances the analytic route.  For Chapter 4,
 reuse `LowerBounds.lean`'s single gradient-span/oracle model, the compiled
 `coordinatePrefixSubmodule` induction, and `lowerBoundChainGradient`
 support/minimizer/norm/objective-value theorems.  Search mathlib
-basis/coordinate, matrix, PSD, derivative, and smoothness APIs before proving
-the objective-gradient bridge, convex/smooth facts, `f_d = f_N` on `V_N`, or
-the lower-bound gap estimate.
+basis/coordinate, matrix, PSD, derivative, smoothness, finite-sum telescoping,
+and Cauchy APIs before proving the full objective-gradient bridge,
+convex/smooth facts, `f_d = f_N` on `V_N`, or the lower-bound gap estimate.
 Continue
 deferring exercise proofs except where an exercise statement is needed as a
 temporary interface for a main-text theorem; such exercise material belongs

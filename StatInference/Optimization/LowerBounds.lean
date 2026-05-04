@@ -280,6 +280,55 @@ noncomputable def lowerBoundChainGradient (beta : ℝ) (d : ℕ)
           0))
 
 /--
+The tridiagonal gradient is the difference of adjacent edge residuals of the
+chain objective.  This is the algebraic core of the objective-gradient bridge.
+-/
+theorem lowerBoundChainGradient_eq_edgeDifference
+    (beta : ℝ) (d : ℕ) (x : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainGradient beta d x =
+      WithLp.toLp 2 fun i : Fin d =>
+        (beta / 4) *
+          (lowerBoundChainEdge d x ⟨i.1, by omega⟩ -
+            lowerBoundChainEdge d x ⟨i.1 + 1, by omega⟩) := by
+  ext i
+  by_cases hprev : 0 < i.1
+  · by_cases hnext : i.1 + 1 < d
+    · have hi_ne_zero : i.1 ≠ 0 := by omega
+      have hi_ne_d : i.1 ≠ d := by omega
+      have hi_ne_succd : i.1 ≠ d + 1 := by omega
+      have hnext_node_not_last : 1 + (i.1 + 1) ≠ d + 1 := by omega
+      simp [lowerBoundChainGradient, lowerBoundChainEdge, lowerBoundChainNode,
+        PiLp.toLp_apply, hprev, hnext, hi_ne_zero, hi_ne_d, hi_ne_succd,
+        Nat.add_comm]
+      left
+      simp [hnext_node_not_last]
+      ring_nf
+    · have hi_last : i.1 + 1 = d := by omega
+      have hi_ne_zero : i.1 ≠ 0 := by omega
+      have hi_ne_succd : i.1 ≠ d + 1 := by omega
+      have hd_ne_zero : d ≠ 0 := by omega
+      simp [lowerBoundChainGradient, lowerBoundChainEdge, lowerBoundChainNode,
+        PiLp.toLp_apply, hprev, hi_last, hi_ne_zero, hi_ne_succd,
+        hd_ne_zero]
+      left
+      ring_nf
+  · have hi_zero : i.1 = 0 := by omega
+    by_cases hnext : i.1 + 1 < d
+    · have hd_ne_zero : d ≠ 0 := by omega
+      have hd_ne_one : d ≠ 1 := by omega
+      have hone_lt_d : 1 < d := by omega
+      simp [lowerBoundChainGradient, lowerBoundChainEdge, lowerBoundChainNode,
+        PiLp.toLp_apply, hi_zero, hd_ne_zero, hd_ne_one]
+      left
+      simp [hone_lt_d]
+      ring_nf
+    · have hd_eq : d = 1 := by omega
+      simp [lowerBoundChainGradient, lowerBoundChainEdge, lowerBoundChainNode,
+        PiLp.toLp_apply, hi_zero, hd_eq]
+      left
+      ring_nf
+
+/--
 The displayed support calculation in Chewi's proof of Theorem 4.4: if
 `x ∈ V_k`, then the tridiagonal-chain gradient belongs to `V_{k+1}`.
 -/

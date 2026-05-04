@@ -371,6 +371,7 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.lowerBoundChainNode`
 - `StatInference.Optimization.lowerBoundChainEdge`
 - `StatInference.Optimization.lowerBoundChainObjective`
+- `StatInference.Optimization.lowerBoundChainGradient_eq_edgeDifference`
 - `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainMinimizer`
@@ -394,11 +395,15 @@ modeled as `lowerBoundChainObjective` using extended boundary nodes
 `1, x_0, ..., x_{d-1}, 0`; the exact displayed minimizer value
 `β / (8 * (d + 1))` compiles by reducing every edge difference to
 `-1 / (d + 1)`.  The tridiagonal chain-gradient support calculation,
-displayed minimizer candidate, vanishing-gradient theorem, `‖x_*‖² ≤ d`
-estimate, and minimizer-value theorem for Theorem 4.4 now compile on top of
-this interface.  The next Chapter 4 theorem route should prove the
-objective-gradient bridge, the convex/smooth matrix facts, `f_d = f_N` on
-`V_N`, and then formalize the lower-bound gap estimate.
+displayed minimizer candidate, vanishing-gradient theorem, edge-difference
+gradient bridge, `‖x_*‖² ≤ d` estimate, and minimizer-value theorem for
+Theorem 4.4 now compile on top of this interface.  Search also found
+mathlib's `sq_sum_le_card_mul_sum_sq`, which is the likely reusable Cauchy
+ingredient for the global lower bound from the edge telescoping identity.
+The next Chapter 4 theorem route should turn the edge-difference bridge into
+a full objective-gradient/convexity package, prove the Cauchy/telescoping
+objective lower bound, prove `f_d = f_N` on `V_N`, and then formalize the
+final lower-bound gap estimate.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
