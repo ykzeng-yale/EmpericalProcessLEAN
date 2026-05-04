@@ -3533,3 +3533,15 @@ show that, once this named primitive is proved and a fixed-space
 outer-probability endpoint is available, the a.s. zero conclusion follows.
 This is a precise blocker registration, not a proof of the missing reverse
 cofiltration theorem.
+
+2026-05-04 follow-up: the full-subgraph Theorem 2.4.3/Lemma 2.4.5 route now
+also consumes the named reverse/cofiltration blocker directly.  New compiled
+declarations are
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_reverseCofiltrationHandoff`
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_reverseCofiltrationHandoff`.
+They compose the full-subgraph `P`-GC endpoint, the in-mean centered-supremum
+endpoint, the fixed-space outer-probability/Borel-Cantelli zero route, and the
+named reverse/cofiltration primitive.  Downstream assembly for the
+full-subgraph path now has one exposed missing hypothesis:
+`VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun`.

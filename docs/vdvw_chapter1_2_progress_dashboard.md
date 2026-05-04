@@ -1020,3 +1020,12 @@ Borel-Cantelli route.  Search confirmed that mathlib currently supplies the
 forward filtration martingale convergence APIs, but not the exact VdV&W
 reverse/permutation-symmetric cofiltration theorem.  Next real proof work is
 therefore the named primitive itself or a structural route that avoids it.
+
+2026-05-04 follow-up: the full-subgraph route now has a consolidated
+named-blocker package:
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_reverseCofiltrationHandoff`.
+It returns the book-style `P`-GC branch, the in-mean centered-supremum
+conclusion, and the Lemma 2.4.5 a.s. zero conclusion from the existing
+full-subgraph hypotheses plus the single named reverse/cofiltration primitive.
+The companion a.s. consumer is
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_reverseCofiltrationHandoff`.

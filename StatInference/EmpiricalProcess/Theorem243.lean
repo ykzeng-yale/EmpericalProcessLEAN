@@ -25524,6 +25524,119 @@ theorem
       henvelope hclass henv_integrable hprob hreverse
 
 /--
+Canonical full-subgraph Lemma 2.4.5 a.s. zero consumer in named-blocker form.
+
+This is the same theorem-facing full-subgraph route as the previous consumer,
+but the remaining reverse/cofiltration input is exposed as the named
+proposition `VdVWLemma245ReverseCofiltrationHandoff`.  Thus the
+full-subgraph path now has a single precise blocker rather than a repeated
+anonymous higher-order hypothesis.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_reverseCofiltrationHandoff
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hreverse :
+      VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) := by
+  have hprob :
+      VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+        (fun n sequence =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        atTop (fun _ => (0 : ℝ)) :=
+    VdVWConvergesInOuterProbability_nat_succ
+      (VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_fullSubgraph_integrable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable)
+  exact
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseCofiltrationHandoff_of_outerProbability_invNat_geometric
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (Set.to_countable indexClass)
+      henvelope hclass henv_integrable hprob hreverse
+
+/--
+Canonical full-subgraph Theorem 2.4.3/Lemma 2.4.5 package under the named
+reverse/cofiltration blocker.
+
+The compiled finite-product and fixed-space Theorem 2.4.3 routes provide the
+book-style `P`-Glivenko-Cantelli and in-mean conclusions.  The only additional
+input for the almost-sure Lemma 2.4.5 centered-supremum conclusion is the
+named primitive `VdVWLemma245ReverseCofiltrationHandoff`.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_reverseCofiltrationHandoff
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hreverse :
+      VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun) :
+    VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) := by
+  constructor
+  · exact
+      (VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable).1
+  · constructor
+    · exact
+        (VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (vcDegree := vcDegree)
+          hvc hindexClass henvelope hclass henv henv_integrable).2
+    · exact
+        vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_reverseCofiltrationHandoff
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (vcDegree := vcDegree)
+          hvc hindexClass henvelope hclass henv henv_integrable hreverse
+
+/--
 Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the
 canonical terminal sample-path process.
 
