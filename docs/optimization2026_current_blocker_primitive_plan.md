@@ -1087,14 +1087,26 @@ The canonical quotient-rate variant now compiles too:
 and `chewi45_not_finiteGeometricCandidate_near_min_of_logQuotientRate_lt`.
 This eliminates the redundant `hrate_log` hypothesis when the rate is chosen
 as `log (eps/(alpha/8)) / (2*log q) - 1`.
+The standard source-dimension specialization now compiles:
+`chewi45_two_mul_add_one_boundary_exponent_eq`,
+`chewi45_iteration_count_ge_logQuotientRate_two_mul_add_one`, and
+`chewi45_not_finiteGeometricCandidate_near_min_of_logQuotientRate_lt_two_mul_add_one`.
+These instantiate `d = 2*N+1` and `M = 2*(N+1)`, discharging `N < d` and the
+finite boundary inequality by `omega`.
+The half-boundary rate conversion now also compiles:
+`chewi45_log_half_bound_of_logQuotient_iteration_lower_bound` and
+`chewi45_not_finiteGeometricCandidate_near_min_of_two_logQuotient_rates`.
+The latter is the current strongest direct finite route: it rules out
+near-minimality from two explicit rate comparisons,
+`log(1/2)/(2*log q)-1 <= N` and
+`N < log(eps/(alpha/8))/(2*log q)-1`, with `q = chewi45GeometricRatio kappa`.
 Search/source correction: Exercise 4.2 is stated for an infinite-dimensional
 `R^infty` chain, and scalar checks of the finite corrected truncation show the
 literal `q^(2N)` tail factor is approached from below rather than true for all
 finite `d` without extra slack.  The next atomic target is therefore either a
-dimension/log proof producing a convenient `M` with
-`M <= 2*d+2-2*(N+1)` and `(M : Real) * log q <= log (1/2)`, then instantiate
-the quotient-rate wrapper; alternate route: a true `l^2`/infinite-sequence
-model where the exact Exercise 4.2 tail identity should hold.  The reduction-route comparison
+condition-number comparison replacing the quotient rates by the textbook
+`sqrt(kappa) * log(...)` lower bound, or a true `l^2`/infinite-sequence model
+where the exact Exercise 4.2 tail identity should hold.  The reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` remains an alternate
 assembly target when concrete condition-number/log hypotheses make it faster.
 Search mathlib/local APIs for `Real.log` monotonicity, `Real.exp` inversions,

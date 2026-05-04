@@ -199,6 +199,16 @@ The newest quotient-rate pass adds
 `chewi45_iteration_count_ge_logQuotientRate_of_finiteGeometricCandidate_log_near_min`,
 and `chewi45_not_finiteGeometricCandidate_near_min_of_logQuotientRate_lt`,
 removing the scalar `hrate_log` assumption for the canonical quotient rate.
+The newest source-dimension pass adds
+`chewi45_two_mul_add_one_boundary_exponent_eq`,
+`chewi45_iteration_count_ge_logQuotientRate_two_mul_add_one`, and
+`chewi45_not_finiteGeometricCandidate_near_min_of_logQuotientRate_lt_two_mul_add_one`,
+specializing the finite direct route to `d = 2N+1` and `M = 2(N+1)`.
+The newest half-boundary rate pass adds
+`chewi45_log_half_bound_of_logQuotient_iteration_lower_bound` and
+`chewi45_not_finiteGeometricCandidate_near_min_of_two_logQuotient_rates`,
+so the strongest direct finite obstruction is now phrased by two explicit
+quotient-rate inequalities on `N`.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains
