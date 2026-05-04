@@ -2615,3 +2615,16 @@ from `VdVWUniformThresholdVCSubgraphBound`, or consume the selected package
 directly in the final Theorem 2.4.3 assembly.  The remaining mathematical
 input is an honest proof or assumption that the textbook VC-subgraph condition
 implies `VdVWUniformThresholdVCSubgraphBound` for the truncated class.
+
+2026-05-04 follow-up: the matching untruncated consumer is now compiled as
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_subgraph_vc`.
+It composes the canonical integer-grid untruncated route with
+`VdVWUniformThresholdVCSubgraphBound`, so the theorem-facing structural input
+is now one uniform all-threshold VC predicate for each positive truncation
+level.
+
+Next exact theorem-facing edit: prove or precisely primitive-register the
+bridge from the textbook VC-subgraph condition for the truncated class to
+`VdVWUniformThresholdVCSubgraphBound`, then use this untruncated consumer in
+the final Theorem 2.4.3 statement.  Do not add more integer-grid or
+threshold-subgraph wrappers unless the final assembly exposes a real mismatch.

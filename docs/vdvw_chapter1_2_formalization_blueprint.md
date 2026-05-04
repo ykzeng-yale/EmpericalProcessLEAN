@@ -874,6 +874,8 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_subgraph_vc`,
    which turns one uniform all-threshold empirical VC predicate into the
    canonical selected fixed-radius package.
+   The matching untruncated consumer is now compiled as
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_subgraph_vc`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

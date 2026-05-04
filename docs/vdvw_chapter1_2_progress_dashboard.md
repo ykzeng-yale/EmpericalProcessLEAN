@@ -473,6 +473,10 @@ uniform all-threshold empirical VC input, and
 feeds it into the canonical selected fixed-radius package.  Remaining gap:
 connect the actual textbook VC-subgraph condition for truncated classes to
 this uniform threshold predicate and consume it in the final untruncated route.
+2026-05-04 follow-up: the untruncated route now has the matching consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_subgraph_vc`.
+The current blocker is therefore the mathematical VC-subgraph implication
+itself, not per-grid packaging.
 
 ## Verification Monitor
 
