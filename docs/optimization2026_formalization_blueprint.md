@@ -111,6 +111,7 @@ Current compiled surface:
 - `StatInference.Optimization.PLGradientFlowLimitRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovNonzeroDisplacementRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLyapunovContinuousDataRouteToQGOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn`
@@ -120,6 +121,7 @@ Current compiled surface:
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNonzeroDisplacementRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovContinuousDataRoute`
 
 Near-term exact candidates:
 
@@ -205,12 +207,13 @@ Current compiled surface:
 
 Near-term exact candidates:
 
-1. Discharge `PLGradientFlowLyapunovNonzeroDisplacementRouteToQGOn` by
+1. Discharge `PLGradientFlowLyapunovContinuousDataRouteToQGOn` by
    formalizing or cleanly supplying the gradient-flow convergence/minimizer
-   interface, Lyapunov continuity, positive-gap, and nonzero-displacement side
-   conditions.  The derivative-to-antitone bridge, PL scalar sign calculation,
-   objective-gap derivative, and nonzero norm-derivative calculation already
-   compile for Proposition 2.7(2).
+   interface, trajectory/gap continuity, positive-gap, and
+   nonzero-displacement side conditions.  The derivative-to-antitone bridge,
+   PL scalar sign calculation, objective-gap derivative, nonzero
+   norm-derivative calculation, and Lyapunov-continuity wrapper already compile
+   for Proposition 2.7(2).
 2. Remove or discharge the interval-integrability assumptions in Theorem 2.4
    from the notes' `C²`/regular trajectory hypotheses if a clean mathlib
    continuity route is available.

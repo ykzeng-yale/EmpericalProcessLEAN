@@ -230,6 +230,26 @@ def PLGradientFlowLyapunovNonzeroDisplacementRouteToQGOn
             0 < f (y t) - fstar) ∧
           (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t - x ≠ 0)
 
+/--
+Continuous-data route for Chewi Proposition 2.7(2).  It replaces the supplied
+continuity of the Lyapunov expression by continuity of the trajectory and of
+the objective gap along that trajectory.
+-/
+def PLGradientFlowLyapunovContinuousDataRouteToQGOn
+    (C : Set E) (f : E -> ℝ) (grad : E -> E)
+    (_alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    ∃ xStar, ∃ y : ℝ -> E,
+      xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+        y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
+          IsGradientFlowTrajectory grad y ∧
+          ContinuousOn y (Set.Ici (0 : ℝ)) ∧
+          ContinuousOn (fun t => f (y t) - fstar) (Set.Ici (0 : ℝ)) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t ∈ C) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            0 < f (y t) - fstar) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t - x ≠ 0)
+
 omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] in
 /--
 Scalar algebra in Chewi Proposition 2.7(2): under the PL lower bound,
@@ -520,6 +540,33 @@ theorem plGradientFlowLyapunovNormDerivativeRouteToQGOn_of_nonzeroDisplacementRo
           real_inner_le_norm _ _
         _ = ‖y t - x‖ * ‖grad (y t)‖ := by simp
     nlinarith
+
+/--
+Continuity of the trajectory and of the objective gap along it gives
+continuity of Chewi's Lyapunov expression.
+-/
+theorem plGradientFlowLyapunovNonzeroDisplacementRouteToQGOn_of_continuousDataRoute
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hroute :
+      PLGradientFlowLyapunovContinuousDataRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovNonzeroDisplacementRouteToQGOn
+      C f grad alpha fstar := by
+  intro x hx
+  rcases hroute hx with
+    ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv,
+      hflow, hy_cont, hgap_cont, hy_mem, hgap_pos, hnonzero⟩
+  have hnorm_cont : ContinuousOn (fun t => ‖y t - x‖) (Set.Ici (0 : ℝ)) := by
+    exact (hy_cont.sub continuousOn_const).norm
+  have hlyap_cont :
+      ContinuousOn
+        (fun t =>
+          Real.sqrt (alpha / 2) * ‖y t - x‖ +
+            Real.sqrt (f (y t) - fstar))
+        (Set.Ici (0 : ℝ)) :=
+    (hnorm_cont.const_mul (Real.sqrt (alpha / 2))).add hgap_cont.sqrt
+  exact ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv, hflow,
+    hlyap_cont, hy_mem, hgap_pos, hnonzero⟩
 
 omit [InnerProductSpace ℝ E] in
 /--
@@ -831,6 +878,25 @@ theorem quadraticGrowthOn_of_plGradientFlowLyapunovNonzeroDisplacementRoute
   quadraticGrowthOn_of_plGradientFlowLyapunovNormDerivativeRoute
     hgrad halpha hpl
     (plGradientFlowLyapunovNormDerivativeRouteToQGOn_of_nonzeroDisplacementRoute
+      hroute)
+
+/--
+Chewi Proposition 2.7, second implication, from continuous trajectory/gap
+data plus the remaining convergence and side conditions.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovContinuousDataRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovContinuousDataRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLyapunovNonzeroDisplacementRoute
+    hgrad halpha hpl
+    (plGradientFlowLyapunovNonzeroDisplacementRouteToQGOn_of_continuousDataRoute
       hroute)
 
 end Optimization
