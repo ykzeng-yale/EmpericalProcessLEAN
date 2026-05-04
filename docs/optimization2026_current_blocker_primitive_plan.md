@@ -176,9 +176,15 @@ the whole-space differentiable case:
   `lowerBoundChainObjective_lowerBoundChainMinimizer`.  The algebraic
   objective-gradient bridge now starts with
   `lowerBoundChainGradient_eq_edgeDifference`, which rewrites the tridiagonal
-  gradient as `β/4` times adjacent chain-edge residual differences.  Search
-  found mathlib's `sq_sum_le_card_mul_sum_sq` as the likely Cauchy ingredient
-  for the next global objective lower-bound layer.
+  gradient as `β/4` times adjacent chain-edge residual differences.  The
+  global lower-bound/minimizer layer also now compiles: `finSum_forwardDifference`
+  and `lowerBoundChainEdge_sum` telescope the boundary chain edge residuals,
+  mathlib's `sq_sum_le_card_mul_sum_sq` supplies the finite Cauchy inequality,
+  `lowerBoundChain_edgeSquareSum_ge` proves the edge-energy lower bound,
+  `lowerBoundChainObjective_ge_minValue` proves the global objective lower
+  bound for `0 ≤ β`, and
+  `lowerBoundChainObjective_isMinOn_lowerBoundChainMinimizer` proves the
+  displayed chain point is an `IsMinOn` global minimizer.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -838,6 +844,8 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChainNode`
 - `StatInference.Optimization.lowerBoundChainEdge`
 - `StatInference.Optimization.lowerBoundChainObjective`
+- `StatInference.Optimization.finSum_forwardDifference`
+- `StatInference.Optimization.lowerBoundChainEdge_sum`
 - `StatInference.Optimization.lowerBoundChainGradient_eq_edgeDifference`
 - `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
@@ -850,6 +858,9 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChainNode_lowerBoundChainMinimizer`
 - `StatInference.Optimization.lowerBoundChainEdge_lowerBoundChainMinimizer`
 - `StatInference.Optimization.lowerBoundChainObjective_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChain_edgeSquareSum_ge`
+- `StatInference.Optimization.lowerBoundChainObjective_ge_minValue`
+- `StatInference.Optimization.lowerBoundChainObjective_isMinOn_lowerBoundChainMinimizer`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
@@ -871,7 +882,7 @@ already compiled, so do not spend another run there unless strengthening the
 continuity hypotheses materially advances the analytic route.  For Chapter 4,
 reuse `LowerBounds.lean`'s single gradient-span/oracle model, the compiled
 `coordinatePrefixSubmodule` induction, and `lowerBoundChainGradient`
-support/minimizer/norm/objective-value theorems.  Search mathlib
+support/minimizer/norm/objective-value/global-minimizer theorems.  Search mathlib
 basis/coordinate, matrix, PSD, derivative, smoothness, finite-sum telescoping,
 and Cauchy APIs before proving the full objective-gradient bridge,
 convex/smooth facts, `f_d = f_N` on `V_N`, or the lower-bound gap estimate.

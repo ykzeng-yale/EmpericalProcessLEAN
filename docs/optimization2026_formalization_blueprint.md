@@ -370,6 +370,8 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainNode`
 - `StatInference.Optimization.lowerBoundChainEdge`
+- `StatInference.Optimization.finSum_forwardDifference`
+- `StatInference.Optimization.lowerBoundChainEdge_sum`
 - `StatInference.Optimization.lowerBoundChainObjective`
 - `StatInference.Optimization.lowerBoundChainGradient_eq_edgeDifference`
 - `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
@@ -383,6 +385,9 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.lowerBoundChainNode_lowerBoundChainMinimizer`
 - `StatInference.Optimization.lowerBoundChainEdge_lowerBoundChainMinimizer`
 - `StatInference.Optimization.lowerBoundChainObjective_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChain_edgeSquareSum_ge`
+- `StatInference.Optimization.lowerBoundChainObjective_ge_minValue`
+- `StatInference.Optimization.lowerBoundChainObjective_isMinOn_lowerBoundChainMinimizer`
 
 Search-first result for this lane: there was no local Chewi gradient-span
 formalization; mathlib's `Submodule.span`, `Submodule.subset_span`, and
@@ -396,14 +401,14 @@ modeled as `lowerBoundChainObjective` using extended boundary nodes
 `β / (8 * (d + 1))` compiles by reducing every edge difference to
 `-1 / (d + 1)`.  The tridiagonal chain-gradient support calculation,
 displayed minimizer candidate, vanishing-gradient theorem, edge-difference
-gradient bridge, `‖x_*‖² ≤ d` estimate, and minimizer-value theorem for
-Theorem 4.4 now compile on top of this interface.  Search also found
-mathlib's `sq_sum_le_card_mul_sum_sq`, which is the likely reusable Cauchy
-ingredient for the global lower bound from the edge telescoping identity.
-The next Chapter 4 theorem route should turn the edge-difference bridge into
-a full objective-gradient/convexity package, prove the Cauchy/telescoping
-objective lower bound, prove `f_d = f_N` on `V_N`, and then formalize the
-final lower-bound gap estimate.
+gradient bridge, `‖x_*‖² ≤ d` estimate, minimizer-value theorem, finite
+telescoping identity, Cauchy edge-energy bound, global objective lower bound,
+and `IsMinOn` minimizer theorem for Theorem 4.4 now compile on top of this
+interface.  Search found and reused mathlib's `sq_sum_le_card_mul_sum_sq` for
+the Cauchy step, plus mathlib's `isMinOn_univ_iff` for the global minimizer
+wrapper.  The next Chapter 4 theorem route should turn the edge-difference
+bridge into a full objective-gradient/convexity package, prove `f_d = f_N` on
+`V_N`, and then formalize the final lower-bound gap estimate.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
