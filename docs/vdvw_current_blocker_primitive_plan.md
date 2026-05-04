@@ -1784,6 +1784,25 @@ bounded real-valued truncated traces by binary threshold/subgraph traces with
 controlled VC dimension, or prove an independent maximal-separated/internal
 cover cardinality bound.  The pure binary indicator case is now closed.
 
+2026-05-04 `/goal` update after fixed-threshold subgraph bridge closure:
+`StatInference/EmpiricalProcess/SubgraphTraceVC.lean` now exposes the first
+real-valued subgraph entry point.  New compiled declarations are
+`thresholdIndicatorClassFun`, `thresholdIndicatorClassFun_sample_binary`,
+`empiricalBinaryTraceSet_thresholdIndicatorClassFun_eq`, and
+`thresholdIndicator_trace_card_add_one_real_le_vc_nat_poly`.  For each fixed
+threshold, the thresholded class consumes the binary empirical-trace Sauer
+bridge under a `vcDim` bound on the realized threshold trace family.
+
+Search record: local `BinaryTraceVC` closes the `{0,1}` case; no ready
+mathlib/local theorem was found that uniformly reconstructs or bounds a
+general real-valued truncated trace image from all threshold/subgraph traces.
+
+The exact next theorem-facing edit is now the uniform subgraph lift: prove a
+finite-threshold or subgraph coding theorem that bounds the number of distinct
+bounded real-valued truncated traces by controlled threshold trace families, or
+switch to a maximal-separated/internal-cover cardinality proof.  Fixed
+thresholds alone are compiled but do not yet bound full real-valued traces.
+
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
 APIs found and used are `ProbabilityTheory.iIndepFun_pi`,

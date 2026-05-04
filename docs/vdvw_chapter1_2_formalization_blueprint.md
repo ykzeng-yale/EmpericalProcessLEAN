@@ -147,7 +147,7 @@ Targeted search of pinned mathlib found reusable foundations for:
 | CLT foundations | `Probability.CentralLimitTheorem` |
 | tail inequalities | sub-Gaussian and Hoeffding infrastructure in `Probability.Moments.SubGaussian` |
 | `L_p`/integrability | `MemLp`, `eLpNorm`, Bochner/Lebesgue integrals |
-| VC combinatorics | `Combinatorics.SetFamily.Shatter`, `Finset.vcDim`, local `StatInference.EmpiricalProcess.VCSauer` Sauer/polynomial wrappers, and `StatInference.EmpiricalProcess.BinaryTraceVC` binary empirical-trace bridge |
+| VC combinatorics | `Combinatorics.SetFamily.Shatter`, `Finset.vcDim`, local `StatInference.EmpiricalProcess.VCSauer` Sauer/polynomial wrappers, `StatInference.EmpiricalProcess.BinaryTraceVC` binary empirical-trace bridge, and `StatInference.EmpiricalProcess.SubgraphTraceVC` fixed-threshold subgraph bridge |
 
 Targeted search did not find exact Lean statements for VdV&W-specific
 empirical-process objects such as:
