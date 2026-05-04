@@ -117,6 +117,174 @@ def VdVWFirstNPermutationSymmetric {Observation : Type u} (n : ℕ)
   ∀ (perm : Equiv.Perm (Fin n)) (sequence : ℕ -> Observation),
     statistic (vdVWPermuteFirstN perm sequence) = statistic sequence
 
+/-- A permutation of `ℕ` fixes every coordinate from `n` onward. -/
+def VdVWNatPermFixesFrom (n : ℕ) (perm : Equiv.Perm ℕ) : Prop :=
+  ∀ k, n ≤ k -> perm k = k
+
+/-- Permute an infinite sample sequence by a permutation of coordinate indices. -/
+def vdVWPermuteNatSequence {Observation : Type u}
+    (perm : Equiv.Perm ℕ) (sequence : ℕ -> Observation) : ℕ -> Observation :=
+  fun k => sequence (perm.symm k)
+
+/-- A permutation fixing every coordinate from `n` onward maps `{0, ..., n-1}` into itself. -/
+theorem VdVWNatPermFixesFrom.image_lt
+    {n : ℕ} {perm : Equiv.Perm ℕ}
+    (hfix : VdVWNatPermFixesFrom n perm)
+    {k : ℕ} (hk : k < n) :
+    perm k < n := by
+  by_contra hnot
+  have hnle : n ≤ perm k := Nat.le_of_not_gt hnot
+  have hfixed : perm (perm k) = perm k := hfix (perm k) hnle
+  have hperm_eq : perm k = k := perm.injective hfixed
+  exact (not_le_of_gt hk) (by simpa [hperm_eq] using hnle)
+
+/-- The inverse of a permutation fixing every coordinate from `n` onward also preserves `{0, ..., n-1}`. -/
+theorem VdVWNatPermFixesFrom.symm_image_lt
+    {n : ℕ} {perm : Equiv.Perm ℕ}
+    (hfix : VdVWNatPermFixesFrom n perm)
+    {k : ℕ} (hk : k < n) :
+    perm.symm k < n := by
+  by_contra hnot
+  have hnle : n ≤ perm.symm k := Nat.le_of_not_gt hnot
+  have hfixed : perm (perm.symm k) = perm.symm k :=
+    hfix (perm.symm k) hnle
+  have hperm_eq : k = perm.symm k := by
+    simpa using hfixed
+  exact (not_le_of_gt hk) (by simpa [← hperm_eq] using hnle)
+
+/-- Restrict a permutation fixing every coordinate from `n` onward to the first `n` coordinates. -/
+noncomputable def vdVWNatPermRestrictFin
+    {n : ℕ} (perm : Equiv.Perm ℕ)
+    (hfix : VdVWNatPermFixesFrom n perm) :
+    Equiv.Perm (Fin n) :=
+  Equiv.ofBijective
+    (fun i : Fin n => ⟨perm i, hfix.image_lt i.2⟩)
+    ⟨by
+      intro i j hij
+      apply Fin.ext
+      apply perm.injective
+      exact congrArg (fun x : Fin n => (x : ℕ)) hij,
+    by
+      intro j
+      refine ⟨⟨perm.symm j, hfix.symm_image_lt j.2⟩, ?_⟩
+      ext
+      simp⟩
+
+/--
+The infinite-coordinate form of VdV&W permutation symmetry: a statistic is
+invariant under all coordinate permutations that fix every coordinate from
+`n` onward.
+-/
+def VdVWPermutationSymmetricFrom {Observation : Type u} (n : ℕ)
+    (statistic : (ℕ -> Observation) -> ℝ) : Prop :=
+  ∀ (perm : Equiv.Perm ℕ), VdVWNatPermFixesFrom n perm ->
+    ∀ sequence : ℕ -> Observation,
+      statistic (vdVWPermuteNatSequence perm sequence) = statistic sequence
+
+/--
+Symmetry under permutations fixing coordinates from `m` onward implies
+symmetry under the smaller group fixing coordinates from `n` onward, when
+`n ≤ m`.
+-/
+theorem VdVWPermutationSymmetricFrom.mono
+    {Observation : Type u} {statistic : (ℕ -> Observation) -> ℝ}
+    {n m : ℕ} (hnm : n ≤ m)
+    (hsymm : VdVWPermutationSymmetricFrom m statistic) :
+    VdVWPermutationSymmetricFrom n statistic := by
+  intro perm hfix sequence
+  exact hsymm perm (fun k hmk => hfix k (hnm.trans hmk)) sequence
+
+/--
+Generators for the VdV&W permutation-symmetric sigma-field `Σ_n`: measurable
+real functions symmetric under all permutations fixing coordinates from `n`
+onward, pulled back along Borel sets.
+-/
+def VdVWPermutationSymmetricGeneratorSet
+    (Observation : Type u) [MeasurableSpace Observation] (n : ℕ) :
+    Set (Set (ℕ -> Observation)) :=
+  {s | ∃ statistic : (ℕ -> Observation) -> ℝ,
+    Measurable statistic ∧
+      VdVWPermutationSymmetricFrom n statistic ∧
+      ∃ t : Set ℝ, MeasurableSet t ∧ s = statistic ⁻¹' t}
+
+/-- The VdV&W permutation-symmetric sigma-field `Σ_n`. -/
+@[reducible]
+def vdVWPermutationSymmetricMeasurableSpace
+    (Observation : Type u) [MeasurableSpace Observation] (n : ℕ) :
+    MeasurableSpace (ℕ -> Observation) :=
+  MeasurableSpace.generateFrom
+    (VdVWPermutationSymmetricGeneratorSet Observation n)
+
+/-- A generator of `Σ_n` is measurable in `Σ_n`. -/
+theorem measurableSet_vdVWPermutationSymmetricMeasurableSpace_of_generator
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    {s : Set (ℕ -> Observation)}
+    (hs : s ∈ VdVWPermutationSymmetricGeneratorSet Observation n) :
+    MeasurableSet[vdVWPermutationSymmetricMeasurableSpace Observation n] s :=
+  MeasurableSpace.measurableSet_generateFrom hs
+
+/--
+The VdV&W permutation-symmetric sigma-fields decrease with `n`: if `n ≤ m`,
+then every `Σ_m`-measurable set is `Σ_n`-measurable.
+-/
+theorem vdVWPermutationSymmetricMeasurableSpace_antitone
+    {Observation : Type u} [MeasurableSpace Observation]
+    {n m : ℕ} (hnm : n ≤ m) :
+    vdVWPermutationSymmetricMeasurableSpace Observation m ≤
+      vdVWPermutationSymmetricMeasurableSpace Observation n := by
+  refine MeasurableSpace.generateFrom_le ?_
+  intro s hs
+  rcases hs with ⟨statistic, hmeas, hsymm, t, ht, rfl⟩
+  exact MeasurableSpace.measurableSet_generateFrom
+    ⟨statistic, hmeas, VdVWPermutationSymmetricFrom.mono hnm hsymm, t, ht, rfl⟩
+
+/--
+A measurable real statistic symmetric under all permutations fixing
+coordinates from `n` onward is measurable with respect to the generated
+VdV&W permutation-symmetric sigma-field `Σ_n`.
+-/
+theorem measurable_vdVWPermutationSymmetricMeasurableSpace_of_symmetric
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    {statistic : (ℕ -> Observation) -> ℝ}
+    (hmeas : Measurable statistic)
+    (hsymm : VdVWPermutationSymmetricFrom n statistic) :
+    Measurable[vdVWPermutationSymmetricMeasurableSpace Observation n] statistic := by
+  intro t ht
+  exact MeasurableSpace.measurableSet_generateFrom
+    ⟨statistic, hmeas, hsymm, t, ht, rfl⟩
+
+/--
+Projecting the first `n` coordinates after an infinite permutation fixing the
+tail is the finite-coordinate permutation induced by restricting that
+permutation to the first `n` coordinates.
+-/
+theorem vdVWFirstNSample_permuteNatSequence
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (perm : Equiv.Perm ℕ) (hfix : VdVWNatPermFixesFrom n perm)
+    (sequence : ℕ -> Observation) :
+    vdVWFirstNSample n (vdVWPermuteNatSequence perm sequence) =
+      vdVWFinCoordinatePermMeasurableEquiv
+        (vdVWNatPermRestrictFin perm hfix) (vdVWFirstNSample n sequence) := by
+  ext i
+  let restricted := vdVWNatPermRestrictFin perm hfix
+  have hrestricted_symm :
+      ((restricted.symm i : Fin n) : ℕ) = perm.symm (i : ℕ) := by
+    apply perm.injective
+    have happly :
+        perm (((restricted.symm i : Fin n) : ℕ)) = (i : ℕ) := by
+      change ((restricted (restricted.symm i) : Fin n) : ℕ) = (i : ℕ)
+      exact
+        congrArg (fun x : Fin n => (x : ℕ))
+          (restricted.apply_symm_apply i)
+    simpa using happly
+  have hcoord :=
+    vdVWFinCoordinatePermMeasurableEquiv_apply_apply
+      (Observation := Observation) restricted
+      (vdVWFirstNSample n sequence)
+      (restricted.symm i)
+  simpa [vdVWFirstNSample, vdVWPermuteNatSequence, hrestricted_symm] using
+    hcoord.symm
+
 /--
 Projecting the first `n` coordinates after permuting an infinite sequence is
 the finite-coordinate permutation of the first-`n` sample.
@@ -235,6 +403,32 @@ theorem vdVWFirstNPermutationSymmetric_uniformClassSupremum
   exact
     vdVWWeightedClassSupremum_uniform_finCoordinatePerm
       indexClass classFun perm (vdVWFirstNSample n sequence)
+
+/--
+The same uniform empirical supremum statistic is symmetric under every
+infinite-coordinate permutation fixing the tail from `n` onward.  This is the
+form consumed by the generated `Σ_n` permutation-symmetric sigma-field.
+-/
+theorem VdVWPermutationSymmetricFrom_uniformClassSupremum
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (n : ℕ) :
+    VdVWPermutationSymmetricFrom n
+      (fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass classFun
+          (fun _ : Fin n => (n : ℝ)⁻¹) (vdVWFirstNSample n sequence)) := by
+  intro perm hfix sequence
+  change
+    vdVWWeightedClassSupremum indexClass classFun
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+        (vdVWFirstNSample n (vdVWPermuteNatSequence perm sequence)) =
+      vdVWWeightedClassSupremum indexClass classFun
+        (fun _ : Fin n => (n : ℝ)⁻¹) (vdVWFirstNSample n sequence)
+  rw [vdVWFirstNSample_permuteNatSequence perm hfix]
+  exact
+    vdVWWeightedClassSupremum_uniform_finCoordinatePerm
+      indexClass classFun (vdVWNatPermRestrictFin perm hfix)
+      (vdVWFirstNSample n sequence)
 
 /--
 The value set whose supremum is represented by

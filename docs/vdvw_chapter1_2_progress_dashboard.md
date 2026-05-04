@@ -682,6 +682,20 @@ infinite-sequence statistic induced by the uniform empirical supremum is
 symmetric in the first `n` arguments.  Remaining work is the generated
 sigma-field `Σ_n`, its decreasing direction, adapted measurable-cover
 versions, and the reverse-submartingale handoff.
+2026-05-04 follow-up: the generated `Σ_n` substrate is now compiled in
+`PMeasurable.lean`.  New declarations include `VdVWNatPermFixesFrom`,
+`vdVWPermuteNatSequence`, `vdVWNatPermRestrictFin`,
+`VdVWPermutationSymmetricFrom`,
+`VdVWPermutationSymmetricGeneratorSet`,
+`vdVWPermutationSymmetricMeasurableSpace`,
+`vdVWPermutationSymmetricMeasurableSpace_antitone`,
+`measurable_vdVWPermutationSymmetricMeasurableSpace_of_symmetric`,
+`vdVWFirstNSample_permuteNatSequence`, and
+`VdVWPermutationSymmetricFrom_uniformClassSupremum`.  This closes the
+generated sigma-field and decreasing-direction substrate for the
+permutation-symmetric route.  Remaining work is now adapted
+measurable-cover/supremum process construction over `Σ_n` and the
+reverse-submartingale inequality/convergence handoff.
 
 ## Verification Monitor
 
