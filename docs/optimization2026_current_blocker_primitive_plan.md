@@ -1550,20 +1550,26 @@ The concrete displayed-CG bridge also compiles
 `IsCGDisplayedIteration.quadraticGradient_orthogonal_displacement`,
 `IsCGDisplayedIteration.quadraticGradient_pairwise_orthogonal`, and
 `IsCGDisplayedIteration.chewi54_accelerated_bound_of_cgAffineMinimizer`.
+The affine minimization property itself now also compiles from first-order
+convexity and residual orthogonality:
+`firstOrderStrongConvexOn_isMinOn_cgAffineSpan_of_orthogonal`,
+`IsCGDisplayedIteration.isMinOn_cgAffineSpan_of_point_updates`, and
+`IsCGDisplayedIteration.chewi54_accelerated_bound_of_point_updates`.
 This proves the source pre-halving chain through
 `N * gap_N <= sqrt(2 * beta * initial_gap) *
 sqrt(2 * initial_gap / alpha)` from competitive steps, first-order strong
 convexity, gradient orthogonality, and the first-order/orthogonality gap
 comparison, simplifies it to the readable
 `N * gap_N <= 2 * sqrt(beta / alpha) * initial_gap`, and proves the halving
-algebra `gap_N >= gap_0 / 2 -> N <= 4 * sqrt(beta / alpha)`.  Next target:
-derive or package the remaining affine `IsMinOn` property of the displayed CG
-step over `x_0 + span {p_0, ..., p_n}`.  The search-span, residual-gradient,
-displacement-orthogonality, and pairwise-gradient-orthogonality assumptions
-are now discharged from the displayed point update and
-`IsCGDisplayedIteration`.  Do not redo Theorem 5.3's A-conjugacy induction,
-the Chapter 3 descent lemma, Chapter 4 gradient-span interfaces, or Chapter 4
-hard-instance packages.
+algebra `gap_N >= gap_0 / 2 -> N <= 4 * sqrt(beta / alpha)`.  The search-span,
+residual-gradient, displacement-orthogonality, pairwise-gradient-orthogonality,
+and affine-minimizer assumptions are now discharged from the displayed point
+update and `IsCGDisplayedIteration`.  Next target: package the restart/halving
+iteration-count statement into a logarithmic `O(sqrt(kappa) log(gap0/eps))`
+endpoint, or move directly to the polynomial/Chebyshev alternative proof after
+a source-facing Theorem 5.4 statement audit.  Do not redo Theorem 5.3's
+A-conjugacy induction, the Chapter 3 descent lemma, Chapter 4 gradient-span
+interfaces, or Chapter 4 hard-instance packages.
 
 Chapter 2 route context is still available but no longer the active target:
 The route
