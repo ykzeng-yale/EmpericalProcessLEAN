@@ -3557,3 +3557,24 @@ integrability; it does not require `[Countable Index]`, `[Inhabited
 Observation]`, or the reverse/cofiltration primitive.  The arbitrary/countable
 non-finite route remains blocked exactly at
 `VdVWLemma245ReverseCofiltrationHandoff`.
+
+2026-05-04 follow-up: a cofiltration-adaptedness sub-primitive for the
+arbitrary/countable Lemma 2.4.5 route is now compiled.  Search/reuse record:
+local `Theorem243.lean` already had the generic
+`measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`
+and
+`adapted_vdVWPermutationSymmetricCofiltration_uniformClassSupremum_of_countable`;
+local `PMeasurable.lean` supplied the antitone field relation
+`vdVWPermutationSymmetricMeasurableSpace_antitone`; pinned mathlib search still
+found only ordinary forward-filtration martingale convergence APIs such as
+`Submartingale.ae_tendsto_limitProcess`, not a direct reverse/cofiltration
+convergence theorem over `ℕᵒᵈ`.  New declarations specialize the generic
+uniform-supremum layer to the named centered Lemma 2.4.5 statistic:
+`measurable_vdVWPermutationSymmetricMeasurableSpace_vdVWLemma245CenteredEmpiricalSupremum_of_countable`,
+`adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_of_countable`,
+and
+`adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_succ_of_countable`.
+This closes the process measurability/adaptedness bookkeeping for `X_n` and
+`X_{n+1}`.  The remaining non-finite-class blocker is still the genuine
+reverse/permutation-symmetric convergence theorem represented by
+`VdVWLemma245ReverseCofiltrationHandoff`.

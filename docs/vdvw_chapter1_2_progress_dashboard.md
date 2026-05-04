@@ -1039,3 +1039,14 @@ ambient countability, an inhabited observation type, or the reverse
 cofiltration primitive.  This is the clean finite-class closure; the
 non-finite arbitrary/countable route still depends on
 `VdVWLemma245ReverseCofiltrationHandoff`.
+
+2026-05-04 follow-up: the named Lemma 2.4.5 centered statistic is now
+measurable/adapted with respect to the permutation-symmetric cofiltration.  New
+compiled declarations are
+`measurable_vdVWPermutationSymmetricMeasurableSpace_vdVWLemma245CenteredEmpiricalSupremum_of_countable`,
+`adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_of_countable`,
+and
+`adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_succ_of_countable`.
+This removes another bookkeeping layer from the non-finite Lemma 2.4.5 route:
+the remaining blocker is the actual reverse/permutation-symmetric convergence
+principle, not measurability or adaptedness of the centered supremum process.

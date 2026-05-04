@@ -4900,6 +4900,103 @@ noncomputable def vdVWLemma245LeaveOneOutCenteredSupremum
       (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))
 
 /--
+The named centered empirical supremum from Lemma 2.4.5 is measurable with
+respect to the matching VdV&W permutation-symmetric sigma-field `Σ_n`.
+
+This specializes the generic countable uniform-supremum measurability theorem
+to the centered class `f - Pf`, making the cofiltration side of the
+Lemma 2.4.5 reverse-submartingale blocker explicit.
+-/
+theorem measurable_vdVWPermutationSymmetricMeasurableSpace_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (n : ℕ) :
+    Measurable[vdVWPermutationSymmetricMeasurableSpace Observation n]
+      (fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence) := by
+  let centeredClassFun : Index -> Observation -> ℝ :=
+    fun index observation => classFun index observation - ∫ x, classFun index x ∂P
+  have hcentered_meas :
+      VdVWClassCoordinateMeasurable indexClass centeredClassFun := by
+    intro index hindex
+    exact (hclass index hindex).sub measurable_const
+  simpa [vdVWLemma245CenteredEmpiricalSupremum, centeredClassFun] using
+    (measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable
+      (indexClass := indexClass) (classFun := centeredClassFun)
+      hcount hcentered_meas n)
+
+/--
+Adaptedness of the named Lemma 2.4.5 centered empirical supremum process to the
+VdV&W permutation-symmetric cofiltration.
+
+Mathlib's martingale convergence theorem is formulated for ordinary
+filtrations, while the textbook argument uses the decreasing fields `Σ_n`.
+This theorem closes the process-adaptedness part of that reverse-filtration
+handoff; the remaining blocker is the reverse/cofiltration convergence
+principle itself.
+-/
+theorem adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun) :
+    Adapted (vdVWPermutationSymmetricCofiltration Observation)
+      (fun n : ℕᵒᵈ => fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+          (OrderDual.ofDual n) sequence) := by
+  intro n
+  change
+    Measurable[vdVWPermutationSymmetricMeasurableSpace Observation (OrderDual.ofDual n)]
+      (fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+          (OrderDual.ofDual n) sequence)
+  exact
+    measurable_vdVWPermutationSymmetricMeasurableSpace_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      hcount hclass (OrderDual.ofDual n)
+
+/--
+Shifted adaptedness of the Lemma 2.4.5 centered empirical supremum process.
+The textbook convergence display is usually written with sample size `n + 1`;
+this form records that `X_{n+1}` is still measurable with respect to the
+larger field `Σ_n`, since the permutation-symmetric fields decrease in `n`.
+-/
+theorem adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_succ_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun) :
+    Adapted (vdVWPermutationSymmetricCofiltration Observation)
+      (fun n : ℕᵒᵈ => fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+          (OrderDual.ofDual n + 1) sequence) := by
+  intro n
+  change
+    Measurable[vdVWPermutationSymmetricMeasurableSpace Observation (OrderDual.ofDual n)]
+      (fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+          (OrderDual.ofDual n + 1) sequence)
+  have hmeas :
+      Measurable[
+        vdVWPermutationSymmetricMeasurableSpace Observation (OrderDual.ofDual n + 1)]
+        (fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (OrderDual.ofDual n + 1) sequence) :=
+    measurable_vdVWPermutationSymmetricMeasurableSpace_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      hcount hclass (OrderDual.ofDual n + 1)
+  exact
+    hmeas.mono
+      (vdVWPermutationSymmetricMeasurableSpace_antitone
+        (Observation := Observation) (Nat.le_succ (OrderDual.ofDual n)))
+      le_rfl
+
+/--
 Integral transport for the Lemma 2.4.5 centered empirical supremum from the
 fixed infinite iid product space to the corresponding finite product space.
 -/
