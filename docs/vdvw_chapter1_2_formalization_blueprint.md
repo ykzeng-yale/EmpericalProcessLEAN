@@ -641,6 +641,11 @@ above, so they do not change the theorem-level dashboard counts.
    consumer now also derive finite-center Rademacher supremum integrability via
    `integrable_vdVWFiniteCenterWeightedSupremum_of_truncated_rademacher`, using
    the existing one-center sub-Gaussian bridge and truncated variance proxy.
+   The finite-class consumer now also derives the centered truncated measurable
+   cover internally through
+   `VdVWMeasurableCover.centered_truncated_of_countable_of_coordinate`, which
+   combines countable coordinate measurability with the existing `ofReal`
+   measurable-cover constructor.
    The next proof step is therefore the non-finite-class
    geometric/cardinality instantiation, or a final theorem-critical
    specialization consuming this finite-class untruncated consumer.

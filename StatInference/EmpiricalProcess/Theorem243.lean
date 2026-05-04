@@ -1605,6 +1605,46 @@ theorem VdVWPMeasurableClass.truncate_of_countable_of_coordinate
       (hclass.truncate henvelope)
 
 /--
+Centered truncated countable classes supply the measurable cover used by the
+outer-expectation Markov bridge.
+
+This packages Definition 2.3.3 measurability with `ENNReal.ofReal`, so later
+Theorem 2.4.3 consumers do not have to carry this `Ucentered` hypothesis when
+countability and coordinate measurability are already available.
+-/
+noncomputable def
+    VdVWMeasurableCover.centered_truncated_of_countable_of_coordinate
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M : ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope : Measurable envelope)
+    (n : ℕ) :
+    VdVWMeasurableCover (vdVWProductMeasure P n)
+      (fun sample : SampleAt Observation n => ENNReal.ofReal
+        (vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)) := by
+  have hcentered :
+      VdVWClassCoordinateMeasurable indexClass
+        (fun index : Index => fun observation : Observation =>
+          vdVWTruncatedClassFun classFun envelope M index observation -
+            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) := by
+    intro index hindex
+    exact
+      (measurable_vdVWTruncatedClassFun (hclass index hindex) henvelope).sub
+        measurable_const
+  exact
+    VdVWMeasurableCover.ofNullMeasurable_ofReal
+      (vdVWProductMeasure P n)
+      (VdVWPMeasurableClass.of_countable_of_measurable hcount hcentered
+        n (fun _ : Fin n => (n : ℝ)⁻¹))
+
+/--
 The product-copy pair difference for a fixed truncated class member is
 measurable.
 
@@ -15825,14 +15865,7 @@ theorem
               (vdVWTruncatedClassFun classFun envelope M)
               (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)) sample)
           μsign)
-    (Ucentered :
-      ∀ M n, VdVWMeasurableCover (vdVWProductMeasure P n)
-        (fun sample : SampleAt Observation n => ENNReal.ofReal
-          (vdVWWeightedClassSupremum indexClass
-            (fun index : Index => fun observation : Observation =>
-              vdVWTruncatedClassFun classFun envelope M index observation -
-                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
-            (fun _ : Fin n => (n : ℝ)⁻¹) sample))) :
+    :
     VdVWConvergesInOuterProbabilityConst
       (fun n : ℕ => SampleAt Observation n)
       (fun _ : ℕ => inferInstance)
@@ -15887,7 +15920,9 @@ theorem
       (Urandom := Urandom)
       (hproductSupIntegrable := hproductSupIntegrable)
       (hsignSupIntegrable := hsignSupIntegrable)
-      (Ucentered := Ucentered)
+      (Ucentered := fun M n =>
+        VdVWMeasurableCover.centered_truncated_of_countable_of_coordinate
+          hindex_finite.countable hclass henv n)
 
 /--
 Fixed-`M` centered-truncated convergence from entropy, measurable random

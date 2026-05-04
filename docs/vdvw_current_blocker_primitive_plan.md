@@ -1428,9 +1428,32 @@ Search record for this edit: local `Theorem243.lean` already had
 pinned mathlib supplies the underlying `HasSubgaussianMGF` API but no VdVW
 finite empirical-cover supremum specialization.
 
+2026-05-03 `/goal` update after the centered-cover closure:
+`VdVWMeasurableCover.centered_truncated_of_countable_of_coordinate` now derives
+the centered truncated measurable cover from countability, coordinate
+measurability, and envelope measurability by combining
+`VdVWPMeasurableClass.of_countable_of_measurable` with
+`VdVWMeasurableCover.ofNullMeasurable_ofReal`.  The finite-class untruncated
+consumer no longer carries the separate `Ucentered` assumption; it derives the
+cover internally from `hindex_finite.countable`, `hclass`, and `henv`.
+Search record for this edit: local `PMeasurable.lean` already supplies the
+countable null-measurable class constructor, local `OuterExpectation.lean`
+supplies the `ENNReal.ofReal` measurable-cover constructor, and no new mathlib
+primitive was needed.
+
+Current compact `/goal` execution prompt: continue VdV&W Chapters 1-2 in
+dependency order without repeating closed Theorem 2.4.3 finite-net,
+selected-fixed-radius, finite-class, integrability, centered-cover, and
+untruncation layers.  The active closure batch is the actual non-finite
+theorem handoff from textbook entropy assumptions to selected fixed-radius
+tail/UI or deterministic log-ratio inputs; if that blocks after Lean/search,
+move to a theorem-critical finite-class specialization or a precise Chapter 1
+arbitrary-map/asymptotic-measurability primitive.
+
 Next exact edit: do not repeat the finite-class geometry/entropy/consumer
-bridge.  The remaining Theorem 2.4.3 proof work is now either (1) prove the
-actual non-finite-class
+bridge, finite-center integrability closure, or centered-cover closure.  The
+remaining Theorem 2.4.3 proof work is now either (1) prove the actual
+non-finite-class
 geometric packing/cardinality estimate for the chosen empirical internal
 cover/maximal separated set, for example
 `Metric.coveringNumber (⟨eta, _⟩ : ℝ≥0)
