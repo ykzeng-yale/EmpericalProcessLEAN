@@ -202,6 +202,72 @@ theorem thresholdTraceCode_separates_of_coordinate_thresholds_separate
     thresholdTraceCode_separates_of_pointwise_thresholds_separate
       (pointwise_thresholds_separate_of_coordinate_thresholds_separate hcoordinate)
 
+/--
+If the finite threshold set contains every realized value at every sample
+coordinate, then it separates those coordinate values: taking the threshold to
+be one of the two candidate values rules out strict inequality in either
+direction.
+-/
+theorem coordinate_thresholds_separate_of_values_mem_thresholds
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ}
+    (hvalues :
+      ∀ sampleIndex : Fin n,
+        ∀ index, index ∈ indexClass ->
+          classFun index (sample sampleIndex) ∈ thresholds) :
+    ∀ sampleIndex : Fin n,
+      ∀ index₁, index₁ ∈ indexClass ->
+        ∀ index₂, index₂ ∈ indexClass ->
+          (∀ threshold : {threshold // threshold ∈ thresholds},
+            (threshold.1 < classFun index₁ (sample sampleIndex) ↔
+              threshold.1 < classFun index₂ (sample sampleIndex))) ->
+          classFun index₁ (sample sampleIndex) =
+            classFun index₂ (sample sampleIndex) := by
+  intro sampleIndex index₁ hindex₁ index₂ hindex₂ hthresholds
+  let value₁ : ℝ := classFun index₁ (sample sampleIndex)
+  let value₂ : ℝ := classFun index₂ (sample sampleIndex)
+  have hvalue₁_mem : value₁ ∈ thresholds := hvalues sampleIndex index₁ hindex₁
+  have hvalue₂_mem : value₂ ∈ thresholds := hvalues sampleIndex index₂ hindex₂
+  have hnot_value₁_lt_value₂ : ¬ value₁ < value₂ := by
+    intro hlt
+    have hiff := hthresholds ⟨value₁, hvalue₁_mem⟩
+    exact (lt_irrefl value₁) (hiff.mpr hlt)
+  have hnot_value₂_lt_value₁ : ¬ value₂ < value₁ := by
+    intro hlt
+    have hiff := hthresholds ⟨value₂, hvalue₂_mem⟩
+    exact (lt_irrefl value₂) (hiff.mp hlt)
+  exact
+    le_antisymm (le_of_not_gt hnot_value₂_lt_value₁)
+      (le_of_not_gt hnot_value₁_lt_value₂)
+
+/--
+When all realized sample-coordinate values lie in the threshold set, finite
+threshold signatures separate realized empirical traces.
+-/
+theorem thresholdTraceCode_separates_of_values_mem_thresholds
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ}
+    (hvalues :
+      ∀ sampleIndex : Fin n,
+        ∀ index, index ∈ indexClass ->
+          classFun index (sample sampleIndex) ∈ thresholds) :
+    ∀ index₁, index₁ ∈ indexClass ->
+      ∀ index₂, index₂ ∈ indexClass ->
+        (∀ threshold : {threshold // threshold ∈ thresholds},
+          thresholdTraceCode thresholds
+              (empiricalTrace sample classFun index₁) threshold =
+            thresholdTraceCode thresholds
+              (empiricalTrace sample classFun index₂) threshold) ->
+        empiricalTrace sample classFun index₁ =
+          empiricalTrace sample classFun index₂ := by
+  exact
+    thresholdTraceCode_separates_of_coordinate_thresholds_separate
+      (coordinate_thresholds_separate_of_values_mem_thresholds hvalues)
+
 /-- Every realized empirical trace has a threshold code in the realized-code set. -/
 theorem thresholdTraceCode_mem_thresholdTraceCodeSet
     {Observation : Type u} {Index : Type v} {n : ℕ}
@@ -321,6 +387,24 @@ theorem finite_empiricalTrace_image_of_coordinate_thresholds_separate
   exact
     finite_empiricalTrace_image_of_thresholdTraceCode_separates
       (thresholdTraceCode_separates_of_coordinate_thresholds_separate hcoordinate)
+
+/--
+If all realized sample-coordinate values lie in the finite threshold set, then
+the empirical trace image is finite.
+-/
+theorem finite_empiricalTrace_image_of_values_mem_thresholds
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ}
+    (hvalues :
+      ∀ sampleIndex : Fin n,
+        ∀ index, index ∈ indexClass ->
+          classFun index (sample sampleIndex) ∈ thresholds) :
+    (empiricalTrace sample classFun '' indexClass).Finite := by
+  exact
+    finite_empiricalTrace_image_of_thresholdTraceCode_separates
+      (thresholdTraceCode_separates_of_values_mem_thresholds hvalues)
 
 /--
 The cardinality of a trace image separated by finite threshold signatures is
@@ -976,6 +1060,36 @@ theorem empiricalTrace_image_card_add_one_real_le_of_coordinate_thresholds_separ
       (sample := sample) (indexClass := indexClass) (classFun := classFun)
       (thresholds := thresholds) (d := d) (k := k)
       (thresholdTraceCode_separates_of_coordinate_thresholds_separate hcoordinate)
+      hthresholds_card hvc
+
+/--
+If all realized sample-coordinate values lie in the finite threshold set, then
+threshold-count and uniform fixed-threshold VC/Sauer bounds give the
+natural-polynomial empirical trace-cardinality bound.
+-/
+theorem empiricalTrace_image_card_add_one_real_le_of_values_mem_thresholds_uniform_vc
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ}
+    (hvalues :
+      ∀ sampleIndex : Fin n,
+        ∀ index, index ∈ indexClass ->
+          classFun index (sample sampleIndex) ∈ thresholds)
+    (hthresholds_card : thresholds.card ≤ k)
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d) :
+    (((finite_empiricalTrace_image_of_thresholdTraceCode_separates
+      (thresholdTraceCode_separates_of_values_mem_thresholds hvalues)).toFinset.card : ℝ) + 1) ≤
+      ((((d + 2 : ℕ) : ℝ) ^ k) + 1) *
+        (((n + 1 : ℕ) : ℝ) ^ (d * k)) := by
+  exact
+    empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_uniform_vc
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) (d := d) (k := k)
+      (thresholdTraceCode_separates_of_values_mem_thresholds hvalues)
       hthresholds_card hvc
 
 end StatInference

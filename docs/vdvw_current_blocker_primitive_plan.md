@@ -2110,6 +2110,10 @@ thresholdTraceCode_separates_of_coordinate_thresholds_separate
 finite_empiricalTrace_image_of_coordinate_thresholds_separate
 empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card_of_coordinate_thresholds_separate
 empiricalTrace_image_card_add_one_real_le_of_coordinate_thresholds_separate_uniform_vc
+coordinate_thresholds_separate_of_values_mem_thresholds
+thresholdTraceCode_separates_of_values_mem_thresholds
+finite_empiricalTrace_image_of_values_mem_thresholds
+empiricalTrace_image_card_add_one_real_le_of_values_mem_thresholds_uniform_vc
 ```
 
 These prove that finite threshold signatures, when they separate the realized
@@ -2147,6 +2151,15 @@ feeds the pointwise separation condition and therefore the finite-image,
 product-cardinality, and uniform-VC natural-polynomial consumers.  This is a
 more local target for the next subgraph/truncated-class geometry proof.
 
+The value-membership declarations give a concrete exact-separation sufficient
+condition: if the finite threshold set contains every realized coordinate
+value, then matching threshold predicates forces equality of those values.
+This supplies finite-code separation and the uniform-VC natural-polynomial
+trace bound under the same threshold-count and fixed-threshold VC assumptions.
+This is useful for finite-valued/discretized traces and also documents why the
+non-finite textbook route still needs a genuine geometric or approximation
+argument rather than an exact finite threshold injection.
+
 Search record: reused local fixed-threshold declarations in `SubgraphTraceVC`,
 the new finite-code bridge in `TraceCoding`, mathlib `Finset.pi`,
 `Finset.card_pi`, `Finset.card_le_card_of_injOn`, and finite-product
@@ -2154,14 +2167,17 @@ big-operator APIs from `Mathlib.Data.Fintype.BigOperators`, plus `Finset.ext`
 and membership extensionality for the pointwise threshold bridge.  Searches for
 `thresholdTraceCode_eq`, `pointwise_threshold`, `threshold.*separate`,
 `coordinate.*separate`, `threshold.*coordinate`,
+`value.*threshold`, `threshold.*value`, `contains.*values`,
 `empiricalTrace.*threshold`, and threshold-indicator trace APIs found no ready
 local/mathlib theorem giving this VdVW finite-threshold
-signature/product-cardinality, pointwise-separation, or
-coordinatewise-separation bridge.
+signature/product-cardinality, pointwise-separation,
+coordinatewise-separation, or value-membership separation bridge.
 
 Next exact theorem-facing edit: prove the actual coordinatewise
 finite-threshold value-separation and threshold-count assumptions from the
 subgraph/truncated-class geometry, or provide the
 maximal-separated/internal-cover cardinality theorem that bypasses threshold
 products and directly supplies the natural-polynomial trace bound consumed by
-Theorem 2.4.3.
+Theorem 2.4.3.  The exact value-membership route is now closed but is too
+strong for arbitrary continuum-valued classes unless a finite/discretized trace
+hypothesis is supplied.

@@ -772,7 +772,12 @@ above, so they do not change the theorem-level dashboard counts.
    `empiricalTrace_image_card_add_one_real_le_of_coordinate_thresholds_separate_uniform_vc`
    localizes this further to one sample coordinate: matching all threshold
    predicates at that coordinate must force equality of the two realized
-   real values.
+   real values.  The exact value-membership route
+   `coordinate_thresholds_separate_of_values_mem_thresholds` and
+   `empiricalTrace_image_card_add_one_real_le_of_values_mem_thresholds_uniform_vc`
+   closes the special case where the threshold set contains every realized
+   coordinate value; this is intentionally stronger than the general
+   continuum-valued textbook route.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
