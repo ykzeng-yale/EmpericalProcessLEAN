@@ -670,6 +670,12 @@ The constant-cleanup layer now compiles as
 `chewi45_not_finiteGeometricCandidate_near_min_of_sqrtKappa_rates`,
 which packages the direct finite route using pure `sqrt(kappa)` constants
 under `4 <= kappa`.
+The positive-log presentation layer now compiles as
+`chewi45_log_half_eq_neg_log_two`,
+`chewi45_neg_log_eps_div_alpha_eighth_eq_log_alpha_eighth_div_eps`, and
+`chewi45_not_finiteGeometricCandidate_near_min_of_sqrtKappa_positiveLog_rates`,
+so the direct finite obstruction uses `log 2` and
+`log ((alpha/8)/eps)` instead of negative logs.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
