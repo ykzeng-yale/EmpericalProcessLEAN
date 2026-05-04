@@ -148,7 +148,15 @@ the whole-space differentiable case:
   `gradientDescentTrajectory_mem_affineGradientSpan`.  Search-first result:
   no local Chewi-specific gradient-span layer existed; mathlib's
   `Submodule.span`, `Submodule.subset_span`, and `Submodule.span_mono` are the
-  reusable foundation.
+  reusable foundation.  The next Theorem 4.4 source subspace layer also now
+  compiles: `coordinatePrefixSubmodule` models `V_n` over
+  `EuclideanSpace ℝ (Fin d)`, and
+  `gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_grad_mem_next`
+  proves the abstract induction that a zero-start gradient-span trajectory
+  stays in `V_n` once the displayed gradient support condition
+  `grad (x_k) ∈ V_{k+1}` is supplied.  Search-first result: use mathlib's
+  `EuclideanSpace`/`PiLp` coordinate APIs for `ℝ^d`, not plain
+  `Fin d -> ℝ`, when inner-product structure is needed.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -798,6 +806,12 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.IsGradientDescentTrajectory.isGradientSpanTrajectory`
 - `StatInference.Optimization.gradientDescentTrajectory_mem_gradientSpanSubmodule`
 - `StatInference.Optimization.gradientDescentTrajectory_mem_affineGradientSpan`
+- `StatInference.Optimization.coordinatePrefixSubmodule`
+- `StatInference.Optimization.mem_coordinatePrefixSubmodule_iff`
+- `StatInference.Optimization.coordinatePrefixSubmodule_mono`
+- `StatInference.Optimization.coordinatePrefixSubmodule_eq_top_of_le`
+- `StatInference.Optimization.gradientSpanSubmodule_le_coordinatePrefixSubmodule`
+- `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_grad_mem_next`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
@@ -817,9 +831,10 @@ side-condition-to-Lyapunov inequality are now compiled; do not repeat them.
 The Corollary 2.8 compact-minimum and continuity/integrability bridge is
 already compiled, so do not spend another run there unless strengthening the
 continuity hypotheses materially advances the analytic route.  For Chapter 4,
-reuse `LowerBounds.lean`'s single gradient-span/oracle model, and search
-mathlib basis/coordinate, matrix, PSD, and smoothness APIs before adding the
-tridiagonal quadratic construction.  Continue
+reuse `LowerBounds.lean`'s single gradient-span/oracle model and the compiled
+`coordinatePrefixSubmodule` induction, and search mathlib basis/coordinate,
+matrix, PSD, and smoothness APIs before adding the tridiagonal quadratic
+construction.  Continue
 deferring exercise proofs except where an exercise statement is needed as a
 temporary interface for a main-text theorem; such exercise material belongs
 in `StatInference/Optimization/Exercises.lean`.
