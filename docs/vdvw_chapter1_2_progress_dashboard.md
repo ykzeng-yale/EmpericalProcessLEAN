@@ -575,6 +575,16 @@ and `VdVWOuterProbabilityUniformDeviationConstOn_of_finite_indexClass_canonical`
 The route now reaches the finite-product uniform-deviation conclusion under
 the full-subgraph/canonical and finite-class/canonical hypotheses, while the
 exact in-mean and a.s. textbook conclusions remain pending.
+2026-05-04 follow-up: the in-mean adapter layer has started.  New compiled
+declarations are
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`
+and
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation`.
+These turn the centered full-subgraph outer-probability route into ordinary
+mean convergence of the centered weighted supremum under explicit
+measurability, integrability, and varying-domain tail/UI assumptions.  The
+book-level task still has to discharge those side conditions from the theorem
+hypotheses and then prove the a.s./reverse-submartingale conclusion.
 
 ## Verification Monitor
 

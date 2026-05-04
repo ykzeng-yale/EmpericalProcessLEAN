@@ -2107,6 +2107,85 @@ theorem bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope
                 (abs_integral_classFun_le_integral_envelope
                   (μ := P) henvelope hclass henv_integrable hindex))
 
+/--
+Centered weighted-supremum convergence in outer probability upgrades to
+ordinary in-mean convergence under an explicit varying-domain tail/UI
+condition.
+
+This is the theorem-facing in-mean adapter for Theorem 2.4.3.  The tail
+condition is intentionally explicit: the VdV&W in-mean conclusion needs more
+than convergence in outer probability.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcentered :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        atTop (0 : ℝ))
+    (hmeas :
+      ∀ n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+    (hintegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+          (vdVWProductMeasure P n))
+    (hTail :
+      ∀ ε > 0, ∃ R, 0 ≤ R ∧
+        ∀ᶠ n in atTop,
+          ∫ sample,
+            Set.indicator
+              {sample' : SampleAt Observation n |
+                R <
+                  vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      classFun index observation - ∫ x, classFun index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample'}
+              (fun sample' : SampleAt Observation n =>
+                vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    classFun index observation - ∫ x, classFun index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample') sample
+              ∂(vdVWProductMeasure P n) ≤ ε) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_tailExpectation_nonneg
+      (μ := fun n : ℕ => vdVWProductMeasure P n)
+      (hμ_prob := fun n => instIsProbabilityMeasure_vdVWProductMeasure (P := P) n)
+      hcentered hmeas hintegrable
+      (fun n sample =>
+        vdVWWeightedClassSupremum_nonneg indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      hTail
+
 /-- Coordinate measurability is preserved by the `F_M` truncation. -/
 theorem VdVWClassCoordinateMeasurable.truncate
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
@@ -20125,6 +20204,97 @@ theorem
         (classFun := classFun) (envelope := envelope) (X := X)
         (vcDegree := vcDegree) hX_samplePath hvc hindexClass
         henvelope hclass henv henv_integrable sign hsign hindep hsubG
+
+/--
+Full-subgraph integrable Theorem 2.4.3 route, expressed as in-mean convergence
+of the centered finite-product weighted supremum under an explicit
+varying-domain tail/UI condition.
+
+The proof consumes the full-subgraph outer-probability convergence route and
+the generic in-mean adapter above.  The remaining measurability, integrability,
+and tail/UI inputs are kept explicit.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
+    (hsign :
+      ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
+        (fun i : Fin n => sign n i ω))
+    (hindep : ∀ n, iIndepFun (sign n) μsign)
+    (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign)
+    (hmeas :
+      ∀ n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+    (hintegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+          (vdVWProductMeasure P n))
+    (hTail :
+      ∀ ε > 0, ∃ R, 0 ≤ R ∧
+        ∀ᶠ n in atTop,
+          ∫ sample,
+            Set.indicator
+              {sample' : SampleAt Observation n |
+                R <
+                  vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      classFun index observation - ∫ x, classFun index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample'}
+              (fun sample' : SampleAt Observation n =>
+                vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    classFun index observation - ∫ x, classFun index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample') sample
+              ∂(vdVWProductMeasure P n) ≤ ε) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (hcentered :=
+        VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable
+          (μsign := μsign) (P := P) (indexClass := indexClass)
+          (classFun := classFun) (envelope := envelope) (X := X)
+          (vcDegree := vcDegree) hX_samplePath hvc hindexClass
+          henvelope hclass henv henv_integrable sign hsign hindep hsubG)
+      hmeas hintegrable hTail
 
 /--
 Full-subgraph integrable Theorem 2.4.3 route with the auxiliary Rademacher

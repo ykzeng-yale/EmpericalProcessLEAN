@@ -940,6 +940,13 @@ above, so they do not change the theorem-level dashboard counts.
    `bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope` uses
    sample-dependent envelope values plus the envelope integral, so it does not
    require a bounded envelope.
+   The in-mean bridge has also started: the generic adapter
+   `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`
+   and the full-subgraph consumer
+   `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation`
+   compile under explicit varying-domain tail/UI, measurability, and
+   integrability inputs.  These side conditions must still be discharged or
+   stated honestly in the final theorem layer.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

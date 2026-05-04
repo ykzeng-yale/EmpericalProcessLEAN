@@ -2812,10 +2812,22 @@ reused mathlib `abs_integral_le_integral_abs`, `integral_mono`, and
 `Finset.abs_sum_le_sum_abs`, together with the local envelope and weighted
 sample-sum APIs.
 
+2026-05-04 follow-up: the first in-mean Theorem 2.4.3 adapter is now compiled.
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`
+specializes the existing varying-domain tail/UI mean theorem
+`tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_tailExpectation_nonneg`
+to the centered weighted-supremum process.  The full-subgraph composition
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation`
+then consumes the full-subgraph outer-probability convergence route.  The
+remaining measurability, integrability, and tail/UI inputs are intentionally
+explicit; this does not yet prove the exact textbook in-mean conclusion from
+only the book entropy assumptions.
+
 Next exact theorem-facing edit: move from this proof layer toward the exact
 Theorem 2.4.3 statement by aligning the remaining structural full-subgraph
 VC/grid assumption with the textbook entropy hypothesis, then add the
-in-mean and almost-sure/reverse-submartingale conclusions.  The finite-product
-GC outer-probability conclusion is now available for the current full-subgraph
-and finite-class routes; do not recreate the derived integrability,
-measurable-cover, or finite-product GC witnesses.
+remaining in-mean tail/UI discharge and almost-sure/reverse-submartingale
+conclusions.  The finite-product GC outer-probability conclusion and the
+explicit-tail/UI in-mean adapter are now available for the current
+full-subgraph route; do not recreate the derived integrability,
+measurable-cover, finite-product GC, or generic in-mean adapter witnesses.
