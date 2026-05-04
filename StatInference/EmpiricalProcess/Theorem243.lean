@@ -2939,6 +2939,36 @@ theorem measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_
       indexClass classFun n
 
 /--
+The same countable coordinate-measurable uniform empirical supremum gives a
+VdV&W measurable cover over the generated permutation-symmetric sigma-field
+`Σ_n`.  This is the cover-shaped adaptedness primitive needed by the
+Lemma 2.4.5 reverse-submartingale route.
+-/
+noncomputable def VdVWMeasurableCover_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (n : ℕ)
+    (μ : @Measure (ℕ -> Observation)
+      (vdVWPermutationSymmetricMeasurableSpace Observation n)) :
+    @VdVWMeasurableCover (ℕ -> Observation)
+      (vdVWPermutationSymmetricMeasurableSpace Observation n) μ
+      (fun sequence : ℕ -> Observation =>
+        ENNReal.ofReal
+          (vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹) (vdVWFirstNSample n sequence))) :=
+  @VdVWMeasurableCover.ofMeasurable (ℕ -> Observation)
+    (vdVWPermutationSymmetricMeasurableSpace Observation n) μ
+    (fun sequence : ℕ -> Observation =>
+      ENNReal.ofReal
+        (vdVWWeightedClassSupremum indexClass classFun
+          (fun _ : Fin n => (n : ℝ)⁻¹) (vdVWFirstNSample n sequence)))
+    ((measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable
+      (indexClass := indexClass) (classFun := classFun)
+      hcount hclass n).ennreal_ofReal)
+
+/--
 Countable centered truncated weighted class suprema are integrable under the
 empirical product law once fixed-index truncated functions are integrable.
 -/

@@ -3029,3 +3029,18 @@ the local countable-supremum theorem
 needed.  The remaining Lemma 2.4.5 blocker is now the measurable-cover
 version and reverse-submartingale inequality/convergence handoff over the
 decreasing `Σ_n`.
+
+2026-05-04 follow-up: the corresponding adapted measurable-cover object is
+now compiled as
+`VdVWMeasurableCover_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`.
+It constructs the Chapter 1.2 `VdVWMeasurableCover` of the nonnegative
+`ENNReal.ofReal` uniform empirical supremum over the explicit source
+measurable space `vdVWPermutationSymmetricMeasurableSpace Observation n`.
+Search/reuse record: this is not a new cover primitive; it fully reuses
+`VdVWMeasurableCover.ofMeasurable` and the preceding `Σ_n` measurability
+theorem, with the constructor made explicitly source-measurable-space
+specific to avoid falling back to the ambient product sigma-field.  The next
+blocker is the reverse-submartingale inequality/convergence reduction itself:
+identify the adapted process/covers indexed by decreasing `Σ_n`, prove the
+conditional-expectation/submartingale comparison, then feed it into the
+existing mathlib martingale convergence wrapper.

@@ -704,6 +704,11 @@ It combines the countable weighted-supremum measurability theorem with
 coordinate-measurable uniform empirical supremum is now `Σ_n`-measurable.
 Remaining work: measurable-cover version plus reverse-submartingale
 inequality/convergence over decreasing `Σ_n`.
+2026-05-04 follow-up: the adapted measurable-cover version is now compiled as
+`VdVWMeasurableCover_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`.
+It packages the nonnegative `ENNReal.ofReal` empirical supremum as a
+`VdVWMeasurableCover` over the explicit source sigma-field `Σ_n`.  Remaining
+work is the reverse-submartingale comparison/convergence reduction.
 
 ## Verification Monitor
 
