@@ -1074,6 +1074,69 @@ theorem nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image
        dist_le := hdist }⟩
 
 /--
+Padded-cardinality empirical cover from a finite approximate code.
+
+This is the approximate analogue of
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image`: instead of
+requiring equal empirical traces, it is enough that two class indices with the
+same finite code are within `epsilon` in empirical `L1(P_n)`.  This is the
+primitive needed for quantized-trace/grid entropy arguments, where exact trace
+equality is too strong.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_finite_approx_code
+    {Observation : Type u} {Index : Type v} {Code : Type*} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (code : Index -> Code)
+    (hcode_finite : (code '' indexClass).Finite)
+    (happrox :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          code index = code center ->
+            empiricalL1Distance sample (classFun index) (classFun center) ≤
+              epsilon) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        hcode_finite.toFinset.card) := by
+  classical
+  let center : Fin hcode_finite.toFinset.card -> Index :=
+    fun codeIndex =>
+      Classical.choose
+        ((hcode_finite.mem_toFinset).1
+          (((hcode_finite.toFinset.equivFin).symm codeIndex).2))
+  let centerOf :
+      ∀ index, index ∈ indexClass -> Fin hcode_finite.toFinset.card :=
+    fun index hindex =>
+      hcode_finite.toFinset.equivFin
+        ⟨code index, (hcode_finite.mem_toFinset).2 ⟨index, hindex, rfl⟩⟩
+  have hcenter_mem : ∀ codeIndex, center codeIndex ∈ indexClass := by
+    intro codeIndex
+    have hchosen :=
+      Classical.choose_spec
+        ((hcode_finite.mem_toFinset).1
+          (((hcode_finite.toFinset.equivFin).symm codeIndex).2))
+    exact hchosen.1
+  have hdist :
+      ∀ index hindex,
+        empiricalL1Distance sample (classFun index)
+          (classFun (center (centerOf index hindex))) ≤ epsilon := by
+    intro index hindex
+    have hchosen :=
+      Classical.choose_spec
+        ((hcode_finite.mem_toFinset).1
+          (((hcode_finite.toFinset.equivFin).symm
+            (centerOf index hindex)).2))
+    have hcode_eq : code index = code (center (centerOf index hindex)) := by
+      simpa [center, centerOf] using hchosen.2.symm
+    exact happrox index hindex (center (centerOf index hindex))
+      (hcenter_mem (centerOf index hindex)) hcode_eq
+  exact
+    ⟨{ center := center
+       center_mem := hcenter_mem
+       centerOf := centerOf
+       dist_le := hdist }⟩
+
+/--
 Numeric empirical-covering-number bound by the number of distinct fixed-sample
 traces.
 -/
@@ -1090,6 +1153,79 @@ theorem empiricalL1CoveringNumber_le_of_finite_trace_image
     empiricalL1CoveringNumber_le_of_coverAtCard
       (nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image
         htrace_finite hepsilon_nonneg)
+
+/--
+Numeric empirical-covering-number bound from a finite approximate code.
+-/
+theorem empiricalL1CoveringNumber_le_of_finite_approx_code
+    {Observation : Type u} {Index : Type v} {Code : Type*} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (code : Index -> Code)
+    (hcode_finite : (code '' indexClass).Finite)
+    (happrox :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          code index = code center ->
+            empiricalL1Distance sample (classFun index) (classFun center) ≤
+              epsilon) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (hcode_finite.toFinset.card : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_coverAtCard
+      (nonempty_finiteEmpiricalL1CoverAtCard_of_finite_approx_code
+        code hcode_finite happrox)
+
+/--
+Padded-cardinality cover from a finite approximate code and a terminal
+cardinality bound.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_finite_approx_code_card_le
+    {Observation : Type u} {Index : Type v} {Code : Type*} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (code : Index -> Code)
+    (hcode_finite : (code '' indexClass).Finite)
+    (happrox :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          code index = code center ->
+            empiricalL1Distance sample (classFun index) (classFun center) ≤
+              epsilon)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le : hcode_finite.toFinset.card ≤ cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  exact
+    (nonempty_finiteEmpiricalL1CoverAtCard_of_finite_approx_code
+      code hcode_finite happrox).elim fun cover =>
+      ⟨cover.pad_cardinality hindexClass hcard_le⟩
+
+/--
+Padded numeric empirical-covering-number bound from a finite approximate code
+and a terminal cardinality estimate.
+-/
+theorem empiricalL1CoveringNumber_le_of_finite_approx_code_card_le
+    {Observation : Type u} {Index : Type v} {Code : Type*} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (code : Index -> Code)
+    (hcode_finite : (code '' indexClass).Finite)
+    (happrox :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          code index = code center ->
+            empiricalL1Distance sample (classFun index) (classFun center) ≤
+              epsilon)
+    (hcard_le : hcode_finite.toFinset.card ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    (empiricalL1CoveringNumber_le_of_finite_approx_code
+      code hcode_finite happrox).trans (by exact_mod_cast hcard_le)
 
 /--
 Padded-cardinality cover from a finite fixed-sample trace image.  Later

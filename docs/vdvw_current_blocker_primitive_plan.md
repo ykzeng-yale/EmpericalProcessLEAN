@@ -2241,3 +2241,30 @@ products and directly supplies the natural-polynomial trace bound consumed by
 Theorem 2.4.3.  The exact finite-value threshold route now reaches untruncated
 convergence, but it remains too strong for arbitrary continuum-valued classes
 unless a finite/discretized trace hypothesis is supplied.
+
+2026-05-04 `/goal` update after approximate-code cover primitive:
+`CoveringPrimitive.lean` now adds the approximate finite-code empirical-cover
+bridge
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_approx_code`,
+`empiricalL1CoveringNumber_le_of_finite_approx_code`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_approx_code_card_le`, and
+`empiricalL1CoveringNumber_le_of_finite_approx_code_card_le`.  These are the
+approximate analogues of the finite exact-trace cover layer: a finite code
+image plus the hypothesis that equal codes imply empirical `L1(P_n)` distance
+at most `epsilon` gives a local empirical cover, with padded cardinality
+versions for entropy estimates.
+
+Search record: the local exact-trace cover declarations
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image` and
+`empiricalL1CoveringNumber_le_of_finite_trace_image` existed, and mathlib
+provides generic finite image/set APIs, but no local theorem supplied the
+approximate finite-code cover shape needed for quantized-trace/grid entropy.
+The proof reuses `Set.Finite.toFinset`, representative choice from finite code
+images, and `FiniteEmpiricalL1CoverAtCard.pad_cardinality`.
+
+Next exact theorem-facing edit: construct an actual quantized-trace code for
+bounded truncated classes, prove that equal quantized codes imply empirical
+`L1(P_n)` error at most the chosen radius, and bound the code image cardinality
+by the VC/subgraph/grid polynomial needed by Theorem 2.4.3.  This is the more
+faithful route for arbitrary real-valued classes than exact threshold
+separation.
