@@ -1919,6 +1919,65 @@ theorem chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate
   exact hmain
 
 /--
+For Chewi's ratio `q <= 1`, a half-bound proved at a smaller exponent remains
+true at every larger exponent.  This is the monotonicity bridge needed by the
+finite-dimensional slack route.
+-/
+theorem chewi45GeometricRatio_pow_le_half_of_exponent_le
+    {kappa : ℝ} (hkappa : 1 ≤ kappa) {m n : ℕ}
+    (hmn : m ≤ n)
+    (hm_half : (chewi45GeometricRatio kappa) ^ m ≤ (1 / 2 : ℝ)) :
+    (chewi45GeometricRatio kappa) ^ n ≤ (1 / 2 : ℝ) := by
+  have hq_nonneg : 0 ≤ chewi45GeometricRatio kappa :=
+    chewi45GeometricRatio_nonneg hkappa
+  have hq_le_one : chewi45GeometricRatio kappa ≤ 1 :=
+    chewi45GeometricRatio_le_one kappa
+  exact (pow_le_pow_of_le_one hq_nonneg hq_le_one hmn).trans hm_half
+
+/--
+Boundary-condition wrapper for the finite slack route: it is enough to prove
+`q^M <= 1/2` for any `M` below the available finite-boundary exponent.
+-/
+theorem chewi45_half_boundary_condition_of_exponent_le
+    {kappa : ℝ} (hkappa : 1 ≤ kappa) {d N M : ℕ}
+    (hM_le : M ≤ 2 * d + 2 - 2 * (N + 1))
+    (hM_half : (chewi45GeometricRatio kappa) ^ M ≤ (1 / 2 : ℝ)) :
+    (chewi45GeometricRatio kappa) ^
+        (2 * d + 2 - 2 * (N + 1)) ≤ (1 / 2 : ℝ) :=
+  chewi45GeometricRatio_pow_le_half_of_exponent_le
+    (kappa := kappa) hkappa hM_le hM_half
+
+/--
+Half-boundary gap bound with the boundary condition supplied at any smaller
+exponent `M`.  This is the form intended for the upcoming logarithmic
+dimension choice.
+-/
+theorem chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate_of_exponent_le
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d N M : ℕ} (hN : N < d)
+    (hM_le : M ≤ 2 * d + 2 - 2 * (N + 1))
+    (hM_half : (chewi45GeometricRatio kappa) ^ M ≤ (1 / 2 : ℝ))
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x) :
+    (alpha / 8) * (chewi45GeometricRatio kappa) ^ (2 * (N + 1)) ≤
+      strongLowerBoundChainObjective alpha beta d (x N) -
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) := by
+  have hkappa_ge : 1 ≤ kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta |>.le
+  have hboundary_half :=
+    chewi45_half_boundary_condition_of_exponent_le
+      (kappa := kappa) hkappa_ge hM_le hM_half
+  exact chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate
+    (alpha := alpha) (beta := beta) (kappa := kappa)
+    halpha_pos halpha_lt_beta hkappa (N := N) hN hboundary_half
+    (x := x) hx0 hspan
+
+/--
 Contradiction form of the direct Exercise 4.2 obstruction: an iterate whose
 gap is at most `eps` cannot exist if `eps` lies below the geometric tail lower
 bound.

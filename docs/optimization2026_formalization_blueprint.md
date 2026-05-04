@@ -606,6 +606,13 @@ Reuse these for the finite route: it now suffices to prove the dimension
 condition `q^(2*d+2-2*(N+1)) <= 1/2` and then translate the resulting
 `(alpha/8) * q^(2*(N+1))` obstruction into the logarithmic iteration lower
 bound.
+The monotone-exponent bridge now compiles as
+`chewi45GeometricRatio_pow_le_half_of_exponent_le`,
+`chewi45_half_boundary_condition_of_exponent_le`, and
+`chewi45_gap_ge_geometric_half_boundary_of_finiteGeometricCandidate_of_exponent_le`.
+So the next finite proof may target any convenient
+`M <= 2*d+2-2*(N+1)` with `q^M <= 1/2`, rather than the exact boundary
+exponent directly.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
