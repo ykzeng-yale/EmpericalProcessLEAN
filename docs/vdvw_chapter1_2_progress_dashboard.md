@@ -485,6 +485,11 @@ itself, not per-grid packaging.
 fixed-radius package also has
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`,
 so the VC/subgraph-to-threshold direction is now formalized.
+2026-05-04 follow-up: the direct untruncated full-subgraph consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`
+is compiled.  Next target: package this as the named final Theorem 2.4.3
+side-condition theorem while keeping remaining measurability/integrability and
+Rademacher assumptions explicit.
 
 ## Verification Monitor
 

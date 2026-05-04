@@ -2645,3 +2645,16 @@ structural side conditions.  Remaining exact textbook work is to align
 `VdVWUniformSubgraphVCBound` with the book's named VC-subgraph hypothesis and
 discharge or expose the non-combinatorial measurability/integrability side
 conditions.
+
+2026-05-04 follow-up: `Theorem243.lean` now adds the direct untruncated
+consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`.
+This composes `VdVWUniformSubgraphVCBound` with the canonical integer-grid
+untruncated route, so final assembly can use the lifted full-subgraph VC
+predicate directly.
+
+Next exact theorem-facing edit: assemble a named final Theorem 2.4.3
+side-condition theorem around this consumer, grouping the still-explicit
+measurability, integrability, Rademacher, sample-path, and envelope
+assumptions honestly.  Do not add further VC/grid wrappers unless final
+assembly exposes a type mismatch.

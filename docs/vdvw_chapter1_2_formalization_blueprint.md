@@ -883,6 +883,9 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWUniformSubgraphVCBound.toUniformThresholdVCSubgraphBound`, and the
    package constructor
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`.
+   The direct untruncated consumer from the lifted full-subgraph VC predicate is
+   now compiled as
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
