@@ -106,6 +106,9 @@ Current compiled surface:
 - `StatInference.Optimization.minimizer_unique_of_strictConvexOn`
 - `StatInference.Optimization.minimizer_unique_of_strongConvexOn`
 - `StatInference.Optimization.gradient_eq_zero_of_isMinOn_univ_hasGradientAt`
+- `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn`
 
 Near-term exact candidates:
 
@@ -183,8 +186,9 @@ Current compiled surface:
 
 Near-term exact candidates:
 
-1. Proposition 2.7 main-text implications: strong convexity implies PL, and
-   PL implies quadratic growth, skipping exercises.
+1. Proposition 2.7(2): PL implies quadratic growth, following the notes'
+   gradient-flow route with a supplied convergence-to-minimizer interface if
+   needed.
 2. Remove or discharge the interval-integrability assumptions in Theorem 2.4
    from the notes' `C²`/regular trajectory hypotheses if a clean mathlib
    continuity route is available.

@@ -53,9 +53,9 @@ content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, continuing from the Chapter 2 gradient-flow
 frontier and the existing Chapter 1/3 bridge frontier.  The current route
 should push Chapter 2 main-text theorem layers after the compiled
-gradient-flow calculus/exponential-decay batch: Proposition 2.7 main
-implications, Corollary 2.8, and eventual removal/discharge of Theorem 2.4's
-exposed interval-integrability assumptions from stronger regularity
+gradient-flow calculus/exponential-decay batch: Proposition 2.7(2) PL implies
+quadratic growth, Corollary 2.8, and eventual removal/discharge of Theorem
+2.4's exposed interval-integrability assumptions from stronger regularity
 hypotheses, while preserving the Chapter 3 theorem spine already compiled
 through Theorem 3.7.  Search existing mathlib and local `StatInference` APIs
 first, prove the next highest-leverage main-text theorem layer, verify with
@@ -122,6 +122,11 @@ blocker for the whole-space differentiable case:
 - Corollary 2.6 under PL now compiles in weighted and source-shaped forms as
   `chewi26_gap_weighted_le_of_polyakLojasiewiczOn` and
   `chewi26_gap_le_exp_of_polyakLojasiewiczOn`.
+- Proposition 2.7(1) now compiles in
+  `StatInference/Optimization/Theorem27.lean`: first-order strong convexity
+  implies `PolyakLojasiewiczOn` by setting `y = xStar` in the lower model and
+  applying Cauchy-Schwarz/Young; whole-space `StrongConvexOn Set.univ` plus
+  `HasGradientAt` discharges the first-order model.
 
 - Lemma 3.5 discrete Gronwall has both zero-based finite-sum and source-shaped
   one-based display wrappers in `StatInference/Optimization/DiscreteGronwall.lean`.
@@ -303,6 +308,16 @@ integrand.  The remaining regularity task is to derive the exposed
 `IntervalIntegrable` assumptions from a clean `C²`/regular trajectory surface
 instead of passing them explicitly.
 
+Current Proposition 2.7 search result: local `PolyakLojasiewiczOn` and
+`FirstOrderStrongConvexOn.lower_model` already give the right interfaces for
+part (1).  Mathlib supplies `real_inner_le_norm`; the Young step is easiest
+locally from `sq_nonneg (r - alpha * d)` plus `le_div_iff₀`, avoiding a
+separate dependency on the general Young-inequality API.  The remaining part
+(2) is the PL-to-quadratic-growth implication; the notes use a gradient-flow
+convergence-to-minimizer argument, so a supplied convergence interface may be
+the right bounded next formalization layer before proving the full analytic
+limit statement.
+
 Current Exercise 3.1 co-coercivity interface result: the source display (3.5)
 now compiles as `GradientCocoerciveOn`.  The bridge
 `GradientCocoerciveOn.stepCocoerciveOn_of_le_inv` converts it to
@@ -431,6 +446,9 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.gradientStep`
 - `StatInference.Optimization.FirstOrderStrongConvexOn`
 - `StatInference.Optimization.FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn`
 - `StatInference.Optimization.discreteGronwall_sum_le`
 - `StatInference.Optimization.discreteGronwall_sum_le_of_pos`
 - `StatInference.Optimization.discreteGronwall_one_based_sum_le`
@@ -506,9 +524,9 @@ Latest verified local frontier after lane creation:
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal target: Chewi Proposition 2.7 main-text implications,
-starting with strong convexity implies PL under a minimizer/gradient-zero
-interface, then the PL-to-quadratic-growth route used in the notes.  Continue
-with Corollary 2.8 afterward.  Continue deferring exercise proofs except where
-an exercise statement is needed as a temporary interface for a main-text
-theorem.
+Next manual goal target: Chewi Proposition 2.7(2), the PL-to-quadratic-growth
+route used in the notes, likely with a bounded supplied
+gradient-flow-converges-to-minimizer interface before attempting the full
+analytic limit proof.  Continue with Corollary 2.8 afterward.  Continue
+deferring exercise proofs except where an exercise statement is needed as a
+temporary interface for a main-text theorem.
