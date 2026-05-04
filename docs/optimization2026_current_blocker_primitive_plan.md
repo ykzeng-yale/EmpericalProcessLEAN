@@ -937,9 +937,10 @@ Latest verified local frontier after lane creation:
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal targets: continue Chapter 4 Lemma 4.2 reductions toward the
-strongly-convex lower-bound Theorem 4.5, then decide whether to source-report
-Theorem 4.4 or finish the Theorem 4.5 reduction first.  The new
+Next manual goal targets: use the now-compiled Chapter 4 Lemma 4.2 reduction
+package to derive the strongly-convex lower-bound Theorem 4.5 from the
+compiled Theorem 4.4 lower-bound lane, then decide whether to source-report
+Theorem 4.4 or the Theorem 4.5 reduction first.  The
 `StatInference/Optimization/Reductions.lean` module already compiles
 `quadraticRegularizedAround`, `regularizedGradient`,
 `quadraticRegularizedAround_firstOrderStrongConvexOn`,
@@ -949,13 +950,21 @@ Theorem 4.4 or finish the Theorem 4.5 reduction first.  The new
 `quadraticRegularizedAround_near_min_gap_le_eps`,
 `regularization_penalty_le_of_norm_le`,
 `regularized_minimizer_dist_le_of_base_min`, and
-`regularized_smoothness_le_two_beta`.  Do not repeat these.  The next atomic
-target is the source-shaped Lemma 4.2 condition-number/complexity arithmetic:
-with `delta = eps / R^2`, `eps <= beta * R^2`, and `0 < R`, show the
-regularized problem is `delta`-strongly convex, `(beta + delta)`-smooth with
-`beta + delta <= 2 * beta`, and condition-number bounded by
-`2 * beta * R^2 / eps`; then use the compiled regularized-minimizer distance
-and epsilon-gap hooks to package the full reduction interface.
+`regularized_smoothness_le_two_beta`, plus the newer
+`regularization_delta_pos`, `regularization_delta_le_beta_of_eps_le`,
+`regularization_delta_mul_radius_sq`,
+`regularization_penalty_le_eps_of_norm_le_radius`,
+`quadraticRegularizedAround_near_min_gap_le_eps_of_radius`,
+`regularized_minimizer_dist_le_radius_of_base_min_delta`,
+`quadraticRegularizedAround_smoothWithGradientOn_two_beta`,
+`regularized_conditionNumber_le`,
+`lemma42_regularization_complexity_package`,
+`lemma42_regularization_reduction_package`, and
+`lemma42_regularization_reduction_package_of_isMinOn`.  Do not repeat these.
+The next atomic target is a source-shaped Theorem 4.5 wrapper: combine
+Theorem 4.4's compiled convex smooth lower bound with the Lemma 4.2 reduction
+package, and search mathlib/local APIs for logarithm/asymptotic/iteration-count
+wrappers before introducing any new complexity primitive.
 
 Chapter 2 route context is still available but no longer the active target:
 The route

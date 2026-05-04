@@ -482,9 +482,14 @@ spine now compiles separately in `StatInference/Optimization/Reductions.lean`:
 `quadraticRegularizedAround`, `regularizedGradient`, first-order
 strong-convexity/smoothness parameter shifts, the source value-chain and
 epsilon-gap corollaries, the radius-to-penalty hook, the
-regularized-minimizer distance estimate, and `beta + delta <= 2 beta`.  Next
-source-shaped reduction work should add the condition-number/complexity wrapper
-and then connect Theorem 4.4 to Theorem 4.5.  The source step
+regularized-minimizer distance estimate, `beta + delta <= 2 beta`, the
+textbook-choice arithmetic `delta = eps / R^2`, the condition-number bound,
+and the bundled source-shaped packages
+`lemma42_regularization_complexity_package`,
+`lemma42_regularization_reduction_package`, and
+`lemma42_regularization_reduction_package_of_isMinOn`.  Next source-shaped
+work should connect Theorem 4.4 to Theorem 4.5 using this compiled reduction.
+The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
 `lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory` proves the main
