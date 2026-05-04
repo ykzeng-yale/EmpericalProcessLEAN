@@ -7318,6 +7318,53 @@ def VdVWRandomEmpiricalL1CoveringNumberLeCardinality
       (cardinality ω n : ℕ∞)
 
 /--
+Sample-path deterministic empirical-covering-number bounds supply the random
+empirical covering-number domination used by the Theorem 2.4.3 selected
+fixed-radius route.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_empiricalL1CoveringNumber_le_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hcovering_le :
+      ∀ n (sample : SampleAt Observation n) m,
+        empiricalL1CoveringNumber (samplePath (X n) sample m) indexClass
+          classFun epsilon ≤ (cardinality n sample m : ℕ∞)) :
+    ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun epsilon (cardinality n) := by
+  intro n sample m
+  simpa [vdVWRandomEmpiricalL1CoveringNumber] using
+    hcovering_le n sample m
+
+/--
+All-positive-radius sample-path deterministic empirical-covering-number
+domination, ready for fixed-radius Theorem 2.4.3 constructors.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_empiricalL1CoveringNumber_le_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hcovering_le :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        empiricalL1CoveringNumber (samplePath (X n) sample m) indexClass
+          classFun eta ≤ (cardinality eta n sample m : ℕ∞)) :
+    ∀ eta, 0 < eta -> ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun eta (cardinality eta n) := by
+  intro eta heta
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_empiricalL1CoveringNumber_le_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (epsilon := eta) (cardinality := cardinality eta) X
+      (hcovering_le eta heta)
+
+/--
 An internal covering-number bound for the induced empirical `L1(P_n)`
 pseudometric supplies the random empirical covering-number domination used by
 the Theorem 2.4.3 selected-cardinality route.
@@ -12468,6 +12515,120 @@ theorem
       _ = Real.log (constant eta) +
           (degree eta : ℝ) * Real.log (((n + 1 : ℕ) : ℝ)) := by
         rw [Real.log_mul hconstant_pos.ne' hpow_pos.ne', Real.log_pow]
+
+/--
+Selected fixed-radius tail/UI package from the concrete bounded
+integer-multiple threshold-grid empirical-covering bound.
+
+The structural assumptions are intentionally explicit: every sampled
+truncated value is bounded by an integer multiple of the radius, and every
+fixed threshold in the finite integer grid has the supplied VC dimension
+bound.  Under those assumptions the compiled approximate-threshold cover
+bridge gives the natural-polynomial entropy package consumed by Theorem 2.4.3.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {bound : ℝ -> ℕ} {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hbounded_abs :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ sampleIndex : Fin m,
+            |vdVWTruncatedClassFun classFun envelope M index
+              ((samplePath (X n) sample m) sampleIndex)| ≤
+                ((bound eta : ℤ) : ℝ) * eta)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hvc :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ threshold : {threshold // threshold ∈
+            integerMultipleThresholdGrid eta (bound eta : ℤ)},
+          (empiricalBinaryTraceSetFamily (samplePath (X n) sample m)
+            indexClass
+            (thresholdIndicatorClassFun
+              (vdVWTruncatedClassFun classFun envelope M) threshold.1)).vcDim ≤
+            vcDegree eta) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta _n _sample m =>
+        (((vcDegree eta + 2) * (m + 1) ^ vcDegree eta) ^
+          (2 * bound eta + 1))) := by
+  classical
+  let selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun eta _n _sample m =>
+      (((vcDegree eta + 2) * (m + 1) ^ vcDegree eta) ^
+        (2 * bound eta + 1))
+  have hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (selectedCardinality eta n) := by
+    intro eta heta
+    exact
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_empiricalL1CoveringNumber_le_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (epsilon := eta) (cardinality := selectedCardinality eta) X
+        (by
+          intro n sample m
+          exact
+            empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_nat_uniform_abs_bound_vc_card_le
+              (sample := samplePath (X n) sample m)
+              (indexClass := indexClass)
+              (classFun := vdVWTruncatedClassFun classFun envelope M)
+              (epsilon := eta) (bound := bound eta)
+              (d := vcDegree eta)
+              (cardinality := selectedCardinality eta n sample m)
+              heta
+              (fun index hindex sampleIndex =>
+                hbounded_abs eta heta n sample m index hindex sampleIndex)
+              (hvc eta heta n sample m)
+              (by rfl))
+  have hconstant_ge_one :
+      ∀ eta, 0 < eta ->
+        1 ≤ ((((vcDegree eta + 2 : ℕ) : ℝ) ^ (2 * bound eta + 1)) + 1) := by
+    intro eta _heta
+    have hnonneg :
+        0 ≤ (((vcDegree eta + 2 : ℕ) : ℝ) ^ (2 * bound eta + 1)) :=
+      pow_nonneg (Nat.cast_nonneg _) _
+    linarith
+  have hpoly_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        ((selectedCardinality eta n sample n : ℝ) + 1) ≤
+          ((((vcDegree eta + 2 : ℕ) : ℝ) ^ (2 * bound eta + 1)) + 1) *
+            (((n + 1 : ℕ) : ℝ) ^ (vcDegree eta * (2 * bound eta + 1))) := by
+    intro eta _heta n sample
+    have hbase_growth :
+        (((vcDegree eta + 2) * (n + 1) ^ vcDegree eta : ℕ) : ℝ) ≤
+          ((vcDegree eta + 2 : ℕ) : ℝ) *
+            (((n + 1 : ℕ) : ℝ) ^ vcDegree eta) := by
+      norm_num [Nat.cast_mul, Nat.cast_pow]
+    simpa [selectedCardinality] using
+      nat_pow_add_one_real_le_nat_poly_of_base_le
+        (base := (vcDegree eta + 2) * (n + 1) ^ vcDegree eta)
+        (n := n) (a := vcDegree eta) (k := 2 * bound eta + 1)
+        (B := ((vcDegree eta + 2 : ℕ) : ℝ))
+        (Nat.cast_nonneg _) hbase_growth
+  simpa [selectedCardinality] using
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_nat_poly_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (constant := fun eta =>
+        ((((vcDegree eta + 2 : ℕ) : ℝ) ^ (2 * bound eta + 1)) + 1))
+      (degree := fun eta => vcDegree eta * (2 * bound eta + 1))
+      (cardinality := selectedCardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas
+      hconstant_ge_one hM_pos hpoly_bound
 
 /--
 Selected fixed-radius tail/UI package from finite-threshold value separation

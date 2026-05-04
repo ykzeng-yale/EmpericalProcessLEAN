@@ -850,10 +850,13 @@ above, so they do not change the theorem-level dashboard counts.
    The explicit integer-grid cardinality and envelope-friendly absolute-bound
    consumer are now compiled as `integerMultipleThresholdGrid_nat_card_le` and
    `empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_nat_uniform_abs_bound_vc_card_le`.
+   `Theorem243.lean` now consumes this route through
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_vc`,
+   after adding direct random-covering-number bridges from deterministic
+   empirical-covering-number bounds.
    The next structural inputs are the fixed-radius truncated-value absolute
    boundedness hypotheses and the uniform threshold/subgraph VC condition
-   needed to feed the selected fixed-radius Theorem 2.4.3 side-condition
-   package.
+   needed to feed the untruncated Theorem 2.4.3 consumer.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

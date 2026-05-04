@@ -2530,3 +2530,22 @@ The remaining assumptions to prove or package honestly are now the
 truncated-class absolute bound by a chosen integer multiple of the fixed
 radius and the uniform fixed-threshold VC/subgraph condition over the finite
 integer grid.
+
+2026-05-04 `/goal` update after integer-grid selected-package closure:
+`Theorem243.lean` now consumes deterministic empirical-covering-number bounds
+directly through
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_empiricalL1CoveringNumber_le_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_empiricalL1CoveringNumber_le_samplePath`.
+It also adds the theorem-facing selected fixed-radius constructor
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_vc`.
+This composes the concrete integer-multiple threshold grid, its cardinality
+bound, the absolute boundedness form, fixed-threshold VC/Sauer, and the
+existing natural-polynomial entropy/tail/UI package.
+
+Next exact theorem-facing edit: use this selected fixed-radius package in the
+untruncated Theorem 2.4.3 consumer, under explicit for-all-positive-`M`
+integer-bound and threshold/subgraph VC hypotheses.  The remaining gap is now
+stating/proving those structural hypotheses from the exact textbook
+measurable/VC class assumptions, not connecting the grid cover to the
+Theorem 2.4.3 package.

@@ -433,6 +433,14 @@ absolute boundedness plus uniform fixed-threshold VC.  Next target: feed this
 into the selected fixed-radius Theorem 2.4.3 package under honest
 truncation-bound and threshold/subgraph VC assumptions.
 
+2026-05-04 follow-up: the integer-grid route now reaches the selected
+fixed-radius tail/UI package.  `Theorem243.lean` adds the direct random
+empirical-covering-number bridge from deterministic
+`empiricalL1CoveringNumber` bounds and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_vc`.
+Next target: compose this package with the existing untruncated Theorem 2.4.3
+consumer and keep the remaining structural assumptions explicit.
+
 ## Verification Monitor
 
 Latest targeted verification includes the selected terminal/truncated
