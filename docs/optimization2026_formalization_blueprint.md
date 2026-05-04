@@ -496,7 +496,18 @@ now also compiles: it defines `strongLowerBoundChainObjective` and
 gradient-span trajectories from zero remain in `V_n`.  The newest witness
 layer defines `coordinateTailSq` and proves that a supplied zero-gradient
 minimizer candidate with tail beyond `V_N` forces a function gap for every
-gradient-span trajectory iterate `x_N`.
+gradient-span trajectory iterate `x_N`.  The concrete Lemma 4.2 reduction
+instantiation also now compiles here: `lowerBoundChainMinimizer_norm_le_sqrt_dim`
+upgrades the existing `‖x_*‖² <= d` estimate to the source radius
+`‖x_*‖ <= sqrt d`, and
+`chewi45_lowerBoundChain_regularization_complexity_package`,
+`chewi45_lowerBoundChain_regularization_reduction_package`, and
+`chewi45_lowerBoundChain_regularization_reduction_package_sqrt_dim` plug the
+compiled Theorem 4.4 lower-bound chain into the regularization/condition-number
+packages from `Reductions.lean`.  The remaining Theorem 4.5 work is no longer
+the Lemma 4.2 bookkeeping; it is the geometric/logarithmic rate statement,
+either by the direct Exercise 4.2 tail route or by source-shaped packaging of
+the Lemma 4.2 + Theorem 4.4 reduction.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and

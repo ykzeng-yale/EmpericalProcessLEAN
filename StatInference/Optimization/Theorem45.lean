@@ -149,6 +149,185 @@ theorem chewi45_regularized_chain_interface_package
         (x := x)
         hx0 hspan⟩
 
+/--
+The displayed minimizer from the convex lower-bound chain has radius at most
+`sqrt d`.  This is the concrete radius estimate fed into the Lemma 4.2
+regularization reduction en route to Chewi Theorem 4.5.
+-/
+theorem lowerBoundChainMinimizer_norm_le_sqrt_dim (d : ℕ) :
+    ‖lowerBoundChainMinimizer d‖ ≤ Real.sqrt (d : ℝ) := by
+  have hsq := lowerBoundChainMinimizer_norm_sq_le_dim d
+  have hdim_nonneg : 0 ≤ (d : ℝ) := by positivity
+  have hsqrt_sq : (Real.sqrt (d : ℝ)) ^ (2 : ℕ) = (d : ℝ) :=
+    Real.sq_sqrt hdim_nonneg
+  have hsq' :
+      ‖lowerBoundChainMinimizer d‖ ^ (2 : ℕ) ≤
+        (Real.sqrt (d : ℝ)) ^ (2 : ℕ) := by
+    simpa [hsqrt_sq] using hsq
+  exact (sq_le_sq₀ (norm_nonneg _) (Real.sqrt_nonneg _)).mp hsq'
+
+/--
+Lemma 4.2's complexity package instantiated on the concrete convex
+lower-bound chain from Chewi Theorem 4.4.
+-/
+theorem chewi45_lowerBoundChain_regularization_complexity_package
+    {beta eps R : ℝ} (hbeta : 0 ≤ beta) (heps : 0 < eps)
+    (hR : 0 < R) (heps_le : eps ≤ beta * R ^ (2 : ℕ))
+    (d : ℕ) :
+    let delta := eps / R ^ (2 : ℕ)
+    FirstOrderStrongConvexOn Set.univ
+      (quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d)))
+      (regularizedGradient (lowerBoundChainGradient beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d))) delta ∧
+    SmoothWithGradientOn Set.univ
+      (quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d)))
+      (regularizedGradient (lowerBoundChainGradient beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d))) (beta + delta) ∧
+    SmoothWithGradientOn Set.univ
+      (quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d)))
+      (regularizedGradient (lowerBoundChainGradient beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d))) (2 * beta) ∧
+    (beta + delta) / delta ≤ 2 * beta * R ^ (2 : ℕ) / eps := by
+  exact lemma42_regularization_complexity_package
+    (f := lowerBoundChainTextbookObjective beta d)
+    (grad := lowerBoundChainGradient beta d)
+    (beta := beta) (eps := eps) (R := R)
+    (x0 := (0 : EuclideanSpace ℝ (Fin d)))
+    (lowerBoundChainTextbookObjective_firstOrderConvex hbeta d)
+    (lowerBoundChainTextbookObjective_smoothWithGradientOn hbeta d)
+    heps hR heps_le
+
+/--
+Concrete Lemma 4.2 reduction package for Chewi's lower-bound chain: an
+`eps / 2`-near minimizer of the regularized chain is an `eps`-near minimizer
+of the base convex chain, and the regularized problem carries the expected
+strong-convexity, smoothness, and condition-number bounds.
+-/
+theorem chewi45_lowerBoundChain_regularization_reduction_package
+    {beta eps R : ℝ} {d : ℕ}
+    {x xDelta : EuclideanSpace ℝ (Fin d)}
+    (hbeta : 0 ≤ beta) (heps : 0 < eps) (hR : 0 < R)
+    (heps_le : eps ≤ beta * R ^ (2 : ℕ))
+    (hR_bound : ‖lowerBoundChainMinimizer d‖ ≤ R)
+    (hx_near :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d)
+        (eps / R ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin d)) x ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d)
+        (eps / R ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin d)) xDelta + eps / 2)
+    (hDelta_le :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d)
+        (eps / R ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin d)) xDelta ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d)
+        (eps / R ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin d)) (lowerBoundChainMinimizer d)) :
+    let delta := eps / R ^ (2 : ℕ)
+    lowerBoundChainTextbookObjective beta d x -
+        lowerBoundChainTextbookObjective beta d (lowerBoundChainMinimizer d) ≤ eps ∧
+    ‖xDelta - (0 : EuclideanSpace ℝ (Fin d))‖ ≤ R ∧
+    FirstOrderStrongConvexOn Set.univ
+      (quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d)))
+      (regularizedGradient (lowerBoundChainGradient beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d))) delta ∧
+    SmoothWithGradientOn Set.univ
+      (quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d)))
+      (regularizedGradient (lowerBoundChainGradient beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d))) (beta + delta) ∧
+    SmoothWithGradientOn Set.univ
+      (quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d)))
+      (regularizedGradient (lowerBoundChainGradient beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d))) (2 * beta) ∧
+    (beta + delta) / delta ≤ 2 * beta * R ^ (2 : ℕ) / eps := by
+  exact lemma42_regularization_reduction_package_of_isMinOn
+    (f := lowerBoundChainTextbookObjective beta d)
+    (grad := lowerBoundChainGradient beta d)
+    (beta := beta) (eps := eps) (R := R)
+    (x0 := (0 : EuclideanSpace ℝ (Fin d)))
+    (x := x) (xDelta := xDelta)
+    (xStar := lowerBoundChainMinimizer d)
+    (lowerBoundChainTextbookObjective_firstOrderConvex hbeta d)
+    (lowerBoundChainTextbookObjective_smoothWithGradientOn hbeta d)
+    heps hR heps_le (by simpa using hR_bound) hx_near hDelta_le
+    (lowerBoundChainTextbookObjective_isMinOn_lowerBoundChainMinimizer hbeta d)
+
+/--
+Source-radius specialization of the concrete Lemma 4.2 reduction package,
+using the compiled estimate `‖x_*‖ <= sqrt d` for Chewi's lower-bound chain.
+-/
+theorem chewi45_lowerBoundChain_regularization_reduction_package_sqrt_dim
+    {beta eps : ℝ} {d : ℕ}
+    {x xDelta : EuclideanSpace ℝ (Fin d)}
+    (hbeta : 0 ≤ beta) (heps : 0 < eps) (hdpos : 0 < d)
+    (heps_le :
+      eps ≤ beta * (Real.sqrt (d : ℝ)) ^ (2 : ℕ))
+    (hx_near :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d)
+        (eps / (Real.sqrt (d : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin d)) x ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d)
+        (eps / (Real.sqrt (d : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin d)) xDelta + eps / 2)
+    (hDelta_le :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d)
+        (eps / (Real.sqrt (d : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin d)) xDelta ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d)
+        (eps / (Real.sqrt (d : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin d)) (lowerBoundChainMinimizer d)) :
+    let delta := eps / (Real.sqrt (d : ℝ)) ^ (2 : ℕ)
+    lowerBoundChainTextbookObjective beta d x -
+        lowerBoundChainTextbookObjective beta d (lowerBoundChainMinimizer d) ≤ eps ∧
+    ‖xDelta - (0 : EuclideanSpace ℝ (Fin d))‖ ≤ Real.sqrt (d : ℝ) ∧
+    FirstOrderStrongConvexOn Set.univ
+      (quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d)))
+      (regularizedGradient (lowerBoundChainGradient beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d))) delta ∧
+    SmoothWithGradientOn Set.univ
+      (quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d)))
+      (regularizedGradient (lowerBoundChainGradient beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d))) (beta + delta) ∧
+    SmoothWithGradientOn Set.univ
+      (quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d)))
+      (regularizedGradient (lowerBoundChainGradient beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d))) (2 * beta) ∧
+    (beta + delta) / delta ≤
+      2 * beta * (Real.sqrt (d : ℝ)) ^ (2 : ℕ) / eps := by
+  have hdpos_real : 0 < (d : ℝ) := by exact_mod_cast hdpos
+  have hR : 0 < Real.sqrt (d : ℝ) := Real.sqrt_pos.2 hdpos_real
+  exact chewi45_lowerBoundChain_regularization_reduction_package
+    (beta := beta) (eps := eps) (R := Real.sqrt (d : ℝ))
+    (d := d) (x := x) (xDelta := xDelta)
+    hbeta heps hR heps_le (lowerBoundChainMinimizer_norm_le_sqrt_dim d)
+    hx_near hDelta_le
+
 /-- Squared coordinate tail beyond the source prefix subspace `V_N`. -/
 noncomputable def coordinateTailSq (d N : ℕ)
     (z : EuclideanSpace ℝ (Fin d)) : ℝ :=

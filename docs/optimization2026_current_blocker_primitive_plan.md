@@ -961,10 +961,19 @@ Theorem 4.4 or the Theorem 4.5 reduction first.  The
 `lemma42_regularization_complexity_package`,
 `lemma42_regularization_reduction_package`, and
 `lemma42_regularization_reduction_package_of_isMinOn`.  Do not repeat these.
-The next atomic target is a source-shaped Theorem 4.5 wrapper: combine
-Theorem 4.4's compiled convex smooth lower bound with the Lemma 4.2 reduction
-package, and search mathlib/local APIs for logarithm/asymptotic/iteration-count
-wrappers before introducing any new complexity primitive.
+The latest source-shaped Theorem 4.5 reduction plumbing now compiles:
+`Theorem45.lean` instantiates Lemma 4.2 on the concrete Theorem 4.4 lower-bound
+chain through `lowerBoundChainMinimizer_norm_le_sqrt_dim`,
+`chewi45_lowerBoundChain_regularization_complexity_package`,
+`chewi45_lowerBoundChain_regularization_reduction_package`, and
+`chewi45_lowerBoundChain_regularization_reduction_package_sqrt_dim`.  Do not
+repeat this regularization/condition-number/radius package.  The next atomic
+target is the real strongly-convex lower-bound rate statement: combine this
+compiled reduction with Theorem 4.4's convex lower bound into a source-shaped
+Theorem 4.5 wrapper, or close the direct Exercise 4.2 geometric tail route.
+Search mathlib/local APIs for finite geometric sums, recurrence solutions,
+logarithm/order/asymptotic iteration-count wrappers, and existing exercise
+interfaces before introducing any new complexity primitive.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
@@ -977,9 +986,9 @@ the newest witness layer also compiles `coordinateTailSq`,
 `coordinateTailSq_le_sqdist_of_mem_coordinatePrefixSubmodule`,
 `strongLowerBoundChainObjective_gap_ge_tailSq_of_gradient_eq_zero`, and
 `strongLowerBoundChainObjective_gap_ge_tailSq_of_gradientSpanTrajectory`.  Do
-not repeat these.  The next missing theorem content is the geometric
-zero-gradient minimizer/tail lower bound and then the strongly-convex gap/rate
-assembly.
+not repeat these.  The remaining missing theorem content is the
+geometric/logarithmic rate assembly, not the already solved Lemma 4.2
+bookkeeping.
 
 Chapter 2 route context is still available but no longer the active target:
 The route
