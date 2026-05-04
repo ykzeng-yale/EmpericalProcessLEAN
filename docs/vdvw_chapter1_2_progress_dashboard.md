@@ -960,3 +960,16 @@ and
 `vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_finite_indexClass_canonical_of_reverseComparisonHandoff`.
 These consumers leave only the genuine reverse-comparison/cofiltration handoff
 as an explicit assumption for those routes.
+
+2026-05-04 `/goal` follow-up: the finite-class canonical Lemma 2.4.5 endpoint
+now has a direct proof from iid coordinate SLLN, without the
+reverse/cofiltration assumption.  New compiled declarations are
+`vdVWInfiniteProductMeasure_coordinate_hasLaw`,
+`vdVWInfiniteProductMeasure_iIndepFun_coordinates`,
+`ae_forall_mem_tendsto_empiricalAverage_sub_integral_zero_of_countable_canonical`,
+`vdVWLemma245CenteredEmpiricalSupremum_le_sum_abs_empiricalAverage_sub_integral_of_finite`,
+and
+`vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_zero_of_finite_indexClass_canonical_slln`.
+This is a theorem-facing closure for finite index classes: the remaining
+reverse/permutation-symmetric cofiltration blocker is now only needed for
+arbitrary/countable classes beyond the finite SLLN route.

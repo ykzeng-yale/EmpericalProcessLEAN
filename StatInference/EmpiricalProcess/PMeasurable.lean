@@ -2,6 +2,7 @@ import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.MeasureTheory.Group.Arithmetic
 import Mathlib.MeasureTheory.Measure.NullMeasurable
+import Mathlib.Probability.HasLawExists
 import Mathlib.Probability.ProductMeasure
 import Mathlib.Topology.Order.OrderClosed
 import Mathlib.GroupTheory.Perm.Fin
@@ -25,7 +26,7 @@ mathlib this completion-measurability condition is expressed as
 
 namespace StatInference
 
-open MeasureTheory Filter
+open MeasureTheory Filter ProbabilityTheory
 open scoped BigOperators Topology NNReal
 
 universe u v
@@ -55,6 +56,44 @@ instance instIsProbabilityMeasure_vdVWInfiniteProductMeasure
     IsProbabilityMeasure (vdVWInfiniteProductMeasure P) := by
   unfold vdVWInfiniteProductMeasure
   infer_instance
+
+/--
+Each coordinate projection of the canonical infinite iid product sample space
+has law `P`.
+-/
+theorem vdVWInfiniteProductMeasure_coordinate_hasLaw
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] (i : ℕ) :
+    HasLaw (fun sequence : ℕ -> Observation => sequence i)
+      P (vdVWInfiniteProductMeasure P) := by
+  simpa [vdVWInfiniteProductMeasure] using
+    (measurePreserving_eval_infinitePi
+      (fun _ : ℕ => P) i).hasLaw
+
+/--
+The coordinate projections of the canonical infinite iid product sample space
+are mutually independent.
+
+This is the direct iid bridge needed by finite-class strong-law routes.
+-/
+theorem vdVWInfiniteProductMeasure_iIndepFun_coordinates
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] :
+    iIndepFun (fun i : ℕ => fun sequence : ℕ -> Observation => sequence i)
+      (vdVWInfiniteProductMeasure P) := by
+  rw [iIndepFun_iff_map_fun_eq_infinitePi_map (by fun_prop)]
+  change Measure.map id (vdVWInfiniteProductMeasure P) =
+    Measure.infinitePi
+      (fun i : ℕ =>
+        Measure.map (fun sequence : ℕ -> Observation => sequence i)
+          (vdVWInfiniteProductMeasure P))
+  rw [Measure.map_id]
+  unfold vdVWInfiniteProductMeasure
+  congr
+  funext i
+  exact
+    ((measurePreserving_eval_infinitePi
+      (fun _ : ℕ => P) i).map_eq).symm
 
 /--
 Finite-coordinate permutation of the sample space `Observation^n`.

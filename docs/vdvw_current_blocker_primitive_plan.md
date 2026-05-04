@@ -3442,3 +3442,23 @@ with the outer-probability/Borel-Cantelli zero bridge.  For these two
 important theorem-critical cases, the remaining exposed assumption is exactly
 the reverse-comparison/cofiltration handoff; no separate subsequence,
 summability, or endpoint-transport plumbing remains.
+
+2026-05-04 `/goal` follow-up: the finite-class canonical route now also has a
+direct pointwise-SLLN proof of the Lemma 2.4.5 a.s. zero conclusion, bypassing
+the general reverse/cofiltration handoff for finite index classes.  Search
+record: local `EndpointSamples.lean` supplies
+`endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid`; local
+`PMeasurable.lean` now supplies
+`vdVWInfiniteProductMeasure_coordinate_hasLaw` and
+`vdVWInfiniteProductMeasure_iIndepFun_coordinates`; pinned mathlib supplies
+`tendsto_finsetSum`, `tendsto_add_atTop_nat`, `Tendsto.abs`, and the squeeze
+lemma `tendsto_of_tendsto_of_tendsto_of_le_of_le'`.  New compiled theorem
+layers in `Theorem243.lean` are
+`ae_forall_mem_tendsto_empiricalAverage_sub_integral_zero_of_countable_canonical`,
+`vdVWLemma245CenteredEmpiricalSupremum_le_sum_abs_empiricalAverage_sub_integral_of_finite`,
+and
+`vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_zero_of_finite_indexClass_canonical_slln`.
+This closes a genuine finite-class Lemma 2.4.5 endpoint from iid product-space
+SLLN plus a finite-sum supremum bound.  It does not solve the arbitrary-class
+VdV&W reverse/permutation-symmetric cofiltration theorem, which remains the
+main exact Lemma 2.4.5 blocker outside finite classes.

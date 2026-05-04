@@ -6,6 +6,7 @@ import Mathlib.Probability.Martingale.Convergence
 import Mathlib.Probability.Moments.SubGaussian
 import Mathlib.Probability.ProbabilityMassFunction.Integrals
 import StatInference.EmpiricalProcess.CoveringPrimitive
+import StatInference.EmpiricalProcess.EndpointSamples
 import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.OuterProbabilityExpectation
 import StatInference.EmpiricalProcess.PMeasurable
@@ -25731,6 +25732,177 @@ theorem
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
         henv_integrable)
+
+/--
+Canonical infinite-product endpoint strong law for every member of a countable
+class dominated by an integrable envelope.
+
+This is the pointwise SLLN ingredient for finite-class a.s. routes that avoid
+the reverse/cofiltration theorem.
+-/
+theorem
+    ae_forall_mem_tendsto_empiricalAverage_sub_integral_zero_of_countable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      ∀ index, index ∈ indexClass ->
+        Tendsto
+          (fun n : ℕ =>
+            empiricalAverage
+              (vdVWFirstNSample (Observation := Observation) n sequence)
+              (classFun index) -
+              ∫ observation, classFun index observation ∂P)
+          atTop (𝓝 0) := by
+  have hpoint :
+      ∀ index, ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        index ∈ indexClass ->
+          Tendsto
+            (fun n : ℕ =>
+              empiricalAverage
+                (vdVWFirstNSample (Observation := Observation) n sequence)
+                (classFun index) -
+                ∫ observation, classFun index observation ∂P)
+            atTop (𝓝 0) := by
+    intro index
+    by_cases hmem : index ∈ indexClass
+    · have hstat_meas : AEMeasurable (classFun index) P :=
+        (hclass index hmem).aemeasurable
+      have hstat_integrable : Integrable (classFun index) P :=
+        integrable_classFun_of_integrable_envelope
+          (μ := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) henvelope hclass henv_integrable hmem
+      have hendpoint :=
+        endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid
+          (μ := vdVWInfiniteProductMeasure P) (P := P)
+          (X := fun i sequence => sequence i)
+          (statistic := classFun index)
+          hstat_meas hstat_integrable
+          (fun i => vdVWInfiniteProductMeasure_coordinate_hasLaw P i)
+          (fun _i _j hij =>
+            (vdVWInfiniteProductMeasure_iIndepFun_coordinates P).indepFun hij)
+      filter_upwards [hendpoint] with sequence hsequence _hmem
+      simpa [samplePath, vdVWFirstNSample] using hsequence
+    · exact Filter.Eventually.of_forall fun _ hindex => (hmem hindex).elim
+  exact ae_all_iff.2 hpoint
+
+/--
+For a finite class, the named Lemma 2.4.5 centered supremum is bounded by the
+finite sum of the absolute centered empirical averages over the class.
+
+This deterministic inequality is the finite-class bridge from pointwise SLLNs
+to a.s. convergence of the supremum.
+-/
+theorem
+    vdVWLemma245CenteredEmpiricalSupremum_le_sum_abs_empiricalAverage_sub_integral_of_finite
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hindex_finite : indexClass.Finite) {n : ℕ} (hn : 0 < n)
+    (sequence : ℕ -> Observation) :
+    vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence ≤
+      hindex_finite.toFinset.sum
+        (fun index =>
+          |empiricalAverage
+              (vdVWFirstNSample (Observation := Observation) n sequence)
+              (classFun index) -
+            ∫ observation, classFun index observation ∂P|) := by
+  have hbase :=
+    vdVWWeightedClassSupremum_le_sum_abs_of_finite
+      (indexClass := indexClass)
+      (classFun := fun index : Index => fun observation : Observation =>
+        classFun index observation - ∫ x, classFun index x ∂P)
+      hindex_finite
+      (fun _ : Fin n => (n : ℝ)⁻¹)
+      (vdVWFirstNSample (Observation := Observation) n sequence)
+  refine hbase.trans_eq ?_
+  apply Finset.sum_congr rfl
+  intro index _hindex
+  congr 1
+  exact
+    vdVWWeightedSampleSum_centered_const_inv_eq_empiricalAverage_sub
+      (P := P) (classFun := classFun) hn
+      (vdVWFirstNSample (Observation := Observation) n sequence) index
+
+/--
+Canonical finite-class Lemma 2.4.5 a.s. convergence from pointwise SLLN.
+
+For finite index classes, the supremum is bounded by a finite sum of absolute
+centered empirical averages, so the canonical iid product-space SLLN gives the
+almost-sure zero limit directly.  This bypasses the general VdV&W
+reverse/cofiltration comparison, which remains the blocker for arbitrary
+classes.
+-/
+theorem
+    vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_zero_of_finite_indexClass_canonical_slln
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) := by
+  have hpoint :=
+    ae_forall_mem_tendsto_empiricalAverage_sub_integral_zero_of_countable_canonical
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) henvelope hclass henv_integrable
+  filter_upwards [hpoint] with sequence hsequence
+  let upper : ℕ -> ℝ :=
+    fun n =>
+      hindex_finite.toFinset.sum
+        (fun index =>
+          |empiricalAverage
+              (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)
+              (classFun index) -
+            ∫ observation, classFun index observation ∂P|)
+  have hupper_tendsto : Tendsto upper atTop (𝓝 0) := by
+    have hsum :
+        Tendsto upper atTop
+          (𝓝
+            (hindex_finite.toFinset.sum
+              (fun _index : Index => (0 : ℝ)))) := by
+      refine tendsto_finsetSum hindex_finite.toFinset ?_
+      intro index hindex
+      have hmem : index ∈ indexClass :=
+        (hindex_finite.mem_toFinset).1 hindex
+      have hindex_tendsto :
+          Tendsto
+            (fun n : ℕ =>
+              empiricalAverage
+                (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)
+                (classFun index) -
+              ∫ observation, classFun index observation ∂P)
+            atTop (𝓝 0) :=
+        (hsequence index hmem).comp (tendsto_add_atTop_nat 1)
+      simpa using hindex_tendsto.abs
+    simpa [upper] using hsum
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      tendsto_const_nhds hupper_tendsto ?_ ?_
+  · exact Eventually.of_forall fun n =>
+      by
+        simpa [vdVWLemma245CenteredEmpiricalSupremum] using
+          vdVWWeightedClassSupremum_nonneg indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+            (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)
+  · exact Eventually.of_forall fun n =>
+      vdVWLemma245CenteredEmpiricalSupremum_le_sum_abs_empiricalAverage_sub_integral_of_finite
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        hindex_finite (Nat.succ_pos n) sequence
 
 /--
 Canonical finite-class Lemma 2.4.5 a.s. zero consumer.
