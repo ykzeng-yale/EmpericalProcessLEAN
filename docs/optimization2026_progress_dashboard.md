@@ -371,15 +371,27 @@ existing Lemma 4.2 reduction API.  The newest edge substrate adds
 analogue of the finite edge-expansion proof.  The newest expansion pass adds
 `exercise42InfiniteBaseChainObjective_add_direction`,
 `exercise42InfiniteBaseChainObjective_add_direction_ge_edge_linear`, and
-`exercise42InfiniteBaseChainObjective_ge_edge_linear`; the remaining base-chain
-first-order blocker is the summation-by-parts bridge from the edge-linear tsum
-to the inner product with `exercise42InfiniteBaseChainGradientLp`.  The
-geometric obstruction and log-quotient conversion are already available.
-In parallel, specialize the remaining
-reduction-route comparison
+`exercise42InfiniteBaseChainObjective_ge_edge_linear`.  The summation-by-parts
+and concrete first-order pass now adds
+`exercise42InfiniteBaseChain_edge_direction_sum_range_eq_core_sum_sub_boundary`,
+`exercise42InfiniteBaseChain_edge_direction_tsum_eq_core_tsum`,
+`inner_exercise42InfiniteBaseChainGradientLp_eq_edgeDirection_tsum`,
+`exercise42InfiniteBaseChainObjective_firstOrderConvex`, and
+`exercise42InfiniteChainObjective_firstOrderStrongConvexOn`; the final
+no-supplied-interface infinite Exercise 4.2 wrappers now compile as
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_concreteGradient`
+and
+`exercise42InfiniteChainObjective_logQuotientRate_le_near_min_concreteGradient`.
+Search-first result: reused mathlib `lp.inner_eq_tsum`, `lp.summable_inner`,
+`Summable.tendsto_atTop_zero`, `tendsto_add_atTop_nat`, and the finite
+`LowerBounds.lean` summation-by-parts pattern.  The next target is
+source-shaped packaging of the concrete infinite log-quotient statement into
+the textbook's preferred Theorem/Exercise 4.2 lower-bound display, then
+feeding it into the Theorem 4.5 condition-number/rate comparison.  In
+parallel, specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
-condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.  Search
-mathlib/local APIs for `Real.log` monotonicity, `Real.exp` inversions,
+condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.
+Search mathlib/local APIs for `Real.log` monotonicity, `Real.exp` inversions,
 sqrt/order facts, finite geometric sums, and asymptotic iteration-count
 wrappers before adding any local complexity primitive.  Keep any exercise work opportunistic and centralized in
 `StatInference/Optimization/Exercises.lean`; the main theorem lane remains the

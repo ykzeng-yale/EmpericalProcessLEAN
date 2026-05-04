@@ -686,9 +686,22 @@ counterpart of the finite edge-energy representation before proving the full
 direction expansion.  The expansion and lower edge-linear layer now also
 compiles as `exercise42InfiniteBaseChainObjective_add_direction`,
 `exercise42InfiniteBaseChainObjective_add_direction_ge_edge_linear`, and
-`exercise42InfiniteBaseChainObjective_ge_edge_linear`; next is the
-summation-by-parts identity connecting this edge-linear form to
-`inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) (y - x)`.
+`exercise42InfiniteBaseChainObjective_ge_edge_linear`.  The summation-by-parts
+bridge and concrete first-order package now also compile as
+`exercise42InfiniteBaseChain_edge_direction_sum_range_eq_core_sum_sub_boundary`,
+`exercise42InfiniteBaseChain_edge_direction_tsum_eq_core_tsum`,
+`inner_exercise42InfiniteBaseChainGradientLp_eq_edgeDirection_tsum`,
+`exercise42InfiniteBaseChainObjective_firstOrderConvex`, and
+`exercise42InfiniteChainObjective_firstOrderStrongConvexOn`, reusing mathlib
+`lp.inner_eq_tsum`, `lp.summable_inner`, `Summable.tendsto_atTop_zero`, and
+`tendsto_add_atTop_nat`.  The concrete no-supplied-interface infinite
+geometric/log wrappers now compile as
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_concreteGradient`
+and
+`exercise42InfiniteChainObjective_logQuotientRate_le_near_min_concreteGradient`.
+Next is source-shaped packaging of this concrete log-quotient theorem into the
+book's preferred Exercise 4.2 display and its use in the Theorem 4.5
+condition-number/rate statement.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

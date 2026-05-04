@@ -1282,14 +1282,27 @@ expansion and nonnegative-remainder lower model also compile as
 `exercise42InfiniteBaseChainObjective_ge_edge_linear`.  This mirrors the
 finite `lowerBoundChainTextbookObjective_add_direction` route and reuses
 `summable_nat_add_iff`, `lp.summable_inner`, and the existing infinite
-edge-square summability.  Remaining analytic bridge: prove the summation by
-parts identity equating the edge-linear tsum with
-`inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) (y - x)`.
-Next direct Exercise 4.2 step: prove
-`FirstOrderStrongConvexOn Set.univ (exercise42InfiniteBaseChainObjective
-(beta - alpha)) (exercise42InfiniteBaseChainGradientLp (beta - alpha)) 0`;
-the separate supplied coordinate-gradient hypothesis and the regularizer part
-are both discharged.
+edge-square summability.  The summation-by-parts bridge now also compiles:
+`exercise42InfiniteBaseChain_edge_direction_sum_range_eq_core_sum_sub_boundary`
+proves the finite boundary identity,
+`exercise42InfiniteBaseChain_edge_direction_tsum_eq_core_tsum` passes to the
+`ell^2` limit, and
+`inner_exercise42InfiniteBaseChainGradientLp_eq_edgeDirection_tsum` identifies
+the edge-linear work with
+`inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) (y - x)`.  This
+reuses mathlib `lp.inner_eq_tsum`, `lp.summable_inner`,
+`Summable.tendsto_atTop_zero`, and `tendsto_add_atTop_nat`.  Consequently
+`exercise42InfiniteBaseChainObjective_firstOrderConvex` and
+`exercise42InfiniteChainObjective_firstOrderStrongConvexOn` discharge the
+formerly supplied first-order package for the concrete infinite hard-chain
+objective.  The no-supplied-interface geometric/log wrappers now compile as
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_concreteGradient`
+and
+`exercise42InfiniteChainObjective_logQuotientRate_le_near_min_concreteGradient`.
+Next direct Exercise 4.2 step: simplify/package the concrete log-quotient
+statement into the textbook's preferred `Ω(√κ log(...))` lower-bound form,
+using the existing Chewi 4.5 condition-number/log comparison lemmas rather
+than redoing the infinite first-order or gradient algebra.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
