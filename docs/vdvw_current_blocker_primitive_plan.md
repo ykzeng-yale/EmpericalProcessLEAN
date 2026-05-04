@@ -2932,3 +2932,20 @@ exact VdV&W Lemma 2.4.5: the missing theorem-facing primitive is still the
 construction of the decreasing permutation-symmetric filtration, measurable
 cover versions adapted to it, and the reduction of that reverse
 submartingale to a mathlib-compatible submartingale convergence theorem.
+
+2026-05-04 follow-up: the exterior-cofiltration substrate for the same
+Lemma 2.4.5 route is now wrapped locally.  Search record: local
+`StatInference` had no exterior/reverse filtration layer; pinned mathlib
+`Mathlib/Probability/Process/Filtration.lean` provides
+`Filtration.cylinderEventsCompl`, and
+`Mathlib/MeasureTheory/Constructions/Cylinders.lean` provides
+`cylinderEvents`, `cylinderEvents_mono`, and `cylinderEvents_le_pi`.
+New compiled declarations are `vdVWExteriorCofiltration`,
+`vdVWExteriorCofiltration_eq_cylinderEventsCompl`,
+`vdVWExteriorCofiltration_apply`, `vdVWExteriorCofiltration_le_pi`, and
+`vdVWExteriorCofiltration_antitone`.  These close only the product-coordinate
+exterior sigma-field/cofiltration substrate.  The next missing primitive is
+still the VdV&W permutation-symmetric decreasing filtration on sample paths,
+its adapted measurable-cover/supremum process, and the reverse-submartingale
+inequality/convergence reduction needed for the almost-sure part of
+Theorem 2.4.3.

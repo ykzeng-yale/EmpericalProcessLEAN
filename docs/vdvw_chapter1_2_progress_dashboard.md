@@ -647,6 +647,16 @@ Lemma 2.4.5 is now wrapped locally as
 reverse-submartingale lemma; the remaining blocker is the VdV&W-specific
 permutation-symmetric decreasing filtration and adapted measurable-cover
 construction.
+2026-05-04 follow-up: the exterior product-coordinate cofiltration needed for
+that reverse-filtration route is now also wrapped locally.  New declarations
+`vdVWExteriorCofiltration`,
+`vdVWExteriorCofiltration_eq_cylinderEventsCompl`,
+`vdVWExteriorCofiltration_apply`, `vdVWExteriorCofiltration_le_pi`, and
+`vdVWExteriorCofiltration_antitone` reuse mathlib
+`Filtration.cylinderEventsCompl` and record the shrink direction as finite
+coordinate sets grow.  This is still substrate only; the exact VdV&W
+permutation-symmetric filtration and reverse-submartingale reduction remain
+open.
 
 ## Verification Monitor
 

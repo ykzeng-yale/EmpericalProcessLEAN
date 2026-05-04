@@ -988,7 +988,12 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVW_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd`.  This is only
    the forward martingale-convergence substrate; the exact Lemma 2.4.5 still
    needs the VdV&W reverse/permutation-symmetric filtration construction and
-   adapted measurable-cover versions.
+   adapted measurable-cover versions.  The product-coordinate exterior
+   cofiltration substrate is now also wrapped as
+   `vdVWExteriorCofiltration`, with display/monotonicity helpers
+   `vdVWExteriorCofiltration_apply`, `vdVWExteriorCofiltration_le_pi`, and
+   `vdVWExteriorCofiltration_antitone`, reusing mathlib
+   `Filtration.cylinderEventsCompl`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
