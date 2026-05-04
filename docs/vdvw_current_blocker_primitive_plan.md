@@ -1642,6 +1642,34 @@ whose normalized log cardinality tends to zero, or a proof that the precise
 polynomial/VC assumption must be added as the honest interface for the current
 Lean theorem before full Theorem 2.4.3 assembly.
 
+2026-05-04 `/goal` update after deterministic-rate entropy bridge closure:
+`StatInference/EmpiricalProcess/Theorem243.lean` now has the missing
+outer-probability adapter that turns a deterministic normalized
+log-cardinality rate into the VdV&W stochastic entropy field.  New compiled
+declarations are
+`VdVWConvergesInOuterProbabilityConst_zero_of_nonneg_le_tendsto_bound`,
+`VdVWConvergesInOuterProbabilityConst_zero_of_logCardinality_div_le_tendsto_bound`,
+`VdVWConvergesInOuterProbabilityConst_zero_of_real_log_cardinality_div_le_tendsto_bound`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_tendsto_bound`,
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_logCardinality_div_tendsto_bound`.
+Search record: local outer-probability monotonicity
+`VdVWConvergesInOuterProbabilityConst_zero_of_nonneg_le` and deterministic
+constant convergence `VdVWConvergesInOuterProbabilityConst_of_tendsto_const`
+were sufficient; pinned mathlib asymptotic log APIs such as
+`Real.isLittleO_log_id_atTop`, `IsLittleO.comp_tendsto`, and
+`Real.log_natCast_le_rpow_div` remain available for later concrete
+polynomial/VC cardinality rates, but no ready VdVW normalized
+log-cardinality-to-outer-probability adapter existed locally.
+
+Remaining blocker is now narrower: prove a concrete theorem-facing structural
+cardinality estimate, for example VC/Sauer/polynomial trace growth, and its
+deterministic rate hypothesis
+`Tendsto (rate eta) atTop (𝓝 0)` plus
+`log(cardinality eta n sample n + 1) / n <= rate eta n`.  Once that is
+available, the selected fixed-radius tail/UI package and untruncated
+Theorem 2.4.3 consumers no longer need a separate stochastic entropy proof.
+
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
 APIs found and used are `ProbabilityTheory.iIndepFun_pi`,

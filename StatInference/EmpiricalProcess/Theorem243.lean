@@ -8972,6 +8972,97 @@ theorem
       (l := atTop) (c := (0 : ℝ)) htendsto)
 
 /--
+Variable-domain nonnegative processes converge to zero in VdV&W outer
+probability when they are eventually bounded above by a deterministic real
+sequence tending to zero.
+
+This is the reusable entropy bridge needed for structural trace-count or
+VC/Sauer bounds: after reducing a random normalized log-cardinality process to
+a deterministic rate, ordinary deterministic convergence supplies the
+outer-probability convergence field.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst_zero_of_nonneg_le_tendsto_bound
+    {ι : Type v} {Ω : ι -> Type u}
+    (mΩ : (i : ι) -> MeasurableSpace (Ω i))
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i))
+    {l : Filter ι} {X : (i : ι) -> Ω i -> ℝ} {bound : ι -> ℝ}
+    (hX_nonneg : ∀ i (ω : Ω i), 0 ≤ X i ω)
+    (hX_le : ∀ᶠ i in l, ∀ ω : Ω i, X i ω ≤ bound i)
+    (hbound : Tendsto bound l (𝓝 0)) :
+    VdVWConvergesInOuterProbabilityConst Ω mΩ μ X l (0 : ℝ) := by
+  exact
+    VdVWConvergesInOuterProbabilityConst_zero_of_nonneg_le mΩ μ
+      hX_nonneg hX_le
+      (VdVWConvergesInOuterProbabilityConst_of_tendsto_const
+        (Ω := Ω) (mΩ := mΩ) (μ := μ) (x := bound)
+        (l := l) (c := (0 : ℝ)) hbound)
+
+/--
+Normalized empirical-cover log-cardinality converges in VdVW outer probability
+when it is pointwise dominated by a deterministic rate tending to zero.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst_zero_of_logCardinality_div_le_tendsto_bound
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {bound : ℕ -> ℝ}
+    (hbound : Tendsto bound atTop (𝓝 0))
+    (hlog_div_le :
+      ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+        vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ) ≤ bound n) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+          (n : ℝ))
+      atTop (0 : ℝ) := by
+  exact
+    VdVWConvergesInOuterProbabilityConst_zero_of_nonneg_le_tendsto_bound
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        div_nonneg
+          (vdVWLogEmpiricalL1CoveringCardinality_nonneg
+            (cardinality n) sample n)
+          (Nat.cast_nonneg n))
+      hlog_div_le hbound
+
+/--
+Raw real-log spelling of
+`VdVWConvergesInOuterProbabilityConst_zero_of_logCardinality_div_le_tendsto_bound`.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst_zero_of_real_log_cardinality_div_le_tendsto_bound
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {bound : ℕ -> ℝ}
+    (hbound : Tendsto bound atTop (𝓝 0))
+    (hreal_log_div_le :
+      ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+        Real.log ((cardinality n sample n : ℝ) + 1) / (n : ℝ) ≤
+          bound n) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+          (n : ℝ))
+      atTop (0 : ℝ) := by
+  exact
+    VdVWConvergesInOuterProbabilityConst_zero_of_logCardinality_div_le_tendsto_bound
+      (P := P) (cardinality := cardinality) hbound
+      (hreal_log_div_le.mono (by
+        intro n hn sample
+        simpa [vdVWLogEmpiricalL1CoveringCardinality] using hn sample))
+
+/--
 The normalized logarithm of a constant finite cardinality is bounded by its
 own logarithm at every sample size.
 -/
@@ -11786,6 +11877,124 @@ theorem
       finiteNetHoeffdingUpper_tailExpectation_condition_of_bound
         (P := P) (M := M) (C := Real.sqrt (6 * (1 + K eta)) * M)
         (cardinality := selectedCardinality) hC_nonneg hupperBound
+
+/--
+Build the selected fixed-radius tail/UI package from a deterministic
+normalized log-cardinality rate.
+
+Compared with `...of_logCardinality_div_bound`, this constructor also derives
+the stochastic entropy-convergence field from a deterministic rate
+`rate eta n -> 0`.  This is the exact handoff wanted after a structural
+trace-count, VC/Sauer, or polynomial-cardinality argument proves a bound of
+the form
+`log(cardinality eta n sample n + 1) / n <= rate eta n`.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_tendsto_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {K : ℝ -> ℝ} {rate : ℝ -> ℕ -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hrate_tendsto :
+      ∀ eta, 0 < eta -> Tendsto (rate eta) atTop (𝓝 0))
+    (hM_pos : 0 < M)
+    (hK_nonneg : ∀ eta, 0 < eta -> 0 ≤ K eta)
+    (hrate_le_K : ∀ eta, 0 < eta -> ∀ n, rate eta n ≤ K eta)
+    (hlog_rate_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        Real.log ((cardinality eta n sample n : ℝ) + 1) /
+            (n : ℝ) ≤ rate eta n) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  refine
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (K := K) (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas ?_ hM_pos
+      hK_nonneg ?_
+  · intro eta heta
+    exact
+      VdVWConvergesInOuterProbabilityConst_zero_of_real_log_cardinality_div_le_tendsto_bound
+        (P := P) (cardinality := cardinality eta)
+        (bound := rate eta) (hrate_tendsto eta heta)
+        (Eventually.of_forall (hlog_rate_bound eta heta))
+  · intro eta heta n sample
+    exact (hlog_rate_bound eta heta n sample).trans (hrate_le_K eta heta n)
+
+/--
+Finite-trace-image constructor for the selected fixed-radius tail/UI package
+from a deterministic normalized log-cardinality rate.
+
+This combines the fixed-sample trace-cover bridge with
+`...of_logCardinality_div_tendsto_bound`, so a future VC/Sauer or polynomial
+trace-count theorem only needs to supply the deterministic rate and its
+eventual uniform bound.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_logCardinality_div_tendsto_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {K : ℝ -> ℝ} {rate : ℝ -> ℕ -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (htrace_finite :
+      ∀ n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        (htrace_finite n sample m).toFinset.card ≤
+          cardinality eta n sample m)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hrate_tendsto :
+      ∀ eta, 0 < eta -> Tendsto (rate eta) atTop (𝓝 0))
+    (hM_pos : 0 < M)
+    (hK_nonneg : ∀ eta, 0 < eta -> 0 ≤ K eta)
+    (hrate_le_K : ∀ eta, 0 < eta -> ∀ n, rate eta n ≤ K eta)
+    (hlog_rate_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        Real.log ((cardinality eta n sample n : ℝ) + 1) /
+            (n : ℝ) ≤ rate eta n) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  have hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n) :=
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_trace_image_cardinality_bound_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (cardinality := cardinality) X htrace_finite hcardinality_dom
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_tendsto_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (K := K) (rate := rate) (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas hrate_tendsto
+      hM_pos hK_nonneg hrate_le_K hlog_rate_bound
 
 /--
 Build the selected fixed-radius tail/UI package from a terminal

@@ -703,10 +703,16 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_terminal_pow`
    and
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_succ_terminal_pow`.
+   The deterministic-rate entropy adapter is also compiled through
+   `VdVWConvergesInOuterProbabilityConst_zero_of_logCardinality_div_le_tendsto_bound`,
+   `VdVWConvergesInOuterProbabilityConst_zero_of_real_log_cardinality_div_le_tendsto_bound`,
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_tendsto_bound`,
+   and
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_logCardinality_div_tendsto_bound`.
    What remains for the full non-finite class route is the actual
-   geometric/cardinality estimate and normalized log-convergence proof for the
-   chosen empirical internal cover, trace image, VC/Sauer trace count, or
-   maximal separated set.  If this
+   geometric/cardinality estimate and deterministic normalized log-rate proof
+   for the chosen empirical internal cover, trace image, VC/Sauer trace count,
+   or maximal separated set.  If this
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
