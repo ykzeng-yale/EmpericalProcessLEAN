@@ -1218,13 +1218,15 @@ infinite hard-chain gradient oracle:
 `exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_lowerModel`.
 The lower-model input is now reduced to the first-order interface:
 `exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply`,
+`exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient`,
 `exercise42InfiniteGeometricMinimizer_lowerModel_of_firstOrder`,
 `exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_firstOrder`,
 `exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_firstOrder`,
 and
 `exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_firstOrder`
 combine `FirstOrderStrongConvexOn`, the Chewi hard-chain coordinate gradient,
-and the support induction into the exact geometric function-gap obstruction.
+the zero-gradient minimizer certificate, and the support induction into the
+exact geometric function-gap obstruction.
 The concrete source objective layer now compiles:
 `exercise42InfiniteChainEdgeSq_summable`,
 `exercise42InfiniteChainObjective`,
@@ -1313,10 +1315,14 @@ which derive the needed `log(eps / scale) <= 0` from
 `eps <= (alpha/2) * ‖x_0 - x_*‖^2`.  The literal source exponent display now
 also compiles as
 `exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_concreteGradient`,
-rewriting `(q^2)^N` to `q^(2N)` with `pow_mul` and `omega`.  Next direct
-Exercise 4.2 step: either add the minimizer/value notation wrapper so the
-right side reads `f(x_N)-f_*`, or connect this display directly to the derived
-`Ω(√κ log(alpha ‖x_0-x_*‖^2 / eps))` statement.
+rewriting `(q^2)^N` to `q^(2N)` with `pow_mul` and `omega`.  The follow-up
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minValue_concreteGradient`
+now names the optimum value as `fstar`, giving the textbook-shaped right side
+`f(x_N)-f_*` once `hfstar` identifies `fstar` with the geometric minimizer
+value.  Next direct Exercise 4.2 step: feed this display into the already
+derived `Ω(√κ log(alpha ‖x_0-x_*‖^2 / eps))` statement, or package a single
+fully source-shaped theorem whose hypotheses mention `f_*` rather than the
+geometric point.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,

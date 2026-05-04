@@ -713,8 +713,14 @@ handled by `exercise42InfiniteGeometricInitialScale_pos` and
 `exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale`,
 which derive the needed log-nonpositive hypothesis from
 `eps <= (alpha/2) * ‖x_0-x_*‖^2`.
-Next is adding the minimizer/value notation wrapper for `f_*` or connecting
-the display directly to the Theorem 4.5 rate statement.
+The newest source-shape wrappers certify the geometric profile as a concrete
+global minimizer
+(`exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient`) and rename
+the display to `f(x_N)-f_*`
+(`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minValue_concreteGradient`)
+under an `hfstar` value identification.  Next is a single public Exercise 4.2
+theorem combining the `f_*` display with the already compiled `sqrt(kappa)`
+rate statement, or feeding that exact package into Theorem 4.5.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

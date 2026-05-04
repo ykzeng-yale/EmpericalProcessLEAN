@@ -1583,6 +1583,40 @@ theorem exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply
     halpha_pos halpha_lt_beta hkappa hq_nonneg hq_lt_one i
 
 /--
+The displayed infinite geometric profile is the concrete global minimizer of
+Chewi's Exercise 4.2 hard-chain objective.
+-/
+theorem exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha) :
+    IsMinOn (exercise42InfiniteChainObjective alpha beta) Set.univ
+      (exercise42InfiniteGeometricMinimizer
+        (chewi45GeometricRatio kappa)
+        (chewi45GeometricRatio_nonneg (kappa := kappa)
+          ((by
+            rw [hkappa]
+            exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+              1 < kappa).le))
+        (chewi45GeometricRatio_lt_one kappa)) := by
+  have hgamma : 0 ≤ beta - alpha := by linarith
+  refine
+    isMinOn_of_firstOrderStrongConvexOn_gradient_eq_zero
+      (exercise42InfiniteChainObjective_firstOrderStrongConvexOn
+        (alpha := alpha) (beta := beta) hgamma)
+      halpha_pos.le trivial ?_
+  exact
+    exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply
+      halpha_pos halpha_lt_beta hkappa
+      (chewi45GeometricRatio_nonneg (kappa := kappa)
+        ((by
+          rw [hkappa]
+          exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+            1 < kappa).le))
+      (chewi45GeometricRatio_lt_one kappa)
+      (grad := exercise42InfiniteChainGradientLp alpha beta)
+      (by intro y i; rfl)
+
+/--
 First-order lower model at the infinite hard-chain minimizer.  This discharges
 the formerly supplied lower-model input from `FirstOrderStrongConvexOn` and the
 compiled zero-gradient coordinate formula.
@@ -2082,6 +2116,46 @@ theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_concr
     omega
   simpa [q, pow_mul, hpow, mul_comm, mul_left_comm, mul_assoc] using
     exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_concreteGradient
+      halpha_pos halpha_lt_beta hkappa hx0 hspan N
+
+/--
+Same source-display lower bound, with the optimum value named as `fstar`.
+This is the local formal stand-in for the textbook notation `f_*`.
+-/
+theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minValue_concreteGradient
+    {alpha beta kappa fstar : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (hfstar :
+      fstar =
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)))
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ) :
+    (alpha / 2) *
+        ((chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^
+              (2 : ℕ)) ≤
+      exercise42InfiniteChainObjective alpha beta (x N) - fstar := by
+  subst fstar
+  exact
+    exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_concreteGradient
       halpha_pos halpha_lt_beta hkappa hx0 hspan N
 
 /--
