@@ -120,6 +120,28 @@ theorem abs_vdVWTruncatedClassFun_le_M
   · simpa [vdVWTruncatedClassFun, hle] using hM
 
 /--
+Canonical natural integer-grid radius for truncation level `M` and positive
+empirical-cover radius `eta`.
+-/
+noncomputable def vdVWIntegerGridRadius (M eta : ℝ) : ℕ :=
+  Nat.ceil (M / eta)
+
+/--
+The canonical integer-grid radius is large enough to cover the truncation
+level after scaling by the positive empirical-cover radius.
+-/
+theorem vdVWIntegerGridRadius_mul_eta_ge
+    {M eta : ℝ} (heta : 0 < eta) :
+    M ≤ ((vdVWIntegerGridRadius M eta : ℤ) : ℝ) * eta := by
+  have heta_ne : eta ≠ 0 := ne_of_gt heta
+  have hceil : M / eta ≤ (vdVWIntegerGridRadius M eta : ℝ) := by
+    simpa [vdVWIntegerGridRadius] using Nat.le_ceil (M / eta)
+  have hmul := mul_le_mul_of_nonneg_right hceil heta.le
+  have hleft : M / eta * eta = M := by
+    field_simp [heta_ne]
+  simpa [hleft] using hmul
+
+/--
 The truncation error is supported on the envelope tail `{F > M}` and is
 bounded there by the envelope.
 
@@ -12686,6 +12708,52 @@ theorem
             ((samplePath (X n) sample m) sampleIndex)).trans
             (hbound eta heta))
       hclass henvelope_meas hM_pos hvc
+
+/--
+Selected fixed-radius integer-grid package using the canonical grid radius
+`ceil(M / eta)`.  This removes the separate arithmetic domination hypothesis
+from
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_bound_vc`.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hvc :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ threshold : {threshold // threshold ∈
+            integerMultipleThresholdGrid eta (vdVWIntegerGridRadius M eta : ℤ)},
+          (empiricalBinaryTraceSetFamily (samplePath (X n) sample m)
+            indexClass
+            (thresholdIndicatorClassFun
+              (vdVWTruncatedClassFun classFun envelope M) threshold.1)).vcDim ≤
+            vcDegree eta) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta _n _sample m =>
+        (((vcDegree eta + 2) * (m + 1) ^ vcDegree eta) ^
+          (2 * vdVWIntegerGridRadius M eta + 1))) := by
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_bound_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (bound := fun eta => vdVWIntegerGridRadius M eta)
+      (vcDegree := vcDegree)
+      hX_samplePath henvelope hclass henvelope_meas hM_pos
+      (fun eta heta => vdVWIntegerGridRadius_mul_eta_ge (M := M) (eta := eta) heta)
+      hvc
 
 /--
 Selected fixed-radius tail/UI package from finite-threshold value separation

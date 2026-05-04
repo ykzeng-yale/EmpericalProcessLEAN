@@ -860,6 +860,10 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_bound_vc`,
    replacing sampled absolute boundedness by `abs_vdVWTruncatedClassFun_le_M`
    and the arithmetic condition `M <= bound * eta`.
+   The canonical grid-radius choice is now compiled as
+   `vdVWIntegerGridRadius`, with
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_vc`
+   removing caller-supplied grid-radius arithmetic.
    The next structural inputs are the matching untruncated wrapper and the
    reduction from textbook-facing VC-subgraph assumptions to the explicit
    per-threshold VC hypotheses.

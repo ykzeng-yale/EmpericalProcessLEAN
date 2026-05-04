@@ -2583,3 +2583,16 @@ consumer that uses this envelope-bound package, so callers need only provide
 the integer-radius domination and per-grid-threshold VC hypotheses.  After
 that, reduce the remaining VC hypothesis to a textbook-facing subgraph/VC
 class assumption.
+
+2026-05-04 `/goal` update after canonical integer-grid radius closure:
+`Theorem243.lean` now defines `vdVWIntegerGridRadius M eta := Nat.ceil (M / eta)`
+and proves `vdVWIntegerGridRadius_mul_eta_ge`, discharging
+`M <= ((bound eta : ℤ) : ℝ) * eta` for positive `eta`.  It also adds
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_vc`,
+which specializes the envelope-bound selected fixed-radius package to this
+canonical radius.
+
+Next exact theorem-facing edit: add the corresponding untruncated consumer for
+the canonical-radius package, then reduce the remaining per-grid-threshold VC
+hypothesis to a textbook-facing subgraph/VC class assumption.  The arithmetic
+grid-radius choice and sampled truncation bound are now compiled.

@@ -456,6 +456,13 @@ field is replaced by the arithmetic domination `M <= bound * eta`.  Next
 target: add the matching untruncated consumer and then reduce threshold VC to
 a textbook-facing subgraph/VC class condition.
 
+2026-05-04 follow-up: the canonical integer-grid radius is compiled as
+`vdVWIntegerGridRadius M eta = Nat.ceil (M / eta)`, with
+`vdVWIntegerGridRadius_mul_eta_ge` proving the required scaled domination.
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_vc`
+now packages the selected fixed-radius route with no caller-supplied grid
+radius arithmetic.
+
 ## Verification Monitor
 
 Latest targeted verification includes the selected terminal/truncated
