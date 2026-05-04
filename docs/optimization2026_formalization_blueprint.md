@@ -629,6 +629,17 @@ supplied infinite hard-chain gradient oracle through
 `exercise42InfiniteGradientSpanTrajectory_mem_prefixSubmodule_of_apply`,
 `exercise42InfiniteGradientSpanTrajectory_prefixSupported_of_apply`, and
 `exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_lowerModel`.
+The lower-model route has also been tightened to first-order data:
+`exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply`,
+`exercise42InfiniteGeometricMinimizer_lowerModel_of_firstOrder`,
+`exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_firstOrder`,
+`exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_firstOrder`,
+and
+`exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_firstOrder`
+prove the geometric obstruction from `FirstOrderStrongConvexOn` plus the
+coordinate gradient formula.  The next infinite-model step is therefore the
+actual tridiagonal objective and its `FirstOrderStrongConvexOn`/gradient
+package, followed by the source-shaped log-rate wrapper.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

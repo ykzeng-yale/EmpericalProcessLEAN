@@ -317,9 +317,18 @@ hard-chain gradient oracle via
 `exercise42InfiniteGradientSpanTrajectory_mem_prefixSubmodule_of_apply`,
 `exercise42InfiniteGradientSpanTrajectory_prefixSupported_of_apply`, and
 `exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_lowerModel`.
+The first-order lower-model bridge now compiles too:
+`exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply`,
+`exercise42InfiniteGeometricMinimizer_lowerModel_of_firstOrder`,
+`exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_firstOrder`,
+`exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_firstOrder`,
+and
+`exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_firstOrder`
+remove the ad hoc `hlower` premise once `FirstOrderStrongConvexOn` and the
+coordinate gradient formula are available.
 Next, define the infinite tridiagonal hard-chain objective and prove/supply its
-lower model at the shifted minimizer, then convert the obstruction into the
-logarithmic iteration-count statement.  In parallel, specialize the remaining
+`FirstOrderStrongConvexOn` package with the compiled coordinate gradient, then
+convert the obstruction into the logarithmic iteration-count statement.  In parallel, specialize the remaining
 reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.  Search

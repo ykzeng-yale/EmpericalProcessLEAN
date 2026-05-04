@@ -1216,10 +1216,20 @@ infinite hard-chain gradient oracle:
 `exercise42InfiniteGradientSpanTrajectory_mem_prefixSubmodule_of_apply`,
 `exercise42InfiniteGradientSpanTrajectory_prefixSupported_of_apply`, and
 `exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_lowerModel`.
+The lower-model input is now reduced to the first-order interface:
+`exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply`,
+`exercise42InfiniteGeometricMinimizer_lowerModel_of_firstOrder`,
+`exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_firstOrder`,
+`exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_firstOrder`,
+and
+`exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_firstOrder`
+combine `FirstOrderStrongConvexOn`, the Chewi hard-chain coordinate gradient,
+and the support induction into the exact geometric function-gap obstruction.
 Next direct Exercise 4.2 step: define the infinite tridiagonal hard-chain
-objective and prove/supply its lower model at the shifted minimizer, then
-convert the compiled geometric obstruction into the source logarithmic
-iteration lower bound without finite-boundary slack.
+objective and prove/supply its `FirstOrderStrongConvexOn` package with the
+compiled coordinate gradient, then convert the compiled geometric obstruction
+into the source logarithmic iteration lower bound without finite-boundary
+slack.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
