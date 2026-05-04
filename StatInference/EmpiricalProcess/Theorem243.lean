@@ -12403,6 +12403,125 @@ theorem
       hoffset_nonneg hdegree_nonneg hM_pos hlog_succ_linear_bound
 
 /--
+Selected fixed-radius tail/UI package from a natural polynomial cardinality
+bound.
+
+This is the arithmetic bridge for VC/Sauer-style trace estimates of the form
+`cardinality + 1 <= C eta * (n + 1) ^ d eta`.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_nat_poly_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {constant : ℝ -> ℝ} {degree : ℝ -> ℕ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hconstant_ge_one : ∀ eta, 0 < eta -> 1 ≤ constant eta)
+    (hM_pos : 0 < M)
+    (hpoly_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        ((cardinality eta n sample n : ℝ) + 1) ≤
+          constant eta * (((n + 1 : ℕ) : ℝ) ^ degree eta)) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  refine
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_log_succ_linear_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (offset := fun eta => Real.log (constant eta))
+      (degree := fun eta => (degree eta : ℝ))
+      (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas ?_ ?_
+      hM_pos ?_
+  · intro eta heta
+    exact Real.log_nonneg (hconstant_ge_one eta heta)
+  · intro eta _heta
+    exact Nat.cast_nonneg (degree eta)
+  · intro eta heta n sample
+    have hleft_pos : 0 < ((cardinality eta n sample n : ℝ) + 1) := by
+      positivity
+    have hconstant_pos : 0 < constant eta :=
+      lt_of_lt_of_le zero_lt_one (hconstant_ge_one eta heta)
+    have hsucc_pos : 0 < (((n + 1 : ℕ) : ℝ)) := by
+      positivity
+    have hpow_pos : 0 < (((n + 1 : ℕ) : ℝ) ^ degree eta) :=
+      pow_pos hsucc_pos _
+    calc
+      Real.log ((cardinality eta n sample n : ℝ) + 1)
+          ≤ Real.log (constant eta *
+              (((n + 1 : ℕ) : ℝ) ^ degree eta)) :=
+        Real.log_le_log hleft_pos (hpoly_bound eta heta n sample)
+      _ = Real.log (constant eta) +
+          (degree eta : ℝ) * Real.log (((n + 1 : ℕ) : ℝ)) := by
+        rw [Real.log_mul hconstant_pos.ne' hpow_pos.ne', Real.log_pow]
+
+/--
+Finite-trace-image selected fixed-radius tail/UI package from a natural
+polynomial trace-count estimate.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_nat_poly
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {constant : ℝ -> ℝ} {degree : ℝ -> ℕ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (htrace_finite :
+      ∀ n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        (htrace_finite n sample m).toFinset.card ≤
+          cardinality eta n sample m)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hconstant_ge_one : ∀ eta, 0 < eta -> 1 ≤ constant eta)
+    (hM_pos : 0 < M)
+    (hpoly_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        ((cardinality eta n sample n : ℝ) + 1) ≤
+          constant eta * (((n + 1 : ℕ) : ℝ) ^ degree eta)) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  have hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n) :=
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_trace_image_cardinality_bound_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (cardinality := cardinality) X htrace_finite hcardinality_dom
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_nat_poly_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (constant := constant) (degree := degree)
+      (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas
+      hconstant_ge_one hM_pos hpoly_bound
+
+/--
 Build the selected fixed-radius tail/UI package from a terminal
 `cardinality <= base^n` geometric estimate.
 

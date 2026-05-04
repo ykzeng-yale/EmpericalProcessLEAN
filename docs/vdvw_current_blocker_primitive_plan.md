@@ -1712,6 +1712,28 @@ or VC/Sauer estimate in the shifted log-linear form
 That theorem should then be fed directly into
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_log_succ_linear`.
 
+2026-05-04 `/goal` update after natural polynomial package closure:
+`StatInference/EmpiricalProcess/Theorem243.lean` now also compiles the direct
+polynomial-cardinality bridge for estimates of the form
+`cardinality eta n sample n + 1 <= C eta * (n + 1) ^ d eta`.  New declarations
+are
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_nat_poly_bound`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_nat_poly`.
+Search record: mathlib supplies the set-family Sauer-Shelah layer in
+`Mathlib.Combinatorics.SetFamily.Shatter` (`Finset.card_le_card_shatterer`,
+`Finset.card_shatterer_le_sum_vcDim`), plus real-log arithmetic
+`Real.log_le_log`, `Real.log_mul`, `Real.log_pow`, and `Real.log_nonneg`.
+There is still no ready real-valued VdVW truncated-trace VC/Sauer theorem in
+mathlib or local `StatInference`.
+
+The exact next theorem-facing edit is now structural, not analytic: prove a
+class-specific trace-count theorem giving
+`((cardinality eta n sample n : ℝ) + 1) <= C eta * (((n + 1 : ℕ) : ℝ) ^ d eta)`
+for the truncated empirical trace image or for a maximal separated/internal
+cover.  Feed that theorem into
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_nat_poly`.
+
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
 APIs found and used are `ProbabilityTheory.iIndepFun_pi`,

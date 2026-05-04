@@ -721,10 +721,15 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_log_succ_linear_bound`,
    and
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_log_succ_linear`.
+   The natural polynomial-count version
+   `cardinality + 1 <= C eta * (n + 1) ^ d eta` is compiled through
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_nat_poly_bound`
+   and
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_nat_poly`.
    What remains for the full non-finite class route is the actual
-   geometric/cardinality estimate in log-linear or shifted-log-linear form for
-   the chosen empirical internal cover, trace image, VC/Sauer trace count, or
-   maximal separated set.  If this
+   geometric/cardinality estimate in natural polynomial or shifted-log-linear
+   form for the chosen empirical internal cover, trace image, VC/Sauer trace
+   count, or maximal separated set.  If this
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
