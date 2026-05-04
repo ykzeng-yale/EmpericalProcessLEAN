@@ -864,9 +864,11 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWIntegerGridRadius`, with
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_vc`
    removing caller-supplied grid-radius arithmetic.
-   The next structural inputs are the matching untruncated wrapper and the
-   reduction from textbook-facing VC-subgraph assumptions to the explicit
-   per-threshold VC hypotheses.
+   The matching untruncated consumer
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_vc`
+   is also compiled.  The next structural input is the reduction from
+   textbook-facing VC-subgraph assumptions to the explicit per-threshold VC
+   hypotheses.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

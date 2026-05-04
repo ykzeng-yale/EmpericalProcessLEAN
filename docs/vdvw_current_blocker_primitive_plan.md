@@ -2592,7 +2592,12 @@ and proves `vdVWIntegerGridRadius_mul_eta_ge`, discharging
 which specializes the envelope-bound selected fixed-radius package to this
 canonical radius.
 
-Next exact theorem-facing edit: add the corresponding untruncated consumer for
-the canonical-radius package, then reduce the remaining per-grid-threshold VC
-hypothesis to a textbook-facing subgraph/VC class assumption.  The arithmetic
-grid-radius choice and sampled truncation bound are now compiled.
+2026-05-04 follow-up: the corresponding untruncated consumer is compiled as
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_vc`.
+This removes both the sampled absolute-bound input and the caller-supplied
+grid-radius arithmetic from the theorem-facing integer-grid route.
+
+Next exact theorem-facing edit: reduce the remaining per-grid-threshold VC
+hypothesis to a textbook-facing subgraph/VC class assumption, then consume this
+canonical route in the final Theorem 2.4.3 handoff.  Do not add more
+integer-grid packaging unless the final assembly explicitly requires it.

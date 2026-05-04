@@ -462,6 +462,11 @@ a textbook-facing subgraph/VC class condition.
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_vc`
 now packages the selected fixed-radius route with no caller-supplied grid
 radius arithmetic.
+The matching untruncated consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_vc`
+is also compiled, so the remaining integer-grid route blocker is the
+textbook-facing reduction from subgraph/VC assumptions to the per-grid
+threshold VC hypothesis.
 
 ## Verification Monitor
 
