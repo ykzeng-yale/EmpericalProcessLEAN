@@ -677,10 +677,83 @@ now compiles as `exercise42InfiniteBaseChainEdge`,
 `exercise42InfiniteBaseChainDirectionEdge`,
 `exercise42InfiniteBaseChainEdgeSq_summable`,
 `exercise42InfiniteBaseChainDirectionEdgeSq_summable`,
+`exercise42InfiniteBaseChainEdgeLp`,
+`exercise42InfiniteBaseChainDirectionEdgeLp`,
+`exercise42InfiniteBaseChainEdge_mul_direction_summable`,
 `exercise42InfiniteBaseChainEdge_add_direction`, and
 `exercise42InfiniteBaseChainObjective_eq_edge_tsum`, giving the infinite
 counterpart of the finite edge-energy representation before proving the full
-direction expansion.
+direction expansion.  The expansion and lower edge-linear layer now also
+compiles as `exercise42InfiniteBaseChainObjective_add_direction`,
+`exercise42InfiniteBaseChainObjective_add_direction_ge_edge_linear`, and
+`exercise42InfiniteBaseChainObjective_ge_edge_linear`.  The summation-by-parts
+bridge and concrete first-order package now also compile as
+`exercise42InfiniteBaseChain_edge_direction_sum_range_eq_core_sum_sub_boundary`,
+`exercise42InfiniteBaseChain_edge_direction_tsum_eq_core_tsum`,
+`inner_exercise42InfiniteBaseChainGradientLp_eq_edgeDirection_tsum`,
+`exercise42InfiniteBaseChainObjective_firstOrderConvex`, and
+`exercise42InfiniteChainObjective_firstOrderStrongConvexOn`, reusing mathlib
+`lp.inner_eq_tsum`, `lp.summable_inner`, `Summable.tendsto_atTop_zero`, and
+`tendsto_add_atTop_nat`.  The concrete no-supplied-interface infinite
+geometric/log wrappers now compile as
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_concreteGradient`
+and
+`exercise42InfiniteChainObjective_logQuotientRate_le_near_min_concreteGradient`.
+The source-rate wrappers
+`exercise42InfiniteChainObjective_sqrtSubOneLogRate_le_near_min_concreteGradient`
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient`
+now convert that exact quotient into the textbook's `sqrt(kappa)` lower-bound
+shape, reusing the existing Chewi 4.5 log-comparison lemmas.  The literal
+source exponent display now compiles as
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_concreteGradient`,
+which rewrites `(q^2)^N` to `q^(2N)` for the Exercise 4.2 statement.  The
+natural small-accuracy side condition is now
+handled by `exercise42InfiniteGeometricInitialScale_pos` and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale`,
+which derive the needed log-nonpositive hypothesis from
+`eps <= (alpha/2) * ‖x_0-x_*‖^2`.
+The newest source-shape wrappers certify the geometric profile as a concrete
+global minimizer
+(`exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient`) and rename
+the display to `f(x_N)-f_*`
+(`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minValue_concreteGradient`)
+under an `hfstar` value identification.  The public rate wrapper
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient`
+now combines the `f_*` near-minimality hypothesis with the already compiled
+`sqrt(kappa)` lower-bound statement.  The newest opt-value layer defines
+`exercise42InfiniteChainObjectiveMinValue` and proves the named-value lower
+bound plus source-display/rate wrappers
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_optValue_concreteGradient`
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient`.
+The Theorem 4.5-facing package now also compiles:
+`exercise42InfiniteInitialScale`, `exercise42InfiniteInitialScale_pos`, and
+`exercise42InfiniteChainObjective_theorem45_hard_instance_package`.  The
+package combines the concrete first-order/smooth oracle, zero-start
+gradient-span prefix support, the geometric minimizer, the named optimum value,
+and the opt-value `sqrt(kappa)` rate obstruction.  Next is either to use this
+as the source-facing direct Exercise 4.2 hard instance, or to factor the
+infinite substrate into a pre-`Theorem45` module if the main Theorem 4.5 file
+must import it without a cycle.  A positive-log infinite display remains a
+cleanup target; do it after naming the minimizer/scale layer enough to avoid
+dependent proof-term normalization in the geometric-minimizer certificate.
+The newest smoothness bridge proves
+`exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq`,
+`exercise42InfiniteBaseChainObjective_add_direction_inner`,
+`exercise42InfiniteBaseChainObjective_add_direction_le_smooth`,
+`exercise42InfiniteBaseChainObjective_le_smooth`, and
+`exercise42InfiniteChainObjective_le_smooth`, giving the exact two-point
+smooth upper inequality for the concrete infinite hard-chain objective.
+Continuity is now proved by squeezing the objective gap between the first-order
+lower model and the smooth upper model:
+`continuous_exercise42InfiniteBaseChainObjective` and
+`continuous_exercise42InfiniteChainObjective` compile, as do the full supplied
+smoothness wrappers
+`exercise42InfiniteBaseChainObjective_smoothWithGradientOn` and
+`exercise42InfiniteChainObjective_smoothWithGradientOn`.  The oracle-side
+package `exercise42InfiniteChainObjective_oracle_interface_package` now
+bundles first-order strong convexity, smoothness, and gradient-span support.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

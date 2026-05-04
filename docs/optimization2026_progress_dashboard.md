@@ -363,15 +363,85 @@ existing Lemma 4.2 reduction API.  The newest edge substrate adds
 `exercise42InfiniteBaseChainDirectionEdge`,
 `exercise42InfiniteBaseChainEdgeSq_summable`,
 `exercise42InfiniteBaseChainDirectionEdgeSq_summable`,
+`exercise42InfiniteBaseChainEdgeLp`,
+`exercise42InfiniteBaseChainDirectionEdgeLp`,
+`exercise42InfiniteBaseChainEdge_mul_direction_summable`,
 `exercise42InfiniteBaseChainEdge_add_direction`, and
 `exercise42InfiniteBaseChainObjective_eq_edge_tsum`, setting up the infinite
-analogue of the finite edge-expansion proof.  The geometric obstruction and
-log-quotient conversion are already available.
-In parallel, specialize the remaining
-reduction-route comparison
+analogue of the finite edge-expansion proof.  The newest expansion pass adds
+`exercise42InfiniteBaseChainObjective_add_direction`,
+`exercise42InfiniteBaseChainObjective_add_direction_ge_edge_linear`, and
+`exercise42InfiniteBaseChainObjective_ge_edge_linear`.  The summation-by-parts
+and concrete first-order pass now adds
+`exercise42InfiniteBaseChain_edge_direction_sum_range_eq_core_sum_sub_boundary`,
+`exercise42InfiniteBaseChain_edge_direction_tsum_eq_core_tsum`,
+`inner_exercise42InfiniteBaseChainGradientLp_eq_edgeDirection_tsum`,
+`exercise42InfiniteBaseChainObjective_firstOrderConvex`, and
+`exercise42InfiniteChainObjective_firstOrderStrongConvexOn`; the final
+no-supplied-interface infinite Exercise 4.2 wrappers now compile as
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_concreteGradient`
+and
+`exercise42InfiniteChainObjective_logQuotientRate_le_near_min_concreteGradient`.
+Search-first result: reused mathlib `lp.inner_eq_tsum`, `lp.summable_inner`,
+`Summable.tendsto_atTop_zero`, `tendsto_add_atTop_nat`, and the finite
+`LowerBounds.lean` summation-by-parts pattern.  The newest source-rate pass
+adds
+`exercise42InfiniteChainObjective_sqrtSubOneLogRate_le_near_min_concreteGradient`
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient`,
+reusing the existing Chewi 4.5 log-comparison lemmas to convert the exact
+log quotient into the `√κ` lower-bound shape.  The small-accuracy side
+condition is now discharged by `exercise42InfiniteGeometricInitialScale_pos`
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale`,
+which convert `eps <= (alpha/2) * ‖x_0 - x_*‖^2` into the required
+log-nonpositive hypothesis.  The literal source exponent display now compiles
+as
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_concreteGradient`,
+rewriting `(q^2)^N` to `q^(2N)`.  The newest wrapper
+`exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient` certifies the
+geometric profile as a concrete global minimizer, and
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minValue_concreteGradient`
+renames the right side to the textbook `f(x_N)-f_*` shape through an `hfstar`
+identification.  The public rate wrapper
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient`
+now accepts the source-shaped hypothesis `f(x_N) <= f_* + eps` and returns the
+compiled `sqrt(kappa)` iteration lower bound.  The newest opt-value pass adds
+`exercise42InfiniteChainObjectiveMinValue`,
+`exercise42InfiniteChainObjectiveMinValue_le_concreteGradient`,
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_optValue_concreteGradient`,
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient`,
+so the public Exercise 4.2 route no longer exposes an `hfstar` equality
+hypothesis.  The newest Theorem 4.5-facing package pass adds
+`exercise42InfiniteInitialScale`, `exercise42InfiniteInitialScale_pos`, and
+`exercise42InfiniteChainObjective_theorem45_hard_instance_package`; the last
+one bundles first-order strong convexity, smoothness, gradient-span prefix
+support, the concrete geometric minimizer, the named optimum-value lower
+bound, and the opt-value `sqrt(kappa)` rate obstruction in one statement.
+Search-first result: reused local `IsMinOn`/opt-value/rate wrappers and
+mathlib `IsMinOn` support; an attempted positive-log infinite display should
+first name the minimizer/scale more aggressively, because direct rewriting
+ran into dependent proof-term normalization around the geometric-minimizer
+certificate.  The next target is factoring the infinite Exercise 4.2 substrate
+into a pre-`Theorem45` module if direct Theorem 4.5 import is needed, or using
+this package immediately as the source-facing hard instance.  The newest
+smoothness bridge adds
+`exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq`,
+`exercise42InfiniteBaseChainObjective_add_direction_inner`,
+`exercise42InfiniteBaseChainObjective_add_direction_le_smooth`,
+`exercise42InfiniteBaseChainObjective_le_smooth`, and
+`exercise42InfiniteChainObjective_le_smooth`; the concrete infinite hard-chain
+now has the compiled two-point `beta`-smooth upper inequality.  The continuity
+blocker is also closed by `continuous_exercise42InfiniteBaseChainObjective`
+and `continuous_exercise42InfiniteChainObjective`, yielding the full supplied
+interfaces
+`exercise42InfiniteBaseChainObjective_smoothWithGradientOn` and
+`exercise42InfiniteChainObjective_smoothWithGradientOn`.  In
+parallel, specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
-condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.  Search
-mathlib/local APIs for `Real.log` monotonicity, `Real.exp` inversions,
+condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.
+Search mathlib/local APIs for `Real.log` monotonicity, `Real.exp` inversions,
 sqrt/order facts, finite geometric sums, and asymptotic iteration-count
 wrappers before adding any local complexity primitive.  Keep any exercise work opportunistic and centralized in
 `StatInference/Optimization/Exercises.lean`; the main theorem lane remains the

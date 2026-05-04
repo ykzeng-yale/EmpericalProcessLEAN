@@ -1,5 +1,6 @@
 import Mathlib.Analysis.Normed.Lp.lpSpace
 import Mathlib.Analysis.SpecificLimits.Basic
+import Mathlib.Order.Filter.AtTopBot.Basic
 import StatInference.Optimization.Theorem27
 import StatInference.Optimization.Theorem28
 import StatInference.Optimization.Theorem33
@@ -26,7 +27,8 @@ namespace StatInference
 namespace Optimization
 
 open Set
-open scoped InnerProductSpace ENNReal
+open Filter
+open scoped InnerProductSpace ENNReal Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
@@ -914,6 +916,130 @@ theorem exercise42InfiniteBaseChainDirectionEdgeSq_summable
       (f := fun n : ℕ =>
         (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) 1).1 htail
 
+/--
+Uniform infinite-direction energy bound.  This is the `ell^2` analogue of
+`lowerBoundChainDirectionEnergy_le_four_norm_sq` and is the analytic input for
+the infinite hard-chain smoothness certificate.
+-/
+theorem exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq
+    (v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    (∑' n : ℕ, (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) ≤
+      4 * ‖v‖ ^ (2 : ℕ) := by
+  let prev : ℕ -> ℝ := fun n => if n = 0 then 0 else v (n - 1)
+  let g : ℕ -> ℝ := fun n => 2 * (v n) ^ (2 : ℕ) + 2 * (prev n) ^ (2 : ℕ)
+  have hp : 0 < (2 : ℝ≥0∞).toReal := by norm_num
+  have hv_summ : Summable fun n : ℕ => (v n) ^ (2 : ℕ) := by
+    have hv := (lp.memℓp v).summable hp
+    simpa [Real.norm_eq_abs, sq_abs] using hv
+  have hprev_mem :
+      Memℓp prev (2 : ℝ≥0∞) := by
+    simpa [prev] using exercise42Infinite_shiftBackwardZero_memℓp_two v
+  have hprev_summ : Summable fun n : ℕ => (prev n) ^ (2 : ℕ) := by
+    have hv := hprev_mem.summable hp
+    simpa [Real.norm_eq_abs, sq_abs] using hv
+  have hg_summ : Summable g := by
+    simpa [g] using (hv_summ.mul_left 2).add (hprev_summ.mul_left 2)
+  have hpoint :
+      ∀ n : ℕ, (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ) ≤
+        g n := by
+    intro n
+    cases n with
+    | zero =>
+        have hsq : 0 ≤ (v 0) ^ (2 : ℕ) := sq_nonneg _
+        simp [g, prev, exercise42InfiniteBaseChainDirectionEdge]
+        nlinarith
+    | succ n =>
+        have h :=
+          sq_sub_le_two_mul_sq_add_two_mul_sq (v n) (v (n + 1))
+        simp [g, prev, exercise42InfiniteBaseChainDirectionEdge]
+        nlinarith
+  have hle :
+      (∑' n : ℕ, (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) ≤
+        ∑' n : ℕ, g n :=
+    (exercise42InfiniteBaseChainDirectionEdgeSq_summable v).tsum_le_tsum
+      hpoint hg_summ
+  have hprev_tsum :
+      (∑' n : ℕ, (prev n) ^ (2 : ℕ)) =
+        ∑' n : ℕ, (v n) ^ (2 : ℕ) := by
+    have hsplit := hprev_summ.sum_add_tsum_nat_add 1
+    have htail :
+        (∑' n : ℕ, (prev (n + 1)) ^ (2 : ℕ)) =
+          ∑' n : ℕ, (v n) ^ (2 : ℕ) := by
+      apply tsum_congr
+      intro n
+      simp [prev]
+    rw [← hsplit, htail]
+    simp [prev]
+  have hnorm :
+      ‖v‖ ^ (2 : ℕ) = ∑' n : ℕ, (v n) ^ (2 : ℕ) := by
+    have hnorm' :
+        ‖v‖ ^ (2 : ℝ≥0∞).toReal =
+          ∑' n : ℕ, ‖v n‖ ^ (2 : ℝ≥0∞).toReal :=
+      lp.norm_rpow_eq_tsum (E := fun _ : ℕ => ℝ)
+        (p := (2 : ℝ≥0∞)) hp v
+    simpa [Real.norm_eq_abs, sq_abs] using hnorm'
+  have hg_tsum :
+      (∑' n : ℕ, g n) = 4 * ‖v‖ ^ (2 : ℕ) := by
+    rw [show (∑' n : ℕ, g n) =
+        (∑' n : ℕ, 2 * (v n) ^ (2 : ℕ)) +
+          ∑' n : ℕ, 2 * (prev n) ^ (2 : ℕ) by
+      simpa [g] using
+        (Summable.tsum_add (hv_summ.mul_left 2) (hprev_summ.mul_left 2))]
+    rw [tsum_mul_left, tsum_mul_left, hprev_tsum, ← hnorm]
+    ring
+  exact hle.trans_eq hg_tsum
+
+/-- Edge residuals bundled as an `ell^2` element. -/
+noncomputable def exercise42InfiniteBaseChainEdgeLp
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) :=
+  ⟨exercise42InfiniteBaseChainEdge x, by
+    apply memℓp_gen
+    simpa [Real.norm_eq_abs, sq_abs, Real.rpow_natCast] using
+      exercise42InfiniteBaseChainEdgeSq_summable x⟩
+
+@[simp]
+theorem exercise42InfiniteBaseChainEdgeLp_apply
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (n : ℕ) :
+    exercise42InfiniteBaseChainEdgeLp x n =
+      exercise42InfiniteBaseChainEdge x n :=
+  rfl
+
+/-- Direction edge residuals bundled as an `ell^2` element. -/
+noncomputable def exercise42InfiniteBaseChainDirectionEdgeLp
+    (v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) :=
+  ⟨exercise42InfiniteBaseChainDirectionEdge v, by
+    apply memℓp_gen
+    simpa [Real.norm_eq_abs, sq_abs, Real.rpow_natCast] using
+      exercise42InfiniteBaseChainDirectionEdgeSq_summable v⟩
+
+@[simp]
+theorem exercise42InfiniteBaseChainDirectionEdgeLp_apply
+    (v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (n : ℕ) :
+    exercise42InfiniteBaseChainDirectionEdgeLp v n =
+      exercise42InfiniteBaseChainDirectionEdge v n :=
+  rfl
+
+/--
+The edge-direction product series is summable by mathlib's `ell^2`
+Cauchy-Schwarz summability.
+-/
+theorem exercise42InfiniteBaseChainEdge_mul_direction_summable
+    (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    Summable fun n : ℕ =>
+      exercise42InfiniteBaseChainEdge x n *
+        exercise42InfiniteBaseChainDirectionEdge v n := by
+  have h :
+      Summable fun n : ℕ =>
+        inner ℝ (exercise42InfiniteBaseChainEdgeLp x n)
+          (exercise42InfiniteBaseChainDirectionEdgeLp v n) :=
+    lp.summable_inner
+      (𝕜 := ℝ)
+      (exercise42InfiniteBaseChainEdgeLp x)
+      (exercise42InfiniteBaseChainDirectionEdgeLp v)
+  simpa [RCLike.inner_apply, mul_comm] using h
+
 /-- Edge residuals add the homogeneous direction residual under `x ↦ x + v`. -/
 theorem exercise42InfiniteBaseChainEdge_add_direction
     (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (n : ℕ) :
@@ -952,6 +1078,100 @@ theorem exercise42InfiniteBaseChainObjective_eq_edge_tsum
   rw [exercise42InfiniteBaseChainObjective, hsum_eq]
   ring
 
+/--
+Exact infinite edge-energy expansion for the convex base hard-chain objective
+under a direction update.
+-/
+theorem exercise42InfiniteBaseChainObjective_add_direction
+    (gamma : ℝ) (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma (x + v) =
+      exercise42InfiniteBaseChainObjective gamma x +
+        (gamma / 4) *
+          (∑' n : ℕ,
+            exercise42InfiniteBaseChainEdge x n *
+              exercise42InfiniteBaseChainDirectionEdge v n) +
+        (gamma / 8) *
+          (∑' n : ℕ,
+            (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) := by
+  let e : ℕ -> ℝ := exercise42InfiniteBaseChainEdge x
+  let d : ℕ -> ℝ := exercise42InfiniteBaseChainDirectionEdge v
+  have he : Summable fun n : ℕ => e n ^ (2 : ℕ) :=
+    exercise42InfiniteBaseChainEdgeSq_summable x
+  have hd : Summable fun n : ℕ => d n ^ (2 : ℕ) :=
+    exercise42InfiniteBaseChainDirectionEdgeSq_summable v
+  have hed : Summable fun n : ℕ => e n * d n :=
+    exercise42InfiniteBaseChainEdge_mul_direction_summable x v
+  have htwoed : Summable fun n : ℕ => 2 * (e n * d n) :=
+    hed.mul_left 2
+  have hsum_expand :
+      (∑' n : ℕ, (exercise42InfiniteBaseChainEdge (x + v) n) ^ (2 : ℕ)) =
+        (∑' n : ℕ, e n ^ (2 : ℕ)) +
+          2 * (∑' n : ℕ, e n * d n) +
+            (∑' n : ℕ, d n ^ (2 : ℕ)) := by
+    calc
+      (∑' n : ℕ, (exercise42InfiniteBaseChainEdge (x + v) n) ^ (2 : ℕ)) =
+          ∑' n : ℕ, (e n ^ (2 : ℕ) + (2 * (e n * d n) + d n ^ (2 : ℕ))) := by
+        apply tsum_congr
+        intro n
+        rw [exercise42InfiniteBaseChainEdge_add_direction]
+        dsimp [e, d]
+        ring
+      _ = (∑' n : ℕ, e n ^ (2 : ℕ)) +
+            ∑' n : ℕ, (2 * (e n * d n) + d n ^ (2 : ℕ)) := by
+        rw [Summable.tsum_add he (htwoed.add hd)]
+      _ = (∑' n : ℕ, e n ^ (2 : ℕ)) +
+            ((∑' n : ℕ, 2 * (e n * d n)) +
+              ∑' n : ℕ, d n ^ (2 : ℕ)) := by
+        rw [Summable.tsum_add htwoed hd]
+      _ = (∑' n : ℕ, e n ^ (2 : ℕ)) +
+            2 * (∑' n : ℕ, e n * d n) +
+              (∑' n : ℕ, d n ^ (2 : ℕ)) := by
+        rw [tsum_mul_left]
+        ring
+  rw [exercise42InfiniteBaseChainObjective_eq_edge_tsum,
+    exercise42InfiniteBaseChainObjective_eq_edge_tsum, hsum_expand]
+  ring
+
+/--
+Infinite base-chain lower model in edge-linear form: the quadratic remainder
+in the direction expansion is nonnegative.
+-/
+theorem exercise42InfiniteBaseChainObjective_add_direction_ge_edge_linear
+    {gamma : ℝ} (hgamma : 0 ≤ gamma)
+    (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma x +
+        (gamma / 4) *
+          (∑' n : ℕ,
+            exercise42InfiniteBaseChainEdge x n *
+              exercise42InfiniteBaseChainDirectionEdge v n) ≤
+      exercise42InfiniteBaseChainObjective gamma (x + v) := by
+  have hdir_nonneg :
+      0 ≤
+        (∑' n : ℕ,
+          (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) :=
+    tsum_nonneg fun _ => sq_nonneg _
+  rw [exercise42InfiniteBaseChainObjective_add_direction]
+  have hcoef : 0 ≤ gamma / 8 := by positivity
+  nlinarith
+
+/-- Two-point edge-linear lower model for the infinite convex base hard chain. -/
+theorem exercise42InfiniteBaseChainObjective_ge_edge_linear
+    {gamma : ℝ} (hgamma : 0 ≤ gamma)
+    (x y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma x +
+        (gamma / 4) *
+          (∑' n : ℕ,
+            exercise42InfiniteBaseChainEdge x n *
+              exercise42InfiniteBaseChainDirectionEdge (y - x) n) ≤
+      exercise42InfiniteBaseChainObjective gamma y := by
+  have h :=
+    exercise42InfiniteBaseChainObjective_add_direction_ge_edge_linear
+      hgamma x (y - x)
+  have hxy : x + (y - x) = y := by
+    ext i
+    simp
+  simpa [hxy] using h
+
 /-- Concrete `ell^2` gradient oracle for the convex base hard-chain objective. -/
 noncomputable def exercise42InfiniteBaseChainGradientLp (gamma : ℝ)
     (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
@@ -965,6 +1185,346 @@ theorem exercise42InfiniteBaseChainGradientLp_apply
       exercise42InfiniteBaseChainGradient gamma x i := by
   simp [exercise42InfiniteBaseChainGradientLp,
     exercise42InfiniteBaseChainGradient, exercise42InfiniteChainGradient]
+
+/--
+Finite summation by parts for the infinite base chain, with the explicit
+boundary term that vanishes in the `ell^2` limit.
+-/
+theorem exercise42InfiniteBaseChain_edge_direction_sum_range_eq_core_sum_sub_boundary
+    (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (N : ℕ) :
+    (∑ n ∈ Finset.range (N + 2),
+        exercise42InfiniteBaseChainEdge x n *
+          exercise42InfiniteBaseChainDirectionEdge v n) =
+      (∑ i ∈ Finset.range (N + 1),
+        (2 * x i - (if i = 0 then (1 : ℝ) else x (i - 1)) - x (i + 1)) *
+          v i) -
+        exercise42InfiniteBaseChainEdge x (N + 1) * v (N + 1) := by
+  let e : ℕ -> ℝ := exercise42InfiniteBaseChainEdge x
+  let d : ℕ -> ℝ := exercise42InfiniteBaseChainDirectionEdge v
+  let c : ℕ -> ℝ :=
+    fun i =>
+      (2 * x i - (if i = 0 then (1 : ℝ) else x (i - 1)) - x (i + 1)) *
+        v i
+  change
+    (∑ n ∈ Finset.range (N + 2), e n * d n) =
+      (∑ i ∈ Finset.range (N + 1), c i) -
+        e (N + 1) * v (N + 1)
+  induction N with
+  | zero =>
+      have hleft :
+          (∑ n ∈ Finset.range (0 + 2), e n * d n) =
+            e 0 * d 0 + e 1 * d 1 := by
+        norm_num [Finset.sum_range_succ]
+      have hright :
+          (∑ i ∈ Finset.range (0 + 1), c i) - e (0 + 1) * v (0 + 1) =
+            c 0 - e 1 * v 1 := by
+        norm_num [Finset.sum_range_succ]
+      rw [hleft, hright]
+      simp [e, d, c, exercise42InfiniteBaseChainEdge,
+        exercise42InfiniteBaseChainDirectionEdge]
+      ring_nf
+  | succ N ih =>
+      rw [show N.succ + 2 = (N + 2).succ by omega,
+        Finset.sum_range_succ, ih]
+      have hsum_c :
+          (∑ i ∈ Finset.range (N.succ + 1), c i) =
+            (∑ i ∈ Finset.range (N + 1), c i) + c (N + 1) := by
+        rw [show N.succ + 1 = (N + 1).succ by omega,
+          Finset.sum_range_succ]
+      rw [hsum_c]
+      have hdir : d (N + 2) =
+            v (N + 1) - v (N + 2) := by
+        simp [d, exercise42InfiniteBaseChainDirectionEdge]
+      have hcore : c (N + 1) = (e (N + 2) - e (N + 1)) * v (N + 1) := by
+        have he_next : e (N + 2) = x (N + 1) - x (N + 2) := by
+          rw [show N + 2 = Nat.succ (N + 1) by omega]
+          simp [e, exercise42InfiniteBaseChainEdge]
+        have he_prev : e (N + 1) = x N - x (N + 1) := by
+          rw [show N + 1 = Nat.succ N by omega]
+          simp [e, exercise42InfiniteBaseChainEdge]
+        dsimp [c]
+        rw [show N + 1 + 1 = N + 2 by omega, he_next, he_prev]
+        ring
+      rw [hdir, hcore]
+      ring
+
+/--
+Infinite summation by parts for the convex base hard chain: edge-linear work
+equals the coordinate work against Chewi's unscaled tridiagonal core.
+-/
+theorem exercise42InfiniteBaseChain_edge_direction_tsum_eq_core_tsum
+    (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    (∑' n : ℕ,
+        exercise42InfiniteBaseChainEdge x n *
+          exercise42InfiniteBaseChainDirectionEdge v n) =
+      ∑' i : ℕ,
+        (2 * x i - (if i = 0 then (1 : ℝ) else x (i - 1)) - x (i + 1)) *
+          v i := by
+  let e : ℕ -> ℝ := exercise42InfiniteBaseChainEdge x
+  let d : ℕ -> ℝ := exercise42InfiniteBaseChainDirectionEdge v
+  let c : ℕ -> ℝ :=
+    fun i =>
+      (2 * x i - (if i = 0 then (1 : ℝ) else x (i - 1)) - x (i + 1)) *
+        v i
+  have hed : Summable fun n : ℕ => e n * d n := by
+    simpa [e, d] using exercise42InfiniteBaseChainEdge_mul_direction_summable x v
+  have hc : Summable c := by
+    have h :=
+      lp.summable_inner
+        (𝕜 := ℝ)
+        (exercise42InfiniteBaseChainGradientLp 4 x)
+        v
+    simpa [c, RCLike.inner_apply, exercise42InfiniteBaseChainGradientLp_apply,
+      exercise42InfiniteBaseChainGradient, mul_comm, mul_left_comm, mul_assoc] using h
+  have hev : Summable fun n : ℕ => e n * v n := by
+    have h :=
+      lp.summable_inner
+        (𝕜 := ℝ)
+        (exercise42InfiniteBaseChainEdgeLp x)
+        v
+    simpa [e, RCLike.inner_apply, exercise42InfiniteBaseChainEdgeLp_apply,
+      mul_comm] using h
+  have hleft :
+      Tendsto
+        (fun N : ℕ => ∑ n ∈ Finset.range (N + 2), e n * d n)
+        atTop
+        (𝓝 (∑' n : ℕ, e n * d n)) :=
+    hed.hasSum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 2)
+  have hcore :
+      Tendsto
+        (fun N : ℕ => ∑ i ∈ Finset.range (N + 1), c i)
+        atTop
+        (𝓝 (∑' i : ℕ, c i)) :=
+    hc.hasSum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
+  have hboundary :
+      Tendsto (fun N : ℕ => e (N + 1) * v (N + 1)) atTop (𝓝 0) :=
+    hev.tendsto_atTop_zero.comp (tendsto_add_atTop_nat 1)
+  have hright :
+      Tendsto
+        (fun N : ℕ =>
+          (∑ i ∈ Finset.range (N + 1), c i) - e (N + 1) * v (N + 1))
+        atTop
+        (𝓝 ((∑' i : ℕ, c i) - 0)) :=
+    hcore.sub hboundary
+  have hfinite_eventually :
+      (fun N : ℕ =>
+        (∑ i ∈ Finset.range (N + 1), c i) - e (N + 1) * v (N + 1)) =ᶠ[atTop]
+        (fun N : ℕ => ∑ n ∈ Finset.range (N + 2), e n * d n) :=
+    Eventually.of_forall fun N =>
+      (exercise42InfiniteBaseChain_edge_direction_sum_range_eq_core_sum_sub_boundary
+        x v N).symm
+  have hright_as_left :
+      Tendsto
+        (fun N : ℕ => ∑ n ∈ Finset.range (N + 2), e n * d n)
+        atTop
+        (𝓝 ((∑' i : ℕ, c i) - 0)) :=
+    hright.congr' hfinite_eventually
+  have hlim :=
+    tendsto_nhds_unique hleft hright_as_left
+  simpa [e, d, c] using hlim
+
+/--
+The edge-linear work in the infinite base-chain expansion is the actual
+`ell^2` inner product with Chewi's base gradient oracle.
+-/
+theorem inner_exercise42InfiniteBaseChainGradientLp_eq_edgeDirection_tsum
+    (gamma : ℝ)
+    (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) v =
+      (gamma / 4) *
+        (∑' n : ℕ,
+          exercise42InfiniteBaseChainEdge x n *
+            exercise42InfiniteBaseChainDirectionEdge v n) := by
+  let c : ℕ -> ℝ :=
+    fun i =>
+      (2 * x i - (if i = 0 then (1 : ℝ) else x (i - 1)) - x (i + 1)) *
+        v i
+  have hc : Summable c := by
+    have h :=
+      lp.summable_inner
+        (𝕜 := ℝ)
+        (exercise42InfiniteBaseChainGradientLp 4 x)
+        v
+    simpa [c, RCLike.inner_apply, exercise42InfiniteBaseChainGradientLp_apply,
+      exercise42InfiniteBaseChainGradient, mul_comm, mul_left_comm, mul_assoc] using h
+  calc
+    inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) v =
+        ∑' i : ℕ,
+          inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x i) (v i) := by
+      rw [lp.inner_eq_tsum]
+    _ = ∑' i : ℕ, (gamma / 4) * c i := by
+      apply tsum_congr
+      intro i
+      simp [c, RCLike.inner_apply, exercise42InfiniteBaseChainGradientLp_apply,
+        exercise42InfiniteBaseChainGradient]
+      ring
+    _ = (gamma / 4) * (∑' i : ℕ, c i) := by
+      rw [tsum_mul_left]
+    _ =
+        (gamma / 4) *
+          (∑' n : ℕ,
+            exercise42InfiniteBaseChainEdge x n *
+              exercise42InfiniteBaseChainDirectionEdge v n) := by
+      rw [exercise42InfiniteBaseChain_edge_direction_tsum_eq_core_tsum]
+
+/--
+Exact infinite base-chain expansion with the supplied gradient inner product.
+-/
+theorem exercise42InfiniteBaseChainObjective_add_direction_inner
+    (gamma : ℝ)
+    (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma (x + v) =
+      exercise42InfiniteBaseChainObjective gamma x +
+        inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) v +
+        (gamma / 8) *
+          (∑' n : ℕ,
+            (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) := by
+  rw [exercise42InfiniteBaseChainObjective_add_direction,
+    inner_exercise42InfiniteBaseChainGradientLp_eq_edgeDirection_tsum]
+
+/--
+Smooth upper model for the infinite convex base hard chain along a direction.
+-/
+theorem exercise42InfiniteBaseChainObjective_add_direction_le_smooth
+    {gamma : ℝ} (hgamma : 0 ≤ gamma)
+    (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma (x + v) ≤
+      exercise42InfiniteBaseChainObjective gamma x +
+        inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) v +
+        (gamma / 2) * ‖v‖ ^ (2 : ℕ) := by
+  have hcoef : 0 ≤ gamma / 8 := div_nonneg hgamma (by norm_num)
+  have henergy := exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq v
+  have hrem :
+      (gamma / 8) *
+          (∑' n : ℕ,
+            (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) ≤
+        (gamma / 8) * (4 * ‖v‖ ^ (2 : ℕ)) :=
+    mul_le_mul_of_nonneg_left henergy hcoef
+  rw [exercise42InfiniteBaseChainObjective_add_direction_inner]
+  nlinarith
+
+/-- Two-point smooth upper model for the infinite convex base hard chain. -/
+theorem exercise42InfiniteBaseChainObjective_le_smooth
+    {gamma : ℝ} (hgamma : 0 ≤ gamma)
+    (x y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma y ≤
+      exercise42InfiniteBaseChainObjective gamma x +
+        inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) (y - x) +
+        (gamma / 2) * ‖y - x‖ ^ (2 : ℕ) := by
+  have h :=
+    exercise42InfiniteBaseChainObjective_add_direction_le_smooth
+      hgamma x (y - x)
+  have hxy : x + (y - x) = y := by
+    ext i
+    simp
+  simpa [hxy] using h
+
+/-- Supplied-gradient convex lower model for the infinite convex base chain. -/
+theorem exercise42InfiniteBaseChainObjective_firstOrderConvex
+    {gamma : ℝ} (hgamma : 0 ≤ gamma) :
+    FirstOrderStrongConvexOn Set.univ
+      (exercise42InfiniteBaseChainObjective gamma)
+      (exercise42InfiniteBaseChainGradientLp gamma) 0 := by
+  refine ⟨convex_univ, ?_⟩
+  intro x _hx y _hy
+  have h :=
+    exercise42InfiniteBaseChainObjective_ge_edge_linear
+      hgamma x y
+  have hinner :=
+    inner_exercise42InfiniteBaseChainGradientLp_eq_edgeDirection_tsum
+      gamma x (y - x)
+  rw [← hinner] at h
+  simpa using h
+
+/--
+Continuity of the infinite convex base hard-chain objective.  The proof avoids
+separate continuity of the infinite edge-energy series: the first-order lower
+model and the smooth upper model squeeze the objective gap by a fixed
+linear-plus-quadratic function of `‖y - x‖`.
+-/
+theorem continuous_exercise42InfiniteBaseChainObjective
+    {gamma : ℝ} (hgamma : 0 ≤ gamma) :
+    Continuous (exercise42InfiniteBaseChainObjective gamma) := by
+  rw [continuous_iff_continuousAt]
+  intro x
+  let f := exercise42InfiniteBaseChainObjective gamma
+  let grad := exercise42InfiniteBaseChainGradientLp gamma
+  let gx := grad x
+  have hfirst := exercise42InfiniteBaseChainObjective_firstOrderConvex hgamma
+  have hgap_bound :
+      ∀ y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞),
+        ‖f y - f x‖ ≤
+          ‖gx‖ * ‖y - x‖ + (gamma / 2) * ‖y - x‖ ^ (2 : ℕ) := by
+    intro y
+    let r := ‖y - x‖
+    have hr_nonneg : 0 ≤ r := norm_nonneg _
+    have hquad_nonneg : 0 ≤ (gamma / 2) * r ^ (2 : ℕ) := by
+      have hrsq : 0 ≤ r ^ (2 : ℕ) := sq_nonneg _
+      nlinarith
+    have hupper := exercise42InfiniteBaseChainObjective_le_smooth hgamma x y
+    have hinner_le : inner ℝ gx (y - x) ≤ ‖gx‖ * r := by
+      simpa [gx, grad, r] using real_inner_le_norm gx (y - x)
+    have hdiff_upper :
+        f y - f x ≤ ‖gx‖ * r + (gamma / 2) * r ^ (2 : ℕ) := by
+      simpa [f, grad, gx, r] using
+        (by nlinarith [hupper, hinner_le] :
+          exercise42InfiniteBaseChainObjective gamma y -
+              exercise42InfiniteBaseChainObjective gamma x ≤
+            ‖gx‖ * r + (gamma / 2) * r ^ (2 : ℕ))
+    have hlower := hfirst.lower_model (x := x) (y := y) trivial trivial
+    have hlower' :
+        f x + inner ℝ gx (y - x) ≤ f y := by
+      simpa [f, grad, gx] using hlower
+    have hneg_inner_le : -inner ℝ gx (y - x) ≤ ‖gx‖ * r := by
+      have habs := abs_real_inner_le_norm gx (y - x)
+      exact (neg_le_abs _).trans (by simpa [r] using habs)
+    have hdiff_lower :
+        -(‖gx‖ * r + (gamma / 2) * r ^ (2 : ℕ)) ≤ f y - f x := by
+      nlinarith [hlower', hneg_inner_le, hquad_nonneg]
+    have habs :
+        |f y - f x| ≤
+          ‖gx‖ * r + (gamma / 2) * r ^ (2 : ℕ) :=
+      abs_le.mpr ⟨hdiff_lower, hdiff_upper⟩
+    simpa [Real.norm_eq_abs, r] using habs
+  rw [ContinuousAt, tendsto_iff_norm_sub_tendsto_zero]
+  have hnorm :
+      Tendsto
+        (fun y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) => ‖y - x‖)
+        (𝓝 x) (𝓝 0) := by
+    have hsub :
+        Tendsto
+          (fun y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) => y - x)
+          (𝓝 x) (𝓝 (x - x)) :=
+      tendsto_id.sub tendsto_const_nhds
+    simpa using hsub.norm
+  have hcontrol :
+      Tendsto
+        (fun y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) =>
+          ‖gx‖ * ‖y - x‖ + (gamma / 2) * ‖y - x‖ ^ (2 : ℕ))
+        (𝓝 x) (𝓝 0) := by
+    have hsq :
+        Tendsto
+          (fun y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) =>
+            ‖y - x‖ ^ (2 : ℕ))
+          (𝓝 x) (𝓝 0) := by
+      simpa using hnorm.pow (2 : ℕ)
+    simpa using
+      ((tendsto_const_nhds.mul hnorm).add
+        (tendsto_const_nhds.mul hsq))
+  exact squeeze_zero
+    (fun y => norm_nonneg (f y - f x))
+    hgap_bound hcontrol
+
+/-- Supplied-gradient smoothness interface for the infinite convex base chain. -/
+theorem exercise42InfiniteBaseChainObjective_smoothWithGradientOn
+    {gamma : ℝ} (hgamma : 0 ≤ gamma) :
+    SmoothWithGradientOn Set.univ
+      (exercise42InfiniteBaseChainObjective gamma)
+      (exercise42InfiniteBaseChainGradientLp gamma) gamma := by
+  refine ⟨convex_univ,
+    (continuous_exercise42InfiniteBaseChainObjective hgamma).continuousOn, ?_⟩
+  intro x _hx y _hy
+  exact exercise42InfiniteBaseChainObjective_le_smooth hgamma x y
 
 /--
 The strongly-convex infinite Exercise 4.2 objective is the convex base chain
@@ -998,6 +1558,74 @@ theorem exercise42InfiniteChainGradientLp_eq_regularizedGradient
   simp [exercise42InfiniteChainGradient, sub_eq_add_neg]
 
 /--
+Two-point smooth upper model for the concrete infinite strongly-convex
+Exercise 4.2 hard-chain objective.  The remaining step to a full
+`SmoothWithGradientOn` certificate is continuity of the infinite objective.
+-/
+theorem exercise42InfiniteChainObjective_le_smooth
+    {alpha beta : ℝ} (_halpha_nonneg : 0 ≤ alpha)
+    (hgamma : 0 ≤ beta - alpha)
+    (x y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteChainObjective alpha beta y ≤
+      exercise42InfiniteChainObjective alpha beta x +
+        inner ℝ (exercise42InfiniteChainGradientLp alpha beta x) (y - x) +
+        (beta / 2) * ‖y - x‖ ^ (2 : ℕ) := by
+  have hbase :=
+    exercise42InfiniteBaseChainObjective_le_smooth
+      (gamma := beta - alpha) hgamma x y
+  have hquad :
+      (alpha / 2) * ‖x‖ ^ (2 : ℕ) +
+          inner ℝ (alpha • x) (y - x) +
+          (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) =
+        (alpha / 2) * ‖y‖ ^ (2 : ℕ) := by
+    have hdecomp : y = x + (y - x) := by
+      abel
+    rw [hdecomp, norm_add_sq_real]
+    simp [real_inner_smul_left]
+    ring
+  rw [exercise42InfiniteChainObjective_eq_quadraticRegularizedAround,
+    exercise42InfiniteChainGradientLp_eq_regularizedGradient]
+  simp [quadraticRegularizedAround, regularizedGradient, inner_add_left] at *
+  nlinarith
+
+/-- Continuity of the concrete infinite strongly-convex hard-chain objective. -/
+theorem continuous_exercise42InfiniteChainObjective
+    {alpha beta : ℝ} (hgamma : 0 ≤ beta - alpha) :
+    Continuous (exercise42InfiniteChainObjective alpha beta) := by
+  have hbase :=
+    continuous_exercise42InfiniteBaseChainObjective
+      (gamma := beta - alpha) hgamma
+  have hquad :
+      Continuous
+        (fun x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) =>
+          (alpha / 2) *
+            ‖x - (0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞))‖ ^ (2 : ℕ)) := by
+    exact continuous_const.mul
+      (((continuous_id.sub continuous_const).norm).pow (2 : ℕ))
+  rw [exercise42InfiniteChainObjective_eq_quadraticRegularizedAround]
+  change Continuous
+    (fun x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) =>
+      exercise42InfiniteBaseChainObjective (beta - alpha) x +
+        (alpha / 2) *
+          ‖x - (0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞))‖ ^ (2 : ℕ))
+  exact hbase.add hquad
+
+/--
+Full supplied-gradient smoothness interface for the concrete infinite
+Exercise 4.2 hard-chain objective.
+-/
+theorem exercise42InfiniteChainObjective_smoothWithGradientOn
+    {alpha beta : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (hgamma : 0 ≤ beta - alpha) :
+    SmoothWithGradientOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta)
+      (exercise42InfiniteChainGradientLp alpha beta) beta := by
+  refine ⟨convex_univ,
+    (continuous_exercise42InfiniteChainObjective hgamma).continuousOn, ?_⟩
+  intro x _hx y _hy
+  exact exercise42InfiniteChainObjective_le_smooth halpha_nonneg hgamma x y
+
+/--
 Reduction of the remaining concrete first-order package to the convex base
 chain lower model.
 -/
@@ -1016,6 +1644,19 @@ theorem exercise42InfiniteChainObjective_firstOrderStrongConvexOn_of_base
       hbase
   simpa [exercise42InfiniteChainObjective_eq_quadraticRegularizedAround,
     exercise42InfiniteChainGradientLp_eq_regularizedGradient] using hreg
+
+/--
+Concrete first-order strong-convexity certificate for Chewi Exercise 4.2's
+infinite hard-chain objective.
+-/
+theorem exercise42InfiniteChainObjective_firstOrderStrongConvexOn
+    {alpha beta : ℝ} (hgamma : 0 ≤ beta - alpha) :
+    FirstOrderStrongConvexOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta)
+      (exercise42InfiniteChainGradientLp alpha beta) alpha :=
+  exercise42InfiniteChainObjective_firstOrderStrongConvexOn_of_base
+    (alpha := alpha) (beta := beta)
+    (exercise42InfiniteBaseChainObjective_firstOrderConvex hgamma)
 
 /--
 The infinite hard-chain gradient expands prefix support by one coordinate.
@@ -1087,6 +1728,34 @@ theorem exercise42InfiniteGradientSpanTrajectory_prefixSupported_of_apply
     exercise42InfinitePrefixSupported (x n) n :=
   exercise42InfiniteGradientSpanTrajectory_mem_prefixSubmodule_of_apply
     hgrad_apply hx0 hspan n
+
+/--
+Source-facing oracle package for the concrete infinite Exercise 4.2 hard
+instance: first-order strong convexity, supplied smoothness, and the
+gradient-span prefix-support induction in one reusable interface.
+-/
+theorem exercise42InfiniteChainObjective_oracle_interface_package
+    {alpha beta : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (hgamma : 0 ≤ beta - alpha) :
+    FirstOrderStrongConvexOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta)
+      (exercise42InfiniteChainGradientLp alpha beta) alpha ∧
+    SmoothWithGradientOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta)
+      (exercise42InfiniteChainGradientLp alpha beta) beta ∧
+    ∀ {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)},
+      x 0 = 0 ->
+      IsGradientSpanTrajectory
+        (exercise42InfiniteChainGradientLp alpha beta) x ->
+      ∀ n, x n ∈ exercise42InfinitePrefixSubmodule n := by
+  exact ⟨
+    exercise42InfiniteChainObjective_firstOrderStrongConvexOn hgamma,
+    exercise42InfiniteChainObjective_smoothWithGradientOn
+      halpha_nonneg hgamma,
+    fun {x} hx0 hspan =>
+      exercise42InfiniteGradientSpanTrajectory_mem_prefixSubmodule_of_apply
+        (grad := exercise42InfiniteChainGradientLp alpha beta)
+        (fun _ _ => rfl) hx0 hspan⟩
 
 /--
 Gradient-span version of the infinite Exercise 4.2 geometric obstruction.
@@ -1223,6 +1892,74 @@ theorem exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply
   rw [hgrad_apply]
   exact exercise42InfiniteChainGradient_geometricMinimizer_eq_zero
     halpha_pos halpha_lt_beta hkappa hq_nonneg hq_lt_one i
+
+/--
+The displayed infinite geometric profile is the concrete global minimizer of
+Chewi's Exercise 4.2 hard-chain objective.
+-/
+theorem exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha) :
+    IsMinOn (exercise42InfiniteChainObjective alpha beta) Set.univ
+      (exercise42InfiniteGeometricMinimizer
+        (chewi45GeometricRatio kappa)
+        (chewi45GeometricRatio_nonneg (kappa := kappa)
+          ((by
+            rw [hkappa]
+            exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+              1 < kappa).le))
+        (chewi45GeometricRatio_lt_one kappa)) := by
+  have hgamma : 0 ≤ beta - alpha := by linarith
+  refine
+    isMinOn_of_firstOrderStrongConvexOn_gradient_eq_zero
+      (exercise42InfiniteChainObjective_firstOrderStrongConvexOn
+        (alpha := alpha) (beta := beta) hgamma)
+      halpha_pos.le trivial ?_
+  exact
+    exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply
+      halpha_pos halpha_lt_beta hkappa
+      (chewi45GeometricRatio_nonneg (kappa := kappa)
+        ((by
+          rw [hkappa]
+          exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+            1 < kappa).le))
+      (chewi45GeometricRatio_lt_one kappa)
+      (grad := exercise42InfiniteChainGradientLp alpha beta)
+      (by intro y i; rfl)
+
+/--
+Canonical optimum value for the concrete infinite Exercise 4.2 hard-chain
+objective.  The proof arguments record the source condition-number relation
+used to certify that Chewi's geometric profile is admissible.
+-/
+noncomputable def exercise42InfiniteChainObjectiveMinValue
+    (alpha beta kappa : ℝ) (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha) : ℝ :=
+  exercise42InfiniteChainObjective alpha beta
+    (exercise42InfiniteGeometricMinimizer
+      (chewi45GeometricRatio kappa)
+      (chewi45GeometricRatio_nonneg (kappa := kappa)
+        ((by
+          rw [hkappa]
+          exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+            1 < kappa).le))
+      (chewi45GeometricRatio_lt_one kappa))
+
+/--
+The named Exercise 4.2 optimum value is below every concrete hard-chain value.
+-/
+theorem exercise42InfiniteChainObjectiveMinValue_le_concreteGradient
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteChainObjectiveMinValue
+        alpha beta kappa halpha_pos halpha_lt_beta hkappa ≤
+      exercise42InfiniteChainObjective alpha beta y := by
+  have hmin :=
+    exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient
+      halpha_pos halpha_lt_beta hkappa
+  rw [isMinOn_univ_iff] at hmin
+  simpa [exercise42InfiniteChainObjectiveMinValue] using hmin y
 
 /--
 First-order lower model at the infinite hard-chain minimizer.  This discharges
@@ -1642,6 +2379,718 @@ theorem exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_m
     (grad := exercise42InfiniteChainGradientLp alpha beta)
     halpha_pos heps_pos halpha_lt_beta hkappa hfirst
     (fun _ _ => rfl) hx0 hspan N hnear
+
+/--
+Fully concrete infinite Exercise 4.2 geometric obstruction for the displayed
+hard-chain objective and its concrete `ell^2` gradient oracle.
+-/
+theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_concreteGradient
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ) :
+    (alpha / 2) *
+        (((chewi45GeometricRatio kappa) ^ (2 : ℕ)) ^ N *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^
+              (2 : ℕ)) ≤
+      exercise42InfiniteChainObjective alpha beta (x N) -
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)) := by
+  have hgamma : 0 ≤ beta - alpha := by linarith
+  exact
+    exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder_concreteGradient
+      halpha_pos halpha_lt_beta hkappa
+      (exercise42InfiniteChainObjective_firstOrderStrongConvexOn
+        (alpha := alpha) (beta := beta) hgamma)
+      hx0 hspan N
+
+/--
+Literal source-display form of the infinite Exercise 4.2 geometric gap:
+`(q^2)^N` is rewritten as `q^(2N)`, matching the textbook statement.
+-/
+theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_concreteGradient
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ) :
+    (alpha / 2) *
+        ((chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^
+              (2 : ℕ)) ≤
+      exercise42InfiniteChainObjective alpha beta (x N) -
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)) := by
+  let q := chewi45GeometricRatio kappa
+  have hpow : (q ^ (2 : ℕ)) ^ N = (q ^ N) ^ (2 : ℕ) := by
+    rw [← pow_mul, ← pow_mul]
+    congr 1
+    omega
+  simpa [q, pow_mul, hpow, mul_comm, mul_left_comm, mul_assoc] using
+    exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_concreteGradient
+      halpha_pos halpha_lt_beta hkappa hx0 hspan N
+
+/--
+Same source-display lower bound, with the optimum value named as `fstar`.
+This is the local formal stand-in for the textbook notation `f_*`.
+-/
+theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minValue_concreteGradient
+    {alpha beta kappa fstar : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (hfstar :
+      fstar =
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)))
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ) :
+    (alpha / 2) *
+        ((chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^
+              (2 : ℕ)) ≤
+      exercise42InfiniteChainObjective alpha beta (x N) - fstar := by
+  subst fstar
+  exact
+    exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_concreteGradient
+      halpha_pos halpha_lt_beta hkappa hx0 hspan N
+
+/--
+Same source-display lower bound using the canonical Exercise 4.2 optimum-value
+abbreviation, avoiding a separate `hfstar` bookkeeping hypothesis.
+-/
+theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_optValue_concreteGradient
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ) :
+    (alpha / 2) *
+        ((chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^
+              (2 : ℕ)) ≤
+      exercise42InfiniteChainObjective alpha beta (x N) -
+        exercise42InfiniteChainObjectiveMinValue
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa := by
+  exact
+    exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minValue_concreteGradient
+      halpha_pos halpha_lt_beta hkappa
+      (fstar :=
+        exercise42InfiniteChainObjectiveMinValue
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa)
+      (by simp [exercise42InfiniteChainObjectiveMinValue])
+      hx0 hspan N
+
+/--
+Fully concrete infinite Exercise 4.2 log-quotient lower bound.  Near-minimality
+for the displayed hard-chain objective forces the source logarithmic iteration
+lower bound, with no remaining supplied first-order or gradient hypotheses.
+-/
+theorem exercise42InfiniteChainObjective_logQuotientRate_le_near_min_concreteGradient
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ)
+    (hnear :
+      exercise42InfiniteChainObjective alpha beta (x N) ≤
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)) + eps) :
+    Real.log
+        (eps /
+          ((alpha / 2) *
+            ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+              exercise42InfiniteGeometricMinimizer
+                (chewi45GeometricRatio kappa)
+                (chewi45GeometricRatio_nonneg (kappa := kappa)
+                  ((by
+                    rw [hkappa]
+                    exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                      1 < kappa).le))
+                (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ))) /
+          (2 * Real.log (chewi45GeometricRatio kappa)) ≤
+      (N : ℝ) := by
+  have hgamma : 0 ≤ beta - alpha := by linarith
+  exact
+    exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min_concreteGradient
+      halpha_pos heps_pos halpha_lt_beta hkappa
+      (exercise42InfiniteChainObjective_firstOrderStrongConvexOn
+        (alpha := alpha) (beta := beta) hgamma)
+      hx0 hspan N hnear
+
+/--
+Source-shaped infinite Exercise 4.2 rate wrapper: the exact log-quotient lower
+bound implies a `(sqrt(kappa)-1)` logarithmic iteration lower bound whenever
+the logarithmic accuracy ratio is nonpositive.
+-/
+theorem exercise42InfiniteChainObjective_sqrtSubOneLogRate_le_near_min_concreteGradient
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ)
+    (hnear :
+      exercise42InfiniteChainObjective alpha beta (x N) ≤
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)) + eps)
+    (hlog_nonpos :
+      Real.log
+        (eps /
+          ((alpha / 2) *
+            ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+              exercise42InfiniteGeometricMinimizer
+                (chewi45GeometricRatio kappa)
+                (chewi45GeometricRatio_nonneg (kappa := kappa)
+                  ((by
+                    rw [hkappa]
+                    exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                      1 < kappa).le))
+                (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ))) ≤ 0) :
+    -((Real.sqrt kappa - 1) *
+        Real.log
+          (eps /
+            ((alpha / 2) *
+              ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+                exercise42InfiniteGeometricMinimizer
+                  (chewi45GeometricRatio kappa)
+                  (chewi45GeometricRatio_nonneg (kappa := kappa)
+                    ((by
+                      rw [hkappa]
+                      exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                        1 < kappa).le))
+                  (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)))) / 4 ≤
+      (N : ℝ) := by
+  let A : ℝ :=
+    Real.log
+      (eps /
+        ((alpha / 2) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)))
+  let q := chewi45GeometricRatio kappa
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  have hquot :
+      A / (2 * Real.log q) ≤ (N : ℝ) := by
+    simpa [A, q] using
+      exercise42InfiniteChainObjective_logQuotientRate_le_near_min_concreteGradient
+        halpha_pos heps_pos halpha_lt_beta hkappa hx0 hspan N hnear
+  have hcmp :
+      -((Real.sqrt kappa - 1) * A) / 4 - 1 ≤
+        A / (2 * Real.log q) - 1 := by
+    simpa [A, q] using
+      chewi45_sqrt_sub_one_bound_le_logQuotientRate
+        (kappa := kappa) (A := A) hkappa_gt (by simpa [A] using hlog_nonpos)
+  nlinarith
+
+/--
+Cleaner large-condition-number Exercise 4.2 rate wrapper: for `kappa >= 4`,
+the concrete infinite construction forces a `sqrt(kappa)` logarithmic lower
+bound, up to the explicit harmless `-1` burn-in.
+-/
+theorem exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha) (hkappa_four : 4 ≤ kappa)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ)
+    (hnear :
+      exercise42InfiniteChainObjective alpha beta (x N) ≤
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)) + eps)
+    (hlog_nonpos :
+      Real.log
+        (eps /
+          ((alpha / 2) *
+            ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+              exercise42InfiniteGeometricMinimizer
+                (chewi45GeometricRatio kappa)
+                (chewi45GeometricRatio_nonneg (kappa := kappa)
+                  ((by
+                    rw [hkappa]
+                    exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                      1 < kappa).le))
+                (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ))) ≤ 0) :
+    -((Real.sqrt kappa / 2) *
+        Real.log
+          (eps /
+            ((alpha / 2) *
+              ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+                exercise42InfiniteGeometricMinimizer
+                  (chewi45GeometricRatio kappa)
+                  (chewi45GeometricRatio_nonneg (kappa := kappa)
+                    ((by
+                      rw [hkappa]
+                      exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                        1 < kappa).le))
+                  (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)))) / 4 - 1 ≤
+      (N : ℝ) := by
+  let A : ℝ :=
+    Real.log
+      (eps /
+        ((alpha / 2) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)))
+  have hsub :
+      -((Real.sqrt kappa - 1) * A) / 4 ≤ (N : ℝ) := by
+    simpa [A] using
+      exercise42InfiniteChainObjective_sqrtSubOneLogRate_le_near_min_concreteGradient
+        halpha_pos heps_pos halpha_lt_beta hkappa hx0 hspan N hnear
+        (by simpa [A] using hlog_nonpos)
+  have hhalf :
+      -((Real.sqrt kappa / 2) * A) / 4 - 1 ≤
+        -((Real.sqrt kappa - 1) * A) / 4 - 1 := by
+    simpa [A] using
+      chewi45_half_sqrt_rate_le_sqrt_sub_one_rate
+        (kappa := kappa) (A := A) hkappa_four
+        (by simpa [A] using hlog_nonpos)
+  nlinarith
+
+/-- The source initial geometric scale in the infinite Exercise 4.2 lower bound is positive. -/
+theorem exercise42InfiniteGeometricInitialScale_pos
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha) :
+    0 <
+      (alpha / 2) *
+        ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+          exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ) := by
+  let q := chewi45GeometricRatio kappa
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  let hq_nonneg : 0 ≤ q :=
+    chewi45GeometricRatio_nonneg (kappa := kappa) hkappa_gt.le
+  let hq_lt_one : q < 1 := chewi45GeometricRatio_lt_one kappa
+  let z := exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one
+  have hq_pos : 0 < q := chewi45GeometricRatio_pos hkappa_gt
+  have hq_sq_lt_one : q ^ (2 : ℕ) < 1 := by
+    nlinarith [sq_nonneg q, hq_pos, hq_lt_one]
+  have hdist_sq_pos :
+      0 <
+        ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) - z‖ ^ (2 : ℕ) := by
+    have hnorm_eq :
+        ‖z‖ ^ (2 : ℕ) = q ^ (2 : ℕ) * (1 - q ^ (2 : ℕ))⁻¹ := by
+      simpa [z, q, hq_nonneg, hq_lt_one] using
+        exercise42InfiniteGeometricMinimizer_norm_sq hq_nonneg hq_lt_one
+    have hden_pos : 0 < 1 - q ^ (2 : ℕ) := by
+      nlinarith
+    have hnorm_pos :
+        0 < q ^ (2 : ℕ) * (1 - q ^ (2 : ℕ))⁻¹ :=
+      mul_pos (pow_pos hq_pos _) (inv_pos.mpr hden_pos)
+    rw [zero_sub, norm_neg, hnorm_eq]
+    exact hnorm_pos
+  simpa [z, q, hq_nonneg, hq_lt_one] using
+    mul_pos (by positivity : 0 < alpha / 2) hdist_sq_pos
+
+/--
+Named source initial scale for the infinite Exercise 4.2 hard instance,
+`(alpha / 2) * ‖x_0 - x_*‖²` with `x_0 = 0`.
+-/
+noncomputable def exercise42InfiniteInitialScale
+    (alpha beta kappa : ℝ) (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha) : ℝ :=
+  (alpha / 2) *
+    ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+      exercise42InfiniteGeometricMinimizer
+        (chewi45GeometricRatio kappa)
+        (chewi45GeometricRatio_nonneg (kappa := kappa)
+          ((by
+            rw [hkappa]
+            exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+              1 < kappa).le))
+        (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)
+
+/-- The named source initial scale is positive. -/
+theorem exercise42InfiniteInitialScale_pos
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha) :
+    0 <
+      exercise42InfiniteInitialScale
+        alpha beta kappa halpha_pos halpha_lt_beta hkappa := by
+  simpa [exercise42InfiniteInitialScale] using
+    exercise42InfiniteGeometricInitialScale_pos
+      (alpha := alpha) (beta := beta) (kappa := kappa)
+      halpha_pos halpha_lt_beta hkappa
+
+/--
+Small-accuracy wrapper for the infinite Exercise 4.2 `sqrt(kappa)` rate:
+`eps <= (alpha/2)‖x_0-x_*‖²` discharges the logarithmic nonpositivity side
+condition in the source-rate theorem.
+-/
+theorem exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha) (hkappa_four : 4 ≤ kappa)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ)
+    (hnear :
+      exercise42InfiniteChainObjective alpha beta (x N) ≤
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)) + eps)
+    (heps_le_initial :
+      eps ≤
+        (alpha / 2) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)) :
+    -((Real.sqrt kappa / 2) *
+        Real.log
+          (eps /
+            ((alpha / 2) *
+              ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+                exercise42InfiniteGeometricMinimizer
+                  (chewi45GeometricRatio kappa)
+                  (chewi45GeometricRatio_nonneg (kappa := kappa)
+                    ((by
+                      rw [hkappa]
+                      exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                        1 < kappa).le))
+                  (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)))) / 4 - 1 ≤
+      (N : ℝ) := by
+  let C : ℝ :=
+    (alpha / 2) *
+      ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+        exercise42InfiniteGeometricMinimizer
+          (chewi45GeometricRatio kappa)
+          (chewi45GeometricRatio_nonneg (kappa := kappa)
+            ((by
+              rw [hkappa]
+              exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                1 < kappa).le))
+          (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)
+  have hC_pos : 0 < C := by
+    simpa [C] using
+      exercise42InfiniteGeometricInitialScale_pos
+        (alpha := alpha) (beta := beta) (kappa := kappa)
+        halpha_pos halpha_lt_beta hkappa
+  have hlog_nonpos : Real.log (eps / C) ≤ 0 := by
+    have hratio_nonneg : 0 ≤ eps / C := by positivity
+    have hratio_le_one : eps / C ≤ 1 := by
+      exact (div_le_iff₀ hC_pos).2 (by simpa [C] using heps_le_initial)
+    exact Real.log_nonpos hratio_nonneg hratio_le_one
+  simpa [C] using
+    exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient
+      halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
+      hx0 hspan N hnear hlog_nonpos
+
+/--
+Source-shaped Exercise 4.2 rate wrapper with the optimum value named `fstar`.
+This exposes the near-minimality hypothesis in the textbook form
+`f(x_N) <= f_* + eps`.
+-/
+theorem exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient
+    {alpha beta kappa eps fstar : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha) (hkappa_four : 4 ≤ kappa)
+    (hfstar :
+      fstar =
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)))
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ)
+    (hnear :
+      exercise42InfiniteChainObjective alpha beta (x N) ≤ fstar + eps)
+    (heps_le_initial :
+      eps ≤
+        (alpha / 2) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)) :
+    -((Real.sqrt kappa / 2) *
+        Real.log
+          (eps /
+            ((alpha / 2) *
+              ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+                exercise42InfiniteGeometricMinimizer
+                  (chewi45GeometricRatio kappa)
+                  (chewi45GeometricRatio_nonneg (kappa := kappa)
+                    ((by
+                      rw [hkappa]
+                      exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                        1 < kappa).le))
+                  (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)))) / 4 - 1 ≤
+      (N : ℝ) := by
+  subst fstar
+  exact
+    exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale
+      halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
+      hx0 hspan N hnear heps_le_initial
+
+/--
+Public Exercise 4.2 rate wrapper using the canonical optimum-value
+abbreviation, so the near-minimality hypothesis is directly
+`f(x_N) <= f_* + eps`.
+-/
+theorem exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha) (hkappa_four : 4 ≤ kappa)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ)
+    (hnear :
+      exercise42InfiniteChainObjective alpha beta (x N) ≤
+        exercise42InfiniteChainObjectiveMinValue
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa + eps)
+    (heps_le_initial :
+      eps ≤
+        (alpha / 2) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)) :
+    -((Real.sqrt kappa / 2) *
+        Real.log
+          (eps /
+            ((alpha / 2) *
+              ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+                exercise42InfiniteGeometricMinimizer
+                  (chewi45GeometricRatio kappa)
+                  (chewi45GeometricRatio_nonneg (kappa := kappa)
+                    ((by
+                      rw [hkappa]
+                      exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                        1 < kappa).le))
+                  (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)))) / 4 - 1 ≤
+      (N : ℝ) := by
+  exact
+    exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient
+      halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
+      (fstar :=
+        exercise42InfiniteChainObjectiveMinValue
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa)
+      (by simp [exercise42InfiniteChainObjectiveMinValue])
+      hx0 hspan N hnear heps_le_initial
+
+/--
+Theorem 4.5-facing hard-instance package obtained from the direct infinite
+Exercise 4.2 construction.  The concrete `ell^2` chain is certified
+simultaneously as an `alpha`-strongly-convex/`beta`-smooth supplied-gradient
+oracle, has the displayed geometric minimizer and canonical optimum value,
+keeps every zero-start gradient-span trajectory inside the prefix subspaces,
+and forces the source-shaped `sqrt(kappa) log` lower bound from
+`f(x_N) <= f_* + eps`.
+-/
+theorem exercise42InfiniteChainObjective_theorem45_hard_instance_package
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha) (hkappa_four : 4 ≤ kappa) :
+    FirstOrderStrongConvexOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta)
+      (exercise42InfiniteChainGradientLp alpha beta) alpha ∧
+    SmoothWithGradientOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta)
+      (exercise42InfiniteChainGradientLp alpha beta) beta ∧
+    (∀ {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)},
+      x 0 = 0 ->
+      IsGradientSpanTrajectory
+        (exercise42InfiniteChainGradientLp alpha beta) x ->
+      ∀ n, x n ∈ exercise42InfinitePrefixSubmodule n) ∧
+    IsMinOn (exercise42InfiniteChainObjective alpha beta) Set.univ
+      (exercise42InfiniteGeometricMinimizer
+        (chewi45GeometricRatio kappa)
+        (chewi45GeometricRatio_nonneg (kappa := kappa)
+          ((by
+            rw [hkappa]
+            exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+              1 < kappa).le))
+        (chewi45GeometricRatio_lt_one kappa)) ∧
+    (∀ y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞),
+      exercise42InfiniteChainObjectiveMinValue
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa ≤
+        exercise42InfiniteChainObjective alpha beta y) ∧
+    (∀ {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)} (N : ℕ),
+      x 0 = 0 ->
+      IsGradientSpanTrajectory
+        (exercise42InfiniteChainGradientLp alpha beta) x ->
+      exercise42InfiniteChainObjective alpha beta (x N) ≤
+        exercise42InfiniteChainObjectiveMinValue
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa + eps ->
+      eps ≤
+        (alpha / 2) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ) ->
+      -((Real.sqrt kappa / 2) *
+          Real.log
+            (eps /
+              ((alpha / 2) *
+                ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+                  exercise42InfiniteGeometricMinimizer
+                    (chewi45GeometricRatio kappa)
+                    (chewi45GeometricRatio_nonneg (kappa := kappa)
+                      ((by
+                        rw [hkappa]
+                        exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                          1 < kappa).le))
+                    (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)))) /
+          4 - 1 ≤
+        (N : ℝ)) := by
+  have hgamma : 0 ≤ beta - alpha := by linarith
+  rcases
+    exercise42InfiniteChainObjective_oracle_interface_package
+      (alpha := alpha) (beta := beta) halpha_pos.le hgamma with
+    ⟨hfirst, hsmooth, hprefix⟩
+  refine ⟨hfirst, hsmooth, hprefix, ?_, ?_, ?_⟩
+  · exact
+      exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient
+        halpha_pos halpha_lt_beta hkappa
+  · intro y
+    exact
+      exercise42InfiniteChainObjectiveMinValue_le_concreteGradient
+        halpha_pos halpha_lt_beta hkappa y
+  · intro x N hx0 hspan hnear heps_le_initial
+    exact
+      exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient
+        halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
+        hx0 hspan N hnear heps_le_initial
 
 end Optimization
 end StatInference

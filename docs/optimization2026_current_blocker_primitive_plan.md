@@ -50,28 +50,25 @@ runs.
 
 Current manual objective: aggressively formalize and prove the main theorem
 content of Sinho Chewi's Optimization 2026 notes in Lean under
-`StatInference/Optimization`, continuing from the Chapter 2 gradient-flow
-frontier, the existing Chapter 1/3 bridge frontier, and the new Chapter 4
-gradient-span lower-bound foundation.  The current route should push Chapter 2
-main-text theorem layers after the compiled gradient-flow
-calculus/exponential-decay batch and push Chapter 4 from Definition 4.3 toward
-Theorem 4.4: discharge the analytic gradient-flow limit route behind
-Proposition 2.7(2), instantiate Corollary 2.8's interval-minimum hypothesis
-from compactness/continuity when useful, and build the finite-dimensional
-Euclidean/tridiagonal quadratic lower-bound construction for gradient-span
-algorithms, while preserving the Chapter 3 theorem spine already compiled
-through Theorem 3.7.
-Search existing mathlib and local `StatInference` APIs
-first, prove the next highest-leverage main-text theorem layer, verify with
-focused `lake env lean`, targeted `lake build StatInference`, proof-hole and
-secret scans, update this route state, and commit/push clean verified
-progress.  Keep main-text theorem coverage as the priority; exercise
-statements and exercise proofs may still be formalized opportunistically when
-they are cheap, reusable, or directly unblock a main-text theorem.  All
-Optimization textbook exercise statements and exercise proofs should live in
-the single module
-`StatInference/Optimization/Exercises.lean`, so the main theorem modules stay
-focused while the later exercise sweep remains source-trackable.
+`StatInference/Optimization`, continuing from the current Chapter 4
+Theorem 4.5 / Exercise 4.2 lower-bound frontier.  The compiled spine already
+covers Chapter 1 minimizer/first-order bridges, Chapter 2 gradient-flow
+interfaces, Chapter 3 gradient descent through the Theorem 3.7 support layer,
+Chapter 4 Definition 4.3/Theorem 4.4 gradient-span lower bounds, the finite
+Theorem 4.5 corrected-chain route, and the infinite Exercise 4.2 direct hard
+instance through the Theorem 4.5-facing package theorem.  The current route
+should now use or factor that package to finish a source-facing Theorem 4.5
+statement, then proceed aggressively to the next main-text theorem layer in
+Chapter 5.  Search existing mathlib and local `StatInference` APIs first,
+prove the next highest-leverage theorem layer, verify with focused
+`lake env lean`, targeted `lake build StatInference`, proof-hole and secret
+scans, update this route state, and commit/push clean verified progress.  Keep
+main-text theorem coverage as the priority; exercise statements and exercise
+proofs may still be formalized opportunistically when cheap, reusable, or
+directly unblock a main-text theorem.  All Optimization textbook exercise
+statements and exercise proofs should live in the single module
+`StatInference/Optimization/Exercises.lean`, so the later exercise sweep
+remains source-trackable.
 
 ## Current Blocker
 
@@ -1218,13 +1215,15 @@ infinite hard-chain gradient oracle:
 `exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_lowerModel`.
 The lower-model input is now reduced to the first-order interface:
 `exercise42InfiniteGeometricMinimizer_grad_eq_zero_of_apply`,
+`exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient`,
 `exercise42InfiniteGeometricMinimizer_lowerModel_of_firstOrder`,
 `exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_firstOrder`,
 `exercise42InfiniteGradientSpanTrajectory_gap_ge_geometric_tail_of_firstOrder`,
 and
 `exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_firstOrder`
 combine `FirstOrderStrongConvexOn`, the Chewi hard-chain coordinate gradient,
-and the support induction into the exact geometric function-gap obstruction.
+the zero-gradient minimizer certificate, and the support induction into the
+exact geometric function-gap obstruction.
 The concrete source objective layer now compiles:
 `exercise42InfiniteChainEdgeSq_summable`,
 `exercise42InfiniteChainObjective`,
@@ -1269,15 +1268,98 @@ compiles:
 `exercise42InfiniteBaseChainDirectionEdge`,
 `exercise42InfiniteBaseChainEdgeSq_summable`,
 `exercise42InfiniteBaseChainDirectionEdgeSq_summable`,
+`exercise42InfiniteBaseChainEdgeLp`,
+`exercise42InfiniteBaseChainEdgeLp_apply`,
+`exercise42InfiniteBaseChainDirectionEdgeLp`,
+`exercise42InfiniteBaseChainDirectionEdgeLp_apply`,
+`exercise42InfiniteBaseChainEdge_mul_direction_summable`,
 `exercise42InfiniteBaseChainEdge_add_direction`, and
-`exercise42InfiniteBaseChainObjective_eq_edge_tsum`.  This mirrors the finite
-`lowerBoundChainTextbookObjective_add_direction` route and reuses
-`summable_nat_add_iff` plus the existing infinite edge-square summability.
-Next direct Exercise 4.2 step: prove
-`FirstOrderStrongConvexOn Set.univ (exercise42InfiniteBaseChainObjective
-(beta - alpha)) (exercise42InfiniteBaseChainGradientLp (beta - alpha)) 0`;
-the separate supplied coordinate-gradient hypothesis and the regularizer part
-are both discharged.
+`exercise42InfiniteBaseChainObjective_eq_edge_tsum`.  The exact direction
+expansion and nonnegative-remainder lower model also compile as
+`exercise42InfiniteBaseChainObjective_add_direction`,
+`exercise42InfiniteBaseChainObjective_add_direction_ge_edge_linear`, and
+`exercise42InfiniteBaseChainObjective_ge_edge_linear`.  This mirrors the
+finite `lowerBoundChainTextbookObjective_add_direction` route and reuses
+`summable_nat_add_iff`, `lp.summable_inner`, and the existing infinite
+edge-square summability.  The summation-by-parts bridge now also compiles:
+`exercise42InfiniteBaseChain_edge_direction_sum_range_eq_core_sum_sub_boundary`
+proves the finite boundary identity,
+`exercise42InfiniteBaseChain_edge_direction_tsum_eq_core_tsum` passes to the
+`ell^2` limit, and
+`inner_exercise42InfiniteBaseChainGradientLp_eq_edgeDirection_tsum` identifies
+the edge-linear work with
+`inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) (y - x)`.  This
+reuses mathlib `lp.inner_eq_tsum`, `lp.summable_inner`,
+`Summable.tendsto_atTop_zero`, and `tendsto_add_atTop_nat`.  Consequently
+`exercise42InfiniteBaseChainObjective_firstOrderConvex` and
+`exercise42InfiniteChainObjective_firstOrderStrongConvexOn` discharge the
+formerly supplied first-order package for the concrete infinite hard-chain
+objective.  The no-supplied-interface geometric/log wrappers now compile as
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_concreteGradient`
+and
+`exercise42InfiniteChainObjective_logQuotientRate_le_near_min_concreteGradient`.
+The newest source-rate wrappers convert this exact quotient into the
+textbook-shaped square-root condition-number form:
+`exercise42InfiniteChainObjective_sqrtSubOneLogRate_le_near_min_concreteGradient`
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient`.
+They reuse `chewi45_sqrt_sub_one_bound_le_logQuotientRate` and
+`chewi45_half_sqrt_rate_le_sqrt_sub_one_rate`, so no new real-log comparison
+primitive was introduced.  The small-accuracy side condition is now discharged
+by `exercise42InfiniteGeometricInitialScale_pos` and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale`,
+which derive the needed `log(eps / scale) <= 0` from
+`eps <= (alpha/2) * ‖x_0 - x_*‖^2`.  The literal source exponent display now
+also compiles as
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_concreteGradient`,
+rewriting `(q^2)^N` to `q^(2N)` with `pow_mul` and `omega`.  The follow-up
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_minValue_concreteGradient`
+now names the optimum value as `fstar`, giving the textbook-shaped right side
+`f(x_N)-f_*` once `hfstar` identifies `fstar` with the geometric minimizer
+value.  The public rate wrapper
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_fstar_concreteGradient`
+now also compiles: its near-minimality hypothesis is exactly the source-shaped
+`f(x_N) <= f_* + eps`, while `hfstar` records that `f_*` is the geometric
+minimizer value.  The newest layer removes that bookkeeping by defining
+`exercise42InfiniteChainObjectiveMinValue` and proving
+`exercise42InfiniteChainObjectiveMinValue_le_concreteGradient`,
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_optValue_concreteGradient`,
+and
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient`.
+The public Exercise 4.2 rate route can now state near-minimality directly
+against the named optimum value.  Next direct step: feed this opt-value package
+into the Theorem 4.5 lower-bound route, or factor the infinite Exercise 4.2
+substrate into a pre-`Theorem45` module if Theorem 4.5 itself must import it
+without a cycle.
+The newest smoothness bridge also compiles:
+`exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq`,
+`exercise42InfiniteBaseChainObjective_add_direction_inner`,
+`exercise42InfiniteBaseChainObjective_add_direction_le_smooth`,
+`exercise42InfiniteBaseChainObjective_le_smooth`, and
+`exercise42InfiniteChainObjective_le_smooth`.  This proves the full two-point
+`beta`-smooth upper inequality for the concrete infinite hard-chain objective.
+The continuity blocker is now also closed: the compiled declarations
+`continuous_exercise42InfiniteBaseChainObjective`,
+`exercise42InfiniteBaseChainObjective_smoothWithGradientOn`,
+`continuous_exercise42InfiniteChainObjective`, and
+`exercise42InfiniteChainObjective_smoothWithGradientOn` give the full supplied
+`SmoothWithGradientOn Set.univ` interface for the infinite Exercise 4.2 hard
+instance.  The new
+`exercise42InfiniteChainObjective_oracle_interface_package` now bundles
+first-order strong convexity, smoothness, and gradient-span prefix support in
+one source-facing theorem.  The Theorem 4.5-facing package step is now also
+closed by `exercise42InfiniteInitialScale`,
+`exercise42InfiniteInitialScale_pos`, and
+`exercise42InfiniteChainObjective_theorem45_hard_instance_package`, which
+combines the oracle interfaces, geometric minimizer, named optimum-value lower
+bound, zero-start gradient-span support, and the opt-value `sqrt(kappa)` rate
+obstruction.  Next direct step: either use this package as the source-facing
+direct Exercise 4.2 hard instance, or factor the infinite substrate out of
+`Exercises.lean` into a pre-`Theorem45` module if the main Theorem 4.5 file
+must import it without a cycle.  A positive-log infinite display remains a
+cleanup target; avoid direct large-expression rewrites until the minimizer and
+initial-scale proof terms are named enough to avoid dependent proof-term
+normalization noise.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
