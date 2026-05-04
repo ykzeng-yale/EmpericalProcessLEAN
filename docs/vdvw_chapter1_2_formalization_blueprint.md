@@ -749,7 +749,11 @@ above, so they do not change the theorem-level dashboard counts.
    estimate on their product into the same theorem-facing shape.  The
    common-base specialization
    `empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_const_factor_bound`
-   reduces the product estimate to a bound on `base ^ thresholds.card`.
+   reduces the product estimate to a bound on `base ^ thresholds.card`; the
+   threshold-count version
+   `empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_const_factor_card_le`
+   reduces it further to a supplied bound on `base ^ k` when
+   `thresholds.card <= k`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

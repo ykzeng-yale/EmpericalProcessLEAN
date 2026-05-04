@@ -438,4 +438,76 @@ theorem empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_const_fa
       (thresholds := thresholds) (C := C) hseparate
       (hproduct_real.trans hpow_bound)
 
+/--
+If the number of thresholds is bounded by `k`, a common fixed-threshold
+cardinality bound gives the cleaner product bound `base ^ k`.
+-/
+theorem threshold_binaryTraceSetFamily_product_card_le_const_pow_of_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (thresholds : Finset ℝ) {base k : ℕ}
+    (hbase_pos : 0 < base) (hthresholds_card : thresholds.card ≤ k)
+    (hbase :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card ≤
+          base) :
+    (∏ threshold ∈ thresholds.attach,
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card) ≤
+      base ^ k :=
+  (threshold_binaryTraceSetFamily_product_card_le_const_pow
+    sample indexClass classFun thresholds base hbase).trans
+    (Nat.pow_le_pow_right hbase_pos hthresholds_card)
+
+/--
+Common fixed-threshold cardinality bounds and a threshold-count bound reduce
+the theorem-facing entropy estimate to a bound on `base ^ k`.
+-/
+theorem empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_const_factor_card_le
+    {Observation : Type u} {Index : Type v} {n d : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {C : ℝ} {base k : ℕ}
+    (hseparate :
+      ∀ index₁, index₁ ∈ indexClass ->
+        ∀ index₂, index₂ ∈ indexClass ->
+          (∀ threshold : {threshold // threshold ∈ thresholds},
+            thresholdTraceCode thresholds
+                (empiricalTrace sample classFun index₁) threshold =
+              thresholdTraceCode thresholds
+                (empiricalTrace sample classFun index₂) threshold) ->
+          empiricalTrace sample classFun index₁ =
+            empiricalTrace sample classFun index₂)
+    (hbase_pos : 0 < base) (hthresholds_card : thresholds.card ≤ k)
+    (hbase :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card ≤
+          base)
+    (hpow_bound :
+      (((base ^ k : ℕ) : ℝ) + 1) ≤
+        C * (((n + 1 : ℕ) : ℝ) ^ d)) :
+    (((finite_empiricalTrace_image_of_thresholdTraceCode_separates hseparate).toFinset.card : ℝ) + 1) ≤
+      C * (((n + 1 : ℕ) : ℝ) ^ d) := by
+  have hproduct_nat :
+      (∏ threshold ∈ thresholds.attach,
+          (empiricalBinaryTraceSetFamily sample indexClass
+            (thresholdIndicatorClassFun classFun threshold.1)).card) ≤
+        base ^ k :=
+    threshold_binaryTraceSetFamily_product_card_le_const_pow_of_card_le
+      sample indexClass classFun thresholds hbase_pos hthresholds_card hbase
+  have hproduct_real :
+      (((∏ threshold ∈ thresholds.attach,
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card : ℕ) : ℝ) + 1) ≤
+        ((base ^ k : ℕ) : ℝ) + 1 := by
+    exact_mod_cast Nat.add_le_add_right hproduct_nat 1
+  exact
+    empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_product_bound
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) (C := C) hseparate
+      (hproduct_real.trans hpow_bound)
+
 end StatInference

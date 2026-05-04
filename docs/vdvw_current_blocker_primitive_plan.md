@@ -2094,6 +2094,8 @@ threshold_binaryTraceSetFamily_product_card_le_of_forall_card_le
 empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_factor_bound
 threshold_binaryTraceSetFamily_product_card_le_const_pow
 empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_const_factor_bound
+threshold_binaryTraceSetFamily_product_card_le_const_pow_of_card_le
+empiricalTrace_image_card_add_one_real_le_of_thresholdTraceCode_const_factor_card_le
 ```
 
 These prove that finite threshold signatures, when they separate the realized
@@ -2107,7 +2109,8 @@ per-threshold cardinality bounds into the required product estimate before
 using the same theorem-facing handoff.  The common-base declarations specialize
 this further to `base ^ thresholds.card`, which is the convenient target when
 every fixed-threshold binary trace family has the same VC/Sauer cardinality
-bound.
+bound.  The threshold-count declarations reduce this target further to
+`base ^ k` under an explicit `thresholds.card <= k` assumption.
 
 Search record: reused local fixed-threshold declarations in `SubgraphTraceVC`,
 the new finite-code bridge in `TraceCoding`, mathlib `Finset.pi`,
@@ -2117,9 +2120,9 @@ mathlib theorem gave the VdVW finite-threshold signature/product-cardinality
 bridge.
 
 Next exact theorem-facing edit: derive the common base or factor bounds from
-the fixed-threshold VC/Sauer bound, and prove that `base ^ thresholds.card`
-has the required polynomial or shifted-log-linear growth under the chosen
-finite-threshold separation construction.  Equivalently, provide the
+the fixed-threshold VC/Sauer bound, and prove that `base ^ k` has the required
+polynomial or shifted-log-linear growth under the chosen finite-threshold
+separation construction.  Equivalently, provide the
 maximal-separated/internal-cover cardinality theorem that bypasses threshold
 products and directly supplies the natural-polynomial trace bound consumed by
 Theorem 2.4.3.
