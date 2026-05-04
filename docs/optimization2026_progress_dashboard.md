@@ -415,7 +415,15 @@ and
 so the public Exercise 4.2 route no longer exposes an `hfstar` equality
 hypothesis.  The next target is feeding this wrapper into the Theorem 4.5
 condition-number/rate comparison, or factoring the infinite Exercise 4.2
-substrate into a pre-`Theorem45` module if direct import is needed.  In
+substrate into a pre-`Theorem45` module if direct import is needed.  The newest
+smoothness bridge adds
+`exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq`,
+`exercise42InfiniteBaseChainObjective_add_direction_inner`,
+`exercise42InfiniteBaseChainObjective_add_direction_le_smooth`,
+`exercise42InfiniteBaseChainObjective_le_smooth`, and
+`exercise42InfiniteChainObjective_le_smooth`; the concrete infinite hard-chain
+now has the compiled two-point `beta`-smooth upper inequality, with continuity
+left as the blocker for a full `SmoothWithGradientOn` interface.  In
 parallel, specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.

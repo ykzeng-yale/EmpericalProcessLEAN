@@ -916,6 +916,79 @@ theorem exercise42InfiniteBaseChainDirectionEdgeSq_summable
       (f := fun n : ℕ =>
         (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) 1).1 htail
 
+/--
+Uniform infinite-direction energy bound.  This is the `ell^2` analogue of
+`lowerBoundChainDirectionEnergy_le_four_norm_sq` and is the analytic input for
+the infinite hard-chain smoothness certificate.
+-/
+theorem exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq
+    (v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    (∑' n : ℕ, (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) ≤
+      4 * ‖v‖ ^ (2 : ℕ) := by
+  let prev : ℕ -> ℝ := fun n => if n = 0 then 0 else v (n - 1)
+  let g : ℕ -> ℝ := fun n => 2 * (v n) ^ (2 : ℕ) + 2 * (prev n) ^ (2 : ℕ)
+  have hp : 0 < (2 : ℝ≥0∞).toReal := by norm_num
+  have hv_summ : Summable fun n : ℕ => (v n) ^ (2 : ℕ) := by
+    have hv := (lp.memℓp v).summable hp
+    simpa [Real.norm_eq_abs, sq_abs] using hv
+  have hprev_mem :
+      Memℓp prev (2 : ℝ≥0∞) := by
+    simpa [prev] using exercise42Infinite_shiftBackwardZero_memℓp_two v
+  have hprev_summ : Summable fun n : ℕ => (prev n) ^ (2 : ℕ) := by
+    have hv := hprev_mem.summable hp
+    simpa [Real.norm_eq_abs, sq_abs] using hv
+  have hg_summ : Summable g := by
+    simpa [g] using (hv_summ.mul_left 2).add (hprev_summ.mul_left 2)
+  have hpoint :
+      ∀ n : ℕ, (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ) ≤
+        g n := by
+    intro n
+    cases n with
+    | zero =>
+        have hsq : 0 ≤ (v 0) ^ (2 : ℕ) := sq_nonneg _
+        simp [g, prev, exercise42InfiniteBaseChainDirectionEdge]
+        nlinarith
+    | succ n =>
+        have h :=
+          sq_sub_le_two_mul_sq_add_two_mul_sq (v n) (v (n + 1))
+        simp [g, prev, exercise42InfiniteBaseChainDirectionEdge]
+        nlinarith
+  have hle :
+      (∑' n : ℕ, (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) ≤
+        ∑' n : ℕ, g n :=
+    (exercise42InfiniteBaseChainDirectionEdgeSq_summable v).tsum_le_tsum
+      hpoint hg_summ
+  have hprev_tsum :
+      (∑' n : ℕ, (prev n) ^ (2 : ℕ)) =
+        ∑' n : ℕ, (v n) ^ (2 : ℕ) := by
+    have hsplit := hprev_summ.sum_add_tsum_nat_add 1
+    have htail :
+        (∑' n : ℕ, (prev (n + 1)) ^ (2 : ℕ)) =
+          ∑' n : ℕ, (v n) ^ (2 : ℕ) := by
+      apply tsum_congr
+      intro n
+      simp [prev]
+    rw [← hsplit, htail]
+    simp [prev]
+  have hnorm :
+      ‖v‖ ^ (2 : ℕ) = ∑' n : ℕ, (v n) ^ (2 : ℕ) := by
+    have hnorm' :
+        ‖v‖ ^ (2 : ℝ≥0∞).toReal =
+          ∑' n : ℕ, ‖v n‖ ^ (2 : ℝ≥0∞).toReal :=
+      lp.norm_rpow_eq_tsum (E := fun _ : ℕ => ℝ)
+        (p := (2 : ℝ≥0∞)) hp v
+    simpa [Real.norm_eq_abs, sq_abs] using hnorm'
+  have hg_tsum :
+      (∑' n : ℕ, g n) = 4 * ‖v‖ ^ (2 : ℕ) := by
+    rw [show (∑' n : ℕ, g n) =
+        (∑' n : ℕ, 2 * (v n) ^ (2 : ℕ)) +
+          ∑' n : ℕ, 2 * (prev n) ^ (2 : ℕ) by
+      simpa [g] using
+        (Summable.tsum_add (hv_summ.mul_left 2) (hprev_summ.mul_left 2))]
+    rw [tsum_mul_left, tsum_mul_left, hprev_tsum, ← hnorm]
+    ring
+  exact hle.trans_eq hg_tsum
+
 /-- Edge residuals bundled as an `ell^2` element. -/
 noncomputable def exercise42InfiniteBaseChainEdgeLp
     (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
@@ -1294,6 +1367,58 @@ theorem inner_exercise42InfiniteBaseChainGradientLp_eq_edgeDirection_tsum
               exercise42InfiniteBaseChainDirectionEdge v n) := by
       rw [exercise42InfiniteBaseChain_edge_direction_tsum_eq_core_tsum]
 
+/--
+Exact infinite base-chain expansion with the supplied gradient inner product.
+-/
+theorem exercise42InfiniteBaseChainObjective_add_direction_inner
+    (gamma : ℝ)
+    (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma (x + v) =
+      exercise42InfiniteBaseChainObjective gamma x +
+        inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) v +
+        (gamma / 8) *
+          (∑' n : ℕ,
+            (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) := by
+  rw [exercise42InfiniteBaseChainObjective_add_direction,
+    inner_exercise42InfiniteBaseChainGradientLp_eq_edgeDirection_tsum]
+
+/--
+Smooth upper model for the infinite convex base hard chain along a direction.
+-/
+theorem exercise42InfiniteBaseChainObjective_add_direction_le_smooth
+    {gamma : ℝ} (hgamma : 0 ≤ gamma)
+    (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma (x + v) ≤
+      exercise42InfiniteBaseChainObjective gamma x +
+        inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) v +
+        (gamma / 2) * ‖v‖ ^ (2 : ℕ) := by
+  have hcoef : 0 ≤ gamma / 8 := div_nonneg hgamma (by norm_num)
+  have henergy := exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq v
+  have hrem :
+      (gamma / 8) *
+          (∑' n : ℕ,
+            (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) ≤
+        (gamma / 8) * (4 * ‖v‖ ^ (2 : ℕ)) :=
+    mul_le_mul_of_nonneg_left henergy hcoef
+  rw [exercise42InfiniteBaseChainObjective_add_direction_inner]
+  nlinarith
+
+/-- Two-point smooth upper model for the infinite convex base hard chain. -/
+theorem exercise42InfiniteBaseChainObjective_le_smooth
+    {gamma : ℝ} (hgamma : 0 ≤ gamma)
+    (x y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma y ≤
+      exercise42InfiniteBaseChainObjective gamma x +
+        inner ℝ (exercise42InfiniteBaseChainGradientLp gamma x) (y - x) +
+        (gamma / 2) * ‖y - x‖ ^ (2 : ℕ) := by
+  have h :=
+    exercise42InfiniteBaseChainObjective_add_direction_le_smooth
+      hgamma x (y - x)
+  have hxy : x + (y - x) = y := by
+    ext i
+    simp
+  simpa [hxy] using h
+
 /-- Supplied-gradient convex lower model for the infinite convex base chain. -/
 theorem exercise42InfiniteBaseChainObjective_firstOrderConvex
     {gamma : ℝ} (hgamma : 0 ≤ gamma) :
@@ -1341,6 +1466,37 @@ theorem exercise42InfiniteChainGradientLp_eq_regularizedGradient
     Pi.smul_apply, Pi.sub_apply, Pi.zero_apply,
     exercise42InfiniteChainGradientLp_apply]
   simp [exercise42InfiniteChainGradient, sub_eq_add_neg]
+
+/--
+Two-point smooth upper model for the concrete infinite strongly-convex
+Exercise 4.2 hard-chain objective.  The remaining step to a full
+`SmoothWithGradientOn` certificate is continuity of the infinite objective.
+-/
+theorem exercise42InfiniteChainObjective_le_smooth
+    {alpha beta : ℝ} (_halpha_nonneg : 0 ≤ alpha)
+    (hgamma : 0 ≤ beta - alpha)
+    (x y : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteChainObjective alpha beta y ≤
+      exercise42InfiniteChainObjective alpha beta x +
+        inner ℝ (exercise42InfiniteChainGradientLp alpha beta x) (y - x) +
+        (beta / 2) * ‖y - x‖ ^ (2 : ℕ) := by
+  have hbase :=
+    exercise42InfiniteBaseChainObjective_le_smooth
+      (gamma := beta - alpha) hgamma x y
+  have hquad :
+      (alpha / 2) * ‖x‖ ^ (2 : ℕ) +
+          inner ℝ (alpha • x) (y - x) +
+          (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) =
+        (alpha / 2) * ‖y‖ ^ (2 : ℕ) := by
+    have hdecomp : y = x + (y - x) := by
+      abel
+    rw [hdecomp, norm_add_sq_real]
+    simp [real_inner_smul_left]
+    ring
+  rw [exercise42InfiniteChainObjective_eq_quadraticRegularizedAround,
+    exercise42InfiniteChainGradientLp_eq_regularizedGradient]
+  simp [quadraticRegularizedAround, regularizedGradient, inner_add_left] at *
+  nlinarith
 
 /--
 Reduction of the remaining concrete first-order package to the convex base

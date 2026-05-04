@@ -1334,6 +1334,15 @@ against the named optimum value.  Next direct step: feed this opt-value package
 into the Theorem 4.5 lower-bound route, or factor the infinite Exercise 4.2
 substrate into a pre-`Theorem45` module if Theorem 4.5 itself must import it
 without a cycle.
+The newest smoothness bridge also compiles:
+`exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq`,
+`exercise42InfiniteBaseChainObjective_add_direction_inner`,
+`exercise42InfiniteBaseChainObjective_add_direction_le_smooth`,
+`exercise42InfiniteBaseChainObjective_le_smooth`, and
+`exercise42InfiniteChainObjective_le_smooth`.  This proves the full two-point
+`beta`-smooth upper inequality for the concrete infinite hard-chain objective;
+the remaining step for a literal `SmoothWithGradientOn` package is continuity
+of the infinite objective (or an equivalent continuous quadratic-form wrapper).
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,

@@ -730,6 +730,15 @@ and
 Next is feeding that exact package into Theorem 4.5, or moving the infinite
 Exercise 4.2 substrate into a pre-`Theorem45` module to avoid import cycles
 for a direct Theorem 4.5 dependency.
+The newest smoothness bridge proves
+`exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq`,
+`exercise42InfiniteBaseChainObjective_add_direction_inner`,
+`exercise42InfiniteBaseChainObjective_add_direction_le_smooth`,
+`exercise42InfiniteBaseChainObjective_le_smooth`, and
+`exercise42InfiniteChainObjective_le_smooth`, giving the exact two-point
+smooth upper inequality for the concrete infinite hard-chain objective.  A
+full `SmoothWithGradientOn` wrapper now primarily needs continuity of this
+infinite objective, likely via a continuous quadratic-form/edge-map package.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,
