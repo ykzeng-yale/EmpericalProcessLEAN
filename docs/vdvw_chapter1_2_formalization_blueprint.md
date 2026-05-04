@@ -908,8 +908,11 @@ above, so they do not change the theorem-level dashboard counts.
    cover constructor.  The theorem-facing wrapper
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable`
    now consumes this constructor, so the full-subgraph route exposes only the
-   structural VC route, ordinary envelope/integrability/measurability
-   hypotheses, and Rademacher sign hypotheses.  The iid Rademacher and
+   structural VC route, envelope measurability/integrability hypotheses, and
+   Rademacher sign hypotheses; ordinary class-member integrability is derived
+   internally from envelope domination, coordinate measurability, and
+   `Integrable envelope P` using `integrable_classFun_of_integrable_envelope`.
+   The iid Rademacher and
    canonical terminal-sample wrappers now also remove the auxiliary sign-space
    and `X`/sample-path choices from this full-subgraph proof layer.
    If the remaining quantitative structural estimate

@@ -2675,8 +2675,11 @@ still requires replacing or justifying the remaining side-condition fields.
 
 2026-05-04 follow-up: `Theorem243.lean` now adds
 `VdVWTheorem243FullSubgraphSideConditions.of_integrable`, a constructor that
-derives the package field `htruncIntegrable` from `hclass`, `henv`, and
-`hclassIntegrable` using the existing lemma
+derives ordinary class-member integrability from `hclass`, the envelope bound,
+and `Integrable envelope P` using the new theorem-facing helper
+`integrable_classFun_of_integrable_envelope` and mathlib `Integrable.mono'`.
+The package field `htruncIntegrable` is then derived from this internally
+proved class-member integrability, `henv`, and the existing lemma
 `integrable_vdVWTruncatedClassFun_of_integrable`.
 
 2026-05-04 follow-up: the same theorem-facing package constructor now also
@@ -2763,6 +2766,9 @@ and
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable_canonical`.
 The first uses `exists_common_iid_vdVWRademacherSigns`; the second uses
 `vdVWCanonicalSampleProcess` and `samplePath_vdVWCanonicalSampleProcess`.
+The full-subgraph constructor and its iid/canonical consumers no longer expose
+the previously separate `hclassIntegrable` parameter; envelope integrability
+and coordinate measurability now discharge it.
 
 Next exact theorem-facing edit: move from this proof layer toward the exact
 Theorem 2.4.3 statement by aligning the remaining structural full-subgraph

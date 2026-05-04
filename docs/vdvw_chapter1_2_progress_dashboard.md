@@ -503,6 +503,11 @@ integrability/measurable-cover witnesses behind
 Rademacher and canonical terminal-sample wrappers, so the caller-facing
 auxiliary sign space and `X`/sample-path plumbing can be discharged by
 `exists_common_iid_vdVWRademacherSigns` and `vdVWCanonicalSampleProcess`.
+2026-05-04 follow-up: ordinary class-member integrability is now derived
+internally from the measurable class, envelope domination, and
+`Integrable envelope P` via `integrable_classFun_of_integrable_envelope`.
+The full-subgraph constructor and iid/canonical wrappers no longer expose a
+separate `hclassIntegrable` argument.
 2026-05-04 follow-up: constructor
 `VdVWTheorem243FullSubgraphSideConditions.of_integrable` now derives
 `htruncIntegrable` from ordinary class integrability plus the measurable

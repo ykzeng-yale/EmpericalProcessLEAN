@@ -48,6 +48,22 @@ structure VdVWClassEnvelope {Observation : Type u} {Index : Type v}
     ∀ index, index ∈ indexClass -> ∀ observation,
       |classFun index observation| ≤ envelope observation
 
+/-- An integrable envelope makes every measurable class member integrable. -/
+theorem integrable_classFun_of_integrable_envelope
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {μ : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope μ)
+    {index : Index} (hindex : index ∈ indexClass) :
+    Integrable (classFun index) μ := by
+  refine Integrable.mono' henv_integrable
+    ((hclass index hindex).aestronglyMeasurable) ?_
+  exact ae_of_all μ fun observation => by
+    simpa [Real.norm_eq_abs] using henvelope.bound index hindex observation
+
 /--
 The truncated class member `f 1{F <= M}` from VdV&W Theorem 2.4.3.
 
@@ -19608,8 +19624,6 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
     (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
     (hsign :
       ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
         (fun i : Fin n => sign n i ω))
@@ -19624,7 +19638,11 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
   hclass := hclass
   henv := henv
   henv_integrable := henv_integrable
-  hclassIntegrable := hclassIntegrable
+  hclassIntegrable := by
+    intro index hindex
+    exact
+      integrable_classFun_of_integrable_envelope
+        (μ := P) henvelope hclass henv_integrable hindex
   hsign := hsign
   hindep := hindep
   hsubG := hsubG
@@ -19632,7 +19650,9 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
     intro M index hindex
     exact
       integrable_vdVWTruncatedClassFun_of_integrable
-        (hclass index hindex) henv (hclassIntegrable index hindex)
+        (hclass index hindex) henv
+        (integrable_classFun_of_integrable_envelope
+          (μ := P) henvelope hclass henv_integrable hindex)
   hbdd_truncated := by
     intro M n sample
     exact
@@ -19642,7 +19662,9 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
         (fun _ : Fin n => (n : ℝ)⁻¹) sample henvelope
         (fun index hindex =>
           integrable_vdVWTruncatedClassFun_of_integrable
-            (hclass index hindex) henv (hclassIntegrable index hindex))
+            (hclass index hindex) henv
+            (integrable_classFun_of_integrable_envelope
+              (μ := P) henvelope hclass henv_integrable hindex))
   hpairSupIntegrable := by
     intro M n sample
     exact
@@ -19659,7 +19681,9 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
         henvelope hclass henv
         (fun index hindex =>
           integrable_vdVWTruncatedClassFun_of_integrable
-            (hclass index hindex) henv (hclassIntegrable index hindex))
+            (hclass index hindex) henv
+            (integrable_classFun_of_integrable_envelope
+              (μ := P) henvelope hclass henv_integrable hindex))
         (fun _ : Fin n => (n : ℝ)⁻¹)
   hghostExpectationIntegrable := by
     intro M n
@@ -19706,7 +19730,10 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
         (μsign := μsign) (P := P) (indexClass := indexClass)
         (classFun := classFun) (envelope := envelope) (M := M)
         (Set.to_countable indexClass) henvelope hclass henv
-        hclassIntegrable (sign n) (hsubG n)
+        (fun index hindex =>
+          integrable_classFun_of_integrable_envelope
+            (μ := P) henvelope hclass henv_integrable hindex)
+        (sign n) (hsubG n)
     simpa using hproduct.integral_prod_left
   Urandom := by
     intro M n
@@ -19715,7 +19742,10 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
         (μsign := μsign) (P := P) (indexClass := indexClass)
         (classFun := classFun) (envelope := envelope) (M := M)
         (Set.to_countable indexClass) henvelope hclass henv
-        hclassIntegrable (sign n) (hsubG n)
+        (fun index hindex =>
+          integrable_classFun_of_integrable_envelope
+            (μ := P) henvelope hclass henv_integrable hindex)
+        (sign n) (hsubG n)
   hproductSupIntegrable := by
     intro M n
     exact
@@ -19723,7 +19753,10 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
         (μsign := μsign) (P := P) (indexClass := indexClass)
         (classFun := classFun) (envelope := envelope) (M := M)
         (Set.to_countable indexClass) henvelope hclass henv
-        hclassIntegrable (sign n) (hsubG n)
+        (fun index hindex =>
+          integrable_classFun_of_integrable_envelope
+            (μ := P) henvelope hclass henv_integrable hindex)
+        (sign n) (hsubG n)
   hsignSupIntegrable := by
     intro M n sample
     exact
@@ -19816,8 +19849,6 @@ theorem
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
     (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
     (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
     (hsign :
       ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
@@ -19842,7 +19873,7 @@ theorem
           (classFun := classFun) (envelope := envelope) (X := X)
           (vcDegree := vcDegree) (sign := sign)
           hX_samplePath hvc hindexClass henvelope hclass henv
-          henv_integrable hclassIntegrable hsign hindep hsubG)
+          henv_integrable hsign hindep hsubG)
 
 /--
 Full-subgraph integrable Theorem 2.4.3 route with the auxiliary Rademacher
@@ -19868,9 +19899,7 @@ theorem
     (henvelope : VdVWClassEnvelope indexClass classFun envelope)
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
-    (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P) :
+    (henv_integrable : Integrable envelope P) :
     VdVWConvergesInOuterProbabilityConst
       (fun n : ℕ => SampleAt Observation n)
       (fun _ : ℕ => inferInstance)
@@ -19893,7 +19922,7 @@ theorem
       (μsign := μsign) (P := P) (indexClass := indexClass)
       (classFun := classFun) (envelope := envelope) (X := X)
       (vcDegree := vcDegree) hX_samplePath hvc hindexClass
-      henvelope hclass henv henv_integrable hclassIntegrable sign
+      henvelope hclass henv henv_integrable sign
       (by
         intro n
         exact hsupportNat.mono (fun ω hω i => hω (i : ℕ)))
@@ -20663,9 +20692,7 @@ theorem
     (henvelope : VdVWClassEnvelope indexClass classFun envelope)
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
-    (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P) :
+    (henv_integrable : Integrable envelope P) :
     VdVWConvergesInOuterProbabilityConst
       (fun n : ℕ => SampleAt Observation n)
       (fun _ : ℕ => inferInstance)
@@ -20688,7 +20715,6 @@ theorem
       (hvc := hvc) (hindexClass := hindexClass)
       (henvelope := henvelope) (hclass := hclass) (henv := henv)
       (henv_integrable := henv_integrable)
-      (hclassIntegrable := hclassIntegrable)
 
 /--
 Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the
