@@ -1441,17 +1441,39 @@ countable null-measurable class constructor, local `OuterExpectation.lean`
 supplies the `ENNReal.ofReal` measurable-cover constructor, and no new mathlib
 primitive was needed.
 
+2026-05-03 `/goal` update after the finite-class centered-supremum
+integrability closure: the finite nonempty-class untruncated consumer now also
+derives the centered truncated weighted-class supremum integrability input
+internally.  New compiled helpers in `Theorem243.lean` are
+`integrable_vdVWWeightedSampleSum_of_integrable`,
+`vdVWWeightedClassSupremum_le_sum_abs_of_finite`, and
+`integrable_vdVWWeightedClassSupremum_of_finite`.  The proof bounds the finite
+class supremum by the finite sum of absolute fixed-index weighted sample sums,
+then applies the product-coordinate integrability of each fixed class member.
+Consequently
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass`
+no longer assumes `hcenteredSupIntegrable`; it derives it from finite
+`indexClass`, countable coordinate measurability, envelope measurability, and
+ordinary class-member integrability.  Search record for this edit: local
+`Theorem243.lean` already had the weighted-sum display, finite value-set
+boundedness, countable measurable-class constructors, and truncated-class
+integrability helpers; pinned mathlib supplies
+`MeasureTheory.integrable_comp_eval`, `MeasureTheory.integrable_finsetSum`,
+and `Integrable.mono'`.
+
 Current compact `/goal` execution prompt: continue VdV&W Chapters 1-2 in
 dependency order without repeating closed Theorem 2.4.3 finite-net,
 selected-fixed-radius, finite-class, integrability, centered-cover, and
-untruncation layers.  The active closure batch is the actual non-finite
+centered-supremum integrability, and untruncation layers.  The active closure
+batch is the actual non-finite
 theorem handoff from textbook entropy assumptions to selected fixed-radius
 tail/UI or deterministic log-ratio inputs; if that blocks after Lean/search,
 move to a theorem-critical finite-class specialization or a precise Chapter 1
 arbitrary-map/asymptotic-measurability primitive.
 
 Next exact edit: do not repeat the finite-class geometry/entropy/consumer
-bridge, finite-center integrability closure, or centered-cover closure.  The
+bridge, finite-center integrability closure, centered-cover closure, or
+centered-supremum integrability closure.  The
 remaining Theorem 2.4.3 proof work is now either (1) prove the actual
 non-finite-class
 geometric packing/cardinality estimate for the chosen empirical internal

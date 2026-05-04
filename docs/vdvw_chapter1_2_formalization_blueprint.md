@@ -646,6 +646,13 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWMeasurableCover.centered_truncated_of_countable_of_coordinate`, which
    combines countable coordinate measurability with the existing `ofReal`
    measurable-cover constructor.
+   It also derives the centered truncated weighted-class supremum
+   integrability input internally through
+   `integrable_vdVWWeightedSampleSum_of_integrable`,
+   `vdVWWeightedClassSupremum_le_sum_abs_of_finite`, and
+   `integrable_vdVWWeightedClassSupremum_of_finite`, by bounding the finite
+   supremum with a finite sum of absolute fixed-index weighted sample sums and
+   using mathlib product-coordinate integrability.
    The next proof step is therefore the non-finite-class
    geometric/cardinality instantiation, or a final theorem-critical
    specialization consuming this finite-class untruncated consumer.

@@ -1645,6 +1645,115 @@ noncomputable def
         n (fun _ : Fin n => (n : ℝ)⁻¹))
 
 /--
+Fixed-index weighted sample sums are integrable under the finite product law
+when the class member is integrable under `P`.
+
+This is a reusable finite-product integrability bridge for the finite-class
+Theorem 2.4.3 route.
+-/
+theorem integrable_vdVWWeightedSampleSum_of_integrable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {classFun : Index -> Observation -> ℝ} {n : ℕ}
+    (weights : Fin n -> ℝ) {index : Index}
+    (hindexIntegrable : Integrable (classFun index) P) :
+    Integrable
+      (fun sample : SampleAt Observation n =>
+        vdVWWeightedSampleSum classFun weights index sample)
+      (vdVWProductMeasure P n) := by
+  have hcoord :
+      ∀ i : Fin n,
+        Integrable (fun sample : SampleAt Observation n =>
+          classFun index (sample i)) (vdVWProductMeasure P n) := by
+    intro i
+    simpa [SampleAt, vdVWProductMeasure, Function.comp_def] using
+      (MeasureTheory.integrable_comp_eval
+        (μ := fun _ : Fin n => P) (i := i) hindexIntegrable)
+  unfold vdVWWeightedSampleSum
+  exact
+    (MeasureTheory.integrable_finsetSum (s := Finset.univ)
+      (f := fun i (sample : SampleAt Observation n) =>
+        weights i * classFun index (sample i))
+      (fun i _hi => (hcoord i).const_mul (weights i)))
+
+/--
+For a finite class, the weighted supremum is bounded by the sum of the
+absolute weighted sums over the finite `toFinset`.
+-/
+theorem vdVWWeightedClassSupremum_le_sum_abs_of_finite
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    {n : ℕ} (weights : Fin n -> ℝ) (sample : SampleAt Observation n) :
+    vdVWWeightedClassSupremum indexClass classFun weights sample ≤
+      hindex_finite.toFinset.sum (fun index =>
+        |vdVWWeightedSampleSum classFun weights index sample|) := by
+  have hsum_nonneg :
+      0 ≤ hindex_finite.toFinset.sum (fun index =>
+        |vdVWWeightedSampleSum classFun weights index sample|) := by
+    exact Finset.sum_nonneg fun index _hindex =>
+      abs_nonneg (vdVWWeightedSampleSum classFun weights index sample)
+  unfold vdVWWeightedClassSupremum
+  apply Real.iSup_le
+  · intro index
+    apply Real.iSup_le
+    · intro hindex
+      exact
+        Finset.single_le_sum
+          (fun candidate _hcandidate =>
+            abs_nonneg (vdVWWeightedSampleSum classFun weights candidate sample))
+          ((hindex_finite.mem_toFinset).2 hindex)
+    · exact hsum_nonneg
+  · exact hsum_nonneg
+
+/--
+Finite weighted class suprema are integrable once each fixed-index weighted
+sample sum is integrable and the supremum map is a.e. strongly measurable.
+
+The a.e. measurability is kept explicit so the lemma can be reused both with
+ordinary measurable finite classes and with VdV&W null-measurable class
+interfaces.
+-/
+theorem integrable_vdVWWeightedClassSupremum_of_finite
+    {Ω : Type x} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hindex_finite : indexClass.Finite) {n : ℕ}
+    (weights : Fin n -> ℝ) (sample : Ω -> SampleAt Observation n)
+    (hsup_meas :
+      AEStronglyMeasurable
+        (fun ω : Ω =>
+          vdVWWeightedClassSupremum indexClass classFun weights (sample ω)) μ)
+    (hterm :
+      ∀ index, index ∈ indexClass ->
+        Integrable
+          (fun ω : Ω =>
+            vdVWWeightedSampleSum classFun weights index (sample ω)) μ) :
+    Integrable
+      (fun ω : Ω =>
+        vdVWWeightedClassSupremum indexClass classFun weights (sample ω)) μ := by
+  have hsum_integrable :
+      Integrable
+        (fun ω : Ω =>
+          hindex_finite.toFinset.sum (fun index =>
+            |vdVWWeightedSampleSum classFun weights index (sample ω)|)) μ := by
+    exact
+      MeasureTheory.integrable_finsetSum (s := hindex_finite.toFinset)
+        (f := fun index ω =>
+          |vdVWWeightedSampleSum classFun weights index (sample ω)|)
+        (fun index hindex =>
+          (hterm index ((hindex_finite.mem_toFinset).1 hindex)).abs)
+  refine Integrable.mono' hsum_integrable hsup_meas ?_
+  refine ae_of_all μ ?_
+  intro ω
+  have hsup_nonneg :
+      0 ≤ vdVWWeightedClassSupremum indexClass classFun weights (sample ω) :=
+    vdVWWeightedClassSupremum_nonneg indexClass classFun weights (sample ω)
+  rw [Real.norm_eq_abs, abs_of_nonneg hsup_nonneg]
+  exact vdVWWeightedClassSupremum_le_sum_abs_of_finite
+    hindex_finite weights (sample ω)
+
+/--
 The product-copy pair difference for a fixed truncated class member is
 measurable.
 
@@ -15791,16 +15900,6 @@ theorem
               (fun _ : Fin n => (n : ℝ)⁻¹)
               (fun i : Fin n => (sample i, ghostSample i)))
           (vdVWProductMeasure P n))
-    (hcenteredSupIntegrable :
-      ∀ M n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWWeightedClassSupremum indexClass
-              (fun index : Index => fun observation : Observation =>
-                vdVWTruncatedClassFun classFun envelope M index observation -
-                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
-              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
-          (vdVWProductMeasure P n))
     (hghostExpectationIntegrable :
       ∀ M n,
         Integrable
@@ -15912,7 +16011,41 @@ theorem
           bddAbove_vdVWWeightedClassValueSet_of_finite hindex_finite
             (fun _ : Fin n => (n : ℝ)⁻¹) sample)
       (hpairSupIntegrable := hpairSupIntegrable)
-      (hcenteredSupIntegrable := hcenteredSupIntegrable)
+      (hcenteredSupIntegrable := by
+        intro M n
+        let centeredClassFun : Index -> Observation -> ℝ :=
+          fun index observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P
+        have hcenteredCoord :
+            VdVWClassCoordinateMeasurable indexClass centeredClassFun := by
+          intro index hindex
+          exact
+            (measurable_vdVWTruncatedClassFun (hclass index hindex) henv).sub
+              measurable_const
+        have hcenteredMeas :
+            AEStronglyMeasurable
+              (fun sample : SampleAt Observation n =>
+                vdVWWeightedClassSupremum indexClass centeredClassFun
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+              (vdVWProductMeasure P n) := by
+          exact
+            ((VdVWPMeasurableClass.of_countable_of_measurable
+              hindex_finite.countable hcenteredCoord)
+              n (fun _ : Fin n => (n : ℝ)⁻¹)).aemeasurable.aestronglyMeasurable
+        simpa [centeredClassFun] using
+          integrable_vdVWWeightedClassSupremum_of_finite
+            (μ := vdVWProductMeasure P n) hindex_finite
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (fun sample : SampleAt Observation n => sample)
+            hcenteredMeas
+            (fun index hindex =>
+              integrable_vdVWWeightedSampleSum_of_integrable
+                (P := P) (classFun := centeredClassFun)
+                (fun _ : Fin n => (n : ℝ)⁻¹)
+                ((integrable_vdVWTruncatedClassFun_of_integrable
+                  (hclass index hindex) henv
+                  (hclassIntegrable index hindex)).sub (integrable_const _))))
       (hghostExpectationIntegrable := hghostExpectationIntegrable)
       (hsplitSupIntegrable := hsplitSupIntegrable)
       (hsampleSupIntegrable := hsampleSupIntegrable)
