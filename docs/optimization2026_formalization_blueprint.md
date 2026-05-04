@@ -586,9 +586,17 @@ profile `n |-> q^n` as a mathlib `lp` element and prove the exact squared norm
 identity `(1 - q^2)^{-1}` for `0 <= q < 1`.  The search-first route reused
 `Mathlib.Analysis.Normed.Lp.lpSpace`, `Memℓp`, `lp.norm_rpow_eq_tsum`,
 `summable_geometric_of_lt_one`, and `tsum_geometric_of_lt_one`; no local
-infinite-norm primitive was needed.  The next infinite-model step is the
-tridiagonal objective/gradient and exact zero-gradient geometric minimizer,
-then a source-shaped tail-to-gap/log-rate wrapper.
+infinite-norm primitive was needed.  The tail-energy version now also compiles:
+`exercise42InfiniteTailSq`, `exercise42_geometric_l2_tail_term_eq`,
+`exercise42InfiniteGeometric_tailSq_eq`,
+`exercise42InfiniteGeometric_tailSq_eq_pow_mul_norm_sq`,
+`exercise42InfiniteGeometric_tailSq_eq_pow_mul_zero_dist_sq`, and
+`exercise42InfiniteGeometric_pow_mul_zero_dist_sq_le_tailSq`; these prove the
+exact source-shaped tail identity
+`tail_N = (q^2)^N * ‖0 - geometricProfile‖^2` using `tsum_mul_left` and
+`tsum_congr`.  The next infinite-model step is the tridiagonal
+objective/gradient and exact zero-gradient geometric minimizer, then a
+source-shaped tail-to-gap/log-rate wrapper.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

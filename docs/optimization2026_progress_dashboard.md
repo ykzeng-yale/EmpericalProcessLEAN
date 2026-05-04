@@ -279,10 +279,18 @@ true `ℓ²` model.  The first infinite-chain substrate now compiles in
 `exercise42InfiniteGeometric_norm_sq` prove the nonnegative geometric profile
 `n |-> q^n` is an `ell^2` element and has squared norm `(1 - q^2)^{-1}` for
 `0 <= q < 1`, reusing mathlib `lp`, `Memℓp`, `lp.norm_rpow_eq_tsum`,
-`summable_geometric_of_lt_one`, and `tsum_geometric_of_lt_one`.  Next, define
-the infinite tridiagonal hard-chain objective/gradient on this `lp` model,
-prove the geometric profile is the exact zero-gradient minimizer, then convert
-the tail obstruction into the logarithmic iteration-count statement.  In parallel,
+`summable_geometric_of_lt_one`, and `tsum_geometric_of_lt_one`.  The exact
+infinite tail layer also compiles as `exercise42InfiniteTailSq`,
+`exercise42_geometric_l2_tail_term_eq`,
+`exercise42InfiniteGeometric_tailSq_eq`,
+`exercise42InfiniteGeometric_tailSq_eq_pow_mul_norm_sq`,
+`exercise42InfiniteGeometric_tailSq_eq_pow_mul_zero_dist_sq`, and
+`exercise42InfiniteGeometric_pow_mul_zero_dist_sq_le_tailSq`, proving the
+source-shaped `(q^2)^N` tail-times-zero-distance identity by reusing
+`tsum_mul_left` and `tsum_congr`.  Next, define the infinite tridiagonal
+hard-chain objective/gradient on this `lp` model, prove the geometric profile
+is the exact zero-gradient minimizer, then convert the tail obstruction into
+the logarithmic iteration-count statement.  In parallel,
 specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.  Search
