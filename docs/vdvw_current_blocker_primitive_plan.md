@@ -2043,3 +2043,32 @@ That closes the Lean side needed for the exact Example 2.4.2 theorem report.
 Every heartbeat should check this file before choosing a new primitive.  If a
 mathlib or local-code search finds a reusable theorem for one of the steps
 above, update this file and reuse that theorem rather than duplicating it.
+
+## 2026-05-04 `/goal` update: finite-code empirical trace bridge
+
+`StatInference/EmpiricalProcess/TraceCoding.lean` adds the generic finite-code
+layer between structural coding arguments and Theorem 2.4.3 entropy
+constructors.  New compiled declarations:
+
+```lean
+finite_empiricalTrace_image_of_finite_code
+empiricalTrace_image_toFinset_card_le_finite_code
+empiricalTrace_image_card_add_one_real_le_of_finite_code_nat_poly
+```
+
+These prove that if the realized empirical trace image is injectively coded
+into a finite `Finset Code`, then the trace image is finite, its cardinality is
+bounded by `codeSet.card`, and any supplied natural-polynomial bound on the
+code set transfers to the trace image.
+
+Search record: reused pinned mathlib finite-image/cardinality APIs
+`Set.Finite.of_finite_image`, `Set.ncard_le_ncard_of_injOn`,
+`Set.ncard_eq_toFinset_card`, and `Set.ncard_coe_finset`; reused local
+`empiricalTrace` from `CoveringPrimitive`.  No existing local/mathlib theorem
+provided this exact VdV&W finite-code trace bridge.
+
+Next exact theorem-facing edit: build the structural code itself for the
+remaining non-finite real-valued route, either by a uniform finite-threshold /
+subgraph coding theorem that injectively codes bounded truncated traces into a
+polynomial-size finite code set, or by a maximal-separated/internal-cover
+cardinality theorem that directly supplies the natural-polynomial trace bound.

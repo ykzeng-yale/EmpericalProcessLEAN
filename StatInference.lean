@@ -8,6 +8,7 @@ import StatInference.EmpiricalProcess.Preservation
 import StatInference.EmpiricalProcess.Complexity
 import StatInference.EmpiricalProcess.VCSauer
 import StatInference.EmpiricalProcess.CoveringPrimitive
+import StatInference.EmpiricalProcess.TraceCoding
 import StatInference.EmpiricalProcess.BinaryTraceVC
 import StatInference.EmpiricalProcess.SubgraphTraceVC
 import StatInference.EmpiricalProcess.PMeasurable
