@@ -395,8 +395,11 @@ condition is now discharged by `exercise42InfiniteGeometricInitialScale_pos`
 and
 `exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale`,
 which convert `eps <= (alpha/2) * ‖x_0 - x_*‖^2` into the required
-log-nonpositive hypothesis.  The next target is packaging the concrete
-infinite Exercise 4.2 display, then feeding it into the Theorem 4.5
+log-nonpositive hypothesis.  The literal source exponent display now compiles
+as
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_concreteGradient`,
+rewriting `(q^2)^N` to `q^(2N)`.  The next target is adding the minimizer/value
+notation wrapper for `f_*` or feeding this display into the Theorem 4.5
 condition-number/rate comparison.  In
 parallel, specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete

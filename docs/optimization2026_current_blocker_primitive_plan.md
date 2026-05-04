@@ -1310,9 +1310,12 @@ primitive was introduced.  The small-accuracy side condition is now discharged
 by `exercise42InfiniteGeometricInitialScale_pos` and
 `exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_concreteGradient_of_eps_le_initialScale`,
 which derive the needed `log(eps / scale) <= 0` from
-`eps <= (alpha/2) * ‖x_0 - x_*‖^2`.  Next direct Exercise 4.2 step: package
-the theorem in the literal display
-`f(x_N)-f_* >= (alpha/2) q^(2N) ‖x_0-x_*‖^2` and the derived
+`eps <= (alpha/2) * ‖x_0 - x_*‖^2`.  The literal source exponent display now
+also compiles as
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_concreteGradient`,
+rewriting `(q^2)^N` to `q^(2N)` with `pow_mul` and `omega`.  Next direct
+Exercise 4.2 step: either add the minimizer/value notation wrapper so the
+right side reads `f(x_N)-f_*`, or connect this display directly to the derived
 `Ω(√κ log(alpha ‖x_0-x_*‖^2 / eps))` statement.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,

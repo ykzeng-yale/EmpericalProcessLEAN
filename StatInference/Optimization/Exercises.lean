@@ -2043,6 +2043,48 @@ theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_concreteGrad
       hx0 hspan N
 
 /--
+Literal source-display form of the infinite Exercise 4.2 geometric gap:
+`(q^2)^N` is rewritten as `q^(2N)`, matching the textbook statement.
+-/
+theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_concreteGradient
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ) :
+    (alpha / 2) *
+        ((chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^
+              (2 : ℕ)) ≤
+      exercise42InfiniteChainObjective alpha beta (x N) -
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)) := by
+  let q := chewi45GeometricRatio kappa
+  have hpow : (q ^ (2 : ℕ)) ^ N = (q ^ N) ^ (2 : ℕ) := by
+    rw [← pow_mul, ← pow_mul]
+    congr 1
+    omega
+  simpa [q, pow_mul, hpow, mul_comm, mul_left_comm, mul_assoc] using
+    exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_concreteGradient
+      halpha_pos halpha_lt_beta hkappa hx0 hspan N
+
+/--
 Fully concrete infinite Exercise 4.2 log-quotient lower bound.  Near-minimality
 for the displayed hard-chain objective forces the source logarithmic iteration
 lower bound, with no remaining supplied first-order or gradient hypotheses.
