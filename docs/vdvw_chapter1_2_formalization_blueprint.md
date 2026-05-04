@@ -1054,10 +1054,16 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWWeightedClassSupremum_uniform_le_leaveOneOutAverage`; the next
    Lemma 2.4.5 step is the conditional-expectation symmetry of the
    leave-one-out terms given `Σ_{n+1}` and the resulting reverse-submartingale
-   comparison, not
-   the finite permutation, generated-sigma, countable-supremum adaptedness,
-   cover-shaped adaptedness, cofiltration substrate, or ordinary conditional
-   expectation convergence substrate.
+   comparison.  The generic conditional-expectation comparison and finite
+   average symmetry reduction are now compiled as
+   `vdVW_condExp_comparison_of_ae_le_of_condExp_eq`,
+   `vdVW_condExp_uniformAverage_eq_of_finite_condExp_symmetry`, and
+   `vdVW_condExp_reverseComparison_of_ae_le_uniformAverage`; the remaining
+   exact task is the VdV&W-specific conditional symmetry theorem for the
+   leave-one-out terms under `Σ_{n+1}`, not the finite permutation,
+   generated-sigma, countable-supremum adaptedness, cover-shaped adaptedness,
+   cofiltration substrate, ordinary conditional expectation convergence
+   substrate, or generic conditional-expectation algebra.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

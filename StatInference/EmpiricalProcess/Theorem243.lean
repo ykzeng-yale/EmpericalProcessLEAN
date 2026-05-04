@@ -170,6 +170,126 @@ theorem vdVW_condExp_ae_tendsto_limitProcess_of_eLpNorm_le
   exact (eLpNorm_one_condExp_le_eLpNorm (m := ℱ n) (μ := μ) g).trans hR
 
 /--
+Conditional-expectation comparison bridge for the reverse-submartingale step in
+VdV&W Lemma 2.4.5.  If an adapted statistic `X` is bounded by an integrable
+upper statistic `Z`, and the conditional expectation of `Z` is identified with
+`W`, then `X ≤ W` a.e.
+
+This is the reusable probability-side handoff that lets the deterministic
+leave-one-out inequality feed the conditional-expectation argument.
+-/
+theorem vdVW_condExp_comparison_of_ae_le_of_condExp_eq
+    {Ω : Type u} [mΩ : MeasurableSpace Ω] {μ : Measure Ω}
+    [IsFiniteMeasure μ]
+    {m : MeasurableSpace Ω} (hm : m ≤ mΩ)
+    {X Z W : Ω -> ℝ}
+    (hX_meas : StronglyMeasurable[m] X)
+    (hX_int : Integrable X μ) (hZ_int : Integrable Z μ)
+    (hXZ : X ≤ᵐ[μ] Z)
+    (hZW : μ[Z | m] =ᵐ[μ] W) :
+    X ≤ᵐ[μ] W := by
+  have hXcond_eq : μ[X | m] = X :=
+    condExp_of_stronglyMeasurable (μ := μ) hm hX_meas hX_int
+  have hcond_le : μ[X | m] ≤ᵐ[μ] μ[Z | m] :=
+    condExp_mono (m := m) hX_int hZ_int hXZ
+  filter_upwards [hcond_le, hZW] with ω hle heq
+  rw [hXcond_eq] at hle
+  exact hle.trans_eq heq
+
+/--
+Finite conditional-expectation symmetry bridge.  If all terms in a finite
+family have the same conditional expectation as a distinguished term, then the
+conditional expectation of their uniform average is that same term.
+
+This isolates the VdV&W Lemma 2.4.5 permutation-symmetry task: after proving
+the leave-one-out terms are conditionally symmetric given `Σ_{n+1}`, the
+average in the deterministic inequality collapses to any one term.
+-/
+theorem vdVW_condExp_uniformAverage_eq_of_finite_condExp_symmetry
+    {Ω : Type u} [mΩ : MeasurableSpace Ω] {μ : Measure Ω}
+    {m : MeasurableSpace Ω} {ι : Type v} [Fintype ι] [Nonempty ι]
+    (base : ι) {Y : ι -> Ω -> ℝ}
+    (hY_int : ∀ i, Integrable (Y i) μ)
+    (hY_cond : ∀ i, μ[Y i | m] =ᵐ[μ] μ[Y base | m]) :
+    μ[((Fintype.card ι : ℝ)⁻¹) • (∑ i, Y i) | m] =ᵐ[μ]
+      μ[Y base | m] := by
+  let c : ℝ := (Fintype.card ι : ℝ)⁻¹
+  have hcard_ne : (Fintype.card ι : ℝ) ≠ 0 := by
+    exact_mod_cast (Fintype.card_ne_zero : Fintype.card ι ≠ 0)
+  have hsmul :
+      μ[c • (∑ i, Y i) | m] =ᵐ[μ]
+        c • μ[∑ i, Y i | m] := by
+    exact condExp_smul (μ := μ) (m := m) c (∑ i, Y i)
+  have hsum :
+      μ[∑ i, Y i | m] =ᵐ[μ]
+        ∑ i, μ[Y i | m] := by
+    simpa using
+      (condExp_finsetSum
+        (μ := μ) (m := m) (s := Finset.univ) (f := Y)
+        (fun i _hi => hY_int i))
+  have hall : ∀ᵐ ω ∂μ, ∀ i, μ[Y i | m] ω = μ[Y base | m] ω :=
+    ae_all_iff.2 hY_cond
+  filter_upwards [hsmul, hsum, hall] with ω hsmulω hsumω hallω
+  rw [hsmulω]
+  change c * (μ[∑ i, Y i | m] ω) = μ[Y base | m] ω
+  rw [hsumω]
+  simp only [Finset.sum_apply]
+  have hsum_eq :
+      (∑ i, μ[Y i | m] ω) =
+        (Fintype.card ι : ℝ) * μ[Y base | m] ω := by
+    calc
+      (∑ i, μ[Y i | m] ω)
+          = ∑ _i : ι, μ[Y base | m] ω := by
+              exact Finset.sum_congr rfl fun i _hi => hallω i
+      _ = (Fintype.card ι : ℝ) * μ[Y base | m] ω := by
+              simp [Finset.sum_const, nsmul_eq_mul]
+  have hc : c * (Fintype.card ι : ℝ) = 1 := by
+    exact inv_mul_cancel₀ hcard_ne
+  calc
+    c * (∑ i, μ[Y i | m] ω)
+        = c * ((Fintype.card ι : ℝ) * μ[Y base | m] ω) := by
+            rw [hsum_eq]
+    _ = μ[Y base | m] ω := by
+            rw [← mul_assoc, hc, one_mul]
+
+/--
+Reverse-submartingale comparison bridge for a finite leave-one-out average:
+an adapted integrable statistic bounded by the uniform average of conditionally
+symmetric integrable terms is bounded by the conditional expectation of a
+distinguished term.
+
+For Lemma 2.4.5, `X` is the `(n+1)`-sample supremum and the `Y i` are the
+leave-one-out `n`-sample supremum covers.
+-/
+theorem vdVW_condExp_reverseComparison_of_ae_le_uniformAverage
+    {Ω : Type u} [mΩ : MeasurableSpace Ω] {μ : Measure Ω}
+    [IsFiniteMeasure μ]
+    {m : MeasurableSpace Ω} (hm : m ≤ mΩ)
+    {ι : Type v} [Fintype ι] [Nonempty ι]
+    (base : ι) {X : Ω -> ℝ} {Y : ι -> Ω -> ℝ}
+    (hX_meas : StronglyMeasurable[m] X)
+    (hX_int : Integrable X μ) (hY_int : ∀ i, Integrable (Y i) μ)
+    (hdet :
+      X ≤ᵐ[μ] ((Fintype.card ι : ℝ)⁻¹) • (∑ i, Y i))
+    (hY_cond : ∀ i, μ[Y i | m] =ᵐ[μ] μ[Y base | m]) :
+    X ≤ᵐ[μ] μ[Y base | m] := by
+  let Z : Ω -> ℝ := ((Fintype.card ι : ℝ)⁻¹) • (∑ i, Y i)
+  have hZ_int : Integrable Z μ := by
+    change Integrable (fun x => ((Fintype.card ι : ℝ)⁻¹) * (∑ i, Y i) x) μ
+    simpa [Finset.sum_apply] using
+      (integrable_finsetSum Finset.univ (fun i _hi => hY_int i)).const_mul
+        ((Fintype.card ι : ℝ)⁻¹)
+  have hZ_cond :
+      μ[Z | m] =ᵐ[μ] μ[Y base | m] := by
+    dsimp [Z]
+    exact
+      vdVW_condExp_uniformAverage_eq_of_finite_condExp_symmetry
+        (Ω := Ω) (mΩ := mΩ) (μ := μ) (m := m) base hY_int hY_cond
+  exact
+    vdVW_condExp_comparison_of_ae_le_of_condExp_eq
+      (Ω := Ω) (mΩ := mΩ) (μ := μ) (m := m) hm hX_meas hX_int hZ_int hdet hZ_cond
+
+/--
 VdV&W Lemma 2.4.5 exterior-cofiltration substrate on an infinite product
 sample space.
 

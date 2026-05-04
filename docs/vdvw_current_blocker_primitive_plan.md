@@ -3140,3 +3140,20 @@ suprema.  The remaining Lemma 2.4.5 blocker is now the probability side:
 prove the conditional-expectation symmetry of the leave-one-out terms given
 `Σ_{n+1}`, then combine it with this deterministic inequality to obtain the
 reverse-submartingale comparison.
+
+2026-05-04 follow-up: the generic conditional-expectation comparison layer
+needed after the deterministic leave-one-out inequality is now compiled.
+Search/reuse record: pinned mathlib conditional-expectation APIs used here are
+`condExp_of_stronglyMeasurable`, `condExp_mono`, `condExp_finsetSum`,
+`condExp_smul`, and `ae_all_iff`; no ready local/mathlib theorem was found for
+the full VdV&W leave-one-out conditional symmetry under `Σ_{n+1}`.  New
+compiled declarations are `vdVW_condExp_comparison_of_ae_le_of_condExp_eq`,
+`vdVW_condExp_uniformAverage_eq_of_finite_condExp_symmetry`, and
+`vdVW_condExp_reverseComparison_of_ae_le_uniformAverage`.  These close the
+probability algebra once conditional symmetry of the leave-one-out terms is
+available.  The remaining exact Lemma 2.4.5 blocker is now narrower: prove
+that the leave-one-out empirical-supremum cover terms have equal conditional
+expectations given the permutation-symmetric sigma-field `Σ_{n+1}` (or record
+the precise invariant-set/measure-preserving primitive needed), then instantiate
+the new reverse-comparison bridge with the existing deterministic
+`vdVWWeightedClassSupremum_uniform_le_leaveOneOutAverage`.

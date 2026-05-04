@@ -755,16 +755,26 @@ now compiled: `sum_leaveOneOut_eq_nat_mul_sum`,
 sample-path inequality before conditional expectations.  Remaining work is the
 conditional-expectation symmetry of the leave-one-out terms given `Σ_{n+1}`
 and the resulting reverse-submartingale comparison.
+2026-05-04 follow-up: the generic conditional-expectation comparison part of
+that reverse-submartingale comparison is now compiled:
+`vdVW_condExp_comparison_of_ae_le_of_condExp_eq`,
+`vdVW_condExp_uniformAverage_eq_of_finite_condExp_symmetry`, and
+`vdVW_condExp_reverseComparison_of_ae_le_uniformAverage`.  These proofs reuse
+mathlib `condExp_of_stronglyMeasurable`, `condExp_mono`,
+`condExp_finsetSum`, `condExp_smul`, and `ae_all_iff`.  Remaining work is now
+the VdV&W-specific conditional symmetry theorem for the leave-one-out terms
+given `Σ_{n+1}`, then instantiation of the bridge with the existing
+deterministic leave-one-out supremum inequality.
 
 ## Verification Monitor
 
 Latest targeted verification includes the Theorem 2.4.3 theorem module after
-the finite-product GC-deviation bridge on 2026-05-04.
+the Lemma 2.4.5 conditional-expectation comparison bridge on 2026-05-04.
 
 ```text
 lake env lean StatInference/EmpiricalProcess/Theorem243.lean
 lake build
-Build completed successfully (8426 jobs).
+Build completed successfully (8427 jobs).
 
 rg -n '\b(sorry|admit|axiom|unsafe)\b' StatInference -g '*.lean'
 No matches.
