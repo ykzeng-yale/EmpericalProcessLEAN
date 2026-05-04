@@ -127,6 +127,7 @@ Current compiled surface:
 - `StatInference.Optimization.PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn`
 - `StatInference.Optimization.positive_gap_of_not_isMinOn`
+- `StatInference.Optimization.minimizer_value_eq_of_reference_minimizer`
 - `StatInference.Optimization.plGradientFlowLyapunov_inequality_of_sideConditionData`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
@@ -134,12 +135,16 @@ Current compiled surface:
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovRoute`
 - `StatInference.Optimization.plGradientFlowLimitNonMinimizerRouteToQGOn_of_lyapunovNonMinimizerRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute_of_referenceMinimizer`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute_of_referenceMinimizer`
 - `StatInference.Optimization.plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_sideConditionNonMinimizerRoute`
 - `StatInference.Optimization.plGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn_of_noMinimizerHitRoute`
 - `StatInference.Optimization.plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_noMinimizerHitRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_sideConditionNonMinimizerRoute`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_sideConditionNonMinimizerRoute_of_referenceMinimizer`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_noMinimizerHitRoute`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_noMinimizerHitRoute_of_referenceMinimizer`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_sideConditionRoute`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn.quadraticGrowthOn`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute`
@@ -150,9 +155,13 @@ Current compiled surface:
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitNonMinimizerRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitNonMinimizerRoute_of_referenceMinimizer`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNonMinimizerRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNonMinimizerRoute_of_referenceMinimizer`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRoute_of_referenceMinimizer`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNoMinimizerHitRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNoMinimizerHitRoute_of_referenceMinimizer`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNonzeroDisplacementRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovContinuousDataRoute`
@@ -255,8 +264,9 @@ Near-term exact candidates:
    nonzero-displacement side conditions.  The derivative-to-antitone bridge,
    PL scalar sign calculation, positive-gap derivation from no minimizer hit,
    objective-gap derivative, nonzero norm-derivative calculation,
-   trajectory/gap continuity, and Lyapunov-continuity wrapper already compile
-   for Proposition 2.7(2).
+   trajectory/gap continuity, Lyapunov-continuity wrapper, and
+   reference-minimizer replacement for the global minimizer-value invariant
+   already compile for Proposition 2.7(2).
 2. Remove or discharge the interval-integrability assumptions in Theorem 2.4
    from the notes' `C²`/regular trajectory hypotheses if a clean mathlib
    continuity route is available.

@@ -402,6 +402,23 @@ theorem positive_gap_of_not_isMinOn
   have hlt : fstar < f y := lt_of_le_of_ne hle hne.symm
   nlinarith
 
+omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] in
+/--
+If `fstar` is attained by one minimizer, then every minimizer in the same
+feasible set has value `fstar`.
+-/
+theorem minimizer_value_eq_of_reference_minimizer
+    {C : Set E} {f : E -> ℝ} {fstar : ℝ} {xRef z : E}
+    (hxRef : xRef ∈ C) (hminRef : IsMinOn f C xRef)
+    (hfxRef : f xRef = fstar) (hz : z ∈ C)
+    (hminz : IsMinOn f C z) :
+    f z = fstar := by
+  have href_le : f xRef ≤ f z :=
+    (isMinOn_iff.mp hminRef) z hz
+  have hz_le : f z ≤ f xRef :=
+    (isMinOn_iff.mp hminz) xRef hxRef
+  nlinarith
+
 /--
 Pointwise Lyapunov inequality from Chewi's side-condition data.  This is the
 calculus core reused by both the all-start and nontrivial-start routes:
@@ -1090,6 +1107,25 @@ theorem plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute
 
 omit [InnerProductSpace ℝ E] in
 /--
+Reference-minimizer form of the nontrivial-start limit route.  This replaces
+the global minimizer-value invariant by one attained minimizer with value
+`fstar`.
+-/
+theorem plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute_of_referenceMinimizer
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ} {xRef : E}
+    (hxRef : xRef ∈ C) (hminRef : IsMinOn f C xRef)
+    (hfxRef : f xRef = fstar)
+    (hroute :
+      PLGradientFlowLimitNonMinimizerRouteToQGOn C f alpha fstar) :
+    PLGradientFlowLimitRouteToQGOn C f alpha fstar :=
+  plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute
+    (fun _ hz hminz =>
+      minimizer_value_eq_of_reference_minimizer
+        hxRef hminRef hfxRef hz hminz)
+    hroute
+
+omit [InnerProductSpace ℝ E] in
+/--
 The nontrivial-start Lyapunov route plus minimizer-value bookkeeping gives
 the full limit route used by the algebraic `(QG)` proof.
 -/
@@ -1101,6 +1137,22 @@ theorem plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute
     PLGradientFlowLimitRouteToQGOn C f alpha fstar :=
   plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute
     hmin_value
+    (plGradientFlowLimitNonMinimizerRouteToQGOn_of_lyapunovNonMinimizerRoute
+      hroute)
+
+omit [InnerProductSpace ℝ E] in
+/--
+Reference-minimizer form of the nontrivial-start Lyapunov route.
+-/
+theorem plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute_of_referenceMinimizer
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ} {xRef : E}
+    (hxRef : xRef ∈ C) (hminRef : IsMinOn f C xRef)
+    (hfxRef : f xRef = fstar)
+    (hroute :
+      PLGradientFlowLyapunovNonMinimizerRouteToQGOn C f alpha fstar) :
+    PLGradientFlowLimitRouteToQGOn C f alpha fstar :=
+  plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute_of_referenceMinimizer
+    hxRef hminRef hfxRef
     (plGradientFlowLimitNonMinimizerRouteToQGOn_of_lyapunovNonMinimizerRoute
       hroute)
 
@@ -1126,6 +1178,27 @@ theorem plGradientFlowLimitRouteToQGOn_of_sideConditionNonMinimizerRoute
       hgrad halpha hpl hroute)
 
 /--
+Reference-minimizer form of the nontrivial-start side-condition route.
+-/
+theorem plGradientFlowLimitRouteToQGOn_of_sideConditionNonMinimizerRoute_of_referenceMinimizer
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    {xRef : E}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hxRef : xRef ∈ C) (hminRef : IsMinOn f C xRef)
+    (hfxRef : f xRef = fstar)
+    (hroute :
+      PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLimitRouteToQGOn C f alpha fstar :=
+  plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute_of_referenceMinimizer
+    hxRef hminRef hfxRef
+    (plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_sideConditionNonMinimizerRoute
+      hgrad halpha hpl hroute)
+
+/--
 No-minimizer-hit route implies the full gradient-flow limit route once the
 already-minimizer branch is handled by minimizer-value bookkeeping.
 -/
@@ -1142,6 +1215,27 @@ theorem plGradientFlowLimitRouteToQGOn_of_noMinimizerHitRoute
     PLGradientFlowLimitRouteToQGOn C f alpha fstar :=
   plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute
     hmin_value
+    (plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_noMinimizerHitRoute
+      hgrad halpha hpl hroute)
+
+/--
+Reference-minimizer form of the no-minimizer-hit route.
+-/
+theorem plGradientFlowLimitRouteToQGOn_of_noMinimizerHitRoute_of_referenceMinimizer
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    {xRef : E}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hxRef : xRef ∈ C) (hminRef : IsMinOn f C xRef)
+    (hfxRef : f xRef = fstar)
+    (hroute :
+      PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLimitRouteToQGOn C f alpha fstar :=
+  plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute_of_referenceMinimizer
+    hxRef hminRef hfxRef
     (plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_noMinimizerHitRoute
       hgrad halpha hpl hroute)
 
@@ -1353,6 +1447,23 @@ theorem quadraticGrowthOn_of_plGradientFlowLimitNonMinimizerRoute
 
 omit [InnerProductSpace ℝ E] in
 /--
+Reference-minimizer form of Chewi Proposition 2.7(2) from a nontrivial-start
+limit route.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLimitNonMinimizerRoute_of_referenceMinimizer
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ} {xRef : E}
+    (halpha : 0 < alpha)
+    (hxRef : xRef ∈ C) (hminRef : IsMinOn f C xRef)
+    (hfxRef : f xRef = fstar)
+    (hroute :
+      PLGradientFlowLimitNonMinimizerRouteToQGOn C f alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLimitRoute halpha
+    (plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute_of_referenceMinimizer
+      hxRef hminRef hfxRef hroute)
+
+omit [InnerProductSpace ℝ E] in
+/--
 Chewi Proposition 2.7, second implication, in source infimum form, from the
 nontrivial-start Lyapunov route.
 -/
@@ -1366,6 +1477,23 @@ theorem quadraticGrowthOn_of_plGradientFlowLyapunovNonMinimizerRoute
   (quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNonMinimizerRoute
     (C := C) (f := f) (alpha := alpha) (fstar := fstar)
     halpha hmin_value hroute).quadraticGrowthOn halpha.le
+
+omit [InnerProductSpace ℝ E] in
+/--
+Reference-minimizer form of Chewi Proposition 2.7(2) from the nontrivial-start
+Lyapunov route.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovNonMinimizerRoute_of_referenceMinimizer
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ} {xRef : E}
+    (halpha : 0 < alpha)
+    (hxRef : xRef ∈ C) (hminRef : IsMinOn f C xRef)
+    (hfxRef : f xRef = fstar)
+    (hroute :
+      PLGradientFlowLyapunovNonMinimizerRouteToQGOn C f alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLimitRoute halpha
+    (plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute_of_referenceMinimizer
+      hxRef hminRef hfxRef hroute)
 
 /--
 Chewi Proposition 2.7, second implication, in source infimum form, from the
@@ -1386,6 +1514,27 @@ theorem quadraticGrowthOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRout
     hgrad halpha hpl hmin_value hroute).quadraticGrowthOn halpha.le
 
 /--
+Reference-minimizer form of Chewi Proposition 2.7(2) from the nontrivial-start
+side-condition route.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRoute_of_referenceMinimizer
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    {xRef : E}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hxRef : xRef ∈ C) (hminRef : IsMinOn f C xRef)
+    (hfxRef : f xRef = fstar)
+    (hroute :
+      PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLimitRoute halpha
+    (plGradientFlowLimitRouteToQGOn_of_sideConditionNonMinimizerRoute_of_referenceMinimizer
+      hgrad halpha.le hpl hxRef hminRef hfxRef hroute)
+
+/--
 Chewi Proposition 2.7, second implication, in source infimum form, from the
 no-minimizer-hit route.  Positive gap is derived rather than assumed.
 -/
@@ -1402,6 +1551,27 @@ theorem quadraticGrowthOn_of_plGradientFlowLyapunovNoMinimizerHitRoute
     QuadraticGrowthOn C f alpha fstar :=
   (quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNoMinimizerHitRoute
     hgrad halpha hpl hmin_value hroute).quadraticGrowthOn halpha.le
+
+/--
+Reference-minimizer form of Chewi Proposition 2.7(2) from the no-minimizer-hit
+route.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovNoMinimizerHitRoute_of_referenceMinimizer
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    {xRef : E}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hxRef : xRef ∈ C) (hminRef : IsMinOn f C xRef)
+    (hfxRef : f xRef = fstar)
+    (hroute :
+      PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLimitRoute halpha
+    (plGradientFlowLimitRouteToQGOn_of_noMinimizerHitRoute_of_referenceMinimizer
+      hgrad halpha.le hpl hxRef hminRef hfxRef hroute)
 
 omit [InnerProductSpace ℝ E] in
 /--
