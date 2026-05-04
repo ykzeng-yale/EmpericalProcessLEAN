@@ -787,6 +787,13 @@ above, so they do not change the theorem-level dashboard counts.
    now composes this package with the large-`M` untruncation layer, so the
    exact finite-value/discretized threshold route reaches centered untruncated
    convergence under its explicit structural and integrability hypotheses.
+   The finite realized value-set bridge
+   `empiricalTrace_image_card_add_one_real_le_of_sample_valueSet_finite_uniform_vc`
+   and Theorem 2.4.3 constructor
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_sample_valueSet_finite_uniform_vc`
+   now also choose the threshold finset as the finite set of values realized
+   on the empirical sample, so later geometry can target value-set finiteness
+   and cardinality directly.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

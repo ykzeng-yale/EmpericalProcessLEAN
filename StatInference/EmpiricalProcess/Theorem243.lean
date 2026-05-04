@@ -12589,6 +12589,84 @@ theorem
       hconstant_ge_one hM_pos hpoly_bound
 
 /--
+Selected fixed-radius tail/UI package from finite realized sample-coordinate
+value sets and uniform fixed-threshold VC/Sauer bounds.
+
+This specializes the finite-threshold route by choosing the threshold finset to
+be the finite set of values actually realized by the truncated class on the
+current empirical sample.  The caller supplies finiteness and a uniform
+cardinality bound for that realized value set.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_sample_valueSet_finite_uniform_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {thresholdCount : ℝ -> ℕ} {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hvalues_finite :
+      ∀ _eta n (sample : SampleAt Observation n) m,
+        ({value : ℝ |
+          ∃ sampleIndex : Fin m, ∃ index, index ∈ indexClass ∧
+            vdVWTruncatedClassFun classFun envelope M index
+              ((samplePath (X n) sample m) sampleIndex) = value} : Set ℝ).Finite)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hvalues_card :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        (hvalues_finite eta n sample n).toFinset.card ≤ thresholdCount eta)
+    (hvc :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        ∀ threshold :
+          {threshold // threshold ∈
+            (hvalues_finite eta n sample n).toFinset},
+          (empiricalBinaryTraceSetFamily (samplePath (X n) sample n) indexClass
+            (thresholdIndicatorClassFun
+              (vdVWTruncatedClassFun classFun envelope M) threshold.1)).vcDim ≤
+            vcDegree eta) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta n sample m =>
+        (finite_empiricalTrace_image_of_values_mem_thresholds
+          (sample := samplePath (X n) sample m)
+          (indexClass := indexClass)
+          (classFun := vdVWTruncatedClassFun classFun envelope M)
+          (thresholds := (hvalues_finite eta n sample m).toFinset)
+          (by
+            intro sampleIndex index hindex
+            exact
+              ((hvalues_finite eta n sample m).mem_toFinset).2
+                ⟨sampleIndex, index, hindex, rfl⟩)).toFinset.card) := by
+  classical
+  let thresholds :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Finset ℝ :=
+    fun eta n sample m => (hvalues_finite eta n sample m).toFinset
+  have hvalues :
+      ∀ eta n (sample : SampleAt Observation n) m,
+        ∀ sampleIndex : Fin m,
+          ∀ index, index ∈ indexClass ->
+            vdVWTruncatedClassFun classFun envelope M index
+              ((samplePath (X n) sample m) sampleIndex) ∈
+                thresholds eta n sample m := by
+    intro eta n sample m sampleIndex index hindex
+    exact
+      ((hvalues_finite eta n sample m).mem_toFinset).2
+        ⟨sampleIndex, index, hindex, rfl⟩
+  simpa [thresholds] using
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_values_mem_thresholds_uniform_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (thresholds := thresholds)
+      (thresholdCount := thresholdCount) (vcDegree := vcDegree)
+      hX_samplePath hvalues hclass henvelope_meas hM_pos hvalues_card hvc
+
+/--
 Finite-trace-image selected fixed-radius tail/UI package from a natural
 polynomial trace-count estimate.
 -/

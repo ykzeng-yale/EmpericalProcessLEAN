@@ -2204,9 +2204,30 @@ and
 No new mathlib theorem was needed because the step is theorem plumbing between
 two compiled VdVW-local interfaces.
 
+2026-05-04 `/goal` update after finite realized value-set constructor:
+`ThresholdCoding.lean` now adds
+`empiricalTrace_image_card_add_one_real_le_of_sample_valueSet_finite_uniform_vc`,
+which chooses the threshold finset as the finite set of all real values
+actually realized by the class on the current empirical sample.  `Theorem243.lean`
+now adds
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_sample_valueSet_finite_uniform_vc`,
+which packages that finite realized value-set route into the selected
+fixed-radius tail/UI structure.  This removes the need for callers to provide
+an arbitrary threshold finset when they can prove finite realized value-set
+finiteness, a cardinality bound, and fixed-threshold VC bounds for the induced
+thresholds.
+
+Search record: local searches for finite-value/range helpers found no prior
+VdVW constructor with this shape.  The proof reuses mathlib
+`Set.Finite.toFinset` / `mem_toFinset` and the compiled local
+`empiricalTrace_image_card_add_one_real_le_of_values_mem_thresholds_uniform_vc`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_values_mem_thresholds_uniform_vc`.
+
 Next exact theorem-facing edit: prove the actual coordinatewise
-finite-threshold value-separation and threshold-count assumptions from the
-subgraph/truncated-class geometry, or provide the
+finite-threshold value-separation/count assumptions, or finite realized
+value-set cardinality bounds, from the subgraph/truncated-class geometry; or
+provide the
 maximal-separated/internal-cover cardinality theorem that bypasses threshold
 products and directly supplies the natural-polynomial trace bound consumed by
 Theorem 2.4.3.  The exact finite-value threshold route now reaches untruncated

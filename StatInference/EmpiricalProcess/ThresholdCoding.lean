@@ -1092,4 +1092,51 @@ theorem empiricalTrace_image_card_add_one_real_le_of_values_mem_thresholds_unifo
       (thresholdTraceCode_separates_of_values_mem_thresholds hvalues)
       hthresholds_card hvc
 
+/--
+Finite realized sample-coordinate value sets supply the finite threshold set
+used by the value-membership threshold route.
+
+This is a structural bridge toward the Theorem 2.4.3 finite-threshold route:
+instead of requiring an externally chosen threshold finset, it uses the finite
+set of all values actually realized on the current empirical sample by the
+class.
+-/
+theorem empiricalTrace_image_card_add_one_real_le_of_sample_valueSet_finite_uniform_vc
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hvalues_finite :
+      ({value : ℝ |
+        ∃ sampleIndex : Fin n, ∃ index, index ∈ indexClass ∧
+          classFun index (sample sampleIndex) = value} : Set ℝ).Finite)
+    (hvalues_card : hvalues_finite.toFinset.card ≤ k)
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈ hvalues_finite.toFinset},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d) :
+    (((finite_empiricalTrace_image_of_thresholdTraceCode_separates
+      (thresholdTraceCode_separates_of_values_mem_thresholds
+        (thresholds := hvalues_finite.toFinset)
+        (by
+          intro sampleIndex index hindex
+          exact
+            (hvalues_finite.mem_toFinset).2
+              ⟨sampleIndex, index, hindex, rfl⟩))).toFinset.card : ℝ) + 1) ≤
+      ((((d + 2 : ℕ) : ℝ) ^ k) + 1) *
+        (((n + 1 : ℕ) : ℝ) ^ (d * k)) := by
+  classical
+  let hvalues :
+      ∀ sampleIndex : Fin n,
+        ∀ index, index ∈ indexClass ->
+          classFun index (sample sampleIndex) ∈ hvalues_finite.toFinset := by
+    intro sampleIndex index hindex
+    exact
+      (hvalues_finite.mem_toFinset).2
+        ⟨sampleIndex, index, hindex, rfl⟩
+  exact
+    empiricalTrace_image_card_add_one_real_le_of_values_mem_thresholds_uniform_vc
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := hvalues_finite.toFinset) (d := d) (k := k)
+      hvalues hvalues_card hvc
+
 end StatInference
