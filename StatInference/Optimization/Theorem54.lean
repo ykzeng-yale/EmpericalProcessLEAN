@@ -485,5 +485,448 @@ theorem chewi54_iteration_le_four_sqrt_condition_of_not_halved
     ring
   simpa [hratio] using hdiv
 
+/-- The affine CG search space `x₀ + span {p₀, ..., pₙ}`. -/
+def cgAffineSpan (x0 : E) (p : ℕ -> E) (n : ℕ) : Set E :=
+  {y | y - x0 ∈ cgDirectionSubmodule p n}
+
+/-- Unfolding helper for `cgAffineSpan`. -/
+theorem mem_cgAffineSpan_iff {x0 : E} {p : ℕ -> E} {n : ℕ} {y : E} :
+    y ∈ cgAffineSpan x0 p n ↔ y - x0 ∈ cgDirectionSubmodule p n :=
+  Iff.rfl
+
+/--
+Any point update along the current CG direction remains in the corresponding
+affine direction span.
+-/
+theorem cgPoint_sub_initial_mem_cgDirectionSubmodule_of_step
+    {x p : ℕ -> E} {a : ℕ -> ℝ}
+    (hstep : ∀ n, x (n + 1) = x n + a n • p n) :
+    ∀ n, x n - x 0 ∈ cgDirectionSubmodule p n := by
+  intro n
+  induction n with
+  | zero =>
+      simp
+  | succ n ih =>
+      have hprev :
+          x n - x 0 ∈ cgDirectionSubmodule p (n + 1) :=
+        cgDirectionSubmodule_mono p (Nat.le_succ n) ih
+      have hp :
+          p n ∈ cgDirectionSubmodule p (n + 1) :=
+        cgDirectionSubmodule_mono p (Nat.le_succ n)
+          (cgDirection_mem_cgDirectionSubmodule p n)
+      have hnext :
+          (x n - x 0) + a n • p n ∈
+            cgDirectionSubmodule p (n + 1) :=
+        Submodule.add_mem _ hprev (Submodule.smul_mem _ (a n) hp)
+      rw [hstep n]
+      simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm] using hnext
+
+/--
+Sharper point-update membership: after `n + 1` displayed CG point updates, the
+displacement uses only directions through `p_n`.
+-/
+theorem cgPoint_succ_sub_initial_mem_cgDirectionSubmodule_of_step
+    {x p : ℕ -> E} {a : ℕ -> ℝ}
+    (hstep : ∀ n, x (n + 1) = x n + a n • p n) :
+    ∀ n, x (n + 1) - x 0 ∈ cgDirectionSubmodule p n := by
+  intro n
+  induction n with
+  | zero =>
+      have hp : p 0 ∈ cgDirectionSubmodule p 0 :=
+        cgDirection_mem_cgDirectionSubmodule p 0
+      have hmem : a 0 • p 0 ∈ cgDirectionSubmodule p 0 :=
+        Submodule.smul_mem _ (a 0) hp
+      rw [hstep 0]
+      simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm] using hmem
+  | succ n ih =>
+      have hprev :
+          x (n + 1) - x 0 ∈ cgDirectionSubmodule p (n + 1) :=
+        cgDirectionSubmodule_mono p (Nat.le_succ n) ih
+      have hp :
+          p (n + 1) ∈ cgDirectionSubmodule p (n + 1) :=
+        cgDirection_mem_cgDirectionSubmodule p (n + 1)
+      have hnext :
+          (x (n + 1) - x 0) + a (n + 1) • p (n + 1) ∈
+            cgDirectionSubmodule p (n + 1) :=
+        Submodule.add_mem _ hprev (Submodule.smul_mem _ (a (n + 1)) hp)
+      rw [hstep (n + 1)]
+      simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm] using hnext
+
+/--
+The `1 / beta` gradient trial point belongs to the current affine CG search
+space once both the current displacement and the current gradient do.
+-/
+theorem gradientDescentStep_mem_cgAffineSpan_of_mem
+    {grad : E -> E} {x0 x : E} {p : ℕ -> E} {n : ℕ} {h : ℝ}
+    (hx : x - x0 ∈ cgDirectionSubmodule p n)
+    (hgrad : grad x ∈ cgDirectionSubmodule p n) :
+    gradientDescentStep grad h x ∈ cgAffineSpan x0 p n := by
+  change gradientDescentStep grad h x - x0 ∈ cgDirectionSubmodule p n
+  have hmem :
+      (x - x0) - h • grad x ∈ cgDirectionSubmodule p n :=
+    Submodule.sub_mem _ hx (Submodule.smul_mem _ h hgrad)
+  simpa [gradientDescentStep, sub_eq_add_neg, add_assoc, add_left_comm,
+    add_comm] using hmem
+
+/-- Displayed CG point updates give `x_n - x_0 ∈ span {p_0, ..., p_n}`. -/
+theorem IsCGDisplayedIteration.point_sub_initial_mem_cgDirectionSubmodule
+    {A : E →L[ℝ] E} {p0 : E} {x r p : ℕ -> E}
+    (_h : IsCGDisplayedIteration A p0 r p)
+    (hpoint : ∀ n, x (n + 1) =
+      x n + cgLineSearchCoeff A r p n • p n) :
+    ∀ n, x n - x 0 ∈ cgDirectionSubmodule p n :=
+  cgPoint_sub_initial_mem_cgDirectionSubmodule_of_step hpoint
+
+/--
+Displayed CG point updates give the sharper membership
+`x_{n+1} - x_0 ∈ span {p_0, ..., p_n}`.
+-/
+theorem IsCGDisplayedIteration.point_succ_sub_initial_mem_cgDirectionSubmodule
+    {A : E →L[ℝ] E} {p0 : E} {x r p : ℕ -> E}
+    (_h : IsCGDisplayedIteration A p0 r p)
+    (hpoint : ∀ n, x (n + 1) =
+      x n + cgLineSearchCoeff A r p n • p n) :
+    ∀ n, x (n + 1) - x 0 ∈ cgDirectionSubmodule p n :=
+  cgPoint_succ_sub_initial_mem_cgDirectionSubmodule_of_step hpoint
+
+/--
+For displayed CG point updates, the quadratic gradients belong to the current
+direction span once the residuals identify with the quadratic gradients.
+-/
+theorem IsCGDisplayedIteration.quadraticGradient_mem_cgDirectionSubmodule
+    {A : E →L[ℝ] E} {b p0 : E} {x r p : ℕ -> E}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hpoint : ∀ n, x (n + 1) =
+      x n + cgLineSearchCoeff A r p n • p n) :
+    ∀ n, quadraticGradient A b (x n) ∈ cgDirectionSubmodule p n := by
+  intro n
+  have hres_eq := h.residual_eq_quadraticGradient_of_point_updates hres0 hpoint n
+  rw [← hres_eq]
+  exact h.to_isCGThreeTermRecurrence.residual_mem_cgDirectionSubmodule n
+
+/--
+Displayed CG residual orthogonality gives the source displacement
+orthogonality `∇f(x_n) ⟂ x_n - x_0` for quadratic gradients.
+-/
+theorem IsCGDisplayedIteration.quadraticGradient_orthogonal_displacement
+    {A : E →L[ℝ] E} {b p0 : E} {x r p : ℕ -> E}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hpoint : ∀ n, x (n + 1) =
+      x n + cgLineSearchCoeff A r p n • p n) :
+    ∀ n, inner ℝ (quadraticGradient A b (x n)) (x n - x 0) = 0 := by
+  intro n
+  cases n with
+  | zero =>
+      simp
+  | succ n =>
+      have horth_prev :
+          ∀ m, IsOrthogonalToSubmodule (r (m + 1)) (cgDirectionSubmodule p m) :=
+        orthogonalToPrevious_of_inner_directions_eq_zero
+          (h.inner_residual_succ_directions_eq_zero hA_sym)
+      have hdisp :
+          x (n + 1) - x 0 ∈ cgDirectionSubmodule p n :=
+        h.point_succ_sub_initial_mem_cgDirectionSubmodule hpoint n
+      have horth :
+          inner ℝ (r (n + 1)) (x (n + 1) - x 0) = 0 :=
+        horth_prev n (x (n + 1) - x 0) hdisp
+      have hres_eq :=
+        h.residual_eq_quadraticGradient_of_point_updates hres0 hpoint (n + 1)
+      rw [← hres_eq]
+      exact horth
+
+/--
+Displayed CG residual orthogonality gives pairwise orthogonality of the
+quadratic gradients along the point sequence.
+-/
+theorem IsCGDisplayedIteration.quadraticGradient_pairwise_orthogonal
+    {A : E →L[ℝ] E} {b p0 : E} {x r p : ℕ -> E}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hpoint : ∀ n, x (n + 1) =
+      x n + cgLineSearchCoeff A r p n • p n) :
+    ∀ i j : ℕ, i ≠ j →
+      inner ℝ (quadraticGradient A b (x i))
+        (quadraticGradient A b (x j)) = 0 := by
+  have horth_prev :
+      ∀ m, IsOrthogonalToSubmodule (r (m + 1)) (cgDirectionSubmodule p m) :=
+    orthogonalToPrevious_of_inner_directions_eq_zero
+      (h.inner_residual_succ_directions_eq_zero hA_sym)
+  have hpair : ∀ i j : ℕ, i ≠ j -> inner ℝ (r i) (r j) = 0 :=
+    h.pairwise_residual_orthogonal horth_prev
+  intro i j hij
+  have hri := h.residual_eq_quadraticGradient_of_point_updates hres0 hpoint i
+  have hrj := h.residual_eq_quadraticGradient_of_point_updates hres0 hpoint j
+  rw [← hri, ← hrj]
+  exact hpair i j hij
+
+/--
+Source-facing CG competitive-step extraction: if `x_{n+1}` minimizes over the
+current affine CG search space, it is no worse than the gradient-descent trial
+point in that same affine space.
+-/
+theorem chewi54_competitive_step_of_cgAffineMinimizer
+    {f : E -> ℝ} {grad : E -> E} {beta : ℝ} {x p : ℕ -> E}
+    (hmin : ∀ n, IsMinOn f (cgAffineSpan (x 0) p n) (x (n + 1)))
+    (hx_span : ∀ n, x n - x 0 ∈ cgDirectionSubmodule p n)
+    (hgrad_span : ∀ n, grad (x n) ∈ cgDirectionSubmodule p n) :
+    ∀ n, f (x (n + 1)) ≤
+      f (gradientDescentStep grad (1 / beta) (x n)) := by
+  intro n
+  have htrial :
+      gradientDescentStep grad (1 / beta) (x n) ∈ cgAffineSpan (x 0) p n :=
+    gradientDescentStep_mem_cgAffineSpan_of_mem
+      (hx_span n) (hgrad_span n)
+  exact (isMinOn_iff.mp (hmin n))
+    (gradientDescentStep grad (1 / beta) (x n)) htrial
+
+/--
+Competitive CG steps against the `1 / beta` gradient trial are function-value
+nonincreasing.
+-/
+theorem chewi54_functionValue_antitone_of_competitive_step
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {beta : ℝ} {x : ℕ -> E}
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (hmem : ∀ n, x n ∈ C)
+    (hgd_mem : ∀ n, gradientDescentStep grad (1 / beta) (x n) ∈ C)
+    (hcomp : ∀ n,
+      f (x (n + 1)) ≤ f (gradientDescentStep grad (1 / beta) (x n)))
+    (hbeta_pos : 0 < beta) :
+    Antitone fun n => f (x n) := by
+  refine antitone_nat_of_succ_le ?_
+  intro n
+  have hbeta_step : beta * (1 / beta) ≤ 1 := by
+    field_simp [hbeta_pos.ne']
+    rfl
+  have hdescent :
+      f (gradientDescentStep grad (1 / beta) (x n)) - f (x n) ≤
+        -((1 / beta) / 2) * ‖grad (x n)‖ ^ (2 : ℕ) :=
+    descentLemma_of_smoothWithGradientOn hsmooth (hmem n) (hgd_mem n)
+      (by positivity) hbeta_step
+  have htrial_le : f (gradientDescentStep grad (1 / beta) (x n)) ≤ f (x n) := by
+    have hcoef_nonneg : 0 ≤ (1 / beta) / 2 := by positivity
+    have hnorm_nonneg : 0 ≤ ‖grad (x n)‖ ^ (2 : ℕ) := sq_nonneg _
+    nlinarith
+  exact (hcomp n).trans htrial_le
+
+/--
+Monotone-gap hypothesis for the Theorem 5.4 summation, derived from the
+competitive-step descent property.
+-/
+theorem chewi54_gap_mono_of_competitive_step
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {beta fstar : ℝ} {x : ℕ -> E} {N : ℕ}
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (hmem : ∀ n, x n ∈ C)
+    (hgd_mem : ∀ n, gradientDescentStep grad (1 / beta) (x n) ∈ C)
+    (hcomp : ∀ n,
+      f (x (n + 1)) ≤ f (gradientDescentStep grad (1 / beta) (x n)))
+    (hbeta_pos : 0 < beta) :
+    ∀ n, n < N -> f (x N) - fstar ≤ f (x n) - fstar := by
+  intro n hn
+  have hanti :
+      Antitone fun n => f (x n) :=
+    chewi54_functionValue_antitone_of_competitive_step
+      hsmooth hmem hgd_mem hcomp hbeta_pos
+  have hle : f (x N) ≤ f (x n) := hanti (Nat.le_of_lt hn)
+  nlinarith
+
+/--
+The source first-order/orthogonality inequality in Theorem 5.4.  First-order
+strong convexity gives the comparison with `x_n - x_*`; orthogonality of the
+current gradient to the displacement `x_n - x_0` turns it into the displayed
+`x_0 - x_*` inner product.
+-/
+theorem chewi54_first_orth_of_firstOrderStrongConvexOn
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {alpha fstar : ℝ} {x : ℕ -> E} {xStar : E} {N : ℕ}
+    (hfirst : FirstOrderStrongConvexOn C f grad alpha)
+    (hmem : ∀ n, x n ∈ C)
+    (hxStar : xStar ∈ C)
+    (hfstar : fstar = f xStar)
+    (halpha_nonneg : 0 ≤ alpha)
+    (horth_disp : ∀ n, n < N →
+      inner ℝ (grad (x n)) (x n - x 0) = 0) :
+    ∀ n, n < N ->
+      f (x n) - fstar ≤ inner ℝ (grad (x n)) (x 0 - xStar) := by
+  intro n hn
+  have hmodel := hfirst.lower_model (hmem n) hxStar
+  have hterm_nonneg :
+      0 ≤ (alpha / 2) * ‖xStar - x n‖ ^ (2 : ℕ) :=
+    mul_nonneg (by nlinarith) (sq_nonneg _)
+  have hfirst_bound :
+      f (x n) - fstar ≤ inner ℝ (grad (x n)) (x n - xStar) := by
+    have hinner :
+        inner ℝ (grad (x n)) (xStar - x n) =
+          -inner ℝ (grad (x n)) (x n - xStar) := by
+      rw [show xStar - x n = -(x n - xStar) by abel]
+      rw [inner_neg_right]
+    rw [hinner] at hmodel
+    rw [hfstar]
+    nlinarith
+  have hdecomp :
+      x n - xStar = (x n - x 0) + (x 0 - xStar) := by
+    abel
+  have hinner_eq :
+      inner ℝ (grad (x n)) (x n - xStar) =
+        inner ℝ (grad (x n)) (x 0 - xStar) := by
+    rw [hdecomp, inner_add_right, horth_disp n hn, zero_add]
+  exact hfirst_bound.trans_eq hinner_eq
+
+/--
+Lower-bound property for the optimum value, derived from the first-order
+strong-convexity model at a zero-gradient minimizer candidate.
+-/
+theorem chewi54_star_lower_of_firstOrderStrongConvexOn
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {alpha fstar : ℝ} {x : ℕ -> E} {xStar : E}
+    (hfirst : FirstOrderStrongConvexOn C f grad alpha)
+    (hmem : ∀ n, x n ∈ C)
+    (hxStar : xStar ∈ C)
+    (hgrad_zero : grad xStar = 0)
+    (hfstar : fstar = f xStar)
+    (halpha_nonneg : 0 ≤ alpha) :
+    ∀ n, fstar ≤ f (x n) := by
+  intro n
+  have hmodel := hfirst.lower_model hxStar (hmem n)
+  rw [hgrad_zero] at hmodel
+  simp at hmodel
+  have hterm_nonneg :
+      0 ≤ (alpha / 2) * ‖x n - xStar‖ ^ (2 : ℕ) :=
+    mul_nonneg (by nlinarith) (sq_nonneg _)
+  nlinarith
+
+/--
+Source-facing CG Theorem 5.4 wrapper.  It packages the displayed CG
+affine-minimizer property into the competitive-step hypothesis, derives
+monotone gaps and the first-order/orthogonality comparison, and then applies
+the compiled analytic Theorem 5.4 core.
+-/
+theorem chewi54_accelerated_bound_of_cgAffineMinimizer
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {fstar alpha beta : ℝ} {x p : ℕ -> E} {xStar : E} {N : ℕ}
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (hfirst : FirstOrderStrongConvexOn C f grad alpha)
+    (hmem : ∀ n, x n ∈ C)
+    (hxStar : xStar ∈ C)
+    (hgrad_zero : grad xStar = 0)
+    (hfstar : fstar = f xStar)
+    (hgd_mem : ∀ n, gradientDescentStep grad (1 / beta) (x n) ∈ C)
+    (hmin : ∀ n, IsMinOn f (cgAffineSpan (x 0) p n) (x (n + 1)))
+    (hx_span : ∀ n, x n - x 0 ∈ cgDirectionSubmodule p n)
+    (hgrad_span : ∀ n, grad (x n) ∈ cgDirectionSubmodule p n)
+    (horth_disp : ∀ n, n < N →
+      inner ℝ (grad (x n)) (x n - x 0) = 0)
+    (hgrad_orth : ∀ i j, i < N → j < N → i ≠ j →
+      inner ℝ (grad (x i)) (grad (x j)) = 0)
+    (hbeta_pos : 0 < beta)
+    (halpha_pos : 0 < alpha) :
+    (N : ℝ) * (f (x N) - fstar) ≤
+      2 * Real.sqrt (beta / alpha) * (f (x 0) - fstar) := by
+  have hcomp :
+      ∀ n, f (x (n + 1)) ≤
+        f (gradientDescentStep grad (1 / beta) (x n)) :=
+    chewi54_competitive_step_of_cgAffineMinimizer hmin hx_span hgrad_span
+  have hstar_lower : ∀ n, fstar ≤ f (x n) :=
+    chewi54_star_lower_of_firstOrderStrongConvexOn
+      hfirst hmem hxStar hgrad_zero hfstar halpha_pos.le
+  have hgap_mono :
+      ∀ n, n < N -> f (x N) - fstar ≤ f (x n) - fstar :=
+    chewi54_gap_mono_of_competitive_step
+      hsmooth hmem hgd_mem hcomp hbeta_pos
+  have hfirst_orth :
+      ∀ n, n < N ->
+        f (x n) - fstar ≤ inner ℝ (grad (x n)) (x 0 - xStar) :=
+    chewi54_first_orth_of_firstOrderStrongConvexOn
+      hfirst hmem hxStar hfstar halpha_pos.le horth_disp
+  exact
+    chewi54_gap_sum_le_two_sqrt_condition_mul_gap_of_firstOrderStrongConvexOn
+      hsmooth hfirst hmem hxStar hgrad_zero hfstar hgd_mem hcomp
+      hstar_lower hbeta_pos halpha_pos hgap_mono hfirst_orth hgrad_orth
+
+/--
+Whole-space specialization of the source-facing CG Theorem 5.4 wrapper, suited
+to the quadratic setting of the textbook.
+-/
+theorem chewi54_accelerated_bound_of_cgAffineMinimizer_univ
+    {f : E -> ℝ} {grad : E -> E}
+    {fstar alpha beta : ℝ} {x p : ℕ -> E} {xStar : E} {N : ℕ}
+    (hsmooth : SmoothWithGradientOn Set.univ f grad beta)
+    (hfirst : FirstOrderStrongConvexOn Set.univ f grad alpha)
+    (hgrad_zero : grad xStar = 0)
+    (hfstar : fstar = f xStar)
+    (hmin : ∀ n, IsMinOn f (cgAffineSpan (x 0) p n) (x (n + 1)))
+    (hx_span : ∀ n, x n - x 0 ∈ cgDirectionSubmodule p n)
+    (hgrad_span : ∀ n, grad (x n) ∈ cgDirectionSubmodule p n)
+    (horth_disp : ∀ n, n < N →
+      inner ℝ (grad (x n)) (x n - x 0) = 0)
+    (hgrad_orth : ∀ i j, i < N → j < N → i ≠ j →
+      inner ℝ (grad (x i)) (grad (x j)) = 0)
+    (hbeta_pos : 0 < beta)
+    (halpha_pos : 0 < alpha) :
+    (N : ℝ) * (f (x N) - fstar) ≤
+      2 * Real.sqrt (beta / alpha) * (f (x 0) - fstar) := by
+  exact chewi54_accelerated_bound_of_cgAffineMinimizer
+    (C := Set.univ) hsmooth hfirst
+    (by intro n; simp) (by simp) hgrad_zero hfstar
+    (by intro n; simp) hmin hx_span hgrad_span horth_disp hgrad_orth
+    hbeta_pos halpha_pos
+
+/--
+Quadratic displayed-CG specialization of the source-facing Theorem 5.4 wrapper.
+The displayed recurrence supplies the search-span and orthogonality hypotheses;
+the remaining algorithmic assumption is the defining affine minimization
+property of CG.
+-/
+theorem IsCGDisplayedIteration.chewi54_accelerated_bound_of_cgAffineMinimizer
+    {A : E →L[ℝ] E} {b p0 xStar : E} {x r p : ℕ -> E}
+    {fstar alpha beta : ℝ} {N : ℕ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (hsmooth :
+      SmoothWithGradientOn Set.univ (quadraticObjective A b)
+        (quadraticGradient A b) beta)
+    (hfirst :
+      FirstOrderStrongConvexOn Set.univ (quadraticObjective A b)
+        (quadraticGradient A b) alpha)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hpoint : ∀ n, x (n + 1) =
+      x n + cgLineSearchCoeff A r p n • p n)
+    (hmin : ∀ n,
+      IsMinOn (quadraticObjective A b) (cgAffineSpan (x 0) p n)
+        (x (n + 1)))
+    (hgrad_zero : quadraticGradient A b xStar = 0)
+    (hfstar : fstar = quadraticObjective A b xStar)
+    (hbeta_pos : 0 < beta)
+    (halpha_pos : 0 < alpha) :
+    (N : ℝ) * (quadraticObjective A b (x N) - fstar) ≤
+      2 * Real.sqrt (beta / alpha) *
+        (quadraticObjective A b (x 0) - fstar) := by
+  have hx_span :
+      ∀ n, x n - x 0 ∈ cgDirectionSubmodule p n :=
+    h.point_sub_initial_mem_cgDirectionSubmodule hpoint
+  have hgrad_span :
+      ∀ n, quadraticGradient A b (x n) ∈ cgDirectionSubmodule p n :=
+    h.quadraticGradient_mem_cgDirectionSubmodule hres0 hpoint
+  have horth_disp :
+      ∀ n, n < N ->
+        inner ℝ (quadraticGradient A b (x n)) (x n - x 0) = 0 := by
+    intro n _hn
+    exact h.quadraticGradient_orthogonal_displacement
+      hA_sym hres0 hpoint n
+  have hgrad_orth :
+      ∀ i j, i < N → j < N → i ≠ j →
+        inner ℝ (quadraticGradient A b (x i))
+          (quadraticGradient A b (x j)) = 0 := by
+    intro i j _hi _hj hij
+    exact h.quadraticGradient_pairwise_orthogonal hA_sym hres0 hpoint i j hij
+  exact chewi54_accelerated_bound_of_cgAffineMinimizer_univ
+    hsmooth hfirst hgrad_zero hfstar hmin hx_span hgrad_span
+    horth_disp hgrad_orth hbeta_pos halpha_pos
+
 end Optimization
 end StatInference

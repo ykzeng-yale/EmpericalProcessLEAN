@@ -1029,6 +1029,24 @@ The Theorem 5.4 lane now starts in
 - `StatInference.Optimization.chewi54_sqrt_product_bound_le_conditioned_gap`
 - `StatInference.Optimization.chewi54_gap_sum_le_two_sqrt_condition_mul_gap_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi54_iteration_le_four_sqrt_condition_of_not_halved`
+- `StatInference.Optimization.cgAffineSpan`
+- `StatInference.Optimization.mem_cgAffineSpan_iff`
+- `StatInference.Optimization.cgPoint_sub_initial_mem_cgDirectionSubmodule_of_step`
+- `StatInference.Optimization.cgPoint_succ_sub_initial_mem_cgDirectionSubmodule_of_step`
+- `StatInference.Optimization.gradientDescentStep_mem_cgAffineSpan_of_mem`
+- `StatInference.Optimization.IsCGDisplayedIteration.point_sub_initial_mem_cgDirectionSubmodule`
+- `StatInference.Optimization.IsCGDisplayedIteration.point_succ_sub_initial_mem_cgDirectionSubmodule`
+- `StatInference.Optimization.IsCGDisplayedIteration.quadraticGradient_mem_cgDirectionSubmodule`
+- `StatInference.Optimization.IsCGDisplayedIteration.quadraticGradient_orthogonal_displacement`
+- `StatInference.Optimization.IsCGDisplayedIteration.quadraticGradient_pairwise_orthogonal`
+- `StatInference.Optimization.chewi54_competitive_step_of_cgAffineMinimizer`
+- `StatInference.Optimization.chewi54_functionValue_antitone_of_competitive_step`
+- `StatInference.Optimization.chewi54_gap_mono_of_competitive_step`
+- `StatInference.Optimization.chewi54_first_orth_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi54_star_lower_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi54_accelerated_bound_of_cgAffineMinimizer`
+- `StatInference.Optimization.chewi54_accelerated_bound_of_cgAffineMinimizer_univ`
+- `StatInference.Optimization.IsCGDisplayedIteration.chewi54_accelerated_bound_of_cgAffineMinimizer`
 
 This compiles the source descent comparison against the `1 / beta` gradient
 step and telescopes the Lemma 3.1 decrease to the finite squared-gradient sum
@@ -1037,10 +1055,14 @@ inequality, Cauchy-Schwarz wrapper, finite Pythagoras identity for pairwise
 orthogonal gradients, strong-convexity radius estimate, and the source
 pre-halving product bound, then simplifies it to
 `2 * sqrt(beta / alpha) * initial_gap` and proves the restart/halving
-iteration-count conversion.  The next Theorem 5.4 target is a source-facing CG
-wrapper that derives the competitive-step, monotone-gap, and first-order/
-orthogonality hypotheses from the displayed affine-minimizer/search-span
-interfaces.
+iteration-count conversion.  The newest wrapper layer packages the displayed
+affine-minimizer/search-span proof into a source-facing CG Theorem 5.4 theorem
+and derives the competitive-step, monotone-gap, first-order/orthogonality, and
+lower-optimum hypotheses.  The newest displayed-CG bridge discharges the
+point-update search-span membership, residual-gradient membership,
+displacement orthogonality, and pairwise gradient orthogonality from
+`IsCGDisplayedIteration`.  The next Theorem 5.4 target is the remaining affine
+`IsMinOn` property over `x_0 + span {p_0, ..., p_n}`.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 

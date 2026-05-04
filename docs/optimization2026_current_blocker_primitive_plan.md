@@ -1531,6 +1531,25 @@ The scalar/rate close-out now also compiles as
 `chewi54_sqrt_product_bound_le_conditioned_gap`,
 `chewi54_gap_sum_le_two_sqrt_condition_mul_gap_of_firstOrderStrongConvexOn`,
 and `chewi54_iteration_le_four_sqrt_condition_of_not_halved`.
+The source-facing affine-minimizer wrapper layer now compiles:
+`cgAffineSpan`, `mem_cgAffineSpan_iff`,
+`cgPoint_sub_initial_mem_cgDirectionSubmodule_of_step`,
+`gradientDescentStep_mem_cgAffineSpan_of_mem`,
+`chewi54_competitive_step_of_cgAffineMinimizer`,
+`chewi54_functionValue_antitone_of_competitive_step`,
+`chewi54_gap_mono_of_competitive_step`,
+`chewi54_first_orth_of_firstOrderStrongConvexOn`,
+`chewi54_star_lower_of_firstOrderStrongConvexOn`,
+`chewi54_accelerated_bound_of_cgAffineMinimizer`, and
+`chewi54_accelerated_bound_of_cgAffineMinimizer_univ`.
+The concrete displayed-CG bridge also compiles
+`cgPoint_succ_sub_initial_mem_cgDirectionSubmodule_of_step`,
+`IsCGDisplayedIteration.point_sub_initial_mem_cgDirectionSubmodule`,
+`IsCGDisplayedIteration.point_succ_sub_initial_mem_cgDirectionSubmodule`,
+`IsCGDisplayedIteration.quadraticGradient_mem_cgDirectionSubmodule`,
+`IsCGDisplayedIteration.quadraticGradient_orthogonal_displacement`,
+`IsCGDisplayedIteration.quadraticGradient_pairwise_orthogonal`, and
+`IsCGDisplayedIteration.chewi54_accelerated_bound_of_cgAffineMinimizer`.
 This proves the source pre-halving chain through
 `N * gap_N <= sqrt(2 * beta * initial_gap) *
 sqrt(2 * initial_gap / alpha)` from competitive steps, first-order strong
@@ -1538,12 +1557,13 @@ convexity, gradient orthogonality, and the first-order/orthogonality gap
 comparison, simplifies it to the readable
 `N * gap_N <= 2 * sqrt(beta / alpha) * initial_gap`, and proves the halving
 algebra `gap_N >= gap_0 / 2 -> N <= 4 * sqrt(beta / alpha)`.  Next target:
-assemble a source-facing CG Theorem 5.4 wrapper by proving or packaging the
-competitive-step hypothesis, monotone-gap hypothesis, and first-order/
-orthogonality gap comparison from the displayed CG affine-minimizer/search-span
-interfaces.  Do not redo Theorem 5.3's A-conjugacy induction, the Chapter 3
-descent lemma, Chapter 4 gradient-span interfaces, or Chapter 4 hard-instance
-packages.
+derive or package the remaining affine `IsMinOn` property of the displayed CG
+step over `x_0 + span {p_0, ..., p_n}`.  The search-span, residual-gradient,
+displacement-orthogonality, and pairwise-gradient-orthogonality assumptions
+are now discharged from the displayed point update and
+`IsCGDisplayedIteration`.  Do not redo Theorem 5.3's A-conjugacy induction,
+the Chapter 3 descent lemma, Chapter 4 gradient-span interfaces, or Chapter 4
+hard-instance packages.
 
 Chapter 2 route context is still available but no longer the active target:
 The route
