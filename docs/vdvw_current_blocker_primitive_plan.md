@@ -3429,3 +3429,16 @@ actual VdV&W reverse-comparison handoff from the permutation-symmetric
 reverse/cofiltration argument, then connect the existing Theorem 2.4.3
 fixed-space outer-probability convergence endpoints to this zero-limit
 consumer.
+
+2026-05-04 `/goal` follow-up: the fixed-space endpoint wiring is now also
+compiled.  The new generic shift bridge
+`VdVWConvergesInOuterProbability_nat_succ` lets theorem endpoints stated for
+`n` feed Lemma 2.4.5 handoffs stated for `n + 1`.  The canonical consumers
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_reverseComparisonHandoff`
+and
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_finite_indexClass_canonical_of_reverseComparisonHandoff`
+now compose the existing Theorem 2.4.3 fixed-space outer-probability endpoints
+with the outer-probability/Borel-Cantelli zero bridge.  For these two
+important theorem-critical cases, the remaining exposed assumption is exactly
+the reverse-comparison/cofiltration handoff; no separate subsequence,
+summability, or endpoint-transport plumbing remains.

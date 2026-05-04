@@ -5290,6 +5290,24 @@ theorem
     simp
 
 /--
+Common-domain outer-probability convergence is unchanged by dropping finitely
+many initial natural-number indices.
+
+This lightweight shift bridge lets Lemma 2.4.5 consumers use theorem endpoints
+stated for `n` with handoffs stated for `n + 1`.
+-/
+theorem VdVWConvergesInOuterProbability_nat_succ
+    {Ω : Type u} [MeasurableSpace Ω]
+    {D : Type x} [PseudoMetricSpace D]
+    {μ : Measure Ω} {X : ℕ -> Ω -> D} {limit : Ω -> D}
+    (hprob : VdVWConvergesInOuterProbability μ X atTop limit) :
+    VdVWConvergesInOuterProbability μ
+      (fun n ω => X (n + 1) ω) atTop limit := by
+  intro ε hε
+  simpa [Function.comp_def] using
+    (hprob ε hε).comp (tendsto_add_atTop_nat 1)
+
+/--
 Final Lemma 2.4.5 consumer for the already-compiled countable centered
 reverse-comparison rows.
 
@@ -25351,6 +25369,66 @@ theorem
         hvc hindexClass henvelope hclass henv henv_integrable)
 
 /--
+Canonical full-subgraph Lemma 2.4.5 a.s. zero consumer.
+
+The Theorem 2.4.3 full-subgraph outer-probability endpoint supplies the
+zero-identification input; the remaining explicit hypothesis is the genuine
+VdV&W reverse-comparison/cofiltration handoff.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_reverseComparisonHandoff
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hreverse :
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∀ n, 0 < n ->
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+            (vdVWInfiniteProductMeasure P)[
+              (fun sequence : ℕ -> Observation =>
+                vdVWLemma245LeaveOneOutCenteredSupremum P indexClass classFun n sequence) |
+              vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence) ->
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∃ limit : ℝ,
+          Tendsto
+            (fun n : ℕ =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+            atTop (𝓝 limit)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) := by
+  have hprob :
+      VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+        (fun n sequence =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        atTop (fun _ => (0 : ℝ)) :=
+    VdVWConvergesInOuterProbability_nat_succ
+      (VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_fullSubgraph_integrable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable)
+  exact
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_outerProbability_invNat_geometric
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (Set.to_countable indexClass)
+      henvelope hclass henv_integrable hprob hreverse
+
+/--
 Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the
 canonical terminal sample-path process.
 
@@ -25653,6 +25731,63 @@ theorem
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
         henv_integrable)
+
+/--
+Canonical finite-class Lemma 2.4.5 a.s. zero consumer.
+
+This is the finite-index analogue of the full-subgraph bridge: the existing
+finite-class Theorem 2.4.3 outer-probability endpoint supplies the
+zero-identification input, leaving only the reverse-comparison/cofiltration
+handoff explicit.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_finite_indexClass_canonical_of_reverseComparisonHandoff
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hreverse :
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∀ n, 0 < n ->
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+            (vdVWInfiniteProductMeasure P)[
+              (fun sequence : ℕ -> Observation =>
+                vdVWLemma245LeaveOneOutCenteredSupremum P indexClass classFun n sequence) |
+              vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence) ->
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∃ limit : ℝ,
+          Tendsto
+            (fun n : ℕ =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+            atTop (𝓝 limit)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) := by
+  have hprob :
+      VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+        (fun n sequence =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        atTop (fun _ => (0 : ℝ)) :=
+    VdVWConvergesInOuterProbability_nat_succ
+      (VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finite_indexClass_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
+        henv_integrable)
+  exact
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_outerProbability_invNat_geometric
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (Set.to_countable indexClass)
+      henvelope hclass henv_integrable hprob hreverse
 
 /--
 Fixed-`M` centered-truncated convergence from entropy, measurable random

@@ -950,3 +950,13 @@ finite limit and the fixed-space outer-probability endpoint is available, the
 centered empirical supremum converges a.e. to zero.  Remaining exact work is
 the reverse/cofiltration comparison theorem itself and the final wiring to the
 Theorem 2.4.3 outer-probability endpoint.
+
+2026-05-04 `/goal` follow-up: the final wiring to the currently compiled
+Theorem 2.4.3 fixed-space endpoints is now done for the canonical
+full-subgraph and finite-class routes.  The new declarations are
+`VdVWConvergesInOuterProbability_nat_succ`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_reverseComparisonHandoff`,
+and
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_finite_indexClass_canonical_of_reverseComparisonHandoff`.
+These consumers leave only the genuine reverse-comparison/cofiltration handoff
+as an explicit assumption for those routes.
