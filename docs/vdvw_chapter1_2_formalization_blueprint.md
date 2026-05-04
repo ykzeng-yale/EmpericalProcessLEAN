@@ -953,6 +953,12 @@ above, so they do not change the theorem-level dashboard counts.
    `measurable_vdVWWeightedClassSupremum_centered_of_countable`,
    `integrable_vdVWWeightedClassSupremum_centered_of_countable`, and
    `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable`.
+   The iid and canonical wrappers
+   `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable_iidRademacher`
+   and
+   `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable_canonical`
+   also remove the auxiliary sign-space and sample-path process plumbing from
+   this in-mean route.
    The remaining in-mean side condition is the genuine varying-domain
    tail/UI hypothesis for the centered supremum.
    If the remaining quantitative structural estimate

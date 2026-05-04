@@ -2837,6 +2837,12 @@ provided `MeasureTheory.integrable_comp_eval`,
 `measurable_vdVWWeightedClassSupremum_centered_of_countable`,
 `integrable_vdVWWeightedClassSupremum_centered_of_countable`, and
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable`.
+The adjacent iid/canonical wrappers
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable_iidRademacher`
+and
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable_canonical`
+now remove the auxiliary Rademacher sign-space and terminal sample-path process
+choices from this in-mean route.
 The remaining nontrivial analytic input for the current in-mean theorem layer
 is the varying-domain tail/UI condition for the centered supremum, not routine
 measurability or integrability.

@@ -20536,6 +20536,86 @@ theorem
       hTail
 
 /--
+Full-subgraph in-mean Theorem 2.4.3 route with a canonical iid real-valued
+Rademacher sign space and countable/envelope measurability-integrability
+witnesses.
+
+The varying-domain tail/UI condition for the centered supremum remains the
+only analytic mean-upgrade input.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable_iidRademacher
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hTail :
+      ∀ ε > 0, ∃ R, 0 ≤ R ∧
+        ∀ᶠ n in atTop,
+          ∫ sample,
+            Set.indicator
+              {sample' : SampleAt Observation n |
+                R <
+                  vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      classFun index observation - ∫ x, classFun index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample'}
+              (fun sample' : SampleAt Observation n =>
+                vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    classFun index observation - ∫ x, classFun index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample') sample
+              ∂(vdVWProductMeasure P n) ≤ ε) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  obtain ⟨Ωsign, mΩsign, μsign, signNat, _hmeas, _hlaw,
+      hindepNat, hprob, hsubGNat, hsupportNat⟩ :=
+    exists_common_iid_vdVWRademacherSigns
+  letI : MeasurableSpace Ωsign := mΩsign
+  haveI : IsProbabilityMeasure μsign := hprob
+  let sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ :=
+    fun _n i => signNat (i : ℕ)
+  exact
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (X := X)
+      (vcDegree := vcDegree) hX_samplePath hvc hindexClass
+      henvelope hclass henv henv_integrable sign
+      (by
+        intro n
+        exact hsupportNat.mono (fun ω hω i => hω (i : ℕ)))
+      (by
+        intro n
+        simpa [sign] using
+          hindepNat.precomp (g := fun i : Fin n => (i : ℕ)) Fin.val_injective)
+      (by
+        intro n i
+        simpa [sign] using hsubGNat (i : ℕ))
+      hTail
+
+/--
 Full-subgraph integrable Theorem 2.4.3 route with the auxiliary Rademacher
 sign space instantiated from a common iid real-valued Rademacher sequence.
 -/
@@ -21412,6 +21492,69 @@ theorem
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) (vcDegree := vcDegree)
         hvc hindexClass henvelope hclass henv henv_integrable
+
+/--
+Canonical full-subgraph Theorem 2.4.3 in-mean route.
+
+This removes the auxiliary Rademacher and sample-path choices from the
+countable/envelope in-mean consumer.  The varying-domain tail/UI condition for
+the centered supremum remains explicit.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hTail :
+      ∀ ε > 0, ∃ R, 0 ≤ R ∧
+        ∀ᶠ n in atTop,
+          ∫ sample,
+            Set.indicator
+              {sample' : SampleAt Observation n |
+                R <
+                  vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      classFun index observation - ∫ x, classFun index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample'}
+              (fun sample' : SampleAt Observation n =>
+                vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    classFun index observation - ∫ x, classFun index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample') sample
+              ∂(vdVWProductMeasure P n) ≤ ε) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable_iidRademacher
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      (X := fun _M n => vdVWCanonicalSampleProcess n)
+      (vcDegree := vcDegree)
+      (hX_samplePath := by
+        intro M n sample
+        exact samplePath_vdVWCanonicalSampleProcess n sample)
+      (hvc := hvc) (hindexClass := hindexClass)
+      (henvelope := henvelope) (hclass := hclass) (henv := henv)
+      (henv_integrable := henv_integrable) hTail
 
 /--
 Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the

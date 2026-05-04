@@ -594,6 +594,12 @@ in-mean route are now compiled.  New declarations are
 The full-subgraph in-mean consumer no longer needs caller-supplied
 measurability/integrability witnesses for the centered supremum; only the
 genuine varying-domain tail/UI condition remains explicit.
+Additional compiled wrappers
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable_iidRademacher`
+and
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable_canonical`
+remove the auxiliary Rademacher sign-space and canonical sample-path process
+choices from this in-mean route.
 
 ## Verification Monitor
 
