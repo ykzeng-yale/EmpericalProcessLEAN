@@ -393,8 +393,15 @@ bounded truncated values, then VC/subgraph/grid cardinality control.
 2026-05-04 follow-up: rounded-code membership in finite symmetric integer
 intervals is now compiled as
 `empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_interval_card_le`.
-Next target: derive the integer bounds from `|x| <= M` and bound the interval
-cardinalities/products.
+The bounded rounding-grid closure is now also compiled:
+`round_div_mem_intInterval_of_abs_le` derives rounded-code interval membership
+from `|x| <= M`, `card_int_symmetric_Icc` normalizes the symmetric integer
+interval cardinality, and
+`empiricalL1CoveringNumber_le_of_roundingQuantizer_uniform_abs_bound_card_le`
+gives the uniform grid cover with terminal count `(2 * B + 1)^n`.  Next target:
+use this only under honest finite/discretized hypotheses and prove the sharper
+VC/subgraph/grid cardinality control needed for the general Theorem 2.4.3
+fixed-radius side-condition package.
 
 ## Verification Monitor
 

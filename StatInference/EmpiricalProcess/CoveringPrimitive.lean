@@ -1690,6 +1690,61 @@ theorem abs_sub_mul_round_div_le_half
     _ = step / 2 := by ring
 
 /--
+If the upper half-step endpoint of a real point is below an integer bound,
+then its nearest-integer rounding is below that bound.
+-/
+theorem round_le_int_of_add_half_le
+    {z : ℝ} {bound : ℤ}
+    (h : z + 1 / 2 ≤ (bound : ℝ)) :
+    round z ≤ bound := by
+  have hround : (round z : ℝ) ≤ z + 1 / 2 :=
+    round_le_add_half z
+  exact_mod_cast hround.trans h
+
+/--
+If an integer lower bound is below the lower half-step endpoint of a real
+point, then it is below the nearest-integer rounding.
+-/
+theorem int_neg_le_round_of_le_sub_half
+    {z : ℝ} {bound : ℤ}
+    (h : ((-bound : ℤ) : ℝ) ≤ z - 1 / 2) :
+    -bound ≤ round z := by
+  have hround : z - 1 / 2 < (round z : ℝ) :=
+    sub_half_lt_round z
+  have hlt : ((-bound : ℤ) : ℝ) < (round z : ℝ) :=
+    lt_of_le_of_lt h hround
+  exact_mod_cast le_of_lt hlt
+
+/--
+A bounded real value has nearest-integer `epsilon`-grid code in the symmetric
+integer interval determined by any supplied bound above `M / epsilon + 1/2`.
+-/
+theorem round_div_mem_intInterval_of_abs_le
+    {x epsilon M : ℝ} {bound : ℤ}
+    (hepsilon_pos : 0 < epsilon)
+    (habs : |x| ≤ M)
+    (hbound : M / epsilon + 1 / 2 ≤ (bound : ℝ)) :
+    -bound ≤ round (x / epsilon) ∧
+      round (x / epsilon) ≤ bound := by
+  have hdiv_abs : |x / epsilon| ≤ M / epsilon := by
+    rw [abs_div, abs_of_pos hepsilon_pos]
+    exact div_le_div_of_nonneg_right habs hepsilon_pos.le
+  have hdiv := abs_le.mp hdiv_abs
+  constructor
+  · apply int_neg_le_round_of_le_sub_half
+    have hcast : ((-bound : ℤ) : ℝ) = -(bound : ℝ) := by norm_num
+    rw [hcast]
+    linarith
+  · apply round_le_int_of_add_half_le
+    linarith
+
+/-- Cardinality of the symmetric integer interval used by the rounding code. -/
+theorem card_int_symmetric_Icc (bound : ℤ) :
+    (Finset.Icc (-bound) bound).card = (2 * bound + 1).toNat := by
+  rw [Int.card_Icc]
+  ring_nf
+
+/--
 Padded-cardinality empirical cover from coordinatewise nearest-integer
 rounding at grid step `epsilon`.  The finite code-set membership and product
 cardinality bound are kept explicit; the rounding decoding error is proved
@@ -1833,6 +1888,212 @@ theorem empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_interval_ca
           ⟨hround_lower index hindex sampleIndex,
             hround_upper index hindex sampleIndex⟩)
       hcard_le
+
+/--
+Padded-cardinality empirical cover from nearest-integer rounding when bounded
+sample coordinates imply membership in supplied finite symmetric integer
+intervals.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_roundingQuantizer_abs_bound_interval_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (bound : Fin n -> ℤ) (M : Fin n -> ℝ)
+    (hepsilon_pos : 0 < epsilon)
+    (habs :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          |classFun index (sample sampleIndex)| ≤ M sampleIndex)
+    (hbound :
+      ∀ sampleIndex : Fin n,
+        M sampleIndex / epsilon + 1 / 2 ≤ (bound sampleIndex : ℝ))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le :
+      (∏ sampleIndex : Fin n,
+          (Finset.Icc (-bound sampleIndex) (bound sampleIndex)).card) ≤
+        cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  exact
+    nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_roundingQuantizer_interval_card_le
+      bound hepsilon_pos
+      (fun index hindex sampleIndex =>
+        (round_div_mem_intInterval_of_abs_le
+          (x := classFun index (sample sampleIndex))
+          (epsilon := epsilon) (M := M sampleIndex)
+          (bound := bound sampleIndex) hepsilon_pos
+          (habs index hindex sampleIndex) (hbound sampleIndex)).1)
+      (fun index hindex sampleIndex =>
+        (round_div_mem_intInterval_of_abs_le
+          (x := classFun index (sample sampleIndex))
+          (epsilon := epsilon) (M := M sampleIndex)
+          (bound := bound sampleIndex) hepsilon_pos
+          (habs index hindex sampleIndex) (hbound sampleIndex)).2)
+      hindexClass hcard_le
+
+/--
+Numeric empirical-covering-number bound from nearest-integer rounding when
+bounded sample coordinates imply membership in supplied finite symmetric
+integer intervals.
+-/
+theorem empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_abs_bound_interval_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (bound : Fin n -> ℤ) (M : Fin n -> ℝ)
+    (hepsilon_pos : 0 < epsilon)
+    (habs :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          |classFun index (sample sampleIndex)| ≤ M sampleIndex)
+    (hbound :
+      ∀ sampleIndex : Fin n,
+        M sampleIndex / epsilon + 1 / 2 ≤ (bound sampleIndex : ℝ))
+    (hcard_le :
+      (∏ sampleIndex : Fin n,
+          (Finset.Icc (-bound sampleIndex) (bound sampleIndex)).card) ≤
+        cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_interval_card_le
+      bound hepsilon_pos
+      (fun index hindex sampleIndex =>
+        (round_div_mem_intInterval_of_abs_le
+          (x := classFun index (sample sampleIndex))
+          (epsilon := epsilon) (M := M sampleIndex)
+          (bound := bound sampleIndex) hepsilon_pos
+          (habs index hindex sampleIndex) (hbound sampleIndex)).1)
+      (fun index hindex sampleIndex =>
+        (round_div_mem_intInterval_of_abs_le
+          (x := classFun index (sample sampleIndex))
+          (epsilon := epsilon) (M := M sampleIndex)
+          (bound := bound sampleIndex) hepsilon_pos
+          (habs index hindex sampleIndex) (hbound sampleIndex)).2)
+      hcard_le
+
+/--
+Padded-cardinality empirical cover from bounded nearest-integer rounding, with
+the symmetric integer-interval cardinalities normalized to `(2 * B + 1).toNat`.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_roundingQuantizer_abs_bound_symmetric_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (bound : Fin n -> ℤ) (M : Fin n -> ℝ)
+    (hepsilon_pos : 0 < epsilon)
+    (habs :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          |classFun index (sample sampleIndex)| ≤ M sampleIndex)
+    (hbound :
+      ∀ sampleIndex : Fin n,
+        M sampleIndex / epsilon + 1 / 2 ≤ (bound sampleIndex : ℝ))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le :
+      (∏ sampleIndex : Fin n, (2 * bound sampleIndex + 1).toNat) ≤
+        cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  refine
+    nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_roundingQuantizer_abs_bound_interval_card_le
+      bound M hepsilon_pos habs hbound hindexClass ?_
+  simpa [card_int_symmetric_Icc, two_mul, add_assoc, add_left_comm, add_comm]
+    using hcard_le
+
+/--
+Numeric empirical-covering-number bound from bounded nearest-integer rounding,
+with symmetric integer-interval cardinalities normalized to
+`(2 * B + 1).toNat`.
+-/
+theorem empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_abs_bound_symmetric_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (bound : Fin n -> ℤ) (M : Fin n -> ℝ)
+    (hepsilon_pos : 0 < epsilon)
+    (habs :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          |classFun index (sample sampleIndex)| ≤ M sampleIndex)
+    (hbound :
+      ∀ sampleIndex : Fin n,
+        M sampleIndex / epsilon + 1 / 2 ≤ (bound sampleIndex : ℝ))
+    (hcard_le :
+      (∏ sampleIndex : Fin n, (2 * bound sampleIndex + 1).toNat) ≤
+        cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  refine
+    empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_abs_bound_interval_card_le
+      bound M hepsilon_pos habs hbound ?_
+  simpa [card_int_symmetric_Icc, two_mul, add_assoc, add_left_comm, add_comm]
+    using hcard_le
+
+/--
+Padded-cardinality empirical cover from nearest-integer rounding under a
+single uniform absolute bound on all sampled truncated values.  The terminal
+cardinality is the usual grid count `(2 * B + 1)^n`.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_roundingQuantizer_uniform_abs_bound_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon M : ℝ}
+    {cardinality : ℕ}
+    (bound : ℤ)
+    (hepsilon_pos : 0 < epsilon)
+    (habs :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          |classFun index (sample sampleIndex)| ≤ M)
+    (hbound : M / epsilon + 1 / 2 ≤ (bound : ℝ))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le : ((2 * bound + 1).toNat) ^ n ≤ cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  refine
+    nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_roundingQuantizer_abs_bound_symmetric_card_le
+      (fun _ => bound) (fun _ => M) hepsilon_pos ?_ ?_ hindexClass ?_
+  · intro index hindex sampleIndex
+    exact habs index hindex sampleIndex
+  · intro sampleIndex
+    exact hbound
+  · simpa using hcard_le
+
+/--
+Numeric empirical-covering-number bound from nearest-integer rounding under a
+single uniform absolute bound on all sampled truncated values.
+-/
+theorem empiricalL1CoveringNumber_le_of_roundingQuantizer_uniform_abs_bound_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon M : ℝ}
+    {cardinality : ℕ}
+    (bound : ℤ)
+    (hepsilon_pos : 0 < epsilon)
+    (habs :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          |classFun index (sample sampleIndex)| ≤ M)
+    (hbound : M / epsilon + 1 / 2 ≤ (bound : ℝ))
+    (hcard_le : ((2 * bound + 1).toNat) ^ n ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  refine
+    empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_abs_bound_symmetric_card_le
+      (fun _ => bound) (fun _ => M) hepsilon_pos ?_ ?_ ?_
+  · intro index hindex sampleIndex
+    exact habs index hindex sampleIndex
+  · intro sampleIndex
+    exact hbound
+  · simpa using hcard_le
 
 /--
 Padded-cardinality cover from a finite fixed-sample trace image.  Later

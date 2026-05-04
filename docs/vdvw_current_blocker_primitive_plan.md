@@ -2403,4 +2403,36 @@ Next exact theorem-facing edit: prove the integer bounds for
 `round (x / epsilon)` from a real truncated-value bound such as `|x| <= M`, and
 then prove a usable bound on
 `(Finset.Icc (-B) B).card` or its finite-coordinate product.  This closes the
-plain bounded-grid part before the harder VC/subgraph cardinality refinement.
+plain bounded-grid route before the harder VC/subgraph/grid cardinality
+refinement.
+
+2026-05-04 `/goal` update after bounded rounding-grid closure:
+`CoveringPrimitive.lean` now proves the missing real-to-integer bounded-code
+bridge.  The compiled declarations are
+`round_le_int_of_add_half_le`,
+`int_neg_le_round_of_le_sub_half`,
+`round_div_mem_intInterval_of_abs_le`,
+`card_int_symmetric_Icc`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_roundingQuantizer_abs_bound_interval_card_le`,
+`empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_abs_bound_interval_card_le`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_roundingQuantizer_abs_bound_symmetric_card_le`,
+`empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_abs_bound_symmetric_card_le`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_roundingQuantizer_uniform_abs_bound_card_le`, and
+`empiricalL1CoveringNumber_le_of_roundingQuantizer_uniform_abs_bound_card_le`.
+Thus a uniform truncated-value bound `|f(X_i)| <= M` plus
+`M / epsilon + 1/2 <= B` gives an empirical `L1(P_n)` cover with terminal
+grid count `(2 * B + 1)^n`.
+
+Search record: this step reused mathlib `round_le_add_half`,
+`sub_half_lt_round`, `abs_sub_round`, integer-cast order transport
+(`exact_mod_cast`/`Int.cast_le`), `Finset.Icc`, and `Int.card_Icc`.
+No prior local theorem converted real truncated-value bounds into finite
+rounding-code interval membership or the normalized symmetric interval count.
+
+Next exact theorem-facing edit: use this bounded-grid cover as an input to the
+Theorem 2.4.3 fixed-radius side-condition package only when its exponential
+grid count is acceptable under an explicit discretization/finite-value
+hypothesis.  For the general textbook VC/subgraph route, the remaining
+nontrivial blocker is sharper VC/subgraph/grid cardinality control; the plain
+uniform grid count `(2B+1)^n` is too large by itself for normalized
+log-cardinality convergence.

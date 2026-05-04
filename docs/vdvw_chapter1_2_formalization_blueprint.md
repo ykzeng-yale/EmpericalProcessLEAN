@@ -826,10 +826,15 @@ above, so they do not change the theorem-level dashboard counts.
    as the next inputs.  The interval-code bridge
    `empiricalL1CoveringNumber_le_of_coordinate_roundingQuantizer_interval_card_le`
    now discharges membership in finite integer intervals once coordinatewise
-   lower/upper rounded-code bounds are supplied.  The
-   remaining theorem-facing work is the actual bounded quantization/grid code
-   and the nontrivial VC/subgraph/grid cardinality estimate, not this finite
-   product-code plumbing.
+   lower/upper rounded-code bounds are supplied.  The bounded rounding-grid
+   closure
+   `empiricalL1CoveringNumber_le_of_roundingQuantizer_uniform_abs_bound_card_le`
+   now derives those interval bounds from `|f(X_i)| <= M` and
+   `M / epsilon + 1/2 <= B`, with terminal grid count `(2 * B + 1)^n`.  The
+   remaining theorem-facing work is therefore not nearest-integer or finite
+   product-code plumbing; it is the nontrivial VC/subgraph/grid cardinality
+   estimate strong enough for the fixed-radius Theorem 2.4.3 side-condition
+   package.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
