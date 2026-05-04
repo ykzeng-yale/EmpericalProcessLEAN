@@ -1454,7 +1454,13 @@ The newest point-update bridge adds `quadraticGradient_succ_of_point_step`,
 `IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_pairwise_orthogonal`.
 This connects the displayed CG point update
 `x_{n+1}=x_n+eta_n p_n` to the residual-gradient invariant used by the
-finite-dimensional termination wrapper.
+finite-dimensional termination wrapper.  The newest orthogonality propagation
+pass adds `IsCGThreeTermRecurrence.pairwise_residual_orthogonal`,
+`IsCGDisplayedIteration.pairwise_residual_orthogonal`, and
+`IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_orthogonalToPrevious`:
+the source-shaped invariant that each new residual is orthogonal to the
+previous direction span now implies the pairwise residual orthogonality needed
+for the finite-dimensional Theorem 5.3 wrapper.
 Search-first result: mathlib has continuous linear maps,
 `continuous_id.inner`, `Continuous.inner`, `real_inner_comm`,
 `Function.iterate_succ_apply'`, `Submodule.span_induction`,
@@ -1470,13 +1476,13 @@ searched before adding a future spectral bridge.  The current substrate
 deliberately uses supplied quadratic-form bounds so it can reuse local
 `FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and minimizer wrappers
 without waiting for a full spectral theorem bridge.  Next target: derive or
-package the residual-orthogonality invariant from the CG optimality/line-search
-conditions, then state the exact Theorem 5.3 termination wrapper.  For Theorem
-5.4, first package the textbook proof assumptions explicitly: CG descent
-comparison against one GD step, gradient orthogonality, finite sum of squared
-gradients, Cauchy-Schwarz, and the restart/halving argument.  Do not redo the
-Chapter 3 descent lemma, Chapter 4 gradient-span interfaces, or Chapter 4
-hard-instance packages.
+package `∀ n, IsOrthogonalToSubmodule (r (n+1)) (cgDirectionSubmodule p n)`
+from the CG optimality/line-search conditions, then state the exact Theorem
+5.3 termination wrapper.  For Theorem 5.4, first package the textbook proof
+assumptions explicitly: CG descent comparison against one GD step, gradient
+orthogonality, finite sum of squared gradients, Cauchy-Schwarz, and the
+restart/halving argument.  Do not redo the Chapter 3 descent lemma, Chapter 4
+gradient-span interfaces, or Chapter 4 hard-instance packages.
 
 Chapter 2 route context is still available but no longer the active target:
 The route
