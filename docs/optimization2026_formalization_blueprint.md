@@ -522,7 +522,13 @@ and its contradiction form.  The finite rate wrapper now also compiles:
 obstruction to `beta / (16 * eps) - 1 <= N`, and
 `chewi45_iteration_count_ge_of_regularizedGradientSpan_near_min` plus
 `chewi45_not_regularizedGradientSpan_near_min_of_iteration_count_lt` package
-that conclusion for the regularized gradient-span run.
+that conclusion for the regularized gradient-span run.  The source-shaped rate
+wrappers `chewi45_iteration_count_ge_rate_of_regularizedGradientSpan_near_min`,
+`chewi45_iteration_count_ge_sqrtKappa_log_rate_of_regularizedGradientSpan_near_min`,
+and `chewi45_not_regularizedGradientSpan_near_min_of_sqrtKappa_log_rate_lt`
+now specialize this finite lower bound to an arbitrary rate and to the
+Chewi-shaped expression `c * sqrt(kappa) * log(ratio)`, with the remaining
+analytic comparison isolated as a separate hypothesis.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and

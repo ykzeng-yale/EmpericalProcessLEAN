@@ -663,6 +663,145 @@ theorem chewi45_not_regularizedGradientSpan_near_min_of_iteration_count_lt
       hx0 hspan hx_near hDelta_le
   linarith
 
+/--
+Generic rate wrapper for the finite Theorem 4.5 obstruction.  Any rate known
+to be below the finite lower bound `beta / (16 eps) - 1` is also below the
+number of iterations `N`.
+-/
+theorem chewi45_iteration_count_ge_rate_of_regularizedGradientSpan_near_min
+    {beta eps rate : ℝ} (hbeta : 0 ≤ beta) (heps : 0 < eps) (N : ℕ)
+    (heps_le :
+      eps ≤ beta * (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+    (hrate_le : rate ≤ beta / (16 * eps) - 1)
+    {x : ℕ -> EuclideanSpace ℝ (Fin (2 * N + 1))}
+    {xDelta : EuclideanSpace ℝ (Fin (2 * N + 1))}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (regularizedGradient
+        (lowerBoundChainGradient beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))) x)
+    (hx_near :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) (x N) ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta + eps / 2)
+    (hDelta_le :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))
+        (lowerBoundChainMinimizer (2 * N + 1))) :
+    rate ≤ (N : ℝ) := by
+  have hfinite :=
+    chewi45_iteration_count_ge_of_regularizedGradientSpan_near_min
+      (beta := beta) (eps := eps) hbeta heps N heps_le
+      hx0 hspan hx_near hDelta_le
+  exact hrate_le.trans hfinite
+
+/--
+Logarithmic-condition-number-shaped wrapper for Chewi Theorem 4.5.  The
+remaining analytic/asymptotic comparison is isolated in `hrate_le`; once that
+comparison shows `c * sqrt(kappa) * log(ratio) <= beta / (16 eps) - 1`, the
+compiled regularized-chain obstruction gives the source-shaped lower bound on
+`N`.
+-/
+theorem chewi45_iteration_count_ge_sqrtKappa_log_rate_of_regularizedGradientSpan_near_min
+    {beta eps c kappa ratio : ℝ}
+    (hbeta : 0 ≤ beta) (heps : 0 < eps) (N : ℕ)
+    (heps_le :
+      eps ≤ beta * (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+    (hrate_le :
+      c * Real.sqrt kappa * Real.log ratio ≤ beta / (16 * eps) - 1)
+    {x : ℕ -> EuclideanSpace ℝ (Fin (2 * N + 1))}
+    {xDelta : EuclideanSpace ℝ (Fin (2 * N + 1))}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (regularizedGradient
+        (lowerBoundChainGradient beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))) x)
+    (hx_near :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) (x N) ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta + eps / 2)
+    (hDelta_le :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))
+        (lowerBoundChainMinimizer (2 * N + 1))) :
+    c * Real.sqrt kappa * Real.log ratio ≤ (N : ℝ) := by
+  exact chewi45_iteration_count_ge_rate_of_regularizedGradientSpan_near_min
+    (beta := beta) (eps := eps)
+    (rate := c * Real.sqrt kappa * Real.log ratio)
+    hbeta heps N heps_le hrate_le hx0 hspan hx_near hDelta_le
+
+/--
+Contradiction form of the logarithmic-condition-number-shaped wrapper: a run
+cannot satisfy the near-minimum hypotheses by time `N` if `N` is below a
+logarithmic rate which has already been compared to the finite obstruction.
+-/
+theorem chewi45_not_regularizedGradientSpan_near_min_of_sqrtKappa_log_rate_lt
+    {beta eps c kappa ratio : ℝ}
+    (hbeta : 0 ≤ beta) (heps : 0 < eps) (N : ℕ)
+    (heps_le :
+      eps ≤ beta * (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+    (hrate_le :
+      c * Real.sqrt kappa * Real.log ratio ≤ beta / (16 * eps) - 1)
+    (hN_lt : (N : ℝ) < c * Real.sqrt kappa * Real.log ratio)
+    {x : ℕ -> EuclideanSpace ℝ (Fin (2 * N + 1))}
+    {xDelta : EuclideanSpace ℝ (Fin (2 * N + 1))}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (regularizedGradient
+        (lowerBoundChainGradient beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))) x)
+    (hx_near :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) (x N) ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta + eps / 2)
+    (hDelta_le :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))
+        (lowerBoundChainMinimizer (2 * N + 1))) :
+    False := by
+  have hge :=
+    chewi45_iteration_count_ge_sqrtKappa_log_rate_of_regularizedGradientSpan_near_min
+      (beta := beta) (eps := eps) (c := c) (kappa := kappa)
+      (ratio := ratio)
+      hbeta heps N heps_le hrate_le hx0 hspan hx_near hDelta_le
+  linarith
+
 /-- Squared coordinate tail beyond the source prefix subspace `V_N`. -/
 noncomputable def coordinateTailSq (d N : ℕ)
     (z : EuclideanSpace ℝ (Fin d)) : ℝ :=

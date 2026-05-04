@@ -980,14 +980,19 @@ The finite iteration-count layer also compiles:
 `chewi45_iteration_count_ge_of_regularizedGradientSpan_near_min`, and
 `chewi45_not_regularizedGradientSpan_near_min_of_iteration_count_lt`.  Do not
 repeat the prefix-support, `d = 2N + 1` obstruction, or the algebra converting
-`beta / (16 * (N + 1)) <= eps` into `beta / (16 * eps) - 1 <= N`.  The next
-atomic target is the final strongly-convex lower-bound rate statement: combine
-this finite iteration lower bound with condition-number/log bookkeeping into
-the source `sqrt(kappa) * log(alpha R^2 / eps)` shape, or close the direct
-Exercise 4.2 geometric tail route.  Search mathlib/local APIs for finite
-geometric sums, recurrence solutions, logarithm/order/asymptotic iteration-
-count wrappers, and existing exercise interfaces before introducing any new
-complexity primitive.
+`beta / (16 * (N + 1)) <= eps` into `beta / (16 * eps) - 1 <= N`.  The newest
+source-shaped rate wrappers also compile:
+`chewi45_iteration_count_ge_rate_of_regularizedGradientSpan_near_min`,
+`chewi45_iteration_count_ge_sqrtKappa_log_rate_of_regularizedGradientSpan_near_min`,
+and `chewi45_not_regularizedGradientSpan_near_min_of_sqrtKappa_log_rate_lt`.
+Do not repeat the arbitrary-rate or `c * sqrt(kappa) * log(ratio)` wrapper.
+The next atomic target is the remaining comparison lemma:
+prove or specialize `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1`
+from concrete condition-number/log hypotheses, or close the direct Exercise
+4.2 geometric tail route.  Search mathlib/local APIs for `Real.log`
+monotonicity, `Real.exp` inversions, sqrt/order facts, finite geometric sums,
+recurrence solutions, and asymptotic iteration-count wrappers before
+introducing any new complexity primitive.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
