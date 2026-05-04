@@ -1026,6 +1026,19 @@ and
 `chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate_tailSq` now
 isolate the remaining comparison as
 `q^(2N) * coordinateTailSq d 0 xStar <= coordinateTailSq d N xStar`.
+The finite-boundary comparison layer now compiles:
+`strongLowerBoundFiniteGeometricNode_nonneg`,
+`strongLowerBoundFiniteGeometricNode_le_geometric`,
+`geometric_mul_boundary_le_strongLowerBoundFiniteGeometricNode`,
+`strongLowerBoundFiniteGeometricCandidate_nonneg`,
+`strongLowerBoundFiniteGeometricCandidate_le_geometric`,
+`geometric_mul_boundary_le_strongLowerBoundFiniteGeometricCandidate`,
+`strongLowerBoundFiniteGeometricCandidate_sq_le_geometric_sq`,
+`geometric_boundary_sq_le_finiteGeometricCandidate_sq`,
+`coordinateTailSq_finiteGeometricCandidate_le_geometric`,
+`finiteGeometricCandidate_coordinate_sq_le_coordinateTailSq`, and
+`geometric_boundary_sq_le_finiteGeometricCandidate_coordinateTailSq`.  Reuse
+these before reopening the corrected-node algebra.
 Search/source correction: Exercise 4.2 is stated for an infinite-dimensional
 `R^infty` chain, and scalar checks of the finite corrected truncation show the
 literal `q^(2N)` tail factor is approached from below rather than true for all

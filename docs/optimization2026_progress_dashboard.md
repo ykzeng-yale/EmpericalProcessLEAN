@@ -143,6 +143,20 @@ and
 Route correction: the source Exercise 4.2 is infinite-dimensional, while the
 finite corrected truncation needs additional dimension/slack analysis for the
 literal `q^(2N)` tail factor.
+The newest finite-boundary comparison layer adds
+`strongLowerBoundFiniteGeometricNode_nonneg`,
+`strongLowerBoundFiniteGeometricNode_le_geometric`,
+`geometric_mul_boundary_le_strongLowerBoundFiniteGeometricNode`,
+`strongLowerBoundFiniteGeometricCandidate_nonneg`,
+`strongLowerBoundFiniteGeometricCandidate_le_geometric`,
+`geometric_mul_boundary_le_strongLowerBoundFiniteGeometricCandidate`,
+`strongLowerBoundFiniteGeometricCandidate_sq_le_geometric_sq`,
+`geometric_boundary_sq_le_finiteGeometricCandidate_sq`,
+`coordinateTailSq_finiteGeometricCandidate_le_geometric`,
+`finiteGeometricCandidate_coordinate_sq_le_coordinateTailSq`, and
+`geometric_boundary_sq_le_finiteGeometricCandidate_coordinateTailSq`.  These
+are the next reusable tools for either a finite slack lower bound or the
+transition to the exact infinite-chain model.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains
