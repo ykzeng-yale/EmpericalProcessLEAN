@@ -53,11 +53,13 @@ content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, continuing from the Chapter 2 gradient-flow
 frontier and the existing Chapter 1/3 bridge frontier.  The current route
 should push Chapter 2 main-text theorem layers after the compiled
-gradient-flow calculus/exponential-decay batch: Proposition 2.7(2) PL implies
-quadratic growth, Corollary 2.8, and eventual removal/discharge of Theorem
-2.4's exposed interval-integrability assumptions from stronger regularity
-hypotheses, while preserving the Chapter 3 theorem spine already compiled
-through Theorem 3.7.  Search existing mathlib and local `StatInference` APIs
+gradient-flow calculus/exponential-decay batch: discharge the analytic
+gradient-flow limit route behind Proposition 2.7(2), instantiate Corollary
+2.8's interval-minimum hypothesis from compactness/continuity when useful,
+and eventually remove/discharge Theorem 2.4's exposed
+interval-integrability assumptions from stronger regularity hypotheses, while
+preserving the Chapter 3 theorem spine already compiled through Theorem 3.7.
+Search existing mathlib and local `StatInference` APIs
 first, prove the next highest-leverage main-text theorem layer, verify with
 focused `lake env lean`, targeted `lake build StatInference`, proof-hole and
 secret scans, update this route state, and commit/push clean verified
@@ -127,6 +129,16 @@ blocker for the whole-space differentiable case:
   implies `PolyakLojasiewiczOn` by setting `y = xStar` in the lower model and
   applying Cauchy-Schwarz/Young; whole-space `StrongConvexOn Set.univ` plus
   `HasGradientAt` discharges the first-order model.
+- Proposition 2.7(2)'s algebraic layer now compiles in
+  `StatInference/Optimization/Theorem27.lean`: `QuadraticGrowthOn` records
+  the source infimum-over-minimizers `(QG)` form, `QuadraticGrowthWitnessOn`
+  is the witness form, and
+  `quadraticGrowthOn_of_plGradientFlowLimitRoute` proves `(QG)` from the
+  gradient-flow limit inequality Chewi uses after assuming flow convergence.
+- Corollary 2.8 now compiles in `StatInference/Optimization/Theorem28.lean`:
+  the integrated Lemma 2.1 identity, squared-gradient integral bound, average
+  bound, interval lower-bound principle, and source square-root minimum form
+  from an `IsMinOn` representative over `[0,t]`.
 
 - Lemma 3.5 discrete Gronwall has both zero-based finite-sum and source-shaped
   one-based display wrappers in `StatInference/Optimization/DiscreteGronwall.lean`.
@@ -308,15 +320,23 @@ integrand.  The remaining regularity task is to derive the exposed
 `IntervalIntegrable` assumptions from a clean `C²`/regular trajectory surface
 instead of passing them explicitly.
 
-Current Proposition 2.7 search result: local `PolyakLojasiewiczOn` and
-`FirstOrderStrongConvexOn.lower_model` already give the right interfaces for
-part (1).  Mathlib supplies `real_inner_le_norm`; the Young step is easiest
-locally from `sq_nonneg (r - alpha * d)` plus `le_div_iff₀`, avoiding a
-separate dependency on the general Young-inequality API.  The remaining part
-(2) is the PL-to-quadratic-growth implication; the notes use a gradient-flow
-convergence-to-minimizer argument, so a supplied convergence interface may be
-the right bounded next formalization layer before proving the full analytic
-limit statement.
+Current Proposition 2.7 / Corollary 2.8 search result: local
+`PolyakLojasiewiczOn` and `FirstOrderStrongConvexOn.lower_model` already give
+the right interfaces for part (1).  Mathlib supplies `real_inner_le_norm`;
+the Young step is easiest locally from `sq_nonneg (r - alpha * d)` plus
+`le_div_iff₀`.  Mathlib has no PL/QG predicate, so the local
+`QuadraticGrowthOn`/`QuadraticGrowthWitnessOn` surface is necessary.  Useful
+mathlib APIs for the remaining analytic route are `Filter.Tendsto`,
+`tendsto_of_tendsto_of_tendsto_of_le_of_le`,
+`intervalIntegral.integral_eq_sub_of_hasDerivAt`,
+`intervalIntegral.norm_integral_le_integral_norm`,
+`AbsolutelyContinuousOnInterval.integral_deriv_eq_sub`,
+`Real.hasDerivAt_sqrt`, `HasDerivAt.sqrt`, `HasDerivAt.norm_sq`,
+`IsCompact.exists_isMinOn`, `ContinuousOn.exists_isMinOn'`, and
+`isCompact_Icc`.  The next proof step should discharge
+`PLGradientFlowLimitRouteToQGOn` from an explicit gradient-flow convergence
+and Lyapunov-monotonicity theorem, or instantiate Corollary 2.8's
+`IsMinOn` hypothesis from continuity on `[0,t]`.
 
 Current Exercise 3.1 co-coercivity interface result: the source display (3.5)
 now compiles as `GradientCocoerciveOn`.  The bridge
@@ -446,9 +466,20 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.gradientStep`
 - `StatInference.Optimization.FirstOrderStrongConvexOn`
 - `StatInference.Optimization.FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.QuadraticGrowthOn`
+- `StatInference.Optimization.QuadraticGrowthWitnessOn`
+- `StatInference.Optimization.PLGradientFlowLimitRouteToQGOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn`
+- `StatInference.Optimization.QuadraticGrowthWitnessOn.quadraticGrowthOn`
+- `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
+- `StatInference.Optimization.gradientFlow_grad_sq_integral_eq_value_drop`
+- `StatInference.Optimization.chewi28_gradient_sq_integral_bound`
+- `StatInference.Optimization.chewi28_gradient_sq_average_bound`
+- `StatInference.Optimization.chewi28_interval_sq_lower_bound_le_average`
+- `StatInference.Optimization.chewi28_min_grad_norm_le_of_isMinOn`
 - `StatInference.Optimization.discreteGronwall_sum_le`
 - `StatInference.Optimization.discreteGronwall_sum_le_of_pos`
 - `StatInference.Optimization.discreteGronwall_one_based_sum_le`
@@ -524,9 +555,9 @@ Latest verified local frontier after lane creation:
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal target: Chewi Proposition 2.7(2), the PL-to-quadratic-growth
-route used in the notes, likely with a bounded supplied
-gradient-flow-converges-to-minimizer interface before attempting the full
-analytic limit proof.  Continue with Corollary 2.8 afterward.  Continue
-deferring exercise proofs except where an exercise statement is needed as a
-temporary interface for a main-text theorem.
+Next manual goal target: discharge the analytic hypothesis
+`PLGradientFlowLimitRouteToQGOn` from the book's gradient-flow convergence and
+Lyapunov monotonicity argument, or instantiate
+`chewi28_min_grad_norm_le_of_isMinOn` from compactness/continuity on `[0,t]`
+if that is faster.  Continue deferring exercise proofs except where an
+exercise statement is needed as a temporary interface for a main-text theorem.

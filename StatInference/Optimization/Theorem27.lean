@@ -17,6 +17,44 @@ open scoped InnerProductSpace
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 /--
+Chewi Proposition 2.7 / `(QG)`, in exact infimum form over minimizers with
+reference value `fstar`.
+-/
+def QuadraticGrowthOn (C : Set E) (f : E -> ℝ) (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    (alpha / 2) *
+        sInf ((fun xStar => ‖x - xStar‖ ^ (2 : ℕ)) ''
+          {xStar | xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar}) ≤
+      f x - fstar
+
+/--
+A witness form of `(QG)`: for each `x`, exhibit a minimizer whose squared
+distance already satisfies the quadratic-growth bound.  This immediately
+implies the source infimum form.
+-/
+def QuadraticGrowthWitnessOn (C : Set E) (f : E -> ℝ)
+    (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    ∃ xStar, xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+      (alpha / 2) * ‖x - xStar‖ ^ (2 : ℕ) ≤ f x - fstar
+
+/--
+The analytic gradient-flow route used in Chewi's proof that `PŁ => QG`.
+
+The notes assume convergence of the gradient flow and monotonicity of the
+Lyapunov quantity
+`sqrt(alpha / 2) * ||x_t - x_0|| + sqrt(f(x_t) - fstar)`.  This interface
+records exactly the limit inequality left after that analytic argument; the
+algebra from this interface to `(QG)` is proved below.
+-/
+def PLGradientFlowLimitRouteToQGOn (C : Set E) (f : E -> ℝ)
+    (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    ∃ xStar, xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+      Real.sqrt (alpha / 2) * ‖x - xStar‖ ≤
+        Real.sqrt (f x - fstar)
+
+/--
 Chewi Proposition 2.7, first implication, in first-order lower-model form:
 positive strong convexity implies the Polyak-Lojasiewicz inequality with
 reference value `f xStar`.
@@ -103,6 +141,86 @@ theorem polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn
     PolyakLojasiewiczOn C f grad alpha (f xStar) :=
   polyakLojasiewiczOn_of_firstOrderStrongConvexOn
     hfirst halpha hxStar
+
+omit [InnerProductSpace ℝ E] in
+/--
+The source infimum form of `(QG)` follows from the witness form.
+-/
+theorem QuadraticGrowthWitnessOn.quadraticGrowthOn
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (halpha_nonneg : 0 ≤ alpha)
+    (hqg : QuadraticGrowthWitnessOn C f alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar := by
+  intro x hx
+  rcases hqg hx with ⟨xStar, hxStar, hmin, hfxStar, hqg_xStar⟩
+  let S : Set ℝ :=
+    (fun y => ‖x - y‖ ^ (2 : ℕ)) ''
+      {y | y ∈ C ∧ IsMinOn f C y ∧ f y = fstar}
+  have hmem : ‖x - xStar‖ ^ (2 : ℕ) ∈ S := by
+    exact ⟨xStar, ⟨hxStar, hmin, hfxStar⟩, rfl⟩
+  have hbdd : BddBelow S := by
+    refine ⟨0, ?_⟩
+    intro r hr
+    rcases hr with ⟨y, _hy, rfl⟩
+    exact sq_nonneg _
+  have hsInf_le : sInf S ≤ ‖x - xStar‖ ^ (2 : ℕ) :=
+    csInf_le hbdd hmem
+  have hcoef_nonneg : 0 ≤ alpha / 2 := by nlinarith
+  have hmul :
+      (alpha / 2) * sInf S ≤
+        (alpha / 2) * ‖x - xStar‖ ^ (2 : ℕ) :=
+    mul_le_mul_of_nonneg_left hsInf_le hcoef_nonneg
+  exact hmul.trans hqg_xStar
+
+omit [InnerProductSpace ℝ E] in
+/--
+Chewi Proposition 2.7, second implication, algebraic core: the gradient-flow
+limit inequality used in the notes implies the witness form of quadratic
+growth.
+-/
+theorem quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (halpha : 0 < alpha)
+    (hroute : PLGradientFlowLimitRouteToQGOn C f alpha fstar) :
+    QuadraticGrowthWitnessOn C f alpha fstar := by
+  intro x hx
+  rcases hroute hx with ⟨xStar, hxStar, hmin, hfxStar, hsqrt⟩
+  have hgap_nonneg : 0 ≤ f x - fstar := by
+    have hmin_le : f xStar ≤ f x := (isMinOn_iff.mp hmin) x hx
+    nlinarith
+  have hcoef_nonneg : 0 ≤ alpha / 2 := by nlinarith
+  have hleft_nonneg :
+      0 ≤ Real.sqrt (alpha / 2) * ‖x - xStar‖ :=
+    mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)
+  have hright_nonneg : 0 ≤ Real.sqrt (f x - fstar) :=
+    Real.sqrt_nonneg _
+  have hsq :
+      (Real.sqrt (alpha / 2) * ‖x - xStar‖) ^ (2 : ℕ) ≤
+        (Real.sqrt (f x - fstar)) ^ (2 : ℕ) :=
+    (sq_le_sq₀ hleft_nonneg hright_nonneg).mpr hsqrt
+  have hleft :
+      (Real.sqrt (alpha / 2) * ‖x - xStar‖) ^ (2 : ℕ) =
+        (alpha / 2) * ‖x - xStar‖ ^ (2 : ℕ) := by
+    rw [mul_pow, Real.sq_sqrt hcoef_nonneg]
+  have hright :
+      (Real.sqrt (f x - fstar)) ^ (2 : ℕ) = f x - fstar :=
+    Real.sq_sqrt hgap_nonneg
+  refine ⟨xStar, hxStar, hmin, hfxStar, ?_⟩
+  nlinarith
+
+omit [InnerProductSpace ℝ E] in
+/--
+Chewi Proposition 2.7, second implication, in source infimum form, from the
+gradient-flow limit inequality used in the notes.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLimitRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (halpha : 0 < alpha)
+    (hroute : PLGradientFlowLimitRouteToQGOn C f alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  (quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute
+    (C := C) (f := f) (alpha := alpha) (fstar := fstar)
+    halpha hroute).quadraticGrowthOn halpha.le
 
 end Optimization
 end StatInference

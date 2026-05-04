@@ -106,9 +106,15 @@ Current compiled surface:
 - `StatInference.Optimization.minimizer_unique_of_strictConvexOn`
 - `StatInference.Optimization.minimizer_unique_of_strongConvexOn`
 - `StatInference.Optimization.gradient_eq_zero_of_isMinOn_univ_hasGradientAt`
+- `StatInference.Optimization.QuadraticGrowthOn`
+- `StatInference.Optimization.QuadraticGrowthWitnessOn`
+- `StatInference.Optimization.PLGradientFlowLimitRouteToQGOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn`
+- `StatInference.Optimization.QuadraticGrowthWitnessOn.quadraticGrowthOn`
+- `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
 
 Near-term exact candidates:
 
@@ -183,17 +189,22 @@ Current compiled surface:
 - `StatInference.Optimization.gradientFlow_gap_deriv_le_of_polyakLojasiewiczOn`
 - `StatInference.Optimization.chewi26_gap_weighted_le_of_polyakLojasiewiczOn`
 - `StatInference.Optimization.chewi26_gap_le_exp_of_polyakLojasiewiczOn`
+- `StatInference.Optimization.gradientFlow_grad_sq_integral_eq_value_drop`
+- `StatInference.Optimization.chewi28_gradient_sq_integral_bound`
+- `StatInference.Optimization.chewi28_gradient_sq_average_bound`
+- `StatInference.Optimization.chewi28_interval_sq_lower_bound_le_average`
+- `StatInference.Optimization.chewi28_min_grad_norm_le_of_isMinOn`
 
 Near-term exact candidates:
 
-1. Proposition 2.7(2): PL implies quadratic growth, following the notes'
-   gradient-flow route with a supplied convergence-to-minimizer interface if
-   needed.
+1. Discharge `PLGradientFlowLimitRouteToQGOn` from the notes'
+   gradient-flow convergence and Lyapunov monotonicity argument, completing
+   Proposition 2.7(2) without the supplied analytic limit hypothesis.
 2. Remove or discharge the interval-integrability assumptions in Theorem 2.4
    from the notes' `C²`/regular trajectory hypotheses if a clean mathlib
    continuity route is available.
-3. Corollary 2.8 gradient-norm convergence, reusing Lemma 2.1 and a continuous
-   analog of the Chapter 3 finite-average/telescoping pattern.
+3. Instantiate Corollary 2.8's `IsMinOn` hypothesis from compactness and
+   continuity of `s ↦ ‖grad (x s)‖` on `[0,t]`.
 
 ### Lane C: Discrete gradient descent and algorithmic rates
 

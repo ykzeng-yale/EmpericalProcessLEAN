@@ -28,6 +28,7 @@ import StatInference.Optimization.GradientDescent
 import StatInference.Optimization.GradientFlow
 import StatInference.Optimization.Minimizer
 import StatInference.Optimization.Theorem27
+import StatInference.Optimization.Theorem28
 import StatInference.Optimization.Theorem33
 import StatInference.Optimization.Theorem34
 import StatInference.Optimization.Theorem36
