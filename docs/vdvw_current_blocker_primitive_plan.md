@@ -1734,6 +1734,32 @@ for the truncated empirical trace image or for a maximal separated/internal
 cover.  Feed that theorem into
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_nat_poly`.
 
+2026-05-04 `/goal` update after local VC/Sauer wrapper closure:
+`StatInference/EmpiricalProcess/VCSauer.lean` now wraps mathlib's finite
+set-family Sauer-Shelah theorem in the form needed by the VdVW entropy route.
+New compiled declarations are `vdVWSauerShelah_card_le_sum_vcDim`,
+`vdVWSauerShelah_card_le_sum_of_vcDim_le`,
+`vdVWSauerShelah_card_add_one_le_nat_poly_of_vcDim_le`, and
+`vdVWSauerShelah_card_add_one_real_le_nat_poly_of_vcDim_le`.  The last two
+prove the coarse but directly usable bound
+`#family + 1 <= (d + 2) * (N + 1)^d` from `vcDim family <= d` and ground-set
+size `<= N`.
+
+Search record: reused mathlib `Mathlib.Combinatorics.SetFamily.Shatter`
+(`Finset.card_le_card_shatterer`, `Finset.card_shatterer_le_sum_vcDim`) and
+`Mathlib.Data.Nat.Choose.Bounds` (`Nat.choose_le_pow`).  No exact local/mathlib
+bridge was found from VdVW real-valued truncated traces to binary set-family
+VC dimension.
+
+The exact next theorem-facing edit is now to connect a concrete VdVW class
+(indicator/subgraph/thresholded truncated traces, or a maximal separated
+internal-cover construction) to a finite set family `family : Finset (Finset α)`
+whose cardinality controls the empirical trace image and whose `vcDim` is
+bounded.  Then apply
+`vdVWSauerShelah_card_add_one_real_le_nat_poly_of_vcDim_le` and feed the result
+to
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_nat_poly`.
+
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
 APIs found and used are `ProbabilityTheory.iIndepFun_pi`,
