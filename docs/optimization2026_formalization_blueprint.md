@@ -964,6 +964,7 @@ Chapter 5 acceleration/conjugate-gradient expansion has now started in
 - `StatInference.Optimization.IsCGDisplayedIteration.inner_residual_succ_direction_self_eq_zero`
 - `StatInference.Optimization.IsCGDisplayedIteration.inner_residual_succ_directions_eq_zero_of_aOrthogonal`
 - `StatInference.Optimization.IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_aOrthogonal`
+- `StatInference.Optimization.IsCGDisplayedIteration.quadraticObjective_isMinOn_of_direction_succ_eq_zero_and_aOrthogonal`
 
 Source anchors are the quadratic display and linear-system minimizer claim at
 markdown lines 954-960, Lemma 5.1 at line 1005, Definition 5.2 at line 1015,
@@ -996,10 +997,12 @@ scalar-orthogonality layer reduces that invariant to the generated-direction
 equations `inner ℝ (r (n+1)) (p k)=0` for `k≤n`; and the latest line-search
 layer proves the same-index equation from the displayed coefficient, then
 upgrades an A-conjugacy hypothesis on search directions to all scalar
-residual-direction equations.  Next proof work should prove or sharply package
+residual-direction equations.  The zero-direction branch of Theorem 5.3 now
+also compiles directly from A-conjugacy, the displayed direction update, and
+the residual-gradient bridge.  Next proof work should prove or sharply package
 that A-conjugacy condition from Chewi's direction-update coefficient /
-Gram-Schmidt calculation, then close the exact Theorem 5.3 wrapper and move
-to the descent/halving package for Theorem 5.4.
+Gram-Schmidt calculation, then close the finite-dimensional exact Theorem 5.3
+wrapper and move to the descent/halving package for Theorem 5.4.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
