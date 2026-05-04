@@ -696,6 +696,14 @@ generated sigma-field and decreasing-direction substrate for the
 permutation-symmetric route.  Remaining work is now adapted
 measurable-cover/supremum process construction over `Σ_n` and the
 reverse-submartingale inequality/convergence handoff.
+2026-05-04 follow-up: the first adapted `Σ_n` empirical-supremum bridge is
+compiled as
+`measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`.
+It combines the countable weighted-supremum measurability theorem with
+`VdVWPermutationSymmetricFrom_uniformClassSupremum`, so the countable
+coordinate-measurable uniform empirical supremum is now `Σ_n`-measurable.
+Remaining work: measurable-cover version plus reverse-submartingale
+inequality/convergence over decreasing `Σ_n`.
 
 ## Verification Monitor
 

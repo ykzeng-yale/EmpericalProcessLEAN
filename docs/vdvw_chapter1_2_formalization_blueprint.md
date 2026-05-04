@@ -1011,13 +1011,15 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWPermutationSymmetricMeasurableSpace_antitone`, and
    `measurable_vdVWPermutationSymmetricMeasurableSpace_of_symmetric`, with
    the direct infinite-permutation empirical-supremum bridge
-   `VdVWPermutationSymmetricFrom_uniformClassSupremum`.
+   `VdVWPermutationSymmetricFrom_uniformClassSupremum`.  The first adapted
+   countable empirical-supremum bridge is compiled as
+   `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.  For Lemma 2.4.5, the next exact
-   primitive is now adapted measurable-cover/supremum construction over
-   `Σ_n` and the reverse-submartingale inequality/convergence handoff, not
-   the finite permutation or generated-sigma substrate.
+   primitive is now the adapted measurable-cover version over `Σ_n` and the
+   reverse-submartingale inequality/convergence handoff, not the finite
+   permutation, generated-sigma, or countable-supremum adaptedness substrate.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

@@ -3014,3 +3014,18 @@ adapted measurable-cover/supremum process over this decreasing
 permutation-symmetric sigma-field and the reverse-submartingale
 inequality/convergence handoff used for the almost-sure part of
 Theorem 2.4.3.
+
+2026-05-04 follow-up: the first adapted `Σ_n` empirical-supremum bridge is
+compiled in `Theorem243.lean` as
+`measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`.
+It proves that a countable coordinate-measurable class has its infinite
+uniform empirical supremum measurable with respect to the generated
+permutation-symmetric sigma-field `Σ_n`.  Search/reuse record: this reuses
+the local countable-supremum theorem
+`measurable_vdVWWeightedClassSupremum_of_countable`,
+`measurable_vdVWWeightedSampleSum`, `measurable_vdVWFirstNSample`,
+`measurable_vdVWPermutationSymmetricMeasurableSpace_of_symmetric`, and
+`VdVWPermutationSymmetricFrom_uniformClassSupremum`; no new primitive was
+needed.  The remaining Lemma 2.4.5 blocker is now the measurable-cover
+version and reverse-submartingale inequality/convergence handoff over the
+decreasing `Σ_n`.

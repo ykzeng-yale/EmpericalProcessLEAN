@@ -2910,6 +2910,35 @@ theorem measurable_vdVWWeightedClassSupremum_of_countable
     (hterm index hindex).abs
 
 /--
+For a countable coordinate-measurable class, the infinite-sequence uniform
+empirical supremum is measurable with respect to the VdV&W
+permutation-symmetric sigma-field `Σ_n`.
+-/
+theorem measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (n : ℕ) :
+    Measurable[vdVWPermutationSymmetricMeasurableSpace Observation n]
+      (fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass classFun
+          (fun _ : Fin n => (n : ℝ)⁻¹) (vdVWFirstNSample n sequence)) := by
+  refine measurable_vdVWPermutationSymmetricMeasurableSpace_of_symmetric ?_ ?_
+  · exact
+      measurable_vdVWWeightedClassSupremum_of_countable
+        (Ω := ℕ -> Observation) (Observation := Observation)
+        (Index := Index) (indexClass := indexClass) (classFun := classFun)
+        hcount (fun _ : Fin n => (n : ℝ)⁻¹)
+        (vdVWFirstNSample n) fun index hindex =>
+          (measurable_vdVWWeightedSampleSum
+            (classFun := classFun) (weights := fun _ : Fin n => (n : ℝ)⁻¹)
+            (index := index) (hclass index hindex)).comp
+            (measurable_vdVWFirstNSample n)
+  · exact VdVWPermutationSymmetricFrom_uniformClassSupremum
+      indexClass classFun n
+
+/--
 Countable centered truncated weighted class suprema are integrable under the
 empirical product law once fixed-index truncated functions are integrable.
 -/
