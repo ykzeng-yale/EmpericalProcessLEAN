@@ -892,6 +892,33 @@ Chewi's norm-scaled final line before dimension choice now compiles as
 reusing `lowerBoundChainMinimizer_norm_sq_le_dim` and mathlib reciprocal
 monotonicity.
 
+Chapter 5 acceleration/conjugate-gradient expansion has now started in
+`StatInference/Optimization/ConjugateGradient.lean`.  The compiled surface is:
+
+- `StatInference.Optimization.quadraticObjective`
+- `StatInference.Optimization.quadraticGradient`
+- `StatInference.Optimization.IsSelfAdjointOperator`
+- `StatInference.Optimization.QuadraticFormLowerBound`
+- `StatInference.Optimization.QuadraticFormUpperBound`
+- `StatInference.Optimization.quadraticGradient_eq_zero_iff`
+- `StatInference.Optimization.continuous_quadraticObjective`
+- `StatInference.Optimization.quadraticObjective_eq_model_add_quadratic`
+- `StatInference.Optimization.quadraticObjective_firstOrderStrongConvexOn`
+- `StatInference.Optimization.quadraticObjective_smoothWithGradientOn`
+- `StatInference.Optimization.quadraticObjective_oracle_package`
+- `StatInference.Optimization.quadraticObjective_isMinOn_of_apply_eq`
+
+Source anchors are the quadratic display and linear-system minimizer claim at
+markdown lines 954-960, Lemma 5.1 at line 1005, Definition 5.2 at line 1015,
+Theorem 5.3 at line 1033, and Theorem 5.4 at line 1037.  Search-first result:
+mathlib supplies continuous linear maps and inner-product continuity APIs, plus
+`real_inner_comm`; self-adjoint/positive-operator APIs under
+`Analysis/InnerProductSpace/Positive.lean` should be searched before adding a
+future spectral bridge.  The current local substrate intentionally keeps
+Chewi's source hypotheses as supplied symmetry and quadratic-form bounds so it
+can reuse the existing `FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and
+minimizer packages immediately.
+
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
 1. Lower bounds and oracle/gradient-span interfaces, Chapter 4.
