@@ -99,6 +99,30 @@ theorem vdVWWeightedClassValueSet_mono
   rcases hvalue with ⟨index, hindex, rfl⟩
   exact abs_vdVWWeightedSampleSum_mem_valueSet weights sample (hsubset hindex)
 
+/--
+For a finite class, the value set whose supremum defines
+`vdVWWeightedClassSupremum` is bounded above for every fixed sample and weight
+vector.
+-/
+theorem bddAbove_vdVWWeightedClassValueSet_of_finite
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    {n : ℕ} (weights : Fin n -> ℝ)
+    (sample : Fin n -> Observation) :
+    BddAbove (vdVWWeightedClassValueSet indexClass classFun weights sample) := by
+  let imageValues : Set ℝ :=
+    (fun index : Index =>
+      |vdVWWeightedSampleSum classFun weights index sample|) '' indexClass
+  have himage_finite : imageValues.Finite := hindex_finite.image _
+  have hsubset :
+      vdVWWeightedClassValueSet indexClass classFun weights sample ⊆
+        imageValues := by
+    intro value hvalue
+    rcases hvalue with ⟨index, hindex, rfl⟩
+    exact ⟨index, hindex, rfl⟩
+  exact BddAbove.mono hsubset himage_finite.bddAbove
+
 /-- Weighted class suprema are nonnegative, including mathlib's empty-class case. -/
 theorem vdVWWeightedClassSupremum_nonneg
     {Observation : Type u} {Index : Type v}

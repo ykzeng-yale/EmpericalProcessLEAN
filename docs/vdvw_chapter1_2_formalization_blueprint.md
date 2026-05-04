@@ -632,6 +632,11 @@ above, so they do not change the theorem-level dashboard counts.
    The finite-class package is now consumed by the untruncated theorem-facing
    convergence declaration
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass`.
+   This finite-class consumer now also discharges truncated-class integrability
+   and finite-class value-set boundedness through
+   `integrable_vdVWTruncatedClassFun_of_integrable`,
+   `integrable_envelope_tail_of_integrable`, and
+   `bddAbove_vdVWWeightedClassValueSet_of_finite`.
    The next proof step is therefore the non-finite-class
    geometric/cardinality instantiation, or a final theorem-critical
    specialization consuming this finite-class untruncated consumer.

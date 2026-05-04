@@ -380,6 +380,35 @@ theorem measurable_vdVWTruncatedClassFun
   unfold vdVWTruncatedClassFun
   exact hclass.indicator (measurableSet_le henvelope measurable_const)
 
+/-- Truncation preserves integrability of an ordinary real-valued class member. -/
+theorem integrable_vdVWTruncatedClassFun_of_integrable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {μ : Measure Observation}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M : ℝ} {index : Index}
+    (hclass : Measurable (classFun index))
+    (henvelope : Measurable envelope)
+    (hclassIntegrable : Integrable (classFun index) μ) :
+    Integrable (vdVWTruncatedClassFun classFun envelope M index) μ := by
+  refine
+    Integrable.mono hclassIntegrable
+      (measurable_vdVWTruncatedClassFun hclass henvelope).aestronglyMeasurable
+      ?_
+  exact ae_of_all _ fun observation => by
+    simpa [Real.norm_eq_abs] using
+      abs_vdVWTruncatedClassFun_le_abs classFun envelope M index observation
+
+/-- The envelope upper tail remains integrable under an integrable envelope. -/
+theorem integrable_envelope_tail_of_integrable
+    {Observation : Type u} [MeasurableSpace Observation]
+    {μ : Measure Observation} {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : Measurable envelope)
+    (henvelope_integrable : Integrable envelope μ) :
+    Integrable (Set.indicator {x : Observation | M < envelope x}
+      envelope) μ := by
+  exact henvelope_integrable.indicator
+    (measurableSet_lt measurable_const henvelope)
+
 /--
 Ordinary measurable integral form of the truncation-tail bound.
 
@@ -1486,7 +1515,8 @@ theorem
   filter_upwards [eventually_gt_atTop (0 : ℕ), htruncSmall] with n hn htrunc_n
   have htailIntegrable :
       Integrable (Set.indicator {x : Observation | M < envelope x} envelope) P := by
-    exact henv_integrable.indicator (measurableSet_lt measurable_const henv)
+    exact integrable_envelope_tail_of_integrable (μ := P) (M := M)
+      henv henv_integrable
   have hsplit :
       VdVWOuterProbability (vdVWProductMeasure P n)
           {sample : SampleAt Observation n |
@@ -15651,9 +15681,9 @@ Untruncated centered convergence for finite nonempty classes.
 This consumes the finite-class selected fixed-radius tail/UI package at every
 positive truncation level, so finite classes no longer need a separate
 empirical entropy side-condition in the Theorem 2.4.3 route.  The remaining
-assumptions are the existing measurability, envelope, symmetrization,
-Rademacher, and integrability hypotheses used by the theorem-local
-symmetrization/truncation pipeline.
+assumptions are the existing symmetrization, Rademacher, and supremum
+integrability hypotheses used by the theorem-local product/Fubini pipeline;
+truncation integrability and finite-class boundedness are discharged here.
 -/
 theorem
     VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass
@@ -15682,17 +15712,6 @@ theorem
         (fun i : Fin n => sign n i ω))
     (hindep : ∀ n, iIndepFun (sign n) μsign)
     (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign)
-    (htruncIntegrable :
-      ∀ M index, index ∈ indexClass ->
-        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
-    (hbdd_truncated :
-      ∀ M n (sample : SampleAt Observation n),
-        BddAbove
-          (vdVWWeightedClassValueSet indexClass
-            (fun index : Index => fun observation : Observation =>
-              vdVWTruncatedClassFun classFun envelope M index observation -
-                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
-            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
     (hpairSupIntegrable :
       ∀ M n (sample : SampleAt Observation n),
         Integrable
@@ -15843,8 +15862,17 @@ theorem
       (henv_integrable := henv_integrable)
       (hclassIntegrable := hclassIntegrable)
       (sign := sign) (hsign := hsign) (hindep := hindep)
-      (hsubG := hsubG) (htruncIntegrable := htruncIntegrable)
-      (hbdd_truncated := hbdd_truncated)
+      (hsubG := hsubG)
+      (htruncIntegrable := by
+        intro M index hindex
+        exact
+          integrable_vdVWTruncatedClassFun_of_integrable
+            (hclass index hindex) henv (hclassIntegrable index hindex))
+      (hbdd_truncated := by
+        intro M n sample
+        exact
+          bddAbove_vdVWWeightedClassValueSet_of_finite hindex_finite
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
       (hpairSupIntegrable := hpairSupIntegrable)
       (hcenteredSupIntegrable := hcenteredSupIntegrable)
       (hghostExpectationIntegrable := hghostExpectationIntegrable)

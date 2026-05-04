@@ -1401,6 +1401,18 @@ current theorem-local measurability, envelope integrability, symmetrization,
 Rademacher, and finite-center integrability inputs; the entropy/tail package is
 no longer a separate assumption for finite classes.
 
+2026-05-03 `/goal` update after the finite-class side-condition reduction:
+two remaining routine finite-class assumptions are now discharged locally.
+`bddAbove_vdVWWeightedClassValueSet_of_finite` proves boundedness of the
+weighted value set from finite index classes, and
+`integrable_vdVWTruncatedClassFun_of_integrable` plus
+`integrable_envelope_tail_of_integrable` provide the truncation/tail
+integrability bridges from ordinary measurable integrability.  Consequently
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass`
+no longer assumes separate truncated-class integrability or finite-class
+boundedness; those are derived from coordinate measurability, original-class
+integrability, envelope measurability, and finite `indexClass`.
+
 Next exact edit: do not repeat the finite-class geometry/entropy/consumer
 bridge.  The remaining Theorem 2.4.3 proof work is now either (1) prove the
 actual non-finite-class
