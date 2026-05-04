@@ -1070,7 +1070,14 @@ above, so they do not change the theorem-level dashboard counts.
    `measurable_vdVWPermuteNatSequence_permutationSymmetric`, and
    `vdVWInfiniteProductMeasure_measurePreserving_permuteNatSequence`; the next
    patch should use these with set-integral/conditional-expectation uniqueness
-   to prove the leave-one-out conditional symmetry itself.
+   to prove the leave-one-out conditional symmetry itself.  The set-integral
+   and conditional-expectation invariance bridges are also now compiled as
+   `setIntegral_vdVWInfiniteProductMeasure_comp_permuteNatSequence_of_measurableSet_permutationSymmetric`,
+   `vdVW_condExp_eq_of_forall_setIntegral_eq`, and
+   `vdVW_condExp_comp_permuteNatSequence_eq_of_permutationSymmetric`; the
+   remaining patch should prove the deterministic leave-one-out transport
+   identifying each omitted term as a tail-fixing permutation of a distinguished
+   omitted term, then instantiate the reverse-comparison bridge.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

@@ -463,6 +463,55 @@ theorem measurable_vdVWPermuteNatSequence_permutationSymmetric
   exact hs
 
 /--
+Set-integral invariance over a `Σ_n`-measurable set under a tail-fixing
+coordinate permutation of the iid infinite product space.
+
+This is the integral-side primitive needed to identify conditional
+expectations of leave-one-out terms in VdV&W Lemma 2.4.5.
+-/
+theorem setIntegral_vdVWInfiniteProductMeasure_comp_permuteNatSequence_of_measurableSet_permutationSymmetric
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] {n : ℕ}
+    (perm : Equiv.Perm ℕ) (hfix : VdVWNatPermFixesFrom n perm)
+    {s : Set (ℕ -> Observation)}
+    (hs : MeasurableSet[vdVWPermutationSymmetricMeasurableSpace Observation n] s)
+    (f : (ℕ -> Observation) -> ℝ) :
+    (∫ sequence in s,
+        f (vdVWPermuteNatSequence (Observation := Observation) perm sequence)
+          ∂(vdVWInfiniteProductMeasure P)) =
+      ∫ sequence in s, f sequence ∂(vdVWInfiniteProductMeasure P) := by
+  let e := vdVWNatCoordinatePermMeasurableEquiv
+    (Observation := Observation) perm
+  have hpre : e ⁻¹' s = s := by
+    simpa [e, vdVWNatCoordinatePermMeasurableEquiv_eq_vdVWPermuteNatSequence
+      (Observation := Observation) perm] using
+      preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetric
+        (Observation := Observation) perm hfix hs
+  have hmp : MeasurePreserving e
+      (vdVWInfiniteProductMeasure P) (vdVWInfiniteProductMeasure P) := by
+    simpa [e] using
+      vdVWInfiniteProductMeasure_measurePreserving_natCoordinatePerm
+        (Observation := Observation) P perm
+  calc
+    (∫ sequence in s,
+        f (vdVWPermuteNatSequence (Observation := Observation) perm sequence)
+          ∂(vdVWInfiniteProductMeasure P))
+        =
+      ∫ sequence in s, f (e sequence) ∂(vdVWInfiniteProductMeasure P) := by
+          simp [e, vdVWNatCoordinatePermMeasurableEquiv_eq_vdVWPermuteNatSequence
+            (Observation := Observation) perm]
+    _ = ∫ sequence in e ⁻¹' s, f (e sequence)
+        ∂(vdVWInfiniteProductMeasure P) := by
+          rw [hpre]
+    _ = ∫ sequence in s, f sequence
+        ∂(Measure.map e (vdVWInfiniteProductMeasure P)) := by
+          exact
+            (setIntegral_map_equiv
+              (μ := vdVWInfiniteProductMeasure P) e f s).symm
+    _ = ∫ sequence in s, f sequence ∂(vdVWInfiniteProductMeasure P) := by
+          rw [hmp.map_eq]
+
+/--
 Projecting the first `n` coordinates after an infinite permutation fixing the
 tail is the finite-coordinate permutation induced by restricting that
 permutation to the first `n` coordinates.

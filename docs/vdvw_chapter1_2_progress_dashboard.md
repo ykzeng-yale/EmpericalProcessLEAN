@@ -775,6 +775,16 @@ coordinate permutations.  New declarations include
 `vdVWInfiniteProductMeasure_measurePreserving_permuteNatSequence`.  Remaining
 work is the set-integral/conditional-expectation equality for the actual
 leave-one-out terms.
+2026-05-04 follow-up: the set-integral and conditional-expectation invariance
+bridges over `Σ_n` are now compiled:
+`setIntegral_vdVWInfiniteProductMeasure_comp_permuteNatSequence_of_measurableSet_permutationSymmetric`,
+`vdVW_condExp_eq_of_forall_setIntegral_eq`, and
+`vdVW_condExp_comp_permuteNatSequence_eq_of_permutationSymmetric`.  Thus any
+integrable statistic composed with a tail-fixing coordinate permutation has
+the same conditional expectation over `Σ_n`.  Remaining Lemma 2.4.5 work is
+the deterministic leave-one-out transport identifying each omitted term as a
+permuted copy of a distinguished omitted term, then final instantiation of the
+reverse-comparison bridge.
 
 ## Verification Monitor
 

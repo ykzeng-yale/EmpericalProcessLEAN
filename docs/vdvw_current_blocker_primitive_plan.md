@@ -3179,3 +3179,23 @@ and `P^∞` is invariant under those permutations.  The next theorem-facing edit
 is to combine these with `ae_eq_condExp_of_forall_setIntegral_eq` or
 set-integral invariance to prove equality of the conditional expectations of
 the leave-one-out empirical-supremum cover terms given `Σ_{n+1}`.
+
+2026-05-04 follow-up: the set-integral and conditional-expectation invariance
+bridges over `Σ_n` are now compiled.  Search/reuse record: pinned mathlib APIs
+used are `MeasurePreserving.integrable_comp_of_integrable`,
+`setIntegral_map_equiv`, `setIntegral_condExp`, and
+`ae_eq_condExp_of_forall_setIntegral_eq`; local code reuses the just-compiled
+`Σ_n` invariant-set theorem and `P^∞` coordinate-permutation
+measure-preserving theorem.  New declarations are
+`setIntegral_vdVWInfiniteProductMeasure_comp_permuteNatSequence_of_measurableSet_permutationSymmetric`,
+`vdVW_condExp_eq_of_forall_setIntegral_eq`, and
+`vdVW_condExp_comp_permuteNatSequence_eq_of_permutationSymmetric`.  This closes
+the conditional-expectation equality theorem for any integrable statistic
+composed with a tail-fixing coordinate permutation over `Σ_n`.  The remaining
+Lemma 2.4.5 blocker is now the deterministic leave-one-out identification:
+for each omitted index, construct a tail-fixing coordinate permutation of
+`ℕ` that transports the distinguished leave-one-out empirical-supremum term to
+that omitted term, then combine it with
+`vdVW_condExp_comp_permuteNatSequence_eq_of_permutationSymmetric`,
+`vdVW_condExp_reverseComparison_of_ae_le_uniformAverage`, and the compiled
+sample-path inequality.

@@ -290,6 +290,40 @@ theorem vdVW_condExp_reverseComparison_of_ae_le_uniformAverage
       (Ω := Ω) (mΩ := mΩ) (μ := μ) (m := m) hm hX_meas hX_int hZ_int hdet hZ_cond
 
 /--
+Conditional-expectation uniqueness bridge from set integrals.  If two
+integrable real random variables have the same integral over every set of a
+sub-sigma-field, then their conditional expectations with respect to that
+sub-sigma-field are equal a.e.
+
+This is the bridge used after the `Σ_n` set-integral permutation-invariance
+primitive in the VdV&W Lemma 2.4.5 leave-one-out symmetry step.
+-/
+theorem vdVW_condExp_eq_of_forall_setIntegral_eq
+    {Ω : Type u} [mΩ : MeasurableSpace Ω] {μ : Measure Ω}
+    [IsFiniteMeasure μ]
+    {m : MeasurableSpace Ω} (hm : m ≤ mΩ)
+    {f g : Ω -> ℝ}
+    (hf_int : Integrable f μ) (hg_int : Integrable g μ)
+    (hset :
+      ∀ s : Set Ω, MeasurableSet[m] s ->
+        (∫ ω in s, f ω ∂μ) = ∫ ω in s, g ω ∂μ) :
+    μ[f | m] =ᵐ[μ] μ[g | m] := by
+  have hcandidate :
+      μ[f | m] =ᵐ[μ] μ[g | m] := by
+    refine
+      ae_eq_condExp_of_forall_setIntegral_eq
+        (μ := μ) (m := m) hm hg_int ?_ ?_ ?_
+    · intro s _hs _hμs
+      exact integrable_condExp.integrableOn
+    · intro s hs _hμs
+      calc
+        (∫ ω in s, μ[f | m] ω ∂μ)
+            = ∫ ω in s, f ω ∂μ := setIntegral_condExp hm hf_int hs
+        _ = ∫ ω in s, g ω ∂μ := hset s hs
+    · exact stronglyMeasurable_condExp.aestronglyMeasurable
+  exact hcandidate
+
+/--
 VdV&W Lemma 2.4.5 exterior-cofiltration substrate on an infinite product
 sample space.
 
@@ -3211,6 +3245,63 @@ theorem vdVWPermutationSymmetricMeasurableSpace_le_pi
   intro s hs
   rcases hs with ⟨statistic, hmeas, _hsymm, t, ht, rfl⟩
   exact hmeas ht
+
+/--
+Conditional expectations over `Σ_n` are invariant under tail-fixing coordinate
+permutations of the iid infinite product sample space.
+
+This is the conditional-expectation form of the set-integral invariance needed
+for the VdV&W Lemma 2.4.5 leave-one-out symmetry proof.
+-/
+theorem vdVW_condExp_comp_permuteNatSequence_eq_of_permutationSymmetric
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] {n : ℕ}
+    (perm : Equiv.Perm ℕ) (hfix : VdVWNatPermFixesFrom n perm)
+    {f : (ℕ -> Observation) -> ℝ}
+    (hf_int : Integrable f (vdVWInfiniteProductMeasure P)) :
+    (vdVWInfiniteProductMeasure P)[
+        (fun sequence =>
+          f (vdVWPermuteNatSequence (Observation := Observation) perm sequence)) |
+        vdVWPermutationSymmetricMeasurableSpace Observation n] =ᵐ[
+          vdVWInfiniteProductMeasure P]
+      (vdVWInfiniteProductMeasure P)[
+        f | vdVWPermutationSymmetricMeasurableSpace Observation n] := by
+  have hm :
+      vdVWPermutationSymmetricMeasurableSpace Observation n ≤
+        (.pi (X := fun _ : ℕ => Observation)) :=
+    vdVWPermutationSymmetricMeasurableSpace_le_pi Observation n
+  have hmp :
+      @MeasurePreserving (ℕ -> Observation) (ℕ -> Observation)
+        (.pi (X := fun _ : ℕ => Observation))
+        (.pi (X := fun _ : ℕ => Observation))
+        (vdVWPermuteNatSequence (Observation := Observation) perm)
+        (vdVWInfiniteProductMeasure P) (vdVWInfiniteProductMeasure P) := by
+    simpa using
+      vdVWInfiniteProductMeasure_measurePreserving_permuteNatSequence
+        (Observation := Observation) P perm
+  have hcomp_int :
+      Integrable
+        (fun sequence =>
+          f (vdVWPermuteNatSequence (Observation := Observation) perm sequence))
+        (vdVWInfiniteProductMeasure P) := by
+    simpa [Function.comp_def] using hmp.integrable_comp_of_integrable hf_int
+  have hset :
+      ∀ s : Set (ℕ -> Observation),
+        MeasurableSet[vdVWPermutationSymmetricMeasurableSpace Observation n] s ->
+        (∫ sequence in s,
+          f (vdVWPermuteNatSequence (Observation := Observation) perm sequence)
+            ∂(vdVWInfiniteProductMeasure P)) =
+        ∫ sequence in s, f sequence ∂(vdVWInfiniteProductMeasure P) := by
+    intro s hs
+    simpa using
+      setIntegral_vdVWInfiniteProductMeasure_comp_permuteNatSequence_of_measurableSet_permutationSymmetric
+        (Observation := Observation) P perm hfix hs f
+  exact
+    vdVW_condExp_eq_of_forall_setIntegral_eq
+      (Ω := ℕ -> Observation) (mΩ := .pi (X := fun _ : ℕ => Observation))
+      (μ := vdVWInfiniteProductMeasure P)
+      (m := vdVWPermutationSymmetricMeasurableSpace Observation n) hm
+      hcomp_int hf_int hset
 
 /--
 The VdV&W decreasing permutation-symmetric sigma-fields, represented as a
