@@ -637,6 +637,10 @@ above, so they do not change the theorem-level dashboard counts.
    `integrable_vdVWTruncatedClassFun_of_integrable`,
    `integrable_envelope_tail_of_integrable`, and
    `bddAbove_vdVWWeightedClassValueSet_of_finite`.
+   The selected fixed-radius tail/untruncated wrappers and the finite-class
+   consumer now also derive finite-center Rademacher supremum integrability via
+   `integrable_vdVWFiniteCenterWeightedSupremum_of_truncated_rademacher`, using
+   the existing one-center sub-Gaussian bridge and truncated variance proxy.
    The next proof step is therefore the non-finite-class
    geometric/cardinality instantiation, or a final theorem-critical
    specialization consuming this finite-class untruncated consumer.

@@ -1413,6 +1413,21 @@ no longer assumes separate truncated-class integrability or finite-class
 boundedness; those are derived from coordinate measurability, original-class
 integrability, envelope measurability, and finite `indexClass`.
 
+2026-05-03 `/goal` update after the finite-center integrability closure:
+`integrable_vdVWFiniteCenterWeightedSupremum_of_truncated_rademacher`
+now derives finite-empirical-cover Rademacher center-supremum integrability
+from the compiled one-center `HasSubgaussianMGF` bridge, the truncated
+variance-proxy bound, and the finite-center sub-Gaussian integrability
+handoff.  This removes the explicit finite-center integrability assumption
+from the selected fixed-radius tail/untruncated wrappers and from
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass`.
+Search record for this edit: local `Theorem243.lean` already had
+`vdVWTheorem243_oneCenter_rademacher_subGaussian_bridge`,
+`vdVWTheorem243_truncated_varianceProxy_le`, and
+`vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF_of_pos`;
+pinned mathlib supplies the underlying `HasSubgaussianMGF` API but no VdVW
+finite empirical-cover supremum specialization.
+
 Next exact edit: do not repeat the finite-class geometry/entropy/consumer
 bridge.  The remaining Theorem 2.4.3 proof work is now either (1) prove the
 actual non-finite-class

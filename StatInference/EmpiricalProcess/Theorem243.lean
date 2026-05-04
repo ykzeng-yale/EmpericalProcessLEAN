@@ -5482,6 +5482,59 @@ theorem
       sign hindep hsubG hproxy_pos
 
 /--
+Finite-empirical-cover integrability of truncated Rademacher center suprema.
+
+The expectation bound below needs a positive common proxy.  For the integrability
+side-condition in the later symmetrization pipeline, it is enough to combine
+the one-center Rademacher sub-Gaussian bridge with the truncated variance-proxy
+monotonicity and the finite-center integrability handoff.
+-/
+theorem
+    integrable_vdVWFiniteCenterWeightedSupremum_of_truncated_rademacher
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    (sign : Fin n -> Ω -> ℝ)
+    (hindep : iIndepFun sign μ)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μ) :
+    Integrable
+      (fun ω =>
+        vdVWFiniteCenterWeightedSupremum sample
+          (vdVWTruncatedClassFun classFun envelope M) cover.center
+          (vdVWRademacherWeights (fun i : Fin n => sign i ω)))
+      μ := by
+  unfold vdVWFiniteCenterWeightedSupremum
+  exact
+    vdVWTheorem243_finiteCenter_iSup_abs_integrable_of_hasSubgaussianMGF_of_pos
+      (cover.cardinality_pos_of_nonempty hindexClass_nonempty)
+      (fun centerIndex : Fin cardinality =>
+        fun ω =>
+          vdVWWeightedSampleSum
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+            (cover.center centerIndex) sample)
+      (c := NNReal.mk (M ^ 2 / (n : ℝ))
+        (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)))
+      (by
+        intro centerIndex
+        exact
+          vdVWTheorem243_hasSubgaussianMGF_mono
+            (vdVWTheorem243_oneCenter_rademacher_subGaussian_bridge
+              μ sample (vdVWTruncatedClassFun classFun envelope M)
+              (cover.center centerIndex) sign hindep hsubG)
+            (vdVWTheorem243_truncated_varianceProxy_le
+              (sample := sample) henvelope hM_nonneg
+              (cover.center_mem centerIndex)))
+
+/--
 The common sub-Gaussian proxy for truncated Rademacher centers is positive
 under the explicit book-side assumptions `0 < n` and `0 < M`.
 -/
@@ -15144,22 +15197,6 @@ theorem
               (vdVWTruncatedClassFun classFun envelope M)
               (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)) sample)
           μsign)
-    (hfiniteCenterSupIntegrable :
-      ∀ M (hM_pos : 0 < M) eta (heta : 0 < eta) n
-        (sample : SampleAt Observation n),
-        Integrable
-          (fun ωsign =>
-            vdVWFiniteCenterWeightedSupremum sample
-              (vdVWTruncatedClassFun classFun envelope M)
-              (vdVWRandomEmpiricalL1CoverAtCard (X M n)
-                ((VdVWRandomEmpiricalL1CoveringNumberLeCardinality.selected_truncated_positiveRadius_of_forAllRadius_samplePath
-                  (indexClass := indexClass) (classFun := classFun)
-                  (envelope := envelope) (M := M)
-                  (cardinality := cardinality M) (X M)
-                  (hcovering_all M hM_pos) heta) n)
-                hindexClass sample n).center
-              (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)))
-          μsign)
     (Ucentered :
       ∀ M n, VdVWMeasurableCover (vdVWProductMeasure P n)
         (fun sample : SampleAt Observation n => ENNReal.ofReal
@@ -15208,8 +15245,20 @@ theorem
             (Urandom := Urandom M)
             (hproductSupIntegrable := hproductSupIntegrable M)
             (hsignSupIntegrable := hsignSupIntegrable M)
-            (hfiniteCenterSupIntegrable :=
-              hfiniteCenterSupIntegrable M hM_pos)
+            (hfiniteCenterSupIntegrable := by
+              intro eta heta n sample
+              simpa [hX_samplePath M n sample] using
+                integrable_vdVWFiniteCenterWeightedSupremum_of_truncated_rademacher
+                  (cover :=
+                    vdVWRandomEmpiricalL1CoverAtCard (X M n)
+                      ((VdVWRandomEmpiricalL1CoveringNumberLeCardinality.selected_truncated_positiveRadius_of_forAllRadius_samplePath
+                        (indexClass := indexClass) (classFun := classFun)
+                        (envelope := envelope) (M := M)
+                        (cardinality := cardinality M) (X M)
+                        (hcovering_all M hM_pos) heta) n)
+                      hindexClass sample n)
+                  hindexClass henvelope hM_pos.le (sign n) (hindep n)
+                  (hsubG n))
             (Ucentered := Ucentered M))
 
 /--
@@ -15394,22 +15443,6 @@ theorem
               (vdVWTruncatedClassFun classFun envelope M)
               (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)) sample)
           μsign)
-    (hfiniteCenterSupIntegrable :
-      ∀ M (hM_pos : 0 < M) eta (heta : 0 < eta) n
-        (sample : SampleAt Observation n),
-        Integrable
-          (fun ωsign =>
-            vdVWFiniteCenterWeightedSupremum sample
-              (vdVWTruncatedClassFun classFun envelope M)
-              (vdVWRandomEmpiricalL1CoverAtCard (X M n)
-                ((VdVWRandomEmpiricalL1CoveringNumberLeCardinality.selected_truncated_positiveRadius_of_forAllRadius_samplePath
-                  (indexClass := indexClass) (classFun := classFun)
-                  (envelope := envelope) (M := M)
-                  (cardinality := cardinality M) (X M)
-                  (hcovering_all M hM_pos) heta) n)
-                hindexClass sample n).center
-              (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)))
-          μsign)
     (Ucentered :
       ∀ M n, VdVWMeasurableCover (vdVWProductMeasure P n)
         (fun sample : SampleAt Observation n => ENNReal.ofReal
@@ -15460,8 +15493,20 @@ theorem
             (Urandom := Urandom M)
             (hproductSupIntegrable := hproductSupIntegrable M)
             (hsignSupIntegrable := hsignSupIntegrable M)
-            (hfiniteCenterSupIntegrable :=
-              hfiniteCenterSupIntegrable M hM_pos)
+            (hfiniteCenterSupIntegrable := by
+              intro eta heta n sample
+              simpa [hX_samplePath M n sample] using
+                integrable_vdVWFiniteCenterWeightedSupremum_of_truncated_rademacher
+                  (cover :=
+                    vdVWRandomEmpiricalL1CoverAtCard (X M n)
+                      ((VdVWRandomEmpiricalL1CoveringNumberLeCardinality.selected_truncated_positiveRadius_of_forAllRadius_samplePath
+                        (indexClass := indexClass) (classFun := classFun)
+                        (envelope := envelope) (M := M)
+                        (cardinality := cardinality M) (X M)
+                        (hcovering_all M hM_pos) heta) n)
+                      hindexClass sample n)
+                  hindexClass henvelope hM_pos.le (sign n) (hindep n)
+                  (hsubG n))
             (Ucentered := Ucentered M))
 
 /--
@@ -15602,22 +15647,6 @@ theorem
               (vdVWTruncatedClassFun classFun envelope M)
               (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)) sample)
           μsign)
-    (hfiniteCenterSupIntegrable :
-      ∀ M (hM_pos : 0 < M) eta (heta : 0 < eta) n
-        (sample : SampleAt Observation n),
-        Integrable
-          (fun ωsign =>
-            vdVWFiniteCenterWeightedSupremum sample
-              (vdVWTruncatedClassFun classFun envelope M)
-              (vdVWRandomEmpiricalL1CoverAtCard (X M n)
-                ((VdVWRandomEmpiricalL1CoveringNumberLeCardinality.selected_truncated_positiveRadius_of_forAllRadius_samplePath
-                  (indexClass := indexClass) (classFun := classFun)
-                  (envelope := envelope) (M := M)
-                  (cardinality := cardinality M) (X M)
-                  (hselected M hM_pos).coveringNumber_le heta) n)
-                hindexClass sample n).center
-              (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)))
-          μsign)
     (Ucentered :
       ∀ M n, VdVWMeasurableCover (vdVWProductMeasure P n)
         (fun sample : SampleAt Observation n => ENNReal.ofReal
@@ -15672,7 +15701,6 @@ theorem
       (Urandom := Urandom)
       (hproductSupIntegrable := hproductSupIntegrable)
       (hsignSupIntegrable := hsignSupIntegrable)
-      (hfiniteCenterSupIntegrable := hfiniteCenterSupIntegrable)
       (Ucentered := Ucentered)
 
 /--
@@ -15797,29 +15825,6 @@ theorem
               (vdVWTruncatedClassFun classFun envelope M)
               (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)) sample)
           μsign)
-    (hfiniteCenterSupIntegrable :
-      ∀ M (_hM_pos : 0 < M) eta (heta : 0 < eta) n
-        (sample : SampleAt Observation n)
-        (hcovering_all :
-          ∀ eta, 0 < eta -> ∀ n,
-            VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n)
-              indexClass (vdVWTruncatedClassFun classFun envelope M) eta
-              ((fun _eta : ℝ => fun _n _sample _m =>
-                hindex_finite.toFinset.card) eta n)),
-        Integrable
-          (fun ωsign =>
-            vdVWFiniteCenterWeightedSupremum sample
-              (vdVWTruncatedClassFun classFun envelope M)
-              (vdVWRandomEmpiricalL1CoverAtCard (X M n)
-                ((VdVWRandomEmpiricalL1CoveringNumberLeCardinality.selected_truncated_positiveRadius_of_forAllRadius_samplePath
-                  (indexClass := indexClass) (classFun := classFun)
-                  (envelope := envelope) (M := M)
-                  (cardinality := fun _eta : ℝ => fun _n _sample _m =>
-                    hindex_finite.toFinset.card)
-                  (X M) hcovering_all heta) n)
-                hindexClass sample n).center
-              (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)))
-          μsign)
     (Ucentered :
       ∀ M n, VdVWMeasurableCover (vdVWProductMeasure P n)
         (fun sample : SampleAt Observation n => ENNReal.ofReal
@@ -15882,11 +15887,6 @@ theorem
       (Urandom := Urandom)
       (hproductSupIntegrable := hproductSupIntegrable)
       (hsignSupIntegrable := hsignSupIntegrable)
-      (hfiniteCenterSupIntegrable := by
-        intro M hM_pos eta heta n sample
-        simpa [cardinality] using
-          hfiniteCenterSupIntegrable M hM_pos eta heta n sample
-            (hselected M hM_pos).coveringNumber_le)
       (Ucentered := Ucentered)
 
 /--
