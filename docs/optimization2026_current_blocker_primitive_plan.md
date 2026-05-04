@@ -63,10 +63,11 @@ Search existing mathlib and local `StatInference` APIs
 first, prove the next highest-leverage main-text theorem layer, verify with
 focused `lake env lean`, targeted `lake build StatInference`, proof-hole and
 secret scans, update this route state, and commit/push clean verified
-progress.  Skip exercise proofs until the main textbook theorem lane is
-covered; exercise statements may be used as supplied interfaces only when they
-directly unblock a main-text theorem.  All Optimization textbook exercise
-statements and exercise proofs should live in the single module
+progress.  Keep main-text theorem coverage as the priority; exercise
+statements and exercise proofs may still be formalized opportunistically when
+they are cheap, reusable, or directly unblock a main-text theorem.  All
+Optimization textbook exercise statements and exercise proofs should live in
+the single module
 `StatInference/Optimization/Exercises.lean`, so the main theorem modules stay
 focused while the later exercise sweep remains source-trackable.
 
@@ -459,8 +460,9 @@ Local searches should prioritize:
 9. Keep `StatInference/Optimization/Exercises.lean` as the single exercise
    module for all Optimization textbook exercises.  Exercise statements may be
    formalized there before the full exercise-proof pass when they help main
-   theorem reuse, but exercise proofs should not displace the main-text theorem
-   lane until the book spine is covered.
+   theorem reuse, and exercise proofs may be added opportunistically when they
+   are cheap or unlock theorem reuse, without displacing the main-text theorem
+   lane.
 10. Prove the first source-exact report candidate only after the exact theorem
    declaration compiles and source screenshots are captured.
 
@@ -553,9 +555,12 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.plGradientFlowLyapunovContinuousDataRouteToQGOn_of_sideConditionRoute`
 - `StatInference.Optimization.plGradientFlowLyapunovRouteToQGOn_of_derivativeComponentsRoute`
 - `StatInference.Optimization.plGradientFlowLyapunovRouteToQGOn_of_normDerivativeRoute`
+- `StatInference.Optimization.plGradientFlowLyapunovRouteToQGOn_of_sideConditionRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovRoute`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_sideConditionRoute`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn.quadraticGrowthOn`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute`
+- `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovAntitoneRoute`

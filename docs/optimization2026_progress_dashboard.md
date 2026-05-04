@@ -17,8 +17,8 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Exercise policy: all Optimization textbook exercise statements and exercise
   proofs live in the single module `StatInference/Optimization/Exercises.lean`.
   The main-text theorem lane remains priority; exercise statements can be
-  formalized there when useful for reuse, and full exercise proofs can follow
-  after the main theorem spine is covered.
+  formalized there when useful for reuse, and full exercise proofs can be added
+  opportunistically when they are cheap or unlock theorem progress.
 - Automation policy: the Optimization heartbeat is currently paused while this
   thread runs under an explicit manual goal.  If reactivated, refresh the live
   prompt from the blocker plan and dashboard before ending any proof run.

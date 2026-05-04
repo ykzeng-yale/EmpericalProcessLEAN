@@ -701,6 +701,27 @@ theorem plGradientFlowLyapunovRouteToQGOn_of_normDerivativeRoute
     (plGradientFlowLyapunovDerivativeComponentsRouteToQGOn_of_normDerivativeRoute
       hgrad hroute)
 
+/--
+The remaining side-condition route supplies Chewi's pointwise Lyapunov
+inequality; all continuity and derivative plumbing is discharged on the way.
+-/
+theorem plGradientFlowLyapunovRouteToQGOn_of_sideConditionRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovSideConditionRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovRouteToQGOn C f alpha fstar :=
+  plGradientFlowLyapunovRouteToQGOn_of_normDerivativeRoute
+    hgrad halpha hpl
+    (plGradientFlowLyapunovNormDerivativeRouteToQGOn_of_nonzeroDisplacementRoute
+      (plGradientFlowLyapunovNonzeroDisplacementRouteToQGOn_of_continuousDataRoute
+        (plGradientFlowLyapunovContinuousDataRouteToQGOn_of_sideConditionRoute
+          hgrad hroute)))
+
 omit [InnerProductSpace ℝ E] in
 /--
 The explicit Lyapunov-plus-convergence route implies the limit inequality
@@ -731,6 +752,24 @@ theorem plGradientFlowLimitRouteToQGOn_of_lyapunovRoute
     le_of_tendsto hL_tend hev
   refine ⟨xStar, hxStar, hmin, hfxStar, ?_⟩
   simpa [c, norm_sub_rev] using hlimit
+
+/--
+The remaining side-condition route implies the gradient-flow limit inequality
+used in Chewi's algebraic proof of `(QG)`.
+-/
+theorem plGradientFlowLimitRouteToQGOn_of_sideConditionRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovSideConditionRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLimitRouteToQGOn C f alpha fstar :=
+  plGradientFlowLimitRouteToQGOn_of_lyapunovRoute
+    (plGradientFlowLyapunovRouteToQGOn_of_sideConditionRoute
+      hgrad halpha hpl hroute)
 
 omit [InnerProductSpace ℝ E] in
 /--
@@ -797,6 +836,25 @@ theorem quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute
     Real.sq_sqrt hgap_nonneg
   refine ⟨xStar, hxStar, hmin, hfxStar, ?_⟩
   nlinarith
+
+/--
+Witness form of Chewi Proposition 2.7(2) from the remaining side-condition
+route.  This is useful for combining the nontrivial-flow case with a separate
+trivial minimizer-start case.
+-/
+theorem quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovSideConditionRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthWitnessOn C f alpha fstar :=
+  quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute halpha
+    (plGradientFlowLimitRouteToQGOn_of_sideConditionRoute
+      hgrad halpha.le hpl hroute)
 
 omit [InnerProductSpace ℝ E] in
 /--
@@ -962,10 +1020,8 @@ theorem quadraticGrowthOn_of_plGradientFlowLyapunovSideConditionRoute
       PLGradientFlowLyapunovSideConditionRouteToQGOn
         C f grad alpha fstar) :
     QuadraticGrowthOn C f alpha fstar :=
-  quadraticGrowthOn_of_plGradientFlowLyapunovContinuousDataRoute
-    hgrad halpha hpl
-    (plGradientFlowLyapunovContinuousDataRouteToQGOn_of_sideConditionRoute
-      hgrad hroute)
+  (quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionRoute
+    hgrad halpha hpl hroute).quadraticGrowthOn halpha.le
 
 end Optimization
 end StatInference

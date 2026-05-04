@@ -117,8 +117,10 @@ Current compiled surface:
 - `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovRoute`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_sideConditionRoute`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn.quadraticGrowthOn`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute`
+- `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNonzeroDisplacementRoute`
@@ -281,8 +283,9 @@ Exercise formalization policy: all exercises from the Optimization notes
 should be formalized in `StatInference/Optimization/Exercises.lean`.  Main
 textbook theorem modules may keep exercise statements as supplied interfaces
 when needed for theorem reuse, but new exercise statements/proofs should be
-centralized in that single exercise module so the later full exercise pass is
-auditable and does not fragment the main theorem lane.
+centralized in that single exercise module.  The main theorem lane remains the
+aggressive priority, while exercise statements and proofs may be added
+opportunistically when they are cheap, reusable, or unblock a textbook theorem.
 
 ### Lane D: Later textbook expansion
 
