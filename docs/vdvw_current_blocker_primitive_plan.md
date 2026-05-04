@@ -3481,3 +3481,17 @@ bridge; pinned mathlib supplies `tendsto_add_atTop_iff_nat` and
 outer-probability/in-mean route and a direct outer-a.s. book-style GC branch.
 The remaining non-finite-class blocker remains the reverse/cofiltration
 convergence theorem or a different structural route that avoids it.
+
+2026-05-04 follow-up: the finite-class canonical SLLN/GC route has been
+strengthened to remove the global `[Countable Index]` assumption.  The new
+finite-intersection bridge
+`ae_forall_mem_tendsto_empiricalAverage_sub_integral_zero_of_finite_canonical`
+intersects pointwise SLLN events over `hindex_finite.toFinset`, and the
+finite-class endpoint theorems now consume that bridge directly.  Search/reuse
+record: local `endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid`,
+`vdVWInfiniteProductMeasure_coordinate_hasLaw`, and
+`vdVWInfiniteProductMeasure_iIndepFun_coordinates` remain the pointwise SLLN
+inputs; local finite-set API `Set.Finite.toFinset` and `Finset.induction_on`
+replace the previous countable `ae_all_iff` route.  This is closer to the
+textbook finite-class case: finiteness of the class, not countability of the
+ambient index type, is now the relevant assumption.

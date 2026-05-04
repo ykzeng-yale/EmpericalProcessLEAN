@@ -25792,6 +25792,88 @@ theorem
   exact ae_all_iff.2 hpoint
 
 /--
+Canonical infinite-product endpoint strong law over a finite class, without a
+global `Countable Index` assumption.
+
+The countable-class bridge above intersects pointwise SLLN events using
+`ae_all_iff`.  For genuinely finite VdV&W classes we only need a finite
+intersection over `hindex_finite.toFinset`.
+-/
+theorem
+    ae_forall_mem_tendsto_empiricalAverage_sub_integral_zero_of_finite_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      ∀ index, index ∈ indexClass ->
+        Tendsto
+          (fun n : ℕ =>
+            empiricalAverage
+              (vdVWFirstNSample (Observation := Observation) n sequence)
+              (classFun index) -
+              ∫ observation, classFun index observation ∂P)
+          atTop (𝓝 0) := by
+  classical
+  have hpoint :
+      ∀ index, ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        index ∈ indexClass ->
+          Tendsto
+            (fun n : ℕ =>
+              empiricalAverage
+                (vdVWFirstNSample (Observation := Observation) n sequence)
+                (classFun index) -
+                ∫ observation, classFun index observation ∂P)
+            atTop (𝓝 0) := by
+    intro index
+    by_cases hmem : index ∈ indexClass
+    · have hstat_meas : AEMeasurable (classFun index) P :=
+        (hclass index hmem).aemeasurable
+      have hstat_integrable : Integrable (classFun index) P :=
+        integrable_classFun_of_integrable_envelope
+          (μ := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) henvelope hclass henv_integrable hmem
+      have hendpoint :=
+        endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid
+          (μ := vdVWInfiniteProductMeasure P) (P := P)
+          (X := fun i sequence => sequence i)
+          (statistic := classFun index)
+          hstat_meas hstat_integrable
+          (fun i => vdVWInfiniteProductMeasure_coordinate_hasLaw P i)
+          (fun _i _j hij =>
+            (vdVWInfiniteProductMeasure_iIndepFun_coordinates P).indepFun hij)
+      filter_upwards [hendpoint] with sequence hsequence _hmem
+      simpa [samplePath, vdVWFirstNSample] using hsequence
+    · exact Filter.Eventually.of_forall fun _ hindex => (hmem hindex).elim
+  have hfin :
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∀ index, index ∈ hindex_finite.toFinset ->
+          index ∈ indexClass ->
+            Tendsto
+              (fun n : ℕ =>
+                empiricalAverage
+                  (vdVWFirstNSample (Observation := Observation) n sequence)
+                  (classFun index) -
+                  ∫ observation, classFun index observation ∂P)
+              atTop (𝓝 0) := by
+    refine hindex_finite.toFinset.induction_on ?_ ?_
+    · exact Eventually.of_forall fun _ index hindex => by simp at hindex
+    · intro index remaining hnot_mem_remaining hremaining
+      filter_upwards [hpoint index, hremaining] with
+        sequence hindex_point hremaining_seq candidate hcandidate hcandidate_mem
+      simp only [Finset.mem_insert] at hcandidate
+      rcases hcandidate with hcandidate_eq | hcandidate_remaining
+      · subst candidate
+        exact hindex_point hcandidate_mem
+      · exact hremaining_seq candidate hcandidate_remaining hcandidate_mem
+  filter_upwards [hfin] with sequence hsequence index hmem
+  exact hsequence index ((hindex_finite.mem_toFinset).2 hmem) hmem
+
+/--
 For a finite class, the named Lemma 2.4.5 centered supremum is bounded by the
 finite sum of the absolute centered empirical averages over the class.
 
@@ -25841,7 +25923,6 @@ classes.
 theorem
     vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_zero_of_finite_indexClass_canonical_slln
     {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
-    [Countable Index]
     {P : Measure Observation} [IsProbabilityMeasure P]
     {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
     {envelope : Observation -> ℝ}
@@ -25855,9 +25936,9 @@ theorem
           vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
         atTop (𝓝 0) := by
   have hpoint :=
-    ae_forall_mem_tendsto_empiricalAverage_sub_integral_zero_of_countable_canonical
+    ae_forall_mem_tendsto_empiricalAverage_sub_integral_zero_of_finite_canonical
       (P := P) (indexClass := indexClass) (classFun := classFun)
-      (envelope := envelope) henvelope hclass henv_integrable
+      (envelope := envelope) hindex_finite henvelope hclass henv_integrable
   filter_upwards [hpoint] with sequence hsequence
   let upper : ℕ -> ℝ :=
     fun n =>
@@ -26002,7 +26083,6 @@ uniform-deviation conclusion for the canonical infinite iid product space.
 theorem
     VdVWAlmostSureGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
     {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
-    [Countable Index]
     {P : Measure Observation} [IsProbabilityMeasure P]
     {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
     {envelope : Observation -> ℝ}
@@ -26034,7 +26114,6 @@ endpoint from the direct finite-class SLLN route.
 theorem
     VdVWOuterAlmostSurePGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
     {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
-    [Countable Index]
     {P : Measure Observation} [IsProbabilityMeasure P]
     {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
     {envelope : Observation -> ℝ}
@@ -26058,7 +26137,6 @@ outer-a.s. branch supplied by the direct SLLN route.
 theorem
     VdVWPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln
     {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
-    [Countable Index]
     {P : Measure Observation} [IsProbabilityMeasure P]
     {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
     {envelope : Observation -> ℝ}

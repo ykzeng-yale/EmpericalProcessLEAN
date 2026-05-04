@@ -983,3 +983,11 @@ and `VdVWPGlivenkoCantelliClass_of_finite_indexClass_canonical_slln`.
 This closes the finite-index outer-a.s. branch without the
 reverse/cofiltration assumption; arbitrary/countable classes still need the
 general reverse/permutation-symmetric theorem or another structural route.
+
+2026-05-04 follow-up: the finite-class canonical SLLN/GC endpoint was tightened
+again: the direct finite-class route no longer assumes `[Countable Index]`.
+The new bridge
+`ae_forall_mem_tendsto_empiricalAverage_sub_integral_zero_of_finite_canonical`
+uses a finite intersection over `hindex_finite.toFinset`; the finite-class
+SLLN and canonical outer-a.s. GC endpoints now depend only on actual class
+finiteness plus the envelope/measurability assumptions.
