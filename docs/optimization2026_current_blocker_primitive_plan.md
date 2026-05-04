@@ -872,6 +872,13 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChainObjective`
 - `StatInference.Optimization.lowerBoundChainObjective_add_direction`
 - `StatInference.Optimization.lowerBoundChainDirectionEnergy_nonneg`
+- `StatInference.Optimization.sq_sub_le_two_mul_sq_add_two_mul_sq`
+- `StatInference.Optimization.lowerBoundChain_directionNode_succ_sq_sum`
+- `StatInference.Optimization.lowerBoundChain_directionNode_sq_sum`
+- `StatInference.Optimization.lowerBoundChainDirectionEnergy_le_four_norm_sq`
+- `StatInference.Optimization.lowerBoundChain_sum_mul_directionNode_succ`
+- `StatInference.Optimization.lowerBoundChain_sum_mul_directionNode`
+- `StatInference.Optimization.lowerBoundChain_edge_direction_sum_eq_edgeDifference_sum`
 - `StatInference.Optimization.lowerBoundChainObjective_add_direction_ge_linear`
 - `StatInference.Optimization.lowerBoundChainObjective_ge_linear`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective`
@@ -882,6 +889,24 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChainEdge_sum`
 - `StatInference.Optimization.lowerBoundChainGradient_eq_edgeDifference`
 - `StatInference.Optimization.inner_lowerBoundChainGradient_eq_edgeDifference_sum`
+- `StatInference.Optimization.inner_lowerBoundChainGradient_eq_edgeDirection_sum`
+- `StatInference.Optimization.lowerBoundChainObjective_add_direction_inner`
+- `StatInference.Optimization.lowerBoundChainObjective_add_direction_ge_inner`
+- `StatInference.Optimization.lowerBoundChainObjective_ge_inner`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_add_direction_inner`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_ge_inner`
+- `StatInference.Optimization.lowerBoundChainObjective_add_direction_le_smooth`
+- `StatInference.Optimization.lowerBoundChainObjective_le_smooth`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_add_direction_le_smooth`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_le_smooth`
+- `StatInference.Optimization.continuous_lowerBoundChainNode`
+- `StatInference.Optimization.continuous_lowerBoundChainEdge`
+- `StatInference.Optimization.continuous_lowerBoundChainObjective`
+- `StatInference.Optimization.continuous_lowerBoundChainTextbookObjective`
+- `StatInference.Optimization.lowerBoundChainObjective_firstOrderConvex`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_firstOrderConvex`
+- `StatInference.Optimization.lowerBoundChainObjective_smoothWithGradientOn`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_smoothWithGradientOn`
 - `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainMinimizer`
@@ -934,12 +959,16 @@ support/minimizer/norm/objective-value/global-minimizer theorems.  The current
 Chapter 4 algebra package now has zero-boundary direction nodes/edges, exact
 edge residual subtraction/addition, exact shifted and source-objective
 quadratic expansions, nonnegative quadratic remainders, edge-coordinate
-first-order lower models, and the coordinate-sum form of the inner product
-with `lowerBoundChainGradient`.  Next aggressive Chapter 4 blockers are:
-prove the summation-by-parts identity turning the edge-linear term into
-`inner ℝ (lowerBoundChainGradient beta d x) v`, prove the uniform
-direction-energy bound needed for the displayed Hessian/smoothness estimate,
-then package source convexity and `β`-smoothness for Theorem 4.4.  Search
+first-order lower models, the coordinate-sum form of the inner product with
+`lowerBoundChainGradient`, the summation-by-parts identity turning edge-linear
+work into `inner ℝ (lowerBoundChainGradient beta d x) v`, the uniform
+direction-energy bound behind the displayed Hessian/smoothness estimate, and
+source convexity/smoothness wrappers:
+`lowerBoundChainTextbookObjective_firstOrderConvex` and
+`lowerBoundChainTextbookObjective_smoothWithGradientOn`.  Next aggressive
+Chapter 4 targets are exact source-report packaging around Theorem 4.4, or
+continuing to the strongly-convex lower bound Theorem 4.5 and its reduction
+from Lemma 4.2 if report packaging is deferred.  Search
 mathlib basis/coordinate, matrix, PSD, derivative, smoothness,
 finite-sum telescoping, and Cauchy APIs before proving the full
 objective-gradient bridge, convex/smooth facts, or the final source-report
