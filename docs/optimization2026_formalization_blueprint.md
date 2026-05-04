@@ -681,6 +681,11 @@ The newest source-constant window wrapper compiles as
 rewriting those two gates as the cleaner textbook-facing bounds
 `3 * sqrt(kappa) * log 2 / 8 - 1 <= N` and
 `N < sqrt(kappa) * log ((alpha/8)/eps) / 8 - 1`.
+The accompanying gate comparison lemmas
+`chewi45_source_positiveLog_half_gate_le_eps_gate`,
+`chewi45_source_positiveLog_half_gate_lt_eps_gate_of_kappa_pos`, and
+`chewi45_source_positiveLog_half_gate_lt_eps_gate_of_four_le` now compile,
+so the large-log assumption can be reused without redoing scalar algebra.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and

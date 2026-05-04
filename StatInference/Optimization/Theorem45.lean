@@ -3051,6 +3051,55 @@ theorem chewi45_not_finiteGeometricCandidate_near_min_of_sqrtKappa_positiveLog_r
       (N := N) hhalf_old heps_old (x := x) hx0 hspan hnear
 
 /--
+Scalar nonemptiness comparison for the source-positive-log window in the
+direct finite Theorem 4.5 route.  If the accuracy logarithm dominates the
+fixed half-boundary logarithm, then the half-boundary gate is no larger than
+the accuracy gate.
+-/
+theorem chewi45_source_positiveLog_half_gate_le_eps_gate
+    {alpha eps kappa : ℝ}
+    (hlog_large :
+      3 * Real.log (2 : ℝ) ≤ Real.log ((alpha / 8) / eps)) :
+    (3 * Real.sqrt kappa * Real.log (2 : ℝ)) / 8 - 1 ≤
+      (Real.sqrt kappa * Real.log ((alpha / 8) / eps)) / 8 - 1 := by
+  have hsqrt_nonneg : 0 ≤ Real.sqrt kappa := Real.sqrt_nonneg kappa
+  have hmul :
+      Real.sqrt kappa * (3 * Real.log (2 : ℝ)) ≤
+        Real.sqrt kappa * Real.log ((alpha / 8) / eps) :=
+    mul_le_mul_of_nonneg_left hlog_large hsqrt_nonneg
+  nlinarith
+
+/--
+Strict version of `chewi45_source_positiveLog_half_gate_le_eps_gate`, useful
+when choosing a natural iteration count inside the source-positive-log window.
+-/
+theorem chewi45_source_positiveLog_half_gate_lt_eps_gate_of_kappa_pos
+    {alpha eps kappa : ℝ} (hkappa_pos : 0 < kappa)
+    (hlog_large :
+      3 * Real.log (2 : ℝ) < Real.log ((alpha / 8) / eps)) :
+    (3 * Real.sqrt kappa * Real.log (2 : ℝ)) / 8 - 1 <
+      (Real.sqrt kappa * Real.log ((alpha / 8) / eps)) / 8 - 1 := by
+  have hsqrt_pos : 0 < Real.sqrt kappa := Real.sqrt_pos.2 hkappa_pos
+  have hmul :
+      Real.sqrt kappa * (3 * Real.log (2 : ℝ)) <
+        Real.sqrt kappa * Real.log ((alpha / 8) / eps) :=
+    mul_lt_mul_of_pos_left hlog_large hsqrt_pos
+  nlinarith
+
+/--
+Strict source-positive-log window comparison in the standard Theorem 4.5
+condition-number regime `4 <= kappa`.
+-/
+theorem chewi45_source_positiveLog_half_gate_lt_eps_gate_of_four_le
+    {alpha eps kappa : ℝ} (hkappa_four : 4 ≤ kappa)
+    (hlog_large :
+      3 * Real.log (2 : ℝ) < Real.log ((alpha / 8) / eps)) :
+    (3 * Real.sqrt kappa * Real.log (2 : ℝ)) / 8 - 1 <
+      (Real.sqrt kappa * Real.log ((alpha / 8) / eps)) / 8 - 1 := by
+  exact chewi45_source_positiveLog_half_gate_lt_eps_gate_of_kappa_pos
+    (by nlinarith) hlog_large
+
+/--
 Source-constant presentation of the direct finite Theorem 4.5 obstruction.
 This is the positive-log wrapper with the scalar coefficients multiplied out:
 the lower dimension-adequacy gate is `3 * sqrt(kappa) * log 2 / 8`, while
