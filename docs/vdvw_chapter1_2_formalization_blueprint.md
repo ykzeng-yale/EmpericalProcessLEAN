@@ -590,12 +590,20 @@ above, so they do not change the theorem-level dashboard counts.
    `empiricalL1CoveringNumber_le_of_metric_isCover`,
    `nonempty_finiteEmpiricalL1CoverAtCard_of_metric_minimalCover`, and
    `empiricalL1CoveringNumber_le_of_metric_minimalCover`.  The next proof step
-   is therefore the geometric/cardinality instantiation: build or select the
-   empirical `L1(P_n)` pseudometric cover, prove the compatibility estimate
-   from its `edist` balls to the local empirical distance bound, and feed the
-   resulting cardinality estimate into the selected fixed-radius tail route.
-   If this cannot be proved from the textbook assumptions, state the exact
-   additional theorem-level side condition honestly.
+   is therefore the geometric/cardinality instantiation.  The terminal
+   power-bound constructors
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_terminal_le_pow`
+   and
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_succ_terminal_le_pow`
+   are also compiled, so a future estimate
+   `cardinality eta n sample n <= base eta ^ n` or
+   `cardinality eta n sample n + 1 <= base eta ^ n` now directly supplies the
+   selected fixed-radius tail/UI package.  What remains is to build or select
+   the empirical `L1(P_n)` pseudometric cover, prove the compatibility estimate
+   from its `edist` balls to the local empirical distance bound, and prove the
+   resulting cardinality estimate.  If this cannot be proved from the textbook
+   assumptions, state the exact additional theorem-level side condition
+   honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

@@ -1295,17 +1295,32 @@ missing local adapter from finite internal metric centers to empirical
 `L1(P_n)` cover witnesses, under the honest compatibility hypothesis
 `edist index center <= radius -> empiricalL1Distance ... <= epsilon`.
 
+2026-05-03 `/goal` update: the terminal power estimates now feed the selected
+fixed-radius tail/UI package directly.  Search reused the local terminal
+log-cardinality arithmetic declarations
+`vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_terminal_le_pow`,
+`vdVWLogEmpiricalL1CoveringCardinality_terminal_div_le_of_succ_terminal_le_pow`,
+and the existing package constructor
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_bound`.
+The new compiled constructors are
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_terminal_le_pow` and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_succ_terminal_le_pow`.
+Thus a geometric estimate of the form
+`cardinality eta n sample n <= base eta ^ n`, or the sharper
+`cardinality eta n sample n + 1 <= base eta ^ n`, now directly produces the
+fixed-radius tail/UI package consumed by the fixed-`M` and untruncated
+Theorem 2.4.3 handoffs.
+
 Next exact edit: prove the selected finite-net tail-expectation/UI condition
 from the textbook entropy hypothesis by supplying the remaining geometric
 cardinality estimate.  The adapter gap is now closed; the remaining proof work
 is to instantiate or construct the empirical `L1(P_n)` pseudometric geometry,
 prove the compatibility estimate for the chosen internal covers/maximal
-separated sets, bound the resulting finite center cardinality by a usable
-`base ^ n` expression or by the selected fixed-radius entropy input, and feed
-the terminal log-cardinality arithmetic lemmas.  If this geometric packing
-route blocks, record the precise additional book-level
-uniform-integrability/tail-expectation condition needed to keep the final
-Theorem 2.4.3 statement honest.
+separated sets, and bound the resulting finite center cardinality by a usable
+`base ^ n` expression.  The analytic package handoff from that estimate is now
+closed.  If this geometric packing route blocks, record the precise additional
+book-level uniform-integrability/tail-expectation condition needed to keep the
+final Theorem 2.4.3 statement honest.
 The remaining analytic gap is no longer selected-cardinality measurability/log
 convergence under countability, nor the fixed-`M`/untruncated consumer
 composition, nor a missing tail/UI consumer, nor converting a deterministic
