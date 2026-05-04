@@ -1447,6 +1447,14 @@ the finite-dimensional counting core
 wrapper `exists_quadraticObjective_isMinOn_of_pairwise_orthogonal_residuals`.
 These prove that mutually orthogonal residuals identifying with quadratic
 gradients force a global minimizer among the first `finrank ℝ E + 1` iterates.
+The newest point-update bridge adds `quadraticGradient_succ_of_point_step`,
+`residual_succ_eq_quadraticGradient_of_point_and_residual_steps`,
+`residual_eq_quadraticGradient_of_point_and_residual_updates`,
+`IsCGDisplayedIteration.residual_eq_quadraticGradient_of_point_updates`, and
+`IsCGDisplayedIteration.exists_quadraticObjective_isMinOn_of_pairwise_orthogonal`.
+This connects the displayed CG point update
+`x_{n+1}=x_n+eta_n p_n` to the residual-gradient invariant used by the
+finite-dimensional termination wrapper.
 Search-first result: mathlib has continuous linear maps,
 `continuous_id.inner`, `Continuous.inner`, `real_inner_comm`,
 `Function.iterate_succ_apply'`, `Submodule.span_induction`,
@@ -1461,15 +1469,14 @@ operator APIs under `Analysis/InnerProductSpace/Positive.lean` should be
 searched before adding a future spectral bridge.  The current substrate
 deliberately uses supplied quadratic-form bounds so it can reuse local
 `FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and minimizer wrappers
-without waiting for a full spectral theorem bridge.  Next target: connect the
-displayed CG algorithm to the residual-orthogonality and residual-gradient
-invariants required by `exists_quadraticObjective_isMinOn_of_pairwise_orthogonal_residuals`,
-then state the exact Theorem 5.3 termination wrapper.  For Theorem 5.4, first
-package the textbook proof assumptions explicitly: CG descent comparison
-against one GD step, gradient orthogonality, finite sum of squared gradients,
-Cauchy-Schwarz, and the restart/halving argument.  Do not redo the Chapter 3
-descent lemma, Chapter 4 gradient-span interfaces, or Chapter 4 hard-instance
-packages.
+without waiting for a full spectral theorem bridge.  Next target: derive or
+package the residual-orthogonality invariant from the CG optimality/line-search
+conditions, then state the exact Theorem 5.3 termination wrapper.  For Theorem
+5.4, first package the textbook proof assumptions explicitly: CG descent
+comparison against one GD step, gradient orthogonality, finite sum of squared
+gradients, Cauchy-Schwarz, and the restart/halving argument.  Do not redo the
+Chapter 3 descent lemma, Chapter 4 gradient-span interfaces, or Chapter 4
+hard-instance packages.
 
 Chapter 2 route context is still available but no longer the active target:
 The route
