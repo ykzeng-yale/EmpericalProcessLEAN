@@ -820,6 +820,13 @@ It consumes the centered leave-one-out comparison and the envelope `eLpNorm`
 bound through the generic conditional-expectation comparison/convergence
 adapter.  Remaining Lemma 2.4.5 work is now only the global
 reverse-filtration convergence/reindexing step.
+2026-05-04 follow-up: all positive row handoffs are now also packaged on one
+full-measure set as
+`vdVW_condExp_centered_reverseComparison_and_ae_tendsto_limitProcess_allRows_of_countable`.
+The theorem keeps row-wise filtrations explicit, so it avoids the false claim
+that the decreasing `Σ_n` family is already an increasing mathlib filtration.
+The only remaining Lemma 2.4.5 blocker is the reverse/cofiltration convergence
+theorem itself.
 
 ## Verification Monitor
 

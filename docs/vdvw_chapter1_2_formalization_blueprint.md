@@ -1106,6 +1106,10 @@ above, so they do not change the theorem-level dashboard counts.
    now also compiles, combining the centered leave-one-out comparison, the
    envelope `eLpNorm` bound, and the conditional-expectation convergence
    adapter for each positive row.
+   The all-positive-row full-measure packaging
+   `vdVW_condExp_centered_reverseComparison_and_ae_tendsto_limitProcess_allRows_of_countable`
+   is also compiled.  It keeps filtrations row-indexed, avoiding an invalid
+   increasing-filtration encoding of the decreasing `Σ_n` family.
    The remaining Lemma 2.4.5 task is therefore narrowed to the actual
    reverse-filtration convergence reduction for the decreasing
    permutation-symmetric `Σ_n` cofiltration, or an honest reindexing into a

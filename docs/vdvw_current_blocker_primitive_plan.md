@@ -3276,3 +3276,14 @@ This closes the positive-`n` row input for the final Lemma 2.4.5 proof.  The
 remaining blocker is not row integrability, conditional symmetry, or envelope
 boundedness; it is the global reverse-filtration convergence step over the
 decreasing permutation-symmetric sigma-fields `Σ_n`.
+
+2026-05-04 follow-up: the countable intersection of all positive row handoffs
+is now compiled as
+`vdVW_condExp_centered_reverseComparison_and_ae_tendsto_limitProcess_allRows_of_countable`.
+This theorem deliberately uses a row-indexed family of ordinary filtrations
+instead of pretending the decreasing `Σ_n` family is one increasing
+`ℕ`-filtration.  It packages the row comparison/convergence statements on one
+full-measure set, leaving the remaining exact blocker unchanged and sharper:
+prove the reverse/cofiltration convergence theorem that turns these
+row-wise conditional-expectation controls into a.e. convergence of the
+centered empirical supremum sequence itself.
