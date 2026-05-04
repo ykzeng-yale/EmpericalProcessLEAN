@@ -65,7 +65,10 @@ focused `lake env lean`, targeted `lake build StatInference`, proof-hole and
 secret scans, update this route state, and commit/push clean verified
 progress.  Skip exercise proofs until the main textbook theorem lane is
 covered; exercise statements may be used as supplied interfaces only when they
-directly unblock a main-text theorem.
+directly unblock a main-text theorem.  All Optimization textbook exercise
+statements and exercise proofs should live in the single module
+`StatInference/Optimization/Exercises.lean`, so the main theorem modules stay
+focused while the later exercise sweep remains source-trackable.
 
 ## Current Blocker
 
@@ -139,7 +142,18 @@ blocker for the whole-space differentiable case:
   `PLGradientFlowLyapunovRouteToQGOn` records the explicit book route with a
   convergent flow and Lyapunov inequality, and
   `quadraticGrowthOn_of_plGradientFlowLyapunovRoute` derives `(QG)` from it
-  via `Tendsto`, `eventually_ge_atTop`, and `le_of_tendsto`.
+  via `Tendsto`, `eventually_ge_atTop`, and `le_of_tendsto`.  The latest
+  bridge tightens this toward the actual displayed proof: the antitone,
+  derivative, and differential-estimate route interfaces compile as
+  `PLGradientFlowLyapunovAntitoneRouteToQGOn`,
+  `PLGradientFlowLyapunovDerivativeRouteToQGOn`, and
+  `PLGradientFlowLyapunovDifferentialEstimateRouteToQGOn`; theorems
+  `plGradientFlowLyapunovAntitoneRouteToQGOn_of_derivativeRoute`,
+  `plGradientFlowLyapunovDerivativeRouteToQGOn_of_differentialEstimateRoute`,
+  `plLyapunovDerivativeBound_nonpos`, and
+  `quadraticGrowthOn_of_plGradientFlowLyapunovDifferentialEstimateRoute`
+  prove the mathlib derivative-monotonicity and PL scalar-algebra parts of
+  Chewi's Lyapunov calculation.
 - Corollary 2.8 now compiles in `StatInference/Optimization/Theorem28.lean`:
   the integrated Lemma 2.1 identity, squared-gradient integral bound, average
   bound, interval lower-bound principle, and source square-root minimum form
@@ -343,13 +357,17 @@ mathlib APIs for the remaining analytic route are `Filter.Tendsto`,
 `AbsolutelyContinuousOnInterval.integral_deriv_eq_sub`,
 `Real.hasDerivAt_sqrt`, `HasDerivAt.sqrt`, `HasDerivAt.norm_sq`,
 `IsCompact.exists_isMinOn`, `ContinuousOn.exists_isMinOn'`, and
-`isCompact_Icc`.  The next proof step should discharge
-`PLGradientFlowLyapunovRouteToQGOn` itself from PL: prove the derivative
-inequality for Chewi's Lyapunov function and connect it to a supplied or
-mathlib gradient-flow convergence theorem.  The Corollary 2.8 compactness step
-is now done using `isCompact_Icc.exists_isMinOn` and
-`ContinuousOn.intervalIntegrable_of_Icc`; future work should not rediscover
-that API.
+`isCompact_Icc`.  For the Lyapunov monotonicity step, mathlib's
+`antitoneOn_of_hasDerivWithinAt_nonpos` over `convex_Ici (0 : ℝ)` now bridges
+the supplied nonpositive derivative on `interior (Set.Ici 0)` to
+`AntitoneOn`.  The scalar PL sign calculation is now local as
+`plLyapunovDerivativeBound_nonpos`.  The remaining proof step should discharge
+`PLGradientFlowLyapunovDifferentialEstimateRouteToQGOn` itself: prove the
+gradient-flow derivative upper bound for Chewi's Lyapunov function, the
+positive-gap side condition on positive times, and the convergence-to-minimizer
+input.  The Corollary 2.8 compactness step is now done using
+`isCompact_Icc.exists_isMinOn` and `ContinuousOn.intervalIntegrable_of_Icc`;
+future work should not rediscover that API.
 
 Current Exercise 3.1 co-coercivity interface result: the source display (3.5)
 now compiles as `GradientCocoerciveOn`.  The bridge
@@ -415,7 +433,12 @@ Local searches should prioritize:
    proves Chewi Lemma 2.1's derivative identity, Theorem 2.2's
    squared-distance exponential contraction layer, and Corollary 2.6's PL
    exponential convergence through the local scalar exponential-decay wrapper.
-9. Prove the first source-exact report candidate only after the exact theorem
+9. Keep `StatInference/Optimization/Exercises.lean` as the single exercise
+   module for all Optimization textbook exercises.  Exercise statements may be
+   formalized there before the full exercise-proof pass when they help main
+   theorem reuse, but exercise proofs should not displace the main-text theorem
+   lane until the book spine is covered.
+10. Prove the first source-exact report candidate only after the exact theorem
    declaration compiles and source screenshots are captured.
 
 ## Verification Gate
@@ -483,14 +506,26 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.QuadraticGrowthWitnessOn`
 - `StatInference.Optimization.PLGradientFlowLimitRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLyapunovAntitoneRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLyapunovDerivativeRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLyapunovDifferentialEstimateRouteToQGOn`
+- `StatInference.Optimization.plLyapunovDerivativeBound_nonpos`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn`
+- `StatInference.Optimization.plGradientFlowLyapunovRouteToQGOn_of_antitoneRoute`
+- `StatInference.Optimization.plGradientFlowLyapunovAntitoneRouteToQGOn_of_derivativeRoute`
+- `StatInference.Optimization.plGradientFlowLyapunovRouteToQGOn_of_derivativeRoute`
+- `StatInference.Optimization.plGradientFlowLyapunovDerivativeRouteToQGOn_of_differentialEstimateRoute`
+- `StatInference.Optimization.plGradientFlowLyapunovRouteToQGOn_of_differentialEstimateRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovRoute`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn.quadraticGrowthOn`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovAntitoneRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovDerivativeRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovDifferentialEstimateRoute`
 - `StatInference.Optimization.gradientFlow_grad_sq_integral_eq_value_drop`
 - `StatInference.Optimization.chewi28_gradient_sq_integral_bound`
 - `StatInference.Optimization.chewi28_gradient_sq_average_bound`
@@ -575,11 +610,14 @@ Latest verified local frontier after lane creation:
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
 Next manual goal target: discharge the analytic hypothesis
-`PLGradientFlowLyapunovRouteToQGOn` from PL by formalizing the Lyapunov
-monotonicity calculation in the proof of Proposition 2.7(2), plus a bounded
-gradient-flow convergence/minimizer interface if no mathlib theorem is ready.
+`PLGradientFlowLyapunovDifferentialEstimateRouteToQGOn` by formalizing the
+Lyapunov derivative upper bound in the proof of Proposition 2.7(2), plus a
+bounded gradient-flow convergence/minimizer interface if no mathlib theorem is
+ready.  The derivative-to-antitone bridge and the PL scalar sign calculation
+are now compiled; do not repeat them.
 The Corollary 2.8 compact-minimum and continuity/integrability bridge is
 already compiled, so do not spend another run there unless strengthening the
 continuity hypotheses materially advances the analytic route.  Continue
 deferring exercise proofs except where an exercise statement is needed as a
-temporary interface for a main-text theorem.
+temporary interface for a main-text theorem; such exercise material belongs
+in `StatInference/Optimization/Exercises.lean`.

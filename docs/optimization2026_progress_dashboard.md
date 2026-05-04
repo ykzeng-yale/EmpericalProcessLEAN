@@ -14,6 +14,11 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Formal theorem reports: none yet.
 - Proof-hole policy: no Optimization report until the exact textbook statement
   compiles with no `sorry`, `admit`, unreviewed `axiom`, or `unsafe`.
+- Exercise policy: all Optimization textbook exercise statements and exercise
+  proofs live in the single module `StatInference/Optimization/Exercises.lean`.
+  The main-text theorem lane remains priority; exercise statements can be
+  formalized there when useful for reuse, and full exercise proofs can follow
+  after the main theorem spine is covered.
 - Automation policy: the Optimization heartbeat is currently paused while this
   thread runs under an explicit manual goal.  If reactivated, refresh the live
   prompt from the blocker plan and dashboard before ending any proof run.
@@ -29,7 +34,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 | Lane | Status | Current Lean anchor | Notes |
 | --- | --- | --- | --- |
 | Chapter 1 convexity/smoothness foundations | local-layer/mathlib-foundation | `StatInference/Optimization/Basic.lean`, `StatInference/Optimization/Minimizer.lean`; mathlib `StrongConvexOn`, `ConvexOn`, `StrictConvexOn`, `HasGradientAt` | Initial interfaces for strong convexity, Chewi convexity, smooth upper models, gradient-descent steps, first-order lower models, strong gradient monotonicity, Exercise 3.1 co-coercivity, PL, h-scaled step co-coercivity, mathlib-gradient Lipschitzness, and GD trajectories compile as the intended surface for Definition 1.5, Definition 1.12, Definition 2.5, Proposition 1.6, Exercise 3.1, and Chapter 3. Proposition 1.6 now has `(1.3) => (1.4)` on `Set.univ` from segment `StrongConvexOn` plus `HasGradientAt`, and `(1.4) => (1.5)` from `FirstOrderStrongConvexOn` to `StronglyMonotoneGradientOn`. Lemma 1.10 minimizer uniqueness and Corollary 1.11-style gradient-zero characterization wrappers compile in `Minimizer.lean`. Prefer mathlib's `StrongConvexOn`, `ConvexOn`, `StrictConvexOn`, and `gradient` APIs for exact derivative-heavy theorem routes. |
-| Chapter 2 gradient flow and PL/QG | local-layer | `StatInference/Optimization/GradientFlow.lean`, `StatInference/Optimization/Theorem27.lean`, `StatInference/Optimization/Theorem28.lean` | Gradient-flow trajectory interface now compiles. Lemma 2.1 derivative identity, gap derivative, and value antitonicity compile from mathlib `HasGradientAt` plus chain rule. Theorem 2.2 has the squared-distance derivative identity, the strong-monotonicity differential inequality, weighted exponential squared-distance contraction, and the literal norm-form contraction from supplied monotonicity, first-order strong convexity, and actual whole-space `StrongConvexOn` plus `HasGradientAt`. Theorem 2.4 now has the interval-integral weighted-forcing step, monotone-gap weighted lower bound, positive-`alpha` denominator convergence, and `alpha = 0` limiting convergence from first-order strong convexity and whole-space `StrongConvexOn` plus `HasGradientAt`, with interval-integrability hypotheses exposed. Corollary 2.6 has the PL differential inequality and source-shaped exponential function-gap convergence. Proposition 2.7 now has the compiled strong-convexity-to-PL implication plus exact `QuadraticGrowthOn`/witness forms, the algebra from Chewi's gradient-flow limit route to `(QG)`, and a bridge from an explicit Lyapunov-plus-convergence route to that limit route. Corollary 2.8 now compiles through the integrated Lemma 2.1 identity, squared-gradient average bound, interval-minimum square-root form from an `IsMinOn` representative, and a compactness/continuity wrapper that discharges the minimizing-time and integrability hypotheses. Next Chapter 2 target is discharging `PLGradientFlowLyapunovRouteToQGOn` from PL. |
+| Chapter 2 gradient flow and PL/QG | local-layer | `StatInference/Optimization/GradientFlow.lean`, `StatInference/Optimization/Theorem27.lean`, `StatInference/Optimization/Theorem28.lean` | Gradient-flow trajectory interface now compiles. Lemma 2.1 derivative identity, gap derivative, and value antitonicity compile from mathlib `HasGradientAt` plus chain rule. Theorem 2.2 has the squared-distance derivative identity, the strong-monotonicity differential inequality, weighted exponential squared-distance contraction, and the literal norm-form contraction from supplied monotonicity, first-order strong convexity, and actual whole-space `StrongConvexOn` plus `HasGradientAt`. Theorem 2.4 now has the interval-integral weighted-forcing step, monotone-gap weighted lower bound, positive-`alpha` denominator convergence, and `alpha = 0` limiting convergence from first-order strong convexity and whole-space `StrongConvexOn` plus `HasGradientAt`, with interval-integrability hypotheses exposed. Corollary 2.6 has the PL differential inequality and source-shaped exponential function-gap convergence. Proposition 2.7 now has the compiled strong-convexity-to-PL implication plus exact `QuadraticGrowthOn`/witness forms, the algebra from Chewi's gradient-flow limit route to `(QG)`, and bridges from explicit Lyapunov routes down to `(QG)`. The newest bridge compiles the antitone, derivative, and differential-estimate route interfaces, uses mathlib `antitoneOn_of_hasDerivWithinAt_nonpos` on `[0,∞)`, and proves the scalar PL sign calculation `plLyapunovDerivativeBound_nonpos`. Corollary 2.8 now compiles through the integrated Lemma 2.1 identity, squared-gradient average bound, interval-minimum square-root form from an `IsMinOn` representative, and a compactness/continuity wrapper that discharges the minimizing-time and integrability hypotheses. Next Chapter 2 target is proving the actual Lyapunov differential estimate and convergence input behind Proposition 2.7(2). |
 | Chapter 3 smooth gradient descent | local-layer | `gradientDescentStep`, `IsGradientDescentTrajectory`, `DiscreteGronwall.lean`, `GradientDescent.lean`, `Theorem33.lean`, `Theorem34.lean`, `Theorem36.lean`, `Theorem37.lean` | First deterministic GD trajectory interface is available. Chewi Lemma 3.5 now has zero-based and source-shaped one-based compiled wrappers, Chewi Lemma 3.1 is compiled from the smooth upper-model interface, GD function values are antitone under the descent step-size condition, Theorem 3.3 contraction compiles in squared and norm forms from supplied gradient monotonicity, supplied first-order lower model, and actual whole-space segment `StrongConvexOn` plus `HasGradientAt` once Exercise 3.1 co-coercivity is supplied. Theorem 3.4 positive-`alpha` plus `alpha = 0` denominator bounds compile from the first-order model and from actual whole-space `StrongConvexOn` plus `HasGradientAt`. Theorem 3.6 PL convergence compiles from the descent lemma plus scalar recurrence, and Theorem 3.7 compiles in existential and finite-minimum gradient-norm forms from the descent lemma plus finite telescoping/average APIs. Next target should be source-audited report packaging for a strongest compiled main-text declaration or Chapter 2 gradient-flow expansion; exercise proofs are deferred. |
 | Chapter 4 lower bounds | pending-local | none | Requires oracle/gradient-span interfaces and finite-dimensional Euclidean/matrix support. |
 | Chapters 5-11 deterministic algorithms | pending-local | none | Acceleration, nonsmooth optimization, Frank-Wolfe, proximal methods, Fenchel duality, mirror methods, and alternating minimization should wait until the basic convex/smooth/GD layer is stable. |
@@ -92,7 +97,8 @@ interval-minimum source form, and the compactness/continuity bridge using
 Do not spend proof runs on Chapter 3 exercise derivations for now.  Exercise
 statements may remain supplied interfaces when they unblock main-text
 Theorem 3.3/3.4 style results; their derivations are deferred until after the
-main theorem lane is covered.
+main theorem lane is covered.  All exercise statement/proof formalizations
+belong in `StatInference/Optimization/Exercises.lean`.
 
 Current compiled Chapter 3 spine:
 
@@ -109,8 +115,9 @@ Current compiled Chapter 3 spine:
    display forms.
 
 Next high-value task: discharge the analytic
-`PLGradientFlowLyapunovRouteToQGOn` hypothesis from PL by proving the book's
-Lyapunov monotonicity calculation and connecting it to gradient-flow
-convergence.
+`PLGradientFlowLyapunovDifferentialEstimateRouteToQGOn` hypothesis by proving
+the book's Lyapunov derivative upper bound and connecting it to the
+gradient-flow convergence-to-minimizer input; the derivative-to-antitone and
+PL scalar-sign parts are now compiled.
 Do not spend proof runs on exercise derivations until the main theorem lane is
 covered.

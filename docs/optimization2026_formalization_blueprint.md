@@ -269,6 +269,13 @@ Near-term exact candidates:
    bound with `Real.le_sqrt_of_sq_le`, and avoids Chapter 3 exercise proof
    derivations.
 
+Exercise formalization policy: all exercises from the Optimization notes
+should be formalized in `StatInference/Optimization/Exercises.lean`.  Main
+textbook theorem modules may keep exercise statements as supplied interfaces
+when needed for theorem reuse, but new exercise statements/proofs should be
+centralized in that single exercise module so the later full exercise pass is
+auditable and does not fragment the main theorem lane.
+
 ### Lane D: Later textbook expansion
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:

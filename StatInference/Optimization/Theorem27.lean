@@ -1,4 +1,5 @@
 import StatInference.Optimization.GradientFlow
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
 
 /-!
 # Chewi Proposition 2.7
@@ -71,6 +72,122 @@ def PLGradientFlowLyapunovRouteToQGOn (C : Set E) (f : E -> ℝ)
             Real.sqrt (alpha / 2) * ‖y t - x‖ +
                 Real.sqrt (f (y t) - fstar) ≤
               Real.sqrt (f x - fstar))
+
+/--
+An even more explicit route for Chewi Proposition 2.7(2): the Lyapunov
+quantity is antitone on nonnegative times.  This is the exact monotonicity
+conclusion obtained after the derivative calculation in the notes.
+-/
+def PLGradientFlowLyapunovAntitoneRouteToQGOn (C : Set E) (f : E -> ℝ)
+    (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    ∃ xStar, ∃ y : ℝ -> E,
+      xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+        y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
+          AntitoneOn
+            (fun t =>
+              Real.sqrt (alpha / 2) * ‖y t - x‖ +
+                Real.sqrt (f (y t) - fstar))
+            (Set.Ici (0 : ℝ))
+
+/--
+Derivative-level route for Chewi Proposition 2.7(2).  This is the analytic
+calculus statement immediately before the monotonicity conclusion in the
+notes: the Lyapunov expression is continuous on nonnegative time and has
+nonpositive derivative on positive time.
+-/
+def PLGradientFlowLyapunovDerivativeRouteToQGOn (C : Set E) (f : E -> ℝ)
+    (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    ∃ xStar, ∃ y : ℝ -> E, ∃ L' : ℝ -> ℝ,
+      xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+        y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
+          ContinuousOn
+            (fun t =>
+              Real.sqrt (alpha / 2) * ‖y t - x‖ +
+                Real.sqrt (f (y t) - fstar))
+            (Set.Ici (0 : ℝ)) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            HasDerivWithinAt
+              (fun s =>
+                Real.sqrt (alpha / 2) * ‖y s - x‖ +
+                  Real.sqrt (f (y s) - fstar))
+              (L' t) (interior (Set.Ici (0 : ℝ))) t) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> L' t ≤ 0)
+
+/--
+Differential-estimate route for the displayed calculation in Chewi's proof of
+`PŁ => QG`.  It exposes the part still coming from gradient-flow calculus:
+the derivative of the Lyapunov quantity is bounded by the expression that the
+PL inequality makes nonpositive.
+-/
+def PLGradientFlowLyapunovDifferentialEstimateRouteToQGOn
+    (C : Set E) (f : E -> ℝ) (grad : E -> E)
+    (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C ->
+    ∃ xStar, ∃ y : ℝ -> E, ∃ L' : ℝ -> ℝ,
+      xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+        y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
+          ContinuousOn
+            (fun t =>
+              Real.sqrt (alpha / 2) * ‖y t - x‖ +
+                Real.sqrt (f (y t) - fstar))
+            (Set.Ici (0 : ℝ)) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t ∈ C) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            0 < f (y t) - fstar) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            HasDerivWithinAt
+              (fun s =>
+                Real.sqrt (alpha / 2) * ‖y s - x‖ +
+                  Real.sqrt (f (y s) - fstar))
+              (L' t) (interior (Set.Ici (0 : ℝ))) t) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            L' t ≤
+              Real.sqrt (alpha / 2) * ‖grad (y t)‖ -
+                ‖grad (y t)‖ ^ (2 : ℕ) /
+                  (2 * Real.sqrt (f (y t) - fstar)))
+
+omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] in
+/--
+Scalar algebra in Chewi Proposition 2.7(2): under the PL lower bound,
+the displayed upper bound for the Lyapunov derivative is nonpositive.
+-/
+theorem plLyapunovDerivativeBound_nonpos
+    {alpha gap g : ℝ}
+    (halpha : 0 ≤ alpha) (hgap : 0 < gap) (hg : 0 ≤ g)
+    (hpl : 2 * alpha * gap ≤ g ^ (2 : ℕ)) :
+    Real.sqrt (alpha / 2) * g -
+        g ^ (2 : ℕ) / (2 * Real.sqrt gap) ≤ 0 := by
+  have hs_pos : 0 < Real.sqrt gap := Real.sqrt_pos.2 hgap
+  have hcoef_nonneg :
+      0 ≤ 2 * Real.sqrt gap * Real.sqrt (alpha / 2) := by
+    positivity
+  have hs_sq : (Real.sqrt gap) ^ (2 : ℕ) = gap :=
+    Real.sq_sqrt hgap.le
+  have hc_sq : (Real.sqrt (alpha / 2)) ^ (2 : ℕ) = alpha / 2 := by
+    exact Real.sq_sqrt (by nlinarith)
+  have hsq :
+      (2 * Real.sqrt gap * Real.sqrt (alpha / 2)) ^ (2 : ℕ) ≤
+        g ^ (2 : ℕ) := by
+    rw [mul_pow, mul_pow, hs_sq, hc_sq]
+    nlinarith
+  have hcoef_le_g :
+      2 * Real.sqrt gap * Real.sqrt (alpha / 2) ≤ g :=
+    (sq_le_sq₀ hcoef_nonneg hg).mp hsq
+  have hmul :
+      (2 * Real.sqrt gap * Real.sqrt (alpha / 2)) * g ≤
+        g ^ (2 : ℕ) := by
+    have := mul_le_mul_of_nonneg_right hcoef_le_g hg
+    nlinarith
+  have hden_pos : 0 < 2 * Real.sqrt gap := by
+    positivity
+  have hle :
+      Real.sqrt (alpha / 2) * g ≤
+        g ^ (2 : ℕ) / (2 * Real.sqrt gap) := by
+    rw [le_div_iff₀ hden_pos]
+    nlinarith
+  nlinarith
 
 /--
 Chewi Proposition 2.7, first implication, in first-order lower-model form:
@@ -159,6 +276,104 @@ theorem polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn
     PolyakLojasiewiczOn C f grad alpha (f xStar) :=
   polyakLojasiewiczOn_of_firstOrderStrongConvexOn
     hfirst halpha hxStar
+
+omit [InnerProductSpace ℝ E] in
+/--
+The antitone Lyapunov route gives the pointwise Lyapunov inequality used by
+the convergence route.
+-/
+theorem plGradientFlowLyapunovRouteToQGOn_of_antitoneRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (hroute : PLGradientFlowLyapunovAntitoneRouteToQGOn C f alpha fstar) :
+    PLGradientFlowLyapunovRouteToQGOn C f alpha fstar := by
+  intro x hx
+  rcases hroute hx with
+    ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv, hanti⟩
+  refine ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv, ?_⟩
+  intro t ht
+  have h0mem : (0 : ℝ) ∈ Set.Ici (0 : ℝ) := by simp
+  have htmem : t ∈ Set.Ici (0 : ℝ) := ht
+  have hle := hanti h0mem htmem ht
+  simpa [hy0] using hle
+
+omit [InnerProductSpace ℝ E] in
+/--
+The derivative calculation in Chewi's proof gives the antitone Lyapunov
+route, via mathlib's one-dimensional mean-value monotonicity theorem on
+`[0, ∞)`.
+-/
+theorem plGradientFlowLyapunovAntitoneRouteToQGOn_of_derivativeRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (hroute : PLGradientFlowLyapunovDerivativeRouteToQGOn C f alpha fstar) :
+    PLGradientFlowLyapunovAntitoneRouteToQGOn C f alpha fstar := by
+  intro x hx
+  rcases hroute hx with
+    ⟨xStar, y, L', hxStar, hmin, hfxStar, hy0, hyconv,
+      hcont, hderiv, hderiv_nonpos⟩
+  refine ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv, ?_⟩
+  exact antitoneOn_of_hasDerivWithinAt_nonpos
+    (convex_Ici (0 : ℝ)) hcont hderiv hderiv_nonpos
+
+omit [InnerProductSpace ℝ E] in
+/--
+The derivative-level Lyapunov route implies the pointwise Lyapunov inequality
+used by the convergence-to-limit algebra.
+-/
+theorem plGradientFlowLyapunovRouteToQGOn_of_derivativeRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (hroute : PLGradientFlowLyapunovDerivativeRouteToQGOn C f alpha fstar) :
+    PLGradientFlowLyapunovRouteToQGOn C f alpha fstar :=
+  plGradientFlowLyapunovRouteToQGOn_of_antitoneRoute
+    (plGradientFlowLyapunovAntitoneRouteToQGOn_of_derivativeRoute hroute)
+
+omit [InnerProductSpace ℝ E] in
+/--
+The differential estimate in Chewi's display, together with the PL
+inequality, supplies the nonpositive-derivative route.
+-/
+theorem plGradientFlowLyapunovDerivativeRouteToQGOn_of_differentialEstimateRoute
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovDifferentialEstimateRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovDerivativeRouteToQGOn C f alpha fstar := by
+  intro x hx
+  rcases hroute hx with
+    ⟨xStar, y, L', hxStar, hmin, hfxStar, hy0, hyconv,
+      hcont, hy_mem, hgap_pos, hderiv, hderiv_bound⟩
+  refine ⟨xStar, y, L', hxStar, hmin, hfxStar, hy0, hyconv,
+    hcont, hderiv, ?_⟩
+  intro t ht
+  have hpl_t :
+      2 * alpha * (f (y t) - fstar) ≤
+        ‖grad (y t)‖ ^ (2 : ℕ) :=
+    hpl (hy_mem t ht)
+  have hscalar :
+      Real.sqrt (alpha / 2) * ‖grad (y t)‖ -
+          ‖grad (y t)‖ ^ (2 : ℕ) /
+            (2 * Real.sqrt (f (y t) - fstar)) ≤ 0 :=
+    plLyapunovDerivativeBound_nonpos
+      halpha (hgap_pos t ht) (norm_nonneg _) hpl_t
+  exact (hderiv_bound t ht).trans hscalar
+
+omit [InnerProductSpace ℝ E] in
+/--
+The differential estimate plus PL gives the pointwise Lyapunov inequality
+used by the convergence route.
+-/
+theorem plGradientFlowLyapunovRouteToQGOn_of_differentialEstimateRoute
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovDifferentialEstimateRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovRouteToQGOn C f alpha fstar :=
+  plGradientFlowLyapunovRouteToQGOn_of_derivativeRoute
+    (plGradientFlowLyapunovDerivativeRouteToQGOn_of_differentialEstimateRoute
+      halpha hpl hroute)
 
 omit [InnerProductSpace ℝ E] in
 /--
@@ -283,6 +498,49 @@ theorem quadraticGrowthOn_of_plGradientFlowLyapunovRoute
     QuadraticGrowthOn C f alpha fstar :=
   quadraticGrowthOn_of_plGradientFlowLimitRoute
     halpha (plGradientFlowLimitRouteToQGOn_of_lyapunovRoute hroute)
+
+omit [InnerProductSpace ℝ E] in
+/--
+Chewi Proposition 2.7, second implication, from a nonincreasing Lyapunov
+quantity along a convergent gradient flow.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovAntitoneRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (halpha : 0 < alpha)
+    (hroute : PLGradientFlowLyapunovAntitoneRouteToQGOn C f alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLyapunovRoute
+    halpha (plGradientFlowLyapunovRouteToQGOn_of_antitoneRoute hroute)
+
+omit [InnerProductSpace ℝ E] in
+/--
+Chewi Proposition 2.7, second implication, from the derivative-level
+Lyapunov calculation plus convergence of the gradient flow.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovDerivativeRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (halpha : 0 < alpha)
+    (hroute : PLGradientFlowLyapunovDerivativeRouteToQGOn C f alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLyapunovAntitoneRoute
+    halpha (plGradientFlowLyapunovAntitoneRouteToQGOn_of_derivativeRoute hroute)
+
+omit [InnerProductSpace ℝ E] in
+/--
+Chewi Proposition 2.7, second implication, from the displayed differential
+estimate for the Lyapunov function and the PL inequality.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovDifferentialEstimateRoute
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovDifferentialEstimateRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  quadraticGrowthOn_of_plGradientFlowLyapunovDerivativeRoute halpha
+    (plGradientFlowLyapunovDerivativeRouteToQGOn_of_differentialEstimateRoute
+      halpha.le hpl hroute)
 
 end Optimization
 end StatInference
