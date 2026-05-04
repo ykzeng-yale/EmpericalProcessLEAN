@@ -1196,10 +1196,20 @@ Chewi-ratio shifted profile is an exact zero-gradient point in every
 coordinate.  Search-first reuse: mathlib `lp.coeFn_smul`,
 `lp.norm_const_smul`, local `chewi45GeometricRatio_pow_recurrence`, and the
 finite Theorem 4.5 ratio algebra; no new recurrence primitive was introduced.
+The supplied infinite tail-to-gap obstruction now compiles too:
+`exercise42InfinitePrefixSupported`,
+`exercise42InfiniteTailSq_le_sqdist_of_prefixSupported`,
+`exercise42Infinite_gap_ge_tailSq_of_lowerModel`, and
+`exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_lowerModel`
+show that a prefix-supported iterate plus a supplied strong lower model at the
+shifted minimizer forces the exact
+`(alpha/2) * (q^2)^N * ‖0 - x_*‖^2` function-gap obstruction.  Reused mathlib
+`lp.norm_rpow_eq_tsum`, `Summable.sum_add_tsum_nat_add`, and nonnegative
+finite-sum/tsum decomposition; no new infinite-series primitive was introduced.
 Next direct Exercise 4.2 step: define the infinite tridiagonal hard-chain
-objective or a supplied tail-to-gap interface for this `lp` model, then reuse
-the compiled tail-to-gap obstruction pattern to obtain the source geometric
-iteration lower bound without finite-boundary slack.
+objective and prove/supply its lower model and prefix-support induction for
+gradient-span algorithms, then convert the compiled geometric obstruction into
+the source logarithmic iteration lower bound without finite-boundary slack.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,

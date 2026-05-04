@@ -298,10 +298,17 @@ infinite gradient layer also compiles: `exercise42InfiniteGeometricMinimizer`,
 `exercise42InfiniteChainGradient_geometricMinimizer_eq_zero_of_kappa`.  This
 is the exact no-terminal-residual version of the finite corrected-chain
 algebra, reusing `lp.coeFn_smul`, `lp.norm_const_smul`, and the compiled
-`chewi45GeometricRatio_pow_recurrence`.  Next, define the infinite tridiagonal
-hard-chain objective or a supplied tail-to-gap interface on this `lp` model,
-then convert the tail obstruction into the logarithmic iteration-count
-statement.  In parallel,
+`chewi45GeometricRatio_pow_recurrence`.  The supplied infinite tail-to-gap
+interface now compiles as `exercise42InfinitePrefixSupported`,
+`exercise42InfiniteTailSq_le_sqdist_of_prefixSupported`,
+`exercise42Infinite_gap_ge_tailSq_of_lowerModel`, and
+`exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_lowerModel`,
+using `lp.norm_rpow_eq_tsum`, `Summable.sum_add_tsum_nat_add`, and
+nonnegative finite-sum decomposition to get the exact
+`(alpha/2) * (q^2)^N * ‖0 - x_*‖^2` obstruction from a supplied lower model.
+Next, define the infinite tridiagonal hard-chain objective and prove/supply its
+lower model and prefix-support induction for gradient-span algorithms, then
+convert the obstruction into the logarithmic iteration-count statement.  In parallel,
 specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.  Search

@@ -607,9 +607,18 @@ that the Chewi-ratio profile `q^(n+1)` is the exact zero-gradient point of the
 infinite hard-chain gradient and has the required `(q^2)^N` tail-times-distance
 identity.  The search-first route reused mathlib `lp.coeFn_smul`,
 `lp.norm_const_smul`, and local `chewi45GeometricRatio_pow_recurrence`; no new
-recurrence theory was needed.  The next infinite-model step is the tridiagonal
-objective or supplied tail-to-gap interface, then a source-shaped
-tail-to-gap/log-rate wrapper.
+recurrence theory was needed.  The supplied infinite tail-to-gap interface
+now also compiles: `exercise42InfinitePrefixSupported`,
+`exercise42InfiniteTailSq_le_sqdist_of_prefixSupported`,
+`exercise42Infinite_gap_ge_tailSq_of_lowerModel`, and
+`exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_lowerModel`
+turn prefix support plus a supplied lower model at the minimizer into the exact
+`(alpha/2) * (q^2)^N * ‖0 - x_*‖^2` gap obstruction.  The search-first route
+reused `lp.norm_rpow_eq_tsum`, `Summable.sum_add_tsum_nat_add`, and
+nonnegative finite-sum decomposition; no local infinite-series comparison
+primitive was needed.  The next infinite-model step is the tridiagonal
+objective/lower-model package and prefix-support induction for gradient-span
+algorithms, then a source-shaped log-rate wrapper.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

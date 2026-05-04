@@ -332,6 +332,84 @@ noncomputable def exercise42InfiniteTailSq
     (z : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (N : ℕ) : ℝ :=
   ∑' n : ℕ, ‖z (N + n)‖ ^ (2 : ℝ≥0∞).toReal
 
+/-- Infinite prefix-support condition: all coordinates from `N` onward vanish. -/
+def exercise42InfinitePrefixSupported
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (N : ℕ) : Prop :=
+  ∀ i : ℕ, N ≤ i -> x i = 0
+
+/--
+The infinite tail energy of `z` is bounded by the squared distance from any
+point whose coordinates vanish from `N` onward.
+-/
+theorem exercise42InfiniteTailSq_le_sqdist_of_prefixSupported
+    {x z : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)} {N : ℕ}
+    (hx : exercise42InfinitePrefixSupported x N) :
+    exercise42InfiniteTailSq z N ≤ ‖x - z‖ ^ (2 : ℕ) := by
+  let w := x - z
+  have hp : 0 < (2 : ℝ≥0∞).toReal := by norm_num
+  have hsumm :
+      Summable fun n : ℕ => ‖w n‖ ^ (2 : ℝ≥0∞).toReal :=
+    (lp.memℓp w).summable hp
+  have htail_eq :
+      exercise42InfiniteTailSq z N =
+        ∑' n : ℕ, ‖w (N + n)‖ ^ (2 : ℝ≥0∞).toReal := by
+    unfold exercise42InfiniteTailSq
+    apply tsum_congr
+    intro n
+    have hxN : x (N + n) = 0 := hx (N + n) (by omega)
+    have hw : w (N + n) = -z (N + n) := by
+      change (x - z) (N + n) = -z (N + n)
+      change x (N + n) - z (N + n) = -z (N + n)
+      rw [hxN]
+      ring
+    rw [hw, norm_neg]
+  have htail_comm :
+      (∑' n : ℕ, ‖w (N + n)‖ ^ (2 : ℝ≥0∞).toReal) =
+        ∑' n : ℕ, ‖w (n + N)‖ ^ (2 : ℝ≥0∞).toReal := by
+    apply tsum_congr
+    intro n
+    rw [Nat.add_comm]
+  have htail_le :
+      (∑' n : ℕ, ‖w (n + N)‖ ^ (2 : ℝ≥0∞).toReal) ≤
+        ∑' n : ℕ, ‖w n‖ ^ (2 : ℝ≥0∞).toReal := by
+    have hsplit := hsumm.sum_add_tsum_nat_add N
+    have hsum_nonneg :
+        0 ≤
+          ∑ n ∈ Finset.range N, ‖w n‖ ^ (2 : ℝ≥0∞).toReal :=
+      Finset.sum_nonneg fun _ _ => by positivity
+    nlinarith
+  have hnorm :
+      ‖x - z‖ ^ (2 : ℕ) =
+        ∑' n : ℕ, ‖w n‖ ^ (2 : ℝ≥0∞).toReal := by
+    have hleft :
+        ‖x - z‖ ^ (2 : ℕ) = ‖w‖ ^ (2 : ℝ≥0∞).toReal := by
+      norm_num [w, Real.rpow_natCast]
+    rw [hleft, lp.norm_rpow_eq_tsum (E := fun _ : ℕ => ℝ)
+      (p := (2 : ℝ≥0∞)) hp w]
+  rw [htail_eq, htail_comm, hnorm]
+  exact htail_le
+
+/--
+Supplied lower-model tail obstruction for the infinite Exercise 4.2 hard
+instance.  Once a point is prefix-supported, a strong lower model at `z` turns
+tail energy into a function-value gap.
+-/
+theorem exercise42Infinite_gap_ge_tailSq_of_lowerModel
+    {f : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) -> ℝ}
+    {alpha : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    {x z : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)} {N : ℕ}
+    (hx : exercise42InfinitePrefixSupported x N)
+    (hlower : f z + (alpha / 2) * ‖x - z‖ ^ (2 : ℕ) ≤ f x) :
+    (alpha / 2) * exercise42InfiniteTailSq z N ≤ f x - f z := by
+  have htail :
+      exercise42InfiniteTailSq z N ≤ ‖x - z‖ ^ (2 : ℕ) :=
+    exercise42InfiniteTailSq_le_sqdist_of_prefixSupported hx
+  have hmul :
+      (alpha / 2) * exercise42InfiniteTailSq z N ≤
+        (alpha / 2) * ‖x - z‖ ^ (2 : ℕ) :=
+    mul_le_mul_of_nonneg_left htail (by nlinarith)
+  nlinarith
+
 /--
 Chewi Exercise 4.2 infinite-chain substrate: the shifted squared `L^2` terms
 of a nonnegative geometric profile form the shifted geometric series.
@@ -498,6 +576,36 @@ theorem exercise42InfiniteGeometricMinimizer_tailSq_eq_pow_mul_zero_dist_sq
     exercise42InfiniteGeometricMinimizer_norm_sq hq_nonneg hq_lt_one]
   rw [pow_succ]
   ring
+
+/--
+Source-shaped infinite Exercise 4.2 obstruction for the shifted hard-chain
+minimizer: a prefix-supported point cannot beat the geometric tail lower
+bound under any supplied strong lower model at the minimizer.
+-/
+theorem exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_lowerModel
+    {f : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) -> ℝ}
+    {alpha q : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1)
+    {x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)} {N : ℕ}
+    (hx : exercise42InfinitePrefixSupported x N)
+    (hlower :
+      f (exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one) +
+          (alpha / 2) *
+            ‖x - exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one‖ ^
+              (2 : ℕ) ≤
+        f x) :
+    (alpha / 2) *
+        ((q ^ (2 : ℕ)) ^ N *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one‖ ^
+              (2 : ℕ)) ≤
+      f x - f (exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one) := by
+  have hgap :=
+    exercise42Infinite_gap_ge_tailSq_of_lowerModel
+      (f := f) (alpha := alpha) halpha_nonneg hx hlower
+  rw [exercise42InfiniteGeometricMinimizer_tailSq_eq_pow_mul_zero_dist_sq
+    hq_nonneg hq_lt_one N] at hgap
+  exact hgap
 
 /--
 Coordinate formula for the infinite strongly-convex hard-chain gradient in
