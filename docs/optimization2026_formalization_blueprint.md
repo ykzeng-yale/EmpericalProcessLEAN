@@ -147,6 +147,7 @@ Current compiled surface:
 - `StatInference.Optimization.gradientFlow_value_hasDerivAt`
 - `StatInference.Optimization.gradientFlow_gap_hasDerivAt`
 - `StatInference.Optimization.gradientFlow_value_deriv_nonpos`
+- `StatInference.Optimization.gradientFlow_value_antitone`
 - `StatInference.Optimization.gradientFlow_sqdist_hasDerivAt`
 - `StatInference.Optimization.gradientFlow_sqdist_deriv_le_of_stronglyMonotoneGradientOn`
 - `StatInference.Optimization.gradientFlow_sqdist_deriv_le_of_firstOrderStrongConvexOn`
@@ -157,25 +158,29 @@ Current compiled surface:
 - `StatInference.Optimization.chewi22_sqdist_weighted_le_of_stronglyMonotoneGradientOn`
 - `StatInference.Optimization.chewi22_sqdist_weighted_le_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi22_sqdist_weighted_le_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.chewi22_dist_le_exp_of_stronglyMonotoneGradientOn`
+- `StatInference.Optimization.chewi22_dist_le_exp_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi22_dist_le_exp_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.gradientFlow_sqdist_to_point_hasDerivAt`
 - `StatInference.Optimization.gradientFlow_sqdist_to_minimizer_deriv_le_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.gradientFlow_sqdist_to_minimizer_deriv_le_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_weighted_bound`
+- `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_weighted_bound`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_weighted_gap_bound`
+- `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_weighted_gap_bound`
 - `StatInference.Optimization.gradientFlow_gap_deriv_le_of_polyakLojasiewiczOn`
 - `StatInference.Optimization.chewi26_gap_weighted_le_of_polyakLojasiewiczOn`
 - `StatInference.Optimization.chewi26_gap_le_exp_of_polyakLojasiewiczOn`
 
 Near-term exact candidates:
 
-1. Theorem 2.4 function-value convergence denominator.  The distance-to-
-   minimizer differential inequality is compiled; the remaining work is the
-   weighted-forcing/integral denominator step and the `alpha = 0` limiting
-   display.
-2. Theorem 2.2 norm-form contraction from the compiled squared-distance
-   weighted contraction, if the square-root/exponential algebra stays
-   lightweight.
-3. Proposition 2.7 main-text implications: strong convexity implies PL, and
+1. Theorem 2.4 analytic interval-integral instantiation.  The distance-to-
+   minimizer differential inequality and positive-`alpha`/`alpha = 0`
+   denominator algebra are compiled; the remaining work is deriving the
+   weighted Gronwall/integral lower-bound input from interval-integral APIs.
+2. Proposition 2.7 main-text implications: strong convexity implies PL, and
    PL implies quadratic growth, skipping exercises.
-4. Corollary 2.8 gradient-norm convergence, reusing Lemma 2.1 and a continuous
+3. Corollary 2.8 gradient-norm convergence, reusing Lemma 2.1 and a continuous
    analog of the Chapter 3 finite-average/telescoping pattern.
 
 ### Lane C: Discrete gradient descent and algorithmic rates

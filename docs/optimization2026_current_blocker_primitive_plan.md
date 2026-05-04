@@ -53,16 +53,16 @@ content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, continuing from the Chapter 2 gradient-flow
 frontier and the existing Chapter 1/3 bridge frontier.  The current route
 should push Chapter 2 main-text theorem layers after the compiled
-gradient-flow calculus/exponential-decay batch: Theorem 2.4 denominator
-convergence, Proposition 2.7 main implications, and Corollary 2.8, while
-preserving the Chapter 3 theorem spine already compiled through Theorem 3.7.
-Search existing mathlib and local `StatInference` APIs first, prove the next
-highest-leverage main-text theorem layer, verify with focused `lake env lean`,
-targeted `lake build StatInference`, proof-hole and secret scans, update this
-route state, and commit/push clean verified progress.  Skip exercise proofs
-until the main textbook theorem lane is covered; exercise statements may be
-used as supplied interfaces only when they directly unblock a main-text
-theorem.
+gradient-flow calculus/exponential-decay batch: Theorem 2.4's analytic
+interval-integral instantiation, Proposition 2.7 main implications, and
+Corollary 2.8, while preserving the Chapter 3 theorem spine already compiled
+through Theorem 3.7.  Search existing mathlib and local `StatInference` APIs
+first, prove the next highest-leverage main-text theorem layer, verify with
+focused `lake env lean`, targeted `lake build StatInference`, proof-hole and
+secret scans, update this route state, and commit/push clean verified
+progress.  Skip exercise proofs until the main textbook theorem lane is
+covered; exercise statements may be used as supplied interfaces only when they
+directly unblock a main-text theorem.
 
 ## Current Blocker
 
@@ -95,12 +95,19 @@ blocker for the whole-space differentiable case:
   well-posedness.
 - Lemma 2.1 now compiles as `gradientFlow_value_hasDerivAt` and
   `gradientFlow_gap_hasDerivAt`, with the nonpositive derivative scalar
-  helper `gradientFlow_value_deriv_nonpos`.
+  helper `gradientFlow_value_deriv_nonpos` and antitonicity wrapper
+  `gradientFlow_value_antitone`.
 - Theorem 2.2's proof spine now compiles: squared-distance derivative
   identity, strong-monotonicity differential inequality, first-order and
   whole-space `StrongConvexOn` plus `HasGradientAt` bridges, and weighted
   exponential squared-distance contraction via
-  `chewi22_sqdist_weighted_le_of_*`.
+  `chewi22_sqdist_weighted_le_of_*`, plus the literal norm-form source
+  contraction via `chewi22_dist_le_exp_of_*`.
+- Theorem 2.4 now has source-shaped positive-`alpha` and `alpha = 0`
+  denominator assembly wrappers from a weighted Gronwall/integral lower-bound
+  interface as `chewi24_gap_le_geometric_denominator_of_weighted_gap_bound`
+  and `chewi24_gap_le_alpha_zero_denominator_of_weighted_gap_bound`; the
+  remaining blocker is the analytic interval-integral instantiation.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -278,7 +285,13 @@ uses `HasGradientAt.hasFDerivAt`, `HasFDerivAt.comp_hasDerivAt`,
 changes the route: use the local exponential-decay wrapper for Theorem 2.2 and
 Corollary 2.6, and reserve full integral Gronwall APIs for Theorem 2.4's
 weighted-forcing denominator if the direct proof becomes longer than the
-mathlib bridge.
+mathlib bridge.  The Theorem 2.2 norm-form conversion reuses `sq_le_sq₀`,
+`Real.exp_add`, `Real.exp_nat_mul`, and positivity of `Real.exp`.  The Theorem
+2.4 denominator assembly now compiles without interval integrals; the remaining
+search target is the interval-integral lower-bound input using
+`intervalIntegral.integral_eq_sub_of_hasDerivAt`, `intervalIntegral.integral_mono_on`,
+`intervalIntegral.integral_const_mul`, and `integral_exp`/`integral_exp_mul_*`
+from `Mathlib.Analysis.SpecialFunctions.Integrals.Basic`.
 
 Current Exercise 3.1 co-coercivity interface result: the source display (3.5)
 now compiles as `GradientCocoerciveOn`.  The bridge
@@ -371,6 +384,7 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.gradientFlow_value_hasDerivAt`
 - `StatInference.Optimization.gradientFlow_gap_hasDerivAt`
 - `StatInference.Optimization.gradientFlow_value_deriv_nonpos`
+- `StatInference.Optimization.gradientFlow_value_antitone`
 - `StatInference.Optimization.gradientFlow_sqdist_hasDerivAt`
 - `StatInference.Optimization.gradientFlow_sqdist_deriv_le_of_stronglyMonotoneGradientOn`
 - `StatInference.Optimization.gradientFlow_sqdist_deriv_le_of_firstOrderStrongConvexOn`
@@ -381,9 +395,16 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.chewi22_sqdist_weighted_le_of_stronglyMonotoneGradientOn`
 - `StatInference.Optimization.chewi22_sqdist_weighted_le_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi22_sqdist_weighted_le_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.chewi22_dist_le_exp_of_stronglyMonotoneGradientOn`
+- `StatInference.Optimization.chewi22_dist_le_exp_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.chewi22_dist_le_exp_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.gradientFlow_sqdist_to_point_hasDerivAt`
 - `StatInference.Optimization.gradientFlow_sqdist_to_minimizer_deriv_le_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.gradientFlow_sqdist_to_minimizer_deriv_le_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_weighted_bound`
+- `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_weighted_bound`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_weighted_gap_bound`
+- `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_weighted_gap_bound`
 - `StatInference.Optimization.gradientFlow_gap_deriv_le_of_polyakLojasiewiczOn`
 - `StatInference.Optimization.chewi26_gap_weighted_le_of_polyakLojasiewiczOn`
 - `StatInference.Optimization.chewi26_gap_le_exp_of_polyakLojasiewiczOn`
@@ -466,10 +487,8 @@ Latest verified local frontier after lane creation:
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal target: close Chewi Theorem 2.4's function-value convergence
-denominator using the compiled distance-to-minimizer differential inequality,
-Lemma 2.1 monotonicity/gap machinery, and either the local weighted
-exponential-decay route or mathlib's integral Gronwall APIs.  Then continue
-with Proposition 2.7 and Corollary 2.8.  Continue deferring exercise proofs
-except where an exercise statement is needed as a temporary interface for a
-main-text theorem.
+Next manual goal target: close Chewi Theorem 2.4's analytic interval-integral
+instantiation for the weighted forcing lower bound, then continue with
+Proposition 2.7 and Corollary 2.8.  Continue deferring exercise proofs except
+where an exercise statement is needed as a temporary interface for a main-text
+theorem.
