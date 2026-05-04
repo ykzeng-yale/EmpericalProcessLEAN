@@ -907,17 +907,44 @@ Chapter 5 acceleration/conjugate-gradient expansion has now started in
 - `StatInference.Optimization.quadraticObjective_smoothWithGradientOn`
 - `StatInference.Optimization.quadraticObjective_oracle_package`
 - `StatInference.Optimization.quadraticObjective_isMinOn_of_apply_eq`
+- `StatInference.Optimization.aInner`
+- `StatInference.Optimization.aNormSq`
+- `StatInference.Optimization.aInner_comm`
+- `StatInference.Optimization.aNormSq_nonneg_of_lowerBound`
+- `StatInference.Optimization.krylovVector`
+- `StatInference.Optimization.krylovSubmodule`
+- `StatInference.Optimization.cgDirectionSubmodule`
+- `StatInference.Optimization.krylovVector_mem_krylovSubmodule`
+- `StatInference.Optimization.krylovSubmodule_mono`
+- `StatInference.Optimization.continuousLinearMap_apply_mem_krylovSubmodule_succ`
+- `StatInference.Optimization.cgDirection_mem_cgDirectionSubmodule`
+- `StatInference.Optimization.cgDirectionSubmodule_mono`
+- `StatInference.Optimization.continuousLinearMap_apply_mem_cgDirectionSubmodule_succ`
+- `StatInference.Optimization.IsCGKrylovRecurrence`
+- `StatInference.Optimization.IsCGKrylovRecurrence.krylovVector_mem_cgDirectionSubmodule`
+- `StatInference.Optimization.IsCGKrylovRecurrence.cgDirectionSubmodule_eq_krylovSubmodule`
+- `StatInference.Optimization.IsOrthogonalToSubmodule`
+- `StatInference.Optimization.eq_zero_of_mem_submodule_and_orthogonal`
+- `StatInference.Optimization.IsCGResidualExactnessState`
+- `StatInference.Optimization.quadraticGradient_eq_zero_of_cgResidualExactnessState`
+- `StatInference.Optimization.quadraticObjective_isMinOn_of_cgResidualExactnessState`
 
 Source anchors are the quadratic display and linear-system minimizer claim at
 markdown lines 954-960, Lemma 5.1 at line 1005, Definition 5.2 at line 1015,
 Theorem 5.3 at line 1033, and Theorem 5.4 at line 1037.  Search-first result:
-mathlib supplies continuous linear maps and inner-product continuity APIs, plus
-`real_inner_comm`; self-adjoint/positive-operator APIs under
+mathlib supplies continuous linear maps and inner-product continuity APIs,
+`real_inner_comm`, `Function.iterate_succ_apply'`,
+`Submodule.span_induction`, `Submodule.span_mono`, and submodule orthogonal
+complement APIs; self-adjoint/positive-operator APIs under
 `Analysis/InnerProductSpace/Positive.lean` should be searched before adding a
 future spectral bridge.  The current local substrate intentionally keeps
 Chewi's source hypotheses as supplied symmetry and quadratic-form bounds so it
 can reuse the existing `FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and
-minimizer packages immediately.
+minimizer packages immediately.  Next proof work should derive the
+`IsCGKrylovRecurrence` and residual-exactness hypotheses from the concrete CG
+line-search/Gram-Schmidt iteration, then add the finite-dimensional
+orthogonality/counting package for Theorem 5.3 and the descent/halving package
+for Theorem 5.4.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
