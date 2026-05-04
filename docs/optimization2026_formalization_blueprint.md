@@ -116,6 +116,8 @@ Current compiled surface:
 - `StatInference.Optimization.PLGradientFlowLyapunovContinuousDataRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovSideConditionRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn`
+- `StatInference.Optimization.positive_gap_of_not_isMinOn`
 - `StatInference.Optimization.plGradientFlowLyapunov_inequality_of_sideConditionData`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
@@ -125,18 +127,23 @@ Current compiled surface:
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute`
 - `StatInference.Optimization.plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_sideConditionNonMinimizerRoute`
+- `StatInference.Optimization.plGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn_of_noMinimizerHitRoute`
+- `StatInference.Optimization.plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_noMinimizerHitRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_sideConditionNonMinimizerRoute`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_noMinimizerHitRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_sideConditionRoute`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn.quadraticGrowthOn`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitNonMinimizerRoute`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNonMinimizerRoute`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRoute`
+- `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNoMinimizerHitRoute`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitNonMinimizerRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNonMinimizerRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNoMinimizerHitRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNonzeroDisplacementRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovContinuousDataRoute`
@@ -226,12 +233,14 @@ Current compiled surface:
 
 Near-term exact candidates:
 
-1. Discharge `PLGradientFlowLyapunovSideConditionRouteToQGOn` by
+1. Discharge `PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn` by
    formalizing or cleanly supplying the gradient-flow convergence/minimizer
-   interface, positive-gap, and nonzero-displacement side conditions.  The
-   derivative-to-antitone bridge, PL scalar sign calculation, objective-gap
-   derivative, nonzero norm-derivative calculation, trajectory/gap continuity,
-   and Lyapunov-continuity wrapper already compile for Proposition 2.7(2).
+   interface, feasible positive-time membership, no minimizer hit, and
+   nonzero-displacement side conditions.  The derivative-to-antitone bridge,
+   PL scalar sign calculation, positive-gap derivation from no minimizer hit,
+   objective-gap derivative, nonzero norm-derivative calculation,
+   trajectory/gap continuity, and Lyapunov-continuity wrapper already compile
+   for Proposition 2.7(2).
 2. Remove or discharge the interval-integrability assumptions in Theorem 2.4
    from the notes' `C²`/regular trajectory hypotheses if a clean mathlib
    continuity route is available.

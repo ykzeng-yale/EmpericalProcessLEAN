@@ -189,7 +189,13 @@ blocker for the whole-space differentiable case:
   wrappers through
   `quadraticGrowthOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRoute`
   derive `(QG)` while requiring convergence/positive-gap/nonzero-displacement
-  only for non-minimizer starts.
+  only for non-minimizer starts.  The newest route removes the explicit
+  positive-gap side condition: `positive_gap_of_not_isMinOn` derives
+  `0 < f y - fstar` from a minimizer witness plus `¬ IsMinOn f C y`, and
+  `PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn` plus wrappers through
+  `quadraticGrowthOn_of_plGradientFlowLyapunovNoMinimizerHitRoute` derive
+  `(QG)` from convergence, feasible trajectory membership, no minimizer hit
+  on positive times, and nonzero displacement.
 - Corollary 2.8 now compiles in `StatInference/Optimization/Theorem28.lean`:
   the integrated Lemma 2.1 identity, squared-gradient integral bound, average
   bound, interval lower-bound principle, and source square-root minimum form
@@ -405,11 +411,12 @@ continuous trajectory/gap data.  The scalar PL sign calculation is now local as
 `HasDerivWithinAt.norm`; the compiled route uses
 `‖z‖ = sqrt (‖z‖^2)` away from `z = 0`.  `HasDerivAt.continuousOn` and
 `gradientFlow_gap_hasDerivAt` now discharge trajectory/gap continuity from the
-gradient-flow hypotheses.  The remaining proof step should discharge
-`PLGradientFlowLyapunovSideConditionRouteToQGOn` itself: prove or supply the
-gradient-flow convergence-to-minimizer input, positive gap on positive times,
-and the nonzero-displacement side condition needed for the classical norm
-derivative.
+gradient-flow hypotheses.  `positive_gap_of_not_isMinOn` now removes the
+explicit positive-gap assumption once no minimizer hit is known.  The
+remaining proof step should discharge the no-minimizer-hit route itself:
+prove or supply gradient-flow convergence to a minimizer, feasible
+positive-time membership, no minimizer hit on positive times, and the
+nonzero-displacement side condition needed for the classical norm derivative.
 The Corollary 2.8 compactness step is now done using
 `isCompact_Icc.exists_isMinOn` and `ContinuousOn.intervalIntegrable_of_Icc`;
 future work should not rediscover that API.
@@ -563,7 +570,9 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.PLGradientFlowLyapunovContinuousDataRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovSideConditionRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn`
 - `StatInference.Optimization.plLyapunovDerivativeBound_nonpos`
+- `StatInference.Optimization.positive_gap_of_not_isMinOn`
 - `StatInference.Optimization.plGradientFlowLyapunov_inequality_of_sideConditionData`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
@@ -582,22 +591,27 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.plGradientFlowLyapunovRouteToQGOn_of_normDerivativeRoute`
 - `StatInference.Optimization.plGradientFlowLyapunovRouteToQGOn_of_sideConditionRoute`
 - `StatInference.Optimization.plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_sideConditionNonMinimizerRoute`
+- `StatInference.Optimization.plGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn_of_noMinimizerHitRoute`
+- `StatInference.Optimization.plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_noMinimizerHitRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovRoute`
 - `StatInference.Optimization.plGradientFlowLimitNonMinimizerRouteToQGOn_of_lyapunovNonMinimizerRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_sideConditionNonMinimizerRoute`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_noMinimizerHitRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_sideConditionRoute`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn.quadraticGrowthOn`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitNonMinimizerRoute`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNonMinimizerRoute`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRoute`
+- `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNoMinimizerHitRoute`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitNonMinimizerRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNonMinimizerRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNoMinimizerHitRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovAntitoneRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovDerivativeRoute`
@@ -692,14 +706,15 @@ Latest verified local frontier after lane creation:
 
 Next manual goal target: discharge or sharply package the remaining
 nontrivial-start analytic input behind Proposition 2.7(2).  The route
-`PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn -> QG` now
-compiles, so the remaining assumptions to attack are convergence to a
-minimizer, positive objective gap, and nonzero displacement on positive times
-for `¬ IsMinOn f C x`.  The derivative-to-antitone bridge, PL scalar sign
-calculation, gap derivative, classical nonzero norm-derivative calculation,
-trajectory/gap continuity, Lyapunov-continuity wrapper, minimizer-start split,
-and pointwise side-condition-to-Lyapunov inequality are now compiled; do not
-repeat them.
+`PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn -> QG` now compiles, so the
+remaining assumptions to attack are convergence to a minimizer, feasible
+positive-time trajectory membership, no minimizer hit on positive times, and
+nonzero displacement on positive times for `¬ IsMinOn f C x`.  The
+derivative-to-antitone bridge, PL scalar sign calculation, positive-gap
+derivation from no minimizer hit, gap derivative, classical nonzero
+norm-derivative calculation, trajectory/gap continuity,
+Lyapunov-continuity wrapper, minimizer-start split, and pointwise
+side-condition-to-Lyapunov inequality are now compiled; do not repeat them.
 The Corollary 2.8 compact-minimum and continuity/integrability bridge is
 already compiled, so do not spend another run there unless strengthening the
 continuity hypotheses materially advances the analytic route.  Continue

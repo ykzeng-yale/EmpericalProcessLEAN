@@ -316,6 +316,24 @@ def PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn
             0 < f (y t) - fstar) ∧
           (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t - x ≠ 0)
 
+/--
+Nontrivial-start route where positive objective gap is replaced by the more
+structural condition that the flow has not hit the minimizer set at positive
+times.  The positive gap is derived from this condition below.
+-/
+def PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn
+    (C : Set E) (f : E -> ℝ) (grad : E -> E)
+    (_alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C -> ¬ IsMinOn f C x ->
+    ∃ xStar, ∃ y : ℝ -> E,
+      xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+        y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
+          IsGradientFlowTrajectory grad y ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t ∈ C) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) ->
+            ¬ IsMinOn f C (y t)) ∧
+          (∀ t, t ∈ interior (Set.Ici (0 : ℝ)) -> y t - x ≠ 0)
+
 omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] in
 /--
 Scalar algebra in Chewi Proposition 2.7(2): under the PL lower bound,
@@ -355,6 +373,33 @@ theorem plLyapunovDerivativeBound_nonpos
         g ^ (2 : ℕ) / (2 * Real.sqrt gap) := by
     rw [le_div_iff₀ hden_pos]
     nlinarith
+  nlinarith
+
+omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] in
+/--
+If `fstar` is attained by a minimizer and a point in the feasible set is not
+a minimizer, then its objective gap over `fstar` is strictly positive.
+-/
+theorem positive_gap_of_not_isMinOn
+    {C : Set E} {f : E -> ℝ} {fstar : ℝ} {xStar y : E}
+    (_hxStar : xStar ∈ C) (hmin : IsMinOn f C xStar)
+    (hfxStar : f xStar = fstar) (hy : y ∈ C)
+    (hnot_min : ¬ IsMinOn f C y) :
+    0 < f y - fstar := by
+  have hle : fstar ≤ f y := by
+    have := (isMinOn_iff.mp hmin) y hy
+    nlinarith
+  have hne : f y ≠ fstar := by
+    intro hfy
+    have hy_min : IsMinOn f C y := by
+      rw [isMinOn_iff]
+      intro z hz
+      have hz_le : fstar ≤ f z := by
+        have := (isMinOn_iff.mp hmin) z hz
+        nlinarith
+      nlinarith
+    exact hnot_min hy_min
+  have hlt : fstar < f y := lt_of_le_of_ne hle hne.symm
   nlinarith
 
 /--
@@ -918,6 +963,47 @@ theorem plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_sideConditionNonMinimiz
     plGradientFlowLyapunov_inequality_of_sideConditionData
       hgrad halpha hpl hy0 hflow hy_mem hgap_pos hnonzero
 
+/--
+No-minimizer-hit route supplies the nontrivial side-condition route: the
+positive-gap hypothesis is derived from the fact that positive-time points are
+in `C` and are not minimizers.
+-/
+theorem plGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn_of_noMinimizerHitRoute
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hroute :
+      PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn
+      C f grad alpha fstar := by
+  intro x hx hnot_min
+  rcases hroute hx hnot_min with
+    ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv,
+      hflow, hy_mem, hnot_hit, hnonzero⟩
+  refine ⟨xStar, y, hxStar, hmin, hfxStar, hy0, hyconv,
+    hflow, hy_mem, ?_, hnonzero⟩
+  intro t ht
+  exact positive_gap_of_not_isMinOn hxStar hmin hfxStar
+    (hy_mem t ht) (hnot_hit t ht)
+
+/--
+No-minimizer-hit route gives the nontrivial-start Lyapunov route after
+deriving the positive-gap condition.
+-/
+theorem plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_noMinimizerHitRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hroute :
+      PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLyapunovNonMinimizerRouteToQGOn C f alpha fstar :=
+  plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_sideConditionNonMinimizerRoute
+    hgrad halpha hpl
+    (plGradientFlowLyapunovSideConditionNonMinimizerRouteToQGOn_of_noMinimizerHitRoute
+      hroute)
+
 omit [InnerProductSpace ℝ E] in
 /--
 The explicit Lyapunov-plus-convergence route implies the limit inequality
@@ -1037,6 +1123,26 @@ theorem plGradientFlowLimitRouteToQGOn_of_sideConditionNonMinimizerRoute
   plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute
     hmin_value
     (plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_sideConditionNonMinimizerRoute
+      hgrad halpha hpl hroute)
+
+/--
+No-minimizer-hit route implies the full gradient-flow limit route once the
+already-minimizer branch is handled by minimizer-value bookkeeping.
+-/
+theorem plGradientFlowLimitRouteToQGOn_of_noMinimizerHitRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 ≤ alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hmin_value : ∀ ⦃z⦄, z ∈ C -> IsMinOn f C z -> f z = fstar)
+    (hroute :
+      PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn
+        C f grad alpha fstar) :
+    PLGradientFlowLimitRouteToQGOn C f alpha fstar :=
+  plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute
+    hmin_value
+    (plGradientFlowLyapunovNonMinimizerRouteToQGOn_of_noMinimizerHitRoute
       hgrad halpha hpl hroute)
 
 /--
@@ -1178,6 +1284,25 @@ theorem quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionNonMinimi
       hgrad halpha.le hpl hmin_value hroute)
 
 /--
+Witness form of Chewi Proposition 2.7(2) from the no-minimizer-hit route.
+This removes the explicit positive-gap assumption from the route.
+-/
+theorem quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNoMinimizerHitRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hmin_value : ∀ ⦃z⦄, z ∈ C -> IsMinOn f C z -> f z = fstar)
+    (hroute :
+      PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthWitnessOn C f alpha fstar :=
+  quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute halpha
+    (plGradientFlowLimitRouteToQGOn_of_noMinimizerHitRoute
+      hgrad halpha.le hpl hmin_value hroute)
+
+/--
 Witness form of Chewi Proposition 2.7(2) from the remaining side-condition
 route.  This is useful for combining the nontrivial-flow case with a separate
 trivial minimizer-start case.
@@ -1258,6 +1383,24 @@ theorem quadraticGrowthOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRout
         C f grad alpha fstar) :
     QuadraticGrowthOn C f alpha fstar :=
   (quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionNonMinimizerRoute
+    hgrad halpha hpl hmin_value hroute).quadraticGrowthOn halpha.le
+
+/--
+Chewi Proposition 2.7, second implication, in source infimum form, from the
+no-minimizer-hit route.  Positive gap is derived rather than assumed.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovNoMinimizerHitRoute
+    [CompleteSpace E]
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha fstar : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (halpha : 0 < alpha)
+    (hpl : PolyakLojasiewiczOn C f grad alpha fstar)
+    (hmin_value : ∀ ⦃z⦄, z ∈ C -> IsMinOn f C z -> f z = fstar)
+    (hroute :
+      PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn
+        C f grad alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  (quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNoMinimizerHitRoute
     hgrad halpha hpl hmin_value hroute).quadraticGrowthOn halpha.le
 
 omit [InnerProductSpace ℝ E] in
