@@ -876,6 +876,13 @@ above, so they do not change the theorem-level dashboard counts.
    canonical selected fixed-radius package.
    The matching untruncated consumer is now compiled as
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_subgraph_vc`.
+   The lifted full-subgraph bridge is now compiled as
+   `empiricalSubgraphTraceSetFamily`,
+   `empiricalBinaryTraceSetFamily_thresholdIndicatorClassFun_eq_empiricalSubgraphTraceSetFamily`,
+   `VdVWUniformSubgraphVCBound`,
+   `VdVWUniformSubgraphVCBound.toUniformThresholdVCSubgraphBound`, and the
+   package constructor
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

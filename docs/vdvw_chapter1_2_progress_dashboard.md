@@ -477,6 +477,14 @@ this uniform threshold predicate and consume it in the final untruncated route.
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_subgraph_vc`.
 The current blocker is therefore the mathematical VC-subgraph implication
 itself, not per-grid packaging.
+2026-05-04 follow-up: the lifted subgraph trace bridge is now compiled:
+`empiricalSubgraphTraceSetFamily`,
+`empiricalBinaryTraceSetFamily_thresholdIndicatorClassFun_eq_empiricalSubgraphTraceSetFamily`,
+`VdVWUniformSubgraphVCBound`, and
+`VdVWUniformSubgraphVCBound.toUniformThresholdVCSubgraphBound`.  The selected
+fixed-radius package also has
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`,
+so the VC/subgraph-to-threshold direction is now formalized.
 
 ## Verification Monitor
 

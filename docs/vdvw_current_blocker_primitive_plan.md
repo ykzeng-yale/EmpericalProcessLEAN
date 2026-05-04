@@ -2628,3 +2628,20 @@ bridge from the textbook VC-subgraph condition for the truncated class to
 `VdVWUniformThresholdVCSubgraphBound`, then use this untruncated consumer in
 the final Theorem 2.4.3 statement.  Do not add more integer-grid or
 threshold-subgraph wrappers unless the final assembly exposes a real mismatch.
+
+2026-05-04 follow-up: `SubgraphTraceVC.lean` now adds the lifted finite
+subgraph trace family `empiricalSubgraphTraceSetFamily` over samples in
+`Observation × ℝ`, proves the fixed-threshold equality
+`empiricalBinaryTraceSetFamily_thresholdIndicatorClassFun_eq_empiricalSubgraphTraceSetFamily`,
+defines `VdVWUniformSubgraphVCBound`, and proves
+`VdVWUniformSubgraphVCBound.toUniformThresholdVCSubgraphBound`.  `Theorem243.lean`
+also adds
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`,
+which consumes this full lifted-subgraph VC predicate directly.
+
+Next exact theorem-facing edit: use the full-subgraph selected package and the
+existing untruncated consumer in the final Theorem 2.4.3 assembly under honest
+structural side conditions.  Remaining exact textbook work is to align
+`VdVWUniformSubgraphVCBound` with the book's named VC-subgraph hypothesis and
+discharge or expose the non-combinatorial measurability/integrability side
+conditions.

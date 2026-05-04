@@ -12801,6 +12801,47 @@ theorem
             (sample := samplePath (X n) sample m) threshold.1)
 
 /--
+Selected fixed-radius integer-grid package from a uniform VC bound for the full
+subgraph class `{(x,t) | t < f_i x}` of the truncated class.
+
+This is the closest local formal analogue of the textbook VC-subgraph input:
+the full subgraph trace bound over arbitrary finite samples of `(x,t)` pairs
+is converted to the all-threshold predicate and then fed into the canonical
+integer-grid package.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {vcDegree : ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hvc :
+      VdVWUniformSubgraphVCBound indexClass
+        (vdVWTruncatedClassFun classFun envelope M) vcDegree) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta _n _sample m =>
+        (((vcDegree + 2) * (m + 1) ^ vcDegree) ^
+          (2 * vdVWIntegerGridRadius M eta + 1))) := by
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_subgraph_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (vcDegree := vcDegree)
+      hX_samplePath henvelope hclass henvelope_meas hM_pos
+      hvc.toUniformThresholdVCSubgraphBound
+
+/--
 Selected fixed-radius tail/UI package from finite-threshold value separation
 and uniform fixed-threshold VC/Sauer bounds.
 

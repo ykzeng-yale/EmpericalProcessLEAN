@@ -55,6 +55,75 @@ theorem empiricalBinaryTraceSet_thresholdIndicatorClassFun_eq
   · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun, h]
 
 /--
+The empirical trace set of the subgraph class
+`{(x,t) | t < f_i x}` on a finite sample of pairs `(x,t)`.
+-/
+noncomputable def empiricalSubgraphTraceSet
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt (Observation × ℝ) n)
+    (classFun : Index -> Observation -> ℝ) (index : Index) :
+    Finset (Fin n) :=
+  Finset.univ.filter fun sampleIndex =>
+    (sample sampleIndex).2 < classFun index (sample sampleIndex).1
+
+/--
+The finite family of subgraph trace sets realized by `indexClass` on a sample
+of observation/threshold pairs.
+-/
+noncomputable def empiricalSubgraphTraceSetFamily
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt (Observation × ℝ) n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ) :
+    Finset (Finset (Fin n)) :=
+  by
+    classical
+    exact
+      Finset.univ.filter fun traceSet =>
+        ∃ index, index ∈ indexClass ∧
+          empiricalSubgraphTraceSet sample classFun index = traceSet
+
+/--
+Fixed-threshold binary traces are exactly subgraph traces on the lifted sample
+`i ↦ (x_i, threshold)`.
+-/
+theorem empiricalBinaryTraceSet_thresholdIndicatorClassFun_eq_empiricalSubgraphTraceSet
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) (threshold : ℝ)
+    (index : Index) :
+    empiricalBinaryTraceSet sample
+        (thresholdIndicatorClassFun classFun threshold) index =
+      empiricalSubgraphTraceSet
+        (fun sampleIndex : Fin n => (sample sampleIndex, threshold))
+        classFun index := by
+  classical
+  ext sampleIndex
+  by_cases h : threshold < classFun index (sample sampleIndex)
+  · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+      empiricalSubgraphTraceSet, h]
+  · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+      empiricalSubgraphTraceSet, h]
+
+/--
+The fixed-threshold binary trace family is the subgraph trace family of the
+lifted constant-threshold sample.
+-/
+theorem empiricalBinaryTraceSetFamily_thresholdIndicatorClassFun_eq_empiricalSubgraphTraceSetFamily
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (threshold : ℝ) :
+    empiricalBinaryTraceSetFamily sample indexClass
+        (thresholdIndicatorClassFun classFun threshold) =
+      empiricalSubgraphTraceSetFamily
+        (fun sampleIndex : Fin n => (sample sampleIndex, threshold))
+        indexClass classFun := by
+  classical
+  ext traceSet
+  simp [empiricalBinaryTraceSetFamily, empiricalSubgraphTraceSetFamily,
+    empiricalBinaryTraceSet_thresholdIndicatorClassFun_eq_empiricalSubgraphTraceSet]
+
+/--
 Uniform empirical VC bound for every fixed threshold subgraph of a real-valued
 class.
 
@@ -85,6 +154,32 @@ theorem VdVWUniformThresholdVCSubgraphBound.empiricalBinaryTraceSetFamily_vcDim_
     (empiricalBinaryTraceSetFamily sample indexClass
       (thresholdIndicatorClassFun classFun threshold)).vcDim ≤ d :=
   hvc sample threshold
+
+/--
+Uniform empirical VC bound for the full subgraph class
+`{(x,t) | t < f_i x}` over arbitrary finite samples of observation/threshold
+pairs.
+-/
+def VdVWUniformSubgraphVCBound
+    {Observation : Type u} {Index : Type v}
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (d : ℕ) : Prop :=
+  ∀ {n : ℕ} (sample : SampleAt (Observation × ℝ) n),
+    (empiricalSubgraphTraceSetFamily sample indexClass classFun).vcDim ≤ d
+
+/--
+A uniform VC bound for the full subgraph class implies the all-threshold
+empirical VC predicate used by the Theorem 2.4.3 threshold-grid route.
+-/
+theorem VdVWUniformSubgraphVCBound.toUniformThresholdVCSubgraphBound
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {d : ℕ}
+    (hvc : VdVWUniformSubgraphVCBound indexClass classFun d) :
+    VdVWUniformThresholdVCSubgraphBound indexClass classFun d := by
+  intro n sample threshold
+  rw [empiricalBinaryTraceSetFamily_thresholdIndicatorClassFun_eq_empiricalSubgraphTraceSetFamily]
+  exact hvc (fun sampleIndex : Fin n => (sample sampleIndex, threshold))
 
 /--
 For a fixed threshold, the empirical trace image of the threshold-indicator
