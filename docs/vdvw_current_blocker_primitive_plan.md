@@ -1,6 +1,6 @@
 # VdV&W Current Blocker Primitive Plan
 
-Status date: 2026-05-03.
+Status date: 2026-05-04.
 
 This file pins down the active blocker and the primitive Lean declarations
 needed to close it.  It is not a theorem report.  A formal report is created
@@ -2882,3 +2882,25 @@ empirical-average tail condition with
 `vdVWWeightedClassSupremum_centered_invNat_le_empiricalAverage_envelope_add_integral`
 to discharge the centered-supremum `hTail` input in the in-mean Theorem 2.4.3
 route.
+
+2026-05-04 follow-up: the centered-supremum tail/UI input for the countable
+integrable-envelope in-mean route is now discharged.  Search/reuse record:
+local APIs `integrable_vdVWWeightedClassSupremum_centered_of_countable`,
+`measurable_vdVWWeightedClassSupremum_centered_of_countable`,
+`vdVWWeightedClassSupremum_centered_invNat_le_empiricalAverage_envelope_add_integral`,
+`integral_indicator_empiricalAverage_envelope_tail_le_two_integral_tail_half`,
+and the ProbabilityMeasure tail convergence
+`integral_indicator_tail_lt_tendsto_zero_of_integrable` supply the proof; no
+new mathlib primitive was needed.  New compiled declarations are
+`centered_vdVWWeightedClassSupremum_tailExpectation_condition_of_integrable_envelope`,
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable`,
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable_iidRademacher`,
+and
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable_canonical`.
+Thus the current countable/envelope full-subgraph in-mean route no longer
+requires caller-supplied centered-supremum measurability, integrability, sign
+space, sample-path process, or varying-domain tail/UI hypotheses.  The next
+theorem-facing target is to package this in-mean convergence with the existing
+uniform-deviation outer-probability route and keep the remaining structural
+full-subgraph/entropy assumptions explicit, then continue to the
+almost-sure/reverse-submartingale part of Theorem 2.4.3.

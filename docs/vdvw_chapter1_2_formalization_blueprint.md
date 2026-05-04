@@ -967,6 +967,16 @@ above, so they do not change the theorem-level dashboard counts.
    target is to combine this domination with the compiled empirical-average
    tail/UI layer
    `empiricalAverage_envelope_tailExpectation_condition_of_integrable`.
+   That combination is now compiled as
+   `centered_vdVWWeightedClassSupremum_tailExpectation_condition_of_integrable_envelope`.
+   The no-tail countable, iid-Rademacher, and canonical in-mean wrappers
+   `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable`,
+   `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable_iidRademacher`,
+   and
+   `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable_canonical`
+   mean that the countable/envelope full-subgraph in-mean route no longer
+   exposes the centered-supremum tail/UI, auxiliary sign-space, or terminal
+   sample-path choices to callers.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

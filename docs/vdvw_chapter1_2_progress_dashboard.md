@@ -5,7 +5,7 @@ van der Vaart and Wellner Chapters 1 and 2.  The authoritative detailed
 inventory is `docs/vdvw_chapter1_2_formalization_blueprint.md`; this file is a
 human-facing monitor for what is proved, what is in progress, and what remains.
 
-Status snapshot date: 2026-05-03.
+Status snapshot date: 2026-05-04.
 
 Active blocker/primitives register:
 
@@ -615,6 +615,21 @@ and `empiricalAverage_envelope_tailExpectation_condition_of_integrable`.
 The next closure is to combine this empirical-average tail condition with the
 centered-supremum envelope domination to discharge the explicit `hTail` input
 in the current Theorem 2.4.3 in-mean consumers.
+2026-05-04 follow-up: that closure is now compiled.  The new countable
+integrable-envelope theorem
+`centered_vdVWWeightedClassSupremum_tailExpectation_condition_of_integrable_envelope`
+discharges the centered-supremum varying-domain tail/UI condition from the
+empirical-average tail estimate and the deterministic envelope domination.
+The no-tail in-mean consumers
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable`,
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable_iidRademacher`,
+and
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable_canonical`
+now remove the caller-facing tail/UI, auxiliary sign-space, and sample-path
+plumbing from the countable/envelope full-subgraph in-mean route.  The next
+closure is to package this with the existing uniform-deviation route and keep
+the remaining full-subgraph/entropy assumptions explicit before attacking the
+a.s./reverse-submartingale conclusion.
 
 ## Verification Monitor
 

@@ -2993,6 +2993,208 @@ theorem integrable_vdVWWeightedClassSupremum_centered_of_countable
       (P := P) weights sample henvelope hclass henv_integrable
 
 /--
+An integrable envelope supplies the varying-domain tail/UI condition for the
+untruncated centered empirical supremum with weights `1/n`.
+-/
+theorem
+    centered_vdVWWeightedClassSupremum_tailExpectation_condition_of_integrable_envelope
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    ∀ ε > 0, ∃ R, 0 ≤ R ∧
+      ∀ᶠ n : ℕ in atTop,
+        ∫ sample : SampleAt Observation n,
+          Set.indicator
+            {sample' : SampleAt Observation n |
+              R <
+                vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    classFun index observation - ∫ x, classFun index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample'}
+            (fun sample' : SampleAt Observation n =>
+              vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  classFun index observation - ∫ x, classFun index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample') sample
+          ∂(vdVWProductMeasure P n) ≤ ε := by
+  intro ε hε_pos
+  let c : ℝ := ∫ x, envelope x ∂P
+  have hc_nonneg : 0 ≤ c := by
+    simpa [c] using integral_nonneg fun x => henvelope.nonneg x
+  have htail_tendsto :
+      Tendsto
+        (fun M : ℝ =>
+          ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂P)
+        atTop (𝓝 0) :=
+    StatInference.ProbabilityMeasure.integral_indicator_tail_lt_tendsto_zero_of_integrable
+      (μ := P) (X := envelope) henv_integrable
+  have htail_eventually :
+      ∀ᶠ M in atTop,
+        ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂P <
+          ε / 4 := by
+    exact htail_tendsto.eventually (eventually_lt_nhds (by linarith))
+  rcases eventually_atTop.1 htail_eventually with ⟨M0, hM0⟩
+  let M : ℝ := max (max 1 c) M0
+  have hM_pos : 0 < M := by
+    exact lt_of_lt_of_le zero_lt_one
+      ((le_max_left 1 c).trans (le_max_left (max 1 c) M0))
+  have hc_le_M : c ≤ M := by
+    exact (le_max_right 1 c).trans (le_max_left (max 1 c) M0)
+  have hM_ge : M0 ≤ M := le_max_right (max 1 c) M0
+  have htail_lt :
+      ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂P <
+        ε / 4 := hM0 M hM_ge
+  have htail_bound :
+      4 * ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂P
+        ≤ ε := by
+    linarith
+  refine ⟨2 * M + c, add_nonneg (mul_nonneg zero_le_two hM_pos.le) hc_nonneg, ?_⟩
+  filter_upwards [eventually_ge_atTop (1 : ℕ)] with n hn
+  have hn_pos : 0 < n := lt_of_lt_of_le Nat.zero_lt_one hn
+  let centeredSup : SampleAt Observation n -> ℝ :=
+    fun sample =>
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P)
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample
+  let avg : SampleAt Observation n -> ℝ :=
+    fun sample => empiricalAverage sample envelope
+  have hcentered_integrable :
+      Integrable centeredSup (vdVWProductMeasure P n) := by
+    simpa [centeredSup] using
+      integrable_vdVWWeightedClassSupremum_centered_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hcount henvelope hclass henv_integrable
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+  have havg_meas : Measurable avg := by
+    simpa [avg] using measurable_empiricalAverage (n := n) henv
+  have havg_integrable : Integrable avg (vdVWProductMeasure P n) := by
+    simpa [avg] using
+      integrable_empiricalAverage (P := P) (n := n) henv_integrable
+  have hright_integrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          2 * Set.indicator {sample' : SampleAt Observation n | 2 * M < avg sample'}
+            avg sample)
+        (vdVWProductMeasure P n) := by
+    exact
+      (havg_integrable.indicator
+        (measurableSet_lt measurable_const havg_meas)).const_mul 2
+  have hleft_integrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          Set.indicator
+            {sample' : SampleAt Observation n | 2 * M + c < centeredSup sample'}
+            centeredSup sample)
+        (vdVWProductMeasure P n) := by
+    exact hcentered_integrable.indicator
+      (measurableSet_lt measurable_const
+        (measurable_vdVWWeightedClassSupremum_centered_of_countable
+          (P := P) hcount hclass (fun _ : Fin n => (n : ℝ)⁻¹)))
+  have hpoint :
+      ∀ sample : SampleAt Observation n,
+        Set.indicator
+          {sample' : SampleAt Observation n | 2 * M + c < centeredSup sample'}
+          centeredSup sample ≤
+        2 * Set.indicator {sample' : SampleAt Observation n | 2 * M < avg sample'}
+          avg sample := by
+    intro sample
+    have hS_nonneg : 0 ≤ centeredSup sample := by
+      exact vdVWWeightedClassSupremum_nonneg indexClass
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P)
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample
+    have hA_nonneg : 0 ≤ avg sample := by
+      unfold avg empiricalAverage
+      exact div_nonneg
+        (Finset.sum_nonneg fun i _hi => henvelope.nonneg (sample i))
+        (Nat.cast_nonneg n)
+    by_cases hbad : 2 * M + c < centeredSup sample
+    · have hdom :
+          centeredSup sample ≤ avg sample + c := by
+        simpa [centeredSup, avg, c] using
+          vdVWWeightedClassSupremum_centered_invNat_le_empiricalAverage_envelope_add_integral
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) hn_pos sample henvelope hclass henv_integrable
+      have htail : 2 * M < avg sample := by linarith
+      have hS_le : centeredSup sample ≤ 2 * avg sample := by
+        nlinarith
+      simpa [Set.indicator, hbad, htail] using hS_le
+    · have hright_nonneg :
+          0 ≤
+            2 * Set.indicator {sample' : SampleAt Observation n | 2 * M < avg sample'}
+              avg sample := by
+        by_cases htail : 2 * M < avg sample
+        · simp [Set.indicator, htail, hA_nonneg]
+        · simp [Set.indicator, htail]
+      simpa [Set.indicator, hbad] using hright_nonneg
+  have hmain_le :
+      ∫ sample : SampleAt Observation n,
+          Set.indicator
+            {sample' : SampleAt Observation n | 2 * M + c < centeredSup sample'}
+            centeredSup sample
+          ∂(vdVWProductMeasure P n) ≤
+        ∫ sample : SampleAt Observation n,
+          2 * Set.indicator {sample' : SampleAt Observation n | 2 * M < avg sample'}
+            avg sample
+          ∂(vdVWProductMeasure P n) := by
+    exact integral_mono hleft_integrable hright_integrable hpoint
+  have hK_pos : 0 < 2 * M := mul_pos two_pos hM_pos
+  have havg_tail :=
+    integral_indicator_empiricalAverage_envelope_tail_le_two_integral_tail_half
+      (P := P) (n := n) (envelope := envelope) (K := 2 * M)
+      hn_pos hK_pos henv henvelope.nonneg henv_integrable
+  have hhalf : (2 * M) / 2 = M := by ring
+  have havg_tail' :
+      ∫ sample : SampleAt Observation n,
+          Set.indicator {sample' : SampleAt Observation n | 2 * M < avg sample'}
+            avg sample ∂(vdVWProductMeasure P n) ≤
+        2 * ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂P := by
+    simpa [avg, hhalf] using havg_tail
+  calc
+    ∫ sample : SampleAt Observation n,
+        Set.indicator
+          {sample' : SampleAt Observation n |
+            2 * M + c <
+              vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  classFun index observation - ∫ x, classFun index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample'}
+          (fun sample' : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample') sample
+        ∂(vdVWProductMeasure P n)
+        =
+      ∫ sample : SampleAt Observation n,
+          Set.indicator
+            {sample' : SampleAt Observation n | 2 * M + c < centeredSup sample'}
+            centeredSup sample
+          ∂(vdVWProductMeasure P n) := by
+        rfl
+    _ ≤ ∫ sample : SampleAt Observation n,
+          2 * Set.indicator {sample' : SampleAt Observation n | 2 * M < avg sample'}
+            avg sample
+          ∂(vdVWProductMeasure P n) := hmain_le
+    _ = 2 * ∫ sample : SampleAt Observation n,
+          Set.indicator {sample' : SampleAt Observation n | 2 * M < avg sample'}
+            avg sample
+          ∂(vdVWProductMeasure P n) := by
+        rw [integral_const_mul]
+    _ ≤ 2 * (2 * ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂P) := by
+        exact mul_le_mul_of_nonneg_left havg_tail' zero_le_two
+    _ = 4 * ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂P := by
+        ring
+    _ ≤ ε := htail_bound
+
+/--
 Countable truncated weighted class suprema are integrable under the empirical
 product law, using only coordinate measurability and the uniform truncation
 bound.
@@ -20916,6 +21118,59 @@ theorem
       hTail
 
 /--
+Full-subgraph in-mean Theorem 2.4.3 route with the centered-supremum
+tail/UI condition discharged from the integrable envelope.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
+    (hsign :
+      ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
+        (fun i : Fin n => sign n i ω))
+    (hindep : ∀ n, iIndepFun (sign n) μsign)
+    (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (X := X)
+      (vcDegree := vcDegree) hX_samplePath hvc hindexClass
+      henvelope hclass henv henv_integrable sign hsign hindep hsubG
+      (centered_vdVWWeightedClassSupremum_tailExpectation_condition_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (Set.to_countable indexClass)
+        henvelope hclass henv henv_integrable)
+
+/--
 Full-subgraph in-mean Theorem 2.4.3 route with a canonical iid real-valued
 Rademacher sign space and countable/envelope measurability-integrability
 witnesses.
@@ -20994,6 +21249,51 @@ theorem
         intro n i
         simpa [sign] using hsubGNat (i : ℕ))
       hTail
+
+/--
+Full-subgraph in-mean Theorem 2.4.3 route with canonical iid Rademacher signs,
+with the centered-supremum tail/UI condition discharged from the integrable
+envelope.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable_iidRademacher
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable_iidRademacher
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (X := X) (vcDegree := vcDegree)
+      hX_samplePath hvc hindexClass henvelope hclass henv henv_integrable
+      (centered_vdVWWeightedClassSupremum_tailExpectation_condition_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (Set.to_countable indexClass)
+        henvelope hclass henv henv_integrable)
 
 /--
 Full-subgraph integrable Theorem 2.4.3 route with the auxiliary Rademacher
@@ -21935,6 +22235,49 @@ theorem
       (hvc := hvc) (hindexClass := hindexClass)
       (henvelope := henvelope) (hclass := hclass) (henv := henv)
       (henv_integrable := henv_integrable) hTail
+
+/--
+Canonical full-subgraph Theorem 2.4.3 in-mean route with the centered-supremum
+tail/UI condition discharged from the integrable envelope.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable_iidRademacher
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      (X := fun _M n => vdVWCanonicalSampleProcess n)
+      (vcDegree := vcDegree)
+      (hX_samplePath := by
+        intro M n sample
+        exact samplePath_vdVWCanonicalSampleProcess n sample)
+      (hvc := hvc) (hindexClass := hindexClass)
+      (henvelope := henvelope) (hclass := hclass) (henv := henv)
+      (henv_integrable := henv_integrable)
 
 /--
 Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the
