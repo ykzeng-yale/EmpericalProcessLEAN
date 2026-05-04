@@ -358,8 +358,15 @@ infinite Exercise 4.2 route.  The newest regularization bridge adds
 `exercise42InfiniteChainObjective_firstOrderStrongConvexOn_of_base`.  Thus the
 remaining concrete first-order package is narrowed to the convex base chain
 lower model at parameter `0`; the quadratic regularizer is handled by the
-existing Lemma 4.2 reduction API.  The geometric obstruction and log-quotient
-conversion are already available.
+existing Lemma 4.2 reduction API.  The newest edge substrate adds
+`exercise42InfiniteBaseChainEdge`,
+`exercise42InfiniteBaseChainDirectionEdge`,
+`exercise42InfiniteBaseChainEdgeSq_summable`,
+`exercise42InfiniteBaseChainDirectionEdgeSq_summable`,
+`exercise42InfiniteBaseChainEdge_add_direction`, and
+`exercise42InfiniteBaseChainObjective_eq_edge_tsum`, setting up the infinite
+analogue of the finite edge-expansion proof.  The geometric obstruction and
+log-quotient conversion are already available.
 In parallel, specialize the remaining
 reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete

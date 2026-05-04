@@ -866,6 +866,92 @@ noncomputable def exercise42InfiniteBaseChainGradient (gamma : ℝ)
   (gamma / 4) *
     (2 * x i - (if i = 0 then 1 else x (i - 1)) - x (i + 1))
 
+/--
+Infinite hard-chain edge residuals with boundary node `z₀ = 1` and interior
+nodes `zₙ₊₁ = xₙ`.
+-/
+noncomputable def exercise42InfiniteBaseChainEdge
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) : ℕ -> ℝ
+  | 0 => x 0 - 1
+  | n + 1 => x n - x (n + 1)
+
+/--
+Homogeneous edge residuals for a direction vector.  These are the increments
+of `exercise42InfiniteBaseChainEdge` under `x ↦ x + v`.
+-/
+noncomputable def exercise42InfiniteBaseChainDirectionEdge
+    (v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) : ℕ -> ℝ
+  | 0 => v 0
+  | n + 1 => v n - v (n + 1)
+
+/-- The infinite hard-chain edge residuals are square-summable. -/
+theorem exercise42InfiniteBaseChainEdgeSq_summable
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    Summable fun n : ℕ =>
+      (exercise42InfiniteBaseChainEdge x n) ^ (2 : ℕ) := by
+  have htail :
+      Summable fun n : ℕ =>
+        (exercise42InfiniteBaseChainEdge x (n + 1)) ^ (2 : ℕ) := by
+    simpa [exercise42InfiniteBaseChainEdge] using
+      exercise42InfiniteChainEdgeSq_summable x
+  exact
+    (summable_nat_add_iff
+      (f := fun n : ℕ =>
+        (exercise42InfiniteBaseChainEdge x n) ^ (2 : ℕ)) 1).1 htail
+
+/-- The homogeneous direction edge residuals are square-summable. -/
+theorem exercise42InfiniteBaseChainDirectionEdgeSq_summable
+    (v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    Summable fun n : ℕ =>
+      (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ) := by
+  have htail :
+      Summable fun n : ℕ =>
+        (exercise42InfiniteBaseChainDirectionEdge v (n + 1)) ^ (2 : ℕ) := by
+    simpa [exercise42InfiniteBaseChainDirectionEdge] using
+      exercise42InfiniteChainEdgeSq_summable v
+  exact
+    (summable_nat_add_iff
+      (f := fun n : ℕ =>
+        (exercise42InfiniteBaseChainDirectionEdge v n) ^ (2 : ℕ)) 1).1 htail
+
+/-- Edge residuals add the homogeneous direction residual under `x ↦ x + v`. -/
+theorem exercise42InfiniteBaseChainEdge_add_direction
+    (x v : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) (n : ℕ) :
+    exercise42InfiniteBaseChainEdge (x + v) n =
+      exercise42InfiniteBaseChainEdge x n +
+        exercise42InfiniteBaseChainDirectionEdge v n := by
+  cases n with
+  | zero =>
+      simp only [exercise42InfiniteBaseChainEdge,
+        exercise42InfiniteBaseChainDirectionEdge]
+      rw [lp.coeFn_add]
+      change (x 0 + v 0) - 1 = (x 0 - 1) + v 0
+      ring
+  | succ n =>
+      simp only [exercise42InfiniteBaseChainEdge,
+        exercise42InfiniteBaseChainDirectionEdge]
+      rw [lp.coeFn_add]
+      change (x n + v n) - (x (n + 1) + v (n + 1)) =
+        (x n - x (n + 1)) + (v n - v (n + 1))
+      ring
+
+/-- The convex base hard-chain objective is the edge energy minus the boundary constant. -/
+theorem exercise42InfiniteBaseChainObjective_eq_edge_tsum
+    (gamma : ℝ) (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteBaseChainObjective gamma x =
+      (gamma / 8) *
+        ((∑' n : ℕ, (exercise42InfiniteBaseChainEdge x n) ^ (2 : ℕ)) - 1) := by
+  have hsumm := exercise42InfiniteBaseChainEdgeSq_summable x
+  have hsplit := hsumm.sum_add_tsum_nat_add 1
+  have hsum_eq :
+      (∑' n : ℕ, (exercise42InfiniteBaseChainEdge x n) ^ (2 : ℕ)) =
+        (x 0 - 1) ^ (2 : ℕ) +
+          ∑' n : ℕ, (x n - x (n + 1)) ^ (2 : ℕ) := by
+    rw [← hsplit]
+    simp [exercise42InfiniteBaseChainEdge]
+  rw [exercise42InfiniteBaseChainObjective, hsum_eq]
+  ring
+
 /-- Concrete `ell^2` gradient oracle for the convex base hard-chain objective. -/
 noncomputable def exercise42InfiniteBaseChainGradientLp (gamma : ℝ)
     (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
