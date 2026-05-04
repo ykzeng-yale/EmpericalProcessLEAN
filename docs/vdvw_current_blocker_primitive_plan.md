@@ -2756,6 +2756,14 @@ integrability/measurable-cover witnesses; it keeps only the structural
 full-subgraph VC route, envelope/measurability/integrability assumptions, and
 Rademacher sign hypotheses explicit.
 
+2026-05-04 follow-up: the full-subgraph integrable route now also has
+caller-facing auxiliary choices discharged by
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable_iidRademacher`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable_canonical`.
+The first uses `exists_common_iid_vdVWRademacherSigns`; the second uses
+`vdVWCanonicalSampleProcess` and `samplePath_vdVWCanonicalSampleProcess`.
+
 Next exact theorem-facing edit: move from this proof layer toward the exact
 Theorem 2.4.3 statement by aligning the remaining structural full-subgraph
 VC/grid assumption with the textbook entropy hypothesis, or else record the

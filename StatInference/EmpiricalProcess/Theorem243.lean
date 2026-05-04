@@ -19845,6 +19845,67 @@ theorem
           henv_integrable hclassIntegrable hsign hindep hsubG)
 
 /--
+Full-subgraph integrable Theorem 2.4.3 route with the auxiliary Rademacher
+sign space instantiated from a common iid real-valued Rademacher sequence.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable_iidRademacher
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  obtain ⟨Ωsign, mΩsign, μsign, signNat, _hmeas, _hlaw,
+      hindepNat, hprob, hsubGNat, hsupportNat⟩ :=
+    exists_common_iid_vdVWRademacherSigns
+  letI : MeasurableSpace Ωsign := mΩsign
+  haveI : IsProbabilityMeasure μsign := hprob
+  let sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ :=
+    fun _n i => signNat (i : ℕ)
+  exact
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (X := X)
+      (vcDegree := vcDegree) hX_samplePath hvc hindexClass
+      henvelope hclass henv henv_integrable hclassIntegrable sign
+      (by
+        intro n
+        exact hsupportNat.mono (fun ω hω i => hω (i : ℕ)))
+      (by
+        intro n
+        simpa [sign] using
+          hindepNat.precomp (g := fun i : Fin n => (i : ℕ)) Fin.val_injective)
+      (by
+        intro n i
+        simpa [sign] using hsubGNat (i : ℕ))
+
+/--
 Untruncated centered convergence from finite-threshold value separation and
 uniform fixed-threshold VC/Sauer bounds at every positive truncation level.
 
@@ -20581,6 +20642,53 @@ theorem samplePath_vdVWCanonicalSampleProcess
     samplePath (vdVWCanonicalSampleProcess n) sample n = sample := by
   funext i
   simp [samplePath, vdVWCanonicalSampleProcess, i.isLt]
+
+/--
+Full-subgraph integrable Theorem 2.4.3 route with canonical iid Rademacher
+signs and the canonical terminal sample-path process.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable_iidRademacher
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      (X := fun _M n => vdVWCanonicalSampleProcess n)
+      (vcDegree := vcDegree)
+      (hX_samplePath := by
+        intro M n sample
+        exact samplePath_vdVWCanonicalSampleProcess n sample)
+      (hvc := hvc) (hindexClass := hindexClass)
+      (henvelope := henvelope) (hclass := hclass) (henv := henv)
+      (henv_integrable := henv_integrable)
+      (hclassIntegrable := hclassIntegrable)
 
 /--
 Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the

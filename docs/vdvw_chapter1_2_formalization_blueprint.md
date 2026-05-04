@@ -909,7 +909,9 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable`
    now consumes this constructor, so the full-subgraph route exposes only the
    structural VC route, ordinary envelope/integrability/measurability
-   hypotheses, and Rademacher sign hypotheses.
+   hypotheses, and Rademacher sign hypotheses.  The iid Rademacher and
+   canonical terminal-sample wrappers now also remove the auxiliary sign-space
+   and `X`/sample-path choices from this full-subgraph proof layer.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

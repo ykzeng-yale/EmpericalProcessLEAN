@@ -499,6 +499,10 @@ It is data-carrying because it includes measurable-cover witnesses.
 which keeps the theorem-facing full-subgraph route while hiding all derived
 integrability/measurable-cover witnesses behind
 `VdVWTheorem243FullSubgraphSideConditions.of_integrable`.
+2026-05-04 follow-up: the full-subgraph integrable route now also has iid
+Rademacher and canonical terminal-sample wrappers, so the caller-facing
+auxiliary sign space and `X`/sample-path plumbing can be discharged by
+`exists_common_iid_vdVWRademacherSigns` and `vdVWCanonicalSampleProcess`.
 2026-05-04 follow-up: constructor
 `VdVWTheorem243FullSubgraphSideConditions.of_integrable` now derives
 `htruncIntegrable` from ordinary class integrability plus the measurable
