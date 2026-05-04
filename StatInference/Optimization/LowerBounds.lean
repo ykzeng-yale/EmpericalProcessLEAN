@@ -129,5 +129,105 @@ theorem gradientDescentTrajectory_mem_affineGradientSpan
     x (n + 1) ∈ affineGradientSpan grad x n :=
   hx.isGradientSpanTrajectory n
 
+section CoordinatePrefix
+
+/--
+The coordinate prefix subspace used in Chewi's proof of Theorem 4.4.
+
+In zero-based `Fin d` coordinates, this is the source subspace
+`V_n = {x : x[k] = 0 for k = n + 1, ..., d}`: the coordinates with
+`n <= i.val` vanish.
+-/
+def coordinatePrefixSubmodule (d n : ℕ) :
+    Submodule ℝ (EuclideanSpace ℝ (Fin d)) where
+  carrier := {x | ∀ i : Fin d, n ≤ i.1 -> x i = 0}
+  zero_mem' := by
+    intro i hi
+    rfl
+  add_mem' := by
+    intro x y hx hy i hi
+    simp [hx i hi, hy i hi]
+  smul_mem' := by
+    intro a x hx i hi
+    simp [hx i hi]
+
+/-- Membership in the coordinate-prefix subspace is just coordinate vanishing. -/
+theorem mem_coordinatePrefixSubmodule_iff {d n : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} :
+    x ∈ coordinatePrefixSubmodule d n ↔
+      ∀ i : Fin d, n ≤ i.1 -> x i = 0 :=
+  Iff.rfl
+
+/-- The source subspaces `V_n` are monotone in `n`. -/
+theorem coordinatePrefixSubmodule_mono (d : ℕ) {m n : ℕ} (hmn : m ≤ n) :
+    coordinatePrefixSubmodule d m ≤ coordinatePrefixSubmodule d n := by
+  intro x hx i hi
+  exact hx i (hmn.trans hi)
+
+/-- Once the prefix length reaches the dimension, the coordinate subspace is all space. -/
+theorem coordinatePrefixSubmodule_eq_top_of_le {d n : ℕ} (hdn : d ≤ n) :
+    coordinatePrefixSubmodule d n = ⊤ := by
+  ext x
+  constructor
+  · intro hx
+    exact Submodule.mem_top
+  · intro hx i hi
+    exact (Nat.not_lt_of_ge (hdn.trans hi) i.2).elim
+
+/--
+If every queried gradient through time `n` lies in `V_{n+1}`, then the
+gradient span through time `n` is contained in `V_{n+1}`.
+-/
+theorem gradientSpanSubmodule_le_coordinatePrefixSubmodule
+    {d : ℕ}
+    {grad : EuclideanSpace ℝ (Fin d) -> EuclideanSpace ℝ (Fin d)}
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {n : ℕ}
+    (hgrad : ∀ ⦃k : ℕ⦄, k ≤ n ->
+      grad (x k) ∈ coordinatePrefixSubmodule d (n + 1)) :
+    gradientSpanSubmodule grad x n ≤ coordinatePrefixSubmodule d (n + 1) := by
+  refine Submodule.span_le.mpr ?_
+  rintro v ⟨k, hk, rfl⟩
+  exact hgrad hk
+
+/--
+Abstract induction in Chewi Theorem 4.4: if the oracle gradients satisfy
+`grad (x_k) ∈ V_{k+1}` along a gradient-span trajectory starting from zero,
+then every iterate satisfies `x_n ∈ V_n`.
+-/
+theorem gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_grad_mem_next
+    {d : ℕ}
+    {grad : EuclideanSpace ℝ (Fin d) -> EuclideanSpace ℝ (Fin d)}
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory grad x)
+    (hgrad : ∀ k, x k ∈ coordinatePrefixSubmodule d k ->
+      grad (x k) ∈ coordinatePrefixSubmodule d (k + 1)) :
+    ∀ n, x n ∈ coordinatePrefixSubmodule d n := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      cases n with
+      | zero =>
+          simp [hx0, coordinatePrefixSubmodule]
+      | succ n =>
+          have hspan_n :
+              x (n + 1) - x 0 ∈ gradientSpanSubmodule grad x n :=
+            mem_affineGradientSpan_iff.mp (hspan n)
+          have hle :
+              gradientSpanSubmodule grad x n ≤
+                coordinatePrefixSubmodule d (n + 1) := by
+            refine gradientSpanSubmodule_le_coordinatePrefixSubmodule ?_
+            intro k hk
+            have hxk : x k ∈ coordinatePrefixSubmodule d k :=
+              ih k (Nat.lt_succ_of_le hk)
+            exact coordinatePrefixSubmodule_mono d (Nat.succ_le_succ hk)
+              (hgrad k hxk)
+          have hx_sub :
+              x (n + 1) - x 0 ∈ coordinatePrefixSubmodule d (n + 1) :=
+            hle hspan_n
+          simpa [hx0] using hx_sub
+
+end CoordinatePrefix
+
 end Optimization
 end StatInference
