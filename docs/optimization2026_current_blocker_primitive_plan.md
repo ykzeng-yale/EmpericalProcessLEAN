@@ -194,7 +194,18 @@ the whole-space differentiable case:
   `N`-chain minimum.  Then
   `lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory` proves the main
   finite-dimensional Theorem 4.4 gap estimate before the final `d ≍ N`
-  parameter choice.
+  parameter choice.  The source-shaped `d = 2N + 1` specialization now
+  compiles as `lowerBoundChainObjective_gap_ge_two_mul_add_one`, with the clean
+  `β / (16 * (N + 1))` lower bound.  The unshifted textbook-display objective
+  is now connected by `lowerBoundChainTextbookObjective`, with the constant-gap
+  bridge `lowerBoundChainTextbookObjective_gap_eq_objective_gap`, exact
+  minimizer value
+  `lowerBoundChainTextbookObjective_lowerBoundChainMinimizer`, global minimizer
+  theorem `lowerBoundChainTextbookObjective_isMinOn_lowerBoundChainMinimizer`,
+  direct `(f_N)_*` lower-bound theorem
+  `lowerBoundChainTextbookObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`,
+  and source-objective wrappers for the finite-dimensional and `d = 2N + 1`
+  gap estimates.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -854,6 +865,8 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChainNode`
 - `StatInference.Optimization.lowerBoundChainEdge`
 - `StatInference.Optimization.lowerBoundChainObjective`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_eq_objective_gap`
 - `StatInference.Optimization.finSum_forwardDifference`
 - `StatInference.Optimization.lowerBoundChainEdge_sum`
 - `StatInference.Optimization.lowerBoundChainGradient_eq_edgeDifference`
@@ -871,11 +884,18 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChain_edgeSquareSum_ge`
 - `StatInference.Optimization.lowerBoundChainObjective_ge_minValue`
 - `StatInference.Optimization.lowerBoundChainObjective_isMinOn_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_ge_minValue`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_isMinOn_lowerBoundChainMinimizer`
 - `StatInference.Optimization.lowerBoundChain_prefixEdge_sum_of_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_ge_of_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_le_full`
 - `StatInference.Optimization.lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory`
+- `StatInference.Optimization.lowerBoundChainObjective_gap_ge_two_mul_add_one`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_ge_of_gradientSpanTrajectory`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_ge_two_mul_add_one`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
@@ -900,8 +920,8 @@ reuse `LowerBounds.lean`'s single gradient-span/oracle model, the compiled
 support/minimizer/norm/objective-value/global-minimizer theorems.  Search mathlib
 basis/coordinate, matrix, PSD, derivative, smoothness, finite-sum telescoping,
 and Cauchy APIs before proving the full objective-gradient bridge,
-convex/smooth facts, or the final source-shaped `d = 2N + 1` lower-bound
-corollary.
+convex/smooth facts, or the final source-report packaging around the compiled
+Theorem 4.4 declarations.
 Continue
 deferring exercise proofs except where an exercise statement is needed as a
 temporary interface for a main-text theorem; such exercise material belongs

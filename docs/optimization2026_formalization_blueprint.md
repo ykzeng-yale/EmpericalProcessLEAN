@@ -373,6 +373,8 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.finSum_forwardDifference`
 - `StatInference.Optimization.lowerBoundChainEdge_sum`
 - `StatInference.Optimization.lowerBoundChainObjective`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_eq_objective_gap`
 - `StatInference.Optimization.lowerBoundChainGradient_eq_edgeDifference`
 - `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
@@ -388,11 +390,18 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.lowerBoundChain_edgeSquareSum_ge`
 - `StatInference.Optimization.lowerBoundChainObjective_ge_minValue`
 - `StatInference.Optimization.lowerBoundChainObjective_isMinOn_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_ge_minValue`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_isMinOn_lowerBoundChainMinimizer`
 - `StatInference.Optimization.lowerBoundChain_prefixEdge_sum_of_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_ge_of_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.lowerBoundChain_prefixEdgeSquareSum_le_full`
 - `StatInference.Optimization.lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory`
+- `StatInference.Optimization.lowerBoundChainObjective_gap_ge_two_mul_add_one`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_ge_of_gradientSpanTrajectory`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_ge_two_mul_add_one`
 
 Search-first result for this lane: there was no local Chewi gradient-span
 formalization; mathlib's `Submodule.span`, `Submodule.subset_span`, and
@@ -417,9 +426,16 @@ full chain energy.  The source step `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
 `lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory` proves the main
 finite-dimensional gap estimate before choosing `d` as a multiple of `N`.
-The next Chapter 4 theorem route should turn the edge-difference bridge into a
-full objective-gradient/convexity package and add the source-shaped final
-parameter corollary, e.g. the `d = 2N + 1` gap lower bound.
+The source-shaped `d = 2N + 1` specialization now compiles as
+`lowerBoundChainObjective_gap_ge_two_mul_add_one`, giving the clean
+`β / (16 * (N + 1))` lower bound.  The next Chapter 4 theorem route should
+turn the edge-difference bridge into a full objective-gradient/convexity
+package.  The shifted-chain objective is now connected to the exact unshifted
+textbook display by `lowerBoundChainTextbookObjective`; its minimizer value is
+`-(β / 8) * (1 - 1 / (d + 1))`, and the finite-dimensional plus `d = 2N + 1`
+gap estimates have source-objective wrappers.  The textbook `(f_n)_*` step is
+also available directly as
+`lowerBoundChainTextbookObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
