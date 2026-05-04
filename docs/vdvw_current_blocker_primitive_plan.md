@@ -2856,6 +2856,19 @@ and the already-compiled finite-product in-mean consumers.  It does not prove
 the a.s. Lemma 2.4.5 reverse/cofiltration convergence theorem, but it closes a
 fixed-space in-mean input for the same centered empirical supremum process.
 
+2026-05-04 `/goal` follow-up: the centered-supremum outer-probability
+convergence itself is now transported from finite products to the fixed
+infinite iid product space used by Lemma 2.4.5.  New compiled declarations are
+`VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct`,
+`VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_fullSubgraph_integrable_canonical`,
+and
+`VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finite_indexClass_canonical`.
+Search/reuse record: this uses the same first-coordinate product-law bridge
+and mathlib `Measure.le_map_apply` pattern as the fixed-iid GC bridge, so it
+does not require measurability of the centered-supremum bad events.  The next
+hard step remains converting reverse/cofiltration a.e. convergence plus these
+zero-convergence inputs into the exact almost-sure Lemma 2.4.5 conclusion.
+
 2026-05-04 follow-up: the first in-mean Theorem 2.4.3 adapter is now compiled.
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`
 specializes the existing varying-domain tail/UI mean theorem

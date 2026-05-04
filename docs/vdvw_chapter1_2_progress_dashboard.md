@@ -599,6 +599,13 @@ conclusion now also has a fixed infinite-product form for the named Lemma
 `tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_fullSubgraph_integrable_canonical`,
 and
 `tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finite_indexClass_canonical`.
+2026-05-04 `/goal` follow-up: the centered-supremum outer-probability
+convergence now also has a fixed infinite-product form for the named Lemma
+2.4.5 statistic.  New compiled declarations are
+`VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct`,
+`VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_fullSubgraph_integrable_canonical`,
+and
+`VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finite_indexClass_canonical`.
 2026-05-04 follow-up: the in-mean adapter layer has started.  New compiled
 declarations are
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`

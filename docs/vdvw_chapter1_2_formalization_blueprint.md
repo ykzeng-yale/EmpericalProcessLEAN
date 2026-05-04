@@ -964,6 +964,12 @@ above, so they do not change the theorem-level dashboard counts.
    `tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_fullSubgraph_integrable_canonical`,
    and
    `tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finite_indexClass_canonical`.
+   Its outer-probability zero-convergence analogue is also available on the
+   fixed infinite iid product space through
+   `VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct`,
+   `VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_fullSubgraph_integrable_canonical`,
+   and
+   `VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finite_indexClass_canonical`.
    The in-mean bridge has also started: the generic adapter
    `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`
    and the full-subgraph consumer

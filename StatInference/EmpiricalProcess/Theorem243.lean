@@ -4963,6 +4963,71 @@ theorem
       (envelope := envelope) hcount henvelope hclass henv_integrable n).symm
 
 /--
+Finite-product outer-probability convergence of the centered empirical
+supremum transfers to the fixed infinite iid product space used by Lemma
+2.4.5.
+-/
+theorem
+    VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hfinite :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        atTop (0 : ℝ)) :
+    VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+      (fun n sequence =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence)
+      atTop (fun _ => 0) := by
+  intro epsilon hepsilon
+  have hfinite_eps := hfinite epsilon hepsilon
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (𝓝 0) from
+        tendsto_const_nhds)
+      hfinite_eps
+      (Eventually.of_forall fun _ => bot_le)
+      ?_
+  refine Eventually.of_forall fun n => ?_
+  let badFinite : Set (SampleAt Observation n) :=
+    {sample : SampleAt Observation n |
+      epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+          (0 : ℝ)}
+  have hpre :
+      {sequence : ℕ -> Observation |
+        epsilon <
+          dist
+            (vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence)
+            ((fun _ => 0) sequence)} =
+        (vdVWFirstNSample (Observation := Observation) n) ⁻¹' badFinite := by
+    ext sequence
+    simp [badFinite, vdVWLemma245CenteredEmpiricalSupremum]
+  rw [hpre]
+  calc
+    (vdVWInfiniteProductMeasure P)
+        ((vdVWFirstNSample (Observation := Observation) n) ⁻¹' badFinite)
+        ≤
+          Measure.map (vdVWFirstNSample (Observation := Observation) n)
+            (vdVWInfiniteProductMeasure P) badFinite :=
+            Measure.le_map_apply (measurable_vdVWFirstNSample n).aemeasurable
+              badFinite
+    _ = (vdVWProductMeasure P n) badFinite := by
+          rw [(vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n).map_eq]
+
+/--
 Final Lemma 2.4.5 consumer for the already-compiled countable centered
 reverse-comparison rows.
 
@@ -24692,6 +24757,39 @@ theorem
         hvc hindexClass henvelope hclass henv henv_integrable)
 
 /--
+Canonical full-subgraph Theorem 2.4.3 centered-supremum convergence
+transported to the fixed infinite iid product space used by Lemma 2.4.5.
+-/
+theorem
+    VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_fullSubgraph_integrable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+      (fun n sequence =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence)
+      atTop (fun _ => 0) := by
+  exact
+    VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable)
+
+/--
 Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the
 canonical terminal sample-path process.
 
@@ -24962,6 +25060,35 @@ theorem
       (envelope := envelope) (Set.to_countable indexClass)
       henvelope hclass henv_integrable
       (integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
+        henv_integrable)
+
+/--
+Canonical finite-class Theorem 2.4.3 centered-supremum convergence
+transported to the fixed infinite iid product space used by Lemma 2.4.5.
+-/
+theorem
+    VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finite_indexClass_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+      (fun n sequence =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence)
+      atTop (fun _ => 0) := by
+  exact
+    VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_canonical
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
         henv_integrable)
