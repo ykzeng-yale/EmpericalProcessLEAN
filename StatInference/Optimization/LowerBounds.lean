@@ -204,6 +204,24 @@ noncomputable def lowerBoundChainObjective (beta : ℝ) (d : ℕ)
     (x : EuclideanSpace ℝ (Fin d)) : ℝ :=
   (beta / 8) * ∑ k : Fin (d + 1), (lowerBoundChainEdge d x k) ^ (2 : ℕ)
 
+/--
+Chewi's unshifted textbook lower-bound quadratic.
+
+The edge-energy objective above is this source objective plus the harmless
+constant `beta / 8`, because the first boundary edge is `(x[1] - 1)^2`.
+-/
+noncomputable def lowerBoundChainTextbookObjective (beta : ℝ) (d : ℕ)
+    (x : EuclideanSpace ℝ (Fin d)) : ℝ :=
+  lowerBoundChainObjective beta d x - beta / 8
+
+/-- Gaps are unchanged by the constant shift from the source objective. -/
+theorem lowerBoundChainTextbookObjective_gap_eq_objective_gap
+    (beta : ℝ) (d : ℕ) (x y : EuclideanSpace ℝ (Fin d)) :
+    lowerBoundChainTextbookObjective beta d x -
+        lowerBoundChainTextbookObjective beta d y =
+      lowerBoundChainObjective beta d x - lowerBoundChainObjective beta d y := by
+  simp [lowerBoundChainTextbookObjective]
+
 /-- Telescoping sum for forward differences on a finite `Fin` chain. -/
 theorem finSum_forwardDifference (n : ℕ) (z : Fin (n + 2) -> ℝ) :
     (∑ k : Fin (n + 1),
@@ -584,6 +602,39 @@ theorem lowerBoundChainObjective_isMinOn_lowerBoundChainMinimizer
   rw [lowerBoundChainObjective_lowerBoundChainMinimizer]
   exact lowerBoundChainObjective_ge_minValue hbeta d y
 
+/-- Exact source value of Chewi's unshifted quadratic at the displayed minimizer. -/
+theorem lowerBoundChainTextbookObjective_lowerBoundChainMinimizer
+    (beta : ℝ) (d : ℕ) :
+    lowerBoundChainTextbookObjective beta d (lowerBoundChainMinimizer d) =
+      -(beta / 8) * (1 - 1 / ((d : ℝ) + 1)) := by
+  have hden : ((d : ℝ) + 1) ≠ 0 := by positivity
+  rw [lowerBoundChainTextbookObjective,
+    lowerBoundChainObjective_lowerBoundChainMinimizer]
+  field_simp [hden]
+  ring
+
+/-- Global source lower bound for Chewi's unshifted lower-bound objective. -/
+theorem lowerBoundChainTextbookObjective_ge_minValue
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ)
+    (x : EuclideanSpace ℝ (Fin d)) :
+    -(beta / 8) * (1 - 1 / ((d : ℝ) + 1)) ≤
+      lowerBoundChainTextbookObjective beta d x := by
+  rw [lowerBoundChainTextbookObjective]
+  rw [← lowerBoundChainTextbookObjective_lowerBoundChainMinimizer]
+  simp [lowerBoundChainTextbookObjective]
+  rw [lowerBoundChainObjective_lowerBoundChainMinimizer]
+  exact lowerBoundChainObjective_ge_minValue hbeta d x
+
+/-- Chewi's displayed point globally minimizes the unshifted textbook objective. -/
+theorem lowerBoundChainTextbookObjective_isMinOn_lowerBoundChainMinimizer
+    {beta : ℝ} (hbeta : 0 ≤ beta) (d : ℕ) :
+    IsMinOn (lowerBoundChainTextbookObjective beta d) Set.univ
+      (lowerBoundChainMinimizer d) := by
+  rw [isMinOn_univ_iff]
+  intro y
+  rw [lowerBoundChainTextbookObjective_lowerBoundChainMinimizer]
+  exact lowerBoundChainTextbookObjective_ge_minValue hbeta d y
+
 /--
 If a point lies in the discovered-coordinate subspace `V_n`, then the first
 `n + 1` chain edges already telescope from boundary value `1` to `0`.
@@ -742,6 +793,34 @@ theorem lowerBoundChainObjective_gap_ge_two_mul_add_one
     ring
   rw [← hleft]
   exact hgap
+
+/-- Source-objective version of the finite-dimensional Theorem 4.4 gap estimate. -/
+theorem lowerBoundChainTextbookObjective_gap_ge_of_gradientSpanTrajectory
+    {beta : ℝ} (hbeta : 0 ≤ beta) {N d : ℕ} (hNd : N ≤ d)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory (lowerBoundChainGradient beta d) x) :
+    beta / (8 * ((N : ℝ) + 1)) -
+        beta / (8 * ((d : ℝ) + 1)) ≤
+      lowerBoundChainTextbookObjective beta d (x N) -
+        lowerBoundChainTextbookObjective beta d (lowerBoundChainMinimizer d) := by
+  rw [lowerBoundChainTextbookObjective_gap_eq_objective_gap]
+  exact lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory
+    hbeta hNd hx0 hspan
+
+/-- Source-objective `d = 2N + 1` corollary for Chewi Theorem 4.4. -/
+theorem lowerBoundChainTextbookObjective_gap_ge_two_mul_add_one
+    {beta : ℝ} (hbeta : 0 ≤ beta) (N : ℕ)
+    {x : ℕ -> EuclideanSpace ℝ (Fin (2 * N + 1))}
+    (hx0 : x 0 = 0)
+    (hspan :
+      IsGradientSpanTrajectory (lowerBoundChainGradient beta (2 * N + 1)) x) :
+    beta / (16 * ((N : ℝ) + 1)) ≤
+      lowerBoundChainTextbookObjective beta (2 * N + 1) (x N) -
+        lowerBoundChainTextbookObjective beta (2 * N + 1)
+          (lowerBoundChainMinimizer (2 * N + 1)) := by
+  rw [lowerBoundChainTextbookObjective_gap_eq_objective_gap]
+  exact lowerBoundChainObjective_gap_ge_two_mul_add_one hbeta N hx0 hspan
 
 end CoordinatePrefix
 
