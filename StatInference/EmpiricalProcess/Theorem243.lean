@@ -2968,6 +2968,65 @@ noncomputable def VdVWMeasurableCover_vdVWPermutationSymmetricMeasurableSpace_un
       (indexClass := indexClass) (classFun := classFun)
       hcount hclass n).ennreal_ofReal)
 
+/-- Each generated permutation-symmetric sigma-field is a sub-sigma-field of the product one. -/
+theorem vdVWPermutationSymmetricMeasurableSpace_le_pi
+    (Observation : Type u) [MeasurableSpace Observation] (n : ℕ) :
+    vdVWPermutationSymmetricMeasurableSpace Observation n ≤
+      (.pi (X := fun _ : ℕ => Observation)) := by
+  refine MeasurableSpace.generateFrom_le ?_
+  intro s hs
+  rcases hs with ⟨statistic, hmeas, _hsymm, t, ht, rfl⟩
+  exact hmeas ht
+
+/--
+The VdV&W decreasing permutation-symmetric sigma-fields, represented as a
+mathlib filtration on the dual order `ℕᵒᵈ`.
+-/
+abbrev vdVWPermutationSymmetricCofiltration
+    (Observation : Type u) [MeasurableSpace Observation] :
+    Filtration ℕᵒᵈ (.pi (X := fun _ : ℕ => Observation)) where
+  seq n := vdVWPermutationSymmetricMeasurableSpace Observation (OrderDual.ofDual n)
+  mono' := by
+    intro n m hnm
+    exact vdVWPermutationSymmetricMeasurableSpace_antitone
+      (Observation := Observation) (show OrderDual.ofDual m ≤ OrderDual.ofDual n from hnm)
+  le' := fun n => vdVWPermutationSymmetricMeasurableSpace_le_pi
+    Observation (OrderDual.ofDual n)
+
+/-- Display form of the VdV&W permutation-symmetric cofiltration. -/
+theorem vdVWPermutationSymmetricCofiltration_apply
+    (Observation : Type u) [MeasurableSpace Observation] (n : ℕᵒᵈ) :
+    vdVWPermutationSymmetricCofiltration Observation n =
+      vdVWPermutationSymmetricMeasurableSpace Observation (OrderDual.ofDual n) :=
+  rfl
+
+/--
+The uniform empirical supremum process is adapted to the VdV&W
+permutation-symmetric cofiltration whenever the class is countable and
+coordinate-measurable.
+-/
+theorem adapted_vdVWPermutationSymmetricCofiltration_uniformClassSupremum_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun) :
+    Adapted (vdVWPermutationSymmetricCofiltration Observation)
+      (fun n : ℕᵒᵈ => fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass classFun
+          (fun _ : Fin (OrderDual.ofDual n) => ((OrderDual.ofDual n : ℕ) : ℝ)⁻¹)
+          (vdVWFirstNSample (OrderDual.ofDual n) sequence)) := by
+  intro n
+  change
+    Measurable[vdVWPermutationSymmetricMeasurableSpace Observation (OrderDual.ofDual n)]
+      (fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass classFun
+          (fun _ : Fin (OrderDual.ofDual n) => ((OrderDual.ofDual n : ℕ) : ℝ)⁻¹)
+          (vdVWFirstNSample (OrderDual.ofDual n) sequence))
+  exact
+    measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable
+      (indexClass := indexClass) (classFun := classFun)
+      hcount hclass (OrderDual.ofDual n)
+
 /--
 Countable centered truncated weighted class suprema are integrable under the
 empirical product law once fixed-index truncated functions are integrable.

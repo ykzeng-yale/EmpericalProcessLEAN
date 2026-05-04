@@ -1016,12 +1016,18 @@ above, so they do not change the theorem-level dashboard counts.
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
    and its Chapter 1.2 cover-shaped counterpart is compiled as
    `VdVWMeasurableCover_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`.
+   The decreasing `Σ_n` family is now packaged as
+   `vdVWPermutationSymmetricCofiltration : Filtration ℕᵒᵈ ...`, with
+   `adapted_vdVWPermutationSymmetricCofiltration_uniformClassSupremum_of_countable`
+   proving the countable uniform empirical supremum process adapted to that
+   cofiltration.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.  For Lemma 2.4.5, the next exact
-   primitive is now the reverse-submartingale inequality/convergence handoff
-   over decreasing `Σ_n`, not the finite permutation, generated-sigma,
-   countable-supremum adaptedness, or cover-shaped adaptedness substrate.
+   primitive is now the conditional-expectation/reverse-submartingale
+   comparison and L1-boundedness handoff over decreasing `Σ_n`, not the
+   finite permutation, generated-sigma, countable-supremum adaptedness,
+   cover-shaped adaptedness, or cofiltration substrate.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

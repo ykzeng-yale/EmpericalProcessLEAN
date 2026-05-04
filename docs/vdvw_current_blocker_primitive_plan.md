@@ -3044,3 +3044,17 @@ blocker is the reverse-submartingale inequality/convergence reduction itself:
 identify the adapted process/covers indexed by decreasing `Σ_n`, prove the
 conditional-expectation/submartingale comparison, then feed it into the
 existing mathlib martingale convergence wrapper.
+
+2026-05-04 follow-up: the decreasing `Σ_n` family is now packaged as an
+actual mathlib filtration on the dual order `ℕᵒᵈ`.  New compiled declarations
+are `vdVWPermutationSymmetricMeasurableSpace_le_pi`,
+`vdVWPermutationSymmetricCofiltration`,
+`vdVWPermutationSymmetricCofiltration_apply`, and
+`adapted_vdVWPermutationSymmetricCofiltration_uniformClassSupremum_of_countable`.
+Search/reuse record: this uses mathlib `Filtration` and `Adapted`, plus local
+`vdVWPermutationSymmetricMeasurableSpace_antitone` and
+`measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`.
+This closes the adapted-process substrate for the countable uniform empirical
+supremum over decreasing `Σ_n`.  The next exact blocker is the
+conditional-expectation/reverse-submartingale comparison and L1-boundedness
+handoff needed to invoke `vdVW_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd`.

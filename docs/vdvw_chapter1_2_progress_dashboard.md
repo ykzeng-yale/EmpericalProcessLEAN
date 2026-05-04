@@ -709,6 +709,14 @@ inequality/convergence over decreasing `Σ_n`.
 It packages the nonnegative `ENNReal.ofReal` empirical supremum as a
 `VdVWMeasurableCover` over the explicit source sigma-field `Σ_n`.  Remaining
 work is the reverse-submartingale comparison/convergence reduction.
+2026-05-04 follow-up: the decreasing `Σ_n` family is now a mathlib
+filtration over `ℕᵒᵈ`, with
+`vdVWPermutationSymmetricMeasurableSpace_le_pi`,
+`vdVWPermutationSymmetricCofiltration`,
+`vdVWPermutationSymmetricCofiltration_apply`, and
+`adapted_vdVWPermutationSymmetricCofiltration_uniformClassSupremum_of_countable`.
+Remaining work is now the conditional-expectation/reverse-submartingale
+comparison and L1 boundedness handoff.
 
 ## Verification Monitor
 
