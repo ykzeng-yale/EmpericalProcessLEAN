@@ -1,3 +1,5 @@
+import Mathlib.Analysis.Normed.Lp.lpSpace
+import Mathlib.Analysis.SpecificLimits.Basic
 import StatInference.Optimization.Theorem27
 import StatInference.Optimization.Theorem28
 import StatInference.Optimization.Theorem33
@@ -23,7 +25,7 @@ namespace StatInference
 namespace Optimization
 
 open Set
-open scoped InnerProductSpace
+open scoped InnerProductSpace ENNReal
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
@@ -242,6 +244,87 @@ theorem exercise31_gradientStep_dist_contract_of_strongConvexOn_univ_hasGradient
       hstrong hgrad)
     halpha_nonneg
     hsmooth hbeta_pos hh_nonneg hstep_size hfactor_nonneg
+
+/--
+Chewi Exercise 4.2 infinite-chain substrate: the squared `L^2` term of a
+nonnegative geometric profile is the geometric series with ratio `q^2`.
+-/
+theorem exercise42_geometric_l2_term_eq {q : ℝ} (hq_nonneg : 0 ≤ q) (n : ℕ) :
+    ‖q ^ n‖ ^ (2 : ℝ≥0∞).toReal = (q ^ (2 : ℕ)) ^ n := by
+  have hpow_nonneg : 0 ≤ q ^ n := pow_nonneg hq_nonneg n
+  rw [Real.norm_of_nonneg hpow_nonneg]
+  norm_num [Real.rpow_natCast]
+  rw [← pow_mul, ← pow_mul]
+  ring
+
+/--
+Chewi Exercise 4.2 infinite-chain substrate: the pure geometric profile
+`n ↦ q^n` belongs to `ell^2` whenever `0 <= q < 1`.
+-/
+theorem exercise42_geometric_memℓp_two {q : ℝ}
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) :
+    Memℓp (fun n : ℕ => q ^ n) (2 : ℝ≥0∞) := by
+  apply memℓp_gen
+  have hq_sq_nonneg : 0 ≤ q ^ (2 : ℕ) := sq_nonneg q
+  have hq_sq_lt_one : q ^ (2 : ℕ) < 1 := by
+    have hq_sq_le_q : q ^ (2 : ℕ) ≤ q := by
+      rw [pow_two]
+      exact mul_le_of_le_one_right hq_nonneg hq_lt_one.le
+    exact lt_of_le_of_lt hq_sq_le_q hq_lt_one
+  have hsum : Summable fun n : ℕ => (q ^ (2 : ℕ)) ^ n :=
+    summable_geometric_of_lt_one hq_sq_nonneg hq_sq_lt_one
+  convert hsum using 1
+  ext n
+  exact exercise42_geometric_l2_term_eq hq_nonneg n
+
+/-- The pure geometric profile as an element of `ell^2`. -/
+noncomputable def exercise42InfiniteGeometric (q : ℝ)
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) :
+    lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) :=
+  ⟨fun n => q ^ n, exercise42_geometric_memℓp_two hq_nonneg hq_lt_one⟩
+
+@[simp]
+theorem exercise42InfiniteGeometric_apply {q : ℝ}
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) (n : ℕ) :
+    exercise42InfiniteGeometric q hq_nonneg hq_lt_one n = q ^ n :=
+  rfl
+
+/--
+Exact infinite geometric identity from Chewi Exercise 4.2: the squared
+`ell^2` norm of the pure geometric profile is `(1 - q^2)^{-1}`.
+-/
+theorem exercise42InfiniteGeometric_norm_sq {q : ℝ}
+    (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) :
+    ‖exercise42InfiniteGeometric q hq_nonneg hq_lt_one‖ ^ (2 : ℕ) =
+      (1 - q ^ (2 : ℕ))⁻¹ := by
+  let z := exercise42InfiniteGeometric q hq_nonneg hq_lt_one
+  have hp : 0 < (2 : ℝ≥0∞).toReal := by norm_num
+  have hnorm :
+      ‖z‖ ^ (2 : ℝ≥0∞).toReal =
+        ∑' n : ℕ, ‖z n‖ ^ (2 : ℝ≥0∞).toReal :=
+    lp.norm_rpow_eq_tsum (E := fun _ : ℕ => ℝ)
+      (p := (2 : ℝ≥0∞)) hp z
+  have hq_sq_nonneg : 0 ≤ q ^ (2 : ℕ) := sq_nonneg q
+  have hq_sq_lt_one : q ^ (2 : ℕ) < 1 := by
+    have hq_sq_le_q : q ^ (2 : ℕ) ≤ q := by
+      rw [pow_two]
+      exact mul_le_of_le_one_right hq_nonneg hq_lt_one.le
+    exact lt_of_le_of_lt hq_sq_le_q hq_lt_one
+  have htsum :
+      (∑' n : ℕ, ‖z n‖ ^ (2 : ℝ≥0∞).toReal) =
+        (1 - q ^ (2 : ℕ))⁻¹ := by
+    have hgeom :
+        (∑' n : ℕ, (q ^ (2 : ℕ)) ^ n) =
+          (1 - q ^ (2 : ℕ))⁻¹ :=
+      tsum_geometric_of_lt_one hq_sq_nonneg hq_sq_lt_one
+    rw [← hgeom]
+    apply tsum_congr
+    intro n
+    simpa [z] using exercise42_geometric_l2_term_eq hq_nonneg n
+  have hleft :
+      ‖z‖ ^ (2 : ℕ) = ‖z‖ ^ (2 : ℝ≥0∞).toReal := by
+    norm_num [Real.rpow_natCast]
+  rw [hleft, hnorm, htsum]
 
 end Optimization
 end StatInference

@@ -271,11 +271,18 @@ Current compiled Chapter 3 spine:
 6. Theorem 3.7 gradient-norm convergence layer in existential and finite-min
    display forms.
 
-Next high-value task: finish the direct Exercise 4.2 minimizer geometry by
-canceling the verified terminal residual with a finite correction, or by
-switching to a true `ℓ²` model where the geometric vector is the exact
-zero-gradient minimizer.  Then prove the geometric tail lower bound and
-convert that obstruction into the logarithmic iteration-count statement.  In parallel,
+Next high-value task: finish the direct Exercise 4.2 minimizer geometry in the
+true `ℓ²` model.  The first infinite-chain substrate now compiles in
+`StatInference/Optimization/Exercises.lean`:
+`exercise42_geometric_l2_term_eq`, `exercise42_geometric_memℓp_two`,
+`exercise42InfiniteGeometric`, `exercise42InfiniteGeometric_apply`, and
+`exercise42InfiniteGeometric_norm_sq` prove the nonnegative geometric profile
+`n |-> q^n` is an `ell^2` element and has squared norm `(1 - q^2)^{-1}` for
+`0 <= q < 1`, reusing mathlib `lp`, `Memℓp`, `lp.norm_rpow_eq_tsum`,
+`summable_geometric_of_lt_one`, and `tsum_geometric_of_lt_one`.  Next, define
+the infinite tridiagonal hard-chain objective/gradient on this `lp` model,
+prove the geometric profile is the exact zero-gradient minimizer, then convert
+the tail obstruction into the logarithmic iteration-count statement.  In parallel,
 specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.  Search

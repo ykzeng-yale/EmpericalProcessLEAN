@@ -577,6 +577,18 @@ check: Exercise 4.2 is an infinite-dimensional `R^infty` construction; the
 finite corrected truncation solves the finite boundary problem exactly, but
 the literal textbook `q^(2N)` tail factor requires either dimension/slack
 bookkeeping or the true `l^2` model.
+The first true `l^2` substrate for Exercise 4.2 now compiles in
+`StatInference/Optimization/Exercises.lean`: `exercise42_geometric_l2_term_eq`,
+`exercise42_geometric_memℓp_two`, `exercise42InfiniteGeometric`,
+`exercise42InfiniteGeometric_apply`, and
+`exercise42InfiniteGeometric_norm_sq` instantiate the nonnegative geometric
+profile `n |-> q^n` as a mathlib `lp` element and prove the exact squared norm
+identity `(1 - q^2)^{-1}` for `0 <= q < 1`.  The search-first route reused
+`Mathlib.Analysis.Normed.Lp.lpSpace`, `Memℓp`, `lp.norm_rpow_eq_tsum`,
+`summable_geometric_of_lt_one`, and `tsum_geometric_of_lt_one`; no local
+infinite-norm primitive was needed.  The next infinite-model step is the
+tridiagonal objective/gradient and exact zero-gradient geometric minimizer,
+then a source-shaped tail-to-gap/log-rate wrapper.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,
