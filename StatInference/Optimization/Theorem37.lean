@@ -4,10 +4,9 @@ import StatInference.Optimization.GradientDescent
 # Chewi Theorem 3.7 gradient-norm convergence layer
 
 This module proves the main-text stationary-point guarantee for smooth
-gradient descent from the compiled descent lemma.  The source states the result
-as a finite minimum over `n = 0, ..., N - 1`; the first compiled wrapper gives
-the equivalent existence form over `n < N`, which is the proof-carrying content
-used to package the finite-min display later.
+gradient descent from the compiled descent lemma.  It provides both the
+proof-carrying existence form over `n < N` and the finite-minimum display used
+in the source.
 -/
 
 namespace StatInference
@@ -238,6 +237,55 @@ theorem chewi37_exists_grad_norm_le_of_le_inv
       field_simp [hbeta_pos.ne']
     linarith
   exact chewi37_exists_grad_norm_le
+    hsmooth htraj hmem hstar_lower hh_pos hbeta_step hN
+
+/--
+Chewi Theorem 3.7, finite-minimum display form.
+-/
+theorem chewi37_min_grad_norm_le
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {beta h fstar : ℝ} {x : ℕ -> E} {N : ℕ}
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (htraj : IsGradientDescentTrajectory grad h x)
+    (hmem : ∀ n, x n ∈ C)
+    (hstar_lower : ∀ n, fstar ≤ f (x n))
+    (hh_pos : 0 < h)
+    (hbeta_step : beta * h ≤ 1)
+    (hN : N ≠ 0) :
+    (Finset.range N).inf' (Finset.nonempty_range_iff.mpr hN)
+        (fun n => ‖grad (x n)‖) ≤
+      Real.sqrt (2 * (f (x 0) - fstar) / ((N : ℝ) * h)) := by
+  rcases chewi37_exists_grad_norm_le
+      hsmooth htraj hmem hstar_lower hh_pos hbeta_step hN
+    with ⟨n, hnlt, hnle⟩
+  exact (Finset.inf'_le (s := Finset.range N)
+      (f := fun n => ‖grad (x n)‖) (Finset.mem_range.mpr hnlt)).trans hnle
+
+/--
+Chewi Theorem 3.7 finite-minimum display with the source step-size condition
+`h <= 1 / beta`.
+-/
+theorem chewi37_min_grad_norm_le_of_le_inv
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {beta h fstar : ℝ} {x : ℕ -> E} {N : ℕ}
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (htraj : IsGradientDescentTrajectory grad h x)
+    (hmem : ∀ n, x n ∈ C)
+    (hstar_lower : ∀ n, fstar ≤ f (x n))
+    (hbeta_pos : 0 < beta)
+    (hh_pos : 0 < h)
+    (hstep_size : h ≤ 1 / beta)
+    (hN : N ≠ 0) :
+    (Finset.range N).inf' (Finset.nonempty_range_iff.mpr hN)
+        (fun n => ‖grad (x n)‖) ≤
+      Real.sqrt (2 * (f (x 0) - fstar) / ((N : ℝ) * h)) := by
+  have hbeta_step : beta * h ≤ 1 := by
+    have hmul : beta * h ≤ beta * (1 / beta) :=
+      mul_le_mul_of_nonneg_left hstep_size hbeta_pos.le
+    have hcancel : beta * (1 / beta) = 1 := by
+      field_simp [hbeta_pos.ne']
+    linarith
+  exact chewi37_min_grad_norm_le
     hsmooth htraj hmem hstar_lower hh_pos hbeta_step hN
 
 end Optimization

@@ -147,5 +147,49 @@ theorem gradientStep_dist_contract_of_firstOrderStrongConvexOn_gradientCocoerciv
     hfirst (hcoco.stepCocoerciveOn_of_le_inv hbeta_pos hh_nonneg hstep_size)
     hh_nonneg hfactor_nonneg hx hy
 
+/--
+Chewi Theorem 3.3, squared-distance form, with Proposition 1.6 `(1.3) =>
+(1.4)` discharged from the actual segment strong-convexity definition on the
+whole space.  The co-coercivity input remains the Exercise 3.1 interface.
+-/
+theorem gradientStep_sqdist_contract_of_strongConvexOn_univ_hasGradientAt_gradientCocoerciveOn
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {alpha beta h : ℝ} {x y : E}
+    (hstrong : StrongConvexOn Set.univ f alpha)
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hcoco : GradientCocoerciveOn Set.univ grad beta)
+    (hbeta_pos : 0 < beta)
+    (hh_nonneg : 0 ≤ h)
+    (hstep_size : h ≤ 1 / beta) :
+    ‖gradientDescentStep grad h y - gradientDescentStep grad h x‖ ^ (2 : ℕ) ≤
+      (1 - alpha * h) * ‖y - x‖ ^ (2 : ℕ) :=
+  gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_gradientCocoerciveOn
+    (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
+      hstrong hgrad)
+    hcoco hbeta_pos hh_nonneg hstep_size (by simp) (by simp)
+
+/--
+Chewi Theorem 3.3, norm form, with Proposition 1.6 `(1.3) => (1.4)`
+discharged from the actual segment strong-convexity definition on the whole
+space.  The co-coercivity input remains the Exercise 3.1 interface.
+-/
+theorem gradientStep_dist_contract_of_strongConvexOn_univ_hasGradientAt_gradientCocoerciveOn
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {alpha beta h : ℝ} {x y : E}
+    (hstrong : StrongConvexOn Set.univ f alpha)
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hcoco : GradientCocoerciveOn Set.univ grad beta)
+    (hbeta_pos : 0 < beta)
+    (hh_nonneg : 0 ≤ h)
+    (hstep_size : h ≤ 1 / beta)
+    (hfactor_nonneg : 0 ≤ 1 - alpha * h) :
+    ‖gradientDescentStep grad h y - gradientDescentStep grad h x‖ ≤
+      Real.sqrt (1 - alpha * h) * ‖y - x‖ :=
+  gradientStep_dist_contract_of_firstOrderStrongConvexOn_gradientCocoerciveOn
+    (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
+      hstrong hgrad)
+    hcoco hbeta_pos hh_nonneg hstep_size hfactor_nonneg
+    (by simp) (by simp)
+
 end Optimization
 end StatInference

@@ -715,5 +715,57 @@ theorem chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn_
     chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn
       hfirst hsmooth htraj hmem hxStar hh hbeta_step hN hmono
 
+/--
+Chewi Theorem 3.4 closed-form `alpha > 0` function-value bound with
+Proposition 1.6 `(1.3) => (1.4)` discharged from the actual segment
+strong-convexity definition on the whole space.
+-/
+theorem chewi34_final_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientAt_of_descent
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [CompleteSpace E]
+    {f : E -> ℝ} {grad : E -> E}
+    {alpha beta h : ℝ} {x : ℕ -> E} {xStar : E}
+    (hstrong : StrongConvexOn Set.univ f alpha)
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hsmooth : SmoothWithGradientOn Set.univ f grad beta)
+    (htraj : IsGradientDescentTrajectory grad h x)
+    (halpha : 0 < alpha)
+    (hh : 0 < h)
+    (hbeta_step : beta * h ≤ 1)
+    (hfactor_pos : 0 < 1 - alpha * h)
+    {N : ℕ} (hN : N ≠ 0) :
+    f (x N) - f xStar ≤
+      alpha * ‖x 0 - xStar‖ ^ (2 : ℕ) /
+        (2 * (((1 - alpha * h) ^ N)⁻¹ - 1)) :=
+  chewi34_final_gap_le_geometric_denominator_of_firstOrderStrongConvexOn_of_descent
+    (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
+      hstrong hgrad)
+    hsmooth htraj (by intro n; simp) (by simp) halpha hh hbeta_step
+    hfactor_pos hN
+
+/--
+Chewi Theorem 3.4 limiting `alpha = 0` function-value bound with Proposition
+1.6 `(1.3) => (1.4)` discharged from the actual segment convexity definition
+on the whole space.
+-/
+theorem chewi34_final_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradientAt_of_descent
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [CompleteSpace E]
+    {f : E -> ℝ} {grad : E -> E}
+    {beta h : ℝ} {x : ℕ -> E} {xStar : E}
+    (hstrong : StrongConvexOn Set.univ f 0)
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hsmooth : SmoothWithGradientOn Set.univ f grad beta)
+    (htraj : IsGradientDescentTrajectory grad h x)
+    (hh : 0 < h)
+    (hbeta_step : beta * h ≤ 1)
+    {N : ℕ} (hN : N ≠ 0) :
+    f (x N) - f xStar ≤
+      ‖x 0 - xStar‖ ^ (2 : ℕ) / (2 * h * (N : ℝ)) :=
+  chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn_of_descent
+    (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
+      hstrong hgrad)
+    hsmooth htraj (by intro n; simp) (by simp) hh hbeta_step hN
+
 end Optimization
 end StatInference

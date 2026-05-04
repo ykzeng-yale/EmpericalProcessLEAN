@@ -50,10 +50,12 @@ runs.
 
 Current manual objective: aggressively formalize and prove the main theorem
 content of Sinho Chewi's Optimization 2026 notes in Lean under
-`StatInference/Optimization`, continuing from the verified Theorem 3.7
-gradient-norm layer in `StatInference/Optimization/Theorem37.lean`.  Search
-existing mathlib and local `StatInference` APIs first, prove the next
-highest-leverage main-text theorem layer, verify with focused
+`StatInference/Optimization`, continuing from the Chapter 1/3 bridge frontier:
+minimizer uniqueness, Proposition 1.6's segment-strong-convexity to
+first-order lower-model bridge, and Theorem 3.3/3.4 wrappers from the actual
+Definition 1.5 `StrongConvexOn Set.univ` assumption.  Search existing mathlib
+and local `StatInference` APIs first, prove the next highest-leverage
+main-text theorem layer, verify with focused
 `lake env lean`, targeted `lake build StatInference`, proof-hole and secret
 scans, update this route
 state, and commit/push clean verified progress.  Skip exercise proofs until
@@ -65,7 +67,24 @@ supplied interfaces only when they directly unblock a main-text theorem.
 The Chewi lane has source materials and a compiled content-based Lean namespace
 under `StatInference/Optimization/`, but it does not yet have an exact
 source-audited Optimization theorem report.  Main-text Chapter 3 now has a
-strong reusable spine through Theorem 3.7's existential gradient-norm form:
+strong reusable spine through Theorem 3.7's finite-minimum gradient-norm form,
+and the Chapter 1 convexity bridge now removes a major supplied-interface
+blocker for the whole-space differentiable case:
+
+- Lemma 1.10 minimizer uniqueness under mathlib `StrictConvexOn` compiles in
+  `StatInference/Optimization/Minimizer.lean`, reusing
+  `StrictConvexOn.eq_of_isMinOn`.
+- Positive local `StrongConvexOn` implies mathlib `StrictConvexOn`, so positive
+  Chewi strong convexity plus minimizer existence gives an `∃!` minimizer.
+- Corollary 1.11-style wrappers compile for the supplied first-order lower
+  model, including the whole-space mathlib-gradient necessary condition
+  `IsMinOn f Set.univ x -> HasGradientAt f grad x -> grad = 0`.
+- Proposition 1.6 `(1.3) => (1.4)` now compiles on `Set.univ` as
+  `FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt`, using
+  mathlib `HasGradientAt`/`HasFDerivAt` and a right-limit directional-slope
+  argument.
+- Proposition 1.6 `(1.4) => (1.5)` already compiles as
+  `FirstOrderStrongConvexOn.stronglyMonotoneGradientOn`.
 
 - Lemma 3.5 discrete Gronwall has both zero-based finite-sum and source-shaped
   one-based display wrappers in `StatInference/Optimization/DiscreteGronwall.lean`.
@@ -79,7 +98,10 @@ strong reusable spine through Theorem 3.7's existential gradient-norm form:
   It also has wrappers deriving gradient monotonicity from the supplied
   first-order lower-model form `FirstOrderStrongConvexOn`, and wrappers using
   the source-shaped Exercise 3.1 display `(3.5)` as `GradientCocoerciveOn`
-  together with `h <= 1 / beta`.
+  together with `h <= 1 / beta`.  The newest wrappers discharge the
+  first-order lower model from actual whole-space segment strong convexity plus
+  `HasGradientAt`, leaving Exercise 3.1 co-coercivity as the only exercise
+  interface in that Theorem 3.3 route.
 
 The positive-`alpha` closed-form Theorem 3.4 function-value denominator now
 compiles.  The assembly layer in
@@ -96,16 +118,17 @@ that lower model plus Lemma 3.1, and feeds a gradient-descent trajectory into
 the weighted finite-sum/final-value bounds.  The descent lemma also now
 derives monotonicity of function values along GD trajectories, removing the
 last supplied monotone-gap assumption from the positive-`alpha` and
-`alpha = 0` closed-form wrappers.  The Proposition 1.6 `(1.4) => (1.5)`
-swap-and-add bridge from `FirstOrderStrongConvexOn` to
-`StronglyMonotoneGradientOn` now compiles.  The source-shaped Exercise 3.1
+`alpha = 0` closed-form wrappers.  The newest Theorem 3.4 wrappers discharge
+the first-order lower model from actual whole-space segment strong convexity
+plus `HasGradientAt`, giving closed-form `alpha > 0` and `alpha = 0` GD
+function-value convergence directly from Definition 1.5-style strong
+convexity assumptions.  The source-shaped Exercise 3.1
 display `(3.5)` also compiles as `GradientCocoerciveOn`, and it supplies the
 h-scaled Theorem 3.3 co-coercivity condition under `0 < beta`, `0 <= h`, and
 `h <= 1 / beta`.  Per the current route decision, exercise proofs are deferred
 until after the main textbook lane is covered.  Next choices are main-text
-source-audited packaging for Theorem 3.3/3.4, continuing to main-text Theorems
-3.6/3.7, or the segment-strong-convexity plus differentiability bridge to
-`FirstOrderStrongConvexOn`.
+source-audited packaging for Theorem 3.3/3.4/3.7, Chapter 2 gradient-flow
+theorems, or the next main deterministic algorithm chapter.
 
 Theorem 3.6 under PL also compiles in
 `StatInference/Optimization/Theorem36.lean`.  It adds
@@ -114,13 +137,13 @@ Theorem 3.6 under PL also compiles in
 `discreteGronwall_sum_le`, and provides a source-shaped wrapper for
 `h <= 1 / beta`.
 
-Theorem 3.7 now compiles in `StatInference/Optimization/Theorem37.lean` in the
-source-faithful existential form over `n < N`.  It proves the one-step
-squared-gradient decrease from Lemma 3.1, telescopes the finite sum, applies a
-finite average/existence principle, and provides the source-shaped
-`h <= 1 / beta` wrapper.  It has no dependency on Chapter 3 exercises.  The
-remaining Theorem 3.7 packaging work is the exact finite `min` display, if we
-want a literal source-form declaration; otherwise the next high-value tasks are
+Theorem 3.7 now compiles in `StatInference/Optimization/Theorem37.lean` in
+both the source-faithful existential form over `n < N` and the literal
+finite-minimum display form using `(Finset.range N).inf'`.  It proves the
+one-step squared-gradient decrease from Lemma 3.1, telescopes the finite sum,
+applies a finite average/existence principle, converts to the square-root norm
+bound, and provides source-shaped `h <= 1 / beta` wrappers.  It has no
+dependency on Chapter 3 exercises.  The next high-value tasks are
 source-audited Chapter 3 report packaging and the segment-strong-convexity plus
 differentiability bridge to `FirstOrderStrongConvexOn`.
 
@@ -173,18 +196,21 @@ derived from `descentLemma_of_smoothWithGradientOn` plus
 `antitone_nat_of_succ_le`.  The `alpha = 0` branch reuses mathlib
 `one_geom_sum`/`simp` for the finite sum of unit weights, then specializes the
 same finite-denominator theorem.
-For the one-step recurrence (3.1), neither local `StrongConvexOn` nor mathlib
-`StrongConvexOn` currently provides a ready first-order gradient lower-model
-bridge; prefer adding a supplied first-order strong-convexity interface before
-attempting the full segment-to-gradient theorem.
+For the one-step recurrence (3.1), the new whole-space bridge
+`FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt` proves the
+first-order lower model from the local segment `StrongConvexOn Set.univ`
+definition plus mathlib `HasGradientAt`.  It uses
+`HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.tendsto_slope_zero_right`,
+`le_of_tendsto`, `eventually_le_nhds`, `self_mem_nhdsWithin`, and
+`mul_le_mul_iff_of_pos_left`.
 
 Current first-order recurrence bridge result: `FirstOrderStrongConvexOn` is a
-source-faithful supplied version of Chewi Proposition 1.6 / equation (1.4).
-The one-step recurrence proof uses `norm_sub_sq_real`, `real_inner_comm`,
+source-faithful version of Chewi Proposition 1.6 / equation (1.4), and on the
+whole space it is now derived from local segment strong convexity plus
+`HasGradientAt`.  The one-step recurrence proof uses `norm_sub_sq_real`,
+`real_inner_comm`,
 `inner_neg_right`, `real_inner_smul_right`, `norm_smul`, `Real.norm_eq_abs`,
-`abs_of_nonneg`, `mul_le_mul_of_nonpos_left`, and `nlinarith`.  The full
-segment-strong-convexity plus differentiability bridge remains a later exact
-Proposition 1.6 target.
+`abs_of_nonneg`, `mul_le_mul_of_nonpos_left`, and `nlinarith`.
 
 Current Proposition 1.6 monotonicity bridge result: the implication
 `(1.4) => (1.5)` now compiles locally as
@@ -201,14 +227,18 @@ Current Theorem 3.3 contraction search result: mathlib provides the norm-square
 expansion `norm_sub_sq_real` and the square-root/order helpers
 `sq_le_sq₀`, `Real.sq_sqrt`, and `Real.sqrt_nonneg`, but neither pinned
 mathlib nor local `StatInference` has a ready Chewi Exercise 3.1 co-coercivity
-theorem or a direct strong-convexity-to-gradient-monotonicity bridge for the
-local segment interface.  The compiled local theorem therefore assumes the
-source-shaped supplied interfaces `StronglyMonotoneGradientOn` and
+theorem.  The direct strong-convexity-to-gradient-monotonicity bridge now
+exists on `Set.univ` by composing
+`FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt` with
+`FirstOrderStrongConvexOn.stronglyMonotoneGradientOn`.  The compiled local
+theorem also keeps the source-shaped supplied interfaces
+`StronglyMonotoneGradientOn` and
 `GradientStepCocoerciveOn`, expands the square with `smul_sub`,
 `norm_sub_sq_real`, `real_inner_smul_right`, `norm_smul`, and
 `Real.norm_eq_abs`, then closes the contraction with `nlinarith` and
 `sq_le_sq₀`.  Theorem 3.3 also has wrappers from
-`FirstOrderStrongConvexOn` plus `GradientStepCocoerciveOn`.
+`FirstOrderStrongConvexOn` plus `GradientStepCocoerciveOn`, and whole-space
+wrappers from local `StrongConvexOn Set.univ` plus `HasGradientAt`.
 
 Current Exercise 3.1 co-coercivity interface result: the source display (3.5)
 now compiles as `GradientCocoerciveOn`.  The bridge
@@ -225,8 +255,9 @@ formalization.
 Current Theorem 3.7 search result: local `GradientDescent.lean` already
 supplies the descent lemma and GD trajectory interface.  Mathlib supplies the
 finite telescope as `Finset.sum_range_sub`, the finite average/existence step
-as `Finset.exists_le_of_sum_le` with `Finset.nonempty_range_iff`, and the
-square-root conversion as `Real.le_sqrt_of_sq_le`.  The local theorem layer
+as `Finset.exists_le_of_sum_le` with `Finset.nonempty_range_iff`, the
+square-root conversion as `Real.le_sqrt_of_sq_le`, and the literal finite-min
+packaging via `Finset.inf'` and `Finset.inf'_le`.  The local theorem layer
 only adds Chewi-shaped wrappers around these APIs; it does not duplicate a
 finite-sum or minimum foundation.
 
@@ -240,7 +271,9 @@ Local searches should prioritize:
 ## Primitive Sequence
 
 1. Keep `StatInference/Optimization/Basic.lean` compiling and imported by
-   `StatInference.lean`.
+   `StatInference.lean`.  It now includes the whole-space Proposition 1.6
+   bridge from segment `StrongConvexOn` plus `HasGradientAt` to
+   `FirstOrderStrongConvexOn`.
 2. Keep `StatInference/Optimization/DiscreteGronwall.lean` compiling.  It now
    proves both the zero-based finite-sum form and the source-shaped one-based
    display form of Chewi Lemma 3.5.
@@ -254,13 +287,14 @@ Local searches should prioritize:
    antitonicity of function values along GD trajectories.
 5. Keep `StatInference/Optimization/Theorem33.lean` compiling.  It proves
    Chewi Theorem 3.3 squared and norm contraction forms from supplied gradient
-   monotonicity and Exercise 3.1 co-coercivity interfaces.
-6. Add a bounded Theorem 3.4 assembly layer.  First prefer a supplied-interface
-   theorem that assumes the one-step recurrence (3.1), then derive monotonicity
-   from Lemma 3.1 where possible.  The weighted finite-sum, finite
-   denominator, positive-`alpha` closed denominator, `alpha = 0` limiting
-   denominator, and first-order supplied strong-convexity trajectory wrappers
-   now compile in `Theorem34.lean`.
+   monotonicity and Exercise 3.1 co-coercivity interfaces, and from actual
+   whole-space `StrongConvexOn` plus `HasGradientAt` once co-coercivity is
+   supplied.
+6. Keep the Theorem 3.4 assembly layer compiling.  It has the weighted
+   finite-sum, finite denominator, positive-`alpha` closed denominator,
+   `alpha = 0` limiting denominator, first-order trajectory wrappers, and
+   whole-space `StrongConvexOn` plus `HasGradientAt` wrappers in
+   `Theorem34.lean`.
 7. Keep `StatInference/Optimization/Theorem36.lean` and
    `StatInference/Optimization/Theorem37.lean` compiling.  Theorem 3.6 gives
    PL convergence; Theorem 3.7 gives the main-text gradient-norm guarantee in
@@ -292,6 +326,7 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.HasLipschitzGradientOn`
 - `StatInference.Optimization.gradientStep`
 - `StatInference.Optimization.FirstOrderStrongConvexOn`
+- `StatInference.Optimization.FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.discreteGronwall_sum_le`
 - `StatInference.Optimization.discreteGronwall_sum_le_of_pos`
 - `StatInference.Optimization.discreteGronwall_one_based_sum_le`
@@ -311,6 +346,21 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.gradientStep_dist_contract_of_firstOrderStrongConvexOn_cocoercive`
 - `StatInference.Optimization.gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_gradientCocoerciveOn`
 - `StatInference.Optimization.gradientStep_dist_contract_of_firstOrderStrongConvexOn_gradientCocoerciveOn`
+- `StatInference.Optimization.gradientStep_sqdist_contract_of_strongConvexOn_univ_hasGradientAt_gradientCocoerciveOn`
+- `StatInference.Optimization.gradientStep_dist_contract_of_strongConvexOn_univ_hasGradientAt_gradientCocoerciveOn`
+- `StatInference.Optimization.StrongConvexOn.strictConvexOn`
+- `StatInference.Optimization.minimizer_unique_of_strictConvexOn`
+- `StatInference.Optimization.minimizer_unique_of_strongConvexOn`
+- `StatInference.Optimization.existsUnique_minimizer_of_strictConvexOn`
+- `StatInference.Optimization.existsUnique_minimizer_of_strongConvexOn`
+- `StatInference.Optimization.isMinOn_of_firstOrderStrongConvexOn_gradient_eq_zero`
+- `StatInference.Optimization.gradient_eq_zero_unique_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.isMinOn_iff_gradient_eq_zero_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.existsUnique_minimizer_gradient_zero_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.existsUnique_minimizer_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.gradient_eq_zero_of_isMinOn_univ_hasGradientAt`
+- `StatInference.Optimization.isMinOn_univ_iff_gradient_eq_zero_of_firstOrderStrongConvexOn`
+- `StatInference.Optimization.existsUnique_minimizer_gradient_zero_univ_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.weightedSumBound_of_gronwall_negative_forcing`
 - `StatInference.Optimization.weightedFinalGap_le_weightedGapSum`
 - `StatInference.Optimization.geometricWeights_sum_eq_geom_sum`
@@ -331,6 +381,8 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi34_final_gap_le_geometric_denominator_of_firstOrderStrongConvexOn_of_descent`
 - `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn_of_descent`
+- `StatInference.Optimization.chewi34_final_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientAt_of_descent`
+- `StatInference.Optimization.chewi34_final_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradientAt_of_descent`
 - `StatInference.Optimization.oneStepGap_le_of_polyakLojasiewiczOn`
 - `StatInference.Optimization.oneStepGap_le_of_polyakLojasiewiczOn_of_le_inv`
 - `StatInference.Optimization.gapRecurrence_of_polyakLojasiewiczOn`
@@ -345,11 +397,13 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.chewi37_exists_grad_sq_le`
 - `StatInference.Optimization.chewi37_exists_grad_norm_le`
 - `StatInference.Optimization.chewi37_exists_grad_norm_le_of_le_inv`
+- `StatInference.Optimization.chewi37_min_grad_norm_le`
+- `StatInference.Optimization.chewi37_min_grad_norm_le_of_le_inv`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal target: package the exact finite-min display for main-text
-Theorem 3.7 if lightweight; otherwise move to source-exact supplied-interface
-report packaging for Theorem 3.3/3.4/3.6/3.7 or to the differentiability
-bridge from segment `StrongConvexOn` to `FirstOrderStrongConvexOn` for full
-Proposition 1.6 fidelity.  Continue deferring exercise proofs.
+Next manual goal target: source-exact main-text report packaging for the
+strongest compiled Chapter 3 declaration, or move aggressively into Chapter 2
+gradient-flow theorems using mathlib Gronwall/ODE APIs.  Continue deferring
+exercise proofs except where an exercise statement is needed as a temporary
+interface for a main-text theorem.

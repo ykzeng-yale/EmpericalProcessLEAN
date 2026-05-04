@@ -25,6 +25,7 @@ import StatInference.EmpiricalProcess.RealHalfLineGC
 import StatInference.Optimization.Basic
 import StatInference.Optimization.DiscreteGronwall
 import StatInference.Optimization.GradientDescent
+import StatInference.Optimization.Minimizer
 import StatInference.Optimization.Theorem33
 import StatInference.Optimization.Theorem34
 import StatInference.Optimization.Theorem36

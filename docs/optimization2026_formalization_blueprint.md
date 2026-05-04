@@ -100,16 +100,25 @@ Current compiled surface:
 - `StatInference.Optimization.IsGradientDescentTrajectory`
 - `StatInference.Optimization.HasLipschitzGradientOn`
 - `StatInference.Optimization.gradientStep`
+- `StatInference.Optimization.FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.FirstOrderStrongConvexOn.stronglyMonotoneGradientOn`
+- `StatInference.Optimization.StrongConvexOn.strictConvexOn`
+- `StatInference.Optimization.minimizer_unique_of_strictConvexOn`
+- `StatInference.Optimization.minimizer_unique_of_strongConvexOn`
+- `StatInference.Optimization.gradient_eq_zero_of_isMinOn_univ_hasGradientAt`
 
 Near-term exact candidates:
 
 1. Definition 1.4/1.5 wrappers against mathlib `Convex`/`ConvexOn` and
    root-level mathlib `StrongConvexOn`.
-2. Lemma 1.10 uniqueness of minimizer under strict convexity.
-3. Corollary 1.11 unique minimizer under a strong-convexity plus existence
-   interface.
-4. Proposition 1.6 first-order convexity equivalence, after choosing the
-   Frechet-derivative/gradient representation.
+2. Source-audited packaging for Lemma 1.10 uniqueness of minimizer under
+   strict convexity, now compiled via mathlib `StrictConvexOn.eq_of_isMinOn`.
+3. Corollary 1.11 existence/coercivity layer; uniqueness and gradient-zero
+   characterization wrappers compile, while existence from strong convexity
+   still needs a coercivity/compactness argument.
+4. Proposition 1.6 remaining directions beyond the compiled
+   `(1.3) => (1.4)` whole-space bridge and `(1.4) => (1.5)` swap-and-add
+   bridge.
 
 ### Lane B: Continuous-time gradient flow
 
@@ -156,41 +165,36 @@ Near-term exact candidates:
    `StatInference/Optimization/GradientDescent.lean`, including the source
    step-size corollary `h <= 1 / beta` under `0 < beta`, and the
    function-value antitonicity lemma for GD trajectories.
-3. Theorem 3.3 contraction of gradient descent as a supplied-interface
-   theorem.  `StatInference/Optimization/Theorem33.lean` now compiles the
-   squared-distance and norm contraction forms from the source-shaped
-   `StronglyMonotoneGradientOn` and `GradientStepCocoerciveOn` interfaces,
-   plus wrappers deriving gradient monotonicity from
-   `FirstOrderStrongConvexOn` via the textbook's Proposition 1.6
-   `(1.4) => (1.5)` swap-and-add argument.  It also compiles source-step
-   wrappers from Exercise 3.1 display `(3.5)` as `GradientCocoerciveOn`
-   under `h <= 1 / beta`.  The derivation of (3.5) itself is deferred to the
-   later exercise pass; for the main-text lane, continue with report packaging,
-   main-text Theorems 3.6/3.7, or deriving the supplied first-order lower model
-   from segment strong convexity plus differentiability.
-4. Theorem 3.4 as a supplied-interface convergence theorem.  The next layer
-   now compiles in `StatInference/Optimization/Theorem34.lean`: it assumes the
+3. Theorem 3.3 contraction of gradient descent as a main-text theorem with
+   one deferred exercise interface.  `StatInference/Optimization/Theorem33.lean`
+   now compiles the squared-distance and norm contraction forms from the
+   source-shaped `StronglyMonotoneGradientOn` and `GradientStepCocoerciveOn`
+   interfaces, plus wrappers deriving gradient monotonicity from
+   `FirstOrderStrongConvexOn` and from actual whole-space segment
+   `StrongConvexOn` plus `HasGradientAt`.  Exercise 3.1 display `(3.5)` still
+   supplies co-coercivity under `h <= 1 / beta`; proving (3.5) itself is
+   deferred to the later exercise pass.
+4. Theorem 3.4 as a convergence theorem from actual whole-space
+   `StrongConvexOn` plus `HasGradientAt`.  `Theorem34.lean` assumes the
    one-step recurrence (3.1), uses the compiled Gronwall theorem for the
    weighted finite-sum bound, provides the source-indexed one-based display,
    adds the monotone-gap weighted lower-bound helper, proves the finite and
    positive-`alpha` closed geometric denominator corollaries, proves the
-   `alpha = 0` limiting display, and proves the one-step recurrence from the
-   supplied first-order strong-convexity lower model plus Lemma 3.1.  Final
-   wrappers derive monotonicity from the descent lemma rather than taking it as
-   a supplied assumption.  Remaining work is source-audited theorem packaging
-   and, later, the full segment-strong-convexity plus differentiability bridge
-   for Proposition 1.6.
+   `alpha = 0` limiting display, proves the one-step recurrence from the
+   first-order lower model plus Lemma 3.1, and now derives the first-order
+   lower model from segment strong convexity plus `HasGradientAt` on
+   `Set.univ`.
 5. Theorem 3.6 convergence under PL.  `StatInference/Optimization/Theorem36.lean`
    now compiles a source-shaped PL interface, the one-step PL gap recurrence
    from Lemma 3.1, a scalar nonnegative-factor recurrence unrolling, and the
    source step-size wrapper for `h <= 1 / beta`.
 6. Theorem 3.7 gradient-norm/stationary point convergence.
    `StatInference/Optimization/Theorem37.lean` now compiles the existential
-   source-faithful form over `n < N`.  It reuses the compiled descent lemma,
-   proves the telescope/finite-average layer over `Finset.range N`, converts
-   the squared bound with `Real.le_sqrt_of_sq_le`, and avoids Chapter 3
-   exercise proof derivations.  Remaining work is optional literal finite-min
-   display packaging and source-audited theorem reporting.
+   source-faithful form over `n < N` and the literal finite-min display using
+   `(Finset.range N).inf'`.  It reuses the compiled descent lemma, proves the
+   telescope/finite-average layer over `Finset.range N`, converts the squared
+   bound with `Real.le_sqrt_of_sq_le`, and avoids Chapter 3 exercise proof
+   derivations.
 
 ### Lane D: Later textbook expansion
 

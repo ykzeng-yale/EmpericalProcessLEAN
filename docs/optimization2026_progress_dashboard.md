@@ -28,9 +28,9 @@ This dashboard tracks the Chewi optimization formalization lane for
 
 | Lane | Status | Current Lean anchor | Notes |
 | --- | --- | --- | --- |
-| Chapter 1 convexity/smoothness foundations | local-layer/mathlib-foundation | `StatInference/Optimization/Basic.lean`; mathlib `StrongConvexOn`, `ConvexOn`, `gradient` | Initial interfaces for strong convexity, Chewi convexity, smooth upper models, gradient-descent steps, first-order lower models, strong gradient monotonicity, Exercise 3.1 co-coercivity, PL, h-scaled step co-coercivity, mathlib-gradient Lipschitzness, and GD trajectories compile as the intended surface for Definition 1.5, Definition 1.12, Definition 2.5, Proposition 1.6, Exercise 3.1, and Chapter 3. The Proposition 1.6 `(1.4) => (1.5)` bridge from `FirstOrderStrongConvexOn` to `StronglyMonotoneGradientOn` now compiles, and `GradientCocoerciveOn` supplies `GradientStepCocoerciveOn` under `h <= 1 / beta`. Prefer mathlib's `StrongConvexOn`, `ConvexOn`, and `gradient` APIs for exact derivative-heavy theorem routes. |
+| Chapter 1 convexity/smoothness foundations | local-layer/mathlib-foundation | `StatInference/Optimization/Basic.lean`, `StatInference/Optimization/Minimizer.lean`; mathlib `StrongConvexOn`, `ConvexOn`, `StrictConvexOn`, `HasGradientAt` | Initial interfaces for strong convexity, Chewi convexity, smooth upper models, gradient-descent steps, first-order lower models, strong gradient monotonicity, Exercise 3.1 co-coercivity, PL, h-scaled step co-coercivity, mathlib-gradient Lipschitzness, and GD trajectories compile as the intended surface for Definition 1.5, Definition 1.12, Definition 2.5, Proposition 1.6, Exercise 3.1, and Chapter 3. Proposition 1.6 now has `(1.3) => (1.4)` on `Set.univ` from segment `StrongConvexOn` plus `HasGradientAt`, and `(1.4) => (1.5)` from `FirstOrderStrongConvexOn` to `StronglyMonotoneGradientOn`. Lemma 1.10 minimizer uniqueness and Corollary 1.11-style gradient-zero characterization wrappers compile in `Minimizer.lean`. Prefer mathlib's `StrongConvexOn`, `ConvexOn`, `StrictConvexOn`, and `gradient` APIs for exact derivative-heavy theorem routes. |
 | Chapter 2 gradient flow | pending-local | none | Reuse mathlib `Analysis/ODE/Gronwall.lean`; exact gradient-flow modeling still needs a choice of differentiability/ODE interface. |
-| Chapter 3 smooth gradient descent | local-layer | `gradientDescentStep`, `IsGradientDescentTrajectory`, `DiscreteGronwall.lean`, `GradientDescent.lean`, `Theorem33.lean`, `Theorem34.lean`, `Theorem36.lean`, `Theorem37.lean` | First deterministic GD trajectory interface is available. Chewi Lemma 3.5 now has zero-based and source-shaped one-based compiled wrappers, Chewi Lemma 3.1 is compiled from the smooth upper-model interface, GD function values are antitone under the descent step-size condition, Theorem 3.3 contraction compiles in squared and norm forms from either supplied gradient monotonicity or the supplied first-order lower model plus Exercise 3.1 display (3.5), Theorem 3.4 positive-`alpha` plus `alpha = 0` denominator bounds compile from the first-order strong-convexity supplied interface, Theorem 3.6 PL convergence compiles from the descent lemma plus scalar recurrence, and Theorem 3.7 compiles in existential gradient-norm form from the descent lemma plus finite telescoping/average APIs. Next target should be finite-min source packaging or source-audited report packaging; exercise proofs are deferred. |
+| Chapter 3 smooth gradient descent | local-layer | `gradientDescentStep`, `IsGradientDescentTrajectory`, `DiscreteGronwall.lean`, `GradientDescent.lean`, `Theorem33.lean`, `Theorem34.lean`, `Theorem36.lean`, `Theorem37.lean` | First deterministic GD trajectory interface is available. Chewi Lemma 3.5 now has zero-based and source-shaped one-based compiled wrappers, Chewi Lemma 3.1 is compiled from the smooth upper-model interface, GD function values are antitone under the descent step-size condition, Theorem 3.3 contraction compiles in squared and norm forms from supplied gradient monotonicity, supplied first-order lower model, and actual whole-space segment `StrongConvexOn` plus `HasGradientAt` once Exercise 3.1 co-coercivity is supplied. Theorem 3.4 positive-`alpha` plus `alpha = 0` denominator bounds compile from the first-order model and from actual whole-space `StrongConvexOn` plus `HasGradientAt`. Theorem 3.6 PL convergence compiles from the descent lemma plus scalar recurrence, and Theorem 3.7 compiles in existential and finite-minimum gradient-norm forms from the descent lemma plus finite telescoping/average APIs. Next target should be source-audited report packaging for a strongest compiled main-text declaration or Chapter 2 gradient-flow expansion; exercise proofs are deferred. |
 | Chapter 4 lower bounds | pending-local | none | Requires oracle/gradient-span interfaces and finite-dimensional Euclidean/matrix support. |
 | Chapters 5-11 deterministic algorithms | pending-local | none | Acceleration, nonsmooth optimization, Frank-Wolfe, proximal methods, Fenchel duality, mirror methods, and alternating minimization should wait until the basic convex/smooth/GD layer is stable. |
 | Chapter 12 stochastic optimization | pending-local | none | Should reuse `StatInference/ProbabilityMeasure` and empirical-process probability wrappers where possible. |
@@ -67,13 +67,15 @@ High-value local files:
 
 ## Current Active Target
 
-Latest verified proof target: Chewi Theorem 3.7, the main-text
-gradient-norm/stationary point theorem, now compiles in
-`StatInference/Optimization/Theorem37.lean` in the source-faithful existence
-form over `n < N`.  It reuses Lemma 3.1 from `GradientDescent.lean`,
-telescopes `∑ n in Finset.range N, (f (x n) - f (x (n + 1)))`, applies a
-finite average/existence argument over `n < N`, and converts the squared bound
-to the square-root norm bound.
+Latest verified proof target: the Chapter 1-to-Chapter 3 bridge batch.
+`StatInference/Optimization/Minimizer.lean` proves Lemma 1.10-style minimizer
+uniqueness and Corollary 1.11-style gradient-zero characterization wrappers.
+`StatInference/Optimization/Basic.lean` proves Proposition 1.6 `(1.3) =>
+(1.4)` on `Set.univ` from local segment strong convexity plus mathlib
+`HasGradientAt`, and `(1.4) => (1.5)` was already available locally.  Theorem
+3.3 and Theorem 3.4 now expose wrappers from actual whole-space
+`StrongConvexOn` plus `HasGradientAt`, with Exercise 3.1 co-coercivity still
+kept as a deferred supplied interface for Theorem 3.3.
 
 Do not spend proof runs on Chapter 3 exercise derivations for now.  Exercise
 statements may remain supplied interfaces when they unblock main-text
@@ -91,10 +93,10 @@ Current compiled Chapter 3 spine:
    recurrence bridge, finite denominator bounds, positive-`alpha` closed
    denominator, and `alpha = 0` limiting wrapper.
 5. Theorem 3.6 PL convergence layer.
-6. Theorem 3.7 gradient-norm convergence layer in existential form.
+6. Theorem 3.7 gradient-norm convergence layer in existential and finite-min
+   display forms.
 
-Next high-value tasks: package the literal finite-min display for Theorem 3.7
-if the required `Finset.inf'`/finite-min API layer is lightweight; otherwise
-prepare source-audited report packaging for an exact compiled Chapter 3
-main-text item, with local source screenshots and report PDF, after the exact
-declaration chosen for reporting is verified.
+Next high-value tasks: prepare source-audited report packaging for a strongest
+compiled Chapter 3 main-text item, or move into Chapter 2 gradient-flow
+theorems with mathlib Gronwall/ODE reuse.  Do not spend proof runs on exercise
+derivations until the main theorem lane is covered.

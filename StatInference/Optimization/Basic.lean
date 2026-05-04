@@ -13,7 +13,8 @@ reports should be added only after an exact textbook theorem or lemma compiles.
 namespace StatInference
 namespace Optimization
 
-open Set
+open Set Filter
+open scoped Topology
 open scoped InnerProductSpace
 open scoped Gradient
 open scoped NNReal
@@ -141,6 +142,85 @@ theorem FirstOrderStrongConvexOn.lower_model {C : Set E} {f : E -> ℝ}
     f x + inner ℝ (grad x) (y - x) +
       (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) ≤ f y :=
   h.2 hx hy
+
+/--
+Chewi Proposition 1.6, implication `(1.3) => (1.4)` on the whole space:
+segment strong convexity plus a mathlib gradient at every point gives the
+first-order strong-convexity lower model.
+-/
+theorem FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E} {alpha : ℝ}
+    (hstrong : StrongConvexOn Set.univ f alpha)
+    (hgrad : ∀ x, HasGradientAt f (grad x) x) :
+    FirstOrderStrongConvexOn Set.univ f grad alpha := by
+  refine ⟨convex_univ, ?_⟩
+  intro x hx y hy
+  let d : E := y - x
+  let q : ℝ -> ℝ := fun t => t⁻¹ * (f (x + t • d) - f x)
+  let corr : ℝ -> ℝ :=
+    fun t => (alpha / 2) * (1 - t) * ‖d‖ ^ (2 : ℕ)
+  let phi : ℝ -> E := fun t => x + t • d
+  have hphi : HasDerivAt phi d 0 := by
+    have hsmul : HasDerivAt (fun t : ℝ => t • d) d 0 := by
+      simpa using (hasDerivAt_id (0 : ℝ)).smul_const d
+    simpa [phi] using hsmul.const_add x
+  have hderiv :
+      HasDerivAt (fun t : ℝ => f (phi t)) (inner ℝ (grad x) d) 0 := by
+    have hfx :
+        HasFDerivAt f ((InnerProductSpace.toDual ℝ E) (grad x)) (phi 0) := by
+      simpa [phi] using (hgrad x).hasFDerivAt
+    have hcomp := hfx.comp_hasDerivAt (x := (0 : ℝ)) hphi
+    have happly :
+        ((InnerProductSpace.toDual ℝ E) (grad x)) d =
+          inner ℝ (grad x) d := by
+      simp
+    simpa [phi, happly] using hcomp
+  have hq_tend : Tendsto q (𝓝[>] (0 : ℝ)) (𝓝 (inner ℝ (grad x) d)) := by
+    have h := hderiv.tendsto_slope_zero_right
+    simpa [q, phi] using h
+  have htend_id : Tendsto (fun t : ℝ => t) (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ)) := by
+    exact tendsto_id.mono_right nhdsWithin_le_nhds
+  have hcorr_tend : Tendsto corr (𝓝[>] (0 : ℝ))
+      (𝓝 ((alpha / 2) * (1 - 0) * ‖d‖ ^ (2 : ℕ))) := by
+    have hone_minus :
+        Tendsto (fun t : ℝ => 1 - t) (𝓝[>] (0 : ℝ)) (𝓝 (1 - 0)) :=
+      tendsto_const_nhds.sub htend_id
+    exact (tendsto_const_nhds.mul hone_minus).mul tendsto_const_nhds
+  have hlim : Tendsto (fun t => q t + corr t) (𝓝[>] (0 : ℝ))
+      (𝓝 (inner ℝ (grad x) d +
+        (alpha / 2) * (1 - 0) * ‖d‖ ^ (2 : ℕ))) :=
+    hq_tend.add hcorr_tend
+  have hev_le1 : ∀ᶠ t : ℝ in 𝓝[>] (0 : ℝ), t ≤ 1 := by
+    exact (eventually_le_nhds (show (0 : ℝ) < 1 by norm_num)).filter_mono
+      nhdsWithin_le_nhds
+  have hev : ∀ᶠ t : ℝ in 𝓝[>] (0 : ℝ), q t + corr t ≤ f y - f x := by
+    filter_upwards [self_mem_nhdsWithin, hev_le1] with t htpos htle
+    have htpos_real : 0 < t := htpos
+    have htIcc : t ∈ Icc (0 : ℝ) 1 := ⟨le_of_lt htpos_real, htle⟩
+    have hseg := hstrong.segment_ineq
+      (by simp : x ∈ Set.univ) (by simp : y ∈ Set.univ) (t := t) htIcc
+    have hpoint : (1 - t) • x + t • y = x + t • d := by
+      simp [d]
+      module
+    have hsegd :
+        f (x + t • d) ≤
+          (1 - t) * f x + t * f y -
+            alpha / 2 * t * (1 - t) * ‖d‖ ^ (2 : ℕ) := by
+      simpa [d, hpoint] using hseg
+    have hmul : t * (q t + corr t) ≤ t * (f y - f x) := by
+      dsimp [q, corr]
+      field_simp [htpos_real.ne']
+      nlinarith [hsegd]
+    exact (mul_le_mul_iff_of_pos_left htpos_real).mp hmul
+  have hle_limit :
+      inner ℝ (grad x) d + (alpha / 2) * (1 - 0) * ‖d‖ ^ (2 : ℕ) ≤
+        f y - f x :=
+    le_of_tendsto hlim hev
+  have hfinal :
+      f x + inner ℝ (grad x) d +
+        (alpha / 2) * ‖d‖ ^ (2 : ℕ) ≤ f y := by
+    nlinarith
+  simpa [d] using hfinal
 
 /--
 Chewi Proposition 1.6, implication `(1.4) => (1.5)`: swapping the
