@@ -204,8 +204,9 @@ the whole-space differentiable case:
   theorem `lowerBoundChainTextbookObjective_isMinOn_lowerBoundChainMinimizer`,
   direct `(f_N)_*` lower-bound theorem
   `lowerBoundChainTextbookObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`,
-  and source-objective wrappers for the finite-dimensional and `d = 2N + 1`
-  gap estimates.
+  source-objective wrappers for the finite-dimensional and `d = 2N + 1`
+  gap estimates, and the norm-scaled final lower-bound line
+  `lowerBoundChainTextbookObjective_gap_ge_norm_scaled_of_gradientSpanTrajectory`.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -895,6 +896,7 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory`
 - `StatInference.Optimization.lowerBoundChainObjective_gap_ge_two_mul_add_one`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_ge_of_gradientSpanTrajectory`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_ge_norm_scaled_of_gradientSpanTrajectory`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_ge_two_mul_add_one`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.

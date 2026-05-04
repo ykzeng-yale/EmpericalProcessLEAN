@@ -401,6 +401,7 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory`
 - `StatInference.Optimization.lowerBoundChainObjective_gap_ge_two_mul_add_one`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_ge_of_gradientSpanTrajectory`
+- `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_ge_norm_scaled_of_gradientSpanTrajectory`
 - `StatInference.Optimization.lowerBoundChainTextbookObjective_gap_ge_two_mul_add_one`
 
 Search-first result for this lane: there was no local Chewi gradient-span
@@ -436,6 +437,10 @@ textbook display by `lowerBoundChainTextbookObjective`; its minimizer value is
 gap estimates have source-objective wrappers.  The textbook `(f_n)_*` step is
 also available directly as
 `lowerBoundChainTextbookObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`.
+Chewi's norm-scaled final line before dimension choice now compiles as
+`lowerBoundChainTextbookObjective_gap_ge_norm_scaled_of_gradientSpanTrajectory`,
+reusing `lowerBoundChainMinimizer_norm_sq_le_dim` and mathlib reciprocal
+monotonicity.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
