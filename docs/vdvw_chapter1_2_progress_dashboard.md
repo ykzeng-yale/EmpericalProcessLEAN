@@ -917,3 +917,19 @@ git log --oneline -5
 
 Intermediate proof layers should update this dashboard and the blueprint, not
 create formal theorem reports.
+
+2026-05-04 `/goal` follow-up: the Lemma 2.4.5 zero-limit reduction is now
+compiled.  New theorem-facing declarations in `Theorem243.lean` are
+`ae_tendsto_zero_of_ae_tendsto_limit_of_subseq_tendsto_zero`,
+`ae_subseq_tendsto_zero_of_eventually_notMem_bad_events`,
+`ae_subseq_tendsto_zero_of_summable_bad_events`,
+`ae_subseq_tendsto_zero_of_bad_measure_le_summable_bound`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_subseq`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_summable_subseq_bad`,
+and
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_bad_measure_le_summable_bound`.
+The remaining a.s. Lemma 2.4.5 task is now more concrete: combine the existing
+fixed-space outer-probability convergence of the centered empirical supremum
+with a Borel-Cantelli subsequence-selection theorem, then feed the resulting
+summable-bad-event subsequence or summable upper bound into the compiled
+zero-limit consumer.

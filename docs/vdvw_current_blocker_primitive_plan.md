@@ -3382,3 +3382,28 @@ reverse comparisons over the actual fields `Σ_{n+1}`.  The remaining primitive
 can therefore be stated sharply as: prove that these VdV&W
 permutation-symmetric reverse comparisons imply a.e. convergence of the
 centered empirical supremum sequence.  No row-filtration plumbing remains.
+
+2026-05-04 follow-up: the zero-limit part of the Lemma 2.4.5 route is now
+split off and compiled.  Search/reuse record: local `ProbabilityMeasure`
+already exposed first Borel-Cantelli as
+`StatInference.ProbabilityMeasure.ae_eventually_notMem`; pinned mathlib search
+found `tendsto_nhds_unique`, `Tendsto.comp`, and the first Borel-Cantelli
+limsup/eventual-not-member APIs, but no ready theorem combining reverse-limit
+convergence with an outer-probability subsequence extraction.  New compiled
+declarations in `Theorem243.lean` are
+`ae_tendsto_zero_of_ae_tendsto_limit_of_subseq_tendsto_zero`,
+`ae_subseq_tendsto_zero_of_eventually_notMem_bad_events`,
+`ae_subseq_tendsto_zero_of_summable_bad_events`,
+`ae_subseq_tendsto_zero_of_bad_measure_le_summable_bound`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_subseq`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_summable_subseq_bad`,
+and
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_bad_measure_le_summable_bound`.
+This narrows the remaining Lemma 2.4.5 probability task: after the
+reverse/comparison handoff gives a.e. convergence to some limit, it is enough
+to produce a cofinal subsequence whose shrinking bad-event probabilities are
+summable, or are dominated by a summable `ℝ≥0∞` bound.  Next exact
+theorem-facing edit: derive that summable subsequence/bound from the existing
+fixed-space outer-probability convergence of
+`vdVWLemma245CenteredEmpiricalSupremum`, or prove a direct Borel-Cantelli
+selection theorem from `VdVWConvergesInOuterProbability`.

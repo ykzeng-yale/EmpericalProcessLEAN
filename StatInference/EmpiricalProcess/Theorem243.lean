@@ -10,6 +10,7 @@ import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.OuterProbabilityExpectation
 import StatInference.EmpiricalProcess.PMeasurable
 import StatInference.EmpiricalProcess.ThresholdCoding
+import StatInference.ProbabilityMeasure.BorelCantelli
 import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.Tail
 
@@ -5028,6 +5029,101 @@ theorem
           rw [(vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n).map_eq]
 
 /--
+If a real sequence converges almost everywhere to some limit and a cofinal
+subsequence converges almost everywhere to `0`, then the original sequence
+converges almost everywhere to `0`.
+
+This is the topology part of the remaining Lemma 2.4.5 zero-limit argument:
+the probabilistic work can focus on producing the almost-sure zero subsequence,
+for example through a Borel-Cantelli extraction from convergence in outer
+probability.
+-/
+theorem ae_tendsto_zero_of_ae_tendsto_limit_of_subseq_tendsto_zero
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {subseq : ℕ -> ℕ}
+    (hsubseq : Tendsto subseq atTop atTop)
+    (hlimit :
+      ∀ᵐ ω ∂μ, ∃ limit : ℝ, Tendsto (fun n : ℕ => X n ω) atTop (𝓝 limit))
+    (hsubseq_zero :
+      ∀ᵐ ω ∂μ, Tendsto (fun k : ℕ => X (subseq k) ω) atTop (𝓝 0)) :
+    ∀ᵐ ω ∂μ, Tendsto (fun n : ℕ => X n ω) atTop (𝓝 0) := by
+  filter_upwards [hlimit, hsubseq_zero] with ω hω_limit hω_subseq_zero
+  rcases hω_limit with ⟨limit, hω_tendsto⟩
+  have hω_subseq_limit :
+      Tendsto (fun k : ℕ => X (subseq k) ω) atTop (𝓝 limit) :=
+    hω_tendsto.comp hsubseq
+  have hlimit_eq : limit = 0 :=
+    tendsto_nhds_unique hω_subseq_limit hω_subseq_zero
+  simpa [hlimit_eq] using hω_tendsto
+
+/--
+Eventual exclusion from shrinking bad events gives almost-sure convergence of
+the selected subsequence to zero.  This is the deterministic endpoint of a
+Borel-Cantelli extraction.
+-/
+theorem ae_subseq_tendsto_zero_of_eventually_notMem_bad_events
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {subseq : ℕ -> ℕ} {threshold : ℕ -> ℝ}
+    (hthreshold_tendsto : Tendsto threshold atTop (𝓝 0))
+    (heventually_not_bad :
+      ∀ᵐ ω ∂μ,
+        ∀ᶠ k in atTop,
+          ω ∉ {ω : Ω | threshold k < dist (X (subseq k) ω) (0 : ℝ)}) :
+    ∀ᵐ ω ∂μ, Tendsto (fun k : ℕ => X (subseq k) ω) atTop (𝓝 0) := by
+  filter_upwards [heventually_not_bad] with ω hω
+  rw [tendsto_iff_dist_tendsto_zero]
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0) from
+        tendsto_const_nhds)
+      hthreshold_tendsto
+      (Eventually.of_forall fun _ => dist_nonneg)
+      ?_
+  exact hω.mono fun k hk => le_of_not_gt hk
+
+/--
+First Borel-Cantelli supplies almost-sure convergence of a selected
+subsequence to zero once the selected bad-event probabilities are summable.
+
+The events are intentionally arbitrary outer events: the pinned
+`MeasureTheory.ae_eventually_notMem` theorem used through the local
+`ProbabilityMeasure` wrapper does not require measurability.
+-/
+theorem ae_subseq_tendsto_zero_of_summable_bad_events
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {subseq : ℕ -> ℕ} {threshold : ℕ -> ℝ}
+    (hthreshold_tendsto : Tendsto threshold atTop (𝓝 0))
+    (hsummable_bad :
+      (∑' k : ℕ,
+        μ {ω : Ω | threshold k < dist (X (subseq k) ω) (0 : ℝ)}) ≠ ∞) :
+    ∀ᵐ ω ∂μ, Tendsto (fun k : ℕ => X (subseq k) ω) atTop (𝓝 0) :=
+  ae_subseq_tendsto_zero_of_eventually_notMem_bad_events
+    (μ := μ) (X := X) (subseq := subseq) (threshold := threshold)
+    hthreshold_tendsto
+    (StatInference.ProbabilityMeasure.ae_eventually_notMem hsummable_bad)
+
+/--
+A comparison version of the Borel-Cantelli subsequence handoff.  It is often
+easier to prove a summable deterministic/probabilistic upper bound for the
+selected bad-event probabilities than to identify their exact sum.
+-/
+theorem ae_subseq_tendsto_zero_of_bad_measure_le_summable_bound
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {subseq : ℕ -> ℕ} {threshold : ℕ -> ℝ}
+    {bound : ℕ -> ℝ≥0∞}
+    (hthreshold_tendsto : Tendsto threshold atTop (𝓝 0))
+    (hbad_le :
+      ∀ k : ℕ,
+        μ {ω : Ω | threshold k < dist (X (subseq k) ω) (0 : ℝ)}
+          ≤ bound k)
+    (hsummable_bound : (∑' k : ℕ, bound k) ≠ ∞) :
+    ∀ᵐ ω ∂μ, Tendsto (fun k : ℕ => X (subseq k) ω) atTop (𝓝 0) :=
+  ae_subseq_tendsto_zero_of_summable_bad_events
+    (μ := μ) (X := X) (subseq := subseq) (threshold := threshold)
+    hthreshold_tendsto
+    (ne_top_of_le_ne_top hsummable_bound (ENNReal.tsum_le_tsum hbad_le))
+
+/--
 Final Lemma 2.4.5 consumer for the already-compiled countable centered
 reverse-comparison rows.
 
@@ -5237,6 +5333,195 @@ theorem
     · exact Filter.Eventually.of_forall fun sequence hpos => (hn hpos).elim
   filter_upwards [ae_all_iff.2 hrow] with sequence hsequence n hn
   exact hsequence n hn
+
+/--
+Zero-limit Lemma 2.4.5 consumer after a Borel-Cantelli/subsequence step.
+
+The compiled reverse-comparison handoff gives almost-sure convergence of the
+centered empirical supremum to some real limit.  It remains enough to prove
+that a cofinal subsequence tends to `0` almost everywhere; this theorem then
+identifies the reverse-limit as zero and upgrades the full sequence.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_subseq
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {subseq : ℕ -> ℕ}
+    (hsubseq : Tendsto subseq atTop atTop)
+    (hsubseq_zero :
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun k : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+              (subseq k + 1) sequence)
+          atTop (𝓝 0))
+    (hreverse :
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∀ n, 0 < n ->
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+            (vdVWInfiniteProductMeasure P)[
+              (fun sequence : ℕ -> Observation =>
+                vdVWLemma245LeaveOneOutCenteredSupremum P indexClass classFun n sequence) |
+              vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence) ->
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∃ limit : ℝ,
+          Tendsto
+            (fun n : ℕ =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+            atTop (𝓝 limit)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) := by
+  have hlimit :=
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseComparisonHandoff
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable hreverse
+  exact
+    ae_tendsto_zero_of_ae_tendsto_limit_of_subseq_tendsto_zero
+      (μ := vdVWInfiniteProductMeasure P)
+      (X := fun n sequence =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+      hsubseq hlimit hsubseq_zero
+
+/--
+Lemma 2.4.5 zero-limit consumer with an explicit Borel-Cantelli subsequence
+input.  It packages the remaining probability task as a summability condition
+for shrinking bad events along a cofinal subsequence.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_summable_subseq_bad
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {subseq : ℕ -> ℕ} {threshold : ℕ -> ℝ}
+    (hsubseq : Tendsto subseq atTop atTop)
+    (hthreshold_tendsto : Tendsto threshold atTop (𝓝 0))
+    (hsummable_bad :
+      (∑' k : ℕ,
+        (vdVWInfiniteProductMeasure P)
+          {sequence : ℕ -> Observation |
+            threshold k <
+              dist
+                (vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                  (subseq k + 1) sequence)
+                (0 : ℝ)}) ≠ ∞)
+    (hreverse :
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∀ n, 0 < n ->
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+            (vdVWInfiniteProductMeasure P)[
+              (fun sequence : ℕ -> Observation =>
+                vdVWLemma245LeaveOneOutCenteredSupremum P indexClass classFun n sequence) |
+              vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence) ->
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∃ limit : ℝ,
+          Tendsto
+            (fun n : ℕ =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+            atTop (𝓝 limit)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) := by
+  have hsubseq_zero :
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun k : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+              (subseq k + 1) sequence)
+          atTop (𝓝 0) :=
+    ae_subseq_tendsto_zero_of_summable_bad_events
+      (μ := vdVWInfiniteProductMeasure P)
+      (X := fun n sequence =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+      (subseq := subseq) (threshold := threshold)
+      hthreshold_tendsto hsummable_bad
+  exact
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_subseq
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable
+      hsubseq hsubseq_zero hreverse
+
+/--
+Lemma 2.4.5 zero-limit consumer with a summable upper bound on the selected
+bad-event probabilities.  This is the form expected from a future
+outer-probability-to-Borel-Cantelli subsequence extraction.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_bad_measure_le_summable_bound
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {subseq : ℕ -> ℕ} {threshold : ℕ -> ℝ} {bound : ℕ -> ℝ≥0∞}
+    (hsubseq : Tendsto subseq atTop atTop)
+    (hthreshold_tendsto : Tendsto threshold atTop (𝓝 0))
+    (hbad_le :
+      ∀ k : ℕ,
+        (vdVWInfiniteProductMeasure P)
+          {sequence : ℕ -> Observation |
+            threshold k <
+              dist
+                (vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                  (subseq k + 1) sequence)
+                (0 : ℝ)}
+          ≤ bound k)
+    (hsummable_bound : (∑' k : ℕ, bound k) ≠ ∞)
+    (hreverse :
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∀ n, 0 < n ->
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+            (vdVWInfiniteProductMeasure P)[
+              (fun sequence : ℕ -> Observation =>
+                vdVWLemma245LeaveOneOutCenteredSupremum P indexClass classFun n sequence) |
+              vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence) ->
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∃ limit : ℝ,
+          Tendsto
+            (fun n : ℕ =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+            atTop (𝓝 limit)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) := by
+  have hsubseq_zero :
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun k : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+              (subseq k + 1) sequence)
+          atTop (𝓝 0) :=
+    ae_subseq_tendsto_zero_of_bad_measure_le_summable_bound
+      (μ := vdVWInfiniteProductMeasure P)
+      (X := fun n sequence =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+      (subseq := subseq) (threshold := threshold) (bound := bound)
+      hthreshold_tendsto hbad_le hsummable_bound
+  exact
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_subseq
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable
+      hsubseq hsubseq_zero hreverse
 
 /--
 An integrable envelope supplies the varying-domain tail/UI condition for the
