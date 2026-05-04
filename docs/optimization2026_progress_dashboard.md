@@ -209,6 +209,15 @@ The newest half-boundary rate pass adds
 `chewi45_not_finiteGeometricCandidate_near_min_of_two_logQuotient_rates`,
 so the strongest direct finite obstruction is now phrased by two explicit
 quotient-rate inequalities on `N`.
+The newest condition-number pass adds
+`chewi45GeometricRatio_sub_one`, `chewi45GeometricRatio_inv_sub_one`,
+`chewi45GeometricRatio_log_le_neg_two_div_sqrt_add_one`,
+`chewi45GeometricRatio_neg_two_div_sqrt_sub_one_le_log`,
+`chewi45_logQuotientRate_le_sqrt_add_one_bound`,
+`chewi45_sqrt_sub_one_bound_le_logQuotientRate`, and
+`chewi45_not_finiteGeometricCandidate_near_min_of_conditionNumber_rates`,
+moving the direct finite obstruction from raw quotient rates to
+`sqrt(kappa) +/- 1` rate gates.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains

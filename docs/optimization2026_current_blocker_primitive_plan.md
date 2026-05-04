@@ -1100,13 +1100,27 @@ The latter is the current strongest direct finite route: it rules out
 near-minimality from two explicit rate comparisons,
 `log(1/2)/(2*log q)-1 <= N` and
 `N < log(eps/(alpha/8))/(2*log q)-1`, with `q = chewi45GeometricRatio kappa`.
+The condition-number comparison layer now compiles:
+`chewi45GeometricRatio_sub_one`,
+`chewi45GeometricRatio_inv_sub_one`,
+`chewi45GeometricRatio_log_le_neg_two_div_sqrt_add_one`,
+`chewi45GeometricRatio_neg_two_div_sqrt_sub_one_le_log`,
+`chewi45_logQuotientRate_le_sqrt_add_one_bound`,
+`chewi45_sqrt_sub_one_bound_le_logQuotientRate`, and
+`chewi45_not_finiteGeometricCandidate_near_min_of_conditionNumber_rates`.
+Search-first result: reused mathlib `Real.log_le_sub_one_of_pos`,
+`Real.log_inv`, `div_le_div_of_nonneg_left`, `mul_le_mul_of_nonpos_left`,
+and local positivity/ratio facts.  The strongest direct finite obstruction is
+now phrased with `(sqrt kappa + 1)` for the finite half-boundary gate and
+`(sqrt kappa - 1)` for the `eps`-rate gate.
 Search/source correction: Exercise 4.2 is stated for an infinite-dimensional
 `R^infty` chain, and scalar checks of the finite corrected truncation show the
 literal `q^(2N)` tail factor is approached from below rather than true for all
 finite `d` without extra slack.  The next atomic target is therefore either a
-condition-number comparison replacing the quotient rates by the textbook
-`sqrt(kappa) * log(...)` lower bound, or a true `l^2`/infinite-sequence model
-where the exact Exercise 4.2 tail identity should hold.  The reduction-route comparison
+constant-cleanup wrapper converting the `(sqrt kappa ± 1)` condition-number
+rates into a textbook `c * sqrt(kappa) * log(...)` lower bound under simple
+side conditions, or a true `l^2`/infinite-sequence model where the exact
+Exercise 4.2 tail identity should hold.  The reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` remains an alternate
 assembly target when concrete condition-number/log hypotheses make it faster.
 Search mathlib/local APIs for `Real.log` monotonicity, `Real.exp` inversions,

@@ -652,6 +652,15 @@ The half-boundary rate conversion now compiles as
 `chewi45_not_finiteGeometricCandidate_near_min_of_two_logQuotient_rates`,
 which packages the direct finite route using two explicit quotient-rate
 comparisons on `N`.
+The condition-number comparison layer now compiles as
+`chewi45GeometricRatio_sub_one`, `chewi45GeometricRatio_inv_sub_one`,
+`chewi45GeometricRatio_log_le_neg_two_div_sqrt_add_one`,
+`chewi45GeometricRatio_neg_two_div_sqrt_sub_one_le_log`,
+`chewi45_logQuotientRate_le_sqrt_add_one_bound`,
+`chewi45_sqrt_sub_one_bound_le_logQuotientRate`, and
+`chewi45_not_finiteGeometricCandidate_near_min_of_conditionNumber_rates`.
+This replaces the raw quotient-rate obstruction by a
+`sqrt(kappa) +/- 1` condition-number-shaped obstruction.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
