@@ -20432,8 +20432,6 @@ theorem
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
     (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
     (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
     (hsign :
       ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
@@ -20451,6 +20449,11 @@ theorem
             classFun index observation - ∫ x, classFun index x ∂P)
           (fun _ : Fin n => (n : ℝ)⁻¹) sample)
       atTop (0 : ℝ) := by
+  let hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P :=
+    fun index hindex =>
+      integrable_classFun_of_integrable_envelope
+        (μ := P) henvelope hclass henv_integrable hindex
   let cardinality :
       ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
     fun _M _eta _n _sample _m => hindex_finite.toFinset.card
@@ -20610,10 +20613,7 @@ theorem
     (henvelope : VdVWClassEnvelope indexClass classFun envelope)
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
-    (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
-    :
+    (henv_integrable : Integrable envelope P) :
     VdVWConvergesInOuterProbabilityConst
       (fun n : ℕ => SampleAt Observation n)
       (fun _ : ℕ => inferInstance)
@@ -20639,7 +20639,6 @@ theorem
       (hindex_finite := hindex_finite) (hindexClass := hindexClass)
       (henvelope := henvelope) (hclass := hclass) (henv := henv)
       (henv_integrable := henv_integrable)
-      (hclassIntegrable := hclassIntegrable)
       (sign := sign)
       (hsign := by
         intro n
@@ -20738,10 +20737,7 @@ theorem
     (henvelope : VdVWClassEnvelope indexClass classFun envelope)
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
-    (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
-    :
+    (henv_integrable : Integrable envelope P) :
     VdVWConvergesInOuterProbabilityConst
       (fun n : ℕ => SampleAt Observation n)
       (fun _ : ℕ => inferInstance)
@@ -20763,7 +20759,6 @@ theorem
       (hindex_finite := hindex_finite) (hindexClass := hindexClass)
       (henvelope := henvelope) (hclass := hclass) (henv := henv)
       (henv_integrable := henv_integrable)
-      (hclassIntegrable := hclassIntegrable)
 
 /--
 Fixed-`M` centered-truncated convergence from entropy, measurable random

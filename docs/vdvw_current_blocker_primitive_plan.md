@@ -2769,6 +2769,10 @@ The first uses `exists_common_iid_vdVWRademacherSigns`; the second uses
 The full-subgraph constructor and its iid/canonical consumers no longer expose
 the previously separate `hclassIntegrable` parameter; envelope integrability
 and coordinate measurability now discharge it.
+The finite-class untruncated consumer and its iid/canonical wrappers have the
+same reduction: `hclassIntegrable` is derived locally from
+`integrable_classFun_of_integrable_envelope`, so finite-class callers now need
+only envelope measurability/integrability plus coordinate measurability.
 
 Next exact theorem-facing edit: move from this proof layer toward the exact
 Theorem 2.4.3 statement by aligning the remaining structural full-subgraph

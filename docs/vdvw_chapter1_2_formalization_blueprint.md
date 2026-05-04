@@ -915,6 +915,10 @@ above, so they do not change the theorem-level dashboard counts.
    The iid Rademacher and
    canonical terminal-sample wrappers now also remove the auxiliary sign-space
    and `X`/sample-path choices from this full-subgraph proof layer.
+   The finite-class untruncated consumer and its iid/canonical wrappers also
+   derive ordinary class-member integrability from the envelope, so that
+   finite-class theorem-facing route exposes the same reduced analytic
+   assumption profile.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

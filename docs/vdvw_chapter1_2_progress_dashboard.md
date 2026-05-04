@@ -508,6 +508,10 @@ internally from the measurable class, envelope domination, and
 `Integrable envelope P` via `integrable_classFun_of_integrable_envelope`.
 The full-subgraph constructor and iid/canonical wrappers no longer expose a
 separate `hclassIntegrable` argument.
+2026-05-04 follow-up: the finite-class untruncated consumer and its iid and
+canonical wrappers now use the same envelope-integrability helper internally,
+so finite-class callers also no longer supply ordinary class-member
+integrability separately.
 2026-05-04 follow-up: constructor
 `VdVWTheorem243FullSubgraphSideConditions.of_integrable` now derives
 `htruncIntegrable` from ordinary class integrability plus the measurable
