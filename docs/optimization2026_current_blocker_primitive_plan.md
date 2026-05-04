@@ -169,7 +169,11 @@ the whole-space differentiable case:
   chain-gradient vanishes at it.  The source norm estimate also now compiles:
   coordinate nonnegativity, coordinate upper bounds, coordinate square bounds,
   and `lowerBoundChainMinimizer_norm_sq_le_dim` prove `‖x_*‖² ≤ d` using
-  mathlib's `EuclideanSpace.real_norm_sq_eq` and `Finset.sum_le_sum`.
+  mathlib's `EuclideanSpace.real_norm_sq_eq` and `Finset.sum_le_sum`.  The
+  actual lower-bound quadratic now compiles as `lowerBoundChainObjective`,
+  modeled by extended boundary nodes `1, x_0, ..., x_{d-1}, 0`; the exact
+  displayed minimizer value compiles as
+  `lowerBoundChainObjective_lowerBoundChainMinimizer`.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -826,6 +830,9 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.gradientSpanSubmodule_le_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_grad_mem_next`
 - `StatInference.Optimization.lowerBoundChainGradient`
+- `StatInference.Optimization.lowerBoundChainNode`
+- `StatInference.Optimization.lowerBoundChainEdge`
+- `StatInference.Optimization.lowerBoundChainObjective`
 - `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainMinimizer`
@@ -834,6 +841,9 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.lowerBoundChainMinimizer_coord_le_one`
 - `StatInference.Optimization.lowerBoundChainMinimizer_coord_sq_le_one`
 - `StatInference.Optimization.lowerBoundChainMinimizer_norm_sq_le_dim`
+- `StatInference.Optimization.lowerBoundChainNode_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChainEdge_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChainObjective_lowerBoundChainMinimizer`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
@@ -855,10 +865,10 @@ already compiled, so do not spend another run there unless strengthening the
 continuity hypotheses materially advances the analytic route.  For Chapter 4,
 reuse `LowerBounds.lean`'s single gradient-span/oracle model, the compiled
 `coordinatePrefixSubmodule` induction, and `lowerBoundChainGradient`
-support/minimizer/norm-estimate theorems.  Search mathlib basis/coordinate,
-matrix, PSD, and smoothness APIs before connecting the oracle to the actual
-quadratic objective, proving convex/smooth facts, `f_d = f_N` on `V_N`, or
-objective/minimizer-value estimates.
+support/minimizer/norm/objective-value theorems.  Search mathlib
+basis/coordinate, matrix, PSD, derivative, and smoothness APIs before proving
+the objective-gradient bridge, convex/smooth facts, `f_d = f_N` on `V_N`, or
+the lower-bound gap estimate.
 Continue
 deferring exercise proofs except where an exercise statement is needed as a
 temporary interface for a main-text theorem; such exercise material belongs

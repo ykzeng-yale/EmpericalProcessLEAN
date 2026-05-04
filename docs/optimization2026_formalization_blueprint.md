@@ -368,6 +368,9 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.gradientSpanSubmodule_le_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_grad_mem_next`
 - `StatInference.Optimization.lowerBoundChainGradient`
+- `StatInference.Optimization.lowerBoundChainNode`
+- `StatInference.Optimization.lowerBoundChainEdge`
+- `StatInference.Optimization.lowerBoundChainObjective`
 - `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
 - `StatInference.Optimization.lowerBoundChainMinimizer`
@@ -376,6 +379,9 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.lowerBoundChainMinimizer_coord_le_one`
 - `StatInference.Optimization.lowerBoundChainMinimizer_coord_sq_le_one`
 - `StatInference.Optimization.lowerBoundChainMinimizer_norm_sq_le_dim`
+- `StatInference.Optimization.lowerBoundChainNode_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChainEdge_lowerBoundChainMinimizer`
+- `StatInference.Optimization.lowerBoundChainObjective_lowerBoundChainMinimizer`
 
 Search-first result for this lane: there was no local Chewi gradient-span
 formalization; mathlib's `Submodule.span`, `Submodule.subset_span`, and
@@ -383,12 +389,16 @@ formalization; mathlib's `Submodule.span`, `Submodule.subset_span`, and
 mathlib's `EuclideanSpace ℝ (Fin d)`/`PiLp` coordinate API is the right model
 for the source's `ℝ^d`.  The norm estimate reuses
 `EuclideanSpace.real_norm_sq_eq` and `Finset.sum_le_sum` instead of opening a
-new coordinate norm primitive.  The tridiagonal chain-gradient support
-calculation, displayed minimizer candidate, vanishing-gradient theorem, and
-`‖x_*‖² ≤ d` estimate for Theorem 4.4 now compile on top of this interface.
-The next Chapter 4 theorem route should connect the oracle to the actual
-quadratic objective, prove the convex/smooth matrix facts, prove `f_d = f_N`
-on `V_N`, and then formalize the objective/minimizer-value estimate.
+new coordinate norm primitive.  The actual lower-bound quadratic is now
+modeled as `lowerBoundChainObjective` using extended boundary nodes
+`1, x_0, ..., x_{d-1}, 0`; the exact displayed minimizer value
+`β / (8 * (d + 1))` compiles by reducing every edge difference to
+`-1 / (d + 1)`.  The tridiagonal chain-gradient support calculation,
+displayed minimizer candidate, vanishing-gradient theorem, `‖x_*‖² ≤ d`
+estimate, and minimizer-value theorem for Theorem 4.4 now compile on top of
+this interface.  The next Chapter 4 theorem route should prove the
+objective-gradient bridge, the convex/smooth matrix facts, `f_d = f_N` on
+`V_N`, and then formalize the lower-bound gap estimate.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
