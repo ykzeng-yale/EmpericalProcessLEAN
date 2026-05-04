@@ -367,15 +367,19 @@ Chapter 4 lower-bound expansion has now started in
 - `StatInference.Optimization.coordinatePrefixSubmodule_eq_top_of_le`
 - `StatInference.Optimization.gradientSpanSubmodule_le_coordinatePrefixSubmodule`
 - `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_grad_mem_next`
+- `StatInference.Optimization.lowerBoundChainGradient`
+- `StatInference.Optimization.lowerBoundChainGradient_mem_coordinatePrefixSubmodule`
+- `StatInference.Optimization.gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient`
 
 Search-first result for this lane: there was no local Chewi gradient-span
 formalization; mathlib's `Submodule.span`, `Submodule.subset_span`, and
 `Submodule.span_mono` provide the reusable algebraic foundation, while
 mathlib's `EuclideanSpace ℝ (Fin d)`/`PiLp` coordinate API is the right model
-for the source's `ℝ^d`.  The next Chapter 4 theorem route should build the
-tridiagonal quadratic lower-bound construction for Theorem 4.4 on top of this
-interface, proving the displayed gradient support condition
-`grad (x_k) ∈ V_{k+1}` before assembling the lower-bound induction.
+for the source's `ℝ^d`.  The tridiagonal chain-gradient support calculation
+for Theorem 4.4 now compiles on top of this interface.  The next Chapter 4
+theorem route should connect the oracle to the actual quadratic objective,
+prove the convex/smooth matrix facts, prove `f_d = f_N` on `V_N`, and then
+formalize the minimizer-value estimate.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 

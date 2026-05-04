@@ -227,6 +227,66 @@ theorem gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_grad_mem_next
             hle hspan_n
           simpa [hx0] using hx_sub
 
+/--
+The gradient of Chewi's tridiagonal lower-bound quadratic, up to the harmless
+global scaling factor `beta / 4`.
+
+In zero-based coordinates this is the finite-difference chain
+`2*x[i] - x[i-1] - x[i+1]`, with the source forcing term `-e_1` represented
+by the `i = 0` boundary value `1`.
+-/
+noncomputable def lowerBoundChainGradient (beta : ℝ) (d : ℕ)
+    (x : EuclideanSpace ℝ (Fin d)) : EuclideanSpace ℝ (Fin d) :=
+  WithLp.toLp 2 fun i : Fin d =>
+    (beta / 4) *
+      (2 * x i -
+        (if _ : 0 < i.1 then
+          x ⟨i.1 - 1, lt_of_le_of_lt (Nat.sub_le i.1 1) i.2⟩
+        else
+          1) -
+        (if hnext : i.1 + 1 < d then
+          x ⟨i.1 + 1, hnext⟩
+        else
+          0))
+
+/--
+The displayed support calculation in Chewi's proof of Theorem 4.4: if
+`x ∈ V_k`, then the tridiagonal-chain gradient belongs to `V_{k+1}`.
+-/
+theorem lowerBoundChainGradient_mem_coordinatePrefixSubmodule
+    {d k : ℕ} {beta : ℝ} {x : EuclideanSpace ℝ (Fin d)}
+    (hx : x ∈ coordinatePrefixSubmodule d k) :
+    lowerBoundChainGradient beta d x ∈ coordinatePrefixSubmodule d (k + 1) := by
+  intro i hi
+  have hpos : 0 < i.1 := by omega
+  have hxi : x i = 0 := hx i (by omega)
+  have hprev :
+      x ⟨i.1 - 1, lt_of_le_of_lt (Nat.sub_le i.1 1) i.2⟩ = 0 := by
+    apply hx
+    change k ≤ i.1 - 1
+    omega
+  by_cases hnext : i.1 + 1 < d
+  · have hnext_zero : x ⟨i.1 + 1, hnext⟩ = 0 := by
+      apply hx
+      change k ≤ i.1 + 1
+      omega
+    simp [lowerBoundChainGradient, PiLp.toLp_apply, hpos, hnext, hxi,
+      hprev, hnext_zero]
+  · simp [lowerBoundChainGradient, PiLp.toLp_apply, hpos, hnext, hxi, hprev]
+
+/--
+The lower-bound quadratic supplies the support hypothesis needed by the
+abstract `V_n` induction.
+-/
+theorem gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_lowerBoundChainGradient
+    {d : ℕ} {beta : ℝ} {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory (lowerBoundChainGradient beta d) x) :
+    ∀ n, x n ∈ coordinatePrefixSubmodule d n :=
+  gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_grad_mem_next
+    hx0 hspan (fun _ hxk =>
+      lowerBoundChainGradient_mem_coordinatePrefixSubmodule hxk)
+
 end CoordinatePrefix
 
 end Optimization
