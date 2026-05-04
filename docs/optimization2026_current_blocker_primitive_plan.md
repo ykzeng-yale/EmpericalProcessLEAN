@@ -1039,14 +1039,19 @@ The finite-boundary comparison layer now compiles:
 `finiteGeometricCandidate_coordinate_sq_le_coordinateTailSq`, and
 `geometric_boundary_sq_le_finiteGeometricCandidate_coordinateTailSq`.  Reuse
 these before reopening the corrected-node algebra.
+The concrete finite-boundary obstruction wrappers now also compile:
+`chewi45_gap_ge_geometric_boundary_of_finiteGeometricCandidate` and
+`chewi45_not_near_min_of_finiteGeometricCandidate_boundary_lower_bound`.  They
+turn one corrected-candidate tail coordinate into a fully discharged finite
+gap lower bound with no supplied tail-comparison hypothesis.
 Search/source correction: Exercise 4.2 is stated for an infinite-dimensional
 `R^infty` chain, and scalar checks of the finite corrected truncation show the
 literal `q^(2N)` tail factor is approached from below rather than true for all
 finite `d` without extra slack.  The next atomic target is therefore either a
-finite-dimension slack comparison strong enough for the logarithmic lower
-bound after choosing `d` sufficiently large, or a true `l^2`/infinite-sequence
-model where the exact Exercise 4.2 tail identity should hold.  Then convert
-the resulting geometric obstruction into the logarithmic iteration lower bound.  The
+finite-dimension slack/log comparison starting from the boundary obstruction,
+or a true `l^2`/infinite-sequence model where the exact Exercise 4.2 tail
+identity should hold.  Then convert the resulting geometric obstruction into
+the logarithmic iteration lower bound.  The
 reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` remains an alternate
 assembly target when concrete condition-number/log hypotheses make it faster.

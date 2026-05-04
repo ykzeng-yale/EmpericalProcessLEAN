@@ -1754,6 +1754,56 @@ theorem chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate_tailSq
     (x := x) hx0 hspan htail_ge'
 
 /--
+Concrete finite-boundary lower bound obtained from one tail coordinate of the
+corrected finite geometric minimizer.  This is weaker than the exact
+infinite-chain `q^(2N)` tail identity, but it is a fully discharged finite
+obstruction with no supplied tail-comparison hypothesis.
+-/
+theorem chewi45_gap_ge_geometric_boundary_of_finiteGeometricCandidate
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d N : ℕ} (hN : N < d)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x) :
+    (alpha / 2) *
+        (((chewi45GeometricRatio kappa) ^ (N + 1) *
+          (1 - (chewi45GeometricRatio kappa) ^
+            (2 * d + 2 - 2 * (N + 1)))) ^ (2 : ℕ)) ≤
+      strongLowerBoundChainObjective alpha beta d (x N) -
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) := by
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  have hgrad_zero :=
+    strongLowerBoundChainGradient_finiteGeometricCandidate_eq_zero
+      (alpha := alpha) (beta := beta) (kappa := kappa)
+      halpha_pos halpha_lt_beta hkappa d
+  have htail :=
+    strongLowerBoundChainObjective_gap_ge_tailSq_of_gradientSpanTrajectory
+      (alpha := alpha) (beta := beta)
+      halpha_pos.le halpha_lt_beta.le (N := N)
+      (x := x)
+      (xStar := strongLowerBoundFiniteGeometricCandidate kappa d)
+      hx0 hspan hgrad_zero
+  have hboundary :=
+    geometric_boundary_sq_le_finiteGeometricCandidate_coordinateTailSq
+      (kappa := kappa) hkappa_gt d N hN
+  have hcoef_nonneg : 0 ≤ alpha / 2 := by nlinarith
+  have hscaled :
+      (alpha / 2) *
+          (((chewi45GeometricRatio kappa) ^ (N + 1) *
+            (1 - (chewi45GeometricRatio kappa) ^
+              (2 * d + 2 - 2 * (N + 1)))) ^ (2 : ℕ)) ≤
+        (alpha / 2) *
+          coordinateTailSq d N
+            (strongLowerBoundFiniteGeometricCandidate kappa d) :=
+    mul_le_mul_of_nonneg_left hboundary hcoef_nonneg
+  exact hscaled.trans htail
+
+/--
 Contradiction form of the direct Exercise 4.2 obstruction: an iterate whose
 gap is at most `eps` cannot exist if `eps` lies below the geometric tail lower
 bound.
@@ -1829,6 +1879,42 @@ theorem chewi45_not_near_min_of_finiteGeometricCandidate_tail_lower_bound
     halpha_pos.le halpha_lt_beta.le (N := N)
     (x := x) (xStar := strongLowerBoundFiniteGeometricCandidate kappa d)
     hx0 hspan hgrad_zero htail_ge hnear heps_lt
+
+/--
+Contradiction form of the finite-boundary obstruction.  This is the concrete
+finite slack target to use while deciding whether to complete Theorem 4.5 by a
+large-dimension comparison or by moving to the true infinite-chain model.
+-/
+theorem chewi45_not_near_min_of_finiteGeometricCandidate_boundary_lower_bound
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d N : ℕ} (hN : N < d)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta d (x N) ≤
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) + eps)
+    (heps_lt :
+      eps <
+        (alpha / 2) *
+          (((chewi45GeometricRatio kappa) ^ (N + 1) *
+            (1 - (chewi45GeometricRatio kappa) ^
+              (2 * d + 2 - 2 * (N + 1)))) ^ (2 : ℕ))) :
+    False := by
+  have hgap_ge :=
+    chewi45_gap_ge_geometric_boundary_of_finiteGeometricCandidate
+      (alpha := alpha) (beta := beta) (kappa := kappa)
+      halpha_pos halpha_lt_beta hkappa (N := N) hN
+      (x := x) hx0 hspan
+  have hgap_le :
+      strongLowerBoundChainObjective alpha beta d (x N) -
+          strongLowerBoundChainObjective alpha beta d
+            (strongLowerBoundFiniteGeometricCandidate kappa d) ≤ eps := by
+    linarith
+  linarith
 
 end Optimization
 end StatInference

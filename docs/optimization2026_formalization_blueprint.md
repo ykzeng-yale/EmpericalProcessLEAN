@@ -591,6 +591,13 @@ The finite-boundary comparison layer now also compiles:
 `geometric_boundary_sq_le_finiteGeometricCandidate_coordinateTailSq`.  These
 are the reusable finite scalar upper/lower comparisons for the next slack
 proof; do not reopen the corrected-node recurrence algebra.
+The concrete finite-boundary obstruction now compiles as
+`chewi45_gap_ge_geometric_boundary_of_finiteGeometricCandidate` and
+`chewi45_not_near_min_of_finiteGeometricCandidate_boundary_lower_bound`,
+which discharge the tail lower-bound hypothesis by using the first unknown
+coordinate of the corrected finite minimizer.  The next finite route is a
+log/slack comparison from this explicit boundary factor; the exact
+source-display route still points to a true `l^2` model.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
