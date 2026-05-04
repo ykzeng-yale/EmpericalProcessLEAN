@@ -1730,6 +1730,34 @@ theorem exercise42InfiniteGradientSpanTrajectory_prefixSupported_of_apply
     hgrad_apply hx0 hspan n
 
 /--
+Source-facing oracle package for the concrete infinite Exercise 4.2 hard
+instance: first-order strong convexity, supplied smoothness, and the
+gradient-span prefix-support induction in one reusable interface.
+-/
+theorem exercise42InfiniteChainObjective_oracle_interface_package
+    {alpha beta : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (hgamma : 0 ≤ beta - alpha) :
+    FirstOrderStrongConvexOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta)
+      (exercise42InfiniteChainGradientLp alpha beta) alpha ∧
+    SmoothWithGradientOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta)
+      (exercise42InfiniteChainGradientLp alpha beta) beta ∧
+    ∀ {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)},
+      x 0 = 0 ->
+      IsGradientSpanTrajectory
+        (exercise42InfiniteChainGradientLp alpha beta) x ->
+      ∀ n, x n ∈ exercise42InfinitePrefixSubmodule n := by
+  exact ⟨
+    exercise42InfiniteChainObjective_firstOrderStrongConvexOn hgamma,
+    exercise42InfiniteChainObjective_smoothWithGradientOn
+      halpha_nonneg hgamma,
+    fun {x} hx0 hspan =>
+      exercise42InfiniteGradientSpanTrajectory_mem_prefixSubmodule_of_apply
+        (grad := exercise42InfiniteChainGradientLp alpha beta)
+        (fun _ _ => rfl) hx0 hspan⟩
+
+/--
 Gradient-span version of the infinite Exercise 4.2 geometric obstruction.
 After the support induction has been discharged from the coordinate formula,
 only the supplied lower model at the geometric minimizer remains.

@@ -743,8 +743,11 @@ lower model and the smooth upper model:
 `continuous_exercise42InfiniteChainObjective` compile, as do the full supplied
 smoothness wrappers
 `exercise42InfiniteBaseChainObjective_smoothWithGradientOn` and
-`exercise42InfiniteChainObjective_smoothWithGradientOn`.  Next package these
-interfaces with the opt-value rate obstruction for the Theorem 4.5 lane.
+`exercise42InfiniteChainObjective_smoothWithGradientOn`.  The oracle-side
+package `exercise42InfiniteChainObjective_oracle_interface_package` now
+bundles first-order strong convexity, smoothness, and gradient-span support.
+Next package this with the named optimum value and opt-value rate obstruction
+for the Theorem 4.5 lane.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

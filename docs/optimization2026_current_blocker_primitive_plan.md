@@ -1347,11 +1347,13 @@ The continuity blocker is now also closed: the compiled declarations
 `continuous_exercise42InfiniteChainObjective`, and
 `exercise42InfiniteChainObjective_smoothWithGradientOn` give the full supplied
 `SmoothWithGradientOn Set.univ` interface for the infinite Exercise 4.2 hard
-instance.  Next direct step: package the first-order strong-convexity,
-smoothness, gradient-span support, optimum value, and opt-value rate theorem
-into a single Theorem 4.5-facing interface theorem; if this must live before
-`Theorem45.lean`, factor the infinite substrate out of `Exercises.lean` to
-avoid an import cycle.
+instance.  The new
+`exercise42InfiniteChainObjective_oracle_interface_package` now bundles
+first-order strong convexity, smoothness, and gradient-span prefix support in
+one source-facing theorem.  Next direct step: package the optimum value and
+opt-value rate theorem with this oracle package for a single Theorem
+4.5-facing statement; if this must live before `Theorem45.lean`, factor the
+infinite substrate out of `Exercises.lean` to avoid an import cycle.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
