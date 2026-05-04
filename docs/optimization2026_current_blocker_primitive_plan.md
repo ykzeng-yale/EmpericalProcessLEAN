@@ -975,14 +975,19 @@ obstruction layer also compiles:
 `chewi45_convex_lower_bound_le_eps_of_regularizedGradientSpan_near_min`,
 `chewi45_two_mul_add_one_lower_bound_le_eps_of_regularizedGradientSpan_near_min`,
 and `chewi45_not_regularizedGradientSpan_near_min_of_eps_lt_two_mul_add_one_bound`.
-Do not repeat the prefix-support or `d = 2N + 1` obstruction.  The next atomic
-target is the final strongly-convex lower-bound rate statement: convert
-`beta / (16 * (N + 1)) <= eps` plus condition-number bookkeeping into the
-source `sqrt(kappa) * log(alpha R^2 / eps)` shape, or close the direct
+The finite iteration-count layer also compiles:
+`chewi45_iteration_count_ge_of_two_mul_add_one_lower_bound`,
+`chewi45_iteration_count_ge_of_regularizedGradientSpan_near_min`, and
+`chewi45_not_regularizedGradientSpan_near_min_of_iteration_count_lt`.  Do not
+repeat the prefix-support, `d = 2N + 1` obstruction, or the algebra converting
+`beta / (16 * (N + 1)) <= eps` into `beta / (16 * eps) - 1 <= N`.  The next
+atomic target is the final strongly-convex lower-bound rate statement: combine
+this finite iteration lower bound with condition-number/log bookkeeping into
+the source `sqrt(kappa) * log(alpha R^2 / eps)` shape, or close the direct
 Exercise 4.2 geometric tail route.  Search mathlib/local APIs for finite
-geometric sums, recurrence solutions, logarithm/order/asymptotic
-iteration-count wrappers, and existing exercise interfaces before introducing
-any new complexity primitive.
+geometric sums, recurrence solutions, logarithm/order/asymptotic iteration-
+count wrappers, and existing exercise interfaces before introducing any new
+complexity primitive.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
