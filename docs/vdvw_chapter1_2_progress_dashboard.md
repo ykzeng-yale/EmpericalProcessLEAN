@@ -785,12 +785,23 @@ the same conditional expectation over `Σ_n`.  Remaining Lemma 2.4.5 work is
 the deterministic leave-one-out transport identifying each omitted term as a
 permuted copy of a distinguished omitted term, then final instantiation of the
 reverse-comparison bridge.
+2026-05-04 follow-up: that transport and instantiation are now compiled.  New
+declarations include `vdVWLeaveOneOutToLastPerm`,
+`removeNth_last_vdVWFinCoordinatePerm_leaveOneOutToLastPerm`,
+`vdVWNatPermOfFin`, `VdVWNatPermFixesFrom_natPermOfFin`,
+`vdVWFirstNSample_permuteNatSequence_natPermOfFin`,
+`vdVWWeightedClassSupremum_leaveOneOut_last_comp_natPermOfFin_eq`,
+`vdVW_condExp_leaveOneOut_uniformClassSupremum_eq_last`, and
+`vdVW_condExp_reverseComparison_uniformClassSupremum_le_lastLeaveOneOut`.
+The remaining Lemma 2.4.5 work is now the measurable-cover/integrability and
+L1-boundedness instantiation of this reverse-comparison handoff, followed by
+the reverse-submartingale convergence reduction.
 
 ## Verification Monitor
 
 Latest targeted verification includes the Theorem 2.4.3 theorem module after
-the Lemma 2.4.5 conditional-expectation comparison bridge and the
-permutation-symmetric invariant-set/product-measure primitives on 2026-05-04.
+the Lemma 2.4.5 leave-one-out transport, conditional-symmetry, and
+reverse-comparison handoff on 2026-05-04.
 
 ```text
 lake env lean StatInference/EmpiricalProcess/Theorem243.lean

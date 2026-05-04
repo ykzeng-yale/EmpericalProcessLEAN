@@ -1078,6 +1078,18 @@ above, so they do not change the theorem-level dashboard counts.
    remaining patch should prove the deterministic leave-one-out transport
    identifying each omitted term as a tail-fixing permutation of a distinguished
    omitted term, then instantiate the reverse-comparison bridge.
+   That transport and instantiation are now compiled as
+   `vdVWLeaveOneOutToLastPerm`,
+   `removeNth_last_vdVWFinCoordinatePerm_leaveOneOutToLastPerm`,
+   `vdVWNatPermOfFin`, `VdVWNatPermFixesFrom_natPermOfFin`,
+   `vdVWFirstNSample_permuteNatSequence_natPermOfFin`,
+   `vdVWWeightedClassSupremum_leaveOneOut_last_comp_natPermOfFin_eq`,
+   `vdVW_condExp_leaveOneOut_uniformClassSupremum_eq_last`, and
+   `vdVW_condExp_reverseComparison_uniformClassSupremum_le_lastLeaveOneOut`.
+   The remaining Lemma 2.4.5 task is to instantiate this comparison for the
+   measurable-cover empirical supremum process, prove the required
+   integrability/L1-boundedness inputs, and connect it to the
+   reverse-submartingale convergence reduction.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

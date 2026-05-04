@@ -4,6 +4,8 @@ import Mathlib.MeasureTheory.Group.Arithmetic
 import Mathlib.MeasureTheory.Measure.NullMeasurable
 import Mathlib.Probability.ProductMeasure
 import Mathlib.Topology.Order.OrderClosed
+import Mathlib.GroupTheory.Perm.Fin
+import Mathlib.Logic.Equiv.Fintype
 import StatInference.EmpiricalProcess.CoveringPrimitive
 
 /-!
@@ -75,6 +77,63 @@ theorem vdVWFinCoordinatePermMeasurableEquiv_apply_apply
     simpa [vdVWFinCoordinatePermMeasurableEquiv] using
       (MeasurableEquiv.piCongrLeft_apply_apply
         (β := fun _ : Fin n => Observation) perm sample i)
+
+/--
+The finite permutation that identifies the sample with coordinate `omitted`
+removed with the sample with the last coordinate removed.
+
+It sends the complement of `omitted` to the complement of `Fin.last n` while
+preserving the induced `Fin n` order.  This is the deterministic transport
+needed for the leave-one-out conditional-symmetry step in VdV&W Lemma 2.4.5.
+-/
+noncomputable def vdVWLeaveOneOutToLastPerm {n : ℕ}
+    (omitted : Fin (n + 1)) : Equiv.Perm (Fin (n + 1)) :=
+  omitted.cycleRange.trans (Fin.last n).cycleRange.symm
+
+/-- The leave-one-out transport sends `omitted.succAbove j` to the last-complement coordinate. -/
+theorem vdVWLeaveOneOutToLastPerm_apply_succAbove {n : ℕ}
+    (omitted : Fin (n + 1)) (j : Fin n) :
+    vdVWLeaveOneOutToLastPerm omitted (omitted.succAbove j) =
+      (Fin.last n).succAbove j := by
+  change (Fin.last n).cycleRange.symm
+      (omitted.cycleRange (omitted.succAbove j)) =
+    (Fin.last n).succAbove j
+  rw [Fin.cycleRange_succAbove, Fin.cycleRange_symm_succ]
+
+/-- Inverse form of `vdVWLeaveOneOutToLastPerm_apply_succAbove`. -/
+theorem vdVWLeaveOneOutToLastPerm_symm_apply_last_succAbove {n : ℕ}
+    (omitted : Fin (n + 1)) (j : Fin n) :
+    (vdVWLeaveOneOutToLastPerm omitted).symm ((Fin.last n).succAbove j) =
+      omitted.succAbove j := by
+  apply (vdVWLeaveOneOutToLastPerm omitted).injective
+  rw [Equiv.apply_symm_apply]
+  exact (vdVWLeaveOneOutToLastPerm_apply_succAbove omitted j).symm
+
+/--
+Finite-coordinate leave-one-out transport: after applying the canonical
+permutation, removing the last coordinate gives the same `n`-sample as removing
+the chosen coordinate from the original sample.
+-/
+theorem removeNth_last_vdVWFinCoordinatePerm_leaveOneOutToLastPerm
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (omitted : Fin (n + 1)) (sample : Fin (n + 1) -> Observation) :
+    (Fin.last n).removeNth
+        (vdVWFinCoordinatePermMeasurableEquiv
+          (vdVWLeaveOneOutToLastPerm omitted) sample) =
+      omitted.removeNth sample := by
+  ext j
+  have hcoord :=
+    vdVWFinCoordinatePermMeasurableEquiv_apply_apply
+      (Observation := Observation) (vdVWLeaveOneOutToLastPerm omitted) sample
+      ((vdVWLeaveOneOutToLastPerm omitted).symm ((Fin.last n).succAbove j))
+  rw [vdVWLeaveOneOutToLastPerm_symm_apply_last_succAbove omitted j] at hcoord
+  rw [vdVWLeaveOneOutToLastPerm_apply_succAbove omitted j] at hcoord
+  change
+    vdVWFinCoordinatePermMeasurableEquiv
+        (vdVWLeaveOneOutToLastPerm omitted) sample
+        ((Fin.last n).succAbove j) =
+      sample (omitted.succAbove j)
+  exact hcoord
 
 /--
 The iid finite product measure `P^n` is invariant under finite-coordinate
@@ -228,6 +287,37 @@ def VdVWFirstNPermutationSymmetric {Observation : Type u} (n : ℕ)
 def VdVWNatPermFixesFrom (n : ℕ) (perm : Equiv.Perm ℕ) : Prop :=
   ∀ k, n ≤ k -> perm k = k
 
+/--
+Extend a finite-coordinate permutation to a permutation of `ℕ` that fixes all
+coordinates outside the first `n`.
+-/
+noncomputable def vdVWNatPermOfFin {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) : Equiv.Perm ℕ :=
+  perm.viaFintypeEmbedding Fin.valEmbedding
+
+/-- The finite-to-natural extension agrees with the finite permutation on the first `n` coordinates. -/
+theorem vdVWNatPermOfFin_apply_fin {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) (i : Fin n) :
+    vdVWNatPermOfFin perm (i : ℕ) = (perm i : ℕ) := by
+  simpa [vdVWNatPermOfFin] using
+    (Equiv.Perm.viaFintypeEmbedding_apply_image
+      (e := perm) (f := Fin.valEmbedding) i)
+
+/-- The finite-to-natural extension fixes every coordinate from `n` onward. -/
+theorem VdVWNatPermFixesFrom_natPermOfFin {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) :
+    VdVWNatPermFixesFrom n (vdVWNatPermOfFin perm) := by
+  intro k hk
+  have hnot : k ∉ Set.range (Fin.valEmbedding : Fin n ↪ ℕ) := by
+    rintro ⟨i, hi⟩
+    have hk_eq : k = (i : ℕ) := hi.symm
+    exact (Nat.not_lt_of_ge hk) (by
+      rw [hk_eq]
+      exact i.isLt)
+  simpa [vdVWNatPermOfFin] using
+    (Equiv.Perm.viaFintypeEmbedding_apply_notMem_range
+      (e := perm) (f := Fin.valEmbedding) hnot)
+
 /-- Permute an infinite sample sequence by a permutation of coordinate indices. -/
 def vdVWPermuteNatSequence {Observation : Type u}
     (perm : Equiv.Perm ℕ) (sequence : ℕ -> Observation) : ℕ -> Observation :=
@@ -333,6 +423,15 @@ noncomputable def vdVWNatPermRestrictFin
       refine ⟨⟨perm.symm j, hfix.symm_image_lt j.2⟩, ?_⟩
       ext
       simp⟩
+
+/-- Restricting the natural extension of a finite permutation recovers the original permutation. -/
+theorem vdVWNatPermRestrictFin_natPermOfFin
+    {n : ℕ} (perm : Equiv.Perm (Fin n)) :
+    vdVWNatPermRestrictFin (vdVWNatPermOfFin perm)
+        (VdVWNatPermFixesFrom_natPermOfFin perm) =
+      perm := by
+  ext i
+  exact vdVWNatPermOfFin_apply_fin perm i
 
 /--
 The infinite-coordinate form of VdV&W permutation symmetry: a statistic is
@@ -544,6 +643,23 @@ theorem vdVWFirstNSample_permuteNatSequence
     hcoord.symm
 
 /--
+Projecting the first `n` coordinates after applying the natural extension of a
+finite permutation is exactly the finite-coordinate permutation of the
+projected sample.
+-/
+theorem vdVWFirstNSample_permuteNatSequence_natPermOfFin
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) (sequence : ℕ -> Observation) :
+    vdVWFirstNSample n
+        (vdVWPermuteNatSequence
+          (Observation := Observation) (vdVWNatPermOfFin perm) sequence) =
+      vdVWFinCoordinatePermMeasurableEquiv perm (vdVWFirstNSample n sequence) := by
+  rw [vdVWFirstNSample_permuteNatSequence
+    (perm := vdVWNatPermOfFin perm)
+    (hfix := VdVWNatPermFixesFrom_natPermOfFin perm)]
+  rw [vdVWNatPermRestrictFin_natPermOfFin]
+
+/--
 Projecting the first `n` coordinates after permuting an infinite sequence is
 the finite-coordinate permutation of the first-`n` sample.
 -/
@@ -636,6 +752,32 @@ theorem vdVWWeightedClassSupremum_uniform_finCoordinatePerm
         (fun _ : Fin n => (n : ℝ)⁻¹) sample := by
   simp [vdVWWeightedClassSupremum,
     vdVWWeightedSampleSum_uniform_finCoordinatePerm]
+
+/--
+Leave-one-out transport for the uniform class supremum on the infinite product
+space: applying the natural extension of the canonical finite permutation and
+then removing the last coordinate is the same as removing `omitted` before the
+transport.
+-/
+theorem vdVWWeightedClassSupremum_leaveOneOut_last_comp_natPermOfFin_eq
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {n : ℕ} (omitted : Fin (n + 1)) (sequence : ℕ -> Observation) :
+    vdVWWeightedClassSupremum indexClass classFun
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+        ((Fin.last n).removeNth
+          (vdVWFirstNSample (Observation := Observation) (n + 1)
+            (vdVWPermuteNatSequence
+              (Observation := Observation)
+              (vdVWNatPermOfFin (vdVWLeaveOneOutToLastPerm omitted))
+              sequence))) =
+      vdVWWeightedClassSupremum indexClass classFun
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+        (omitted.removeNth
+          (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)) := by
+  rw [vdVWFirstNSample_permuteNatSequence_natPermOfFin
+    (perm := vdVWLeaveOneOutToLastPerm omitted)]
+  rw [removeNth_last_vdVWFinCoordinatePerm_leaveOneOutToLastPerm]
 
 /--
 The infinite-sequence statistic induced by the uniform finite-sample class

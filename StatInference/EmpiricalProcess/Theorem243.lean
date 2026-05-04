@@ -3304,6 +3304,79 @@ theorem vdVW_condExp_comp_permuteNatSequence_eq_of_permutationSymmetric
       hcomp_int hf_int hset
 
 /--
+Conditional-expectation symmetry of leave-one-out empirical suprema over the
+permutation-symmetric sigma-field.  Every omitted coordinate has the same
+conditional expectation as the distinguished last-coordinate omission.
+
+This is the first theorem-facing consumption of the deterministic
+leave-one-out transport in the VdV&W Lemma 2.4.5 reverse-submartingale route.
+-/
+theorem vdVW_condExp_leaveOneOut_uniformClassSupremum_eq_last
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} (omitted : Fin (n + 1))
+    (hbase_int :
+      Integrable
+        (fun sequence : ℕ -> Observation =>
+          vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            ((Fin.last n).removeNth
+              (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)))
+        (vdVWInfiniteProductMeasure P)) :
+    (vdVWInfiniteProductMeasure P)[
+      (fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass classFun
+          (fun _ : Fin n => (n : ℝ)⁻¹)
+          (omitted.removeNth
+            (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))) |
+      vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] =ᵐ[
+        vdVWInfiniteProductMeasure P]
+    (vdVWInfiniteProductMeasure P)[
+      (fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass classFun
+          (fun _ : Fin n => (n : ℝ)⁻¹)
+          ((Fin.last n).removeNth
+            (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))) |
+      vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] := by
+  let f : (ℕ -> Observation) -> ℝ := fun sequence =>
+    vdVWWeightedClassSupremum indexClass classFun
+      (fun _ : Fin n => (n : ℝ)⁻¹)
+      ((Fin.last n).removeNth
+        (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))
+  let permFin : Equiv.Perm (Fin (n + 1)) := vdVWLeaveOneOutToLastPerm omitted
+  let permNat : Equiv.Perm ℕ := vdVWNatPermOfFin permFin
+  have hce :
+      (vdVWInfiniteProductMeasure P)[
+          (fun sequence =>
+            f (vdVWPermuteNatSequence (Observation := Observation) permNat sequence)) |
+          vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] =ᵐ[
+            vdVWInfiniteProductMeasure P]
+        (vdVWInfiniteProductMeasure P)[
+          f | vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] := by
+    exact
+      vdVW_condExp_comp_permuteNatSequence_eq_of_permutationSymmetric
+        (Observation := Observation) P
+        (n := n + 1) permNat
+        (VdVWNatPermFixesFrom_natPermOfFin permFin)
+        (f := f) hbase_int
+  have hfun :
+      (fun sequence : ℕ -> Observation =>
+          f (vdVWPermuteNatSequence (Observation := Observation) permNat sequence)) =
+        fun sequence : ℕ -> Observation =>
+          vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (omitted.removeNth
+              (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)) := by
+    funext sequence
+    exact
+      vdVWWeightedClassSupremum_leaveOneOut_last_comp_natPermOfFin_eq
+        (Observation := Observation)
+        indexClass classFun omitted sequence
+  rw [hfun] at hce
+  simpa [f] using hce
+
+/--
 The VdV&W decreasing permutation-symmetric sigma-fields, represented as a
 mathlib filtration on the dual order `ℕᵒᵈ`.
 -/
@@ -3543,6 +3616,110 @@ theorem vdVWWeightedClassSupremum_uniform_le_leaveOneOutAverage
             (fun _ : Fin n => (n : ℝ)⁻¹)
             (omitted.removeNth sample) := by
             rfl
+
+/--
+VdV&W Lemma 2.4.5 leave-one-out reverse-comparison handoff.  The
+deterministic leave-one-out inequality and the conditional symmetry of the
+leave-one-out terms imply that the `(n+1)`-sample uniform class supremum is
+bounded by the conditional expectation of the distinguished `n`-sample
+leave-one-out supremum over `Σ_{n+1}`.
+-/
+theorem vdVW_condExp_reverseComparison_uniformClassSupremum_le_lastLeaveOneOut
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} (hn : 0 < n)
+    (hX_meas :
+      StronglyMeasurable[
+        vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)]
+        (fun sequence : ℕ -> Observation =>
+          vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹)
+            (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)))
+    (hX_int :
+      Integrable
+        (fun sequence : ℕ -> Observation =>
+          vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹)
+            (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))
+        (vdVWInfiniteProductMeasure P))
+    (hY_int :
+      ∀ omitted : Fin (n + 1),
+        Integrable
+          (fun sequence : ℕ -> Observation =>
+            vdVWWeightedClassSupremum indexClass classFun
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (omitted.removeNth
+                (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)))
+          (vdVWInfiniteProductMeasure P))
+    (hbdd :
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∀ omitted : Fin (n + 1),
+          BddAbove
+            (vdVWWeightedClassValueSet indexClass classFun
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (omitted.removeNth
+                (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)))) :
+    (fun sequence : ℕ -> Observation =>
+      vdVWWeightedClassSupremum indexClass classFun
+        (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹)
+        (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)) ≤ᵐ[
+      vdVWInfiniteProductMeasure P]
+      (vdVWInfiniteProductMeasure P)[
+        (fun sequence : ℕ -> Observation =>
+          vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            ((Fin.last n).removeNth
+              (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))) |
+        vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] := by
+  let X : (ℕ -> Observation) -> ℝ := fun sequence =>
+    vdVWWeightedClassSupremum indexClass classFun
+      (fun _ : Fin (n + 1) => ((n + 1 : ℕ) : ℝ)⁻¹)
+      (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)
+  let Y : Fin (n + 1) -> (ℕ -> Observation) -> ℝ := fun omitted sequence =>
+    vdVWWeightedClassSupremum indexClass classFun
+      (fun _ : Fin n => (n : ℝ)⁻¹)
+      (omitted.removeNth
+        (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))
+  have hm :
+      vdVWPermutationSymmetricMeasurableSpace Observation (n + 1) ≤
+        (.pi (X := fun _ : ℕ => Observation)) :=
+    vdVWPermutationSymmetricMeasurableSpace_le_pi Observation (n + 1)
+  have hdet :
+      X ≤ᵐ[vdVWInfiniteProductMeasure P]
+        ((Fintype.card (Fin (n + 1)) : ℝ)⁻¹) • (∑ omitted, Y omitted) := by
+    filter_upwards [hbdd] with sequence hbdd_sequence
+    have hpoint :=
+      vdVWWeightedClassSupremum_uniform_le_leaveOneOutAverage
+        (indexClass := indexClass) (classFun := classFun)
+        hn (vdVWFirstNSample (Observation := Observation) (n + 1) sequence)
+        (hbdd_sequence)
+    simpa [X, Y, Fintype.card_fin, Finset.sum_apply] using hpoint
+  have hY_cond :
+      ∀ omitted : Fin (n + 1),
+        (vdVWInfiniteProductMeasure P)[Y omitted |
+          vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] =ᵐ[
+            vdVWInfiniteProductMeasure P]
+        (vdVWInfiniteProductMeasure P)[Y (Fin.last n) |
+          vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] := by
+    intro omitted
+    exact
+      vdVW_condExp_leaveOneOut_uniformClassSupremum_eq_last
+        (Observation := Observation) P (omitted := omitted)
+        (indexClass := indexClass) (classFun := classFun)
+        (n := n) (by simpa [Y] using hY_int (Fin.last n))
+  exact
+    vdVW_condExp_reverseComparison_of_ae_le_uniformAverage
+      (Ω := ℕ -> Observation)
+      (mΩ := .pi (X := fun _ : ℕ => Observation))
+      (μ := vdVWInfiniteProductMeasure P)
+      (m := vdVWPermutationSymmetricMeasurableSpace Observation (n + 1))
+      hm (Fin.last n)
+      (X := X) (Y := Y)
+      (by simpa [X] using hX_meas)
+      (by simpa [X] using hX_int)
+      (by intro omitted; simpa [Y] using hY_int omitted)
+      hdet hY_cond
 
 /--
 Countable centered truncated weighted class suprema are integrable under the

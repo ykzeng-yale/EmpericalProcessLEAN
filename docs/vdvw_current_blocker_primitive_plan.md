@@ -3199,3 +3199,29 @@ that omitted term, then combine it with
 `vdVW_condExp_comp_permuteNatSequence_eq_of_permutationSymmetric`,
 `vdVW_condExp_reverseComparison_of_ae_le_uniformAverage`, and the compiled
 sample-path inequality.
+
+2026-05-04 follow-up: the deterministic leave-one-out transport and its
+conditional-expectation consumption are now compiled.  Search/reuse record:
+pinned mathlib provided `Fin.cycleRange_succAbove`,
+`Fin.cycleRange_symm_succ`, and `Equiv.Perm.viaFintypeEmbedding`; local code
+reused `vdVWFirstNSample_permuteNatSequence`,
+`vdVWNatPermRestrictFin`,
+`vdVW_condExp_comp_permuteNatSequence_eq_of_permutationSymmetric`, and
+`vdVWWeightedClassSupremum_uniform_le_leaveOneOutAverage`.  New declarations
+are `vdVWLeaveOneOutToLastPerm`,
+`vdVWLeaveOneOutToLastPerm_apply_succAbove`,
+`vdVWLeaveOneOutToLastPerm_symm_apply_last_succAbove`,
+`removeNth_last_vdVWFinCoordinatePerm_leaveOneOutToLastPerm`,
+`vdVWNatPermOfFin`, `VdVWNatPermFixesFrom_natPermOfFin`,
+`vdVWNatPermRestrictFin_natPermOfFin`,
+`vdVWFirstNSample_permuteNatSequence_natPermOfFin`,
+`vdVWWeightedClassSupremum_leaveOneOut_last_comp_natPermOfFin_eq`,
+`vdVW_condExp_leaveOneOut_uniformClassSupremum_eq_last`, and
+`vdVW_condExp_reverseComparison_uniformClassSupremum_le_lastLeaveOneOut`.
+This closes the finite/infinite omitted-coordinate transport, equality of
+leave-one-out conditional expectations over `Σ_{n+1}`, and the theorem-facing
+reverse-comparison handoff under explicit measurability, integrability, and
+bounded-value-set assumptions.  The remaining exact Lemma 2.4.5 blocker is now
+to instantiate those assumptions for the measurable-cover empirical supremum
+process and connect the comparison to the reverse-submartingale convergence
+and L1-boundedness route.
