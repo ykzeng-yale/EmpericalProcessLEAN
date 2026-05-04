@@ -109,7 +109,9 @@ Current compiled surface:
 - `StatInference.Optimization.QuadraticGrowthOn`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn`
 - `StatInference.Optimization.PLGradientFlowLimitRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLimitNonMinimizerRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLyapunovNonMinimizerRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovNonzeroDisplacementRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovContinuousDataRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovSideConditionRouteToQGOn`
@@ -117,11 +119,18 @@ Current compiled surface:
 - `StatInference.Optimization.polyakLojasiewiczOn_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.polyakLojasiewiczOn_of_firstOrderStrongConvexOn_isMinOn`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovRoute`
+- `StatInference.Optimization.plGradientFlowLimitNonMinimizerRouteToQGOn_of_lyapunovNonMinimizerRoute`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_sideConditionRoute`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn.quadraticGrowthOn`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute`
+- `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitNonMinimizerRoute`
+- `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNonMinimizerRoute`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitNonMinimizerRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNonMinimizerRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNonzeroDisplacementRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovContinuousDataRoute`
@@ -249,14 +258,15 @@ Near-term exact candidates:
    step-size corollary `h <= 1 / beta` under `0 < beta`, and the
    function-value antitonicity lemma for GD trajectories.
 3. Theorem 3.3 contraction of gradient descent as a main-text theorem with
-   one deferred exercise interface.  `StatInference/Optimization/Theorem33.lean`
+   one exercise interface.  `StatInference/Optimization/Theorem33.lean`
    now compiles the squared-distance and norm contraction forms from the
    source-shaped `StronglyMonotoneGradientOn` and `GradientStepCocoerciveOn`
    interfaces, plus wrappers deriving gradient monotonicity from
    `FirstOrderStrongConvexOn` and from actual whole-space segment
    `StrongConvexOn` plus `HasGradientAt`.  Exercise 3.1 display `(3.5)` still
-   supplies co-coercivity under `h <= 1 / beta`; proving (3.5) itself is
-   deferred to the later exercise pass.
+   supplies co-coercivity under `h <= 1 / beta`; proving (3.5) itself belongs
+   in `StatInference/Optimization/Exercises.lean` and may be handled
+   opportunistically when it advances theorem reuse.
 4. Theorem 3.4 as a convergence theorem from actual whole-space
    `StrongConvexOn` plus `HasGradientAt`.  `Theorem34.lean` assumes the
    one-step recurrence (3.1), uses the compiled Gronwall theorem for the

@@ -57,6 +57,18 @@ def PLGradientFlowLimitRouteToQGOn (C : Set E) (f : E -> ℝ)
         Real.sqrt (f x - fstar)
 
 /--
+Nontrivial-start version of the gradient-flow limit route.  In Chewi's proof,
+the Lyapunov flow argument is only needed when the starting point is not
+already a minimizer; minimizer starts are discharged algebraically below.
+-/
+def PLGradientFlowLimitNonMinimizerRouteToQGOn (C : Set E) (f : E -> ℝ)
+    (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C -> ¬ IsMinOn f C x ->
+    ∃ xStar, xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+      Real.sqrt (alpha / 2) * ‖x - xStar‖ ≤
+        Real.sqrt (f x - fstar)
+
+/--
 The more explicit Lyapunov-and-convergence route appearing in Chewi's proof
 of `PŁ => QG`.  For each starting point `x`, it supplies a convergent
 gradient-flow trajectory and the Lyapunov inequality
@@ -65,6 +77,23 @@ gradient-flow trajectory and the Lyapunov inequality
 def PLGradientFlowLyapunovRouteToQGOn (C : Set E) (f : E -> ℝ)
     (alpha fstar : ℝ) : Prop :=
   ∀ ⦃x⦄, x ∈ C ->
+    ∃ xStar, ∃ y : ℝ -> E,
+      xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
+        y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
+          (∀ t, 0 ≤ t ->
+            Real.sqrt (alpha / 2) * ‖y t - x‖ +
+                Real.sqrt (f (y t) - fstar) ≤
+              Real.sqrt (f x - fstar))
+
+/--
+Nontrivial-start version of the explicit Lyapunov route.  This is the right
+shape for the displayed proof: if `x` is already a minimizer, the desired
+quadratic-growth witness is `x` itself and no positive-time flow side
+condition should be required.
+-/
+def PLGradientFlowLyapunovNonMinimizerRouteToQGOn (C : Set E) (f : E -> ℝ)
+    (alpha fstar : ℝ) : Prop :=
+  ∀ ⦃x⦄, x ∈ C -> ¬ IsMinOn f C x ->
     ∃ xStar, ∃ y : ℝ -> E,
       xStar ∈ C ∧ IsMinOn f C xStar ∧ f xStar = fstar ∧
         y 0 = x ∧ Tendsto y atTop (𝓝 xStar) ∧
@@ -753,6 +782,75 @@ theorem plGradientFlowLimitRouteToQGOn_of_lyapunovRoute
   refine ⟨xStar, hxStar, hmin, hfxStar, ?_⟩
   simpa [c, norm_sub_rev] using hlimit
 
+omit [InnerProductSpace ℝ E] in
+/--
+Nontrivial-start Lyapunov route implies the corresponding nontrivial-start
+limit route.  This is the pointwise limit passage in Chewi's proof, separated
+so the minimizer-start branch can be handled without artificial positive-gap
+side conditions.
+-/
+theorem plGradientFlowLimitNonMinimizerRouteToQGOn_of_lyapunovNonMinimizerRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (hroute :
+      PLGradientFlowLyapunovNonMinimizerRouteToQGOn C f alpha fstar) :
+    PLGradientFlowLimitNonMinimizerRouteToQGOn C f alpha fstar := by
+  intro x hx hnot_min
+  rcases hroute hx hnot_min with
+    ⟨xStar, y, hxStar, hmin, hfxStar, _hy0, hyconv, hlyap⟩
+  let c : ℝ := Real.sqrt (alpha / 2)
+  let L : ℝ -> ℝ := fun t => c * ‖y t - x‖
+  have hnorm_tend : Tendsto (fun t => ‖y t - x‖) atTop
+      (𝓝 ‖xStar - x‖) := by
+    simpa using (hyconv.sub tendsto_const_nhds).norm
+  have hL_tend : Tendsto L atTop (𝓝 (c * ‖xStar - x‖)) := by
+    simpa [L] using tendsto_const_nhds.mul hnorm_tend
+  have hev : ∀ᶠ t : ℝ in atTop, L t ≤ Real.sqrt (f x - fstar) := by
+    filter_upwards [eventually_ge_atTop (0 : ℝ)] with t ht
+    have h := hlyap t ht
+    have hsqrt_nonneg : 0 ≤ Real.sqrt (f (y t) - fstar) :=
+      Real.sqrt_nonneg _
+    dsimp [L, c]
+    nlinarith
+  have hlimit : c * ‖xStar - x‖ ≤ Real.sqrt (f x - fstar) :=
+    le_of_tendsto hL_tend hev
+  refine ⟨xStar, hxStar, hmin, hfxStar, ?_⟩
+  simpa [c, norm_sub_rev] using hlimit
+
+omit [InnerProductSpace ℝ E] in
+/--
+The nontrivial-start limit route plus the fact that `fstar` is the value of
+every minimizer gives the full limit route.  This isolates the trivial
+minimizer branch instead of forcing the gradient-flow side conditions to hold
+there.
+-/
+theorem plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (hmin_value : ∀ ⦃z⦄, z ∈ C -> IsMinOn f C z -> f z = fstar)
+    (hroute :
+      PLGradientFlowLimitNonMinimizerRouteToQGOn C f alpha fstar) :
+    PLGradientFlowLimitRouteToQGOn C f alpha fstar := by
+  intro x hx
+  by_cases hmin : IsMinOn f C x
+  · refine ⟨x, hx, hmin, hmin_value hx hmin, ?_⟩
+    simp [hmin_value hx hmin]
+  · exact hroute hx hmin
+
+omit [InnerProductSpace ℝ E] in
+/--
+The nontrivial-start Lyapunov route plus minimizer-value bookkeeping gives
+the full limit route used by the algebraic `(QG)` proof.
+-/
+theorem plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (hmin_value : ∀ ⦃z⦄, z ∈ C -> IsMinOn f C z -> f z = fstar)
+    (hroute :
+      PLGradientFlowLyapunovNonMinimizerRouteToQGOn C f alpha fstar) :
+    PLGradientFlowLimitRouteToQGOn C f alpha fstar :=
+  plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute
+    hmin_value
+    (plGradientFlowLimitNonMinimizerRouteToQGOn_of_lyapunovNonMinimizerRoute
+      hroute)
+
 /--
 The remaining side-condition route implies the gradient-flow limit inequality
 used in Chewi's algebraic proof of `(QG)`.
@@ -837,6 +935,40 @@ theorem quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute
   refine ⟨xStar, hxStar, hmin, hfxStar, ?_⟩
   nlinarith
 
+omit [InnerProductSpace ℝ E] in
+/--
+Witness form of Chewi Proposition 2.7(2) from a nontrivial-start
+gradient-flow limit route.  If the starting point is already a minimizer, the
+witness is the point itself; otherwise the supplied nontrivial route is used.
+-/
+theorem quadraticGrowthWitnessOn_of_plGradientFlowLimitNonMinimizerRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (halpha : 0 < alpha)
+    (hmin_value : ∀ ⦃z⦄, z ∈ C -> IsMinOn f C z -> f z = fstar)
+    (hroute :
+      PLGradientFlowLimitNonMinimizerRouteToQGOn C f alpha fstar) :
+    QuadraticGrowthWitnessOn C f alpha fstar :=
+  quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute halpha
+    (plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute
+      hmin_value hroute)
+
+omit [InnerProductSpace ℝ E] in
+/--
+Witness form of Chewi Proposition 2.7(2) from a nontrivial-start Lyapunov
+route.  This is the source proof shape with the already-minimizer branch
+removed from the positive-time Lyapunov hypotheses.
+-/
+theorem quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNonMinimizerRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (halpha : 0 < alpha)
+    (hmin_value : ∀ ⦃z⦄, z ∈ C -> IsMinOn f C z -> f z = fstar)
+    (hroute :
+      PLGradientFlowLyapunovNonMinimizerRouteToQGOn C f alpha fstar) :
+    QuadraticGrowthWitnessOn C f alpha fstar :=
+  quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute halpha
+    (plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute
+      hmin_value hroute)
+
 /--
 Witness form of Chewi Proposition 2.7(2) from the remaining side-condition
 route.  This is useful for combining the nontrivial-flow case with a separate
@@ -869,6 +1001,38 @@ theorem quadraticGrowthOn_of_plGradientFlowLimitRoute
   (quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute
     (C := C) (f := f) (alpha := alpha) (fstar := fstar)
     halpha hroute).quadraticGrowthOn halpha.le
+
+omit [InnerProductSpace ℝ E] in
+/--
+Chewi Proposition 2.7, second implication, in source infimum form, from the
+nontrivial-start gradient-flow limit route plus minimizer-value bookkeeping.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLimitNonMinimizerRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (halpha : 0 < alpha)
+    (hmin_value : ∀ ⦃z⦄, z ∈ C -> IsMinOn f C z -> f z = fstar)
+    (hroute :
+      PLGradientFlowLimitNonMinimizerRouteToQGOn C f alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  (quadraticGrowthWitnessOn_of_plGradientFlowLimitNonMinimizerRoute
+    (C := C) (f := f) (alpha := alpha) (fstar := fstar)
+    halpha hmin_value hroute).quadraticGrowthOn halpha.le
+
+omit [InnerProductSpace ℝ E] in
+/--
+Chewi Proposition 2.7, second implication, in source infimum form, from the
+nontrivial-start Lyapunov route.
+-/
+theorem quadraticGrowthOn_of_plGradientFlowLyapunovNonMinimizerRoute
+    {C : Set E} {f : E -> ℝ} {alpha fstar : ℝ}
+    (halpha : 0 < alpha)
+    (hmin_value : ∀ ⦃z⦄, z ∈ C -> IsMinOn f C z -> f z = fstar)
+    (hroute :
+      PLGradientFlowLyapunovNonMinimizerRouteToQGOn C f alpha fstar) :
+    QuadraticGrowthOn C f alpha fstar :=
+  (quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNonMinimizerRoute
+    (C := C) (f := f) (alpha := alpha) (fstar := fstar)
+    halpha hmin_value hroute).quadraticGrowthOn halpha.le
 
 omit [InnerProductSpace ℝ E] in
 /--

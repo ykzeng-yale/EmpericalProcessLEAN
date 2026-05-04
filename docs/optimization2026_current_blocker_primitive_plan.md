@@ -170,6 +170,18 @@ blocker for the whole-space differentiable case:
   `PLGradientFlowLyapunovSideConditionRouteToQGOn` goes one step further:
   `HasDerivAt.continuousOn` plus `gradientFlow_gap_hasDerivAt` derive both
   trajectory continuity and gap continuity from the gradient-flow hypotheses.
+  The latest branch split records the correct proof shape for minimizer
+  starts: `PLGradientFlowLimitNonMinimizerRouteToQGOn` and
+  `PLGradientFlowLyapunovNonMinimizerRouteToQGOn` require the flow/Lyapunov
+  argument only when the starting point is not already a minimizer, while
+  `plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute`,
+  `plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute`,
+  `quadraticGrowthWitnessOn_of_plGradientFlowLimitNonMinimizerRoute`,
+  `quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNonMinimizerRoute`,
+  `quadraticGrowthOn_of_plGradientFlowLimitNonMinimizerRoute`, and
+  `quadraticGrowthOn_of_plGradientFlowLyapunovNonMinimizerRoute` discharge
+  the already-minimizer branch from the minimizer-value invariant
+  `∀ z ∈ C, IsMinOn f C z -> f z = fstar`.
 - Corollary 2.8 now compiles in `StatInference/Optimization/Theorem28.lean`:
   the integrated Lemma 2.1 identity, squared-gradient integral bound, average
   bound, interval lower-bound principle, and source square-root minimum form
@@ -219,8 +231,9 @@ function-value convergence directly from Definition 1.5-style strong
 convexity assumptions.  The source-shaped Exercise 3.1
 display `(3.5)` also compiles as `GradientCocoerciveOn`, and it supplies the
 h-scaled Theorem 3.3 co-coercivity condition under `0 < beta`, `0 <= h`, and
-`h <= 1 / beta`.  Per the current route decision, exercise proofs are deferred
-until after the main textbook lane is covered.  Next choices are main-text
+`h <= 1 / beta`.  Exercise statements/proofs may be added opportunistically
+in `StatInference/Optimization/Exercises.lean`, but they should not slow the
+main theorem lane.  Next choices are main-text
 source-audited packaging for Theorem 3.3/3.4/3.7, Chapter 2 gradient-flow
 theorems, or the next main deterministic algorithm chapter.
 
@@ -530,7 +543,9 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.QuadraticGrowthOn`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn`
 - `StatInference.Optimization.PLGradientFlowLimitRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLimitNonMinimizerRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovRouteToQGOn`
+- `StatInference.Optimization.PLGradientFlowLyapunovNonMinimizerRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovAntitoneRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovDerivativeRouteToQGOn`
 - `StatInference.Optimization.PLGradientFlowLyapunovDifferentialEstimateRouteToQGOn`
@@ -557,11 +572,18 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.plGradientFlowLyapunovRouteToQGOn_of_normDerivativeRoute`
 - `StatInference.Optimization.plGradientFlowLyapunovRouteToQGOn_of_sideConditionRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovRoute`
+- `StatInference.Optimization.plGradientFlowLimitNonMinimizerRouteToQGOn_of_lyapunovNonMinimizerRoute`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_nonMinimizerLimitRoute`
+- `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_lyapunovNonMinimizerRoute`
 - `StatInference.Optimization.plGradientFlowLimitRouteToQGOn_of_sideConditionRoute`
 - `StatInference.Optimization.QuadraticGrowthWitnessOn.quadraticGrowthOn`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitRoute`
+- `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLimitNonMinimizerRoute`
+- `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovNonMinimizerRoute`
 - `StatInference.Optimization.quadraticGrowthWitnessOn_of_plGradientFlowLyapunovSideConditionRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLimitNonMinimizerRoute`
+- `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovNonMinimizerRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovAntitoneRoute`
 - `StatInference.Optimization.quadraticGrowthOn_of_plGradientFlowLyapunovDerivativeRoute`
@@ -654,13 +676,14 @@ Latest verified local frontier after lane creation:
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal target: discharge the analytic hypothesis
-`PLGradientFlowLyapunovSideConditionRouteToQGOn` by formalizing or cleanly
-supplying the gradient-flow convergence/minimizer interface, positive-gap side
-condition, and nonzero-displacement side condition for Proposition 2.7(2).
-The derivative-to-antitone bridge, PL scalar sign calculation, gap derivative,
-classical nonzero norm-derivative calculation, trajectory/gap continuity, and
-Lyapunov-continuity wrapper are now compiled; do not repeat them.
+Next manual goal target: discharge the nontrivial-start analytic hypothesis
+behind Proposition 2.7(2).  The minimizer-start branch now compiles from the
+minimizer-value invariant, so the next route should require
+gradient-flow convergence/minimizer, positive-gap, and nonzero-displacement
+side conditions only for `¬ IsMinOn f C x`.  The derivative-to-antitone
+bridge, PL scalar sign calculation, gap derivative, classical nonzero
+norm-derivative calculation, trajectory/gap continuity, Lyapunov-continuity
+wrapper, and minimizer-start split are now compiled; do not repeat them.
 The Corollary 2.8 compact-minimum and continuity/integrability bridge is
 already compiled, so do not spend another run there unless strengthening the
 continuity hypotheses materially advances the analytic route.  Continue
