@@ -1019,12 +1019,21 @@ corrected finite geometric vector is an exact zero-gradient point for the
 strongly-convex hard chain.  The concrete wrappers
 `chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate` and
 `chewi45_not_near_min_of_finiteGeometricCandidate_tail_lower_bound` remove the
-old supplied zero-gradient hypothesis.  The next atomic target is now the
-genuinely missing direct tail geometry: prove the finite corrected minimizer
-tail estimate giving
-`coordinateTailSq d N xStar >= q^(2N) * ‖x 0 - xStar‖^2` for
-`q = (sqrt kappa - 1)/(sqrt kappa + 1)`, then convert the resulting
-geometric obstruction into the logarithmic iteration lower bound.  The
+old supplied zero-gradient hypothesis.  The reusable tail primitives
+`coordinate_sq_le_coordinateTailSq`, `coordinateTailSq_anti_mono`,
+`coordinateTailSq_zero_eq_norm_sq`, `norm_zero_sub_sq_eq_coordinateTailSq_zero`,
+and
+`chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate_tailSq` now
+isolate the remaining comparison as
+`q^(2N) * coordinateTailSq d 0 xStar <= coordinateTailSq d N xStar`.
+Search/source correction: Exercise 4.2 is stated for an infinite-dimensional
+`R^infty` chain, and scalar checks of the finite corrected truncation show the
+literal `q^(2N)` tail factor is approached from below rather than true for all
+finite `d` without extra slack.  The next atomic target is therefore either a
+finite-dimension slack comparison strong enough for the logarithmic lower
+bound after choosing `d` sufficiently large, or a true `l^2`/infinite-sequence
+model where the exact Exercise 4.2 tail identity should hold.  Then convert
+the resulting geometric obstruction into the logarithmic iteration lower bound.  The
 reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` remains an alternate
 assembly target when concrete condition-number/log hypotheses make it faster.

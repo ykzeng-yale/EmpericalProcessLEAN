@@ -566,7 +566,17 @@ concrete wrappers
 `chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate` and
 `chewi45_not_near_min_of_finiteGeometricCandidate_tail_lower_bound` reduce the
 remaining direct Theorem 4.5 route to the tail comparison and log/rate
-conversion.
+conversion.  The next tail-comparison interface is now cleaner:
+`coordinate_sq_le_coordinateTailSq`, `coordinateTailSq_anti_mono`,
+`coordinateTailSq_zero_eq_norm_sq`, `norm_zero_sub_sq_eq_coordinateTailSq_zero`,
+and
+`chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate_tailSq` reduce
+the finite-candidate obstruction to the scalar comparison
+`q^(2N) * coordinateTailSq d 0 xStar <= coordinateTailSq d N xStar`.  Source
+check: Exercise 4.2 is an infinite-dimensional `R^infty` construction; the
+finite corrected truncation solves the finite boundary problem exactly, but
+the literal textbook `q^(2N)` tail factor requires either dimension/slack
+bookkeeping or the true `l^2` model.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and
