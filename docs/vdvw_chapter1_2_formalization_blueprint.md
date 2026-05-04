@@ -624,6 +624,11 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass_cardinality_bound_terminal_pow`,
    and
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass_cardinality_bound_succ_terminal_pow`.
+   The finite-class entropy/tail package is also compiled through
+   `VdVWConvergesInOuterProbabilityConst_of_tendsto_const`,
+   `VdVWConvergesInOuterProbabilityConst_zero_of_constant_logCardinality_div`,
+   `vdVWLogEmpiricalL1CoveringCardinality_const_terminal_div_le_log`, and
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass`.
    The next proof step is therefore the non-finite-class
    geometric/cardinality instantiation, or a theorem-critical finite-class
    specialization consuming this package.

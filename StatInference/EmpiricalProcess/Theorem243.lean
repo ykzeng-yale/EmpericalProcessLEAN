@@ -8075,6 +8075,70 @@ theorem vdVWLogEmpiricalL1CoveringCardinality_nonneg
   linarith
 
 /--
+A deterministic finite cardinality has normalized logarithm converging to zero
+in VdV&W outer probability on the varying product sample spaces.
+
+This discharges the stochastic entropy field for finite-class specializations
+where the selected empirical-cover cardinality is bounded by a fixed finite
+number.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst_zero_of_constant_logCardinality_div
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} (cardinality : ℕ) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWLogEmpiricalL1CoveringCardinality
+            (fun _sample : SampleAt Observation n => fun _m : ℕ =>
+              cardinality)
+            sample n /
+          (n : ℝ))
+      atTop (0 : ℝ) := by
+  have htendsto :
+      Tendsto
+        (fun n : ℕ => Real.log ((cardinality : ℝ) + 1) / (n : ℝ))
+        atTop (𝓝 0) :=
+    tendsto_const_div_atTop_nhds_zero_nat
+      (Real.log ((cardinality : ℝ) + 1))
+  simpa [vdVWLogEmpiricalL1CoveringCardinality] using
+    (VdVWConvergesInOuterProbabilityConst_of_tendsto_const
+      (Ω := fun n : ℕ => SampleAt Observation n)
+      (mΩ := fun _ : ℕ => inferInstance)
+      (μ := fun n : ℕ => vdVWProductMeasure P n)
+      (x := fun n : ℕ => Real.log ((cardinality : ℝ) + 1) / (n : ℝ))
+      (l := atTop) (c := (0 : ℝ)) htendsto)
+
+/--
+The normalized logarithm of a constant finite cardinality is bounded by its
+own logarithm at every sample size.
+-/
+theorem vdVWLogEmpiricalL1CoveringCardinality_const_terminal_div_le_log
+    {Observation : Type v} (cardinality : ℕ) :
+    ∀ n (sample : SampleAt Observation n),
+      vdVWLogEmpiricalL1CoveringCardinality
+          (fun _sample : SampleAt Observation n => fun _m : ℕ =>
+            cardinality)
+          sample n /
+        (n : ℝ) ≤ Real.log ((cardinality : ℝ) + 1) := by
+  intro n sample
+  have hlog_nonneg : 0 ≤ Real.log ((cardinality : ℝ) + 1) := by
+    apply Real.log_nonneg
+    have hcard_nonneg : (0 : ℝ) ≤ (cardinality : ℝ) := Nat.cast_nonneg _
+    linarith
+  by_cases hn : n = 0
+  · subst n
+    simpa [vdVWLogEmpiricalL1CoveringCardinality] using hlog_nonneg
+  · have hn_pos_nat : 0 < n := Nat.pos_of_ne_zero hn
+    have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_pos_nat
+    have hn_one : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn_pos_nat
+    unfold vdVWLogEmpiricalL1CoveringCardinality
+    rw [div_le_iff₀ hn_pos]
+    nlinarith
+
+/--
 Adapter from the raw real-log spelling of a finite-cardinality entropy bound to
 the local logarithmic-cardinality process used by Theorem 2.4.3 consumers.
 -/
@@ -11250,6 +11314,71 @@ theorem
       (radius := (⟨eta, heta.le⟩ : ℝ≥0)) hindex_finite).trans
       (by
         exact_mod_cast hcardinality_dom eta heta n sample m)
+
+/--
+Finite-class constructor for the selected fixed-radius tail/UI package.
+
+For a finite nonempty index class, the empirical covering number at every
+fixed radius is bounded by the class cardinality.  The normalized logarithmic
+cardinality then converges deterministically to zero, and the deterministic
+log bound supplies the package's finite-net tail/UI fields.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hindex_finite : indexClass.Finite)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun _eta : ℝ => fun _n _sample _m =>
+        hindex_finite.toFinset.card) := by
+  let fixedCardinality : ℕ := hindex_finite.toFinset.card
+  let cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun _eta _n _sample _m => fixedCardinality
+  change
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality
+  refine
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (K := fun _eta : ℝ => Real.log ((fixedCardinality : ℝ) + 1))
+      (cardinality := cardinality)
+      hX_samplePath ?_ hclass henvelope_meas ?_ hM_pos ?_ ?_
+  · exact
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_indexClass_cardinality_bound_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (cardinality := cardinality) X hindex_finite
+        (by
+          intro eta heta n sample m
+          rfl)
+        hindexClass
+  · intro eta heta
+    simpa [cardinality, fixedCardinality] using
+      (VdVWConvergesInOuterProbabilityConst_zero_of_constant_logCardinality_div
+        (Observation := Observation) (P := P) fixedCardinality)
+  · intro eta heta
+    apply Real.log_nonneg
+    have hcard_nonneg : (0 : ℝ) ≤ (fixedCardinality : ℝ) :=
+      Nat.cast_nonneg _
+    linarith
+  · intro eta heta n sample
+    simpa [cardinality, fixedCardinality] using
+      (vdVWLogEmpiricalL1CoveringCardinality_const_terminal_div_le_log
+        (Observation := Observation) fixedCardinality n sample)
 
 /--
 Fixed-radius finite-net mean convergence for the selected least truncated

@@ -62,6 +62,39 @@ def VdVWConvergesInOuterProbabilityConst
       l (𝓝 0)
 
 /--
+Deterministic varying-domain convergence implies VdV&W convergence in outer
+probability to a constant.
+
+The random variable is constant on each sample space.  Once the deterministic
+value is within `ε` of the limit, the corresponding outer-probability event is
+empty.
+-/
+theorem VdVWConvergesInOuterProbabilityConst_of_tendsto_const
+    {ι : Type w} {D : Type v} [PseudoMetricSpace D]
+    {Ω : ι -> Type u} {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    {x : ι -> D} {l : Filter ι} {c : D}
+    (hx : Tendsto x l (𝓝 c)) :
+    VdVWConvergesInOuterProbabilityConst Ω mΩ μ
+      (fun i _ω => x i) l c := by
+  intro ε hε
+  have hball : {y : D | dist y c < ε} ∈ 𝓝 c := by
+    simpa [Metric.ball, dist_comm] using Metric.ball_mem_nhds c hε
+  have heq :
+      (fun i =>
+        @VdVWOuterProbability (Ω i) (mΩ i) (μ i)
+          {ω | ε < dist ((fun i _ω => x i) i ω) c}) =ᶠ[l]
+        fun _ => (0 : ℝ≥0∞) := by
+    filter_upwards [hx.eventually hball] with i hdist
+    have hnot : ¬ ε < dist (x i) c := not_lt.mpr (le_of_lt hdist)
+    have hempty :
+        {ω : Ω i | ε < dist ((fun i _ω => x i) i ω) c} = ∅ := by
+      ext ω
+      simp [hnot]
+    simp [VdVWOuterProbability, hempty]
+  exact Tendsto.congr' heq.symm tendsto_const_nhds
+
+/--
 Common-domain convergence in outer probability.
 
 This is the Definition 1.9/1.10 shape used when all maps live on one sample

@@ -1378,6 +1378,19 @@ declarations in `Theorem243.lean` are
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass_cardinality_bound_succ_terminal_pow`.
 
+2026-05-03 `/goal` update after the finite-class entropy pass: the finite
+class route now also discharges the fixed-radius stochastic entropy/tail
+package itself.  New compiled declarations are
+`VdVWConvergesInOuterProbabilityConst_of_tendsto_const` in
+`GlivenkoCantelli.lean`, plus
+`VdVWConvergesInOuterProbabilityConst_zero_of_constant_logCardinality_div`,
+`vdVWLogEmpiricalL1CoveringCardinality_const_terminal_div_le_log`, and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_indexClass` in
+`Theorem243.lean`.  Thus a finite nonempty index class with countable
+coordinate measurability now supplies the selected fixed-radius tail/UI
+package directly; it no longer needs a separate stochastic entropy hypothesis
+at this layer.
+
 Next exact edit: do not repeat the finite-class geometry bridge.  The remaining
 Theorem 2.4.3 proof work is now either (1) prove the actual non-finite-class
 geometric packing/cardinality estimate for the chosen empirical internal
@@ -1385,9 +1398,9 @@ cover/maximal separated set, for example
 `Metric.coveringNumber (⟨eta, _⟩ : ℝ≥0)
   (EmpiricalL1Index.liftSet ...) <= base eta ^ n` at the terminal sample
 size under the correct textbook structural assumptions, or (2) consume the
-finite-class constructor in a theorem-critical finite-class specialization if
-that is the next honest closure.  If the non-finite geometric packing route
-blocks, record the precise additional book-level structural or
+finite-class selected fixed-radius package in a theorem-critical finite-class
+specialization if that is the next honest closure.  If the non-finite
+geometric packing route blocks, record the precise additional book-level structural or
 uniform-integrability/tail-expectation condition needed to keep the final
 Theorem 2.4.3 statement honest.
 The remaining analytic gap is no longer selected-cardinality measurability/log
