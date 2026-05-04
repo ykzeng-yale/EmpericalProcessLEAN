@@ -2823,11 +2823,30 @@ remaining measurability, integrability, and tail/UI inputs are intentionally
 explicit; this does not yet prove the exact textbook in-mean conclusion from
 only the book entropy assumptions.
 
+2026-05-04 follow-up: the countable/envelope part of the in-mean side
+conditions is now discharged.  Search/reuse record: local APIs
+`measurable_vdVWWeightedClassSupremum_of_countable`,
+`measurable_vdVWWeightedSampleSum`,
+`integrable_vdVWWeightedSampleSum_of_integrable`,
+`integrable_classFun_of_integrable_envelope`, and
+`abs_integral_classFun_le_integral_envelope` were reusable; pinned mathlib
+provided `MeasureTheory.integrable_comp_eval`,
+`MeasureTheory.integrable_finsetSum`, `Finset.abs_sum_le_sum_abs`,
+`integral_nonneg`, and `Integrable.mono'`.  New compiled declarations are
+`vdVWWeightedClassSupremum_centered_le_sum_abs_mul_envelope_add_integral`,
+`measurable_vdVWWeightedClassSupremum_centered_of_countable`,
+`integrable_vdVWWeightedClassSupremum_centered_of_countable`, and
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable`.
+The remaining nontrivial analytic input for the current in-mean theorem layer
+is the varying-domain tail/UI condition for the centered supremum, not routine
+measurability or integrability.
+
 Next exact theorem-facing edit: move from this proof layer toward the exact
 Theorem 2.4.3 statement by aligning the remaining structural full-subgraph
 VC/grid assumption with the textbook entropy hypothesis, then add the
 remaining in-mean tail/UI discharge and almost-sure/reverse-submartingale
 conclusions.  The finite-product GC outer-probability conclusion and the
-explicit-tail/UI in-mean adapter are now available for the current
+countable/envelope in-mean adapter are now available for the current
 full-subgraph route; do not recreate the derived integrability,
-measurable-cover, finite-product GC, or generic in-mean adapter witnesses.
+measurable-cover, finite-product GC, countable measurability/integrability, or
+generic in-mean adapter witnesses.

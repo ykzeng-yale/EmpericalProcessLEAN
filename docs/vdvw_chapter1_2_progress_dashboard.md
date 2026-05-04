@@ -585,6 +585,15 @@ mean convergence of the centered weighted supremum under explicit
 measurability, integrability, and varying-domain tail/UI assumptions.  The
 book-level task still has to discharge those side conditions from the theorem
 hypotheses and then prove the a.s./reverse-submartingale conclusion.
+2026-05-04 follow-up: the countable/envelope analytic witnesses for that
+in-mean route are now compiled.  New declarations are
+`vdVWWeightedClassSupremum_centered_le_sum_abs_mul_envelope_add_integral`,
+`measurable_vdVWWeightedClassSupremum_centered_of_countable`,
+`integrable_vdVWWeightedClassSupremum_centered_of_countable`, and
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable`.
+The full-subgraph in-mean consumer no longer needs caller-supplied
+measurability/integrability witnesses for the centered supremum; only the
+genuine varying-domain tail/UI condition remains explicit.
 
 ## Verification Monitor
 

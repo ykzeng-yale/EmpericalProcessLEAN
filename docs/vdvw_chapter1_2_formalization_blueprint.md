@@ -947,6 +947,14 @@ above, so they do not change the theorem-level dashboard counts.
    compile under explicit varying-domain tail/UI, measurability, and
    integrability inputs.  These side conditions must still be discharged or
    stated honestly in the final theorem layer.
+   The countable-class/envelope part of those analytic inputs is now
+   discharged by
+   `vdVWWeightedClassSupremum_centered_le_sum_abs_mul_envelope_add_integral`,
+   `measurable_vdVWWeightedClassSupremum_centered_of_countable`,
+   `integrable_vdVWWeightedClassSupremum_centered_of_countable`, and
+   `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_tailExpectation_of_countable`.
+   The remaining in-mean side condition is the genuine varying-domain
+   tail/UI hypothesis for the centered supremum.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
