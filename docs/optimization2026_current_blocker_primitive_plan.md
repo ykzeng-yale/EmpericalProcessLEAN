@@ -1479,10 +1479,21 @@ The exact zero-direction source branch also now compiles as
 if `p_{n+1}=0`, then the A-conjugacy route gives orthogonality to
 `span {p_0,...,p_n}`, the residual-gradient bridge identifies
 `r_{n+1}=∇f(x_{n+1})`, and the next iterate is a global minimizer.
-Thus Theorem 5.3 is reduced from all scalar residual-direction equations to
-the textbook A-conjugacy condition
-`∀ n k, k < n → aInner A (p k) (p n) = 0`, plus the displayed point update and
-nonzero denominator side conditions already exposed by `IsCGDisplayedIteration`.
+The newest A-conjugacy induction pass discharges that condition from the
+displayed CG updates themselves.  It proves
+`IsCGDisplayedIteration.aInner_direction_self_succ_eq_zero_of_orthogonalToPrevious`,
+`IsCGDisplayedIteration.aInner_direction_succ_eq_zero_of_lt_of_orthogonalToPrevious`,
+`IsCGDisplayedIteration.aOrthogonal_and_inner_residual_succ_directions`,
+`IsCGDisplayedIteration.aOrthogonal_directions`, and
+`IsCGDisplayedIteration.inner_residual_succ_directions_eq_zero`, and upgrades
+the wrappers to
+`IsCGDisplayedIteration.quadraticObjective_isMinOn_of_direction_succ_eq_zero`
+and `IsCGDisplayedIteration.exists_quadraticObjective_isMinOn`.  Thus the
+finite-dimensional Theorem 5.3-facing termination wrapper now needs only the
+displayed iteration, self-adjointness/lower-bound minimizer hypotheses, the
+initial residual-gradient identity, and the matching point update; it no
+longer needs an external A-conjugacy or scalar residual-orthogonality
+assumption.
 Search-first result: mathlib has continuous linear maps,
 `continuous_id.inner`, `Continuous.inner`, `real_inner_comm`,
 `real_inner_smul_left`,
@@ -1499,15 +1510,12 @@ operator APIs under `Analysis/InnerProductSpace/Positive.lean` should be
 searched before adding a future spectral bridge.  The current substrate
 deliberately uses supplied quadratic-form bounds so it can reuse local
 `FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and minimizer wrappers
-without waiting for a full spectral theorem bridge.  Next target: prove or
-sharply package the A-conjugacy condition from Chewi's direction-update
-coefficient / Gram-Schmidt line-search calculation, then state the exact
-Theorem 5.3 termination wrapper with only textbook displayed hypotheses and
-localized non-stopping side conditions.  For Theorem 5.4, first package the textbook proof
-assumptions explicitly: CG descent comparison against one GD step, gradient
-orthogonality, finite sum of squared gradients, Cauchy-Schwarz, and the
-restart/halving argument.  Do not redo the Chapter 3 descent lemma, Chapter 4
-gradient-span interfaces, or Chapter 4 hard-instance packages.
+without waiting for a full spectral theorem bridge.  Next target: move to
+Theorem 5.4.  First package the textbook proof assumptions explicitly: CG
+descent comparison against one GD step, gradient orthogonality, finite sum of
+squared gradients, Cauchy-Schwarz, and the restart/halving argument.  Do not
+redo Theorem 5.3's A-conjugacy induction, the Chapter 3 descent lemma, Chapter
+4 gradient-span interfaces, or Chapter 4 hard-instance packages.
 
 Chapter 2 route context is still available but no longer the active target:
 The route

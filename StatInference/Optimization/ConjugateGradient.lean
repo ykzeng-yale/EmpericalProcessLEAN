@@ -642,6 +642,196 @@ theorem IsCGDisplayedIteration.inner_residual_succ_directions_eq_zero_of_aOrthog
       · exact h.inner_residual_succ_direction_self_eq_zero (n + 1)
 
 /--
+The same-index A-conjugacy cancellation in the displayed CG update.  Once the
+new residual is orthogonal to the previous direction span, the textbook
+coefficient `‖r_{n+1}‖² / ‖r_n‖²` makes
+`⟪p_n, p_{n+1}⟫_A = 0`.
+-/
+theorem IsCGDisplayedIteration.aInner_direction_self_succ_eq_zero_of_orthogonalToPrevious
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E} {n : ℕ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (horth : IsOrthogonalToSubmodule (r (n + 1)) (cgDirectionSubmodule p n)) :
+    aInner A (p n) (p (n + 1)) = 0 := by
+  have hrn_mem : r n ∈ cgDirectionSubmodule p n :=
+    h.to_isCGThreeTermRecurrence.residual_mem_cgDirectionSubmodule n
+  have hrr : inner ℝ (r (n + 1)) (r n) = 0 :=
+    horth (r n) hrn_mem
+  have hdiff : r (n + 1) - r n =
+      cgLineSearchCoeff A r p n • A (p n) := by
+    rw [h.residual_succ n]
+    abel
+  have heta_inner :
+      cgLineSearchCoeff A r p n *
+          inner ℝ (r (n + 1)) (A (p n)) =
+        ‖r (n + 1)‖ ^ (2 : ℕ) := by
+    calc
+      cgLineSearchCoeff A r p n *
+          inner ℝ (r (n + 1)) (A (p n))
+          = inner ℝ (r (n + 1))
+              (cgLineSearchCoeff A r p n • A (p n)) := by
+            rw [real_inner_smul_right]
+      _ = inner ℝ (r (n + 1)) (r (n + 1) - r n) := by
+            rw [← hdiff]
+      _ = ‖r (n + 1)‖ ^ (2 : ℕ) := by
+            rw [inner_sub_right, hrr]
+            simp
+  have hinnerA :
+      inner ℝ (r (n + 1)) (A (p n)) +
+          cgDirectionUpdateCoeff r n * aNormSq A (p n) = 0 := by
+    unfold cgLineSearchCoeff at heta_inner
+    unfold cgDirectionUpdateCoeff
+    have hden_ne : aNormSq A (p n) ≠ 0 := h.aNormSq_direction_ne_zero n
+    have hrn_norm_base_ne : ‖r n‖ ≠ 0 :=
+      norm_ne_zero_iff.mpr (h.residual_ne_zero n)
+    have hrn_norm_ne : ‖r n‖ ^ (2 : ℕ) ≠ 0 :=
+      cgDirectionUpdateCoeff_denom_ne_zero r n (h.residual_ne_zero n)
+    field_simp [hden_ne] at heta_inner
+    have hterm :
+        ‖r n‖ ^ (2 : ℕ) *
+            ((‖r (n + 1)‖ ^ (2 : ℕ) / ‖r n‖ ^ (2 : ℕ)) *
+          aNormSq A (p n)) =
+          aNormSq A (p n) * ‖r (n + 1)‖ ^ (2 : ℕ) := by
+      field_simp [hrn_norm_ne, hrn_norm_base_ne]
+    have hmulzero :
+        ‖r n‖ ^ (2 : ℕ) *
+            (inner ℝ (r (n + 1)) (A (p n)) +
+              (‖r (n + 1)‖ ^ (2 : ℕ) / ‖r n‖ ^ (2 : ℕ)) *
+                aNormSq A (p n)) = 0 := by
+      rw [mul_add, hterm]
+      nlinarith
+    exact (mul_eq_zero.mp hmulzero).resolve_left hrn_norm_ne
+  have hsym_inner :
+      inner ℝ (p n) (A (r (n + 1))) =
+        inner ℝ (r (n + 1)) (A (p n)) := by
+    calc
+      inner ℝ (p n) (A (r (n + 1)))
+          = inner ℝ (A (p n)) (r (n + 1)) := by
+              simpa using (hA_sym (p n) (r (n + 1))).symm
+      _ = inner ℝ (r (n + 1)) (A (p n)) := by
+              rw [real_inner_comm]
+  rw [h.direction_succ n]
+  simpa [aInner, aNormSq, map_add, map_smul, inner_add_right,
+    real_inner_smul_right, hsym_inner] using hinnerA
+
+/--
+Previous-direction A-conjugacy propagation in the displayed CG update.  If
+`r_{n+1}` is orthogonal to the current direction span and `p_n` is already
+A-conjugate to earlier directions, then `p_{n+1}` is A-conjugate to those
+earlier directions as well.
+-/
+theorem IsCGDisplayedIteration.aInner_direction_succ_eq_zero_of_lt_of_orthogonalToPrevious
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E} {n k : ℕ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (horth : IsOrthogonalToSubmodule (r (n + 1)) (cgDirectionSubmodule p n))
+    (haorth : ∀ j, j < n → aInner A (p j) (p n) = 0)
+    (hk : k < n) :
+    aInner A (p k) (p (n + 1)) = 0 := by
+  have hAp_mem : A (p k) ∈ cgDirectionSubmodule p n :=
+    cgDirectionSubmodule_mono p (Nat.succ_le_of_lt hk)
+      (h.to_isCGThreeTermRecurrence.apply_direction_mem_next k)
+  have hresAp : inner ℝ (r (n + 1)) (A (p k)) = 0 :=
+    horth (A (p k)) hAp_mem
+  have hleft : aInner A (p k) (r (n + 1)) = 0 := by
+    calc
+      aInner A (p k) (r (n + 1))
+          = inner ℝ (A (p k)) (r (n + 1)) := by
+              simpa [aInner] using (hA_sym (p k) (r (n + 1))).symm
+      _ = inner ℝ (r (n + 1)) (A (p k)) := by
+              rw [real_inner_comm]
+      _ = 0 := hresAp
+  have hleft_inner : inner ℝ (p k) (A (r (n + 1))) = 0 := by
+    simpa [aInner] using hleft
+  have haorth_inner : inner ℝ (p k) (A (p n)) = 0 := by
+    simpa [aInner] using haorth k hk
+  rw [h.direction_succ n]
+  simp [aInner, map_add, map_smul, inner_add_right, real_inner_smul_right,
+    hleft_inner, haorth_inner]
+
+/--
+Simultaneous CG orthogonality induction: the displayed update produces
+A-conjugate search directions, and each new residual is orthogonal to all
+directions built so far.
+-/
+theorem IsCGDisplayedIteration.aOrthogonal_and_inner_residual_succ_directions
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A) :
+    ∀ n,
+      (∀ k, k < n → aInner A (p k) (p n) = 0) ∧
+        (∀ k, k ≤ n → inner ℝ (r (n + 1)) (p k) = 0) := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      have hA_n : ∀ k, k < n → aInner A (p k) (p n) = 0 := by
+        by_cases hn : n = 0
+        · subst n
+          intro k hk
+          exact (Nat.not_lt_zero k hk).elim
+        · obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hn
+          have hm : m < m + 1 := Nat.lt_succ_self m
+          have hPm := ih m hm
+          have horth_m :
+              IsOrthogonalToSubmodule (r (m + 1)) (cgDirectionSubmodule p m) :=
+            by
+              intro y hy
+              induction hy using Submodule.span_induction with
+              | mem y hy =>
+                  rcases hy with ⟨j, hj, rfl⟩
+                  exact hPm.2 j hj
+              | zero =>
+                  simp
+              | add x y _ _ hx hy =>
+                  simp [inner_add_right, hx, hy]
+              | smul t x _ hx =>
+                  simp [inner_smul_right, hx]
+          intro k hk
+          have hkle : k ≤ m := Nat.lt_succ_iff.mp hk
+          rcases Nat.lt_or_eq_of_le hkle with hkm | rfl
+          · exact h.aInner_direction_succ_eq_zero_of_lt_of_orthogonalToPrevious
+              hA_sym horth_m hPm.1 hkm
+          · exact h.aInner_direction_self_succ_eq_zero_of_orthogonalToPrevious
+              hA_sym horth_m
+      have hS_n : ∀ k, k ≤ n → inner ℝ (r (n + 1)) (p k) = 0 := by
+        intro k hk
+        rcases Nat.lt_or_eq_of_le hk with hkn | rfl
+        · have hn_ne : n ≠ 0 :=
+            Nat.ne_of_gt (lt_of_le_of_lt (Nat.zero_le k) hkn)
+          obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hn_ne
+          have hm : m < m + 1 := Nat.lt_succ_self m
+          have hPm := ih m hm
+          have hkm : k ≤ m := Nat.lt_succ_iff.mp hkn
+          have hrprev : inner ℝ (r (m + 1)) (p k) = 0 := hPm.2 k hkm
+          have hAinner : inner ℝ (A (p (m + 1))) (p k) = 0 := by
+            have hAorth : aInner A (p k) (p (m + 1)) = 0 :=
+              hA_n k hkn
+            simpa [aInner, real_inner_comm] using hAorth
+          rw [h.residual_succ (m + 1), inner_add_left, real_inner_smul_left,
+            hrprev, hAinner]
+          simp
+        · exact h.inner_residual_succ_direction_self_eq_zero _
+      exact ⟨hA_n, hS_n⟩
+
+/-- Displayed CG search directions are A-conjugate. -/
+theorem IsCGDisplayedIteration.aOrthogonal_directions
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A) :
+    ∀ n k, k < n → aInner A (p k) (p n) = 0 := by
+  intro n
+  exact (h.aOrthogonal_and_inner_residual_succ_directions hA_sym n).1
+
+/-- Displayed CG residuals are orthogonal to all directions built so far. -/
+theorem IsCGDisplayedIteration.inner_residual_succ_directions_eq_zero
+    {A : E →L[ℝ] E} {p0 : E} {r p : ℕ → E}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A) :
+    ∀ n k, k ≤ n → inner ℝ (r (n + 1)) (p k) = 0 := by
+  intro n
+  exact (h.aOrthogonal_and_inner_residual_succ_directions hA_sym n).2
+
+/--
 If the displayed direction update has `p_{n+1}=0`, then the next residual
 already belongs to the previous direction span `span {p₀,...,p_n}`.
 -/
@@ -987,6 +1177,43 @@ theorem IsCGDisplayedIteration.quadraticObjective_isMinOn_of_direction_succ_eq_z
       (h.inner_residual_succ_directions_eq_zero_of_aOrthogonal haorth n)
   exact quadraticObjective_isMinOn_of_direction_succ_eq_zero_and_orthogonal
     hA_sym hlower halpha_nonneg hres_grad (h.direction_succ n) hpzero horth
+
+/--
+Source branch in Chewi Theorem 5.3 with the A-conjugacy invariant discharged
+from the displayed CG iteration.
+-/
+theorem IsCGDisplayedIteration.quadraticObjective_isMinOn_of_direction_succ_eq_zero
+    {A : E →L[ℝ] E} {b p0 : E} {x r p : ℕ → E} {alpha : ℝ} {n : ℕ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (hlower : QuadraticFormLowerBound A alpha)
+    (halpha_nonneg : 0 ≤ alpha)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hx : ∀ m, x (m + 1) = x m + cgLineSearchCoeff A r p m • p m)
+    (hpzero : p (n + 1) = 0) :
+    IsMinOn (quadraticObjective A b) Set.univ (x (n + 1)) :=
+  h.quadraticObjective_isMinOn_of_direction_succ_eq_zero_and_aOrthogonal
+    hA_sym hlower halpha_nonneg hres0 hx hpzero
+    (h.aOrthogonal_directions hA_sym)
+
+/--
+Chewi Theorem 5.3-facing finite-dimensional termination wrapper for the
+displayed CG iteration, with the residual/direction orthogonality invariants
+proved from the displayed coefficients.
+-/
+theorem IsCGDisplayedIteration.exists_quadraticObjective_isMinOn
+    [FiniteDimensional ℝ E] {A : E →L[ℝ] E} {b p0 : E}
+    {x r p : ℕ → E} {alpha : ℝ}
+    (h : IsCGDisplayedIteration A p0 r p)
+    (hA_sym : IsSelfAdjointOperator A)
+    (hlower : QuadraticFormLowerBound A alpha)
+    (halpha_nonneg : 0 ≤ alpha)
+    (hres0 : r 0 = quadraticGradient A b (x 0))
+    (hx : ∀ n, x (n + 1) = x n + cgLineSearchCoeff A r p n • p n) :
+    ∃ n ≤ Module.finrank ℝ E, IsMinOn (quadraticObjective A b) Set.univ (x n) :=
+  h.exists_quadraticObjective_isMinOn_of_aOrthogonal
+    hA_sym hlower halpha_nonneg hres0 hx
+    (h.aOrthogonal_directions hA_sym)
 
 end Optimization
 end StatInference
