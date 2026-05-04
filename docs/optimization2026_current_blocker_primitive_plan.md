@@ -973,7 +973,12 @@ The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `strongLowerBoundChainGradient_mem_coordinatePrefixSubmodule`,
 `gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_strongLowerBoundChainGradient`,
 and `chewi45_regularized_chain_interface_package`.  Do not repeat this setup;
-the next missing theorem content is the actual strongly-convex gap/rate
+the newest witness layer also compiles `coordinateTailSq`,
+`coordinateTailSq_le_sqdist_of_mem_coordinatePrefixSubmodule`,
+`strongLowerBoundChainObjective_gap_ge_tailSq_of_gradient_eq_zero`, and
+`strongLowerBoundChainObjective_gap_ge_tailSq_of_gradientSpanTrajectory`.  Do
+not repeat these.  The next missing theorem content is the geometric
+zero-gradient minimizer/tail lower bound and then the strongly-convex gap/rate
 assembly.
 
 Chapter 2 route context is still available but no longer the active target:
