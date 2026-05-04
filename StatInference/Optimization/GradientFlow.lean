@@ -720,6 +720,100 @@ theorem chewi24_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientA
     (by intro s hs; simp) (by simp) halpha ht hint_deriv hint_gap
 
 /--
+Chewi Theorem 2.4, positive-`alpha` convergence with interval-integrability
+discharged by continuity of the gradient-oracle trajectory.
+-/
+theorem chewi24_gap_le_geometric_denominator_of_firstOrderStrongConvexOn_of_continuousOn_grad
+    [CompleteSpace E] {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {x : ℝ -> E} {xStar : E} {alpha t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsGradientFlowTrajectory grad x)
+    (hfirst : FirstOrderStrongConvexOn C f grad alpha)
+    (hxmem : ∀ s, s ∈ Set.Icc (0 : ℝ) t -> x s ∈ C)
+    (hxStar : xStar ∈ C)
+    (halpha : 0 < alpha) (ht : 0 < t)
+    (hcont_grad : ContinuousOn (fun s => grad (x s)) (Set.Icc (0 : ℝ) t)) :
+    f (x t) - f xStar ≤
+      alpha / (2 * (Real.exp (alpha * t) - 1)) *
+        ‖x 0 - xStar‖ ^ (2 : ℕ) := by
+  have hx_cont : ContinuousOn x (Set.Icc (0 : ℝ) t) :=
+    HasDerivAt.continuousOn (s := Set.Icc (0 : ℝ) t)
+      (fun s _hs => hflow s)
+  have hdist_cont : ContinuousOn (fun s => x s - xStar)
+      (Set.Icc (0 : ℝ) t) :=
+    hx_cont.sub continuousOn_const
+  have hnorm_sq_cont :
+      ContinuousOn (fun s => ‖x s - xStar‖ ^ (2 : ℕ))
+        (Set.Icc (0 : ℝ) t) :=
+    hdist_cont.norm.pow 2
+  have hinner_cont :
+      ContinuousOn (fun s => inner ℝ (x s - xStar) (grad (x s)))
+        (Set.Icc (0 : ℝ) t) :=
+    hdist_cont.inner hcont_grad
+  have hexp_cont :
+      ContinuousOn (fun s : ℝ => Real.exp (alpha * s))
+        (Set.Icc (0 : ℝ) t) := by
+    fun_prop
+  have hderiv_cont :
+      ContinuousOn
+        (fun s =>
+          Real.exp (alpha * s) * alpha * ‖x s - xStar‖ ^ (2 : ℕ) +
+            Real.exp (alpha * s) *
+              (-2 * inner ℝ (x s - xStar) (grad (x s))))
+        (Set.Icc (0 : ℝ) t) := by
+    have hcont : ContinuousOn
+        (fun s =>
+          (Real.exp (alpha * s) * alpha) * ‖x s - xStar‖ ^ (2 : ℕ) +
+            Real.exp (alpha * s) *
+              (-2 * inner ℝ (x s - xStar) (grad (x s))))
+        (Set.Icc (0 : ℝ) t) :=
+      ((hexp_cont.mul (continuousOn_const (c := alpha))).mul hnorm_sq_cont).add
+        (hexp_cont.mul (hinner_cont.const_mul (-2)))
+    convert hcont using 1
+  have hgap_cont :
+      ContinuousOn (fun s => f (x s) - f xStar) (Set.Icc (0 : ℝ) t) :=
+    HasDerivAt.continuousOn (s := Set.Icc (0 : ℝ) t)
+      (fun s _hs =>
+        gradientFlow_gap_hasDerivAt (t := s) (fstar := f xStar)
+          hgrad hflow)
+  have hint_deriv : IntervalIntegrable
+      (fun s =>
+        Real.exp (alpha * s) * alpha * ‖x s - xStar‖ ^ (2 : ℕ) +
+          Real.exp (alpha * s) *
+            (-2 * inner ℝ (x s - xStar) (grad (x s))))
+      MeasureTheory.volume 0 t :=
+    hderiv_cont.intervalIntegrable_of_Icc ht.le
+  have hint_gap : IntervalIntegrable
+      (fun s => Real.exp (alpha * s) * (f (x s) - f xStar))
+      MeasureTheory.volume 0 t :=
+    (hexp_cont.mul hgap_cont).intervalIntegrable_of_Icc ht.le
+  exact
+    chewi24_gap_le_geometric_denominator_of_firstOrderStrongConvexOn
+      hgrad hflow hfirst hxmem hxStar halpha ht hint_deriv hint_gap
+
+/--
+Chewi Theorem 2.4, positive-`alpha` convergence from whole-space segment
+strong convexity plus mathlib gradients, with integrability discharged by
+continuity of the gradient-oracle trajectory.
+-/
+theorem chewi24_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientAt_of_continuousOn_grad
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {x : ℝ -> E} {xStar : E} {alpha t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsGradientFlowTrajectory grad x)
+    (hstrong : StrongConvexOn Set.univ f alpha)
+    (halpha : 0 < alpha) (ht : 0 < t)
+    (hcont_grad : ContinuousOn (fun s => grad (x s)) (Set.Icc (0 : ℝ) t)) :
+    f (x t) - f xStar ≤
+      alpha / (2 * (Real.exp (alpha * t) - 1)) *
+        ‖x 0 - xStar‖ ^ (2 : ℕ) :=
+  chewi24_gap_le_geometric_denominator_of_firstOrderStrongConvexOn_of_continuousOn_grad
+    hgrad hflow
+    (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
+      hstrong hgrad)
+    (by intro s hs; simp) (by simp) halpha ht hcont_grad
+
+/--
 Chewi Theorem 2.4, `alpha = 0` function-value convergence, with the remaining
 interval-integrability assumptions exposed.
 -/
@@ -804,6 +898,72 @@ theorem chewi24_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradient
     (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
       hstrong hgrad)
     (by intro s hs; simp) (by simp) ht hint_deriv hint_gap
+
+/--
+Chewi Theorem 2.4, `alpha = 0` convergence with interval-integrability
+discharged by continuity of the gradient-oracle trajectory.
+-/
+theorem chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn_of_continuousOn_grad
+    [CompleteSpace E] {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {x : ℝ -> E} {xStar : E} {t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsGradientFlowTrajectory grad x)
+    (hfirst : FirstOrderStrongConvexOn C f grad 0)
+    (hxmem : ∀ s, s ∈ Set.Icc (0 : ℝ) t -> x s ∈ C)
+    (hxStar : xStar ∈ C)
+    (ht : 0 < t)
+    (hcont_grad : ContinuousOn (fun s => grad (x s)) (Set.Icc (0 : ℝ) t)) :
+    f (x t) - f xStar ≤ ‖x 0 - xStar‖ ^ (2 : ℕ) / (2 * t) := by
+  have hx_cont : ContinuousOn x (Set.Icc (0 : ℝ) t) :=
+    HasDerivAt.continuousOn (s := Set.Icc (0 : ℝ) t)
+      (fun s _hs => hflow s)
+  have hdist_cont : ContinuousOn (fun s => x s - xStar)
+      (Set.Icc (0 : ℝ) t) :=
+    hx_cont.sub continuousOn_const
+  have hinner_cont :
+      ContinuousOn (fun s => inner ℝ (x s - xStar) (grad (x s)))
+        (Set.Icc (0 : ℝ) t) :=
+    hdist_cont.inner hcont_grad
+  have hderiv_cont :
+      ContinuousOn (fun s => -2 * inner ℝ (x s - xStar) (grad (x s)))
+        (Set.Icc (0 : ℝ) t) :=
+    hinner_cont.const_mul (-2)
+  have hgap_cont :
+      ContinuousOn (fun s => f (x s) - f xStar) (Set.Icc (0 : ℝ) t) :=
+    HasDerivAt.continuousOn (s := Set.Icc (0 : ℝ) t)
+      (fun s _hs =>
+        gradientFlow_gap_hasDerivAt (t := s) (fstar := f xStar)
+          hgrad hflow)
+  have hint_deriv : IntervalIntegrable
+      (fun s => -2 * inner ℝ (x s - xStar) (grad (x s)))
+      MeasureTheory.volume 0 t :=
+    hderiv_cont.intervalIntegrable_of_Icc ht.le
+  have hint_gap : IntervalIntegrable
+      (fun s => f (x s) - f xStar) MeasureTheory.volume 0 t :=
+    hgap_cont.intervalIntegrable_of_Icc ht.le
+  exact
+    chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn
+      hgrad hflow hfirst hxmem hxStar ht hint_deriv hint_gap
+
+/--
+Chewi Theorem 2.4, `alpha = 0` convergence from whole-space segment
+convexity plus mathlib gradients, with integrability discharged by continuity
+of the gradient-oracle trajectory.
+-/
+theorem chewi24_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradientAt_of_continuousOn_grad
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {x : ℝ -> E} {xStar : E} {t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsGradientFlowTrajectory grad x)
+    (hstrong : StrongConvexOn Set.univ f 0)
+    (ht : 0 < t)
+    (hcont_grad : ContinuousOn (fun s => grad (x s)) (Set.Icc (0 : ℝ) t)) :
+    f (x t) - f xStar ≤ ‖x 0 - xStar‖ ^ (2 : ℕ) / (2 * t) :=
+  chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn_of_continuousOn_grad
+    hgrad hflow
+    (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
+      hstrong hgrad)
+    (by intro s hs; simp) (by simp) ht hcont_grad
 
 /--
 Chewi Theorem 2.4 positive-`alpha` denominator algebra after the weighted

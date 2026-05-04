@@ -240,6 +240,10 @@ Current compiled surface:
 - `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_firstOrderStrongConvexOn_of_continuousOn_grad`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientAt_of_continuousOn_grad`
+- `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn_of_continuousOn_grad`
+- `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradientAt_of_continuousOn_grad`
 - `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_weighted_bound`
 - `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_weighted_bound`
 - `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_weighted_gap_bound`
@@ -267,9 +271,11 @@ Near-term exact candidates:
    trajectory/gap continuity, Lyapunov-continuity wrapper, and
    reference-minimizer replacement for the global minimizer-value invariant
    already compile for Proposition 2.7(2).
-2. Remove or discharge the interval-integrability assumptions in Theorem 2.4
-   from the notes' `C²`/regular trajectory hypotheses if a clean mathlib
-   continuity route is available.
+2. Theorem 2.4 now has wrappers discharging the interval-integrability
+   assumptions from continuity of `s ↦ grad (x s)` on `[0,t]`, together with
+   gradient-flow differentiability and `HasGradientAt`.  A later exact report
+   can decide whether to present this regularity input directly or package it
+   behind a `C¹`/`C²` trajectory surface matching the notes.
 3. Strengthen the regularity bridge behind Corollary 2.8 only if needed for
    the Proposition 2.7(2) analytic route; the compact-minimum and
    continuity-to-integrability pieces already compile.
