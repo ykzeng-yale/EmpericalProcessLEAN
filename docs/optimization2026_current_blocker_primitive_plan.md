@@ -1165,6 +1165,19 @@ assembly target when concrete condition-number/log hypotheses make it faster.
 Search mathlib/local APIs for `Real.log` monotonicity, `Real.exp` inversions,
 sqrt/order facts, finite geometric sums, recurrence solutions, and asymptotic
 iteration-count wrappers before introducing any new complexity primitive.
+The first true infinite-chain substrate now compiles in
+`StatInference/Optimization/Exercises.lean`: `exercise42_geometric_l2_term_eq`,
+`exercise42_geometric_memℓp_two`, `exercise42InfiniteGeometric`,
+`exercise42InfiniteGeometric_apply`, and
+`exercise42InfiniteGeometric_norm_sq` use mathlib `lp`, `Memℓp`,
+`lp.norm_rpow_eq_tsum`, `summable_geometric_of_lt_one`, and
+`tsum_geometric_of_lt_one` to prove that the nonnegative profile
+`n |-> q^n` is in `ell^2` and has squared norm `(1 - q^2)^{-1}` for
+`0 <= q < 1`.  Next direct Exercise 4.2 step: define the infinite
+tridiagonal hard-chain objective/gradient on this `lp` model, prove the
+geometric profile is the exact zero-gradient minimizer, then reuse the
+compiled tail-to-gap obstruction pattern to obtain the source geometric
+iteration lower bound without finite-boundary slack.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
