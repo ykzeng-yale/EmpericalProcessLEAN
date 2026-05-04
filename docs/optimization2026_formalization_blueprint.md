@@ -348,6 +348,27 @@ opportunistically when they are cheap, reusable, or unblock a textbook theorem.
 
 ### Lane D: Later textbook expansion
 
+Chapter 4 lower-bound expansion has now started in
+`StatInference/Optimization/LowerBounds.lean`.  The compiled surface is:
+
+- `StatInference.Optimization.gradientSpanSubmodule`
+- `StatInference.Optimization.affineGradientSpan`
+- `StatInference.Optimization.IsGradientSpanTrajectory`
+- `StatInference.Optimization.mem_affineGradientSpan_iff`
+- `StatInference.Optimization.gradient_mem_gradientSpanSubmodule`
+- `StatInference.Optimization.gradientSpanSubmodule_mono`
+- `StatInference.Optimization.gradientDescentStep_sub_initial_mem_gradientSpanSubmodule`
+- `StatInference.Optimization.IsGradientDescentTrajectory.isGradientSpanTrajectory`
+- `StatInference.Optimization.gradientDescentTrajectory_mem_gradientSpanSubmodule`
+- `StatInference.Optimization.gradientDescentTrajectory_mem_affineGradientSpan`
+
+Search-first result for this lane: there was no local Chewi gradient-span
+formalization; mathlib's `Submodule.span`, `Submodule.subset_span`, and
+`Submodule.span_mono` provide the reusable algebraic foundation.  The next
+Chapter 4 theorem route should build finite-dimensional Euclidean coordinate
+support and the tridiagonal quadratic lower-bound construction for Theorem 4.4
+on top of this interface, rather than introducing a second oracle model.
+
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
 1. Lower bounds and oracle/gradient-span interfaces, Chapter 4.

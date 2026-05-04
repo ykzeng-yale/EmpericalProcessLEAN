@@ -51,14 +51,16 @@ runs.
 Current manual objective: aggressively formalize and prove the main theorem
 content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, continuing from the Chapter 2 gradient-flow
-frontier and the existing Chapter 1/3 bridge frontier.  The current route
-should push Chapter 2 main-text theorem layers after the compiled
-gradient-flow calculus/exponential-decay batch: discharge the analytic
-gradient-flow limit route behind Proposition 2.7(2), instantiate Corollary
-2.8's interval-minimum hypothesis from compactness/continuity when useful,
-and eventually remove/discharge Theorem 2.4's exposed
-interval-integrability assumptions from stronger regularity hypotheses, while
-preserving the Chapter 3 theorem spine already compiled through Theorem 3.7.
+frontier, the existing Chapter 1/3 bridge frontier, and the new Chapter 4
+gradient-span lower-bound foundation.  The current route should push Chapter 2
+main-text theorem layers after the compiled gradient-flow
+calculus/exponential-decay batch and push Chapter 4 from Definition 4.3 toward
+Theorem 4.4: discharge the analytic gradient-flow limit route behind
+Proposition 2.7(2), instantiate Corollary 2.8's interval-minimum hypothesis
+from compactness/continuity when useful, and build the finite-dimensional
+Euclidean/tridiagonal quadratic lower-bound construction for gradient-span
+algorithms, while preserving the Chapter 3 theorem spine already compiled
+through Theorem 3.7.
 Search existing mathlib and local `StatInference` APIs
 first, prove the next highest-leverage main-text theorem layer, verify with
 focused `lake env lean`, targeted `lake build StatInference`, proof-hole and
@@ -77,8 +79,9 @@ The Chewi lane has source materials and a compiled content-based Lean namespace
 under `StatInference/Optimization/`, but it does not yet have an exact
 source-audited Optimization theorem report.  Main-text Chapter 3 now has a
 strong reusable spine through Theorem 3.7's finite-minimum gradient-norm form,
-and the Chapter 1 convexity bridge now removes a major supplied-interface
-blocker for the whole-space differentiable case:
+Chapter 4 now has a compiled gradient-span/oracle-model foundation, and the
+Chapter 1 convexity bridge now removes a major supplied-interface blocker for
+the whole-space differentiable case:
 
 - Lemma 1.10 minimizer uniqueness under mathlib `StrictConvexOn` compiles in
   `StatInference/Optimization/Minimizer.lean`, reusing
@@ -135,6 +138,17 @@ blocker for the whole-space differentiable case:
   discharge those interval-integrability hypotheses from continuity of
   `s ↦ grad (x s)` on `[0,t]`, using gradient-flow differentiability to
   obtain continuity of `x` and `s ↦ f (x s) - f xStar`.
+- Chapter 4 lower-bound modeling now starts in
+  `StatInference/Optimization/LowerBounds.lean`.  Chewi Definition 4.3 is
+  represented by `gradientSpanSubmodule`, `affineGradientSpan`, and
+  `IsGradientSpanTrajectory`, and the source example "GD is a gradient span
+  algorithm" compiles as
+  `IsGradientDescentTrajectory.isGradientSpanTrajectory`,
+  `gradientDescentTrajectory_mem_gradientSpanSubmodule`, and
+  `gradientDescentTrajectory_mem_affineGradientSpan`.  Search-first result:
+  no local Chewi-specific gradient-span layer existed; mathlib's
+  `Submodule.span`, `Submodule.subset_span`, and `Submodule.span_mono` are the
+  reusable foundation.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -774,11 +788,23 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.chewi37_exists_grad_norm_le_of_le_inv`
 - `StatInference.Optimization.chewi37_min_grad_norm_le`
 - `StatInference.Optimization.chewi37_min_grad_norm_le_of_le_inv`
+- `StatInference.Optimization.gradientSpanSubmodule`
+- `StatInference.Optimization.affineGradientSpan`
+- `StatInference.Optimization.IsGradientSpanTrajectory`
+- `StatInference.Optimization.mem_affineGradientSpan_iff`
+- `StatInference.Optimization.gradient_mem_gradientSpanSubmodule`
+- `StatInference.Optimization.gradientSpanSubmodule_mono`
+- `StatInference.Optimization.gradientDescentStep_sub_initial_mem_gradientSpanSubmodule`
+- `StatInference.Optimization.IsGradientDescentTrajectory.isGradientSpanTrajectory`
+- `StatInference.Optimization.gradientDescentTrajectory_mem_gradientSpanSubmodule`
+- `StatInference.Optimization.gradientDescentTrajectory_mem_affineGradientSpan`
 - projection lemmas for convex-set, segment inequality, smooth upper model,
   continuity, mathlib-gradient Lipschitzness, and trajectory successor steps.
 
-Next manual goal target: discharge or sharply package the remaining
-nontrivial-start analytic input behind Proposition 2.7(2).  The route
+Next manual goal targets: discharge or sharply package the remaining
+nontrivial-start analytic input behind Proposition 2.7(2), and advance the
+new Chapter 4 gradient-span lane toward Theorem 4.4's finite-dimensional
+lower-bound construction.  The route
 `PLGradientFlowLyapunovNoMinimizerHitRouteToQGOn -> QG` now compiles, so the
 remaining assumptions to attack are convergence to a minimizer, feasible
 positive-time trajectory membership, no minimizer hit on positive times, and
@@ -790,7 +816,10 @@ Lyapunov-continuity wrapper, minimizer-start split, and pointwise
 side-condition-to-Lyapunov inequality are now compiled; do not repeat them.
 The Corollary 2.8 compact-minimum and continuity/integrability bridge is
 already compiled, so do not spend another run there unless strengthening the
-continuity hypotheses materially advances the analytic route.  Continue
+continuity hypotheses materially advances the analytic route.  For Chapter 4,
+reuse `LowerBounds.lean`'s single gradient-span/oracle model, and search
+mathlib basis/coordinate, matrix, PSD, and smoothness APIs before adding the
+tridiagonal quadratic construction.  Continue
 deferring exercise proofs except where an exercise statement is needed as a
 temporary interface for a main-text theorem; such exercise material belongs
 in `StatInference/Optimization/Exercises.lean`.
