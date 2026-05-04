@@ -76,15 +76,22 @@ High-value local files:
 ## Current Active Target
 
 Latest proof target: Chapter 5 acceleration/conjugate-gradient.  The active
-Lean module is `StatInference/Optimization/ConjugateGradient.lean`, starting
-from the quadratic display at markdown lines 954-960, Lemma 5.1 at line 1005,
-and the termination/rate statements at lines 1033-1037.  The newest compiled
-layer derives Lemma 5.1's Krylov equality from a source-shaped three-term
-recurrence interface.  The next aggressive step is to instantiate the
-line-search/Gram-Schmidt scalar formulas and denominator side conditions, then
-package finite-dimensional termination.  Do not replay Chapter 3 GD convergence
-or Chapter 4 hard-instance setup unless a Chapter 5 proof explicitly depends
-on one of those compiled declarations.
+Lean modules are `StatInference/Optimization/ConjugateGradient.lean` and
+`StatInference/Optimization/Theorem54.lean`, starting from the quadratic
+display at markdown lines 954-960, Lemma 5.1 at line 1005, termination at line
+1033, and the rate statement at line 1037.  The newest compiled layer adds
+`cgAffineSpan`, the affine-gradient-trial membership lemma, competitive-step
+extraction from an affine `IsMinOn`, monotone-gap and first-order/orthogonality
+bridges, the source-facing wrappers
+`chewi54_accelerated_bound_of_cgAffineMinimizer` and
+`chewi54_accelerated_bound_of_cgAffineMinimizer_univ`, plus displayed-CG
+bridges for point-update search-span membership, residual-gradient membership,
+displacement orthogonality, pairwise gradient orthogonality, and
+`IsCGDisplayedIteration.chewi54_accelerated_bound_of_cgAffineMinimizer`.
+The next aggressive step is to derive or package the remaining affine `IsMinOn`
+property over `x_0 + span {p_0, ..., p_n}`.  Do not replay Chapter 3 GD
+convergence or Chapter 4 hard-instance setup unless a Chapter 5 proof
+explicitly depends on one of those compiled declarations.
 
 Recently completed Chapter 4 context: The
 `StatInference/Optimization/Reductions.lean` module compiles the quadratic
