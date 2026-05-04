@@ -801,7 +801,10 @@ above, so they do not change the theorem-level dashboard counts.
    `empiricalL1CoveringNumber_le_of_finite_approx_code`, and their
    padded-cardinality variants are now available for the more faithful
    quantized-trace/grid route, where exact trace equality is too strong but
-   equal codes give empirical `L1(P_n)` error at most the target radius.
+   equal codes give empirical `L1(P_n)` error at most the target radius.  The
+   pointwise variant
+   `empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le`
+   lets a grid proof supply coordinatewise absolute-error bounds directly.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

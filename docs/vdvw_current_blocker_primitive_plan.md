@@ -2248,11 +2248,17 @@ bridge
 `nonempty_finiteEmpiricalL1CoverAtCard_of_finite_approx_code`,
 `empiricalL1CoveringNumber_le_of_finite_approx_code`,
 `nonempty_finiteEmpiricalL1CoverAtCard_of_finite_approx_code_card_le`, and
-`empiricalL1CoveringNumber_le_of_finite_approx_code_card_le`.  These are the
+`empiricalL1CoveringNumber_le_of_finite_approx_code_card_le`.  It also adds
+`empiricalL1Distance_le_of_forall_abs_le` plus the pointwise-code consumers
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_pointwise_approx_code_card_le`
+and
+`empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le`.
+These are the
 approximate analogues of the finite exact-trace cover layer: a finite code
 image plus the hypothesis that equal codes imply empirical `L1(P_n)` distance
 at most `epsilon` gives a local empirical cover, with padded cardinality
-versions for entropy estimates.
+versions for entropy estimates.  The pointwise variants reduce that distance
+hypothesis to coordinatewise absolute-error bounds on the empirical sample.
 
 Search record: the local exact-trace cover declarations
 `nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image` and

@@ -236,6 +236,43 @@ theorem empiricalL1Distance_le_of_empiricalTrace_eq
   rw [empiricalL1Distance_eq_zero_of_empiricalTrace_eq htrace]
   exact hepsilon_nonneg
 
+/--
+Pointwise sample-coordinate error bounds control the empirical `L1(P_n)`
+distance.
+
+This is the arithmetic bridge used by quantized-code covers: if two functions
+are within `epsilon` at every observed sample coordinate, then their empirical
+average absolute difference is at most `epsilon`.
+-/
+theorem empiricalL1Distance_le_of_forall_abs_le
+    {Observation : Type u} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {f g : Observation -> ℝ} {epsilon : ℝ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hpoint :
+      ∀ sampleIndex : Fin n,
+        |f (sample sampleIndex) - g (sample sampleIndex)| ≤ epsilon) :
+    empiricalL1Distance sample f g ≤ epsilon := by
+  unfold empiricalL1Distance empiricalAverage
+  by_cases hn : n = 0
+  · subst n
+    simpa using hepsilon_nonneg
+  · have hn_pos_nat : 0 < n := Nat.pos_of_ne_zero hn
+    have hn_pos : 0 < (n : ℝ) := Nat.cast_pos.mpr hn_pos_nat
+    have hsum :
+        (∑ sampleIndex : Fin n,
+          |f (sample sampleIndex) - g (sample sampleIndex)|) ≤
+          ∑ _sampleIndex : Fin n, epsilon := by
+      exact Finset.sum_le_sum fun sampleIndex _hsampleIndex =>
+        hpoint sampleIndex
+    calc
+      (∑ sampleIndex : Fin n,
+          |f (sample sampleIndex) - g (sample sampleIndex)|) / (n : ℝ)
+          ≤ (∑ _sampleIndex : Fin n, epsilon) / (n : ℝ) :=
+        div_le_div_of_nonneg_right hsum (Nat.cast_nonneg n)
+      _ = epsilon := by
+        simp [Finset.sum_const, Fintype.card_fin, nsmul_eq_mul, hn_pos.ne']
+
 /-- Empirical `L1(P_n)` distance is symmetric. -/
 theorem empiricalL1Distance_comm {Observation : Type u} {n : ℕ}
     (sample : SampleAt Observation n)
@@ -1226,6 +1263,68 @@ theorem empiricalL1CoveringNumber_le_of_finite_approx_code_card_le
   exact
     (empiricalL1CoveringNumber_le_of_finite_approx_code
       code hcode_finite happrox).trans (by exact_mod_cast hcard_le)
+
+/--
+Padded-cardinality cover from a finite code whose equal-code classes are
+pointwise close on the empirical sample.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_finite_pointwise_approx_code_card_le
+    {Observation : Type u} {Index : Type v} {Code : Type*} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (code : Index -> Code)
+    (hcode_finite : (code '' indexClass).Finite)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hpoint :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          code index = code center ->
+            ∀ sampleIndex : Fin n,
+              |classFun index (sample sampleIndex) -
+                classFun center (sample sampleIndex)| ≤ epsilon)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le : hcode_finite.toFinset.card ≤ cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  exact
+    nonempty_finiteEmpiricalL1CoverAtCard_of_finite_approx_code_card_le
+      code hcode_finite
+      (fun index hindex center hcenter hcode =>
+        empiricalL1Distance_le_of_forall_abs_le hepsilon_nonneg
+          (hpoint index hindex center hcenter hcode))
+      hindexClass hcard_le
+
+/--
+Padded numeric empirical-covering-number bound from a finite pointwise
+approximation code.
+-/
+theorem empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le
+    {Observation : Type u} {Index : Type v} {Code : Type*} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (code : Index -> Code)
+    (hcode_finite : (code '' indexClass).Finite)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hpoint :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          code index = code center ->
+            ∀ sampleIndex : Fin n,
+              |classFun index (sample sampleIndex) -
+                classFun center (sample sampleIndex)| ≤ epsilon)
+    (hcard_le : hcode_finite.toFinset.card ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_finite_approx_code_card_le
+      code hcode_finite
+      (fun index hindex center hcenter hcode =>
+        empiricalL1Distance_le_of_forall_abs_le hepsilon_nonneg
+          (hpoint index hindex center hcenter hcode))
+      hcard_le
 
 /--
 Padded-cardinality cover from a finite fixed-sample trace image.  Later
