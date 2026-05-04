@@ -1692,6 +1692,26 @@ with nonnegative `offset` and `degree`, or state the exact additional
 structural assumption needed for this estimate.  That estimate will feed the
 compiled log-linear finite-trace constructor directly.
 
+2026-05-04 `/goal` update after shifted log-linear package closure:
+`StatInference/EmpiricalProcess/Theorem243.lean` now also supports the more
+natural polynomial/VC spelling with `log (n + 1)`, avoiding a special
+sample-size-zero cardinality case.  New compiled declarations are
+`tendsto_log_nat_succ_div_atTop_nhds_zero`,
+`tendsto_const_add_mul_log_nat_succ_div_atTop_nhds_zero`,
+`const_add_mul_log_nat_succ_div_le_const_add`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_log_succ_linear_bound`,
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_log_succ_linear`.
+Search record: the proof reuses the already compiled `log n / n -> 0`, mathlib
+`tendsto_add_atTop_nat`, `tendsto_const_div_atTop_nhds_zero_nat`, and
+`Real.log_le_sub_one_of_pos` to get the shifted rate and deterministic bound.
+
+The exact next theorem-facing edit is now combinatorial: prove a trace-count
+or VC/Sauer estimate in the shifted log-linear form
+`Real.log ((cardinality eta n sample n : ℝ) + 1) <= offset eta + degree eta * Real.log (((n + 1 : ℕ) : ℝ))`.
+That theorem should then be fed directly into
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_log_succ_linear`.
+
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
 APIs found and used are `ProbabilityTheory.iIndepFun_pi`,

@@ -9069,6 +9069,49 @@ theorem tendsto_log_nat_div_atTop_nhds_zero :
     (Asymptotics.IsLittleO.natCast_atTop
       Real.isLittleO_log_id_atTop).tendsto_div_nhds_zero
 
+/-- The shifted deterministic rate `log (n + 1) / n -> 0`. -/
+theorem tendsto_log_nat_succ_div_atTop_nhds_zero :
+    Tendsto
+      (fun n : ℕ => Real.log (((n + 1 : ℕ) : ℝ)) / (n : ℝ))
+      atTop (𝓝 0) := by
+  have hlog_succ_div_succ :
+      Tendsto
+        (fun n : ℕ =>
+          Real.log (((n + 1 : ℕ) : ℝ)) / (((n + 1 : ℕ) : ℝ)))
+        atTop (𝓝 0) := by
+    simpa [Function.comp_def, Nat.cast_add, Nat.cast_one] using
+      tendsto_log_nat_div_atTop_nhds_zero.comp (tendsto_add_atTop_nat 1)
+  have hratio :
+      Tendsto (fun n : ℕ => (((n + 1 : ℕ) : ℝ) / (n : ℝ)))
+        atTop (𝓝 1) := by
+    have hbase :
+        Tendsto (fun n : ℕ => (1 : ℝ) + 1 / (n : ℝ))
+          atTop (𝓝 (1 + 0)) :=
+      tendsto_const_nhds.add
+        (tendsto_const_div_atTop_nhds_zero_nat (1 : ℝ))
+    have hbase_one :
+        Tendsto (fun n : ℕ => (1 : ℝ) + 1 / (n : ℝ))
+          atTop (𝓝 1) := by
+      simpa using hbase
+    refine Tendsto.congr' ?_ hbase_one
+    filter_upwards [eventually_gt_atTop (0 : ℕ)] with n hn
+    have hn_ne : (n : ℝ) ≠ 0 := by
+      exact_mod_cast (Nat.ne_of_gt hn)
+    field_simp [hn_ne, Nat.cast_add, Nat.cast_one]
+    simp [Nat.cast_add, Nat.cast_one]
+  have hprod := hlog_succ_div_succ.mul hratio
+  convert hprod using 1
+  · ext n
+    by_cases hn : n = 0
+    · subst n
+      simp
+    · have hn_ne : (n : ℝ) ≠ 0 := by
+        exact_mod_cast hn
+      have hns_ne : (((n + 1 : ℕ) : ℝ)) ≠ 0 := by
+        positivity
+      field_simp [hn_ne, hns_ne]
+  · ring_nf
+
 /--
 The deterministic log-linear rate `(A + D log n) / n` tends to zero.
 
@@ -9089,6 +9132,35 @@ theorem tendsto_const_add_mul_log_nat_div_atTop_nhds_zero (A D : ℝ) :
     tendsto_log_nat_div_atTop_nhds_zero
   have hD :
       Tendsto (fun n : ℕ => D * (Real.log (n : ℝ) / (n : ℝ)))
+        atTop (𝓝 0) := by
+    simpa using hlog.const_mul D
+  convert hA.add hD using 1
+  · ext n
+    ring_nf
+  · ring_nf
+
+/--
+The shifted deterministic log-linear rate `(A + D log (n + 1)) / n` tends to
+zero.
+-/
+theorem tendsto_const_add_mul_log_nat_succ_div_atTop_nhds_zero
+    (A D : ℝ) :
+    Tendsto
+      (fun n : ℕ =>
+        (A + D * Real.log (((n + 1 : ℕ) : ℝ))) / (n : ℝ))
+      atTop (𝓝 0) := by
+  have hA :
+      Tendsto (fun n : ℕ => A / (n : ℝ)) atTop (𝓝 0) :=
+    tendsto_const_div_atTop_nhds_zero_nat A
+  have hlog :
+      Tendsto
+        (fun n : ℕ => Real.log (((n + 1 : ℕ) : ℝ)) / (n : ℝ))
+        atTop (𝓝 0) :=
+    tendsto_log_nat_succ_div_atTop_nhds_zero
+  have hD :
+      Tendsto
+        (fun n : ℕ => D * (Real.log (((n + 1 : ℕ) : ℝ)) /
+          (n : ℝ)))
         atTop (𝓝 0) := by
     simpa using hlog.const_mul D
   convert hA.add hD using 1
@@ -9120,6 +9192,37 @@ theorem const_add_mul_log_nat_div_le_const_add {A D : ℝ}
     have hlog_le : Real.log (n : ℝ) ≤ (n : ℝ) :=
       Real.log_le_self (Nat.cast_nonneg n)
     have hDlog_le : D * Real.log (n : ℝ) ≤ D * (n : ℝ) :=
+      mul_le_mul_of_nonneg_left hlog_le hD_nonneg
+    have hA_le : A ≤ A * (n : ℝ) := by
+      nlinarith
+    nlinarith
+
+/--
+If `A,D >= 0`, then `(A + D log (n + 1)) / n` is uniformly bounded by
+`A + D`.
+-/
+theorem const_add_mul_log_nat_succ_div_le_const_add {A D : ℝ}
+    (hA_nonneg : 0 ≤ A) (hD_nonneg : 0 ≤ D) :
+    ∀ n : ℕ,
+      (A + D * Real.log (((n + 1 : ℕ) : ℝ))) / (n : ℝ) ≤ A + D := by
+  intro n
+  by_cases hn : n = 0
+  · subst n
+    simp
+    linarith
+  · have hn_pos_nat : 0 < n := Nat.pos_of_ne_zero hn
+    have hn_pos : (0 : ℝ) < (n : ℝ) := by
+      exact_mod_cast hn_pos_nat
+    have hn_one : (1 : ℝ) ≤ (n : ℝ) := by
+      exact_mod_cast hn_pos_nat
+    rw [div_le_iff₀ hn_pos]
+    have hsucc_pos : 0 < (((n + 1 : ℕ) : ℝ)) := by
+      positivity
+    have hlog_le : Real.log (((n + 1 : ℕ) : ℝ)) ≤ (n : ℝ) := by
+      have h := Real.log_le_sub_one_of_pos hsucc_pos
+      simpa [Nat.cast_add, Nat.cast_one] using h
+    have hDlog_le :
+        D * Real.log (((n + 1 : ℕ) : ℝ)) ≤ D * (n : ℝ) :=
       mul_le_mul_of_nonneg_left hlog_le hD_nonneg
     have hA_le : A ≤ A * (n : ℝ) := by
       nlinarith
@@ -12180,6 +12283,124 @@ theorem
       (offset := offset) (degree := degree) (cardinality := cardinality)
       hX_samplePath hcovering_all hclass henvelope_meas
       hoffset_nonneg hdegree_nonneg hM_pos hlog_linear_bound
+
+/--
+Shifted log-linear cardinality constructor using `log (n + 1)`.
+
+This is often the most natural polynomial-growth interface, since trace-count
+estimates usually have the form `(n + 1)^d` and do not require a special
+sample-size-zero case.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_log_succ_linear_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {offset degree : ℝ -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hoffset_nonneg : ∀ eta, 0 < eta -> 0 ≤ offset eta)
+    (hdegree_nonneg : ∀ eta, 0 < eta -> 0 ≤ degree eta)
+    (hM_pos : 0 < M)
+    (hlog_succ_linear_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        Real.log ((cardinality eta n sample n : ℝ) + 1) ≤
+          offset eta + degree eta *
+            Real.log (((n + 1 : ℕ) : ℝ))) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  let rate : ℝ -> ℕ -> ℝ :=
+    fun eta n =>
+      (offset eta + degree eta * Real.log (((n + 1 : ℕ) : ℝ))) /
+        (n : ℝ)
+  refine
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_tendsto_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (K := fun eta => offset eta + degree eta) (rate := rate)
+      (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas ?_ hM_pos
+      ?_ ?_ ?_
+  · intro eta _heta
+    simpa [rate] using
+      tendsto_const_add_mul_log_nat_succ_div_atTop_nhds_zero
+        (offset eta) (degree eta)
+  · intro eta heta
+    exact add_nonneg (hoffset_nonneg eta heta) (hdegree_nonneg eta heta)
+  · intro eta heta n
+    simpa [rate] using
+      const_add_mul_log_nat_succ_div_le_const_add
+        (hoffset_nonneg eta heta) (hdegree_nonneg eta heta) n
+  · intro eta heta n sample
+    exact
+      div_le_div_of_nonneg_right
+        (hlog_succ_linear_bound eta heta n sample) (Nat.cast_nonneg n)
+
+/--
+Finite-trace-image selected fixed-radius package from a shifted log-linear
+trace-count estimate.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_log_succ_linear
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {offset degree : ℝ -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (htrace_finite :
+      ∀ n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        (htrace_finite n sample m).toFinset.card ≤
+          cardinality eta n sample m)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hoffset_nonneg : ∀ eta, 0 < eta -> 0 ≤ offset eta)
+    (hdegree_nonneg : ∀ eta, 0 < eta -> 0 ≤ degree eta)
+    (hM_pos : 0 < M)
+    (hlog_succ_linear_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        Real.log ((cardinality eta n sample n : ℝ) + 1) ≤
+          offset eta + degree eta *
+            Real.log (((n + 1 : ℕ) : ℝ))) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  have hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n) :=
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_trace_image_cardinality_bound_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (cardinality := cardinality) X htrace_finite hcardinality_dom
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_log_succ_linear_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (offset := offset) (degree := degree) (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas
+      hoffset_nonneg hdegree_nonneg hM_pos hlog_succ_linear_bound
 
 /--
 Build the selected fixed-radius tail/UI package from a terminal
