@@ -232,6 +232,10 @@ The newest positive-log pass adds `chewi45_log_half_eq_neg_log_two`,
 `chewi45_not_finiteGeometricCandidate_near_min_of_sqrtKappa_positiveLog_rates`,
 giving the direct finite obstruction in `log 2` and
 `log ((alpha/8)/eps)` form.
+The latest source-constant window pass adds
+`chewi45_not_finiteGeometricCandidate_near_min_of_source_positiveLog_window`,
+with the gates multiplied out as `3 * sqrt(kappa) * log 2 / 8 - 1 <= N` and
+`N < sqrt(kappa) * log ((alpha/8)/eps) / 8 - 1`.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains
