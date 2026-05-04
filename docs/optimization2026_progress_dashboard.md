@@ -413,9 +413,19 @@ compiled `sqrt(kappa)` iteration lower bound.  The newest opt-value pass adds
 and
 `exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient`,
 so the public Exercise 4.2 route no longer exposes an `hfstar` equality
-hypothesis.  The next target is feeding this wrapper into the Theorem 4.5
-condition-number/rate comparison, or factoring the infinite Exercise 4.2
-substrate into a pre-`Theorem45` module if direct import is needed.  The newest
+hypothesis.  The newest Theorem 4.5-facing package pass adds
+`exercise42InfiniteInitialScale`, `exercise42InfiniteInitialScale_pos`, and
+`exercise42InfiniteChainObjective_theorem45_hard_instance_package`; the last
+one bundles first-order strong convexity, smoothness, gradient-span prefix
+support, the concrete geometric minimizer, the named optimum-value lower
+bound, and the opt-value `sqrt(kappa)` rate obstruction in one statement.
+Search-first result: reused local `IsMinOn`/opt-value/rate wrappers and
+mathlib `IsMinOn` support; an attempted positive-log infinite display should
+first name the minimizer/scale more aggressively, because direct rewriting
+ran into dependent proof-term normalization around the geometric-minimizer
+certificate.  The next target is factoring the infinite Exercise 4.2 substrate
+into a pre-`Theorem45` module if direct Theorem 4.5 import is needed, or using
+this package immediately as the source-facing hard instance.  The newest
 smoothness bridge adds
 `exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq`,
 `exercise42InfiniteBaseChainObjective_add_direction_inner`,
@@ -427,11 +437,7 @@ blocker is also closed by `continuous_exercise42InfiniteBaseChainObjective`
 and `continuous_exercise42InfiniteChainObjective`, yielding the full supplied
 interfaces
 `exercise42InfiniteBaseChainObjective_smoothWithGradientOn` and
-`exercise42InfiniteChainObjective_smoothWithGradientOn`.  The next target is a
-single Theorem 4.5-facing package theorem combining the new oracle package
-`exercise42InfiniteChainObjective_oracle_interface_package` with the named
-optimum value and opt-value rate obstruction, with a module split if direct
-import into `Theorem45.lean` is needed.  In
+`exercise42InfiniteChainObjective_smoothWithGradientOn`.  In
 parallel, specialize the remaining reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.

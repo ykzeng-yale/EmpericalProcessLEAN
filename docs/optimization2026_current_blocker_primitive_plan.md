@@ -50,28 +50,25 @@ runs.
 
 Current manual objective: aggressively formalize and prove the main theorem
 content of Sinho Chewi's Optimization 2026 notes in Lean under
-`StatInference/Optimization`, continuing from the Chapter 2 gradient-flow
-frontier, the existing Chapter 1/3 bridge frontier, and the new Chapter 4
-gradient-span lower-bound foundation.  The current route should push Chapter 2
-main-text theorem layers after the compiled gradient-flow
-calculus/exponential-decay batch and push Chapter 4 from Definition 4.3 toward
-Theorem 4.4: discharge the analytic gradient-flow limit route behind
-Proposition 2.7(2), instantiate Corollary 2.8's interval-minimum hypothesis
-from compactness/continuity when useful, and build the finite-dimensional
-Euclidean/tridiagonal quadratic lower-bound construction for gradient-span
-algorithms, while preserving the Chapter 3 theorem spine already compiled
-through Theorem 3.7.
-Search existing mathlib and local `StatInference` APIs
-first, prove the next highest-leverage main-text theorem layer, verify with
-focused `lake env lean`, targeted `lake build StatInference`, proof-hole and
-secret scans, update this route state, and commit/push clean verified
-progress.  Keep main-text theorem coverage as the priority; exercise
-statements and exercise proofs may still be formalized opportunistically when
-they are cheap, reusable, or directly unblock a main-text theorem.  All
-Optimization textbook exercise statements and exercise proofs should live in
-the single module
-`StatInference/Optimization/Exercises.lean`, so the main theorem modules stay
-focused while the later exercise sweep remains source-trackable.
+`StatInference/Optimization`, continuing from the current Chapter 4
+Theorem 4.5 / Exercise 4.2 lower-bound frontier.  The compiled spine already
+covers Chapter 1 minimizer/first-order bridges, Chapter 2 gradient-flow
+interfaces, Chapter 3 gradient descent through the Theorem 3.7 support layer,
+Chapter 4 Definition 4.3/Theorem 4.4 gradient-span lower bounds, the finite
+Theorem 4.5 corrected-chain route, and the infinite Exercise 4.2 direct hard
+instance through the Theorem 4.5-facing package theorem.  The current route
+should now use or factor that package to finish a source-facing Theorem 4.5
+statement, then proceed aggressively to the next main-text theorem layer in
+Chapter 5.  Search existing mathlib and local `StatInference` APIs first,
+prove the next highest-leverage theorem layer, verify with focused
+`lake env lean`, targeted `lake build StatInference`, proof-hole and secret
+scans, update this route state, and commit/push clean verified progress.  Keep
+main-text theorem coverage as the priority; exercise statements and exercise
+proofs may still be formalized opportunistically when cheap, reusable, or
+directly unblock a main-text theorem.  All Optimization textbook exercise
+statements and exercise proofs should live in the single module
+`StatInference/Optimization/Exercises.lean`, so the later exercise sweep
+remains source-trackable.
 
 ## Current Blocker
 
@@ -1350,10 +1347,19 @@ The continuity blocker is now also closed: the compiled declarations
 instance.  The new
 `exercise42InfiniteChainObjective_oracle_interface_package` now bundles
 first-order strong convexity, smoothness, and gradient-span prefix support in
-one source-facing theorem.  Next direct step: package the optimum value and
-opt-value rate theorem with this oracle package for a single Theorem
-4.5-facing statement; if this must live before `Theorem45.lean`, factor the
-infinite substrate out of `Exercises.lean` to avoid an import cycle.
+one source-facing theorem.  The Theorem 4.5-facing package step is now also
+closed by `exercise42InfiniteInitialScale`,
+`exercise42InfiniteInitialScale_pos`, and
+`exercise42InfiniteChainObjective_theorem45_hard_instance_package`, which
+combines the oracle interfaces, geometric minimizer, named optimum-value lower
+bound, zero-start gradient-span support, and the opt-value `sqrt(kappa)` rate
+obstruction.  Next direct step: either use this package as the source-facing
+direct Exercise 4.2 hard instance, or factor the infinite substrate out of
+`Exercises.lean` into a pre-`Theorem45` module if the main Theorem 4.5 file
+must import it without a cycle.  A positive-log infinite display remains a
+cleanup target; avoid direct large-expression rewrites until the minimizer and
+initial-scale proof terms are named enough to avoid dependent proof-term
+normalization noise.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,

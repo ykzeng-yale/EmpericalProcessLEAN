@@ -727,9 +727,17 @@ bound plus source-display/rate wrappers
 `exercise42InfiniteChainObjective_gap_ge_geometricRatio_pow_two_mul_optValue_concreteGradient`
 and
 `exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient`.
-Next is feeding that exact package into Theorem 4.5, or moving the infinite
-Exercise 4.2 substrate into a pre-`Theorem45` module to avoid import cycles
-for a direct Theorem 4.5 dependency.
+The Theorem 4.5-facing package now also compiles:
+`exercise42InfiniteInitialScale`, `exercise42InfiniteInitialScale_pos`, and
+`exercise42InfiniteChainObjective_theorem45_hard_instance_package`.  The
+package combines the concrete first-order/smooth oracle, zero-start
+gradient-span prefix support, the geometric minimizer, the named optimum value,
+and the opt-value `sqrt(kappa)` rate obstruction.  Next is either to use this
+as the source-facing direct Exercise 4.2 hard instance, or to factor the
+infinite substrate into a pre-`Theorem45` module if the main Theorem 4.5 file
+must import it without a cycle.  A positive-log infinite display remains a
+cleanup target; do it after naming the minimizer/scale layer enough to avoid
+dependent proof-term normalization in the geometric-minimizer certificate.
 The newest smoothness bridge proves
 `exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq`,
 `exercise42InfiniteBaseChainObjective_add_direction_inner`,
@@ -746,8 +754,6 @@ smoothness wrappers
 `exercise42InfiniteChainObjective_smoothWithGradientOn`.  The oracle-side
 package `exercise42InfiniteChainObjective_oracle_interface_package` now
 bundles first-order strong convexity, smoothness, and gradient-span support.
-Next package this with the named optimum value and opt-value rate obstruction
-for the Theorem 4.5 lane.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,
