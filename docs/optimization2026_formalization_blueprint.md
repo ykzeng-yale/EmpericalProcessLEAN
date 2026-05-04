@@ -489,6 +489,11 @@ and the bundled source-shaped packages
 `lemma42_regularization_reduction_package`, and
 `lemma42_regularization_reduction_package_of_isMinOn`.  Next source-shaped
 work should connect Theorem 4.4 to Theorem 4.5 using this compiled reduction.
+The concrete Theorem 4.5 setup in `StatInference/Optimization/Theorem45.lean`
+now also compiles: it defines `strongLowerBoundChainObjective` and
+`strongLowerBoundChainGradient`, proves the `alpha`-strong-convex and
+`beta`-smooth supplied interfaces for `0 < alpha < beta`, and proves that
+gradient-span trajectories from zero remain in `V_n`.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and

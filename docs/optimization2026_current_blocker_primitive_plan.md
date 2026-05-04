@@ -965,6 +965,16 @@ The next atomic target is a source-shaped Theorem 4.5 wrapper: combine
 Theorem 4.4's compiled convex smooth lower bound with the Lemma 4.2 reduction
 package, and search mathlib/local APIs for logarithm/asymptotic/iteration-count
 wrappers before introducing any new complexity primitive.
+The concrete regularized-chain setup for Theorem 4.5 also now compiles in
+`StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
+`strongLowerBoundChainGradient`,
+`strongLowerBoundChainObjective_firstOrderStrongConvexOn`,
+`strongLowerBoundChainObjective_smoothWithGradientOn`,
+`strongLowerBoundChainGradient_mem_coordinatePrefixSubmodule`,
+`gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_strongLowerBoundChainGradient`,
+and `chewi45_regularized_chain_interface_package`.  Do not repeat this setup;
+the next missing theorem content is the actual strongly-convex gap/rate
+assembly.
 
 Chapter 2 route context is still available but no longer the active target:
 The route
