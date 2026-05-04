@@ -831,6 +831,67 @@ theorem lowerBoundChainTextbookObjective_gap_ge_of_gradientSpanTrajectory
   exact lowerBoundChainObjective_gap_ge_of_gradientSpanTrajectory
     hbeta hNd hx0 hspan
 
+/--
+Chewi's final norm-scaled lower-bound line before choosing the dimension:
+use `‖x_*‖² ≤ d` to rewrite the finite-dimensional gap in the source scale.
+-/
+theorem lowerBoundChainTextbookObjective_gap_ge_norm_scaled_of_gradientSpanTrajectory
+    {beta : ℝ} (hbeta : 0 ≤ beta) {N d : ℕ} (hNd : N ≤ d)
+    (hdpos : 0 < d) {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory (lowerBoundChainGradient beta d) x) :
+    (beta * ‖lowerBoundChainMinimizer d‖ ^ (2 : ℕ)) / (8 * (d : ℝ)) *
+        (1 / ((N : ℝ) + 1) - 1 / ((d : ℝ) + 1)) ≤
+      lowerBoundChainTextbookObjective beta d (x N) -
+        lowerBoundChainTextbookObjective beta d (lowerBoundChainMinimizer d) := by
+  let diff : ℝ := 1 / ((N : ℝ) + 1) - 1 / ((d : ℝ) + 1)
+  let q : ℝ := ‖lowerBoundChainMinimizer d‖ ^ (2 : ℕ)
+  have hdRpos : 0 < (d : ℝ) := by exact_mod_cast hdpos
+  have hNdenpos : 0 < (N : ℝ) + 1 := by positivity
+  have hddenpos : 0 < (d : ℝ) + 1 := by positivity
+  have hden_order : (N : ℝ) + 1 ≤ (d : ℝ) + 1 := by
+    exact_mod_cast Nat.succ_le_succ hNd
+  have hdiff_nonneg : 0 ≤ diff := by
+    have hinv : 1 / ((d : ℝ) + 1) ≤ 1 / ((N : ℝ) + 1) :=
+      (one_div_le_one_div hddenpos hNdenpos).2 hden_order
+    dsimp [diff]
+    linarith
+  have hA_nonneg : 0 ≤ beta / 8 * diff :=
+    mul_nonneg (div_nonneg hbeta (by norm_num)) hdiff_nonneg
+  have hq_le_d : q ≤ (d : ℝ) := by
+    dsimp [q]
+    exact lowerBoundChainMinimizer_norm_sq_le_dim d
+  have hq_div_le_one : q / (d : ℝ) ≤ 1 := by
+    rw [div_le_one hdRpos]
+    exact hq_le_d
+  have hscaled_le :
+      (beta / 8 * diff) * (q / (d : ℝ)) ≤ beta / 8 * diff := by
+    simpa using mul_le_mul_of_nonneg_left hq_div_le_one hA_nonneg
+  have htarget :
+      (beta * ‖lowerBoundChainMinimizer d‖ ^ (2 : ℕ)) / (8 * (d : ℝ)) *
+          (1 / ((N : ℝ) + 1) - 1 / ((d : ℝ) + 1)) =
+        (beta / 8 * diff) * (q / (d : ℝ)) := by
+    dsimp [q, diff]
+    field_simp [hdRpos.ne']
+  have hraw :
+      beta / (8 * ((N : ℝ) + 1)) -
+          beta / (8 * ((d : ℝ) + 1)) =
+        beta / 8 * diff := by
+    dsimp [diff]
+    field_simp [hNdenpos.ne', hddenpos.ne']
+  have hgap :=
+    lowerBoundChainTextbookObjective_gap_ge_of_gradientSpanTrajectory
+      hbeta hNd hx0 hspan
+  calc
+    (beta * ‖lowerBoundChainMinimizer d‖ ^ (2 : ℕ)) / (8 * (d : ℝ)) *
+        (1 / ((N : ℝ) + 1) - 1 / ((d : ℝ) + 1))
+        = (beta / 8 * diff) * (q / (d : ℝ)) := htarget
+    _ ≤ beta / 8 * diff := hscaled_le
+    _ = beta / (8 * ((N : ℝ) + 1)) -
+          beta / (8 * ((d : ℝ) + 1)) := hraw.symm
+    _ ≤ lowerBoundChainTextbookObjective beta d (x N) -
+        lowerBoundChainTextbookObjective beta d (lowerBoundChainMinimizer d) := hgap
+
 /-- Source-objective `d = 2N + 1` corollary for Chewi Theorem 4.4. -/
 theorem lowerBoundChainTextbookObjective_gap_ge_two_mul_add_one
     {beta : ℝ} (hbeta : 0 ≤ beta) (N : ℕ)
