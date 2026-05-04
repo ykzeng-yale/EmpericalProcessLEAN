@@ -19478,8 +19478,6 @@ structure VdVWTheorem243FullSubgraphSideConditions
   hclass : VdVWClassCoordinateMeasurable indexClass classFun
   henv : Measurable envelope
   henv_integrable : Integrable envelope P
-  hclassIntegrable :
-    ∀ index, index ∈ indexClass -> Integrable (classFun index) P
   hsign :
     ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
       (fun i : Fin n => sign n i ω)
@@ -19632,11 +19630,6 @@ noncomputable def VdVWTheorem243FullSubgraphSideConditions.of_integrable
   hclass := hclass
   henv := henv
   henv_integrable := henv_integrable
-  hclassIntegrable := by
-    intro index hindex
-    exact
-      integrable_classFun_of_integrable_envelope
-        (μ := P) henvelope hclass henv_integrable hindex
   hsign := hsign
   hindep := hindep
   hsubG := hsubG

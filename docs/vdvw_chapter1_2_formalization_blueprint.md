@@ -923,6 +923,8 @@ above, so they do not change the theorem-level dashboard counts.
    finite-threshold, and full-subgraph bridge stack now share this reduction:
    caller-facing ordinary class-member integrability is derived internally
    from the envelope hypotheses.
+   The proof-carrying `VdVWTheorem243FullSubgraphSideConditions` package no
+   longer stores an `hclassIntegrable` field.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

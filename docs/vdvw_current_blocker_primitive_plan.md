@@ -2778,6 +2778,10 @@ finite-threshold, finite-realized-value, canonical envelope, subgraph, and
 full-subgraph bridge stack now also remove caller-facing `hclassIntegrable`
 where the envelope hypotheses are available; the lower-level tail-expectation
 primitive still keeps explicit class integrability for direct users.
+`VdVWTheorem243FullSubgraphSideConditions` also no longer stores a
+`hclassIntegrable` field; package construction still derives the needed
+ordinary member integrability internally whenever a lower-level direct
+primitive requires it.
 
 Next exact theorem-facing edit: move from this proof layer toward the exact
 Theorem 2.4.3 statement by aligning the remaining structural full-subgraph

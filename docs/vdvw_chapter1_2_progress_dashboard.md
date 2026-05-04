@@ -516,6 +516,10 @@ integrability separately.
 integer-grid/finite-threshold/full-subgraph bridge stack now also derive
 ordinary class-member integrability from the envelope; these theorem-facing
 routes no longer take a separate `hclassIntegrable` argument.
+2026-05-04 follow-up: the proof-carrying
+`VdVWTheorem243FullSubgraphSideConditions` package itself no longer stores a
+separate class-member integrability field; all remaining uses are derived
+inside the constructor from the envelope helper.
 2026-05-04 follow-up: constructor
 `VdVWTheorem243FullSubgraphSideConditions.of_integrable` now derives
 `htruncIntegrable` from ordinary class integrability plus the measurable
