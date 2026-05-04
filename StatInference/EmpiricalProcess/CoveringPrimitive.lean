@@ -1,3 +1,4 @@
+import Mathlib.Data.Fintype.Pi
 import Mathlib.Topology.MetricSpace.CoveringNumbers
 import StatInference.EmpiricalProcess.Average
 
@@ -1325,6 +1326,150 @@ theorem empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le
         empiricalL1Distance_le_of_forall_abs_le hepsilon_nonneg
           (hpoint index hindex center hcenter hcode))
       hcard_le
+
+/--
+If each sample coordinate of a code takes values in a finite coordinate code
+set, then the realized vector-code image is finite.
+-/
+theorem finite_coordinateCode_image
+    {Index : Type v} {CoordCode : Type*} [DecidableEq CoordCode] {n : ℕ}
+    {indexClass : Set Index}
+    (code : Index -> Fin n -> CoordCode)
+    (codeSets : Fin n -> Finset CoordCode)
+    (hcode_mem :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n, code index sampleIndex ∈ codeSets sampleIndex) :
+    (code '' indexClass).Finite := by
+  classical
+  let vectorCodeSet : Finset (Fin n -> CoordCode) :=
+    Fintype.piFinset codeSets
+  have himage_subset : code '' indexClass ⊆
+      (vectorCodeSet : Set (Fin n -> CoordCode)) := by
+    rintro coded ⟨index, hindex, rfl⟩
+    exact Fintype.mem_piFinset.2 fun sampleIndex =>
+      hcode_mem index hindex sampleIndex
+  exact vectorCodeSet.finite_toSet.subset himage_subset
+
+/--
+The cardinality of the realized vector-code image is bounded by the product
+of the coordinate code-set cardinalities.
+-/
+theorem coordinateCode_image_toFinset_card_le_prod
+    {Index : Type v} {CoordCode : Type*} [DecidableEq CoordCode] {n : ℕ}
+    {indexClass : Set Index}
+    (code : Index -> Fin n -> CoordCode)
+    (codeSets : Fin n -> Finset CoordCode)
+    (hcode_mem :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n, code index sampleIndex ∈ codeSets sampleIndex) :
+    (finite_coordinateCode_image code codeSets hcode_mem).toFinset.card ≤
+      ∏ sampleIndex : Fin n, (codeSets sampleIndex).card := by
+  classical
+  let codeImage : Set (Fin n -> CoordCode) := code '' indexClass
+  let vectorCodeSet : Finset (Fin n -> CoordCode) :=
+    Fintype.piFinset codeSets
+  have hcode_finite : codeImage.Finite :=
+    finite_coordinateCode_image
+      (indexClass := indexClass) code codeSets hcode_mem
+  have himage_subset : codeImage ⊆
+      (vectorCodeSet : Set (Fin n -> CoordCode)) := by
+    rintro coded ⟨index, hindex, rfl⟩
+    exact Fintype.mem_piFinset.2 fun sampleIndex =>
+      hcode_mem index hindex sampleIndex
+  have hle :
+      codeImage.ncard ≤ (vectorCodeSet : Set (Fin n -> CoordCode)).ncard :=
+    Set.ncard_le_ncard_of_injOn
+      (s := codeImage) (t := (vectorCodeSet : Set (Fin n -> CoordCode)))
+      id (fun coded hcoded => himage_subset hcoded)
+      (by
+        intro coded₁ _ coded₂ _ hcoded
+        simpa using hcoded)
+      vectorCodeSet.finite_toSet
+  have htarget :
+      (vectorCodeSet : Set (Fin n -> CoordCode)).ncard =
+        vectorCodeSet.card := by
+    exact Set.ncard_coe_finset vectorCodeSet
+  have htarget_card :
+      vectorCodeSet.card =
+        ∏ sampleIndex : Fin n, (codeSets sampleIndex).card := by
+    simp [vectorCodeSet]
+  rw [Set.ncard_eq_toFinset_card codeImage hcode_finite, htarget,
+    htarget_card] at hle
+  simpa [codeImage] using hle
+
+/--
+Padded-cardinality cover from a coordinatewise finite code whose equal-code
+classes are pointwise close on the empirical sample.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_pointwise_approx_code_card_le
+    {Observation : Type u} {Index : Type v} {CoordCode : Type*}
+    [DecidableEq CoordCode] {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (code : Index -> Fin n -> CoordCode)
+    (codeSets : Fin n -> Finset CoordCode)
+    (hcode_mem :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n, code index sampleIndex ∈ codeSets sampleIndex)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hpoint :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          code index = code center ->
+            ∀ sampleIndex : Fin n,
+              |classFun index (sample sampleIndex) -
+                classFun center (sample sampleIndex)| ≤ epsilon)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le :
+      (∏ sampleIndex : Fin n, (codeSets sampleIndex).card) ≤ cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  let hcode_finite :
+      (code '' indexClass).Finite :=
+    finite_coordinateCode_image code codeSets hcode_mem
+  exact
+    nonempty_finiteEmpiricalL1CoverAtCard_of_finite_pointwise_approx_code_card_le
+      code hcode_finite hepsilon_nonneg hpoint hindexClass
+      ((coordinateCode_image_toFinset_card_le_prod code codeSets hcode_mem).trans
+        hcard_le)
+
+/--
+Numeric empirical-covering-number bound from a coordinatewise finite pointwise
+approximation code.
+-/
+theorem empiricalL1CoveringNumber_le_of_coordinate_pointwise_approx_code_card_le
+    {Observation : Type u} {Index : Type v} {CoordCode : Type*}
+    [DecidableEq CoordCode] {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (code : Index -> Fin n -> CoordCode)
+    (codeSets : Fin n -> Finset CoordCode)
+    (hcode_mem :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n, code index sampleIndex ∈ codeSets sampleIndex)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hpoint :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          code index = code center ->
+            ∀ sampleIndex : Fin n,
+              |classFun index (sample sampleIndex) -
+                classFun center (sample sampleIndex)| ≤ epsilon)
+    (hcard_le :
+      (∏ sampleIndex : Fin n, (codeSets sampleIndex).card) ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  let hcode_finite :
+      (code '' indexClass).Finite :=
+    finite_coordinateCode_image code codeSets hcode_mem
+  exact
+    empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le
+      code hcode_finite hepsilon_nonneg hpoint
+      ((coordinateCode_image_toFinset_card_le_prod code codeSets hcode_mem).trans
+        hcard_le)
 
 /--
 Padded-cardinality cover from a finite fixed-sample trace image.  Later

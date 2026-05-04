@@ -805,6 +805,15 @@ above, so they do not change the theorem-level dashboard counts.
    pointwise variant
    `empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le`
    lets a grid proof supply coordinatewise absolute-error bounds directly.
+   The coordinate-code layer
+   `finite_coordinateCode_image`,
+   `coordinateCode_image_toFinset_card_le_prod`, and
+   `empiricalL1CoveringNumber_le_of_coordinate_pointwise_approx_code_card_le`
+   now discharges the finite vector-code image and product-cardinality
+   bookkeeping once each sample coordinate has a finite code set.  The
+   remaining theorem-facing work is the actual bounded quantization/grid code
+   and the nontrivial VC/subgraph/grid cardinality estimate, not this finite
+   product-code plumbing.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

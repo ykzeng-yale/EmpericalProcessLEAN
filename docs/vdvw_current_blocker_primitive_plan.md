@@ -2274,3 +2274,37 @@ bounded truncated classes, prove that equal quantized codes imply empirical
 by the VC/subgraph/grid polynomial needed by Theorem 2.4.3.  This is the more
 faithful route for arbitrary real-valued classes than exact threshold
 separation.
+
+2026-05-04 `/goal` update after coordinate-code cardinality bridge:
+`CoveringPrimitive.lean` now adds
+`finite_coordinateCode_image`,
+`coordinateCode_image_toFinset_card_le_prod`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_coordinate_pointwise_approx_code_card_le`,
+and
+`empiricalL1CoveringNumber_le_of_coordinate_pointwise_approx_code_card_le`.
+These declarations close the finite vector-code bookkeeping layer needed by
+the quantized/grid route: if each sample coordinate code lies in a finite
+coordinate code set, then the realized vector-code image is finite and its
+cardinality is bounded by the product of the coordinate code-set
+cardinalities.  The empirical-cover consumers then combine this product bound
+with the existing pointwise approximate-code cover bridge.
+
+Search record: local searches reused the just-added approximate-code cover
+bridge and the older exact finite-trace cover layer in
+`CoveringPrimitive.lean`, plus finite-code cardinality patterns in
+`TraceCoding.lean` and `ThresholdCoding.lean`.  Pinned mathlib search found
+the exact product-code APIs `Fintype.piFinset`, `Fintype.mem_piFinset`,
+`Fintype.card_piFinset`, `Set.ncard_le_ncard_of_injOn`, and
+`Set.ncard_coe_finset`; no local theorem previously supplied this finite
+coordinate-code image/product-cardinality bridge for empirical approximate
+codes.
+
+Next exact theorem-facing edit: define the concrete bounded quantized trace
+code for truncated classes, prove the coordinatewise absolute-error implication
+required by
+`empiricalL1CoveringNumber_le_of_coordinate_pointwise_approx_code_card_le`,
+and replace the crude product bound by a theorem-facing VC/subgraph/grid
+cardinality estimate strong enough for the fixed-radius Theorem 2.4.3
+side-condition package.  If that final cardinality estimate needs an additional
+structural hypothesis, record its exact theorem shape rather than folding it
+into a vague entropy assumption.

@@ -363,6 +363,15 @@ The exact current blocker and the next primitive declarations are maintained
 in `docs/vdvw_current_blocker_primitive_plan.md`; this dashboard should not be
 used as the only source for choosing the next low-level proof target.
 
+2026-05-04 `/goal` monitor update: the finite coordinate-code image/product
+cardinality bridge is now compiled in `CoveringPrimitive.lean` as
+`finite_coordinateCode_image`,
+`coordinateCode_image_toFinset_card_le_prod`, and the coordinate pointwise-code
+empirical-cover consumers.  Do not repeat that bookkeeping layer.  The next
+Theorem 2.4.3 quantized-grid target is the concrete bounded trace code plus
+the VC/subgraph/grid cardinality theorem strong enough to feed the fixed-radius
+side-condition package.
+
 ## Verification Monitor
 
 Latest targeted verification includes the selected terminal/truncated
