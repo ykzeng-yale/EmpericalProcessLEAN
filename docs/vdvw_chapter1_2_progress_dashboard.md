@@ -740,6 +740,14 @@ the truncated and untruncated infinite-product integrability lifts for
 countable centered empirical suprema.  Remaining Lemma 2.4.5 work is the
 actual reverse/permutation-symmetric comparison, not first-coordinate law or
 finite-to-infinite integrability transport.
+2026-05-04 follow-up: the same bridge now has exact integral and `L^p`
+seminorm transport for truncated and untruncated centered empirical suprema:
+`integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_truncated_eq`,
+`eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_truncated_eq`,
+`integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq`, and
+`eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq`.
+Remaining work is the structural reverse/permutation-symmetric comparison
+over `Σ_n`, plus using these identities to discharge the L1-bound input.
 
 ## Verification Monitor
 

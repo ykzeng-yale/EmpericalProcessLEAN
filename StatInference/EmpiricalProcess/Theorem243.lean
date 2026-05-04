@@ -3246,6 +3246,105 @@ theorem integrable_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_tru
       hfinite
 
 /--
+Integral transport for the countable centered truncated empirical supremum
+from the infinite iid product law to the finite product law.
+-/
+theorem integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_truncated_eq
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    {n : ℕ} (weights : Fin n -> ℝ) :
+    (∫ sequence : ℕ -> Observation,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          weights (vdVWFirstNSample n sequence)
+        ∂(vdVWInfiniteProductMeasure P)) =
+      ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          weights sample
+        ∂(vdVWProductMeasure P n) := by
+  let finiteStatistic : SampleAt Observation n -> ℝ :=
+    fun sample =>
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          vdVWTruncatedClassFun classFun envelope M index observation -
+            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+        weights sample
+  have hfinite :
+      Integrable finiteStatistic (vdVWProductMeasure P n) :=
+    integrable_vdVWWeightedClassSupremum_centered_truncated_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M)
+      hcount henvelope hclass henv htruncIntegrable weights
+  simpa [finiteStatistic] using
+    integral_vdVWInfiniteProductMeasure_firstNSample P n finiteStatistic
+      hfinite.aestronglyMeasurable
+
+/--
+`L^p` seminorm transport for the countable centered truncated empirical
+supremum from `P^∞` to `P^n`.
+-/
+theorem eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_truncated_eq
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    {n : ℕ} (weights : Fin n -> ℝ) (p : ℝ≥0∞) :
+    eLpNorm
+      (fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          weights (vdVWFirstNSample n sequence))
+      p (vdVWInfiniteProductMeasure P) =
+      eLpNorm
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            weights sample)
+        p (vdVWProductMeasure P n) := by
+  let finiteStatistic : SampleAt Observation n -> ℝ :=
+    fun sample =>
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          vdVWTruncatedClassFun classFun envelope M index observation -
+            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+        weights sample
+  have hfinite :
+      Integrable finiteStatistic (vdVWProductMeasure P n) :=
+    integrable_vdVWWeightedClassSupremum_centered_truncated_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M)
+      hcount henvelope hclass henv htruncIntegrable weights
+  simpa [finiteStatistic] using
+    eLpNorm_comp_measurePreserving
+      (p := p) hfinite.aestronglyMeasurable
+      (vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n)
+
+/--
 Countable centered untruncated weighted class suprema are measurable under
 coordinate measurability.
 -/
@@ -3377,6 +3476,93 @@ theorem integrable_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_of_
   simpa [finiteStatistic] using
     (vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n).integrable_comp_of_integrable
       hfinite
+
+/--
+Integral transport for the countable centered untruncated empirical supremum
+from the infinite iid product law to the finite product law.
+-/
+theorem integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {n : ℕ} (weights : Fin n -> ℝ) :
+    (∫ sequence : ℕ -> Observation,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          weights (vdVWFirstNSample n sequence)
+        ∂(vdVWInfiniteProductMeasure P)) =
+      ∫ sample : SampleAt Observation n,
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          weights sample
+        ∂(vdVWProductMeasure P n) := by
+  let finiteStatistic : SampleAt Observation n -> ℝ :=
+    fun sample =>
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P)
+        weights sample
+  have hfinite :
+      Integrable finiteStatistic (vdVWProductMeasure P n) :=
+    integrable_vdVWWeightedClassSupremum_centered_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      hcount henvelope hclass henv_integrable weights
+  simpa [finiteStatistic] using
+    integral_vdVWInfiniteProductMeasure_firstNSample P n finiteStatistic
+      hfinite.aestronglyMeasurable
+
+/--
+`L^p` seminorm transport for the countable centered untruncated empirical
+supremum from `P^∞` to `P^n`.
+-/
+theorem eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {n : ℕ} (weights : Fin n -> ℝ) (p : ℝ≥0∞) :
+    eLpNorm
+      (fun sequence : ℕ -> Observation =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          weights (vdVWFirstNSample n sequence))
+      p (vdVWInfiniteProductMeasure P) =
+      eLpNorm
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            weights sample)
+        p (vdVWProductMeasure P n) := by
+  let finiteStatistic : SampleAt Observation n -> ℝ :=
+    fun sample =>
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P)
+        weights sample
+  have hfinite :
+      Integrable finiteStatistic (vdVWProductMeasure P n) :=
+    integrable_vdVWWeightedClassSupremum_centered_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      hcount henvelope hclass henv_integrable weights
+  simpa [finiteStatistic] using
+    eLpNorm_comp_measurePreserving
+      (p := p) hfinite.aestronglyMeasurable
+      (vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n)
 
 /--
 An integrable envelope supplies the varying-domain tail/UI condition for the

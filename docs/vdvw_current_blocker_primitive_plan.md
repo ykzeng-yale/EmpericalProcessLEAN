@@ -3105,3 +3105,20 @@ supremum estimates into the Lemma 2.4.5 infinite-sequence/cofiltration setting.
 The next exact blocker is now more concrete: prove the reverse/permutation
 symmetric comparison itself, using the transported integrability and the
 already-compiled `Σ_n` adaptedness/conditional-expectation convergence layers.
+
+2026-05-04 follow-up: the finite-to-infinite transport has been strengthened
+from law/integrability to exact integral and `L^p` seminorm identities for the
+two empirical-supremum statistics used in the Theorem 2.4.3/Lemma 2.4.5
+handoff.  Search/reuse record: pinned mathlib provides
+`eLpNorm_comp_measurePreserving`; the new proofs also reuse the generic local
+`integral_vdVWInfiniteProductMeasure_firstNSample` and the finite-product
+integrability lemmas.  New compiled declarations are
+`integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_truncated_eq`,
+`eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_truncated_eq`,
+`integral_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq`, and
+`eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_eq`.  These
+are the exact transport tools needed for the L1-boundedness side of the
+reverse-submartingale convergence step.  The remaining blocker is still the
+structural VdV&W comparison identifying or bounding the `Σ_n` process by the
+appropriate conditional expectations; first-sample law, integral, seminorm,
+and integrability transport should not be redone.

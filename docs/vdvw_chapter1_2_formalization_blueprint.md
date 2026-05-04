@@ -1043,9 +1043,10 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWInfiniteProductMeasure_measurePreserving_firstNSample`,
    `vdVWFirstNSample_hasLaw_vdVWProductMeasure`,
    `integral_vdVWInfiniteProductMeasure_firstNSample`, and the truncated and
-   untruncated infinite-product integrability lifts for countable centered
-   empirical suprema.  Thus the next work should not redo first-coordinate
-   law/integrability transport, and should instead prove the structural
+   untruncated infinite-product integrability, integral, and `L^p` seminorm
+   lifts for countable centered empirical suprema.  Thus the next work should
+   not redo first-coordinate law/integrability/integral/seminorm transport,
+   and should instead prove the structural
    reverse/permutation-symmetric comparison itself, not
    the finite permutation, generated-sigma, countable-supremum adaptedness,
    cover-shaped adaptedness, cofiltration substrate, or ordinary conditional
