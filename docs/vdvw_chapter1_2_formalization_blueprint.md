@@ -834,7 +834,14 @@ above, so they do not change the theorem-level dashboard counts.
    remaining theorem-facing work is therefore not nearest-integer or finite
    product-code plumbing; it is the nontrivial VC/subgraph/grid cardinality
    estimate strong enough for the fixed-radius Theorem 2.4.3 side-condition
-   package.
+   package.  The approximate threshold-signature route is now compiled in
+   `ThresholdCoding.lean`: if a finite threshold grid hits every gap wider than
+   `epsilon`, then equal threshold signatures give coordinatewise
+   `epsilon`-closeness, and
+   `empiricalL1CoveringNumber_le_of_thresholdTraceCode_gap_grid_uniform_vc_card_le`
+   combines that approximate-code bridge with fixed-threshold Sauer/VC bounds.
+   The next structural input is the actual bounded truncated-value threshold
+   grid and its fixed threshold count for each fixed `M, epsilon`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

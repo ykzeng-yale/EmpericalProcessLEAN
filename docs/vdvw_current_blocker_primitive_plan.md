@@ -2436,3 +2436,39 @@ hypothesis.  For the general textbook VC/subgraph route, the remaining
 nontrivial blocker is sharper VC/subgraph/grid cardinality control; the plain
 uniform grid count `(2B+1)^n` is too large by itself for normalized
 log-cardinality convergence.
+
+2026-05-04 `/goal` update after approximate threshold-grid closure:
+`ThresholdCoding.lean` now has the missing approximate threshold-signature
+route.  The new compiled declarations are
+`finite_thresholdTraceCode_image`,
+`thresholdTraceCode_image_toFinset_card_le_thresholdTraceCodeSet_card`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_thresholdTraceCode_coordinate_approx_card_le`,
+`empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_card_le`,
+`empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_product_card_le`,
+`abs_sub_le_of_forall_gap_exists_threshold`,
+`empiricalL1CoveringNumber_le_of_thresholdTraceCode_gap_grid_product_card_le`,
+`threshold_binaryTraceSetFamily_product_card_le_uniform_vc`, and
+`empiricalL1CoveringNumber_le_of_thresholdTraceCode_gap_grid_uniform_vc_card_le`.
+This closes the proof-theoretic gap between finite threshold signatures and
+empirical `L1(P_n)` approximation: exact trace separation is no longer needed.
+If a finite threshold grid hits every interval of length greater than
+`epsilon`, equal threshold signatures force coordinatewise `epsilon`-closeness,
+and Sauer/VC bounds for each fixed threshold control the terminal cover
+cardinality by `(((d + 2) * (n + 1)^d)^k)`.
+
+Search record: local search found exact threshold-signature separation,
+finite-value threshold consumers, finite-code approximate cover primitives,
+and Sauer/VC fixed-threshold product bounds, but no theorem combining
+approximate threshold signatures with empirical `L1(P_n)` covers.  The new
+route reuses `thresholdTraceCode_eq_iff_forall_threshold_sample`,
+`thresholdTraceCodeSet_card_le_pi_binaryTraceSetFamily_card`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_pointwise_approx_code_card_le`,
+`empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le`, and
+`threshold_binaryTraceSetFamily_card_le_vc_nat_poly`.
+
+Next exact theorem-facing edit: instantiate the gap-grid hypothesis with an
+actual finite threshold grid for bounded truncated values, then feed the
+resulting empirical-cover bound into the selected fixed-radius Theorem 2.4.3
+side-condition package.  The remaining issue is now choosing/counting a
+finite threshold grid with fixed `k` for each fixed `M, epsilon`, not proving
+that threshold signatures can act as approximate covers.

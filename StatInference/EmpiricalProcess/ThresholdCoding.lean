@@ -486,6 +486,256 @@ theorem thresholdTraceCodeSet_card_le_pi_binaryTraceSetFamily_card
   simpa [piSet] using hcard
 
 /--
+The set of finite-threshold codes realized by `indexClass` is finite.  Unlike
+the exact-separation trace-image route, this keeps only the threshold
+signature image; later approximate-grid arguments use it as a finite
+approximation code.
+-/
+theorem finite_thresholdTraceCode_image
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (thresholds : Finset ℝ) :
+    ((fun index =>
+        thresholdTraceCode thresholds (empiricalTrace sample classFun index)) ''
+      indexClass).Finite := by
+  classical
+  have hsubset :
+      ((fun index =>
+          thresholdTraceCode thresholds (empiricalTrace sample classFun index)) ''
+        indexClass) ⊆
+        (thresholdTraceCodeSet sample indexClass classFun thresholds : Set
+          ({threshold // threshold ∈ thresholds} -> Finset (Fin n))) := by
+    rintro code ⟨index, hindex, rfl⟩
+    exact thresholdTraceCode_mem_thresholdTraceCodeSet hindex
+  exact
+    (thresholdTraceCodeSet sample indexClass classFun thresholds).finite_toSet.subset
+      hsubset
+
+/--
+The realized finite-threshold code image has cardinality bounded by the
+ambient realized-code set.
+-/
+theorem thresholdTraceCode_image_toFinset_card_le_thresholdTraceCodeSet_card
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (thresholds : Finset ℝ) :
+    (finite_thresholdTraceCode_image sample indexClass classFun thresholds).toFinset.card ≤
+      (thresholdTraceCodeSet sample indexClass classFun thresholds).card := by
+  classical
+  let codeImage : Set ({threshold // threshold ∈ thresholds} -> Finset (Fin n)) :=
+    (fun index =>
+        thresholdTraceCode thresholds (empiricalTrace sample classFun index)) ''
+      indexClass
+  let codeSet : Finset ({threshold // threshold ∈ thresholds} -> Finset (Fin n)) :=
+    thresholdTraceCodeSet sample indexClass classFun thresholds
+  have hsubset : codeImage ⊆ (codeSet : Set
+      ({threshold // threshold ∈ thresholds} -> Finset (Fin n))) := by
+    rintro code ⟨index, hindex, rfl⟩
+    exact thresholdTraceCode_mem_thresholdTraceCodeSet hindex
+  have hfinite : codeImage.Finite :=
+    finite_thresholdTraceCode_image sample indexClass classFun thresholds
+  have hle :
+      codeImage.ncard ≤ (codeSet : Set
+        ({threshold // threshold ∈ thresholds} -> Finset (Fin n))).ncard :=
+    Set.ncard_le_ncard hsubset codeSet.finite_toSet
+  simpa [codeImage, codeSet, Set.ncard_eq_toFinset_card codeImage hfinite]
+    using hle
+
+/--
+Approximate empirical-cover bridge from finite threshold signatures.  If
+matching all threshold comparisons on a coordinate forces the two realized
+values to be within `epsilon`, then the threshold signature is a finite
+`L1(P_n)` approximation code.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_thresholdTraceCode_coordinate_approx_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {epsilon : ℝ} {cardinality : ℕ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hcoordinate :
+      ∀ sampleIndex : Fin n,
+        ∀ index, index ∈ indexClass ->
+          ∀ center, center ∈ indexClass ->
+            (∀ threshold : {threshold // threshold ∈ thresholds},
+              (threshold.1 < classFun index (sample sampleIndex) ↔
+                threshold.1 < classFun center (sample sampleIndex))) ->
+            |classFun index (sample sampleIndex) -
+              classFun center (sample sampleIndex)| ≤ epsilon)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le :
+      (finite_thresholdTraceCode_image sample indexClass classFun thresholds).toFinset.card ≤
+        cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  exact
+    nonempty_finiteEmpiricalL1CoverAtCard_of_finite_pointwise_approx_code_card_le
+      (fun index =>
+        thresholdTraceCode thresholds (empiricalTrace sample classFun index))
+      (finite_thresholdTraceCode_image sample indexClass classFun thresholds)
+      hepsilon_nonneg
+      (fun index hindex center hcenter hcode sampleIndex =>
+        hcoordinate sampleIndex index hindex center hcenter
+          (fun threshold =>
+            by
+              have hiff :=
+                (thresholdTraceCode_eq_iff_forall_threshold_sample.mp hcode)
+                  threshold sampleIndex
+              simpa [empiricalTrace] using hiff))
+      hindexClass hcard_le
+
+/--
+Numeric empirical-covering-number bound from finite threshold signatures and a
+coordinatewise approximate-separation hypothesis.
+-/
+theorem empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {epsilon : ℝ} {cardinality : ℕ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hcoordinate :
+      ∀ sampleIndex : Fin n,
+        ∀ index, index ∈ indexClass ->
+          ∀ center, center ∈ indexClass ->
+            (∀ threshold : {threshold // threshold ∈ thresholds},
+              (threshold.1 < classFun index (sample sampleIndex) ↔
+                threshold.1 < classFun center (sample sampleIndex))) ->
+            |classFun index (sample sampleIndex) -
+              classFun center (sample sampleIndex)| ≤ epsilon)
+    (hcard_le :
+      (finite_thresholdTraceCode_image sample indexClass classFun thresholds).toFinset.card ≤
+        cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le
+      (fun index =>
+        thresholdTraceCode thresholds (empiricalTrace sample classFun index))
+      (finite_thresholdTraceCode_image sample indexClass classFun thresholds)
+      hepsilon_nonneg
+      (fun index hindex center hcenter hcode sampleIndex =>
+        hcoordinate sampleIndex index hindex center hcenter
+          (fun threshold =>
+            by
+              have hiff :=
+                (thresholdTraceCode_eq_iff_forall_threshold_sample.mp hcode)
+                  threshold sampleIndex
+              simpa [empiricalTrace] using hiff))
+      hcard_le
+
+/--
+Approximate empirical-cover bridge from threshold signatures with the terminal
+cardinality bounded by the product of the fixed-threshold binary trace-family
+cardinalities.
+-/
+theorem empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_product_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {epsilon : ℝ} {cardinality : ℕ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hcoordinate :
+      ∀ sampleIndex : Fin n,
+        ∀ index, index ∈ indexClass ->
+          ∀ center, center ∈ indexClass ->
+            (∀ threshold : {threshold // threshold ∈ thresholds},
+              (threshold.1 < classFun index (sample sampleIndex) ↔
+                threshold.1 < classFun center (sample sampleIndex))) ->
+            |classFun index (sample sampleIndex) -
+              classFun center (sample sampleIndex)| ≤ epsilon)
+    (hcard_le :
+      (∏ threshold ∈ thresholds.attach,
+          (empiricalBinaryTraceSetFamily sample indexClass
+            (thresholdIndicatorClassFun classFun threshold.1)).card) ≤
+        cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  refine
+    empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_card_le
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) hepsilon_nonneg hcoordinate ?_
+  exact
+    (thresholdTraceCode_image_toFinset_card_le_thresholdTraceCodeSet_card
+      sample indexClass classFun thresholds).trans
+      ((thresholdTraceCodeSet_card_le_pi_binaryTraceSetFamily_card
+        sample indexClass classFun thresholds).trans hcard_le)
+
+/--
+If every interval of length greater than `epsilon` contains a threshold, then
+two real values with the same threshold comparisons are within `epsilon`.
+This is the deterministic grid lemma behind approximate threshold coding.
+-/
+theorem abs_sub_le_of_forall_gap_exists_threshold
+    {thresholds : Finset ℝ} {epsilon x y : ℝ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hgrid :
+      ∀ a b : ℝ, a < b -> epsilon < b - a ->
+        ∃ threshold : {threshold // threshold ∈ thresholds},
+          a ≤ threshold.1 ∧ threshold.1 < b)
+    (hcompare :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (threshold.1 < x ↔ threshold.1 < y)) :
+    |x - y| ≤ epsilon := by
+  by_cases hxy : x ≤ y
+  · have hyx_le : y - x ≤ epsilon := by
+      by_contra hnot
+      have hgap : epsilon < y - x := lt_of_not_ge hnot
+      have hlt : x < y := by
+        by_contra hnot_lt
+        have hyx : y ≤ x := le_of_not_gt hnot_lt
+        have hsub_nonpos : y - x ≤ 0 := sub_nonpos.mpr hyx
+        linarith
+      rcases hgrid x y hlt hgap with ⟨threshold, hx_le_t, ht_lt_y⟩
+      have ht_lt_x : threshold.1 < x := (hcompare threshold).mpr ht_lt_y
+      exact (not_lt_of_ge hx_le_t) ht_lt_x
+    rw [abs_of_nonpos (sub_nonpos.mpr hxy)]
+    linarith
+  · have hyx : y < x := lt_of_not_ge hxy
+    have hxy_le : x - y ≤ epsilon := by
+      by_contra hnot
+      have hgap : epsilon < x - y := lt_of_not_ge hnot
+      rcases hgrid y x hyx hgap with ⟨threshold, hy_le_t, ht_lt_x⟩
+      have ht_lt_y : threshold.1 < y := (hcompare threshold).mp ht_lt_x
+      exact (not_lt_of_ge hy_le_t) ht_lt_y
+    rw [abs_of_pos (sub_pos.mpr hyx)]
+    exact hxy_le
+
+/--
+Threshold-grid empirical-covering-number bound: a finite threshold grid whose
+points hit every gap wider than `epsilon` makes matching threshold signatures
+an `epsilon`-accurate empirical `L1(P_n)` code.
+-/
+theorem empiricalL1CoveringNumber_le_of_thresholdTraceCode_gap_grid_product_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {epsilon : ℝ} {cardinality : ℕ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hgrid :
+      ∀ a b : ℝ, a < b -> epsilon < b - a ->
+        ∃ threshold : {threshold // threshold ∈ thresholds},
+          a ≤ threshold.1 ∧ threshold.1 < b)
+    (hcard_le :
+      (∏ threshold ∈ thresholds.attach,
+          (empiricalBinaryTraceSetFamily sample indexClass
+            (thresholdIndicatorClassFun classFun threshold.1)).card) ≤
+        cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_product_card_le
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) hepsilon_nonneg
+      (fun sampleIndex index hindex center hcenter hcompare =>
+        abs_sub_le_of_forall_gap_exists_threshold hepsilon_nonneg hgrid
+          hcompare)
+      hcard_le
+
+/--
 Composed threshold-coding cardinality bound for real empirical traces:
 if finite threshold signatures separate the trace image, then the trace-image
 cardinality is bounded by the product of the individual threshold binary trace
@@ -936,6 +1186,69 @@ theorem threshold_binaryTraceSetFamily_card_le_vc_nat_poly
         (thresholdIndicatorClassFun classFun threshold.1))
       (N := n) (d := d) (by simp) (hvc threshold)
   exact (Nat.le_succ _).trans hadd_one
+
+/--
+Uniform fixed-threshold VC/Sauer bounds control the product of the
+fixed-threshold binary trace-family cardinalities.
+-/
+theorem threshold_binaryTraceSetFamily_product_card_le_uniform_vc
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {thresholds : Finset ℝ}
+    (hthresholds_card : thresholds.card ≤ k)
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d) :
+    (∏ threshold ∈ thresholds.attach,
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card) ≤
+      (((d + 2) * (n + 1) ^ d) ^ k) := by
+  let base : ℕ := (d + 2) * (n + 1) ^ d
+  have hbase_pos : 0 < base := by
+    dsimp [base]
+    exact Nat.mul_pos (Nat.succ_pos (d + 1)) (pow_pos (Nat.succ_pos n) d)
+  have hbase :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).card ≤
+          base := by
+    intro threshold
+    exact threshold_binaryTraceSetFamily_card_le_vc_nat_poly
+      sample indexClass classFun hvc threshold
+  simpa [base] using
+    threshold_binaryTraceSetFamily_product_card_le_const_pow_of_card_le
+      sample indexClass classFun thresholds hbase_pos hthresholds_card hbase
+
+/--
+Finite threshold grids plus uniform fixed-threshold VC/Sauer bounds yield a
+numeric empirical covering-number bound through approximate threshold coding.
+-/
+theorem empiricalL1CoveringNumber_le_of_thresholdTraceCode_gap_grid_uniform_vc_card_le
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {epsilon : ℝ} {cardinality : ℕ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hgrid :
+      ∀ a b : ℝ, a < b -> epsilon < b - a ->
+        ∃ threshold : {threshold // threshold ∈ thresholds},
+          a ≤ threshold.1 ∧ threshold.1 < b)
+    (hthresholds_card : thresholds.card ≤ k)
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d)
+    (hcard_le : (((d + 2) * (n + 1) ^ d) ^ k) ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_thresholdTraceCode_gap_grid_product_card_le
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) hepsilon_nonneg hgrid
+      ((threshold_binaryTraceSetFamily_product_card_le_uniform_vc
+        sample indexClass classFun hthresholds_card hvc).trans hcard_le)
 
 /--
 Uniform fixed-threshold VC/Sauer bounds, finite threshold separation, and a

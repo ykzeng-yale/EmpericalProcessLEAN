@@ -403,6 +403,16 @@ use this only under honest finite/discretized hypotheses and prove the sharper
 VC/subgraph/grid cardinality control needed for the general Theorem 2.4.3
 fixed-radius side-condition package.
 
+2026-05-04 follow-up: the general VC/subgraph route now has an approximate
+threshold-signature empirical-cover bridge in `ThresholdCoding.lean`.
+`empiricalL1CoveringNumber_le_of_thresholdTraceCode_gap_grid_uniform_vc_card_le`
+combines a finite threshold grid hitting every gap wider than `epsilon`, fixed
+threshold-count `k`, and uniform VC dimension `d` of the threshold indicator
+families to bound the empirical covering number by
+`(((d + 2) * (n + 1)^d)^k)`.  Next target: instantiate the finite gap-grid
+condition for bounded truncated values and package the resulting fixed-radius
+selected side conditions for Theorem 2.4.3.
+
 ## Verification Monitor
 
 Latest targeted verification includes the selected terminal/truncated
