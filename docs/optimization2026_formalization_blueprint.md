@@ -647,8 +647,22 @@ the exact log-quotient conversion now compiles as
 `exercise42_iteration_count_ge_logQuotientRate_of_sq_geometric_eps_lower_bound`
 and
 `exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min`.
-Only the objective's first-order/gradient package remains on this infinite
-Exercise 4.2 route.
+The concrete gradient is now a genuine `ell^2` oracle too:
+`exercise42Infinite_shiftForward_memℓp_two`,
+`exercise42Infinite_shiftBackwardZero_memℓp_two`,
+`exercise42Infinite_predecessor_memℓp_two`,
+`exercise42InfiniteChainGradient_memℓp_two`,
+`exercise42InfiniteChainGradientLp`,
+`exercise42InfiniteChainGradientLp_apply`,
+`exercise42InfiniteChainGradientLp_mem_prefixSubmodule`,
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder_concreteGradient`,
+and
+`exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min_concreteGradient`.
+This search-first step reused mathlib/local `Memℓp.add/sub/const_smul`,
+`lp.single`, and `summable_nat_add_iff` to avoid any new sequence-space
+primitive.  Only the objective's concrete `FirstOrderStrongConvexOn` package
+for `exercise42InfiniteChainGradientLp` remains on this infinite Exercise 4.2
+route.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

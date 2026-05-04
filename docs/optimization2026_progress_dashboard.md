@@ -335,9 +335,23 @@ The exact infinite log bridge now compiles as
 `exercise42_iteration_count_ge_logQuotientRate_of_sq_geometric_eps_lower_bound`
 and
 `exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min`.
-Next, prove/supply the concrete objective's `FirstOrderStrongConvexOn` package
-with the compiled coordinate gradient; the geometric obstruction and
-log-quotient conversion are already available.  In parallel, specialize the remaining
+The newest concrete-gradient pass proves that the coordinate hard-chain
+gradient is itself an `ell^2` oracle:
+`exercise42Infinite_shiftForward_memℓp_two`,
+`exercise42Infinite_shiftBackwardZero_memℓp_two`,
+`exercise42Infinite_predecessor_memℓp_two`,
+`exercise42InfiniteChainGradient_memℓp_two`,
+`exercise42InfiniteChainGradientLp`,
+`exercise42InfiniteChainGradientLp_apply`,
+`exercise42InfiniteChainGradientLp_mem_prefixSubmodule`,
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder_concreteGradient`,
+and
+`exercise42InfiniteChainObjective_logQuotientRate_le_of_firstOrder_near_min_concreteGradient`.
+This removes the supplied coordinate-gradient formula from the direct
+infinite Exercise 4.2 route.  Next, prove the concrete objective's
+`FirstOrderStrongConvexOn` package for `exercise42InfiniteChainGradientLp`;
+the geometric obstruction and log-quotient conversion are already available.
+In parallel, specialize the remaining
 reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.  Search
