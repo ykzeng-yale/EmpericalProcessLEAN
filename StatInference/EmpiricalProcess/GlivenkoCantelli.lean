@@ -743,6 +743,21 @@ def VdVWPGlivenkoCantelliClass
     VdVWOuterAlmostSurePGlivenkoCantelliClass μ P indexClass classFun X
 
 /--
+The book-style `P`-Glivenko-Cantelli predicate accepts an outer-probability
+uniform-deviation proof as its first branch.
+-/
+theorem vdVWPGlivenkoCantelliClass_of_outerProbability
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {μ : Measure Ω} {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {X : ℕ -> Ω -> Observation}
+    (h :
+      VdVWOuterProbabilityPGlivenkoCantelliClass μ P indexClass classFun X) :
+    VdVWPGlivenkoCantelliClass μ P indexClass classFun X :=
+  Or.inl h
+
+/--
 Primitive finite `L1(P)` bracketing numbers at every positive radius imply the
 named almost-sure pathwise uniform-deviation conclusion for iid observations.
 -/

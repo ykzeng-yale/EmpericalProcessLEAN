@@ -584,6 +584,13 @@ and `VdVWOuterProbabilityPGlivenkoCantelliClass_of_finite_indexClass_canonical`.
 The bridge uses `vdVWInfiniteProductMeasure_measurePreserving_firstNSample`
 and mathlib `Measure.le_map_apply`, so it works for arbitrary outer bad events
 without requiring measurable bad-event sets.
+2026-05-04 `/goal` follow-up: the fixed-iid outer-probability branch is now
+packaged into the local book-style `P`-Glivenko-Cantelli predicate, together
+with the current in-mean conclusion.  New compiled declarations are
+`vdVWPGlivenkoCantelliClass_of_outerProbability`,
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical`,
+and
+`VdVWTheorem243_finite_indexClass_pGlivenkoCantelli_and_inMean_canonical`.
 2026-05-04 follow-up: the in-mean adapter layer has started.  New compiled
 declarations are
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`

@@ -948,6 +948,15 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWOuterProbabilityPGlivenkoCantelliClass_of_finite_indexClass_canonical`.
    This uses the existing first-`n` coordinate law and mathlib
    `Measure.le_map_apply`, so no measurable-bad-event assumption is introduced.
+   The outer-probability branch is now also consumed by the local book-style
+   disjunction through `vdVWPGlivenkoCantelliClass_of_outerProbability`, and
+   theorem-facing packages
+   `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical`
+   and
+   `VdVWTheorem243_finite_indexClass_pGlivenkoCantelli_and_inMean_canonical`
+   return both the canonical fixed-iid `VdVWPGlivenkoCantelliClass` conclusion
+   and the current in-mean centered-supremum conclusion under their respective
+   structural hypotheses.
    The in-mean bridge has also started: the generic adapter
    `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`
    and the full-subgraph consumer

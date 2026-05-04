@@ -2828,6 +2828,20 @@ bridge without adding a measurability assumption.  Remaining Theorem 2.4.3
 work is still the exact general structural entropy/full-subgraph alignment and
 the almost-sure reverse/cofiltration Lemma 2.4.5 route.
 
+2026-05-04 `/goal` follow-up: the fixed-iid outer-probability branch is now
+consumed by the local book-style `P`-Glivenko-Cantelli disjunction.  New
+compiled declarations are
+`vdVWPGlivenkoCantelliClass_of_outerProbability`,
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical`,
+and
+`VdVWTheorem243_finite_indexClass_pGlivenkoCantelli_and_inMean_canonical`.
+These packages return the book-style `VdVWPGlivenkoCantelliClass` on the
+canonical infinite iid sample space together with the current ordinary in-mean
+centered-supremum conclusion.  They are theorem-facing endpoint packages under
+the current full-subgraph or finite-class hypotheses, not exact textbook
+Theorem 2.4.3: the remaining gap is still the general entropy/structural
+alignment plus the a.s. reverse-submartingale route.
+
 2026-05-04 follow-up: the first in-mean Theorem 2.4.3 adapter is now compiled.
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`
 specializes the existing varying-domain tail/UI mean theorem

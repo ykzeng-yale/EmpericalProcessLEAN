@@ -24538,6 +24538,57 @@ theorem
         hvc hindexClass henvelope hclass henv henv_integrable
 
 /--
+Canonical full-subgraph Theorem 2.4.3 route, packaged in the local
+book-style `P`-Glivenko-Cantelli predicate on the canonical infinite iid
+sample space, together with the current in-mean centered-supremum conclusion.
+
+This is still not the exact textbook theorem: it keeps the current
+full-subgraph structural hypothesis explicit and does not include the
+almost-sure reverse-submartingale conclusion.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) := by
+  constructor
+  · exact
+      vdVWPGlivenkoCantelliClass_of_outerProbability
+        (VdVWOuterProbabilityPGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (vcDegree := vcDegree)
+          hvc hindexClass henvelope hclass henv henv_integrable)
+  · exact
+      integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_fullSubgraph_integrable_of_countable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable
+
+/--
 Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the
 canonical terminal sample-path process.
 
@@ -24729,6 +24780,49 @@ theorem
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
         henv_integrable
+  · exact
+      integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
+        henv_integrable
+
+/--
+Canonical finite-class Theorem 2.4.3 route, packaged in the local book-style
+`P`-Glivenko-Cantelli predicate on the canonical infinite iid sample space,
+together with the current in-mean centered-supremum conclusion.
+-/
+theorem
+    VdVWTheorem243_finite_indexClass_pGlivenkoCantelli_and_inMean_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) := by
+  constructor
+  · exact
+      vdVWPGlivenkoCantelliClass_of_outerProbability
+        (VdVWOuterProbabilityPGlivenkoCantelliClass_of_finite_indexClass_canonical
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
+          henv_integrable)
   · exact
       integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical
         (P := P) (indexClass := indexClass) (classFun := classFun)
