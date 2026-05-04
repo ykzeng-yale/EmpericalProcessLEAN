@@ -41,6 +41,26 @@ acceptable only when it is the fastest verified dependency for the active proof
 route or when the exact theorem target is blocked and the blocker is recorded
 precisely.
 
+Manual goal acceleration mode: avoid tiny push loops when other agents are
+moving `origin/main`.  Prefer theorem packets with focused `lake env lean`
+checks during development, route-doc updates after a verified packet, then a
+single `lake build StatInference`/scan/commit/push gate for the batch.  Use
+read-only scout agents to map future chapters and mathlib APIs while the main
+thread proves the active theorem layer.  The current scout map says:
+
+- Chapters 6-8 should start with local `Subgradient.lean`,
+  `ProjectedSubgradient.lean`, `FrankWolfe.lean`, and `Proximal.lean`,
+  using source-shaped algorithmic interfaces before heavy extended-real
+  convex analysis.
+- Chapters 9-11 should start with `Fenchel.lean`, `Bregman.lean`,
+  `MirrorDescent.lean`, and `AlternatingProjection.lean`, emphasizing
+  Fenchel-Young, Bregman divergence, relative convexity/smoothness, and ABP
+  telescoping wrappers.
+- Chapters 12-13/Appendix A should start with `MatrixOrder.lean`,
+  `StochasticGradient.lean`, `SMPGD.lean`, `Newton.lean`, and
+  `SelfConcordance.lean`, reusing local empirical/probability wrappers plus
+  mathlib matrix/spectral and finite-dimensional APIs.
+
 ## Manual Goal Prompt
 
 The active app-level `/goal` text is immutable in the current tool surface
@@ -1418,29 +1438,38 @@ and direction formulas as `IsCGDisplayedIteration`.  The compiled bridges
 `IsCGDisplayedIteration.to_isCGKrylovRecurrence`, and
 `IsCGDisplayedIteration.cgDirectionSubmodule_eq_krylovSubmodule` now derive
 Lemma 5.1 from the displayed coefficient formulas plus the exposed nonzero
-residual/A-norm side conditions.
+residual/A-norm side conditions.  The latest termination pass adds the
+source branch `residual_succ_mem_cgDirectionSubmodule_of_direction_succ_eq_zero`,
+`residual_succ_eq_zero_of_direction_succ_eq_zero_and_orthogonal`, and
+`quadraticObjective_isMinOn_of_direction_succ_eq_zero_and_orthogonal`, plus
+the finite-dimensional counting core
+`exists_residual_eq_zero_of_pairwise_orthogonal` and the Theorem 5.3-facing
+wrapper `exists_quadraticObjective_isMinOn_of_pairwise_orthogonal_residuals`.
+These prove that mutually orthogonal residuals identifying with quadratic
+gradients force a global minimizer among the first `finrank ℝ E + 1` iterates.
 Search-first result: mathlib has continuous linear maps,
 `continuous_id.inner`, `Continuous.inner`, `real_inner_comm`,
 `Function.iterate_succ_apply'`, `Submodule.span_induction`,
 `Submodule.span_mono`, inverse scalar algebra via `smul_smul` and
 `inv_mul_cancel₀`, coefficient nonzero APIs `div_ne_zero`, `neg_ne_zero`,
-`pow_ne_zero`, and `norm_ne_zero_iff`, and `Submodule.orthogonal` APIs;
+`pow_ne_zero`, and `norm_ne_zero_iff`, finite-dimensional orthogonal-family
+APIs `LinearMap.BilinForm.linearIndependent_of_iIsOrtho`,
+`LinearIndependent.fintype_card_le_finrank`, and `innerₗ`, and
+`Submodule.orthogonal` APIs;
 self-adjoint/positive
 operator APIs under `Analysis/InnerProductSpace/Positive.lean` should be
 searched before adding a future spectral bridge.  The current substrate
 deliberately uses supplied quadratic-form bounds so it can reuse local
 `FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and minimizer wrappers
-without waiting for a full spectral theorem bridge.  Next target: package
-Theorem 5.3 termination using finite-dimensional A-orthogonal nonzero
-directions.  First prove the residual-zero termination branch (`p_{n+1}=0`
-and residual orthogonality imply `quadraticGradient A b x = 0`) from the
-current `IsCGResidualExactnessState` wrapper, then add the finite-dimensional
-counting interface that an A-orthogonal family in `ℝ^d` cannot have more than
-`d` nonzero directions.  For Theorem 5.4, first package the textbook proof
-assumptions explicitly: CG descent comparison against one GD step, gradient
-orthogonality, finite sum of squared gradients, Cauchy-Schwarz, and the
-restart/halving argument.  Do not redo the Chapter 3 descent lemma, Chapter 4
-gradient-span interfaces, or Chapter 4 hard-instance packages.
+without waiting for a full spectral theorem bridge.  Next target: connect the
+displayed CG algorithm to the residual-orthogonality and residual-gradient
+invariants required by `exists_quadraticObjective_isMinOn_of_pairwise_orthogonal_residuals`,
+then state the exact Theorem 5.3 termination wrapper.  For Theorem 5.4, first
+package the textbook proof assumptions explicitly: CG descent comparison
+against one GD step, gradient orthogonality, finite sum of squared gradients,
+Cauchy-Schwarz, and the restart/halving argument.  Do not redo the Chapter 3
+descent lemma, Chapter 4 gradient-span interfaces, or Chapter 4 hard-instance
+packages.
 
 Chapter 2 route context is still available but no longer the active target:
 The route

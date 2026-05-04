@@ -1,3 +1,4 @@
+import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
 import StatInference.Optimization.Minimizer
 
 /-!
@@ -558,6 +559,119 @@ theorem IsCGDisplayedIteration.cgDirectionSubmodule_eq_krylovSubmodule
     (h : IsCGDisplayedIteration A p0 r p) (n : ℕ) :
     cgDirectionSubmodule p n = krylovSubmodule A p0 n :=
   h.to_isCGThreeTermRecurrence.cgDirectionSubmodule_eq_krylovSubmodule n
+
+/--
+If the displayed direction update has `p_{n+1}=0`, then the next residual
+already belongs to the previous direction span `span {p₀,...,p_n}`.
+-/
+theorem residual_succ_mem_cgDirectionSubmodule_of_direction_succ_eq_zero
+    {r p : ℕ → E} {gamma : ℕ → ℝ} {n : ℕ}
+    (hdir : p (n + 1) = r (n + 1) + gamma n • p n)
+    (hpzero : p (n + 1) = 0) :
+    r (n + 1) ∈ cgDirectionSubmodule p n := by
+  have hp_mem : p n ∈ cgDirectionSubmodule p n :=
+    cgDirection_mem_cgDirectionSubmodule p n
+  have hsum : r (n + 1) + gamma n • p n = 0 := by
+    rw [← hdir, hpzero]
+  have hres_eq : r (n + 1) = -(gamma n • p n) :=
+    eq_neg_of_add_eq_zero_left hsum
+  rw [hres_eq]
+  exact Submodule.neg_mem _ (Submodule.smul_mem _ (gamma n) hp_mem)
+
+/--
+The termination branch in the proof of Chewi Theorem 5.3: if `p_{n+1}=0`
+and the next residual is orthogonal to the previous direction span, then the
+next residual vanishes.
+-/
+theorem residual_succ_eq_zero_of_direction_succ_eq_zero_and_orthogonal
+    {r p : ℕ → E} {gamma : ℕ → ℝ} {n : ℕ}
+    (hdir : p (n + 1) = r (n + 1) + gamma n • p n)
+    (hpzero : p (n + 1) = 0)
+    (horth : IsOrthogonalToSubmodule (r (n + 1)) (cgDirectionSubmodule p n)) :
+    r (n + 1) = 0 :=
+  eq_zero_of_mem_submodule_and_orthogonal
+    (residual_succ_mem_cgDirectionSubmodule_of_direction_succ_eq_zero hdir hpzero)
+    horth
+
+/--
+The same termination branch as a quadratic-minimizer wrapper: once the
+vanishing residual is identified with the quadratic gradient at the current
+point, that point globally minimizes the quadratic objective.
+-/
+theorem quadraticObjective_isMinOn_of_direction_succ_eq_zero_and_orthogonal
+    {A : E →L[ℝ] E} {b x : E} {r p : ℕ → E} {gamma : ℕ → ℝ}
+    {n : ℕ} {alpha : ℝ}
+    (hA_sym : IsSelfAdjointOperator A)
+    (hlower : QuadraticFormLowerBound A alpha)
+    (halpha_nonneg : 0 ≤ alpha)
+    (hres_grad : r (n + 1) = quadraticGradient A b x)
+    (hdir : p (n + 1) = r (n + 1) + gamma n • p n)
+    (hpzero : p (n + 1) = 0)
+    (horth : IsOrthogonalToSubmodule (r (n + 1)) (cgDirectionSubmodule p n)) :
+    IsMinOn (quadraticObjective A b) Set.univ x := by
+  have hr_zero : r (n + 1) = 0 :=
+    residual_succ_eq_zero_of_direction_succ_eq_zero_and_orthogonal hdir hpzero horth
+  have hgrad_zero : quadraticGradient A b x = 0 := by
+    rw [← hres_grad]
+    exact hr_zero
+  exact quadraticObjective_isMinOn_of_apply_eq hA_sym hlower halpha_nonneg
+    ((quadraticGradient_eq_zero_iff A b x).1 hgrad_zero)
+
+/--
+Finite-dimensional counting core for Chewi Theorem 5.3: among the first
+`finrank ℝ E + 1` mutually orthogonal residuals, one must vanish.
+-/
+theorem exists_residual_eq_zero_of_pairwise_orthogonal
+    [FiniteDimensional ℝ E] (r : ℕ → E)
+    (horth : ∀ i j : ℕ, i ≠ j → inner ℝ (r i) (r j) = 0) :
+    ∃ n ≤ Module.finrank ℝ E, r n = 0 := by
+  let d := Module.finrank ℝ E
+  by_contra hnone
+  have hne : ∀ n, n ≤ d → r n ≠ 0 := by
+    intro n hn hzero
+    exact hnone ⟨n, hn, hzero⟩
+  let v : Fin (d + 1) → E := fun i => r i.val
+  have hiortho : LinearMap.BilinForm.iIsOrtho (innerₗ E) v := by
+    intro i j hij
+    dsimp [v]
+    exact horth i.val j.val (fun hval => hij (Fin.ext hval))
+  have hself : ∀ i, ¬LinearMap.BilinForm.IsOrtho (innerₗ E) (v i) (v i) := by
+    intro i hi
+    have hinner' : (innerₗ E) (v i) (v i) = 0 := hi
+    have hinner : inner ℝ (r i.val) (r i.val) = 0 := by
+      simpa [v] using hinner'
+    have hnormsq : ‖r i.val‖ ^ (2 : ℕ) = 0 := by
+      simpa [real_inner_self_eq_norm_sq] using hinner
+    have hzero : r i.val = 0 :=
+      norm_eq_zero.mp (sq_eq_zero_iff.mp hnormsq)
+    exact hne i.val (Nat.le_of_lt_succ i.isLt) hzero
+  have hli : LinearIndependent ℝ v :=
+    LinearMap.BilinForm.linearIndependent_of_iIsOrtho hiortho hself
+  have hcard : Fintype.card (Fin (d + 1)) ≤ Module.finrank ℝ E :=
+    hli.fintype_card_le_finrank
+  simp [d] at hcard
+
+/--
+Finite-dimensional Theorem 5.3-facing wrapper: if the residuals are mutually
+orthogonal and identify with the quadratic gradients, one of the first
+`finrank ℝ E + 1` iterates is already a global minimizer.
+-/
+theorem exists_quadraticObjective_isMinOn_of_pairwise_orthogonal_residuals
+    [FiniteDimensional ℝ E] {A : E →L[ℝ] E} {b : E}
+    {x r : ℕ → E} {alpha : ℝ}
+    (hA_sym : IsSelfAdjointOperator A)
+    (hlower : QuadraticFormLowerBound A alpha)
+    (halpha_nonneg : 0 ≤ alpha)
+    (horth : ∀ i j : ℕ, i ≠ j → inner ℝ (r i) (r j) = 0)
+    (hres_grad : ∀ n, r n = quadraticGradient A b (x n)) :
+    ∃ n ≤ Module.finrank ℝ E, IsMinOn (quadraticObjective A b) Set.univ (x n) := by
+  rcases exists_residual_eq_zero_of_pairwise_orthogonal r horth with ⟨n, hn, hr_zero⟩
+  refine ⟨n, hn, ?_⟩
+  have hgrad_zero : quadraticGradient A b (x n) = 0 := by
+    rw [← hres_grad n]
+    exact hr_zero
+  exact quadraticObjective_isMinOn_of_apply_eq hA_sym hlower halpha_nonneg
+    ((quadraticGradient_eq_zero_iff A b (x n)).1 hgrad_zero)
 
 end Optimization
 end StatInference

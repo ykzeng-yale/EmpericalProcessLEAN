@@ -943,6 +943,11 @@ Chapter 5 acceleration/conjugate-gradient expansion has now started in
 - `StatInference.Optimization.IsCGDisplayedIteration.to_isCGThreeTermRecurrence`
 - `StatInference.Optimization.IsCGDisplayedIteration.to_isCGKrylovRecurrence`
 - `StatInference.Optimization.IsCGDisplayedIteration.cgDirectionSubmodule_eq_krylovSubmodule`
+- `StatInference.Optimization.residual_succ_mem_cgDirectionSubmodule_of_direction_succ_eq_zero`
+- `StatInference.Optimization.residual_succ_eq_zero_of_direction_succ_eq_zero_and_orthogonal`
+- `StatInference.Optimization.quadraticObjective_isMinOn_of_direction_succ_eq_zero_and_orthogonal`
+- `StatInference.Optimization.exists_residual_eq_zero_of_pairwise_orthogonal`
+- `StatInference.Optimization.exists_quadraticObjective_isMinOn_of_pairwise_orthogonal_residuals`
 
 Source anchors are the quadratic display and linear-system minimizer claim at
 markdown lines 954-960, Lemma 5.1 at line 1005, Definition 5.2 at line 1015,
@@ -951,8 +956,10 @@ mathlib supplies continuous linear maps and inner-product continuity APIs,
 `real_inner_comm`, `Function.iterate_succ_apply'`,
 `Submodule.span_induction`, `Submodule.span_mono`, scalar inverse algebra via
 `smul_smul`/`inv_mul_cancel₀`, coefficient nonzero APIs `div_ne_zero`,
-`neg_ne_zero`, `pow_ne_zero`, `norm_ne_zero_iff`, and submodule orthogonal
-complement APIs;
+`neg_ne_zero`, `pow_ne_zero`, `norm_ne_zero_iff`, finite-dimensional
+bilinear-form APIs `LinearMap.BilinForm.linearIndependent_of_iIsOrtho`,
+`LinearIndependent.fintype_card_le_finrank`, `innerₗ`, and submodule
+orthogonal complement APIs;
 self-adjoint/positive-operator APIs under
 `Analysis/InnerProductSpace/Positive.lean` should be searched before adding a
 future spectral bridge.  The current local substrate intentionally keeps
@@ -960,10 +967,13 @@ Chewi's source hypotheses as supplied symmetry and quadratic-form bounds so it
 can reuse the existing `FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and
 minimizer packages immediately.  The three-term recurrence layer already
 derives `IsCGKrylovRecurrence` from the source update skeleton, and the
-displayed-coefficient layer now derives it from the literal residual and
-direction formulas.  Next proof work should add the finite-dimensional
-orthogonality/counting package for Theorem 5.3 and the descent/halving package
-for Theorem 5.4.
+displayed-coefficient layer derives it from the literal residual and direction
+formulas.  The finite-dimensional termination layer now proves the zero
+direction branch and the orthogonal-residual counting/minimizer wrapper for
+Theorem 5.3.  Next proof work should derive the residual-orthogonality and
+residual-gradient invariants from the displayed CG algorithm, then close the
+exact Theorem 5.3 wrapper and move to the descent/halving package for Theorem
+5.4.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
