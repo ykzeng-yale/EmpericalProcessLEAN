@@ -1293,6 +1293,46 @@ theorem coordinateTailSq_nonneg (d N : ℕ)
   unfold coordinateTailSq
   exact Finset.sum_nonneg fun _ _ => sq_nonneg _
 
+/-- A single tail coordinate is bounded by the full coordinate-tail energy. -/
+theorem coordinate_sq_le_coordinateTailSq
+    {d N : ℕ} (z : EuclideanSpace ℝ (Fin d)) {i : Fin d}
+    (hi : N ≤ i.1) :
+    (z i) ^ (2 : ℕ) ≤ coordinateTailSq d N z := by
+  unfold coordinateTailSq
+  exact Finset.single_le_sum
+    (fun _ _ => sq_nonneg _)
+    (Finset.mem_filter.mpr ⟨Finset.mem_univ i, hi⟩)
+
+/--
+Coordinate-tail energy is antitone in the prefix length: asking for a later
+tail can only remove nonnegative coordinate squares.
+-/
+theorem coordinateTailSq_anti_mono
+    {d M N : ℕ} (hMN : M ≤ N) (z : EuclideanSpace ℝ (Fin d)) :
+    coordinateTailSq d N z ≤ coordinateTailSq d M z := by
+  unfold coordinateTailSq
+  exact Finset.sum_le_sum_of_subset_of_nonneg
+    (by
+      intro i hi
+      exact Finset.mem_filter.mpr
+        ⟨Finset.mem_univ i, hMN.trans (Finset.mem_filter.mp hi).2⟩)
+    (fun _ _ _ => sq_nonneg _)
+
+/-- The zero-prefix tail is the full squared Euclidean norm. -/
+theorem coordinateTailSq_zero_eq_norm_sq
+    {d : ℕ} (z : EuclideanSpace ℝ (Fin d)) :
+    coordinateTailSq d 0 z = ‖z‖ ^ (2 : ℕ) := by
+  rw [EuclideanSpace.real_norm_sq_eq]
+  unfold coordinateTailSq
+  simp
+
+/-- Source-shaped form for the initial point `0` used in lower-bound proofs. -/
+theorem norm_zero_sub_sq_eq_coordinateTailSq_zero
+    {d : ℕ} (z : EuclideanSpace ℝ (Fin d)) :
+    ‖(0 : EuclideanSpace ℝ (Fin d)) - z‖ ^ (2 : ℕ) =
+      coordinateTailSq d 0 z := by
+  rw [zero_sub, norm_neg, coordinateTailSq_zero_eq_norm_sq]
+
 /--
 If `x ∈ V_N`, then the squared distance from `x` to any `z` controls the
 tail energy of `z` outside `V_N`.
@@ -1467,6 +1507,51 @@ theorem chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate
     halpha_pos.le halpha_lt_beta.le (N := N)
     (x := x) (xStar := strongLowerBoundFiniteGeometricCandidate kappa d)
     hx0 hspan hgrad_zero htail_ge
+
+/--
+Same concrete lower bound as
+`chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate`, but with the
+remaining tail comparison stated purely in coordinate-tail language.  This is
+the form to attack next for finite truncations or infinite-model limits.
+-/
+theorem chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate_tailSq
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d N : ℕ} {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (htail_ge :
+      (chewi45GeometricRatio kappa) ^ (2 * N) *
+          coordinateTailSq d 0
+            (strongLowerBoundFiniteGeometricCandidate kappa d) ≤
+        coordinateTailSq d N
+          (strongLowerBoundFiniteGeometricCandidate kappa d)) :
+    (alpha / 2) *
+        ((chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖x 0 - strongLowerBoundFiniteGeometricCandidate kappa d‖ ^
+            (2 : ℕ)) ≤
+      strongLowerBoundChainObjective alpha beta d (x N) -
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) := by
+  have hnorm :
+      ‖x 0 - strongLowerBoundFiniteGeometricCandidate kappa d‖ ^ (2 : ℕ) =
+        coordinateTailSq d 0
+          (strongLowerBoundFiniteGeometricCandidate kappa d) := by
+    rw [hx0]
+    exact norm_zero_sub_sq_eq_coordinateTailSq_zero
+      (strongLowerBoundFiniteGeometricCandidate kappa d)
+  have htail_ge' :
+      (chewi45GeometricRatio kappa) ^ (2 * N) *
+          ‖x 0 - strongLowerBoundFiniteGeometricCandidate kappa d‖ ^
+            (2 : ℕ) ≤
+        coordinateTailSq d N
+          (strongLowerBoundFiniteGeometricCandidate kappa d) := by
+    simpa [hnorm] using htail_ge
+  exact chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate
+    (alpha := alpha) (beta := beta) (kappa := kappa)
+    halpha_pos halpha_lt_beta hkappa (N := N)
+    (x := x) hx0 hspan htail_ge'
 
 /--
 Contradiction form of the direct Exercise 4.2 obstruction: an iterate whose

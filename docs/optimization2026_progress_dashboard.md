@@ -135,7 +135,14 @@ The finite-correction layer now compiles as
 `chewi45_not_near_min_of_finiteGeometricCandidate_tail_lower_bound`.  This
 settles the finite terminal-residual blocker; the next direct Theorem 4.5
 target is the corrected-candidate tail comparison and logarithmic
-iteration-count conversion.
+iteration-count conversion.  The latest tail-scaffold pass adds
+`coordinate_sq_le_coordinateTailSq`, `coordinateTailSq_anti_mono`,
+`coordinateTailSq_zero_eq_norm_sq`, `norm_zero_sub_sq_eq_coordinateTailSq_zero`,
+and
+`chewi45_gap_ge_geometricRatio_tail_of_finiteGeometricCandidate_tailSq`.
+Route correction: the source Exercise 4.2 is infinite-dimensional, while the
+finite corrected truncation needs additional dimension/slack analysis for the
+literal `q^(2N)` tail factor.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains
