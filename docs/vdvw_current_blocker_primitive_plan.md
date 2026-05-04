@@ -2505,3 +2505,28 @@ result with the selected fixed-radius side-condition package and the existing
 untruncated Theorem 2.4.3 consumer.  The main remaining mathematical blocker
 is the honest VC/subgraph/grid cardinality side condition, not finite
 threshold-code plumbing.
+
+2026-05-04 `/goal` update after integer-grid cardinality and abs-bound
+consumer: the explicit grid-size side condition is now discharged for natural
+symmetric integer radii.  New compiled declarations are
+`integerMultipleThresholdGrid_card_le`,
+`integerMultipleThresholdGrid_nat_card_le`,
+`empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_nat_uniform_vc_card_le`,
+and
+`empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_nat_uniform_abs_bound_vc_card_le`.
+The last theorem is the truncated-envelope-friendly form: a coordinatewise
+absolute bound
+`|f(X_i)| <= ((bound : ℤ) : ℝ) * epsilon` plus uniform fixed-threshold VC
+control yields the empirical covering bound with terminal cardinality
+`(((d + 2) * (n + 1)^d) ^ (2 * bound + 1))`.
+
+Search record: reused local `card_int_symmetric_Icc`, mathlib
+`Finset.card_image_le`, and the standard `abs_le` lower/upper splitter.  No
+new primitive was needed for the grid count.
+
+Next exact theorem-facing edit: connect this compiled integer-grid empirical
+cover bound to the Theorem 2.4.3 selected fixed-radius side-condition package.
+The remaining assumptions to prove or package honestly are now the
+truncated-class absolute bound by a chosen integer multiple of the fixed
+radius and the uniform fixed-threshold VC/subgraph condition over the finite
+integer grid.

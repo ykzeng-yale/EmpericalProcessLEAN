@@ -847,10 +847,13 @@ above, so they do not change the theorem-level dashboard counts.
    `empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_uniform_vc_card_le`.
    This converts bounded sampled values and fixed-threshold VC bounds into the
    theorem-facing empirical covering-number estimate.
-   The next structural inputs are the explicit integer-grid cardinality bound,
-   the fixed-radius truncated-value boundedness hypotheses, and the uniform
-   threshold/subgraph VC condition needed to feed the selected fixed-radius
-   Theorem 2.4.3 side-condition package.
+   The explicit integer-grid cardinality and envelope-friendly absolute-bound
+   consumer are now compiled as `integerMultipleThresholdGrid_nat_card_le` and
+   `empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_nat_uniform_abs_bound_vc_card_le`.
+   The next structural inputs are the fixed-radius truncated-value absolute
+   boundedness hypotheses and the uniform threshold/subgraph VC condition
+   needed to feed the selected fixed-radius Theorem 2.4.3 side-condition
+   package.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

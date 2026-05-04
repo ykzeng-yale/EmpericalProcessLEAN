@@ -424,6 +424,15 @@ remaining theorem-facing side conditions for fixed-radius Theorem 2.4.3:
 integer-grid cardinality, truncated-value boundedness, and uniform
 threshold/subgraph VC control.
 
+2026-05-04 follow-up: the integer-grid cardinality side condition is now
+compiled.  `integerMultipleThresholdGrid_nat_card_le` bounds the concrete grid
+by `2 * bound + 1`, and
+`empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_nat_uniform_abs_bound_vc_card_le`
+is the envelope-friendly empirical-cover consumer under coordinatewise
+absolute boundedness plus uniform fixed-threshold VC.  Next target: feed this
+into the selected fixed-radius Theorem 2.4.3 package under honest
+truncation-bound and threshold/subgraph VC assumptions.
+
 ## Verification Monitor
 
 Latest targeted verification includes the selected terminal/truncated

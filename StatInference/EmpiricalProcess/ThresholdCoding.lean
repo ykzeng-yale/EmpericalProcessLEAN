@@ -714,6 +714,20 @@ noncomputable def integerMultipleThresholdGrid (epsilon : ℝ) (bound : ℤ) :
   exact (Finset.Icc (-bound) bound).image fun gridIndex : ℤ =>
     epsilon * (gridIndex : ℝ)
 
+/-- The integer-multiple threshold grid has no more points than its source
+integer interval. -/
+theorem integerMultipleThresholdGrid_card_le (epsilon : ℝ) (bound : ℤ) :
+    (integerMultipleThresholdGrid epsilon bound).card ≤ (2 * bound + 1).toNat := by
+  classical
+  dsimp [integerMultipleThresholdGrid]
+  exact Finset.card_image_le.trans_eq (card_int_symmetric_Icc bound)
+
+/-- Natural-number version of the symmetric integer-multiple grid-cardinality
+bound. -/
+theorem integerMultipleThresholdGrid_nat_card_le (epsilon : ℝ) (bound : ℕ) :
+    (integerMultipleThresholdGrid epsilon (bound : ℤ)).card ≤ 2 * bound + 1 := by
+  simpa using integerMultipleThresholdGrid_card_le epsilon (bound : ℤ)
+
 /--
 If `a` and `b` lie in the bounded interval covered by the integer-multiple
 threshold grid and `b - a > epsilon`, then one grid threshold lies in
@@ -1476,6 +1490,77 @@ theorem empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_uniform_vc_
         exists_integerMultipleThresholdGrid_between_of_bounds
           hepsilon_pos ha hb hab hgap)
       hthresholds_card hvc hcard_le
+
+/--
+Concrete bounded empirical-covering-number bound using the integer-multiple
+threshold grid, with the grid-cardinality bound discharged for a natural
+symmetric radius.
+-/
+theorem empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_nat_uniform_vc_card_le
+    {Observation : Type u} {Index : Type v} {n d : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon : ℝ} {bound cardinality : ℕ}
+    (hepsilon_pos : 0 < epsilon)
+    (hbounded :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          (-(bound : ℤ) : ℝ) * epsilon ≤ classFun index (sample sampleIndex) ∧
+            classFun index (sample sampleIndex) ≤ ((bound : ℤ) : ℝ) * epsilon)
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈
+          integerMultipleThresholdGrid epsilon (bound : ℤ)},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d)
+    (hcard_le :
+      (((d + 2) * (n + 1) ^ d) ^ (2 * bound + 1)) ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_uniform_vc_card_le
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (epsilon := epsilon) (bound := (bound : ℤ))
+      (k := 2 * bound + 1) hepsilon_pos hbounded
+      (integerMultipleThresholdGrid_nat_card_le epsilon bound) hvc hcard_le
+
+/--
+Absolute-value bounded variant of the natural integer-multiple threshold-grid
+covering bound.  This is the form used by truncated classes with an envelope
+bound.
+-/
+theorem empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_nat_uniform_abs_bound_vc_card_le
+    {Observation : Type u} {Index : Type v} {n d : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon : ℝ} {bound cardinality : ℕ}
+    (hepsilon_pos : 0 < epsilon)
+    (hbounded_abs :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          |classFun index (sample sampleIndex)| ≤
+            ((bound : ℤ) : ℝ) * epsilon)
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈
+          integerMultipleThresholdGrid epsilon (bound : ℤ)},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d)
+    (hcard_le :
+      (((d + 2) * (n + 1) ^ d) ^ (2 * bound + 1)) ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  apply
+    empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_nat_uniform_vc_card_le
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (epsilon := epsilon) (bound := bound) hepsilon_pos
+  · intro index hindex sampleIndex
+    have hbounds := abs_le.mp (hbounded_abs index hindex sampleIndex)
+    constructor
+    · have hleft : -(((bound : ℤ) : ℝ) * epsilon) ≤
+          classFun index (sample sampleIndex) := hbounds.1
+      simpa [neg_mul] using hleft
+    · exact hbounds.2
+  · exact hvc
+  · exact hcard_le
 
 /--
 Uniform fixed-threshold VC/Sauer bounds, finite threshold separation, and a
