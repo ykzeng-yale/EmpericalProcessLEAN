@@ -2105,6 +2105,11 @@ thresholdTraceCode_separates_of_pointwise_thresholds_separate
 finite_empiricalTrace_image_of_pointwise_thresholds_separate
 empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card_of_pointwise_thresholds_separate
 empiricalTrace_image_card_add_one_real_le_of_pointwise_thresholds_separate_uniform_vc
+pointwise_thresholds_separate_of_coordinate_thresholds_separate
+thresholdTraceCode_separates_of_coordinate_thresholds_separate
+finite_empiricalTrace_image_of_coordinate_thresholds_separate
+empiricalTrace_image_toFinset_card_le_pi_binaryTraceSetFamily_card_of_coordinate_thresholds_separate
+empiricalTrace_image_card_add_one_real_le_of_coordinate_thresholds_separate_uniform_vc
 ```
 
 These prove that finite threshold signatures, when they separate the realized
@@ -2135,18 +2140,28 @@ This is the next theorem-facing interface for deriving separation from the
 actual subgraph/truncated-class geometry, rather than requiring later geometry
 proofs to manipulate `Finset` code equality.
 
+The coordinatewise-threshold declarations narrow the same interface one step
+further: it is enough to prove, for each sample coordinate, that matching all
+threshold predicates forces equality of the two realized real values.  This
+feeds the pointwise separation condition and therefore the finite-image,
+product-cardinality, and uniform-VC natural-polynomial consumers.  This is a
+more local target for the next subgraph/truncated-class geometry proof.
+
 Search record: reused local fixed-threshold declarations in `SubgraphTraceVC`,
 the new finite-code bridge in `TraceCoding`, mathlib `Finset.pi`,
 `Finset.card_pi`, `Finset.card_le_card_of_injOn`, and finite-product
 big-operator APIs from `Mathlib.Data.Fintype.BigOperators`, plus `Finset.ext`
 and membership extensionality for the pointwise threshold bridge.  Searches for
 `thresholdTraceCode_eq`, `pointwise_threshold`, `threshold.*separate`,
+`coordinate.*separate`, `threshold.*coordinate`,
 `empiricalTrace.*threshold`, and threshold-indicator trace APIs found no ready
 local/mathlib theorem giving this VdVW finite-threshold
-signature/product-cardinality or pointwise-separation bridge.
+signature/product-cardinality, pointwise-separation, or
+coordinatewise-separation bridge.
 
-Next exact theorem-facing edit: prove the actual pointwise-threshold
-separation/count assumptions from the subgraph/truncated-class geometry, or
-provide the maximal-separated/internal-cover cardinality theorem that bypasses
-threshold products and directly supplies the natural-polynomial trace bound
-consumed by Theorem 2.4.3.
+Next exact theorem-facing edit: prove the actual coordinatewise
+finite-threshold value-separation and threshold-count assumptions from the
+subgraph/truncated-class geometry, or provide the
+maximal-separated/internal-cover cardinality theorem that bypasses threshold
+products and directly supplies the natural-polynomial trace bound consumed by
+Theorem 2.4.3.

@@ -766,7 +766,13 @@ above, so they do not change the theorem-level dashboard counts.
    `empiricalTrace_image_card_add_one_real_le_of_pointwise_thresholds_separate_uniform_vc`
    now lets later geometry prove only samplewise threshold predicate
    separation and then feed the same finite-image/product/uniform-VC
-   cardinality consumers.
+   cardinality consumers.  The coordinatewise bridge
+   `pointwise_thresholds_separate_of_coordinate_thresholds_separate`,
+   `thresholdTraceCode_separates_of_coordinate_thresholds_separate`, and
+   `empiricalTrace_image_card_add_one_real_le_of_coordinate_thresholds_separate_uniform_vc`
+   localizes this further to one sample coordinate: matching all threshold
+   predicates at that coordinate must force equality of the two realized
+   real values.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
