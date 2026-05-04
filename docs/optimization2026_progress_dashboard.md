@@ -180,6 +180,11 @@ and
 `chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_exponent_le`,
 so the finite route now has a direct `eps` lower-bound input for the final
 iteration/log conversion.
+The newest log bridge adds
+`chewi45GeometricRatio_pow_le_half_of_nat_mul_log_le`,
+`chewi45_half_boundary_condition_of_log_exponent_le`, and
+`chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_log_exponent_le`.
+The finite route can now use `(M : Real) * log q <= log (1/2)` directly.
 
 Exercise statement/proof formalizations belong in
 `StatInference/Optimization/Exercises.lean`.  The main theorem lane remains

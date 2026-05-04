@@ -846,6 +846,27 @@ theorem chewi45GeometricRatio_pow_nonneg {kappa : ℝ}
     0 ≤ (chewi45GeometricRatio kappa) ^ n :=
   pow_nonneg (chewi45GeometricRatio_nonneg hkappa) n
 
+/--
+Logarithmic sufficient condition for a half-bound on Chewi's geometric ratio:
+if `M * log q <= log (1/2)`, then `q^M <= 1/2`.
+-/
+theorem chewi45GeometricRatio_pow_le_half_of_nat_mul_log_le
+    {kappa : ℝ} (hkappa : 1 < kappa) {M : ℕ}
+    (hlog :
+      (M : ℝ) * Real.log (chewi45GeometricRatio kappa) ≤
+        Real.log (1 / 2 : ℝ)) :
+    (chewi45GeometricRatio kappa) ^ M ≤ (1 / 2 : ℝ) := by
+  let q := chewi45GeometricRatio kappa
+  have hq_pos : 0 < q := by
+    simpa [q] using chewi45GeometricRatio_pos hkappa
+  have hhalf_pos : 0 < (1 / 2 : ℝ) := by norm_num
+  have hpow_pos : 0 < q ^ M := pow_pos hq_pos M
+  have hlogpow :
+      Real.log (q ^ M) ≤ Real.log (1 / 2 : ℝ) := by
+    rw [Real.log_pow]
+    simpa [q] using hlog
+  exact (Real.log_le_log_iff hpow_pos hhalf_pos).mp hlogpow
+
 theorem chewi45GeometricRatio_quadratic {kappa : ℝ}
     (hkappa : 1 < kappa) :
     chewi45GeometricRatio kappa ^ (2 : ℕ) -
@@ -1948,6 +1969,23 @@ theorem chewi45_half_boundary_condition_of_exponent_le
     (kappa := kappa) hkappa hM_le hM_half
 
 /--
+Logarithmic version of the finite half-boundary condition.  It is enough to
+prove a log inequality at any smaller exponent `M`.
+-/
+theorem chewi45_half_boundary_condition_of_log_exponent_le
+    {kappa : ℝ} (hkappa : 1 < kappa) {d N M : ℕ}
+    (hM_le : M ≤ 2 * d + 2 - 2 * (N + 1))
+    (hM_log :
+      (M : ℝ) * Real.log (chewi45GeometricRatio kappa) ≤
+        Real.log (1 / 2 : ℝ)) :
+    (chewi45GeometricRatio kappa) ^
+        (2 * d + 2 - 2 * (N + 1)) ≤ (1 / 2 : ℝ) := by
+  exact chewi45_half_boundary_condition_of_exponent_le
+    (kappa := kappa) hkappa.le hM_le
+    (chewi45GeometricRatio_pow_le_half_of_nat_mul_log_le
+      (kappa := kappa) hkappa hM_log)
+
+/--
 Half-boundary gap bound with the boundary condition supplied at any smaller
 exponent `M`.  This is the form intended for the upcoming logarithmic
 dimension choice.
@@ -2193,6 +2231,43 @@ theorem chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_expone
             (strongLowerBoundFiniteGeometricCandidate kappa d) ≤ eps := by
     linarith
   exact hgap_ge.trans hgap_le
+
+/--
+Logarithmic near-minimality form of the finite half-boundary obstruction.
+This is the direct input for the final source-shaped log iteration conversion:
+the finite dimension only needs to provide an exponent `M` below the boundary
+exponent and a log proof that `q^M <= 1/2`.
+-/
+theorem chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_log_exponent_le
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    {d N M : ℕ} (hN : N < d)
+    (hM_le : M ≤ 2 * d + 2 - 2 * (N + 1))
+    (hM_log :
+      (M : ℝ) * Real.log (chewi45GeometricRatio kappa) ≤
+        Real.log (1 / 2 : ℝ))
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (strongLowerBoundChainGradient alpha beta d) x)
+    (hnear :
+      strongLowerBoundChainObjective alpha beta d (x N) ≤
+        strongLowerBoundChainObjective alpha beta d
+          (strongLowerBoundFiniteGeometricCandidate kappa d) + eps) :
+    (alpha / 8) *
+        (chewi45GeometricRatio kappa) ^ (2 * (N + 1)) ≤ eps := by
+  have hkappa_gt : 1 < kappa := by
+    rw [hkappa]
+    exact (one_lt_div halpha_pos).2 halpha_lt_beta
+  have hM_half :
+      (chewi45GeometricRatio kappa) ^ M ≤ (1 / 2 : ℝ) :=
+    chewi45GeometricRatio_pow_le_half_of_nat_mul_log_le
+      (kappa := kappa) hkappa_gt hM_log
+  exact
+    chewi45_geometric_half_boundary_lower_bound_le_eps_of_near_min_of_exponent_le
+      (alpha := alpha) (beta := beta) (kappa := kappa) (eps := eps)
+      halpha_pos halpha_lt_beta hkappa (N := N) (M := M)
+      hN hM_le hM_half (x := x) hx0 hspan hnear
 
 end Optimization
 end StatInference
