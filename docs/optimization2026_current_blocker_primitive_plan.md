@@ -1510,12 +1510,18 @@ operator APIs under `Analysis/InnerProductSpace/Positive.lean` should be
 searched before adding a future spectral bridge.  The current substrate
 deliberately uses supplied quadratic-form bounds so it can reuse local
 `FirstOrderStrongConvexOn`, `SmoothWithGradientOn`, and minimizer wrappers
-without waiting for a full spectral theorem bridge.  Next target: move to
-Theorem 5.4.  First package the textbook proof assumptions explicitly: CG
-descent comparison against one GD step, gradient orthogonality, finite sum of
-squared gradients, Cauchy-Schwarz, and the restart/halving argument.  Do not
-redo Theorem 5.3's A-conjugacy induction, the Chapter 3 descent lemma, Chapter
-4 gradient-span interfaces, or Chapter 4 hard-instance packages.
+without waiting for a full spectral theorem bridge.  The Theorem 5.4 lane has
+now started in `StatInference/Optimization/Theorem54.lean`.
+`chewi54_gradient_sq_sum_bound_of_competitive_step` compiles the first
+displayed descent-sum bound: any CG-like step competitive with the `1 / beta`
+gradient-descent trial step inherits the Lemma 3.1 telescoped squared-gradient
+bound `(1 / (2 * beta)) * sum ||grad x_n||^2 <= f x_0 - fstar`.
+Next target: package the second half of Theorem 5.4, namely gradient
+orthogonality plus Cauchy-Schwarz/strong-convexity radius to get
+`N * gap_N <= 2 * sqrt(kappa) * initial_gap`, then the restart/halving
+argument.  Do not redo Theorem 5.3's A-conjugacy induction, the Chapter 3
+descent lemma, Chapter 4 gradient-span interfaces, or Chapter 4 hard-instance
+packages.
 
 Chapter 2 route context is still available but no longer the active target:
 The route

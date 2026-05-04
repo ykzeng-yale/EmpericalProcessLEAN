@@ -1012,6 +1012,16 @@ coefficients themselves, giving a finite-dimensional Theorem 5.3-facing
 termination wrapper with no external A-conjugacy hypothesis.  Next proof work
 should move to the descent/halving package for Theorem 5.4.
 
+The Theorem 5.4 lane now starts in
+`StatInference/Optimization/Theorem54.lean`:
+
+- `StatInference.Optimization.chewi54_gradient_sq_sum_bound_of_competitive_step`
+
+This compiles the source descent comparison against the `1 / beta` gradient
+step and telescopes the Lemma 3.1 decrease to the finite squared-gradient sum
+bound.  The next Theorem 5.4 target is the orthogonality/Cauchy-Schwarz
+estimate and the restart/halving conversion.
+
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
 1. Lower bounds and oracle/gradient-span interfaces, Chapter 4.
