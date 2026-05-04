@@ -1311,14 +1311,43 @@ Thus a geometric estimate of the form
 fixed-radius tail/UI package consumed by the fixed-`M` and untruncated
 Theorem 2.4.3 handoffs.
 
+2026-05-03 `/goal` update: the induced empirical `L1(P_n)` pseudometric bridge
+is now compiled.  Search reused pinned mathlib
+`PseudoEMetricSpace.ofEDist`, `Metric.IsCover`, `Metric.coveringNumber`,
+`Metric.minimalCover`, `Metric.finite_minimalCover`,
+`Metric.minimalCover_subset`, `Metric.isCover_minimalCover`,
+`Metric.encard_minimalCover`, `ENNReal.ofReal_add_le`,
+`ENNReal.ofReal_le_ofReal`, `ENNReal.ofReal_le_ofReal_iff`, and finite
+image-cardinality APIs `Set.ncard_image_le` /
+`Set.ncard_eq_toFinset_card`.  The new proof-carrying local declarations are
+`EmpiricalL1Index`, `EmpiricalL1Index.instPseudoEMetricSpace`,
+`EmpiricalL1Index.empiricalL1Distance_le_coe_radius_of_edist_le`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_empiricalL1Index_isCover`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_empiricalL1Index_minimalCover`,
+`empiricalL1CoveringNumber_le_of_empiricalL1Index_isCover`,
+`empiricalL1Index_image_toFinset_card_le`,
+`empiricalL1CoveringNumber_le_of_empiricalL1Index_isCover_card`,
+`empiricalL1CoveringNumber_le_of_empiricalL1Index_minimalCover`,
+`empiricalL1CoveringNumber_le_of_empiricalL1Index_minimalCover_card`, and
+`empiricalL1CoveringNumber_le_empiricalL1Index_coveringNumber`.  The same
+closure batch also compiled the finite-bound consumers
+`nonempty_finiteEmpiricalL1CoverAtCard_of_empiricalL1Index_coveringNumber_le`
+and
+`empiricalL1CoveringNumber_le_of_empiricalL1Index_coveringNumber_le`, so a
+future geometric estimate `Metric.coveringNumber <= cardinality` immediately
+produces a local empirical finite-cover witness at that finite cardinality.
+This closes the compatibility step from internal-cover `edist` balls in the
+empirical pseudometric to local empirical `L1(P_n)` cover witnesses with
+centers still in `indexClass`.
+
 Next exact edit: prove the selected finite-net tail-expectation/UI condition
 from the textbook entropy hypothesis by supplying the remaining geometric
-cardinality estimate.  The adapter gap is now closed; the remaining proof work
-is to instantiate or construct the empirical `L1(P_n)` pseudometric geometry,
-prove the compatibility estimate for the chosen internal covers/maximal
-separated sets, and bound the resulting finite center cardinality by a usable
-`base ^ n` expression.  The analytic package handoff from that estimate is now
-closed.  If this geometric packing route blocks, record the precise additional
+cardinality estimate.  The adapter and induced-pseudometric compatibility gaps
+are now closed; the remaining proof work is to prove a usable geometric bound
+for the chosen empirical internal cover/maximal separated set, for example a
+terminal estimate bounded by `base ^ n` that can feed the selected fixed-radius
+tail package.  The analytic package handoff from that estimate is now closed.
+If this geometric packing route blocks, record the precise additional
 book-level uniform-integrability/tail-expectation condition needed to keep the
 final Theorem 2.4.3 statement honest.
 The remaining analytic gap is no longer selected-cardinality measurability/log

@@ -589,8 +589,21 @@ above, so they do not change the theorem-level dashboard counts.
    `nonempty_finiteEmpiricalL1CoverAtCard_of_metric_isCover`,
    `empiricalL1CoveringNumber_le_of_metric_isCover`,
    `nonempty_finiteEmpiricalL1CoverAtCard_of_metric_minimalCover`, and
-   `empiricalL1CoveringNumber_le_of_metric_minimalCover`.  The next proof step
-   is therefore the geometric/cardinality instantiation.  The terminal
+   `empiricalL1CoveringNumber_le_of_metric_minimalCover`.  The induced
+   empirical pseudometric adapter is also compiled through
+   `EmpiricalL1Index`, `EmpiricalL1Index.instPseudoEMetricSpace`,
+   `EmpiricalL1Index.empiricalL1Distance_le_coe_radius_of_edist_le`,
+   `nonempty_finiteEmpiricalL1CoverAtCard_of_empiricalL1Index_isCover`,
+   `nonempty_finiteEmpiricalL1CoverAtCard_of_empiricalL1Index_minimalCover`,
+   `empiricalL1CoveringNumber_le_of_empiricalL1Index_minimalCover_card`, and
+   `empiricalL1CoveringNumber_le_empiricalL1Index_coveringNumber`,
+   `nonempty_finiteEmpiricalL1CoverAtCard_of_empiricalL1Index_coveringNumber_le`,
+   and
+   `empiricalL1CoveringNumber_le_of_empiricalL1Index_coveringNumber_le`, so
+   mathlib internal covers for the empirical `L1(P_n)` pseudometric now give
+   local empirical-cover witnesses with centers in the class, and finite
+   internal-cover cardinality bounds can be consumed directly.  The next proof
+   step is therefore the geometric/cardinality instantiation.  The terminal
    power-bound constructors
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_terminal_le_pow`
    and
@@ -598,10 +611,9 @@ above, so they do not change the theorem-level dashboard counts.
    are also compiled, so a future estimate
    `cardinality eta n sample n <= base eta ^ n` or
    `cardinality eta n sample n + 1 <= base eta ^ n` now directly supplies the
-   selected fixed-radius tail/UI package.  What remains is to build or select
-   the empirical `L1(P_n)` pseudometric cover, prove the compatibility estimate
-   from its `edist` balls to the local empirical distance bound, and prove the
-   resulting cardinality estimate.  If this cannot be proved from the textbook
+   selected fixed-radius tail/UI package.  What remains is the actual
+   geometric/cardinality estimate for the chosen empirical internal cover or
+   maximal separated set.  If this cannot be proved from the textbook
    assumptions, state the exact additional theorem-level side condition
    honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
