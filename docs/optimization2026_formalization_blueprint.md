@@ -639,7 +639,12 @@ and
 prove the geometric obstruction from `FirstOrderStrongConvexOn` plus the
 coordinate gradient formula.  The next infinite-model step is therefore the
 actual tridiagonal objective and its `FirstOrderStrongConvexOn`/gradient
-package, followed by the source-shaped log-rate wrapper.
+package, followed by the source-shaped log-rate wrapper.  The concrete
+objective layer now compiles as `exercise42InfiniteChainEdgeSq_summable`,
+`exercise42InfiniteChainObjective`, `exercise42InfiniteChainObjective_apply`,
+and `exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder`;
+only the objective's first-order/gradient package and the log-rate wrapper
+remain on this infinite Exercise 4.2 route.
 The finite-boundary comparison layer now also compiles:
 `strongLowerBoundFiniteGeometricNode_nonneg`,
 `strongLowerBoundFiniteGeometricNode_le_geometric`,

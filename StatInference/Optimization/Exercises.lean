@@ -696,6 +696,58 @@ theorem exercise42InfiniteGeometricMinimizer_gap_ge_geometric_tail_of_lowerModel
   exact hgap
 
 /--
+The source infinite chain edge-energy series in Exercise 4.2 is summable for
+every `ell^2` point.  This is the analytic substrate needed to state the
+displayed objective as a genuine infinite quadratic.
+-/
+theorem exercise42InfiniteChainEdgeSq_summable
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    Summable fun n : ℕ => (x n - x (n + 1)) ^ (2 : ℕ) := by
+  have hp : 0 < (2 : ℝ≥0∞).toReal := by norm_num
+  have hxnorm :
+      Summable fun n : ℕ => ‖x n‖ ^ (2 : ℕ) := by
+    have hx := (lp.memℓp x).summable hp
+    simpa using hx
+  have hxshift :
+      Summable fun n : ℕ => ‖x (n + 1)‖ ^ (2 : ℕ) := by
+    have hx :=
+      (summable_nat_add_iff
+        (f := fun n : ℕ => ‖x n‖ ^ (2 : ℕ)) 1).2 hxnorm
+    simpa [Nat.add_comm, Nat.succ_eq_add_one] using hx
+  refine Summable.of_nonneg_of_le
+    (fun n => sq_nonneg (x n - x (n + 1))) ?_
+    ((hxnorm.mul_left 2).add (hxshift.mul_left 2))
+  intro n
+  have h :=
+    sq_sub_le_two_mul_sq_add_two_mul_sq (x n) (x (n + 1))
+  simpa [Real.norm_eq_abs, sq_abs, mul_add] using h
+
+/--
+Concrete infinite strongly-convex hard-chain objective from Chewi Exercise 4.2,
+in zero-based coordinates:
+
+`((beta-alpha)/8) * (x₀² + ∑ (xₙ-xₙ₊₁)² - 2*x₀) + (alpha/2) * ‖x‖²`.
+-/
+noncomputable def exercise42InfiniteChainObjective (alpha beta : ℝ)
+    (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) : ℝ :=
+  ((beta - alpha) / 8) *
+      (x 0 ^ (2 : ℕ) +
+        (∑' n : ℕ, (x n - x (n + 1)) ^ (2 : ℕ)) -
+          2 * x 0) +
+    (alpha / 2) * ‖x‖ ^ (2 : ℕ)
+
+/-- Unfolding form of the concrete infinite Exercise 4.2 hard-chain objective. -/
+theorem exercise42InfiniteChainObjective_apply
+    (alpha beta : ℝ) (x : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) :
+    exercise42InfiniteChainObjective alpha beta x =
+      ((beta - alpha) / 8) *
+          (x 0 ^ (2 : ℕ) +
+            (∑' n : ℕ, (x n - x (n + 1)) ^ (2 : ℕ)) -
+              2 * x 0) +
+        (alpha / 2) * ‖x‖ ^ (2 : ℕ) :=
+  rfl
+
+/--
 Coordinate formula for the infinite strongly-convex hard-chain gradient in
 Chewi Exercise 4.2.  This is the infinite analogue of
 `strongLowerBoundChainGradient`, with no terminal boundary residual.
@@ -1051,6 +1103,51 @@ theorem exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_f
             1 < kappa).le))
       (chewi45GeometricRatio_lt_one kappa)
       hfirst hgrad_apply hx0 hspan N
+
+/--
+Concrete-objective wrapper for the infinite Exercise 4.2 obstruction.  Once
+the displayed objective is supplied/proved to satisfy the first-order
+strong-convexity interface with the compiled coordinate gradient, the exact
+geometric lower bound follows immediately for every gradient-span trajectory.
+-/
+theorem exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder
+    {grad : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞) ->
+        lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    {alpha beta kappa : ℝ} (halpha_pos : 0 < alpha)
+    (halpha_lt_beta : alpha < beta) (hkappa : kappa = beta / alpha)
+    (hfirst : FirstOrderStrongConvexOn Set.univ
+      (exercise42InfiniteChainObjective alpha beta) grad alpha)
+    (hgrad_apply : ∀ y i,
+      grad y i = exercise42InfiniteChainGradient alpha beta y i)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory grad x) (N : ℕ) :
+    (alpha / 2) *
+        (((chewi45GeometricRatio kappa) ^ (2 : ℕ)) ^ N *
+          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
+            exercise42InfiniteGeometricMinimizer
+              (chewi45GeometricRatio kappa)
+              (chewi45GeometricRatio_nonneg (kappa := kappa)
+                ((by
+                  rw [hkappa]
+                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                    1 < kappa).le))
+              (chewi45GeometricRatio_lt_one kappa)‖ ^
+              (2 : ℕ)) ≤
+      exercise42InfiniteChainObjective alpha beta (x N) -
+        exercise42InfiniteChainObjective alpha beta
+          (exercise42InfiniteGeometricMinimizer
+            (chewi45GeometricRatio kappa)
+            (chewi45GeometricRatio_nonneg (kappa := kappa)
+              ((by
+                rw [hkappa]
+                exact (one_lt_div halpha_pos).2 halpha_lt_beta :
+                  1 < kappa).le))
+            (chewi45GeometricRatio_lt_one kappa)) := by
+  exact
+    exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_firstOrder
+      (f := exercise42InfiniteChainObjective alpha beta) (grad := grad)
+      halpha_pos halpha_lt_beta hkappa hfirst hgrad_apply hx0 hspan N
 
 end Optimization
 end StatInference

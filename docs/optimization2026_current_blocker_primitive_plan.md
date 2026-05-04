@@ -1225,11 +1225,18 @@ and
 `exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_firstOrder`
 combine `FirstOrderStrongConvexOn`, the Chewi hard-chain coordinate gradient,
 and the support induction into the exact geometric function-gap obstruction.
-Next direct Exercise 4.2 step: define the infinite tridiagonal hard-chain
-objective and prove/supply its `FirstOrderStrongConvexOn` package with the
-compiled coordinate gradient, then convert the compiled geometric obstruction
-into the source logarithmic iteration lower bound without finite-boundary
-slack.
+The concrete source objective layer now compiles:
+`exercise42InfiniteChainEdgeSq_summable`,
+`exercise42InfiniteChainObjective`,
+`exercise42InfiniteChainObjective_apply`, and
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder`.
+The source display
+`((beta-alpha)/8) * (x[0]^2 + tsum (x[n]-x[n+1])^2 - 2*x[0]) +
+(alpha/2)*‖x‖^2` is now a reusable Lean objective on `ell^2`.
+Next direct Exercise 4.2 step: prove/supply the concrete objective's
+`FirstOrderStrongConvexOn` package with the compiled coordinate gradient, then
+convert the compiled geometric obstruction into the source logarithmic
+iteration lower bound without finite-boundary slack.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,

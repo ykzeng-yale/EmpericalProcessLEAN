@@ -326,9 +326,14 @@ and
 `exercise42InfiniteGradientSpanTrajectory_gap_ge_geometricRatio_tail_of_firstOrder`
 remove the ad hoc `hlower` premise once `FirstOrderStrongConvexOn` and the
 coordinate gradient formula are available.
-Next, define the infinite tridiagonal hard-chain objective and prove/supply its
-`FirstOrderStrongConvexOn` package with the compiled coordinate gradient, then
-convert the obstruction into the logarithmic iteration-count statement.  In parallel, specialize the remaining
+The concrete source objective layer now compiles:
+`exercise42InfiniteChainEdgeSq_summable`,
+`exercise42InfiniteChainObjective`,
+`exercise42InfiniteChainObjective_apply`, and
+`exercise42InfiniteChainObjective_gap_ge_geometricRatio_tail_of_firstOrder`.
+Next, prove/supply the concrete objective's `FirstOrderStrongConvexOn` package
+with the compiled coordinate gradient, then convert the obstruction into the
+logarithmic iteration-count statement.  In parallel, specialize the remaining
 reduction-route comparison
 `c * sqrt(kappa) * log(ratio) <= beta / (16 * eps) - 1` from concrete
 condition-number/log hypotheses when it gives a faster Theorem 4.5 assembly.  Search
