@@ -640,6 +640,13 @@ current explicit full-subgraph structural assumptions.  This is still a
 theorem layer, not the exact textbook Theorem 2.4.3: remaining work is the
 structural entropy/trace-grid alignment and the a.s./reverse-submartingale
 conclusion.
+2026-05-04 follow-up: the pinned-mathlib martingale-convergence substrate for
+Lemma 2.4.5 is now wrapped locally as
+`vdVW_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd`, using
+`Submartingale.ae_tendsto_limitProcess`.  This does not close the exact
+reverse-submartingale lemma; the remaining blocker is the VdV&W-specific
+permutation-symmetric decreasing filtration and adapted measurable-cover
+construction.
 
 ## Verification Monitor
 

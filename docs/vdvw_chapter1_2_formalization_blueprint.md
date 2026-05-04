@@ -983,6 +983,12 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_fullSubgraph_integrable_outerProbabilityUniformDeviation_and_inMean_canonical`.
    These are theorem-facing assembly points under explicit full-subgraph
    structural assumptions, not exact textbook reports.
+   For the almost-sure part, the pinned mathlib submartingale convergence
+   theorem has been wrapped as
+   `vdVW_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd`.  This is only
+   the forward martingale-convergence substrate; the exact Lemma 2.4.5 still
+   needs the VdV&W reverse/permutation-symmetric filtration construction and
+   adapted measurable-cover versions.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

@@ -2,6 +2,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import Mathlib.Probability.HasLawExists
 import Mathlib.Probability.IdentDistrib
+import Mathlib.Probability.Martingale.Convergence
 import Mathlib.Probability.Moments.SubGaussian
 import Mathlib.Probability.ProbabilityMassFunction.Integrals
 import StatInference.EmpiricalProcess.CoveringPrimitive
@@ -31,6 +32,28 @@ open MeasureTheory Filter ProbabilityTheory
 open scoped BigOperators ENNReal NNReal Topology
 
 universe u v w x
+
+/-!
+## Lemma 2.4.5 martingale-convergence foundation
+-/
+
+/--
+VdV&W Lemma 2.4.5 foundation wrapper: an `L¹`-bounded submartingale converges
+almost everywhere to mathlib's `limitProcess`.
+
+The exact textbook lemma is a reverse-submartingale statement over the
+permutation-symmetric decreasing filtration.  This wrapper records the
+available pinned-mathlib convergence theorem that the later reverse-filtration
+reduction must feed.
+-/
+theorem vdVW_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕ -> Ω -> ℝ} {R : ℝ≥0}
+    (hf : Submartingale f ℱ μ)
+    (hbdd : ∀ n, eLpNorm (f n) 1 μ ≤ R) :
+    ∀ᵐ ω ∂μ, Tendsto (fun n => f n ω) atTop (𝓝 (ℱ.limitProcess f μ ω)) :=
+  hf.ae_tendsto_limitProcess hbdd
 
 /-!
 ## Envelope and truncation interface

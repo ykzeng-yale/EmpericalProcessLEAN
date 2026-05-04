@@ -2917,3 +2917,18 @@ This remains a theorem layer, not an exact textbook report: the remaining
 main-line work is to align the structural full-subgraph/trace-grid assumption
 with the textbook entropy hypothesis or keep it honest as a side condition,
 then prove the almost-sure/reverse-submartingale conclusion.
+
+2026-05-04 follow-up: the first Lemma 2.4.5 martingale-convergence foundation
+wrapper is compiled.  Search record: local `StatInference` had no exact
+reverse-submartingale/permutation-symmetric filtration theorem; pinned mathlib
+`Mathlib/Probability/Martingale/Convergence.lean` provides
+`Submartingale.ae_tendsto_limitProcess`, and
+`Mathlib/Probability/Martingale/Basic.lean` plus
+`Mathlib/Probability/Process/Filtration.lean` provide the required
+`Submartingale`, `Filtration`, and `limitProcess` foundations.  The new local
+wrapper is
+`vdVW_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd`.  It is not the
+exact VdV&W Lemma 2.4.5: the missing theorem-facing primitive is still the
+construction of the decreasing permutation-symmetric filtration, measurable
+cover versions adapted to it, and the reduction of that reverse
+submartingale to a mathlib-compatible submartingale convergence theorem.
