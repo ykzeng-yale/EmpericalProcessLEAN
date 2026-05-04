@@ -1760,6 +1760,30 @@ bounded.  Then apply
 to
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_nat_poly`.
 
+2026-05-04 `/goal` update after binary empirical-trace VC bridge closure:
+`StatInference/EmpiricalProcess/BinaryTraceVC.lean` now connects `{0,1}`-valued
+fixed-sample empirical traces to the local Sauer polynomial wrapper.  New
+compiled declarations include `empiricalBinaryTraceSet`,
+`empiricalBinaryTraceSetFamily`, `empiricalBinaryTraceFunction`,
+`empiricalTrace_eq_binaryTraceFunction_of_sample_binary`,
+`finite_empiricalTrace_image_of_sample_binary`,
+`empiricalTrace_image_toFinset_card_le_binaryTraceSetFamily_card`, and
+`empiricalTrace_image_card_add_one_real_le_vc_nat_poly_of_sample_binary`.
+The final theorem proves that if the realized binary trace family has
+`vcDim <= d`, then the real empirical trace image satisfies
+`traceCard + 1 <= (d + 2) * (n + 1)^d`.
+
+Search record: reused local `empiricalTrace`, mathlib/local finite-set
+cardinality APIs `Set.ncard_le_ncard`, `Set.ncard_image_le`,
+`Set.ncard_eq_toFinset_card`, and the new
+`vdVWSauerShelah_card_add_one_real_le_nat_poly_of_vcDim_le`.  No exact
+general real-valued VdVW subgraph/threshold trace bridge was found.
+
+The exact next theorem-facing edit is now the subgraph/threshold lift: encode
+bounded real-valued truncated traces by binary threshold/subgraph traces with
+controlled VC dimension, or prove an independent maximal-separated/internal
+cover cardinality bound.  The pure binary indicator case is now closed.
+
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
 APIs found and used are `ProbabilityTheory.iIndepFun_pi`,
