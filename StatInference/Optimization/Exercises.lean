@@ -161,7 +161,7 @@ theorem exercise31_gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_smoo
     {f : E -> ℝ} {grad : E -> E}
     {alpha beta h : ℝ} {x y : E}
     (hfirst : FirstOrderStrongConvexOn Set.univ f grad alpha)
-    (hconvex : FirstOrderStrongConvexOn Set.univ f grad 0)
+    (halpha_nonneg : 0 ≤ alpha)
     (hsmooth : SmoothWithGradientOn Set.univ f grad beta)
     (hbeta_pos : 0 < beta)
     (hh_nonneg : 0 ≤ h)
@@ -171,7 +171,7 @@ theorem exercise31_gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_smoo
   gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_gradientCocoerciveOn
     hfirst
     (exercise31_gradientCocoerciveOn_univ_of_firstOrderStrongConvexOn_smooth
-      hconvex hsmooth hbeta_pos)
+      (FirstOrderStrongConvexOn.convex hfirst halpha_nonneg) hsmooth hbeta_pos)
     hbeta_pos hh_nonneg hstep_size (by simp) (by simp)
 
 /--
@@ -182,7 +182,7 @@ theorem exercise31_gradientStep_dist_contract_of_firstOrderStrongConvexOn_smooth
     {f : E -> ℝ} {grad : E -> E}
     {alpha beta h : ℝ} {x y : E}
     (hfirst : FirstOrderStrongConvexOn Set.univ f grad alpha)
-    (hconvex : FirstOrderStrongConvexOn Set.univ f grad 0)
+    (halpha_nonneg : 0 ≤ alpha)
     (hsmooth : SmoothWithGradientOn Set.univ f grad beta)
     (hbeta_pos : 0 < beta)
     (hh_nonneg : 0 ≤ h)
@@ -193,7 +193,7 @@ theorem exercise31_gradientStep_dist_contract_of_firstOrderStrongConvexOn_smooth
   gradientStep_dist_contract_of_firstOrderStrongConvexOn_gradientCocoerciveOn
     hfirst
     (exercise31_gradientCocoerciveOn_univ_of_firstOrderStrongConvexOn_smooth
-      hconvex hsmooth hbeta_pos)
+      (FirstOrderStrongConvexOn.convex hfirst halpha_nonneg) hsmooth hbeta_pos)
     hbeta_pos hh_nonneg hstep_size hfactor_nonneg (by simp) (by simp)
 
 /--
@@ -205,7 +205,7 @@ theorem exercise31_gradientStep_sqdist_contract_of_strongConvexOn_univ_hasGradie
     {f : E -> ℝ} {grad : E -> E}
     {alpha beta h : ℝ} {x y : E}
     (hstrong : StrongConvexOn Set.univ f alpha)
-    (hconvex : StrongConvexOn Set.univ f 0)
+    (halpha_nonneg : 0 ≤ alpha)
     (hgrad : ∀ z, HasGradientAt f (grad z) z)
     (hsmooth : SmoothWithGradientOn Set.univ f grad beta)
     (hbeta_pos : 0 < beta)
@@ -216,8 +216,7 @@ theorem exercise31_gradientStep_sqdist_contract_of_strongConvexOn_univ_hasGradie
   exercise31_gradientStep_sqdist_contract_of_firstOrderStrongConvexOn_smooth_univ
     (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
       hstrong hgrad)
-    (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
-      hconvex hgrad)
+    halpha_nonneg
     hsmooth hbeta_pos hh_nonneg hstep_size
 
 /--
@@ -229,7 +228,7 @@ theorem exercise31_gradientStep_dist_contract_of_strongConvexOn_univ_hasGradient
     {f : E -> ℝ} {grad : E -> E}
     {alpha beta h : ℝ} {x y : E}
     (hstrong : StrongConvexOn Set.univ f alpha)
-    (hconvex : StrongConvexOn Set.univ f 0)
+    (halpha_nonneg : 0 ≤ alpha)
     (hgrad : ∀ z, HasGradientAt f (grad z) z)
     (hsmooth : SmoothWithGradientOn Set.univ f grad beta)
     (hbeta_pos : 0 < beta)
@@ -241,8 +240,7 @@ theorem exercise31_gradientStep_dist_contract_of_strongConvexOn_univ_hasGradient
   exercise31_gradientStep_dist_contract_of_firstOrderStrongConvexOn_smooth_univ
     (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
       hstrong hgrad)
-    (FirstOrderStrongConvexOn.of_strongConvexOn_univ_hasGradientAt
-      hconvex hgrad)
+    halpha_nonneg
     hsmooth hbeta_pos hh_nonneg hstep_size hfactor_nonneg
 
 end Optimization

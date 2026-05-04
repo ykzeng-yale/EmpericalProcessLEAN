@@ -181,6 +181,23 @@ theorem strongConvexOn_iff_mathlibStrongConvexOn
   ⟨StrongConvexOn.to_mathlibStrongConvexOn,
     StrongConvexOn.of_mathlibStrongConvexOn⟩
 
+/-- Lowering the strong-convexity parameter preserves Chewi strong convexity. -/
+theorem StrongConvexOn.mono
+    {C : Set E} {f : E -> ℝ} {alpha gamma : ℝ}
+    (hgamma_le_alpha : gamma ≤ alpha)
+    (h : StrongConvexOn C f alpha) :
+    StrongConvexOn C f gamma :=
+  StrongConvexOn.of_mathlibStrongConvexOn
+    (_root_.StrongConvexOn.mono hgamma_le_alpha
+      h.to_mathlibStrongConvexOn)
+
+/-- Nonnegative Chewi strong convexity downshifts to Chewi convexity. -/
+theorem StrongConvexOn.chewiConvexOn
+    {C : Set E} {f : E -> ℝ} {alpha : ℝ}
+    (h : StrongConvexOn C f alpha) (halpha : 0 ≤ alpha) :
+    ChewiConvexOn C f :=
+  StrongConvexOn.mono halpha h
+
 /--
 Nonnegative Chewi strong convexity gives the ordinary mathlib convex-function
 API.
@@ -214,6 +231,31 @@ theorem FirstOrderStrongConvexOn.lower_model {C : Set E} {f : E -> ℝ}
     f x + inner ℝ (grad x) (y - x) +
       (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) ≤ f y :=
   h.2 hx hy
+
+/--
+Lowering the first-order strong-convexity parameter preserves the lower model.
+-/
+theorem FirstOrderStrongConvexOn.mono
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha gamma : ℝ}
+    (hgamma_le_alpha : gamma ≤ alpha)
+    (h : FirstOrderStrongConvexOn C f grad alpha) :
+    FirstOrderStrongConvexOn C f grad gamma := by
+  refine ⟨h.convex_set, ?_⟩
+  intro x hx y hy
+  have hmodel := h.lower_model hx hy
+  have hcoef :
+      (gamma / 2) * ‖y - x‖ ^ (2 : ℕ) ≤
+        (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) := by
+    have hsq : 0 ≤ ‖y - x‖ ^ (2 : ℕ) := sq_nonneg _
+    nlinarith
+  nlinarith
+
+/-- Nonnegative first-order strong convexity downshifts to the convex lower model. -/
+theorem FirstOrderStrongConvexOn.convex
+    {C : Set E} {f : E -> ℝ} {grad : E -> E} {alpha : ℝ}
+    (h : FirstOrderStrongConvexOn C f grad alpha) (halpha : 0 ≤ alpha) :
+    FirstOrderStrongConvexOn C f grad 0 :=
+  FirstOrderStrongConvexOn.mono halpha h
 
 /--
 Chewi Proposition 1.6, implication `(1.3) => (1.4)` on the whole space:

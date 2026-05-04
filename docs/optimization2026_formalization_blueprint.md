@@ -97,9 +97,13 @@ Current compiled surface:
 - `StatInference.Optimization.StrongConvexOn.to_mathlibStrongConvexOn`
 - `StatInference.Optimization.StrongConvexOn.of_mathlibStrongConvexOn`
 - `StatInference.Optimization.strongConvexOn_iff_mathlibStrongConvexOn`
+- `StatInference.Optimization.StrongConvexOn.mono`
+- `StatInference.Optimization.StrongConvexOn.chewiConvexOn`
 - `StatInference.Optimization.StrongConvexOn.convexOn`
 - `StatInference.Optimization.ChewiConvexOn.convexOn`
 - `StatInference.Optimization.FirstOrderStrongConvexOn`
+- `StatInference.Optimization.FirstOrderStrongConvexOn.mono`
+- `StatInference.Optimization.FirstOrderStrongConvexOn.convex`
 - `StatInference.Optimization.SmoothWithGradientOn`
 - `StatInference.Optimization.gradientDescentStep`
 - `StatInference.Optimization.IsGradientDescentTrajectory`
@@ -161,7 +165,10 @@ Near-term exact candidates:
    `StrongConvexOn.of_mathlibStrongConvexOn`, and
    `strongConvexOn_iff_mathlibStrongConvexOn` when later theorem routes want
    mathlib's root `StrongConvexOn`/`ConvexOn` API; do not reprove this
-   equivalence.
+   equivalence.  Reuse `StrongConvexOn.mono`,
+   `StrongConvexOn.chewiConvexOn`, `FirstOrderStrongConvexOn.mono`, and
+   `FirstOrderStrongConvexOn.convex` when a theorem route needs to downshift
+   from nonnegative strong convexity to the alpha-zero convex lower model.
 2. Source-audited packaging for Lemma 1.10 uniqueness of minimizer under
    strict convexity, now compiled via mathlib `StrictConvexOn.eq_of_isMinOn`.
 3. Corollary 1.11 existence/coercivity layer; uniqueness and gradient-zero
@@ -291,6 +298,8 @@ Near-term exact candidates:
    Exercise 3.1 co-coercivity display `(3.5)` from convexity plus
    `SmoothWithGradientOn`, and provides Theorem 3.3 squared/norm wrappers with
    the co-coercivity input discharged for the whole-space smooth-convex route.
+   Those wrappers now use the local parameter-downshift lemmas, so callers
+   provide `0 <= alpha` rather than a separate alpha-zero convexity hypothesis.
 4. Theorem 3.4 as a convergence theorem from actual whole-space
    `StrongConvexOn` plus `HasGradientAt`.  `Theorem34.lean` assumes the
    one-step recurrence (3.1), uses the compiled Gronwall theorem for the

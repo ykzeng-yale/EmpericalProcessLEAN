@@ -87,8 +87,14 @@ blocker for the whole-space differentiable case:
   mathlib's root `_root_.StrongConvexOn C alpha f` via
   `StrongConvexOn.to_mathlibStrongConvexOn`,
   `StrongConvexOn.of_mathlibStrongConvexOn`, and
-  `strongConvexOn_iff_mathlibStrongConvexOn`; nonnegative strong convexity
-  and `ChewiConvexOn` also expose mathlib `ConvexOn`.
+  `strongConvexOn_iff_mathlibStrongConvexOn`; local parameter downshift now
+  compiles as `StrongConvexOn.mono`, reusing mathlib root
+  `StrongConvexOn.mono`, and nonnegative strong convexity now gives
+  `StrongConvexOn.chewiConvexOn` as well as mathlib `ConvexOn`.
+- The first-order lower-model interface also now has
+  `FirstOrderStrongConvexOn.mono` and `FirstOrderStrongConvexOn.convex`,
+  so downstream theorem wrappers can derive the alpha-zero convex lower model
+  from `0 <= alpha` instead of asking for a separate convexity hypothesis.
 - Positive local `StrongConvexOn` implies mathlib `StrictConvexOn`, so positive
   Chewi strong convexity plus minimizer existence gives an `∃!` minimizer.
 - Corollary 1.11-style wrappers compile for the supplied first-order lower
@@ -229,7 +235,10 @@ blocker for the whole-space differentiable case:
   `HasGradientAt`.  Exercise 3.1 itself now compiles in
   `StatInference/Optimization/Exercises.lean` for the whole-space
   smooth-convex route, removing the supplied co-coercivity input from the
-  corresponding Theorem 3.3 squared/norm wrappers.
+  corresponding Theorem 3.3 squared/norm wrappers.  The newest wrappers also
+  remove the separate alpha-zero convexity input by downshifting
+  `FirstOrderStrongConvexOn` or `StrongConvexOn` from `alpha` to `0` under
+  `0 <= alpha`.
 
 The positive-`alpha` closed-form Theorem 3.4 function-value denominator now
 compiles.  The assembly layer in
@@ -341,8 +350,12 @@ display (1.3) is equivalent after reindexing `a = 1 - t`, `b = t` and using
 `StrongConvexOn.to_mathlibStrongConvexOn`,
 `StrongConvexOn.of_mathlibStrongConvexOn`,
 `strongConvexOn_iff_mathlibStrongConvexOn`,
-`StrongConvexOn.convexOn`, and `ChewiConvexOn.convexOn`.  Future convexity
-routes should reuse these wrappers before opening local algebra.
+`StrongConvexOn.mono`, `StrongConvexOn.chewiConvexOn`,
+`StrongConvexOn.convexOn`, and `ChewiConvexOn.convexOn`.  The downshift search
+found mathlib's root `StrongConvexOn.mono` in
+`Mathlib.Analysis.Convex.Strong`; no local wrapper existed before this layer.
+Future convexity routes should reuse these wrappers before opening local
+algebra.
 
 Current first-order recurrence bridge result: `FirstOrderStrongConvexOn` is a
 source-faithful version of Chewi Proposition 1.6 / equation (1.4), and on the
@@ -361,7 +374,10 @@ textbook's swap-and-add argument directly, using two applications of
 convex-derivative monotonicity lemmas in `Analysis/Convex/Deriv.lean` and
 gradient/fderiv bridges in `Analysis/Calculus/Gradient/Basic.lean`, but no
 ready multidimensional theorem matching the local supplied first-order
-interface.
+interface.  No local first-order parameter monotonicity theorem existed; the
+compiled `FirstOrderStrongConvexOn.mono` is the direct algebraic downshift of
+the lower-model correction term, and `FirstOrderStrongConvexOn.convex` is the
+`gamma = 0` specialization used by Exercise 3.1/Theorem 3.3 wrappers.
 
 Current Theorem 3.3 contraction search result: mathlib provides the norm-square
 expansion `norm_sub_sq_real` and the square-root/order helpers
@@ -451,6 +467,8 @@ provides Theorem 3.3 squared/norm contraction wrappers
 `exercise31_gradientStep_dist_contract_of_firstOrderStrongConvexOn_smooth_univ`,
 `exercise31_gradientStep_sqdist_contract_of_strongConvexOn_univ_hasGradientAt_smooth`,
 and `exercise31_gradientStep_dist_contract_of_strongConvexOn_univ_hasGradientAt_smooth`.
+These wrappers now assume only `0 <= alpha` for the convex downshift instead
+of requiring an extra alpha-zero convexity/strong-convexity hypothesis.
 The older interface bridge `GradientCocoerciveOn.stepCocoerciveOn_of_le_inv`
 remains the reusable conversion from (3.5) to the h-scaled step inequality.
 
@@ -492,7 +510,9 @@ Local searches should prioritize:
    monotonicity and Exercise 3.1 co-coercivity interfaces.  The whole-space
    smooth-convex Exercise 3.1 proof in `Exercises.lean` now discharges the
    co-coercivity input for first-order and actual whole-space
-   `StrongConvexOn` plus `HasGradientAt` wrappers.
+   `StrongConvexOn` plus `HasGradientAt` wrappers, and the local downshift
+   lemmas remove the former separate alpha-zero convexity input under
+   `0 <= alpha`.
 6. Keep the Theorem 3.4 assembly layer compiling.  It has the weighted
    finite-sum, finite denominator, positive-`alpha` closed denominator,
    `alpha = 0` limiting denominator, first-order trajectory wrappers, and
