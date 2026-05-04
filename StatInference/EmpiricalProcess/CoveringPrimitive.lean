@@ -186,6 +186,56 @@ theorem empiricalL1Distance_self {Observation : Type u} {n : ℕ}
     empiricalL1Distance sample f f = 0 := by
   simp [empiricalL1Distance, empiricalAverage]
 
+/--
+The fixed-sample trace of an indexed function on the empirical sample.
+
+This is the deterministic object behind later finite-trace and VC/Sauer-style
+empirical-cover arguments: two class members with the same trace on the sample
+have empirical `L1(P_n)` distance zero.
+-/
+def empiricalTrace {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) (index : Index) : Fin n -> ℝ :=
+  fun sampleIndex => classFun index (sample sampleIndex)
+
+/-- Equal fixed-sample traces have zero empirical `L1(P_n)` distance. -/
+theorem empiricalL1Distance_eq_zero_of_empiricalTrace_eq
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {index center : Index}
+    (htrace :
+      empiricalTrace sample classFun index =
+        empiricalTrace sample classFun center) :
+    empiricalL1Distance sample (classFun index) (classFun center) = 0 := by
+  unfold empiricalL1Distance empiricalAverage
+  have hsum :
+      (∑ sampleIndex : Fin n,
+        |classFun index (sample sampleIndex) -
+          classFun center (sample sampleIndex)|) = 0 := by
+    refine Finset.sum_eq_zero fun sampleIndex _hsampleIndex => ?_
+    have hpoint := congrFun htrace sampleIndex
+    simp [empiricalTrace] at hpoint
+    simp [hpoint]
+  simp [hsum]
+
+/--
+Equal fixed-sample traces give an empirical `L1(P_n)` cover at every
+nonnegative radius.
+-/
+theorem empiricalL1Distance_le_of_empiricalTrace_eq
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {index center : Index}
+    {epsilon : ℝ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (htrace :
+      empiricalTrace sample classFun index =
+        empiricalTrace sample classFun center) :
+    empiricalL1Distance sample (classFun index) (classFun center) ≤
+      epsilon := by
+  rw [empiricalL1Distance_eq_zero_of_empiricalTrace_eq htrace]
+  exact hepsilon_nonneg
+
 /-- Empirical `L1(P_n)` distance is symmetric. -/
 theorem empiricalL1Distance_comm {Observation : Type u} {n : ℕ}
     (sample : SampleAt Observation n)
@@ -855,6 +905,233 @@ theorem empiricalL1CoveringNumber_le_of_finite_centerSet_card_le
   exact
     (empiricalL1CoveringNumber_le_of_finite_centerSet
       hcenter_finite hcenter_subset hcover).trans (by exact_mod_cast hcard_le)
+
+/--
+A finite set of representatives for fixed-sample traces gives a local empirical
+`L1(P_n)` cover.
+
+This is the theorem-facing fixed-sample bridge needed by finite-trace,
+VC/Sauer, and discretization routes: it separates the combinatorial task
+(choose finitely many trace representatives) from the empirical-cover witness.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_centerSet
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass centerSet : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hcenter_finite : centerSet.Finite)
+    (hcenter_subset : centerSet ⊆ indexClass)
+    (htrace_cover :
+      ∀ index, index ∈ indexClass ->
+        ∃ center, center ∈ centerSet ∧
+          empiricalTrace sample classFun index =
+            empiricalTrace sample classFun center)
+    (hepsilon_nonneg : 0 ≤ epsilon) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        hcenter_finite.toFinset.card) := by
+  refine
+    nonempty_finiteEmpiricalL1CoverAtCard_of_finite_centerSet
+      hcenter_finite hcenter_subset ?_
+  intro index hindex
+  rcases htrace_cover index hindex with ⟨center, hcenter, htrace⟩
+  exact
+    ⟨center, hcenter,
+      empiricalL1Distance_le_of_empiricalTrace_eq hepsilon_nonneg htrace⟩
+
+/--
+Padded-cardinality fixed-sample trace cover.  This is useful when a
+combinatorial argument controls the number of distinct traces by a simpler
+terminal bound such as a polynomial in the sample size.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_centerSet_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass centerSet : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (hcenter_finite : centerSet.Finite)
+    (hcenter_subset : centerSet ⊆ indexClass)
+    (htrace_cover :
+      ∀ index, index ∈ indexClass ->
+        ∃ center, center ∈ centerSet ∧
+          empiricalTrace sample classFun index =
+            empiricalTrace sample classFun center)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le : hcenter_finite.toFinset.card ≤ cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  exact
+    (nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_centerSet
+      hcenter_finite hcenter_subset htrace_cover hepsilon_nonneg).elim
+      fun cover => ⟨cover.pad_cardinality hindexClass hcard_le⟩
+
+/-- Numeric empirical-covering-number bound from finite trace representatives. -/
+theorem empiricalL1CoveringNumber_le_of_finite_trace_centerSet
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass centerSet : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hcenter_finite : centerSet.Finite)
+    (hcenter_subset : centerSet ⊆ indexClass)
+    (htrace_cover :
+      ∀ index, index ∈ indexClass ->
+        ∃ center, center ∈ centerSet ∧
+          empiricalTrace sample classFun index =
+            empiricalTrace sample classFun center)
+    (hepsilon_nonneg : 0 ≤ epsilon) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (hcenter_finite.toFinset.card : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_coverAtCard
+      (nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_centerSet
+        hcenter_finite hcenter_subset htrace_cover hepsilon_nonneg)
+
+/--
+Cardinality-padded numeric empirical-covering-number bound from finite trace
+representatives.
+-/
+theorem empiricalL1CoveringNumber_le_of_finite_trace_centerSet_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass centerSet : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (hcenter_finite : centerSet.Finite)
+    (hcenter_subset : centerSet ⊆ indexClass)
+    (htrace_cover :
+      ∀ index, index ∈ indexClass ->
+        ∃ center, center ∈ centerSet ∧
+          empiricalTrace sample classFun index =
+            empiricalTrace sample classFun center)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hcard_le : hcenter_finite.toFinset.card ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    (empiricalL1CoveringNumber_le_of_finite_trace_centerSet
+      hcenter_finite hcenter_subset htrace_cover hepsilon_nonneg).trans
+      (by exact_mod_cast hcard_le)
+
+/--
+If only finitely many fixed-sample traces occur on the class, then those traces
+choose representatives that form an empirical `L1(P_n)` cover.
+
+This removes the explicit representative-set hypothesis from
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_centerSet` and is the
+direct fixed-sample trace-count primitive used by finite-trace/VC arguments.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (htrace_finite :
+      (empiricalTrace sample classFun '' indexClass).Finite)
+    (hepsilon_nonneg : 0 ≤ epsilon) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        htrace_finite.toFinset.card) := by
+  classical
+  let traceSet : Set (Fin n -> ℝ) :=
+    empiricalTrace sample classFun '' indexClass
+  let traceFinset := htrace_finite.toFinset
+  let center : Fin htrace_finite.toFinset.card -> Index :=
+    fun centerIndex =>
+      Classical.choose
+        ((htrace_finite.mem_toFinset).1
+          (((htrace_finite.toFinset.equivFin).symm centerIndex).2))
+  let centerOf :
+      ∀ index, index ∈ indexClass -> Fin htrace_finite.toFinset.card :=
+    fun index hindex =>
+      htrace_finite.toFinset.equivFin
+        ⟨empiricalTrace sample classFun index,
+          (htrace_finite.mem_toFinset).2 ⟨index, hindex, rfl⟩⟩
+  have hcenter_mem :
+      ∀ centerIndex, center centerIndex ∈ indexClass := by
+    intro centerIndex
+    have hchosen :=
+      Classical.choose_spec
+        ((htrace_finite.mem_toFinset).1
+          (((htrace_finite.toFinset.equivFin).symm centerIndex).2))
+    exact hchosen.1
+  have hdist :
+      ∀ index hindex,
+        empiricalL1Distance sample (classFun index)
+          (classFun (center (centerOf index hindex))) ≤ epsilon := by
+    intro index hindex
+    have hchosen :=
+      Classical.choose_spec
+        ((htrace_finite.mem_toFinset).1
+          (((htrace_finite.toFinset.equivFin).symm
+            (centerOf index hindex)).2))
+    have htrace :
+        empiricalTrace sample classFun index =
+          empiricalTrace sample classFun (center (centerOf index hindex)) := by
+      simpa [center, centerOf] using hchosen.2.symm
+    exact empiricalL1Distance_le_of_empiricalTrace_eq hepsilon_nonneg htrace
+  exact
+    ⟨{ center := center
+       center_mem := hcenter_mem
+       centerOf := centerOf
+       dist_le := hdist }⟩
+
+/--
+Numeric empirical-covering-number bound by the number of distinct fixed-sample
+traces.
+-/
+theorem empiricalL1CoveringNumber_le_of_finite_trace_image
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (htrace_finite :
+      (empiricalTrace sample classFun '' indexClass).Finite)
+    (hepsilon_nonneg : 0 ≤ epsilon) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (htrace_finite.toFinset.card : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_coverAtCard
+      (nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image
+        htrace_finite hepsilon_nonneg)
+
+/--
+Padded-cardinality cover from a finite fixed-sample trace image.  Later
+combinatorial arguments can supply a terminal bound on the number of distinct
+traces and reuse this cover witness directly.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (htrace_finite :
+      (empiricalTrace sample classFun '' indexClass).Finite)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le : htrace_finite.toFinset.card ≤ cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  exact
+    (nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image
+      htrace_finite hepsilon_nonneg).elim fun cover =>
+      ⟨cover.pad_cardinality hindexClass hcard_le⟩
+
+/--
+Padded numeric empirical-covering-number bound from a finite fixed-sample trace
+image and a terminal cardinality estimate.
+-/
+theorem empiricalL1CoveringNumber_le_of_finite_trace_image_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (htrace_finite :
+      (empiricalTrace sample classFun '' indexClass).Finite)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hcard_le : htrace_finite.toFinset.card ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    (empiricalL1CoveringNumber_le_of_finite_trace_image
+      htrace_finite hepsilon_nonneg).trans (by exact_mod_cast hcard_le)
 
 /--
 Convert a mathlib internal metric cover into a local empirical `L1(P_n)` cover

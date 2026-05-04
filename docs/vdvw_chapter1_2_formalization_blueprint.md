@@ -693,9 +693,14 @@ above, so they do not change the theorem-level dashboard counts.
    are also compiled, so a future estimate
    `cardinality eta n sample n <= base eta ^ n` or
    `cardinality eta n sample n + 1 <= base eta ^ n` now directly supplies the
-   selected fixed-radius tail/UI package.  What remains for the full
-   non-finite class route is the actual geometric/cardinality estimate for
-   the chosen empirical internal cover or maximal separated set.  If this
+   selected fixed-radius tail/UI package.  The fixed-sample trace layer is also
+   compiled via `empiricalTrace` and
+   `nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image`, so any
+   finite trace-count, VC/Sauer, or discretization argument now directly
+   produces a deterministic empirical `L1(P_n)` cover and covering-number
+   bound.  What remains for the full non-finite class route is the actual
+   geometric/cardinality estimate for the chosen empirical internal cover,
+   trace image, or maximal separated set.  If this
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid

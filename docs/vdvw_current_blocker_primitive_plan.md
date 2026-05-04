@@ -1578,6 +1578,43 @@ inverse-radius and fixed-radius consumers, finite-net tail/UI adapters,
 untruncation handoffs, and symmetrization/product finite-net route are already
 compiled.
 
+2026-05-03 `/goal` update after fixed-sample trace-cover closure:
+`StatInference/EmpiricalProcess/CoveringPrimitive.lean` now has the
+theorem-facing finite-trace empirical-cover primitive.  New compiled
+declarations are `empiricalTrace`,
+`empiricalL1Distance_eq_zero_of_empiricalTrace_eq`,
+`empiricalL1Distance_le_of_empiricalTrace_eq`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_centerSet`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_centerSet_card_le`,
+`empiricalL1CoveringNumber_le_of_finite_trace_centerSet`,
+`empiricalL1CoveringNumber_le_of_finite_trace_centerSet_card_le`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image`,
+`empiricalL1CoveringNumber_le_of_finite_trace_image`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_trace_image_card_le`, and
+`empiricalL1CoveringNumber_le_of_finite_trace_image_card_le`.  Search record:
+local `CoveringPrimitive.lean` already supplied finite-center empirical-cover
+and padding adapters; pinned mathlib supplied finite-image/cardinality APIs
+such as `Set.ncard_image_le`, but no fixed-sample trace-to-empirical-cover
+primitive existed.  This closure gives the next non-finite route a clean
+bridge from a combinatorial finite trace count, VC/Sauer trace count, or
+sample discretization argument to a deterministic empirical `L1(P_n)` cover.
+It does not by itself prove the full book entropy hypothesis; the remaining
+structural task is to bound or control the number of distinct traces (or
+selected fixed-radius cover cardinalities) under the theorem's assumptions.
+
+Current compact `/goal` execution prompt: continue VdV&W Chapters 1-2 in
+dependency order without repeating closed Theorem 2.4.3 finite-net,
+selected-fixed-radius, finite-class, integrability, centered-cover,
+centered-supremum/pair/sample/random-sign product integrability, canonical
+iid-sign/sample-path instantiations, untruncation, or fixed-sample trace-cover
+bridges.  The active closure batch is now a structural non-finite entropy
+handoff: prove a theorem-facing trace-count / VC-Sauer / empirical internal
+cover cardinality estimate that feeds the selected fixed-radius tail/UI
+package through the new trace-cover declarations, or honestly record the exact
+missing structural hypothesis before moving to the next Chapter 1
+arbitrary-map/asymptotic-measurability primitive needed by the exact textbook
+statement.
+
 Search note for the finite product layer: the finite-sample route can use
 mathlib's finite `Pi` product APIs rather than only binary products.  Relevant
 APIs found and used are `ProbabilityTheory.iIndepFun_pi`,
