@@ -2,6 +2,7 @@ import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.MeasureTheory.Group.Arithmetic
 import Mathlib.MeasureTheory.Measure.NullMeasurable
+import Mathlib.Probability.ProductMeasure
 import Mathlib.Topology.Order.OrderClosed
 import StatInference.EmpiricalProcess.CoveringPrimitive
 
@@ -38,6 +39,19 @@ instance instIsProbabilityMeasure_vdVWProductMeasure
     (P : Measure Observation) [IsProbabilityMeasure P] (n : ℕ) :
     IsProbabilityMeasure (vdVWProductMeasure P n) := by
   unfold vdVWProductMeasure
+  infer_instance
+
+/-- Infinite iid product measure `P^∞` on sample sequences. -/
+noncomputable def vdVWInfiniteProductMeasure {Observation : Type u}
+    [MeasurableSpace Observation] (P : Measure Observation) :
+    Measure (ℕ -> Observation) :=
+  Measure.infinitePi fun _ : ℕ => P
+
+instance instIsProbabilityMeasure_vdVWInfiniteProductMeasure
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] :
+    IsProbabilityMeasure (vdVWInfiniteProductMeasure P) := by
+  unfold vdVWInfiniteProductMeasure
   infer_instance
 
 /--
@@ -94,6 +108,17 @@ def vdVWFirstNSample {Observation : Type u} (n : ℕ)
     (sequence : ℕ -> Observation) : Fin n -> Observation :=
   fun i => sequence i
 
+/-- The canonical equivalence between `Fin n` and the subtype `Finset.range n`. -/
+def vdVWFinRangeEquiv (n : ℕ) : Fin n ≃ ↥(Finset.range n) where
+  toFun i := ⟨i, Finset.mem_range.mpr i.isLt⟩
+  invFun i := ⟨i, Finset.mem_range.mp i.property⟩
+  left_inv i := by
+    ext
+    rfl
+  right_inv i := by
+    ext
+    rfl
+
 /-- The first-`n` coordinate projection is measurable for product sigma-fields. -/
 theorem measurable_vdVWFirstNSample
     {Observation : Type u} [MeasurableSpace Observation] (n : ℕ) :
@@ -101,6 +126,88 @@ theorem measurable_vdVWFirstNSample
   rw [measurable_pi_iff]
   intro i
   exact measurable_pi_apply (i : ℕ)
+
+/--
+The first `n` coordinates of `P^∞` have law `P^n`.
+
+This is the bridge from the infinite sequence space used by the VdV&W
+permutation-symmetric reverse-submartingale route back to the finite product
+estimates used throughout Theorem 2.4.3.
+-/
+theorem vdVWInfiniteProductMeasure_measurePreserving_firstNSample
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] (n : ℕ) :
+    MeasurePreserving (vdVWFirstNSample (Observation := Observation) n)
+      (vdVWInfiniteProductMeasure P) (vdVWProductMeasure P n) := by
+  refine ⟨measurable_vdVWFirstNSample n, ?_⟩
+  let I : Finset ℕ := Finset.range n
+  let e : Fin n ≃ ↥I := vdVWFinRangeEquiv n
+  let rangeToFin : (↥I -> Observation) -> (Fin n -> Observation) :=
+    fun sample i => sample (e i)
+  have hrangeToFin_measurable : Measurable rangeToFin := by
+    rw [measurable_pi_iff]
+    intro i
+    exact measurable_pi_apply (e i)
+  have hfirst :
+      vdVWFirstNSample (Observation := Observation) n =
+        rangeToFin ∘ I.restrict := by
+    funext sequence i
+    rfl
+  have hmap_range :
+      (Measure.infinitePi fun _ : ℕ => P).map I.restrict =
+        Measure.pi fun _ : ↥I => P := by
+    simpa [I] using
+      (Measure.infinitePi_map_restrict (μ := fun _ : ℕ => P) (I := I))
+  have hmap_reindex :
+      (Measure.pi fun _ : ↥I => P).map rangeToFin =
+        Measure.pi fun _ : Fin n => P := by
+    simpa [rangeToFin, e, I] using
+      (MeasureTheory.measurePreserving_piCongrLeft
+        (α := fun _ : Fin n => Observation)
+        (μ := fun _ : Fin n => P) (vdVWFinRangeEquiv n).symm).map_eq
+  calc
+    (vdVWInfiniteProductMeasure P).map
+        (vdVWFirstNSample (Observation := Observation) n)
+        = (Measure.infinitePi fun _ : ℕ => P).map (rangeToFin ∘ I.restrict) := by
+            simp [vdVWInfiniteProductMeasure, hfirst]
+    _ = ((Measure.infinitePi fun _ : ℕ => P).map I.restrict).map rangeToFin := by
+          rw [← Measure.map_map hrangeToFin_measurable
+            (Finset.measurable_restrict (X := fun _ : ℕ => Observation) I)]
+    _ = vdVWProductMeasure P n := by
+          rw [hmap_range, hmap_reindex]
+          rfl
+
+/-- The first `n` coordinates on `P^∞` have finite-product law `P^n`. -/
+theorem vdVWFirstNSample_hasLaw_vdVWProductMeasure
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] (n : ℕ) :
+    ProbabilityTheory.HasLaw
+      (vdVWFirstNSample (Observation := Observation) n)
+      (vdVWProductMeasure P n) (vdVWInfiniteProductMeasure P) :=
+  (vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n).hasLaw
+
+/--
+Integrals of finite-sample statistics can be lifted from `P^n` to `P^∞` by
+precomposing with the first-`n` projection.
+-/
+theorem integral_vdVWInfiniteProductMeasure_firstNSample
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] (n : ℕ)
+    (g : (Fin n -> Observation) -> ℝ)
+    (hg : AEStronglyMeasurable g (vdVWProductMeasure P n)) :
+    (∫ sequence : ℕ -> Observation,
+        g (vdVWFirstNSample (Observation := Observation) n sequence)
+          ∂(vdVWInfiniteProductMeasure P)) =
+      ∫ sample : Fin n -> Observation, g sample ∂(vdVWProductMeasure P n) :=
+  by
+    let hmp := vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n
+    have hgmap :
+        AEStronglyMeasurable g
+          ((vdVWInfiniteProductMeasure P).map
+            (vdVWFirstNSample (Observation := Observation) n)) := by
+      simpa [hmp.map_eq] using hg
+    rw [← hmp.map_eq]
+    exact (integral_map (hmp.measurable.aemeasurable) hgmap).symm
 
 /-- Permute the first `n` coordinates of an infinite sample sequence. -/
 def vdVWPermuteFirstN {Observation : Type u} {n : ℕ}

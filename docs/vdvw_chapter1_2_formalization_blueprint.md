@@ -1038,7 +1038,15 @@ above, so they do not change the theorem-level dashboard counts.
    primitive is now the VdV&W-specific reverse/permutation-symmetric comparison
    that reindexes or compares the decreasing `Σ_n` empirical-supremum covers
    to this ordinary conditional-expectation martingale framework, plus the
-   terminal integrability/L1-bound discharge from the envelope hypotheses, not
+   terminal integrability/L1-bound discharge from the envelope hypotheses.  The
+   first finite-to-infinite iid sample transport is also compiled:
+   `vdVWInfiniteProductMeasure_measurePreserving_firstNSample`,
+   `vdVWFirstNSample_hasLaw_vdVWProductMeasure`,
+   `integral_vdVWInfiniteProductMeasure_firstNSample`, and the truncated and
+   untruncated infinite-product integrability lifts for countable centered
+   empirical suprema.  Thus the next work should not redo first-coordinate
+   law/integrability transport, and should instead prove the structural
+   reverse/permutation-symmetric comparison itself, not
    the finite permutation, generated-sigma, countable-supremum adaptedness,
    cover-shaped adaptedness, cofiltration substrate, or ordinary conditional
    expectation convergence substrate.

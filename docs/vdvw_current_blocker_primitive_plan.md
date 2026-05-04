@@ -3083,3 +3083,25 @@ compares the decreasing `Σ_n` empirical-supremum covers to this ordinary
 conditional-expectation martingale framework, then discharge the required
 integrable terminal variable or explicit finite L1 bound from the envelope
 hypotheses.
+
+2026-05-04 follow-up: the finite-sample law/integrability bridge from the
+infinite iid sequence space to the first `n` coordinates is now compiled.
+Search record: local `StatInference` had no existing first-`n` law bridge;
+pinned mathlib provides `Measure.infinitePi`, `Measure.infinitePi_map_restrict`,
+`MeasureTheory.measurePreserving_piCongrLeft`,
+`Finset.measurable_restrict`, `integral_map`, and
+`MeasurePreserving.integrable_comp_of_integrable`.  New compiled declarations
+are `vdVWInfiniteProductMeasure`,
+`instIsProbabilityMeasure_vdVWInfiniteProductMeasure`,
+`vdVWFinRangeEquiv`,
+`vdVWInfiniteProductMeasure_measurePreserving_firstNSample`,
+`vdVWFirstNSample_hasLaw_vdVWProductMeasure`,
+`integral_vdVWInfiniteProductMeasure_firstNSample`,
+`integrable_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_truncated_of_countable`,
+and
+`integrable_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_of_countable`.
+This closes the basic `P^∞ -> P^n` transport needed to move finite empirical
+supremum estimates into the Lemma 2.4.5 infinite-sequence/cofiltration setting.
+The next exact blocker is now more concrete: prove the reverse/permutation
+symmetric comparison itself, using the transported integrability and the
+already-compiled `Σ_n` adaptedness/conditional-expectation convergence layers.

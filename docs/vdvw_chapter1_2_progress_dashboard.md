@@ -731,6 +731,15 @@ now the VdV&W-specific reverse/permutation-symmetric comparison from the
 decreasing `Σ_n` empirical-supremum covers into that ordinary conditional
 expectation framework, plus the terminal integrability/L1-bound discharge from
 the envelope assumptions.
+2026-05-04 follow-up: the finite-to-infinite iid sample bridge is now
+compiled.  `PMeasurable.lean` adds `vdVWInfiniteProductMeasure`,
+`vdVWInfiniteProductMeasure_measurePreserving_firstNSample`,
+`vdVWFirstNSample_hasLaw_vdVWProductMeasure`, and
+`integral_vdVWInfiniteProductMeasure_firstNSample`; `Theorem243.lean` adds
+the truncated and untruncated infinite-product integrability lifts for
+countable centered empirical suprema.  Remaining Lemma 2.4.5 work is the
+actual reverse/permutation-symmetric comparison, not first-coordinate law or
+finite-to-infinite integrability transport.
 
 ## Verification Monitor
 
