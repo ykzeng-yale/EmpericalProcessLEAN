@@ -4905,6 +4905,146 @@ theorem vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseCofiltratio
     vdVWLemma245LeaveOneOutCenteredSupremum] using hsequence n hn
 
 /--
+For each row `n`, the ordinary `ℕ`-filtration that is constantly equal to the
+VdV&W permutation-symmetric sigma-field `Σ_{n+1}`.  This is the canonical
+specialization of the row-indexed ordinary filtrations used only to access
+mathlib's current `ℕ`-filtration martingale-convergence API.
+-/
+abbrev vdVWLemma245ConstantRowFiltration
+    (Observation : Type u) [MeasurableSpace Observation] (n : ℕ) :
+    Filtration ℕ (.pi (X := fun _ : ℕ => Observation)) :=
+  Filtration.const ℕ
+    (vdVWPermutationSymmetricMeasurableSpace Observation (n + 1))
+    (vdVWPermutationSymmetricMeasurableSpace_le_pi Observation (n + 1))
+
+/--
+Canonical-row version of
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseCofiltrationHandoff`.
+It removes the arbitrary row-filtration parameter by using the constant
+filtration at the actual VdV&W field `Σ_{n+1}` in each row.
+
+The remaining hypothesis is still the genuine reverse/cofiltration convergence
+primitive; this theorem only closes the bookkeeping needed to present that
+primitive directly over the VdV&W permutation-symmetric fields.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseCofiltrationHandoff_constRows
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hreverse :
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∀ n, 0 < n ->
+          (vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+            (vdVWInfiniteProductMeasure P)[
+              (fun sequence : ℕ -> Observation =>
+                vdVWLemma245LeaveOneOutCenteredSupremum P indexClass classFun n sequence) |
+              vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence) ∧
+          Tendsto
+            (fun m : ℕ =>
+              (vdVWInfiniteProductMeasure P)[
+                (fun sequence : ℕ -> Observation =>
+                  vdVWLemma245LeaveOneOutCenteredSupremum P indexClass classFun n sequence) |
+                vdVWLemma245ConstantRowFiltration Observation n m] sequence)
+            atTop
+            (𝓝
+              ((vdVWLemma245ConstantRowFiltration Observation n).limitProcess
+                (fun m sequence =>
+                  (vdVWInfiniteProductMeasure P)[
+                    (fun sequence : ℕ -> Observation =>
+                      vdVWLemma245LeaveOneOutCenteredSupremum P indexClass classFun n sequence) |
+                    vdVWLemma245ConstantRowFiltration Observation n m] sequence)
+                (vdVWInfiniteProductMeasure P) sequence))) ->
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∃ limit : ℝ,
+          Tendsto
+            (fun n : ℕ =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+            atTop (𝓝 limit)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      ∃ limit : ℝ,
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 limit) := by
+  have hbase :=
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseCofiltrationHandoff
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable
+      (fun n => vdVWLemma245ConstantRowFiltration Observation n)
+      (by
+        intro n hn
+        rfl)
+  refine hbase ?_
+  intro hrows
+  apply hreverse
+  filter_upwards [hrows] with sequence hsequence n hn
+  simpa [vdVWLemma245ConstantRowFiltration] using hsequence n hn
+
+/--
+Lean-facing Lemma 2.4.5 consumer that strips the remaining auxiliary
+`limitProcess` row data from the reverse/cofiltration primitive.  It supplies
+the genuine all-row reverse comparison over the VdV&W fields `Σ_{n+1}`
+directly from the compiled countable conditional-expectation comparison.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseComparisonHandoff
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hreverse :
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∀ n, 0 < n ->
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+            (vdVWInfiniteProductMeasure P)[
+              (fun sequence : ℕ -> Observation =>
+                vdVWLemma245LeaveOneOutCenteredSupremum P indexClass classFun n sequence) |
+              vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence) ->
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∃ limit : ℝ,
+          Tendsto
+            (fun n : ℕ =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+            atTop (𝓝 limit)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      ∃ limit : ℝ,
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 limit) := by
+  apply hreverse
+  have hrow :
+      ∀ n, ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        0 < n ->
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+            (vdVWInfiniteProductMeasure P)[
+              (fun sequence : ℕ -> Observation =>
+                vdVWLemma245LeaveOneOutCenteredSupremum P indexClass classFun n sequence) |
+              vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence := by
+    intro n
+    by_cases hn : 0 < n
+    · have h :=
+        vdVW_condExp_reverseComparison_centered_uniformClassSupremum_le_lastLeaveOneOut_of_countable
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) hcount henvelope hclass henv_integrable hn
+      filter_upwards [h] with sequence hsequence _hn
+      simpa [vdVWLemma245CenteredEmpiricalSupremum,
+        vdVWLemma245LeaveOneOutCenteredSupremum] using hsequence
+    · exact Filter.Eventually.of_forall fun sequence hpos => (hn hpos).elim
+  filter_upwards [ae_all_iff.2 hrow] with sequence hsequence n hn
+  exact hsequence n hn
+
+/--
 An integrable envelope supplies the varying-domain tail/UI condition for the
 untruncated centered empirical supremum with weights `1/n`.
 -/

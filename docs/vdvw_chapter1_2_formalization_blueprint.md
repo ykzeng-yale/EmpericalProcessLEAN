@@ -1119,6 +1119,12 @@ above, so they do not change the theorem-level dashboard counts.
    now compiles as well, so the final local class/envelope/measurability
    plumbing is closed once that reverse/cofiltration convergence primitive is
    available.
+   The preferred follow-up shape is now even sharper:
+   `vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseComparisonHandoff`
+   consumes only the all-row reverse comparisons over the actual
+   permutation-symmetric fields `Σ_{n+1}`.  The remaining primitive should
+   prove the reverse/cofiltration convergence from those comparisons, not add
+   more ordinary-row filtration wrappers.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

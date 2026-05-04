@@ -3302,3 +3302,15 @@ remaining blocker is therefore exactly that reverse/cofiltration convergence
 primitive for the decreasing permutation-symmetric `Σ_n` fields; pinned
 mathlib searches found only ordinary `ℕ`-filtration martingale convergence,
 not a ready `ℕᵒᵈ` reverse/cofiltration convergence theorem.
+
+2026-05-04 follow-up: the arbitrary row-filtration and `limitProcess`
+bookkeeping has now been further removed from the cleanest Lemma 2.4.5
+handoff.  The canonical constant-row specialization
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseCofiltrationHandoff_constRows`
+compiles, and the stronger comparison-only consumer
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseComparisonHandoff`
+now feeds the final a.e. centered-supremum convergence from just the all-row
+reverse comparisons over the actual fields `Σ_{n+1}`.  The remaining primitive
+can therefore be stated sharply as: prove that these VdV&W
+permutation-symmetric reverse comparisons imply a.e. convergence of the
+centered empirical supremum sequence.  No row-filtration plumbing remains.

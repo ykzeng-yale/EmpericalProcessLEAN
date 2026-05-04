@@ -837,6 +837,16 @@ convergence statement under one explicit reverse/cofiltration convergence
 primitive.  The remaining gap is still the mathematical reverse
 martingale/cofiltration convergence theorem for the decreasing
 permutation-symmetric `Σ_n` fields.
+2026-05-04 follow-up: the handoff is now cleaner.  The canonical constant-row
+consumer
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseCofiltrationHandoff_constRows`
+and the comparison-only consumer
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_reverseComparisonHandoff`
+compile.  The next Lemma 2.4.5 target is now exactly the reverse/cofiltration
+convergence theorem from the all-row inequalities
+`Z_{n+1} <= E[Z_n^{(-last)} | Σ_{n+1}]` to a.e. convergence of `Z_{n+1}`;
+the auxiliary ordinary-row `limitProcess` data is no longer part of the
+preferred theorem statement.
 
 ## Verification Monitor
 
