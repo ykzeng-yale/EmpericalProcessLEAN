@@ -919,6 +919,10 @@ above, so they do not change the theorem-level dashboard counts.
    derive ordinary class-member integrability from the envelope, so that
    finite-class theorem-facing route exposes the same reduced analytic
    assumption profile.
+   The selected fixed-radius tail/UI consumer and the integer-grid,
+   finite-threshold, and full-subgraph bridge stack now share this reduction:
+   caller-facing ordinary class-member integrability is derived internally
+   from the envelope hypotheses.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

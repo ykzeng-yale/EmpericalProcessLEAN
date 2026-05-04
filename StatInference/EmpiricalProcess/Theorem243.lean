@@ -18553,8 +18553,6 @@ theorem
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
     (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
     (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
     (hsign :
       ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
@@ -18675,6 +18673,11 @@ theorem
             classFun index observation - ∫ x, classFun index x ∂P)
           (fun _ : Fin n => (n : ℝ)⁻¹) sample)
       atTop (0 : ℝ) := by
+  let hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P :=
+    fun index hindex =>
+      integrable_classFun_of_integrable_envelope
+        (μ := P) henvelope hclass henv_integrable hindex
   exact
     VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_fixedRadius_tailExpectation
       (μsign := μsign) (P := P) (indexClass := indexClass)
@@ -18760,8 +18763,6 @@ theorem
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
     (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
     (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
     (hsign :
       ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
@@ -18912,7 +18913,6 @@ theorem
       (hindexClass := hindexClass) (henvelope := henvelope)
       (hclass := hclass) (henv := henv)
       (henv_integrable := henv_integrable)
-      (hclassIntegrable := hclassIntegrable)
       (sign := sign) (hsign := hsign) (hindep := hindep)
       (hsubG := hsubG) (htruncIntegrable := htruncIntegrable)
       (hbdd_truncated := hbdd_truncated)
@@ -18966,8 +18966,6 @@ theorem
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
     (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
     (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
     (hsign :
       ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
@@ -19104,7 +19102,7 @@ theorem
             ((samplePath (X M n) sample m) sampleIndex)).trans
             (vdVWIntegerGridRadius_mul_eta_ge (M := M) (eta := eta) heta))
       hvc hindexClass henvelope hclass henv henv_integrable
-      hclassIntegrable sign hsign hindep hsubG htruncIntegrable
+      sign hsign hindep hsubG htruncIntegrable
       hbdd_truncated hpairSupIntegrable hcenteredSupIntegrable
       hghostExpectationIntegrable hsplitSupIntegrable hsampleSupIntegrable
       hrandomIntegralIntegrable Urandom hproductSupIntegrable
@@ -19142,8 +19140,6 @@ theorem
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
     (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
     (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
     (hsign :
       ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
@@ -19276,7 +19272,7 @@ theorem
           VdVWUniformThresholdVCSubgraphBound.empiricalBinaryTraceSetFamily_vcDim_le
             (sample := samplePath (X M n) sample m)
             (hvc M hM_pos) threshold.1)
-      hindexClass henvelope hclass henv henv_integrable hclassIntegrable
+      hindexClass henvelope hclass henv henv_integrable
       sign hsign hindep hsubG htruncIntegrable hbdd_truncated
       hpairSupIntegrable hcenteredSupIntegrable hghostExpectationIntegrable
       hsplitSupIntegrable hsampleSupIntegrable hrandomIntegralIntegrable
@@ -19314,8 +19310,6 @@ theorem
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
     (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
     (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
     (hsign :
       ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
@@ -19445,7 +19439,7 @@ theorem
       (fun M hM_pos =>
         VdVWUniformSubgraphVCBound.toUniformThresholdVCSubgraphBound
           (hvc M hM_pos))
-      hindexClass henvelope hclass henv henv_integrable hclassIntegrable
+      hindexClass henvelope hclass henv henv_integrable
       sign hsign hindep hsubG htruncIntegrable hbdd_truncated
       hpairSupIntegrable hcenteredSupIntegrable hghostExpectationIntegrable
       hsplitSupIntegrable hsampleSupIntegrable hrandomIntegralIntegrable
@@ -19810,7 +19804,7 @@ theorem
       (classFun := classFun) (envelope := envelope) (X := X)
       (vcDegree := vcDegree) hside.hX_samplePath hside.hvc
       hside.hindexClass hside.henvelope hside.hclass hside.henv
-      hside.henv_integrable hside.hclassIntegrable sign hside.hsign
+      hside.henv_integrable sign hside.hsign
       hside.hindep hside.hsubG hside.htruncIntegrable
       hside.hbdd_truncated hside.hpairSupIntegrable
       hside.hcenteredSupIntegrable hside.hghostExpectationIntegrable
@@ -19986,8 +19980,6 @@ theorem
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
     (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
     (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
     (hsign :
       ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
@@ -20144,7 +20136,6 @@ theorem
       (hindexClass := hindexClass) (henvelope := henvelope)
       (hclass := hclass) (henv := henv)
       (henv_integrable := henv_integrable)
-      (hclassIntegrable := hclassIntegrable)
       (sign := sign) (hsign := hsign) (hindep := hindep)
       (hsubG := hsubG) (htruncIntegrable := htruncIntegrable)
       (hbdd_truncated := hbdd_truncated)
@@ -20209,8 +20200,6 @@ theorem
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
     (henv_integrable : Integrable envelope P)
-    (hclassIntegrable :
-      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
     (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
     (hsign :
       ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
@@ -20332,6 +20321,11 @@ theorem
           (fun _ : Fin n => (n : ℝ)⁻¹) sample)
       atTop (0 : ℝ) := by
   classical
+  let hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P :=
+    fun index hindex =>
+      integrable_classFun_of_integrable_envelope
+        (μ := P) henvelope hclass henv_integrable hindex
   let thresholds :
       ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Finset ℝ :=
     fun M eta n sample m =>
@@ -20385,7 +20379,6 @@ theorem
       (hindexClass := hindexClass) (henvelope := henvelope)
       (hclass := hclass) (henv := henv)
       (henv_integrable := henv_integrable)
-      (hclassIntegrable := hclassIntegrable)
       (sign := sign) (hsign := hsign) (hindep := hindep)
       (hsubG := hsubG) (htruncIntegrable := htruncIntegrable)
       (hbdd_truncated := hbdd_truncated)
@@ -20476,7 +20469,6 @@ theorem
       (hindexClass := hindexClass) (henvelope := henvelope)
       (hclass := hclass) (henv := henv)
       (henv_integrable := henv_integrable)
-      (hclassIntegrable := hclassIntegrable)
       (sign := sign) (hsign := hsign) (hindep := hindep)
       (hsubG := hsubG)
       (htruncIntegrable := by

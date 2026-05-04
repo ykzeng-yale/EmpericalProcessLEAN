@@ -2773,6 +2773,11 @@ The finite-class untruncated consumer and its iid/canonical wrappers have the
 same reduction: `hclassIntegrable` is derived locally from
 `integrable_classFun_of_integrable_envelope`, so finite-class callers now need
 only envelope measurability/integrability plus coordinate measurability.
+The selected fixed-radius tail/UI consumer and the integer-grid,
+finite-threshold, finite-realized-value, canonical envelope, subgraph, and
+full-subgraph bridge stack now also remove caller-facing `hclassIntegrable`
+where the envelope hypotheses are available; the lower-level tail-expectation
+primitive still keeps explicit class integrability for direct users.
 
 Next exact theorem-facing edit: move from this proof layer toward the exact
 Theorem 2.4.3 statement by aligning the remaining structural full-subgraph

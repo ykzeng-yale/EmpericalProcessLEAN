@@ -512,6 +512,10 @@ separate `hclassIntegrable` argument.
 canonical wrappers now use the same envelope-integrability helper internally,
 so finite-class callers also no longer supply ordinary class-member
 integrability separately.
+2026-05-04 follow-up: the selected fixed-radius tail/UI consumer and the
+integer-grid/finite-threshold/full-subgraph bridge stack now also derive
+ordinary class-member integrability from the envelope; these theorem-facing
+routes no longer take a separate `hclassIntegrable` argument.
 2026-05-04 follow-up: constructor
 `VdVWTheorem243FullSubgraphSideConditions.of_integrable` now derives
 `htruncIntegrable` from ordinary class integrability plus the measurable
