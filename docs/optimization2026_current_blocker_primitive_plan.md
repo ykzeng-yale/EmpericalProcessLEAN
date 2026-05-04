@@ -131,7 +131,10 @@ blocker for the whole-space differentiable case:
   `chewi24_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientAt`,
   `chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn`, and
   `chewi24_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradientAt`,
-  with interval-integrability hypotheses exposed.
+  with interval-integrability hypotheses exposed.  The newest wrappers
+  discharge those interval-integrability hypotheses from continuity of
+  `s ↦ grad (x s)` on `[0,t]`, using gradient-flow differentiability to
+  obtain continuity of `x` and `s ↦ f (x s) - f xStar`.
 - The scalar Gronwall special case used by Theorem 2.2 and Corollary 2.6 now
   compiles as `scalarExpWeighted_antitone_of_hasDerivAt_le`,
   `scalarExpWeighted_le_initial_of_hasDerivAt_le`, and
@@ -422,8 +425,12 @@ follow-up interval-integral instantiation now reuses
 `intervalIntegral.integral_const`, `Continuous.intervalIntegrable`,
 `HasDerivAt.div_const`, and `fun_prop` for the exponential lower-bound
 integrand.  The remaining regularity task is to derive the exposed
-`IntervalIntegrable` assumptions from a clean `C²`/regular trajectory surface
-instead of passing them explicitly.
+`IntervalIntegrable` assumptions from a clean regularity surface instead of
+passing them explicitly.  The current compiled surface is continuity of the
+gradient-oracle trajectory on `[0,t]`; it reuses
+`ContinuousOn.intervalIntegrable_of_Icc`, `ContinuousOn.inner`,
+`ContinuousOn.norm`, `ContinuousOn.pow`, `HasDerivAt.continuousOn`, and local
+`gradientFlow_gap_hasDerivAt`.
 
 Current Proposition 2.7 / Corollary 2.8 search result: local
 `PolyakLojasiewiczOn` and `FirstOrderStrongConvexOn.lower_model` already give
@@ -600,6 +607,10 @@ Latest verified local frontier after lane creation:
 - `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientAt`
 - `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn`
 - `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradientAt`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_firstOrderStrongConvexOn_of_continuousOn_grad`
+- `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_strongConvexOn_univ_hasGradientAt_of_continuousOn_grad`
+- `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_firstOrderStrongConvexOn_of_continuousOn_grad`
+- `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_strongConvexOn_univ_hasGradientAt_of_continuousOn_grad`
 - `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_weighted_bound`
 - `StatInference.Optimization.chewi24_gap_le_alpha_zero_denominator_of_weighted_bound`
 - `StatInference.Optimization.chewi24_gap_le_geometric_denominator_of_weighted_gap_bound`
