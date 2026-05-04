@@ -657,6 +657,17 @@ that reverse-filtration route is now also wrapped locally.  New declarations
 coordinate sets grow.  This is still substrate only; the exact VdV&W
 permutation-symmetric filtration and reverse-submartingale reduction remain
 open.
+2026-05-04 follow-up: the finite-product iid coordinate-permutation layer is
+now compiled in `PMeasurable.lean`.  New declarations
+`vdVWFinCoordinatePermMeasurableEquiv`,
+`vdVWFinCoordinatePermMeasurableEquiv_apply_apply`,
+`vdVWProductMeasure_measurePreserving_finCoordinatePerm`, and
+`integral_vdVWProductMeasure_comp_finCoordinatePerm` reuse mathlib
+`MeasurableEquiv.piCongrLeft` and
+`MeasureTheory.measurePreserving_piCongrLeft`.  This removes finite-sample
+permutation invariance as a blocker for symmetric sample expressions; it does
+not yet construct the decreasing VdV&W symmetric sigma-fields or prove the
+reverse-submartingale handoff.
 
 ## Verification Monitor
 

@@ -993,7 +993,13 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWExteriorCofiltration`, with display/monotonicity helpers
    `vdVWExteriorCofiltration_apply`, `vdVWExteriorCofiltration_le_pi`, and
    `vdVWExteriorCofiltration_antitone`, reusing mathlib
-   `Filtration.cylinderEventsCompl`.
+   `Filtration.cylinderEventsCompl`.  The finite-sample iid
+   coordinate-permutation layer is now compiled as
+   `vdVWFinCoordinatePermMeasurableEquiv`,
+   `vdVWProductMeasure_measurePreserving_finCoordinatePerm`, and
+   `integral_vdVWProductMeasure_comp_finCoordinatePerm`, reusing mathlib
+   `MeasurableEquiv.piCongrLeft` and
+   `MeasureTheory.measurePreserving_piCongrLeft`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

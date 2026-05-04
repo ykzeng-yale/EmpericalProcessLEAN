@@ -40,6 +40,55 @@ instance instIsProbabilityMeasure_vdVWProductMeasure
   unfold vdVWProductMeasure
   infer_instance
 
+/--
+Finite-coordinate permutation of the sample space `Observation^n`.
+
+This is the finite-sample permutation action used by the VdV&W
+permutation-symmetric filtration route.
+-/
+noncomputable def vdVWFinCoordinatePermMeasurableEquiv
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) :
+    (Fin n -> Observation) ≃ᵐ (Fin n -> Observation) :=
+  MeasurableEquiv.piCongrLeft (fun _ : Fin n => Observation) perm
+
+/-- Coordinate display for `vdVWFinCoordinatePermMeasurableEquiv`. -/
+theorem vdVWFinCoordinatePermMeasurableEquiv_apply_apply
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) (sample : Fin n -> Observation) (i : Fin n) :
+    vdVWFinCoordinatePermMeasurableEquiv perm sample (perm i) = sample i :=
+  by
+    simpa [vdVWFinCoordinatePermMeasurableEquiv] using
+      (MeasurableEquiv.piCongrLeft_apply_apply
+        (β := fun _ : Fin n => Observation) perm sample i)
+
+/--
+The iid finite product measure `P^n` is invariant under finite-coordinate
+permutations.
+-/
+theorem vdVWProductMeasure_measurePreserving_finCoordinatePerm
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [SigmaFinite P] {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) :
+    MeasurePreserving (vdVWFinCoordinatePermMeasurableEquiv perm)
+      (vdVWProductMeasure P n) (vdVWProductMeasure P n) := by
+  simpa [vdVWProductMeasure, vdVWFinCoordinatePermMeasurableEquiv] using
+    (MeasureTheory.measurePreserving_piCongrLeft
+      (α := fun _ : Fin n => Observation)
+      (μ := fun _ : Fin n => P) perm)
+
+/-- Integral invariance under finite-coordinate permutations of `P^n`. -/
+theorem integral_vdVWProductMeasure_comp_finCoordinatePerm
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [SigmaFinite P] {n : ℕ}
+    (perm : Equiv.Perm (Fin n))
+    (g : (Fin n -> Observation) -> ℝ) :
+    (∫ sample : Fin n -> Observation,
+        g (vdVWFinCoordinatePermMeasurableEquiv perm sample)
+          ∂(vdVWProductMeasure P n)) =
+      ∫ sample : Fin n -> Observation, g sample ∂(vdVWProductMeasure P n) :=
+  (vdVWProductMeasure_measurePreserving_finCoordinatePerm P perm).integral_comp' g
+
 /-- The weighted finite sample sum appearing in VdV&W display `(2.3.2)`. -/
 noncomputable def vdVWWeightedSampleSum {Observation : Type u} {Index : Type v}
     (classFun : Index -> Observation -> ℝ) {n : ℕ}

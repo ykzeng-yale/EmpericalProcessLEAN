@@ -2949,3 +2949,22 @@ still the VdV&W permutation-symmetric decreasing filtration on sample paths,
 its adapted measurable-cover/supremum process, and the reverse-submartingale
 inequality/convergence reduction needed for the almost-sure part of
 Theorem 2.4.3.
+
+2026-05-04 follow-up: the finite-sample iid permutation-invariance layer for
+the Lemma 2.4.5 permutation-symmetric route is now compiled in
+`PMeasurable.lean`.  Search record: local code had product-measure and
+finite-`Pi` law wrappers but no coordinate-permutation action; pinned mathlib
+`Mathlib/MeasureTheory/Constructions/Pi.lean` provides
+`MeasurableEquiv.piCongrLeft`,
+`MeasurableEquiv.piCongrLeft_apply_apply`,
+`MeasureTheory.measurePreserving_piCongrLeft`, and
+`Measure.pi_map_piCongrLeft`.  New compiled declarations are
+`vdVWFinCoordinatePermMeasurableEquiv`,
+`vdVWFinCoordinatePermMeasurableEquiv_apply_apply`,
+`vdVWProductMeasure_measurePreserving_finCoordinatePerm`, and
+`integral_vdVWProductMeasure_comp_finCoordinatePerm`.  These close the
+finite-product iid coordinate-permutation invariance needed for symmetric
+sample expressions.  The remaining blocker is not finite permutation
+invariance itself; it is the VdV&W decreasing permutation-symmetric sigma-field
+or adapted process, plus the reverse-submartingale inequality/convergence
+handoff that uses it.
