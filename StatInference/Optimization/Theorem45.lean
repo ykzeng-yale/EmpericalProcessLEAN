@@ -328,6 +328,232 @@ theorem chewi45_lowerBoundChain_regularization_reduction_package_sqrt_dim
     hbeta heps hR heps_le (lowerBoundChainMinimizer_norm_le_sqrt_dim d)
     hx_near hDelta_le
 
+/--
+Prefix-subspace version of the convex lower-bound gap.  This removes the
+base-chain gradient-span hypothesis when another oracle, such as a regularized
+oracle, has already proved `x ∈ V_N`.
+-/
+theorem lowerBoundChainTextbookObjective_gap_ge_of_mem_coordinatePrefixSubmodule
+    {beta : ℝ} (hbeta : 0 ≤ beta) {N d : ℕ} (hNd : N ≤ d)
+    {x : EuclideanSpace ℝ (Fin d)}
+    (hx : x ∈ coordinatePrefixSubmodule d N) :
+    beta / (8 * ((N : ℝ) + 1)) - beta / (8 * ((d : ℝ) + 1)) ≤
+      lowerBoundChainTextbookObjective beta d x -
+        lowerBoundChainTextbookObjective beta d (lowerBoundChainMinimizer d) := by
+  have hprefix :
+      -(beta / 8) * (1 - 1 / ((N : ℝ) + 1)) ≤
+        lowerBoundChainTextbookObjective beta d x :=
+    lowerBoundChainTextbookObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule
+      hbeta hNd hx
+  have hNden : ((N : ℝ) + 1) ≠ 0 := by positivity
+  have hdden : ((d : ℝ) + 1) ≠ 0 := by positivity
+  calc
+    beta / (8 * ((N : ℝ) + 1)) - beta / (8 * ((d : ℝ) + 1))
+        =
+          -(beta / 8) * (1 - 1 / ((N : ℝ) + 1)) -
+            (-(beta / 8) * (1 - 1 / ((d : ℝ) + 1))) := by
+            field_simp [hNden, hdden]
+            ring
+    _ ≤ lowerBoundChainTextbookObjective beta d x -
+          (-(beta / 8) * (1 - 1 / ((d : ℝ) + 1))) := by
+          exact sub_le_sub_right hprefix _
+    _ = lowerBoundChainTextbookObjective beta d x -
+          lowerBoundChainTextbookObjective beta d (lowerBoundChainMinimizer d) := by
+          rw [lowerBoundChainTextbookObjective_lowerBoundChainMinimizer]
+
+/--
+The regularized lower-bound chain oracle has the same one-coordinate support
+growth as the base chain: `x ∈ V_k -> grad_delta(x) ∈ V_{k+1}`.
+-/
+theorem regularizedLowerBoundChainGradient_mem_coordinatePrefixSubmodule
+    {d k : ℕ} {beta delta : ℝ} {x : EuclideanSpace ℝ (Fin d)}
+    (hx : x ∈ coordinatePrefixSubmodule d k) :
+    regularizedGradient (lowerBoundChainGradient beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d)) x ∈
+      coordinatePrefixSubmodule d (k + 1) := by
+  rw [regularizedGradient_apply]
+  refine Submodule.add_mem _ ?_ ?_
+  · exact lowerBoundChainGradient_mem_coordinatePrefixSubmodule hx
+  · have hx_sub :
+        x - (0 : EuclideanSpace ℝ (Fin d)) ∈ coordinatePrefixSubmodule d k := by
+      simpa using hx
+    have hx_smul :
+        delta • (x - (0 : EuclideanSpace ℝ (Fin d))) ∈
+          coordinatePrefixSubmodule d k :=
+      Submodule.smul_mem _ delta hx_sub
+    exact coordinatePrefixSubmodule_mono d (Nat.le_succ k) hx_smul
+
+/--
+Regularized-chain gradient-span trajectories from zero still satisfy the
+source support invariant `x_n ∈ V_n`.
+-/
+theorem gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_regularizedLowerBoundChainGradient
+    {d : ℕ} {beta delta : ℝ}
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (regularizedGradient (lowerBoundChainGradient beta d) delta
+        (0 : EuclideanSpace ℝ (Fin d))) x) :
+    ∀ n, x n ∈ coordinatePrefixSubmodule d n :=
+  gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_grad_mem_next
+    hx0 hspan (fun _ hxk =>
+      regularizedLowerBoundChainGradient_mem_coordinatePrefixSubmodule hxk)
+
+/--
+Concrete Theorem 4.5 reduction obstruction: a regularized gradient-span run
+which is `eps / 2`-near the regularized minimum by time `N` forces the convex
+Theorem 4.4 lower-bound quantity to be at most `eps`.
+-/
+theorem chewi45_convex_lower_bound_le_eps_of_regularizedGradientSpan_near_min
+    {beta eps R : ℝ} (hbeta : 0 ≤ beta) (heps : 0 < eps)
+    (hR : 0 < R) (heps_le : eps ≤ beta * R ^ (2 : ℕ))
+    {N d : ℕ} (hNd : N ≤ d)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {xDelta : EuclideanSpace ℝ (Fin d)}
+    (hR_bound : ‖lowerBoundChainMinimizer d‖ ≤ R)
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (regularizedGradient (lowerBoundChainGradient beta d)
+        (eps / R ^ (2 : ℕ)) (0 : EuclideanSpace ℝ (Fin d))) x)
+    (hx_near :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d)
+        (eps / R ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin d)) (x N) ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d)
+        (eps / R ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin d)) xDelta + eps / 2)
+    (hDelta_le :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d)
+        (eps / R ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin d)) xDelta ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta d)
+        (eps / R ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin d)) (lowerBoundChainMinimizer d)) :
+    beta / (8 * ((N : ℝ) + 1)) - beta / (8 * ((d : ℝ) + 1)) ≤ eps := by
+  have hx_prefix :
+      x N ∈ coordinatePrefixSubmodule d N :=
+    gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_regularizedLowerBoundChainGradient
+      (x := x) hx0 hspan N
+  have hgap_lower :
+      beta / (8 * ((N : ℝ) + 1)) - beta / (8 * ((d : ℝ) + 1)) ≤
+        lowerBoundChainTextbookObjective beta d (x N) -
+          lowerBoundChainTextbookObjective beta d (lowerBoundChainMinimizer d) :=
+    lowerBoundChainTextbookObjective_gap_ge_of_mem_coordinatePrefixSubmodule
+      hbeta hNd hx_prefix
+  have hreduce :=
+    chewi45_lowerBoundChain_regularization_reduction_package
+      (beta := beta) (eps := eps) (R := R) (d := d)
+      (x := x N) (xDelta := xDelta)
+      hbeta heps hR heps_le hR_bound hx_near hDelta_le
+  exact hgap_lower.trans hreduce.1
+
+/--
+`d = 2N + 1` source specialization of the regularized-chain obstruction,
+using the canonical radius bound `R = sqrt d`.
+-/
+theorem chewi45_two_mul_add_one_lower_bound_le_eps_of_regularizedGradientSpan_near_min
+    {beta eps : ℝ} (hbeta : 0 ≤ beta) (heps : 0 < eps) (N : ℕ)
+    (heps_le :
+      eps ≤ beta * (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+    {x : ℕ -> EuclideanSpace ℝ (Fin (2 * N + 1))}
+    {xDelta : EuclideanSpace ℝ (Fin (2 * N + 1))}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (regularizedGradient
+        (lowerBoundChainGradient beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))) x)
+    (hx_near :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) (x N) ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta + eps / 2)
+    (hDelta_le :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))
+        (lowerBoundChainMinimizer (2 * N + 1))) :
+    beta / (16 * ((N : ℝ) + 1)) ≤ eps := by
+  have hdpos : 0 < 2 * N + 1 := by omega
+  have hdpos_real : 0 < ((2 * N + 1 : ℕ) : ℝ) := by exact_mod_cast hdpos
+  have hR : 0 < Real.sqrt ((2 * N + 1 : ℕ) : ℝ) :=
+    Real.sqrt_pos.2 hdpos_real
+  have hraw :=
+    chewi45_convex_lower_bound_le_eps_of_regularizedGradientSpan_near_min
+      (beta := beta) (eps := eps)
+      (R := Real.sqrt ((2 * N + 1 : ℕ) : ℝ))
+      (N := N) (d := 2 * N + 1) (x := x) (xDelta := xDelta)
+      hbeta heps hR heps_le (by omega)
+      (lowerBoundChainMinimizer_norm_le_sqrt_dim (2 * N + 1))
+      hx0 hspan hx_near hDelta_le
+  have hleft :
+      beta / (8 * ((N : ℝ) + 1)) -
+          beta / (8 * (((2 * N + 1 : ℕ) : ℝ) + 1)) =
+        beta / (16 * ((N : ℝ) + 1)) := by
+    have hden : ((N : ℝ) + 1) ≠ 0 := by positivity
+    have hden2 : (((2 * N + 1 : ℕ) : ℝ) + 1) ≠ 0 := by positivity
+    field_simp [hden, hden2]
+    norm_num [Nat.cast_add, Nat.cast_mul]
+    ring
+  rwa [hleft] at hraw
+
+/--
+Contradiction form of the preceding theorem: under the regularization
+reduction hypotheses, accuracy `eps < beta / (16 (N+1))` cannot be reached by
+time `N` on the `d = 2N + 1` lower-bound chain.
+-/
+theorem chewi45_not_regularizedGradientSpan_near_min_of_eps_lt_two_mul_add_one_bound
+    {beta eps : ℝ} (hbeta : 0 ≤ beta) (heps : 0 < eps) (N : ℕ)
+    (heps_le :
+      eps ≤ beta * (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+    (heps_lt : eps < beta / (16 * ((N : ℝ) + 1)))
+    {x : ℕ -> EuclideanSpace ℝ (Fin (2 * N + 1))}
+    {xDelta : EuclideanSpace ℝ (Fin (2 * N + 1))}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (regularizedGradient
+        (lowerBoundChainGradient beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))) x)
+    (hx_near :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) (x N) ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta + eps / 2)
+    (hDelta_le :
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1))) xDelta ≤
+      quadraticRegularizedAround
+        (lowerBoundChainTextbookObjective beta (2 * N + 1))
+        (eps / (Real.sqrt ((2 * N + 1 : ℕ) : ℝ)) ^ (2 : ℕ))
+        (0 : EuclideanSpace ℝ (Fin (2 * N + 1)))
+        (lowerBoundChainMinimizer (2 * N + 1))) :
+    False := by
+  have hle :=
+    chewi45_two_mul_add_one_lower_bound_le_eps_of_regularizedGradientSpan_near_min
+      (beta := beta) (eps := eps) hbeta heps N heps_le
+      hx0 hspan hx_near hDelta_le
+  linarith
+
 /-- Squared coordinate tail beyond the source prefix subspace `V_N`. -/
 noncomputable def coordinateTailSq (d N : ℕ)
     (z : EuclideanSpace ℝ (Fin d)) : ℝ :=

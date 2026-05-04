@@ -507,7 +507,17 @@ compiled Theorem 4.4 lower-bound chain into the regularization/condition-number
 packages from `Reductions.lean`.  The remaining Theorem 4.5 work is no longer
 the Lemma 4.2 bookkeeping; it is the geometric/logarithmic rate statement,
 either by the direct Exercise 4.2 tail route or by source-shaped packaging of
-the Lemma 4.2 + Theorem 4.4 reduction.
+the Lemma 4.2 + Theorem 4.4 reduction.  The reduction obstruction itself now
+also compiles: `lowerBoundChainTextbookObjective_gap_ge_of_mem_coordinatePrefixSubmodule`
+turns prefix-subspace membership into the convex lower-bound gap,
+`regularizedLowerBoundChainGradient_mem_coordinatePrefixSubmodule` and
+`gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_regularizedLowerBoundChainGradient`
+prove the regularized oracle support invariant, and
+`chewi45_convex_lower_bound_le_eps_of_regularizedGradientSpan_near_min`,
+`chewi45_two_mul_add_one_lower_bound_le_eps_of_regularizedGradientSpan_near_min`,
+and `chewi45_not_regularizedGradientSpan_near_min_of_eps_lt_two_mul_add_one_bound`
+give the concrete `d = 2N + 1` obstruction `beta / (16 * (N + 1)) <= eps`
+and its contradiction form.
 The source step
 `f_d = f_N` on `V_N` is now packaged as
 `lowerBoundChainObjective_ge_prefixMin_of_mem_coordinatePrefixSubmodule`, and

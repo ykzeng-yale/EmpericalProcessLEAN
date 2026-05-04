@@ -967,13 +967,22 @@ chain through `lowerBoundChainMinimizer_norm_le_sqrt_dim`,
 `chewi45_lowerBoundChain_regularization_complexity_package`,
 `chewi45_lowerBoundChain_regularization_reduction_package`, and
 `chewi45_lowerBoundChain_regularization_reduction_package_sqrt_dim`.  Do not
-repeat this regularization/condition-number/radius package.  The next atomic
-target is the real strongly-convex lower-bound rate statement: combine this
-compiled reduction with Theorem 4.4's convex lower bound into a source-shaped
-Theorem 4.5 wrapper, or close the direct Exercise 4.2 geometric tail route.
-Search mathlib/local APIs for finite geometric sums, recurrence solutions,
-logarithm/order/asymptotic iteration-count wrappers, and existing exercise
-interfaces before introducing any new complexity primitive.
+repeat this regularization/condition-number/radius package.  The newest
+obstruction layer also compiles:
+`lowerBoundChainTextbookObjective_gap_ge_of_mem_coordinatePrefixSubmodule`,
+`regularizedLowerBoundChainGradient_mem_coordinatePrefixSubmodule`,
+`gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_regularizedLowerBoundChainGradient`,
+`chewi45_convex_lower_bound_le_eps_of_regularizedGradientSpan_near_min`,
+`chewi45_two_mul_add_one_lower_bound_le_eps_of_regularizedGradientSpan_near_min`,
+and `chewi45_not_regularizedGradientSpan_near_min_of_eps_lt_two_mul_add_one_bound`.
+Do not repeat the prefix-support or `d = 2N + 1` obstruction.  The next atomic
+target is the final strongly-convex lower-bound rate statement: convert
+`beta / (16 * (N + 1)) <= eps` plus condition-number bookkeeping into the
+source `sqrt(kappa) * log(alpha R^2 / eps)` shape, or close the direct
+Exercise 4.2 geometric tail route.  Search mathlib/local APIs for finite
+geometric sums, recurrence solutions, logarithm/order/asymptotic
+iteration-count wrappers, and existing exercise interfaces before introducing
+any new complexity primitive.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,
@@ -986,9 +995,9 @@ the newest witness layer also compiles `coordinateTailSq`,
 `coordinateTailSq_le_sqdist_of_mem_coordinatePrefixSubmodule`,
 `strongLowerBoundChainObjective_gap_ge_tailSq_of_gradient_eq_zero`, and
 `strongLowerBoundChainObjective_gap_ge_tailSq_of_gradientSpanTrajectory`.  Do
-not repeat these.  The remaining missing theorem content is the
-geometric/logarithmic rate assembly, not the already solved Lemma 4.2
-bookkeeping.
+not repeat these.  The remaining missing theorem content is the logarithmic
+iteration-count/rate assembly or the direct Exercise 4.2 geometric tail
+argument, not the already solved Lemma 4.2 or obstruction bookkeeping.
 
 Chapter 2 route context is still available but no longer the active target:
 The route
