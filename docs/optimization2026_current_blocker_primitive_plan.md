@@ -1353,13 +1353,14 @@ closed by `exercise42InfiniteInitialScale`,
 `exercise42InfiniteChainObjective_theorem45_hard_instance_package`, which
 combines the oracle interfaces, geometric minimizer, named optimum-value lower
 bound, zero-start gradient-span support, and the opt-value `sqrt(kappa)` rate
-obstruction.  Next direct step: either use this package as the source-facing
-direct Exercise 4.2 hard instance, or factor the infinite substrate out of
-`Exercises.lean` into a pre-`Theorem45` module if the main Theorem 4.5 file
-must import it without a cycle.  A positive-log infinite display remains a
-cleanup target; avoid direct large-expression rewrites until the minimizer and
-initial-scale proof terms are named enough to avoid dependent proof-term
-normalization noise.
+obstruction.  The positive-log source display is also closed by
+`exercise42InfiniteGeometricMinimizer_proof_irrel` and
+`exercise42InfiniteChainObjective_positiveLogRate_le_near_min_optValue_concreteGradient`,
+which convert the internal negative-log rate into the source-facing
+`log(C/eps)` form for the named initial scale.  Next direct step: either use
+this package as the source-facing direct Exercise 4.2 hard instance, or factor
+the infinite substrate out of `Exercises.lean` into a pre-`Theorem45` module if
+the main Theorem 4.5 file must import it without a cycle.
 The concrete regularized-chain setup for Theorem 4.5 also now compiles in
 `StatInference/Optimization/Theorem45.lean`: `strongLowerBoundChainObjective`,
 `strongLowerBoundChainGradient`,

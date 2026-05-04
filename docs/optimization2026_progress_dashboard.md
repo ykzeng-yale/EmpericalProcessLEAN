@@ -420,12 +420,14 @@ one bundles first-order strong convexity, smoothness, gradient-span prefix
 support, the concrete geometric minimizer, the named optimum-value lower
 bound, and the opt-value `sqrt(kappa)` rate obstruction in one statement.
 Search-first result: reused local `IsMinOn`/opt-value/rate wrappers and
-mathlib `IsMinOn` support; an attempted positive-log infinite display should
-first name the minimizer/scale more aggressively, because direct rewriting
-ran into dependent proof-term normalization around the geometric-minimizer
-certificate.  The next target is factoring the infinite Exercise 4.2 substrate
-into a pre-`Theorem45` module if direct Theorem 4.5 import is needed, or using
-this package immediately as the source-facing hard instance.  The newest
+mathlib `IsMinOn` support.  The positive-log source display is now also closed
+by `exercise42InfiniteGeometricMinimizer_proof_irrel` and
+`exercise42InfiniteChainObjective_positiveLogRate_le_near_min_optValue_concreteGradient`,
+which rewrite the internal `-log(eps/C)` form into `log(C/eps)` for the named
+initial scale.  The next target is factoring the infinite Exercise 4.2
+substrate into a pre-`Theorem45` module if direct Theorem 4.5 import is needed,
+or using this package immediately as the source-facing hard instance.  The
+newest
 smoothness bridge adds
 `exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq`,
 `exercise42InfiniteBaseChainObjective_add_direction_inner`,

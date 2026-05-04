@@ -609,6 +609,19 @@ theorem exercise42InfiniteGeometricMinimizer_apply {q : ℝ}
   rw [exercise42InfiniteGeometricMinimizer, lp.coeFn_smul]
   simp [exercise42InfiniteGeometric_apply, pow_succ, mul_comm]
 
+/--
+The shifted geometric minimizer is independent of the particular proofs of
+`0 <= q` and `q < 1`; only the ratio `q` determines the `ell^2` vector.
+-/
+@[simp]
+theorem exercise42InfiniteGeometricMinimizer_proof_irrel {q : ℝ}
+    (hq_nonneg hq_nonneg' : 0 ≤ q)
+    (hq_lt_one hq_lt_one' : q < 1) :
+    exercise42InfiniteGeometricMinimizer q hq_nonneg hq_lt_one =
+      exercise42InfiniteGeometricMinimizer q hq_nonneg' hq_lt_one' := by
+  ext n
+  simp [exercise42InfiniteGeometricMinimizer_apply]
+
 /-- Squared norm of the shifted geometric hard-chain minimizer profile. -/
 theorem exercise42InfiniteGeometricMinimizer_norm_sq {q : ℝ}
     (hq_nonneg : 0 ≤ q) (hq_lt_one : q < 1) :
@@ -3004,6 +3017,58 @@ theorem exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_c
       hx0 hspan N hnear heps_le_initial
 
 /--
+Positive-log presentation of the public infinite Exercise 4.2 rate wrapper.
+This is the same lower bound as
+`exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient`,
+rewritten from `-log(eps/C)` to `log(C/eps)` using the named initial scale
+`C = (alpha / 2) * ‖x_0 - x_*‖²`.
+-/
+theorem exercise42InfiniteChainObjective_positiveLogRate_le_near_min_optValue_concreteGradient
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha) (hkappa_four : 4 ≤ kappa)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) (N : ℕ)
+    (hnear :
+      exercise42InfiniteChainObjective alpha beta (x N) ≤
+        exercise42InfiniteChainObjectiveMinValue
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa + eps)
+    (heps_le_initial :
+      eps ≤
+        exercise42InfiniteInitialScale
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa) :
+    ((Real.sqrt kappa / 2) *
+        Real.log
+          (exercise42InfiniteInitialScale
+              alpha beta kappa halpha_pos halpha_lt_beta hkappa / eps)) /
+        4 - 1 ≤
+      (N : ℝ) := by
+  let C : ℝ :=
+    exercise42InfiniteInitialScale
+      alpha beta kappa halpha_pos halpha_lt_beta hkappa
+  have hneg :
+      -((Real.sqrt kappa / 2) * Real.log (eps / C)) / 4 - 1 ≤
+        (N : ℝ) := by
+    simpa [C, exercise42InfiniteInitialScale] using
+      exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient
+        halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
+        hx0 hspan N hnear
+        (by simpa [C, exercise42InfiniteInitialScale] using heps_le_initial)
+  have hC_pos : 0 < C := by
+    simpa [C] using
+      exercise42InfiniteInitialScale_pos
+        (alpha := alpha) (beta := beta) (kappa := kappa)
+        halpha_pos halpha_lt_beta hkappa
+  have hratio : eps / C = (C / eps)⁻¹ := by
+    field_simp [heps_pos.ne', hC_pos.ne']
+  have hlog_eps : Real.log (eps / C) = -Real.log (C / eps) := by
+    rw [hratio, Real.log_inv]
+  rw [hlog_eps] at hneg
+  simpa [C, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hneg
+
+/--
 Theorem 4.5-facing hard-instance package obtained from the direct infinite
 Exercise 4.2 construction.  The concrete `ell^2` chain is certified
 simultaneously as an `alpha`-strongly-convex/`beta`-smooth supplied-gradient
@@ -3048,29 +3113,12 @@ theorem exercise42InfiniteChainObjective_theorem45_hard_instance_package
         exercise42InfiniteChainObjectiveMinValue
           alpha beta kappa halpha_pos halpha_lt_beta hkappa + eps ->
       eps ≤
-        (alpha / 2) *
-          ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
-            exercise42InfiniteGeometricMinimizer
-              (chewi45GeometricRatio kappa)
-              (chewi45GeometricRatio_nonneg (kappa := kappa)
-                ((by
-                  rw [hkappa]
-                  exact (one_lt_div halpha_pos).2 halpha_lt_beta :
-                    1 < kappa).le))
-              (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ) ->
-      -((Real.sqrt kappa / 2) *
+        exercise42InfiniteInitialScale
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa ->
+      ((Real.sqrt kappa / 2) *
           Real.log
-            (eps /
-              ((alpha / 2) *
-                ‖(0 : lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)) -
-                  exercise42InfiniteGeometricMinimizer
-                    (chewi45GeometricRatio kappa)
-                    (chewi45GeometricRatio_nonneg (kappa := kappa)
-                      ((by
-                        rw [hkappa]
-                        exact (one_lt_div halpha_pos).2 halpha_lt_beta :
-                          1 < kappa).le))
-                    (chewi45GeometricRatio_lt_one kappa)‖ ^ (2 : ℕ)))) /
+            (exercise42InfiniteInitialScale
+                alpha beta kappa halpha_pos halpha_lt_beta hkappa / eps)) /
           4 - 1 ≤
         (N : ℝ)) := by
   have hgamma : 0 ≤ beta - alpha := by linarith
@@ -3088,7 +3136,7 @@ theorem exercise42InfiniteChainObjective_theorem45_hard_instance_package
         halpha_pos halpha_lt_beta hkappa y
   · intro x N hx0 hspan hnear heps_le_initial
     exact
-      exercise42InfiniteChainObjective_sqrtKappaLogRate_le_near_min_optValue_concreteGradient
+      exercise42InfiniteChainObjective_positiveLogRate_le_near_min_optValue_concreteGradient
         halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
         hx0 hspan N hnear heps_le_initial
 

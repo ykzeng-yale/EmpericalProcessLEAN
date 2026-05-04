@@ -732,12 +732,15 @@ The Theorem 4.5-facing package now also compiles:
 `exercise42InfiniteChainObjective_theorem45_hard_instance_package`.  The
 package combines the concrete first-order/smooth oracle, zero-start
 gradient-span prefix support, the geometric minimizer, the named optimum value,
-and the opt-value `sqrt(kappa)` rate obstruction.  Next is either to use this
-as the source-facing direct Exercise 4.2 hard instance, or to factor the
-infinite substrate into a pre-`Theorem45` module if the main Theorem 4.5 file
-must import it without a cycle.  A positive-log infinite display remains a
-cleanup target; do it after naming the minimizer/scale layer enough to avoid
-dependent proof-term normalization in the geometric-minimizer certificate.
+and the opt-value `sqrt(kappa)` rate obstruction.  The positive-log source
+display now compiles too:
+`exercise42InfiniteGeometricMinimizer_proof_irrel` removes dependent
+proof-term noise in the geometric minimizer, and
+`exercise42InfiniteChainObjective_positiveLogRate_le_near_min_optValue_concreteGradient`
+rewrites the rate from `-log(eps/C)` to `log(C/eps)` for the named initial
+scale.  Next is either to use this as the source-facing direct Exercise 4.2
+hard instance, or to factor the infinite substrate into a pre-`Theorem45`
+module if the main Theorem 4.5 file must import it without a cycle.
 The newest smoothness bridge proves
 `exercise42InfiniteBaseChainDirectionEnergy_le_four_norm_sq`,
 `exercise42InfiniteBaseChainObjective_add_direction_inner`,
