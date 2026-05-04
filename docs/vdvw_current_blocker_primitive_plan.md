@@ -1461,11 +1461,33 @@ integrability helpers; pinned mathlib supplies
 `MeasureTheory.integrable_comp_eval`, `MeasureTheory.integrable_finsetSum`,
 and `Integrable.mono'`.
 
+2026-05-03 `/goal` update after the finite-class pair/sample integrability
+closure: four more finite-class assumptions are now discharged internally.
+New compiled helpers in `Theorem243.lean` are
+`measurable_vdVWWeightedClassSupremum_of_countable`,
+`integrable_vdVWWeightedClassSupremum_truncated_of_finite`,
+`integrable_vdVWWeightedClassSupremum_pairDifference_ghost_of_finite`, and
+`integrable_vdVWWeightedClassSupremum_pairDifference_split_of_finite`.
+Consequently
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass`
+no longer assumes the ghost pair-difference supremum integrability,
+ghost-expectation integrability, split-copy supremum integrability, or
+sample-side Rademacher supremum integrability hypotheses.  These now follow
+from finite `indexClass`, coordinate measurability, envelope measurability,
+and ordinary class-member integrability.  Search record for this edit: local
+`Theorem243.lean` and `PMeasurable.lean` supply the weighted-sum/supremum
+display, countable `biSup` measurability pattern, pair-difference
+measurability, and finite supremum integrability helper; pinned mathlib
+supplies `MeasureTheory.integrable_comp_eval`,
+`MeasureTheory.integrable_finsetSum`, `Integrable.comp_fst`,
+`Integrable.comp_snd`, `Integrable.integral_prod_left`, and
+`AEMeasurable.biSup`.
+
 Current compact `/goal` execution prompt: continue VdV&W Chapters 1-2 in
 dependency order without repeating closed Theorem 2.4.3 finite-net,
 selected-fixed-radius, finite-class, integrability, centered-cover, and
-centered-supremum integrability, and untruncation layers.  The active closure
-batch is the actual non-finite
+centered-supremum/pair/sample integrability, and untruncation layers.  The
+active closure batch is the actual non-finite
 theorem handoff from textbook entropy assumptions to selected fixed-radius
 tail/UI or deterministic log-ratio inputs; if that blocks after Lean/search,
 move to a theorem-critical finite-class specialization or a precise Chapter 1
@@ -1473,7 +1495,7 @@ arbitrary-map/asymptotic-measurability primitive.
 
 Next exact edit: do not repeat the finite-class geometry/entropy/consumer
 bridge, finite-center integrability closure, centered-cover closure, or
-centered-supremum integrability closure.  The
+centered-supremum/pair/sample integrability closure.  The
 remaining Theorem 2.4.3 proof work is now either (1) prove the actual
 non-finite-class
 geometric packing/cardinality estimate for the chosen empirical internal

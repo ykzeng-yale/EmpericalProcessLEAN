@@ -1754,6 +1754,248 @@ theorem integrable_vdVWWeightedClassSupremum_of_finite
     hindex_finite weights (sample ω)
 
 /--
+Countable classes give measurability of weighted suprema after an arbitrary
+measurable sample map, once every fixed-index weighted sample sum is
+measurable.
+-/
+theorem measurable_vdVWWeightedClassSupremum_of_countable
+    {Ω : Type x} [MeasurableSpace Ω]
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable) {n : ℕ}
+    (weights : Fin n -> ℝ) (sample : Ω -> SampleAt Observation n)
+    (hterm :
+      ∀ index, index ∈ indexClass ->
+        Measurable
+          (fun ω : Ω =>
+            vdVWWeightedSampleSum classFun weights index (sample ω))) :
+    Measurable
+      (fun ω : Ω =>
+        vdVWWeightedClassSupremum indexClass classFun weights (sample ω)) := by
+  unfold vdVWWeightedClassSupremum
+  exact Measurable.biSup indexClass hcount fun index hindex =>
+    (hterm index hindex).abs
+
+/--
+Finite truncated weighted class suprema are integrable under the empirical
+product law when each original class member is integrable.
+-/
+theorem integrable_vdVWWeightedClassSupremum_truncated_of_finite
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hindex_finite : indexClass.Finite)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope : Measurable envelope)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    {n : ℕ} (weights : Fin n -> ℝ) :
+    Integrable
+      (fun sample : SampleAt Observation n =>
+        vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M) weights sample)
+      (vdVWProductMeasure P n) := by
+  have hsup_meas :
+      AEStronglyMeasurable
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M) weights sample)
+        (vdVWProductMeasure P n) := by
+    exact
+      (measurable_vdVWWeightedClassSupremum_of_countable
+        hindex_finite.countable weights (fun sample : SampleAt Observation n => sample)
+        (fun index hindex =>
+          measurable_vdVWWeightedSampleSum weights
+            (measurable_vdVWTruncatedClassFun
+              (hclass index hindex) henvelope))).aemeasurable.aestronglyMeasurable
+  exact
+    integrable_vdVWWeightedClassSupremum_of_finite
+      (μ := vdVWProductMeasure P n) hindex_finite weights
+      (fun sample : SampleAt Observation n => sample) hsup_meas
+      (fun index hindex =>
+        integrable_vdVWWeightedSampleSum_of_integrable
+          (P := P) (classFun := vdVWTruncatedClassFun classFun envelope M)
+          weights
+          (integrable_vdVWTruncatedClassFun_of_integrable
+            (hclass index hindex) henvelope
+            (hclassIntegrable index hindex)))
+
+/--
+For finite classes, the ghost-copy pair-difference supremum is integrable for
+each fixed original sample.
+-/
+theorem integrable_vdVWWeightedClassSupremum_pairDifference_ghost_of_finite
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hindex_finite : indexClass.Finite)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope : Measurable envelope)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    {n : ℕ} (weights : Fin n -> ℝ) (sample : SampleAt Observation n) :
+    Integrable
+      (fun ghostSample : SampleAt Observation n =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.1 -
+              vdVWTruncatedClassFun classFun envelope M index z.2)
+          weights (fun i : Fin n => (sample i, ghostSample i)))
+      (vdVWProductMeasure P n) := by
+  let pairClassFun : Index -> Observation × Observation -> ℝ :=
+    fun index z =>
+      vdVWTruncatedClassFun classFun envelope M index z.1 -
+        vdVWTruncatedClassFun classFun envelope M index z.2
+  let pairedSample : SampleAt Observation n -> SampleAt (Observation × Observation) n :=
+    fun ghostSample i => (sample i, ghostSample i)
+  have hterm :
+      ∀ index, index ∈ indexClass ->
+        Integrable
+          (fun ghostSample : SampleAt Observation n =>
+            vdVWWeightedSampleSum pairClassFun weights index
+              (pairedSample ghostSample))
+          (vdVWProductMeasure P n) := by
+    intro index hindex
+    have htrunc :
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P :=
+      integrable_vdVWTruncatedClassFun_of_integrable
+        (hclass index hindex) henvelope (hclassIntegrable index hindex)
+    unfold vdVWWeightedSampleSum
+    exact
+      MeasureTheory.integrable_finsetSum (s := Finset.univ)
+        (f := fun i (ghostSample : SampleAt Observation n) =>
+          weights i * pairClassFun index (pairedSample ghostSample i))
+        (fun i _hi => by
+          have hghost :
+              Integrable
+                (fun ghostSample : SampleAt Observation n =>
+                  vdVWTruncatedClassFun classFun envelope M index
+                    (ghostSample i))
+                (vdVWProductMeasure P n) := by
+            simpa [SampleAt, vdVWProductMeasure, Function.comp_def] using
+              (MeasureTheory.integrable_comp_eval
+                (μ := fun _ : Fin n => P) (i := i) htrunc)
+          have hconst :
+              Integrable
+                (fun _ghostSample : SampleAt Observation n =>
+                  vdVWTruncatedClassFun classFun envelope M index
+                    (sample i))
+                (vdVWProductMeasure P n) :=
+            integrable_const _
+          simpa [pairClassFun, pairedSample] using
+            (hconst.sub hghost).const_mul (weights i))
+  have hsup_meas :
+      AEStronglyMeasurable
+        (fun ghostSample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass pairClassFun weights
+            (pairedSample ghostSample))
+        (vdVWProductMeasure P n) := by
+    unfold vdVWWeightedClassSupremum
+    exact
+      (AEMeasurable.biSup indexClass hindex_finite.countable
+        (fun index hindex =>
+          (hterm index hindex).aemeasurable.abs)).aestronglyMeasurable
+  simpa [pairClassFun, pairedSample] using
+    integrable_vdVWWeightedClassSupremum_of_finite
+      (μ := vdVWProductMeasure P n) hindex_finite weights pairedSample
+      hsup_meas hterm
+
+/--
+For finite classes, the split product-copy pair-difference supremum is
+integrable on `P^n × P^n`.
+-/
+theorem integrable_vdVWWeightedClassSupremum_pairDifference_split_of_finite
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (hindex_finite : indexClass.Finite)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope : Measurable envelope)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    {n : ℕ} (weights : Fin n -> ℝ) :
+    Integrable
+      (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.1 -
+              vdVWTruncatedClassFun classFun envelope M index z.2)
+          weights (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+      ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) := by
+  let pairClassFun : Index -> Observation × Observation -> ℝ :=
+    fun index z =>
+      vdVWTruncatedClassFun classFun envelope M index z.1 -
+        vdVWTruncatedClassFun classFun envelope M index z.2
+  let pairedSample :
+      SampleAt Observation n × SampleAt Observation n ->
+        SampleAt (Observation × Observation) n :=
+    fun splitSample i => (splitSample.1 i, splitSample.2 i)
+  have hterm :
+      ∀ index, index ∈ indexClass ->
+        Integrable
+          (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+            vdVWWeightedSampleSum pairClassFun weights index
+              (pairedSample splitSample))
+          ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) := by
+    intro index hindex
+    have htrunc :
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P :=
+      integrable_vdVWTruncatedClassFun_of_integrable
+        (hclass index hindex) henvelope (hclassIntegrable index hindex)
+    unfold vdVWWeightedSampleSum
+    exact
+      MeasureTheory.integrable_finsetSum (s := Finset.univ)
+        (f := fun i
+          (splitSample : SampleAt Observation n × SampleAt Observation n) =>
+          weights i * pairClassFun index (pairedSample splitSample i))
+        (fun i _hi => by
+          have hcoord :
+              Integrable
+                (fun sample : SampleAt Observation n =>
+                  vdVWTruncatedClassFun classFun envelope M index
+                    (sample i))
+                (vdVWProductMeasure P n) := by
+            simpa [SampleAt, vdVWProductMeasure, Function.comp_def] using
+              (MeasureTheory.integrable_comp_eval
+                (μ := fun _ : Fin n => P) (i := i) htrunc)
+          have hfst :
+              Integrable
+                (fun splitSample :
+                    SampleAt Observation n × SampleAt Observation n =>
+                  vdVWTruncatedClassFun classFun envelope M index
+                    (splitSample.1 i))
+                ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) := by
+            simpa using hcoord.comp_fst (vdVWProductMeasure P n)
+          have hsnd :
+              Integrable
+                (fun splitSample :
+                    SampleAt Observation n × SampleAt Observation n =>
+                  vdVWTruncatedClassFun classFun envelope M index
+                    (splitSample.2 i))
+                ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) := by
+            simpa using hcoord.comp_snd (vdVWProductMeasure P n)
+          simpa [pairClassFun, pairedSample] using
+            (hfst.sub hsnd).const_mul (weights i))
+  have hsup_meas :
+      AEStronglyMeasurable
+        (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass pairClassFun weights
+            (pairedSample splitSample))
+        ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) := by
+    unfold vdVWWeightedClassSupremum
+    exact
+      (AEMeasurable.biSup indexClass hindex_finite.countable
+        (fun index hindex =>
+          (hterm index hindex).aemeasurable.abs)).aestronglyMeasurable
+  simpa [pairClassFun, pairedSample] using
+    integrable_vdVWWeightedClassSupremum_of_finite
+      (μ := (vdVWProductMeasure P n).prod (vdVWProductMeasure P n))
+      hindex_finite weights pairedSample hsup_meas hterm
+
+/--
 The product-copy pair difference for a fixed truncated class member is
 measurable.
 
@@ -15857,10 +16099,12 @@ Untruncated centered convergence for finite nonempty classes.
 
 This consumes the finite-class selected fixed-radius tail/UI package at every
 positive truncation level, so finite classes no longer need a separate
-empirical entropy side-condition in the Theorem 2.4.3 route.  The remaining
-assumptions are the existing symmetrization, Rademacher, and supremum
-integrability hypotheses used by the theorem-local product/Fubini pipeline;
-truncation integrability and finite-class boundedness are discharged here.
+empirical entropy side-condition in the Theorem 2.4.3 route.  The finite-class
+route also discharges the theorem-local truncated, pair-copy, split-copy,
+sample-side, centered, and finite-center supremum integrability assumptions
+that reduce to finite sums.  The remaining assumptions are the existing
+Rademacher/product-space outer-expectation inputs used by the theorem-local
+product/Fubini pipeline.
 -/
 theorem
     VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass
@@ -15889,49 +16133,6 @@ theorem
         (fun i : Fin n => sign n i ω))
     (hindep : ∀ n, iIndepFun (sign n) μsign)
     (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign)
-    (hpairSupIntegrable :
-      ∀ M n (sample : SampleAt Observation n),
-        Integrable
-          (fun ghostSample : SampleAt Observation n =>
-            vdVWWeightedClassSupremum indexClass
-              (fun index : Index => fun z : Observation × Observation =>
-                vdVWTruncatedClassFun classFun envelope M index z.1 -
-                  vdVWTruncatedClassFun classFun envelope M index z.2)
-              (fun _ : Fin n => (n : ℝ)⁻¹)
-              (fun i : Fin n => (sample i, ghostSample i)))
-          (vdVWProductMeasure P n))
-    (hghostExpectationIntegrable :
-      ∀ M n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            ∫ ghostSample : SampleAt Observation n,
-              vdVWWeightedClassSupremum indexClass
-                (fun index : Index => fun z : Observation × Observation =>
-                  vdVWTruncatedClassFun classFun envelope M index z.1 -
-                    vdVWTruncatedClassFun classFun envelope M index z.2)
-                (fun _ : Fin n => (n : ℝ)⁻¹)
-                (fun i : Fin n => (sample i, ghostSample i))
-                ∂(vdVWProductMeasure P n))
-          (vdVWProductMeasure P n))
-    (hsplitSupIntegrable :
-      ∀ M n,
-        Integrable
-          (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
-            vdVWWeightedClassSupremum indexClass
-              (fun index : Index => fun z : Observation × Observation =>
-                vdVWTruncatedClassFun classFun envelope M index z.1 -
-                  vdVWTruncatedClassFun classFun envelope M index z.2)
-              (fun _ : Fin n => (n : ℝ)⁻¹)
-              (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
-          ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)))
-    (hsampleSupIntegrable :
-      ∀ M n (ω : Ωsign),
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWWeightedClassSupremum indexClass
-              (vdVWTruncatedClassFun classFun envelope M)
-              (vdVWRademacherWeights (fun i : Fin n => sign n i ω)) sample)
-          (vdVWProductMeasure P n))
     (hrandomIntegralIntegrable :
       ∀ M n,
         Integrable
@@ -16010,7 +16211,12 @@ theorem
         exact
           bddAbove_vdVWWeightedClassValueSet_of_finite hindex_finite
             (fun _ : Fin n => (n : ℝ)⁻¹) sample)
-      (hpairSupIntegrable := hpairSupIntegrable)
+      (hpairSupIntegrable := by
+        intro M n sample
+        exact
+          integrable_vdVWWeightedClassSupremum_pairDifference_ghost_of_finite
+            (P := P) hindex_finite hclass henv hclassIntegrable
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
       (hcenteredSupIntegrable := by
         intro M n
         let centeredClassFun : Index -> Observation -> ℝ :=
@@ -16046,9 +16252,35 @@ theorem
                 ((integrable_vdVWTruncatedClassFun_of_integrable
                   (hclass index hindex) henv
                   (hclassIntegrable index hindex)).sub (integrable_const _))))
-      (hghostExpectationIntegrable := hghostExpectationIntegrable)
-      (hsplitSupIntegrable := hsplitSupIntegrable)
-      (hsampleSupIntegrable := hsampleSupIntegrable)
+      (hghostExpectationIntegrable := by
+        intro M n
+        have hsplit :
+            Integrable
+              (fun splitSample :
+                  SampleAt Observation n × SampleAt Observation n =>
+                vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun z : Observation × Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index z.1 -
+                      vdVWTruncatedClassFun classFun envelope M index z.2)
+                  (fun _ : Fin n => (n : ℝ)⁻¹)
+                  (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+              ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) :=
+          integrable_vdVWWeightedClassSupremum_pairDifference_split_of_finite
+            (P := P) hindex_finite hclass henv hclassIntegrable
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+        simpa using hsplit.integral_prod_left)
+      (hsplitSupIntegrable := by
+        intro M n
+        exact
+          integrable_vdVWWeightedClassSupremum_pairDifference_split_of_finite
+            (P := P) hindex_finite hclass henv hclassIntegrable
+            (fun _ : Fin n => (n : ℝ)⁻¹))
+      (hsampleSupIntegrable := by
+        intro M n ω
+        exact
+          integrable_vdVWWeightedClassSupremum_truncated_of_finite
+            (P := P) hindex_finite hclass henv hclassIntegrable
+            (vdVWRademacherWeights (fun i : Fin n => sign n i ω)))
       (hrandomIntegralIntegrable := hrandomIntegralIntegrable)
       (Urandom := Urandom)
       (hproductSupIntegrable := hproductSupIntegrable)

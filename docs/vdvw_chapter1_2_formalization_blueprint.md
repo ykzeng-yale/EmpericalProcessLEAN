@@ -653,6 +653,13 @@ above, so they do not change the theorem-level dashboard counts.
    `integrable_vdVWWeightedClassSupremum_of_finite`, by bounding the finite
    supremum with a finite sum of absolute fixed-index weighted sample sums and
    using mathlib product-coordinate integrability.
+   The same finite-sum route now also removes the finite-class ghost
+   pair-difference supremum integrability, ghost-expectation integrability,
+   split-copy supremum integrability, and sample-side Rademacher supremum
+   integrability assumptions through
+   `integrable_vdVWWeightedClassSupremum_truncated_of_finite`,
+   `integrable_vdVWWeightedClassSupremum_pairDifference_ghost_of_finite`, and
+   `integrable_vdVWWeightedClassSupremum_pairDifference_split_of_finite`.
    The next proof step is therefore the non-finite-class
    geometric/cardinality instantiation, or a final theorem-critical
    specialization consuming this finite-class untruncated consumer.
