@@ -2216,6 +2216,12 @@ fixed-radius tail/UI structure.  This removes the need for callers to provide
 an arbitrary threshold finset when they can prove finite realized value-set
 finiteness, a cardinality bound, and fixed-threshold VC bounds for the induced
 thresholds.
+`Theorem243.lean` now also adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_sample_valueSet_finite_uniform_vc`,
+which composes this finite realized value-set package with the untruncated
+large-`M` convergence consumer.  Thus the finite realized value-set route now
+reaches the same centered untruncated Theorem 2.4.3 conclusion under its
+explicit structural and integrability hypotheses.
 
 Search record: local searches for finite-value/range helpers found no prior
 VdVW constructor with this shape.  The proof reuses mathlib
@@ -2223,6 +2229,8 @@ VdVW constructor with this shape.  The proof reuses mathlib
 `empiricalTrace_image_card_add_one_real_le_of_values_mem_thresholds_uniform_vc`
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_values_mem_thresholds_uniform_vc`.
+The untruncated composition reuses
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_values_mem_thresholds_uniform_vc`.
 
 Next exact theorem-facing edit: prove the actual coordinatewise
 finite-threshold value-separation/count assumptions, or finite realized

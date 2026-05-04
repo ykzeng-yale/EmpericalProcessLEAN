@@ -793,7 +793,9 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_sample_valueSet_finite_uniform_vc`
    now also choose the threshold finset as the finite set of values realized
    on the empirical sample, so later geometry can target value-set finiteness
-   and cardinality directly.
+   and cardinality directly.  The untruncated consumer
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_sample_valueSet_finite_uniform_vc`
+   composes this value-set package with the large-`M` layer.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
