@@ -2866,3 +2866,19 @@ bound for a nonnegative integrable envelope, e.g. an inequality of the form
 `∫ 1{K < empiricalAverage F} empiricalAverage F dP^n ≤
 2 * ∫ 1{K/2 < F} F dP` for `0 < n` and `0 < K`, then combine it with the
 new centered-supremum domination and the constant population envelope mean.
+
+2026-05-04 follow-up: the empirical-average tail/UI target is now partially
+closed.  New compiled declarations are `measurable_empiricalAverage`,
+`integrable_empiricalAverage`,
+`empiricalAverage_le_two_mul_empiricalAverage_tail_half_of_lt`,
+`integral_indicator_empiricalAverage_envelope_tail_le_two_integral_tail_half`,
+and `empiricalAverage_envelope_tailExpectation_condition_of_integrable`.
+Search/reuse record: the proof reuses local
+`integral_indicator_tail_lt_tendsto_zero_of_integrable`,
+`probability_pi_integral_weighted_sum`, and the empirical-average product-law
+API; no ready variable-domain empirical-average uniform-integrability theorem
+was found in pinned mathlib.  The remaining patchable step is to combine this
+empirical-average tail condition with
+`vdVWWeightedClassSupremum_centered_invNat_le_empiricalAverage_envelope_add_integral`
+to discharge the centered-supremum `hTail` input in the in-mean Theorem 2.4.3
+route.

@@ -606,6 +606,15 @@ now compiles.  For positive sample sizes it bounds the centered `1/n`
 weighted supremum by the empirical envelope average plus `∫ envelope dP`.
 This narrows the remaining in-mean tail/UI blocker to a tail expectation
 theorem for empirical averages of a nonnegative integrable envelope.
+2026-05-04 follow-up: that empirical-average tail/UI layer is now compiled.
+New declarations are `measurable_empiricalAverage`,
+`integrable_empiricalAverage`,
+`empiricalAverage_le_two_mul_empiricalAverage_tail_half_of_lt`,
+`integral_indicator_empiricalAverage_envelope_tail_le_two_integral_tail_half`,
+and `empiricalAverage_envelope_tailExpectation_condition_of_integrable`.
+The next closure is to combine this empirical-average tail condition with the
+centered-supremum envelope domination to discharge the explicit `hTail` input
+in the current Theorem 2.4.3 in-mean consumers.
 
 ## Verification Monitor
 

@@ -964,8 +964,9 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWWeightedClassSupremum_centered_invNat_le_empiricalAverage_envelope_add_integral`
    now reduces the positive-sample-size tail estimate to the empirical
    envelope average plus the population envelope mean; the next analytic
-   target is the empirical-average tail expectation bound for a nonnegative
-   integrable envelope.
+   target is to combine this domination with the compiled empirical-average
+   tail/UI layer
+   `empiricalAverage_envelope_tailExpectation_condition_of_integrable`.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.

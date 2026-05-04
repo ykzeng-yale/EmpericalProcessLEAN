@@ -1229,6 +1229,315 @@ theorem integrable_empiricalAverage_envelope_tail
       (fun i _hi => hcomp i)).div_const
       (n : ℝ)
 
+/-- Measurability of an empirical average of a measurable real function. -/
+theorem measurable_empiricalAverage
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    {f : Observation -> ℝ} (hf : Measurable f) :
+    Measurable fun sample : SampleAt Observation n => empiricalAverage sample f := by
+  unfold empiricalAverage
+  exact
+    (Finset.measurable_fun_sum Finset.univ fun i _hi =>
+      hf.comp (measurable_pi_apply i)).div_const (n : ℝ)
+
+/-- Integrability of an empirical average under a finite product law. -/
+theorem integrable_empiricalAverage
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ}
+    {f : Observation -> ℝ} (hf : Integrable f P) :
+    Integrable
+      (fun sample : SampleAt Observation n => empiricalAverage sample f)
+      (vdVWProductMeasure P n) := by
+  have hcomp :
+      ∀ i : Fin n,
+        Integrable (fun sample : SampleAt Observation n => f (sample i))
+          (vdVWProductMeasure P n) := by
+    intro i
+    simpa [SampleAt, vdVWProductMeasure, Function.comp_def] using
+      (MeasureTheory.integrable_comp_eval
+        (μ := fun _ : Fin n => P) (i := i) hf)
+  unfold empiricalAverage
+  exact
+    (MeasureTheory.integrable_finsetSum (s := Finset.univ)
+      (f := fun i (sample : SampleAt Observation n) => f (sample i))
+      (fun i _hi => hcomp i)).div_const (n : ℝ)
+
+/--
+If the empirical average of a nonnegative envelope is larger than `K`, then it
+is controlled by twice the empirical average of the `K/2` tail.
+
+This is the deterministic half-threshold estimate behind the variable-domain
+tail/UI proof for Theorem 2.4.3.
+-/
+theorem empiricalAverage_le_two_mul_empiricalAverage_tail_half_of_lt
+    {Observation : Type u} {n : ℕ} {sample : SampleAt Observation n}
+    {envelope : Observation -> ℝ} {K : ℝ}
+    (hn : 0 < n) (hK : 0 < K)
+    (havg : K < empiricalAverage sample envelope) :
+    empiricalAverage sample envelope ≤
+      2 *
+        empiricalAverage sample
+          (fun x => Set.indicator {y | K / 2 < envelope y} envelope x) := by
+  let tail : Observation -> ℝ :=
+    fun x => Set.indicator {y | K / 2 < envelope y} envelope x
+  let small : Observation -> ℝ :=
+    fun x => Set.indicator {y | envelope y ≤ K / 2} envelope x
+  have hn_cast_pos : 0 < (n : ℝ) := Nat.cast_pos.mpr hn
+  have hn_cast_nonneg : 0 ≤ (n : ℝ) := le_of_lt hn_cast_pos
+  have hdecomp : ∀ x, envelope x = tail x + small x := by
+    intro x
+    by_cases hx : K / 2 < envelope x
+    · have hx_not : ¬ envelope x ≤ K / 2 := not_le_of_gt hx
+      simp [tail, small, hx, hx_not]
+    · have hx_le : envelope x ≤ K / 2 := le_of_not_gt hx
+      simp [tail, small, hx, hx_le]
+  have hsmall_le : ∀ i : Fin n, small (sample i) ≤ K / 2 := by
+    intro i
+    by_cases hx : K / 2 < envelope (sample i)
+    · have hx_not : ¬ envelope (sample i) ≤ K / 2 := not_le_of_gt hx
+      simp [small, hx_not]
+      linarith
+    · have hx_le : envelope (sample i) ≤ K / 2 := le_of_not_gt hx
+      simp [small, hx_le]
+  have hsmall_avg_le : empiricalAverage sample small ≤ K / 2 := by
+    unfold empiricalAverage
+    have hsum_le :
+        (∑ i : Fin n, small (sample i)) ≤
+          ∑ _i : Fin n, K / 2 := by
+      exact Finset.sum_le_sum fun i _hi => hsmall_le i
+    calc
+      (∑ i : Fin n, small (sample i)) / (n : ℝ)
+          ≤ (∑ _i : Fin n, K / 2) / (n : ℝ) := by
+            exact div_le_div_of_nonneg_right hsum_le hn_cast_nonneg
+      _ = K / 2 := by
+            simp [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+              nsmul_eq_mul]
+            field_simp [ne_of_gt hn_cast_pos]
+  have havg_decomp :
+      empiricalAverage sample envelope =
+        empiricalAverage sample tail + empiricalAverage sample small := by
+    unfold empiricalAverage
+    have hsum_decomp :
+        (∑ i : Fin n, envelope (sample i)) =
+          (∑ i : Fin n, tail (sample i)) +
+            (∑ i : Fin n, small (sample i)) := by
+      rw [← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun i _hi => hdecomp (sample i)
+    rw [hsum_decomp]
+    ring
+  have hupper :
+      empiricalAverage sample envelope ≤
+        empiricalAverage sample tail + K / 2 := by
+    rw [havg_decomp]
+    linarith
+  have hK_half_lt : K / 2 < empiricalAverage sample envelope / 2 := by
+    linarith
+  linarith
+
+/--
+The half-threshold pointwise estimate integrates to a uniform empirical-tail
+bound for positive sample sizes.
+-/
+theorem integral_indicator_empiricalAverage_envelope_tail_le_two_integral_tail_half
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ}
+    {envelope : Observation -> ℝ} {K : ℝ}
+    (hn : 0 < n) (hK : 0 < K)
+    (henv : Measurable envelope)
+    (henvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (henv_integrable : Integrable envelope P) :
+    ∫ sample : SampleAt Observation n,
+        Set.indicator
+          {sample' : SampleAt Observation n |
+            K < empiricalAverage sample' envelope}
+          (fun sample' : SampleAt Observation n =>
+            empiricalAverage sample' envelope) sample
+        ∂(vdVWProductMeasure P n) ≤
+      2 * ∫ x, Set.indicator {y | K / 2 < envelope y} envelope x ∂P := by
+  let tail : Observation -> ℝ :=
+    fun x => Set.indicator {y | K / 2 < envelope y} envelope x
+  have htailSet : MeasurableSet {y | K / 2 < envelope y} :=
+    measurableSet_lt measurable_const henv
+  have htail_meas : Measurable tail := by
+    simpa [tail] using henv.indicator htailSet
+  have htail_integrable : Integrable tail P := by
+    simpa [tail] using henv_integrable.indicator htailSet
+  let avg : SampleAt Observation n -> ℝ :=
+    fun sample => empiricalAverage sample envelope
+  let tailAvg : SampleAt Observation n -> ℝ :=
+    fun sample => empiricalAverage sample tail
+  have havg_meas : Measurable avg := by
+    simpa [avg] using measurable_empiricalAverage (n := n) henv
+  have havg_integrable :
+      Integrable avg (vdVWProductMeasure P n) := by
+    simpa [avg] using
+      integrable_empiricalAverage (P := P) (n := n) henv_integrable
+  have htailAvg_integrable :
+      Integrable tailAvg (vdVWProductMeasure P n) := by
+    simpa [tailAvg] using
+      integrable_empiricalAverage (P := P) (n := n) htail_integrable
+  have hpoint :
+      ∀ sample : SampleAt Observation n,
+        Set.indicator {sample' : SampleAt Observation n | K < avg sample'}
+            avg sample ≤ 2 * tailAvg sample := by
+    intro sample
+    by_cases hsample : K < avg sample
+    · simpa [avg, tailAvg, tail, Set.indicator, hsample] using
+        empiricalAverage_le_two_mul_empiricalAverage_tail_half_of_lt
+          (sample := sample) (envelope := envelope) (K := K) hn hK hsample
+    · have htailAvg_nonneg : 0 ≤ tailAvg sample := by
+        unfold tailAvg empiricalAverage tail
+        exact div_nonneg
+          (Finset.sum_nonneg fun i _hi => by
+            by_cases htail : K / 2 < envelope (sample i)
+            · simpa [Set.indicator, htail] using henvelope_nonneg (sample i)
+            · simp [Set.indicator, htail])
+          (Nat.cast_nonneg n)
+      simp [Set.indicator, avg, hsample, htailAvg_nonneg]
+  have hleft_integrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          Set.indicator {sample' : SampleAt Observation n | K < avg sample'}
+            avg sample)
+        (vdVWProductMeasure P n) := by
+    exact havg_integrable.indicator
+      (measurableSet_lt measurable_const havg_meas)
+  have hright_integrable :
+      Integrable
+        (fun sample : SampleAt Observation n => 2 * tailAvg sample)
+        (vdVWProductMeasure P n) :=
+    htailAvg_integrable.const_mul 2
+  calc
+    ∫ sample : SampleAt Observation n,
+        Set.indicator
+          {sample' : SampleAt Observation n |
+            K < empiricalAverage sample' envelope}
+          (fun sample' : SampleAt Observation n =>
+            empiricalAverage sample' envelope) sample
+        ∂(vdVWProductMeasure P n)
+        =
+      ∫ sample : SampleAt Observation n,
+        Set.indicator {sample' : SampleAt Observation n | K < avg sample'}
+          avg sample ∂(vdVWProductMeasure P n) := by
+        rfl
+    _ ≤ ∫ sample : SampleAt Observation n, 2 * tailAvg sample
+          ∂(vdVWProductMeasure P n) := by
+        exact integral_mono hleft_integrable hright_integrable hpoint
+    _ = 2 * ∫ x, Set.indicator {y | K / 2 < envelope y} envelope x ∂P := by
+        rw [integral_const_mul]
+        congr 1
+        have hn_cast : (n : ℝ) ≠ 0 :=
+          Nat.cast_ne_zero.mpr (Nat.ne_of_gt hn)
+        have hsumWeights : (∑ _i : Fin n, (n : ℝ)⁻¹) = 1 := by
+          calc
+            (∑ _i : Fin n, (n : ℝ)⁻¹)
+                = (n : ℝ) * (n : ℝ)⁻¹ := by
+                  simp [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+                    nsmul_eq_mul]
+            _ = 1 := by
+                  field_simp [hn_cast]
+        have hweighted :
+            ∫ sample : SampleAt Observation n,
+                (∑ i : Fin n, (n : ℝ)⁻¹ * tail (sample i))
+                ∂(vdVWProductMeasure P n) =
+              ∑ i : Fin n, (n : ℝ)⁻¹ * ∫ x, tail x ∂P := by
+          simpa [SampleAt, vdVWProductMeasure, tail] using
+            (StatInference.ProbabilityMeasure.probability_pi_integral_weighted_sum
+              (P := fun _ : Fin n =>
+                (⟨P, inferInstance⟩ :
+                  MeasureTheory.ProbabilityMeasure Observation))
+              (f := fun _ : Fin n => tail)
+              (weights := fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun _ => htail_integrable))
+        calc
+          ∫ sample : SampleAt Observation n, tailAvg sample
+              ∂(vdVWProductMeasure P n)
+              =
+            ∫ sample : SampleAt Observation n,
+                (∑ i : Fin n, (n : ℝ)⁻¹ * tail (sample i))
+              ∂(vdVWProductMeasure P n) := by
+              congr 1
+              funext sample
+              unfold tailAvg empiricalAverage
+              symm
+              rw [← Finset.mul_sum, inv_mul_eq_div]
+          _ = ∑ i : Fin n, (n : ℝ)⁻¹ * ∫ x, tail x ∂P := hweighted
+          _ = ∫ x, Set.indicator {y | K / 2 < envelope y} envelope x ∂P := by
+              calc
+                (∑ i : Fin n, (n : ℝ)⁻¹ * ∫ x, tail x ∂P)
+                    = (∑ _i : Fin n, (n : ℝ)⁻¹) *
+                        ∫ x, tail x ∂P := by
+                      rw [Finset.sum_mul]
+                _ = ∫ x, tail x ∂P := by
+                      rw [hsumWeights]
+                      ring
+                _ = ∫ x, Set.indicator {y | K / 2 < envelope y} envelope x ∂P := by
+                      rfl
+
+/--
+A nonnegative integrable envelope gives the varying-domain tail/UI condition
+for its empirical averages over all positive sample sizes.
+-/
+theorem empiricalAverage_envelope_tailExpectation_condition_of_integrable
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {envelope : Observation -> ℝ}
+    (henv : Measurable envelope)
+    (henvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (henv_integrable : Integrable envelope P) :
+    ∀ ε > 0, ∃ R, 0 ≤ R ∧
+      ∀ᶠ n : ℕ in atTop,
+        ∫ sample : SampleAt Observation n,
+          Set.indicator
+            {sample' : SampleAt Observation n |
+              R < empiricalAverage sample' envelope}
+            (fun sample' : SampleAt Observation n =>
+              empiricalAverage sample' envelope) sample
+          ∂(vdVWProductMeasure P n) ≤ ε := by
+  intro ε hε_pos
+  have htail_tendsto :
+      Tendsto
+        (fun M : ℝ =>
+          ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂P)
+        atTop (𝓝 0) :=
+    StatInference.ProbabilityMeasure.integral_indicator_tail_lt_tendsto_zero_of_integrable
+      (μ := P) (X := envelope) henv_integrable
+  have htail_eventually :
+      ∀ᶠ M in atTop,
+        ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂P <
+          ε / 2 := by
+    exact htail_tendsto.eventually (eventually_lt_nhds (by linarith))
+  rcases eventually_atTop.1 htail_eventually with ⟨M0, hM0⟩
+  let M : ℝ := max 1 M0
+  have hM_pos : 0 < M := lt_of_lt_of_le zero_lt_one (le_max_left 1 M0)
+  have hM_ge : M0 ≤ M := le_max_right 1 M0
+  have htail_lt :
+      ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂P <
+        ε / 2 := hM0 M hM_ge
+  have htail_bound :
+      2 * ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂P
+        ≤ ε := by
+    linarith
+  refine ⟨2 * M, mul_nonneg zero_le_two hM_pos.le, ?_⟩
+  filter_upwards [eventually_ge_atTop (1 : ℕ)] with n hn
+  have hn_pos : 0 < n := lt_of_lt_of_le Nat.zero_lt_one hn
+  have hK_pos : 0 < 2 * M := mul_pos two_pos hM_pos
+  have hineq :=
+    integral_indicator_empiricalAverage_envelope_tail_le_two_integral_tail_half
+      (P := P) (n := n) (envelope := envelope) (K := 2 * M)
+      hn_pos hK_pos henv henvelope_nonneg henv_integrable
+  have hhalf : (2 * M) / 2 = M := by ring
+  have hineq' :
+      ∫ sample : SampleAt Observation n,
+          Set.indicator
+            {sample' : SampleAt Observation n |
+              2 * M < empiricalAverage sample' envelope}
+            (fun sample' : SampleAt Observation n =>
+              empiricalAverage sample' envelope) sample
+          ∂(vdVWProductMeasure P n) ≤
+        2 * ∫ x, Set.indicator {y : Observation | M < envelope y} envelope x ∂P := by
+    simpa [hhalf] using hineq
+  exact hineq'.trans htail_bound
+
 /--
 The expected empirical envelope-tail average equals the population
 envelope-tail integral for positive sample sizes.
