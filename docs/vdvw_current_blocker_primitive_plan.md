@@ -2472,3 +2472,36 @@ resulting empirical-cover bound into the selected fixed-radius Theorem 2.4.3
 side-condition package.  The remaining issue is now choosing/counting a
 finite threshold grid with fixed `k` for each fixed `M, epsilon`, not proving
 that threshold signatures can act as approximate covers.
+
+2026-05-04 `/goal` update after bounded integer threshold-grid instantiation:
+`ThresholdCoding.lean` now closes the bounded finite-threshold grid step.  The
+new compiled declarations are
+`integerMultipleThresholdGrid`,
+`exists_integerMultipleThresholdGrid_between_of_bounds`,
+`abs_sub_le_of_forall_bounded_gap_exists_threshold`,
+`empiricalL1CoveringNumber_le_of_thresholdTraceCode_bounded_gap_grid_product_card_le`,
+`empiricalL1CoveringNumber_le_of_thresholdTraceCode_bounded_gap_grid_uniform_vc_card_le`,
+and
+`empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_uniform_vc_card_le`.
+Thus, if all sampled truncated values lie in
+`[-bound * epsilon, bound * epsilon]`, the integer-multiple threshold grid
+hits every relevant gap and the fixed-threshold VC/Sauer product bound gives
+the empirical `L1(P_n)` cover cardinality
+`(((d + 2) * (n + 1)^d)^k)` under an explicit bound on the grid size.
+
+Search record: reused local approximate threshold-signature cover bridges,
+fixed-threshold Sauer/VC product bounds, and mathlib integer ceiling/grid APIs
+`Int.le_ceil`, `Int.ceil_lt_add_one`, `Finset.Icc`, and `Finset.image`.  No
+prior local theorem instantiated bounded real threshold gaps with a concrete
+finite integer-multiple threshold grid.
+
+Next exact theorem-facing edit: prove or package the fixed-radius truncated
+class hypotheses that feed this integer-grid route into Theorem 2.4.3:
+boundedness of sampled `F_M` values by an integer multiple of the target
+radius, an explicit usable bound on
+`(integerMultipleThresholdGrid epsilon bound).card`, and the theorem-level
+uniform VC/subgraph assumption for every grid threshold.  Then compose the
+result with the selected fixed-radius side-condition package and the existing
+untruncated Theorem 2.4.3 consumer.  The main remaining mathematical blocker
+is the honest VC/subgraph/grid cardinality side condition, not finite
+threshold-code plumbing.

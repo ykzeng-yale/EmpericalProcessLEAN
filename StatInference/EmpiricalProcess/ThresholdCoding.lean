@@ -705,6 +705,125 @@ theorem abs_sub_le_of_forall_gap_exists_threshold
     exact hxy_le
 
 /--
+Finite arithmetic threshold grid made of integer multiples of `epsilon` inside
+the symmetric integer interval `[-bound, bound]`.
+-/
+noncomputable def integerMultipleThresholdGrid (epsilon : ℝ) (bound : ℤ) :
+    Finset ℝ := by
+  classical
+  exact (Finset.Icc (-bound) bound).image fun gridIndex : ℤ =>
+    epsilon * (gridIndex : ℝ)
+
+/--
+If `a` and `b` lie in the bounded interval covered by the integer-multiple
+threshold grid and `b - a > epsilon`, then one grid threshold lies in
+`[a, b)`.
+-/
+theorem exists_integerMultipleThresholdGrid_between_of_bounds
+    {epsilon a b : ℝ} {bound : ℤ}
+    (hepsilon_pos : 0 < epsilon)
+    (ha_bound : (-(bound : ℝ)) * epsilon ≤ a)
+    (hb_bound : b ≤ (bound : ℝ) * epsilon)
+    (_hab : a < b) (hgap : epsilon < b - a) :
+    ∃ threshold : {threshold // threshold ∈
+        integerMultipleThresholdGrid epsilon bound},
+      a ≤ threshold.1 ∧ threshold.1 < b := by
+  classical
+  let gridIndex : ℤ := ⌈a / epsilon⌉
+  have hepsilon_ne : epsilon ≠ 0 := ne_of_gt hepsilon_pos
+  have hneg_bound_le_div : -(bound : ℝ) ≤ a / epsilon := by
+    rw [le_div_iff₀ hepsilon_pos]
+    simpa using ha_bound
+  have hceil_ge : a / epsilon ≤ (gridIndex : ℝ) := by
+    simpa [gridIndex] using (Int.le_ceil (a / epsilon))
+  have hgridIndex_lower_real : ((-bound : ℤ) : ℝ) ≤ (gridIndex : ℝ) := by
+    have hcast : ((-bound : ℤ) : ℝ) = -(bound : ℝ) := by norm_num
+    rw [hcast]
+    exact hneg_bound_le_div.trans hceil_ge
+  have hgridIndex_lower : -bound ≤ gridIndex := by
+    exact_mod_cast hgridIndex_lower_real
+  have ha_add_epsilon_lt_b : a + epsilon < b := by
+    linarith
+  have hdiv_upper : a / epsilon + 1 < (bound : ℝ) := by
+    have hmul : a + epsilon < (bound : ℝ) * epsilon :=
+      ha_add_epsilon_lt_b.trans_le hb_bound
+    have hdiv : (a + epsilon) / epsilon < (bound : ℝ) := by
+      rw [div_lt_iff₀ hepsilon_pos]
+      simpa [mul_comm] using hmul
+    have hrewrite : (a + epsilon) / epsilon = a / epsilon + 1 := by
+      field_simp [hepsilon_ne]
+    simpa [hrewrite] using hdiv
+  have hceil_lt_add : (gridIndex : ℝ) < a / epsilon + 1 := by
+    simpa [gridIndex] using (Int.ceil_lt_add_one (a / epsilon))
+  have hgridIndex_upper_real : (gridIndex : ℝ) < (bound : ℝ) :=
+    hceil_lt_add.trans hdiv_upper
+  have hgridIndex_upper : gridIndex ≤ bound := by
+    exact_mod_cast le_of_lt hgridIndex_upper_real
+  let threshold : ℝ := epsilon * (gridIndex : ℝ)
+  have hthreshold_mem :
+      threshold ∈ integerMultipleThresholdGrid epsilon bound := by
+    refine Finset.mem_image.mpr ?_
+    exact ⟨gridIndex, Finset.mem_Icc.mpr
+      ⟨hgridIndex_lower, hgridIndex_upper⟩, rfl⟩
+  refine ⟨⟨threshold, hthreshold_mem⟩, ?_, ?_⟩
+  · dsimp [threshold]
+    have hmul := mul_le_mul_of_nonneg_left hceil_ge hepsilon_pos.le
+    have hleft : epsilon * (a / epsilon) = a := by
+      field_simp [hepsilon_ne]
+    linarith
+  · dsimp [threshold]
+    have hceil_lt : (gridIndex : ℝ) < a / epsilon + 1 := hceil_lt_add
+    have hmul := mul_lt_mul_of_pos_left hceil_lt hepsilon_pos
+    have hright : epsilon * (a / epsilon + 1) = a + epsilon := by
+      field_simp [hepsilon_ne]
+    linarith
+
+/--
+Bounded variant of the deterministic threshold-grid lemma.  If `x` and `y`
+are known to lie in `[lower, upper]`, it is enough for the threshold grid to
+hit gaps inside that interval.
+-/
+theorem abs_sub_le_of_forall_bounded_gap_exists_threshold
+    {thresholds : Finset ℝ} {epsilon lower upper x y : ℝ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hx_bounds : lower ≤ x ∧ x ≤ upper)
+    (hy_bounds : lower ≤ y ∧ y ≤ upper)
+    (hgrid :
+      ∀ a b : ℝ, lower ≤ a -> b ≤ upper -> a < b ->
+        epsilon < b - a ->
+          ∃ threshold : {threshold // threshold ∈ thresholds},
+            a ≤ threshold.1 ∧ threshold.1 < b)
+    (hcompare :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (threshold.1 < x ↔ threshold.1 < y)) :
+    |x - y| ≤ epsilon := by
+  by_cases hxy : x ≤ y
+  · have hyx_le : y - x ≤ epsilon := by
+      by_contra hnot
+      have hgap : epsilon < y - x := lt_of_not_ge hnot
+      have hlt : x < y := by
+        by_contra hnot_lt
+        have hyx : y ≤ x := le_of_not_gt hnot_lt
+        have hsub_nonpos : y - x ≤ 0 := sub_nonpos.mpr hyx
+        linarith
+      rcases hgrid x y hx_bounds.1 hy_bounds.2 hlt hgap with
+        ⟨threshold, hx_le_t, ht_lt_y⟩
+      have ht_lt_x : threshold.1 < x := (hcompare threshold).mpr ht_lt_y
+      exact (not_lt_of_ge hx_le_t) ht_lt_x
+    rw [abs_of_nonpos (sub_nonpos.mpr hxy)]
+    linarith
+  · have hyx : y < x := lt_of_not_ge hxy
+    have hxy_le : x - y ≤ epsilon := by
+      by_contra hnot
+      have hgap : epsilon < x - y := lt_of_not_ge hnot
+      rcases hgrid y x hy_bounds.1 hx_bounds.2 hyx hgap with
+        ⟨threshold, hy_le_t, ht_lt_x⟩
+      have ht_lt_y : threshold.1 < y := (hcompare threshold).mp ht_lt_x
+      exact (not_lt_of_ge hy_le_t) ht_lt_y
+    rw [abs_of_pos (sub_pos.mpr hyx)]
+    exact hxy_le
+
+/--
 Threshold-grid empirical-covering-number bound: a finite threshold grid whose
 points hit every gap wider than `epsilon` makes matching threshold signatures
 an `epsilon`-accurate empirical `L1(P_n)` code.
@@ -1249,6 +1368,114 @@ theorem empiricalL1CoveringNumber_le_of_thresholdTraceCode_gap_grid_uniform_vc_c
       (thresholds := thresholds) hepsilon_nonneg hgrid
       ((threshold_binaryTraceSetFamily_product_card_le_uniform_vc
         sample indexClass classFun hthresholds_card hvc).trans hcard_le)
+
+/--
+Bounded threshold-grid empirical-covering-number bound.  The threshold grid
+only has to hit gaps inside a deterministic range containing all realized
+sample coordinates of the class.
+-/
+theorem empiricalL1CoveringNumber_le_of_thresholdTraceCode_bounded_gap_grid_product_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {epsilon lower upper : ℝ} {cardinality : ℕ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hbounded :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          lower ≤ classFun index (sample sampleIndex) ∧
+            classFun index (sample sampleIndex) ≤ upper)
+    (hgrid :
+      ∀ a b : ℝ, lower ≤ a -> b ≤ upper -> a < b ->
+        epsilon < b - a ->
+          ∃ threshold : {threshold // threshold ∈ thresholds},
+            a ≤ threshold.1 ∧ threshold.1 < b)
+    (hcard_le :
+      (∏ threshold ∈ thresholds.attach,
+          (empiricalBinaryTraceSetFamily sample indexClass
+            (thresholdIndicatorClassFun classFun threshold.1)).card) ≤
+        cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_product_card_le
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) hepsilon_nonneg
+      (fun sampleIndex index hindex center hcenter hcompare =>
+        abs_sub_le_of_forall_bounded_gap_exists_threshold hepsilon_nonneg
+          (hbounded index hindex sampleIndex)
+          (hbounded center hcenter sampleIndex) hgrid hcompare)
+      hcard_le
+
+/--
+Bounded finite threshold grids plus uniform fixed-threshold VC/Sauer bounds
+yield a numeric empirical covering-number bound.
+-/
+theorem empiricalL1CoveringNumber_le_of_thresholdTraceCode_bounded_gap_grid_uniform_vc_card_le
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {epsilon lower upper : ℝ} {cardinality : ℕ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hbounded :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          lower ≤ classFun index (sample sampleIndex) ∧
+            classFun index (sample sampleIndex) ≤ upper)
+    (hgrid :
+      ∀ a b : ℝ, lower ≤ a -> b ≤ upper -> a < b ->
+        epsilon < b - a ->
+          ∃ threshold : {threshold // threshold ∈ thresholds},
+            a ≤ threshold.1 ∧ threshold.1 < b)
+    (hthresholds_card : thresholds.card ≤ k)
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d)
+    (hcard_le : (((d + 2) * (n + 1) ^ d) ^ k) ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_thresholdTraceCode_bounded_gap_grid_product_card_le
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) hepsilon_nonneg hbounded hgrid
+      ((threshold_binaryTraceSetFamily_product_card_le_uniform_vc
+        sample indexClass classFun hthresholds_card hvc).trans hcard_le)
+
+/--
+Concrete bounded empirical-covering-number bound using the integer-multiple
+threshold grid.
+-/
+theorem empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_uniform_vc_card_le
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon : ℝ} {bound : ℤ} {cardinality : ℕ}
+    (hepsilon_pos : 0 < epsilon)
+    (hbounded :
+      ∀ index, index ∈ indexClass ->
+        ∀ sampleIndex : Fin n,
+          (-(bound : ℝ)) * epsilon ≤ classFun index (sample sampleIndex) ∧
+            classFun index (sample sampleIndex) ≤ (bound : ℝ) * epsilon)
+    (hthresholds_card : (integerMultipleThresholdGrid epsilon bound).card ≤ k)
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈
+          integerMultipleThresholdGrid epsilon bound},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d)
+    (hcard_le : (((d + 2) * (n + 1) ^ d) ^ k) ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_thresholdTraceCode_bounded_gap_grid_uniform_vc_card_le
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := integerMultipleThresholdGrid epsilon bound)
+      (epsilon := epsilon) (lower := (-(bound : ℝ)) * epsilon)
+      (upper := (bound : ℝ) * epsilon) hepsilon_pos.le hbounded
+      (fun a b ha hb hab hgap =>
+        exists_integerMultipleThresholdGrid_between_of_bounds
+          hepsilon_pos ha hb hab hgap)
+      hthresholds_card hvc hcard_le
 
 /--
 Uniform fixed-threshold VC/Sauer bounds, finite threshold separation, and a

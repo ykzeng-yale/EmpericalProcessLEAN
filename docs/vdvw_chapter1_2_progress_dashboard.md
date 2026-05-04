@@ -413,6 +413,17 @@ families to bound the empirical covering number by
 condition for bounded truncated values and package the resulting fixed-radius
 selected side conditions for Theorem 2.4.3.
 
+2026-05-04 follow-up: the bounded truncated-value threshold grid is now
+instantiated by `integerMultipleThresholdGrid` in `ThresholdCoding.lean`.
+`exists_integerMultipleThresholdGrid_between_of_bounds` proves the concrete
+integer-ceiling gap witness, and
+`empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_uniform_vc_card_le`
+feeds bounded sampled values plus per-threshold VC bounds into the empirical
+covering-number estimate.  Next target: discharge or honestly package the
+remaining theorem-facing side conditions for fixed-radius Theorem 2.4.3:
+integer-grid cardinality, truncated-value boundedness, and uniform
+threshold/subgraph VC control.
+
 ## Verification Monitor
 
 Latest targeted verification includes the selected terminal/truncated

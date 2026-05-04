@@ -840,8 +840,17 @@ above, so they do not change the theorem-level dashboard counts.
    `epsilon`-closeness, and
    `empiricalL1CoveringNumber_le_of_thresholdTraceCode_gap_grid_uniform_vc_card_le`
    combines that approximate-code bridge with fixed-threshold Sauer/VC bounds.
-   The next structural input is the actual bounded truncated-value threshold
-   grid and its fixed threshold count for each fixed `M, epsilon`.
+   The bounded truncated-value threshold grid is now instantiated by
+   `integerMultipleThresholdGrid`,
+   `exists_integerMultipleThresholdGrid_between_of_bounds`,
+   `abs_sub_le_of_forall_bounded_gap_exists_threshold`, and
+   `empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_uniform_vc_card_le`.
+   This converts bounded sampled values and fixed-threshold VC bounds into the
+   theorem-facing empirical covering-number estimate.
+   The next structural inputs are the explicit integer-grid cardinality bound,
+   the fixed-radius truncated-value boundedness hypotheses, and the uniform
+   threshold/subgraph VC condition needed to feed the selected fixed-radius
+   Theorem 2.4.3 side-condition package.
    If the remaining quantitative structural estimate
    cannot be proved from the textbook assumptions, state the exact additional
    theorem-level side condition honestly.
