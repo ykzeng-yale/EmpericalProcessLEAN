@@ -132,6 +132,86 @@ theorem chewi620_standard_cut_scalar_containment
   rwa [div_le_iff₀ hD_sq_pos, one_mul]
 
 /--
+Nonnegativity of the source square-root argument in Chewi Lemma 6.20's volume
+ratio display.
+-/
+theorem chewi620_ellipsoidVolumeRatio_source_nonneg
+    {d : ℕ} (hd : 1 < d) :
+    0 ≤
+      (((d : ℝ) - 1) / ((d : ℝ) + 1)) *
+        ((((d : ℝ) ^ (2 : ℕ)) /
+          (((d : ℝ) ^ (2 : ℕ)) - 1)) ^ d) := by
+  have hD_gt_one : 1 < (d : ℝ) := by exact_mod_cast hd
+  have hleft_nonneg : 0 ≤ ((d : ℝ) - 1) / ((d : ℝ) + 1) := by
+    exact div_nonneg (by linarith) (by positivity)
+  have hden_pos : 0 < (d : ℝ) ^ (2 : ℕ) - 1 := by
+    nlinarith [sq_pos_of_pos (show 0 < (d : ℝ) - 1 by linarith)]
+  have hbase_nonneg :
+      0 ≤ ((d : ℝ) ^ (2 : ℕ)) /
+        (((d : ℝ) ^ (2 : ℕ)) - 1) :=
+    div_nonneg (sq_nonneg (d : ℝ)) hden_pos.le
+  exact mul_nonneg hleft_nonneg (pow_nonneg hbase_nonneg d)
+
+/--
+Scalar determinant algebra for the normalized standard-cut ellipsoid.
+
+In coordinates where the current ellipsoid is the unit ball and the cut is the
+first coordinate half-space, the next ellipsoid has squared axis factor
+`d^2 / (d + 1)^2` in the cut direction and
+`d^2 / (d^2 - 1)` in each of the remaining `d - 1` directions.  Their product
+is exactly Chewi's displayed square-root argument.
+-/
+theorem chewi620_standardCut_detRatio_eq_source
+    {d : ℕ} (hd : 1 < d) :
+    (((d : ℝ) ^ (2 : ℕ)) / (((d : ℝ) + 1) ^ (2 : ℕ))) *
+        ((((d : ℝ) ^ (2 : ℕ)) /
+          (((d : ℝ) ^ (2 : ℕ)) - 1)) ^ (d - 1)) =
+      (((d : ℝ) - 1) / ((d : ℝ) + 1)) *
+        ((((d : ℝ) ^ (2 : ℕ)) /
+          (((d : ℝ) ^ (2 : ℕ)) - 1)) ^ d) := by
+  have hD_gt_one : 1 < (d : ℝ) := by exact_mod_cast hd
+  have hD1_ne : (d : ℝ) + 1 ≠ 0 := by positivity
+  have hDsq_minus_ne : (d : ℝ) ^ (2 : ℕ) - 1 ≠ 0 := by
+    nlinarith [sq_pos_of_pos (show 0 < (d : ℝ) - 1 by linarith)]
+  let q : ℝ :=
+    ((d : ℝ) ^ (2 : ℕ)) /
+      (((d : ℝ) ^ (2 : ℕ)) - 1)
+  have hpow :
+      q ^ d = q ^ (d - 1) * q := by
+    calc
+      q ^ d = q ^ ((d - 1) + 1) := by
+        congr 1
+        omega
+      _ = q ^ (d - 1) * q := by
+        rw [pow_succ]
+  have hcoef :
+      ((d : ℝ) ^ (2 : ℕ)) / (((d : ℝ) + 1) ^ (2 : ℕ)) =
+        (((d : ℝ) - 1) / ((d : ℝ) + 1)) * q := by
+    dsimp [q]
+    field_simp [hD1_ne, hDsq_minus_ne]
+    ring
+  change
+    (((d : ℝ) ^ (2 : ℕ)) / (((d : ℝ) + 1) ^ (2 : ℕ))) *
+        q ^ (d - 1) =
+      (((d : ℝ) - 1) / ((d : ℝ) + 1)) * q ^ d
+  rw [hpow, hcoef]
+  ring
+
+/--
+Chewi Lemma 6.20's displayed `ellipsoidVolumeRatio` is the square root of the
+standard-cut determinant ratio.
+-/
+theorem chewi620_ellipsoidVolumeRatio_sq_eq_standardCut_detRatio
+    {d : ℕ} (hd : 1 < d) :
+    ellipsoidVolumeRatio d ^ (2 : ℕ) =
+      (((d : ℝ) ^ (2 : ℕ)) / (((d : ℝ) + 1) ^ (2 : ℕ))) *
+        ((((d : ℝ) ^ (2 : ℕ)) /
+          (((d : ℝ) ^ (2 : ℕ)) - 1)) ^ (d - 1)) := by
+  rw [ellipsoidVolumeRatio]
+  rw [Real.sq_sqrt (chewi620_ellipsoidVolumeRatio_source_nonneg hd)]
+  exact (chewi620_standardCut_detRatio_eq_source (d := d) hd).symm
+
+/--
 Source-shaped certificate for one Lemma 6.20 ellipsoid step: the next
 ellipsoid contains the half-space cut and has the displayed volume ratio.
 -/
