@@ -43,15 +43,17 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after the 2026-05-05 Chapter 6 PSD packet:
+Manual goal frontier after the 2026-05-05 Theorem 6.14 source packet:
 `StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
 discrete AGD source rate and `StatInference/Optimization/ProjectedSubgradient.lean`
 now proves the finite-valued Chapter 6 projected-subgradient layer through the
-supplied-interface Theorem 6.14 average-gap bound.  Do not target the stale
-app-level `/goal` text's old Theorem 3.4 frontier, and do not replay the
-already-built CG substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9
-strong-convex AGF proof, Theorem 5.10 weighted-telescope proof, or the basic
-projection/Jensen/PSD recurrence packet.
+Theorem 6.14 average-gap bound, Lipschitz/ray source bridge, displayed
+`h = R / sqrt N` rate wrapper, and the scaled-step recurrence needed for
+Theorem 6.16.  Do not target the stale app-level `/goal` text's old Theorem
+3.4 frontier, and do not replay the already-built CG substrate, Theorem 5.8
+AGF source wrapper, Theorem 5.9 strong-convex AGF proof, Theorem 5.10
+weighted-telescope proof, or the basic projection/Jensen/PSD recurrence
+packet.
 `StatInference/Optimization/Theorem58.lean` proves the AGF Lyapunov derivative
 formula, discharges Lyapunov continuity from the trajectory and gradient oracle,
 and exposes a source-facing Theorem 5.8 rate wrapper.  Since Chewi leaves the
@@ -66,27 +68,29 @@ and final exponential gap wrappers.  `Theorem510.lean` now records
 the weighted two-point inequality, finite weighted telescope, denominator form,
 and final source theorem `chewi510_gap_le_two_beta_dist_sq_over_nat_sq`.
 
-Chapter 6 nonsmooth convex optimization is now open.  The first packet in
+Chapter 6 nonsmooth convex optimization is now open.  The packet in
 `StatInference/Optimization/ProjectedSubgradient.lean` compiles source-shaped
 finite-valued interfaces and proofs for Definition 6.8 subgradients,
 Definition 6.11 projection, Lemma 6.12 projection characterization, Lemma 6.13
 projection non-expansiveness, the PSD trajectory display, Jensen for averaged
-iterates, the PSD squared-distance recurrence, finite telescoping, and the
-Theorem 6.14 average-gap wrapper `chewi614_average_gap_bound`.
+iterates, the PSD squared-distance recurrence, finite telescoping, the
+Theorem 6.14 average-gap wrapper `chewi614_average_gap_bound`, the
+Lipschitz/ray source bridge, the displayed `h = R / sqrt N` corollary, and a
+scaled projected-subgradient recurrence for Theorem 6.16.
 
-The next active packet should source-complete Theorem 6.14 and immediately
-start Theorem 6.16, not drip one wrapper at a time.  Prove a correct
-interior/ray-form bridge from Chewi's `L`-Lipschitz assumption to the supplied
-bound `‖p_n‖ <= L` for selected subgradients, add the displayed
-`h = R / sqrt N` corollary, and then define the functional-constraint PSD
-trajectory/oracle interface for Theorem 6.16 so the recurrence and telescope
-can reuse the 6.14 spine.  Mandatory search and reuse: mathlib
+The next active packet should attack Theorem 6.16 directly, not drip one
+wrapper at a time.  Define the functional-constraint PSD trajectory/oracle
+interface, prove the objective-case and violated-constraint-case distance
+decreases from `projectedSubgradient_scaled_sqdist_recurrence`, and assemble
+the finite contradiction proof of (6.5) under the iteration lower bound.
+Mandatory search and reuse: mathlib
 `Analysis/InnerProductSpace/Projection/Minimal.lean` has
 `exists_norm_eq_iInf_of_complete_convex` and
 `norm_eq_iInf_iff_real_inner_le_zero`; mathlib `Analysis/Convex/Jensen.lean`
 has `ConvexOn.map_sum_le`; mathlib `Topology/MetricSpace/Lipschitz.lean` has
 `LipschitzOnWith`, `LipschitzOnWith.dist_le_mul`, and
-`LipschitzOnWith.le_add_mul`; local `sum_range_sub_succ` is the finite
+`LipschitzOnWith.le_add_mul`; mathlib `Data/Real/Sqrt.lean` has
+`Real.sqrt_pos` and `Real.sq_sqrt`; local `sum_range_sub_succ` is the finite
 telescope.  Keep Chapter 6 finite-valued and theorem-driven until a named
 result actually needs the extended-real regular-convex infrastructure.
 
