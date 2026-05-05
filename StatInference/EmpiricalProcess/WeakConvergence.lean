@@ -1040,6 +1040,61 @@ theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.mono_filte
   exact (h f).mono_left hl
 
 /--
+The lower-shifted nonnegative gap is one half of the signed
+positive/negative gap after subtracting the lower shift.
+-/
+theorem VdVWLowerShiftedRealOuterInnerExpectationGap_le_signed_sub_const
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Y : Ω -> ℝ} {c : ℝ} :
+    VdVWLowerShiftedRealOuterInnerExpectationGap μ Y c ≤
+      VdVWSignedBoundedContinuousOuterInnerExpectationGap μ
+        (fun ω => Y ω - c) := by
+  simp [VdVWLowerShiftedRealOuterInnerExpectationGap,
+    VdVWSignedBoundedContinuousOuterInnerExpectationGap]
+
+/--
+Signed bounded-continuous asymptotic measurability implies the older
+lower-shifted bounded-continuous layer.
+
+This connects the current signed Chapter 1 arbitrary-map predicate back to the
+previous nonnegative shifted predicate without adding a new primitive
+assumption.
+-/
+theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_lowerShifted
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableSignedBoundedContinuous μs X l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l := by
+  intro f c _hlower
+  let fc : S →ᵇ ℝ := f - BoundedContinuousFunction.const S c
+  have hsigned := h fc
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0) from
+        tendsto_const_nhds)
+      hsigned
+      (Eventually.of_forall fun _ => bot_le)
+      ?_
+  refine Eventually.of_forall fun i => ?_
+  simpa [fc] using
+    (VdVWLowerShiftedRealOuterInnerExpectationGap_le_signed_sub_const
+      (μ := μs i) (Y := fun ω => f (X i ω)) (c := c))
+
+/--
+Signed bounded-continuous asymptotic measurability implies the canonical
+`-‖f‖` shifted layer.
+-/
+theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_canonicalShifted
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableSignedBoundedContinuous μs X l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted μs X l :=
+  VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_lowerShifted
+    h.to_lowerShifted
+
+/--
 Measure-level weak convergence of probability measures.
 
 This is the mathlib-backed part of VdV&W Definition 1.3.3, specialized to

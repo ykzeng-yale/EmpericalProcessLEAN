@@ -58,7 +58,7 @@ consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`14580fb`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`7fe3bca`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -4972,6 +4972,26 @@ wrapper.  Priority order is:
 4. continue self-contained Chapter 1 wrappers from mathlib/ProbabilityMeasure
    such as product/FDD uniqueness and tightness/Portmanteau variants only when
    they directly remove a named row in the Chapter 1-2 blueprint.
+
+2026-05-05 proof/search update: the random-entropy tail/UI target was searched
+again in local `Theorem243.lean`, local `ProbabilityMeasure`, and pinned
+mathlib `UniformIntegrable`/Vitali APIs.  The available mathlib theorems are
+fixed-domain (`UniformIntegrable`, `tendsto_Lp_finite_of_tendstoInMeasure`,
+`tendstoInMeasure_iff_tendsto_Lp_finite`) and do not by themselves convert
+the varying-domain empirical-cover random entropy
+`log N(η, F_M, L1(P_n))/n -> 0` in outer probability into tail expectation,
+uniform integrability, or ordinary mean convergence.  This keeps the
+random-entropy bridge as a genuine missing theorem unless an additional
+tail/UI, deterministic bound, or structural cardinality estimate is supplied.
+
+2026-05-05 Chapter 1 bridge update: the signed bounded-continuous
+asymptotic-measurability layer now feeds the older lower-shifted/canonical
+shifted predicates.  New compiled declarations:
+`VdVWLowerShiftedRealOuterInnerExpectationGap_le_signed_sub_const`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_lowerShifted`, and
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_canonicalShifted`.
+This reduces one foundation mismatch between the signed arbitrary-map
+predicate and the earlier nonnegative shifted outer/inner expectation layer.
 
 2026-05-05 follow-up: the local asymptotic-measurability predicates are now
 stable under filter refinement/subsequence filters.  The compiled declarations

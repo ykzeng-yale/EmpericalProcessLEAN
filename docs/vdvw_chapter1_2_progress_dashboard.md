@@ -14,7 +14,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`14580fb`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
+`7fe3bca`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
 Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
@@ -34,6 +34,10 @@ assumption before moving to deeper theorem-critical Chapter 1-2 arbitrary-map,
 nonmeasurable envelope-tail, asymptotic-tightness/FDD, or separability
 primitives.  The VdV&W 1.4.1 product Borel-space equality is also now
 compiled as `vdVW141_prod_borel_eq_product_borel`; do not repeat that wrapper.
+The signed arbitrary-map asymptotic-measurability layer now also implies the
+lower-shifted/canonical shifted predicates through
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_lowerShifted` and
+`.to_canonicalShifted`.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new
