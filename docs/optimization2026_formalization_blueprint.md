@@ -63,25 +63,26 @@ and final exponential gap wrappers.  `Theorem510.lean` now records
 the weighted two-point inequality, finite weighted telescope, denominator form,
 and final source theorem `chewi510_gap_le_two_beta_dist_sq_over_nat_sq`.
 
-The next active packet is Chapter 6 nonsmooth convex optimization, starting
-with the projection/subgradient layer around markdown lines 1458-1554.  Create
-`StatInference/Optimization/ProjectedSubgradient.lean` unless search discovers
-a stronger existing anchor.  First close source-shaped supplied-interface
-versions of Definition 6.8 subgradients, Definition 6.11 projection, Lemma 6.12
-projection characterization, Lemma 6.13 projection non-expansiveness, the PSD
-trajectory display, and Theorem 6.14's average-gap bound.  Mandatory search and
-reuse before adding primitives: mathlib
-`Analysis/InnerProductSpace/Projection/Minimal.lean` has
+Chapter 6 nonsmooth convex optimization is now open.  The first packet in
+`StatInference/Optimization/ProjectedSubgradient.lean` compiles source-shaped
+finite-valued interfaces and proofs for Definition 6.8 subgradients,
+Definition 6.11 projection, Lemma 6.12 projection characterization, Lemma 6.13
+projection non-expansiveness, the PSD trajectory display, Jensen for averaged
+iterates, the PSD squared-distance recurrence, finite telescoping, and the
+Theorem 6.14 average-gap wrapper `chewi614_average_gap_bound`.
+
+The next active packet should make Theorem 6.14 closer to the exact source
+statement: prove or sharply package the bridge from Chewi's `L`-Lipschitz
+assumption to the supplied bound `‖p_n‖ <= L` for selected subgradients, and
+then add the displayed `h = R / sqrt N` corollary.  Mandatory search and reuse:
+mathlib `Analysis/InnerProductSpace/Projection/Minimal.lean` has
 `exists_norm_eq_iInf_of_complete_convex` and
-`norm_eq_iInf_iff_real_inner_le_zero`; mathlib
-`Topology/MetricSpace/Lipschitz.lean` has `LipschitzOnWith`,
-`LipschitzOnWith.dist_le_mul`, and `LipschitzOnWith.le_add_mul`; local Chapter
-3/5 finite-sum telescope and convex-average patterns should be reused for the
-PSD summation.  Keep the first Chapter 6 packet finite-valued and
-source-theorem driven; backfill extended-real regular-convex infrastructure for
-Definitions 6.1-6.10 only when it becomes a theorem blocker.  Scouts can map
-Chapter 7-13 APIs in parallel, but the main lane should push theorem-sized
-Chapter 6 progress.
+`norm_eq_iInf_iff_real_inner_le_zero`; mathlib `Analysis/Convex/Jensen.lean`
+has `ConvexOn.map_sum_le`; mathlib `Topology/MetricSpace/Lipschitz.lean` has
+`LipschitzOnWith`, `LipschitzOnWith.dist_le_mul`, and
+`LipschitzOnWith.le_add_mul`; local `sum_range_sub_succ` is the finite
+telescope.  Keep Chapter 6 finite-valued and theorem-driven until a named
+result actually needs the extended-real regular-convex infrastructure.
 
 ## Local Sources
 
