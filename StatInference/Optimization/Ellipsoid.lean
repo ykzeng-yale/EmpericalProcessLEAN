@@ -757,6 +757,143 @@ theorem chewi620_matrix_rankOne_collapse
   exact dotProduct_comm (Sigma.mulVec p.ofLp) p.ofLp
 
 /--
+Rank-one determinant update for Chewi's displayed ellipsoid shape matrix.
+This is the matrix determinant lemma specialized to
+`Σ - c (Σp)(Σp)^T`, with the scalar collapse
+`(Σp)^T Σ⁻¹(Σp) = <p,Σp>` already discharged locally.
+-/
+theorem chewi620_matrix_rankOne_det_update
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    (c : ℝ) (p : EuclideanSpace ℝ ι) :
+    (Sigma -
+        c • Matrix.vecMulVec (Sigma.mulVec p.ofLp) (Sigma.mulVec p.ofLp)).det =
+      Sigma.det * (1 - c * inner ℝ p (matrixInvShape Sigma p)) := by
+  let u : ι -> ℝ := Sigma.mulVec p.ofLp
+  have hunit : IsUnit Sigma.det :=
+    chewi620_matrixPosDef_det_isUnit hSigma
+  have hcollapse :
+      u ⬝ᵥ (Sigma⁻¹.mulVec u) =
+        inner ℝ p (matrixInvShape Sigma p) := by
+    simpa [u] using
+      chewi620_matrix_rankOne_collapse (Sigma := Sigma) hSigma p
+  calc
+    (Sigma -
+        c • Matrix.vecMulVec (Sigma.mulVec p.ofLp) (Sigma.mulVec p.ofLp)).det =
+        (Sigma +
+          Matrix.replicateCol (Fin 1) u *
+            Matrix.replicateRow (Fin 1) ((-c) • u)).det := by
+      congr 1
+      ext i j
+      simp [u, Matrix.mul_apply, Matrix.vecMulVec_apply,
+        Matrix.replicateCol_apply, Matrix.replicateRow_apply, sub_eq_add_neg]
+      ring_nf
+    _ =
+        Sigma.det *
+          (1 +
+            Matrix.replicateRow (Fin 1) ((-c) • u) *
+              Sigma⁻¹ * Matrix.replicateCol (Fin 1) u).det := by
+      exact Matrix.det_add_replicateCol_mul_replicateRow
+        (ι := Fin 1) (A := Sigma) hunit u ((-c) • u)
+    _ = Sigma.det * (1 - c * inner ℝ p (matrixInvShape Sigma p)) := by
+      have hscalar :
+          Matrix.vecMul ((-c) • u) Sigma⁻¹ ⬝ᵥ u =
+            -c * inner ℝ p (matrixInvShape Sigma p) := by
+        calc
+          Matrix.vecMul ((-c) • u) Sigma⁻¹ ⬝ᵥ u =
+              ((-c) • u) ⬝ᵥ (Sigma⁻¹.mulVec u) := by
+            exact (Matrix.dotProduct_mulVec ((-c) • u) Sigma⁻¹ u).symm
+          _ = -c * (u ⬝ᵥ (Sigma⁻¹.mulVec u)) := by
+            simp [dotProduct, Finset.mul_sum, mul_assoc]
+          _ = -c * inner ℝ p (matrixInvShape Sigma p) := by
+            rw [hcollapse]
+      have hsmall :
+          (1 +
+            Matrix.replicateRow (Fin 1) ((-c) • u) *
+              Sigma⁻¹ * Matrix.replicateCol (Fin 1) u).det =
+            1 - c * inner ℝ p (matrixInvShape Sigma p) := by
+        rw [Matrix.det_fin_one]
+        change
+          ((1 +
+            Matrix.replicateRow (Fin 1) ((-c) • u) *
+              Sigma⁻¹ * Matrix.replicateCol (Fin 1) u :
+              Matrix (Fin 1) (Fin 1) ℝ) 0 0) =
+            1 - c * inner ℝ p (matrixInvShape Sigma p)
+        calc
+          ((1 +
+              Matrix.replicateRow (Fin 1) ((-c) • u) *
+                Sigma⁻¹ * Matrix.replicateCol (Fin 1) u :
+                Matrix (Fin 1) (Fin 1) ℝ) 0 0) =
+              1 + (Matrix.vecMul ((-c) • u) Sigma⁻¹ ⬝ᵥ u) := by
+            simp [Matrix.mul_apply, Matrix.vecMul, dotProduct]
+          _ = 1 - c * inner ℝ p (matrixInvShape Sigma p) := by
+            rw [hscalar]
+            ring
+      rw [hsmall]
+
+/--
+The unscaled shape-update core in Chewi Lemma 6.20:
+`Σ - (2/(d+1)) (Σp)(Σp)^T / <p,Σp>`.
+-/
+noncomputable def chewi620DisplayedShapeUpdateCore
+    (d : ℕ) (Sigma : Matrix ι ι ℝ) (p : EuclideanSpace ℝ ι) :
+    Matrix ι ι ℝ :=
+  Sigma -
+    (((2 : ℝ) / ((d : ℝ) + 1)) /
+      inner ℝ p (matrixInvShape Sigma p)) •
+      Matrix.vecMulVec (Sigma.mulVec p.ofLp) (Sigma.mulVec p.ofLp)
+
+/--
+Determinant of Chewi's unscaled rank-one ellipsoid update core:
+`det(Σ - (2/(d+1)) ΣppᵀΣ / <p,Σp>) = det(Σ) * (d-1)/(d+1)`.
+-/
+theorem chewi620_displayedShapeUpdateCore_det
+    {d : ℕ} (hd : 1 < d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0) :
+    (chewi620DisplayedShapeUpdateCore d Sigma p).det =
+      Sigma.det * (((d : ℝ) - 1) / ((d : ℝ) + 1)) := by
+  let q : ℝ := inner ℝ p (matrixInvShape Sigma p)
+  have hq_pos : 0 < q := by
+    exact matrixInvShape_quadratic_pos_of_posDef hSigma hp
+  have hq_ne : q ≠ 0 := ne_of_gt hq_pos
+  have hd_ne : (d : ℝ) + 1 ≠ 0 := by
+    positivity
+  rw [chewi620DisplayedShapeUpdateCore]
+  rw [chewi620_matrix_rankOne_det_update (Sigma := Sigma) hSigma]
+  congr 1
+  change 1 - ((2 / ((d : ℝ) + 1)) / q) * q =
+    ((d : ℝ) - 1) / ((d : ℝ) + 1)
+  field_simp [hq_ne, hd_ne]
+  ring
+
+/--
+The full displayed forward-shape update in Chewi Lemma 6.20:
+`d^2/(d^2-1)` times the rank-one update core.
+-/
+noncomputable def chewi620DisplayedShapeUpdate
+    (d : ℕ) (Sigma : Matrix ι ι ℝ) (p : EuclideanSpace ℝ ι) :
+    Matrix ι ι ℝ :=
+  ((((d : ℝ) ^ (2 : ℕ)) /
+    (((d : ℝ) ^ (2 : ℕ)) - 1)) •
+    chewi620DisplayedShapeUpdateCore d Sigma p)
+
+/--
+Determinant of Chewi's fully scaled displayed forward-shape update.  The
+cardinality hypothesis identifies the matrix index type with the source
+dimension `d`.
+-/
+theorem chewi620_displayedShapeUpdate_det
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0) :
+    (chewi620DisplayedShapeUpdate d Sigma p).det =
+      ((((d : ℝ) ^ (2 : ℕ)) /
+          (((d : ℝ) ^ (2 : ℕ)) - 1)) ^ d) *
+        (Sigma.det * (((d : ℝ) - 1) / ((d : ℝ) + 1))) := by
+  rw [chewi620DisplayedShapeUpdate, Matrix.det_smul, hcard,
+    chewi620_displayedShapeUpdateCore_det (d := d) hd hSigma hp]
+
+/--
 Positive denominator for Chewi's normalized ellipsoid cut direction when the
 forward shape matrix is positive definite and the cut vector is nonzero.
 -/

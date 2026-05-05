@@ -69,8 +69,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Live replacement `/goal` prompt as of 2026-05-05 after syncing local `main` to
-`origin/main` at `6c7c6cd` (`Add Chewi ellipsoid displayed center bridge`) plus
-the current verified local rank-one-collapse packet in
+`origin/main` at `9b70295` (`Refresh Chewi optimization goal frontier`) plus
+the current verified local determinant packet in
 `StatInference/Optimization/Ellipsoid.lean`: aggressively formalize and prove
 all main theorem content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercises tracked in the single
@@ -135,7 +135,12 @@ the pullback packet `chewi620PullbackIdentityInvShape`,
 `chewi620_matrixSqrt_centerUpdate_hcenter`,
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedCenter`, and
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`,
-plus `chewi620_matrix_rankOne_collapse`.
+plus `chewi620_matrix_rankOne_collapse`,
+`chewi620_matrix_rankOne_det_update`,
+`chewi620DisplayedShapeUpdateCore`,
+`chewi620_displayedShapeUpdateCore_det`,
+`chewi620DisplayedShapeUpdate`, and
+`chewi620_displayedShapeUpdate_det`.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
@@ -147,12 +152,13 @@ Lemma 6.20 matrix packet by connecting the remaining pullback next inverse shape
 to Chewi's displayed `Σ_{n+1}^{-1}` matrix update and volume ratio.  The raw
 square-root adjoint identity, normalized cut `hcut` bridge, `Sigma.PosDef`
 invertibility/cancellation layer, pullback `hnext` certificate, current
-`Σ⁻¹` ellipsoid identification, displayed center update, and the rank-one
-collapse `(Σp)^T Σ⁻¹ (Σp) = <p, Σp>` are now local; this is not a minor wrapper
-target.  Do not spend another run on scalar, coordinate-free, abstract
-transport, current-shape, center-update, pullback-only wrappers, or the
-rank-one collapse unless one is the shortest verified route to the concrete
-matrix theorem.  The dependency order is:
+`Σ⁻¹` ellipsoid identification, displayed center update, rank-one collapse
+`(Σp)^T Σ⁻¹ (Σp) = <p, Σp>`, and displayed forward-shape determinant formula
+are now local; this is not a minor wrapper target.  Do not spend another run on
+scalar, coordinate-free, abstract transport, current-shape, center-update,
+pullback-only wrappers, rank-one collapse, or determinant-core algebra unless
+one is the shortest verified route to the concrete matrix theorem.  The
+dependency order is:
 
 1. Search pinned mathlib and local `StatInference/Optimization` for
    square-root/symmetric linear-equivalence, `Matrix.toEuclideanLin`,
@@ -162,15 +168,20 @@ matrix theorem.  The dependency order is:
    `LinearEquiv.isSymmetric_symm_iff`, `LinearEquiv.apply_symm_apply`, and
    `inner_sub_right` proved the symmetric square-root raw identity; mathlib
    nonsingular-inverse APIs are wrapped locally for PosDef cancellation; the
-   rank-one collapse is local as `chewi620_matrix_rankOne_collapse`; rank-one
-   determinant and volume-scaling APIs still need to be instantiated.
-2. Define or expose the displayed next-shape/inverse-shape matrix update, then
-   prove equality with
+   rank-one determinant path uses mathlib
+   `Matrix.det_add_replicateCol_mul_replicateRow`,
+   `Matrix.det_fin_one`, `Matrix.vecMulVec_eq`,
+   `Matrix.replicateCol`, and `Matrix.replicateRow`, and is now local through
+   `chewi620_matrix_rankOne_det_update`,
+   `chewi620_displayedShapeUpdateCore_det`, and
+   `chewi620_displayedShapeUpdate_det`.  Volume-scaling APIs still need to be
+   instantiated.
+2. Prove the displayed next-shape/inverse-shape matrix equality: connect
    `chewi620PullbackStandardCutInvShape d u T` under the square-root/inverse
-   hypotheses.
-3. Prove the rank-one determinant/volume inequality or exact ratio needed for
-   the `hvolume` hypothesis of the displayed-current/displayed-center
-   certificate.
+   hypotheses with `matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹`.
+3. Prove the determinant-to-volume bridge needed for the `hvolume` hypothesis
+   of the displayed-current/displayed-center certificate, reusing the compiled
+   determinant formula and mathlib volume-scaling APIs.
 4. Package the exact one-step Lemma 6.20 certificate, then promote it to the
    ellipsoid trajectory/rate wrapper.
 
@@ -184,11 +195,12 @@ The displayed-current/displayed-center packet identifies
 current ellipsoid set to Chewi's displayed form, derives the displayed center
 update from `T ∘ T = Sigma`, and exposes a certificate whose only geometric
 blockers are the next inverse-shape matrix equality and determinant/volume
-ratio.  The rank-one collapse needed inside the determinant lemma now compiles,
-so the next useful Lean work is the determinant lemma itself or the displayed
-next-shape equality.  If the full matrix proof balloons, record the exact
-missing API and prove the smallest matrix-coordinate, rank-one-determinant, or
-volume-scaling certificate that removes that blocker in the same run.
+ratio.  The rank-one collapse and determinant formula needed inside the volume
+lemma now compile, so the next useful Lean work is the inverse-shape equality
+or the determinant-to-volume scaling bridge.  If the full matrix proof
+balloons, record the exact missing API and prove the smallest matrix-coordinate,
+inverse-shape, or volume-scaling certificate that removes that blocker in the
+same run.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
@@ -218,15 +230,16 @@ symmetric square-root cut bridge, PosDef invertibility/cancellation layer,
 pullback-standard-cut certificate, current `Σ⁻¹` identification, and displayed
 center-update bridge now compile via `matrixInvShape`,
 PosDef/PosSemidef dot-product APIs, `Real.sqrt` normalization, mathlib
-`LinearMap.IsSymmetric`, and mathlib nonsingular-inverse APIs.  The next
-aggressive theorem packet should prove the displayed next inverse-shape matrix
-equivalence and determinant/volume pieces needed by
+`LinearMap.IsSymmetric`, mathlib nonsingular-inverse APIs, and mathlib
+rank-one determinant APIs.  The next aggressive theorem packet should prove the
+displayed next inverse-shape matrix equivalence and determinant-to-volume piece
+needed by
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`:
-search and use mathlib matrix/rank-one determinant/volume APIs to connect the
-remaining local pullback object to Chewi's displayed `Σ_{n+1}` update.  If the
-full matrix proof balloons, record the exact missing matrix API and prove the
-smallest matrix-coordinate, rank-one determinant, or volume-scaling certificate
-that removes it.
+search and use mathlib matrix inverse/volume APIs to connect the remaining
+local pullback object and volume expression to Chewi's displayed `Σ_{n+1}`
+update.  If the full matrix proof balloons, record the exact missing matrix API
+and prove the smallest matrix-coordinate, inverse-shape, or volume-scaling
+certificate that removes it.
 Do not spend a run only polishing a minor wrapper unless it is the fastest
 verified dependency for this theorem packet.
 

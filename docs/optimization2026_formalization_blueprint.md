@@ -92,7 +92,10 @@ helpers, plus the raw symmetric square-root cut bridge declarations
 `chewi620_matrixSqrt_centerUpdate_hcenter`,
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedCenter`, and
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`,
-and `chewi620_matrix_rankOne_collapse`.
+`chewi620_matrix_rankOne_collapse`, `chewi620_matrix_rankOne_det_update`,
+`chewi620DisplayedShapeUpdateCore`,
+`chewi620_displayedShapeUpdateCore_det`,
+`chewi620DisplayedShapeUpdate`, and `chewi620_displayedShapeUpdate_det`.
 Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
@@ -200,17 +203,21 @@ symmetric square-root cut bridge, PosDef invertibility/cancellation bridge,
 pullback-standard-cut certificate, current `Σ⁻¹` identification, and displayed
 center-update bridge are now local; the rank-one collapse
 `(Σp)^T Σ⁻¹ (Σp) = <p, Σp>` also now compiles as
-`chewi620_matrix_rankOne_collapse`.  The remaining blocker is the displayed
-next inverse-shape matrix equality plus determinant/volume bridge, not scalar
-algebra, abstract transport, current-shape rewriting, center algebra, or the
-rank-one collapse itself.  The target order is displayed `Σ_{n+1}^{-1}` matrix
-equivalence, rank-one determinant/volume bridge using the local collapse, then
-exact one-step Lemma 6.20 certificate.  If the full matrix proof balloons,
-prove the smallest matrix-coordinate, rank-one determinant, or volume-scaling
-certificate that removes the precise missing matrix API.  After that, continue
-Chapter 6 with nonsmooth lower-bound Theorems 6.21-6.23 and feasibility
-Definition 6.24/Theorem 6.25 before opening Chapter 7 as the next main-text
-frontier.
+`chewi620_matrix_rankOne_collapse`, and the determinant side of the displayed
+forward-shape update now compiles through
+`chewi620_matrix_rankOne_det_update`,
+`chewi620_displayedShapeUpdateCore_det`, and
+`chewi620_displayedShapeUpdate_det`.  The remaining blocker is the displayed
+next inverse-shape matrix equality plus determinant-to-volume bridge, not
+scalar algebra, abstract transport, current-shape rewriting, center algebra,
+rank-one collapse, or determinant-core algebra.  The target order is displayed
+`Σ_{n+1}^{-1}` matrix equivalence, determinant-to-volume scaling using the
+local determinant formula and mathlib volume APIs, then exact one-step Lemma
+6.20 certificate.  If the full matrix proof balloons, prove the smallest
+matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
+the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth
+lower-bound Theorems 6.21-6.23 and feasibility Definition 6.24/Theorem 6.25
+before opening Chapter 7 as the next main-text frontier.
 Mandatory search and reuse: mathlib
 `Analysis/InnerProductSpace/Projection/Minimal.lean` has
 `exists_norm_eq_iInf_of_complete_convex` and
@@ -226,8 +233,10 @@ telescope.  Lemma 6.20 matrix scout results to reuse next include
 `Matrix.posSemidef_iff_dotProduct_mulVec`,
 `Matrix.PosDef.dotProduct_mulVec_pos`, `Matrix.PosDef.isUnit`,
 `Matrix.PosDef.inv`, nonsingular-inverse determinant and cancellation lemmas
-now wrapped locally, rank-one determinant lemmas in `Matrix.SchurComplement`, including
-`Matrix.det_add_mul`,
+now wrapped locally, rank-one determinant lemmas in `Matrix.SchurComplement`,
+including `Matrix.det_add_replicateCol_mul_replicateRow`, `Matrix.det_add_mul`,
+`Matrix.det_fin_one`, `Matrix.vecMulVec_eq`, `Matrix.replicateCol`, and
+`Matrix.replicateRow`,
 and volume-scaling lemmas
 `Real.map_matrix_volume_pi_eq_smul_volume_pi` /
 `Real.map_linearMap_volume_pi_eq_smul_volume_pi`.  Keep Chapter 6 finite-valued
