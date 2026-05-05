@@ -253,6 +253,15 @@ common-space/UI strategy can now reuse the fixed-domain Vitali bridge for any
 measurable real statistic whose first-sample lifts are uniformly integrable;
 the remaining Theorem 2.4.3 entropy blocker is to supply that measurability
 and UI/tail control for selected empirical-cover entropy.
+
+2026-05-05 UI mean recoding follow-up: `PMeasurable.lean` now closes the
+ordinary-mean version of that common-space route via
+`tendsto_integral_vdVWProductMeasure_of_VdVWConvergesInOuterProbabilityConst_firstNSample_unifIntegrable`.
+This consumes measurable finite-product outer-probability convergence and
+uniform integrability of first-sample lifts to prove convergence of the
+finite-product integrals.  The next non-duplicative proof target remains the
+UI/tail or structural-cardinality theorem for selected normalized
+empirical-cover entropy.
 The next proof target is therefore not more selected-package plumbing: it is
 the honest varying-domain theorem deriving those raw normalized-log
 integrability/tail-UI hypotheses from the book random entropy assumption, or a

@@ -187,6 +187,13 @@ Next high-capacity proof batches, in order:
    `VdVWConvergesInOuterProbabilityConst_of_firstNSample_real`, and
    `vdVWConvergesInOuterProbability_firstNSample_real_iff_const`; arbitrary
    nonmeasurable outer events still require separate one-sided primitives.
+   The common-space UI mean route is compiled as
+   `tendsto_integral_vdVWProductMeasure_of_VdVWConvergesInOuterProbabilityConst_firstNSample_unifIntegrable`:
+   measurable finite-product convergence plus uniform integrability of the
+   infinite-product first-sample lifts gives ordinary finite-product mean
+   convergence.  The remaining entropy target is therefore the actual UI/tail
+   or structural cardinality proof for the selected normalized empirical-cover
+   entropy.
 3. In parallel only when it directly supports exact Chapter 1-2 statements or
    Theorem 2.4.3 endpoints, close reusable arbitrary-map/process foundation
    gaps that are already search-isolated.  The signed weak-convergence

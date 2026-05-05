@@ -8,7 +8,7 @@ import Mathlib.Topology.Order.OrderClosed
 import Mathlib.GroupTheory.Perm.Fin
 import Mathlib.Logic.Equiv.Fintype
 import StatInference.EmpiricalProcess.CoveringPrimitive
-import StatInference.EmpiricalProcess.GlivenkoCantelli
+import StatInference.EmpiricalProcess.OuterProbabilityExpectation
 
 /-!
 # `P`-measurable classes
@@ -439,6 +439,76 @@ theorem integral_vdVWInfiniteProductMeasure_firstNSample
       simpa [hmp.map_eq] using hg
     rw [← hmp.map_eq]
     exact (integral_map (hmp.measurable.aemeasurable) hgmap).symm
+
+/--
+Finite-product ordinary means converge to zero when the corresponding
+first-sample lifts converge in outer probability on the canonical infinite iid
+space and are uniformly integrable there.
+
+The theorem packages the common-space route exposed by the first-sample event
+and integral recoding lemmas: finite-product convergence gives common-domain
+convergence after lifting, fixed-domain Vitali/UI gives convergence of the
+lifted means, and the integral recoding identifies those means with the
+finite-product means.
+-/
+theorem
+    tendsto_integral_vdVWProductMeasure_of_VdVWConvergesInOuterProbabilityConst_firstNSample_unifIntegrable
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {g : (n : ℕ) -> (Fin n -> Observation) -> ℝ}
+    (hg_meas : ∀ n, Measurable (g n))
+    (hg_integrable : ∀ n, Integrable (g n) (vdVWProductMeasure P n))
+    (hfinite :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => Fin n -> Observation)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        g atTop (0 : ℝ))
+    (hg_ui :
+      UnifIntegrable
+        (fun n sequence =>
+          g n (vdVWFirstNSample (Observation := Observation) n sequence))
+        1 (vdVWInfiniteProductMeasure P)) :
+    Tendsto (fun n : ℕ => ∫ sample, g n sample ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  have hcommon :
+      VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+        (fun n sequence =>
+          g n (vdVWFirstNSample (Observation := Observation) n sequence))
+        atTop (fun _ => (0 : ℝ)) :=
+    VdVWConvergesInOuterProbability_firstNSample_real_of_const
+      (P := P) hg_meas hfinite
+  have hg_lift_meas :
+      ∀ n,
+        AEStronglyMeasurable
+          (fun sequence : ℕ -> Observation =>
+            g n (vdVWFirstNSample (Observation := Observation) n sequence))
+          (vdVWInfiniteProductMeasure P) := by
+    intro n
+    exact ((hg_meas n).comp (measurable_vdVWFirstNSample n)).aestronglyMeasurable
+  have hg_lift_integrable :
+      ∀ n,
+        Integrable
+          (fun sequence : ℕ -> Observation =>
+            g n (vdVWFirstNSample (Observation := Observation) n sequence))
+          (vdVWInfiniteProductMeasure P) := by
+    intro n
+    simpa [Function.comp_def] using
+      (vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n).integrable_comp_of_integrable
+        (hg_integrable n)
+  have hcommon_integral :
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sequence : ℕ -> Observation,
+            g n (vdVWFirstNSample (Observation := Observation) n sequence)
+            ∂(vdVWInfiniteProductMeasure P))
+        atTop (𝓝 0) :=
+    tendsto_integral_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable
+      hcommon hg_lift_meas hg_lift_integrable hg_ui
+  refine hcommon_integral.congr' ?_
+  exact Eventually.of_forall fun n =>
+    integral_vdVWInfiniteProductMeasure_firstNSample
+      (P := P) n (g n) (hg_integrable n).aestronglyMeasurable
 
 /-- Permute the first `n` coordinates of an infinite sample sequence. -/
 def vdVWPermuteFirstN {Observation : Type u} {n : ℕ}

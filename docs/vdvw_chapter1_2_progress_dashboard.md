@@ -233,6 +233,16 @@ the canonical infinite iid product space.  This narrows the common-space/UI
 route to measurability and uniform-integrability/tail control for the selected
 entropy statistics.
 
+2026-05-05 UI mean recoding follow-up: the common-space route now reaches
+ordinary finite-product means through
+`tendsto_integral_vdVWProductMeasure_of_VdVWConvergesInOuterProbabilityConst_firstNSample_unifIntegrable`.
+For measurable finite-sample real statistics, finite-product outer-probability
+convergence plus uniform integrability of their infinite-product first-sample
+lifts implies convergence of the finite-product integrals.  The remaining
+Theorem 2.4.3 entropy problem is the substantive one: prove UI/tail or a
+structural cardinality bound for the selected normalized empirical-cover
+entropy.
+
 2026-05-05 Chapter 1 arbitrary-map follow-up: the varying-domain signed
 bounded-continuous weak-convergence package now has continuous-mapping
 stability.  The new declarations
