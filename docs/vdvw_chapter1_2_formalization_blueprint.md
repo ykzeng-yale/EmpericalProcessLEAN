@@ -89,7 +89,7 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at synced repository head `915223d`:
+Current operational target, 2026-05-05 at synced repository head `ee26281`:
 the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
@@ -250,6 +250,15 @@ It packages the existing probability-measure finite-coordinate restriction
 theorem under the empirical-process/FDD namespace.  The exact FDD
 weak-convergence converse remains blocked by the missing tightness,
 separability, and asymptotic-measurability/process hypotheses.
+
+2026-05-05 bounded-continuous uniqueness follow-up: `WeakConvergence.lean` now
+adds the VdV&W 1.3.12(i)-named finite-measure uniqueness wrapper
+`vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`.  It is a
+direct wrapper around pinned mathlib's
+`MeasureTheory.ext_of_forall_integral_eq_of_IsFiniteMeasure` for finite Borel
+measures on `HasOuterApproxClosed` spaces.  This closes the bounded-continuous
+integral uniqueness direction; the VdV&W 1.3.12(ii) vector-lattice/tight
+variant remains pending.
 
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
@@ -457,7 +466,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.3.8 | Lemma | `..._1-100.md:678` | blocked-vdvw: Hoffmann-Jørgensen arbitrary-map weak-convergence infrastructure; missing exact local arbitrary-map/asymptotic-measurability primitive |
 | 1.3.9 | Theorem | `..._1-100.md:688` | local-layer/mathlib-foundation: probability-measure tightness wrapper, compact-set characterization, and Prokhorov compact-closure wrapper proved over mathlib; exact arbitrary-map/asymptotic-tightness extension remains pending |
 | 1.3.10 | Theorem | `..._1-100.md:756` | blocked-vdvw: exact nonmeasurable/arbitrary-map weak-convergence layer missing; measure-level weak-convergence/Portmanteau/tightness wrappers are already local, so the remaining gap is the exact arbitrary-map extension |
-| 1.3.12 | Lemma | `..._1-100.md:768` | foundation-lane/mathlib-foundation: classical foundation available in pinned mathlib, pending local restatement/wrapper |
+| 1.3.12 | Lemma | `..._1-100.md:768` | local-layer/mathlib-foundation: part (i) finite Borel measure uniqueness from bounded-continuous real integrals wrapped as `vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`; part (ii) vector-lattice/tight variant pending |
 | 1.3.13 | Lemma | `..._1-100.md:778` | blocked-vdvw: arbitrary-map/asymptotic-measurability infrastructure missing after mathlib search |
 | 1.4.1 | Lemma | `..._1-100.md:848` | foundation-lane/mathlib-foundation: audit found product/Pi Borel-space and finite-coordinate restriction APIs; pending exact VdV&W product-space wrapper |
 | 1.4.2 | Lemma | `..._1-100.md:849` | foundation-lane/mathlib-foundation: audit found product-law, projective-limit, and finite-dimensional-law APIs; exact nonnegative Lipschitz product-test uniqueness not found |

@@ -14,7 +14,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`915223d`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
+`ee26281`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
 Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
@@ -177,6 +177,15 @@ exports the VdV&W 1.4.8-named forward weak-convergence handoff
 reusing the compiled finite-coordinate restriction theorem for probability
 measures.  This strengthens the Section 1.4 local layer without claiming the
 still-missing FDD weak-convergence converse.
+
+2026-05-05 bounded-continuous uniqueness follow-up: `WeakConvergence.lean` now
+exports the VdV&W 1.3.12(i)-named finite-measure uniqueness wrapper
+`vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`, proved by
+mathlib's
+`MeasureTheory.ext_of_forall_integral_eq_of_IsFiniteMeasure`.  This closes the
+finite-Borel-measure bounded-continuous integral determination direction under
+the standard `HasOuterApproxClosed` hypothesis; the vector-lattice/tight
+1.3.12(ii) variant is still pending.
 
 ## Status Legend
 

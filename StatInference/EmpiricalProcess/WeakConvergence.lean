@@ -1649,6 +1649,21 @@ theorem vdVWWeakConvergenceProbabilityMeasures_iff_forall_bounded_lipschitz_inte
   exact MeasureTheory.tendsto_iff_forall_lipschitz_integral_tendsto
 
 /--
+VdV&W Lemma 1.3.12(i): finite Borel measures are determined by their
+bounded-continuous real integrals.
+
+This is the exact finite-measure uniqueness direction available in pinned
+mathlib under the `HasOuterApproxClosed` regularity assumption.
+-/
+theorem vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    [HasOuterApproxClosed S] [BorelSpace S]
+    {μ ν : Measure S} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    (h : ∀ f : S →ᵇ ℝ, ∫ s, f s ∂μ = ∫ s, f s ∂ν) :
+    μ = ν := by
+  exact MeasureTheory.ext_of_forall_integral_eq_of_IsFiniteMeasure h
+
+/--
 Portmanteau closed-set implication for the measure-level VdV&W weak convergence
 wrapper.
 

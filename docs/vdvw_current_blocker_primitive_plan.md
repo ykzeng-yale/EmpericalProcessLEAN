@@ -58,7 +58,7 @@ consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`915223d`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`ee26281`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -300,6 +300,18 @@ exposed process-law and `IdentDistrib` uniqueness wrappers.  This closes the
 forward FDD handoff in the VdV&W-named namespace; the FDD weak-convergence
 converse remains a genuine blocker requiring tightness, separability, and
 asymptotic-measurability/process primitives.
+
+2026-05-05 bounded-continuous uniqueness follow-up: the Chapter 1 weak
+convergence file now has the VdV&W 1.3.12(i)-named finite-measure uniqueness
+wrapper
+`vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`.  It reuses
+pinned mathlib's
+`MeasureTheory.ext_of_forall_integral_eq_of_IsFiniteMeasure`, whose hypotheses
+are finite Borel measures on `HasOuterApproxClosed` spaces.  Search record:
+local ProbabilityMeasure/EmpiricalProcess weak-convergence files did not have
+the VdVW 1.3.12 wrapper, while pinned mathlib had the exact finite-measure
+bounded-continuous integral uniqueness theorem.  The vector-lattice/tight
+variant in VdV&W 1.3.12(ii) remains pending.
 
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the
