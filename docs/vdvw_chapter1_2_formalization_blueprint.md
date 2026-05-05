@@ -97,9 +97,10 @@ have compiled.  The current target is exact Theorem 2.4.3/Lemma 2.4.5
 statement alignment from the strongest no-nonempty full-subgraph and
 structural-rate packages, followed by the exact missing bridges to the
 textbook hypotheses: random entropy/tail-UI without deterministic log
-boundedness, genuine VC/Sauer/trace-cover instantiation of structural
-covering/rate hypotheses, arbitrary `P`-measurable/asymptotic-measurable class
-support beyond the countable coordinate-measurable route, and any
+boundedness, concrete textbook-class instantiation of the already compiled
+full-subgraph/structural-rate consumers, arbitrary
+`P`-measurable/asymptotic-measurable class support beyond the countable
+coordinate-measurable route, and any
 nonmeasurable outer-cover envelope variants required by the exact statement.
 A new Chapter 1 bridge now collapses nonnegative outer and inner expectations
 for measurable maps and measurable test compositions; this should be used as

@@ -1478,7 +1478,9 @@ as a paired endpoint.  The compiled theorem
 `VdVWTheorem243_logCardinality_div_tendsto_bound_pGlivenkoCantelli_and_inMean`
 returns both the local book-style `P`-GC conclusion and the in-mean
 centered-supremum conclusion from the same structural covering/rate
-hypotheses.  This keeps the next work honest: prove the exposed structural
-rate inputs from VC/Sauer/trace-cover theory, remove deterministic
-boundedness with a random-entropy tail/UI theorem, or extend beyond the
-countable coordinate-measurable route.
+hypotheses.  This keeps the next work honest: instantiate the already compiled
+full-subgraph/structural-rate consumers for concrete textbook class
+hypotheses when needed, remove deterministic boundedness with a
+random-entropy tail/UI theorem, or extend beyond the countable
+coordinate-measurable route.  The generic full-subgraph endpoint is no longer
+a missing proof target; it is compiled under `VdVWUniformSubgraphVCBound`.

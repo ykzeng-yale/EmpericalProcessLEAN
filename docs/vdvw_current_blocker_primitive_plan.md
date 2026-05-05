@@ -66,13 +66,17 @@ As of 2026-05-05, the active `/goal` should be interpreted as:
 > `VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`
 > route.  The next high-value target is to remove or explicitly isolate the
 > remaining mismatches between these endpoints and the exact textbook Theorem
-> 2.4.3 assumptions: (1) derive random-entropy finite-net tail/UI or
-> deterministic structural log-rate inputs from the book entropy condition
-> without overclaiming monotonicity, (2) instantiate the structural
-> covering/rate side conditions from the genuine VC/Sauer/trace-cover theorem,
-> and (3) extend the countable coordinate-measurable route toward arbitrary
+> 2.4.3 assumptions: (1) prove the random-entropy finite-net tail/UI theorem
+> from the book entropy condition without adding deterministic log boundedness
+> or overclaiming covering-number monotonicity, (2) instantiate the already
+> compiled full-subgraph/structural-rate consumers for concrete textbook class
+> hypotheses rather than rebuilding more endpoint packaging, and (3) extend the
+> countable coordinate-measurable route toward arbitrary
 > `P`-measurable/asymptotic-measurable classes and any needed nonmeasurable
-> outer-cover envelope variants.  If exact Theorem 2.4.3 assembly blocks after
+> outer-cover envelope variants.  The full-subgraph VC consumer itself is no
+> longer a missing bridge: it is compiled under `VdVWUniformSubgraphVCBound` in
+> `VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`.
+> If exact Theorem 2.4.3 assembly blocks after
 > real Lean/search attempts, immediately close the next theorem-critical
 > Chapter 1-2 primitive that reduces one of those mismatches, especially the
 > arbitrary-map/asymptotic-measurability foundation.
@@ -4361,3 +4365,20 @@ inputs that this package still exposes: a genuine structural covering/rate
 theorem, a random-entropy finite-net tail/UI theorem without deterministic log
 boundedness, or the arbitrary `P`-measurable/asymptotic-measurable class
 bridge beyond countable coordinate measurability.
+
+2026-05-05 `/goal` audit update: local search of
+`StatInference/EmpiricalProcess/SubgraphTraceVC.lean` and
+`StatInference/EmpiricalProcess/Theorem243.lean` confirms that the
+full-subgraph route itself is already compiled under the explicit structural
+assumption `VdVWUniformSubgraphVCBound`.  The strongest endpoint
+`VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`
+already consumes that assumption and returns the no-nonempty countable
+full-subgraph package including local `P`-GC, in-mean convergence, and the
+Lemma 2.4.5 strong route.  Therefore the current `/goal` target should not
+spend more runs on generic full-subgraph endpoint packaging.  The remaining
+Theorem 2.4.3 work is now exactly: prove the random-entropy selected finite-net
+tail/UI bridge without deterministic log boundedness; instantiate the compiled
+full-subgraph/structural-rate assumptions for concrete textbook classes when a
+chapter theorem or example requires it; and remove the countability/measurable
+coordinate restriction by building the exact arbitrary-map/asymptotic
+measurability and outer-cover primitives.
