@@ -1,3 +1,4 @@
+import StatInference.EmpiricalProcess.OuterExpectation
 import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
 import Mathlib.MeasureTheory.Measure.FiniteMeasurePi
 import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
@@ -17,9 +18,87 @@ namespace StatInference
 
 open Filter MeasureTheory ProbabilityTheory TopologicalSpace
 
-open scoped BoundedContinuousFunction Topology
+open scoped BoundedContinuousFunction ENNReal Topology
 
 universe u v w x
+
+/--
+Nonnegative outer/inner expectation gap for a possibly nonmeasurable test
+composition.
+
+This is a scoped Chapter 1 primitive on the way to VdV&W asymptotic
+measurability.  It intentionally uses the already formalized nonnegative
+outer/inner expectations; the full signed extended-real textbook layer remains
+separate.
+-/
+noncomputable def VdVWNonnegativeOuterInnerExpectationGap
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
+    (T : Ω -> ℝ≥0∞) : ℝ≥0∞ :=
+  VdVWOuterExpectation μ T - VdVWInnerExpectation μ T
+
+/--
+Measurable nonnegative maps have zero VdV&W nonnegative outer/inner
+expectation gap.
+-/
+theorem VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (hT : Measurable T) :
+    VdVWNonnegativeOuterInnerExpectationGap μ T = 0 := by
+  unfold VdVWNonnegativeOuterInnerExpectationGap
+  rw [VdVWOuterExpectation_eq_innerExpectation_of_measurable hT]
+  simp
+
+/--
+Nonnegative version of VdV&W asymptotic measurability for a family of
+possibly arbitrary maps and a chosen class of nonnegative test functions.
+
+For exact textbook weak convergence this must later be upgraded to the signed
+bounded-continuous test-function formulation.  This primitive isolates the
+outer/inner expectation-gap mechanism without adding a proof hole.
+-/
+def VdVWAsymptoticallyMeasurableNonnegative
+    {Ω : Type u} {S : Type v} {ι : Type w} [MeasurableSpace Ω]
+    (μs : ι -> Measure Ω) (X : ι -> Ω -> S) (l : Filter ι)
+    (tests : (S -> ℝ≥0∞) -> Prop) : Prop :=
+  ∀ T, tests T ->
+    Tendsto
+      (fun i => VdVWNonnegativeOuterInnerExpectationGap (μs i)
+        (fun ω => T (X i ω)))
+      l (𝓝 0)
+
+/--
+If every selected nonnegative test composition is measurable, then the
+nonnegative VdV&W asymptotic-measurability gap is identically zero.
+-/
+theorem VdVWAsymptoticallyMeasurableNonnegative.of_forall_measurable_comp
+    {Ω : Type u} {S : Type v} {ι : Type w} [MeasurableSpace Ω]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {tests : (S -> ℝ≥0∞) -> Prop}
+    (hmeas : ∀ i T, tests T -> Measurable (fun ω => T (X i ω))) :
+    VdVWAsymptoticallyMeasurableNonnegative μs X l tests := by
+  intro T hT
+  have hzero :
+      (fun i => VdVWNonnegativeOuterInnerExpectationGap (μs i)
+        (fun ω => T (X i ω))) = fun _ => 0 := by
+    funext i
+    exact VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_measurable
+      (hmeas i T hT)
+  simpa [hzero] using (tendsto_const_nhds : Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
+
+/--
+Measurable maps into a measurable state space are nonnegatively
+asymptotically measurable for every selected measurable nonnegative test.
+-/
+theorem VdVWAsymptoticallyMeasurableNonnegative.of_forall_measurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {tests : (S -> ℝ≥0∞) -> Prop}
+    (hX : ∀ i, Measurable (X i))
+    (hT : ∀ T, tests T -> Measurable T) :
+    VdVWAsymptoticallyMeasurableNonnegative μs X l tests :=
+  VdVWAsymptoticallyMeasurableNonnegative.of_forall_measurable_comp
+    (fun i T htest => (hT T htest).comp (hX i))
 
 /--
 Measure-level weak convergence of probability measures.

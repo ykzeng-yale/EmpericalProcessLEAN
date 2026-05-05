@@ -194,7 +194,7 @@ Therefore the status convention is:
 | Item | Anchor | Current status |
 | --- | --- | --- |
 | 1.3.3 weak convergence of arbitrary maps | `..._1-100.md:585` | local-layer/mathlib-foundation: measure-level probability-law wrapper `VdVWWeakConvergenceProbabilityMeasures` and bounded-continuous integral characterization proved; exact arbitrary-map outer-expectation definition pending |
-| 1.3.7 asymptotic measurability | `..._1-100.md:661` | pending-local |
+| 1.3.7 asymptotic measurability | `..._1-100.md:661` | local-layer: nonnegative outer/inner expectation-gap primitive `VdVWAsymptoticallyMeasurableNonnegative` and measurable-composition constructors proved; full signed bounded-continuous arbitrary-map definition pending |
 | 1.9.1 stochastic convergence notation | `..._1-100.md:1292` | local-layer for common-domain outer-probability convergence |
 | 1.10.1 convergence in outer probability to a constant | `..._1-100.md:1406` | local-layer |
 | 2.1.5 covering numbers | `..._1-100.md:1894` | local-layer: `vdVWCoveringNumber` wraps mathlib `Metric.externalCoveringNumber`, with explicit finite-cover witnesses and closed-ball/open-ball slack documented |

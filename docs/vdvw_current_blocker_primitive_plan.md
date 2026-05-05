@@ -98,6 +98,21 @@ As a first foundation closure in that direction,
 `VdVWOuterExpectation_eq_innerExpectation_of_measurable_comp` collapse the
 nonnegative outer/inner expectation gap for measurable test compositions.
 
+2026-05-05 follow-up: search of local `StatInference` and pinned mathlib for
+`Asymptotic`, `asymptotic`, `outer.*inner`, and `VdVWAsymptotic` found no
+existing VdV&W asymptotic-measurability primitive.  Pinned mathlib has general
+asymptotics and measure-theoretic measurability APIs, but not the VdV&W
+outer/inner expectation-gap formulation.  The nonnegative foundation is now
+compiled in `WeakConvergence.lean` as
+`VdVWNonnegativeOuterInnerExpectationGap`,
+`VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_measurable`,
+`VdVWAsymptoticallyMeasurableNonnegative`,
+`VdVWAsymptoticallyMeasurableNonnegative.of_forall_measurable_comp`, and
+`VdVWAsymptoticallyMeasurableNonnegative.of_forall_measurable`.  This is not
+the full signed bounded-continuous textbook definition, but it removes the
+first proof obstacle: measurable nonnegative test compositions are
+automatically asymptotically measurable in the outer/inner-gap sense.
+
 2026-05-04 `/goal` status correction: local scratch now registers the exact
 remaining reverse-time theorem as the generic proposition
 `VdVWOrderDualSubmartingaleConvergenceHandoff`.  The theorem-facing consumer
