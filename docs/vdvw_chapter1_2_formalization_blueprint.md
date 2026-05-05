@@ -89,6 +89,22 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
+Current operational target, 2026-05-05 at repository head `16fb288`: the
+strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages and the signed
+arbitrary-map/varying-domain weak-convergence interfaces are compiled.  The
+next blueprint target is not more endpoint packaging; it is the theorem-facing
+bridge from varying-domain convergence in outer probability to weak convergence
+of pushforward laws to `δ_0`, followed by immediate consumption in the signed
+bounded-continuous varying-domain package.  If that bridge blocks after
+search/Lean attempts, the alternative is to project the finite-product
+statistics to a canonical common infinite-product domain and use the compiled
+common-domain outer-probability bridge.  Only after this should work return to
+the remaining exact textbook mismatches: random-entropy selected finite-net
+tail/UI from the book entropy condition, arbitrary/nonmeasurable
+asymptotic-measurability support beyond countable coordinate-measurable
+classes, and any nonmeasurable envelope-tail outer-cover clauses required by
+the final exact Chapter 1-2 theorem statements.
+
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
 reverse/cofiltration theorem, finite-cover entropy plumbing, untruncation,
