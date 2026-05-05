@@ -67,8 +67,8 @@ unless a new exact statement directly consumes them.
 
 ## Current `/goal` Target
 
-Authoritative operational prompt, 2026-05-05 after the verified
-independent product convergence closure at `aa8d39d`: finish VdV&W Chapters 1-2
+Authoritative operational prompt, 2026-05-05 after the verified fixed-domain UI
+mean closures and first-sample event recoding layer: finish VdV&W Chapters 1-2
 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
@@ -177,7 +177,12 @@ Next high-capacity proof batches, in order:
    `tendsto_integral_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable`
    is compiled too, using `‖∫ Y_n‖ ≤ ∫ ‖Y_n‖`.
    These confirm the reusable common-space route but do not remove the
-   varying-domain empirical-cover entropy blocker.
+   varying-domain empirical-cover entropy blocker.  The finite-product to
+   infinite-product event recoding now has the measurable-event equality
+   `vdVWInfiniteProductMeasure_firstNSample_preimage_eq` and real-tail
+   specialization `vdVWInfiniteProductMeasure_firstNSample_real_tail_eq`,
+   complementing the existing first-sample integral lift; arbitrary
+   nonmeasurable outer events still require separate one-sided primitives.
 3. In parallel only when it directly supports exact Chapter 1-2 statements or
    Theorem 2.4.3 endpoints, close reusable arbitrary-map/process foundation
    gaps that are already search-isolated.  The signed weak-convergence

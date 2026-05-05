@@ -13,8 +13,8 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current `/goal` target override, 2026-05-05 after the verified
-independent product convergence closure at `aa8d39d`: closed
+Current `/goal` target override, 2026-05-05 after the verified fixed-domain UI
+mean closures and first-sample event recoding layer: closed
 finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
@@ -212,6 +212,15 @@ now handles centered real processes by bounding `‖∫ Y_n‖` with the `L1` no
 These are useful for any common-space recoding of entropy processes, but they
 do not by themselves close Theorem 2.4.3 because the selected empirical-cover
 cardinality processes currently live on varying finite-product sample spaces.
+
+2026-05-05 first-sample event recoding follow-up: `PMeasurable.lean` now adds
+`vdVWInfiniteProductMeasure_firstNSample_preimage_eq` and
+`vdVWInfiniteProductMeasure_firstNSample_real_tail_eq`.  These lift measurable
+finite-product events and real-valued measurable tail events to the canonical
+infinite iid product space with equal probability, complementing the existing
+`integral_vdVWInfiniteProductMeasure_firstNSample`.  This helps any honest
+common-space recoding route, but arbitrary nonmeasurable outer events remain a
+separate primitive.
 
 2026-05-05 Chapter 1 arbitrary-map follow-up: the varying-domain signed
 bounded-continuous weak-convergence package now has continuous-mapping

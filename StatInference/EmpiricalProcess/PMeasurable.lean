@@ -285,6 +285,58 @@ theorem vdVWFirstNSample_hasLaw_vdVWProductMeasure
   (vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n).hasLaw
 
 /--
+Measurable finite-sample events can be lifted from `P^n` to the canonical
+infinite iid product space by precomposing with the first-`n` projection.
+
+This is the event-probability counterpart of
+`integral_vdVWInfiniteProductMeasure_firstNSample`.  It is intentionally stated
+for measurable events; arbitrary outer events still need the one-sided outer
+measure inequalities used elsewhere.
+-/
+theorem vdVWInfiniteProductMeasure_firstNSample_preimage_eq
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] (n : ℕ)
+    {event : Set (Fin n -> Observation)} (hevent : MeasurableSet event) :
+    (vdVWInfiniteProductMeasure P)
+        ((vdVWFirstNSample (Observation := Observation) n) ⁻¹' event) =
+      (vdVWProductMeasure P n) event := by
+  let hmp := vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n
+  calc
+    (vdVWInfiniteProductMeasure P)
+        ((vdVWFirstNSample (Observation := Observation) n) ⁻¹' event)
+        = Measure.map (vdVWFirstNSample (Observation := Observation) n)
+            (vdVWInfiniteProductMeasure P) event := by
+            rw [Measure.map_apply hmp.measurable hevent]
+    _ = (vdVWProductMeasure P n) event := by
+            rw [hmp.map_eq]
+
+/--
+Real-valued finite-sample tail events have the same probability after lifting
+to the infinite iid product space through the first-`n` projection.
+
+This is the common-space recoding form needed for fixed-domain convergence and
+uniform-integrability arguments when the statistic is measurable.
+-/
+theorem vdVWInfiniteProductMeasure_firstNSample_real_tail_eq
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] (n : ℕ)
+    {g : (Fin n -> Observation) -> ℝ} (hg : Measurable g)
+    (ε c : ℝ) :
+    (vdVWInfiniteProductMeasure P)
+        {sequence : ℕ -> Observation |
+          ε < dist (g (vdVWFirstNSample (Observation := Observation) n sequence)) c} =
+      (vdVWProductMeasure P n)
+        {sample : Fin n -> Observation | ε < dist (g sample) c} := by
+  let event : Set (Fin n -> Observation) :=
+    {sample : Fin n -> Observation | ε < dist (g sample) c}
+  have hevent : MeasurableSet event := by
+    simpa [event, Set.preimage, Set.mem_Ioi] using
+      (hg.dist measurable_const) isOpen_Ioi.measurableSet
+  simpa [event] using
+    vdVWInfiniteProductMeasure_firstNSample_preimage_eq
+      (P := P) (n := n) hevent
+
+/--
 Integrals of finite-sample statistics can be lifted from `P^n` to `P^∞` by
 precomposing with the first-`n` projection.
 -/

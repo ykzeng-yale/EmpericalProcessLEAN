@@ -89,8 +89,8 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 after the verified
-independent product convergence closure at `aa8d39d`: the strong
+Current operational target, 2026-05-05 after the verified fixed-domain UI mean
+closures and first-sample event recoding layer: the strong
 Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
@@ -234,6 +234,15 @@ ordinary-mean consumer
 `tendsto_integral_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable`
 is compiled for centered real processes.  The actual Theorem 2.4.3
 varying-domain random-entropy/UI bridge remains the blocker.
+
+2026-05-05 first-sample event recoding follow-up: `PMeasurable.lean` now
+contains the measurable-event lift
+`vdVWInfiniteProductMeasure_firstNSample_preimage_eq` and the measurable
+real-tail specialization `vdVWInfiniteProductMeasure_firstNSample_real_tail_eq`.
+Together with `integral_vdVWInfiniteProductMeasure_firstNSample`, these are the
+probability and integral bridges needed to move measurable finite-sample
+statistics onto the canonical infinite iid product space.  They intentionally
+do not assert equality for arbitrary nonmeasurable outer events.
 The next proof target is therefore not more selected-package plumbing: it is
 the honest varying-domain theorem deriving those raw normalized-log
 integrability/tail-UI hypotheses from the book random entropy assumption, or a
