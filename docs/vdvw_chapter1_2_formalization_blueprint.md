@@ -126,9 +126,17 @@ feeders:
 `vdVWTendstoInDistribution_to_signedOuterBoundedContinuous`, and the
 continuous-mapping closure
 `VdVWWeakConvergenceSignedOuterBoundedContinuous.comp_continuous`.
+The signed asymptotic-measurability layer now also has the positive/negative
+gap predicate `VdVWSignedBoundedContinuousOuterInnerExpectationGap`, the
+bounded-continuous test predicate
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous`, and the proof-carrying
+package `VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap`, with
+measurable-map, law-map, `HasLaw`, common-domain `TendstoInDistribution`,
+filter-refinement, and continuous-map closures.
 This is the current signed foundation for the exact arbitrary-map weak
-convergence route; it does not yet discharge the full nonmeasurable
-outer-cover/asymptotic-measurability clauses.
+convergence route; it still does not discharge full nonmeasurable
+outer-cover, asymptotic-tightness, or exact VdV&W signed extended-real
+clauses.
 The
 example-specific Example 2.4.2 distribution-dependent finite middle partition
 / quantile cutpoint layer remains parked as a deferred example blocker unless
