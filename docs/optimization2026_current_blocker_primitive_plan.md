@@ -70,24 +70,28 @@ runs.
 
 Current manual objective: aggressively formalize and prove the main theorem
 content of Sinho Chewi's Optimization 2026 notes in Lean under
-`StatInference/Optimization`, continuing from the current Chapter 5
-acceleration/conjugate-gradient frontier.  The compiled spine already covers
-Chapter 1 minimizer/first-order bridges, Chapter 2 gradient-flow interfaces,
-Chapter 3 gradient descent through the Theorem 3.7 support layer, Chapter 4
-Definition 4.3/Theorem 4.4 gradient-span lower bounds, the finite Theorem 4.5
-corrected-chain route, and the infinite Exercise 4.2 direct hard instance
-through the Theorem 4.5-facing package theorem.  The current route should now
-build the Chapter 5 quadratic/CG layer: reuse the new quadratic objective
-oracle substrate, formalize the Krylov subspace and CG optimality interfaces,
-then push toward Lemma 5.1, Theorem 5.3 termination, and Theorem 5.4
-accelerated convergence.  Search existing mathlib and local `StatInference`
-APIs first, prove the next highest-leverage theorem layer, verify with focused
-`lake env lean`, targeted `lake build StatInference`, proof-hole and secret
-scans, update this route state, and commit/push clean verified progress.  Keep
-main-text theorem coverage as the priority; exercise statements and exercise
-proofs may still be formalized opportunistically when cheap, reusable, or
-directly unblock a main-text theorem.  All Optimization textbook exercise
-statements and exercise proofs should live in the single module
+`StatInference/Optimization`, continuing from the verified Chapter 5
+acceleration/conjugate-gradient frontier rather than replaying the old Chapter
+3/early-CG setup.  The compiled spine already covers Chapter 1
+minimizer/first-order bridges, Chapter 2 gradient-flow interfaces, Chapter 3
+gradient descent through Theorem 3.7 support layers, Chapter 4
+Definition 4.3/Theorem 4.4 gradient-span lower bounds, Theorem 4.5-facing
+strongly-convex lower-bound packages, and Chapter 5 Lemma 5.1, Theorem 5.3,
+and the displayed restarted-CG/log-rate endpoint for Theorem 5.4 in
+`StatInference/Optimization/Theorem54.lean`.  The immediate route is now:
+source-audit/package the final Theorem 5.4 statement only if it is cheap and
+source-useful; otherwise move directly to a new
+`StatInference/Optimization/Theorem58.lean` AGF Lyapunov-to-rate layer for
+Theorem 5.8, then continue through Theorem 5.9 and the remaining Chapter 5
+acceleration results before opening Chapter 6 nonsmooth/projection packets.
+Search existing mathlib and local `StatInference` APIs first, prove the
+highest-leverage theorem packet per run, verify with focused `lake env lean`,
+targeted `lake build StatInference`, proof-hole and secret scans, update this
+route state, and batch commit/push clean verified progress.  Keep main-text
+theorem coverage as the priority; exercise statements and exercise proofs may
+still be formalized opportunistically when cheap, reusable, or directly unblock
+a main-text theorem.  All Optimization textbook exercise statements and
+exercise proofs should live in the single module
 `StatInference/Optimization/Exercises.lean`, so the later exercise sweep
 remains source-trackable.
 
