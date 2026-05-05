@@ -28,11 +28,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
-- Current manual frontier after the 2026-05-05 standard-cut scalar,
-  determinant-ratio, coordinate-free affine-containment, supplied-identity
-  affine-transport certificate, first Euclidean matrix quadratic packet, and
-  cut-normalization algebra packet, building on prior pushed frontier
-  `c63864c`:
+- Current manual frontier after local sync to `origin/main` at `95ca18b`; the
+  latest Optimization proof frontier remains `83a31d2` after the 2026-05-05
+  standard-cut scalar, determinant-ratio, coordinate-free affine-containment,
+  supplied-identity affine-transport certificate, first Euclidean matrix
+  quadratic packet, and cut-normalization algebra packet:
   `StatInference/Optimization/Theorem510.lean` proves the source-shaped
   discrete AGD rate, and `StatInference/Optimization/ProjectedSubgradient.lean`
   now starts Chapter 6 with compiled finite-valued subgradient/projection/PSD
@@ -58,7 +58,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   cores, coordinate-free normalized half-space containment, abstract
   affine-transport certificate bridge, and the first Euclidean matrix
   quadratic/positive-denominator and normalized-cut algebra bridge compile in
-  `StatInference/Optimization/Ellipsoid.lean`, while the exact
+  `StatInference/Optimization/Ellipsoid.lean`.  A focused
+  `lake env lean StatInference/Optimization/Ellipsoid.lean` check passed after
+  the `95ca18b` sync, while the exact
   Grünbaum/centroid theorem remains a supplied blocker for exact CoGM
   reporting.
 

@@ -68,10 +68,12 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Live replacement `/goal` prompt after the 2026-05-05 standard-cut scalar,
-determinant-ratio, coordinate-free affine-containment, supplied-identity
-affine-transport certificate, first Euclidean matrix quadratic packet, and
-cut-normalization algebra packet, building on prior pushed frontier `c63864c`:
+Live replacement `/goal` prompt as of 2026-05-05 after syncing local `main` to
+`origin/main` at `95ca18b`; the latest Optimization proof frontier is
+`83a31d2` (`Add Chewi ellipsoid cut normalization bridge`) after the
+standard-cut scalar, determinant-ratio, coordinate-free affine-containment,
+supplied-identity affine-transport certificate, first Euclidean matrix
+quadratic packet, and cut-normalization algebra packet:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under `StatInference/Optimization`, with
 exercises tracked in the single `StatInference/Optimization/Exercises.lean`
@@ -112,18 +114,38 @@ cannot be edited directly through the current tool surface unless the full
 textbook goal is marked complete, so this paragraph is the operative manual
 `/goal` target.
 
-Immediate target for the next manual goal run: instantiate the supplied
-hypotheses of `chewi620_affineTransport_stepCertificate_of_quadratic` for
-Chewi's displayed update.  Do not spend another run on scalar,
-coordinate-free, or abstract transport wrappers.  The remaining hard work is
-the concrete matrix bridge proving the raw square-root adjoint identity
-`<Σ^{1/2}p, Σ^{-1/2}(z-center)> = <p,z> - <p,center>`, the pullback identity
-for the displayed `Σ_{n+1}` inverse shape, and the determinant/volume
-inequality.  The current matrix quadratic, positive denominator, and normalized
-cut direction algebra are now local.  First search and use mathlib/local APIs
-for EuclideanSpace coordinates, matrix PSD order, square-root/inverse
-cancellation, rank-one inverse/determinant updates, ellipsoid volume scaling,
-and quadratic-form half-space containment.
+Immediate target for the next manual goal run: finish a theorem-sized packet
+for Chewi Lemma 6.20 by instantiating the supplied hypotheses of
+`chewi620_affineTransport_stepCertificate_of_quadratic` for the displayed
+matrix update.  This is not a "small source-shape gap" target.  Do not spend
+another run on scalar, coordinate-free, or abstract transport wrappers unless
+one is the shortest verified route to the concrete matrix theorem.  The
+dependency order is:
+
+1. Search pinned mathlib and local `StatInference/Optimization` for
+   square-root/symmetric linear-equivalence, `Matrix.toEuclideanLin`,
+   PosDef/PosSemidef, nonsingular inverse, rank-one determinant, and
+   volume-scaling APIs.
+2. Prove the raw square-root adjoint bridge
+   `<Σ^{1/2}p, Σ^{-1/2}(z-center)> = <p,z> - <p,center>` from the strongest
+   reusable matrix or symmetric-linear-equivalence interface that Lean can
+   support cleanly.
+3. Use that bridge to discharge the `hcut` hypothesis already packaged by
+   `chewi620_matrixNormalizedCutDirection_inner_toStd`.
+4. Prove the displayed pullback identity for `Σ_{n+1}^{-1}` and the displayed
+   center update, so the `hnext` hypothesis of
+   `chewi620_affineTransport_stepCertificate_of_quadratic` is no longer
+   supplied.
+5. Prove the rank-one determinant/volume inequality or exact ratio needed for
+   the `hvolume` hypothesis.
+6. Package the exact one-step Lemma 6.20 certificate, then promote it to the
+   ellipsoid trajectory/rate wrapper.
+
+The current matrix quadratic, positive denominator, and normalized cut
+direction algebra are already local.  If the full matrix proof balloons, record
+the exact missing API and prove the smallest matrix-coordinate,
+rank-one-determinant, or volume-scaling certificate that removes that blocker
+in the same run.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF

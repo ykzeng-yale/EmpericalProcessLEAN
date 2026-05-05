@@ -43,10 +43,11 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after the 2026-05-05 standard-cut scalar,
-determinant-ratio, coordinate-free affine-containment, supplied-identity
-affine-transport certificate, first Euclidean matrix quadratic packet, and
-cut-normalization algebra packet, building on prior pushed frontier `c63864c`:
+Manual goal frontier after local sync to `origin/main` at `95ca18b`; the
+latest Optimization proof frontier remains `83a31d2` after the 2026-05-05
+standard-cut scalar, determinant-ratio, coordinate-free affine-containment,
+supplied-identity affine-transport certificate, first Euclidean matrix
+quadratic packet, and cut-normalization algebra packet:
 `StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
 discrete AGD source rate,
 `StatInference/Optimization/ProjectedSubgradient.lean` proves the finite-valued
@@ -150,7 +151,10 @@ volume-scaling APIs first, then instantiate the concrete matrix hypotheses of
 now local, and the normalized cut direction algebra is now local modulo the
 raw square-root adjoint identity; the remaining blocker is the actual
 matrix/affine pullback for `Σ_{n+1}^{-1}` and determinant/volume bridge, not
-scalar algebra or abstract transport.  If the full matrix proof balloons, prove the smallest
+scalar algebra or abstract transport.  The target order is raw square-root
+adjoint bridge, normalized cut hypothesis, displayed pullback identity,
+rank-one determinant/volume bridge, then exact one-step Lemma 6.20
+certificate.  If the full matrix proof balloons, prove the smallest
 matrix-coordinate, rank-one determinant, or volume-scaling certificate that
 removes the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth
 lower-bound Theorems 6.21-6.23 and feasibility Theorem 6.25 before opening
