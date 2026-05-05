@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Matrix.Order
 import StatInference.Optimization.CuttingPlane
 
 /-!
@@ -12,7 +13,7 @@ back to the compiled center-of-gravity rate wrapper are proved here.
 namespace StatInference
 namespace Optimization
 
-open scoped InnerProductSpace
+open scoped InnerProductSpace MatrixOrder
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
@@ -841,6 +842,59 @@ theorem matrixInvShape_image_add_volume_real
   rw [addHaar_image_add_left_real]
   exact matrixInvShape_image_volume_real A s
 
+/--
+Square-root image model for a displayed ellipsoid.  If an invertible matrix
+`root` parametrizes the quadratic form in the sense that
+`<root y, A⁻¹ root y> = <y, y>`, then the ellipsoid
+`{z : <z-c, A⁻¹(z-c)> <= 1}` is exactly the translated image of the closed
+unit ball under `root`.
+-/
+theorem ellipsoidSet_eq_matrix_image_closedBall_of_quadratic
+    {A root : Matrix ι ι ℝ} (hroot : IsUnit root.det)
+    (center : EuclideanSpace ℝ ι)
+    (hquad : ∀ y : EuclideanSpace ℝ ι,
+      inner ℝ (matrixInvShape root y)
+        (matrixInvShape A⁻¹ (matrixInvShape root y)) = inner ℝ y y) :
+    ellipsoidSet center (matrixInvShape A⁻¹) =
+      (fun y => center + matrixInvShape root y) ''
+        Metric.closedBall (0 : EuclideanSpace ℝ ι) 1 := by
+  ext z
+  constructor
+  · intro hz
+    let y : EuclideanSpace ℝ ι := matrixInvShape root⁻¹ (z - center)
+    have hy_image : matrixInvShape root y = z - center := by
+      change matrixInvShape root (matrixInvShape root⁻¹ (z - center)) = z - center
+      rw [← matrixInvShape_mul]
+      rw [Matrix.mul_nonsing_inv root hroot]
+      simp [matrixInvShape]
+    have hquad_y := hquad y
+    rw [hy_image] at hquad_y
+    have hy_inner_le : inner ℝ y y ≤ 1 := by
+      rw [← hquad_y]
+      simpa [ellipsoidSet] using hz
+    have hy_norm_sq : ‖y‖ ^ (2 : ℕ) ≤ 1 ^ (2 : ℕ) := by
+      simpa [real_inner_self_eq_norm_sq] using hy_inner_le
+    have hy_norm : ‖y‖ ≤ 1 :=
+      (sq_le_sq₀ (norm_nonneg y) zero_le_one).mp hy_norm_sq
+    refine ⟨y, ?_, ?_⟩
+    · simpa [Metric.mem_closedBall, dist_eq_norm] using hy_norm
+    · change center + matrixInvShape root y = z
+      rw [hy_image]
+      abel
+  · rintro ⟨y, hy, rfl⟩
+    have hy_norm : ‖y‖ ≤ 1 := by
+      simpa [Metric.mem_closedBall, dist_eq_norm] using hy
+    have hy_norm_sq : ‖y‖ ^ (2 : ℕ) ≤ 1 ^ (2 : ℕ) :=
+      (sq_le_sq₀ (norm_nonneg y) zero_le_one).mpr hy_norm
+    have hy_inner_le : inner ℝ y y ≤ 1 := by
+      simpa [real_inner_self_eq_norm_sq] using hy_norm_sq
+    have hroot_quad_le :
+        inner ℝ (matrixInvShape root y)
+          (matrixInvShape A⁻¹ (matrixInvShape root y)) ≤ 1 := by
+      rw [hquad y]
+      exact hy_inner_le
+    simpa [ellipsoidSet] using hroot_quad_le
+
 /-- Positive-definite matrices have positive determinant. -/
 theorem chewi620_matrixPosDef_det_pos
     {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
@@ -852,6 +906,16 @@ theorem chewi620_matrixPosDef_det_ne_zero
     {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
     Sigma.det ≠ 0 :=
   ne_of_gt (chewi620_matrixPosDef_det_pos hSigma)
+
+/--
+Determinant-square identity for mathlib's CFC matrix square root.  This is the
+local wrapper needed for the Lemma 6.20 square-root volume model.
+-/
+theorem cfcSqrt_det_sq_of_posSemidef
+    {A : Matrix ι ι ℝ} (hA : A.PosSemidef) :
+    (CFC.sqrt A).det ^ (2 : ℕ) = A.det := by
+  rw [Matrix.PosSemidef.det_sqrt hA]
+  simpa using Real.sq_sqrt hA.det_nonneg
 
 /-- Positive-definite matrices have a unit determinant, the key nonsingular-inverse hypothesis. -/
 theorem chewi620_matrixPosDef_det_isUnit
@@ -2014,6 +2078,124 @@ theorem chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models
           (inner ℝ p (matrixInvShape Sigma p)))
       (baseSet := baseSet)
       hcurrentRoot_det_sq hnextRoot_det_sq hvol hvolNext
+
+/--
+Displayed-matrix Lemma 6.20 step certificate with volumes stated directly as
+displayed ellipsoid volumes.  The only remaining square-root inputs are the
+quadratic identities showing that `currentRoot` and `nextRoot` parametrize the
+current and next ellipsoids, plus their determinant-square identities.  This is
+the source-facing bridge from the geometric ellipsoid statement to the compiled
+determinant-volume theorem.
+-/
+theorem chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    {center p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    {currentRoot nextRoot : Matrix ι ι ℝ}
+    {vol volNext : ℝ}
+    (hcurrentRoot_det_sq :
+      currentRoot.det ^ (2 : ℕ) = Sigma.det)
+    (hnextRoot_det_sq :
+      nextRoot.det ^ (2 : ℕ) =
+        (chewi620DisplayedShapeUpdate d Sigma p).det)
+    (hcurrentRoot_quad :
+      ∀ y : EuclideanSpace ℝ ι,
+        inner ℝ (matrixInvShape currentRoot y)
+          (matrixInvShape Sigma⁻¹ (matrixInvShape currentRoot y)) =
+            inner ℝ y y)
+    (hnextRoot_quad :
+      ∀ y : EuclideanSpace ℝ ι,
+        inner ℝ (matrixInvShape nextRoot y)
+          (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹
+            (matrixInvShape nextRoot y)) = inner ℝ y y)
+    (hvol :
+      vol =
+        MeasureTheory.volume.real
+          (ellipsoidSet center (matrixInvShape Sigma⁻¹)))
+    (hvolNext :
+      volNext =
+        MeasureTheory.volume.real
+          (ellipsoidSet
+            (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+              (inner ℝ p (matrixInvShape Sigma p)))
+            (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹))) :
+    IsEllipsoidStepCertificate center
+      (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+        (inner ℝ p (matrixInvShape Sigma p)))
+      (matrixInvShape Sigma⁻¹)
+      (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹)
+      p vol volNext (ellipsoidVolumeRatio d) := by
+  have hcurrentRoot_det_ne : currentRoot.det ≠ 0 := by
+    intro hzero
+    have hSigma_zero : Sigma.det = 0 := by
+      rw [← hcurrentRoot_det_sq, hzero]
+      norm_num
+    exact (chewi620_matrixPosDef_det_ne_zero hSigma) hSigma_zero
+  have hnextRoot_det_ne : nextRoot.det ≠ 0 := by
+    intro hzero
+    have hnext_zero :
+        (chewi620DisplayedShapeUpdate d Sigma p).det = 0 := by
+      rw [← hnextRoot_det_sq, hzero]
+      norm_num
+    exact
+      (chewi620_displayedShapeUpdate_det_ne_zero
+        (d := d) hd hcard hSigma hp) hnext_zero
+  have hcurrentRoot_unit : IsUnit currentRoot.det :=
+    isUnit_iff_ne_zero.mpr hcurrentRoot_det_ne
+  have hnextRoot_unit : IsUnit nextRoot.det :=
+    isUnit_iff_ne_zero.mpr hnextRoot_det_ne
+  let unitBall : Set (EuclideanSpace ℝ ι) :=
+    Metric.closedBall (0 : EuclideanSpace ℝ ι) 1
+  have hvol_image :
+      vol =
+        MeasureTheory.volume.real
+          ((fun x => center + matrixInvShape currentRoot x) '' unitBall) := by
+    calc
+      vol =
+          MeasureTheory.volume.real
+            (ellipsoidSet center (matrixInvShape Sigma⁻¹)) := hvol
+      _ =
+          MeasureTheory.volume.real
+            ((fun x => center + matrixInvShape currentRoot x) '' unitBall) := by
+        rw [ellipsoidSet_eq_matrix_image_closedBall_of_quadratic
+          (A := Sigma) (root := currentRoot) hcurrentRoot_unit
+          center hcurrentRoot_quad]
+  have hvolNext_image :
+      volNext =
+        MeasureTheory.volume.real
+          ((fun x =>
+            ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+              (inner ℝ p (matrixInvShape Sigma p)) +
+              matrixInvShape nextRoot x) '' unitBall) := by
+    calc
+      volNext =
+          MeasureTheory.volume.real
+            (ellipsoidSet
+              (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+                (inner ℝ p (matrixInvShape Sigma p)))
+              (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹)) :=
+        hvolNext
+      _ =
+          MeasureTheory.volume.real
+            ((fun x =>
+              ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+                (inner ℝ p (matrixInvShape Sigma p)) +
+                matrixInvShape nextRoot x) '' unitBall) := by
+        rw [ellipsoidSet_eq_matrix_image_closedBall_of_quadratic
+          (A := chewi620DisplayedShapeUpdate d Sigma p)
+          (root := nextRoot) hnextRoot_unit
+          (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+            (inner ℝ p (matrixInvShape Sigma p))) hnextRoot_quad]
+  exact
+    chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models
+      (d := d) hd hcard hSigma (T := T) hT_symm
+      (center := center) (p := p) hp hT_sq
+      (currentRoot := currentRoot) (nextRoot := nextRoot)
+      (baseSet := unitBall)
+      hcurrentRoot_det_sq hnextRoot_det_sq hvol_image hvolNext_image
 
 end EuclideanMatrix
 
