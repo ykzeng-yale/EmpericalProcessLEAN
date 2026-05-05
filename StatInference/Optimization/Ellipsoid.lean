@@ -700,6 +700,46 @@ theorem matrixInvShape_inv_mul_cancel
   simp [matrixInvShape]
 
 /--
+If a linear equivalence `T` squares to Chewi's forward shape matrix `Σ`, then
+the current pullback inverse-shape is the displayed `Σ⁻¹` inverse shape.
+-/
+theorem chewi620_pullbackIdentityInvShape_eq_matrixInvShape_inv
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    (y : EuclideanSpace ℝ ι) :
+    chewi620PullbackIdentityInvShape T y = matrixInvShape Sigma⁻¹ y := by
+  let v : EuclideanSpace ℝ ι := chewi620PullbackIdentityInvShape T y
+  have hvT : T (T v) = y := by
+    simp [v, chewi620PullbackIdentityInvShape]
+  have hvSigma : matrixInvShape Sigma v = y := by
+    rw [← hT_sq v]
+    exact hvT
+  calc
+    chewi620PullbackIdentityInvShape T y = v := rfl
+    _ = matrixInvShape Sigma⁻¹ (matrixInvShape Sigma v) := by
+      exact (matrixInvShape_inv_mul_cancel hSigma v).symm
+    _ = matrixInvShape Sigma⁻¹ y := by
+      rw [hvSigma]
+
+/--
+Set-level version of the current-shape pullback identity.  This identifies the
+affine-normalized current ellipsoid with Chewi's displayed
+`<x-c, Σ⁻¹(x-c)> <= 1` ellipsoid.
+-/
+theorem chewi620_ellipsoidSet_pullbackIdentity_eq_matrixInvShape_inv
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    (center : EuclideanSpace ℝ ι) :
+    ellipsoidSet center (chewi620PullbackIdentityInvShape T) =
+      ellipsoidSet center (matrixInvShape Sigma⁻¹) := by
+  ext z
+  simp [ellipsoidSet,
+    chewi620_pullbackIdentityInvShape_eq_matrixInvShape_inv
+      (Sigma := Sigma) hSigma hT_sq (z - center)]
+
+/--
 Positive denominator for Chewi's normalized ellipsoid cut direction when the
 forward shape matrix is positive definite and the cut vector is nonzero.
 -/
@@ -810,6 +850,24 @@ theorem chewi620_matrixSqrt_normalizedCutDirection_inner_toStd
     z
 
 /--
+The square-root hypothesis turns Chewi's normalized standard-cut center into
+the displayed original-space center update
+`x - (d+1)⁻¹ Σp / sqrt(<p, Σp>)`.
+-/
+theorem chewi620_matrixSqrt_centerUpdate_hcenter
+    {d : ℕ} {Sigma : Matrix ι ι ℝ}
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    (center p : EuclideanSpace ℝ ι) :
+    ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+        (inner ℝ p (matrixInvShape Sigma p)) - center =
+      T (chewi620StandardCutCenter d
+        (chewi620MatrixNormalizedCutDirection Sigma p (T p))) := by
+  simp [ellipsoidCenterUpdate, chewi620StandardCutCenter,
+    chewi620MatrixNormalizedCutDirection, chewi620MatrixCutScale, hT_sq]
+  module
+
+/--
 Square-root affine-transport certificate for Chewi Lemma 6.20 with the next
 inverse-shape represented as the pullback of the normalized standard-cut
 inverse-shape.  This discharges the current-ellipsoid, cut, and next-ellipsoid
@@ -863,6 +921,78 @@ theorem chewi620_sqrtAffineTransport_stepCertificate_of_pullback
       (u := chewi620MatrixNormalizedCutDirection Sigma p (T p))
       (center := center) (nextCenter := nextCenter)
       (z := z) (T := T) hT_symm hcenter
+
+/--
+Square-root affine-transport certificate with Chewi's displayed center update
+inserted.  The remaining supplied hypothesis is now only the determinant/volume
+calculation and the matrix identification of the next inverse shape.
+-/
+theorem chewi620_sqrtAffineTransport_stepCertificate_of_displayedCenter
+    {d : ℕ} {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    {center p : EuclideanSpace ℝ ι}
+    (hd : 1 < d) (hp : p ≠ 0)
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    {vol volNext : ℝ}
+    (hvolume : volNext ≤ ellipsoidVolumeRatio d * vol) :
+    IsEllipsoidStepCertificate center
+      (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+        (inner ℝ p (matrixInvShape Sigma p)))
+      (chewi620PullbackIdentityInvShape T)
+      (chewi620PullbackStandardCutInvShape d
+        (chewi620MatrixNormalizedCutDirection Sigma p (T p)) T)
+      p vol volNext (ellipsoidVolumeRatio d) := by
+  refine
+    chewi620_sqrtAffineTransport_stepCertificate_of_pullback
+      (Sigma := Sigma) hSigma (T := T) hT_symm
+      (center := center)
+      (nextCenter := ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+        (inner ℝ p (matrixInvShape Sigma p)))
+      (p := p) hd hp ?_ ?_ hvolume
+  · calc
+      ‖T p‖ ^ (2 : ℕ) = inner ℝ (T p) (T p) := by
+        rw [real_inner_self_eq_norm_sq]
+      _ = inner ℝ p (T (T p)) := by
+        exact hT_symm p (T p)
+      _ = inner ℝ p (matrixInvShape Sigma p) := by
+        rw [hT_sq p]
+  · exact chewi620_matrixSqrt_centerUpdate_hcenter
+      (Sigma := Sigma) (T := T) hT_sq center p
+
+/--
+Chewi Lemma 6.20 certificate with the current ellipsoid written in the
+source's displayed matrix form `Σ⁻¹` and the center update written in the
+source's displayed form.  The next inverse shape is still the pullback of the
+standard-cut inverse shape; identifying it with the displayed `Σ_{n+1}^{-1}`
+matrix update is the next matrix-algebra blocker.
+-/
+theorem chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter
+    {d : ℕ} {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    {center p : EuclideanSpace ℝ ι}
+    (hd : 1 < d) (hp : p ≠ 0)
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    {vol volNext : ℝ}
+    (hvolume : volNext ≤ ellipsoidVolumeRatio d * vol) :
+    IsEllipsoidStepCertificate center
+      (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+        (inner ℝ p (matrixInvShape Sigma p)))
+      (matrixInvShape Sigma⁻¹)
+      (chewi620PullbackStandardCutInvShape d
+        (chewi620MatrixNormalizedCutDirection Sigma p (T p)) T)
+      p vol volNext (ellipsoidVolumeRatio d) := by
+  have hcert :=
+    chewi620_sqrtAffineTransport_stepCertificate_of_displayedCenter
+      (Sigma := Sigma) hSigma (T := T) hT_symm
+      (center := center) (p := p) hd hp hT_sq hvolume
+  have hset :
+      ellipsoidSet center (chewi620PullbackIdentityInvShape T) =
+        ellipsoidSet center (matrixInvShape Sigma⁻¹) :=
+    chewi620_ellipsoidSet_pullbackIdentity_eq_matrixInvShape_inv
+      (Sigma := Sigma) hSigma hT_sq center
+  simpa [IsEllipsoidStepCertificate, hset] using hcert
 
 end EuclideanMatrix
 

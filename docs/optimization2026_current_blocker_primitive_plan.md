@@ -69,8 +69,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Live replacement `/goal` prompt as of 2026-05-05 after syncing local `main` to
-`origin/main` at `4e43e7d` (`Add Chewi ellipsoid PosDef cancellation bridge`)
-plus the current verified pullback-certificate packet in
+`origin/main` at `9c41b38` (`Add Chewi ellipsoid pullback certificate`) plus
+the current verified displayed-current/displayed-center packet in
 `StatInference/Optimization/Ellipsoid.lean`: aggressively formalize and prove
 all main theorem content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercises tracked in the single
@@ -79,8 +79,9 @@ main-text theorem lane.  Continue from the Chapter 6 Lemma 6.20 frontier after
 the standard-cut scalar, determinant-ratio, coordinate-free
 affine-containment, supplied-identity affine-transport certificate, first
 Euclidean matrix quadratic packet, cut-normalization algebra packet, raw
-square-root adjoint/cut bridge, PosDef invertibility/cancellation packet, and
-pullback-standard-cut certificate packet:
+square-root adjoint/cut bridge, PosDef invertibility/cancellation packet,
+pullback-standard-cut certificate packet, and displayed current
+`Σ⁻¹`/displayed center-update packet:
 `StatInference/Optimization/ProjectedSubgradient.lean`
 proves the finite-valued Theorem 6.14 and Theorem 6.16 PSD/functional-constraint
 layers, `StatInference/Optimization/CuttingPlane.lean` proves the
@@ -128,21 +129,28 @@ the pullback packet `chewi620PullbackIdentityInvShape`,
 `chewi620_pullbackIdentityInvShape_quadratic`,
 `chewi620_pullbackStandardCutInvShape_quadratic`,
 `chewi620_pullbackStandardCutInvShape_hnext`, and
-`chewi620_sqrtAffineTransport_stepCertificate_of_pullback`.  The app-level
+`chewi620_sqrtAffineTransport_stepCertificate_of_pullback`, plus
+`chewi620_pullbackIdentityInvShape_eq_matrixInvShape_inv`,
+`chewi620_ellipsoidSet_pullbackIdentity_eq_matrixInvShape_inv`,
+`chewi620_matrixSqrt_centerUpdate_hcenter`,
+`chewi620_sqrtAffineTransport_stepCertificate_of_displayedCenter`, and
+`chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`.
+The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
 textbook goal is marked complete, so this paragraph is the operative manual
 `/goal` target.
 
 Immediate target for the next manual goal run: finish a theorem-sized Chewi
-Lemma 6.20 matrix packet by connecting the new square-root pullback certificate
-to Chewi's displayed matrix update and volume ratio.  The raw square-root
-adjoint identity, normalized cut `hcut` bridge, `Sigma.PosDef`
-invertibility/cancellation layer, and abstract pullback `hnext` certificate are
-now local; this is not a minor wrapper target.  Do not spend another run on
-scalar, coordinate-free, abstract transport, or pullback-only wrappers unless
-one is the shortest verified route to the concrete matrix theorem.  The
-dependency order is:
+Lemma 6.20 matrix packet by connecting the remaining pullback next inverse shape
+to Chewi's displayed `Σ_{n+1}^{-1}` matrix update and volume ratio.  The raw
+square-root adjoint identity, normalized cut `hcut` bridge, `Sigma.PosDef`
+invertibility/cancellation layer, pullback `hnext` certificate, current
+`Σ⁻¹` ellipsoid identification, and displayed center update are now local; this
+is not a minor wrapper target.  Do not spend another run on scalar,
+coordinate-free, abstract transport, current-shape, center-update, or
+pullback-only wrappers unless one is the shortest verified route to the concrete
+matrix theorem.  The dependency order is:
 
 1. Search pinned mathlib and local `StatInference/Optimization` for
    square-root/symmetric linear-equivalence, `Matrix.toEuclideanLin`,
@@ -153,13 +161,13 @@ dependency order is:
    `inner_sub_right` proved the symmetric square-root raw identity; mathlib
    nonsingular-inverse APIs are wrapped locally for PosDef cancellation; rank-one
    determinant and volume-scaling APIs still need to be instantiated.
-2. Prove the equality between `chewi620PullbackIdentityInvShape T` and
-   `matrixInvShape Sigma`, and between
-   `chewi620PullbackStandardCutInvShape d u T` and Chewi's displayed
-   `Σ_{n+1}^{-1}` matrix update, under the square-root/inverse hypotheses.
-3. Prove the displayed center update and rank-one determinant/volume inequality
-   or exact ratio needed for the `hvolume` hypothesis of
-   `chewi620_sqrtAffineTransport_stepCertificate_of_pullback`.
+2. Define or expose the displayed next-shape/inverse-shape matrix update, then
+   prove equality with
+   `chewi620PullbackStandardCutInvShape d u T` under the square-root/inverse
+   hypotheses.
+3. Prove the rank-one determinant/volume inequality or exact ratio needed for
+   the `hvolume` hypothesis of the displayed-current/displayed-center
+   certificate.
 4. Package the exact one-step Lemma 6.20 certificate, then promote it to the
    ellipsoid trajectory/rate wrapper.
 
@@ -168,11 +176,14 @@ direction algebra are already local, and the raw symmetric square-root
 adjoint/cut bridge now discharges the `hcut` side of the affine-transport
 certificate.  The `Sigma.PosDef` matrix invertibility/cancellation layer is
 also local through nonsingular-inverse APIs and `matrixInvShape` composition.
-The new pullback certificate discharges the current-ellipsoid and next-ellipsoid
-quadratic hypotheses once the displayed matrix objects are identified with the
-pullback objects.  If the full matrix proof balloons, record the exact missing
-API and prove the smallest matrix-coordinate, rank-one-determinant, or
-volume-scaling certificate that removes that blocker in the same run.
+The new displayed-current/displayed-center packet identifies
+`chewi620PullbackIdentityInvShape T` with `matrixInvShape Sigma⁻¹`, rewrites the
+current ellipsoid set to Chewi's displayed form, derives the displayed center
+update from `T ∘ T = Sigma`, and exposes a certificate whose only geometric
+blockers are the next inverse-shape matrix equality and determinant/volume
+ratio.  If the full matrix proof balloons, record the exact missing API and
+prove the smallest matrix-coordinate, rank-one-determinant, or volume-scaling
+certificate that removes that blocker in the same run.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
@@ -198,17 +209,19 @@ normalized scalar central-cut containment, determinant-ratio inequalities, and
 coordinate-free normalized half-space containment, and an abstract
 affine-transport `IsEllipsoidStepCertificate` bridge.  The current-ellipsoid
 matrix quadratic, positive-denominator, normalized cut-direction algebra, raw
-symmetric square-root cut bridge, PosDef invertibility/cancellation layer, and
-pullback-standard-cut certificate now compile via `matrixInvShape`,
+symmetric square-root cut bridge, PosDef invertibility/cancellation layer,
+pullback-standard-cut certificate, current `Σ⁻¹` identification, and displayed
+center-update bridge now compile via `matrixInvShape`,
 PosDef/PosSemidef dot-product APIs, `Real.sqrt` normalization, mathlib
 `LinearMap.IsSymmetric`, and mathlib nonsingular-inverse APIs.  The next
-aggressive theorem packet should prove the displayed matrix equivalence and
-determinant/volume pieces needed by
-`chewi620_sqrtAffineTransport_stepCertificate_of_pullback`: search and use
-mathlib matrix/rank-one determinant/volume APIs to connect these local pullback
-objects to Chewi's displayed matrix update.  If the full matrix proof balloons,
-record the exact missing matrix API and prove the smallest matrix-coordinate,
-rank-one determinant, or volume-scaling certificate that removes it.
+aggressive theorem packet should prove the displayed next inverse-shape matrix
+equivalence and determinant/volume pieces needed by
+`chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`:
+search and use mathlib matrix/rank-one determinant/volume APIs to connect the
+remaining local pullback object to Chewi's displayed `Σ_{n+1}` update.  If the
+full matrix proof balloons, record the exact missing matrix API and prove the
+smallest matrix-coordinate, rank-one determinant, or volume-scaling certificate
+that removes it.
 Do not spend a run only polishing a minor wrapper unless it is the fastest
 verified dependency for this theorem packet.
 
