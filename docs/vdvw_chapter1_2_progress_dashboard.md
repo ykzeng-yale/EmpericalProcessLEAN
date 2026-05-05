@@ -1729,3 +1729,9 @@ laws, identical distributions, and random-variable convergence in
 distribution.  Remaining Chapter 1 process blockers are
 separability/asymptotic tightness, the FDD weak-convergence converse, and
 arbitrary-map/nonmeasurable outer-cover weak-convergence primitives.
+
+2026-05-05 finite-index process follow-up: `EllInfty.lean` now adds
+`VdVWEllInfty.finiteContinuousLinearEquiv`, identifying finite
+`ell_infty(T)` with the ordinary product `T -> ℝ` through mathlib's
+`lpPiLpₗᵢ` and `PiLp.continuousLinearEquiv`.  This is a finite-index
+FDD-converse substrate, not the arbitrary-index VdV&W 1.4.8 converse.

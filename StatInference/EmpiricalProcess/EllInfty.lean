@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Normed.Lp.LpEquiv
 import Mathlib.Analysis.Normed.Lp.lpSpace
 import Mathlib.MeasureTheory.Function.StronglyMeasurable.Basic
 
@@ -122,6 +123,25 @@ theorem measurable_finiteRestrict
     [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)] :
     Measurable (finiteRestrict (T := T) I) :=
   (continuous_finiteRestrict (T := T) I).measurable
+
+/--
+For finite index sets, `ell_infty(T)` is linearly homeomorphic to the ordinary
+finite product `T -> ℝ`.
+-/
+def finiteContinuousLinearEquiv [Fintype T] :
+    VdVWEllInfty T ≃L[ℝ] (T -> ℝ) :=
+  (lpPiLpₗᵢ (fun _ : T => ℝ) ℝ).toContinuousLinearEquiv.trans
+    (PiLp.continuousLinearEquiv (∞ : ℝ≥0∞) ℝ (fun _ : T => ℝ))
+
+@[simp]
+theorem finiteContinuousLinearEquiv_apply [Fintype T] (x : VdVWEllInfty T) :
+    finiteContinuousLinearEquiv (T := T) x = x :=
+  rfl
+
+@[simp]
+theorem finiteContinuousLinearEquiv_symm_apply [Fintype T] (f : T -> ℝ) (t : T) :
+    (finiteContinuousLinearEquiv (T := T)).symm f t = f t :=
+  rfl
 
 end VdVWEllInfty
 

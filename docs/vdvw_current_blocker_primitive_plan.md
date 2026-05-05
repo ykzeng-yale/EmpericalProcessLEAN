@@ -5106,3 +5106,14 @@ substrate layer; it does not prove separability, asymptotic tightness, or the
 FDD weak-convergence converse.  Next work in this lane should target those
 stronger process primitives or the nonmeasurable outer-cover signed
 weak-convergence layer.
+
+2026-05-05 finite-index `ell_infty(T)` follow-up: pinned mathlib search found
+the exact finite-index equivalences
+`Equiv.lpPiLp`, `lpPiLpₗᵢ`, and `PiLp.continuousLinearEquiv` in
+`Mathlib.Analysis.Normed.Lp.LpEquiv`/`PiLp`.  `EllInfty.lean` now exposes
+their composition as
+`VdVWEllInfty.finiteContinuousLinearEquiv : VdVWEllInfty T ≃L[ℝ] (T -> ℝ)`
+for `Fintype T`, with forward/symmetric coordinate simplification lemmas.
+This is the finite-index process-space identification needed before a clean
+finite-index FDD converse; it still does not close the arbitrary-index
+separability/tightness/FDD-converse theorem.

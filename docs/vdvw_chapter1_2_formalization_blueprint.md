@@ -1517,6 +1517,13 @@ restriction wrappers.  This should be treated as the base substrate for later
 VdV&W process statements, not as a proof of separability, asymptotic
 tightness, Donsker, or the FDD converse.
 
+2026-05-05 finite-index `ell_infty(T)` follow-up: the finite-index process
+space is now explicitly identified with the ordinary product through
+`VdVWEllInfty.finiteContinuousLinearEquiv`.  This reuses mathlib's
+`lpPiLpₗᵢ` and `PiLp.continuousLinearEquiv` and should be used for any
+finite-index FDD-converse sanity layer before attempting the arbitrary-index
+separability/tightness theorem.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
