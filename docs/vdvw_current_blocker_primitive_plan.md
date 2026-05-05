@@ -81,8 +81,9 @@ The Codex `/goal` tool currently exposes only completion updates for an active
 goal, so this section is the authoritative refreshed target text for the
 ongoing goal until the tool objective can be recreated.
 
-2026-05-05 status check: git head `4903594` is synced with `origin/main`, and
-the active `/goal` tool objective remains broad but cannot be edited in place.
+2026-05-05 status check: this run started from VdVW head `4903594` and pushed
+the merged verified head `57c0b80`; the active `/goal` tool objective remains
+broad but cannot be edited in place.
 The code search confirms the reverse/cofiltration route and the strong
 countable full-subgraph Theorem 2.4.3/Lemma 2.4.5 packages are compiled.  It
 also confirms there is no local exact `VdVWAsymptoticMeasurable` primitive yet;
