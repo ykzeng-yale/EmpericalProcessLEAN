@@ -1279,6 +1279,16 @@ above, so they do not change the theorem-level dashboard counts.
    also packages both current conclusions as
    `VdVWTheorem243_finite_indexClass_outerProbabilityUniformDeviation_and_inMean_canonical`;
    exact a.s. completion still depends on Lemma 2.4.5.
+   The variable-domain random-entropy branch now also has the direct
+   proof-carrying consumer
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_tailExpectation`,
+   which composes the book-shaped entropy package with explicit selected
+   finite-net integrability and tail-expectation hypotheses.  This is a
+   theorem-facing bridge, not the missing analytic theorem: the next
+   Chapter 2.4.3 target is to derive those selected finite-net tail/UI inputs
+   from the textbook random entropy condition, or from a genuine structural
+   entropy/VC bound, without hiding the assumption as deterministic
+   boundedness.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

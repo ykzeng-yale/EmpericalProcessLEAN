@@ -14,7 +14,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`73e0125` before the latest proof batch: closed finite-net/Hoeffding/Mills,
+`a18f1c3` before the current proof batch: closed finite-net/Hoeffding/Mills,
 untruncation, reverse-cofiltration, selected-entropy, full-subgraph,
 measurable/null-measurable signed weak-convergence, and Dirac-law endpoint
 packages should not be rebuilt.  The current theorem-facing gap after this
@@ -47,6 +47,15 @@ Theorem 2.4.3 consumer
 `VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pMeasurableClass_convergesInOuterProbabilityConst`.
 Next target: the exact textbook entropy/tail-UI mismatch, not more endpoint
 packaging.
+
+2026-05-05 current proof batch: the variable-domain book-entropy route now has
+a direct untruncated centered convergence consumer with explicit selected
+finite-net tail/UI hypotheses:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_tailExpectation`.
+This removes another package-construction layer but keeps the mathematical
+gap honest.  The next `/goal` target is still to prove the selected finite-net
+tail/UI bridge from the textbook random entropy hypothesis, or derive the
+needed deterministic/tail control from a real structural entropy theorem.
 
 ## Status Legend
 
