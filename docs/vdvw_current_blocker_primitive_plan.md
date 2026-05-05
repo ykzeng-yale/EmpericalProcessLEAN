@@ -58,7 +58,7 @@ consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`3dcacda`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`0f502cc`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -75,6 +75,10 @@ packages including
 `VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`;
 selected fixed-radius/inverse-radius entropy packages and finite-net
 tail/UI consumers; deterministic untruncation and envelope-tail bridges;
+the raw normalized-log tail/UI route, deterministic normalized-log bound route,
+ordinary-mean normalized-log route, selected L1 side-condition package, and
+the untruncated centered L1 consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_integral_tendsto_zero`;
 the measurable and null-measurable signed positive/negative outer-expectation
 bridges, signed bounded-continuous arbitrary-map asymptotic-measurability
 including null-measurable constructors, common-domain/varying-domain
@@ -92,13 +96,15 @@ Next high-capacity proof batches, in order:
 
 1. Close or precisely isolate the exact Theorem 2.4.3 random-entropy mismatch.
    The finite-net/Hoeffding/Mills, selected fixed-radius and inverse-radius,
-   untruncation, signed endpoint, full-subgraph, finite-class, and Lemma 2.4.5
-   reverse/cofiltration packages are already compiled.  The remaining
-   non-duplicative theorem target is the bridge from the book condition
-   `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η > 0` to the raw
-   normalized-log integrability/tail/UI or ordinary mean-convergence input
-   consumed by the compiled selected finite-net route.  Do not add another
-   endpoint wrapper unless it directly consumes a new theorem hypothesis.
+   untruncation, signed endpoint, full-subgraph, finite-class, Lemma 2.4.5
+   reverse/cofiltration, deterministic normalized-log, raw tail/UI, and L1
+   ordinary-mean packages are already compiled.  The remaining non-duplicative
+   theorem target is the structural bridge from the book condition
+   `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η > 0` to a real
+   tail/UI, uniform-integrability, deterministic cardinality, or ordinary
+   mean-convergence input consumed by those compiled routes.  Do not add
+   another endpoint or selected-package wrapper unless it directly consumes a
+   new theorem hypothesis.
 2. Search and try the strongest honest entropy closure first:
    prove a structural varying-domain uniform-integrability theorem for
    `Y_n = log(cardinality_n + 1) / n`, derive ordinary mean convergence of
@@ -109,11 +115,15 @@ Next high-capacity proof batches, in order:
    added UI/tail or structural bound hypothesis.
 3. If the book random-entropy route remains blocked after real Lean/search
    attempts, move immediately to theorem-critical exactness gaps instead of
-   rewrapping closed Theorem 2.4.3 layers: arbitrary-map/asymptotic
-   measurability for Chapter 1, exact nonmeasurable outer-cover envelope-tail
-   variants if final statements require them, and removal of remaining
-   countability/coordinate-measurability assumptions through the
-   `VdVWPMeasurableClass` and pointwise-separable APIs.
+   rewrapping closed Theorem 2.4.3 layers.  The first fallback is a precise
+   named final-current Theorem 2.4.3/Lemma 2.4.5 statement from the strongest
+   full-subgraph/structural-route packages, with every assumption classified
+   as textbook, stronger-but-structural, or missing primitive.  Then continue
+   to arbitrary-map/asymptotic measurability for Chapter 1, exact
+   nonmeasurable outer-cover envelope-tail variants if final statements
+   require them, and removal of remaining countability/coordinate-
+   measurability assumptions through the `VdVWPMeasurableClass` and
+   pointwise-separable APIs.
 4. After Theorem 2.4.3 is exact or its remaining hypotheses are named as
    honest primitives, advance in textbook dependency order through Chapter 2:
    Section 2.2 covering/packing/entropy results, Section 2.3 measurable-class

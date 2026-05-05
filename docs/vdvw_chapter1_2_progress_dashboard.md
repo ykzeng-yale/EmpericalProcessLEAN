@@ -14,18 +14,22 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`3dcacda`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
+`0f502cc`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
-and Dirac-law endpoint packages should not be rebuilt.  The current
-theorem-facing gap is the exact book random-entropy selected finite-net
-tail/UI or mean-convergence bridge for Theorem 2.4.3, plus any exact
-nonmeasurable envelope-tail or arbitrary-map clauses required by final
-textbook statements.  Bare outer-probability convergence of normalized random
-entropy should not be treated as tail/UI; future runs must either prove a real
-structural/UI theorem, instantiate an existing deterministic/L1 route from a
-valid structural bound, or record the missing primitive precisely and move to
-the next theorem-critical Chapter 1-2 gap.
+Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
+ordinary-mean/L1 normalized-log packages should not be rebuilt.  The current
+theorem-facing gap is the exact book random-entropy bridge for Theorem 2.4.3:
+derive a real tail/UI, uniform-integrability, deterministic structural
+cardinality, or ordinary mean-convergence input from
+`log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η > 0`, then consume the
+already compiled selected finite-net routes.  Bare outer-probability
+convergence of normalized random entropy should not be treated as tail/UI.  If
+that bridge is blocked after real Lean/search attempts, the next `/goal` batch
+should produce the cleanest final-current Theorem 2.4.3/Lemma 2.4.5 statement
+from the full-subgraph/structural packages and classify each stronger
+assumption before moving to theorem-critical Chapter 1-2 arbitrary-map,
+nonmeasurable envelope-tail, or separability primitives.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new
