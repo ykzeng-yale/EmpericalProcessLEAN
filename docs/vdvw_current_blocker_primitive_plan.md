@@ -5427,3 +5427,16 @@ case for the local signed arbitrary-map weak-convergence package under
 a.e.-measurability.  It does not close the full VdV&W
 asymptotic-independence product theorem, which still needs a genuine
 nonmeasurable/asymptotic-independence primitive.
+
+2026-05-05 varying-domain signed product-coordinate follow-up:
+`WeakConvergence.lean` now adds the sample-size-varying analogues
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.prod_fst_of_aemeasurable`,
+`.prod_snd_of_aemeasurable`,
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.prod_fst_of_aemeasurable`,
+and `.prod_snd_of_aemeasurable`.  These lift the signed varying-domain weak
+convergence and asymptotic-measurability packages through an ignored
+probability product coordinate, reusing the same signed product-projection
+expectation equalities.  This is the product-coordinate closure needed for
+finite-sample spaces such as `SampleAt Observation n`; the remaining product
+gap is still the true arbitrary-map/asymptotic-independence theorem, not this
+a.e.-measurable ignored-coordinate case.

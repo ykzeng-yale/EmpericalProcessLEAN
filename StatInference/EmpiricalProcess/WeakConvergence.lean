@@ -950,6 +950,125 @@ theorem
       h.asymptoticMeasurability.mono_filter hl }
 
 /--
+First-coordinate product lift for varying-domain signed-outer
+bounded-continuous weak convergence.
+
+This is the sample-size-varying analogue of
+`VdVWWeakConvergenceSignedOuterBoundedContinuous.prod_fst_of_aemeasurable`.
+-/
+theorem
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.prod_fst_of_aemeasurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v} {T : Type x}
+    [∀ i, MeasurableSpace (Ω i)] [MeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [OpensMeasurableSpace T]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, SFinite (μs i)]
+    {ν : Measure S} [SFinite ν] [IsProbabilityMeasure ν]
+    {X : (i : ι) -> Ω i -> T} {l : Filter ι} {μ : ProbabilityMeasure T}
+    (h :
+      VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains
+        Ω μs X l μ)
+    (hX : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains
+      (fun i => Ω i × S) (fun i => (μs i).prod ν)
+      (fun i z => X i z.1) l μ := by
+  intro f
+  have houter :
+      (fun i =>
+        VdVWSignedOuterExpectationPosNeg ((μs i).prod ν)
+          (fun z : Ω i × S => f (X i z.1))) =
+        fun i =>
+          VdVWSignedOuterExpectationPosNeg (μs i)
+            (fun ω => f (X i ω)) := by
+    funext i
+    exact
+      VdVWSignedOuterExpectationPosNeg_prod_fst_eq_of_aemeasurable
+        (ν := ν) (f.continuous.measurable.comp_aemeasurable (hX i))
+  simpa [VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains,
+    houter] using h f
+
+/--
+Second-coordinate product lift for varying-domain signed-outer
+bounded-continuous weak convergence.
+-/
+theorem
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.prod_snd_of_aemeasurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v} {T : Type x}
+    [∀ i, MeasurableSpace (Ω i)] [MeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [OpensMeasurableSpace T]
+    {ν : Measure S} [SFinite ν] [IsProbabilityMeasure ν]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, SFinite (μs i)]
+    {X : (i : ι) -> Ω i -> T} {l : Filter ι} {μ : ProbabilityMeasure T}
+    (h :
+      VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains
+        Ω μs X l μ)
+    (hX : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains
+      (fun i => S × Ω i) (fun i => ν.prod (μs i))
+      (fun i z => X i z.2) l μ := by
+  intro f
+  have houter :
+      (fun i =>
+        VdVWSignedOuterExpectationPosNeg (ν.prod (μs i))
+          (fun z : S × Ω i => f (X i z.2))) =
+        fun i =>
+          VdVWSignedOuterExpectationPosNeg (μs i)
+            (fun ω => f (X i ω)) := by
+    funext i
+    exact
+      VdVWSignedOuterExpectationPosNeg_prod_snd_eq_of_aemeasurable
+        (μ := ν) (f.continuous.measurable.comp_aemeasurable (hX i))
+  simpa [VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains,
+    houter] using h f
+
+/--
+First-coordinate product lift for the proof-carrying varying-domain signed
+bounded-continuous weak-convergence package.
+-/
+theorem
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.prod_fst_of_aemeasurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v} {T : Type x}
+    [∀ i, MeasurableSpace (Ω i)] [MeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [OpensMeasurableSpace T]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, SFinite (μs i)]
+    {ν : Measure S} [SFinite ν] [IsProbabilityMeasure ν]
+    {X : (i : ι) -> Ω i -> T} {l : Filter ι} {μ : ProbabilityMeasure T}
+    (h :
+      VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ)
+    (hX : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains
+      (fun i => Ω i × S) (fun i => (μs i).prod ν)
+      (fun i z => X i z.1) l μ :=
+  { weakConvergence := h.weakConvergence.prod_fst_of_aemeasurable hX
+    asymptoticMeasurability :=
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_aemeasurable
+        (Ω := fun i => Ω i × S) (μs := fun i => (μs i).prod ν)
+        (X := fun i z => X i z.1) (fun i => (hX i).comp_fst) }
+
+/--
+Second-coordinate product lift for the proof-carrying varying-domain signed
+bounded-continuous weak-convergence package.
+-/
+theorem
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.prod_snd_of_aemeasurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v} {T : Type x}
+    [∀ i, MeasurableSpace (Ω i)] [MeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [OpensMeasurableSpace T]
+    {ν : Measure S} [SFinite ν] [IsProbabilityMeasure ν]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, SFinite (μs i)]
+    {X : (i : ι) -> Ω i -> T} {l : Filter ι} {μ : ProbabilityMeasure T}
+    (h :
+      VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ)
+    (hX : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains
+      (fun i => S × Ω i) (fun i => ν.prod (μs i))
+      (fun i z => X i z.2) l μ :=
+  { weakConvergence := h.weakConvergence.prod_snd_of_aemeasurable hX
+    asymptoticMeasurability :=
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_aemeasurable
+        (Ω := fun i => S × Ω i) (μs := fun i => ν.prod (μs i))
+        (X := fun i z => X i z.2) (fun i => (hX i).comp_snd) }
+
+/--
 Nonnegative version of VdV&W asymptotic measurability for a family of
 possibly arbitrary maps and a chosen class of nonnegative test functions.
 
