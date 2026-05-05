@@ -486,6 +486,77 @@ theorem chewi620_rawAdjointIdentity_of_symmetric_inverse
     _ = inner ℝ p z - inner ℝ p center := by
       rw [inner_sub_right]
 
+/--
+Current inverse-shape obtained by pulling back the unit-ball quadratic through
+the normalization map `T.symm`, intended as `Σ^{-1/2} ∘ Σ^{-1/2}`.
+-/
+noncomputable def chewi620PullbackIdentityInvShape
+    (T : E ≃ₗ[ℝ] E) (y : E) : E :=
+  T.symm (T.symm y)
+
+/--
+Next inverse-shape obtained by pulling back the normalized standard-cut
+inverse-shape through the normalization map `T.symm`.
+-/
+noncomputable def chewi620PullbackStandardCutInvShape
+    (d : ℕ) (u : E) (T : E ≃ₗ[ℝ] E) (y : E) : E :=
+  T.symm (chewi620StandardCutInvShape d u (T.symm y))
+
+/-- Quadratic form for the current pullback inverse-shape. -/
+theorem chewi620_pullbackIdentityInvShape_quadratic
+    {T : E ≃ₗ[ℝ] E} (hT_symm : T.IsSymmetric) (y : E) :
+    inner ℝ y (chewi620PullbackIdentityInvShape T y) =
+      ‖T.symm y‖ ^ (2 : ℕ) := by
+  have hsymm_inv : T.symm.IsSymmetric := hT_symm.toLinearMap_symm
+  calc
+    inner ℝ y (chewi620PullbackIdentityInvShape T y) =
+        inner ℝ (T.symm y) (T.symm y) := by
+      exact (hsymm_inv y (T.symm y)).symm
+    _ = ‖T.symm y‖ ^ (2 : ℕ) := by
+      rw [real_inner_self_eq_norm_sq]
+
+/-- Quadratic form for the next standard-cut pullback inverse-shape. -/
+theorem chewi620_pullbackStandardCutInvShape_quadratic
+    {d : ℕ} {u : E} {T : E ≃ₗ[ℝ] E}
+    (hT_symm : T.IsSymmetric) (y : E) :
+    inner ℝ y (chewi620PullbackStandardCutInvShape d u T y) =
+      inner ℝ (T.symm y)
+        (chewi620StandardCutInvShape d u (T.symm y)) := by
+  have hsymm_inv : T.symm.IsSymmetric := hT_symm.toLinearMap_symm
+  exact (hsymm_inv y (chewi620StandardCutInvShape d u (T.symm y))).symm
+
+/--
+The pulled-back next inverse-shape supplies the `hnext` identity in the affine
+transport certificate, once the original-space center is the image of the
+normalized standard-cut center.
+-/
+theorem chewi620_pullbackStandardCutInvShape_hnext
+    {d : ℕ} {u center nextCenter z : E} {T : E ≃ₗ[ℝ] E}
+    (hT_symm : T.IsSymmetric)
+    (hcenter :
+      nextCenter - center = T (chewi620StandardCutCenter d u)) :
+    inner ℝ (z - nextCenter)
+        (chewi620PullbackStandardCutInvShape d u T (z - nextCenter)) =
+      inner ℝ
+        (T.symm (z - center) - chewi620StandardCutCenter d u)
+        (chewi620StandardCutInvShape d u
+          (T.symm (z - center) - chewi620StandardCutCenter d u)) := by
+  have hstd :
+      T.symm (z - nextCenter) =
+        T.symm (z - center) - chewi620StandardCutCenter d u := by
+    calc
+      T.symm (z - nextCenter) =
+          T.symm ((z - center) - (nextCenter - center)) := by
+        congr 1
+        module
+      _ = T.symm (z - center) - T.symm (nextCenter - center) := by
+        simp
+      _ = T.symm (z - center) - chewi620StandardCutCenter d u := by
+        rw [hcenter]
+        simp
+  rw [chewi620_pullbackStandardCutInvShape_quadratic hT_symm]
+  rw [hstd]
+
 section EuclideanMatrix
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -737,6 +808,61 @@ theorem chewi620_matrixSqrt_normalizedCutDirection_inner_toStd
       chewi620_rawAdjointIdentity_of_symmetric_inverse
         (T := T) hT_symm p center w)
     z
+
+/--
+Square-root affine-transport certificate for Chewi Lemma 6.20 with the next
+inverse-shape represented as the pullback of the normalized standard-cut
+inverse-shape.  This discharges the current-ellipsoid, cut, and next-ellipsoid
+quadratic identities; the remaining supplied hypothesis is the determinant/
+volume calculation.
+-/
+theorem chewi620_sqrtAffineTransport_stepCertificate_of_pullback
+    {d : ℕ} {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    {center nextCenter p : EuclideanSpace ℝ ι}
+    (hd : 1 < d) (hp : p ≠ 0)
+    (hT_quadratic :
+      ‖T p‖ ^ (2 : ℕ) = inner ℝ p (matrixInvShape Sigma p))
+    (hcenter :
+      nextCenter - center =
+        T (chewi620StandardCutCenter d
+          (chewi620MatrixNormalizedCutDirection Sigma p (T p))))
+    {vol volNext : ℝ}
+    (hvolume : volNext ≤ ellipsoidVolumeRatio d * vol) :
+    IsEllipsoidStepCertificate center nextCenter
+      (chewi620PullbackIdentityInvShape T)
+      (chewi620PullbackStandardCutInvShape d
+        (chewi620MatrixNormalizedCutDirection Sigma p (T p)) T)
+      p vol volNext (ellipsoidVolumeRatio d) := by
+  refine
+    chewi620_affineTransport_stepCertificate_of_quadratic
+      (d := d) (center := center) (nextCenter := nextCenter)
+      (invShape := chewi620PullbackIdentityInvShape T)
+      (nextInvShape := chewi620PullbackStandardCutInvShape d
+        (chewi620MatrixNormalizedCutDirection Sigma p (T p)) T)
+      (p := p)
+      (u := chewi620MatrixNormalizedCutDirection Sigma p (T p))
+      (toStd := fun y => T.symm y)
+      (scale := chewi620MatrixCutScale Sigma p)
+      hd
+      (chewi620_matrixSqrt_normalizedCutDirection_norm_of_posDef
+        (Sigma := Sigma) hSigma hp hT_quadratic)
+      (chewi620_matrix_cut_sqrt_inv_pos_of_posDef
+        (Sigma := Sigma) hSigma hp)
+      ?_ ?_ ?_ hvolume
+  · intro z
+    exact chewi620_pullbackIdentityInvShape_quadratic
+      (T := T) hT_symm (z - center)
+  · intro z
+    exact chewi620_matrixSqrt_normalizedCutDirection_inner_toStd
+      (Sigma := Sigma) (T := T) hT_symm p center z
+  · intro z
+    exact chewi620_pullbackStandardCutInvShape_hnext
+      (d := d)
+      (u := chewi620MatrixNormalizedCutDirection Sigma p (T p))
+      (center := center) (nextCenter := nextCenter)
+      (z := z) (T := T) hT_symm hcenter
 
 end EuclideanMatrix
 

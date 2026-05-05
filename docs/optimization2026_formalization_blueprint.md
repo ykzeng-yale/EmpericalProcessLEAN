@@ -43,13 +43,15 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after local sync to `origin/main` at `95ca18b`; the
-latest Optimization proof frontier remains `83a31d2` plus the current raw
-symmetric square-root adjoint/cut bridge and PosDef
-invertibility/cancellation packets after the 2026-05-05 standard-cut scalar,
-determinant-ratio, coordinate-free affine-containment, supplied-identity
-affine-transport certificate, first Euclidean matrix quadratic packet, and
-cut-normalization algebra packet:
+Manual goal frontier after local sync to `origin/main` at `4e43e7d`
+(`Add Chewi ellipsoid PosDef cancellation bridge`) plus the current verified
+pullback-certificate packet in `StatInference/Optimization/Ellipsoid.lean`;
+the latest Optimization proof frontier is Chapter 6 Lemma 6.20 after the
+2026-05-05 standard-cut scalar, determinant-ratio, coordinate-free
+affine-containment, supplied-identity affine-transport certificate, first
+Euclidean matrix quadratic packet, cut-normalization algebra packet, raw
+symmetric square-root adjoint/cut bridge, PosDef invertibility/cancellation
+packet, and pullback-standard-cut certificate packet:
 `StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
 discrete AGD source rate,
 `StatInference/Optimization/ProjectedSubgradient.lean` proves the finite-valued
@@ -76,15 +78,22 @@ helpers, plus the raw symmetric square-root cut bridge declarations
 `chewi620_matrixPosDef_mul_inv_cancel_right`,
 `chewi620_matrixPosDef_inv_mul_cancel_left`,
 `chewi620_matrixPosDef_det_inv_mul_det`, `chewi620_matrixPosDef_inv_inv`,
-`matrixInvShape_mul_inv_cancel`, and `matrixInvShape_inv_mul_cancel`.
+`matrixInvShape_mul_inv_cancel`, `matrixInvShape_inv_mul_cancel`,
+`chewi620PullbackIdentityInvShape`,
+`chewi620PullbackStandardCutInvShape`,
+`chewi620_pullbackIdentityInvShape_quadratic`,
+`chewi620_pullbackStandardCutInvShape_quadratic`,
+`chewi620_pullbackStandardCutInvShape_hnext`, and
+`chewi620_sqrtAffineTransport_stepCertificate_of_pullback`.
 Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
 Theorem 5.10 weighted-telescope proof, Theorem 6.14 PSD packet, Theorem 6.16
 functional-constraint packet, the CuttingPlane CoGM wrapper packet, or the
 now-compiled supplied ellipsoid trajectory/rate, scalar containment,
-determinant-ratio, coordinate-free normalized containment, or abstract
-affine-transport packets.
+determinant-ratio, coordinate-free normalized containment, abstract
+affine-transport, matrix normalization, PosDef cancellation, or pullback
+certificate packets.
 `StatInference/Optimization/Theorem58.lean` proves the AGF Lyapunov derivative
 formula, discharges Lyapunov continuity from the trajectory and gradient oracle,
 and exposes a source-facing Theorem 5.8 rate wrapper.  Since Chewi leaves the
@@ -158,26 +167,32 @@ matrix bridge declarations `matrixInvShape`,
 invertibility/cancellation bridge declarations `matrixInvShape_mul`,
 `chewi620_matrixPosDef_det_isUnit`, `chewi620_matrixPosDef_mul_inv`,
 `chewi620_matrixPosDef_inv_mul`, and the two matrix-backed shape cancellation
-theorems.
+theorems, plus the pullback-standard-cut declarations
+`chewi620PullbackIdentityInvShape`,
+`chewi620PullbackStandardCutInvShape`,
+`chewi620_pullbackIdentityInvShape_quadratic`,
+`chewi620_pullbackStandardCutInvShape_quadratic`,
+`chewi620_pullbackStandardCutInvShape_hnext`, and
+`chewi620_sqrtAffineTransport_stepCertificate_of_pullback`.
 
 The next active packet should stay in Chapter 6 and prove a theorem-sized part
 of ellipsoid Lemma 6.20, not drip minor wrappers.  The exact
 Grünbaum/centroid measure theorem remains a precise supplied blocker before a
 source-audited CoGM report, and the exact Lemma 6.20 matrix proof remains the
 next ellipsoid blocker.  Search mathlib matrix/PSD/inverse/determinant and
-volume-scaling APIs first, then instantiate the concrete matrix hypotheses of
-`chewi620_affineTransport_stepCertificate_of_quadratic` for Chewi's displayed
-`Σ_{n+1}` update.  The current matrix quadratic, positive denominator,
-normalized cut direction algebra, raw symmetric square-root cut bridge, and
-PosDef invertibility/cancellation bridge are now local; the remaining blocker
-is the actual matrix/affine pullback for `Σ_{n+1}^{-1}` and
-determinant/volume bridge, not scalar algebra or abstract transport.  The
-target order is displayed pullback identity, rank-one determinant/volume
-bridge, then exact one-step Lemma 6.20 certificate.  If the full matrix proof balloons, prove the smallest
-matrix-coordinate, rank-one determinant, or volume-scaling certificate that
-removes the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth
-lower-bound Theorems 6.21-6.23 and feasibility Theorem 6.25 before opening
-Chapter 7 as the next main-text frontier.
+volume-scaling APIs first, then identify the pullback certificate objects with
+Chewi's displayed `Σ_n^{-1}` and `Σ_{n+1}^{-1}` matrix updates.  The current
+matrix quadratic, positive denominator, normalized cut direction algebra, raw
+symmetric square-root cut bridge, PosDef invertibility/cancellation bridge, and
+pullback-standard-cut certificate are now local; the remaining blocker is the
+displayed matrix equality plus determinant/volume bridge, not scalar algebra or
+abstract transport.  The target order is displayed matrix equivalence, rank-one
+determinant/volume bridge, then exact one-step Lemma 6.20 certificate.  If the
+full matrix proof balloons, prove the smallest matrix-coordinate, rank-one
+determinant, or volume-scaling certificate that removes the precise missing
+matrix API.  After that, continue Chapter 6 with nonsmooth lower-bound Theorems
+6.21-6.23 and feasibility Theorem 6.25 before opening Chapter 7 as the next
+main-text frontier.
 Mandatory search and reuse: mathlib
 `Analysis/InnerProductSpace/Projection/Minimal.lean` has
 `exists_norm_eq_iInf_of_complete_convex` and
