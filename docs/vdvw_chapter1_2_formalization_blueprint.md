@@ -89,7 +89,7 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at synced repository head `ee26281`:
+Current operational target, 2026-05-05 at synced repository head `6bcd319`:
 the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
@@ -259,6 +259,14 @@ direct wrapper around pinned mathlib's
 measures on `HasOuterApproxClosed` spaces.  This closes the bounded-continuous
 integral uniqueness direction; the VdV&W 1.3.12(ii) vector-lattice/tight
 variant remains pending.
+
+2026-05-05 bounded-continuous generated-sigma follow-up:
+`WeakConvergence.lean` now adds VdV&W 1.3.1 generated-sigma wrappers:
+`vdVW131_measurableSet_isClosed_of_forall_boundedContinuous_measurable`,
+`vdVW131_borel_le_of_forall_boundedContinuous_measurable`, and
+`vdVW131_borel_le_iff_forall_boundedContinuous_measurable`.  The proof uses
+pinned mathlib's closed-set Borel generator theorem and the continuous
+distance-to-a-closed-set function, matching the textbook argument.
 
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
@@ -459,7 +467,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.2.5 | Lemma | `..._1-100.md:467` | blocked-vdvw: product/perfect-map measurable-cover transfer; mathlib has product and measurable-space foundations but no exact local VdV&W perfect-map wrapper yet |
 | 1.2.6 | Lemma | `..._1-100.md:480` | promote-soon; mathlib Fubini foundation exists, pending VdV&W outer wrapper for Chapter 2.3/2.4.3 symmetrization |
 | 1.2.7 | Lemma | `..._1-100.md:492` | promote-soon; mathlib Fubini foundation exists, pending VdV&W outer wrapper for product outer expectations |
-| 1.3.1 | Lemma | `..._1-100.md:575` | foundation-lane/mathlib-foundation: classical topology/measure lemma, wrap or restate from pinned mathlib before claiming any gap |
+| 1.3.1 | Lemma | `..._1-100.md:575` | local-layer/mathlib-foundation: Borel sigma-field least for bounded-continuous real tests wrapped as `vdVW131_borel_le_iff_forall_boundedContinuous_measurable`, with closed-set distance proof |
 | 1.3.2 | Lemma | `..._1-100.md:582` | foundation-lane/mathlib-foundation: classical topology/measure lemma, wrap or restate from pinned mathlib before claiming any gap |
 | 1.3.4 | Theorem | `..._1-100.md:606` | local-layer/mathlib-foundation: weak convergence of probability measures via `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto` plus Portmanteau closed/open implications wrapped locally; exact arbitrary-map outer-expectation version remains pending |
 | 1.3.6 | Theorem | `..._1-100.md:650` | local-layer/mathlib-foundation: continuous map pushforward and `TendstoInDistribution` continuous-composition wrappers proved; arbitrary-map cover layer still pending |

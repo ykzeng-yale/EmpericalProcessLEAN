@@ -58,7 +58,7 @@ consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`ee26281`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`6bcd319`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -312,6 +312,17 @@ local ProbabilityMeasure/EmpiricalProcess weak-convergence files did not have
 the VdVW 1.3.12 wrapper, while pinned mathlib had the exact finite-measure
 bounded-continuous integral uniqueness theorem.  The vector-lattice/tight
 variant in VdV&W 1.3.12(ii) remains pending.
+
+2026-05-05 bounded-continuous generated-sigma follow-up: the Chapter 1 weak
+convergence file now has VdV&W 1.3.1 local wrappers:
+`vdVW131_measurableSet_isClosed_of_forall_boundedContinuous_measurable`,
+`vdVW131_borel_le_of_forall_boundedContinuous_measurable`, and
+`vdVW131_borel_le_iff_forall_boundedContinuous_measurable`.  They prove the
+metric-space statement that the Borel sigma-field is the least sigma-field
+making all bounded-continuous real functions measurable.  Search record:
+pinned mathlib supplied `borel_eq_generateFrom_isClosed`,
+`Metric.continuous_infDist_pt`, and `IsClosed.mem_iff_infDist_zero`, but no
+VdVW-named bounded-continuous generated-sigma wrapper existed locally.
 
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the

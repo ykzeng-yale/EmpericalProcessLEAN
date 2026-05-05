@@ -14,7 +14,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`ee26281`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
+`6bcd319`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
 Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
@@ -186,6 +186,14 @@ mathlib's
 finite-Borel-measure bounded-continuous integral determination direction under
 the standard `HasOuterApproxClosed` hypothesis; the vector-lattice/tight
 1.3.12(ii) variant is still pending.
+
+2026-05-05 bounded-continuous generated-sigma follow-up:
+`WeakConvergence.lean` now exports the VdV&W 1.3.1 generated-sigma wrappers
+`vdVW131_measurableSet_isClosed_of_forall_boundedContinuous_measurable`,
+`vdVW131_borel_le_of_forall_boundedContinuous_measurable`, and
+`vdVW131_borel_le_iff_forall_boundedContinuous_measurable`.  These formalize
+the metric-space distance-to-closed-set proof that Borel is the least
+sigma-field making all bounded-continuous real functions measurable.
 
 ## Status Legend
 

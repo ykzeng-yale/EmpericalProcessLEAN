@@ -1649,6 +1649,90 @@ theorem vdVWWeakConvergenceProbabilityMeasures_iff_forall_bounded_lipschitz_inte
   exact MeasureTheory.tendsto_iff_forall_lipschitz_integral_tendsto
 
 /--
+VdV&W Lemma 1.3.1, closed-set step: if every bounded-continuous real test is
+measurable for a sigma-field `m`, then every closed set is `m`-measurable.
+
+The proof follows the textbook distance-to-a-closed-set argument using
+`x ↦ min (Metric.infDist x F) 1`.
+-/
+theorem vdVW131_measurableSet_isClosed_of_forall_boundedContinuous_measurable
+    {S : Type u} [PseudoMetricSpace S] {m : MeasurableSpace S}
+    (h : ∀ f : S →ᵇ ℝ, @Measurable S ℝ m (borel ℝ) f)
+    {F : Set S} (hF : IsClosed F) :
+    MeasurableSet[m] F := by
+  by_cases hFne : F.Nonempty
+  · let g : S →ᵇ ℝ :=
+      BoundedContinuousFunction.ofNormedAddCommGroup
+        (fun x => min (Metric.infDist x F) 1)
+        ((Metric.continuous_infDist_pt F).min continuous_const)
+        1
+        (by
+          intro x
+          rw [Real.norm_eq_abs]
+          have hnonneg : 0 ≤ min (Metric.infDist x F) 1 :=
+            le_min Metric.infDist_nonneg zero_le_one
+          exact abs_le.mpr
+            ⟨le_trans (by norm_num : (-1 : ℝ) ≤ 0) hnonneg,
+              min_le_right _ _⟩)
+    have hg_meas : @Measurable S ℝ m (borel ℝ) g := h g
+    have hpre : MeasurableSet[m] (g ⁻¹' ({0} : Set ℝ)) :=
+      hg_meas (measurableSet_singleton (0 : ℝ))
+    have hEq : F = g ⁻¹' ({0} : Set ℝ) := by
+      ext x
+      simp only [Set.mem_preimage, Set.mem_singleton_iff]
+      constructor
+      · intro hx
+        have hzero : Metric.infDist x F = 0 := Metric.infDist_zero_of_mem hx
+        simp [g, hzero]
+      · intro hx
+        have hmin : min (Metric.infDist x F) 1 = 0 := by simpa [g] using hx
+        have hdistzero : Metric.infDist x F = 0 := by
+          by_contra hne
+          have hpos : 0 < Metric.infDist x F :=
+            lt_of_le_of_ne Metric.infDist_nonneg (Ne.symm hne)
+          have hminpos : 0 < min (Metric.infDist x F) 1 :=
+            lt_min hpos zero_lt_one
+          linarith
+        exact (hF.mem_iff_infDist_zero hFne).2 hdistzero
+    simpa [hEq] using hpre
+  · have hEmpty : F = ∅ := by
+      ext x
+      constructor
+      · intro hx
+        exact (hFne ⟨x, hx⟩).elim
+      · intro hx
+        cases hx
+    simp [hEmpty]
+
+/--
+VdV&W Lemma 1.3.1: on a metric space, the Borel sigma-field is contained in
+any sigma-field that makes every bounded-continuous real function measurable.
+-/
+theorem vdVW131_borel_le_of_forall_boundedContinuous_measurable
+    {S : Type u} [PseudoMetricSpace S] {m : MeasurableSpace S}
+    (h : ∀ f : S →ᵇ ℝ, @Measurable S ℝ m (borel ℝ) f) :
+    borel S ≤ m := by
+  rw [borel_eq_generateFrom_isClosed]
+  exact MeasurableSpace.generateFrom_le fun F hF =>
+    vdVW131_measurableSet_isClosed_of_forall_boundedContinuous_measurable h hF
+
+/--
+VdV&W Lemma 1.3.1, least-sigma-field formulation: the Borel sigma-field on a
+metric space is the least sigma-field making all bounded-continuous real
+functions measurable.
+-/
+theorem vdVW131_borel_le_iff_forall_boundedContinuous_measurable
+    {S : Type u} [PseudoMetricSpace S] {m : MeasurableSpace S} :
+    borel S ≤ m ↔
+      ∀ f : S →ᵇ ℝ, @Measurable S ℝ m (borel ℝ) f := by
+  constructor
+  · intro hm f
+    have hf : @Measurable S ℝ (borel S) (borel ℝ) f :=
+      f.continuous.borel_measurable
+    exact hf.mono hm le_rfl
+  · exact vdVW131_borel_le_of_forall_boundedContinuous_measurable
+
+/--
 VdV&W Lemma 1.3.12(i): finite Borel measures are determined by their
 bounded-continuous real integrals.
 
