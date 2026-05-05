@@ -113,6 +113,19 @@ the full signed bounded-continuous textbook definition, but it removes the
 first proof obstacle: measurable nonnegative test compositions are
 automatically asymptotically measurable in the outer/inner-gap sense.
 
+2026-05-05 second follow-up: the asymptotic-measurability foundation now also
+has lower-shifted real-test and bounded-continuous local layers:
+`VdVWLowerShiftedRealOuterInnerExpectationGap`,
+`VdVWLowerShiftedRealOuterInnerExpectationGap_eq_zero_of_measurable`,
+`VdVWAsymptoticallyMeasurableLowerShiftedReal`,
+`VdVWAsymptoticallyMeasurableLowerShiftedReal.of_forall_measurable_comp`,
+`VdVWAsymptoticallyMeasurableLowerShiftedReal.of_forall_measurable`,
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted`, and
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_measurable`.
+These declarations move Definition 1.3.7 closer to the textbook bounded
+continuous test class while honestly keeping the missing signed arbitrary-map
+outer expectation as a remaining primitive.
+
 2026-05-04 `/goal` status correction: local scratch now registers the exact
 remaining reverse-time theorem as the generic proposition
 `VdVWOrderDualSubmartingaleConvergenceHandoff`.  The theorem-facing consumer
