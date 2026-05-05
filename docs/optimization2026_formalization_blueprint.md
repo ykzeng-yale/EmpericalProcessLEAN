@@ -206,16 +206,20 @@ center-update bridge are now local; the rank-one collapse
 `chewi620_matrix_rankOne_collapse`, and the determinant side of the displayed
 forward-shape update now compiles through
 `chewi620_matrix_rankOne_det_update`,
-`chewi620_displayedShapeUpdateCore_det`, and
-`chewi620_displayedShapeUpdate_det`.  The remaining blocker is the displayed
-next inverse-shape matrix equality plus determinant-to-volume bridge, not
-scalar algebra, abstract transport, current-shape rewriting, center algebra,
-rank-one collapse, or determinant-core algebra.  The target order is the
-determinant-ratio/source-volume bridge
-`(chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det =
-ellipsoidVolumeRatio d ^ 2`, determinant-to-volume scaling using mathlib
-volume APIs, displayed `Σ_{n+1}^{-1}` matrix equivalence, then exact one-step
-Lemma 6.20 certificate.  If the full matrix proof balloons, prove the smallest
+`chewi620_displayedShapeUpdateCore_det`, `chewi620_displayedShapeUpdate_det`,
+`chewi620_displayedShapeUpdate_det_div_det`,
+`chewi620_displayedShapeUpdate_det_div_det_eq_ellipsoidVolumeRatio_sq`,
+`chewi620_displayedShapeUpdate_det_pos`,
+`chewi620_displayedShapeUpdate_det_ne_zero`,
+`chewi620_displayedShapeUpdate_det_isUnit`, and
+`chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio`.  The remaining
+blocker is the displayed next inverse-shape matrix equality plus the actual
+mathlib measure-scaling instantiation, not scalar algebra, abstract transport,
+current-shape rewriting, center algebra, rank-one collapse, determinant-core
+algebra, or source-volume determinant algebra.  The target order is
+determinant-to-volume scaling using mathlib volume APIs, displayed
+`Σ_{n+1}^{-1}` matrix equivalence, then exact one-step Lemma 6.20 certificate.
+If the full matrix proof balloons, prove the smallest
 matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
 the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth
 lower-bound Theorems 6.21-6.23 and feasibility Definition 6.24/Theorem 6.25

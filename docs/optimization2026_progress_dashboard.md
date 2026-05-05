@@ -29,8 +29,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
 - Current manual frontier after local sync to `origin/main` at `8d279bb`
-  (`Add Chewi ellipsoid determinant bridge`) with the verified pushed
-  rank-one-collapse and displayed forward-shape determinant packet in
+  (`Add Chewi ellipsoid determinant bridge`) plus the verified local
+  source-volume determinant and scalar `hvolume` packet in
   `StatInference/Optimization/Ellipsoid.lean`:
   `StatInference/Optimization/Theorem510.lean` proves the source-shaped
   discrete AGD rate, and `StatInference/Optimization/ProjectedSubgradient.lean`
@@ -60,11 +60,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   symmetric square-root raw-adjoint/cut bridge, the PosDef
   invertibility/cancellation bridge, the pullback-standard-cut certificate,
   current `Σ⁻¹` identification, displayed center-update declarations,
-  `chewi620_matrix_rankOne_collapse`, and the displayed forward-shape
-  determinant declarations compile
+  `chewi620_matrix_rankOne_collapse`, the displayed forward-shape determinant
+  declarations, source-volume determinant ratio, determinant
+  positivity/nonzero/unit facts, and scalar `hvolume` bridge compile
   in `StatInference/Optimization/Ellipsoid.lean`.  A
   focused `lake env lean StatInference/Optimization/Ellipsoid.lean` check
-  passed after the determinant packet, while the exact Grünbaum/centroid
+  passed after the source-volume packet, while the exact Grünbaum/centroid
   theorem remains a supplied blocker for exact CoGM reporting.
 
 ## Coverage By Lane
@@ -134,16 +135,18 @@ invertibility/cancellation packet, the pullback-standard-cut certificate
 `chewi620_sqrtAffineTransport_stepCertificate_of_pullback`, the current
 `Σ⁻¹` ellipsoid identification, and the displayed-center certificate
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`.
-The next manual goal packet should first put the displayed determinant formula
-into the source volume-ratio shape
+The displayed determinant formula is now in the source volume-ratio shape
 `(chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det =
-ellipsoidVolumeRatio d ^ 2`, then use mathlib volume-scaling APIs to discharge
-the `hvolume` side of the displayed-current/displayed-center certificate, while
-continuing the harder displayed next inverse-shape equality with Chewi's
-`Σ_{n+1}^{-1}` matrix update.  If the full inverse-shape proof balloons, record
-the exact missing matrix API and prove the smallest affine transport,
-matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
-it.
+ellipsoidVolumeRatio d ^ 2`, with determinant positivity/nonzero/unit facts and
+the scalar bridge
+`chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio` converting a
+squared determinant-volume bound into the certificate's `hvolume` hypothesis.
+The next manual goal packet should instantiate mathlib volume-scaling APIs for
+the actual ellipsoid affine image and continue the harder displayed
+next inverse-shape equality with Chewi's `Σ_{n+1}^{-1}` matrix update.  If
+either proof balloons, record the exact missing matrix/measure API and prove
+the smallest affine transport, matrix-coordinate, inverse-shape, or
+volume-scaling certificate that removes it.
 
 This paragraph overrides any older "next target" language in historical
 Chapter 4/5 notes below: the current manual `/goal` target is the rest of

@@ -894,6 +894,108 @@ theorem chewi620_displayedShapeUpdate_det
     chewi620_displayedShapeUpdateCore_det (d := d) hd hSigma hp]
 
 /--
+Chewi's displayed forward-shape determinant as a ratio against the current
+shape determinant, in the source square-volume-ratio form.
+-/
+theorem chewi620_displayedShapeUpdate_det_div_det
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0) :
+    (chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det =
+      (((d : ℝ) - 1) / ((d : ℝ) + 1)) *
+        ((((d : ℝ) ^ (2 : ℕ)) /
+          (((d : ℝ) ^ (2 : ℕ)) - 1)) ^ d) := by
+  have hdet :=
+    chewi620_displayedShapeUpdate_det
+      (d := d) hd hcard hSigma hp
+  have hSigma_det_ne : Sigma.det ≠ 0 :=
+    chewi620_matrixPosDef_det_ne_zero hSigma
+  rw [hdet]
+  field_simp [hSigma_det_ne]
+
+/--
+The determinant ratio of Chewi's displayed forward-shape update is exactly the
+square of the displayed volume ratio.
+-/
+theorem chewi620_displayedShapeUpdate_det_div_det_eq_ellipsoidVolumeRatio_sq
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0) :
+    (chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det =
+      ellipsoidVolumeRatio d ^ (2 : ℕ) := by
+  rw [chewi620_displayedShapeUpdate_det_div_det (d := d) hd hcard hSigma hp]
+  rw [ellipsoidVolumeRatio]
+  rw [Real.sq_sqrt (chewi620_ellipsoidVolumeRatio_source_nonneg hd)]
+
+/--
+Chewi's displayed forward-shape matrix has positive determinant under the
+positive-definite current-shape and nonzero cut-vector hypotheses.
+-/
+theorem chewi620_displayedShapeUpdate_det_pos
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0) :
+    0 < (chewi620DisplayedShapeUpdate d Sigma p).det := by
+  have hD_gt_one : 1 < (d : ℝ) := by exact_mod_cast hd
+  have hD_pos : 0 < (d : ℝ) := by linarith
+  have hscale_pos :
+      0 < ((d : ℝ) ^ (2 : ℕ)) /
+        (((d : ℝ) ^ (2 : ℕ)) - 1) := by
+    refine div_pos (sq_pos_of_pos hD_pos) ?_
+    nlinarith [sq_pos_of_pos (show 0 < (d : ℝ) - 1 by linarith)]
+  have hleft_pos : 0 < ((d : ℝ) - 1) / ((d : ℝ) + 1) := by
+    exact div_pos (by linarith) (by positivity)
+  rw [chewi620_displayedShapeUpdate_det (d := d) hd hcard hSigma hp]
+  exact mul_pos (pow_pos hscale_pos d)
+    (mul_pos (chewi620_matrixPosDef_det_pos hSigma) hleft_pos)
+
+/-- Chewi's displayed forward-shape update is nonsingular. -/
+theorem chewi620_displayedShapeUpdate_det_ne_zero
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0) :
+    (chewi620DisplayedShapeUpdate d Sigma p).det ≠ 0 :=
+  ne_of_gt (chewi620_displayedShapeUpdate_det_pos (d := d) hd hcard hSigma hp)
+
+/--
+Chewi's displayed forward-shape update supplies the determinant unit needed by
+mathlib nonsingular-inverse and volume-scaling APIs.
+-/
+theorem chewi620_displayedShapeUpdate_det_isUnit
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0) :
+    IsUnit (chewi620DisplayedShapeUpdate d Sigma p).det :=
+  isUnit_iff_ne_zero.mpr
+    (chewi620_displayedShapeUpdate_det_ne_zero (d := d) hd hcard hSigma hp)
+
+/--
+Scalar bridge from a squared-volume determinant bound to the `hvolume`
+hypothesis used by the ellipsoid-step certificate.
+-/
+theorem chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    {vol volNext : ℝ}
+    (hvol_nonneg : 0 ≤ vol) (hvolNext_nonneg : 0 ≤ volNext)
+    (hsq :
+      volNext ^ (2 : ℕ) ≤
+        ((chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det) *
+          vol ^ (2 : ℕ)) :
+    volNext ≤ ellipsoidVolumeRatio d * vol := by
+  have hsq_ratio := hsq
+  rw [chewi620_displayedShapeUpdate_det_div_det_eq_ellipsoidVolumeRatio_sq
+    (d := d) hd hcard hSigma hp] at hsq_ratio
+  have hsq_target :
+      volNext ^ (2 : ℕ) ≤ (ellipsoidVolumeRatio d * vol) ^ (2 : ℕ) := by
+    simpa [mul_pow] using hsq_ratio
+  exact
+    (sq_le_sq₀ hvolNext_nonneg
+      (mul_nonneg (ellipsoidVolumeRatio_nonneg d) hvol_nonneg)).mp
+        hsq_target
+
+/--
 Positive denominator for Chewi's normalized ellipsoid cut direction when the
 forward shape matrix is positive definite and the cut vector is nonzero.
 -/

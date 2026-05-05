@@ -139,29 +139,40 @@ plus `chewi620_matrix_rankOne_collapse`,
 `chewi620DisplayedShapeUpdateCore`,
 `chewi620_displayedShapeUpdateCore_det`,
 `chewi620DisplayedShapeUpdate`, and
-`chewi620_displayedShapeUpdate_det`; the determinant bridge is verified and
-pushed, so the next run must not spend theorem time reproving or repackaging
-that determinant core unless it is directly needed inside the volume theorem.
+`chewi620_displayedShapeUpdate_det`, plus the source-volume determinant packet
+`chewi620_displayedShapeUpdate_det_div_det`,
+`chewi620_displayedShapeUpdate_det_div_det_eq_ellipsoidVolumeRatio_sq`,
+`chewi620_displayedShapeUpdate_det_pos`,
+`chewi620_displayedShapeUpdate_det_ne_zero`,
+`chewi620_displayedShapeUpdate_det_isUnit`, and
+`chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio`.  The determinant
+and scalar `hvolume` bridge is verified in focused Lean, so the next run must
+not spend theorem time reproving or repackaging that determinant/source-volume
+core unless it is directly needed inside the measure-scaling theorem.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
 textbook goal is marked complete, so this paragraph is the operative manual
 `/goal` target.
 
-Immediate target for the next manual goal run: finish a theorem-sized Chewi
-Lemma 6.20 matrix-and-volume packet.  First prove the displayed
-determinant-to-volume bridge from the compiled forward-shape determinant
-formula to `ellipsoidVolumeRatio d`, because this is the shortest route toward
-the `hvolume` side of
-`chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`;
-in parallel, continue the displayed next inverse-shape matrix equality that
+Immediate target for the next manual goal run: finish the remaining
+theorem-sized Chewi Lemma 6.20 matrix-and-volume packet.  The displayed
+determinant ratio is now in the exact source shape
+`(chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det =
+ellipsoidVolumeRatio d ^ 2`, and the scalar bridge
+`chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio` converts any
+squared-volume determinant bound into the certificate's `hvolume` hypothesis.
+Next, instantiate the actual mathlib measure/volume-scaling API for the
+ellipsoid affine image, or, if that route balloons, record the exact missing
+measure API and switch to the displayed next inverse-shape matrix equality that
 identifies the local pullback next shape with Chewi's displayed
 `Σ_{n+1}^{-1}` update.  The raw square-root adjoint identity, normalized cut
 `hcut` bridge, `Sigma.PosDef` invertibility/cancellation layer, pullback
 `hnext` certificate, current `Σ⁻¹` ellipsoid identification, displayed center
-update, rank-one collapse `(Σp)^T Σ⁻¹ (Σp) = <p, Σp>`, and displayed
-forward-shape determinant formula are now local and pushed; this is not a
-minor wrapper target.  Do not spend another run on
+update, rank-one collapse `(Σp)^T Σ⁻¹ (Σp) = <p, Σp>`, displayed
+forward-shape determinant formula, determinant/source-volume ratio, determinant
+positivity/nonzero/unit facts, and scalar `hvolume` bridge are now local; this
+is not a minor wrapper target.  Do not spend another run on
 scalar, coordinate-free, abstract transport, current-shape, center-update,
 pullback-only wrappers, rank-one collapse, or determinant-core algebra unless
 one is the shortest verified route to the concrete matrix theorem.  The
@@ -185,10 +196,9 @@ dependency order is:
    instantiated; use `Real.map_matrix_volume_pi_eq_smul_volume_pi` /
    `Real.map_linearMap_volume_pi_eq_smul_volume_pi` after the determinant
    ratio is in source shape.
-2. Prove the determinant ratio/source-rate bridge:
-   `(chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det =
-   ellipsoidVolumeRatio d ^ 2`, plus the positivity/nonzero side facts needed
-   for a volume scaling theorem.
+2. Instantiate mathlib volume-scaling from the determinant/source-volume packet
+   and prove a concrete measured-volume inequality that feeds
+   `chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio`.
 3. Prove the displayed next-shape/inverse-shape matrix equality: connect
    `chewi620PullbackStandardCutInvShape d u T` under the square-root/inverse
    hypotheses with `matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹`.
