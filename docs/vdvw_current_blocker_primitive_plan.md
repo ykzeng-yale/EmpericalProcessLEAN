@@ -3981,3 +3981,16 @@ now exposes this as the final primitive boundary: a proof of the deterministic
 comparison immediately closes `VdVWOrderDualSubmartingaleConvergenceHandoff`
 for all finite-measure order-dual submartingales satisfying the existing
 uniform `eLpNorm` bound.
+
+2026-05-04 follow-up: the blocker boundary now also has the strict
+inner-threshold form expected from mathlib's pathwise extension lemma
+`upcrossingsBefore_lt_of_exists_upcrossing`.  The compiled declarations
+`vdVWOrderDualSubmartingale_ae_tendsto_of_finiteHorizon_innerReverseComparison`
+and
+`VdVWOrderDualSubmartingaleConvergenceHandoff.of_finiteHorizon_innerReverseComparison`
+prove order-dual convergence when every finite-prefix downcrossing from `b` to
+`a` is bounded by a reversed-window upcrossing from some inner thresholds
+`c,d` with `a < c < d < b`.  This avoids the non-strict endpoint mismatch:
+the next proof should construct this inner comparison from the crossing times,
+using the facts that a downcrossing reaches `f ≥ b` then `f ≤ a`, hence the
+reversed path is strictly below `c` and strictly above `d`.

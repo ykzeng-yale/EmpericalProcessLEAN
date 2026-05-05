@@ -1291,3 +1291,10 @@ integration primitives.  The generic interface-level wrapper
 `VdVWOrderDualSubmartingaleConvergenceHandoff.of_finiteHorizon_reverseComparison`
 is also compiled, so the next proof should target the deterministic comparison
 directly rather than adding more convergence adapters.
+2026-05-04 follow-up: a strict inner-threshold variant is now compiled as
+`vdVWOrderDualSubmartingale_ae_tendsto_of_finiteHorizon_innerReverseComparison`
+and
+`VdVWOrderDualSubmartingaleConvergenceHandoff.of_finiteHorizon_innerReverseComparison`.
+This is the preferred deterministic target because mathlib's crossing
+extension lemma uses strict inequalities; downcrossing from `b` to `a` can be
+reversed into an upcrossing from any `c,d` with `a < c < d < b`.

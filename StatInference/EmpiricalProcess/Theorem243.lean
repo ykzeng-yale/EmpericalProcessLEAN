@@ -5861,6 +5861,78 @@ theorem vdVWOrderDualSubmartingale_ae_tendsto_of_finiteHorizon_reverseComparison
       exact not_le.2 (sub_pos.2 (Rat.cast_lt.2 hab)))
 
 /--
+Order-dual convergence from an inner-threshold finite-prefix reversal
+comparison.
+
+This is the strict-threshold variant expected from mathlib's pathwise crossing
+API: a reverse downcrossing from `b` to `a` gives, after reversing the finite
+window, an upcrossing from any inner `c,d` with `a < c < d < b`.
+-/
+theorem vdVWOrderDualSubmartingale_ae_tendsto_of_finiteHorizon_innerReverseComparison
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕᵒᵈ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕᵒᵈ -> Ω -> ℝ} {R : ℝ≥0}
+    (hsub : Submartingale f ℱ μ)
+    (hbdd : ∀ n : ℕᵒᵈ, eLpNorm (f n) 1 μ ≤ (R : ℝ≥0∞))
+    (hcompare :
+      ∀ a b : ℚ, a < b ->
+        ∃ c d : ℝ, (a : ℝ) < c ∧ c < d ∧ d < (b : ℝ) ∧
+          ∀ N : ℕ, ∀ ω : Ω,
+            (upcrossingsBefore (-(b : ℝ)) (-(a : ℝ))
+              (fun n : ℕ => fun ω : Ω => -f (OrderDual.toDual n) ω) N ω : ℝ≥0∞) ≤
+            upcrossings c d
+              (fun k : ℕ => fun ω : Ω => f (OrderDual.toDual (N - k)) ω) ω) :
+    ∀ᵐ ω ∂μ, ∃ limit : ℝ,
+      Tendsto (fun n : ℕ => f (OrderDual.toDual n) ω) atTop (𝓝 limit) := by
+  refine vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_lintegral_lt_top
+    (μ := μ) (ℱ := ℱ) (f := f) hsub hbdd ?_
+  intro a b hab
+  rcases hcompare a b hab with ⟨c, d, hac, hcd, hdb, hcomparison⟩
+  let g : ℕ -> Ω -> ℝ := fun n ω => -f (OrderDual.toDual n) ω
+  have hg_sm : ∀ n : ℕ, StronglyMeasurable (g n) := by
+    intro n
+    exact ((hsub.stronglyMeasurable (OrderDual.toDual n)).neg).mono
+      (ℱ.le (OrderDual.toDual n))
+  have hg_adapted :
+      StronglyAdapted (Filtration.natural g hg_sm) g :=
+    Filtration.stronglyAdapted_natural (u := g) hg_sm
+  have hneg : (-(b : ℝ)) < (-(a : ℝ)) :=
+    neg_lt_neg (Rat.cast_lt.2 hab)
+  have hmono :
+      Monotone fun N ω =>
+        (upcrossingsBefore (-(b : ℝ)) (-(a : ℝ)) g N ω : ℝ≥0∞) := by
+    intro N M hNM ω
+    simpa only [ENNReal.coe_natCast, Nat.cast_le] using
+      (upcrossingsBefore_mono hneg hNM ω)
+  have htotal_le :
+      ∫⁻ ω, upcrossings (-(b : ℝ)) (-(a : ℝ)) g ω ∂μ ≤
+        (R + ‖c‖₊ * μ Set.univ) / ENNReal.ofReal (d - c) := by
+    change
+      ∫⁻ ω, (⨆ N : ℕ,
+          (upcrossingsBefore (-(b : ℝ)) (-(a : ℝ)) g N ω : ℝ≥0∞)) ∂μ ≤
+        (R + ‖c‖₊ * μ Set.univ) / ENNReal.ofReal (d - c)
+    rw [lintegral_iSup]
+    · refine iSup_le fun N => ?_
+      calc
+        ∫⁻ ω, (upcrossingsBefore (-(b : ℝ)) (-(a : ℝ)) g N ω : ℝ≥0∞) ∂μ
+            ≤ ∫⁻ ω, upcrossings c d
+                (fun k : ℕ => fun ω : Ω => f (OrderDual.toDual (N - k)) ω) ω ∂μ :=
+          lintegral_mono fun ω => hcomparison N ω
+        _ ≤ (R + ‖c‖₊ * μ Set.univ) / ENNReal.ofReal (d - c) :=
+          vdVWOrderDualFiniteHorizon_lintegral_upcrossings_le
+            (μ := μ) (ℱ := ℱ) (f := f) (R := R) hsub hbdd hcd N
+    · intro N
+      exact measurable_from_top.comp
+        (hg_adapted.measurable_upcrossingsBefore hneg)
+    · exact hmono
+  refine lt_of_le_of_lt htotal_le ?_
+  exact ENNReal.div_lt_top
+    (by finiteness)
+    (by
+      rw [ne_eq, ENNReal.ofReal_eq_zero]
+      exact not_le.2 (sub_pos.2 hcd))
+
+/--
 The generic VdV&W order-dual convergence handoff follows once the
 finite-prefix reversal comparison is proved uniformly for order-dual
 processes.
@@ -5884,6 +5956,31 @@ theorem VdVWOrderDualSubmartingaleConvergenceHandoff.of_finiteHorizon_reverseCom
     vdVWOrderDualSubmartingale_ae_tendsto_of_finiteHorizon_reverseComparison
       (μ := μ) (ℱ := ℱ) (f := f) (R := R) hsub hbdd
       (fun a b hab N ω => hcompare (f := f) a b hab N ω)
+
+/--
+Inner-threshold version of
+`VdVWOrderDualSubmartingaleConvergenceHandoff.of_finiteHorizon_reverseComparison`.
+
+This is the preferred target for the remaining deterministic proof because it
+matches mathlib's strict finite-upcrossing extension lemma.
+-/
+theorem VdVWOrderDualSubmartingaleConvergenceHandoff.of_finiteHorizon_innerReverseComparison
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    (hcompare :
+      ∀ {f : ℕᵒᵈ -> Ω -> ℝ},
+        ∀ a b : ℚ, a < b ->
+          ∃ c d : ℝ, (a : ℝ) < c ∧ c < d ∧ d < (b : ℝ) ∧
+            ∀ N : ℕ, ∀ ω : Ω,
+              (upcrossingsBefore (-(b : ℝ)) (-(a : ℝ))
+                (fun n : ℕ => fun ω : Ω => -f (OrderDual.toDual n) ω) N ω : ℝ≥0∞) ≤
+              upcrossings c d
+                (fun k : ℕ => fun ω : Ω => f (OrderDual.toDual (N - k)) ω) ω) :
+    VdVWOrderDualSubmartingaleConvergenceHandoff Ω μ := by
+  intro ℱ f R hsub hbdd
+  exact
+    vdVWOrderDualSubmartingale_ae_tendsto_of_finiteHorizon_innerReverseComparison
+      (μ := μ) (ℱ := ℱ) (f := f) (R := R) hsub hbdd
+      (fun a b hab => hcompare (f := f) a b hab)
 
 /--
 The textbook Lemma 2.4.5 display comparison builds a genuine mathlib
