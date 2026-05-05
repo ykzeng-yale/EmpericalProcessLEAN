@@ -1085,9 +1085,13 @@ logarithmic CG rate, or source-audit the polynomial/Chebyshev alternative
 proof before moving to Theorem 5.8.  The affine-minimizer restarted interface
 now compiles as `chewi54_block_bound_of_cgAffineMinimizer_blocks`,
 `chewi54_log_rate_of_cgAffineMinimizer_blocks`, and
-`chewi54_log_rate_of_cgAffineMinimizer_blocks_blockSize`; the next step is the
-displayed/restarted CG specialization that discharges those block hypotheses
-from `IsCGDisplayedIteration`-style data.
+`chewi54_log_rate_of_cgAffineMinimizer_blocks_blockSize`.  The displayed
+restart specialization now compiles as
+`chewi54_log_rate_of_displayed_cg_blocks` and
+`chewi54_log_rate_of_displayed_cg_blocks_blockSize`, discharging those block
+hypotheses from `IsCGDisplayedIteration`-style data.  The next step is a
+source-audited final Theorem 5.4 wrapper/report path, or the
+polynomial/Chebyshev route before moving to Theorem 5.8.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 

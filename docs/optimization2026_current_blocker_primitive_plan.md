@@ -1583,10 +1583,14 @@ Chebyshev alternative proof after a source-facing Theorem 5.4 statement audit.
 The shifted affine-minimizer block interface now compiles:
 `chewi54_block_bound_of_cgAffineMinimizer_blocks`,
 `chewi54_log_rate_of_cgAffineMinimizer_blocks`, and
-`chewi54_log_rate_of_cgAffineMinimizer_blocks_blockSize`.  Next target: build
-the displayed/restarted CG block record and use the existing
+`chewi54_log_rate_of_cgAffineMinimizer_blocks_blockSize`.  The displayed
+restart layer now also compiles: `chewi54_log_rate_of_displayed_cg_blocks`
+and `chewi54_log_rate_of_displayed_cg_blocks_blockSize`, reusing the existing
 `IsCGDisplayedIteration` bridges to discharge the span, gradient-span,
-orthogonality, and affine-minimizer assumptions inside each block.  Do not redo
+orthogonality, and affine-minimizer assumptions inside each block.  Next
+target: source-audit the final Theorem 5.4 statement/report path and either
+package a final named source theorem around the displayed block endpoint or
+switch to the polynomial/Chebyshev route and Theorem 5.8.  Do not redo
 Theorem 5.3's
 A-conjugacy induction, the Chapter 3 descent lemma, Chapter 4 gradient-span
 interfaces, or Chapter 4 hard-instance packages.
