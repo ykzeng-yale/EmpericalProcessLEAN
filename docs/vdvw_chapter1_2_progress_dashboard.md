@@ -113,6 +113,15 @@ the family and sequence/range forms as
 `vdVWProbabilityMeasuresTight_range_iff_tendsto_limsup_inner`.  These are
 measure-level FDD/Hilbert-coordinate tightness foundations; arbitrary-map
 asymptotic tightness remains open.
+
+2026-05-05 finite-dimensional unit-tail follow-up: the remaining adjacent
+mathlib sequence criteria in `TightNormed` are now wrapped too:
+`vdVWProbabilityMeasuresTight_range_of_tendsto_limsup_inner_of_norm_eq_one`
+uses only unit-vector projection tails, and
+`vdVWProbabilityMeasuresTight_range_of_tendsto_limsup_measureReal_inner_of_norm_eq_one`
+uses real-valued measure tails with the probability total-mass bound discharged
+locally.  This completes the current mathlib-backed finite-dimensional
+inner-product tightness wrapper batch.
 Direct null/a.e.-measurable constructors are now also available for the
 lower-shifted/canonical shifted bounded-continuous predicates in both
 common-domain and varying-domain forms.  The direct signed positive/negative

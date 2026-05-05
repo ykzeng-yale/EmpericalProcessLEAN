@@ -5466,3 +5466,18 @@ pinned mathlib file also supplies
 `vdVWProbabilityMeasuresTight_range_iff_tendsto_limsup_inner`.  This closes
 the finite-dimensional inner-product/FDD-coordinate tightness layer; it is
 still measure-level and does not prove arbitrary-map asymptotic tightness.
+
+2026-05-05 finite-dimensional unit-tail follow-up: search in
+`Mathlib.MeasureTheory.Measure.TightNormed` also found
+`MeasureTheory.isTightMeasureSet_range_of_tendsto_limsup_inner_of_norm_eq_one`
+and
+`MeasureTheory.isTightMeasureSet_range_of_tendsto_limsup_measureReal_inner_of_norm_eq_one`.
+`WeakConvergence.lean` now exposes the corresponding probability-measure
+wrappers
+`vdVWProbabilityMeasuresTight_range_of_tendsto_limsup_inner_of_norm_eq_one`
+and
+`vdVWProbabilityMeasuresTight_range_of_tendsto_limsup_measureReal_inner_of_norm_eq_one`.
+The second wrapper discharges mathlib's eventual finite-measure total-mass
+bound with probability total mass one.  This completes the current
+mathlib-backed finite-dimensional tightness wrapper batch; the remaining
+tightness blocker is still exact arbitrary-map/asymptotic tightness.
