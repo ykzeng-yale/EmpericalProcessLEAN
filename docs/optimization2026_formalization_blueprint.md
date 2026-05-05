@@ -43,40 +43,45 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after the 2026-05-05 Theorem 5.10 setup packet: local
-`main` is past `88178a2`, and
-`StatInference/Optimization/Theorem510.lean` now compiles and is imported by
-`StatInference.lean`.  Do not target the stale
-app-level `/goal` text's old Theorem 3.4 frontier, and do not replay the
-already-built CG substrate, Theorem 5.8 AGF source wrapper, or Theorem 5.9
-strong-convex AGF proof.  `StatInference/Optimization/Theorem58.lean` proves
-the AGF Lyapunov derivative formula, discharges Lyapunov continuity from the
-trajectory and gradient oracle, and exposes a source-facing Theorem 5.8 rate
-wrapper.  Since Chewi leaves the strongly-convex AGF proof to Exercise 5.3,
-`StatInference/Optimization/Theorem59.lean` records the standard Lyapunov
-route: strong-convex friction, momentum-shift Lyapunov vector, Lyapunov
-energy, generic AGF gap derivative, energy-vector derivative, raw Lyapunov
-derivative, derivative decay inequality, scalar exponential-decay consumer,
-zero-momentum initial-energy bound, and the final exponential gap wrappers.
-
-The next active packet is still Theorem 5.10 discrete AGD around markdown line
-1219, but the setup layer is no longer missing.  `Theorem510.lean` now records
+Manual goal frontier after the 2026-05-05 Theorem 5.10 source-rate packet:
+`StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
+discrete AGD source rate and is imported by `StatInference.lean`.  Do not
+target the stale app-level `/goal` text's old Theorem 3.4 frontier, and do not
+replay the already-built CG substrate, Theorem 5.8 AGF source wrapper, Theorem
+5.9 strong-convex AGF proof, or Theorem 5.10 weighted-telescope proof.
+`StatInference/Optimization/Theorem58.lean` proves the AGF Lyapunov derivative
+formula, discharges Lyapunov continuity from the trajectory and gradient oracle,
+and exposes a source-facing Theorem 5.8 rate wrapper.  Since Chewi leaves the
+strongly-convex AGF proof to Exercise 5.3,
+`StatInference/Optimization/Theorem59.lean` records the standard Lyapunov route
+and final exponential gap wrappers.  `Theorem510.lean` now records
 `chewi510Lambda`, `chewi510Theta`, `chewi510TrialPoint`,
 `IsChewi510AGDTrajectory`, lambda positivity/nonzero/recurrence/growth,
-`lambda N >= N / 2`, theta's scalar identity, source telescope alignment, the
-`(3.3)` one-step reuse from
+`lambda N >= N / 2`, theta's scalar identity, source telescope alignment,
+`(3.3)` reuse from
 `StatInference.Optimization.oneStepRecurrence_of_firstOrderStrongConvexOn`,
-and the rearranged gap upper bound.  The next packet should apply the
-rearranged one-step estimate with `z = x n` and `z = xstar`, multiply/add with
-weight `lambda (n+1) - 1`, convert the inner-product line to the squared-norm
-difference, use telescope alignment plus
-`lambda (n+1) * (lambda (n+1) - 1) = lambda n ^ 2`, prove the finite weighted
-telescoping sum, and close the final source rate.  Search/reuse local
-`sum_range_sub_succ`, mathlib finite-sum telescoping APIs, `norm_add_sq_real`,
-`norm_sub_sq_real`, `Real.sq_sqrt`, `Real.le_sqrt_of_sq_le`, and scalar
-algebra tactics before introducing any new primitive.  Only after Theorem 5.10
-is compiled should the main route open the Chapter 6 nonsmooth/projection
-layer, while scouts can map Chapter 6-13 APIs in parallel.
+the weighted two-point inequality, finite weighted telescope, denominator form,
+and final source theorem `chewi510_gap_le_two_beta_dist_sq_over_nat_sq`.
+
+The next active packet is Chapter 6 nonsmooth convex optimization, starting
+with the projection/subgradient layer around markdown lines 1458-1554.  Create
+`StatInference/Optimization/ProjectedSubgradient.lean` unless search discovers
+a stronger existing anchor.  First close source-shaped supplied-interface
+versions of Definition 6.8 subgradients, Definition 6.11 projection, Lemma 6.12
+projection characterization, Lemma 6.13 projection non-expansiveness, the PSD
+trajectory display, and Theorem 6.14's average-gap bound.  Mandatory search and
+reuse before adding primitives: mathlib
+`Analysis/InnerProductSpace/Projection/Minimal.lean` has
+`exists_norm_eq_iInf_of_complete_convex` and
+`norm_eq_iInf_iff_real_inner_le_zero`; mathlib
+`Topology/MetricSpace/Lipschitz.lean` has `LipschitzOnWith`,
+`LipschitzOnWith.dist_le_mul`, and `LipschitzOnWith.le_add_mul`; local Chapter
+3/5 finite-sum telescope and convex-average patterns should be reused for the
+PSD summation.  Keep the first Chapter 6 packet finite-valued and
+source-theorem driven; backfill extended-real regular-convex infrastructure for
+Definitions 6.1-6.10 only when it becomes a theorem blocker.  Scouts can map
+Chapter 7-13 APIs in parallel, but the main lane should push theorem-sized
+Chapter 6 progress.
 
 ## Local Sources
 

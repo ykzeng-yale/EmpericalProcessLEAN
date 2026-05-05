@@ -68,42 +68,47 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current manual objective after the 2026-05-05 Theorem 5.10 setup packet:
-aggressively
-formalize and prove the main theorem content of Sinho Chewi's Optimization
-2026 notes in Lean under `StatInference/Optimization`, continuing from local
-`main` past `88178a2` and the latest Optimization proof frontier:
-`StatInference/Optimization/Theorem510.lean` now compiles and is imported by
-`StatInference.lean`.  The app-level `/goal` objective
-text still mentions the obsolete Theorem 3.4 frontier and cannot be edited
-directly through the current tool surface unless the full textbook goal is
-marked complete, so this paragraph is the live replacement `/goal` prompt.
+Current manual objective after the 2026-05-05 Theorem 5.10 source-rate packet:
+aggressively formalize and prove the main theorem content of Sinho Chewi's
+Optimization 2026 notes in Lean under `StatInference/Optimization`, continuing
+from the latest verified Optimization frontier where
+`StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
+discrete accelerated-gradient source rate in a supplied-interface form.  The
+app-level `/goal` objective text still mentions the obsolete Theorem 3.4
+frontier and cannot be edited directly through the current tool surface unless
+the full textbook goal is marked complete, so this paragraph is the live
+replacement `/goal` prompt.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
-Lyapunov work, or Theorem 5.9 strong-convex AGF work.  The active target is
-Chewi Theorem 5.10, convergence of discrete AGD, around markdown line 1219.
-The setup packet has already added `chewi510Lambda`, `chewi510Theta`,
-`chewi510TrialPoint`, `IsChewi510AGDTrajectory`, lambda nonnegativity,
-successor positivity/nonzero, `chewi510Lambda_succ_mul_sub_one`,
-`chewi510Lambda_add_half_le_succ`, `chewi510Lambda_ge_nat_half`,
-`chewi510Lambda_mul_theta_succ`,
-`chewi510_telescopeAlignment_of_trial_succ`,
-`IsChewi510AGDTrajectory.telescopeAlignment`,
-`chewi510_oneStepInequality`, `chewi510_oneStepInequality_univ`,
-`chewi510_gap_le_norm_sq_diff_of_oneStep`,
-`chewi510_gap_le_norm_sq_diff`, and
-`chewi510_gap_le_norm_sq_diff_univ`, reusing
-`StatInference.Optimization.oneStepRecurrence_of_firstOrderStrongConvexOn`
-from `Theorem34.lean` for source inequality `(3.3)`.  The next proof packet
-should assemble the actual Theorem 5.10 argument: apply the rearranged
-one-step estimate with `z = x n` and `z = xstar`, multiply the first by
-`lambda (n+1) - 1`, add, rewrite with `norm_add_sq_real`/`norm_sub_sq_real`,
-use the compiled telescope alignment and
-`lambda (n+1) * (lambda (n+1) - 1) = lambda n ^ 2`, prove the weighted
-finite-sum telescope, and then close the final source rate
-`f (x N) - fstar <= 2 * beta * ‖x 0 - xstar‖ ^ 2 / (N : ℝ) ^ 2` for positive
-`N` under convexity, smoothness, minimizer, and AGD-trajectory assumptions.
+Lyapunov work, Theorem 5.9 strong-convex AGF work, or the now-closed Theorem
+5.10 discrete AGD proof.  `Theorem510.lean` now compiles the lambda/theta
+recurrences, telescope alignment, source `(3.3)` reuse from
+`StatInference.Optimization.oneStepRecurrence_of_firstOrderStrongConvexOn`,
+weighted two-point inequality, finite weighted telescope, denominator form, and
+the final source wrapper
+`chewi510_gap_le_two_beta_dist_sq_over_nat_sq`:
+`f (x N) - f xStar <= 2 * beta * ‖x 0 - xStar‖ ^ 2 / (N : ℝ) ^ 2` for
+positive `N` under convexity, smoothness, feasible AGD trajectory, and
+minimizer membership assumptions.
+
+The active aggressive target is now Chapter 6 nonsmooth convex optimization.
+Start with a new `StatInference/Optimization/ProjectedSubgradient.lean` module
+unless a search finds a better existing local anchor.  The first theorem-sized
+packet should build source-shaped interfaces for Definition 6.8 subgradients,
+Definition 6.11 projection, Lemma 6.12 projection characterization, Lemma 6.13
+projection non-expansiveness, the PSD trajectory display at markdown lines
+1512-1517, and Theorem 6.14's average-gap bound around lines 1523-1554.  Search
+and reuse first: mathlib `Analysis/InnerProductSpace/Projection/Minimal.lean`
+has `exists_norm_eq_iInf_of_complete_convex` and
+`norm_eq_iInf_iff_real_inner_le_zero`; mathlib `Topology/MetricSpace/Lipschitz`
+has `LipschitzOnWith`, `LipschitzOnWith.dist_le_mul`, and
+`LipschitzOnWith.le_add_mul`; local Chapter 3/5 finite-sum telescope and convex
+average lower-bound patterns should be reused for the PSD summation.  Avoid a
+heavy extended-real regular-convex foundation in the first pass unless it
+directly unblocks a named theorem; for Theorem 6.14 it is faster to use a
+supplied finite-valued subgradient/lipschitz/projection interface and later
+backfill Definitions 6.1-6.10.
 
 Speed rule for this manual goal: make theorem-sized packets, not one-wrapper
 push loops.  Use scouts in parallel for future Chapter 6-8 nonsmooth/proximal
