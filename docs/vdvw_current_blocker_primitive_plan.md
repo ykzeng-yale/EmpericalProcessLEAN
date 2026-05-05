@@ -3654,3 +3654,22 @@ Lemma 2.4.5 conclusion: strong adaptedness of the shifted centered process to
 a suitable ordinary `ℕ` filtration and the one-step nonnegative conditional
 drift.  No broader named reverse/cofiltration proposition or raw
 `Submartingale` object is needed at this package boundary.
+
+2026-05-04 follow-up: the ordinary filtration and strong adaptedness part of
+that constructor-level route is now fixed by the process itself.  Search/reuse
+record: pinned mathlib `Filtration.natural` and
+`Filtration.stronglyAdapted_natural` build the smallest ordinary increasing
+filtration that makes a strongly-measurable process strongly adapted.  Local
+`measurable_vdVWPermutationSymmetricMeasurableSpace_vdVWLemma245CenteredEmpiricalSupremum_of_countable`
+and `vdVWPermutationSymmetricMeasurableSpace_le_pi` provide full-product
+strong measurability of the shifted centered supremum.  New compiled
+declarations are
+`stronglyMeasurable_vdVWLemma245CenteredEmpiricalSupremum_of_countable`,
+`vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration`,
+`stronglyAdapted_vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration`,
+`VdVWLemma245ReverseCofiltrationHandoff.of_natural_condExp_step_nonneg`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_natural_condExp_step_nonneg`,
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_natural_condExp_step_nonneg`.
+The current non-finite-class proof target is now only the natural-filtration
+one-step conditional drift inequality for the shifted centered supremum.

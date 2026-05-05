@@ -1100,3 +1100,13 @@ and
 The active non-finite-class target is therefore exactly: choose/build the
 ordinary filtration, prove strong adaptedness of the shifted centered process,
 and prove the one-step conditional drift inequality.
+
+2026-05-04 follow-up: the first two parts of that target are now closed using
+mathlib's natural filtration.  New compiled declarations include
+`vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration`,
+`stronglyAdapted_vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration`,
+`VdVWLemma245ReverseCofiltrationHandoff.of_natural_condExp_step_nonneg`, and
+the full-subgraph endpoint
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_natural_condExp_step_nonneg`.
+The active non-finite-class target is now just the one-step conditional drift
+inequality over this natural filtration.

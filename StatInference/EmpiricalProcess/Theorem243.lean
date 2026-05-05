@@ -4924,9 +4924,29 @@ theorem measurable_vdVWPermutationSymmetricMeasurableSpace_vdVWLemma245CenteredE
     intro index hindex
     exact (hclass index hindex).sub measurable_const
   simpa [vdVWLemma245CenteredEmpiricalSupremum, centeredClassFun] using
-    (measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable
-      (indexClass := indexClass) (classFun := centeredClassFun)
-      hcount hcentered_meas n)
+      (measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable
+        (indexClass := indexClass) (classFun := centeredClassFun)
+        hcount hcentered_meas n)
+
+/--
+Full-product strong measurability of the named Lemma 2.4.5 centered empirical
+supremum.  This is the input needed to build its ordinary natural filtration.
+-/
+theorem stronglyMeasurable_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (n : ℕ) :
+    StronglyMeasurable
+      (fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence) := by
+  exact
+    ((measurable_vdVWPermutationSymmetricMeasurableSpace_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      hcount hclass n).mono
+      (vdVWPermutationSymmetricMeasurableSpace_le_pi Observation n) le_rfl).stronglyMeasurable
 
 /--
 Adaptedness of the named Lemma 2.4.5 centered empirical supremum process to the
@@ -5032,6 +5052,53 @@ theorem stronglyAdapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245Centere
   (adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_succ_of_countable
     (P := P) (indexClass := indexClass) (classFun := classFun)
     hcount hclass).stronglyAdapted
+
+/--
+The ordinary natural filtration of the shifted Lemma 2.4.5 centered empirical
+supremum process `X_n = sup_f |P_{n+1} f - P f|`.
+-/
+noncomputable def vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun) :
+    Filtration ℕ (.pi (X := fun _ : ℕ => Observation)) :=
+  Filtration.natural
+    (fun n : ℕ => fun sequence : ℕ -> Observation =>
+      vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+    (fun n =>
+      stronglyMeasurable_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        hcount hclass (n + 1))
+
+/--
+The shifted Lemma 2.4.5 centered empirical supremum process is strongly
+adapted to its ordinary natural filtration.
+-/
+theorem stronglyAdapted_vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun) :
+    StronglyAdapted
+      (vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        hcount hclass)
+      (fun n : ℕ => fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+          (n + 1) sequence) := by
+  unfold vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration
+  exact
+    Filtration.stronglyAdapted_natural
+      (u := fun n : ℕ => fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+          (n + 1) sequence)
+      (fun n =>
+        stronglyMeasurable_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          hcount hclass (n + 1))
 
 /-- Nonnegativity of the named Lemma 2.4.5 centered empirical supremum. -/
 theorem vdVWLemma245CenteredEmpiricalSupremum_nonneg
@@ -5668,6 +5735,49 @@ theorem VdVWLemma245ReverseCofiltrationHandoff.of_condExp_step_nonneg
     VdVWLemma245ReverseCofiltrationHandoff.of_submartingale
       (P := P) (indexClass := indexClass) (classFun := classFun)
       (envelope := envelope) hcount henvelope hclass henv_integrable hsub
+
+/--
+Natural-filtration version of the constructor-level conditional-drift
+sufficient condition.
+
+The ordinary filtration and strong adaptedness are now fixed by the process
+itself.  The only remaining input is the one-step nonnegative conditional
+drift over this natural filtration.
+-/
+theorem VdVWLemma245ReverseCofiltrationHandoff.of_natural_condExp_step_nonneg
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hstep :
+      ∀ n : ℕ,
+        0 ≤ᵐ[vdVWInfiniteProductMeasure P]
+          (vdVWInfiniteProductMeasure P)[
+            (fun sequence : ℕ -> Observation =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                ((n + 1) + 1) sequence -
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                (n + 1) sequence) |
+            vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration
+              (P := P) (indexClass := indexClass) (classFun := classFun)
+              hcount hclass n]) :
+    VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun := by
+  exact
+    VdVWLemma245ReverseCofiltrationHandoff.of_condExp_step_nonneg
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      hcount henvelope hclass henv_integrable
+      (ℱ := vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        hcount hclass)
+      (stronglyAdapted_vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        hcount hclass)
+      hstep
 
 /--
 Final Lemma 2.4.5 consumer for the already-compiled countable centered
@@ -26005,6 +26115,53 @@ theorem
       hadapted hstep)
 
 /--
+Canonical full-subgraph Lemma 2.4.5 a.s. zero consumer under the
+natural-filtration conditional-drift sufficient condition.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_natural_condExp_step_nonneg
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hstep :
+      ∀ n : ℕ,
+        0 ≤ᵐ[vdVWInfiniteProductMeasure P]
+          (vdVWInfiniteProductMeasure P)[
+            (fun sequence : ℕ -> Observation =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                ((n + 1) + 1) sequence -
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                (n + 1) sequence) |
+            vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration
+              (P := P) (indexClass := indexClass) (classFun := classFun)
+              (Set.to_countable indexClass) hclass n]) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) :=
+  vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_reverseCofiltrationHandoff
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) (vcDegree := vcDegree)
+    hvc hindexClass henvelope hclass henv henv_integrable
+    (VdVWLemma245ReverseCofiltrationHandoff.of_natural_condExp_step_nonneg
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      (Set.to_countable indexClass) henvelope hclass henv_integrable hstep)
+
+/--
 Canonical full-subgraph Theorem 2.4.3/Lemma 2.4.5 package under the named
 reverse/cofiltration blocker.
 
@@ -26194,6 +26351,71 @@ theorem
         (envelope := envelope) (ℱ := ℱ)
         (Set.to_countable indexClass) henvelope hclass henv_integrable
         hadapted hstep)
+
+/--
+Canonical full-subgraph Theorem 2.4.3/Lemma 2.4.5 package under the natural
+filtration conditional-drift sufficient condition.
+
+The ordinary filtration and strong adaptedness are fixed internally as the
+natural filtration of the shifted centered supremum process; the caller only
+has to prove the one-step nonnegative conditional drift over that natural
+filtration.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_natural_condExp_step_nonneg
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hstep :
+      ∀ n : ℕ,
+        0 ≤ᵐ[vdVWInfiniteProductMeasure P]
+          (vdVWInfiniteProductMeasure P)[
+            (fun sequence : ℕ -> Observation =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                ((n + 1) + 1) sequence -
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                (n + 1) sequence) |
+            vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration
+              (P := P) (indexClass := indexClass) (classFun := classFun)
+              (Set.to_countable indexClass) hclass n]) :
+    VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) := by
+  exact
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_reverseCofiltrationHandoff
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (vcDegree := vcDegree)
+      hvc hindexClass henvelope hclass henv henv_integrable
+      (VdVWLemma245ReverseCofiltrationHandoff.of_natural_condExp_step_nonneg
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope)
+        (Set.to_countable indexClass) henvelope hclass henv_integrable hstep)
 
 /--
 Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the
