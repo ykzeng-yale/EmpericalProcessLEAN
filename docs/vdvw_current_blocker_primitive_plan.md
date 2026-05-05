@@ -58,7 +58,7 @@ consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`73e0125` before the latest proof batch: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`a18f1c3` before the current proof batch: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -93,7 +93,10 @@ Next high-capacity proof batches, in order:
 1. Attack the exact Theorem 2.4.3 entropy mismatch: prove the random-entropy
    selected finite-net tail/UI theorem from the book condition
    `log N(η, F_M, L1(P_n)) = o_P^*(n)` for fixed positive `η`, or prove a
-   genuine varying-domain tail/UI replacement.  Do not smuggle in deterministic
+   genuine varying-domain tail/UI replacement.  The current proof batch adds
+   the direct variable-entropy-plus-explicit-tail/UI consumer, so the remaining
+   target is the theorem that derives the tail/UI input itself, not another
+   endpoint or package wrapper.  Do not smuggle in deterministic
    log-cardinality boundedness unless the theorem statement names it.
 2. Remove the remaining countability/coordinate-measurability mismatch in
    Theorem 2.4.3
@@ -115,6 +118,25 @@ Next high-capacity proof batches, in order:
 Older entries below are historical proof-state logs.  Use the authoritative
 paragraph above for the next `/goal` run unless a later verified commit updates
 it.
+
+2026-05-05 current proof batch: the direct book-shaped variable-entropy route
+with honest selected finite-net tail/UI side conditions now compiles in
+`Theorem243.lean`.  The new declaration
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_tailExpectation`
+feeds
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM` and explicit
+selected finite-net integrability/tail-expectation hypotheses into the
+already compiled fixed-radius/untruncation Theorem 2.4.3 consumer.  Search
+record: local code already had
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions`,
+`integral_finiteNetHoeffdingUpper_tendsto_zero_of_tailExpectation_convergesInOuterProbabilityConst`,
+and bounded deterministic-log tail/UI adapters; pinned mathlib has
+fixed-domain `UniformIntegrable`/Vitali APIs but no ready varying-domain
+`SampleAt Observation n` selected finite-net UI theorem.  This closes manual
+tail-side-condition packaging for the random-entropy branch but does not prove
+that the textbook random entropy hypothesis alone implies the required
+tail/UI.  The next target remains exactly that analytic bridge, or an honest
+structural entropy theorem deriving a deterministic bound.
 
 2026-05-05 proof follow-up: the first `NullMeasurable` bridge for the
 countability/P-measurability mismatch is now compiled.  New declarations:
