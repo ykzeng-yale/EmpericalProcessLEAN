@@ -50,6 +50,19 @@ handoff.
 Current main-line target: Theorem 2.4.3 and the Chapter 2
 bracketing/measurable-class primitives it needs.
 
+2026-05-04 `/goal` status correction: local scratch now registers the exact
+remaining reverse-time theorem as the generic proposition
+`VdVWOrderDualSubmartingaleConvergenceHandoff`.  The theorem-facing consumer
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_orderDualSubmartingaleConvergence`
+compiles against the VdV&W-specific shifted permutation-symmetric
+cofiltration submartingale and the envelope `L¹`/`eLpNorm` bound.  Therefore
+the next proof target should be the generic reverse-time convergence theorem
+itself, or an equivalent reindexing of an `ℕᵒᵈ` submartingale into an ordinary
+mathlib `ℕ` submartingale/supermartingale convergence theorem.  Do not spend
+the next run on already-closed cofiltration construction, adaptedness,
+textbook comparison, leave-one-out notation, finite-cover entropy, grid/VC
+packaging, or finite-class SLLN endpoints.
+
 2026-05-04 `/goal` target update: the live non-finite-class frontier is no
 longer inverse-radius entropy, finite-cover selection, VC/subgraph packaging,
 untruncation, finite-class GC, or leave-one-out notation.  Those layers are

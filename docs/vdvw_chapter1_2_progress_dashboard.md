@@ -1217,3 +1217,11 @@ and
 Thus the remaining Lemma 2.4.5 gap is narrowed to reverse convergence for this
 `ℕᵒᵈ` submartingale, not construction of the cofiltration/submartingale
 structure itself.
+2026-05-04 follow-up: the generic reverse-time convergence gap is now named
+as `VdVWOrderDualSubmartingaleConvergenceHandoff`, and the VdV&W-specific
+consumer
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_orderDualSubmartingaleConvergence`
+is compiled.  It composes the shifted `ℕᵒᵈ` cofiltration submartingale with
+the existing envelope `eLpNorm` bound.  The next target is to prove this
+generic handoff, preferably by reindexing an `ℕᵒᵈ` submartingale into an
+ordinary mathlib martingale-convergence theorem.
