@@ -20,6 +20,22 @@ variable {T Ω : Type*} {𝓧 : T -> Type*} {mΩ : MeasurableSpace Ω}
   {X Y : (t : T) -> Ω -> 𝓧 t} {P : Measure Ω}
 
 /--
+VdV&W Lemma 1.4.1: for separable metric-type Borel spaces, the product of the
+Borel sigma-fields equals the Borel sigma-field of the product topology.
+
+This is the local empirical-process wrapper around mathlib's
+`Prod.borelSpace` instance, with separability providing second countability
+for pseudometric spaces.
+-/
+theorem vdVW141_prod_borel_eq_product_borel
+    {D E : Type*} [PseudoMetricSpace D] [TopologicalSpace.SeparableSpace D]
+    [MeasurableSpace D] [BorelSpace D]
+    [PseudoMetricSpace E] [TopologicalSpace.SeparableSpace E]
+    [MeasurableSpace E] [BorelSpace E] :
+    (inferInstance : MeasurableSpace (D × E)) = borel (D × E) :=
+  BorelSpace.measurable_eq
+
+/--
 VdV&W 1.4.8 uniqueness-only layer: a process law is determined by all of its
 finite-dimensional distributions.
 

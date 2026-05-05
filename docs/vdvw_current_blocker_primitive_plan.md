@@ -58,7 +58,7 @@ consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`f495f64`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`1e471ea`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -334,6 +334,14 @@ pre-tightness and separability, the complete-space equivalence with tightness,
 and the Polish-measure formulation still require local definitions for
 pre-tight/separable/Polish probability measures before an exact theorem can be
 claimed.
+
+2026-05-05 product Borel-space follow-up: the empirical-process
+finite-dimensional file now has the VdV&W 1.4.1 wrapper
+`vdVW141_prod_borel_eq_product_borel`.  It states that for separable
+pseudometric Borel spaces the product measurable space equals the Borel
+sigma-field of the product topology, reusing mathlib's `Prod.borelSpace` and
+the separable-pseudometric second-countability route.  The stronger VdV&W
+1.4.2 uniqueness theorem from nonnegative Lipschitz product tests remains open.
 
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the

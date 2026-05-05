@@ -89,7 +89,7 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at synced repository head `f495f64`:
+Current operational target, 2026-05-05 at synced repository head `1e471ea`:
 the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
@@ -274,6 +274,12 @@ mathlib-backed complete separable metric-type probability-measure tightness
 direction for VdV&W 1.3.2.  The pre-tight/separable equivalence, complete-space
 equivalence with tightness, and Polish-measure tightness clauses remain pending
 until the corresponding local measure-level definitions are introduced.
+
+2026-05-05 product Borel-space follow-up: `FiniteDimensional.lean` now adds
+`vdVW141_prod_borel_eq_product_borel`, a VdV&W 1.4.1 wrapper stating that the
+product of the Borel sigma-fields equals the Borel sigma-field of the product
+topology for separable pseudometric Borel spaces.  This consumes mathlib's
+`Prod.borelSpace`; VdV&W 1.4.2 product-test uniqueness remains pending.
 
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
@@ -483,7 +489,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.3.10 | Theorem | `..._1-100.md:756` | blocked-vdvw: exact nonmeasurable/arbitrary-map weak-convergence layer missing; measure-level weak-convergence/Portmanteau/tightness wrappers are already local, so the remaining gap is the exact arbitrary-map extension |
 | 1.3.12 | Lemma | `..._1-100.md:768` | local-layer/mathlib-foundation: part (i) finite Borel measure uniqueness from bounded-continuous real integrals wrapped as `vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`; part (ii) vector-lattice/tight variant pending |
 | 1.3.13 | Lemma | `..._1-100.md:778` | blocked-vdvw: arbitrary-map/asymptotic-measurability infrastructure missing after mathlib search |
-| 1.4.1 | Lemma | `..._1-100.md:848` | foundation-lane/mathlib-foundation: audit found product/Pi Borel-space and finite-coordinate restriction APIs; pending exact VdV&W product-space wrapper |
+| 1.4.1 | Lemma | `..._1-100.md:848` | local-layer/mathlib-foundation: product Borel equality for separable pseudometric Borel spaces wrapped as `vdVW141_prod_borel_eq_product_borel` |
 | 1.4.2 | Lemma | `..._1-100.md:849` | foundation-lane/mathlib-foundation: audit found product-law, projective-limit, and finite-dimensional-law APIs; exact nonnegative Lipschitz product-test uniqueness not found |
 | 1.4.3 | Lemma | `..._1-100.md:857` | local-layer/mathlib-foundation: binary and finite product-law weak-convergence wrappers proved as `VdVWWeakConvergenceProbabilityMeasures.prod` and `.pi`; arbitrary-map/asymptotic-tightness extension pending |
 | 1.4.4 | Lemma | `..._1-100.md:858` | local-layer/mathlib-foundation: finite-coordinate projection/FDD forward wrapper proved as `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict`; converse FDD iff theorem still missing |

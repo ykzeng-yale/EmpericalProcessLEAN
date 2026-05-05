@@ -14,7 +14,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`f495f64`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
+`1e471ea`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
 Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
@@ -200,6 +200,11 @@ sigma-field making all bounded-continuous real functions measurable.
 wrapper for the complete separable metric-type probability-measure tightness
 direction.  The full pre-tight/separable/tight/Polish-measure equivalence
 still needs local definitions before it can be marked exact.
+
+2026-05-05 product Borel-space follow-up: `FiniteDimensional.lean` now exports
+`vdVW141_prod_borel_eq_product_borel`, proving the VdV&W 1.4.1 product
+Borel-space equality for separable pseudometric Borel spaces.  The exact
+1.4.2 nonnegative Lipschitz product-test uniqueness theorem is still pending.
 
 ## Status Legend
 
