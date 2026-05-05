@@ -91,12 +91,20 @@ High-value local files:
 Latest proof target: Chapter 6 nonsmooth convex optimization.  Theorem 6.14 is
 now compiled in the finite-valued source-rate form, including the ray-valid
 Lipschitz-to-subgradient-norm bridge and `h = R / sqrt N` corollary.  The next
-manual goal packet should attack Theorem 6.16 directly: define the
+manual goal packet should attack Theorem 6.16 directly and aggressively:
+define the
 functional-constraint PSD interface, prove the objective-case and
 constraint-case distance decreases from
 `projectedSubgradient_scaled_sqdist_recurrence`, then assemble the finite
 contradiction proof of (6.5) under
 `N >= L^2 * ‖x 0 - xStar‖^2 / eps^2`.
+
+This paragraph overrides any older "next target" language in historical
+Chapter 4/5 notes below: the current manual `/goal` target is Theorem 6.16,
+then the rest of Chapter 6 main text (6.18-6.25), then Chapters 7-13 by
+theorem-sized module packets.  Do not reroute to source-report packaging,
+Theorem 5.4/5.8/5.9/5.10, or Chapter 4 geometric-lower-bound polishing unless a
+current Chapter 6 proof explicitly needs that dependency.
 
 Stable background: the first `ProjectedSubgradient.lean` packet proves the
 supplied-interface Theorem 6.14 average-gap bound, including source-shaped
