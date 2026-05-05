@@ -466,6 +466,14 @@ a nonnegative measurable cover remain minimal measurable covers on the product
 space.  The remaining 1.2.5 gap is the full arbitrary-map perfect projection
 statement, where the required majorization set need not be measurable.
 
+2026-05-05 product projection expectation follow-up:
+`VdVWOuterExpectation_prod_fst_eq_of_measurable` and
+`VdVWOuterExpectation_prod_snd_eq_of_measurable` now package the corresponding
+probability-product outer-expectation invariance for measurable nonnegative
+targets.  This is the expectation-level form needed when adjoining an ignored
+probability-coordinate product factor; it still deliberately does not claim
+full arbitrary-map perfectness.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.

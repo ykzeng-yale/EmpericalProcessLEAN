@@ -1167,6 +1167,60 @@ theorem VdVWOuterExpectation_eq_lintegral_cover
         (U.minimal_ae V V.measurable_toFun (ae_of_all μ V.majorizes))
 
 /--
+First-coordinate product-space outer expectation for measurable targets.
+
+If the second product factor is a probability measure, adjoining it and then
+ignoring it does not change the VdV&W nonnegative outer expectation.  This is
+the expectation-level measurable-target core of the perfect-coordinate
+projection statement in VdV&W Lemma 1.2.5.
+-/
+theorem VdVWOuterExpectation_prod_fst_eq_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure ν]
+    {T : Ω -> ℝ≥0∞} (U : VdVWMeasurableCover μ T) (hT : Measurable T) :
+    VdVWOuterExpectation (μ.prod ν) (fun z : Ω × S => T z.1) =
+      VdVWOuterExpectation μ T := by
+  rw [VdVWOuterExpectation_eq_lintegral_cover
+      (VdVWMeasurableCover.fstProductOfMeasurable U hT),
+    VdVWOuterExpectation_eq_lintegral_cover U]
+  change (∫⁻ z : Ω × S, U z.1 ∂μ.prod ν) = ∫⁻ ω, U ω ∂μ
+  calc
+    ∫⁻ z : Ω × S, U z.1 ∂μ.prod ν =
+        ∫⁻ ω, ∫⁻ _s : S, U ω ∂ν ∂μ := by
+      exact
+        MeasureTheory.lintegral_prod (fun z : Ω × S => U z.1)
+          (U.measurable_toFun.comp measurable_fst).aemeasurable
+    _ = ∫⁻ ω, U ω ∂μ := by
+      simp [lintegral_const]
+
+/--
+Second-coordinate product-space outer expectation for measurable targets.
+
+If the first product factor is a probability measure, adjoining it and then
+ignoring it does not change the VdV&W nonnegative outer expectation.
+-/
+theorem VdVWOuterExpectation_prod_snd_eq_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ]
+    {T : S -> ℝ≥0∞} (U : VdVWMeasurableCover ν T) (hT : Measurable T) :
+    VdVWOuterExpectation (μ.prod ν) (fun z : Ω × S => T z.2) =
+      VdVWOuterExpectation ν T := by
+  rw [VdVWOuterExpectation_eq_lintegral_cover
+      (VdVWMeasurableCover.sndProductOfMeasurable U hT),
+    VdVWOuterExpectation_eq_lintegral_cover U]
+  change (∫⁻ z : Ω × S, U z.2 ∂μ.prod ν) = ∫⁻ s, U s ∂ν
+  calc
+    ∫⁻ z : Ω × S, U z.2 ∂μ.prod ν =
+        ∫⁻ s, ∫⁻ _ω : Ω, U s ∂μ ∂ν := by
+      exact
+        MeasureTheory.lintegral_prod_symm (fun z : Ω × S => U z.2)
+          (U.measurable_toFun.comp measurable_snd).aemeasurable
+    _ = ∫⁻ s, U s ∂ν := by
+      simp [lintegral_const]
+
+/--
 A.e.-measurable nonnegative maps have their VdV&W outer expectation equal to
 the ordinary `lintegral`.
 

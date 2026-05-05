@@ -106,6 +106,8 @@ simultaneously minimal for all absolutely continuous measures in the family.
 Lemma 1.2.5 now has a compiled measurable-target core: first and second
 coordinate product pullbacks of a nonnegative measurable cover remain minimal
 measurable covers on the product space.
+The corresponding probability-product outer-expectation invariance is also
+compiled for first and second coordinate pullbacks.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new
