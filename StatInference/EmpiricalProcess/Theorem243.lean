@@ -5402,6 +5402,52 @@ def VdVWOrderDualSubmartingaleConvergenceHandoff
           Tendsto (fun n : ℕ => f (OrderDual.toDual n) ω) atTop (𝓝 limit)
 
 /--
+Finite-horizon reversal of an `ℕᵒᵈ` filtration.
+
+For a fixed horizon `N`, ordinary time `k` reads the reverse-time field
+`ℱ_{N-k}` with natural subtraction saturating at `0`.  This converts finite
+windows of a reverse-time/cofiltration argument into ordinary mathlib
+filtration language.
+-/
+abbrev vdVWOrderDualFiniteHorizonFiltration
+    {Ω : Type u} [MeasurableSpace Ω]
+    (ℱ : Filtration ℕᵒᵈ (inferInstance : MeasurableSpace Ω)) (N : ℕ) :
+    Filtration ℕ (inferInstance : MeasurableSpace Ω) where
+  seq k := ℱ (OrderDual.toDual (N - k))
+  mono' := by
+    intro k l hkl
+    exact ℱ.mono (by
+      change N - l ≤ N - k
+      exact Nat.sub_le_sub_left hkl N)
+  le' k := ℱ.le (OrderDual.toDual (N - k))
+
+/--
+Every finite reversed window of an `ℕᵒᵈ` submartingale is an ordinary
+`ℕ`-indexed submartingale.
+
+This is the exact bridge needed before proving a reverse-upcrossing estimate:
+mathlib's finite-window upcrossing machinery can be applied to
+`k ↦ f (N-k)` under `vdVWOrderDualFiniteHorizonFiltration ℱ N`.
+-/
+theorem submartingale_vdVWOrderDualFiniteHorizon
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {ℱ : Filtration ℕᵒᵈ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕᵒᵈ -> Ω -> ℝ} (N : ℕ)
+    (hsub : Submartingale f ℱ μ) :
+    Submartingale
+      (fun k : ℕ => f (OrderDual.toDual (N - k)))
+      (vdVWOrderDualFiniteHorizonFiltration ℱ N) μ := by
+  refine ⟨?hadapted, ?hsub, ?hint⟩
+  · intro k
+    exact hsub.stronglyAdapted (OrderDual.toDual (N - k))
+  · intro k l hkl
+    exact hsub.2.1 _ _ (by
+      change N - l ≤ N - k
+      exact Nat.sub_le_sub_left hkl N)
+  · intro k
+    exact hsub.integrable (OrderDual.toDual (N - k))
+
+/--
 The textbook Lemma 2.4.5 display comparison builds a genuine mathlib
 submartingale over the shifted VdV&W permutation-symmetric cofiltration.
 

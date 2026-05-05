@@ -1229,3 +1229,9 @@ submartingale convergence theorem; the VdV&W consumer supplies this bound from
 preferably by reindexing an `ℕᵒᵈ` submartingale into an ordinary mathlib
 martingale-convergence theorem or by proving the corresponding reverse
 upcrossing theorem.
+2026-05-04 follow-up: the finite-window reindexing substrate for that proof is
+now compiled.  `vdVWOrderDualFiniteHorizonFiltration` reverses a fixed
+`ℕᵒᵈ` window, and `submartingale_vdVWOrderDualFiniteHorizon` proves
+`k ↦ f (OrderDual.toDual (N-k))` is an ordinary mathlib submartingale on that
+window.  This avoids the invalid global ordinary-time filtration and points the
+next proof at a finite-window reverse-upcrossing estimate.

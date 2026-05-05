@@ -67,6 +67,15 @@ on already-closed cofiltration construction, adaptedness, textbook comparison,
 leave-one-out notation, finite-cover entropy, grid/VC packaging, or
 finite-class SLLN endpoints.
 
+2026-05-04 follow-up: the safe finite-window reindexing route is now compiled
+as `vdVWOrderDualFiniteHorizonFiltration` and
+`submartingale_vdVWOrderDualFiniteHorizon`.  For each fixed horizon `N`, the
+ordinary process `k ↦ f (OrderDual.toDual (N-k))` is a mathlib
+`Submartingale` over the reversed finite-horizon filtration.  This is the
+right substrate for the reverse-upcrossing proof.  The ordinary-time
+filtration `n ↦ ℱ (OrderDual.toDual n)` is decreasing and must not be treated
+as a mathlib `Filtration ℕ`.
+
 2026-05-04 `/goal` target update: the live non-finite-class frontier is no
 longer inverse-radius entropy, finite-cover selection, VC/subgraph packaging,
 untruncation, finite-class GC, or leave-one-out notation.  Those layers are
