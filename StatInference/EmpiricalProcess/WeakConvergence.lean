@@ -2809,6 +2809,68 @@ theorem vdVWTendstoInDistribution_prodMk_laws_of_indepFun
   simpa [hseq_eq, μX, μY, νX, νY] using hprod
 
 /--
+Independent-coordinate convergence in distribution for binary products.
+
+This consumes the law-level product wrapper
+`vdVWTendstoInDistribution_prodMk_laws_of_indepFun` and repackages it as a
+`TendstoInDistribution` statement for the paired random variables.  It is the
+ordinary measurable random-variable version of the VdV&W 1.4.6 independent
+product statement: marginal convergence plus finite-stage independence and
+independence of the limiting coordinates imply joint convergence.
+
+The full arbitrary-map/asymptotic-independence VdV&W statement remains a
+separate nonmeasurable primitive.
+-/
+theorem vdVWTendstoInDistribution_prodMk_of_indepFun
+    {ι : Type u} {Ω : ι -> Type v} {Ωlim : Type w}
+    {E : Type*} {F : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace Ωlim] {μlim : Measure Ωlim} [IsProbabilityMeasure μlim]
+    [MeasurableSpace E] [TopologicalSpace E] [SecondCountableTopology E]
+    [PseudoMetrizableSpace E] [OpensMeasurableSpace E]
+    [MeasurableSpace F] [TopologicalSpace F] [SecondCountableTopology F]
+    [PseudoMetrizableSpace F] [OpensMeasurableSpace F]
+    {X : (i : ι) -> Ω i -> E} {Y : (i : ι) -> Ω i -> F}
+    {Z : Ωlim -> E} {W : Ωlim -> F} {l : Filter ι}
+    (hX : TendstoInDistribution X l Z μ μlim)
+    (hY : TendstoInDistribution Y l W μ μlim)
+    (hInd : ∀ i, X i ⟂ᵢ[μ i] Y i)
+    (hLimitInd : Z ⟂ᵢ[μlim] W) :
+    TendstoInDistribution
+      (fun i ω => (X i ω, Y i ω)) l (fun ω => (Z ω, W ω)) μ μlim := by
+  have hweak :=
+    vdVWTendstoInDistribution_prodMk_laws_of_indepFun
+      (μE := μlim) (μF := μlim) hX hY hInd
+  refine
+    { forall_aemeasurable := fun i =>
+        (hX.forall_aemeasurable i).prodMk (hY.forall_aemeasurable i)
+      aemeasurable_limit := hX.aemeasurable_limit.prodMk hY.aemeasurable_limit
+      tendsto := ?_ }
+  have htarget_eq :
+      (ProbabilityMeasure.prod
+        (⟨μlim.map Z,
+          Measure.isProbabilityMeasure_map hX.aemeasurable_limit⟩ :
+          ProbabilityMeasure E)
+        (⟨μlim.map W,
+          Measure.isProbabilityMeasure_map hY.aemeasurable_limit⟩ :
+          ProbabilityMeasure F)) =
+        (⟨μlim.map (fun ω => (Z ω, W ω)),
+          Measure.isProbabilityMeasure_map
+            (hX.aemeasurable_limit.prodMk hY.aemeasurable_limit)⟩ :
+          ProbabilityMeasure (E × F)) := by
+    ext s hs
+    change (μlim.map Z).prod (μlim.map W) s =
+      μlim.map (fun ω => (Z ω, W ω)) s
+    have hZLaw : HasLaw Z (μlim.map Z) μlim :=
+      ⟨hX.aemeasurable_limit, rfl⟩
+    have hWLaw : HasLaw W (μlim.map W) μlim :=
+      ⟨hY.aemeasurable_limit, rfl⟩
+    rw [((hLimitInd.hasLaw_prod hZLaw hWLaw).map_eq)]
+  simpa [VdVWWeakConvergenceProbabilityMeasures, htarget_eq] using hweak
+
+/--
 Finite independent-coordinate product-law convergence.
 
 This is the finite-product extension of
@@ -2881,6 +2943,69 @@ theorem vdVWTendstoInDistribution_pi_laws_of_iIndepFun
       exact ⟨(hX j).forall_aemeasurable i, rfl⟩
     rw [(hInd i).hasLaw_pi hcoordLaw |>.map_eq]
   simpa [hseq_eq, μX, ν] using hprod
+
+/--
+Finite independent-coordinate convergence in distribution.
+
+This is the finite-coordinate `TendstoInDistribution` counterpart of
+`vdVWTendstoInDistribution_pi_laws_of_iIndepFun`: marginal convergence in
+distribution for each coordinate, finite-stage independence, and independence
+of the limiting coordinate family imply joint finite-product convergence in
+distribution.
+
+This remains the ordinary measurable random-variable layer.  Arbitrary-map,
+asymptotic-independence, and arbitrary-index process criteria are separate
+Chapter 1 primitives.
+-/
+theorem vdVWTendstoInDistribution_pi_of_iIndepFun
+    {J : Type u} [Fintype J]
+    {ι : Type v} {Ω : ι -> Type w} {Ωlim : Type x}
+    {S : J -> Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace Ωlim] {μlim : Measure Ωlim} [IsProbabilityMeasure μlim]
+    [∀ j, MeasurableSpace (S j)] [∀ j, TopologicalSpace (S j)]
+    [∀ j, SecondCountableTopology (S j)] [∀ j, PseudoMetrizableSpace (S j)]
+    [∀ j, OpensMeasurableSpace (S j)]
+    {X : (i : ι) -> (j : J) -> Ω i -> S j}
+    {Z : (j : J) -> Ωlim -> S j} {l : Filter ι}
+    (hX :
+      ∀ j,
+        TendstoInDistribution (fun i ω => X i j ω) l (Z j) μ μlim)
+    (hInd : ∀ i, iIndepFun (fun j => X i j) (μ i))
+    (hLimitInd : iIndepFun Z μlim) :
+    TendstoInDistribution
+      (fun i ω => fun j => X i j ω) l (fun ω => fun j => Z j ω) μ μlim := by
+  have hweak :=
+    vdVWTendstoInDistribution_pi_laws_of_iIndepFun
+      (Ωlim := fun _ : J => Ωlim) (μlim := fun _ : J => μlim)
+      hX hInd
+  refine
+    { forall_aemeasurable := fun i =>
+        aemeasurable_pi_lambda _ fun j => (hX j).forall_aemeasurable i
+      aemeasurable_limit :=
+        aemeasurable_pi_lambda _ fun j => (hX j).aemeasurable_limit
+      tendsto := ?_ }
+  have htarget_eq :
+      (ProbabilityMeasure.pi fun j =>
+        (⟨μlim.map (Z j),
+          Measure.isProbabilityMeasure_map (hX j).aemeasurable_limit⟩ :
+          ProbabilityMeasure (S j))) =
+        (⟨μlim.map (fun ω => fun j => Z j ω),
+          Measure.isProbabilityMeasure_map
+            (aemeasurable_pi_lambda _ fun j =>
+              (hX j).aemeasurable_limit)⟩ :
+          ProbabilityMeasure ((j : J) -> S j)) := by
+    ext s hs
+    change (Measure.pi fun j => μlim.map (Z j)) s =
+      μlim.map (fun ω => fun j => Z j ω) s
+    have hcoordLaw :
+        ∀ j, HasLaw (Z j) (μlim.map (Z j)) μlim := by
+      intro j
+      exact ⟨(hX j).aemeasurable_limit, rfl⟩
+    rw [(hLimitInd.hasLaw_pi hcoordLaw |>.map_eq)]
+  simpa [VdVWWeakConvergenceProbabilityMeasures, htarget_eq] using hweak
 
 /--
 Finite-dimensional restriction of a weakly convergent process law.

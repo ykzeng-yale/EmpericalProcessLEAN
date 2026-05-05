@@ -120,7 +120,10 @@ varying-domain proof-carrying predicates.  The measurable independent-product
 law convergence layer behind VdV&W 1.4.6 is also now closed in both the binary
 and finite-coordinate forms: the compiled wrappers are
 `vdVWTendstoInDistribution_prodMk_laws_of_indepFun` and
-`vdVWTendstoInDistribution_pi_laws_of_iIndepFun`.  The next Chapter 1 fallback
+`vdVWTendstoInDistribution_pi_laws_of_iIndepFun`, plus their corresponding
+ordinary `TendstoInDistribution` wrappers
+`vdVWTendstoInDistribution_prodMk_of_indepFun` and
+`vdVWTendstoInDistribution_pi_of_iIndepFun`.  The next Chapter 1 fallback
 should therefore move to deeper exact primitives such as
 nonmeasurable outer-cover signed weak convergence, asymptotic-tightness/
 asymptotic-independence, arbitrary-index FDD converse, or separability/
@@ -550,7 +553,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.4.2 | Lemma | `..._1-100.md:849` | local-layer/mathlib-foundation: product bounded-continuous test uniqueness wrappers compiled as `vdVW142_prod_measure_ext_of_forall_boundedContinuous_integral_mul` and `vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`; exact nonnegative-Lipschitz spelling is a source-alignment refinement |
 | 1.4.3 | Lemma | `..._1-100.md:857` | local-layer/mathlib-foundation: binary and finite product-law weak-convergence wrappers proved as `VdVWWeakConvergenceProbabilityMeasures.prod` and `.pi`; arbitrary-map/asymptotic-tightness extension pending |
 | 1.4.4 | Lemma | `..._1-100.md:858` | local-layer/mathlib-foundation: finite-coordinate projection/FDD forward wrapper proved as `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict`; converse FDD iff theorem still missing |
-| 1.4.5 / 1.4.6 | Corollary/Example | `..._1-100.md:878`, `..._1-100.md:883` | local-layer/mathlib-foundation: measurable common-domain Slutsky/product convergence wrapper plus binary and finite-coordinate independent joint-law convergence wrappers `vdVWTendstoInDistribution_prodMk_laws_of_indepFun` and `vdVWTendstoInDistribution_pi_laws_of_iIndepFun` proved; exact VdV&W product/arbitrary-map/asymptotic-independence criteria still pending |
+| 1.4.5 / 1.4.6 | Corollary/Example | `..._1-100.md:878`, `..._1-100.md:883` | local-layer/mathlib-foundation: measurable common-domain Slutsky/product convergence wrapper plus binary and finite-coordinate independent joint-law convergence wrappers `vdVWTendstoInDistribution_prodMk_laws_of_indepFun`, `vdVWTendstoInDistribution_pi_laws_of_iIndepFun`, `vdVWTendstoInDistribution_prodMk_of_indepFun`, and `vdVWTendstoInDistribution_pi_of_iIndepFun` proved; exact VdV&W product/arbitrary-map/asymptotic-independence criteria still pending |
 | 1.4.8 | Theorem | `..._1-100.md:910` | local-layer/mathlib-foundation: FDD forward direction now wrapped for weak convergence, including the VdV&W-named `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`; process-law and `IdentDistrib` uniqueness-only FDD wrappers are compiled in `FiniteDimensional.lean`; projective-limit/FDD law equality APIs exist, but no exact weak-convergence iff-over-FDD converse theorem found |
 | 1.5.2 | Lemma | `..._1-100.md:932` | foundation-lane: `l_infty(T)`/separability primitive target; mathlib has tightness/Prokhorov but local bounded-function-space API is still needed |
 | 1.5.3 | Lemma | `..._1-100.md:933` | foundation-lane: `l_infty(T)`/Donsker tightness primitive target, local bounded-function-space API needed |

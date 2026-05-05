@@ -142,7 +142,10 @@ and the VdV&W 1.4.2 product-test uniqueness wrappers
 `vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`;
 and the measurable independent-coordinate joint-law convergence wrappers
 `vdVWTendstoInDistribution_prodMk_laws_of_indepFun` and
-`vdVWTendstoInDistribution_pi_laws_of_iIndepFun`.
+`vdVWTendstoInDistribution_pi_laws_of_iIndepFun`, plus the corresponding
+ordinary convergence-in-distribution wrappers
+`vdVWTendstoInDistribution_prodMk_of_indepFun` and
+`vdVWTendstoInDistribution_pi_of_iIndepFun`.
 
 Next high-capacity proof batches, in order:
 
@@ -5229,3 +5232,15 @@ exact blockers: arbitrary-map/asymptotic-independence product statements,
 arbitrary-index FDD converse with separability/tightness support, the
 nonmeasurable signed outer-cover weak-convergence layer, or the exact
 Theorem 2.4.3 random-entropy/tail-UI mismatch.
+
+2026-05-05 independent product convergence-in-distribution follow-up: local
+and pinned search found no direct mathlib theorem for independent nonconstant
+joint convergence in distribution; mathlib only has the Slutsky-style
+`TendstoInDistribution.prodMk_of_tendstoInMeasure_const`, while the needed law
+equalities are supplied by `IndepFun.hasLaw_prod` and `iIndepFun.hasLaw_pi`.
+`WeakConvergence.lean` now consumes the law-level wrappers into the ordinary
+random-variable declarations `vdVWTendstoInDistribution_prodMk_of_indepFun`
+and `vdVWTendstoInDistribution_pi_of_iIndepFun`, assuming independence of the
+limiting coordinates.  This closes the ordinary measurable binary and finite
+VdV&W 1.4.6 convergence-in-distribution layer.  It still does not prove the
+textbook arbitrary-map/asymptotic-independence product criterion.
