@@ -14,7 +14,7 @@ namespace StatInference
 
 open MeasureTheory Filter
 
-open scoped ENNReal Topology
+open scoped ENNReal NNReal Topology
 
 universe u v
 
@@ -417,6 +417,38 @@ theorem tailExpectation_condition_of_eventual_bound
     simp [Set.indicator, hnot]
   rw [hzero]
   simpa using hε_pos.le
+
+/--
+A uniform pointwise `nnnorm` bound supplies the fixed-domain `eLpNorm` large
+tail condition used by mathlib's `MeasureTheory.unifIntegrable_of`.
+
+This records the deterministic support route separately from the theorem
+endpoint: if later entropy/cardinality arguments give a uniform bound on a
+family of real-valued statistics, then the large-tail `L¹` input for uniform
+integrability is immediate.
+-/
+theorem eLpNorm_one_tail_condition_of_nnnorm_bound
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
+    {Y : ℕ -> Ω -> ℝ}
+    (hY_bound : ∃ K : ℝ≥0, ∀ n ω, ‖Y n ω‖₊ ≤ K) :
+    ∀ ε : ℝ, 0 < ε -> ∃ C : ℝ≥0,
+      ∀ n,
+        eLpNorm ({ω : Ω | C ≤ ‖Y n ω‖₊}.indicator (Y n))
+          (1 : ℝ≥0∞) μ ≤ ENNReal.ofReal ε := by
+  obtain ⟨K, hK⟩ := hY_bound
+  intro ε hε_pos
+  refine ⟨K + 1, ?_⟩
+  intro n
+  have hzero :
+      ({ω : Ω | K + 1 ≤ ‖Y n ω‖₊}.indicator (Y n)) =
+        fun _ => 0 := by
+    funext ω
+    have hK_lt : K < K + 1 := lt_add_of_pos_right K zero_lt_one
+    have hnot : ¬ K + 1 ≤ ‖Y n ω‖₊ := by
+      exact fun htail => not_le_of_gt (lt_of_le_of_lt (hK n ω) hK_lt) htail
+    simp [Set.indicator, hnot]
+  rw [hzero]
+  simp
 
 /--
 Vanishing ordinary means supply the varying-domain tail-expectation

@@ -280,6 +280,17 @@ the selected normalized empirical-cover entropy.  The next target is therefore
 sharper: prove the explicit lifted selected-entropy `eLpNorm` tail condition
 from a genuine structural entropy theorem, or record the exact missing
 cardinality/VC/finite-trace primitive.
+
+2026-05-05 bounded first-sample tail follow-up: the deterministic sufficient
+condition for that `eLpNorm` route is now compiled.  The reusable
+`OuterProbabilityExpectation.lean` lemma
+`eLpNorm_one_tail_condition_of_nnnorm_bound` turns a uniform pointwise
+`nnnorm` bound into the large-tail `L¹` condition expected by mathlib
+uniform-integrability.  The Theorem 2.4.3 wrapper
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_nnnorm_bound`
+feeds such a bound on the first-sample lifted selected normalized entropy into
+the selected fixed-radius package.  The next target is the actual structural
+entropy/cardinality theorem supplying that bound or a stronger tail estimate.
 The next proof target is therefore not more selected-package plumbing: it is
 the honest varying-domain theorem deriving those raw normalized-log
 integrability/tail-UI hypotheses from the book random entropy assumption, or a

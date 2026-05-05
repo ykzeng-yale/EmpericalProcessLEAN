@@ -204,7 +204,15 @@ Next high-capacity proof batches, in order:
    `.lake/packages/mathlib/Mathlib/MeasureTheory/Function/UniformIntegrable.lean`.
    The remaining blocker is no longer UI plumbing: it is proving the explicit
    lifted selected-entropy `eLpNorm` tail condition, or a stronger structural
-   cardinality/VC/finite-trace theorem that implies it.
+   cardinality/VC/finite-trace theorem that implies it.  A deterministic
+   pointwise support criterion for this route is also compiled:
+   `eLpNorm_one_tail_condition_of_nnnorm_bound` proves the fixed-domain
+   `eLpNorm` tail condition from a uniform `nnnorm` bound, and
+   `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_nnnorm_bound`
+   feeds such a bound for the first-sample selected entropy lifts into the
+   selected fixed-radius package.  Next proof work should instantiate that
+   bound or the stronger tail criterion from an actual structural entropy
+   theorem, not add another package endpoint.
 3. In parallel only when it directly supports exact Chapter 1-2 statements or
    Theorem 2.4.3 endpoints, close reusable arbitrary-map/process foundation
    gaps that are already search-isolated.  The signed weak-convergence

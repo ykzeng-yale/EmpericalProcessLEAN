@@ -260,6 +260,16 @@ The current target is therefore the substantive entropy estimate itself:
 prove the lifted selected normalized-log empirical-cover `eLpNorm` tail
 condition, or derive it from a structural VC/finite-trace/cardinality theorem.
 
+2026-05-05 bounded first-sample tail follow-up: the deterministic support
+route into that criterion is now compiled.  The reusable lemma
+`eLpNorm_one_tail_condition_of_nnnorm_bound` proves the fixed-domain `L¹`
+large-tail condition from a uniform pointwise `nnnorm` bound, and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_nnnorm_bound`
+feeds a bound on the first-sample lifted selected entropy process into the
+selected fixed-radius Theorem 2.4.3 side-condition package.  The remaining
+mathematical work is to prove such a bound, or a sharper tail estimate, from
+the actual entropy/VC/trace hypotheses.
+
 2026-05-05 Chapter 1 arbitrary-map follow-up: the varying-domain signed
 bounded-continuous weak-convergence package now has continuous-mapping
 stability.  The new declarations
