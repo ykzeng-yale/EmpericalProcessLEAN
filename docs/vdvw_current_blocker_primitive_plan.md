@@ -3822,3 +3822,20 @@ close Lemma 2.4.5: the remaining mathematical task is still the reverse
 cofiltration convergence theorem turning that displayed comparison into a.e.
 finite convergence, or a proof that the displayed comparison satisfies one of
 the already compiled ordinary sub/supermartingale constructor hypotheses.
+
+2026-05-04 follow-up: the converse structural direction from adjacent textbook
+comparison to a real mathlib submartingale object is now also compiled for the
+shifted Lemma 2.4.5 process.  Search/reuse record: pinned mathlib has the
+ordinary `submartingale_nat` constructor but no `ℕᵒᵈ` adjacent-step constructor,
+so the local theorem `submartingale_orderDual_nat_of_succ` proves the dual
+natural-order version using `condExp_mono` and `Filtration.condExp_condExp`.
+The shifted cofiltration `vdVWLemma245ShiftedPermutationSymmetricCofiltration`
+packages the fields `Σ_{n+1}`, with adaptedness and strong adaptedness
+wrappers for `X_{n+1}`.  The theorem
+`submartingale_vdVWLemma245ShiftedPermutationSymmetricCofiltration_of_textbookReverseComparison`
+then turns the textbook display comparison plus the countable/envelope
+integrability assumptions into a genuine `Submartingale` over this shifted
+`ℕᵒᵈ` cofiltration.  The active blocker is therefore not construction of the
+cofiltration submartingale object; it is the reverse martingale convergence
+theorem for this `ℕᵒᵈ` object, or a proof that it can be reindexed into one of
+the already compiled ordinary `ℕ` sub/supermartingale convergence routes.

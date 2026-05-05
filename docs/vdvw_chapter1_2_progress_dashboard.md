@@ -1205,3 +1205,15 @@ cofiltration object and mathlib `Submartingale.ae_le_condExp` line up with the
 book's row inequality.  The active blocker is unchanged but sharper: prove the
 reverse cofiltration convergence theorem from this comparison, or reindex it
 into one of the compiled ordinary sub/supermartingale convergence routes.
+
+2026-05-04 follow-up: the adjacent textbook comparison now also constructs the
+actual shifted `ℕᵒᵈ` cofiltration submartingale object.  New compiled
+declarations are `submartingale_orderDual_nat_of_succ`,
+`vdVWLemma245ShiftedPermutationSymmetricCofiltration`,
+`adapted_vdVWLemma245ShiftedPermutationSymmetricCofiltration_centeredEmpiricalSupremum_of_countable`,
+`stronglyAdapted_vdVWLemma245ShiftedPermutationSymmetricCofiltration_centeredEmpiricalSupremum_of_countable`,
+and
+`submartingale_vdVWLemma245ShiftedPermutationSymmetricCofiltration_of_textbookReverseComparison`.
+Thus the remaining Lemma 2.4.5 gap is narrowed to reverse convergence for this
+`ℕᵒᵈ` submartingale, not construction of the cofiltration/submartingale
+structure itself.

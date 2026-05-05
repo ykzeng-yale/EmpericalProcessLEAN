@@ -5149,6 +5149,132 @@ theorem vdVW_textbookReverseComparison_of_permutationSymmetricCofiltration_subma
   exact hsequence n
 
 /--
+Adjacent conditional-expectation inequalities on the dual natural order build
+a genuine mathlib submartingale.
+
+This is the `ℕᵒᵈ` analogue of mathlib's ordinary `submartingale_nat`
+constructor.  It is useful for the VdV&W Lemma 2.4.5 route because the
+textbook comparison is naturally adjacent in the decreasing fields `Σ_n`,
+while mathlib's `Submartingale` structure asks for all comparable pairs.
+-/
+theorem submartingale_orderDual_nat_of_succ
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕᵒᵈ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕᵒᵈ -> Ω -> ℝ}
+    (hadp : StronglyAdapted ℱ f)
+    (hint : ∀ i : ℕᵒᵈ, Integrable (f i) μ)
+    (hsucc :
+      ∀ n : ℕ,
+        f (OrderDual.toDual (n + 1)) ≤ᵐ[μ]
+          μ[f (OrderDual.toDual n) | ℱ (OrderDual.toDual (n + 1))]) :
+    Submartingale f ℱ μ := by
+  refine ⟨hadp, ?_, hint⟩
+  intro i j hij
+  let m : ℕ := OrderDual.ofDual i
+  let n : ℕ := OrderDual.ofDual j
+  have hnm : n ≤ m := by
+    change OrderDual.ofDual j ≤ OrderDual.ofDual i
+    exact hij
+  have hmain :
+      ∀ m : ℕ, n ≤ m ->
+        f (OrderDual.toDual m) ≤ᵐ[μ]
+          μ[f (OrderDual.toDual n) | ℱ (OrderDual.toDual m)] := by
+    intro m hm
+    refine Nat.le_induction ?base ?step m hm
+    ·
+        rw [condExp_of_stronglyMeasurable
+          (ℱ.le (OrderDual.toDual n))
+          (hadp (OrderDual.toDual n))
+          (hint (OrderDual.toDual n))]
+    ·
+      intro k hnk hk
+      have hdual : OrderDual.toDual (k + 1) ≤ OrderDual.toDual k := by
+        exact Nat.le_succ k
+      filter_upwards
+        [hsucc k,
+          condExp_mono
+            (hint (OrderDual.toDual k))
+            integrable_condExp
+            hk,
+          ℱ.condExp_condExp (f (OrderDual.toDual n)) hdual]
+        with ω hstep hmono htower
+      calc
+        f (OrderDual.toDual (k + 1)) ω ≤
+            μ[f (OrderDual.toDual k) | ℱ (OrderDual.toDual (k + 1))] ω := hstep
+        _ ≤
+            μ[μ[f (OrderDual.toDual n) | ℱ (OrderDual.toDual k)] |
+                ℱ (OrderDual.toDual (k + 1))] ω := hmono
+        _ =
+              μ[f (OrderDual.toDual n) | ℱ (OrderDual.toDual (k + 1))] ω := htower
+  simpa [m, n] using hmain m hnm
+
+/--
+Shifted VdV&W permutation-symmetric cofiltration used by Lemma 2.4.5 for the
+process `X_{n+1}`.  Its `n`th dual-order field is `Σ_{n+1}`.
+-/
+abbrev vdVWLemma245ShiftedPermutationSymmetricCofiltration
+    (Observation : Type u) [MeasurableSpace Observation] :
+    Filtration ℕᵒᵈ (.pi (X := fun _ : ℕ => Observation)) where
+  seq n := vdVWPermutationSymmetricMeasurableSpace Observation (OrderDual.ofDual n + 1)
+  mono' := by
+    intro n m hnm
+    exact vdVWPermutationSymmetricMeasurableSpace_antitone
+      (Observation := Observation)
+      (Nat.succ_le_succ (show OrderDual.ofDual m ≤ OrderDual.ofDual n from hnm))
+  le' := fun n =>
+    vdVWPermutationSymmetricMeasurableSpace_le_pi Observation (OrderDual.ofDual n + 1)
+
+/-- Display form of the shifted Lemma 2.4.5 cofiltration. -/
+theorem vdVWLemma245ShiftedPermutationSymmetricCofiltration_apply
+    (Observation : Type u) [MeasurableSpace Observation] (n : ℕᵒᵈ) :
+    vdVWLemma245ShiftedPermutationSymmetricCofiltration Observation n =
+      vdVWPermutationSymmetricMeasurableSpace Observation (OrderDual.ofDual n + 1) :=
+  rfl
+
+/--
+The shifted centered empirical supremum `X_{n+1}` is adapted to the shifted
+permutation-symmetric cofiltration `Σ_{n+1}`.
+-/
+theorem adapted_vdVWLemma245ShiftedPermutationSymmetricCofiltration_centeredEmpiricalSupremum_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun) :
+    Adapted (vdVWLemma245ShiftedPermutationSymmetricCofiltration Observation)
+      (fun n : ℕᵒᵈ => fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+          (OrderDual.ofDual n + 1) sequence) := by
+  intro n
+  change
+    Measurable[vdVWPermutationSymmetricMeasurableSpace Observation (OrderDual.ofDual n + 1)]
+      (fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+          (OrderDual.ofDual n + 1) sequence)
+  exact
+    measurable_vdVWPermutationSymmetricMeasurableSpace_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      hcount hclass (OrderDual.ofDual n + 1)
+
+/--
+Strongly-adapted shifted centered empirical supremum over the shifted
+permutation-symmetric cofiltration.
+-/
+theorem stronglyAdapted_vdVWLemma245ShiftedPermutationSymmetricCofiltration_centeredEmpiricalSupremum_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun) :
+    StronglyAdapted (vdVWLemma245ShiftedPermutationSymmetricCofiltration Observation)
+      (fun n : ℕᵒᵈ => fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+          (OrderDual.ofDual n + 1) sequence) :=
+  (adapted_vdVWLemma245ShiftedPermutationSymmetricCofiltration_centeredEmpiricalSupremum_of_countable
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    hcount hclass).stronglyAdapted
+
+/--
 The ordinary natural filtration of the shifted Lemma 2.4.5 centered empirical
 supremum process `X_n = sup_f |P_{n+1} f - P f|`.
 -/
@@ -5257,6 +5383,53 @@ theorem eLpNorm_vdVWLemma245CenteredEmpiricalSupremum_le_two_integral_envelope
     eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_invNat_le_two_integral_envelope
       (P := P) (indexClass := indexClass) (classFun := classFun)
       (envelope := envelope) hcount henvelope hclass henv_integrable hn
+
+/--
+The textbook Lemma 2.4.5 display comparison builds a genuine mathlib
+submartingale over the shifted VdV&W permutation-symmetric cofiltration.
+
+This closes the structural direction from the row-wise book inequality to the
+actual `Submartingale` object; the remaining blocker is the reverse
+cofiltration convergence theorem for this object.
+-/
+theorem submartingale_vdVWLemma245ShiftedPermutationSymmetricCofiltration_of_textbookReverseComparison
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hcomparison :
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∀ n : ℕ, 0 < n ->
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+            (vdVWInfiniteProductMeasure P)[
+              (fun sequence : ℕ -> Observation =>
+                vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence) |
+              vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence) :
+    Submartingale
+      (fun n : ℕᵒᵈ => fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+          (OrderDual.ofDual n + 1) sequence)
+      (vdVWLemma245ShiftedPermutationSymmetricCofiltration Observation)
+      (vdVWInfiniteProductMeasure P) := by
+  refine submartingale_orderDual_nat_of_succ
+    (stronglyAdapted_vdVWLemma245ShiftedPermutationSymmetricCofiltration_centeredEmpiricalSupremum_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      hcount hclass)
+    ?hint ?hsucc
+  · intro n
+    exact
+      integrable_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hcount henvelope hclass henv_integrable
+        (OrderDual.ofDual n + 1)
+  · intro n
+    filter_upwards [hcomparison] with sequence hsequence
+    simpa [vdVWLemma245ShiftedPermutationSymmetricCofiltration_apply] using
+      hsequence (n + 1) (Nat.succ_pos n)
 
 /--
 Integral transport for the Lemma 2.4.5 centered empirical supremum from the
