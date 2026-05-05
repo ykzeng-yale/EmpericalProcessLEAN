@@ -1195,3 +1195,13 @@ ordinary submartingale/supermartingale sufficient-condition constructors:
 The remaining mathematical task is still to prove the reverse/permutation-
 symmetric cofiltration theorem itself, or to derive one of these constructor
 hypotheses from the actual `Σ_n` comparison.
+
+2026-05-04 follow-up: the theorem-facing bridge
+`vdVW_textbookReverseComparison_of_permutationSymmetricCofiltration_submartingale`
+now shows that an `ℕᵒᵈ` submartingale over the actual VdV&W
+permutation-symmetric cofiltration yields the textbook display comparison
+`E[‖P_n-P‖_F^* | Σ_{n+1}] ≥ ‖P_{n+1}-P‖_F^*`.  This confirms the local
+cofiltration object and mathlib `Submartingale.ae_le_condExp` line up with the
+book's row inequality.  The active blocker is unchanged but sharper: prove the
+reverse cofiltration convergence theorem from this comparison, or reindex it
+into one of the compiled ordinary sub/supermartingale convergence routes.

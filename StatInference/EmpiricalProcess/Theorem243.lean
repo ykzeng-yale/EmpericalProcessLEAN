@@ -5106,6 +5106,49 @@ theorem stronglyAdapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245Centere
     hcount hclass).stronglyAdapted
 
 /--
+An actual `ℕᵒᵈ`-indexed submartingale realization over the VdV&W
+permutation-symmetric cofiltration yields the textbook displayed comparison
+from Lemma 2.4.5:
+`E[‖P_n - P‖_F^* | Σ_{n+1}] ≥ ‖P_{n+1} - P‖_F^*`.
+
+This is not yet the reverse/cofiltration convergence theorem.  It records the
+exact mathlib bridge from a cofiltration submartingale object to the displayed
+row comparison consumed by `VdVWLemma245TextbookReverseCofiltrationHandoff`.
+-/
+theorem vdVW_textbookReverseComparison_of_permutationSymmetricCofiltration_submartingale
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hsub :
+      Submartingale
+        (fun n : ℕᵒᵈ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (OrderDual.ofDual n) sequence)
+        (vdVWPermutationSymmetricCofiltration Observation)
+        (vdVWInfiniteProductMeasure P)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      ∀ n : ℕ, 0 < n ->
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+          (vdVWInfiniteProductMeasure P)[
+            (fun sequence : ℕ -> Observation =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence) |
+            vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence := by
+  have hrow :
+      ∀ n : ℕ, ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+          (vdVWInfiniteProductMeasure P)[
+            (fun sequence : ℕ -> Observation =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence) |
+            vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence := by
+    intro n
+    have hdual : OrderDual.toDual (n + 1) ≤ OrderDual.toDual n := by
+      exact Nat.le_succ n
+    simpa [vdVWPermutationSymmetricCofiltration_apply] using
+      hsub.ae_le_condExp hdual
+  filter_upwards [ae_all_iff.2 hrow] with sequence hsequence n _hn
+  exact hsequence n
+
+/--
 The ordinary natural filtration of the shifted Lemma 2.4.5 centered empirical
 supremum process `X_n = sup_f |P_{n+1} f - P f|`.
 -/

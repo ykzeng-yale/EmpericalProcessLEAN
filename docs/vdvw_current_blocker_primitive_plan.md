@@ -3806,3 +3806,19 @@ cofiltration theorem.  The next high-value proof attempt should either prove
 `VdVWLemma245TextbookReverseCofiltrationHandoff` directly from the decreasing
 `Σ_n` comparison, or prove one of these constructor hypotheses from the
 permutation-symmetric cofiltration.
+
+2026-05-04 follow-up: the actual `ℕᵒᵈ` cofiltration submartingale API is now
+connected to the textbook display comparison.  Search/reuse record: pinned
+mathlib supplies `Submartingale.ae_le_condExp` for arbitrary preorder-indexed
+filtrations, and local code supplies `vdVWPermutationSymmetricCofiltration`
+plus its display lemma.  The new compiled theorem
+`vdVW_textbookReverseComparison_of_permutationSymmetricCofiltration_submartingale`
+proves that a submartingale realization of
+`n ↦ vdVWLemma245CenteredEmpiricalSupremum ... (OrderDual.ofDual n)` over the
+VdV&W `ℕᵒᵈ` permutation-symmetric cofiltration gives
+`E[‖P_n - P‖_F^* | Σ_{n+1}] ≥ ‖P_{n+1} - P‖_F^*` on a common full-measure set.
+This closes the cofiltration-submartingale-to-display direction.  It does not
+close Lemma 2.4.5: the remaining mathematical task is still the reverse
+cofiltration convergence theorem turning that displayed comparison into a.e.
+finite convergence, or a proof that the displayed comparison satisfies one of
+the already compiled ordinary sub/supermartingale constructor hypotheses.
