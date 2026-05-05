@@ -152,11 +152,15 @@ determinant-unit inverse-shape reduction packet
 `matrixInvShape_eq_inv_of_left_inverse`,
 `chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_left_inverse`,
 and
-`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_left_inverse`.
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_left_inverse`,
+plus the normalized forward/inverse algebra packet
+`chewi620StandardCutForwardShape` and
+`chewi620_standardCutForwardShape_left_inverse`.
 The determinant/scalar `hvolume` bridge and the inverse-shape left-inverse
-reduction are verified in focused Lean, so the next run must not spend theorem
-time reproving or repackaging those cores unless they are directly needed
-inside the measure-scaling or left-inverse algebra theorem.
+reduction plus normalized forward/inverse cancellation are verified in focused
+Lean, so the next run must not spend theorem time reproving or repackaging
+those cores unless they are directly needed inside the measure-scaling or
+displayed left-inverse theorem.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
@@ -171,21 +175,27 @@ ellipsoidVolumeRatio d ^ 2`, and the scalar bridge
 `chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio` converts any
 squared-volume determinant bound into the certificate's `hvolume` hypothesis.
 Next, instantiate the actual mathlib measure/volume-scaling API for the
-ellipsoid affine image, and prove the explicit left-inverse identity
+ellipsoid affine image, and lift the normalized cancellation through `T` to
+prove the explicit displayed left-inverse identity
 `matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)
   (chewi620PullbackStandardCutInvShape d u T y) = y` for the normalized cut
-direction; the latter now immediately yields the displayed `Σ_{n+1}^{-1}`
-set-level replacement through the compiled left-inverse reduction.  If either
-route balloons, record the exact missing measure or matrix API and prove the
-smallest volume-scaling or left-inverse algebra certificate that removes it.
+direction.  The core normalized step
+`chewi620StandardCutForwardShape d u (chewi620StandardCutInvShape d u x) = x`
+is now local; the remaining displayed theorem should show Chewi's matrix update
+applied after `T.symm` is exactly `T` applied to the normalized forward shape.
+That then yields the displayed `Σ_{n+1}^{-1}` set-level replacement through the
+compiled left-inverse reduction.  If either route balloons, record the exact
+missing measure or matrix API and prove the smallest volume-scaling or
+left-inverse transport certificate that removes it.
 The raw square-root adjoint identity, normalized cut
 `hcut` bridge, `Sigma.PosDef` invertibility/cancellation layer, pullback
 `hnext` certificate, current `Σ⁻¹` ellipsoid identification, displayed center
 update, rank-one collapse `(Σp)^T Σ⁻¹ (Σp) = <p, Σp>`, displayed
 forward-shape determinant formula, determinant/source-volume ratio, determinant
-positivity/nonzero/unit facts, scalar `hvolume` bridge, and determinant-unit
-left-inverse reduction are now local; this is not a minor wrapper target.  Do
-not spend another run on
+positivity/nonzero/unit facts, scalar `hvolume` bridge, determinant-unit
+left-inverse reduction, and normalized standard-cut forward/inverse
+cancellation are now local; this is not a minor wrapper target.  Do not spend
+another run on
 scalar, coordinate-free, abstract transport, current-shape, center-update,
 pullback-only wrappers, rank-one collapse, or determinant-core algebra unless
 one is the shortest verified route to the concrete matrix theorem.  The
@@ -221,7 +231,9 @@ dependency order is:
 2. Instantiate mathlib volume-scaling from the determinant/source-volume packet
    and prove a concrete measured-volume inequality that feeds
    `chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio`.
-3. Prove the displayed next-shape left-inverse identity:
+3. Prove the displayed next-shape left-inverse identity by lifting
+   `chewi620_standardCutForwardShape_left_inverse` through the square-root
+   equivalence `T`:
    `matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)
      (chewi620PullbackStandardCutInvShape d u T y) = y` for the normalized
    cut direction under the square-root hypotheses; then use

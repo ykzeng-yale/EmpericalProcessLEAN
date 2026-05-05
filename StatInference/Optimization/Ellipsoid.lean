@@ -226,6 +226,84 @@ noncomputable def chewi620StandardCutInvShape (d : ℕ) (u : E) (z : E) : E :=
       (z - (inner ℝ u z) • u))
 
 /--
+Forward-shape operator for the normalized standard central-cut ellipsoid.  This
+is the normalized-coordinate version of Chewi's displayed `Σ_{n+1}` update.
+-/
+noncomputable def chewi620StandardCutForwardShape
+    (d : ℕ) (u : E) (z : E) : E :=
+  ((((d : ℝ) ^ (2 : ℕ)) / (((d : ℝ) ^ (2 : ℕ)) - 1)) •
+    (z - (((2 : ℝ) / ((d : ℝ) + 1)) * inner ℝ u z) • u))
+
+/--
+In normalized coordinates, Chewi's standard-cut forward-shape update is a left
+inverse of the normalized next inverse-shape.
+-/
+theorem chewi620_standardCutForwardShape_left_inverse
+    {d : ℕ} (hd : 1 < d) {u x : E} (hu_norm : ‖u‖ = 1) :
+    chewi620StandardCutForwardShape d u
+      (chewi620StandardCutInvShape d u x) = x := by
+  let t : ℝ := inner ℝ u x
+  let a : ℝ := (((d : ℝ) + 1) ^ (2 : ℕ)) / ((d : ℝ) ^ (2 : ℕ))
+  let b : ℝ := (((d : ℝ) ^ (2 : ℕ) - 1) / ((d : ℝ) ^ (2 : ℕ)))
+  let c : ℝ := (2 : ℝ) / ((d : ℝ) + 1)
+  let s : ℝ := ((d : ℝ) ^ (2 : ℕ)) / (((d : ℝ) ^ (2 : ℕ)) - 1)
+  have hD_pos : 0 < (d : ℝ) := by
+    have hd_pos_nat : 0 < d := by omega
+    exact_mod_cast hd_pos_nat
+  have hD_ne : (d : ℝ) ≠ 0 := ne_of_gt hD_pos
+  have hD1_ne : (d : ℝ) + 1 ≠ 0 := by positivity
+  have hDsq_ne : (d : ℝ) ^ (2 : ℕ) ≠ 0 := pow_ne_zero _ hD_ne
+  have hDsq_minus_ne : (d : ℝ) ^ (2 : ℕ) - 1 ≠ 0 := by
+    have hD_gt_one : 1 < (d : ℝ) := by exact_mod_cast hd
+    nlinarith [sq_pos_of_pos (show 0 < (d : ℝ) - 1 by linarith)]
+  have huu : inner ℝ u u = 1 := by
+    rw [real_inner_self_eq_norm_sq, hu_norm]
+    norm_num
+  have hshape :
+      chewi620StandardCutInvShape d u x =
+        b • x + ((a - b) * t) • u := by
+    dsimp [chewi620StandardCutInvShape, a, b, t]
+    module
+  have hinner_shape :
+      inner ℝ u (chewi620StandardCutInvShape d u x) = a * t := by
+    rw [hshape]
+    simp [inner_add_right, inner_smul_right, hu_norm, t]
+    ring_nf
+  have hinner_shape_expanded :
+      inner ℝ u (b • x + ((a - b) * t) • u) = a * t := by
+    rw [← hshape]
+    exact hinner_shape
+  have hsb : s * b = 1 := by
+    dsimp [s, b]
+    field_simp [hDsq_ne, hDsq_minus_ne]
+  have hcoef :
+      (a - b) * t - c * (a * t) = 0 := by
+    have hcoef0 : (a - b) - c * a = 0 := by
+      dsimp [a, b, c]
+      field_simp [hDsq_ne, hDsq_minus_ne, hD1_ne]
+      ring
+    calc
+      (a - b) * t - c * (a * t) = ((a - b) - c * a) * t := by
+        ring
+      _ = 0 := by
+        rw [hcoef0]
+        ring
+  calc
+    chewi620StandardCutForwardShape d u
+        (chewi620StandardCutInvShape d u x)
+        = s • (chewi620StandardCutInvShape d u x -
+            (c * inner ℝ u (chewi620StandardCutInvShape d u x)) • u) := by
+      dsimp [chewi620StandardCutForwardShape, s, c]
+    _ = s •
+          (b • x + (((a - b) * t) - c * (a * t)) • u) := by
+      rw [hshape, hinner_shape_expanded]
+      module
+    _ = x := by
+      rw [hcoef]
+      simp
+      rw [smul_smul, hsb, one_smul]
+
+/--
 Pythagoras for the decomposition into a unit direction and its orthogonal
 residual.  This is the coordinate-free replacement for writing
 `‖z‖² = t² + ‖y‖²` in the normalized Lemma 6.20 proof.

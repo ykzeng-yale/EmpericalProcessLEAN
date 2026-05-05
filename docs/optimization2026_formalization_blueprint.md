@@ -218,18 +218,21 @@ forward-shape update now compiles through
 `matrixInvShape_eq_inv_of_left_inverse`,
 `chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_left_inverse`,
 and
-`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_left_inverse`.
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_left_inverse`,
+plus `chewi620StandardCutForwardShape` and
+`chewi620_standardCutForwardShape_left_inverse`.
 The remaining blocker is the actual mathlib measure-scaling instantiation plus
-the displayed-update left-inverse algebra for the normalized pullback next
-shape, not scalar algebra, abstract transport, current-shape rewriting, center
-algebra, rank-one collapse, determinant-core algebra, source-volume determinant
-algebra, or nonsingular-inverse uniqueness.  For measure scaling, use
+the transport of the normalized forward/inverse cancellation through `T` to the
+displayed-update left-inverse identity, not scalar algebra, abstract transport,
+current-shape rewriting, center algebra, rank-one collapse, determinant-core
+algebra, source-volume determinant algebra, normalized standard-cut algebra, or
+nonsingular-inverse uniqueness.  For measure scaling, use
 `Measure.addHaar_image_linearMap` / `Measure.addHaar_preimage_linearEquiv`,
 translation invariance, and `LinearMap.det_toLpLin` for
 `Matrix.toEuclideanLin`; the raw `Real.map_*` pushforward lemmas scale by
 `|det|⁻¹`, while set-image volume needs the `|det|` addHaar route.  The target
 order is determinant-to-volume scaling using mathlib volume APIs, the
-displayed-update left-inverse identity, then exact one-step Lemma 6.20
+displayed-update left-inverse transport, then exact one-step Lemma 6.20
 certificate.
 If the full matrix proof balloons, prove the smallest
 matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
