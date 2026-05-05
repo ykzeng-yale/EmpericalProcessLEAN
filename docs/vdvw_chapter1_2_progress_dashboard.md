@@ -108,6 +108,8 @@ coordinate product pullbacks of a nonnegative measurable cover remain minimal
 measurable covers on the product space.
 The corresponding probability-product outer-expectation invariance is also
 compiled for first and second coordinate pullbacks.
+The same invariance now also has a.e.-measurable target variants, covering the
+null-measurable product-coordinate cases used by outer-expectation arguments.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new

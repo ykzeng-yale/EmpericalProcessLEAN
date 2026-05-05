@@ -474,6 +474,14 @@ targets.  This is the expectation-level form needed when adjoining an ignored
 probability-coordinate product factor; it still deliberately does not claim
 full arbitrary-map perfectness.
 
+2026-05-05 product projection a.e.-measurable expectation follow-up:
+`VdVWOuterExpectation_prod_fst_eq_of_aemeasurable` and
+`VdVWOuterExpectation_prod_snd_eq_of_aemeasurable` extend the same
+probability-product outer-expectation invariance to a.e.-measurable
+nonnegative targets, using `AEMeasurable.comp_fst`/`.comp_snd` and Tonelli.
+This closes the null-measurable/a.e.-measurable product-coordinate branch
+while keeping the full arbitrary perfect-map statement open.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.

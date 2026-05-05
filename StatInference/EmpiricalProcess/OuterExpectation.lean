@@ -1257,6 +1257,49 @@ theorem VdVWOuterExpectation_eq_lintegral_of_aemeasurable
     _ = ∫⁻ ω, T ω ∂μ := (lintegral_congr_ae hT.ae_eq_mk).symm
 
 /--
+First-coordinate product-space outer expectation for a.e.-measurable targets.
+
+This is the null-measurable/a.e.-measurable analogue of
+`VdVWOuterExpectation_prod_fst_eq_of_measurable`.  It gives the
+expectation-level product-projection invariance used when the ignored product
+coordinate is adjoined to an already null-measurable statistic.
+-/
+theorem VdVWOuterExpectation_prod_fst_eq_of_aemeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure ν]
+    {T : Ω -> ℝ≥0∞} (hT : AEMeasurable T μ) :
+    VdVWOuterExpectation (μ.prod ν) (fun z : Ω × S => T z.1) =
+      VdVWOuterExpectation μ T := by
+  rw [VdVWOuterExpectation_eq_lintegral_of_aemeasurable hT.comp_fst,
+    VdVWOuterExpectation_eq_lintegral_of_aemeasurable hT]
+  calc
+    ∫⁻ z : Ω × S, T z.1 ∂μ.prod ν =
+        ∫⁻ ω, ∫⁻ _s : S, T ω ∂ν ∂μ := by
+      exact MeasureTheory.lintegral_prod (fun z : Ω × S => T z.1) hT.comp_fst
+    _ = ∫⁻ ω, T ω ∂μ := by
+      simp [lintegral_const]
+
+/--
+Second-coordinate product-space outer expectation for a.e.-measurable targets.
+-/
+theorem VdVWOuterExpectation_prod_snd_eq_of_aemeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ]
+    {T : S -> ℝ≥0∞} (hT : AEMeasurable T ν) :
+    VdVWOuterExpectation (μ.prod ν) (fun z : Ω × S => T z.2) =
+      VdVWOuterExpectation ν T := by
+  rw [VdVWOuterExpectation_eq_lintegral_of_aemeasurable hT.comp_snd,
+    VdVWOuterExpectation_eq_lintegral_of_aemeasurable hT]
+  calc
+    ∫⁻ z : Ω × S, T z.2 ∂μ.prod ν =
+        ∫⁻ s, ∫⁻ _ω : Ω, T s ∂μ ∂ν := by
+      exact MeasureTheory.lintegral_prod_symm (fun z : Ω × S => T z.2) hT.comp_snd
+    _ = ∫⁻ s, T s ∂ν := by
+      simp [lintegral_const]
+
+/--
 Product-space Tonelli bridge for VdV&W nonnegative outer expectation.
 
 For an a.e.-measurable nonnegative integrand on a product space, the
