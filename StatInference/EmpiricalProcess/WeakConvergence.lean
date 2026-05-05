@@ -21,7 +21,7 @@ namespace StatInference
 
 open Filter MeasureTheory ProbabilityTheory TopologicalSpace
 
-open scoped BoundedContinuousFunction ENNReal Topology
+open scoped BoundedContinuousFunction ENNReal Topology InnerProductSpace
 
 universe u v w x
 
@@ -3080,6 +3080,119 @@ theorem vdVWProbabilityMeasuresTight_range_iff_tendsto_limsup_norm_tail
   simpa [VdVWProbabilityMeasuresTight, hset] using
     (MeasureTheory.isTightMeasureSet_range_iff_tendsto_limsup_measure_norm_gt
       (μ := fun n : ℕ => ((μ n : ProbabilityMeasure S) : Measure S)))
+
+/--
+Finite-dimensional inner-product tightness criterion, converse direction: a
+family of probability measures is tight when all one-dimensional inner-product
+tails vanish uniformly.
+
+This is a VdV&W-local wrapper around mathlib's inner-product tightness API and
+is useful for finite-dimensional and Hilbert-coordinate Chapter 1 arguments.
+-/
+theorem vdVWProbabilityMeasuresTight_of_forall_inner_tendsto
+    {𝕜 E ι : Type*} [RCLike 𝕜] [Fintype ι]
+    [MeasurableSpace E] [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    [FiniteDimensional 𝕜 E]
+    {A : Set (ProbabilityMeasure E)}
+    (h :
+      ∀ y : E,
+        Tendsto
+          (fun r : ℝ =>
+            ⨆ μ ∈ {((ν : ProbabilityMeasure E) : Measure E) | ν ∈ A},
+              μ {x : E | r < ‖⟪y, x⟫_𝕜‖})
+          atTop (𝓝 0)) :
+    VdVWProbabilityMeasuresTight A := by
+  simpa [VdVWProbabilityMeasuresTight] using
+    (MeasureTheory.isTightMeasureSet_of_inner_tendsto (𝕜 := 𝕜)
+      (S := {((ν : ProbabilityMeasure E) : Measure E) | ν ∈ A}) h)
+
+/--
+Finite-dimensional inner-product tightness characterization for probability
+measure families.
+-/
+theorem vdVWProbabilityMeasuresTight_iff_forall_inner_tendsto
+    {𝕜 E ι : Type*} [RCLike 𝕜] [Fintype ι]
+    [MeasurableSpace E] [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    [FiniteDimensional 𝕜 E]
+    {A : Set (ProbabilityMeasure E)} :
+    VdVWProbabilityMeasuresTight A ↔
+      ∀ y : E,
+        Tendsto
+          (fun r : ℝ =>
+            ⨆ μ ∈ {((ν : ProbabilityMeasure E) : Measure E) | ν ∈ A},
+              μ {x : E | r < ‖⟪y, x⟫_𝕜‖})
+          atTop (𝓝 0) := by
+  simpa [VdVWProbabilityMeasuresTight] using
+    (MeasureTheory.isTightMeasureSet_iff_inner_tendsto (𝕜 := 𝕜)
+      (S := {((ν : ProbabilityMeasure E) : Measure E) | ν ∈ A}))
+
+/--
+Sequential finite-dimensional inner-product tightness criterion: for a
+sequence of probability measures, vanishing limsup tails of every
+one-dimensional inner product imply tightness of the range.
+-/
+theorem vdVWProbabilityMeasuresTight_range_of_tendsto_limsup_inner
+    {𝕜 E ι : Type*} [RCLike 𝕜] [Fintype ι]
+    [MeasurableSpace E] [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    [FiniteDimensional 𝕜 E] [BorelSpace E]
+    (μ : ℕ -> ProbabilityMeasure E)
+    (h :
+      ∀ y : E,
+        Tendsto
+          (fun r : ℝ =>
+            limsup
+              (fun n : ℕ =>
+                ((μ n : ProbabilityMeasure E) : Measure E)
+                  {x : E | r < ‖⟪y, x⟫_𝕜‖})
+              atTop)
+          atTop (𝓝 0)) :
+    VdVWProbabilityMeasuresTight (Set.range μ) := by
+  have hset :
+      {((ν : ProbabilityMeasure E) : Measure E) | ν ∈ Set.range μ} =
+        Set.range (fun n : ℕ => ((μ n : ProbabilityMeasure E) : Measure E)) := by
+    ext ν
+    constructor
+    · rintro ⟨ρ, hρ, rfl⟩
+      rcases hρ with ⟨n, rfl⟩
+      exact ⟨n, rfl⟩
+    · rintro ⟨n, rfl⟩
+      exact ⟨μ n, ⟨n, rfl⟩, rfl⟩
+  simpa [VdVWProbabilityMeasuresTight, hset] using
+    (MeasureTheory.isTightMeasureSet_range_of_tendsto_limsup_inner (𝕜 := 𝕜)
+      (μ := fun n : ℕ => ((μ n : ProbabilityMeasure E) : Measure E)) h)
+
+/--
+Sequential finite-dimensional inner-product tightness characterization for
+probability-measure ranges.
+-/
+theorem vdVWProbabilityMeasuresTight_range_iff_tendsto_limsup_inner
+    {𝕜 E ι : Type*} [RCLike 𝕜] [Fintype ι]
+    [MeasurableSpace E] [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
+    [FiniteDimensional 𝕜 E] [BorelSpace E]
+    {μ : ℕ -> ProbabilityMeasure E} :
+    VdVWProbabilityMeasuresTight (Set.range μ) ↔
+      ∀ y : E,
+        Tendsto
+          (fun r : ℝ =>
+            limsup
+              (fun n : ℕ =>
+                ((μ n : ProbabilityMeasure E) : Measure E)
+                  {x : E | r < ‖⟪y, x⟫_𝕜‖})
+              atTop)
+          atTop (𝓝 0) := by
+  have hset :
+      {((ν : ProbabilityMeasure E) : Measure E) | ν ∈ Set.range μ} =
+        Set.range (fun n : ℕ => ((μ n : ProbabilityMeasure E) : Measure E)) := by
+    ext ν
+    constructor
+    · rintro ⟨ρ, hρ, rfl⟩
+      rcases hρ with ⟨n, rfl⟩
+      exact ⟨n, rfl⟩
+    · rintro ⟨n, rfl⟩
+      exact ⟨μ n, ⟨n, rfl⟩, rfl⟩
+  simpa [VdVWProbabilityMeasuresTight, hset] using
+    (MeasureTheory.isTightMeasureSet_range_iff_tendsto_limsup_inner (𝕜 := 𝕜)
+      (μ := fun n : ℕ => ((μ n : ProbabilityMeasure E) : Measure E)))
 
 /--
 Levy-Prokhorov characterization of the measure-level weak-convergence wrapper

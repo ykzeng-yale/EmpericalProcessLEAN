@@ -5452,3 +5452,17 @@ sequences of probability measures on proper normed Borel spaces.  This closes
 the sequential measure-level norm-tail tightness foundation used by Chapter 1
 Prokhorov/tightness arguments; it does not close VdV&W arbitrary-map
 asymptotic tightness or process-level separability.
+
+2026-05-05 finite-dimensional inner-product tightness follow-up: the same
+pinned mathlib file also supplies
+`MeasureTheory.isTightMeasureSet_of_inner_tendsto`,
+`MeasureTheory.isTightMeasureSet_iff_inner_tendsto`,
+`MeasureTheory.isTightMeasureSet_range_of_tendsto_limsup_inner`, and
+`MeasureTheory.isTightMeasureSet_range_iff_tendsto_limsup_inner`.
+`WeakConvergence.lean` now exposes the VdV&W-local probability-measure wrappers
+`vdVWProbabilityMeasuresTight_of_forall_inner_tendsto`,
+`vdVWProbabilityMeasuresTight_iff_forall_inner_tendsto`,
+`vdVWProbabilityMeasuresTight_range_of_tendsto_limsup_inner`, and
+`vdVWProbabilityMeasuresTight_range_iff_tendsto_limsup_inner`.  This closes
+the finite-dimensional inner-product/FDD-coordinate tightness layer; it is
+still measure-level and does not prove arbitrary-map asymptotic tightness.

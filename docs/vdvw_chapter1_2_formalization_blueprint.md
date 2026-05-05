@@ -132,7 +132,8 @@ nonmeasurable outer-cover signed weak convergence, asymptotic-tightness/
 asymptotic-independence, arbitrary-index FDD converse, or separability/
 `P`-measurable class support.
 The finite-index FDD converse, Portmanteau converse, norm-tail tightness
-including the sequence/range limsup norm-tail criterion,
+including the sequence/range limsup norm-tail criterion and
+finite-dimensional inner-product tail criteria,
 π-system convergence-determining criterion, and VdV&W 1.4.2 product
 bounded-continuous test uniqueness wrappers are closed and should not be
 repeated.
@@ -636,7 +637,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.3.4 | Theorem | `..._1-100.md:606` | local-layer/mathlib-foundation: weak convergence of probability measures via `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto` plus Portmanteau closed/open implications wrapped locally; exact arbitrary-map outer-expectation version remains pending |
 | 1.3.6 | Theorem | `..._1-100.md:650` | local-layer/mathlib-foundation: continuous map pushforward and `TendstoInDistribution` continuous-composition wrappers proved; signed arbitrary-map weak convergence now has continuous-map, filter-refinement, and ignored probability-product coordinate closures under a.e.-measurability in both common-domain and varying-domain forms; full nonmeasurable arbitrary-map cover layer still pending |
 | 1.3.8 | Lemma | `..._1-100.md:678` | blocked-vdvw: Hoffmann-Jørgensen arbitrary-map weak-convergence infrastructure; missing exact local arbitrary-map/asymptotic-measurability primitive |
-| 1.3.9 | Theorem | `..._1-100.md:688` | local-layer/mathlib-foundation: probability-measure tightness wrapper, compact-set characterization, Prokhorov compact-closure wrapper, norm-tail family characterization, and sequence/range limsup norm-tail criterion proved over mathlib; exact arbitrary-map/asymptotic-tightness extension remains pending |
+| 1.3.9 | Theorem | `..._1-100.md:688` | local-layer/mathlib-foundation: probability-measure tightness wrapper, compact-set characterization, Prokhorov compact-closure wrapper, norm-tail family characterization, sequence/range limsup norm-tail criterion, and finite-dimensional inner-product tail criteria proved over mathlib; exact arbitrary-map/asymptotic-tightness extension remains pending |
 | 1.3.10 | Theorem | `..._1-100.md:756` | blocked-vdvw: exact nonmeasurable/arbitrary-map weak-convergence layer missing; measure-level weak-convergence/Portmanteau/tightness wrappers are already local, so the remaining gap is the exact arbitrary-map extension |
 | 1.3.12 | Lemma | `..._1-100.md:768` | local-layer/mathlib-foundation: part (i) finite Borel measure uniqueness from bounded-continuous real integrals wrapped as `vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`; part (ii) vector-lattice/tight variant pending |
 | 1.3.13 | Lemma | `..._1-100.md:778` | blocked-vdvw: arbitrary-map/asymptotic-measurability infrastructure missing after mathlib search |
