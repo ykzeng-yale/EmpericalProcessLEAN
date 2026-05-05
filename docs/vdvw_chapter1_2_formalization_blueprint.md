@@ -1535,6 +1535,18 @@ This closes only the finite-index case.  The arbitrary-index VdV&W 1.4.8
 criterion still depends on separability, tightness, asymptotic measurability,
 and nonmeasurable/process primitives.
 
+2026-05-05 Portmanteau converse follow-up: the ordinary measure-level
+Portmanteau layer now includes the continuity-set implication and closed/open
+converses in VdV&W-local names.  `WeakConvergence.lean` exposes
+`VdVWWeakConvergenceProbabilityMeasures.tendsto_measure_of_null_frontier`,
+`vdVWWeakConvergenceProbabilityMeasures_of_forall_isClosed_limsup_measure_le`,
+and
+`vdVWWeakConvergenceProbabilityMeasures_of_forall_isOpen_measure_le_liminf`,
+reusing pinned mathlib Portmanteau APIs and the Billingsley/ProbabilityMeasure
+search result.  This is still the ordinary probability-measure statement; the
+arbitrary-map/nonmeasurable outer-probability Portmanteau layer remains a
+separate Chapter 1 primitive.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

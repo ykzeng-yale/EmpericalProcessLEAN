@@ -23,8 +23,10 @@ ordinary-mean/L1 normalized-log packages should not be rebuilt.  The
 varying-domain signed continuous-mapping and signed filter-refinement closures,
 the `ell_infty(T)` process-space substrate, finite-coordinate law wrappers,
 finite-index product equivalence, and finite-index `ell_infty(T)` FDD converse
-wrappers are also compiled.  The current Theorem 2.4.3 gap remains the exact
-book random-entropy bridge: derive a real tail/UI, uniform-integrability,
+wrappers are also compiled.  The measure-level Portmanteau continuity-set
+implication and closed/open converse wrappers are now compiled as well.  The
+current Theorem 2.4.3 gap remains the exact book random-entropy bridge: derive
+a real tail/UI, uniform-integrability,
 deterministic structural cardinality, or ordinary mean-convergence input from
 `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η > 0`, then consume the
 already compiled selected finite-net routes.  Bare outer-probability

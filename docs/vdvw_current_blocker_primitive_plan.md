@@ -122,7 +122,12 @@ wrappers
 `vdVW148_ellInfty_map_finiteContinuousLinearEquiv_symm_map`,
 `vdVW148_ellInfty_weakConvergence_of_finiteProduct_weakConvergence_finite`,
 and
-`vdVW148_ellInfty_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite`.
+`vdVW148_ellInfty_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite`;
+and the measure-level Portmanteau continuity-set/converse wrappers
+`VdVWWeakConvergenceProbabilityMeasures.tendsto_measure_of_null_frontier`,
+`vdVWWeakConvergenceProbabilityMeasures_of_forall_isClosed_limsup_measure_le`,
+and
+`vdVWWeakConvergenceProbabilityMeasures_of_forall_isOpen_measure_le_liminf`.
 
 Next high-capacity proof batches, in order:
 
@@ -5150,3 +5155,19 @@ This closes the finite-index converse layer.  It deliberately does not claim
 the arbitrary-index VdV&W 1.4.8 criterion, whose remaining prerequisites are
 separability, tightness, asymptotic measurability, and process-level
 nonmeasurable/arbitrary-map primitives.
+
+2026-05-05 Portmanteau converse follow-up: local and pinned search found the
+Billingsley/ProbabilityMeasure closed-set converse wrapper
+`weakConvergence_of_forall_isClosed_limsup_measure_le`, mathlib
+`MeasureTheory.tendsto_of_forall_isClosed_limsup_le'`,
+`MeasureTheory.tendsto_of_forall_isOpen_le_liminf'`, and
+`ProbabilityMeasure.tendsto_measure_of_null_frontier_of_tendsto'`.
+`WeakConvergence.lean` now exposes the VdV&W-local measure-level declarations
+`VdVWWeakConvergenceProbabilityMeasures.tendsto_measure_of_null_frontier`,
+`vdVWWeakConvergenceProbabilityMeasures_of_forall_isClosed_limsup_measure_le`,
+and
+`vdVWWeakConvergenceProbabilityMeasures_of_forall_isOpen_measure_le_liminf`.
+This closes the ordinary probability-measure continuity-set and closed/open
+Portmanteau converse layer.  It does not close arbitrary-map outer-probability
+Portmanteau statements or the nonmeasurable process-level weak-convergence
+definitions.

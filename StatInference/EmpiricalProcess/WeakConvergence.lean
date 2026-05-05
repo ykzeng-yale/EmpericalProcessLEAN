@@ -2418,6 +2418,61 @@ theorem VdVWWeakConvergenceProbabilityMeasures.le_liminf_measure_open
   exact ProbabilityMeasure.le_liminf_measure_open_of_tendsto h hG
 
 /--
+Portmanteau continuity-set implication for the measure-level VdV&W weak
+convergence wrapper.
+
+If the limiting probability gives zero mass to the frontier of a set, then the
+probabilities of that set converge.  This is the ordinary measurable
+probability-measure layer; arbitrary-map and outer-probability continuity-set
+forms remain separate VdV&W-specific primitives.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.tendsto_measure_of_null_frontier
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S] [HasOuterApproxClosed S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    {E : Set S} (hE : (μ : Measure S) (frontier E) = 0) :
+    Tendsto (fun i => (μs i : Measure S) E) l
+      (𝓝 ((μ : Measure S) E)) := by
+  exact ProbabilityMeasure.tendsto_measure_of_null_frontier_of_tendsto' h hE
+
+/--
+Closed-set Portmanteau converse for the measure-level VdV&W weak-convergence
+wrapper.
+
+For countably generated filters, the limsup inequality for every closed set
+implies weak convergence of probability measures.  This is the pinned-mathlib
+`(C) -> (T)` direction in VdV&W-local notation.
+-/
+theorem vdVWWeakConvergenceProbabilityMeasures_of_forall_isClosed_limsup_measure_le
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι} [l.IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (h : ∀ F : Set S, IsClosed F ->
+      l.limsup (fun i => (μs i : Measure S) F) ≤ (μ : Measure S) F) :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ := by
+  exact MeasureTheory.tendsto_of_forall_isClosed_limsup_le' h
+
+/--
+Open-set Portmanteau converse for the measure-level VdV&W weak-convergence
+wrapper.
+
+For countably generated filters, the liminf inequality for every open set
+implies weak convergence of probability measures.
+-/
+theorem vdVWWeakConvergenceProbabilityMeasures_of_forall_isOpen_measure_le_liminf
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι} [l.IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (h : ∀ G : Set S, IsOpen G ->
+      (μ : Measure S) G ≤ l.liminf (fun i => (μs i : Measure S) G)) :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ := by
+  exact MeasureTheory.tendsto_of_forall_isOpen_le_liminf' h
+
+/--
 Tightness of a family of probability measures, expressed through mathlib's
 `IsTightMeasureSet` on the underlying measures.
 
