@@ -47,8 +47,35 @@ handoff.
 
 ## Active Blocker
 
-Current main-line target: Theorem 2.4.3 and the Chapter 2
-bracketing/measurable-class primitives it needs.
+Current main-line target: final Theorem 2.4.3/Lemma 2.4.5 statement
+alignment, then the exact Chapter 1-2 primitives needed to remove remaining
+textbook-hypothesis mismatches.
+
+## Current `/goal` Target
+
+As of 2026-05-05, the active `/goal` should be interpreted as:
+
+> Finish VdV&W Chapters 1-2 in Lean by dependency order.  The immediate
+> theorem-facing target is final Theorem 2.4.3/Lemma 2.4.5 statement alignment,
+> not more wrappers around already-closed entropy, untruncation, finite-class,
+> or reverse/cofiltration layers.  Start from
+> `VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`,
+> `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`,
+> the variable-entropy/structural-rate GC and in-mean endpoints, and the
+> proved `VdVWOrderDualSubmartingaleConvergenceHandoff` /
+> `VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`
+> route.  Try first to produce the cleanest named VdVW Theorem 2.4.3/Lemma
+> 2.4.5 statement with no avoidable side assumptions.  Any remaining mismatch
+> must be recorded as an exact missing bridge: random entropy/tail-UI without
+> deterministic log boundedness, arbitrary `P`-measurable/asymptotic-measurable
+> class support beyond the countable coordinate-measurable route, or
+> nonmeasurable outer-cover envelope variants.  If this exact assembly blocks
+> after real Lean/search attempts, move to the next theorem-critical Chapter
+> 1-2 primitive that closes one of those bridges.
+
+The Codex `/goal` tool currently exposes only completion updates for an active
+goal, so this section is the authoritative refreshed target text for the
+ongoing goal until the tool objective can be recreated.
 
 2026-05-04 `/goal` status correction: local scratch now registers the exact
 remaining reverse-time theorem as the generic proposition

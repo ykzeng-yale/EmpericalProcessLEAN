@@ -5,7 +5,7 @@ van der Vaart and Wellner Chapters 1 and 2.  The authoritative detailed
 inventory is `docs/vdvw_chapter1_2_formalization_blueprint.md`; this file is a
 human-facing monitor for what is proved, what is in progress, and what remains.
 
-Status snapshot date: 2026-05-04.
+Status snapshot date: 2026-05-05.
 
 Active blocker/primitives register:
 
@@ -74,7 +74,7 @@ flowchart LR
   BR["Definition 2.1.6 bracketing number<br/>local-layer"]
   T241["Theorem 2.4.1 finite bracketing GC<br/>local-exact"]
   E242["Example 2.4.2 empirical CDF brackets<br/>deferred-example local-layer"]
-  T243["Theorem 2.4.3 next bracketing/GC result<br/>next"]
+  T243["Theorem 2.4.3 / Lemma 2.4.5 final alignment<br/>current"]
   GCH1["Chapter 1 weak convergence and tightness<br/>foundation-lane wrappers"]
 
   C12 --> OP
