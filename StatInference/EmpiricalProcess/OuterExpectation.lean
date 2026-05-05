@@ -1,6 +1,7 @@
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
 import Mathlib.MeasureTheory.Measure.MeasureSpace
+import Mathlib.MeasureTheory.Measure.Prod
 import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Real
 import Mathlib.MeasureTheory.Order.Lattice
@@ -824,6 +825,62 @@ theorem VdVWOuterExpectation_eq_lintegral_of_aemeasurable
       VdVWOuterExpectation_eq_lintegral_cover U
     _ = ∫⁻ ω, hT.mk T ω ∂μ := lintegral_congr_ae hU_ae
     _ = ∫⁻ ω, T ω ∂μ := (lintegral_congr_ae hT.ae_eq_mk).symm
+
+/--
+Product-space Tonelli bridge for VdV&W nonnegative outer expectation.
+
+For an a.e.-measurable nonnegative integrand on a product space, the
+product-measure outer expectation agrees with the iterated `lintegral`.  This
+is the reusable Chapter 1.2 Fubini/Tonelli wrapper behind later product-space
+outer-expectation arguments.
+-/
+theorem VdVWOuterExpectation_prod_eq_lintegral_lintegral_of_aemeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite ν]
+    {T : Ω × S -> ℝ≥0∞} (hT : AEMeasurable T (μ.prod ν)) :
+    VdVWOuterExpectation (μ.prod ν) T =
+      ∫⁻ ω, ∫⁻ s, T (ω, s) ∂ν ∂μ := by
+  rw [VdVWOuterExpectation_eq_lintegral_of_aemeasurable hT]
+  exact MeasureTheory.lintegral_prod T hT
+
+/--
+Measurable product-space Tonelli bridge for VdV&W nonnegative outer
+expectation.
+-/
+theorem VdVWOuterExpectation_prod_eq_lintegral_lintegral_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite ν]
+    {T : Ω × S -> ℝ≥0∞} (hT : Measurable T) :
+    VdVWOuterExpectation (μ.prod ν) T =
+      ∫⁻ ω, ∫⁻ s, T (ω, s) ∂ν ∂μ :=
+  VdVWOuterExpectation_prod_eq_lintegral_lintegral_of_aemeasurable
+    hT.aemeasurable
+
+/--
+Symmetric product-space Tonelli bridge for VdV&W nonnegative outer
+expectation.
+-/
+theorem VdVWOuterExpectation_prod_eq_lintegral_lintegral_symm_of_aemeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    {T : Ω × S -> ℝ≥0∞} (hT : AEMeasurable T (μ.prod ν)) :
+    VdVWOuterExpectation (μ.prod ν) T =
+      ∫⁻ s, ∫⁻ ω, T (ω, s) ∂μ ∂ν := by
+  rw [VdVWOuterExpectation_eq_lintegral_of_aemeasurable hT]
+  exact MeasureTheory.lintegral_prod_symm T hT
+
+/--
+Measurable symmetric product-space Tonelli bridge for VdV&W nonnegative outer
+expectation.
+-/
+theorem VdVWOuterExpectation_prod_eq_lintegral_lintegral_symm_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    {T : Ω × S -> ℝ≥0∞} (hT : Measurable T) :
+    VdVWOuterExpectation (μ.prod ν) T =
+      ∫⁻ s, ∫⁻ ω, T (ω, s) ∂μ ∂ν :=
+  VdVWOuterExpectation_prod_eq_lintegral_lintegral_symm_of_aemeasurable
+    hT.aemeasurable
 
 /--
 A.e.-measurable nonnegative maps have equal VdV&W outer and inner

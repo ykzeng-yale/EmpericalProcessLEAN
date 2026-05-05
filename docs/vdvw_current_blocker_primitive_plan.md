@@ -403,6 +403,20 @@ a.e.-measurable constructors now use these direct a.e.-measurable proofs and
 no longer require a countably-generated state-space assumption merely to pass
 through `NullMeasurable`.
 
+2026-05-05 product outer-expectation Tonelli follow-up: search found the
+needed mathlib APIs `MeasureTheory.lintegral_prod` and
+`MeasureTheory.lintegral_prod_symm`, plus product/Fubini wrappers in the local
+`ProbabilityMeasure` lane and theorem-local product wrappers in
+`Theorem243.lean`, but no general Chapter 1.2 VdV&W nonnegative
+outer-expectation product wrapper.  `OuterExpectation.lean` now adds
+`VdVWOuterExpectation_prod_eq_lintegral_lintegral_of_aemeasurable`,
+`VdVWOuterExpectation_prod_eq_lintegral_lintegral_of_measurable`,
+`VdVWOuterExpectation_prod_eq_lintegral_lintegral_symm_of_aemeasurable`, and
+`VdVWOuterExpectation_prod_eq_lintegral_lintegral_symm_of_measurable`.
+These close the measure-level Tonelli/Fubini bridge for nonnegative
+a.e.-measurable product integrands; the exact VdV&W arbitrary-map/perfect-map
+product-cover statements remain separate blockers.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.
