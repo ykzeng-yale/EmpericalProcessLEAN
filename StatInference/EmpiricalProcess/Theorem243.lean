@@ -17426,6 +17426,50 @@ structure VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM
         atTop (0 : ℝ)
 
 /--
+Build the variable-domain book entropy condition from a deterministic
+normalized log-cardinality rate.
+
+This is the canonical bridge for structural VC/Sauer or polynomial-cardinality
+arguments whose output is a pointwise bound
+`log(cardinality M eta n sample n + 1) / n <= rate M eta n` with
+`rate M eta n -> 0`.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_div_tendsto_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {rate : ℝ -> ℝ -> ℕ -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hcovering_all :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality M eta n))
+    (hrate_tendsto :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        Tendsto (rate M eta) atTop (𝓝 0))
+    (hlog_rate_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) /
+              (n : ℝ) ≤ rate M eta n) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope cardinality := by
+  refine
+    { coveringNumber_le := hcovering_all
+      log_cardinality_div_converges := ?_ }
+  intro M hM_pos eta heta
+  exact
+    VdVWConvergesInOuterProbabilityConst_zero_of_real_log_cardinality_div_le_tendsto_bound
+      (P := P) (cardinality := cardinality M eta)
+      (bound := rate M eta) (hrate_tendsto M hM_pos eta heta)
+      (hlog_rate_bound M hM_pos eta heta)
+
+/--
 The variable-domain book entropy condition supplies the entropy and covering
 fields of the selected fixed-radius package for each fixed truncation level.
 
@@ -19352,6 +19396,62 @@ theorem
         (Eventually.of_forall (hlog_rate_bound eta heta))
   · intro eta heta n sample
     exact (hlog_rate_bound eta heta n sample).trans (hrate_le_K eta heta n)
+
+/--
+All-positive-`M` selected fixed-radius tail/UI packages from deterministic
+normalized log-cardinality rates.
+
+This is the direct structural-rate constructor for the Theorem 2.4.3
+fixed-radius route.  It avoids first materializing a separate entropy package
+when a VC/Sauer or polynomial trace-count argument already gives both the
+covering domination and a deterministic rate tending to zero.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_logCardinality_div_tendsto_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {K : ℝ -> ℝ -> ℝ} {rate : ℝ -> ℝ -> ℕ -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hcovering_all :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality M eta n))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hrate_tendsto :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        Tendsto (rate M eta) atTop (𝓝 0))
+    (hK_nonneg : ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ K M eta)
+    (hrate_le_K :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        rate M eta n ≤ K M eta)
+    (hlog_rate_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) /
+              (n : ℝ) ≤ rate M eta n) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M (cardinality M) := by
+  intro M hM_pos
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_tendsto_bound
+      (P := P) (X := X M) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (K := K M) (rate := rate M) (cardinality := cardinality M)
+      (hX_samplePath M) (hcovering_all M hM_pos)
+      hclass henvelope_meas (hrate_tendsto M hM_pos)
+      hM_pos (hK_nonneg M hM_pos) (hrate_le_K M hM_pos)
+      (hlog_rate_bound M hM_pos)
 
 /--
 Finite-trace-image constructor for the selected fixed-radius tail/UI package

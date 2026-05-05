@@ -4172,3 +4172,21 @@ or prove a genuine selected finite-net tail/UI theorem from the textbook random
 entropy hypothesis without deterministic boundedness; separately extend the
 countable coordinate-measurable route to the arbitrary `P`-measurable /
 asymptotic-measurable textbook class layer.
+
+2026-05-05 follow-up: the structural deterministic-rate route is now named
+before the final untruncated consumer.  The new constructor
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_div_tendsto_bound`
+builds the canonical varying-domain book entropy package from empirical
+covering domination plus a deterministic normalized log-cardinality rate
+tending to zero.  The new all-`M` constructor
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_logCardinality_div_tendsto_bound`
+builds selected fixed-radius tail/UI packages directly from the same
+structural-rate data plus a deterministic envelope bound `rate <= K`.  Thus a
+future VC/Sauer/polynomial trace-count proof can now feed the current
+Theorem 2.4.3 untruncated convergence theorem without separately proving the
+book entropy structure or hand-building selected finite-net UI fields.
+Remaining blockers are now: instantiate this rate-bound route from an actual
+textbook structural covering theorem, or prove a non-deterministic selected
+finite-net tail/UI theorem from the random entropy hypothesis alone; and
+extend the countable coordinate-measurable route to the arbitrary
+`P`-measurable/asymptotic-measurable class layer.

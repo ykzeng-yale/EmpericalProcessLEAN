@@ -1408,3 +1408,16 @@ the untruncated Theorem 2.4.3 convergence handoff.  Next frontier: prove that
 deterministic log-ratio bound from a genuine structural covering/VC argument
 or replace it with a real selected finite-net tail/UI theorem; the arbitrary
 `P`-measurable/asymptotic-measurable class layer remains separate.
+
+2026-05-05 follow-up: structural deterministic-rate inputs can now be consumed
+without manual entropy/package rebuilding.  The compiled constructor
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_div_tendsto_bound`
+turns a pointwise bound
+`log(cardinality M eta n sample n + 1) / n <= rate M eta n` with
+`rate M eta -> 0` into the canonical variable-domain entropy condition.  The
+compiled constructor
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_logCardinality_div_tendsto_bound`
+then builds the all-positive-`M` selected fixed-radius tail/UI packages when
+`rate M eta n` is also bounded by a deterministic `K M eta`.  This is the
+intended feeder for future VC/Sauer/polynomial covering proofs before the
+untruncated Theorem 2.4.3 convergence consumer.
