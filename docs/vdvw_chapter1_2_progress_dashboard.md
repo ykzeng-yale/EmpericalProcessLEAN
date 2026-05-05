@@ -13,13 +13,17 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current `/goal` target override, 2026-05-05 at repository head `16fb288`: the
-next theorem-facing batch is the varying-domain outer-probability-to-Dirac-law
-weak-convergence bridge for real-valued finite-product endpoints, then its
-consumption by the signed bounded-continuous varying-domain package.  Closed
-Theorem 2.4.3 finite-net/Hoeffding/Mills/untruncation/reverse-cofiltration and
-countable full-subgraph endpoint packages should not be reopened unless a
-final exact statement directly consumes them.
+Current `/goal` target override, 2026-05-05 at repository head `633efcc`: the
+varying-domain outer-probability-to-Dirac-law weak-convergence bridge for
+real-valued finite-product endpoints is compiled as
+`VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real`,
+with signed consumer
+`VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real`.
+The next theorem-facing batch should consume this in the Theorem 2.4.3
+finite-product centered-supremum endpoint layer.  Closed finite-net/Hoeffding/
+Mills/untruncation/reverse-cofiltration and countable full-subgraph endpoint
+packages should not be reopened unless a final exact statement directly
+consumes them.
 
 ## Status Legend
 

@@ -56,7 +56,7 @@ unless a final exact statement consumes them.
 
 ## Current `/goal` Target
 
-Latest override, 2026-05-05, repository head `16fb288`: the active Codex
+Latest override, 2026-05-05, repository head `633efcc`: the active Codex
 `/goal` object is broad and cannot be edited in place, so this paragraph is
 the operational goal prompt for the next run.  Continue the full Chapter 1-2
 formalization in dependency order, but start from the verified state: the
@@ -64,37 +64,27 @@ strong countable full-subgraph Theorem 2.4.3/Lemma 2.4.5 packages, the signed
 positive/negative outer-expectation bridge, the signed bounded-continuous
 arbitrary-map weak-convergence package, the common-domain
 outer-probability-to-signed-weak-convergence bridge, and the varying-domain
-signed weak-convergence/asymptotic-measurability interfaces are compiled.
-The next proof batch should be theorem-facing and high capacity:
+signed weak-convergence/asymptotic-measurability interfaces are compiled.  The
+real-valued varying-domain Dirac-law bridge is now also compiled as
+`VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real`,
+with the direct signed endpoint consumer
+`VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real`.
+The next proof batch should consume these declarations in the finite-product
+centered-supremum endpoint layer of Theorem 2.4.3, then return to the exact
+textbook mismatches: random-entropy selected finite-net tail/UI from the book
+entropy condition, arbitrary `P`-measurable/asymptotic-measurable class support
+beyond countable coordinate-measurable classes, and any nonmeasurable
+outer-cover envelope variants required by the final statement.
 
-1. first attempt to prove a real-valued varying-domain law-convergence bridge
-   from `VdVWConvergesInOuterProbabilityConst Ω ... X l c` and measurability
-   to weak convergence of `Measure.map (X i) (μs i)` to `Measure.dirac c`;
-2. immediately consume that bridge through
-   `VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps`
-   to produce the signed bounded-continuous varying-domain endpoint needed by
-   the current finite-product centered-supremum statistics;
-3. if the direct Dirac-law bridge is blocked, record the exact missing proof
-   shape after searching local `StatInference`, `StatInference/ProbabilityMeasure`,
-   pinned mathlib, and recorded Lean checkouts, then try the alternative
-   common infinite-product projection route before moving to any lower-value
-   wrapper;
-4. after this endpoint bridge, return to the exact textbook mismatches:
-   random-entropy selected finite-net tail/UI from the book entropy condition,
-   arbitrary `P`-measurable/asymptotic-measurable class support beyond
-   countable coordinate-measurable classes, and any nonmeasurable outer-cover
-   envelope variants required by the final statement.
-
-Useful search record for the next bridge: local code has no exact theorem from
-varying-domain `VdVWConvergesInOuterProbabilityConst` to Dirac weak
-convergence; pinned/local APIs found include `Measure.dirac.isProbabilityMeasure`,
-`integral_dirac'`, `integral_map`, `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto`,
+Search/reuse record for this closed bridge: local code had no exact theorem
+from varying-domain `VdVWConvergesInOuterProbabilityConst` to Dirac weak
+convergence.  The proof reuses `Measure.dirac.isProbabilityMeasure`,
+`integral_dirac'`, `integral_map`,
+`ProbabilityMeasure.tendsto_iff_forall_integral_tendsto`,
 `BoundedContinuousFunction` measurability/boundedness, and the local
 `tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg`
-bounded nonnegative integral convergence theorem.  A plausible proof route is
-to apply the latter to
-`ω ↦ |f (X i ω) - f c|`, using continuity of each bounded-continuous test at
-`c`, boundedness by `2 * ‖f‖`, and `norm_integral_le_integral_norm`.
+bounded nonnegative integral convergence theorem, applied to
+`ω ↦ |f (X i ω) - f c|`.
 
 As of 2026-05-05, after syncing to repository head `f3424f9`, the active
 `/goal` should be interpreted as:

@@ -1,5 +1,6 @@
 import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.OuterExpectation
+import StatInference.EmpiricalProcess.OuterProbabilityExpectation
 import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
 import Mathlib.MeasureTheory.Measure.FiniteMeasurePi
 import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
@@ -947,6 +948,162 @@ theorem
     VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ :=
   VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_map_eq
     (μs := μs) (X := X) hX hweak (fun _ => rfl)
+
+/--
+Real-valued varying-domain convergence in VdV&W outer probability to a
+constant implies weak convergence of the pushforward laws to the Dirac law.
+
+This is the law-convergence bridge needed for sample-size-varying endpoints
+such as the finite-product centered suprema in Theorem 2.4.3.  The proof uses
+bounded-continuous test functions: continuity turns outer-probability
+convergence of `X_i` into outer-probability convergence of
+`|f(X_i)-f(c)|`, and the existing bounded nonnegative expectation bridge
+upgrades that to convergence of test integrals.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real
+    {ι : Type w} {Ω : ι -> Type u}
+    [∀ i, MeasurableSpace (Ω i)]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, IsProbabilityMeasure (μs i)]
+    {X : (i : ι) -> Ω i -> ℝ} {l : Filter ι} {c : ℝ}
+    (hX_outer :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μs X l c)
+    (hX_meas : ∀ i, Measurable (X i)) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun i =>
+        ⟨Measure.map (X i) (μs i),
+          Measure.isProbabilityMeasure_map (hX_meas i).aemeasurable⟩)
+      l
+      ⟨Measure.dirac c, Measure.dirac.isProbabilityMeasure⟩ := by
+  classical
+  rw [vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto]
+  intro f
+  let Y : (i : ι) -> Ω i -> ℝ :=
+    fun i ω => |f (X i ω) - f c|
+  have hY_outer :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μs
+        Y l (0 : ℝ) := by
+    intro ε hε
+    rcases Metric.continuousAt_iff.mp f.continuous.continuousAt ε hε with
+      ⟨δ, hδ_pos, hδ⟩
+    have hδ_half_pos : 0 < δ / 2 := half_pos hδ_pos
+    have htail := hX_outer (δ / 2) hδ_half_pos
+    refine
+      tendsto_of_tendsto_of_tendsto_of_le_of_le'
+        (show Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0) from
+          tendsto_const_nhds)
+        htail
+        (Eventually.of_forall fun _ => bot_le)
+        ?_
+    exact Eventually.of_forall fun i => by
+      dsimp [VdVWOuterProbability]
+      refine measure_mono ?_
+      intro ω hω
+      have hY_bad : ε < |f (X i ω) - f c| := by
+        simpa [Y, Real.dist_eq, sub_zero, abs_of_nonneg (abs_nonneg _)] using hω
+      have hnot_small : ¬ dist (X i ω) c < δ := by
+        intro hsmall
+        have hf_small : dist (f (X i ω)) (f c) < ε := hδ hsmall
+        have habs_small : |f (X i ω) - f c| < ε := by
+          simpa [Real.dist_eq] using hf_small
+        exact (not_lt_of_ge hY_bad.le) habs_small
+      have hδ_le : δ ≤ dist (X i ω) c := le_of_not_gt hnot_small
+      have hδ_half_lt_delta : δ / 2 < δ := by linarith
+      have hδ_half_lt : δ / 2 < dist (X i ω) c :=
+        lt_of_lt_of_le hδ_half_lt_delta hδ_le
+      simpa [Real.dist_eq] using hδ_half_lt
+  have hY_meas : ∀ i, Measurable (Y i) := by
+    intro i
+    exact ((f.continuous.measurable.comp (hX_meas i)).sub measurable_const).abs
+  have hY_nonneg : ∀ i (ω : Ω i), 0 ≤ Y i ω := by
+    intro i ω
+    exact abs_nonneg _
+  have hY_le : ∀ i (ω : Ω i), Y i ω ≤ 2 * ‖f‖ := by
+    intro i ω
+    simpa [Y, Real.dist_eq] using f.dist_le_two_norm (X i ω) c
+  have hY_integrable : ∀ i, Integrable (Y i) (μs i) := by
+    intro i
+    exact Integrable.of_bound (hY_meas i).aestronglyMeasurable (2 * ‖f‖)
+      (Eventually.of_forall fun ω => by
+        simpa [Real.norm_eq_abs, abs_of_nonneg (hY_nonneg i ω)] using
+          hY_le i ω)
+  have hY_int_tendsto :
+      Tendsto (fun i => ∫ ω, Y i ω ∂(μs i)) l (𝓝 0) :=
+    tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg
+      μs (fun i => inferInstance) hY_outer hY_meas hY_integrable hY_nonneg hY_le
+  have hdiff_tendsto :
+      Tendsto
+        (fun i => ∫ ω, (f (X i ω) - f c) ∂(μs i))
+        l (𝓝 0) := by
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    refine squeeze_zero (fun i => norm_nonneg _) ?_ hY_int_tendsto
+    intro i
+    calc
+      ‖∫ ω, (f (X i ω) - f c) ∂(μs i)‖
+          ≤ ∫ ω, ‖f (X i ω) - f c‖ ∂(μs i) :=
+            norm_integral_le_integral_norm _
+      _ = ∫ ω, Y i ω ∂(μs i) := by
+            simp [Y, Real.norm_eq_abs]
+  have hsource_tendsto :
+      Tendsto (fun i => ∫ ω, f (X i ω) ∂(μs i)) l (𝓝 (f c)) := by
+    have hdiff_eq :
+        (fun i => ∫ ω, (f (X i ω) - f c) ∂(μs i)) =
+          fun i => (∫ ω, f (X i ω) ∂(μs i)) - f c := by
+      funext i
+      have hfX_int : Integrable (fun ω => f (X i ω)) (μs i) :=
+        Integrable.of_bound
+          ((f.continuous.measurable.comp (hX_meas i)).aestronglyMeasurable)
+          ‖f‖
+          (Eventually.of_forall fun ω => f.norm_coe_le_norm (X i ω))
+      have hconst_int : Integrable (fun _ : Ω i => f c) (μs i) :=
+        integrable_const (f c)
+      haveI : IsProbabilityMeasure (μs i) := inferInstance
+      rw [integral_sub hfX_int hconst_int]
+      simp
+    have hdiff' :
+        Tendsto (fun i => (∫ ω, f (X i ω) ∂(μs i)) - f c) l (𝓝 0) := by
+      simpa [hdiff_eq] using hdiff_tendsto
+    have hadd :=
+      hdiff'.add
+        (show Tendsto (fun _ : ι => f c) l (𝓝 (f c)) from
+          tendsto_const_nhds)
+    simpa [sub_add_cancel] using hadd
+  have hsource_map :
+      (fun i => ∫ s, f s ∂(Measure.map (X i) (μs i))) =
+        fun i => ∫ ω, f (X i ω) ∂(μs i) := by
+    funext i
+    exact integral_map (hX_meas i).aemeasurable
+      f.continuous.measurable.aestronglyMeasurable
+  have htarget_dirac :
+      (∫ s, f s ∂(Measure.dirac c : Measure ℝ)) = f c := by
+    exact
+      (integral_dirac' (fun s : ℝ => f s) c
+        f.continuous.stronglyMeasurable)
+  change
+    Tendsto (fun i => ∫ s, f s ∂(Measure.map (X i) (μs i))) l
+      (𝓝 (∫ s, f s ∂(Measure.dirac c : Measure ℝ)))
+  simpa [hsource_map, htarget_dirac] using hsource_tendsto
+
+/--
+Real-valued varying-domain convergence in outer probability to a constant
+feeds the proof-carrying signed bounded-continuous varying-domain
+weak-convergence package.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real
+    {ι : Type w} {Ω : ι -> Type u}
+    [∀ i, MeasurableSpace (Ω i)]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, IsProbabilityMeasure (μs i)]
+    {X : (i : ι) -> Ω i -> ℝ} {l : Filter ι} {c : ℝ}
+    (hX_outer :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μs X l c)
+    (hX_meas : ∀ i, Measurable (X i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l
+      ⟨Measure.dirac c, Measure.dirac.isProbabilityMeasure⟩ :=
+  VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps
+    hX_meas
+    (VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real
+      hX_outer hX_meas)
 
 /--
 Has-law form of the signed-outer bounded-continuous weak-convergence bridge.
