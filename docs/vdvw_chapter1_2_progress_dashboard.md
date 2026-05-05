@@ -1247,3 +1247,11 @@ proved only from pinned mathlib `Submartingale.exists_ae_tendsto_of_bdd`,
 primitive.  This keeps the reverse/cofiltration route sign-flexible if a later
 finite-window or reindexing step yields an ordinary supermartingale, but the
 main blocker remains `VdVWOrderDualSubmartingaleConvergenceHandoff`.
+2026-05-04 follow-up: the reverse downcrossing reduction now compiles as
+`vdVW_tendsto_of_downcrossings_lt_top` and
+`vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_ae_lt_top`.  The
+order-dual handoff now has a sharper intermediate target: prove a.e. finite
+reverse downcrossing counts for
+`n ↦ f (OrderDual.toDual n)`.  Once that is available, boundedness and
+pointwise convergence follow from existing mathlib plus the new local
+deterministic criterion.

@@ -83,6 +83,39 @@ theorem vdVW_supermartingale_exists_ae_tendsto_of_eLpNorm_bdd
   simpa [Pi.neg_apply] using hlimit.neg
 
 /--
+Deterministic reverse-crossing convergence criterion.
+
+Mathlib's martingale convergence proof uses finiteness of ordinary
+upcrossings.  The finite-window route for an `ℕᵒᵈ` submartingale naturally
+controls downcrossings of the process read in ordinary sample-size order.  This
+lemma records the exact deterministic reduction: downcrossings of `f` are
+upcrossings of `-f`, and convergence of `-f` is equivalent to convergence of
+`f`.
+-/
+theorem vdVW_tendsto_of_downcrossings_lt_top
+    {Ω : Type u} {f : ℕ -> Ω -> ℝ} {ω : Ω}
+    (hf₁ : liminf (fun n => (‖f n ω‖₊ : ℝ≥0∞)) atTop < ∞)
+    (hf₂ :
+      ∀ a b : ℚ, a < b ->
+        upcrossings (-(b : ℝ)) (-(a : ℝ))
+          (fun n : ℕ => fun ω : Ω => -f n ω) ω < ∞) :
+    ∃ limit : ℝ, Tendsto (fun n => f n ω) atTop (𝓝 limit) := by
+  have hneg_bdd :
+      liminf (fun n => (‖(-f n ω)‖₊ : ℝ≥0∞)) atTop < ∞ := by
+    simpa using hf₁
+  have hneg_upcross :
+      ∀ a b : ℚ, a < b ->
+        upcrossings (a : ℝ) (b : ℝ)
+          (fun n : ℕ => fun ω : Ω => -f n ω) ω < ∞ := by
+    intro a b hab
+    simpa using hf₂ (-b) (-a) (neg_lt_neg hab)
+  obtain ⟨limit, hlimit⟩ :=
+    tendsto_of_uncrossing_lt_top
+      (f := fun n : ℕ => fun ω : Ω => -f n ω) hneg_bdd hneg_upcross
+  refine ⟨-limit, ?_⟩
+  simpa using hlimit.neg
+
+/--
 Conditional expectations of a fixed real random variable along an ordinary
 mathlib filtration form the submartingale needed by the VdV&W Lemma 2.4.5
 route.
@@ -5493,6 +5526,49 @@ theorem vdVWOrderDualFiniteHorizon_mul_integral_upcrossingsBefore_le_integral_po
     (submartingale_vdVWOrderDualFiniteHorizon (μ := μ) (ℱ := ℱ)
       (f := f) N hsub).mul_integral_upcrossingsBefore_le_integral_pos_part
         a b T
+
+/--
+Order-dual convergence reduced to reverse downcrossing finiteness.
+
+This is the next reusable target after the finite-window upcrossing estimate:
+boundedness comes from the uniform `L¹`/`eLpNorm` hypothesis, while the
+remaining genuinely reverse-time part is exactly a.e. finiteness of
+downcrossings of `n ↦ f (OrderDual.toDual n)`.
+-/
+theorem vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_ae_lt_top
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕᵒᵈ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕᵒᵈ -> Ω -> ℝ} {R : ℝ≥0}
+    (hsub : Submartingale f ℱ μ)
+    (hbdd : ∀ n : ℕᵒᵈ, eLpNorm (f n) 1 μ ≤ (R : ℝ≥0∞))
+    (hdown :
+      ∀ a b : ℚ, a < b ->
+        ∀ᵐ ω ∂μ,
+          upcrossings (-(b : ℝ)) (-(a : ℝ))
+            (fun n : ℕ => fun ω : Ω => -f (OrderDual.toDual n) ω) ω < ∞) :
+    ∀ᵐ ω ∂μ, ∃ limit : ℝ,
+      Tendsto (fun n : ℕ => f (OrderDual.toDual n) ω) atTop (𝓝 limit) := by
+  have hbounded :
+      ∀ᵐ ω ∂μ,
+        liminf
+          (fun n : ℕ => (‖f (OrderDual.toDual n) ω‖₊ : ℝ≥0∞)) atTop < ∞ := by
+    refine ae_bdd_liminf_atTop_of_eLpNorm_bdd (R := R) one_ne_zero ?hmeas ?hbdd
+    · intro n
+      exact
+        (hsub.stronglyMeasurable (OrderDual.toDual n)).measurable.mono
+          (ℱ.le (OrderDual.toDual n)) le_rfl
+    · intro n
+      exact hbdd (OrderDual.toDual n)
+  have hdown_all :
+      ∀ᵐ ω ∂μ,
+        ∀ a b : ℚ, a < b ->
+          upcrossings (-(b : ℝ)) (-(a : ℝ))
+            (fun n : ℕ => fun ω : Ω => -f (OrderDual.toDual n) ω) ω < ∞ := by
+    simp only [ae_all_iff, eventually_imp_distrib_left]
+    intro a b hab
+    exact hdown a b hab
+  filter_upwards [hbounded, hdown_all] with ω hω_bounded hω_down
+  exact vdVW_tendsto_of_downcrossings_lt_top hω_bounded hω_down
 
 /--
 The textbook Lemma 2.4.5 display comparison builds a genuine mathlib

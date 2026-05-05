@@ -97,6 +97,22 @@ blocker remains the reverse/upcrossing or reindexing theorem for
 `VdVWOrderDualSubmartingaleConvergenceHandoff`; do not count this adapter as a
 proof of Lemma 2.4.5.
 
+2026-05-04 follow-up: the reverse-crossing convergence reduction is now
+compiled.  New declarations are `vdVW_tendsto_of_downcrossings_lt_top` and
+`vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_ae_lt_top`.  The first
+is a deterministic criterion: bounded liminf plus finite downcrossings of
+`f` imply convergence, by applying mathlib's
+`tendsto_of_uncrossing_lt_top` to `-f`.  The second applies mathlib
+`ae_bdd_liminf_atTop_of_eLpNorm_bdd` to an `ℕᵒᵈ` submartingale read as
+`n ↦ f (OrderDual.toDual n)`, so the remaining generic handoff is reduced to
+a.e. finiteness of the reverse downcrossing counts
+`upcrossings (-(b : ℝ)) (-(a : ℝ)) (fun n ω => -f (OrderDual.toDual n) ω)`.
+Next exact proof target: derive this downcrossing finiteness from the compiled
+finite-window estimate
+`vdVWOrderDualFiniteHorizon_mul_integral_upcrossingsBefore_le_integral_pos_part`,
+or show that a different reindexing into an ordinary sub/supermartingale
+constructor is shorter.
+
 2026-05-04 `/goal` target update: the live non-finite-class frontier is no
 longer inverse-radius entropy, finite-cover selection, VC/subgraph packaging,
 untruncation, finite-class GC, or leave-one-out notation.  Those layers are
