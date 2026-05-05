@@ -18663,6 +18663,102 @@ theorem
       M hM
 
 /--
+Build selected fixed-radius side conditions from variable-domain book entropy
+and ordinary mean convergence of the raw normalized-log selected-cardinality
+process.
+
+This is the L1-strengthened random-entropy route: it does not claim that the
+textbook outer-probability entropy condition implies uniform integrability,
+but it packages the recently proved mean-to-tail bridge into the selected
+fixed-radius Theorem 2.4.3 side-condition interface.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_integral_tendsto_zero
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hfiniteNetUpperIntegrable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (eta := eta)
+                (cardinality := cardinality M) (X M)
+                (hentropy.coveringNumber_le M hM) heta) n sample n)
+              n M)
+          (vdVWProductMeasure P n))
+    (hselectedLogMeasurable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWLogEmpiricalL1CoveringCardinality
+            (fun sample' : SampleAt Observation n => fun m : ℕ =>
+              (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (eta := eta)
+                (cardinality := cardinality M) (X M)
+                (hentropy.coveringNumber_le M hM) heta) n sample' m)
+            sample n / (n : ℝ))
+    (hselectedLogIntegrable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWLogEmpiricalL1CoveringCardinality
+              (fun sample' : SampleAt Observation n => fun m : ℕ =>
+                (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                  (indexClass := indexClass) (classFun := classFun)
+                  (envelope := envelope) (M := M) (eta := eta)
+                  (cardinality := cardinality M) (X M)
+                  (hentropy.coveringNumber_le M hM) heta) n sample' m)
+              sample n / (n : ℝ))
+          (vdVWProductMeasure P n))
+    (hselectedLogIntegral :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta),
+        Tendsto
+          (fun n : ℕ =>
+            ∫ sample : SampleAt Observation n,
+              vdVWLogEmpiricalL1CoveringCardinality
+                (fun sample' : SampleAt Observation n => fun m : ℕ =>
+                  (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                    (indexClass := indexClass) (classFun := classFun)
+                    (envelope := envelope) (M := M) (eta := eta)
+                    (cardinality := cardinality M) (X M)
+                    (hentropy.coveringNumber_le M hM) heta) n sample' m)
+                sample n / (n : ℝ) ∂(vdVWProductMeasure P n))
+          atTop (𝓝 0)) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M (cardinality M) := by
+  intro M hM
+  exact
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
+      (fun M hM eta heta =>
+        finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_integral_tendsto_zero
+          (P := P) (M := M)
+          (cardinality := fun n sample m =>
+            (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (cardinality := cardinality M) (X M)
+              (hentropy.coveringNumber_le M hM) heta) n sample m)
+          hM
+          (hselectedLogMeasurable M hM eta heta)
+          (hselectedLogIntegrable M hM eta heta)
+          (hselectedLogIntegral M hM eta heta))
+      M hM
+
+/--
 Selected terminal cardinalities supply the measurable-cardinality field of the
 fixed-`M` inverse-radius entropy package for countable coordinate-measurable
 classes.
