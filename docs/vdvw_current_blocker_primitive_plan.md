@@ -3671,5 +3671,35 @@ declarations are
 `vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_natural_condExp_step_nonneg`,
 and
 `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_natural_condExp_step_nonneg`.
-The current non-finite-class proof target is now only the natural-filtration
-one-step conditional drift inequality for the shifted centered supremum.
+This natural-filtration endpoint is an optional sufficient condition, not the
+main textbook route.  The natural one-step drift may be stronger than the
+row-wise VdV&W reverse/permutation-symmetric argument and should not be chased
+as the default next step without a concrete proof route.
+
+2026-05-04 follow-up: the full-subgraph Theorem 2.4.3/Lemma 2.4.5 package now
+also exposes the direct row-wise reverse-comparison handoff, avoiding the
+natural-filtration detour.  Search/reuse record: pinned mathlib still supplies
+ordinary forward `ℕ` martingale/submartingale convergence APIs only
+(`Submartingale.exists_ae_tendsto_of_bdd`, `Submartingale.ae_tendsto_limitProcess`,
+`submartingale_of_condExp_sub_nonneg_nat`, `Filtration.natural`); no exact
+`ℕᵒᵈ` or VdV&W reverse/cofiltration convergence theorem was found.  Local
+reusable declarations already provide the row-wise conditional-expectation
+comparison over `Σ_{n+1}`:
+`vdVW_condExp_reverseComparison_centered_uniformClassSupremum_le_lastLeaveOneOut_of_countable`,
+`vdVW_condExp_centered_reverseComparison_and_ae_tendsto_limitProcess_allRows_of_countable`,
+and the zero-limit consumer
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_reverseComparisonHandoff`.
+The new compiled theorem-facing package
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_reverseComparisonHandoff`
+combines the full-subgraph `P`-GC endpoint, in-mean endpoint, and direct
+row-wise reverse-comparison handoff.
+
+Current non-finite-class blocker: prove the actual VdV&W reverse/cofiltration
+convergence theorem that turns the already-compiled all-row comparison over
+`Σ_{n+1}` into an a.e. finite limit for
+`vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1)`, or
+prove an equivalent row-wise handoff consumed by
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_reverseComparisonHandoff`.
+Do not spend the next run on more natural-filtration packaging unless it
+directly proves that reverse/cofiltration theorem or is forced by a verified
+Lean proof route.

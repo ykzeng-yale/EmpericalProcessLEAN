@@ -1155,6 +1155,12 @@ above, so they do not change the theorem-level dashboard counts.
    permutation-symmetric fields `Σ_{n+1}`.  The remaining primitive should
    prove the reverse/cofiltration convergence from those comparisons, not add
    more ordinary-row filtration wrappers.
+   The full-subgraph endpoint now also has the direct theorem-facing package
+   `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_reverseComparisonHandoff`,
+   which combines the compiled `P`-GC branch, in-mean branch, and this
+   row-wise Lemma 2.4.5 handoff.  Natural-filtration drift packages are only
+   sufficient-condition adapters; they should not displace the row-wise
+   reverse/cofiltration theorem as the active textbook target.
    On the Theorem 2.4.3 convergence side, the finite-class canonical route now
    also packages both current conclusions as
    `VdVWTheorem243_finite_indexClass_outerProbabilityUniformDeviation_and_inMean_canonical`;

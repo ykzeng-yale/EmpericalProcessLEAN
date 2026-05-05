@@ -1108,5 +1108,16 @@ mathlib's natural filtration.  New compiled declarations include
 `VdVWLemma245ReverseCofiltrationHandoff.of_natural_condExp_step_nonneg`, and
 the full-subgraph endpoint
 `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_natural_condExp_step_nonneg`.
-The active non-finite-class target is now just the one-step conditional drift
-inequality over this natural filtration.
+This natural-filtration route is only a sufficient condition; it may be
+stronger than the VdV&W row-wise reverse/permutation-symmetric proof and should
+not be the default target unless a concrete drift proof appears.
+
+2026-05-04 follow-up: the full-subgraph Theorem 2.4.3/Lemma 2.4.5 endpoint
+now has a direct row-wise reverse-comparison package:
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_reverseComparisonHandoff`.
+It combines the full-subgraph `P`-GC endpoint, in-mean endpoint, and existing
+direct Lemma 2.4.5 zero consumer from the all-row comparison over
+`Σ_{n+1}`.  The active non-finite-class target is therefore the actual
+reverse/cofiltration convergence theorem that consumes the compiled all-row
+conditional-expectation comparison, or an equivalent row-wise handoff.  Avoid
+additional natural-filtration packaging unless it proves that theorem.
