@@ -4382,3 +4382,17 @@ full-subgraph/structural-rate assumptions for concrete textbook classes when a
 chapter theorem or example requires it; and remove the countability/measurable
 coordinate restriction by building the exact arbitrary-map/asymptotic
 measurability and outer-cover primitives.
+
+2026-05-05 follow-up: the Chapter 1 asymptotic-measurability lane now has a
+continuous-map closure for the local shifted bounded-continuous predicates.
+The compiled theorem
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.comp_continuous`
+pulls bounded continuous tests back along a continuous map, and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.comp_continuous_of_lowerShifted`
+packages the corresponding canonical-shift corollary.  This is the
+arbitrary-map foundation analogue of the continuous-mapping theorem for the
+current outer/inner expectation-gap primitive; it still does not replace the
+full signed outer-expectation/asymptotic-measurability textbook definition.
+Next work in this lane should connect these shifted predicates to exact
+arbitrary-map weak-convergence statements or build the missing signed
+outer-cover envelope layer.

@@ -105,7 +105,13 @@ nonmeasurable outer-cover envelope variants required by the exact statement.
 A new Chapter 1 bridge now collapses nonnegative outer and inner expectations
 for measurable maps and measurable test compositions; this should be used as
 the first building block for the arbitrary-map/asymptotic-measurability lane
-rather than adding more already-consumed Theorem 2.4.3 wrappers.  The
+rather than adding more already-consumed Theorem 2.4.3 wrappers.  The same
+lane now has continuous-map closure for lower-shifted/canonical
+bounded-continuous tests via
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.comp_continuous`
+and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.comp_continuous_of_lowerShifted`.
+The
 example-specific Example 2.4.2 distribution-dependent finite middle partition
 / quantile cutpoint layer remains parked as a deferred example blocker unless
 a theorem needs it.

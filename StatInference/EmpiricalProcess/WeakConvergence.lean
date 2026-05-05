@@ -218,6 +218,27 @@ theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_meas
   simpa [hzero] using (tendsto_const_nhds : Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
 
 /--
+Continuous maps preserve the lower-shifted bounded-continuous
+asymptotic-measurability layer.
+
+This is the local arbitrary-map analogue of the continuous-mapping theorem for
+the current shifted outer/inner expectation primitive: every bounded
+continuous test on the target pulls back to a bounded continuous test on the
+source.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.comp_continuous
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω] [TopologicalSpace S] [TopologicalSpace T]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted
+      μs (fun i ω => g (X i ω)) l := by
+  intro f c hlower
+  let gC : C(S, T) := ⟨g, hg⟩
+  simpa [gC] using h (f.compContinuous gC) c hlower
+
+/--
 Bounded-continuous asymptotic measurability with the canonical lower shift
 `-‖f‖`.
 
@@ -264,6 +285,23 @@ theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_forall_
   VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_lowerShifted
     (VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_measurable
       hX)
+
+/--
+Continuous maps preserve the canonical bounded-continuous shifted
+asymptotic-measurability predicate whenever the source has the stronger
+all-lower-shifts version.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.comp_continuous_of_lowerShifted
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω] [TopologicalSpace S] [TopologicalSpace T]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted
+      μs (fun i ω => g (X i ω)) l :=
+  VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_lowerShifted
+    (h.comp_continuous hg)
 
 /--
 Measure-level weak convergence of probability measures.
