@@ -97,16 +97,22 @@ unrolls a block-halving recurrence, `chewi54_halvingBlocks_gap_le_of_power_bound
 packages an abstract accuracy gate, `chewi54_half_pow_mul_le_eps_of_log_ratio_le`
 formalizes the log-ratio scalar calculation, and
 `chewi54_halvingBlocks_gap_le_of_log_ratio_le` gives the source-facing
-logarithmic endpoint.  Search-first reuse: Chapter 3's
-`scalarRecurrence_le_pow`, Chapter 4's geometric/log analogues, and mathlib
-`Real.log_pow`, `Real.log_mul`, `Real.log_div`, `Real.log_inv`, and
-`Real.log_le_log_iff`.  Next aggressive step: derive the actual CG block
-halving recurrence from `chewi54_iteration_le_four_sqrt_condition_of_not_halved`
-using a natural integer block size, then package the full source Theorem 5.4
-statement or source-audit the polynomial/Chebyshev alternative before Theorem
-5.8.  Do not replay Chapter 3 GD convergence or Chapter 4 hard-instance setup
-unless a Chapter 5 proof explicitly depends on one of those compiled
-declarations.
+logarithmic endpoint.  The newest block bridge adds `chewi54BlockSize`,
+`chewi54_four_sqrt_le_blockSize`,
+`chewi54_block_halving_of_accelerated_block_bound`,
+`chewi54_block_halving_recurrence_of_accelerated_block_bounds`,
+`chewi54_log_rate_of_accelerated_block_bounds`, and
+`chewi54_log_rate_of_accelerated_block_bounds_blockSize`: accelerated bounds
+on each integer block of length at least `4 * sqrt(beta / alpha)` now feed the
+compiled logarithmic endpoint.  Search-first reuse: Chapter 3's
+`scalarRecurrence_le_pow`, Chapter 4's geometric/log analogues, mathlib
+`Nat.le_ceil`, and mathlib `Real.log_pow`, `Real.log_mul`, `Real.log_div`,
+`Real.log_inv`, and `Real.log_le_log_iff`.  Next aggressive step: derive the
+per-block accelerated bound from a restarted/displayed CG interface, then
+state the full source Theorem 5.4 logarithmic rate, or source-audit the
+polynomial/Chebyshev alternative before Theorem 5.8.  Do not replay Chapter 3
+GD convergence or Chapter 4 hard-instance setup unless a Chapter 5 proof
+explicitly depends on one of those compiled declarations.
 
 Recently completed Chapter 4 context: The
 `StatInference/Optimization/Reductions.lean` module compiles the quadratic

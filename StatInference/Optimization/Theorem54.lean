@@ -1037,6 +1037,72 @@ theorem IsCGDisplayedIteration.chewi54_accelerated_bound_of_point_updates
     hbeta_pos halpha_pos
 
 /--
+Canonical integer block size for the restart presentation of Chewi Theorem
+5.4.
+-/
+noncomputable def chewi54BlockSize (alpha beta : ℝ) : ℕ :=
+  ⌈4 * Real.sqrt (beta / alpha)⌉₊
+
+theorem chewi54_four_sqrt_le_blockSize (alpha beta : ℝ) :
+    4 * Real.sqrt (beta / alpha) ≤
+      (chewi54BlockSize alpha beta : ℝ) := by
+  simpa [chewi54BlockSize] using
+    Nat.le_ceil (4 * Real.sqrt (beta / alpha))
+
+/--
+Block-halving bridge for Chewi Theorem 5.4.  The accelerated estimate on one
+block, together with an integer block length at least `4 * sqrt(beta / alpha)`,
+forces the objective gap at the end of the block to be at most half the gap at
+the start.
+-/
+theorem chewi54_block_halving_of_accelerated_block_bound
+    {alpha beta gapStart gapEnd : ℝ} {B : ℕ}
+    (hblock : (B : ℝ) * gapEnd ≤
+      2 * Real.sqrt (beta / alpha) * gapStart)
+    (hB : 4 * Real.sqrt (beta / alpha) ≤ (B : ℝ))
+    (hgapEnd_nonneg : 0 ≤ gapEnd)
+    (halpha_pos : 0 < alpha) (hbeta_pos : 0 < beta) :
+    gapEnd ≤ (1 / 2 : ℝ) * gapStart := by
+  let s := Real.sqrt (beta / alpha)
+  have hs_pos : 0 < s := by
+    exact Real.sqrt_pos.2 (div_pos hbeta_pos halpha_pos)
+  have hleft : (4 * s) * gapEnd ≤ (B : ℝ) * gapEnd := by
+    exact mul_le_mul_of_nonneg_right hB hgapEnd_nonneg
+  have hcombined : (4 * s) * gapEnd ≤ 2 * s * gapStart := by
+    exact hleft.trans hblock
+  have htwo_pos : 0 < 2 * s := by nlinarith
+  have hdiv : ((4 * s) * gapEnd) / (2 * s) ≤ gapStart := by
+    rw [div_le_iff₀ htwo_pos]
+    calc
+      (4 * s) * gapEnd ≤ 2 * s * gapStart := hcombined
+      _ = gapStart * (2 * s) := by ring
+  have hratio : ((4 * s) * gapEnd) / (2 * s) = 2 * gapEnd := by
+    field_simp [hs_pos.ne']
+    ring
+  have htwo_gap : 2 * gapEnd ≤ gapStart := by
+    simpa [hratio] using hdiv
+  nlinarith
+
+/--
+The block-halving recurrence obtained by applying the accelerated block bound
+at every restart block.
+-/
+theorem chewi54_block_halving_recurrence_of_accelerated_block_bounds
+    {alpha beta : ℝ} {gap : ℕ -> ℝ} {B : ℕ}
+    (hblock : ∀ m,
+      (B : ℝ) * gap ((m + 1) * B) ≤
+        2 * Real.sqrt (beta / alpha) * gap (m * B))
+    (hB : 4 * Real.sqrt (beta / alpha) ≤ (B : ℝ))
+    (hgap_nonneg : ∀ n, 0 ≤ gap n)
+    (halpha_pos : 0 < alpha) (hbeta_pos : 0 < beta) :
+    ∀ m, gap ((m + 1) * B) ≤ (1 / 2 : ℝ) * gap (m * B) := by
+  intro m
+  exact chewi54_block_halving_of_accelerated_block_bound
+    (alpha := alpha) (beta := beta) (gapStart := gap (m * B))
+    (gapEnd := gap ((m + 1) * B)) (B := B) (hblock m) hB
+    (hgap_nonneg _) halpha_pos hbeta_pos
+
+/--
 Chewi Theorem 5.4 restart algebra.  If each block of `B` conjugate-gradient
 iterations halves the objective gap, then after `M` blocks the gap is bounded
 by the `M`-th power of `1 / 2`.
@@ -1118,6 +1184,53 @@ theorem chewi54_halvingBlocks_gap_le_of_log_ratio_le
     (gap := gap) (B := B) (M := M) (eps := eps) hhalve
     (chewi54_half_pow_mul_le_eps_of_log_ratio_le
       hgap0_pos heps_pos hM_log)
+
+/--
+Source-facing logarithmic endpoint from accelerated block estimates.  This is
+the scalar restart shell around Chewi Theorem 5.4: prove the accelerated bound
+on each block, choose a block length at least `4 * sqrt(beta / alpha)`, and the
+log-ratio condition gives the target accuracy after `M` blocks.
+-/
+theorem chewi54_log_rate_of_accelerated_block_bounds
+    {alpha beta : ℝ} {gap : ℕ -> ℝ} {B M : ℕ} {eps : ℝ}
+    (hblock : ∀ m,
+      (B : ℝ) * gap ((m + 1) * B) ≤
+        2 * Real.sqrt (beta / alpha) * gap (m * B))
+    (hB : 4 * Real.sqrt (beta / alpha) ≤ (B : ℝ))
+    (hgap_nonneg : ∀ n, 0 ≤ gap n)
+    (hgap0_pos : 0 < gap 0) (heps_pos : 0 < eps)
+    (halpha_pos : 0 < alpha) (hbeta_pos : 0 < beta)
+    (hM_log : Real.log ((gap 0) / eps) ≤
+      (M : ℝ) * Real.log (2 : ℝ)) :
+    gap (M * B) ≤ eps :=
+  chewi54_halvingBlocks_gap_le_of_log_ratio_le
+    (gap := gap) (B := B) (M := M) (eps := eps)
+    (chewi54_block_halving_recurrence_of_accelerated_block_bounds
+      hblock hB hgap_nonneg halpha_pos hbeta_pos)
+    hgap0_pos heps_pos hM_log
+
+/--
+Ceiling-block specialization of the restart shell.  The block size is the
+source-natural integer ceiling of `4 * sqrt(beta / alpha)`.
+-/
+theorem chewi54_log_rate_of_accelerated_block_bounds_blockSize
+    {alpha beta : ℝ} {gap : ℕ -> ℝ} {M : ℕ} {eps : ℝ}
+    (hblock : ∀ m,
+      (chewi54BlockSize alpha beta : ℝ) *
+          gap ((m + 1) * chewi54BlockSize alpha beta) ≤
+        2 * Real.sqrt (beta / alpha) *
+          gap (m * chewi54BlockSize alpha beta))
+    (hgap_nonneg : ∀ n, 0 ≤ gap n)
+    (hgap0_pos : 0 < gap 0) (heps_pos : 0 < eps)
+    (halpha_pos : 0 < alpha) (hbeta_pos : 0 < beta)
+    (hM_log : Real.log ((gap 0) / eps) ≤
+      (M : ℝ) * Real.log (2 : ℝ)) :
+    gap (M * chewi54BlockSize alpha beta) ≤ eps :=
+  chewi54_log_rate_of_accelerated_block_bounds
+    (alpha := alpha) (beta := beta) (gap := gap)
+    (B := chewi54BlockSize alpha beta) (M := M) (eps := eps)
+    hblock (chewi54_four_sqrt_le_blockSize alpha beta) hgap_nonneg
+    hgap0_pos heps_pos halpha_pos hbeta_pos hM_log
 
 end Optimization
 end StatInference

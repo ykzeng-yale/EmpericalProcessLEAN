@@ -1072,11 +1072,17 @@ restart/log endpoint packaging now compiles in `Theorem54.lean` via
 `chewi54_halvingBlocks_gap_le_of_power_bound`,
 `chewi54_half_pow_mul_le_eps_of_log_ratio_le`, and
 `chewi54_halvingBlocks_gap_le_of_log_ratio_le`, reusing
-`scalarRecurrence_le_pow` and mathlib's `Real.log_*` APIs.  The next Theorem
-5.4 target is the true block-halving bridge: derive the recurrence for integer
-blocks of size at least `4 * sqrt(beta / alpha)`, then state the full
-source-facing logarithmic CG rate, or source-audit the polynomial/Chebyshev
-alternative proof before moving to Theorem 5.8.
+`scalarRecurrence_le_pow` and mathlib's `Real.log_*` APIs.  The integer
+block bridge now compiles via `chewi54BlockSize`,
+`chewi54_four_sqrt_le_blockSize`,
+`chewi54_block_halving_of_accelerated_block_bound`,
+`chewi54_block_halving_recurrence_of_accelerated_block_bounds`,
+`chewi54_log_rate_of_accelerated_block_bounds`, and
+`chewi54_log_rate_of_accelerated_block_bounds_blockSize`.  The next Theorem
+5.4 target is to derive the per-block accelerated bound from a
+restarted/displayed CG interface, then state the full source-facing
+logarithmic CG rate, or source-audit the polynomial/Chebyshev alternative
+proof before moving to Theorem 5.8.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 
