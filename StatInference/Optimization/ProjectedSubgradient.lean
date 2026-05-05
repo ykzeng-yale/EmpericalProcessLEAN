@@ -179,10 +179,67 @@ theorem normalizedSubgradient_norm {p : E} (hp : p ≠ 0) :
     ‖normalizedSubgradient p‖ = 1 := by
   simpa [normalizedSubgradient] using (norm_smul_inv_norm (𝕜 := ℝ) hp)
 
+/-- The normalized subgradient has inner product `‖p‖` with `p`. -/
+theorem normalizedSubgradient_inner_self {p : E} (hp : p ≠ 0) :
+    inner ℝ p (normalizedSubgradient p) = ‖p‖ := by
+  have hp_norm_pos : 0 < ‖p‖ := norm_pos_iff.mpr hp
+  calc
+    inner ℝ p (normalizedSubgradient p)
+        = ‖p‖⁻¹ * inner ℝ p p := by
+          simp [normalizedSubgradient, real_inner_smul_right]
+    _ = ‖p‖⁻¹ * ‖p‖ ^ (2 : ℕ) := by
+          rw [real_inner_self_eq_norm_sq]
+    _ = ‖p‖ := by
+          field_simp [hp_norm_pos.ne']
+
+/--
+An `L`-Lipschitz finite-valued convex function has subgradients of norm at most
+`L` along any feasible positive ray in the normalized subgradient direction.
+
+This is the source Exercise 6.3 mechanism in the form needed by PSD: at boundary
+points one must assume the ray used to probe the subgradient stays feasible.
+-/
+theorem IsSubgradientAt.norm_le_of_lipschitzOnWith_feasible_ray
+    {C : Set E} {f : E -> ℝ} {p x : E} {L : ℝ}
+    (hsub : IsSubgradientAt C f p x)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hL_nonneg : 0 ≤ L)
+    (hray : ∃ t : ℝ, 0 < t ∧ x + t • normalizedSubgradient p ∈ C) :
+    ‖p‖ ≤ L := by
+  by_cases hp : p = 0
+  · simpa [hp] using hL_nonneg
+  · rcases hray with ⟨t, ht_pos, hy⟩
+    have hx : x ∈ C := hsub.mem
+    have hsub_y := hsub.2 hy
+    have hdiff : x + t • normalizedSubgradient p - x =
+        t • normalizedSubgradient p := by
+      module
+    have hsub_lower :
+        f x + t * ‖p‖ ≤ f (x + t • normalizedSubgradient p) := by
+      rw [hdiff, real_inner_smul_right, normalizedSubgradient_inner_self hp] at hsub_y
+      simpa using hsub_y
+    have hdist :
+        dist (x + t • normalizedSubgradient p) x = t := by
+      rw [dist_eq_norm, hdiff, norm_smul, normalizedSubgradient_norm hp,
+        Real.norm_eq_abs, abs_of_pos ht_pos]
+      ring
+    have hLip_upper :
+        f (x + t • normalizedSubgradient p) ≤ f x + L * t := by
+      have hraw := hLip.le_add_mul hy hx
+      simpa [Real.coe_toNNReal L hL_nonneg, hdist] using hraw
+    have hmul : t * ‖p‖ ≤ t * L := by
+      nlinarith
+    nlinarith [ht_pos]
+
 /-- Chewi's projected subgradient update. -/
 noncomputable def projectedSubgradientStep
     (proj : E -> E) (h : ℝ) (p x : E) : E :=
   proj (x - h • normalizedSubgradient p)
+
+/-- A scaled projected-subgradient step, used for functional constraints. -/
+noncomputable def projectedSubgradientScaledStep
+    (proj : E -> E) (η : ℝ) (p x : E) : E :=
+  proj (x - η • p)
 
 /-- Source-shaped projected subgradient trajectory interface. -/
 def IsProjectedSubgradientTrajectory
@@ -261,6 +318,57 @@ theorem convex_value_iterateAverage_sub_le_average_gap
     simp [nsmul_eq_mul]
     field_simp [hN_pos.ne']
   nlinarith
+
+/--
+One projected scaled-subgradient step gives the squared-distance recurrence
+needed for Chewi Theorem 6.16's functional-constraint cases.
+-/
+theorem projectedSubgradient_scaled_sqdist_recurrence
+    {C : Set E} {proj : E -> E} {f : E -> ℝ} {η : ℝ}
+    {x p xStar : E}
+    (hproj : ProjectionOracleOn C proj)
+    (hsub : IsSubgradientAt C f p x)
+    (hxStar_mem : xStar ∈ C)
+    (hη_nonneg : 0 ≤ η) :
+    ‖projectedSubgradientScaledStep proj η p x - xStar‖ ^ (2 : ℕ) ≤
+      ‖x - xStar‖ ^ (2 : ℕ) -
+        2 * η * (f x - f xStar) + η ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) := by
+  have hproj_dist :
+      ‖projectedSubgradientScaledStep proj η p x - xStar‖ ≤
+        ‖x - η • p - xStar‖ := by
+    simpa [projectedSubgradientScaledStep] using
+      hproj.dist_to_set_le (x - η • p) hxStar_mem
+  have hproj_sq :
+      ‖projectedSubgradientScaledStep proj η p x - xStar‖ ^ (2 : ℕ) ≤
+        ‖x - η • p - xStar‖ ^ (2 : ℕ) :=
+    (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mpr hproj_dist
+  have hexpand :
+      ‖x - η • p - xStar‖ ^ (2 : ℕ) =
+        ‖x - xStar‖ ^ (2 : ℕ) -
+          2 * η * inner ℝ p (x - xStar) + η ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) := by
+    have hdecomp : x - η • p - xStar = (x - xStar) - η • p := by
+      module
+    rw [hdecomp, norm_sub_sq_real, real_inner_smul_right, norm_smul,
+      Real.norm_eq_abs, abs_of_nonneg hη_nonneg]
+    rw [real_inner_comm (x - xStar) p]
+    ring
+  have hgap_inner :
+      f x - f xStar ≤ inner ℝ p (x - xStar) :=
+    hsub.gap_le_inner hxStar_mem
+  have hscaled_gap :
+      2 * η * (f x - f xStar) ≤ 2 * η * inner ℝ p (x - xStar) := by
+    exact mul_le_mul_of_nonneg_left hgap_inner (by nlinarith)
+  calc
+    ‖projectedSubgradientScaledStep proj η p x - xStar‖ ^ (2 : ℕ)
+        ≤ ‖x - η • p - xStar‖ ^ (2 : ℕ) := hproj_sq
+    _ =
+        ‖x - xStar‖ ^ (2 : ℕ) -
+          2 * η * inner ℝ p (x - xStar) + η ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) :=
+        hexpand
+    _ ≤
+        ‖x - xStar‖ ^ (2 : ℕ) -
+          2 * η * (f x - f xStar) + η ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) := by
+        nlinarith
 
 /--
 One PSD step gives the Chewi Theorem 6.14 squared-distance recurrence.
@@ -462,6 +570,125 @@ theorem chewi614_average_gap_bound
       (C := C) (f := f) (x := x) (xStar := xStar) (N := N)
       hconv (fun n _hn => htraj.mem n) hN
   exact hconv_gap.trans (by simpa [gap, distSq] using hsum_bound)
+
+/--
+Chewi Theorem 6.14 with the subgradient norm bound derived from Lipschitzness
+and feasible positive rays in the selected subgradient directions.
+-/
+theorem chewi614_average_gap_bound_of_lipschitzOnWith_feasible_rays
+    {C : Set E} {proj : E -> E} {f : E -> ℝ}
+    {h L : ℝ} {x p : ℕ -> E} {xStar : E} {N : ℕ}
+    (hconv : ConvexOn ℝ C f)
+    (hproj : ProjectionOracleOn C proj)
+    (htraj : IsProjectedSubgradientTrajectory C proj f h x p)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hxStar_mem : xStar ∈ C)
+    (hmin : ∀ ⦃z⦄, z ∈ C -> f xStar ≤ f z)
+    (hp_ne : ∀ n, n < N -> p n ≠ 0)
+    (hrays : ∀ n, n < N ->
+      ∃ t : ℝ, 0 < t ∧ x n + t • normalizedSubgradient (p n) ∈ C)
+    (hh_pos : 0 < h)
+    (hL_pos : 0 < L)
+    (hN : N ≠ 0) :
+    f (iterateAverage x N) - f xStar ≤
+      L / (2 * (N : ℝ) * h) * ‖x 0 - xStar‖ ^ (2 : ℕ) + L * h / 2 := by
+  exact
+    chewi614_average_gap_bound
+      (C := C) (proj := proj) (f := f) (h := h) (L := L)
+      (x := x) (p := p) (xStar := xStar) (N := N)
+      hconv hproj htraj hxStar_mem hmin hp_ne
+      (fun n hn =>
+        (htraj.subgradient n).norm_le_of_lipschitzOnWith_feasible_ray
+          hLip hL_pos.le (hrays n hn))
+      hh_pos hL_pos hN
+
+/-- Chewi Theorem 6.14 with the displayed choice `h = R / sqrt N`. -/
+theorem chewi614_average_gap_bound_stepsize
+    {C : Set E} {proj : E -> E} {f : E -> ℝ}
+    {L R : ℝ} {x p : ℕ -> E} {xStar : E} {N : ℕ}
+    (hconv : ConvexOn ℝ C f)
+    (hproj : ProjectionOracleOn C proj)
+    (htraj : IsProjectedSubgradientTrajectory
+      C proj f (R / Real.sqrt (N : ℝ)) x p)
+    (hxStar_mem : xStar ∈ C)
+    (hmin : ∀ ⦃z⦄, z ∈ C -> f xStar ≤ f z)
+    (hp_ne : ∀ n, n < N -> p n ≠ 0)
+    (hp_norm_le : ∀ n, n < N -> ‖p n‖ ≤ L)
+    (hL_pos : 0 < L)
+    (hR_pos : 0 < R)
+    (hR_bound : ‖x 0 - xStar‖ ≤ R)
+    (hN : N ≠ 0) :
+    f (iterateAverage x N) - f xStar ≤
+      L * R / Real.sqrt (N : ℝ) := by
+  have hN_pos_nat : 0 < N := Nat.pos_of_ne_zero hN
+  have hN_pos : 0 < (N : ℝ) := by
+    exact_mod_cast hN_pos_nat
+  have hs_pos : 0 < Real.sqrt (N : ℝ) := Real.sqrt_pos.2 hN_pos
+  have hh_pos : 0 < R / Real.sqrt (N : ℝ) := div_pos hR_pos hs_pos
+  have hbase :=
+    chewi614_average_gap_bound
+      (C := C) (proj := proj) (f := f)
+      (h := R / Real.sqrt (N : ℝ)) (L := L)
+      (x := x) (p := p) (xStar := xStar) (N := N)
+      hconv hproj htraj hxStar_mem hmin hp_ne hp_norm_le
+      hh_pos hL_pos hN
+  have hdist_sq_le :
+      ‖x 0 - xStar‖ ^ (2 : ℕ) ≤ R ^ (2 : ℕ) :=
+    (sq_le_sq₀ (norm_nonneg _) hR_pos.le).mpr hR_bound
+  have hcoef_nonneg :
+      0 ≤ L / (2 * (N : ℝ) * (R / Real.sqrt (N : ℝ))) := by
+    positivity
+  have hreplace :
+      L / (2 * (N : ℝ) * (R / Real.sqrt (N : ℝ))) *
+          ‖x 0 - xStar‖ ^ (2 : ℕ) +
+        L * (R / Real.sqrt (N : ℝ)) / 2 ≤
+      L / (2 * (N : ℝ) * (R / Real.sqrt (N : ℝ))) * R ^ (2 : ℕ) +
+        L * (R / Real.sqrt (N : ℝ)) / 2 := by
+    have hmul :=
+      mul_le_mul_of_nonneg_left hdist_sq_le hcoef_nonneg
+    nlinarith
+  have hclosed :
+      L / (2 * (N : ℝ) * (R / Real.sqrt (N : ℝ))) * R ^ (2 : ℕ) +
+        L * (R / Real.sqrt (N : ℝ)) / 2 =
+      L * R / Real.sqrt (N : ℝ) := by
+    have hs_sq : Real.sqrt (N : ℝ) ^ (2 : ℕ) = (N : ℝ) :=
+      Real.sq_sqrt hN_pos.le
+    field_simp [hN_pos.ne', hR_pos.ne', hs_pos.ne']
+    nlinarith [hs_sq]
+  exact hbase.trans (hreplace.trans_eq hclosed)
+
+/--
+Chewi Theorem 6.14 with `h = R / sqrt N`, deriving the subgradient norm bound
+from Lipschitzness and feasible positive rays.
+-/
+theorem chewi614_average_gap_bound_of_lipschitzOnWith_feasible_rays_stepsize
+    {C : Set E} {proj : E -> E} {f : E -> ℝ}
+    {L R : ℝ} {x p : ℕ -> E} {xStar : E} {N : ℕ}
+    (hconv : ConvexOn ℝ C f)
+    (hproj : ProjectionOracleOn C proj)
+    (htraj : IsProjectedSubgradientTrajectory
+      C proj f (R / Real.sqrt (N : ℝ)) x p)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hxStar_mem : xStar ∈ C)
+    (hmin : ∀ ⦃z⦄, z ∈ C -> f xStar ≤ f z)
+    (hp_ne : ∀ n, n < N -> p n ≠ 0)
+    (hrays : ∀ n, n < N ->
+      ∃ t : ℝ, 0 < t ∧ x n + t • normalizedSubgradient (p n) ∈ C)
+    (hL_pos : 0 < L)
+    (hR_pos : 0 < R)
+    (hR_bound : ‖x 0 - xStar‖ ≤ R)
+    (hN : N ≠ 0) :
+    f (iterateAverage x N) - f xStar ≤
+      L * R / Real.sqrt (N : ℝ) := by
+  exact
+    chewi614_average_gap_bound_stepsize
+      (C := C) (proj := proj) (f := f) (L := L) (R := R)
+      (x := x) (p := p) (xStar := xStar) (N := N)
+      hconv hproj htraj hxStar_mem hmin hp_ne
+      (fun n hn =>
+        (htraj.subgradient n).norm_le_of_lipschitzOnWith_feasible_ray
+          hLip hL_pos.le (hrays n hn))
+      hL_pos hR_pos hR_bound hN
 
 end Optimization
 end StatInference
