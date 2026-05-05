@@ -3614,3 +3614,16 @@ non-finite-class proof target is sharper: construct or prove an ordinary
 `fun n sequence => vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
 (n + 1) sequence` from the VdV&W decreasing permutation-symmetric fields, or
 prove the equivalent reverse/cofiltration convergence theorem directly.
+
+2026-05-04 follow-up: the full-subgraph Theorem 2.4.3/Lemma 2.4.5 downstream
+package now consumes the sharper ordinary-submartingale sufficient condition
+directly.  New compiled declarations are
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_submartingale`
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_submartingale`.
+They compose the existing full-subgraph `P`-GC and in-mean endpoints with
+`VdVWLemma245ReverseCofiltrationHandoff.of_submartingale`.  The remaining
+proof obligation for this route is no longer a generic named blocker at the
+call site; it is exactly the ordinary submartingale realization of the shifted
+centered empirical supremum process, or a direct proof of the reverse
+cofiltration convergence theorem.

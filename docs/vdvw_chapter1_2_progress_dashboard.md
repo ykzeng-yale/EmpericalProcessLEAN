@@ -1074,3 +1074,12 @@ submartingale sufficient-condition route.  New compiled declarations
 very concrete: produce the ordinary `ℕ` submartingale realization of the
 shifted process from the decreasing permutation-symmetric fields, or prove the
 reverse convergence theorem directly.
+
+2026-05-04 follow-up: the full-subgraph Theorem 2.4.3 package now has a direct
+ordinary-submartingale variant:
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_submartingale`
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_submartingale`.
+This means the downstream full-subgraph route can now be closed from one
+ordinary submartingale realization of the shifted centered process, without
+asking callers to supply the broader named reverse/cofiltration proposition.
