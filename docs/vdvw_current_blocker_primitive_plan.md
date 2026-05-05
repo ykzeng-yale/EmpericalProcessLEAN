@@ -56,26 +56,46 @@ textbook-hypothesis mismatches.
 As of 2026-05-05, the active `/goal` should be interpreted as:
 
 > Finish VdV&W Chapters 1-2 in Lean by dependency order.  The immediate
-> theorem-facing target is final Theorem 2.4.3/Lemma 2.4.5 statement alignment,
-> not more wrappers around already-closed entropy, untruncation, finite-class,
-> or reverse/cofiltration layers.  Start from
+> theorem-facing target is not more packaging around the already-closed
+> entropy, untruncation, finite-class, full-subgraph, or reverse/cofiltration
+> layers.  Start from the current strongest compiled endpoints:
 > `VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`,
-> `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`,
-> the variable-entropy/structural-rate GC and in-mean endpoints, and the
-> proved `VdVWOrderDualSubmartingaleConvergenceHandoff` /
+> `VdVWTheorem243_logCardinality_div_tendsto_bound_pGlivenkoCantelli_and_inMean`,
+> and the proved
+> `VdVWOrderDualSubmartingaleConvergenceHandoff.proved` /
 > `VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`
-> route.  Try first to produce the cleanest named VdVW Theorem 2.4.3/Lemma
-> 2.4.5 statement with no avoidable side assumptions.  Any remaining mismatch
-> must be recorded as an exact missing bridge: random entropy/tail-UI without
-> deterministic log boundedness, arbitrary `P`-measurable/asymptotic-measurable
-> class support beyond the countable coordinate-measurable route, or
-> nonmeasurable outer-cover envelope variants.  If this exact assembly blocks
-> after real Lean/search attempts, move to the next theorem-critical Chapter
-> 1-2 primitive that closes one of those bridges.
+> route.  The next high-value target is to remove or explicitly isolate the
+> remaining mismatches between these endpoints and the exact textbook Theorem
+> 2.4.3 assumptions: (1) derive random-entropy finite-net tail/UI or
+> deterministic structural log-rate inputs from the book entropy condition
+> without overclaiming monotonicity, (2) instantiate the structural
+> covering/rate side conditions from the genuine VC/Sauer/trace-cover theorem,
+> and (3) extend the countable coordinate-measurable route toward arbitrary
+> `P`-measurable/asymptotic-measurable classes and any needed nonmeasurable
+> outer-cover envelope variants.  If exact Theorem 2.4.3 assembly blocks after
+> real Lean/search attempts, immediately close the next theorem-critical
+> Chapter 1-2 primitive that reduces one of those mismatches, especially the
+> arbitrary-map/asymptotic-measurability foundation.
 
 The Codex `/goal` tool currently exposes only completion updates for an active
 goal, so this section is the authoritative refreshed target text for the
 ongoing goal until the tool objective can be recreated.
+
+2026-05-05 status check: git head `4903594` is synced with `origin/main`, and
+the active `/goal` tool objective remains broad but cannot be edited in place.
+The code search confirms the reverse/cofiltration route and the strong
+countable full-subgraph Theorem 2.4.3/Lemma 2.4.5 packages are compiled.  It
+also confirms there is no local exact `VdVWAsymptoticMeasurable` primitive yet;
+`WeakConvergence.lean` is still measure-level, while `PMeasurable.lean`
+contains the countable and pointwise-separable routes for Definition 2.3.3.
+Therefore the next `/goal` work should alternate only between exact theorem
+assumption removal for Theorem 2.4.3 and the Chapter 1 arbitrary-map
+measurability primitives needed to state that theorem without countability.
+As a first foundation closure in that direction,
+`VdVWOuterExpectation_eq_innerExpectation_of_measurable`,
+`VdVWOuterExpectation_eq_innerExpectation_of_measurable_ofReal`, and
+`VdVWOuterExpectation_eq_innerExpectation_of_measurable_comp` collapse the
+nonnegative outer/inner expectation gap for measurable test compositions.
 
 2026-05-04 `/goal` status correction: local scratch now registers the exact
 remaining reverse-time theorem as the generic proposition
