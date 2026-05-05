@@ -47,11 +47,54 @@ handoff.
 
 ## Active Blocker
 
-Current main-line target: final Theorem 2.4.3/Lemma 2.4.5 statement
-alignment, then the exact Chapter 1-2 primitives needed to remove remaining
-textbook-hypothesis mismatches.
+Current main-line target: convert the already compiled varying-domain
+outer-probability endpoints into the signed bounded-continuous weak-convergence
+interfaces needed for exact Chapter 1 arbitrary-map statements and the
+remaining Theorem 2.4.3 alignment.  Do not reopen the closed Theorem 2.4.3
+finite-net/Hoeffding/Mills/untruncation/reverse-cofiltration endpoint packages
+unless a final exact statement consumes them.
 
 ## Current `/goal` Target
+
+Latest override, 2026-05-05, repository head `16fb288`: the active Codex
+`/goal` object is broad and cannot be edited in place, so this paragraph is
+the operational goal prompt for the next run.  Continue the full Chapter 1-2
+formalization in dependency order, but start from the verified state: the
+strong countable full-subgraph Theorem 2.4.3/Lemma 2.4.5 packages, the signed
+positive/negative outer-expectation bridge, the signed bounded-continuous
+arbitrary-map weak-convergence package, the common-domain
+outer-probability-to-signed-weak-convergence bridge, and the varying-domain
+signed weak-convergence/asymptotic-measurability interfaces are compiled.
+The next proof batch should be theorem-facing and high capacity:
+
+1. first attempt to prove a real-valued varying-domain law-convergence bridge
+   from `VdVWConvergesInOuterProbabilityConst Ω ... X l c` and measurability
+   to weak convergence of `Measure.map (X i) (μs i)` to `Measure.dirac c`;
+2. immediately consume that bridge through
+   `VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps`
+   to produce the signed bounded-continuous varying-domain endpoint needed by
+   the current finite-product centered-supremum statistics;
+3. if the direct Dirac-law bridge is blocked, record the exact missing proof
+   shape after searching local `StatInference`, `StatInference/ProbabilityMeasure`,
+   pinned mathlib, and recorded Lean checkouts, then try the alternative
+   common infinite-product projection route before moving to any lower-value
+   wrapper;
+4. after this endpoint bridge, return to the exact textbook mismatches:
+   random-entropy selected finite-net tail/UI from the book entropy condition,
+   arbitrary `P`-measurable/asymptotic-measurable class support beyond
+   countable coordinate-measurable classes, and any nonmeasurable outer-cover
+   envelope variants required by the final statement.
+
+Useful search record for the next bridge: local code has no exact theorem from
+varying-domain `VdVWConvergesInOuterProbabilityConst` to Dirac weak
+convergence; pinned/local APIs found include `Measure.dirac.isProbabilityMeasure`,
+`integral_dirac'`, `integral_map`, `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto`,
+`BoundedContinuousFunction` measurability/boundedness, and the local
+`tendsto_integral_of_VdVWConvergesInOuterProbabilityConst_zero_of_bounded_nonneg`
+bounded nonnegative integral convergence theorem.  A plausible proof route is
+to apply the latter to
+`ω ↦ |f (X i ω) - f c|`, using continuity of each bounded-continuous test at
+`c`, boundedness by `2 * ‖f‖`, and `norm_integral_le_integral_norm`.
 
 As of 2026-05-05, after syncing to repository head `f3424f9`, the active
 `/goal` should be interpreted as:
@@ -173,6 +216,39 @@ composition, `integral_map`, `HasLaw`, and `TendstoInDistribution` law
 convergence.  The next target should consume this bridge in the Theorem 2.4.3
 alignment layer or extend it only where exact VdV&W nonmeasurable
 outer-cover/asymptotic-tightness clauses require stronger primitives.
+
+2026-05-05 outer-probability consumption follow-up: the signed arbitrary-map
+package now consumes the existing common-domain VdV&W outer-probability
+convergence bridge.  New declaration:
+`VdVWConvergesInOuterProbability.to_signedBoundedContinuousArbitraryMap`.
+It composes `tendstoInDistribution_of_vdVWConvergesInOuterProbability` with
+`vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap`, so any
+measurable common-domain outer-probability endpoint can now be promoted to the
+proof-carrying signed bounded-continuous arbitrary-map weak-convergence layer.
+The remaining Theorem 2.4.3 consumption issue is the sample-size-varying
+domain in the current finite-product centered-supremum endpoints; handling it
+requires either a varying-domain law convergence primitive to `δ_0`, or a
+canonical infinite-product projection of those endpoints before applying this
+common-domain bridge.
+
+2026-05-05 varying-domain follow-up: the sample-size-varying side of that
+blocker now has a compiled signed weak-convergence interface.  New
+declarations are
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_measurable`,
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains`,
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_map_eq`,
+and
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps`.
+Search/reuse record: no local/mathlib varying-domain signed weak-convergence
+predicate existed; the proof reuses the existing signed positive/negative
+outer-expectation measurable-collapse theorem and the mathlib `integral_map`
+law transport.  The next exact target is now narrower: prove weak convergence
+of the pushforward laws for finite-product centered-supremum statistics to
+`δ_0` from `VdVWConvergesInOuterProbabilityConst`, or project those statistics
+to a canonical common domain and use the already compiled common-domain
+outer-probability bridge.
 
 2026-05-05 status check: this run started from VdVW head `4903594` and pushed
 the merged verified head `57c0b80`; the active `/goal` tool objective remains
