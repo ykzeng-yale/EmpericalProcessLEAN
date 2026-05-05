@@ -160,6 +160,11 @@ bridges now enter the local signed weak-convergence packages using mathlib's
 built-in a.e.-measurability and map-law fields, without adding pointwise
 measurability assumptions.
 
+2026-05-05 shifted-constructor follow-up: lower-shifted and canonical shifted
+bounded-continuous asymptotic-measurability predicates now have direct
+null/a.e.-measurable constructors, including varying-domain a.e.-measurable
+constructors for sample-size-varying endpoints.
+
 2026-05-05 proof update: the countability-to-`P`-measurability route has a new
 compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`
 and

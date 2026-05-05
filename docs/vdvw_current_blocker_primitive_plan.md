@@ -5055,6 +5055,21 @@ and
 This closes the has-law version of the same Chapter 1 arbitrary-map
 measurability mismatch.
 
+2026-05-05 shifted a.e.-measurable constructor update: local search found no
+direct a.e.-measurable constructors for the lower-shifted/canonical shifted
+bounded-continuous asymptotic-measurability predicates.  `WeakConvergence.lean`
+now adds common-domain null/a.e. constructors
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_nullMeasurable`,
+`.of_forall_aemeasurable`,
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_forall_nullMeasurable`,
+and `.of_forall_aemeasurable`, plus the varying-domain a.e. constructors
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.of_forall_aemeasurable`
+and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.of_forall_aemeasurable`.
+These are direct consumers of the signed a.e.-measurable bridge and avoid
+manual routing through the signed package in later Chapter 1 and Theorem 2.4.3
+endpoints.
+
 2026-05-05 follow-up: the local asymptotic-measurability predicates are now
 stable under filter refinement/subsequence filters.  The compiled declarations
 `VdVWAsymptoticallyMeasurableNonnegative.mono_filter`,

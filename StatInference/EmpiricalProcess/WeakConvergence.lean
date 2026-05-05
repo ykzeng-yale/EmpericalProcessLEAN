@@ -1127,6 +1127,62 @@ theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_canonicalShifted
     h.to_lowerShifted
 
 /--
+Null-measurable maps are lower-shifted asymptotically measurable for all
+bounded continuous real tests.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_nullMeasurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (hX : ∀ i, NullMeasurable (X i) (μs i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l :=
+  (VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_nullMeasurable
+    hX).to_lowerShifted
+
+/--
+A.e.-measurable maps are lower-shifted asymptotically measurable for all
+bounded continuous real tests.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_aemeasurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (hX : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l :=
+  (VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable
+    hX).to_lowerShifted
+
+/--
+Null-measurable maps are canonically shifted asymptotically measurable for all
+bounded continuous real tests.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_forall_nullMeasurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (hX : ∀ i, NullMeasurable (X i) (μs i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted μs X l :=
+  (VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_nullMeasurable
+    hX).to_canonicalShifted
+
+/--
+A.e.-measurable maps are canonically shifted asymptotically measurable for all
+bounded continuous real tests.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_forall_aemeasurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (hX : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted μs X l :=
+  (VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable
+    hX).to_canonicalShifted
+
+/--
 Varying-domain bounded-continuous lower-shifted asymptotic measurability.
 
 This is the sample-size-varying analogue of
@@ -1336,6 +1392,42 @@ theorem
   VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.of_lowerShifted
     (VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.of_forall_nullMeasurable
       hX)
+
+/--
+A.e.-measurable varying-domain maps are lower-shifted asymptotically
+measurable for all bounded continuous real tests.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.of_forall_aemeasurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (hX : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+      Ω μs X l :=
+  (VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_aemeasurable
+    hX).to_lowerShifted
+
+/--
+A.e.-measurable varying-domain maps are canonically shifted asymptotically
+measurable for all bounded continuous real tests.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.of_forall_aemeasurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (hX : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+      Ω μs X l :=
+  (VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_aemeasurable
+    hX).to_canonicalShifted
 
 /--
 Measure-level weak convergence of probability measures.

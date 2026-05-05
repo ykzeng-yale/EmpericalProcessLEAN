@@ -66,6 +66,9 @@ The `HasLaw` feeder also no longer needs pointwise measurability:
 and
 `VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_hasLaw_aemeasurable`
 consume mathlib `HasLaw.aemeasurable` and `HasLaw.map_eq` directly.
+Direct null/a.e.-measurable constructors are now also available for the
+lower-shifted/canonical shifted bounded-continuous predicates in both
+common-domain and varying-domain forms.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new
