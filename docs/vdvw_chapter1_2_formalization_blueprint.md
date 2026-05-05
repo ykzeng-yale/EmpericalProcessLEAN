@@ -112,7 +112,8 @@ bounded-continuous tests via
 and
 `VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.comp_continuous_of_lowerShifted`.
 It also has selected-test monotonicity and arbitrary-map pullback closures for
-the nonnegative and lower-shifted real predicates.
+the nonnegative and lower-shifted real predicates, plus filter-refinement
+closure for all four local asymptotic-measurability predicates.
 The
 example-specific Example 2.4.2 distribution-dependent finite middle partition
 / quantile cutpoint layer remains parked as a deferred example blocker unless

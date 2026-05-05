@@ -134,6 +134,20 @@ theorem VdVWAsymptoticallyMeasurableNonnegative.comp_map
   exact h (fun s => φ (g s)) (hpull φ hφ)
 
 /--
+The nonnegative asymptotic-measurability predicate is stable under passing to
+a finer index filter, e.g. a subsequence filter.
+-/
+theorem VdVWAsymptoticallyMeasurableNonnegative.mono_filter
+    {Ω : Type u} {S : Type v} {ι : Type w} [MeasurableSpace Ω]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l l' : Filter ι} {tests : (S -> ℝ≥0∞) -> Prop}
+    (h : VdVWAsymptoticallyMeasurableNonnegative μs X l tests)
+    (hl : l' ≤ l) :
+    VdVWAsymptoticallyMeasurableNonnegative μs X l' tests := by
+  intro T hT
+  exact (h T hT).mono_left hl
+
+/--
 Lower-shifted real outer/inner expectation gap.
 
 For a real-valued test `Y` with lower bound `c`, `ENNReal.ofReal (Y - c)` is
@@ -243,6 +257,20 @@ theorem VdVWAsymptoticallyMeasurableLowerShiftedReal.comp_map
   exact h (fun s => φ (g s)) c (hpull φ hφ) hlower
 
 /--
+The lower-shifted real asymptotic-measurability predicate is stable under
+passing to a finer index filter, e.g. a subsequence filter.
+-/
+theorem VdVWAsymptoticallyMeasurableLowerShiftedReal.mono_filter
+    {Ω : Type u} {S : Type v} {ι : Type w} [MeasurableSpace Ω]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l l' : Filter ι} {tests : (S -> ℝ) -> Prop}
+    (h : VdVWAsymptoticallyMeasurableLowerShiftedReal μs X l tests)
+    (hl : l' ≤ l) :
+    VdVWAsymptoticallyMeasurableLowerShiftedReal μs X l' tests := by
+  intro f c hf hlower
+  exact (h f c hf hlower).mono_left hl
+
+/--
 Bounded-continuous lower-shifted asymptotic measurability.
 
 This is the closest current local bridge to VdV&W Definition 1.3.7: it ranges
@@ -301,6 +329,21 @@ theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.comp_continuou
   intro f c hlower
   let gC : C(S, T) := ⟨g, hg⟩
   simpa [gC] using h (f.compContinuous gC) c hlower
+
+/--
+The bounded-continuous lower-shifted asymptotic-measurability predicate is
+stable under passing to a finer index filter.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.mono_filter
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l l' : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l)
+    (hl : l' ≤ l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l' := by
+  intro f c hlower
+  exact (h f c hlower).mono_left hl
 
 /--
 Bounded-continuous asymptotic measurability with the canonical lower shift
@@ -366,6 +409,21 @@ theorem
       μs (fun i ω => g (X i ω)) l :=
   VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_lowerShifted
     (h.comp_continuous hg)
+
+/--
+The canonical bounded-continuous shifted asymptotic-measurability predicate is
+stable under passing to a finer index filter.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.mono_filter
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l l' : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted μs X l)
+    (hl : l' ≤ l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted μs X l' := by
+  intro f
+  exact (h f).mono_left hl
 
 /--
 Measure-level weak convergence of probability measures.

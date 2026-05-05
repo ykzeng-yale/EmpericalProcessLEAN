@@ -4408,3 +4408,14 @@ state-space maps without reopening the outer/inner expectation-gap proof.
 This is still a foundation layer: the next missing exact Chapter 1 bridge is
 the signed bounded-continuous arbitrary-map weak-convergence formulation, or a
 nonmeasurable outer-cover envelope layer strong enough to state it honestly.
+
+2026-05-05 follow-up: the local asymptotic-measurability predicates are now
+stable under filter refinement/subsequence filters.  The compiled declarations
+`VdVWAsymptoticallyMeasurableNonnegative.mono_filter`,
+`VdVWAsymptoticallyMeasurableLowerShiftedReal.mono_filter`,
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.mono_filter`, and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.mono_filter`
+let later Chapter 1 weak-convergence and tightness arguments pass to finer
+filters without rebuilding outer/inner expectation-gap proofs.  This narrows
+the remaining arbitrary-map gap to the signed bounded-continuous weak-
+convergence definition and its nonmeasurable outer-cover envelope support.
