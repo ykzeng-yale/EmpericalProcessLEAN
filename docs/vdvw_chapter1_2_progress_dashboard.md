@@ -13,20 +13,18 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current `/goal` target override, 2026-05-05 at repository head `633efcc`: the
-varying-domain outer-probability-to-Dirac-law weak-convergence bridge for
-real-valued finite-product endpoints is compiled as
-`VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real`,
-with signed consumer
-`VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real`.
-The concrete Theorem 2.4.3 centered-supremum adapter
-`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_convergesInOuterProbabilityConst`
-is also compiled.  The next theorem-facing batch should move back to the exact
-textbook mismatches: random entropy tail/UI, noncountable/arbitrary-map
-asymptotic measurability, and nonmeasurable envelope-tail clauses.  Closed
-finite-net/Hoeffding/Mills/untruncation/reverse-cofiltration and countable
-full-subgraph endpoint packages should not be reopened unless a final exact
-statement directly consumes them.
+Current `/goal` target override, 2026-05-05 at synced repository head
+`ece76ed`: the signed arbitrary-map, varying-domain weak-convergence, and
+real-valued Dirac-law endpoint bridges are compiled and consumed by the
+Theorem 2.4.3 centered-supremum adapter.  Closed
+finite-net/Hoeffding/Mills/untruncation/reverse-cofiltration,
+selected-entropy, full-subgraph, and signed weak-convergence endpoint
+packages should not be rebuilt.  The next theorem-facing work is to remove the
+remaining exact textbook mismatches: derive selected finite-net tail/UI from
+the book random entropy condition, remove countability/coordinate-measurability
+assumptions through the Chapter 1 arbitrary-map/P-measurable foundations, and
+add nonmeasurable envelope-tail outer-cover clauses only if exact statements
+need them.
 
 ## Status Legend
 

@@ -89,22 +89,16 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at repository head `633efcc`: the
-strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages and the signed
-arbitrary-map/varying-domain weak-convergence interfaces are compiled.  The
-real-valued varying-domain bridge from convergence in outer probability to
-weak convergence of pushforward laws to a Dirac limit is now compiled as
-`VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real`,
-with the signed endpoint consumer
-`VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real`.
-The concrete Theorem 2.4.3 finite-product centered-supremum adapter
-`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_convergesInOuterProbabilityConst`
-is also compiled.  The next blueprint target is now the remaining exact
-textbook mismatches: random-entropy selected finite-net tail/UI from the book
-entropy condition, arbitrary/nonmeasurable asymptotic-measurability support
-beyond countable coordinate-measurable classes, and any nonmeasurable
-envelope-tail outer-cover clauses required by the final exact Chapter 1-2
-theorem statements.
+Current operational target, 2026-05-05 at synced repository head `ece76ed`:
+the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, signed
+arbitrary-map/varying-domain weak-convergence interfaces, and real-valued
+Dirac-law bridge are compiled and should be treated as closed infrastructure.
+The next blueprint target is no longer endpoint packaging.  It is the exact
+textbook mismatch layer: prove selected finite-net tail/UI from the book
+random entropy condition, remove the countability/coordinate-measurability
+assumptions through Chapter 1 arbitrary-map and `P`-measurable foundations, and
+add nonmeasurable envelope-tail outer-cover clauses only when required by an
+exact Chapter 1-2 theorem statement.
 
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the

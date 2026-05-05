@@ -1,6 +1,6 @@
 # VdV&W Current Blocker Primitive Plan
 
-Status date: 2026-05-04.
+Status date: 2026-05-05.
 
 This file pins down the active blocker and the primitive Lean declarations
 needed to close it.  It is not a theorem report.  A formal report is created
@@ -47,14 +47,67 @@ handoff.
 
 ## Active Blocker
 
-Current main-line target: convert the already compiled varying-domain
-outer-probability endpoints into the signed bounded-continuous weak-convergence
-interfaces needed for exact Chapter 1 arbitrary-map statements and the
-remaining Theorem 2.4.3 alignment.  Do not reopen the closed Theorem 2.4.3
-finite-net/Hoeffding/Mills/untruncation/reverse-cofiltration endpoint packages
-unless a final exact statement consumes them.
+Current main-line target: remove the remaining exact-textbook mismatches after
+the signed bounded-continuous arbitrary-map and varying-domain
+weak-convergence bridges have already compiled.  Do not reopen the closed
+Theorem 2.4.3 finite-net/Hoeffding/Mills/untruncation/reverse-cofiltration,
+full-subgraph, signed weak-convergence, or Dirac-law endpoint packages unless a
+final exact statement directly consumes them.
 
 ## Current `/goal` Target
+
+Authoritative operational prompt, 2026-05-05, synced repository head
+`ece76ed`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+proof-hole-free code, search-first reuse of pinned mathlib and local
+`StatInference/ProbabilityMeasure`, and no exact textbook claim until the
+corresponding theorem statement compiles.  The active Codex `/goal` tool
+objective is intentionally broad and currently cannot be edited in place; this
+paragraph is the replacement target for ongoing `/goal` work.
+
+Verified compiled foundation that should not be repeated:
+`vdVW_theorem_2_4_1_glivenkoCantelli`;
+the strong countable/full-subgraph Theorem 2.4.3 and Lemma 2.4.5 endpoint
+packages including
+`VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`,
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`,
+`VdVWOrderDualSubmartingaleConvergenceHandoff.proved`, and
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`;
+selected fixed-radius/inverse-radius entropy packages and finite-net
+tail/UI consumers; deterministic untruncation and envelope-tail bridges;
+signed positive/negative outer-expectation, signed bounded-continuous
+arbitrary-map asymptotic-measurability, common-domain and varying-domain
+signed weak-convergence packages; and the real-valued varying-domain Dirac-law
+bridge
+`VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real`
+with Theorem 2.4.3 consumer
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_convergesInOuterProbabilityConst`.
+
+Next high-capacity proof batches, in order:
+
+1. Attack the exact Theorem 2.4.3 entropy mismatch: prove the random-entropy
+   selected finite-net tail/UI theorem from the book condition
+   `log N(η, F_M, L1(P_n)) = o_P^*(n)` for fixed positive `η`, or prove a
+   genuine varying-domain tail/UI replacement.  Do not smuggle in deterministic
+   log-cardinality boundedness unless the theorem statement names it.
+2. Remove the countability/coordinate-measurability mismatch in Theorem 2.4.3
+   by consuming the Chapter 1 signed arbitrary-map foundation together with
+   the existing `VdVWPMeasurableClass`/pointwise-separable routes in
+   `PMeasurable.lean`, or record the exact missing `NullMeasurable`/outer-cover
+   theorem shape after Lean attempts.
+3. Add nonmeasurable outer-cover envelope-tail variants only if the exact
+   Theorem 2.4.3 or Chapter 1 arbitrary-map statements require them.
+4. Once Theorem 2.4.3 is exact or its remaining hypotheses are honestly
+   isolated, advance through the next Chapter 2 theorem-line items in order:
+   covering/packing and entropy results in Section 2.2, measurable-class and
+   separability lemmas in Section 2.3, then bracketing/GC and later
+   Donsker/entropy material.  Chapter 1 Portmanteau/Prokhorov/tightness,
+   product/FDD, Hilbert/Gaussian, generated-sigma, and asymptotic-measurability
+   wrappers remain real foundation targets when they discharge one of these
+   theorem lines.
+
+Older entries below are historical proof-state logs.  Use the authoritative
+paragraph above for the next `/goal` run unless a later verified commit updates
+it.
 
 Latest override, 2026-05-05, repository head `633efcc`: the active Codex
 `/goal` object is broad and cannot be edited in place, so this paragraph is
