@@ -140,8 +140,9 @@ the π-system convergence-determining wrapper
 and the VdV&W 1.4.2 product-test uniqueness wrappers
 `vdVW142_prod_measure_ext_of_forall_boundedContinuous_integral_mul` and
 `vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`;
-and the measurable independent-coordinate joint-law convergence wrapper
-`vdVWTendstoInDistribution_prodMk_laws_of_indepFun`.
+and the measurable independent-coordinate joint-law convergence wrappers
+`vdVWTendstoInDistribution_prodMk_laws_of_indepFun` and
+`vdVWTendstoInDistribution_pi_laws_of_iIndepFun`.
 
 Next high-capacity proof batches, in order:
 
@@ -5212,3 +5213,19 @@ now proves VdV&W 1.4.2-named wrappers
 `vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`.  These
 are ordinary measure-level product/FDD foundations and do not close the
 arbitrary-index process weak-convergence converse.
+
+2026-05-05 independent product-law follow-up: local search found the already
+compiled binary product-law wrapper `VdVWWeakConvergenceProbabilityMeasures.prod`,
+finite product-law wrapper `VdVWWeakConvergenceProbabilityMeasures.pi`, and
+mathlib independence law APIs `IndepFun.hasLaw_prod` and
+`iIndepFun.hasLaw_pi`.  `WeakConvergence.lean` now exposes the ordinary
+measurable random-variable forms of the VdV&W 1.4.6 independent-coordinate
+product convergence layer as
+`vdVWTendstoInDistribution_prodMk_laws_of_indepFun` for binary pairs and
+`vdVWTendstoInDistribution_pi_laws_of_iIndepFun` for finite coordinate
+families.  The current `/goal` target should treat ordinary measurable
+finite-coordinate product-law convergence as closed and move to the remaining
+exact blockers: arbitrary-map/asymptotic-independence product statements,
+arbitrary-index FDD converse with separability/tightness support, the
+nonmeasurable signed outer-cover weak-convergence layer, or the exact
+Theorem 2.4.3 random-entropy/tail-UI mismatch.
