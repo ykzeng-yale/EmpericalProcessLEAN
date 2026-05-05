@@ -1734,6 +1734,20 @@ give Chapter 1 a named ordinary probability-measure asymptotic-tightness
 foundation.  The exact VdV&W arbitrary-map and nonmeasurable process
 asymptotic-tightness statements remain future primitives.
 
+2026-05-05 finite-dimensional asymptotic-tightness follow-up:
+`WeakConvergence.lean` now exposes
+`VdVWProbabilityMeasuresAsymptoticallyTight.finiteDimensionalRestrict`.
+`FiniteDimensional.lean` adds the `ell_infty(T)` finite-coordinate and
+finite-index pushback wrappers
+`vdVW148_ellInfty_finiteDimensional_asymptoticallyTight_of_processLaw_asymptoticallyTight`,
+`vdVW148_ellInfty_asymptoticallyTight_of_finiteProduct_asymptoticallyTight_finite`,
+and
+`vdVW148_ellInfty_map_symm_asymptoticallyTight_of_finiteProduct_asymptoticallyTight_finite`.
+This closes the ordinary finite-dimensional asymptotic-tightness feeder for
+the Chapter 1 process/FDD route.  The arbitrary-index VdV&W 1.4.8 converse
+still needs separability, process asymptotic tightness, and nonmeasurable
+arbitrary-map weak-convergence primitives.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

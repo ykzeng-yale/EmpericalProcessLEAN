@@ -162,6 +162,28 @@ theorem vdVW148_ellInfty_finiteDimensional_weakConvergence_of_processLaw_weakCon
   exact hμ.map_continuous (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
 
 /--
+Forward finite-dimensional asymptotic-tightness layer for laws on
+`ell_infty(T)`.  Ordinary asymptotic tightness of `ell_infty(T)` laws implies
+ordinary asymptotic tightness of every finite-coordinate restriction.
+
+This is only the measure-level forward FDD tightness direction; the
+arbitrary-index VdV&W converse still needs separability, process
+asymptotic-tightness, and nonmeasurable arbitrary-map primitives.
+-/
+theorem vdVW148_ellInfty_finiteDimensional_asymptoticallyTight_of_processLaw_asymptoticallyTight
+    {ι : Type*} {l : Filter ι}
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    {μs : ι -> ProbabilityMeasure (VdVWEllInfty T)}
+    (hμ : VdVWProbabilityMeasuresAsymptoticallyTight μs l)
+    (I : Finset T)
+    [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)] :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => (μs n).map
+        ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable))
+      l := by
+  exact hμ.map_continuous (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
+
+/--
 For finite index sets, mapping an `ell_infty(T)` law to the ordinary finite
 product and back by the finite product equivalence recovers the original law.
 -/
@@ -234,6 +256,49 @@ theorem vdVW148_ellInfty_map_symm_weakConvergence_of_finiteProduct_weakConvergen
       l
       (ν.map
         ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm.continuous.measurable.aemeasurable)) :=
+  hν.map_continuous (VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm.continuous
+
+/--
+Finite-index converse for ordinary measure-level asymptotic tightness on
+`ell_infty(T)`: if the finite-product image laws are asymptotically tight,
+then the original `ell_infty(T)` laws are asymptotically tight.
+
+This is finite-index only.  The arbitrary-index process asymptotic-tightness
+criterion remains a separate VdV&W primitive.
+-/
+theorem vdVW148_ellInfty_asymptoticallyTight_of_finiteProduct_asymptoticallyTight_finite
+    {ι : Type*} {l : Filter ι}
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {μs : ι -> ProbabilityMeasure (VdVWEllInfty T)}
+    (hμ : VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => (μs n).map
+        ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).continuous.measurable.aemeasurable))
+      l) :
+    VdVWProbabilityMeasuresAsymptoticallyTight μs l := by
+  let e := VdVWEllInfty.finiteContinuousLinearEquiv (T := T)
+  have hback := hμ.map_continuous e.symm.continuous
+  simpa [e] using hback
+
+/--
+Direct finite-index measure-level asymptotic-tightness pushback: ordinary
+asymptotic tightness of probability measures on the finite product `T -> ℝ`
+pushes back to their corresponding `ell_infty(T)` laws.
+-/
+theorem vdVW148_ellInfty_map_symm_asymptoticallyTight_of_finiteProduct_asymptoticallyTight_finite
+    {ι : Type*} {l : Filter ι}
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {νs : ι -> ProbabilityMeasure (T -> ℝ)}
+    (hν : VdVWProbabilityMeasuresAsymptoticallyTight νs l) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => (νs n).map
+        ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm.continuous.measurable.aemeasurable))
+      l :=
   hν.map_continuous (VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm.continuous
 
 /-- Finite-dimensional law of an `ell_infty(T)`-valued random element. -/

@@ -5562,3 +5562,20 @@ continuous-map stability
 ordinary probability-measure foundation needed by Chapter 1 process/FDD
 routes; it does not close the full VdV&W arbitrary-map/nonmeasurable process
 asymptotic-tightness theorem.
+
+2026-05-05 finite-dimensional asymptotic-tightness follow-up: local search
+found the newly compiled measure-level asymptotic-tightness predicate and the
+existing finite-dimensional weak-convergence/FDD wrappers, but no
+finite-dimensional asymptotic-tightness bridge.  `WeakConvergence.lean` now
+adds
+`VdVWProbabilityMeasuresAsymptoticallyTight.finiteDimensionalRestrict`.
+`FiniteDimensional.lean` adds
+`vdVW148_ellInfty_finiteDimensional_asymptoticallyTight_of_processLaw_asymptoticallyTight`,
+`vdVW148_ellInfty_asymptoticallyTight_of_finiteProduct_asymptoticallyTight_finite`,
+and
+`vdVW148_ellInfty_map_symm_asymptoticallyTight_of_finiteProduct_asymptoticallyTight_finite`.
+This closes the ordinary finite-coordinate and finite-index process-law
+asymptotic-tightness feeders.  It still does not prove the arbitrary-index
+VdV&W process asymptotic-tightness/FDD-converse theorem, whose missing inputs
+remain separability, exact arbitrary-map asymptotic measurability, and the
+nonmeasurable outer-cover process weak-convergence layer.

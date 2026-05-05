@@ -1949,3 +1949,12 @@ arbitrary-map/nonmeasurable outer-cover weak-convergence primitives.
 `ell_infty(T)` with the ordinary product `T -> ℝ` through mathlib's
 `lpPiLpₗᵢ` and `PiLp.continuousLinearEquiv`.  This is a finite-index
 FDD-converse substrate, not the arbitrary-index VdV&W 1.4.8 converse.
+
+2026-05-05 finite-dimensional asymptotic-tightness follow-up:
+`VdVWProbabilityMeasuresAsymptoticallyTight.finiteDimensionalRestrict` now
+pushes ordinary asymptotic tightness through finite-coordinate restrictions.
+`FiniteDimensional.lean` also has the `ell_infty(T)` finite-coordinate and
+finite-index asymptotic-tightness wrappers.  This closes the finite-dimensional
+measure-level tightness feeder; arbitrary-index process asymptotic tightness,
+separability, and nonmeasurable/arbitrary-map weak-convergence primitives
+remain open.

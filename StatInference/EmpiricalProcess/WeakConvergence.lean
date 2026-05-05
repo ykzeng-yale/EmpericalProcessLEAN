@@ -3806,6 +3806,29 @@ theorem VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict
   exact hμ.map_continuous (Finset.continuous_restrict s)
 
 /--
+Finite-dimensional restriction of an asymptotically tight process-law family.
+
+This is the measure-level tightness analogue of the forward FDD direction:
+ordinary asymptotic tightness of laws on a product space implies asymptotic
+tightness of every finite-coordinate restriction.  It does not assert the
+full VdV&W arbitrary-map/process asymptotic-tightness criterion.
+-/
+theorem VdVWProbabilityMeasuresAsymptoticallyTight.finiteDimensionalRestrict
+    {I : Type u} {S : I -> Type v} {ι : Type w}
+    [∀ i, MeasurableSpace (S i)] [∀ i, TopologicalSpace (S i)]
+    [∀ i, OpensMeasurableSpace (S i)]
+    [MeasurableSpace ((i : I) -> S i)] [OpensMeasurableSpace ((i : I) -> S i)]
+    {μs : ι -> ProbabilityMeasure ((i : I) -> S i)}
+    {l : Filter ι}
+    (hμ : VdVWProbabilityMeasuresAsymptoticallyTight μs l)
+    (s : Finset I)
+    [MeasurableSpace ((i : s) -> S i)] [BorelSpace ((i : s) -> S i)]
+    [T2Space ((i : s) -> S i)] :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => (μs n).map ((Finset.continuous_restrict s).measurable.aemeasurable)) l := by
+  exact hμ.map_continuous (Finset.continuous_restrict s)
+
+/--
 Measurable-random-variable continuous mapping theorem for convergence in
 distribution.
 
