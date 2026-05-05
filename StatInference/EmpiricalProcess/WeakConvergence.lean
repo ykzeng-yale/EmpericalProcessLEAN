@@ -2913,6 +2913,36 @@ def VdVWProbabilityMeasuresAsymptoticallyTight
       ∀ᶠ i in l, ((μs i : ProbabilityMeasure S) : Measure S) (Kᶜ) ≤ ε
 
 /--
+Measure-level asymptotic tightness is stable under passing to a finer index
+filter.
+-/
+theorem VdVWProbabilityMeasuresAsymptoticallyTight.mono_filter
+    {ι : Type v} {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l l' : Filter ι}
+    (hμs : VdVWProbabilityMeasuresAsymptoticallyTight μs l)
+    (hl : l' ≤ l) :
+    VdVWProbabilityMeasuresAsymptoticallyTight μs l' := by
+  intro ε hε
+  rcases hμs ε hε with ⟨K, hK, htail⟩
+  exact ⟨K, hK, htail.filter_mono hl⟩
+
+/--
+Measure-level asymptotic tightness is unchanged by eventually equal
+probability-measure families.
+-/
+theorem VdVWProbabilityMeasuresAsymptoticallyTight.congr_eventually
+    {ι : Type v} {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    {μs νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    (hμs : VdVWProbabilityMeasuresAsymptoticallyTight μs l)
+    (h_eq : ∀ᶠ i in l, νs i = μs i) :
+    VdVWProbabilityMeasuresAsymptoticallyTight νs l := by
+  intro ε hε
+  rcases hμs ε hε with ⟨K, hK, htail⟩
+  refine ⟨K, hK, ?_⟩
+  filter_upwards [htail, h_eq] with i hi hνμ
+  simpa [hνμ] using hi
+
+/--
 A singleton family of probability measures is tight on complete separable
 metric-type spaces.
 

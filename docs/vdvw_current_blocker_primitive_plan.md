@@ -5589,3 +5589,13 @@ ordinary measure-level asymptotic tightness is stable under binary product
 laws along the same filter.  This closes the ordinary Chapter 1 product-law
 tightness foundation; it still does not prove the nonmeasurable VdV&W
 arbitrary-map/asymptotic-independence product criterion.
+
+2026-05-05 asymptotic-tightness filter-stability follow-up: local search found
+filter-refinement lemmas for weak convergence and asymptotic measurability,
+but not for the newly introduced measure-level asymptotic-tightness predicate.
+`WeakConvergence.lean` now adds
+`VdVWProbabilityMeasuresAsymptoticallyTight.mono_filter` and
+`VdVWProbabilityMeasuresAsymptoticallyTight.congr_eventually`.  These support
+subsequence/finer-filter and eventually-equal law-family handoffs in Chapter 1
+process arguments without changing the remaining exact arbitrary-map/process
+blockers.

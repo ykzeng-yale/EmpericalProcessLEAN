@@ -1964,3 +1964,9 @@ remain open.
 stability for ordinary measure-level asymptotic tightness.  This closes a
 Chapter 1 product/tightness support lemma; arbitrary-map
 asymptotic-independence is still open.
+
+2026-05-05 asymptotic-tightness filter-stability follow-up:
+`VdVWProbabilityMeasuresAsymptoticallyTight.mono_filter` and
+`VdVWProbabilityMeasuresAsymptoticallyTight.congr_eventually` now support
+subsequence/finer-filter and eventually-equal law-family transfers for the
+ordinary measure-level asymptotic-tightness predicate.

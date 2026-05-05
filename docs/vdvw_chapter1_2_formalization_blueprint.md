@@ -1756,6 +1756,15 @@ ordinary measure-level asymptotic tightness.  This supports the Chapter 1
 product/FDD route but remains separate from the exact VdV&W
 arbitrary-map/asymptotic-independence theorem.
 
+2026-05-05 asymptotic-tightness filter-stability follow-up:
+`WeakConvergence.lean` now adds
+`VdVWProbabilityMeasuresAsymptoticallyTight.mono_filter` and
+`VdVWProbabilityMeasuresAsymptoticallyTight.congr_eventually`, matching the
+filter-refinement style already available for weak convergence and local
+asymptotic-measurability predicates.  These are support lemmas for Chapter 1
+subsequence/reindexing process arguments, not the full arbitrary-map process
+asymptotic-tightness theorem.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
