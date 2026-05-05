@@ -1298,3 +1298,11 @@ and
 This is the preferred deterministic target because mathlib's crossing
 extension lemma uses strict inequalities; downcrossing from `b` to `a` can be
 reversed into an upcrossing from any `c,d` with `a < c < d < b`.
+2026-05-04 follow-up: the first pathwise crossing-time step toward that
+deterministic target now compiles.  `vdVW_exists_reverse_inner_upcrossing_of_lt_downcrossingsBefore`
+extracts a strict reversed-window inner upcrossing pair from each counted
+reverse downcrossing, and
+`vdVW_reverse_inner_upcrossings_pos_of_downcrossingsBefore_pos` turns positive
+reverse-downcrossing count into positive reversed inner-upcrossing count via
+mathlib `upcrossingsBefore_lt_of_exists_upcrossing`.  The remaining task is
+the multiplicity/counting upgrade to the full finite-prefix comparison.

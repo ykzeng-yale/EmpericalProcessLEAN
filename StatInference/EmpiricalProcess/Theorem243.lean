@@ -209,6 +209,115 @@ theorem vdVW_submartingale_lintegral_upcrossings_le
     finiteness
 
 /--
+A counted reverse downcrossing yields a strict inner upcrossing in the finite
+reversed window.
+
+The endpoint thresholds in mathlib's `upcrossingsBefore_lt_of_exists_upcrossing`
+are strict.  This lemma records the deterministic ingredient needed by the
+VdV&W reverse-time route: if the original path has completed one more
+downcrossing from `b` to `a` before `N`, then the reversed finite window
+contains an upcrossing from any inner pair `c,d` with `a < c` and `d < b`.
+-/
+theorem vdVW_exists_reverse_inner_upcrossing_of_lt_downcrossingsBefore
+    {Ω : Type u} {x : ℕ -> Ω -> ℝ} {ω : Ω}
+    {a b c d : ℝ} {N m : ℕ}
+    (hac : a < c) (hcd : c < d) (hdb : d < b)
+    (hm :
+      m < upcrossingsBefore (-b) (-a)
+        (fun n : ℕ => fun ω : Ω => -x n ω) N ω) :
+    ∃ N₁ N₂ : ℕ,
+      N₁ ≤ N₂ ∧ N₂ < N + 1 ∧
+        x (N - N₁) ω < c ∧ d < x (N - N₂) ω := by
+  let g : ℕ -> Ω -> ℝ := fun n ω => -x n ω
+  have hab : a < b := hac.trans (hcd.trans hdb)
+  have hneg : -b < -a := by linarith
+  by_cases hN : 0 < N
+  · let s : ℕ := lowerCrossingTime (-b) (-a) g N m ω
+    let t : ℕ := upperCrossingTime (-b) (-a) g N (m + 1) ω
+    have hs_lt : s < N := by
+      simpa [s, g] using
+        (lowerCrossingTime_lt_of_lt_upcrossingsBefore (f := g) hN hneg hm)
+    have ht_lt : t < N := by
+      have hm_succ :
+          m + 1 ≤ upcrossingsBefore (-b) (-a) g N ω :=
+        Nat.succ_le_iff.2 hm
+      simpa [t, g] using
+        (upperCrossingTime_lt_of_le_upcrossingsBefore (f := g) hN hneg hm_succ)
+    have hst : s ≤ t := by
+      simpa [s, t] using
+        (lowerCrossingTime_le_upperCrossingTime_succ
+          (a := -b) (b := -a) (f := g) (N := N) (n := m) (ω := ω))
+    have ht_value : x t ω ≤ a := by
+      have hupper :
+          -a ≤ stoppedValue g
+            (fun ω => (upperCrossingTime (-b) (-a) g N (m + 1) ω : ℕ)) ω :=
+        stoppedValue_upperCrossingTime (a := -b) (b := -a) (f := g)
+          (N := N) (n := m) (ω := ω) ht_lt.ne
+      simpa [stoppedValue, g, t] using hupper
+    have hs_value : b ≤ x s ω := by
+      have hlower :
+          stoppedValue g
+            (fun ω => (lowerCrossingTime (-b) (-a) g N m ω : ℕ)) ω ≤ -b :=
+        stoppedValue_lowerCrossingTime (a := -b) (b := -a) (f := g)
+          (N := N) (n := m) (ω := ω) hs_lt.ne
+      simpa [stoppedValue, g, s] using hlower
+    refine ⟨N - t, N - s, ?_, ?_, ?_, ?_⟩
+    · exact Nat.sub_le_sub_left hst N
+    · omega
+    · have ht_le : t ≤ N := le_of_lt ht_lt
+      have hNt : N - (N - t) = t := Nat.sub_sub_self ht_le
+      simpa [hNt] using lt_of_le_of_lt ht_value hac
+    · have hs_le : s ≤ N := le_of_lt hs_lt
+      have hNs : N - (N - s) = s := Nat.sub_sub_self hs_le
+      simpa [hNs] using lt_of_lt_of_le hdb hs_value
+  · have hN_zero : N = 0 := by omega
+    subst hN_zero
+    simp at hm
+
+/--
+Positive reverse downcrossing count gives a positive strict inner upcrossing
+count in the reversed finite window.
+
+This checks the orientation of the preceding existential lemma against
+mathlib's finite-upcrossing extension theorem.  The remaining full comparison
+must show that these reversed inner upcrossings can be counted without losing
+multiplicity.
+-/
+theorem vdVW_reverse_inner_upcrossings_pos_of_downcrossingsBefore_pos
+    {Ω : Type u} {x : ℕ -> Ω -> ℝ} {ω : Ω}
+    {a b c d : ℝ} {N : ℕ}
+    (hac : a < c) (hcd : c < d) (hdb : d < b)
+    (hpos :
+      0 < upcrossingsBefore (-b) (-a)
+        (fun n : ℕ => fun ω : Ω => -x n ω) N ω) :
+    0 < upcrossings c d (fun k : ℕ => fun ω : Ω => x (N - k) ω) ω := by
+  rcases vdVW_exists_reverse_inner_upcrossing_of_lt_downcrossingsBefore
+      (x := x) (ω := ω) (a := a) (b := b) (c := c) (d := d)
+      (N := N) (m := 0) hac hcd hdb hpos with
+    ⟨N₁, N₂, hN₁N₂, hN₂, hlow, hhigh⟩
+  let rev : ℕ -> Ω -> ℝ := fun k ω => x (N - k) ω
+  have hstep :
+      upcrossingsBefore c d rev 0 ω <
+        upcrossingsBefore c d rev (N₂ + 1) ω := by
+    exact upcrossingsBefore_lt_of_exists_upcrossing (f := rev) (ω := ω)
+      (N := 0) (N₁ := N₁) (N₂ := N₂) hcd (Nat.zero_le N₁)
+      (by simpa [rev] using hlow) hN₁N₂ (by simpa [rev] using hhigh)
+  have hN₂_le : N₂ + 1 ≤ N + 1 := by omega
+  have hbefore_pos :
+      0 < upcrossingsBefore c d rev (N + 1) ω := by
+    simpa using
+      lt_of_lt_of_le hstep
+        (upcrossingsBefore_mono (f := rev) hcd hN₂_le ω)
+  have hbefore_pos_enn :
+      (0 : ℝ≥0∞) < (upcrossingsBefore c d rev (N + 1) ω : ℝ≥0∞) := by
+    exact_mod_cast hbefore_pos
+  exact lt_of_lt_of_le hbefore_pos_enn
+    (by
+      rw [upcrossings]
+      exact le_iSup (fun T : ℕ =>
+        (upcrossingsBefore c d rev T ω : ℝ≥0∞)) (N + 1))
+
+/--
 Conditional expectations of a fixed real random variable along an ordinary
 mathlib filtration form the submartingale needed by the VdV&W Lemma 2.4.5
 route.

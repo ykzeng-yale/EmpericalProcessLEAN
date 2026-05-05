@@ -3994,3 +3994,17 @@ prove order-dual convergence when every finite-prefix downcrossing from `b` to
 the next proof should construct this inner comparison from the crossing times,
 using the facts that a downcrossing reaches `f ≥ b` then `f ≤ a`, hence the
 reversed path is strictly below `c` and strictly above `d`.
+
+2026-05-04 follow-up: the first deterministic crossing-time step is now
+proved.  The compiled lemma
+`vdVW_exists_reverse_inner_upcrossing_of_lt_downcrossingsBefore` shows that
+every counted reverse downcrossing before `N` produces concrete indices
+`N₁ ≤ N₂ < N+1` such that the reversed finite window is strictly below `c` at
+`N₁` and strictly above `d` at `N₂`, for any `a < c < d < b`.  The consumer
+`vdVW_reverse_inner_upcrossings_pos_of_downcrossingsBefore_pos` then applies
+mathlib `upcrossingsBefore_lt_of_exists_upcrossing` to prove that a positive
+reverse-downcrossing count gives a positive strict inner upcrossing count in
+the reversed window.  The remaining deterministic blocker is the multiplicity
+step: upgrade this one-crossing/positive-count result to the full inequality
+between finite-prefix downcrossing counts and reversed-window inner upcrossing
+counts.
