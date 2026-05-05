@@ -123,7 +123,9 @@ It also has map-law, `HasLaw`, and common-domain `TendstoInDistribution`
 feeders:
 `VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq`,
 `VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_hasLaw`,
-and `vdVWTendstoInDistribution_to_signedOuterBoundedContinuous`.
+`vdVWTendstoInDistribution_to_signedOuterBoundedContinuous`, and the
+continuous-mapping closure
+`VdVWWeakConvergenceSignedOuterBoundedContinuous.comp_continuous`.
 This is the current signed foundation for the exact arbitrary-map weak
 convergence route; it does not yet discharge the full nonmeasurable
 outer-cover/asymptotic-measurability clauses.
