@@ -536,6 +536,99 @@ theorem matrixInvShape_quadratic_pos_of_posDef
   simpa using hA.dotProduct_mulVec_pos hz_ofLp
 
 /--
+Composition law for matrix-backed inverse-shape operators.  This is the
+Euclidean-space version of `(A * B) z = A (B z)`.
+-/
+theorem matrixInvShape_mul
+    (A B : Matrix ι ι ℝ) (z : EuclideanSpace ℝ ι) :
+    matrixInvShape (A * B) z = matrixInvShape A (matrixInvShape B z) := by
+  ext i
+  simp [matrixInvShape, Matrix.toEuclideanLin, Matrix.toLpLin_apply,
+    Matrix.mulVec_mulVec]
+
+/-- Positive-definite matrices have positive determinant. -/
+theorem chewi620_matrixPosDef_det_pos
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
+    0 < Sigma.det :=
+  hSigma.det_pos
+
+/-- Positive-definite matrices have nonzero determinant. -/
+theorem chewi620_matrixPosDef_det_ne_zero
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
+    Sigma.det ≠ 0 :=
+  ne_of_gt (chewi620_matrixPosDef_det_pos hSigma)
+
+/-- Positive-definite matrices have a unit determinant, the key nonsingular-inverse hypothesis. -/
+theorem chewi620_matrixPosDef_det_isUnit
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
+    IsUnit Sigma.det :=
+  (Matrix.isUnit_iff_isUnit_det (A := Sigma)).mp hSigma.isUnit
+
+/-- The nonsingular inverse of a positive-definite matrix is positive definite. -/
+theorem chewi620_matrixPosDef_inv
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
+    Sigma⁻¹.PosDef :=
+  hSigma.inv
+
+/-- Right inverse cancellation for a positive-definite matrix. -/
+theorem chewi620_matrixPosDef_mul_inv
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
+    Sigma * Sigma⁻¹ = 1 :=
+  Matrix.mul_nonsing_inv Sigma (chewi620_matrixPosDef_det_isUnit hSigma)
+
+/-- Left inverse cancellation for a positive-definite matrix. -/
+theorem chewi620_matrixPosDef_inv_mul
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
+    Sigma⁻¹ * Sigma = 1 :=
+  Matrix.nonsing_inv_mul Sigma (chewi620_matrixPosDef_det_isUnit hSigma)
+
+/-- Right cancellation through the nonsingular inverse of a positive-definite matrix. -/
+theorem chewi620_matrixPosDef_mul_inv_cancel_right
+    {Sigma B : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
+    B * Sigma * Sigma⁻¹ = B :=
+  Matrix.mul_nonsing_inv_cancel_right Sigma B
+    (chewi620_matrixPosDef_det_isUnit hSigma)
+
+/-- Left cancellation through the nonsingular inverse of a positive-definite matrix. -/
+theorem chewi620_matrixPosDef_inv_mul_cancel_left
+    {Sigma B : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
+    Sigma⁻¹ * (Sigma * B) = B :=
+  Matrix.nonsing_inv_mul_cancel_left Sigma B
+    (chewi620_matrixPosDef_det_isUnit hSigma)
+
+/-- Determinant product identity for the nonsingular inverse of a positive-definite matrix. -/
+theorem chewi620_matrixPosDef_det_inv_mul_det
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
+    Sigma⁻¹.det * Sigma.det = 1 :=
+  Matrix.det_nonsing_inv_mul_det Sigma
+    (chewi620_matrixPosDef_det_isUnit hSigma)
+
+/-- The nonsingular inverse of the nonsingular inverse returns a positive-definite matrix. -/
+theorem chewi620_matrixPosDef_inv_inv
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
+    Sigma⁻¹⁻¹ = Sigma :=
+  Matrix.nonsing_inv_nonsing_inv Sigma
+    (chewi620_matrixPosDef_det_isUnit hSigma)
+
+/-- Matrix-backed shape cancellation `Σ (Σ⁻¹ z) = z`. -/
+theorem matrixInvShape_mul_inv_cancel
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    (z : EuclideanSpace ℝ ι) :
+    matrixInvShape Sigma (matrixInvShape Sigma⁻¹ z) = z := by
+  rw [← matrixInvShape_mul]
+  rw [chewi620_matrixPosDef_mul_inv hSigma]
+  simp [matrixInvShape]
+
+/-- Matrix-backed shape cancellation `Σ⁻¹ (Σ z) = z`. -/
+theorem matrixInvShape_inv_mul_cancel
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    (z : EuclideanSpace ℝ ι) :
+    matrixInvShape Sigma⁻¹ (matrixInvShape Sigma z) = z := by
+  rw [← matrixInvShape_mul]
+  rw [chewi620_matrixPosDef_inv_mul hSigma]
+  simp [matrixInvShape]
+
+/--
 Positive denominator for Chewi's normalized ellipsoid cut direction when the
 forward shape matrix is positive definite and the cut vector is nonzero.
 -/

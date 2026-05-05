@@ -45,10 +45,11 @@ replacement prompt for manual runs.
 
 Manual goal frontier after local sync to `origin/main` at `95ca18b`; the
 latest Optimization proof frontier remains `83a31d2` plus the current raw
-symmetric square-root adjoint/cut bridge packet after the 2026-05-05
-standard-cut scalar, determinant-ratio, coordinate-free affine-containment,
-supplied-identity affine-transport certificate, first Euclidean matrix
-quadratic packet, and cut-normalization algebra packet:
+symmetric square-root adjoint/cut bridge and PosDef
+invertibility/cancellation packets after the 2026-05-05 standard-cut scalar,
+determinant-ratio, coordinate-free affine-containment, supplied-identity
+affine-transport certificate, first Euclidean matrix quadratic packet, and
+cut-normalization algebra packet:
 `StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
 discrete AGD source rate,
 `StatInference/Optimization/ProjectedSubgradient.lean` proves the finite-valued
@@ -67,7 +68,15 @@ and matrix-backed quadratic/positive-denominator plus normalized-cut algebra
 helpers, plus the raw symmetric square-root cut bridge declarations
 `chewi620_rawAdjointIdentity_of_symmetric_inverse`,
 `chewi620_matrixSqrt_normalizedCutDirection_norm_of_posDef`, and
-`chewi620_matrixSqrt_normalizedCutDirection_inner_toStd`.
+`chewi620_matrixSqrt_normalizedCutDirection_inner_toStd`, plus
+`matrixInvShape_mul`, `chewi620_matrixPosDef_det_pos`,
+`chewi620_matrixPosDef_det_ne_zero`, `chewi620_matrixPosDef_det_isUnit`,
+`chewi620_matrixPosDef_inv`, `chewi620_matrixPosDef_mul_inv`,
+`chewi620_matrixPosDef_inv_mul`,
+`chewi620_matrixPosDef_mul_inv_cancel_right`,
+`chewi620_matrixPosDef_inv_mul_cancel_left`,
+`chewi620_matrixPosDef_det_inv_mul_det`, `chewi620_matrixPosDef_inv_inv`,
+`matrixInvShape_mul_inv_cancel`, and `matrixInvShape_inv_mul_cancel`.
 Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
@@ -145,7 +154,11 @@ matrix bridge declarations `matrixInvShape`,
 `chewi620_matrixNormalizedCutDirection_inner_toStd`,
 `chewi620_rawAdjointIdentity_of_symmetric_inverse`,
 `chewi620_matrixSqrt_normalizedCutDirection_norm_of_posDef`, and
-`chewi620_matrixSqrt_normalizedCutDirection_inner_toStd`.
+`chewi620_matrixSqrt_normalizedCutDirection_inner_toStd`, plus the PosDef
+invertibility/cancellation bridge declarations `matrixInvShape_mul`,
+`chewi620_matrixPosDef_det_isUnit`, `chewi620_matrixPosDef_mul_inv`,
+`chewi620_matrixPosDef_inv_mul`, and the two matrix-backed shape cancellation
+theorems.
 
 The next active packet should stay in Chapter 6 and prove a theorem-sized part
 of ellipsoid Lemma 6.20, not drip minor wrappers.  The exact
@@ -155,11 +168,11 @@ next ellipsoid blocker.  Search mathlib matrix/PSD/inverse/determinant and
 volume-scaling APIs first, then instantiate the concrete matrix hypotheses of
 `chewi620_affineTransport_stepCertificate_of_quadratic` for Chewi's displayed
 `Σ_{n+1}` update.  The current matrix quadratic, positive denominator,
-normalized cut direction algebra, and raw symmetric square-root cut bridge are
-now local; the remaining blocker is the actual matrix/affine pullback for
-`Σ_{n+1}^{-1}` and determinant/volume bridge, not scalar algebra or abstract
-transport.  The target order is matrix invertibility/cancellation from
-`Sigma.PosDef`, displayed pullback identity, rank-one determinant/volume
+normalized cut direction algebra, raw symmetric square-root cut bridge, and
+PosDef invertibility/cancellation bridge are now local; the remaining blocker
+is the actual matrix/affine pullback for `Σ_{n+1}^{-1}` and
+determinant/volume bridge, not scalar algebra or abstract transport.  The
+target order is displayed pullback identity, rank-one determinant/volume
 bridge, then exact one-step Lemma 6.20 certificate.  If the full matrix proof balloons, prove the smallest
 matrix-coordinate, rank-one determinant, or volume-scaling certificate that
 removes the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth
@@ -179,8 +192,8 @@ telescope.  Lemma 6.20 matrix scout results to reuse next include
 `EuclideanSpace.inner_eq_star_dotProduct`,
 `Matrix.posSemidef_iff_dotProduct_mulVec`,
 `Matrix.PosDef.dotProduct_mulVec_pos`, `Matrix.PosDef.isUnit`,
-`Matrix.PosDef.inv`, nonsingular-inverse determinant and cancellation lemmas,
-rank-one determinant lemmas in `Matrix.SchurComplement`, including
+`Matrix.PosDef.inv`, nonsingular-inverse determinant and cancellation lemmas
+now wrapped locally, rank-one determinant lemmas in `Matrix.SchurComplement`, including
 `Matrix.det_add_mul`,
 and volume-scaling lemmas
 `Real.map_matrix_volume_pi_eq_smul_volume_pi` /
