@@ -43,9 +43,9 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after local sync to `origin/main` at `9c41b38`
-(`Add Chewi ellipsoid pullback certificate`) plus the current verified
-displayed-current/displayed-center packet in
+Manual goal frontier after local sync to `origin/main` at `6c7c6cd`
+(`Add Chewi ellipsoid displayed center bridge`) plus the current verified
+local rank-one-collapse packet in
 `StatInference/Optimization/Ellipsoid.lean`;
 the latest Optimization proof frontier is Chapter 6 Lemma 6.20 after the
 2026-05-05 standard-cut scalar, determinant-ratio, coordinate-free
@@ -91,7 +91,8 @@ helpers, plus the raw symmetric square-root cut bridge declarations
 `chewi620_ellipsoidSet_pullbackIdentity_eq_matrixInvShape_inv`,
 `chewi620_matrixSqrt_centerUpdate_hcenter`,
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedCenter`, and
-`chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`.
+`chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`,
+and `chewi620_matrix_rankOne_collapse`.
 Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
@@ -197,16 +198,19 @@ Chewi's displayed `Σ_n^{-1}` and `Σ_{n+1}^{-1}` matrix updates.  The current
 matrix quadratic, positive denominator, normalized cut direction algebra, raw
 symmetric square-root cut bridge, PosDef invertibility/cancellation bridge,
 pullback-standard-cut certificate, current `Σ⁻¹` identification, and displayed
-center-update bridge are now local; the remaining blocker is the displayed
+center-update bridge are now local; the rank-one collapse
+`(Σp)^T Σ⁻¹ (Σp) = <p, Σp>` also now compiles as
+`chewi620_matrix_rankOne_collapse`.  The remaining blocker is the displayed
 next inverse-shape matrix equality plus determinant/volume bridge, not scalar
-algebra, abstract transport, current-shape rewriting, or center algebra.  The
-target order is displayed `Σ_{n+1}^{-1}` matrix equivalence, rank-one
-determinant/volume bridge, then exact one-step Lemma 6.20 certificate.  If the
-full matrix proof balloons, prove the smallest matrix-coordinate, rank-one
-determinant, or volume-scaling certificate that removes the precise missing
-matrix API.  After that, continue Chapter 6 with nonsmooth lower-bound Theorems
-6.21-6.23 and feasibility Theorem 6.25 before opening Chapter 7 as the next
-main-text frontier.
+algebra, abstract transport, current-shape rewriting, center algebra, or the
+rank-one collapse itself.  The target order is displayed `Σ_{n+1}^{-1}` matrix
+equivalence, rank-one determinant/volume bridge using the local collapse, then
+exact one-step Lemma 6.20 certificate.  If the full matrix proof balloons,
+prove the smallest matrix-coordinate, rank-one determinant, or volume-scaling
+certificate that removes the precise missing matrix API.  After that, continue
+Chapter 6 with nonsmooth lower-bound Theorems 6.21-6.23 and feasibility
+Definition 6.24/Theorem 6.25 before opening Chapter 7 as the next main-text
+frontier.
 Mandatory search and reuse: mathlib
 `Analysis/InnerProductSpace/Projection/Minimal.lean` has
 `exists_norm_eq_iInf_of_complete_convex` and

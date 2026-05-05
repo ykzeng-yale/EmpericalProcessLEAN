@@ -740,6 +740,23 @@ theorem chewi620_ellipsoidSet_pullbackIdentity_eq_matrixInvShape_inv
       (Sigma := Sigma) hSigma hT_sq (z - center)]
 
 /--
+Rank-one collapse for Chewi's displayed ellipsoid update:
+`(Σp)^T Σ⁻¹ (Σp) = <p, Σp>`.
+-/
+theorem chewi620_matrix_rankOne_collapse
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    (p : EuclideanSpace ℝ ι) :
+    Sigma.mulVec p.ofLp ⬝ᵥ (Sigma⁻¹.mulVec (Sigma.mulVec p.ofLp)) =
+      inner ℝ p (matrixInvShape Sigma p) := by
+  have hcancel :
+      Sigma⁻¹.mulVec (Sigma.mulVec p.ofLp) = p.ofLp := by
+    rw [Matrix.mulVec_mulVec]
+    rw [chewi620_matrixPosDef_inv_mul hSigma]
+    simp
+  rw [hcancel, matrixInvShape_quadratic_eq_dotProduct]
+  exact dotProduct_comm (Sigma.mulVec p.ofLp) p.ofLp
+
+/--
 Positive denominator for Chewi's normalized ellipsoid cut direction when the
 forward shape matrix is positive definite and the cut vector is nonzero.
 -/

@@ -69,8 +69,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Live replacement `/goal` prompt as of 2026-05-05 after syncing local `main` to
-`origin/main` at `9c41b38` (`Add Chewi ellipsoid pullback certificate`) plus
-the current verified displayed-current/displayed-center packet in
+`origin/main` at `6c7c6cd` (`Add Chewi ellipsoid displayed center bridge`) plus
+the current verified local rank-one-collapse packet in
 `StatInference/Optimization/Ellipsoid.lean`: aggressively formalize and prove
 all main theorem content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercises tracked in the single
@@ -134,7 +134,8 @@ the pullback packet `chewi620PullbackIdentityInvShape`,
 `chewi620_ellipsoidSet_pullbackIdentity_eq_matrixInvShape_inv`,
 `chewi620_matrixSqrt_centerUpdate_hcenter`,
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedCenter`, and
-`chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`.
+`chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`,
+plus `chewi620_matrix_rankOne_collapse`.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
@@ -146,10 +147,11 @@ Lemma 6.20 matrix packet by connecting the remaining pullback next inverse shape
 to Chewi's displayed `Σ_{n+1}^{-1}` matrix update and volume ratio.  The raw
 square-root adjoint identity, normalized cut `hcut` bridge, `Sigma.PosDef`
 invertibility/cancellation layer, pullback `hnext` certificate, current
-`Σ⁻¹` ellipsoid identification, and displayed center update are now local; this
-is not a minor wrapper target.  Do not spend another run on scalar,
-coordinate-free, abstract transport, current-shape, center-update, or
-pullback-only wrappers unless one is the shortest verified route to the concrete
+`Σ⁻¹` ellipsoid identification, displayed center update, and the rank-one
+collapse `(Σp)^T Σ⁻¹ (Σp) = <p, Σp>` are now local; this is not a minor wrapper
+target.  Do not spend another run on scalar, coordinate-free, abstract
+transport, current-shape, center-update, pullback-only wrappers, or the
+rank-one collapse unless one is the shortest verified route to the concrete
 matrix theorem.  The dependency order is:
 
 1. Search pinned mathlib and local `StatInference/Optimization` for
@@ -159,7 +161,8 @@ matrix theorem.  The dependency order is:
    `LinearMap.IsSymmetric`, `LinearMap.IsSymmetric.toLinearMap_symm`,
    `LinearEquiv.isSymmetric_symm_iff`, `LinearEquiv.apply_symm_apply`, and
    `inner_sub_right` proved the symmetric square-root raw identity; mathlib
-   nonsingular-inverse APIs are wrapped locally for PosDef cancellation; rank-one
+   nonsingular-inverse APIs are wrapped locally for PosDef cancellation; the
+   rank-one collapse is local as `chewi620_matrix_rankOne_collapse`; rank-one
    determinant and volume-scaling APIs still need to be instantiated.
 2. Define or expose the displayed next-shape/inverse-shape matrix update, then
    prove equality with
@@ -176,14 +179,16 @@ direction algebra are already local, and the raw symmetric square-root
 adjoint/cut bridge now discharges the `hcut` side of the affine-transport
 certificate.  The `Sigma.PosDef` matrix invertibility/cancellation layer is
 also local through nonsingular-inverse APIs and `matrixInvShape` composition.
-The new displayed-current/displayed-center packet identifies
+The displayed-current/displayed-center packet identifies
 `chewi620PullbackIdentityInvShape T` with `matrixInvShape Sigma⁻¹`, rewrites the
 current ellipsoid set to Chewi's displayed form, derives the displayed center
 update from `T ∘ T = Sigma`, and exposes a certificate whose only geometric
 blockers are the next inverse-shape matrix equality and determinant/volume
-ratio.  If the full matrix proof balloons, record the exact missing API and
-prove the smallest matrix-coordinate, rank-one-determinant, or volume-scaling
-certificate that removes that blocker in the same run.
+ratio.  The rank-one collapse needed inside the determinant lemma now compiles,
+so the next useful Lean work is the determinant lemma itself or the displayed
+next-shape equality.  If the full matrix proof balloons, record the exact
+missing API and prove the smallest matrix-coordinate, rank-one-determinant, or
+volume-scaling certificate that removes that blocker in the same run.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
@@ -314,9 +319,11 @@ so the later exercise sweep remains source-trackable.
 
 Book-level target map for the next 2-4 hour acceleration window: stay in
 Chapter 6 and finish theorem-sized packets instead of jumping past the chapter:
-Lemma 6.18 and Theorem 6.19 for center-of-gravity/cutting-plane volume
-progress, Lemma 6.20 for ellipsoid update geometry, Theorems 6.21-6.23 for
-nonsmooth lower bounds, and Definition 6.24/Theorem 6.25 for feasibility.
+Lemma 6.20 for exact ellipsoid update geometry, then Theorems 6.21-6.23 for
+nonsmooth lower bounds and Definition 6.24/Theorem 6.25 for feasibility.
+Lemma 6.18 and Theorem 6.19 already have a supplied-interface algebraic spine;
+their exact source-audited report remains blocked only by the genuine
+Grünbaum/centroid measure theorem.
 After Chapter 6 has a stable main-text spine, split future packets by chapter
 surface rather than by tiny lemmas: Chapter 7 `FrankWolfe.lean` for Theorem
 7.3 and Carathéodory wrappers, Chapter 8 `Proximal.lean` for Theorems 8.5 and
