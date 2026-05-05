@@ -4018,3 +4018,69 @@ one-index gap when the later lower crossing is completed before the horizon.
 The next proof should use this strict ordering to induct over the counted
 downcrossing indices and chain repeated applications of
 `upcrossingsBefore_lt_of_exists_upcrossing`.
+
+2026-05-05 follow-up: the multiplicity/counting blocker is now closed.
+`vdVW_reverse_inner_upcrossingsBefore_ge_downcrossingsBefore` proves the full
+finite-prefix deterministic comparison by a backward induction over completed
+downcrossings.  It uses the one-crossing extension lemma and the strict
+crossing-pair ordering to chain mathlib `upcrossingsBefore_lt_of_exists_upcrossing`.
+This feeds the compiled inner-threshold handoff and proves the previously
+named generic primitive as
+`VdVWOrderDualSubmartingaleConvergenceHandoff.proved`: every uniformly
+`L¹`-bounded finite-measure `ℕᵒᵈ` submartingale has an a.e. ordinary-time
+limit along `n ↦ OrderDual.toDual n`.  The VdV&W-facing theorem
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable` now
+removes the former `hreverse` primitive assumption from the textbook-display
+reverse/cofiltration package under countability, coordinate measurability, and
+integrable-envelope hypotheses.  Next target: consume this new handoff in the
+Lemma 2.4.5 and Theorem 2.4.3 final endpoint wrappers, replacing theorem
+statements that still ask for an explicit reverse/cofiltration primitive.
+
+2026-05-05 follow-up: the main full-subgraph endpoint cleanup is now compiled.
+New declarations
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_textbookReverseCofiltrationHandoff`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_countable_integrable`,
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_countable_integrable`
+consume `VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`
+directly.  Thus the canonical full-subgraph package now exposes only the
+countable-class, full-subgraph VC, coordinate-measurability, measurable
+integrable-envelope, and nonempty-class hypotheses; it no longer requires a
+caller-supplied reverse/cofiltration theorem.  Next target: audit remaining
+`hreverse` wrappers and keep only the genuinely alternative sufficient
+conditions; then continue final Theorem 2.4.3 exact-statement assembly from the
+proved full-subgraph package and the fixed-radius/selected entropy consumers.
+
+2026-05-05 follow-up: the no-`hreverse` endpoint now also reaches the
+outer-a.s. `P`-Glivenko-Cantelli branch.  New declarations
+`VdVWAlmostSureGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical_of_countable_integrable`,
+`VdVWOuterAlmostSurePGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical_of_countable_integrable`,
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable`
+combine the full-subgraph outer-probability endpoint, outer-a.s. endpoint,
+book-style `P`-GC predicate, in-mean centered-supremum convergence, and
+Lemma 2.4.5 a.s. centered-supremum convergence under the standard
+countable/integrable-envelope hypotheses.  The next proof target should not
+add more endpoint wrappers unless an exact textbook theorem statement consumes
+them; instead assemble the exact named Theorem 2.4.3/Lemma 2.4.5 statement
+from this strong package and identify any remaining mismatch with the book's
+entropy/VC hypotheses.
+
+2026-05-05 `/goal` recalibration: the active goal should now treat the
+reverse/cofiltration theorem, no-`hreverse` Lemma 2.4.5 endpoint, and strong
+full-subgraph Theorem 2.4.3 package as closed.  The next high-capacity target is
+exact final-statement assembly, not another local endpoint wrapper.  Work from
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable`
+and try to produce the cleanest named VdVW Theorem 2.4.3/Lemma 2.4.5 statement
+with no avoidable extra assumptions.  First audit whether the remaining
+nonempty-class hypothesis can be removed by an empty-class/vacuity split for
+`vdVWWeightedClassSupremum`; if that fails, record the exact Lean obstruction.
+Then compare the resulting assumptions against the textbook entropy/VC
+statement.  Any remaining gap should be stated as a precise missing bridge, for
+example a theorem converting the book's entropy/VC hypotheses to the current
+full-subgraph/countable/integrable-envelope package, rather than hidden in a
+new wrapper.  If final 2.4.3 assembly is genuinely blocked after search and
+Lean attempts, continue to theorem-critical Chapter 1/2 primitives needed by
+that exact statement: arbitrary-map/asymptotic-measurability, `ell_infty`
+process primitives, FDD weak-convergence converse, or extended-real measurable
+cover existence.

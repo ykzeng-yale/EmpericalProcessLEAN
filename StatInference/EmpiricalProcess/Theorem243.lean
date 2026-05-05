@@ -318,6 +318,81 @@ theorem vdVW_reverse_inner_upcrossings_pos_of_downcrossingsBefore_pos
         (upcrossingsBefore c d rev T ω : ℝ≥0∞)) (N + 1))
 
 /--
+One counted original downcrossing extends the reversed finite-window
+inner-upcrossing count past a supplied horizon.
+
+This is the induction step for the remaining multiplicity argument.  If the
+current reversed horizon `T` has not passed the low point `N - τ_m` of the
+reversed image of the `m`-th original downcrossing, then the strict inner
+thresholds and mathlib's `upcrossingsBefore_lt_of_exists_upcrossing` increase
+the upcrossing count by the time the reversed window reaches the high point
+`N - σ_m`.
+-/
+theorem vdVW_reverse_inner_upcrossingsBefore_lt_of_horizon_le_crossing
+    {Ω : Type u} {x : ℕ -> Ω -> ℝ} {ω : Ω}
+    {a b c d : ℝ} {N T m : ℕ}
+    (hac : a < c) (hcd : c < d) (hdb : d < b)
+    (hm :
+      m < upcrossingsBefore (-b) (-a)
+        (fun n : ℕ => fun ω : Ω => -x n ω) N ω)
+    (hT :
+      T ≤ N - upperCrossingTime (-b) (-a)
+        (fun n : ℕ => fun ω : Ω => -x n ω) N (m + 1) ω) :
+    upcrossingsBefore c d (fun k : ℕ => fun ω : Ω => x (N - k) ω) T ω <
+      upcrossingsBefore c d (fun k : ℕ => fun ω : Ω => x (N - k) ω)
+        (N - lowerCrossingTime (-b) (-a)
+          (fun n : ℕ => fun ω : Ω => -x n ω) N m ω + 1) ω := by
+  let g : ℕ -> Ω -> ℝ := fun n ω => -x n ω
+  let rev : ℕ -> Ω -> ℝ := fun k ω => x (N - k) ω
+  have hab : a < b := hac.trans (hcd.trans hdb)
+  have hneg : -b < -a := by linarith
+  by_cases hN : 0 < N
+  · let s : ℕ := lowerCrossingTime (-b) (-a) g N m ω
+    let t : ℕ := upperCrossingTime (-b) (-a) g N (m + 1) ω
+    have hs_lt : s < N := by
+      simpa [s, g] using
+        (lowerCrossingTime_lt_of_lt_upcrossingsBefore (f := g) hN hneg hm)
+    have ht_lt : t < N := by
+      have hm_succ :
+          m + 1 ≤ upcrossingsBefore (-b) (-a) g N ω :=
+        Nat.succ_le_iff.2 hm
+      simpa [t, g] using
+        (upperCrossingTime_lt_of_le_upcrossingsBefore (f := g) hN hneg hm_succ)
+    have hst : s ≤ t := by
+      simpa [s, t] using
+        (lowerCrossingTime_le_upperCrossingTime_succ
+          (a := -b) (b := -a) (f := g) (N := N) (n := m) (ω := ω))
+    have ht_value : x t ω ≤ a := by
+      have hupper :
+          -a ≤ stoppedValue g
+            (fun ω => (upperCrossingTime (-b) (-a) g N (m + 1) ω : ℕ)) ω :=
+        stoppedValue_upperCrossingTime (a := -b) (b := -a) (f := g)
+          (N := N) (n := m) (ω := ω) ht_lt.ne
+      simpa [stoppedValue, g, t] using hupper
+    have hs_value : b ≤ x s ω := by
+      have hlower :
+          stoppedValue g
+            (fun ω => (lowerCrossingTime (-b) (-a) g N m ω : ℕ)) ω ≤ -b :=
+        stoppedValue_lowerCrossingTime (a := -b) (b := -a) (f := g)
+          (N := N) (n := m) (ω := ω) hs_lt.ne
+      simpa [stoppedValue, g, s] using hlower
+    have hN_t : N - (N - t) = t := Nat.sub_sub_self (le_of_lt ht_lt)
+    have hN_s : N - (N - s) = s := Nat.sub_sub_self (le_of_lt hs_lt)
+    have hT' : T ≤ N - t := by simpa [t, g] using hT
+    have hlow : rev (N - t) ω < c := by
+      simpa [rev, hN_t] using lt_of_le_of_lt ht_value hac
+    have hhigh : d < rev (N - s) ω := by
+      simpa [rev, hN_s] using lt_of_lt_of_le hdb hs_value
+    have hpair : N - t ≤ N - s := Nat.sub_le_sub_left hst N
+    simpa [rev, s, g] using
+      (upcrossingsBefore_lt_of_exists_upcrossing
+        (a := c) (b := d) (f := rev) (N := T) (N₁ := N - t)
+        (N₂ := N - s) (ω := ω) hcd hT' hlow hpair hhigh)
+  · have hN_zero : N = 0 := by omega
+    subst hN_zero
+    simp at hm
+
+/--
 Ordering of reversed crossing pairs.
 
 If `i < j`, then the `j`-th original crossing interval lies later in ordinary
@@ -375,6 +450,108 @@ theorem vdVW_reverse_crossing_pair_succ_le_of_lt_of_lower_lt
             lowerCrossingTime a b g N (k + 1) ω :=
         lt_of_le_of_lt hupper_le hupper_lt_lower
       omega
+
+/--
+Finite-prefix multiplicity comparison for reverse downcrossings and reversed
+inner upcrossings.
+
+This is the deterministic comparison needed by the order-dual martingale
+convergence route.  It counts the reversed images of the original completed
+downcrossing intervals from the last one backwards, using
+`vdVW_reverse_inner_upcrossingsBefore_lt_of_horizon_le_crossing` and the
+strict ordering lemma above.
+-/
+theorem vdVW_reverse_inner_upcrossingsBefore_ge_downcrossingsBefore
+    {Ω : Type u} {x : ℕ -> Ω -> ℝ} {ω : Ω}
+    {a b c d : ℝ} {N : ℕ}
+    (hac : a < c) (hcd : c < d) (hdb : d < b) :
+    upcrossingsBefore (-b) (-a)
+        (fun n : ℕ => fun ω : Ω => -x n ω) N ω ≤
+      upcrossingsBefore c d
+        (fun k : ℕ => fun ω : Ω => x (N - k) ω) (N + 1) ω := by
+  let g : ℕ -> Ω -> ℝ := fun n ω => -x n ω
+  let rev : ℕ -> Ω -> ℝ := fun k ω => x (N - k) ω
+  let D : ℕ := upcrossingsBefore (-b) (-a) g N ω
+  have hab : a < b := hac.trans (hcd.trans hdb)
+  have hneg : -b < -a := by linarith
+  let H : ℕ -> ℕ := fun q =>
+    if q = 0 then 0
+    else N - lowerCrossingTime (-b) (-a) g N (D - q) ω + 1
+  have haux :
+      ∀ q : ℕ, q ≤ D ->
+        q ≤ upcrossingsBefore c d rev (H q) ω := by
+    intro q hqD
+    induction q with
+    | zero =>
+        simp [H]
+    | succ q ih =>
+        have hq_lt_D : q < D := Nat.lt_of_succ_le hqD
+        have hqD_le : q ≤ D := le_of_lt hq_lt_D
+        have ihq : q ≤ upcrossingsBefore c d rev (H q) ω := ih hqD_le
+        have hm_lt :
+            D - (q + 1) < D := by omega
+        have hT :
+            H q ≤ N - upperCrossingTime (-b) (-a) g N (D - (q + 1) + 1) ω := by
+          by_cases hq0 : q = 0
+          · simp [H, hq0]
+          · have hj_lt : D - q < D := by omega
+            have hj_lower :
+                lowerCrossingTime (-b) (-a) g N (D - q) ω < N := by
+              exact lowerCrossingTime_lt_of_lt_upcrossingsBefore
+                (f := g) (N := N) (n := D - q) (ω := ω)
+                (by
+                  by_contra hN
+                  have hN_zero : N = 0 := by omega
+                  subst hN_zero
+                  simp [D, g] at hq_lt_D)
+                hneg hj_lt
+            have horder :
+                N - lowerCrossingTime (-b) (-a) g N (D - q) ω + 1 ≤
+                  N - upperCrossingTime (-b) (-a) g N (D - (q + 1) + 1) ω := by
+              have hij : D - (q + 1) < D - q := by omega
+              simpa using
+                (vdVW_reverse_crossing_pair_succ_le_of_lt_of_lower_lt
+                  (g := g) (ω := ω) (a := -b) (b := -a) (N := N)
+                  (i := D - (q + 1)) (j := D - q) hneg hij hj_lower)
+            simpa [H, hq0] using horder
+        have hstep :
+            upcrossingsBefore c d rev (H q) ω <
+              upcrossingsBefore c d rev (H (q + 1)) ω := by
+          have hraw :=
+            vdVW_reverse_inner_upcrossingsBefore_lt_of_horizon_le_crossing
+              (x := x) (ω := ω) (a := a) (b := b) (c := c) (d := d)
+              (N := N) (T := H q) (m := D - (q + 1))
+              hac hcd hdb ?hm hT
+          · simpa [rev, g, H, Nat.succ_ne_zero] using hraw
+          · simpa [D, g] using hm_lt
+        exact Nat.succ_le_iff.2 (lt_of_le_of_lt ihq hstep)
+  by_cases hD0 : D = 0
+  · simp [D] at hD0
+    rw [hD0]
+    exact Nat.zero_le _
+  · have hD_pos : 0 < D := Nat.pos_of_ne_zero hD0
+    have hHD :
+        H D ≤ N + 1 := by
+      have hN_pos : 0 < N := by
+        by_contra hN
+        have hN_zero : N = 0 := by omega
+        subst hN_zero
+        simp [D, g] at hD_pos
+      have hlower0 :
+          lowerCrossingTime (-b) (-a) g N 0 ω < N := by
+        simpa [D, g] using
+          (lowerCrossingTime_lt_of_lt_upcrossingsBefore
+            (f := g) (N := N) (n := 0) (ω := ω)
+            hN_pos hneg hD_pos)
+      have hlower0_le : lowerCrossingTime (-b) (-a) g N 0 ω ≤ N :=
+        le_of_lt hlower0
+      rw [show H D =
+        N - lowerCrossingTime (-b) (-a) g N 0 ω + 1 by simp [H, hD0]]
+      omega
+    have hD_at_H :
+        D ≤ upcrossingsBefore c d rev (H D) ω := haux D le_rfl
+    exact hD_at_H.trans
+      (upcrossingsBefore_mono (f := rev) hcd hHD ω)
 
 /--
 Conditional expectations of a fixed real random variable along an ordinary
@@ -6151,6 +6328,52 @@ theorem VdVWOrderDualSubmartingaleConvergenceHandoff.of_finiteHorizon_innerRever
       (fun a b hab => hcompare (f := f) a b hab)
 
 /--
+Generic order-dual submartingale convergence theorem needed by the VdV&W
+reverse/cofiltration route.
+
+This discharges the previously named primitive
+`VdVWOrderDualSubmartingaleConvergenceHandoff`: finite-horizon reversal,
+Doob upcrossing estimates, and the deterministic inner-threshold crossing
+comparison are enough to prove a.e. convergence for every uniformly
+`L¹`-bounded `ℕᵒᵈ` submartingale.
+-/
+theorem VdVWOrderDualSubmartingaleConvergenceHandoff.proved
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ] :
+    VdVWOrderDualSubmartingaleConvergenceHandoff Ω μ := by
+  refine
+    VdVWOrderDualSubmartingaleConvergenceHandoff.of_finiteHorizon_innerReverseComparison
+      (μ := μ) ?_
+  intro f a b hab
+  let ar : ℝ := a
+  let br : ℝ := b
+  let c : ℝ := (2 * ar + br) / 3
+  let d : ℝ := (ar + 2 * br) / 3
+  have habR : ar < br := Rat.cast_lt.2 hab
+  have hac : ar < c := by dsimp [c, ar, br]; linarith
+  have hcd : c < d := by dsimp [c, d, ar, br]; linarith
+  have hdb : d < br := by dsimp [d, ar, br]; linarith
+  refine ⟨c, d, hac, hcd, hdb, ?_⟩
+  intro N ω
+  let x : ℕ -> Ω -> ℝ := fun n ω => f (OrderDual.toDual n) ω
+  let rev : ℕ -> Ω -> ℝ := fun k ω => x (N - k) ω
+  have hfinite :
+      upcrossingsBefore (-(b : ℝ)) (-(a : ℝ))
+          (fun n : ℕ => fun ω : Ω => -x n ω) N ω ≤
+        upcrossingsBefore c d rev (N + 1) ω :=
+    vdVW_reverse_inner_upcrossingsBefore_ge_downcrossingsBefore
+      (x := x) (ω := ω) (a := ar) (b := br) (c := c) (d := d)
+      (N := N) hac hcd hdb
+  have hfinite_enn :
+      (upcrossingsBefore (-(b : ℝ)) (-(a : ℝ))
+          (fun n : ℕ => fun ω : Ω => -x n ω) N ω : ℝ≥0∞) ≤
+        (upcrossingsBefore c d rev (N + 1) ω : ℝ≥0∞) := by
+    exact_mod_cast hfinite
+  refine hfinite_enn.trans ?_
+  rw [upcrossings]
+  exact le_iSup
+    (fun T : ℕ => (upcrossingsBefore c d rev T ω : ℝ≥0∞)) (N + 1)
+
+/--
 The textbook Lemma 2.4.5 display comparison builds a genuine mathlib
 submartingale over the shifted VdV&W permutation-symmetric cofiltration.
 
@@ -6864,6 +7087,31 @@ theorem VdVWLemma245TextbookReverseCofiltrationHandoff.of_orderDualSubmartingale
   filter_upwards [hconv] with sequence hsequence
   rcases hsequence with ⟨limit, hlimit⟩
   exact ⟨limit, by simpa using hlimit⟩
+
+/--
+The VdV&W Lemma 2.4.5 textbook reverse/cofiltration handoff under the standard
+countability and integrable-envelope assumptions.
+
+The generic order-dual submartingale convergence theorem is now proved locally,
+so this theorem removes the former primitive `hreverse` assumption from the
+textbook-display row comparison package.
+-/
+theorem VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    VdVWLemma245TextbookReverseCofiltrationHandoff P indexClass classFun :=
+  VdVWLemma245TextbookReverseCofiltrationHandoff.of_orderDualSubmartingaleConvergence
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope)
+    hcount henvelope hclass henv_integrable
+    (VdVWOrderDualSubmartingaleConvergenceHandoff.proved
+      (Ω := ℕ -> Observation) (μ := vdVWInfiniteProductMeasure P))
 
 /--
 Sufficient condition for the named reverse/cofiltration handoff: an ordinary
@@ -27598,6 +27846,81 @@ theorem
       henvelope hclass henv_integrable hprob hreverse
 
 /--
+Canonical full-subgraph Lemma 2.4.5 a.s. zero consumer in named
+textbook/cofiltration form.
+
+This is the same endpoint as the textbook reverse-comparison wrapper, but the
+remaining reverse-time input is exposed through the reusable named proposition
+`VdVWLemma245TextbookReverseCofiltrationHandoff`.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_textbookReverseCofiltrationHandoff
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hreverse :
+      VdVWLemma245TextbookReverseCofiltrationHandoff P indexClass classFun) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) :=
+  vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_textbookReverseComparisonHandoff
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) (vcDegree := vcDegree)
+    hvc hindexClass henvelope hclass henv henv_integrable hreverse
+
+/--
+Canonical full-subgraph Lemma 2.4.5 a.s. zero endpoint with the
+reverse/cofiltration handoff discharged by the proved order-dual theorem.
+
+Under the standard countable-class and integrable-envelope assumptions, the
+caller no longer supplies an explicit `hreverse` primitive.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_countable_integrable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) :=
+  vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_textbookReverseCofiltrationHandoff
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) (vcDegree := vcDegree)
+    hvc hindexClass henvelope hclass henv henv_integrable
+    (VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      (Set.to_countable indexClass) henvelope hclass henv_integrable)
+
+/--
 Canonical full-subgraph Lemma 2.4.5 a.s. zero consumer in named-blocker form.
 
 This is the same theorem-facing full-subgraph route as the previous consumer,
@@ -27991,6 +28314,58 @@ theorem
     (P := P) (indexClass := indexClass) (classFun := classFun)
     (envelope := envelope) (vcDegree := vcDegree)
     hvc hindexClass henvelope hclass henv henv_integrable hreverse
+
+/--
+Canonical full-subgraph Theorem 2.4.3/Lemma 2.4.5 package with the
+textbook reverse/cofiltration handoff discharged.
+
+This consumes the proved order-dual submartingale convergence theorem through
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`, so
+the endpoint now exposes only the countable-class, full-subgraph VC, and
+integrable-envelope hypotheses.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_countable_integrable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) :=
+  VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_textbookReverseCofiltrationHandoff
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) (vcDegree := vcDegree)
+    hvc hindexClass henvelope hclass henv henv_integrable
+    (VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      (Set.to_countable indexClass) henvelope hclass henv_integrable)
 
 /--
 Canonical full-subgraph Theorem 2.4.3/Lemma 2.4.5 package under the named
@@ -29019,6 +29394,149 @@ theorem
           sequence := by
     simpa [hsample] using hmember_le
   exact hmember_le_samplePath.trans (le_of_lt hsup_lt)
+
+/--
+Canonical full-subgraph almost-sure `P`-Glivenko-Cantelli record from the
+proved Lemma 2.4.5 reverse/cofiltration route.
+
+The no-`hreverse` full-subgraph Lemma 2.4.5 endpoint gives pathwise
+convergence of the centered empirical supremum.  The existing deterministic
+domination then upgrades it to uniform deviation convergence for the canonical
+infinite iid process.
+-/
+theorem
+    VdVWAlmostSureGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical_of_countable_integrable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWAlmostSureGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i) where
+  law := fun i => vdVWInfiniteProductMeasure_coordinate_hasLaw P i
+  independent := fun _i _j hij =>
+    (vdVWInfiniteProductMeasure_iIndepFun_coordinates P).indepFun hij
+  uniform_deviation_ae := by
+    have hsup :=
+      vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_countable_integrable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable
+    filter_upwards [hsup] with sequence hsequence
+    exact
+      UniformDeviationTendstoZeroOn_of_vdVWLemma245CenteredEmpiricalSupremum_tendsto_zero_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) henvelope hclass henv_integrable hsequence
+
+/--
+Canonical full-subgraph Theorem 2.4.3 outer-a.s. `P`-Glivenko-Cantelli
+endpoint from the proved reverse/cofiltration route.
+-/
+theorem
+    VdVWOuterAlmostSurePGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical_of_countable_integrable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterAlmostSurePGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i) := by
+  exact
+    vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_almostSure
+      (VdVWAlmostSureGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical_of_countable_integrable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable).uniform_deviation_ae
+
+/--
+Canonical full-subgraph Theorem 2.4.3 package with both outer-probability and
+outer-a.s. `P`-Glivenko-Cantelli endpoints, the local book-style `P`-GC
+predicate, the in-mean centered-supremum conclusion, and the Lemma 2.4.5
+a.s. centered-supremum conclusion.
+
+This consumes the proved reverse/cofiltration handoff through the no-`hreverse`
+countable/integrable endpoint and is the current strongest theorem-facing
+full-subgraph package.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWOuterAlmostSurePGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) := by
+  constructor
+  · exact
+      VdVWOuterProbabilityPGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable
+  · constructor
+    · exact
+        VdVWOuterAlmostSurePGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical_of_countable_integrable
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (vcDegree := vcDegree)
+          hvc hindexClass henvelope hclass henv henv_integrable
+    · exact
+        VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_countable_integrable
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (vcDegree := vcDegree)
+          hvc hindexClass henvelope hclass henv henv_integrable
 
 /--
 Canonical finite-class almost-sure `P`-Glivenko-Cantelli record from the direct
