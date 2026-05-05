@@ -43,22 +43,36 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier as of the Theorem 5.8 AGF source-wrapper push: do not
-target the old Theorem 3.4 frontier or the already-built CG substrate.
-`StatInference/Optimization/Theorem58.lean` now proves the AGF Lyapunov
-derivative formula, discharges Lyapunov continuity from the trajectory and
-gradient oracle, and exposes a source-facing Theorem 5.8 rate wrapper.  The
-current active packet has closed Theorem 5.9 in source-shaped supplied
-interface form.  Since Chewi leaves the strongly-convex AGF proof to
-Exercise 5.3, `StatInference/Optimization/Theorem59.lean` records the standard
-Lyapunov route: strong-convex friction, momentum-shift Lyapunov vector,
-Lyapunov energy, generic AGF gap derivative, energy-vector derivative, raw
-Lyapunov derivative, derivative decay inequality, scalar exponential-decay
-consumer, zero-momentum initial-energy bound, and the final exponential gap
-wrappers.  The next active packet is Theorem 5.10 discrete AGD around markdown
-line 1219.  Search Chapter 3 for the compiled (3.3)-style one-step inequality
-and reuse existing scalar/telescoping APIs before opening the Chapter 6
-nonsmooth/projection layer.
+Manual goal frontier after the 2026-05-05 status audit: local `main` is
+fast-forwarded to `88178a2`, and the latest Optimization proof commit remains
+`f128db4 Prove Chewi theorem 5.9 AGF rate`.  Do not target the stale
+app-level `/goal` text's old Theorem 3.4 frontier, and do not replay the
+already-built CG substrate, Theorem 5.8 AGF source wrapper, or Theorem 5.9
+strong-convex AGF proof.  `StatInference/Optimization/Theorem58.lean` proves
+the AGF Lyapunov derivative formula, discharges Lyapunov continuity from the
+trajectory and gradient oracle, and exposes a source-facing Theorem 5.8 rate
+wrapper.  Since Chewi leaves the strongly-convex AGF proof to Exercise 5.3,
+`StatInference/Optimization/Theorem59.lean` records the standard Lyapunov
+route: strong-convex friction, momentum-shift Lyapunov vector, Lyapunov
+energy, generic AGF gap derivative, energy-vector derivative, raw Lyapunov
+derivative, derivative decay inequality, scalar exponential-decay consumer,
+zero-momentum initial-energy bound, and the final exponential gap wrappers.
+
+The next active packet is Theorem 5.10 discrete AGD around markdown line 1219.
+Create `StatInference/Optimization/Theorem510.lean`.  Reuse
+`StatInference.Optimization.oneStepRecurrence_of_firstOrderStrongConvexOn`
+from Chapter 3 as source inequality `(3.3)` with `alpha = 0` and
+`h = 1 / beta`, then add the missing AGD-specific recurrence algebra:
+`chewi510Lambda`, `chewi510Theta`, lambda positivity, the identity
+`lambda (n+1) * (lambda (n+1) - 1) = lambda n ^ 2`, the lower bound
+`lambda N >= N / 2`, the AGD trial/update interface with `y 0 = x 0`, the
+source telescoping alignment identity, weighted finite telescoping, and the
+final source rate.  Search/reuse local `sum_range_sub_succ`, mathlib finite
+sum telescoping APIs, `norm_add_sq_real`, `norm_sub_sq_real`, `Real.sq_sqrt`,
+`Real.le_sqrt_of_sq_le`, and scalar algebra tactics before introducing any
+new primitive.  Only after Theorem 5.10 is compiled should the main route open
+the Chapter 6 nonsmooth/projection layer, while scouts can map Chapter 6-13
+APIs in parallel.
 
 ## Local Sources
 

@@ -68,32 +68,47 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current manual objective: aggressively formalize and prove the main theorem
-content of Sinho Chewi's Optimization 2026 notes in Lean under
-`StatInference/Optimization`, continuing from the verified Chapter 5
-acceleration/conjugate-gradient frontier rather than replaying the old Chapter
-3/early-CG setup.  The compiled spine already covers Chapter 1
-minimizer/first-order bridges, Chapter 2 gradient-flow interfaces, Chapter 3
-gradient descent through Theorem 3.7 support layers, Chapter 4
-Definition 4.3/Theorem 4.4 gradient-span lower bounds, Theorem 4.5-facing
-strongly-convex lower-bound packages, and Chapter 5 Lemma 5.1, Theorem 5.3,
-and the displayed restarted-CG/log-rate endpoint for Theorem 5.4 in
-`StatInference/Optimization/Theorem54.lean`.  The immediate route is now:
-source-audit/package the final Theorem 5.4 statement only if it is cheap and
-source-useful; otherwise move directly to a new
-`StatInference/Optimization/Theorem58.lean` AGF Lyapunov-to-rate layer for
-Theorem 5.8, then continue through Theorem 5.9 and the remaining Chapter 5
-acceleration results before opening Chapter 6 nonsmooth/projection packets.
+Current manual objective after the 2026-05-05 status audit: aggressively
+formalize and prove the main theorem content of Sinho Chewi's Optimization
+2026 notes in Lean under `StatInference/Optimization`, continuing from local
+`main` fast-forwarded to `88178a2` and the latest Optimization proof commit
+`f128db4 Prove Chewi theorem 5.9 AGF rate`.  The app-level `/goal` objective
+text still mentions the obsolete Theorem 3.4 frontier and cannot be edited
+directly through the current tool surface unless the full textbook goal is
+marked complete, so this paragraph is the live replacement `/goal` prompt.
+
+Do not replay completed Chapter 3 gradient-descent work, Chapter 4
+gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
+Lyapunov work, or Theorem 5.9 strong-convex AGF work.  The active target is
+Chewi Theorem 5.10, convergence of discrete AGD, around markdown line 1219.
+First build `StatInference/Optimization/Theorem510.lean`, importing the
+existing Chapter 3 recurrence and Chapter 5 AGF/optimization spine.  The first
+proof packet should reuse
+`StatInference.Optimization.oneStepRecurrence_of_firstOrderStrongConvexOn`
+from `Theorem34.lean` as the source inequality `(3.3)` with `alpha = 0` and
+`h = 1 / beta`, then add only the missing AGD-specific material:
+`chewi510Lambda`, `chewi510Theta`, lambda positivity, the identity
+`lambda (n+1) * (lambda (n+1) - 1) = lambda n ^ 2`, `lambda N >= N / 2`, the
+AGD trial/update interface with `y 0 = x 0`, the source telescoping alignment
+identity, the weighted Lyapunov telescoping bound, and finally the source
+rate `f (x N) - fstar <= 2 * beta * ‖x 0 - xstar‖ ^ 2 / (N : ℝ) ^ 2` for
+positive `N` under convexity, smoothness, minimizer, and AGD-trajectory
+assumptions.
+
+Speed rule for this manual goal: make theorem-sized packets, not one-wrapper
+push loops.  Use scouts in parallel for future Chapter 6-8 nonsmooth/proximal
+APIs, Chapter 9-11 Fenchel/Bregman/mirror APIs, and Chapter 12-13 stochastic/
+matrix/self-concordance APIs while the main thread proves the current theorem.
 Search existing mathlib and local `StatInference` APIs first, prove the
 highest-leverage theorem packet per run, verify with focused `lake env lean`,
-targeted `lake build StatInference`, proof-hole and secret scans, update this
-route state, and batch commit/push clean verified progress.  Keep main-text
-theorem coverage as the priority; exercise statements and exercise proofs may
-still be formalized opportunistically when cheap, reusable, or directly unblock
-a main-text theorem.  All Optimization textbook exercise statements and
-exercise proofs should live in the single module
-`StatInference/Optimization/Exercises.lean`, so the later exercise sweep
-remains source-trackable.
+promote with targeted `lake build StatInference` after adding root imports,
+scan for proof holes and secrets, update this route state, then batch
+commit/push clean verified progress.  Keep main-text theorem coverage as the
+priority; exercise statements and exercise proofs may still be formalized
+opportunistically when cheap, reusable, or directly unblock a main-text
+theorem.  All Optimization textbook exercise statements and exercise proofs
+should live in the single module `StatInference/Optimization/Exercises.lean`,
+so the later exercise sweep remains source-trackable.
 
 ## Current Blocker
 
