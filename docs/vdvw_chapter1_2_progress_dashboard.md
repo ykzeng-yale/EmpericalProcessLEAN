@@ -26,7 +26,8 @@ finite-index product equivalence, and finite-index `ell_infty(T)` FDD converse
 wrappers are also compiled.  The measure-level Portmanteau continuity-set
 implication and closed/open converse wrappers are now compiled as well.  The
 norm-tail tightness characterization for probability-measure families on
-normed/proper normed spaces is compiled.  The π-system convergence-determining
+normed/proper normed spaces is compiled, including the sequence/range limsup
+norm-tail criterion backed by mathlib `TightNormed`.  The π-system convergence-determining
 criterion and VdV&W 1.4.2 product bounded-continuous test uniqueness wrappers
 are compiled.  The measurable independent-coordinate product-law convergence
 wrappers `vdVWTendstoInDistribution_prodMk_laws_of_indepFun` and
@@ -92,6 +93,14 @@ under a.e.-measurability of the original maps.
 The same ignored-product-coordinate closure is now available for the
 varying-domain signed weak-convergence package used by finite-sample
 Theorem 2.4.3 endpoints.
+
+2026-05-05 tightness sequence follow-up: `WeakConvergence.lean` now wraps
+mathlib's sequence/range norm-tail criterion as
+`vdVWProbabilityMeasuresTight_range_of_tendsto_limsup_norm_tail` and
+`vdVWProbabilityMeasuresTight_range_iff_tendsto_limsup_norm_tail`.  This
+closes a reusable Chapter 1 Prokhorov/tightness foundation for sequential
+probability-measure families on proper normed Borel spaces; it deliberately
+does not claim the still-missing arbitrary-map/asymptotic-tightness theorem.
 Direct null/a.e.-measurable constructors are now also available for the
 lower-shifted/canonical shifted bounded-continuous predicates in both
 common-domain and varying-domain forms.  The direct signed positive/negative

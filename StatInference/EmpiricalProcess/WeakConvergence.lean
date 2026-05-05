@@ -3019,6 +3019,69 @@ theorem vdVWProbabilityMeasuresTight_iff_tendsto_norm_tail
   ⟨fun hA => hA.tendsto_norm_tail, vdVWProbabilityMeasuresTight_of_tendsto_norm_tail⟩
 
 /--
+Sequential norm-tail tightness criterion, converse direction: for a sequence
+of probability measures on a proper normed group, vanishing limsup norm tails
+imply tightness of the range.
+
+This is the VdV&W-local wrapper around mathlib's sequence form of the normed
+tightness API.  It is useful for Chapter 1 Prokhorov/tightness arguments where
+the family is presented as a sequence rather than an arbitrary set.
+-/
+theorem vdVWProbabilityMeasuresTight_range_of_tendsto_limsup_norm_tail
+    {S : Type u} [MeasurableSpace S] [NormedAddCommGroup S] [ProperSpace S] [BorelSpace S]
+    (μ : ℕ -> ProbabilityMeasure S)
+    (h :
+      Tendsto
+        (fun r : ℝ =>
+          limsup
+            (fun n : ℕ => ((μ n : ProbabilityMeasure S) : Measure S) {x : S | r < ‖x‖})
+            atTop)
+        atTop (𝓝 0)) :
+    VdVWProbabilityMeasuresTight (Set.range μ) := by
+  have hset :
+      {((ν : ProbabilityMeasure S) : Measure S) | ν ∈ Set.range μ} =
+        Set.range (fun n : ℕ => ((μ n : ProbabilityMeasure S) : Measure S)) := by
+    ext ν
+    constructor
+    · rintro ⟨ρ, hρ, rfl⟩
+      rcases hρ with ⟨n, rfl⟩
+      exact ⟨n, rfl⟩
+    · rintro ⟨n, rfl⟩
+      exact ⟨μ n, ⟨n, rfl⟩, rfl⟩
+  simpa [VdVWProbabilityMeasuresTight, hset] using
+    (MeasureTheory.isTightMeasureSet_range_of_tendsto_limsup_measure_norm_gt
+      (μ := fun n : ℕ => ((μ n : ProbabilityMeasure S) : Measure S)) h)
+
+/--
+Sequential norm-tail tightness characterization: for a sequence of probability
+measures on a proper normed group, tightness of the range is equivalent to
+vanishing limsup norm tails.
+-/
+theorem vdVWProbabilityMeasuresTight_range_iff_tendsto_limsup_norm_tail
+    {S : Type u} [MeasurableSpace S] [NormedAddCommGroup S] [ProperSpace S] [BorelSpace S]
+    {μ : ℕ -> ProbabilityMeasure S} :
+    VdVWProbabilityMeasuresTight (Set.range μ) ↔
+      Tendsto
+        (fun r : ℝ =>
+          limsup
+            (fun n : ℕ => ((μ n : ProbabilityMeasure S) : Measure S) {x : S | r < ‖x‖})
+            atTop)
+        atTop (𝓝 0) := by
+  have hset :
+      {((ν : ProbabilityMeasure S) : Measure S) | ν ∈ Set.range μ} =
+        Set.range (fun n : ℕ => ((μ n : ProbabilityMeasure S) : Measure S)) := by
+    ext ν
+    constructor
+    · rintro ⟨ρ, hρ, rfl⟩
+      rcases hρ with ⟨n, rfl⟩
+      exact ⟨n, rfl⟩
+    · rintro ⟨n, rfl⟩
+      exact ⟨μ n, ⟨n, rfl⟩, rfl⟩
+  simpa [VdVWProbabilityMeasuresTight, hset] using
+    (MeasureTheory.isTightMeasureSet_range_iff_tendsto_limsup_measure_norm_gt
+      (μ := fun n : ℕ => ((μ n : ProbabilityMeasure S) : Measure S)))
+
+/--
 Levy-Prokhorov characterization of the measure-level weak-convergence wrapper
 on separable pseudometric spaces.
 

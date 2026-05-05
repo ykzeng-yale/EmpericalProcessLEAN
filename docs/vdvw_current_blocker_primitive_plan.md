@@ -5440,3 +5440,15 @@ expectation equalities.  This is the product-coordinate closure needed for
 finite-sample spaces such as `SampleAt Observation n`; the remaining product
 gap is still the true arbitrary-map/asymptotic-independence theorem, not this
 a.e.-measurable ignored-coordinate case.
+
+2026-05-05 sequence norm-tail tightness follow-up: pinned mathlib search found
+`MeasureTheory.isTightMeasureSet_range_of_tendsto_limsup_measure_norm_gt` and
+`MeasureTheory.isTightMeasureSet_range_iff_tendsto_limsup_measure_norm_gt` in
+`Mathlib.MeasureTheory.Measure.TightNormed`.  `WeakConvergence.lean` now wraps
+them as
+`vdVWProbabilityMeasuresTight_range_of_tendsto_limsup_norm_tail` and
+`vdVWProbabilityMeasuresTight_range_iff_tendsto_limsup_norm_tail` for
+sequences of probability measures on proper normed Borel spaces.  This closes
+the sequential measure-level norm-tail tightness foundation used by Chapter 1
+Prokhorov/tightness arguments; it does not close VdV&W arbitrary-map
+asymptotic tightness or process-level separability.
