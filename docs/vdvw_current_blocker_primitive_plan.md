@@ -209,6 +209,17 @@ selected normalized-log mean convergence or a genuine UI theorem from VdV&W
 entropy hypotheses, or instantiate the compiled deterministic route from a
 valid cardinality estimate.
 
+2026-05-05 second L1 follow-up: the selected package constructor now feeds an
+untruncated centered convergence consumer:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_integral_tendsto_zero`.
+This is the theorem-facing endpoint for the L1-strengthened branch.  It
+combines variable-domain book entropy, finite-net upper integrability,
+selected normalized-log measurability/integrability, and selected
+normalized-log mean convergence with the existing selected fixed-radius
+untruncation route.  Future runs should not add another untruncated wrapper
+for the same hypotheses; they should prove the structural mean/UI input or
+move to the next exact Chapter 1-2 primitive if that remains blocked.
+
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the
 non-deterministic entropy route.  New compiled declarations:

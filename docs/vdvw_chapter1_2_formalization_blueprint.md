@@ -197,6 +197,15 @@ the selected normalized-log process.  The next theorem-facing target is the
 actual structural entropy/UI theorem that supplies that mean convergence, not
 more fixed-radius or untruncated endpoint packaging.
 
+2026-05-05 untruncated L1 follow-up: ordinary mean convergence of the selected
+normalized-log process now also has a direct untruncated centered convergence
+consumer,
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_integral_tendsto_zero`.
+This closes the endpoint-composition layer for the L1-strengthened branch.
+The remaining work is the structural entropy theorem that produces mean
+convergence/UI, or the next exact arbitrary-map/nonmeasurable Chapter 1-2
+primitive if that theorem is blocked.
+
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
 reverse/cofiltration theorem, finite-cover entropy plumbing, untruncation,

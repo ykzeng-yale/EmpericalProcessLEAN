@@ -130,6 +130,14 @@ deriving the selected normalized-log mean convergence/UI input from a real
 structural entropy hypothesis, or moving to the next exact Chapter 1-2 gap if
 that remains blocked after search.
 
+2026-05-05 untruncated L1 follow-up: the same L1 route now reaches the
+untruncated centered Theorem 2.4.3 conclusion through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_integral_tendsto_zero`.
+The current highest-value target is therefore the structural proof that
+selected normalized empirical entropy converges in ordinary mean or is
+uniformly integrable; adding more endpoint wrappers around these same
+hypotheses would be duplicative.
+
 ## Status Legend
 
 | Status | Meaning |
