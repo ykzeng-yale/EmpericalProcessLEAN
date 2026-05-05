@@ -1359,3 +1359,16 @@ centered-supremum convergence, and Lemma 2.4.5 a.s. centered-supremum
 convergence without an explicit reverse/cofiltration hypothesis.  The next
 frontier is exact final-statement assembly and matching the remaining book
 entropy/VC hypotheses to this strong package.
+
+2026-05-05 follow-up: the envelope-integrability assumption is now explicitly
+connected to the textbook `P^* F < ∞` side condition for the measurable-envelope
+route.  The compiled bridge
+`VdVWOuterExpectation_ofReal_lt_top_of_measurable_integrable_nonneg`, with the
+class-envelope specialization
+`VdVWClassEnvelope.outerExpectation_lt_top_of_measurable_integrable`, proves
+finite VdV&W nonnegative outer expectation from ordinary measurable
+integrability and nonnegativity of the envelope.  This closes one final
+assembly mismatch; the remaining Theorem 2.4.3 mismatches are the exact
+arbitrary `P`-measurable/asymptotic-measurable class layer and the conversion
+from the book random empirical entropy condition to the current fixed-radius
+selected/full-subgraph finite-net package.

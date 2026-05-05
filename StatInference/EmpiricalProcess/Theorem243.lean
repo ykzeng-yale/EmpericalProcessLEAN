@@ -931,6 +931,23 @@ theorem integrable_classFun_of_integrable_envelope
     simpa [Real.norm_eq_abs] using henvelope.bound index hindex observation
 
 /--
+An ordinary measurable integrable VdV&W envelope has finite nonnegative outer
+expectation.  This names the bridge from the current full-subgraph route's
+envelope assumptions to the textbook Theorem 2.4.3 side condition
+`P^* F < ∞` in the measurable-envelope case.
+-/
+theorem VdVWClassEnvelope.outerExpectation_lt_top_of_measurable_integrable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (henv : Measurable envelope) (henv_integrable : Integrable envelope P) :
+    VdVWOuterExpectation P (fun observation => ENNReal.ofReal (envelope observation)) < ∞ :=
+  VdVWOuterExpectation_ofReal_lt_top_of_measurable_integrable_nonneg
+    henv henv_integrable henvelope.nonneg
+
+/--
 The truncated class member `f 1{F <= M}` from VdV&W Theorem 2.4.3.
 
 The index set is unchanged; the class function is modified by zeroing a member

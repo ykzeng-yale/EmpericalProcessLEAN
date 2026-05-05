@@ -4105,3 +4105,21 @@ integrable envelope, and the full-subgraph VC/entropy bridge.  If a direct
 named exact theorem cannot yet be stated honestly, record the missing bridge as
 a precise primitive and move to the theorem-critical Chapter 1/2 foundation
 needed to close it.
+
+2026-05-05 follow-up: the measurable/integrable envelope side of that
+assumption comparison is now narrowed.  Search/reuse record: pinned mathlib
+provides `MeasureTheory.ofReal_integral_eq_lintegral_ofReal` and
+`ENNReal.ofReal_lt_top`; local `OuterExpectation.lean` already proves
+`VdVWOuterExpectation_eq_lintegral_of_measurable`.  The new compiled bridge
+`VdVWOuterExpectation_ofReal_lt_top_of_measurable_integrable_nonneg` proves
+finite VdV&W nonnegative outer expectation for any measurable integrable
+nonnegative real map, and
+`VdVWClassEnvelope.outerExpectation_lt_top_of_measurable_integrable`
+specializes it to a VdV&W class envelope.  Thus the current
+measurable-integrable-envelope route honestly supplies the textbook-looking
+`P^* F < ∞` side condition in the measurable-envelope case.  Remaining
+Theorem 2.4.3 final-assembly gaps are now more sharply: exact arbitrary
+`P`-measurable class versus the current countable coordinate-measurable route,
+the book random empirical entropy hypothesis versus the current
+full-subgraph/selected fixed-radius tail package, and nonmeasurable-envelope
+outer-cover variants if the exact arbitrary-map statement requires them.

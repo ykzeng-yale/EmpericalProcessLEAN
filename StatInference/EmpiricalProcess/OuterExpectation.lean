@@ -85,6 +85,23 @@ theorem VdVWOuterExpectation_eq_lintegral_of_measurable
     exact lintegral_mono U.majorizes
 
 /--
+A measurable, integrable, nonnegative real map has finite VdV&W nonnegative
+outer expectation after embedding into `ℝ≥0∞`.
+
+This is the local bridge from an ordinary measurable/integrable envelope to the
+textbook-style `P^* F < ∞` side condition used in Theorem 2.4.3.
+-/
+theorem VdVWOuterExpectation_ofReal_lt_top_of_measurable_integrable_nonneg
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {f : Ω -> ℝ} (hf_meas : Measurable f) (hf_int : Integrable f μ)
+    (hf_nonneg : ∀ ω, 0 ≤ f ω) :
+    VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (f ω)) < ∞ := by
+  rw [VdVWOuterExpectation_eq_lintegral_of_measurable hf_meas.ennreal_ofReal]
+  rw [← MeasureTheory.ofReal_integral_eq_lintegral_ofReal hf_int
+    (ae_of_all μ hf_nonneg)]
+  exact ENNReal.ofReal_lt_top
+
+/--
 For a measurable integrable real-valued map, the signed difference of the
 VdV&W nonnegative outer expectations of its positive and negative parts is
 the ordinary Bochner integral.
