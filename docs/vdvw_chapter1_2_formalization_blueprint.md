@@ -97,13 +97,14 @@ weak convergence of pushforward laws to a Dirac limit is now compiled as
 `VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real`,
 with the signed endpoint consumer
 `VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real`.
-The next blueprint target is to consume these declarations in the finite-product
-centered-supremum endpoints of Theorem 2.4.3.  After that, work should return
-to the remaining exact textbook mismatches: random-entropy selected finite-net
-tail/UI from the book entropy condition, arbitrary/nonmeasurable
-asymptotic-measurability support beyond countable coordinate-measurable
-classes, and any nonmeasurable envelope-tail outer-cover clauses required by
-the final exact Chapter 1-2 theorem statements.
+The concrete Theorem 2.4.3 finite-product centered-supremum adapter
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_convergesInOuterProbabilityConst`
+is also compiled.  The next blueprint target is now the remaining exact
+textbook mismatches: random-entropy selected finite-net tail/UI from the book
+entropy condition, arbitrary/nonmeasurable asymptotic-measurability support
+beyond countable coordinate-measurable classes, and any nonmeasurable
+envelope-tail outer-cover clauses required by the final exact Chapter 1-2
+theorem statements.
 
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the

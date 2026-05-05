@@ -65,16 +65,18 @@ positive/negative outer-expectation bridge, the signed bounded-continuous
 arbitrary-map weak-convergence package, the common-domain
 outer-probability-to-signed-weak-convergence bridge, and the varying-domain
 signed weak-convergence/asymptotic-measurability interfaces are compiled.  The
-real-valued varying-domain Dirac-law bridge is now also compiled as
+real-valued varying-domain Dirac-law bridge is also compiled as
 `VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real`,
 with the direct signed endpoint consumer
 `VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real`.
-The next proof batch should consume these declarations in the finite-product
-centered-supremum endpoint layer of Theorem 2.4.3, then return to the exact
-textbook mismatches: random-entropy selected finite-net tail/UI from the book
-entropy condition, arbitrary `P`-measurable/asymptotic-measurable class support
-beyond countable coordinate-measurable classes, and any nonmeasurable
-outer-cover envelope variants required by the final statement.
+The concrete Theorem 2.4.3 finite-product centered-supremum adapter is compiled
+as
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_convergesInOuterProbabilityConst`.
+The next proof batch should now return to the exact textbook mismatches:
+random-entropy selected finite-net tail/UI from the book entropy condition,
+arbitrary `P`-measurable/asymptotic-measurable class support beyond countable
+coordinate-measurable classes, and any nonmeasurable outer-cover envelope
+variants required by the final statement.
 
 Search/reuse record for this closed bridge: local code had no exact theorem
 from varying-domain `VdVWConvergesInOuterProbabilityConst` to Dirac weak

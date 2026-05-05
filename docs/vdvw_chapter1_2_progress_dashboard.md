@@ -19,11 +19,14 @@ real-valued finite-product endpoints is compiled as
 `VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real`,
 with signed consumer
 `VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real`.
-The next theorem-facing batch should consume this in the Theorem 2.4.3
-finite-product centered-supremum endpoint layer.  Closed finite-net/Hoeffding/
-Mills/untruncation/reverse-cofiltration and countable full-subgraph endpoint
-packages should not be reopened unless a final exact statement directly
-consumes them.
+The concrete Theorem 2.4.3 centered-supremum adapter
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_convergesInOuterProbabilityConst`
+is also compiled.  The next theorem-facing batch should move back to the exact
+textbook mismatches: random entropy tail/UI, noncountable/arbitrary-map
+asymptotic measurability, and nonmeasurable envelope-tail clauses.  Closed
+finite-net/Hoeffding/Mills/untruncation/reverse-cofiltration and countable
+full-subgraph endpoint packages should not be reopened unless a final exact
+statement directly consumes them.
 
 ## Status Legend
 

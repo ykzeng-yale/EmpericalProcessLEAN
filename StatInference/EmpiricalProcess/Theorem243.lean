@@ -11,6 +11,7 @@ import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.OuterProbabilityExpectation
 import StatInference.EmpiricalProcess.PMeasurable
 import StatInference.EmpiricalProcess.ThresholdCoding
+import StatInference.EmpiricalProcess.WeakConvergence
 import StatInference.ProbabilityMeasure.BorelCantelli
 import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.Tail
@@ -4553,6 +4554,50 @@ theorem measurable_vdVWWeightedClassSupremum_centered_of_countable
       (fun index hindex =>
         measurable_vdVWWeightedSampleSum weights
           ((hclass index hindex).sub measurable_const))
+
+/--
+Theorem 2.4.3 centered untruncated finite-product endpoints, once proved in
+outer probability, feed the signed bounded-continuous varying-domain weak
+convergence package.
+
+This consumes the Chapter 1 varying-domain Dirac-law bridge for the concrete
+centered empirical-process supremum statistic.  The only extra local inputs
+are the countable/coordinate-measurable hypotheses used to prove measurability
+of the finite-product statistic.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_convergesInOuterProbabilityConst
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (hconv :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        atTop (0 : ℝ)) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains
+      (fun n : ℕ => SampleAt Observation n)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop
+      ⟨Measure.dirac (0 : ℝ), Measure.dirac.isProbabilityMeasure⟩ :=
+  VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real
+    hconv
+    (fun n =>
+      measurable_vdVWWeightedClassSupremum_centered_of_countable
+        (P := P) hcount hclass (fun _ : Fin n => (n : ℝ)⁻¹))
 
 /--
 Countable centered untruncated weighted class suprema are integrable under the
