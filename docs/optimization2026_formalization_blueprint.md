@@ -48,14 +48,17 @@ target the old Theorem 3.4 frontier or the already-built CG substrate.
 `StatInference/Optimization/Theorem58.lean` now proves the AGF Lyapunov
 derivative formula, discharges Lyapunov continuity from the trajectory and
 gradient oracle, and exposes a source-facing Theorem 5.8 rate wrapper.  The
-current active packet is Theorem 5.9.  Since Chewi leaves the strongly-convex
-AGF proof to Exercise 5.3, use the standard Lyapunov route.  The first
-`StatInference/Optimization/Theorem59.lean` anchor now compiles the
-strong-convex friction, momentum-shift Lyapunov vector, Lyapunov energy,
-generic AGF gap derivative, energy-vector derivative, raw Lyapunov derivative,
-and zero-momentum vector identity.  Next simplify the raw derivative to the
-decay inequality, apply the local scalar exponential-decay lemma, and close the
-initial-energy bound before opening the Chapter 6 nonsmooth/projection layer.
+current active packet has closed Theorem 5.9 in source-shaped supplied
+interface form.  Since Chewi leaves the strongly-convex AGF proof to
+Exercise 5.3, `StatInference/Optimization/Theorem59.lean` records the standard
+Lyapunov route: strong-convex friction, momentum-shift Lyapunov vector,
+Lyapunov energy, generic AGF gap derivative, energy-vector derivative, raw
+Lyapunov derivative, derivative decay inequality, scalar exponential-decay
+consumer, zero-momentum initial-energy bound, and the final exponential gap
+wrappers.  The next active packet is Theorem 5.10 discrete AGD around markdown
+line 1219.  Search Chapter 3 for the compiled (3.3)-style one-step inequality
+and reuse existing scalar/telescoping APIs before opening the Chapter 6
+nonsmooth/projection layer.
 
 ## Local Sources
 
