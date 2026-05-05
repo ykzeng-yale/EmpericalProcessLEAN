@@ -154,6 +154,28 @@ expectation implication from
 `log N(η, F_M, L1(P_n)) / n -> 0` in outer probability, or an explicit
 book-facing assumption strong enough to provide it.
 
+2026-05-05 blocker refinement after search: the next non-duplicative
+Theorem 2.4.3 target is not another selected fixed-radius or untruncated
+consumer.  Existing compiled declarations already consume deterministic
+normalized-log bounds through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_bound`,
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_bound`,
+and the raw-log tail reductions above.  Searches over local `StatInference`,
+`StatInference/ProbabilityMeasure`, and pinned mathlib found fixed-domain
+`UniformIntegrable`/Vitali APIs and local varying-domain tail-expectation
+adapters, but no theorem of the false-too-strong shape
+`VdVWConvergesInOuterProbabilityConst Y_n 0 -> tailExpectation_condition Y_n`.
+The exact remaining non-deterministic theorem shape must therefore include a
+real varying-domain uniform-integrability/tail condition, or a structural
+entropy theorem implying it.  Patchable missing primitive:
+for
+`Y_n(sample) = log(cardinality_n(sample,n)+1)/n`, prove measurability,
+integrability, and
+`∀ ε>0, ∃ R≥0, ∀ᶠ n, ∫ 1_{R<Y_n} Y_n dP_n ≤ ε`
+from a named VdV&W/book entropy hypothesis stronger than mere outer
+probability convergence, or prove the structural cardinality bound that lets
+the already compiled deterministic route apply.
+
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the
 non-deterministic entropy route.  New compiled declarations:
