@@ -124,6 +124,24 @@ assumption.  It does not yet close the signed arbitrary-map endpoint, because
 that still needs a null-measurable/outer-inner-gap asymptotic-measurability
 variant for the original statistic rather than only the pushforward law.
 
+2026-05-05 second null-measurable follow-up: the outer/inner-gap half of that
+remaining signed endpoint is now compiled.  New declarations:
+`VdVWMeasurableLowerCover.ofAEMeasurable`,
+`VdVWOuterExpectation_eq_innerExpectation_of_aemeasurable`,
+`VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_aemeasurable`,
+`VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_nullMeasurable`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_nullMeasurable`,
+and
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_nullMeasurable`.
+Search/reuse record: local `VdVWMeasurableCover.ofAEMeasurable` already
+supplied the upper cover; the new lower cover mirrors it using the same
+`AEMeasurable.mk` representative and `toMeasurable` hull.  Pinned mathlib
+supplies `NullMeasurable.aemeasurable`, `Measurable.comp_nullMeasurable`, and
+`lintegral_congr_ae`.  The next missing bridge is now sharper: prove the
+signed positive/negative outer expectation of a null-measurable bounded real
+test equals the ordinary integral/pushforward-law integral, then combine it
+with the already compiled null-measurable Dirac law convergence.
+
 Latest override, 2026-05-05, repository head `633efcc`: the active Codex
 `/goal` object is broad and cannot be edited in place, so this paragraph is
 the operational goal prompt for the next run.  Continue the full Chapter 1-2

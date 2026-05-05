@@ -114,6 +114,17 @@ applies this to centered finite-product suprema under a
 final exact theorem: signed arbitrary-map asymptotic-measurability and the
 book entropy-to-tail/UI implication remain open.
 
+2026-05-05 follow-up: the signed arbitrary-map asymptotic-measurability part
+now has null-measurable constructors.  The new lower-cover primitive
+`VdVWMeasurableLowerCover.ofAEMeasurable` pairs with the existing upper cover
+to prove `VdVWOuterExpectation_eq_innerExpectation_of_aemeasurable`; this feeds
+`VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_nullMeasurable`
+and the common/varying-domain
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous...of_forall_nullMeasurable`
+constructors.  The remaining exact signed endpoint bridge is now the signed
+positive/negative outer-expectation equality for null-measurable bounded real
+tests, not the asymptotic-measurability gap.
+
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
 reverse/cofiltration theorem, finite-cover entropy plumbing, untruncation,

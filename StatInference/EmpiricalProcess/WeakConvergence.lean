@@ -51,6 +51,18 @@ theorem VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_measurable
   simp
 
 /--
+A.e.-measurable nonnegative maps have zero VdV&W nonnegative outer/inner
+expectation gap.
+-/
+theorem VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_aemeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (hT : AEMeasurable T μ) :
+    VdVWNonnegativeOuterInnerExpectationGap μ T = 0 := by
+  unfold VdVWNonnegativeOuterInnerExpectationGap
+  rw [VdVWOuterExpectation_eq_innerExpectation_of_aemeasurable hT]
+  simp
+
+/--
 Signed positive/negative VdV&W outer expectation of a real-valued map.
 
 This is the signed Chapter 1 bridge available from the current nonnegative
@@ -195,6 +207,20 @@ theorem VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_measurabl
     VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_measurable hY.neg.ennreal_ofReal]
 
 /--
+Null-measurable real maps have zero signed positive/negative outer/inner
+expectation gap.
+-/
+theorem VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_nullMeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Y : Ω -> ℝ} (hY : NullMeasurable Y μ) :
+    VdVWSignedBoundedContinuousOuterInnerExpectationGap μ Y = 0 := by
+  simp [VdVWSignedBoundedContinuousOuterInnerExpectationGap,
+    VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_aemeasurable
+      (hY.aemeasurable.ennreal_ofReal),
+    VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_aemeasurable
+      (hY.aemeasurable.neg.ennreal_ofReal)]
+
+/--
 Signed bounded-continuous asymptotic measurability for arbitrary maps.
 
 This is the closest local predicate to the signed part of VdV&W Definition
@@ -232,6 +258,30 @@ theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_measurable
     exact
       VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_measurable
         (f.continuous.measurable.comp (hX i))
+  simpa [hzero] using
+    (tendsto_const_nhds :
+      Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
+
+/--
+Null-measurable maps into a topological measurable state space are signed
+bounded-continuous asymptotically measurable.
+-/
+theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_nullMeasurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (hX : ∀ i, NullMeasurable (X i) (μs i)) :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuous μs X l := by
+  intro f
+  have hzero :
+      (fun i =>
+        VdVWSignedBoundedContinuousOuterInnerExpectationGap (μs i)
+          (fun ω => f (X i ω))) = fun _ => 0 := by
+    funext i
+    exact
+      VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_nullMeasurable
+        (f.continuous.measurable.comp_nullMeasurable (hX i))
   simpa [hzero] using
     (tendsto_const_nhds :
       Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
@@ -362,6 +412,33 @@ theorem
     exact
       VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_measurable
         (f.continuous.measurable.comp (hX i))
+  simpa [hzero] using
+    (tendsto_const_nhds :
+      Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
+
+/--
+Varying-domain null-measurable maps are signed bounded-continuous
+asymptotically measurable.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_nullMeasurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (hX : ∀ i, NullMeasurable (X i) (μs i)) :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
+      Ω μs X l := by
+  intro f
+  have hzero :
+      (fun i =>
+        VdVWSignedBoundedContinuousOuterInnerExpectationGap (μs i)
+          (fun ω => f (X i ω))) = fun _ => 0 := by
+    funext i
+    exact
+      VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_nullMeasurable
+        (f.continuous.measurable.comp_nullMeasurable (hX i))
   simpa [hzero] using
     (tendsto_const_nhds :
       Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))

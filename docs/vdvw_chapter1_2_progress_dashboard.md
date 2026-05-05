@@ -35,6 +35,13 @@ outer-probability convergence to weak convergence of pushforward laws to
 `δ_0`.  Remaining gap: the signed arbitrary-map endpoint still needs a
 null-measurable outer/inner-gap asymptotic-measurability bridge.
 
+2026-05-05 follow-up: that null-measurable asymptotic-measurability bridge is
+now compiled.  The remaining signed endpoint gap is narrower: prove equality
+between the signed positive/negative outer expectation of a null-measurable
+bounded real test and the ordinary/pushforward-law integral, then combine that
+with the null-measurable Dirac-law convergence bridge for the Theorem 2.4.3
+`P`-measurable endpoint.
+
 ## Status Legend
 
 | Status | Meaning |

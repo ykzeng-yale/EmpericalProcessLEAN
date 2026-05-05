@@ -283,6 +283,60 @@ def ofMeasurable {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
   minorizes := fun _ => le_rfl
   maximal_ae := fun _ _ h_minorizes => h_minorizes
 
+/--
+An a.e.-measurable nonnegative map has a VdV&W lower measurable cover.
+
+The measurable modification `hT.mk T` only agrees with `T` almost surely, so
+the lower cover is set to `0` on a measurable hull of the disagreement set.
+This keeps the cover pointwise below `T` while preserving the usual a.e.
+maximality.
+-/
+noncomputable def ofAEMeasurable {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) {T : Ω -> ℝ≥0∞} (hT : AEMeasurable T μ) :
+    VdVWMeasurableLowerCover μ T where
+  toFun := by
+    classical
+    exact fun ω =>
+      if ω ∈ toMeasurable μ {ω | T ω ≠ hT.mk T ω} then 0 else hT.mk T ω
+  measurable_toFun := by
+    classical
+    exact
+      Measurable.ite (measurableSet_toMeasurable μ {ω | T ω ≠ hT.mk T ω})
+        measurable_const hT.measurable_mk
+  minorizes := by
+    classical
+    intro ω
+    by_cases hω : ω ∈ toMeasurable μ {ω | T ω ≠ hT.mk T ω}
+    · simp [hω]
+    · have hnot_bad : ω ∉ {ω | T ω ≠ hT.mk T ω} :=
+        fun hbad => hω (subset_toMeasurable μ {ω | T ω ≠ hT.mk T ω} hbad)
+      have heq : T ω = hT.mk T ω := by
+        by_contra hne
+        exact hnot_bad hne
+      simp [hω, heq]
+  maximal_ae := by
+    classical
+    intro L hL h_minorizes
+    let bad : Set Ω := {ω | T ω ≠ hT.mk T ω}
+    let hull : Set Ω := toMeasurable μ bad
+    have hbad_zero : μ bad = 0 := by
+      have h_eq : ∀ᵐ ω ∂μ, T ω = hT.mk T ω := hT.ae_eq_mk
+      simpa [bad] using (ae_iff.mp h_eq)
+    have hhull_zero : μ hull = 0 := by
+      change μ (toMeasurable μ bad) = 0
+      rw [measure_toMeasurable bad, hbad_zero]
+    have hnot_hull_ae : ∀ᵐ ω ∂μ, ω ∉ hull := by
+      apply ae_iff.mpr
+      simpa using hhull_zero
+    filter_upwards [h_minorizes, hnot_hull_ae] with ω hle hnot_hull
+    have hnot_bad : ω ∉ bad :=
+      fun hbad => hnot_hull (subset_toMeasurable μ bad hbad)
+    have heq : T ω = hT.mk T ω := by
+      by_contra hne
+      exact hnot_bad hne
+    change L ω ≤ (if ω ∈ hull then 0 else hT.mk T ω)
+    simp [hnot_hull, ← heq, hle]
+
 end VdVWMeasurableLowerCover
 
 /--
@@ -734,6 +788,61 @@ theorem VdVWOuterExpectation_eq_lintegral_cover
     exact
       lintegral_mono_ae
         (U.minimal_ae V V.measurable_toFun (ae_of_all μ V.majorizes))
+
+/--
+A.e.-measurable nonnegative maps have equal VdV&W outer and inner
+expectations.
+
+This extends the measurable-map collapse to null-measurable real statistics
+after coercion to `ℝ≥0∞`, using the upper and lower measurable covers built
+from the same a.e.-measurable representative.
+-/
+theorem VdVWOuterExpectation_eq_innerExpectation_of_aemeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (hT : AEMeasurable T μ) :
+    VdVWOuterExpectation μ T = VdVWInnerExpectation μ T := by
+  classical
+  let U : VdVWMeasurableCover μ T :=
+    VdVWMeasurableCover.ofAEMeasurable μ hT
+  let L : VdVWMeasurableLowerCover μ T :=
+    VdVWMeasurableLowerCover.ofAEMeasurable μ hT
+  have hU_ae : U =ᵐ[μ] hT.mk T := by
+    let bad : Set Ω := {ω | T ω ≠ hT.mk T ω}
+    let hull : Set Ω := toMeasurable μ bad
+    have hbad_zero : μ bad = 0 := by
+      have h_eq : ∀ᵐ ω ∂μ, T ω = hT.mk T ω := hT.ae_eq_mk
+      simpa [bad] using (ae_iff.mp h_eq)
+    have hhull_zero : μ hull = 0 := by
+      change μ (toMeasurable μ bad) = 0
+      rw [measure_toMeasurable bad, hbad_zero]
+    have hnot_hull_ae : ∀ᵐ ω ∂μ, ω ∉ hull := by
+      apply ae_iff.mpr
+      simpa using hhull_zero
+    filter_upwards [hnot_hull_ae] with ω hnot_hull
+    change (if ω ∈ hull then ∞ else hT.mk T ω) = hT.mk T ω
+    simp [hnot_hull]
+  have hL_ae : L =ᵐ[μ] hT.mk T := by
+    let bad : Set Ω := {ω | T ω ≠ hT.mk T ω}
+    let hull : Set Ω := toMeasurable μ bad
+    have hbad_zero : μ bad = 0 := by
+      have h_eq : ∀ᵐ ω ∂μ, T ω = hT.mk T ω := hT.ae_eq_mk
+      simpa [bad] using (ae_iff.mp h_eq)
+    have hhull_zero : μ hull = 0 := by
+      change μ (toMeasurable μ bad) = 0
+      rw [measure_toMeasurable bad, hbad_zero]
+    have hnot_hull_ae : ∀ᵐ ω ∂μ, ω ∉ hull := by
+      apply ae_iff.mpr
+      simpa using hhull_zero
+    filter_upwards [hnot_hull_ae] with ω hnot_hull
+    change (if ω ∈ hull then 0 else hT.mk T ω) = hT.mk T ω
+    simp [hnot_hull]
+  calc
+    VdVWOuterExpectation μ T = ∫⁻ ω, U ω ∂μ :=
+      VdVWOuterExpectation_eq_lintegral_cover U
+    _ = ∫⁻ ω, hT.mk T ω ∂μ := lintegral_congr_ae hU_ae
+    _ = ∫⁻ ω, L ω ∂μ := (lintegral_congr_ae hL_ae).symm
+    _ = VdVWInnerExpectation μ T :=
+      (VdVWInnerExpectation_eq_lintegral_lowerCover L).symm
 
 /-- The cover theorem specializes to the measurable-map theorem. -/
 theorem VdVWOuterExpectation_eq_lintegral_of_cover_ofMeasurable
