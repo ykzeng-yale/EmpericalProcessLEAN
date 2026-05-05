@@ -923,6 +923,81 @@ theorem chewi620_matrixPosDef_det_isUnit
     IsUnit Sigma.det :=
   (Matrix.isUnit_iff_isUnit_det (A := Sigma)).mp hSigma.isUnit
 
+/--
+For a positive-definite matrix, the CFC square root conjugates the inverse
+quadratic form to the Euclidean unit quadratic form.  This is the spectral
+square-root identity needed to instantiate the Lemma 6.20 volume model.
+-/
+theorem cfcSqrt_quadratic_inv_of_posDef
+    {A : Matrix ι ι ℝ} (hA : A.PosDef)
+    (y : EuclideanSpace ℝ ι) :
+    inner ℝ (matrixInvShape (CFC.sqrt A) y)
+      (matrixInvShape A⁻¹ (matrixInvShape (CFC.sqrt A) y)) =
+        inner ℝ y y := by
+  let S : Matrix ι ι ℝ := CFC.sqrt A
+  have hA_psd : A.PosSemidef := hA.posSemidef
+  have hS_sq : S * S = A := by
+    simpa [S, pow_two] using
+      (CFC.sq_sqrt A (ha := hA_psd.nonneg))
+  have hS_det_sq : S.det ^ (2 : ℕ) = A.det := by
+    simpa [S] using cfcSqrt_det_sq_of_posSemidef hA_psd
+  have hS_det_ne : S.det ≠ 0 := by
+    intro hzero
+    have hA_det_zero : A.det = 0 := by
+      rw [← hS_det_sq, hzero]
+      norm_num
+    exact (chewi620_matrixPosDef_det_ne_zero hA) hA_det_zero
+  have hS_unit : IsUnit S.det := isUnit_iff_ne_zero.mpr hS_det_ne
+  have hprod :
+      S * (A⁻¹ * S) = 1 := by
+    have hXS : S * (A⁻¹ * S) * S = S := by
+      calc
+        S * (A⁻¹ * S) * S = S * (A⁻¹ * (S * S)) := by
+          rw [Matrix.mul_assoc, ← Matrix.mul_assoc A⁻¹ S S]
+        _ = S * (A⁻¹ * A) := by
+          rw [hS_sq]
+        _ = S * 1 := by
+          rw [Matrix.nonsing_inv_mul A (chewi620_matrixPosDef_det_isUnit hA)]
+        _ = S := by
+          rw [Matrix.mul_one]
+    calc
+      S * (A⁻¹ * S) =
+          (S * (A⁻¹ * S) * S) * S⁻¹ := by
+        exact
+          (Matrix.mul_nonsing_inv_cancel_right
+            (A := S) (B := S * (A⁻¹ * S)) hS_unit).symm
+      _ = S * S⁻¹ := by
+        rw [hXS]
+      _ = 1 := by
+        exact Matrix.mul_nonsing_inv S hS_unit
+  have hS_psd : S.PosSemidef :=
+    Matrix.nonneg_iff_posSemidef.mp (by simp [S])
+  have hS_symm : (S.toEuclideanLin).IsSymmetric :=
+    Matrix.isSymmetric_toEuclideanLin_iff.mpr hS_psd.isHermitian
+  have happ :
+      matrixInvShape S (matrixInvShape A⁻¹ (matrixInvShape S y)) = y := by
+    calc
+      matrixInvShape S (matrixInvShape A⁻¹ (matrixInvShape S y)) =
+          matrixInvShape S (matrixInvShape (A⁻¹ * S) y) := by
+        rw [matrixInvShape_mul]
+      _ = matrixInvShape (S * (A⁻¹ * S)) y := by
+        rw [← matrixInvShape_mul]
+      _ = y := by
+        rw [hprod, matrixInvShape_one]
+  calc
+    inner ℝ (matrixInvShape (CFC.sqrt A) y)
+        (matrixInvShape A⁻¹ (matrixInvShape (CFC.sqrt A) y)) =
+        inner ℝ (matrixInvShape S y)
+          (matrixInvShape A⁻¹ (matrixInvShape S y)) := by
+      rfl
+    _ =
+        inner ℝ y
+          (matrixInvShape S (matrixInvShape A⁻¹ (matrixInvShape S y))) := by
+      simpa [matrixInvShape] using
+        hS_symm y (matrixInvShape A⁻¹ (matrixInvShape S y))
+    _ = inner ℝ y y := by
+      rw [happ]
+
 /-- The nonsingular inverse of a positive-definite matrix is positive definite. -/
 theorem chewi620_matrixPosDef_inv
     {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
@@ -2196,6 +2271,50 @@ theorem chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models
       (currentRoot := currentRoot) (nextRoot := nextRoot)
       (baseSet := unitBall)
       hcurrentRoot_det_sq hnextRoot_det_sq hvol_image hvolNext_image
+
+/--
+Displayed-matrix Lemma 6.20 step certificate with the volume model
+instantiated by mathlib's CFC square roots.  The only remaining structural
+input is positive-definiteness of Chewi's displayed next forward-shape matrix.
+-/
+theorem chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    {center p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    (hnextPosDef :
+      (chewi620DisplayedShapeUpdate d Sigma p).PosDef)
+    {vol volNext : ℝ}
+    (hvol :
+      vol =
+        MeasureTheory.volume.real
+          (ellipsoidSet center (matrixInvShape Sigma⁻¹)))
+    (hvolNext :
+      volNext =
+        MeasureTheory.volume.real
+          (ellipsoidSet
+            (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+              (inner ℝ p (matrixInvShape Sigma p)))
+            (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹))) :
+    IsEllipsoidStepCertificate center
+      (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+        (inner ℝ p (matrixInvShape Sigma p)))
+      (matrixInvShape Sigma⁻¹)
+      (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹)
+      p vol volNext (ellipsoidVolumeRatio d) := by
+  exact
+    chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models
+      (d := d) hd hcard hSigma (T := T) hT_symm
+      (center := center) (p := p) hp hT_sq
+      (currentRoot := CFC.sqrt Sigma)
+      (nextRoot := CFC.sqrt (chewi620DisplayedShapeUpdate d Sigma p))
+      (cfcSqrt_det_sq_of_posSemidef hSigma.posSemidef)
+      (cfcSqrt_det_sq_of_posSemidef hnextPosDef.posSemidef)
+      (cfcSqrt_quadratic_inv_of_posDef hSigma)
+      (cfcSqrt_quadratic_inv_of_posDef hnextPosDef)
+      hvol hvolNext
 
 end EuclideanMatrix
 

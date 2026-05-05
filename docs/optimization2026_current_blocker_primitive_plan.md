@@ -199,7 +199,10 @@ the determinant-volume bridge packet
 plus the square-root image-model packet
 `ellipsoidSet_eq_matrix_image_closedBall_of_quadratic`,
 `cfcSqrt_det_sq_of_posSemidef`, and
-`chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`.
+`chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`, plus
+the CFC-root instantiation packet
+`cfcSqrt_quadratic_inv_of_posDef` and
+`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef`.
 The determinant/scalar `hvolume` bridge, inverse-shape left-inverse reduction,
 normalized forward/inverse cancellation, transport reduction, rank-one action
 expansion, displayed-shape action expansion, square-root current/rank-inner
@@ -207,9 +210,10 @@ transport, concrete displayed-to-normalized forward-shape transport theorem, and
 matrix-backed translated real image-volume scaling bridge are verified in
 focused Lean; the displayed next-shape matrix certificate, the generic
 determinant-square-to-`hvolume` theorem, the translated closed-unit-ball image
-model, and the displayed-volume certificate wrapper now compile, so the next run
-must not spend theorem time reproving or repackaging those cores unless they are
-directly needed inside the final CFC/spectral square-root theorem.
+model, the displayed-volume certificate wrapper, and the CFC-root quadratic
+instantiation now compile, so the next run must not spend theorem time reproving
+or repackaging those cores unless they are directly needed inside the final
+rank-one positivity theorem.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
@@ -233,14 +237,19 @@ generic determinant-volume model already feeds
 displayed ellipsoid-volume wrapper now reduces the geometric volume statement
 to supplied square-root quadratic identities and determinant-square identities
 via `chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`.
-The next target is the true CFC/spectral square-root theorem: instantiate
-`currentRoot := CFC.sqrt Sigma`, prove the quadratic identity
-`<sqrt Sigma y, Sigma⁻¹ sqrt Sigma y> = <y,y>`, use
-`cfcSqrt_det_sq_of_posSemidef` for the determinant square, and then prove the
-same facts for `chewi620DisplayedShapeUpdate d Sigma p` after establishing the
-needed PosSemidef/PosDef hypothesis.  If the full CFC packaging balloons, record
-the exact missing `CFC.sq_sqrt`, `Matrix.PosSemidef.inv_sqrt`, commutation, or
-matrix-order API and prove the smallest spectral certificate that removes it.
+The CFC square-root theorem now instantiates both current and next roots from a
+positive-definite matrix through
+`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef`.  The next target
+is the true displayed next-shape positivity theorem:
+`(chewi620DisplayedShapeUpdate d Sigma p).PosDef`.  Prove it from the
+rank-one quadratic display
+`Σ - (2/(d+1)) (Σp)(Σp)^T / <p,Σp>` using a matrix Cauchy-Schwarz inequality
+for the `Σ`-inner product, then scale by the positive factor
+`d^2/(d^2-1)`.  Search first for mathlib `Matrix.PosDef`/`PosSemidef`
+rank-one, Schur-complement, and Cauchy-Schwarz APIs; if no direct API fits,
+formalize the quadratic-form proof with `Matrix.PosDef.of_dotProduct_mulVec_pos`,
+`matrixInvShape_quadratic_eq_dotProduct`,
+`chewi620_displayedShapeUpdateCore_action`, and the local rank-one collapse.
 The raw square-root adjoint identity, normalized cut
 `hcut` bridge, `Sigma.PosDef` invertibility/cancellation layer, pullback
 `hnext` certificate, current `Σ⁻¹` ellipsoid identification, displayed center
@@ -301,12 +310,15 @@ measure-scaling theorem.  The dependency order is:
    volume wrapper now compiles as
    `chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`.
    Do not redo the set-image/closed-ball packaging.
-5. Instantiate the supplied square-root inputs with mathlib CFC roots: prove
-   the current and next quadratic identities and determinant-square facts using
-   `CFC.sq_sqrt`, `Matrix.PosSemidef.inv_sqrt`, and
-   `Matrix.PosSemidef.det_sqrt`/`cfcSqrt_det_sq_of_posSemidef`; first prove or
-   isolate the needed PosSemidef/PosDef fact for the displayed next shape.
-6. Package the exact one-step Lemma 6.20 certificate, then promote it to the
+5. The supplied square-root inputs are now instantiated for any positive-definite
+   matrix using `cfcSqrt_quadratic_inv_of_posDef`,
+   `cfcSqrt_det_sq_of_posSemidef`, and
+   `chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef`.  Do not redo
+   the CFC root algebra.
+6. Prove the displayed next-shape positivity theorem
+   `(chewi620DisplayedShapeUpdate d Sigma p).PosDef`, likely by a direct
+   quadratic-form proof plus positive scalar scaling.
+7. Package the exact one-step Lemma 6.20 certificate, then promote it to the
    ellipsoid trajectory/rate wrapper.
 
 The current matrix quadratic, positive denominator, and normalized cut
