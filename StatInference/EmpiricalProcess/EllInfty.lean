@@ -111,6 +111,13 @@ theorem finiteRestrict_apply (I : Finset T) (x : VdVWEllInfty T) (t : I) :
     finiteRestrict I x t = x t :=
   rfl
 
+@[simp]
+theorem finiteRestrict_processMap_apply
+    (I : Finset T) (X : Ω -> T -> ℝ) (hX : IsBoundedSamplePath X)
+    (ω : Ω) (t : I) :
+    finiteRestrict I (processMap X hX ω) t = X ω t :=
+  rfl
+
 /-- The finite-dimensional coordinate restriction is continuous. -/
 theorem continuous_finiteRestrict (I : Finset T) :
     Continuous (finiteRestrict (T := T) I) := by

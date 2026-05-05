@@ -274,6 +274,93 @@ theorem vdVW148_ellInfty_finiteDimensional_tendstoInDistribution
   hX.continuous_comp (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
 
 /--
+Finite-dimensional law of a bounded raw process, routed through its
+`ell_infty(T)` process law.  This is the raw-process version of the forward
+FDD handoff used in VdV&W 1.4.8.
+-/
+theorem vdVW148_boundedProcess_finiteDimensional_hasLaw
+    [MeasurableSpace Ω] [MeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    {X : Ω -> T -> ℝ} (hbounded : VdVWEllInfty.IsBoundedSamplePath X)
+    {P : Measure Ω} {μ : Measure (VdVWEllInfty T)}
+    (hX : HasLaw (VdVWEllInfty.processMap X hbounded) μ P)
+    (I : Finset T)
+    [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)] :
+    HasLaw
+      (fun ω => I.restrict (X ω))
+      (μ.map (VdVWEllInfty.finiteRestrict I))
+      P := by
+  simpa [Function.comp_def, VdVWEllInfty.finiteRestrict, VdVWEllInfty.processMap]
+    using
+      (vdVW148_ellInfty_finiteDimensional_hasLaw
+        (T := T) (Ω := Ω) (X := VdVWEllInfty.processMap X hbounded)
+        (P := P) (μ := μ) hX I)
+
+/--
+Identical `ell_infty(T)` laws of bounded raw processes imply identical
+finite-dimensional distributions of the original coordinate processes.
+-/
+theorem vdVW148_boundedProcess_finiteDimensional_identDistrib
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    {X : Ω -> T -> ℝ} {Y : Ω' -> T -> ℝ}
+    (hXbounded : VdVWEllInfty.IsBoundedSamplePath X)
+    (hYbounded : VdVWEllInfty.IsBoundedSamplePath Y)
+    {P : Measure Ω} {Q : Measure Ω'}
+    (hXY : IdentDistrib
+      (VdVWEllInfty.processMap X hXbounded)
+      (VdVWEllInfty.processMap Y hYbounded) P Q)
+    (I : Finset T)
+    [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)] :
+    IdentDistrib
+      (fun ω => I.restrict (X ω))
+      (fun ω => I.restrict (Y ω))
+      P Q := by
+  simpa [Function.comp_def, VdVWEllInfty.finiteRestrict, VdVWEllInfty.processMap]
+    using
+      (vdVW148_ellInfty_finiteDimensional_identDistrib
+        (T := T) (Ω := Ω) (Ω' := Ω')
+        (X := VdVWEllInfty.processMap X hXbounded)
+        (Y := VdVWEllInfty.processMap Y hYbounded)
+        (P := P) (Q := Q) hXY I)
+
+/--
+Raw-process form of the forward FDD implication: convergence in distribution
+of the associated bounded `ell_infty(T)` processes implies convergence in
+distribution of every finite coordinate restriction.
+-/
+theorem vdVW148_boundedProcess_finiteDimensional_tendstoInDistribution
+    {ι : Type*} {Ω : ι -> Type*} {Ω' : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    {X : (i : ι) -> Ω i -> T -> ℝ} {Z : Ω' -> T -> ℝ}
+    (hXbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    {l : Filter ι}
+    (hX : TendstoInDistribution
+      (fun i => VdVWEllInfty.processMap (X i) (hXbounded i))
+      l
+      (VdVWEllInfty.processMap Z hZbounded)
+      μ μ')
+    (I : Finset T)
+    [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)] :
+    TendstoInDistribution
+      (fun i ω => I.restrict (X i ω))
+      l
+      (fun ω => I.restrict (Z ω))
+      μ μ' := by
+  simpa [Function.comp_def, VdVWEllInfty.finiteRestrict, VdVWEllInfty.processMap]
+    using
+      (vdVW148_ellInfty_finiteDimensional_tendstoInDistribution
+        (T := T) (Ω := Ω) (Ω' := Ω') (μ := μ) (μ' := μ')
+        (X := fun i => VdVWEllInfty.processMap (X i) (hXbounded i))
+        (Z := VdVWEllInfty.processMap Z hZbounded) (l := l) hX I)
+
+/--
 Random-variable finite-index converse for `ell_infty(T)`: if `T` is finite,
 convergence in distribution after the finite product identification implies
 convergence in distribution of the original `ell_infty(T)`-valued variables.

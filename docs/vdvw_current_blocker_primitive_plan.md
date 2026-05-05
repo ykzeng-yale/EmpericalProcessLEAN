@@ -5495,3 +5495,21 @@ The second wrapper discharges mathlib's eventual finite-measure total-mass
 bound with probability total mass one.  This completes the current
 mathlib-backed finite-dimensional tightness wrapper batch; the remaining
 tightness blocker is still exact arbitrary-map/asymptotic tightness.
+
+2026-05-05 raw bounded-process FDD follow-up: local search for
+`processMap.*finiteDimensional`, `boundedProcess`, and raw-process FDD
+wrappers found no existing VdV&W bridge beyond the already compiled
+`ell_infty(T)`-valued declarations.  `EllInfty.lean` now adds the coordinate
+simplification
+`VdVWEllInfty.finiteRestrict_processMap_apply`, and
+`FiniteDimensional.lean` adds
+`vdVW148_boundedProcess_finiteDimensional_hasLaw`,
+`vdVW148_boundedProcess_finiteDimensional_identDistrib`, and
+`vdVW148_boundedProcess_finiteDimensional_tendstoInDistribution`.  These route
+bounded raw sample-path processes through `VdVWEllInfty.processMap` into the
+existing finite-dimensional law, identical-distribution, and convergence-in-
+distribution wrappers.  This removes a small Chapter 1 process/FDD API gap
+without claiming the arbitrary-index 1.4.8 converse; the remaining process
+blockers are still separability/asymptotic tightness, arbitrary-map
+asymptotic measurability/outer-cover weak convergence, and the full FDD
+weak-convergence converse.

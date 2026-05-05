@@ -130,6 +130,17 @@ uses only unit-vector projection tails, and
 uses real-valued measure tails with the probability total-mass bound discharged
 locally.  This completes the current mathlib-backed finite-dimensional
 inner-product tightness wrapper batch.
+
+2026-05-05 raw bounded-process FDD follow-up: the finite-dimensional
+`ell_infty(T)` process substrate now accepts raw bounded sample-path processes
+directly.  `EllInfty.lean` adds
+`VdVWEllInfty.finiteRestrict_processMap_apply`, and
+`FiniteDimensional.lean` adds
+`vdVW148_boundedProcess_finiteDimensional_hasLaw`,
+`vdVW148_boundedProcess_finiteDimensional_identDistrib`, and
+`vdVW148_boundedProcess_finiteDimensional_tendstoInDistribution`.  These are
+forward FDD wrappers through `VdVWEllInfty.processMap`; arbitrary-index
+separability/asymptotic-tightness and FDD-converse primitives remain open.
 Direct null/a.e.-measurable constructors are now also available for the
 lower-shifted/canonical shifted bounded-continuous predicates in both
 common-domain and varying-domain forms.  The direct signed positive/negative

@@ -1683,6 +1683,19 @@ independence to get weak convergence of the joint laws to the product of the
 two limiting laws.  The nonmeasurable arbitrary-map/asymptotic-independence
 version remains a deeper Chapter 1 primitive.
 
+2026-05-05 raw bounded-process FDD follow-up: the VdV&W 1.4.8 forward FDD
+substrate now includes raw bounded sample-path processes, not only already
+packaged `ell_infty(T)` random elements.  `EllInfty.lean` exposes
+`VdVWEllInfty.finiteRestrict_processMap_apply`, while
+`FiniteDimensional.lean` adds the raw-process law, identical-distribution, and
+convergence-in-distribution wrappers
+`vdVW148_boundedProcess_finiteDimensional_hasLaw`,
+`vdVW148_boundedProcess_finiteDimensional_identDistrib`, and
+`vdVW148_boundedProcess_finiteDimensional_tendstoInDistribution`.  This closes
+the forward raw-process bridge and leaves the exact arbitrary-index FDD
+converse, separability, asymptotic tightness, and nonmeasurable arbitrary-map
+weak-convergence primitives as the real Chapter 1 blockers.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
