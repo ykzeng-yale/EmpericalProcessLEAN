@@ -47,19 +47,26 @@ handoff.
 
 ## Active Blocker
 
-Current main-line target: remove the remaining exact-textbook mismatches for
-Theorem 2.4.3 after the `P`-measurable/arbitrary-map signed endpoint gap has
-compiled.  Do not reopen the closed Theorem 2.4.3
-finite-net/Hoeffding/Mills/untruncation/reverse-cofiltration, full-subgraph,
-measurable/null-measurable signed weak-convergence, asymptotic-measurability,
-or Dirac-law endpoint packages unless a final exact statement directly
-consumes them.
+Current main-line target: finish VdV&W Chapters 1-2 by dependency order, using
+the already compiled Theorem 2.4.3 endpoint infrastructure instead of rebuilding
+it.  The highest-value immediate Chapter 1 closure is the finite-index
+`ell_infty(T)`/FDD converse made possible by
+`VdVWEllInfty.finiteContinuousLinearEquiv`; it is a self-contained process-law
+foundation and a clean stepping stone toward the exact VdV&W 1.4.8
+finite-dimensional criterion.  The highest-value Theorem 2.4.3 blocker remains
+the genuine book random-entropy mismatch: deriving a tail/UI, ordinary-mean, or
+deterministic structural cardinality input from
+`log N(η, F_M, L1(P_n)) = o_P^*(n)` for fixed positive `η`.  Do not reopen the
+closed Theorem 2.4.3 finite-net/Hoeffding/Mills/untruncation/
+reverse-cofiltration, full-subgraph, measurable/null-measurable signed
+weak-convergence, asymptotic-measurability, or Dirac-law endpoint packages
+unless a new exact statement directly consumes them.
 
 ## Current `/goal` Target
 
-Authoritative operational prompt, 2026-05-05, after the verified
-varying-domain shifted asymptotic-measurability bridge: finish VdV&W Chapters
-1-2 in Lean by dependency order, with
+Authoritative operational prompt, 2026-05-05 after verified head `bcf840b`
+(`Add finite ell_infty product equivalence`): finish VdV&W Chapters 1-2 in
+Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -104,11 +111,26 @@ with its null-measurable variant
 and the Theorem 2.4.3 `P`-measurable law consumer
 `VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pMeasurableClass_convergesInOuterProbabilityConst`
 plus the signed endpoint consumer
-`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pMeasurableClass_convergesInOuterProbabilityConst`.
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pMeasurableClass_convergesInOuterProbabilityConst`;
+the `ell_infty(T)` substrate in `EllInfty.lean`, including
+`VdVWEllInfty.ofBounded`, coordinate norm/evaluation wrappers,
+bounded-sample-path process maps, finite-coordinate restrictions, the forward
+FDD weak-convergence/HasLaw/IdentDistrib/TendstoInDistribution wrappers, and
+the finite-index product identification
+`VdVWEllInfty.finiteContinuousLinearEquiv`.
 
 Next high-capacity proof batches, in order:
 
-1. Close or precisely isolate the exact Theorem 2.4.3 random-entropy mismatch.
+1. Prove the finite-index `ell_infty(T)` FDD converse layer using
+   `VdVWEllInfty.finiteContinuousLinearEquiv`.  Target shape: if `T` is finite,
+   weak convergence after pushing `ProbabilityMeasure (VdVWEllInfty T)` through
+   the finite product equivalence implies weak convergence of the original
+   `ell_infty(T)` laws.  Search first for reusable `ProbabilityMeasure.map`,
+   `Measure.map_map`, homeomorphism/continuous-linear-equivalence pushforward,
+   and probability-measure extensionality APIs.  This closes only the
+   finite-index converse; arbitrary-index VdV&W 1.4.8 still needs separability,
+   tightness, asymptotic measurability, and process primitives.
+2. Close or precisely isolate the exact Theorem 2.4.3 random-entropy mismatch.
    The finite-net/Hoeffding/Mills, selected fixed-radius and inverse-radius,
    untruncation, signed endpoint, full-subgraph, finite-class, Lemma 2.4.5
    reverse/cofiltration, deterministic normalized-log, raw tail/UI, and L1
@@ -119,7 +141,7 @@ Next high-capacity proof batches, in order:
    mean-convergence input consumed by those compiled routes.  Do not add
    another endpoint or selected-package wrapper unless it directly consumes a
    new theorem hypothesis.
-2. Search and try the strongest honest entropy closure first:
+3. Search and try the strongest honest entropy closure first:
    prove a structural varying-domain uniform-integrability theorem for
    `Y_n = log(cardinality_n + 1) / n`, derive ordinary mean convergence of
    `Y_n`, or instantiate the compiled deterministic normalized-log route from
@@ -127,7 +149,7 @@ Next high-capacity proof batches, in order:
    or polynomial growth.  Bare outer-probability convergence of `Y_n` is not
    enough for tail expectation; do not assert that implication without an
    added UI/tail or structural bound hypothesis.
-3. In parallel only when it directly supports exact Chapter 1-2 statements or
+4. In parallel only when it directly supports exact Chapter 1-2 statements or
    Theorem 2.4.3 endpoints, close small reusable arbitrary-map foundation
    gaps that are already search-isolated.  The signed weak-convergence
    filter-refinement package is now closed; do not repeat it.  The next
@@ -136,7 +158,7 @@ Next high-capacity proof batches, in order:
    asymptotic-tightness/asymptotic-independence, FDD converse, or exact
    separability/`P`-measurable class support beyond the current signed
    bounded-continuous package.
-4. If the book random-entropy route remains blocked after real Lean/search
+5. If the book random-entropy route remains blocked after real Lean/search
    attempts, move immediately to theorem-critical exactness gaps instead of
    rewrapping closed Theorem 2.4.3 layers.  The first fallback is a precise
    named final-current Theorem 2.4.3/Lemma 2.4.5 statement from the strongest
@@ -147,7 +169,7 @@ Next high-capacity proof batches, in order:
    require them, and removal of remaining countability/coordinate-
    measurability assumptions through the `VdVWPMeasurableClass` and
    pointwise-separable APIs.
-5. After Theorem 2.4.3 is exact or its remaining hypotheses are named as
+6. After Theorem 2.4.3 is exact or its remaining hypotheses are named as
    honest primitives, advance in textbook dependency order through Chapter 2:
    Section 2.2 covering/packing/entropy results, Section 2.3 measurable-class
    and separability lemmas, then bracketing/GC, Orlicz/maximal inequalities,

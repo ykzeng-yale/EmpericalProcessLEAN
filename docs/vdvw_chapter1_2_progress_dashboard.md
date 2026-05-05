@@ -13,27 +13,31 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current `/goal` target override, 2026-05-05 after the verified
-varying-domain shifted asymptotic-measurability bridge: closed
+Current `/goal` target override, 2026-05-05 after verified head `bcf840b`
+(`Add finite ell_infty product equivalence`): closed
 finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
 Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
 ordinary-mean/L1 normalized-log packages should not be rebuilt.  The
-varying-domain signed continuous-mapping and signed filter-refinement closures
-are also compiled.  The
-current theorem-facing gap is the exact book random-entropy bridge for
-Theorem 2.4.3: derive a real tail/UI, uniform-integrability, deterministic
-structural cardinality, or ordinary mean-convergence input from
+varying-domain signed continuous-mapping and signed filter-refinement closures,
+the `ell_infty(T)` process-space substrate, finite-coordinate law wrappers,
+and finite-index product equivalence are also compiled.  The next
+self-contained Chapter 1 proof target is the finite-index `ell_infty(T)` FDD
+converse using `VdVWEllInfty.finiteContinuousLinearEquiv`; this should close
+only the finite-index converse layer and must not overclaim the arbitrary-index
+VdV&W 1.4.8 theorem.  The current Theorem 2.4.3 gap remains the exact book
+random-entropy bridge: derive a real tail/UI, uniform-integrability,
+deterministic structural cardinality, or ordinary mean-convergence input from
 `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η > 0`, then consume the
 already compiled selected finite-net routes.  Bare outer-probability
 convergence of normalized random entropy should not be treated as tail/UI.  If
-that bridge is blocked after real Lean/search attempts, the next `/goal` batch
-should produce the cleanest final-current Theorem 2.4.3/Lemma 2.4.5 statement
-from the full-subgraph/structural packages and classify each stronger
-assumption before moving to deeper theorem-critical Chapter 1-2 arbitrary-map,
-nonmeasurable envelope-tail, asymptotic-tightness/FDD, or separability
-primitives.  The VdV&W 1.4.1 product Borel-space equality is also now
+that bridge is blocked after real Lean/search attempts, move to theorem-
+critical Chapter 1-2 primitives rather than adding more endpoint wrappers:
+arbitrary-map/nonmeasurable outer-cover weak convergence, asymptotic
+tightness/independence, arbitrary-index FDD converse, and separability/
+`P`-measurable class support.  The VdV&W 1.4.1 product Borel-space equality is
+also now
 compiled as `vdVW141_prod_borel_eq_product_borel`; do not repeat that wrapper.
 The signed arbitrary-map asymptotic-measurability layer now also implies the
 lower-shifted/canonical shifted predicates through
