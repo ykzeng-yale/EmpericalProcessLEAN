@@ -26,6 +26,15 @@ assumptions through the Chapter 1 arbitrary-map/P-measurable foundations, and
 add nonmeasurable envelope-tail outer-cover clauses only if exact statements
 need them.
 
+2026-05-05 proof update: the `P`-measurable/null-measurable side of that
+countability mismatch now has a compiled law-convergence bridge.  The new
+Theorem 2.4.3 consumer
+`VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pMeasurableClass_convergesInOuterProbabilityConst`
+promotes centered finite-product suprema from `VdVWPMeasurableClass` plus
+outer-probability convergence to weak convergence of pushforward laws to
+`δ_0`.  Remaining gap: the signed arbitrary-map endpoint still needs a
+null-measurable outer/inner-gap asymptotic-measurability bridge.
+
 ## Status Legend
 
 | Status | Meaning |

@@ -950,6 +950,40 @@ theorem
     (μs := μs) (X := X) hX hweak (fun _ => rfl)
 
 /--
+Varying-domain convergence in VdV&W outer probability is invariant under
+sample-wise almost-everywhere equality.
+
+This is the basic bridge needed when a textbook `P`-measurable object is only
+available as a null-measurable statistic on the completed product space: it may
+be replaced by an a.e.-equal measurable representative without changing the
+outer-probability convergence assertion.
+-/
+theorem VdVWConvergesInOuterProbabilityConst.congr_ae
+    {ι : Type w} {Ω : ι -> Type u} {D : Type v}
+    [PseudoMetricSpace D] [∀ i, MeasurableSpace (Ω i)]
+    {μs : (i : ι) -> Measure (Ω i)}
+    {X Y : (i : ι) -> Ω i -> D} {l : Filter ι} {c : D}
+    (hXY : ∀ i, X i =ᵐ[μs i] Y i)
+    (hX_outer :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μs X l c) :
+    VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μs Y l c := by
+  intro ε hε
+  have hprob :
+      (fun i =>
+        @VdVWOuterProbability (Ω i) inferInstance (μs i)
+          {ω | ε < dist (Y i ω) c}) =
+      (fun i =>
+        @VdVWOuterProbability (Ω i) inferInstance (μs i)
+          {ω | ε < dist (X i ω) c}) := by
+    funext i
+    unfold VdVWOuterProbability
+    exact measure_congr ((hXY i).mono fun ω hω => by
+      apply propext
+      change (ε < dist (Y i ω) c) ↔ (ε < dist (X i ω) c)
+      rw [← hω])
+  simpa [hprob] using hX_outer ε hε
+
+/--
 Real-valued varying-domain convergence in VdV&W outer probability to a
 constant implies weak convergence of the pushforward laws to the Dirac law.
 
@@ -1083,6 +1117,67 @@ theorem
     Tendsto (fun i => ∫ s, f s ∂(Measure.map (X i) (μs i))) l
       (𝓝 (∫ s, f s ∂(Measure.dirac c : Measure ℝ)))
   simpa [hsource_map, htarget_dirac] using hsource_tendsto
+
+/--
+Null-measurable real-valued varying-domain convergence in VdV&W outer
+probability to a constant implies weak convergence of the pushforward laws to
+the Dirac law.
+
+The proof replaces each statistic by its mathlib `AEMeasurable.mk`
+representative, uses `VdVWConvergesInOuterProbabilityConst.congr_ae`, and then
+transports the pushforward laws back by `Measure.map_congr`.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real_of_nullMeasurable
+    {ι : Type w} {Ω : ι -> Type u}
+    [∀ i, MeasurableSpace (Ω i)]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, IsProbabilityMeasure (μs i)]
+    {X : (i : ι) -> Ω i -> ℝ} {l : Filter ι} {c : ℝ}
+    (hX_outer :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μs X l c)
+    (hX_null : ∀ i, NullMeasurable (X i) (μs i)) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun i =>
+        ⟨Measure.map (X i) (μs i),
+          Measure.isProbabilityMeasure_map ((hX_null i).aemeasurable)⟩)
+      l
+      ⟨Measure.dirac c, Measure.dirac.isProbabilityMeasure⟩ := by
+  classical
+  let Xmk : (i : ι) -> Ω i -> ℝ :=
+    fun i => ((hX_null i).aemeasurable).mk (X i)
+  have hXmk_meas : ∀ i, Measurable (Xmk i) := by
+    intro i
+    exact ((hX_null i).aemeasurable).measurable_mk
+  have hX_to_mk : ∀ i, X i =ᵐ[μs i] Xmk i := by
+    intro i
+    exact ((hX_null i).aemeasurable).ae_eq_mk
+  have hXmk_outer :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μs
+        Xmk l c :=
+    VdVWConvergesInOuterProbabilityConst.congr_ae hX_to_mk hX_outer
+  have hweak_mk :
+      VdVWWeakConvergenceProbabilityMeasures
+        (fun i =>
+          ⟨Measure.map (Xmk i) (μs i),
+            Measure.isProbabilityMeasure_map (hXmk_meas i).aemeasurable⟩)
+        l
+        ⟨Measure.dirac c, Measure.dirac.isProbabilityMeasure⟩ :=
+    VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real
+      hXmk_outer hXmk_meas
+  have hprob_eq :
+      (fun i =>
+        (⟨Measure.map (Xmk i) (μs i),
+          Measure.isProbabilityMeasure_map (hXmk_meas i).aemeasurable⟩ :
+            ProbabilityMeasure ℝ)) =
+      (fun i =>
+        (⟨Measure.map (X i) (μs i),
+          Measure.isProbabilityMeasure_map ((hX_null i).aemeasurable)⟩ :
+            ProbabilityMeasure ℝ)) := by
+    funext i
+    ext s hs
+    change Measure.map (Xmk i) (μs i) s = Measure.map (X i) (μs i) s
+    rw [Measure.map_congr (hX_to_mk i)]
+  simpa [hprob_eq] using hweak_mk
 
 /--
 Real-valued varying-domain convergence in outer probability to a constant

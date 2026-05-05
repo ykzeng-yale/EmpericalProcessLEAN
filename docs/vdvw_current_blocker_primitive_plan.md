@@ -109,6 +109,21 @@ Older entries below are historical proof-state logs.  Use the authoritative
 paragraph above for the next `/goal` run unless a later verified commit updates
 it.
 
+2026-05-05 proof follow-up: the first `NullMeasurable` bridge for the
+countability/P-measurability mismatch is now compiled.  New declarations:
+`VdVWConvergesInOuterProbabilityConst.congr_ae`,
+`VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real_of_nullMeasurable`,
+and the Theorem 2.4.3 consumer
+`VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pMeasurableClass_convergesInOuterProbabilityConst`.
+Search/reuse record: pinned mathlib supplies
+`MeasureTheory.NullMeasurable.aemeasurable`, `AEMeasurable.mk`,
+`Measure.map_congr`, `Measure.isProbabilityMeasure_map`, and the existing
+local measurable Dirac bridge.  This closes the law-convergence layer for
+`P`-measurable centered finite-product suprema without a countability
+assumption.  It does not yet close the signed arbitrary-map endpoint, because
+that still needs a null-measurable/outer-inner-gap asymptotic-measurability
+variant for the original statistic rather than only the pushforward law.
+
 Latest override, 2026-05-05, repository head `633efcc`: the active Codex
 `/goal` object is broad and cannot be edited in place, so this paragraph is
 the operational goal prompt for the next run.  Continue the full Chapter 1-2

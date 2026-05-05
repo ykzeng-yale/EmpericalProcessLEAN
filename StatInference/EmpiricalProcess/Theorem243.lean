@@ -4600,6 +4600,55 @@ theorem
         (P := P) hcount hclass (fun _ : Fin n => (n : ℝ)⁻¹))
 
 /--
+`P`-measurable centered untruncated finite-product endpoints feed weak
+convergence of their pushforward laws to the Dirac law once the corresponding
+outer-probability convergence is known.
+
+Compared with
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_convergesInOuterProbabilityConst`,
+this theorem uses the Definition 2.3.3-style `VdVWPMeasurableClass` hypothesis
+for the centered class and therefore avoids a countability assumption at the
+law-convergence layer.  The signed arbitrary-map/asymptotic-measurability
+endpoint still requires the separate outer/inner-gap primitive.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pMeasurableClass_convergesInOuterProbabilityConst
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hpmeas_centered :
+      VdVWPMeasurableClass P indexClass
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P))
+    (hconv :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        atTop (0 : ℝ)) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun n : ℕ =>
+        ⟨Measure.map
+          (fun sample =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+          (vdVWProductMeasure P n),
+          Measure.isProbabilityMeasure_map
+            ((hpmeas_centered n (fun _ : Fin n => (n : ℝ)⁻¹)).aemeasurable)⟩)
+      atTop
+      ⟨Measure.dirac (0 : ℝ), Measure.dirac.isProbabilityMeasure⟩ :=
+  VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real_of_nullMeasurable
+    hconv
+    (fun n => hpmeas_centered n (fun _ : Fin n => (n : ℝ)⁻¹))
+
+/--
 Countable centered untruncated weighted class suprema are integrable under the
 empirical product law when the class has an integrable envelope.
 -/

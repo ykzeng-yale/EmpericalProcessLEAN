@@ -100,6 +100,20 @@ assumptions through Chapter 1 arbitrary-map and `P`-measurable foundations, and
 add nonmeasurable envelope-tail outer-cover clauses only when required by an
 exact Chapter 1-2 theorem statement.
 
+2026-05-05 proof update: the countability-to-`P`-measurability route has a new
+compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`
+and
+`VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real_of_nullMeasurable`
+use mathlib `NullMeasurable.aemeasurable`, measurable representatives, and
+`Measure.map_congr` to replace ordinary measurability by null-measurability for
+real-valued varying-domain Dirac-law weak convergence.  The Theorem 2.4.3
+consumer
+`VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pMeasurableClass_convergesInOuterProbabilityConst`
+applies this to centered finite-product suprema under a
+`VdVWPMeasurableClass` hypothesis.  This is a theorem-facing closure, not the
+final exact theorem: signed arbitrary-map asymptotic-measurability and the
+book entropy-to-tail/UI implication remain open.
+
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
 reverse/cofiltration theorem, finite-cover entropy plumbing, untruncation,
