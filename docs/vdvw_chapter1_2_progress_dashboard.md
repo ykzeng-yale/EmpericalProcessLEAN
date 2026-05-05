@@ -1267,3 +1267,9 @@ It converts finite lintegral of total reverse downcrossing counts into the
 same order-dual convergence conclusion, using the natural filtration of the
 signed reverse process for measurability.  This is the route most directly
 aligned with finite-window Doob estimates.
+2026-05-04 follow-up: the finite-window analytic estimate is now packaged as
+`vdVW_submartingale_lintegral_upcrossings_lt_top` and
+`vdVWOrderDualFiniteHorizon_lintegral_upcrossings_lt_top`.  Every reversed
+finite horizon of an `ℕᵒᵈ` submartingale now has finite expected total
+upcrossings under the uniform `eLpNorm` bound.  The active gap is the
+deterministic reversal/monotone comparison to total reverse downcrossings.

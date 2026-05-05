@@ -140,6 +140,18 @@ required by `vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_ae_lt_top`.
 Next target: prove the finite lintegral hypotheses from the finite-window Doob
 estimate or from a deterministic comparison plus monotone convergence.
 
+2026-05-04 follow-up: the finite-window analytic side is now compiled.
+`vdVW_submartingale_lintegral_upcrossings_lt_top` exposes the lintegral
+finiteness consequence inside mathlib's ordinary submartingale convergence
+proof, and `vdVWOrderDualFiniteHorizon_lintegral_upcrossings_lt_top`
+specializes it to every reversed finite horizon
+`k ↦ f (OrderDual.toDual (N-k))` of an `ℕᵒᵈ` submartingale under the same
+uniform `eLpNorm` bound.  Thus the remaining nontrivial step on this route is
+not analytic boundedness; it is the deterministic/monotone comparison that
+transfers these finite-horizon upcrossing bounds to the total reverse
+downcrossing lintegral consumed by
+`vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_lintegral_lt_top`.
+
 2026-05-04 `/goal` target update: the live non-finite-class frontier is no
 longer inverse-radius entropy, finite-cover selection, VC/subgraph packaging,
 untruncation, finite-class GC, or leave-one-out notation.  Those layers are

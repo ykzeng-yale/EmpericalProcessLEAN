@@ -116,6 +116,56 @@ theorem vdVW_tendsto_of_downcrossings_lt_top
   simpa using hlimit.neg
 
 /--
+Pinned-mathlib consequence used by the reverse/cofiltration route: an
+`L¹`-bounded ordinary submartingale has finite expected total upcrossings.
+
+Mathlib exposes this inside the proof of `Submartingale.upcrossings_ae_lt_top`;
+we keep the lintegral-finiteness form available because the order-dual proof
+needs to pass finite-window Doob estimates into an expected reverse
+downcrossing bound.
+-/
+theorem vdVW_submartingale_lintegral_upcrossings_lt_top
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕ -> Ω -> ℝ} {R : ℝ≥0}
+    (hf : Submartingale f ℱ μ)
+    (hbdd : ∀ n, eLpNorm (f n) 1 μ ≤ R)
+    {a b : ℝ} (hab : a < b) :
+    ∫⁻ ω, upcrossings a b f ω ∂μ < ∞ := by
+  have hineq := hf.mul_lintegral_upcrossings_le_lintegral_pos_part a b
+  rw [mul_comm, ← ENNReal.le_div_iff_mul_le] at hineq
+  · refine lt_of_le_of_lt hineq (ENNReal.div_lt_top ?_ ?_)
+    · have hR' :
+          ∀ n, ∫⁻ ω, ‖f n ω - a‖₊ ∂μ ≤ R + ‖a‖₊ * μ Set.univ := by
+        simp_rw [eLpNorm_one_eq_lintegral_enorm] at hbdd
+        intro n
+        refine
+          (lintegral_mono ?_ :
+            ∫⁻ ω, ‖f n ω - a‖₊ ∂μ ≤ ∫⁻ ω, ‖f n ω‖₊ + ‖a‖₊ ∂μ).trans ?_
+        · intro ω
+          simp_rw [sub_eq_add_neg, ← nnnorm_neg a, ← ENNReal.coe_add,
+            ENNReal.coe_le_coe]
+          exact nnnorm_add_le _ _
+        · simp_rw [lintegral_add_right _ measurable_const, lintegral_const]
+          exact add_le_add (hbdd n) le_rfl
+      refine ne_of_lt (iSup_lt_iff.2
+        ⟨R + ‖a‖₊ * μ Set.univ,
+          ENNReal.add_lt_top.2 ⟨ENNReal.coe_lt_top, by finiteness⟩,
+          fun n => ?_⟩)
+      refine (lintegral_mono fun ω => ?_).trans (hR' n)
+      rw [ENNReal.ofReal_le_iff_le_toReal, ENNReal.coe_toReal, coe_nnnorm]
+      · by_cases hnonneg : 0 ≤ f n ω - a
+        · rw [posPart_eq_self.2 hnonneg, Real.norm_eq_abs, abs_of_nonneg hnonneg]
+        · rw [posPart_eq_zero.2 (le_of_not_ge hnonneg)]
+          exact norm_nonneg _
+      · finiteness
+    · simp only [hab, ne_eq, ENNReal.ofReal_eq_zero, sub_nonpos, not_le]
+  · left
+    simp only [hab, ne_eq, ENNReal.ofReal_eq_zero, sub_nonpos, not_le]
+  · left
+    finiteness
+
+/--
 Conditional expectations of a fixed real random variable along an ordinary
 mathlib filtration form the submartingale needed by the VdV&W Lemma 2.4.5
 route.
@@ -5526,6 +5576,35 @@ theorem vdVWOrderDualFiniteHorizon_mul_integral_upcrossingsBefore_le_integral_po
     (submartingale_vdVWOrderDualFiniteHorizon (μ := μ) (ℱ := ℱ)
       (f := f) N hsub).mul_integral_upcrossingsBefore_le_integral_pos_part
         a b T
+
+/--
+Finite expected total upcrossings for every reversed finite horizon of an
+`ℕᵒᵈ` submartingale.
+
+This packages the ordinary lintegral-upcrossing consequence under the same
+order-dual hypotheses as the main blocker.  It is the analytic half needed
+before the remaining deterministic comparison from reverse downcrossings to
+finite-window upcrossings.
+-/
+theorem vdVWOrderDualFiniteHorizon_lintegral_upcrossings_lt_top
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕᵒᵈ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕᵒᵈ -> Ω -> ℝ} {R : ℝ≥0}
+    (hsub : Submartingale f ℱ μ)
+    (hbdd : ∀ n : ℕᵒᵈ, eLpNorm (f n) 1 μ ≤ (R : ℝ≥0∞))
+    {a b : ℝ} (hab : a < b) (N : ℕ) :
+    ∫⁻ ω, upcrossings a b
+      (fun k : ℕ => fun ω : Ω => f (OrderDual.toDual (N - k)) ω) ω ∂μ < ∞ := by
+  refine vdVW_submartingale_lintegral_upcrossings_lt_top
+    (μ := μ)
+    (ℱ := vdVWOrderDualFiniteHorizonFiltration ℱ N)
+    (f := fun k : ℕ => fun ω : Ω => f (OrderDual.toDual (N - k)) ω)
+    (R := R)
+    (submartingale_vdVWOrderDualFiniteHorizon (μ := μ) (ℱ := ℱ)
+      (f := f) N hsub)
+    ?_ hab
+  intro k
+  exact hbdd (OrderDual.toDual (N - k))
 
 /--
 Order-dual convergence reduced to reverse downcrossing finiteness.
