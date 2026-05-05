@@ -14,7 +14,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`1e471ea`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
+`14580fb`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
 Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
@@ -32,7 +32,8 @@ should produce the cleanest final-current Theorem 2.4.3/Lemma 2.4.5 statement
 from the full-subgraph/structural packages and classify each stronger
 assumption before moving to deeper theorem-critical Chapter 1-2 arbitrary-map,
 nonmeasurable envelope-tail, asymptotic-tightness/FDD, or separability
-primitives.
+primitives.  The VdV&W 1.4.1 product Borel-space equality is also now
+compiled as `vdVW141_prod_borel_eq_product_borel`; do not repeat that wrapper.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new

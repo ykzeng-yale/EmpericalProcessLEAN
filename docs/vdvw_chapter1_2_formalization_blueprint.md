@@ -89,7 +89,7 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at synced repository head `1e471ea`:
+Current operational target, 2026-05-05 at synced repository head `14580fb`:
 the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
@@ -110,9 +110,11 @@ final-current Theorem 2.4.3/Lemma 2.4.5 statement from the full-subgraph or
 structural-rate packages and classify its assumptions before moving to
 Chapter 1 arbitrary-map/`P`-measurable foundations, nonmeasurable envelope-tail
 outer-cover clauses, or separability primitives required by exact Chapter 1-2
-statements.  The next small but theorem-facing Chapter 1 foundation closure is
-now closed: filter-refinement stability for the signed weak-convergence
-packages in `WeakConvergence.lean`, covering signed-outer, arbitrary-map, and
+statements.  The VdV&W 1.4.1 product Borel-space equality is also closed as
+`vdVW141_prod_borel_eq_product_borel`.  The next small but theorem-facing
+Chapter 1 foundation closure is now closed: filter-refinement stability for
+the signed weak-convergence packages in `WeakConvergence.lean`, covering
+signed-outer, arbitrary-map, and
 varying-domain proof-carrying predicates.  The next Chapter 1 fallback should
 therefore move to deeper exact primitives such as nonmeasurable outer-cover
 signed weak convergence, asymptotic-tightness/asymptotic-independence, FDD

@@ -58,7 +58,7 @@ consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`1e471ea`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`14580fb`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -4952,6 +4952,26 @@ state-space maps without reopening the outer/inner expectation-gap proof.
 This is still a foundation layer: the next missing exact Chapter 1 bridge is
 the signed bounded-continuous arbitrary-map weak-convergence formulation, or a
 nonmeasurable outer-cover envelope layer strong enough to state it honestly.
+
+2026-05-05 `/goal` target refresh after `fefbccd`: treat the Chapter 1
+VdV&W 1.3.1 bounded-continuous generated-sigma wrapper, 1.3.12(i)
+bounded-continuous measure uniqueness wrapper, 1.3.2 complete-separable
+tightness wrapper, and 1.4.1 product Borel-space wrapper as closed.  The next
+high-capacity proof target is not another generic Theorem 2.4.3 endpoint
+wrapper.  Priority order is:
+
+1. prove the selected finite-net/random-entropy tail/UI bridge without a
+   deterministic normalized-log bound, or record the exact missing theorem
+   after Lean/API attempts;
+2. instantiate the compiled structural-rate/full-subgraph Theorem 2.4.3
+   packages for concrete textbook VC/Sauer/trace-cover hypotheses when the
+   needed combinatorial theorem is available;
+3. build the exact Chapter 1 arbitrary-map/asymptotic-measurability signed
+   weak-convergence and nonmeasurable outer-cover envelope primitives needed
+   to remove countable/coordinate-measurable surrogate assumptions;
+4. continue self-contained Chapter 1 wrappers from mathlib/ProbabilityMeasure
+   such as product/FDD uniqueness and tightness/Portmanteau variants only when
+   they directly remove a named row in the Chapter 1-2 blueprint.
 
 2026-05-05 follow-up: the local asymptotic-measurability predicates are now
 stable under filter refinement/subsequence filters.  The compiled declarations
