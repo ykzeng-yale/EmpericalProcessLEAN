@@ -211,6 +211,31 @@ theorem vdVW148_ellInfty_weakConvergence_of_finiteProduct_weakConvergence_finite
   have hback := hμ.map_continuous e.symm.continuous
   simpa [e] using hback
 
+/--
+Direct finite-index measure-level converse: weak convergence of probability
+measures on the ordinary finite product `T -> ℝ` pushes back to weak
+convergence of their corresponding `ell_infty(T)` laws.
+
+This is a convenient entry point for finite-dimensional process-law arguments.
+It is still finite-index only, not the arbitrary-index VdV&W 1.4.8 converse.
+-/
+theorem vdVW148_ellInfty_map_symm_weakConvergence_of_finiteProduct_weakConvergence_finite
+    {ι : Type*} {l : Filter ι}
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {νs : ι -> ProbabilityMeasure (T -> ℝ)}
+    {ν : ProbabilityMeasure (T -> ℝ)}
+    (hν : VdVWWeakConvergenceProbabilityMeasures νs l ν) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun n => (νs n).map
+        ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm.continuous.measurable.aemeasurable))
+      l
+      (ν.map
+        ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm.continuous.measurable.aemeasurable)) :=
+  hν.map_continuous (VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm.continuous
+
 /-- Finite-dimensional law of an `ell_infty(T)`-valued random element. -/
 theorem vdVW148_ellInfty_finiteDimensional_hasLaw
     [MeasurableSpace Ω] [MeasurableSpace (VdVWEllInfty T)]

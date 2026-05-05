@@ -1717,6 +1717,15 @@ finite continuous linear equivalence inverse.  This closes the finite-index
 raw law/identical-distribution bridge, while leaving the arbitrary-index
 VdV&W 1.4.8 converse as a genuine process primitive.
 
+2026-05-05 finite-product law weak-convergence follow-up:
+`FiniteDimensional.lean` now adds the direct finite-index measure-level
+wrapper
+`vdVW148_ellInfty_map_symm_weakConvergence_of_finiteProduct_weakConvergence_finite`.
+Weak convergence of probability measures on the ordinary finite product
+`T -> ℝ` now pushes back to weak convergence of the associated
+`ell_infty(T)` laws through the finite continuous linear equivalence inverse.
+This is a finite-index feeder, not the arbitrary-index FDD criterion.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

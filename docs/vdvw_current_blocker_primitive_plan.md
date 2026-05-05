@@ -5540,3 +5540,13 @@ identical distributions for raw bounded processes now lift directly to their
 bridge layer; the arbitrary-index VdV&W 1.4.8 converse still needs the
 separability, tightness/asymptotic-tightness, and nonmeasurable
 asymptotic-measurability primitives.
+
+2026-05-05 finite-product law weak-convergence follow-up: local search found
+the existing finite-index converse for `ell_infty(T)` laws, but not the direct
+entry point from weak convergence of ordinary finite-product laws.
+`FiniteDimensional.lean` now adds
+`vdVW148_ellInfty_map_symm_weakConvergence_of_finiteProduct_weakConvergence_finite`,
+which pushes weak convergence on `T -> ℝ` back along
+`VdVWEllInfty.finiteContinuousLinearEquiv.symm`.  This closes the
+measure-level finite-product law feeder for finite-index process arguments;
+it remains separate from the arbitrary-index FDD converse.

@@ -158,6 +158,11 @@ now lift finite-product law and identical-distribution statements for raw
 bounded processes to their `ell_infty(T)` process maps.  This completes the
 finite-index raw law/IdentDistrib bridge; arbitrary-index FDD converse remains
 open.
+
+2026-05-05 finite-product law weak-convergence follow-up:
+`vdVW148_ellInfty_map_symm_weakConvergence_of_finiteProduct_weakConvergence_finite`
+now lets weak convergence of ordinary finite-product laws on `T -> ℝ` feed
+weak convergence of the corresponding finite-index `ell_infty(T)` laws.
 Direct null/a.e.-measurable constructors are now also available for the
 lower-shifted/canonical shifted bounded-continuous predicates in both
 common-domain and varying-domain forms.  The direct signed positive/negative
