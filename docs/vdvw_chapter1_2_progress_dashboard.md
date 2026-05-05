@@ -303,6 +303,16 @@ reusing the compiled finite-coordinate restriction theorem for probability
 measures.  This strengthens the Section 1.4 local layer without claiming the
 still-missing FDD weak-convergence converse.
 
+2026-05-05 base filter-refinement follow-up: the Chapter 1 convergence
+foundations now have filter-refinement stability at the base level.
+`GlivenkoCantelli.lean` adds
+`VdVWConvergesInOuterProbabilityConst.mono_filter` and
+`VdVWConvergesInOuterProbability.mono_filter`; `WeakConvergence.lean` adds
+`VdVWWeakConvergenceProbabilityMeasures.mono_filter`.  These close the common
+subsequence/finer-filter plumbing for Definition 1.10 outer-probability
+convergence and measure-level weak convergence, matching the already compiled
+signed arbitrary-map refinement wrappers.
+
 2026-05-05 bounded-continuous uniqueness follow-up: `WeakConvergence.lean` now
 exports the VdV&W 1.3.12(i)-named finite-measure uniqueness wrapper
 `vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`, proved by

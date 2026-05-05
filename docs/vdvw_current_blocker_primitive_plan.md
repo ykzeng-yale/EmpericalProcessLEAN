@@ -380,6 +380,14 @@ Chapter 1 arbitrary-map work is the deeper nonmeasurable outer-cover,
 asymptotic-tightness/asymptotic-independence, FDD-converse, and separability
 support listed above.
 
+2026-05-05 base filter-refinement follow-up: the convergence foundation now
+also has base-level refinement wrappers.  `GlivenkoCantelli.lean` adds
+`VdVWConvergesInOuterProbabilityConst.mono_filter` and
+`VdVWConvergesInOuterProbability.mono_filter`; `WeakConvergence.lean` adds
+`VdVWWeakConvergenceProbabilityMeasures.mono_filter`.  These are direct
+`Tendsto.mono_left` closures, but they prevent later subsequence/finer-filter
+arguments from depending only on the higher signed-package wrappers.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.

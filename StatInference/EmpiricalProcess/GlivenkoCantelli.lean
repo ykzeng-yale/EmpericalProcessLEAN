@@ -62,6 +62,21 @@ def VdVWConvergesInOuterProbabilityConst
       l (𝓝 0)
 
 /--
+Varying-domain outer-probability convergence to a constant is stable under
+passing to a finer index filter.
+-/
+theorem VdVWConvergesInOuterProbabilityConst.mono_filter
+    {ι : Type w} {D : Type v} [PseudoMetricSpace D]
+    {Ω : ι -> Type u} {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    {X : (i : ι) -> Ω i -> D} {l l' : Filter ι} {c : D}
+    (h : VdVWConvergesInOuterProbabilityConst Ω mΩ μ X l c)
+    (hl : l' ≤ l) :
+    VdVWConvergesInOuterProbabilityConst Ω mΩ μ X l' c := by
+  intro ε hε
+  exact (h ε hε).mono_left hl
+
+/--
 Deterministic varying-domain convergence implies VdV&W convergence in outer
 probability to a constant.
 
@@ -110,6 +125,20 @@ def VdVWConvergesInOuterProbability
       (fun i =>
         VdVWOuterProbability μ {ω | ε < dist (X i ω) (limit ω)})
       l (𝓝 0)
+
+/--
+Common-domain outer-probability convergence is stable under passing to a finer
+index filter.
+-/
+theorem VdVWConvergesInOuterProbability.mono_filter
+    {Ω : Type u} {ι : Type w} {D : Type v}
+    [MeasurableSpace Ω] [PseudoMetricSpace D]
+    {μ : Measure Ω} {X : ι -> Ω -> D} {l l' : Filter ι}
+    {limit : Ω -> D}
+    (h : VdVWConvergesInOuterProbability μ X l limit) (hl : l' ≤ l) :
+    VdVWConvergesInOuterProbability μ X l' limit := by
+  intro ε hε
+  exact (h ε hε).mono_left hl
 
 /--
 Mathlib convergence in measure implies the corresponding VdV&W outer

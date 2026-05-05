@@ -375,6 +375,15 @@ filter closures, but no signed weak-convergence package closures.  This closes
 the simple filter-refinement foundation gap and keeps the active Chapter 1
 fallback focused on the deeper arbitrary-map/nonmeasurable/process primitives.
 
+2026-05-05 base filter-refinement follow-up: the same stability is now present
+at the base convergence layers.  `GlivenkoCantelli.lean` proves
+`VdVWConvergesInOuterProbabilityConst.mono_filter` and
+`VdVWConvergesInOuterProbability.mono_filter`, and `WeakConvergence.lean`
+proves `VdVWWeakConvergenceProbabilityMeasures.mono_filter`.  These wrappers
+are direct `Tendsto.mono_left` consequences, but they remove repeated
+subsequence/finer-filter plumbing from later Chapter 1 and Theorem 2.4.3
+endpoint arguments.
+
 2026-05-05 FDD forward-direction follow-up: `FiniteDimensional.lean` now adds
 the VdV&W 1.4.8-named forward weak-convergence handoff
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.

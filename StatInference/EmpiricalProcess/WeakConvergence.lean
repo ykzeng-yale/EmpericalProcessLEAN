@@ -1444,6 +1444,19 @@ def VdVWWeakConvergenceProbabilityMeasures
   Tendsto μs l (𝓝 μ)
 
 /--
+Measure-level weak convergence is stable under passing to a finer index
+filter.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.mono_filter
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l l' : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ) (hl : l' ≤ l) :
+    VdVWWeakConvergenceProbabilityMeasures μs l' μ :=
+  h.mono_left hl
+
+/--
 VdV&W weak convergence of probability measures is characterized by convergence
 of integrals of all bounded continuous real-valued test functions.
 
