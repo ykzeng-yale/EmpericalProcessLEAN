@@ -760,6 +760,44 @@ theorem matrixInvShape_vecMulVec_self
         (WithLp.toLp 2 a : EuclideanSpace ℝ ι) := by
   rw [matrixInvShape_vecMulVec, inner_toLp_eq_dotProduct]
 
+/--
+Real-valued version of mathlib's Haar image-scaling theorem for a linear map.
+This is the measure-theoretic bridge needed to turn a determinant calculation
+into Chewi's real-valued volume ratio.
+-/
+theorem addHaar_image_linearMap_real
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [BorelSpace F] [FiniteDimensional ℝ F]
+    (μ : MeasureTheory.Measure F) [μ.IsAddHaarMeasure]
+    (L : F →ₗ[ℝ] F) (s : Set F) :
+    μ.real (L '' s) = |LinearMap.det L| * μ.real s := by
+  change (μ (L '' s)).toReal = |LinearMap.det L| * (μ s).toReal
+  rw [MeasureTheory.Measure.addHaar_image_linearMap]
+  simp
+
+/-- Determinant of the Euclidean linear map associated to a real matrix. -/
+theorem matrix_toEuclideanLin_det (A : Matrix ι ι ℝ) :
+    LinearMap.det
+        (A.toEuclideanLin :
+          EuclideanSpace ℝ ι →ₗ[ℝ] EuclideanSpace ℝ ι) = A.det := by
+  simp [Matrix.toEuclideanLin, LinearMap.det_toLpLin]
+
+/--
+Real-volume scaling for the image of a set under a matrix-backed inverse-shape
+operator on Euclidean coordinate space.
+-/
+theorem matrixInvShape_image_volume_real
+    (A : Matrix ι ι ℝ) (s : Set (EuclideanSpace ℝ ι)) :
+    MeasureTheory.volume.real (matrixInvShape A '' s) =
+      |A.det| * MeasureTheory.volume.real s := by
+  simpa [matrixInvShape, matrix_toEuclideanLin_det] using
+    (addHaar_image_linearMap_real
+      (μ := MeasureTheory.volume)
+      (L :=
+        (A.toEuclideanLin :
+          EuclideanSpace ℝ ι →ₗ[ℝ] EuclideanSpace ℝ ι))
+      (s := s))
+
 /-- Positive-definite matrices have positive determinant. -/
 theorem chewi620_matrixPosDef_det_pos
     {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :

@@ -83,9 +83,9 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Live replacement `/goal` prompt as of 2026-05-05 after syncing local `main` to
-`origin/main` at `1061241`
-(`Add Chewi ellipsoid rank-one action support`) and adding the local concrete
-displayed-to-normalized forward-shape transport packet:
+`origin/main` at `b4690bc`
+(`Add Chewi ellipsoid forward-shape transport theorem`) and adding the local
+real Haar/matrix image-volume scaling packet:
 aggressively formalize and prove
 all main theorem content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercises tracked in the single
@@ -185,15 +185,17 @@ plus the matrix-action support packet `matrixInvShape_eq_toLp_mulVec`,
 `chewi620_matrixSqrt_current_action`, and
 `chewi620_matrixSqrt_rank_inner`, plus the concrete scalar/transport packet
 `chewi620_matrixCutScale_mul_self_of_pos` and
-`chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt`.
-The determinant/scalar `hvolume` bridge and the inverse-shape left-inverse
-reduction plus normalized forward/inverse cancellation, transport reduction,
-rank-one action expansion, displayed-shape action expansion, and square-root
-current/rank-inner transport, and the concrete displayed-to-normalized
-forward-shape transport theorem are verified in focused Lean, so the next run must
-not spend theorem time reproving or repackaging those cores unless they are
-directly needed inside the measure-scaling or concrete transport-identity
-theorem.
+`chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt`, plus the
+real-volume scaling packet `addHaar_image_linearMap_real`,
+`matrix_toEuclideanLin_det`, and `matrixInvShape_image_volume_real`.
+The determinant/scalar `hvolume` bridge, inverse-shape left-inverse reduction,
+normalized forward/inverse cancellation, transport reduction, rank-one action
+expansion, displayed-shape action expansion, square-root current/rank-inner
+transport, concrete displayed-to-normalized forward-shape transport theorem, and
+matrix-backed real image-volume scaling bridge are verified in focused Lean, so
+the next run must not spend theorem time reproving or repackaging those cores
+unless they are directly needed inside the final ellipsoid image/hvolume
+certificate.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
@@ -207,15 +209,15 @@ determinant ratio is now in the exact source shape
 ellipsoidVolumeRatio d ^ 2`, and the scalar bridge
 `chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio` converts any
 squared-volume determinant bound into the certificate's `hvolume` hypothesis.
-Next, instantiate the actual mathlib measure/volume-scaling API for the
-ellipsoid affine image, then package the exact one-step Lemma 6.20 certificate
-using the compiled normalized-direction transport theorem
-`chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt`.
-The compiled transport reductions then immediately yield the displayed
-left-inverse identity and the displayed `Σ_{n+1}^{-1}` set-level replacement.
-If either route balloons, record the exact missing measure or matrix API and
-prove the smallest volume-scaling or matrix-coordinate transport certificate
-that removes it.
+The raw linear-image volume scaling is now instantiated from mathlib's
+`Measure.addHaar_image_linearMap`; next, turn it into the actual ellipsoid
+affine-image/translation volume statement and feed the resulting determinant
+inequality into the exact one-step Lemma 6.20 certificate using
+`chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt`.  The compiled
+transport reductions then immediately yield the displayed left-inverse identity
+and the displayed `Σ_{n+1}^{-1}` set-level replacement.  If the full packaging
+balloons, record the exact missing measure API and prove the smallest
+translation/image-volume or hvolume certificate that removes it.
 The raw square-root adjoint identity, normalized cut
 `hcut` bridge, `Sigma.PosDef` invertibility/cancellation layer, pullback
 `hnext` certificate, current `Σ⁻¹` ellipsoid identification, displayed center
@@ -257,22 +259,21 @@ measure-scaling theorem.  The dependency order is:
    `Real.map_matrix_volume_pi_eq_smul_volume_pi` /
    `Real.map_linearMap_volume_pi_eq_smul_volume_pi`.  The raw `Real.map_*`
    lemmas scale pushforwards by `|det|⁻¹`; set images need the `|det|`
-   addHaar-image route.  For `Matrix.toEuclideanLin`, reuse mathlib
+   addHaar-image route, now locally wrapped by `addHaar_image_linearMap_real`
+   and `matrixInvShape_image_volume_real`.  For `Matrix.toEuclideanLin`, reuse
    `Matrix.toEuclideanLin = Matrix.toLpLin 2 2`, `LinearMap.det_toLpLin`,
    and `PiLp.volume_preserving_toLp` / `PiLp.volume_preserving_ofLp`.
-2. Instantiate mathlib volume-scaling from the determinant/source-volume packet
-   and prove a concrete measured-volume inequality that feeds
+2. Use the local volume-scaling wrapper plus translation invariance to prove the
+   concrete ellipsoid measured-volume inequality that feeds
    `chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio`.
-3. Prove the concrete displayed-to-normalized forward-shape transport identity:
-   `matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)
-     (T.symm x) = T (chewi620StandardCutForwardShape d u x)` for the
-   normalized cut direction under the square-root hypotheses; then use
-   `chewi620_displayedShapeUpdate_left_inverse_of_standardCutForward_transport`
-   and the compiled inverse-shape/set reductions to replace the pullback next
-   shape by `matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹`.
-4. Prove the determinant-to-volume bridge needed for the `hvolume` hypothesis
-   of the displayed-current/displayed-center certificate, reusing the compiled
-   determinant formula and mathlib volume-scaling APIs.
+3. Package the exact displayed next-shape certificate by rewriting the pullback
+   next ellipsoid through
+   `chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt` and the
+   compiled inverse-shape/set reductions to
+   `matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹`.
+4. Prove the determinant-to-volume `hvolume` hypothesis of the
+   displayed-current/displayed-center certificate, reusing the compiled
+   determinant formula and local volume-scaling APIs.
 5. Package the exact one-step Lemma 6.20 certificate, then promote it to the
    ellipsoid trajectory/rate wrapper.
 

@@ -265,9 +265,11 @@ plus `matrixInvShape_eq_toLp_mulVec`, `matrixInvShape_vecMulVec`,
 `chewi620_displayedShapeUpdate_action`,
 `chewi620_matrixSqrt_current_action`, and
 `chewi620_matrixSqrt_rank_inner`, plus
-`chewi620_matrixCutScale_mul_self_of_pos` and
-`chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt`.
-The remaining blocker is the actual mathlib measure-scaling instantiation and
+`chewi620_matrixCutScale_mul_self_of_pos`,
+`chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt`,
+`addHaar_image_linearMap_real`, `matrix_toEuclideanLin_det`, and
+`matrixInvShape_image_volume_real`.
+The remaining blocker is the translated ellipsoid hvolume instantiation and
 exact one-step certificate packaging, not
 scalar algebra, abstract transport, current-shape rewriting, center algebra,
 rank-one collapse, determinant-core algebra, source-volume determinant algebra,
@@ -278,9 +280,11 @@ uniqueness.  For measure scaling, use
 `Measure.addHaar_image_linearMap` / `Measure.addHaar_preimage_linearEquiv`,
 translation invariance, and `LinearMap.det_toLpLin` for
 `Matrix.toEuclideanLin`; the raw `Real.map_*` pushforward lemmas scale by
-`|det|⁻¹`, while set-image volume needs the `|det|` addHaar route.  The target
-order is determinant-to-volume scaling using mathlib volume APIs, then exact
-one-step Lemma 6.20 certificate using
+`|det|⁻¹`, while set-image volume needs the `|det|` addHaar route, now locally
+wrapped by `addHaar_image_linearMap_real` and
+`matrixInvShape_image_volume_real`.  The target order is translated ellipsoid
+volume/hvolume packaging using the local volume wrapper, then exact one-step
+Lemma 6.20 certificate using
 `chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt`.
 If the full matrix proof balloons, prove the smallest
 matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
