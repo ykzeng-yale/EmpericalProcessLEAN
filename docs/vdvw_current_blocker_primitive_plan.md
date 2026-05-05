@@ -5006,6 +5006,23 @@ signed bridge declarations
 and `.to_canonicalShifted`.  This closes the shifted/canonical interface for
 the varying-domain endpoints used by Theorem 2.4.3.
 
+2026-05-05 a.e.-measurable arbitrary-map bridge update: local search found
+the varying-domain null-measurable map-law wrappers but no common-domain
+null-measurable or direct a.e.-measurable signed weak-convergence wrappers.
+`WeakConvergence.lean` now adds
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_aemeasurable`,
+the common-domain null-measurable map-law bridge
+`VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq_nullMeasurable`,
+the proof-carrying common-domain wrappers
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_map_eq_nullMeasurable`,
+`.to_signedBoundedContinuousArbitraryMap_of_maps_nullMeasurable`, and
+`.to_signedBoundedContinuousArbitraryMap_of_maps_aemeasurable`, plus the
+varying-domain a.e.-measurable wrapper
+`.to_signedBoundedContinuousVaryingDomains_of_maps_aemeasurable`.  This closes
+another Chapter 1 mismatch between mathlib a.e.-measurable random variables
+and the local VdV&W signed arbitrary-map packages.
+
 2026-05-05 follow-up: the local asymptotic-measurability predicates are now
 stable under filter refinement/subsequence filters.  The compiled declarations
 `VdVWAsymptoticallyMeasurableNonnegative.mono_filter`,

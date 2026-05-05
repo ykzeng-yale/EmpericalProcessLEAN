@@ -134,6 +134,16 @@ measurability predicates and constructors, plus
 and `.to_canonicalShifted`.  The sample-size-varying signed layer can now feed
 the same shifted interface as the common-domain Chapter 1 layer.
 
+2026-05-05 a.e.-measurable bridge update: `WeakConvergence.lean` now exposes
+the signed arbitrary-map and varying-domain weak-convergence packages directly
+from mathlib-style a.e.-measurable maps.  The new declarations include the
+common-domain null-measurable map-law bridge, common-domain null/a.e.
+automatic-pushforward wrappers, the varying-domain a.e. automatic-pushforward
+wrapper, and a.e.-measurable asymptotic-measurability constructors.  This is a
+Chapter 1 foundation closure; the remaining exact gap is still the deeper
+nonmeasurable outer-cover/process layer and the Theorem 2.4.3 random-entropy
+tail/UI theorem.
+
 2026-05-05 proof update: the countability-to-`P`-measurability route has a new
 compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`
 and

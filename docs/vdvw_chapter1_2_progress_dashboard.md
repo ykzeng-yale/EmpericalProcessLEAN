@@ -45,6 +45,13 @@ endpoints through
 `VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains`,
 and the signed varying-domain `.to_lowerShifted`/`.to_canonicalShifted`
 bridges.
+The a.e.-measurable map-law bridge is now also available for common-domain
+arbitrary maps and varying-domain endpoints through
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_aemeasurable`,
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_maps_aemeasurable`,
+and
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps_aemeasurable`.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new
