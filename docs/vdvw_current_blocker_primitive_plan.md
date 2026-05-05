@@ -429,6 +429,15 @@ dominating measure is a valid minimal cover for every absolutely continuous
 measure.  The remaining exact 1.2.4 gap is full arbitrary extended-real
 common-cover existence for arbitrary maps.
 
+2026-05-05 family common-cover follow-up: the same dominated-cover layer now
+has the family-level existence theorem
+`exists_common_measurableCover_of_forall_absolutelyContinuous_aemeasurable`.
+It packages the single cover built under the dominating measure and proves
+simultaneous minimality for every measure in a dominated family.  This closes
+the nonnegative a.e.-measurable reading of VdV&W Lemma 1.2.4; the remaining
+gap is still the arbitrary extended-real/nonmeasurable common-cover existence
+statement.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.

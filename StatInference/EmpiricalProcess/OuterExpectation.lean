@@ -532,6 +532,34 @@ noncomputable def ofAEMeasurableDominated {Ω : Type u} [MeasurableSpace Ω]
       VdVWMeasurableCover.ofAEMeasurable_minimal_ae_of_absolutelyContinuous
         hμν hT U hU h_majorizes
 
+/--
+Family-level common measurable cover for dominated measures.
+
+If every measure in a family is absolutely continuous with respect to `ν` and
+`T` is `ν`-a.e.-measurable, then the single cover built under `ν` is
+simultaneously minimal for every measure in the family.  This is the
+nonnegative a.e.-measurable version of VdV&W Lemma 1.2.4.
+-/
+theorem exists_common_measurableCover_of_forall_absolutelyContinuous_aemeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {ν : Measure Ω}
+    {measures : Set (Measure Ω)} {T : Ω -> ℝ≥0∞}
+    (hT : AEMeasurable T ν)
+    (hdom : ∀ μ ∈ measures, μ ≪ ν) :
+    ∃ U : Ω -> ℝ≥0∞,
+      Measurable U ∧
+        (∀ ω, T ω ≤ U ω) ∧
+          ∀ μ ∈ measures, ∀ V : Ω -> ℝ≥0∞,
+            Measurable V ->
+            (∀ᵐ ω ∂μ, T ω ≤ V ω) ->
+              ∀ᵐ ω ∂μ, U ω ≤ V ω := by
+  refine ⟨VdVWMeasurableCover.ofAEMeasurable ν hT, ?_, ?_, ?_⟩
+  · exact (VdVWMeasurableCover.ofAEMeasurable ν hT).measurable_toFun
+  · exact (VdVWMeasurableCover.ofAEMeasurable ν hT).majorizes
+  · intro μ hμ V hV h_majorizes
+    exact
+      VdVWMeasurableCover.ofAEMeasurable_minimal_ae_of_absolutelyContinuous
+        (hdom μ hμ) hT V hV h_majorizes
+
 /-- Real-valued null-measurable targets give covers after coercion to `ℝ≥0∞`. -/
 noncomputable def ofNullMeasurable_ofReal {Ω : Type u} [MeasurableSpace Ω]
     (μ : Measure Ω) {f : Ω -> ℝ} (hf : NullMeasurable f μ) :
