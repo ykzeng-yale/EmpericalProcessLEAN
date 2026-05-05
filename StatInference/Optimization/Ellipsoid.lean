@@ -998,6 +998,65 @@ theorem cfcSqrt_quadratic_inv_of_posDef
     _ = inner ℝ y y := by
       rw [happ]
 
+/--
+The CFC square root factors a positive-semidefinite matrix quadratic form.
+This is the local Cauchy-Schwarz bridge for Chewi's rank-one ellipsoid update.
+-/
+theorem cfcSqrt_inner_matrixInvShape_left
+    {A : Matrix ι ι ℝ} (hA : A.PosSemidef)
+    (x y : EuclideanSpace ℝ ι) :
+    inner ℝ (matrixInvShape A x) y =
+      inner ℝ (matrixInvShape (CFC.sqrt A) x)
+        (matrixInvShape (CFC.sqrt A) y) := by
+  let S : Matrix ι ι ℝ := CFC.sqrt A
+  have hS_sq : S * S = A := by
+    simpa [S, pow_two] using
+      (CFC.sq_sqrt A (ha := hA.nonneg))
+  have hS_psd : S.PosSemidef :=
+    Matrix.nonneg_iff_posSemidef.mp (by simp [S])
+  have hS_symm : (S.toEuclideanLin).IsSymmetric :=
+    Matrix.isSymmetric_toEuclideanLin_iff.mpr hS_psd.isHermitian
+  calc
+    inner ℝ (matrixInvShape A x) y =
+        inner ℝ (matrixInvShape (S * S) x) y := by
+      rw [hS_sq]
+    _ = inner ℝ (matrixInvShape S (matrixInvShape S x)) y := by
+      rw [matrixInvShape_mul]
+    _ =
+        inner ℝ (matrixInvShape S x)
+          (matrixInvShape S y) := by
+      simpa [matrixInvShape] using hS_symm (matrixInvShape S x) y
+
+/--
+Cauchy-Schwarz for the positive-definite `Σ`-inner product, in the exact
+rank-one form used by the ellipsoid update.
+-/
+theorem chewi620_matrix_rankOne_cauchy_schwarz
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    (p z : EuclideanSpace ℝ ι) :
+    inner ℝ (matrixInvShape Sigma p) z ^ (2 : ℕ) ≤
+      inner ℝ p (matrixInvShape Sigma p) *
+        inner ℝ z (matrixInvShape Sigma z) := by
+  have hpsd : Sigma.PosSemidef := hSigma.posSemidef
+  rw [cfcSqrt_inner_matrixInvShape_left hpsd p z]
+  have hpp :
+      inner ℝ p (matrixInvShape Sigma p) =
+        inner ℝ (matrixInvShape (CFC.sqrt Sigma) p)
+          (matrixInvShape (CFC.sqrt Sigma) p) := by
+    rw [real_inner_comm]
+    rw [cfcSqrt_inner_matrixInvShape_left hpsd p p]
+  have hzz :
+      inner ℝ z (matrixInvShape Sigma z) =
+        inner ℝ (matrixInvShape (CFC.sqrt Sigma) z)
+          (matrixInvShape (CFC.sqrt Sigma) z) := by
+    rw [real_inner_comm]
+    rw [cfcSqrt_inner_matrixInvShape_left hpsd z z]
+  rw [hpp, hzz]
+  simpa [sq] using
+    real_inner_mul_inner_self_le
+      (matrixInvShape (CFC.sqrt Sigma) p)
+      (matrixInvShape (CFC.sqrt Sigma) z)
+
 /-- The nonsingular inverse of a positive-definite matrix is positive definite. -/
 theorem chewi620_matrixPosDef_inv
     {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef) :
@@ -1309,6 +1368,142 @@ theorem chewi620_displayedShapeUpdate_action
             matrixInvShape Sigma p))) := by
   rw [chewi620DisplayedShapeUpdate, matrixInvShape_smul,
     chewi620_displayedShapeUpdateCore_action]
+
+/-- The unscaled displayed shape update is Hermitian. -/
+theorem chewi620_displayedShapeUpdateCore_isHermitian
+    (d : ℕ) {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    (p : EuclideanSpace ℝ ι) :
+    (chewi620DisplayedShapeUpdateCore d Sigma p).IsHermitian := by
+  have hvec :
+      (Matrix.vecMulVec (Sigma.mulVec p.ofLp) (Sigma.mulVec p.ofLp)).IsHermitian := by
+    simpa using
+      (Matrix.posSemidef_vecMulVec_self_star
+        (Sigma.mulVec p.ofLp)).isHermitian
+  have hcoef_self :
+      IsSelfAdjoint
+        (((2 : ℝ) / ((d : ℝ) + 1)) /
+          inner ℝ p (matrixInvShape Sigma p)) := by
+    simp [isSelfAdjoint_iff]
+  rw [chewi620DisplayedShapeUpdateCore]
+  exact hSigma.isHermitian.sub (hvec.smul hcoef_self)
+
+/-- The full displayed shape update is Hermitian. -/
+theorem chewi620_displayedShapeUpdate_isHermitian
+    (d : ℕ) {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    (p : EuclideanSpace ℝ ι) :
+    (chewi620DisplayedShapeUpdate d Sigma p).IsHermitian := by
+  have hscale_self :
+      IsSelfAdjoint
+        (((d : ℝ) ^ (2 : ℕ)) /
+          (((d : ℝ) ^ (2 : ℕ)) - 1)) := by
+    simp [isSelfAdjoint_iff]
+  rw [chewi620DisplayedShapeUpdate]
+  exact
+    (chewi620_displayedShapeUpdateCore_isHermitian
+      (d := d) hSigma p).smul hscale_self
+
+/--
+The unscaled rank-one core in Chewi's ellipsoid update remains positive in
+every nonzero direction.  The proof is the source Cauchy-Schwarz estimate in
+the `Σ`-inner product.
+-/
+theorem chewi620_displayedShapeUpdateCore_quadratic_pos
+    {d : ℕ} (hd : 1 < d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p z : EuclideanSpace ℝ ι} (hp : p ≠ 0) (hz : z ≠ 0) :
+    0 <
+      inner ℝ z
+        (matrixInvShape (chewi620DisplayedShapeUpdateCore d Sigma p) z) := by
+  let q : ℝ := inner ℝ p (matrixInvShape Sigma p)
+  let r : ℝ := inner ℝ z (matrixInvShape Sigma z)
+  let b : ℝ := inner ℝ (matrixInvShape Sigma p) z
+  let k : ℝ := (2 : ℝ) / ((d : ℝ) + 1)
+  have hq_pos : 0 < q := by
+    exact matrixInvShape_quadratic_pos_of_posDef hSigma hp
+  have hr_pos : 0 < r := by
+    exact matrixInvShape_quadratic_pos_of_posDef hSigma hz
+  have hk_pos : 0 < k := by
+    have hden_pos : 0 < (d : ℝ) + 1 := by positivity
+    exact div_pos (by norm_num) hden_pos
+  have hk_lt_one : k < 1 := by
+    have hd_real : 1 < (d : ℝ) := by exact_mod_cast hd
+    have hden_pos : 0 < (d : ℝ) + 1 := by positivity
+    change (2 : ℝ) / ((d : ℝ) + 1) < 1
+    rw [div_lt_one hden_pos]
+    linarith
+  have hq_ne : q ≠ 0 := ne_of_gt hq_pos
+  have hcs :
+      b ^ (2 : ℕ) ≤ q * r := by
+    simpa [q, r, b] using
+      chewi620_matrix_rankOne_cauchy_schwarz
+        (Sigma := Sigma) hSigma p z
+  have hcoef_nonneg : 0 ≤ k / q := div_nonneg hk_pos.le hq_pos.le
+  have hcorr_le : (k / q) * b ^ (2 : ℕ) ≤ k * r := by
+    calc
+      (k / q) * b ^ (2 : ℕ) ≤ (k / q) * (q * r) :=
+        mul_le_mul_of_nonneg_left hcs hcoef_nonneg
+      _ = k * r := by
+        field_simp [hq_ne]
+  have hcore_eq :
+      inner ℝ z
+          (matrixInvShape (chewi620DisplayedShapeUpdateCore d Sigma p) z) =
+        r - (k / q) * b ^ (2 : ℕ) := by
+    rw [chewi620_displayedShapeUpdateCore_action]
+    simp only [inner_sub_right, inner_smul_right]
+    have hb_comm : inner ℝ z (matrixInvShape Sigma p) = b := by
+      rw [real_inner_comm]
+    simp only [q, r, b, k] at hb_comm ⊢
+    rw [hb_comm]
+    ring
+  have hkr_lt : k * r < r := by
+    nlinarith [hr_pos, hk_pos, hk_lt_one]
+  rw [hcore_eq]
+  nlinarith
+
+/-- The full displayed shape update has positive quadratic form. -/
+theorem chewi620_displayedShapeUpdate_quadratic_pos
+    {d : ℕ} (hd : 1 < d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p z : EuclideanSpace ℝ ι} (hp : p ≠ 0) (hz : z ≠ 0) :
+    0 <
+      inner ℝ z
+        (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p) z) := by
+  have hD_pos : 0 < (d : ℝ) := by
+    have hd_nat : 0 < d := by omega
+    exact_mod_cast hd_nat
+  have hden_pos : 0 < ((d : ℝ) ^ (2 : ℕ)) - 1 := by
+    have hd_real : 1 < (d : ℝ) := by exact_mod_cast hd
+    nlinarith [sq_pos_of_pos (show 0 < (d : ℝ) - 1 by linarith)]
+  have hscale_pos :
+      0 < ((d : ℝ) ^ (2 : ℕ)) /
+        (((d : ℝ) ^ (2 : ℕ)) - 1) :=
+    div_pos (sq_pos_of_pos hD_pos) hden_pos
+  rw [chewi620DisplayedShapeUpdate, matrixInvShape_smul]
+  rw [inner_smul_right]
+  exact mul_pos hscale_pos
+    (chewi620_displayedShapeUpdateCore_quadratic_pos
+      (d := d) hd hSigma hp hz)
+
+/-- Chewi's displayed next forward-shape matrix is positive definite. -/
+theorem chewi620_displayedShapeUpdate_posDef
+    {d : ℕ} (hd : 1 < d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0) :
+    (chewi620DisplayedShapeUpdate d Sigma p).PosDef := by
+  refine
+    Matrix.PosDef.of_dotProduct_mulVec_pos
+      (chewi620_displayedShapeUpdate_isHermitian (d := d) hSigma p) ?_
+  intro x hx
+  let z : EuclideanSpace ℝ ι := WithLp.toLp 2 x
+  have hz : z ≠ 0 := by
+    intro hz0
+    apply hx
+    simpa [z] using congrArg (fun y : EuclideanSpace ℝ ι => y.ofLp) hz0
+  have hpos :=
+    chewi620_displayedShapeUpdate_quadratic_pos
+      (d := d) hd hSigma (p := p) (z := z) hp hz
+  rw [matrixInvShape_quadratic_eq_dotProduct] at hpos
+  simpa [z] using hpos
 
 /--
 Determinant of Chewi's fully scaled displayed forward-shape update.  The
@@ -2314,6 +2509,44 @@ theorem chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef
       (cfcSqrt_det_sq_of_posSemidef hnextPosDef.posSemidef)
       (cfcSqrt_quadratic_inv_of_posDef hSigma)
       (cfcSqrt_quadratic_inv_of_posDef hnextPosDef)
+      hvol hvolNext
+
+/--
+Displayed-matrix Lemma 6.20 step certificate with CFC square roots and no
+separate next-shape positivity hypothesis: the rank-one positivity theorem for
+Chewi's displayed update discharges it.
+-/
+theorem chewi620_displayedMatrices_stepCertificate_of_cfcSqrt
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    {center p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    {vol volNext : ℝ}
+    (hvol :
+      vol =
+        MeasureTheory.volume.real
+          (ellipsoidSet center (matrixInvShape Sigma⁻¹)))
+    (hvolNext :
+      volNext =
+        MeasureTheory.volume.real
+          (ellipsoidSet
+            (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+              (inner ℝ p (matrixInvShape Sigma p)))
+            (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹))) :
+    IsEllipsoidStepCertificate center
+      (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+        (inner ℝ p (matrixInvShape Sigma p)))
+      (matrixInvShape Sigma⁻¹)
+      (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹)
+      p vol volNext (ellipsoidVolumeRatio d) := by
+  exact
+    chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef
+      (d := d) hd hcard hSigma (T := T) hT_symm
+      (center := center) (p := p) hp hT_sq
+      (chewi620_displayedShapeUpdate_posDef
+        (d := d) hd hSigma hp)
       hvol hvolNext
 
 end EuclideanMatrix

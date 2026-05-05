@@ -43,13 +43,14 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after local sync to `origin/main` at `2a458dd`
-(`Add Chewi ellipsoid displayed matrix certificate`) with the verified pushed
+Manual goal frontier after rebasing local `main` onto `origin/main` at
+`be7af69` (`Add FDD asymptotic tightness bridges`) with the verified pushed
 source-volume determinant, determinant-unit inverse-shape reduction,
 normalized forward/inverse algebra, forward-shape transport reduction,
 rank-one/displayed-action support, concrete displayed-to-normalized
 forward-shape transport, displayed next-shape certificate, real matrix-image
-volume scaling, and determinant-square volume-model packets in
+volume scaling, determinant-square volume-model, CFC-root, and displayed-shape
+positivity packets in
 `StatInference/Optimization/Ellipsoid.lean`;
 the latest Optimization proof frontier is Chapter 6 Lemma 6.20 after the
 2026-05-05 standard-cut scalar, determinant-ratio, coordinate-free
@@ -138,8 +139,16 @@ plus `matrixInvShape_eq_toLp_mulVec`, `matrixInvShape_one`,
 `ellipsoidSet_eq_matrix_image_closedBall_of_quadratic`,
 `cfcSqrt_det_sq_of_posSemidef`, and
 `chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`,
-`cfcSqrt_quadratic_inv_of_posDef`, and
-`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef`.
+`cfcSqrt_quadratic_inv_of_posDef`,
+`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef`,
+`cfcSqrt_inner_matrixInvShape_left`,
+`chewi620_matrix_rankOne_cauchy_schwarz`,
+`chewi620_displayedShapeUpdateCore_isHermitian`,
+`chewi620_displayedShapeUpdate_isHermitian`,
+`chewi620_displayedShapeUpdateCore_quadratic_pos`,
+`chewi620_displayedShapeUpdate_quadratic_pos`,
+`chewi620_displayedShapeUpdate_posDef`, and
+`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt`.
 Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
@@ -295,9 +304,17 @@ plus `matrixInvShape_eq_toLp_mulVec`, `matrixInvShape_vecMulVec`,
 `ellipsoidSet_eq_matrix_image_closedBall_of_quadratic`,
 `cfcSqrt_det_sq_of_posSemidef`, and
 `chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`,
-`cfcSqrt_quadratic_inv_of_posDef`, and
-`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef`.
-The remaining blocker is the displayed next-shape PosDef theorem, not
+`cfcSqrt_quadratic_inv_of_posDef`,
+`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef`,
+`cfcSqrt_inner_matrixInvShape_left`,
+`chewi620_matrix_rankOne_cauchy_schwarz`,
+`chewi620_displayedShapeUpdateCore_isHermitian`,
+`chewi620_displayedShapeUpdate_isHermitian`,
+`chewi620_displayedShapeUpdateCore_quadratic_pos`,
+`chewi620_displayedShapeUpdate_quadratic_pos`,
+`chewi620_displayedShapeUpdate_posDef`, and
+`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt`.
+The remaining blocker is exact Lemma 6.20 one-step/trajectory packaging, not
 scalar algebra, abstract transport, current-shape rewriting, center algebra,
 rank-one collapse, determinant-core algebra, source-volume determinant algebra,
 normalized standard-cut algebra, rank-one action expansion, displayed-shape
@@ -305,7 +322,8 @@ action expansion, square-root current/rank-inner transport, concrete
 displayed-to-normalized transport, transport reduction, displayed next-shape
 certificate packaging, determinant-to-hvolume scalar algebra,
 translated closed-unit-ball image-model packaging, displayed-volume wrapper
-packaging, CFC-root quadratic algebra, or nonsingular-inverse uniqueness.  For measure scaling, use
+packaging, CFC-root quadratic algebra, displayed-shape PosDef, or
+nonsingular-inverse uniqueness.  For measure scaling, use
 `Measure.addHaar_image_linearMap` / `Measure.addHaar_preimage_linearEquiv`,
 translation invariance, and `LinearMap.det_toLpLin` for
 `Matrix.toEuclideanLin`; the raw `Real.map_*` pushforward lemmas scale by
@@ -313,12 +331,11 @@ translation invariance, and `LinearMap.det_toLpLin` for
 wrapped by `addHaar_image_linearMap_real` and
 `matrixInvShape_image_volume_real`, with translation wrapped by
 `addHaar_image_add_left_real` and `matrixInvShape_image_add_volume_real`.  The
-target order is to prove
-`(chewi620DisplayedShapeUpdate d Sigma p).PosDef` from Chewi's rank-one
-quadratic update, then feed it into
-`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef`.  Search first
-for matrix Cauchy-Schwarz, Schur-complement, and rank-one `Matrix.PosDef`
-APIs; if none fit, prove the quadratic-form bound directly.
+target order is to use `chewi620_displayedMatrices_stepCertificate_of_cfcSqrt`
+to build a source-shaped one-step Lemma 6.20 certificate, then promote the
+step theorem to an `IsEllipsoidCuttingPlaneTrajectory` theorem and feed it into
+`chewi620_volume_ratio_and_gap_bound_of_scaled_candidates`.  Search first for
+any local sequence/trajectory packaging APIs before adding new wrappers.
 If the full matrix proof balloons, prove the smallest
 matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
 the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth
