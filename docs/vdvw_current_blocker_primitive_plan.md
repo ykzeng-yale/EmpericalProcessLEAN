@@ -5527,3 +5527,16 @@ bounded `ell_infty(T)` process maps.  It closes the raw finite-index converse
 API while preserving the real arbitrary-index blockers: separability,
 tightness/asymptotic tightness, asymptotic measurability, and nonmeasurable
 outer-cover process weak convergence.
+
+2026-05-05 finite-index raw-process law follow-up: local search for finite
+raw-process `HasLaw`/`IdentDistrib` converse wrappers found no existing API.
+`FiniteDimensional.lean` now adds
+`vdVW148_boundedProcess_hasLaw_of_finiteProduct_hasLaw_finite` and
+`vdVW148_boundedProcess_identDistrib_of_finiteProduct_identDistrib_finite`,
+using `HasLaw.comp`, `IdentDistrib.comp`, and the finite
+`VdVWEllInfty.finiteContinuousLinearEquiv`.  Thus finite-product laws and
+identical distributions for raw bounded processes now lift directly to their
+`ell_infty(T)` process maps.  This completes the finite-index raw law/FDD
+bridge layer; the arbitrary-index VdV&W 1.4.8 converse still needs the
+separability, tightness/asymptotic-tightness, and nonmeasurable
+asymptotic-measurability primitives.

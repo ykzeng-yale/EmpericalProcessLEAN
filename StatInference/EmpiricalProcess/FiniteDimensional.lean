@@ -361,6 +361,57 @@ theorem vdVW148_boundedProcess_finiteDimensional_tendstoInDistribution
         (Z := VdVWEllInfty.processMap Z hZbounded) (l := l) hX I)
 
 /--
+Finite-index law converse for bounded raw processes: a law for the ordinary
+finite product process induces the corresponding `ell_infty(T)` process law.
+
+This is finite-index only, using the local equivalence
+`VdVWEllInfty.finiteContinuousLinearEquiv`.
+-/
+theorem vdVW148_boundedProcess_hasLaw_of_finiteProduct_hasLaw_finite
+    [MeasurableSpace Ω]
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {X : Ω -> T -> ℝ} (hbounded : VdVWEllInfty.IsBoundedSamplePath X)
+    {P : Measure Ω} {ν : Measure (T -> ℝ)}
+    (hX : HasLaw X ν P) :
+    HasLaw
+      (VdVWEllInfty.processMap X hbounded)
+      (ν.map (VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm)
+      P := by
+  let e := VdVWEllInfty.finiteContinuousLinearEquiv (T := T)
+  have hmap : HasLaw (e.symm ∘ X) (ν.map e.symm) P := by
+    refine HasLaw.comp ?_ hX
+    exact
+      { aemeasurable := e.symm.continuous.measurable.aemeasurable
+        map_eq := rfl }
+  simpa [e, Function.comp_def, VdVWEllInfty.processMap] using hmap
+
+/--
+Finite-index identical-distribution converse for bounded raw processes:
+identical finite-product distributions induce identical `ell_infty(T)` process
+distributions.
+-/
+theorem vdVW148_boundedProcess_identDistrib_of_finiteProduct_identDistrib_finite
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {X : Ω -> T -> ℝ} {Y : Ω' -> T -> ℝ}
+    (hXbounded : VdVWEllInfty.IsBoundedSamplePath X)
+    (hYbounded : VdVWEllInfty.IsBoundedSamplePath Y)
+    {P : Measure Ω} {Q : Measure Ω'}
+    (hXY : IdentDistrib X Y P Q) :
+    IdentDistrib
+      (VdVWEllInfty.processMap X hXbounded)
+      (VdVWEllInfty.processMap Y hYbounded)
+      P Q := by
+  let e := VdVWEllInfty.finiteContinuousLinearEquiv (T := T)
+  have hmap : IdentDistrib (e.symm ∘ X) (e.symm ∘ Y) P Q :=
+    hXY.comp e.symm.continuous.measurable
+  simpa [e, Function.comp_def, VdVWEllInfty.processMap] using hmap
+
+/--
 Random-variable finite-index converse for `ell_infty(T)`: if `T` is finite,
 convergence in distribution after the finite product identification implies
 convergence in distribution of the original `ell_infty(T)`-valued variables.

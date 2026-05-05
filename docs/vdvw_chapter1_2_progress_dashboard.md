@@ -150,6 +150,14 @@ finite equivalence on process maps.  For finite `T`, ordinary finite-product
 convergence of raw processes now yields `ell_infty(T)` convergence; the
 arbitrary-index converse remains a separability/tightness/asymptotic-
 measurability problem.
+
+2026-05-05 finite-index raw-process law follow-up:
+`vdVW148_boundedProcess_hasLaw_of_finiteProduct_hasLaw_finite` and
+`vdVW148_boundedProcess_identDistrib_of_finiteProduct_identDistrib_finite`
+now lift finite-product law and identical-distribution statements for raw
+bounded processes to their `ell_infty(T)` process maps.  This completes the
+finite-index raw law/IdentDistrib bridge; arbitrary-index FDD converse remains
+open.
 Direct null/a.e.-measurable constructors are now also available for the
 lower-shifted/canonical shifted bounded-continuous predicates in both
 common-domain and varying-domain forms.  The direct signed positive/negative

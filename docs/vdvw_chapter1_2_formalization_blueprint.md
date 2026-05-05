@@ -1707,6 +1707,16 @@ bounded processes now feeds convergence of their `ell_infty(T)` process maps.
 This is still a finite-index theorem and does not close the arbitrary-index
 separability/tightness/asymptotic-measurability converse.
 
+2026-05-05 finite-index raw-process law follow-up: `FiniteDimensional.lean`
+now also adds
+`vdVW148_boundedProcess_hasLaw_of_finiteProduct_hasLaw_finite` and
+`vdVW148_boundedProcess_identDistrib_of_finiteProduct_identDistrib_finite`.
+These lift finite-product `HasLaw` and `IdentDistrib` statements for raw
+bounded processes to their `ell_infty(T)` process maps by composing with the
+finite continuous linear equivalence inverse.  This closes the finite-index
+raw law/identical-distribution bridge, while leaving the arbitrary-index
+VdV&W 1.4.8 converse as a genuine process primitive.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
