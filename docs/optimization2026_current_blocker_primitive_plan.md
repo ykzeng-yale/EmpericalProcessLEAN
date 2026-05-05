@@ -68,18 +68,19 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current manual objective after the 2026-05-05 Theorem 6.14 source packet:
-aggressively formalize and prove the main theorem content of Sinho Chewi's
-Optimization 2026 notes in Lean under `StatInference/Optimization`, continuing
-from the latest verified Optimization frontier where
-`StatInference/Optimization/ProjectedSubgradient.lean` proves the finite-valued
-source-shaped subgradient/projection/PSD layer through the supplied-interface
-Theorem 6.14 average-gap bound, its Lipschitz/ray source bridge, the displayed
-`h = R / sqrt N` rate wrapper, and the scaled-step recurrence needed for
-Theorem 6.16.  The app-level `/goal` objective text still mentions the
-obsolete Theorem 3.4 frontier and cannot be edited directly through the current
-tool surface unless the full textbook goal is marked complete, so this
-paragraph is the live replacement `/goal` prompt.
+Live replacement `/goal` prompt after the 2026-05-05 Theorem 6.14 source
+packet: aggressively formalize and prove all main theorem content of Sinho
+Chewi's Optimization 2026 notes in Lean under `StatInference/Optimization`,
+with exercises tracked in the single `StatInference/Optimization/Exercises.lean`
+module but not allowed to slow the main-text theorem lane.  Continue from the
+latest verified frontier where `StatInference/Optimization/ProjectedSubgradient.lean`
+proves the finite-valued source-shaped subgradient/projection/PSD layer through
+the supplied-interface Theorem 6.14 average-gap bound, its Lipschitz/ray source
+bridge, the displayed `h = R / sqrt N` rate wrapper, and the scaled-step
+recurrence needed for Theorem 6.16.  The app-level `/goal` objective text still
+mentions the obsolete Theorem 3.4 frontier and cannot be edited directly
+through the current tool surface unless the full textbook goal is marked
+complete, so this paragraph is the operative manual `/goal` target.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
@@ -97,10 +98,13 @@ minimizer membership assumptions.
 The active aggressive target is Chapter 6 nonsmooth convex optimization, with
 main-text theorem coverage prioritized over reports and exercises.  Theorem
 6.14 is now source-complete in the finite-valued/ray-valid form.  The next
-theorem packet should attack Theorem 6.16 directly: define a source-shaped
-functional-constraint PSD trajectory/oracle interface, prove the two case
-decrease lemmas from the compiled scaled-step recurrence, then assemble the
-finite contradiction argument for (6.5) under the iteration lower bound.
+theorem packet must attack Theorem 6.16 directly and in one batch if feasible:
+define a source-shaped functional-constraint PSD trajectory/oracle interface,
+prove the objective-case and violated-constraint-case distance decreases from
+`projectedSubgradient_scaled_sqdist_recurrence`, then assemble the finite
+contradiction proof of (6.5) under
+`N >= L^2 * ‖x 0 - xStar‖^2 / eps^2`.  Do not spend a run only polishing a
+minor wrapper unless it is the fastest verified dependency for this theorem.
 
 `StatInference/Optimization/ProjectedSubgradient.lean` now starts this lane and
 compiles a source-shaped finite-valued packet for Definition 6.8, Definition
@@ -154,15 +158,20 @@ should live in the single module `StatInference/Optimization/Exercises.lean`,
 so the later exercise sweep remains source-trackable.
 
 Book-level target map for the next 2-4 hour acceleration window: keep the main
-thread on Chapter 6 until Theorem 6.16 is proved, then split future packets by
-chapter surface rather than by tiny lemmas: Chapter 7 `FrankWolfe.lean` for
-Theorem 7.3 and Carathéodory wrappers, Chapter 8 `Proximal.lean` for Theorems
-8.5 and 8.6 reusing Chapter 5 AGD algebra, Chapters 9-10 `Fenchel.lean` and
-`MirrorDescent.lean` for Fenchel-Young/Bregman/OMD telescopes, Chapter 11
+thread on Chapter 6 until Theorem 6.16 is proved, then finish the remaining
+Chapter 6 main-text packets instead of jumping past the chapter: Lemma 6.18 and
+Theorem 6.19 for center-of-gravity/cutting-plane volume progress, Lemma 6.20
+for ellipsoid update geometry, Theorems 6.21-6.23 for nonsmooth lower bounds,
+and Definition 6.24/Theorem 6.25 for feasibility.  After Chapter 6 has a stable
+main-text spine, split future packets by chapter surface rather than by tiny
+lemmas: Chapter 7 `FrankWolfe.lean` for Theorem 7.3 and Carathéodory wrappers,
+Chapter 8 `Proximal.lean` for Theorems 8.5 and 8.6 reusing Chapter 5 AGD
+algebra, Chapters 9-10 `Fenchel.lean` and `MirrorDescent.lean` for
+Fenchel-Young/Bregman/OMD telescopes, Chapter 11
 `AlternatingProjection.lean` for ABP/AM/RAM recurrences, Chapter 12
 `StochasticGradient.lean`/`SMPGD.lean` reusing local probability modules, and
 Chapter 13/Appendix `Newton.lean`/`SelfConcordance.lean` with mathlib matrix
-and spectral APIs.  Scouts may map these APIs in parallel, but the commit gate
+and spectral APIs.  Scouts may map later APIs in parallel, but the commit gate
 should favor verified main-text theorem packets.
 
 ## Current Blocker

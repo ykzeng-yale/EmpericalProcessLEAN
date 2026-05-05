@@ -82,7 +82,10 @@ The next active packet should attack Theorem 6.16 directly, not drip one
 wrapper at a time.  Define the functional-constraint PSD trajectory/oracle
 interface, prove the objective-case and violated-constraint-case distance
 decreases from `projectedSubgradient_scaled_sqdist_recurrence`, and assemble
-the finite contradiction proof of (6.5) under the iteration lower bound.
+the finite contradiction proof of (6.5) under the iteration lower bound.  Once
+6.16 is verified, keep the main line in Chapter 6 long enough to build the
+cutting-plane, ellipsoid, nonsmooth lower-bound, and feasibility packets
+(6.18-6.25) before opening Chapter 7 as the next main-text frontier.
 Mandatory search and reuse: mathlib
 `Analysis/InnerProductSpace/Projection/Minimal.lean` has
 `exists_norm_eq_iInf_of_complete_convex` and
