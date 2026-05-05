@@ -4065,3 +4065,22 @@ add more endpoint wrappers unless an exact textbook theorem statement consumes
 them; instead assemble the exact named Theorem 2.4.3/Lemma 2.4.5 statement
 from this strong package and identify any remaining mismatch with the book's
 entropy/VC hypotheses.
+
+2026-05-05 `/goal` recalibration: the active goal should now treat the
+reverse/cofiltration theorem, no-`hreverse` Lemma 2.4.5 endpoint, and strong
+full-subgraph Theorem 2.4.3 package as closed.  The next high-capacity target is
+exact final-statement assembly, not another local endpoint wrapper.  Work from
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable`
+and try to produce the cleanest named VdVW Theorem 2.4.3/Lemma 2.4.5 statement
+with no avoidable extra assumptions.  First audit whether the remaining
+nonempty-class hypothesis can be removed by an empty-class/vacuity split for
+`vdVWWeightedClassSupremum`; if that fails, record the exact Lean obstruction.
+Then compare the resulting assumptions against the textbook entropy/VC
+statement.  Any remaining gap should be stated as a precise missing bridge, for
+example a theorem converting the book's entropy/VC hypotheses to the current
+full-subgraph/countable/integrable-envelope package, rather than hidden in a
+new wrapper.  If final 2.4.3 assembly is genuinely blocked after search and
+Lean attempts, continue to theorem-critical Chapter 1/2 primitives needed by
+that exact statement: arbitrary-map/asymptotic-measurability, `ell_infty`
+process primitives, FDD weak-convergence converse, or extended-real measurable
+cover existence.
