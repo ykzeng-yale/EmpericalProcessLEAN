@@ -89,23 +89,23 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at synced repository head `5d1e42f`
-before the latest proof batch:
-the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, the measurable
-signed arbitrary-map/varying-domain weak-convergence interfaces, the
-null-measurable Dirac-law bridge, and the null-measurable
+Current operational target, 2026-05-05 at synced repository head `3dcacda`:
+the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
+fixed-radius/inverse-radius entropy packages, deterministic untruncation and
+envelope-tail bridges, finite-class and full-subgraph structural routes,
+measurable/null-measurable signed arbitrary-map/varying-domain
+weak-convergence interfaces, Dirac-law bridges, and null-measurable
 asymptotic-measurability constructors are compiled and should be treated as
-closed infrastructure.  The `P`-measurable signed endpoint bridge has now
-also compiled: signed positive/negative outer expectation of a
-null-measurable bounded real test collapses to the ordinary integral, and the
-existing null-measurable Dirac-law convergence and asymptotic-measurability
-layers feed a signed bounded-continuous varying-domain weak-convergence
-consumer for Theorem 2.4.3.  The next blueprint target is the exact textbook
-mismatch layer: prove selected finite-net tail/UI from the book random entropy
-condition, remove any remaining countability/coordinate-measurability
-assumptions through Chapter 1 arbitrary-map and `P`-measurable foundations,
-and add nonmeasurable envelope-tail outer-cover clauses only when required by
-an exact Chapter 1-2 theorem statement.
+closed infrastructure.  The next blueprint target is the exact textbook
+mismatch layer: prove selected finite-net tail/UI or ordinary mean convergence
+from the book random entropy condition
+`log N(η, F_M, L1(P_n)) = o_P^*(n)`, or prove/record the precise structural
+uniform-integrability primitive needed to justify that step.  Do not rebuild
+closed Theorem 2.4.3 endpoint packages; remove countability/coordinate-
+measurability assumptions through Chapter 1 arbitrary-map and `P`-measurable
+foundations only when that is the active exact-statement gap, and add
+nonmeasurable envelope-tail outer-cover clauses only when required by an exact
+Chapter 1-2 theorem statement.
 
 2026-05-05 proof update: the countability-to-`P`-measurability route has a new
 compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`

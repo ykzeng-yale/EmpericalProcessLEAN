@@ -14,14 +14,18 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`5d1e42f` before the current proof batch: closed finite-net/Hoeffding/Mills,
-untruncation, reverse-cofiltration, selected-entropy, full-subgraph,
-measurable/null-measurable signed weak-convergence, and Dirac-law endpoint
-packages should not be rebuilt.  The current theorem-facing gap after this
-proof batch is the book random-entropy selected finite-net tail/UI mismatch
-and any exact nonmeasurable envelope-tail clauses that final textbook
-statements require.  The `P`-measurable null-measurable signed varying-domain
-endpoint itself is now compiled.
+`3dcacda`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
+inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
+full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
+and Dirac-law endpoint packages should not be rebuilt.  The current
+theorem-facing gap is the exact book random-entropy selected finite-net
+tail/UI or mean-convergence bridge for Theorem 2.4.3, plus any exact
+nonmeasurable envelope-tail or arbitrary-map clauses required by final
+textbook statements.  Bare outer-probability convergence of normalized random
+entropy should not be treated as tail/UI; future runs must either prove a real
+structural/UI theorem, instantiate an existing deterministic/L1 route from a
+valid structural bound, or record the missing primitive precisely and move to
+the next theorem-critical Chapter 1-2 gap.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new
