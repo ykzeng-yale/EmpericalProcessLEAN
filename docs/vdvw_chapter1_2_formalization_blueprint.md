@@ -1772,6 +1772,15 @@ net/subsequence handoff for reindexed probability-measure families.  This
 rounds out the measure-level filter-stability layer while preserving the
 remaining arbitrary-map/process blockers.
 
+2026-05-05 weak-convergence-to-tightness follow-up:
+`WeakConvergence.lean` now adds
+`VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_atTop`, using
+compactness of a convergent sequence plus mathlib's Prokhorov tightness
+theorem to turn sequential weak convergence into ordinary measure-level
+asymptotic tightness on complete second-countable pseudo-metric Borel spaces.
+This supports the Chapter 1 Prokhorov/tightness route but remains separate
+from stochastic-process asymptotic tightness for arbitrary maps.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

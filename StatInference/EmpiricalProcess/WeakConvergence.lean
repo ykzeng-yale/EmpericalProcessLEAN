@@ -3047,6 +3047,37 @@ theorem VdVWProbabilityMeasuresAsymptoticallyTight.of_tight_range
   hμs.asymptoticallyTight_of_eventually_mem (Eventually.of_forall fun i => ⟨i, rfl⟩)
 
 /--
+Sequential weak convergence of ordinary probability measures implies
+measure-level asymptotic tightness.
+
+This is the VdV&W-local Prokhorov/tightness consequence for sequences on
+complete second-countable pseudo-metric Borel spaces.  It remains
+measure-level and does not assert stochastic-process asymptotic tightness for
+arbitrary nonmeasurable maps.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_atTop
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S]
+    [OpensMeasurableSpace S] [BorelSpace S] [SecondCountableTopology S] [CompleteSpace S]
+    {μs : ℕ -> ProbabilityMeasure S} {μ : ProbabilityMeasure S}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs atTop μ) :
+    VdVWProbabilityMeasuresAsymptoticallyTight μs atTop := by
+  have hcompact_insert : IsCompact (insert μ (Set.range μs)) :=
+    hμ.isCompact_insert_range
+  have hclosed_insert : IsClosed (insert μ (Set.range μs)) :=
+    hcompact_insert.isClosed
+  have hclosure_subset : closure (Set.range μs) ⊆ insert μ (Set.range μs) :=
+    closure_minimal (Set.subset_insert μ (Set.range μs)) hclosed_insert
+  have hcompact_closure : IsCompact (closure (Set.range μs)) :=
+    hcompact_insert.of_isClosed_subset isClosed_closure hclosure_subset
+  exact
+    VdVWProbabilityMeasuresAsymptoticallyTight.of_tight_range
+      (μs := μs) (l := atTop)
+      (hμs := by
+        simpa [VdVWProbabilityMeasuresTight] using
+          (MeasureTheory.isTightMeasureSet_of_isCompact_closure
+            (𝓧 := S) (S := Set.range μs) hcompact_closure))
+
+/--
 Measure-level asymptotic tightness is preserved by continuous maps.
 
 This is the ordinary continuous-image tightness step used by finite-dimensional

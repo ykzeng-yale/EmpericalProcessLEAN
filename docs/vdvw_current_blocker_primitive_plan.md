@@ -5609,3 +5609,15 @@ index-map tending to the original filter pull asymptotic tightness back to
 the reindexed family.  This is the ordinary net/subsequence handoff needed by
 Chapter 1 process arguments; it still leaves exact arbitrary-map
 asymptotic-tightness and FDD-converse primitives open.
+
+2026-05-05 weak-convergence-to-tightness follow-up: local/mathlib search found
+the compact-range theorem `Tendsto.isCompact_insert_range` and mathlib's
+Prokhorov tightness theorem
+`MeasureTheory.isTightMeasureSet_of_isCompact_closure`, but no VdV&W-local
+consumer connecting sequential weak convergence of probability laws to the
+new asymptotic-tightness predicate.  `WeakConvergence.lean` now adds
+`VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_atTop` for
+complete second-countable pseudo-metric Borel spaces.  This closes the
+ordinary sequential measure-level implication “weak convergence implies
+asymptotic tightness”; it does not prove the VdV&W nonmeasurable
+arbitrary-map/process asymptotic-tightness theorem.

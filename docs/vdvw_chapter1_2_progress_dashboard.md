@@ -1975,3 +1975,9 @@ ordinary measure-level asymptotic-tightness predicate.
 `VdVWProbabilityMeasuresAsymptoticallyTight.comp_tendsto` now pulls ordinary
 asymptotic tightness back along any index map tending to the original filter,
 covering the basic net/subsequence reindexing use case.
+
+2026-05-05 weak-convergence-to-tightness follow-up:
+`VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_atTop` now proves
+that sequential weak convergence of probability measures implies ordinary
+measure-level asymptotic tightness in complete second-countable pseudo-metric
+Borel spaces.
