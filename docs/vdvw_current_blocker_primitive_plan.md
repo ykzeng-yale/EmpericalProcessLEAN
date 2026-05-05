@@ -193,7 +193,12 @@ Next high-capacity proof batches, in order:
    infinite-product first-sample lifts gives ordinary finite-product mean
    convergence.  The remaining entropy target is therefore the actual UI/tail
    or structural cardinality proof for the selected normalized empirical-cover
-   entropy.
+   entropy.  The common-space UI input now feeds the Theorem 2.4.3 selected
+   fixed-radius side-condition package through
+   `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_unifIntegrable`;
+   it first transfers the book external-cardinality convergence to the selected
+   least-cover process by monotonicity, then uses the first-sample UI mean
+   bridge.
 3. In parallel only when it directly supports exact Chapter 1-2 statements or
    Theorem 2.4.3 endpoints, close reusable arbitrary-map/process foundation
    gaps that are already search-isolated.  The signed weak-convergence

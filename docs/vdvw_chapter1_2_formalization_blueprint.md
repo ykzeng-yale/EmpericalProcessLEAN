@@ -262,6 +262,15 @@ uniform integrability of first-sample lifts to prove convergence of the
 finite-product integrals.  The next non-duplicative proof target remains the
 UI/tail or structural-cardinality theorem for selected normalized
 empirical-cover entropy.
+
+2026-05-05 selected UI package follow-up: `Theorem243.lean` now adds
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_unifIntegrable`.
+This consumes the book entropy field, selected-cardinality monotonicity,
+measurability/integrability of the selected normalized log-cardinality process,
+and uniform integrability of its first-sample lifts to build the selected
+fixed-radius tail/UI side-condition package.  The next proof target is the
+substantive UI/tail or structural cardinality theorem supplying that final
+uniform-integrability input.
 The next proof target is therefore not more selected-package plumbing: it is
 the honest varying-domain theorem deriving those raw normalized-log
 integrability/tail-UI hypotheses from the book random entropy assumption, or a

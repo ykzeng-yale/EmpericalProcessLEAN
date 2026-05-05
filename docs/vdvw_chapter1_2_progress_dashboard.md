@@ -243,6 +243,14 @@ Theorem 2.4.3 entropy problem is the substantive one: prove UI/tail or a
 structural cardinality bound for the selected normalized empirical-cover
 entropy.
 
+2026-05-05 selected UI package follow-up: the fixed-domain UI route now feeds
+the selected fixed-radius Theorem 2.4.3 side-condition package through
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_unifIntegrable`.
+This theorem composes the selected-cardinality monotonicity bridge, first-sample
+convergence recoding, fixed-domain UI mean bridge, and existing mean-to-tail
+adapter.  The remaining proof obligation is to establish the actual UI/tail or
+structural bound for the selected normalized empirical-cover entropy.
+
 2026-05-05 Chapter 1 arbitrary-map follow-up: the varying-domain signed
 bounded-continuous weak-convergence package now has continuous-mapping
 stability.  The new declarations
