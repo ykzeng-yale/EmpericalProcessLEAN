@@ -5513,3 +5513,17 @@ without claiming the arbitrary-index 1.4.8 converse; the remaining process
 blockers are still separability/asymptotic tightness, arbitrary-map
 asymptotic measurability/outer-cover weak convergence, and the full FDD
 weak-convergence converse.
+
+2026-05-05 finite-index raw-process converse follow-up: the adjacent search
+for `boundedProcess.*finiteProduct`, `finiteProduct.*boundedProcess`,
+`processMap.*finiteProduct`, and `finiteContinuousLinearEquiv.*processMap`
+found no existing raw-process finite-index converse.  `EllInfty.lean` now
+adds `VdVWEllInfty.finiteContinuousLinearEquiv_processMap_apply`, and
+`FiniteDimensional.lean` adds
+`vdVW148_boundedProcess_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite`.
+This proves that for finite `T`, convergence in distribution of the ordinary
+finite-coordinate raw processes implies convergence in distribution of the
+bounded `ell_infty(T)` process maps.  It closes the raw finite-index converse
+API while preserving the real arbitrary-index blockers: separability,
+tightness/asymptotic tightness, asymptotic measurability, and nonmeasurable
+outer-cover process weak convergence.

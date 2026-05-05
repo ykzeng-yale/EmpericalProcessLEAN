@@ -146,6 +146,12 @@ theorem finiteContinuousLinearEquiv_apply [Fintype T] (x : VdVWEllInfty T) :
   rfl
 
 @[simp]
+theorem finiteContinuousLinearEquiv_processMap_apply [Fintype T]
+    (X : Ω -> T -> ℝ) (hX : IsBoundedSamplePath X) (ω : Ω) :
+    finiteContinuousLinearEquiv (T := T) (processMap X hX ω) = X ω :=
+  rfl
+
+@[simp]
 theorem finiteContinuousLinearEquiv_symm_apply [Fintype T] (f : T -> ℝ) (t : T) :
     (finiteContinuousLinearEquiv (T := T)).symm f t = f t :=
   rfl

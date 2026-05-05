@@ -1696,6 +1696,17 @@ the forward raw-process bridge and leaves the exact arbitrary-index FDD
 converse, separability, asymptotic tightness, and nonmeasurable arbitrary-map
 weak-convergence primitives as the real Chapter 1 blockers.
 
+2026-05-05 finite-index raw-process converse follow-up: the finite-index
+VdV&W 1.4.8 converse now also has a raw bounded-process entry point.
+`EllInfty.lean` adds
+`VdVWEllInfty.finiteContinuousLinearEquiv_processMap_apply`, and
+`FiniteDimensional.lean` adds
+`vdVW148_boundedProcess_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite`.
+For finite `T`, ordinary finite-product convergence in distribution of raw
+bounded processes now feeds convergence of their `ell_infty(T)` process maps.
+This is still a finite-index theorem and does not close the arbitrary-index
+separability/tightness/asymptotic-measurability converse.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

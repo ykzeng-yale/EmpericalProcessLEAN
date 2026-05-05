@@ -141,6 +141,15 @@ directly.  `EllInfty.lean` adds
 `vdVW148_boundedProcess_finiteDimensional_tendstoInDistribution`.  These are
 forward FDD wrappers through `VdVWEllInfty.processMap`; arbitrary-index
 separability/asymptotic-tightness and FDD-converse primitives remain open.
+
+2026-05-05 finite-index raw-process converse follow-up: the raw bounded
+process layer now also has the finite-index converse entry point
+`vdVW148_boundedProcess_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite`,
+with `VdVWEllInfty.finiteContinuousLinearEquiv_processMap_apply` exposing the
+finite equivalence on process maps.  For finite `T`, ordinary finite-product
+convergence of raw processes now yields `ell_infty(T)` convergence; the
+arbitrary-index converse remains a separability/tightness/asymptotic-
+measurability problem.
 Direct null/a.e.-measurable constructors are now also available for the
 lower-shifted/canonical shifted bounded-continuous predicates in both
 common-domain and varying-domain forms.  The direct signed positive/negative

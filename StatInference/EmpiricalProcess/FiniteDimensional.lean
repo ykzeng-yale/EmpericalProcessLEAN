@@ -391,4 +391,41 @@ theorem vdVW148_ellInfty_tendstoInDistribution_of_finiteProduct_tendstoInDistrib
   have hback := hX.continuous_comp e.symm.continuous
   simpa [e, Function.comp_def] using hback
 
+/--
+Raw-process finite-index converse: for finite `T`, convergence in distribution
+of the ordinary finite-coordinate processes implies convergence in
+distribution of their bounded `ell_infty(T)` process maps.
+
+This is the raw-process analogue of
+`vdVW148_ellInfty_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite`.
+It remains finite-index only; the arbitrary-index VdV&W 1.4.8 converse still
+requires separability, tightness, and asymptotic-measurability primitives.
+-/
+theorem vdVW148_boundedProcess_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite
+    {ι : Type*} {Ω : ι -> Type*} {Ω' : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {X : (i : ι) -> Ω i -> T -> ℝ} {Z : Ω' -> T -> ℝ}
+    (hXbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    {l : Filter ι}
+    (hX : TendstoInDistribution X l Z μ μ') :
+    TendstoInDistribution
+      (fun i => VdVWEllInfty.processMap (X i) (hXbounded i))
+      l
+      (VdVWEllInfty.processMap Z hZbounded)
+      μ μ' := by
+  refine
+    vdVW148_ellInfty_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite
+      (T := T) (Ω := Ω) (Ω' := Ω') (μ := μ) (μ' := μ')
+      (X := fun i => VdVWEllInfty.processMap (X i) (hXbounded i))
+      (Z := VdVWEllInfty.processMap Z hZbounded) (l := l) ?_
+  simpa [Function.comp_def, VdVWEllInfty.processMap] using hX
+
 end StatInference
