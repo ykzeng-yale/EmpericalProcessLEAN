@@ -29642,6 +29642,69 @@ theorem
         hvc h_nonempty henvelope hclass henv henv_integrable
 
 /--
+The strongest current full-subgraph Theorem 2.4.3/Lemma 2.4.5 package, with
+the textbook-side measurable-envelope assumptions made explicit.
+
+This does not claim the exact textbook entropy theorem: it records that, under
+the current countable coordinate-measurable full-subgraph route, the class is
+`P`-measurable in the sense of Definition 2.3.3 and the measurable integrable
+envelope has finite VdV&W nonnegative outer expectation.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWPMeasurableClass P indexClass classFun ∧
+      VdVWOuterExpectation P (fun observation => ENNReal.ofReal (envelope observation)) < ∞ ∧
+      VdVWOuterProbabilityPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWOuterAlmostSurePGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) := by
+  have hcount : indexClass.Countable :=
+    Set.Countable.mono (fun index _hindex => Set.mem_univ index) Set.countable_univ
+  refine
+    ⟨VdVWPMeasurableClass.of_countable_of_measurable
+        (P := P) hcount hclass,
+      henvelope.outerExpectation_lt_top_of_measurable_integrable henv henv_integrable,
+      ?_⟩
+  exact
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (vcDegree := vcDegree)
+      hvc henvelope hclass henv henv_integrable
+
+/--
 Canonical finite-class almost-sure `P`-Glivenko-Cantelli record from the direct
 finite-class SLLN route.
 

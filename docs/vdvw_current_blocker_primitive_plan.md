@@ -4123,3 +4123,18 @@ Theorem 2.4.3 final-assembly gaps are now more sharply: exact arbitrary
 the book random empirical entropy hypothesis versus the current
 full-subgraph/selected fixed-radius tail package, and nonmeasurable-envelope
 outer-cover variants if the exact arbitrary-map statement requires them.
+
+2026-05-05 follow-up: the countable coordinate-measurable route now explicitly
+exports the two textbook-side hypotheses that it can honestly supply.  The
+compiled theorem
+`VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`
+combines `VdVWPMeasurableClass.of_countable_of_measurable`,
+`VdVWClassEnvelope.outerExpectation_lt_top_of_measurable_integrable`, and the
+no-nonempty strong full-subgraph package.  Its conclusion contains
+Definition 2.3.3 `P`-measurability, finite VdV&W outer envelope expectation,
+outer-probability GC, outer-a.s. GC, the local book-style `P`-GC predicate,
+in-mean centered-supremum convergence, and Lemma 2.4.5 a.s.
+centered-supremum convergence.  This closes the countable-route bookkeeping
+for `P`-measurability; it does not close the exact arbitrary
+`P`-measurable/asymptotic-measurable textbook class layer or the book random
+entropy-to-full-subgraph/fixed-radius finite-net bridge.

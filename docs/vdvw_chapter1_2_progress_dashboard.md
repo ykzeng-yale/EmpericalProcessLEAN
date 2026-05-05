@@ -1372,3 +1372,14 @@ assembly mismatch; the remaining Theorem 2.4.3 mismatches are the exact
 arbitrary `P`-measurable/asymptotic-measurable class layer and the conversion
 from the book random empirical entropy condition to the current fixed-radius
 selected/full-subgraph finite-net package.
+
+2026-05-05 follow-up: the countable full-subgraph route now has a compact
+textbook-aligned consumer,
+`VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`.
+It packages Definition 2.3.3 `P`-measurability and finite outer envelope
+expectation together with the already proved no-nonempty Theorem 2.4.3/Lemma
+2.4.5 strong conclusions.  The remaining Theorem 2.4.3 work is no longer
+bookkeeping for the countable route; it is the genuinely broader arbitrary
+`P`-measurable/asymptotic-measurable layer and the conversion from the book's
+random empirical entropy hypothesis to the current fixed-radius/full-subgraph
+finite-net assumptions.
