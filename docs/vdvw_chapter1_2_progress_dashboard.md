@@ -1131,3 +1131,11 @@ use mathlib `Supermartingale.neg` and `eLpNorm_neg` to reduce an ordinary
 supermartingale realization to the same finite-limit and full-subgraph endpoint
 as the submartingale route.  This keeps the reverse/cofiltration reindexing
 lane flexible without changing the active blocker.
+
+2026-05-04 follow-up: the supermartingale path now has the matching
+constructor-level one-step drift endpoint:
+`VdVWLemma245ReverseCofiltrationHandoff.of_condExp_step_nonpos` and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_condExp_step_nonpos`.
+These consume mathlib `supermartingale_of_condExp_sub_nonneg_nat`, so future
+reverse/cofiltration attempts can target the signed drift condition that is
+actually produced by the reindexing.

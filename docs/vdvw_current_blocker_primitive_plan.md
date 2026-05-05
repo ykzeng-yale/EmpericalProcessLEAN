@@ -3716,3 +3716,17 @@ This does not prove the VdV&W reverse/cofiltration theorem, but it removes a
 possible sign mismatch in future reindexing attempts: either an ordinary
 submartingale or ordinary supermartingale realization can now feed the same
 full-subgraph Theorem 2.4.3/Lemma 2.4.5 endpoint.
+
+2026-05-04 follow-up: the supermartingale route now also has the
+constructor-level one-step drift form.  Search/reuse record: pinned mathlib
+`Probability/Martingale/Basic.lean` supplies
+`supermartingale_of_condExp_sub_nonneg_nat`, whose hypothesis is
+`0 ≤ E[X_n - X_{n+1} | ℱ_n]`.  Local integrability is again supplied by
+`integrable_vdVWLemma245CenteredEmpiricalSupremum_of_countable`.  New compiled
+declarations are
+`VdVWLemma245ReverseCofiltrationHandoff.of_condExp_step_nonpos` and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_condExp_step_nonpos`.
+The active blocker remains the reverse/cofiltration convergence theorem, but
+future proof attempts can now target either constructor condition:
+`E[X_{n+1} - X_n | ℱ_n] ≥ 0` for a submartingale or
+`E[X_n - X_{n+1} | ℱ_n] ≥ 0` for a supermartingale.

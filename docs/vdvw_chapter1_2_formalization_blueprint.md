@@ -1168,6 +1168,11 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_supermartingale`.
    This is a flexibility layer for the eventual reindexing proof, not a
    replacement for the missing reverse/cofiltration convergence theorem.
+   The matching constructor-level supermartingale drift package is also
+   compiled as `VdVWLemma245ReverseCofiltrationHandoff.of_condExp_step_nonpos`
+   and
+   `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_condExp_step_nonpos`,
+   reusing mathlib `supermartingale_of_condExp_sub_nonneg_nat`.
    On the Theorem 2.4.3 convergence side, the finite-class canonical route now
    also packages both current conclusions as
    `VdVWTheorem243_finite_indexClass_outerProbabilityUniformDeviation_and_inMean_canonical`;
