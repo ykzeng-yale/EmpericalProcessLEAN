@@ -5571,6 +5571,34 @@ theorem vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_ae_lt_top
   exact vdVW_tendsto_of_downcrossings_lt_top hω_bounded hω_down
 
 /--
+Order-dual convergence from bounded finite-prefix reverse downcrossings.
+
+Mathlib characterizes finiteness of total upcrossings by a uniform finite
+bound on all finite-horizon `upcrossingsBefore` counts.  This is the exact
+shape expected from the next finite-window combinatorial estimate, so this
+wrapper removes the `ℝ≥0∞` total-upcrossing layer from downstream proof
+obligations.
+-/
+theorem vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossingsBefore_bound
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕᵒᵈ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕᵒᵈ -> Ω -> ℝ} {R : ℝ≥0}
+    (hsub : Submartingale f ℱ μ)
+    (hbdd : ∀ n : ℕᵒᵈ, eLpNorm (f n) 1 μ ≤ (R : ℝ≥0∞))
+    (hbound :
+      ∀ a b : ℚ, a < b ->
+        ∀ᵐ ω ∂μ, ∃ K : ℕ, ∀ N : ℕ,
+          upcrossingsBefore (-(b : ℝ)) (-(a : ℝ))
+            (fun n : ℕ => fun ω : Ω => -f (OrderDual.toDual n) ω) N ω ≤ K) :
+    ∀ᵐ ω ∂μ, ∃ limit : ℝ,
+      Tendsto (fun n : ℕ => f (OrderDual.toDual n) ω) atTop (𝓝 limit) := by
+  refine vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_ae_lt_top
+    (μ := μ) (ℱ := ℱ) (f := f) hsub hbdd ?_
+  intro a b hab
+  filter_upwards [hbound a b hab] with ω hω
+  rwa [upcrossings_lt_top_iff]
+
+/--
 The textbook Lemma 2.4.5 display comparison builds a genuine mathlib
 submartingale over the shifted VdV&W permutation-symmetric cofiltration.
 

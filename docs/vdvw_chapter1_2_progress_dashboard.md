@@ -1255,3 +1255,9 @@ reverse downcrossing counts for
 `n ↦ f (OrderDual.toDual n)`.  Once that is available, boundedness and
 pointwise convergence follow from existing mathlib plus the new local
 deterministic criterion.
+2026-05-04 follow-up: the finite-prefix version of that target is now
+compiled as `vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossingsBefore_bound`.
+It converts a uniform bound on all finite `upcrossingsBefore` reverse
+downcrossing counts into the a.e. convergence conclusion.  The remaining
+proof obligation is now the deterministic/measure bridge from finite-window
+reversed-process upcrossing estimates to those finite-prefix bounds.

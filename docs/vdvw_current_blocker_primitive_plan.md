@@ -113,6 +113,20 @@ finite-window estimate
 or show that a different reindexing into an ordinary sub/supermartingale
 constructor is shorter.
 
+2026-05-04 follow-up: the total-upcrossing layer is now removed from the
+remaining order-dual proof obligation.  The compiled theorem
+`vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossingsBefore_bound` consumes
+the finite-prefix form
+`∃ K, ∀ N, upcrossingsBefore (-(b : ℝ)) (-(a : ℝ))
+  (fun n ω => -f (OrderDual.toDual n) ω) N ω ≤ K`
+for every rational `a < b`, then applies
+`vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_ae_lt_top` via
+mathlib `upcrossings_lt_top_iff`.  The next target is therefore the exact
+finite-prefix reverse-downcrossing bound from the finite-window estimates,
+including the deterministic comparison between a downcrossing of
+`n ↦ f (OrderDual.toDual n)` on `[0, N]` and an upcrossing of the reversed
+finite-window process `k ↦ f (OrderDual.toDual (N-k))`.
+
 2026-05-04 `/goal` target update: the live non-finite-class frontier is no
 longer inverse-radius entropy, finite-cover selection, VC/subgraph packaging,
 untruncation, finite-class GC, or leave-one-out notation.  Those layers are
