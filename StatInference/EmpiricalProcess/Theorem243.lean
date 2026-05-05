@@ -5599,6 +5599,44 @@ theorem vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossingsBefore_bound
   rwa [upcrossings_lt_top_iff]
 
 /--
+Order-dual convergence from finite expected reverse downcrossings.
+
+This is the expectation-facing version of the previous consumer.  It is shaped
+for the finite-window Doob estimates: once the total reverse-downcrossing count
+has finite lintegral for every rational interval, `ae_lt_top` gives the
+pointwise finiteness required by
+`vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_ae_lt_top`.
+-/
+theorem vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_lintegral_lt_top
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕᵒᵈ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕᵒᵈ -> Ω -> ℝ} {R : ℝ≥0}
+    (hsub : Submartingale f ℱ μ)
+    (hbdd : ∀ n : ℕᵒᵈ, eLpNorm (f n) 1 μ ≤ (R : ℝ≥0∞))
+    (hdown_integral :
+      ∀ a b : ℚ, a < b ->
+        ∫⁻ ω, upcrossings (-(b : ℝ)) (-(a : ℝ))
+          (fun n : ℕ => fun ω : Ω => -f (OrderDual.toDual n) ω) ω ∂μ < ∞) :
+    ∀ᵐ ω ∂μ, ∃ limit : ℝ,
+      Tendsto (fun n : ℕ => f (OrderDual.toDual n) ω) atTop (𝓝 limit) := by
+  refine vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_ae_lt_top
+    (μ := μ) (ℱ := ℱ) (f := f) hsub hbdd ?_
+  intro a b hab
+  let g : ℕ -> Ω -> ℝ := fun n ω => -f (OrderDual.toDual n) ω
+  have hg_sm : ∀ n : ℕ, StronglyMeasurable (g n) := by
+    intro n
+    exact ((hsub.stronglyMeasurable (OrderDual.toDual n)).neg).mono
+      (ℱ.le (OrderDual.toDual n))
+  have hg_adapted :
+      StronglyAdapted (Filtration.natural g hg_sm) g :=
+    Filtration.stronglyAdapted_natural (u := g) hg_sm
+  have hneg : (-(b : ℝ)) < (-(a : ℝ)) :=
+    neg_lt_neg (Rat.cast_lt.2 hab)
+  exact ae_lt_top
+    (hg_adapted.measurable_upcrossings hneg)
+    (ne_of_lt (hdown_integral a b hab))
+
+/--
 The textbook Lemma 2.4.5 display comparison builds a genuine mathlib
 submartingale over the shifted VdV&W permutation-symmetric cofiltration.
 

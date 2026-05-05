@@ -127,6 +127,19 @@ including the deterministic comparison between a downcrossing of
 `n ↦ f (OrderDual.toDual n)` on `[0, N]` and an upcrossing of the reversed
 finite-window process `k ↦ f (OrderDual.toDual (N-k))`.
 
+2026-05-04 follow-up: the expected-crossing version is now compiled as
+`vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_lintegral_lt_top`.
+Search/reuse record: mathlib provides `StronglyAdapted.measurable_upcrossings`,
+`Filtration.stronglyAdapted_natural`, and `ae_lt_top`, but no reverse
+cofiltration convergence theorem.  The new consumer builds the natural
+filtration of the ordinary reverse signed process
+`g n ω = -f (OrderDual.toDual n) ω`, uses the submartingale's coordinate
+strong measurability to get measurability of total reverse downcrossing counts,
+and turns finite lintegral of those counts into the a.e. finiteness input
+required by `vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_ae_lt_top`.
+Next target: prove the finite lintegral hypotheses from the finite-window Doob
+estimate or from a deterministic comparison plus monotone convergence.
+
 2026-05-04 `/goal` target update: the live non-finite-class frontier is no
 longer inverse-radius entropy, finite-cover selection, VC/subgraph packaging,
 untruncation, finite-class GC, or leave-one-out notation.  Those layers are

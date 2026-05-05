@@ -1261,3 +1261,9 @@ It converts a uniform bound on all finite `upcrossingsBefore` reverse
 downcrossing counts into the a.e. convergence conclusion.  The remaining
 proof obligation is now the deterministic/measure bridge from finite-window
 reversed-process upcrossing estimates to those finite-prefix bounds.
+2026-05-04 follow-up: the expectation-facing route is now also compiled as
+`vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_lintegral_lt_top`.
+It converts finite lintegral of total reverse downcrossing counts into the
+same order-dual convergence conclusion, using the natural filtration of the
+signed reverse process for measurability.  This is the route most directly
+aligned with finite-window Doob estimates.
