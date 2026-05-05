@@ -1240,3 +1240,10 @@ next proof at a finite-window reverse-upcrossing estimate.
 It applies mathlib's ordinary Doob upcrossing inequality to each reversed
 finite window.  The next bridge is the combinatorial comparison between
 ordinary reverse-time upcrossings and those finite-window reversed estimates.
+2026-05-04 follow-up: the ordinary supermartingale convergence adapter now
+compiles as `vdVW_supermartingale_exists_ae_tendsto_of_eLpNorm_bdd`.  It is
+proved only from pinned mathlib `Submartingale.exists_ae_tendsto_of_bdd`,
+`Supermartingale.neg`, and `eLpNorm_neg`, so it adds no new probabilistic
+primitive.  This keeps the reverse/cofiltration route sign-flexible if a later
+finite-window or reindexing step yields an ordinary supermartingale, but the
+main blocker remains `VdVWOrderDualSubmartingaleConvergenceHandoff`.

@@ -58,6 +58,31 @@ theorem vdVW_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd
   hf.ae_tendsto_limitProcess hbdd
 
 /--
+VdV&W Lemma 2.4.5 foundation wrapper: the ordinary `ℕ` supermartingale
+counterpart of mathlib's `Submartingale.exists_ae_tendsto_of_bdd`.
+
+Pinned mathlib states the convergence theorem for submartingales.  The
+reverse/cofiltration route can produce either sign after finite reindexing, so
+this local wrapper records the no-new-primitive reduction through negation.
+-/
+theorem vdVW_supermartingale_exists_ae_tendsto_of_eLpNorm_bdd
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕ -> Ω -> ℝ} {R : ℝ≥0}
+    (hf : Supermartingale f ℱ μ)
+    (hbdd : ∀ n, eLpNorm (f n) 1 μ ≤ R) :
+    ∀ᵐ ω ∂μ, ∃ limit : ℝ,
+      Tendsto (fun n => f n ω) atTop (𝓝 limit) := by
+  have hneg : Submartingale (-f) ℱ μ := hf.neg
+  have hbdd_neg : ∀ n, eLpNorm ((-f) n) 1 μ ≤ R := by
+    intro n
+    simpa [Pi.neg_apply, eLpNorm_neg] using hbdd n
+  filter_upwards [hneg.exists_ae_tendsto_of_bdd hbdd_neg] with ω hω
+  rcases hω with ⟨limit, hlimit⟩
+  refine ⟨-limit, ?_⟩
+  simpa [Pi.neg_apply] using hlimit.neg
+
+/--
 Conditional expectations of a fixed real random variable along an ordinary
 mathlib filtration form the submartingale needed by the VdV&W Lemma 2.4.5
 route.
@@ -6007,40 +6032,21 @@ theorem vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_of_supermartingale
             vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
               (n + 1) sequence)
           atTop (𝓝 limit) := by
-  have hnegSub :
-      Submartingale
-        (fun n : ℕ => fun sequence : ℕ -> Observation =>
-          -vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
-            (n + 1) sequence)
-        ℱ (vdVWInfiniteProductMeasure P) := by
-    simpa using hsuper.neg
   have hbdd :
       ∀ n : ℕ,
         eLpNorm
           (fun sequence : ℕ -> Observation =>
-            -vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
               (n + 1) sequence)
           1 (vdVWInfiniteProductMeasure P) ≤
           ENNReal.ofReal (2 * ∫ x, envelope x ∂P) := by
     intro n
-    change
-      eLpNorm
-        (-(fun sequence : ℕ -> Observation =>
-          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
-            (n + 1) sequence))
-        1 (vdVWInfiniteProductMeasure P) ≤
-        ENNReal.ofReal (2 * ∫ x, envelope x ∂P)
-    rw [eLpNorm_neg]
     simpa [Nat.succ_eq_add_one] using
       eLpNorm_vdVWLemma245CenteredEmpiricalSupremum_le_two_integral_envelope
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) hcount henvelope hclass henv_integrable
         (Nat.succ_pos n)
-  have hnegLimit := hnegSub.exists_ae_tendsto_of_bdd hbdd
-  filter_upwards [hnegLimit] with sequence hsequence
-  rcases hsequence with ⟨limit, hlimit⟩
-  refine ⟨-limit, ?_⟩
-  simpa using hlimit.neg
+  exact vdVW_supermartingale_exists_ae_tendsto_of_eLpNorm_bdd hsuper hbdd
 
 /--
 The exact remaining VdV&W Lemma 2.4.5 reverse/cofiltration convergence

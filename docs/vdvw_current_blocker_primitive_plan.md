@@ -83,6 +83,20 @@ finite-window process.  Next proof target: relate ordinary upcrossings of
 reversed-window estimate, then pass to the global reverse-time convergence
 handoff.
 
+2026-05-04 follow-up: the ordinary supermartingale convergence sign adapter is
+now compiled as `vdVW_supermartingale_exists_ae_tendsto_of_eLpNorm_bdd`.
+Search/reuse record: pinned mathlib has
+`Submartingale.exists_ae_tendsto_of_bdd`, `Supermartingale.neg`, and
+`eLpNorm_neg`, but no standalone
+`Supermartingale.exists_ae_tendsto_of_bdd`.  The new local theorem is proved
+by negating into the pinned submartingale convergence theorem and then
+negating the pointwise limit back.  This does not close the reverse
+cofiltration theorem, but it removes a sign-only obstacle for attempts that
+reindex the `ℕᵒᵈ` process into an ordinary supermartingale.  The active
+blocker remains the reverse/upcrossing or reindexing theorem for
+`VdVWOrderDualSubmartingaleConvergenceHandoff`; do not count this adapter as a
+proof of Lemma 2.4.5.
+
 2026-05-04 `/goal` target update: the live non-finite-class frontier is no
 longer inverse-radius entropy, finite-cover selection, VC/subgraph packaging,
 untruncation, finite-class GC, or leave-one-out notation.  Those layers are
