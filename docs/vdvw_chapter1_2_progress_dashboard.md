@@ -1432,3 +1432,13 @@ and the finite-product outer-probability uniform-deviation conclusion.  The
 remaining theorem-critical work is to instantiate those rate/covering inputs
 from actual VdV&W structural entropy/VC hypotheses, or replace the
 deterministic boundedness branch with a true random-entropy tail/UI theorem.
+
+2026-05-05 follow-up: the same structural-rate branch now also reaches the
+canonical infinite-product GC endpoints.  New compiled declarations
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_logCardinality_div_tendsto_bound`
+and `VdVWPGlivenkoCantelliClass_of_logCardinality_div_tendsto_bound` project
+the finite-product result to the canonical iid process and package it as the
+local book-style `P`-Glivenko-Cantelli predicate.  Remaining work is now
+concentrated on proving the structural rate/covering inputs from actual
+VdV&W entropy/VC hypotheses, or proving the missing random-entropy tail/UI
+bridge without deterministic boundedness.

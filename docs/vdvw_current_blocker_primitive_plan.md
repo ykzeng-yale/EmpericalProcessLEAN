@@ -4206,3 +4206,17 @@ real blocker is no longer a packaging handoff: instantiate `hcovering_all`,
 textbook structural covering/VC theorem, or prove the missing
 non-deterministic selected finite-net tail/UI theorem from random entropy
 alone.
+
+2026-05-05 follow-up: the structural deterministic-rate branch now reaches the
+canonical infinite-product `P`-Glivenko-Cantelli endpoints.  The compiled
+declaration
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_logCardinality_div_tendsto_bound`
+projects the finite-product outer-probability uniform-deviation conclusion to
+the infinite iid product process, and
+`VdVWPGlivenkoCantelliClass_of_logCardinality_div_tendsto_bound` packages that
+as the local book-style `P`-GC predicate.  These are still structural-rate
+sufficient conditions, not the exact arbitrary textbook Theorem 2.4.3.  The
+next real proof target is to derive those rate/covering inputs from a genuine
+VdV&W structural entropy/VC theorem, or to remove the deterministic-rate
+boundedness assumption by proving the selected finite-net tail/UI theorem from
+random entropy alone.
