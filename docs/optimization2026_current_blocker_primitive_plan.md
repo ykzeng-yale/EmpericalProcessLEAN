@@ -92,23 +92,37 @@ the final source wrapper
 positive `N` under convexity, smoothness, feasible AGD trajectory, and
 minimizer membership assumptions.
 
-The active aggressive target is now Chapter 6 nonsmooth convex optimization.
-Start with a new `StatInference/Optimization/ProjectedSubgradient.lean` module
-unless a search finds a better existing local anchor.  The first theorem-sized
-packet should build source-shaped interfaces for Definition 6.8 subgradients,
-Definition 6.11 projection, Lemma 6.12 projection characterization, Lemma 6.13
-projection non-expansiveness, the PSD trajectory display at markdown lines
-1512-1517, and Theorem 6.14's average-gap bound around lines 1523-1554.  Search
-and reuse first: mathlib `Analysis/InnerProductSpace/Projection/Minimal.lean`
-has `exists_norm_eq_iInf_of_complete_convex` and
-`norm_eq_iInf_iff_real_inner_le_zero`; mathlib `Topology/MetricSpace/Lipschitz`
-has `LipschitzOnWith`, `LipschitzOnWith.dist_le_mul`, and
-`LipschitzOnWith.le_add_mul`; local Chapter 3/5 finite-sum telescope and convex
-average lower-bound patterns should be reused for the PSD summation.  Avoid a
-heavy extended-real regular-convex foundation in the first pass unless it
-directly unblocks a named theorem; for Theorem 6.14 it is faster to use a
-supplied finite-valued subgradient/lipschitz/projection interface and later
-backfill Definitions 6.1-6.10.
+The active aggressive target is Chapter 6 nonsmooth convex optimization.
+`StatInference/Optimization/ProjectedSubgradient.lean` now starts this lane and
+compiles a source-shaped finite-valued packet for Definition 6.8, Definition
+6.11, Lemma 6.12, Lemma 6.13, the PSD trajectory display, and the main
+Theorem 6.14 average-gap inequality in a supplied-interface form.  Compiled
+declarations include `IsSubgradientAt`, `ProjectionCharacterizationOn`,
+`ProjectionCharacterizationOn.dist_to_set_le`,
+`ProjectionCharacterizationOn.fixed`,
+`ProjectionCharacterizationOn.nonexpansive`, `ProjectionOracleOn`,
+`ProjectionCharacterizationOn.toProjectionOracleOn`, `normalizedSubgradient`,
+`projectedSubgradientStep`, `IsProjectedSubgradientTrajectory`,
+`iterateAverage`, the Jensen wrappers
+`convex_value_iterateAverage_le_average` and
+`convex_value_iterateAverage_sub_le_average_gap`,
+`projectedSubgradient_sqdist_recurrence`,
+`projectedSubgradient_gap_average_bound_of_recurrence`, and
+`chewi614_average_gap_bound`.
+
+Next Chapter 6 target: close the source gap between Chewi's stated
+`L`-Lipschitz assumption and the current supplied subgradient norm bound, then
+add the displayed `h = R / sqrt N` corollary if the scalar algebra stays
+bounded.  Search and reuse first: mathlib
+`Analysis/InnerProductSpace/Projection/Minimal.lean` has
+`exists_norm_eq_iInf_of_complete_convex` and
+`norm_eq_iInf_iff_real_inner_le_zero`; mathlib `Analysis/Convex/Jensen.lean`
+has `ConvexOn.map_sum_le`; mathlib `Topology/MetricSpace/Lipschitz.lean` has
+`LipschitzOnWith`, `LipschitzOnWith.dist_le_mul`, and
+`LipschitzOnWith.le_add_mul`; local Chapter 3/5 finite-sum telescope and
+convex-average patterns are already reused for the PSD summation.  Avoid a
+heavy extended-real regular-convex foundation unless it directly unblocks a
+named theorem; backfill Definitions 6.1-6.10 only when a theorem needs them.
 
 Speed rule for this manual goal: make theorem-sized packets, not one-wrapper
 push loops.  Use scouts in parallel for future Chapter 6-8 nonsmooth/proximal
