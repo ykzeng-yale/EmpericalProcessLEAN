@@ -68,22 +68,22 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Live replacement `/goal` prompt after the 2026-05-05 Theorem 6.16 source
+Live replacement `/goal` prompt after the 2026-05-05 cutting-plane source
 packet: aggressively formalize and prove all main theorem content of Sinho
 Chewi's Optimization 2026 notes in Lean under `StatInference/Optimization`,
 with exercises tracked in the single `StatInference/Optimization/Exercises.lean`
 module but not allowed to slow the main-text theorem lane.  Continue from the
-latest verified frontier where `StatInference/Optimization/ProjectedSubgradient.lean`
-proves the finite-valued source-shaped subgradient/projection/PSD layer through
-the supplied-interface Theorem 6.14 average-gap bound, its Lipschitz/ray source
-bridge, the displayed `h = R / sqrt N` rate wrapper, and the scaled-step
-recurrence, functional-constraint PSD interface, objective-case and
-violated-constraint-case strict decrease lemmas, finite strict-decrease
-contradiction, and proof-carrying existential Theorem 6.16 wrapper
-`chewi616_exists_functionalConstraintSuccess`.  The app-level `/goal` objective
-text still mentions the obsolete Theorem 3.4 frontier and cannot be edited
-directly through the current tool surface unless the full textbook goal is
-marked complete, so this paragraph is the operative manual `/goal` target.
+verified frontier where `StatInference/Optimization/ProjectedSubgradient.lean`
+proves the finite-valued Theorem 6.14 and Theorem 6.16 PSD/functional-constraint
+layers, and `StatInference/Optimization/CuttingPlane.lean` now starts Lemma
+6.18/Theorem 6.19 with a supplied-interface cutting-plane layer: finite
+volume-shrink recurrence, `centerOfGravityRate`, scaled outside-candidate
+interface, convex scaled-candidate Lipschitz/diameter bound, the limiting
+`t -> rho` scalar helper, and source-rate wrappers for
+`f (x (N-1)) - fStar <= D * L * lambda^(N/d)`.  The app-level `/goal`
+objective text still mentions the obsolete Theorem 3.4 frontier and cannot be
+edited directly through the current tool surface unless the full textbook goal
+is marked complete, so this paragraph is the operative manual `/goal` target.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
@@ -100,16 +100,18 @@ minimizer membership assumptions.
 
 The active aggressive target is Chapter 6 nonsmooth convex optimization, with
 main-text theorem coverage prioritized over reports and exercises.  Theorem
-6.14 is source-complete in the finite-valued/ray-valid form, and Theorem 6.16
-now compiles in the proof-carrying existential form of display (6.5).  The next
-theorem packet should stay in Chapter 6 and open the cutting-plane/center of
-gravity lane: introduce a source-shaped cutting-plane state/interface for
-Lemma 6.18 and Theorem 6.19, use a supplied Grünbaum/volume-shrink hypothesis
-at first, prove the finite volume-shrink recurrence and the source rate
-wrapper `f (x (N-1)) - fStar <= D * L * lambda^(N/d)` from the compiled convex
-and Lipschitz interfaces, and record exactly which genuine measure/centroid
-facts remain before an exact report.  Do not spend a run only polishing a minor
-wrapper unless it is the fastest verified dependency for this theorem packet.
+6.14 is source-complete in the finite-valued/ray-valid form, Theorem 6.16 now
+compiles in the proof-carrying existential form of display (6.5), and the first
+CuttingPlane packet compiles the algebraic spine for Lemma 6.18/Theorem 6.19.
+The next theorem packet should close the remaining supplied-geometry bridge:
+derive the eventual scaled-candidate bound from the volume comparison and
+localization certificate, package a source-shaped CoGM trajectory theorem
+around the compiled `chewi619_gap_le_display_rate_of_eventual_scaled_bound`,
+and record the exact unproved centroid/Grunbaum facts needed before any exact
+report.  If that bridge balloons into measure theory, keep it as a sharply
+documented supplied interface and move immediately to Lemma 6.20 ellipsoid
+geometry.  Do not spend a run only polishing a minor wrapper unless it is the
+fastest verified dependency for this theorem packet.
 
 `StatInference/Optimization/ProjectedSubgradient.lean` now starts this lane and
 compiles a source-shaped finite-valued packet for Definition 6.8, Definition
@@ -154,15 +156,19 @@ mathlib `Analysis/InnerProductSpace/Projection/Minimal.lean` has
 has `ConvexOn.map_sum_le`; mathlib `Topology/MetricSpace/Lipschitz.lean` has
 `LipschitzOnWith`, `LipschitzOnWith.dist_le_mul`, and
 `LipschitzOnWith.le_add_mul`; mathlib `Data/Real/Sqrt.lean` supplies
-`Real.sqrt_pos` and `Real.sq_sqrt`; local Chapter 3/5 finite-sum telescope and
-convex-average patterns are already reused for the PSD summation.  Avoid a
-heavy extended-real regular-convex foundation unless it directly unblocks a
-named theorem; backfill Definitions 6.1-6.10 only when a theorem needs them.
-For the next cutting-plane packet, the current search found no direct local or
-mathlib Grünbaum/centroid theorem.  Mathlib has extensive measure/volume and
-convex-body infrastructure in specialized files, but the fastest route for
-Theorem 6.19 is initially a supplied volume-shrink/centroid interface plus
-verified finite recurrence and Lipschitz/diameter algebra.
+`Real.sqrt_pos` and `Real.sq_sqrt`; mathlib convex segment APIs include
+`Convex.lineMap_mem` and `ConvexOn.le_on_segment`/`le_on_segment'`; mathlib
+diameter APIs include `Metric.ediam_le`/the deprecated `diam_le` aliases; real
+power APIs include `Real.rpow`, `Real.rpow_nonneg`, and monotonicity lemmas.
+Local Chapter 3/5 finite-sum telescope and convex-average patterns are already
+reused for the PSD summation.  Avoid a heavy extended-real regular-convex
+foundation unless it directly unblocks a named theorem; backfill Definitions
+6.1-6.10 only when a theorem needs them.  For the cutting-plane lane, the
+current search found no direct local or mathlib Grünbaum/centroid theorem.
+Mathlib has extensive measure/volume and convex-body infrastructure in
+specialized files, but the fastest route for Theorem 6.19 is initially a
+supplied volume-shrink/centroid interface plus the now-verified finite
+recurrence and Lipschitz/diameter algebra in `CuttingPlane.lean`.
 
 Speed rule for this manual goal: make theorem-sized packets, not one-wrapper
 push loops.  Use scouts in parallel for future Chapter 6-8 nonsmooth/proximal
@@ -179,17 +185,16 @@ theorem.  All Optimization textbook exercise statements and exercise proofs
 should live in the single module `StatInference/Optimization/Exercises.lean`,
 so the later exercise sweep remains source-trackable.
 
-Book-level target map for the next 2-4 hour acceleration window: keep the main
-thread on Chapter 6 until Theorem 6.16 is proved, then finish the remaining
-Chapter 6 main-text packets instead of jumping past the chapter: Lemma 6.18 and
-Theorem 6.19 for center-of-gravity/cutting-plane volume progress, Lemma 6.20
-for ellipsoid update geometry, Theorems 6.21-6.23 for nonsmooth lower bounds,
-and Definition 6.24/Theorem 6.25 for feasibility.  After Chapter 6 has a stable
-main-text spine, split future packets by chapter surface rather than by tiny
-lemmas: Chapter 7 `FrankWolfe.lean` for Theorem 7.3 and Carathéodory wrappers,
-Chapter 8 `Proximal.lean` for Theorems 8.5 and 8.6 reusing Chapter 5 AGD
-algebra, Chapters 9-10 `Fenchel.lean` and `MirrorDescent.lean` for
-Fenchel-Young/Bregman/OMD telescopes, Chapter 11
+Book-level target map for the next 2-4 hour acceleration window: stay in
+Chapter 6 and finish theorem-sized packets instead of jumping past the chapter:
+Lemma 6.18 and Theorem 6.19 for center-of-gravity/cutting-plane volume
+progress, Lemma 6.20 for ellipsoid update geometry, Theorems 6.21-6.23 for
+nonsmooth lower bounds, and Definition 6.24/Theorem 6.25 for feasibility.
+After Chapter 6 has a stable main-text spine, split future packets by chapter
+surface rather than by tiny lemmas: Chapter 7 `FrankWolfe.lean` for Theorem
+7.3 and Carathéodory wrappers, Chapter 8 `Proximal.lean` for Theorems 8.5 and
+8.6 reusing Chapter 5 AGD algebra, Chapters 9-10 `Fenchel.lean` and
+`MirrorDescent.lean` for Fenchel-Young/Bregman/OMD telescopes, Chapter 11
 `AlternatingProjection.lean` for ABP/AM/RAM recurrences, Chapter 12
 `StochasticGradient.lean`/`SMPGD.lean` reusing local probability modules, and
 Chapter 13/Appendix `Newton.lean`/`SelfConcordance.lean` with mathlib matrix
