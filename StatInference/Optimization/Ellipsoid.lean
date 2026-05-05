@@ -463,6 +463,29 @@ theorem chewi620_affineTransport_stepCertificate_of_quadratic
       hd hu_norm hscale_pos hcurrent hcut hnext,
     hvolume⟩
 
+/--
+Raw adjoint identity for the square-root normalization in Chewi Lemma 6.20.
+
+When `T` is the symmetric square-root factor `Σ^{1/2}`, its inverse
+`T.symm` is the normalization map `Σ^{-1/2}`.  This proves the source identity
+`<Σ^{1/2}p, Σ^{-1/2}(z-center)> = <p,z> - <p,center>` from symmetry and
+inverse cancellation alone.
+-/
+theorem chewi620_rawAdjointIdentity_of_symmetric_inverse
+    {T : E ≃ₗ[ℝ] E}
+    (hT_symm : T.IsSymmetric)
+    (p center z : E) :
+    inner ℝ (T p) (T.symm (z - center)) =
+      inner ℝ p z - inner ℝ p center := by
+  calc
+    inner ℝ (T p) (T.symm (z - center)) =
+        inner ℝ p (T (T.symm (z - center))) := by
+      simpa using hT_symm p (T.symm (z - center))
+    _ = inner ℝ p (z - center) := by
+      simp
+    _ = inner ℝ p z - inner ℝ p center := by
+      rw [inner_sub_right]
+
 section EuclideanMatrix
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -586,6 +609,41 @@ theorem chewi620_matrixNormalizedCutDirection_inner_toStd
         (inner ℝ p z - inner ℝ p center) := by
   rw [chewi620MatrixNormalizedCutDirection, inner_smul_left, hraw]
   simp
+
+/--
+Unit-norm wrapper for the normalized cut direction when the supplied vector is
+the image of `p` under a square-root factor of the forward shape matrix.
+-/
+theorem chewi620_matrixSqrt_normalizedCutDirection_norm_of_posDef
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    (hT_quadratic :
+      ‖T p‖ ^ (2 : ℕ) = inner ℝ p (matrixInvShape Sigma p)) :
+    ‖chewi620MatrixNormalizedCutDirection Sigma p (T p)‖ = 1 :=
+  chewi620_matrixNormalizedCutDirection_norm_of_posDef
+    (Sigma := Sigma) hSigma hp hT_quadratic
+
+/--
+The symmetric square-root raw-adjoint identity gives the `hcut` hypothesis
+needed by `chewi620_affineTransport_stepCertificate_of_quadratic`.
+-/
+theorem chewi620_matrixSqrt_normalizedCutDirection_inner_toStd
+    {Sigma : Matrix ι ι ℝ}
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    (p center z : EuclideanSpace ℝ ι) :
+    inner ℝ (chewi620MatrixNormalizedCutDirection Sigma p (T p))
+        (T.symm (z - center)) =
+      chewi620MatrixCutScale Sigma p *
+        (inner ℝ p z - inner ℝ p center) :=
+  chewi620_matrixNormalizedCutDirection_inner_toStd
+    (Sigma := Sigma) (p := p) (sigmaHalfP := T p) (center := center)
+    (toStd := fun y => T.symm y)
+    (fun w =>
+      chewi620_rawAdjointIdentity_of_symmetric_inverse
+        (T := T) hT_symm p center w)
+    z
 
 end EuclideanMatrix
 

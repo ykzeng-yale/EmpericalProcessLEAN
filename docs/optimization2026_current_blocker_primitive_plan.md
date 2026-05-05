@@ -70,10 +70,11 @@ runs.
 
 Live replacement `/goal` prompt as of 2026-05-05 after syncing local `main` to
 `origin/main` at `95ca18b`; the latest Optimization proof frontier is
-`83a31d2` (`Add Chewi ellipsoid cut normalization bridge`) after the
-standard-cut scalar, determinant-ratio, coordinate-free affine-containment,
-supplied-identity affine-transport certificate, first Euclidean matrix
-quadratic packet, and cut-normalization algebra packet:
+`83a31d2` (`Add Chewi ellipsoid cut normalization bridge`) plus the current
+raw square-root adjoint/cut bridge packet after the standard-cut scalar,
+determinant-ratio, coordinate-free affine-containment, supplied-identity
+affine-transport certificate, first Euclidean matrix quadratic packet, and
+cut-normalization algebra packet:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under `StatInference/Optimization`, with
 exercises tracked in the single `StatInference/Optimization/Exercises.lean`
@@ -107,45 +108,50 @@ matrix-backed inverse-shape bridge `matrixInvShape`,
 `matrixInvShape_quadratic_pos_of_posDef`, and
 `chewi620_matrix_cut_sqrt_inv_pos_of_posDef`, plus
 `chewi620MatrixCutScale`, `chewi620MatrixNormalizedCutDirection`,
-`chewi620_matrixNormalizedCutDirection_norm_of_posDef`, and
-`chewi620_matrixNormalizedCutDirection_inner_toStd`.  The app-level
+`chewi620_matrixNormalizedCutDirection_norm_of_posDef`,
+`chewi620_matrixNormalizedCutDirection_inner_toStd`, and now
+`chewi620_rawAdjointIdentity_of_symmetric_inverse`,
+`chewi620_matrixSqrt_normalizedCutDirection_norm_of_posDef`, and
+`chewi620_matrixSqrt_normalizedCutDirection_inner_toStd`.  The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
 textbook goal is marked complete, so this paragraph is the operative manual
 `/goal` target.
 
-Immediate target for the next manual goal run: finish a theorem-sized packet
-for Chewi Lemma 6.20 by instantiating the supplied hypotheses of
-`chewi620_affineTransport_stepCertificate_of_quadratic` for the displayed
-matrix update.  This is not a "small source-shape gap" target.  Do not spend
-another run on scalar, coordinate-free, or abstract transport wrappers unless
-one is the shortest verified route to the concrete matrix theorem.  The
-dependency order is:
+Immediate target for the next manual goal run: continue the theorem-sized
+Chewi Lemma 6.20 matrix packet by instantiating the remaining supplied
+hypotheses of `chewi620_affineTransport_stepCertificate_of_quadratic` for the
+displayed matrix update.  The raw square-root adjoint identity and normalized
+cut `hcut` bridge are now local; this is not a "small source-shape gap"
+target.  Do not spend another run on scalar, coordinate-free, or abstract
+transport wrappers unless one is the shortest verified route to the concrete
+matrix theorem.  The dependency order is:
 
 1. Search pinned mathlib and local `StatInference/Optimization` for
    square-root/symmetric linear-equivalence, `Matrix.toEuclideanLin`,
    PosDef/PosSemidef, nonsingular inverse, rank-one determinant, and
-   volume-scaling APIs.
-2. Prove the raw square-root adjoint bridge
-   `<Σ^{1/2}p, Σ^{-1/2}(z-center)> = <p,z> - <p,center>` from the strongest
-   reusable matrix or symmetric-linear-equivalence interface that Lean can
-   support cleanly.
-3. Use that bridge to discharge the `hcut` hypothesis already packaged by
-   `chewi620_matrixNormalizedCutDirection_inner_toStd`.
-4. Prove the displayed pullback identity for `Σ_{n+1}^{-1}` and the displayed
+   volume-scaling APIs.  New raw-adjoint search result: mathlib
+   `LinearMap.IsSymmetric`, `LinearMap.IsSymmetric.toLinearMap_symm`,
+   `LinearEquiv.isSymmetric_symm_iff`, `LinearEquiv.apply_symm_apply`, and
+   `inner_sub_right` are enough to prove the symmetric square-root raw identity.
+2. Prove the matrix invertibility/cancellation packet from `Sigma.PosDef`:
+   `Matrix.PosDef.isUnit`, `Matrix.PosDef.inv`, determinant nonzero/positive,
+   and nonsingular-inverse cancellations for the current and next shape.
+3. Prove the displayed pullback identity for `Σ_{n+1}^{-1}` and the displayed
    center update, so the `hnext` hypothesis of
    `chewi620_affineTransport_stepCertificate_of_quadratic` is no longer
    supplied.
-5. Prove the rank-one determinant/volume inequality or exact ratio needed for
+4. Prove the rank-one determinant/volume inequality or exact ratio needed for
    the `hvolume` hypothesis.
-6. Package the exact one-step Lemma 6.20 certificate, then promote it to the
+5. Package the exact one-step Lemma 6.20 certificate, then promote it to the
    ellipsoid trajectory/rate wrapper.
 
 The current matrix quadratic, positive denominator, and normalized cut
-direction algebra are already local.  If the full matrix proof balloons, record
-the exact missing API and prove the smallest matrix-coordinate,
-rank-one-determinant, or volume-scaling certificate that removes that blocker
-in the same run.
+direction algebra are already local, and the raw symmetric square-root
+adjoint/cut bridge now discharges the `hcut` side of the affine-transport
+certificate.  If the full matrix proof balloons, record the exact missing API
+and prove the smallest matrix-coordinate, rank-one-determinant, or
+volume-scaling certificate that removes that blocker in the same run.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
@@ -170,10 +176,11 @@ has a compiled supplied-interface ellipsoid trajectory/rate layer plus the
 normalized scalar central-cut containment, determinant-ratio inequalities, and
 coordinate-free normalized half-space containment, and an abstract
 affine-transport `IsEllipsoidStepCertificate` bridge.  The current-ellipsoid
-matrix quadratic, positive-denominator, and normalized cut-direction algebra
-now compile via `matrixInvShape`, PosDef/PosSemidef dot-product APIs, and
-`Real.sqrt` normalization.  The next aggressive theorem packet should prove
-the raw matrix square-root adjoint identity and then the pullback/determinant
+matrix quadratic, positive-denominator, normalized cut-direction algebra, and
+raw symmetric square-root cut bridge now compile via `matrixInvShape`,
+PosDef/PosSemidef dot-product APIs, `Real.sqrt` normalization, and mathlib
+`LinearMap.IsSymmetric` APIs.  The next aggressive theorem packet should prove
+the matrix invertibility/cancellation layer and the pullback/determinant
 pieces needed by `chewi620_affineTransport_stepCertificate_of_quadratic`:
 search and use mathlib matrix/PSD/inverse/determinant/volume APIs to transport
 these local theorems to the displayed matrix update.  If the full matrix proof

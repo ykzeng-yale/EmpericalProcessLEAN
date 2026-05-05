@@ -44,7 +44,8 @@ directly in this tool surface unless the goal is complete, so
 replacement prompt for manual runs.
 
 Manual goal frontier after local sync to `origin/main` at `95ca18b`; the
-latest Optimization proof frontier remains `83a31d2` after the 2026-05-05
+latest Optimization proof frontier remains `83a31d2` plus the current raw
+symmetric square-root adjoint/cut bridge packet after the 2026-05-05
 standard-cut scalar, determinant-ratio, coordinate-free affine-containment,
 supplied-identity affine-transport certificate, first Euclidean matrix
 quadratic packet, and cut-normalization algebra packet:
@@ -63,7 +64,10 @@ Lemma 6.20 ellipsoid trajectory/rate layer plus the normalized central-cut
 scalar containment, determinant-ratio cores, and coordinate-free normalized
 half-space containment, plus an abstract affine-transport certificate bridge
 and matrix-backed quadratic/positive-denominator plus normalized-cut algebra
-helpers.
+helpers, plus the raw symmetric square-root cut bridge declarations
+`chewi620_rawAdjointIdentity_of_symmetric_inverse`,
+`chewi620_matrixSqrt_normalizedCutDirection_norm_of_posDef`, and
+`chewi620_matrixSqrt_normalizedCutDirection_inner_toStd`.
 Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
@@ -137,8 +141,11 @@ matrix bridge declarations `matrixInvShape`,
 `matrixInvShape_quadratic_pos_of_posDef`, and
 `chewi620_matrix_cut_sqrt_inv_pos_of_posDef`, plus
 `chewi620MatrixCutScale`, `chewi620MatrixNormalizedCutDirection`,
-`chewi620_matrixNormalizedCutDirection_norm_of_posDef`, and
-`chewi620_matrixNormalizedCutDirection_inner_toStd`.
+`chewi620_matrixNormalizedCutDirection_norm_of_posDef`,
+`chewi620_matrixNormalizedCutDirection_inner_toStd`,
+`chewi620_rawAdjointIdentity_of_symmetric_inverse`,
+`chewi620_matrixSqrt_normalizedCutDirection_norm_of_posDef`, and
+`chewi620_matrixSqrt_normalizedCutDirection_inner_toStd`.
 
 The next active packet should stay in Chapter 6 and prove a theorem-sized part
 of ellipsoid Lemma 6.20, not drip minor wrappers.  The exact
@@ -147,14 +154,13 @@ source-audited CoGM report, and the exact Lemma 6.20 matrix proof remains the
 next ellipsoid blocker.  Search mathlib matrix/PSD/inverse/determinant and
 volume-scaling APIs first, then instantiate the concrete matrix hypotheses of
 `chewi620_affineTransport_stepCertificate_of_quadratic` for Chewi's displayed
-`Σ_{n+1}` update.  The current matrix quadratic and positive denominator are
-now local, and the normalized cut direction algebra is now local modulo the
-raw square-root adjoint identity; the remaining blocker is the actual
-matrix/affine pullback for `Σ_{n+1}^{-1}` and determinant/volume bridge, not
-scalar algebra or abstract transport.  The target order is raw square-root
-adjoint bridge, normalized cut hypothesis, displayed pullback identity,
-rank-one determinant/volume bridge, then exact one-step Lemma 6.20
-certificate.  If the full matrix proof balloons, prove the smallest
+`Σ_{n+1}` update.  The current matrix quadratic, positive denominator,
+normalized cut direction algebra, and raw symmetric square-root cut bridge are
+now local; the remaining blocker is the actual matrix/affine pullback for
+`Σ_{n+1}^{-1}` and determinant/volume bridge, not scalar algebra or abstract
+transport.  The target order is matrix invertibility/cancellation from
+`Sigma.PosDef`, displayed pullback identity, rank-one determinant/volume
+bridge, then exact one-step Lemma 6.20 certificate.  If the full matrix proof balloons, prove the smallest
 matrix-coordinate, rank-one determinant, or volume-scaling certificate that
 removes the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth
 lower-bound Theorems 6.21-6.23 and feasibility Theorem 6.25 before opening
@@ -168,10 +174,14 @@ has `ConvexOn.map_sum_le`; mathlib `Topology/MetricSpace/Lipschitz.lean` has
 `LipschitzOnWith.le_add_mul`; mathlib `Data/Real/Sqrt.lean` has
 `Real.sqrt_pos` and `Real.sq_sqrt`; local `sum_range_sub_succ` is the finite
 telescope.  Lemma 6.20 matrix scout results to reuse next include
-`Matrix.toEuclideanLin`, `EuclideanSpace.inner_eq_star_dotProduct`,
+`LinearMap.IsSymmetric`, `LinearMap.IsSymmetric.toLinearMap_symm`,
+`LinearEquiv.isSymmetric_symm_iff`, `Matrix.toEuclideanLin`,
+`EuclideanSpace.inner_eq_star_dotProduct`,
 `Matrix.posSemidef_iff_dotProduct_mulVec`,
-`Matrix.PosDef.dotProduct_mulVec_pos`, nonsingular-inverse determinant and
-cancellation lemmas, rank-one determinant lemmas in `Matrix.SchurComplement`,
+`Matrix.PosDef.dotProduct_mulVec_pos`, `Matrix.PosDef.isUnit`,
+`Matrix.PosDef.inv`, nonsingular-inverse determinant and cancellation lemmas,
+rank-one determinant lemmas in `Matrix.SchurComplement`, including
+`Matrix.det_add_mul`,
 and volume-scaling lemmas
 `Real.map_matrix_volume_pi_eq_smul_volume_pi` /
 `Real.map_linearMap_volume_pi_eq_smul_volume_pi`.  Keep Chapter 6 finite-valued
