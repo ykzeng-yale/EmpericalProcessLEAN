@@ -1334,3 +1334,15 @@ Theorem 2.4.3/Lemma 2.4.5 package no longer asks callers for an explicit
 `hreverse` primitive under the standard countable/integrable-envelope
 assumptions.  The next frontier is exact final-statement assembly and auditing
 remaining `hreverse` wrappers as optional alternative sufficient conditions.
+
+2026-05-05 follow-up: the canonical full-subgraph endpoint package now also
+includes the outer-a.s. `P`-GC branch.  The compiled declarations
+`VdVWAlmostSureGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical_of_countable_integrable`,
+`VdVWOuterAlmostSurePGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical_of_countable_integrable`,
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable`
+package outer-probability GC, outer-a.s. GC, book-style `P`-GC, in-mean
+centered-supremum convergence, and Lemma 2.4.5 a.s. centered-supremum
+convergence without an explicit reverse/cofiltration hypothesis.  The next
+frontier is exact final-statement assembly and matching the remaining book
+entropy/VC hypotheses to this strong package.

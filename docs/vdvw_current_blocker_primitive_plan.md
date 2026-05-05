@@ -4050,3 +4050,18 @@ caller-supplied reverse/cofiltration theorem.  Next target: audit remaining
 `hreverse` wrappers and keep only the genuinely alternative sufficient
 conditions; then continue final Theorem 2.4.3 exact-statement assembly from the
 proved full-subgraph package and the fixed-radius/selected entropy consumers.
+
+2026-05-05 follow-up: the no-`hreverse` endpoint now also reaches the
+outer-a.s. `P`-Glivenko-Cantelli branch.  New declarations
+`VdVWAlmostSureGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical_of_countable_integrable`,
+`VdVWOuterAlmostSurePGlivenkoCantelliClass_of_fullSubgraph_integrable_canonical_of_countable_integrable`,
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable`
+combine the full-subgraph outer-probability endpoint, outer-a.s. endpoint,
+book-style `P`-GC predicate, in-mean centered-supremum convergence, and
+Lemma 2.4.5 a.s. centered-supremum convergence under the standard
+countable/integrable-envelope hypotheses.  The next proof target should not
+add more endpoint wrappers unless an exact textbook theorem statement consumes
+them; instead assemble the exact named Theorem 2.4.3/Lemma 2.4.5 statement
+from this strong package and identify any remaining mismatch with the book's
+entropy/VC hypotheses.
