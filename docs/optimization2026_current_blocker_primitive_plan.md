@@ -1618,22 +1618,29 @@ proved.  Next target: Theorem 5.9.  Because the notes leave it as
 Exercise 5.3, first record the informal strong-convex AGF Lyapunov proof, then
 formalize the reusable strong-convex friction/Lyapunov derivative layer and
 the exponential rate wrapper.
-The first Theorem 5.9 anchor now compiles in
+Theorem 5.9 now compiles in source-shaped supplied-interface form in
 `StatInference/Optimization/Theorem59.lean`: `chewi59Friction`,
 `IsChewi59AcceleratedGradientFlowTrajectory`, `chewi59EnergyVector`,
 `chewi59Lyapunov`, `agf_gap_hasDerivAt`,
-`chewi59EnergyVector_hasDerivAt`, `chewi59Lyapunov_hasDerivAt_raw`, and
-`chewi59EnergyVector_zero_of_momentum_zero`.  Search-first reuse for this
-layer: local `IsAcceleratedGradientFlowTrajectory` from Theorem 5.8, local
-`scalarExpDecay_le_of_hasDerivAt_le` from Chapter 2 for the next rate step,
-local minimizer/gradient-zero APIs for the future initial-energy bound, and
-mathlib `HasDerivAt.const_smul`, `HasDerivAt.norm_sq`, `HasGradientAt` chain
-rule APIs, `Real.sq_sqrt`, `module`, and `ring`.  Next atomic target:
-simplify the raw derivative into
-`L'_t <= -Real.sqrt alpha * chewi59Lyapunov alpha f fstar x p xStar t`
-using `FirstOrderStrongConvexOn.lower_model`, `0 < alpha`, and
-`Real.sq_sqrt`; then apply the existing scalar exponential-decay wrapper and
-close the `p 0 = 0` initial-energy bound.
+`chewi59EnergyVector_hasDerivAt`, `chewi59Lyapunov_hasDerivAt_raw`,
+`chewi59LyapunovDerivative_le_neg_sqrt_mul_of_gap_bound`,
+`chewi59LyapunovDerivative_le_neg_sqrt_mul_of_firstOrderStrongConvex`,
+`chewi59_gap_le_lyapunov`,
+`chewi59Lyapunov_le_exp_decay_of_firstOrderStrongConvex`,
+`chewi59_gap_le_initial_lyapunov_exp_decay`,
+`chewi59EnergyVector_zero_of_momentum_zero`,
+`chewi59Lyapunov_zero_le_two_gap_of_momentum_zero`,
+`chewi59_gap_le_exp_decay_of_firstOrderStrongConvex`, and
+`chewi59_gap_le_exp_decay_of_firstOrderStrongConvex_of_isMinOn`.  Search-first
+reuse for this layer: local `IsAcceleratedGradientFlowTrajectory` from
+Theorem 5.8, local `scalarExpDecay_le_of_hasDerivAt_le` from Chapter 2, local
+minimizer/gradient-zero APIs for stationarity, and mathlib
+`HasDerivAt.const_smul`, `HasDerivAt.norm_sq`, `HasGradientAt` chain rule APIs,
+`norm_add_sq_real`, `Real.sq_sqrt`, `module`, `ring`, and `nlinarith`.  Next
+atomic target: Theorem 5.10 discrete AGD.  Before defining new primitives,
+search Chapter 3 for the compiled (3.3)-style one-step inequality, search
+mathlib/local APIs for the lambda recurrence and finite telescoping algebra,
+and then formalize the AGD state/update/Lyapunov wrapper.
 Do not redo
 Theorem 5.3's
 A-conjugacy induction, the Chapter 3 descent lemma, Chapter 4 gradient-span
