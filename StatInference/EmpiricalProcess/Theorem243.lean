@@ -6049,6 +6049,162 @@ theorem VdVWLemma245ReverseCofiltrationHandoff.of_natural_condExp_step_nonneg
       hstep
 
 /--
+Ordinary-submartingale sufficient condition for the preferred
+textbook-display reverse/cofiltration blocker.
+-/
+theorem VdVWLemma245TextbookReverseCofiltrationHandoff.of_submartingale
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    (hsub :
+      Submartingale
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        ℱ (vdVWInfiniteProductMeasure P)) :
+    VdVWLemma245TextbookReverseCofiltrationHandoff P indexClass classFun :=
+  VdVWLemma245TextbookReverseCofiltrationHandoff.of_leaveOneOut
+    (VdVWLemma245ReverseCofiltrationHandoff.of_submartingale
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (ℱ := ℱ)
+      hcount henvelope hclass henv_integrable hsub)
+
+/--
+Ordinary-supermartingale sufficient condition for the preferred
+textbook-display reverse/cofiltration blocker.
+-/
+theorem VdVWLemma245TextbookReverseCofiltrationHandoff.of_supermartingale
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    (hsuper :
+      Supermartingale
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        ℱ (vdVWInfiniteProductMeasure P)) :
+    VdVWLemma245TextbookReverseCofiltrationHandoff P indexClass classFun :=
+  VdVWLemma245TextbookReverseCofiltrationHandoff.of_leaveOneOut
+    (VdVWLemma245ReverseCofiltrationHandoff.of_supermartingale
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (ℱ := ℱ)
+      hcount henvelope hclass henv_integrable hsuper)
+
+/--
+Constructor-level nonnegative-drift sufficient condition for the preferred
+textbook-display reverse/cofiltration blocker.
+-/
+theorem VdVWLemma245TextbookReverseCofiltrationHandoff.of_condExp_step_nonneg
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    (hadapted :
+      StronglyAdapted ℱ
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence))
+    (hstep :
+      ∀ n : ℕ,
+        0 ≤ᵐ[vdVWInfiniteProductMeasure P]
+          (vdVWInfiniteProductMeasure P)[
+            (fun sequence : ℕ -> Observation =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                ((n + 1) + 1) sequence -
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                (n + 1) sequence) | ℱ n]) :
+    VdVWLemma245TextbookReverseCofiltrationHandoff P indexClass classFun :=
+  VdVWLemma245TextbookReverseCofiltrationHandoff.of_leaveOneOut
+    (VdVWLemma245ReverseCofiltrationHandoff.of_condExp_step_nonneg
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (ℱ := ℱ)
+      hcount henvelope hclass henv_integrable hadapted hstep)
+
+/--
+Constructor-level nonpositive-drift sufficient condition for the preferred
+textbook-display reverse/cofiltration blocker.
+-/
+theorem VdVWLemma245TextbookReverseCofiltrationHandoff.of_condExp_step_nonpos
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    (hadapted :
+      StronglyAdapted ℱ
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence))
+    (hstep :
+      ∀ n : ℕ,
+        0 ≤ᵐ[vdVWInfiniteProductMeasure P]
+          (vdVWInfiniteProductMeasure P)[
+            (fun sequence : ℕ -> Observation =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                (n + 1) sequence -
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                ((n + 1) + 1) sequence) | ℱ n]) :
+    VdVWLemma245TextbookReverseCofiltrationHandoff P indexClass classFun :=
+  VdVWLemma245TextbookReverseCofiltrationHandoff.of_leaveOneOut
+    (VdVWLemma245ReverseCofiltrationHandoff.of_condExp_step_nonpos
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (ℱ := ℱ)
+      hcount henvelope hclass henv_integrable hadapted hstep)
+
+/--
+Natural-filtration nonnegative-drift sufficient condition for the preferred
+textbook-display reverse/cofiltration blocker.
+-/
+theorem VdVWLemma245TextbookReverseCofiltrationHandoff.of_natural_condExp_step_nonneg
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hstep :
+      ∀ n : ℕ,
+        0 ≤ᵐ[vdVWInfiniteProductMeasure P]
+          (vdVWInfiniteProductMeasure P)[
+            (fun sequence : ℕ -> Observation =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                ((n + 1) + 1) sequence -
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                (n + 1) sequence) |
+            vdVWLemma245CenteredEmpiricalSupremumNaturalFiltration
+              (P := P) (indexClass := indexClass) (classFun := classFun)
+              hcount hclass n]) :
+    VdVWLemma245TextbookReverseCofiltrationHandoff P indexClass classFun :=
+  VdVWLemma245TextbookReverseCofiltrationHandoff.of_leaveOneOut
+    (VdVWLemma245ReverseCofiltrationHandoff.of_natural_condExp_step_nonneg
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      hcount henvelope hclass henv_integrable hstep)
+
+/--
 Final Lemma 2.4.5 consumer for the already-compiled countable centered
 reverse-comparison rows.
 

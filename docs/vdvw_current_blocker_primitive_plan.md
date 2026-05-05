@@ -3772,3 +3772,19 @@ symmetric cofiltration convergence theorem itself.  The old
 leave-one-out and martingale sufficient-condition routes, but future theorem
 assembly should prefer the textbook-display primitive unless a proof step
 naturally produces the leave-one-out form.
+
+2026-05-04 follow-up: the preferred textbook-display blocker now also has
+direct ordinary martingale sufficient-condition constructors, so future proof
+attempts can target either the reverse/cofiltration theorem itself or an
+ordinary `ℕ` sub/supermartingale realization without detouring through the old
+leave-one-out primitive.  New compiled declarations are
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_submartingale`,
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_supermartingale`,
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_condExp_step_nonneg`,
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_condExp_step_nonpos`, and
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_natural_condExp_step_nonneg`.
+These are sufficient-condition adapters, not a proof of the VdV&W reverse
+cofiltration theorem.  The next high-value proof attempt should either prove
+`VdVWLemma245TextbookReverseCofiltrationHandoff` directly from the decreasing
+`Σ_n` comparison, or prove one of these constructor hypotheses from the
+permutation-symmetric cofiltration.

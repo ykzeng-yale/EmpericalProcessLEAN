@@ -1172,3 +1172,14 @@ full-subgraph endpoint.  New compiled declarations are
 The active blocker is now exactly this named textbook-display reverse
 cofiltration theorem; the older leave-one-out primitive is equivalent and
 remains available for local proof routes.
+
+2026-05-04 follow-up: the named textbook-display blocker now has direct
+ordinary submartingale/supermartingale sufficient-condition constructors:
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_submartingale`,
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_supermartingale`,
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_condExp_step_nonneg`,
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_condExp_step_nonpos`, and
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_natural_condExp_step_nonneg`.
+The remaining mathematical task is still to prove the reverse/permutation-
+symmetric cofiltration theorem itself, or to derive one of these constructor
+hypotheses from the actual `Σ_n` comparison.
