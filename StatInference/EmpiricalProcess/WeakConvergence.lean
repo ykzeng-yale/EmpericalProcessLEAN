@@ -1727,6 +1727,49 @@ theorem
     (fun i => (hX i).nullMeasurable) hweak (fun _ => rfl)
 
 /--
+Varying-domain convergence in distribution implies the local signed-outer
+bounded-continuous weak-convergence formulation.
+
+This is the sample-size-varying analogue of
+`vdVWTendstoInDistribution_to_signedOuterBoundedContinuous_aemeasurable`.
+It uses the a.e.-measurability carried by mathlib's
+`TendstoInDistribution` and the local VdV&W signed outer-expectation bridge.
+-/
+theorem vdVWTendstoInDistribution_to_signedOuterBoundedContinuousVaryingDomains_aemeasurable
+    {ι : Type w} {Ω : ι -> Type u} {Ω' : Type x} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace Ω'] {μ' : Measure Ω'} [IsProbabilityMeasure μ']
+    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, IsProbabilityMeasure (μs i)]
+    {X : (i : ι) -> Ω i -> S} {Z : Ω' -> S} {l : Filter ι}
+    (h : TendstoInDistribution X l Z μs μ') :
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains Ω μs X l
+      ⟨μ'.map Z, Measure.isProbabilityMeasure_map h.aemeasurable_limit⟩ :=
+  (VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps_aemeasurable
+    (Ω := Ω) (μs := μs) (X := X)
+    (fun i => h.forall_aemeasurable i) h.tendsto).weakConvergence
+
+/--
+Varying-domain convergence in distribution gives the proof-carrying signed
+bounded-continuous weak-convergence package.
+-/
+theorem vdVWTendstoInDistribution_to_signedBoundedContinuousVaryingDomains_aemeasurable
+    {ι : Type w} {Ω : ι -> Type u} {Ω' : Type x} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace Ω'] {μ' : Measure Ω'} [IsProbabilityMeasure μ']
+    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, IsProbabilityMeasure (μs i)]
+    {X : (i : ι) -> Ω i -> S} {Z : Ω' -> S} {l : Filter ι}
+    (h : TendstoInDistribution X l Z μs μ') :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l
+      ⟨μ'.map Z, Measure.isProbabilityMeasure_map h.aemeasurable_limit⟩ :=
+  VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps_aemeasurable
+    (Ω := Ω) (μs := μs) (X := X)
+    (fun i => h.forall_aemeasurable i) h.tendsto
+
+/--
 Varying-domain convergence in VdV&W outer probability is invariant under
 sample-wise almost-everywhere equality.
 

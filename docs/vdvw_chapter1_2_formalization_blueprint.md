@@ -150,6 +150,11 @@ now reaches the local VdV&W arbitrary-map package directly from mathlib
 This removes a pointwise-measurability strengthening in the Chapter 1
 weak-convergence handoff.
 
+2026-05-05 varying-domain distribution follow-up: the same direct
+`TendstoInDistribution` feeder is now available for sample-size-varying
+domains.  This is the form needed by finite-product empirical-process
+statistics and Theorem 2.4.3 law endpoints.
+
 2026-05-05 proof update: the countability-to-`P`-measurability route has a new
 compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`
 and

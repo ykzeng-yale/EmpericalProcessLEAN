@@ -5035,6 +5035,16 @@ These use the a.e.-measurability already stored in mathlib convergence in
 distribution, plus the new a.e.-measurable pushforward wrappers, to close a
 Chapter 1 bridge toward exact arbitrary-map weak-convergence statements.
 
+2026-05-05 varying-domain distribution bridge update: local/mathlib search
+found no direct varying-domain `TendstoInDistribution` feeder into the local
+VdV&W signed package, even though mathlib's `TendstoInDistribution` itself is
+sample-space-varying.  `WeakConvergence.lean` now adds
+`vdVWTendstoInDistribution_to_signedOuterBoundedContinuousVaryingDomains_aemeasurable`
+and
+`vdVWTendstoInDistribution_to_signedBoundedContinuousVaryingDomains_aemeasurable`.
+These let sample-size-varying law convergence feed Theorem 2.4.3-style
+signed weak-convergence endpoints directly under a.e.-measurability.
+
 2026-05-05 follow-up: the local asymptotic-measurability predicates are now
 stable under filter refinement/subsequence filters.  The compiled declarations
 `VdVWAsymptoticallyMeasurableNonnegative.mono_filter`,

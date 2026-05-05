@@ -58,6 +58,9 @@ a.e.-measurability, via
 `vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap_aemeasurable`
 and
 `VdVWConvergesInOuterProbability.to_signedBoundedContinuousArbitraryMap_aemeasurable`.
+The same direct feeder is now available for sample-size-varying mathlib
+`TendstoInDistribution` through
+`vdVWTendstoInDistribution_to_signedBoundedContinuousVaryingDomains_aemeasurable`.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new
