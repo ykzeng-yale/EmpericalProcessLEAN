@@ -154,6 +154,17 @@ integrability/tail-UI hypotheses from the book random entropy assumption, or a
 precise blocker showing which structural uniform-integrability input is
 missing.
 
+2026-05-05 deterministic-tail follow-up: the deterministic structural route
+for those raw normalized-log hypotheses is now compiled.  A deterministic
+bound on `log(cardinality + 1) / n` gives normalized-log integrability,
+normalized-log tail/UI, and finite-net Hoeffding tail/UI through
+`logCardinality_div_integrable_of_measurable_bound`,
+`logCardinality_div_tailExpectation_condition_of_bound`, and
+`finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_bound`.
+This is the correct bridge for finite-code, VC, and other structural entropy
+routes.  It does not assert that convergence in outer probability alone
+implies UI; that remains the exact non-deterministic entropy blocker.
+
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
 reverse/cofiltration theorem, finite-cover entropy plumbing, untruncation,

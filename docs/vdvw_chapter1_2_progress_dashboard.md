@@ -85,6 +85,17 @@ Theorem 2.4.3 entropy gap is now narrower: derive those raw normalized-log
 tail/UI and integrability inputs from the book random entropy hypothesis, or
 isolate the missing varying-domain uniform-integrability theorem honestly.
 
+2026-05-05 deterministic-tail follow-up: the structural deterministic branch
+of that raw-log gap is now compiled.  The new declarations
+`logCardinality_div_integrable_of_measurable_bound`,
+`logCardinality_div_tailExpectation_condition_of_bound`, and
+`finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_bound`
+show that deterministic normalized-log cardinality bounds imply the raw
+normalized-log integrability/tail/UI inputs and then the finite-net Hoeffding
+tail/UI condition.  This keeps VC/finite-code entropy routes usable while
+leaving the pure stochastic random-entropy-to-UI implication as the honest
+remaining mismatch.
+
 ## Status Legend
 
 | Status | Meaning |
