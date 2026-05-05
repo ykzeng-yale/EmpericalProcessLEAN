@@ -4272,3 +4272,19 @@ centered-supremum measurability, integrability, and tail/UI obligations.  The
 remaining mismatch with the exact textbook statement is still the deterministic
 log-bound/tail-UI input and the broader arbitrary `P`-measurable /
 asymptotic-measurable class layer.
+
+2026-05-05 follow-up: the structural deterministic-rate branch now also
+reaches the Theorem 2.4.3 in-mean centered-supremum conclusion.  The compiled
+declaration
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_logCardinality_div_tendsto_bound`
+builds the canonical variable-domain entropy package from empirical covering
+domination plus deterministic normalized log-cardinality rates tending to zero,
+then reuses the variable-entropy in-mean endpoint.  This closes a real
+asymmetry in the structural-rate route: structural deterministic entropy rates
+now feed centered outer-probability convergence, finite-product and canonical
+`P`-GC endpoints, and in-mean centered-supremum convergence.  The next target
+should not be another endpoint wrapper; it should instantiate the structural
+rate inputs from a genuine textbook VC/Sauer/trace-cover theorem, prove the
+random-entropy selected finite-net tail/UI theorem without deterministic
+boundedness, or extend the route beyond the countable coordinate-measurable
+class layer.
