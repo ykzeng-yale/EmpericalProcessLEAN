@@ -1151,3 +1151,14 @@ empirical supremum and expose the inequality as
 `E[‖P_n - P‖_F^* | Σ_{n+1}] ≥ ‖P_{n+1} - P‖_F^*`.  The active blocker remains
 the genuine reverse/permutation-symmetric cofiltration convergence theorem,
 not the leave-one-out notation.
+
+2026-05-04 follow-up: that textbook-display route now reaches the full
+Theorem 2.4.3/Lemma 2.4.5 package boundary.  New compiled declarations
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_textbookReverseComparisonHandoff_of_outerProbability_invNat_geometric`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_textbookReverseComparisonHandoff`,
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_textbookReverseComparisonHandoff`
+combine the existing full-subgraph `P`-GC, in-mean, and a.s. zero endpoints
+under the displayed reverse/cofiltration handoff.  This should be the active
+non-finite-class Theorem 2.4.3 target; further progress should prove the
+displayed handoff itself.

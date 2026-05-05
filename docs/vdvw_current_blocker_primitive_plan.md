@@ -3744,3 +3744,16 @@ non-finite-class blocker is no longer notation or leave-one-out bookkeeping:
 prove the VdV&W reverse/permutation-symmetric cofiltration convergence theorem
 from that displayed comparison, or an equivalent theorem consumed by the
 existing full-subgraph Theorem 2.4.3/Lemma 2.4.5 endpoints.
+
+2026-05-04 follow-up: the textbook-display comparison now feeds the
+full-subgraph Theorem 2.4.3/Lemma 2.4.5 endpoint directly.  New compiled
+declarations are
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_textbookReverseComparisonHandoff_of_outerProbability_invNat_geometric`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_textbookReverseComparisonHandoff`,
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_textbookReverseComparisonHandoff`.
+This is now the preferred non-finite-class package boundary: it combines the
+full-subgraph `P`-GC endpoint, in-mean endpoint, and Lemma 2.4.5 a.s. zero
+endpoint under exactly the displayed reverse/cofiltration handoff.  The next
+real proof step should prove that displayed handoff, not add more
+natural-filtration or leave-one-out packaging.
