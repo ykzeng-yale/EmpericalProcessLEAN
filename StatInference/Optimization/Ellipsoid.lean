@@ -1361,6 +1361,26 @@ noncomputable def chewi620MatrixCutScale
     (Sigma : Matrix ι ι ℝ) (p : EuclideanSpace ℝ ι) : ℝ :=
   (Real.sqrt (inner ℝ p (matrixInvShape Sigma p)))⁻¹
 
+/-- The square of the cut-normalization scale is the inverse quadratic form. -/
+theorem chewi620_matrixCutScale_mul_self_of_pos
+    {Sigma : Matrix ι ι ℝ} {p : EuclideanSpace ℝ ι}
+    (hq_pos : 0 < inner ℝ p (matrixInvShape Sigma p)) :
+    chewi620MatrixCutScale Sigma p * chewi620MatrixCutScale Sigma p =
+      (inner ℝ p (matrixInvShape Sigma p))⁻¹ := by
+  let q : ℝ := inner ℝ p (matrixInvShape Sigma p)
+  have hq_nonneg : 0 ≤ q := le_of_lt hq_pos
+  have hsqrt_sq : Real.sqrt q * Real.sqrt q = q := by
+    rw [← sq]
+    exact Real.sq_sqrt hq_nonneg
+  dsimp [chewi620MatrixCutScale]
+  change (Real.sqrt q)⁻¹ * (Real.sqrt q)⁻¹ = q⁻¹
+  calc
+    (Real.sqrt q)⁻¹ * (Real.sqrt q)⁻¹ =
+        (Real.sqrt q * Real.sqrt q)⁻¹ := by
+      rw [mul_inv_rev]
+    _ = q⁻¹ := by
+      rw [hsqrt_sq]
+
 /--
 The normalized cut direction obtained from a supplied square-root factor
 `sigmaHalfP`, intended to be `Σ_n^{1/2} p_n`.
@@ -1483,6 +1503,50 @@ theorem chewi620_matrixSqrt_rank_inner
       simpa using hT_symm (T p) (T.symm x)
     _ = inner ℝ (T p) x := by
       simp
+
+/--
+Concrete displayed-to-normalized forward-shape transport for Chewi Lemma 6.20.
+This discharges the matrix identity required by the compiled inverse-shape
+transport reductions, assuming `T` is a symmetric square-root factor for the
+displayed current shape matrix.
+-/
+theorem chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt
+    {d : ℕ} {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    (x : EuclideanSpace ℝ ι) :
+    matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p) (T.symm x) =
+      T (chewi620StandardCutForwardShape d
+        (chewi620MatrixNormalizedCutDirection Sigma p (T p)) x) := by
+  let q : ℝ := inner ℝ p (matrixInvShape Sigma p)
+  let scale : ℝ := chewi620MatrixCutScale Sigma p
+  let c : ℝ := (2 : ℝ) / ((d : ℝ) + 1)
+  have hq_pos : 0 < q := by
+    exact matrixInvShape_quadratic_pos_of_posDef hSigma hp
+  have hscale_sq :
+      scale * scale = q⁻¹ := by
+    exact chewi620_matrixCutScale_mul_self_of_pos
+      (Sigma := Sigma) (p := p) hq_pos
+  have hscalar (r : ℝ) :
+      ((((2 : ℝ) / ((d : ℝ) + 1)) /
+          inner ℝ p ((Matrix.toEuclideanLin Sigma) p)) * r) =
+        (((2 : ℝ) / ((d : ℝ) + 1) *
+            (chewi620MatrixCutScale Sigma p * r)) *
+          chewi620MatrixCutScale Sigma p) := by
+    change (c / q) * r = (c * (scale * r)) * scale
+    calc
+      (c / q) * r = c * q⁻¹ * r := by rw [div_eq_mul_inv]
+      _ = c * (scale * scale) * r := by rw [← hscale_sq]
+      _ = (c * (scale * r)) * scale := by ring
+  rw [chewi620_displayedShapeUpdate_action]
+  rw [chewi620_matrixSqrt_current_action (Sigma := Sigma) (T := T) hT_sq x]
+  rw [chewi620_matrixSqrt_rank_inner
+    (Sigma := Sigma) (T := T) hT_symm hT_sq p x]
+  simp [chewi620StandardCutForwardShape, chewi620MatrixNormalizedCutDirection,
+    hT_sq, inner_smul_left, smul_sub, smul_smul]
+  rw [hscalar (inner ℝ (T p) x)]
 
 /--
 The square-root hypothesis turns Chewi's normalized standard-cut center into
