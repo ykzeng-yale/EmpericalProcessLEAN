@@ -464,6 +464,74 @@ noncomputable def ofAEMeasurable {Ω : Type u} [MeasurableSpace Ω]
     change (if ω ∈ hull then ∞ else hT.mk T ω) ≤ U ω
     simp [hnot_hull, ← heq, hle]
 
+/--
+The cover built from an a.e.-measurable representative agrees with the target
+almost surely.
+-/
+theorem ofAEMeasurable_ae_eq {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) {T : Ω -> ℝ≥0∞} (hT : AEMeasurable T μ) :
+    (VdVWMeasurableCover.ofAEMeasurable μ hT : Ω -> ℝ≥0∞) =ᵐ[μ] T := by
+  classical
+  let bad : Set Ω := {ω | T ω ≠ hT.mk T ω}
+  let hull : Set Ω := toMeasurable μ bad
+  have hbad_zero : μ bad = 0 := by
+    have h_eq : ∀ᵐ ω ∂μ, T ω = hT.mk T ω := hT.ae_eq_mk
+    simpa [bad] using (ae_iff.mp h_eq)
+  have hhull_zero : μ hull = 0 := by
+    change μ (toMeasurable μ bad) = 0
+    rw [measure_toMeasurable bad, hbad_zero]
+  have hnot_hull_ae : ∀ᵐ ω ∂μ, ω ∉ hull := by
+    apply ae_iff.mpr
+    simpa using hhull_zero
+  filter_upwards [hnot_hull_ae] with ω hnot_hull
+  have hnot_bad : ω ∉ bad :=
+    fun hbad => hnot_hull (subset_toMeasurable μ bad hbad)
+  have heq : T ω = hT.mk T ω := by
+    by_contra hne
+    exact hnot_bad hne
+  change (if ω ∈ hull then ∞ else hT.mk T ω) = T ω
+  simp [hnot_hull, heq]
+
+/--
+Dominated-measure minimality of the a.e.-measurable cover built under a
+dominating measure.
+
+If `μ << ν`, then a cover built from a `ν`-a.e.-measurable representative is
+minimal against every `μ`-a.e. measurable majorant.  This is the core
+nonnegative common-cover primitive behind VdV&W Lemma 1.2.4.
+-/
+theorem ofAEMeasurable_minimal_ae_of_absolutelyContinuous
+    {Ω : Type u} [MeasurableSpace Ω] {ν μ : Measure Ω}
+    (hμν : μ ≪ ν) {T : Ω -> ℝ≥0∞} (hT : AEMeasurable T ν)
+    (U : Ω -> ℝ≥0∞) (_hU : Measurable U)
+    (h_majorizes : ∀ᵐ ω ∂μ, T ω ≤ U ω) :
+    ∀ᵐ ω ∂μ,
+      (VdVWMeasurableCover.ofAEMeasurable ν hT : Ω -> ℝ≥0∞) ω ≤ U ω := by
+  filter_upwards [hμν.ae_le (VdVWMeasurableCover.ofAEMeasurable_ae_eq ν hT),
+    h_majorizes] with ω hcover_eq hle
+  simpa [hcover_eq] using hle
+
+/--
+The a.e.-measurable cover built under a dominating measure is a valid
+VdV&W measurable cover for every dominated measure.
+
+This is a proof-carrying nonnegative version of the common measurable cover
+assertion in VdV&W Lemma 1.2.4.
+-/
+noncomputable def ofAEMeasurableDominated {Ω : Type u} [MeasurableSpace Ω]
+    (ν μ : Measure Ω) (hμν : μ ≪ ν)
+    {T : Ω -> ℝ≥0∞} (hT : AEMeasurable T ν) :
+    VdVWMeasurableCover μ T where
+  toFun := VdVWMeasurableCover.ofAEMeasurable ν hT
+  measurable_toFun :=
+    (VdVWMeasurableCover.ofAEMeasurable ν hT).measurable_toFun
+  majorizes := (VdVWMeasurableCover.ofAEMeasurable ν hT).majorizes
+  minimal_ae := by
+    intro U hU h_majorizes
+    exact
+      VdVWMeasurableCover.ofAEMeasurable_minimal_ae_of_absolutelyContinuous
+        hμν hT U hU h_majorizes
+
 /-- Real-valued null-measurable targets give covers after coercion to `ℝ≥0∞`. -/
 noncomputable def ofNullMeasurable_ofReal {Ω : Type u} [MeasurableSpace Ω]
     (μ : Measure Ω) {f : Ω -> ℝ} (hf : NullMeasurable f μ) :

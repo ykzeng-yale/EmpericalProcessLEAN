@@ -94,6 +94,9 @@ null-measurable conversion.
 The Chapter 1.2 product outer-expectation lane also now has nonnegative
 a.e.-measurable and measurable Tonelli wrappers for both integration orders,
 using mathlib `lintegral_prod`/`lintegral_prod_symm`.
+The dominated common-cover lane for Lemma 1.2.4 now has its nonnegative
+a.e.-measurable core: covers built under a dominating measure transport to
+minimal covers for absolutely continuous measures.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new

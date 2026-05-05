@@ -417,6 +417,18 @@ These close the measure-level Tonelli/Fubini bridge for nonnegative
 a.e.-measurable product integrands; the exact VdV&W arbitrary-map/perfect-map
 product-cover statements remain separate blockers.
 
+2026-05-05 dominated common-cover follow-up: search found mathlib absolute
+continuity transport through `Measure.AbsolutelyContinuous.ae_le` and local
+`VdVWMeasurableCover.ofAEMeasurable`, but no VdV&W-named dominated common
+cover theorem.  `OuterExpectation.lean` now proves
+`VdVWMeasurableCover.ofAEMeasurable_ae_eq`,
+`VdVWMeasurableCover.ofAEMeasurable_minimal_ae_of_absolutelyContinuous`, and
+`VdVWMeasurableCover.ofAEMeasurableDominated`.  This gives the nonnegative
+a.e.-measurable core of VdV&W Lemma 1.2.4: a cover constructed under a
+dominating measure is a valid minimal cover for every absolutely continuous
+measure.  The remaining exact 1.2.4 gap is full arbitrary extended-real
+common-cover existence for arbitrary maps.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.
