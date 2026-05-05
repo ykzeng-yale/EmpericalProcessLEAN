@@ -43,7 +43,8 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after the 2026-05-05 ellipsoid source packet:
+Manual goal frontier after latest pushed frontier `05f5ae4` on 2026-05-05
+(`f1472c4` ellipsoid source packet plus remote-safe merges):
 `StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
 discrete AGD source rate,
 `StatInference/Optimization/ProjectedSubgradient.lean` proves the finite-valued
@@ -108,16 +109,19 @@ scaled projected-subgradient recurrence for Theorem 6.16.
 `ellipsoidTrajectory_volume_ratio_le_pow`, and
 `chewi620_volume_ratio_and_gap_bound_of_scaled_candidates`.
 
-The next active packet should stay in Chapter 6 and move to ellipsoid Lemma
-6.20, not drip minor wrappers.  The exact Grünbaum/centroid measure theorem
-remains a precise supplied blocker before a source-audited CoGM report, and the
-exact Lemma 6.20 matrix proof remains the next ellipsoid blocker.  Search
-mathlib matrix/PSD/inverse/determinant and volume-scaling APIs first, then
-instantiate or narrow `IsEllipsoidStepCertificate` from Chewi's displayed
-matrix update by proving either the half-space containment or the determinant/
-volume-ratio calculation.  After that, continue Chapter 6 with nonsmooth
-lower-bound Theorems 6.21-6.23 and feasibility Theorem 6.25 before opening
-Chapter 7 as the next main-text frontier.
+The next active packet should stay in Chapter 6 and prove a theorem-sized part
+of ellipsoid Lemma 6.20, not drip minor wrappers.  The exact
+Grünbaum/centroid measure theorem remains a precise supplied blocker before a
+source-audited CoGM report, and the exact Lemma 6.20 matrix proof remains the
+next ellipsoid blocker.  Search mathlib matrix/PSD/inverse/determinant and
+volume-scaling APIs first, then instantiate or narrow
+`IsEllipsoidStepCertificate` from Chewi's displayed matrix update by proving
+either the half-space containment or the determinant/volume-ratio calculation.
+If the full matrix proof balloons, prove the scalar determinant/rank-one update
+certificate as a reusable intermediate and record the remaining matrix API
+blocker precisely.  After that, continue Chapter 6 with nonsmooth lower-bound
+Theorems 6.21-6.23 and feasibility Theorem 6.25 before opening Chapter 7 as
+the next main-text frontier.
 Mandatory search and reuse: mathlib
 `Analysis/InnerProductSpace/Projection/Minimal.lean` has
 `exists_norm_eq_iInf_of_complete_convex` and

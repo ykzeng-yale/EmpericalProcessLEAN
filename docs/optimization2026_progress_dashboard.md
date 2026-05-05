@@ -28,7 +28,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
-- Current manual frontier after the 2026-05-05 ellipsoid source packet:
+- Current manual frontier after latest pushed frontier `05f5ae4` on
+  2026-05-05 (`f1472c4` ellipsoid source packet plus remote-safe merges):
   `StatInference/Optimization/Theorem510.lean` proves the source-shaped
   discrete AGD rate, and `StatInference/Optimization/ProjectedSubgradient.lean`
   now starts Chapter 6 with compiled finite-valued subgradient/projection/PSD
@@ -101,16 +102,19 @@ High-value local files:
 
 ## Current Active Target
 
-Latest proof target: Chapter 6 nonsmooth convex optimization.  Theorems 6.14
+Latest proof target after pushed frontier `05f5ae4`: Chapter 6 nonsmooth
+convex optimization.  Theorems 6.14
 and 6.16 are now compiled in finite-valued source-facing supplied-interface
 forms, `CuttingPlane.lean` now compiles the supplied-interface algebraic spine
 plus source-shaped CoGM Theorem 6.19 wrapper
 `chewi619_gap_le_display_rate_of_scaled_candidates`, and `Ellipsoid.lean` now
 compiles the supplied-interface Lemma 6.20 trajectory/rate layer.  The next
-manual goal packet should instantiate or narrow `IsEllipsoidStepCertificate`
-from Chewi's displayed matrix update using mathlib matrix/PSD/determinant/
-inverse/volume APIs, starting with the half-space containment or the
-determinant/volume-ratio calculation.
+manual goal packet should prove a theorem-sized component of Chewi Lemma 6.20:
+instantiate or narrow `IsEllipsoidStepCertificate` from the displayed matrix
+update using mathlib matrix/PSD/determinant/inverse/volume APIs, starting with
+the half-space containment or the determinant/volume-ratio calculation.  If the
+full matrix proof balloons, first prove the scalar determinant/rank-one update
+certificate that will be reused by the exact matrix proof.
 
 This paragraph overrides any older "next target" language in historical
 Chapter 4/5 notes below: the current manual `/goal` target is the rest of

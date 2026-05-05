@@ -68,7 +68,8 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Live replacement `/goal` prompt after the 2026-05-05 ellipsoid source packet:
+Live replacement `/goal` prompt after latest pushed frontier `05f5ae4`
+(`f1472c4` ellipsoid source packet plus remote-safe merges) on 2026-05-05:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under `StatInference/Optimization`, with
 exercises tracked in the single `StatInference/Optimization/Exercises.lean`
@@ -87,6 +88,17 @@ ellipsoid volume shrink, and
 cannot be edited directly through the current tool surface unless the full
 textbook goal is marked complete, so this paragraph is the operative manual
 `/goal` target.
+
+Immediate target for the next manual goal run: prove a theorem-sized part of
+Chewi Lemma 6.20, not another small wrapper.  First search mathlib/local APIs
+for matrix PSD order, rank-one inverse/determinant updates, ellipsoid volume
+scaling, and quadratic-form halfspace containment.  Then instantiate or narrow
+`IsEllipsoidStepCertificate` for Chewi's displayed ellipsoid update by proving
+one of the two hard components: (1) the half-space containment of the central
+cut inside the next ellipsoid, or (2) the determinant/volume ratio bound
+matching `ellipsoidVolumeRatio`.  If the full matrix proof balloons, prove the
+scalar determinant/rank-one algebra certificate as the reusable intermediate
+and record exactly which matrix API remains missing.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
