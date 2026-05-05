@@ -111,11 +111,12 @@ structural-rate packages and classify its assumptions before moving to
 Chapter 1 arbitrary-map/`P`-measurable foundations, nonmeasurable envelope-tail
 outer-cover clauses, or separability primitives required by exact Chapter 1-2
 statements.  The next small but theorem-facing Chapter 1 foundation closure is
-filter-refinement stability for the signed weak-convergence packages in
-`WeakConvergence.lean`, which local search shows is still missing for the
-signed-outer, arbitrary-map, and varying-domain proof-carrying predicates even
-though the corresponding asymptotic-measurability predicates already have
-`mono_filter` lemmas.
+now closed: filter-refinement stability for the signed weak-convergence
+packages in `WeakConvergence.lean`, covering signed-outer, arbitrary-map, and
+varying-domain proof-carrying predicates.  The next Chapter 1 fallback should
+therefore move to deeper exact primitives such as nonmeasurable outer-cover
+signed weak convergence, asymptotic-tightness/asymptotic-independence, FDD
+converse, or separability/`P`-measurable class support.
 
 2026-05-05 proof update: the countability-to-`P`-measurability route has a new
 compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`
@@ -228,6 +229,19 @@ It remains a foundation layer, not the full VdV&W arbitrary-map theory:
 nonmeasurable outer-cover signed extended-real weak convergence,
 asymptotic-tightness/asymptotic-independence, FDD converse, and exact
 separability/`P`-measurable class bridges remain open.
+
+2026-05-05 signed filter-refinement follow-up: the signed weak-convergence
+packages now have filter-refinement stability through
+`VdVWWeakConvergenceSignedOuterBoundedContinuous.mono_filter`,
+`VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.mono_filter`,
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.mono_filter`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.mono_filter`,
+and
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.mono_filter`.
+Search record: local code already had analogous asymptotic-measurability
+filter closures, but no signed weak-convergence package closures.  This closes
+the simple filter-refinement foundation gap and keeps the active Chapter 1
+fallback focused on the deeper arbitrary-map/nonmeasurable/process primitives.
 
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the

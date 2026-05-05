@@ -88,6 +88,13 @@ varying-domain signed continuous-mapping closures
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.comp_continuous`,
 and
 `VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.comp_continuous`,
+the signed weak-convergence filter-refinement closures
+`VdVWWeakConvergenceSignedOuterBoundedContinuous.mono_filter`,
+`VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.mono_filter`,
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.mono_filter`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.mono_filter`,
+and
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.mono_filter`,
 and the
 real-valued varying-domain Dirac-law bridge
 `VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real`
@@ -121,16 +128,13 @@ Next high-capacity proof batches, in order:
    added UI/tail or structural bound hypothesis.
 3. In parallel only when it directly supports exact Chapter 1-2 statements or
    Theorem 2.4.3 endpoints, close small reusable arbitrary-map foundation
-   gaps that are already search-isolated.  The immediate patchable item is
-   filter-refinement stability for the signed weak-convergence packages:
-   common-domain signed-outer weak convergence, the proof-carrying arbitrary
-   map package, and the varying-domain signed-outer/asymptotic-measurability/
-   proof-carrying packages.  Search record: local code has filter-refinement
-   closure for nonnegative, lower-shifted, canonical shifted, and common-domain
-   signed asymptotic-measurability predicates, but not these signed
-   weak-convergence packages.  These closures should be proved directly by
-   `Tendsto.mono_left` and by reusing the existing asymptotic-measurability
-   `mono_filter`; they should not distract into new endpoint wrappers.
+   gaps that are already search-isolated.  The signed weak-convergence
+   filter-refinement package is now closed; do not repeat it.  The next
+   Chapter 1 foundation fallback should address a deeper exact primitive:
+   nonmeasurable outer-cover signed extended-real weak convergence,
+   asymptotic-tightness/asymptotic-independence, FDD converse, or exact
+   separability/`P`-measurable class support beyond the current signed
+   bounded-continuous package.
 4. If the book random-entropy route remains blocked after real Lean/search
    attempts, move immediately to theorem-critical exactness gaps instead of
    rewrapping closed Theorem 2.4.3 layers.  The first fallback is a precise
@@ -264,6 +268,24 @@ nonmeasurable outer-cover signed extended-real weak convergence,
 asymptotic-tightness/asymptotic-independence, FDD converse, and exact
 separability/`P`-measurable class support beyond the current signed
 bounded-continuous package.
+
+2026-05-05 signed filter-refinement follow-up: the signed bounded-continuous
+weak-convergence packages are now stable under passing to a finer index
+filter.  New compiled declarations:
+`VdVWWeakConvergenceSignedOuterBoundedContinuous.mono_filter`,
+`VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.mono_filter`,
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.mono_filter`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.mono_filter`,
+and
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.mono_filter`.
+Search record: local `WeakConvergence.lean` already had
+filter-refinement closures for the nonnegative, lower-shifted, canonical
+shifted, and common-domain signed asymptotic-measurability predicates, while
+local/mathlib search found no signed weak-convergence package closures.  The
+new proofs are direct `Tendsto.mono_left` and package-field reuse.  Remaining
+Chapter 1 arbitrary-map work is the deeper nonmeasurable outer-cover,
+asymptotic-tightness/asymptotic-independence, FDD-converse, and separability
+support listed above.
 
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the

@@ -210,6 +210,22 @@ theorem VdVWWeakConvergenceSignedOuterBoundedContinuous.comp_continuous
   simpa [VdVWWeakConvergenceSignedOuterBoundedContinuous, gC] using hbase
 
 /--
+Signed-outer bounded-continuous weak convergence is stable under passing to a
+finer index filter.
+-/
+theorem VdVWWeakConvergenceSignedOuterBoundedContinuous.mono_filter
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l l' : Filter ι} {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l μ)
+    (hl : l' ≤ l) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l' μ := by
+  intro f
+  exact (h f).mono_left hl
+
+/--
 Signed bounded-continuous outer/inner expectation gap for an arbitrary real
 map.
 
@@ -385,6 +401,22 @@ theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.comp_continuous
     asymptoticMeasurability := h.asymptoticMeasurability.comp_continuous hg }
 
 /--
+The proof-carrying signed bounded-continuous arbitrary-map weak-convergence
+package is stable under passing to a finer index filter.
+-/
+theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.mono_filter
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l l' : Filter ι} {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ)
+    (hl : l' ≤ l) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l' μ :=
+  { weakConvergence := h.weakConvergence.mono_filter hl
+    asymptoticMeasurability := h.asymptoticMeasurability.mono_filter hl }
+
+/--
 Varying-domain signed-outer bounded-continuous weak convergence.
 
 This is the same signed-outer bounded-continuous test formulation as
@@ -442,6 +474,26 @@ theorem
   rw [htarget]
   simpa [VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains, gC]
     using hbase
+
+/--
+Varying-domain signed-outer bounded-continuous weak convergence is stable
+under passing to a finer index filter.
+-/
+theorem
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.mono_filter
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l l' : Filter ι} {μ : ProbabilityMeasure S}
+    (h :
+      VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains
+        Ω μs X l μ)
+    (hl : l' ≤ l) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains
+      Ω μs X l' μ := by
+  intro f
+  exact (h f).mono_left hl
 
 /--
 Varying-domain signed bounded-continuous asymptotic measurability.
@@ -535,6 +587,25 @@ theorem
   simpa [gC] using h (f.compContinuous gC)
 
 /--
+Varying-domain signed bounded-continuous asymptotic measurability is stable
+under passing to a finer index filter.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.mono_filter
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l l' : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
+        Ω μs X l)
+    (hl : l' ≤ l) :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
+      Ω μs X l' := by
+  intro f
+  exact (h f).mono_left hl
+
+/--
 Proof-carrying varying-domain signed bounded-continuous weak convergence.
 
 This packages the varying-domain weak-convergence and asymptotic-measurability
@@ -572,6 +643,24 @@ theorem
   { weakConvergence := h.weakConvergence.comp_continuous hg
     asymptoticMeasurability :=
       h.asymptoticMeasurability.comp_continuous hg }
+
+/--
+The proof-carrying varying-domain signed bounded-continuous weak-convergence
+package is stable under passing to a finer index filter.
+-/
+theorem
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.mono_filter
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l l' : Filter ι} {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ)
+    (hl : l' ≤ l) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l' μ :=
+  { weakConvergence := h.weakConvergence.mono_filter hl
+    asymptoticMeasurability :=
+      h.asymptoticMeasurability.mono_filter hl }
 
 /--
 Nonnegative version of VdV&W asymptotic measurability for a family of

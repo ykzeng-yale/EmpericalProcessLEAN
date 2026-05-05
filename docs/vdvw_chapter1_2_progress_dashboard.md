@@ -19,7 +19,8 @@ inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
 Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
 ordinary-mean/L1 normalized-log packages should not be rebuilt.  The
-varying-domain signed continuous-mapping closures are also compiled.  The
+varying-domain signed continuous-mapping and signed filter-refinement closures
+are also compiled.  The
 current theorem-facing gap is the exact book random-entropy bridge for
 Theorem 2.4.3: derive a real tail/UI, uniform-integrability, deterministic
 structural cardinality, or ordinary mean-convergence input from
@@ -27,12 +28,11 @@ structural cardinality, or ordinary mean-convergence input from
 already compiled selected finite-net routes.  Bare outer-probability
 convergence of normalized random entropy should not be treated as tail/UI.  If
 that bridge is blocked after real Lean/search attempts, the next `/goal` batch
-should either close the already isolated signed weak-convergence
-filter-refinement foundations in `WeakConvergence.lean`, or produce the
-cleanest final-current Theorem 2.4.3/Lemma 2.4.5 statement from the
-full-subgraph/structural packages and classify each stronger assumption before
-moving to theorem-critical Chapter 1-2 arbitrary-map, nonmeasurable
-envelope-tail, or separability primitives.
+should produce the cleanest final-current Theorem 2.4.3/Lemma 2.4.5 statement
+from the full-subgraph/structural packages and classify each stronger
+assumption before moving to deeper theorem-critical Chapter 1-2 arbitrary-map,
+nonmeasurable envelope-tail, asymptotic-tightness/FDD, or separability
+primitives.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new
@@ -157,6 +157,19 @@ sample-size-varying Chapter 1 endpoints and Theorem 2.4.3 pushforwards.  This
 does not close the deeper nonmeasurable outer-cover, asymptotic-tightness,
 asymptotic-independence, FDD-converse, or separability/`P`-measurable class
 primitives.
+
+2026-05-05 signed filter-refinement follow-up: the signed weak-convergence
+packages now have filter-refinement stability:
+`VdVWWeakConvergenceSignedOuterBoundedContinuous.mono_filter`,
+`VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.mono_filter`,
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.mono_filter`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.mono_filter`,
+and
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.mono_filter`.
+This closes the already isolated sample-size/index-filter stability gap for
+Chapter 1 arbitrary-map weak-convergence packages; remaining Chapter 1 work is
+the deeper nonmeasurable outer-cover, asymptotic-tightness/independence,
+FDD-converse, and separability/`P`-measurable class support.
 
 ## Status Legend
 
