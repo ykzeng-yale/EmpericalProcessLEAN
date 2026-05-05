@@ -89,8 +89,9 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at synced repository head `7fe3bca`:
-the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
+Current operational target, 2026-05-05 after the verified varying-domain
+shifted asymptotic-measurability bridge: the strong Theorem 2.4.3/Lemma 2.4.5
+endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
 measurable/null-measurable signed arbitrary-map/varying-domain
@@ -125,6 +126,13 @@ converse, or separability/`P`-measurable class support.
 `.to_canonicalShifted`, so the signed bounded-continuous arbitrary-map
 asymptotic-measurability layer directly feeds the older nonnegative
 lower-shifted/canonical shifted predicates.
+
+2026-05-05 varying-domain shifted bridge update: `WeakConvergence.lean` now
+adds the varying-domain lower-shifted/canonical shifted asymptotic-
+measurability predicates and constructors, plus
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.to_lowerShifted`
+and `.to_canonicalShifted`.  The sample-size-varying signed layer can now feed
+the same shifted interface as the common-domain Chapter 1 layer.
 
 2026-05-05 proof update: the countability-to-`P`-measurability route has a new
 compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`

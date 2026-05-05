@@ -13,8 +13,9 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current `/goal` target override, 2026-05-05 at synced repository head
-`7fe3bca`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
+Current `/goal` target override, 2026-05-05 after the verified
+varying-domain shifted asymptotic-measurability bridge: closed
+finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
 Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
@@ -38,6 +39,12 @@ The signed arbitrary-map asymptotic-measurability layer now also implies the
 lower-shifted/canonical shifted predicates through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_lowerShifted` and
 `.to_canonicalShifted`.
+The same shifted/canonical interface is now available for varying-domain
+endpoints through
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains`,
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains`,
+and the signed varying-domain `.to_lowerShifted`/`.to_canonicalShifted`
+bridges.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new

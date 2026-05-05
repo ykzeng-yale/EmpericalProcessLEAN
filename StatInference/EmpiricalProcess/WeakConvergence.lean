@@ -1095,6 +1095,217 @@ theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_canonicalShifted
     h.to_lowerShifted
 
 /--
+Varying-domain bounded-continuous lower-shifted asymptotic measurability.
+
+This is the sample-size-varying analogue of
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted`, used for
+empirical-process endpoints over spaces such as `SampleAt Observation n`.
+-/
+def VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+    {ι : Type w} (Ω : ι -> Type u) {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    (μs : (i : ι) -> Measure (Ω i)) (X : (i : ι) -> Ω i -> S)
+    (l : Filter ι) : Prop :=
+  ∀ f : S →ᵇ ℝ, ∀ c,
+    (∀ i ω, c ≤ f (X i ω)) ->
+      Tendsto
+        (fun i => VdVWLowerShiftedRealOuterInnerExpectationGap (μs i)
+          (fun ω => f (X i ω)) c)
+        l (𝓝 0)
+
+/--
+Varying-domain bounded-continuous asymptotic measurability with the canonical
+lower shift `-‖f‖`.
+-/
+def VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+    {ι : Type w} (Ω : ι -> Type u) {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    (μs : (i : ι) -> Measure (Ω i)) (X : (i : ι) -> Ω i -> S)
+    (l : Filter ι) : Prop :=
+  ∀ f : S →ᵇ ℝ,
+    Tendsto
+      (fun i => VdVWLowerShiftedRealOuterInnerExpectationGap (μs i)
+        (fun ω => f (X i ω)) (-‖f‖))
+      l (𝓝 0)
+
+/--
+The varying-domain explicit lower-shifted layer implies the canonical
+`-‖f‖` version.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.of_lowerShifted
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+        Ω μs X l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+      Ω μs X l := by
+  intro f
+  exact h f (-‖f‖) fun i ω =>
+    BoundedContinuousFunction.neg_norm_le_apply f (X i ω)
+
+/--
+The varying-domain lower-shifted predicate is stable under passing to a finer
+index filter.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.mono_filter
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l l' : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+        Ω μs X l)
+    (hl : l' ≤ l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+      Ω μs X l' := by
+  intro f c hlower
+  exact (h f c hlower).mono_left hl
+
+/--
+The varying-domain canonical shifted predicate is stable under passing to a
+finer index filter.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.mono_filter
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l l' : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+        Ω μs X l)
+    (hl : l' ≤ l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+      Ω μs X l' := by
+  intro f
+  exact (h f).mono_left hl
+
+/--
+Varying-domain signed bounded-continuous asymptotic measurability implies the
+varying-domain lower-shifted bounded-continuous layer.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.to_lowerShifted
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
+        Ω μs X l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+      Ω μs X l := by
+  intro f c _hlower
+  let fc : S →ᵇ ℝ := f - BoundedContinuousFunction.const S c
+  have hsigned := h fc
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0) from
+        tendsto_const_nhds)
+      hsigned
+      (Eventually.of_forall fun _ => bot_le)
+      ?_
+  refine Eventually.of_forall fun i => ?_
+  simpa [fc] using
+    (VdVWLowerShiftedRealOuterInnerExpectationGap_le_signed_sub_const
+      (μ := μs i) (Y := fun ω => f (X i ω)) (c := c))
+
+/--
+Varying-domain signed bounded-continuous asymptotic measurability implies the
+varying-domain canonical shifted layer.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.to_canonicalShifted
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
+        Ω μs X l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+      Ω μs X l :=
+  VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.of_lowerShifted
+    h.to_lowerShifted
+
+/--
+Measurable varying-domain maps are lower-shifted asymptotically measurable for
+all bounded continuous real tests.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.of_forall_measurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (hX : ∀ i, Measurable (X i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+      Ω μs X l :=
+  (VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_measurable
+    hX).to_lowerShifted
+
+/--
+Measurable varying-domain maps are canonically shifted asymptotically
+measurable for all bounded continuous real tests.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.of_forall_measurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (hX : ∀ i, Measurable (X i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+      Ω μs X l :=
+  VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.of_lowerShifted
+    (VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.of_forall_measurable
+      hX)
+
+/--
+Null-measurable varying-domain maps are lower-shifted asymptotically
+measurable for all bounded continuous real tests.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.of_forall_nullMeasurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (hX : ∀ i, NullMeasurable (X i) (μs i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+      Ω μs X l :=
+  (VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_nullMeasurable
+    hX).to_lowerShifted
+
+/--
+Null-measurable varying-domain maps are canonically shifted asymptotically
+measurable for all bounded continuous real tests.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.of_forall_nullMeasurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (hX : ∀ i, NullMeasurable (X i) (μs i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+      Ω μs X l :=
+  VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.of_lowerShifted
+    (VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.of_forall_nullMeasurable
+      hX)
+
+/--
 Measure-level weak convergence of probability measures.
 
 This is the mathlib-backed part of VdV&W Definition 1.3.3, specialized to

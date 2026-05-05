@@ -57,8 +57,9 @@ consumes them.
 
 ## Current `/goal` Target
 
-Authoritative operational prompt, 2026-05-05, synced repository head
-`7fe3bca`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+Authoritative operational prompt, 2026-05-05, after the verified
+varying-domain shifted asymptotic-measurability bridge: finish VdV&W Chapters
+1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -4992,6 +4993,18 @@ shifted predicates.  New compiled declarations:
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_canonicalShifted`.
 This reduces one foundation mismatch between the signed arbitrary-map
 predicate and the earlier nonnegative shifted outer/inner expectation layer.
+
+2026-05-05 varying-domain shifted bridge update: local/mathlib search found
+no existing varying-domain lower-shifted/canonical shifted
+asymptotic-measurability layer.  `WeakConvergence.lean` now adds the
+sample-size-varying analogues
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains` and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains`,
+their filter-refinement and measurable/null-measurable constructors, and the
+signed bridge declarations
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.to_lowerShifted`
+and `.to_canonicalShifted`.  This closes the shifted/canonical interface for
+the varying-domain endpoints used by Theorem 2.4.3.
 
 2026-05-05 follow-up: the local asymptotic-measurability predicates are now
 stable under filter refinement/subsequence filters.  The compiled declarations
