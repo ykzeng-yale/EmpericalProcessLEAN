@@ -482,6 +482,18 @@ nonnegative targets, using `AEMeasurable.comp_fst`/`.comp_snd` and Tonelli.
 This closes the null-measurable/a.e.-measurable product-coordinate branch
 while keeping the full arbitrary perfect-map statement open.
 
+2026-05-05 product projection inner-expectation follow-up:
+`VdVWInnerExpectation_prod_fst_eq_of_measurable`,
+`VdVWInnerExpectation_prod_snd_eq_of_measurable`,
+`VdVWInnerExpectation_prod_fst_eq_of_aemeasurable`, and
+`VdVWInnerExpectation_prod_snd_eq_of_aemeasurable` now package the matching
+probability-product inner-expectation invariance for measurable and
+a.e.-measurable nonnegative coordinate pullbacks.  The proofs reuse the
+outer-expectation product projection invariance plus the measurable/a.e.-
+measurable outer-inner collapse, so this is a Chapter 1.2 cleanup rather than
+a new perfect-map primitive.  The remaining 1.2.5 gap is still the full
+arbitrary-map perfect projection theorem.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.

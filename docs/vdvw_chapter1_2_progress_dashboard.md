@@ -110,6 +110,10 @@ The corresponding probability-product outer-expectation invariance is also
 compiled for first and second coordinate pullbacks.
 The same invariance now also has a.e.-measurable target variants, covering the
 null-measurable product-coordinate cases used by outer-expectation arguments.
+The matching inner-expectation invariance is now compiled for measurable and
+a.e.-measurable first/second coordinate pullbacks, so the Chapter 1.2
+product-projection lane has both nonnegative outer and inner expectation
+forms under ordinary measurable/null-measurable hypotheses.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new

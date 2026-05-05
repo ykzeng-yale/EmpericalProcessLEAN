@@ -1221,6 +1221,50 @@ theorem VdVWOuterExpectation_prod_snd_eq_of_measurable
       simp [lintegral_const]
 
 /--
+First-coordinate product-space inner expectation for measurable targets.
+-/
+theorem VdVWInnerExpectation_prod_fst_eq_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure ν]
+    {T : Ω -> ℝ≥0∞} (U : VdVWMeasurableCover μ T) (hT : Measurable T) :
+    VdVWInnerExpectation (μ.prod ν) (fun z : Ω × S => T z.1) =
+      VdVWInnerExpectation μ T := by
+  have hprod :
+      VdVWOuterExpectation (μ.prod ν) (fun z : Ω × S => T z.1) =
+        VdVWInnerExpectation (μ.prod ν) (fun z : Ω × S => T z.1) := by
+    simpa only [Function.comp_apply] using
+      (VdVWOuterExpectation_eq_innerExpectation_of_measurable
+        (hT.comp measurable_fst))
+  have hbase :
+      VdVWOuterExpectation μ T = VdVWInnerExpectation μ T :=
+    VdVWOuterExpectation_eq_innerExpectation_of_measurable hT
+  rw [← hprod, ← hbase]
+  exact VdVWOuterExpectation_prod_fst_eq_of_measurable U hT
+
+/--
+Second-coordinate product-space inner expectation for measurable targets.
+-/
+theorem VdVWInnerExpectation_prod_snd_eq_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ]
+    {T : S -> ℝ≥0∞} (U : VdVWMeasurableCover ν T) (hT : Measurable T) :
+    VdVWInnerExpectation (μ.prod ν) (fun z : Ω × S => T z.2) =
+      VdVWInnerExpectation ν T := by
+  have hprod :
+      VdVWOuterExpectation (μ.prod ν) (fun z : Ω × S => T z.2) =
+        VdVWInnerExpectation (μ.prod ν) (fun z : Ω × S => T z.2) := by
+    simpa only [Function.comp_apply] using
+      (VdVWOuterExpectation_eq_innerExpectation_of_measurable
+        (hT.comp measurable_snd))
+  have hbase :
+      VdVWOuterExpectation ν T = VdVWInnerExpectation ν T :=
+    VdVWOuterExpectation_eq_innerExpectation_of_measurable hT
+  rw [← hprod, ← hbase]
+  exact VdVWOuterExpectation_prod_snd_eq_of_measurable U hT
+
+/--
 A.e.-measurable nonnegative maps have their VdV&W outer expectation equal to
 the ordinary `lintegral`.
 
@@ -1409,6 +1453,48 @@ theorem VdVWOuterExpectation_eq_innerExpectation_of_aemeasurable
     _ = ∫⁻ ω, L ω ∂μ := (lintegral_congr_ae hL_ae).symm
     _ = VdVWInnerExpectation μ T :=
       (VdVWInnerExpectation_eq_lintegral_lowerCover L).symm
+
+/--
+First-coordinate product-space inner expectation for a.e.-measurable targets.
+-/
+theorem VdVWInnerExpectation_prod_fst_eq_of_aemeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure ν]
+    {T : Ω -> ℝ≥0∞} (hT : AEMeasurable T μ) :
+    VdVWInnerExpectation (μ.prod ν) (fun z : Ω × S => T z.1) =
+      VdVWInnerExpectation μ T := by
+  have hprod :
+      VdVWOuterExpectation (μ.prod ν) (fun z : Ω × S => T z.1) =
+        VdVWInnerExpectation (μ.prod ν) (fun z : Ω × S => T z.1) := by
+    simpa only [Function.comp_apply] using
+      (VdVWOuterExpectation_eq_innerExpectation_of_aemeasurable hT.comp_fst)
+  have hbase :
+      VdVWOuterExpectation μ T = VdVWInnerExpectation μ T :=
+    VdVWOuterExpectation_eq_innerExpectation_of_aemeasurable hT
+  rw [← hprod, ← hbase]
+  exact VdVWOuterExpectation_prod_fst_eq_of_aemeasurable hT
+
+/--
+Second-coordinate product-space inner expectation for a.e.-measurable targets.
+-/
+theorem VdVWInnerExpectation_prod_snd_eq_of_aemeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ]
+    {T : S -> ℝ≥0∞} (hT : AEMeasurable T ν) :
+    VdVWInnerExpectation (μ.prod ν) (fun z : Ω × S => T z.2) =
+      VdVWInnerExpectation ν T := by
+  have hprod :
+      VdVWOuterExpectation (μ.prod ν) (fun z : Ω × S => T z.2) =
+        VdVWInnerExpectation (μ.prod ν) (fun z : Ω × S => T z.2) := by
+    simpa only [Function.comp_apply] using
+      (VdVWOuterExpectation_eq_innerExpectation_of_aemeasurable hT.comp_snd)
+  have hbase :
+      VdVWOuterExpectation ν T = VdVWInnerExpectation ν T :=
+    VdVWOuterExpectation_eq_innerExpectation_of_aemeasurable hT
+  rw [← hprod, ← hbase]
+  exact VdVWOuterExpectation_prod_snd_eq_of_aemeasurable hT
 
 /--
 For an a.e.-measurable integrable real map, the signed positive/negative
