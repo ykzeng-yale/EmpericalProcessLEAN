@@ -69,9 +69,9 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Live replacement `/goal` prompt after the 2026-05-05 standard-cut scalar,
-determinant-ratio, coordinate-free affine-containment, and supplied-identity
-affine-transport certificate packet, building on prior pushed frontier
-`ee26281`:
+determinant-ratio, coordinate-free affine-containment, supplied-identity
+affine-transport certificate, and first Euclidean matrix quadratic packet,
+building on prior pushed frontier `14580fb`:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under `StatInference/Optimization`, with
 exercises tracked in the single `StatInference/Optimization/Exercises.lean`
@@ -98,7 +98,12 @@ coordinate-free normalized central-cut bridge
 `chewi620_standardCutInvShape_quadratic`, and
 `chewi620_standardCut_halfspace_subset`, plus the certificate bridge
 `chewi620_affineTransport_halfspace_subset_of_quadratic` and
-`chewi620_affineTransport_stepCertificate_of_quadratic`.  The app-level
+`chewi620_affineTransport_stepCertificate_of_quadratic`, plus the
+matrix-backed inverse-shape bridge `matrixInvShape`,
+`matrixInvShape_quadratic_eq_dotProduct`,
+`matrixInvShape_quadratic_nonneg_of_posSemidef`,
+`matrixInvShape_quadratic_pos_of_posDef`, and
+`chewi620_matrix_cut_sqrt_inv_pos_of_posDef`.  The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
 textbook goal is marked complete, so this paragraph is the operative manual
@@ -138,13 +143,16 @@ centroid/volume fact as `HasScaledOutsideCandidatesAbove`, and Lemma 6.20 now
 has a compiled supplied-interface ellipsoid trajectory/rate layer plus the
 normalized scalar central-cut containment, determinant-ratio inequalities, and
 coordinate-free normalized half-space containment, and an abstract
-affine-transport `IsEllipsoidStepCertificate` bridge.  The next aggressive
-theorem packet should prove the concrete matrix identities needed by that
-bridge: search and use mathlib matrix/PSD/inverse/determinant/volume APIs to
-transport these local theorems to the displayed matrix update.  If the full
-matrix proof balloons, record the exact missing matrix API and prove the
-smallest matrix-coordinate, rank-one determinant, or volume-scaling certificate
-that removes it.
+affine-transport `IsEllipsoidStepCertificate` bridge.  The current-ellipsoid
+matrix quadratic and positive-denominator pieces now compile via
+`matrixInvShape` and PosDef/PosSemidef dot-product APIs.  The next aggressive
+theorem packet should prove the cut-normalization identity and then the
+pullback/determinant pieces needed by `chewi620_affineTransport_stepCertificate_of_quadratic`:
+search and use mathlib matrix/PSD/inverse/determinant/volume APIs to transport
+these local theorems to the displayed matrix update.  If the full matrix proof
+balloons, record the exact missing matrix API and prove the smallest
+matrix-coordinate, rank-one determinant, or volume-scaling certificate that
+removes it.
 Do not spend a run only polishing a minor wrapper unless it is the fastest
 verified dependency for this theorem packet.
 
