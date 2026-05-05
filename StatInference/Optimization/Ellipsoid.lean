@@ -2590,6 +2590,67 @@ theorem IsEllipsoidCuttingPlaneTrajectory.halfspace_subset
   simpa [ellipsoidSets] using
     (h.step (n := n)).halfspace_subset
 
+section EuclideanMatrixTrajectory
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+/--
+Chewi Lemma 6.20, sequence form: if the displayed matrix iterates use Chewi's
+center and shape updates, then the displayed ellipsoids form an ellipsoid
+cutting-plane trajectory.
+-/
+theorem chewi620_displayedMatrices_trajectory_of_cfcSqrt
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : ℕ -> Matrix ι ι ℝ}
+    (hSigma : ∀ n, (Sigma n).PosDef)
+    {T : ℕ -> EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : ∀ n, (T n).IsSymmetric)
+    (hT_sq : ∀ n y, T n (T n y) = matrixInvShape (Sigma n) y)
+    {center p : ℕ -> EuclideanSpace ℝ ι}
+    (hp : ∀ n, p n ≠ 0)
+    (hcenter_succ : ∀ n,
+      center (n + 1) =
+        ellipsoidCenterUpdate d (center n) (matrixInvShape (Sigma n) (p n))
+          (inner ℝ (p n) (matrixInvShape (Sigma n) (p n))))
+    (hSigma_succ : ∀ n,
+      Sigma (n + 1) = chewi620DisplayedShapeUpdate d (Sigma n) (p n))
+    {vol : ℕ -> ℝ}
+    (hvol : ∀ n,
+      vol n =
+        MeasureTheory.volume.real
+          (ellipsoidSet (center n) (matrixInvShape (Sigma n)⁻¹))) :
+    IsEllipsoidCuttingPlaneTrajectory center p
+      (fun n => matrixInvShape (Sigma n)⁻¹) vol d := by
+  intro n
+  have hvol_next :
+      vol (n + 1) =
+        MeasureTheory.volume.real
+          (ellipsoidSet
+            (ellipsoidCenterUpdate d (center n) (matrixInvShape (Sigma n) (p n))
+              (inner ℝ (p n) (matrixInvShape (Sigma n) (p n))))
+            (matrixInvShape (chewi620DisplayedShapeUpdate d (Sigma n) (p n))⁻¹)) := by
+    calc
+      vol (n + 1) =
+          MeasureTheory.volume.real
+            (ellipsoidSet (center (n + 1))
+              (matrixInvShape (Sigma (n + 1))⁻¹)) := hvol (n + 1)
+      _ =
+          MeasureTheory.volume.real
+            (ellipsoidSet
+              (ellipsoidCenterUpdate d (center n) (matrixInvShape (Sigma n) (p n))
+                (inner ℝ (p n) (matrixInvShape (Sigma n) (p n))))
+              (matrixInvShape (chewi620DisplayedShapeUpdate d (Sigma n) (p n))⁻¹)) := by
+        rw [hcenter_succ n, hSigma_succ n]
+  have hstep :=
+    chewi620_displayedMatrices_stepCertificate_of_cfcSqrt
+      (d := d) hd hcard (hSigma n)
+      (T := T n) (hT_symm n)
+      (center := center n) (p := p n) (hp n)
+      (hT_sq n) (hvol n) hvol_next
+  simpa [hcenter_succ n, hSigma_succ n] using hstep
+
+end EuclideanMatrixTrajectory
+
 /-- Finite product consequence of the Lemma 6.20 volume-ratio certificate. -/
 theorem ellipsoidTrajectory_volume_ratio_le_pow
     {center p : ℕ -> E} {invShape : ℕ -> E -> E}
@@ -2637,6 +2698,72 @@ theorem chewi620_volume_ratio_and_gap_bound_of_scaled_candidates
         hconv hLip hxStar_mem hcert
         (ellipsoidVolumeRatio_nonneg d) hrate_lt_one
         hD_nonneg hL_nonneg hcandidates
+
+section EuclideanMatrixTrajectory
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+/--
+Chewi Lemma 6.20 fed directly into the compiled center-of-gravity rate wrapper:
+displayed ellipsoid updates give the finite volume-ratio bound and the
+source-shaped optimization-rate conclusion.
+-/
+theorem chewi620_displayedMatrices_volume_ratio_and_gap_bound_of_scaled_candidates
+    {C : Set (EuclideanSpace ℝ ι)}
+    {center p : ℕ -> EuclideanSpace ℝ ι}
+    {Sigma : ℕ -> Matrix ι ι ℝ}
+    {vol : ℕ -> ℝ}
+    {f : EuclideanSpace ℝ ι -> ℝ} {xStar : EuclideanSpace ℝ ι}
+    {N d : ℕ} {D L : ℝ}
+    (hd : 1 < d) (hcard : Fintype.card ι = d)
+    (hSigma : ∀ n, (Sigma n).PosDef)
+    {T : ℕ -> EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : ∀ n, (T n).IsSymmetric)
+    (hT_sq : ∀ n y, T n (T n y) = matrixInvShape (Sigma n) y)
+    (hp : ∀ n, p n ≠ 0)
+    (hcenter_succ : ∀ n,
+      center (n + 1) =
+        ellipsoidCenterUpdate d (center n) (matrixInvShape (Sigma n) (p n))
+          (inner ℝ (p n) (matrixInvShape (Sigma n) (p n))))
+    (hSigma_succ : ∀ n,
+      Sigma (n + 1) = chewi620DisplayedShapeUpdate d (Sigma n) (p n))
+    (hvol : ∀ n,
+      vol n =
+        MeasureTheory.volume.real
+          (ellipsoidSet (center n) (matrixInvShape (Sigma n)⁻¹)))
+    (hvol0_pos : 0 < vol 0)
+    (hconv : ConvexOn ℝ C f)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hxStar_mem : xStar ∈ C)
+    (hcert :
+      IsCuttingPlaneValueCertificate
+        (ellipsoidSets center (fun n => matrixInvShape (Sigma n)⁻¹)) f center N)
+    (hrate_lt_one :
+      centerOfGravityRate (ellipsoidVolumeRatio d) N d < 1)
+    (hD_nonneg : 0 ≤ D)
+    (hL_nonneg : 0 ≤ L)
+    (hcandidates :
+      HasScaledOutsideCandidatesAbove C
+        (ellipsoidSets center (fun n => matrixInvShape (Sigma n)⁻¹))
+        xStar N D (centerOfGravityRate (ellipsoidVolumeRatio d) N d)) :
+    vol N / vol 0 ≤ ellipsoidVolumeRatio d ^ N ∧
+      f (center (N - 1)) - f xStar ≤
+        D * L * centerOfGravityRate (ellipsoidVolumeRatio d) N d := by
+  have htraj :
+      IsEllipsoidCuttingPlaneTrajectory center p
+        (fun n => matrixInvShape (Sigma n)⁻¹) vol d :=
+    chewi620_displayedMatrices_trajectory_of_cfcSqrt
+      (d := d) hd hcard hSigma (T := T) hT_symm hT_sq hp
+      hcenter_succ hSigma_succ hvol
+  exact
+    chewi620_volume_ratio_and_gap_bound_of_scaled_candidates
+      (C := C) (center := center) (p := p)
+      (invShape := fun n => matrixInvShape (Sigma n)⁻¹)
+      (vol := vol) (f := f) (xStar := xStar) (N := N) (d := d)
+      (D := D) (L := L) htraj hvol0_pos hconv hLip hxStar_mem hcert
+      hrate_lt_one hD_nonneg hL_nonneg hcandidates
+
+end EuclideanMatrixTrajectory
 
 end Optimization
 end StatInference

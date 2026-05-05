@@ -44,7 +44,7 @@ directly in this tool surface unless the goal is complete, so
 replacement prompt for manual runs.
 
 Manual goal frontier after rebasing local `main` onto `origin/main` at
-`be7af69` (`Add FDD asymptotic tightness bridges`) with the verified pushed
+`b21bcbd` (`Add asymptotic tightness reindexing`) with the verified pushed
 source-volume determinant, determinant-unit inverse-shape reduction,
 normalized forward/inverse algebra, forward-shape transport reduction,
 rank-one/displayed-action support, concrete displayed-to-normalized
@@ -148,7 +148,9 @@ plus `matrixInvShape_eq_toLp_mulVec`, `matrixInvShape_one`,
 `chewi620_displayedShapeUpdateCore_quadratic_pos`,
 `chewi620_displayedShapeUpdate_quadratic_pos`,
 `chewi620_displayedShapeUpdate_posDef`, and
-`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt`.
+`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt`, plus
+`chewi620_displayedMatrices_trajectory_of_cfcSqrt` and
+`chewi620_displayedMatrices_volume_ratio_and_gap_bound_of_scaled_candidates`.
 Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
@@ -313,8 +315,11 @@ plus `matrixInvShape_eq_toLp_mulVec`, `matrixInvShape_vecMulVec`,
 `chewi620_displayedShapeUpdateCore_quadratic_pos`,
 `chewi620_displayedShapeUpdate_quadratic_pos`,
 `chewi620_displayedShapeUpdate_posDef`, and
-`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt`.
-The remaining blocker is exact Lemma 6.20 one-step/trajectory packaging, not
+`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt`,
+`chewi620_displayedMatrices_trajectory_of_cfcSqrt`, and
+`chewi620_displayedMatrices_volume_ratio_and_gap_bound_of_scaled_candidates`.
+The remaining blocker is Chapter 6 lower-bound/feasibility coverage after
+Lemma 6.20, not
 scalar algebra, abstract transport, current-shape rewriting, center algebra,
 rank-one collapse, determinant-core algebra, source-volume determinant algebra,
 normalized standard-cut algebra, rank-one action expansion, displayed-shape
@@ -322,7 +327,8 @@ action expansion, square-root current/rank-inner transport, concrete
 displayed-to-normalized transport, transport reduction, displayed next-shape
 certificate packaging, determinant-to-hvolume scalar algebra,
 translated closed-unit-ball image-model packaging, displayed-volume wrapper
-packaging, CFC-root quadratic algebra, displayed-shape PosDef, or
+packaging, CFC-root quadratic algebra, displayed-shape PosDef, Lemma 6.20
+sequence/rate packaging, or
 nonsingular-inverse uniqueness.  For measure scaling, use
 `Measure.addHaar_image_linearMap` / `Measure.addHaar_preimage_linearEquiv`,
 translation invariance, and `LinearMap.det_toLpLin` for
@@ -331,16 +337,15 @@ translation invariance, and `LinearMap.det_toLpLin` for
 wrapped by `addHaar_image_linearMap_real` and
 `matrixInvShape_image_volume_real`, with translation wrapped by
 `addHaar_image_add_left_real` and `matrixInvShape_image_add_volume_real`.  The
-target order is to use `chewi620_displayedMatrices_stepCertificate_of_cfcSqrt`
-to build a source-shaped one-step Lemma 6.20 certificate, then promote the
-step theorem to an `IsEllipsoidCuttingPlaneTrajectory` theorem and feed it into
-`chewi620_volume_ratio_and_gap_bound_of_scaled_candidates`.  Search first for
-any local sequence/trajectory packaging APIs before adding new wrappers.
-If the full matrix proof balloons, prove the smallest
-matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
-the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth
-lower-bound Theorems 6.21-6.23 and feasibility Definition 6.24/Theorem 6.25
-before opening Chapter 7 as the next main-text frontier.
+target order is now to source-scan and formalize Chapter 6 nonsmooth
+lower-bound Theorems 6.21-6.23 and feasibility Definition 6.24/Theorem 6.25,
+reusing `chewi620_displayedMatrices_trajectory_of_cfcSqrt` and
+`chewi620_displayedMatrices_volume_ratio_and_gap_bound_of_scaled_candidates`
+as the Lemma 6.20 frontier.  Search first for local PSD, CoGM, ellipsoid,
+lower-bound, and exercise APIs before adding new wrappers.  If the next theorem
+balloons, prove the smallest nonsmooth lower-bound or feasibility primitive
+that removes the precise missing API, then continue Chapter 6 before opening
+Chapter 7 as the next main-text frontier.
 Mandatory search and reuse: mathlib
 `Analysis/InnerProductSpace/Projection/Minimal.lean` has
 `exists_norm_eq_iInf_of_complete_convex` and

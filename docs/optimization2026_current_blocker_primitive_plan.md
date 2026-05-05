@@ -83,8 +83,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Live replacement `/goal` prompt as of 2026-05-05 after rebasing local `main`
-onto `origin/main` at `be7af69`
-(`Add FDD asymptotic tightness bridges`) and adding the local
+onto `origin/main` at `b21bcbd`
+(`Add asymptotic tightness reindexing`) and adding the local
 displayed-shape positivity/no-extra-PosDef CFC-root certificate packet:
 aggressively formalize and prove
 all main theorem content of Sinho Chewi's Optimization 2026 notes in Lean under
@@ -211,7 +211,9 @@ displayed-shape positivity packet
 `chewi620_displayedShapeUpdateCore_quadratic_pos`,
 `chewi620_displayedShapeUpdate_quadratic_pos`,
 `chewi620_displayedShapeUpdate_posDef`, and
-`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt`.
+`chewi620_displayedMatrices_stepCertificate_of_cfcSqrt`, plus the sequence/rate
+promotion packet `chewi620_displayedMatrices_trajectory_of_cfcSqrt` and
+`chewi620_displayedMatrices_volume_ratio_and_gap_bound_of_scaled_candidates`.
 The determinant/scalar `hvolume` bridge, inverse-shape left-inverse reduction,
 normalized forward/inverse cancellation, transport reduction, rank-one action
 expansion, displayed-shape action expansion, square-root current/rank-inner
@@ -220,31 +222,35 @@ matrix-backed translated real image-volume scaling bridge are verified in
 focused Lean; the displayed next-shape matrix certificate, the generic
 determinant-square-to-`hvolume` theorem, the translated closed-unit-ball image
 model, the displayed-volume certificate wrapper, the CFC-root quadratic
-instantiation, and the rank-one displayed-shape positivity theorem now compile,
-so the next run must not spend theorem time reproving or repackaging those cores
-unless they are directly needed inside the final Lemma 6.20 trajectory wrapper.
+instantiation, the rank-one displayed-shape positivity theorem, and the
+displayed sequence/rate wrappers now compile, so the next run must not spend
+theorem time reproving or repackaging those cores unless they are directly
+needed for the next Chapter 6 theorem packet.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
 textbook goal is marked complete, so this paragraph is the operative manual
 `/goal` target.
 
-Immediate target for the next manual goal run: package the exact
-theorem-sized Chewi Lemma 6.20 one-step certificate and promote it to the
-ellipsoid trajectory/rate wrapper.  The displayed determinant ratio is now in
-the exact source shape
+Immediate target for the next manual goal run: move past Lemma 6.20 packaging
+and start Chapter 6 nonsmooth lower-bound/feasibility coverage, beginning with
+Theorems 6.21-6.23 unless the source scan shows Definition 6.24/Theorem 6.25 is
+the faster theorem-sized packet.  The displayed determinant ratio is now in the
+exact source shape
 `(chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det =
 ellipsoidVolumeRatio d ^ 2`, the scalar bridge
 `chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio` converts squared
 volume determinant bounds into the certificate's `hvolume` hypothesis, the
 displayed inverse-shape/set replacement and translated image-volume model are
 packaged, and `chewi620_displayedMatrices_stepCertificate_of_cfcSqrt` removes
-the separate next-shape PosDef assumption.  The next proof should therefore
-build the source-shaped step theorem for the displayed updates and then the
-sequence theorem instantiating `IsEllipsoidCuttingPlaneTrajectory`; any
-remaining current-root/symmetric-square-root input should be isolated as a
-single precise supplied assumption or discharged by a canonical CFC-root
-linear-equivalence wrapper if bounded.
+the separate next-shape PosDef assumption; the sequence theorem
+`chewi620_displayedMatrices_trajectory_of_cfcSqrt` instantiates
+`IsEllipsoidCuttingPlaneTrajectory`, and
+`chewi620_displayedMatrices_volume_ratio_and_gap_bound_of_scaled_candidates`
+feeds the displayed updates into the compiled CoGM rate wrapper.  The next
+proof should search the Chewi source around 6.21-6.25, then choose the largest
+bounded theorem packet whose primitives already exist in
+`ProjectedSubgradient.lean`, `CuttingPlane.lean`, or `Ellipsoid.lean`.
 The raw square-root adjoint identity, normalized cut
 `hcut` bridge, `Sigma.PosDef` invertibility/cancellation layer, pullback
 `hnext` certificate, current `Σ⁻¹` ellipsoid identification, displayed center
@@ -310,12 +316,13 @@ measure-scaling theorem.  The dependency order is:
    `cfcSqrt_det_sq_of_posSemidef`, and
    `chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef`.  Do not redo
    the CFC root algebra.
-6. Package the exact one-step Lemma 6.20 displayed-update certificate using
-   `chewi620_displayedMatrices_stepCertificate_of_cfcSqrt`, with only genuinely
-   source-level sequence/root/model hypotheses exposed.
-7. Promote the one-step certificate to an `IsEllipsoidCuttingPlaneTrajectory`
-   theorem and immediately feed it into
-   `chewi620_volume_ratio_and_gap_bound_of_scaled_candidates`.
+6. Reuse `chewi620_displayedMatrices_trajectory_of_cfcSqrt` and
+   `chewi620_displayedMatrices_volume_ratio_and_gap_bound_of_scaled_candidates`
+   as the Lemma 6.20 trajectory/rate frontier; do not repackage them unless a
+   later theorem needs a strictly cleaner hypothesis surface.
+7. Source-scan Chapter 6 Theorems 6.21-6.25 and implement the next theorem-sized
+   nonsmooth lower-bound or feasibility packet, reusing existing PSD, CoGM, and
+   ellipsoid layers first.
 
 The current matrix quadratic, positive denominator, and normalized cut
 direction algebra are already local, and the raw symmetric square-root
@@ -364,13 +371,11 @@ PosDef/PosSemidef dot-product APIs, `Real.sqrt` normalization, mathlib
 `LinearMap.IsSymmetric`, mathlib nonsingular-inverse APIs, mathlib rank-one
 determinant APIs, Haar image-volume APIs, CFC square roots, and
 `real_inner_mul_inner_self_le`.  The next aggressive theorem packet should
-package `chewi620_displayedMatrices_stepCertificate_of_cfcSqrt` into the
-source-shaped Lemma 6.20 one-step theorem and then into an
-`IsEllipsoidCuttingPlaneTrajectory` theorem feeding
-`chewi620_volume_ratio_and_gap_bound_of_scaled_candidates`.  Search and reuse
-local trajectory/sequence APIs first; if the packaging proof balloons, record
-the exact missing sequence/root/model API and prove the smallest wrapper that
-removes it.
+leave the now-compiled Lemma 6.20 sequence/rate wrappers alone and move to
+Chapter 6 Theorems 6.21-6.25.  Search the local PSD, CoGM, ellipsoid, lower-bound,
+and exercises modules first; if the next source theorem needs a missing
+nonsmooth lower-bound primitive, record that precise API and prove the smallest
+wrapper that removes it.
 Do not spend a run only polishing a minor wrapper unless it is the fastest
 verified dependency for this theorem packet.
 
