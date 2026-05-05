@@ -1970,3 +1970,8 @@ asymptotic-independence is still open.
 `VdVWProbabilityMeasuresAsymptoticallyTight.congr_eventually` now support
 subsequence/finer-filter and eventually-equal law-family transfers for the
 ordinary measure-level asymptotic-tightness predicate.
+
+2026-05-05 asymptotic-tightness reindexing follow-up:
+`VdVWProbabilityMeasuresAsymptoticallyTight.comp_tendsto` now pulls ordinary
+asymptotic tightness back along any index map tending to the original filter,
+covering the basic net/subsequence reindexing use case.

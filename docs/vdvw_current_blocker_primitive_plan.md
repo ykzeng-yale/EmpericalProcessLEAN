@@ -5599,3 +5599,13 @@ but not for the newly introduced measure-level asymptotic-tightness predicate.
 subsequence/finer-filter and eventually-equal law-family handoffs in Chapter 1
 process arguments without changing the remaining exact arbitrary-map/process
 blockers.
+
+2026-05-05 asymptotic-tightness reindexing follow-up: local search found
+generic `Tendsto.comp`/`Tendsto.eventually` patterns but no VdV&W-local
+reindexing theorem for the measure-level asymptotic-tightness predicate.
+`WeakConvergence.lean` now adds
+`VdVWProbabilityMeasuresAsymptoticallyTight.comp_tendsto`, letting any
+index-map tending to the original filter pull asymptotic tightness back to
+the reindexed family.  This is the ordinary net/subsequence handoff needed by
+Chapter 1 process arguments; it still leaves exact arbitrary-map
+asymptotic-tightness and FDD-converse primitives open.

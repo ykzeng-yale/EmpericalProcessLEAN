@@ -1765,6 +1765,13 @@ asymptotic-measurability predicates.  These are support lemmas for Chapter 1
 subsequence/reindexing process arguments, not the full arbitrary-map process
 asymptotic-tightness theorem.
 
+2026-05-05 asymptotic-tightness reindexing follow-up:
+`WeakConvergence.lean` now adds
+`VdVWProbabilityMeasuresAsymptoticallyTight.comp_tendsto`, the ordinary
+net/subsequence handoff for reindexed probability-measure families.  This
+rounds out the measure-level filter-stability layer while preserving the
+remaining arbitrary-map/process blockers.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

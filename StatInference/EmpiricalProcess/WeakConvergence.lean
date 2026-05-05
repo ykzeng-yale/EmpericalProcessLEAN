@@ -2943,6 +2943,23 @@ theorem VdVWProbabilityMeasuresAsymptoticallyTight.congr_eventually
   simpa [hνμ] using hi
 
 /--
+Measure-level asymptotic tightness is stable under reindexing along a map that
+tends to the original index filter.  This is the basic net/subsequence handoff
+for the ordinary probability-measure asymptotic-tightness layer.
+-/
+theorem VdVWProbabilityMeasuresAsymptoticallyTight.comp_tendsto
+    {ι : Type v} {κ : Type w} {S : Type u}
+    [MeasurableSpace S] [TopologicalSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {φ : κ -> ι} {l' : Filter κ}
+    (hμs : VdVWProbabilityMeasuresAsymptoticallyTight μs l)
+    (hφ : Tendsto φ l' l) :
+    VdVWProbabilityMeasuresAsymptoticallyTight (fun j => μs (φ j)) l' := by
+  intro ε hε
+  rcases hμs ε hε with ⟨K, hK, htail⟩
+  exact ⟨K, hK, hφ.eventually htail⟩
+
+/--
 A singleton family of probability measures is tight on complete separable
 metric-type spaces.
 
