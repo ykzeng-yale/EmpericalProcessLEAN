@@ -58,7 +58,7 @@ consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`6bcd319`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`f495f64`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -323,6 +323,17 @@ making all bounded-continuous real functions measurable.  Search record:
 pinned mathlib supplied `borel_eq_generateFrom_isClosed`,
 `Metric.continuous_infDist_pt`, and `IsClosed.mem_iff_infDist_zero`, but no
 VdVW-named bounded-continuous generated-sigma wrapper existed locally.
+
+2026-05-05 tightness component follow-up: the Chapter 1 weak-convergence file
+now has the VdV&W 1.3.2-named tightness component
+`vdVW132_complete_separable_probabilityMeasure_tight`, reusing the compiled
+`vdVWProbabilityMeasuresTight_singleton` / mathlib `IsTightMeasureSet`
+foundation.  This proves the complete separable metric-type probability
+measure tightness direction.  The full VdV&W 1.3.2 equivalence between
+pre-tightness and separability, the complete-space equivalence with tightness,
+and the Polish-measure formulation still require local definitions for
+pre-tight/separable/Polish probability measures before an exact theorem can be
+claimed.
 
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the

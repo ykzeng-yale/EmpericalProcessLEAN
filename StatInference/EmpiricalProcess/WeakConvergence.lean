@@ -1810,6 +1810,22 @@ theorem vdVWProbabilityMeasuresTight_singleton
     (isTightMeasureSet_singleton (μ := (μ : Measure S)))
 
 /--
+VdV&W Lemma 1.3.2 tightness component: on complete separable metric-type
+Borel spaces, every Borel probability measure is tight.
+
+The full VdV&W pre-tight/separable/Polish-measure equivalence still needs
+local definitions for those measure-level notions; this theorem records the
+compiled mathlib-backed tightness direction already available for probability
+measures.
+-/
+theorem vdVW132_complete_separable_probabilityMeasure_tight
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    [IsCompletelyPseudoMetrizableSpace S] [SecondCountableTopology S] [BorelSpace S]
+    (μ : ProbabilityMeasure S) :
+    VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) :=
+  vdVWProbabilityMeasuresTight_singleton μ
+
+/--
 Compact-set characterization of the VdV&W-local probability-measure tightness
 wrapper.
 -/

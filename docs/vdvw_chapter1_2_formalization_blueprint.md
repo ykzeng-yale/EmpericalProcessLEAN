@@ -89,7 +89,7 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at synced repository head `6bcd319`:
+Current operational target, 2026-05-05 at synced repository head `f495f64`:
 the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
@@ -267,6 +267,13 @@ variant remains pending.
 `vdVW131_borel_le_iff_forall_boundedContinuous_measurable`.  The proof uses
 pinned mathlib's closed-set Borel generator theorem and the continuous
 distance-to-a-closed-set function, matching the textbook argument.
+
+2026-05-05 tightness component follow-up: `WeakConvergence.lean` now adds
+`vdVW132_complete_separable_probabilityMeasure_tight`, which records the
+mathlib-backed complete separable metric-type probability-measure tightness
+direction for VdV&W 1.3.2.  The pre-tight/separable equivalence, complete-space
+equivalence with tightness, and Polish-measure tightness clauses remain pending
+until the corresponding local measure-level definitions are introduced.
 
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
@@ -468,7 +475,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.2.6 | Lemma | `..._1-100.md:480` | promote-soon; mathlib Fubini foundation exists, pending VdV&W outer wrapper for Chapter 2.3/2.4.3 symmetrization |
 | 1.2.7 | Lemma | `..._1-100.md:492` | promote-soon; mathlib Fubini foundation exists, pending VdV&W outer wrapper for product outer expectations |
 | 1.3.1 | Lemma | `..._1-100.md:575` | local-layer/mathlib-foundation: Borel sigma-field least for bounded-continuous real tests wrapped as `vdVW131_borel_le_iff_forall_boundedContinuous_measurable`, with closed-set distance proof |
-| 1.3.2 | Lemma | `..._1-100.md:582` | foundation-lane/mathlib-foundation: classical topology/measure lemma, wrap or restate from pinned mathlib before claiming any gap |
+| 1.3.2 | Lemma | `..._1-100.md:582` | local-layer/mathlib-foundation: complete separable metric-type probability-measure tightness wrapped as `vdVW132_complete_separable_probabilityMeasure_tight`; exact pre-tight/separable/tight/Polish-measure equivalence still pending local definitions |
 | 1.3.4 | Theorem | `..._1-100.md:606` | local-layer/mathlib-foundation: weak convergence of probability measures via `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto` plus Portmanteau closed/open implications wrapped locally; exact arbitrary-map outer-expectation version remains pending |
 | 1.3.6 | Theorem | `..._1-100.md:650` | local-layer/mathlib-foundation: continuous map pushforward and `TendstoInDistribution` continuous-composition wrappers proved; arbitrary-map cover layer still pending |
 | 1.3.8 | Lemma | `..._1-100.md:678` | blocked-vdvw: Hoffmann-Jørgensen arbitrary-map weak-convergence infrastructure; missing exact local arbitrary-map/asymptotic-measurability primitive |

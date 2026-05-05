@@ -14,7 +14,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`6bcd319`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
+`f495f64`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
 Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
@@ -194,6 +194,12 @@ the standard `HasOuterApproxClosed` hypothesis; the vector-lattice/tight
 `vdVW131_borel_le_iff_forall_boundedContinuous_measurable`.  These formalize
 the metric-space distance-to-closed-set proof that Borel is the least
 sigma-field making all bounded-continuous real functions measurable.
+
+2026-05-05 tightness component follow-up: `WeakConvergence.lean` now exports
+`vdVW132_complete_separable_probabilityMeasure_tight`, a VdV&W 1.3.2-named
+wrapper for the complete separable metric-type probability-measure tightness
+direction.  The full pre-tight/separable/tight/Polish-measure equivalence
+still needs local definitions before it can be marked exact.
 
 ## Status Legend
 
