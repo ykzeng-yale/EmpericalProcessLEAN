@@ -103,6 +103,14 @@ closes a reusable Chapter 1 Prokhorov/tightness foundation for sequential
 probability-measure families on proper normed Borel spaces; it deliberately
 does not claim the still-missing arbitrary-map/asymptotic-tightness theorem.
 
+2026-05-05 closed-ball tightness follow-up: `WeakConvergence.lean` now also
+wraps mathlib's proper pseudo-metric closed-ball tightness criterion as
+`VdVWProbabilityMeasuresTight.tendsto_closedBall_compl`,
+`vdVWProbabilityMeasuresTight_of_tendsto_closedBall_compl`, and
+`vdVWProbabilityMeasuresTight_iff_tendsto_closedBall_compl`.  This closes the
+closed-ball form underlying the norm-tail route for measure-level Chapter 1
+tightness; arbitrary-map/asymptotic tightness remains the real blocker.
+
 2026-05-05 finite-dimensional tightness follow-up: local search found
 mathlib's finite-dimensional inner-product tightness APIs in
 `Mathlib.MeasureTheory.Measure.TightNormed`.  `WeakConvergence.lean` now wraps

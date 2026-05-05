@@ -5453,6 +5453,20 @@ the sequential measure-level norm-tail tightness foundation used by Chapter 1
 Prokhorov/tightness arguments; it does not close VdV&W arbitrary-map
 asymptotic tightness or process-level separability.
 
+2026-05-05 closed-ball tightness follow-up: search in
+`Mathlib.MeasureTheory.Measure.TightNormed` also found
+`MeasureTheory.tendsto_measure_compl_closedBall_of_isTightMeasureSet`,
+`MeasureTheory.isTightMeasureSet_of_tendsto_measure_compl_closedBall`, and
+`MeasureTheory.isTightMeasureSet_iff_tendsto_measure_compl_closedBall`.
+`WeakConvergence.lean` now exposes the corresponding VdV&W-local
+probability-measure wrappers
+`VdVWProbabilityMeasuresTight.tendsto_closedBall_compl`,
+`vdVWProbabilityMeasuresTight_of_tendsto_closedBall_compl`, and
+`vdVWProbabilityMeasuresTight_iff_tendsto_closedBall_compl`.  This closes the
+proper pseudo-metric closed-ball tightness layer behind the norm-tail route;
+the remaining tightness blocker is still exact arbitrary-map/asymptotic
+tightness.
+
 2026-05-05 finite-dimensional inner-product tightness follow-up: the same
 pinned mathlib file also supplies
 `MeasureTheory.isTightMeasureSet_of_inner_tendsto`,

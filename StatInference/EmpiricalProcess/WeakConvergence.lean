@@ -2964,6 +2964,61 @@ theorem VdVWProbabilityMeasuresTight.isCompact_closure
   exact isCompact_closure_of_isTightMeasureSet hA
 
 /--
+Closed-ball tightness characterization, forward direction: tight families of
+probability measures have uniformly vanishing mass outside closed balls.
+
+This is the direct VdV&W-local wrapper around mathlib's pseudo-metric
+tightness API and is the closed-ball form behind the later norm-tail wrappers.
+-/
+theorem VdVWProbabilityMeasuresTight.tendsto_closedBall_compl
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S]
+    {A : Set (ProbabilityMeasure S)}
+    (hA : VdVWProbabilityMeasuresTight A) (x : S) :
+    Tendsto
+      (fun r : ℝ =>
+        ⨆ μ ∈ {((ν : ProbabilityMeasure S) : Measure S) | ν ∈ A},
+          μ (Metric.closedBall x r)ᶜ)
+      atTop (𝓝 0) := by
+  simpa [VdVWProbabilityMeasuresTight] using
+    (MeasureTheory.tendsto_measure_compl_closedBall_of_isTightMeasureSet
+      (S := {((ν : ProbabilityMeasure S) : Measure S) | ν ∈ A}) hA x)
+
+/--
+Closed-ball tightness criterion, converse direction: in a proper pseudo-metric
+space, uniformly vanishing mass outside closed balls implies tightness.
+-/
+theorem vdVWProbabilityMeasuresTight_of_tendsto_closedBall_compl
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [ProperSpace S]
+    {A : Set (ProbabilityMeasure S)} {x : S}
+    (h :
+      Tendsto
+        (fun r : ℝ =>
+          ⨆ μ ∈ {((ν : ProbabilityMeasure S) : Measure S) | ν ∈ A},
+            μ (Metric.closedBall x r)ᶜ)
+        atTop (𝓝 0)) :
+    VdVWProbabilityMeasuresTight A := by
+  simpa [VdVWProbabilityMeasuresTight] using
+    (MeasureTheory.isTightMeasureSet_of_tendsto_measure_compl_closedBall
+      (S := {((ν : ProbabilityMeasure S) : Measure S) | ν ∈ A}) h)
+
+/--
+In a proper pseudo-metric space, the VdV&W-local tightness predicate is
+equivalent to uniformly vanishing mass outside closed balls around any fixed
+center.
+-/
+theorem vdVWProbabilityMeasuresTight_iff_tendsto_closedBall_compl
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [ProperSpace S]
+    {A : Set (ProbabilityMeasure S)} (x : S) :
+    VdVWProbabilityMeasuresTight A ↔
+      Tendsto
+        (fun r : ℝ =>
+          ⨆ μ ∈ {((ν : ProbabilityMeasure S) : Measure S) | ν ∈ A},
+            μ (Metric.closedBall x r)ᶜ)
+        atTop (𝓝 0) :=
+  ⟨fun hA => hA.tendsto_closedBall_compl x,
+    vdVWProbabilityMeasuresTight_of_tendsto_closedBall_compl⟩
+
+/--
 Norm-tail characterization, forward direction: tight families of probability
 measures on a normed group have uniformly vanishing norm tails.
 
