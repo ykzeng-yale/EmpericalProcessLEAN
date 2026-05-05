@@ -116,10 +116,12 @@ statements.  The VdV&W 1.4.1 product Borel-space equality is also closed as
 Chapter 1 foundation closure is now closed: filter-refinement stability for
 the signed weak-convergence packages in `WeakConvergence.lean`, covering
 signed-outer, arbitrary-map, and
-varying-domain proof-carrying predicates.  The next Chapter 1 fallback should
-therefore move to deeper exact primitives such as nonmeasurable outer-cover
-signed weak convergence, asymptotic-tightness/asymptotic-independence,
-arbitrary-index FDD converse, or separability/`P`-measurable class support.
+varying-domain proof-carrying predicates.  The measurable independent-product
+law convergence layer behind VdV&W 1.4.6 is also now closed.  The next
+Chapter 1 fallback should therefore move to deeper exact primitives such as
+nonmeasurable outer-cover signed weak convergence, asymptotic-tightness/
+asymptotic-independence, arbitrary-index FDD converse, or separability/
+`P`-measurable class support.
 The finite-index FDD converse, Portmanteau converse, norm-tail tightness,
 π-system convergence-determining criterion, and VdV&W 1.4.2 product
 bounded-continuous test uniqueness wrappers are closed and should not be
@@ -330,7 +332,8 @@ until the corresponding local measure-level definitions are introduced.
 `vdVW141_prod_borel_eq_product_borel`, a VdV&W 1.4.1 wrapper stating that the
 product of the Borel sigma-fields equals the Borel sigma-field of the product
 topology for separable pseudometric Borel spaces.  This consumes mathlib's
-`Prod.borelSpace`; VdV&W 1.4.2 product-test uniqueness remains pending.
+`Prod.borelSpace`; the later VdV&W 1.4.2 bounded-continuous product-test
+uniqueness wrapper is now also compiled.
 
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
@@ -541,10 +544,10 @@ quotes; the anchor is the authoritative local source location.
 | 1.3.12 | Lemma | `..._1-100.md:768` | local-layer/mathlib-foundation: part (i) finite Borel measure uniqueness from bounded-continuous real integrals wrapped as `vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`; part (ii) vector-lattice/tight variant pending |
 | 1.3.13 | Lemma | `..._1-100.md:778` | blocked-vdvw: arbitrary-map/asymptotic-measurability infrastructure missing after mathlib search |
 | 1.4.1 | Lemma | `..._1-100.md:848` | local-layer/mathlib-foundation: product Borel equality for separable pseudometric Borel spaces wrapped as `vdVW141_prod_borel_eq_product_borel` |
-| 1.4.2 | Lemma | `..._1-100.md:849` | foundation-lane/mathlib-foundation: audit found product-law, projective-limit, and finite-dimensional-law APIs; exact nonnegative Lipschitz product-test uniqueness not found |
+| 1.4.2 | Lemma | `..._1-100.md:849` | local-layer/mathlib-foundation: product bounded-continuous test uniqueness wrappers compiled as `vdVW142_prod_measure_ext_of_forall_boundedContinuous_integral_mul` and `vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`; exact nonnegative-Lipschitz spelling is a source-alignment refinement |
 | 1.4.3 | Lemma | `..._1-100.md:857` | local-layer/mathlib-foundation: binary and finite product-law weak-convergence wrappers proved as `VdVWWeakConvergenceProbabilityMeasures.prod` and `.pi`; arbitrary-map/asymptotic-tightness extension pending |
 | 1.4.4 | Lemma | `..._1-100.md:858` | local-layer/mathlib-foundation: finite-coordinate projection/FDD forward wrapper proved as `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict`; converse FDD iff theorem still missing |
-| 1.4.5 | Corollary | `..._1-100.md:878` | local-layer/mathlib-foundation: measurable common-domain Slutsky/product convergence wrapper proved; exact VdV&W product/arbitrary-map criterion still pending |
+| 1.4.5 / 1.4.6 | Corollary/Example | `..._1-100.md:878`, `..._1-100.md:883` | local-layer/mathlib-foundation: measurable common-domain Slutsky/product convergence wrapper and measurable independent-coordinate joint-law convergence wrapper `vdVWTendstoInDistribution_prodMk_laws_of_indepFun` proved; exact VdV&W product/arbitrary-map/asymptotic-independence criteria still pending |
 | 1.4.8 | Theorem | `..._1-100.md:910` | local-layer/mathlib-foundation: FDD forward direction now wrapped for weak convergence, including the VdV&W-named `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`; process-law and `IdentDistrib` uniqueness-only FDD wrappers are compiled in `FiniteDimensional.lean`; projective-limit/FDD law equality APIs exist, but no exact weak-convergence iff-over-FDD converse theorem found |
 | 1.5.2 | Lemma | `..._1-100.md:932` | foundation-lane: `l_infty(T)`/separability primitive target; mathlib has tightness/Prokhorov but local bounded-function-space API is still needed |
 | 1.5.3 | Lemma | `..._1-100.md:933` | foundation-lane: `l_infty(T)`/Donsker tightness primitive target, local bounded-function-space API needed |
@@ -1573,6 +1576,14 @@ backed by pinned mathlib product-measure extensionality.  These are
 measure-level foundations for product/FDD work and should not be confused with
 the still-pending arbitrary-index VdV&W 1.4.8 process weak-convergence
 criterion.
+
+2026-05-05 independent product-law follow-up: `WeakConvergence.lean` now adds
+`vdVWTendstoInDistribution_prodMk_laws_of_indepFun`, the measurable
+random-variable form of the VdV&W 1.4.6 independent-coordinate product
+principle.  It combines marginal convergence in distribution with finite-stage
+independence to get weak convergence of the joint laws to the product of the
+two limiting laws.  The nonmeasurable arbitrary-map/asymptotic-independence
+version remains a deeper Chapter 1 primitive.
 
 ## Automation Checklist
 

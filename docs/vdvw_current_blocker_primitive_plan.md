@@ -51,12 +51,12 @@ Current main-line target: finish VdV&W Chapters 1-2 by dependency order, using
 the already compiled Theorem 2.4.3 endpoint infrastructure and Chapter 1
 measure-level wrappers instead of rebuilding them.  The finite-index
 `ell_infty(T)`/FDD converse, Portmanteau converse, norm-tail tightness,
-π-system convergence-determining, and VdV&W 1.4.2 product-test uniqueness
-layers are now compiled.  The highest-value remaining Chapter 1 process
-blockers are the arbitrary-index VdV&W 1.4.8 converse,
-separability/tightness/asymptotic-measurability interfaces, and the
-nonmeasurable outer-cover signed weak-convergence layer.  The highest-value
-Theorem 2.4.3 blocker remains the genuine book
+π-system convergence-determining, VdV&W 1.4.2 product-test uniqueness, and
+measurable independent-product law convergence layers are now compiled.  The
+highest-value remaining Chapter 1 process blockers are the arbitrary-index
+VdV&W 1.4.8 converse, separability/tightness/asymptotic-measurability
+interfaces, and the nonmeasurable outer-cover signed weak-convergence layer.
+The highest-value Theorem 2.4.3 blocker remains the genuine book
 random-entropy mismatch: deriving a tail/UI, ordinary-mean, or deterministic
 structural cardinality input from
 `log N(η, F_M, L1(P_n)) = o_P^*(n)` for fixed positive `η`.  Do not reopen the
@@ -139,7 +139,9 @@ the π-system convergence-determining wrapper
 `vdVWWeakConvergenceProbabilityMeasures_of_piSystem_tendsto`;
 and the VdV&W 1.4.2 product-test uniqueness wrappers
 `vdVW142_prod_measure_ext_of_forall_boundedContinuous_integral_mul` and
-`vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`.
+`vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`;
+and the measurable independent-coordinate joint-law convergence wrapper
+`vdVWTendstoInDistribution_prodMk_laws_of_indepFun`.
 
 Next high-capacity proof batches, in order:
 

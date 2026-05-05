@@ -2732,6 +2732,83 @@ theorem VdVWWeakConvergenceProbabilityMeasures.pi
   exact ProbabilityMeasure.continuous_pi.tendsto μ |>.comp hp
 
 /--
+Independent random-variable product-law convergence.
+
+This is the measurable random-variable form of the VdV&W Section 1.4
+independent-coordinate product-space principle: if the two marginals converge
+in distribution and the coordinates are independent at every index, then the
+joint laws converge weakly to the product of the two limiting laws.
+
+The full VdV&W arbitrary-map/asymptotic-independence statement remains a
+separate nonmeasurable primitive.
+-/
+theorem vdVWTendstoInDistribution_prodMk_laws_of_indepFun
+    {ι : Type u} {Ω : ι -> Type v} {ΩE : Type w} {ΩF : Type x}
+    {E : Type*} {F : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace ΩE] {μE : Measure ΩE} [IsProbabilityMeasure μE]
+    [MeasurableSpace ΩF] {μF : Measure ΩF} [IsProbabilityMeasure μF]
+    [MeasurableSpace E] [TopologicalSpace E] [SecondCountableTopology E]
+    [PseudoMetrizableSpace E] [OpensMeasurableSpace E]
+    [MeasurableSpace F] [TopologicalSpace F] [SecondCountableTopology F]
+    [PseudoMetrizableSpace F] [OpensMeasurableSpace F]
+    {X : (i : ι) -> Ω i -> E} {Y : (i : ι) -> Ω i -> F}
+    {Z : ΩE -> E} {W : ΩF -> F} {l : Filter ι}
+    (hX : TendstoInDistribution X l Z μ μE)
+    (hY : TendstoInDistribution Y l W μ μF)
+    (hInd : ∀ i, X i ⟂ᵢ[μ i] Y i) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun i : ι =>
+        (⟨(μ i).map (fun ω => (X i ω, Y i ω)),
+            Measure.isProbabilityMeasure_map
+              ((hX.forall_aemeasurable i).prodMk
+                (hY.forall_aemeasurable i))⟩ :
+          ProbabilityMeasure (E × F)))
+      l
+      (ProbabilityMeasure.prod
+        (⟨μE.map Z,
+          Measure.isProbabilityMeasure_map hX.aemeasurable_limit⟩ :
+          ProbabilityMeasure E)
+        (⟨μF.map W,
+          Measure.isProbabilityMeasure_map hY.aemeasurable_limit⟩ :
+          ProbabilityMeasure F)) := by
+  let μX : ι -> ProbabilityMeasure E := fun i =>
+    ⟨(μ i).map (X i),
+      Measure.isProbabilityMeasure_map (hX.forall_aemeasurable i)⟩
+  let μY : ι -> ProbabilityMeasure F := fun i =>
+    ⟨(μ i).map (Y i),
+      Measure.isProbabilityMeasure_map (hY.forall_aemeasurable i)⟩
+  let νX : ProbabilityMeasure E :=
+    ⟨μE.map Z, Measure.isProbabilityMeasure_map hX.aemeasurable_limit⟩
+  let νY : ProbabilityMeasure F :=
+    ⟨μF.map W, Measure.isProbabilityMeasure_map hY.aemeasurable_limit⟩
+  have hprod : VdVWWeakConvergenceProbabilityMeasures
+      (fun i => (μX i).prod (μY i)) l (νX.prod νY) := by
+    exact VdVWWeakConvergenceProbabilityMeasures.prod (S := E) (T := F)
+      (μs := μX) (νs := μY) (μ := νX) (ν := νY)
+      hX.tendsto hY.tendsto
+  have hseq_eq :
+      (fun i : ι =>
+        (⟨(μ i).map (fun ω => (X i ω, Y i ω)),
+            Measure.isProbabilityMeasure_map
+              ((hX.forall_aemeasurable i).prodMk
+                (hY.forall_aemeasurable i))⟩ :
+          ProbabilityMeasure (E × F))) =
+        fun i : ι => (μX i).prod (μY i) := by
+    funext i
+    ext s hs
+    change (Measure.map (fun ω => (X i ω, Y i ω)) (μ i)) s =
+      (((μ i).map (X i)).prod ((μ i).map (Y i))) s
+    have hXLaw : HasLaw (X i) ((μ i).map (X i)) (μ i) :=
+      ⟨hX.forall_aemeasurable i, rfl⟩
+    have hYLaw : HasLaw (Y i) ((μ i).map (Y i)) (μ i) :=
+      ⟨hY.forall_aemeasurable i, rfl⟩
+    rw [((hInd i).hasLaw_prod hXLaw hYLaw).map_eq]
+  simpa [hseq_eq, μX, μY, νX, νY] using hprod
+
+/--
 Finite-dimensional restriction of a weakly convergent process law.
 
 This is the forward FDD direction: weak convergence of laws on a product space
