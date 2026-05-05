@@ -4084,3 +4084,24 @@ Lean attempts, continue to theorem-critical Chapter 1/2 primitives needed by
 that exact statement: arbitrary-map/asymptotic-measurability, `ell_infty`
 process primitives, FDD weak-convergence converse, or extended-real measurable
 cover existence.
+
+2026-05-05 follow-up: the first final-assembly mismatch is now closed.  New
+compiled declarations
+`vdVWWeightedClassSupremum_empty`,
+`UniformDeviationTendstoZeroOn_empty`,
+`AlmostSureUniformDeviationTendstoZeroOn_empty`,
+`VdVWOuterAlmostSureUniformDeviationTendstoZeroOn_empty`,
+`VdVWOuterProbabilityUniformDeviationTendstoZeroOn_empty`, and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`
+remove the exposed nonempty-class hypothesis from the strongest full-subgraph
+Theorem 2.4.3/Lemma 2.4.5 package.  The empty branch is handled by the
+complete-lattice empty supremum convention and vacuous uniform-deviation
+predicates; the nonempty branch delegates to the existing strong package.
+Next target: do not add more endpoint wrappers for this route.  Compare the
+remaining assumptions of the no-nonempty theorem against the exact book
+Theorem 2.4.3/Lemma 2.4.5 hypotheses, especially countability vs.
+separability/asymptotic measurability, coordinate measurability, measurable
+integrable envelope, and the full-subgraph VC/entropy bridge.  If a direct
+named exact theorem cannot yet be stated honestly, record the missing bridge as
+a precise primitive and move to the theorem-critical Chapter 1/2 foundation
+needed to close it.

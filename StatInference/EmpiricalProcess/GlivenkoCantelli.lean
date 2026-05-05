@@ -227,6 +227,27 @@ def AlmostSureUniformDeviationTendstoZeroOn {Ω : Type u} {Index : Type v}
   ∀ᵐ ω ∂μ,
     UniformDeviationTendstoZeroOn indexClass populationRisk (empiricalRisk ω)
 
+/-- The pathwise uniform-deviation conclusion is vacuous over an empty class. -/
+theorem UniformDeviationTendstoZeroOn_empty
+    {Index : Type v} (populationRisk : Index -> ℝ)
+    (empiricalRisk : ℕ -> Index -> ℝ) :
+    UniformDeviationTendstoZeroOn (∅ : Set Index) populationRisk empiricalRisk := by
+  intro tolerance htolerance
+  exact Eventually.of_forall fun sampleSize index hindex => by
+    cases hindex
+
+/--
+The almost-sure uniform-deviation conclusion is vacuous over an empty class.
+-/
+theorem AlmostSureUniformDeviationTendstoZeroOn_empty
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    (μ : Measure Ω) (populationRisk : Index -> ℝ)
+    (empiricalRisk : Ω -> ℕ -> Index -> ℝ) :
+    AlmostSureUniformDeviationTendstoZeroOn μ (∅ : Set Index)
+      populationRisk empiricalRisk := by
+  exact ae_of_all μ fun ω =>
+    UniformDeviationTendstoZeroOn_empty populationRisk (empiricalRisk ω)
+
 /--
 Outer-almost-sure version of VdV&W's uniform law of large numbers over a class.
 
@@ -262,6 +283,41 @@ def VdVWOuterProbabilityUniformDeviationTendstoZeroOn
             ¬ EmpiricalDeviationBoundOn indexClass populationRisk
               (empiricalRisk ω sampleSize) tolerance})
       atTop (𝓝 0)
+
+/--
+The outer-a.s. uniform-deviation conclusion is vacuous over an empty class.
+-/
+theorem VdVWOuterAlmostSureUniformDeviationTendstoZeroOn_empty
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    (μ : Measure Ω) (populationRisk : Index -> ℝ)
+    (empiricalRisk : Ω -> ℕ -> Index -> ℝ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ (∅ : Set Index)
+      populationRisk empiricalRisk :=
+  vdVWOuterAlmostSure_of_ae
+    (AlmostSureUniformDeviationTendstoZeroOn_empty μ populationRisk empiricalRisk)
+
+/--
+The outer-probability uniform-deviation conclusion is vacuous over an empty
+class.
+-/
+theorem VdVWOuterProbabilityUniformDeviationTendstoZeroOn_empty
+    {Ω : Type u} {Index : Type v} [MeasurableSpace Ω]
+    (μ : Measure Ω) (populationRisk : Index -> ℝ)
+    (empiricalRisk : Ω -> ℕ -> Index -> ℝ) :
+    VdVWOuterProbabilityUniformDeviationTendstoZeroOn μ (∅ : Set Index)
+      populationRisk empiricalRisk := by
+  intro tolerance htolerance
+  have hzero :
+      (fun sampleSize : ℕ =>
+        VdVWOuterProbability μ
+          {ω |
+            ¬ EmpiricalDeviationBoundOn (∅ : Set Index) populationRisk
+              (empiricalRisk ω sampleSize) tolerance}) =
+        fun _ : ℕ => (0 : ℝ≥0∞) := by
+    funext sampleSize
+    simp [VdVWOuterProbability, EmpiricalDeviationBoundOn]
+  rw [hzero]
+  exact tendsto_const_nhds
 
 /-- Bad event for a fixed sample size and tolerance. -/
 def VdVWUniformDeviationBadEvent

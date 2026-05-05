@@ -29539,6 +29539,92 @@ theorem
           hvc hindexClass henvelope hclass henv henv_integrable
 
 /--
+Canonical full-subgraph Theorem 2.4.3/Lemma 2.4.5 package without a nonempty
+class assumption.
+
+The nonempty branch is the existing strong full-subgraph package.  The empty
+branch is discharged by the complete-lattice convention for
+`vdVWWeightedClassSupremum` over `∅` and by the vacuous uniform-deviation
+interfaces.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWOuterAlmostSurePGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) := by
+  classical
+  rcases Set.eq_empty_or_nonempty indexClass with h_empty | h_nonempty
+  · subst indexClass
+    have h_outer_probability :
+        VdVWOuterProbabilityPGlivenkoCantelliClass
+          (vdVWInfiniteProductMeasure P) P (∅ : Set Index) classFun
+          (fun i sequence => sequence i) := by
+      simpa [VdVWOuterProbabilityPGlivenkoCantelliClass] using
+        (VdVWOuterProbabilityUniformDeviationTendstoZeroOn_empty
+          (μ := vdVWInfiniteProductMeasure P)
+          (populationRisk := fun index : Index =>
+            populationRiskOfFunction P (classFun index))
+          (empiricalRisk := fun sequence sampleSize index =>
+            empiricalAverage (samplePath (fun i sequence => sequence i) sequence sampleSize)
+              (classFun index)))
+    have h_outer_as :
+        VdVWOuterAlmostSurePGlivenkoCantelliClass
+          (vdVWInfiniteProductMeasure P) P (∅ : Set Index) classFun
+          (fun i sequence => sequence i) := by
+      simpa [VdVWOuterAlmostSurePGlivenkoCantelliClass] using
+        (VdVWOuterAlmostSureUniformDeviationTendstoZeroOn_empty
+          (μ := vdVWInfiniteProductMeasure P)
+          (populationRisk := fun index : Index =>
+            populationRiskOfFunction P (classFun index))
+          (empiricalRisk := fun sequence sampleSize index =>
+            empiricalAverage (samplePath (fun i sequence => sequence i) sequence sampleSize)
+              (classFun index)))
+    refine ⟨h_outer_probability, h_outer_as, ?_, ?_, ?_⟩
+    · exact Or.inl h_outer_probability
+    · simp
+    · exact ae_of_all _ fun sequence => by
+        simp [vdVWLemma245CenteredEmpiricalSupremum]
+  · exact
+      VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc h_nonempty henvelope hclass henv henv_integrable
+
+/--
 Canonical finite-class almost-sure `P`-Glivenko-Cantelli record from the direct
 finite-class SLLN route.
 
