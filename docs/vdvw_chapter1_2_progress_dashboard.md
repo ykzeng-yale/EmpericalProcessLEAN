@@ -1312,3 +1312,13 @@ compiles.  `vdVW_reverse_crossing_pair_order_of_lt` and
 crossing intervals are earlier, with a one-index separation, in the reversed
 finite window.  The remaining exact step is an induction/counting proof chaining
 these separated pairs into a full `upcrossingsBefore` lower bound.
+2026-05-05 follow-up: that induction/counting proof is now compiled as
+`vdVW_reverse_inner_upcrossingsBefore_ge_downcrossingsBefore`, closing the
+deterministic finite-prefix comparison.  Consequently
+`VdVWOrderDualSubmartingaleConvergenceHandoff.proved` proves the generic
+order-dual submartingale convergence theorem, and
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`
+removes the former reverse/cofiltration primitive from the standard
+countable/integrable-envelope Lemma 2.4.5 route.  The next dashboard frontier
+is final endpoint cleanup: consume this proved handoff in Lemma 2.4.5 and
+Theorem 2.4.3 wrappers that still carry an explicit `hreverse` hypothesis.

@@ -4018,3 +4018,20 @@ one-index gap when the later lower crossing is completed before the horizon.
 The next proof should use this strict ordering to induct over the counted
 downcrossing indices and chain repeated applications of
 `upcrossingsBefore_lt_of_exists_upcrossing`.
+
+2026-05-05 follow-up: the multiplicity/counting blocker is now closed.
+`vdVW_reverse_inner_upcrossingsBefore_ge_downcrossingsBefore` proves the full
+finite-prefix deterministic comparison by a backward induction over completed
+downcrossings.  It uses the one-crossing extension lemma and the strict
+crossing-pair ordering to chain mathlib `upcrossingsBefore_lt_of_exists_upcrossing`.
+This feeds the compiled inner-threshold handoff and proves the previously
+named generic primitive as
+`VdVWOrderDualSubmartingaleConvergenceHandoff.proved`: every uniformly
+`L¹`-bounded finite-measure `ℕᵒᵈ` submartingale has an a.e. ordinary-time
+limit along `n ↦ OrderDual.toDual n`.  The VdV&W-facing theorem
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable` now
+removes the former `hreverse` primitive assumption from the textbook-display
+reverse/cofiltration package under countability, coordinate measurability, and
+integrable-envelope hypotheses.  Next target: consume this new handoff in the
+Lemma 2.4.5 and Theorem 2.4.3 final endpoint wrappers, replacing theorem
+statements that still ask for an explicit reverse/cofiltration primitive.
