@@ -96,6 +96,16 @@ tail/UI condition.  This keeps VC/finite-code entropy routes usable while
 leaving the pure stochastic random-entropy-to-UI implication as the honest
 remaining mismatch.
 
+2026-05-05 blocker refinement: after local/mathlib search, the remaining
+non-deterministic entropy target is now explicitly a varying-domain UI theorem
+or a stronger structural entropy theorem.  The compiled deterministic
+normalized-log route already feeds the selected fixed-radius and untruncated
+Theorem 2.4.3 consumers, so adding more endpoint wrappers would be redundant.
+The missing theorem cannot have the bare form "outer-probability convergence
+of normalized log cardinality implies tail expectation"; it needs an explicit
+uniform-integrability/tail hypothesis or a proof that the VdV&W entropy
+assumptions supply one.
+
 ## Status Legend
 
 | Status | Meaning |

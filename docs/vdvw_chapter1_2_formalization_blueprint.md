@@ -165,6 +165,15 @@ This is the correct bridge for finite-code, VC, and other structural entropy
 routes.  It does not assert that convergence in outer probability alone
 implies UI; that remains the exact non-deterministic entropy blocker.
 
+2026-05-05 blocker refinement: the non-deterministic entropy blocker is now
+isolated to a real varying-domain uniform-integrability/tail-expectation
+principle for the normalized log-cardinality process.  The deterministic
+normalized-log route and the selected/untruncated Theorem 2.4.3 consumers are
+already compiled; the next proof should either instantiate those consumers
+with a structural entropy bound, or introduce/prove an explicit
+book-facing UI/tail hypothesis.  Do not add another final wrapper that simply
+renames the same selected fixed-radius side-condition package.
+
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
 reverse/cofiltration theorem, finite-cover entropy plumbing, untruncation,
