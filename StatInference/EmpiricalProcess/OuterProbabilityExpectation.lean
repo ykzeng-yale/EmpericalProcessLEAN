@@ -418,6 +418,43 @@ theorem tailExpectation_condition_of_eventual_bound
   simpa using hε_pos.le
 
 /--
+Vanishing ordinary means supply the varying-domain tail-expectation
+condition for nonnegative processes.
+
+This is the L1-strengthened alternative to the bounded-tail route: if
+`∫ Y_i -> 0` and `0 <= Y_i`, then the large-tail expectation is small by
+taking cutoff `R = 0`.
+-/
+theorem tailExpectation_condition_of_integral_tendsto_zero_nonneg
+    {ι : Type v} {Ω : ι -> Type u}
+    [(i : ι) -> MeasurableSpace (Ω i)]
+    (μ : (i : ι) -> Measure (Ω i))
+    {l : Filter ι} {Y : (i : ι) -> Ω i -> ℝ}
+    (hY_nonneg : ∀ i (ω : Ω i), 0 ≤ Y i ω)
+    (hIntegral : Tendsto (fun i => ∫ ω, Y i ω ∂(μ i)) l (𝓝 0)) :
+    ∀ ε > 0, ∃ R, 0 ≤ R ∧
+      ∀ᶠ i in l,
+        ∫ ω,
+          Set.indicator {ω' : Ω i | R < Y i ω'} (Y i) ω ∂(μ i) ≤ ε := by
+  intro ε hε_pos
+  refine ⟨0, le_rfl, ?_⟩
+  have heventually :
+      ∀ᶠ i in l, ∫ ω, Y i ω ∂(μ i) < ε :=
+    hIntegral.eventually (eventually_lt_nhds hε_pos)
+  filter_upwards [heventually] with i hi
+  have hindicator_eq :
+      (fun ω : Ω i =>
+        Set.indicator {ω' : Ω i | (0 : ℝ) < Y i ω'} (Y i) ω) =
+        Y i := by
+    funext ω
+    by_cases hpos : 0 < Y i ω
+    · simp [Set.indicator, hpos]
+    · have hzero : Y i ω = 0 := le_antisymm (le_of_not_gt hpos) (hY_nonneg i ω)
+      simp [Set.indicator, hzero]
+  rw [hindicator_eq]
+  exact hi.le
+
+/--
 A varying-domain perturbation rule for convergence in outer probability to
 zero.
 

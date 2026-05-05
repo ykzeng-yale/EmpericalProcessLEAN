@@ -174,6 +174,21 @@ with a structural entropy bound, or introduce/prove an explicit
 book-facing UI/tail hypothesis.  Do not add another final wrapper that simply
 renames the same selected fixed-radius side-condition package.
 
+2026-05-05 L1-strengthened follow-up: the blueprint now has a compiled
+mean-convergence route for the raw normalized-log tail/UI input.  The general
+varying-domain lemma
+`tailExpectation_condition_of_integral_tendsto_zero_nonneg` and the
+Theorem 2.4.3 specialization
+`logCardinality_div_tailExpectation_condition_of_integral_tendsto_zero`,
+together with
+`finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_integral_tendsto_zero`,
+show that if normalized empirical entropy converges to zero in ordinary mean,
+then the required raw normalized-log and finite-net tail expectations follow.
+This is deliberately recorded as stronger than VdV&W's outer-probability
+entropy condition; the remaining theorem-line work is to derive such mean
+convergence or UI from a structural entropy assumption, not from probability
+convergence alone.
+
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
 reverse/cofiltration theorem, finite-cover entropy plumbing, untruncation,

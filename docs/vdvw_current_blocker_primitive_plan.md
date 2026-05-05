@@ -176,6 +176,21 @@ from a named VdV&W/book entropy hypothesis stronger than mere outer
 probability convergence, or prove the structural cardinality bound that lets
 the already compiled deterministic route apply.
 
+2026-05-05 L1-strengthened entropy bridge: the varying-domain tail/UI route
+now has a mean-convergence sufficient condition.  New compiled declarations:
+`tailExpectation_condition_of_integral_tendsto_zero_nonneg` in
+`OuterProbabilityExpectation.lean` and
+`logCardinality_div_tailExpectation_condition_of_integral_tendsto_zero` plus
+`finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_integral_tendsto_zero`
+in `Theorem243.lean`.  They prove that if the ordinary means of the normalized
+log-cardinality process tend to zero, then the raw normalized-log tail/UI
+condition and the finite-net Hoeffding tail/UI condition hold.  This is
+stronger than the textbook outer-probability entropy condition, but it is a
+genuine non-deterministic route that avoids a deterministic cardinality bound.
+Remaining exact blocker: derive this mean convergence from a VdV&W structural
+entropy hypothesis, or prove a separate uniform-integrability theorem for the
+normalized log-cardinality process.
+
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the
 non-deterministic entropy route.  New compiled declarations:
