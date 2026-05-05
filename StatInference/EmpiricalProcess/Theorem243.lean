@@ -5615,6 +5615,61 @@ theorem VdVWLemma245ReverseCofiltrationHandoff.of_submartingale
       (envelope := envelope) hcount henvelope hclass henv_integrable hsub
 
 /--
+One-step conditional-drift sufficient condition for the named reverse
+cofiltration handoff.
+
+This is the mathlib constructor-facing form of the remaining ordinary
+submartingale realization: provide strong adaptedness to an ordinary
+`ℕ`-filtration and the nonnegative conditional drift
+`E[X_{n+1} - X_n | ℱ_n] ≥ 0` for the shifted centered supremum process.
+-/
+theorem VdVWLemma245ReverseCofiltrationHandoff.of_condExp_step_nonneg
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    (hadapted :
+      StronglyAdapted ℱ
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence))
+    (hstep :
+      ∀ n : ℕ,
+        0 ≤ᵐ[vdVWInfiniteProductMeasure P]
+          (vdVWInfiniteProductMeasure P)[
+            (fun sequence : ℕ -> Observation =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                ((n + 1) + 1) sequence -
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                (n + 1) sequence) | ℱ n]) :
+    VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun := by
+  let shifted : ℕ -> (ℕ -> Observation) -> ℝ := fun n sequence =>
+    vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence
+  have hint :
+      ∀ n : ℕ, Integrable (shifted n) (vdVWInfiniteProductMeasure P) := by
+    intro n
+    simpa [shifted] using
+      integrable_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hcount henvelope hclass henv_integrable
+        (n + 1)
+  have hsub :
+      Submartingale shifted ℱ (vdVWInfiniteProductMeasure P) := by
+    refine submartingale_of_condExp_sub_nonneg_nat ?_ hint ?_
+    · simpa [shifted] using hadapted
+    · intro n
+      simpa [shifted] using hstep n
+  exact
+    VdVWLemma245ReverseCofiltrationHandoff.of_submartingale
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable hsub
+
+/--
 Final Lemma 2.4.5 consumer for the already-compiled countable centered
 reverse-comparison rows.
 

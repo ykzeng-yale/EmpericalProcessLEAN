@@ -1083,3 +1083,11 @@ and
 This means the downstream full-subgraph route can now be closed from one
 ordinary submartingale realization of the shifted centered process, without
 asking callers to supply the broader named reverse/cofiltration proposition.
+
+2026-05-04 follow-up: the ordinary-submartingale realization has been reduced
+to explicit constructor inputs by
+`VdVWLemma245ReverseCofiltrationHandoff.of_condExp_step_nonneg`, using
+mathlib's `submartingale_of_condExp_sub_nonneg_nat`.  The next proof target is
+now the one-step conditional drift inequality for the shifted centered
+supremum under a suitable ordinary filtration, together with strong
+adaptedness for that filtration.

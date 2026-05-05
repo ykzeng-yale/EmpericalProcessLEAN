@@ -3627,3 +3627,19 @@ proof obligation for this route is no longer a generic named blocker at the
 call site; it is exactly the ordinary submartingale realization of the shifted
 centered empirical supremum process, or a direct proof of the reverse
 cofiltration convergence theorem.
+
+2026-05-04 follow-up: the ordinary-submartingale route has been reduced one
+step further to the mathlib constructor inputs.  Search/reuse record: pinned
+mathlib `Probability/Martingale/Basic.lean` provides
+`submartingale_of_condExp_sub_nonneg_nat`, which builds an ordinary `ℕ`
+submartingale from strong adaptedness, integrability, and one-step
+nonnegative conditional drift.  The local named integrability theorem
+`integrable_vdVWLemma245CenteredEmpiricalSupremum_of_countable` supplies the
+integrability input for the shifted centered supremum.  New compiled
+declaration:
+`VdVWLemma245ReverseCofiltrationHandoff.of_condExp_step_nonneg`.  The
+remaining proof target is now the exact VdV&W reverse/permutation-symmetric
+conditional-drift inequality for a suitable ordinary filtration:
+`0 ≤ E[X_{n+1} - X_n | ℱ_n]` where
+`X_n(sequence) = vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+(n + 1) sequence`.
