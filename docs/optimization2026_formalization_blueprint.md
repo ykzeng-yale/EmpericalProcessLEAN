@@ -45,8 +45,8 @@ replacement prompt for manual runs.
 
 Manual goal frontier after the 2026-05-05 standard-cut scalar,
 determinant-ratio, coordinate-free affine-containment, supplied-identity
-affine-transport certificate, and first Euclidean matrix quadratic packet,
-building on prior pushed frontier `14580fb`:
+affine-transport certificate, first Euclidean matrix quadratic packet, and
+cut-normalization algebra packet, building on prior pushed frontier `c63864c`:
 `StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
 discrete AGD source rate,
 `StatInference/Optimization/ProjectedSubgradient.lean` proves the finite-valued
@@ -61,7 +61,8 @@ Theorem 6.19 display-rate wrapper
 Lemma 6.20 ellipsoid trajectory/rate layer plus the normalized central-cut
 scalar containment, determinant-ratio cores, and coordinate-free normalized
 half-space containment, plus an abstract affine-transport certificate bridge
-and matrix-backed quadratic/positive-denominator helpers.
+and matrix-backed quadratic/positive-denominator plus normalized-cut algebra
+helpers.
 Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
@@ -133,7 +134,10 @@ matrix bridge declarations `matrixInvShape`,
 `matrixInvShape_quadratic_eq_dotProduct`,
 `matrixInvShape_quadratic_nonneg_of_posSemidef`,
 `matrixInvShape_quadratic_pos_of_posDef`, and
-`chewi620_matrix_cut_sqrt_inv_pos_of_posDef`.
+`chewi620_matrix_cut_sqrt_inv_pos_of_posDef`, plus
+`chewi620MatrixCutScale`, `chewi620MatrixNormalizedCutDirection`,
+`chewi620_matrixNormalizedCutDirection_norm_of_posDef`, and
+`chewi620_matrixNormalizedCutDirection_inner_toStd`.
 
 The next active packet should stay in Chapter 6 and prove a theorem-sized part
 of ellipsoid Lemma 6.20, not drip minor wrappers.  The exact
@@ -143,8 +147,9 @@ next ellipsoid blocker.  Search mathlib matrix/PSD/inverse/determinant and
 volume-scaling APIs first, then instantiate the concrete matrix hypotheses of
 `chewi620_affineTransport_stepCertificate_of_quadratic` for Chewi's displayed
 `Σ_{n+1}` update.  The current matrix quadratic and positive denominator are
-now local; the remaining blocker is the cut-normalization identity, the actual
-matrix/affine pullback for `Σ_{n+1}^{-1}`, and determinant/volume bridge, not
+now local, and the normalized cut direction algebra is now local modulo the
+raw square-root adjoint identity; the remaining blocker is the actual
+matrix/affine pullback for `Σ_{n+1}^{-1}` and determinant/volume bridge, not
 scalar algebra or abstract transport.  If the full matrix proof balloons, prove the smallest
 matrix-coordinate, rank-one determinant, or volume-scaling certificate that
 removes the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth

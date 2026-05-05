@@ -70,8 +70,8 @@ runs.
 
 Live replacement `/goal` prompt after the 2026-05-05 standard-cut scalar,
 determinant-ratio, coordinate-free affine-containment, supplied-identity
-affine-transport certificate, and first Euclidean matrix quadratic packet,
-building on prior pushed frontier `14580fb`:
+affine-transport certificate, first Euclidean matrix quadratic packet, and
+cut-normalization algebra packet, building on prior pushed frontier `c63864c`:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under `StatInference/Optimization`, with
 exercises tracked in the single `StatInference/Optimization/Exercises.lean`
@@ -103,7 +103,10 @@ matrix-backed inverse-shape bridge `matrixInvShape`,
 `matrixInvShape_quadratic_eq_dotProduct`,
 `matrixInvShape_quadratic_nonneg_of_posSemidef`,
 `matrixInvShape_quadratic_pos_of_posDef`, and
-`chewi620_matrix_cut_sqrt_inv_pos_of_posDef`.  The app-level
+`chewi620_matrix_cut_sqrt_inv_pos_of_posDef`, plus
+`chewi620MatrixCutScale`, `chewi620MatrixNormalizedCutDirection`,
+`chewi620_matrixNormalizedCutDirection_norm_of_posDef`, and
+`chewi620_matrixNormalizedCutDirection_inner_toStd`.  The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
 textbook goal is marked complete, so this paragraph is the operative manual
@@ -113,13 +116,14 @@ Immediate target for the next manual goal run: instantiate the supplied
 hypotheses of `chewi620_affineTransport_stepCertificate_of_quadratic` for
 Chewi's displayed update.  Do not spend another run on scalar,
 coordinate-free, or abstract transport wrappers.  The remaining hard work is
-the concrete matrix bridge proving the current-ellipsoid quadratic identity,
-the cut-normalization identity, the pullback identity for the displayed
-`Σ_{n+1}` inverse shape, and the determinant/volume inequality.  First search
-and use mathlib/local APIs for EuclideanSpace coordinates, matrix PSD order,
-rank-one inverse/determinant updates, ellipsoid volume scaling,
-square-root/linear-equivalence normalization, and quadratic-form half-space
-containment.
+the concrete matrix bridge proving the raw square-root adjoint identity
+`<Σ^{1/2}p, Σ^{-1/2}(z-center)> = <p,z> - <p,center>`, the pullback identity
+for the displayed `Σ_{n+1}` inverse shape, and the determinant/volume
+inequality.  The current matrix quadratic, positive denominator, and normalized
+cut direction algebra are now local.  First search and use mathlib/local APIs
+for EuclideanSpace coordinates, matrix PSD order, square-root/inverse
+cancellation, rank-one inverse/determinant updates, ellipsoid volume scaling,
+and quadratic-form half-space containment.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
@@ -144,10 +148,11 @@ has a compiled supplied-interface ellipsoid trajectory/rate layer plus the
 normalized scalar central-cut containment, determinant-ratio inequalities, and
 coordinate-free normalized half-space containment, and an abstract
 affine-transport `IsEllipsoidStepCertificate` bridge.  The current-ellipsoid
-matrix quadratic and positive-denominator pieces now compile via
-`matrixInvShape` and PosDef/PosSemidef dot-product APIs.  The next aggressive
-theorem packet should prove the cut-normalization identity and then the
-pullback/determinant pieces needed by `chewi620_affineTransport_stepCertificate_of_quadratic`:
+matrix quadratic, positive-denominator, and normalized cut-direction algebra
+now compile via `matrixInvShape`, PosDef/PosSemidef dot-product APIs, and
+`Real.sqrt` normalization.  The next aggressive theorem packet should prove
+the raw matrix square-root adjoint identity and then the pullback/determinant
+pieces needed by `chewi620_affineTransport_stepCertificate_of_quadratic`:
 search and use mathlib matrix/PSD/inverse/determinant/volume APIs to transport
 these local theorems to the displayed matrix update.  If the full matrix proof
 balloons, record the exact missing matrix API and prove the smallest
