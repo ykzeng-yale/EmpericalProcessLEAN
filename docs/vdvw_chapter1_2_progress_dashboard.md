@@ -13,8 +13,8 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current `/goal` target override, 2026-05-05 after the verified finite-index
-`ell_infty(T)` FDD converse closure: closed
+Current `/goal` target override, 2026-05-05 after the verified
+π-system/product-test wrapper closure at `b84e9ed`: closed
 finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,

@@ -89,9 +89,9 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 after the verified varying-domain
-shifted asymptotic-measurability bridge: the strong Theorem 2.4.3/Lemma 2.4.5
-endpoint packages, selected
+Current operational target, 2026-05-05 after the verified
+π-system/product-test wrapper closure at `b84e9ed`: the strong
+Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
 measurable/null-measurable signed arbitrary-map/varying-domain
@@ -118,8 +118,12 @@ the signed weak-convergence packages in `WeakConvergence.lean`, covering
 signed-outer, arbitrary-map, and
 varying-domain proof-carrying predicates.  The next Chapter 1 fallback should
 therefore move to deeper exact primitives such as nonmeasurable outer-cover
-signed weak convergence, asymptotic-tightness/asymptotic-independence, FDD
-converse, or separability/`P`-measurable class support.
+signed weak convergence, asymptotic-tightness/asymptotic-independence,
+arbitrary-index FDD converse, or separability/`P`-measurable class support.
+The finite-index FDD converse, Portmanteau converse, norm-tail tightness,
+π-system convergence-determining criterion, and VdV&W 1.4.2 product
+bounded-continuous test uniqueness wrappers are closed and should not be
+repeated.
 
 2026-05-05 signed/shifted bridge update: `WeakConvergence.lean` now proves
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_lowerShifted` and

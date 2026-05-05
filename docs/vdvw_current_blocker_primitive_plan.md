@@ -48,12 +48,15 @@ handoff.
 ## Active Blocker
 
 Current main-line target: finish VdV&W Chapters 1-2 by dependency order, using
-the already compiled Theorem 2.4.3 endpoint infrastructure instead of rebuilding
-it.  The finite-index `ell_infty(T)`/FDD converse layer is now compiled, so the
-highest-value remaining Chapter 1 process blockers are the arbitrary-index
-VdV&W 1.4.8 converse, separability/tightness/asymptotic-measurability
-interfaces, and the nonmeasurable outer-cover signed weak-convergence layer.
-The highest-value Theorem 2.4.3 blocker remains the genuine book
+the already compiled Theorem 2.4.3 endpoint infrastructure and Chapter 1
+measure-level wrappers instead of rebuilding them.  The finite-index
+`ell_infty(T)`/FDD converse, Portmanteau converse, norm-tail tightness,
+π-system convergence-determining, and VdV&W 1.4.2 product-test uniqueness
+layers are now compiled.  The highest-value remaining Chapter 1 process
+blockers are the arbitrary-index VdV&W 1.4.8 converse,
+separability/tightness/asymptotic-measurability interfaces, and the
+nonmeasurable outer-cover signed weak-convergence layer.  The highest-value
+Theorem 2.4.3 blocker remains the genuine book
 random-entropy mismatch: deriving a tail/UI, ordinary-mean, or deterministic
 structural cardinality input from
 `log N(η, F_M, L1(P_n)) = o_P^*(n)` for fixed positive `η`.  Do not reopen the
@@ -64,9 +67,9 @@ unless a new exact statement directly consumes them.
 
 ## Current `/goal` Target
 
-Authoritative operational prompt, 2026-05-05 after the verified finite-index
-`ell_infty(T)` FDD converse closure: finish VdV&W Chapters 1-2 in Lean by
-dependency order, with
+Authoritative operational prompt, 2026-05-05 after the verified
+π-system/product-test wrapper closure at `b84e9ed`: finish VdV&W Chapters 1-2
+in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
