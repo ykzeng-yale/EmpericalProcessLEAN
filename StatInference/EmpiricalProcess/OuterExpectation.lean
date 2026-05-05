@@ -188,6 +188,45 @@ theorem VdVWInnerExpectation_eq_lintegral_of_measurable
            minorizes := fun _ => le_rfl } :
           VdVWMeasurableMinorant μ T)
 
+/--
+For a measurable nonnegative map, the VdV&W nonnegative outer and inner
+expectations coincide.
+
+This is the local Chapter 1 bridge used before the full arbitrary-map
+asymptotic-measurability layer: measurable test compositions have zero
+outer/inner expectation gap.
+-/
+theorem VdVWOuterExpectation_eq_innerExpectation_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (hT : Measurable T) :
+    VdVWOuterExpectation μ T = VdVWInnerExpectation μ T := by
+  rw [VdVWOuterExpectation_eq_lintegral_of_measurable hT,
+    VdVWInnerExpectation_eq_lintegral_of_measurable hT]
+
+/--
+Measurable real-valued maps embedded as nonnegative `ENNReal.ofReal` maps have
+equal VdV&W nonnegative outer and inner expectations.
+-/
+theorem VdVWOuterExpectation_eq_innerExpectation_of_measurable_ofReal
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {f : Ω -> ℝ} (hf : Measurable f) :
+    VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (f ω)) =
+      VdVWInnerExpectation μ (fun ω => ENNReal.ofReal (f ω)) :=
+  VdVWOuterExpectation_eq_innerExpectation_of_measurable hf.ennreal_ofReal
+
+/--
+Composable form: if a map and a nonnegative test are measurable, then the
+test-composed arbitrary-map expression has equal VdV&W outer and inner
+expectations.
+-/
+theorem VdVWOuterExpectation_eq_innerExpectation_of_measurable_comp
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {X : Ω -> S} {T : S -> ℝ≥0∞}
+    (hX : Measurable X) (hT : Measurable T) :
+    VdVWOuterExpectation μ (fun ω => T (X ω)) =
+      VdVWInnerExpectation μ (fun ω => T (X ω)) :=
+  VdVWOuterExpectation_eq_innerExpectation_of_measurable (hT.comp hX)
+
 /-- VdV&W nonnegative inner expectation is monotone in the map. -/
 theorem VdVWInnerExpectation_mono
     {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}

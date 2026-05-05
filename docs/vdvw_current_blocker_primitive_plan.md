@@ -56,26 +56,90 @@ textbook-hypothesis mismatches.
 As of 2026-05-05, the active `/goal` should be interpreted as:
 
 > Finish VdV&W Chapters 1-2 in Lean by dependency order.  The immediate
-> theorem-facing target is final Theorem 2.4.3/Lemma 2.4.5 statement alignment,
-> not more wrappers around already-closed entropy, untruncation, finite-class,
-> or reverse/cofiltration layers.  Start from
+> theorem-facing target is not more packaging around the already-closed
+> entropy, untruncation, finite-class, full-subgraph, or reverse/cofiltration
+> layers.  Start from the current strongest compiled endpoints:
 > `VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`,
-> `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`,
-> the variable-entropy/structural-rate GC and in-mean endpoints, and the
-> proved `VdVWOrderDualSubmartingaleConvergenceHandoff` /
+> `VdVWTheorem243_logCardinality_div_tendsto_bound_pGlivenkoCantelli_and_inMean`,
+> and the proved
+> `VdVWOrderDualSubmartingaleConvergenceHandoff.proved` /
 > `VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`
-> route.  Try first to produce the cleanest named VdVW Theorem 2.4.3/Lemma
-> 2.4.5 statement with no avoidable side assumptions.  Any remaining mismatch
-> must be recorded as an exact missing bridge: random entropy/tail-UI without
-> deterministic log boundedness, arbitrary `P`-measurable/asymptotic-measurable
-> class support beyond the countable coordinate-measurable route, or
-> nonmeasurable outer-cover envelope variants.  If this exact assembly blocks
-> after real Lean/search attempts, move to the next theorem-critical Chapter
-> 1-2 primitive that closes one of those bridges.
+> route.  The next high-value target is to remove or explicitly isolate the
+> remaining mismatches between these endpoints and the exact textbook Theorem
+> 2.4.3 assumptions: (1) prove the random-entropy finite-net tail/UI theorem
+> from the book entropy condition without adding deterministic log boundedness
+> or overclaiming covering-number monotonicity, (2) instantiate the already
+> compiled full-subgraph/structural-rate consumers for concrete textbook class
+> hypotheses rather than rebuilding more endpoint packaging, and (3) extend the
+> countable coordinate-measurable route toward arbitrary
+> `P`-measurable/asymptotic-measurable classes and any needed nonmeasurable
+> outer-cover envelope variants.  The full-subgraph VC consumer itself is no
+> longer a missing bridge: it is compiled under `VdVWUniformSubgraphVCBound` in
+> `VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`.
+> If exact Theorem 2.4.3 assembly blocks after
+> real Lean/search attempts, immediately close the next theorem-critical
+> Chapter 1-2 primitive that reduces one of those mismatches, especially the
+> arbitrary-map/asymptotic-measurability foundation.
 
 The Codex `/goal` tool currently exposes only completion updates for an active
 goal, so this section is the authoritative refreshed target text for the
 ongoing goal until the tool objective can be recreated.
+
+2026-05-05 status check: this run started from VdVW head `4903594` and pushed
+the merged verified head `57c0b80`; the active `/goal` tool objective remains
+broad but cannot be edited in place.
+The code search confirms the reverse/cofiltration route and the strong
+countable full-subgraph Theorem 2.4.3/Lemma 2.4.5 packages are compiled.  It
+also confirms there is no local exact `VdVWAsymptoticMeasurable` primitive yet;
+`WeakConvergence.lean` is still measure-level, while `PMeasurable.lean`
+contains the countable and pointwise-separable routes for Definition 2.3.3.
+Therefore the next `/goal` work should alternate only between exact theorem
+assumption removal for Theorem 2.4.3 and the Chapter 1 arbitrary-map
+measurability primitives needed to state that theorem without countability.
+As a first foundation closure in that direction,
+`VdVWOuterExpectation_eq_innerExpectation_of_measurable`,
+`VdVWOuterExpectation_eq_innerExpectation_of_measurable_ofReal`, and
+`VdVWOuterExpectation_eq_innerExpectation_of_measurable_comp` collapse the
+nonnegative outer/inner expectation gap for measurable test compositions.
+
+2026-05-05 follow-up: search of local `StatInference` and pinned mathlib for
+`Asymptotic`, `asymptotic`, `outer.*inner`, and `VdVWAsymptotic` found no
+existing VdV&W asymptotic-measurability primitive.  Pinned mathlib has general
+asymptotics and measure-theoretic measurability APIs, but not the VdV&W
+outer/inner expectation-gap formulation.  The nonnegative foundation is now
+compiled in `WeakConvergence.lean` as
+`VdVWNonnegativeOuterInnerExpectationGap`,
+`VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_measurable`,
+`VdVWAsymptoticallyMeasurableNonnegative`,
+`VdVWAsymptoticallyMeasurableNonnegative.of_forall_measurable_comp`, and
+`VdVWAsymptoticallyMeasurableNonnegative.of_forall_measurable`.  This is not
+the full signed bounded-continuous textbook definition, but it removes the
+first proof obstacle: measurable nonnegative test compositions are
+automatically asymptotically measurable in the outer/inner-gap sense.
+
+2026-05-05 second follow-up: the asymptotic-measurability foundation now also
+has lower-shifted real-test and bounded-continuous local layers:
+`VdVWLowerShiftedRealOuterInnerExpectationGap`,
+`VdVWLowerShiftedRealOuterInnerExpectationGap_eq_zero_of_measurable`,
+`VdVWAsymptoticallyMeasurableLowerShiftedReal`,
+`VdVWAsymptoticallyMeasurableLowerShiftedReal.of_forall_measurable_comp`,
+`VdVWAsymptoticallyMeasurableLowerShiftedReal.of_forall_measurable`,
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted`, and
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_measurable`.
+These declarations move Definition 1.3.7 closer to the textbook bounded
+continuous test class while honestly keeping the missing signed arbitrary-map
+outer expectation as a remaining primitive.
+
+2026-05-05 third follow-up: pinned mathlib exposes the needed bounded
+continuous lower-bound API as
+`BoundedContinuousFunction.neg_norm_le_apply`.  The local bounded-continuous
+layer now has the canonical shift declarations
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted`,
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_lowerShifted`,
+and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_forall_measurable`.
+This removes the extra supplied lower-bound parameter for bounded continuous
+tests by using the automatic lower bound `-‖f‖`.
 
 2026-05-04 `/goal` status correction: local scratch now registers the exact
 remaining reverse-time theorem as the generic proposition
@@ -4301,3 +4365,34 @@ inputs that this package still exposes: a genuine structural covering/rate
 theorem, a random-entropy finite-net tail/UI theorem without deterministic log
 boundedness, or the arbitrary `P`-measurable/asymptotic-measurable class
 bridge beyond countable coordinate measurability.
+
+2026-05-05 `/goal` audit update: local search of
+`StatInference/EmpiricalProcess/SubgraphTraceVC.lean` and
+`StatInference/EmpiricalProcess/Theorem243.lean` confirms that the
+full-subgraph route itself is already compiled under the explicit structural
+assumption `VdVWUniformSubgraphVCBound`.  The strongest endpoint
+`VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`
+already consumes that assumption and returns the no-nonempty countable
+full-subgraph package including local `P`-GC, in-mean convergence, and the
+Lemma 2.4.5 strong route.  Therefore the current `/goal` target should not
+spend more runs on generic full-subgraph endpoint packaging.  The remaining
+Theorem 2.4.3 work is now exactly: prove the random-entropy selected finite-net
+tail/UI bridge without deterministic log boundedness; instantiate the compiled
+full-subgraph/structural-rate assumptions for concrete textbook classes when a
+chapter theorem or example requires it; and remove the countability/measurable
+coordinate restriction by building the exact arbitrary-map/asymptotic
+measurability and outer-cover primitives.
+
+2026-05-05 follow-up: the Chapter 1 asymptotic-measurability lane now has a
+continuous-map closure for the local shifted bounded-continuous predicates.
+The compiled theorem
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.comp_continuous`
+pulls bounded continuous tests back along a continuous map, and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.comp_continuous_of_lowerShifted`
+packages the corresponding canonical-shift corollary.  This is the
+arbitrary-map foundation analogue of the continuous-mapping theorem for the
+current outer/inner expectation-gap primitive; it still does not replace the
+full signed outer-expectation/asymptotic-measurability textbook definition.
+Next work in this lane should connect these shifted predicates to exact
+arbitrary-map weak-convergence statements or build the missing signed
+outer-cover envelope layer.

@@ -1,3 +1,4 @@
+import StatInference.EmpiricalProcess.OuterExpectation
 import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
 import Mathlib.MeasureTheory.Measure.FiniteMeasurePi
 import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
@@ -17,9 +18,290 @@ namespace StatInference
 
 open Filter MeasureTheory ProbabilityTheory TopologicalSpace
 
-open scoped BoundedContinuousFunction Topology
+open scoped BoundedContinuousFunction ENNReal Topology
 
 universe u v w x
+
+/--
+Nonnegative outer/inner expectation gap for a possibly nonmeasurable test
+composition.
+
+This is a scoped Chapter 1 primitive on the way to VdV&W asymptotic
+measurability.  It intentionally uses the already formalized nonnegative
+outer/inner expectations; the full signed extended-real textbook layer remains
+separate.
+-/
+noncomputable def VdVWNonnegativeOuterInnerExpectationGap
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
+    (T : Ω -> ℝ≥0∞) : ℝ≥0∞ :=
+  VdVWOuterExpectation μ T - VdVWInnerExpectation μ T
+
+/--
+Measurable nonnegative maps have zero VdV&W nonnegative outer/inner
+expectation gap.
+-/
+theorem VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (hT : Measurable T) :
+    VdVWNonnegativeOuterInnerExpectationGap μ T = 0 := by
+  unfold VdVWNonnegativeOuterInnerExpectationGap
+  rw [VdVWOuterExpectation_eq_innerExpectation_of_measurable hT]
+  simp
+
+/--
+Nonnegative version of VdV&W asymptotic measurability for a family of
+possibly arbitrary maps and a chosen class of nonnegative test functions.
+
+For exact textbook weak convergence this must later be upgraded to the signed
+bounded-continuous test-function formulation.  This primitive isolates the
+outer/inner expectation-gap mechanism without adding a proof hole.
+-/
+def VdVWAsymptoticallyMeasurableNonnegative
+    {Ω : Type u} {S : Type v} {ι : Type w} [MeasurableSpace Ω]
+    (μs : ι -> Measure Ω) (X : ι -> Ω -> S) (l : Filter ι)
+    (tests : (S -> ℝ≥0∞) -> Prop) : Prop :=
+  ∀ T, tests T ->
+    Tendsto
+      (fun i => VdVWNonnegativeOuterInnerExpectationGap (μs i)
+        (fun ω => T (X i ω)))
+      l (𝓝 0)
+
+/--
+If every selected nonnegative test composition is measurable, then the
+nonnegative VdV&W asymptotic-measurability gap is identically zero.
+-/
+theorem VdVWAsymptoticallyMeasurableNonnegative.of_forall_measurable_comp
+    {Ω : Type u} {S : Type v} {ι : Type w} [MeasurableSpace Ω]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {tests : (S -> ℝ≥0∞) -> Prop}
+    (hmeas : ∀ i T, tests T -> Measurable (fun ω => T (X i ω))) :
+    VdVWAsymptoticallyMeasurableNonnegative μs X l tests := by
+  intro T hT
+  have hzero :
+      (fun i => VdVWNonnegativeOuterInnerExpectationGap (μs i)
+        (fun ω => T (X i ω))) = fun _ => 0 := by
+    funext i
+    exact VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_measurable
+      (hmeas i T hT)
+  simpa [hzero] using (tendsto_const_nhds : Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
+
+/--
+Measurable maps into a measurable state space are nonnegatively
+asymptotically measurable for every selected measurable nonnegative test.
+-/
+theorem VdVWAsymptoticallyMeasurableNonnegative.of_forall_measurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {tests : (S -> ℝ≥0∞) -> Prop}
+    (hX : ∀ i, Measurable (X i))
+    (hT : ∀ T, tests T -> Measurable T) :
+    VdVWAsymptoticallyMeasurableNonnegative μs X l tests :=
+  VdVWAsymptoticallyMeasurableNonnegative.of_forall_measurable_comp
+    (fun i T htest => (hT T htest).comp (hX i))
+
+/--
+Lower-shifted real outer/inner expectation gap.
+
+For a real-valued test `Y` with lower bound `c`, `ENNReal.ofReal (Y - c)` is
+the nonnegative proxy used by the local outer/inner expectation layer.  The
+lower-bound hypothesis is carried by the higher-level predicates; the gap
+itself is defined for every shift.
+-/
+noncomputable def VdVWLowerShiftedRealOuterInnerExpectationGap
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
+    (Y : Ω -> ℝ) (c : ℝ) : ℝ≥0∞ :=
+  VdVWNonnegativeOuterInnerExpectationGap μ
+    (fun ω => ENNReal.ofReal (Y ω - c))
+
+/--
+Measurable real-valued maps have zero lower-shifted VdV&W nonnegative
+outer/inner expectation gap.
+-/
+theorem VdVWLowerShiftedRealOuterInnerExpectationGap_eq_zero_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Y : Ω -> ℝ} {c : ℝ} (hY : Measurable Y) :
+    VdVWLowerShiftedRealOuterInnerExpectationGap μ Y c = 0 := by
+  unfold VdVWLowerShiftedRealOuterInnerExpectationGap
+  exact
+    VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_measurable
+      ((hY.sub measurable_const).ennreal_ofReal)
+
+/--
+Lower-shifted real-test version of VdV&W asymptotic measurability.
+
+The predicate quantifies over selected real tests and every supplied lower
+shift along the process.  This is still a local bridge, not the full signed
+outer-expectation definition from the textbook.
+-/
+def VdVWAsymptoticallyMeasurableLowerShiftedReal
+    {Ω : Type u} {S : Type v} {ι : Type w} [MeasurableSpace Ω]
+    (μs : ι -> Measure Ω) (X : ι -> Ω -> S) (l : Filter ι)
+    (tests : (S -> ℝ) -> Prop) : Prop :=
+  ∀ f c, tests f -> (∀ i ω, c ≤ f (X i ω)) ->
+    Tendsto
+      (fun i => VdVWLowerShiftedRealOuterInnerExpectationGap (μs i)
+        (fun ω => f (X i ω)) c)
+      l (𝓝 0)
+
+/--
+If every selected real test composition is measurable, then the lower-shifted
+real VdV&W asymptotic-measurability gap is identically zero.
+-/
+theorem VdVWAsymptoticallyMeasurableLowerShiftedReal.of_forall_measurable_comp
+    {Ω : Type u} {S : Type v} {ι : Type w} [MeasurableSpace Ω]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {tests : (S -> ℝ) -> Prop}
+    (hmeas : ∀ i f, tests f -> Measurable (fun ω => f (X i ω))) :
+    VdVWAsymptoticallyMeasurableLowerShiftedReal μs X l tests := by
+  intro f c hf _hlower
+  have hzero :
+      (fun i => VdVWLowerShiftedRealOuterInnerExpectationGap (μs i)
+        (fun ω => f (X i ω)) c) = fun _ => 0 := by
+    funext i
+    exact VdVWLowerShiftedRealOuterInnerExpectationGap_eq_zero_of_measurable
+      (hmeas i f hf)
+  simpa [hzero] using (tendsto_const_nhds : Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
+
+/--
+Measurable maps into a measurable state space are lower-shifted real
+asymptotically measurable for every selected measurable real test.
+-/
+theorem VdVWAsymptoticallyMeasurableLowerShiftedReal.of_forall_measurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {tests : (S -> ℝ) -> Prop}
+    (hX : ∀ i, Measurable (X i))
+    (hT : ∀ T, tests T -> Measurable T) :
+    VdVWAsymptoticallyMeasurableLowerShiftedReal μs X l tests :=
+  VdVWAsymptoticallyMeasurableLowerShiftedReal.of_forall_measurable_comp
+    (fun i T htest => (hT T htest).comp (hX i))
+
+/--
+Bounded-continuous lower-shifted asymptotic measurability.
+
+This is the closest current local bridge to VdV&W Definition 1.3.7: it ranges
+over bounded continuous real tests, but uses the nonnegative shifted
+outer/inner expectation gap until the full signed outer expectation is
+formalized.
+-/
+def VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S] (μs : ι -> Measure Ω)
+    (X : ι -> Ω -> S) (l : Filter ι) : Prop :=
+  ∀ f : S →ᵇ ℝ, ∀ c,
+    (∀ i ω, c ≤ f (X i ω)) ->
+      Tendsto
+        (fun i => VdVWLowerShiftedRealOuterInnerExpectationGap (μs i)
+          (fun ω => f (X i ω)) c)
+        l (𝓝 0)
+
+/--
+Measurable maps into a topological measurable state space are lower-shifted
+asymptotically measurable for all bounded continuous real tests.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_measurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (hX : ∀ i, Measurable (X i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l := by
+  intro f c _hlower
+  have hzero :
+      (fun i => VdVWLowerShiftedRealOuterInnerExpectationGap (μs i)
+        (fun ω => f (X i ω)) c) = fun _ => 0 := by
+    funext i
+    exact VdVWLowerShiftedRealOuterInnerExpectationGap_eq_zero_of_measurable
+      (f.continuous.measurable.comp (hX i))
+  simpa [hzero] using (tendsto_const_nhds : Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
+
+/--
+Continuous maps preserve the lower-shifted bounded-continuous
+asymptotic-measurability layer.
+
+This is the local arbitrary-map analogue of the continuous-mapping theorem for
+the current shifted outer/inner expectation primitive: every bounded
+continuous test on the target pulls back to a bounded continuous test on the
+source.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.comp_continuous
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω] [TopologicalSpace S] [TopologicalSpace T]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted
+      μs (fun i ω => g (X i ω)) l := by
+  intro f c hlower
+  let gC : C(S, T) := ⟨g, hg⟩
+  simpa [gC] using h (f.compContinuous gC) c hlower
+
+/--
+Bounded-continuous asymptotic measurability with the canonical lower shift
+`-‖f‖`.
+
+This removes the explicit lower-bound argument from the local
+bounded-continuous layer.  The shift is valid for every bounded continuous
+real-valued test by `BoundedContinuousFunction.neg_norm_le_apply`.
+-/
+def VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S] (μs : ι -> Measure Ω)
+    (X : ι -> Ω -> S) (l : Filter ι) : Prop :=
+  ∀ f : S →ᵇ ℝ,
+    Tendsto
+      (fun i => VdVWLowerShiftedRealOuterInnerExpectationGap (μs i)
+        (fun ω => f (X i ω)) (-‖f‖))
+      l (𝓝 0)
+
+/--
+The explicit lower-shifted bounded-continuous layer implies the canonical
+`-‖f‖` version.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_lowerShifted
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted μs X l := by
+  intro f
+  exact h f (-‖f‖) fun i ω =>
+    BoundedContinuousFunction.neg_norm_le_apply f (X i ω)
+
+/--
+Measurable maps into a topological measurable state space are canonically
+lower-shifted asymptotically measurable for all bounded continuous real tests.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_forall_measurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (hX : ∀ i, Measurable (X i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted μs X l :=
+  VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_lowerShifted
+    (VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_measurable
+      hX)
+
+/--
+Continuous maps preserve the canonical bounded-continuous shifted
+asymptotic-measurability predicate whenever the source has the stronger
+all-lower-shifts version.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.comp_continuous_of_lowerShifted
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω] [TopologicalSpace S] [TopologicalSpace T]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted
+      μs (fun i ω => g (X i ω)) l :=
+  VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_lowerShifted
+    (h.comp_continuous hg)
 
 /--
 Measure-level weak convergence of probability measures.
