@@ -5771,6 +5771,69 @@ def VdVWLemma245ReverseCofiltrationHandoff
         atTop (𝓝 limit)
 
 /--
+Textbook-display form of the exact remaining VdV&W Lemma 2.4.5
+reverse/cofiltration convergence primitive.
+
+This is equivalent to `VdVWLemma245ReverseCofiltrationHandoff`, but states the
+comparison in the book's displayed form with
+`E[‖P_n - P‖_F^* | Σ_{n+1}]` instead of the internally useful distinguished
+leave-one-out term.
+-/
+def VdVWLemma245TextbookReverseCofiltrationHandoff
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ) : Prop :=
+  (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+    ∀ n, 0 < n ->
+      vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+        (vdVWInfiniteProductMeasure P)[
+          (fun sequence : ℕ -> Observation =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence) |
+          vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence) ->
+  ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+    ∃ limit : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 limit)
+
+/--
+The textbook-display reverse/cofiltration primitive implies the original
+leave-one-out named primitive, by identifying the distinguished leave-one-out
+statistic with the previous centered empirical supremum.
+-/
+theorem VdVWLemma245ReverseCofiltrationHandoff.of_textbook
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hreverse :
+      VdVWLemma245TextbookReverseCofiltrationHandoff P indexClass classFun) :
+    VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun := by
+  intro hcomparison
+  apply hreverse
+  filter_upwards [hcomparison] with sequence hsequence n hn
+  simpa [vdVWLemma245LeaveOneOutCenteredSupremum_eq_centeredEmpiricalSupremum] using
+    hsequence n hn
+
+/--
+The original leave-one-out named primitive implies the textbook-display
+reverse/cofiltration primitive.  Hence future theorem statements can use
+whichever form is closer to the local proof step.
+-/
+theorem VdVWLemma245TextbookReverseCofiltrationHandoff.of_leaveOneOut
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hreverse :
+      VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun) :
+    VdVWLemma245TextbookReverseCofiltrationHandoff P indexClass classFun := by
+  intro hcomparison
+  apply hreverse
+  filter_upwards [hcomparison] with sequence hsequence n hn
+  simpa [vdVWLemma245LeaveOneOutCenteredSupremum_eq_centeredEmpiricalSupremum] using
+    hsequence n hn
+
+/--
 Sufficient condition for the named reverse/cofiltration handoff: an ordinary
 `ℕ`-indexed submartingale realization of the shifted centered supremum process.
 
@@ -26690,6 +26753,56 @@ theorem
           (P := P) (indexClass := indexClass) (classFun := classFun)
           (envelope := envelope) (vcDegree := vcDegree)
           hvc hindexClass henvelope hclass henv henv_integrable hreverse
+
+/--
+Canonical full-subgraph Theorem 2.4.3/Lemma 2.4.5 package under the named
+textbook-display reverse/cofiltration blocker.
+
+This is the preferred non-finite-class theorem-facing boundary: all
+full-subgraph `P`-GC, in-mean, and a.s. Lemma 2.4.5 plumbing is discharged,
+and the sole remaining input is the named VdV&W reverse/cofiltration theorem
+in textbook-display notation.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_textbookReverseCofiltrationHandoff
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hreverse :
+      VdVWLemma245TextbookReverseCofiltrationHandoff P indexClass classFun) :
+    VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) :=
+  VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_textbookReverseComparisonHandoff
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) (vcDegree := vcDegree)
+    hvc hindexClass henvelope hclass henv henv_integrable hreverse
 
 /--
 Canonical full-subgraph Theorem 2.4.3/Lemma 2.4.5 package under the named

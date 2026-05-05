@@ -3757,3 +3757,18 @@ full-subgraph `P`-GC endpoint, in-mean endpoint, and Lemma 2.4.5 a.s. zero
 endpoint under exactly the displayed reverse/cofiltration handoff.  The next
 real proof step should prove that displayed handoff, not add more
 natural-filtration or leave-one-out packaging.
+
+2026-05-04 follow-up: the displayed reverse/cofiltration handoff is now
+registered as a named primitive equivalent to the older leave-one-out blocker.
+New compiled declarations are
+`VdVWLemma245TextbookReverseCofiltrationHandoff`,
+`VdVWLemma245ReverseCofiltrationHandoff.of_textbook`,
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_leaveOneOut`, and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_textbookReverseCofiltrationHandoff`.
+This is now the clean active blocker for the arbitrary/countable
+non-finite-class route: prove the named textbook-display reverse/permutation-
+symmetric cofiltration convergence theorem itself.  The old
+`VdVWLemma245ReverseCofiltrationHandoff` remains available for already-compiled
+leave-one-out and martingale sufficient-condition routes, but future theorem
+assembly should prefer the textbook-display primitive unless a proof step
+naturally produces the leave-one-out form.

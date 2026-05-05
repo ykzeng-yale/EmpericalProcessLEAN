@@ -1162,3 +1162,13 @@ combine the existing full-subgraph `P`-GC, in-mean, and a.s. zero endpoints
 under the displayed reverse/cofiltration handoff.  This should be the active
 non-finite-class Theorem 2.4.3 target; further progress should prove the
 displayed handoff itself.
+
+2026-05-04 follow-up: the displayed handoff is now named and connected to the
+full-subgraph endpoint.  New compiled declarations are
+`VdVWLemma245TextbookReverseCofiltrationHandoff`,
+`VdVWLemma245ReverseCofiltrationHandoff.of_textbook`,
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_leaveOneOut`, and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_textbookReverseCofiltrationHandoff`.
+The active blocker is now exactly this named textbook-display reverse
+cofiltration theorem; the older leave-one-out primitive is equivalent and
+remains available for local proof routes.
