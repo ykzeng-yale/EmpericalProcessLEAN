@@ -5621,3 +5621,19 @@ complete second-countable pseudo-metric Borel spaces.  This closes the
 ordinary sequential measure-level implication “weak convergence implies
 asymptotic tightness”; it does not prove the VdV&W nonmeasurable
 arbitrary-map/process asymptotic-tightness theorem.
+
+2026-05-05 weak-convergence tightness reindex/product follow-up: local search
+found the existing finite product weak-convergence wrapper
+`VdVWWeakConvergenceProbabilityMeasures.pi`, the new measure-level
+asymptotic-tightness reindexing theorem
+`VdVWProbabilityMeasuresAsymptoticallyTight.comp_tendsto`, and mathlib's
+finite product probability-measure continuity `ProbabilityMeasure.continuous_pi`;
+no direct finite-product asymptotic-tightness theorem was present.  Rather
+than adding a fragile finite-union measure proof, `WeakConvergence.lean` now
+adds the theorem-facing consumers
+`VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_comp_tendsto_atTop`
+and `VdVWWeakConvergenceProbabilityMeasures.pi_asymptoticallyTight_atTop`.
+These close the ordinary subsequence/reindexed weak-convergence-to-tightness
+handoff and the finite product-law weak-convergence-to-tightness handoff.
+They still do not prove the arbitrary-map/process asymptotic-tightness or
+arbitrary-index FDD-converse theorem.

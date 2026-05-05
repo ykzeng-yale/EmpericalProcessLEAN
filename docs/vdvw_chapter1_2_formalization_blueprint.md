@@ -1781,6 +1781,18 @@ asymptotic tightness on complete second-countable pseudo-metric Borel spaces.
 This supports the Chapter 1 Prokhorov/tightness route but remains separate
 from stochastic-process asymptotic tightness for arbitrary maps.
 
+2026-05-05 weak-convergence tightness reindex/product follow-up:
+`WeakConvergence.lean` now adds
+`VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_comp_tendsto_atTop`
+and `VdVWWeakConvergenceProbabilityMeasures.pi_asymptoticallyTight_atTop`.
+The first turns sequential weak convergence into ordinary asymptotic
+tightness after any reindexing map tending to `atTop`; the second turns
+finite-coordinate weak convergence into ordinary asymptotic tightness of the
+finite product laws by reusing `VdVWWeakConvergenceProbabilityMeasures.pi`.
+This closes a finite-product FDD/tightness feeder without claiming the
+arbitrary-index VdV&W FDD converse or arbitrary-map process asymptotic
+tightness theorem.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

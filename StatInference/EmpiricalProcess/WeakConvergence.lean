@@ -3075,7 +3075,25 @@ theorem VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_atTop
       (hμs := by
         simpa [VdVWProbabilityMeasuresTight] using
           (MeasureTheory.isTightMeasureSet_of_isCompact_closure
-            (𝓧 := S) (S := Set.range μs) hcompact_closure))
+          (𝓧 := S) (S := Set.range μs) hcompact_closure))
+
+/--
+Sequential weak convergence also gives asymptotic tightness after any
+subsequence or, more generally, after any reindexing map tending to `atTop`.
+
+This is the ordinary probability-law version of the VdV&W subsequence
+tightness handoff.  It remains measure-level, not an arbitrary-map
+asymptotic-tightness theorem.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_comp_tendsto_atTop
+    {κ : Type v} {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S]
+    [OpensMeasurableSpace S] [BorelSpace S] [SecondCountableTopology S] [CompleteSpace S]
+    {μs : ℕ -> ProbabilityMeasure S} {μ : ProbabilityMeasure S}
+    {φ : κ -> ℕ} {l : Filter κ}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs atTop μ)
+    (hφ : Tendsto φ l atTop) :
+    VdVWProbabilityMeasuresAsymptoticallyTight (fun k => μs (φ k)) l :=
+  hμ.asymptoticallyTight_atTop.comp_tendsto hφ
 
 /--
 Measure-level asymptotic tightness is preserved by continuous maps.
@@ -3630,6 +3648,29 @@ theorem VdVWWeakConvergenceProbabilityMeasures.pi
       (fun n => ProbabilityMeasure.pi (μs n)) l (ProbabilityMeasure.pi μ) := by
   have hp : Tendsto μs l (𝓝 μ) := tendsto_pi_nhds.mpr hμ
   exact ProbabilityMeasure.continuous_pi.tendsto μ |>.comp hp
+
+/--
+Finite product-law weak convergence implies measure-level asymptotic tightness
+of the finite product laws.
+
+This combines the finite product-law weak-convergence wrapper with the
+sequential Prokhorov/tightness consequence above.  It supplies the ordinary
+finite-dimensional product tightness direction needed before the full VdV&W
+arbitrary-index FDD converse and process asymptotic-tightness theorem.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.pi_asymptoticallyTight_atTop
+    {J : Type u} [Fintype J] {S : J -> Type v}
+    [∀ j, MeasurableSpace (S j)] [∀ j, PseudoMetricSpace (S j)]
+    [∀ j, SecondCountableTopology (S j)] [∀ j, OpensMeasurableSpace (S j)]
+    [OpensMeasurableSpace ((j : J) -> S j)]
+    [BorelSpace ((j : J) -> S j)] [SecondCountableTopology ((j : J) -> S j)]
+    [CompleteSpace ((j : J) -> S j)]
+    {μs : ℕ -> (j : J) -> ProbabilityMeasure (S j)}
+    {μ : (j : J) -> ProbabilityMeasure (S j)}
+    (hμ : ∀ j, VdVWWeakConvergenceProbabilityMeasures (fun n => μs n j) atTop (μ j)) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => ProbabilityMeasure.pi (μs n)) atTop :=
+  (VdVWWeakConvergenceProbabilityMeasures.pi hμ).asymptoticallyTight_atTop
 
 /--
 Independent random-variable product-law convergence.

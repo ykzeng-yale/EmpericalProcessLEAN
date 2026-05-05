@@ -1981,3 +1981,12 @@ covering the basic net/subsequence reindexing use case.
 that sequential weak convergence of probability measures implies ordinary
 measure-level asymptotic tightness in complete second-countable pseudo-metric
 Borel spaces.
+
+2026-05-05 weak-convergence tightness reindex/product follow-up:
+`VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_comp_tendsto_atTop`
+now combines sequential weak convergence with any reindexing map tending to
+`atTop`, and `VdVWWeakConvergenceProbabilityMeasures.pi_asymptoticallyTight_atTop`
+combines finite product-law weak convergence with the ordinary measure-level
+asymptotic-tightness consequence.  These close the finite-product
+weak-convergence-to-tightness feeder, while the exact arbitrary-map/process
+asymptotic-tightness and arbitrary-index FDD converse remain open.
