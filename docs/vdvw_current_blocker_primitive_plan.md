@@ -139,6 +139,21 @@ target the remaining exact VdV&W gap: a signed outer/inner expectation-gap or
 asymptotic-measurability predicate strong enough for nonmeasurable maps, not
 another measurable law-convergence or continuous-map wrapper.
 
+2026-05-05 `/goal` recalibration after pushed head `f948c5b`: the editable
+target is now this blocker plan, because the active `/goal` tool objective is
+broad and cannot be rewritten without completing it.  Do not spend further
+runs on measurable signed law feeders, continuous-map wrappers, Theorem 2.4.3
+finite-net/Hoeffding/Mills/untruncation/reverse-cofiltration packaging, or
+full-subgraph endpoint wrappers unless a final exact statement directly
+consumes them.  The next high-value proof batch should build the missing
+signed outer/inner expectation-gap or asymptotic-measurability predicate for
+bounded-continuous real tests of arbitrary maps, prove its measurable-map
+collapse from the existing positive/negative layer, and connect it to
+`VdVWWeakConvergenceSignedOuterBoundedContinuous`.  After that, return to the
+exact Theorem 2.4.3 mismatch: remove countability/coordinate-measurability via
+that Chapter 1 primitive, or prove the random-entropy selected finite-net
+tail/UI theorem without deterministic log-cardinality boundedness.
+
 2026-05-05 status check: this run started from VdVW head `4903594` and pushed
 the merged verified head `57c0b80`; the active `/goal` tool objective remains
 broad but cannot be edited in place.
