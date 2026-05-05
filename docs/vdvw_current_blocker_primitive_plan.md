@@ -82,7 +82,13 @@ the untruncated centered L1 consumer
 the measurable and null-measurable signed positive/negative outer-expectation
 bridges, signed bounded-continuous arbitrary-map asymptotic-measurability
 including null-measurable constructors, common-domain/varying-domain
-measurable and null-measurable signed weak-convergence packages, and the
+measurable and null-measurable signed weak-convergence packages, the
+varying-domain signed continuous-mapping closures
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.comp_continuous`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.comp_continuous`,
+and
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.comp_continuous`,
+and the
 real-valued varying-domain Dirac-law bridge
 `VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real`
 with its null-measurable variant
@@ -228,7 +234,24 @@ selected normalized-log measurability/integrability, and selected
 normalized-log mean convergence with the existing selected fixed-radius
 untruncation route.  Future runs should not add another untruncated wrapper
 for the same hypotheses; they should prove the structural mean/UI input or
-move to the next exact Chapter 1-2 primitive if that remains blocked.
+continue to the next theorem-critical arbitrary-map primitive.
+
+2026-05-05 Chapter 1 arbitrary-map follow-up: the varying-domain signed
+bounded-continuous weak-convergence layer now has the same continuous-mapping
+closure as the common-domain layer.  New compiled declarations:
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.comp_continuous`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.comp_continuous`,
+and
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.comp_continuous`.
+Search record: local code already had common-domain signed continuous-mapping
+closures and varying-domain map-law/null-measurable feeders, while pinned
+mathlib supplies `integral_map` and bounded-continuous composition.  The new
+lemmas close the sample-size-varying continuous-mapping gap for endpoints such
+as Theorem 2.4.3 pushforwards.  Remaining arbitrary-map work is deeper:
+nonmeasurable outer-cover signed extended-real weak convergence,
+asymptotic-tightness/asymptotic-independence, FDD converse, and exact
+separability/`P`-measurable class support beyond the current signed
+bounded-continuous package.
 
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the

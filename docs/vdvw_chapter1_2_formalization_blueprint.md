@@ -97,8 +97,9 @@ measurable/null-measurable signed arbitrary-map/varying-domain
 weak-convergence interfaces, Dirac-law bridges, and null-measurable
 asymptotic-measurability constructors, deterministic normalized-log bound
 route, raw tail/UI route, ordinary-mean normalized-log route, selected L1
-side-condition package, and untruncated centered L1 consumer are compiled and
-should be treated as closed infrastructure.  The next blueprint target is the
+side-condition package, untruncated centered L1 consumer, and varying-domain
+signed continuous-mapping closures are compiled and should be treated as
+closed infrastructure.  The next blueprint target is the
 exact textbook mismatch layer: prove a real tail/UI, uniform-integrability,
 deterministic structural cardinality, or ordinary mean-convergence input from
 the book random entropy condition
@@ -209,6 +210,19 @@ This closes the endpoint-composition layer for the L1-strengthened branch.
 The remaining work is the structural entropy theorem that produces mean
 convergence/UI, or the next exact arbitrary-map/nonmeasurable Chapter 1-2
 primitive if that theorem is blocked.
+
+2026-05-05 Chapter 1 arbitrary-map follow-up: the varying-domain signed
+bounded-continuous layer now has continuous-mapping stability through
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.comp_continuous`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.comp_continuous`,
+and
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.comp_continuous`.
+This closes the sample-size-varying analogue of the common-domain signed
+continuous-mapping theorem and is reusable for Theorem 2.4.3 law endpoints.
+It remains a foundation layer, not the full VdV&W arbitrary-map theory:
+nonmeasurable outer-cover signed extended-real weak convergence,
+asymptotic-tightness/asymptotic-independence, FDD converse, and exact
+separability/`P`-measurable class bridges remain open.
 
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the

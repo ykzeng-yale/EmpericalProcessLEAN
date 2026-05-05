@@ -405,6 +405,45 @@ def VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains
       l (𝓝 (∫ s, f s ∂(μ : Measure S)))
 
 /--
+Continuous maps preserve varying-domain signed-outer bounded-continuous weak
+convergence.
+
+This is the sample-size-varying analogue of
+`VdVWWeakConvergenceSignedOuterBoundedContinuous.comp_continuous`, needed when
+Theorem 2.4.3 endpoints are pushed forward by a continuous map.
+-/
+theorem
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.comp_continuous
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v} {T : Type x}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [BorelSpace T]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι} {μ : ProbabilityMeasure S}
+    (h :
+      VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains
+        Ω μs X l μ)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains Ω μs
+      (fun i ω => g (X i ω)) l
+      (μ.map hg.measurable.aemeasurable) := by
+  intro f
+  let gC : C(S, T) := ⟨g, hg⟩
+  have hbase := h (f.compContinuous gC)
+  have htarget :
+      (∫ t, f t ∂((μ.map hg.measurable.aemeasurable : ProbabilityMeasure T) :
+        Measure T)) =
+        ∫ s, f (g s) ∂(μ : Measure S) := by
+    simpa [gC] using
+      (integral_map hg.measurable.aemeasurable
+        f.continuous.measurable.aestronglyMeasurable :
+        ∫ t, f t ∂Measure.map g (μ : Measure S) =
+          ∫ s, f (g s) ∂(μ : Measure S))
+  rw [htarget]
+  simpa [VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains, gC]
+    using hbase
+
+/--
 Varying-domain signed bounded-continuous asymptotic measurability.
 -/
 def VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
@@ -475,6 +514,27 @@ theorem
       Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
 
 /--
+Continuous maps preserve varying-domain signed bounded-continuous asymptotic
+measurability.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.comp_continuous
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v} {T : Type x}
+    [∀ i, MeasurableSpace (Ω i)]
+    [TopologicalSpace S] [TopologicalSpace T]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
+        Ω μs X l)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains Ω μs
+      (fun i ω => g (X i ω)) l := by
+  intro f
+  let gC : C(S, T) := ⟨g, hg⟩
+  simpa [gC] using h (f.compContinuous gC)
+
+/--
 Proof-carrying varying-domain signed bounded-continuous weak convergence.
 
 This packages the varying-domain weak-convergence and asymptotic-measurability
@@ -490,6 +550,28 @@ structure VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains
     VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains Ω μs X l μ
   asymptoticMeasurability :
     VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains Ω μs X l
+
+/--
+Continuous maps preserve the proof-carrying varying-domain signed
+bounded-continuous weak-convergence package.
+-/
+theorem
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.comp_continuous
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v} {T : Type x}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [BorelSpace T]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι} {μ : ProbabilityMeasure S}
+    (h :
+      VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs
+      (fun i ω => g (X i ω)) l
+      (μ.map hg.measurable.aemeasurable) :=
+  { weakConvergence := h.weakConvergence.comp_continuous hg
+    asymptoticMeasurability :=
+      h.asymptoticMeasurability.comp_continuous hg }
 
 /--
 Nonnegative version of VdV&W asymptotic measurability for a family of
