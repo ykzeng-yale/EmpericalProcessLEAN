@@ -4206,3 +4206,42 @@ real blocker is no longer a packaging handoff: instantiate `hcovering_all`,
 textbook structural covering/VC theorem, or prove the missing
 non-deterministic selected finite-net tail/UI theorem from random entropy
 alone.
+
+2026-05-05 follow-up: the structural deterministic-rate branch now reaches the
+canonical infinite-product `P`-Glivenko-Cantelli endpoints.  The compiled
+declaration
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_logCardinality_div_tendsto_bound`
+projects the finite-product outer-probability uniform-deviation conclusion to
+the infinite iid product process, and
+`VdVWPGlivenkoCantelliClass_of_logCardinality_div_tendsto_bound` packages that
+as the local book-style `P`-GC predicate.  These are still structural-rate
+sufficient conditions, not the exact arbitrary textbook Theorem 2.4.3.  The
+next real proof target is to derive those rate/covering inputs from a genuine
+VdV&W structural entropy/VC theorem, or to remove the deterministic-rate
+boundedness assumption by proving the selected finite-net tail/UI theorem from
+random entropy alone.
+
+2026-05-05 follow-up: the variable-domain book entropy branch with
+deterministic normalized log-cardinality boundedness now also reaches the
+canonical `P`-Glivenko-Cantelli endpoint.  The compiled declaration
+`VdVWPGlivenkoCantelliClass_of_variableEntropy_logCardinality_div_bound`
+composes the existing variable-entropy centered convergence theorem with the
+finite-product uniform-deviation bridge and the canonical iid projection
+bridge.  This is closer to the book's random-entropy statement than the
+structural-rate sufficient condition, but it still carries the deterministic
+boundedness input needed to discharge selected finite-net tail/UI.  Remaining
+blocker: remove or derive that deterministic bound by proving a true
+random-entropy tail/UI theorem, or derive it from structural entropy/VC
+hypotheses.
+
+2026-05-05 follow-up: the variable-domain entropy branch with deterministic
+log-cardinality boundedness now also reaches the Theorem 2.4.3 in-mean
+centered-supremum conclusion.  The compiled declaration
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_variableEntropy_logCardinality_div_bound`
+reuses the variable-entropy outer-probability convergence theorem and upgrades
+it through the generic varying-domain tail/UI adapter.  Countability,
+coordinate measurability, and an integrable measurable envelope discharge the
+centered-supremum measurability, integrability, and tail/UI obligations.  The
+remaining mismatch with the exact textbook statement is still the deterministic
+log-bound/tail-UI input and the broader arbitrary `P`-measurable /
+asymptotic-measurable class layer.

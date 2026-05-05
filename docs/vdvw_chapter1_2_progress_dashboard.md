@@ -1432,3 +1432,32 @@ and the finite-product outer-probability uniform-deviation conclusion.  The
 remaining theorem-critical work is to instantiate those rate/covering inputs
 from actual VdV&W structural entropy/VC hypotheses, or replace the
 deterministic boundedness branch with a true random-entropy tail/UI theorem.
+
+2026-05-05 follow-up: the same structural-rate branch now also reaches the
+canonical infinite-product GC endpoints.  New compiled declarations
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_logCardinality_div_tendsto_bound`
+and `VdVWPGlivenkoCantelliClass_of_logCardinality_div_tendsto_bound` project
+the finite-product result to the canonical iid process and package it as the
+local book-style `P`-Glivenko-Cantelli predicate.  Remaining work is now
+concentrated on proving the structural rate/covering inputs from actual
+VdV&W entropy/VC hypotheses, or proving the missing random-entropy tail/UI
+bridge without deterministic boundedness.
+
+2026-05-05 follow-up: the variable-domain book entropy branch with a
+deterministic normalized log-cardinality bound now reaches the canonical
+book-style `P`-GC endpoint.  The compiled declaration
+`VdVWPGlivenkoCantelliClass_of_variableEntropy_logCardinality_div_bound`
+projects the variable-entropy centered convergence theorem through the
+finite-product uniform-deviation bridge and the canonical iid process bridge.
+This closes another endpoint handoff; the remaining theorem-critical issue is
+still the deterministic-bound/tail-UI input or the broader arbitrary
+`P`-measurable/asymptotic-measurable layer.
+
+2026-05-05 follow-up: the same variable-domain entropy branch now also reaches
+the in-mean centered-supremum conclusion.  The compiled theorem
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_variableEntropy_logCardinality_div_bound`
+upgrades outer-probability convergence through the generic tail/UI adapter,
+with countability plus a measurable integrable envelope supplying the
+measurability, integrability, and centered-supremum tail/UI inputs.  The branch
+now has both local book-style `P`-GC and in-mean conclusions under the honest
+deterministic log-bound assumption.
