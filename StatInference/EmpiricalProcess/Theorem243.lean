@@ -17299,6 +17299,203 @@ theorem
       _ ≤ ε := hn
 
 /--
+The affine normalized-log tail majorant is integrable whenever the normalized
+log-cardinality process is measurable and integrable.
+-/
+theorem logCardinality_div_affineTailIntegrable_of_measurable_integrable
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (A R : ℝ)
+    (hlogMeasurable :
+      ∀ n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+    (hlogIntegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+              (n : ℝ))
+          (vdVWProductMeasure P n)) :
+    ∀ n,
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          Set.indicator
+            {sample' : SampleAt Observation n |
+              R <
+                vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+                  sample' n / (n : ℝ)}
+            (fun sample' : SampleAt Observation n =>
+              A *
+                (1 + vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+                  sample' n / (n : ℝ)))
+            sample)
+        (vdVWProductMeasure P n) := by
+  intro n
+  let Y : SampleAt Observation n -> ℝ := fun sample =>
+    vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n / (n : ℝ)
+  have hset : MeasurableSet {sample : SampleAt Observation n | R < Y sample} :=
+    measurableSet_lt measurable_const (hlogMeasurable n)
+  have hbase : Integrable (fun sample : SampleAt Observation n => 1 + Y sample)
+      (vdVWProductMeasure P n) :=
+    (integrable_const (1 : ℝ)).add (hlogIntegrable n)
+  exact (hbase.const_mul A).indicator hset
+
+/--
+Tail/UI of the normalized log-cardinality process implies tail/UI of the
+affine majorant `A * (1 + log(cardinality + 1) / n)`.
+
+This is a varying-domain elementary UI reduction.  It still assumes tail/UI of
+the normalized log process itself; the textbook gap is whether that follows
+from random entropy convergence alone or needs an additional structural bound.
+-/
+theorem
+    logCardinality_div_affine_tailExpectation_condition_of_tailExpectation
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {A : ℝ} (hA_pos : 0 < A)
+    (hlogMeasurable :
+      ∀ n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+    (hlogIntegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+              (n : ℝ))
+          (vdVWProductMeasure P n))
+    (hlogTail :
+      ∀ ε > 0, ∃ R, 0 ≤ R ∧
+        ∀ᶠ n in atTop,
+          ∫ sample : SampleAt Observation n,
+            Set.indicator
+              {sample' : SampleAt Observation n |
+                R <
+                  vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+                    sample' n / (n : ℝ)}
+              (fun sample' : SampleAt Observation n =>
+                vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+                  sample' n / (n : ℝ))
+              sample ∂(vdVWProductMeasure P n) ≤ ε) :
+    ∀ ε > 0, ∃ R, 0 ≤ R ∧
+      ∀ᶠ n in atTop,
+        ∫ sample : SampleAt Observation n,
+          Set.indicator
+            {sample' : SampleAt Observation n |
+              R <
+                vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+                  sample' n / (n : ℝ)}
+            (fun sample' : SampleAt Observation n =>
+              A *
+                (1 + vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+                  sample' n / (n : ℝ)))
+            sample ∂(vdVWProductMeasure P n) ≤ ε := by
+  intro ε hε
+  set δ : ℝ := ε / (2 * A) with hδ_def
+  have hδ_pos : 0 < δ := by
+    have hden_pos : 0 < 2 * A := mul_pos (by norm_num) hA_pos
+    simpa [δ, hδ_def] using div_pos hε hden_pos
+  obtain ⟨R₀, hR₀_nonneg, hR₀_eventually⟩ := hlogTail δ hδ_pos
+  refine ⟨R₀ + 1, by linarith, ?_⟩
+  filter_upwards [hR₀_eventually] with n hn
+  let Y : SampleAt Observation n -> ℝ := fun sample =>
+    vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n / (n : ℝ)
+  have hset₀ : MeasurableSet {sample : SampleAt Observation n | R₀ < Y sample} :=
+    measurableSet_lt measurable_const (hlogMeasurable n)
+  have hrightIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          (2 * A) *
+            Set.indicator {sample' : SampleAt Observation n | R₀ < Y sample'}
+              Y sample)
+        (vdVWProductMeasure P n) :=
+    ((hlogIntegrable n).indicator hset₀).const_mul (2 * A)
+  have hmono :
+      ∫ sample : SampleAt Observation n,
+          Set.indicator
+            {sample' : SampleAt Observation n | R₀ + 1 < Y sample'}
+            (fun sample' : SampleAt Observation n => A * (1 + Y sample'))
+            sample ∂(vdVWProductMeasure P n) ≤
+        ∫ sample : SampleAt Observation n,
+          (2 * A) *
+            Set.indicator {sample' : SampleAt Observation n | R₀ < Y sample'}
+              Y sample ∂(vdVWProductMeasure P n) := by
+    refine integral_mono_of_nonneg ?_ hrightIntegrable ?_
+    · exact ae_of_all _ fun sample => by
+        by_cases htail : R₀ + 1 < Y sample
+        · have hY_ge_one : 1 ≤ Y sample := by linarith
+          have hleft_nonneg : 0 ≤ A * (1 + Y sample) := by
+            nlinarith
+          simpa [Set.indicator, htail] using hleft_nonneg
+        · simp [Set.indicator, htail]
+    · exact ae_of_all _ fun sample => by
+        have hY_nonneg : 0 ≤ Y sample := by
+          by_cases hn_pos : 0 < n
+          · have hn_real_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_pos
+            exact
+              div_nonneg
+                (vdVWLogEmpiricalL1CoveringCardinality_nonneg
+                  (cardinality n) sample n) hn_real_pos.le
+          · have hn_zero : n = 0 := Nat.eq_zero_of_not_pos hn_pos
+            subst n
+            simp [Y]
+        by_cases htail : R₀ + 1 < Y sample
+        · have htail₀ : R₀ < Y sample := by linarith
+          have hY_ge_one : 1 ≤ Y sample := by linarith
+          have hineq : A * (1 + Y sample) ≤ (2 * A) * Y sample := by
+            nlinarith
+          simpa [Set.indicator, htail, htail₀, mul_assoc] using hineq
+        · by_cases htail₀ : R₀ < Y sample
+          · have hright_nonneg : 0 ≤ (2 * A) * Y sample := by nlinarith
+            simpa [Set.indicator, htail, htail₀] using hright_nonneg
+          · simp [Set.indicator, htail, htail₀]
+  have hright_eq :
+      (∫ sample : SampleAt Observation n,
+          (2 * A) *
+            Set.indicator {sample' : SampleAt Observation n | R₀ < Y sample'}
+              Y sample ∂(vdVWProductMeasure P n)) =
+        (2 * A) *
+          ∫ sample : SampleAt Observation n,
+            Set.indicator {sample' : SampleAt Observation n | R₀ < Y sample'}
+              Y sample ∂(vdVWProductMeasure P n) := by
+    rw [integral_const_mul]
+  have htail_le : ∫ sample : SampleAt Observation n,
+      Set.indicator {sample' : SampleAt Observation n | R₀ < Y sample'}
+        Y sample ∂(vdVWProductMeasure P n) ≤ δ := hn
+  calc
+    ∫ sample : SampleAt Observation n,
+        Set.indicator
+          {sample' : SampleAt Observation n | R₀ + 1 < Y sample'}
+          (fun sample' : SampleAt Observation n => A * (1 + Y sample'))
+          sample ∂(vdVWProductMeasure P n)
+        ≤ ∫ sample : SampleAt Observation n,
+            (2 * A) *
+              Set.indicator {sample' : SampleAt Observation n | R₀ < Y sample'}
+                Y sample ∂(vdVWProductMeasure P n) := hmono
+    _ = (2 * A) *
+          ∫ sample : SampleAt Observation n,
+            Set.indicator {sample' : SampleAt Observation n | R₀ < Y sample'}
+              Y sample ∂(vdVWProductMeasure P n) := hright_eq
+    _ ≤ ε := by
+      have hcoef_pos : 0 < 2 * A := mul_pos (by norm_num) hA_pos
+      have hmul_le :
+          (2 * A) *
+              (∫ sample : SampleAt Observation n,
+                Set.indicator {sample' : SampleAt Observation n | R₀ < Y sample'}
+                  Y sample ∂(vdVWProductMeasure P n)) ≤
+            (2 * A) * δ :=
+        mul_le_mul_of_nonneg_left htail_le hcoef_pos.le
+      have hmul_eq : (2 * A) * δ = ε := by
+        rw [hδ_def]
+        field_simp [hcoef_pos.ne']
+      exact hmul_le.trans_eq hmul_eq
+
+/--
 Deterministic analytic core of the entropy-to-Hoeffding-scale convergence
 step.
 
@@ -18052,6 +18249,126 @@ theorem
               (hentropy.coveringNumber_le M hM) heta) n sample m)
           hM
           (hselectedLogTailIntegrable M hM eta heta)
+          (hselectedLogTail M hM eta heta))
+      M hM
+
+/--
+Build selected fixed-radius side conditions from variable-domain book entropy
+and raw normalized-log tail/UI for the selected cardinality process.
+
+This removes the caller-facing affine normalized-log tail hypotheses from
+`toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation`.
+The remaining finite-net upper integrability field is still explicit, because
+it is a separate varying-domain integrability input rather than a consequence
+of convergence in outer probability alone.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation_raw
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hfiniteNetUpperIntegrable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (eta := eta)
+                (cardinality := cardinality M) (X M)
+                (hentropy.coveringNumber_le M hM) heta) n sample n)
+              n M)
+          (vdVWProductMeasure P n))
+    (hselectedLogMeasurable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWLogEmpiricalL1CoveringCardinality
+            (fun sample' : SampleAt Observation n => fun m : ℕ =>
+              (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (eta := eta)
+                (cardinality := cardinality M) (X M)
+                (hentropy.coveringNumber_le M hM) heta) n sample' m)
+            sample n / (n : ℝ))
+    (hselectedLogIntegrable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWLogEmpiricalL1CoveringCardinality
+              (fun sample' : SampleAt Observation n => fun m : ℕ =>
+                (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                  (indexClass := indexClass) (classFun := classFun)
+                  (envelope := envelope) (M := M) (eta := eta)
+                  (cardinality := cardinality M) (X M)
+                  (hentropy.coveringNumber_le M hM) heta) n sample' m)
+              sample n / (n : ℝ))
+          (vdVWProductMeasure P n))
+    (hselectedLogTail :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta), ∀ ε > 0, ∃ R, 0 ≤ R ∧
+        ∀ᶠ n in atTop,
+          ∫ sample : SampleAt Observation n,
+            Set.indicator
+              {sample' : SampleAt Observation n |
+                R <
+                  vdVWLogEmpiricalL1CoveringCardinality
+                    (fun sample'' : SampleAt Observation n => fun m : ℕ =>
+                      (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                        (indexClass := indexClass) (classFun := classFun)
+                        (envelope := envelope) (M := M) (eta := eta)
+                        (cardinality := cardinality M) (X M)
+                        (hentropy.coveringNumber_le M hM) heta) n sample'' m)
+                    sample' n / (n : ℝ)}
+              (fun sample' : SampleAt Observation n =>
+                vdVWLogEmpiricalL1CoveringCardinality
+                  (fun sample'' : SampleAt Observation n => fun m : ℕ =>
+                    (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                      (indexClass := indexClass) (classFun := classFun)
+                      (envelope := envelope) (M := M) (eta := eta)
+                      (cardinality := cardinality M) (X M)
+                      (hentropy.coveringNumber_le M hM) heta) n sample'' m)
+                  sample' n / (n : ℝ))
+              sample ∂(vdVWProductMeasure P n) ≤ ε) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M (cardinality M) := by
+  intro M hM
+  exact
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
+      (fun M hM eta heta R =>
+        logCardinality_div_affineTailIntegrable_of_measurable_integrable
+          (P := P)
+          (cardinality := fun n sample m =>
+            (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (cardinality := cardinality M) (X M)
+              (hentropy.coveringNumber_le M hM) heta) n sample m)
+          (6 * M) R
+          (hselectedLogMeasurable M hM eta heta)
+          (hselectedLogIntegrable M hM eta heta))
+      (fun M hM eta heta =>
+        logCardinality_div_affine_tailExpectation_condition_of_tailExpectation
+          (P := P)
+          (cardinality := fun n sample m =>
+            (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (cardinality := cardinality M) (X M)
+              (hentropy.coveringNumber_le M hM) heta) n sample m)
+          (A := 6 * M)
+          (by nlinarith)
+          (hselectedLogMeasurable M hM eta heta)
+          (hselectedLogIntegrable M hM eta heta)
           (hselectedLogTail M hM eta heta))
       M hM
 

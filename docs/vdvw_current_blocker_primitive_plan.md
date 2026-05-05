@@ -58,7 +58,7 @@ consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`d76aaa3` before the current proof batch: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`5d1e42f` before the current proof batch: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -90,14 +90,15 @@ plus the signed endpoint consumer
 
 Next high-capacity proof batches, in order:
 
-1. Attack the exact Theorem 2.4.3 entropy mismatch: prove the random-entropy
-   selected finite-net tail/UI theorem from the book condition
-   `log N(η, F_M, L1(P_n)) = o_P^*(n)` for fixed positive `η`, or prove a
-   genuine varying-domain tail/UI replacement.  The current proof batch adds
-   the direct variable-entropy-plus-explicit-tail/UI consumer, so the remaining
-   target is the theorem that derives the tail/UI input itself, not another
-   endpoint or package wrapper.  Do not smuggle in deterministic
-   log-cardinality boundedness unless the theorem statement names it.
+1. Attack the exact Theorem 2.4.3 entropy mismatch: prove the raw normalized-log
+   selected-cardinality integrability and tail/UI theorem from the book
+   condition `log N(η, F_M, L1(P_n)) = o_P^*(n)` for fixed positive `η`, or
+   prove a genuine varying-domain tail/UI replacement.  The direct
+   variable-entropy-plus-explicit-tail/UI consumer and the affine normalized-log
+   tail reduction are now compiled, so the remaining target is the theorem that
+   derives the raw normalized-log tail/UI input itself, not another endpoint or
+   package wrapper.  Do not smuggle in deterministic log-cardinality boundedness
+   unless the theorem statement names it.
 2. Remove the remaining countability/coordinate-measurability mismatch in
    Theorem 2.4.3
    by consuming the Chapter 1 signed arbitrary-map foundation together with
@@ -118,6 +119,24 @@ Next high-capacity proof batches, in order:
 Older entries below are historical proof-state logs.  Use the authoritative
 paragraph above for the next `/goal` run unless a later verified commit updates
 it.
+
+2026-05-05 current proof batch: the selected finite-net tail/UI gap now has the
+raw normalized-log to affine-tail reduction and selected-package constructor.
+New compiled declarations:
+`logCardinality_div_affineTailIntegrable_of_measurable_integrable`,
+`logCardinality_div_affine_tailExpectation_condition_of_tailExpectation`, and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation_raw`.
+These prove that measurability, integrability, and tail/UI of the normalized
+log selected empirical-cover cardinality imply the affine normalized-log
+tail/UI required by the finite-net Hoeffding upper tail package.  Search
+record: local code already had the finite-net Hoeffding-to-affine-log tail
+reduction and selected fixed-radius package constructor; pinned mathlib has
+fixed-domain `UniformIntegrable`/Vitali APIs but no ready theorem turning
+varying-domain outer-probability entropy into tail expectation.  Next exact
+edit: derive the raw normalized-log tail/UI and integrability hypotheses from
+the textbook random entropy condition, or record the missing structural
+uniform-integrability theorem shape if convergence in outer probability alone
+is insufficient.
 
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the

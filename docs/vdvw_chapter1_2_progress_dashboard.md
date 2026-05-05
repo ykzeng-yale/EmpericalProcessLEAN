@@ -14,7 +14,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`d76aaa3` before the current proof batch: closed finite-net/Hoeffding/Mills,
+`5d1e42f` before the current proof batch: closed finite-net/Hoeffding/Mills,
 untruncation, reverse-cofiltration, selected-entropy, full-subgraph,
 measurable/null-measurable signed weak-convergence, and Dirac-law endpoint
 packages should not be rebuilt.  The current theorem-facing gap after this
@@ -70,6 +70,18 @@ and selected-package constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation`.
 The remaining analytic step is now to prove or isolate normalized-log affine
 tail/UI and integrability from the book random entropy condition.
+
+2026-05-05 follow-up: the normalized-log affine tail step itself is now
+compiled.  The new declarations
+`logCardinality_div_affineTailIntegrable_of_measurable_integrable`,
+`logCardinality_div_affine_tailExpectation_condition_of_tailExpectation`, and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation_raw`
+turn raw normalized-log measurability, integrability, and tail/UI for the
+selected empirical-cover cardinality into the selected fixed-radius tail/UI
+package.  The remaining exact Theorem 2.4.3 entropy gap is now narrower:
+derive those raw normalized-log tail/UI and integrability inputs from the
+book random entropy hypothesis, or isolate the missing varying-domain
+uniform-integrability theorem honestly.
 
 ## Status Legend
 

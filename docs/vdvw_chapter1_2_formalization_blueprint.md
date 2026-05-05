@@ -89,7 +89,7 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at synced repository head `73e0125`
+Current operational target, 2026-05-05 at synced repository head `5d1e42f`
 before the latest proof batch:
 the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, the measurable
 signed arbitrary-map/varying-domain weak-convergence interfaces, the
@@ -137,6 +137,19 @@ is now compiled.  The new declarations are recorded in
 `docs/vdvw_current_blocker_primitive_plan.md`.  The main dependency order now
 returns to the book entropy/tail-UI mismatch and exact theorem-statement
 alignment, not additional signed endpoint packaging.
+
+2026-05-05 entropy follow-up: the normalized-log affine tail/UI reduction now
+also compiles.  Raw normalized-log measurability, integrability, and tail/UI of
+the selected empirical-cover cardinality feed the affine normalized-log tail
+majorant and the selected fixed-radius tail/UI package through
+`logCardinality_div_affineTailIntegrable_of_measurable_integrable`,
+`logCardinality_div_affine_tailExpectation_condition_of_tailExpectation`, and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation_raw`.
+The next proof target is therefore not more selected-package plumbing: it is
+the honest varying-domain theorem deriving those raw normalized-log
+integrability/tail-UI hypotheses from the book random entropy assumption, or a
+precise blocker showing which structural uniform-integrability input is
+missing.
 
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
