@@ -17645,6 +17645,55 @@ theorem logCardinality_div_tailExpectation_condition_of_bound
       hK_nonneg (Eventually.of_forall hlogBound)
 
 /--
+Vanishing ordinary mean of the normalized log-cardinality process supplies
+the raw normalized-log tail/UI condition.
+
+This is the L1-strengthened random-entropy route.  It is intentionally
+stronger than the book's outer-probability entropy condition, but it gives a
+usable theorem-facing input when structural arguments prove mean convergence.
+-/
+theorem logCardinality_div_tailExpectation_condition_of_integral_tendsto_zero
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hIntegral :
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+              sample n / (n : ℝ) ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0)) :
+    ∀ ε > 0, ∃ R, 0 ≤ R ∧
+      ∀ᶠ n in atTop,
+        ∫ sample : SampleAt Observation n,
+          Set.indicator
+            {sample' : SampleAt Observation n |
+              R <
+                vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+                  sample' n / (n : ℝ)}
+            (fun sample' : SampleAt Observation n =>
+              vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+                sample' n / (n : ℝ))
+            sample ∂(vdVWProductMeasure P n) ≤ ε := by
+  exact
+    tailExpectation_condition_of_integral_tendsto_zero_nonneg
+      (μ := fun n : ℕ => vdVWProductMeasure P n)
+      (Y := fun n sample =>
+        vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+          (n : ℝ))
+      (fun n sample => by
+        by_cases hn_pos : 0 < n
+        · have hn_real_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_pos
+          exact
+            div_nonneg
+              (vdVWLogEmpiricalL1CoveringCardinality_nonneg
+                (cardinality n) sample n) hn_real_pos.le
+        · have hn_zero : n = 0 := Nat.eq_zero_of_not_pos hn_pos
+          subst n
+          simp)
+      hIntegral
+
+/--
 Deterministic normalized-log bounds supply the finite-net Hoeffding tail/UI
 condition through the raw normalized-log route.
 -/
