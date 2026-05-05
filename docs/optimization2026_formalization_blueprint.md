@@ -1066,10 +1066,17 @@ point-update search-span membership, residual-gradient membership,
 displacement orthogonality, and pairwise gradient orthogonality from
 `IsCGDisplayedIteration`.  The affine minimization property over
 `x_0 + span {p_0, ..., p_n}` is now derived from the same displayed-CG
-orthogonality plus the first-order strong-convexity lower model.  The next
-Theorem 5.4 target is source-facing endpoint packaging: turn the halving
-algebra into the logarithmic iteration-count statement, or source-audit the
-polynomial/Chebyshev alternative proof before moving to Theorem 5.8.
+orthogonality plus the first-order strong-convexity lower model.  The
+restart/log endpoint packaging now compiles in `Theorem54.lean` via
+`chewi54_halvingBlocks_gap_le`,
+`chewi54_halvingBlocks_gap_le_of_power_bound`,
+`chewi54_half_pow_mul_le_eps_of_log_ratio_le`, and
+`chewi54_halvingBlocks_gap_le_of_log_ratio_le`, reusing
+`scalarRecurrence_le_pow` and mathlib's `Real.log_*` APIs.  The next Theorem
+5.4 target is the true block-halving bridge: derive the recurrence for integer
+blocks of size at least `4 * sqrt(beta / alpha)`, then state the full
+source-facing logarithmic CG rate, or source-audit the polynomial/Chebyshev
+alternative proof before moving to Theorem 5.8.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 

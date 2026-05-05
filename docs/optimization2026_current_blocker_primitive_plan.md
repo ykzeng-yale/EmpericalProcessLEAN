@@ -1564,10 +1564,18 @@ comparison, simplifies it to the readable
 algebra `gap_N >= gap_0 / 2 -> N <= 4 * sqrt(beta / alpha)`.  The search-span,
 residual-gradient, displacement-orthogonality, pairwise-gradient-orthogonality,
 and affine-minimizer assumptions are now discharged from the displayed point
-update and `IsCGDisplayedIteration`.  Next target: package the restart/halving
-iteration-count statement into a logarithmic `O(sqrt(kappa) log(gap0/eps))`
-endpoint, or move directly to the polynomial/Chebyshev alternative proof after
-a source-facing Theorem 5.4 statement audit.  Do not redo Theorem 5.3's
+update and `IsCGDisplayedIteration`.  The restart/log endpoint packaging now
+also compiles: `chewi54_halvingBlocks_gap_le`,
+`chewi54_halvingBlocks_gap_le_of_power_bound`,
+`chewi54_half_pow_mul_le_eps_of_log_ratio_le`, and
+`chewi54_halvingBlocks_gap_le_of_log_ratio_le`.  Search-first reuse: local
+`scalarRecurrence_le_pow`, the Chapter 4 geometric/log bridges, and mathlib
+`Real.log_pow`, `Real.log_mul`, `Real.log_div`, `Real.log_inv`, and
+`Real.log_le_log_iff`.  Next target: derive the actual CG block-halving
+recurrence from the compiled one-block contrapositive using an integer block
+size such as a ceiling of `4 * sqrt(beta / alpha)`, or move directly to the
+polynomial/Chebyshev alternative proof after a source-facing Theorem 5.4
+statement audit.  Do not redo Theorem 5.3's
 A-conjugacy induction, the Chapter 3 descent lemma, Chapter 4 gradient-span
 interfaces, or Chapter 4 hard-instance packages.
 

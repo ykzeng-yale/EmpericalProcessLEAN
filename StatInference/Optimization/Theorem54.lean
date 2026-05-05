@@ -1,4 +1,5 @@
 import StatInference.Optimization.ConjugateGradient
+import StatInference.Optimization.Theorem36
 import StatInference.Optimization.Theorem37
 
 /-!
@@ -1034,6 +1035,89 @@ theorem IsCGDisplayedIteration.chewi54_accelerated_bound_of_point_updates
   exact h.chewi54_accelerated_bound_of_cgAffineMinimizer
     hA_sym hsmooth hfirst hres0 hpoint hmin hgrad_zero hfstar
     hbeta_pos halpha_pos
+
+/--
+Chewi Theorem 5.4 restart algebra.  If each block of `B` conjugate-gradient
+iterations halves the objective gap, then after `M` blocks the gap is bounded
+by the `M`-th power of `1 / 2`.
+-/
+theorem chewi54_halvingBlocks_gap_le
+    {gap : ℕ -> ℝ} {B : ℕ}
+    (hhalve : ∀ m,
+      gap ((m + 1) * B) ≤ (1 / 2 : ℝ) * gap (m * B)) :
+    ∀ M, gap (M * B) ≤ (1 / 2 : ℝ) ^ M * gap 0 := by
+  intro M
+  let u : ℕ -> ℝ := fun m => gap (m * B)
+  have hrec : ∀ m, u (m + 1) ≤ (1 / 2 : ℝ) * u m := by
+    intro m
+    simpa [u] using hhalve m
+  have hpow :=
+    scalarRecurrence_le_pow (u := u) (A := (1 / 2 : ℝ))
+      (by norm_num) hrec M
+  simpa [u] using hpow
+
+/--
+Source-facing endpoint form of the restart algebra: a separately supplied
+power estimate on the halving factor gives the target accuracy.
+-/
+theorem chewi54_halvingBlocks_gap_le_of_power_bound
+    {gap : ℕ -> ℝ} {B M : ℕ} {eps : ℝ}
+    (hhalve : ∀ m,
+      gap ((m + 1) * B) ≤ (1 / 2 : ℝ) * gap (m * B))
+    (hpow_eps : (1 / 2 : ℝ) ^ M * gap 0 ≤ eps) :
+    gap (M * B) ≤ eps :=
+  (chewi54_halvingBlocks_gap_le (gap := gap) (B := B) hhalve M).trans
+    hpow_eps
+
+/--
+Logarithmic sufficient condition for the halving power bound.  This is the
+scalar calculation behind the textbook phrase that halving every block gives
+`O(sqrt(kappa) log(gap_0 / eps))` iterations.
+-/
+theorem chewi54_half_pow_mul_le_eps_of_log_ratio_le
+    {gap0 eps : ℝ} {M : ℕ}
+    (hgap0_pos : 0 < gap0) (heps_pos : 0 < eps)
+    (hM_log : Real.log (gap0 / eps) ≤ (M : ℝ) * Real.log (2 : ℝ)) :
+    (1 / 2 : ℝ) ^ M * gap0 ≤ eps := by
+  have hhalf_pos : 0 < (1 / 2 : ℝ) := by norm_num
+  have hpow_pos : 0 < (1 / 2 : ℝ) ^ M := pow_pos hhalf_pos M
+  have hleft_pos : 0 < (1 / 2 : ℝ) ^ M * gap0 :=
+    mul_pos hpow_pos hgap0_pos
+  have hlog_half : Real.log (1 / 2 : ℝ) = -Real.log (2 : ℝ) := by
+    have hhalf : (1 / 2 : ℝ) = (2 : ℝ)⁻¹ := by norm_num
+    rw [hhalf, Real.log_inv]
+  have hlog_ratio :
+      Real.log (gap0 / eps) = Real.log gap0 - Real.log eps := by
+    rw [Real.log_div hgap0_pos.ne' heps_pos.ne']
+  have hlog_left :
+      Real.log ((1 / 2 : ℝ) ^ M * gap0) =
+        (M : ℝ) * Real.log (1 / 2 : ℝ) + Real.log gap0 := by
+    rw [Real.log_mul hpow_pos.ne' hgap0_pos.ne', Real.log_pow]
+  have hlog_le : Real.log ((1 / 2 : ℝ) ^ M * gap0) ≤ Real.log eps := by
+    rw [hlog_left, hlog_half]
+    have hM_log' :
+        Real.log gap0 - Real.log eps ≤ (M : ℝ) * Real.log (2 : ℝ) := by
+      simpa [hlog_ratio] using hM_log
+    linarith
+  exact (Real.log_le_log_iff hleft_pos heps_pos).mp hlog_le
+
+/--
+Logarithmic source-facing restart endpoint for Chewi Theorem 5.4: once the
+one-block halving property is available, the usual log-ratio condition implies
+the requested accuracy after `M` blocks.
+-/
+theorem chewi54_halvingBlocks_gap_le_of_log_ratio_le
+    {gap : ℕ -> ℝ} {B M : ℕ} {eps : ℝ}
+    (hhalve : ∀ m,
+      gap ((m + 1) * B) ≤ (1 / 2 : ℝ) * gap (m * B))
+    (hgap0_pos : 0 < gap 0) (heps_pos : 0 < eps)
+    (hM_log : Real.log ((gap 0) / eps) ≤
+      (M : ℝ) * Real.log (2 : ℝ)) :
+    gap (M * B) ≤ eps :=
+  chewi54_halvingBlocks_gap_le_of_power_bound
+    (gap := gap) (B := B) (M := M) (eps := eps) hhalve
+    (chewi54_half_pow_mul_le_eps_of_log_ratio_le
+      hgap0_pos heps_pos hM_log)
 
 end Optimization
 end StatInference

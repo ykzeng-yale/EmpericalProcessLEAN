@@ -91,11 +91,21 @@ displacement orthogonality, pairwise gradient orthogonality, and
 affine minimization property is now derived as
 `IsCGDisplayedIteration.isMinOn_cgAffineSpan_of_point_updates`, giving
 `IsCGDisplayedIteration.chewi54_accelerated_bound_of_point_updates`.
-The next aggressive step is source-facing endpoint packaging for Theorem 5.4:
-convert the halving bound into the logarithmic iteration-count statement, or
-source-audit the polynomial/Chebyshev alternative proof before moving to
-Theorem 5.8.  Do not replay Chapter 3 GD convergence or Chapter 4 hard-instance
-setup unless a Chapter 5 proof explicitly depends on one of those compiled
+Newest Theorem 5.4 endpoint packaging now compiles in
+`StatInference/Optimization/Theorem54.lean`: `chewi54_halvingBlocks_gap_le`
+unrolls a block-halving recurrence, `chewi54_halvingBlocks_gap_le_of_power_bound`
+packages an abstract accuracy gate, `chewi54_half_pow_mul_le_eps_of_log_ratio_le`
+formalizes the log-ratio scalar calculation, and
+`chewi54_halvingBlocks_gap_le_of_log_ratio_le` gives the source-facing
+logarithmic endpoint.  Search-first reuse: Chapter 3's
+`scalarRecurrence_le_pow`, Chapter 4's geometric/log analogues, and mathlib
+`Real.log_pow`, `Real.log_mul`, `Real.log_div`, `Real.log_inv`, and
+`Real.log_le_log_iff`.  Next aggressive step: derive the actual CG block
+halving recurrence from `chewi54_iteration_le_four_sqrt_condition_of_not_halved`
+using a natural integer block size, then package the full source Theorem 5.4
+statement or source-audit the polynomial/Chebyshev alternative before Theorem
+5.8.  Do not replay Chapter 3 GD convergence or Chapter 4 hard-instance setup
+unless a Chapter 5 proof explicitly depends on one of those compiled
 declarations.
 
 Recently completed Chapter 4 context: The
