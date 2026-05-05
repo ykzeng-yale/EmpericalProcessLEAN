@@ -49,6 +49,90 @@ theorem VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_measurable
   simp
 
 /--
+Signed positive/negative VdV&W outer expectation of a real-valued map.
+
+This is the signed Chapter 1 bridge available from the current nonnegative
+outer-expectation primitive.  It is deliberately named as a positive/negative
+outer construction: the full arbitrary-map signed outer/inner expectation
+textbook API still has to track finiteness and nonmeasurable cover clauses
+separately.
+-/
+noncomputable def VdVWSignedOuterExpectationPosNeg
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
+    (Y : Ω -> ℝ) : ℝ :=
+  ENNReal.toReal (VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (Y ω))) -
+    ENNReal.toReal (VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (-Y ω)))
+
+/--
+For a measurable integrable real map, the signed positive/negative VdV&W
+outer expectation agrees with the ordinary Bochner integral.
+-/
+theorem VdVWSignedOuterExpectationPosNeg_eq_integral_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Y : Ω -> ℝ} (hY_meas : Measurable Y) (hY_int : Integrable Y μ) :
+    VdVWSignedOuterExpectationPosNeg μ Y = ∫ ω, Y ω ∂μ := by
+  simpa [VdVWSignedOuterExpectationPosNeg] using
+    VdVWOuterExpectation_posPart_sub_negPart_eq_integral_of_measurable
+      hY_meas hY_int
+
+/--
+Composable form of the measurable signed positive/negative outer-expectation
+bridge.
+-/
+theorem VdVWSignedOuterExpectationPosNeg_eq_integral_of_measurable_comp
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {X : Ω -> S} {f : S -> ℝ}
+    (hX : Measurable X) (hf : Measurable f)
+    (hint : Integrable (fun ω => f (X ω)) μ) :
+    VdVWSignedOuterExpectationPosNeg μ (fun ω => f (X ω)) =
+      ∫ ω, f (X ω) ∂μ :=
+  VdVWSignedOuterExpectationPosNeg_eq_integral_of_measurable
+    (hf.comp hX) hint
+
+/--
+Bounded-continuous tests composed with measurable maps have the expected
+signed positive/negative VdV&W outer expectation on finite measure spaces.
+
+This is the measurable-map specialization needed by the Chapter 1 weak-
+convergence lane before replacing the current lower-shifted proxy by a full
+signed arbitrary-map outer/inner expectation API.
+-/
+theorem VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {X : Ω -> S}
+    (hX : Measurable X) (f : S →ᵇ ℝ) :
+    VdVWSignedOuterExpectationPosNeg μ (fun ω => f (X ω)) =
+      ∫ ω, f (X ω) ∂μ :=
+  VdVWSignedOuterExpectationPosNeg_eq_integral_of_measurable_comp hX
+    f.continuous.measurable
+    (Integrable.of_bound
+      ((f.continuous.measurable.comp hX).aestronglyMeasurable) ‖f‖
+      (Eventually.of_forall fun ω => f.norm_coe_le_norm (X ω)))
+
+/--
+Signed-outer bounded-continuous weak convergence for possibly arbitrary maps.
+
+This is the current honest Chapter 1 bridge toward VdV&W Definition 1.3.3 for
+arbitrary maps: bounded continuous tests are evaluated through the local
+positive/negative outer-expectation construction.  It is intentionally a
+separate predicate from the already proved probability-measure weak
+convergence wrapper, because exact nonmeasurable-map clauses still need
+additional outer-cover support.
+-/
+def VdVWWeakConvergenceSignedOuterBoundedContinuous
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    (μs : ι -> Measure Ω) (X : ι -> Ω -> S) (l : Filter ι)
+    (μ : ProbabilityMeasure S) : Prop :=
+  ∀ f : S →ᵇ ℝ,
+    Tendsto
+      (fun i => VdVWSignedOuterExpectationPosNeg (μs i)
+        (fun ω => f (X i ω)))
+      l (𝓝 (∫ s, f s ∂(μ : Measure S)))
+
+/--
 Nonnegative version of VdV&W asymptotic measurability for a family of
 possibly arbitrary maps and a chosen class of nonnegative test functions.
 
@@ -455,6 +539,36 @@ theorem vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto
         Tendsto (fun i => ∫ s, f s ∂(μs i : Measure S)) l
           (𝓝 (∫ s, f s ∂(μ : Measure S))) := by
   exact ProbabilityMeasure.tendsto_iff_forall_integral_tendsto
+
+/--
+Measure-level weak convergence implies the signed-outer bounded-continuous
+formulation for the identity maps.
+
+This connects the new signed positive/negative outer-expectation bridge back
+to the pinned mathlib weak-convergence theorem: on measurable probability
+spaces, the signed outer test integral is the ordinary bounded-continuous
+test integral.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_id
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous
+      (fun i => (μs i : Measure S)) (fun _ s => s) l μ := by
+  intro f
+  have houter :
+      (fun i =>
+        VdVWSignedOuterExpectationPosNeg (μs i : Measure S)
+          (fun s => f ((fun s => s) s))) =
+        fun i => ∫ s, f s ∂(μs i : Measure S) := by
+    funext i
+    simpa using
+      (VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp
+        (μ := (μs i : Measure S)) (X := fun s : S => s) measurable_id f)
+  simpa [VdVWWeakConvergenceSignedOuterBoundedContinuous, houter] using
+    (vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto.mp h f)
 
 /--
 VdV&W bounded-Lipschitz test-function criterion for measure-level weak

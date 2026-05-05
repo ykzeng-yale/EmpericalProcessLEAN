@@ -113,7 +113,15 @@ and
 `VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.comp_continuous_of_lowerShifted`.
 It also has selected-test monotonicity and arbitrary-map pullback closures for
 the nonnegative and lower-shifted real predicates, plus filter-refinement
-closure for all four local asymptotic-measurability predicates.
+closure for all four local asymptotic-measurability predicates.  The signed
+positive/negative outer-expectation lane now has
+`VdVWSignedOuterExpectationPosNeg` with measurable, composable, and
+bounded-continuous finite-measure integral collapse theorems, plus
+`VdVWWeakConvergenceSignedOuterBoundedContinuous` and the identity-map bridge
+`VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_id`.
+This is the current signed foundation for the exact arbitrary-map weak
+convergence route; it does not yet discharge the full nonmeasurable
+outer-cover/asymptotic-measurability clauses.
 The
 example-specific Example 2.4.2 distribution-dependent finite middle partition
 / quantile cutpoint layer remains parked as a deferred example blocker unless

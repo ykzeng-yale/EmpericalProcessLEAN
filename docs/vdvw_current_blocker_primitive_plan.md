@@ -66,12 +66,11 @@ As of 2026-05-05, after syncing to repository head `f3424f9`, the active
 > `VdVWOrderDualSubmartingaleConvergenceHandoff.proved`, and
 > `VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`.
 > The next high-capacity proof batches are, in order:
-> (1) close the Chapter 1 signed bounded-continuous arbitrary-map foundation,
-> starting with a signed positive/negative outer-expectation bridge that reuses
-> `VdVWOuterExpectation_posPart_sub_negPart_eq_integral_of_measurable`, then
-> connect it to the existing lower-shifted/canonical bounded-continuous
-> asymptotic-measurability predicates;
-> (2) use that foundation to state/prove the honest arbitrary-map weak
+> (1) extend the new signed positive/negative outer-expectation bridge into the
+> full signed bounded-continuous arbitrary-map/asymptotic-measurability
+> foundation, connecting it to the existing lower-shifted/canonical
+> bounded-continuous asymptotic-measurability predicates;
+> (2) use that signed foundation to state/prove the honest arbitrary-map weak
 > convergence/asymptotic-measurability wrappers needed by exact VdV&W Chapter 1
 > and by Theorem 2.4.3 without countability-only assumptions;
 > (3) remove or explicitly isolate the remaining Theorem 2.4.3 textbook
@@ -97,6 +96,22 @@ place.  Operationally, the next proof run should start with the signed
 positive/negative outer-expectation bridge in `WeakConvergence.lean` or an
 equally direct arbitrary-map/asymptotic-measurability closure; it should not
 reopen solved Theorem 2.4.3 endpoint-packaging work.
+
+2026-05-05 follow-up: the signed positive/negative outer-expectation bridge is
+now compiled in `WeakConvergence.lean`.  New declarations are
+`VdVWSignedOuterExpectationPosNeg`,
+`VdVWSignedOuterExpectationPosNeg_eq_integral_of_measurable`,
+`VdVWSignedOuterExpectationPosNeg_eq_integral_of_measurable_comp`,
+`VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp`,
+`VdVWWeakConvergenceSignedOuterBoundedContinuous`, and
+`VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_id`.
+Search/reuse record: local `OuterExpectation.lean` already had
+`VdVWOuterExpectation_posPart_sub_negPart_eq_integral_of_measurable`; pinned
+mathlib has `BoundedContinuousFunction.integrable` on finite measure spaces and
+`Integrable.of_bound`, but no VdV&W signed arbitrary-map weak-convergence API.
+The next target is therefore not to recreate this bridge, but to connect the
+signed-outer predicate to the existing asymptotic-measurability predicates and
+then state/prove the exact arbitrary-map weak-convergence wrappers.
 
 2026-05-05 status check: this run started from VdVW head `4903594` and pushed
 the merged verified head `57c0b80`; the active `/goal` tool objective remains
