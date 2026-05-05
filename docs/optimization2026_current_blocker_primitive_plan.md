@@ -69,9 +69,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Live replacement `/goal` prompt as of 2026-05-05 after syncing local `main` to
-`origin/main` at `9b70295` (`Refresh Chewi optimization goal frontier`) plus
-the current verified local determinant packet in
-`StatInference/Optimization/Ellipsoid.lean`: aggressively formalize and prove
+`origin/main` at `8d279bb` (`Add Chewi ellipsoid determinant bridge`):
+aggressively formalize and prove
 all main theorem content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercises tracked in the single
 `StatInference/Optimization/Exercises.lean` module but not allowed to slow the
@@ -140,7 +139,9 @@ plus `chewi620_matrix_rankOne_collapse`,
 `chewi620DisplayedShapeUpdateCore`,
 `chewi620_displayedShapeUpdateCore_det`,
 `chewi620DisplayedShapeUpdate`, and
-`chewi620_displayedShapeUpdate_det`.
+`chewi620_displayedShapeUpdate_det`; the determinant bridge is verified and
+pushed, so the next run must not spend theorem time reproving or repackaging
+that determinant core unless it is directly needed inside the volume theorem.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
@@ -148,13 +149,19 @@ textbook goal is marked complete, so this paragraph is the operative manual
 `/goal` target.
 
 Immediate target for the next manual goal run: finish a theorem-sized Chewi
-Lemma 6.20 matrix packet by connecting the remaining pullback next inverse shape
-to Chewi's displayed `Σ_{n+1}^{-1}` matrix update and volume ratio.  The raw
-square-root adjoint identity, normalized cut `hcut` bridge, `Sigma.PosDef`
-invertibility/cancellation layer, pullback `hnext` certificate, current
-`Σ⁻¹` ellipsoid identification, displayed center update, rank-one collapse
-`(Σp)^T Σ⁻¹ (Σp) = <p, Σp>`, and displayed forward-shape determinant formula
-are now local; this is not a minor wrapper target.  Do not spend another run on
+Lemma 6.20 matrix-and-volume packet.  First prove the displayed
+determinant-to-volume bridge from the compiled forward-shape determinant
+formula to `ellipsoidVolumeRatio d`, because this is the shortest route toward
+the `hvolume` side of
+`chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`;
+in parallel, continue the displayed next inverse-shape matrix equality that
+identifies the local pullback next shape with Chewi's displayed
+`Σ_{n+1}^{-1}` update.  The raw square-root adjoint identity, normalized cut
+`hcut` bridge, `Sigma.PosDef` invertibility/cancellation layer, pullback
+`hnext` certificate, current `Σ⁻¹` ellipsoid identification, displayed center
+update, rank-one collapse `(Σp)^T Σ⁻¹ (Σp) = <p, Σp>`, and displayed
+forward-shape determinant formula are now local and pushed; this is not a
+minor wrapper target.  Do not spend another run on
 scalar, coordinate-free, abstract transport, current-shape, center-update,
 pullback-only wrappers, rank-one collapse, or determinant-core algebra unless
 one is the shortest verified route to the concrete matrix theorem.  The
@@ -175,14 +182,20 @@ dependency order is:
    `chewi620_matrix_rankOne_det_update`,
    `chewi620_displayedShapeUpdateCore_det`, and
    `chewi620_displayedShapeUpdate_det`.  Volume-scaling APIs still need to be
-   instantiated.
-2. Prove the displayed next-shape/inverse-shape matrix equality: connect
+   instantiated; use `Real.map_matrix_volume_pi_eq_smul_volume_pi` /
+   `Real.map_linearMap_volume_pi_eq_smul_volume_pi` after the determinant
+   ratio is in source shape.
+2. Prove the determinant ratio/source-rate bridge:
+   `(chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det =
+   ellipsoidVolumeRatio d ^ 2`, plus the positivity/nonzero side facts needed
+   for a volume scaling theorem.
+3. Prove the displayed next-shape/inverse-shape matrix equality: connect
    `chewi620PullbackStandardCutInvShape d u T` under the square-root/inverse
    hypotheses with `matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹`.
-3. Prove the determinant-to-volume bridge needed for the `hvolume` hypothesis
+4. Prove the determinant-to-volume bridge needed for the `hvolume` hypothesis
    of the displayed-current/displayed-center certificate, reusing the compiled
    determinant formula and mathlib volume-scaling APIs.
-4. Package the exact one-step Lemma 6.20 certificate, then promote it to the
+5. Package the exact one-step Lemma 6.20 certificate, then promote it to the
    ellipsoid trajectory/rate wrapper.
 
 The current matrix quadratic, positive denominator, and normalized cut

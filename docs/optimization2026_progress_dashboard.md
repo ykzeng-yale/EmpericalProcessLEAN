@@ -28,9 +28,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
-- Current manual frontier after local sync to `origin/main` at `6c7c6cd`
-  (`Add Chewi ellipsoid displayed center bridge`) plus the current verified
-  local rank-one-collapse packet in
+- Current manual frontier after local sync to `origin/main` at `8d279bb`
+  (`Add Chewi ellipsoid determinant bridge`) with the verified pushed
+  rank-one-collapse and displayed forward-shape determinant packet in
   `StatInference/Optimization/Ellipsoid.lean`:
   `StatInference/Optimization/Theorem510.lean` proves the source-shaped
   discrete AGD rate, and `StatInference/Optimization/ProjectedSubgradient.lean`
@@ -134,13 +134,16 @@ invertibility/cancellation packet, the pullback-standard-cut certificate
 `chewi620_sqrtAffineTransport_stepCertificate_of_pullback`, the current
 `Σ⁻¹` ellipsoid identification, and the displayed-center certificate
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`.
-The next manual goal packet should identify the remaining pullback next inverse
-shape with Chewi's displayed `Σ_{n+1}^{-1}` matrix update, then prove the
-rank-one determinant/volume bridge using mathlib
-matrix/PSD/determinant/inverse/volume APIs.  If the full matrix proof balloons,
-record the exact missing matrix API and prove the smallest affine transport,
-matrix-coordinate, rank-one determinant, or volume-scaling certificate that
-removes it.
+The next manual goal packet should first put the displayed determinant formula
+into the source volume-ratio shape
+`(chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det =
+ellipsoidVolumeRatio d ^ 2`, then use mathlib volume-scaling APIs to discharge
+the `hvolume` side of the displayed-current/displayed-center certificate, while
+continuing the harder displayed next inverse-shape equality with Chewi's
+`Σ_{n+1}^{-1}` matrix update.  If the full inverse-shape proof balloons, record
+the exact missing matrix API and prove the smallest affine transport,
+matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
+it.
 
 This paragraph overrides any older "next target" language in historical
 Chapter 4/5 notes below: the current manual `/goal` target is the rest of

@@ -43,9 +43,9 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after local sync to `origin/main` at `6c7c6cd`
-(`Add Chewi ellipsoid displayed center bridge`) plus the current verified
-local rank-one-collapse packet in
+Manual goal frontier after local sync to `origin/main` at `8d279bb`
+(`Add Chewi ellipsoid determinant bridge`) with the verified pushed
+rank-one-collapse and displayed forward-shape determinant packet in
 `StatInference/Optimization/Ellipsoid.lean`;
 the latest Optimization proof frontier is Chapter 6 Lemma 6.20 after the
 2026-05-05 standard-cut scalar, determinant-ratio, coordinate-free
@@ -210,10 +210,12 @@ forward-shape update now compiles through
 `chewi620_displayedShapeUpdate_det`.  The remaining blocker is the displayed
 next inverse-shape matrix equality plus determinant-to-volume bridge, not
 scalar algebra, abstract transport, current-shape rewriting, center algebra,
-rank-one collapse, or determinant-core algebra.  The target order is displayed
-`Σ_{n+1}^{-1}` matrix equivalence, determinant-to-volume scaling using the
-local determinant formula and mathlib volume APIs, then exact one-step Lemma
-6.20 certificate.  If the full matrix proof balloons, prove the smallest
+rank-one collapse, or determinant-core algebra.  The target order is the
+determinant-ratio/source-volume bridge
+`(chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det =
+ellipsoidVolumeRatio d ^ 2`, determinant-to-volume scaling using mathlib
+volume APIs, displayed `Σ_{n+1}^{-1}` matrix equivalence, then exact one-step
+Lemma 6.20 certificate.  If the full matrix proof balloons, prove the smallest
 matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
 the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth
 lower-bound Theorems 6.21-6.23 and feasibility Definition 6.24/Theorem 6.25
