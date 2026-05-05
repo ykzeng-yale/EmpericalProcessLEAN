@@ -1290,6 +1290,80 @@ theorem chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio
         hsq_target
 
 /--
+Determinant-volume bridge for the final Lemma 6.20 `hvolume` hypothesis.  If
+the current and next ellipsoid volumes are modeled as translated images of a
+common unit set under matrix square-root factors whose determinant squares are
+the displayed forward-shape determinants, then Chewi's source determinant ratio
+implies the required volume shrink.
+-/
+theorem chewi620_hvolume_of_matrix_image_volume_models
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    {currentRoot nextRoot : Matrix ι ι ℝ}
+    {center nextCenter : EuclideanSpace ℝ ι}
+    {baseSet : Set (EuclideanSpace ℝ ι)}
+    {vol volNext : ℝ}
+    (hcurrentRoot_det_sq :
+      currentRoot.det ^ (2 : ℕ) = Sigma.det)
+    (hnextRoot_det_sq :
+      nextRoot.det ^ (2 : ℕ) =
+        (chewi620DisplayedShapeUpdate d Sigma p).det)
+    (hvol :
+      vol =
+        MeasureTheory.volume.real
+          ((fun x => center + matrixInvShape currentRoot x) '' baseSet))
+    (hvolNext :
+      volNext =
+        MeasureTheory.volume.real
+          ((fun x => nextCenter + matrixInvShape nextRoot x) '' baseSet)) :
+    volNext ≤ ellipsoidVolumeRatio d * vol := by
+  let baseVol : ℝ := MeasureTheory.volume.real baseSet
+  have hvol_nonneg : 0 ≤ vol := by
+    rw [hvol]
+    exact MeasureTheory.measureReal_nonneg
+  have hvolNext_nonneg : 0 ≤ volNext := by
+    rw [hvolNext]
+    exact MeasureTheory.measureReal_nonneg
+  have hvol_sq :
+      vol ^ (2 : ℕ) = Sigma.det * baseVol ^ (2 : ℕ) := by
+    rw [hvol, matrixInvShape_image_add_volume_real]
+    change (|currentRoot.det| * baseVol) ^ (2 : ℕ) =
+      Sigma.det * baseVol ^ (2 : ℕ)
+    rw [mul_pow, sq_abs, hcurrentRoot_det_sq]
+  have hvolNext_sq :
+      volNext ^ (2 : ℕ) =
+        (chewi620DisplayedShapeUpdate d Sigma p).det *
+          baseVol ^ (2 : ℕ) := by
+    rw [hvolNext, matrixInvShape_image_add_volume_real]
+    change (|nextRoot.det| * baseVol) ^ (2 : ℕ) =
+      (chewi620DisplayedShapeUpdate d Sigma p).det *
+        baseVol ^ (2 : ℕ)
+    rw [mul_pow, sq_abs, hnextRoot_det_sq]
+  have hSigma_det_ne : Sigma.det ≠ 0 :=
+    chewi620_matrixPosDef_det_ne_zero hSigma
+  have hsq_eq :
+      volNext ^ (2 : ℕ) =
+        ((chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det) *
+          vol ^ (2 : ℕ) := by
+    calc
+      volNext ^ (2 : ℕ) =
+          (chewi620DisplayedShapeUpdate d Sigma p).det *
+            baseVol ^ (2 : ℕ) := hvolNext_sq
+      _ =
+          ((chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det) *
+            (Sigma.det * baseVol ^ (2 : ℕ)) := by
+        field_simp [hSigma_det_ne]
+      _ =
+          ((chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det) *
+            vol ^ (2 : ℕ) := by
+        rw [hvol_sq]
+  exact
+    chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio
+      (d := d) hd hcard hSigma hp hvol_nonneg hvolNext_nonneg
+      (le_of_eq hsq_eq)
+
+/--
 Once the displayed next-shape update is shown to be a left inverse for the
 pulled-back standard-cut inverse-shape, the remaining Chewi Lemma 6.20
 next-shape equality follows from nonsingular-inverse uniqueness.
@@ -1888,6 +1962,58 @@ theorem chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices
     have hz' := hcert.1 hz
     rwa [hnext] at hz',
     hcert.2⟩
+
+/--
+Displayed-matrix Lemma 6.20 step certificate whose volume hypothesis is
+discharged from translated matrix-image volume models and determinant-square
+identities for the current and next square-root factors.
+-/
+theorem chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    {center p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    {currentRoot nextRoot : Matrix ι ι ℝ}
+    {baseSet : Set (EuclideanSpace ℝ ι)}
+    {vol volNext : ℝ}
+    (hcurrentRoot_det_sq :
+      currentRoot.det ^ (2 : ℕ) = Sigma.det)
+    (hnextRoot_det_sq :
+      nextRoot.det ^ (2 : ℕ) =
+        (chewi620DisplayedShapeUpdate d Sigma p).det)
+    (hvol :
+      vol =
+        MeasureTheory.volume.real
+          ((fun x => center + matrixInvShape currentRoot x) '' baseSet))
+    (hvolNext :
+      volNext =
+        MeasureTheory.volume.real
+          ((fun x =>
+            ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+              (inner ℝ p (matrixInvShape Sigma p)) +
+              matrixInvShape nextRoot x) '' baseSet)) :
+    IsEllipsoidStepCertificate center
+      (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+        (inner ℝ p (matrixInvShape Sigma p)))
+      (matrixInvShape Sigma⁻¹)
+      (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹)
+      p vol volNext (ellipsoidVolumeRatio d) := by
+  refine
+    chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices
+      (d := d) hd hcard hSigma (T := T) hT_symm
+      (center := center) (p := p) hp hT_sq ?_
+  exact
+    chewi620_hvolume_of_matrix_image_volume_models
+      (d := d) hd hcard hSigma hp
+      (currentRoot := currentRoot) (nextRoot := nextRoot)
+      (center := center)
+      (nextCenter :=
+        ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+          (inner ℝ p (matrixInvShape Sigma p)))
+      (baseSet := baseSet)
+      hcurrentRoot_det_sq hnextRoot_det_sq hvol hvolNext
 
 end EuclideanMatrix
 
