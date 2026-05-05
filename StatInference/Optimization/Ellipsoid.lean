@@ -211,6 +211,135 @@ theorem chewi620_ellipsoidVolumeRatio_sq_eq_standardCut_detRatio
   rw [Real.sq_sqrt (chewi620_ellipsoidVolumeRatio_source_nonneg hd)]
   exact (chewi620_standardCut_detRatio_eq_source (d := d) hd).symm
 
+/-- Center of the normalized standard central-cut ellipsoid. -/
+noncomputable def chewi620StandardCutCenter (d : ℕ) (u : E) : E :=
+  -(((d : ℝ) + 1)⁻¹) • u
+
+/--
+Inverse-shape operator for the normalized standard central-cut ellipsoid.  The
+direction `u` is the cut direction; the theorem below assumes `‖u‖ = 1`.
+-/
+noncomputable def chewi620StandardCutInvShape (d : ℕ) (u : E) (z : E) : E :=
+  (((((d : ℝ) + 1) ^ (2 : ℕ)) / ((d : ℝ) ^ (2 : ℕ))) *
+      inner ℝ u z) • u +
+    ((((d : ℝ) ^ (2 : ℕ) - 1) / ((d : ℝ) ^ (2 : ℕ))) •
+      (z - (inner ℝ u z) • u))
+
+/--
+Pythagoras for the decomposition into a unit direction and its orthogonal
+residual.  This is the coordinate-free replacement for writing
+`‖z‖² = t² + ‖y‖²` in the normalized Lemma 6.20 proof.
+-/
+theorem chewi620_norm_sq_eq_inner_sq_add_orthogonal_sq
+    {u z : E} (hu_norm : ‖u‖ = 1) :
+    ‖z‖ ^ (2 : ℕ) =
+      (inner ℝ u z) ^ (2 : ℕ) +
+        ‖z - (inner ℝ u z) • u‖ ^ (2 : ℕ) := by
+  let t : ℝ := inner ℝ u z
+  have hres :
+      ‖z - t • u‖ ^ (2 : ℕ) =
+        ‖z‖ ^ (2 : ℕ) - t ^ (2 : ℕ) := by
+    rw [norm_sub_sq_real, real_inner_smul_right, norm_smul, hu_norm, mul_one,
+      Real.norm_eq_abs, sq_abs]
+    have hzu : inner ℝ z u = t := by
+      dsimp [t]
+      rw [real_inner_comm]
+    rw [hzu]
+    ring
+  change
+    ‖z‖ ^ (2 : ℕ) =
+      t ^ (2 : ℕ) + ‖z - t • u‖ ^ (2 : ℕ)
+  nlinarith
+
+/-- Quadratic form of the normalized standard-cut inverse shape. -/
+theorem chewi620_standardCutInvShape_quadratic
+    {d : ℕ} {u z : E} (hu_norm : ‖u‖ = 1) :
+    inner ℝ z (chewi620StandardCutInvShape d u z) =
+      ((((d : ℝ) + 1) ^ (2 : ℕ)) / ((d : ℝ) ^ (2 : ℕ))) *
+          (inner ℝ u z) ^ (2 : ℕ) +
+        ((((d : ℝ) ^ (2 : ℕ) - 1) / ((d : ℝ) ^ (2 : ℕ))) *
+          ‖z - (inner ℝ u z) • u‖ ^ (2 : ℕ)) := by
+  let t : ℝ := inner ℝ u z
+  let q : E := z - t • u
+  let a : ℝ := (((d : ℝ) + 1) ^ (2 : ℕ)) / ((d : ℝ) ^ (2 : ℕ))
+  let b : ℝ := (((d : ℝ) ^ (2 : ℕ) - 1) / ((d : ℝ) ^ (2 : ℕ)))
+  have huu : inner ℝ u u = 1 := by
+    rw [real_inner_self_eq_norm_sq, hu_norm]
+    norm_num
+  have horth_uq : inner ℝ u q = 0 := by
+    dsimp [q, t]
+    rw [inner_sub_right, real_inner_smul_right, huu]
+    ring
+  have horth_qu : inner ℝ q u = 0 := by
+    simpa [real_inner_comm q u] using horth_uq
+  have hz_decomp : z = t • u + q := by
+    dsimp [q, t]
+    module
+  change inner ℝ z (((a * t) • u) + b • q) =
+      a * t ^ (2 : ℕ) + b * ‖q‖ ^ (2 : ℕ)
+  rw [hz_decomp]
+  simp [inner_add_left, inner_add_right, inner_smul_left, inner_smul_right,
+    horth_uq, horth_qu, hu_norm]
+  ring
+
+/--
+Coordinate-free normalized half-space containment for Chewi Lemma 6.20.  This
+is the affine-normalized version of the ellipsoid update before inserting a
+concrete matrix square-root/change-of-variables for `Σ_n`.
+-/
+theorem chewi620_standardCut_halfspace_subset
+    {d : ℕ} {u : E} (hd : 1 < d) (hu_norm : ‖u‖ = 1) :
+    ellipsoidSet (0 : E) (fun z => z) ∩
+        ellipsoidCutHalfspace u (0 : E) ⊆
+      ellipsoidSet (chewi620StandardCutCenter d u)
+        (chewi620StandardCutInvShape d u) := by
+  intro z hz
+  let t : ℝ := inner ℝ u z
+  let r2 : ℝ := ‖z - t • u‖ ^ (2 : ℕ)
+  have hz_ball : ‖z‖ ^ (2 : ℕ) ≤ 1 := by
+    simpa [ellipsoidSet, real_inner_self_eq_norm_sq] using hz.1
+  have hz_cut : t ≤ 0 := by
+    simpa [ellipsoidCutHalfspace, t] using hz.2
+  have hr2_nonneg : 0 ≤ r2 := sq_nonneg _
+  have hpyth :
+      ‖z‖ ^ (2 : ℕ) = t ^ (2 : ℕ) + r2 := by
+    simpa [t, r2] using
+      chewi620_norm_sq_eq_inner_sq_add_orthogonal_sq
+        (u := u) (z := z) hu_norm
+  have hball : t ^ (2 : ℕ) + r2 ≤ 1 := by
+    nlinarith
+  have hscalar :
+      ((((d : ℝ) + 1) ^ (2 : ℕ)) / ((d : ℝ) ^ (2 : ℕ))) *
+          (t + (((d : ℝ) + 1)⁻¹)) ^ (2 : ℕ) +
+        ((((d : ℝ) ^ (2 : ℕ)) - 1) / ((d : ℝ) ^ (2 : ℕ))) * r2 ≤
+          1 :=
+    chewi620_standard_cut_scalar_containment
+      (d := d) (t := t) (r2 := r2) hd hr2_nonneg hball hz_cut
+  have hcenter_sub :
+      z - chewi620StandardCutCenter d u =
+        z + (((d : ℝ) + 1)⁻¹) • u := by
+    simp [chewi620StandardCutCenter, sub_eq_add_neg]
+  have hinner_shift :
+      inner ℝ u (z - chewi620StandardCutCenter d u) =
+        t + (((d : ℝ) + 1)⁻¹) := by
+    rw [hcenter_sub]
+    simp [t, inner_add_right, real_inner_smul_right, hu_norm]
+  have horth_shift :
+      (z - chewi620StandardCutCenter d u) -
+          inner ℝ u (z - chewi620StandardCutCenter d u) • u =
+        z - t • u := by
+    rw [hinner_shift, hcenter_sub]
+    module
+  have hquad :=
+    chewi620_standardCutInvShape_quadratic
+      (d := d) (u := u) (z := z - chewi620StandardCutCenter d u) hu_norm
+  change
+    inner ℝ (z - chewi620StandardCutCenter d u)
+        (chewi620StandardCutInvShape d u
+          (z - chewi620StandardCutCenter d u)) ≤ 1
+  rw [hquad, horth_shift, hinner_shift]
+  simpa [r2] using hscalar
+
 /--
 Source-shaped certificate for one Lemma 6.20 ellipsoid step: the next
 ellipsoid contains the half-space cut and has the displayed volume ratio.

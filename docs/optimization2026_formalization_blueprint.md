@@ -43,9 +43,9 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after the 2026-05-05 standard-cut scalar containment and
-determinant-ratio packet, building on pushed frontier `489d182` (`f1472c4`
-ellipsoid source packet plus remote-safe merges):
+Manual goal frontier after the 2026-05-05 standard-cut scalar,
+determinant-ratio, and coordinate-free affine-containment packet, building on
+pushed frontier `ea518a6` and fetched remote frontier `0f502cc`:
 `StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
 discrete AGD source rate,
 `StatInference/Optimization/ProjectedSubgradient.lean` proves the finite-valued
@@ -58,13 +58,14 @@ Theorem 6.19 display-rate wrapper
 `chewi619_gap_le_display_rate_of_scaled_candidates`, and
 `StatInference/Optimization/Ellipsoid.lean` now compiles the supplied-interface
 Lemma 6.20 ellipsoid trajectory/rate layer plus the normalized central-cut
-scalar containment and determinant-ratio cores.  Do not target the stale app-level
+scalar containment, determinant-ratio cores, and coordinate-free normalized
+half-space containment.  Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
 Theorem 5.10 weighted-telescope proof, Theorem 6.14 PSD packet, Theorem 6.16
 functional-constraint packet, the CuttingPlane CoGM wrapper packet, or the
-now-compiled supplied ellipsoid trajectory/rate, scalar containment, and
-determinant-ratio packets.
+now-compiled supplied ellipsoid trajectory/rate, scalar containment,
+determinant-ratio, and coordinate-free normalized containment packets.
 `StatInference/Optimization/Theorem58.lean` proves the AGF Lyapunov derivative
 formula, discharges Lyapunov continuity from the trajectory and gradient oracle,
 and exposes a source-facing Theorem 5.8 rate wrapper.  Since Chewi leaves the
@@ -116,7 +117,12 @@ unit-ball central-cut containment inequalities
 `chewi620_standard_cut_scalar_containment`, plus
 `chewi620_ellipsoidVolumeRatio_source_nonneg`,
 `chewi620_standardCut_detRatio_eq_source`, and
-`chewi620_ellipsoidVolumeRatio_sq_eq_standardCut_detRatio`.
+`chewi620_ellipsoidVolumeRatio_sq_eq_standardCut_detRatio`, and the
+coordinate-free normalized bridge `chewi620StandardCutCenter`,
+`chewi620StandardCutInvShape`,
+`chewi620_norm_sq_eq_inner_sq_add_orthogonal_sq`,
+`chewi620_standardCutInvShape_quadratic`, and
+`chewi620_standardCut_halfspace_subset`.
 
 The next active packet should stay in Chapter 6 and prove a theorem-sized part
 of ellipsoid Lemma 6.20, not drip minor wrappers.  The exact
@@ -125,7 +131,7 @@ source-audited CoGM report, and the exact Lemma 6.20 matrix proof remains the
 next ellipsoid blocker.  Search mathlib matrix/PSD/inverse/determinant and
 volume-scaling APIs first, then instantiate or narrow
 `IsEllipsoidStepCertificate` from Chewi's displayed matrix update by
-transporting `chewi620_standard_cut_scalar_containment` and
+transporting `chewi620_standardCut_halfspace_subset` and
 `chewi620_ellipsoidVolumeRatio_sq_eq_standardCut_detRatio` through the affine/
 matrix normalization.  The remaining blocker is the actual matrix/affine
 transport, not scalar algebra.  If the full matrix proof balloons, prove the
