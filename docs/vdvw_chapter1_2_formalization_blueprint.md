@@ -1524,6 +1524,17 @@ space is now explicitly identified with the ordinary product through
 finite-index FDD-converse sanity layer before attempting the arbitrary-index
 separability/tightness theorem.
 
+2026-05-05 finite-index FDD-converse follow-up: that sanity layer is now
+compiled.  `FiniteDimensional.lean` proves cancellation of the finite product
+equivalence on `ProbabilityMeasure (VdVWEllInfty T)`, the finite-index
+weak-convergence converse
+`vdVW148_ellInfty_weakConvergence_of_finiteProduct_weakConvergence_finite`,
+and the random-variable distribution-convergence converse
+`vdVW148_ellInfty_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite`.
+This closes only the finite-index case.  The arbitrary-index VdV&W 1.4.8
+criterion still depends on separability, tightness, asymptotic measurability,
+and nonmeasurable/process primitives.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

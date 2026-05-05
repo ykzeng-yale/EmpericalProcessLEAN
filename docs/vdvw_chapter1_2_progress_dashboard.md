@@ -13,8 +13,8 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current `/goal` target override, 2026-05-05 after verified head `bcf840b`
-(`Add finite ell_infty product equivalence`): closed
+Current `/goal` target override, 2026-05-05 after the verified finite-index
+`ell_infty(T)` FDD converse closure: closed
 finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
@@ -22,12 +22,9 @@ Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
 ordinary-mean/L1 normalized-log packages should not be rebuilt.  The
 varying-domain signed continuous-mapping and signed filter-refinement closures,
 the `ell_infty(T)` process-space substrate, finite-coordinate law wrappers,
-and finite-index product equivalence are also compiled.  The next
-self-contained Chapter 1 proof target is the finite-index `ell_infty(T)` FDD
-converse using `VdVWEllInfty.finiteContinuousLinearEquiv`; this should close
-only the finite-index converse layer and must not overclaim the arbitrary-index
-VdV&W 1.4.8 theorem.  The current Theorem 2.4.3 gap remains the exact book
-random-entropy bridge: derive a real tail/UI, uniform-integrability,
+finite-index product equivalence, and finite-index `ell_infty(T)` FDD converse
+wrappers are also compiled.  The current Theorem 2.4.3 gap remains the exact
+book random-entropy bridge: derive a real tail/UI, uniform-integrability,
 deterministic structural cardinality, or ordinary mean-convergence input from
 `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η > 0`, then consume the
 already compiled selected finite-net routes.  Bare outer-probability

@@ -125,6 +125,56 @@ theorem vdVW148_ellInfty_finiteDimensional_weakConvergence_of_processLaw_weakCon
         ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable)) := by
   exact hμ.map_continuous (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
 
+/--
+For finite index sets, mapping an `ell_infty(T)` law to the ordinary finite
+product and back by the finite product equivalence recovers the original law.
+-/
+@[simp]
+theorem vdVW148_ellInfty_map_finiteContinuousLinearEquiv_symm_map
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    (ν : ProbabilityMeasure (VdVWEllInfty T)) :
+    ((ν.map
+          ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).continuous.measurable.aemeasurable)).map
+        ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm.continuous.measurable.aemeasurable)) =
+      ν := by
+  let e := VdVWEllInfty.finiteContinuousLinearEquiv (T := T)
+  ext s hs
+  change (Measure.map e.symm (Measure.map e (ν : Measure (VdVWEllInfty T)))) s =
+    (ν : Measure (VdVWEllInfty T)) s
+  rw [Measure.map_map e.symm.continuous.measurable e.continuous.measurable]
+  simp
+
+/--
+Finite-index converse for the `ell_infty(T)` finite-dimensional criterion.
+When `T` is finite, weak convergence after identifying `ell_infty(T)` with the
+ordinary finite product `T -> ℝ` implies weak convergence of the original
+`ell_infty(T)` laws.
+
+This is only the finite-index converse.  The arbitrary-index VdV&W 1.4.8
+converse still needs the textbook separability, tightness, asymptotic
+measurability, and process primitives.
+-/
+theorem vdVW148_ellInfty_weakConvergence_of_finiteProduct_weakConvergence_finite
+    {ι : Type*} {l : Filter ι}
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {μs : ι -> ProbabilityMeasure (VdVWEllInfty T)}
+    {μ : ProbabilityMeasure (VdVWEllInfty T)}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures
+      (fun n => (μs n).map
+        ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).continuous.measurable.aemeasurable))
+      l
+      (μ.map
+        ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).continuous.measurable.aemeasurable))) :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ := by
+  let e := VdVWEllInfty.finiteContinuousLinearEquiv (T := T)
+  have hback := hμ.map_continuous e.symm.continuous
+  simpa [e] using hback
+
 /-- Finite-dimensional law of an `ell_infty(T)`-valued random element. -/
 theorem vdVW148_ellInfty_finiteDimensional_hasLaw
     [MeasurableSpace Ω] [MeasurableSpace (VdVWEllInfty T)]
@@ -186,5 +236,36 @@ theorem vdVW148_ellInfty_finiteDimensional_tendstoInDistribution
       (VdVWEllInfty.finiteRestrict I ∘ Z)
       μ μ' :=
   hX.continuous_comp (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
+
+/--
+Random-variable finite-index converse for `ell_infty(T)`: if `T` is finite,
+convergence in distribution after the finite product identification implies
+convergence in distribution of the original `ell_infty(T)`-valued variables.
+
+This is the random-variable analogue of
+`vdVW148_ellInfty_weakConvergence_of_finiteProduct_weakConvergence_finite`.
+-/
+theorem vdVW148_ellInfty_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite
+    {ι : Type*} {Ω : ι -> Type*} {Ω' : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {X : (i : ι) -> Ω i -> VdVWEllInfty T}
+    {Z : Ω' -> VdVWEllInfty T} {l : Filter ι}
+    (hX : TendstoInDistribution
+      (fun i => (VdVWEllInfty.finiteContinuousLinearEquiv (T := T)) ∘ X i)
+      l
+      ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)) ∘ Z)
+      μ μ') :
+    TendstoInDistribution X l Z μ μ' := by
+  haveI : Nonempty (VdVWEllInfty T) := ⟨0⟩
+  let e := VdVWEllInfty.finiteContinuousLinearEquiv (T := T)
+  have hback := hX.continuous_comp e.symm.continuous
+  simpa [e, Function.comp_def] using hback
 
 end StatInference
