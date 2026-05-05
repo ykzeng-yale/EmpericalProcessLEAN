@@ -653,6 +653,13 @@ theorem matrixInvShape_apply (A : Matrix ι ι ℝ) (z : EuclideanSpace ℝ ι) 
     matrixInvShape A z = A.toEuclideanLin z :=
   rfl
 
+/-- Coordinate-vector expression for applying a matrix-backed inverse shape. -/
+theorem matrixInvShape_eq_toLp_mulVec
+    (A : Matrix ι ι ℝ) (z : EuclideanSpace ℝ ι) :
+    matrixInvShape A z =
+      (WithLp.toLp 2 (A.mulVec z.ofLp) : EuclideanSpace ℝ ι) := by
+  simp [matrixInvShape, Matrix.toEuclideanLin, Matrix.toLpLin_apply]
+
 /--
 Coordinate expression for the quadratic form induced by a matrix-backed
 inverse shape.  This is the reusable bridge from `ellipsoidSet`'s inner-product
@@ -694,6 +701,64 @@ theorem matrixInvShape_mul
   ext i
   simp [matrixInvShape, Matrix.toEuclideanLin, Matrix.toLpLin_apply,
     Matrix.mulVec_mulVec]
+
+/-- The identity matrix-backed inverse shape is the identity map. -/
+theorem matrixInvShape_one (z : EuclideanSpace ℝ ι) :
+    matrixInvShape (1 : Matrix ι ι ℝ) z = z := by
+  ext i
+  simp [matrixInvShape, Matrix.toEuclideanLin]
+
+/-- Matrix-backed inverse shapes preserve matrix addition. -/
+theorem matrixInvShape_add
+    (A B : Matrix ι ι ℝ) (z : EuclideanSpace ℝ ι) :
+    matrixInvShape (A + B) z = matrixInvShape A z + matrixInvShape B z := by
+  ext i
+  simp [matrixInvShape, Matrix.toEuclideanLin, Matrix.toLpLin_apply]
+
+/-- Matrix-backed inverse shapes preserve scalar multiplication of matrices. -/
+theorem matrixInvShape_smul
+    (c : ℝ) (A : Matrix ι ι ℝ) (z : EuclideanSpace ℝ ι) :
+    matrixInvShape (c • A) z = c • matrixInvShape A z := by
+  ext i
+  simp [matrixInvShape, Matrix.toEuclideanLin, Matrix.toLpLin_apply]
+
+/-- Matrix-backed inverse shapes preserve matrix subtraction. -/
+theorem matrixInvShape_sub
+    (A B : Matrix ι ι ℝ) (z : EuclideanSpace ℝ ι) :
+    matrixInvShape (A - B) z = matrixInvShape A z - matrixInvShape B z := by
+  ext i
+  simp [matrixInvShape, Matrix.toEuclideanLin, Matrix.toLpLin_apply]
+
+/--
+Action of a rank-one matrix-backed inverse shape.  This is the coordinate
+engine for expanding Chewi's displayed ellipsoid update
+`Σ + c (Σp)(Σp)^T`.
+-/
+theorem matrixInvShape_vecMulVec
+    (a b : ι -> ℝ) (z : EuclideanSpace ℝ ι) :
+    matrixInvShape (Matrix.vecMulVec a b) z =
+      (b ⬝ᵥ z.ofLp) • (WithLp.toLp 2 a : EuclideanSpace ℝ ι) := by
+  ext i
+  simp [matrixInvShape, Matrix.toEuclideanLin, Matrix.toLpLin_apply,
+    Matrix.vecMulVec_mulVec, mul_comm]
+
+omit [DecidableEq ι] in
+/-- Inner product with a coordinate vector as a matrix dot product. -/
+theorem inner_toLp_eq_dotProduct
+    (a : ι -> ℝ) (z : EuclideanSpace ℝ ι) :
+    inner ℝ (WithLp.toLp 2 a : EuclideanSpace ℝ ι) z = a ⬝ᵥ z.ofLp := by
+  simp [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm]
+
+/--
+Self rank-one action in inner-product form.  This is the shape used by the
+normalized standard-cut forward map.
+-/
+theorem matrixInvShape_vecMulVec_self
+    (a : ι -> ℝ) (z : EuclideanSpace ℝ ι) :
+    matrixInvShape (Matrix.vecMulVec a a) z =
+      (inner ℝ (WithLp.toLp 2 a : EuclideanSpace ℝ ι) z) •
+        (WithLp.toLp 2 a : EuclideanSpace ℝ ι) := by
+  rw [matrixInvShape_vecMulVec, inner_toLp_eq_dotProduct]
 
 /-- Positive-definite matrices have positive determinant. -/
 theorem chewi620_matrixPosDef_det_pos
@@ -988,6 +1053,42 @@ noncomputable def chewi620DisplayedShapeUpdate
   ((((d : ℝ) ^ (2 : ℕ)) /
     (((d : ℝ) ^ (2 : ℕ)) - 1)) •
     chewi620DisplayedShapeUpdateCore d Sigma p)
+
+/--
+Action of the unscaled displayed update core.  This packages the rank-one
+correction in the original Chewi coordinates.
+-/
+theorem chewi620_displayedShapeUpdateCore_action
+    (d : ℕ) (Sigma : Matrix ι ι ℝ)
+    (p z : EuclideanSpace ℝ ι) :
+    matrixInvShape (chewi620DisplayedShapeUpdateCore d Sigma p) z =
+      matrixInvShape Sigma z -
+        (((((2 : ℝ) / ((d : ℝ) + 1)) /
+            inner ℝ p (matrixInvShape Sigma p)) *
+            inner ℝ (matrixInvShape Sigma p) z) •
+          matrixInvShape Sigma p) := by
+  rw [chewi620DisplayedShapeUpdateCore, matrixInvShape_sub, matrixInvShape_smul,
+    matrixInvShape_vecMulVec_self]
+  rw [← matrixInvShape_eq_toLp_mulVec Sigma p]
+  rw [smul_smul]
+
+/--
+Action of Chewi's full displayed forward-shape update.  This is the matrix
+side of the remaining Lemma 6.20 transport identity.
+-/
+theorem chewi620_displayedShapeUpdate_action
+    (d : ℕ) (Sigma : Matrix ι ι ℝ)
+    (p z : EuclideanSpace ℝ ι) :
+    matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p) z =
+      ((((d : ℝ) ^ (2 : ℕ)) /
+        (((d : ℝ) ^ (2 : ℕ)) - 1)) •
+        (matrixInvShape Sigma z -
+          (((((2 : ℝ) / ((d : ℝ) + 1)) /
+              inner ℝ p (matrixInvShape Sigma p)) *
+              inner ℝ (matrixInvShape Sigma p) z) •
+            matrixInvShape Sigma p))) := by
+  rw [chewi620DisplayedShapeUpdate, matrixInvShape_smul,
+    chewi620_displayedShapeUpdateCore_action]
 
 /--
 Determinant of Chewi's fully scaled displayed forward-shape update.  The
@@ -1349,6 +1450,39 @@ theorem chewi620_matrixSqrt_normalizedCutDirection_inner_toStd
       chewi620_rawAdjointIdentity_of_symmetric_inverse
         (T := T) hT_symm p center w)
     z
+
+/--
+The square-root hypothesis transports the current displayed inverse-shape
+action through the normalization map.
+-/
+theorem chewi620_matrixSqrt_current_action
+    {Sigma : Matrix ι ι ℝ}
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    (x : EuclideanSpace ℝ ι) :
+    matrixInvShape Sigma (T.symm x) = T x := by
+  simpa using (hT_sq (T.symm x)).symm
+
+/--
+The square-root symmetry transports the rank-one correction inner product from
+displayed coordinates to normalized coordinates.
+-/
+theorem chewi620_matrixSqrt_rank_inner
+    {Sigma : Matrix ι ι ℝ}
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    (p x : EuclideanSpace ℝ ι) :
+    inner ℝ (matrixInvShape Sigma p) (T.symm x) =
+      inner ℝ (T p) x := by
+  calc
+    inner ℝ (matrixInvShape Sigma p) (T.symm x) =
+        inner ℝ (T (T p)) (T.symm x) := by
+      rw [← hT_sq p]
+    _ = inner ℝ (T p) (T (T.symm x)) := by
+      simpa using hT_symm (T p) (T.symm x)
+    _ = inner ℝ (T p) x := by
+      simp
 
 /--
 The square-root hypothesis turns Chewi's normalized standard-cut center into

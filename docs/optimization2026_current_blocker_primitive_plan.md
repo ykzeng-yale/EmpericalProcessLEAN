@@ -83,8 +83,9 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Live replacement `/goal` prompt as of 2026-05-05 after syncing local `main` to
-`origin/main` at `52beefe`
-(`Add Chewi ellipsoid forward-shape transport bridge`):
+`origin/main` at `00bae61`
+(`Rebase Chewi optimization manual goal frontier`) and adding the local
+rank-one action/displayed-update action support packet:
 aggressively formalize and prove
 all main theorem content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercises tracked in the single
@@ -174,12 +175,22 @@ plus the normalized forward/inverse algebra packet
 `chewi620_displayedShapeUpdate_left_inverse_of_standardCutForward_transport`,
 `chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_forwardShape_transport`,
 and
-`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_forwardShape_transport`.
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_forwardShape_transport`,
+plus the matrix-action support packet `matrixInvShape_eq_toLp_mulVec`,
+`matrixInvShape_one`, `matrixInvShape_add`, `matrixInvShape_smul`,
+`matrixInvShape_sub`, `matrixInvShape_vecMulVec`,
+`inner_toLp_eq_dotProduct`, `matrixInvShape_vecMulVec_self`,
+`chewi620_displayedShapeUpdateCore_action`,
+`chewi620_displayedShapeUpdate_action`,
+`chewi620_matrixSqrt_current_action`, and
+`chewi620_matrixSqrt_rank_inner`.
 The determinant/scalar `hvolume` bridge and the inverse-shape left-inverse
-reduction plus normalized forward/inverse cancellation and transport reduction
-are verified in focused Lean, so the next run must not spend theorem time
-reproving or repackaging those cores unless they are directly needed inside the
-measure-scaling or concrete transport-identity theorem.
+reduction plus normalized forward/inverse cancellation, transport reduction,
+rank-one action expansion, displayed-shape action expansion, and square-root
+current/rank-inner transport are verified in focused Lean, so the next run must
+not spend theorem time reproving or repackaging those cores unless they are
+directly needed inside the measure-scaling or concrete transport-identity
+theorem.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
@@ -193,8 +204,9 @@ determinant ratio is now in the exact source shape
 ellipsoidVolumeRatio d ^ 2`, and the scalar bridge
 `chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio` converts any
 squared-volume determinant bound into the certificate's `hvolume` hypothesis.
-Next, instantiate the actual mathlib measure/volume-scaling API for the
-ellipsoid affine image, and prove the concrete matrix transport identity
+Next, finish the scalar normalization inside the concrete matrix transport
+identity, then instantiate the actual mathlib measure/volume-scaling API for
+the ellipsoid affine image:
 `matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p) (T.symm x) =
   T (chewi620StandardCutForwardShape d u x)` for the normalized cut direction.
 The compiled transport reductions then immediately yield the displayed
@@ -209,12 +221,14 @@ update, rank-one collapse `(Σp)^T Σ⁻¹ (Σp) = <p, Σp>`, displayed
 forward-shape determinant formula, determinant/source-volume ratio, determinant
 positivity/nonzero/unit facts, scalar `hvolume` bridge, determinant-unit
 left-inverse reduction, normalized standard-cut forward/inverse cancellation,
-and forward-shape transport reductions are now local; this is not a minor
-wrapper target.  Do not spend another run on
+forward-shape transport reductions, rank-one action expansion, displayed-shape
+action expansion, and square-root current/rank-inner transport are now local;
+this is not a minor wrapper target.  Do not spend another run on
 scalar, coordinate-free, abstract transport, current-shape, center-update,
-pullback-only wrappers, rank-one collapse, or determinant-core algebra unless
-one is the shortest verified route to the concrete matrix theorem.  The
-dependency order is:
+pullback-only wrappers, rank-one collapse, rank-one action expansion,
+displayed-shape action expansion, square-root current-action transport, or
+determinant-core algebra unless one is the shortest verified route to the
+concrete matrix theorem.  The dependency order is:
 
 1. Search pinned mathlib and local `StatInference/Optimization` for
    square-root/symmetric linear-equivalence, `Matrix.toEuclideanLin`,

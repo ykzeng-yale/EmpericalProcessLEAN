@@ -43,11 +43,12 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after local sync to `origin/main` at `52beefe`
-(`Add Chewi ellipsoid forward-shape transport bridge`) with the verified
-pushed source-volume determinant, determinant-unit inverse-shape reduction,
-normalized forward/inverse algebra, and forward-shape transport reduction
-packets in `StatInference/Optimization/Ellipsoid.lean`;
+Manual goal frontier after local sync to `origin/main` at `00bae61`
+(`Rebase Chewi optimization manual goal frontier`) with the verified pushed
+source-volume determinant, determinant-unit inverse-shape reduction,
+normalized forward/inverse algebra, forward-shape transport reduction, and
+local rank-one/displayed-action transport support packets in
+`StatInference/Optimization/Ellipsoid.lean`;
 the latest Optimization proof frontier is Chapter 6 Lemma 6.20 after the
 2026-05-05 standard-cut scalar, determinant-ratio, coordinate-free
 affine-containment, supplied-identity affine-transport certificate, first
@@ -113,7 +114,15 @@ helpers, plus the raw symmetric square-root cut bridge declarations
 `chewi620_displayedShapeUpdate_left_inverse_of_standardCutForward_transport`,
 `chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_forwardShape_transport`,
 and
-`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_forwardShape_transport`.
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_forwardShape_transport`,
+plus `matrixInvShape_eq_toLp_mulVec`, `matrixInvShape_one`,
+`matrixInvShape_add`, `matrixInvShape_smul`, `matrixInvShape_sub`,
+`matrixInvShape_vecMulVec`, `inner_toLp_eq_dotProduct`,
+`matrixInvShape_vecMulVec_self`,
+`chewi620_displayedShapeUpdateCore_action`,
+`chewi620_displayedShapeUpdate_action`,
+`chewi620_matrixSqrt_current_action`, and
+`chewi620_matrixSqrt_rank_inner`.
 Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
@@ -124,7 +133,8 @@ determinant-ratio, coordinate-free normalized containment, abstract
 affine-transport, matrix normalization, PosDef cancellation, pullback
 certificate, current-shape, center-update, determinant/source-volume,
 inverse-shape reduction, normalized forward/inverse algebra, or
-forward-shape transport-reduction packets.
+forward-shape transport-reduction, rank-one action, displayed-shape action, or
+square-root current/rank-inner transport packets.
 `StatInference/Optimization/Theorem58.lean` proves the AGF Lyapunov derivative
 formula, discharges Lyapunov continuity from the trajectory and gradient oracle,
 and exposes a source-facing Theorem 5.8 rate wrapper.  Since Chewi leaves the
@@ -244,20 +254,28 @@ plus `chewi620StandardCutForwardShape` and
 `chewi620_displayedShapeUpdate_left_inverse_of_standardCutForward_transport`,
 `chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_forwardShape_transport`,
 and
-`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_forwardShape_transport`.
-The remaining blocker is the actual mathlib measure-scaling instantiation plus
-the concrete displayed-to-normalized forward-shape transport identity, not
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_forwardShape_transport`,
+plus `matrixInvShape_eq_toLp_mulVec`, `matrixInvShape_vecMulVec`,
+`matrixInvShape_vecMulVec_self`,
+`chewi620_displayedShapeUpdateCore_action`,
+`chewi620_displayedShapeUpdate_action`,
+`chewi620_matrixSqrt_current_action`, and
+`chewi620_matrixSqrt_rank_inner`.
+The remaining blocker is the scalar normalization inside the concrete
+displayed-to-normalized forward-shape transport identity plus the actual
+mathlib measure-scaling instantiation, not
 scalar algebra, abstract transport, current-shape rewriting, center algebra,
 rank-one collapse, determinant-core algebra, source-volume determinant algebra,
-normalized standard-cut algebra, transport reduction, or nonsingular-inverse
-uniqueness.  For measure scaling, use
+normalized standard-cut algebra, rank-one action expansion, displayed-shape
+action expansion, square-root current/rank-inner transport, transport
+reduction, or nonsingular-inverse uniqueness.  For measure scaling, use
 `Measure.addHaar_image_linearMap` / `Measure.addHaar_preimage_linearEquiv`,
 translation invariance, and `LinearMap.det_toLpLin` for
 `Matrix.toEuclideanLin`; the raw `Real.map_*` pushforward lemmas scale by
 `|det|⁻¹`, while set-image volume needs the `|det|` addHaar route.  The target
-order is determinant-to-volume scaling using mathlib volume APIs, the concrete
-displayed-to-normalized forward-shape transport identity, then exact one-step
-Lemma 6.20 certificate.
+order is finish the scalar normalization in the concrete transport identity,
+then determinant-to-volume scaling using mathlib volume APIs, then exact
+one-step Lemma 6.20 certificate.
 If the full matrix proof balloons, prove the smallest
 matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
 the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth
