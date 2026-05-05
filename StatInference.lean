@@ -43,4 +43,5 @@ import StatInference.Optimization.Theorem36
 import StatInference.Optimization.Theorem37
 import StatInference.Optimization.Theorem45
 import StatInference.Optimization.Theorem54
+import StatInference.Optimization.Theorem58
 import StatInference.Optimization.Exercises

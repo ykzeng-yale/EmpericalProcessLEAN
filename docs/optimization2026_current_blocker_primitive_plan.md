@@ -1591,10 +1591,24 @@ The shifted affine-minimizer block interface now compiles:
 restart layer now also compiles: `chewi54_log_rate_of_displayed_cg_blocks`
 and `chewi54_log_rate_of_displayed_cg_blocks_blockSize`, reusing the existing
 `IsCGDisplayedIteration` bridges to discharge the span, gradient-span,
-orthogonality, and affine-minimizer assumptions inside each block.  Next
-target: source-audit the final Theorem 5.4 statement/report path and either
-package a final named source theorem around the displayed block endpoint or
-switch to the polynomial/Chebyshev route and Theorem 5.8.  Do not redo
+orthogonality, and affine-minimizer assumptions inside each block.  The Theorem
+5.8 AGF lane has now started in `StatInference/Optimization/Theorem58.lean`.
+Compiled declarations include `IsAcceleratedGradientFlowTrajectory`,
+`chewi58Friction`, `IsChewi58AcceleratedGradientFlowTrajectory`,
+`agfAuxPoint`, `chewi58Lyapunov`, `chewi58Lyapunov_zero`,
+`chewi58_gap_le_of_lyapunov_le_initial`,
+`chewi58_gap_le_of_lyapunov_antitoneOn`,
+`chewi58LyapunovDerivative_nonpos_of_firstOrderConvex`,
+`chewi58_gap_le_of_lyapunov_derivative_nonpos`, and
+`chewi58_gap_le_of_lyapunov_derivative_formula_firstOrderConvex`.  Search-first
+reuse: local `FirstOrderStrongConvexOn` convex lower model, Chapter 2
+`antitoneOn_of_hasDerivWithinAt_nonpos` route pattern, mathlib
+`HasDerivWithinAt.norm_sq`, `HasDerivAt.inner`, `le_div_iff₀`,
+`sq_nonneg`, `field_simp`, and `nlinarith`.  Next target: prove the actual AGF
+Lyapunov derivative formula from `IsChewi58AcceleratedGradientFlowTrajectory`,
+`HasGradientAt`, and continuity/differentiability side conditions, then expose
+the exact source-facing Theorem 5.8 statement before moving to Theorem 5.9.
+Do not redo
 Theorem 5.3's
 A-conjugacy induction, the Chapter 3 descent lemma, Chapter 4 gradient-span
 interfaces, or Chapter 4 hard-instance packages.
