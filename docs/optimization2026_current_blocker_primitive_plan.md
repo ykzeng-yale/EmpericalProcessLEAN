@@ -69,8 +69,9 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Live replacement `/goal` prompt after the 2026-05-05 standard-cut scalar,
-determinant-ratio, and coordinate-free affine-containment packet, building on
-pushed frontier `ea518a6` and fetched remote frontier `0f502cc`:
+determinant-ratio, coordinate-free affine-containment, and supplied-identity
+affine-transport certificate packet, building on prior pushed frontier
+`ee26281`:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under `StatInference/Optimization`, with
 exercises tracked in the single `StatInference/Optimization/Exercises.lean`
@@ -95,24 +96,25 @@ coordinate-free normalized central-cut bridge
 `chewi620StandardCutCenter`, `chewi620StandardCutInvShape`,
 `chewi620_norm_sq_eq_inner_sq_add_orthogonal_sq`,
 `chewi620_standardCutInvShape_quadratic`, and
-`chewi620_standardCut_halfspace_subset`.  The app-level
+`chewi620_standardCut_halfspace_subset`, plus the certificate bridge
+`chewi620_affineTransport_halfspace_subset_of_quadratic` and
+`chewi620_affineTransport_stepCertificate_of_quadratic`.  The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
 textbook goal is marked complete, so this paragraph is the operative manual
 `/goal` target.
 
-Immediate target for the next manual goal run: instantiate or sharply narrow
-`IsEllipsoidStepCertificate` for Chewi's displayed update by transporting the
-verified normalized half-space containment
-`chewi620_standardCut_halfspace_subset` and determinant-ratio theorem through
-the matrix/affine change of variables.  Do not spend another run on scalar or
-coordinate-free wrappers.  First search mathlib/local APIs for EuclideanSpace
-coordinates, matrix PSD order, rank-one inverse/determinant updates, ellipsoid
-volume scaling, square-root/linear-equivalence normalization, and
-quadratic-form half-space containment.  The remaining hard work is the
-affine/matrix bridge from `Σ_n`, `Σ_n p_n`, and `p_n^T Σ_n p_n` to the
-normalized standard-cut coordinates, plus the corresponding matrix
-determinant/volume transport.
+Immediate target for the next manual goal run: instantiate the supplied
+hypotheses of `chewi620_affineTransport_stepCertificate_of_quadratic` for
+Chewi's displayed update.  Do not spend another run on scalar,
+coordinate-free, or abstract transport wrappers.  The remaining hard work is
+the concrete matrix bridge proving the current-ellipsoid quadratic identity,
+the cut-normalization identity, the pullback identity for the displayed
+`Σ_{n+1}` inverse shape, and the determinant/volume inequality.  First search
+and use mathlib/local APIs for EuclideanSpace coordinates, matrix PSD order,
+rank-one inverse/determinant updates, ellipsoid volume scaling,
+square-root/linear-equivalence normalization, and quadratic-form half-space
+containment.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
@@ -135,13 +137,14 @@ source-shaped CoGM Theorem 6.19 wrapper compiles after isolating the genuine
 centroid/volume fact as `HasScaledOutsideCandidatesAbove`, and Lemma 6.20 now
 has a compiled supplied-interface ellipsoid trajectory/rate layer plus the
 normalized scalar central-cut containment, determinant-ratio inequalities, and
-coordinate-free normalized half-space containment.  The next aggressive theorem
-packet should instantiate or narrow the supplied
-`IsEllipsoidStepCertificate`: search and use mathlib matrix/PSD/inverse/
-determinant/volume APIs to transport these scalar theorems to the displayed
-matrix update.  If the full matrix proof balloons, record the exact missing
-matrix API and prove the smallest affine transport or rank-one determinant
-certificate that removes it.
+coordinate-free normalized half-space containment, and an abstract
+affine-transport `IsEllipsoidStepCertificate` bridge.  The next aggressive
+theorem packet should prove the concrete matrix identities needed by that
+bridge: search and use mathlib matrix/PSD/inverse/determinant/volume APIs to
+transport these local theorems to the displayed matrix update.  If the full
+matrix proof balloons, record the exact missing matrix API and prove the
+smallest matrix-coordinate, rank-one determinant, or volume-scaling certificate
+that removes it.
 Do not spend a run only polishing a minor wrapper unless it is the fastest
 verified dependency for this theorem packet.
 
@@ -201,11 +204,16 @@ Mathlib has extensive measure/volume and convex-body infrastructure in
 specialized files, but the fastest route for Theorem 6.19 is the now-verified
 supplied candidate-family interface plus finite recurrence and
 Lipschitz/diameter algebra in `CuttingPlane.lean`.  For Lemma 6.20, the current
-search found relevant mathlib files/APIs: `Analysis/Matrix/PosDef.lean`,
-`Analysis/Matrix/Order.lean`, `LinearAlgebra/Matrix/Symmetric.lean`,
-`LinearAlgebra/Matrix/NonsingularInverse.lean`, determinant APIs in
-`LinearAlgebra/Matrix/Determinant/*`, and volume-scaling APIs such as
-`Real.map_matrix_volume_pi_eq_smul_volume_pi` and
+search found relevant mathlib files/APIs: `Matrix.toEuclideanLin` and
+`EuclideanSpace.inner_eq_star_dotProduct` in inner-product `PiL2` files,
+`Matrix.isSymmetric_toEuclideanLin_iff`, `Matrix.isPositive_toEuclideanLin_iff`,
+`Matrix.posSemidef_iff_dotProduct_mulVec`,
+`Matrix.PosSemidef.dotProduct_mulVec_nonneg`,
+`Matrix.PosDef.dotProduct_mulVec_pos`, positive-definite inverse/isUnit
+bridges in `LinearAlgebra/Matrix/PosDef.lean`,
+`LinearAlgebra/Matrix/NonsingularInverse.lean` cancellation/determinant lemmas,
+rank-one determinant APIs in `LinearAlgebra/Matrix/SchurComplement.lean`, and
+volume-scaling APIs such as `Real.map_matrix_volume_pi_eq_smul_volume_pi` and
 `Real.map_linearMap_volume_pi_eq_smul_volume_pi` in
 `MeasureTheory/Measure/Lebesgue/Basic.lean`.  Local reusable patterns are
 mostly EuclideanSpace/coordinate algebra in `LowerBounds.lean` and quadratic

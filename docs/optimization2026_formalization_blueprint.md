@@ -44,8 +44,9 @@ directly in this tool surface unless the goal is complete, so
 replacement prompt for manual runs.
 
 Manual goal frontier after the 2026-05-05 standard-cut scalar,
-determinant-ratio, and coordinate-free affine-containment packet, building on
-pushed frontier `ea518a6` and fetched remote frontier `0f502cc`:
+determinant-ratio, coordinate-free affine-containment, and supplied-identity
+affine-transport certificate packet, building on prior pushed frontier
+`ee26281`:
 `StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
 discrete AGD source rate,
 `StatInference/Optimization/ProjectedSubgradient.lean` proves the finite-valued
@@ -59,13 +60,15 @@ Theorem 6.19 display-rate wrapper
 `StatInference/Optimization/Ellipsoid.lean` now compiles the supplied-interface
 Lemma 6.20 ellipsoid trajectory/rate layer plus the normalized central-cut
 scalar containment, determinant-ratio cores, and coordinate-free normalized
-half-space containment.  Do not target the stale app-level
+half-space containment, plus an abstract affine-transport certificate bridge.
+Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
 Theorem 5.10 weighted-telescope proof, Theorem 6.14 PSD packet, Theorem 6.16
 functional-constraint packet, the CuttingPlane CoGM wrapper packet, or the
 now-compiled supplied ellipsoid trajectory/rate, scalar containment,
-determinant-ratio, and coordinate-free normalized containment packets.
+determinant-ratio, coordinate-free normalized containment, or abstract
+affine-transport packets.
 `StatInference/Optimization/Theorem58.lean` proves the AGF Lyapunov derivative
 formula, discharges Lyapunov continuity from the trajectory and gradient oracle,
 and exposes a source-facing Theorem 5.8 rate wrapper.  Since Chewi leaves the
@@ -122,21 +125,22 @@ coordinate-free normalized bridge `chewi620StandardCutCenter`,
 `chewi620StandardCutInvShape`,
 `chewi620_norm_sq_eq_inner_sq_add_orthogonal_sq`,
 `chewi620_standardCutInvShape_quadratic`, and
-`chewi620_standardCut_halfspace_subset`.
+`chewi620_standardCut_halfspace_subset`, plus
+`chewi620_affineTransport_halfspace_subset_of_quadratic` and
+`chewi620_affineTransport_stepCertificate_of_quadratic`.
 
 The next active packet should stay in Chapter 6 and prove a theorem-sized part
 of ellipsoid Lemma 6.20, not drip minor wrappers.  The exact
 Grünbaum/centroid measure theorem remains a precise supplied blocker before a
 source-audited CoGM report, and the exact Lemma 6.20 matrix proof remains the
 next ellipsoid blocker.  Search mathlib matrix/PSD/inverse/determinant and
-volume-scaling APIs first, then instantiate or narrow
-`IsEllipsoidStepCertificate` from Chewi's displayed matrix update by
-transporting `chewi620_standardCut_halfspace_subset` and
-`chewi620_ellipsoidVolumeRatio_sq_eq_standardCut_detRatio` through the affine/
-matrix normalization.  The remaining blocker is the actual matrix/affine
-transport, not scalar algebra.  If the full matrix proof balloons, prove the
-smallest affine transport or rank-one determinant certificate that removes the
-precise missing matrix API.  After that, continue Chapter 6 with nonsmooth
+volume-scaling APIs first, then instantiate the concrete matrix hypotheses of
+`chewi620_affineTransport_stepCertificate_of_quadratic` for Chewi's displayed
+`Σ_{n+1}` update.  The remaining blocker is the actual matrix/affine
+transport and determinant/volume bridge, not scalar algebra or abstract
+transport.  If the full matrix proof balloons, prove the smallest
+matrix-coordinate, rank-one determinant, or volume-scaling certificate that
+removes the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth
 lower-bound Theorems 6.21-6.23 and feasibility Theorem 6.25 before opening
 Chapter 7 as the next main-text frontier.
 Mandatory search and reuse: mathlib
@@ -147,8 +151,16 @@ has `ConvexOn.map_sum_le`; mathlib `Topology/MetricSpace/Lipschitz.lean` has
 `LipschitzOnWith`, `LipschitzOnWith.dist_le_mul`, and
 `LipschitzOnWith.le_add_mul`; mathlib `Data/Real/Sqrt.lean` has
 `Real.sqrt_pos` and `Real.sq_sqrt`; local `sum_range_sub_succ` is the finite
-telescope.  Keep Chapter 6 finite-valued and theorem-driven until a named
-result actually needs the extended-real regular-convex infrastructure.
+telescope.  Lemma 6.20 matrix scout results to reuse next include
+`Matrix.toEuclideanLin`, `EuclideanSpace.inner_eq_star_dotProduct`,
+`Matrix.posSemidef_iff_dotProduct_mulVec`,
+`Matrix.PosDef.dotProduct_mulVec_pos`, nonsingular-inverse determinant and
+cancellation lemmas, rank-one determinant lemmas in `Matrix.SchurComplement`,
+and volume-scaling lemmas
+`Real.map_matrix_volume_pi_eq_smul_volume_pi` /
+`Real.map_linearMap_volume_pi_eq_smul_volume_pi`.  Keep Chapter 6 finite-valued
+and theorem-driven until a named result actually needs the extended-real
+regular-convex infrastructure.
 
 ## Local Sources
 
