@@ -14,17 +14,17 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`ece76ed`: the signed arbitrary-map, varying-domain weak-convergence, and
-real-valued Dirac-law endpoint bridges are compiled and consumed by the
-Theorem 2.4.3 centered-supremum adapter.  Closed
-finite-net/Hoeffding/Mills/untruncation/reverse-cofiltration,
-selected-entropy, full-subgraph, and signed weak-convergence endpoint
-packages should not be rebuilt.  The next theorem-facing work is to remove the
-remaining exact textbook mismatches: derive selected finite-net tail/UI from
-the book random entropy condition, remove countability/coordinate-measurability
-assumptions through the Chapter 1 arbitrary-map/P-measurable foundations, and
-add nonmeasurable envelope-tail outer-cover clauses only if exact statements
-need them.
+`4c174a0`: closed finite-net/Hoeffding/Mills/untruncation,
+reverse-cofiltration, selected-entropy, full-subgraph, measurable signed
+weak-convergence, and Dirac-law endpoint packages should not be rebuilt.  The
+current theorem-facing gap is sharper: the `P`-measurable/null-measurable
+centered-supremum law converges weakly to `δ_0`, and null-measurable signed
+bounded-continuous asymptotic measurability is compiled, but the signed
+positive/negative outer expectation still needs a null-measurable
+ordinary-integral collapse.  Closing that bridge should yield the Theorem
+2.4.3 `P`-measurable signed varying-domain endpoint; after that, return to the
+book random-entropy selected finite-net tail/UI mismatch and any exact
+nonmeasurable envelope-tail clauses that final textbook statements require.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new

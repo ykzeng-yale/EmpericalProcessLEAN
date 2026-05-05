@@ -89,16 +89,23 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at synced repository head `ece76ed`:
-the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, signed
-arbitrary-map/varying-domain weak-convergence interfaces, and real-valued
-Dirac-law bridge are compiled and should be treated as closed infrastructure.
-The next blueprint target is no longer endpoint packaging.  It is the exact
-textbook mismatch layer: prove selected finite-net tail/UI from the book
-random entropy condition, remove the countability/coordinate-measurability
-assumptions through Chapter 1 arbitrary-map and `P`-measurable foundations, and
-add nonmeasurable envelope-tail outer-cover clauses only when required by an
-exact Chapter 1-2 theorem statement.
+Current operational target, 2026-05-05 at synced repository head `4c174a0`:
+the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, the measurable
+signed arbitrary-map/varying-domain weak-convergence interfaces, the
+null-measurable Dirac-law bridge, and the null-measurable
+asymptotic-measurability constructors are compiled and should be treated as
+closed infrastructure.  The next blueprint target is the exact
+`P`-measurable signed endpoint bridge: prove that signed positive/negative
+outer expectation of a null-measurable bounded real test collapses to the
+ordinary integral, then use it to turn the existing null-measurable
+Dirac-law convergence and asymptotic-measurability layers into a signed
+bounded-continuous varying-domain weak-convergence consumer for Theorem 2.4.3.
+After that, return to the exact textbook mismatch layer: prove selected
+finite-net tail/UI from the book random entropy condition, remove any
+remaining countability/coordinate-measurability assumptions through Chapter 1
+arbitrary-map and `P`-measurable foundations, and add nonmeasurable
+envelope-tail outer-cover clauses only when required by an exact Chapter 1-2
+theorem statement.
 
 2026-05-05 proof update: the countability-to-`P`-measurability route has a new
 compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`
