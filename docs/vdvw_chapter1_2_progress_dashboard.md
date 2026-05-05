@@ -1091,3 +1091,12 @@ mathlib's `submartingale_of_condExp_sub_nonneg_nat`.  The next proof target is
 now the one-step conditional drift inequality for the shifted centered
 supremum under a suitable ordinary filtration, together with strong
 adaptedness for that filtration.
+
+2026-05-04 follow-up: the full-subgraph Theorem 2.4.3 package now exposes that
+constructor-level condition directly through
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_condExp_step_nonneg`
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_condExp_step_nonneg`.
+The active non-finite-class target is therefore exactly: choose/build the
+ordinary filtration, prove strong adaptedness of the shifted centered process,
+and prove the one-step conditional drift inequality.

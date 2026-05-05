@@ -3643,3 +3643,14 @@ conditional-drift inequality for a suitable ordinary filtration:
 `0 ≤ E[X_{n+1} - X_n | ℱ_n]` where
 `X_n(sequence) = vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
 (n + 1) sequence`.
+
+2026-05-04 follow-up: the full-subgraph Theorem 2.4.3 route now consumes that
+constructor-level drift condition directly.  New compiled declarations are
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_condExp_step_nonneg`
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_condExp_step_nonneg`.
+They expose the sharpest current caller-facing assumptions for the a.s.
+Lemma 2.4.5 conclusion: strong adaptedness of the shifted centered process to
+a suitable ordinary `ℕ` filtration and the one-step nonnegative conditional
+drift.  No broader named reverse/cofiltration proposition or raw
+`Submartingale` object is needed at this package boundary.

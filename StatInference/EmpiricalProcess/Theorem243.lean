@@ -25953,6 +25953,58 @@ theorem
       (Set.to_countable indexClass) henvelope hclass henv_integrable hsub)
 
 /--
+Canonical full-subgraph Lemma 2.4.5 a.s. zero consumer under the
+constructor-level conditional-drift sufficient condition for the ordinary
+submartingale route.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_condExp_step_nonneg
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hadapted :
+      StronglyAdapted ℱ
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence))
+    (hstep :
+      ∀ n : ℕ,
+        0 ≤ᵐ[vdVWInfiniteProductMeasure P]
+          (vdVWInfiniteProductMeasure P)[
+            (fun sequence : ℕ -> Observation =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                ((n + 1) + 1) sequence -
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                (n + 1) sequence) | ℱ n]) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) :=
+  vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_reverseCofiltrationHandoff
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) (vcDegree := vcDegree)
+    hvc hindexClass henvelope hclass henv henv_integrable
+    (VdVWLemma245ReverseCofiltrationHandoff.of_condExp_step_nonneg
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (ℱ := ℱ)
+      (Set.to_countable indexClass) henvelope hclass henv_integrable
+      hadapted hstep)
+
+/--
 Canonical full-subgraph Theorem 2.4.3/Lemma 2.4.5 package under the named
 reverse/cofiltration blocker.
 
@@ -26074,6 +26126,74 @@ theorem
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) (ℱ := ℱ)
         (Set.to_countable indexClass) henvelope hclass henv_integrable hsub)
+
+/--
+Canonical full-subgraph Theorem 2.4.3/Lemma 2.4.5 package under the
+constructor-level conditional-drift sufficient condition.
+
+This is the sharpest currently compiled caller-facing full-subgraph endpoint:
+the only remaining almost-sure Lemma 2.4.5 inputs are strong adaptedness of the
+shifted centered process and the one-step nonnegative conditional drift.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_condExp_step_nonneg
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hadapted :
+      StronglyAdapted ℱ
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence))
+    (hstep :
+      ∀ n : ℕ,
+        0 ≤ᵐ[vdVWInfiniteProductMeasure P]
+          (vdVWInfiniteProductMeasure P)[
+            (fun sequence : ℕ -> Observation =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                ((n + 1) + 1) sequence -
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+                (n + 1) sequence) | ℱ n]) :
+    VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) := by
+  exact
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_reverseCofiltrationHandoff
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (vcDegree := vcDegree)
+      hvc hindexClass henvelope hclass henv henv_integrable
+      (VdVWLemma245ReverseCofiltrationHandoff.of_condExp_step_nonneg
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (ℱ := ℱ)
+        (Set.to_countable indexClass) henvelope hclass henv_integrable
+        hadapted hstep)
 
 /--
 Finite-class Theorem 2.4.3 route with canonical iid Rademacher signs and the
