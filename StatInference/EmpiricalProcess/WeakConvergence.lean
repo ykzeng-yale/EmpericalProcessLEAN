@@ -6,6 +6,7 @@ import Mathlib.MeasureTheory.Measure.FiniteMeasurePi
 import Mathlib.MeasureTheory.Measure.FiniteMeasureProd
 import Mathlib.MeasureTheory.Measure.ProbabilityMeasure
 import Mathlib.MeasureTheory.Measure.Prokhorov
+import Mathlib.MeasureTheory.Measure.TightNormed
 
 /-!
 # Weak-convergence foundation wrappers
@@ -2551,6 +2552,61 @@ theorem VdVWProbabilityMeasuresTight.isCompact_closure
     (hA : VdVWProbabilityMeasuresTight A) :
     IsCompact (closure A) := by
   exact isCompact_closure_of_isTightMeasureSet hA
+
+/--
+Norm-tail characterization, forward direction: tight families of probability
+measures on a normed group have uniformly vanishing norm tails.
+
+This is a VdV&W-local wrapper around mathlib's normed-space tightness API.  The
+statement is written over the underlying set of ordinary measures to match the
+local definition `VdVWProbabilityMeasuresTight`.
+-/
+theorem VdVWProbabilityMeasuresTight.tendsto_norm_tail
+    {S : Type u} [MeasurableSpace S] [NormedAddCommGroup S]
+    {A : Set (ProbabilityMeasure S)}
+    (hA : VdVWProbabilityMeasuresTight A) :
+    Tendsto
+      (fun r : ℝ =>
+        ⨆ μ ∈ {((ν : ProbabilityMeasure S) : Measure S) | ν ∈ A},
+          μ {x : S | r < ‖x‖})
+      atTop (𝓝 0) := by
+  simpa [VdVWProbabilityMeasuresTight] using
+    (MeasureTheory.tendsto_measure_norm_gt_of_isTightMeasureSet (E := S)
+      (S := {((μ : ProbabilityMeasure S) : Measure S) | μ ∈ A}) hA)
+
+/--
+Norm-tail characterization, converse direction: in a proper normed group,
+uniformly vanishing norm tails imply tightness of the probability-measure
+family.
+-/
+theorem vdVWProbabilityMeasuresTight_of_tendsto_norm_tail
+    {S : Type u} [MeasurableSpace S] [NormedAddCommGroup S] [ProperSpace S]
+    {A : Set (ProbabilityMeasure S)}
+    (h :
+      Tendsto
+        (fun r : ℝ =>
+          ⨆ μ ∈ {((ν : ProbabilityMeasure S) : Measure S) | ν ∈ A},
+            μ {x : S | r < ‖x‖})
+        atTop (𝓝 0)) :
+    VdVWProbabilityMeasuresTight A := by
+  simpa [VdVWProbabilityMeasuresTight] using
+    (MeasureTheory.isTightMeasureSet_of_tendsto_measure_norm_gt (E := S)
+      (S := {((μ : ProbabilityMeasure S) : Measure S) | μ ∈ A}) h)
+
+/--
+In a proper normed group, the VdV&W-local tightness predicate is equivalent to
+uniformly vanishing norm tails.
+-/
+theorem vdVWProbabilityMeasuresTight_iff_tendsto_norm_tail
+    {S : Type u} [MeasurableSpace S] [NormedAddCommGroup S] [ProperSpace S]
+    {A : Set (ProbabilityMeasure S)} :
+    VdVWProbabilityMeasuresTight A ↔
+      Tendsto
+        (fun r : ℝ =>
+          ⨆ μ ∈ {((ν : ProbabilityMeasure S) : Measure S) | ν ∈ A},
+            μ {x : S | r < ‖x‖})
+        atTop (𝓝 0) :=
+  ⟨fun hA => hA.tendsto_norm_tail, vdVWProbabilityMeasuresTight_of_tendsto_norm_tail⟩
 
 /--
 Levy-Prokhorov characterization of the measure-level weak-convergence wrapper

@@ -127,7 +127,11 @@ and the measure-level Portmanteau continuity-set/converse wrappers
 `VdVWWeakConvergenceProbabilityMeasures.tendsto_measure_of_null_frontier`,
 `vdVWWeakConvergenceProbabilityMeasures_of_forall_isClosed_limsup_measure_le`,
 and
-`vdVWWeakConvergenceProbabilityMeasures_of_forall_isOpen_measure_le_liminf`.
+`vdVWWeakConvergenceProbabilityMeasures_of_forall_isOpen_measure_le_liminf`;
+and the norm-tail tightness wrappers
+`VdVWProbabilityMeasuresTight.tendsto_norm_tail`,
+`vdVWProbabilityMeasuresTight_of_tendsto_norm_tail`, and
+`vdVWProbabilityMeasuresTight_iff_tendsto_norm_tail`.
 
 Next high-capacity proof batches, in order:
 
@@ -5171,3 +5175,16 @@ This closes the ordinary probability-measure continuity-set and closed/open
 Portmanteau converse layer.  It does not close arbitrary-map outer-probability
 Portmanteau statements or the nonmeasurable process-level weak-convergence
 definitions.
+
+2026-05-05 norm-tail tightness follow-up: pinned search found mathlib
+`MeasureTheory.tendsto_measure_norm_gt_of_isTightMeasureSet`,
+`MeasureTheory.isTightMeasureSet_of_tendsto_measure_norm_gt`, and
+`MeasureTheory.isTightMeasureSet_iff_tendsto_measure_norm_gt` in
+`Mathlib.MeasureTheory.Measure.TightNormed`.  `WeakConvergence.lean` now
+exposes the VdV&W-local wrappers
+`VdVWProbabilityMeasuresTight.tendsto_norm_tail`,
+`vdVWProbabilityMeasuresTight_of_tendsto_norm_tail`, and
+`vdVWProbabilityMeasuresTight_iff_tendsto_norm_tail` for probability-measure
+families on normed/proper normed spaces.  This is a reusable Chapter 1
+tightness foundation for finite-dimensional and Hilbert/normed routes; it is
+not an arbitrary-map asymptotic-tightness theorem.

@@ -1547,6 +1547,17 @@ search result.  This is still the ordinary probability-measure statement; the
 arbitrary-map/nonmeasurable outer-probability Portmanteau layer remains a
 separate Chapter 1 primitive.
 
+2026-05-05 norm-tail tightness follow-up: `WeakConvergence.lean` now also
+wraps mathlib's normed-space tightness characterization for the local
+`VdVWProbabilityMeasuresTight` predicate.  The new declarations
+`VdVWProbabilityMeasuresTight.tendsto_norm_tail`,
+`vdVWProbabilityMeasuresTight_of_tendsto_norm_tail`, and
+`vdVWProbabilityMeasuresTight_iff_tendsto_norm_tail` connect tightness of
+probability-measure families on normed/proper normed spaces with uniformly
+vanishing norm tails.  This supports Chapter 1 tightness and later
+finite-dimensional/Hilbert process routes without claiming arbitrary-map
+asymptotic tightness.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
