@@ -318,6 +318,65 @@ theorem vdVW_reverse_inner_upcrossings_pos_of_downcrossingsBefore_pos
         (upcrossingsBefore c d rev T ω : ℝ≥0∞)) (N + 1))
 
 /--
+Ordering of reversed crossing pairs.
+
+If `i < j`, then the `j`-th original crossing interval lies later in ordinary
+time, hence appears earlier in the reversed finite window than the `i`-th
+interval.  This is the deterministic ordering fact needed to upgrade the
+one-crossing extraction to a multiplicity/counting comparison.
+-/
+theorem vdVW_reverse_crossing_pair_order_of_lt
+    {Ω : Type u} {g : ℕ -> Ω -> ℝ} {ω : Ω}
+    {a b : ℝ} {N i j : ℕ} (hij : i < j) :
+    N - lowerCrossingTime a b g N j ω ≤
+      N - upperCrossingTime a b g N (i + 1) ω := by
+  have hi_succ_le_j : i + 1 ≤ j := Nat.succ_le_iff.2 hij
+  have hupper_le :
+      upperCrossingTime a b g N (i + 1) ω ≤
+        upperCrossingTime a b g N j ω :=
+    upperCrossingTime_mono hi_succ_le_j
+  have hupper_lower :
+      upperCrossingTime a b g N j ω ≤ lowerCrossingTime a b g N j ω :=
+    upperCrossingTime_le_lowerCrossingTime
+  exact Nat.sub_le_sub_left (hupper_le.trans hupper_lower) N
+
+/--
+Strict ordering of reversed crossing pairs when the later original lower
+crossing occurs before the finite horizon.
+
+The `+ 1` gap is the form needed to chain finite-window upcrossing extensions:
+after counting the reversed image of a later original crossing, the reversed
+image of an earlier original crossing starts no earlier than the next index.
+-/
+theorem vdVW_reverse_crossing_pair_succ_le_of_lt_of_lower_lt
+    {Ω : Type u} {g : ℕ -> Ω -> ℝ} {ω : Ω}
+    {a b : ℝ} {N i j : ℕ} (hab : a < b) (hij : i < j)
+    (hj_lower :
+      lowerCrossingTime a b g N j ω < N) :
+    N - lowerCrossingTime a b g N j ω + 1 ≤
+      N - upperCrossingTime a b g N (i + 1) ω := by
+  cases j with
+  | zero =>
+      exact False.elim (Nat.not_lt_zero _ hij)
+  | succ k =>
+      have hi_succ_le_j : i + 1 ≤ k + 1 := Nat.succ_le_iff.2 hij
+      have hupper_le :
+          upperCrossingTime a b g N (i + 1) ω ≤
+            upperCrossingTime a b g N (k + 1) ω :=
+        upperCrossingTime_mono hi_succ_le_j
+      have hupper_lt_lower :
+          upperCrossingTime a b g N (k + 1) ω <
+            lowerCrossingTime a b g N (k + 1) ω :=
+        upperCrossingTime_lt_lowerCrossingTime
+          (a := a) (b := b) (f := g) (N := N) (n := k) (ω := ω)
+          hab hj_lower.ne
+      have hlt :
+          upperCrossingTime a b g N (i + 1) ω <
+            lowerCrossingTime a b g N (k + 1) ω :=
+        lt_of_le_of_lt hupper_le hupper_lt_lower
+      omega
+
+/--
 Conditional expectations of a fixed real random variable along an ordinary
 mathlib filtration form the submartingale needed by the VdV&W Lemma 2.4.5
 route.

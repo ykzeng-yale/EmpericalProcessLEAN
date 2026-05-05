@@ -1306,3 +1306,9 @@ reverse downcrossing, and
 reverse-downcrossing count into positive reversed inner-upcrossing count via
 mathlib `upcrossingsBefore_lt_of_exists_upcrossing`.  The remaining task is
 the multiplicity/counting upgrade to the full finite-prefix comparison.
+2026-05-04 follow-up: the ordering half of that multiplicity argument now
+compiles.  `vdVW_reverse_crossing_pair_order_of_lt` and
+`vdVW_reverse_crossing_pair_succ_le_of_lt_of_lower_lt` show that later original
+crossing intervals are earlier, with a one-index separation, in the reversed
+finite window.  The remaining exact step is an induction/counting proof chaining
+these separated pairs into a full `upcrossingsBefore` lower bound.

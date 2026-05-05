@@ -4008,3 +4008,13 @@ the reversed window.  The remaining deterministic blocker is the multiplicity
 step: upgrade this one-crossing/positive-count result to the full inequality
 between finite-prefix downcrossing counts and reversed-window inner upcrossing
 counts.
+
+2026-05-04 follow-up: the crossing-pair ordering needed for that multiplicity
+step is now compiled.  `vdVW_reverse_crossing_pair_order_of_lt` proves that
+later original crossing intervals appear earlier in the reversed finite
+window.  The sharper
+`vdVW_reverse_crossing_pair_succ_le_of_lt_of_lower_lt` proves the required
+one-index gap when the later lower crossing is completed before the horizon.
+The next proof should use this strict ordering to induct over the counted
+downcrossing indices and chain repeated applications of
+`upcrossingsBefore_lt_of_exists_upcrossing`.
