@@ -1294,11 +1294,16 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWTheorem243FiniteNetHoeffdingUpper_tail_subset_logCardinality_div_tail`,
    and
    `vdVWTheorem243FiniteNetHoeffdingUpper_tail_indicator_le_logCardinality_div_tail_indicator`.
-   These reduce finite-net Hoeffding tail/UI to tail/UI of the normalized
-   log-cardinality process.  The next proof should integrate this pointwise
-   inequality under an explicit normalized-log tail/UI hypothesis, then
-   determine whether the textbook random entropy condition supplies that
-   hypothesis or whether a genuine uniform-integrability primitive is missing.
+   The integrated theorem
+   `finiteNetHoeffdingUpper_tailExpectation_condition_of_logCardinality_div_tailExpectation`
+   and selected-package constructor
+   `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation`
+   now turn explicit normalized-log affine tail/UI into the finite-net
+   Hoeffding tail/UI field needed by the selected fixed-radius Theorem 2.4.3
+   route.  The next proof should determine whether the textbook random entropy
+   condition supplies that normalized-log tail/UI and integrability, or whether
+   a genuine varying-domain uniform-integrability primitive or structural
+   entropy bound is missing.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
