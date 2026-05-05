@@ -28,10 +28,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
-- Current manual frontier after local sync to `origin/main` at `8d279bb`
-  (`Add Chewi ellipsoid determinant bridge`) plus the verified local
-  source-volume determinant and scalar `hvolume` packet in
-  `StatInference/Optimization/Ellipsoid.lean`:
+- Current manual frontier after local sync to `origin/main` at `52beefe`
+  (`Add Chewi ellipsoid forward-shape transport bridge`) with the verified
+  source-volume determinant, scalar `hvolume`, determinant-unit inverse-shape
+  reduction, normalized forward/inverse algebra, and forward-shape transport
+  reduction packets in `StatInference/Optimization/Ellipsoid.lean`:
   `StatInference/Optimization/Theorem510.lean` proves the source-shaped
   discrete AGD rate, and `StatInference/Optimization/ProjectedSubgradient.lean`
   now starts Chapter 6 with compiled finite-valued subgradient/projection/PSD
@@ -62,11 +63,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   current `Σ⁻¹` identification, displayed center-update declarations,
   `chewi620_matrix_rankOne_collapse`, the displayed forward-shape determinant
   declarations, source-volume determinant ratio, determinant
-  positivity/nonzero/unit facts, and scalar `hvolume` bridge compile
-  in `StatInference/Optimization/Ellipsoid.lean`.  A
-  focused `lake env lean StatInference/Optimization/Ellipsoid.lean` check
-  passed after the source-volume packet, while the exact Grünbaum/centroid
-  theorem remains a supplied blocker for exact CoGM reporting.
+  positivity/nonzero/unit facts, scalar `hvolume` bridge, determinant-unit
+  inverse-shape reduction, normalized forward/inverse cancellation, and
+  forward-shape transport reductions compile in
+  `StatInference/Optimization/Ellipsoid.lean`.  A focused
+  `lake env lean StatInference/Optimization/Ellipsoid.lean` check passed for
+  the latest pushed packet, while the exact Grünbaum/centroid theorem remains
+  a supplied blocker for exact CoGM reporting.
 
 ## Coverage By Lane
 

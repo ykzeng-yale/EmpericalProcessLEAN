@@ -43,10 +43,11 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after local sync to `origin/main` at `8d279bb`
-(`Add Chewi ellipsoid determinant bridge`) with the verified pushed
-rank-one-collapse and displayed forward-shape determinant packet in
-`StatInference/Optimization/Ellipsoid.lean`;
+Manual goal frontier after local sync to `origin/main` at `52beefe`
+(`Add Chewi ellipsoid forward-shape transport bridge`) with the verified
+pushed source-volume determinant, determinant-unit inverse-shape reduction,
+normalized forward/inverse algebra, and forward-shape transport reduction
+packets in `StatInference/Optimization/Ellipsoid.lean`;
 the latest Optimization proof frontier is Chapter 6 Lemma 6.20 after the
 2026-05-05 standard-cut scalar, determinant-ratio, coordinate-free
 affine-containment, supplied-identity affine-transport certificate, first
@@ -95,7 +96,24 @@ helpers, plus the raw symmetric square-root cut bridge declarations
 `chewi620_matrix_rankOne_collapse`, `chewi620_matrix_rankOne_det_update`,
 `chewi620DisplayedShapeUpdateCore`,
 `chewi620_displayedShapeUpdateCore_det`,
-`chewi620DisplayedShapeUpdate`, and `chewi620_displayedShapeUpdate_det`.
+`chewi620DisplayedShapeUpdate`, and `chewi620_displayedShapeUpdate_det`, plus
+`chewi620_displayedShapeUpdate_det_div_det`,
+`chewi620_displayedShapeUpdate_det_div_det_eq_ellipsoidVolumeRatio_sq`,
+`chewi620_displayedShapeUpdate_det_pos`,
+`chewi620_displayedShapeUpdate_det_ne_zero`,
+`chewi620_displayedShapeUpdate_det_isUnit`,
+`chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio`,
+`matrixInvShape_mul_inv_cancel_of_det_isUnit`,
+`matrixInvShape_inv_mul_cancel_of_det_isUnit`,
+`matrixInvShape_eq_inv_of_left_inverse`,
+`chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_left_inverse`,
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_left_inverse`,
+`chewi620StandardCutForwardShape`,
+`chewi620_standardCutForwardShape_left_inverse`,
+`chewi620_displayedShapeUpdate_left_inverse_of_standardCutForward_transport`,
+`chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_forwardShape_transport`,
+and
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_forwardShape_transport`.
 Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
@@ -104,7 +122,9 @@ functional-constraint packet, the CuttingPlane CoGM wrapper packet, or the
 now-compiled supplied ellipsoid trajectory/rate, scalar containment,
 determinant-ratio, coordinate-free normalized containment, abstract
 affine-transport, matrix normalization, PosDef cancellation, pullback
-certificate, current-shape, or center-update packets.
+certificate, current-shape, center-update, determinant/source-volume,
+inverse-shape reduction, normalized forward/inverse algebra, or
+forward-shape transport-reduction packets.
 `StatInference/Optimization/Theorem58.lean` proves the AGF Lyapunov derivative
 formula, discharges Lyapunov continuity from the trajectory and gradient oracle,
 and exposes a source-facing Theorem 5.8 rate wrapper.  Since Chewi leaves the

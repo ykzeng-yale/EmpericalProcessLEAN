@@ -46,7 +46,21 @@ moving `origin/main`.  Prefer theorem packets with focused `lake env lean`
 checks during development, route-doc updates after a verified packet, then a
 single `lake build StatInference`/scan/commit/push gate for the batch.  Use
 read-only scout agents to map future chapters and mathlib APIs while the main
-thread proves the active theorem layer.  The current scout map says:
+thread proves the active theorem layer.  The current 2-4 hour route is:
+
+- finish Lemma 6.20 as one theorem-sized ellipsoid packet by splitting only
+  along the real blockers: concrete matrix transport and actual
+  determinant-to-volume scaling;
+- immediately continue Chapter 6 through Theorems 6.21-6.25, reusing the
+  compiled PSD/cutting-plane/ellipsoid interfaces instead of re-opening
+  scalar setup;
+- open Chapters 7-13 in parallel module packets with source-shaped theorem
+  interfaces first, then fill proof bodies by dependency order;
+- keep exercise statements and any cheap reusable exercise proofs in
+  `StatInference/Optimization/Exercises.lean`, but never let exercises block
+  the main-text theorem lane.
+
+The current scout map says:
 
 - Chapters 6-8 should start with local `Subgradient.lean`,
   `ProjectedSubgradient.lean`, `FrankWolfe.lean`, and `Proximal.lean`,
@@ -69,7 +83,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Live replacement `/goal` prompt as of 2026-05-05 after syncing local `main` to
-`origin/main` at `8d279bb` (`Add Chewi ellipsoid determinant bridge`):
+`origin/main` at `52beefe`
+(`Add Chewi ellipsoid forward-shape transport bridge`):
 aggressively formalize and prove
 all main theorem content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercises tracked in the single
