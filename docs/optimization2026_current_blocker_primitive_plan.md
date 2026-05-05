@@ -68,7 +68,7 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Live replacement `/goal` prompt after the 2026-05-05 Theorem 6.14 source
+Live replacement `/goal` prompt after the 2026-05-05 Theorem 6.16 source
 packet: aggressively formalize and prove all main theorem content of Sinho
 Chewi's Optimization 2026 notes in Lean under `StatInference/Optimization`,
 with exercises tracked in the single `StatInference/Optimization/Exercises.lean`
@@ -77,10 +77,13 @@ latest verified frontier where `StatInference/Optimization/ProjectedSubgradient.
 proves the finite-valued source-shaped subgradient/projection/PSD layer through
 the supplied-interface Theorem 6.14 average-gap bound, its Lipschitz/ray source
 bridge, the displayed `h = R / sqrt N` rate wrapper, and the scaled-step
-recurrence needed for Theorem 6.16.  The app-level `/goal` objective text still
-mentions the obsolete Theorem 3.4 frontier and cannot be edited directly
-through the current tool surface unless the full textbook goal is marked
-complete, so this paragraph is the operative manual `/goal` target.
+recurrence, functional-constraint PSD interface, objective-case and
+violated-constraint-case strict decrease lemmas, finite strict-decrease
+contradiction, and proof-carrying existential Theorem 6.16 wrapper
+`chewi616_exists_functionalConstraintSuccess`.  The app-level `/goal` objective
+text still mentions the obsolete Theorem 3.4 frontier and cannot be edited
+directly through the current tool surface unless the full textbook goal is
+marked complete, so this paragraph is the operative manual `/goal` target.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
@@ -97,14 +100,16 @@ minimizer membership assumptions.
 
 The active aggressive target is Chapter 6 nonsmooth convex optimization, with
 main-text theorem coverage prioritized over reports and exercises.  Theorem
-6.14 is now source-complete in the finite-valued/ray-valid form.  The next
-theorem packet must attack Theorem 6.16 directly and in one batch if feasible:
-define a source-shaped functional-constraint PSD trajectory/oracle interface,
-prove the objective-case and violated-constraint-case distance decreases from
-`projectedSubgradient_scaled_sqdist_recurrence`, then assemble the finite
-contradiction proof of (6.5) under
-`N >= L^2 * ‖x 0 - xStar‖^2 / eps^2`.  Do not spend a run only polishing a
-minor wrapper unless it is the fastest verified dependency for this theorem.
+6.14 is source-complete in the finite-valued/ray-valid form, and Theorem 6.16
+now compiles in the proof-carrying existential form of display (6.5).  The next
+theorem packet should stay in Chapter 6 and open the cutting-plane/center of
+gravity lane: introduce a source-shaped cutting-plane state/interface for
+Lemma 6.18 and Theorem 6.19, use a supplied Grünbaum/volume-shrink hypothesis
+at first, prove the finite volume-shrink recurrence and the source rate
+wrapper `f (x (N-1)) - fStar <= D * L * lambda^(N/d)` from the compiled convex
+and Lipschitz interfaces, and record exactly which genuine measure/centroid
+facts remain before an exact report.  Do not spend a run only polishing a minor
+wrapper unless it is the fastest verified dependency for this theorem packet.
 
 `StatInference/Optimization/ProjectedSubgradient.lean` now starts this lane and
 compiles a source-shaped finite-valued packet for Definition 6.8, Definition
@@ -127,8 +132,20 @@ declarations include `IsSubgradientAt`, `ProjectionCharacterizationOn`,
 `normalizedSubgradient_inner_self`,
 `IsSubgradientAt.norm_le_of_lipschitzOnWith_feasible_ray`,
 `chewi614_average_gap_bound_of_lipschitzOnWith_feasible_rays`,
-`chewi614_average_gap_bound_stepsize`, and
-`chewi614_average_gap_bound_of_lipschitzOnWith_feasible_rays_stepsize`.
+`chewi614_average_gap_bound_stepsize`,
+`chewi614_average_gap_bound_of_lipschitzOnWith_feasible_rays_stepsize`,
+`FunctionalConstraintSuccess`,
+`FunctionalConstraintSuccess.constraint`,
+`FunctionalConstraintSuccess.value_gap`,
+`IsFunctionalConstraintPSDStep`,
+`IsFunctionalConstraintPSDTrajectory`,
+`IsFunctionalConstraintPSDTrajectory.mem`,
+`IsFunctionalConstraintPSDTrajectory.step`,
+`functionalConstraintPSD_objective_case_sqdist_decrease`,
+`functionalConstraintPSD_constraint_case_sqdist_decrease`,
+`functionalConstraintPSD_step_sqdist_decrease_of_not_success`,
+`strict_decrease_contradiction_of_le_mul`, and
+`chewi616_exists_functionalConstraintSuccess`.
 
 Mandatory Chapter 6 search-first gate before inventing new primitives:
 mathlib `Analysis/InnerProductSpace/Projection/Minimal.lean` has
@@ -141,6 +158,11 @@ has `ConvexOn.map_sum_le`; mathlib `Topology/MetricSpace/Lipschitz.lean` has
 convex-average patterns are already reused for the PSD summation.  Avoid a
 heavy extended-real regular-convex foundation unless it directly unblocks a
 named theorem; backfill Definitions 6.1-6.10 only when a theorem needs them.
+For the next cutting-plane packet, the current search found no direct local or
+mathlib Grünbaum/centroid theorem.  Mathlib has extensive measure/volume and
+convex-body infrastructure in specialized files, but the fastest route for
+Theorem 6.19 is initially a supplied volume-shrink/centroid interface plus
+verified finite recurrence and Lipschitz/diameter algebra.
 
 Speed rule for this manual goal: make theorem-sized packets, not one-wrapper
 push loops.  Use scouts in parallel for future Chapter 6-8 nonsmooth/proximal

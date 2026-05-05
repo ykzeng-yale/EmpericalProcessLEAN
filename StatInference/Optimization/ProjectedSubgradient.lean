@@ -241,6 +241,70 @@ noncomputable def projectedSubgradientScaledStep
     (proj : E -> E) (η : ℝ) (p x : E) : E :=
   proj (x - η • p)
 
+/--
+The success condition in Chewi Theorem 6.16: the selected iterate is
+`eps`-feasible for the functional constraints and has objective gap at most
+`eps`.
+-/
+def FunctionalConstraintSuccess
+    (f fmax : E -> ℝ) (eps : ℝ) (xStar x : E) : Prop :=
+  fmax x ≤ eps ∧ f x - f xStar ≤ eps
+
+omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] in
+theorem FunctionalConstraintSuccess.constraint
+    {f fmax : E -> ℝ} {eps : ℝ} {xStar x : E}
+    (h : FunctionalConstraintSuccess f fmax eps xStar x) :
+    fmax x ≤ eps :=
+  h.1
+
+omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] in
+theorem FunctionalConstraintSuccess.value_gap
+    {f fmax : E -> ℝ} {eps : ℝ} {xStar x : E}
+    (h : FunctionalConstraintSuccess f fmax eps xStar x) :
+    f x - f xStar ≤ eps :=
+  h.2
+
+/--
+One source step of Chewi's projected subgradient method with functional
+constraints.  The first branch is the `fmax(x_n) <= eps` objective step, and
+the second branch is the violated-constraint step.
+-/
+def IsFunctionalConstraintPSDStep
+    (C : Set E) (proj : E -> E) (f fmax : E -> ℝ) (eps : ℝ)
+    (x p xNext : E) : Prop :=
+  (fmax x ≤ eps ∧ IsSubgradientAt C f p x ∧
+      xNext =
+        projectedSubgradientScaledStep proj (eps / ‖p‖ ^ (2 : ℕ)) p x) ∨
+    (eps < fmax x ∧ IsSubgradientAt C fmax p x ∧
+      xNext =
+        projectedSubgradientScaledStep proj (fmax x / ‖p‖ ^ (2 : ℕ)) p x)
+
+/-- Source-shaped trajectory for PSD under functional constraints. -/
+def IsFunctionalConstraintPSDTrajectory
+    (C : Set E) (proj : E -> E) (f fmax : E -> ℝ) (eps : ℝ)
+    (x p : ℕ -> E) : Prop :=
+  (∀ n, x n ∈ C) ∧
+    ∀ n,
+      IsFunctionalConstraintPSDStep C proj f fmax eps
+        (x n) (p n) (x (n + 1))
+
+theorem IsFunctionalConstraintPSDTrajectory.mem
+    {C : Set E} {proj : E -> E} {f fmax : E -> ℝ} {eps : ℝ}
+    {x p : ℕ -> E}
+    (ht : IsFunctionalConstraintPSDTrajectory C proj f fmax eps x p)
+    (n : ℕ) :
+    x n ∈ C :=
+  ht.1 n
+
+theorem IsFunctionalConstraintPSDTrajectory.step
+    {C : Set E} {proj : E -> E} {f fmax : E -> ℝ} {eps : ℝ}
+    {x p : ℕ -> E}
+    (ht : IsFunctionalConstraintPSDTrajectory C proj f fmax eps x p)
+    (n : ℕ) :
+    IsFunctionalConstraintPSDStep C proj f fmax eps
+      (x n) (p n) (x (n + 1)) :=
+  ht.2 n
+
 /-- Source-shaped projected subgradient trajectory interface. -/
 def IsProjectedSubgradientTrajectory
     (C : Set E) (proj : E -> E) (f : E -> ℝ) (h : ℝ)
@@ -369,6 +433,260 @@ theorem projectedSubgradient_scaled_sqdist_recurrence
         ‖x - xStar‖ ^ (2 : ℕ) -
           2 * η * (f x - f xStar) + η ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) := by
         nlinarith
+
+/--
+The first branch in Chewi Theorem 6.16 strictly decreases squared distance
+whenever the objective gap has not yet met the success threshold.
+-/
+theorem functionalConstraintPSD_objective_case_sqdist_decrease
+    {C : Set E} {proj : E -> E} {f : E -> ℝ} {eps L : ℝ}
+    {x p xStar : E}
+    (hproj : ProjectionOracleOn C proj)
+    (hsub : IsSubgradientAt C f p x)
+    (hxStar_mem : xStar ∈ C)
+    (hp_ne : p ≠ 0)
+    (hp_norm_le : ‖p‖ ≤ L)
+    (heps_pos : 0 < eps)
+    (hL_pos : 0 < L)
+    (hgap_gt : eps < f x - f xStar) :
+    ‖projectedSubgradientScaledStep proj (eps / ‖p‖ ^ (2 : ℕ)) p x -
+        xStar‖ ^ (2 : ℕ) <
+      ‖x - xStar‖ ^ (2 : ℕ) - eps ^ (2 : ℕ) / L ^ (2 : ℕ) := by
+  have hp_norm_pos : 0 < ‖p‖ := norm_pos_iff.mpr hp_ne
+  have hnorm_sq_pos : 0 < ‖p‖ ^ (2 : ℕ) := sq_pos_of_pos hp_norm_pos
+  have hL_sq_pos : 0 < L ^ (2 : ℕ) := sq_pos_of_pos hL_pos
+  have heta_nonneg : 0 ≤ eps / ‖p‖ ^ (2 : ℕ) := by
+    positivity
+  have hrec :=
+    projectedSubgradient_scaled_sqdist_recurrence
+      (C := C) (proj := proj) (f := f)
+      (η := eps / ‖p‖ ^ (2 : ℕ)) (x := x) (p := p)
+      (xStar := xStar) hproj hsub hxStar_mem heta_nonneg
+  have hnorm_sq_le_L_sq : ‖p‖ ^ (2 : ℕ) ≤ L ^ (2 : ℕ) :=
+    (sq_le_sq₀ (norm_nonneg _) hL_pos.le).mpr hp_norm_le
+  have h_eps_sq_div_L_le_norm :
+      eps ^ (2 : ℕ) / L ^ (2 : ℕ) ≤
+        eps ^ (2 : ℕ) / ‖p‖ ^ (2 : ℕ) :=
+    div_le_div_of_nonneg_left (sq_nonneg eps) hnorm_sq_pos hnorm_sq_le_L_sq
+  have hstrict_norm :
+      ‖x - xStar‖ ^ (2 : ℕ) -
+          2 * (eps / ‖p‖ ^ (2 : ℕ)) * (f x - f xStar) +
+          (eps / ‖p‖ ^ (2 : ℕ)) ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) <
+        ‖x - xStar‖ ^ (2 : ℕ) -
+          eps ^ (2 : ℕ) / ‖p‖ ^ (2 : ℕ) := by
+    field_simp [hnorm_sq_pos.ne']
+    nlinarith [heps_pos, hgap_gt]
+  have hnorm_to_L :
+      ‖x - xStar‖ ^ (2 : ℕ) -
+          eps ^ (2 : ℕ) / ‖p‖ ^ (2 : ℕ) ≤
+        ‖x - xStar‖ ^ (2 : ℕ) -
+          eps ^ (2 : ℕ) / L ^ (2 : ℕ) := by
+    nlinarith
+  exact hrec.trans_lt (hstrict_norm.trans_le hnorm_to_L)
+
+/--
+The violated-constraint branch in Chewi Theorem 6.16 strictly decreases squared
+distance because the feasible optimizer lies below the zero constraint level.
+-/
+theorem functionalConstraintPSD_constraint_case_sqdist_decrease
+    {C : Set E} {proj : E -> E} {fmax : E -> ℝ} {eps L : ℝ}
+    {x p xStar : E}
+    (hproj : ProjectionOracleOn C proj)
+    (hsub : IsSubgradientAt C fmax p x)
+    (hxStar_mem : xStar ∈ C)
+    (hfmax_star : fmax xStar ≤ 0)
+    (hp_ne : p ≠ 0)
+    (hp_norm_le : ‖p‖ ≤ L)
+    (heps_pos : 0 < eps)
+    (hL_pos : 0 < L)
+    (hviol : eps < fmax x) :
+    ‖projectedSubgradientScaledStep proj (fmax x / ‖p‖ ^ (2 : ℕ)) p x -
+        xStar‖ ^ (2 : ℕ) <
+      ‖x - xStar‖ ^ (2 : ℕ) - eps ^ (2 : ℕ) / L ^ (2 : ℕ) := by
+  have hp_norm_pos : 0 < ‖p‖ := norm_pos_iff.mpr hp_ne
+  have hnorm_sq_pos : 0 < ‖p‖ ^ (2 : ℕ) := sq_pos_of_pos hp_norm_pos
+  have hL_sq_pos : 0 < L ^ (2 : ℕ) := sq_pos_of_pos hL_pos
+  have hfx_pos : 0 < fmax x := heps_pos.trans hviol
+  have heta_nonneg : 0 ≤ fmax x / ‖p‖ ^ (2 : ℕ) := by
+    positivity
+  have hrec :=
+    projectedSubgradient_scaled_sqdist_recurrence
+      (C := C) (proj := proj) (f := fmax)
+      (η := fmax x / ‖p‖ ^ (2 : ℕ)) (x := x) (p := p)
+      (xStar := xStar) hproj hsub hxStar_mem heta_nonneg
+  have hnorm_sq_le_L_sq : ‖p‖ ^ (2 : ℕ) ≤ L ^ (2 : ℕ) :=
+    (sq_le_sq₀ (norm_nonneg _) hL_pos.le).mpr hp_norm_le
+  have h_eps_sq_div_L_le_norm :
+      eps ^ (2 : ℕ) / L ^ (2 : ℕ) ≤
+        eps ^ (2 : ℕ) / ‖p‖ ^ (2 : ℕ) :=
+    div_le_div_of_nonneg_left (sq_nonneg eps) hnorm_sq_pos hnorm_sq_le_L_sq
+  have hgap_ge_viol : fmax x ≤ fmax x - fmax xStar := by
+    nlinarith
+  have hcoef_nonneg : 0 ≤ 2 * (fmax x / ‖p‖ ^ (2 : ℕ)) := by
+    positivity
+  have hreplace_gap :
+      ‖x - xStar‖ ^ (2 : ℕ) -
+          2 * (fmax x / ‖p‖ ^ (2 : ℕ)) * (fmax x - fmax xStar) +
+          (fmax x / ‖p‖ ^ (2 : ℕ)) ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) ≤
+        ‖x - xStar‖ ^ (2 : ℕ) -
+          2 * (fmax x / ‖p‖ ^ (2 : ℕ)) * fmax x +
+          (fmax x / ‖p‖ ^ (2 : ℕ)) ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) := by
+    have hmul :=
+      mul_le_mul_of_nonneg_left hgap_ge_viol hcoef_nonneg
+    nlinarith
+  have hstrict_norm :
+      ‖x - xStar‖ ^ (2 : ℕ) -
+          2 * (fmax x / ‖p‖ ^ (2 : ℕ)) * fmax x +
+          (fmax x / ‖p‖ ^ (2 : ℕ)) ^ (2 : ℕ) * ‖p‖ ^ (2 : ℕ) <
+        ‖x - xStar‖ ^ (2 : ℕ) -
+          eps ^ (2 : ℕ) / ‖p‖ ^ (2 : ℕ) := by
+    field_simp [hnorm_sq_pos.ne']
+    nlinarith [heps_pos, hviol, hfx_pos]
+  have hnorm_to_L :
+      ‖x - xStar‖ ^ (2 : ℕ) -
+          eps ^ (2 : ℕ) / ‖p‖ ^ (2 : ℕ) ≤
+        ‖x - xStar‖ ^ (2 : ℕ) -
+          eps ^ (2 : ℕ) / L ^ (2 : ℕ) := by
+    nlinarith
+  exact hrec.trans_lt (hreplace_gap.trans_lt (hstrict_norm.trans_le hnorm_to_L))
+
+/--
+A single functional-constraint PSD step strictly decreases squared distance if
+the current point has not already met the Theorem 6.16 success condition.
+-/
+theorem functionalConstraintPSD_step_sqdist_decrease_of_not_success
+    {C : Set E} {proj : E -> E} {f fmax : E -> ℝ} {eps L : ℝ}
+    {x p xNext xStar : E}
+    (hproj : ProjectionOracleOn C proj)
+    (hstep : IsFunctionalConstraintPSDStep C proj f fmax eps x p xNext)
+    (hxStar_mem : xStar ∈ C)
+    (hfmax_star : fmax xStar ≤ 0)
+    (hp_ne : p ≠ 0)
+    (hp_norm_le : ‖p‖ ≤ L)
+    (heps_pos : 0 < eps)
+    (hL_pos : 0 < L)
+    (hno_success : ¬ FunctionalConstraintSuccess f fmax eps xStar x) :
+    ‖xNext - xStar‖ ^ (2 : ℕ) <
+      ‖x - xStar‖ ^ (2 : ℕ) - eps ^ (2 : ℕ) / L ^ (2 : ℕ) := by
+  rcases hstep with hobj | hviol_step
+  · rcases hobj with ⟨hfeas, hsub, hxNext⟩
+    have hgap_gt : eps < f x - f xStar := by
+      have hnot_gap : ¬ f x - f xStar ≤ eps := by
+        intro hgap
+        exact hno_success ⟨hfeas, hgap⟩
+      exact not_le.mp hnot_gap
+    simpa [hxNext] using
+      functionalConstraintPSD_objective_case_sqdist_decrease
+        (C := C) (proj := proj) (f := f) (eps := eps) (L := L)
+        (x := x) (p := p) (xStar := xStar)
+        hproj hsub hxStar_mem hp_ne hp_norm_le heps_pos hL_pos hgap_gt
+  · rcases hviol_step with ⟨hviol, hsub, hxNext⟩
+    simpa [hxNext] using
+      functionalConstraintPSD_constraint_case_sqdist_decrease
+        (C := C) (proj := proj) (fmax := fmax) (eps := eps) (L := L)
+        (x := x) (p := p) (xStar := xStar)
+        hproj hsub hxStar_mem hfmax_star hp_ne hp_norm_le
+        heps_pos hL_pos hviol
+
+/--
+Finite strict-decrease contradiction used at the end of Chewi Theorem 6.16.
+If each of `N` steps decreases `distSq` by more than `c`, while
+`distSq 0 <= N * c`, then nonnegativity of `distSq N` is impossible.
+-/
+theorem strict_decrease_contradiction_of_le_mul
+    {distSq : ℕ -> ℝ} {c : ℝ} {N : ℕ}
+    (hN_pos : 0 < N)
+    (hbound : distSq 0 ≤ (N : ℝ) * c)
+    (hdistN_nonneg : 0 ≤ distSq N)
+    (hdec : ∀ n, n < N -> distSq (n + 1) < distSq n - c) :
+    False := by
+  have hrange_nonempty : (Finset.range N).Nonempty :=
+    Finset.nonempty_range_iff.mpr (Nat.ne_of_gt hN_pos)
+  have hterm_le : ∀ n ∈ Finset.range N,
+      c ≤ distSq n - distSq (n + 1) := by
+    intro n hn
+    have hlt := hdec n (Finset.mem_range.mp hn)
+    nlinarith
+  have hterm_lt0 :
+      c < distSq 0 - distSq (0 + 1) := by
+    have hlt := hdec 0 hN_pos
+    nlinarith
+  have hsum_lt :
+      (∑ n ∈ Finset.range N, c) <
+        ∑ n ∈ Finset.range N, (distSq n - distSq (n + 1)) :=
+    Finset.sum_lt_sum hterm_le ⟨0, Finset.mem_range.mpr hN_pos, hterm_lt0⟩
+  have hsum_const :
+      (∑ n ∈ Finset.range N, c) = (N : ℝ) * c := by
+    simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+  have htel :
+      (∑ n ∈ Finset.range N, (distSq n - distSq (n + 1))) =
+        distSq 0 - distSq N :=
+    sum_range_sub_succ distSq N
+  have hNc_lt : (N : ℝ) * c < distSq 0 - distSq N := by
+    simpa [hsum_const, htel] using hsum_lt
+  nlinarith
+
+/--
+Chewi Theorem 6.16, proof-carrying existential form of display (6.5).
+
+Under the source iteration lower bound, PSD with functional constraints must
+produce an iterate `n < N` satisfying both the `eps`-functional feasibility
+condition and the `eps` objective-gap condition.
+-/
+theorem chewi616_exists_functionalConstraintSuccess
+    {C : Set E} {proj : E -> E} {f fmax : E -> ℝ}
+    {eps L : ℝ} {x p : ℕ -> E} {xStar : E} {N : ℕ}
+    (hproj : ProjectionOracleOn C proj)
+    (htraj : IsFunctionalConstraintPSDTrajectory C proj f fmax eps x p)
+    (hxStar_mem : xStar ∈ C)
+    (hfmax_star : fmax xStar ≤ 0)
+    (hp_ne : ∀ n, n < N -> p n ≠ 0)
+    (hp_norm_le : ∀ n, n < N -> ‖p n‖ ≤ L)
+    (heps_pos : 0 < eps)
+    (hL_pos : 0 < L)
+    (hN_pos : 0 < N)
+    (hN_bound :
+      L ^ (2 : ℕ) * ‖x 0 - xStar‖ ^ (2 : ℕ) / eps ^ (2 : ℕ) ≤
+        (N : ℝ)) :
+    ∃ n, n < N ∧ FunctionalConstraintSuccess f fmax eps xStar (x n) := by
+  by_contra hno_exists
+  have hno_success : ∀ n, n < N ->
+      ¬ FunctionalConstraintSuccess f fmax eps xStar (x n) := by
+    intro n hn hs
+    exact hno_exists ⟨n, hn, hs⟩
+  let distSq : ℕ -> ℝ := fun n => ‖x n - xStar‖ ^ (2 : ℕ)
+  let c : ℝ := eps ^ (2 : ℕ) / L ^ (2 : ℕ)
+  have heps_sq_pos : 0 < eps ^ (2 : ℕ) := sq_pos_of_pos heps_pos
+  have hL_sq_pos : 0 < L ^ (2 : ℕ) := sq_pos_of_pos hL_pos
+  have hc_nonneg : 0 ≤ c := by
+    dsimp [c]
+    positivity
+  have hbound : distSq 0 ≤ (N : ℝ) * c := by
+    have hmul :=
+      mul_le_mul_of_nonneg_right hN_bound hc_nonneg
+    have hleft :
+        (L ^ (2 : ℕ) * ‖x 0 - xStar‖ ^ (2 : ℕ) /
+              eps ^ (2 : ℕ)) *
+            (eps ^ (2 : ℕ) / L ^ (2 : ℕ)) =
+          ‖x 0 - xStar‖ ^ (2 : ℕ) := by
+      field_simp [heps_sq_pos.ne', hL_sq_pos.ne']
+    rw [hleft] at hmul
+    simpa [distSq, c, mul_comm, mul_left_comm, mul_assoc] using hmul
+  have hdec : ∀ n, n < N -> distSq (n + 1) < distSq n - c := by
+    intro n hn
+    have hstep :=
+      functionalConstraintPSD_step_sqdist_decrease_of_not_success
+        (C := C) (proj := proj) (f := f) (fmax := fmax)
+        (eps := eps) (L := L) (x := x n) (p := p n)
+        (xNext := x (n + 1)) (xStar := xStar)
+        hproj (htraj.step n) hxStar_mem hfmax_star
+        (hp_ne n hn) (hp_norm_le n hn) heps_pos hL_pos
+        (hno_success n hn)
+    simpa [distSq, c] using hstep
+  exact
+    strict_decrease_contradiction_of_le_mul
+      (distSq := distSq) (c := c) (N := N) hN_pos hbound
+      (sq_nonneg _) hdec
 
 /--
 One PSD step gives the Chewi Theorem 6.14 squared-distance recurrence.

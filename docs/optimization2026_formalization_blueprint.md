@@ -43,17 +43,18 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after the 2026-05-05 Theorem 6.14 source packet:
+Manual goal frontier after the 2026-05-05 Theorem 6.16 source packet:
 `StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
 discrete AGD source rate and `StatInference/Optimization/ProjectedSubgradient.lean`
 now proves the finite-valued Chapter 6 projected-subgradient layer through the
 Theorem 6.14 average-gap bound, Lipschitz/ray source bridge, displayed
-`h = R / sqrt N` rate wrapper, and the scaled-step recurrence needed for
-Theorem 6.16.  Do not target the stale app-level `/goal` text's old Theorem
-3.4 frontier, and do not replay the already-built CG substrate, Theorem 5.8
-AGF source wrapper, Theorem 5.9 strong-convex AGF proof, Theorem 5.10
-weighted-telescope proof, or the basic projection/Jensen/PSD recurrence
-packet.
+`h = R / sqrt N` rate wrapper, scaled-step recurrence, functional-constraint
+PSD interface, strict case decreases, finite contradiction, and proof-carrying
+Theorem 6.16 wrapper `chewi616_exists_functionalConstraintSuccess`.  Do not
+target the stale app-level `/goal` text's old Theorem 3.4 frontier, and do not
+replay the already-built CG substrate, Theorem 5.8 AGF source wrapper, Theorem
+5.9 strong-convex AGF proof, Theorem 5.10 weighted-telescope proof, Theorem
+6.14 PSD packet, or Theorem 6.16 functional-constraint packet.
 `StatInference/Optimization/Theorem58.lean` proves the AGF Lyapunov derivative
 formula, discharges Lyapunov continuity from the trajectory and gradient oracle,
 and exposes a source-facing Theorem 5.8 rate wrapper.  Since Chewi leaves the
@@ -78,14 +79,16 @@ Theorem 6.14 average-gap wrapper `chewi614_average_gap_bound`, the
 Lipschitz/ray source bridge, the displayed `h = R / sqrt N` corollary, and a
 scaled projected-subgradient recurrence for Theorem 6.16.
 
-The next active packet should attack Theorem 6.16 directly, not drip one
-wrapper at a time.  Define the functional-constraint PSD trajectory/oracle
-interface, prove the objective-case and violated-constraint-case distance
-decreases from `projectedSubgradient_scaled_sqdist_recurrence`, and assemble
-the finite contradiction proof of (6.5) under the iteration lower bound.  Once
-6.16 is verified, keep the main line in Chapter 6 long enough to build the
-cutting-plane, ellipsoid, nonsmooth lower-bound, and feasibility packets
-(6.18-6.25) before opening Chapter 7 as the next main-text frontier.
+The next active packet should stay in Chapter 6 and start the
+cutting-plane/center-of-gravity lane around Lemma 6.18 and Theorem 6.19, not
+drip minor wrappers.  Since the source does not prove Grünbaum and the current
+search found no direct mathlib centroid/Grünbaum theorem, begin with a supplied
+volume-shrink interface: define source-shaped cutting-plane states/trajectory,
+prove the finite volume-shrink recurrence and the Lipschitz/diameter rate
+wrapper, and record the genuine measure/centroid gap before any exact theorem
+report.  After that, continue Chapter 6 with ellipsoid Lemma 6.20,
+nonsmooth lower-bound Theorems 6.21-6.23, and feasibility Theorem 6.25 before
+opening Chapter 7 as the next main-text frontier.
 Mandatory search and reuse: mathlib
 `Analysis/InnerProductSpace/Projection/Minimal.lean` has
 `exists_norm_eq_iInf_of_complete_convex` and
