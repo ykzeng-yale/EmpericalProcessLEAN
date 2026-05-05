@@ -45,6 +45,93 @@ theorem ellipsoidVolumeRatio_nonneg (d : ℕ) :
   Real.sqrt_nonneg _
 
 /--
+Cleared scalar core of the central-cut containment in Chewi Lemma 6.20.
+
+After reducing the current ellipsoid to the unit ball and aligning the cut with
+the first coordinate, write a point as `(t, y)` with `t <= 0` and
+`t^2 + ‖y‖^2 <= 1`.  The next ellipsoid has center shifted by
+`-1 / (d + 1)` in the cut direction, squared radius `d^2 / (d + 1)^2` in that
+direction, and squared radius `d^2 / (d^2 - 1)` in the orthogonal directions.
+This theorem is the denominator-cleared inequality behind that containment.
+-/
+theorem chewi620_standard_cut_scalar_containment_cleared
+    {d : ℕ} {t r2 : ℝ}
+    (hd : 1 < d)
+    (hr2_nonneg : 0 ≤ r2)
+    (hball : t ^ (2 : ℕ) + r2 ≤ 1)
+    (hcut : t ≤ 0) :
+    (((d : ℝ) + 1) ^ (2 : ℕ)) *
+        (t + (((d : ℝ) + 1)⁻¹)) ^ (2 : ℕ) +
+      (((d : ℝ) ^ (2 : ℕ)) - 1) * r2 ≤
+        (d : ℝ) ^ (2 : ℕ) := by
+  have hd_pos_nat : 0 < d := by omega
+  have hD_pos : 0 < (d : ℝ) := by exact_mod_cast hd_pos_nat
+  have hD1_pos : 0 < (d : ℝ) + 1 := by positivity
+  have hD1_ne : (d : ℝ) + 1 ≠ 0 := ne_of_gt hD1_pos
+  have hcoef_nonneg : 0 ≤ (d : ℝ) ^ (2 : ℕ) - 1 := by
+    have hD_ge_one : 1 ≤ (d : ℝ) := by exact_mod_cast le_of_lt hd
+    nlinarith [sq_nonneg ((d : ℝ) - 1)]
+  have ht_sq_le_one : t ^ (2 : ℕ) ≤ 1 := by nlinarith
+  have ht_ge_neg_one : -1 ≤ t := by
+    nlinarith [sq_nonneg (t + 1)]
+  have hr2_le : r2 ≤ 1 - t ^ (2 : ℕ) := by nlinarith
+  have hbound :
+      (((d : ℝ) + 1) ^ (2 : ℕ)) *
+          (t + (((d : ℝ) + 1)⁻¹)) ^ (2 : ℕ) +
+        (((d : ℝ) ^ (2 : ℕ)) - 1) * r2 ≤
+      (((d : ℝ) + 1) ^ (2 : ℕ)) *
+          (t + (((d : ℝ) + 1)⁻¹)) ^ (2 : ℕ) +
+        (((d : ℝ) ^ (2 : ℕ)) - 1) * (1 - t ^ (2 : ℕ)) := by
+    have hmul :
+        (((d : ℝ) ^ (2 : ℕ)) - 1) * r2 ≤
+          (((d : ℝ) ^ (2 : ℕ)) - 1) * (1 - t ^ (2 : ℕ)) :=
+      mul_le_mul_of_nonneg_left hr2_le hcoef_nonneg
+    nlinarith
+  have hidentity :
+      (((d : ℝ) + 1) ^ (2 : ℕ)) *
+          (t + (((d : ℝ) + 1)⁻¹)) ^ (2 : ℕ) +
+        (((d : ℝ) ^ (2 : ℕ)) - 1) * (1 - t ^ (2 : ℕ)) =
+      (d : ℝ) ^ (2 : ℕ) + 2 * (((d : ℝ) + 1) * (t * (t + 1))) := by
+    field_simp [hD1_ne]
+    ring
+  have ht_prod_nonpos : t * (t + 1) ≤ 0 := by nlinarith
+  calc
+    (((d : ℝ) + 1) ^ (2 : ℕ)) *
+        (t + (((d : ℝ) + 1)⁻¹)) ^ (2 : ℕ) +
+      (((d : ℝ) ^ (2 : ℕ)) - 1) * r2
+        ≤ (((d : ℝ) + 1) ^ (2 : ℕ)) *
+            (t + (((d : ℝ) + 1)⁻¹)) ^ (2 : ℕ) +
+          (((d : ℝ) ^ (2 : ℕ)) - 1) * (1 - t ^ (2 : ℕ)) := hbound
+    _ = (d : ℝ) ^ (2 : ℕ) +
+          2 * (((d : ℝ) + 1) * (t * (t + 1))) := hidentity
+    _ ≤ (d : ℝ) ^ (2 : ℕ) := by nlinarith
+
+/--
+Normalized central-cut containment inequality in the source denominator form.
+This is the scalar theorem to reuse when instantiating the half-space part of
+`IsEllipsoidStepCertificate` for Chewi's displayed matrix update.
+-/
+theorem chewi620_standard_cut_scalar_containment
+    {d : ℕ} {t r2 : ℝ}
+    (hd : 1 < d)
+    (hr2_nonneg : 0 ≤ r2)
+    (hball : t ^ (2 : ℕ) + r2 ≤ 1)
+    (hcut : t ≤ 0) :
+    ((((d : ℝ) + 1) ^ (2 : ℕ)) / ((d : ℝ) ^ (2 : ℕ))) *
+        (t + (((d : ℝ) + 1)⁻¹)) ^ (2 : ℕ) +
+      ((((d : ℝ) ^ (2 : ℕ)) - 1) / ((d : ℝ) ^ (2 : ℕ))) * r2 ≤
+        1 := by
+  have hd_pos_nat : 0 < d := by omega
+  have hD_pos : 0 < (d : ℝ) := by exact_mod_cast hd_pos_nat
+  have hD_sq_pos : 0 < (d : ℝ) ^ (2 : ℕ) := sq_pos_of_pos hD_pos
+  have hcleared :=
+    chewi620_standard_cut_scalar_containment_cleared
+      (d := d) (t := t) (r2 := r2) hd hr2_nonneg hball hcut
+  rw [div_mul_eq_mul_div, div_mul_eq_mul_div]
+  rw [← add_div]
+  rwa [div_le_iff₀ hD_sq_pos, one_mul]
+
+/--
 Source-shaped certificate for one Lemma 6.20 ellipsoid step: the next
 ellipsoid contains the half-space cut and has the displayed volume ratio.
 -/

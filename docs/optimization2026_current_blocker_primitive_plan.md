@@ -68,8 +68,9 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Live replacement `/goal` prompt after latest pushed frontier `05f5ae4`
-(`f1472c4` ellipsoid source packet plus remote-safe merges) on 2026-05-05:
+Live replacement `/goal` prompt after the 2026-05-05 standard-cut scalar
+containment packet, building on pushed frontier `05f5ae4`
+(`f1472c4` ellipsoid source packet plus remote-safe merges):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under `StatInference/Optimization`, with
 exercises tracked in the single `StatInference/Optimization/Exercises.lean`
@@ -82,23 +83,29 @@ supplied-interface algebraic spine and final source-shaped CoGM display wrapper
 `StatInference/Optimization/Ellipsoid.lean` now starts Lemma 6.20 with
 source ellipsoid sets, cut half-spaces, the displayed center update,
 `ellipsoidVolumeRatio`, ellipsoid step/trajectory certificates, finite
-ellipsoid volume shrink, and
-`chewi620_volume_ratio_and_gap_bound_of_scaled_candidates`.  The app-level
+ellipsoid volume shrink,
+`chewi620_volume_ratio_and_gap_bound_of_scaled_candidates`, and the normalized
+central-cut scalar containment core
+`chewi620_standard_cut_scalar_containment_cleared` /
+`chewi620_standard_cut_scalar_containment`.  The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
 textbook goal is marked complete, so this paragraph is the operative manual
 `/goal` target.
 
-Immediate target for the next manual goal run: prove a theorem-sized part of
-Chewi Lemma 6.20, not another small wrapper.  First search mathlib/local APIs
-for matrix PSD order, rank-one inverse/determinant updates, ellipsoid volume
-scaling, and quadratic-form halfspace containment.  Then instantiate or narrow
-`IsEllipsoidStepCertificate` for Chewi's displayed ellipsoid update by proving
-one of the two hard components: (1) the half-space containment of the central
-cut inside the next ellipsoid, or (2) the determinant/volume ratio bound
-matching `ellipsoidVolumeRatio`.  If the full matrix proof balloons, prove the
-scalar determinant/rank-one algebra certificate as the reusable intermediate
-and record exactly which matrix API remains missing.
+Immediate target for the next manual goal run: transport the normalized
+standard-cut scalar containment theorem through the matrix/affine change of
+variables, or prove the determinant/volume-ratio component of Chewi Lemma 6.20.
+Do not add another small wrapper.  First search mathlib/local APIs for
+EuclideanSpace coordinates, matrix PSD order, rank-one inverse/determinant
+updates, ellipsoid volume scaling, and quadratic-form halfspace containment.
+Then instantiate or narrow `IsEllipsoidStepCertificate` for Chewi's displayed
+ellipsoid update by proving either: (1) the affine/matrix half-space
+containment using `chewi620_standard_cut_scalar_containment`, or (2) the
+determinant/volume ratio bound matching `ellipsoidVolumeRatio`.  If the full
+matrix proof balloons, prove the scalar determinant/rank-one algebra
+certificate as the reusable intermediate and record exactly which matrix API
+remains missing.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
@@ -119,13 +126,14 @@ main-text theorem coverage prioritized over reports and exercises.  Theorem
 compiles in the proof-carrying existential form of display (6.5), the
 source-shaped CoGM Theorem 6.19 wrapper compiles after isolating the genuine
 centroid/volume fact as `HasScaledOutsideCandidatesAbove`, and Lemma 6.20 now
-has a compiled supplied-interface ellipsoid trajectory/rate layer.  The next
-aggressive theorem packet should instantiate or narrow the supplied
+has a compiled supplied-interface ellipsoid trajectory/rate layer plus the
+normalized scalar central-cut containment inequality.  The next aggressive
+theorem packet should instantiate or narrow the supplied
 `IsEllipsoidStepCertificate`: search and use mathlib matrix/PSD/inverse/
-determinant/volume APIs to prove either the half-space containment or the
-determinant/volume-ratio calculation for Chewi's displayed update.  If the
-matrix proof balloons, first prove the scalar determinant/ratio algebra or a
-rank-one update certificate that can be reused by the exact matrix proof.
+determinant/volume APIs to transport the scalar containment theorem to the
+displayed matrix update or to prove the determinant/volume-ratio calculation.
+If the matrix proof balloons, first prove the scalar determinant/ratio algebra
+or a rank-one update certificate that can be reused by the exact matrix proof.
 Do not spend a run only polishing a minor wrapper unless it is the fastest
 verified dependency for this theorem packet.
 
