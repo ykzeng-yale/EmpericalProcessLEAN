@@ -17026,6 +17026,172 @@ theorem vdVWTheorem243FiniteNetHoeffdingUpper_bound_of_logCardinality_div_le
       vdVWTheorem243HoeffdingCenterScale] using hright_nonneg
 
 /--
+Affine domination of the Hoeffding finite-net upper by the normalized
+log-cardinality process.
+
+This is the pointwise analytic bridge for the non-deterministic entropy route:
+it reduces selected finite-net tail/UI to tail/UI of
+`log(cardinality + 1) / n`.  It deliberately avoids a deterministic
+log-cardinality bound.
+-/
+theorem
+    vdVWTheorem243FiniteNetHoeffdingUpper_le_six_mul_M_mul_one_add_logCardinality_div
+    {Ω : Type u} (cardinality : Ω -> ℕ -> ℕ) (ω : Ω) (n : ℕ) {M : ℝ}
+    (hM_nonneg : 0 ≤ M) :
+    vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M ≤
+      (6 * M) *
+        (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+          (n : ℝ)) := by
+  by_cases hn : 0 < n
+  · let Y : ℝ :=
+      vdVWLogEmpiricalL1CoveringCardinality cardinality ω n / (n : ℝ)
+    have hY_nonneg : 0 ≤ Y := by
+      have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+      exact
+        div_nonneg
+          (vdVWLogEmpiricalL1CoveringCardinality_nonneg cardinality ω n)
+          hn_pos.le
+    have hfirst :
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M ≤
+          Real.sqrt (6 * (1 + Y)) * M := by
+      exact
+        vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le
+          cardinality ω hn hM_nonneg hY_nonneg (by rfl)
+    have hsqrt_le :
+        Real.sqrt (6 * (1 + Y)) ≤ 6 * (1 + Y) := by
+      have ht_nonneg : 0 ≤ 6 * (1 + Y) := by nlinarith
+      rw [Real.sqrt_le_left ht_nonneg]
+      have hone_le : 1 ≤ 6 * (1 + Y) := by nlinarith
+      nlinarith
+    calc
+      vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M
+          ≤ Real.sqrt (6 * (1 + Y)) * M := hfirst
+      _ ≤ (6 * (1 + Y)) * M :=
+          mul_le_mul_of_nonneg_right hsqrt_le hM_nonneg
+      _ = (6 * M) *
+            (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+              (n : ℝ)) := by
+            dsimp [Y]
+            ring
+  · have hn_zero : n = 0 := Nat.eq_zero_of_not_pos hn
+    subst n
+    have hright_nonneg :
+        0 ≤ (6 * M) *
+          (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω 0 /
+            (0 : ℝ)) := by
+      have hM_factor : 0 ≤ 6 * M := mul_nonneg (by norm_num) hM_nonneg
+      have hone_nonneg :
+          0 ≤
+            1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω 0 /
+              (0 : ℝ) := by
+        simp
+      exact mul_nonneg hM_factor hone_nonneg
+    simpa [vdVWTheorem243FiniteNetHoeffdingUpper,
+      vdVWTheorem243FiniteNetMaximalUpper,
+      vdVWTheorem243HoeffdingCenterScale] using hright_nonneg
+
+/--
+Tail-event inclusion induced by the affine log-cardinality domination above.
+
+If the Hoeffding upper exceeds `6 M (1 + R)`, then the normalized
+log-cardinality process must exceed `R`.  This is the event-level form needed
+before integrating the selected finite-net tails.
+-/
+theorem
+    vdVWTheorem243FiniteNetHoeffdingUpper_tail_subset_logCardinality_div_tail
+    {Ω : Type u} (cardinality : Ω -> ℕ -> ℕ) (n : ℕ) {M R : ℝ}
+    (hM_pos : 0 < M) :
+    {ω : Ω |
+      (6 * M) * (1 + R) <
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M} ⊆
+      {ω : Ω |
+        R <
+          vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+            (n : ℝ)} := by
+  intro ω hω
+  have hupper_le :=
+    vdVWTheorem243FiniteNetHoeffdingUpper_le_six_mul_M_mul_one_add_logCardinality_div
+      cardinality ω n hM_pos.le
+  have hcoef_pos : 0 < 6 * M := mul_pos (by norm_num) hM_pos
+  have hlt :
+      (6 * M) * (1 + R) <
+        (6 * M) *
+          (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+            (n : ℝ)) :=
+    lt_of_lt_of_le hω hupper_le
+  have hlt_add :
+      1 + R <
+        1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+          (n : ℝ) :=
+    (mul_lt_mul_iff_right₀ hcoef_pos).mp (by
+      simpa [mul_comm, mul_left_comm, mul_assoc] using hlt)
+  exact (add_lt_add_iff_left (1 : ℝ)).mp hlt_add
+
+/--
+Pointwise tail-integrand domination for the finite-net Hoeffding upper by the
+affine normalized log-cardinality tail.
+
+This is the integrand inequality behind the next selected finite-net tail/UI
+bridge; it keeps the remaining analytic assumption on the log-cardinality
+process explicit.
+-/
+theorem
+    vdVWTheorem243FiniteNetHoeffdingUpper_tail_indicator_le_logCardinality_div_tail_indicator
+    {Ω : Type u} (cardinality : Ω -> ℕ -> ℕ) (n : ℕ) {M R : ℝ}
+    (hM_pos : 0 < M) (ω : Ω) :
+    Set.indicator
+        {ω' : Ω |
+          (6 * M) * (1 + R) <
+            vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω' n) n M}
+        (fun ω' : Ω =>
+          vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω' n) n M) ω ≤
+      Set.indicator
+        {ω' : Ω |
+          R <
+            vdVWLogEmpiricalL1CoveringCardinality cardinality ω' n /
+              (n : ℝ)}
+        (fun ω' : Ω =>
+          (6 * M) *
+            (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω' n /
+              (n : ℝ))) ω := by
+  by_cases htail :
+      (6 * M) * (1 + R) <
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M
+  · have hlogtail :
+      R <
+        vdVWLogEmpiricalL1CoveringCardinality cardinality ω n / (n : ℝ) :=
+      vdVWTheorem243FiniteNetHoeffdingUpper_tail_subset_logCardinality_div_tail
+        cardinality n hM_pos htail
+    simp [Set.indicator, htail, hlogtail,
+      vdVWTheorem243FiniteNetHoeffdingUpper_le_six_mul_M_mul_one_add_logCardinality_div
+        cardinality ω n hM_pos.le]
+  · by_cases hlogtail :
+      R <
+        vdVWLogEmpiricalL1CoveringCardinality cardinality ω n / (n : ℝ)
+    · have hlog_nonneg :
+        0 ≤ vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+            (n : ℝ) := by
+        by_cases hn : 0 < n
+        · have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+          exact
+            div_nonneg
+              (vdVWLogEmpiricalL1CoveringCardinality_nonneg cardinality ω n)
+              hn_pos.le
+        · have hn_zero : n = 0 := Nat.eq_zero_of_not_pos hn
+          subst n
+          simp
+      have hright_nonneg :
+          0 ≤
+            (6 * M) *
+              (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n /
+                (n : ℝ)) := by
+        exact
+          mul_nonneg (mul_nonneg (by norm_num) hM_pos.le)
+            (by nlinarith)
+      simpa [Set.indicator, htail, hlogtail] using hright_nonneg
+    · simp [Set.indicator, htail, hlogtail]
+
+/--
 Deterministic analytic core of the entropy-to-Hoeffding-scale convergence
 step.
 

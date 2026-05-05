@@ -58,7 +58,7 @@ consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`a18f1c3` before the current proof batch: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`703fdfe` before the current proof batch: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -118,6 +118,26 @@ Next high-capacity proof batches, in order:
 Older entries below are historical proof-state logs.  Use the authoritative
 paragraph above for the next `/goal` run unless a later verified commit updates
 it.
+
+2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
+the pointwise analytic reduction needed for the non-deterministic entropy
+route.  New compiled declarations:
+`vdVWTheorem243FiniteNetHoeffdingUpper_le_six_mul_M_mul_one_add_logCardinality_div`,
+`vdVWTheorem243FiniteNetHoeffdingUpper_tail_subset_logCardinality_div_tail`,
+and
+`vdVWTheorem243FiniteNetHoeffdingUpper_tail_indicator_le_logCardinality_div_tail_indicator`.
+They prove that the Hoeffding finite-net upper is dominated by
+`6 M * (1 + log(cardinality + 1) / n)`, and that its large-tail event and
+tail integrand are controlled by the corresponding normalized-log tail.  Search
+record: local code already had deterministic bound adapters
+`vdVWTheorem243FiniteNetHoeffdingUpper_le_of_logCardinality_div_le` and
+`finiteNetHoeffdingUpper_tailExpectation_condition_of_bound`; pinned mathlib
+supplies the real square-root order API but no varying-domain UI theorem that
+turns random entropy in probability into tail expectation.  Next exact edit:
+integrate this pointwise tail-indicator inequality to prove a selected
+finite-net tail/UI theorem from an explicit normalized-log tail/UI hypothesis;
+then try to derive that hypothesis from the textbook entropy assumption or
+record the missing uniform-integrability theorem shape.
 
 2026-05-05 current proof batch: the direct book-shaped variable-entropy route
 with honest selected finite-net tail/UI side conditions now compiles in
