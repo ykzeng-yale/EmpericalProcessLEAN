@@ -170,9 +170,11 @@ Next high-capacity proof batches, in order:
    added UI/tail or structural bound hypothesis.  The fixed-domain Vitali/UI
    bridge is now compiled as
    `tendsto_eLpNorm_one_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable`,
-   reusing mathlib `tendsto_Lp_finite_of_tendstoInMeasure`; it confirms the
-   reusable common-space route but does not remove the varying-domain
-   empirical-cover entropy blocker.
+   reusing mathlib `tendsto_Lp_finite_of_tendstoInMeasure`, and its
+   nonnegative ordinary-mean consumer is compiled as
+   `tendsto_integral_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable_nonneg`.
+   These confirm the reusable common-space route but do not remove the
+   varying-domain empirical-cover entropy blocker.
 3. In parallel only when it directly supports exact Chapter 1-2 statements or
    Theorem 2.4.3 endpoints, close reusable arbitrary-map/process foundation
    gaps that are already search-isolated.  The signed weak-convergence

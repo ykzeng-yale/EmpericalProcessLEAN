@@ -487,6 +487,52 @@ theorem tendsto_eLpNorm_one_of_VdVWConvergesInOuterProbability_zero_of_unifInteg
   simpa [hEq] using hLp
 
 /--
+Fixed-domain nonnegative mean-convergence consumer for the Vitali/UI bridge.
+
+This is the ordinary-expectation version of
+`tendsto_eLpNorm_one_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable`:
+for nonnegative integrable processes on one sample space, the `L1` convergence
+from Vitali is exactly convergence of ordinary means to zero.
+-/
+theorem tendsto_integral_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable_nonneg
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {Y : ℕ -> Ω -> ℝ}
+    (hY : VdVWConvergesInOuterProbability μ Y atTop (fun _ => (0 : ℝ)))
+    (hY_meas : ∀ n, AEStronglyMeasurable (Y n) μ)
+    (hY_integrable : ∀ n, Integrable (Y n) μ)
+    (hY_nonneg : ∀ n ω, 0 ≤ Y n ω)
+    (hY_ui : UnifIntegrable Y 1 μ) :
+    Tendsto (fun n => ∫ ω, Y n ω ∂μ) atTop (𝓝 0) := by
+  have hLp :
+      Tendsto (fun n => eLpNorm (Y n) 1 μ) atTop (𝓝 0) :=
+    tendsto_eLpNorm_one_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable
+      hY hY_meas hY_ui
+  have hLpReal :
+      Tendsto (fun n => (eLpNorm (Y n) 1 μ).toReal) atTop (𝓝 0) :=
+    (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hLp
+  have hEq :
+      (fun n => (eLpNorm (Y n) 1 μ).toReal) =
+        fun n => ∫ ω, Y n ω ∂μ := by
+    funext n
+    have h_nonneg_ae : 0 ≤ᵐ[μ] Y n :=
+      ae_of_all μ (hY_nonneg n)
+    have h_integral_nonneg : 0 ≤ ∫ ω, Y n ω ∂μ :=
+      integral_nonneg (μ := μ) (hY_nonneg n)
+    have h_norm :
+        (∫⁻ ω, ‖Y n ω‖ₑ ∂μ) =
+          ∫⁻ ω, ENNReal.ofReal (Y n ω) ∂μ := by
+      refine lintegral_congr_ae ?_
+      filter_upwards with ω
+      rw [Real.enorm_eq_ofReal_abs, abs_of_nonneg (hY_nonneg n ω)]
+    have h_ofReal :
+        ENNReal.ofReal (∫ ω, Y n ω ∂μ) = eLpNorm (Y n) 1 μ := by
+      rw [eLpNorm_one_eq_lintegral_enorm, h_norm]
+      exact (MeasureTheory.ofReal_integral_eq_lintegral_ofReal
+        (hY_integrable n) h_nonneg_ae)
+    rw [← ENNReal.toReal_ofReal h_integral_nonneg, h_ofReal]
+  simpa [hEq] using hLpReal
+
+/--
 A varying-domain perturbation rule for convergence in outer probability to
 zero.
 
