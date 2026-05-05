@@ -1596,18 +1596,24 @@ orthogonality, and affine-minimizer assumptions inside each block.  The Theorem
 Compiled declarations include `IsAcceleratedGradientFlowTrajectory`,
 `chewi58Friction`, `IsChewi58AcceleratedGradientFlowTrajectory`,
 `agfAuxPoint`, `chewi58Lyapunov`, `chewi58Lyapunov_zero`,
+`chewi58_gap_hasDerivAt`, `agfAuxPoint_hasDerivAt`,
+`chewi58Lyapunov_hasDerivAt`, `chewi58Lyapunov_hasDerivWithinAt`,
 `chewi58_gap_le_of_lyapunov_le_initial`,
 `chewi58_gap_le_of_lyapunov_antitoneOn`,
 `chewi58LyapunovDerivative_nonpos_of_firstOrderConvex`,
 `chewi58_gap_le_of_lyapunov_derivative_nonpos`, and
-`chewi58_gap_le_of_lyapunov_derivative_formula_firstOrderConvex`.  Search-first
-reuse: local `FirstOrderStrongConvexOn` convex lower model, Chapter 2
+`chewi58_gap_le_of_lyapunov_derivative_formula_firstOrderConvex`, plus the
+continuity-supplied source wrapper `chewi58_gap_le_of_agf_firstOrderConvex`.
+Search-first reuse: local `FirstOrderStrongConvexOn` convex lower model,
+Chapter 2
 `antitoneOn_of_hasDerivWithinAt_nonpos` route pattern, mathlib
-`HasDerivWithinAt.norm_sq`, `HasDerivAt.inner`, `le_div_iff₀`,
-`sq_nonneg`, `field_simp`, and `nlinarith`.  Next target: prove the actual AGF
-Lyapunov derivative formula from `IsChewi58AcceleratedGradientFlowTrajectory`,
-`HasGradientAt`, and continuity/differentiability side conditions, then expose
-the exact source-facing Theorem 5.8 statement before moving to Theorem 5.9.
+`HasGradientAt.hasFDerivAt`, `HasDerivAt.smul`, `HasDerivAt.mul`,
+`HasDerivAt.norm_sq`, `HasDerivWithinAt.norm_sq`, `HasDerivAt.inner`,
+`le_div_iff₀`, `sq_nonneg`, `field_simp`, `module`, and `nlinarith`.  The AGF
+ODE derivative formula is now proved; next target: discharge or package the
+remaining `ContinuousOn (chewi58Lyapunov ...) (Set.Ici 0)` side condition from
+trajectory/gradient continuity when practical, expose the exact source-facing
+Theorem 5.8 statement, then move to Theorem 5.9.
 Do not redo
 Theorem 5.3's
 A-conjugacy induction, the Chapter 3 descent lemma, Chapter 4 gradient-span

@@ -47,6 +47,106 @@ noncomputable def chewi58Lyapunov (f : E -> ℝ) (fstar : ℝ)
   (t ^ (2 : ℕ) / 2) * (f (x t) - fstar) +
     ‖agfAuxPoint x p t - xStar‖ ^ (2 : ℕ)
 
+/-- Function-gap derivative along AGF, using the supplied gradient oracle. -/
+theorem chewi58_gap_hasDerivAt
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {x p : ℝ -> E} {fstar t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsChewi58AcceleratedGradientFlowTrajectory grad x p) :
+    HasDerivAt (fun s => f (x s) - fstar)
+      (inner ℝ (grad (x t)) (p t)) t := by
+  have hcomp :=
+    (hgrad (x t)).hasFDerivAt.comp_hasDerivAt (x := t) (hflow.1 t)
+  simpa [InnerProductSpace.toDual_apply_apply] using hcomp.sub_const fstar
+
+/--
+Derivative of Chewi's auxiliary AGF point.  The friction coefficient `3 / t`
+is exactly what cancels the momentum terms, leaving `z'_t = -(t / 2) ∇f(x_t)`.
+-/
+theorem agfAuxPoint_hasDerivAt
+    {grad : E -> E} {x p : ℝ -> E} {t : ℝ}
+    (hflow : IsChewi58AcceleratedGradientFlowTrajectory grad x p)
+    (ht : t ≠ 0) :
+    HasDerivAt (agfAuxPoint x p) (-((t / 2) • grad (x t))) t := by
+  have hcoef : HasDerivAt (fun s : ℝ => s / 2) (1 / 2) t := by
+    simpa using (hasDerivAt_id t).div_const 2
+  have hscaled := hcoef.smul (hflow.2 t)
+  have hraw :
+      HasDerivAt (fun s : ℝ => x s + (s / 2) • p s)
+        (p t +
+          ((t / 2) • (-(grad (x t)) - chewi58Friction t • p t) +
+            ((1 : ℝ) / 2) • p t)) t :=
+    (hflow.1 t).add hscaled
+  have hscalar : (t / 2) * (3 / t) = (3 : ℝ) / 2 := by
+    field_simp [ht]
+  have hderiv :
+      p t +
+          ((t / 2) • (-(grad (x t)) - chewi58Friction t • p t) +
+            ((1 : ℝ) / 2) • p t) =
+        -((t / 2) • grad (x t)) := by
+    rw [chewi58Friction, smul_sub, smul_smul, hscalar]
+    module
+  convert hraw using 1
+  exact hderiv.symm
+
+/--
+The displayed derivative identity in Chewi Theorem 5.8 after substituting the
+AGF equation with friction `γ_t = 3 / t`.
+-/
+theorem chewi58Lyapunov_hasDerivAt
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {fstar : ℝ} {x p : ℝ -> E} {xStar : E} {t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsChewi58AcceleratedGradientFlowTrajectory grad x p)
+    (ht : t ≠ 0) :
+    HasDerivAt (chewi58Lyapunov f fstar x p xStar)
+      (t * (f (x t) - fstar) -
+        t * inner ℝ (grad (x t)) (x t - xStar)) t := by
+  have hcoef : HasDerivAt (fun s : ℝ => s ^ (2 : ℕ) / 2) t t := by
+    have hid : HasDerivAt (fun s : ℝ => s) 1 t := hasDerivAt_id t
+    have hsq : HasDerivAt (fun s : ℝ => s * s) (2 * t) t := by
+      simpa [one_mul, mul_one, two_mul] using hid.mul hid
+    have hsq_div := hsq.div_const 2
+    convert hsq_div using 1
+    · ext s
+      ring
+    · ring
+  have hgap :
+      HasDerivAt (fun s => f (x s) - fstar)
+        (inner ℝ (grad (x t)) (p t)) t :=
+    chewi58_gap_hasDerivAt hgrad hflow
+  have hweighted := hcoef.mul hgap
+  have hz :
+      HasDerivAt (fun s => agfAuxPoint x p s - xStar)
+        (-((t / 2) • grad (x t))) t := by
+    simpa using (agfAuxPoint_hasDerivAt hflow ht).sub_const xStar
+  have hnorm := hz.norm_sq
+  have hsum := hweighted.add hnorm
+  have haux :
+      agfAuxPoint x p t - xStar =
+        (x t - xStar) + (t / 2) • p t := by
+    simp [agfAuxPoint]
+    abel
+  convert hsum using 1
+  rw [haux]
+  simp [inner_add_left, inner_smul_left, inner_smul_right, real_inner_comm]
+  ring
+
+/-- Within-set form of `chewi58Lyapunov_hasDerivAt` on positive time. -/
+theorem chewi58Lyapunov_hasDerivWithinAt
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {fstar : ℝ} {x p : ℝ -> E} {xStar : E} {t : ℝ}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsChewi58AcceleratedGradientFlowTrajectory grad x p)
+    (ht : t ∈ interior (Set.Ici (0 : ℝ))) :
+    HasDerivWithinAt (chewi58Lyapunov f fstar x p xStar)
+      (t * (f (x t) - fstar) -
+        t * inner ℝ (grad (x t)) (x t - xStar))
+      (interior (Set.Ici (0 : ℝ))) t := by
+  have ht_pos : 0 < t := by simpa using ht
+  exact (chewi58Lyapunov_hasDerivAt hgrad hflow
+    (ne_of_gt ht_pos)).hasDerivWithinAt
+
 /-- At time zero, Chewi's Theorem 5.8 Lyapunov equals the initial squared distance. -/
 theorem chewi58Lyapunov_zero (f : E -> ℝ) (fstar : ℝ)
     (x p : ℝ -> E) (xStar : E) :
@@ -197,6 +297,35 @@ theorem chewi58_gap_le_of_lyapunov_derivative_formula_firstOrderConvex
   exact chewi58LyapunovDerivative_nonpos_of_firstOrderConvex
     (x := x) (xStar := xStar) hfirst hfxStar hs_nonneg
     (hderiv_formula s hs)
+
+/--
+Source-facing Theorem 5.8 wrapper, with continuity of the Lyapunov expression
+kept as an explicit analytic side condition.  The AGF equation supplies the
+derivative formula; first-order convexity supplies its nonpositivity.
+-/
+theorem chewi58_gap_le_of_agf_firstOrderConvex
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E} {fstar : ℝ}
+    {x p : ℝ -> E} {xStar : E} {t : ℝ}
+    (hfirst : FirstOrderStrongConvexOn Set.univ f grad 0)
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsChewi58AcceleratedGradientFlowTrajectory grad x p)
+    (hfxStar : f xStar = fstar)
+    (hcont :
+      ContinuousOn (chewi58Lyapunov f fstar x p xStar) (Set.Ici (0 : ℝ)))
+    (ht : 0 < t) :
+    f (x t) - fstar ≤
+      2 * ‖x 0 - xStar‖ ^ (2 : ℕ) / t ^ (2 : ℕ) := by
+  refine chewi58_gap_le_of_lyapunov_derivative_formula_firstOrderConvex
+    (f := f) (grad := grad) (fstar := fstar) (x := x) (p := p)
+    (xStar := xStar)
+    (L' := fun s =>
+      s * (f (x s) - fstar) -
+        s * inner ℝ (grad (x s)) (x s - xStar))
+    hfirst hfxStar hcont ?_ ?_ ht
+  · intro s hs
+    exact chewi58Lyapunov_hasDerivWithinAt hgrad hflow hs
+  · intro s hs
+    rfl
 
 end Optimization
 end StatInference
