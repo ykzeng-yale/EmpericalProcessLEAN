@@ -1322,3 +1322,15 @@ removes the former reverse/cofiltration primitive from the standard
 countable/integrable-envelope Lemma 2.4.5 route.  The next dashboard frontier
 is final endpoint cleanup: consume this proved handoff in Lemma 2.4.5 and
 Theorem 2.4.3 wrappers that still carry an explicit `hreverse` hypothesis.
+
+2026-05-05 follow-up: the canonical full-subgraph endpoint cleanup is now
+compiled.  New theorem-facing declarations
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_textbookReverseCofiltrationHandoff`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_countable_integrable`,
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_countable_integrable`
+use the proved textbook reverse/cofiltration handoff, so the full-subgraph
+Theorem 2.4.3/Lemma 2.4.5 package no longer asks callers for an explicit
+`hreverse` primitive under the standard countable/integrable-envelope
+assumptions.  The next frontier is exact final-statement assembly and auditing
+remaining `hreverse` wrappers as optional alternative sufficient conditions.

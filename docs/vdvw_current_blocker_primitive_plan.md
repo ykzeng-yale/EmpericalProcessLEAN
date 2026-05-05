@@ -4035,3 +4035,18 @@ reverse/cofiltration package under countability, coordinate measurability, and
 integrable-envelope hypotheses.  Next target: consume this new handoff in the
 Lemma 2.4.5 and Theorem 2.4.3 final endpoint wrappers, replacing theorem
 statements that still ask for an explicit reverse/cofiltration primitive.
+
+2026-05-05 follow-up: the main full-subgraph endpoint cleanup is now compiled.
+New declarations
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_textbookReverseCofiltrationHandoff`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_fullSubgraph_integrable_canonical_of_countable_integrable`,
+and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_countable_integrable`
+consume `VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`
+directly.  Thus the canonical full-subgraph package now exposes only the
+countable-class, full-subgraph VC, coordinate-measurability, measurable
+integrable-envelope, and nonempty-class hypotheses; it no longer requires a
+caller-supplied reverse/cofiltration theorem.  Next target: audit remaining
+`hreverse` wrappers and keep only the genuinely alternative sufficient
+conditions; then continue final Theorem 2.4.3 exact-statement assembly from the
+proved full-subgraph package and the fixed-radius/selected entropy consumers.
