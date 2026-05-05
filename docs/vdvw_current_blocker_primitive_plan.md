@@ -173,6 +173,9 @@ Next high-capacity proof batches, in order:
    reusing mathlib `tendsto_Lp_finite_of_tendstoInMeasure`, and its
    nonnegative ordinary-mean consumer is compiled as
    `tendsto_integral_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable_nonneg`.
+   The signed ordinary-mean consumer
+   `tendsto_integral_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable`
+   is compiled too, using `‖∫ Y_n‖ ≤ ∫ ‖Y_n‖`.
    These confirm the reusable common-space route but do not remove the
    varying-domain empirical-cover entropy blocker.
 3. In parallel only when it directly supports exact Chapter 1-2 statements or

@@ -533,6 +533,46 @@ theorem tendsto_integral_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrab
   simpa [hEq] using hLpReal
 
 /--
+Fixed-domain signed mean-convergence consumer for the Vitali/UI bridge.
+
+For integrable real processes on one sample space, common-domain convergence in
+outer probability to zero plus uniform integrability implies convergence of
+ordinary signed means to zero.  The proof uses the preceding `L1` bridge and
+the standard bound `‖∫ Y_n‖ ≤ ∫ ‖Y_n‖`.
+-/
+theorem tendsto_integral_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {Y : ℕ -> Ω -> ℝ}
+    (hY : VdVWConvergesInOuterProbability μ Y atTop (fun _ => (0 : ℝ)))
+    (hY_meas : ∀ n, AEStronglyMeasurable (Y n) μ)
+    (hY_integrable : ∀ n, Integrable (Y n) μ)
+    (hY_ui : UnifIntegrable Y 1 μ) :
+    Tendsto (fun n => ∫ ω, Y n ω ∂μ) atTop (𝓝 0) := by
+  have hLp :
+      Tendsto (fun n => eLpNorm (Y n) 1 μ) atTop (𝓝 0) :=
+    tendsto_eLpNorm_one_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable
+      hY hY_meas hY_ui
+  have hLpReal :
+      Tendsto (fun n => (eLpNorm (Y n) 1 μ).toReal) atTop (𝓝 0) :=
+    (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hLp
+  rw [tendsto_zero_iff_norm_tendsto_zero]
+  refine squeeze_zero (fun n => norm_nonneg _) ?_ hLpReal
+  intro n
+  have h_norm_eq :
+      ∫ ω, ‖Y n ω‖ ∂μ = (eLpNorm (Y n) 1 μ).toReal := by
+    have h_integral_norm_nonneg : 0 ≤ ∫ ω, ‖Y n ω‖ ∂μ :=
+      integral_nonneg (μ := μ) fun ω => norm_nonneg (Y n ω)
+    have h_ofReal :
+        ENNReal.ofReal (∫ ω, ‖Y n ω‖ ∂μ) = eLpNorm (Y n) 1 μ := by
+      rw [eLpNorm_one_eq_lintegral_enorm]
+      exact MeasureTheory.ofReal_integral_norm_eq_lintegral_enorm (hY_integrable n)
+    rw [← ENNReal.toReal_ofReal h_integral_norm_nonneg, h_ofReal]
+  calc
+    ‖∫ ω, Y n ω ∂μ‖ ≤ ∫ ω, ‖Y n ω‖ ∂μ :=
+      norm_integral_le_integral_norm _
+    _ = (eLpNorm (Y n) 1 μ).toReal := h_norm_eq
+
+/--
 A varying-domain perturbation rule for convergence in outer probability to
 zero.
 

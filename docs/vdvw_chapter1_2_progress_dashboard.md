@@ -206,10 +206,12 @@ It translates common-domain outer-probability convergence to mathlib
 `TendstoInMeasure` and applies `tendsto_Lp_finite_of_tendstoInMeasure`.
 The nonnegative ordinary-mean consumer
 `tendsto_integral_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable_nonneg`
-is compiled as well.  These are useful for any common-space recoding of
-entropy processes, but they do not by themselves close Theorem 2.4.3 because
-the selected empirical-cover cardinality processes currently live on varying
-finite-product sample spaces.
+is compiled as well, and the signed ordinary-mean consumer
+`tendsto_integral_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable`
+now handles centered real processes by bounding `‖∫ Y_n‖` with the `L1` norm.
+These are useful for any common-space recoding of entropy processes, but they
+do not by themselves close Theorem 2.4.3 because the selected empirical-cover
+cardinality processes currently live on varying finite-product sample spaces.
 
 2026-05-05 Chapter 1 arbitrary-map follow-up: the varying-domain signed
 bounded-continuous weak-convergence package now has continuous-mapping
