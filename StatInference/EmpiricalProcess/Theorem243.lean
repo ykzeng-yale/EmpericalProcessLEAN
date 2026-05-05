@@ -4996,6 +4996,43 @@ theorem adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiric
         (Observation := Observation) (Nat.le_succ (OrderDual.ofDual n)))
       le_rfl
 
+/--
+Strongly-adapted version of the named Lemma 2.4.5 centered empirical
+supremum process.  Mathlib's martingale and submartingale APIs require this
+strong form rather than plain measurability/adaptedness.
+-/
+theorem stronglyAdapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun) :
+    StronglyAdapted (vdVWPermutationSymmetricCofiltration Observation)
+      (fun n : ℕᵒᵈ => fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+          (OrderDual.ofDual n) sequence) :=
+  (adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    hcount hclass).stronglyAdapted
+
+/--
+Strongly-adapted shifted display `X_{n+1}` for the Lemma 2.4.5 centered
+empirical supremum process.
+-/
+theorem stronglyAdapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_succ_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun) :
+    StronglyAdapted (vdVWPermutationSymmetricCofiltration Observation)
+      (fun n : ℕᵒᵈ => fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+          (OrderDual.ofDual n + 1) sequence) :=
+  (adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_succ_of_countable
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    hcount hclass).stronglyAdapted
+
 /-- Nonnegativity of the named Lemma 2.4.5 centered empirical supremum. -/
 theorem vdVWLemma245CenteredEmpiricalSupremum_nonneg
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]

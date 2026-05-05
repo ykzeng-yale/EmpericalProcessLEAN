@@ -1055,3 +1055,12 @@ This removes another bookkeeping layer from the non-finite Lemma 2.4.5 route:
 the remaining blocker is the actual reverse/permutation-symmetric convergence
 principle, not measurability, adaptedness, nonnegativity, or envelope `L¹`
 control of the centered supremum process.
+
+2026-05-04 follow-up: the centered process also now has the direct strong
+adaptedness wrappers required by mathlib martingale APIs:
+`stronglyAdapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_of_countable`
+and
+`stronglyAdapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_succ_of_countable`.
+The remaining blocker is unchanged but sharper: prove the VdV&W
+reverse/permutation-symmetric convergence theorem, not the process API
+plumbing around it.

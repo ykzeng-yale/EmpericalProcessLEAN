@@ -3585,3 +3585,16 @@ measurability/adaptedness/integrability bookkeeping for `X_n` and `X_{n+1}`.
 The remaining non-finite-class blocker is still the genuine
 reverse/permutation-symmetric convergence theorem represented by
 `VdVWLemma245ReverseCofiltrationHandoff`.
+
+2026-05-04 follow-up: the same Lemma 2.4.5 process is now also exposed in the
+strong adaptedness form required by mathlib martingale/submartingale APIs.
+Search/reuse record: pinned mathlib `Probability/Process/Adapted.lean`
+provides `Adapted.stronglyAdapted` for second-countable targets such as `ℝ`,
+and `Probability/Martingale/Basic.lean` shows `Submartingale`,
+`Supermartingale`, and `Martingale` all consume `StronglyAdapted`.  New
+compiled wrappers are
+`stronglyAdapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_of_countable`
+and
+`stronglyAdapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_succ_of_countable`.
+This removes another API mismatch before the remaining reverse/cofiltration
+proof; it is not itself the reverse convergence theorem.
