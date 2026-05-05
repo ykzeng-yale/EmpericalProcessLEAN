@@ -145,10 +145,18 @@ plus `chewi620_matrix_rankOne_collapse`,
 `chewi620_displayedShapeUpdate_det_pos`,
 `chewi620_displayedShapeUpdate_det_ne_zero`,
 `chewi620_displayedShapeUpdate_det_isUnit`, and
-`chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio`.  The determinant
-and scalar `hvolume` bridge is verified in focused Lean, so the next run must
-not spend theorem time reproving or repackaging that determinant/source-volume
-core unless it is directly needed inside the measure-scaling theorem.
+`chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio`, plus the
+determinant-unit inverse-shape reduction packet
+`matrixInvShape_mul_inv_cancel_of_det_isUnit`,
+`matrixInvShape_inv_mul_cancel_of_det_isUnit`,
+`matrixInvShape_eq_inv_of_left_inverse`,
+`chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_left_inverse`,
+and
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_left_inverse`.
+The determinant/scalar `hvolume` bridge and the inverse-shape left-inverse
+reduction are verified in focused Lean, so the next run must not spend theorem
+time reproving or repackaging those cores unless they are directly needed
+inside the measure-scaling or left-inverse algebra theorem.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
@@ -163,16 +171,21 @@ ellipsoidVolumeRatio d ^ 2`, and the scalar bridge
 `chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio` converts any
 squared-volume determinant bound into the certificate's `hvolume` hypothesis.
 Next, instantiate the actual mathlib measure/volume-scaling API for the
-ellipsoid affine image, or, if that route balloons, record the exact missing
-measure API and switch to the displayed next inverse-shape matrix equality that
-identifies the local pullback next shape with Chewi's displayed
-`Σ_{n+1}^{-1}` update.  The raw square-root adjoint identity, normalized cut
+ellipsoid affine image, and prove the explicit left-inverse identity
+`matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)
+  (chewi620PullbackStandardCutInvShape d u T y) = y` for the normalized cut
+direction; the latter now immediately yields the displayed `Σ_{n+1}^{-1}`
+set-level replacement through the compiled left-inverse reduction.  If either
+route balloons, record the exact missing measure or matrix API and prove the
+smallest volume-scaling or left-inverse algebra certificate that removes it.
+The raw square-root adjoint identity, normalized cut
 `hcut` bridge, `Sigma.PosDef` invertibility/cancellation layer, pullback
 `hnext` certificate, current `Σ⁻¹` ellipsoid identification, displayed center
 update, rank-one collapse `(Σp)^T Σ⁻¹ (Σp) = <p, Σp>`, displayed
 forward-shape determinant formula, determinant/source-volume ratio, determinant
-positivity/nonzero/unit facts, and scalar `hvolume` bridge are now local; this
-is not a minor wrapper target.  Do not spend another run on
+positivity/nonzero/unit facts, scalar `hvolume` bridge, and determinant-unit
+left-inverse reduction are now local; this is not a minor wrapper target.  Do
+not spend another run on
 scalar, coordinate-free, abstract transport, current-shape, center-update,
 pullback-only wrappers, rank-one collapse, or determinant-core algebra unless
 one is the shortest verified route to the concrete matrix theorem.  The
@@ -192,16 +205,29 @@ dependency order is:
    `Matrix.replicateCol`, and `Matrix.replicateRow`, and is now local through
    `chewi620_matrix_rankOne_det_update`,
    `chewi620_displayedShapeUpdateCore_det`, and
-   `chewi620_displayedShapeUpdate_det`.  Volume-scaling APIs still need to be
-   instantiated; use `Real.map_matrix_volume_pi_eq_smul_volume_pi` /
-   `Real.map_linearMap_volume_pi_eq_smul_volume_pi` after the determinant
-   ratio is in source shape.
+   `chewi620_displayedShapeUpdate_det`.  Volume-scaling scout result:
+   for actual set volumes use mathlib Haar/Lebesgue image APIs on
+   `EuclideanSpace`, especially `Measure.addHaar_image_linearMap`,
+   `Measure.addHaar_image_continuousLinearMap`,
+   `Measure.addHaar_preimage_linearMap`,
+   `Measure.addHaar_preimage_linearEquiv`, and translation invariance,
+   rather than only the raw pushforward formulas
+   `Real.map_matrix_volume_pi_eq_smul_volume_pi` /
+   `Real.map_linearMap_volume_pi_eq_smul_volume_pi`.  The raw `Real.map_*`
+   lemmas scale pushforwards by `|det|⁻¹`; set images need the `|det|`
+   addHaar-image route.  For `Matrix.toEuclideanLin`, reuse mathlib
+   `Matrix.toEuclideanLin = Matrix.toLpLin 2 2`, `LinearMap.det_toLpLin`,
+   and `PiLp.volume_preserving_toLp` / `PiLp.volume_preserving_ofLp`.
 2. Instantiate mathlib volume-scaling from the determinant/source-volume packet
    and prove a concrete measured-volume inequality that feeds
    `chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio`.
-3. Prove the displayed next-shape/inverse-shape matrix equality: connect
-   `chewi620PullbackStandardCutInvShape d u T` under the square-root/inverse
-   hypotheses with `matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹`.
+3. Prove the displayed next-shape left-inverse identity:
+   `matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)
+     (chewi620PullbackStandardCutInvShape d u T y) = y` for the normalized
+   cut direction under the square-root hypotheses; then use
+   `chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_left_inverse`
+   and its ellipsoid-set form to replace the pullback next shape by
+   `matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹`.
 4. Prove the determinant-to-volume bridge needed for the `hvolume` hypothesis
    of the displayed-current/displayed-center certificate, reusing the compiled
    determinant formula and mathlib volume-scaling APIs.

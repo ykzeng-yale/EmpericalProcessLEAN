@@ -141,9 +141,21 @@ ellipsoidVolumeRatio d ^ 2`, with determinant positivity/nonzero/unit facts and
 the scalar bridge
 `chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio` converting a
 squared determinant-volume bound into the certificate's `hvolume` hypothesis.
+The determinant-unit inverse-shape reduction now also compiles:
+`matrixInvShape_mul_inv_cancel_of_det_isUnit`,
+`matrixInvShape_inv_mul_cancel_of_det_isUnit`,
+`matrixInvShape_eq_inv_of_left_inverse`,
+`chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_left_inverse`,
+and
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_left_inverse`.
 The next manual goal packet should instantiate mathlib volume-scaling APIs for
-the actual ellipsoid affine image and continue the harder displayed
-next inverse-shape equality with Chewi's `Σ_{n+1}^{-1}` matrix update.  If
+the actual ellipsoid affine image using `Measure.addHaar_image_linearMap` /
+`Measure.addHaar_preimage_linearEquiv`, translation invariance, and
+`LinearMap.det_toLpLin` for `Matrix.toEuclideanLin`; the raw `Real.map_*`
+pushforward lemmas scale by `|det|⁻¹`, while set images need the `|det|`
+addHaar-image route.  In parallel, prove the explicit displayed-update
+left-inverse identity for the normalized pullback next shape; the compiled
+left-inverse reduction then gives Chewi's `Σ_{n+1}^{-1}` set replacement.  If
 either proof balloons, record the exact missing matrix/measure API and prove
 the smallest affine transport, matrix-coordinate, inverse-shape, or
 volume-scaling certificate that removes it.

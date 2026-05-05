@@ -212,13 +212,25 @@ forward-shape update now compiles through
 `chewi620_displayedShapeUpdate_det_pos`,
 `chewi620_displayedShapeUpdate_det_ne_zero`,
 `chewi620_displayedShapeUpdate_det_isUnit`, and
-`chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio`.  The remaining
-blocker is the displayed next inverse-shape matrix equality plus the actual
-mathlib measure-scaling instantiation, not scalar algebra, abstract transport,
-current-shape rewriting, center algebra, rank-one collapse, determinant-core
-algebra, or source-volume determinant algebra.  The target order is
-determinant-to-volume scaling using mathlib volume APIs, displayed
-`Σ_{n+1}^{-1}` matrix equivalence, then exact one-step Lemma 6.20 certificate.
+`chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio`, plus
+`matrixInvShape_mul_inv_cancel_of_det_isUnit`,
+`matrixInvShape_inv_mul_cancel_of_det_isUnit`,
+`matrixInvShape_eq_inv_of_left_inverse`,
+`chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_left_inverse`,
+and
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_left_inverse`.
+The remaining blocker is the actual mathlib measure-scaling instantiation plus
+the displayed-update left-inverse algebra for the normalized pullback next
+shape, not scalar algebra, abstract transport, current-shape rewriting, center
+algebra, rank-one collapse, determinant-core algebra, source-volume determinant
+algebra, or nonsingular-inverse uniqueness.  For measure scaling, use
+`Measure.addHaar_image_linearMap` / `Measure.addHaar_preimage_linearEquiv`,
+translation invariance, and `LinearMap.det_toLpLin` for
+`Matrix.toEuclideanLin`; the raw `Real.map_*` pushforward lemmas scale by
+`|det|⁻¹`, while set-image volume needs the `|det|` addHaar route.  The target
+order is determinant-to-volume scaling using mathlib volume APIs, the
+displayed-update left-inverse identity, then exact one-step Lemma 6.20
+certificate.
 If the full matrix proof balloons, prove the smallest
 matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
 the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth

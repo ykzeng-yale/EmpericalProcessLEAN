@@ -699,6 +699,40 @@ theorem matrixInvShape_inv_mul_cancel
   rw [chewi620_matrixPosDef_inv_mul hSigma]
   simp [matrixInvShape]
 
+/-- Matrix-backed shape cancellation `A (A⁻¹ z) = z` from a determinant unit. -/
+theorem matrixInvShape_mul_inv_cancel_of_det_isUnit
+    {A : Matrix ι ι ℝ} (hA : IsUnit A.det)
+    (z : EuclideanSpace ℝ ι) :
+    matrixInvShape A (matrixInvShape A⁻¹ z) = z := by
+  rw [← matrixInvShape_mul]
+  rw [Matrix.mul_nonsing_inv A hA]
+  simp [matrixInvShape]
+
+/-- Matrix-backed shape cancellation `A⁻¹ (A z) = z` from a determinant unit. -/
+theorem matrixInvShape_inv_mul_cancel_of_det_isUnit
+    {A : Matrix ι ι ℝ} (hA : IsUnit A.det)
+    (z : EuclideanSpace ℝ ι) :
+    matrixInvShape A⁻¹ (matrixInvShape A z) = z := by
+  rw [← matrixInvShape_mul]
+  rw [Matrix.nonsing_inv_mul A hA]
+  simp [matrixInvShape]
+
+/--
+If a candidate inverse-shape operator is a left inverse for `A`, then it is the
+matrix-backed nonsingular inverse shape of `A`.
+-/
+theorem matrixInvShape_eq_inv_of_left_inverse
+    {A : Matrix ι ι ℝ} (hA : IsUnit A.det)
+    {F : EuclideanSpace ℝ ι -> EuclideanSpace ℝ ι}
+    (hleft : ∀ y, matrixInvShape A (F y) = y)
+    (y : EuclideanSpace ℝ ι) :
+    F y = matrixInvShape A⁻¹ y := by
+  calc
+    F y = matrixInvShape A⁻¹ (matrixInvShape A (F y)) := by
+      exact (matrixInvShape_inv_mul_cancel_of_det_isUnit hA (F y)).symm
+    _ = matrixInvShape A⁻¹ y := by
+      rw [hleft y]
+
 /--
 If a linear equivalence `T` squares to Chewi's forward shape matrix `Σ`, then
 the current pullback inverse-shape is the displayed `Σ⁻¹` inverse shape.
@@ -994,6 +1028,58 @@ theorem chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio
     (sq_le_sq₀ hvolNext_nonneg
       (mul_nonneg (ellipsoidVolumeRatio_nonneg d) hvol_nonneg)).mp
         hsq_target
+
+/--
+Once the displayed next-shape update is shown to be a left inverse for the
+pulled-back standard-cut inverse-shape, the remaining Chewi Lemma 6.20
+next-shape equality follows from nonsingular-inverse uniqueness.
+-/
+theorem chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_left_inverse
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    {u : EuclideanSpace ℝ ι}
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hleft :
+      ∀ y,
+        matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)
+          (chewi620PullbackStandardCutInvShape d u T y) = y)
+    (y : EuclideanSpace ℝ ι) :
+    chewi620PullbackStandardCutInvShape d u T y =
+      matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹ y := by
+  exact
+    matrixInvShape_eq_inv_of_left_inverse
+      (A := chewi620DisplayedShapeUpdate d Sigma p)
+      (F := fun y =>
+        chewi620PullbackStandardCutInvShape d u T y)
+      (chewi620_displayedShapeUpdate_det_isUnit
+        (d := d) hd hcard hSigma hp)
+      hleft y
+
+/--
+Set-level form of the displayed next inverse-shape equality, ready to replace
+the pullback certificate's `nextInvShape` by Chewi's displayed
+`Σ_{n+1}^{-1}` matrix update.
+-/
+theorem chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_left_inverse
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    {u : EuclideanSpace ℝ ι}
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hleft :
+      ∀ y,
+        matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)
+          (chewi620PullbackStandardCutInvShape d u T y) = y)
+    (center : EuclideanSpace ℝ ι) :
+    ellipsoidSet center
+        (chewi620PullbackStandardCutInvShape d u T) =
+      ellipsoidSet center
+        (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹) := by
+  ext z
+  simp [ellipsoidSet,
+    chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_left_inverse
+      (d := d) hd hcard hSigma hp hleft (z - center)]
 
 /--
 Positive denominator for Chewi's normalized ellipsoid cut direction when the
