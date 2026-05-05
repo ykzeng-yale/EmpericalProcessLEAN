@@ -5409,3 +5409,21 @@ and `vdVWTendstoInDistribution_pi_of_iIndepFun`, assuming independence of the
 limiting coordinates.  This closes the ordinary measurable binary and finite
 VdV&W 1.4.6 convergence-in-distribution layer.  It still does not prove the
 textbook arbitrary-map/asymptotic-independence product criterion.
+
+2026-05-05 signed product-coordinate arbitrary-map follow-up: local search
+found no existing signed arbitrary-map product-coordinate lift, but the newly
+compiled Chapter 1.2 product projection outer/inner expectation invariance is
+enough for the a.e.-measurable ignored-coordinate case.  `WeakConvergence.lean`
+now adds
+`VdVWSignedOuterExpectationPosNeg_prod_fst_eq_of_aemeasurable`,
+`VdVWSignedOuterExpectationPosNeg_prod_snd_eq_of_aemeasurable`,
+`VdVWSignedBoundedContinuousOuterInnerExpectationGap_prod_fst_eq_of_aemeasurable`,
+`VdVWSignedBoundedContinuousOuterInnerExpectationGap_prod_snd_eq_of_aemeasurable`,
+`VdVWWeakConvergenceSignedOuterBoundedContinuous.prod_fst_of_aemeasurable`,
+`.prod_snd_of_aemeasurable`,
+`VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.prod_fst_of_aemeasurable`,
+and `.prod_snd_of_aemeasurable`.  This closes the ignored-product-coordinate
+case for the local signed arbitrary-map weak-convergence package under
+a.e.-measurability.  It does not close the full VdV&W
+asymptotic-independence product theorem, which still needs a genuine
+nonmeasurable/asymptotic-independence primitive.

@@ -200,6 +200,39 @@ theorem VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp_n
         (Eventually.of_forall fun ω => f.norm_coe_le_norm (X ω)))
 
 /--
+First-coordinate probability-product invariance for the signed
+positive/negative VdV&W outer expectation.
+
+Adjoining an ignored probability coordinate does not change the signed
+outer-expectation value of an a.e.-measurable real statistic.
+-/
+theorem VdVWSignedOuterExpectationPosNeg_prod_fst_eq_of_aemeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure ν]
+    {Y : Ω -> ℝ} (hY : AEMeasurable Y μ) :
+    VdVWSignedOuterExpectationPosNeg (μ.prod ν) (fun z : Ω × S => Y z.1) =
+      VdVWSignedOuterExpectationPosNeg μ Y := by
+  simp [VdVWSignedOuterExpectationPosNeg,
+    VdVWOuterExpectation_prod_fst_eq_of_aemeasurable hY.ennreal_ofReal,
+    VdVWOuterExpectation_prod_fst_eq_of_aemeasurable hY.neg.ennreal_ofReal]
+
+/--
+Second-coordinate probability-product invariance for the signed
+positive/negative VdV&W outer expectation.
+-/
+theorem VdVWSignedOuterExpectationPosNeg_prod_snd_eq_of_aemeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ]
+    {Y : S -> ℝ} (hY : AEMeasurable Y ν) :
+    VdVWSignedOuterExpectationPosNeg (μ.prod ν) (fun z : Ω × S => Y z.2) =
+      VdVWSignedOuterExpectationPosNeg ν Y := by
+  simp [VdVWSignedOuterExpectationPosNeg,
+    VdVWOuterExpectation_prod_snd_eq_of_aemeasurable hY.ennreal_ofReal,
+    VdVWOuterExpectation_prod_snd_eq_of_aemeasurable hY.neg.ennreal_ofReal]
+
+/--
 Signed-outer bounded-continuous weak convergence for possibly arbitrary maps.
 
 This is the current honest Chapter 1 bridge toward VdV&W Definition 1.3.3 for
@@ -324,6 +357,47 @@ theorem VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_aemeasura
       hY.ennreal_ofReal,
     VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_aemeasurable
       hY.neg.ennreal_ofReal]
+
+/--
+First-coordinate probability-product invariance for the signed
+outer/inner expectation gap.
+
+This is the asymptotic-measurability counterpart of
+`VdVWSignedOuterExpectationPosNeg_prod_fst_eq_of_aemeasurable`.
+-/
+theorem VdVWSignedBoundedContinuousOuterInnerExpectationGap_prod_fst_eq_of_aemeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure ν]
+    {Y : Ω -> ℝ} (hY : AEMeasurable Y μ) :
+    VdVWSignedBoundedContinuousOuterInnerExpectationGap (μ.prod ν)
+        (fun z : Ω × S => Y z.1) =
+      VdVWSignedBoundedContinuousOuterInnerExpectationGap μ Y := by
+  simp [VdVWSignedBoundedContinuousOuterInnerExpectationGap,
+    VdVWNonnegativeOuterInnerExpectationGap,
+    VdVWOuterExpectation_prod_fst_eq_of_aemeasurable hY.ennreal_ofReal,
+    VdVWInnerExpectation_prod_fst_eq_of_aemeasurable hY.ennreal_ofReal,
+    VdVWOuterExpectation_prod_fst_eq_of_aemeasurable hY.neg.ennreal_ofReal,
+    VdVWInnerExpectation_prod_fst_eq_of_aemeasurable hY.neg.ennreal_ofReal]
+
+/--
+Second-coordinate probability-product invariance for the signed
+outer/inner expectation gap.
+-/
+theorem VdVWSignedBoundedContinuousOuterInnerExpectationGap_prod_snd_eq_of_aemeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ]
+    {Y : S -> ℝ} (hY : AEMeasurable Y ν) :
+    VdVWSignedBoundedContinuousOuterInnerExpectationGap (μ.prod ν)
+        (fun z : Ω × S => Y z.2) =
+      VdVWSignedBoundedContinuousOuterInnerExpectationGap ν Y := by
+  simp [VdVWSignedBoundedContinuousOuterInnerExpectationGap,
+    VdVWNonnegativeOuterInnerExpectationGap,
+    VdVWOuterExpectation_prod_snd_eq_of_aemeasurable hY.ennreal_ofReal,
+    VdVWInnerExpectation_prod_snd_eq_of_aemeasurable hY.ennreal_ofReal,
+    VdVWOuterExpectation_prod_snd_eq_of_aemeasurable hY.neg.ennreal_ofReal,
+    VdVWInnerExpectation_prod_snd_eq_of_aemeasurable hY.neg.ennreal_ofReal]
 
 /--
 Signed bounded-continuous asymptotic measurability for arbitrary maps.
@@ -498,6 +572,108 @@ theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.mono_filter
     VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l' μ :=
   { weakConvergence := h.weakConvergence.mono_filter hl
     asymptoticMeasurability := h.asymptoticMeasurability.mono_filter hl }
+
+/--
+First-coordinate product lift for signed-outer bounded-continuous weak
+convergence.
+
+If the original maps converge in the local signed-outer sense and are
+a.e.-measurable, adjoining an ignored probability coordinate preserves the
+same convergence target.
+-/
+theorem VdVWWeakConvergenceSignedOuterBoundedContinuous.prod_fst_of_aemeasurable
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω] [MeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [OpensMeasurableSpace T]
+    {μs : ι -> Measure Ω} [∀ i, SFinite (μs i)]
+    {ν : Measure S} [SFinite ν] [IsProbabilityMeasure ν]
+    {X : ι -> Ω -> T} {l : Filter ι} {μ : ProbabilityMeasure T}
+    (h : VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l μ)
+    (hX : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous
+      (fun i => (μs i).prod ν) (fun i z => X i z.1) l μ := by
+  intro f
+  have houter :
+      (fun i =>
+        VdVWSignedOuterExpectationPosNeg ((μs i).prod ν)
+          (fun z : Ω × S => f (X i z.1))) =
+        fun i =>
+          VdVWSignedOuterExpectationPosNeg (μs i)
+            (fun ω => f (X i ω)) := by
+    funext i
+    exact
+      VdVWSignedOuterExpectationPosNeg_prod_fst_eq_of_aemeasurable
+        (ν := ν) (f.continuous.measurable.comp_aemeasurable (hX i))
+  simpa [VdVWWeakConvergenceSignedOuterBoundedContinuous, houter] using h f
+
+/--
+Second-coordinate product lift for signed-outer bounded-continuous weak
+convergence.
+-/
+theorem VdVWWeakConvergenceSignedOuterBoundedContinuous.prod_snd_of_aemeasurable
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω] [MeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [OpensMeasurableSpace T]
+    {ν : Measure Ω} [SFinite ν] [IsProbabilityMeasure ν]
+    {μs : ι -> Measure S} [∀ i, SFinite (μs i)]
+    {X : ι -> S -> T} {l : Filter ι} {μ : ProbabilityMeasure T}
+    (h : VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l μ)
+    (hX : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous
+      (fun i => ν.prod (μs i)) (fun i z => X i z.2) l μ := by
+  intro f
+  have houter :
+      (fun i =>
+        VdVWSignedOuterExpectationPosNeg (ν.prod (μs i))
+          (fun z : Ω × S => f (X i z.2))) =
+        fun i =>
+          VdVWSignedOuterExpectationPosNeg (μs i)
+            (fun s => f (X i s)) := by
+    funext i
+    exact
+      VdVWSignedOuterExpectationPosNeg_prod_snd_eq_of_aemeasurable
+        (μ := ν) (f.continuous.measurable.comp_aemeasurable (hX i))
+  simpa [VdVWWeakConvergenceSignedOuterBoundedContinuous, houter] using h f
+
+/--
+First-coordinate product lift for the proof-carrying signed arbitrary-map
+weak-convergence package.
+-/
+theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.prod_fst_of_aemeasurable
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω] [MeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [OpensMeasurableSpace T]
+    {μs : ι -> Measure Ω} [∀ i, SFinite (μs i)]
+    {ν : Measure S} [SFinite ν] [IsProbabilityMeasure ν]
+    {X : ι -> Ω -> T} {l : Filter ι} {μ : ProbabilityMeasure T}
+    (h : VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ)
+    (hX : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap
+      (fun i => (μs i).prod ν) (fun i z => X i z.1) l μ :=
+  { weakConvergence := h.weakConvergence.prod_fst_of_aemeasurable hX
+    asymptoticMeasurability :=
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable
+        (fun i => (hX i).comp_fst) }
+
+/--
+Second-coordinate product lift for the proof-carrying signed arbitrary-map
+weak-convergence package.
+-/
+theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.prod_snd_of_aemeasurable
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω] [MeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [OpensMeasurableSpace T]
+    {ν : Measure Ω} [SFinite ν] [IsProbabilityMeasure ν]
+    {μs : ι -> Measure S} [∀ i, SFinite (μs i)]
+    {X : ι -> S -> T} {l : Filter ι} {μ : ProbabilityMeasure T}
+    (h : VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ)
+    (hX : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap
+      (fun i => ν.prod (μs i)) (fun i z => X i z.2) l μ :=
+  { weakConvergence := h.weakConvergence.prod_snd_of_aemeasurable hX
+    asymptoticMeasurability :=
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable
+        (fun i => (hX i).comp_snd) }
 
 /--
 Varying-domain signed-outer bounded-continuous weak convergence.
