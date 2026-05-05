@@ -267,25 +267,29 @@ plus `matrixInvShape_eq_toLp_mulVec`, `matrixInvShape_vecMulVec`,
 `chewi620_matrixSqrt_rank_inner`, plus
 `chewi620_matrixCutScale_mul_self_of_pos`,
 `chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt`,
-`addHaar_image_linearMap_real`, `matrix_toEuclideanLin_det`, and
-`matrixInvShape_image_volume_real`.
-The remaining blocker is the translated ellipsoid hvolume instantiation and
-exact one-step certificate packaging, not
+`addHaar_image_linearMap_real`, `addHaar_image_add_left_real`,
+`matrix_toEuclideanLin_det`, `matrixInvShape_image_volume_real`,
+`matrixInvShape_image_add_volume_real`, `chewi620_matrixSqrt_quadratic`,
+`chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_sqrt`,
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_sqrt`,
+and `chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`.
+The remaining blocker is the exact ellipsoid hvolume instantiation, not
 scalar algebra, abstract transport, current-shape rewriting, center algebra,
 rank-one collapse, determinant-core algebra, source-volume determinant algebra,
 normalized standard-cut algebra, rank-one action expansion, displayed-shape
 action expansion, square-root current/rank-inner transport, concrete
-displayed-to-normalized transport, transport reduction, or nonsingular-inverse
-uniqueness.  For measure scaling, use
+displayed-to-normalized transport, transport reduction, displayed next-shape
+certificate packaging, or nonsingular-inverse uniqueness.  For measure scaling, use
 `Measure.addHaar_image_linearMap` / `Measure.addHaar_preimage_linearEquiv`,
 translation invariance, and `LinearMap.det_toLpLin` for
 `Matrix.toEuclideanLin`; the raw `Real.map_*` pushforward lemmas scale by
 `|det|⁻¹`, while set-image volume needs the `|det|` addHaar route, now locally
 wrapped by `addHaar_image_linearMap_real` and
-`matrixInvShape_image_volume_real`.  The target order is translated ellipsoid
-volume/hvolume packaging using the local volume wrapper, then exact one-step
-Lemma 6.20 certificate using
-`chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt`.
+`matrixInvShape_image_volume_real`, with translation wrapped by
+`addHaar_image_add_left_real` and `matrixInvShape_image_add_volume_real`.  The
+target order is exact ellipsoid volume/hvolume packaging using the local volume
+wrappers, then feed the resulting inequality into
+`chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`.
 If the full matrix proof balloons, prove the smallest
 matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
 the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth

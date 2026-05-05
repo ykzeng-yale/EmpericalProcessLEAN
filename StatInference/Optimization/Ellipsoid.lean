@@ -775,6 +775,26 @@ theorem addHaar_image_linearMap_real
   rw [MeasureTheory.Measure.addHaar_image_linearMap]
   simp
 
+/--
+Real-valued translation invariance for an additive Haar measure.  This is the
+affine part needed after the linear determinant scaling has been applied.
+-/
+theorem addHaar_image_add_left_real
+    {F : Type*} [NormedAddCommGroup F]
+    [MeasurableSpace F] [BorelSpace F]
+    (μ : MeasureTheory.Measure F) [μ.IsAddHaarMeasure]
+    (a : F) (s : Set F) :
+    μ.real ((fun x => a + x) '' s) = μ.real s := by
+  change (μ ((fun x => a + x) '' s)).toReal = (μ s).toReal
+  have hset : (fun x => a + x) '' s = (fun x => -a + x) ⁻¹' s := by
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      simpa using hx
+    · intro hy
+      exact ⟨-a + y, by simpa using hy, by simp⟩
+  rw [hset, MeasureTheory.measure_preimage_add]
+
 /-- Determinant of the Euclidean linear map associated to a real matrix. -/
 theorem matrix_toEuclideanLin_det (A : Matrix ι ι ℝ) :
     LinearMap.det
@@ -797,6 +817,29 @@ theorem matrixInvShape_image_volume_real
         (A.toEuclideanLin :
           EuclideanSpace ℝ ι →ₗ[ℝ] EuclideanSpace ℝ ι))
       (s := s))
+
+/--
+Real-volume scaling for the translated image of a set under a matrix-backed
+inverse-shape operator.
+-/
+theorem matrixInvShape_image_add_volume_real
+    (A : Matrix ι ι ℝ) (center : EuclideanSpace ℝ ι)
+    (s : Set (EuclideanSpace ℝ ι)) :
+    MeasureTheory.volume.real
+        ((fun x => center + matrixInvShape A x) '' s) =
+      |A.det| * MeasureTheory.volume.real s := by
+  have himage :
+      (fun x => center + matrixInvShape A x) '' s =
+        (fun y => center + y) '' (matrixInvShape A '' s) := by
+    ext z
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨matrixInvShape A x, ⟨x, hx, rfl⟩, rfl⟩
+    · rintro ⟨y, ⟨x, hx, rfl⟩, rfl⟩
+      exact ⟨x, hx, rfl⟩
+  rw [himage]
+  rw [addHaar_image_add_left_real]
+  exact matrixInvShape_image_volume_real A s
 
 /-- Positive-definite matrices have positive determinant. -/
 theorem chewi620_matrixPosDef_det_pos
@@ -1543,6 +1586,25 @@ theorem chewi620_matrixSqrt_rank_inner
       simp
 
 /--
+The square-root hypothesis identifies the norm of `T p` with Chewi's displayed
+quadratic form `<p, Σ p>`.
+-/
+theorem chewi620_matrixSqrt_quadratic
+    {Sigma : Matrix ι ι ℝ}
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    (p : EuclideanSpace ℝ ι) :
+    ‖T p‖ ^ (2 : ℕ) = inner ℝ p (matrixInvShape Sigma p) := by
+  calc
+    ‖T p‖ ^ (2 : ℕ) = inner ℝ (T p) (T p) := by
+      rw [real_inner_self_eq_norm_sq]
+    _ = inner ℝ p (T (T p)) := by
+      exact hT_symm p (T p)
+    _ = inner ℝ p (matrixInvShape Sigma p) := by
+      rw [hT_sq p]
+
+/--
 Concrete displayed-to-normalized forward-shape transport for Chewi Lemma 6.20.
 This discharges the matrix identity required by the compiled inverse-shape
 transport reductions, assuming `T` is a symmetric square-root factor for the
@@ -1585,6 +1647,58 @@ theorem chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt
   simp [chewi620StandardCutForwardShape, chewi620MatrixNormalizedCutDirection,
     hT_sq, inner_smul_left, smul_sub, smul_smul]
   rw [hscalar (inner ℝ (T p) x)]
+
+/--
+Concrete displayed next inverse-shape equality under the symmetric square-root
+hypotheses.  This packages the compiled transport theorem with the nonsingular
+inverse reduction, closing the matrix-identification side of Lemma 6.20.
+-/
+theorem chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_sqrt
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    {p y : EuclideanSpace ℝ ι} (hp : p ≠ 0) :
+    chewi620PullbackStandardCutInvShape d
+        (chewi620MatrixNormalizedCutDirection Sigma p (T p)) T y =
+      matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹ y := by
+  exact
+    chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_forwardShape_transport
+      (d := d) hd hcard hSigma hp
+      (u := chewi620MatrixNormalizedCutDirection Sigma p (T p))
+      (T := T)
+      (chewi620_matrixSqrt_normalizedCutDirection_norm_of_posDef
+        (Sigma := Sigma) hSigma hp
+        (chewi620_matrixSqrt_quadratic
+          (Sigma := Sigma) (T := T) hT_symm hT_sq p))
+      (fun x =>
+        chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt
+          (d := d) (Sigma := Sigma) hSigma (T := T) hT_symm hT_sq hp x)
+      (y := y)
+
+/--
+Set-level displayed next inverse-shape replacement under the symmetric
+square-root hypotheses.
+-/
+theorem chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_sqrt
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    (center : EuclideanSpace ℝ ι) :
+    ellipsoidSet center
+        (chewi620PullbackStandardCutInvShape d
+          (chewi620MatrixNormalizedCutDirection Sigma p (T p)) T) =
+      ellipsoidSet center
+        (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹) := by
+  ext z
+  simp [ellipsoidSet,
+    chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_sqrt
+      (d := d) hd hcard hSigma (T := T) hT_symm hT_sq hp
+      (y := z - center)]
 
 /--
 The square-root hypothesis turns Chewi's normalized standard-cut center into
@@ -1730,6 +1844,50 @@ theorem chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCente
     chewi620_ellipsoidSet_pullbackIdentity_eq_matrixInvShape_inv
       (Sigma := Sigma) hSigma hT_sq center
   simpa [IsEllipsoidStepCertificate, hset] using hcert
+
+/--
+Chewi Lemma 6.20 one-step certificate with both current and next ellipsoids in
+the displayed matrix forms `Σ⁻¹` and `Σ_{n+1}^{-1}`.  The only remaining
+external input is the real volume inequality `hvolume`.
+-/
+theorem chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hT_symm : T.IsSymmetric)
+    {center p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    (hT_sq : ∀ y, T (T y) = matrixInvShape Sigma y)
+    {vol volNext : ℝ}
+    (hvolume : volNext ≤ ellipsoidVolumeRatio d * vol) :
+    IsEllipsoidStepCertificate center
+      (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+        (inner ℝ p (matrixInvShape Sigma p)))
+      (matrixInvShape Sigma⁻¹)
+      (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹)
+      p vol volNext (ellipsoidVolumeRatio d) := by
+  have hcert :=
+    chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter
+      (Sigma := Sigma) hSigma (T := T) hT_symm
+      (center := center) (p := p) hd hp hT_sq hvolume
+  have hnext :
+      ellipsoidSet
+          (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+            (inner ℝ p (matrixInvShape Sigma p)))
+          (chewi620PullbackStandardCutInvShape d
+            (chewi620MatrixNormalizedCutDirection Sigma p (T p)) T) =
+        ellipsoidSet
+          (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+            (inner ℝ p (matrixInvShape Sigma p)))
+          (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹) :=
+    chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_sqrt
+      (d := d) hd hcard hSigma (T := T) hT_symm hT_sq hp
+      (ellipsoidCenterUpdate d center (matrixInvShape Sigma p)
+        (inner ℝ p (matrixInvShape Sigma p)))
+  exact ⟨by
+    intro z hz
+    have hz' := hcert.1 hz
+    rwa [hnext] at hz',
+    hcert.2⟩
 
 end EuclideanMatrix
 
