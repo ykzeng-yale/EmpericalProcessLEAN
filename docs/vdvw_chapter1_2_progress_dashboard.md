@@ -1394,3 +1394,17 @@ projects it into the selected fixed-radius package once the explicit
 finite-net integrability and tail/UI inputs are available.  This sharpens the
 remaining target to the analytic tail/UI derivation and the broader arbitrary
 `P`-measurable/asymptotic-measurable class layer.
+
+2026-05-05 follow-up: the bounded-log-ratio branch of that variable-domain
+entropy route now reaches untruncated centered convergence.  The compiled
+declarations
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_bound`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_bound`
+compose the canonical book entropy package with a deterministic normalized
+log-cardinality bound, discharge selected finite-net integrability and tail/UI
+through the existing Hoeffding-scale bounded route, and feed the result into
+the untruncated Theorem 2.4.3 convergence handoff.  Next frontier: prove that
+deterministic log-ratio bound from a genuine structural covering/VC argument
+or replace it with a real selected finite-net tail/UI theorem; the arbitrary
+`P`-measurable/asymptotic-measurable class layer remains separate.

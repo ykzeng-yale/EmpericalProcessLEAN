@@ -4154,3 +4154,21 @@ blockers are now exactly: prove the selected finite-net tail/UI condition from
 book hypotheses or a stronger structural entropy bound, and extend from the
 countable coordinate-measurable route to the arbitrary `P`-measurable /
 asymptotic-measurable class layer.
+
+2026-05-05 follow-up: the deterministic-boundedness branch of the
+variable-domain entropy route is now compiled through the untruncated centered
+convergence consumer.  The new bridge
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_bound`
+turns the canonical book-shaped varying-domain entropy package plus a
+deterministic normalized log-cardinality bound into
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions` for every `M > 0`.  The
+new theorem-facing consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_bound`
+feeds that package directly into the existing fixed-radius/untruncation
+Theorem 2.4.3 route.  This closes the repeated manual selected-tail packaging
+for the bounded log-ratio branch.  Remaining blockers are now sharper: prove
+the deterministic log-ratio bound from a structural entropy/VC cover theorem
+or prove a genuine selected finite-net tail/UI theorem from the textbook random
+entropy hypothesis without deterministic boundedness; separately extend the
+countable coordinate-measurable route to the arbitrary `P`-measurable /
+asymptotic-measurable textbook class layer.
