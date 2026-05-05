@@ -445,6 +445,17 @@ now records the measurable bounded extended-real case: a bounded measurable
 This closes the measurable-map extended-real common-cover clause while keeping
 the arbitrary/nonmeasurable existence theorem as the remaining 1.2.4 gap.
 
+2026-05-05 bounded `EReal` dominated-cover follow-up:
+`VdVWBoundedERealMeasurableCover.ofAEMeasurable`,
+`.ofAEMeasurable_ae_eq`,
+`.ofAEMeasurable_minimal_ae_of_absolutelyContinuous`,
+`.ofAEMeasurableDominated`, and
+`.exists_common_boundedERealMeasurableCover_of_forall_absolutelyContinuous_aemeasurable`
+now extend the bounded extended-real common-cover layer from measurable maps
+to maps that are a.e.-measurable under a dominating measure.  This mirrors the
+nonnegative dominated-family theorem and leaves only the genuinely arbitrary
+nonmeasurable extended-real common-cover existence clause open for Lemma 1.2.4.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.

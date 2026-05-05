@@ -831,6 +831,152 @@ def ofMeasurable {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
   cover_le_upper := hupper
   minimal_ae := fun _ _ h_majorizes => h_majorizes
 
+/-- A bounded a.e.-measurable `EReal` map has a bounded measurable cover. -/
+noncomputable def ofAEMeasurable {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) {T : Ω -> EReal} {lower upper : ℝ}
+    (hT : AEMeasurable T μ) (hlower : ∀ ω, (lower : EReal) ≤ T ω)
+    (hupper : ∀ ω, T ω ≤ (upper : EReal)) :
+    VdVWBoundedERealMeasurableCover μ T lower upper where
+  toFun := by
+    classical
+    exact fun ω =>
+      if ω ∈ toMeasurable μ {ω | T ω ≠ hT.mk T ω} then
+        (upper : EReal)
+      else
+        hT.mk T ω
+  measurable_toFun := by
+    classical
+    exact
+      Measurable.ite (measurableSet_toMeasurable μ {ω | T ω ≠ hT.mk T ω})
+        measurable_const hT.measurable_mk
+  majorizes := by
+    classical
+    intro ω
+    let bad : Set Ω := {ω | T ω ≠ hT.mk T ω}
+    let hull : Set Ω := toMeasurable μ bad
+    by_cases hω : ω ∈ hull
+    · change T ω ≤ (if ω ∈ hull then (upper : EReal) else hT.mk T ω)
+      simpa [hω] using hupper ω
+    · have hnot_bad : ω ∉ bad :=
+        fun hbad => hω (subset_toMeasurable μ bad hbad)
+      have heq : T ω = hT.mk T ω := by
+        by_contra hne
+        exact hnot_bad hne
+      change T ω ≤ (if ω ∈ hull then (upper : EReal) else hT.mk T ω)
+      simp [hω, heq]
+  lower_le_target := hlower
+  target_le_upper := hupper
+  cover_le_upper := by
+    classical
+    intro ω
+    let bad : Set Ω := {ω | T ω ≠ hT.mk T ω}
+    let hull : Set Ω := toMeasurable μ bad
+    by_cases hω : ω ∈ hull
+    · change (if ω ∈ hull then (upper : EReal) else hT.mk T ω) ≤ (upper : EReal)
+      simp [hω]
+    · have hnot_bad : ω ∉ bad :=
+        fun hbad => hω (subset_toMeasurable μ bad hbad)
+      have heq : T ω = hT.mk T ω := by
+        by_contra hne
+        exact hnot_bad hne
+      change (if ω ∈ hull then (upper : EReal) else hT.mk T ω) ≤ (upper : EReal)
+      simpa [hω, ← heq] using hupper ω
+  minimal_ae := by
+    classical
+    intro V _hV h_majorizes
+    let bad : Set Ω := {ω | T ω ≠ hT.mk T ω}
+    let hull : Set Ω := toMeasurable μ bad
+    have hbad_zero : μ bad = 0 := by
+      have h_eq : ∀ᵐ ω ∂μ, T ω = hT.mk T ω := hT.ae_eq_mk
+      simpa [bad] using (ae_iff.mp h_eq)
+    have hhull_zero : μ hull = 0 := by
+      change μ (toMeasurable μ bad) = 0
+      rw [measure_toMeasurable bad, hbad_zero]
+    have hnot_hull_ae : ∀ᵐ ω ∂μ, ω ∉ hull := by
+      apply ae_iff.mpr
+      simpa using hhull_zero
+    filter_upwards [h_majorizes, hnot_hull_ae] with ω hle hnot_hull
+    have hnot_bad : ω ∉ bad :=
+      fun hbad => hnot_hull (subset_toMeasurable μ bad hbad)
+    have heq : T ω = hT.mk T ω := by
+      by_contra hne
+      exact hnot_bad hne
+    change (if ω ∈ hull then (upper : EReal) else hT.mk T ω) ≤ V ω
+    simpa [hnot_hull, ← heq] using hle
+
+/-- The bounded `EReal` cover built from an a.e.-measurable representative is a.e. equal to the target. -/
+theorem ofAEMeasurable_ae_eq {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) {T : Ω -> EReal} {lower upper : ℝ}
+    (hT : AEMeasurable T μ) (hlower : ∀ ω, (lower : EReal) ≤ T ω)
+    (hupper : ∀ ω, T ω ≤ (upper : EReal)) :
+    (VdVWBoundedERealMeasurableCover.ofAEMeasurable μ hT hlower hupper :
+        Ω -> EReal) =ᵐ[μ] T := by
+  classical
+  let bad : Set Ω := {ω | T ω ≠ hT.mk T ω}
+  let hull : Set Ω := toMeasurable μ bad
+  have hbad_zero : μ bad = 0 := by
+    have h_eq : ∀ᵐ ω ∂μ, T ω = hT.mk T ω := hT.ae_eq_mk
+    simpa [bad] using (ae_iff.mp h_eq)
+  have hhull_zero : μ hull = 0 := by
+    change μ (toMeasurable μ bad) = 0
+    rw [measure_toMeasurable bad, hbad_zero]
+  have hnot_hull_ae : ∀ᵐ ω ∂μ, ω ∉ hull := by
+    apply ae_iff.mpr
+    simpa using hhull_zero
+  filter_upwards [hnot_hull_ae] with ω hnot_hull
+  have hnot_bad : ω ∉ bad :=
+    fun hbad => hnot_hull (subset_toMeasurable μ bad hbad)
+  have heq : T ω = hT.mk T ω := by
+    by_contra hne
+    exact hnot_bad hne
+  change (if ω ∈ hull then (upper : EReal) else hT.mk T ω) = T ω
+  simp [hnot_hull, heq]
+
+/--
+Dominated-measure minimality of the bounded `EReal` cover built under a
+dominating measure.
+-/
+theorem ofAEMeasurable_minimal_ae_of_absolutelyContinuous
+    {Ω : Type u} [MeasurableSpace Ω] {ν μ : Measure Ω}
+    (hμν : μ ≪ ν) {T : Ω -> EReal} {lower upper : ℝ}
+    (hT : AEMeasurable T ν) (hlower : ∀ ω, (lower : EReal) ≤ T ω)
+    (hupper : ∀ ω, T ω ≤ (upper : EReal))
+    (V : Ω -> EReal) (_hV : Measurable V)
+    (h_majorizes : ∀ᵐ ω ∂μ, T ω ≤ V ω) :
+    ∀ᵐ ω ∂μ,
+      (VdVWBoundedERealMeasurableCover.ofAEMeasurable ν hT hlower hupper :
+        Ω -> EReal) ω ≤ V ω := by
+  filter_upwards
+    [hμν.ae_le
+      (VdVWBoundedERealMeasurableCover.ofAEMeasurable_ae_eq ν hT hlower hupper),
+      h_majorizes] with ω hcover_eq hle
+  simpa [hcover_eq] using hle
+
+/--
+The bounded `EReal` cover built under a dominating measure is a valid cover for
+every dominated measure.
+-/
+noncomputable def ofAEMeasurableDominated {Ω : Type u} [MeasurableSpace Ω]
+    (ν μ : Measure Ω) (hμν : μ ≪ ν)
+    {T : Ω -> EReal} {lower upper : ℝ}
+    (hT : AEMeasurable T ν) (hlower : ∀ ω, (lower : EReal) ≤ T ω)
+    (hupper : ∀ ω, T ω ≤ (upper : EReal)) :
+    VdVWBoundedERealMeasurableCover μ T lower upper where
+  toFun := VdVWBoundedERealMeasurableCover.ofAEMeasurable ν hT hlower hupper
+  measurable_toFun :=
+    (VdVWBoundedERealMeasurableCover.ofAEMeasurable ν hT hlower hupper).measurable_toFun
+  majorizes :=
+    (VdVWBoundedERealMeasurableCover.ofAEMeasurable ν hT hlower hupper).majorizes
+  lower_le_target := hlower
+  target_le_upper := hupper
+  cover_le_upper :=
+    (VdVWBoundedERealMeasurableCover.ofAEMeasurable ν hT hlower hupper).cover_le_upper
+  minimal_ae := by
+    intro V hV h_majorizes
+    exact
+      VdVWBoundedERealMeasurableCover.ofAEMeasurable_minimal_ae_of_absolutelyContinuous
+        hμν hT hlower hupper V hV h_majorizes
+
 /--
 Family-level common bounded `EReal` measurable cover for measurable maps.
 
@@ -858,6 +1004,45 @@ theorem exists_common_boundedERealMeasurableCover_of_measurable
     rfl
   · intro μ _hμ V _hV h_majorizes
     exact h_majorizes
+
+/--
+Family-level common bounded `EReal` cover for dominated a.e.-measurable maps.
+
+If every measure in a family is absolutely continuous with respect to `ν` and
+the bounded extended-real map is `ν`-a.e.-measurable, then the single cover
+built under `ν` is simultaneously minimal for every measure in the family.
+This is the dominated a.e.-measurable bounded-extended-real layer of VdV&W
+Lemma 1.2.4.
+-/
+theorem exists_common_boundedERealMeasurableCover_of_forall_absolutelyContinuous_aemeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {ν : Measure Ω}
+    {measures : Set (Measure Ω)} {T : Ω -> EReal} {lower upper : ℝ}
+    (hT : AEMeasurable T ν)
+    (hlower : ∀ ω, (lower : EReal) ≤ T ω)
+    (hupper : ∀ ω, T ω ≤ (upper : EReal))
+    (hdom : ∀ μ ∈ measures, μ ≪ ν) :
+    ∃ U : Ω -> EReal,
+      Measurable U ∧
+        (∀ ω, T ω ≤ U ω) ∧
+          (∀ ω, (lower : EReal) ≤ T ω) ∧
+            (∀ ω, U ω ≤ (upper : EReal)) ∧
+              ∀ μ ∈ measures, ∀ V : Ω -> EReal,
+                Measurable V ->
+                (∀ᵐ ω ∂μ, T ω ≤ V ω) ->
+                  ∀ᵐ ω ∂μ, U ω ≤ V ω := by
+  refine
+    ⟨VdVWBoundedERealMeasurableCover.ofAEMeasurable ν hT hlower hupper,
+      ?_, ?_, hlower, ?_, ?_⟩
+  · exact
+      (VdVWBoundedERealMeasurableCover.ofAEMeasurable ν hT hlower hupper).measurable_toFun
+  · exact
+      (VdVWBoundedERealMeasurableCover.ofAEMeasurable ν hT hlower hupper).majorizes
+  · exact
+      (VdVWBoundedERealMeasurableCover.ofAEMeasurable ν hT hlower hupper).cover_le_upper
+  · intro μ hμ V hV h_majorizes
+    exact
+      VdVWBoundedERealMeasurableCover.ofAEMeasurable_minimal_ae_of_absolutelyContinuous
+        (hdom μ hμ) hT hlower hupper V hV h_majorizes
 
 /--
 Nonnegative bounded `EReal` covers descend to the existing nonnegative
