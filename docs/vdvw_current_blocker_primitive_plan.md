@@ -4233,3 +4233,15 @@ boundedness input needed to discharge selected finite-net tail/UI.  Remaining
 blocker: remove or derive that deterministic bound by proving a true
 random-entropy tail/UI theorem, or derive it from structural entropy/VC
 hypotheses.
+
+2026-05-05 follow-up: the variable-domain entropy branch with deterministic
+log-cardinality boundedness now also reaches the Theorem 2.4.3 in-mean
+centered-supremum conclusion.  The compiled declaration
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_variableEntropy_logCardinality_div_bound`
+reuses the variable-entropy outer-probability convergence theorem and upgrades
+it through the generic varying-domain tail/UI adapter.  Countability,
+coordinate measurability, and an integrable measurable envelope discharge the
+centered-supremum measurability, integrability, and tail/UI obligations.  The
+remaining mismatch with the exact textbook statement is still the deterministic
+log-bound/tail-UI input and the broader arbitrary `P`-measurable /
+asymptotic-measurable class layer.

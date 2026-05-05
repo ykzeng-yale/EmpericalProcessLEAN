@@ -1452,3 +1452,12 @@ finite-product uniform-deviation bridge and the canonical iid process bridge.
 This closes another endpoint handoff; the remaining theorem-critical issue is
 still the deterministic-bound/tail-UI input or the broader arbitrary
 `P`-measurable/asymptotic-measurable layer.
+
+2026-05-05 follow-up: the same variable-domain entropy branch now also reaches
+the in-mean centered-supremum conclusion.  The compiled theorem
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_variableEntropy_logCardinality_div_bound`
+upgrades outer-probability convergence through the generic tail/UI adapter,
+with countability plus a measurable integrable envelope supplying the
+measurability, integrability, and centered-supremum tail/UI inputs.  The branch
+now has both local book-style `P`-GC and in-mean conclusions under the honest
+deterministic log-bound assumption.
