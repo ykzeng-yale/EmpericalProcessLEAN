@@ -110,11 +110,13 @@ assumptions supply one.
 normalized-log tail/UI is now compiled.  The new general bridge
 `tailExpectation_condition_of_integral_tendsto_zero_nonneg` and Theorem 2.4.3
 specialization
-`logCardinality_div_tailExpectation_condition_of_integral_tendsto_zero` show
-that ordinary mean convergence of normalized log cardinalities implies the
-tail/UI condition required by the finite-net route.  This does not replace
-the textbook `o_P^*` hypothesis, but it gives a non-deterministic L1 route
-for later structural entropy arguments.
+`logCardinality_div_tailExpectation_condition_of_integral_tendsto_zero`, plus
+the finite-net handoff
+`finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_integral_tendsto_zero`,
+show that ordinary mean convergence of normalized log cardinalities implies
+the tail/UI condition required by the finite-net route.  This does not replace
+the textbook `o_P^*` hypothesis, but it gives a non-deterministic L1 route for
+later structural entropy arguments.
 
 ## Status Legend
 

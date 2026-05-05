@@ -17737,6 +17737,55 @@ theorem
         hK_nonneg hlogBound)
 
 /--
+Mean convergence of the normalized log-cardinality process supplies the
+finite-net Hoeffding tail/UI condition through the raw normalized-log route.
+-/
+theorem
+    finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_integral_tendsto_zero
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {M : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M)
+    (hlogMeasurable :
+      ∀ n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+    (hlogIntegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+              (n : ℝ))
+          (vdVWProductMeasure P n))
+    (hIntegral :
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+              sample n / (n : ℝ) ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0)) :
+    ∀ ε > 0, ∃ R, 0 ≤ R ∧
+      ∀ᶠ n in atTop,
+        ∫ sample : SampleAt Observation n,
+          Set.indicator
+            {sample' : SampleAt Observation n |
+              R <
+                vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality n sample' n) n M}
+            (fun sample' : SampleAt Observation n =>
+              vdVWTheorem243FiniteNetHoeffdingUpper
+                (cardinality n sample' n) n M)
+            sample ∂(vdVWProductMeasure P n) ≤ ε := by
+  exact
+    finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_tailExpectation
+      (P := P) (M := M) (cardinality := cardinality) hM_pos
+      hlogMeasurable hlogIntegrable
+      (logCardinality_div_tailExpectation_condition_of_integral_tendsto_zero
+        (P := P) (cardinality := cardinality) hIntegral)
+
+/--
 Deterministic analytic core of the entropy-to-Hoeffding-scale convergence
 step.
 
