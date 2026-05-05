@@ -271,6 +271,15 @@ and uniform integrability of its first-sample lifts to build the selected
 fixed-radius tail/UI side-condition package.  The next proof target is the
 substantive UI/tail or structural cardinality theorem supplying that final
 uniform-integrability input.
+
+2026-05-05 selected `eLpNorm` tail follow-up: the previous UI input now has a
+direct theorem-facing mathlib-tail criterion.  The compiled declaration
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_eLpNormTail`
+applies `MeasureTheory.unifIntegrable_of` to the canonical first-sample lift of
+the selected normalized empirical-cover entropy.  The next target is therefore
+sharper: prove the explicit lifted selected-entropy `eLpNorm` tail condition
+from a genuine structural entropy theorem, or record the exact missing
+cardinality/VC/finite-trace primitive.
 The next proof target is therefore not more selected-package plumbing: it is
 the honest varying-domain theorem deriving those raw normalized-log
 integrability/tail-UI hypotheses from the book random entropy assumption, or a

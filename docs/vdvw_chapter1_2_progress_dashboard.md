@@ -251,6 +251,15 @@ convergence recoding, fixed-domain UI mean bridge, and existing mean-to-tail
 adapter.  The remaining proof obligation is to establish the actual UI/tail or
 structural bound for the selected normalized empirical-cover entropy.
 
+2026-05-05 selected `eLpNorm` tail follow-up: the fixed-domain UI route now
+also has a direct mathlib-tail criterion consumer,
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_eLpNormTail`.
+It applies mathlib `MeasureTheory.unifIntegrable_of` to the first-sample lifted
+selected entropy process and then reuses the compiled first-sample UI package.
+The current target is therefore the substantive entropy estimate itself:
+prove the lifted selected normalized-log empirical-cover `eLpNorm` tail
+condition, or derive it from a structural VC/finite-trace/cardinality theorem.
+
 2026-05-05 Chapter 1 arbitrary-map follow-up: the varying-domain signed
 bounded-continuous weak-convergence package now has continuous-mapping
 stability.  The new declarations

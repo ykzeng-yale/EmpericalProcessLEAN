@@ -20373,6 +20373,111 @@ theorem
       (hselectedLogUI M hM eta heta)
 
 /--
+Build selected fixed-radius side conditions from the first-sample UI route
+using mathlib's concrete large-tail `eLpNorm` criterion for uniform
+integrability.
+
+The remaining hypothesis is now an explicit tail condition for the lifted
+selected normalized-log empirical-cover entropy on the canonical infinite iid
+product space.  This is a theorem-facing form of the current random-entropy
+blocker: once a structural argument proves this tail criterion, the existing
+Theorem 2.4.3 finite-net route can consume it without rebuilding endpoint
+packages.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_eLpNormTail
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hfiniteNetUpperIntegrable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (eta := eta)
+                (cardinality := cardinality M) (X M)
+                (hentropy.coveringNumber_le M hM) heta) n sample n)
+              n M)
+          (vdVWProductMeasure P n))
+    (hselectedLogMeasurable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWLogEmpiricalL1CoveringCardinality
+            (fun sample' : SampleAt Observation n => fun m : ℕ =>
+              (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (eta := eta)
+                (cardinality := cardinality M) (X M)
+                (hentropy.coveringNumber_le M hM) heta) n sample' m)
+            sample n / (n : ℝ))
+    (hselectedLogIntegrable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWLogEmpiricalL1CoveringCardinality
+              (fun sample' : SampleAt Observation n => fun m : ℕ =>
+                (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                  (indexClass := indexClass) (classFun := classFun)
+                  (envelope := envelope) (M := M) (eta := eta)
+                  (cardinality := cardinality M) (X M)
+                  (hentropy.coveringNumber_le M hM) heta) n sample' m)
+              sample n / (n : ℝ))
+          (vdVWProductMeasure P n))
+    (hselectedLogTail :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta),
+        ∀ ε : ℝ, 0 < ε -> ∃ C : ℝ≥0,
+          ∀ n,
+            eLpNorm
+              ({sequence : ℕ -> Observation |
+                C ≤ ‖(vdVWLogEmpiricalL1CoveringCardinality
+                  (fun sample' : SampleAt Observation n => fun m : ℕ =>
+                    (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                      (indexClass := indexClass) (classFun := classFun)
+                      (envelope := envelope) (M := M) (eta := eta)
+                      (cardinality := cardinality M) (X M)
+                      (hentropy.coveringNumber_le M hM) heta) n sample' m)
+                  (vdVWFirstNSample (Observation := Observation) n sequence) n /
+                    (n : ℝ))‖₊}.indicator
+                (fun sequence : ℕ -> Observation =>
+                  vdVWLogEmpiricalL1CoveringCardinality
+                    (fun sample' : SampleAt Observation n => fun m : ℕ =>
+                      (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                        (indexClass := indexClass) (classFun := classFun)
+                        (envelope := envelope) (M := M) (eta := eta)
+                        (cardinality := cardinality M) (X M)
+                        (hentropy.coveringNumber_le M hM) heta) n sample' m)
+                    (vdVWFirstNSample (Observation := Observation) n sequence) n /
+                      (n : ℝ)))
+              (1 : ℝ≥0∞) (vdVWInfiniteProductMeasure P) ≤ ENNReal.ofReal ε) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M (cardinality M) := by
+  refine
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_unifIntegrable
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
+      hselectedLogMeasurable hselectedLogIntegrable ?_
+  intro M hM eta heta
+  exact
+    MeasureTheory.unifIntegrable_of
+      (μ := vdVWInfiniteProductMeasure P) (p := (1 : ℝ≥0∞))
+      le_rfl ENNReal.one_ne_top
+      (fun n =>
+        ((hselectedLogMeasurable M hM eta heta n).comp
+          (measurable_vdVWFirstNSample n)).aestronglyMeasurable)
+      (hselectedLogTail M hM eta heta)
+
+/--
 All-positive-radius version of the selected fixed-radius finite-net mean
 handoff.
 

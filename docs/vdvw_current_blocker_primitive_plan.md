@@ -198,7 +198,13 @@ Next high-capacity proof batches, in order:
    `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_unifIntegrable`;
    it first transfers the book external-cardinality convergence to the selected
    least-cover process by monotonicity, then uses the first-sample UI mean
-   bridge.
+   bridge.  The mathlib large-tail criterion is now consumed directly by
+   `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_eLpNormTail`,
+   using `MeasureTheory.unifIntegrable_of` after search in
+   `.lake/packages/mathlib/Mathlib/MeasureTheory/Function/UniformIntegrable.lean`.
+   The remaining blocker is no longer UI plumbing: it is proving the explicit
+   lifted selected-entropy `eLpNorm` tail condition, or a stronger structural
+   cardinality/VC/finite-trace theorem that implies it.
 3. In parallel only when it directly supports exact Chapter 1-2 statements or
    Theorem 2.4.3 endpoints, close reusable arbitrary-map/process foundation
    gaps that are already search-isolated.  The signed weak-convergence
