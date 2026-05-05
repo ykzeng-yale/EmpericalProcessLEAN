@@ -180,6 +180,14 @@ bounded-continuous asymptotic-measurability predicates now have direct
 null/a.e.-measurable constructors, including varying-domain a.e.-measurable
 constructors for sample-size-varying endpoints.
 
+2026-05-05 signed a.e.-measurable collapse follow-up:
+`WeakConvergence.lean` now exposes the direct a.e.-measurable signed
+positive/negative outer-expectation integral bridge and signed outer/inner-gap
+collapse.  The common-domain and varying-domain signed/lower-shifted/canonical
+a.e.-measurable asymptotic-measurability constructors therefore no longer need
+a countably-generated target assumption just to route through
+`NullMeasurable`.
+
 2026-05-05 proof update: the countability-to-`P`-measurability route has a new
 compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`
 and

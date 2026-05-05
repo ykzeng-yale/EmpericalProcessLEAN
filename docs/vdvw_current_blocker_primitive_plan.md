@@ -388,6 +388,21 @@ also has base-level refinement wrappers.  `GlivenkoCantelli.lean` adds
 `Tendsto.mono_left` closures, but they prevent later subsequence/finer-filter
 arguments from depending only on the higher signed-package wrappers.
 
+2026-05-05 a.e.-measurable signed-collapse follow-up: local search found the
+lower-level
+`VdVWOuterExpectation_posPart_sub_negPart_eq_integral_of_aemeasurable` but no
+direct signed positive/negative VdV&W wrapper or signed outer/inner-gap
+a.e.-measurable collapse.  `WeakConvergence.lean` now adds
+`VdVWSignedOuterExpectationPosNeg_eq_integral_of_aemeasurable`,
+`VdVWSignedOuterExpectationPosNeg_eq_integral_of_aemeasurable_comp`,
+`VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp_aemeasurable`,
+and
+`VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_aemeasurable`.
+The common-domain and varying-domain signed/lower-shifted/canonical
+a.e.-measurable constructors now use these direct a.e.-measurable proofs and
+no longer require a countably-generated state-space assumption merely to pass
+through `NullMeasurable`.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.

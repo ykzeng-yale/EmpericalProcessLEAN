@@ -86,7 +86,11 @@ and
 consume mathlib `HasLaw.aemeasurable` and `HasLaw.map_eq` directly.
 Direct null/a.e.-measurable constructors are now also available for the
 lower-shifted/canonical shifted bounded-continuous predicates in both
-common-domain and varying-domain forms.
+common-domain and varying-domain forms.  The direct signed positive/negative
+a.e.-measurable integral collapse and signed outer/inner-gap collapse are now
+compiled too, so the a.e.-measurable signed asymptotic-measurability
+constructors no longer need to detour through a countably-generated
+null-measurable conversion.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new

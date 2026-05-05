@@ -91,16 +91,28 @@ theorem VdVWSignedOuterExpectationPosNeg_eq_integral_of_measurable
       hY_meas hY_int
 
 /--
+For an a.e.-measurable integrable real map, the signed positive/negative
+VdV&W outer expectation agrees with the ordinary Bochner integral.
+-/
+theorem VdVWSignedOuterExpectationPosNeg_eq_integral_of_aemeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Y : Ω -> ℝ} (hY_aemeas : AEMeasurable Y μ)
+    (hY_int : Integrable Y μ) :
+    VdVWSignedOuterExpectationPosNeg μ Y = ∫ ω, Y ω ∂μ := by
+  simpa [VdVWSignedOuterExpectationPosNeg] using
+    VdVWOuterExpectation_posPart_sub_negPart_eq_integral_of_aemeasurable
+      hY_aemeas hY_int
+
+/--
 For a null-measurable integrable real map, the signed positive/negative VdV&W
 outer expectation agrees with the ordinary Bochner integral.
 -/
 theorem VdVWSignedOuterExpectationPosNeg_eq_integral_of_nullMeasurable
     {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
     {Y : Ω -> ℝ} (hY_null : NullMeasurable Y μ) (hY_int : Integrable Y μ) :
-    VdVWSignedOuterExpectationPosNeg μ Y = ∫ ω, Y ω ∂μ := by
-  simpa [VdVWSignedOuterExpectationPosNeg] using
-    VdVWOuterExpectation_posPart_sub_negPart_eq_integral_of_aemeasurable
-      hY_null.aemeasurable hY_int
+    VdVWSignedOuterExpectationPosNeg μ Y = ∫ ω, Y ω ∂μ :=
+  VdVWSignedOuterExpectationPosNeg_eq_integral_of_aemeasurable
+    hY_null.aemeasurable hY_int
 
 /--
 Composable form of the measurable signed positive/negative outer-expectation
@@ -115,6 +127,20 @@ theorem VdVWSignedOuterExpectationPosNeg_eq_integral_of_measurable_comp
       ∫ ω, f (X ω) ∂μ :=
   VdVWSignedOuterExpectationPosNeg_eq_integral_of_measurable
     (hf.comp hX) hint
+
+/--
+Composable form of the a.e.-measurable signed positive/negative
+outer-expectation bridge.
+-/
+theorem VdVWSignedOuterExpectationPosNeg_eq_integral_of_aemeasurable_comp
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {X : Ω -> S} {f : S -> ℝ}
+    (hX : AEMeasurable X μ) (hf : Measurable f)
+    (hint : Integrable (fun ω => f (X ω)) μ) :
+    VdVWSignedOuterExpectationPosNeg μ (fun ω => f (X ω)) =
+      ∫ ω, f (X ω) ∂μ :=
+  VdVWSignedOuterExpectationPosNeg_eq_integral_of_aemeasurable
+    (hf.comp_aemeasurable hX) hint
 
 /--
 Bounded-continuous tests composed with measurable maps have the expected
@@ -138,6 +164,24 @@ theorem VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp
       (Eventually.of_forall fun ω => f.norm_coe_le_norm (X ω)))
 
 /--
+Bounded-continuous tests composed with a.e.-measurable maps have the expected
+signed positive/negative VdV&W outer expectation on finite measure spaces.
+-/
+theorem VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp_aemeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {X : Ω -> S}
+    (hX : AEMeasurable X μ) (f : S →ᵇ ℝ) :
+    VdVWSignedOuterExpectationPosNeg μ (fun ω => f (X ω)) =
+      ∫ ω, f (X ω) ∂μ :=
+  VdVWSignedOuterExpectationPosNeg_eq_integral_of_aemeasurable_comp hX
+    f.continuous.measurable
+    (Integrable.of_bound
+      ((f.continuous.measurable.comp_aemeasurable hX).aestronglyMeasurable)
+      ‖f‖
+      (Eventually.of_forall fun ω => f.norm_coe_le_norm (X ω)))
+
+/--
 Bounded-continuous tests composed with null-measurable maps have the expected
 signed positive/negative VdV&W outer expectation on finite measure spaces.
 -/
@@ -151,7 +195,7 @@ theorem VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp_n
   have hY_null : NullMeasurable (fun ω => f (X ω)) μ :=
     f.continuous.measurable.comp_nullMeasurable hX
   exact
-    VdVWSignedOuterExpectationPosNeg_eq_integral_of_nullMeasurable hY_null
+    VdVWSignedOuterExpectationPosNeg_eq_integral_of_aemeasurable hY_null.aemeasurable
       (Integrable.of_bound hY_null.aemeasurable.aestronglyMeasurable ‖f‖
         (Eventually.of_forall fun ω => f.norm_coe_le_norm (X ω)))
 
@@ -268,6 +312,20 @@ theorem VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_nullMeasu
       (hY.aemeasurable.neg.ennreal_ofReal)]
 
 /--
+A.e.-measurable real maps have zero signed positive/negative outer/inner
+expectation gap.
+-/
+theorem VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_aemeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Y : Ω -> ℝ} (hY : AEMeasurable Y μ) :
+    VdVWSignedBoundedContinuousOuterInnerExpectationGap μ Y = 0 := by
+  simp [VdVWSignedBoundedContinuousOuterInnerExpectationGap,
+    VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_aemeasurable
+      hY.ennreal_ofReal,
+    VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_aemeasurable
+      hY.neg.ennreal_ofReal]
+
+/--
 Signed bounded-continuous asymptotic measurability for arbitrary maps.
 
 This is the closest local predicate to the signed part of VdV&W Definition
@@ -339,13 +397,23 @@ bounded-continuous asymptotically measurable.
 -/
 theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable
     {Ω : Type u} {S : Type v} {ι : Type w}
-    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [MeasurableSpace Ω] [MeasurableSpace S]
     [TopologicalSpace S] [OpensMeasurableSpace S]
     {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
     (hX : ∀ i, AEMeasurable (X i) (μs i)) :
-    VdVWAsymptoticallyMeasurableSignedBoundedContinuous μs X l :=
-  VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_nullMeasurable
-    (fun i => (hX i).nullMeasurable)
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuous μs X l := by
+  intro f
+  have hzero :
+      (fun i =>
+        VdVWSignedBoundedContinuousOuterInnerExpectationGap (μs i)
+          (fun ω => f (X i ω))) = fun _ => 0 := by
+    funext i
+    exact
+      VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_aemeasurable
+        (f.continuous.measurable.comp_aemeasurable (hX i))
+  simpa [hzero] using
+    (tendsto_const_nhds :
+      Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
 
 /--
 Continuous maps preserve signed bounded-continuous asymptotic measurability.
@@ -560,7 +628,7 @@ theorem
     VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_nullMeasurable
     {ι : Type w} {Ω : ι -> Type u} {S : Type v}
     [∀ i, MeasurableSpace (Ω i)]
-    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [MeasurableSpace S]
     [TopologicalSpace S] [OpensMeasurableSpace S]
     {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
     {l : Filter ι}
@@ -588,15 +656,25 @@ theorem
     VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_aemeasurable
     {ι : Type w} {Ω : ι -> Type u} {S : Type v}
     [∀ i, MeasurableSpace (Ω i)]
-    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [MeasurableSpace S]
     [TopologicalSpace S] [OpensMeasurableSpace S]
     {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
     {l : Filter ι}
     (hX : ∀ i, AEMeasurable (X i) (μs i)) :
     VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
-      Ω μs X l :=
-  VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_nullMeasurable
-    (fun i => (hX i).nullMeasurable)
+      Ω μs X l := by
+  intro f
+  have hzero :
+      (fun i =>
+        VdVWSignedBoundedContinuousOuterInnerExpectationGap (μs i)
+          (fun ω => f (X i ω))) = fun _ => 0 := by
+    funext i
+    exact
+      VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_aemeasurable
+        (f.continuous.measurable.comp_aemeasurable (hX i))
+  simpa [hzero] using
+    (tendsto_const_nhds :
+      Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
 
 /--
 Continuous maps preserve varying-domain signed bounded-continuous asymptotic
@@ -1133,7 +1211,7 @@ bounded continuous real tests.
 -/
 theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_nullMeasurable
     {Ω : Type u} {S : Type v} {ι : Type w}
-    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [MeasurableSpace Ω] [MeasurableSpace S]
     [TopologicalSpace S] [OpensMeasurableSpace S]
     {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
     (hX : ∀ i, NullMeasurable (X i) (μs i)) :
@@ -1147,7 +1225,7 @@ bounded continuous real tests.
 -/
 theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_aemeasurable
     {Ω : Type u} {S : Type v} {ι : Type w}
-    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [MeasurableSpace Ω] [MeasurableSpace S]
     [TopologicalSpace S] [OpensMeasurableSpace S]
     {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
     (hX : ∀ i, AEMeasurable (X i) (μs i)) :
@@ -1161,7 +1239,7 @@ bounded continuous real tests.
 -/
 theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_forall_nullMeasurable
     {Ω : Type u} {S : Type v} {ι : Type w}
-    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [MeasurableSpace Ω] [MeasurableSpace S]
     [TopologicalSpace S] [OpensMeasurableSpace S]
     {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
     (hX : ∀ i, NullMeasurable (X i) (μs i)) :
@@ -1175,7 +1253,7 @@ bounded continuous real tests.
 -/
 theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_forall_aemeasurable
     {Ω : Type u} {S : Type v} {ι : Type w}
-    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [MeasurableSpace Ω] [MeasurableSpace S]
     [TopologicalSpace S] [OpensMeasurableSpace S]
     {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
     (hX : ∀ i, AEMeasurable (X i) (μs i)) :
@@ -1365,7 +1443,7 @@ theorem
     VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.of_forall_nullMeasurable
     {ι : Type w} {Ω : ι -> Type u} {S : Type v}
     [∀ i, MeasurableSpace (Ω i)]
-    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [MeasurableSpace S]
     [TopologicalSpace S] [OpensMeasurableSpace S]
     {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
     {l : Filter ι}
@@ -1383,7 +1461,7 @@ theorem
     VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.of_forall_nullMeasurable
     {ι : Type w} {Ω : ι -> Type u} {S : Type v}
     [∀ i, MeasurableSpace (Ω i)]
-    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [MeasurableSpace S]
     [TopologicalSpace S] [OpensMeasurableSpace S]
     {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
     {l : Filter ι}
@@ -1402,7 +1480,7 @@ theorem
     VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.of_forall_aemeasurable
     {ι : Type w} {Ω : ι -> Type u} {S : Type v}
     [∀ i, MeasurableSpace (Ω i)]
-    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [MeasurableSpace S]
     [TopologicalSpace S] [OpensMeasurableSpace S]
     {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
     {l : Filter ι}
@@ -1420,7 +1498,7 @@ theorem
     VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.of_forall_aemeasurable
     {ι : Type w} {Ω : ι -> Type u} {S : Type v}
     [∀ i, MeasurableSpace (Ω i)]
-    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [MeasurableSpace S]
     [TopologicalSpace S] [OpensMeasurableSpace S]
     {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
     {l : Filter ι}
