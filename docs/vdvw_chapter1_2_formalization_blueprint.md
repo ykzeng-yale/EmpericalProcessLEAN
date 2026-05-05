@@ -134,6 +134,12 @@ package `VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap`, with
 measurable-map, law-map, `HasLaw`, common-domain `TendstoInDistribution`,
 common-domain outer-probability convergence, filter-refinement, and
 continuous-map closures.
+For sample-size-varying endpoints, it now also has the varying-domain
+predicates
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains`, and
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains`, plus map-law and
+automatic-pushforward feeders from measure-level weak convergence.
 This is the current signed foundation for the exact arbitrary-map weak
 convergence route; it still does not discharge full nonmeasurable
 outer-cover, asymptotic-tightness, or exact VdV&W signed extended-real

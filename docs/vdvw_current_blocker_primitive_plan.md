@@ -188,6 +188,25 @@ requires either a varying-domain law convergence primitive to `δ_0`, or a
 canonical infinite-product projection of those endpoints before applying this
 common-domain bridge.
 
+2026-05-05 varying-domain follow-up: the sample-size-varying side of that
+blocker now has a compiled signed weak-convergence interface.  New
+declarations are
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_measurable`,
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains`,
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_map_eq`,
+and
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps`.
+Search/reuse record: no local/mathlib varying-domain signed weak-convergence
+predicate existed; the proof reuses the existing signed positive/negative
+outer-expectation measurable-collapse theorem and the mathlib `integral_map`
+law transport.  The next exact target is now narrower: prove weak convergence
+of the pushforward laws for finite-product centered-supremum statistics to
+`δ_0` from `VdVWConvergesInOuterProbabilityConst`, or project those statistics
+to a canonical common domain and use the already compiled common-domain
+outer-probability bridge.
+
 2026-05-05 status check: this run started from VdVW head `4903594` and pushed
 the merged verified head `57c0b80`; the active `/goal` tool objective remains
 broad but cannot be edited in place.

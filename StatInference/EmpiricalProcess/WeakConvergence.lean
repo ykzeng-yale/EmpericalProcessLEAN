@@ -304,6 +304,85 @@ theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.comp_continuous
     asymptoticMeasurability := h.asymptoticMeasurability.comp_continuous hg }
 
 /--
+Varying-domain signed-outer bounded-continuous weak convergence.
+
+This is the same signed-outer bounded-continuous test formulation as
+`VdVWWeakConvergenceSignedOuterBoundedContinuous`, but with sample spaces
+`Ω i` depending on the index.  It is the natural target for Theorem 2.4.3
+finite-product endpoints such as `SampleAt Observation n`.
+-/
+def VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains
+    {ι : Type w} (Ω : ι -> Type u) {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    (μs : (i : ι) -> Measure (Ω i)) (X : (i : ι) -> Ω i -> S)
+    (l : Filter ι) (μ : ProbabilityMeasure S) : Prop :=
+  ∀ f : S →ᵇ ℝ,
+    Tendsto
+      (fun i => VdVWSignedOuterExpectationPosNeg (μs i)
+        (fun ω => f (X i ω)))
+      l (𝓝 (∫ s, f s ∂(μ : Measure S)))
+
+/--
+Varying-domain signed bounded-continuous asymptotic measurability.
+-/
+def VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
+    {ι : Type w} (Ω : ι -> Type u) {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    (μs : (i : ι) -> Measure (Ω i)) (X : (i : ι) -> Ω i -> S)
+    (l : Filter ι) : Prop :=
+  ∀ f : S →ᵇ ℝ,
+    Tendsto
+      (fun i =>
+        VdVWSignedBoundedContinuousOuterInnerExpectationGap (μs i)
+          (fun ω => f (X i ω)))
+      l (𝓝 0)
+
+/--
+Measurable varying-domain maps are signed bounded-continuous asymptotically
+measurable.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_measurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (hX : ∀ i, Measurable (X i)) :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
+      Ω μs X l := by
+  intro f
+  have hzero :
+      (fun i =>
+        VdVWSignedBoundedContinuousOuterInnerExpectationGap (μs i)
+          (fun ω => f (X i ω))) = fun _ => 0 := by
+    funext i
+    exact
+      VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_measurable
+        (f.continuous.measurable.comp (hX i))
+  simpa [hzero] using
+    (tendsto_const_nhds :
+      Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
+
+/--
+Proof-carrying varying-domain signed bounded-continuous weak convergence.
+
+This packages the varying-domain weak-convergence and asymptotic-measurability
+fields needed to consume sample-size-varying Theorem 2.4.3 endpoints.
+-/
+structure VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains
+    {ι : Type w} (Ω : ι -> Type u) {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    (μs : (i : ι) -> Measure (Ω i)) (X : (i : ι) -> Ω i -> S)
+    (l : Filter ι) (μ : ProbabilityMeasure S) : Prop where
+  weakConvergence :
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains Ω μs X l μ
+  asymptoticMeasurability :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains Ω μs X l
+
+/--
 Nonnegative version of VdV&W asymptotic measurability for a family of
 possibly arbitrary maps and a chosen class of nonnegative test functions.
 
@@ -799,6 +878,75 @@ theorem
       hweak.to_signedOuterBoundedContinuous_of_map_eq hX hmap
     asymptoticMeasurability :=
       VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_measurable hX }
+
+/--
+Varying-domain map-law form of the signed bounded-continuous
+weak-convergence bridge.
+
+This is the law-convergence feeder for sample-size-varying spaces such as
+`SampleAt Observation n`: once the pushforward laws on the common state space
+converge weakly, the varying-domain maps satisfy the proof-carrying signed
+bounded-continuous weak-convergence package.
+-/
+theorem
+    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_map_eq
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, IsFiniteMeasure (μs i)]
+    {X : (i : ι) -> Ω i -> S} (hX : ∀ i, Measurable (X i))
+    {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (hweak : VdVWWeakConvergenceProbabilityMeasures νs l μ)
+    (hmap : ∀ i, (νs i : Measure S) = Measure.map (X i) (μs i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ := by
+  refine ⟨?_, ?_⟩
+  · intro f
+    have houter :
+        (fun i =>
+          VdVWSignedOuterExpectationPosNeg (μs i) (fun ω => f (X i ω))) =
+          fun i => ∫ s, f s ∂(νs i : Measure S) := by
+      funext i
+      calc
+        VdVWSignedOuterExpectationPosNeg (μs i) (fun ω => f (X i ω))
+            = ∫ ω, f (X i ω) ∂μs i := by
+              exact
+                VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp
+                  (μ := μs i) (X := X i) (hX i) f
+        _ = ∫ s, f s ∂Measure.map (X i) (μs i) := by
+              exact (integral_map (hX i).aemeasurable
+                f.continuous.measurable.aestronglyMeasurable).symm
+        _ = ∫ s, f s ∂(νs i : Measure S) := by
+              rw [← hmap i]
+    simpa [VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains,
+      houter] using
+      (vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto.mp
+        hweak f)
+  · exact
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.of_forall_measurable
+        hX
+
+/--
+Automatic-pushforward version of the varying-domain signed
+bounded-continuous weak-convergence bridge.
+-/
+theorem
+    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, IsProbabilityMeasure (μs i)]
+    {X : (i : ι) -> Ω i -> S} (hX : ∀ i, Measurable (X i))
+    {l : Filter ι} {μ : ProbabilityMeasure S}
+    (hweak :
+      VdVWWeakConvergenceProbabilityMeasures
+        (fun i =>
+          ⟨Measure.map (X i) (μs i),
+            Measure.isProbabilityMeasure_map (hX i).aemeasurable⟩)
+        l μ) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ :=
+  VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_map_eq
+    (μs := μs) (X := X) hX hweak (fun _ => rfl)
 
 /--
 Has-law form of the signed-outer bounded-continuous weak-convergence bridge.
