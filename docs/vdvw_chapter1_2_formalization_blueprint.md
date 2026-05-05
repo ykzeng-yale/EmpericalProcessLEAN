@@ -89,7 +89,7 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at synced repository head `0f502cc`:
+Current operational target, 2026-05-05 at synced repository head `77025e0`:
 the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
@@ -110,7 +110,12 @@ final-current Theorem 2.4.3/Lemma 2.4.5 statement from the full-subgraph or
 structural-rate packages and classify its assumptions before moving to
 Chapter 1 arbitrary-map/`P`-measurable foundations, nonmeasurable envelope-tail
 outer-cover clauses, or separability primitives required by exact Chapter 1-2
-statements.
+statements.  The next small but theorem-facing Chapter 1 foundation closure is
+filter-refinement stability for the signed weak-convergence packages in
+`WeakConvergence.lean`, which local search shows is still missing for the
+signed-outer, arbitrary-map, and varying-domain proof-carrying predicates even
+though the corresponding asymptotic-measurability predicates already have
+`mono_filter` lemmas.
 
 2026-05-05 proof update: the countability-to-`P`-measurability route has a new
 compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`

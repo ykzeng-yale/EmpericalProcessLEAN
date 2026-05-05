@@ -14,22 +14,25 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`0f502cc`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
+`77025e0`: closed finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
 Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
-ordinary-mean/L1 normalized-log packages should not be rebuilt.  The current
-theorem-facing gap is the exact book random-entropy bridge for Theorem 2.4.3:
-derive a real tail/UI, uniform-integrability, deterministic structural
-cardinality, or ordinary mean-convergence input from
+ordinary-mean/L1 normalized-log packages should not be rebuilt.  The
+varying-domain signed continuous-mapping closures are also compiled.  The
+current theorem-facing gap is the exact book random-entropy bridge for
+Theorem 2.4.3: derive a real tail/UI, uniform-integrability, deterministic
+structural cardinality, or ordinary mean-convergence input from
 `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η > 0`, then consume the
 already compiled selected finite-net routes.  Bare outer-probability
 convergence of normalized random entropy should not be treated as tail/UI.  If
 that bridge is blocked after real Lean/search attempts, the next `/goal` batch
-should produce the cleanest final-current Theorem 2.4.3/Lemma 2.4.5 statement
-from the full-subgraph/structural packages and classify each stronger
-assumption before moving to theorem-critical Chapter 1-2 arbitrary-map,
-nonmeasurable envelope-tail, or separability primitives.
+should either close the already isolated signed weak-convergence
+filter-refinement foundations in `WeakConvergence.lean`, or produce the
+cleanest final-current Theorem 2.4.3/Lemma 2.4.5 statement from the
+full-subgraph/structural packages and classify each stronger assumption before
+moving to theorem-critical Chapter 1-2 arbitrary-map, nonmeasurable
+envelope-tail, or separability primitives.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new

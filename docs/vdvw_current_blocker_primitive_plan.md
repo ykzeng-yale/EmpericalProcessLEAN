@@ -58,7 +58,7 @@ consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`0f502cc`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`77025e0`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -119,7 +119,19 @@ Next high-capacity proof batches, in order:
    or polynomial growth.  Bare outer-probability convergence of `Y_n` is not
    enough for tail expectation; do not assert that implication without an
    added UI/tail or structural bound hypothesis.
-3. If the book random-entropy route remains blocked after real Lean/search
+3. In parallel only when it directly supports exact Chapter 1-2 statements or
+   Theorem 2.4.3 endpoints, close small reusable arbitrary-map foundation
+   gaps that are already search-isolated.  The immediate patchable item is
+   filter-refinement stability for the signed weak-convergence packages:
+   common-domain signed-outer weak convergence, the proof-carrying arbitrary
+   map package, and the varying-domain signed-outer/asymptotic-measurability/
+   proof-carrying packages.  Search record: local code has filter-refinement
+   closure for nonnegative, lower-shifted, canonical shifted, and common-domain
+   signed asymptotic-measurability predicates, but not these signed
+   weak-convergence packages.  These closures should be proved directly by
+   `Tendsto.mono_left` and by reusing the existing asymptotic-measurability
+   `mono_filter`; they should not distract into new endpoint wrappers.
+4. If the book random-entropy route remains blocked after real Lean/search
    attempts, move immediately to theorem-critical exactness gaps instead of
    rewrapping closed Theorem 2.4.3 layers.  The first fallback is a precise
    named final-current Theorem 2.4.3/Lemma 2.4.5 statement from the strongest
@@ -130,7 +142,7 @@ Next high-capacity proof batches, in order:
    require them, and removal of remaining countability/coordinate-
    measurability assumptions through the `VdVWPMeasurableClass` and
    pointwise-separable APIs.
-4. After Theorem 2.4.3 is exact or its remaining hypotheses are named as
+5. After Theorem 2.4.3 is exact or its remaining hypotheses are named as
    honest primitives, advance in textbook dependency order through Chapter 2:
    Section 2.2 covering/packing/entropy results, Section 2.3 measurable-class
    and separability lemmas, then bracketing/GC, Orlicz/maximal inequalities,
