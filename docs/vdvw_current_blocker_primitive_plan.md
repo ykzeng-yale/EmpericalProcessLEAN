@@ -53,37 +53,50 @@ textbook-hypothesis mismatches.
 
 ## Current `/goal` Target
 
-As of 2026-05-05, the active `/goal` should be interpreted as:
+As of 2026-05-05, after syncing to repository head `f3424f9`, the active
+`/goal` should be interpreted as:
 
-> Finish VdV&W Chapters 1-2 in Lean by dependency order.  The immediate
-> theorem-facing target is not more packaging around the already-closed
-> entropy, untruncation, finite-class, full-subgraph, or reverse/cofiltration
-> layers.  Start from the current strongest compiled endpoints:
+> Finish VdV&W Chapters 1-2 in Lean by dependency order, with proof-hole-free
+> code, search-first reuse of pinned mathlib and local `ProbabilityMeasure`,
+> and no exact textbook claim until the corresponding theorem statement
+> compiles.  Do not spend more runs on endpoint packaging already closed by
+> the strongest compiled Theorem 2.4.3/Lemma 2.4.5 endpoints:
 > `VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`,
 > `VdVWTheorem243_logCardinality_div_tendsto_bound_pGlivenkoCantelli_and_inMean`,
-> and the proved
-> `VdVWOrderDualSubmartingaleConvergenceHandoff.proved` /
-> `VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`
-> route.  The next high-value target is to remove or explicitly isolate the
-> remaining mismatches between these endpoints and the exact textbook Theorem
-> 2.4.3 assumptions: (1) prove the random-entropy finite-net tail/UI theorem
-> from the book entropy condition without adding deterministic log boundedness
-> or overclaiming covering-number monotonicity, (2) instantiate the already
-> compiled full-subgraph/structural-rate consumers for concrete textbook class
-> hypotheses rather than rebuilding more endpoint packaging, and (3) extend the
-> countable coordinate-measurable route toward arbitrary
-> `P`-measurable/asymptotic-measurable classes and any needed nonmeasurable
-> outer-cover envelope variants.  The full-subgraph VC consumer itself is no
-> longer a missing bridge: it is compiled under `VdVWUniformSubgraphVCBound` in
+> `VdVWOrderDualSubmartingaleConvergenceHandoff.proved`, and
+> `VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`.
+> The next high-capacity proof batches are, in order:
+> (1) close the Chapter 1 signed bounded-continuous arbitrary-map foundation,
+> starting with a signed positive/negative outer-expectation bridge that reuses
+> `VdVWOuterExpectation_posPart_sub_negPart_eq_integral_of_measurable`, then
+> connect it to the existing lower-shifted/canonical bounded-continuous
+> asymptotic-measurability predicates;
+> (2) use that foundation to state/prove the honest arbitrary-map weak
+> convergence/asymptotic-measurability wrappers needed by exact VdV&W Chapter 1
+> and by Theorem 2.4.3 without countability-only assumptions;
+> (3) remove or explicitly isolate the remaining Theorem 2.4.3 textbook
+> mismatch by proving the random-entropy selected finite-net tail/UI theorem
+> from the book entropy condition, or by recording the exact missing theorem
+> shape after real Lean/search attempts; and
+> (4) instantiate the already compiled full-subgraph/structural-rate consumers
+> for concrete textbook class hypotheses only when a Chapter 1-2 theorem or
+> theorem-critical example needs that instantiation.  The full-subgraph VC
+> consumer itself is no longer a missing bridge: it is compiled under
+> `VdVWUniformSubgraphVCBound` in
 > `VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`.
-> If exact Theorem 2.4.3 assembly blocks after
-> real Lean/search attempts, immediately close the next theorem-critical
-> Chapter 1-2 primitive that reduces one of those mismatches, especially the
-> arbitrary-map/asymptotic-measurability foundation.
 
 The Codex `/goal` tool currently exposes only completion updates for an active
 goal, so this section is the authoritative refreshed target text for the
 ongoing goal until the tool objective can be recreated.
+
+2026-05-05 live recalibration: repository head is `f3424f9`; the latest VdVW
+proof commit remains `407962b Add asymptotic measurability filter closures`,
+and `f3424f9` only updates the parallel optimization docs.  The active tool
+goal remains broad because the `/goal` API cannot edit an active objective in
+place.  Operationally, the next proof run should start with the signed
+positive/negative outer-expectation bridge in `WeakConvergence.lean` or an
+equally direct arbitrary-map/asymptotic-measurability closure; it should not
+reopen solved Theorem 2.4.3 endpoint-packaging work.
 
 2026-05-05 status check: this run started from VdVW head `4903594` and pushed
 the merged verified head `57c0b80`; the active `/goal` tool objective remains
