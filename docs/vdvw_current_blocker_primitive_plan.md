@@ -55,13 +55,17 @@ remaining reverse-time theorem as the generic proposition
 `VdVWOrderDualSubmartingaleConvergenceHandoff`.  The theorem-facing consumer
 `VdVWLemma245TextbookReverseCofiltrationHandoff.of_orderDualSubmartingaleConvergence`
 compiles against the VdV&W-specific shifted permutation-symmetric
-cofiltration submartingale and the envelope `L¹`/`eLpNorm` bound.  Therefore
-the next proof target should be the generic reverse-time convergence theorem
-itself, or an equivalent reindexing of an `ℕᵒᵈ` submartingale into an ordinary
-mathlib `ℕ` submartingale/supermartingale convergence theorem.  Do not spend
-the next run on already-closed cofiltration construction, adaptedness,
-textbook comparison, leave-one-out notation, finite-cover entropy, grid/VC
-packaging, or finite-class SLLN endpoints.
+cofiltration submartingale and the envelope `L¹`/`eLpNorm` bound.  Follow-up
+correction: this generic handoff now requires a finite `ℝ≥0` seminorm bound,
+matching mathlib's L¹-bounded submartingale convergence theorem; the VdV&W
+consumer supplies that finite bound from `2 * ∫ envelope dP` using envelope
+nonnegativity.  Therefore the next proof target should be the generic
+reverse-time convergence theorem itself, or an equivalent reindexing of an
+`ℕᵒᵈ` submartingale into an ordinary mathlib `ℕ`
+submartingale/supermartingale convergence theorem.  Do not spend the next run
+on already-closed cofiltration construction, adaptedness, textbook comparison,
+leave-one-out notation, finite-cover entropy, grid/VC packaging, or
+finite-class SLLN endpoints.
 
 2026-05-04 `/goal` target update: the live non-finite-class frontier is no
 longer inverse-radius entropy, finite-cover selection, VC/subgraph packaging,

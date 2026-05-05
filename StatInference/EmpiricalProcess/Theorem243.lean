@@ -5395,9 +5395,9 @@ along ordinary sample sizes `n ↦ OrderDual.toDual n`.
 def VdVWOrderDualSubmartingaleConvergenceHandoff
     (Ω : Type u) [MeasurableSpace Ω] (μ : Measure Ω) : Prop :=
   ∀ {ℱ : Filtration ℕᵒᵈ (inferInstance : MeasurableSpace Ω)}
-    {f : ℕᵒᵈ -> Ω -> ℝ} {R : ℝ≥0∞},
+    {f : ℕᵒᵈ -> Ω -> ℝ} {R : ℝ≥0},
     Submartingale f ℱ μ ->
-      (∀ n : ℕᵒᵈ, eLpNorm (f n) 1 μ ≤ R) ->
+      (∀ n : ℕᵒᵈ, eLpNorm (f n) 1 μ ≤ (R : ℝ≥0∞)) ->
         ∀ᵐ ω ∂μ, ∃ limit : ℝ,
           Tendsto (fun n : ℕ => f (OrderDual.toDual n) ω) atTop (𝓝 limit)
 
@@ -6100,6 +6100,9 @@ theorem VdVWLemma245TextbookReverseCofiltrationHandoff.of_orderDualSubmartingale
       (P := P) (indexClass := indexClass) (classFun := classFun)
       (envelope := envelope)
       hcount henvelope hclass henv_integrable hcomparison
+  let Rbound : ℝ≥0 :=
+    ⟨2 * ∫ x, envelope x ∂P,
+      mul_nonneg zero_le_two (integral_nonneg fun x => henvelope.nonneg x)⟩
   have hbdd :
       ∀ n : ℕᵒᵈ,
         eLpNorm
@@ -6107,19 +6110,26 @@ theorem VdVWLemma245TextbookReverseCofiltrationHandoff.of_orderDualSubmartingale
             vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
               (OrderDual.ofDual n + 1) sequence)
           1 (vdVWInfiniteProductMeasure P) ≤
-          ENNReal.ofReal (2 * ∫ x, envelope x ∂P) := by
+          (Rbound : ℝ≥0∞) := by
     intro n
+    have hRbound :
+        (Rbound : ℝ≥0∞) = ENNReal.ofReal (2 * ∫ x, envelope x ∂P) := by
+      rw [ENNReal.ofReal_eq_coe_nnreal
+        (mul_nonneg zero_le_two (integral_nonneg fun x => henvelope.nonneg x))]
+      rfl
+    rw [hRbound]
     exact
-      eLpNorm_vdVWLemma245CenteredEmpiricalSupremum_le_two_integral_envelope
+      (eLpNorm_vdVWLemma245CenteredEmpiricalSupremum_le_two_integral_envelope
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) hcount henvelope hclass henv_integrable
-        (Nat.succ_pos (OrderDual.ofDual n))
+        (Nat.succ_pos (OrderDual.ofDual n)))
   have hconv :=
     hreverse
       (ℱ := vdVWLemma245ShiftedPermutationSymmetricCofiltration Observation)
       (f := fun n : ℕᵒᵈ => fun sequence : ℕ -> Observation =>
         vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
           (OrderDual.ofDual n + 1) sequence)
+      (R := Rbound)
       hsub hbdd
   filter_upwards [hconv] with sequence hsequence
   rcases hsequence with ⟨limit, hlimit⟩

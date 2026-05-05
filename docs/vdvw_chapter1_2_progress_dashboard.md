@@ -1222,6 +1222,10 @@ as `VdVWOrderDualSubmartingaleConvergenceHandoff`, and the VdV&W-specific
 consumer
 `VdVWLemma245TextbookReverseCofiltrationHandoff.of_orderDualSubmartingaleConvergence`
 is compiled.  It composes the shifted `ℕᵒᵈ` cofiltration submartingale with
-the existing envelope `eLpNorm` bound.  The next target is to prove this
-generic handoff, preferably by reindexing an `ℕᵒᵈ` submartingale into an
-ordinary mathlib martingale-convergence theorem.
+the existing envelope `eLpNorm` bound.  The generic handoff has now been
+tightened to use a finite `ℝ≥0` L¹ bound, matching the pinned mathlib
+submartingale convergence theorem; the VdV&W consumer supplies this bound from
+`2 * ∫ envelope dP`.  The next target is to prove this generic handoff,
+preferably by reindexing an `ℕᵒᵈ` submartingale into an ordinary mathlib
+martingale-convergence theorem or by proving the corresponding reverse
+upcrossing theorem.
