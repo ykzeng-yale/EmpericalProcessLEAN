@@ -147,6 +147,49 @@ theorem chewi58Lyapunov_hasDerivWithinAt
   exact (chewi58Lyapunov_hasDerivAt hgrad hflow
     (ne_of_gt ht_pos)).hasDerivWithinAt
 
+/-- Continuity of Chewi's auxiliary AGF point from the supplied trajectory. -/
+theorem agfAuxPoint_continuousOn
+    {grad : E -> E} {x p : ℝ -> E}
+    (hflow : IsChewi58AcceleratedGradientFlowTrajectory grad x p) :
+    ContinuousOn (agfAuxPoint x p) (Set.Ici (0 : ℝ)) := by
+  have hx_cont : ContinuousOn x (Set.Ici (0 : ℝ)) := by
+    exact HasDerivAt.continuousOn (s := Set.Ici (0 : ℝ))
+      (fun t _ht => hflow.1 t)
+  have hp_cont : ContinuousOn p (Set.Ici (0 : ℝ)) := by
+    exact HasDerivAt.continuousOn (s := Set.Ici (0 : ℝ))
+      (fun t _ht => hflow.2 t)
+  have hcoef_cont :
+      ContinuousOn (fun t : ℝ => t / 2) (Set.Ici (0 : ℝ)) := by
+    exact (continuous_id.div_const 2).continuousOn
+  simpa [agfAuxPoint] using hx_cont.add (hcoef_cont.smul hp_cont)
+
+/--
+Continuity of Chewi's Theorem 5.8 Lyapunov expression from the AGF trajectory
+and the supplied objective gradient.
+-/
+theorem chewi58Lyapunov_continuousOn
+    [CompleteSpace E] {f : E -> ℝ} {grad : E -> E}
+    {fstar : ℝ} {x p : ℝ -> E} {xStar : E}
+    (hgrad : ∀ z, HasGradientAt f (grad z) z)
+    (hflow : IsChewi58AcceleratedGradientFlowTrajectory grad x p) :
+    ContinuousOn (chewi58Lyapunov f fstar x p xStar) (Set.Ici (0 : ℝ)) := by
+  have hcoef_cont :
+      ContinuousOn (fun t : ℝ => t ^ (2 : ℕ) / 2) (Set.Ici (0 : ℝ)) := by
+    exact ((continuous_id.pow (2 : ℕ)).div_const 2).continuousOn
+  have hgap_cont :
+      ContinuousOn (fun t => f (x t) - fstar) (Set.Ici (0 : ℝ)) := by
+    exact HasDerivAt.continuousOn (s := Set.Ici (0 : ℝ))
+      (fun t _ht => chewi58_gap_hasDerivAt hgrad hflow)
+  have haux_cont :
+      ContinuousOn (agfAuxPoint x p) (Set.Ici (0 : ℝ)) :=
+    agfAuxPoint_continuousOn hflow
+  have hnorm_cont :
+      ContinuousOn
+        (fun t => ‖agfAuxPoint x p t - xStar‖ ^ (2 : ℕ))
+        (Set.Ici (0 : ℝ)) := by
+    exact ((haux_cont.sub continuousOn_const).norm).pow (2 : ℕ)
+  simpa [chewi58Lyapunov] using (hcoef_cont.mul hgap_cont).add hnorm_cont
+
 /-- At time zero, Chewi's Theorem 5.8 Lyapunov equals the initial squared distance. -/
 theorem chewi58Lyapunov_zero (f : E -> ℝ) (fstar : ℝ)
     (x p : ℝ -> E) (xStar : E) :
@@ -299,9 +342,9 @@ theorem chewi58_gap_le_of_lyapunov_derivative_formula_firstOrderConvex
     (hderiv_formula s hs)
 
 /--
-Source-facing Theorem 5.8 wrapper, with continuity of the Lyapunov expression
-kept as an explicit analytic side condition.  The AGF equation supplies the
-derivative formula; first-order convexity supplies its nonpositivity.
+Source-facing Theorem 5.8 wrapper.  The AGF equation supplies the derivative
+formula and continuity of the Lyapunov expression; first-order convexity
+supplies derivative nonpositivity.
 -/
 theorem chewi58_gap_le_of_agf_firstOrderConvex
     [CompleteSpace E] {f : E -> ℝ} {grad : E -> E} {fstar : ℝ}
@@ -310,11 +353,12 @@ theorem chewi58_gap_le_of_agf_firstOrderConvex
     (hgrad : ∀ z, HasGradientAt f (grad z) z)
     (hflow : IsChewi58AcceleratedGradientFlowTrajectory grad x p)
     (hfxStar : f xStar = fstar)
-    (hcont :
-      ContinuousOn (chewi58Lyapunov f fstar x p xStar) (Set.Ici (0 : ℝ)))
     (ht : 0 < t) :
     f (x t) - fstar ≤
       2 * ‖x 0 - xStar‖ ^ (2 : ℕ) / t ^ (2 : ℕ) := by
+  have hcont :
+      ContinuousOn (chewi58Lyapunov f fstar x p xStar) (Set.Ici (0 : ℝ)) :=
+    chewi58Lyapunov_continuousOn hgrad hflow
   refine chewi58_gap_le_of_lyapunov_derivative_formula_firstOrderConvex
     (f := f) (grad := grad) (fstar := fstar) (x := x) (p := p)
     (xStar := xStar)
