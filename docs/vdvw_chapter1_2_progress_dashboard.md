@@ -1461,3 +1461,14 @@ with countability plus a measurable integrable envelope supplying the
 measurability, integrability, and centered-supremum tail/UI inputs.  The branch
 now has both local book-style `P`-GC and in-mean conclusions under the honest
 deterministic log-bound assumption.
+
+2026-05-05 follow-up: the structural deterministic-rate branch now has the
+matching in-mean endpoint.  The compiled declaration
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_logCardinality_div_tendsto_bound`
+turns empirical covering domination plus deterministic normalized
+log-cardinality rates into in-mean centered-supremum convergence by reusing the
+variable-domain entropy constructor and in-mean theorem.  This leaves the
+same substantive blockers: instantiate the structural rates from a book-level
+VC/Sauer/trace-cover theorem, remove deterministic boundedness by a genuine
+random-entropy finite-net tail/UI theorem, or extend beyond the countable
+coordinate-measurable class layer.
