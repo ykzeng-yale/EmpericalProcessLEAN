@@ -1472,3 +1472,13 @@ same substantive blockers: instantiate the structural rates from a book-level
 VC/Sauer/trace-cover theorem, remove deterministic boundedness by a genuine
 random-entropy finite-net tail/UI theorem, or extend beyond the countable
 coordinate-measurable class layer.
+
+2026-05-05 follow-up: the structural deterministic-rate branch is now packaged
+as a paired endpoint.  The compiled theorem
+`VdVWTheorem243_logCardinality_div_tendsto_bound_pGlivenkoCantelli_and_inMean`
+returns both the local book-style `P`-GC conclusion and the in-mean
+centered-supremum conclusion from the same structural covering/rate
+hypotheses.  This keeps the next work honest: prove the exposed structural
+rate inputs from VC/Sauer/trace-cover theory, remove deterministic
+boundedness with a random-entropy tail/UI theorem, or extend beyond the
+countable coordinate-measurable route.
