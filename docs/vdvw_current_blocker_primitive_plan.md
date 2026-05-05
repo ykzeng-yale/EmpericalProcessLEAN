@@ -438,6 +438,13 @@ the nonnegative a.e.-measurable reading of VdV&W Lemma 1.2.4; the remaining
 gap is still the arbitrary extended-real/nonmeasurable common-cover existence
 statement.
 
+2026-05-05 bounded `EReal` common-cover follow-up:
+`VdVWBoundedERealMeasurableCover.exists_common_boundedERealMeasurableCover_of_measurable`
+now records the measurable bounded extended-real case: a bounded measurable
+`EReal` map is its own simultaneous minimal cover for any family of measures.
+This closes the measurable-map extended-real common-cover clause while keeping
+the arbitrary/nonmeasurable existence theorem as the remaining 1.2.4 gap.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.

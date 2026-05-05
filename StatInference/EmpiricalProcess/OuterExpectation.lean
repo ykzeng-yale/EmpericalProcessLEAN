@@ -832,6 +832,34 @@ def ofMeasurable {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
   minimal_ae := fun _ _ h_majorizes => h_majorizes
 
 /--
+Family-level common bounded `EReal` measurable cover for measurable maps.
+
+If a bounded extended-real map is measurable, then the map itself is a common
+minimal measurable majorant for every measure in any family.  This is the
+measurable-map part of the extended-real common-cover statement in VdV&W
+Lemma 1.2.4.
+-/
+theorem exists_common_boundedERealMeasurableCover_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {measures : Set (Measure Ω)}
+    {T : Ω -> EReal} {lower upper : ℝ} (hT : Measurable T)
+    (hlower : ∀ ω, (lower : EReal) ≤ T ω)
+    (hupper : ∀ ω, T ω ≤ (upper : EReal)) :
+    ∃ U : Ω -> EReal,
+      Measurable U ∧
+        (∀ ω, T ω ≤ U ω) ∧
+          (∀ ω, (lower : EReal) ≤ T ω) ∧
+            (∀ ω, U ω ≤ (upper : EReal)) ∧
+              ∀ μ ∈ measures, ∀ V : Ω -> EReal,
+                Measurable V ->
+                (∀ᵐ ω ∂μ, T ω ≤ V ω) ->
+                  ∀ᵐ ω ∂μ, U ω ≤ V ω := by
+  refine ⟨T, hT, ?_, hlower, hupper, ?_⟩
+  · intro ω
+    rfl
+  · intro μ _hμ V _hV h_majorizes
+    exact h_majorizes
+
+/--
 Nonnegative bounded `EReal` covers descend to the existing nonnegative
 `ℝ≥0∞` measurable-cover interface.
 

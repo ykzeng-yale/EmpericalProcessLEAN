@@ -98,6 +98,8 @@ The dominated common-cover lane for Lemma 1.2.4 now has its nonnegative
 a.e.-measurable core: covers built under a dominating measure transport to
 minimal covers for absolutely continuous measures, and the same cover is now
 packaged as a simultaneous common cover for dominated measure families.
+The bounded extended-real measurable case is also compiled: a bounded
+measurable `EReal` map is a common minimal cover for every measure family.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new
