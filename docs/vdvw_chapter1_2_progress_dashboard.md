@@ -1713,3 +1713,15 @@ hypotheses when needed, remove deterministic boundedness with a
 random-entropy tail/UI theorem, or extend beyond the countable
 coordinate-measurable route.  The generic full-subgraph endpoint is no longer
 a missing proof target; it is compiled under `VdVWUniformSubgraphVCBound`.
+
+2026-05-05 process-space foundation update: the `ell_infty(T)` substrate is
+now locally named and connected to finite-dimensional restrictions.  New
+compiled declarations in `StatInference/EmpiricalProcess/EllInfty.lean`
+include `VdVWEllInfty`, `VdVWEllInfty.ofBounded`,
+`VdVWEllInfty.evalCLM`, `VdVWEllInfty.processMap`, and
+`VdVWEllInfty.continuous_finiteRestrict`; `FiniteDimensional.lean` adds
+`vdVW148_ellInfty_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.
+This closes the safe mathlib-backed bounded-process/FDD forward substrate.
+Remaining Chapter 1 process blockers are separability/asymptotic tightness,
+the FDD weak-convergence converse, and arbitrary-map/nonmeasurable
+outer-cover weak-convergence primitives.

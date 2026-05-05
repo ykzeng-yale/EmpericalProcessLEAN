@@ -22,6 +22,7 @@ import StatInference.EmpiricalProcess.OuterExpectation
 import StatInference.EmpiricalProcess.WeakConvergence
 import StatInference.EmpiricalProcess.HilbertGaussian
 import StatInference.EmpiricalProcess.BallSigma
+import StatInference.EmpiricalProcess.EllInfty
 import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.Theorem243
 import StatInference.EmpiricalProcess.OuterProbabilityExpectation

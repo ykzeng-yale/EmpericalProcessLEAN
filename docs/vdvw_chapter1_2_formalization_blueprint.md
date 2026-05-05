@@ -1505,6 +1505,16 @@ above, so they do not change the theorem-level dashboard counts.
 7. Formalize multiplier, permanence, bracketing CLT, functional Donsker, and
    maximal inequality sections 2.9-2.14.
 
+2026-05-05 `ell_infty(T)` foundation update: the first VdV&W-named bounded
+process-space substrate is now compiled.  `EllInfty.lean` wraps mathlib
+`lp (fun _ : T => ℝ) ∞` as `VdVWEllInfty T`, proves the bounded-function
+constructor, coordinate norm/supremum-norm wrappers, continuous coordinate
+evaluation, bounded sample-path process map, and finite-dimensional coordinate
+restriction.  `FiniteDimensional.lean` now adds the forward FDD
+weak-convergence wrapper for laws on `ell_infty(T)`.  This should be treated
+as the base substrate for later VdV&W process statements, not as a proof of
+separability, asymptotic tightness, Donsker, or the FDD converse.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

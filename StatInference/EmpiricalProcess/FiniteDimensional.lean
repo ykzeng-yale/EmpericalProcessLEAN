@@ -1,5 +1,6 @@
 import StatInference.ProbabilityMeasure.FiniteDimensional
 import StatInference.EmpiricalProcess.WeakConvergence
+import StatInference.EmpiricalProcess.EllInfty
 
 /-!
 # Finite-dimensional empirical-process law wrappers
@@ -101,5 +102,27 @@ theorem vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence
       l
       (μ.map ((Finset.continuous_restrict I).measurable.aemeasurable)) := by
   exact VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict hμ I
+
+/--
+Forward finite-dimensional weak-convergence layer for laws on
+`ell_infty(T)`.  This is the process-space version of the easy direction of
+VdV&W 1.4.8: weak convergence of `ell_infty(T)` laws implies weak convergence
+of every finite coordinate restriction.
+-/
+theorem vdVW148_ellInfty_finiteDimensional_weakConvergence_of_processLaw_weakConvergence
+    {ι : Type*} {l : Filter ι}
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    {μs : ι -> ProbabilityMeasure (VdVWEllInfty T)}
+    {μ : ProbabilityMeasure (VdVWEllInfty T)}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    (I : Finset T)
+    [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)] :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun n => (μs n).map
+        ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable))
+      l
+      (μ.map
+        ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable)) := by
+  exact hμ.map_continuous (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
 
 end StatInference

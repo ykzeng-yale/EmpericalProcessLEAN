@@ -5080,3 +5080,22 @@ let later Chapter 1 weak-convergence and tightness arguments pass to finer
 filters without rebuilding outer/inner expectation-gap proofs.  This narrows
 the remaining arbitrary-map gap to the signed bounded-continuous weak-
 convergence definition and its nonmeasurable outer-cover envelope support.
+
+2026-05-05 `ell_infty(T)` process-space update: local search confirmed the
+mathlib substrate remains `lp (fun _ : T => ℝ) ∞` with `Memℓp`,
+`memℓp_infty_iff`, `lp.norm_eq_ciSup`, `lp.norm_apply_le_norm`,
+`lp.norm_le_of_forall_le`, `lp.evalCLM`, and `lp.completeSpace`; no existing
+VdV&W-named `ell_infty(T)` process wrapper was present in `StatInference`.
+`StatInference/EmpiricalProcess/EllInfty.lean` now adds the local
+`VdVWEllInfty T` abbreviation, bounded-function constructor
+`VdVWEllInfty.ofBounded`, coordinate norm and supremum-norm wrappers,
+continuous coordinate evaluation `VdVWEllInfty.evalCLM`, bounded sample-path
+process maps, and finite-dimensional coordinate restriction
+`VdVWEllInfty.finiteRestrict` with continuity/measurability wrappers.  The
+empirical-process FDD namespace now also has
+`vdVW148_ellInfty_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`,
+the forward FDD weak-convergence implication for laws on `ell_infty(T)`.
+This closes the first exact process-space substrate layer; it does not prove
+separability, asymptotic tightness, or the FDD weak-convergence converse.
+Next work in this lane should target those stronger process primitives or the
+nonmeasurable outer-cover signed weak-convergence layer.
