@@ -1720,8 +1720,12 @@ compiled declarations in `StatInference/EmpiricalProcess/EllInfty.lean`
 include `VdVWEllInfty`, `VdVWEllInfty.ofBounded`,
 `VdVWEllInfty.evalCLM`, `VdVWEllInfty.processMap`, and
 `VdVWEllInfty.continuous_finiteRestrict`; `FiniteDimensional.lean` adds
-`vdVW148_ellInfty_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.
-This closes the safe mathlib-backed bounded-process/FDD forward substrate.
-Remaining Chapter 1 process blockers are separability/asymptotic tightness,
-the FDD weak-convergence converse, and arbitrary-map/nonmeasurable
-outer-cover weak-convergence primitives.
+`vdVW148_ellInfty_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`,
+`vdVW148_ellInfty_finiteDimensional_hasLaw`,
+`vdVW148_ellInfty_finiteDimensional_identDistrib`, and
+`vdVW148_ellInfty_finiteDimensional_tendstoInDistribution`.
+This closes the safe mathlib-backed bounded-process/FDD forward substrate for
+laws, identical distributions, and random-variable convergence in
+distribution.  Remaining Chapter 1 process blockers are
+separability/asymptotic tightness, the FDD weak-convergence converse, and
+arbitrary-map/nonmeasurable outer-cover weak-convergence primitives.

@@ -1511,9 +1511,11 @@ process-space substrate is now compiled.  `EllInfty.lean` wraps mathlib
 constructor, coordinate norm/supremum-norm wrappers, continuous coordinate
 evaluation, bounded sample-path process map, and finite-dimensional coordinate
 restriction.  `FiniteDimensional.lean` now adds the forward FDD
-weak-convergence wrapper for laws on `ell_infty(T)`.  This should be treated
-as the base substrate for later VdV&W process statements, not as a proof of
-separability, asymptotic tightness, Donsker, or the FDD converse.
+weak-convergence wrapper for laws on `ell_infty(T)`, plus the corresponding
+`HasLaw`, `IdentDistrib`, and varying-domain `TendstoInDistribution` finite
+restriction wrappers.  This should be treated as the base substrate for later
+VdV&W process statements, not as a proof of separability, asymptotic
+tightness, Donsker, or the FDD converse.
 
 ## Automation Checklist
 

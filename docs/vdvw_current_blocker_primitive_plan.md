@@ -5094,8 +5094,15 @@ process maps, and finite-dimensional coordinate restriction
 `VdVWEllInfty.finiteRestrict` with continuity/measurability wrappers.  The
 empirical-process FDD namespace now also has
 `vdVW148_ellInfty_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`,
-the forward FDD weak-convergence implication for laws on `ell_infty(T)`.
-This closes the first exact process-space substrate layer; it does not prove
-separability, asymptotic tightness, or the FDD weak-convergence converse.
-Next work in this lane should target those stronger process primitives or the
-nonmeasurable outer-cover signed weak-convergence layer.
+the forward FDD weak-convergence implication for laws on `ell_infty(T)`.  A
+follow-up in the same layer adds
+`vdVW148_ellInfty_finiteDimensional_hasLaw`,
+`vdVW148_ellInfty_finiteDimensional_identDistrib`, and
+`vdVW148_ellInfty_finiteDimensional_tendstoInDistribution`, so
+`ell_infty(T)`-valued laws, identical distributions, and varying-domain
+mathlib convergence in distribution now all feed finite-dimensional
+coordinate restrictions directly.  This closes the first exact process-space
+substrate layer; it does not prove separability, asymptotic tightness, or the
+FDD weak-convergence converse.  Next work in this lane should target those
+stronger process primitives or the nonmeasurable outer-cover signed
+weak-convergence layer.

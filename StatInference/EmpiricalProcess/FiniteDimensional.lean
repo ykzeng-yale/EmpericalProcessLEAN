@@ -125,4 +125,66 @@ theorem vdVW148_ellInfty_finiteDimensional_weakConvergence_of_processLaw_weakCon
         ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable)) := by
   exact hμ.map_continuous (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
 
+/-- Finite-dimensional law of an `ell_infty(T)`-valued random element. -/
+theorem vdVW148_ellInfty_finiteDimensional_hasLaw
+    [MeasurableSpace Ω] [MeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    {X : Ω -> VdVWEllInfty T} {P : Measure Ω}
+    {μ : Measure (VdVWEllInfty T)}
+    (hX : HasLaw X μ P)
+    (I : Finset T)
+    [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)] :
+    HasLaw
+      (VdVWEllInfty.finiteRestrict I ∘ X)
+      (μ.map (VdVWEllInfty.finiteRestrict I))
+      P := by
+  refine HasLaw.comp ?_ hX
+  exact
+    { aemeasurable :=
+        ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable)
+      map_eq := rfl }
+
+/-- Identical distribution of `ell_infty(T)` processes implies identical FDDs. -/
+theorem vdVW148_ellInfty_finiteDimensional_identDistrib
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    {X : Ω -> VdVWEllInfty T} {Y : Ω' -> VdVWEllInfty T}
+    {P : Measure Ω} {Q : Measure Ω'}
+    (hXY : IdentDistrib X Y P Q)
+    (I : Finset T)
+    [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)] :
+    IdentDistrib
+      (VdVWEllInfty.finiteRestrict I ∘ X)
+      (VdVWEllInfty.finiteRestrict I ∘ Y)
+      P Q :=
+  hXY.comp (VdVWEllInfty.measurable_finiteRestrict (T := T) I)
+
+/--
+Random-variable form of the forward FDD implication for `ell_infty(T)`:
+convergence in distribution of `ell_infty(T)`-valued random elements implies
+convergence in distribution of every finite coordinate restriction.
+
+This is still the easy direction of VdV&W 1.4.8.  The FDD converse requires
+the separate tightness/separability/asymptotic-measurability hypotheses.
+-/
+theorem vdVW148_ellInfty_finiteDimensional_tendstoInDistribution
+    {ι : Type*} {Ω : ι -> Type*} {Ω' : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    {X : (i : ι) -> Ω i -> VdVWEllInfty T}
+    {Z : Ω' -> VdVWEllInfty T} {l : Filter ι}
+    (hX : TendstoInDistribution X l Z μ μ')
+    (I : Finset T)
+    [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)] :
+    TendstoInDistribution
+      (fun i => VdVWEllInfty.finiteRestrict I ∘ X i)
+      l
+      (VdVWEllInfty.finiteRestrict I ∘ Z)
+      μ μ' :=
+  hX.continuous_comp (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
+
 end StatInference
