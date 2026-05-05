@@ -1442,3 +1442,13 @@ local book-style `P`-Glivenko-Cantelli predicate.  Remaining work is now
 concentrated on proving the structural rate/covering inputs from actual
 VdV&W entropy/VC hypotheses, or proving the missing random-entropy tail/UI
 bridge without deterministic boundedness.
+
+2026-05-05 follow-up: the variable-domain book entropy branch with a
+deterministic normalized log-cardinality bound now reaches the canonical
+book-style `P`-GC endpoint.  The compiled declaration
+`VdVWPGlivenkoCantelliClass_of_variableEntropy_logCardinality_div_bound`
+projects the variable-entropy centered convergence theorem through the
+finite-product uniform-deviation bridge and the canonical iid process bridge.
+This closes another endpoint handoff; the remaining theorem-critical issue is
+still the deterministic-bound/tail-UI input or the broader arbitrary
+`P`-measurable/asymptotic-measurable layer.

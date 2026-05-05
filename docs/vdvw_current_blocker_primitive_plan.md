@@ -4220,3 +4220,16 @@ next real proof target is to derive those rate/covering inputs from a genuine
 VdV&W structural entropy/VC theorem, or to remove the deterministic-rate
 boundedness assumption by proving the selected finite-net tail/UI theorem from
 random entropy alone.
+
+2026-05-05 follow-up: the variable-domain book entropy branch with
+deterministic normalized log-cardinality boundedness now also reaches the
+canonical `P`-Glivenko-Cantelli endpoint.  The compiled declaration
+`VdVWPGlivenkoCantelliClass_of_variableEntropy_logCardinality_div_bound`
+composes the existing variable-entropy centered convergence theorem with the
+finite-product uniform-deviation bridge and the canonical iid projection
+bridge.  This is closer to the book's random-entropy statement than the
+structural-rate sufficient condition, but it still carries the deterministic
+boundedness input needed to discharge selected finite-net tail/UI.  Remaining
+blocker: remove or derive that deterministic bound by proving a true
+random-entropy tail/UI theorem, or derive it from structural entropy/VC
+hypotheses.
