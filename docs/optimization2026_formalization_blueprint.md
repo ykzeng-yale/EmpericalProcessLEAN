@@ -43,14 +43,14 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier as of the Theorem 5.8 AGF push: do not target the old
-Theorem 3.4 frontier or the already-built CG substrate.  The current active
-packet is to finish the AGF Lyapunov derivative formula in
-`StatInference/Optimization/Theorem58.lean`, using the compiled
-Lyapunov-to-rate and convexity wrappers already in that file.  After the exact
-source-facing Theorem 5.8 statement is exposed, keep moving through Theorem
-5.9 and the remaining acceleration material before opening the Chapter 6
-nonsmooth/projection layer.
+Manual goal frontier as of the Theorem 5.8 AGF derivative push: do not target
+the old Theorem 3.4 frontier or the already-built CG substrate.
+`StatInference/Optimization/Theorem58.lean` now proves the AGF Lyapunov
+derivative formula and a continuity-supplied Theorem 5.8 rate wrapper.  The
+current active packet is to discharge or sharply package Lyapunov continuity,
+then expose the exact source-facing Theorem 5.8 statement.  After that, keep
+moving through Theorem 5.9 and the remaining acceleration material before
+opening the Chapter 6 nonsmooth/projection layer.
 
 ## Local Sources
 
