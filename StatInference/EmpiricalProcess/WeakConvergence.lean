@@ -218,6 +218,54 @@ theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_meas
   simpa [hzero] using (tendsto_const_nhds : Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
 
 /--
+Bounded-continuous asymptotic measurability with the canonical lower shift
+`-‖f‖`.
+
+This removes the explicit lower-bound argument from the local
+bounded-continuous layer.  The shift is valid for every bounded continuous
+real-valued test by `BoundedContinuousFunction.neg_norm_le_apply`.
+-/
+def VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S] (μs : ι -> Measure Ω)
+    (X : ι -> Ω -> S) (l : Filter ι) : Prop :=
+  ∀ f : S →ᵇ ℝ,
+    Tendsto
+      (fun i => VdVWLowerShiftedRealOuterInnerExpectationGap (μs i)
+        (fun ω => f (X i ω)) (-‖f‖))
+      l (𝓝 0)
+
+/--
+The explicit lower-shifted bounded-continuous layer implies the canonical
+`-‖f‖` version.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_lowerShifted
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted μs X l := by
+  intro f
+  exact h f (-‖f‖) fun i ω =>
+    BoundedContinuousFunction.neg_norm_le_apply f (X i ω)
+
+/--
+Measurable maps into a topological measurable state space are canonically
+lower-shifted asymptotically measurable for all bounded continuous real tests.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_forall_measurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (hX : ∀ i, Measurable (X i)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted μs X l :=
+  VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_lowerShifted
+    (VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.of_forall_measurable
+      hX)
+
+/--
 Measure-level weak convergence of probability measures.
 
 This is the mathlib-backed part of VdV&W Definition 1.3.3, specialized to

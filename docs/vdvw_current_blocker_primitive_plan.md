@@ -126,6 +126,17 @@ These declarations move Definition 1.3.7 closer to the textbook bounded
 continuous test class while honestly keeping the missing signed arbitrary-map
 outer expectation as a remaining primitive.
 
+2026-05-05 third follow-up: pinned mathlib exposes the needed bounded
+continuous lower-bound API as
+`BoundedContinuousFunction.neg_norm_le_apply`.  The local bounded-continuous
+layer now has the canonical shift declarations
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted`,
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_lowerShifted`,
+and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.of_forall_measurable`.
+This removes the extra supplied lower-bound parameter for bounded continuous
+tests by using the automatic lower bound `-‖f‖`.
+
 2026-05-04 `/goal` status correction: local scratch now registers the exact
 remaining reverse-time theorem as the generic proposition
 `VdVWOrderDualSubmartingaleConvergenceHandoff`.  The theorem-facing consumer
