@@ -1,3 +1,4 @@
+import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.OuterExpectation
 import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
 import Mathlib.MeasureTheory.Measure.FiniteMeasurePi
@@ -1164,6 +1165,36 @@ theorem vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap
       vdVWTendstoInDistribution_to_signedOuterBoundedContinuous h hX
     asymptoticMeasurability :=
       VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_measurable hX }
+
+/--
+Common-domain outer-probability convergence implies the proof-carrying signed
+bounded-continuous arbitrary-map weak-convergence layer.
+
+This composes the existing VdV&W Lemma 1.10.2 measurable common-domain bridge
+from outer probability to mathlib `TendstoInDistribution` with the signed
+bounded-continuous arbitrary-map package above.
+-/
+theorem
+    VdVWConvergesInOuterProbability.to_signedBoundedContinuousArbitraryMap
+    {ι : Type u} {Ω : Type v} {D : Type w}
+    [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    [MeasurableSpace D] [SeminormedAddCommGroup D]
+    [SecondCountableTopology D] [BorelSpace D] [OpensMeasurableSpace D]
+    {X : ι -> Ω -> D} {limit : Ω -> D} {l : Filter ι}
+    [l.NeBot] [l.IsCountablyGenerated]
+    (h : VdVWConvergesInOuterProbability μ X l limit)
+    (hX : ∀ i, Measurable (X i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap
+      (fun _ : ι => μ) X l
+      ⟨μ.map limit,
+        Measure.isProbabilityMeasure_map
+          (tendstoInDistribution_of_vdVWConvergesInOuterProbability h
+            (fun i => (hX i).aemeasurable)).aemeasurable_limit⟩ := by
+  have hdist :
+      TendstoInDistribution X l limit (fun _ : ι => μ) μ :=
+    tendstoInDistribution_of_vdVWConvergesInOuterProbability h
+      (fun i => (hX i).aemeasurable)
+  exact vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap hdist hX
 
 /--
 Measurable common-domain Slutsky/product theorem.

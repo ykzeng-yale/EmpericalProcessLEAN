@@ -174,6 +174,20 @@ convergence.  The next target should consume this bridge in the Theorem 2.4.3
 alignment layer or extend it only where exact VdV&W nonmeasurable
 outer-cover/asymptotic-tightness clauses require stronger primitives.
 
+2026-05-05 outer-probability consumption follow-up: the signed arbitrary-map
+package now consumes the existing common-domain VdV&W outer-probability
+convergence bridge.  New declaration:
+`VdVWConvergesInOuterProbability.to_signedBoundedContinuousArbitraryMap`.
+It composes `tendstoInDistribution_of_vdVWConvergesInOuterProbability` with
+`vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap`, so any
+measurable common-domain outer-probability endpoint can now be promoted to the
+proof-carrying signed bounded-continuous arbitrary-map weak-convergence layer.
+The remaining Theorem 2.4.3 consumption issue is the sample-size-varying
+domain in the current finite-product centered-supremum endpoints; handling it
+requires either a varying-domain law convergence primitive to `δ_0`, or a
+canonical infinite-product projection of those endpoints before applying this
+common-domain bridge.
+
 2026-05-05 status check: this run started from VdVW head `4903594` and pushed
 the merged verified head `57c0b80`; the active `/goal` tool objective remains
 broad but cannot be edited in place.

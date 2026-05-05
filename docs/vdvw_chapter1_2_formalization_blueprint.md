@@ -132,7 +132,8 @@ bounded-continuous test predicate
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous`, and the proof-carrying
 package `VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap`, with
 measurable-map, law-map, `HasLaw`, common-domain `TendstoInDistribution`,
-filter-refinement, and continuous-map closures.
+common-domain outer-probability convergence, filter-refinement, and
+continuous-map closures.
 This is the current signed foundation for the exact arbitrary-map weak
 convergence route; it still does not discharge full nonmeasurable
 outer-cover, asymptotic-tightness, or exact VdV&W signed extended-real
