@@ -4900,6 +4900,58 @@ noncomputable def vdVWLemma245LeaveOneOutCenteredSupremum
       (vdVWFirstNSample (Observation := Observation) (n + 1) sequence))
 
 /--
+The distinguished leave-one-out term in Lemma 2.4.5 is definitionally the
+previous centered empirical supremum: removing the last coordinate from the
+first `n + 1` observations leaves the first `n` observations.
+
+This converts the compiled leave-one-out comparison into the textbook display
+`E[‖P_n - P‖_F^* | Σ_{n+1}] ≥ ‖P_{n+1} - P‖_F^*`.
+-/
+theorem vdVWLemma245LeaveOneOutCenteredSupremum_eq_centeredEmpiricalSupremum
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (n : ℕ) (sequence : ℕ -> Observation) :
+    vdVWLemma245LeaveOneOutCenteredSupremum P indexClass classFun n sequence =
+      vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence := by
+  simp only [vdVWLemma245LeaveOneOutCenteredSupremum,
+    vdVWLemma245CenteredEmpiricalSupremum]
+  congr 1
+  ext j
+  simp [Fin.removeNth, vdVWFirstNSample]
+
+/--
+Textbook-display version of the Lemma 2.4.5 reverse comparison.  The preceding
+leave-one-out theorem gives the conditional-expectation bound with the
+distinguished leave-one-out statistic; the named equality above rewrites that
+statistic to the previous centered empirical supremum.
+-/
+theorem
+    vdVW_condExp_reverseComparison_centeredEmpiricalSupremum_le_prev_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {n : ℕ} (hn : 0 < n) :
+    (fun sequence : ℕ -> Observation =>
+      vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence) ≤ᵐ[
+      vdVWInfiniteProductMeasure P]
+      (vdVWInfiniteProductMeasure P)[
+        (fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence) |
+        vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] := by
+  have h :=
+    vdVW_condExp_reverseComparison_centered_uniformClassSupremum_le_lastLeaveOneOut_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable hn
+  simpa [vdVWLemma245CenteredEmpiricalSupremum,
+    vdVWLemma245LeaveOneOutCenteredSupremum, Fin.removeNth, vdVWFirstNSample] using h
+
+/--
 The named centered empirical supremum from Lemma 2.4.5 is measurable with
 respect to the matching VdV&W permutation-symmetric sigma-field `Σ_n`.
 
@@ -6140,6 +6192,65 @@ theorem
       filter_upwards [h] with sequence hsequence _hn
       simpa [vdVWLemma245CenteredEmpiricalSupremum,
         vdVWLemma245LeaveOneOutCenteredSupremum] using hsequence
+    · exact Filter.Eventually.of_forall fun sequence hpos => (hn hpos).elim
+  filter_upwards [ae_all_iff.2 hrow] with sequence hsequence n hn
+  exact hsequence n hn
+
+/--
+Textbook-display version of the Lemma 2.4.5 convergence consumer.
+
+The remaining reverse/cofiltration convergence primitive may now be stated in
+the displayed VdV&W form
+`E[‖P_n - P‖_F^* | Σ_{n+1}] ≥ ‖P_{n+1} - P‖_F^*`, with the previous centered
+empirical supremum on the right-hand side of the conditional expectation.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_textbookReverseComparisonHandoff
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hreverse :
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∀ n, 0 < n ->
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+            (vdVWInfiniteProductMeasure P)[
+              (fun sequence : ℕ -> Observation =>
+                vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence) |
+              vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence) ->
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        ∃ limit : ℝ,
+          Tendsto
+            (fun n : ℕ =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+            atTop (𝓝 limit)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      ∃ limit : ℝ,
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 limit) := by
+  apply hreverse
+  have hrow :
+      ∀ n, ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        0 < n ->
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence ≤
+            (vdVWInfiniteProductMeasure P)[
+              (fun sequence : ℕ -> Observation =>
+                vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence) |
+              vdVWPermutationSymmetricMeasurableSpace Observation (n + 1)] sequence := by
+    intro n
+    by_cases hn : 0 < n
+    · have h :=
+        vdVW_condExp_reverseComparison_centeredEmpiricalSupremum_le_prev_of_countable
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) hcount henvelope hclass henv_integrable hn
+      filter_upwards [h] with sequence hsequence _hn
+      exact hsequence
     · exact Filter.Eventually.of_forall fun sequence hpos => (hn hpos).elim
   filter_upwards [ae_all_iff.2 hrow] with sequence hsequence n hn
   exact hsequence n hn

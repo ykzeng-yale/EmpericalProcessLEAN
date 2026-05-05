@@ -1139,3 +1139,15 @@ constructor-level one-step drift endpoint:
 These consume mathlib `supermartingale_of_condExp_sub_nonneg_nat`, so future
 reverse/cofiltration attempts can target the signed drift condition that is
 actually produced by the reindexing.
+
+2026-05-04 follow-up: the direct Lemma 2.4.5 reverse-comparison route now
+matches the textbook display notation.  New compiled declarations
+`vdVWLemma245LeaveOneOutCenteredSupremum_eq_centeredEmpiricalSupremum`,
+`vdVW_condExp_reverseComparison_centeredEmpiricalSupremum_le_prev_of_countable`,
+and
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_textbookReverseComparisonHandoff`
+identify the distinguished leave-one-out statistic with the previous centered
+empirical supremum and expose the inequality as
+`E[‖P_n - P‖_F^* | Σ_{n+1}] ≥ ‖P_{n+1} - P‖_F^*`.  The active blocker remains
+the genuine reverse/permutation-symmetric cofiltration convergence theorem,
+not the leave-one-out notation.

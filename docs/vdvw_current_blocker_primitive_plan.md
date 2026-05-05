@@ -3730,3 +3730,17 @@ The active blocker remains the reverse/cofiltration convergence theorem, but
 future proof attempts can now target either constructor condition:
 `E[X_{n+1} - X_n | ℱ_n] ≥ 0` for a submartingale or
 `E[X_n - X_{n+1} | ℱ_n] ≥ 0` for a supermartingale.
+
+2026-05-04 follow-up: the row-wise Lemma 2.4.5 comparison is now also exposed
+in the exact textbook display notation.  New compiled declarations are
+`vdVWLemma245LeaveOneOutCenteredSupremum_eq_centeredEmpiricalSupremum`,
+`vdVW_condExp_reverseComparison_centeredEmpiricalSupremum_le_prev_of_countable`,
+and
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_textbookReverseComparisonHandoff`.
+These prove that the distinguished leave-one-out term is the previous
+centered empirical supremum, and rewrite the compiled comparison as
+`E[‖P_n - P‖_F^* | Σ_{n+1}] ≥ ‖P_{n+1} - P‖_F^*`.  The remaining
+non-finite-class blocker is no longer notation or leave-one-out bookkeeping:
+prove the VdV&W reverse/permutation-symmetric cofiltration convergence theorem
+from that displayed comparison, or an equivalent theorem consumed by the
+existing full-subgraph Theorem 2.4.3/Lemma 2.4.5 endpoints.
