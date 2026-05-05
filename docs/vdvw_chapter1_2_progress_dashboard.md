@@ -199,6 +199,15 @@ selected normalized empirical entropy converges in ordinary mean or is
 uniformly integrable; adding more endpoint wrappers around these same
 hypotheses would be duplicative.
 
+2026-05-05 fixed-domain UI follow-up: the common-domain Vitali route is now
+compiled in VdV&W notation as
+`tendsto_eLpNorm_one_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable`.
+It translates common-domain outer-probability convergence to mathlib
+`TendstoInMeasure` and applies `tendsto_Lp_finite_of_tendstoInMeasure`.
+This is useful for any common-space recoding of entropy processes, but it does
+not by itself close Theorem 2.4.3 because the selected empirical-cover
+cardinality processes currently live on varying finite-product sample spaces.
+
 2026-05-05 Chapter 1 arbitrary-map follow-up: the varying-domain signed
 bounded-continuous weak-convergence package now has continuous-mapping
 stability.  The new declarations

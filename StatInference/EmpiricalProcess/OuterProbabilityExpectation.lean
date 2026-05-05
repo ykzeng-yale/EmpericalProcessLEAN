@@ -1,6 +1,7 @@
 import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.OuterExpectation
 import StatInference.ProbabilityMeasure.Tail
+import Mathlib.MeasureTheory.Function.UniformIntegrable
 
 /-!
 # Bridges between VdV&W outer probability and outer expectation
@@ -453,6 +454,37 @@ theorem tailExpectation_condition_of_integral_tendsto_zero_nonneg
       simp [Set.indicator, hzero]
   rw [hindicator_eq]
   exact hi.le
+
+/--
+Fixed-domain Vitali bridge in VdV&W notation.
+
+On one probability space, common-domain convergence in outer probability plus
+mathlib uniform integrability gives `L1` convergence to zero.  This records the
+usable fixed-domain theorem exposed by the search-first gate; the
+Theorem 2.4.3 random-entropy problem is harder because its empirical-cover
+cardinalities live on varying sample spaces.
+-/
+theorem tendsto_eLpNorm_one_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {Y : ℕ -> Ω -> ℝ}
+    (hY : VdVWConvergesInOuterProbability μ Y atTop (fun _ => (0 : ℝ)))
+    (hY_meas : ∀ n, AEStronglyMeasurable (Y n) μ)
+    (hY_ui : UnifIntegrable Y 1 μ) :
+    Tendsto (fun n => eLpNorm (Y n) 1 μ) atTop (𝓝 0) := by
+  have hInMeasure :
+      MeasureTheory.TendstoInMeasure μ Y atTop (fun _ => (0 : ℝ)) :=
+    tendstoInMeasure_of_vdVWConvergesInOuterProbability hY
+  have hLp :
+      Tendsto (fun n => eLpNorm (Y n - fun _ => (0 : ℝ)) 1 μ) atTop (𝓝 0) :=
+    MeasureTheory.tendsto_Lp_finite_of_tendstoInMeasure
+      (μ := μ) (p := (1 : ℝ≥0∞)) (g := fun _ => (0 : ℝ))
+      le_rfl ENNReal.one_ne_top hY_meas MemLp.zero' hY_ui hInMeasure
+  have hEq :
+      (fun n => eLpNorm (Y n - fun _ => (0 : ℝ)) 1 μ) =
+        fun n => eLpNorm (Y n) 1 μ := by
+    funext n
+    exact eLpNorm_congr_ae (Eventually.of_forall fun ω => by simp)
+  simpa [hEq] using hLp
 
 /--
 A varying-domain perturbation rule for convergence in outer probability to

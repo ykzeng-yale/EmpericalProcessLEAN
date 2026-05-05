@@ -221,6 +221,14 @@ fixed-radius tail/UI package through
 `finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_tailExpectation`,
 and
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation_raw`.
+
+2026-05-05 fixed-domain UI follow-up: `OuterProbabilityExpectation.lean` now
+wraps mathlib's fixed-domain Vitali theorem in local notation through
+`tendsto_eLpNorm_one_of_VdVWConvergesInOuterProbability_zero_of_unifIntegrable`.
+The theorem proves that common-domain VdV&W outer-probability convergence plus
+`UnifIntegrable` gives `L1` convergence to zero.  This records the reusable
+common-space route found by search, while keeping the actual Theorem 2.4.3
+varying-domain random-entropy/UI bridge as the remaining blocker.
 The next proof target is therefore not more selected-package plumbing: it is
 the honest varying-domain theorem deriving those raw normalized-log
 integrability/tail-UI hypotheses from the book random entropy assumption, or a
