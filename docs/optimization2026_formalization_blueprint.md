@@ -43,21 +43,22 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after the 2026-05-05 cutting-plane source packet:
+Manual goal frontier after the 2026-05-05 CoGM source wrapper packet:
 `StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
 discrete AGD source rate,
 `StatInference/Optimization/ProjectedSubgradient.lean` proves the finite-valued
 Chapter 6 projected-subgradient layer through the Theorem 6.14 average-gap
 bound and proof-carrying Theorem 6.16 wrapper
 `chewi616_exists_functionalConstraintSuccess`, and
-`StatInference/Optimization/CuttingPlane.lean` now starts Lemma 6.18/Theorem
-6.19 with the supplied-interface finite volume-shrink and
-Lipschitz/diameter/source-rate algebra.  Do not target the stale app-level
-`/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
-substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
-Theorem 5.10 weighted-telescope proof, Theorem 6.14 PSD packet, Theorem 6.16
-functional-constraint packet, or the now-compiled first CuttingPlane algebra
-packet.
+`StatInference/Optimization/CuttingPlane.lean` now proves the supplied-interface
+finite volume-shrink, scaled-candidate, limiting, and final source-shaped CoGM
+Theorem 6.19 display-rate wrapper
+`chewi619_gap_le_display_rate_of_scaled_candidates`.  Do not target the stale
+app-level `/goal` text's old Theorem 3.4 frontier, and do not replay the
+already-built CG substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9
+strong-convex AGF proof, Theorem 5.10 weighted-telescope proof, Theorem 6.14
+PSD packet, Theorem 6.16 functional-constraint packet, or the now-compiled
+CuttingPlane CoGM wrapper packet.
 `StatInference/Optimization/Theorem58.lean` proves the AGF Lyapunov derivative
 formula, discharges Lyapunov continuity from the trajectory and gradient oracle,
 and exposes a source-facing Theorem 5.8 rate wrapper.  Since Chewi leaves the
@@ -86,21 +87,25 @@ scaled projected-subgradient recurrence for Theorem 6.16.
 `HasScaledOutsideCandidateWithinDiameter`, `volumeShrink_le_pow`,
 `volumeShrink_ratio_le_pow`, `centerOfGravityRate_nonneg`,
 `convex_scaled_candidate_gap_le_diameter_lipschitz`,
-`chewi619_scaled_candidate_gap_bound`, `le_mul_of_forall_gt_le_mul`,
+`chewi619_scaled_candidate_gap_bound`,
+`chewi619_eventual_scaled_bound_of_scaled_candidates`,
+`le_mul_of_forall_gt_le_mul`,
 `chewi619_gap_le_of_eventual_scaled_bound`,
 `chewi619_gap_le_centerOfGravityRate_of_eventual_scaled_bound`, and
-`chewi619_gap_le_display_rate_of_eventual_scaled_bound`.
+`chewi619_gap_le_display_rate_of_eventual_scaled_bound`, and
+`chewi619_gap_le_display_rate_of_scaled_candidates`.
 
-The next active packet should stay in Chapter 6 and close the remaining
-cutting-plane/center-of-gravity bridge around Lemma 6.18 and Theorem 6.19, not
-drip minor wrappers.  Since the source does not prove Grünbaum and the current
-search found no direct mathlib centroid/Grünbaum theorem, derive the eventual
-scaled-candidate bound from the supplied volume/localization hypotheses if
-that remains lightweight; otherwise keep the centroid/Grünbaum geometry as a
-precise supplied blocker and package the strongest source-shaped CoGM theorem
-around the compiled display-rate wrapper.  After that, continue Chapter 6 with
-ellipsoid Lemma 6.20, nonsmooth lower-bound Theorems 6.21-6.23, and feasibility
-Theorem 6.25 before opening Chapter 7 as the next main-text frontier.
+The next active packet should stay in Chapter 6 and move to ellipsoid Lemma
+6.20, not drip minor wrappers.  The exact Grünbaum/centroid measure theorem
+remains a precise supplied blocker before a source-audited CoGM report, but the
+source-shaped Theorem 6.19 algebra is compiled.  For Lemma 6.20, search mathlib
+matrix/PSD/inverse/determinant and local matrix-order APIs first, introduce a
+source-shaped ellipsoid update interface, prove the half-space containment or
+volume-ratio algebra that can be verified quickly, then connect the resulting
+volume-shrink factor back to the compiled CoGM-style rate wrapper.  After that,
+continue Chapter 6 with nonsmooth lower-bound Theorems 6.21-6.23 and
+feasibility Theorem 6.25 before opening Chapter 7 as the next main-text
+frontier.
 Mandatory search and reuse: mathlib
 `Analysis/InnerProductSpace/Projection/Minimal.lean` has
 `exists_norm_eq_iInf_of_complete_convex` and
