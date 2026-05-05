@@ -166,6 +166,49 @@ theorem vdVW_submartingale_lintegral_upcrossings_lt_top
     finiteness
 
 /--
+Explicit `L¹`-bounded ordinary submartingale upcrossing lintegral bound.
+
+This is the quantitative form needed for the reverse-time monotone passage:
+the right side is independent of the time horizon.
+-/
+theorem vdVW_submartingale_lintegral_upcrossings_le
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕ -> Ω -> ℝ} {R : ℝ≥0}
+    (hf : Submartingale f ℱ μ)
+    (hbdd : ∀ n, eLpNorm (f n) 1 μ ≤ R)
+    {a b : ℝ} (hab : a < b) :
+    ∫⁻ ω, upcrossings a b f ω ∂μ ≤
+      (R + ‖a‖₊ * μ Set.univ) / ENNReal.ofReal (b - a) := by
+  have hineq := hf.mul_lintegral_upcrossings_le_lintegral_pos_part a b
+  rw [mul_comm, ← ENNReal.le_div_iff_mul_le] at hineq
+  · refine hineq.trans (ENNReal.div_le_div_right ?_ (ENNReal.ofReal (b - a)))
+    refine iSup_le fun n => ?_
+    have hR' :
+        ∫⁻ ω, ‖f n ω - a‖₊ ∂μ ≤ R + ‖a‖₊ * μ Set.univ := by
+      simp_rw [eLpNorm_one_eq_lintegral_enorm] at hbdd
+      refine
+        (lintegral_mono ?_ :
+          ∫⁻ ω, ‖f n ω - a‖₊ ∂μ ≤ ∫⁻ ω, ‖f n ω‖₊ + ‖a‖₊ ∂μ).trans ?_
+      · intro ω
+        simp_rw [sub_eq_add_neg, ← nnnorm_neg a, ← ENNReal.coe_add,
+          ENNReal.coe_le_coe]
+        exact nnnorm_add_le _ _
+      · simp_rw [lintegral_add_right _ measurable_const, lintegral_const]
+        exact add_le_add (hbdd n) le_rfl
+    refine (lintegral_mono fun ω => ?_).trans hR'
+    rw [ENNReal.ofReal_le_iff_le_toReal, ENNReal.coe_toReal, coe_nnnorm]
+    · by_cases hnonneg : 0 ≤ f n ω - a
+      · rw [posPart_eq_self.2 hnonneg, Real.norm_eq_abs, abs_of_nonneg hnonneg]
+      · rw [posPart_eq_zero.2 (le_of_not_ge hnonneg)]
+        exact norm_nonneg _
+    · finiteness
+  · left
+    simp only [hab, ne_eq, ENNReal.ofReal_eq_zero, sub_nonpos, not_le]
+  · left
+    finiteness
+
+/--
 Conditional expectations of a fixed real random variable along an ordinary
 mathlib filtration form the submartingale needed by the VdV&W Lemma 2.4.5
 route.
@@ -5596,6 +5639,34 @@ theorem vdVWOrderDualFiniteHorizon_lintegral_upcrossings_lt_top
     ∫⁻ ω, upcrossings a b
       (fun k : ℕ => fun ω : Ω => f (OrderDual.toDual (N - k)) ω) ω ∂μ < ∞ := by
   refine vdVW_submartingale_lintegral_upcrossings_lt_top
+    (μ := μ)
+    (ℱ := vdVWOrderDualFiniteHorizonFiltration ℱ N)
+    (f := fun k : ℕ => fun ω : Ω => f (OrderDual.toDual (N - k)) ω)
+    (R := R)
+    (submartingale_vdVWOrderDualFiniteHorizon (μ := μ) (ℱ := ℱ)
+      (f := f) N hsub)
+    ?_ hab
+  intro k
+  exact hbdd (OrderDual.toDual (N - k))
+
+/--
+Explicit finite-horizon expected upcrossing bound for an `ℕᵒᵈ`
+submartingale.
+
+The bound is uniform in the finite horizon `N`, which is the quantitative form
+needed for the remaining monotone/reversal comparison.
+-/
+theorem vdVWOrderDualFiniteHorizon_lintegral_upcrossings_le
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕᵒᵈ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕᵒᵈ -> Ω -> ℝ} {R : ℝ≥0}
+    (hsub : Submartingale f ℱ μ)
+    (hbdd : ∀ n : ℕᵒᵈ, eLpNorm (f n) 1 μ ≤ (R : ℝ≥0∞))
+    {a b : ℝ} (hab : a < b) (N : ℕ) :
+    ∫⁻ ω, upcrossings a b
+      (fun k : ℕ => fun ω : Ω => f (OrderDual.toDual (N - k)) ω) ω ∂μ ≤
+      (R + ‖a‖₊ * μ Set.univ) / ENNReal.ofReal (b - a) := by
+  refine vdVW_submartingale_lintegral_upcrossings_le
     (μ := μ)
     (ℱ := vdVWOrderDualFiniteHorizonFiltration ℱ N)
     (f := fun k : ℕ => fun ω : Ω => f (OrderDual.toDual (N - k)) ω)

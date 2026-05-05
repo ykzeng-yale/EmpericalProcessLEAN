@@ -152,6 +152,18 @@ transfers these finite-horizon upcrossing bounds to the total reverse
 downcrossing lintegral consumed by
 `vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_lintegral_lt_top`.
 
+2026-05-04 follow-up: the same analytic side is now available with an explicit
+uniform bound.  New declarations are `vdVW_submartingale_lintegral_upcrossings_le`
+and `vdVWOrderDualFiniteHorizon_lintegral_upcrossings_le`, proving
+`∫⁻ upcrossings ≤ (R + ‖a‖₊ * μ univ) / ENNReal.ofReal (b - a)` for ordinary
+submartingales and for every reversed finite horizon of an `ℕᵒᵈ`
+submartingale.  This removes the possible weakness that each finite horizon
+was only known finite separately.  The remaining blocker is now exactly:
+prove the deterministic reversal/monotone comparison that bounds total
+reverse downcrossings by the supremum/limit of the finite-horizon reversed
+upcrossing counts so this uniform lintegral bound can pass to
+`vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_lintegral_lt_top`.
+
 2026-05-04 `/goal` target update: the live non-finite-class frontier is no
 longer inverse-radius entropy, finite-cover selection, VC/subgraph packaging,
 untruncation, finite-class GC, or leave-one-out notation.  Those layers are

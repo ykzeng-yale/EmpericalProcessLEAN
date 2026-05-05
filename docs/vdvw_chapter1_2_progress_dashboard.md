@@ -1273,3 +1273,9 @@ aligned with finite-window Doob estimates.
 finite horizon of an `ℕᵒᵈ` submartingale now has finite expected total
 upcrossings under the uniform `eLpNorm` bound.  The active gap is the
 deterministic reversal/monotone comparison to total reverse downcrossings.
+2026-05-04 follow-up: the finite-horizon expected-upcrossing estimate now also
+has the explicit uniform bound
+`vdVW_submartingale_lintegral_upcrossings_le` and
+`vdVWOrderDualFiniteHorizon_lintegral_upcrossings_le`.  The remaining
+reverse/cofiltration blocker is therefore only the deterministic comparison
+needed to pass this uniform bound to total reverse downcrossings.
