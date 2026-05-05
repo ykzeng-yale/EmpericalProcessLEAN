@@ -1082,7 +1082,12 @@ block bridge now compiles via `chewi54BlockSize`,
 5.4 target is to derive the per-block accelerated bound from a
 restarted/displayed CG interface, then state the full source-facing
 logarithmic CG rate, or source-audit the polynomial/Chebyshev alternative
-proof before moving to Theorem 5.8.
+proof before moving to Theorem 5.8.  The affine-minimizer restarted interface
+now compiles as `chewi54_block_bound_of_cgAffineMinimizer_blocks`,
+`chewi54_log_rate_of_cgAffineMinimizer_blocks`, and
+`chewi54_log_rate_of_cgAffineMinimizer_blocks_blockSize`; the next step is the
+displayed/restarted CG specialization that discharges those block hypotheses
+from `IsCGDisplayedIteration`-style data.
 
 After the basic convex/smooth/GD surface compiles, broaden in this order:
 

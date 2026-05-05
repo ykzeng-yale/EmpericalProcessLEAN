@@ -1580,7 +1580,14 @@ local `scalarRecurrence_le_pow`, the Chapter 4 geometric/log bridges, mathlib
 accelerated bound from a restarted/displayed CG interface so the block shell
 is connected to the actual algorithm, or move directly to the polynomial/
 Chebyshev alternative proof after a source-facing Theorem 5.4 statement audit.
-Do not redo Theorem 5.3's
+The shifted affine-minimizer block interface now compiles:
+`chewi54_block_bound_of_cgAffineMinimizer_blocks`,
+`chewi54_log_rate_of_cgAffineMinimizer_blocks`, and
+`chewi54_log_rate_of_cgAffineMinimizer_blocks_blockSize`.  Next target: build
+the displayed/restarted CG block record and use the existing
+`IsCGDisplayedIteration` bridges to discharge the span, gradient-span,
+orthogonality, and affine-minimizer assumptions inside each block.  Do not redo
+Theorem 5.3's
 A-conjugacy induction, the Chapter 3 descent lemma, Chapter 4 gradient-span
 interfaces, or Chapter 4 hard-instance packages.
 

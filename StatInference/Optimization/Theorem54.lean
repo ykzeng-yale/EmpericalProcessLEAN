@@ -1232,5 +1232,167 @@ theorem chewi54_log_rate_of_accelerated_block_bounds_blockSize
     hblock (chewi54_four_sqrt_le_blockSize alpha beta) hgap_nonneg
     hgap0_pos heps_pos halpha_pos hbeta_pos hM_log
 
+/--
+Per-block accelerated estimate from the existing affine-minimizer CG Theorem
+5.4 wrapper, applied to the shifted sequence inside one restart block.
+-/
+theorem chewi54_block_bound_of_cgAffineMinimizer_blocks
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {fstar alpha beta : ℝ} {x : ℕ -> E} {p : ℕ -> ℕ -> E}
+    {xStar : E} {B : ℕ}
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (hfirst : FirstOrderStrongConvexOn C f grad alpha)
+    (hmem : ∀ n, x n ∈ C)
+    (hxStar : xStar ∈ C)
+    (hgrad_zero : grad xStar = 0)
+    (hfstar : fstar = f xStar)
+    (hgd_mem : ∀ n, gradientDescentStep grad (1 / beta) (x n) ∈ C)
+    (hmin : ∀ m n,
+      IsMinOn f (cgAffineSpan (x (m * B)) (p m) n)
+        (x (m * B + (n + 1))))
+    (hx_span : ∀ m n,
+      x (m * B + n) - x (m * B) ∈ cgDirectionSubmodule (p m) n)
+    (hgrad_span : ∀ m n,
+      grad (x (m * B + n)) ∈ cgDirectionSubmodule (p m) n)
+    (horth_disp : ∀ m n, n < B →
+      inner ℝ (grad (x (m * B + n)))
+        (x (m * B + n) - x (m * B)) = 0)
+    (hgrad_orth : ∀ m i j, i < B → j < B → i ≠ j →
+      inner ℝ (grad (x (m * B + i)))
+        (grad (x (m * B + j))) = 0)
+    (hbeta_pos : 0 < beta)
+    (halpha_pos : 0 < alpha) :
+    ∀ m,
+      (B : ℝ) * (f (x ((m + 1) * B)) - fstar) ≤
+        2 * Real.sqrt (beta / alpha) * (f (x (m * B)) - fstar) := by
+  intro m
+  let y : ℕ -> E := fun n => x (m * B + n)
+  have hblock :
+      (B : ℝ) * (f (y B) - fstar) ≤
+        2 * Real.sqrt (beta / alpha) * (f (y 0) - fstar) := by
+    exact chewi54_accelerated_bound_of_cgAffineMinimizer
+      (C := C) (f := f) (grad := grad) (fstar := fstar)
+      (alpha := alpha) (beta := beta) (x := y) (p := p m)
+      (xStar := xStar) (N := B)
+      hsmooth hfirst
+      (by intro n; exact hmem _)
+      hxStar hgrad_zero hfstar
+      (by intro n; exact hgd_mem _)
+      (by intro n; simpa [y] using hmin m n)
+      (by intro n; simpa [y] using hx_span m n)
+      (by intro n; simpa [y] using hgrad_span m n)
+      (by intro n hn; simpa [y] using horth_disp m n hn)
+      (by intro i j hi hj hij; simpa [y] using hgrad_orth m i j hi hj hij)
+      hbeta_pos halpha_pos
+  simpa [y, Nat.succ_mul, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc]
+    using hblock
+
+/--
+Restarted affine-minimizer CG logarithmic endpoint.  This combines the
+blockwise shifted Theorem 5.4 estimate with the compiled integer-block restart
+shell.
+-/
+theorem chewi54_log_rate_of_cgAffineMinimizer_blocks
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {fstar alpha beta : ℝ} {x : ℕ -> E} {p : ℕ -> ℕ -> E}
+    {xStar : E} {B M : ℕ} {eps : ℝ}
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (hfirst : FirstOrderStrongConvexOn C f grad alpha)
+    (hmem : ∀ n, x n ∈ C)
+    (hxStar : xStar ∈ C)
+    (hgrad_zero : grad xStar = 0)
+    (hfstar : fstar = f xStar)
+    (hgd_mem : ∀ n, gradientDescentStep grad (1 / beta) (x n) ∈ C)
+    (hmin : ∀ m n,
+      IsMinOn f (cgAffineSpan (x (m * B)) (p m) n)
+        (x (m * B + (n + 1))))
+    (hx_span : ∀ m n,
+      x (m * B + n) - x (m * B) ∈ cgDirectionSubmodule (p m) n)
+    (hgrad_span : ∀ m n,
+      grad (x (m * B + n)) ∈ cgDirectionSubmodule (p m) n)
+    (horth_disp : ∀ m n, n < B →
+      inner ℝ (grad (x (m * B + n)))
+        (x (m * B + n) - x (m * B)) = 0)
+    (hgrad_orth : ∀ m i j, i < B → j < B → i ≠ j →
+      inner ℝ (grad (x (m * B + i)))
+        (grad (x (m * B + j))) = 0)
+    (hB : 4 * Real.sqrt (beta / alpha) ≤ (B : ℝ))
+    (hgap0_pos : 0 < f (x 0) - fstar)
+    (heps_pos : 0 < eps)
+    (halpha_pos : 0 < alpha)
+    (hbeta_pos : 0 < beta)
+    (hM_log : Real.log ((f (x 0) - fstar) / eps) ≤
+      (M : ℝ) * Real.log (2 : ℝ)) :
+    f (x (M * B)) - fstar ≤ eps := by
+  let gap : ℕ -> ℝ := fun n => f (x n) - fstar
+  have hstar_lower : ∀ n, fstar ≤ f (x n) :=
+    chewi54_star_lower_of_firstOrderStrongConvexOn
+      hfirst hmem hxStar hgrad_zero hfstar halpha_pos.le
+  have hgap_nonneg : ∀ n, 0 ≤ gap n := by
+    intro n
+    exact sub_nonneg.mpr (hstar_lower n)
+  have hblock : ∀ m,
+      (B : ℝ) * gap ((m + 1) * B) ≤
+        2 * Real.sqrt (beta / alpha) * gap (m * B) := by
+    intro m
+    simpa [gap] using
+      chewi54_block_bound_of_cgAffineMinimizer_blocks
+        hsmooth hfirst hmem hxStar hgrad_zero hfstar hgd_mem hmin
+        hx_span hgrad_span horth_disp hgrad_orth hbeta_pos halpha_pos m
+  exact chewi54_log_rate_of_accelerated_block_bounds
+    (alpha := alpha) (beta := beta) (gap := gap) (B := B) (M := M)
+    (eps := eps) hblock hB hgap_nonneg
+    (by simpa [gap] using hgap0_pos) heps_pos halpha_pos hbeta_pos
+    (by simpa [gap] using hM_log)
+
+/--
+Ceiling-block specialization of the restarted affine-minimizer CG logarithmic
+endpoint.
+-/
+theorem chewi54_log_rate_of_cgAffineMinimizer_blocks_blockSize
+    {C : Set E} {f : E -> ℝ} {grad : E -> E}
+    {fstar alpha beta : ℝ} {x : ℕ -> E} {p : ℕ -> ℕ -> E}
+    {xStar : E} {M : ℕ} {eps : ℝ}
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (hfirst : FirstOrderStrongConvexOn C f grad alpha)
+    (hmem : ∀ n, x n ∈ C)
+    (hxStar : xStar ∈ C)
+    (hgrad_zero : grad xStar = 0)
+    (hfstar : fstar = f xStar)
+    (hgd_mem : ∀ n, gradientDescentStep grad (1 / beta) (x n) ∈ C)
+    (hmin : ∀ m n,
+      IsMinOn f
+        (cgAffineSpan (x (m * chewi54BlockSize alpha beta)) (p m) n)
+        (x (m * chewi54BlockSize alpha beta + (n + 1))))
+    (hx_span : ∀ m n,
+      x (m * chewi54BlockSize alpha beta + n) -
+          x (m * chewi54BlockSize alpha beta) ∈
+        cgDirectionSubmodule (p m) n)
+    (hgrad_span : ∀ m n,
+      grad (x (m * chewi54BlockSize alpha beta + n)) ∈
+        cgDirectionSubmodule (p m) n)
+    (horth_disp : ∀ m n, n < chewi54BlockSize alpha beta →
+      inner ℝ (grad (x (m * chewi54BlockSize alpha beta + n)))
+        (x (m * chewi54BlockSize alpha beta + n) -
+          x (m * chewi54BlockSize alpha beta)) = 0)
+    (hgrad_orth : ∀ m i j,
+      i < chewi54BlockSize alpha beta →
+      j < chewi54BlockSize alpha beta → i ≠ j →
+      inner ℝ (grad (x (m * chewi54BlockSize alpha beta + i)))
+        (grad (x (m * chewi54BlockSize alpha beta + j))) = 0)
+    (hgap0_pos : 0 < f (x 0) - fstar)
+    (heps_pos : 0 < eps)
+    (halpha_pos : 0 < alpha)
+    (hbeta_pos : 0 < beta)
+    (hM_log : Real.log ((f (x 0) - fstar) / eps) ≤
+      (M : ℝ) * Real.log (2 : ℝ)) :
+    f (x (M * chewi54BlockSize alpha beta)) - fstar ≤ eps :=
+  chewi54_log_rate_of_cgAffineMinimizer_blocks
+    (B := chewi54BlockSize alpha beta)
+    hsmooth hfirst hmem hxStar hgrad_zero hfstar hgd_mem hmin hx_span
+    hgrad_span horth_disp hgrad_orth
+    (chewi54_four_sqrt_le_blockSize alpha beta)
+    hgap0_pos heps_pos halpha_pos hbeta_pos hM_log
+
 end Optimization
 end StatInference

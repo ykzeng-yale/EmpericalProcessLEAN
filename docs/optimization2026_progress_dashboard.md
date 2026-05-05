@@ -110,9 +110,16 @@ compiled logarithmic endpoint.  Search-first reuse: Chapter 3's
 `Real.log_inv`, and `Real.log_le_log_iff`.  Next aggressive step: derive the
 per-block accelerated bound from a restarted/displayed CG interface, then
 state the full source Theorem 5.4 logarithmic rate, or source-audit the
-polynomial/Chebyshev alternative before Theorem 5.8.  Do not replay Chapter 3
-GD convergence or Chapter 4 hard-instance setup unless a Chapter 5 proof
-explicitly depends on one of those compiled declarations.
+polynomial/Chebyshev alternative before Theorem 5.8.  The shifted
+affine-minimizer restart interface now also compiles:
+`chewi54_block_bound_of_cgAffineMinimizer_blocks`,
+`chewi54_log_rate_of_cgAffineMinimizer_blocks`, and
+`chewi54_log_rate_of_cgAffineMinimizer_blocks_blockSize`.  Next target is to
+specialize these block hypotheses to displayed/restarted CG data, discharging
+the per-block span, residual-gradient, orthogonality, and affine-minimizer
+assumptions from `IsCGDisplayedIteration`-style block records.  Do not replay
+Chapter 3 GD convergence or Chapter 4 hard-instance setup unless a Chapter 5
+proof explicitly depends on one of those compiled declarations.
 
 Recently completed Chapter 4 context: The
 `StatInference/Optimization/Reductions.lean` module compiles the quadratic
