@@ -3598,3 +3598,19 @@ and
 `stronglyAdapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_succ_of_countable`.
 This removes another API mismatch before the remaining reverse/cofiltration
 proof; it is not itself the reverse convergence theorem.
+
+2026-05-04 follow-up: the named reverse/cofiltration blocker now has a
+mathlib-submartingale sufficient condition.  Search/reuse record: pinned
+mathlib `Submartingale.exists_ae_tendsto_of_bdd` proves a.e. finite-limit
+convergence for ordinary `ℕ`-indexed L¹-bounded submartingales, while the local
+named envelope bound
+`eLpNorm_vdVWLemma245CenteredEmpiricalSupremum_le_two_integral_envelope`
+supplies the required L¹ bound for the shifted centered supremum.  New
+compiled declarations are
+`vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_of_submartingale` and
+`VdVWLemma245ReverseCofiltrationHandoff.of_submartingale`.  Thus the remaining
+non-finite-class proof target is sharper: construct or prove an ordinary
+`ℕ`-indexed submartingale realization of
+`fun n sequence => vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+(n + 1) sequence` from the VdV&W decreasing permutation-symmetric fields, or
+prove the equivalent reverse/cofiltration convergence theorem directly.

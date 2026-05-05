@@ -5506,6 +5506,56 @@ theorem VdVWConvergesInOuterProbability_nat_succ
     (hprob ε hε).comp (tendsto_add_atTop_nat 1)
 
 /--
+If the shifted Lemma 2.4.5 centered empirical-supremum process can be realized
+as an ordinary `ℕ`-indexed submartingale, then mathlib's L¹-bounded
+submartingale convergence theorem gives the a.e. finite-limit conclusion
+needed by the reverse/cofiltration handoff.
+
+This theorem isolates the remaining hard step: construct the ordinary
+submartingale reduction from the VdV&W decreasing permutation-symmetric
+fields.  Once that is available, no additional envelope or measurability
+bookkeeping is needed here.
+-/
+theorem vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_of_submartingale
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    (hsub :
+      Submartingale
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        ℱ (vdVWInfiniteProductMeasure P)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      ∃ limit : ℝ,
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+              (n + 1) sequence)
+          atTop (𝓝 limit) := by
+  have hbdd :
+      ∀ n : ℕ,
+        eLpNorm
+          (fun sequence : ℕ -> Observation =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+              (n + 1) sequence)
+          1 (vdVWInfiniteProductMeasure P) ≤
+          ENNReal.ofReal (2 * ∫ x, envelope x ∂P) := by
+    intro n
+    exact
+      eLpNorm_vdVWLemma245CenteredEmpiricalSupremum_le_two_integral_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hcount henvelope hclass henv_integrable
+        (Nat.succ_pos n)
+  exact hsub.exists_ae_tendsto_of_bdd hbdd
+
+/--
 The exact remaining VdV&W Lemma 2.4.5 reverse/cofiltration convergence
 primitive, registered as a named theorem-facing hypothesis.
 
@@ -5533,6 +5583,36 @@ def VdVWLemma245ReverseCofiltrationHandoff
         (fun n : ℕ =>
           vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
         atTop (𝓝 limit)
+
+/--
+Sufficient condition for the named reverse/cofiltration handoff: an ordinary
+`ℕ`-indexed submartingale realization of the shifted centered supremum process.
+
+This packages the previous theorem into the exact `Prop` shape consumed by the
+current Theorem 2.4.3/Lemma 2.4.5 endpoint wrappers.
+-/
+theorem VdVWLemma245ReverseCofiltrationHandoff.of_submartingale
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    (hsub :
+      Submartingale
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        ℱ (vdVWInfiniteProductMeasure P)) :
+    VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun := by
+  intro _hcomparison
+  exact
+    vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_of_submartingale
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable hsub
 
 /--
 Final Lemma 2.4.5 consumer for the already-compiled countable centered

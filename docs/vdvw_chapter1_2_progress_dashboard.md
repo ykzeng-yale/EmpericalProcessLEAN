@@ -1064,3 +1064,13 @@ and
 The remaining blocker is unchanged but sharper: prove the VdV&W
 reverse/permutation-symmetric convergence theorem, not the process API
 plumbing around it.
+
+2026-05-04 follow-up: the reverse/cofiltration blocker now has an ordinary
+submartingale sufficient-condition route.  New compiled declarations
+`vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_of_submartingale` and
+`VdVWLemma245ReverseCofiltrationHandoff.of_submartingale` combine mathlib's
+`Submartingale.exists_ae_tendsto_of_bdd` with the named centered-supremum
+`eLpNorm` envelope bound.  The next non-finite Lemma 2.4.5 target is therefore
+very concrete: produce the ordinary `ℕ` submartingale realization of the
+shifted process from the decreasing permutation-symmetric fields, or prove the
+reverse convergence theorem directly.
