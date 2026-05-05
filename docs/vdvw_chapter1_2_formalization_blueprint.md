@@ -90,11 +90,17 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Every proof heartbeat should inspect that file before introducing a new
-primitive.  As of 2026-05-02, the example-specific Example 2.4.2
-distribution-dependent finite middle partition / quantile cutpoint layer is
-parked as a deferred example blocker.  The active main-line frontier is
-Theorem 2.4.3 and the theorem-level Chapter 2 bracketing/measurable-class
-primitives it requires.
+primitive.  As of 2026-05-05, the active main-line frontier is no longer the
+reverse/cofiltration theorem or finite-cover entropy plumbing: those layers
+have compiled.  The current target is final Theorem 2.4.3/Lemma 2.4.5
+statement alignment from the strongest no-nonempty full-subgraph package,
+followed by the exact missing bridges to the textbook hypotheses: random
+entropy/tail-UI without deterministic log boundedness, arbitrary
+`P`-measurable/asymptotic-measurable class support, and any nonmeasurable
+outer-cover envelope variants required by the exact statement.  The
+example-specific Example 2.4.2 distribution-dependent finite middle partition
+/ quantile cutpoint layer remains parked as a deferred example blocker unless
+a theorem needs it.
 
 ## Automation Prompt Maintenance
 
