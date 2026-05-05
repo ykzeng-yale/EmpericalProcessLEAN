@@ -89,7 +89,7 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at synced repository head `77025e0`:
+Current operational target, 2026-05-05 at synced repository head `915223d`:
 the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
@@ -242,6 +242,14 @@ Search record: local code already had analogous asymptotic-measurability
 filter closures, but no signed weak-convergence package closures.  This closes
 the simple filter-refinement foundation gap and keeps the active Chapter 1
 fallback focused on the deeper arbitrary-map/nonmeasurable/process primitives.
+
+2026-05-05 FDD forward-direction follow-up: `FiniteDimensional.lean` now adds
+the VdV&W 1.4.8-named forward weak-convergence handoff
+`vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.
+It packages the existing probability-measure finite-coordinate restriction
+theorem under the empirical-process/FDD namespace.  The exact FDD
+weak-convergence converse remains blocked by the missing tightness,
+separability, and asymptotic-measurability/process hypotheses.
 
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
@@ -456,7 +464,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.4.3 | Lemma | `..._1-100.md:857` | local-layer/mathlib-foundation: binary and finite product-law weak-convergence wrappers proved as `VdVWWeakConvergenceProbabilityMeasures.prod` and `.pi`; arbitrary-map/asymptotic-tightness extension pending |
 | 1.4.4 | Lemma | `..._1-100.md:858` | local-layer/mathlib-foundation: finite-coordinate projection/FDD forward wrapper proved as `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict`; converse FDD iff theorem still missing |
 | 1.4.5 | Corollary | `..._1-100.md:878` | local-layer/mathlib-foundation: measurable common-domain Slutsky/product convergence wrapper proved; exact VdV&W product/arbitrary-map criterion still pending |
-| 1.4.8 | Theorem | `..._1-100.md:910` | foundation-lane/mathlib-foundation: FDD forward direction now wrapped for weak convergence; process-law and `IdentDistrib` uniqueness-only FDD wrappers are compiled in `FiniteDimensional.lean`; projective-limit/FDD law equality APIs exist, but no exact weak-convergence iff-over-FDD converse theorem found |
+| 1.4.8 | Theorem | `..._1-100.md:910` | local-layer/mathlib-foundation: FDD forward direction now wrapped for weak convergence, including the VdV&W-named `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`; process-law and `IdentDistrib` uniqueness-only FDD wrappers are compiled in `FiniteDimensional.lean`; projective-limit/FDD law equality APIs exist, but no exact weak-convergence iff-over-FDD converse theorem found |
 | 1.5.2 | Lemma | `..._1-100.md:932` | foundation-lane: `l_infty(T)`/separability primitive target; mathlib has tightness/Prokhorov but local bounded-function-space API is still needed |
 | 1.5.3 | Lemma | `..._1-100.md:933` | foundation-lane: `l_infty(T)`/Donsker tightness primitive target, local bounded-function-space API needed |
 | 1.5.4 | Theorem | `..._1-100.md:934` | foundation-lane/mathlib-foundation: tightness theorem target using mathlib `IsTightMeasureSet`/Prokhorov plus local `l_infty(T)` wrappers |

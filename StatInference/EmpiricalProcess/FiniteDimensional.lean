@@ -1,12 +1,14 @@
 import StatInference.ProbabilityMeasure.FiniteDimensional
+import StatInference.EmpiricalProcess.WeakConvergence
 
 /-!
 # Finite-dimensional empirical-process law wrappers
 
 This module records the uniqueness-only finite-dimensional-distribution layer
 behind VdV&W Theorem 1.4.8.  It does not state the full weak-convergence
-criterion for arbitrary nets; it only gives a law-extensionality wrapper for
-measurable process laws.
+criterion for arbitrary nets; it gives law-extensionality wrappers for
+measurable process laws and the forward weak-convergence-to-FDD restriction
+direction.
 -/
 
 namespace StatInference
@@ -59,5 +61,29 @@ theorem vdVW148_identDistrib_of_forall_finiteDimensional_identDistrib
   exact
     (StatInference.ProbabilityMeasure.identDistrib_iff_forall_finiteDimensional_identDistrib
       hX hY).2 hFDD
+
+/--
+VdV&W 1.4.8 forward finite-dimensional weak-convergence layer: weak
+convergence of process laws implies weak convergence of every
+finite-dimensional restriction.
+
+This is the easy direction of the textbook finite-dimensional-distribution
+criterion.  The converse still needs the exact VdV&W tightness/separability
+and asymptotic-measurability hypotheses before it can be stated honestly.
+-/
+theorem vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence
+    {ι : Type*} {l : Filter ι}
+    [∀ t, TopologicalSpace (𝓧 t)] [∀ t, OpensMeasurableSpace (𝓧 t)]
+    [MeasurableSpace ((t : T) -> 𝓧 t)] [OpensMeasurableSpace ((t : T) -> 𝓧 t)]
+    {μs : ι -> ProbabilityMeasure ((t : T) -> 𝓧 t)}
+    {μ : ProbabilityMeasure ((t : T) -> 𝓧 t)}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    (I : Finset T)
+    [MeasurableSpace ((t : I) -> 𝓧 t)] [BorelSpace ((t : I) -> 𝓧 t)] :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun n => (μs n).map ((Finset.continuous_restrict I).measurable.aemeasurable))
+      l
+      (μ.map ((Finset.continuous_restrict I).measurable.aemeasurable)) := by
+  exact VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict hμ I
 
 end StatInference

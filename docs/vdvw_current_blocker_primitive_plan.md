@@ -58,7 +58,7 @@ consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`77025e0`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`915223d`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -286,6 +286,20 @@ new proofs are direct `Tendsto.mono_left` and package-field reuse.  Remaining
 Chapter 1 arbitrary-map work is the deeper nonmeasurable outer-cover,
 asymptotic-tightness/asymptotic-independence, FDD-converse, and separability
 support listed above.
+
+2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
+has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
+`vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.
+It reuses the already compiled
+`VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict` theorem to
+state that weak convergence of process laws implies weak convergence of each
+finite-coordinate restriction.  Search record: local ProbabilityMeasure and
+EmpiricalProcess weak-convergence layers already had the measure-level
+restriction theorem, while the local `FiniteDimensional.lean` file only
+exposed process-law and `IdentDistrib` uniqueness wrappers.  This closes the
+forward FDD handoff in the VdV&W-named namespace; the FDD weak-convergence
+converse remains a genuine blocker requiring tightness, separability, and
+asymptotic-measurability/process primitives.
 
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the
