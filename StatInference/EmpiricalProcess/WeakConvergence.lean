@@ -133,6 +133,39 @@ def VdVWWeakConvergenceSignedOuterBoundedContinuous
       l (𝓝 (∫ s, f s ∂(μ : Measure S)))
 
 /--
+Continuous maps preserve signed-outer bounded-continuous weak convergence.
+
+This is the direct VdV&W arbitrary-map analogue of the continuous-mapping
+theorem for the current signed-outer bounded-continuous weak-convergence
+predicate.
+-/
+theorem VdVWWeakConvergenceSignedOuterBoundedContinuous.comp_continuous
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [BorelSpace T]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l μ)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous μs
+      (fun i ω => g (X i ω)) l (μ.map hg.measurable.aemeasurable) := by
+  intro f
+  let gC : C(S, T) := ⟨g, hg⟩
+  have hbase := h (f.compContinuous gC)
+  have htarget :
+      (∫ t, f t ∂((μ.map hg.measurable.aemeasurable : ProbabilityMeasure T) :
+        Measure T)) =
+        ∫ s, f (g s) ∂(μ : Measure S) := by
+    simpa [gC] using
+      (integral_map hg.measurable.aemeasurable
+        f.continuous.measurable.aestronglyMeasurable :
+        ∫ t, f t ∂Measure.map g (μ : Measure S) =
+          ∫ s, f (g s) ∂(μ : Measure S))
+  rw [htarget]
+  simpa [VdVWWeakConvergenceSignedOuterBoundedContinuous, gC] using hbase
+
+/--
 Nonnegative version of VdV&W asymptotic measurability for a family of
 possibly arbitrary maps and a chosen class of nonnegative test functions.
 

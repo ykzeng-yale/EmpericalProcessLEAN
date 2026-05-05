@@ -128,6 +128,17 @@ weak-convergence layer to the exact VdV&W asymptotic-measurability/outer-inner
 gap formulation for nonmeasurable maps, and then use it to reduce the
 countability/measurability mismatch in Theorem 2.4.3.
 
+2026-05-05 third signed follow-up: the signed-outer bounded-continuous
+weak-convergence predicate is now stable under continuous maps via
+`VdVWWeakConvergenceSignedOuterBoundedContinuous.comp_continuous`.  The proof
+reuses `BoundedContinuousFunction.compContinuous`, `ProbabilityMeasure.map`,
+and pinned mathlib `integral_map` to identify the pushed-forward limit
+integral.  This closes the signed-outer continuous-mapping layer for
+measurable/arbitrary-map weak convergence.  The next useful proof step should
+target the remaining exact VdV&W gap: a signed outer/inner expectation-gap or
+asymptotic-measurability predicate strong enough for nonmeasurable maps, not
+another measurable law-convergence or continuous-map wrapper.
+
 2026-05-05 status check: this run started from VdVW head `4903594` and pushed
 the merged verified head `57c0b80`; the active `/goal` tool objective remains
 broad but cannot be edited in place.
