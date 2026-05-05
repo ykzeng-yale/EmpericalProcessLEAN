@@ -68,7 +68,7 @@ unless a new exact statement directly consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05 after the verified
-π-system/product-test wrapper closure at `b84e9ed`: finish VdV&W Chapters 1-2
+independent product convergence closure at `aa8d39d`: finish VdV&W Chapters 1-2
 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
@@ -169,14 +169,20 @@ Next high-capacity proof batches, in order:
    enough for tail expectation; do not assert that implication without an
    added UI/tail or structural bound hypothesis.
 3. In parallel only when it directly supports exact Chapter 1-2 statements or
-   Theorem 2.4.3 endpoints, close small reusable arbitrary-map foundation
+   Theorem 2.4.3 endpoints, close reusable arbitrary-map/process foundation
    gaps that are already search-isolated.  The signed weak-convergence
-   filter-refinement package is now closed; do not repeat it.  The next
-   Chapter 1 foundation fallback should address a deeper exact primitive:
-   nonmeasurable outer-cover signed extended-real weak convergence,
-   asymptotic-tightness/asymptotic-independence, FDD converse, or exact
-   separability/`P`-measurable class support beyond the current signed
-   bounded-continuous package.
+   filter-refinement package and the binary/finite independent product
+   convergence wrappers are now closed; do not repeat them.  The canonical
+   infinite iid product substrate is also already present in `PMeasurable.lean`
+   through `vdVWInfiniteProductMeasure`,
+   `vdVWInfiniteProductMeasure_coordinate_hasLaw`, and
+   `vdVWInfiniteProductMeasure_iIndepFun_coordinates`, reusing mathlib
+   `Measure.infinitePi` and `iIndepFun_iff_map_fun_eq_infinitePi_map`.
+   The next Chapter 1 fallback should therefore address a deeper exact
+   primitive: nonmeasurable outer-cover signed extended-real weak convergence,
+   asymptotic-tightness/asymptotic-independence, arbitrary-index FDD converse,
+   or exact separability/`P`-measurable class support beyond the current signed
+   bounded-continuous and ordinary product-law packages.
 4. If the book random-entropy route remains blocked after real Lean/search
    attempts, move immediately to theorem-critical exactness gaps instead of
    rewrapping closed Theorem 2.4.3 layers.  The first fallback is a precise

@@ -90,7 +90,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current operational target, 2026-05-05 after the verified
-π-system/product-test wrapper closure at `b84e9ed`: the strong
+independent product convergence closure at `aa8d39d`: the strong
 Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
@@ -123,8 +123,11 @@ and finite-coordinate forms: the compiled wrappers are
 `vdVWTendstoInDistribution_pi_laws_of_iIndepFun`, plus their corresponding
 ordinary `TendstoInDistribution` wrappers
 `vdVWTendstoInDistribution_prodMk_of_indepFun` and
-`vdVWTendstoInDistribution_pi_of_iIndepFun`.  The next Chapter 1 fallback
-should therefore move to deeper exact primitives such as
+`vdVWTendstoInDistribution_pi_of_iIndepFun`.  The canonical infinite iid
+product substrate is already present in `PMeasurable.lean` via
+`vdVWInfiniteProductMeasure`, coordinate `HasLaw`, and coordinate
+`iIndepFun` wrappers over mathlib `Measure.infinitePi`, so the next Chapter 1
+fallback should therefore move to deeper exact primitives such as
 nonmeasurable outer-cover signed weak convergence, asymptotic-tightness/
 asymptotic-independence, arbitrary-index FDD converse, or separability/
 `P`-measurable class support.

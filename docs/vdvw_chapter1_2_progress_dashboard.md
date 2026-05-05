@@ -14,7 +14,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 after the verified
-π-system/product-test wrapper closure at `b84e9ed`: closed
+independent product convergence closure at `aa8d39d`: closed
 finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
@@ -35,6 +35,10 @@ binary and finite-coordinate law layers behind VdV&W 1.4.6; the corresponding
 ordinary convergence-in-distribution wrappers
 `vdVWTendstoInDistribution_prodMk_of_indepFun` and
 `vdVWTendstoInDistribution_pi_of_iIndepFun` are compiled too.  The current
+local search also shows that the canonical infinite iid product substrate is
+already compiled in `PMeasurable.lean` through `vdVWInfiniteProductMeasure`,
+coordinate law, and coordinate independence wrappers, so the next fallback
+should not be another duplicate infinite-product wrapper.  The current
 Theorem 2.4.3 gap remains the exact book
 random-entropy bridge: derive a real tail/UI,
 uniform-integrability,
