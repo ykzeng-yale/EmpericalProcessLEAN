@@ -17496,6 +17496,69 @@ theorem
       exact hmul_le.trans_eq hmul_eq
 
 /--
+Raw normalized-log integrability and tail/UI imply the finite-net Hoeffding
+tail/UI condition.
+
+This composes the raw-log to affine-log reduction with the existing
+finite-net Hoeffding tail comparison.  The remaining textbook gap is now
+strictly the source of the raw normalized-log integrability/tail condition.
+-/
+theorem
+    finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_tailExpectation
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {M : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M)
+    (hlogMeasurable :
+      ∀ n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+    (hlogIntegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+              (n : ℝ))
+          (vdVWProductMeasure P n))
+    (hlogTail :
+      ∀ ε > 0, ∃ R, 0 ≤ R ∧
+        ∀ᶠ n in atTop,
+          ∫ sample : SampleAt Observation n,
+            Set.indicator
+              {sample' : SampleAt Observation n |
+                R <
+                  vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+                    sample' n / (n : ℝ)}
+              (fun sample' : SampleAt Observation n =>
+                vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+                  sample' n / (n : ℝ))
+              sample ∂(vdVWProductMeasure P n) ≤ ε) :
+    ∀ ε > 0, ∃ R, 0 ≤ R ∧
+      ∀ᶠ n in atTop,
+        ∫ sample : SampleAt Observation n,
+          Set.indicator
+            {sample' : SampleAt Observation n |
+              R <
+                vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality n sample' n) n M}
+            (fun sample' : SampleAt Observation n =>
+              vdVWTheorem243FiniteNetHoeffdingUpper
+                (cardinality n sample' n) n M)
+            sample ∂(vdVWProductMeasure P n) ≤ ε := by
+  exact
+    finiteNetHoeffdingUpper_tailExpectation_condition_of_logCardinality_div_tailExpectation
+      (P := P) (M := M) (cardinality := cardinality) hM_pos
+      (fun R =>
+        logCardinality_div_affineTailIntegrable_of_measurable_integrable
+          (P := P) (cardinality := cardinality) (6 * M) R
+          hlogMeasurable hlogIntegrable)
+      (logCardinality_div_affine_tailExpectation_condition_of_tailExpectation
+        (P := P) (cardinality := cardinality) (A := 6 * M)
+        (by nlinarith) hlogMeasurable hlogIntegrable hlogTail)
+
+/--
 Deterministic analytic core of the entropy-to-Hoeffding-scale convergence
 step.
 

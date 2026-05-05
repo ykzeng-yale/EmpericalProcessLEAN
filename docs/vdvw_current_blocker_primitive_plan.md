@@ -125,10 +125,12 @@ raw normalized-log to affine-tail reduction and selected-package constructor.
 New compiled declarations:
 `logCardinality_div_affineTailIntegrable_of_measurable_integrable`,
 `logCardinality_div_affine_tailExpectation_condition_of_tailExpectation`, and
+`finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_tailExpectation`,
+plus the selected package constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation_raw`.
 These prove that measurability, integrability, and tail/UI of the normalized
-log selected empirical-cover cardinality imply the affine normalized-log
-tail/UI required by the finite-net Hoeffding upper tail package.  Search
+log selected empirical-cover cardinality imply both the finite-net Hoeffding
+tail/UI condition and the selected fixed-radius tail/UI package.  Search
 record: local code already had the finite-net Hoeffding-to-affine-log tail
 reduction and selected fixed-radius package constructor; pinned mathlib has
 fixed-domain `UniformIntegrable`/Vitali APIs but no ready theorem turning

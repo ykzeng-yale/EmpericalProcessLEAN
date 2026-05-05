@@ -141,9 +141,12 @@ alignment, not additional signed endpoint packaging.
 2026-05-05 entropy follow-up: the normalized-log affine tail/UI reduction now
 also compiles.  Raw normalized-log measurability, integrability, and tail/UI of
 the selected empirical-cover cardinality feed the affine normalized-log tail
-majorant and the selected fixed-radius tail/UI package through
+majorant, the finite-net Hoeffding tail/UI condition, and the selected
+fixed-radius tail/UI package through
 `logCardinality_div_affineTailIntegrable_of_measurable_integrable`,
-`logCardinality_div_affine_tailExpectation_condition_of_tailExpectation`, and
+`logCardinality_div_affine_tailExpectation_condition_of_tailExpectation`,
+`finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_tailExpectation`,
+and
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation_raw`.
 The next proof target is therefore not more selected-package plumbing: it is
 the honest varying-domain theorem deriving those raw normalized-log
