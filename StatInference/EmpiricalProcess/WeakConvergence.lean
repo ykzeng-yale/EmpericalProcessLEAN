@@ -166,6 +166,143 @@ theorem VdVWWeakConvergenceSignedOuterBoundedContinuous.comp_continuous
   simpa [VdVWWeakConvergenceSignedOuterBoundedContinuous, gC] using hbase
 
 /--
+Signed bounded-continuous outer/inner expectation gap for an arbitrary real
+map.
+
+The current Chapter 1.2 layer is nonnegative, so the signed gap is represented
+by the two nonnegative gaps of the positive and negative parts.  This is the
+honest bridge needed before stating VdV&W arbitrary-map asymptotic
+measurability for bounded-continuous real tests.
+-/
+noncomputable def VdVWSignedBoundedContinuousOuterInnerExpectationGap
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω)
+    (Y : Ω -> ℝ) : ℝ≥0∞ :=
+  VdVWNonnegativeOuterInnerExpectationGap μ (fun ω => ENNReal.ofReal (Y ω)) +
+    VdVWNonnegativeOuterInnerExpectationGap μ (fun ω => ENNReal.ofReal (-Y ω))
+
+/--
+Measurable real maps have zero signed positive/negative outer/inner
+expectation gap.
+-/
+theorem VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Y : Ω -> ℝ} (hY : Measurable Y) :
+    VdVWSignedBoundedContinuousOuterInnerExpectationGap μ Y = 0 := by
+  simp [VdVWSignedBoundedContinuousOuterInnerExpectationGap,
+    VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_measurable hY.ennreal_ofReal,
+    VdVWNonnegativeOuterInnerExpectationGap_eq_zero_of_measurable hY.neg.ennreal_ofReal]
+
+/--
+Signed bounded-continuous asymptotic measurability for arbitrary maps.
+
+This is the closest local predicate to the signed part of VdV&W Definition
+1.3.7: every bounded continuous real test has vanishing positive/negative
+outer/inner expectation gap along the process.
+-/
+def VdVWAsymptoticallyMeasurableSignedBoundedContinuous
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    (μs : ι -> Measure Ω) (X : ι -> Ω -> S) (l : Filter ι) : Prop :=
+  ∀ f : S →ᵇ ℝ,
+    Tendsto
+      (fun i =>
+        VdVWSignedBoundedContinuousOuterInnerExpectationGap (μs i)
+          (fun ω => f (X i ω)))
+      l (𝓝 0)
+
+/--
+Measurable maps into a topological measurable state space are signed
+bounded-continuous asymptotically measurable.
+-/
+theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_measurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (hX : ∀ i, Measurable (X i)) :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuous μs X l := by
+  intro f
+  have hzero :
+      (fun i =>
+        VdVWSignedBoundedContinuousOuterInnerExpectationGap (μs i)
+          (fun ω => f (X i ω))) = fun _ => 0 := by
+    funext i
+    exact
+      VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_measurable
+        (f.continuous.measurable.comp (hX i))
+  simpa [hzero] using
+    (tendsto_const_nhds :
+      Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0))
+
+/--
+Continuous maps preserve signed bounded-continuous asymptotic measurability.
+-/
+theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.comp_continuous
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω] [TopologicalSpace S] [TopologicalSpace T]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableSignedBoundedContinuous μs X l)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuous
+      μs (fun i ω => g (X i ω)) l := by
+  intro f
+  let gC : C(S, T) := ⟨g, hg⟩
+  simpa [gC] using h (f.compContinuous gC)
+
+/--
+Signed bounded-continuous asymptotic measurability is stable under passing to
+a finer index filter.
+-/
+theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.mono_filter
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l l' : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableSignedBoundedContinuous μs X l)
+    (hl : l' ≤ l) :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuous μs X l' := by
+  intro f
+  exact (h f).mono_left hl
+
+/--
+Proof-carrying signed bounded-continuous arbitrary-map weak convergence.
+
+The structure packages the signed-outer bounded-continuous convergence
+predicate together with the signed outer/inner asymptotic-measurability
+predicate above.  It is still a local Chapter 1 bridge: exact VdV&W
+nonmeasurable cover and asymptotic-tightness clauses remain separate.
+-/
+structure VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    (μs : ι -> Measure Ω) (X : ι -> Ω -> S) (l : Filter ι)
+    (μ : ProbabilityMeasure S) : Prop where
+  weakConvergence :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l μ
+  asymptoticMeasurability :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuous μs X l
+
+/--
+Continuous maps preserve the proof-carrying signed bounded-continuous
+arbitrary-map weak-convergence layer.
+-/
+theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.comp_continuous
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [BorelSpace T]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h :
+      VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs
+      (fun i ω => g (X i ω)) l (μ.map hg.measurable.aemeasurable) :=
+  { weakConvergence := h.weakConvergence.comp_continuous hg
+    asymptoticMeasurability := h.asymptoticMeasurability.comp_continuous hg }
+
+/--
 Nonnegative version of VdV&W asymptotic measurability for a family of
 possibly arbitrary maps and a chosen class of nonnegative test functions.
 
@@ -642,6 +779,27 @@ theorem VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_o
     (vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto.mp hν f)
 
 /--
+Measurable law-level weak convergence gives the proof-carrying signed
+bounded-continuous arbitrary-map layer.
+-/
+theorem
+    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_map_eq
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} [∀ i, IsFiniteMeasure (μs i)]
+    {X : ι -> Ω -> S} (hX : ∀ i, Measurable (X i))
+    {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (hweak : VdVWWeakConvergenceProbabilityMeasures νs l μ)
+    (hmap : ∀ i, (νs i : Measure S) = Measure.map (X i) (μs i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ :=
+  { weakConvergence :=
+      hweak.to_signedOuterBoundedContinuous_of_map_eq hX hmap
+    asymptoticMeasurability :=
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_measurable hX }
+
+/--
 Has-law form of the signed-outer bounded-continuous weak-convergence bridge.
 
 This is the most convenient form for probability-theory arguments: the law
@@ -678,6 +836,27 @@ theorem VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_o
             rw [(hlaw i).map_eq]
   simpa [VdVWWeakConvergenceSignedOuterBoundedContinuous, houter] using
     (vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto.mp hν f)
+
+/--
+Has-law weak convergence gives the proof-carrying signed bounded-continuous
+arbitrary-map layer.
+-/
+theorem
+    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_hasLaw
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    (hX : ∀ i, Measurable (X i))
+    {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (hweak : VdVWWeakConvergenceProbabilityMeasures νs l μ)
+    (hlaw : ∀ i, HasLaw (X i) (νs i : Measure S) (μs i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ :=
+  { weakConvergence :=
+      hweak.to_signedOuterBoundedContinuous_of_hasLaw hX hlaw
+    asymptoticMeasurability :=
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_measurable hX }
 
 /--
 VdV&W bounded-Lipschitz test-function criterion for measure-level weak
@@ -966,6 +1145,25 @@ theorem vdVWTendstoInDistribution_to_signedOuterBoundedContinuous
   exact
     VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq
       hX h.tendsto (fun _ => rfl)
+
+/--
+Measurable common-domain convergence in distribution gives the proof-carrying
+signed bounded-continuous arbitrary-map layer.
+-/
+theorem vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap
+    {ι : Type u} {Ω : Type v} {Ω' : Type w} {S : Type x}
+    [MeasurableSpace Ω] {μs : ι -> Measure Ω} [∀ i, IsProbabilityMeasure (μs i)]
+    [MeasurableSpace Ω'] {μ' : Measure Ω'} [IsProbabilityMeasure μ']
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {X : ι -> Ω -> S} {Z : Ω' -> S} {l : Filter ι}
+    (h : TendstoInDistribution X l Z μs μ')
+    (hX : ∀ i, Measurable (X i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l
+      ⟨μ'.map Z, Measure.isProbabilityMeasure_map h.aemeasurable_limit⟩ :=
+  { weakConvergence :=
+      vdVWTendstoInDistribution_to_signedOuterBoundedContinuous h hX
+    asymptoticMeasurability :=
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_measurable hX }
 
 /--
 Measurable common-domain Slutsky/product theorem.

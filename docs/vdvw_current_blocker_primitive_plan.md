@@ -154,6 +154,26 @@ exact Theorem 2.4.3 mismatch: remove countability/coordinate-measurability via
 that Chapter 1 primitive, or prove the random-entropy selected finite-net
 tail/UI theorem without deterministic log-cardinality boundedness.
 
+2026-05-05 signed asymptotic-measurability follow-up: the next bridge in that
+plan is now compiled.  New declarations are
+`VdVWSignedBoundedContinuousOuterInnerExpectationGap`,
+`VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_of_measurable`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_measurable`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous.comp_continuous`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous.mono_filter`,
+`VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap`,
+`VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.comp_continuous`,
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_map_eq`,
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_hasLaw`,
+and `vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap`.
+Search/reuse record: local `OuterExpectation` supplied the nonnegative
+outer/inner gap collapse; pinned mathlib supplied bounded-continuous
+composition, `integral_map`, `HasLaw`, and `TendstoInDistribution` law
+convergence.  The next target should consume this bridge in the Theorem 2.4.3
+alignment layer or extend it only where exact VdV&W nonmeasurable
+outer-cover/asymptotic-tightness clauses require stronger primitives.
+
 2026-05-05 status check: this run started from VdVW head `4903594` and pushed
 the merged verified head `57c0b80`; the active `/goal` tool objective remains
 broad but cannot be edited in place.
