@@ -1287,4 +1287,7 @@ finite-prefix reverse downcrossings and the corresponding reversed-window
 upcrossing count.  Once that comparison is proved, the generic order-dual
 submartingale convergence handoff and the VdV&W Lemma 2.4.5 reverse
 cofiltration package can be closed without further probabilistic or
-integration primitives.
+integration primitives.  The generic interface-level wrapper
+`VdVWOrderDualSubmartingaleConvergenceHandoff.of_finiteHorizon_reverseComparison`
+is also compiled, so the next proof should target the deterministic comparison
+directly rather than adding more convergence adapters.

@@ -3975,4 +3975,9 @@ Search/reuse record: pinned mathlib supplies `upcrossings`, `upcrossingsBefore`,
 submartingale and uniform expected-upcrossing bound.  The remaining blocker is
 therefore exactly the deterministic finite-prefix reversal comparison, with
 careful endpoint/off-by-one handling in mathlib's recursive crossing-time
-definitions.
+definitions.  The named generic handoff
+`VdVWOrderDualSubmartingaleConvergenceHandoff.of_finiteHorizon_reverseComparison`
+now exposes this as the final primitive boundary: a proof of the deterministic
+comparison immediately closes `VdVWOrderDualSubmartingaleConvergenceHandoff`
+for all finite-measure order-dual submartingales satisfying the existing
+uniform `eLpNorm` bound.

@@ -5861,6 +5861,31 @@ theorem vdVWOrderDualSubmartingale_ae_tendsto_of_finiteHorizon_reverseComparison
       exact not_le.2 (sub_pos.2 (Rat.cast_lt.2 hab)))
 
 /--
+The generic VdV&W order-dual convergence handoff follows once the
+finite-prefix reversal comparison is proved uniformly for order-dual
+processes.
+
+This is now the narrow final primitive boundary for the generic reverse-time
+martingale argument: proving `hcompare` closes
+`VdVWOrderDualSubmartingaleConvergenceHandoff`.
+-/
+theorem VdVWOrderDualSubmartingaleConvergenceHandoff.of_finiteHorizon_reverseComparison
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    (hcompare :
+      ∀ {f : ℕᵒᵈ -> Ω -> ℝ},
+        ∀ a b : ℚ, a < b -> ∀ N : ℕ, ∀ ω : Ω,
+          (upcrossingsBefore (-(b : ℝ)) (-(a : ℝ))
+            (fun n : ℕ => fun ω : Ω => -f (OrderDual.toDual n) ω) N ω : ℝ≥0∞) ≤
+          upcrossings (a : ℝ) (b : ℝ)
+            (fun k : ℕ => fun ω : Ω => f (OrderDual.toDual (N - k)) ω) ω) :
+    VdVWOrderDualSubmartingaleConvergenceHandoff Ω μ := by
+  intro ℱ f R hsub hbdd
+  exact
+    vdVWOrderDualSubmartingale_ae_tendsto_of_finiteHorizon_reverseComparison
+      (μ := μ) (ℱ := ℱ) (f := f) (R := R) hsub hbdd
+      (fun a b hab N ω => hcompare (f := f) a b hab N ω)
+
+/--
 The textbook Lemma 2.4.5 display comparison builds a genuine mathlib
 submartingale over the shifted VdV&W permutation-symmetric cofiltration.
 
