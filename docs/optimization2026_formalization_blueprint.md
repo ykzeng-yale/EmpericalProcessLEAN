@@ -133,8 +133,11 @@ plus `matrixInvShape_eq_toLp_mulVec`, `matrixInvShape_one`,
 `chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_sqrt`,
 `chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_sqrt`,
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`,
-`chewi620_hvolume_of_matrix_image_volume_models`, and
-`chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`.
+`chewi620_hvolume_of_matrix_image_volume_models`,
+`chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`,
+`ellipsoidSet_eq_matrix_image_closedBall_of_quadratic`,
+`cfcSqrt_det_sq_of_posSemidef`, and
+`chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`.
 Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
@@ -148,8 +151,9 @@ inverse-shape reduction, normalized forward/inverse algebra, or
 forward-shape transport-reduction, rank-one action, displayed-shape action,
 square-root current/rank-inner transport, scale normalization, concrete
 displayed-to-normalized forward-shape transport, displayed next-shape
-certificate packaging, matrix-image volume scaling, or determinant-to-hvolume
-scalar bridge packets.
+certificate packaging, matrix-image volume scaling, determinant-to-hvolume
+scalar bridge, translated closed-unit-ball image-model, or displayed
+ellipsoid-volume wrapper packets.
 `StatInference/Optimization/Theorem58.lean` proves the AGF Lyapunov derivative
 formula, discharges Lyapunov continuity from the trajectory and gradient oracle,
 and exposes a source-facing Theorem 5.8 rate wrapper.  Since Chewi leaves the
@@ -284,17 +288,21 @@ plus `matrixInvShape_eq_toLp_mulVec`, `matrixInvShape_vecMulVec`,
 `chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_sqrt`,
 `chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_sqrt`,
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`,
-`chewi620_hvolume_of_matrix_image_volume_models`, and
-`chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`.
-The remaining blocker is the actual square-root ellipsoid image model and
-determinant-square facts, not
+`chewi620_hvolume_of_matrix_image_volume_models`,
+`chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`,
+`ellipsoidSet_eq_matrix_image_closedBall_of_quadratic`,
+`cfcSqrt_det_sq_of_posSemidef`, and
+`chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`.
+The remaining blocker is the actual CFC/spectral square-root quadratic identity
+and the displayed next-shape PosSemidef/PosDef facts, not
 scalar algebra, abstract transport, current-shape rewriting, center algebra,
 rank-one collapse, determinant-core algebra, source-volume determinant algebra,
 normalized standard-cut algebra, rank-one action expansion, displayed-shape
 action expansion, square-root current/rank-inner transport, concrete
 displayed-to-normalized transport, transport reduction, displayed next-shape
-certificate packaging, determinant-to-hvolume scalar algebra, or
-nonsingular-inverse uniqueness.  For measure scaling, use
+certificate packaging, determinant-to-hvolume scalar algebra,
+translated closed-unit-ball image-model packaging, displayed-volume wrapper
+packaging, or nonsingular-inverse uniqueness.  For measure scaling, use
 `Measure.addHaar_image_linearMap` / `Measure.addHaar_preimage_linearEquiv`,
 translation invariance, and `LinearMap.det_toLpLin` for
 `Matrix.toEuclideanLin`; the raw `Real.map_*` pushforward lemmas scale by
@@ -302,11 +310,12 @@ translation invariance, and `LinearMap.det_toLpLin` for
 wrapped by `addHaar_image_linearMap_real` and
 `matrixInvShape_image_volume_real`, with translation wrapped by
 `addHaar_image_add_left_real` and `matrixInvShape_image_add_volume_real`.  The
-target order is to identify the displayed current and next ellipsoids as
-translated square-root images of a common unit ball/base set, discharge the
-determinant-square facts using mathlib spectral/CFC or matrix square-root APIs,
-and feed the result into
-`chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`.
+target order is to instantiate the displayed-volume wrapper with mathlib CFC
+roots: prove `<CFC.sqrt A y, A⁻¹ CFC.sqrt A y> = <y,y>`, reuse
+`cfcSqrt_det_sq_of_posSemidef` for determinant squares, first establish the
+needed PosSemidef/PosDef fact for `chewi620DisplayedShapeUpdate d Sigma p`, and
+feed the result into
+`chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`.
 If the full matrix proof balloons, prove the smallest
 matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
 the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth

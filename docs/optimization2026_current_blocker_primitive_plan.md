@@ -195,16 +195,21 @@ plus the displayed-matrices certificate packet `chewi620_matrixSqrt_quadratic`,
 and `chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`, plus
 the determinant-volume bridge packet
 `chewi620_hvolume_of_matrix_image_volume_models` and
-`chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`.
+`chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`,
+plus the square-root image-model packet
+`ellipsoidSet_eq_matrix_image_closedBall_of_quadratic`,
+`cfcSqrt_det_sq_of_posSemidef`, and
+`chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`.
 The determinant/scalar `hvolume` bridge, inverse-shape left-inverse reduction,
 normalized forward/inverse cancellation, transport reduction, rank-one action
 expansion, displayed-shape action expansion, square-root current/rank-inner
 transport, concrete displayed-to-normalized forward-shape transport theorem, and
 matrix-backed translated real image-volume scaling bridge are verified in
-focused Lean; the displayed next-shape matrix certificate and the generic
-determinant-square-to-`hvolume` theorem now compile, so the next run must not
-spend theorem time reproving or repackaging those cores unless they are directly
-needed inside the final square-root image-model theorem.
+focused Lean; the displayed next-shape matrix certificate, the generic
+determinant-square-to-`hvolume` theorem, the translated closed-unit-ball image
+model, and the displayed-volume certificate wrapper now compile, so the next run
+must not spend theorem time reproving or repackaging those cores unless they are
+directly needed inside the final CFC/spectral square-root theorem.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
@@ -224,13 +229,18 @@ The raw linear-image volume scaling is now instantiated from mathlib's
 `matrixInvShape_image_add_volume_real`.  The displayed next inverse-shape and
 set-level replacement are also packaged in the exact square-root form, and the
 generic determinant-volume model already feeds
-`chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`.  The next
-target is the true ellipsoid-image theorem: identify each displayed ellipsoid
-with a translated image of a common unit ball/base set under a square-root
-factor, then discharge the determinant-square identities for those factors
-using mathlib spectral/CFC or matrix square-root APIs.  If the full packaging
-balloons, record the exact missing square-root/determinant or measurable-image
-API and prove the smallest image-model certificate that removes it.
+`chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`.  The
+displayed ellipsoid-volume wrapper now reduces the geometric volume statement
+to supplied square-root quadratic identities and determinant-square identities
+via `chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`.
+The next target is the true CFC/spectral square-root theorem: instantiate
+`currentRoot := CFC.sqrt Sigma`, prove the quadratic identity
+`<sqrt Sigma y, Sigma⁻¹ sqrt Sigma y> = <y,y>`, use
+`cfcSqrt_det_sq_of_posSemidef` for the determinant square, and then prove the
+same facts for `chewi620DisplayedShapeUpdate d Sigma p` after establishing the
+needed PosSemidef/PosDef hypothesis.  If the full CFC packaging balloons, record
+the exact missing `CFC.sq_sqrt`, `Matrix.PosSemidef.inv_sqrt`, commutation, or
+matrix-order API and prove the smallest spectral certificate that removes it.
 The raw square-root adjoint identity, normalized cut
 `hcut` bridge, `Sigma.PosDef` invertibility/cancellation layer, pullback
 `hnext` certificate, current `Σ⁻¹` ellipsoid identification, displayed center
@@ -286,11 +296,17 @@ measure-scaling theorem.  The dependency order is:
    `chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`; do not
    redo the pullback-to-displayed matrix equality unless it is needed to rewrite
    the final hvolume statement.
-4. Prove the actual ellipsoid image model for a positive-definite displayed
-   matrix: `ellipsoidSet center (matrixInvShape Sigma⁻¹)` as a translated image
-   of a common unit ball/base set under a square-root factor whose determinant
-   square is `Sigma.det`; repeat for `chewi620DisplayedShapeUpdate d Sigma p`.
-5. Package the exact one-step Lemma 6.20 certificate, then promote it to the
+4. The supplied actual ellipsoid image model now compiles as
+   `ellipsoidSet_eq_matrix_image_closedBall_of_quadratic`, and the displayed
+   volume wrapper now compiles as
+   `chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`.
+   Do not redo the set-image/closed-ball packaging.
+5. Instantiate the supplied square-root inputs with mathlib CFC roots: prove
+   the current and next quadratic identities and determinant-square facts using
+   `CFC.sq_sqrt`, `Matrix.PosSemidef.inv_sqrt`, and
+   `Matrix.PosSemidef.det_sqrt`/`cfcSqrt_det_sq_of_posSemidef`; first prove or
+   isolate the needed PosSemidef/PosDef fact for the displayed next shape.
+6. Package the exact one-step Lemma 6.20 certificate, then promote it to the
    ellipsoid trajectory/rate wrapper.
 
 The current matrix quadratic, positive denominator, and normalized cut
