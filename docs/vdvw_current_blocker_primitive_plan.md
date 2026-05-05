@@ -4084,3 +4084,125 @@ Lean attempts, continue to theorem-critical Chapter 1/2 primitives needed by
 that exact statement: arbitrary-map/asymptotic-measurability, `ell_infty`
 process primitives, FDD weak-convergence converse, or extended-real measurable
 cover existence.
+
+2026-05-05 follow-up: the first final-assembly mismatch is now closed.  New
+compiled declarations
+`vdVWWeightedClassSupremum_empty`,
+`UniformDeviationTendstoZeroOn_empty`,
+`AlmostSureUniformDeviationTendstoZeroOn_empty`,
+`VdVWOuterAlmostSureUniformDeviationTendstoZeroOn_empty`,
+`VdVWOuterProbabilityUniformDeviationTendstoZeroOn_empty`, and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`
+remove the exposed nonempty-class hypothesis from the strongest full-subgraph
+Theorem 2.4.3/Lemma 2.4.5 package.  The empty branch is handled by the
+complete-lattice empty supremum convention and vacuous uniform-deviation
+predicates; the nonempty branch delegates to the existing strong package.
+Next target: do not add more endpoint wrappers for this route.  Compare the
+remaining assumptions of the no-nonempty theorem against the exact book
+Theorem 2.4.3/Lemma 2.4.5 hypotheses, especially countability vs.
+separability/asymptotic measurability, coordinate measurability, measurable
+integrable envelope, and the full-subgraph VC/entropy bridge.  If a direct
+named exact theorem cannot yet be stated honestly, record the missing bridge as
+a precise primitive and move to the theorem-critical Chapter 1/2 foundation
+needed to close it.
+
+2026-05-05 follow-up: the measurable/integrable envelope side of that
+assumption comparison is now narrowed.  Search/reuse record: pinned mathlib
+provides `MeasureTheory.ofReal_integral_eq_lintegral_ofReal` and
+`ENNReal.ofReal_lt_top`; local `OuterExpectation.lean` already proves
+`VdVWOuterExpectation_eq_lintegral_of_measurable`.  The new compiled bridge
+`VdVWOuterExpectation_ofReal_lt_top_of_measurable_integrable_nonneg` proves
+finite VdV&W nonnegative outer expectation for any measurable integrable
+nonnegative real map, and
+`VdVWClassEnvelope.outerExpectation_lt_top_of_measurable_integrable`
+specializes it to a VdV&W class envelope.  Thus the current
+measurable-integrable-envelope route honestly supplies the textbook-looking
+`P^* F < ∞` side condition in the measurable-envelope case.  Remaining
+Theorem 2.4.3 final-assembly gaps are now more sharply: exact arbitrary
+`P`-measurable class versus the current countable coordinate-measurable route,
+the book random empirical entropy hypothesis versus the current
+full-subgraph/selected fixed-radius tail package, and nonmeasurable-envelope
+outer-cover variants if the exact arbitrary-map statement requires them.
+
+2026-05-05 follow-up: the countable coordinate-measurable route now explicitly
+exports the two textbook-side hypotheses that it can honestly supply.  The
+compiled theorem
+`VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`
+combines `VdVWPMeasurableClass.of_countable_of_measurable`,
+`VdVWClassEnvelope.outerExpectation_lt_top_of_measurable_integrable`, and the
+no-nonempty strong full-subgraph package.  Its conclusion contains
+Definition 2.3.3 `P`-measurability, finite VdV&W outer envelope expectation,
+outer-probability GC, outer-a.s. GC, the local book-style `P`-GC predicate,
+in-mean centered-supremum convergence, and Lemma 2.4.5 a.s.
+centered-supremum convergence.  This closes the countable-route bookkeeping
+for `P`-measurability; it does not close the exact arbitrary
+`P`-measurable/asymptotic-measurable textbook class layer or the book random
+entropy-to-full-subgraph/fixed-radius finite-net bridge.
+
+2026-05-05 follow-up: the canonical varying-domain form of the book random
+entropy hypothesis is now named.  The new structure
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM` records, for
+every `M > 0` and `eta > 0`, empirical `L1(P_n)` covering-number domination and
+normalized log-cardinality convergence on the actual sample spaces
+`SampleAt Observation n`.  The projection theorem
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions`
+feeds those two fields into the existing selected fixed-radius package once
+the honest varying-domain finite-net integrability and tail/UI hypotheses are
+supplied.  This removes the ambiguity between the older fixed-domain entropy
+structure and the sample-size-varying theorem route.  Remaining Theorem 2.4.3
+blockers are now exactly: prove the selected finite-net tail/UI condition from
+book hypotheses or a stronger structural entropy bound, and extend from the
+countable coordinate-measurable route to the arbitrary `P`-measurable /
+asymptotic-measurable class layer.
+
+2026-05-05 follow-up: the deterministic-boundedness branch of the
+variable-domain entropy route is now compiled through the untruncated centered
+convergence consumer.  The new bridge
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_bound`
+turns the canonical book-shaped varying-domain entropy package plus a
+deterministic normalized log-cardinality bound into
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions` for every `M > 0`.  The
+new theorem-facing consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_bound`
+feeds that package directly into the existing fixed-radius/untruncation
+Theorem 2.4.3 route.  This closes the repeated manual selected-tail packaging
+for the bounded log-ratio branch.  Remaining blockers are now sharper: prove
+the deterministic log-ratio bound from a structural entropy/VC cover theorem
+or prove a genuine selected finite-net tail/UI theorem from the textbook random
+entropy hypothesis without deterministic boundedness; separately extend the
+countable coordinate-measurable route to the arbitrary `P`-measurable /
+asymptotic-measurable textbook class layer.
+
+2026-05-05 follow-up: the structural deterministic-rate route is now named
+before the final untruncated consumer.  The new constructor
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_div_tendsto_bound`
+builds the canonical varying-domain book entropy package from empirical
+covering domination plus a deterministic normalized log-cardinality rate
+tending to zero.  The new all-`M` constructor
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_logCardinality_div_tendsto_bound`
+builds selected fixed-radius tail/UI packages directly from the same
+structural-rate data plus a deterministic envelope bound `rate <= K`.  Thus a
+future VC/Sauer/polynomial trace-count proof can now feed the current
+Theorem 2.4.3 untruncated convergence theorem without separately proving the
+book entropy structure or hand-building selected finite-net UI fields.
+Remaining blockers are now: instantiate this rate-bound route from an actual
+textbook structural covering theorem, or prove a non-deterministic selected
+finite-net tail/UI theorem from the random entropy hypothesis alone; and
+extend the countable coordinate-measurable route to the arbitrary
+`P`-measurable/asymptotic-measurable class layer.
+
+2026-05-05 follow-up: the structural deterministic-rate route now reaches both
+the centered-supremum and finite-product outer-probability GC-direction
+outputs.  The compiled theorem
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_tendsto_bound`
+consumes all-positive-`M` empirical covering domination plus deterministic
+rates `rate M eta -> 0` bounded by `K M eta` and produces untruncated centered
+outer-probability convergence.  The compiled theorem
+`VdVWOuterProbabilityUniformDeviationConstOn_of_logCardinality_div_tendsto_bound`
+then applies the generic centered-supremum-to-uniform-deviation bridge to give
+the finite-product outer-probability uniform-deviation conclusion.  The next
+real blocker is no longer a packaging handoff: instantiate `hcovering_all`,
+`hrate_tendsto`, `hrate_le_K`, and `hlog_rate_bound` from a genuine
+textbook structural covering/VC theorem, or prove the missing
+non-deterministic selected finite-net tail/UI theorem from random entropy
+alone.

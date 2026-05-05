@@ -775,6 +775,16 @@ noncomputable def vdVWWeightedClassSupremum
   ⨆ index, ⨆ (_ : index ∈ indexClass),
     |vdVWWeightedSampleSum classFun weights index sample|
 
+/-- The VdV&W finite-sample supremum over an empty class is zero. -/
+@[simp]
+theorem vdVWWeightedClassSupremum_empty
+    {Observation : Type u} {Index : Type v}
+    (classFun : Index -> Observation -> ℝ)
+    {n : ℕ} (weights : Fin n -> ℝ)
+    (sample : Fin n -> Observation) :
+    vdVWWeightedClassSupremum (∅ : Set Index) classFun weights sample = 0 := by
+  simp [vdVWWeightedClassSupremum]
+
 /--
 The uniform-weight finite-sample supremum in VdV&W display `(2.3.2)` is
 permutation-invariant.

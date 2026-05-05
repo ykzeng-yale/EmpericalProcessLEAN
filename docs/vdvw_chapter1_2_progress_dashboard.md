@@ -357,10 +357,12 @@ CURRENT    The active /goal frontier is no longer the reverse/cofiltration
            Theorem 2.4.3/Lemma 2.4.5 package are compiled.  The next target is
            exact final-statement assembly: turn the strong full-subgraph
            package into the cleanest named VdVW Theorem 2.4.3/Lemma 2.4.5
-           theorem statement, audit/remove any avoidable nonempty-class or
-           stronger-than-book side assumptions, and record any remaining
-           mismatch with the book's entropy/VC hypotheses instead of adding
-           more endpoint wrappers.
+           theorem statement, audit/remove any stronger-than-book side
+           assumptions, and record any remaining mismatch with the book's
+           entropy/VC hypotheses instead of adding more endpoint wrappers.  The
+           avoidable nonempty-class assumption is now removed by the compiled
+           empty-class split
+           `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`.
 READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, F_M truncation interfaces, countable/measurable-cardinality selectors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, bounded varying-domain real-tail-to-mean wrapper, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound/inverse-radius consumers, selected-cardinality equality-transport arbitrary-radius/inverse-radius consumers, all-radius covering-domination selectors, selected inverse-radius finite-cover constructor, selected side-condition constructor, inverse-radius entropy side-condition package, package-level inverse-radius entropy mean projections, selected finite-cover and selected inverse-radius all-radius finite-net mean projections, explicit variable-domain tail/UI mean bridge and bounded-tail adapters, generic outer-probability perturbation, deterministic untruncation perturbation inequalities, empirical envelope-tail expectation/Markov bridges, untruncation bad-event probability split, large-M untruncation convergence handoff, untruncated selected/non-selected/all-radius-selected inverse-radius consumers, faithful fixed-radius finite-net mean and log-cardinality handoffs, selected fixed-radius cardinality/log-convergence/finite-net mean handoffs, selected fixed-radius fixed-M and untruncated consumers, selected fixed-radius tail/UI fixed-M and untruncated consumers with finite-center Rademacher integrability derived internally, selected fixed-radius tail/UI side-condition package with deterministic-log-bound and terminal-`base^n` constructors plus fixed-M and untruncated packaged consumers, induced empirical `L1(P_n)` pseudometric/internal-cover adapters and sample-path random-cover bridge, fixed-sample trace image/repr empirical-cover bridges, finite-trace random-cover and selected fixed-radius tail-package constructors, deterministic-rate-to-outer-probability entropy bridges, finite-trace selected fixed-radius tail-package constructor from deterministic normalized log-cardinality rates, log-linear/polynomial-rate, shifted-log-linear, and natural-polynomial finite-trace tail-package constructors, local VC/Sauer wrappers with coarse polynomial set-family bound, generic finite-code empirical-trace cardinality bridge, binary empirical-trace-to-Sauer cardinality bridge, fixed-threshold subgraph/indicator trace bridge, finite-threshold signature/product-cardinality bridge plus product-bound, factorwise-bound, common-base, threshold-count, base-growth, uniform-VC polynomial handoffs, pointwise/coordinatewise-threshold separation consumers, exact finite-value-membership threshold consumers, direct finite-value threshold selected fixed-radius tail/UI package constructor, finite-value threshold untruncated convergence consumer, finite realized value-set threshold/cardinality constructor, finite realized value-set untruncated convergence consumer, finite approximate-code and pointwise-code empirical-cover primitives with padded cardinality, finite-class empirical pseudometric cardinality bounds, finite-class selected fixed-radius tail-package constructor with deterministic log-cardinality convergence, finite-class untruncated centered convergence consumer with truncation-integrability, value-set boundedness, finite-center Rademacher integrability, centered measurable-cover, centered-supremum integrability, pair/split-copy supremum integrability, ghost-expectation integrability, sample-side Rademacher supremum integrability, product-space Rademacher supremum integrability, product-space measurable cover, sign-side supremum integrability, sign-side iterated-integral integrability, canonical common iid Rademacher sign instantiation, and canonical terminal sample-path instantiation discharged, untruncated fixed-radius log-bound consumer, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
 NEXT       Do not repeat finite-class geometry/entropy consumers, finite-center
            integrability, untruncation bridges, fixed/selected radius entropy
@@ -368,12 +370,13 @@ NEXT       Do not repeat finite-class geometry/entropy consumers, finite-center
            handoffs, or reverse/cofiltration wrappers.  The immediate
            theorem-facing route is: (1) try to assemble a named exact
            full-subgraph Theorem 2.4.3/Lemma 2.4.5 statement from
-           `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable`;
-           (2) audit whether the exposed nonempty-class hypothesis can be
-           split off by an empty-class supremum/vacuity lemma; (3) if exact
-           textbook entropy/VC hypotheses still do not match, record the
-           precise missing bridge and continue to the next theorem-critical
-           Chapter 1/2 primitive instead of manufacturing weaker wrappers.
+           `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`;
+           (2) compare the exposed countability, coordinate-measurability,
+           measurable integrable-envelope, and full-subgraph VC assumptions
+           against the book statement; (3) if exact textbook entropy/VC
+           hypotheses still do not match, record the precise missing bridge and
+           continue to the next theorem-critical Chapter 1/2 primitive instead
+           of manufacturing weaker wrappers.
 READY      Definition 2.2.3 semimetric covering/packing comparison layer.
 READY      Definition 2.3.3 P-measurable class primitive, countable constructor, bounded Example 2.3.4 handoff, and deterministic finite-cover supremum bound.
 DEFERRED-EXAMPLE Example 2.4.2 exact quantile-grid closure and empirical-CDF report unless a theorem needs it.
@@ -1356,3 +1359,76 @@ centered-supremum convergence, and Lemma 2.4.5 a.s. centered-supremum
 convergence without an explicit reverse/cofiltration hypothesis.  The next
 frontier is exact final-statement assembly and matching the remaining book
 entropy/VC hypotheses to this strong package.
+
+2026-05-05 follow-up: the envelope-integrability assumption is now explicitly
+connected to the textbook `P^* F < ∞` side condition for the measurable-envelope
+route.  The compiled bridge
+`VdVWOuterExpectation_ofReal_lt_top_of_measurable_integrable_nonneg`, with the
+class-envelope specialization
+`VdVWClassEnvelope.outerExpectation_lt_top_of_measurable_integrable`, proves
+finite VdV&W nonnegative outer expectation from ordinary measurable
+integrability and nonnegativity of the envelope.  This closes one final
+assembly mismatch; the remaining Theorem 2.4.3 mismatches are the exact
+arbitrary `P`-measurable/asymptotic-measurable class layer and the conversion
+from the book random empirical entropy condition to the current fixed-radius
+selected/full-subgraph finite-net package.
+
+2026-05-05 follow-up: the countable full-subgraph route now has a compact
+textbook-aligned consumer,
+`VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`.
+It packages Definition 2.3.3 `P`-measurability and finite outer envelope
+expectation together with the already proved no-nonempty Theorem 2.4.3/Lemma
+2.4.5 strong conclusions.  The remaining Theorem 2.4.3 work is no longer
+bookkeeping for the countable route; it is the genuinely broader arbitrary
+`P`-measurable/asymptotic-measurable layer and the conversion from the book's
+random empirical entropy hypothesis to the current fixed-radius/full-subgraph
+finite-net assumptions.
+
+2026-05-05 follow-up: the book entropy assumption now has a canonical
+variable-domain Lean shape for the Theorem 2.4.3 route:
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM`.  It records
+all-`M`, all-positive-radius empirical covering domination and normalized
+log-cardinality convergence on `SampleAt Observation n`, and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions`
+projects it into the selected fixed-radius package once the explicit
+finite-net integrability and tail/UI inputs are available.  This sharpens the
+remaining target to the analytic tail/UI derivation and the broader arbitrary
+`P`-measurable/asymptotic-measurable class layer.
+
+2026-05-05 follow-up: the bounded-log-ratio branch of that variable-domain
+entropy route now reaches untruncated centered convergence.  The compiled
+declarations
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_bound`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_bound`
+compose the canonical book entropy package with a deterministic normalized
+log-cardinality bound, discharge selected finite-net integrability and tail/UI
+through the existing Hoeffding-scale bounded route, and feed the result into
+the untruncated Theorem 2.4.3 convergence handoff.  Next frontier: prove that
+deterministic log-ratio bound from a genuine structural covering/VC argument
+or replace it with a real selected finite-net tail/UI theorem; the arbitrary
+`P`-measurable/asymptotic-measurable class layer remains separate.
+
+2026-05-05 follow-up: structural deterministic-rate inputs can now be consumed
+without manual entropy/package rebuilding.  The compiled constructor
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_div_tendsto_bound`
+turns a pointwise bound
+`log(cardinality M eta n sample n + 1) / n <= rate M eta n` with
+`rate M eta -> 0` into the canonical variable-domain entropy condition.  The
+compiled constructor
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_logCardinality_div_tendsto_bound`
+then builds the all-positive-`M` selected fixed-radius tail/UI packages when
+`rate M eta n` is also bounded by a deterministic `K M eta`.  This is the
+intended feeder for future VC/Sauer/polynomial covering proofs before the
+untruncated Theorem 2.4.3 convergence consumer.
+
+2026-05-05 follow-up: that structural-rate feeder now reaches the theorem
+output layer.  The compiled declarations
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_tendsto_bound`
+and
+`VdVWOuterProbabilityUniformDeviationConstOn_of_logCardinality_div_tendsto_bound`
+turn deterministic rate/covering inputs into untruncated centered convergence
+and the finite-product outer-probability uniform-deviation conclusion.  The
+remaining theorem-critical work is to instantiate those rate/covering inputs
+from actual VdV&W structural entropy/VC hypotheses, or replace the
+deterministic boundedness branch with a true random-entropy tail/UI theorem.
