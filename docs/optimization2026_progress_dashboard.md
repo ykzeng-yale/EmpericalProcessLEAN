@@ -152,18 +152,23 @@ The normalized algebra core now compiles as
 `chewi620StandardCutForwardShape` and
 `chewi620_standardCutForwardShape_left_inverse`, proving that the normalized
 forward-shape update cancels `chewi620StandardCutInvShape`.
+The transport-reduction layer now also compiles:
+`chewi620_displayedShapeUpdate_left_inverse_of_standardCutForward_transport`,
+`chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_forwardShape_transport`,
+and
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_forwardShape_transport`.
 The next manual goal packet should instantiate mathlib volume-scaling APIs for
 the actual ellipsoid affine image using `Measure.addHaar_image_linearMap` /
 `Measure.addHaar_preimage_linearEquiv`, translation invariance, and
 `LinearMap.det_toLpLin` for `Matrix.toEuclideanLin`; the raw `Real.map_*`
 pushforward lemmas scale by `|det|⁻¹`, while set images need the `|det|`
-addHaar-image route.  In parallel, lift the normalized forward/inverse
-cancellation through `T` to prove the explicit displayed-update left-inverse
-identity for the normalized pullback next shape; the compiled left-inverse
-reduction then gives Chewi's `Σ_{n+1}^{-1}` set replacement.  If either proof
-balloons, record the exact missing matrix/measure API and prove the smallest
-affine transport, matrix-coordinate, inverse-shape, or volume-scaling
-certificate that removes it.
+addHaar-image route.  In parallel, prove the concrete matrix transport identity
+`matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p) (T.symm x) =
+T (chewi620StandardCutForwardShape d u x)` for the normalized cut direction;
+the compiled transport and left-inverse reductions then give Chewi's
+`Σ_{n+1}^{-1}` set replacement.  If either proof balloons, record the exact
+missing matrix/measure API and prove the smallest affine transport,
+matrix-coordinate, inverse-shape, or volume-scaling certificate that removes it.
 
 This paragraph overrides any older "next target" language in historical
 Chapter 4/5 notes below: the current manual `/goal` target is the rest of

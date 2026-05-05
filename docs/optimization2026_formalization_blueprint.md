@@ -220,20 +220,24 @@ forward-shape update now compiles through
 and
 `chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_left_inverse`,
 plus `chewi620StandardCutForwardShape` and
-`chewi620_standardCutForwardShape_left_inverse`.
+`chewi620_standardCutForwardShape_left_inverse`, plus
+`chewi620_displayedShapeUpdate_left_inverse_of_standardCutForward_transport`,
+`chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_forwardShape_transport`,
+and
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_forwardShape_transport`.
 The remaining blocker is the actual mathlib measure-scaling instantiation plus
-the transport of the normalized forward/inverse cancellation through `T` to the
-displayed-update left-inverse identity, not scalar algebra, abstract transport,
-current-shape rewriting, center algebra, rank-one collapse, determinant-core
-algebra, source-volume determinant algebra, normalized standard-cut algebra, or
-nonsingular-inverse uniqueness.  For measure scaling, use
+the concrete displayed-to-normalized forward-shape transport identity, not
+scalar algebra, abstract transport, current-shape rewriting, center algebra,
+rank-one collapse, determinant-core algebra, source-volume determinant algebra,
+normalized standard-cut algebra, transport reduction, or nonsingular-inverse
+uniqueness.  For measure scaling, use
 `Measure.addHaar_image_linearMap` / `Measure.addHaar_preimage_linearEquiv`,
 translation invariance, and `LinearMap.det_toLpLin` for
 `Matrix.toEuclideanLin`; the raw `Real.map_*` pushforward lemmas scale by
 `|det|⁻¹`, while set-image volume needs the `|det|` addHaar route.  The target
-order is determinant-to-volume scaling using mathlib volume APIs, the
-displayed-update left-inverse transport, then exact one-step Lemma 6.20
-certificate.
+order is determinant-to-volume scaling using mathlib volume APIs, the concrete
+displayed-to-normalized forward-shape transport identity, then exact one-step
+Lemma 6.20 certificate.
 If the full matrix proof balloons, prove the smallest
 matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
 the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth

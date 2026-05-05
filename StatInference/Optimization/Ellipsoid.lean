@@ -1160,6 +1160,87 @@ theorem chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of
       (d := d) hd hcard hSigma hp hleft (z - center)]
 
 /--
+Transporting the normalized standard-cut forward-shape cancellation through
+`T` gives the displayed-update left-inverse identity for the pulled-back next
+inverse-shape.
+-/
+theorem chewi620_displayedShapeUpdate_left_inverse_of_standardCutForward_transport
+    {d : ℕ} (hd : 1 < d)
+    {Sigma : Matrix ι ι ℝ} {p u y : EuclideanSpace ℝ ι}
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hu_norm : ‖u‖ = 1)
+    (htransport :
+      ∀ x,
+        matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p) (T.symm x) =
+          T (chewi620StandardCutForwardShape d u x)) :
+    matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)
+        (chewi620PullbackStandardCutInvShape d u T y) = y := by
+  rw [chewi620PullbackStandardCutInvShape]
+  calc
+    matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)
+        (T.symm (chewi620StandardCutInvShape d u (T.symm y)))
+        = T (chewi620StandardCutForwardShape d u
+            (chewi620StandardCutInvShape d u (T.symm y))) := by
+      exact htransport (chewi620StandardCutInvShape d u (T.symm y))
+    _ = T (T.symm y) := by
+      rw [chewi620_standardCutForwardShape_left_inverse (d := d) hd hu_norm]
+    _ = y := by
+      simp
+
+/--
+Transport-level displayed next inverse-shape equality: after the matrix update
+is identified with the normalized forward-shape update through `T`, the
+pullback inverse-shape is Chewi's displayed nonsingular inverse.
+-/
+theorem chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_forwardShape_transport
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    {u y : EuclideanSpace ℝ ι}
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hu_norm : ‖u‖ = 1)
+    (htransport :
+      ∀ x,
+        matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p) (T.symm x) =
+          T (chewi620StandardCutForwardShape d u x)) :
+    chewi620PullbackStandardCutInvShape d u T y =
+      matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹ y := by
+  exact
+    chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_left_inverse
+      (d := d) hd hcard hSigma hp
+      (fun y =>
+        chewi620_displayedShapeUpdate_left_inverse_of_standardCutForward_transport
+          (d := d) hd (u := u) (T := T) hu_norm htransport (y := y))
+      y
+
+/--
+Set-level replacement of the pullback next shape by Chewi's displayed
+`Σ_{n+1}^{-1}` update from the normalized forward-shape transport identity.
+-/
+theorem chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_forwardShape_transport
+    {d : ℕ} (hd : 1 < d) (hcard : Fintype.card ι = d)
+    {Sigma : Matrix ι ι ℝ} (hSigma : Sigma.PosDef)
+    {p : EuclideanSpace ℝ ι} (hp : p ≠ 0)
+    {u : EuclideanSpace ℝ ι}
+    {T : EuclideanSpace ℝ ι ≃ₗ[ℝ] EuclideanSpace ℝ ι}
+    (hu_norm : ‖u‖ = 1)
+    (htransport :
+      ∀ x,
+        matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p) (T.symm x) =
+          T (chewi620StandardCutForwardShape d u x))
+    (center : EuclideanSpace ℝ ι) :
+    ellipsoidSet center (chewi620PullbackStandardCutInvShape d u T) =
+      ellipsoidSet center
+        (matrixInvShape (chewi620DisplayedShapeUpdate d Sigma p)⁻¹) := by
+  exact
+    chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_left_inverse
+      (d := d) hd hcard hSigma hp
+      (fun y =>
+        chewi620_displayedShapeUpdate_left_inverse_of_standardCutForward_transport
+          (d := d) hd (u := u) (T := T) hu_norm htransport (y := y))
+      center
+
+/--
 Positive denominator for Chewi's normalized ellipsoid cut direction when the
 forward shape matrix is positive definite and the cut vector is nonzero.
 -/
