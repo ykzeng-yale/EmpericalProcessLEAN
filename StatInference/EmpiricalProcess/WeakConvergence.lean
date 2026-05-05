@@ -2897,6 +2897,22 @@ def VdVWProbabilityMeasuresTight
   IsTightMeasureSet {((μ : ProbabilityMeasure S) : Measure S) | μ ∈ A}
 
 /--
+Measure-level asymptotic tightness of a family of probability measures along a
+filter: eventually, all measures put arbitrarily small mass outside one compact
+set.
+
+This is the ordinary probability-measure foundation.  The VdV&W arbitrary-map
+and nonmeasurable process asymptotic-tightness clauses remain separate
+primitives.
+-/
+def VdVWProbabilityMeasuresAsymptoticallyTight
+    {ι : Type v} {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    (μs : ι -> ProbabilityMeasure S) (l : Filter ι) : Prop :=
+  ∀ ε, 0 < ε ->
+    ∃ K : Set S, IsCompact K ∧
+      ∀ᶠ i in l, ((μs i : ProbabilityMeasure S) : Measure S) (Kᶜ) ≤ ε
+
+/--
 A singleton family of probability measures is tight on complete separable
 metric-type spaces.
 
@@ -2951,6 +2967,70 @@ theorem vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le
     refine ⟨K, hK, ?_⟩
     rintro ν ⟨μ, hμA, rfl⟩
     exact hKμ μ hμA
+
+/--
+Tightness of an ambient probability-measure family gives asymptotic tightness
+for any net that is eventually inside that family.
+-/
+theorem VdVWProbabilityMeasuresTight.asymptoticallyTight_of_eventually_mem
+    {ι : Type v} {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    {A : Set (ProbabilityMeasure S)} {μs : ι -> ProbabilityMeasure S}
+    {l : Filter ι}
+    (hA : VdVWProbabilityMeasuresTight A)
+    (hmem : ∀ᶠ i in l, μs i ∈ A) :
+    VdVWProbabilityMeasuresAsymptoticallyTight μs l := by
+  intro ε hε
+  rcases
+      (vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le.mp hA)
+        ε hε with
+    ⟨K, hK, hKμ⟩
+  refine ⟨K, hK, ?_⟩
+  filter_upwards [hmem] with i hi
+  exact hKμ (μs i) hi
+
+/--
+Tightness of the range of a probability-measure family gives asymptotic
+tightness along every filter.
+-/
+theorem VdVWProbabilityMeasuresAsymptoticallyTight.of_tight_range
+    {ι : Type v} {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    (hμs : VdVWProbabilityMeasuresTight (Set.range μs)) :
+    VdVWProbabilityMeasuresAsymptoticallyTight μs l :=
+  hμs.asymptoticallyTight_of_eventually_mem (Eventually.of_forall fun i => ⟨i, rfl⟩)
+
+/--
+Measure-level asymptotic tightness is preserved by continuous maps.
+
+This is the ordinary continuous-image tightness step used by finite-dimensional
+and continuous-mapping arguments.  It does not assert the VdV&W arbitrary-map
+process asymptotic-tightness theorem.
+-/
+theorem VdVWProbabilityMeasuresAsymptoticallyTight.map_continuous
+    {ι : Type v} {S : Type u} {T : Type w}
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [BorelSpace T] [T2Space T]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {g : S -> T}
+    (hμs : VdVWProbabilityMeasuresAsymptoticallyTight μs l)
+    (hg : Continuous g) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun i => (μs i).map hg.measurable.aemeasurable) l := by
+  intro ε hε
+  rcases hμs ε hε with ⟨K, hK, htail⟩
+  refine ⟨g '' K, hK.image hg, ?_⟩
+  have hmeas : MeasurableSet ((g '' K)ᶜ) :=
+    (hK.image hg).isClosed.measurableSet.compl
+  have hpre : g ⁻¹' ((g '' K)ᶜ) ⊆ Kᶜ := by
+    intro x hx hxK
+    exact hx ⟨x, hxK, rfl⟩
+  filter_upwards [htail] with i hi
+  calc
+    (((μs i).map hg.measurable.aemeasurable : ProbabilityMeasure T) : Measure T) ((g '' K)ᶜ)
+        = ((μs i : ProbabilityMeasure S) : Measure S) (g ⁻¹' ((g '' K)ᶜ)) := by
+          exact ProbabilityMeasure.map_apply' (μs i) hg.measurable.aemeasurable hmeas
+    _ ≤ ((μs i : ProbabilityMeasure S) : Measure S) (Kᶜ) := measure_mono hpre
+    _ ≤ ε := hi
 
 /--
 Measure-level Prokhorov compactness wrapper: the closure of a tight family of

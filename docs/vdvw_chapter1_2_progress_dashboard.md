@@ -163,6 +163,13 @@ open.
 `vdVW148_ellInfty_map_symm_weakConvergence_of_finiteProduct_weakConvergence_finite`
 now lets weak convergence of ordinary finite-product laws on `T -> ℝ` feed
 weak convergence of the corresponding finite-index `ell_infty(T)` laws.
+
+2026-05-05 measure-level asymptotic tightness follow-up:
+`VdVWProbabilityMeasuresAsymptoticallyTight` is now defined for probability
+measure families along a filter, with feeders from tight ambient families and
+tight ranges plus continuous-map stability.  This closes an ordinary
+measure-level Chapter 1 foundation name; arbitrary-map process asymptotic
+tightness remains open.
 Direct null/a.e.-measurable constructors are now also available for the
 lower-shifted/canonical shifted bounded-continuous predicates in both
 common-domain and varying-domain forms.  The direct signed positive/negative

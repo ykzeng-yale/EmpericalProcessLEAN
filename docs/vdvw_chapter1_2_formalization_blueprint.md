@@ -1726,6 +1726,14 @@ Weak convergence of probability measures on the ordinary finite product
 `ell_infty(T)` laws through the finite continuous linear equivalence inverse.
 This is a finite-index feeder, not the arbitrary-index FDD criterion.
 
+2026-05-05 measure-level asymptotic tightness follow-up:
+`WeakConvergence.lean` now exposes
+`VdVWProbabilityMeasuresAsymptoticallyTight`, plus the basic feeders from a
+tight ambient family/range and continuous-map stability.  These declarations
+give Chapter 1 a named ordinary probability-measure asymptotic-tightness
+foundation.  The exact VdV&W arbitrary-map and nonmeasurable process
+asymptotic-tightness statements remain future primitives.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

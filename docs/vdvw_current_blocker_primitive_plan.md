@@ -5550,3 +5550,15 @@ which pushes weak convergence on `T -> ℝ` back along
 `VdVWEllInfty.finiteContinuousLinearEquiv.symm`.  This closes the
 measure-level finite-product law feeder for finite-index process arguments;
 it remains separate from the arbitrary-index FDD converse.
+
+2026-05-05 measure-level asymptotic tightness follow-up: local search found
+ordinary tightness wrappers but no VdVW-local asymptotic-tightness predicate.
+`WeakConvergence.lean` now adds
+`VdVWProbabilityMeasuresAsymptoticallyTight`, the tight-family feeder
+`VdVWProbabilityMeasuresTight.asymptoticallyTight_of_eventually_mem`, the
+range feeder `VdVWProbabilityMeasuresAsymptoticallyTight.of_tight_range`, and
+continuous-map stability
+`VdVWProbabilityMeasuresAsymptoticallyTight.map_continuous`.  This is the
+ordinary probability-measure foundation needed by Chapter 1 process/FDD
+routes; it does not close the full VdV&W arbitrary-map/nonmeasurable process
+asymptotic-tightness theorem.
