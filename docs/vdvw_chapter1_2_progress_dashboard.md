@@ -52,6 +52,12 @@ arbitrary maps and varying-domain endpoints through
 `VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_maps_aemeasurable`,
 and
 `VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps_aemeasurable`.
+Mathlib `TendstoInDistribution` and common-domain outer-probability
+convergence can now feed the same local signed arbitrary-map package under
+a.e.-measurability, via
+`vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap_aemeasurable`
+and
+`VdVWConvergesInOuterProbability.to_signedBoundedContinuousArbitraryMap_aemeasurable`.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new

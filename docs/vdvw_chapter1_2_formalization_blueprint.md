@@ -144,6 +144,12 @@ Chapter 1 foundation closure; the remaining exact gap is still the deeper
 nonmeasurable outer-cover/process layer and the Theorem 2.4.3 random-entropy
 tail/UI theorem.
 
+2026-05-05 distribution-convergence follow-up: the same a.e.-measurable bridge
+now reaches the local VdV&W arbitrary-map package directly from mathlib
+`TendstoInDistribution` and common-domain outer-probability convergence.
+This removes a pointwise-measurability strengthening in the Chapter 1
+weak-convergence handoff.
+
 2026-05-05 proof update: the countability-to-`P`-measurability route has a new
 compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`
 and

@@ -5023,6 +5023,18 @@ varying-domain a.e.-measurable wrapper
 another Chapter 1 mismatch between mathlib a.e.-measurable random variables
 and the local VdV&W signed arbitrary-map packages.
 
+2026-05-05 distribution-convergence bridge update: the mathlib
+`TendstoInDistribution` feeder no longer needs an extra pointwise
+measurability hypothesis to enter the local signed arbitrary-map package.
+`WeakConvergence.lean` now adds
+`vdVWTendstoInDistribution_to_signedOuterBoundedContinuous_aemeasurable`,
+`vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap_aemeasurable`,
+and
+`VdVWConvergesInOuterProbability.to_signedBoundedContinuousArbitraryMap_aemeasurable`.
+These use the a.e.-measurability already stored in mathlib convergence in
+distribution, plus the new a.e.-measurable pushforward wrappers, to close a
+Chapter 1 bridge toward exact arbitrary-map weak-convergence statements.
+
 2026-05-05 follow-up: the local asymptotic-measurability predicates are now
 stable under filter refinement/subsequence filters.  The compiled declarations
 `VdVWAsymptoticallyMeasurableNonnegative.mono_filter`,

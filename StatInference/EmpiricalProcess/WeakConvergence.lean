@@ -2480,6 +2480,44 @@ theorem vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap
       VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_measurable hX }
 
 /--
+A.e.-measurable common-domain convergence in distribution implies the local
+signed-outer bounded-continuous weak-convergence formulation.
+
+This removes the previous pointwise-measurability strengthening from the
+mathlib-to-VdV&W bridge: `TendstoInDistribution` already carries the
+a.e.-measurability needed for its pushforward laws.
+-/
+theorem vdVWTendstoInDistribution_to_signedOuterBoundedContinuous_aemeasurable
+    {ι : Type u} {Ω : Type v} {Ω' : Type w} {S : Type x}
+    [MeasurableSpace Ω] {μs : ι -> Measure Ω} [∀ i, IsProbabilityMeasure (μs i)]
+    [MeasurableSpace Ω'] {μ' : Measure Ω'} [IsProbabilityMeasure μ']
+    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {X : ι -> Ω -> S} {Z : Ω' -> S} {l : Filter ι}
+    (h : TendstoInDistribution X l Z μs μ') :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l
+      ⟨μ'.map Z, Measure.isProbabilityMeasure_map h.aemeasurable_limit⟩ :=
+  (VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_maps_aemeasurable
+    (μs := μs) (X := X) (fun i => h.forall_aemeasurable i) h.tendsto).weakConvergence
+
+/--
+A.e.-measurable common-domain convergence in distribution gives the
+proof-carrying signed bounded-continuous arbitrary-map layer.
+-/
+theorem vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap_aemeasurable
+    {ι : Type u} {Ω : Type v} {Ω' : Type w} {S : Type x}
+    [MeasurableSpace Ω] {μs : ι -> Measure Ω} [∀ i, IsProbabilityMeasure (μs i)]
+    [MeasurableSpace Ω'] {μ' : Measure Ω'} [IsProbabilityMeasure μ']
+    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {X : ι -> Ω -> S} {Z : Ω' -> S} {l : Filter ι}
+    (h : TendstoInDistribution X l Z μs μ') :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l
+      ⟨μ'.map Z, Measure.isProbabilityMeasure_map h.aemeasurable_limit⟩ :=
+  VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_maps_aemeasurable
+    (μs := μs) (X := X) (fun i => h.forall_aemeasurable i) h.tendsto
+
+/--
 Common-domain outer-probability convergence implies the proof-carrying signed
 bounded-continuous arbitrary-map weak-convergence layer.
 
@@ -2508,6 +2546,33 @@ theorem
     tendstoInDistribution_of_vdVWConvergesInOuterProbability h
       (fun i => (hX i).aemeasurable)
   exact vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap hdist hX
+
+/--
+Common-domain outer-probability convergence with only a.e.-measurable
+statistics implies the proof-carrying signed bounded-continuous arbitrary-map
+weak-convergence layer.
+-/
+theorem
+    VdVWConvergesInOuterProbability.to_signedBoundedContinuousArbitraryMap_aemeasurable
+    {ι : Type u} {Ω : Type v} {D : Type w}
+    [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    [MeasurableSpace D] [MeasurableSpace.CountablyGenerated D]
+    [SeminormedAddCommGroup D] [SecondCountableTopology D]
+    [BorelSpace D] [OpensMeasurableSpace D]
+    {X : ι -> Ω -> D} {limit : Ω -> D} {l : Filter ι}
+    [l.NeBot] [l.IsCountablyGenerated]
+    (h : VdVWConvergesInOuterProbability μ X l limit)
+    (hX : ∀ i, AEMeasurable (X i) μ) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap
+      (fun _ : ι => μ) X l
+      ⟨μ.map limit,
+        Measure.isProbabilityMeasure_map
+          (tendstoInDistribution_of_vdVWConvergesInOuterProbability h
+            hX).aemeasurable_limit⟩ := by
+  have hdist :
+      TendstoInDistribution X l limit (fun _ : ι => μ) μ :=
+    tendstoInDistribution_of_vdVWConvergesInOuterProbability h hX
+  exact vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap_aemeasurable hdist
 
 /--
 Measurable common-domain Slutsky/product theorem.
