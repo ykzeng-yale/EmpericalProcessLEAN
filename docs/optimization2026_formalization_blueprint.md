@@ -43,12 +43,13 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after local sync to `origin/main` at `1061241`
-(`Add Chewi ellipsoid rank-one action support`) with the verified pushed
+Manual goal frontier after local sync to `origin/main` at `2a458dd`
+(`Add Chewi ellipsoid displayed matrix certificate`) with the verified pushed
 source-volume determinant, determinant-unit inverse-shape reduction,
-normalized forward/inverse algebra, forward-shape transport reduction, and
-local rank-one/displayed-action support plus concrete displayed-to-normalized
-forward-shape transport packets in
+normalized forward/inverse algebra, forward-shape transport reduction,
+rank-one/displayed-action support, concrete displayed-to-normalized
+forward-shape transport, displayed next-shape certificate, real matrix-image
+volume scaling, and determinant-square volume-model packets in
 `StatInference/Optimization/Ellipsoid.lean`;
 the latest Optimization proof frontier is Chapter 6 Lemma 6.20 after the
 2026-05-05 standard-cut scalar, determinant-ratio, coordinate-free
@@ -124,8 +125,16 @@ plus `matrixInvShape_eq_toLp_mulVec`, `matrixInvShape_one`,
 `chewi620_displayedShapeUpdate_action`,
 `chewi620_matrixSqrt_current_action`, and
 `chewi620_matrixSqrt_rank_inner`, plus
-`chewi620_matrixCutScale_mul_self_of_pos` and
-`chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt`.
+`chewi620_matrixCutScale_mul_self_of_pos`,
+`chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt`,
+`addHaar_image_linearMap_real`, `addHaar_image_add_left_real`,
+`matrix_toEuclideanLin_det`, `matrixInvShape_image_volume_real`,
+`matrixInvShape_image_add_volume_real`, `chewi620_matrixSqrt_quadratic`,
+`chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_sqrt`,
+`chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_sqrt`,
+`chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`,
+`chewi620_hvolume_of_matrix_image_volume_models`, and
+`chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`.
 Do not target the stale app-level
 `/goal` text's old Theorem 3.4 frontier, and do not replay the already-built CG
 substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9 strong-convex AGF proof,
@@ -136,9 +145,11 @@ determinant-ratio, coordinate-free normalized containment, abstract
 affine-transport, matrix normalization, PosDef cancellation, pullback
 certificate, current-shape, center-update, determinant/source-volume,
 inverse-shape reduction, normalized forward/inverse algebra, or
-forward-shape transport-reduction, rank-one action, displayed-shape action, or
-square-root current/rank-inner transport, scale normalization, or concrete
-displayed-to-normalized forward-shape transport packets.
+forward-shape transport-reduction, rank-one action, displayed-shape action,
+square-root current/rank-inner transport, scale normalization, concrete
+displayed-to-normalized forward-shape transport, displayed next-shape
+certificate packaging, matrix-image volume scaling, or determinant-to-hvolume
+scalar bridge packets.
 `StatInference/Optimization/Theorem58.lean` proves the AGF Lyapunov derivative
 formula, discharges Lyapunov continuity from the trajectory and gradient oracle,
 and exposes a source-facing Theorem 5.8 rate wrapper.  Since Chewi leaves the
@@ -272,14 +283,18 @@ plus `matrixInvShape_eq_toLp_mulVec`, `matrixInvShape_vecMulVec`,
 `matrixInvShape_image_add_volume_real`, `chewi620_matrixSqrt_quadratic`,
 `chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_sqrt`,
 `chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_sqrt`,
-and `chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`.
-The remaining blocker is the exact ellipsoid hvolume instantiation, not
+`chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`,
+`chewi620_hvolume_of_matrix_image_volume_models`, and
+`chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`.
+The remaining blocker is the actual square-root ellipsoid image model and
+determinant-square facts, not
 scalar algebra, abstract transport, current-shape rewriting, center algebra,
 rank-one collapse, determinant-core algebra, source-volume determinant algebra,
 normalized standard-cut algebra, rank-one action expansion, displayed-shape
 action expansion, square-root current/rank-inner transport, concrete
 displayed-to-normalized transport, transport reduction, displayed next-shape
-certificate packaging, or nonsingular-inverse uniqueness.  For measure scaling, use
+certificate packaging, determinant-to-hvolume scalar algebra, or
+nonsingular-inverse uniqueness.  For measure scaling, use
 `Measure.addHaar_image_linearMap` / `Measure.addHaar_preimage_linearEquiv`,
 translation invariance, and `LinearMap.det_toLpLin` for
 `Matrix.toEuclideanLin`; the raw `Real.map_*` pushforward lemmas scale by
@@ -287,9 +302,11 @@ translation invariance, and `LinearMap.det_toLpLin` for
 wrapped by `addHaar_image_linearMap_real` and
 `matrixInvShape_image_volume_real`, with translation wrapped by
 `addHaar_image_add_left_real` and `matrixInvShape_image_add_volume_real`.  The
-target order is exact ellipsoid volume/hvolume packaging using the local volume
-wrappers, then feed the resulting inequality into
-`chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`.
+target order is to identify the displayed current and next ellipsoids as
+translated square-root images of a common unit ball/base set, discharge the
+determinant-square facts using mathlib spectral/CFC or matrix square-root APIs,
+and feed the result into
+`chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`.
 If the full matrix proof balloons, prove the smallest
 matrix-coordinate, inverse-shape, or volume-scaling certificate that removes
 the precise missing matrix API.  After that, continue Chapter 6 with nonsmooth

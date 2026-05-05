@@ -192,16 +192,19 @@ real-volume scaling packet `addHaar_image_linearMap_real`,
 plus the displayed-matrices certificate packet `chewi620_matrixSqrt_quadratic`,
 `chewi620_pullbackStandardCutInvShape_eq_displayedShapeUpdate_inv_of_sqrt`,
 `chewi620_ellipsoidSet_pullbackStandardCut_eq_displayedShapeUpdate_inv_of_sqrt`,
-and `chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`.
+and `chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`, plus
+the determinant-volume bridge packet
+`chewi620_hvolume_of_matrix_image_volume_models` and
+`chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`.
 The determinant/scalar `hvolume` bridge, inverse-shape left-inverse reduction,
 normalized forward/inverse cancellation, transport reduction, rank-one action
 expansion, displayed-shape action expansion, square-root current/rank-inner
 transport, concrete displayed-to-normalized forward-shape transport theorem, and
 matrix-backed translated real image-volume scaling bridge are verified in
-focused Lean, and the displayed next-shape matrix certificate now compiles, so
-the next run must not spend theorem time reproving or repackaging those cores
-unless they are directly needed inside the final ellipsoid image/hvolume
-certificate.
+focused Lean; the displayed next-shape matrix certificate and the generic
+determinant-square-to-`hvolume` theorem now compile, so the next run must not
+spend theorem time reproving or repackaging those cores unless they are directly
+needed inside the final square-root image-model theorem.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
@@ -219,13 +222,15 @@ The raw linear-image volume scaling is now instantiated from mathlib's
 `Measure.addHaar_image_linearMap`, translation invariance is locally wrapped by
 `addHaar_image_add_left_real`, and translated matrix-image scaling compiles as
 `matrixInvShape_image_add_volume_real`.  The displayed next inverse-shape and
-set-level replacement are also packaged in the exact square-root form, so the
-next target is the true ellipsoid-image/hvolume theorem: identify the displayed
-ellipsoid volume expression with the translated image formula, derive the
-squared determinant-volume inequality, and feed it to
-`chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`.  If the
-full packaging balloons, record the exact missing square-root/determinant or
-measurable-image API and prove the smallest hvolume certificate that removes it.
+set-level replacement are also packaged in the exact square-root form, and the
+generic determinant-volume model already feeds
+`chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`.  The next
+target is the true ellipsoid-image theorem: identify each displayed ellipsoid
+with a translated image of a common unit ball/base set under a square-root
+factor, then discharge the determinant-square identities for those factors
+using mathlib spectral/CFC or matrix square-root APIs.  If the full packaging
+balloons, record the exact missing square-root/determinant or measurable-image
+API and prove the smallest image-model certificate that removes it.
 The raw square-root adjoint identity, normalized cut
 `hcut` bridge, `Sigma.PosDef` invertibility/cancellation layer, pullback
 `hnext` certificate, current `Σ⁻¹` ellipsoid identification, displayed center
@@ -272,17 +277,19 @@ measure-scaling theorem.  The dependency order is:
    `matrixInvShape_image_add_volume_real`.  For `Matrix.toEuclideanLin`, reuse
    `Matrix.toEuclideanLin = Matrix.toLpLin 2 2`, `LinearMap.det_toLpLin`,
    and `PiLp.volume_preserving_toLp` / `PiLp.volume_preserving_ofLp`.
-2. Prove the concrete ellipsoid measured-volume inequality that feeds
-   `chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio`, using the
-   translated matrix-image wrapper and whatever square-root determinant bridge is
-   necessary.
+2. The concrete determinant-volume inequality now compiles as
+   `chewi620_hvolume_of_matrix_image_volume_models`, and the displayed matrix
+   certificate consumer compiles as
+   `chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`.
+   Do not redo this scalar hvolume algebra.
 3. The exact displayed next-shape certificate is now packaged through
    `chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`; do not
    redo the pullback-to-displayed matrix equality unless it is needed to rewrite
    the final hvolume statement.
-4. Prove the determinant-to-volume `hvolume` hypothesis of the
-   displayed-current/displayed-center certificate, reusing the compiled
-   determinant formula and local volume-scaling APIs.
+4. Prove the actual ellipsoid image model for a positive-definite displayed
+   matrix: `ellipsoidSet center (matrixInvShape Sigma⁻¹)` as a translated image
+   of a common unit ball/base set under a square-root factor whose determinant
+   square is `Sigma.det`; repeat for `chewi620DisplayedShapeUpdate d Sigma p`.
 5. Package the exact one-step Lemma 6.20 certificate, then promote it to the
    ellipsoid trajectory/rate wrapper.
 
