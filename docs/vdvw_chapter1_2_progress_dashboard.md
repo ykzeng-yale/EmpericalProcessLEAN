@@ -1121,3 +1121,13 @@ direct Lemma 2.4.5 zero consumer from the all-row comparison over
 reverse/cofiltration convergence theorem that consumes the compiled all-row
 conditional-expectation comparison, or an equivalent row-wise handoff.  Avoid
 additional natural-filtration packaging unless it proves that theorem.
+
+2026-05-04 follow-up: the ordinary martingale fallback now handles both signs.
+New compiled declarations
+`vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_of_supermartingale`,
+`VdVWLemma245ReverseCofiltrationHandoff.of_supermartingale`, and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_supermartingale`
+use mathlib `Supermartingale.neg` and `eLpNorm_neg` to reduce an ordinary
+supermartingale realization to the same finite-limit and full-subgraph endpoint
+as the submartingale route.  This keeps the reverse/cofiltration reindexing
+lane flexible without changing the active blocker.

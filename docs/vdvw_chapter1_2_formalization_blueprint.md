@@ -1161,6 +1161,13 @@ above, so they do not change the theorem-level dashboard counts.
    row-wise Lemma 2.4.5 handoff.  Natural-filtration drift packages are only
    sufficient-condition adapters; they should not displace the row-wise
    reverse/cofiltration theorem as the active textbook target.
+   The ordinary martingale fallback now also has an opposite-sign
+   supermartingale route via
+   `vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_of_supermartingale`,
+   `VdVWLemma245ReverseCofiltrationHandoff.of_supermartingale`, and
+   `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_supermartingale`.
+   This is a flexibility layer for the eventual reindexing proof, not a
+   replacement for the missing reverse/cofiltration convergence theorem.
    On the Theorem 2.4.3 convergence side, the finite-class canonical route now
    also packages both current conclusions as
    `VdVWTheorem243_finite_indexClass_outerProbabilityUniformDeviation_and_inMean_canonical`;

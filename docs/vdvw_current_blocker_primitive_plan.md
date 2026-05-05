@@ -3703,3 +3703,16 @@ prove an equivalent row-wise handoff consumed by
 Do not spend the next run on more natural-filtration packaging unless it
 directly proves that reverse/cofiltration theorem or is forced by a verified
 Lean proof route.
+
+2026-05-04 follow-up: the ordinary martingale-convergence adapter now supports
+both signs.  Search/reuse record: pinned mathlib supplies `Supermartingale.neg`
+and `eLpNorm_neg`, so an ordinary supermartingale realization of the shifted
+centered supremum can be reduced to the already-used submartingale convergence
+theorem without introducing a new primitive.  New compiled declarations are
+`vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_of_supermartingale`,
+`VdVWLemma245ReverseCofiltrationHandoff.of_supermartingale`, and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_supermartingale`.
+This does not prove the VdV&W reverse/cofiltration theorem, but it removes a
+possible sign mismatch in future reindexing attempts: either an ordinary
+submartingale or ordinary supermartingale realization can now feed the same
+full-subgraph Theorem 2.4.3/Lemma 2.4.5 endpoint.

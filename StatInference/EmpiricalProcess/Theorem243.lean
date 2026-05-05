@@ -5623,6 +5623,73 @@ theorem vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_of_submartingale
   exact hsub.exists_ae_tendsto_of_bdd hbdd
 
 /--
+Opposite-sign ordinary martingale sufficient condition for the Lemma 2.4.5
+finite-limit handoff.
+
+Some reverse/cofiltration encodings naturally produce an ordinary
+supermartingale after reindexing or sign normalization.  Mathlib's convergence
+theorem is stated for submartingales, so this wrapper applies it to the
+negative process and then negates the pointwise limit back.
+-/
+theorem vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_of_supermartingale
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    (hsuper :
+      Supermartingale
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        ℱ (vdVWInfiniteProductMeasure P)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      ∃ limit : ℝ,
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+              (n + 1) sequence)
+          atTop (𝓝 limit) := by
+  have hnegSub :
+      Submartingale
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          -vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        ℱ (vdVWInfiniteProductMeasure P) := by
+    simpa using hsuper.neg
+  have hbdd :
+      ∀ n : ℕ,
+        eLpNorm
+          (fun sequence : ℕ -> Observation =>
+            -vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+              (n + 1) sequence)
+          1 (vdVWInfiniteProductMeasure P) ≤
+          ENNReal.ofReal (2 * ∫ x, envelope x ∂P) := by
+    intro n
+    change
+      eLpNorm
+        (-(fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence))
+        1 (vdVWInfiniteProductMeasure P) ≤
+        ENNReal.ofReal (2 * ∫ x, envelope x ∂P)
+    rw [eLpNorm_neg]
+    simpa [Nat.succ_eq_add_one] using
+      eLpNorm_vdVWLemma245CenteredEmpiricalSupremum_le_two_integral_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hcount henvelope hclass henv_integrable
+        (Nat.succ_pos n)
+  have hnegLimit := hnegSub.exists_ae_tendsto_of_bdd hbdd
+  filter_upwards [hnegLimit] with sequence hsequence
+  rcases hsequence with ⟨limit, hlimit⟩
+  refine ⟨-limit, ?_⟩
+  simpa using hlimit.neg
+
+/--
 The exact remaining VdV&W Lemma 2.4.5 reverse/cofiltration convergence
 primitive, registered as a named theorem-facing hypothesis.
 
@@ -5680,6 +5747,37 @@ theorem VdVWLemma245ReverseCofiltrationHandoff.of_submartingale
     vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_of_submartingale
       (P := P) (indexClass := indexClass) (classFun := classFun)
       (envelope := envelope) hcount henvelope hclass henv_integrable hsub
+
+/--
+Opposite-sign ordinary-supermartingale sufficient condition for the named
+reverse/cofiltration handoff.
+
+This keeps the final Lemma 2.4.5 route flexible: a future reindexing of the
+decreasing permutation-symmetric fields may expose the shifted centered
+supremum as a supermartingale rather than a submartingale.
+-/
+theorem VdVWLemma245ReverseCofiltrationHandoff.of_supermartingale
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    (hsuper :
+      Supermartingale
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        ℱ (vdVWInfiniteProductMeasure P)) :
+    VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun := by
+  intro _hcomparison
+  exact
+    vdVWLemma245CenteredEmpiricalSupremum_ae_tendsto_of_supermartingale
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable hsuper
 
 /--
 One-step conditional-drift sufficient condition for the named reverse
@@ -26358,6 +26456,66 @@ theorem
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) (ℱ := ℱ)
         (Set.to_countable indexClass) henvelope hclass henv_integrable hsub)
+
+/--
+Canonical full-subgraph Theorem 2.4.3/Lemma 2.4.5 package under the
+opposite-sign ordinary-supermartingale sufficient condition.
+
+This is useful for the reverse/cofiltration route because a decreasing
+permutation-symmetric field may expose the shifted centered supremum as a
+supermartingale after a mathlib-compatible reindexing.  The endpoint is the
+same full-subgraph `P`-GC, in-mean, and Lemma 2.4.5 a.s. zero package.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_supermartingale
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    {ℱ : Filtration ℕ (.pi (X := fun _ : ℕ => Observation))}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hsuper :
+      Supermartingale
+        (fun n : ℕ => fun sequence : ℕ -> Observation =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        ℱ (vdVWInfiniteProductMeasure P)) :
+    VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) := by
+  exact
+    VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_reverseCofiltrationHandoff
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (vcDegree := vcDegree)
+      hvc hindexClass henvelope hclass henv henv_integrable
+      (VdVWLemma245ReverseCofiltrationHandoff.of_supermartingale
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (ℱ := ℱ)
+        (Set.to_countable indexClass) henvelope hclass henv_integrable hsuper)
 
 /--
 Canonical full-subgraph Theorem 2.4.3/Lemma 2.4.5 package under the
