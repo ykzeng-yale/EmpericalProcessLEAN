@@ -17559,6 +17559,135 @@ theorem
         (by nlinarith) hlogMeasurable hlogIntegrable hlogTail)
 
 /--
+A deterministic normalized-log bound supplies integrability of the normalized
+log-cardinality process.
+
+This is the raw-log structural input used by deterministic entropy/VC routes.
+It does not claim that stochastic `o_P^*(n)` entropy alone implies
+integrability.
+-/
+theorem logCardinality_div_integrable_of_measurable_bound
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {K : ℝ}
+    (hlogMeasurable :
+      ∀ n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+    (hlogBound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ) ≤ K) :
+    ∀ n,
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+        (vdVWProductMeasure P n) := by
+  intro n
+  refine
+    Integrable.of_bound
+      (μ := vdVWProductMeasure P n)
+      (hf := (hlogMeasurable n).aestronglyMeasurable) K ?_
+  exact ae_of_all _ fun sample => by
+    have hnonneg :
+        0 ≤ vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ) := by
+      by_cases hn_pos : 0 < n
+      · have hn_real_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_pos
+        exact
+          div_nonneg
+            (vdVWLogEmpiricalL1CoveringCardinality_nonneg
+              (cardinality n) sample n) hn_real_pos.le
+      · have hn_zero : n = 0 := Nat.eq_zero_of_not_pos hn_pos
+        subst n
+        simp
+    rw [Real.norm_of_nonneg hnonneg]
+    exact hlogBound n sample
+
+/--
+A deterministic normalized-log bound supplies the raw normalized-log tail/UI
+condition.
+
+This is a sufficient structural route for finite-code/VC entropy arguments.
+The non-deterministic textbook gap remains the absence of a proof that random
+entropy convergence in outer probability alone gives this tail expectation.
+-/
+theorem logCardinality_div_tailExpectation_condition_of_bound
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {K : ℝ} (hK_nonneg : 0 ≤ K)
+    (hlogBound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ) ≤ K) :
+    ∀ ε > 0, ∃ R, 0 ≤ R ∧
+      ∀ᶠ n in atTop,
+        ∫ sample : SampleAt Observation n,
+          Set.indicator
+            {sample' : SampleAt Observation n |
+              R <
+                vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+                  sample' n / (n : ℝ)}
+            (fun sample' : SampleAt Observation n =>
+              vdVWLogEmpiricalL1CoveringCardinality (cardinality n)
+                sample' n / (n : ℝ))
+            sample ∂(vdVWProductMeasure P n) ≤ ε := by
+  exact
+    tailExpectation_condition_of_eventual_bound
+      (μ := fun n : ℕ => vdVWProductMeasure P n)
+      (Y := fun n sample =>
+        vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+          (n : ℝ))
+      hK_nonneg (Eventually.of_forall hlogBound)
+
+/--
+Deterministic normalized-log bounds supply the finite-net Hoeffding tail/UI
+condition through the raw normalized-log route.
+-/
+theorem
+    finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_bound
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {M K : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M) (hK_nonneg : 0 ≤ K)
+    (hlogMeasurable :
+      ∀ n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ))
+    (hlogBound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWLogEmpiricalL1CoveringCardinality (cardinality n) sample n /
+            (n : ℝ) ≤ K) :
+    ∀ ε > 0, ∃ R, 0 ≤ R ∧
+      ∀ᶠ n in atTop,
+        ∫ sample : SampleAt Observation n,
+          Set.indicator
+            {sample' : SampleAt Observation n |
+              R <
+                vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality n sample' n) n M}
+            (fun sample' : SampleAt Observation n =>
+              vdVWTheorem243FiniteNetHoeffdingUpper
+                (cardinality n sample' n) n M)
+            sample ∂(vdVWProductMeasure P n) ≤ ε := by
+  exact
+    finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_tailExpectation
+      (P := P) (M := M) (cardinality := cardinality) hM_pos
+      hlogMeasurable
+      (logCardinality_div_integrable_of_measurable_bound
+        (P := P) (cardinality := cardinality)
+        hlogMeasurable hlogBound)
+      (logCardinality_div_tailExpectation_condition_of_bound
+        (P := P) (cardinality := cardinality)
+        hK_nonneg hlogBound)
+
+/--
 Deterministic analytic core of the entropy-to-Hoeffding-scale convergence
 step.
 

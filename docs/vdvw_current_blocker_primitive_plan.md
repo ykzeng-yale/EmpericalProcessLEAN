@@ -140,6 +140,20 @@ the textbook random entropy condition, or record the missing structural
 uniform-integrability theorem shape if convergence in outer probability alone
 is insufficient.
 
+2026-05-05 follow-up: the deterministic structural branch of the raw
+normalized-log gap now compiles.  New declarations:
+`logCardinality_div_integrable_of_measurable_bound`,
+`logCardinality_div_tailExpectation_condition_of_bound`, and
+`finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_bound`.
+They prove that a deterministic normalized-log bound supplies raw
+normalized-log integrability, raw normalized-log tail/UI, and hence the
+finite-net Hoeffding tail/UI condition.  This supports VC/finite-code
+entropy routes.  It does not close the pure random-entropy route: the exact
+remaining theorem is still a varying-domain uniform-integrability/tail
+expectation implication from
+`log N(η, F_M, L1(P_n)) / n -> 0` in outer probability, or an explicit
+book-facing assumption strong enough to provide it.
+
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the
 non-deterministic entropy route.  New compiled declarations:
