@@ -4190,3 +4190,19 @@ textbook structural covering theorem, or prove a non-deterministic selected
 finite-net tail/UI theorem from the random entropy hypothesis alone; and
 extend the countable coordinate-measurable route to the arbitrary
 `P`-measurable/asymptotic-measurable class layer.
+
+2026-05-05 follow-up: the structural deterministic-rate route now reaches both
+the centered-supremum and finite-product outer-probability GC-direction
+outputs.  The compiled theorem
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_tendsto_bound`
+consumes all-positive-`M` empirical covering domination plus deterministic
+rates `rate M eta -> 0` bounded by `K M eta` and produces untruncated centered
+outer-probability convergence.  The compiled theorem
+`VdVWOuterProbabilityUniformDeviationConstOn_of_logCardinality_div_tendsto_bound`
+then applies the generic centered-supremum-to-uniform-deviation bridge to give
+the finite-product outer-probability uniform-deviation conclusion.  The next
+real blocker is no longer a packaging handoff: instantiate `hcovering_all`,
+`hrate_tendsto`, `hrate_le_K`, and `hlog_rate_bound` from a genuine
+textbook structural covering/VC theorem, or prove the missing
+non-deterministic selected finite-net tail/UI theorem from random entropy
+alone.

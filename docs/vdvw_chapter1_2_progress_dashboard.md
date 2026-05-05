@@ -1421,3 +1421,14 @@ then builds the all-positive-`M` selected fixed-radius tail/UI packages when
 `rate M eta n` is also bounded by a deterministic `K M eta`.  This is the
 intended feeder for future VC/Sauer/polynomial covering proofs before the
 untruncated Theorem 2.4.3 convergence consumer.
+
+2026-05-05 follow-up: that structural-rate feeder now reaches the theorem
+output layer.  The compiled declarations
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_tendsto_bound`
+and
+`VdVWOuterProbabilityUniformDeviationConstOn_of_logCardinality_div_tendsto_bound`
+turn deterministic rate/covering inputs into untruncated centered convergence
+and the finite-product outer-probability uniform-deviation conclusion.  The
+remaining theorem-critical work is to instantiate those rate/covering inputs
+from actual VdV&W structural entropy/VC hypotheses, or replace the
+deterministic boundedness branch with a true random-entropy tail/UI theorem.
