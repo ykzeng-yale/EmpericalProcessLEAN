@@ -14,7 +14,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`a18f1c3` before the current proof batch: closed finite-net/Hoeffding/Mills,
+`703fdfe` before the current proof batch: closed finite-net/Hoeffding/Mills,
 untruncation, reverse-cofiltration, selected-entropy, full-subgraph,
 measurable/null-measurable signed weak-convergence, and Dirac-law endpoint
 packages should not be rebuilt.  The current theorem-facing gap after this
@@ -56,6 +56,16 @@ This removes another package-construction layer but keeps the mathematical
 gap honest.  The next `/goal` target is still to prove the selected finite-net
 tail/UI bridge from the textbook random entropy hypothesis, or derive the
 needed deterministic/tail control from a real structural entropy theorem.
+
+2026-05-05 current proof batch: the finite-net tail/UI bridge now has the
+pointwise reduction from Hoeffding tails to normalized log-cardinality tails:
+`vdVWTheorem243FiniteNetHoeffdingUpper_le_six_mul_M_mul_one_add_logCardinality_div`,
+`vdVWTheorem243FiniteNetHoeffdingUpper_tail_subset_logCardinality_div_tail`,
+and
+`vdVWTheorem243FiniteNetHoeffdingUpper_tail_indicator_le_logCardinality_div_tail_indicator`.
+The remaining analytic step is to integrate this inequality under an explicit
+normalized-log tail/UI hypothesis, then prove or isolate that hypothesis from
+the book random entropy condition.
 
 ## Status Legend
 

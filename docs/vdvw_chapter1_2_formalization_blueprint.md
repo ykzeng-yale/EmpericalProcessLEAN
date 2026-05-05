@@ -1289,6 +1289,16 @@ above, so they do not change the theorem-level dashboard counts.
    from the textbook random entropy condition, or from a genuine structural
    entropy/VC bound, without hiding the assumption as deterministic
    boundedness.
+   The first analytic reduction for that target is now compiled:
+   `vdVWTheorem243FiniteNetHoeffdingUpper_le_six_mul_M_mul_one_add_logCardinality_div`,
+   `vdVWTheorem243FiniteNetHoeffdingUpper_tail_subset_logCardinality_div_tail`,
+   and
+   `vdVWTheorem243FiniteNetHoeffdingUpper_tail_indicator_le_logCardinality_div_tail_indicator`.
+   These reduce finite-net Hoeffding tail/UI to tail/UI of the normalized
+   log-cardinality process.  The next proof should integrate this pointwise
+   inequality under an explicit normalized-log tail/UI hypothesis, then
+   determine whether the textbook random entropy condition supplies that
+   hypothesis or whether a genuine uniform-integrability primitive is missing.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2
