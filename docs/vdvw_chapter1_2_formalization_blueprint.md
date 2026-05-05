@@ -243,6 +243,16 @@ Together with `integral_vdVWInfiniteProductMeasure_firstNSample`, these are the
 probability and integral bridges needed to move measurable finite-sample
 statistics onto the canonical infinite iid product space.  They intentionally
 do not assert equality for arbitrary nonmeasurable outer events.
+
+2026-05-05 convergence recoding follow-up: `PMeasurable.lean` now also proves
+the corresponding convergence-level bridge and equivalence,
+`VdVWConvergesInOuterProbability_firstNSample_real_of_const`,
+`VdVWConvergesInOuterProbabilityConst_of_firstNSample_real`, and
+`vdVWConvergesInOuterProbability_firstNSample_real_iff_const`.  The
+common-space/UI strategy can now reuse the fixed-domain Vitali bridge for any
+measurable real statistic whose first-sample lifts are uniformly integrable;
+the remaining Theorem 2.4.3 entropy blocker is to supply that measurability
+and UI/tail control for selected empirical-cover entropy.
 The next proof target is therefore not more selected-package plumbing: it is
 the honest varying-domain theorem deriving those raw normalized-log
 integrability/tail-UI hypotheses from the book random entropy assumption, or a

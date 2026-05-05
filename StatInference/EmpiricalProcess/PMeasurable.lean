@@ -8,6 +8,7 @@ import Mathlib.Topology.Order.OrderClosed
 import Mathlib.GroupTheory.Perm.Fin
 import Mathlib.Logic.Equiv.Fintype
 import StatInference.EmpiricalProcess.CoveringPrimitive
+import StatInference.EmpiricalProcess.GlivenkoCantelli
 
 /-!
 # `P`-measurable classes
@@ -335,6 +336,86 @@ theorem vdVWInfiniteProductMeasure_firstNSample_real_tail_eq
   simpa [event] using
     vdVWInfiniteProductMeasure_firstNSample_preimage_eq
       (P := P) (n := n) hevent
+
+/--
+Measurable finite-product convergence in VdV&W outer probability can be recoded
+as common-domain convergence on the canonical infinite iid product space.
+
+This is the convergence-level form of
+`vdVWInfiniteProductMeasure_firstNSample_real_tail_eq`.  It is intentionally
+restricted to measurable real statistics; arbitrary outer events still use the
+one-sided outer-measure transfers.
+-/
+theorem VdVWConvergesInOuterProbability_firstNSample_real_of_const
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {g : (n : ℕ) -> (Fin n -> Observation) -> ℝ}
+    (hg : ∀ n, Measurable (g n)) {c : ℝ}
+    (hfinite :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => Fin n -> Observation)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        g atTop c) :
+    VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+      (fun n sequence =>
+        g n (vdVWFirstNSample (Observation := Observation) n sequence))
+      atTop (fun _ => c) := by
+  intro ε hε
+  refine (hfinite ε hε).congr' ?_
+  exact Eventually.of_forall fun n => by
+    simpa [VdVWOuterProbability] using
+      (vdVWInfiniteProductMeasure_firstNSample_real_tail_eq
+        (P := P) (n := n) (g := g n) (hg n) ε c).symm
+
+/--
+Common-domain convergence of first-sample lifts is equivalent to the original
+finite-product VdV&W outer-probability convergence for measurable real
+finite-sample statistics.
+-/
+theorem VdVWConvergesInOuterProbabilityConst_of_firstNSample_real
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {g : (n : ℕ) -> (Fin n -> Observation) -> ℝ}
+    (hg : ∀ n, Measurable (g n)) {c : ℝ}
+    (hcommon :
+      VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+        (fun n sequence =>
+          g n (vdVWFirstNSample (Observation := Observation) n sequence))
+        atTop (fun _ => c)) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => Fin n -> Observation)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      g atTop c := by
+  intro ε hε
+  refine (hcommon ε hε).congr' ?_
+  exact Eventually.of_forall fun n => by
+    simpa [VdVWOuterProbability] using
+      (vdVWInfiniteProductMeasure_firstNSample_real_tail_eq
+        (P := P) (n := n) (g := g n) (hg n) ε c)
+
+/--
+Measurable real finite-sample statistics converge in VdV&W outer probability on
+their finite product spaces if and only if their first-sample lifts converge on
+the canonical infinite iid product space.
+-/
+theorem vdVWConvergesInOuterProbability_firstNSample_real_iff_const
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {g : (n : ℕ) -> (Fin n -> Observation) -> ℝ}
+    (hg : ∀ n, Measurable (g n)) {c : ℝ} :
+    VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+        (fun n sequence =>
+          g n (vdVWFirstNSample (Observation := Observation) n sequence))
+        atTop (fun _ => c) ↔
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => Fin n -> Observation)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        g atTop c :=
+  ⟨VdVWConvergesInOuterProbabilityConst_of_firstNSample_real P hg,
+    VdVWConvergesInOuterProbability_firstNSample_real_of_const P hg⟩
 
 /--
 Integrals of finite-sample statistics can be lifted from `P^n` to `P^∞` by

@@ -181,7 +181,11 @@ Next high-capacity proof batches, in order:
    infinite-product event recoding now has the measurable-event equality
    `vdVWInfiniteProductMeasure_firstNSample_preimage_eq` and real-tail
    specialization `vdVWInfiniteProductMeasure_firstNSample_real_tail_eq`,
-   complementing the existing first-sample integral lift; arbitrary
+   complementing the existing first-sample integral lift.  The convergence-level
+   real recoding is also compiled as
+   `VdVWConvergesInOuterProbability_firstNSample_real_of_const`,
+   `VdVWConvergesInOuterProbabilityConst_of_firstNSample_real`, and
+   `vdVWConvergesInOuterProbability_firstNSample_real_iff_const`; arbitrary
    nonmeasurable outer events still require separate one-sided primitives.
 3. In parallel only when it directly supports exact Chapter 1-2 statements or
    Theorem 2.4.3 endpoints, close reusable arbitrary-map/process foundation

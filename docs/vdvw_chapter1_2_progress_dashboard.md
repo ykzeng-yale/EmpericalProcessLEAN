@@ -222,6 +222,17 @@ infinite iid product space with equal probability, complementing the existing
 common-space recoding route, but arbitrary nonmeasurable outer events remain a
 separate primitive.
 
+2026-05-05 convergence recoding follow-up: the event equality now has a
+compiled convergence-level interface:
+`VdVWConvergesInOuterProbability_firstNSample_real_of_const`,
+`VdVWConvergesInOuterProbabilityConst_of_firstNSample_real`, and
+`vdVWConvergesInOuterProbability_firstNSample_real_iff_const`.  Measurable real
+finite-sample statistics can therefore move back and forth between varying
+finite-product outer-probability convergence and common-domain convergence on
+the canonical infinite iid product space.  This narrows the common-space/UI
+route to measurability and uniform-integrability/tail control for the selected
+entropy statistics.
+
 2026-05-05 Chapter 1 arbitrary-map follow-up: the varying-domain signed
 bounded-continuous weak-convergence package now has continuous-mapping
 stability.  The new declarations
