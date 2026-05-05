@@ -113,6 +113,21 @@ The next target is therefore not to recreate this bridge, but to connect the
 signed-outer predicate to the existing asymptotic-measurability predicates and
 then state/prove the exact arbitrary-map weak-convergence wrappers.
 
+2026-05-05 second signed follow-up: the signed-outer bounded-continuous
+weak-convergence predicate now has law-level and convergence-in-distribution
+feeders:
+`VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq`,
+`VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_hasLaw`,
+and `vdVWTendstoInDistribution_to_signedOuterBoundedContinuous`.  Search/reuse
+record: pinned mathlib supplies `integral_map`, `Measure.isProbabilityMeasure_map`,
+and `TendstoInDistribution.tendsto`; local `ProbabilityMeasure` wrappers and
+`HasLaw` APIs provide the map-law bridge.  This closes the measurable
+arbitrary-map law-convergence route for signed bounded-continuous tests.  The
+remaining Chapter 1 primitive is now sharper: extend this signed-outer
+weak-convergence layer to the exact VdV&W asymptotic-measurability/outer-inner
+gap formulation for nonmeasurable maps, and then use it to reduce the
+countability/measurability mismatch in Theorem 2.4.3.
+
 2026-05-05 status check: this run started from VdVW head `4903594` and pushed
 the merged verified head `57c0b80`; the active `/goal` tool objective remains
 broad but cannot be edited in place.

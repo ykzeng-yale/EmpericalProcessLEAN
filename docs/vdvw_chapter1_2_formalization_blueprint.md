@@ -119,6 +119,11 @@ positive/negative outer-expectation lane now has
 bounded-continuous finite-measure integral collapse theorems, plus
 `VdVWWeakConvergenceSignedOuterBoundedContinuous` and the identity-map bridge
 `VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_id`.
+It also has map-law, `HasLaw`, and common-domain `TendstoInDistribution`
+feeders:
+`VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq`,
+`VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_hasLaw`,
+and `vdVWTendstoInDistribution_to_signedOuterBoundedContinuous`.
 This is the current signed foundation for the exact arbitrary-map weak
 convergence route; it does not yet discharge the full nonmeasurable
 outer-cover/asymptotic-measurability clauses.

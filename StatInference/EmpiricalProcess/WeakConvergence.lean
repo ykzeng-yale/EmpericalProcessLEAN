@@ -571,6 +571,82 @@ theorem VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_i
     (vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto.mp h f)
 
 /--
+Map-law form of the signed-outer bounded-continuous weak-convergence bridge.
+
+If measurable maps have laws `νs i` under the source measures `μs i`, and
+those laws converge weakly, then the original maps converge in the local
+signed-outer bounded-continuous sense.  This is the measurable arbitrary-map
+analogue of the identity-map bridge.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} [∀ i, IsFiniteMeasure (μs i)]
+    {X : ι -> Ω -> S} (hX : ∀ i, Measurable (X i))
+    {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (hν : VdVWWeakConvergenceProbabilityMeasures νs l μ)
+    (hmap : ∀ i, (νs i : Measure S) = Measure.map (X i) (μs i)) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l μ := by
+  intro f
+  have houter :
+      (fun i =>
+        VdVWSignedOuterExpectationPosNeg (μs i) (fun ω => f (X i ω))) =
+        fun i => ∫ s, f s ∂(νs i : Measure S) := by
+    funext i
+    calc
+      VdVWSignedOuterExpectationPosNeg (μs i) (fun ω => f (X i ω))
+          = ∫ ω, f (X i ω) ∂μs i := by
+            exact VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp
+              (μ := μs i) (X := X i) (hX i) f
+      _ = ∫ s, f s ∂Measure.map (X i) (μs i) := by
+            exact (integral_map (hX i).aemeasurable
+              f.continuous.measurable.aestronglyMeasurable).symm
+      _ = ∫ s, f s ∂(νs i : Measure S) := by
+            rw [← hmap i]
+  simpa [VdVWWeakConvergenceSignedOuterBoundedContinuous, houter] using
+    (vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto.mp hν f)
+
+/--
+Has-law form of the signed-outer bounded-continuous weak-convergence bridge.
+
+This is the most convenient form for probability-theory arguments: the law
+assumption supplies the measure-map identity, while measurability supplies the
+ordinary integral collapse of the signed outer expectation.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_hasLaw
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    (hX : ∀ i, Measurable (X i))
+    {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (hν : VdVWWeakConvergenceProbabilityMeasures νs l μ)
+    (hlaw : ∀ i, HasLaw (X i) (νs i : Measure S) (μs i)) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l μ := by
+  intro f
+  have houter :
+      (fun i =>
+        VdVWSignedOuterExpectationPosNeg (μs i) (fun ω => f (X i ω))) =
+        fun i => ∫ s, f s ∂(νs i : Measure S) := by
+    funext i
+    haveI : IsFiniteMeasure (μs i) := (hlaw i).isFiniteMeasure
+    calc
+      VdVWSignedOuterExpectationPosNeg (μs i) (fun ω => f (X i ω))
+          = ∫ ω, f (X i ω) ∂μs i := by
+            exact VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp
+              (μ := μs i) (X := X i) (hX i) f
+      _ = ∫ s, f s ∂Measure.map (X i) (μs i) := by
+            exact (integral_map (hX i).aemeasurable
+              f.continuous.measurable.aestronglyMeasurable).symm
+      _ = ∫ s, f s ∂(νs i : Measure S) := by
+            rw [(hlaw i).map_eq]
+  simpa [VdVWWeakConvergenceSignedOuterBoundedContinuous, houter] using
+    (vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto.mp hν f)
+
+/--
 VdV&W bounded-Lipschitz test-function criterion for measure-level weak
 convergence.
 
@@ -832,6 +908,31 @@ theorem vdVWTendstoInDistribution_continuous_comp
     (hg : Continuous g) :
     TendstoInDistribution (fun i => g ∘ X i) l (g ∘ Z) μ μ' :=
   h.continuous_comp hg
+
+/--
+Measurable common-domain convergence in distribution implies the local
+signed-outer bounded-continuous weak-convergence formulation for the original
+maps.
+
+Mathlib's `TendstoInDistribution` is convergence of the pushed-forward laws.
+This theorem transports that law convergence through the signed
+positive/negative VdV&W outer-expectation bridge.  The explicit measurability
+hypothesis upgrades the a.e.-measurable law statement to the pointwise
+measurable-map collapse used by the current signed outer expectation layer.
+-/
+theorem vdVWTendstoInDistribution_to_signedOuterBoundedContinuous
+    {ι : Type u} {Ω : Type v} {Ω' : Type w} {S : Type x}
+    [MeasurableSpace Ω] {μs : ι -> Measure Ω} [∀ i, IsProbabilityMeasure (μs i)]
+    [MeasurableSpace Ω'] {μ' : Measure Ω'} [IsProbabilityMeasure μ']
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {X : ι -> Ω -> S} {Z : Ω' -> S} {l : Filter ι}
+    (h : TendstoInDistribution X l Z μs μ')
+    (hX : ∀ i, Measurable (X i)) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l
+      ⟨μ'.map Z, Measure.isProbabilityMeasure_map h.aemeasurable_limit⟩ := by
+  exact
+    VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq
+      hX h.tendsto (fun _ => rfl)
 
 /--
 Measurable common-domain Slutsky/product theorem.
