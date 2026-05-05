@@ -790,6 +790,42 @@ theorem VdVWOuterExpectation_eq_lintegral_cover
         (U.minimal_ae V V.measurable_toFun (ae_of_all μ V.majorizes))
 
 /--
+A.e.-measurable nonnegative maps have their VdV&W outer expectation equal to
+the ordinary `lintegral`.
+
+This is the null-measurable version of
+`VdVWOuterExpectation_eq_lintegral_of_measurable`, using the canonical
+measurable cover built from the mathlib a.e.-measurable representative.
+-/
+theorem VdVWOuterExpectation_eq_lintegral_of_aemeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} (hT : AEMeasurable T μ) :
+    VdVWOuterExpectation μ T = ∫⁻ ω, T ω ∂μ := by
+  classical
+  let U : VdVWMeasurableCover μ T :=
+    VdVWMeasurableCover.ofAEMeasurable μ hT
+  have hU_ae : U =ᵐ[μ] hT.mk T := by
+    let bad : Set Ω := {ω | T ω ≠ hT.mk T ω}
+    let hull : Set Ω := toMeasurable μ bad
+    have hbad_zero : μ bad = 0 := by
+      have h_eq : ∀ᵐ ω ∂μ, T ω = hT.mk T ω := hT.ae_eq_mk
+      simpa [bad] using (ae_iff.mp h_eq)
+    have hhull_zero : μ hull = 0 := by
+      change μ (toMeasurable μ bad) = 0
+      rw [measure_toMeasurable bad, hbad_zero]
+    have hnot_hull_ae : ∀ᵐ ω ∂μ, ω ∉ hull := by
+      apply ae_iff.mpr
+      simpa using hhull_zero
+    filter_upwards [hnot_hull_ae] with ω hnot_hull
+    change (if ω ∈ hull then ∞ else hT.mk T ω) = hT.mk T ω
+    simp [hnot_hull]
+  calc
+    VdVWOuterExpectation μ T = ∫⁻ ω, U ω ∂μ :=
+      VdVWOuterExpectation_eq_lintegral_cover U
+    _ = ∫⁻ ω, hT.mk T ω ∂μ := lintegral_congr_ae hU_ae
+    _ = ∫⁻ ω, T ω ∂μ := (lintegral_congr_ae hT.ae_eq_mk).symm
+
+/--
 A.e.-measurable nonnegative maps have equal VdV&W outer and inner
 expectations.
 
@@ -843,6 +879,20 @@ theorem VdVWOuterExpectation_eq_innerExpectation_of_aemeasurable
     _ = ∫⁻ ω, L ω ∂μ := (lintegral_congr_ae hL_ae).symm
     _ = VdVWInnerExpectation μ T :=
       (VdVWInnerExpectation_eq_lintegral_lowerCover L).symm
+
+/--
+For an a.e.-measurable integrable real map, the signed positive/negative
+VdV&W outer expectation agrees with the ordinary Bochner integral.
+-/
+theorem VdVWOuterExpectation_posPart_sub_negPart_eq_integral_of_aemeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {f : Ω -> ℝ} (hf_aemeas : AEMeasurable f μ) (hf_int : Integrable f μ) :
+    ENNReal.toReal (VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (f ω))) -
+        ENNReal.toReal (VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (-f ω))) =
+      ∫ ω, f ω ∂μ := by
+  rw [VdVWOuterExpectation_eq_lintegral_of_aemeasurable hf_aemeas.ennreal_ofReal,
+    VdVWOuterExpectation_eq_lintegral_of_aemeasurable hf_aemeas.neg.ennreal_ofReal]
+  exact (integral_eq_lintegral_pos_part_sub_lintegral_neg_part hf_int).symm
 
 /-- The cover theorem specializes to the measurable-map theorem. -/
 theorem VdVWOuterExpectation_eq_lintegral_of_cover_ofMeasurable

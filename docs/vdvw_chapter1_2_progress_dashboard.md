@@ -14,17 +14,14 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 at synced repository head
-`4c174a0`: closed finite-net/Hoeffding/Mills/untruncation,
-reverse-cofiltration, selected-entropy, full-subgraph, measurable signed
-weak-convergence, and Dirac-law endpoint packages should not be rebuilt.  The
-current theorem-facing gap is sharper: the `P`-measurable/null-measurable
-centered-supremum law converges weakly to `δ_0`, and null-measurable signed
-bounded-continuous asymptotic measurability is compiled, but the signed
-positive/negative outer expectation still needs a null-measurable
-ordinary-integral collapse.  Closing that bridge should yield the Theorem
-2.4.3 `P`-measurable signed varying-domain endpoint; after that, return to the
-book random-entropy selected finite-net tail/UI mismatch and any exact
-nonmeasurable envelope-tail clauses that final textbook statements require.
+`73e0125` before the latest proof batch: closed finite-net/Hoeffding/Mills,
+untruncation, reverse-cofiltration, selected-entropy, full-subgraph,
+measurable/null-measurable signed weak-convergence, and Dirac-law endpoint
+packages should not be rebuilt.  The current theorem-facing gap after this
+proof batch is the book random-entropy selected finite-net tail/UI mismatch
+and any exact nonmeasurable envelope-tail clauses that final textbook
+statements require.  The `P`-measurable null-measurable signed varying-domain
+endpoint itself is now compiled.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new
@@ -41,6 +38,15 @@ between the signed positive/negative outer expectation of a null-measurable
 bounded real test and the ordinary/pushforward-law integral, then combine that
 with the null-measurable Dirac-law convergence bridge for the Theorem 2.4.3
 `P`-measurable endpoint.
+
+2026-05-05 follow-up: that `P`-measurable signed endpoint is now compiled.
+The new bridge includes the a.e.-measurable nonnegative outer-expectation
+collapse, the null-measurable signed positive/negative integral collapse, the
+null-measurable varying-domain signed weak-convergence feeder, and the
+Theorem 2.4.3 consumer
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pMeasurableClass_convergesInOuterProbabilityConst`.
+Next target: the exact textbook entropy/tail-UI mismatch, not more endpoint
+packaging.
 
 ## Status Legend
 

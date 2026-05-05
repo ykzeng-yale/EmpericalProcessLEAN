@@ -4649,6 +4649,49 @@ theorem
     (fun n => hpmeas_centered n (fun _ : Fin n => (n : ℝ)⁻¹))
 
 /--
+`P`-measurable centered untruncated finite-product endpoints feed the signed
+bounded-continuous varying-domain weak-convergence package once the
+corresponding outer-probability convergence is known.
+
+This consumes the null-measurable Chapter 1 signed positive/negative
+outer-expectation bridge, so it avoids the countability assumption needed by
+the ordinary measurable endpoint.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pMeasurableClass_convergesInOuterProbabilityConst
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hpmeas_centered :
+      VdVWPMeasurableClass P indexClass
+        (fun index : Index => fun observation : Observation =>
+          classFun index observation - ∫ x, classFun index x ∂P))
+    (hconv :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        atTop (0 : ℝ)) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains
+      (fun n : ℕ => SampleAt Observation n)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop
+      ⟨Measure.dirac (0 : ℝ), Measure.dirac.isProbabilityMeasure⟩ :=
+  VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real_of_nullMeasurable
+    hconv
+    (fun n => hpmeas_centered n (fun _ : Fin n => (n : ℝ)⁻¹))
+
+/--
 Countable centered untruncated weighted class suprema are integrable under the
 empirical product law when the class has an integrable envelope.
 -/

@@ -47,22 +47,18 @@ handoff.
 
 ## Active Blocker
 
-Current main-line target: close the remaining `P`-measurable/arbitrary-map
-signed endpoint gap for Theorem 2.4.3 and Chapter 1 weak convergence.  The
-`P`-measurable/null-measurable law-convergence bridge to the Dirac law is
-compiled, and null-measurable signed bounded-continuous asymptotic
-measurability is compiled.  What is still missing is the signed
-positive/negative outer-expectation integral-collapse theorem for
-null-measurable bounded real tests and the resulting varying-domain signed
-weak-convergence consumer.  Do not reopen the closed Theorem 2.4.3
+Current main-line target: remove the remaining exact-textbook mismatches for
+Theorem 2.4.3 after the `P`-measurable/arbitrary-map signed endpoint gap has
+compiled.  Do not reopen the closed Theorem 2.4.3
 finite-net/Hoeffding/Mills/untruncation/reverse-cofiltration, full-subgraph,
-measurable signed weak-convergence, or Dirac-law endpoint packages unless a
-final exact statement directly consumes them.
+measurable/null-measurable signed weak-convergence, asymptotic-measurability,
+or Dirac-law endpoint packages unless a final exact statement directly
+consumes them.
 
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-05, synced repository head
-`4c174a0`: finish VdV&W Chapters 1-2 in Lean by dependency order, with
+`73e0125` before the latest proof batch: finish VdV&W Chapters 1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -79,47 +75,35 @@ packages including
 `VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`;
 selected fixed-radius/inverse-radius entropy packages and finite-net
 tail/UI consumers; deterministic untruncation and envelope-tail bridges;
-the measurable signed positive/negative outer-expectation bridge, signed
-bounded-continuous arbitrary-map asymptotic-measurability including
-null-measurable constructors, common-domain/varying-domain measurable signed
-weak-convergence packages, and the real-valued varying-domain Dirac-law bridge
+the measurable and null-measurable signed positive/negative outer-expectation
+bridges, signed bounded-continuous arbitrary-map asymptotic-measurability
+including null-measurable constructors, common-domain/varying-domain
+measurable and null-measurable signed weak-convergence packages, and the
+real-valued varying-domain Dirac-law bridge
 `VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real`
 with its null-measurable variant
 `VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real_of_nullMeasurable`
 and the Theorem 2.4.3 `P`-measurable law consumer
-`VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pMeasurableClass_convergesInOuterProbabilityConst`.
+`VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pMeasurableClass_convergesInOuterProbabilityConst`
+plus the signed endpoint consumer
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pMeasurableClass_convergesInOuterProbabilityConst`.
 
 Next high-capacity proof batches, in order:
 
-1. Close the null-measurable signed endpoint.  Search/reuse local
-   `OuterExpectation.lean` and pinned mathlib APIs
-   `NullMeasurable.aemeasurable`, `AEMeasurable.ennreal_ofReal`,
-   `lintegral_congr_ae`,
-   `integral_eq_lintegral_pos_part_sub_lintegral_neg_part`, and
-   `integral_map`.  Target a proof cluster with declarations equivalent to:
-   `VdVWOuterExpectation_eq_lintegral_of_aemeasurable`,
-   `VdVWOuterExpectation_posPart_sub_negPart_eq_integral_of_aemeasurable`,
-   `VdVWSignedOuterExpectationPosNeg_eq_integral_of_nullMeasurable`,
-   a bounded-continuous composition/null-measurable integral-collapse theorem,
-   `VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps_nullMeasurable`,
-   and a Theorem 2.4.3 signed varying-domain consumer from
-   `VdVWPMeasurableClass` plus outer-probability convergence.  This should
-   consume the already compiled null-measurable Dirac-law bridge and
-   asymptotic-measurability constructor, not recreate them.
-2. Attack the exact Theorem 2.4.3 entropy mismatch: prove the random-entropy
+1. Attack the exact Theorem 2.4.3 entropy mismatch: prove the random-entropy
    selected finite-net tail/UI theorem from the book condition
    `log N(η, F_M, L1(P_n)) = o_P^*(n)` for fixed positive `η`, or prove a
    genuine varying-domain tail/UI replacement.  Do not smuggle in deterministic
    log-cardinality boundedness unless the theorem statement names it.
-3. Remove the remaining countability/coordinate-measurability mismatch in
+2. Remove the remaining countability/coordinate-measurability mismatch in
    Theorem 2.4.3
    by consuming the Chapter 1 signed arbitrary-map foundation together with
    the existing `VdVWPMeasurableClass`/pointwise-separable routes in
    `PMeasurable.lean`, or record the exact missing `NullMeasurable`/outer-cover
    theorem shape after Lean attempts.
-4. Add nonmeasurable outer-cover envelope-tail variants only if the exact
+3. Add nonmeasurable outer-cover envelope-tail variants only if the exact
    Theorem 2.4.3 or Chapter 1 arbitrary-map statements require them.
-5. Once Theorem 2.4.3 is exact or its remaining hypotheses are honestly
+4. Once Theorem 2.4.3 is exact or its remaining hypotheses are honestly
    isolated, advance through the next Chapter 2 theorem-line items in order:
    covering/packing and entropy results in Section 2.2, measurable-class and
    separability lemmas in Section 2.3, then bracketing/GC and later
@@ -164,6 +148,26 @@ supplies `NullMeasurable.aemeasurable`, `Measurable.comp_nullMeasurable`, and
 signed positive/negative outer expectation of a null-measurable bounded real
 test equals the ordinary integral/pushforward-law integral, then combine it
 with the already compiled null-measurable Dirac law convergence.
+
+2026-05-05 third null-measurable follow-up: the `P`-measurable signed endpoint
+bridge is now compiled.  New declarations:
+`VdVWOuterExpectation_eq_lintegral_of_aemeasurable`,
+`VdVWOuterExpectation_posPart_sub_negPart_eq_integral_of_aemeasurable`,
+`VdVWSignedOuterExpectationPosNeg_eq_integral_of_nullMeasurable`,
+`VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp_nullMeasurable`,
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_map_eq_nullMeasurable`,
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps_nullMeasurable`,
+`VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real_of_nullMeasurable`,
+and the Theorem 2.4.3 consumer
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pMeasurableClass_convergesInOuterProbabilityConst`.
+Search/reuse record: local `VdVWMeasurableCover.ofAEMeasurable`,
+`VdVWOuterExpectation_eq_lintegral_cover`, the existing measurable signed
+bridge, and the null-measurable Dirac-law bridge were reused; pinned mathlib
+supplied `AEMeasurable.ennreal_ofReal`, `NullMeasurable.aemeasurable`,
+`lintegral_congr_ae`, `integral_eq_lintegral_pos_part_sub_lintegral_neg_part`,
+and `integral_map`.  Mathlib requires `MeasurableSpace.CountablyGenerated S`
+for the general null-measurable pushforward map bridge; the real-valued
+Theorem 2.4.3 endpoint has that instance.
 
 Latest override, 2026-05-05, repository head `633efcc`: the active Codex
 `/goal` object is broad and cannot be edited in place, so this paragraph is

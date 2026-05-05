@@ -89,23 +89,23 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 at synced repository head `4c174a0`:
+Current operational target, 2026-05-05 at synced repository head `73e0125`
+before the latest proof batch:
 the strong Theorem 2.4.3/Lemma 2.4.5 endpoint packages, the measurable
 signed arbitrary-map/varying-domain weak-convergence interfaces, the
 null-measurable Dirac-law bridge, and the null-measurable
 asymptotic-measurability constructors are compiled and should be treated as
-closed infrastructure.  The next blueprint target is the exact
-`P`-measurable signed endpoint bridge: prove that signed positive/negative
-outer expectation of a null-measurable bounded real test collapses to the
-ordinary integral, then use it to turn the existing null-measurable
-Dirac-law convergence and asymptotic-measurability layers into a signed
-bounded-continuous varying-domain weak-convergence consumer for Theorem 2.4.3.
-After that, return to the exact textbook mismatch layer: prove selected
-finite-net tail/UI from the book random entropy condition, remove any
-remaining countability/coordinate-measurability assumptions through Chapter 1
-arbitrary-map and `P`-measurable foundations, and add nonmeasurable
-envelope-tail outer-cover clauses only when required by an exact Chapter 1-2
-theorem statement.
+closed infrastructure.  The `P`-measurable signed endpoint bridge has now
+also compiled: signed positive/negative outer expectation of a
+null-measurable bounded real test collapses to the ordinary integral, and the
+existing null-measurable Dirac-law convergence and asymptotic-measurability
+layers feed a signed bounded-continuous varying-domain weak-convergence
+consumer for Theorem 2.4.3.  The next blueprint target is the exact textbook
+mismatch layer: prove selected finite-net tail/UI from the book random entropy
+condition, remove any remaining countability/coordinate-measurability
+assumptions through Chapter 1 arbitrary-map and `P`-measurable foundations,
+and add nonmeasurable envelope-tail outer-cover clauses only when required by
+an exact Chapter 1-2 theorem statement.
 
 2026-05-05 proof update: the countability-to-`P`-measurability route has a new
 compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`
@@ -131,6 +131,12 @@ and the common/varying-domain
 constructors.  The remaining exact signed endpoint bridge is now the signed
 positive/negative outer-expectation equality for null-measurable bounded real
 tests, not the asymptotic-measurability gap.
+
+2026-05-05 second follow-up: that final `P`-measurable signed endpoint bridge
+is now compiled.  The new declarations are recorded in
+`docs/vdvw_current_blocker_primitive_plan.md`.  The main dependency order now
+returns to the book entropy/tail-UI mismatch and exact theorem-statement
+alignment, not additional signed endpoint packaging.
 
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
