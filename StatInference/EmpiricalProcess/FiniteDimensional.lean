@@ -1,6 +1,7 @@
 import StatInference.ProbabilityMeasure.FiniteDimensional
 import StatInference.EmpiricalProcess.WeakConvergence
 import StatInference.EmpiricalProcess.EllInfty
+import Mathlib.MeasureTheory.Measure.HasOuterApproxClosedProd
 
 /-!
 # Finite-dimensional empirical-process law wrappers
@@ -15,6 +16,7 @@ direction.
 namespace StatInference
 
 open MeasureTheory ProbabilityTheory
+open scoped BoundedContinuousFunction
 
 variable {T Ω : Type*} {𝓧 : T -> Type*} {mΩ : MeasurableSpace Ω}
   {m𝓧 : ∀ t, MeasurableSpace (𝓧 t)}
@@ -35,6 +37,40 @@ theorem vdVW141_prod_borel_eq_product_borel
     [MeasurableSpace E] [BorelSpace E] :
     (inferInstance : MeasurableSpace (D × E)) = borel (D × E) :=
   BorelSpace.measurable_eq
+
+/--
+VdV&W 1.4.2 product-test uniqueness layer: a finite measure on `D × E` is
+determined by integrals of products `f(x) g(y)` over bounded continuous real
+test functions.
+
+This is the ordinary measure-level product-space foundation.  It reuses
+mathlib's `HasOuterApproxClosed` product-measure extensionality theorem.
+-/
+theorem vdVW142_prod_measure_ext_of_forall_boundedContinuous_integral_mul
+    {D E : Type*}
+    [MeasurableSpace D] [TopologicalSpace D] [BorelSpace D] [HasOuterApproxClosed D]
+    [MeasurableSpace E] [TopologicalSpace E] [BorelSpace E] [HasOuterApproxClosed E]
+    {μ ν : Measure (D × E)} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    (h : ∀ (f : D →ᵇ ℝ) (g : E →ᵇ ℝ),
+      ∫ p, f p.1 * g p.2 ∂μ = ∫ p, f p.1 * g p.2 ∂ν) :
+    μ = ν := by
+  exact Measure.ext_of_integral_mul_boundedContinuousFunction h
+
+/--
+VdV&W 1.4.2 product-law uniqueness layer: a finite measure on `D × E` is the
+product `μ.prod ν` if all bounded-continuous product tests factor into the
+product of their marginal integrals.
+-/
+theorem vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul
+    {D E : Type*}
+    [MeasurableSpace D] [TopologicalSpace D] [BorelSpace D] [HasOuterApproxClosed D]
+    [MeasurableSpace E] [TopologicalSpace E] [BorelSpace E] [HasOuterApproxClosed E]
+    {μ : Measure D} {ν : Measure E} {ξ : Measure (D × E)}
+    [IsFiniteMeasure μ] [IsFiniteMeasure ν] [IsFiniteMeasure ξ]
+    (h : ∀ (f : D →ᵇ ℝ) (g : E →ᵇ ℝ),
+      ∫ p, f p.1 * g p.2 ∂ξ = (∫ x, f x ∂μ) * (∫ y, g y ∂ν)) :
+    ξ = μ.prod ν := by
+  exact Measure.eq_prod_of_integral_mul_boundedContinuousFunction h
 
 /--
 VdV&W 1.4.8 uniqueness-only layer: a process law is determined by all of its

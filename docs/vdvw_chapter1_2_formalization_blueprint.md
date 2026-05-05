@@ -1558,6 +1558,18 @@ vanishing norm tails.  This supports Chapter 1 tightness and later
 finite-dimensional/Hilbert process routes without claiming arbitrary-map
 asymptotic tightness.
 
+2026-05-05 π-system/product-test follow-up: the Chapter 1 product and
+convergence-determining foundations now include a VdVW-local π-system weak-
+convergence criterion and VdV&W 1.4.2 product bounded-continuous test
+uniqueness.  `WeakConvergence.lean` adds
+`vdVWWeakConvergenceProbabilityMeasures_of_piSystem_tendsto`; `FiniteDimensional.lean`
+adds `vdVW142_prod_measure_ext_of_forall_boundedContinuous_integral_mul` and
+`vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`, both
+backed by pinned mathlib product-measure extensionality.  These are
+measure-level foundations for product/FDD work and should not be confused with
+the still-pending arbitrary-index VdV&W 1.4.8 process weak-convergence
+criterion.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

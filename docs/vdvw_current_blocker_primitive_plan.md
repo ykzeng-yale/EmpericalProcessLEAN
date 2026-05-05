@@ -131,7 +131,12 @@ and
 and the norm-tail tightness wrappers
 `VdVWProbabilityMeasuresTight.tendsto_norm_tail`,
 `vdVWProbabilityMeasuresTight_of_tendsto_norm_tail`, and
-`vdVWProbabilityMeasuresTight_iff_tendsto_norm_tail`.
+`vdVWProbabilityMeasuresTight_iff_tendsto_norm_tail`;
+the π-system convergence-determining wrapper
+`vdVWWeakConvergenceProbabilityMeasures_of_piSystem_tendsto`;
+and the VdV&W 1.4.2 product-test uniqueness wrappers
+`vdVW142_prod_measure_ext_of_forall_boundedContinuous_integral_mul` and
+`vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`.
 
 Next high-capacity proof batches, in order:
 
@@ -5188,3 +5193,17 @@ exposes the VdV&W-local wrappers
 families on normed/proper normed spaces.  This is a reusable Chapter 1
 tightness foundation for finite-dimensional and Hilbert/normed routes; it is
 not an arbitrary-map asymptotic-tightness theorem.
+
+2026-05-05 π-system and product-test follow-up: local search found
+`StatInference.ProbabilityMeasure.weakConvergence_of_piSystem_tendsto` and
+mathlib `IsPiSystem.tendsto_probabilityMeasure_of_tendsto_of_mem`; the
+VdVW-local wrapper
+`vdVWWeakConvergenceProbabilityMeasures_of_piSystem_tendsto` now exposes this
+convergence-determining class criterion in `WeakConvergence.lean`.  Search also
+found mathlib product bounded-continuous test extensionality in
+`Mathlib.MeasureTheory.Measure.HasOuterApproxClosedProd`; `FiniteDimensional.lean`
+now proves VdV&W 1.4.2-named wrappers
+`vdVW142_prod_measure_ext_of_forall_boundedContinuous_integral_mul` and
+`vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`.  These
+are ordinary measure-level product/FDD foundations and do not close the
+arbitrary-index process weak-convergence converse.

@@ -26,8 +26,10 @@ finite-index product equivalence, and finite-index `ell_infty(T)` FDD converse
 wrappers are also compiled.  The measure-level Portmanteau continuity-set
 implication and closed/open converse wrappers are now compiled as well.  The
 norm-tail tightness characterization for probability-measure families on
-normed/proper normed spaces is compiled.  The current Theorem 2.4.3 gap remains
-the exact book random-entropy bridge: derive a real tail/UI,
+normed/proper normed spaces is compiled.  The π-system convergence-determining
+criterion and VdV&W 1.4.2 product bounded-continuous test uniqueness wrappers
+are compiled.  The current Theorem 2.4.3 gap remains the exact book
+random-entropy bridge: derive a real tail/UI,
 uniform-integrability,
 deterministic structural cardinality, or ordinary mean-convergence input from
 `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η > 0`, then consume the

@@ -2474,6 +2474,30 @@ theorem vdVWWeakConvergenceProbabilityMeasures_of_forall_isOpen_measure_le_limin
   exact MeasureTheory.tendsto_of_forall_isOpen_le_liminf' h
 
 /--
+Convergence-determining π-system criterion for the measure-level VdV&W weak
+convergence wrapper.
+
+If a π-system consists of measurable sets, locally approximates open
+neighborhoods, and the probabilities of all π-system sets converge, then the
+probability measures converge weakly.  This is the ordinary measure-level
+cylinder/π-system tool used before FDD and product-space arguments; arbitrary
+nonmeasurable process statements remain separate primitives.
+-/
+theorem vdVWWeakConvergenceProbabilityMeasures_of_piSystem_tendsto
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [SecondCountableTopology S] [OpensMeasurableSpace S]
+    {C : Set (Set S)} (hC : IsPiSystem C)
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι} [l.IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (hmeas : ∀ s ∈ C, MeasurableSet s)
+    (hlocal :
+      ∀ u : Set S, IsOpen u -> ∀ x ∈ u,
+        ∃ s ∈ C, s ∈ 𝓝 x ∧ s ⊆ u)
+    (h : ∀ s ∈ C, Tendsto (fun i => μs i s) l (𝓝 (μ s))) :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ := by
+  exact hC.tendsto_probabilityMeasure_of_tendsto_of_mem hmeas hlocal h
+
+/--
 Tightness of a family of probability measures, expressed through mathlib's
 `IsTightMeasureSet` on the underlying measures.
 
