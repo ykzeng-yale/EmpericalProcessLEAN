@@ -1394,5 +1394,151 @@ theorem chewi54_log_rate_of_cgAffineMinimizer_blocks_blockSize
     (chewi54_four_sqrt_le_blockSize alpha beta)
     hgap0_pos heps_pos halpha_pos hbeta_pos hM_log
 
+/--
+Displayed/restarted CG logarithmic endpoint, with one displayed CG record per
+restart block.  The existing displayed-CG bridges discharge the search-span,
+gradient-span, orthogonality, and affine-minimizer hypotheses required by the
+restarted affine-minimizer theorem.
+-/
+theorem chewi54_log_rate_of_displayed_cg_blocks
+    {A : E →L[ℝ] E} {b xStar : E}
+    {p0 : ℕ -> E} {x : ℕ -> E} {r p : ℕ -> ℕ -> E}
+    {fstar alpha beta : ℝ} {B M : ℕ} {eps : ℝ}
+    (h : ∀ m, IsCGDisplayedIteration A (p0 m) (r m) (p m))
+    (hA_sym : IsSelfAdjointOperator A)
+    (hsmooth :
+      SmoothWithGradientOn Set.univ (quadraticObjective A b)
+        (quadraticGradient A b) beta)
+    (hfirst :
+      FirstOrderStrongConvexOn Set.univ (quadraticObjective A b)
+        (quadraticGradient A b) alpha)
+    (hres0 : ∀ m, r m 0 = quadraticGradient A b (x (m * B)))
+    (hpoint : ∀ m n, x (m * B + (n + 1)) =
+      x (m * B + n) + cgLineSearchCoeff A (r m) (p m) n • p m n)
+    (hgrad_zero : quadraticGradient A b xStar = 0)
+    (hfstar : fstar = quadraticObjective A b xStar)
+    (hB : 4 * Real.sqrt (beta / alpha) ≤ (B : ℝ))
+    (hgap0_pos : 0 < quadraticObjective A b (x 0) - fstar)
+    (heps_pos : 0 < eps)
+    (halpha_pos : 0 < alpha)
+    (hbeta_pos : 0 < beta)
+    (hM_log :
+      Real.log ((quadraticObjective A b (x 0) - fstar) / eps) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    quadraticObjective A b (x (M * B)) - fstar ≤ eps := by
+  have hmin : ∀ m n,
+      IsMinOn (quadraticObjective A b)
+        (cgAffineSpan (x (m * B)) (p m) n)
+        (x (m * B + (n + 1))) := by
+    intro m n
+    let y : ℕ -> E := fun k => x (m * B + k)
+    have hpoint_m : ∀ k, y (k + 1) =
+        y k + cgLineSearchCoeff A (r m) (p m) k • p m k := by
+      intro k
+      simpa [y] using hpoint m k
+    have hmin_m :=
+      (h m).isMinOn_cgAffineSpan_of_point_updates
+        hA_sym hfirst halpha_pos.le (by simpa [y] using hres0 m)
+        hpoint_m n
+    simpa [y] using hmin_m
+  have hx_span : ∀ m n,
+      x (m * B + n) - x (m * B) ∈ cgDirectionSubmodule (p m) n := by
+    intro m n
+    let y : ℕ -> E := fun k => x (m * B + k)
+    have hpoint_m : ∀ k, y (k + 1) =
+        y k + cgLineSearchCoeff A (r m) (p m) k • p m k := by
+      intro k
+      simpa [y] using hpoint m k
+    have hspan_m :=
+      (h m).point_sub_initial_mem_cgDirectionSubmodule hpoint_m n
+    simpa [y] using hspan_m
+  have hgrad_span : ∀ m n,
+      quadraticGradient A b (x (m * B + n)) ∈
+        cgDirectionSubmodule (p m) n := by
+    intro m n
+    let y : ℕ -> E := fun k => x (m * B + k)
+    have hpoint_m : ∀ k, y (k + 1) =
+        y k + cgLineSearchCoeff A (r m) (p m) k • p m k := by
+      intro k
+      simpa [y] using hpoint m k
+    have hspan_m :=
+      (h m).quadraticGradient_mem_cgDirectionSubmodule
+        (b := b) (x := y) (by simpa [y] using hres0 m) hpoint_m n
+    simpa [y] using hspan_m
+  have horth_disp : ∀ m n, n < B →
+      inner ℝ (quadraticGradient A b (x (m * B + n)))
+        (x (m * B + n) - x (m * B)) = 0 := by
+    intro m n _hn
+    let y : ℕ -> E := fun k => x (m * B + k)
+    have hpoint_m : ∀ k, y (k + 1) =
+        y k + cgLineSearchCoeff A (r m) (p m) k • p m k := by
+      intro k
+      simpa [y] using hpoint m k
+    have horth_m :=
+      (h m).quadraticGradient_orthogonal_displacement
+        hA_sym (b := b) (x := y) (by simpa [y] using hres0 m)
+        hpoint_m n
+    simpa [y] using horth_m
+  have hgrad_orth : ∀ m i j, i < B → j < B → i ≠ j →
+      inner ℝ (quadraticGradient A b (x (m * B + i)))
+        (quadraticGradient A b (x (m * B + j))) = 0 := by
+    intro m i j _hi _hj hij
+    let y : ℕ -> E := fun k => x (m * B + k)
+    have hpoint_m : ∀ k, y (k + 1) =
+        y k + cgLineSearchCoeff A (r m) (p m) k • p m k := by
+      intro k
+      simpa [y] using hpoint m k
+    have horth_m :=
+      (h m).quadraticGradient_pairwise_orthogonal
+        hA_sym (b := b) (x := y) (by simpa [y] using hres0 m)
+        hpoint_m i j hij
+    simpa [y] using horth_m
+  exact chewi54_log_rate_of_cgAffineMinimizer_blocks
+    (C := Set.univ) (f := quadraticObjective A b)
+    (grad := quadraticGradient A b) (fstar := fstar)
+    (alpha := alpha) (beta := beta) (x := x) (p := p)
+    (xStar := xStar) (B := B) (M := M) (eps := eps)
+    hsmooth hfirst (by intro n; simp) (by simp) hgrad_zero hfstar
+    (by intro n; simp) hmin hx_span hgrad_span horth_disp hgrad_orth
+    hB hgap0_pos heps_pos halpha_pos hbeta_pos hM_log
+
+/--
+Ceiling-block specialization of the displayed/restarted CG logarithmic
+endpoint.
+-/
+theorem chewi54_log_rate_of_displayed_cg_blocks_blockSize
+    {A : E →L[ℝ] E} {b xStar : E}
+    {p0 : ℕ -> E} {x : ℕ -> E} {r p : ℕ -> ℕ -> E}
+    {fstar alpha beta : ℝ} {M : ℕ} {eps : ℝ}
+    (h : ∀ m, IsCGDisplayedIteration A (p0 m) (r m) (p m))
+    (hA_sym : IsSelfAdjointOperator A)
+    (hsmooth :
+      SmoothWithGradientOn Set.univ (quadraticObjective A b)
+        (quadraticGradient A b) beta)
+    (hfirst :
+      FirstOrderStrongConvexOn Set.univ (quadraticObjective A b)
+        (quadraticGradient A b) alpha)
+    (hres0 : ∀ m,
+      r m 0 = quadraticGradient A b (x (m * chewi54BlockSize alpha beta)))
+    (hpoint : ∀ m n,
+      x (m * chewi54BlockSize alpha beta + (n + 1)) =
+        x (m * chewi54BlockSize alpha beta + n) +
+          cgLineSearchCoeff A (r m) (p m) n • p m n)
+    (hgrad_zero : quadraticGradient A b xStar = 0)
+    (hfstar : fstar = quadraticObjective A b xStar)
+    (hgap0_pos : 0 < quadraticObjective A b (x 0) - fstar)
+    (heps_pos : 0 < eps)
+    (halpha_pos : 0 < alpha)
+    (hbeta_pos : 0 < beta)
+    (hM_log :
+      Real.log ((quadraticObjective A b (x 0) - fstar) / eps) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    quadraticObjective A b
+        (x (M * chewi54BlockSize alpha beta)) - fstar ≤ eps :=
+  chewi54_log_rate_of_displayed_cg_blocks
+    (B := chewi54BlockSize alpha beta) h hA_sym hsmooth hfirst hres0 hpoint
+    hgrad_zero hfstar (chewi54_four_sqrt_le_blockSize alpha beta)
+    hgap0_pos heps_pos halpha_pos hbeta_pos hM_log
+
 end Optimization
 end StatInference
