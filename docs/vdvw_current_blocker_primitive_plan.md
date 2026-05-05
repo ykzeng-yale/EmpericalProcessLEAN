@@ -75,6 +75,13 @@ ordinary process `k ↦ f (OrderDual.toDual (N-k))` is a mathlib
 right substrate for the reverse-upcrossing proof.  The ordinary-time
 filtration `n ↦ ℱ (OrderDual.toDual n)` is decreasing and must not be treated
 as a mathlib `Filtration ℕ`.
+The finite-window quantitative estimate is now also compiled as
+`vdVWOrderDualFiniteHorizon_mul_integral_upcrossingsBefore_le_integral_pos_part`,
+specializing mathlib's ordinary Doob upcrossing inequality to the reversed
+finite-window process.  Next proof target: relate ordinary upcrossings of
+`n ↦ f (OrderDual.toDual n)` up to `N` to the corresponding finite-horizon
+reversed-window estimate, then pass to the global reverse-time convergence
+handoff.
 
 2026-05-04 `/goal` target update: the live non-finite-class frontier is no
 longer inverse-radius entropy, finite-cover selection, VC/subgraph packaging,

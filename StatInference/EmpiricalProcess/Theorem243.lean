@@ -5448,6 +5448,28 @@ theorem submartingale_vdVWOrderDualFiniteHorizon
     exact hsub.integrable (OrderDual.toDual (N - k))
 
 /--
+Finite-window upcrossing estimate for an `ℕᵒᵈ` submartingale, read in reverse
+ordinary time.
+
+This is the first quantitative bridge toward the generic reverse-time
+convergence handoff: it specializes mathlib's ordinary submartingale
+upcrossing inequality to the finite reversed process `k ↦ f (N-k)`.
+-/
+theorem vdVWOrderDualFiniteHorizon_mul_integral_upcrossingsBefore_le_integral_pos_part
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ℱ : Filtration ℕᵒᵈ (inferInstance : MeasurableSpace Ω)}
+    {f : ℕᵒᵈ -> Ω -> ℝ} (hsub : Submartingale f ℱ μ)
+    (a b : ℝ) (N T : ℕ) :
+    (b - a) *
+        μ[upcrossingsBefore a b
+          (fun k : ℕ => fun ω : Ω => f (OrderDual.toDual (N - k)) ω) T] ≤
+      μ[fun ω : Ω => (f (OrderDual.toDual (N - T)) ω - a)⁺] := by
+  exact
+    (submartingale_vdVWOrderDualFiniteHorizon (μ := μ) (ℱ := ℱ)
+      (f := f) N hsub).mul_integral_upcrossingsBefore_le_integral_pos_part
+        a b T
+
+/--
 The textbook Lemma 2.4.5 display comparison builds a genuine mathlib
 submartingale over the shifted VdV&W permutation-symmetric cofiltration.
 

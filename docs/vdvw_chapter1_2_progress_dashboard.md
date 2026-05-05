@@ -1235,3 +1235,8 @@ now compiled.  `vdVWOrderDualFiniteHorizonFiltration` reverses a fixed
 `k ↦ f (OrderDual.toDual (N-k))` is an ordinary mathlib submartingale on that
 window.  This avoids the invalid global ordinary-time filtration and points the
 next proof at a finite-window reverse-upcrossing estimate.
+2026-05-04 follow-up: the finite-window quantitative estimate now compiles as
+`vdVWOrderDualFiniteHorizon_mul_integral_upcrossingsBefore_le_integral_pos_part`.
+It applies mathlib's ordinary Doob upcrossing inequality to each reversed
+finite window.  The next bridge is the combinatorial comparison between
+ordinary reverse-time upcrossings and those finite-window reversed estimates.
