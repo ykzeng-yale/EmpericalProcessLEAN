@@ -68,16 +68,16 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current manual objective after the 2026-05-05 Theorem 5.10 source-rate packet:
+Current manual objective after the 2026-05-05 Chapter 6 PSD packet:
 aggressively formalize and prove the main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under `StatInference/Optimization`, continuing
 from the latest verified Optimization frontier where
-`StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
-discrete accelerated-gradient source rate in a supplied-interface form.  The
-app-level `/goal` objective text still mentions the obsolete Theorem 3.4
-frontier and cannot be edited directly through the current tool surface unless
-the full textbook goal is marked complete, so this paragraph is the live
-replacement `/goal` prompt.
+`StatInference/Optimization/ProjectedSubgradient.lean` proves the finite-valued
+source-shaped subgradient/projection/PSD layer through the supplied-interface
+Theorem 6.14 average-gap bound.  The app-level `/goal` objective text still
+mentions the obsolete Theorem 3.4 frontier and cannot be edited directly
+through the current tool surface unless the full textbook goal is marked
+complete, so this paragraph is the live replacement `/goal` prompt.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
@@ -92,7 +92,17 @@ the final source wrapper
 positive `N` under convexity, smoothness, feasible AGD trajectory, and
 minimizer membership assumptions.
 
-The active aggressive target is Chapter 6 nonsmooth convex optimization.
+The active aggressive target is Chapter 6 nonsmooth convex optimization, with
+main-text theorem coverage prioritized over reports and exercises.  The next
+theorem packet should source-complete Theorem 6.14 rather than add a single
+small wrapper: prove a correct Lipschitz-to-subgradient-norm bridge in the
+interior/ray form justified by source Exercise 6.3, package the existing
+`chewi614_average_gap_bound` under Chewi's stated Lipschitz assumptions where
+valid, and add the displayed `h = R / sqrt N` corollary.  Immediately after
+that, continue in the same Chapter 6 batch to Theorem 6.16 by defining a
+source-shaped functional-constraint PSD trajectory/oracle interface, reusing
+the Theorem 6.14 recurrence and average-gap telescope wherever possible.
+
 `StatInference/Optimization/ProjectedSubgradient.lean` now starts this lane and
 compiles a source-shaped finite-valued packet for Definition 6.8, Definition
 6.11, Lemma 6.12, Lemma 6.13, the PSD trajectory display, and the main
@@ -102,19 +112,16 @@ declarations include `IsSubgradientAt`, `ProjectionCharacterizationOn`,
 `ProjectionCharacterizationOn.fixed`,
 `ProjectionCharacterizationOn.nonexpansive`, `ProjectionOracleOn`,
 `ProjectionCharacterizationOn.toProjectionOracleOn`, `normalizedSubgradient`,
-`projectedSubgradientStep`, `IsProjectedSubgradientTrajectory`,
-`iterateAverage`, the Jensen wrappers
+`normalizedSubgradient_norm`, `projectedSubgradientStep`,
+`IsProjectedSubgradientTrajectory`, `iterateAverage`, the Jensen wrappers
 `convex_value_iterateAverage_le_average` and
 `convex_value_iterateAverage_sub_le_average_gap`,
 `projectedSubgradient_sqdist_recurrence`,
 `projectedSubgradient_gap_average_bound_of_recurrence`, and
 `chewi614_average_gap_bound`.
 
-Next Chapter 6 target: close the source gap between Chewi's stated
-`L`-Lipschitz assumption and the current supplied subgradient norm bound, then
-add the displayed `h = R / sqrt N` corollary if the scalar algebra stays
-bounded.  Search and reuse first: mathlib
-`Analysis/InnerProductSpace/Projection/Minimal.lean` has
+Mandatory Chapter 6 search-first gate before inventing new primitives:
+mathlib `Analysis/InnerProductSpace/Projection/Minimal.lean` has
 `exists_norm_eq_iInf_of_complete_convex` and
 `norm_eq_iInf_iff_real_inner_le_zero`; mathlib `Analysis/Convex/Jensen.lean`
 has `ConvexOn.map_sum_le`; mathlib `Topology/MetricSpace/Lipschitz.lean` has
@@ -138,6 +145,18 @@ opportunistically when cheap, reusable, or directly unblock a main-text
 theorem.  All Optimization textbook exercise statements and exercise proofs
 should live in the single module `StatInference/Optimization/Exercises.lean`,
 so the later exercise sweep remains source-trackable.
+
+Book-level target map for the next 2-4 hour acceleration window: keep the main
+thread on Chapter 6 through Theorems 6.14 and 6.16, then split future packets
+by chapter surface rather than by tiny lemmas: Chapter 7 `FrankWolfe.lean` for
+Theorem 7.3 and Carathéodory wrappers, Chapter 8 `Proximal.lean` for Theorems
+8.5 and 8.6 reusing Chapter 5 AGD algebra, Chapters 9-10 `Fenchel.lean` and
+`MirrorDescent.lean` for Fenchel-Young/Bregman/OMD telescopes, Chapter 11
+`AlternatingProjection.lean` for ABP/AM/RAM recurrences, Chapter 12
+`StochasticGradient.lean`/`SMPGD.lean` reusing local probability modules, and
+Chapter 13/Appendix `Newton.lean`/`SelfConcordance.lean` with mathlib matrix
+and spectral APIs.  Scouts may map these APIs in parallel, but the commit gate
+should favor verified main-text theorem packets.
 
 ## Current Blocker
 

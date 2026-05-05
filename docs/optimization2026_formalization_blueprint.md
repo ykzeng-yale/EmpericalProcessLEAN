@@ -43,12 +43,15 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after the 2026-05-05 Theorem 5.10 source-rate packet:
+Manual goal frontier after the 2026-05-05 Chapter 6 PSD packet:
 `StatInference/Optimization/Theorem510.lean` proves Chewi Theorem 5.10's
-discrete AGD source rate and is imported by `StatInference.lean`.  Do not
-target the stale app-level `/goal` text's old Theorem 3.4 frontier, and do not
-replay the already-built CG substrate, Theorem 5.8 AGF source wrapper, Theorem
-5.9 strong-convex AGF proof, or Theorem 5.10 weighted-telescope proof.
+discrete AGD source rate and `StatInference/Optimization/ProjectedSubgradient.lean`
+now proves the finite-valued Chapter 6 projected-subgradient layer through the
+supplied-interface Theorem 6.14 average-gap bound.  Do not target the stale
+app-level `/goal` text's old Theorem 3.4 frontier, and do not replay the
+already-built CG substrate, Theorem 5.8 AGF source wrapper, Theorem 5.9
+strong-convex AGF proof, Theorem 5.10 weighted-telescope proof, or the basic
+projection/Jensen/PSD recurrence packet.
 `StatInference/Optimization/Theorem58.lean` proves the AGF Lyapunov derivative
 formula, discharges Lyapunov continuity from the trajectory and gradient oracle,
 and exposes a source-facing Theorem 5.8 rate wrapper.  Since Chewi leaves the
@@ -71,11 +74,14 @@ projection non-expansiveness, the PSD trajectory display, Jensen for averaged
 iterates, the PSD squared-distance recurrence, finite telescoping, and the
 Theorem 6.14 average-gap wrapper `chewi614_average_gap_bound`.
 
-The next active packet should make Theorem 6.14 closer to the exact source
-statement: prove or sharply package the bridge from Chewi's `L`-Lipschitz
-assumption to the supplied bound `‖p_n‖ <= L` for selected subgradients, and
-then add the displayed `h = R / sqrt N` corollary.  Mandatory search and reuse:
-mathlib `Analysis/InnerProductSpace/Projection/Minimal.lean` has
+The next active packet should source-complete Theorem 6.14 and immediately
+start Theorem 6.16, not drip one wrapper at a time.  Prove a correct
+interior/ray-form bridge from Chewi's `L`-Lipschitz assumption to the supplied
+bound `‖p_n‖ <= L` for selected subgradients, add the displayed
+`h = R / sqrt N` corollary, and then define the functional-constraint PSD
+trajectory/oracle interface for Theorem 6.16 so the recurrence and telescope
+can reuse the 6.14 spine.  Mandatory search and reuse: mathlib
+`Analysis/InnerProductSpace/Projection/Minimal.lean` has
 `exists_norm_eq_iInf_of_complete_convex` and
 `norm_eq_iInf_iff_real_inner_le_zero`; mathlib `Analysis/Convex/Jensen.lean`
 has `ConvexOn.map_sum_le`; mathlib `Topology/MetricSpace/Lipschitz.lean` has
