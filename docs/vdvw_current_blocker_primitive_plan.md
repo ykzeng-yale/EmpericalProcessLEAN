@@ -197,6 +197,18 @@ Remaining exact blocker: derive this mean convergence from a VdV&W structural
 entropy hypothesis, or prove a separate uniform-integrability theorem for the
 normalized log-cardinality process.
 
+2026-05-05 follow-up: the L1-strengthened route now feeds the selected
+fixed-radius Theorem 2.4.3 side-condition package directly through
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_integral_tendsto_zero`.
+Given variable-domain book entropy, finite-net upper integrability, selected
+normalized-log measurability/integrability, and ordinary mean convergence of
+the selected normalized-log process, this constructor supplies the packaged
+fixed-radius tail/UI assumptions consumed by the existing untruncation route.
+The remaining non-duplicative target is therefore structural: prove the
+selected normalized-log mean convergence or a genuine UI theorem from VdV&W
+entropy hypotheses, or instantiate the compiled deterministic route from a
+valid cardinality estimate.
+
 2026-05-05 current proof batch: the selected finite-net tail/UI gap now has
 the pointwise and integrated analytic reduction needed for the
 non-deterministic entropy route.  New compiled declarations:

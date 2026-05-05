@@ -189,6 +189,14 @@ entropy condition; the remaining theorem-line work is to derive such mean
 convergence or UI from a structural entropy assumption, not from probability
 convergence alone.
 
+2026-05-05 selected-package follow-up: the L1-strengthened route now feeds
+the selected fixed-radius package through
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_integral_tendsto_zero`.
+This closes the package-construction layer for ordinary mean convergence of
+the selected normalized-log process.  The next theorem-facing target is the
+actual structural entropy/UI theorem that supplies that mean convergence, not
+more fixed-radius or untruncated endpoint packaging.
+
 Every proof heartbeat should inspect that file before introducing a new
 primitive.  As of 2026-05-05, the active main-line frontier is no longer the
 reverse/cofiltration theorem, finite-cover entropy plumbing, untruncation,

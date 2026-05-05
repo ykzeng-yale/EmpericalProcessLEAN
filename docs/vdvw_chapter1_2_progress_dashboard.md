@@ -122,6 +122,14 @@ the tail/UI condition required by the finite-net route.  This does not replace
 the textbook `o_P^*` hypothesis, but it gives a non-deterministic L1 route for
 later structural entropy arguments.
 
+2026-05-05 selected-package follow-up: that L1 route now has a theorem-facing
+selected fixed-radius package constructor,
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_integral_tendsto_zero`.
+The next useful proof is no longer another selected-package wrapper; it is
+deriving the selected normalized-log mean convergence/UI input from a real
+structural entropy hypothesis, or moving to the next exact Chapter 1-2 gap if
+that remains blocked after search.
+
 ## Status Legend
 
 | Status | Meaning |
