@@ -155,6 +155,11 @@ weak-convergence handoff.
 domains.  This is the form needed by finite-product empirical-process
 statistics and Theorem 2.4.3 law endpoints.
 
+2026-05-05 has-law follow-up: common-domain and varying-domain `HasLaw`
+bridges now enter the local signed weak-convergence packages using mathlib's
+built-in a.e.-measurability and map-law fields, without adding pointwise
+measurability assumptions.
+
 2026-05-05 proof update: the countability-to-`P`-measurability route has a new
 compiled law-convergence layer.  `VdVWConvergesInOuterProbabilityConst.congr_ae`
 and

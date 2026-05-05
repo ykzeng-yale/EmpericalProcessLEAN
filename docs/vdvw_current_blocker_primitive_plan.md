@@ -5045,6 +5045,16 @@ and
 These let sample-size-varying law convergence feed Theorem 2.4.3-style
 signed weak-convergence endpoints directly under a.e.-measurability.
 
+2026-05-05 has-law bridge update: local search showed the `HasLaw` bridge still
+had an unnecessary pointwise-measurability input, even though mathlib `HasLaw`
+already stores `aemeasurable` and `map_eq`.  `WeakConvergence.lean` now adds
+`VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_hasLaw_aemeasurable`,
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_hasLaw_aemeasurable`,
+and
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_hasLaw_aemeasurable`.
+This closes the has-law version of the same Chapter 1 arbitrary-map
+measurability mismatch.
+
 2026-05-05 follow-up: the local asymptotic-measurability predicates are now
 stable under filter refinement/subsequence filters.  The compiled declarations
 `VdVWAsymptoticallyMeasurableNonnegative.mono_filter`,

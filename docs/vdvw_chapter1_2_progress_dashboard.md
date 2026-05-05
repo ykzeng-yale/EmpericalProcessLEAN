@@ -61,6 +61,11 @@ and
 The same direct feeder is now available for sample-size-varying mathlib
 `TendstoInDistribution` through
 `vdVWTendstoInDistribution_to_signedBoundedContinuousVaryingDomains_aemeasurable`.
+The `HasLaw` feeder also no longer needs pointwise measurability:
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_hasLaw_aemeasurable`
+and
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_hasLaw_aemeasurable`
+consume mathlib `HasLaw.aemeasurable` and `HasLaw.map_eq` directly.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new

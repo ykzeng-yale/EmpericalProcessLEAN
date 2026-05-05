@@ -1727,6 +1727,78 @@ theorem
     (fun i => (hX i).nullMeasurable) hweak (fun _ => rfl)
 
 /--
+Common-domain has-law weak convergence gives the signed-outer
+bounded-continuous weak-convergence layer without a separate pointwise
+measurability hypothesis.
+
+Mathlib's `HasLaw` already contains the a.e.-measurability and map-law
+identity needed for the local null-measurable signed outer-expectation bridge.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_hasLaw_aemeasurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (hν : VdVWWeakConvergenceProbabilityMeasures νs l μ)
+    (hlaw : ∀ i, HasLaw (X i) (νs i : Measure S) (μs i)) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l μ := by
+  haveI : ∀ i, IsFiniteMeasure (μs i) := fun i => (hlaw i).isFiniteMeasure
+  exact
+    VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq_nullMeasurable
+      (μs := μs) (X := X) (νs := νs)
+      (fun i => (hlaw i).aemeasurable.nullMeasurable)
+      hν (fun i => (hlaw i).map_eq.symm)
+
+/--
+Common-domain has-law weak convergence gives the proof-carrying signed
+bounded-continuous arbitrary-map layer without a separate pointwise
+measurability hypothesis.
+-/
+theorem
+    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_hasLaw_aemeasurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (hweak : VdVWWeakConvergenceProbabilityMeasures νs l μ)
+    (hlaw : ∀ i, HasLaw (X i) (νs i : Measure S) (μs i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ := by
+  haveI : ∀ i, IsFiniteMeasure (μs i) := fun i => (hlaw i).isFiniteMeasure
+  exact
+    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_map_eq_nullMeasurable
+      (μs := μs) (X := X) (νs := νs)
+      (fun i => (hlaw i).aemeasurable.nullMeasurable)
+      hweak (fun i => (hlaw i).map_eq.symm)
+
+/--
+Varying-domain has-law weak convergence gives the proof-carrying signed
+bounded-continuous weak-convergence package without a separate pointwise
+measurability hypothesis.
+-/
+theorem
+    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_hasLaw_aemeasurable
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
+    [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (hweak : VdVWWeakConvergenceProbabilityMeasures νs l μ)
+    (hlaw : ∀ i, HasLaw (X i) (νs i : Measure S) (μs i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ := by
+  haveI : ∀ i, IsFiniteMeasure (μs i) := fun i => (hlaw i).isFiniteMeasure
+  exact
+    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_map_eq_nullMeasurable
+      (Ω := Ω) (μs := μs) (X := X) (νs := νs)
+      (fun i => (hlaw i).aemeasurable.nullMeasurable)
+      hweak (fun i => (hlaw i).map_eq.symm)
+
+/--
 Varying-domain convergence in distribution implies the local signed-outer
 bounded-continuous weak-convergence formulation.
 
