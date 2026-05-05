@@ -101,6 +101,39 @@ theorem VdVWAsymptoticallyMeasurableNonnegative.of_forall_measurable
     (fun i T htest => (hT T htest).comp (hX i))
 
 /--
+The nonnegative asymptotic-measurability predicate is monotone in the selected
+test class.
+-/
+theorem VdVWAsymptoticallyMeasurableNonnegative.mono_tests
+    {Ω : Type u} {S : Type v} {ι : Type w} [MeasurableSpace Ω]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {tests tests' : (S -> ℝ≥0∞) -> Prop}
+    (h : VdVWAsymptoticallyMeasurableNonnegative μs X l tests)
+    (hsub : ∀ T, tests' T -> tests T) :
+    VdVWAsymptoticallyMeasurableNonnegative μs X l tests' := by
+  intro T hT
+  exact h T (hsub T hT)
+
+/--
+Arbitrary-map pullback for the nonnegative asymptotic-measurability predicate.
+
+If every selected target test pulls back to a selected source test, then
+asymptotic measurability transfers to the composed maps.
+-/
+theorem VdVWAsymptoticallyMeasurableNonnegative.comp_map
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {testsS : (S -> ℝ≥0∞) -> Prop} {testsT : (T -> ℝ≥0∞) -> Prop}
+    (h : VdVWAsymptoticallyMeasurableNonnegative μs X l testsS)
+    {g : S -> T}
+    (hpull : ∀ φ, testsT φ -> testsS (fun s => φ (g s))) :
+    VdVWAsymptoticallyMeasurableNonnegative
+      μs (fun i ω => g (X i ω)) l testsT := by
+  intro φ hφ
+  exact h (fun s => φ (g s)) (hpull φ hφ)
+
+/--
 Lower-shifted real outer/inner expectation gap.
 
 For a real-valued test `Y` with lower bound `c`, `ENNReal.ofReal (Y - c)` is
@@ -177,6 +210,37 @@ theorem VdVWAsymptoticallyMeasurableLowerShiftedReal.of_forall_measurable
     VdVWAsymptoticallyMeasurableLowerShiftedReal μs X l tests :=
   VdVWAsymptoticallyMeasurableLowerShiftedReal.of_forall_measurable_comp
     (fun i T htest => (hT T htest).comp (hX i))
+
+/--
+The lower-shifted real asymptotic-measurability predicate is monotone in the
+selected real test class.
+-/
+theorem VdVWAsymptoticallyMeasurableLowerShiftedReal.mono_tests
+    {Ω : Type u} {S : Type v} {ι : Type w} [MeasurableSpace Ω]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {tests tests' : (S -> ℝ) -> Prop}
+    (h : VdVWAsymptoticallyMeasurableLowerShiftedReal μs X l tests)
+    (hsub : ∀ f, tests' f -> tests f) :
+    VdVWAsymptoticallyMeasurableLowerShiftedReal μs X l tests' := by
+  intro f c hf hlower
+  exact h f c (hsub f hf) hlower
+
+/--
+Arbitrary-map pullback for the lower-shifted real
+asymptotic-measurability predicate.
+-/
+theorem VdVWAsymptoticallyMeasurableLowerShiftedReal.comp_map
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {testsS : (S -> ℝ) -> Prop} {testsT : (T -> ℝ) -> Prop}
+    (h : VdVWAsymptoticallyMeasurableLowerShiftedReal μs X l testsS)
+    {g : S -> T}
+    (hpull : ∀ φ, testsT φ -> testsS (fun s => φ (g s))) :
+    VdVWAsymptoticallyMeasurableLowerShiftedReal
+      μs (fun i ω => g (X i ω)) l testsT := by
+  intro φ c hφ hlower
+  exact h (fun s => φ (g s)) c (hpull φ hφ) hlower
 
 /--
 Bounded-continuous lower-shifted asymptotic measurability.

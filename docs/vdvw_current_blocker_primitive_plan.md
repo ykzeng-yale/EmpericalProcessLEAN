@@ -4396,3 +4396,15 @@ full signed outer-expectation/asymptotic-measurability textbook definition.
 Next work in this lane should connect these shifted predicates to exact
 arbitrary-map weak-convergence statements or build the missing signed
 outer-cover envelope layer.
+
+2026-05-05 follow-up: the selected-test asymptotic-measurability predicates now
+have monotonicity and arbitrary-map pullback closures.  The compiled
+declarations `VdVWAsymptoticallyMeasurableNonnegative.mono_tests`,
+`VdVWAsymptoticallyMeasurableNonnegative.comp_map`,
+`VdVWAsymptoticallyMeasurableLowerShiftedReal.mono_tests`, and
+`VdVWAsymptoticallyMeasurableLowerShiftedReal.comp_map` let future exact
+weak-convergence statements shrink test classes or precompose tests with
+state-space maps without reopening the outer/inner expectation-gap proof.
+This is still a foundation layer: the next missing exact Chapter 1 bridge is
+the signed bounded-continuous arbitrary-map weak-convergence formulation, or a
+nonmeasurable outer-cover envelope layer strong enough to state it honestly.
