@@ -1047,6 +1047,11 @@ compiled declarations are
 `adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_of_countable`,
 and
 `adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_succ_of_countable`.
+The same batch also adds
+`vdVWLemma245CenteredEmpiricalSupremum_nonneg`,
+`integrable_vdVWLemma245CenteredEmpiricalSupremum_of_countable`, and
+`eLpNorm_vdVWLemma245CenteredEmpiricalSupremum_le_two_integral_envelope`.
 This removes another bookkeeping layer from the non-finite Lemma 2.4.5 route:
 the remaining blocker is the actual reverse/permutation-symmetric convergence
-principle, not measurability or adaptedness of the centered supremum process.
+principle, not measurability, adaptedness, nonnegativity, or envelope `L¹`
+control of the centered supremum process.

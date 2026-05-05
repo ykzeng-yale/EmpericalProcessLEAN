@@ -3574,7 +3574,14 @@ uniform-supremum layer to the named centered Lemma 2.4.5 statistic:
 `adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_of_countable`,
 and
 `adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiricalSupremum_succ_of_countable`.
-This closes the process measurability/adaptedness bookkeeping for `X_n` and
-`X_{n+1}`.  The remaining non-finite-class blocker is still the genuine
+The same run also exposed the named statistic's positivity and envelope
+integrability inputs as
+`vdVWLemma245CenteredEmpiricalSupremum_nonneg`,
+`integrable_vdVWLemma245CenteredEmpiricalSupremum_of_countable`, and
+`eLpNorm_vdVWLemma245CenteredEmpiricalSupremum_le_two_integral_envelope`,
+reusing the existing infinite-product weighted-supremum integrability and
+`eLpNorm` envelope bound.  This closes the process
+measurability/adaptedness/integrability bookkeeping for `X_n` and `X_{n+1}`.
+The remaining non-finite-class blocker is still the genuine
 reverse/permutation-symmetric convergence theorem represented by
 `VdVWLemma245ReverseCofiltrationHandoff`.

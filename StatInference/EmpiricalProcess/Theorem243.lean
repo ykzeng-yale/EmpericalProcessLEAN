@@ -4996,6 +4996,69 @@ theorem adapted_vdVWPermutationSymmetricCofiltration_vdVWLemma245CenteredEmpiric
         (Observation := Observation) (Nat.le_succ (OrderDual.ofDual n)))
       le_rfl
 
+/-- Nonnegativity of the named Lemma 2.4.5 centered empirical supremum. -/
+theorem vdVWLemma245CenteredEmpiricalSupremum_nonneg
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (n : ℕ) (sequence : ℕ -> Observation) :
+    0 ≤ vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence := by
+  simpa [vdVWLemma245CenteredEmpiricalSupremum] using
+    vdVWWeightedClassSupremum_nonneg indexClass
+      (fun index : Index => fun observation : Observation =>
+        classFun index observation - ∫ x, classFun index x ∂P)
+      (fun _ : Fin n => (n : ℝ)⁻¹)
+      (vdVWFirstNSample (Observation := Observation) n sequence)
+
+/--
+Integrability of the named Lemma 2.4.5 centered empirical supremum over the
+infinite iid product space.
+-/
+theorem integrable_vdVWLemma245CenteredEmpiricalSupremum_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (n : ℕ) :
+    Integrable
+      (fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence)
+      (vdVWInfiniteProductMeasure P) := by
+  simpa [vdVWLemma245CenteredEmpiricalSupremum] using
+    integrable_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable
+      (fun _ : Fin n => (n : ℝ)⁻¹)
+
+/--
+Named `L¹` seminorm envelope bound for the Lemma 2.4.5 centered empirical
+supremum.  This is the display-shaped input for any later reverse-martingale
+convergence proof that works directly with `vdVWLemma245CenteredEmpiricalSupremum`.
+-/
+theorem eLpNorm_vdVWLemma245CenteredEmpiricalSupremum_le_two_integral_envelope
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {n : ℕ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hn : 0 < n) :
+    eLpNorm
+      (fun sequence : ℕ -> Observation =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence)
+      1 (vdVWInfiniteProductMeasure P) ≤
+      ENNReal.ofReal (2 * ∫ x, envelope x ∂P) := by
+  simpa [vdVWLemma245CenteredEmpiricalSupremum] using
+    eLpNorm_vdVWInfiniteProductMeasure_weightedClassSupremum_centered_invNat_le_two_integral_envelope
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable hn
+
 /--
 Integral transport for the Lemma 2.4.5 centered empirical supremum from the
 fixed infinite iid product space to the corresponding finite product space.
