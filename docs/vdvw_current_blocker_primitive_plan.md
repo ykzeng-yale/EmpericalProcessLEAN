@@ -4138,3 +4138,19 @@ centered-supremum convergence.  This closes the countable-route bookkeeping
 for `P`-measurability; it does not close the exact arbitrary
 `P`-measurable/asymptotic-measurable textbook class layer or the book random
 entropy-to-full-subgraph/fixed-radius finite-net bridge.
+
+2026-05-05 follow-up: the canonical varying-domain form of the book random
+entropy hypothesis is now named.  The new structure
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM` records, for
+every `M > 0` and `eta > 0`, empirical `L1(P_n)` covering-number domination and
+normalized log-cardinality convergence on the actual sample spaces
+`SampleAt Observation n`.  The projection theorem
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions`
+feeds those two fields into the existing selected fixed-radius package once
+the honest varying-domain finite-net integrability and tail/UI hypotheses are
+supplied.  This removes the ambiguity between the older fixed-domain entropy
+structure and the sample-size-varying theorem route.  Remaining Theorem 2.4.3
+blockers are now exactly: prove the selected finite-net tail/UI condition from
+book hypotheses or a stronger structural entropy bound, and extend from the
+countable coordinate-measurable route to the arbitrary `P`-measurable /
+asymptotic-measurable class layer.

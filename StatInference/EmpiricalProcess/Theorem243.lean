@@ -17391,6 +17391,108 @@ structure VdVWTheorem243SelectedFixedRadiusTailSideConditions
             sample ∂(vdVWProductMeasure P n) ≤ ε
 
 /--
+Variable-domain form of the book all-`M`, all-positive-radius random entropy
+hypothesis for Theorem 2.4.3.
+
+The textbook statement writes the empirical entropy on the `n`-sample space.
+This structure records that canonical varying-domain shape directly: for every
+truncation level `M > 0` and fixed radius `eta > 0`, the supplied finite-valued
+cardinality process dominates the empirical `L1(P_n)` covering number and its
+normalized log converges to zero in outer probability on `SampleAt Observation n`.
+-/
+structure VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ)
+    (cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ) :
+    Prop where
+  coveringNumber_le :
+    ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+        (vdVWTruncatedClassFun classFun envelope M) eta
+        (cardinality M eta n)
+  log_cardinality_div_converges :
+    ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWLogEmpiricalL1CoveringCardinality (cardinality M eta n)
+              sample n / (n : ℝ))
+        atTop (0 : ℝ)
+
+/--
+The variable-domain book entropy condition supplies the entropy and covering
+fields of the selected fixed-radius package for each fixed truncation level.
+
+The selected package still needs its honest varying-domain analytic inputs:
+integrability of the selected finite-net Hoeffding upper and the corresponding
+tail-expectation/UI condition.  These are kept explicit because they are not a
+formal consequence of fixed-radius outer-probability entropy alone.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hfiniteNetUpperIntegrable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (eta := eta)
+                (cardinality := cardinality M) (X M)
+                (hentropy.coveringNumber_le M hM) heta) n sample n)
+              n M)
+          (vdVWProductMeasure P n))
+    (hfiniteNetUpper_tailExpectation :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta), ∀ ε > 0, ∃ R, 0 ≤ R ∧
+        ∀ᶠ n in atTop,
+          ∫ sample : SampleAt Observation n,
+            Set.indicator
+              {sample' : SampleAt Observation n |
+                R <
+                  vdVWTheorem243FiniteNetHoeffdingUpper
+                    ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                      (indexClass := indexClass) (classFun := classFun)
+                      (envelope := envelope) (M := M) (eta := eta)
+                      (cardinality := cardinality M) (X M)
+                      (hentropy.coveringNumber_le M hM) heta) n sample' n) n M}
+              (fun sample' : SampleAt Observation n =>
+                vdVWTheorem243FiniteNetHoeffdingUpper
+                  ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                    (indexClass := indexClass) (classFun := classFun)
+                    (envelope := envelope) (M := M) (eta := eta)
+                    (cardinality := cardinality M) (X M)
+                    (hentropy.coveringNumber_le M hM) heta) n sample' n) n M)
+              sample ∂(vdVWProductMeasure P n) ≤ ε) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M (cardinality M) := by
+  intro M hM
+  exact
+    { coveringNumber_le := hentropy.coveringNumber_le M hM
+      log_cardinality_div_converges :=
+        hentropy.log_cardinality_div_converges M hM
+      finiteNetUpperIntegrable :=
+        hfiniteNetUpperIntegrable M hM
+      finiteNetUpper_tailExpectation :=
+        hfiniteNetUpper_tailExpectation M hM }
+
+/--
 Selected terminal cardinalities supply the measurable-cardinality field of the
 fixed-`M` inverse-radius entropy package for countable coordinate-measurable
 classes.

@@ -1383,3 +1383,14 @@ bookkeeping for the countable route; it is the genuinely broader arbitrary
 `P`-measurable/asymptotic-measurable layer and the conversion from the book's
 random empirical entropy hypothesis to the current fixed-radius/full-subgraph
 finite-net assumptions.
+
+2026-05-05 follow-up: the book entropy assumption now has a canonical
+variable-domain Lean shape for the Theorem 2.4.3 route:
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM`.  It records
+all-`M`, all-positive-radius empirical covering domination and normalized
+log-cardinality convergence on `SampleAt Observation n`, and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions`
+projects it into the selected fixed-radius package once the explicit
+finite-net integrability and tail/UI inputs are available.  This sharpens the
+remaining target to the analytic tail/UI derivation and the broader arbitrary
+`P`-measurable/asymptotic-measurable class layer.
