@@ -50,6 +50,24 @@ handoff.
 Current main-line target: Theorem 2.4.3 and the Chapter 2
 bracketing/measurable-class primitives it needs.
 
+2026-05-04 `/goal` target update: the live non-finite-class frontier is no
+longer inverse-radius entropy, finite-cover selection, VC/subgraph packaging,
+untruncation, finite-class GC, or leave-one-out notation.  Those layers are
+compiled.  The active theorem-facing blocker is exactly the named
+textbook-display Lemma 2.4.5 reverse/cofiltration primitive
+`VdVWLemma245TextbookReverseCofiltrationHandoff`: prove that the VdV&W
+comparison
+`E[‖P_n - P‖_F^* | Σ_{n+1}] ≥ ‖P_{n+1} - P‖_F^*` over the decreasing
+permutation-symmetric fields implies a.e. finite convergence of the centered
+empirical supremum.  The preferred downstream consumer is
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_of_textbookReverseCofiltrationHandoff`.
+The next proof attempt should target the reverse/cofiltration theorem itself,
+or one of its already-compiled ordinary sub/supermartingale constructor
+hypotheses, using the actual `Σ_n` cofiltration.  Do not add more wrappers
+around natural filtrations, inverse-radius entropy, finite-cover witnesses, or
+finite-class endpoints unless a Lean proof attempt shows they directly close
+this named blocker.
+
 Policy update: exact example closures are deferred by default.  The Example
 2.4.2 empirical-CDF quantile-grid blocker below is preserved because it has a
 large compiled local layer and may be useful later, but it should not block the
