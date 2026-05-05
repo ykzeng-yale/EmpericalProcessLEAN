@@ -3033,6 +3033,51 @@ theorem VdVWProbabilityMeasuresAsymptoticallyTight.map_continuous
     _ ≤ ε := hi
 
 /--
+Binary product stability for measure-level asymptotic tightness.
+
+If two probability-measure families are asymptotically tight along the same
+filter, then their product laws are asymptotically tight.  This is the
+ordinary probability-measure product/tightness foundation behind Chapter 1
+product-space arguments; it is not the VdV&W arbitrary-map
+asymptotic-independence theorem.
+-/
+theorem VdVWProbabilityMeasuresAsymptoticallyTight.prod
+    {ι : Type v} {S : Type u} {T : Type w}
+    [MeasurableSpace S] [TopologicalSpace S] [BorelSpace S] [T2Space S]
+    [MeasurableSpace T] [TopologicalSpace T] [BorelSpace T] [T2Space T]
+    {μs : ι -> ProbabilityMeasure S} {νs : ι -> ProbabilityMeasure T}
+    {l : Filter ι}
+    (hμ : VdVWProbabilityMeasuresAsymptoticallyTight μs l)
+    (hν : VdVWProbabilityMeasuresAsymptoticallyTight νs l) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun i => (μs i).prod (νs i)) l := by
+  intro ε hε
+  have hε_ne : ε ≠ 0 := ne_of_gt hε
+  rcases hμ (ε / 2) (ENNReal.half_pos hε_ne) with ⟨K, hK, hKtail⟩
+  rcases hν (ε / 2) (ENNReal.half_pos hε_ne) with ⟨L, hL, hLtail⟩
+  refine ⟨K ×ˢ L, hK.prod hL, ?_⟩
+  filter_upwards [hKtail, hLtail] with i hiK hiL
+  calc
+    (((μs i).prod (νs i) : ProbabilityMeasure (S × T)) : Measure (S × T)) ((K ×ˢ L)ᶜ)
+        = (((μs i : ProbabilityMeasure S) : Measure S).prod
+            ((νs i : ProbabilityMeasure T) : Measure T)) ((K ×ˢ L)ᶜ) := by
+          rfl
+    _ = (((μs i : ProbabilityMeasure S) : Measure S).prod
+            ((νs i : ProbabilityMeasure T) : Measure T))
+          ((Kᶜ ×ˢ Set.univ) ∪ (Set.univ ×ˢ Lᶜ)) := by
+          rw [Set.compl_prod_eq_union]
+    _ ≤ (((μs i : ProbabilityMeasure S) : Measure S).prod
+            ((νs i : ProbabilityMeasure T) : Measure T)) (Kᶜ ×ˢ Set.univ) +
+          (((μs i : ProbabilityMeasure S) : Measure S).prod
+            ((νs i : ProbabilityMeasure T) : Measure T)) (Set.univ ×ˢ Lᶜ) := by
+          exact measure_union_le _ _
+    _ = ((μs i : ProbabilityMeasure S) : Measure S) (Kᶜ) +
+          ((νs i : ProbabilityMeasure T) : Measure T) (Lᶜ) := by
+          simp [Measure.prod_prod]
+    _ ≤ ε / 2 + ε / 2 := add_le_add hiK hiL
+    _ = ε := ENNReal.add_halves ε
+
+/--
 Measure-level Prokhorov compactness wrapper: the closure of a tight family of
 probability measures is compact.
 -/

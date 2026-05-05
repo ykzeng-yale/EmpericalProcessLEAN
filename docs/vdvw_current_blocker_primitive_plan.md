@@ -5579,3 +5579,13 @@ asymptotic-tightness feeders.  It still does not prove the arbitrary-index
 VdV&W process asymptotic-tightness/FDD-converse theorem, whose missing inputs
 remain separability, exact arbitrary-map asymptotic measurability, and the
 nonmeasurable outer-cover process weak-convergence layer.
+
+2026-05-05 product asymptotic-tightness follow-up: local/mathlib search found
+binary product weak-convergence wrappers and product-measure APIs
+`Measure.prod_prod`, `Set.compl_prod_eq_union`, and `measure_union_le`, but no
+existing VdV&W-local asymptotic-tightness product theorem.  `WeakConvergence.lean`
+now adds `VdVWProbabilityMeasuresAsymptoticallyTight.prod`, proving that
+ordinary measure-level asymptotic tightness is stable under binary product
+laws along the same filter.  This closes the ordinary Chapter 1 product-law
+tightness foundation; it still does not prove the nonmeasurable VdV&W
+arbitrary-map/asymptotic-independence product criterion.

@@ -1958,3 +1958,9 @@ finite-index asymptotic-tightness wrappers.  This closes the finite-dimensional
 measure-level tightness feeder; arbitrary-index process asymptotic tightness,
 separability, and nonmeasurable/arbitrary-map weak-convergence primitives
 remain open.
+
+2026-05-05 product asymptotic-tightness follow-up:
+`VdVWProbabilityMeasuresAsymptoticallyTight.prod` now proves binary product
+stability for ordinary measure-level asymptotic tightness.  This closes a
+Chapter 1 product/tightness support lemma; arbitrary-map
+asymptotic-independence is still open.

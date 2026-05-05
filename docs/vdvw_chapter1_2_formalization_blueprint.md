@@ -1748,6 +1748,14 @@ the Chapter 1 process/FDD route.  The arbitrary-index VdV&W 1.4.8 converse
 still needs separability, process asymptotic tightness, and nonmeasurable
 arbitrary-map weak-convergence primitives.
 
+2026-05-05 product asymptotic-tightness follow-up:
+`WeakConvergence.lean` now adds
+`VdVWProbabilityMeasuresAsymptoticallyTight.prod`, using compact product sets
+and product-measure complement bounds to show that binary product laws preserve
+ordinary measure-level asymptotic tightness.  This supports the Chapter 1
+product/FDD route but remains separate from the exact VdV&W
+arbitrary-map/asymptotic-independence theorem.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
