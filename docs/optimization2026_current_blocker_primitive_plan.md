@@ -68,22 +68,23 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Live replacement `/goal` prompt after the 2026-05-05 cutting-plane source
+Live replacement `/goal` prompt after the 2026-05-05 CoGM source wrapper
 packet: aggressively formalize and prove all main theorem content of Sinho
 Chewi's Optimization 2026 notes in Lean under `StatInference/Optimization`,
 with exercises tracked in the single `StatInference/Optimization/Exercises.lean`
 module but not allowed to slow the main-text theorem lane.  Continue from the
 verified frontier where `StatInference/Optimization/ProjectedSubgradient.lean`
 proves the finite-valued Theorem 6.14 and Theorem 6.16 PSD/functional-constraint
-layers, and `StatInference/Optimization/CuttingPlane.lean` now starts Lemma
-6.18/Theorem 6.19 with a supplied-interface cutting-plane layer: finite
+layers, and `StatInference/Optimization/CuttingPlane.lean` now proves the
+supplied-interface algebraic spine for Lemma 6.18/Theorem 6.19: finite
 volume-shrink recurrence, `centerOfGravityRate`, scaled outside-candidate
-interface, convex scaled-candidate Lipschitz/diameter bound, the limiting
-`t -> rho` scalar helper, and source-rate wrappers for
-`f (x (N-1)) - fStar <= D * L * lambda^(N/d)`.  The app-level `/goal`
-objective text still mentions the obsolete Theorem 3.4 frontier and cannot be
-edited directly through the current tool surface unless the full textbook goal
-is marked complete, so this paragraph is the operative manual `/goal` target.
+interfaces, convex scaled-candidate Lipschitz/diameter bound, candidate-family
+eventual bound, the limiting `t -> rho` scalar helper, and final source-shaped
+display wrapper `chewi619_gap_le_display_rate_of_scaled_candidates`.  The
+app-level `/goal` objective text still mentions the obsolete Theorem 3.4
+frontier and cannot be edited directly through the current tool surface unless
+the full textbook goal is marked complete, so this paragraph is the operative
+manual `/goal` target.
 
 Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
@@ -101,17 +102,18 @@ minimizer membership assumptions.
 The active aggressive target is Chapter 6 nonsmooth convex optimization, with
 main-text theorem coverage prioritized over reports and exercises.  Theorem
 6.14 is source-complete in the finite-valued/ray-valid form, Theorem 6.16 now
-compiles in the proof-carrying existential form of display (6.5), and the first
-CuttingPlane packet compiles the algebraic spine for Lemma 6.18/Theorem 6.19.
-The next theorem packet should close the remaining supplied-geometry bridge:
-derive the eventual scaled-candidate bound from the volume comparison and
-localization certificate, package a source-shaped CoGM trajectory theorem
-around the compiled `chewi619_gap_le_display_rate_of_eventual_scaled_bound`,
-and record the exact unproved centroid/Grunbaum facts needed before any exact
-report.  If that bridge balloons into measure theory, keep it as a sharply
-documented supplied interface and move immediately to Lemma 6.20 ellipsoid
-geometry.  Do not spend a run only polishing a minor wrapper unless it is the
-fastest verified dependency for this theorem packet.
+compiles in the proof-carrying existential form of display (6.5), and the
+source-shaped CoGM Theorem 6.19 wrapper now compiles after isolating the
+genuine centroid/volume fact as `HasScaledOutsideCandidatesAbove`.  Do not try
+to prove Grünbaum/centroid measure theory unless specifically allocating a
+geometry-heavy packet; record it as the exact supplied blocker for an exact
+source report.  The next aggressive theorem packet should move to Lemma 6.20
+ellipsoid geometry: search mathlib matrix/PSD/inverse/determinant and local
+matrix-order APIs, introduce a source-shaped ellipsoid update interface, prove
+the half-space containment or volume-ratio algebra that can be verified
+quickly, and then connect it back to the compiled CoGM-style rate wrapper.
+Do not spend a run only polishing a minor wrapper unless it is the fastest
+verified dependency for this theorem packet.
 
 `StatInference/Optimization/ProjectedSubgradient.lean` now starts this lane and
 compiles a source-shaped finite-valued packet for Definition 6.8, Definition
@@ -166,9 +168,13 @@ foundation unless it directly unblocks a named theorem; backfill Definitions
 6.1-6.10 only when a theorem needs them.  For the cutting-plane lane, the
 current search found no direct local or mathlib Grünbaum/centroid theorem.
 Mathlib has extensive measure/volume and convex-body infrastructure in
-specialized files, but the fastest route for Theorem 6.19 is initially a
-supplied volume-shrink/centroid interface plus the now-verified finite
-recurrence and Lipschitz/diameter algebra in `CuttingPlane.lean`.
+specialized files, but the fastest route for Theorem 6.19 is the now-verified
+supplied candidate-family interface plus finite recurrence and
+Lipschitz/diameter algebra in `CuttingPlane.lean`.  For Lemma 6.20, search
+mathlib `Matrix`, `Matrix.PosDef`, `Analysis/Matrix/Order`,
+`LinearAlgebra/Matrix/Symmetric`, determinant and inverse APIs, and local
+`StatInference/Optimization` lower-bound matrix patterns before adding any
+new primitive.
 
 Speed rule for this manual goal: make theorem-sized packets, not one-wrapper
 push loops.  Use scouts in parallel for future Chapter 6-8 nonsmooth/proximal

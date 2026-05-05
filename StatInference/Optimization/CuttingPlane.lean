@@ -41,6 +41,17 @@ def HasScaledOutsideCandidateWithinDiameter
   ∃ y z, y ∈ C ∧ z = (1 - t) • xStar + t • y ∧
     z ∉ sets N ∧ dist y xStar ≤ D
 
+/--
+The supplied geometry/candidate interface in the proof of Theorem 6.19:
+for every scale `t` above the target rate and at most one, the scaled copy
+`(1 - t) xStar + t C` has a point outside the final localization set.
+-/
+def HasScaledOutsideCandidatesAbove
+    (C : Set E) (sets : ℕ -> Set E) (xStar : E) (N : ℕ)
+    (D rho : ℝ) : Prop :=
+  ∀ t, rho < t -> t ≤ 1 ->
+    HasScaledOutsideCandidateWithinDiameter C sets xStar N D t
+
 /-- Iterating a uniform volume-shrink recurrence gives the finite power bound. -/
 theorem volumeShrink_le_pow
     {vol : ℕ -> ℝ} {lambda : ℝ}
@@ -146,6 +157,59 @@ theorem chewi619_scaled_candidate_gap_bound
   nlinarith
 
 /--
+Candidate-family form of the source proof: if every scale above `rho` and at
+most one has a cut-away scaled candidate, then the one-parameter gap bound
+holds for every `t > rho`.
+-/
+theorem chewi619_eventual_scaled_bound_of_scaled_candidates
+    {C : Set E} {sets : ℕ -> Set E} {f : E -> ℝ} {x : ℕ -> E}
+    {xStar : E} {N : ℕ} {D L rho : ℝ}
+    (hconv : ConvexOn ℝ C f)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hxStar_mem : xStar ∈ C)
+    (hcert : IsCuttingPlaneValueCertificate sets f x N)
+    (hrho_nonneg : 0 ≤ rho)
+    (hrho_lt_one : rho < 1)
+    (hL_nonneg : 0 ≤ L)
+    (hDL_nonneg : 0 ≤ D * L)
+    (hcandidates : HasScaledOutsideCandidatesAbove C sets xStar N D rho) :
+    ∀ t, rho < t ->
+      f (x (N - 1)) - f xStar ≤ t * (D * L) := by
+  intro t ht
+  by_cases ht_le_one : t ≤ 1
+  · exact
+      chewi619_scaled_candidate_gap_bound
+        (C := C) (sets := sets) (f := f) (x := x)
+        (xStar := xStar) (N := N) (D := D) (L := L) (t := t)
+        hconv hLip hxStar_mem hcert
+        (hcandidates t ht ht_le_one)
+        (le_trans hrho_nonneg (le_of_lt ht)) ht_le_one hL_nonneg
+  · have hone_lt_t : 1 < t := lt_of_not_ge ht_le_one
+    let tau : ℝ := (rho + 1) / 2
+    have hrho_lt_tau : rho < tau := by
+      dsimp [tau]
+      nlinarith
+    have htau_le_one : tau ≤ 1 := by
+      dsimp [tau]
+      nlinarith
+    have htau_nonneg : 0 ≤ tau := by
+      dsimp [tau]
+      nlinarith
+    have htau_le_t : tau ≤ t := by
+      dsimp [tau]
+      nlinarith
+    have hgap_tau :
+        f (x (N - 1)) - f xStar ≤ tau * (D * L) :=
+      chewi619_scaled_candidate_gap_bound
+        (C := C) (sets := sets) (f := f) (x := x)
+        (xStar := xStar) (N := N) (D := D) (L := L) (t := tau)
+        hconv hLip hxStar_mem hcert
+        (hcandidates tau hrho_lt_tau htau_le_one)
+        htau_nonneg htau_le_one hL_nonneg
+    exact hgap_tau.trans
+      (mul_le_mul_of_nonneg_right htau_le_t hDL_nonneg)
+
+/--
 Order-continuity helper for the final "let `t` decrease to `rho`" step in
 Theorem 6.19.
 -/
@@ -219,6 +283,41 @@ theorem chewi619_gap_le_display_rate_of_eventual_scaled_bound
             hDL_nonneg hbound
     _ = D * L * centerOfGravityRate lambda N d := by
           ring
+
+/--
+Source-shaped CoGM Theorem 6.19 wrapper after isolating the genuine volume /
+centroid geometry into `HasScaledOutsideCandidatesAbove`.
+-/
+theorem chewi619_gap_le_display_rate_of_scaled_candidates
+    {C : Set E} {sets : ℕ -> Set E} {f : E -> ℝ} {x : ℕ -> E}
+    {xStar : E} {N d : ℕ} {D L lambda : ℝ}
+    (hconv : ConvexOn ℝ C f)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hxStar_mem : xStar ∈ C)
+    (hcert : IsCuttingPlaneValueCertificate sets f x N)
+    (hlambda_nonneg : 0 ≤ lambda)
+    (hrate_lt_one : centerOfGravityRate lambda N d < 1)
+    (hD_nonneg : 0 ≤ D)
+    (hL_nonneg : 0 ≤ L)
+    (hcandidates :
+      HasScaledOutsideCandidatesAbove C sets xStar N D
+        (centerOfGravityRate lambda N d)) :
+    f (x (N - 1)) - f xStar ≤
+      D * L * centerOfGravityRate lambda N d := by
+  have hrate_nonneg :
+      0 ≤ centerOfGravityRate lambda N d :=
+    centerOfGravityRate_nonneg hlambda_nonneg N d
+  have hDL_nonneg : 0 ≤ D * L := mul_nonneg hD_nonneg hL_nonneg
+  exact
+    chewi619_gap_le_display_rate_of_eventual_scaled_bound
+      (f := f) (x := x) (xStar := xStar) (N := N) (d := d)
+      (D := D) (L := L) (lambda := lambda) hDL_nonneg
+      (chewi619_eventual_scaled_bound_of_scaled_candidates
+        (C := C) (sets := sets) (f := f) (x := x)
+        (xStar := xStar) (N := N) (D := D) (L := L)
+        (rho := centerOfGravityRate lambda N d)
+        hconv hLip hxStar_mem hcert hrate_nonneg hrate_lt_one
+        hL_nonneg hDL_nonneg hcandidates)
 
 end Optimization
 end StatInference
