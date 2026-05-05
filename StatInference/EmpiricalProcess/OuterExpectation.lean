@@ -777,6 +777,73 @@ noncomputable def mulMajorant {Ω : Type u} [MeasurableSpace Ω] {μ : Measure �
   measurable_toFun := US.measurable_toFun.mul UT.measurable_toFun
   majorizes := fun ω => mul_le_mul' (US.majorizes ω) (UT.majorizes ω)
 
+/--
+First-coordinate product-space cover transfer for measurable targets.
+
+This is the proved measurable-target core of VdV&W Lemma 1.2.5: on a product
+space, a minimal measurable cover depending only on the first coordinate
+remains minimal after pulling it back by the first projection.
+-/
+def fstProductOfMeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    {T : Ω -> ℝ≥0∞} (U : VdVWMeasurableCover μ T) (hT : Measurable T) :
+    VdVWMeasurableCover (μ.prod ν) (fun z : Ω × S => T z.1) where
+  toFun := fun z => U z.1
+  measurable_toFun := U.measurable_toFun.comp measurable_fst
+  majorizes := fun z => U.majorizes z.1
+  minimal_ae := by
+    intro V hV h_majorizes
+    have h_majorizes_set :
+        MeasurableSet {z : Ω × S | T z.1 ≤ V z} :=
+      measurableSet_le (hT.comp measurable_fst) hV
+    have hxy : ∀ᵐ x ∂μ, ∀ᵐ y ∂ν, T x ≤ V (x, y) :=
+      (Measure.ae_prod_iff_ae_ae h_majorizes_set).mp h_majorizes
+    have hyx : ∀ᵐ y ∂ν, ∀ᵐ x ∂μ, T x ≤ V (x, y) :=
+      (Measure.ae_ae_comm h_majorizes_set).mp hxy
+    have hsections : ∀ᵐ y ∂ν, ∀ᵐ x ∂μ, U x ≤ V (x, y) := by
+      filter_upwards [hyx] with y hy
+      exact
+        U.minimal_ae (fun x => V (x, y))
+          (hV.comp (measurable_id.prodMk measurable_const)) hy
+    have h_cover_set :
+        MeasurableSet {z : Ω × S | U z.1 ≤ V z} :=
+      measurableSet_le (U.measurable_toFun.comp measurable_fst) hV
+    exact
+      (Measure.ae_prod_iff_ae_ae h_cover_set).mpr
+        ((Measure.ae_ae_comm h_cover_set).mpr hsections)
+
+/--
+Second-coordinate product-space cover transfer for measurable targets.
+
+This is the symmetric measurable-target core of VdV&W Lemma 1.2.5 for the
+second coordinate projection.
+-/
+def sndProductOfMeasurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    {T : S -> ℝ≥0∞} (U : VdVWMeasurableCover ν T) (hT : Measurable T) :
+    VdVWMeasurableCover (μ.prod ν) (fun z : Ω × S => T z.2) where
+  toFun := fun z => U z.2
+  measurable_toFun := U.measurable_toFun.comp measurable_snd
+  majorizes := fun z => U.majorizes z.2
+  minimal_ae := by
+    intro V hV h_majorizes
+    have h_majorizes_set :
+        MeasurableSet {z : Ω × S | T z.2 ≤ V z} :=
+      measurableSet_le (hT.comp measurable_snd) hV
+    have hxy : ∀ᵐ x ∂μ, ∀ᵐ y ∂ν, T y ≤ V (x, y) :=
+      (Measure.ae_prod_iff_ae_ae h_majorizes_set).mp h_majorizes
+    have hsections : ∀ᵐ x ∂μ, ∀ᵐ y ∂ν, U y ≤ V (x, y) := by
+      filter_upwards [hxy] with x hx
+      exact
+        U.minimal_ae (fun y => V (x, y))
+          (hV.comp (measurable_const.prodMk measurable_id)) hx
+    have h_cover_set :
+        MeasurableSet {z : Ω × S | U z.2 ≤ V z} :=
+      measurableSet_le (U.measurable_toFun.comp measurable_snd) hV
+    exact (Measure.ae_prod_iff_ae_ae h_cover_set).mpr hsections
+
 end VdVWMeasurableCover
 
 /--

@@ -456,6 +456,16 @@ to maps that are a.e.-measurable under a dominating measure.  This mirrors the
 nonnegative dominated-family theorem and leaves only the genuinely arbitrary
 nonmeasurable extended-real common-cover existence clause open for Lemma 1.2.4.
 
+2026-05-05 product projection cover follow-up: search found no existing exact
+VdV&W perfect-map theorem in mathlib or local `StatInference`, but mathlib's
+product-a.e. section APIs (`Measure.ae_prod_iff_ae_ae` and
+`Measure.ae_ae_comm`) are enough for the measurable-target core of Lemma
+1.2.5.  `VdVWMeasurableCover.fstProductOfMeasurable` and
+`.sndProductOfMeasurable` now prove that first/second coordinate pullbacks of
+a nonnegative measurable cover remain minimal measurable covers on the product
+space.  The remaining 1.2.5 gap is the full arbitrary-map perfect projection
+statement, where the required majorization set need not be measurable.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.
