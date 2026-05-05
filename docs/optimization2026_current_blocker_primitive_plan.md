@@ -1598,22 +1598,26 @@ Compiled declarations include `IsAcceleratedGradientFlowTrajectory`,
 `agfAuxPoint`, `chewi58Lyapunov`, `chewi58Lyapunov_zero`,
 `chewi58_gap_hasDerivAt`, `agfAuxPoint_hasDerivAt`,
 `chewi58Lyapunov_hasDerivAt`, `chewi58Lyapunov_hasDerivWithinAt`,
+`agfAuxPoint_continuousOn`, `chewi58Lyapunov_continuousOn`,
 `chewi58_gap_le_of_lyapunov_le_initial`,
 `chewi58_gap_le_of_lyapunov_antitoneOn`,
 `chewi58LyapunovDerivative_nonpos_of_firstOrderConvex`,
 `chewi58_gap_le_of_lyapunov_derivative_nonpos`, and
 `chewi58_gap_le_of_lyapunov_derivative_formula_firstOrderConvex`, plus the
-continuity-supplied source wrapper `chewi58_gap_le_of_agf_firstOrderConvex`.
+source-facing wrapper `chewi58_gap_le_of_agf_firstOrderConvex` with Lyapunov
+continuity now discharged from the AGF trajectory and gradient oracle.
 Search-first reuse: local `FirstOrderStrongConvexOn` convex lower model,
 Chapter 2
 `antitoneOn_of_hasDerivWithinAt_nonpos` route pattern, mathlib
 `HasGradientAt.hasFDerivAt`, `HasDerivAt.smul`, `HasDerivAt.mul`,
 `HasDerivAt.norm_sq`, `HasDerivWithinAt.norm_sq`, `HasDerivAt.inner`,
-`le_div_iff₀`, `sq_nonneg`, `field_simp`, `module`, and `nlinarith`.  The AGF
-ODE derivative formula is now proved; next target: discharge or package the
-remaining `ContinuousOn (chewi58Lyapunov ...) (Set.Ici 0)` side condition from
-trajectory/gradient continuity when practical, expose the exact source-facing
-Theorem 5.8 statement, then move to Theorem 5.9.
+`ContinuousOn.smul`, `ContinuousOn.pow`, `le_div_iff₀`, `sq_nonneg`,
+`field_simp`, `module`, and `nlinarith`.  The AGF ODE derivative formula,
+Lyapunov continuity, and source-facing Theorem 5.8 rate wrapper are now
+proved.  Next target: Theorem 5.9.  Because the notes leave it as
+Exercise 5.3, first record the informal strong-convex AGF Lyapunov proof, then
+formalize the reusable strong-convex friction/Lyapunov derivative layer and
+the exponential rate wrapper.
 Do not redo
 Theorem 5.3's
 A-conjugacy induction, the Chapter 3 descent lemma, Chapter 4 gradient-span

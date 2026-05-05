@@ -43,14 +43,16 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier as of the Theorem 5.8 AGF derivative push: do not target
-the old Theorem 3.4 frontier or the already-built CG substrate.
+Manual goal frontier as of the Theorem 5.8 AGF source-wrapper push: do not
+target the old Theorem 3.4 frontier or the already-built CG substrate.
 `StatInference/Optimization/Theorem58.lean` now proves the AGF Lyapunov
-derivative formula and a continuity-supplied Theorem 5.8 rate wrapper.  The
-current active packet is to discharge or sharply package Lyapunov continuity,
-then expose the exact source-facing Theorem 5.8 statement.  After that, keep
-moving through Theorem 5.9 and the remaining acceleration material before
-opening the Chapter 6 nonsmooth/projection layer.
+derivative formula, discharges Lyapunov continuity from the trajectory and
+gradient oracle, and exposes a source-facing Theorem 5.8 rate wrapper.  The
+current active packet is Theorem 5.9.  Since Chewi leaves the strongly-convex
+AGF proof to Exercise 5.3, first record the informal Lyapunov proof route,
+then formalize the strong-convex friction/Lyapunov derivative layer and
+exponential rate wrapper before opening the Chapter 6 nonsmooth/projection
+layer.
 
 ## Local Sources
 
