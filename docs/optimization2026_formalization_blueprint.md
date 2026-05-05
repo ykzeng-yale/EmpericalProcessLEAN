@@ -43,9 +43,10 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Manual goal frontier after the 2026-05-05 status audit: local `main` is
-fast-forwarded to `88178a2`, and the latest Optimization proof commit remains
-`f128db4 Prove Chewi theorem 5.9 AGF rate`.  Do not target the stale
+Manual goal frontier after the 2026-05-05 Theorem 5.10 setup packet: local
+`main` is past `88178a2`, and
+`StatInference/Optimization/Theorem510.lean` now compiles and is imported by
+`StatInference.lean`.  Do not target the stale
 app-level `/goal` text's old Theorem 3.4 frontier, and do not replay the
 already-built CG substrate, Theorem 5.8 AGF source wrapper, or Theorem 5.9
 strong-convex AGF proof.  `StatInference/Optimization/Theorem58.lean` proves
@@ -58,21 +59,24 @@ energy, generic AGF gap derivative, energy-vector derivative, raw Lyapunov
 derivative, derivative decay inequality, scalar exponential-decay consumer,
 zero-momentum initial-energy bound, and the final exponential gap wrappers.
 
-The next active packet is Theorem 5.10 discrete AGD around markdown line 1219.
-Create `StatInference/Optimization/Theorem510.lean`.  Reuse
-`StatInference.Optimization.oneStepRecurrence_of_firstOrderStrongConvexOn`
-from Chapter 3 as source inequality `(3.3)` with `alpha = 0` and
-`h = 1 / beta`, then add the missing AGD-specific recurrence algebra:
-`chewi510Lambda`, `chewi510Theta`, lambda positivity, the identity
-`lambda (n+1) * (lambda (n+1) - 1) = lambda n ^ 2`, the lower bound
-`lambda N >= N / 2`, the AGD trial/update interface with `y 0 = x 0`, the
-source telescoping alignment identity, weighted finite telescoping, and the
-final source rate.  Search/reuse local `sum_range_sub_succ`, mathlib finite
-sum telescoping APIs, `norm_add_sq_real`, `norm_sub_sq_real`, `Real.sq_sqrt`,
-`Real.le_sqrt_of_sq_le`, and scalar algebra tactics before introducing any
-new primitive.  Only after Theorem 5.10 is compiled should the main route open
-the Chapter 6 nonsmooth/projection layer, while scouts can map Chapter 6-13
-APIs in parallel.
+The next active packet is still Theorem 5.10 discrete AGD around markdown line
+1219, but the setup layer is no longer missing.  `Theorem510.lean` now records
+`chewi510Lambda`, `chewi510Theta`, `chewi510TrialPoint`,
+`IsChewi510AGDTrajectory`, lambda positivity/nonzero/recurrence/growth,
+`lambda N >= N / 2`, theta's scalar identity, source telescope alignment, the
+`(3.3)` one-step reuse from
+`StatInference.Optimization.oneStepRecurrence_of_firstOrderStrongConvexOn`,
+and the rearranged gap upper bound.  The next packet should apply the
+rearranged one-step estimate with `z = x n` and `z = xstar`, multiply/add with
+weight `lambda (n+1) - 1`, convert the inner-product line to the squared-norm
+difference, use telescope alignment plus
+`lambda (n+1) * (lambda (n+1) - 1) = lambda n ^ 2`, prove the finite weighted
+telescoping sum, and close the final source rate.  Search/reuse local
+`sum_range_sub_succ`, mathlib finite-sum telescoping APIs, `norm_add_sq_real`,
+`norm_sub_sq_real`, `Real.sq_sqrt`, `Real.le_sqrt_of_sq_le`, and scalar
+algebra tactics before introducing any new primitive.  Only after Theorem 5.10
+is compiled should the main route open the Chapter 6 nonsmooth/projection
+layer, while scouts can map Chapter 6-13 APIs in parallel.
 
 ## Local Sources
 

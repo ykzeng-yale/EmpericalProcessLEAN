@@ -68,11 +68,13 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current manual objective after the 2026-05-05 status audit: aggressively
+Current manual objective after the 2026-05-05 Theorem 5.10 setup packet:
+aggressively
 formalize and prove the main theorem content of Sinho Chewi's Optimization
 2026 notes in Lean under `StatInference/Optimization`, continuing from local
-`main` fast-forwarded to `88178a2` and the latest Optimization proof commit
-`f128db4 Prove Chewi theorem 5.9 AGF rate`.  The app-level `/goal` objective
+`main` past `88178a2` and the latest Optimization proof frontier:
+`StatInference/Optimization/Theorem510.lean` now compiles and is imported by
+`StatInference.lean`.  The app-level `/goal` objective
 text still mentions the obsolete Theorem 3.4 frontier and cannot be edited
 directly through the current tool surface unless the full textbook goal is
 marked complete, so this paragraph is the live replacement `/goal` prompt.
@@ -81,19 +83,27 @@ Do not replay completed Chapter 3 gradient-descent work, Chapter 4
 gradient-span/hard-instance setup, Chapter 5 CG substrate, Theorem 5.8 AGF
 Lyapunov work, or Theorem 5.9 strong-convex AGF work.  The active target is
 Chewi Theorem 5.10, convergence of discrete AGD, around markdown line 1219.
-First build `StatInference/Optimization/Theorem510.lean`, importing the
-existing Chapter 3 recurrence and Chapter 5 AGF/optimization spine.  The first
-proof packet should reuse
+The setup packet has already added `chewi510Lambda`, `chewi510Theta`,
+`chewi510TrialPoint`, `IsChewi510AGDTrajectory`, lambda nonnegativity,
+successor positivity/nonzero, `chewi510Lambda_succ_mul_sub_one`,
+`chewi510Lambda_add_half_le_succ`, `chewi510Lambda_ge_nat_half`,
+`chewi510Lambda_mul_theta_succ`,
+`chewi510_telescopeAlignment_of_trial_succ`,
+`IsChewi510AGDTrajectory.telescopeAlignment`,
+`chewi510_oneStepInequality`, `chewi510_oneStepInequality_univ`,
+`chewi510_gap_le_norm_sq_diff_of_oneStep`,
+`chewi510_gap_le_norm_sq_diff`, and
+`chewi510_gap_le_norm_sq_diff_univ`, reusing
 `StatInference.Optimization.oneStepRecurrence_of_firstOrderStrongConvexOn`
-from `Theorem34.lean` as the source inequality `(3.3)` with `alpha = 0` and
-`h = 1 / beta`, then add only the missing AGD-specific material:
-`chewi510Lambda`, `chewi510Theta`, lambda positivity, the identity
-`lambda (n+1) * (lambda (n+1) - 1) = lambda n ^ 2`, `lambda N >= N / 2`, the
-AGD trial/update interface with `y 0 = x 0`, the source telescoping alignment
-identity, the weighted Lyapunov telescoping bound, and finally the source
-rate `f (x N) - fstar <= 2 * beta * ‖x 0 - xstar‖ ^ 2 / (N : ℝ) ^ 2` for
-positive `N` under convexity, smoothness, minimizer, and AGD-trajectory
-assumptions.
+from `Theorem34.lean` for source inequality `(3.3)`.  The next proof packet
+should assemble the actual Theorem 5.10 argument: apply the rearranged
+one-step estimate with `z = x n` and `z = xstar`, multiply the first by
+`lambda (n+1) - 1`, add, rewrite with `norm_add_sq_real`/`norm_sub_sq_real`,
+use the compiled telescope alignment and
+`lambda (n+1) * (lambda (n+1) - 1) = lambda n ^ 2`, prove the weighted
+finite-sum telescope, and then close the final source rate
+`f (x N) - fstar <= 2 * beta * ‖x 0 - xstar‖ ^ 2 / (N : ℝ) ^ 2` for positive
+`N` under convexity, smoothness, minimizer, and AGD-trajectory assumptions.
 
 Speed rule for this manual goal: make theorem-sized packets, not one-wrapper
 push loops.  Use scouts in parallel for future Chapter 6-8 nonsmooth/proximal
