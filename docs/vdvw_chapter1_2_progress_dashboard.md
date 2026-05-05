@@ -1279,3 +1279,12 @@ has the explicit uniform bound
 `vdVWOrderDualFiniteHorizon_lintegral_upcrossings_le`.  The remaining
 reverse/cofiltration blocker is therefore only the deterministic comparison
 needed to pass this uniform bound to total reverse downcrossings.
+2026-05-04 follow-up: the uniform finite-horizon bound now feeds a compiled
+order-dual convergence consumer
+`vdVWOrderDualSubmartingale_ae_tendsto_of_finiteHorizon_reverseComparison`.
+This theorem consumes exactly the pointwise deterministic comparison between
+finite-prefix reverse downcrossings and the corresponding reversed-window
+upcrossing count.  Once that comparison is proved, the generic order-dual
+submartingale convergence handoff and the VdV&W Lemma 2.4.5 reverse
+cofiltration package can be closed without further probabilistic or
+integration primitives.

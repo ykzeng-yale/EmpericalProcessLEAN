@@ -3953,3 +3953,26 @@ integrability assumptions into a genuine `Submartingale` over this shifted
 cofiltration submartingale object; it is the reverse martingale convergence
 theorem for this `ℕᵒᵈ` object, or a proof that it can be reindexed into one of
 the already compiled ordinary `ℕ` sub/supermartingale convergence routes.
+
+2026-05-04 follow-up: the analytic/measure bridge from finite-window Doob
+estimates to order-dual convergence is now closed modulo a single deterministic
+comparison.  The new compiled theorem
+`vdVWOrderDualSubmartingale_ae_tendsto_of_finiteHorizon_reverseComparison`
+uses the uniform bound
+`vdVWOrderDualFiniteHorizon_lintegral_upcrossings_le`, monotone convergence for
+`lintegral_iSup`, and
+`vdVWOrderDualSubmartingale_ae_tendsto_of_downcrossings_lintegral_lt_top` to
+prove order-dual a.e. convergence from the pointwise comparison
+```
+upcrossingsBefore (-(b : ℝ)) (-(a : ℝ))
+  (fun n => -f (OrderDual.toDual n)) N ω
+≤ upcrossings (a : ℝ) (b : ℝ)
+  (fun k => f (OrderDual.toDual (N - k))) ω.
+```
+Search/reuse record: pinned mathlib supplies `upcrossings`, `upcrossingsBefore`,
+`upcrossingsBefore_mono`, `StronglyAdapted.measurable_upcrossingsBefore`, and
+`lintegral_iSup`; local code supplies the order-dual finite-horizon
+submartingale and uniform expected-upcrossing bound.  The remaining blocker is
+therefore exactly the deterministic finite-prefix reversal comparison, with
+careful endpoint/off-by-one handling in mathlib's recursive crossing-time
+definitions.
