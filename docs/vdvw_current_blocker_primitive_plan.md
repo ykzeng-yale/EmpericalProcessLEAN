@@ -4288,3 +4288,16 @@ rate inputs from a genuine textbook VC/Sauer/trace-cover theorem, prove the
 random-entropy selected finite-net tail/UI theorem without deterministic
 boundedness, or extend the route beyond the countable coordinate-measurable
 class layer.
+
+2026-05-05 follow-up: the structural deterministic-rate branch now has a
+joint endpoint package.  The compiled theorem
+`VdVWTheorem243_logCardinality_div_tendsto_bound_pGlivenkoCantelli_and_inMean`
+combines the structural-rate local book-style `P`-GC endpoint with the
+structural-rate in-mean centered-supremum endpoint under the same covering,
+rate, measurability, integrability, and Rademacher side conditions.  This is a
+final-assembly convenience for future VC/Sauer/trace-cover instantiations, not
+a new primitive.  The next productive Lean target remains to prove one of the
+inputs that this package still exposes: a genuine structural covering/rate
+theorem, a random-entropy finite-net tail/UI theorem without deterministic log
+boundedness, or the arbitrary `P`-measurable/asymptotic-measurable class
+bridge beyond countable coordinate measurability.
