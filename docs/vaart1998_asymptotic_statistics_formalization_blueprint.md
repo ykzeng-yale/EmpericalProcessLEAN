@@ -118,9 +118,13 @@ Initial modules:
   compiled packet provides `Vaart1998MomentLocalInverseCertificate` and the
   Theorem 4.1 CLT-to-delta handoff for a supplied empirical-moment CLT and
   differentiable/measurable local inverse, including the textbook `sqrt n`
-  specialization.  It deliberately leaves existence with probability tending
-  to one, solve-on-local-range uniqueness, inverse-function theorem packaging,
-  and multivariate CLT/covariance identification as explicit next layers.
+  specialization.  The second packet adds
+  `Vaart1998MomentLocalRangeCertificate`,
+  `Vaart1998MomentEstimatorLocalRangeProbabilityCertificate`, and deterministic
+  solve/uniqueness/local-domain wrappers.  It deliberately leaves
+  inverse-function theorem packaging, vector LLN/local-range probability
+  discharge, and multivariate CLT/covariance identification as explicit next
+  layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

@@ -56,6 +56,103 @@ structure Vaart1998MomentLocalInverseCertificate (M Θ : Type*)
   inverse_measurable : Measurable eInv
 
 /--
+Local range data for the moment equations in van der Vaart Theorem 4.1.
+
+The source proof obtains a neighborhood `V` of the true moment such that the
+local inverse is defined on `V`.  This certificate records only the deterministic
+equation-solving facts that later probability/localization work needs.
+-/
+structure Vaart1998MomentLocalRangeCertificate (M Θ : Type*) where
+  /-- The theoretical moment map `e(theta) = P_theta f`. -/
+  e : Θ -> M
+  /-- The local inverse on the moment range. -/
+  eInv : M -> Θ
+  /-- Local range of empirical moments where the estimator exists. -/
+  momentRange : Set M
+  /-- Local parameter domain where uniqueness is asserted. -/
+  parameterDomain : Set Θ
+  /-- The inverse candidate maps local moments into the local parameter domain. -/
+  eInv_mem_parameterDomain : ∀ {m : M}, m ∈ momentRange -> eInv m ∈ parameterDomain
+  /-- Right inverse property: the local-inverse estimator solves the moment equation. -/
+  right_inverse_on_momentRange : ∀ {m : M}, m ∈ momentRange -> e (eInv m) = m
+  /-- Left inverse property on the local parameter domain, used for uniqueness. -/
+  left_inverse_on_parameterDomain :
+    ∀ {theta : Θ}, theta ∈ parameterDomain -> eInv (e theta) = theta
+
+/--
+Supplied probability-localization certificate for Theorem 4.1's existence
+sentence.  The vector LLN should eventually discharge `localRange_probability`;
+for now it is kept as an explicit field.
+-/
+structure Vaart1998MomentEstimatorLocalRangeProbabilityCertificate
+    (Ω M : Type*) [MeasurableSpace Ω] (P : Measure Ω) where
+  empiricalMoment : ℕ -> Ω -> M
+  momentRange : Set M
+  localRange_probability :
+    Tendsto (fun n : ℕ => P.real {ω : Ω | empiricalMoment n ω ∈ momentRange})
+      atTop (𝓝 1)
+
+/--
+If the empirical moment lies in the local range, the inverse candidate solves
+the moment equation.
+-/
+theorem vaart1998_theorem_4_1_moment_estimator_solves_on_local_range
+    {Ω M Θ : Type*} (C : Vaart1998MomentLocalRangeCertificate M Θ)
+    {empiricalMoment : ℕ -> Ω -> M} {n : ℕ} {ω : Ω}
+    (hmem : empiricalMoment n ω ∈ C.momentRange) :
+    C.e (C.eInv (empiricalMoment n ω)) = empiricalMoment n ω :=
+  C.right_inverse_on_momentRange hmem
+
+/--
+Pointwise version for a named estimator that is definitionally or propositionally
+equal to the local-inverse candidate on the given sample point.
+-/
+theorem vaart1998_theorem_4_1_moment_estimator_thetaHat_solves_on_local_range
+    {Ω M Θ : Type*} (C : Vaart1998MomentLocalRangeCertificate M Θ)
+    {empiricalMoment : ℕ -> Ω -> M} {thetaHat : ℕ -> Ω -> Θ}
+    {n : ℕ} {ω : Ω}
+    (hhat : thetaHat n ω = C.eInv (empiricalMoment n ω))
+    (hmem : empiricalMoment n ω ∈ C.momentRange) :
+    C.e (thetaHat n ω) = empiricalMoment n ω := by
+  rw [hhat]
+  exact vaart1998_theorem_4_1_moment_estimator_solves_on_local_range C hmem
+
+/--
+Uniqueness of the local moment-equation solution inside the supplied local
+parameter domain.
+-/
+theorem vaart1998_theorem_4_1_moment_estimator_unique_on_parameterDomain
+    {M Θ : Type*} (C : Vaart1998MomentLocalRangeCertificate M Θ)
+    {m : M} {theta : Θ}
+    (htheta : theta ∈ C.parameterDomain) (hsolve : C.e theta = m) :
+    theta = C.eInv m := by
+  have hleft := C.left_inverse_on_parameterDomain htheta
+  rw [hsolve] at hleft
+  exact hleft.symm
+
+/--
+The local-inverse candidate itself lies in the local parameter domain whenever
+the empirical moment lies in the local range.
+-/
+theorem vaart1998_theorem_4_1_moment_estimator_mem_parameterDomain_on_local_range
+    {Ω M Θ : Type*} (C : Vaart1998MomentLocalRangeCertificate M Θ)
+    {empiricalMoment : ℕ -> Ω -> M} {n : ℕ} {ω : Ω}
+    (hmem : empiricalMoment n ω ∈ C.momentRange) :
+    C.eInv (empiricalMoment n ω) ∈ C.parameterDomain :=
+  C.eInv_mem_parameterDomain hmem
+
+/--
+Certificate form of the Theorem 4.1 existence-localization sentence: empirical
+moments fall in the local range with probability tending to one.
+-/
+theorem vaart1998_theorem_4_1_local_range_probability_of_certificate
+    {Ω M : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    (C : Vaart1998MomentEstimatorLocalRangeProbabilityCertificate Ω M P) :
+    Tendsto (fun n : ℕ =>
+      P.real {ω : Ω | C.empiricalMoment n ω ∈ C.momentRange}) atTop (𝓝 1) :=
+  C.localRange_probability
+
+/--
 van der Vaart 1998, Theorem 4.1, method-of-moments delta handoff.
 
 This theorem is the compiled Chapter 4 proof spine: once the empirical moments

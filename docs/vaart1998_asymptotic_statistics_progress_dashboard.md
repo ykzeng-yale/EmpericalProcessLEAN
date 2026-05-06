@@ -84,6 +84,17 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_moment_estimator_delta_method`,
   `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method`, and their
   certificate variants.
+- local range/moment-equation certificate:
+  `Vaart1998MomentLocalRangeCertificate`.
+- local-range probability certificate:
+  `Vaart1998MomentEstimatorLocalRangeProbabilityCertificate`.
+- deterministic solve, uniqueness, parameter-domain membership, and supplied
+  local-range probability wrappers:
+  `vaart1998_theorem_4_1_moment_estimator_solves_on_local_range`,
+  `vaart1998_theorem_4_1_moment_estimator_thetaHat_solves_on_local_range`,
+  `vaart1998_theorem_4_1_moment_estimator_unique_on_parameterDomain`,
+  `vaart1998_theorem_4_1_moment_estimator_mem_parameterDomain_on_local_range`,
+  and `vaart1998_theorem_4_1_local_range_probability_of_certificate`.
 
 Verification passed for the latest pushed Vaart packet before this run,
 `14c3424`:
@@ -101,12 +112,12 @@ Current Vaart packet verification passed for:
 
 Continue Vaart Chapter 4.1 from the compiled delta handoff:
 
-1. deterministic solve-on-local-range and uniqueness wrappers for
-   `eInv (empiricalMoment n ω)`;
-2. existence-with-probability-tending-to-one certificate with the local-range
-   probability field supplied;
-3. inverse-function theorem bridge into
+1. inverse-function theorem bridge into
    `Vaart1998MomentLocalInverseCertificate`;
+2. inverse-function local-range bridge into
+   `Vaart1998MomentLocalRangeCertificate`;
+3. vector LLN/local-range probability discharge for
+   `Vaart1998MomentEstimatorLocalRangeProbabilityCertificate`;
 4. keep the multivariate CLT and covariance display as supplied fields until a
    local vector CLT is formalized.
 

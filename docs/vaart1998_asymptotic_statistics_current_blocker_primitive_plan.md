@@ -137,31 +137,40 @@ Chapter 3 theorem-facing wrappers compiling:
 32. Certificate versions:
    `vaart1998_theorem_4_1_moment_estimator_delta_method_of_certificate` and
    `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_certificate`.
+33. Theorem 4.1 local range/moment-equation certificate:
+   `Vaart1998MomentLocalRangeCertificate`.
+34. Theorem 4.1 local range probability certificate:
+   `Vaart1998MomentEstimatorLocalRangeProbabilityCertificate`.
+35. Deterministic local-inverse solve and uniqueness wrappers:
+   `vaart1998_theorem_4_1_moment_estimator_solves_on_local_range`,
+   `vaart1998_theorem_4_1_moment_estimator_thetaHat_solves_on_local_range`,
+   `vaart1998_theorem_4_1_moment_estimator_unique_on_parameterDomain`, and
+   `vaart1998_theorem_4_1_moment_estimator_mem_parameterDomain_on_local_range`.
+36. Supplied local-range probability wrapper:
+   `vaart1998_theorem_4_1_local_range_probability_of_certificate`.
 
-Latest pushed Vaart packet before this run: `14c3424`
-(`Add Vaart delta remainder measurability wrappers`).
+Latest pushed Vaart packet before this run: `cb1542c`
+(`Add Vaart method of moments delta handoff`).
 
-The current theorem-sized packet opens Chapter 4.  The first method-of-moments
-module, `StatInference/AsymptoticStatistics/MomentEstimators.lean`, compiles and
-is root-imported from `StatInference.lean`.  It packages the part of Vaart
-Theorem 4.1 that the current Chapter 2-3 spine can honestly prove: a supplied
-empirical-moment CLT plus a differentiable/measurable local inverse gives the
-asymptotic distribution of the local-inverse moment estimator by the delta
-method.
+The current theorem-sized packet completes the deterministic local-range layer
+of Vaart Theorem 4.1.  The method-of-moments module now has both the
+CLT-to-delta asymptotic-normality handoff and the equation-solving
+bookkeeping: on the supplied local moment range, the local inverse estimator
+solves the moment equations, lies in the supplied local parameter domain, and
+is unique there.  The probability-tending-to-one existence sentence is exposed
+as a supplied local-range probability certificate, ready for a later vector LLN.
 
 The next aggressive packet should continue Chapter 4 without overclaiming the
 existence sentence:
 
-1. add a deterministic solve-on-local-range lemma: if `empiricalMoment n ω`
-   lies in the local range `V`, then `eInv (empiricalMoment n ω)` solves the
-   moment equations, with uniqueness under a supplied one-to-one/local-inverse
-   hypothesis;
-2. add an existence-with-probability-tending-to-one certificate as a supplied
-   probability field, leaving vector LLN/local-range proof obligations explicit;
-3. if cheap, connect mathlib's inverse-function theorem APIs
+1. if cheap, connect mathlib's inverse-function theorem APIs
    `HasStrictFDerivAt.localInverse` and
    `HasFDerivAt.of_local_left_inverse` to
    `Vaart1998MomentLocalInverseCertificate`;
+2. connect an inverse-function local range certificate to
+   `Vaart1998MomentLocalRangeCertificate`;
+3. start vector LLN/local-range probability discharge for
+   `Vaart1998MomentEstimatorLocalRangeProbabilityCertificate`;
 4. keep the multivariate empirical-moment CLT/covariance display supplied for
    now, since the current pinned mathlib CLT is scalar.
 
