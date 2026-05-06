@@ -42,8 +42,8 @@ proof state instead of replaying old instructions.
 Do not update the automation prompt for wording-only churn.  Do update it when
 an old prompt would point at a solved target, omit a newly discovered reusable
 API, or hide a genuine blocker such as the current Theorem 2.4.3
-integrated-Hoeffding mean convergence, truncation/tail, or final assembly
-handoff.
+random-entropy/tail-UI mismatch or the Chapter 1 arbitrary-map/process
+converse and measurability primitives.
 
 ## Active Blocker
 
@@ -71,12 +71,15 @@ unless a new exact statement directly consumes them.
 ## Current `/goal` Target
 
 Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
-`57037fa Add separable centered weak convergence endpoints`: local `main` is
-synced with `origin/main`, the worktree is clean, and the active Codex goal
-object remains broad because the goal API cannot edit an active objective in
-place.  Use this paragraph as the operative replacement prompt.  The latest
-closed Lean support is:
+`fc98144 Add weak convergence target congruence`: local `main` is synced with
+`origin/main`, the worktree is clean, and the active Codex goal object remains
+broad because the goal API cannot edit an active objective in place.  Use this
+paragraph as the operative replacement prompt.  The latest closed Lean support
+is:
 
+* measure-level weak-convergence source/target replacement:
+  `VdVWWeakConvergenceProbabilityMeasures.congr_limit` and
+  `VdVWWeakConvergenceProbabilityMeasures.congr_eventually_limit`;
 * Chapter 1 process-law stability:
   `VdVWEllInftyProcessWeakConvergence.mono_filter`,
   `VdVWEllInftyProcessWeakConvergence.comp_tendsto`,
@@ -112,10 +115,11 @@ closed Lean support is:
   listed below.
 
 Do not spend the next `/goal` continuation on another endpoint alias, another
-finite-index process wrapper, another selected-route restatement, or another
-centered-separability wrapper unless a new exact theorem consumes it
-immediately.  The next high-capacity proof batch should choose the first lane
-below that can make genuine Lean progress after search:
+finite-index process wrapper, another selected-route restatement, another
+process/FDD congruence alias, or another centered-separability wrapper unless a
+new exact theorem consumes it immediately.  The next high-capacity proof batch
+should choose the first lane below that can make genuine Lean progress after
+search:
 
 1. **Theorem 2.4.3 structural entropy lane.**  Prove a real structural
    entropy/cardinality theorem feeding an already compiled selected
@@ -123,7 +127,9 @@ below that can make genuine Lean progress after search:
    finite-trace, threshold-grid, or quantizer estimate with sublinear
    normalized logarithmic growth.  First search the existing
    threshold/grid/full-subgraph/finite-trace routes to avoid duplicating a
-   closed endpoint package.
+   closed endpoint package.  The target should supply a new proof input for
+   the book random entropy condition, not merely repackage an existing final
+   consumer.
 2. **Selected empirical-cover tail/UI/mean lane.**  Prove a genuine selected
    empirical-cover event, tail-expectation, uniform-integrability, or ordinary
    mean-convergence bridge from hypotheses strong enough to imply it.  Bare

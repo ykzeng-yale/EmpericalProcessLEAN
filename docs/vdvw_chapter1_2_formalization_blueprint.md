@@ -90,13 +90,16 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current operational target, 2026-05-06 after verified pushed head
-`57037fa Add separable centered weak convergence endpoints`: the active Codex
-`/goal` remains broad and cannot be edited in place, so this paragraph is the
+`fc98144 Add weak convergence target congruence`: the active Codex `/goal`
+remains broad and cannot be edited in place, so this paragraph is the
 blueprint-level replacement target.  Do not rebuild forward FDD/process-law
-support, finite-index `ell_infty(T)` wrappers, Theorem 2.4.3 endpoint
-packages, or centered separability wrappers unless a new exact theorem consumes
-them immediately.  The newest proof state adds the centered
-pointwise-approximable and `P`-measurable constructor chain
+support, finite-index `ell_infty(T)` wrappers, process/FDD congruence aliases,
+Theorem 2.4.3 endpoint packages, or centered separability wrappers unless a
+new exact theorem consumes them immediately.  The newest proof state adds
+measure-level weak-convergence source/target replacement via
+`VdVWWeakConvergenceProbabilityMeasures.congr_limit` and
+`VdVWWeakConvergenceProbabilityMeasures.congr_eventually_limit`, on top of the
+centered pointwise-approximable and `P`-measurable constructor chain
 `VdVWPointwiseApproximableByCountableSubclass.tendsto_integral_of_uniform_bound`,
 `VdVWPointwiseApproximableByCountableSubclass.centered_of_uniform_bound`, and
 `VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound`,
@@ -110,7 +113,9 @@ The next proof work should close a new upstream theorem-facing blocker:
    VC/Sauer, finite-trace, threshold-grid, or quantizer estimate with
    sublinear normalized logarithmic growth feeding the selected fixed-radius
    Theorem 2.4.3 route, after searching the existing
-   threshold/grid/full-subgraph/finite-trace routes to avoid duplication;
+   threshold/grid/full-subgraph/finite-trace routes to avoid duplication, and
+   only if it supplies a new proof input rather than another final-consumer
+   alias;
 2. selected empirical-cover tail/UI/ordinary-mean: prove such a bridge from
    hypotheses strong enough to imply it, without treating bare
    outer-probability random-entropy convergence as uniform integrability;

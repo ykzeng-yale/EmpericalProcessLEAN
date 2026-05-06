@@ -14,10 +14,14 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-06 after verified pushed head
-`57037fa Add separable centered weak convergence endpoints`: treat the broad
-Codex goal objective as an orchestration label only, because the active goal
-object cannot be edited in place.  The latest closed support is the full
-bounded centered separability handoff:
+`fc98144 Add weak convergence target congruence`: treat the broad Codex goal
+objective as an orchestration label only, because the active goal object cannot
+be edited in place.  The latest closed support includes measure-level
+weak-convergence source/target replacement through
+`VdVWWeakConvergenceProbabilityMeasures.congr_limit` and
+`VdVWWeakConvergenceProbabilityMeasures.congr_eventually_limit`; process and
+FDD stability under whole-sample-path a.e. equality; and the earlier bounded
+centered separability handoff:
 `VdVWPointwiseApproximableByCountableSubclass.tendsto_integral_of_uniform_bound`,
 `VdVWPointwiseApproximableByCountableSubclass.centered_of_uniform_bound`,
 `VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound`,
@@ -30,13 +34,15 @@ The next useful `/goal` run should not rebuild finite-net/Hoeffding/Mills,
 selected fixed-radius/inverse-radius, untruncation, reverse-cofiltration,
 selected-entropy, full-subgraph, finite-class, threshold/grid/quantizer,
 Dirac-law, finite-index `ell_infty(T)`, forward process-law endpoint packages,
-or the centered separability endpoints already compiled.  It should close a
-non-duplicative theorem-facing batch in one of these lanes:
+process/FDD congruence aliases, or the centered separability endpoints already
+compiled.  It should close a non-duplicative theorem-facing batch in one of
+these lanes:
 
 1. a real structural entropy/cardinality theorem feeding Theorem 2.4.3, such
    as finite-code/compression, VC/Sauer, finite-trace, threshold-grid, or
    quantizer sublinear normalized-log growth, only if it is not already covered
-   by the existing threshold/grid/full-subgraph/finite-trace routes;
+   by the existing threshold/grid/full-subgraph/finite-trace routes, and only
+   if it supplies a new proof input rather than an endpoint alias;
 2. a genuine selected empirical-cover event, tail/UI, or ordinary-mean bridge
    from hypotheses strong enough to imply it; bare outer-probability convergence
    of normalized random entropy is not enough;
