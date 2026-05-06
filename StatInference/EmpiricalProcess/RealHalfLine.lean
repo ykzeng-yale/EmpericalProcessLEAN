@@ -804,6 +804,63 @@ theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid
       · simpa [endpoint'] using hinc (Fin.last (cells + 1))
 
 /--
+A strict finite endpoint grid whose open cells refine small real-measure cover
+sets produces a cutpoint chain.
+
+This separates the future endpoint extraction problem from the measure/CDF
+conversion: once the source proof supplies a strict endpoint tuple and a
+small-measure cover set for each adjacent open cell, the existing endpoint-grid
+handoff applies.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_measureReal_refinement
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ coverCell : Set ℝ,
+        Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆ coverCell ∧
+        μ.real coverCell < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) := by
+  refine SuppliedRealMiddleCDFPartitionChain.of_endpointGrid endpoint hstrict ?_
+  intro cell
+  have hlt : endpoint (Fin.castSucc cell) < endpoint (Fin.succ cell) :=
+    hstrict Fin.castSucc_lt_succ
+  rcases hrefine cell with ⟨coverCell, hsubset, hcover_lt⟩
+  have hmeasure :
+      μ.real (Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell))) <
+        epsilon := by
+    exact (measureReal_mono hsubset).trans_lt hcover_lt
+  rw [← measureReal_Ioo_eq_cdf_leftLim_sub μ hlt]
+  exact hmeasure
+
+/--
+A strict finite endpoint grid whose closed adjacent cells refine the finite
+small-interval cover produces a cutpoint chain.
+
+This is the direct consumer for a future duplicate-erasure theorem applied to
+the non-atomic monotone subdivision.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers,
+        Set.Icc (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) ∧
+        μ.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) := by
+  refine SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_measureReal_refinement
+    endpoint hstrict ?_
+  intro cell
+  rcases hrefine cell with ⟨x, _hx, hclosed, hsmall⟩
+  refine ⟨Set.Ioo (l x) (r x), ?_, hsmall⟩
+  exact Set.Ioo_subset_Icc_self.trans hclosed
+
+/--
 Every finite small-increment cutpoint chain supplies a bounded middle CDF
 partition.
 -/
