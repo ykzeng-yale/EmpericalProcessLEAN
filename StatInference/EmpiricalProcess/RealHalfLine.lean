@@ -969,6 +969,25 @@ theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refi
   exact ⟨Set.Ioo (l x) (r x) \ {x}, hpunctured, hsmall⟩
 
 /--
+No endpoint of a strict finite endpoint grid lies inside any adjacent open
+cell of that grid.
+-/
+theorem endpoint_not_mem_adjacent_Ioo_of_strictMono
+    {cells : ℕ} {endpoint : Fin (cells + 2) -> ℝ}
+    (hstrict : StrictMono endpoint)
+    (cell : Fin (cells + 1)) (point : Fin (cells + 2)) :
+    endpoint point ∉
+      Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) := by
+  intro hmem
+  rcases Fin.succ_le_or_le_castSucc point cell with hright | hleft
+  · have hright_le : endpoint (Fin.succ cell) ≤ endpoint point :=
+      hstrict.monotone hright
+    exact (not_lt_of_ge hright_le) hmem.2
+  · have hleft_le : endpoint point ≤ endpoint (Fin.castSucc cell) :=
+      hstrict.monotone hleft
+    exact (not_lt_of_ge hleft_le) hmem.1
+
+/--
 A strict finite endpoint grid whose open adjacent cells refine finite open
 neighborhoods and avoid the selected center produces a cutpoint chain.
 
@@ -999,6 +1018,37 @@ theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_avoids_ce
   intro hzsingleton
   have hzx : z = x := Set.mem_singleton_iff.mp hzsingleton
   exact havoid (by simpa [hzx] using hz)
+
+/--
+A strict finite endpoint grid whose open adjacent cells refine finite open
+neighborhoods, with each selected center appearing as a grid endpoint, produces
+a cutpoint chain.
+
+This packages the endpoint-inclusion target for the future ordering/splitting
+theorem: once all selected atom centers are inserted into the strict grid, the
+center-avoidance side condition is automatic.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_endpoint_center_refinement
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers, ∃ point : Fin (cells + 2),
+        endpoint point = x ∧
+        Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) ∧
+        μ.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) := by
+  refine SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_avoids_center_refinement
+    (centers := centers) (l := l) (r := r) endpoint hstrict ?_
+  intro cell
+  rcases hrefine cell with ⟨x, hx, point, hpoint, hopen, hsmall⟩
+  refine ⟨x, hx, hopen, ?_, hsmall⟩
+  intro hxmem
+  exact endpoint_not_mem_adjacent_Ioo_of_strictMono hstrict cell point
+    (by simpa [hpoint] using hxmem)
 
 /--
 A strict finite prefix of a monotone subdivision, together with the closed-cover

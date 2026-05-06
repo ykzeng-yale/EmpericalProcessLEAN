@@ -92,6 +92,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_avoids_center_refinement`
+- `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_endpoint_center_refinement`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`
@@ -145,6 +146,7 @@ compile, via
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_avoids_center_refinement`,
+`durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_endpoint_center_refinement`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`,
@@ -200,8 +202,14 @@ is the compiled consumer once strict endpoints are ordered so each open cell
 avoids its selected atom center.  The convenience bridge
 `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_avoids_center_refinement`
 now reduces that consumer to ordinary open-cover refinement plus the center
-avoidance fact.  The fully arbitrary distribution route still needs the finite
-ordering/splitting theorem that constructs such a grid.
+avoidance fact.  The endpoint-grid fact
+`endpoint_not_mem_adjacent_Ioo_of_strictMono` and the bridge
+`SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_endpoint_center_refinement`
+now make center avoidance automatic whenever the selected center is inserted as
+one of the strict grid endpoints.  The fully arbitrary distribution route still
+needs the finite ordering/splitting theorem that constructs a strict endpoint
+grid including the selected centers and making each open adjacent cell refine a
+selected finite cover interval.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
 Parallel target: Chapter 2.1 exact iid/product notation refinements only if

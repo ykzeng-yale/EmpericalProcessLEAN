@@ -763,6 +763,29 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_avoid
     endpoint hstrict hrefine
 
 /--
+Durrett 2019, Theorem 2.4.9 endpoint-center open-cover package.
+
+If the selected center for each open adjacent cell is itself one of the strict
+grid endpoints, then the center-avoidance condition is automatic and the
+atom-aware open-cover handoff gives the cutpoint chain.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_endpoint_center_refinement
+    {P : Measure ℝ} [IsProbabilityMeasure P] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers, ∃ point : Fin (cells + 2),
+        endpoint point = x ∧
+        Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_endpoint_center_refinement
+    endpoint hstrict hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9 strict-subdivision-prefix package.
 
 After repeated values have been erased from the monotone subdivision, a strict
