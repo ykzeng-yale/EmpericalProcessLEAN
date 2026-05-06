@@ -52,6 +52,18 @@ theorem weightedDenominator_constant_weight_eq
     _ = commonWeight * (∑ _unit ∈ sample, (1 : Real)) := by
           rw [← Finset.mul_sum]
 
+/-- The finite unit mass is the sample cardinality, coerced to `Real`. -/
+theorem finiteUnitMass_eq_card (sample : Finset Unit) :
+    (∑ _unit ∈ sample, (1 : Real)) = (sample.card : Real) := by
+  simp
+
+/-- A constant-weight Hájek denominator is the common weight times sample size. -/
+theorem weightedDenominator_constant_weight_eq_card
+    (sample : Finset Unit) (commonWeight : Real) :
+    weightedDenominator sample (fun _unit => commonWeight) =
+      commonWeight * (sample.card : Real) := by
+  rw [weightedDenominator_constant_weight_eq, finiteUnitMass_eq_card]
+
 /--
 With a nonzero common survey weight and nonzero finite sample mass, every
 normalized survey weight reduces to the inverse of the finite unit mass.
@@ -68,6 +80,22 @@ theorem normalizedSurveyWeight_constant_weight_eq_inv_mass
   field_simp [hweight, hmass]
 
 /--
+With a nonzero common survey weight and nonzero sample cardinality, every
+normalized survey weight reduces to the inverse sample size.
+-/
+theorem normalizedSurveyWeight_constant_weight_eq_inv_card
+    (sample : Finset Unit) (commonWeight : Real)
+    (hweight : commonWeight ≠ 0)
+    (hcard : (sample.card : Real) ≠ 0)
+    (unit : Unit) :
+    normalizedSurveyWeight sample (fun _unit => commonWeight) unit =
+      (1 : Real) / (sample.card : Real) := by
+  rw [normalizedSurveyWeight_constant_weight_eq_inv_mass
+    sample commonWeight hweight _ unit]
+  · rw [finiteUnitMass_eq_card]
+  · simpa [finiteUnitMass_eq_card] using hcard
+
+/--
 With a nonzero common survey weight, the Hajek mean equals the ratio formed by
 the unweighted finite sum and the finite unit mass `sum 1`.
 -/
@@ -82,6 +110,21 @@ theorem hajekMean_constant_weight_eq_unweighted_ratio
   rw [weightedSum_constant_weight_eq,
     weightedDenominator_constant_weight_eq]
   field_simp [hweight, hmass]
+
+/--
+With a nonzero common survey weight, the Hájek mean is the ordinary finite
+sample average with denominator `sample.card`.
+-/
+theorem hajekMean_constant_weight_eq_card_average
+    (sample : Finset Unit) (value : Unit -> Real) (commonWeight : Real)
+    (hweight : commonWeight ≠ 0)
+    (hcard : (sample.card : Real) ≠ 0) :
+    hajekMean sample (fun _unit => commonWeight) value =
+      (∑ unit ∈ sample, value unit) / (sample.card : Real) := by
+  rw [hajekMean_constant_weight_eq_unweighted_ratio
+    sample value commonWeight hweight _]
+  · rw [finiteUnitMass_eq_card]
+  · simpa [finiteUnitMass_eq_card] using hcard
 
 end WDSM
 end Matching
