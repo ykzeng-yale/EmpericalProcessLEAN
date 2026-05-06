@@ -91,6 +91,8 @@ These chapters should aggressively reuse the VdV&W lane, especially
   line 763.
 - Theorem 3.1 delta method:
   line 1103.
+- Chapter 4.1 method of moments:
+  lines 1387-1418.
 
 ## Current Module Plan
 
@@ -112,7 +114,13 @@ Initial modules:
 - `DeltaMethod.lean`: full finite-dimensional delta method and uniform delta
   method, starting with source reports and uniform variants rather than the
   now-compiled scalar scaled-ball and measurability certificates.
-- `MomentEstimators.lean`: Chapter 4 wrappers.
+- `MomentEstimators.lean`: Chapter 4 method-of-moments wrappers.  The first
+  compiled packet provides `Vaart1998MomentLocalInverseCertificate` and the
+  Theorem 4.1 CLT-to-delta handoff for a supplied empirical-moment CLT and
+  differentiable/measurable local inverse, including the textbook `sqrt n`
+  specialization.  It deliberately leaves existence with probability tending
+  to one, solve-on-local-range uniqueness, inverse-function theorem packaging,
+  and multivariate CLT/covariance identification as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

@@ -125,24 +125,45 @@ Chapter 3 theorem-facing wrappers compiling:
 27. Theorem 3.1 compact sequence wrapper deriving the remainder measurability
    from global measurability of `phi`:
    `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_measurable`.
+28. Chapter 4 textbook-rate helper:
+   `vaart1998_sqrt_nat_tendsto_atTop`.
+29. Theorem 4.1 local inverse/delta certificate structure:
+   `Vaart1998MomentLocalInverseCertificate`.
+30. Theorem 4.1 supplied empirical-moment CLT to method-of-moments
+   asymptotic-normality handoff:
+   `vaart1998_theorem_4_1_moment_estimator_delta_method`.
+31. Theorem 4.1 `sqrt n` specialization:
+   `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method`.
+32. Certificate versions:
+   `vaart1998_theorem_4_1_moment_estimator_delta_method_of_certificate` and
+   `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_certificate`.
 
-Latest pushed Vaart packet before this run: `06ca46f`
-(`Add Vaart delta scaled-ball derivative bridge`).
+Latest pushed Vaart packet before this run: `14c3424`
+(`Add Vaart delta remainder measurability wrappers`).
 
-The current theorem-sized packet has closed the cheap Chapter 3.1 measurability
-bookkeeping layer.  The compact differentiability/distribution wrapper no
-longer asks users to hand-prove `hR_meas` when `T_n` and either `phi ∘ T_n` or
-globally measurable `phi` are available.
+The current theorem-sized packet opens Chapter 4.  The first method-of-moments
+module, `StatInference/AsymptoticStatistics/MomentEstimators.lean`, compiles and
+is root-imported from `StatInference.lean`.  It packages the part of Vaart
+Theorem 4.1 that the current Chapter 2-3 spine can honestly prove: a supplied
+empirical-moment CLT plus a differentiable/measurable local inverse gives the
+asymptotic distribution of the local-inverse moment estimator by the delta
+method.
 
-The next aggressive packet should move out of Chapter 3 plumbing:
+The next aggressive packet should continue Chapter 4 without overclaiming the
+existence sentence:
 
-1. start Chapter 4 method-of-moments wrappers by combining the CLT
-   wrapper with
-   `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`;
-2. add source-shaped moment estimator consistency/asymptotic-normality
-   certificates only as far as existing SLLN/CLT/delta APIs discharge them;
-3. begin exact source capture for Vaart Theorem 3.1 only when the Markdown/PDF
-   theorem statement and assumptions are explicitly quoted in a report file.
+1. add a deterministic solve-on-local-range lemma: if `empiricalMoment n ω`
+   lies in the local range `V`, then `eInv (empiricalMoment n ω)` solves the
+   moment equations, with uniqueness under a supplied one-to-one/local-inverse
+   hypothesis;
+2. add an existence-with-probability-tending-to-one certificate as a supplied
+   probability field, leaving vector LLN/local-range proof obligations explicit;
+3. if cheap, connect mathlib's inverse-function theorem APIs
+   `HasStrictFDerivAt.localInverse` and
+   `HasFDerivAt.of_local_left_inverse` to
+   `Vaart1998MomentLocalInverseCertificate`;
+4. keep the multivariate empirical-moment CLT/covariance display supplied for
+   now, since the current pinned mathlib CLT is scalar.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
@@ -205,6 +226,23 @@ theorem is now compiled.  The proof only needs the fixed scaled-ball event and
 for this certificate.  The Chapter 3 technical `AEMeasurable` side condition is
 now also compiled from standard composition, subtraction, continuous-linear
 composition, and constant-scaling APIs in mathlib.
+
+Search result for Vaart Chapter 4.1: the source statement is in
+`VanDerVaart_Asymptotic_Statistics_1-115.md` around lines 1387-1418.  Theorem
+4.1 assumes `e(theta)=P_theta f` is one-to-one on open `Theta ⊆ R^k`,
+continuously differentiable at `theta0`, has nonsingular derivative, and
+`P_theta0 ‖f‖^2 < ∞`; it concludes existence with probability tending to one
+and asymptotic normality.  The proof explicitly uses LLN for local existence,
+CLT for `sqrt n (P_n f - P_theta0 f)`, and Theorem 3.1 delta method for the
+display preceding the theorem.  The compiled Lean packet deliberately proves
+only this CLT-to-delta handoff first.
+
+Search result for Chapter 4 Lean reuse: pinned mathlib currently provides a
+scalar CLT in `Mathlib.Probability.CentralLimitTheorem`; no ready multivariate
+CLT was found.  Mathlib does provide inverse-function APIs in
+`Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv` and differentiability
+of continuous linear equivalences in `Mathlib.Analysis.Calculus.FDeriv.Equiv`;
+these should be used to discharge the local inverse certificate later.
 
 ## Primitive Sequence
 

@@ -12,13 +12,15 @@ Source folder: `Textbooks/VaartAsymStat1998/`
 
 ## Verified Frontier
 
-Initial scaffold and the next Chapter 3 delta-method localization layer compile:
+Initial scaffold through the first Chapter 4 method-of-moments layer compiles:
 
 - `StatInference/AsymptoticStatistics/Basic.lean`
+- `StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - root import from `StatInference.lean`
 - route docs under `docs/vaart1998_asymptotic_statistics_*`
 
-The initial Lean target is Chapter 2 plus Chapter 3 substrate:
+The compiled Lean target is Chapter 2, Chapter 3 substrate, and the first
+Chapter 4 handoff:
 
 - convergence in probability/distribution notation;
 - stochastic `o_P(1)` and `O_P(1)` notation;
@@ -71,32 +73,46 @@ The initial Lean target is Chapter 2 plus Chapter 3 substrate:
   `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_aemeasurable`
   and
   `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_measurable`.
+- Chapter 4 method-of-moments module:
+  `StatInference/AsymptoticStatistics/MomentEstimators.lean`.
+- textbook-rate helper:
+  `vaart1998_sqrt_nat_tendsto_atTop`.
+- local inverse/delta certificate:
+  `Vaart1998MomentLocalInverseCertificate`.
+- Theorem 4.1 supplied empirical-moment CLT to moment-estimator asymptotic
+  normality:
+  `vaart1998_theorem_4_1_moment_estimator_delta_method`,
+  `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method`, and their
+  certificate variants.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`06ca46f`:
+`14c3424`:
 
 - `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
 - `lake build StatInference.AsymptoticStatistics.Basic`
 
 Current Vaart packet verification passed for:
 
-- `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
-- `lake build StatInference.AsymptoticStatistics.Basic`
+- `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
+- `lake build StatInference.AsymptoticStatistics.MomentEstimators`
+- `lake build StatInference`
 
 ## Next Aggressive Target
 
-Move beyond the now-compiled Chapter 3.1 probability, analytic, and
-measurability plumbing:
+Continue Vaart Chapter 4.1 from the compiled delta handoff:
 
-1. start Chapter 4 method-of-moments wrappers using the CLT wrapper
-   plus `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`;
-2. add only those moment-estimator certificates whose SLLN/CLT/delta fields
-   are already available locally;
-3. only write an exact Theorem 3.1 source report after capturing the theorem
-   statement and assumptions from the Markdown/PDF.
+1. deterministic solve-on-local-range and uniqueness wrappers for
+   `eInv (empiricalMoment n ω)`;
+2. existence-with-probability-tending-to-one certificate with the local-range
+   probability field supplied;
+3. inverse-function theorem bridge into
+   `Vaart1998MomentLocalInverseCertificate`;
+4. keep the multivariate CLT and covariance display as supplied fields until a
+   local vector CLT is formalized.
 
-If this blocks, record the exact missing SLLN/CLT/delta theorem shape and
-continue with the widest Chapter 4 wrapper that compiles.
+If this blocks, record the exact missing local inverse, local range, vector LLN,
+or multivariate CLT theorem shape and continue with the widest Chapter 4
+wrapper that compiles.
 
 ## Reuse Dependencies
 
