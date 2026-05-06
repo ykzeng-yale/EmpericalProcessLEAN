@@ -5999,6 +5999,18 @@ the random covering-number domination used by the pointwise-code endpoint.
 This is a structural input closure; next work can specialize it to concrete
 threshold grids, quantizers, or VC code-set cardinalities.
 
+2026-05-06 coordinate-code selected-package follow-up: the new random-cover
+lift is now consumed by the selected fixed-radius Theorem 2.4.3 side-condition
+package.  `Theorem243.lean` proves
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_pointwise_approx_code_product_cardinality_bound_logCardinality_div_tendsto_bound`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_pointwise_approx_code_product_cardinality_bound_logCardinality_div_tendsto_bound`.
+This closes the package-level bridge from finite coordinate code-set products
+and deterministic normalized log-cardinality rates to the selected
+fixed-radius tail/UI route.  The next non-duplicative work is a concrete
+coordinate quantizer, threshold grid, VC/Sauer, or structural entropy estimate
+that supplies those product-cardinality/log-rate hypotheses.
+
 2026-05-06 varying-domain lower-shifted continuous-map follow-up: local search
 found common-domain lower-shifted continuous-map closure and varying-domain
 signed continuous-map closure, but no matching varying-domain lower-shifted

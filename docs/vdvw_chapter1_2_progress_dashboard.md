@@ -5,7 +5,7 @@ van der Vaart and Wellner Chapters 1 and 2.  The authoritative detailed
 inventory is `docs/vdvw_chapter1_2_formalization_blueprint.md`; this file is a
 human-facing monitor for what is proved, what is in progress, and what remains.
 
-Status snapshot date: 2026-05-05.
+Status snapshot date: 2026-05-06.
 
 Active blocker/primitives register:
 
@@ -138,6 +138,13 @@ compiled too:
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_nnnorm_bound`
 turns a uniform bound on the lifted selected normalized empirical-cover
 entropy into untruncated centered convergence.
+The coordinate-code structural route now also reaches the selected fixed-radius
+side-condition package:
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_pointwise_approx_code_product_cardinality_bound_logCardinality_div_tendsto_bound`
+and its all-positive-`M` wrapper consume finite coordinate code-set products
+and deterministic normalized log-cardinality rates.  The next useful proof
+step is a concrete quantizer/grid/VC cardinality estimate feeding those
+hypotheses, or the broader selected entropy tail/UI theorem.
 The structural input is now fed by two reusable bridges:
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.firstSample_nnnorm_bound_of_logCardinality_div_bound`
 and

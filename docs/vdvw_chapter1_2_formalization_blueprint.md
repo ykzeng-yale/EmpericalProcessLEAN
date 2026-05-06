@@ -148,7 +148,13 @@ empirical-cover interface through
 and
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_coordinate_pointwise_approx_code_product_cardinality_bound_samplePath`,
 so finite coordinate code-set products can feed the pointwise-code Theorem
-2.4.3 endpoint directly.
+2.4.3 endpoint directly.  The selected fixed-radius package now consumes this
+route through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_pointwise_approx_code_product_cardinality_bound_logCardinality_div_tendsto_bound`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_pointwise_approx_code_product_cardinality_bound_logCardinality_div_tendsto_bound`;
+the remaining useful work is a concrete quantizer/grid/VC cardinality estimate
+for the coordinate code sets, not another selected-package wrapper.
 For Chapter 1 varying-domain asymptotic-measurability,
 `WeakConvergence.lean` now also has the lower-shifted continuous-map closure
 `VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.comp_continuous`
@@ -1271,7 +1277,11 @@ above, so they do not change the theorem-level dashboard counts.
    `coordinateCode_image_toFinset_card_le_prod`, and
    `empiricalL1CoveringNumber_le_of_coordinate_pointwise_approx_code_card_le`
    now discharges the finite vector-code image and product-cardinality
-   bookkeeping once each sample coordinate has a finite code set.  The
+   bookkeeping once each sample coordinate has a finite code set.  This route
+   now also feeds the selected fixed-radius Theorem 2.4.3 side-condition
+   package through
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_pointwise_approx_code_product_cardinality_bound_logCardinality_div_tendsto_bound`
+   and its all-positive-`M` wrapper.  The
    scalar-quantizer bridge
    `empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_card_le`
    then builds this vector code by applying coordinate quantizers to the
