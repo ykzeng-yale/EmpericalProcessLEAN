@@ -111,6 +111,10 @@ Initial modules:
   `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`.  The
   technical scaled-remainder a.e.-measurability field is now also packaged
   from `T_n` and `phi ∘ T_n`, with a measurable-`phi` convenience wrapper.
+  The newest Chapter 2 support layer wraps mathlib's theorem that almost-sure
+  convergence implies convergence in probability as
+  `vaart1998_tendstoInMeasure_of_tendsto_ae`, so strong-law outputs can feed
+  later estimator-localization proofs.
 - `DeltaMethod.lean`: full finite-dimensional delta method and uniform delta
   method, starting with source reports and uniform variants rather than the
   now-compiled scalar scaled-ball and measurability certificates.
@@ -133,9 +137,13 @@ Initial modules:
   newest layer assembles these ingredients into the Chapter 4.1 local
   existence conclusion: the local inverse candidate solves the moment equation
   with probability tending to one, including a strict-derivative plus
-  convergence-in-probability wrapper.  It now deliberately leaves the
-  iid/vector LLN producing empirical-moment convergence, the multivariate
-  empirical-moment CLT, and covariance identification as explicit next layers.
+  convergence-in-probability wrapper.  The current handoff layer also accepts
+  almost-sure empirical-moment convergence directly, producing the local-range
+  probability certificate and strict-derivative solved-with-probability
+  conclusion through `vaart1998_tendstoInMeasure_of_tendsto_ae`.  It now
+  deliberately leaves the finite-coordinate/vector LLN producing that a.s.
+  empirical-moment convergence, the multivariate empirical-moment CLT, and
+  covariance identification as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

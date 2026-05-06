@@ -110,25 +110,39 @@ Chapter 4 handoff:
 - local-range probability certificate constructor from convergence in
   probability:
   `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_tendstoInMeasure`.
+- Chapter 2 almost-sure to in-probability bridge:
+  `vaart1998_tendstoInMeasure_of_tendsto_ae`.
+- empirical-moment a.s.-to-probability handoff:
+  `vaart1998_empiricalMoment_tendstoInMeasure_of_ae_tendsto_const`.
+- local-range probability certificate from a.s. empirical-moment convergence:
+  `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_ae_tendsto`.
 - open inverse-function-theorem local-range probability:
   `vaart1998_theorem_4_1_open_local_range_probability_of_hasStrictFDerivAt`.
 - strict-differentiability plus convergence-in-probability local-range
   probability certificate constructor:
   `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_hasStrictFDerivAt_tendstoInMeasure`.
+- strict-differentiability plus a.s. empirical-moment convergence local-range
+  probability constructor:
+  `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_hasStrictFDerivAt_ae_tendsto`.
 - moment-equation solved-with-probability wrappers:
   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to_one`,
   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to_one_of_certificate`,
   and
   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_tendstoInMeasure`.
+- strict-differentiability plus a.s. empirical-moment convergence solved-with
+  probability wrapper:
+  `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_ae_tendsto`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`4156f00`:
+`39d4964`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
 
 Current Vaart packet verification passed for:
 
+- `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
+- `lake build StatInference.AsymptoticStatistics.Basic`
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
 - `git diff --check`
@@ -145,9 +159,9 @@ targeted Vaart module build.
 
 Continue Vaart Chapter 4.1 from the compiled delta handoff:
 
-1. prove or package an iid/vector LLN interface that yields convergence in
-   probability of empirical moments to the true moment, then feed the
-   strict-derivative local-range probability constructor;
+1. prove or package a finite-coordinate iid/vector LLN interface that yields
+   a.s. empirical-moment convergence, then feed the new a.s. local-range
+   probability constructors;
 2. assemble the full Theorem 4.1 existence-plus-delta wrapper from the
    solved-with-probability conclusion and the local inverse delta certificate;
 3. keep the multivariate CLT and covariance display as supplied fields until a

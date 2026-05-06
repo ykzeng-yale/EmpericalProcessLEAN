@@ -178,26 +178,38 @@ Chapter 3 theorem-facing wrappers compiling:
 48. Strict-derivative plus convergence-in-probability solved-with-probability
    wrapper:
    `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_tendstoInMeasure`.
+49. Chapter 2 almost-sure to in-probability bridge:
+   `vaart1998_tendstoInMeasure_of_tendsto_ae`.
+50. Empirical-moment a.s.-to-probability handoff:
+   `vaart1998_empiricalMoment_tendstoInMeasure_of_ae_tendsto_const`.
+51. Local-range probability certificate from a.s. empirical-moment convergence:
+   `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_ae_tendsto`.
+52. Strict-derivative open local-range probability from a.s. empirical-moment
+   convergence:
+   `vaart1998_theorem_4_1_open_local_range_probability_of_hasStrictFDerivAt_ae_tendsto`.
+53. Strict-derivative local-range probability certificate from a.s.
+   empirical-moment convergence:
+   `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_hasStrictFDerivAt_ae_tendsto`.
+54. Strict-derivative solved-with-probability wrapper from a.s.
+   empirical-moment convergence:
+   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_ae_tendsto`.
 
-Latest pushed Vaart packet before this run: `4156f00`
-(`Add Vaart open local range probability bridge`).
+Latest pushed Vaart packet before this run: `39d4964`
+(`Add Vaart moment equation probability bridge`).
 
-The current theorem-sized packet assembles the Chapter 4.1 local existence
-side.  The open local range supplied by
-`HasStrictFDerivAt.toOpenPartialHomeomorph`, together with convergence in
-probability of empirical moments to the true moment, now yields the
-local-range probability certificate and a direct conclusion that the local
-inverse candidate solves the moment equation with probability tending to one.
-This is the Lean version of the proof step "the empirical moment lies in `V`
-with probability tending to one, hence the inverse-function-theorem estimator
-exists and solves the moment equation."
+The current theorem-sized packet connects strong-law-style outputs to the
+Chapter 4.1 local existence machinery.  Chapter 2 now has a Vaart-facing
+wrapper around mathlib's theorem that almost-sure convergence implies
+convergence in probability.  Chapter 4 now consumes a.s. convergence of
+empirical moments directly, producing local-range probability certificates and
+the strict-derivative solved-with-probability conclusion without requiring a
+separate convergence-in-probability hypothesis.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. prove or package the empirical-moment convergence-in-probability field from
-   an iid/vector LLN interface, feeding the strict-derivative local-range
-   probability constructor;
+1. prove or package a finite-coordinate iid/vector LLN interface that yields
+   a.s. empirical-moment convergence, feeding the new a.s. constructors;
 2. assemble the full Theorem 4.1 source wrapper that reports both
    solved-with-probability and the already-compiled delta-method asymptotic
    normality conclusion under supplied empirical-moment CLT;
@@ -296,6 +308,12 @@ such as `strongLaw_ae_real`, `centeredStrongLaw_ae_real`, and
 is not yet present as a ready API, so the next run should either build a finite
 coordinate vector wrapper from these real SLLN facts or introduce a supplied
 vector-LLN certificate that can later be discharged.
+
+Search result for the a.s.-to-probability handoff: pinned mathlib already
+provides `MeasureTheory.tendstoInMeasure_of_tendsto_ae` in
+`Mathlib.MeasureTheory.Function.ConvergenceInMeasure`.  The Vaart lane now
+wraps this as `vaart1998_tendstoInMeasure_of_tendsto_ae` and routes it into
+the Chapter 4 local-range probability constructors.
 
 ## Primitive Sequence
 

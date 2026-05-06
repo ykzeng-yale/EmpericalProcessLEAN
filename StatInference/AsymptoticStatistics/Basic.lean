@@ -59,6 +59,22 @@ def StochasticBounded
       ∀ᶠ n in atTop, P.real {ω | M ≤ ‖X n ω‖} < ε
 
 /--
+Almost-sure convergence implies convergence in probability.
+
+This is the Chapter 2 bridge that lets strong-law outputs feed later
+probability-localization arguments, including the method-of-moments existence
+step in Chapter 4.
+-/
+theorem vaart1998_tendstoInMeasure_of_tendsto_ae
+    {Ω E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [PseudoEMetricSpace E]
+    {X : ℕ -> Ω -> E} {Z : Ω -> E}
+    (hX : ∀ n : ℕ, AEStronglyMeasurable (X n) P)
+    (hAE : ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => X n ω) atTop (𝓝 (Z ω))) :
+    TendstoInMeasure P X atTop Z :=
+  MeasureTheory.tendstoInMeasure_of_tendsto_ae hX hAE
+
+/--
 Law-tail criterion for stochastic boundedness.
 
 This is the random-variable/law specialization needed after measure-level
