@@ -1533,6 +1533,30 @@ theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.mono_filter
   exact (h f c hlower).mono_left hl
 
 /--
+The bounded-continuous lower-shifted asymptotic-measurability predicate is
+unchanged by eventually equal measure families and pointwise equal arbitrary
+maps.
+
+The map equality is kept pointwise, not merely eventual, because the
+lower-shifted predicate carries an all-index lower-bound hypothesis.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.congr_eventually
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs νs : ι -> Measure Ω} {X Y : ι -> Ω -> S}
+    {l : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l)
+    (hμ : ∀ᶠ i in l, νs i = μs i)
+    (hX : ∀ i, Y i = X i) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted νs Y l := by
+  intro f c hlower
+  refine Tendsto.congr' ?_ (h f c ?_)
+  · filter_upwards [hμ] with i hνμ
+    simp [hνμ, hX i]
+  · intro i ω
+    simpa [← hX i] using hlower i ω
+
+/--
 Bounded-continuous asymptotic measurability with the canonical lower shift
 `-‖f‖`.
 
@@ -1611,6 +1635,25 @@ theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.mono_filte
     VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted μs X l' := by
   intro f
   exact (h f).mono_left hl
+
+/--
+The canonical bounded-continuous shifted asymptotic-measurability predicate is
+unchanged by eventually equal measure families and eventually equal arbitrary
+maps.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.congr_eventually
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs νs : ι -> Measure Ω} {X Y : ι -> Ω -> S}
+    {l : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted μs X l)
+    (hμ : ∀ᶠ i in l, νs i = μs i)
+    (hX : ∀ᶠ i in l, Y i = X i) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted νs Y l := by
+  intro f
+  refine Tendsto.congr' ?_ (h f)
+  filter_upwards [hμ, hX] with i hνμ hYX
+  simp [hνμ, hYX]
 
 /--
 The lower-shifted nonnegative gap is one half of the signed
