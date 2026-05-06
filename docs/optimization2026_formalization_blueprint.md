@@ -56,9 +56,10 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after pushed Optimization commit `1d21a6d`
-(`Add Chewi Sinkhorn mirror certificate`) on 2026-05-06 and focused
-Lean/module verification of the new Chapter 12 scalar SMPGD averaging spine:
+Current manual goal frontier after pushed Optimization commit `bba710e`
+(`Open Chewi stochastic gradient lane`) on 2026-05-06 and focused Lean/module
+verification of the Chewi Theorem 12.1 source recurrence and smooth/non-smooth
+scalar rate wrappers:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -269,10 +270,15 @@ Chapter 12 packet creates root-imported
 `weightedSumBound_of_gronwall_negative_forcing_with_error`,
 `weightedAverageGap_le_of_gronwall_negative_forcing_with_error`, and
 `chewi121_weightedAverageGap_le_of_oneStep`, proving the scalar
-weighted-average consequence at the end of Chewi Theorem 12.1.  The active
-Chapter 12 lane is now the stochastic/proximal one-step recurrence interface
-and smooth/non-smooth error instantiations feeding that scalar theorem, before
-the ASGD CLT material.
+weighted-average consequence at the end of Chewi Theorem 12.1.  The newest
+source-rate packet adds `chewi121_weightedAverageGap_le_of_source_oneStep`,
+`chewi121_weightedAverageGap_le_geometric_of_source_oneStep`,
+`chewi121_smooth_weightedAverageGap_le_of_source_oneStep`, and
+`chewi121_nonsmooth_weightedAverageGap_le_of_source_oneStep`, so the displayed
+SMPGD recurrence now feeds the closed geometric denominator and the
+smooth/non-smooth stochastic error floors directly.  The active Chapter 12
+lane is now the stochastic/proximal one-step proof itself, before the ASGD CLT
+material.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

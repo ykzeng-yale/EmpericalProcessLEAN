@@ -89,9 +89,9 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after the pushed Optimization frontier
-`1d21a6d` (`Add Chewi Sinkhorn mirror certificate`) on 2026-05-06 and focused
-Lean/module-build verification of the new Chapter 12 scalar SMPGD averaging
-spine:
+`bba710e` (`Open Chewi stochastic gradient lane`) on 2026-05-06 and focused
+Lean/module-build verification of the Chewi Theorem 12.1 source recurrence and
+smooth/non-smooth scalar rate wrappers:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -111,20 +111,21 @@ Sinkhorn/mirror-descent certificate endpoint, and
 `StatInference/Optimization/StochasticGradient.lean` as the current Chapter
 12 active theorem gate.
 
-Immediate aggressive target: finish Chewi Theorem 12.1 SMPGD in supplied
-interface form.  Do not redo the 10.11 average-gap telescope, the 11.5 RAM
-recurrences, the 11.7 selector wrappers, the 11.8 certificate endpoint, or the
-new scalar Chapter 12 weighted-average algebra.  First search local
+Immediate aggressive target: prove the stochastic/proximal one-step inequality
+interface for Chewi Theorem 12.1 SMPGD.  Do not redo the 10.11 average-gap
+telescope, the 11.5 RAM recurrences, the 11.7 selector wrappers, the 11.8
+certificate endpoint, the Chapter 12 weighted-average algebra, or the compiled
+smooth/non-smooth scalar rate wrappers.  First search local
 `MirrorDescent.lean`, `Bregman.lean`, `ProjectedSubgradient.lean`,
 `StochasticGradient.lean`, local probability/expectation wrappers, and pinned
-mathlib expectation/Jensen/conditional expectation APIs.  Then prove the
-stochastic/proximal one-step inequality interface and the two source error
-instantiations: smooth variance error
-`sigma^2 * d * h^2 / alphaPhi` and non-smooth bounded-gradient error
-`2 * L^2 * h^2 / alphaPhi`, feeding
-`chewi121_weightedAverageGap_le_of_oneStep`.  In parallel, keep the concrete
-Sinkhorn row/column KL identity layer as the next Chapter 11.8 blocker, but do
-not let it stall Chapter 12 coverage.
+mathlib expectation/Jensen/conditional expectation APIs.  Then formalize the
+source one-step inequality from the relative growth model for
+`psi_x`, unbiased stochastic gradient expectation, and the smooth variance or
+non-smooth bounded-gradient lower bound for `E psi_x(x+)`.  Feed the result
+into `chewi121_smooth_weightedAverageGap_le_of_source_oneStep` and
+`chewi121_nonsmooth_weightedAverageGap_le_of_source_oneStep`.  In parallel,
+keep the concrete Sinkhorn row/column KL identity layer as the next Chapter
+11.8 blocker, but do not let it stall Chapter 12 coverage.
 
 Fresh search-first result for the Chapter 11.8 concrete blocker: local
 Optimization now has the 11.7 Sinkhorn selectors and 11.8
@@ -144,12 +145,18 @@ compiled Chapter 10 MPGD recurrence/weighted-denominator infrastructure,
 probability modules for later expectation-side discharges.
 
 Latest verified Optimization proof frontier:
-remote `origin/main` is at `1d21a6d`, and the current local focused Lean and
+remote `origin/main` is at `bba710e`, and the current local focused Lean and
 module build verify `StatInference/Optimization/StochasticGradient.lean` with
 `weightedSumBound_of_gronwall_negative_forcing_with_error`,
 `weightedAverageGap_le_of_gronwall_negative_forcing_with_error`, and
-`chewi121_weightedAverageGap_le_of_oneStep`.  This opens Chapter 12 by proving
-the scalar weighted-average consequence used at the end of Chewi Theorem 12.1.
+`chewi121_weightedAverageGap_le_of_oneStep`, plus the newly compiled
+`chewi121_weightedAverageGap_le_of_source_oneStep`,
+`chewi121_weightedAverageGap_le_geometric_of_source_oneStep`,
+`chewi121_smooth_weightedAverageGap_le_of_source_oneStep`, and
+`chewi121_nonsmooth_weightedAverageGap_le_of_source_oneStep`.  This proves the
+source recurrence-to-rate algebra and the smooth/non-smooth stochastic error
+instantiations used in Chewi Theorem 12.1.  The remaining Theorem 12.1 blocker
+is the actual stochastic/proximal one-step inequality interface.
 The previous verified `StatInference/Optimization/AlternatingBregman.lean`
 packet adds
 `IsChewi118SinkhornMirrorDescentCertificate`,
@@ -445,8 +452,10 @@ attempting full martingale/CLT formalization.
 Active aggressive target ladder:
 
 1. Finish Chewi Theorem 12.1 SMPGD supplied-interface theorem: prove the
-   expectation/proximal one-step recurrence fields and smooth/non-smooth error
-   instantiations that feed `chewi121_weightedAverageGap_le_of_oneStep`.
+   expectation/proximal one-step recurrence fields that feed the compiled
+   smooth/non-smooth wrappers
+   `chewi121_smooth_weightedAverageGap_le_of_source_oneStep` and
+   `chewi121_nonsmooth_weightedAverageGap_le_of_source_oneStep`.
 2. Instantiate the compiled Chewi Theorem 11.8 Sinkhorn/mirror-descent
    certificate with concrete finite row/column-normalization KL identities.
    Reuse `IsChewi118SinkhornMirrorDescentCertificate`,
