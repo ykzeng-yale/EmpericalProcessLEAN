@@ -206,6 +206,13 @@ tightness consequence through
 `VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_asymptoticallyTight_atTop`,
 giving process-law and finite-dimensional-law asymptotic tightness from
 sequential weak convergence of bounded process laws.
+The raw-process predicates also now inherit filter-refinement and reindexing
+stability from the measure-level weak-convergence/tightness APIs through
+`VdVWEllInftyProcessWeakConvergence.mono_filter`,
+`VdVWEllInftyProcessWeakConvergence.comp_tendsto`,
+`VdVWEllInftyProcessAsymptoticallyTight.mono_filter`, and
+`VdVWEllInftyProcessAsymptoticallyTight.comp_tendsto`.  This is support for
+subsequence/subnet arguments, not the arbitrary-index VdV&W 1.4.8 converse.
 
 2026-05-06 scalar-quantizer cover update: `Theorem243.lean` now lifts the
 deterministic coordinate scalar-quantizer decoder-error covering bound from

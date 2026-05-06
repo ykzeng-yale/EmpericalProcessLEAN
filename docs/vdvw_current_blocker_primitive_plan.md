@@ -6798,3 +6798,21 @@ process-law asymptotic tightness and finite-dimensional law tightness.  This
 closes another forward Chapter 1 process consequence while leaving the
 arbitrary-index converse and separability/asymptotic-measurability blockers
 open.
+
+2026-05-06 process filter/reindexing stability follow-up: local search found
+the measure-level stability APIs
+`VdVWWeakConvergenceProbabilityMeasures.mono_filter`,
+`VdVWWeakConvergenceProbabilityMeasures.comp_tendsto`,
+`VdVWProbabilityMeasuresAsymptoticallyTight.mono_filter`, and
+`VdVWProbabilityMeasuresAsymptoticallyTight.comp_tendsto`, but no raw
+bounded-process versions consuming `VdVWEllInftyProcessWeakConvergence` or
+`VdVWEllInftyProcessAsymptoticallyTight`.  `FiniteDimensional.lean` now proves
+`VdVWEllInftyProcessWeakConvergence.mono_filter`,
+`VdVWEllInftyProcessWeakConvergence.comp_tendsto`,
+`VdVWEllInftyProcessAsymptoticallyTight.mono_filter`, and
+`VdVWEllInftyProcessAsymptoticallyTight.comp_tendsto`.  These are
+subsequence/subnet support lemmas for the current process-law interface.  They
+do not change the main blockers: arbitrary-index VdV&W 1.4.8 converse,
+process separability/asymptotic-measurability, nonmeasurable signed
+outer-cover weak convergence, and real Theorem 2.4.3 entropy/cardinality
+inputs remain the high-value next targets.

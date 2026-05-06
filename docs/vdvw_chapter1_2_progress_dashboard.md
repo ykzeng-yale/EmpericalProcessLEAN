@@ -114,6 +114,13 @@ The process Prokhorov/tightness consequence is also available:
 `VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_asymptoticallyTight_atTop`
 turn sequential weak convergence of bounded process laws into process-law
 asymptotic tightness and finite-dimensional law tightness.
+The same raw-process weak-convergence/tightness predicates now have
+filter-refinement and reindexing stability wrappers:
+`VdVWEllInftyProcessWeakConvergence.mono_filter`,
+`VdVWEllInftyProcessWeakConvergence.comp_tendsto`,
+`VdVWEllInftyProcessAsymptoticallyTight.mono_filter`, and
+`VdVWEllInftyProcessAsymptoticallyTight.comp_tendsto`.  These support
+subsequence/subnet arguments without claiming the arbitrary-index FDD converse.
 
 The scalar-quantizer structural-cover lift is also compiled:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`
