@@ -56,10 +56,10 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after rebasing over remote main `87536c1`
-(`Merge remote-tracking branch 'origin/main'`) on 2026-05-06 and focused Lean
-verification of the Chapter 11.5 RAM block-model plus selected Exercise 9.3
-Hopf-Lax interpolation assembly layer:
+Current manual goal frontier after rebasing over remote main `22397e5`
+(`Update Vaart proof lane dashboard`) on 2026-05-06 and focused Lean
+verification of the local Chewi Theorem 11.8 last-iterate mirror-descent
+wrapper:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -253,10 +253,13 @@ source-shaped selectors add
 `chewi117_exists_sinkhorn_half_iterate_error_sum_le_of_abp`, choosing
 respectively the column-correct full iterate `gamma^n` or row-correct half
 iterate `gamma^(n+1/2)` and proving the displayed total marginal-error bound
-from one finite marginal identity plus one Pinsker/KL lower bound.  The next
-main lane should instantiate the selector with finite row/column normalization
-KL identities and then move to Sinkhorn Theorem 11.8, not redo RAM scalar
-recurrence or block averaging.
+from one finite marginal identity plus one Pinsker/KL lower bound.  The
+current local focused Lean check adds `chewi118_last_gap_le_of_recurrence` and
+`chewi118_last_gap_le_of_oneStep` in `MirrorDescent.lean`, so the active lane
+is now to instantiate this last-iterate wrapper with finite row/column
+Sinkhorn normalization KL identities, terminal KL nonnegativity, monotone KL
+gap, and the zero-error Bregman recurrence for Theorem 11.8, not redo RAM
+scalar recurrence, block averaging, or 11.7 selector algebra.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

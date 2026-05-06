@@ -755,6 +755,79 @@ theorem chewi1011_average_gap_le_of_oneStep
   simpa [D, gap, err, herr] using hmain
 
 /--
+Chewi Theorem 11.8 scalar last-iterate wrapper.  A zero-error mirror-descent
+telescope gives an average-gap bound; monotonicity of the displayed objective
+gaps turns it into the last-iterate `D_0 / N` rate used for Sinkhorn.
+-/
+theorem chewi118_last_gap_le_of_recurrence
+    {D gap : ℕ -> ℝ} {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hrec : ∀ n, n < N -> D (n + 1) ≤ D n - gap (n + 1))
+    (hmono : ∀ n, n < N -> gap N ≤ gap (n + 1)) :
+    gap N ≤ D 0 / (N : ℝ) := by
+  let S : ℝ := ∑ n ∈ Finset.range N, gap (n + 1)
+  have hN_pos_nat : 0 < N := Nat.pos_of_ne_zero hN
+  have hN_pos : 0 < (N : ℝ) := by
+    exact_mod_cast hN_pos_nat
+  have havg :
+      (1 / (N : ℝ)) * S ≤ D 0 / (N : ℝ) := by
+    have hbase :=
+      chewi1011_average_gap_le_of_recurrence
+        (D := D) (gap := gap) (h := 1) (err := 0)
+        (by norm_num) hN hD_N_nonneg
+        (by
+          intro n hn
+          have hstep := hrec n hn
+          simpa using hstep)
+    have hrhs :
+        D 0 / ((N : ℝ) * 1) + 0 / 1 = D 0 / (N : ℝ) := by ring
+    simpa [S, hrhs] using hbase
+  have hsum_lower : (N : ℝ) * gap N ≤ S := by
+    calc
+      (N : ℝ) * gap N
+          = ∑ _n ∈ Finset.range N, gap N := by
+              simp [Finset.sum_const, nsmul_eq_mul, mul_comm]
+      _ ≤ ∑ n ∈ Finset.range N, gap (n + 1) := by
+              exact Finset.sum_le_sum fun n hn => hmono n (Finset.mem_range.mp hn)
+      _ = S := rfl
+  have hlast_le_avg : gap N ≤ (1 / (N : ℝ)) * S := by
+    rw [one_div_mul_eq_div]
+    have hsum_lower' : gap N * (N : ℝ) ≤ S := by
+      simpa [mul_comm] using hsum_lower
+    exact (le_div_iff₀ hN_pos).2 hsum_lower'
+  exact hlast_le_avg.trans havg
+
+/--
+Chewi Theorem 11.8 supplied one-step form for a concrete objective.  This is
+the theorem-facing layer for Sinkhorn-as-mirror-descent: once the Sinkhorn
+iteration supplies the zero-error Bregman descent recurrence and monotone KL
+gaps, the last marginal KL is at most the initial Bregman distance divided by
+`N`.
+-/
+theorem chewi118_last_gap_le_of_oneStep
+    {F phi : E -> ℝ} {gradPhi : E -> E} {x : ℕ -> E} {xStar : E}
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N))
+    (hone_step : ∀ n, n < N ->
+      bregmanDivergence phi gradPhi xStar (x (n + 1)) ≤
+        bregmanDivergence phi gradPhi xStar (x n) -
+          (F (x (n + 1)) - F xStar))
+    (hmono : ∀ n, n < N ->
+      F (x N) - F xStar ≤ F (x (n + 1)) - F xStar) :
+    F (x N) - F xStar ≤
+      bregmanDivergence phi gradPhi xStar (x 0) / (N : ℝ) :=
+  chewi118_last_gap_le_of_recurrence
+    (D := fun n => bregmanDivergence phi gradPhi xStar (x n))
+    (gap := fun n => F (x n) - F xStar)
+    hN hD_N_nonneg
+    (by
+      intro n hn
+      simpa using hone_step n hn)
+    (by
+      intro n hn
+      simpa using hmono n hn)
+
+/--
 Chewi Theorem 10.11 source-facing averaged-iterate bound.  The Jensen step is
 reused from the Chapter 6 projected-subgradient layer by applying it to the
 shifted sequence `n ↦ x_{n+1}`.

@@ -28,10 +28,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
-- Current manual frontier after rebasing over remote main `87536c1` (`Merge
-  remote-tracking branch 'origin/main'`) on 2026-05-06 and focused Lean
-  verification of the Chapter 11.5 RAM block-model plus selected Exercise 9.3
-  Hopf-Lax interpolation assembly layer:
+- Current manual frontier after rebasing over remote main `22397e5` (`Update
+  Vaart proof lane dashboard`) on 2026-05-06 and focused Lean verification of
+  the local Chewi Theorem 11.8 last-iterate mirror-descent wrapper:
   Chapter 9/10 now has a compiled finite-valued
   Fenchel/Bregman/mirror substrate.  `MirrorDescent.lean` compiles
   `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
@@ -193,7 +192,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi117_exists_sinkhorn_half_iterate_error_sum_le_of_abp`, choosing
   respectively the column-correct full iterate `gamma^n` or row-correct half
   iterate `gamma^(n+1/2)` and proving the displayed total marginal-error bound
-  from one finite marginal identity plus one Pinsker/KL lower bound.
+  from one finite marginal identity plus one Pinsker/KL lower bound.  The
+  current local focused Lean check also verifies
+  `chewi118_last_gap_le_of_recurrence` and
+  `chewi118_last_gap_le_of_oneStep` in `MirrorDescent.lean`, turning the
+  zero-error Bregman recurrence plus monotone objective/KL gaps into Chewi
+  Theorem 11.8's last-iterate `D_0 / N` rate.
   Exact 10.13 `sInf` or arbitrary norm/dual-norm packaging is deferred until
   source-report exactness or a later theorem demands it.
 - Current manual frontier after focused Lean verification rebased over pushed
@@ -402,19 +406,24 @@ High-value local files:
 
 ## Current Active Target
 
-Current active target after the verified Chapter 11.5 RAM block-model and
-Exercise 9.3 interpolation assembly packet rebased over remote main `87536c1`: treat
+Current active target after rebasing over remote main `22397e5` and focused
+Lean verification of the local Theorem 11.8 last-iterate wrapper: treat
 Chapters 3-8, Chapter 9/10 mirror-descent substrate, Chapter 11.2/11.3 ABP
-telescope, and Chapter 11.4 AM as stable infrastructure.  The live manual
-`/goal` frontier is
-`StatInference/Optimization/AlternatingBregman.lean`.  Next theorem-sized
-packet: continue Sinkhorn Theorem 11.7 by instantiating the supplied
-ABP/Pinsker selectors with finite row/column normalization KL identities, then
-move to Theorem 11.8 from
-ABP/mirror-descent supplied finite
-KL/Pinsker/marginal interfaces, then open Chapter 12 SMPGD.  This paragraph
-supersedes older Chapter 6, Chapter 7, Chapter 8, and Chapter 11.4 next-target
-language below.
+telescope, Chapter 11.4 AM, Chapter 11.5 RAM, and the 11.7 selector layer as
+stable infrastructure.  The live manual `/goal` frontier is
+`StatInference/Optimization/MirrorDescent.lean` plus the Sinkhorn-facing KL
+interfaces that will consume it.  Next theorem-sized packet: instantiate
+`chewi118_last_gap_le_of_oneStep` with finite row/column Sinkhorn
+normalization identities, terminal KL nonnegativity, monotone KL gap, and the
+zero-error Bregman recurrence to prove the source-shaped Theorem 11.8
+`KL(mu^N || mu) <= KL(gamma* || gamma^0) / N`; then open Chapter 12 SMPGD.
+This paragraph supersedes older Chapter 6, Chapter 7, Chapter 8, Chapter 11.4,
+and RAM next-target language below.
+Fresh search result: reuse local 11.7 selectors and 11.8 wrappers, local
+product/marginal probability wrappers, and mathlib
+`InformationTheory.KullbackLeibler.Basic`/`ChainRule` plus
+`MeasureTheory.Integral.Marginal`; no concrete local Sinkhorn
+row/column-normalization KL identity was found yet.
 
 Latest proof target after the standard-cut scalar containment,
 determinant-ratio, coordinate-free half-space, affine-transport certificate,
