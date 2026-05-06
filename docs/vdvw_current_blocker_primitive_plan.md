@@ -304,11 +304,15 @@ its iid-Rademacher variant
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_iidRademacher`,
 and the canonical endpoint
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_canonical`.
-The next useful proof is to consume this centered convergence in a final
-theorem statement, prove a new concrete class-geometry/cardinality theorem, or
-move to the genuine random-entropy tail/UI bridge.  Do not add another endpoint
-alias for the same selected fixed-radius cardinality route unless final
-theorem assembly consumes it.
+This centered convergence is now consumed by the finite-product
+uniform-deviation endpoint
+`VdVWOuterProbabilityUniformDeviationConstOn_of_originalFullSubgraph_integrable_canonical`
+and the canonical outer-probability `P`-GC endpoint
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical`.
+The next useful proof is to prove a new concrete class-geometry/cardinality
+theorem or move to the genuine random-entropy tail/UI bridge.  Do not add
+another endpoint alias for the same selected fixed-radius cardinality route
+unless final theorem assembly consumes a new proof input.
 
 The parallel Chapter 1 audit reached the same conclusion on the process side:
 `WeakConvergence.lean`, `EllInfty.lean`, `BallSigma.lean`, and

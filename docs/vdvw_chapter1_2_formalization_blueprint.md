@@ -202,10 +202,15 @@ the iid-Rademacher variant
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_iidRademacher`,
 and the canonical endpoint
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_canonical`.
+The route is now consumed by the final-shape finite-product uniform-deviation
+and canonical outer-probability `P`-GC endpoints
+`VdVWOuterProbabilityUniformDeviationConstOn_of_originalFullSubgraph_integrable_canonical`
+and
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical`.
 Do not add another endpoint alias for this same route unless final theorem
-assembly consumes it.  The next non-duplicative target is a real final
-statement consuming this route, a new class-geometry/cardinality theorem, or
-the book random-entropy tail/UI/mean bridge.
+assembly consumes a genuinely new proof input.  The next non-duplicative target
+is a new class-geometry/cardinality theorem or the book random-entropy
+tail/UI/mean bridge.
 The finite pointwise-code covering lift is now also available:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
 and

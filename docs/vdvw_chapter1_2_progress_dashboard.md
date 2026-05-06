@@ -163,9 +163,14 @@ original full-subgraph route
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable`,
 its iid-Rademacher variant, and the canonical endpoint
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_canonical`.
+That centered endpoint is now consumed in the finite-product uniform-deviation
+and canonical outer-probability `P`-GC endpoints
+`VdVWOuterProbabilityUniformDeviationConstOn_of_originalFullSubgraph_integrable_canonical`
+and
+`VdVWOuterProbabilityPGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical`.
 The next useful `/goal` target is not another alias for this same route:
-either consume this centered convergence in a final theorem statement, prove a
-genuinely new class-geometry/cardinality theorem, or return to the book
+prove a genuinely new class-geometry/cardinality theorem, add a final theorem
+statement only if it consumes a new proof input, or return to the book
 random-entropy tail/UI/mean bridge.
 The a.e.-measurable map-law bridge is now also available for common-domain
 arbitrary maps and varying-domain endpoints through

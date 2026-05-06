@@ -38873,6 +38873,76 @@ theorem
       hvc hindexClass henvelope hclass henv henv_integrable
 
 /--
+Canonical original full-subgraph Theorem 2.4.3 route, expressed as
+finite-product outer-probability uniform-deviation convergence.
+
+This consumes the centered convergence endpoint whose structural VC input is
+on the original class, not on every truncated class.
+-/
+theorem
+    VdVWOuterProbabilityUniformDeviationConstOn_of_originalFullSubgraph_integrable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterProbabilityUniformDeviationConstOn P indexClass classFun := by
+  refine
+    VdVWOuterProbabilityUniformDeviationConstOn_of_centered_weightedSupremum
+      (P := P) (indexClass := indexClass) (classFun := classFun) ?_ ?_
+  · intro n sample
+    exact
+      bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        henvelope hclass henv_integrable
+  · exact
+      VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable
+
+/--
+Canonical original full-subgraph Theorem 2.4.3 route as a fixed infinite
+iid-process outer-probability `P`-Glivenko-Cantelli statement.
+-/
+theorem
+    VdVWOuterProbabilityPGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i) := by
+  exact
+    VdVWOuterProbabilityPGlivenkoCantelliClass_of_uniformDeviationConstOn_canonical
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (VdVWOuterProbabilityUniformDeviationConstOn_of_originalFullSubgraph_integrable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable)
+
+/--
 Canonical-sample full-subgraph route to the book-style variable-domain entropy
 condition.
 
