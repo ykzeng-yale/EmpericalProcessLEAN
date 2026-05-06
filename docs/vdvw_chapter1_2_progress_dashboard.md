@@ -2998,3 +2998,9 @@ and its support lemma
 `VdVWConvergesInOuterProbabilityConst_zero_of_const_mul_nonneg`.  This removes
 a likely constant-factor mismatch before the next ghost/Rademacher comparison
 proof attempt.
+
+The source-facing scaled a.e. consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledFiniteNetHoeffdingUpper`
+is now compiled too.  The next productive theorem target is its `hae` input:
+derive eventual a.e. scaled finite-net domination from the existing
+ghost-sample, Rademacher, and selected empirical-cover machinery.

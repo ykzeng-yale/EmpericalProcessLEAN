@@ -7461,3 +7461,13 @@ symmetrization constants such as `2`, while still deriving convergence from
 the unscaled finite-net Hoeffding upper.  The next source theorem should now
 prove an eventual a.e. or outer-probability comparison in this scaled shape
 from ghost/Rademacher selected empirical covers.
+
+2026-05-06 Theorem 2.4.3 scaled a.e. source consumer: `Theorem243.lean` now
+also proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledFiniteNetHoeffdingUpper`.
+It composes stochastic fixed-radius log-cardinality entropy with an eventual
+`vdVWProductMeasure P n`-a.e. scaled finite-net domination assumption
+`centeredSup <= C * finiteNetHoeffdingUpper + eta`.  This is the direct Lean
+target for the remaining ghost/Rademacher/random-cover proof: produce that
+`hae` input from the textbook symmetrization and selected empirical-cover
+machinery, with `C = 2` or another explicit positive constant.

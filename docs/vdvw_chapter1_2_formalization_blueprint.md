@@ -195,6 +195,12 @@ It should be used when the source comparison gives `C * finiteNetUpper + eta`
 rather than exactly `finiteNetUpper + eta`; the unscaled entropy-to-Hoeffding
 convergence still supplies the needed scaled error convergence.
 
+The preferred fixed-`M` source target is now
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledFiniteNetHoeffdingUpper`:
+prove its eventual a.e. scaled finite-net domination hypothesis from
+ghost-sample/Rademacher selected-cover arguments, then this theorem consumes
+the stochastic entropy hypothesis directly.
+
 2026-05-06 fixed-FDD congruence refinement: after search, the local FDD
 replacement layer now includes
 `aemeasurable_fdd_congr_finite_coord_ae` and
