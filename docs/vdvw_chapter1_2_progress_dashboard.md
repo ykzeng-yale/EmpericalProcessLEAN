@@ -2054,3 +2054,14 @@ bounded-process coordinate forms `vdVW148_boundedProcess_coordinate_hasLaw`,
 `vdVW148_boundedProcess_coordinate_tendstoInDistribution`.  These close the
 direct one-coordinate process/FDD entry points; they do not close the exact
 random-entropy tail/UI bridge or the arbitrary-index process/FDD converse.
+
+2026-05-05 coordinate weak-convergence/tightness follow-up:
+`FiniteDimensional.lean` now also adds
+`vdVW148_ellInfty_coordinate_weakConvergence_of_processLaw_weakConvergence`
+and
+`vdVW148_ellInfty_coordinate_asymptoticallyTight_of_processLaw_asymptoticallyTight`.
+These are the direct one-coordinate measure-level weak-convergence and
+asymptotic-tightness feeders from `ell_infty(T)` process laws.  They close the
+coordinate version of the forward FDD/tightness support layer, while the
+arbitrary-index converse still needs separability, process asymptotic
+tightness, and nonmeasurable/asymptotic-measurability primitives.

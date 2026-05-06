@@ -162,6 +162,26 @@ theorem vdVW148_ellInfty_finiteDimensional_weakConvergence_of_processLaw_weakCon
   exact hμ.map_continuous (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
 
 /--
+Forward coordinate weak-convergence layer for laws on `ell_infty(T)`.
+Weak convergence of `ell_infty(T)` laws implies weak convergence of every
+single-coordinate marginal law.
+-/
+theorem vdVW148_ellInfty_coordinate_weakConvergence_of_processLaw_weakConvergence
+    {ι : Type*} {l : Filter ι}
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    {μs : ι -> ProbabilityMeasure (VdVWEllInfty T)}
+    {μ : ProbabilityMeasure (VdVWEllInfty T)}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    (t : T) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun n => (μs n).map
+        ((VdVWEllInfty.evalCLM (T := T) t).continuous.measurable.aemeasurable))
+      l
+      (μ.map
+        ((VdVWEllInfty.evalCLM (T := T) t).continuous.measurable.aemeasurable)) := by
+  exact hμ.map_continuous (VdVWEllInfty.evalCLM (T := T) t).continuous
+
+/--
 Forward finite-dimensional asymptotic-tightness layer for laws on
 `ell_infty(T)`.  Ordinary asymptotic tightness of `ell_infty(T)` laws implies
 ordinary asymptotic tightness of every finite-coordinate restriction.
@@ -182,6 +202,23 @@ theorem vdVW148_ellInfty_finiteDimensional_asymptoticallyTight_of_processLaw_asy
         ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable))
       l := by
   exact hμ.map_continuous (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
+
+/--
+Forward coordinate asymptotic-tightness layer for laws on `ell_infty(T)`.
+Ordinary asymptotic tightness of `ell_infty(T)` laws implies ordinary
+asymptotic tightness of every single-coordinate marginal law.
+-/
+theorem vdVW148_ellInfty_coordinate_asymptoticallyTight_of_processLaw_asymptoticallyTight
+    {ι : Type*} {l : Filter ι}
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    {μs : ι -> ProbabilityMeasure (VdVWEllInfty T)}
+    (hμ : VdVWProbabilityMeasuresAsymptoticallyTight μs l)
+    (t : T) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => (μs n).map
+        ((VdVWEllInfty.evalCLM (T := T) t).continuous.measurable.aemeasurable))
+      l := by
+  exact hμ.map_continuous (VdVWEllInfty.evalCLM (T := T) t).continuous
 
 /--
 For finite index sets, mapping an `ell_infty(T)` law to the ordinary finite
