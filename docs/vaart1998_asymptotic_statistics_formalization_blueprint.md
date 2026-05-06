@@ -158,9 +158,13 @@ Initial modules:
   Gaussian.  The newest covariance-display layer records the coordinate-free
   pullback formula for all continuous linear coordinates, matching the
   finite-dimensional `Dinv * Sigma * Dinv^T` statement without prematurely
-  committing to a concrete matrix representation.  It still deliberately leaves
-  local-inverse measurability, the multivariate empirical-moment CLT, and a
-  `covarianceBilinDual`/finite-matrix identification as explicit next layers.
+  committing to a concrete matrix representation.  The current bridge connects
+  that coordinate covariance functional to mathlib's `covarianceBilinDual`
+  under square-integrable-law hypotheses and proves the inverse-derivative
+  pushed-law covariance bilinear form is the pullback of the original one.  It
+  still deliberately leaves local-inverse measurability, propagation of the
+  needed `MemLp` hypotheses, the multivariate empirical-moment CLT, and a
+  finite-matrix specialization as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

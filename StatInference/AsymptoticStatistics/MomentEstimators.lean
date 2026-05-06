@@ -2,6 +2,7 @@ import StatInference.AsymptoticStatistics.Basic
 import StatInference.ProbabilityMeasure.StrongLaw
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
+import Mathlib.Probability.Moments.CovarianceBilinDual
 
 /-!
 # van der Vaart 1998 Chapter 4 moment-estimator interfaces
@@ -977,6 +978,49 @@ theorem vaart1998_limitCovarianceFunctional_inverseDerivative_apply
     vaart1998_limitCovarianceFunctional (fun ω => Dinv (Z ω)) Q L K =
       vaart1998_inverseDerivativeCovarianceFunctional Dinv
         (vaart1998_limitCovarianceFunctional Z Q) L K := by
+  rfl
+
+/--
+When the limit has a square-integrable law, the coordinate covariance
+functional is mathlib's covariance bilinear form of that law.
+-/
+theorem vaart1998_limitCovarianceFunctional_eq_covarianceBilinDual_map
+    {Ω' E : Type*} [MeasurableSpace Ω'] [MeasurableSpace E]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [BorelSpace E] {Q : Measure Ω'} [IsFiniteMeasure Q]
+    (Z : Ω' -> E) (hZ : AEMeasurable Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z)) (L K : StrongDual ℝ E) :
+    vaart1998_limitCovarianceFunctional Z Q L K =
+      ProbabilityTheory.covarianceBilinDual (Q.map Z) L K := by
+  rw [ProbabilityTheory.covarianceBilinDual_eq_covariance hZ_memLp L K,
+    ProbabilityTheory.covariance_map_fun (by fun_prop) (by fun_prop) hZ]
+  rfl
+
+/--
+The covariance bilinear form of the inverse-derivative pushed law is the
+pullback of the covariance bilinear form of the original law.
+-/
+theorem vaart1998_covarianceBilinDual_inverseDerivative_map_apply
+    {Ω' M Θ : Type*} [MeasurableSpace Ω']
+    [MeasurableSpace M] [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [CompleteSpace M] [BorelSpace M]
+    [MeasurableSpace Θ] [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [CompleteSpace Θ] [BorelSpace Θ]
+    {Q : Measure Ω'} [IsFiniteMeasure Q]
+    (Z : Ω' -> M) (Dinv : M →L[ℝ] Θ)
+    (hZ : AEMeasurable Z Q)
+    (hDinvZ : AEMeasurable (fun ω => Dinv (Z ω)) Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hDinvZ_memLp : MemLp id 2 (Q.map fun ω => Dinv (Z ω)))
+    (L K : StrongDual ℝ Θ) :
+    ProbabilityTheory.covarianceBilinDual (Q.map fun ω => Dinv (Z ω)) L K =
+      vaart1998_inverseDerivativeCovarianceFunctional Dinv
+        (fun L0 K0 => ProbabilityTheory.covarianceBilinDual (Q.map Z) L0 K0) L K := by
+  rw [ProbabilityTheory.covarianceBilinDual_eq_covariance hDinvZ_memLp L K,
+    ProbabilityTheory.covariance_map_fun (by fun_prop) (by fun_prop) hDinvZ]
+  dsimp [vaart1998_inverseDerivativeCovarianceFunctional]
+  rw [ProbabilityTheory.covarianceBilinDual_eq_covariance hZ_memLp (L.comp Dinv) (K.comp Dinv),
+    ProbabilityTheory.covariance_map_fun (by fun_prop) (by fun_prop) hZ]
   rfl
 
 /--
