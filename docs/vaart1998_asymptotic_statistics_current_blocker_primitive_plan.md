@@ -114,25 +114,33 @@ Chapter 3 theorem-facing wrappers compiling:
 23. Theorem 3.1 compact sequence wrapper from differentiability,
    `r_n -> ∞`, and distributional convergence of the scaled statistic:
    `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`.
+24. A.e.-measurability of the scaled delta remainder from `T_n` and
+   `phi ∘ T_n`:
+   `vaart1998_delta_remainder_aemeasurable`.
+25. Measurable-function version:
+   `vaart1998_delta_remainder_aemeasurable_of_measurable`.
+26. Theorem 3.1 compact sequence wrapper deriving the remainder measurability
+   from `T_n` and `phi ∘ T_n`:
+   `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_aemeasurable`.
+27. Theorem 3.1 compact sequence wrapper deriving the remainder measurability
+   from global measurability of `phi`:
+   `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_measurable`.
 
-Latest pushed Vaart packet before this run: `4187a82`
-(`Add Vaart distributional stochastic bounded bridge`).
+Latest pushed Vaart packet before this run: `06ca46f`
+(`Add Vaart delta scaled-ball derivative bridge`).
 
-The current theorem-sized packet has closed the scaled-ball local-remainder
-side of Vaart's Chapter 3.1 route.  The deterministic differentiability display
-now yields the `hsmall` field consumed by the scaled-ball delta wrapper as soon
-as `r_n -> ∞`; the wrapper then derives scaled-statistic tightness from
-distributional convergence.
+The current theorem-sized packet has closed the cheap Chapter 3.1 measurability
+bookkeeping layer.  The compact differentiability/distribution wrapper no
+longer asks users to hand-prove `hR_meas` when `T_n` and either `phi ∘ T_n` or
+globally measurable `phi` are available.
 
-The next aggressive packet should move out of Chapter 3 plumbing unless an
-immediate measurability helper is cheap:
+The next aggressive packet should move out of Chapter 3 plumbing:
 
-1. if quick, add an `AEMeasurable` remainder helper from measurability of
-   `T_n` and `phi ∘ T_n` so users do not hand-prove the technical `hR_meas`
-   side condition;
-2. otherwise start Chapter 4 method-of-moments wrappers by combining the CLT
+1. start Chapter 4 method-of-moments wrappers by combining the CLT
    wrapper with
    `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`;
+2. add source-shaped moment estimator consistency/asymptotic-normality
+   certificates only as far as existing SLLN/CLT/delta APIs discharge them;
 3. begin exact source capture for Vaart Theorem 3.1 only when the Markdown/PDF
    theorem statement and assumptions are explicitly quoted in a report file.
 
@@ -194,8 +202,9 @@ bridge is now compiled: `vaart1998_law_real_norm_tail_of_tight_range`,
 Search result for the remaining delta-method layer: the scaled-ball smallness
 theorem is now compiled.  The proof only needs the fixed scaled-ball event and
 `‖r_n‖ -> ∞`; a separate probabilistic `T_n -> theta` assumption is not needed
-for this certificate.  The remaining Chapter 3 technical side condition is
-ordinary `AEMeasurable` bookkeeping for the scaled remainder.
+for this certificate.  The Chapter 3 technical `AEMeasurable` side condition is
+now also compiled from standard composition, subtraction, continuous-linear
+composition, and constant-scaling APIs in mathlib.
 
 ## Primitive Sequence
 

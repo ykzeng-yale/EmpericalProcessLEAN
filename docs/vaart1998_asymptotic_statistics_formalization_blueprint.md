@@ -106,10 +106,12 @@ Initial modules:
   distributional convergence.  The scaled-ball local-remainder certificate is
   now discharged from `HasFDerivAt` plus `r_n -> ∞`, yielding the compact
   sequence wrapper
-  `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`.
+  `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`.  The
+  technical scaled-remainder a.e.-measurability field is now also packaged
+  from `T_n` and `phi ∘ T_n`, with a measurable-`phi` convenience wrapper.
 - `DeltaMethod.lean`: full finite-dimensional delta method and uniform delta
-  method, starting with source reports, measurability helpers, and uniform
-  variants rather than the now-compiled scalar scaled-ball certificate.
+  method, starting with source reports and uniform variants rather than the
+  now-compiled scalar scaled-ball and measurability certificates.
 - `MomentEstimators.lean`: Chapter 4 wrappers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.

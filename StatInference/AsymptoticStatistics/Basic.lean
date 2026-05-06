@@ -816,6 +816,117 @@ theorem vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution
     hR_meas
 
 /--
+A.e.-measurability of the scaled delta-method remainder from the two natural
+composition measurability fields.
+
+This discharges the technical `hR_meas` side condition in the compact
+Theorem 3.1 wrappers whenever `T_n` and `phi ∘ T_n` are a.e.-measurable.
+-/
+theorem vaart1998_delta_remainder_aemeasurable
+    {Ω E F : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ} (L : E →L[ℝ] F)
+    (hTn : ∀ n, AEMeasurable (Tn n) P)
+    (hphiTn : ∀ n, AEMeasurable (fun ω => phi (Tn n ω)) P) :
+    ∀ n, AEMeasurable
+      (fun ω => r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))) P := by
+  intro n
+  have hTdiff : AEMeasurable (fun ω => Tn n ω - theta) P :=
+    (hTn n).sub aemeasurable_const
+  have hL : AEMeasurable (fun ω => L (Tn n ω - theta)) P :=
+    L.continuous.measurable.comp_aemeasurable hTdiff
+  exact (((hphiTn n).sub aemeasurable_const).sub hL).const_smul (r n)
+
+/--
+Measurable-function version of
+`vaart1998_delta_remainder_aemeasurable`.
+-/
+theorem vaart1998_delta_remainder_aemeasurable_of_measurable
+    {Ω E F : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ} (L : E →L[ℝ] F)
+    (hTn : ∀ n, AEMeasurable (Tn n) P) (hphi : Measurable phi) :
+    ∀ n, AEMeasurable
+      (fun ω => r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))) P :=
+  vaart1998_delta_remainder_aemeasurable (Tn := Tn) (phi := phi)
+    (theta := theta) (r := r) L hTn
+    (fun n => hphi.comp_aemeasurable (hTn n))
+
+/--
+van der Vaart 1998, Theorem 3.1, compact sequence form with a.e.-measurability
+of the remainder derived from `T_n` and `phi ∘ T_n`.
+-/
+theorem vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_aemeasurable
+    {Ω : Type v} {Ω' : Type w} {E : Type x} {F : Type y}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E] [CompleteSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {T : Ω' -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ}
+    (L : E →L[ℝ] F)
+    (hphi : HasFDerivAt phi L theta)
+    (hr : Tendsto r atTop atTop)
+    (hW : TendstoInDistribution
+      (fun n ω => r n • (Tn n ω - theta)) atTop T (fun _ => P) Q)
+    (hTn : ∀ n, AEMeasurable (Tn n) P)
+    (hphiTn : ∀ n, AEMeasurable (fun ω => phi (Tn n ω)) P) :
+    TendstoInDistribution
+      (fun n ω => r n • (phi (Tn n ω) - phi theta)) atTop
+      (fun ω => L (T ω)) (fun _ => P) Q :=
+  vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution
+    (L := L) hphi hr hW
+    (vaart1998_delta_remainder_aemeasurable (Tn := Tn) (phi := phi)
+      (theta := theta) (r := r) L hTn hphiTn)
+
+/--
+van der Vaart 1998, Theorem 3.1, compact sequence form with the remainder's
+a.e.-measurability derived from measurability of `phi`.
+-/
+theorem vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_measurable
+    {Ω : Type v} {Ω' : Type w} {E : Type x} {F : Type y}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E] [CompleteSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {T : Ω' -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ}
+    (L : E →L[ℝ] F)
+    (hphi_deriv : HasFDerivAt phi L theta)
+    (hphi_meas : Measurable phi)
+    (hr : Tendsto r atTop atTop)
+    (hW : TendstoInDistribution
+      (fun n ω => r n • (Tn n ω - theta)) atTop T (fun _ => P) Q)
+    (hTn : ∀ n, AEMeasurable (Tn n) P) :
+    TendstoInDistribution
+      (fun n ω => r n • (phi (Tn n ω) - phi theta)) atTop
+      (fun ω => L (T ω)) (fun _ => P) Q :=
+  vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_aemeasurable
+    (Tn := Tn) (T := T) (phi := phi) (theta := theta) (r := r)
+    (L := L) hphi_deriv hr hW hTn
+    (fun n => hphi_meas.comp_aemeasurable (hTn n))
+
+/--
 van der Vaart 1998, Theorem 3.1, sequence form with an `O_P(1)` scaled
 statistic.
 

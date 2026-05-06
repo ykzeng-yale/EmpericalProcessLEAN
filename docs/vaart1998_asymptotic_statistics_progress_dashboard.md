@@ -62,14 +62,21 @@ The initial Lean target is Chapter 2 plus Chapter 3 substrate:
 - Theorem 3.1 compact sequence wrapper from differentiability, `r_n -> ∞`,
   and distributional convergence of the scaled statistic:
   `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`.
+- scaled delta-remainder a.e.-measurability helpers:
+  `vaart1998_delta_remainder_aemeasurable` and
+  `vaart1998_delta_remainder_aemeasurable_of_measurable`.
+- Theorem 3.1 compact sequence wrappers that derive the technical
+  `hR_meas` side condition from either `T_n` plus `phi ∘ T_n`, or from
+  global measurability of `phi`:
+  `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_aemeasurable`
+  and
+  `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_measurable`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`4187a82`:
+`06ca46f`:
 
 - `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
 - `lake build StatInference.AsymptoticStatistics.Basic`
-- `lake env lean StatInference.lean`
-- `lake build StatInference`
 
 Current Vaart packet verification passed for:
 
@@ -78,16 +85,18 @@ Current Vaart packet verification passed for:
 
 ## Next Aggressive Target
 
-Move beyond the now-compiled Chapter 3.1 probability/analytic plumbing:
+Move beyond the now-compiled Chapter 3.1 probability, analytic, and
+measurability plumbing:
 
-1. if immediate, add an `AEMeasurable` helper for the scaled delta remainder;
-2. otherwise start Chapter 4 method-of-moments wrappers using the CLT wrapper
+1. start Chapter 4 method-of-moments wrappers using the CLT wrapper
    plus `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`;
+2. add only those moment-estimator certificates whose SLLN/CLT/delta fields
+   are already available locally;
 3. only write an exact Theorem 3.1 source report after capturing the theorem
    statement and assumptions from the Markdown/PDF.
 
-If this blocks, record the exact missing theorem shape and move to Chapter 4
-method-of-moments wrappers from CLT plus supplied delta.
+If this blocks, record the exact missing SLLN/CLT/delta theorem shape and
+continue with the widest Chapter 4 wrapper that compiles.
 
 ## Reuse Dependencies
 
