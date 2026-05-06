@@ -6011,6 +6011,17 @@ fixed-radius tail/UI route.  The next non-duplicative work is a concrete
 coordinate quantizer, threshold grid, VC/Sauer, or structural entropy estimate
 that supplies those product-cardinality/log-rate hypotheses.
 
+2026-05-06 coordinate-code untruncated endpoint follow-up: the coordinate-code
+selected fixed-radius package is now consumed by the existing large-`M`
+untruncation route.  `Theorem243.lean` proves
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_coordinate_pointwise_approx_code_product_logCardinality_div_tendsto_bound`.
+Thus finite coordinate code sets, coordinatewise `eta`-closeness of equal
+vector codes, product-cardinality domination, and deterministic normalized
+log-cardinality rates now imply the centered untruncated Theorem 2.4.3
+convergence conclusion.  The next target should be an actual
+quantizer/grid/VC cardinality estimate feeding these hypotheses, or the
+broader selected empirical-entropy tail/UI theorem.
+
 2026-05-06 varying-domain lower-shifted continuous-map follow-up: local search
 found common-domain lower-shifted continuous-map closure and varying-domain
 signed continuous-map closure, but no matching varying-domain lower-shifted

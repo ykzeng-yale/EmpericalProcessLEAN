@@ -142,9 +142,11 @@ The coordinate-code structural route now also reaches the selected fixed-radius
 side-condition package:
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_pointwise_approx_code_product_cardinality_bound_logCardinality_div_tendsto_bound`
 and its all-positive-`M` wrapper consume finite coordinate code-set products
-and deterministic normalized log-cardinality rates.  The next useful proof
-step is a concrete quantizer/grid/VC cardinality estimate feeding those
-hypotheses, or the broader selected entropy tail/UI theorem.
+and deterministic normalized log-cardinality rates.  The route now also has
+the untruncated centered convergence consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_coordinate_pointwise_approx_code_product_logCardinality_div_tendsto_bound`.
+The next useful proof step is a concrete quantizer/grid/VC cardinality estimate
+feeding those hypotheses, or the broader selected entropy tail/UI theorem.
 The structural input is now fed by two reusable bridges:
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.firstSample_nnnorm_bound_of_logCardinality_div_bound`
 and
