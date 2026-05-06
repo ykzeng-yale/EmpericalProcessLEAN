@@ -6202,3 +6202,17 @@ then consume the same structural bound.  The next non-duplicative proof must
 instantiate this polynomial cardinality hypothesis from a real VC/Sauer,
 finite-trace, threshold-grid, or quantizer theorem, or prove the genuinely
 random selected empirical-cover tail/UI theorem.
+
+The same closure batch also adds the direct finite-trace structural
+constructors
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_image_cardinality_bound_nat_poly`
+and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_codeSet_cardinality_bound_nat_poly`.
+These consume finite empirical trace images or injective finite trace-code
+sets, respectively, plus a natural-polynomial cardinality estimate, and output
+the variable-domain book entropy condition.  Thus finite-trace and trace-code
+VC/Sauer routes can now feed both sides of the Theorem 2.4.3 machinery: the
+book entropy condition and the selected fixed-radius tail/UI package.  The next
+proof should specialize the trace/code cardinality estimate from a concrete
+VC/Sauer, threshold-grid, or quantizer theorem rather than adding more
+generic nat-poly constructors.

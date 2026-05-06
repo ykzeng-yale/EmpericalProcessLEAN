@@ -194,6 +194,11 @@ The variable-domain entropy package itself now also has the direct constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`,
 so the same pointwise natural-polynomial cardinality estimate supplies the
 book-facing entropy condition and the selected tail/UI package.
+Finite trace images and trace-code sets also now feed the same entropy layer
+through
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_image_cardinality_bound_nat_poly`
+and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_codeSet_cardinality_bound_nat_poly`.
 Thus deterministic normalized-log bounds, including natural-polynomial
 VC/Sauer-style cardinality growth, now supply the first-sample `nnnorm`
 condition directly.  The next non-finite theorem task is upstream: prove such

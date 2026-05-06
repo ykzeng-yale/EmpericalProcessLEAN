@@ -18934,6 +18934,170 @@ theorem
         div_le_div_of_nonneg_right hlog_succ_linear (Nat.cast_nonneg n)
 
 /--
+Finite empirical trace images plus natural-polynomial cardinality growth build
+the variable-domain book entropy condition.
+
+This is the trace-count structural constructor for VC/Sauer and finite-trace
+routes: finite empirical trace images provide the random covering-number
+domination, and the natural-polynomial bound supplies the normalized entropy
+convergence through `of_logCardinality_nat_poly_bound`.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_image_cardinality_bound_nat_poly
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {constant : ℝ -> ℝ -> ℝ} {degree : ℝ -> ℝ -> ℕ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (htrace_finite :
+      ∀ M n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X M n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite)
+    (hcardinality_dom :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          (htrace_finite M n sample m).toFinset.card ≤
+            cardinality M eta n sample m)
+    (hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 1 ≤ constant M eta)
+    (hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((cardinality M eta n sample n : ℝ) + 1) ≤
+            constant M eta *
+              (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope cardinality := by
+  have hcovering_all :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality M eta n) := by
+    intro M hM eta heta
+    exact
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_trace_image_cardinality_bound_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (cardinality := cardinality M) (X M)
+        (htrace_finite M) (hcardinality_dom M hM) eta heta
+  exact
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (constant := constant) (degree := degree)
+      (cardinality := cardinality)
+      hcovering_all hconstant_ge_one hpoly_bound
+
+/--
+Finite trace-code sets plus natural-polynomial code-set cardinality growth
+build the variable-domain book entropy condition.
+
+The caller supplies a finite code set for empirical traces and injectivity on
+the realized trace image.  The code set gives the empirical covering-number
+domination, while the polynomial code-set cardinality bound gives the
+normalized entropy convergence.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_codeSet_cardinality_bound_nat_poly
+    {Observation : Type v} {Index : Type w} {Code : Type*}
+    [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {constant : ℝ -> ℝ -> ℝ} {degree : ℝ -> ℝ -> ℕ}
+    (code :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n ->
+        (m : ℕ) -> (Fin m -> ℝ) -> Code)
+    (codeSet :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Finset Code)
+    (hcode_mem :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ∀ index, index ∈ indexClass ->
+            code M eta n sample m
+                (empiricalTrace (samplePath (X M n) sample m)
+                  (vdVWTruncatedClassFun classFun envelope M) index) ∈
+              codeSet M eta n sample m)
+    (hinj :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          Set.InjOn (code M eta n sample m)
+            (empiricalTrace (samplePath (X M n) sample m)
+              (vdVWTruncatedClassFun classFun envelope M) '' indexClass))
+    (hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 1 ≤ constant M eta)
+    (hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          (((codeSet M eta n sample n).card : ℝ) + 1) ≤
+            constant M eta *
+              (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope
+      (fun M eta n sample m => (codeSet M eta n sample m).card) := by
+  classical
+  have hcovering_all :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (fun sample : SampleAt Observation n => fun m : ℕ =>
+            (codeSet M eta n sample m).card) := by
+    intro M hM eta heta n
+    let htrace_finite :
+        ∀ sample : SampleAt Observation n, ∀ m,
+          (empiricalTrace (samplePath (X M n) sample m)
+            (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite :=
+      fun sample m =>
+        finite_empiricalTrace_image_of_finite_code
+          (sample := samplePath (X M n) sample m)
+          (indexClass := indexClass)
+          (classFun := vdVWTruncatedClassFun classFun envelope M)
+          (code := code M eta n sample m)
+          (codeSet := codeSet M eta n sample m)
+          (by
+            intro index hindex
+            exact hcode_mem M hM eta heta n sample m index hindex)
+          (hinj M hM eta heta n sample m)
+    let hcardinality_dom :
+        ∀ sample : SampleAt Observation n, ∀ m,
+          (htrace_finite sample m).toFinset.card ≤
+            (codeSet M eta n sample m).card :=
+      fun sample m =>
+        by
+          simpa [htrace_finite] using
+            empiricalTrace_image_toFinset_card_le_finite_code
+              (sample := samplePath (X M n) sample m)
+              (indexClass := indexClass)
+              (classFun := vdVWTruncatedClassFun classFun envelope M)
+              (code := code M eta n sample m)
+              (codeSet := codeSet M eta n sample m)
+              (by
+                intro index hindex
+                exact hcode_mem M hM eta heta n sample m index hindex)
+              (hinj M hM eta heta n sample m)
+    exact
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_trace_image_cardinality_bound
+        (X M n)
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (epsilon := eta)
+        (cardinality := fun sample m => (codeSet M eta n sample m).card)
+        (fun sample m => htrace_finite sample m)
+        (fun sample m => hcardinality_dom sample m) heta.le
+  exact
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (constant := constant) (degree := degree)
+      (cardinality := fun M eta n sample m =>
+        (codeSet M eta n sample m).card)
+      hcovering_all hconstant_ge_one hpoly_bound
+
+/--
 The variable-domain book entropy condition supplies the entropy and covering
 fields of the selected fixed-radius package for each fixed truncation level.
 

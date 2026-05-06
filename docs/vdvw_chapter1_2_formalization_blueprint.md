@@ -234,6 +234,13 @@ The matching variable-domain book-entropy constructor is also compiled:
 turns the same pointwise natural-polynomial cardinality growth into the
 book-facing varying-domain entropy condition itself.  This closes the generic
 nat-poly plumbing on both the entropy and selected tail/UI sides.
+The finite-trace versions are compiled as well:
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_image_cardinality_bound_nat_poly`
+and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_codeSet_cardinality_bound_nat_poly`
+turn finite empirical trace images or injective finite trace-code sets plus a
+natural-polynomial cardinality estimate into the book-facing entropy
+condition.
 The remaining useful work is a concrete quantizer/grid/VC cardinality estimate
 for the coordinate code sets, not another endpoint wrapper.
 For Chapter 1 varying-domain asymptotic-measurability,
