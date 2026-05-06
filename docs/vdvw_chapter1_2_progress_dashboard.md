@@ -114,7 +114,10 @@ and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_roundingQuantizer_uniform_abs_bound_nat_poly`.
 This should be consumed only after a real subexponential/natural-polynomial
 cardinality bound is proved; the raw nearest-integer grid remains
-exponential-sized in the sample length.
+exponential-sized in the sample length.  The route now reaches centered
+untruncated convergence through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_roundingQuantizer_uniform_abs_bound_nat_poly`,
+with that structural cardinality hypothesis still explicit.
 The signed arbitrary-map asymptotic-measurability layer now also implies the
 lower-shifted/canonical shifted predicates through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_lowerShifted` and

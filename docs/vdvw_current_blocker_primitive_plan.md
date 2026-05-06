@@ -110,7 +110,10 @@ and
 These theorems do not assert that the raw nearest-integer product grid has
 polynomial size; future progress must prove a real compression/VC/Sauer
 cardinality bound or use another structural entropy input before claiming a
-new Theorem 2.4.3 endpoint.
+new Theorem 2.4.3 endpoint.  The corresponding centered untruncated
+convergence endpoint is now compiled as
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_roundingQuantizer_uniform_abs_bound_nat_poly`,
+again with the polynomial cardinality/compression hypothesis explicit.
 
 Verified compiled foundation that should not be repeated:
 `vdVW_theorem_2_4_1_glivenkoCantelli`;
