@@ -367,12 +367,17 @@ trajectory/rate wrappers.  The current lower-bound packet in
 `StatInference/Optimization/NonsmoothLowerBounds.lean` starts Theorem 6.21 and
 compiles the max-coordinate hard objective, prefix-subspace nonnegativity,
 gradient-span prefix induction consumer, and supplied final gap obstruction
-`chewi621_hardObjective_gap_ge_of_gradientSpan`.  The next aggressive theorem
-packet should instantiate Chewi's source minimizer `x_*[k] = -γ/(α d)`, prove
-`f x_* = -γ^2/(2 α d)` and the radius/Lipschitz/rate parameter choices for
-Theorem 6.21, or prove the concrete first-max subgradient oracle prefix-support
-if that is the bounded dependency.  Then move to the strongly convex Theorem
-6.22 and feasibility Definition 6.24/Theorem 6.25.  Search the local PSD, CoGM,
+`chewi621_hardObjective_gap_ge_of_gradientSpan`.  The newest packet also
+compiles Chewi's source minimizer `x_*[k] = -γ/(α d)`, the value calculation
+`f x_* = -γ^2/(2 α d)`, the first-max resisting oracle, oracle prefix-support,
+the concrete `gamma^2/(2 alpha d)` gap theorem, and the source-parameter
+`d = N + 1`, `γ = L/4`, `α = γ/(R sqrt d)` lower bound
+`chewi621_gap_ge_source_parameters`.  The next aggressive theorem packet should
+certify the remaining source side conditions around this hard instance:
+bounded-domain Lipschitz/radius, subgradient-oracle correctness, and, if needed
+for the fully literal theorem statement, embedding the `Fin (N+1)` instance into
+arbitrary `Fin d` with `d > N`.  Then move to the strongly convex Theorem 6.22
+and feasibility Definition 6.24/Theorem 6.25.  Search the local PSD, CoGM,
 ellipsoid, lower-bound, nonsmooth-lower-bound, and exercises modules first; if
 the next source theorem needs a missing nonsmooth lower-bound primitive, record
 that precise API and prove the smallest wrapper that removes it.
@@ -468,13 +473,14 @@ so the later exercise sweep remains source-trackable.
 
 Book-level target map for the next 2-4 hour acceleration window: stay in
 Chapter 6 and finish theorem-sized packets instead of jumping past the chapter:
-Theorem 6.21 source minimizer/oracle/rate instantiation first, then Theorem
-6.22 for the strongly convex nonsmooth lower bound, then Theorem 6.23's
-optimization-to-feasibility context plus Definition 6.24/Theorem 6.25 for the
-feasibility lower bound.  Lemma 6.20 now has a compiled trajectory/rate
-frontier, and Lemma 6.18/Theorem 6.19 already have a supplied-interface
-algebraic spine; their exact source-audited report remains blocked only by the
-genuine Grünbaum/centroid measure theorem.
+close Theorem 6.21's remaining source certification around the compiled
+`d = N + 1` first-max-oracle lower bound, then Theorem 6.22 for the strongly
+convex nonsmooth lower bound, then Theorem 6.23's optimization-to-feasibility
+context plus Definition 6.24/Theorem 6.25 for the feasibility lower bound.
+Lemma 6.20 now has a compiled trajectory/rate frontier, and Lemma 6.18/Theorem
+6.19 already have a supplied-interface algebraic spine; their exact
+source-audited report remains blocked only by the genuine Grünbaum/centroid
+measure theorem.
 After Chapter 6 has a stable main-text spine, split future packets by chapter
 surface rather than by tiny lemmas: Chapter 7 `FrankWolfe.lean` for Theorem
 7.3 and Carathéodory wrappers, Chapter 8 `Proximal.lean` for Theorems 8.5 and
