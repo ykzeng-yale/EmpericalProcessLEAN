@@ -2197,10 +2197,12 @@ above, so they do not change the theorem-level dashboard counts.
    outer-probability convergence in both fixed and varying sample spaces.  This
    closes a reusable proof step for fixed-space and finite-net mean arguments,
    and `finiteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_integral_tendsto_zero`
-   records the Theorem 2.4.3 finite-net specialization.  This still leaves the
-   same substantive source problem: prove the selected finite-net mean/tail/UI
-   input from the book random-entropy hypothesis or state the needed stronger
-   assumption.
+   records the Theorem 2.4.3 finite-net specialization.  The fixed-`M`
+   event-comparison route now also consumes this input through
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_integral_outerProbability_finiteNetHoeffdingUpper`.
+   This still leaves the same substantive source problem: prove the selected
+   finite-net mean/tail/UI input from the book random-entropy hypothesis or
+   state the needed stronger assumption.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

@@ -175,6 +175,19 @@ source problem is still upstream: prove the finite-net mean/tail/UI input from
 the book random-entropy hypothesis, or state the extra UI/structural
 assumption honestly.
 
+2026-05-06 finite-net mean plus event-comparison consumer: local search found
+the fixed-`M` pure outer-probability event-comparison route
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_finiteNetHoeffdingUpper`
+and the finite-net mean-to-probability bridge above, but no named composition.
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_integral_outerProbability_finiteNetHoeffdingUpper`.
+This is the source-side fixed-radius consumer for routes that prove ordinary
+mean convergence of the finite-net Hoeffding upper and separately prove the
+outer-probability finite-net event comparison.  It avoids reopening the heavy
+product-sign expectation route.  The remaining theorem gap is still the
+upstream derivation of the finite-net mean/tail/UI or event-comparison input
+from the book entropy hypothesis.
+
 2026-05-06 fixed-FDD selected-coordinate congruence follow-up: local search
 found only the whole-sample-path finite-dimensional congruence wrappers
 `aemeasurable_fdd_congr_forall_coord_ae` and

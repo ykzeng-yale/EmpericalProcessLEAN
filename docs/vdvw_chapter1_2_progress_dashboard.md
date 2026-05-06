@@ -44,6 +44,8 @@ so nonnegative measurable fixed-space and finite-net mean routes can feed
 outer-probability convergence directly.  The Theorem 2.4.3 finite-net version
 is now named as
 `finiteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_integral_tendsto_zero`.
+The fixed-`M` event-comparison route also now consumes this mean input through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_integral_outerProbability_finiteNetHoeffdingUpper`.
 The remaining exact-textbook gap is therefore sharper: prove that mean/tail/UI
 input from the random entropy hypothesis, or add a stronger honest hypothesis.
 
