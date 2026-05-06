@@ -54,9 +54,17 @@ The initial Lean target is Chapter 2 plus Chapter 3 substrate:
   scaled-statistic `O_P(1)` field from distributional convergence:
   `vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution` and
   `vaart1998_theorem_3_1_delta_method_of_localization_distribution`.
+- analytic scaled-ball smallness from an `o(‖h‖)` deterministic remainder:
+  `vaart1998_delta_remainder_small_on_scaled_ball_of_isLittleO`.
+- scaled-ball smallness from `HasFDerivAt` and divergent rates:
+  `vaart1998_delta_remainder_small_on_scaled_ball_of_hasFDerivAt_norm_atTop`
+  and `vaart1998_delta_remainder_small_on_scaled_ball_of_hasFDerivAt`.
+- Theorem 3.1 compact sequence wrapper from differentiability, `r_n -> ∞`,
+  and distributional convergence of the scaled statistic:
+  `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`c3cb275`, on remote main `fb090b2`:
+`4187a82`:
 
 - `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
 - `lake build StatInference.AsymptoticStatistics.Basic`
@@ -70,16 +78,13 @@ Current Vaart packet verification passed for:
 
 ## Next Aggressive Target
 
-Close the full finite-dimensional Theorem 3.1 delta method by discharging the
-remaining local-remainder certificate field:
+Move beyond the now-compiled Chapter 3.1 probability/analytic plumbing:
 
-1. derive the scaled-ball smallness field from
-   `vaart1998_hasFDerivAt_delta_remainder_isLittleO`, `r_n -> ∞`, and
-   `T_n - theta -> 0` in probability.
-2. feed the result to
-   `vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution`, whose
-   scaled-statistic tightness is now supplied automatically by convergence in
-   distribution.
+1. if immediate, add an `AEMeasurable` helper for the scaled delta remainder;
+2. otherwise start Chapter 4 method-of-moments wrappers using the CLT wrapper
+   plus `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`;
+3. only write an exact Theorem 3.1 source report after capturing the theorem
+   statement and assumptions from the Markdown/PDF.
 
 If this blocks, record the exact missing theorem shape and move to Chapter 4
 method-of-moments wrappers from CLT plus supplied delta.
