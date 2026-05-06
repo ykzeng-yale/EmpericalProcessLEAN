@@ -83,10 +83,10 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after focused Lean verification and
-root `StatInference` build of the Chewi Theorem 10.13 OMD regret packet on
-2026-05-06, based on verified code frontier `2c62fec` (`Add Chewi theorem
-10.13 OMD regret packet`):
+Current live replacement `/goal` prompt after focused Lean verification,
+promoted module build, and root `StatInference` build of the Chewi Chapter 11
+alternating Bregman projection packet on 2026-05-06, based on verified code
+frontier `4656409` (`Add Chewi chapter 11 ABP telescope packet`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -97,11 +97,11 @@ Frank-Wolfe, Chapter 8 PGD/APGD, or already-compiled Chapter 9 Fenchel/Bregman
 substrate unless an exact source report or later theorem dependency demands it.
 Do not spend a run on wording-only route churn or a single wrapper if a
 theorem-sized packet is available.  Treat Chapters 3-8 as stable reusable
-infrastructure and treat `Fenchel.lean`, `Bregman.lean`, and
-`MirrorDescent.lean` as the active Chapter 9/10 promotion gate.
+infrastructure and treat `Fenchel.lean`, `Bregman.lean`, `MirrorDescent.lean`,
+and `AlternatingBregman.lean` as the active Chapter 9-11 promotion gate.
 
-Latest verified Optimization proof frontier: `2c62fec` (`Add Chewi theorem
-10.13 OMD regret packet`).  `MirrorDescent.lean` now compiles through
+Latest verified Optimization proof frontier: `4656409` (`Add Chewi chapter 11
+ABP telescope packet`).  `MirrorDescent.lean` now compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
 `mirrorProximalGradientModel_le_composite_add_bregman`,
 `composite_le_mirrorProximalGradientModel`,
@@ -167,12 +167,24 @@ from `LipschitzOnWith (Real.toNNReal L) f C`, `‖gradF (x n)‖ <= L`, and
 `chewi1013_regret_bound_of_trajectory_norm_bound_stepsize`.  This proves the
 fixed-comparator form of Chewi Theorem 10.13 and the displayed positive
 step-size corollary in the ordinary Hilbert norm, avoiding `sInf` until exact
-source-report packaging requires it.
+source-report packaging requires it.  The new `AlternatingBregman.lean` module
+is imported by `StatInference.lean` and compiles through
+`IsBregmanProjectionStep`,
+`IsAlternatingBregmanProjectionTrajectory`, trajectory membership accessors,
+the two monotonicity halves
+`alternatingBregmanProjection_star_x_le_star_y` and
+`alternatingBregmanProjection_star_y_succ_le_star_x`, the combined monotonicity
+wrapper, the one-cycle decrease
+`alternatingBregmanProjection_cycle_decrease`,
+`chewi112_finite_sum_with_terminal_le`, `chewi112_finite_sum_le`, and
+`chewi113_exists_small_abp_cycle_gap`.  This proves the finite-source content
+behind Lemma 11.2 and the finite-minimum display `(11.1)` in existential form.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, relative smoothness, OMD, online
-mirror descent, regret, and dual-norm abstractions found no direct
-Bregman/mirror-descent/MPGD/OMD regret theorem; the `MirrorImage` hits in
+mirror descent, regret, dual-norm abstractions, Bregman projection,
+Pythagorean inequality, and alternating projections found no direct
+Bregman/mirror-descent/MPGD/OMD regret/ABP theorem; the `MirrorImage` hits in
 `Analysis/Convex/Deriv.lean` are unrelated symmetry lemmas.  Local search
 confirms the useful APIs are the compiled `Fenchel.lean`, `Bregman.lean`,
 `Proximal.lean`, Chapter 3/5 scalar recurrence/telescope machinery, local
@@ -183,16 +195,16 @@ the OMD theorem packet covers the ordinary Hilbert norm specialization.
 
 Active aggressive target ladder:
 
-1. Open Chapter 11 alternating Bregman projections/minimization as the next
-   theorem-sized packet.  Source-scout anchors are §11.1 around
-   `Optimization_SinhoChewi_sp26.md` lines 3064-3135: define a Bregman
-   projection step certificate, an alternating Bregman projection trajectory,
-   and prove the Lemma 11.2-style finite telescoping inequality before
-   convergence/report packaging.
+1. Continue Chapter 11 beyond the ABP telescope.  First try a supplied-interface
+   Corollary 11.3 convergence/finiteness packet if it can be kept theorem-sized
+   under Chewi's two technical assumptions; otherwise move directly to §11.2
+   alternating minimization and build source-shaped block-coordinate descent
+   interfaces and the first smooth AM descent/telescope theorem.
 2. If exact Theorem 10.13 source-report packaging is requested, add an `sInf`
    wrapper for the fixed-comparator regret theorem and/or a proof-carrying
-   arbitrary norm/dual-norm interface.  Do not block Chapter 11 on those unless
-   a later theorem needs them.
+   arbitrary norm/dual-norm interface.  If exact Lemma 11.2 reporting is
+   requested, package the finite telescope into source screenshots/report form;
+   do not block the main-text theorem lane on reports.
 3. In parallel, keep mapping Chapter 12 stochastic mirror-proximal-gradient and
    Chapter 13 Newton/self-concordance theorem packets.  Use source-shaped
    supplied interfaces first when exact analytic dependencies would otherwise

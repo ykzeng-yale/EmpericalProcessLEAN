@@ -56,13 +56,13 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after focused Lean verification and root
-`StatInference` build of the Chewi Theorem 10.13 OMD regret packet on
-2026-05-06, based on verified code frontier `2c62fec` in
-`StatInference/Optimization/MirrorDescent.lean`:
+Current manual goal frontier after focused Lean verification, promoted module
+build, and root `StatInference` build of the Chewi Chapter 11 alternating
+Bregman projection packet on 2026-05-06, based on verified code frontier
+`4656409` in `StatInference/Optimization/AlternatingBregman.lean`:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.  Latest verified Optimization
-proof frontier: `2c62fec`.
+proof frontier: `4656409`.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
 trajectory interfaces, the model-to-composite Bregman upper/lower comparisons,
 the supplied-interface Chewi Theorem 10.9 one-step inequality, the descent
@@ -104,20 +104,28 @@ accessors, `chewi1013_young_lower_bound`,
 `chewi1013_regret_bound_of_trajectory`,
 `chewi1013_regret_bound_of_trajectory_norm_bound`,
 `chewi1013_stepsize_rhs_bound`, and
-`chewi1013_regret_bound_of_trajectory_norm_bound_stepsize`.
+`chewi1013_regret_bound_of_trajectory_norm_bound_stepsize`.  The newest
+Chapter 11 ABP packet compiles `IsBregmanProjectionStep`,
+`IsAlternatingBregmanProjectionTrajectory`, trajectory membership accessors,
+the two monotonicity halves, the combined monotonicity wrapper,
+`alternatingBregmanProjection_cycle_decrease`,
+`chewi112_finite_sum_with_terminal_le`, `chewi112_finite_sum_le`, and
+`chewi113_exists_small_abp_cycle_gap`.
 Search-first result: mathlib has no direct Bregman/mirror-descent/MPGD theorem
 in the pinned tree; the relevant reuse is local `Bregman.lean`,
 `Proximal.lean`, Chapter 3 geometric-weight/Gronwall APIs,
 `ProjectedSubgradient.lean` finite-average/Jensen APIs,
 `LipschitzOnWith.le_add_mul`, `abs_real_inner_le_norm`, and
-`FirstOrderStrongConvexOn.lower_model`.  The active route is now Chapter 11
-alternating Bregman projection/minimization, starting with a Bregman projection
-step certificate, ABP trajectory interface, and Lemma 11.2 finite telescoping
-packet.  Generalize 10.11/10.13 to a custom arbitrary norm/dual-norm interface
-or add an exact `sInf` wrapper only when source-report packaging or a later
-theorem demands it.  In parallel, map Chapter 12/13 stochastic/Newton theorem
-packets with source-shaped supplied interfaces first when exact analytic
-dependencies would otherwise stall progress.
+`FirstOrderStrongConvexOn.lower_model`; Chapter 11 ABP reuses
+`bregmanDivergence` and `sum_range_sub_succ`, with no direct mathlib/local ABP
+theorem found.  The active route is now Corollary 11.3 convergence under
+supplied compactness/separation assumptions if bounded; otherwise move directly
+to §11.2 alternating minimization and build source-shaped block-coordinate
+descent interfaces.  Generalize 10.11/10.13 to a custom arbitrary
+norm/dual-norm interface or add an exact `sInf` wrapper only when source-report
+packaging or a later theorem demands it.  In parallel, map Chapter 12/13
+stochastic/Newton theorem packets with source-shaped supplied interfaces first
+when exact analytic dependencies would otherwise stall progress.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
