@@ -2040,7 +2040,12 @@ packages:
 the three corresponding varying-domain declarations.  `PMeasurable.lean` adds
 `VdVWPMeasurableClass.centered_of_countable_of_coordinate`, giving a direct
 countable coordinate-measurable route to centered Definition 2.3.3
-`P`-measurability for Theorem 2.4.3 endpoints.  `FiniteDimensional.lean` adds
+`P`-measurability for Theorem 2.4.3 endpoints.  `Theorem243.lean` now consumes
+that bridge in
+`VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_countable_coordinate_convergesInOuterProbabilityConst`
+and
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_countable_coordinate_convergesInOuterProbabilityConst`.
+`FiniteDimensional.lean` adds
 `vdVW148_ellInfty_coordinate_hasLaw`, the one-coordinate law bridge from an
 `ell_infty(T)`-valued random element.  These are theorem-facing support
 closures; they do not close the exact random-entropy tail/UI bridge or the

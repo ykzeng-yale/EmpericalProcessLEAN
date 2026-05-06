@@ -5681,7 +5681,14 @@ coordinate-measurable constructor.  `PMeasurable.lean` now adds
 `VdVWPMeasurableClass.centered_of_countable_of_coordinate`, proving that a
 countable coordinate-measurable class remains `P`-measurable after subtracting
 the population integral from every coordinate.  This is a direct Definition
-2.3.3 bridge for centered Theorem 2.4.3 endpoints.
+2.3.3 bridge for centered Theorem 2.4.3 endpoints.  `Theorem243.lean` now
+consumes it directly through
+`VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_countable_coordinate_convergesInOuterProbabilityConst`
+and
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_countable_coordinate_convergesInOuterProbabilityConst`,
+so countable coordinate-measurable centered empirical suprema can feed both
+Dirac-law weak convergence and signed varying-domain weak convergence without
+carrying a separate centered `P`-measurability hypothesis.
 
 2026-05-05 coordinate `ell_infty` law follow-up: local search found the
 finite-dimensional `ell_infty(T)` law wrapper but no direct single-coordinate
