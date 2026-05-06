@@ -64,6 +64,7 @@ compiles and root-imports the new namespace.  Compiled declarations:
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`;
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`;
 - `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`;
+- `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`;
 - `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`;
 - `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`;
 - `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`;
@@ -83,11 +84,11 @@ Immediate proof route:
    grid/squeezing handoffs;
 2. construct a strict finite endpoint grid with small adjacent CDF left-limit
    increments for every bounded interval and positive radius: first erase
-   repeated points from the non-atomic monotone subdivision to get a strict
-   finite prefix ending at the right endpoint with closed-cover cell
-   assignments, then add atom-aware endpoint selection for arbitrary
-   distributions, and finally feed the compiled strict-prefix and
-   cutpoint-chain-to-GC handoffs;
+   repeated points from the non-atomic monotone subdivision to get strict
+   finite endpoints ending at the right endpoint, together with an original
+   adjacent subdivision-cell witness for each strict gap, then add atom-aware
+   endpoint selection for arbitrary distributions, and finally feed the
+   compiled extracted-gap and cutpoint-chain-to-GC handoffs;
 3. package the empirical CDF statement once the uniform squeezing proof closes;
 4. keep Chapter 2.1 as optional iid/product notation polish while the main
    proof effort returns to the GC grid constructor;

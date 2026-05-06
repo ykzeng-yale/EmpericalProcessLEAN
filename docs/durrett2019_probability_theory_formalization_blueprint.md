@@ -180,6 +180,10 @@ Compiled first source wrappers:
   `SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`
   and
   `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`.
+- Durrett Theorem 2.4.9 extracted-subdivision-adjacency handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_extracted_subdivision_adjacencies_closed_cover`
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`.
 - Durrett Theorem 2.4.9 non-atomic local grid ingredient:
   `exists_realOpenInterval_measureReal_lt_of_noAtoms` and
   `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`.
@@ -233,17 +237,17 @@ one-cell, two-cell, right-append, and finite cutpoint-chain middle-partition
 consumers now compile.  A strict endpoint-grid-to-cutpoint-chain handoff, a
 closed-cover endpoint-grid refinement handoff, a
 non-atomic local small-neighborhood lemma, a non-atomic finite compact-cover
-lemma, a non-atomic monotone-subdivision lemma, and a Durrett-named
-cutpoint-chain-to-GC handoff also compile.  The next non-atomic theorem-core
-primitive is the monotone-subdivision-to-strict-endpoint-grid construction:
-erase repeated subdivision points while preserving the small-cover assignment
-for each nondegenerate adjacent cell, then feed
-`SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`.
-The exact post-dedup shape needed now is a strict finite prefix of the monotone
-subdivision that starts at `a`, ends at `b`, and carries the inherited
-closed-cover cell assignments.  The remaining arbitrary-distribution primitive
-is the atom-aware construction of strict finite endpoint grids for intervals
-whose total CDF increment is not already below the requested radius.
+lemma, a non-atomic monotone-subdivision lemma, strict-prefix and extracted-gap
+closed-cover handoffs, and a Durrett-named cutpoint-chain-to-GC handoff also
+compile.  The next non-atomic theorem-core primitive is the
+monotone-subdivision-to-strict-endpoint-grid construction: erase repeated
+subdivision points while preserving, for each nondegenerate adjacent output
+gap, the original adjacent subdivision cell that realizes that gap.  That
+should feed
+`SuppliedRealMiddleCDFPartitionChain.of_extracted_subdivision_adjacencies_closed_cover`.
+The remaining arbitrary-distribution primitive is the atom-aware construction
+of strict finite endpoint grids for intervals whose total CDF increment is not
+already below the requested radius.
 
 ### Lane D: CLT and characteristic functions
 

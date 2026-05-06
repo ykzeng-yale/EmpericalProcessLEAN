@@ -742,6 +742,37 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix
     ht0 htlast hstrictStep hrefine
 
 /--
+Durrett 2019, Theorem 2.4.9 extracted-subdivision-adjacency package.
+
+After duplicate erasure has produced strict endpoints, it remains enough to
+record which original adjacent subdivision cell realizes each strict gap. The
+small closed-cover assignment for that original cell then gives the cutpoint
+chain.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b : ℝ} {cells : ℕ}
+    {t : ℕ -> Set.Icc a b}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hzero : endpoint 0 = a)
+    (hlast : endpoint (Fin.last (cells + 1)) = b)
+    (hstrict : StrictMono endpoint)
+    (origin : Fin (cells + 1) -> ℕ)
+    (hleft : ∀ cell : Fin (cells + 1),
+      endpoint (Fin.castSucc cell) = (t (origin cell) : ℝ))
+    (hright : ∀ cell : Fin (cells + 1),
+      endpoint (Fin.succ cell) = (t (origin cell + 1) : ℝ))
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ n,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_extracted_subdivision_adjacencies_closed_cover
+    endpoint hzero hlast hstrict origin hleft hright hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9 non-atomic local grid ingredient.
 
 For non-atomic locally finite real measures, every point has an open

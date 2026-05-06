@@ -915,6 +915,60 @@ theorem SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_
   simpa [endpoint, ht0, htlast] using hchain
 
 /--
+An extracted strict endpoint grid whose adjacent gaps are witnessed by adjacent
+cells of the original monotone subdivision produces a cutpoint chain.
+
+This is the main consumer for duplicate erasure: after repeated subdivision
+values have been removed, each remaining strict adjacent gap should be traced
+back to one original adjacent subdivision cell. The closed-cover assignment for
+that original cell is then inherited by the strict endpoint grid.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_extracted_subdivision_adjacencies_closed_cover
+    {μ : Measure ℝ} [IsProbabilityMeasure μ]
+    {epsilon a b : ℝ} {cells : ℕ}
+    {t : ℕ -> Set.Icc a b}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hzero : endpoint 0 = a)
+    (hlast : endpoint (Fin.last (cells + 1)) = b)
+    (hstrict : StrictMono endpoint)
+    (origin : Fin (cells + 1) -> ℕ)
+    (hleft : ∀ cell : Fin (cells + 1),
+      endpoint (Fin.castSucc cell) = (t (origin cell) : ℝ))
+    (hright : ∀ cell : Fin (cells + 1),
+      endpoint (Fin.succ cell) = (t (origin cell + 1) : ℝ))
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ n,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        μ.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon a b := by
+  have hrefineEndpoint : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers,
+        Set.Icc (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) ∧
+        μ.real (Set.Ioo (l x) (r x)) < epsilon := by
+    intro cell
+    rcases hrefine (origin cell) with ⟨x, hx, hclosed, hsmall⟩
+    refine ⟨x, hx, ?_, hsmall⟩
+    intro z hz
+    have hz_left : (t (origin cell) : ℝ) ≤ z := by
+      simpa [hleft cell] using hz.1
+    have hz_right : z ≤ (t (origin cell + 1) : ℝ) := by
+      simpa [hright cell] using hz.2
+    have hzab : z ∈ Set.Icc a b := by
+      exact ⟨(t (origin cell)).2.1.trans hz_left,
+        hz_right.trans (t (origin cell + 1)).2.2⟩
+    have hzsub :
+        (⟨z, hzab⟩ : Set.Icc a b) ∈
+          Set.Icc (t (origin cell)) (t (origin cell + 1)) := by
+      exact ⟨hz_left, hz_right⟩
+    exact hclosed hzsub
+  have hchain := SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement
+    endpoint hstrict hrefineEndpoint
+  simpa [hzero, hlast] using hchain
+
+/--
 Every finite small-increment cutpoint chain supplies a bounded middle CDF
 partition.
 -/

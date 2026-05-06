@@ -91,6 +91,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`
+- `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`
 - `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`
 - `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`
 - `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`
@@ -136,6 +137,7 @@ compile, via
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`,
+`durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`,
 `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`,
 `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`,
 `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`, and
@@ -162,11 +164,16 @@ and
 now turn any extracted strict endpoint tuple with small-cover cell assignments
 directly into the cutpoint chain.  The stricter consumer
 `SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`
-now accepts the most convenient post-dedup output shape: a strict finite prefix
-of the monotone subdivision ending at the right endpoint.  The next non-atomic
-packet should prove the duplicate-erasure/extraction theorem that supplies
-that prefix.  The fully arbitrary distribution route still needs atom-aware
-endpoint selection.
+now accepts the most convenient post-dedup no-skip output shape: a strict finite
+prefix of the monotone subdivision ending at the right endpoint.  The more
+flexible consumer
+`SuppliedRealMiddleCDFPartitionChain.of_extracted_subdivision_adjacencies_closed_cover`
+now accepts the true duplicate-erasure output shape: strict endpoints plus, for
+each strict adjacent gap, the original adjacent subdivision cell that realizes
+that gap.  The next non-atomic packet should prove the finite
+duplicate-erasure/extraction theorem that constructs those endpoints and
+adjacency witnesses from a monotone eventually-constant subdivision.  The fully
+arbitrary distribution route still needs atom-aware endpoint selection.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
 Parallel target: Chapter 2.1 exact iid/product notation refinements only if
