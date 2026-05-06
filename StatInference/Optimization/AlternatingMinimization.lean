@@ -279,5 +279,237 @@ theorem chewi114_gap_le_eps_of_source_recurrence
     (gap := gap) (beta := beta) (R := R) (D := D)
     (n0 := n0) (M := M) hA hM hpos hhalf hsource).trans hK_div_le
 
+/--
+Chewi Theorem 11.4 one-step max recurrence from the displayed source
+recurrence, without assuming in advance that the next gap is at least half of
+the current gap.
+-/
+theorem chewi114_next_gap_le_max_halving_quadratic_of_source {A K g g' : ℝ}
+    (hA : 0 < A) (hK_eq : K = 4 * A)
+    (hg_nonneg : 0 ≤ g)
+    (hsource : g' - g ≤ -g' ^ (2 : ℕ) / A) :
+    g' ≤ max (g / 2) (g - g ^ (2 : ℕ) / K) := by
+  by_cases hhalf : g / 2 ≤ g'
+  · exact (chewi114_quadratic_descent_of_next_gap_sq
+      (A := A) (K := K) (g := g) (g' := g') hA hK_eq hg_nonneg hhalf
+      hsource).trans (le_max_right (g / 2) (g - g ^ (2 : ℕ) / K))
+  · exact (le_of_lt (not_le.mp hhalf)).trans
+      (le_max_left (g / 2) (g - g ^ (2 : ℕ) / K))
+
+/--
+Sequence form of the Chewi Theorem 11.4 one-step max recurrence.
+-/
+theorem chewi114_max_recurrence_of_source
+    {gap : ℕ -> ℝ} {A K : ℝ} {n0 M : ℕ}
+    (hA : 0 < A) (hK_eq : K = 4 * A)
+    (hgap_nonneg : ∀ m, m ≤ M -> 0 ≤ gap (n0 + m))
+    (hsource : ∀ m, m < M ->
+      gap (n0 + (m + 1)) - gap (n0 + m) ≤
+        -gap (n0 + (m + 1)) ^ (2 : ℕ) / A) :
+    ∀ m, m < M ->
+      gap (n0 + (m + 1)) ≤
+        max (gap (n0 + m) / 2)
+          (gap (n0 + m) - gap (n0 + m) ^ (2 : ℕ) / K) := by
+  intro m hm
+  exact chewi114_next_gap_le_max_halving_quadratic_of_source
+    (A := A) (K := K) (g := gap (n0 + m))
+    (g' := gap (n0 + (m + 1))) hA hK_eq
+    (hgap_nonneg m (Nat.le_of_lt hm)) (hsource m hm)
+
+/--
+Source-shaped max recurrence for Chewi Theorem 11.4 with
+`A = 2 * beta * D^2 * R^2` and `K = 8 * beta * D^2 * R^2`.
+-/
+theorem chewi114_source_max_recurrence_of_source
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D n0 M : ℕ}
+    (hA : 0 < chewi114A beta D R)
+    (hgap_nonneg : ∀ m, m ≤ M -> 0 ≤ gap (n0 + m))
+    (hsource : ∀ m, m < M ->
+      gap (n0 + (m + 1)) - gap (n0 + m) ≤
+        -gap (n0 + (m + 1)) ^ (2 : ℕ) / chewi114A beta D R) :
+    ∀ m, m < M ->
+      gap (n0 + (m + 1)) ≤
+        max (gap (n0 + m) / 2)
+          (gap (n0 + m) - gap (n0 + m) ^ (2 : ℕ) / chewi114K beta D R) :=
+  chewi114_max_recurrence_of_source
+    (gap := gap) (A := chewi114A beta D R) (K := chewi114K beta D R)
+    (n0 := n0) (M := M) hA (chewi114K_eq_four_chewi114A beta D R)
+    hgap_nonneg hsource
+
+/--
+Above the source threshold `K / 2`, Chewi's max recurrence is necessarily in
+the halving regime.
+-/
+theorem chewi114_halving_of_max_recurrence_above_threshold {K g g' : ℝ}
+    (hK : 0 < K) (hg_nonneg : 0 ≤ g) (hthreshold : K / 2 ≤ g)
+    (hmax : g' ≤ max (g / 2) (g - g ^ (2 : ℕ) / K)) :
+    g' ≤ g / 2 := by
+  have hmul : (K / 2) * g ≤ g * g :=
+    mul_le_mul_of_nonneg_right hthreshold hg_nonneg
+  have hsq_div : g / 2 ≤ g ^ (2 : ℕ) / K := by
+    rw [le_div_iff₀ hK]
+    nlinarith [hmul]
+  have hquad_le_half : g - g ^ (2 : ℕ) / K ≤ g / 2 := by
+    nlinarith
+  exact hmax.trans (max_le le_rfl hquad_le_half)
+
+/--
+Source-recurrence form of the halving step above the threshold `K / 2`.
+-/
+theorem chewi114_halving_of_source_above_threshold {A K g g' : ℝ}
+    (hA : 0 < A) (hK_eq : K = 4 * A)
+    (hg_nonneg : 0 ≤ g) (hthreshold : K / 2 ≤ g)
+    (hsource : g' - g ≤ -g' ^ (2 : ℕ) / A) :
+    g' ≤ g / 2 := by
+  have hK_pos : 0 < K := by
+    rw [hK_eq]
+    nlinarith
+  exact chewi114_halving_of_max_recurrence_above_threshold
+    (K := K) (g := g) (g' := g') hK_pos hg_nonneg hthreshold
+    (chewi114_next_gap_le_max_halving_quadratic_of_source
+      (A := A) (K := K) (g := g) (g' := g') hA hK_eq hg_nonneg hsource)
+
+/--
+A finite consecutive halving phase gives the expected geometric upper bound.
+-/
+theorem chewi114_gap_le_half_pow_mul_of_halving
+    {gap : ℕ -> ℝ} {n0 M : ℕ}
+    (hhalve : ∀ m, m < M -> gap (n0 + (m + 1)) ≤ gap (n0 + m) / 2) :
+    gap (n0 + M) ≤ (1 / 2 : ℝ) ^ M * gap n0 := by
+  induction M with
+  | zero =>
+      simp
+  | succ M ih =>
+      have hprev :
+          gap (n0 + M) ≤ (1 / 2 : ℝ) ^ M * gap n0 :=
+        ih (fun m hm => hhalve m (Nat.lt_trans hm (Nat.lt_succ_self M)))
+      have hstep : gap (n0 + (M + 1)) ≤ gap (n0 + M) / 2 :=
+        hhalve M (Nat.lt_succ_self M)
+      calc
+        gap (n0 + (M + 1)) ≤ gap (n0 + M) / 2 := hstep
+        _ ≤ ((1 / 2 : ℝ) ^ M * gap n0) / 2 := by nlinarith
+        _ = (1 / 2 : ℝ) ^ (M + 1) * gap n0 := by ring
+
+/--
+Source-shaped halving step above Chewi's threshold
+`chewi114K beta D R / 2 = 4 * beta * D^2 * R^2`.
+-/
+theorem chewi114_source_halving_above_threshold
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D n : ℕ}
+    (hA : 0 < chewi114A beta D R)
+    (hgap_nonneg : 0 ≤ gap n)
+    (hthreshold : chewi114K beta D R / 2 ≤ gap n)
+    (hsource :
+      gap (n + 1) - gap n ≤
+        -gap (n + 1) ^ (2 : ℕ) / chewi114A beta D R) :
+    gap (n + 1) ≤ gap n / 2 :=
+  chewi114_halving_of_source_above_threshold
+    (A := chewi114A beta D R) (K := chewi114K beta D R)
+    (g := gap n) (g' := gap (n + 1)) hA
+    (chewi114K_eq_four_chewi114A beta D R) hgap_nonneg hthreshold hsource
+
+/--
+Algorithm-facing source certificate for the one-dimensional gap sequence
+obtained from Chewi's AM proof after the block-coordinate descent estimate.
+The fields are exactly the nonnegativity of the objective gap and the displayed
+source recurrence before the burn-in split.
+-/
+structure IsChewi114AMSourceCertificate
+    (gap : ℕ -> ℝ) (beta R : ℝ) (D : ℕ) : Prop where
+  gap_nonneg : ∀ n, 0 ≤ gap n
+  source_recurrence : ∀ n,
+    gap (n + 1) - gap n ≤
+      -gap (n + 1) ^ (2 : ℕ) / chewi114A beta D R
+
+/--
+The AM source certificate supplies Chewi's one-step max recurrence at every
+iteration.
+-/
+theorem IsChewi114AMSourceCertificate.max_recurrence
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R) (n : ℕ) :
+    gap (n + 1) ≤
+      max (gap n / 2) (gap n - gap n ^ (2 : ℕ) / chewi114K beta D R) :=
+  chewi114_next_gap_le_max_halving_quadratic_of_source
+    (A := chewi114A beta D R) (K := chewi114K beta D R)
+    (g := gap n) (g' := gap (n + 1)) hA
+    (chewi114K_eq_four_chewi114A beta D R) (hcert.gap_nonneg n)
+    (hcert.source_recurrence n)
+
+/--
+The AM source certificate gives a halving step whenever the current gap is
+above the source burn-in threshold.
+-/
+theorem IsChewi114AMSourceCertificate.halving_above_threshold
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R) {n : ℕ}
+    (hthreshold : chewi114K beta D R / 2 ≤ gap n) :
+    gap (n + 1) ≤ gap n / 2 :=
+  chewi114_source_halving_above_threshold
+    (gap := gap) (beta := beta) (R := R) (D := D) (n := n)
+    hA (hcert.gap_nonneg n) hthreshold (hcert.source_recurrence n)
+
+/--
+If a whole finite prefix stays above the burn-in threshold, the AM source
+certificate gives geometric halving across that prefix.
+-/
+theorem IsChewi114AMSourceCertificate.gap_le_half_pow_mul_of_threshold_phase
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R)
+    (hthreshold : ∀ m, m < M -> chewi114K beta D R / 2 ≤ gap (n0 + m)) :
+    gap (n0 + M) ≤ (1 / 2 : ℝ) ^ M * gap n0 :=
+  chewi114_gap_le_half_pow_mul_of_halving
+    (gap := gap) (n0 := n0) (M := M)
+    (fun m hm => by
+      simpa [Nat.add_assoc] using
+        hcert.halving_above_threshold hA (n := n0 + m) (hthreshold m hm))
+
+/--
+Burn-in consumer for Chewi Theorem 11.4: a finite above-threshold phase reaches
+the threshold once the corresponding geometric upper bound is below it.
+-/
+theorem IsChewi114AMSourceCertificate.gap_le_threshold_of_geometric_burnin
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R)
+    (hthreshold : ∀ m, m < M -> chewi114K beta D R / 2 ≤ gap (n0 + m))
+    (hpow_le :
+      (1 / 2 : ℝ) ^ M * gap n0 ≤ chewi114K beta D R / 2) :
+    gap (n0 + M) ≤ chewi114K beta D R / 2 :=
+  (hcert.gap_le_half_pow_mul_of_threshold_phase hA hthreshold).trans hpow_le
+
+/--
+The AM source certificate supplies the post-threshold `K / M` rate once the
+half-gap condition holds on a tail segment.
+-/
+theorem IsChewi114AMSourceCertificate.gap_le_source_K_div_iterations_of_tail_half
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R) (hM : M ≠ 0)
+    (hpos : ∀ m, m ≤ M -> 0 < gap (n0 + m))
+    (hhalf : ∀ m, m < M -> gap (n0 + m) / 2 ≤ gap (n0 + (m + 1))) :
+    gap (n0 + M) ≤ chewi114K beta D R / (M : ℝ) :=
+  chewi114_gap_le_source_K_div_iterations_of_source_recurrence
+    (gap := gap) (beta := beta) (R := R) (D := D)
+    (n0 := n0) (M := M) hA hM hpos hhalf
+    (fun m _hm => hcert.source_recurrence (n0 + m))
+
+/--
+Epsilon form of the AM source-certificate tail rate.
+-/
+theorem IsChewi114AMSourceCertificate.gap_le_eps_of_tail_half
+    {gap : ℕ -> ℝ} {beta R eps : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R) (hM : M ≠ 0)
+    (hpos : ∀ m, m ≤ M -> 0 < gap (n0 + m))
+    (hhalf : ∀ m, m < M -> gap (n0 + m) / 2 ≤ gap (n0 + (m + 1)))
+    (hK_div_le : chewi114K beta D R / (M : ℝ) ≤ eps) :
+    gap (n0 + M) ≤ eps :=
+  (hcert.gap_le_source_K_div_iterations_of_tail_half
+    hA hM hpos hhalf).trans hK_div_le
+
 end Optimization
 end StatInference

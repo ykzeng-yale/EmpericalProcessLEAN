@@ -56,10 +56,10 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after focused Lean verification and targeted
-module build of the Chapter 11.4 source-recurrence alternating-minimization
-bridge on 2026-05-06, building on pushed frontier `29b2a60` (`Add Chewi
-theorem 11.4 scalar AM packet`):
+Current manual goal frontier after focused Lean verification of the Chapter
+11.4 source-recurrence, max-recurrence, and burn-in alternating-minimization
+scalar bridge on 2026-05-06, building on pushed frontier `6f31edc` (`Add
+Chewi theorem 11.4 source recurrence bridge`):
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -129,12 +129,22 @@ recurrence/half-threshold bridge: `sum_range_succ_sub`,
 `chewi114_gap_le_K_div_iterations_of_source_recurrence`, `chewi114A`,
 `chewi114K`, `chewi114K_eq_four_chewi114A`,
 `chewi114_gap_le_source_K_div_iterations`,
-`chewi114_gap_le_source_K_div_iterations_of_source_recurrence`, and
-`chewi114_gap_le_eps_of_source_recurrence`.  The active route is now the
-algorithm-facing AM trajectory/certificate bridge for exact Theorem 11.4,
-immediately followed by Theorem 11.5 RAM expectation recurrences, Sinkhorn
-Theorems 11.7/11.8 from ABP/mirror-descent supplied interfaces, and Chapter 12
-SMPGD before the ASGD
+`chewi114_gap_le_source_K_div_iterations_of_source_recurrence`,
+`chewi114_gap_le_eps_of_source_recurrence`,
+`chewi114_next_gap_le_max_halving_quadratic_of_source`,
+`chewi114_max_recurrence_of_source`,
+`chewi114_source_max_recurrence_of_source`,
+`chewi114_halving_of_max_recurrence_above_threshold`,
+`chewi114_halving_of_source_above_threshold`,
+`chewi114_gap_le_half_pow_mul_of_halving`,
+`chewi114_source_halving_above_threshold`,
+`IsChewi114AMSourceCertificate`, and its max-recurrence, halving, geometric
+burn-in, threshold, tail-rate, and epsilon consumers.  The active route is now
+deriving that source certificate from the actual block-coordinate descent
+estimate and adding exact log/ceil threshold packaging if bounded, immediately
+followed by Theorem 11.5 RAM expectation recurrences, Sinkhorn Theorems
+11.7/11.8 from ABP/mirror-descent supplied interfaces, and Chapter 12 SMPGD
+before the ASGD
 CLT.  Generalize 10.11/10.13 to a custom arbitrary
 norm/dual-norm interface or add an exact `sInf` wrapper only when source-report
 packaging or a later theorem demands it.  In parallel, map Chapter 13

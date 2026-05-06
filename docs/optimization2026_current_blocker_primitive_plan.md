@@ -88,10 +88,10 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after focused Lean verification and
-targeted module build of the Chapter 11.4 source-recurrence
-alternating-minimization bridge on 2026-05-06, building on pushed frontier
-`29b2a60` (`Add Chewi theorem 11.4 scalar AM packet`):
+Current live replacement `/goal` prompt after focused Lean verification of the
+Chapter 11.4 source-recurrence, max-recurrence, and burn-in
+alternating-minimization scalar bridge on 2026-05-06, building on pushed
+frontier `6f31edc` (`Add Chewi theorem 11.4 source recurrence bridge`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -198,11 +198,27 @@ The new `AlternatingMinimization.lean` module is imported by
 `chewi114_gap_le_K_div_iterations_of_source_recurrence`, `chewi114A`,
 `chewi114K`, `chewi114K_eq_four_chewi114A`,
 `chewi114_gap_le_source_K_div_iterations`,
-`chewi114_gap_le_source_K_div_iterations_of_source_recurrence`, and
-`chewi114_gap_le_eps_of_source_recurrence`.  This proves the post-threshold
-inverse-gap/telescope layer of Chewi Theorem 11.4 in the source constant
-`K = 8 * beta * D^2 * R^2` form and discharges the displayed source recurrence
-with denominator `2 * beta * D^2 * R^2` plus the half-gap threshold.
+`chewi114_gap_le_source_K_div_iterations_of_source_recurrence`,
+`chewi114_gap_le_eps_of_source_recurrence`,
+`chewi114_next_gap_le_max_halving_quadratic_of_source`,
+`chewi114_max_recurrence_of_source`,
+`chewi114_source_max_recurrence_of_source`,
+`chewi114_halving_of_max_recurrence_above_threshold`,
+`chewi114_halving_of_source_above_threshold`,
+`chewi114_gap_le_half_pow_mul_of_halving`,
+`chewi114_source_halving_above_threshold`,
+`IsChewi114AMSourceCertificate`,
+`IsChewi114AMSourceCertificate.max_recurrence`,
+`IsChewi114AMSourceCertificate.halving_above_threshold`,
+`IsChewi114AMSourceCertificate.gap_le_half_pow_mul_of_threshold_phase`,
+`IsChewi114AMSourceCertificate.gap_le_threshold_of_geometric_burnin`,
+`IsChewi114AMSourceCertificate.gap_le_source_K_div_iterations_of_tail_half`,
+and `IsChewi114AMSourceCertificate.gap_le_eps_of_tail_half`.  This proves the
+post-threshold inverse-gap/telescope layer of Chewi Theorem 11.4 in the source
+constant `K = 8 * beta * D^2 * R^2` form, discharges the displayed source
+recurrence with denominator `2 * beta * D^2 * R^2`, derives Chewi's max
+recurrence without a pre-supplied half-gap assumption, and proves the scalar
+burn-in halving/threshold consumers.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, relative smoothness, OMD, online
@@ -231,12 +247,12 @@ attempting full martingale/CLT formalization.
 Active aggressive target ladder:
 
 1. Finish Chewi Theorem 11.4 as an algorithm-facing AM theorem.  The scalar
-   inverse-gap layer and the source-recurrence/half-threshold bridge now
-   compile, so the remaining theorem-sized task is to define the alternating
-   minimization trajectory/certificate and derive the displayed source
-   recurrence from the block-coordinate descent estimate.  Then route the exact
-   statement through the compiled `chewi114_gap_le_source_K_div_iterations` and
-   `chewi114_gap_le_eps_of_source_recurrence` consumers.
+   inverse-gap layer, max recurrence, source-recurrence bridge, and burn-in
+   threshold consumers now compile.  The remaining theorem-sized tasks are:
+   derive `IsChewi114AMSourceCertificate` from the block-coordinate descent
+   estimate, add the exact log/ceil-to-geometric-threshold wrapper if bounded,
+   and route the exact statement through the compiled tail `K/M` and epsilon
+   consumers.
 2. Immediately continue to Theorem 11.5 RAM using expectation-level
    source-shaped interfaces: conditional one-step expectation, convex/strongly
    convex Hopf-Lax supplied bounds, exponential rate for
