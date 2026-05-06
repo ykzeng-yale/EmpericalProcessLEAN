@@ -43,6 +43,19 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
+Current manual goal frontier after focused Lean verification of Chapter 7
+`StatInference/Optimization/FrankWolfe.lean` rebased over pushed frontier
+`4d4601c`, building on `bb0a297`: Chapter 6 should be treated as stable through the supplied
+Definition 6.24/Theorem 6.25 feasibility-instance and no-interior-success
+package, and Chapter 7 now has a compiled supplied-interface Theorem 7.3 rate
+wrapper.  The Frank-Wolfe layer introduces `LinearOptimizationOracleOn`,
+`HasDiameterBound`, `frankWolfeStep`, `chewi73StepSize`,
+`IsFrankWolfeTrajectory`, feasibility preservation, the one-step gap
+recurrence, scalar rate induction, trajectory recurrence, and
+`chewi73_gap_le_two_beta_mul_diam_sq_div`.  The next active main-text route is
+Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
+exact source/report packaging or a dependency.
+
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
 lane has moved from Lemma 6.20 packaging through Chapter 6 Theorems 6.21 and

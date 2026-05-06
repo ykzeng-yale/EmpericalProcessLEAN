@@ -83,6 +83,41 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after focused Lean verification of the
+Chapter 7 Frank-Wolfe packet rebased over pushed frontier `4d4601c`
+(`Add Theorem 2.4.3 coordinate-code selected package`), building on `bb0a297`
+(`Add Chewi theorem 6.25 feasibility instance wrapper`): aggressively
+formalize and prove all main theorem content of Sinho Chewi's Optimization
+2026 notes in Lean under `StatInference/Optimization`, with exercise
+statements and cheap reusable exercise proofs kept in
+`StatInference/Optimization/Exercises.lean` without slowing the main-text
+theorem lane.  Do not route back to the stale Chapter 3/4/5 setup, solved
+Chapter 6 6.21/6.22 packets, or already-compiled Theorem 6.25 feasibility
+infrastructure unless exact source/report packaging needs them.  Treat
+`ProjectedSubgradient.lean`, `CuttingPlane.lean`, `Ellipsoid.lean`, and
+`NonsmoothLowerBounds.lean` as stable Chapter 6 infrastructure through the
+supplied Definition 6.24/Theorem 6.25 closed-convex feasibility-instance and
+no-interior-success wrapper.  Treat `StatInference/Optimization/FrankWolfe.lean`
+as the stable Chapter 7 starter: it now compiles `LinearOptimizationOracleOn`,
+`HasDiameterBound`, `frankWolfeStep`, `chewi73StepSize`,
+`IsFrankWolfeTrajectory`, step feasibility, the one-step Frank-Wolfe gap
+recurrence, the scalar `2/(n+2)` induction, trajectory recurrence, and
+`chewi73_gap_le_two_beta_mul_diam_sq_div`, the supplied-interface
+Theorem 7.3 rate.  Search-first results to preserve: no local/mathlib
+Frank-Wolfe theorem was found; the proof reuses local
+`FirstOrderStrongConvexOn.lower_model`, `SmoothWithGradientOn.upper_model`,
+mathlib `convex_iff_add_mem`, inner-product smul/norm algebra, and scalar
+`field_simp`/`ring`/`nlinarith`.  The next aggressive main-text packet is
+Chapter 8 `Proximal.lean`: source-scan the proximal/composite-gradient section
+of the Chewi notes, search local Chapter 3/5 descent/AGD recurrence APIs,
+mathlib proximal/projection/convex-subdifferential candidates, and then prove
+the largest bounded theorem interface first.  Return to Theorem 6.25 or 7.3
+only for exact source-report packaging or a dependency.  Verification gate:
+focused `lake env lean` during development, root import plus targeted
+`lake build StatInference` after promotion, proof-hole scan, secret scan,
+route-doc refresh, rebase over remote main when needed, then one clean
+commit/push batch.
+
+Current live replacement `/goal` prompt after focused Lean verification of the
 Theorem 6.25 deterministic no-success packet on top of pushed frontier
 `e906bd1` (`Add Chewi theorem 6.25 replay certificate`): aggressively formalize and
 prove all main theorem content of Sinho Chewi's Optimization 2026 notes in
@@ -625,15 +660,17 @@ Theorem 6.21's centered-domain Lipschitz/convexity side conditions and Theorem
 the concrete `d = N + 1` hard family.  Add an arbitrary-d embedding/report
 wrapper only if it is needed for exact source reporting.  Definition
 6.24/Theorem 6.25 now has the closed-convex feasibility-instance and
-topological interior no-success wrapper, so the next non-report proof lane is
-Chapter 7 `FrankWolfe.lean`.
+topological interior no-success wrapper, and Chapter 7 `FrankWolfe.lean` now
+has the supplied Theorem 7.3 rate wrapper, so the next non-report proof lane is
+Chapter 8 `Proximal.lean`.
 Lemma 6.20 now has a compiled trajectory/rate frontier, and Lemma 6.18/Theorem
 6.19 already have a supplied-interface algebraic spine; their exact
 source-audited report remains blocked only by the genuine Grünbaum/centroid
 measure theorem.
-After Chapter 6 has a stable main-text spine, split future packets by chapter
-surface rather than by tiny lemmas: Chapter 7 `FrankWolfe.lean` for Theorem
-7.3 and Carathéodory wrappers, Chapter 8 `Proximal.lean` for Theorems 8.5 and
+After Chapter 6 and the first Chapter 7 Frank-Wolfe rate packet have a stable
+main-text spine, split future packets by chapter surface rather than by tiny
+lemmas: optional Chapter 7 Carathéodory/report wrappers only when needed,
+Chapter 8 `Proximal.lean` for Theorems 8.5 and
 8.6 reusing Chapter 5 AGD algebra, Chapters 9-10 `Fenchel.lean` and
 `MirrorDescent.lean` for Fenchel-Young/Bregman/OMD telescopes, Chapter 11
 `AlternatingProjection.lean` for ABP/AM/RAM recurrences, Chapter 12
