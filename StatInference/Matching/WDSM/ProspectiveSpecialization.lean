@@ -30,6 +30,43 @@ theorem weight_ratio_eq_one_of_common_weight
     commonWeight / commonWeight = 1 := by
   exact div_self hweight
 
+/-- A constant survey weight factors out of a finite weighted sum. -/
+theorem weightedSum_constant_weight_eq
+    (sample : Finset Unit) (value : Unit -> Real) (commonWeight : Real) :
+    weightedSum sample (fun _unit => commonWeight) value =
+      commonWeight * (∑ unit ∈ sample, value unit) := by
+  unfold weightedSum
+  rw [← Finset.mul_sum]
+
+/-- A constant survey weight factors out of a finite Hájek denominator. -/
+theorem weightedDenominator_constant_weight_eq
+    (sample : Finset Unit) (commonWeight : Real) :
+    weightedDenominator sample (fun _unit => commonWeight) =
+      commonWeight * (∑ _unit ∈ sample, (1 : Real)) := by
+  unfold weightedDenominator
+  calc
+    (∑ unit ∈ sample, commonWeight) =
+        (∑ unit ∈ sample, commonWeight * (1 : Real)) := by
+          exact Finset.sum_congr rfl
+            (fun _unit _hunit => by ring)
+    _ = commonWeight * (∑ _unit ∈ sample, (1 : Real)) := by
+          rw [← Finset.mul_sum]
+
+/--
+With a nonzero common survey weight and nonzero finite sample mass, every
+normalized survey weight reduces to the inverse of the finite unit mass.
+-/
+theorem normalizedSurveyWeight_constant_weight_eq_inv_mass
+    (sample : Finset Unit) (commonWeight : Real)
+    (hweight : commonWeight ≠ 0)
+    (hmass : (∑ _unit ∈ sample, (1 : Real)) ≠ 0)
+    (unit : Unit) :
+    normalizedSurveyWeight sample (fun _unit => commonWeight) unit =
+      (1 : Real) / (∑ _unit ∈ sample, (1 : Real)) := by
+  unfold normalizedSurveyWeight
+  rw [weightedDenominator_constant_weight_eq]
+  field_simp [hweight, hmass]
+
 /--
 With a nonzero common survey weight, the Hajek mean equals the ratio formed by
 the unweighted finite sum and the finite unit mass `sum 1`.
@@ -41,22 +78,9 @@ theorem hajekMean_constant_weight_eq_unweighted_ratio
     hajekMean sample (fun _unit => commonWeight) value =
       (∑ unit ∈ sample, value unit) /
         (∑ _unit ∈ sample, (1 : Real)) := by
-  unfold hajekMean weightedSum weightedDenominator
-  have hnum :
-      (∑ unit ∈ sample, commonWeight * value unit) =
-        commonWeight * (∑ unit ∈ sample, value unit) := by
-    rw [← Finset.mul_sum]
-  have hden :
-      (∑ unit ∈ sample, commonWeight) =
-        commonWeight * (∑ _unit ∈ sample, (1 : Real)) := by
-    calc
-      (∑ unit ∈ sample, commonWeight) =
-          (∑ unit ∈ sample, commonWeight * (1 : Real)) := by
-            exact Finset.sum_congr rfl
-              (fun _unit _hunit => by ring)
-      _ = commonWeight * (∑ _unit ∈ sample, (1 : Real)) := by
-            rw [← Finset.mul_sum]
-  rw [hnum, hden]
+  unfold hajekMean
+  rw [weightedSum_constant_weight_eq,
+    weightedDenominator_constant_weight_eq]
   field_simp [hweight, hmass]
 
 end WDSM
