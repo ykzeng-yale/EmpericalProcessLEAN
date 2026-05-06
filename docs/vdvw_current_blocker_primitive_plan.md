@@ -7340,3 +7340,30 @@ limit process by a.e.-equal bounded `ell_infty(T)` representatives in one
 step.  They do not prove the arbitrary-index VdV&W 1.4.8 FDD converse; that
 still needs the separability/asymptotic-measurability/tightness and
 nonmeasurable outer-cover ingredients.
+
+2026-05-06 empirical-cover/internal-covering-number reverse bridge: search
+found the existing internal-to-local comparison
+`empiricalL1CoveringNumber_le_empiricalL1Index_coveringNumber`, but no reverse
+handoff from proof-carrying VdV&W finite empirical covers back to mathlib's
+internal `Metric.coveringNumber` on the induced empirical pseudometric.
+`CoveringPrimitive.lean` now proves
+`empiricalL1Index_coveringNumber_le_of_finiteEmpiricalL1CoverAtCard` and
+`empiricalL1Index_coveringNumber_le_empiricalL1CoveringNumber`.  This closes a
+comparability gap needed by future entropy arguments that move between local
+finite empirical nets and mathlib covering-number displays.  It still does not
+prove the selected entropy tail/UI or ordinary-mean bridge from the textbook
+random entropy hypothesis.
+
+2026-05-06 varying-domain a.e.-measurable map-law bridge: search found the
+existing measurable and null-measurable varying-domain weak-convergence map-law
+bridges, but the automatic a.e.-measurable bridge unnecessarily passed through
+`NullMeasurable` and required `[MeasurableSpace.CountablyGenerated S]`.
+`WeakConvergence.lean` now proves
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_map_eq_aemeasurable`
+directly from `AEMeasurable`, `integral_map`, and the signed outer-expectation
+integral bridge, and the automatic a.e.-measurable pushforward wrapper now uses
+that theorem without a countably-generated target-space assumption.  This is a
+real Chapter 1 varying-domain arbitrary-map support improvement; the remaining
+Chapter 1 blockers are still the full signed extended-real arbitrary-map
+measurable-cover existence layer, nonmeasurable outer-cover weak convergence,
+process separability/asymptotic tightness, and arbitrary-index FDD converse.

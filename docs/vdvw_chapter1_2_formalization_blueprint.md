@@ -118,6 +118,22 @@ convergence into the selected side-condition package.  The remaining
 Theorem 2.4.3 work should therefore target the finite-net upper mean/tail/UI
 input itself, not the downstream selected endpoint.
 
+2026-05-06 `/goal` recalibration after fetching current `origin/main`: the
+stored active Codex objective is still correct at the top level, but the
+working prompt should be narrower and more enforceable.  Do not spend the next
+run on endpoint aliases, already-closed selected fixed-radius/inverse-radius
+packages, or repeated process congruence support.  Attack one largest coherent
+closure batch in this order: first, the source-side Theorem 2.4.3
+entropy/cardinality or selected empirical-cover tail/UI/ordinary-mean bridge;
+second, a structural finite-cover theorem that feeds that bridge; third, a
+theorem-critical Chapter 1 primitive such as arbitrary-index FDD converse,
+process separability/asymptotic tightness/asymptotic measurability,
+nonmeasurable signed outer-cover weak convergence, or full arbitrary-map
+extended-real measurable-cover existence.  The current support batch also adds
+local empirical-cover to mathlib-covering-number reverse comparison and a
+direct varying-domain a.e.-measurable weak-convergence map-law bridge; these
+are useful dependencies, not exact textbook theorem completion.
+
 The exact Theorem 2.4.3 gap is now sharper: the textbook assumption is the
 generic random entropy condition
 `log N(epsilon, F_M, L1(P_n)) = o_P^*(n)` for every positive `epsilon, M`.

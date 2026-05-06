@@ -2929,3 +2929,24 @@ This lets Chapter 1 process/FDD arguments canonicalize both the source family
 and the limiting process by a.e.-equal bounded representatives in one proof
 step.  It remains a support layer, not the arbitrary-index VdV&W 1.4.8
 converse.
+
+2026-05-06 current `/goal` recalibration:
+the active objective remains full VdV&W Chapters 1-2 formalization in
+dependency order, but the operational target should be more precise than the
+stored one-line `/goal` object.  Treat the large Theorem 2.4.3 endpoint
+surface as mostly closed support unless an exact textbook theorem consumes a
+new endpoint immediately.  The highest-value remaining theorem-line gap is
+source-side: prove a genuine entropy/cardinality, selected empirical-cover
+tail/UI, or ordinary-mean theorem that feeds the selected fixed-radius
+Theorem 2.4.3 package from the textbook random entropy hypothesis.  If that is
+blocked after search and Lean attempts, switch to a theorem-critical Chapter 1
+primitive: arbitrary-index FDD converse, process separability/asymptotic
+tightness/asymptotic measurability, nonmeasurable signed outer-cover weak
+convergence, or full arbitrary-map extended-real measurable-cover existence.
+
+This recalibration batch also closes two support gaps without overclaiming the
+exact textbook theorem: `CoveringPrimitive.lean` now proves reverse comparison
+from local proof-carrying empirical covers to mathlib
+`Metric.coveringNumber`, and `WeakConvergence.lean` now gives the direct
+varying-domain a.e.-measurable weak-convergence map-law bridge without a
+countably-generated target-space assumption.

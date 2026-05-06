@@ -2600,6 +2600,103 @@ theorem empiricalL1CoveringNumber_le_empiricalL1Index_coveringNumber
   simpa [hcard_eq] using hbound
 
 /--
+An explicit local empirical `L1(P_n)` cover also gives an internal mathlib
+cover for the induced empirical pseudometric wrapper.
+
+This is the reverse comparison to
+`empiricalL1CoveringNumber_le_empiricalL1Index_coveringNumber`: it lets later
+entropy arguments move from a proof-carrying VdV&W finite empirical net back
+to `Metric.coveringNumber` on `EmpiricalL1Index.liftSet`.
+-/
+theorem empiricalL1Index_coveringNumber_le_of_finiteEmpiricalL1CoverAtCard
+    {Observation : Type u} {Index : Type v} {n cardinality : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) :
+    Metric.coveringNumber (⟨epsilon, hepsilon_nonneg⟩ : ℝ≥0)
+        (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass) ≤
+      (cardinality : ℕ∞) := by
+  let centerSet :
+      Set (EmpiricalL1Index Observation Index n sample classFun) :=
+    Set.range fun centerIndex : Fin cardinality =>
+      EmpiricalL1Index.ofIndex (sample := sample) (classFun := classFun)
+        (cover.center centerIndex)
+  have hcenter_finite : centerSet.Finite :=
+    Set.finite_range fun centerIndex : Fin cardinality =>
+      EmpiricalL1Index.ofIndex (sample := sample) (classFun := classFun)
+        (cover.center centerIndex)
+  have hcenter_subset :
+      centerSet ⊆
+        EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass := by
+    intro center hcenter
+    rcases hcenter with ⟨centerIndex, rfl⟩
+    simpa [EmpiricalL1Index.liftSet] using cover.center_mem centerIndex
+  have hmetric_cover :
+      Metric.IsCover (⟨epsilon, hepsilon_nonneg⟩ : ℝ≥0)
+        (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass) centerSet := by
+    intro index hindex
+    let centerIndex := cover.centerOf index.toIndex hindex
+    refine
+      ⟨EmpiricalL1Index.ofIndex (sample := sample) (classFun := classFun)
+        (cover.center centerIndex), ⟨centerIndex, rfl⟩, ?_⟩
+    have hdist :
+        empiricalL1Distance sample (classFun index.toIndex)
+          (classFun (cover.center centerIndex)) ≤ epsilon :=
+      cover.dist_le index.toIndex hindex
+    simpa [EmpiricalL1Index.edist_eq, centerIndex] using hdist
+  have hcovering :
+      Metric.coveringNumber (⟨epsilon, hepsilon_nonneg⟩ : ℝ≥0)
+          (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+            indexClass) ≤
+        centerSet.encard :=
+    Metric.IsCover.coveringNumber_le_encard hcenter_subset hmetric_cover
+  have hcenter_encard :
+      centerSet.encard ≤ (cardinality : ℕ∞) := by
+    calc
+      centerSet.encard ≤ (Set.univ : Set (Fin cardinality)).encard := by
+        simpa [centerSet] using
+          Set.encard_image_le
+          (fun centerIndex : Fin cardinality =>
+            EmpiricalL1Index.ofIndex (sample := sample) (classFun := classFun)
+              (cover.center centerIndex))
+          Set.univ
+      _ = (cardinality : ℕ∞) := by simp
+  exact hcovering.trans hcenter_encard
+
+/--
+If a finite local empirical cover exists, the internal mathlib covering number
+for the induced empirical pseudometric is bounded by the local VdV&W empirical
+covering number.
+-/
+theorem empiricalL1Index_coveringNumber_le_empiricalL1CoveringNumber
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon) :
+    Metric.coveringNumber (⟨epsilon, hepsilon_nonneg⟩ : ℝ≥0)
+        (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass) ≤
+      empiricalL1CoveringNumber sample indexClass classFun epsilon := by
+  rcases empiricalL1CoveringNumber_find_spec hfinite with ⟨cover⟩
+  have hcovering :
+      Metric.coveringNumber (⟨epsilon, hepsilon_nonneg⟩ : ℝ≥0)
+          (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+            indexClass) ≤
+        (finiteEmpiricalL1CoveringNumberCard hfinite : ℕ∞) :=
+    empiricalL1Index_coveringNumber_le_of_finiteEmpiricalL1CoverAtCard
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      hepsilon_nonneg cover
+  simpa [empiricalL1CoveringNumber_eq_find hfinite] using hcovering
+
+/--
 If the induced empirical internal covering number is bounded by a finite
 cardinality, then the local empirical finite-cover witness can be padded to
 that cardinality.
