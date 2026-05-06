@@ -1795,6 +1795,87 @@ theorem vaart1998_covarianceBilinDual_inverseDerivative_map_apply_of_memLp
     L K
 
 /--
+Finite-indexed covariance table obtained by testing a covariance functional
+against a chosen finite family of continuous linear coordinates.
+-/
+noncomputable def vaart1998_covarianceTable
+    {I E : Type*} [Fintype I]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (coordinates : I -> StrongDual ℝ E)
+    (Sigma : StrongDual ℝ E -> StrongDual ℝ E -> ℝ) :
+    I -> I -> ℝ :=
+  fun i j => Sigma (coordinates i) (coordinates j)
+
+/--
+The inverse-derivative covariance table is obtained by precomposing each
+chosen coordinate with the inverse derivative.
+-/
+theorem vaart1998_inverseDerivativeCovarianceTable_apply
+    {I M Θ : Type*} [Fintype I]
+    [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (Dinv : M →L[ℝ] Θ)
+    (Sigma : StrongDual ℝ M -> StrongDual ℝ M -> ℝ)
+    (coordinates : I -> StrongDual ℝ Θ) (i j : I) :
+    vaart1998_covarianceTable coordinates
+        (vaart1998_inverseDerivativeCovarianceFunctional Dinv Sigma) i j =
+      vaart1998_covarianceTable
+        (fun k => (coordinates k).comp Dinv) Sigma i j := by
+  rfl
+
+/--
+Finite-indexed covarianceBilinDual version of Vaart's covariance display
+`Dinv * Sigma * Dinv^T`.
+-/
+theorem vaart1998_covarianceBilinDual_inverseDerivative_table_apply_of_memLp
+    {I Ω' M Θ : Type*} [Fintype I] [MeasurableSpace Ω']
+    [MeasurableSpace M] [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [CompleteSpace M] [BorelSpace M]
+    [MeasurableSpace Θ] [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [CompleteSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    {Q : Measure Ω'} [IsFiniteMeasure Q]
+    (Z : Ω' -> M) (Dinv : M →L[ℝ] Θ)
+    (coordinates : I -> StrongDual ℝ Θ)
+    (hZ : AEMeasurable Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z)) (i j : I) :
+    vaart1998_covarianceTable coordinates
+        (fun L K =>
+          ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => Dinv (Z ω)) L K) i j =
+      vaart1998_covarianceTable
+        (fun k => (coordinates k).comp Dinv)
+        (fun L K => ProbabilityTheory.covarianceBilinDual (Q.map Z) L K) i j := by
+  simpa [vaart1998_covarianceTable] using
+    vaart1998_covarianceBilinDual_inverseDerivative_map_apply_of_memLp
+      Z Dinv hZ hZ_memLp (coordinates i) (coordinates j)
+
+/--
+The continuous linear coordinate evaluation functional on a finite real vector.
+-/
+noncomputable def vaart1998_finiteCoordinateEvalCLM
+    {Coordinate : Type*} (coordinate : Coordinate) :
+    StrongDual ℝ (Coordinate -> ℝ) :=
+  ContinuousLinearMap.proj coordinate
+
+@[simp]
+theorem vaart1998_finiteCoordinateEvalCLM_apply
+    {Coordinate : Type*} (coordinate : Coordinate) (x : Coordinate -> ℝ) :
+    vaart1998_finiteCoordinateEvalCLM coordinate x = x coordinate := by
+  rfl
+
+/--
+Coordinate-indexed covariance table of a finite real vector law.
+-/
+noncomputable def vaart1998_finiteCoordinateCovarianceTable
+    {Coordinate : Type*} [Fintype Coordinate]
+    (Sigma :
+      StrongDual ℝ (Coordinate -> ℝ) ->
+        StrongDual ℝ (Coordinate -> ℝ) -> ℝ) :
+    Coordinate -> Coordinate -> ℝ :=
+  vaart1998_covarianceTable
+    (fun coordinate => vaart1998_finiteCoordinateEvalCLM coordinate) Sigma
+
+/--
 Finite-coordinate source-shaped form of van der Vaart Theorem 4.1.
 
 For finitely many real moment coordinates, coordinatewise iid strong laws give

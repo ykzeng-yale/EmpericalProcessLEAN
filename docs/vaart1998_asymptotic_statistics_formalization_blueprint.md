@@ -207,8 +207,14 @@ Initial modules:
   random-variable CLTs imply projected convergence of those laws, and repackages
   the remaining Cramér-Wold step as the pure law implication consumed by
   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`.
+  The newest covariance-table layer turns the coordinate-free covarianceBilinDual
+  pullback into finite entrywise covariance tables through
+  `vaart1998_covarianceTable`,
+  `vaart1998_covarianceBilinDual_inverseDerivative_table_apply_of_memLp`, and
+  the finite-coordinate evaluation table
+  `vaart1998_finiteCoordinateCovarianceTable`.
   It still deliberately leaves a concrete finite-dimensional Cramér-Wold
-  law-convergence proof and a finite-matrix specialization as explicit next
+  law-convergence proof and any downstream table consumers as explicit next
   layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.

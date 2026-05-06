@@ -346,26 +346,38 @@ Chapter 3 theorem-facing wrappers compiling:
 110. Cramér-Wold bridge constructor from projected scalar CLTs and a pure
    law-level Cramér-Wold theorem:
    `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`.
+111. Finite-indexed covariance table for a chosen family of continuous linear
+   coordinates:
+   `vaart1998_covarianceTable`.
+112. Inverse-derivative covariance table pullback:
+   `vaart1998_inverseDerivativeCovarianceTable_apply`.
+113. Finite-indexed covarianceBilinDual table version of the Vaart
+   `Dinv * Sigma * Dinv^T` display:
+   `vaart1998_covarianceBilinDual_inverseDerivative_table_apply_of_memLp`.
+114. Coordinate evaluation continuous linear functional:
+   `vaart1998_finiteCoordinateEvalCLM` and
+   `vaart1998_finiteCoordinateEvalCLM_apply`.
+115. Coordinate-indexed covariance table for finite real vector laws:
+   `vaart1998_finiteCoordinateCovarianceTable`.
 
-Latest remote base after rebase before this packet: `b352fa0`.
-Latest pushed Vaart packet before this packet: `ecaee8e`
-(`Add Vaart law-level Cramer Wold handoff`).
+Latest remote base after rebase before this packet: `dc35b8a`.
+Latest pushed Vaart packet before this packet: `58e6cf9`
+(`Add Vaart projected law Cramer Wold bridge`).
 
-The current theorem-sized packet refines the Cramér-Wold route one layer
-further.  It names the scaled centered vector law and vector limit law, defines
-pure projected law convergence for finite-coordinate vector laws, proves that
-the projected random-variable CLTs imply projected law convergence by map-map
-algebra, and packages the remaining Cramér-Wold theorem as a pure law-level
-implication from projected law convergence to vector-law convergence.
+The current theorem-sized packet adds the finite covariance-table display
+layer for Vaart Theorem 4.1.  It turns the existing coordinate-free
+covarianceBilinDual pullback into finite entrywise covariance tables for any
+chosen finite family of continuous linear parameter coordinates, and it names
+the coordinate evaluation functionals and coordinate-indexed covariance table
+for finite real moment vectors.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
 1. prove the pure law-level finite-dimensional Cramér-Wold implication feeding
    `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`;
-2. add the finite-matrix covariance specialization only if it can reuse the
-   existing covarianceBilinDual pullback without opening a large matrix
-   algebra detour.
+2. add direct consumers of the covariance table only if they feed an existing
+   Theorem 4.1 wrapper without opening a large matrix algebra detour.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
