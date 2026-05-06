@@ -148,30 +148,30 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_theorem_4_1_moment_estimator_mem_parameterDomain_on_local_range`.
 36. Supplied local-range probability wrapper:
    `vaart1998_theorem_4_1_local_range_probability_of_certificate`.
+37. Inverse-function-theorem bridge to the local inverse certificate:
+   `vaart1998_momentLocalInverseCertificate_of_hasStrictFDerivAt`.
+38. Inverse-function-theorem bridge to a canonical local range certificate:
+   `vaart1998_momentLocalRangeCertificate_of_hasStrictFDerivAt`.
 
-Latest pushed Vaart packet before this run: `cb1542c`
-(`Add Vaart method of moments delta handoff`).
+Latest pushed Vaart packet before this run: `261bc0d`
+(`Add Vaart moment estimator local range layer`).
 
-The current theorem-sized packet completes the deterministic local-range layer
-of Vaart Theorem 4.1.  The method-of-moments module now has both the
-CLT-to-delta asymptotic-normality handoff and the equation-solving
-bookkeeping: on the supplied local moment range, the local inverse estimator
-solves the moment equations, lies in the supplied local parameter domain, and
-is unique there.  The probability-tending-to-one existence sentence is exposed
-as a supplied local-range probability certificate, ready for a later vector LLN.
+The current theorem-sized packet connects mathlib's inverse-function theorem
+API to the Vaart Chapter 4 certificates.  A strict derivative with invertible
+continuous-linear derivative now produces the Vaart local inverse certificate,
+with global measurability of the chosen local inverse kept explicit.  The same
+mathlib local inverse also produces a canonical local range certificate whose
+moment and parameter sets are the points where the right/left inverse
+identities hold.
 
 The next aggressive packet should continue Chapter 4 without overclaiming the
 existence sentence:
 
-1. if cheap, connect mathlib's inverse-function theorem APIs
-   `HasStrictFDerivAt.localInverse` and
-   `HasFDerivAt.of_local_left_inverse` to
-   `Vaart1998MomentLocalInverseCertificate`;
-2. connect an inverse-function local range certificate to
-   `Vaart1998MomentLocalRangeCertificate`;
-3. start vector LLN/local-range probability discharge for
+1. strengthen the inverse-function bridge from canonical identity-validity sets
+   to explicit open neighborhoods from `HasStrictFDerivAt.toOpenPartialHomeomorph`;
+2. start vector LLN/local-range probability discharge for
    `Vaart1998MomentEstimatorLocalRangeProbabilityCertificate`;
-4. keep the multivariate empirical-moment CLT/covariance display supplied for
+3. keep the multivariate empirical-moment CLT/covariance display supplied for
    now, since the current pinned mathlib CLT is scalar.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
@@ -252,6 +252,9 @@ CLT was found.  Mathlib does provide inverse-function APIs in
 `Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv` and differentiability
 of continuous linear equivalences in `Mathlib.Analysis.Calculus.FDeriv.Equiv`;
 these should be used to discharge the local inverse certificate later.
+The first bridge is now compiled using `HasStrictFDerivAt.localInverse`,
+`HasStrictFDerivAt.localInverse_apply_image`, and
+`HasStrictFDerivAt.to_localInverse`.
 
 ## Primitive Sequence
 

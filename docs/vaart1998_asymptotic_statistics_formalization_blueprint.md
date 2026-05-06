@@ -121,10 +121,12 @@ Initial modules:
   specialization.  The second packet adds
   `Vaart1998MomentLocalRangeCertificate`,
   `Vaart1998MomentEstimatorLocalRangeProbabilityCertificate`, and deterministic
-  solve/uniqueness/local-domain wrappers.  It deliberately leaves
-  inverse-function theorem packaging, vector LLN/local-range probability
-  discharge, and multivariate CLT/covariance identification as explicit next
-  layers.
+  solve/uniqueness/local-domain wrappers.  The third packet connects
+  `HasStrictFDerivAt.localInverse` and `HasStrictFDerivAt.to_localInverse` to
+  the local inverse and local range certificates, with global measurability of
+  the chosen local inverse still explicit.  It deliberately leaves open
+  neighborhood packaging, vector LLN/local-range probability discharge, and
+  multivariate CLT/covariance identification as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

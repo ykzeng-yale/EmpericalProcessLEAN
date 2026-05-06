@@ -95,6 +95,9 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_moment_estimator_unique_on_parameterDomain`,
   `vaart1998_theorem_4_1_moment_estimator_mem_parameterDomain_on_local_range`,
   and `vaart1998_theorem_4_1_local_range_probability_of_certificate`.
+- inverse-function-theorem constructors:
+  `vaart1998_momentLocalInverseCertificate_of_hasStrictFDerivAt` and
+  `vaart1998_momentLocalRangeCertificate_of_hasStrictFDerivAt`.
 
 Verification passed for the latest pushed Vaart packet before this run,
 `14c3424`:
@@ -106,19 +109,25 @@ Current Vaart packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
-- `lake build StatInference`
+- `git diff --check`
+- proof-hole and secret scans on changed Vaart files
+
+Root build note: `lake build StatInference` was attempted in the clean sibling
+worktree using a symlinked Lake cache.  It rebuilt the Vaart module and several
+root dependencies, then failed at the final root import because the symlinked
+cache was missing `StatInference/EmpiricalProcess/RealHalfLine.olean`.  No
+Vaart declaration failed; the reliable gate for this packet is the focused and
+targeted Vaart module build.
 
 ## Next Aggressive Target
 
 Continue Vaart Chapter 4.1 from the compiled delta handoff:
 
-1. inverse-function theorem bridge into
-   `Vaart1998MomentLocalInverseCertificate`;
-2. inverse-function local-range bridge into
-   `Vaart1998MomentLocalRangeCertificate`;
-3. vector LLN/local-range probability discharge for
+1. refine the inverse-function local-range bridge from identity-validity sets
+   to explicit open neighborhoods from mathlib's open partial homeomorphism;
+2. vector LLN/local-range probability discharge for
    `Vaart1998MomentEstimatorLocalRangeProbabilityCertificate`;
-4. keep the multivariate CLT and covariance display as supplied fields until a
+3. keep the multivariate CLT and covariance display as supplied fields until a
    local vector CLT is formalized.
 
 If this blocks, record the exact missing local inverse, local range, vector LLN,
