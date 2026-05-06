@@ -39,6 +39,17 @@ measurability through
 finite-dimensional bridge and does not assert full `ell_infty(T)` process
 measurability.
 
+Latest `/goal` rebase after `e3d050e`: the finite-index `ell_infty(T)`
+boundedness and finite-product converse support is now closed.  The next run
+should not add more finite-index wrappers or endpoint aliases.  It should
+attack one of the remaining non-duplicative blockers: a real structural
+entropy/cardinality theorem feeding the selected fixed-radius Theorem 2.4.3
+route, a genuine selected empirical-cover event/tail/UI/ordinary-mean theorem
+from strong enough book-facing hypotheses, or a Chapter 1 process primitive
+such as arbitrary-index FDD converse, separability/tightness/asymptotic
+measurability, nonmeasurable signed outer-cover weak convergence, or full
+arbitrary-map extended-real measurable-cover existence.
+
 2026-05-06 `/goal` rebase after `2d2b441`: finite-coordinate measurability and
 finite-index FDD/converse wrappers are closed support, not the next target.
 The next useful run should either prove a new structural entropy/cardinality

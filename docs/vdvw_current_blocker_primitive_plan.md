@@ -67,6 +67,37 @@ unless a new exact statement directly consumes them.
 
 ## Current `/goal` Target
 
+2026-05-06 `/goal` rebase after `e3d050e`: local `main` is synced with
+`origin/main`, the worktree is clean, and the latest verified closure is the
+finite-process `ell_infty(T)` converse-support batch.  Treat the current
+`/goal` objective as broad orchestration only; the operative next target is now
+this narrowed dependency order.  Do not spend proof time on more finite-index
+`ell_infty(T)` wrappers, selected fixed-radius/inverse-radius endpoint aliases,
+full-subgraph/finite-class/threshold/grid/quantizer endpoint aliases, or
+Theorem 2.4.3 final consumers already listed below.  The next high-capacity
+proof batch should start with one of the following non-duplicative blockers:
+
+1. prove a real structural entropy/cardinality theorem that supplies an
+   already-compiled selected fixed-radius Theorem 2.4.3 route, such as a
+   genuine finite-code/compression, VC/Sauer, grid, quantizer, or trace
+   cardinality estimate with sublinear normalized logarithmic growth;
+2. prove a genuine selected empirical-cover event/tail/UI/ordinary-mean bridge
+   from hypotheses strong enough to imply it, rather than treating bare
+   outer-probability convergence of normalized entropy as uniform
+   integrability;
+3. if those Theorem 2.4.3 upstream attempts are blocked after search and Lean
+   attempts, switch to a theorem-critical Chapter 1 process primitive:
+   arbitrary-index VdV&W 1.4.8 FDD converse, process separability/tightness or
+   asymptotic-measurability interfaces, nonmeasurable signed outer-cover weak
+   convergence, or full arbitrary-map extended-real measurable-cover
+   existence.
+
+For the active `/goal` work, a successful run should close a theorem-facing
+batch in one of these lanes, not merely refresh documentation or add another
+route alias.  The current Codex goal tool objective cannot be edited in place,
+so this paragraph is the current replacement prompt for continuing the active
+goal without replaying stale completed work.
+
 Authoritative operational prompt, 2026-05-06 after the verified
 original-cover truncation/polynomial entropy bridges and the quantizer
 random-cover lifts, plus the earlier truncated threshold trace algebra,

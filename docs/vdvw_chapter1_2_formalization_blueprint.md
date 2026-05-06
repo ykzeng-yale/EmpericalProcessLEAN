@@ -140,6 +140,17 @@ strong enough to imply it, or a Chapter 1 process primitive upstream of the
 arbitrary-index VdV&W 1.4.8 converse.  Do not spend the next run on another
 endpoint alias for an already-consumed Theorem 2.4.3 route.
 
+2026-05-06 `/goal` rebase after `e3d050e`: finite-index boundedness for
+`ell_infty(T)` process maps and the finite-product law/identically-distributed/
+weak-convergence converse wrappers are also closed support.  The remaining
+Chapter 1-2 target should now be read as: close a genuine upstream
+entropy/cardinality or selected-tail/UI theorem feeding Theorem 2.4.3, or move
+to an exact Chapter 1 process blocker such as arbitrary-index FDD converse,
+separability/tightness/asymptotic measurability, nonmeasurable signed
+outer-cover weak convergence, or full arbitrary-map extended-real
+measurable-cover existence.  More finite-index or endpoint-alias wrappers are
+out of order unless a new exact textbook theorem consumes them directly.
+
 2026-05-06 finite-dimensional process transport update:
 `FiniteDimensional.lean` now proves direct transport from raw finite-vector
 HasLaw, IdentDistrib, and TendstoInDistribution hypotheses to the corresponding
