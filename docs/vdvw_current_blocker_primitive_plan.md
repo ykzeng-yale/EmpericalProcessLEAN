@@ -5777,3 +5777,15 @@ nonnegative proxy.  `WeakConvergence.lean` now proves
 completes the same equality-criterion bridge for the lower-shifted real
 asymptotic-measurability predicate; full signed extended-real arbitrary-map
 cover existence remains the open exact-textbook primitive.
+
+2026-05-05 Theorem 2.4.3 log-succ-linear constructor follow-up: local search
+found fixed-`M` selected fixed-radius tail/UI constructors for shifted
+log-linear bounds, but no all-positive-`M` package constructor.  `Theorem243.lean`
+now adds
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_logCardinality_log_succ_linear_bound`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_trace_image_cardinality_bound_log_succ_linear`.
+These let polynomial/VC trace-count proofs feed the selected fixed-radius
+Theorem 2.4.3 route uniformly over all positive truncation levels.  They do
+not remove the exact random-entropy tail/UI gap when no deterministic
+log-succ-linear or trace-count bound is available.

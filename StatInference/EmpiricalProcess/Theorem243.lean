@@ -21361,6 +21361,117 @@ theorem
       hoffset_nonneg hdegree_nonneg hM_pos hlog_succ_linear_bound
 
 /--
+All-positive-`M` selected fixed-radius tail/UI packages from shifted
+log-linear cardinality estimates.
+
+This is the direct all-truncation-level version of
+`...of_logCardinality_log_succ_linear_bound`, matching polynomial-growth
+trace-count bounds of the form `offset M eta + degree M eta * log (n + 1)`.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_logCardinality_log_succ_linear_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {offset degree : ℝ -> ℝ -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hcovering_all :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality M eta n))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hoffset_nonneg :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ offset M eta)
+    (hdegree_nonneg :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ degree M eta)
+    (hlog_succ_linear_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) ≤
+            offset M eta + degree M eta *
+              Real.log (((n + 1 : ℕ) : ℝ))) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M (cardinality M) := by
+  intro M hM_pos
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_log_succ_linear_bound
+      (P := P) (X := X M) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (offset := offset M) (degree := degree M)
+      (cardinality := cardinality M)
+      (hX_samplePath M) (hcovering_all M hM_pos)
+      hclass henvelope_meas (hoffset_nonneg M hM_pos)
+      (hdegree_nonneg M hM_pos) hM_pos
+      (hlog_succ_linear_bound M hM_pos)
+
+/--
+All-positive-`M` finite-trace-image selected fixed-radius packages from shifted
+log-linear trace-count estimates.
+
+This combines the finite-trace cover constructor with the all-`M`
+log-succ-linear package above.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_trace_image_cardinality_bound_log_succ_linear
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {offset degree : ℝ -> ℝ -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (htrace_finite :
+      ∀ M, 0 < M -> ∀ n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X M n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite)
+    (hcardinality_dom :
+      ∀ M (hM : 0 < M) eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          (htrace_finite M hM n sample m).toFinset.card ≤
+            cardinality M eta n sample m)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hoffset_nonneg :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ offset M eta)
+    (hdegree_nonneg :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ degree M eta)
+    (hlog_succ_linear_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) ≤
+            offset M eta + degree M eta *
+              Real.log (((n + 1 : ℕ) : ℝ))) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M (cardinality M) := by
+  intro M hM_pos
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_log_succ_linear
+      (P := P) (X := X M) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (offset := offset M) (degree := degree M)
+      (cardinality := cardinality M)
+      (hX_samplePath M) (htrace_finite M hM_pos)
+      (hcardinality_dom M hM_pos) hclass henvelope_meas
+      (hoffset_nonneg M hM_pos) (hdegree_nonneg M hM_pos) hM_pos
+      (hlog_succ_linear_bound M hM_pos)
+
+/--
 Selected fixed-radius tail/UI package from a natural polynomial cardinality
 bound.
 

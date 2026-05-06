@@ -2106,3 +2106,10 @@ signed extended-real cover-existence gap.
 `VdVWLowerShiftedRealOuterInnerExpectationGap_eq_zero_iff`, giving the same
 outer-equals-inner criterion for the lower-shifted real nonnegative proxy used
 by the local asymptotic-measurability predicates.
+
+2026-05-05 Theorem 2.4.3 log-succ-linear constructor follow-up:
+`Theorem243.lean` now has all-positive-`M` selected fixed-radius tail/UI
+constructors from shifted log-linear bounds and finite-trace shifted
+log-linear bounds.  These are theorem-facing bridges for polynomial/VC
+trace-count routes; the non-deterministic random-entropy tail/UI bridge remains
+open.
