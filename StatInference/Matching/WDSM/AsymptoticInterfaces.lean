@@ -104,6 +104,84 @@ theorem residual_variance_formula_of_clt_variance_bridge
     hresidual hquad).2
 
 /--
+More explicit martingale-array residual CLT input.
+
+This is still a named probability-layer interface, not a local proof of the
+martingale CLT.  It splits the previous broad residual CLT bridge into the
+ingredients that the WDSM proof has to port or prove: exact reuse-moment
+limits, residual moment regularity, a martingale-difference array, conditional
+Lindeberg control, and predictable quadratic-variation stabilization.
+-/
+structure ResidualMartingaleArrayCLTVarianceInput where
+  exact_weighted_reuse_moment_limits : Prop
+  residual_moment_regularity : Prop
+  martingale_difference_array : Prop
+  conditional_lindeberg : Prop
+  predictable_quadratic_variation_stabilization : Prop
+  residual_clt : Prop
+  residual_variance_formula : Prop
+  martingale_clt_bridge :
+    exact_weighted_reuse_moment_limits ->
+    residual_moment_regularity ->
+    martingale_difference_array ->
+    conditional_lindeberg ->
+    predictable_quadratic_variation_stabilization ->
+    residual_clt ∧ residual_variance_formula
+
+theorem residual_clt_and_variance_formula_of_martingale_array_input
+    (b : ResidualMartingaleArrayCLTVarianceInput)
+    (hmoments : b.exact_weighted_reuse_moment_limits)
+    (hresidual : b.residual_moment_regularity)
+    (hmartingale : b.martingale_difference_array)
+    (hlindeberg : b.conditional_lindeberg)
+    (hquad : b.predictable_quadratic_variation_stabilization) :
+    b.residual_clt ∧ b.residual_variance_formula :=
+  b.martingale_clt_bridge hmoments hresidual hmartingale hlindeberg hquad
+
+theorem residual_clt_of_martingale_array_input
+    (b : ResidualMartingaleArrayCLTVarianceInput)
+    (hmoments : b.exact_weighted_reuse_moment_limits)
+    (hresidual : b.residual_moment_regularity)
+    (hmartingale : b.martingale_difference_array)
+    (hlindeberg : b.conditional_lindeberg)
+    (hquad : b.predictable_quadratic_variation_stabilization) :
+    b.residual_clt :=
+  (residual_clt_and_variance_formula_of_martingale_array_input b hmoments
+    hresidual hmartingale hlindeberg hquad).1
+
+theorem residual_variance_formula_of_martingale_array_input
+    (b : ResidualMartingaleArrayCLTVarianceInput)
+    (hmoments : b.exact_weighted_reuse_moment_limits)
+    (hresidual : b.residual_moment_regularity)
+    (hmartingale : b.martingale_difference_array)
+    (hlindeberg : b.conditional_lindeberg)
+    (hquad : b.predictable_quadratic_variation_stabilization) :
+    b.residual_variance_formula :=
+  (residual_clt_and_variance_formula_of_martingale_array_input b hmoments
+    hresidual hmartingale hlindeberg hquad).2
+
+/--
+Package an explicit martingale-array CLT input as the existing residual
+CLT/variance bridge once the martingale-difference and conditional Lindeberg
+conditions have been supplied.
+-/
+def residualArrayCLTVarianceBridgeOfMartingaleArrayInput
+    (b : ResidualMartingaleArrayCLTVarianceInput)
+    (hmartingale : b.martingale_difference_array)
+    (hlindeberg : b.conditional_lindeberg) :
+    ResidualArrayCLTVarianceBridge where
+  exact_weighted_reuse_moment_limits := b.exact_weighted_reuse_moment_limits
+  residual_moment_regularity := b.residual_moment_regularity
+  quadratic_variation_stabilization :=
+    b.predictable_quadratic_variation_stabilization
+  residual_clt := b.residual_clt
+  residual_variance_formula := b.residual_variance_formula
+  bridge := by
+    intro hmoments hresidual hquad
+    exact b.martingale_clt_bridge hmoments hresidual hmartingale
+      hlindeberg hquad
+
+/--
 Heterogeneity bridge that records both the centered treatment-effect CLT and
 its variance formula.  The finite square-target algebra is already verified in
 `HeterogeneityVarianceAlgebra`; this interface names the remaining probability
@@ -304,6 +382,56 @@ theorem known_score_asymptotic_normality_and_residual_variance_formula_of_geomet
       residual.residual_clt ∧ residual.residual_variance_formula :=
     residual_clt_and_variance_formula_of_reuse_moments residual
       (hmoment_transfer hgeometry_moments) hresidual_reg hquad
+  have hbias : bias.matching_discrepancy_negligible :=
+    matching_discrepancy_negligible_of_average_radius bias
+      hfinite hlipschitz hradius
+  have hknown : known.asymptotic_normality :=
+    known_score_asymptotic_normality_of_bridge known
+      hdecomp hden hheterogeneity
+      (hresidual_transfer hresidual_pair.1)
+      (hbias_transfer hbias)
+  exact ⟨hknown, hresidual_pair.2⟩
+
+/--
+Known-score composition using the explicit martingale-array residual CLT input.
+This theorem exposes the probability obligations for the residual term as
+martingale-difference, conditional Lindeberg, and predictable
+quadratic-variation hypotheses before feeding them into the existing
+known-score asymptotic-normality bridge.
+-/
+theorem known_score_asymptotic_normality_and_residual_variance_formula_of_geometry_martingale_array
+    (geometry : WeightedGeometryMomentBridge)
+    (residual : ResidualMartingaleArrayCLTVarianceInput)
+    (bias : AverageRadiusBiasBridge)
+    (known : KnownScoreAsymptoticBridge)
+    (hregular : geometry.score_space_regularity)
+    (hchen_han : geometry.chen_han_catchment_input)
+    (hmoment_transfer :
+      geometry.exact_weighted_reuse_moment_limits ->
+        residual.exact_weighted_reuse_moment_limits)
+    (hresidual_reg : residual.residual_moment_regularity)
+    (hmartingale : residual.martingale_difference_array)
+    (hlindeberg : residual.conditional_lindeberg)
+    (hquad : residual.predictable_quadratic_variation_stabilization)
+    (hresidual_transfer : residual.residual_clt -> known.residual_clt)
+    (hfinite : bias.eventual_finite_matching_regular)
+    (hlipschitz : bias.lipschitz_score_mean_regular)
+    (hradius : bias.weighted_average_radius_rate)
+    (hbias_transfer :
+      bias.matching_discrepancy_negligible ->
+        known.matching_discrepancy_negligible)
+    (hdecomp : known.aggregate_hajek_decomposition)
+    (hden : known.denominator_stabilization)
+    (hheterogeneity : known.heterogeneity_clt) :
+    known.asymptotic_normality ∧ residual.residual_variance_formula := by
+  have hgeometry_moments :
+      geometry.exact_weighted_reuse_moment_limits :=
+    exact_weighted_reuse_moments_of_geometry geometry hregular hchen_han
+  have hresidual_pair :
+      residual.residual_clt ∧ residual.residual_variance_formula :=
+    residual_clt_and_variance_formula_of_martingale_array_input residual
+      (hmoment_transfer hgeometry_moments) hresidual_reg hmartingale
+      hlindeberg hquad
   have hbias : bias.matching_discrepancy_negligible :=
     matching_discrepancy_negligible_of_average_radius bias
       hfinite hlipschitz hradius
