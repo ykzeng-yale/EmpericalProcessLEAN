@@ -1430,6 +1430,62 @@ theorem thresholdTraceCodeSet_card_add_one_real_le_uniform_subgraph_vc_nat_poly
           threshold.1)
 
 /--
+Uniform fixed-threshold VC/Sauer bounds give the natural-polynomial `+ 1`
+real cardinality estimate for the realized threshold-code image.
+
+This is the realized-image form consumed by entropy interfaces whose
+cardinality estimates are stated as `card + 1 <= C * (n + 1)^d`.
+-/
+theorem thresholdTraceCode_image_toFinset_card_add_one_real_le_uniform_vc
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {thresholds : Finset ℝ}
+    (hthresholds_card : thresholds.card ≤ k)
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d) :
+    (((finite_thresholdTraceCode_image sample indexClass classFun thresholds).toFinset.card : ℝ) + 1) ≤
+      ((((d + 2 : ℕ) : ℝ) ^ k) + 1) *
+        (((n + 1 : ℕ) : ℝ) ^ (d * k)) := by
+  have himage_nat :
+      (finite_thresholdTraceCode_image sample indexClass classFun thresholds).toFinset.card ≤
+        (thresholdTraceCodeSet sample indexClass classFun thresholds).card :=
+    thresholdTraceCode_image_toFinset_card_le_thresholdTraceCodeSet_card
+      sample indexClass classFun thresholds
+  have himage_real :
+      (((finite_thresholdTraceCode_image sample indexClass classFun thresholds).toFinset.card : ℝ) + 1) ≤
+        (((thresholdTraceCodeSet sample indexClass classFun thresholds).card : ℝ) + 1) := by
+    exact_mod_cast Nat.add_le_add_right himage_nat 1
+  exact himage_real.trans
+    (thresholdTraceCodeSet_card_add_one_real_le_uniform_vc
+      sample indexClass classFun hthresholds_card hvc)
+
+/--
+Uniform full-subgraph VC/Sauer bounds give the natural-polynomial `+ 1` real
+cardinality estimate for the realized threshold-code image.
+-/
+theorem thresholdTraceCode_image_toFinset_card_add_one_real_le_uniform_subgraph_vc_nat_poly
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {thresholds : Finset ℝ}
+    (hthresholds_card : thresholds.card ≤ k)
+    (hvc : VdVWUniformSubgraphVCBound indexClass classFun d) :
+    (((finite_thresholdTraceCode_image sample indexClass classFun thresholds).toFinset.card : ℝ) + 1) ≤
+      ((((d + 2 : ℕ) : ℝ) ^ k) + 1) *
+        (((n + 1 : ℕ) : ℝ) ^ (d * k)) := by
+  exact
+    thresholdTraceCode_image_toFinset_card_add_one_real_le_uniform_vc
+      sample indexClass classFun hthresholds_card
+      (fun threshold =>
+        VdVWUniformThresholdVCSubgraphBound.empiricalBinaryTraceSetFamily_vcDim_le
+          (sample := sample)
+          (VdVWUniformSubgraphVCBound.toUniformThresholdVCSubgraphBound hvc)
+          threshold.1)
+
+/--
 Uniform full-subgraph VC/Sauer bounds control the realized threshold-code
 image cardinality.
 

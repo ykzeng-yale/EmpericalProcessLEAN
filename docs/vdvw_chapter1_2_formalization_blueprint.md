@@ -151,11 +151,14 @@ The threshold-code structural cardinality layer also now has the raw
 fixed-threshold and full-subgraph VC inputs
 `thresholdTraceCodeSet_card_add_one_real_le_uniform_vc`,
 `thresholdTraceCodeSet_card_add_one_real_le_uniform_subgraph_vc_nat_poly`, and
-`thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly` in
+`thresholdTraceCode_image_toFinset_card_add_one_real_le_uniform_vc`,
+`thresholdTraceCode_image_toFinset_card_add_one_real_le_uniform_subgraph_vc_nat_poly`,
+and `thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly` in
 `ThresholdCoding.lean`, bounding the whole threshold-code set and the realized
 threshold-code image by the Sauer-polynomial product under the appropriate VC
-hypothesis.  Future VC/grid instantiations should consume these lemmas rather
-than reproving the threshold-code/product-cardinality chain.
+hypothesis, including the real `card + 1` shape consumed by entropy routes.
+Future VC/grid instantiations should consume these lemmas rather than
+reproving the threshold-code/product-cardinality chain.
 The coordinate-code structural route also now lifts into the random
 empirical-cover interface through
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_pointwise_approx_code_product_cardinality_bound_samplePath`
