@@ -14,7 +14,7 @@ subspace while its optimum value is negative.
 namespace StatInference
 namespace Optimization
 
-open scoped InnerProductSpace
+open scoped InnerProductSpace Topology
 
 /--
 The maximum coordinate of a finite Euclidean vector.  Chewi Theorem 6.21 uses
@@ -1137,6 +1137,111 @@ def chewi625StrictCoordinateBox {d : ℕ}
     (a b : EuclideanSpace ℝ (Fin d)) : Set (EuclideanSpace ℝ (Fin d)) :=
   {x | ∀ i : Fin d, a i < x i ∧ x i < b i}
 
+/-- Axis-aligned coordinate boxes are closed convex feasibility bodies. -/
+theorem chewi625CoordinateBox_isClosed {d : ℕ}
+    (a b : EuclideanSpace ℝ (Fin d)) :
+    IsClosed (chewi625CoordinateBox a b) := by
+  have hrepr :
+      chewi625CoordinateBox a b =
+        ⋂ i : Fin d,
+          {x : EuclideanSpace ℝ (Fin d) | a i ≤ x i ∧ x i ≤ b i} := by
+    ext x
+    simp [chewi625CoordinateBox]
+  rw [hrepr]
+  refine isClosed_iInter fun i => ?_
+  have hcont :
+      Continuous fun x : EuclideanSpace ℝ (Fin d) => x i :=
+    (PiLp.continuous_apply (p := 2)
+      (β := fun _ : Fin d => ℝ) i :
+      Continuous fun x : EuclideanSpace ℝ (Fin d) => x i)
+  exact (isClosed_Ici.preimage hcont).inter (isClosed_Iic.preimage hcont)
+
+/-- Axis-aligned coordinate boxes are convex. -/
+theorem chewi625CoordinateBox_convex {d : ℕ}
+    (a b : EuclideanSpace ℝ (Fin d)) :
+    Convex ℝ (chewi625CoordinateBox a b) := by
+  rw [convex_iff_add_mem]
+  intro x hx y hy μ ν hμ hν hsum i
+  have hcoord :
+      (μ • x + ν • y) i = μ * x i + ν * y i := by
+    simp
+  constructor
+  · have hxlo : a i ≤ x i := (hx i).1
+    have hylo : a i ≤ y i := (hy i).1
+    have hμlo : μ * a i ≤ μ * x i :=
+      mul_le_mul_of_nonneg_left hxlo hμ
+    have hνlo : ν * a i ≤ ν * y i :=
+      mul_le_mul_of_nonneg_left hylo hν
+    have hscale : μ * a i + ν * a i = a i := by
+      rw [← add_mul, hsum, one_mul]
+    rw [hcoord]
+    nlinarith
+  · have hxhi : x i ≤ b i := (hx i).2
+    have hyhi : y i ≤ b i := (hy i).2
+    have hμhi : μ * x i ≤ μ * b i :=
+      mul_le_mul_of_nonneg_left hxhi hμ
+    have hνhi : ν * y i ≤ ν * b i :=
+      mul_le_mul_of_nonneg_left hyhi hν
+    have hscale : μ * b i + ν * b i = b i := by
+      rw [← add_mul, hsum, one_mul]
+    rw [hcoord]
+    nlinarith
+
+/--
+The topological interior of a finite coordinate box is contained in its strict
+coordinate interior.  This is the direction needed to upgrade the replay
+lower bound from the source-shaped strict-box predicate to `interior C`.
+-/
+theorem chewi625CoordinateBox_interior_subset_strict {d : ℕ}
+    {a b : EuclideanSpace ℝ (Fin d)} :
+    interior (chewi625CoordinateBox a b) ⊆
+      chewi625StrictCoordinateBox a b := by
+  intro x hx i
+  have hnhds : chewi625CoordinateBox a b ∈ 𝓝 x :=
+    mem_interior_iff_mem_nhds.mp hx
+  rcases Metric.nhds_basis_closedBall.mem_iff.mp hnhds with
+    ⟨ρ, hρ_pos, hρ_subset⟩
+  constructor
+  · by_contra hnot
+    have hxi_le : x i ≤ a i := le_of_not_gt hnot
+    let y : EuclideanSpace ℝ (Fin d) :=
+      x + (-(ρ / 2)) • chewi621CoordinateBasis i
+    have hy_ball : y ∈ Metric.closedBall x ρ := by
+      rw [Metric.mem_closedBall, dist_eq_norm]
+      have hsub : y - x = (-(ρ / 2)) • chewi621CoordinateBasis i := by
+        simp [y]
+      rw [hsub, norm_smul, chewi621CoordinateBasis_norm]
+      have hnorm : ‖(-(ρ / 2) : ℝ)‖ = ρ / 2 := by
+        rw [Real.norm_eq_abs, abs_neg, abs_of_pos (half_pos hρ_pos)]
+      rw [hnorm]
+      nlinarith
+    have hy_box := hρ_subset hy_ball
+    have hlow : a i ≤ y i := (hy_box i).1
+    have hy_coord : y i = x i - ρ / 2 := by
+      simp [y]
+      ring
+    rw [hy_coord] at hlow
+    nlinarith
+  · by_contra hnot
+    have hbi_le : b i ≤ x i := le_of_not_gt hnot
+    let y : EuclideanSpace ℝ (Fin d) :=
+      x + (ρ / 2) • chewi621CoordinateBasis i
+    have hy_ball : y ∈ Metric.closedBall x ρ := by
+      rw [Metric.mem_closedBall, dist_eq_norm]
+      have hsub : y - x = (ρ / 2) • chewi621CoordinateBasis i := by
+        simp [y]
+      rw [hsub, norm_smul, chewi621CoordinateBasis_norm]
+      have hnorm : ‖(ρ / 2 : ℝ)‖ = ρ / 2 := by
+        rw [Real.norm_eq_abs, abs_of_pos (half_pos hρ_pos)]
+      rw [hnorm]
+      nlinarith
+    have hy_box := hρ_subset hy_ball
+    have hupper : y i ≤ b i := (hy_box i).2
+    have hy_coord : y i = x i + ρ / 2 := by
+      simp [y]
+    rw [hy_coord] at hupper
+    nlinarith
+
 /-- Separation-certificate interface for the feasibility resisting oracle. -/
 def IsSeparationVector {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     (C : Set E) (x p : E) : Prop :=
@@ -2143,6 +2248,20 @@ def IsFeasibilityReplayCertificate {E : Type*}
     ∀ n : ℕ, n < N -> x n ∉ Cstrict
 
 /--
+Source-facing feasibility-body package from Definition 6.24, specialized to
+the coordinate cube model used in Theorem 6.25: the candidate set is closed,
+convex, lies in `[-R,R]^d`, and contains an `eps`-ball.
+-/
+def IsChewi625FeasibilityInstance {d : ℕ} (eps R : ℝ)
+    (C : Set (EuclideanSpace ℝ (Fin d))) : Prop :=
+  IsClosed C ∧
+    Convex ℝ C ∧
+    C ⊆
+      chewi625CoordinateBox
+        (chewi625ConstVec (d := d) (-R)) (chewi625ConstVec (d := d) R) ∧
+    ∃ center : EuclideanSpace ℝ (Fin d), Metric.closedBall center eps ⊆ C
+
+/--
 Supplied deterministic algorithm interface for feasibility lower bounds.  The
 query functional at time `n` is allowed to inspect only the previous oracle
 replies.  This is intentionally a light interface rather than a full program
@@ -2467,6 +2586,79 @@ theorem chewi625_deterministic_run_no_strict_success_of_log_bound {d : ℕ}
       IsFeasibilityReplayCertificate.no_strict_success_of_deterministic_run
         (queryOf := queryOf) (y := y) (q := q)
         hpackage.1 hcausal hresistingRun hreplayRun htranscript⟩
+
+/--
+The final resisting box is a closed convex Definition 6.24-style feasibility
+instance inside the source cube, and it still contains an `eps`-ball under the
+same logarithmic query-count condition.
+-/
+theorem chewi625_final_box_feasibilityInstance_of_le_full_cycle_log_bound
+    {d : ℕ} [NeZero d] {R eps : ℝ}
+    (hR_pos : 0 < R) (heps_pos : 0 < eps)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {N m : ℕ}
+    (hNm : N ≤ m * d)
+    (hM_log : (m : ℝ) * Real.log (2 : ℝ) ≤ Real.log (R / eps)) :
+    IsChewi625FeasibilityInstance (d := d) eps R
+      (chewi625CoordinateBox
+        (chewi625BoxLower (d := d) R x N)
+        (chewi625BoxUpper (d := d) R x N)) := by
+  refine
+    ⟨chewi625CoordinateBox_isClosed _ _,
+      chewi625CoordinateBox_convex _ _, ?_, ?_⟩
+  · simpa using
+      chewi625BoxState_subset_of_le
+        (d := d) (R := R) hR_pos.le x
+        (n := 0) (m := N) (Nat.zero_le N)
+  · exact
+      (chewi625_final_replayCertificate_and_closedBall_of_le_full_cycle_log_bound
+        (d := d) (R := R) (eps := eps) hR_pos heps_pos
+        (x := x) (N := N) (m := m) hNm hM_log).2
+
+/--
+Topological-interior form of Chewi Theorem 6.25's deterministic replay
+lower-bound package.  The final post-hoc set is a closed convex feasibility
+instance containing an `eps`-ball, and every first-`N` query of any deterministic
+run with the same separation transcript fails to land in `interior C`.
+-/
+theorem chewi625_deterministic_run_no_interior_success_of_log_bound {d : ℕ}
+    [NeZero d] {R eps : ℝ}
+    (hR_pos : 0 < R) (heps_pos : 0 < eps)
+    {queryOf : ℕ ->
+      (ℕ -> EuclideanSpace ℝ (Fin d)) -> EuclideanSpace ℝ (Fin d)}
+    (hcausal : IsPrefixCausalQueryFunctional queryOf)
+    {x y q : ℕ -> EuclideanSpace ℝ (Fin d)} {N m : ℕ}
+    (hresistingRun :
+      IsDeterministicFeasibilityRun
+        queryOf x (chewi625ReturnedCutVector (d := d) R x) N)
+    (hreplayRun : IsDeterministicFeasibilityRun queryOf y q N)
+    (htranscript :
+      ∀ n : ℕ, n < N -> chewi625ReturnedCutVector (d := d) R x n = q n)
+    (hNm : N ≤ m * d)
+    (hM_log : (m : ℝ) * Real.log (2 : ℝ) ≤ Real.log (R / eps)) :
+    IsChewi625FeasibilityInstance (d := d) eps R
+        (chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x N)
+          (chewi625BoxUpper (d := d) R x N)) ∧
+      ∀ n : ℕ, n < N ->
+        y n ∉ interior
+          (chewi625CoordinateBox
+            (chewi625BoxLower (d := d) R x N)
+            (chewi625BoxUpper (d := d) R x N)) := by
+  have hstrict :=
+    chewi625_deterministic_run_no_strict_success_of_log_bound
+      (d := d) (R := R) (eps := eps) hR_pos heps_pos
+      (queryOf := queryOf) hcausal
+      (x := x) (y := y) (q := q) (N := N) (m := m)
+      hresistingRun hreplayRun htranscript hNm hM_log
+  refine
+    ⟨chewi625_final_box_feasibilityInstance_of_le_full_cycle_log_bound
+        (d := d) (R := R) (eps := eps) hR_pos heps_pos
+        (x := x) (N := N) (m := m) hNm hM_log,
+      ?_⟩
+  intro n hn hy_interior
+  exact
+    hstrict.2 n hn
+      (chewi625CoordinateBox_interior_subset_strict hy_interior)
 
 end Optimization
 end StatInference

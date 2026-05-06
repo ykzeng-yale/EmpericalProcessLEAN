@@ -43,8 +43,8 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Current manual goal frontier after focused Lean verification of the Theorem
-6.25 deterministic no-success packet on top of pushed frontier `e906bd1`: the
+Current manual goal frontier after focused Lean and promoted module build of
+the Theorem 6.25 feasibility-instance/topological-interior packet: the
 lane has moved from Lemma 6.20 packaging through Chapter 6 Theorems 6.21 and
 6.22 nonsmooth lower-bound source packets and into Theorem 6.25 feasibility
 lower bound.  Treat `ProjectedSubgradient.lean`,
@@ -83,11 +83,16 @@ validity, finite separation transcript and replay-certificate interfaces, and
 the source-shaped package combining replay validity with log-bound `eps`-ball
 containment.  The deterministic replay abstraction now adds prefix-causal
 query functionals, finite deterministic runs, transcript-equality replay, and
-the source-shaped no-strict-success wrapper.  The next theorem-sized packet
-should either package exact Theorem 6.25 for reporting or open the next
-main-text chapter packet.  Add a literal arbitrary `d > N`
-embedding/report wrapper for 6.21/6.22
-only if exact theorem reporting requires it.
+the source-shaped no-strict-success wrapper.  The newest source-facing packet
+adds closedness and convexity of coordinate boxes, the topological
+`interior C` subset of the strict coordinate box, the Definition 6.24-style
+closed convex feasibility instance
+`IsChewi625FeasibilityInstance`, and
+`chewi625_deterministic_run_no_interior_success_of_log_bound`.  The next
+theorem-sized packet should either package exact Theorem 6.25 for reporting or
+open Chapter 7 `FrankWolfe.lean`; add a literal arbitrary `d > N`
+embedding/report wrapper for 6.21/6.22 only if exact theorem reporting
+requires it.
 The detailed Lemma 6.20 frontier below is retained only as dependency context
 and should not be used as the active route.
 
