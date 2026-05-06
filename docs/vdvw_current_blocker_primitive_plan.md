@@ -268,9 +268,11 @@ input directly through
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
-The next useful proof is to connect this package to the untruncated Theorem
-2.4.3 endpoint, or prove the concrete coordinate-threshold
-approximation/count hypotheses for an exact class geometry.  Do not add
+The package now reaches untruncated centered convergence through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
+The next useful proof is to prove the concrete coordinate-threshold
+approximation/count hypotheses for an exact class geometry, or add the narrow
+`P`-GC/in-mean endpoint adapter only if it is immediately consumed.  Do not add
 another selected fixed-radius endpoint for the same cardinality route.
 
 The parallel Chapter 1 audit reached the same conclusion on the process side:

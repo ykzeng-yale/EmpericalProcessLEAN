@@ -169,9 +169,12 @@ as
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`,
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
-The immediate next structural target is to connect this original-VC
-threshold-code package to the untruncated Theorem 2.4.3 endpoint, or prove the
-concrete threshold approximation/count hypotheses for an exact class geometry.
+The original-VC threshold-code package now reaches untruncated centered
+convergence through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
+The immediate next structural target is to prove concrete threshold
+approximation/count hypotheses for an exact class geometry, or add the narrow
+`P`-GC/in-mean endpoint adapter only if it is immediately consumed.
 The finite pointwise-code covering lift is now also available:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
 and

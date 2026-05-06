@@ -144,9 +144,12 @@ consumer are now compiled too:
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`,
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
-The next `/goal` target should connect this original-VC threshold-code package
-to the untruncated Theorem 2.4.3 endpoint, or prove the concrete threshold
-approximation/count hypotheses for an exact class geometry.
+The original-VC threshold-code package now reaches the untruncated centered
+Theorem 2.4.3 convergence endpoint through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
+The next `/goal` target should prove concrete threshold approximation/count
+hypotheses for an exact class geometry, or add the narrow `P`-GC/in-mean
+adapter only if it is immediately needed.
 The a.e.-measurable map-law bridge is now also available for common-domain
 arbitrary maps and varying-domain endpoints through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable`,
