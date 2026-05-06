@@ -71,6 +71,38 @@ unless a new exact statement directly consumes them.
 ## Current `/goal` Target
 
 Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
+`c99bb86 Add Theorem 2.4.3 finite code convergence endpoint`: local `main`
+is synced with `origin/main`, the worktree is clean, and the active Codex goal
+object is still a broad orchestration label because it cannot be edited in
+place.  Use this paragraph, not the historical target paragraphs below, as the
+operative continuation prompt.  The fixed finite-code scalar-quantizer route is
+closed through the selected fixed-radius tail/UI package and the centered
+untruncated convergence endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_fintype_scalarQuantizer_decode_error_nat_poly`.
+Recent Chapter 1/process and centered-separability support is also closed
+infrastructure, including the raw bounded `ell_infty(T)` process weak-
+convergence/tightness wrappers, source/target weak-convergence congruence, and
+pointwise-approximable centered `P`-measurability endpoints.
+
+The next `/goal` continuation must not add another endpoint alias, another
+finite-code special case, another selected fixed-radius restatement, or another
+finite-index/process congruence wrapper unless it is immediately consumed by a
+new exact theorem statement.  The next high-value batch should close actual
+upstream mathematics in one of three lanes: (1) a sample-size-dependent
+compression/code-image, VC/Sauer, finite-trace, threshold-grid, or quantizer
+cardinality theorem not already covered by the existing threshold/full-subgraph
+packages, feeding the compiled selected fixed-radius Theorem 2.4.3 route; (2)
+a genuine selected empirical-cover event, tail/UI, ordinary-mean, or
+uniform-integrability bridge from hypotheses strong enough to imply it, not
+bare outer-probability convergence of normalized random entropy alone; or (3)
+an exact Chapter 1 process/arbitrary-map primitive such as the arbitrary-index
+VdV&W 1.4.8 FDD converse, process separability/tightness/asymptotic-
+measurability, nonmeasurable signed outer-cover weak convergence, or full
+arbitrary-map extended-real measurable-cover existence.  If a lane blocks,
+record the searched APIs, the failing theorem shape, and the next patchable
+edit before switching lanes.
+
+Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: local `main`
 is synced with `origin/main`, the worktree is clean, and the active Codex goal
 object remains a broad orchestration label because it cannot be edited in

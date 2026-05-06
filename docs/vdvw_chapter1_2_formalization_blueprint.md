@@ -90,6 +90,31 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current operational target, 2026-05-06 after verified pushed head
+`c99bb86 Add Theorem 2.4.3 finite code convergence endpoint`: the active Codex
+`/goal` object is broad and cannot be edited in place, so this paragraph is
+the blueprint-level replacement target.  The selected fixed-radius,
+finite-code scalar-quantizer route now reaches centered untruncated convergence
+through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_fintype_scalarQuantizer_decode_error_nat_poly`.
+The surrounding Theorem 2.4.3 endpoint infrastructure, raw bounded
+`ell_infty(T)` process-law wrappers, weak-convergence congruence support, and
+centered pointwise-separability endpoints should be treated as closed support.
+Do not spend the next batch on another wrapper or endpoint alias around these
+same routes.
+
+The next proof batch should supply new upstream content.  Preferred order:
+first, a structural entropy/cardinality theorem beyond fixed finite codes
+(sample-size-dependent compression/code images, VC/Sauer, finite-trace,
+threshold-grid, or quantizer estimates not already covered by existing
+threshold/full-subgraph packages); second, a selected empirical-cover
+tail/UI/ordinary-mean bridge from hypotheses strong enough to imply it; third,
+an exact Chapter 1 process/arbitrary-map primitive such as arbitrary-index FDD
+converse, separability/tightness/asymptotic-measurability, nonmeasurable signed
+outer-cover weak convergence, or full arbitrary-map extended-real
+measurable-cover existence.  Older current-target paragraphs below are
+historical context and should not override this target.
+
+Current operational target, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: the active
 Codex `/goal` remains broad and cannot be edited in place, so this paragraph
 is the blueprint-level replacement target.  The latest closed structural

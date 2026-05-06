@@ -13,6 +13,30 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
+Authoritative current `/goal` override, 2026-05-06 after verified pushed head
+`c99bb86 Add Theorem 2.4.3 finite code convergence endpoint`: local `main`
+equals `origin/main`, the worktree is clean, and the broad Codex goal object
+should be treated only as an orchestration label.  The fixed finite-code
+scalar-quantizer path now reaches the centered untruncated Theorem 2.4.3
+convergence endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_fintype_scalarQuantizer_decode_error_nat_poly`.
+The next run should therefore skip endpoint aliases, selected-route
+restatements, finite-code variants, finite-index process wrappers, and
+process/FDD congruence wrappers unless a new exact theorem consumes them
+immediately.
+
+The operative target is to close a non-duplicative theorem-facing batch:
+(1) a structural entropy/cardinality theorem beyond fixed finite codes, such
+as sample-size-dependent compression/code images, VC/Sauer, finite-trace,
+threshold-grid, or quantizer growth not already covered by existing packages;
+(2) a selected empirical-cover event, tail/UI, ordinary-mean, or
+uniform-integrability theorem from assumptions strong enough to imply it; or
+(3) an exact Chapter 1 process/arbitrary-map primitive such as arbitrary-index
+FDD converse, separability/tightness/asymptotic-measurability, nonmeasurable
+signed outer-cover weak convergence, or full arbitrary-map extended-real
+measurable-cover existence.  Historical target paragraphs below are retained
+for audit context only.
+
 Current `/goal` target override, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: local `main`
 equals `origin/main` and the worktree is clean.  The broad Codex goal object
