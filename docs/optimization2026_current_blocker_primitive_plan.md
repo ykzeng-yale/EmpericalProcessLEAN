@@ -143,8 +143,9 @@ compiled Chapter 10 MPGD recurrence/weighted-denominator infrastructure,
 probability modules for later expectation-side discharges.
 
 Latest verified Optimization proof frontier:
-local `main` has been fast-forwarded through remote `origin/main` commit
-`a2b94ce`, and the current focused Lean and module build verify
+after pushed Optimization commit `9c9c167`
+(`Add Chewi SMPGD expected lower model wrappers`), the current focused Lean
+and module build verify
 `StatInference/Optimization/StochasticGradient.lean` with
 `weightedSumBound_of_gronwall_negative_forcing_with_error`,
 `weightedAverageGap_le_of_gronwall_negative_forcing_with_error`, and
@@ -159,13 +160,21 @@ expected-lower-model packet
 `chewi121_smooth_next_lower_of_expected_model_error`,
 `chewi121_nonsmooth_next_lower_of_expected_model_error`,
 `chewi121_smooth_weightedAverageGap_le_geometric_of_model_bounds`, and
-`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_model_bounds`.  This
-proves the source recurrence-to-rate algebra, smooth/non-smooth stochastic
-error instantiations, the expected-model algebra turning Chewi's three
-`psi_x` bounds into the displayed SMPGD one-step recurrence, and the direct
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_model_bounds`, plus the
+newest RMS analytic packet
+`chewi121_smooth_young_lower_bound`,
+`chewi121_smooth_expected_model_lower_of_rms_bound`,
+`chewi121_nonsmooth_expected_model_lower_of_rms_bound`,
+`chewi121_smooth_weightedAverageGap_le_geometric_of_rms_model_bounds`, and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_rms_model_bounds`.
+This proves the source recurrence-to-rate algebra, smooth/non-smooth
+stochastic error instantiations, the expected-model algebra turning Chewi's
+three `psi_x` bounds into the displayed SMPGD one-step recurrence, the direct
 handoff from expected `E F(x+)` lower estimates to the closed weighted-average
-rates.  The remaining Theorem 12.1 blocker is the analytic/probabilistic proof
-of those smooth and non-smooth expected lower estimates.
+rates, and the scalar RMS/Young algebra used in Chewi's displayed smooth and
+non-smooth lower estimates.  The remaining Theorem 12.1 blocker is the
+Bochner/probability proof of the RMS hypotheses: the smooth `hcore` estimate,
+variance domination, and the non-smooth bounded-gradient `hcore` estimate.
 The previous verified `StatInference/Optimization/AlternatingBregman.lean`
 packet adds
 `IsChewi118SinkhornMirrorDescentCertificate`,

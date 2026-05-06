@@ -285,9 +285,16 @@ handoff packet adds `chewi121_smooth_next_lower_of_expected_model_error`,
 `chewi121_smooth_weightedAverageGap_le_geometric_of_model_bounds`, and
 `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_model_bounds`, so the
 smooth and non-smooth source expected lower estimates can now feed the closed
-rates directly.  The active Chapter 12 lane is now the
-analytic/probabilistic proof of those expected lower estimates, before the
-ASGD CLT material.
+rates directly.  The newest RMS analytic packet adds
+`chewi121_smooth_young_lower_bound`,
+`chewi121_smooth_expected_model_lower_of_rms_bound`,
+`chewi121_nonsmooth_expected_model_lower_of_rms_bound`,
+`chewi121_smooth_weightedAverageGap_le_geometric_of_rms_model_bounds`, and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_rms_model_bounds`,
+formalizing the scalar Young/Cauchy-Schwarz handoff in Chewi's smooth and
+non-smooth lower estimates.  The active Chapter 12 lane is now the
+Bochner/probability proof of the RMS hypotheses behind those wrappers, before
+the ASGD CLT material.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
