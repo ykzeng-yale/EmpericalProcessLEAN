@@ -89,8 +89,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after focused Lean verification of the
-Chapter 11.4 block-descent certificate bridge on 2026-05-06, building on
-pushed frontier `d776c6a` (`Add Chewi theorem 11.4 burn-in scalar layer`):
+Chapter 11.4 threshold-tail rate bridge on 2026-05-06, building on pushed
+frontier `deaaf1a` (`Add Chewi theorem 11.4 descent certificate bridge`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -218,13 +218,28 @@ The new `AlternatingMinimization.lean` module is imported by
 `IsChewi114AMDescentCertificate.sourceCertificate`,
 `IsChewi114AMDescentCertificate.max_recurrence`,
 `IsChewi114AMDescentCertificate.gap_le_source_K_div_iterations_of_tail_half`,
-and `IsChewi114AMDescentCertificate.gap_le_eps_of_tail_half`.  This proves the
-post-threshold inverse-gap/telescope layer of Chewi Theorem 11.4 in the source
-constant `K = 8 * beta * D^2 * R^2` form, discharges the displayed source
-recurrence with denominator `2 * beta * D^2 * R^2`, derives Chewi's max
+`IsChewi114AMDescentCertificate.gap_le_eps_of_tail_half`,
+`chewi114_quadratic_of_max_recurrence_below_threshold`,
+`chewi114_quadratic_of_source_below_threshold`,
+`IsChewi114AMSourceCertificate.quadratic_recurrence_below_threshold`,
+`IsChewi114AMSourceCertificate.gap_le_source_K_div_iterations_of_threshold_tail`,
+`IsChewi114AMSourceCertificate.gap_le_eps_of_threshold_tail`,
+`IsChewi114AMSourceCertificate.threshold_tail_of_initial_threshold`,
+`IsChewi114AMSourceCertificate.gap_le_source_K_div_iterations_of_initial_threshold`,
+`IsChewi114AMSourceCertificate.gap_le_eps_of_initial_threshold`,
+`IsChewi114AMDescentCertificate.quadratic_recurrence_below_threshold`,
+`IsChewi114AMDescentCertificate.gap_le_source_K_div_iterations_of_threshold_tail`,
+`IsChewi114AMDescentCertificate.gap_le_eps_of_threshold_tail`,
+`IsChewi114AMDescentCertificate.gap_le_source_K_div_iterations_of_initial_threshold`,
+and `IsChewi114AMDescentCertificate.gap_le_eps_of_initial_threshold`.  This
+proves the post-threshold inverse-gap/telescope layer of Chewi Theorem 11.4 in
+the source constant `K = 8 * beta * D^2 * R^2` form, discharges the displayed
+source recurrence with denominator `2 * beta * D^2 * R^2`, derives Chewi's max
 recurrence without a pre-supplied half-gap assumption, proves the scalar
-burn-in halving/threshold consumers, and turns the two source
-block-coordinate descent estimates
+burn-in halving/threshold consumers, proves that below `K/2` the max recurrence
+is automatically the quadratic recurrence, propagates a single initial
+threshold bound along the tail, and turns the two source block-coordinate
+descent estimates
 `energy/(2*beta) <= gap n - gap (n+1)` and
 `gap(n+1)^2 <= D^2 R^2 * energy` into the AM source certificate.
 
@@ -256,12 +271,12 @@ Active aggressive target ladder:
 
 1. Finish Chewi Theorem 11.4 as an algorithm-facing AM theorem.  The scalar
    inverse-gap layer, max recurrence, source-recurrence bridge, burn-in
-   threshold consumers, and supplied block-descent-to-source-certificate bridge
-   now compile.  The remaining theorem-sized tasks are: instantiate
-   `IsChewi114AMDescentCertificate` from the actual coordinate/proximal
-   minimization proof if bounded, add the exact log/ceil-to-geometric-threshold
-   wrapper, and package the exact source statement through the compiled tail
-   `K/M` and epsilon consumers.
+   threshold consumers, supplied block-descent-to-source-certificate bridge,
+   and initial-threshold tail `K/M`/epsilon consumers now compile.  The
+   remaining theorem-sized tasks are: add the exact log/ceil-to-geometric
+   burn-in wrapper proving the first threshold time, and instantiate
+   `IsChewi114AMDescentCertificate` from actual coordinate/proximal
+   minimization proof obligations if bounded.
 2. Immediately continue to Theorem 11.5 RAM using expectation-level
    source-shaped interfaces: conditional one-step expectation, convex/strongly
    convex Hopf-Lax supplied bounds, exponential rate for

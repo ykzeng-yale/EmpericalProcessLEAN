@@ -409,6 +409,39 @@ theorem chewi114_source_halving_above_threshold
     (chewi114K_eq_four_chewi114A beta D R) hgap_nonneg hthreshold hsource
 
 /--
+Below the source threshold `K / 2`, Chewi's max recurrence is necessarily in
+the quadratic-descent regime.
+-/
+theorem chewi114_quadratic_of_max_recurrence_below_threshold {K g g' : ℝ}
+    (hK : 0 < K) (hg_nonneg : 0 ≤ g) (hthreshold : g ≤ K / 2)
+    (hmax : g' ≤ max (g / 2) (g - g ^ (2 : ℕ) / K)) :
+    g' ≤ g - g ^ (2 : ℕ) / K := by
+  have hmul : g * g ≤ (K / 2) * g :=
+    mul_le_mul_of_nonneg_right hthreshold hg_nonneg
+  have hsq_div : g ^ (2 : ℕ) / K ≤ g / 2 := by
+    rw [div_le_iff₀ hK]
+    nlinarith [hmul]
+  have hhalf_le_quad : g / 2 ≤ g - g ^ (2 : ℕ) / K := by
+    nlinarith
+  exact hmax.trans (max_le hhalf_le_quad le_rfl)
+
+/--
+Source-recurrence form of the quadratic step below the threshold `K / 2`.
+-/
+theorem chewi114_quadratic_of_source_below_threshold {A K g g' : ℝ}
+    (hA : 0 < A) (hK_eq : K = 4 * A)
+    (hg_nonneg : 0 ≤ g) (hthreshold : g ≤ K / 2)
+    (hsource : g' - g ≤ -g' ^ (2 : ℕ) / A) :
+    g' ≤ g - g ^ (2 : ℕ) / K := by
+  have hK_pos : 0 < K := by
+    rw [hK_eq]
+    nlinarith
+  exact chewi114_quadratic_of_max_recurrence_below_threshold
+    (K := K) (g := g) (g' := g') hK_pos hg_nonneg hthreshold
+    (chewi114_next_gap_le_max_halving_quadratic_of_source
+      (A := A) (K := K) (g := g) (g' := g') hA hK_eq hg_nonneg hsource)
+
+/--
 The scalar bridge from Chewi's two block-coordinate estimates to the displayed
 source recurrence.  Here `energy` denotes the sum of squared gradient
 increments in the proof, and `C = D^2 R^2`.
@@ -537,6 +570,70 @@ theorem IsChewi114AMDescentCertificate.gap_le_eps_of_tail_half
     hbeta hscale hM hpos hhalf).trans hK_div_le
 
 /--
+The block-coordinate descent certificate gives the quadratic recurrence
+whenever the current gap is below the source burn-in threshold.
+-/
+theorem IsChewi114AMDescentCertificate.quadratic_recurrence_below_threshold
+    {gap energy : ℕ -> ℝ} {beta R : ℝ} {D : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    {n : ℕ} (hthreshold : gap n ≤ chewi114K beta D R / 2) :
+    gap (n + 1) ≤ gap n - gap n ^ (2 : ℕ) / chewi114K beta D R := by
+  have hsource := hcert.sourceCertificate hbeta hscale
+  have hA : 0 < chewi114A beta D R := by
+    have hprod : 0 < (2 * beta) * ((D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ)) :=
+      mul_pos (by positivity) hscale
+    simpa [chewi114A, mul_assoc] using hprod
+  exact chewi114_quadratic_of_source_below_threshold
+    (A := chewi114A beta D R) (K := chewi114K beta D R)
+    (g := gap n) (g' := gap (n + 1)) hA
+    (chewi114K_eq_four_chewi114A beta D R) (hsource.gap_nonneg n)
+    hthreshold (hsource.source_recurrence n)
+
+/--
+The block-coordinate descent certificate supplies the post-threshold `K / M`
+rate on any tail segment where the current gaps stay below `K / 2`.
+-/
+theorem IsChewi114AMDescentCertificate.gap_le_source_K_div_iterations_of_threshold_tail
+    {gap energy : ℕ -> ℝ} {beta R : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    (hM : M ≠ 0)
+    (hpos : ∀ m, m ≤ M -> 0 < gap (n0 + m))
+    (hthreshold : ∀ m, m < M -> gap (n0 + m) ≤ chewi114K beta D R / 2) :
+    gap (n0 + M) ≤ chewi114K beta D R / (M : ℝ) := by
+  have hsource := hcert.sourceCertificate hbeta hscale
+  have hA : 0 < chewi114A beta D R := by
+    have hprod : 0 < (2 * beta) * ((D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ)) :=
+      mul_pos (by positivity) hscale
+    simpa [chewi114A, mul_assoc] using hprod
+  have hK_pos : 0 < chewi114K beta D R := by
+    rw [chewi114K_eq_four_chewi114A beta D R]
+    nlinarith
+  exact chewi114_gap_le_source_K_div_iterations
+    (gap := gap) (beta := beta) (R := R) (D := D)
+    (n0 := n0) (M := M) hK_pos hM hpos
+    (fun m hm => by
+      simpa [Nat.add_assoc] using
+        hcert.quadratic_recurrence_below_threshold
+          hbeta hscale (n := n0 + m) (hthreshold m hm))
+
+/--
+Epsilon form of the threshold-tail block-coordinate descent-certificate rate.
+-/
+theorem IsChewi114AMDescentCertificate.gap_le_eps_of_threshold_tail
+    {gap energy : ℕ -> ℝ} {beta R eps : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    (hM : M ≠ 0)
+    (hpos : ∀ m, m ≤ M -> 0 < gap (n0 + m))
+    (hthreshold : ∀ m, m < M -> gap (n0 + m) ≤ chewi114K beta D R / 2)
+    (hK_div_le : chewi114K beta D R / (M : ℝ) ≤ eps) :
+    gap (n0 + M) ≤ eps :=
+  (hcert.gap_le_source_K_div_iterations_of_threshold_tail
+    hbeta hscale hM hpos hthreshold).trans hK_div_le
+
+/--
 The AM source certificate supplies Chewi's one-step max recurrence at every
 iteration.
 -/
@@ -551,6 +648,22 @@ theorem IsChewi114AMSourceCertificate.max_recurrence
     (g := gap n) (g' := gap (n + 1)) hA
     (chewi114K_eq_four_chewi114A beta D R) (hcert.gap_nonneg n)
     (hcert.source_recurrence n)
+
+/--
+The AM source certificate gives the quadratic recurrence whenever the current
+gap is below the source burn-in threshold.
+-/
+theorem IsChewi114AMSourceCertificate.quadratic_recurrence_below_threshold
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R) {n : ℕ}
+    (hthreshold : gap n ≤ chewi114K beta D R / 2) :
+    gap (n + 1) ≤ gap n - gap n ^ (2 : ℕ) / chewi114K beta D R :=
+  chewi114_quadratic_of_source_below_threshold
+    (A := chewi114A beta D R) (K := chewi114K beta D R)
+    (g := gap n) (g' := gap (n + 1)) hA
+    (chewi114K_eq_four_chewi114A beta D R) (hcert.gap_nonneg n)
+    hthreshold (hcert.source_recurrence n)
 
 /--
 The AM source certificate gives a halving step whenever the current gap is
@@ -625,6 +738,140 @@ theorem IsChewi114AMSourceCertificate.gap_le_eps_of_tail_half
     gap (n0 + M) ≤ eps :=
   (hcert.gap_le_source_K_div_iterations_of_tail_half
     hA hM hpos hhalf).trans hK_div_le
+
+/--
+The AM source certificate supplies the post-threshold `K / M` rate on any tail
+segment where the current gaps stay below `K / 2`.
+-/
+theorem IsChewi114AMSourceCertificate.gap_le_source_K_div_iterations_of_threshold_tail
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R) (hM : M ≠ 0)
+    (hpos : ∀ m, m ≤ M -> 0 < gap (n0 + m))
+    (hthreshold : ∀ m, m < M -> gap (n0 + m) ≤ chewi114K beta D R / 2) :
+    gap (n0 + M) ≤ chewi114K beta D R / (M : ℝ) := by
+  have hK_pos : 0 < chewi114K beta D R := by
+    rw [chewi114K_eq_four_chewi114A beta D R]
+    nlinarith
+  exact chewi114_gap_le_source_K_div_iterations
+    (gap := gap) (beta := beta) (R := R) (D := D)
+    (n0 := n0) (M := M) hK_pos hM hpos
+    (fun m hm => by
+      simpa [Nat.add_assoc] using
+        hcert.quadratic_recurrence_below_threshold hA
+          (n := n0 + m) (hthreshold m hm))
+
+/--
+Epsilon form of the threshold-tail AM source-certificate rate.
+-/
+theorem IsChewi114AMSourceCertificate.gap_le_eps_of_threshold_tail
+    {gap : ℕ -> ℝ} {beta R eps : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R) (hM : M ≠ 0)
+    (hpos : ∀ m, m ≤ M -> 0 < gap (n0 + m))
+    (hthreshold : ∀ m, m < M -> gap (n0 + m) ≤ chewi114K beta D R / 2)
+    (hK_div_le : chewi114K beta D R / (M : ℝ) ≤ eps) :
+    gap (n0 + M) ≤ eps :=
+  (hcert.gap_le_source_K_div_iterations_of_threshold_tail
+    hA hM hpos hthreshold).trans hK_div_le
+
+/--
+Once the AM source-certificate gap enters the threshold region `gap <= K / 2`,
+all later gaps in a finite tail remain in that region.
+-/
+theorem IsChewi114AMSourceCertificate.threshold_tail_of_initial_threshold
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R)
+    (hinit : gap n0 ≤ chewi114K beta D R / 2) :
+    ∀ m, m ≤ M -> gap (n0 + m) ≤ chewi114K beta D R / 2 := by
+  have hK_pos : 0 < chewi114K beta D R := by
+    rw [chewi114K_eq_four_chewi114A beta D R]
+    nlinarith
+  intro m hm
+  induction m with
+  | zero =>
+      simpa using hinit
+  | succ m ih =>
+      have hm_lt : m < M := Nat.lt_of_succ_le hm
+      have hprev : gap (n0 + m) ≤ chewi114K beta D R / 2 :=
+        ih (Nat.le_of_lt hm_lt)
+      have hrec :
+          gap (n0 + (m + 1)) ≤
+            gap (n0 + m) - gap (n0 + m) ^ (2 : ℕ) / chewi114K beta D R := by
+        simpa [Nat.add_assoc] using
+          hcert.quadratic_recurrence_below_threshold
+            hA (n := n0 + m) hprev
+      have hnonneg : 0 ≤ gap (n0 + m) ^ (2 : ℕ) / chewi114K beta D R :=
+        div_nonneg (sq_nonneg _) hK_pos.le
+      have hstep_le : gap (n0 + (m + 1)) ≤ gap (n0 + m) := by
+        nlinarith
+      exact hstep_le.trans hprev
+
+/--
+Post-threshold `K/M` rate from a single initial threshold certificate.
+-/
+theorem IsChewi114AMSourceCertificate.gap_le_source_K_div_iterations_of_initial_threshold
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R) (hM : M ≠ 0)
+    (hpos : ∀ m, m ≤ M -> 0 < gap (n0 + m))
+    (hinit : gap n0 ≤ chewi114K beta D R / 2) :
+    gap (n0 + M) ≤ chewi114K beta D R / (M : ℝ) :=
+  hcert.gap_le_source_K_div_iterations_of_threshold_tail
+    hA hM hpos
+    (fun m hm => hcert.threshold_tail_of_initial_threshold
+      hA hinit m (Nat.le_of_lt hm))
+
+/--
+Epsilon form of the initial-threshold AM source-certificate rate.
+-/
+theorem IsChewi114AMSourceCertificate.gap_le_eps_of_initial_threshold
+    {gap : ℕ -> ℝ} {beta R eps : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R) (hM : M ≠ 0)
+    (hpos : ∀ m, m ≤ M -> 0 < gap (n0 + m))
+    (hinit : gap n0 ≤ chewi114K beta D R / 2)
+    (hK_div_le : chewi114K beta D R / (M : ℝ) ≤ eps) :
+    gap (n0 + M) ≤ eps :=
+  (hcert.gap_le_source_K_div_iterations_of_initial_threshold
+    hA hM hpos hinit).trans hK_div_le
+
+/--
+Post-threshold `K/M` rate from a block-coordinate descent certificate and a
+single initial threshold certificate.
+-/
+theorem IsChewi114AMDescentCertificate.gap_le_source_K_div_iterations_of_initial_threshold
+    {gap energy : ℕ -> ℝ} {beta R : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    (hM : M ≠ 0)
+    (hpos : ∀ m, m ≤ M -> 0 < gap (n0 + m))
+    (hinit : gap n0 ≤ chewi114K beta D R / 2) :
+    gap (n0 + M) ≤ chewi114K beta D R / (M : ℝ) := by
+  have hsource := hcert.sourceCertificate hbeta hscale
+  have hA : 0 < chewi114A beta D R := by
+    have hprod : 0 < (2 * beta) * ((D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ)) :=
+      mul_pos (by positivity) hscale
+    simpa [chewi114A, mul_assoc] using hprod
+  exact hsource.gap_le_source_K_div_iterations_of_initial_threshold
+    hA hM hpos hinit
+
+/--
+Epsilon form of the initial-threshold block-coordinate descent-certificate
+rate.
+-/
+theorem IsChewi114AMDescentCertificate.gap_le_eps_of_initial_threshold
+    {gap energy : ℕ -> ℝ} {beta R eps : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    (hM : M ≠ 0)
+    (hpos : ∀ m, m ≤ M -> 0 < gap (n0 + m))
+    (hinit : gap n0 ≤ chewi114K beta D R / 2)
+    (hK_div_le : chewi114K beta D R / (M : ℝ) ≤ eps) :
+    gap (n0 + M) ≤ eps :=
+  (hcert.gap_le_source_K_div_iterations_of_initial_threshold
+    hbeta hscale hM hpos hinit).trans hK_div_le
 
 end Optimization
 end StatInference

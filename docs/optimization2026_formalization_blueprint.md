@@ -57,8 +57,8 @@ Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
 Current manual goal frontier after focused Lean verification of the Chapter
-11.4 block-descent certificate bridge on 2026-05-06, building on pushed
-frontier `d776c6a` (`Add Chewi theorem 11.4 burn-in scalar layer`):
+11.4 threshold-tail rate bridge on 2026-05-06, building on pushed frontier
+`deaaf1a` (`Add Chewi theorem 11.4 descent certificate bridge`):
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -144,12 +144,15 @@ burn-in, threshold, tail-rate, and epsilon consumers,
 `IsChewi114AMDescentCertificate.sourceCertificate`,
 `IsChewi114AMDescentCertificate.max_recurrence`,
 `IsChewi114AMDescentCertificate.gap_le_source_K_div_iterations_of_tail_half`,
-and `IsChewi114AMDescentCertificate.gap_le_eps_of_tail_half`.  The active
-route is now instantiating the descent certificate from actual coordinate or
-proximal-minimization proof obligations and adding exact log/ceil threshold
-packaging if bounded, immediately followed by Theorem 11.5 RAM expectation
-recurrences, Sinkhorn Theorems 11.7/11.8 from ABP/mirror-descent supplied
-interfaces, and Chapter 12 SMPGD before the ASGD
+`IsChewi114AMDescentCertificate.gap_le_eps_of_tail_half`,
+below-threshold quadratic recurrence theorems, threshold-tail `K/M`/epsilon
+theorems, and initial-threshold propagation/rate theorems for both source and
+descent certificates.  The active route is now exact log/ceil burn-in packaging
+for entering the threshold region and, if bounded, instantiating the descent
+certificate from actual coordinate or proximal-minimization proof obligations,
+immediately followed by Theorem 11.5 RAM expectation recurrences, Sinkhorn
+Theorems 11.7/11.8 from ABP/mirror-descent supplied interfaces, and Chapter 12
+SMPGD before the ASGD
 CLT.  Generalize 10.11/10.13 to a custom arbitrary
 norm/dual-norm interface or add an exact `sInf` wrapper only when source-report
 packaging or a later theorem demands it.  In parallel, map Chapter 13
