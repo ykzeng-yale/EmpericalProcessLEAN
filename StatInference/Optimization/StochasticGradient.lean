@@ -1493,6 +1493,43 @@ theorem chewi121_integral_noise_bound_of_l2_roots
         (hvariance_root_nonneg.trans hvariance_root)
 
 /--
+Probability-measure L2-to-L1 bound used by the non-smooth SMPGD sampled
+endpoint.  It is the Cauchy-Schwarz estimate with the second factor equal to
+the constant-one function.
+-/
+theorem chewi121_integral_average_le_l2_root_of_probability
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {stepNorm : Ω -> ℝ} {stepRms : ℝ}
+    (hstep_nonneg : 0 ≤ᵐ[μ] stepNorm)
+    (hstep_mem : MemLp stepNorm (ENNReal.ofReal (2 : ℝ)) μ)
+    (hstep_root :
+      (∫ ω, stepNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ stepRms) :
+    (∫ ω, stepNorm ω ∂μ) ≤ stepRms := by
+  have hone_nonneg : 0 ≤ᵐ[μ] fun _ : Ω => (1 : ℝ) :=
+    Filter.Eventually.of_forall fun _ => zero_le_one
+  have hone_mem :
+      MemLp (fun _ : Ω => (1 : ℝ)) (ENNReal.ofReal (2 : ℝ)) μ := by
+    simpa using
+      (memLp_const (1 : ℝ) :
+        MemLp (fun _ : Ω => (1 : ℝ)) (ENNReal.ofReal (2 : ℝ)) μ)
+  have hone_root :
+      (∫ ω, (fun _ : Ω => (1 : ℝ)) ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) =
+        1 := by
+    simp
+  have hholder :
+      (∫ ω, stepNorm ω * (fun _ : Ω => (1 : ℝ)) ω ∂μ) ≤
+        (∫ ω, stepNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) *
+          (∫ ω, (fun _ : Ω => (1 : ℝ)) ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) :=
+    integral_mul_le_Lp_mul_Lq_of_nonneg
+      Real.HolderConjugate.two_two hstep_nonneg hone_nonneg
+      hstep_mem hone_mem
+  have hholder' :
+      (∫ ω, stepNorm ω ∂μ) ≤
+        (∫ ω, stepNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) := by
+    simpa [hone_root] using hholder
+  exact hholder'.trans hstep_root
+
+/--
 Bochner-integral smooth `hcore` theorem, reducing the stochastic-gradient
 expectation proof to integral raw/absorption/mirror/noise component fields.
 -/
@@ -1700,6 +1737,158 @@ theorem chewi121_smooth_hcore_of_integral_l2_sampled_models
       hraw_point hpsi hdf_point hstepRms_sq hphi_point
       hvariance_nonneg hstep_nonneg hvariance_mem hstep_mem hnoise_point
       hvariance_root hstep_root
+
+/--
+Bochner-integral non-smooth sampled-model `hcore` theorem with source-style
+L2 sampled-gradient and step-norm controls.  The Lipschitz term uses the
+probability-measure L2-to-L1 bound, while the sampled-gradient term uses the
+same Hölder/L2 product estimate as the smooth stochastic-noise bridge.
+-/
+theorem chewi121_nonsmooth_hcore_of_integral_l2_sampled_models
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {f g : E -> ℝ} {phi : E -> ℝ} {gradPhi : E -> E}
+    {alphaPhi L h psiNext stepRms : ℝ}
+    {x : E} {p xPlus : Ω -> E} {pNorm stepNorm : Ω -> ℝ}
+    (hh : 0 < h) (halphaPhi_nonneg : 0 ≤ alphaPhi) (hL_nonneg : 0 ≤ L)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hx : x ∈ C) (hxPlus : ∀ᵐ ω ∂μ, xPlus ω ∈ C)
+    (hFplus :
+      Integrable (fun ω => compositeObjective f g (xPlus ω)) μ)
+    (hDphi :
+      Integrable (fun ω => bregmanDivergence phi gradPhi (xPlus ω) x) μ)
+    (hpsi_int :
+      Integrable (fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p ω)
+          phi gradPhi h x (xPlus ω)) μ)
+    (hstepSq :
+      Integrable (fun ω => ‖xPlus ω - x‖ ^ (2 : ℕ)) μ)
+    (hpsi :
+      (∫ ω,
+        mirrorProximalGradientModel f g (fun _ : E => p ω)
+          phi gradPhi h x (xPlus ω) ∂μ) ≤ psiNext)
+    (hstepRms_sq :
+      stepRms ^ (2 : ℕ) ≤ ∫ ω, ‖xPlus ω - x‖ ^ (2 : ℕ) ∂μ)
+    (hstep_point : (fun ω => ‖xPlus ω - x‖) ≤ᵐ[μ] stepNorm)
+    (hpNorm_nonneg : 0 ≤ᵐ[μ] pNorm)
+    (hstep_nonneg : 0 ≤ᵐ[μ] stepNorm)
+    (hpNorm_mem : MemLp pNorm (ENNReal.ofReal (2 : ℝ)) μ)
+    (hstep_mem : MemLp stepNorm (ENNReal.ofReal (2 : ℝ)) μ)
+    (hpNorm_point : (fun ω => ‖p ω‖) ≤ᵐ[μ] pNorm)
+    (hpNorm_root :
+      (∫ ω, pNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ L)
+    (hstep_root :
+      (∫ ω, stepNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ stepRms) :
+    (∫ ω, compositeObjective f g (xPlus ω) ∂μ) +
+        (alphaPhi / (2 * h)) * stepRms ^ (2 : ℕ) -
+          (2 * L) * stepRms ≤ psiNext := by
+  haveI : ENNReal.HolderTriple
+      (ENNReal.ofReal (2 : ℝ)) (ENNReal.ofReal (2 : ℝ)) 1 := by
+    simpa using Real.HolderConjugate.two_two.ennrealOfReal
+  have hstepNorm_int : Integrable stepNorm μ := by
+    exact memLp_one_iff_integrable.mp (hstep_mem.mono_exponent (by norm_num))
+  have hlip_int : Integrable (fun ω => L * stepNorm ω) μ :=
+    hstepNorm_int.const_mul _
+  have hgrad_int : Integrable (fun ω => pNorm ω * stepNorm ω) μ := by
+    simpa [Pi.mul_apply] using hpNorm_mem.integrable_mul hstep_mem
+  have hraw_point :
+      (fun ω =>
+        compositeObjective f g (xPlus ω) - L * stepNorm ω -
+          pNorm ω * stepNorm ω +
+            (1 / h) * bregmanDivergence phi gradPhi (xPlus ω) x) ≤ᵐ[μ]
+        fun ω =>
+          mirrorProximalGradientModel f g (fun _ : E => p ω)
+            phi gradPhi h x (xPlus ω) := by
+    filter_upwards [hxPlus, hstep_point, hpNorm_point] with ω hxω hstepω hpω
+    have hlip_norm :
+        f (xPlus ω) - f x ≤ L * ‖xPlus ω - x‖ := by
+      have hraw := hLip.le_add_mul hxω hx
+      have hdist : dist (xPlus ω) x = ‖xPlus ω - x‖ := by
+        rw [dist_eq_norm]
+      have hupper : f (xPlus ω) ≤ f x + L * ‖xPlus ω - x‖ := by
+        simpa [Real.coe_toNNReal L hL_nonneg, hdist] using hraw
+      nlinarith
+    have hlip : f (xPlus ω) - f x ≤ L * stepNorm ω := by
+      have hscale :
+          L * ‖xPlus ω - x‖ ≤ L * stepNorm ω :=
+        mul_le_mul_of_nonneg_left hstepω hL_nonneg
+      exact hlip_norm.trans hscale
+    have hgrad_norm :
+        -inner ℝ (p ω) (xPlus ω - x) ≤
+          ‖p ω‖ * ‖xPlus ω - x‖ := by
+      have habs := abs_real_inner_le_norm (p ω) (xPlus ω - x)
+      exact (neg_le_abs _).trans habs
+    have hpNorm_nonnegω : 0 ≤ pNorm ω :=
+      (norm_nonneg _).trans hpω
+    have hprod :
+        ‖p ω‖ * ‖xPlus ω - x‖ ≤ pNorm ω * stepNorm ω :=
+      mul_le_mul hpω hstepω (norm_nonneg _) hpNorm_nonnegω
+    have hgrad :
+        -inner ℝ (p ω) (xPlus ω - x) ≤ pNorm ω * stepNorm ω :=
+      hgrad_norm.trans hprod
+    exact
+      chewi121_nonsmooth_raw_point_of_sampled_model
+        (f := f) (g := g) (phi := phi) (gradPhi := gradPhi)
+        (h := h) (lip := L * stepNorm ω)
+        (grad := pNorm ω * stepNorm ω)
+        (x := x) (xPlus := xPlus ω) (p := p ω)
+        hlip hgrad
+  have hphi_point :
+      (fun ω => (alphaPhi / 2) * ‖xPlus ω - x‖ ^ (2 : ℕ)) ≤ᵐ[μ]
+        fun ω => bregmanDivergence phi gradPhi (xPlus ω) x := by
+    filter_upwards [hxPlus] with ω hω
+    exact
+      bregmanDivergence_lower_of_firstOrderStrongConvexOn
+        (C := C) (phi := phi) (gradPhi := gradPhi)
+        (alphaPhi := alphaPhi) (x := x) (xPlus := xPlus ω)
+        hphi hx hω
+  have hstep_avg : (∫ ω, stepNorm ω ∂μ) ≤ stepRms :=
+    chewi121_integral_average_le_l2_root_of_probability
+      (μ := μ) (stepNorm := stepNorm) (stepRms := stepRms)
+      hstep_nonneg hstep_mem hstep_root
+  have hlip_bound :
+      (∫ ω, L * stepNorm ω ∂μ) ≤ L * stepRms :=
+    chewi121_integral_linear_component_bound
+      (term := fun ω => L * stepNorm ω) (stepNorm := stepNorm)
+      (L := L) (stepRms := stepRms)
+      hL_nonneg hlip_int hstepNorm_int hstep_avg
+      (Filter.Eventually.of_forall fun _ => le_rfl)
+  have hgrad_bound :
+      (∫ ω, pNorm ω * stepNorm ω ∂μ) ≤ L * stepRms :=
+    chewi121_integral_noise_bound_of_l2_roots
+      (noise := fun ω => pNorm ω * stepNorm ω)
+      (varianceNorm := pNorm) (stepNorm := stepNorm)
+      (varianceRms := L) (stepRms := stepRms)
+      hgrad_int hpNorm_nonneg hstep_nonneg hpNorm_mem hstep_mem
+      (Filter.Eventually.of_forall fun _ => le_rfl) hpNorm_root hstep_root
+  have hraw :=
+    chewi121_nonsmooth_integral_raw_component_bound
+      (Fplus := fun ω => compositeObjective f g (xPlus ω))
+      (lip := fun ω => L * stepNorm ω)
+      (grad := fun ω => pNorm ω * stepNorm ω)
+      (Dphi := fun ω => bregmanDivergence phi gradPhi (xPlus ω) x)
+      (psi := fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p ω)
+          phi gradPhi h x (xPlus ω))
+      (h := h) (psiNext := psiNext)
+      hFplus hlip_int hgrad_int hDphi hpsi_int hraw_point hpsi
+  have hphi_lower :=
+    chewi121_integral_mirror_lower_component_bound
+      (Dphi := fun ω => bregmanDivergence phi gradPhi (xPlus ω) x)
+      (stepSq := fun ω => ‖xPlus ω - x‖ ^ (2 : ℕ))
+      (alphaPhi := alphaPhi) (stepRms := stepRms)
+      halphaPhi_nonneg hDphi hstepSq hstepRms_sq hphi_point
+  exact
+    chewi121_nonsmooth_hcore_of_expected_components
+      (alphaPhi := alphaPhi) (L := L) (h := h)
+      (expectedNext := ∫ ω, compositeObjective f g (xPlus ω) ∂μ)
+      (psiNext := psiNext)
+      (DphiAvg := ∫ ω, bregmanDivergence phi gradPhi (xPlus ω) x ∂μ)
+      (lipTerm := ∫ ω, L * stepNorm ω ∂μ)
+      (gradTerm := ∫ ω, pNorm ω * stepNorm ω ∂μ)
+      (stepRms := stepRms)
+      hh hraw hphi_lower hlip_bound hgrad_bound
 
 /--
 Bochner-integral non-smooth `hcore` theorem.
@@ -2697,6 +2886,98 @@ theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_component
       (hstepSq_int n hn) (hstepNorm_int n hn) (hraw_point n hn)
       (hpsi n hn) (hstepRms_sq n hn) (hphi_point n hn)
       (hstep_avg n hn) (hlip_point n hn) (hgrad_point n hn)
+
+/--
+Bochner-integral non-smooth sampled-model Chewi Theorem 12.1 rate with the
+source `(12.2)` L2 sampled-gradient and step-norm controls.  Growth and
+star-upper fields remain supplied here; the theorem discharges the sampled
+non-smooth lower-model estimate and plugs it into the existing RMS-to-rate
+wrapper.
+-/
+theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {f g : E -> ℝ} {phi : E -> ℝ} {gradPhi : E -> E}
+    {alphaF alphaG alphaPhi L h Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi) (hL_nonneg : 0 ≤ L)
+    (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap psiNext psiStar stepRms : ℕ -> ℝ)
+    (x : ℕ -> E) (p xPlus : ℕ -> Ω -> E)
+    (pNorm stepNorm : ℕ -> Ω -> ℝ)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hx : ∀ n, n < N -> x n ∈ C)
+    (hxPlus : ∀ n, n < N -> ∀ᵐ ω ∂μ, xPlus n ω ∈ C)
+    (hgrowth : ∀ n, n < N ->
+      (alphaG + 1 / h) * D (n + 1) + psiNext n ≤ psiStar n)
+    (hstar_upper : ∀ n, n < N ->
+      psiStar n ≤ Fstar + ((1 - alphaF * h) / h) * D n)
+    (hFplus : ∀ n, n < N ->
+      Integrable (fun ω => compositeObjective f g (xPlus n ω)) μ)
+    (hDphi : ∀ n, n < N ->
+      Integrable
+        (fun ω => bregmanDivergence phi gradPhi (xPlus n ω) (x n)) μ)
+    (hpsi_int : ∀ n, n < N ->
+      Integrable (fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p n ω)
+          phi gradPhi h (x n) (xPlus n ω)) μ)
+    (hstepSq : ∀ n, n < N ->
+      Integrable (fun ω => ‖xPlus n ω - x n‖ ^ (2 : ℕ)) μ)
+    (hpsi : ∀ n, n < N ->
+      (∫ ω,
+        mirrorProximalGradientModel f g (fun _ : E => p n ω)
+          phi gradPhi h (x n) (xPlus n ω) ∂μ) ≤ psiNext n)
+    (hstepRms_sq : ∀ n, n < N ->
+      stepRms n ^ (2 : ℕ) ≤ ∫ ω, ‖xPlus n ω - x n‖ ^ (2 : ℕ) ∂μ)
+    (hstep_point : ∀ n, n < N ->
+      (fun ω => ‖xPlus n ω - x n‖) ≤ᵐ[μ] stepNorm n)
+    (hpNorm_nonneg : ∀ n, n < N -> 0 ≤ᵐ[μ] pNorm n)
+    (hstep_nonneg : ∀ n, n < N -> 0 ≤ᵐ[μ] stepNorm n)
+    (hpNorm_mem : ∀ n, n < N ->
+      MemLp (pNorm n) (ENNReal.ofReal (2 : ℝ)) μ)
+    (hstep_mem : ∀ n, n < N ->
+      MemLp (stepNorm n) (ENNReal.ofReal (2 : ℝ)) μ)
+    (hpNorm_point : ∀ n, n < N ->
+      (fun ω => ‖p n ω‖) ≤ᵐ[μ] pNorm n)
+    (hpNorm_root : ∀ n, n < N ->
+      (∫ ω, pNorm n ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ L)
+    (hstep_root : ∀ n, n < N ->
+      (∫ ω, stepNorm n ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ stepRms n)
+    (hgap_sum : ∀ n, n < N ->
+      Fstar + gap (n + 1) =
+        ∫ ω, compositeObjective f g (xPlus n ω) ∂μ) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  refine
+    chewi121_nonsmooth_weightedAverageGap_le_geometric_of_rms_model_bounds
+      (alphaF := alphaF) (alphaG := alphaG) (alphaPhi := alphaPhi)
+      (L := L) (h := h) (Fstar := Fstar)
+      htotal_pos hh halphaPhi hden_pos hlambda_pos D gap psiNext psiStar
+      (fun n => ∫ ω, compositeObjective f g (xPlus n ω) ∂μ) stepRms
+      hN hD_N_nonneg hgrowth hstar_upper ?_ hgap_sum
+  intro n hn
+  exact
+    chewi121_nonsmooth_hcore_of_integral_l2_sampled_models
+      (μ := μ) (C := C) (f := f) (g := g) (phi := phi)
+      (gradPhi := gradPhi) (alphaPhi := alphaPhi) (L := L) (h := h)
+      (psiNext := psiNext n) (stepRms := stepRms n)
+      (x := x n) (p := p n) (xPlus := xPlus n)
+      (pNorm := pNorm n) (stepNorm := stepNorm n)
+      hh halphaPhi.le hL_nonneg hLip hphi (hx n hn) (hxPlus n hn)
+      (hFplus n hn) (hDphi n hn) (hpsi_int n hn) (hstepSq n hn)
+      (hpsi n hn) (hstepRms_sq n hn) (hstep_point n hn)
+      (hpNorm_nonneg n hn) (hstep_nonneg n hn) (hpNorm_mem n hn)
+      (hstep_mem n hn) (hpNorm_point n hn) (hpNorm_root n hn)
+      (hstep_root n hn)
 
 /--
 Smooth-case Chewi Theorem 12.1 rate from expected model components: this is

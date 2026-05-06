@@ -58,7 +58,8 @@ exact source/report packaging or a dependency.
 
 Current manual goal frontier after the Chapter 12 finite sampled rate packet,
 smooth integral-L2 sampled-model endpoint packet, and smooth Bochner-unbiased
-growth/star-upper packet for Chewi Theorem 12.1 SMPGD:
+growth/star-upper packet, plus the non-smooth source-L2 sampled endpoint
+packet for Chewi Theorem 12.1 SMPGD:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -352,11 +353,18 @@ The smooth Bochner-unbiased packet adds
 `chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models_unbiased`,
 so a.e. sampled MPGD growth and Bochner-unbiased star upper now feed the
 smooth integral-L2 sampled weighted-average rate directly.
+The non-smooth source-L2 sampled packet adds
+`chewi121_integral_average_le_l2_root_of_probability`,
+`chewi121_nonsmooth_hcore_of_integral_l2_sampled_models`, and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models`,
+so Chewi's `(12.2)` sampled-gradient L2 route now feeds the non-smooth
+weighted-average rate, with growth/star-upper still supplied above the sampled
+lower-model layer.
 The active Chapter 12 lane is now the remaining exact source probability
 discharge behind those wrappers: variance domination from (12.1), any exact
-conditional-expectation/process packaging needed for source reporting, and the
-non-smooth upgrade from pointwise bounded sampled gradients to the source L2
-assumption (12.2), before the ASGD CLT material.
+conditional-expectation/process packaging needed for source reporting, and a
+final source-shaped Chewi Theorem 12.1 wrapper combining those process fields
+with the compiled sampled endpoints, before the ASGD CLT material.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
