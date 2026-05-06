@@ -56,7 +56,7 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after rebasing over remote main `64526db`
+Current manual goal frontier after rebasing over remote main `e03fdad`
 (`Merge remote-tracking branch 'origin/main'`) on 2026-05-06 and focused Lean
 verification of the Chapter 11.5 RAM block-model plus selected Exercise 9.3
 Hopf-Lax interpolation assembly layer:
@@ -239,9 +239,13 @@ source-candidate assembly packet adds
 `chewi115_zero_hopf_lax_certificate_of_block_model_source_candidates`, so the
 block model plus Chewi's selected Exercise 9.3 test point now produce strong
 and weak RAM Hopf-Lax certificates without an intermediate supplied
-`hmodel_interp`.  The next RAM packet should promote these direct certificates
-to displayed strong geometric and weak `2 * D * R_beta^2 / N` rate wrappers,
-not redo scalar recurrence or block averaging.
+`hmodel_interp`.  The newest displayed-rate packet adds
+`chewi115_strong_rate_of_block_model_source_candidates` and
+`chewi115_zero_rate_of_block_model_source_candidates`, proving the source
+Theorem 11.5 geometric rate and weak `2 * D * R_beta^2 / N` rate directly from
+the block model plus selected source-candidate assumptions.  The next main lane
+should move to Sinkhorn Theorems 11.7/11.8, not redo RAM scalar recurrence or
+block averaging.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
