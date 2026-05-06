@@ -2143,6 +2143,64 @@ def IsFeasibilityReplayCertificate {E : Type*}
     ∀ n : ℕ, n < N -> x n ∉ Cstrict
 
 /--
+Supplied deterministic algorithm interface for feasibility lower bounds.  The
+query functional at time `n` is allowed to inspect only the previous oracle
+replies.  This is intentionally a light interface rather than a full program
+semantics model.
+-/
+def IsPrefixCausalQueryFunctional {E : Type*}
+    (queryOf : ℕ -> (ℕ -> E) -> E) : Prop :=
+  ∀ n p q, (∀ k : ℕ, k < n -> p k = q k) ->
+    queryOf n p = queryOf n q
+
+/-- A finite run of a supplied deterministic query functional. -/
+def IsDeterministicFeasibilityRun {E : Type*}
+    (queryOf : ℕ -> (ℕ -> E) -> E) (x p : ℕ -> E) (N : ℕ) : Prop :=
+  ∀ n : ℕ, n < N -> x n = queryOf n p
+
+/--
+If two finite runs of a prefix-causal deterministic query functional see the
+same reply transcript through time `N`, then their query sequences agree
+through time `N`.
+-/
+theorem deterministicFeasibilityRun_query_eq_of_transcript_eq {E : Type*}
+    {queryOf : ℕ -> (ℕ -> E) -> E}
+    {x y p q : ℕ -> E} {N : ℕ}
+    (hcausal : IsPrefixCausalQueryFunctional queryOf)
+    (hxrun : IsDeterministicFeasibilityRun queryOf x p N)
+    (hyrun : IsDeterministicFeasibilityRun queryOf y q N)
+    (hpq : ∀ k : ℕ, k < N -> p k = q k) :
+    ∀ n : ℕ, n < N -> x n = y n := by
+  intro n hnN
+  calc
+    x n = queryOf n p := hxrun n hnN
+    _ = queryOf n q := hcausal n p q (fun k hkn => hpq k (lt_trans hkn hnN))
+    _ = y n := (hyrun n hnN).symm
+
+/--
+Generic deterministic replay consequence: once a resisting transcript is a
+valid final-box certificate, any deterministic run with the same reply
+transcript makes the same first `N` queries and therefore never enters the
+strict final feasible set.
+-/
+theorem IsFeasibilityReplayCertificate.no_strict_success_of_deterministic_run
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {queryOf : ℕ -> (ℕ -> E) -> E}
+    {C Cstrict : Set E} {x y p q : ℕ -> E} {N : ℕ}
+    (hcert : IsFeasibilityReplayCertificate C Cstrict x p N)
+    (hcausal : IsPrefixCausalQueryFunctional queryOf)
+    (hxrun : IsDeterministicFeasibilityRun queryOf x p N)
+    (hyrun : IsDeterministicFeasibilityRun queryOf y q N)
+    (hpq : ∀ k : ℕ, k < N -> p k = q k) :
+    ∀ n : ℕ, n < N -> y n ∉ Cstrict := by
+  intro n hnN hy_mem
+  have hxy :
+      x n = y n :=
+    deterministicFeasibilityRun_query_eq_of_transcript_eq
+      hcausal hxrun hyrun hpq n hnN
+  exact hcert.2 n hnN (by simpa [hxy] using hy_mem)
+
+/--
 The resisting box construction gives the full geometric certificate needed by
 the deterministic post-hoc replay step: valid separation replies for the final
 box and exclusion of every previous query from its strict coordinate interior.
@@ -2360,6 +2418,55 @@ theorem chewi625_final_replayCertificate_and_closedBall_of_le_full_cycle_log_bou
       chewi625_closedBall_subset_of_le_full_cycle_log_bound
         (d := d) (R := R) (eps := eps) hR_pos heps_pos
         (x := x) (n := N) (m := m) hNm hM_log⟩
+
+/--
+Deterministic replay wrapper for Chewi Theorem 6.25.  Under the log
+query-count condition, the resisting construction supplies a final feasible
+box with an `eps`-ball; any supplied deterministic run that sees the same
+reply transcript as the resisting run makes no strict-feasible query in its
+first `N` steps.
+-/
+theorem chewi625_deterministic_run_no_strict_success_of_log_bound {d : ℕ}
+    [NeZero d] {R eps : ℝ}
+    (hR_pos : 0 < R) (heps_pos : 0 < eps)
+    {queryOf : ℕ ->
+      (ℕ -> EuclideanSpace ℝ (Fin d)) -> EuclideanSpace ℝ (Fin d)}
+    (hcausal : IsPrefixCausalQueryFunctional queryOf)
+    {x y q : ℕ -> EuclideanSpace ℝ (Fin d)} {N m : ℕ}
+    (hresistingRun :
+      IsDeterministicFeasibilityRun
+        queryOf x (chewi625ReturnedCutVector (d := d) R x) N)
+    (hreplayRun : IsDeterministicFeasibilityRun queryOf y q N)
+    (htranscript :
+      ∀ n : ℕ, n < N -> chewi625ReturnedCutVector (d := d) R x n = q n)
+    (hNm : N ≤ m * d)
+    (hM_log : (m : ℝ) * Real.log (2 : ℝ) ≤ Real.log (R / eps)) :
+    (∃ center : EuclideanSpace ℝ (Fin d),
+        Metric.closedBall center eps ⊆
+          chewi625CoordinateBox
+            (chewi625BoxLower (d := d) R x N)
+            (chewi625BoxUpper (d := d) R x N)) ∧
+      ∀ n : ℕ, n < N ->
+        y n ∉ chewi625StrictCoordinateBox
+          (chewi625BoxLower (d := d) R x N)
+          (chewi625BoxUpper (d := d) R x N) := by
+  let C :=
+    chewi625CoordinateBox
+      (chewi625BoxLower (d := d) R x N)
+      (chewi625BoxUpper (d := d) R x N)
+  let Cstrict :=
+    chewi625StrictCoordinateBox
+      (chewi625BoxLower (d := d) R x N)
+      (chewi625BoxUpper (d := d) R x N)
+  have hpackage :=
+    chewi625_final_replayCertificate_and_closedBall_of_le_full_cycle_log_bound
+      (d := d) (R := R) (eps := eps) hR_pos heps_pos
+      (x := x) (N := N) (m := m) hNm hM_log
+  exact
+    ⟨hpackage.2,
+      IsFeasibilityReplayCertificate.no_strict_success_of_deterministic_run
+        (queryOf := queryOf) (y := y) (q := q)
+        hpackage.1 hcausal hresistingRun hreplayRun htranscript⟩
 
 end Optimization
 end StatInference

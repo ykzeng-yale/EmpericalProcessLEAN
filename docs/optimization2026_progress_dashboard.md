@@ -152,8 +152,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   previous query from the strict final box.  The newest replay-certificate
   packet packages returned cut vectors as valid final-box separators and
   combines the replay certificate with log-bound `eps`-ball containment.  The
-  next target is the remaining supplied algorithm-level deterministic replay
-  abstraction; Theorem 6.23 remains source
+  newest deterministic replay packet adds the prefix-causal query functional,
+  finite deterministic run interface, transcript-equality replay theorem, and
+  source-shaped deterministic no-success wrapper.  The next target is exact
+  Theorem 6.25 source/report packaging or the next theorem-sized chapter
+  packet; Theorem 6.23 remains source
   context rather than a direct proof target.  The exact
   Grünbaum/centroid theorem remains a
   supplied blocker for exact CoGM reporting.
@@ -205,8 +208,8 @@ High-value local files:
 
 ## Current Active Target
 
-Current active target after the verified local 6.25 scalar/log containment
-packet on top of pushed frontier `7f9272e`: Chapter 6 lower-bound/feasibility is
+Current active target after the verified local 6.25 deterministic no-success
+packet on top of pushed frontier `e906bd1`: Chapter 6 lower-bound/feasibility is
 the live manual `/goal` frontier.  The Chapter 6 infrastructure through
 Theorems 6.14/6.16, the supplied CoGM 6.19 spine, and the supplied Lemma 6.20
 ellipsoid trajectory/rate layer should be treated as stable background.
@@ -223,9 +226,10 @@ width closed form plus full-cycle `eps`-ball obstruction wrappers, multi-step
 nesting, full-cycle midpoint ball-containment success wrappers, and log-bound
 ball containment through `m * log 2 <= log (R / eps)`, strict-box nesting,
 final strict-box query exclusion, final-box separation transcript packaging,
-and the source-shaped replay-certificate plus ball-containment package.  The
-next theorem packet should close the remaining supplied algorithm-level
-deterministic replay abstraction; add literal
+the source-shaped replay-certificate plus ball-containment package, and the
+supplied deterministic no-success wrapper.  The next theorem packet should
+either package exact Theorem 6.25 for reporting or open the next main-text
+chapter packet; add literal
 arbitrary-`d > N`
 wrappers for 6.21/6.22 only if needed for exact theorem reporting.
 This paragraph supersedes older Lemma 6.20 "next manual packet" language below.

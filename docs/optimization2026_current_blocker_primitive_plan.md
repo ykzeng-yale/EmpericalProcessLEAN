@@ -83,8 +83,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after focused Lean verification of the
-Theorem 6.25 scalar/log containment packet on top of pushed frontier `7f9272e`
-(`Add Chewi theorem 6.25 full-cycle width bound`): aggressively formalize and
+Theorem 6.25 deterministic no-success packet on top of pushed frontier
+`e906bd1` (`Add Chewi theorem 6.25 replay certificate`): aggressively formalize and
 prove all main theorem content of Sinho Chewi's Optimization 2026 notes in
 Lean under `StatInference/Optimization`, with all exercise statements and any
 cheap exercise proofs kept in `StatInference/Optimization/Exercises.lean`
@@ -182,18 +182,23 @@ success-side packet now compiles through `chewi625BoxState_subset_add`,
 `chewi625_closedBall_subset_of_le_full_cycle_log_bound`, plus the
 source-shaped package
 `chewi625_final_replayCertificate_and_closedBall_of_le_full_cycle_log_bound`.
+The supplied deterministic replay abstraction now compiles through
+`IsPrefixCausalQueryFunctional`, `IsDeterministicFeasibilityRun`,
+`deterministicFeasibilityRun_query_eq_of_transcript_eq`,
+`IsFeasibilityReplayCertificate.no_strict_success_of_deterministic_run`, and
+`chewi625_deterministic_run_no_strict_success_of_log_bound`.
 
 Immediate aggressive target: do not loop on "small source-shape gaps" for
 6.21/6.22 and do not try to prove Theorem 6.23 directly, since the source
-explicitly switches to feasibility.  Continue Theorem 6.25 by adding the
-remaining algorithm-level deterministic replay abstraction on top of the now
-compiled final-box replay certificate and log-bound ball-containment package.
-The next useful subpacket should model the deterministic update functional
-only as a supplied recurrence/transcript equality, not as a full program
-semantics layer.  If that replay abstraction starts
-ballooning, open Chapters 7-13 in parallel theorem-sized packets while one
-worker continues the 6.25 wrapper; add arbitrary-`d > N` wrappers for 6.21/6.22
-only if exact theorem reporting requires them.  Do the
+explicitly switches to feasibility.  Theorem 6.25 now has the supplied
+deterministic replay core, final-box separation transcript, final-query
+strict-infeasibility, log-bound ball-containment, and deterministic no-success
+wrapper.  Next choose either exact Theorem 6.25 source/report packaging
+(including any needed closed/convex/topological-interior wrappers and source
+screenshots) or, if report packaging would bog down, open Chapters 7-13 in
+parallel theorem-sized packets while leaving 6.25 as a compiled supplied
+interface.  Add arbitrary-`d > N` wrappers for 6.21/6.22 only if exact theorem
+reporting requires them.  Do the
 mandatory search-first pass before new primitives: local `IsSubgradientAt` and
 Lipschitz bridges in `ProjectedSubgradient.lean`, prefix-span machinery in
 `LowerBounds.lean`, mathlib `LipschitzOnWith`, finite `Finset.max'` APIs,
