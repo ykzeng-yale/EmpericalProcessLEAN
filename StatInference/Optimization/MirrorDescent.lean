@@ -433,6 +433,74 @@ theorem chewi109_final_gap_le_geometric_denominator_of_trajectory
       hD_next_nonneg hxStar n
 
 /--
+Scalar Young/completing-square inequality used in Chewi Theorem 10.11:
+`-2 L r + alpha/(2h) r^2` is bounded below by `-2 L^2 h / alpha`.
+-/
+theorem chewi1011_young_lower_bound
+    {L alphaPhi h r : ℝ} (hh : 0 < h) (halphaPhi : 0 < alphaPhi) :
+    -(2 * L ^ (2 : ℕ) * h / alphaPhi) ≤
+      -2 * L * r + (alphaPhi / (2 * h)) * r ^ (2 : ℕ) := by
+  have hden : 0 < 2 * h * alphaPhi := by positivity
+  have hsquare : 0 ≤ (alphaPhi * r - 2 * L * h) ^ (2 : ℕ) := sq_nonneg _
+  have hnonneg :
+      0 ≤
+        (alphaPhi * r - 2 * L * h) ^ (2 : ℕ) /
+          (2 * h * alphaPhi) :=
+    div_nonneg hsquare hden.le
+  have hidentity :
+      (alphaPhi * r - 2 * L * h) ^ (2 : ℕ) /
+          (2 * h * alphaPhi) =
+        -2 * L * r + (alphaPhi / (2 * h)) * r ^ (2 : ℕ) +
+          2 * L ^ (2 : ℕ) * h / alphaPhi := by
+    field_simp [hh.ne', halphaPhi.ne']
+    ring
+  rw [hidentity] at hnonneg
+  nlinarith
+
+/--
+Chewi Theorem 10.11 analytic lower bound for the local mirror model from the
+two displayed source estimates
+`D_f(x⁺,x) <= 2 L r` and `D_phi(x⁺,x) >= alphaPhi/2 * r^2`.
+
+The norm/dual-norm proof of these two estimates remains outside this small
+interface, but the model lower bound no longer needs to be supplied as an
+opaque assumption.
+-/
+theorem mirrorProximalGradientModel_lower_of_bregman_bounds
+    {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {L alphaPhi h r : ℝ} {x xPlus : E}
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hDf_upper :
+      bregmanDivergence f gradF xPlus x ≤ 2 * L * r)
+    (hDphi_lower :
+      (alphaPhi / 2) * r ^ (2 : ℕ) ≤
+        bregmanDivergence phi gradPhi xPlus x) :
+    compositeObjective f g xPlus - 2 * L ^ (2 : ℕ) * h / alphaPhi ≤
+      mirrorProximalGradientModel f g gradF phi gradPhi h x xPlus := by
+  have hDf_linear :
+      f xPlus ≤ f x + inner ℝ (gradF x) (xPlus - x) + 2 * L * r := by
+    unfold bregmanDivergence at hDf_upper
+    nlinarith
+  have hDphi_scaled :
+      (alphaPhi / (2 * h)) * r ^ (2 : ℕ) ≤
+        (1 / h) * bregmanDivergence phi gradPhi xPlus x := by
+    have hinv_nonneg : 0 ≤ (1 / h) := by positivity
+    have hmul :=
+      mul_le_mul_of_nonneg_left hDphi_lower hinv_nonneg
+    calc
+      (alphaPhi / (2 * h)) * r ^ (2 : ℕ) =
+          (1 / h) * ((alphaPhi / 2) * r ^ (2 : ℕ)) := by
+            field_simp [hh.ne']
+      _ ≤ (1 / h) * bregmanDivergence phi gradPhi xPlus x := hmul
+  have hyoung :=
+    chewi1011_young_lower_bound
+      (L := L) (alphaPhi := alphaPhi) (h := h) (r := r)
+      hh halphaPhi
+  unfold mirrorProximalGradientModel compositeObjective
+  nlinarith
+
+/--
 Chewi Theorem 10.11 nonsmooth MPGD one-step recurrence from the source proof,
 with the Cauchy-Schwarz/Lipschitz lower bound on the local mirror model
 supplied as an interface.
@@ -490,6 +558,40 @@ theorem mirrorProximalGradient_nonsmooth_oneStep_ineq
     field_simp [hh.ne']
   rw [hleft, hright] at hmul
   nlinarith
+
+/--
+Chewi Theorem 10.11 nonsmooth MPGD one-step recurrence from the two analytic
+Bregman estimates displayed in the proof.
+-/
+theorem mirrorProximalGradient_nonsmooth_oneStep_ineq_of_bregman_bounds
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {L alphaPhi h r : ℝ} {x xPlus xStar : E}
+    (hconvF : RelativelyStrongConvexOn C f gradF phi gradPhi 0)
+    (hstep : IsMirrorProximalGradientStep C f g gradF phi gradPhi 0 h x xPlus)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hxStar : xStar ∈ C)
+    (hDf_upper :
+      bregmanDivergence f gradF xPlus x ≤ 2 * L * r)
+    (hDphi_lower :
+      (alphaPhi / 2) * r ^ (2 : ℕ) ≤
+        bregmanDivergence phi gradPhi xPlus x) :
+    bregmanDivergence phi gradPhi xStar xPlus ≤
+      bregmanDivergence phi gradPhi xStar x -
+        h * (compositeObjective f g xPlus - compositeObjective f g xStar) +
+          2 * L ^ (2 : ℕ) * h ^ (2 : ℕ) / alphaPhi :=
+  mirrorProximalGradient_nonsmooth_oneStep_ineq
+    (C := C) (f := f) (g := g) (gradF := gradF)
+    (phi := phi) (gradPhi := gradPhi)
+    (L := L) (alphaPhi := alphaPhi) (h := h)
+    (x := x) (xPlus := xPlus) (xStar := xStar)
+    hconvF hstep hh hxStar
+    (mirrorProximalGradientModel_lower_of_bregman_bounds
+      (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (L := L) (alphaPhi := alphaPhi) (h := h) (r := r)
+      (x := x) (xPlus := xPlus)
+      hh halphaPhi hDf_upper hDphi_lower)
 
 /--
 Telescoping average-gap consequence of the nonsmooth MPGD recurrence in
@@ -696,6 +798,96 @@ theorem chewi1011_iterateAverage_gap_le_of_trajectory
       (gradPhi := gradPhi) (x := x) (xStar := xStar)
       (L := L) (alphaPhi := alphaPhi) (h := h)
       (N := N) hconvComposite hmem hh halphaPhi hN hD_N_nonneg hone
+
+/--
+Chewi Theorem 10.11 average-gap bound for a trajectory, using the two
+displayed analytic Bregman estimates at each step instead of an opaque model
+lower-bound assumption.
+-/
+theorem chewi1011_average_gap_le_of_trajectory_bregman_bounds
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {x : ℕ -> E} {xStar : E} {L alphaPhi h : ℝ}
+    {r : ℕ -> ℝ} {N : ℕ}
+    (htraj : IsMirrorProximalGradientTrajectory
+      C f g gradF phi gradPhi 0 h x)
+    (hconvF : RelativelyStrongConvexOn C f gradF phi gradPhi 0)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hxStar : xStar ∈ C)
+    (hDf_upper : ∀ n, n < N ->
+      bregmanDivergence f gradF (x (n + 1)) (x n) ≤
+        2 * L * r n)
+    (hDphi_lower : ∀ n, n < N ->
+      (alphaPhi / 2) * (r n) ^ (2 : ℕ) ≤
+        bregmanDivergence phi gradPhi (x (n + 1)) (x n))
+    (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N)) :
+    (1 / (N : ℝ)) *
+        (∑ n ∈ Finset.range N,
+          (compositeObjective f g (x (n + 1)) -
+            compositeObjective f g xStar)) ≤
+      bregmanDivergence phi gradPhi xStar (x 0) / ((N : ℝ) * h) +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  refine
+    chewi1011_average_gap_le_of_trajectory
+      (C := C) (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (x := x) (xStar := xStar) (L := L)
+      (alphaPhi := alphaPhi) (h := h) (N := N)
+      htraj hconvF hh halphaPhi hxStar ?_ hN hD_N_nonneg
+  intro n hn
+  exact
+    mirrorProximalGradientModel_lower_of_bregman_bounds
+      (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (L := L) (alphaPhi := alphaPhi) (h := h) (r := r n)
+      (x := x n) (xPlus := x (n + 1))
+      hh halphaPhi (hDf_upper n hn) (hDphi_lower n hn)
+
+/--
+Chewi Theorem 10.11 averaged-iterate bound for a trajectory, using the two
+displayed analytic Bregman estimates at each step.
+-/
+theorem chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {x : ℕ -> E} {xStar : E} {L alphaPhi h : ℝ}
+    {r : ℕ -> ℝ} {N : ℕ}
+    (htraj : IsMirrorProximalGradientTrajectory
+      C f g gradF phi gradPhi 0 h x)
+    (hconvFmodel : RelativelyStrongConvexOn C f gradF phi gradPhi 0)
+    (hconvComposite : ConvexOn ℝ C (compositeObjective f g))
+    (hmem : ∀ n, n < N -> x (n + 1) ∈ C)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hxStar : xStar ∈ C)
+    (hDf_upper : ∀ n, n < N ->
+      bregmanDivergence f gradF (x (n + 1)) (x n) ≤
+        2 * L * r n)
+    (hDphi_lower : ∀ n, n < N ->
+      (alphaPhi / 2) * (r n) ^ (2 : ℕ) ≤
+        bregmanDivergence phi gradPhi (x (n + 1)) (x n))
+    (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N)) :
+    compositeObjective f g (iterateAverage (fun n => x (n + 1)) N) -
+        compositeObjective f g xStar ≤
+      bregmanDivergence phi gradPhi xStar (x 0) / ((N : ℝ) * h) +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  refine
+    chewi1011_iterateAverage_gap_le_of_trajectory
+      (C := C) (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (x := x) (xStar := xStar) (L := L)
+      (alphaPhi := alphaPhi) (h := h) (N := N)
+      htraj hconvFmodel hconvComposite hmem hh halphaPhi hxStar ?_
+      hN hD_N_nonneg
+  intro n hn
+  exact
+    mirrorProximalGradientModel_lower_of_bregman_bounds
+      (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (L := L) (alphaPhi := alphaPhi) (h := h) (r := r n)
+      (x := x n) (xPlus := x (n + 1))
+      hh halphaPhi (hDf_upper n hn) (hDphi_lower n hn)
 
 end Optimization
 end StatInference

@@ -83,11 +83,12 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after checking the clean synced
-frontier `0d265ff` (`Refresh Chewi route after MPGD average layer`) on
-2026-05-06, with latest promoted Lean proof commit `ced0653`
-(`Add Chewi theorem 10.11 MPGD average layer`): aggressively formalize and
-prove all main theorem content of Sinho Chewi's Optimization 2026 notes in Lean under
+Current live replacement `/goal` prompt after targeted Lean build of the
+Chapter 10 nonsmooth MPGD analytic bridge on 2026-05-06, based on pushed
+frontier `efcaf79` (`Rebase Chewi manual goal route to MPGD frontier`) and
+latest promoted code base `ced0653` (`Add Chewi theorem 10.11 MPGD average
+layer`): aggressively formalize and prove all main theorem content of Sinho
+Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
 exercise proofs kept in `StatInference/Optimization/Exercises.lean` without
 slowing the main-text theorem lane.  Do not route back to stale Chapter 3/4/5
@@ -117,7 +118,7 @@ and denominator layer:
 `Bregman.lean` relative lower/upper models, Lemma 10.7-style relative growth
 as a supplied minimizer certificate, `Proximal.lean`'s `compositeObjective`,
 and the local Chapter 3 geometric-weight/Gronwall APIs.
-The newest 10.11 packet adds
+The previous 10.11 packet adds
 `mirrorProximalGradient_nonsmooth_oneStep_ineq`,
 `chewi1011_average_gap_le_of_recurrence`,
 `chewi1011_average_gap_le_of_oneStep`,
@@ -125,10 +126,15 @@ The newest 10.11 packet adds
 `chewi1011_average_gap_le_of_trajectory`, and
 `chewi1011_iterateAverage_gap_le_of_trajectory`.  It reuses
 `ProjectedSubgradient.lean`'s `iterateAverage` and Jensen wrapper
-`convex_value_iterateAverage_sub_le_average_gap`.  The 10.11 theorem layer is
-proved from the source nonsmooth one-step/model-lower-bound interface; the
-remaining analytic blocker is the Cauchy-Schwarz/Lipschitz/mirror-strong
-convexity proof of that model-lower-bound.
+`convex_value_iterateAverage_sub_le_average_gap`.  The newest local analytic
+bridge adds `chewi1011_young_lower_bound`,
+`mirrorProximalGradientModel_lower_of_bregman_bounds`,
+`mirrorProximalGradient_nonsmooth_oneStep_ineq_of_bregman_bounds`,
+`chewi1011_average_gap_le_of_trajectory_bregman_bounds`, and
+`chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds`.  Thus the
+opaque 10.11 model-lower-bound has been reduced to the two displayed source
+estimates `D_f(x⁺,x) <= 2 L r` and
+`D_phi(x⁺,x) >= alphaPhi/2 * r^2`.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, and relative smoothness found no
@@ -144,19 +150,18 @@ style for the 10.11 model lower-bound bridge.
 
 Active aggressive target ladder:
 
-1. Finish the analytic side of Chewi Theorem 10.11 by removing or sharply
-   reducing the supplied model-lower-bound.  Search first for mathlib/local
-   dual norm, Cauchy-Schwarz, Lipschitz/subgradient, Young-inequality, and
-   norm-relative strong-convexity APIs.  If no reusable dual-norm abstraction is
-   available, add the smallest proof-carrying interface that turns
-   `D_f(x⁺,x) <= 2 L |||x⁺-x|||` and
-   `D_phi(x⁺,x) >= alphaPhi/2 * |||x⁺-x|||^2` into
-   `ψ_x(x⁺) >= F(x⁺) - 2 L^2 h / alphaPhi`, then connect it to the existing
-   trajectory wrappers.
-2. Close the Theorem 10.11 source step-size corollary
+1. Close the Theorem 10.11 source step-size corollary
    `h^2 = alphaPhi * R_phi^2 / (2 * L^2 * N)` giving
    `L * R_phi * sqrt (8 / (alphaPhi * N))`, using the compiled average and
-   Jensen wrappers rather than rebuilding the recurrence.
+   Jensen wrappers rather than rebuilding the recurrence.  Reuse the sqrt
+   algebra style in `ProjectedSubgradient.lean`'s displayed
+   `h = R / sqrt N` corollary.
+2. In parallel or immediately after, search again for mathlib/local dual norm,
+   Cauchy-Schwarz, Lipschitz/subgradient, and norm-relative strong-convexity
+   APIs.  If no reusable abstraction is available, add the smallest
+   proof-carrying norm interface that produces the two estimates needed by
+   `mirrorProximalGradientModel_lower_of_bregman_bounds`; do not reintroduce an
+   opaque model-lower-bound.
 3. Package Theorem 10.13 OMD regret by exposing the linear-loss version of the
    mirror step and telescoping `D_phi(y, x_n)`.  Reuse the 10.11 one-step
    machinery wherever the algebra is identical.

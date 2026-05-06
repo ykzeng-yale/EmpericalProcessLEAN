@@ -28,9 +28,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
-- Current manual frontier after checking the clean synced route-doc frontier
-  `0d265ff` on 2026-05-06, with latest promoted Lean proof commit `ced0653`
-  in `StatInference/Optimization/MirrorDescent.lean`: Chapter 9/10 now has a
+- Current manual frontier after targeted Lean build of the Chapter 10
+  nonsmooth MPGD analytic bridge on 2026-05-06, based on pushed route frontier
+  `efcaf79` and latest promoted code base `ced0653` in
+  `StatInference/Optimization/MirrorDescent.lean`: Chapter 9/10 now has a
   compiled finite-valued Fenchel/Bregman/mirror substrate.  The latest
   verified Optimization proof frontier is `ced0653` (`Add Chewi theorem 10.11
   MPGD average layer`).  `MirrorDescent.lean` compiles
@@ -52,14 +53,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   MPGD one-step bridge from a supplied model lower bound, recurrence
   telescoping, average-gap bound, Jensen averaged-iterate bound, and trajectory
   wrappers, reusing `ProjectedSubgradient.lean`'s finite-average/Jensen APIs.
-  Current scalar-Young reuse is the completing-square proof style in
-  `Theorem27.lean`'s
-  `polyakLojasiewiczOn_of_firstOrderStrongConvexOn`.  Next aggressive theorem
-  lane: remove or reduce the supplied model-lower-bound by formalizing the
-  Cauchy-Schwarz/Lipschitz/mirror-strong-convexity argument, close the 10.11
-  step-size corollary, then package Theorem 10.13 OMD regret.  In parallel,
-  map and open Chapter 11 alternating Bregman projections/minimization and the
-  Chapter 12/13 stochastic/Newton theorem packets.
+  The newest local analytic bridge adds `chewi1011_young_lower_bound`,
+  `mirrorProximalGradientModel_lower_of_bregman_bounds`,
+  `mirrorProximalGradient_nonsmooth_oneStep_ineq_of_bregman_bounds`,
+  `chewi1011_average_gap_le_of_trajectory_bregman_bounds`, and
+  `chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds`, reducing the
+  opaque 10.11 model-lower-bound to the two displayed source estimates
+  `D_f <= 2 L r` and `D_phi >= alphaPhi/2 * r^2`.  Current scalar-Young reuse
+  is the completing-square proof style in `Theorem27.lean` and the next sqrt
+  reuse point is `ProjectedSubgradient.lean`'s displayed
+  `h = R / sqrt N` corollary.  Next aggressive theorem lane: close the 10.11
+  source step-size corollary, produce the `D_f`/`D_phi` estimates from the
+  smallest reusable norm/dual-norm interface, then package Theorem 10.13 OMD
+  regret.  In parallel, map and open Chapter 11 alternating Bregman
+  projections/minimization and the Chapter 12/13 stochastic/Newton theorem
+  packets.
 - Current manual frontier after focused Lean verification rebased over pushed
   frontier `4d4601c` (`Add Theorem 2.4.3 coordinate-code selected package`), building
   on `bb0a297` (`Add Chewi theorem 6.25 feasibility instance wrapper`):
