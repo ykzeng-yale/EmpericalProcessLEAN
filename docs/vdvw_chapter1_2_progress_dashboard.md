@@ -39,6 +39,20 @@ measurability through
 finite-dimensional bridge and does not assert full `ell_infty(T)` process
 measurability.
 
+Latest `/goal` rebase after `50f88c7`: local `main` equals `origin/main`, and
+the newest verified Chapter 1 closure is the raw bounded-process
+weak-convergence/tightness interface.  Treat the broad Codex goal objective as
+an orchestration label only.  The operative target is now to close a
+non-duplicative theorem-facing blocker: a real structural entropy/cardinality
+theorem feeding Theorem 2.4.3, a selected empirical-cover tail/UI/ordinary-mean
+bridge from strong enough assumptions, or a Chapter 1 process primitive such
+as arbitrary-index FDD converse, separability/tightness/asymptotic-
+measurability, nonmeasurable signed outer-cover weak convergence, or full
+arbitrary-map extended-real measurable-cover existence.  Do not add more
+endpoint aliases around already closed Theorem 2.4.3 routes or more
+finite-index/process-forward wrappers unless a new exact statement consumes
+them.
+
 Latest `/goal` rebase after `e3d050e`: the finite-index `ell_infty(T)`
 boundedness and finite-product converse support is now closed.  The next run
 should not add more finite-index wrappers or endpoint aliases.  It should

@@ -98,6 +98,28 @@ route alias.  The current Codex goal tool objective cannot be edited in place,
 so this paragraph is the current replacement prompt for continuing the active
 goal without replaying stale completed work.
 
+2026-05-06 `/goal` rebase after `50f88c7`: local `main` is synced with
+`origin/main`, the worktree is clean, and the latest verified Chapter 1 closure
+is the raw bounded-process weak-convergence/tightness interface:
+`VdVWEllInftyProcessWeakConvergence`,
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw`,
+`VdVWEllInftyProcessWeakConvergence.asymptoticallyTight_atTop`, and
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_asymptoticallyTight_atTop`.
+The active Codex goal tool objective remains broad and cannot be edited
+in-place except to mark it complete; this paragraph is the operative
+replacement prompt.  Do not replay closed finite-index `ell_infty(T)` wrappers,
+selected fixed-radius/inverse-radius Theorem 2.4.3 endpoint packages,
+quantizer/grid/finite-trace endpoint aliases, or forward FDD/tightness support
+already compiled.  The next high-capacity proof batch should attack one of the
+remaining non-duplicative blockers: prove a real structural entropy/cardinality
+theorem feeding an existing Theorem 2.4.3 selected fixed-radius route; prove a
+selected empirical-cover tail/UI/ordinary-mean theorem from hypotheses strong
+enough to imply it; or prove a Chapter 1 process primitive required for exact
+textbook statements, especially arbitrary-index VdV&W 1.4.8 FDD converse,
+process separability/tightness/asymptotic-measurability, nonmeasurable signed
+outer-cover weak convergence, or full arbitrary-map extended-real measurable
+cover existence.
+
 Authoritative operational prompt, 2026-05-06 after the verified
 original-cover truncation/polynomial entropy bridges and the quantizer
 random-cover lifts, plus the earlier truncated threshold trace algebra,

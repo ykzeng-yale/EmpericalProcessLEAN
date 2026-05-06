@@ -97,6 +97,20 @@ and the earlier natural-polynomial variable-domain entropy constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
 and selected tail/UI bridge
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`:
+after the verified `50f88c7` raw bounded-process weak-convergence/tightness
+closure, the next work should not rebuild forward FDD/process-law support or
+Theorem 2.4.3 endpoint packages.  The operative `/goal` target is to close a
+new upstream theorem-facing blocker: a structural entropy/cardinality theorem
+feeding the selected fixed-radius Theorem 2.4.3 route; a real selected
+empirical-cover tail/UI/ordinary-mean theorem from strong hypotheses; or an
+exact Chapter 1 process primitive such as arbitrary-index FDD converse,
+separability/tightness/asymptotic-measurability, nonmeasurable signed
+outer-cover weak convergence, or full arbitrary-map extended-real
+measurable-cover existence.  This replaces stale local goal prompts that point
+at already-closed finite-index, inverse-radius, quantizer/grid endpoint, or
+forward process wrappers.
+
+Earlier context for the same target:
 the strong
 Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
