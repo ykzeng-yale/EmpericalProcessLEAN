@@ -57,9 +57,8 @@ Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
 Current manual goal frontier after focused Lean verification of the Chapter
-11.4 source-recurrence, max-recurrence, and burn-in alternating-minimization
-scalar bridge on 2026-05-06, building on pushed frontier `6f31edc` (`Add
-Chewi theorem 11.4 source recurrence bridge`):
+11.4 block-descent certificate bridge on 2026-05-06, building on pushed
+frontier `d776c6a` (`Add Chewi theorem 11.4 burn-in scalar layer`):
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -138,13 +137,19 @@ recurrence/half-threshold bridge: `sum_range_succ_sub`,
 `chewi114_halving_of_source_above_threshold`,
 `chewi114_gap_le_half_pow_mul_of_halving`,
 `chewi114_source_halving_above_threshold`,
-`IsChewi114AMSourceCertificate`, and its max-recurrence, halving, geometric
-burn-in, threshold, tail-rate, and epsilon consumers.  The active route is now
-deriving that source certificate from the actual block-coordinate descent
-estimate and adding exact log/ceil threshold packaging if bounded, immediately
-followed by Theorem 11.5 RAM expectation recurrences, Sinkhorn Theorems
-11.7/11.8 from ABP/mirror-descent supplied interfaces, and Chapter 12 SMPGD
-before the ASGD
+`IsChewi114AMSourceCertificate`, its max-recurrence, halving, geometric
+burn-in, threshold, tail-rate, and epsilon consumers,
+`chewi114_source_recurrence_of_descent_energy`,
+`IsChewi114AMDescentCertificate`,
+`IsChewi114AMDescentCertificate.sourceCertificate`,
+`IsChewi114AMDescentCertificate.max_recurrence`,
+`IsChewi114AMDescentCertificate.gap_le_source_K_div_iterations_of_tail_half`,
+and `IsChewi114AMDescentCertificate.gap_le_eps_of_tail_half`.  The active
+route is now instantiating the descent certificate from actual coordinate or
+proximal-minimization proof obligations and adding exact log/ceil threshold
+packaging if bounded, immediately followed by Theorem 11.5 RAM expectation
+recurrences, Sinkhorn Theorems 11.7/11.8 from ABP/mirror-descent supplied
+interfaces, and Chapter 12 SMPGD before the ASGD
 CLT.  Generalize 10.11/10.13 to a custom arbitrary
 norm/dual-norm interface or add an exact `sInf` wrapper only when source-report
 packaging or a later theorem demands it.  In parallel, map Chapter 13

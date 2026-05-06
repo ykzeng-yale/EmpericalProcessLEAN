@@ -89,9 +89,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after focused Lean verification of the
-Chapter 11.4 source-recurrence, max-recurrence, and burn-in
-alternating-minimization scalar bridge on 2026-05-06, building on pushed
-frontier `6f31edc` (`Add Chewi theorem 11.4 source recurrence bridge`):
+Chapter 11.4 block-descent certificate bridge on 2026-05-06, building on
+pushed frontier `d776c6a` (`Add Chewi theorem 11.4 burn-in scalar layer`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -213,12 +212,21 @@ The new `AlternatingMinimization.lean` module is imported by
 `IsChewi114AMSourceCertificate.gap_le_half_pow_mul_of_threshold_phase`,
 `IsChewi114AMSourceCertificate.gap_le_threshold_of_geometric_burnin`,
 `IsChewi114AMSourceCertificate.gap_le_source_K_div_iterations_of_tail_half`,
-and `IsChewi114AMSourceCertificate.gap_le_eps_of_tail_half`.  This proves the
+`IsChewi114AMSourceCertificate.gap_le_eps_of_tail_half`,
+`chewi114_source_recurrence_of_descent_energy`,
+`IsChewi114AMDescentCertificate`,
+`IsChewi114AMDescentCertificate.sourceCertificate`,
+`IsChewi114AMDescentCertificate.max_recurrence`,
+`IsChewi114AMDescentCertificate.gap_le_source_K_div_iterations_of_tail_half`,
+and `IsChewi114AMDescentCertificate.gap_le_eps_of_tail_half`.  This proves the
 post-threshold inverse-gap/telescope layer of Chewi Theorem 11.4 in the source
 constant `K = 8 * beta * D^2 * R^2` form, discharges the displayed source
 recurrence with denominator `2 * beta * D^2 * R^2`, derives Chewi's max
-recurrence without a pre-supplied half-gap assumption, and proves the scalar
-burn-in halving/threshold consumers.
+recurrence without a pre-supplied half-gap assumption, proves the scalar
+burn-in halving/threshold consumers, and turns the two source
+block-coordinate descent estimates
+`energy/(2*beta) <= gap n - gap (n+1)` and
+`gap(n+1)^2 <= D^2 R^2 * energy` into the AM source certificate.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, relative smoothness, OMD, online
@@ -247,12 +255,13 @@ attempting full martingale/CLT formalization.
 Active aggressive target ladder:
 
 1. Finish Chewi Theorem 11.4 as an algorithm-facing AM theorem.  The scalar
-   inverse-gap layer, max recurrence, source-recurrence bridge, and burn-in
-   threshold consumers now compile.  The remaining theorem-sized tasks are:
-   derive `IsChewi114AMSourceCertificate` from the block-coordinate descent
-   estimate, add the exact log/ceil-to-geometric-threshold wrapper if bounded,
-   and route the exact statement through the compiled tail `K/M` and epsilon
-   consumers.
+   inverse-gap layer, max recurrence, source-recurrence bridge, burn-in
+   threshold consumers, and supplied block-descent-to-source-certificate bridge
+   now compile.  The remaining theorem-sized tasks are: instantiate
+   `IsChewi114AMDescentCertificate` from the actual coordinate/proximal
+   minimization proof if bounded, add the exact log/ceil-to-geometric-threshold
+   wrapper, and package the exact source statement through the compiled tail
+   `K/M` and epsilon consumers.
 2. Immediately continue to Theorem 11.5 RAM using expectation-level
    source-shaped interfaces: conditional one-step expectation, convex/strongly
    convex Hopf-Lax supplied bounds, exponential rate for

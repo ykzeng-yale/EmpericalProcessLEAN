@@ -409,6 +409,33 @@ theorem chewi114_source_halving_above_threshold
     (chewi114K_eq_four_chewi114A beta D R) hgap_nonneg hthreshold hsource
 
 /--
+The scalar bridge from Chewi's two block-coordinate estimates to the displayed
+source recurrence.  Here `energy` denotes the sum of squared gradient
+increments in the proof, and `C = D^2 R^2`.
+-/
+theorem chewi114_source_recurrence_of_descent_energy {beta C g g' energy : ℝ}
+    (hbeta : 0 < beta) (hC : 0 < C)
+    (hdescent : energy / (2 * beta) ≤ g - g')
+    (hgap_sq : g' ^ (2 : ℕ) ≤ C * energy) :
+    g' - g ≤ -g' ^ (2 : ℕ) / (2 * beta * C) := by
+  have hden : 0 < 2 * beta * C := by positivity
+  have hdiv : g' ^ (2 : ℕ) / (2 * beta * C) ≤ energy / (2 * beta) := by
+    rw [div_le_iff₀ hden]
+    field_simp [hbeta.ne']
+    nlinarith [hgap_sq]
+  have hdrop : g' - g ≤ -energy / (2 * beta) := by
+    calc
+      g' - g = -(g - g') := by ring
+      _ ≤ -(energy / (2 * beta)) := neg_le_neg hdescent
+      _ = -energy / (2 * beta) := by ring
+  have hneg_div : -energy / (2 * beta) ≤ -g' ^ (2 : ℕ) / (2 * beta * C) := by
+    calc
+      -energy / (2 * beta) = -(energy / (2 * beta)) := by ring
+      _ ≤ -(g' ^ (2 : ℕ) / (2 * beta * C)) := neg_le_neg hdiv
+      _ = -g' ^ (2 : ℕ) / (2 * beta * C) := by ring
+  exact hdrop.trans hneg_div
+
+/--
 Algorithm-facing source certificate for the one-dimensional gap sequence
 obtained from Chewi's AM proof after the block-coordinate descent estimate.
 The fields are exactly the nonnegativity of the objective gap and the displayed
@@ -420,6 +447,94 @@ structure IsChewi114AMSourceCertificate
   source_recurrence : ∀ n,
     gap (n + 1) - gap n ≤
       -gap (n + 1) ^ (2 : ℕ) / chewi114A beta D R
+
+/--
+Algorithm-facing descent certificate matching the two quantitative inequalities
+in Chewi's proof of Theorem 11.4: the AM descent lemma and the comparison of
+the next gap to the accumulated coordinate-gradient increments.
+-/
+structure IsChewi114AMDescentCertificate
+    (gap energy : ℕ -> ℝ) (beta R : ℝ) (D : ℕ) : Prop where
+  gap_nonneg : ∀ n, 0 ≤ gap n
+  descent_energy : ∀ n, energy n / (2 * beta) ≤ gap n - gap (n + 1)
+  gap_sq_le_energy : ∀ n,
+    gap (n + 1) ^ (2 : ℕ) ≤ ((D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ)) * energy n
+
+/--
+The two block-coordinate descent estimates supply the source recurrence
+certificate used by the scalar Theorem 11.4 layer.
+-/
+theorem IsChewi114AMDescentCertificate.sourceCertificate
+    {gap energy : ℕ -> ℝ} {beta R : ℝ} {D : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ)) :
+    IsChewi114AMSourceCertificate gap beta R D := by
+  refine ⟨hcert.gap_nonneg, ?_⟩
+  intro n
+  have hrec := chewi114_source_recurrence_of_descent_energy
+    (beta := beta) (C := (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    (g := gap n) (g' := gap (n + 1)) (energy := energy n)
+    hbeta hscale (hcert.descent_energy n) (hcert.gap_sq_le_energy n)
+  simpa [chewi114A, mul_assoc] using hrec
+
+/--
+The block-coordinate descent certificate supplies Chewi's one-step max
+recurrence.
+-/
+theorem IsChewi114AMDescentCertificate.max_recurrence
+    {gap energy : ℕ -> ℝ} {beta R : ℝ} {D : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    (n : ℕ) :
+    gap (n + 1) ≤
+      max (gap n / 2) (gap n - gap n ^ (2 : ℕ) / chewi114K beta D R) := by
+  have hsource := hcert.sourceCertificate hbeta hscale
+  have hA : 0 < chewi114A beta D R := by
+    have hprod : 0 < (2 * beta) * ((D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ)) :=
+      mul_pos (by positivity) hscale
+    simpa [chewi114A, mul_assoc] using hprod
+  exact chewi114_next_gap_le_max_halving_quadratic_of_source
+    (A := chewi114A beta D R) (K := chewi114K beta D R)
+    (g := gap n) (g' := gap (n + 1)) hA
+    (chewi114K_eq_four_chewi114A beta D R) (hsource.gap_nonneg n)
+    (hsource.source_recurrence n)
+
+/--
+The block-coordinate descent certificate supplies the tail `K/M` rate once the
+post-threshold half-gap condition is known.
+-/
+theorem IsChewi114AMDescentCertificate.gap_le_source_K_div_iterations_of_tail_half
+    {gap energy : ℕ -> ℝ} {beta R : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    (hM : M ≠ 0)
+    (hpos : ∀ m, m ≤ M -> 0 < gap (n0 + m))
+    (hhalf : ∀ m, m < M -> gap (n0 + m) / 2 ≤ gap (n0 + (m + 1))) :
+    gap (n0 + M) ≤ chewi114K beta D R / (M : ℝ) := by
+  have hsource := hcert.sourceCertificate hbeta hscale
+  have hA : 0 < chewi114A beta D R := by
+    have hprod : 0 < (2 * beta) * ((D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ)) :=
+      mul_pos (by positivity) hscale
+    simpa [chewi114A, mul_assoc] using hprod
+  exact chewi114_gap_le_source_K_div_iterations_of_source_recurrence
+    (gap := gap) (beta := beta) (R := R) (D := D)
+    (n0 := n0) (M := M) hA hM hpos hhalf
+    (fun m _hm => hsource.source_recurrence (n0 + m))
+
+/--
+Epsilon form of the block-coordinate descent-certificate tail rate.
+-/
+theorem IsChewi114AMDescentCertificate.gap_le_eps_of_tail_half
+    {gap energy : ℕ -> ℝ} {beta R eps : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    (hM : M ≠ 0)
+    (hpos : ∀ m, m ≤ M -> 0 < gap (n0 + m))
+    (hhalf : ∀ m, m < M -> gap (n0 + m) / 2 ≤ gap (n0 + (m + 1)))
+    (hK_div_le : chewi114K beta D R / (M : ℝ) ≤ eps) :
+    gap (n0 + M) ≤ eps :=
+  (hcert.gap_le_source_K_div_iterations_of_tail_half
+    hbeta hscale hM hpos hhalf).trans hK_div_le
 
 /--
 The AM source certificate supplies Chewi's one-step max recurrence at every
