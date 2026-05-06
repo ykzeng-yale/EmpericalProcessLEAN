@@ -59,7 +59,8 @@ exact source/report packaging or a dependency.
 Current manual goal frontier after the Chapter 12 finite sampled rate packet,
 smooth integral-L2 sampled-model endpoint packet, smooth Bochner-unbiased
 growth/star-upper packet, non-smooth source-L2 sampled endpoint packet, and
-smooth source variance-bound bridge for Chewi Theorem 12.1 SMPGD:
+smooth source variance-bound bridge for Chewi Theorem 12.1 SMPGD, plus the
+non-smooth relative-subgradient growth/star-upper bridge:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -363,8 +364,13 @@ The non-smooth source-L2 sampled packet adds
 `chewi121_nonsmooth_hcore_of_integral_l2_sampled_models`, and
 `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models`,
 so Chewi's `(12.2)` sampled-gradient L2 route now feeds the non-smooth
-weighted-average rate, with growth/star-upper still supplied above the sampled
-lower-model layer.
+weighted-average rate.  The non-smooth relative-subgradient packet adds
+`IsRelativeSubgradientAt`,
+`chewi121_integral_sampled_star_upper_of_relativeSubgradient`, and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models_relativeSubgradient`,
+so a.e. sampled MPGD growth and the source condition that the mean sampled
+oracle is a relative subgradient now discharge the non-smooth growth/star
+upper fields.
 The active Chapter 12 lane is now the remaining exact source probability
 discharge behind those wrappers: any exact conditional-expectation/process
 packaging needed for source reporting, and a final source-shaped Chewi Theorem

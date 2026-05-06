@@ -18,6 +18,37 @@ open MeasureTheory
 open scoped InnerProductSpace
 
 /--
+Relative finite-valued subgradient interface for the non-smooth branch of
+Chewi Theorem 12.1.  It is the nonsmooth analogue of
+`RelativelyStrongConvexOn.lower_model` at one point.
+-/
+def IsRelativeSubgradientAt
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (C : Set E) (f : E -> ℝ) (p : E)
+    (phi : E -> ℝ) (gradPhi : E -> E) (alpha : ℝ) (x : E) : Prop :=
+  x ∈ C ∧ ∀ ⦃y : E⦄, y ∈ C ->
+    f x + inner ℝ p (y - x) +
+        alpha * bregmanDivergence phi gradPhi y x ≤ f y
+
+theorem IsRelativeSubgradientAt.mem
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {f : E -> ℝ} {p : E}
+    {phi : E -> ℝ} {gradPhi : E -> E} {alpha : ℝ} {x : E}
+    (h : IsRelativeSubgradientAt C f p phi gradPhi alpha x) :
+    x ∈ C :=
+  h.1
+
+theorem IsRelativeSubgradientAt.lower_model
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {f : E -> ℝ} {p : E}
+    {phi : E -> ℝ} {gradPhi : E -> E} {alpha : ℝ} {x y : E}
+    (h : IsRelativeSubgradientAt C f p phi gradPhi alpha x)
+    (hy : y ∈ C) :
+    f x + inner ℝ p (y - x) +
+        alpha * bregmanDivergence phi gradPhi y x ≤ f y :=
+  h.2 hy
+
+/--
 Weighted-sum consequence of a discrete Gronwall recurrence with an additive
 stochastic error term.
 
@@ -1262,6 +1293,80 @@ theorem chewi121_integral_sampled_star_upper_of_unbiased
           (1 / h - alphaF) * bregmanDivergence phi gradPhi y x :=
     mirrorProximalGradientModel_le_composite_add_bregman
       hconvF hx hy
+  have hcoeff :
+      1 / h - alphaF = (1 - alphaF * h) / h := by
+    field_simp [hh.ne']
+  rw [hcoeff] at hdet
+  rw [havg]
+  simpa [one_div] using hdet
+
+/--
+Bochner-integral sampled star-model upper bound for the non-smooth branch of
+Chewi Theorem 12.1.  The mean sampled oracle is assumed to be a relative
+subgradient at `x`, matching the source condition
+`E hatGrad f(x) in partial f(x)` with the relative-convexity correction.
+-/
+theorem chewi121_integral_sampled_star_upper_of_relativeSubgradient
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    {C : Set E} {f g : E -> ℝ}
+    {phi : E -> ℝ} {gradPhi : E -> E} {alphaF h : ℝ}
+    {x y : E} {p : Ω -> E}
+    (hh : 0 < h)
+    (hp_int : Integrable p μ)
+    (hsub : IsRelativeSubgradientAt C f (∫ ω, p ω ∂μ)
+      phi gradPhi alphaF x)
+    (hy : y ∈ C) :
+    (∫ ω,
+      mirrorProximalGradientModel f g (fun _ : E => p ω) phi gradPhi h x y ∂μ) ≤
+      compositeObjective f g y +
+        ((1 - alphaF * h) / h) * bregmanDivergence phi gradPhi y x := by
+  have hinner :
+      (∫ ω, inner ℝ (p ω) (y - x) ∂μ) =
+        inner ℝ (∫ ω, p ω ∂μ) (y - x) := by
+    calc
+      (∫ ω, inner ℝ (p ω) (y - x) ∂μ) =
+          ∫ ω, inner ℝ (y - x) (p ω) ∂μ := by
+            simp [real_inner_comm]
+      _ = inner ℝ (y - x) (∫ ω, p ω ∂μ) := by
+            simpa using integral_inner hp_int (y - x)
+      _ = inner ℝ (∫ ω, p ω ∂μ) (y - x) := by
+            rw [real_inner_comm]
+  have havg :
+      (∫ ω,
+        mirrorProximalGradientModel f g (fun _ : E => p ω) phi gradPhi h x y ∂μ) =
+        mirrorProximalGradientModel f g (fun _ : E => ∫ ω, p ω ∂μ)
+          phi gradPhi h x y := by
+    unfold mirrorProximalGradientModel
+    let q : ℝ := f x + g y + (1 / h) * bregmanDivergence phi gradPhi y x
+    have hinner_int : Integrable (fun ω => inner ℝ (p ω) (y - x)) μ :=
+      hp_int.inner_const (y - x)
+    calc
+      (∫ ω,
+        f x + inner ℝ ((fun _ : E => p ω) x) (y - x) + g y +
+          (1 / h) * bregmanDivergence phi gradPhi y x ∂μ) =
+          ∫ ω, q + inner ℝ (p ω) (y - x) ∂μ := by
+            congr 1
+            ext ω
+            dsimp [q]
+            ring
+      _ = q + ∫ ω, inner ℝ (p ω) (y - x) ∂μ := by
+            rw [integral_add (integrable_const q) hinner_int]
+            simp [q]
+      _ =
+          f x + inner ℝ (∫ ω, p ω ∂μ) (y - x) + g y +
+            (1 / h) * bregmanDivergence phi gradPhi y x := by
+            rw [hinner]
+            dsimp [q]
+            ring
+  have hsub_y := hsub.lower_model hy
+  have hdet :
+      mirrorProximalGradientModel f g (fun _ : E => ∫ ω, p ω ∂μ)
+        phi gradPhi h x y ≤
+        compositeObjective f g y +
+          (1 / h - alphaF) * bregmanDivergence phi gradPhi y x := by
+    unfold mirrorProximalGradientModel compositeObjective
+    nlinarith
   have hcoeff :
       1 / h - alphaF = (1 - alphaF * h) / h := by
     field_simp [hh.ne']
@@ -3090,6 +3195,126 @@ theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_l2_sample
       (hpNorm_nonneg n hn) (hstep_nonneg n hn) (hpNorm_mem n hn)
       (hstep_mem n hn) (hpNorm_point n hn) (hpNorm_root n hn)
       (hstep_root n hn)
+
+/--
+Bochner-integral non-smooth sampled-model Chewi Theorem 12.1 rate with the
+growth and star-upper fields discharged from a.e. sampled MPGD steps and a
+relative-subgradient condition on the mean sampled oracle.
+-/
+theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models_relativeSubgradient
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    {C : Set E} {f g : E -> ℝ} {phi : E -> ℝ} {gradPhi : E -> E}
+    {alphaF alphaG alphaPhi L h Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi) (hL_nonneg : 0 ≤ L)
+    (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap stepRms : ℕ -> ℝ)
+    (x : ℕ -> E) (xStar : E)
+    (p xPlus : ℕ -> Ω -> E)
+    (pNorm stepNorm : ℕ -> Ω -> ℝ)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hx : ∀ n, n < N -> x n ∈ C)
+    (hxStar : xStar ∈ C)
+    (hFstar : Fstar = compositeObjective f g xStar)
+    (hD_current : ∀ n, n < N ->
+      D n = bregmanDivergence phi gradPhi xStar (x n))
+    (hD_next : ∀ n, n < N ->
+      D (n + 1) =
+        ∫ ω, bregmanDivergence phi gradPhi xStar (xPlus n ω) ∂μ)
+    (hstep : ∀ n, n < N -> ∀ᵐ ω ∂μ,
+      IsMirrorProximalGradientStep C f g (fun _ : E => p n ω)
+        phi gradPhi alphaG h (x n) (xPlus n ω))
+    (hp_int : ∀ n, n < N -> Integrable (p n) μ)
+    (hmean_sub : ∀ n, n < N ->
+      IsRelativeSubgradientAt C f (∫ ω, p n ω ∂μ)
+        phi gradPhi alphaF (x n))
+    (hxPlus : ∀ n, n < N -> ∀ᵐ ω ∂μ, xPlus n ω ∈ C)
+    (hFplus : ∀ n, n < N ->
+      Integrable (fun ω => compositeObjective f g (xPlus n ω)) μ)
+    (hDphi : ∀ n, n < N ->
+      Integrable
+        (fun ω => bregmanDivergence phi gradPhi (xPlus n ω) (x n)) μ)
+    (hDnext_int : ∀ n, n < N ->
+      Integrable
+        (fun ω => bregmanDivergence phi gradPhi xStar (xPlus n ω)) μ)
+    (hpsi_int : ∀ n, n < N ->
+      Integrable (fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p n ω)
+          phi gradPhi h (x n) (xPlus n ω)) μ)
+    (hpsiStar_int : ∀ n, n < N ->
+      Integrable (fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p n ω)
+          phi gradPhi h (x n) xStar) μ)
+    (hstepSq : ∀ n, n < N ->
+      Integrable (fun ω => ‖xPlus n ω - x n‖ ^ (2 : ℕ)) μ)
+    (hstepRms_sq : ∀ n, n < N ->
+      stepRms n ^ (2 : ℕ) ≤ ∫ ω, ‖xPlus n ω - x n‖ ^ (2 : ℕ) ∂μ)
+    (hstep_point : ∀ n, n < N ->
+      (fun ω => ‖xPlus n ω - x n‖) ≤ᵐ[μ] stepNorm n)
+    (hpNorm_nonneg : ∀ n, n < N -> 0 ≤ᵐ[μ] pNorm n)
+    (hstep_nonneg : ∀ n, n < N -> 0 ≤ᵐ[μ] stepNorm n)
+    (hpNorm_mem : ∀ n, n < N ->
+      MemLp (pNorm n) (ENNReal.ofReal (2 : ℝ)) μ)
+    (hstep_mem : ∀ n, n < N ->
+      MemLp (stepNorm n) (ENNReal.ofReal (2 : ℝ)) μ)
+    (hpNorm_point : ∀ n, n < N ->
+      (fun ω => ‖p n ω‖) ≤ᵐ[μ] pNorm n)
+    (hpNorm_root : ∀ n, n < N ->
+      (∫ ω, pNorm n ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ L)
+    (hstep_root : ∀ n, n < N ->
+      (∫ ω, stepNorm n ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ stepRms n)
+    (hgap_sum : ∀ n, n < N ->
+      Fstar + gap (n + 1) =
+        ∫ ω, compositeObjective f g (xPlus n ω) ∂μ) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  refine
+    chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models
+      (μ := μ) (C := C) (f := f) (g := g) (phi := phi)
+      (gradPhi := gradPhi) (alphaF := alphaF) (alphaG := alphaG)
+      (alphaPhi := alphaPhi) (L := L) (h := h) (Fstar := Fstar)
+      htotal_pos hh halphaPhi hL_nonneg hden_pos hlambda_pos D gap
+      (fun n =>
+        ∫ ω,
+          mirrorProximalGradientModel f g (fun _ : E => p n ω)
+            phi gradPhi h (x n) (xPlus n ω) ∂μ)
+      (fun n =>
+        ∫ ω,
+          mirrorProximalGradientModel f g (fun _ : E => p n ω)
+            phi gradPhi h (x n) xStar ∂μ)
+      stepRms x p xPlus pNorm stepNorm hN hD_N_nonneg hLip hphi hx hxPlus
+      ?_ ?_ hFplus hDphi hpsi_int hstepSq ?_ hstepRms_sq hstep_point
+      hpNorm_nonneg hstep_nonneg hpNorm_mem hstep_mem hpNorm_point
+      hpNorm_root hstep_root hgap_sum
+  · intro n hn
+    exact
+      chewi121_integral_sampled_growth_of_steps
+        (μ := μ) (C := C) (f := f) (g := g) (phi := phi)
+        (gradPhi := gradPhi) (alphaG := alphaG) (h := h)
+        (x := x n) (y := xStar) (p := p n) (xPlus := xPlus n)
+        (hpsiNext_int := hpsi_int n hn) (hDnext_int := hDnext_int n hn)
+        (hpsiStar_int := hpsiStar_int n hn)
+        (hstep := hstep n hn) hxStar (hD_next n hn) rfl rfl
+  · intro n hn
+    have hupper :=
+      chewi121_integral_sampled_star_upper_of_relativeSubgradient
+        (μ := μ) (C := C) (f := f) (g := g)
+        (phi := phi) (gradPhi := gradPhi) (alphaF := alphaF)
+        (h := h) (x := x n) (y := xStar) (p := p n)
+        hh (hp_int n hn) (hmean_sub n hn) hxStar
+    simpa [hFstar, hD_current n hn] using hupper
+  · intro n hn
+    exact le_rfl
 
 /--
 Smooth-case Chewi Theorem 12.1 rate from expected model components: this is

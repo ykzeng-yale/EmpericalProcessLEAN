@@ -98,7 +98,7 @@ Current live replacement `/goal` prompt after the Chapter 12 finite sampled
 rate packet, smooth integral-L2 sampled-model endpoint packet, smooth
 Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
 endpoint packet, and smooth source variance-bound bridge for Chewi Theorem
-12.1 SMPGD:
+12.1 SMPGD, plus the non-smooth relative-subgradient growth/star-upper bridge:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -140,7 +140,8 @@ weighted-average endpoint, Bochner sampled growth wrapper, Bochner unbiased
 star-upper wrapper, or smooth unbiased integral-L2 sampled-model
 weighted-average endpoint, probability L2-to-L1 average bridge, non-smooth
 source-L2 sampled `hcore`, non-smooth source-L2 sampled weighted-average
-endpoint, or smooth source variance-bound wrapper.  First search local
+endpoint, smooth source variance-bound wrapper, or non-smooth
+relative-subgradient growth/star-upper wrapper.  First search local
 `MirrorDescent.lean`, `Bregman.lean`, `ProjectedSubgradient.lean`,
 `StochasticGradient.lean`, local probability/expectation wrappers, and pinned
 mathlib expectation/Jensen/conditional expectation/Bochner/L2 APIs.  Then
@@ -246,7 +247,12 @@ plus the smooth source variance-bound packet
 plus the non-smooth source-L2 sampled packet
 `chewi121_integral_average_le_l2_root_of_probability`,
 `chewi121_nonsmooth_hcore_of_integral_l2_sampled_models`, and
-`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models`.
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models`,
+plus the non-smooth relative-subgradient packet
+`IsRelativeSubgradientAt`,
+`IsRelativeSubgradientAt.lower_model`,
+`chewi121_integral_sampled_star_upper_of_relativeSubgradient`, and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models_relativeSubgradient`.
 This proves the source recurrence-to-rate algebra, smooth/non-smooth
 stochastic error instantiations, the expected-model algebra turning Chewi's
 three `psi_x` bounds into the displayed SMPGD one-step recurrence, the direct
@@ -261,15 +267,16 @@ pointwise-bounded non-smooth endpoints, and the smooth sampled source-L2 route
 to the final weighted-average rate with growth and star-upper no longer
 supplied fields, the smooth `(12.1)` source variance-root specialization, and
 the non-smooth source-L2 route from `(12.2)` to the final weighted-average rate
-with growth/star-upper supplied.  The remaining Theorem 12.1 blocker is now
-not integral transport, smooth Cauchy-Schwarz/Hölder, finite unbiased star
-averaging, finite sampled model assembly, smooth sampled L2 endpoint assembly,
-Bochner sampled growth, Bochner unbiased star-upper transport, smooth `(12.1)`
-variance domination, or the non-smooth `(12.2)` sampled lower-model/rate
-endpoint; it is the remaining exact source probability discharge: any
-conditional expectation/process packaging needed for exact source reporting,
-and a final theorem statement that combines those process fields with the
-compiled sampled endpoints.
+with growth/star-upper no longer supplied once the mean sampled oracle is a
+relative subgradient.  The remaining Theorem 12.1 blocker is now not integral
+transport, smooth Cauchy-Schwarz/Hölder, finite unbiased star averaging,
+finite sampled model assembly, smooth sampled L2 endpoint assembly, Bochner
+sampled growth, Bochner unbiased star-upper transport, smooth `(12.1)`
+variance domination, non-smooth relative-subgradient star upper, or the
+non-smooth `(12.2)` sampled lower-model/rate endpoint; it is the remaining
+exact source probability discharge: any conditional expectation/process
+packaging needed for exact source reporting, and a final theorem statement
+that combines those process fields with the compiled sampled endpoints.
 
 Fresh Chapter 12 Bochner search result: mathlib has `integral_mono_ae` and
 `integral_mono` for pointwise or a.e. real integral inequalities,
@@ -584,14 +591,16 @@ Active aggressive target ladder:
 1. Finish Chewi Theorem 12.1 SMPGD beyond the compiled finite-support,
    Bochner-integral, smooth L2-noise, smooth integral-L2 sampled-model, smooth
    Bochner-unbiased, non-smooth source-L2 sampled, and smooth source
-   variance-bound routes.  The smooth sampled `hcore`, weighted-average
+   variance-bound routes, plus the non-smooth relative-subgradient
+   growth/star-upper route.  The smooth sampled `hcore`, weighted-average
    endpoint, growth wrapper, unbiased star-upper wrapper, smooth unbiased
    weighted-average endpoint, probability L2-to-L1 bridge, non-smooth `(12.2)`
    sampled `hcore`, non-smooth source-L2 sampled weighted-average endpoint,
-   and smooth `(12.1)` source variance-root wrapper are closed.  Next prove
-   any exact conditional-expectation/process packaging needed for source
-   reporting, and a final source-shaped Chewi Theorem 12.1 wrapper combining
-   those process fields with the compiled smooth/non-smooth sampled endpoints.
+   smooth `(12.1)` source variance-root wrapper, and non-smooth
+   relative-subgradient endpoint are closed.  Next prove any exact
+   conditional-expectation/process packaging needed for source reporting, and
+   a final source-shaped Chewi Theorem 12.1 wrapper combining those process
+   fields with the compiled smooth/non-smooth sampled endpoints.
 2. Instantiate the compiled Chewi Theorem 11.8 Sinkhorn/mirror-descent
    certificate with concrete finite row/column-normalization KL identities.
    Reuse `IsChewi118SinkhornMirrorDescentCertificate`,
