@@ -79,15 +79,17 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_hasFDerivAt_delta_remainder_isLittleO`.
 7. Theorem 3.1 scaled-remainder handoff:
    `vaart1998_theorem_3_1_delta_method_of_scaled_remainder`.
-8. Localization criterion:
+8. Law-tail criterion for `O_P(1)`:
+   `vaart1998_stochasticBounded_of_law_real_norm_tail`.
+9. Localization criterion:
    `vaart1998_tendstoInMeasure_zero_of_eventually_subset_tight`.
-9. Theorem 3.1 tight-localization wrapper:
+10. Theorem 3.1 tight-localization wrapper:
    `vaart1998_theorem_3_1_delta_method_of_localization_tight`.
-10. Theorem 3.1 ordinary-sequence `O_P(1)` wrapper:
+11. Theorem 3.1 ordinary-sequence `O_P(1)` wrapper:
    `vaart1998_theorem_3_1_delta_method_of_localization_stochasticBounded`.
-11. Scaled-ball remainder-to-localization bridge:
+12. Scaled-ball remainder-to-localization bridge:
    `vaart1998_delta_remainder_local_subset_of_eventually_small_on_scaled_ball`.
-12. Theorem 3.1 scaled-ball plus `O_P(1)` wrapper:
+13. Theorem 3.1 scaled-ball plus `O_P(1)` wrapper:
    `vaart1998_theorem_3_1_delta_method_of_scaled_ball_stochasticBounded`.
 
 Verified Vaart packet: `4afbd3b` (`Add Vaart asymptotic statistics Lean lane`),
@@ -102,9 +104,10 @@ remainder is eventually small on every fixed scaled ball.
 
 The next aggressive packet is to discharge the remaining certificate fields:
 
-1. derive real-tail tightness of `r_n • (T_n - theta)` from convergence in
-   distribution, reusing `VdVWProbabilityMeasuresAsymptoticallyTight` and the
-   local norm-tail tightness lemmas in `StatInference/EmpiricalProcess`;
+1. derive law-level real norm-tail tightness of `r_n • (T_n - theta)` from
+   convergence in distribution, reusing `VdVWProbabilityMeasuresAsymptoticallyTight`
+   and the local norm-tail tightness lemmas in `StatInference/EmpiricalProcess`,
+   then feed `vaart1998_stochasticBounded_of_law_real_norm_tail`;
 2. derive the scaled-ball smallness field from
    `vaart1998_hasFDerivAt_delta_remainder_isLittleO`, `r_n -> ∞`, and
    `T_n - theta -> 0` in probability.

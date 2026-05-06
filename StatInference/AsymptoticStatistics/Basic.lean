@@ -59,6 +59,35 @@ def StochasticBounded
       ∀ᶠ n in atTop, P.real {ω | M ≤ ‖X n ω‖} < ε
 
 /--
+Law-tail criterion for stochastic boundedness.
+
+This is the random-variable/law specialization needed after measure-level
+tightness has produced norm-tail bounds for the laws `P.map X_n`.
+-/
+theorem vaart1998_stochasticBounded_of_law_real_norm_tail
+    {Ω E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [SeminormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E]
+    {X : ℕ -> Ω -> E}
+    (hX : ∀ n, AEMeasurable (X n) P)
+    (hlaw_tail : ∀ ε : ℝ, 0 < ε ->
+      ∃ M : ℝ, 0 < M ∧
+        ∀ᶠ n in atTop, (P.map (X n)).real {x : E | M ≤ ‖x‖} < ε) :
+    StochasticBounded P X := by
+  intro ε hε
+  rcases hlaw_tail ε hε with ⟨M, hMpos, htail⟩
+  refine ⟨M, hMpos, ?_⟩
+  filter_upwards [htail] with n hn
+  have hset : MeasurableSet {x : E | M ≤ ‖x‖} :=
+    (isClosed_le continuous_const continuous_norm).measurableSet
+  have hmap :
+      (P.map (X n)).real {x : E | M ≤ ‖x‖} =
+        P.real {ω : Ω | M ≤ ‖X n ω‖} := by
+    rw [measureReal_def, measureReal_def]
+    rw [Measure.map_apply_of_aemeasurable (hX n) hset]
+    rfl
+  exact hmap ▸ hn
+
+/--
 van der Vaart 1998, Theorem 2.3, continuous mapping theorem.
 
 This source wrapper keeps the theorem in the Vaart namespace while delegating

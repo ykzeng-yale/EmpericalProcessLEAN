@@ -30,6 +30,8 @@ The initial Lean target is Chapter 2 plus Chapter 3 substrate:
   `vaart1998_hasFDerivAt_delta_remainder_isLittleO`.
 - Theorem 3.1 source-shaped scaled-remainder handoff
   `vaart1998_theorem_3_1_delta_method_of_scaled_remainder`.
+- law-tail criterion for `O_P(1)`
+  `vaart1998_stochasticBounded_of_law_real_norm_tail`.
 - localization criterion
   `vaart1998_tendstoInMeasure_zero_of_eventually_subset_tight`.
 - Theorem 3.1 tight-localization wrapper
@@ -59,9 +61,10 @@ Current unpushed Vaart packet verification passed for:
 Close the full finite-dimensional Theorem 3.1 delta method by discharging the
 two new certificate fields:
 
-1. derive the real-tail tightness field for `r_n • (T_n - theta)` from
+1. derive law-level real-tail tightness for `r_n • (T_n - theta)` from
    convergence in distribution, using local VdV&W/ProbabilityMeasure
-   asymptotic-tightness APIs;
+   asymptotic-tightness APIs, then feed
+   `vaart1998_stochasticBounded_of_law_real_norm_tail`;
 2. derive the scaled-ball smallness field from
    `vaart1998_hasFDerivAt_delta_remainder_isLittleO`, `r_n -> ∞`, and
    `T_n - theta -> 0` in probability.
