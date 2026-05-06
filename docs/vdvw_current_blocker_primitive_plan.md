@@ -6012,6 +6012,20 @@ hypotheses.  The next non-duplicative step is to combine this selected package
 with existing large-`M` untruncation, or specialize the coordinatewise
 approximation hypothesis to concrete integer grids.
 
+2026-05-06 threshold-code-set untruncated endpoint follow-up: local search
+found the selected fixed-radius constructor
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`
+and the generic untruncated selected fixed-radius consumer, but no direct
+endpoint composing them.  `Theorem243.lean` now proves
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`.
+This closes the large-`M` untruncation bridge for finite threshold-signature
+code sets under coordinatewise threshold approximation and fixed-threshold
+VC/Sauer hypotheses.  Do not add another alias for this route unless it
+consumes a new structural input; the next useful theorem should specialize the
+coordinatewise approximation to a concrete grid/quantizer, prove a new
+VC/Sauer/structural cardinality estimate, or attack the broader selected
+empirical-entropy tail/UI bridge.
+
 2026-05-06 coordinate-code random-cover follow-up: local search found the
 deterministic coordinate pointwise-code covering primitive
 `empiricalL1CoveringNumber_le_of_coordinate_pointwise_approx_code_card_le`,
