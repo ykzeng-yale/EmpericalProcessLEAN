@@ -95,8 +95,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after the Chapter 12 finite sampled
-rate packet and focused Lean verification of the Chewi Theorem 12.1 SMPGD
-smooth and pointwise-bounded non-smooth finite sampled endpoints:
+rate packet and smooth integral-L2 sampled-model endpoint packet for Chewi
+Theorem 12.1 SMPGD:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -130,17 +130,18 @@ wrappers, the verified L2/Hölder noise bound, or the verified sampled
 `ψ_x` raw inequalities, finite sampled growth, relative-smoothness absorption,
 finite unbiased star-upper averaging, finite sampled smooth `hcore`, finite
 sampled smooth rate endpoint, finite sampled pointwise-bounded non-smooth
-`hcore`, or finite sampled pointwise-bounded non-smooth rate endpoint.  First
-search local
+`hcore`, finite sampled pointwise-bounded non-smooth rate endpoint, smooth
+integral-L2 sampled-model `hcore`, or smooth integral-L2 sampled-model
+weighted-average endpoint.  First search local
 `MirrorDescent.lean`, `Bregman.lean`, `ProjectedSubgradient.lean`,
 `StochasticGradient.lean`, local probability/expectation wrappers, and pinned
 mathlib expectation/Jensen/conditional expectation/Bochner/L2 APIs.  Then
-formalize the remaining concrete sampled SMPGD fields: variance domination
-from (12.1), Bochner unbiasedness transport beyond the finite star-upper
-wrapper, and the a.e. relative-smoothness and mirror strong-convexity
-hypotheses needed by
-`chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_noise_components`.
-In parallel, upgrade the non-smooth pointwise-bounded finite sampled endpoint
+formalize the remaining concrete sampled SMPGD fields: Bochner unbiasedness
+transport beyond the finite star-upper wrapper, measure-level sampled growth
+transport, variance domination from (12.1), and the expectation/process
+interfaces needed to feed the already-compiled smooth integral-L2 sampled-model
+rate endpoint.  In parallel, upgrade the non-smooth pointwise-bounded finite
+sampled endpoint
 to the source `(12.2)` L2 route: expectation-level Lipschitz/subgradient norm
 bound, finite/Bochner Cauchy-Schwarz for the sampled inner product, and a final
 wrapper feeding `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components`.
@@ -228,7 +229,10 @@ sampled endpoint packet
 `chewi121_nonsmooth_hcore_of_finite_sampled_models`,
 `chewi121_smooth_weightedAverageGap_le_geometric_of_finite_sampled_models`,
 and
-`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_finite_sampled_models`.
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_finite_sampled_models`,
+plus the smooth integral-L2 sampled-model packet
+`chewi121_smooth_hcore_of_integral_l2_sampled_models` and
+`chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models`.
 This proves the source recurrence-to-rate algebra, smooth/non-smooth
 stochastic error instantiations, the expected-model algebra turning Chewi's
 three `psi_x` bounds into the displayed SMPGD one-step recurrence, the direct
@@ -239,12 +243,15 @@ assembly for both smooth and non-smooth SMPGD, including a finite-support
 stochastic-gradient route, a general Bochner-integral route from supplied
 a.e. model inequalities to the final weighted-average rate, the sampled
 `ψ_x` raw/growth/star-upper finite bridge, and the finite sampled smooth and
-pointwise-bounded non-smooth endpoints.  The remaining Theorem 12.1 blocker is
-now not integral transport, smooth Cauchy-Schwarz/Hölder, finite unbiased star
-averaging, or finite sampled model assembly; it is the remaining exact source
-probability discharge: variance domination from (12.1), Bochner expectation
-transport for the sampled oracles, and the non-smooth upgrade from pointwise
-bounded sampled gradients to the source L2 assumption (12.2).
+pointwise-bounded non-smooth endpoints, and the smooth sampled source-L2 route
+to the final weighted-average rate.  The remaining Theorem 12.1 blocker is now
+not integral transport, smooth Cauchy-Schwarz/Hölder, finite unbiased star
+averaging, finite sampled model assembly, or smooth sampled L2 endpoint
+assembly; it is the remaining exact source probability discharge: Bochner
+expectation transport for the sampled oracles, measure-level sampled growth and
+star-upper transport, variance domination from (12.1), and the non-smooth
+upgrade from pointwise bounded sampled gradients to the source L2 assumption
+(12.2).
 
 Fresh Chapter 12 Bochner search result: mathlib has `integral_mono_ae` and
 `integral_mono` for pointwise or a.e. real integral inequalities,
@@ -557,15 +564,11 @@ attempting full martingale/CLT formalization.
 Active aggressive target ladder:
 
 1. Finish Chewi Theorem 12.1 SMPGD beyond the compiled finite-support,
-   Bochner-integral, and smooth L2-noise routes by discharging the sampled
-   stochastic model fields: raw `ψ_x` inequalities from
-   `mirrorProximalGradientModel`, growth from
-   `IsMirrorProximalGradientStep.growth`, finite/Bochner unbiased star-upper
-   averaging, variance domination from (12.1), and source pointwise/a.e.
-   relative-smoothness, mirror strong-convexity, Lipschitz, and
-   bounded-gradient estimates from (12.2).  Feed the smooth result into
-   `chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_noise_components`
-   and the non-smooth result into
+   Bochner-integral, smooth L2-noise, and smooth integral-L2 sampled-model
+   routes.  The smooth sampled `hcore` and weighted-average endpoint are
+   closed; next prove the Bochner unbiasedness/growth/star-upper transport
+   wrappers above them, variance domination from (12.1), and the non-smooth
+   source-L2 sampled endpoint from (12.2).  Feed the non-smooth result into
    `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components`
    or a future non-smooth L2 finite-weighted wrapper.
 2. Instantiate the compiled Chewi Theorem 11.8 Sinkhorn/mirror-descent
