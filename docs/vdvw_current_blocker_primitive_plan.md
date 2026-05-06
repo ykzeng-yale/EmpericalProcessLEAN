@@ -5767,3 +5767,13 @@ by splitting the two nonnegative gaps and reusing
 a Chapter 1 arbitrary-map/asymptotic-measurability support bridge for
 bounded-continuous real tests; the exact full signed extended-real arbitrary-map
 cover theorem remains open.
+
+2026-05-05 lower-shifted gap-equivalence follow-up: local search found the
+lower-shifted real gap definition and measurable zero lemma, but no equivalence
+between zero gap and equality of outer/inner expectations for the shifted
+nonnegative proxy.  `WeakConvergence.lean` now proves
+`VdVWLowerShiftedRealOuterInnerExpectationGap_eq_zero_iff` by reusing
+`VdVWNonnegativeOuterInnerExpectationGap_eq_zero_iff_outer_eq_inner`.  This
+completes the same equality-criterion bridge for the lower-shifted real
+asymptotic-measurability predicate; full signed extended-real arbitrary-map
+cover existence remains the open exact-textbook primitive.

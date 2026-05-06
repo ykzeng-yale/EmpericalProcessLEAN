@@ -2100,3 +2100,9 @@ signed bounded-continuous outer/inner gap to the two positive/negative
 nonnegative outer-equals-inner criteria.  This narrows the local arbitrary-map
 asymptotic-measurability support layer while preserving the remaining full
 signed extended-real cover-existence gap.
+
+2026-05-05 lower-shifted gap-equivalence follow-up:
+`WeakConvergence.lean` now proves
+`VdVWLowerShiftedRealOuterInnerExpectationGap_eq_zero_iff`, giving the same
+outer-equals-inner criterion for the lower-shifted real nonnegative proxy used
+by the local asymptotic-measurability predicates.

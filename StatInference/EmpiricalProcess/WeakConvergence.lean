@@ -1336,6 +1336,19 @@ noncomputable def VdVWLowerShiftedRealOuterInnerExpectationGap
     (fun ω => ENNReal.ofReal (Y ω - c))
 
 /--
+The lower-shifted real outer/inner expectation gap vanishes exactly when the
+outer and inner expectations of its nonnegative shifted proxy coincide.
+-/
+theorem VdVWLowerShiftedRealOuterInnerExpectationGap_eq_zero_iff
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Y : Ω -> ℝ} {c : ℝ} :
+    VdVWLowerShiftedRealOuterInnerExpectationGap μ Y c = 0 ↔
+      VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (Y ω - c)) =
+        VdVWInnerExpectation μ (fun ω => ENNReal.ofReal (Y ω - c)) := by
+  simp [VdVWLowerShiftedRealOuterInnerExpectationGap,
+    VdVWNonnegativeOuterInnerExpectationGap_eq_zero_iff_outer_eq_inner]
+
+/--
 Measurable real-valued maps have zero lower-shifted VdV&W nonnegative
 outer/inner expectation gap.
 -/
