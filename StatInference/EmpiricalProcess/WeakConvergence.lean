@@ -1322,6 +1322,23 @@ theorem VdVWAsymptoticallyMeasurableNonnegative.mono_filter
   exact (h T hT).mono_left hl
 
 /--
+The nonnegative asymptotic-measurability predicate is unchanged by eventually
+equal measure families and eventually equal arbitrary maps.
+-/
+theorem VdVWAsymptoticallyMeasurableNonnegative.congr_eventually
+    {Ω : Type u} {S : Type v} {ι : Type w} [MeasurableSpace Ω]
+    {μs νs : ι -> Measure Ω} {X Y : ι -> Ω -> S}
+    {l : Filter ι} {tests : (S -> ℝ≥0∞) -> Prop}
+    (h : VdVWAsymptoticallyMeasurableNonnegative μs X l tests)
+    (hμ : ∀ᶠ i in l, νs i = μs i)
+    (hX : ∀ᶠ i in l, Y i = X i) :
+    VdVWAsymptoticallyMeasurableNonnegative νs Y l tests := by
+  intro T hT
+  refine Tendsto.congr' ?_ (h T hT)
+  filter_upwards [hμ, hX] with i hνμ hYX
+  simp [hνμ, hYX]
+
+/--
 Lower-shifted real outer/inner expectation gap.
 
 For a real-valued test `Y` with lower bound `c`, `ENNReal.ofReal (Y - c)` is
@@ -1456,6 +1473,28 @@ theorem VdVWAsymptoticallyMeasurableLowerShiftedReal.mono_filter
     VdVWAsymptoticallyMeasurableLowerShiftedReal μs X l' tests := by
   intro f c hf hlower
   exact (h f c hf hlower).mono_left hl
+
+/--
+The lower-shifted real asymptotic-measurability predicate is unchanged by
+eventually equal measure families and pointwise equal arbitrary maps.
+
+The map equality is pointwise because the lower-bound side condition is
+global in the index.
+-/
+theorem VdVWAsymptoticallyMeasurableLowerShiftedReal.congr_eventually
+    {Ω : Type u} {S : Type v} {ι : Type w} [MeasurableSpace Ω]
+    {μs νs : ι -> Measure Ω} {X Y : ι -> Ω -> S}
+    {l : Filter ι} {tests : (S -> ℝ) -> Prop}
+    (h : VdVWAsymptoticallyMeasurableLowerShiftedReal μs X l tests)
+    (hμ : ∀ᶠ i in l, νs i = μs i)
+    (hX : ∀ i, Y i = X i) :
+    VdVWAsymptoticallyMeasurableLowerShiftedReal νs Y l tests := by
+  intro f c hf hlower
+  refine Tendsto.congr' ?_ (h f c hf ?_)
+  · filter_upwards [hμ] with i hνμ
+    simp [hνμ, hX i]
+  · intro i ω
+    simpa [← hX i] using hlower i ω
 
 /--
 Bounded-continuous lower-shifted asymptotic measurability.

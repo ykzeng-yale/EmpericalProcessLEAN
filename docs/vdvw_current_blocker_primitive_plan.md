@@ -6298,18 +6298,21 @@ index; the canonical shifted bridge permits eventually equal maps.  This does
 not close the deeper signed extended-real cover-existence or process/FDD
 converse blockers.
 
-2026-05-06 Chapter 1 shifted common-domain congruence follow-up:
-local search found the varying-domain shifted congruence bridges but no
-matching common-domain replacement lemmas for the lower-shifted and canonical
+2026-05-06 Chapter 1 common-domain asymptotic-measurability congruence
+follow-up: local search found the varying-domain shifted congruence bridges
+but no matching common-domain replacement lemmas for the nonnegative,
+lower-shifted real, lower-shifted bounded-continuous, and canonical
 bounded-continuous asymptotic-measurability predicates.  `WeakConvergence.lean`
 now proves
+`VdVWAsymptoticallyMeasurableNonnegative.congr_eventually`,
+`VdVWAsymptoticallyMeasurableLowerShiftedReal.congr_eventually`,
 `VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.congr_eventually`
 and
 `VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.congr_eventually`.
 This closes the common-domain counterpart of the previous varying-domain
-replacement layer.  As in the varying-domain theorem, the lower-shifted bridge
-keeps pointwise map equality because its lower-bound side condition is global
-in the index, while the canonical shifted bridge permits eventually equal
-maps.  The remaining Chapter 1 blockers are still the full signed
+replacement layer.  The nonnegative and canonical shifted bridges permit
+eventually equal maps; the lower-shifted real and bounded-continuous bridges
+keep pointwise map equality because their lower-bound side conditions are
+global in the index.  The remaining Chapter 1 blockers are still the full signed
 extended-real arbitrary-map cover-existence layer and the process/FDD
 converse, separability, and asymptotic-tightness primitives.

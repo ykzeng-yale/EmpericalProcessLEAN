@@ -2383,12 +2383,14 @@ spaces.  The lower-shifted theorem keeps pointwise map equality because its
 definition carries an all-index lower-bound hypothesis; the canonical theorem
 allows eventually equal maps.
 
-2026-05-06 common-domain shifted congruence follow-up:
-`WeakConvergence.lean` now also proves the common-domain counterparts
+2026-05-06 common-domain asymptotic-measurability congruence follow-up:
+`WeakConvergence.lean` now also proves the common-domain replacement bridges
+`VdVWAsymptoticallyMeasurableNonnegative.congr_eventually`,
+`VdVWAsymptoticallyMeasurableLowerShiftedReal.congr_eventually`,
 `VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.congr_eventually`
 and
 `VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.congr_eventually`.
-This closes the replacement-stability gap for the Chapter 1 shifted
-asymptotic-measurability layer in both common-domain and varying-domain forms;
-the deeper signed extended-real arbitrary-map and process/FDD blockers remain
-open.
+This closes the replacement-stability gap for the Chapter 1 nonnegative and
+shifted asymptotic-measurability layer in common-domain form, matching the
+previous varying-domain shifted congruence closures; the deeper signed
+extended-real arbitrary-map and process/FDD blockers remain open.
