@@ -30810,6 +30810,142 @@ theorem
       (hbound := hprob_bound)
 
 /--
+Nonnegative outer-probability convergence to zero is stable under multiplication
+by a positive deterministic constant.
+
+This local support lemma is used by Theorem 2.4.3 symmetrization routes, where
+the finite-net Hoeffding upper may appear with the textbook symmetrization
+constant.
+-/
+theorem VdVWConvergesInOuterProbabilityConst_zero_of_const_mul_nonneg
+    {ι : Type v} {Ω : ι -> Type u}
+    [(i : ι) -> MeasurableSpace (Ω i)]
+    (μ : (i : ι) -> Measure (Ω i)) {l : Filter ι}
+    {Y : (i : ι) -> Ω i -> ℝ} {C : ℝ}
+    (hC_pos : 0 < C)
+    (hY_nonneg : ∀ i (ω : Ω i), 0 ≤ Y i ω)
+    (hY :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ Y l
+        (0 : ℝ)) :
+    VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ
+      (fun i ω => C * Y i ω) l (0 : ℝ) := by
+  intro epsilon hepsilon
+  have hY_epsilon := hY (epsilon / C) (div_pos hepsilon hC_pos)
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0) from
+        tendsto_const_nhds)
+      hY_epsilon
+      (Eventually.of_forall fun _ => bot_le)
+      ?_
+  refine Eventually.of_forall ?_
+  intro i
+  dsimp [VdVWOuterProbability]
+  refine measure_mono ?_
+  intro ω hω
+  have hCY_nonneg : 0 ≤ C * Y i ω := mul_nonneg hC_pos.le (hY_nonneg i ω)
+  have hdist_scaled : epsilon < C * Y i ω := by
+    have hω' := hω
+    change epsilon < dist (C * Y i ω) (0 : ℝ) at hω'
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg hCY_nonneg] at hω'
+    exact hω'
+  have hY_large : epsilon / C < Y i ω := by
+    rw [div_lt_iff₀ hC_pos]
+    nlinarith
+  have hmem : epsilon / C < dist (Y i ω) (0 : ℝ) := by
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg (hY_nonneg i ω)]
+    exact hY_large
+  simpa using hmem
+
+/--
+Fixed-`M` centered-truncated convergence from a scaled pure
+outer-probability finite-net comparison.
+
+The symmetrization proof naturally introduces deterministic constants such as
+`2`.  This variant keeps the same fixed-radius probability route but allows
+the comparison event to use `C * finiteNetUpper + eta`; convergence of the
+scaled finite-net upper follows from the unscaled finite-net convergence.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_scaledFiniteNetHoeffdingUpper
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M) (hC_pos : 0 < C)
+    (hfiniteNetUpper :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality eta n sample n) n M)
+          atTop (0 : ℝ))
+    (hprob_bound :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)}
+            ≤
+          VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                        (cardinality eta n sample n) n M + eta)
+                    (0 : ℝ)}) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWConvergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_add_bound
+      (μ := fun n : ℕ => vdVWProductMeasure P n)
+      (X := fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      (error := fun eta n sample =>
+        C * vdVWTheorem243FiniteNetHoeffdingUpper
+          (cardinality eta n sample n) n M)
+      (herror_nonneg := by
+        intro eta n sample
+        exact mul_nonneg hC_pos.le
+          (vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+            (cardinality eta n sample n) n hM_pos.le))
+      (herror := by
+        intro eta heta
+        exact
+          VdVWConvergesInOuterProbabilityConst_zero_of_const_mul_nonneg
+            (μ := fun n : ℕ => vdVWProductMeasure P n)
+            (C := C) hC_pos
+            (fun n sample =>
+              vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+                (cardinality eta n sample n) n hM_pos.le)
+            (hfiniteNetUpper eta heta))
+      (hbound := hprob_bound)
+
+/--
 Fixed-`M` centered-truncated convergence from stochastic entropy and the
 proof-carrying finite-net outer-probability comparison primitive.
 

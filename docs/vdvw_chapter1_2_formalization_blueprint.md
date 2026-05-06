@@ -188,6 +188,13 @@ the fixed-radius finite-net domination under `vdVWProductMeasure P n` almost
 everywhere, or prove the comparison structure directly, instead of requiring a
 pointwise all-sample inequality.
 
+Because the existing symmetrization support naturally introduces deterministic
+constants, the fixed-radius route also has the scaled consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_scaledFiniteNetHoeffdingUpper`.
+It should be used when the source comparison gives `C * finiteNetUpper + eta`
+rather than exactly `finiteNetUpper + eta`; the unscaled entropy-to-Hoeffding
+convergence still supplies the needed scaled error convergence.
+
 2026-05-06 fixed-FDD congruence refinement: after search, the local FDD
 replacement layer now includes
 `aemeasurable_fdd_congr_finite_coord_ae` and

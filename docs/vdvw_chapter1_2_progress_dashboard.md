@@ -2990,3 +2990,11 @@ The same comparison target now also has the weaker a.e. constructor
 proved using mathlib `measure_mono_ae`.  Future Theorem 2.4.3 work should aim
 to prove this eventual a.e. selected finite-net domination, or the comparison
 structure directly, from the textbook symmetrization/random-cover argument.
+
+The fixed-radius probability route also now supports deterministic
+symmetrization constants through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_scaledFiniteNetHoeffdingUpper`
+and its support lemma
+`VdVWConvergesInOuterProbabilityConst_zero_of_const_mul_nonneg`.  This removes
+a likely constant-factor mismatch before the next ghost/Rademacher comparison
+proof attempt.

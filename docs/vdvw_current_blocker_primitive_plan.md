@@ -7449,3 +7449,15 @@ to the expected ghost/Fubini/selected-cover proof shape than the all-sample
 pointwise constructor.  The remaining blocker is now sharper: prove that
 eventual a.e. domination, or directly prove the comparison structure, from the
 VdV&W symmetrization and random empirical-cover argument.
+
+2026-05-06 Theorem 2.4.3 scaled fixed-radius comparison: search showed no
+ready local outer-probability constant-multiple closure lemma.  `Theorem243.lean`
+now proves `VdVWConvergesInOuterProbabilityConst_zero_of_const_mul_nonneg`
+and the theorem-facing
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_scaledFiniteNetHoeffdingUpper`.
+This lets the fixed-radius probability route consume comparisons with
+`C * finiteNetHoeffdingUpper + eta`, which is the natural shape after
+symmetrization constants such as `2`, while still deriving convergence from
+the unscaled finite-net Hoeffding upper.  The next source theorem should now
+prove an eventual a.e. or outer-probability comparison in this scaled shape
+from ghost/Rademacher selected empirical covers.
