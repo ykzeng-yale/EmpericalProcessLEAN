@@ -2411,3 +2411,13 @@ field, the signed asymptotic-measurability field, and the proof-carrying
 packages.  This rounds out the filter/replacement/reindexing support layer
 for Chapter 1 arbitrary-map arguments; exact nonmeasurable cover and
 process/FDD converse blockers remain open.
+
+2026-05-06 nonnegative/canonical asymptotic-measurability reindexing
+follow-up:
+`WeakConvergence.lean` now adds `comp_tendsto` reindexing lemmas for
+`VdVWAsymptoticallyMeasurableNonnegative`,
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted`, and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains`.
+The lower-shifted predicates remain intentionally without generic
+reindexing because their all-index lower-bound hypotheses do not follow from
+a bound on only the reindexed subfamily.

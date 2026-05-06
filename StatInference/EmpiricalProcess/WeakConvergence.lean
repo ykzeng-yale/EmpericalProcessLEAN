@@ -1452,6 +1452,21 @@ theorem VdVWAsymptoticallyMeasurableNonnegative.congr_eventually
   simp [hνμ, hYX]
 
 /--
+The nonnegative asymptotic-measurability predicate is stable under reindexing
+along a map that tends to the original index filter.
+-/
+theorem VdVWAsymptoticallyMeasurableNonnegative.comp_tendsto
+    {Ω : Type u} {S : Type v} {ι : Type w} {κ : Type x} [MeasurableSpace Ω]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l : Filter ι} {l' : Filter κ} {tests : (S -> ℝ≥0∞) -> Prop}
+    (h : VdVWAsymptoticallyMeasurableNonnegative μs X l tests)
+    {u : κ -> ι} (hu : Tendsto u l' l) :
+    VdVWAsymptoticallyMeasurableNonnegative
+      (fun k => μs (u k)) (fun k ω => X (u k) ω) l' tests := by
+  intro T hT
+  exact (h T hT).comp hu
+
+/--
 Lower-shifted real outer/inner expectation gap.
 
 For a real-valued test `Y` with lower bound `c`, `ENNReal.ofReal (Y - c)` is
@@ -1808,6 +1823,22 @@ theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.congr_even
   simp [hνμ, hYX]
 
 /--
+The canonical bounded-continuous shifted asymptotic-measurability predicate is
+stable under reindexing along a map that tends to the original index filter.
+-/
+theorem VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.comp_tendsto
+    {Ω : Type u} {S : Type v} {ι : Type w} {κ : Type x}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l : Filter ι} {l' : Filter κ}
+    (h : VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted μs X l)
+    {u : κ -> ι} (hu : Tendsto u l' l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted
+      (fun k => μs (u k)) (fun k ω => X (u k) ω) l' := by
+  intro f
+  exact (h f).comp hu
+
+/--
 The lower-shifted nonnegative gap is one half of the signed
 positive/negative gap after subtracting the lower shift.
 -/
@@ -2103,6 +2134,28 @@ theorem
   refine Tendsto.congr' ?_ (h f)
   filter_upwards [hμ, hX] with i hνμ hYX
   simp [hνμ, hYX]
+
+/--
+The varying-domain canonical shifted bounded-continuous asymptotic-
+measurability predicate is stable under reindexing along a map that tends to
+the original index filter.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.comp_tendsto
+    {ι : Type w} {κ : Type x} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    {μs : (i : ι) -> Measure (Ω i)}
+    {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι} {l' : Filter κ}
+    (h :
+      VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+        Ω μs X l)
+    {u : κ -> ι} (hu : Tendsto u l' l) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+      (fun k => Ω (u k)) (fun k => μs (u k))
+      (fun k ω => X (u k) ω) l' := by
+  intro f
+  exact (h f).comp hu
 
 /--
 Varying-domain signed bounded-continuous asymptotic measurability implies the

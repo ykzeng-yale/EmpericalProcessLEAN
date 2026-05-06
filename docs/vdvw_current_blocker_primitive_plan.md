@@ -6344,3 +6344,18 @@ These close the basic subsequence/net reindexing layer for the current signed
 bounded-continuous arbitrary-map weak-convergence foundations.  They do not
 prove the still-missing signed extended-real measurable-cover existence,
 arbitrary-map asymptotic tightness, or arbitrary-index FDD converse.
+
+2026-05-06 nonnegative/canonical asymptotic-measurability reindexing
+follow-up: after the signed arbitrary-map reindexing batch, local search still
+found `mono_filter` and `congr_eventually` but no `comp_tendsto` for the
+nonnegative and canonical shifted asymptotic-measurability predicates.
+`WeakConvergence.lean` now proves
+`VdVWAsymptoticallyMeasurableNonnegative.comp_tendsto`,
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted.comp_tendsto`,
+and the varying-domain canonical shifted analogue
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.comp_tendsto`.
+No generic lower-shifted reindexing theorem was added: its definition carries
+an all-index lower-bound side condition, and a lower bound on the reindexed
+subfamily alone does not imply the original all-index lower bound.  Such a
+lemma should only be introduced later with an explicit lifted lower-bound
+hypothesis if a theorem needs it.
