@@ -15207,6 +15207,106 @@ theorem
       (hpoint eta heta) (hcardinality_dom eta heta)
 
 /--
+Threshold-signature finite code sets give a random empirical covering-number
+domination when equality of threshold signatures is a coordinatewise
+`epsilon`-approximation and the selected cardinality dominates the finite
+threshold-code-set size.
+
+This is the sample-path random-cover lift of
+`empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_codeSet_card_le`.
+It is intended for threshold-grid and VC/Sauer entropy routes where the
+available structural estimate is stated for `thresholdTraceCodeSet.card`.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_thresholdTraceCode_coordinate_approx_codeSet_cardinality_bound_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (thresholds :
+      (n : ℕ) -> SampleAt Observation n -> (m : ℕ) -> Finset ℝ)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hcoordinate :
+      ∀ n (sample : SampleAt Observation n) m,
+        ∀ sampleIndex : Fin m,
+          ∀ index, index ∈ indexClass ->
+            ∀ center, center ∈ indexClass ->
+              (∀ threshold : {threshold // threshold ∈ thresholds n sample m},
+                (threshold.1 <
+                    classFun index ((samplePath (X n) sample m) sampleIndex) ↔
+                  threshold.1 <
+                    classFun center ((samplePath (X n) sample m) sampleIndex))) ->
+              |classFun index ((samplePath (X n) sample m) sampleIndex) -
+                classFun center ((samplePath (X n) sample m) sampleIndex)| ≤
+                  epsilon)
+    (hcardinality_dom :
+      ∀ n (sample : SampleAt Observation n) m,
+        (thresholdTraceCodeSet (samplePath (X n) sample m) indexClass
+          classFun (thresholds n sample m)).card ≤
+          cardinality n sample m) :
+    ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun epsilon (cardinality n) := by
+  intro n
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_empiricalL1CoveringNumber_le_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (epsilon := epsilon) (cardinality := cardinality) X
+      (fun n sample m =>
+        empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_codeSet_card_le
+          (sample := samplePath (X n) sample m)
+          (indexClass := indexClass) (classFun := classFun)
+          (thresholds := thresholds n sample m)
+          (epsilon := epsilon) (cardinality := cardinality n sample m)
+          hepsilon_nonneg (hcoordinate n sample m)
+          (hcardinality_dom n sample m)) n
+
+/--
+All-positive-radius threshold-signature finite code-set random empirical
+covering-number domination.
+
+This is the direct fixed-radius Theorem 2.4.3 input for threshold-grid
+arguments with structural estimates on `thresholdTraceCodeSet.card`.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_thresholdTraceCode_coordinate_approx_codeSet_cardinality_bound_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (thresholds :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) -> Finset ℝ)
+    (hcoordinate :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ sampleIndex : Fin m,
+          ∀ index, index ∈ indexClass ->
+            ∀ center, center ∈ indexClass ->
+              (∀ threshold : {threshold // threshold ∈ thresholds eta n sample m},
+                (threshold.1 <
+                    classFun index ((samplePath (X n) sample m) sampleIndex) ↔
+                  threshold.1 <
+                    classFun center ((samplePath (X n) sample m) sampleIndex))) ->
+              |classFun index ((samplePath (X n) sample m) sampleIndex) -
+                classFun center ((samplePath (X n) sample m) sampleIndex)| ≤
+                  eta)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        (thresholdTraceCodeSet (samplePath (X n) sample m) indexClass
+          classFun (thresholds eta n sample m)).card ≤
+          cardinality eta n sample m) :
+    ∀ eta, 0 < eta -> ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun eta (cardinality eta n) := by
+  intro eta heta
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_thresholdTraceCode_coordinate_approx_codeSet_cardinality_bound_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (epsilon := eta) (cardinality := cardinality eta) X
+      (thresholds eta) heta.le (hcoordinate eta heta)
+      (hcardinality_dom eta heta)
+
+/--
 A finite-valued domination of the random empirical covering number supplies
 the finite empirical-cover witness needed by the selected-cardinality route.
 -/

@@ -5996,7 +5996,13 @@ and
 `empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_codeSet_card_le`,
 so later selected-cover routes no longer need to re-enter the product API
 when the available structural estimate is already stated for
-`thresholdTraceCodeSet.card`.
+`thresholdTraceCodeSet.card`.  `Theorem243.lean` now lifts those deterministic
+bridges into the random empirical-cover interface as
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_thresholdTraceCode_coordinate_approx_codeSet_cardinality_bound_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_thresholdTraceCode_coordinate_approx_codeSet_cardinality_bound_samplePath`.
+These are the theorem-facing random-cover inputs for threshold-grid/VC routes
+whose cardinality estimate is already on the finite threshold-code set.
 
 2026-05-06 coordinate-code random-cover follow-up: local search found the
 deterministic coordinate pointwise-code covering primitive

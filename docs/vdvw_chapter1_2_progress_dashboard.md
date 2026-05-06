@@ -2275,6 +2275,10 @@ same layer now exposes direct threshold-code-set empirical-cover bridges
 `nonempty_finiteEmpiricalL1CoverAtCard_of_thresholdTraceCode_coordinate_approx_codeSet_card_le`
 and
 `empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_codeSet_card_le`.
+`Theorem243.lean` now lifts this threshold-code-set shape into random
+empirical-cover domination through
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_thresholdTraceCode_coordinate_approx_codeSet_cardinality_bound_samplePath`
+and its all-positive-radius wrapper.
 
 2026-05-06 coordinate-code random-cover follow-up:
 `Theorem243.lean` now lifts coordinatewise finite pointwise approximation codes
