@@ -1,4 +1,5 @@
 import StatInference.Optimization.LowerBounds
+import StatInference.Optimization.ProjectedSubgradient
 
 /-!
 # Chewi Chapter 6 nonsmooth lower-bound layer
@@ -74,6 +75,12 @@ noncomputable def chewi621CoordinateBasis {d : ℕ}
     (i j : Fin d) :
     chewi621CoordinateBasis i j = if j = i then (1 : ℝ) else 0 := by
   simp [chewi621CoordinateBasis, PiLp.toLp_apply]
+
+/-- Coordinate basis vectors extract the corresponding coordinate by inner product. -/
+theorem chewi621CoordinateBasis_inner {d : ℕ}
+    (i : Fin d) (z : EuclideanSpace ℝ (Fin d)) :
+    inner ℝ (chewi621CoordinateBasis i) z = z i := by
+  simp [chewi621CoordinateBasis, PiLp.inner_apply, RCLike.inner_apply]
 
 /--
 Chewi's displayed candidate minimizer for Theorem 6.21:
@@ -177,6 +184,76 @@ noncomputable def chewi621FirstMaxOracle {d : ℕ} [NeZero d]
     EuclideanSpace ℝ (Fin d) :=
   alpha • x + gamma • chewi621CoordinateBasis (chewi621FirstMaxIndex (d := d) x)
 
+/-- The quadratic part's first-order lower model. -/
+theorem chewi621_quadratic_subgradient_ineq {d : ℕ}
+    {alpha : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (x y : EuclideanSpace ℝ (Fin d)) :
+    (alpha / 2) * ‖x‖ ^ (2 : ℕ) + inner ℝ (alpha • x) (y - x) ≤
+      (alpha / 2) * ‖y‖ ^ (2 : ℕ) := by
+  have hdecomp : y = x + (y - x) := by
+    module
+  have hsq_nonneg : 0 ≤ ‖y - x‖ ^ (2 : ℕ) := sq_nonneg _
+  rw [hdecomp, norm_add_sq_real, real_inner_smul_left]
+  have hdiff : x + (y - x) - x = y - x := by
+    module
+  rw [hdiff]
+  nlinarith [mul_nonneg halpha_nonneg hsq_nonneg]
+
+/-- The first-max part's subgradient inequality. -/
+theorem chewi621_firstMax_subgradient_ineq {d : ℕ} [NeZero d]
+    {gamma : ℝ} (hgamma_nonneg : 0 ≤ gamma)
+    (x y : EuclideanSpace ℝ (Fin d)) :
+    gamma * chewi621CoordinateMax x +
+        inner ℝ (gamma • chewi621CoordinateBasis (chewi621FirstMaxIndex (d := d) x))
+          (y - x) ≤
+      gamma * chewi621CoordinateMax y := by
+  let i := chewi621FirstMaxIndex (d := d) x
+  have hmax_x : x i = chewi621CoordinateMax x :=
+    chewi621FirstMaxIndex_is_max (d := d) x
+  have hcoord_y : y i ≤ chewi621CoordinateMax y :=
+    chewi621CoordinateMax_ge_coord y i
+  have hbasis :
+      inner ℝ (chewi621CoordinateBasis i) (y - x) = y i - x i := by
+    rw [chewi621CoordinateBasis_inner]
+    rfl
+  rw [real_inner_smul_left, hbasis, ← hmax_x]
+  nlinarith [mul_le_mul_of_nonneg_left hcoord_y hgamma_nonneg]
+
+/--
+The first-max resisting oracle is a valid subgradient of Chewi's hard
+max-plus-quadratic objective on the whole space.
+-/
+theorem chewi621FirstMaxOracle_isSubgradientAt_univ
+    {d : ℕ} [NeZero d] {alpha gamma : ℝ}
+    (halpha_nonneg : 0 ≤ alpha) (hgamma_nonneg : 0 ≤ gamma)
+    (x : EuclideanSpace ℝ (Fin d)) :
+    IsSubgradientAt Set.univ
+      (chewi621HardObjective (d := d) alpha gamma)
+      (chewi621FirstMaxOracle (d := d) alpha gamma x) x := by
+  refine ⟨by simp, ?_⟩
+  intro y _hy
+  have hmax :=
+    chewi621_firstMax_subgradient_ineq
+      (d := d) (gamma := gamma) hgamma_nonneg x y
+  have hquad :=
+    chewi621_quadratic_subgradient_ineq
+      (d := d) (alpha := alpha) halpha_nonneg x y
+  calc
+    chewi621HardObjective (d := d) alpha gamma x +
+        inner ℝ (chewi621FirstMaxOracle (d := d) alpha gamma x) (y - x)
+        =
+      (gamma * chewi621CoordinateMax x +
+          inner ℝ
+            (gamma • chewi621CoordinateBasis (chewi621FirstMaxIndex (d := d) x))
+            (y - x)) +
+        ((alpha / 2) * ‖x‖ ^ (2 : ℕ) + inner ℝ (alpha • x) (y - x)) := by
+          simp [chewi621HardObjective, chewi621FirstMaxOracle, inner_add_left]
+          ring
+    _ ≤ gamma * chewi621CoordinateMax y +
+        (alpha / 2) * ‖y‖ ^ (2 : ℕ) := add_le_add hmax hquad
+    _ = chewi621HardObjective (d := d) alpha gamma y := by
+      rfl
+
 /--
 The support calculation for Chewi's first-max oracle: if an iterate is in
 `V_k` and `k < d`, the oracle output lies in `V_{k+1}`.
@@ -235,6 +312,48 @@ theorem chewi621HardObjective_minimizer_value {d : ℕ} [NeZero d]
     chewi621Minimizer_norm_sq]
   field_simp [halpha, hd]
   ring
+
+/-- Squared norm of Chewi's minimizer under the displayed source choice of `alpha`. -/
+theorem chewi621Minimizer_norm_sq_source_alpha {d : ℕ} [NeZero d]
+    {R gamma : ℝ} (hR : R ≠ 0) (hgamma : gamma ≠ 0) :
+    ‖chewi621Minimizer (d := d)
+        (gamma / (R * Real.sqrt (d : ℝ))) gamma‖ ^ (2 : ℕ) =
+      R ^ (2 : ℕ) := by
+  have hd_nonneg : 0 ≤ (d : ℝ) := by positivity
+  have hd_pos : 0 < (d : ℝ) := by
+    exact_mod_cast (Nat.pos_of_ne_zero (NeZero.ne d))
+  have hsqrt_pos : 0 < Real.sqrt (d : ℝ) := Real.sqrt_pos.2 hd_pos
+  have hsqrt_ne : Real.sqrt (d : ℝ) ≠ 0 := ne_of_gt hsqrt_pos
+  have hd_ne : (d : ℝ) ≠ 0 := by exact_mod_cast (NeZero.ne d)
+  rw [chewi621Minimizer_norm_sq]
+  field_simp [hR, hgamma, hsqrt_ne, hd_ne]
+  rw [Real.sq_sqrt hd_nonneg]
+
+/-- Chewi's displayed `alpha` makes `‖x_*‖ = R`. -/
+theorem chewi621Minimizer_norm_eq_radius_source_alpha {d : ℕ} [NeZero d]
+    {R gamma : ℝ} (hR_pos : 0 < R) (hgamma : gamma ≠ 0) :
+    ‖chewi621Minimizer (d := d)
+        (gamma / (R * Real.sqrt (d : ℝ))) gamma‖ = R := by
+  have hsq :=
+    chewi621Minimizer_norm_sq_source_alpha
+      (d := d) (R := R) (gamma := gamma) (ne_of_gt hR_pos) hgamma
+  exact le_antisymm
+    ((sq_le_sq₀ (norm_nonneg _) hR_pos.le).mp (le_of_eq hsq))
+    ((sq_le_sq₀ hR_pos.le (norm_nonneg _)).mp (le_of_eq hsq.symm))
+
+/--
+For the displayed source parameters and `x_0 = 0`, the initial point lies in
+the radius-`R` ball around the hard instance minimizer.
+-/
+theorem chewi621_zero_dist_minimizer_le_radius_source_alpha
+    {d : ℕ} [NeZero d] {R gamma : ℝ}
+    (hR_pos : 0 < R) (hgamma : gamma ≠ 0) :
+    dist (0 : EuclideanSpace ℝ (Fin d))
+        (chewi621Minimizer (d := d)
+          (gamma / (R * Real.sqrt (d : ℝ))) gamma) ≤ R := by
+  rw [dist_eq_norm, zero_sub, norm_neg]
+  exact (chewi621Minimizer_norm_eq_radius_source_alpha
+    (d := d) (R := R) (gamma := gamma) hR_pos hgamma).le
 
 /--
 If a vector is supported on the first `N` coordinates and `N < d`, its maximum

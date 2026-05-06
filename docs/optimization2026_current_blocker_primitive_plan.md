@@ -82,7 +82,46 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Live replacement `/goal` prompt as of 2026-05-05 after rebasing local `main`
+Current live replacement `/goal` prompt after rebasing local `main` onto
+`origin/main` at `1b3ae5b` and verifying the local packet
+`Certify Chewi theorem 6.21 oracle and radius`: aggressively formalize and
+prove all main theorem content of Sinho Chewi's Optimization 2026 notes in
+Lean under `StatInference/Optimization`, with all exercise statements and any
+cheap exercise proofs kept in `StatInference/Optimization/Exercises.lean`
+without slowing the main-text theorem lane.  Do not route back to the stale
+Chapter 3 Theorem 3.4 goal or to finished Chapter 5/6 setup.  Treat
+`StatInference/Optimization/ProjectedSubgradient.lean`,
+`CuttingPlane.lean`, and `Ellipsoid.lean` as stable Chapter 6 infrastructure:
+Theorems 6.14/6.16, the supplied CoGM Theorem 6.19 spine, and the supplied
+Lemma 6.20 ellipsoid trajectory/rate with displayed CFC-root matrix
+certificates now compile.  The active frontier is
+`StatInference/Optimization/NonsmoothLowerBounds.lean`, where Theorem 6.21 now
+has the hard max-coordinate objective, constant minimizer and value,
+first-max resisting oracle, whole-space `IsSubgradientAt` correctness,
+prefix-support induction, concrete `gamma^2 / (2 * alpha * d)` gap, source
+parameter identity, `d = N + 1` lower bound
+`L * R / (8 * sqrt (N + 1))`, and displayed source-radius facts
+`‖x_*‖ = R` and `dist 0 x_* <= R` for
+`alpha = gamma / (R * sqrt d)`.
+
+Immediate aggressive target: finish literal Theorem 6.21 certification around
+the concrete hard instance by adding the mathematically correct bounded-domain
+Lipschitz/convex/source side conditions, and only then add an arbitrary
+`d > N` embedding if the source-shaped theorem/report needs it.  Do the
+mandatory search-first pass before new primitives: local `IsSubgradientAt` and
+Lipschitz bridges in `ProjectedSubgradient.lean`, prefix-span machinery in
+`LowerBounds.lean`, mathlib `LipschitzOnWith`, finite `Finset.max'` APIs,
+convex `sup`/finite max APIs, Euclidean norm-sum formulas, and matrix/PSD APIs
+when moving to 6.22.  After 6.21, move immediately to the strongly convex
+lower bound Theorem 6.22, then Definition 6.24/Theorem 6.25 feasibility, then
+open Chapters 7-13 as theorem-sized module packets.  Verification gate:
+focused `lake env lean` while developing, targeted `lake build` for promoted
+Optimization modules, proof-hole scan, secret scan, route-doc refresh, then a
+single commit/push batch.
+
+Historical detailed `/goal` prompt retained for dependency context
+(superseded by the current paragraph above) as of 2026-05-05 after rebasing
+local `main`
 onto `origin/main` at `b21bcbd`
 (`Add asymptotic tightness reindexing`) and adding the local
 displayed-shape positivity/no-extra-PosDef CFC-root certificate packet:
@@ -372,12 +411,17 @@ compiles Chewi's source minimizer `x_*[k] = -γ/(α d)`, the value calculation
 `f x_* = -γ^2/(2 α d)`, the first-max resisting oracle, oracle prefix-support,
 the concrete `gamma^2/(2 alpha d)` gap theorem, and the source-parameter
 `d = N + 1`, `γ = L/4`, `α = γ/(R sqrt d)` lower bound
-`chewi621_gap_ge_source_parameters`.  The next aggressive theorem packet should
+`chewi621_gap_ge_source_parameters`.  The newest certification packet imports
+the local `IsSubgradientAt` interface, proves the quadratic and max-coordinate
+subgradient inequalities, proves the first-max oracle is a whole-space
+subgradient of `chewi621HardObjective`, and proves the displayed source radius
+facts `‖x_*‖ = R` and `dist 0 x_* <= R` for
+`alpha = gamma / (R * sqrt d)`.  The next aggressive theorem packet should
 certify the remaining source side conditions around this hard instance:
-bounded-domain Lipschitz/radius, subgradient-oracle correctness, and, if needed
-for the fully literal theorem statement, embedding the `Fin (N+1)` instance into
-arbitrary `Fin d` with `d > N`.  Then move to the strongly convex Theorem 6.22
-and feasibility Definition 6.24/Theorem 6.25.  Search the local PSD, CoGM,
+bounded-domain Lipschitz and, if needed for the fully literal theorem
+statement, embedding the `Fin (N+1)` instance into arbitrary `Fin d` with
+`d > N`.  Then move to the strongly convex Theorem 6.22 and feasibility
+Definition 6.24/Theorem 6.25.  Search the local PSD, CoGM,
 ellipsoid, lower-bound, nonsmooth-lower-bound, and exercises modules first; if
 the next source theorem needs a missing nonsmooth lower-bound primitive, record
 that precise API and prove the smallest wrapper that removes it.
@@ -474,9 +518,11 @@ so the later exercise sweep remains source-trackable.
 Book-level target map for the next 2-4 hour acceleration window: stay in
 Chapter 6 and finish theorem-sized packets instead of jumping past the chapter:
 close Theorem 6.21's remaining source certification around the compiled
-`d = N + 1` first-max-oracle lower bound, then Theorem 6.22 for the strongly
-convex nonsmooth lower bound, then Theorem 6.23's optimization-to-feasibility
-context plus Definition 6.24/Theorem 6.25 for the feasibility lower bound.
+`d = N + 1` first-max-oracle lower bound, now narrowed to bounded-domain
+Lipschitz and optional arbitrary-d embedding, then Theorem 6.22 for the
+strongly convex nonsmooth lower bound, then Theorem 6.23's
+optimization-to-feasibility context plus Definition 6.24/Theorem 6.25 for the
+feasibility lower bound.
 Lemma 6.20 now has a compiled trajectory/rate frontier, and Lemma 6.18/Theorem
 6.19 already have a supplied-interface algebraic spine; their exact
 source-audited report remains blocked only by the genuine Grünbaum/centroid
