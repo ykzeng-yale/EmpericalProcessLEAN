@@ -84,9 +84,9 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after promoted Lean verification of
-the Chapter 10 MPGD one-step packet in
+the Chapter 10 MPGD full-rate packet in
 `StatInference/Optimization/MirrorDescent.lean`, rebased over current
-`origin/main` at `5b35a16`: aggressively formalize and prove all main theorem
+`origin/main` at `39ffd75`: aggressively formalize and prove all main theorem
 content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
 exercise proofs kept in `StatInference/Optimization/Exercises.lean` without
@@ -98,16 +98,24 @@ it.  Treat Chapters 3-8 as stable reusable infrastructure and treat
 `Fenchel.lean`, `Bregman.lean`, and `MirrorDescent.lean` as the active Chapter
 9/10 promotion gate.
 
-Latest verified Optimization proof frontier: `9b618de` (`Add Chewi theorem
-10.9 MPGD one-step layer`).  `MirrorDescent.lean` now compiles through
+Latest verified Optimization proof frontier: `7ff76c8` (`Add Chewi theorem
+10.9 MPGD rate layer`).  `MirrorDescent.lean` now compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
 `mirrorProximalGradientModel_le_composite_add_bregman`,
 `composite_le_mirrorProximalGradientModel`,
 `mirrorProximalGradient_oneStep_ineq`, `mirrorProximalGradient_descent`,
 `IsMirrorProximalGradientTrajectory`, trajectory membership, and trajectory
-one-step accessors.  The proof reuses `Bregman.lean` relative lower/upper
-models, Lemma 10.7-style relative growth as a supplied minimizer certificate,
-and `Proximal.lean`'s `compositeObjective`.
+one-step accessors.  The new rate packet adds the Chapter 10 scalar recurrence
+and denominator layer:
+`weightedSumBound_of_gronwall_negative_forcing_one`,
+`finalGap_le_weighted_denominator_of_one_step`,
+`finalGap_le_geometric_denominator_of_one_step`, `chewi109Lambda`,
+`chewi109Rho`,
+`chewi109_final_gap_le_geometric_denominator_of_oneStep`, and
+`chewi109_final_gap_le_geometric_denominator_of_trajectory`.  The proof reuses
+`Bregman.lean` relative lower/upper models, Lemma 10.7-style relative growth
+as a supplied minimizer certificate, `Proximal.lean`'s `compositeObjective`,
+and the local Chapter 3 geometric-weight/Gronwall APIs.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, and relative smoothness found no
@@ -116,22 +124,19 @@ direct Bregman/mirror-descent/MPGD theorem; the `MirrorImage` hits in
 confirms the useful APIs are the compiled `Fenchel.lean`, `Bregman.lean`,
 `Proximal.lean`, and Chapter 3/5 scalar recurrence/telescope machinery.
 
-Active aggressive target: finish Chewi Theorem 10.9, not just another wrapper.
-First prove the scalar/telescoping rate from the compiled one-step inequality:
-derive the recurrence for
-`D_phi(x_star, x_n)` with
-`lambda_h = (1 - alphaF * h) / (1 + alphaG * h)`, reuse local discrete
-Gronwall/geometric-denominator APIs where they fit, and close the displayed
-function-value rate
-`F(x_N) - F_* <= (alphaF + alphaG) / (lambda_h^{-N} - 1) *
-D_phi(x_*, x_0)` in supplied-interface form.  Immediately after that, use the
-same module to package Theorem 10.11 nonsmooth MPGD and Theorem 10.13 OMD
-regret if bounded; otherwise open `AlternatingProjection.lean` for Chapter 11
-while scouts map the Chapter 12 stochastic mirror-proximal-gradient and
-Chapter 13 Newton/self-concordance dependencies.  Verification gate remains:
-focused `lake env lean` during development, promoted `lake build StatInference`
-after theorem packets, proof-hole scan, secret scan, route-doc refresh, rebase
-over remote main, then one clean commit/push batch.
+Active aggressive target: continue Chapter 10 without slowing down.  First
+package Theorem 10.11 nonsmooth MPGD using the same MPGD one-step skeleton plus
+the supplied dual-norm/Lipschitz and mirror-strong-convexity inequalities;
+then package Theorem 10.13 OMD regret by exposing the linear-loss version of
+the mirror step and telescoping `D_phi(y,x_n)`.  Search mathlib/local APIs for
+dual norms, Lipschitz/subgradient bounds, Bregman projection, and online regret
+telescopes before adding primitives.  If Theorem 10.11 or 10.13 balloons,
+open `AlternatingProjection.lean` for Chapter 11 while scouts map Chapter 12
+stochastic mirror-proximal-gradient and Chapter 13 Newton/self-concordance
+dependencies.  Verification gate remains: focused `lake env lean` during
+development, promoted `lake build StatInference` after theorem packets,
+proof-hole scan, secret scan, route-doc refresh, rebase over remote main, then
+one clean commit/push batch.
 
 Historical live replacement prompt after focused Lean verification of the
 Chapter 7 Frank-Wolfe packet rebased over pushed frontier `4d4601c`
