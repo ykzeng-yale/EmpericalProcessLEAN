@@ -2152,3 +2152,14 @@ open.
 `Theorem243.lean` now also has all-positive-`M` selected fixed-radius tail/UI
 constructors from natural-polynomial cardinality bounds and finite-trace
 natural-polynomial bounds, matching the standard VC/Sauer growth form.
+
+2026-05-05 a.e.-measurable Dirac endpoint follow-up:
+`WeakConvergence.lean` now adds direct a.e.-measurable real-valued
+varying-domain outer-probability-to-Dirac-law bridges:
+`VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real_of_aemeasurable`
+and
+`VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real_of_aemeasurable`.
+These close a small Chapter 1 / Theorem 2.4.3 endpoint API gap for
+`AEMeasurable` sample-size-varying statistics.  The main non-finite
+Theorem 2.4.3 gap remains the selected empirical-cover entropy tail/UI or
+structural cardinality theorem.

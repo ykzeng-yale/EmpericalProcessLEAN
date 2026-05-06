@@ -5863,3 +5863,19 @@ Theorem 2.4.3 route.  The remaining exact non-finite theorem blocker is no
 longer this transfer; it is the upstream proof of such structural cardinality
 estimates for the selected empirical-cover entropy from the textbook class
 hypotheses, or the genuinely random first-sample `eLpNorm` tail/UI condition.
+
+2026-05-05 a.e.-measurable Dirac endpoint follow-up: local search found the
+measurable and null-measurable real-valued varying-domain
+outer-probability-to-Dirac-law bridges, but no direct `AEMeasurable` forms.
+`WeakConvergence.lean` now adds
+`VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real_of_aemeasurable`
+and
+`VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real_of_aemeasurable`.
+These are Chapter 1/Theorem 2.4.3 endpoint convenience bridges for
+sample-size-varying real statistics whose laws carry mathlib
+`AEMeasurable` hypotheses.  They do not alter the main blocker: the remaining
+Theorem 2.4.3 work is still the selected empirical-cover entropy
+tail/UI or structural cardinality theorem, while the deeper Chapter 1
+arbitrary-map blockers remain nonmeasurable outer-cover signed weak
+convergence, asymptotic-tightness/asymptotic-independence, arbitrary-index FDD
+converse, and separability/`P`-measurable class primitives.

@@ -2718,6 +2718,36 @@ theorem
   simpa [hprob_eq] using hweak_mk
 
 /--
+A.e.-measurable real-valued varying-domain convergence in VdV&W outer
+probability to a constant implies weak convergence of the pushforward laws to
+the Dirac law.
+
+This is the direct a.e.-measurable convenience form of
+`...map_dirac_real_of_nullMeasurable`; it avoids forcing callers to manually
+convert `AEMeasurable` statistics to `NullMeasurable` before using the
+Chapter 1 Dirac-law bridge.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real_of_aemeasurable
+    {ι : Type w} {Ω : ι -> Type u}
+    [∀ i, MeasurableSpace (Ω i)]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, IsProbabilityMeasure (μs i)]
+    {X : (i : ι) -> Ω i -> ℝ} {l : Filter ι} {c : ℝ}
+    (hX_outer :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μs X l c)
+    (hX_aemeas : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun i =>
+        ⟨Measure.map (X i) (μs i),
+          Measure.isProbabilityMeasure_map (hX_aemeas i)⟩)
+      l
+      ⟨Measure.dirac c, Measure.dirac.isProbabilityMeasure⟩ := by
+  simpa using
+    (VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real_of_nullMeasurable
+      (Ω := Ω) (μs := μs) (X := X) hX_outer
+      (fun i => (hX_aemeas i).nullMeasurable))
+
+/--
 Real-valued varying-domain convergence in outer probability to a constant
 feeds the proof-carrying signed bounded-continuous varying-domain
 weak-convergence package.
@@ -2758,6 +2788,31 @@ theorem
     hX_null
     (VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real_of_nullMeasurable
       hX_outer hX_null)
+
+/--
+A.e.-measurable real-valued varying-domain convergence in outer probability to
+a constant feeds the proof-carrying signed bounded-continuous varying-domain
+weak-convergence package.
+
+This is the a.e.-measurable endpoint form needed for sample-size-varying
+statistics whose mathlib law statements carry `AEMeasurable` hypotheses rather
+than ordinary measurability.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst.to_signedBoundedContinuousVaryingDomains_real_of_aemeasurable
+    {ι : Type w} {Ω : ι -> Type u}
+    [∀ i, MeasurableSpace (Ω i)]
+    {μs : (i : ι) -> Measure (Ω i)} [∀ i, IsProbabilityMeasure (μs i)]
+    {X : (i : ι) -> Ω i -> ℝ} {l : Filter ι} {c : ℝ}
+    (hX_outer :
+      VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μs X l c)
+    (hX_aemeas : ∀ i, AEMeasurable (X i) (μs i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l
+      ⟨Measure.dirac c, Measure.dirac.isProbabilityMeasure⟩ :=
+  VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_maps_aemeasurable
+    hX_aemeas
+    (VdVWConvergesInOuterProbabilityConst.to_weakConvergenceProbabilityMeasures_map_dirac_real_of_aemeasurable
+      hX_outer hX_aemeas)
 
 /--
 Has-law form of the signed-outer bounded-continuous weak-convergence bridge.
