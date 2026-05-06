@@ -1,5 +1,4 @@
 import StatInference.Matching.WDSM.AggregateDecomposition
-import StatInference.Asymptotics.AsymptoticNormal
 
 /-!
 # Explicit asymptotic interfaces for WDSM
