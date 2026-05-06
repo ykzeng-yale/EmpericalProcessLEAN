@@ -88,9 +88,9 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after the Chapter 12 source-rate
-packet and focused Lean/module-build verification of the Chewi Theorem 12.1
-expected-model one-step bridge:
+Current live replacement `/goal` prompt after the Chapter 12 component-hcore
+packet and focused Lean verification of the Chewi Theorem 12.1 SMPGD
+component-rate bridge:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -110,20 +110,25 @@ Sinkhorn/mirror-descent certificate endpoint, and
 `StatInference/Optimization/StochasticGradient.lean` as the current Chapter
 12 active theorem gate.
 
-Immediate aggressive target: discharge the smooth and non-smooth stochastic
-model lower bounds for Chewi Theorem 12.1 SMPGD.  Do not redo the 10.11
+Immediate aggressive target: instantiate the compiled smooth and non-smooth
+component wrappers for Chewi Theorem 12.1 SMPGD with genuine
+expectation/Bochner hypotheses.  Do not redo the 10.11
 average-gap telescope, the 11.5 RAM recurrences, the 11.7 selector wrappers,
 the 11.8 certificate endpoint, the Chapter 12 weighted-average algebra, the
-compiled smooth/non-smooth scalar rate wrappers, or the expected-model
-one-step algebra.  First search local
+compiled smooth/non-smooth scalar rate wrappers, expected-model one-step
+algebra, RMS wrappers, or component-to-`hcore` scalar algebra.  First search local
 `MirrorDescent.lean`, `Bregman.lean`, `ProjectedSubgradient.lean`,
 `StochasticGradient.lean`, local probability/expectation wrappers, and pinned
-mathlib expectation/Jensen/conditional expectation APIs.  Then formalize the
-smooth variance lower bound and non-smooth bounded-gradient lower bound for
-`E psi_x(x+)`, and feed them into
-`chewi121_weightedAverageGap_le_geometric_of_model_bounds`.  In parallel, keep
-the concrete Sinkhorn row/column KL identity layer as the next Chapter 11.8
-blocker, but do not let it stall Chapter 12 coverage.
+mathlib expectation/Jensen/conditional expectation/Bochner APIs.  Then
+formalize the smooth raw expected model decomposition, relative-smoothness
+absorption, mirror strong-convexity lower bound, Cauchy-Schwarz noise estimate,
+variance domination from (12.1), and the non-smooth Lipschitz/bounded-gradient
+component bounds from (12.2), feeding them into
+`chewi121_smooth_weightedAverageGap_le_geometric_of_component_model_bounds`
+and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_component_model_bounds`.
+In parallel, keep the concrete Sinkhorn row/column KL identity layer as the
+next Chapter 11.8 blocker, but do not let it stall Chapter 12 coverage.
 
 Fresh search-first result for the Chapter 11.8 concrete blocker: local
 Optimization now has the 11.7 Sinkhorn selectors and 11.8
@@ -143,9 +148,9 @@ compiled Chapter 10 MPGD recurrence/weighted-denominator infrastructure,
 probability modules for later expectation-side discharges.
 
 Latest verified Optimization proof frontier:
-after pushed Optimization commit `9c9c167`
-(`Add Chewi SMPGD expected lower model wrappers`), the current focused Lean
-and module build verify
+after pushed Optimization commit `24d3846`
+(`Add Chewi SMPGD RMS lower bound wrappers`), the current focused Lean check
+also verifies the local component-hcore packet in
 `StatInference/Optimization/StochasticGradient.lean` with
 `weightedSumBound_of_gronwall_negative_forcing_with_error`,
 `weightedAverageGap_le_of_gronwall_negative_forcing_with_error`, and
@@ -166,15 +171,25 @@ newest RMS analytic packet
 `chewi121_smooth_expected_model_lower_of_rms_bound`,
 `chewi121_nonsmooth_expected_model_lower_of_rms_bound`,
 `chewi121_smooth_weightedAverageGap_le_geometric_of_rms_model_bounds`, and
-`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_rms_model_bounds`.
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_rms_model_bounds`, plus
+the component-level wrappers `chewi121_smooth_hcore_of_expected_components`,
+`chewi121_nonsmooth_hcore_of_expected_components`,
+`chewi121_smooth_weightedAverageGap_le_geometric_of_component_model_bounds`,
+and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_component_model_bounds`.
 This proves the source recurrence-to-rate algebra, smooth/non-smooth
 stochastic error instantiations, the expected-model algebra turning Chewi's
 three `psi_x` bounds into the displayed SMPGD one-step recurrence, the direct
 handoff from expected `E F(x+)` lower estimates to the closed weighted-average
-rates, and the scalar RMS/Young algebra used in Chewi's displayed smooth and
-non-smooth lower estimates.  The remaining Theorem 12.1 blocker is the
-Bochner/probability proof of the RMS hypotheses: the smooth `hcore` estimate,
-variance domination, and the non-smooth bounded-gradient `hcore` estimate.
+rates, the scalar RMS/Young algebra used in Chewi's displayed smooth and
+non-smooth lower estimates, and the deterministic component-to-`hcore`
+assembly for both smooth and non-smooth SMPGD.  The remaining Theorem 12.1
+blocker is now the actual Bochner/probability discharge of those component
+fields: smooth raw expected model decomposition, smooth relative-smoothness
+absorption `D_f <= (1/(2h)) D_phi`, mirror strong-convexity lower bound for
+`D_phi`, Cauchy-Schwarz noise estimate, variance domination from (12.1), and
+the non-smooth raw decomposition plus Lipschitz/stochastic-gradient linear
+term bounds from (12.2).
 The previous verified `StatInference/Optimization/AlternatingBregman.lean`
 packet adds
 `IsChewi118SinkhornMirrorDescentCertificate`,
@@ -469,9 +484,15 @@ attempting full martingale/CLT formalization.
 
 Active aggressive target ladder:
 
-1. Finish Chewi Theorem 12.1 SMPGD supplied-interface theorem: prove the
-   smooth variance and non-smooth bounded-gradient model lower bounds that feed
-   `chewi121_weightedAverageGap_le_geometric_of_model_bounds`.
+1. Finish Chewi Theorem 12.1 SMPGD by instantiating the compiled component
+   wrappers with genuine expectation/Bochner hypotheses: prove smooth raw
+   expected model decomposition, relative-smoothness absorption, mirror
+   strong-convexity lower bound, Cauchy-Schwarz noise estimate, variance
+   domination from (12.1), and non-smooth Lipschitz/bounded-gradient component
+   bounds, then feed them into
+   `chewi121_smooth_weightedAverageGap_le_geometric_of_component_model_bounds`
+   and
+   `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_component_model_bounds`.
 2. Instantiate the compiled Chewi Theorem 11.8 Sinkhorn/mirror-descent
    certificate with concrete finite row/column-normalization KL identities.
    Reuse `IsChewi118SinkhornMirrorDescentCertificate`,
