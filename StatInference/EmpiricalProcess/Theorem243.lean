@@ -15001,6 +15001,97 @@ theorem
       htrace_finite (hcardinality_dom eta heta) heta.le
 
 /--
+Finite pointwise approximation codes give a random empirical covering-number
+domination by any finite cardinality process that dominates the code image.
+
+This is the theorem-facing lift of
+`empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le`.
+It is intended for quantized-trace or finite-code entropy arguments where
+equal codes imply pointwise closeness on the realized empirical sample, but not
+necessarily exact trace equality.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath
+    {Observation : Type v} {Index : Type w} {Code : Type*}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (code :
+      (n : ℕ) -> SampleAt Observation n -> ℕ -> Index -> Code)
+    (hcode_finite :
+      ∀ n (sample : SampleAt Observation n) m,
+        ((code n sample m) '' indexClass).Finite)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hpoint :
+      ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ center, center ∈ indexClass ->
+            code n sample m index = code n sample m center ->
+              ∀ sampleIndex : Fin m,
+                |classFun index ((samplePath (X n) sample m) sampleIndex) -
+                  classFun center ((samplePath (X n) sample m) sampleIndex)| ≤
+                    epsilon)
+    (hcardinality_dom :
+      ∀ n (sample : SampleAt Observation n) m,
+        (hcode_finite n sample m).toFinset.card ≤
+          cardinality n sample m) :
+    ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun epsilon (cardinality n) := by
+  intro n
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_empiricalL1CoveringNumber_le_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (epsilon := epsilon) (cardinality := cardinality) X
+      (fun n sample m =>
+        empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le
+          (sample := samplePath (X n) sample m)
+          (indexClass := indexClass) (classFun := classFun)
+          (epsilon := epsilon) (cardinality := cardinality n sample m)
+          (code n sample m) (hcode_finite n sample m) hepsilon_nonneg
+          (hpoint n sample m) (hcardinality_dom n sample m)) n
+
+/--
+All-positive-radius finite pointwise-code random empirical covering-number
+domination, ready for the selected fixed-radius Theorem 2.4.3 route.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_pointwise_approx_code_cardinality_bound_samplePath
+    {Observation : Type v} {Index : Type w} {Code : Type*}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (code :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Index -> Code)
+    (hcode_finite :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ((code eta n sample m) '' indexClass).Finite)
+    (hpoint :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ center, center ∈ indexClass ->
+            code eta n sample m index = code eta n sample m center ->
+              ∀ sampleIndex : Fin m,
+                |classFun index ((samplePath (X n) sample m) sampleIndex) -
+                  classFun center ((samplePath (X n) sample m) sampleIndex)| ≤
+                    eta)
+    (hcardinality_dom :
+      ∀ eta (heta : 0 < eta), ∀ n (sample : SampleAt Observation n) m,
+        (hcode_finite eta heta n sample m).toFinset.card ≤
+          cardinality eta n sample m) :
+    ∀ eta, 0 < eta -> ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun eta (cardinality eta n) := by
+  intro eta heta
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (epsilon := eta) (cardinality := cardinality eta) X
+      (code eta) (hcode_finite eta heta) heta.le
+      (hpoint eta heta) (hcardinality_dom eta heta)
+
+/--
 A finite-valued domination of the random empirical covering number supplies
 the finite empirical-cover witness needed by the selected-cardinality route.
 -/

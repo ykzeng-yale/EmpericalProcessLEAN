@@ -119,6 +119,15 @@ the paired endpoint
 now upgrades it to canonical `P`-GC and in-mean convergence.  Future work
 should return to the true random-entropy tail/UI bridge or prove a new
 structural cardinality theorem rather than rebuild selected-package routes.
+The finite pointwise-code covering lift is now also available:
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_pointwise_approx_code_cardinality_bound_samplePath`
+turn samplewise finite approximate codes with pointwise empirical-sample
+closeness into the random empirical covering-number domination consumed by the
+selected fixed-radius route.  This should be used for quantized-trace or
+finite-code structural entropy arguments; the remaining theorem work is the
+code-image log-cardinality/tail/UI estimate, not another selected endpoint.
 The VdV&W 1.4.1 product Borel-space equality is also closed as
 `vdVW141_prod_borel_eq_product_borel`.  The next small but theorem-facing
 Chapter 1 foundation closure is now closed: filter-refinement stability for

@@ -168,14 +168,25 @@ selected fixed-radius untruncation route, and the endpoint package
 which upgrades that centered convergence to canonical `P`-Glivenko-Cantelli
 and in-mean centered-supremum convergence through the existing endpoint
 adapters.
+The finite pointwise-code structural covering lift is now compiled too:
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_pointwise_approx_code_cardinality_bound_samplePath`
+turn samplewise finite approximate codes, whose equal-code classes are
+pointwise close on the realized empirical sample, into the random empirical
+covering-number domination required by the selected fixed-radius Theorem 2.4.3
+routes.  This is a genuine structural-cardinality input route; future work
+should consume it by proving deterministic log-cardinality or tail/UI bounds
+for the code image, not by adding another endpoint wrapper.
 
 Next high-capacity proof batches, in order:
 
 1. Return to the exact book entropy mismatch.
    The finite-net/Hoeffding/Mills, selected fixed-radius and inverse-radius,
    untruncation, signed endpoint, full-subgraph, finite-class, Lemma 2.4.5
-   reverse/cofiltration, deterministic normalized-log, raw tail/UI, and L1
-   ordinary-mean packages are already compiled.  The remaining non-duplicative
+   reverse/cofiltration, deterministic normalized-log, raw tail/UI, L1
+   ordinary-mean packages, and finite pointwise-code covering lifts are already
+   compiled.  The remaining non-duplicative
    theorem target is the structural bridge from the book condition
    `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η > 0` to a real
    tail/UI, uniform-integrability, deterministic cardinality, or ordinary
