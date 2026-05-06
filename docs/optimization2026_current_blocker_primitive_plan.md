@@ -83,12 +83,11 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after targeted Lean build of the
-Chapter 10 nonsmooth MPGD analytic bridge on 2026-05-06, based on pushed
-frontier `efcaf79` (`Rebase Chewi manual goal route to MPGD frontier`) and
-latest promoted code base `ced0653` (`Add Chewi theorem 10.11 MPGD average
-layer`): aggressively formalize and prove all main theorem content of Sinho
-Chewi's Optimization 2026 notes in Lean under
+Current live replacement `/goal` prompt after focused Lean verification of the
+Chapter 10 nonsmooth MPGD step-size packet on 2026-05-06, based on pushed
+frontier `63868ff` (`Add Chewi theorem 10.11 analytic bridge`):
+aggressively formalize and prove all main theorem content of Sinho Chewi's
+Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
 exercise proofs kept in `StatInference/Optimization/Exercises.lean` without
 slowing the main-text theorem lane.  Do not route back to stale Chapter 3/4/5
@@ -134,7 +133,15 @@ bridge adds `chewi1011_young_lower_bound`,
 `chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds`.  Thus the
 opaque 10.11 model-lower-bound has been reduced to the two displayed source
 estimates `D_f(x⁺,x) <= 2 L r` and
-`D_phi(x⁺,x) >= alphaPhi/2 * r^2`.
+`D_phi(x⁺,x) >= alphaPhi/2 * r^2`.  The newest focused Lean-verified
+step-size packet adds `chewi1011_stepsize_rhs_bound`,
+`chewi1011_average_gap_le_of_oneStep_stepsize`,
+`chewi1011_iterateAverage_gap_le_of_oneStep_stepsize`,
+`chewi1011_average_gap_le_of_trajectory_bregman_bounds_stepsize`, and
+`chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds_stepsize`,
+closing the displayed
+`h^2 = alphaPhi * R_phi^2 / (2 * L^2 * N)` corollary in supplied-interface
+and trajectory forms.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, and relative smoothness found no
@@ -150,22 +157,16 @@ style for the 10.11 model lower-bound bridge.
 
 Active aggressive target ladder:
 
-1. Close the Theorem 10.11 source step-size corollary
-   `h^2 = alphaPhi * R_phi^2 / (2 * L^2 * N)` giving
-   `L * R_phi * sqrt (8 / (alphaPhi * N))`, using the compiled average and
-   Jensen wrappers rather than rebuilding the recurrence.  Reuse the sqrt
-   algebra style in `ProjectedSubgradient.lean`'s displayed
-   `h = R / sqrt N` corollary.
-2. In parallel or immediately after, search again for mathlib/local dual norm,
+1. Search again for mathlib/local dual norm,
    Cauchy-Schwarz, Lipschitz/subgradient, and norm-relative strong-convexity
    APIs.  If no reusable abstraction is available, add the smallest
    proof-carrying norm interface that produces the two estimates needed by
    `mirrorProximalGradientModel_lower_of_bregman_bounds`; do not reintroduce an
    opaque model-lower-bound.
-3. Package Theorem 10.13 OMD regret by exposing the linear-loss version of the
+2. Package Theorem 10.13 OMD regret by exposing the linear-loss version of the
    mirror step and telescoping `D_phi(y, x_n)`.  Reuse the 10.11 one-step
    machinery wherever the algebra is identical.
-4. In parallel, map and then open theorem-packet modules for Chapter 11
+3. In parallel, map and then open theorem-packet modules for Chapter 11
    alternating Bregman projections/minimization, Chapter 12 stochastic
    mirror-proximal-gradient, and Chapter 13 Newton/self-concordance.  Use
    source-shaped supplied interfaces first when exact analytic dependencies

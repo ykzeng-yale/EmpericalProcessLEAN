@@ -713,6 +713,142 @@ theorem chewi1011_iterateAverage_gap_le_of_oneStep
   exact hjensen.trans havg
 
 /--
+Scalar closing step for Chewi Theorem 10.11.  With the displayed positive
+step-size choice `h^2 = alphaPhi * Rphi^2 / (2 * L^2 * N)`, the average-bound
+right-hand side is at most `L Rphi sqrt(8/(alphaPhi N))`.
+-/
+theorem chewi1011_stepsize_rhs_bound
+    {D0 L Rphi alphaPhi h : ℝ} {N : ℕ}
+    (hL : 0 < L) (hRphi : 0 < Rphi)
+    (halphaPhi : 0 < alphaPhi) (hh : 0 < h)
+    (hN : N ≠ 0)
+    (hD0_le : D0 ≤ Rphi ^ (2 : ℕ))
+    (hh_sq :
+      h ^ (2 : ℕ) =
+        alphaPhi * Rphi ^ (2 : ℕ) /
+          (2 * L ^ (2 : ℕ) * (N : ℝ))) :
+    D0 / ((N : ℝ) * h) + 2 * L ^ (2 : ℕ) * h / alphaPhi ≤
+      L * Rphi * Real.sqrt (8 / (alphaPhi * (N : ℝ))) := by
+  have hN_pos_nat : 0 < N := Nat.pos_of_ne_zero hN
+  have hN_pos : 0 < (N : ℝ) := by
+    exact_mod_cast hN_pos_nat
+  have hden_pos : 0 < (N : ℝ) * h := mul_pos hN_pos hh
+  have hD_scaled :
+      D0 / ((N : ℝ) * h) ≤
+        Rphi ^ (2 : ℕ) / ((N : ℝ) * h) :=
+    div_le_div_of_nonneg_right hD0_le hden_pos.le
+  have hterm :
+      Rphi ^ (2 : ℕ) / ((N : ℝ) * h) =
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+    field_simp [hN_pos.ne', hh.ne', hL.ne', halphaPhi.ne'] at hh_sq ⊢
+    nlinarith
+  have hclosed_core :
+      Rphi ^ (2 : ℕ) / ((N : ℝ) * h) +
+          2 * L ^ (2 : ℕ) * h / alphaPhi =
+        4 * L ^ (2 : ℕ) * h / alphaPhi := by
+    rw [hterm]
+    ring
+  have hsqrt_arg_nonneg :
+      0 ≤ 8 / (alphaPhi * (N : ℝ)) := by positivity
+  have hleft_nonneg :
+      0 ≤ 4 * L ^ (2 : ℕ) * h / alphaPhi := by positivity
+  have hright_nonneg :
+      0 ≤ L * Rphi * Real.sqrt (8 / (alphaPhi * (N : ℝ))) := by
+    positivity
+  have hclosed_squares :
+      (4 * L ^ (2 : ℕ) * h / alphaPhi) ^ (2 : ℕ) =
+        (L * Rphi * Real.sqrt (8 / (alphaPhi * (N : ℝ)))) ^ (2 : ℕ) := by
+    rw [mul_pow, mul_pow, Real.sq_sqrt hsqrt_arg_nonneg]
+    have hh_sq' := hh_sq
+    field_simp [hN_pos.ne', hL.ne', halphaPhi.ne'] at hh_sq' ⊢
+    nlinarith
+  have hclosed :
+      4 * L ^ (2 : ℕ) * h / alphaPhi =
+        L * Rphi * Real.sqrt (8 / (alphaPhi * (N : ℝ))) :=
+    (sq_eq_sq₀ hleft_nonneg hright_nonneg).mp hclosed_squares
+  nlinarith
+
+/--
+Chewi Theorem 10.11 one-step supplied-interface bound with the displayed
+positive step-size choice.
+-/
+theorem chewi1011_average_gap_le_of_oneStep_stepsize
+    {F phi : E -> ℝ} {gradPhi : E -> E} {x : ℕ -> E} {xStar : E}
+    {L Rphi alphaPhi h : ℝ} {N : ℕ}
+    (hL : 0 < L) (hRphi : 0 < Rphi)
+    (halphaPhi : 0 < alphaPhi) (hh : 0 < h)
+    (hN : N ≠ 0)
+    (hD0_le :
+      bregmanDivergence phi gradPhi xStar (x 0) ≤ Rphi ^ (2 : ℕ))
+    (hh_sq :
+      h ^ (2 : ℕ) =
+        alphaPhi * Rphi ^ (2 : ℕ) /
+          (2 * L ^ (2 : ℕ) * (N : ℝ)))
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N))
+    (hone_step : ∀ n, n < N ->
+      bregmanDivergence phi gradPhi xStar (x (n + 1)) ≤
+        bregmanDivergence phi gradPhi xStar (x n) -
+          h * (F (x (n + 1)) - F xStar) +
+            2 * L ^ (2 : ℕ) * h ^ (2 : ℕ) / alphaPhi) :
+    (1 / (N : ℝ)) *
+        (∑ n ∈ Finset.range N, (F (x (n + 1)) - F xStar)) ≤
+      L * Rphi * Real.sqrt (8 / (alphaPhi * (N : ℝ))) := by
+  have hbase :=
+    chewi1011_average_gap_le_of_oneStep
+      (F := F) (phi := phi) (gradPhi := gradPhi)
+      (x := x) (xStar := xStar) (L := L)
+      (alphaPhi := alphaPhi) (h := h)
+      hh halphaPhi hN hD_N_nonneg hone_step
+  have hclosed :=
+    chewi1011_stepsize_rhs_bound
+      (D0 := bregmanDivergence phi gradPhi xStar (x 0))
+      (L := L) (Rphi := Rphi) (alphaPhi := alphaPhi)
+      (h := h) (N := N)
+      hL hRphi halphaPhi hh hN hD0_le hh_sq
+  exact hbase.trans hclosed
+
+/--
+Chewi Theorem 10.11 averaged-iterate supplied-interface bound with the
+displayed positive step-size choice.
+-/
+theorem chewi1011_iterateAverage_gap_le_of_oneStep_stepsize
+    {C : Set E} {F phi : E -> ℝ} {gradPhi : E -> E}
+    {x : ℕ -> E} {xStar : E}
+    {L Rphi alphaPhi h : ℝ} {N : ℕ}
+    (hconvF : ConvexOn ℝ C F)
+    (hmem : ∀ n, n < N -> x (n + 1) ∈ C)
+    (hL : 0 < L) (hRphi : 0 < Rphi)
+    (halphaPhi : 0 < alphaPhi) (hh : 0 < h)
+    (hN : N ≠ 0)
+    (hD0_le :
+      bregmanDivergence phi gradPhi xStar (x 0) ≤ Rphi ^ (2 : ℕ))
+    (hh_sq :
+      h ^ (2 : ℕ) =
+        alphaPhi * Rphi ^ (2 : ℕ) /
+          (2 * L ^ (2 : ℕ) * (N : ℝ)))
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N))
+    (hone_step : ∀ n, n < N ->
+      bregmanDivergence phi gradPhi xStar (x (n + 1)) ≤
+        bregmanDivergence phi gradPhi xStar (x n) -
+          h * (F (x (n + 1)) - F xStar) +
+            2 * L ^ (2 : ℕ) * h ^ (2 : ℕ) / alphaPhi) :
+    F (iterateAverage (fun n => x (n + 1)) N) - F xStar ≤
+      L * Rphi * Real.sqrt (8 / (alphaPhi * (N : ℝ))) := by
+  have hbase :=
+    chewi1011_iterateAverage_gap_le_of_oneStep
+      (C := C) (F := F) (phi := phi) (gradPhi := gradPhi)
+      (x := x) (xStar := xStar) (L := L)
+      (alphaPhi := alphaPhi) (h := h) (N := N)
+      hconvF hmem hh halphaPhi hN hD_N_nonneg hone_step
+  have hclosed :=
+    chewi1011_stepsize_rhs_bound
+      (D0 := bregmanDivergence phi gradPhi xStar (x 0))
+      (L := L) (Rphi := Rphi) (alphaPhi := alphaPhi)
+      (h := h) (N := N)
+      hL hRphi halphaPhi hh hN hD0_le hh_sq
+  exact hbase.trans hclosed
+
+/--
 Chewi Theorem 10.11 average-gap bound for a source-shaped MPGD trajectory,
 assuming the nonsmooth model lower bound from the Cauchy-Schwarz/Lipschitz
 part of the proof at each step.
@@ -888,6 +1024,108 @@ theorem chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds
       (L := L) (alphaPhi := alphaPhi) (h := h) (r := r n)
       (x := x n) (xPlus := x (n + 1))
       hh halphaPhi (hDf_upper n hn) (hDphi_lower n hn)
+
+/--
+Chewi Theorem 10.11 trajectory average-gap bound with the displayed positive
+step-size choice and the two source analytic Bregman estimates.
+-/
+theorem chewi1011_average_gap_le_of_trajectory_bregman_bounds_stepsize
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {x : ℕ -> E} {xStar : E} {L Rphi alphaPhi h : ℝ}
+    {r : ℕ -> ℝ} {N : ℕ}
+    (htraj : IsMirrorProximalGradientTrajectory
+      C f g gradF phi gradPhi 0 h x)
+    (hconvF : RelativelyStrongConvexOn C f gradF phi gradPhi 0)
+    (hL : 0 < L) (hRphi : 0 < Rphi)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hxStar : xStar ∈ C)
+    (hD0_le :
+      bregmanDivergence phi gradPhi xStar (x 0) ≤ Rphi ^ (2 : ℕ))
+    (hh_sq :
+      h ^ (2 : ℕ) =
+        alphaPhi * Rphi ^ (2 : ℕ) /
+          (2 * L ^ (2 : ℕ) * (N : ℝ)))
+    (hDf_upper : ∀ n, n < N ->
+      bregmanDivergence f gradF (x (n + 1)) (x n) ≤
+        2 * L * r n)
+    (hDphi_lower : ∀ n, n < N ->
+      (alphaPhi / 2) * (r n) ^ (2 : ℕ) ≤
+        bregmanDivergence phi gradPhi (x (n + 1)) (x n))
+    (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N)) :
+    (1 / (N : ℝ)) *
+        (∑ n ∈ Finset.range N,
+          (compositeObjective f g (x (n + 1)) -
+            compositeObjective f g xStar)) ≤
+      L * Rphi * Real.sqrt (8 / (alphaPhi * (N : ℝ))) := by
+  refine
+    chewi1011_average_gap_le_of_oneStep_stepsize
+      (F := compositeObjective f g) (phi := phi) (gradPhi := gradPhi)
+      (x := x) (xStar := xStar) (L := L) (Rphi := Rphi)
+      (alphaPhi := alphaPhi) (h := h) (N := N)
+      hL hRphi halphaPhi hh hN hD0_le hh_sq hD_N_nonneg ?_
+  intro n hn
+  exact
+    mirrorProximalGradient_nonsmooth_oneStep_ineq_of_bregman_bounds
+      (C := C) (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (L := L) (alphaPhi := alphaPhi) (h := h) (r := r n)
+      (x := x n) (xPlus := x (n + 1)) (xStar := xStar)
+      hconvF (htraj.step n) hh halphaPhi hxStar
+      (hDf_upper n hn) (hDphi_lower n hn)
+
+/--
+Chewi Theorem 10.11 trajectory averaged-iterate bound with the displayed
+positive step-size choice and the two source analytic Bregman estimates.
+-/
+theorem chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds_stepsize
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {x : ℕ -> E} {xStar : E} {L Rphi alphaPhi h : ℝ}
+    {r : ℕ -> ℝ} {N : ℕ}
+    (htraj : IsMirrorProximalGradientTrajectory
+      C f g gradF phi gradPhi 0 h x)
+    (hconvFmodel : RelativelyStrongConvexOn C f gradF phi gradPhi 0)
+    (hconvComposite : ConvexOn ℝ C (compositeObjective f g))
+    (hmem : ∀ n, n < N -> x (n + 1) ∈ C)
+    (hL : 0 < L) (hRphi : 0 < Rphi)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hxStar : xStar ∈ C)
+    (hD0_le :
+      bregmanDivergence phi gradPhi xStar (x 0) ≤ Rphi ^ (2 : ℕ))
+    (hh_sq :
+      h ^ (2 : ℕ) =
+        alphaPhi * Rphi ^ (2 : ℕ) /
+          (2 * L ^ (2 : ℕ) * (N : ℝ)))
+    (hDf_upper : ∀ n, n < N ->
+      bregmanDivergence f gradF (x (n + 1)) (x n) ≤
+        2 * L * r n)
+    (hDphi_lower : ∀ n, n < N ->
+      (alphaPhi / 2) * (r n) ^ (2 : ℕ) ≤
+        bregmanDivergence phi gradPhi (x (n + 1)) (x n))
+    (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N)) :
+    compositeObjective f g (iterateAverage (fun n => x (n + 1)) N) -
+        compositeObjective f g xStar ≤
+      L * Rphi * Real.sqrt (8 / (alphaPhi * (N : ℝ))) := by
+  refine
+    chewi1011_iterateAverage_gap_le_of_oneStep_stepsize
+      (C := C) (F := compositeObjective f g) (phi := phi)
+      (gradPhi := gradPhi) (x := x) (xStar := xStar)
+      (L := L) (Rphi := Rphi) (alphaPhi := alphaPhi)
+      (h := h) (N := N)
+      hconvComposite hmem hL hRphi halphaPhi hh hN hD0_le
+      hh_sq hD_N_nonneg ?_
+  intro n hn
+  exact
+    mirrorProximalGradient_nonsmooth_oneStep_ineq_of_bregman_bounds
+      (C := C) (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (L := L) (alphaPhi := alphaPhi) (h := h) (r := r n)
+      (x := x n) (xPlus := x (n + 1)) (xStar := xStar)
+      hconvFmodel (htraj.step n) hh halphaPhi hxStar
+      (hDf_upper n hn) (hDphi_lower n hn)
 
 end Optimization
 end StatInference

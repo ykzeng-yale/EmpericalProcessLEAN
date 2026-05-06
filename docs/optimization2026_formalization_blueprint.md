@@ -56,10 +56,9 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after targeted Lean build of the Chapter 10
-nonsmooth MPGD analytic bridge on 2026-05-06, based on pushed route frontier
-`efcaf79` and latest promoted Lean proof base `ced0653` (`Add Chewi theorem
-10.11 MPGD average layer`) in `StatInference/Optimization/MirrorDescent.lean`:
+Current manual goal frontier after focused Lean verification of the Chapter 10
+nonsmooth MPGD step-size packet on 2026-05-06, based on pushed code frontier
+`63868ff` in `StatInference/Optimization/MirrorDescent.lean`:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.  Latest verified Optimization
 proof frontier: `ced0653`.
@@ -78,18 +77,23 @@ The newest local analytic bridge compiles `chewi1011_young_lower_bound`,
 `chewi1011_average_gap_le_of_trajectory_bregman_bounds`, and
 `chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds`, reducing the
 opaque 10.11 model-lower-bound to the two displayed source estimates
-`D_f <= 2 L r` and `D_phi >= alphaPhi/2 * r^2`.
+`D_f <= 2 L r` and `D_phi >= alphaPhi/2 * r^2`.  The newest step-size packet
+compiles `chewi1011_stepsize_rhs_bound`,
+`chewi1011_average_gap_le_of_oneStep_stepsize`,
+`chewi1011_iterateAverage_gap_le_of_oneStep_stepsize`,
+`chewi1011_average_gap_le_of_trajectory_bregman_bounds_stepsize`, and
+`chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds_stepsize`,
+closing the displayed `h^2 = alphaPhi * R_phi^2 / (2 * L^2 * N)` corollary.
 Search-first result: mathlib has no direct Bregman/mirror-descent/MPGD theorem
 in the pinned tree; the relevant reuse is local `Bregman.lean`,
 `Proximal.lean`, Chapter 3 geometric-weight/Gronwall APIs, and
 `ProjectedSubgradient.lean` finite-average/Jensen APIs.  The current
 scalar-Young reuse point is the completing-square proof style in
 `Theorem27.lean`'s
-`polyakLojasiewiczOn_of_firstOrderStrongConvexOn`; the next sqrt reuse point is
-`ProjectedSubgradient.lean`'s displayed `h = R / sqrt N` corollary.  The active
-route is now the 10.11 source step-size corollary, production of the
-`D_f`/`D_phi` estimates from the smallest reusable norm/dual-norm interface,
-and Theorem 10.13 OMD regret if bounded.  In parallel, map and open Chapter 11
+`polyakLojasiewiczOn_of_firstOrderStrongConvexOn`.  The active route is now
+production of the `D_f`/`D_phi` estimates from the smallest reusable
+norm/dual-norm interface and Theorem 10.13 OMD regret if bounded.  In parallel,
+map and open Chapter 11
 alternating Bregman projection/minimization and Chapter 12/13
 stochastic/Newton theorem packets with source-shaped supplied interfaces first
 when exact analytic dependencies would otherwise stall progress.

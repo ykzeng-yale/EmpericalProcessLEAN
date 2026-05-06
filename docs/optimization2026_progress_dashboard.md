@@ -28,9 +28,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
-- Current manual frontier after targeted Lean build of the Chapter 10
-  nonsmooth MPGD analytic bridge on 2026-05-06, based on pushed route frontier
-  `efcaf79` and latest promoted code base `ced0653` in
+- Current manual frontier after focused Lean verification of the Chapter 10
+  nonsmooth MPGD step-size packet on 2026-05-06, based on pushed code frontier
+  `63868ff` in
   `StatInference/Optimization/MirrorDescent.lean`: Chapter 9/10 now has a
   compiled finite-valued Fenchel/Bregman/mirror substrate.  The latest
   verified Optimization proof frontier is `ced0653` (`Add Chewi theorem 10.11
@@ -59,11 +59,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1011_average_gap_le_of_trajectory_bregman_bounds`, and
   `chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds`, reducing the
   opaque 10.11 model-lower-bound to the two displayed source estimates
-  `D_f <= 2 L r` and `D_phi >= alphaPhi/2 * r^2`.  Current scalar-Young reuse
-  is the completing-square proof style in `Theorem27.lean` and the next sqrt
-  reuse point is `ProjectedSubgradient.lean`'s displayed
-  `h = R / sqrt N` corollary.  Next aggressive theorem lane: close the 10.11
-  source step-size corollary, produce the `D_f`/`D_phi` estimates from the
+  `D_f <= 2 L r` and `D_phi >= alphaPhi/2 * r^2`.  The newest step-size packet
+  adds `chewi1011_stepsize_rhs_bound`,
+  `chewi1011_average_gap_le_of_oneStep_stepsize`,
+  `chewi1011_iterateAverage_gap_le_of_oneStep_stepsize`,
+  `chewi1011_average_gap_le_of_trajectory_bregman_bounds_stepsize`, and
+  `chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds_stepsize`,
+  closing the displayed `h^2 = alphaPhi * R_phi^2 / (2 * L^2 * N)` corollary.
+  Next aggressive theorem lane: produce the `D_f`/`D_phi` estimates from the
   smallest reusable norm/dual-norm interface, then package Theorem 10.13 OMD
   regret.  In parallel, map and open Chapter 11 alternating Bregman
   projections/minimization and the Chapter 12/13 stochastic/Newton theorem
