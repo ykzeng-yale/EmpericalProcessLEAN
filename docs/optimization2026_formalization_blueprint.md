@@ -298,12 +298,25 @@ non-smooth lower estimates.  The current focused component packet adds
 `chewi121_smooth_weightedAverageGap_le_geometric_of_component_model_bounds`,
 and
 `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_component_model_bounds`,
-so deterministic component-to-rate assembly is verified.  The active Chapter
-12 lane is now the Bochner/probability proof of the component fields behind
-those wrappers: smooth raw expected model decomposition, relative-smoothness
-absorption, mirror strong-convexity lower bound, Cauchy-Schwarz noise estimate,
-variance domination from (12.1), and non-smooth Lipschitz/bounded-gradient
-component bounds from (12.2), before the ASGD CLT material.
+so deterministic component-to-rate assembly is verified.  The current
+finite-support stochastic-gradient packet adds
+`chewi121_smooth_finite_raw_component_bound`,
+`chewi121_smooth_finite_absorb_component_bound`,
+`chewi121_finite_mirror_lower_component_bound`,
+`chewi121_nonsmooth_finite_raw_component_bound`,
+`chewi121_finite_linear_component_bound`,
+`chewi121_smooth_hcore_of_finite_components`,
+`chewi121_nonsmooth_hcore_of_finite_components`,
+`chewi121_smooth_weightedAverageGap_le_geometric_of_finite_components`, and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_finite_components`,
+giving a finite-distribution version of the Chapter 12 SMPGD rate from
+per-sample component inequalities.  The active Chapter 12 lane is now the
+general Bochner/probability proof of the component fields behind those
+wrappers: smooth raw expected model decomposition, relative-smoothness
+absorption, mirror strong-convexity lower bound, Hölder/Cauchy-Schwarz noise
+estimate via `integral_mul_le_Lp_mul_Lq_of_nonneg`, variance domination from
+(12.1), and non-smooth Lipschitz/bounded-gradient component bounds from
+(12.2), before the ASGD CLT material.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

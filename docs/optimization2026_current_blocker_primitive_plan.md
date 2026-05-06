@@ -176,20 +176,43 @@ the component-level wrappers `chewi121_smooth_hcore_of_expected_components`,
 `chewi121_nonsmooth_hcore_of_expected_components`,
 `chewi121_smooth_weightedAverageGap_le_geometric_of_component_model_bounds`,
 and
-`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_component_model_bounds`.
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_component_model_bounds`,
+and the current finite-support expectation packet
+`chewi121_smooth_finite_raw_component_bound`,
+`chewi121_smooth_finite_absorb_component_bound`,
+`chewi121_finite_mirror_lower_component_bound`,
+`chewi121_nonsmooth_finite_raw_component_bound`,
+`chewi121_finite_linear_component_bound`,
+`chewi121_smooth_hcore_of_finite_components`,
+`chewi121_nonsmooth_hcore_of_finite_components`,
+`chewi121_smooth_weightedAverageGap_le_geometric_of_finite_components`, and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_finite_components`.
 This proves the source recurrence-to-rate algebra, smooth/non-smooth
 stochastic error instantiations, the expected-model algebra turning Chewi's
 three `psi_x` bounds into the displayed SMPGD one-step recurrence, the direct
 handoff from expected `E F(x+)` lower estimates to the closed weighted-average
 rates, the scalar RMS/Young algebra used in Chewi's displayed smooth and
 non-smooth lower estimates, and the deterministic component-to-`hcore`
-assembly for both smooth and non-smooth SMPGD.  The remaining Theorem 12.1
-blocker is now the actual Bochner/probability discharge of those component
-fields: smooth raw expected model decomposition, smooth relative-smoothness
-absorption `D_f <= (1/(2h)) D_phi`, mirror strong-convexity lower bound for
-`D_phi`, Cauchy-Schwarz noise estimate, variance domination from (12.1), and
-the non-smooth raw decomposition plus Lipschitz/stochastic-gradient linear
-term bounds from (12.2).
+assembly for both smooth and non-smooth SMPGD, including a finite-support
+stochastic-gradient route from per-sample model inequalities to the final
+weighted-average rate.  The remaining Theorem 12.1 blocker is now the actual
+general Bochner/probability discharge of those component fields: smooth raw
+expected model decomposition, smooth relative-smoothness absorption
+`D_f <= (1/(2h)) D_phi`, mirror strong-convexity lower bound for `D_phi`,
+Hölder/Cauchy-Schwarz noise estimate, variance domination from (12.1), and the
+non-smooth raw decomposition plus Lipschitz/stochastic-gradient linear term
+bounds from (12.2).
+
+Fresh Chapter 12 Bochner search result: mathlib has `integral_mono_ae` and
+`integral_mono` for pointwise or a.e. real integral inequalities,
+`ContinuousLinearMap.integral_comp_comm` and `integral_inner` for moving
+linear maps/inner products through Bochner integrals, and
+`integral_mul_le_Lp_mul_Lq_of_nonneg` with `Real.HolderConjugate.two_two` for
+the scalar L2 Cauchy-Schwarz/Hölder step.  Local reuse remains
+`Bregman.lean`'s `RelativelySmoothOn.upper_model` and
+`RelativelyStrongConvexOn.lower_model`, `MirrorDescent.lean`'s
+`bregmanDivergence_lower_of_firstOrderStrongConvexOn`, and local product
+expectation wrappers in `StatInference/ProbabilityMeasure/ProductMeasure.lean`.
 The previous verified `StatInference/Optimization/AlternatingBregman.lean`
 packet adds
 `IsChewi118SinkhornMirrorDescentCertificate`,
@@ -484,12 +507,13 @@ attempting full martingale/CLT formalization.
 
 Active aggressive target ladder:
 
-1. Finish Chewi Theorem 12.1 SMPGD by instantiating the compiled component
-   wrappers with genuine expectation/Bochner hypotheses: prove smooth raw
-   expected model decomposition, relative-smoothness absorption, mirror
-   strong-convexity lower bound, Cauchy-Schwarz noise estimate, variance
-   domination from (12.1), and non-smooth Lipschitz/bounded-gradient component
-   bounds, then feed them into
+1. Finish Chewi Theorem 12.1 SMPGD beyond the compiled finite-support route by
+   instantiating the component wrappers with genuine Bochner expectations:
+   prove smooth raw expected model decomposition, relative-smoothness
+   absorption, mirror strong-convexity lower bound, Hölder/Cauchy-Schwarz noise
+   estimate via `integral_mul_le_Lp_mul_Lq_of_nonneg`, variance domination from
+   (12.1), and non-smooth Lipschitz/bounded-gradient component bounds, then
+   feed them into
    `chewi121_smooth_weightedAverageGap_le_geometric_of_component_model_bounds`
    and
    `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_component_model_bounds`.

@@ -538,6 +538,285 @@ theorem chewi121_nonsmooth_hcore_of_expected_components
   exact hleft.trans hraw
 
 /--
+Finite-support smooth raw expected-model bound.  This is the finite-probability
+analogue of the first equality/inequality in Chewi's smooth SMPGD lower-bound
+display, after the pointwise model inequality has been proved for every sampled
+stochastic gradient.
+-/
+theorem chewi121_smooth_finite_raw_component_bound
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {w Fplus Df Dphi noise psi : ι -> ℝ} {h psiNext : ℝ}
+    (hw_nonneg : ∀ i ∈ s, 0 ≤ w i)
+    (hpoint : ∀ i ∈ s,
+      Fplus i - Df i + (1 / h) * Dphi i - noise i ≤ psi i)
+    (hpsi : (∑ i ∈ s, w i * psi i) ≤ psiNext) :
+    (∑ i ∈ s, w i * Fplus i) - (∑ i ∈ s, w i * Df i) +
+        (1 / h) * (∑ i ∈ s, w i * Dphi i) -
+          (∑ i ∈ s, w i * noise i) ≤ psiNext := by
+  have hsum :
+      (∑ i ∈ s, w i *
+        (Fplus i - Df i + (1 / h) * Dphi i - noise i)) ≤
+        ∑ i ∈ s, w i * psi i := by
+    refine Finset.sum_le_sum ?_
+    intro i hi
+    exact mul_le_mul_of_nonneg_left (hpoint i hi) (hw_nonneg i hi)
+  have hsum_eq :
+      (∑ i ∈ s, w i *
+        (Fplus i - Df i + (1 / h) * Dphi i - noise i)) =
+        (∑ i ∈ s, w i * Fplus i) - (∑ i ∈ s, w i * Df i) +
+          (1 / h) * (∑ i ∈ s, w i * Dphi i) -
+            (∑ i ∈ s, w i * noise i) := by
+    calc
+      (∑ i ∈ s, w i *
+        (Fplus i - Df i + (1 / h) * Dphi i - noise i))
+          =
+        ∑ i ∈ s,
+          (w i * Fplus i - w i * Df i +
+            (1 / h) * (w i * Dphi i) - w i * noise i) := by
+            refine Finset.sum_congr rfl ?_
+            intro i hi
+            ring
+      _ =
+        (∑ i ∈ s, w i * Fplus i) - (∑ i ∈ s, w i * Df i) +
+          (1 / h) * (∑ i ∈ s, w i * Dphi i) -
+            (∑ i ∈ s, w i * noise i) := by
+            rw [Finset.sum_sub_distrib, Finset.sum_add_distrib,
+              Finset.sum_sub_distrib, Finset.mul_sum]
+  exact hsum_eq ▸ hsum.trans hpsi
+
+/--
+Finite-support lifting of the smooth relative-smoothness absorption
+`D_f <= (1/(2h)) D_phi`.
+-/
+theorem chewi121_smooth_finite_absorb_component_bound
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {w Df Dphi : ι -> ℝ} {h : ℝ}
+    (hw_nonneg : ∀ i ∈ s, 0 ≤ w i)
+    (hpoint : ∀ i ∈ s, Df i ≤ (1 / (2 * h)) * Dphi i) :
+    (∑ i ∈ s, w i * Df i) ≤
+      (1 / (2 * h)) * (∑ i ∈ s, w i * Dphi i) := by
+  have hsum :
+      (∑ i ∈ s, w i * Df i) ≤
+        ∑ i ∈ s, w i * ((1 / (2 * h)) * Dphi i) := by
+    refine Finset.sum_le_sum ?_
+    intro i hi
+    exact mul_le_mul_of_nonneg_left (hpoint i hi) (hw_nonneg i hi)
+  have hsum_eq :
+      (∑ i ∈ s, w i * ((1 / (2 * h)) * Dphi i)) =
+        (1 / (2 * h)) * (∑ i ∈ s, w i * Dphi i) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl ?_
+    intro i hi
+    ring
+  exact hsum.trans_eq hsum_eq
+
+/--
+Finite-support lifting of the mirror strong-convexity lower bound
+`D_phi >= alpha_phi / 2 * ||x+ - x||^2`.
+-/
+theorem chewi121_finite_mirror_lower_component_bound
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {w Dphi stepSq : ι -> ℝ} {alphaPhi stepRms : ℝ}
+    (halphaPhi_nonneg : 0 ≤ alphaPhi)
+    (hw_nonneg : ∀ i ∈ s, 0 ≤ w i)
+    (hstepRms_sq :
+      stepRms ^ (2 : ℕ) ≤ ∑ i ∈ s, w i * stepSq i)
+    (hpoint : ∀ i ∈ s, (alphaPhi / 2) * stepSq i ≤ Dphi i) :
+    (alphaPhi / 2) * stepRms ^ (2 : ℕ) ≤
+      ∑ i ∈ s, w i * Dphi i := by
+  have hcoef_nonneg : 0 ≤ alphaPhi / 2 := by positivity
+  have hsum :
+      (∑ i ∈ s, w i * ((alphaPhi / 2) * stepSq i)) ≤
+        ∑ i ∈ s, w i * Dphi i := by
+    refine Finset.sum_le_sum ?_
+    intro i hi
+    exact mul_le_mul_of_nonneg_left (hpoint i hi) (hw_nonneg i hi)
+  have hsum_eq :
+      (∑ i ∈ s, w i * ((alphaPhi / 2) * stepSq i)) =
+        (alphaPhi / 2) * (∑ i ∈ s, w i * stepSq i) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl ?_
+    intro i hi
+    ring
+  calc
+    (alphaPhi / 2) * stepRms ^ (2 : ℕ) ≤
+        (alphaPhi / 2) * (∑ i ∈ s, w i * stepSq i) :=
+          mul_le_mul_of_nonneg_left hstepRms_sq hcoef_nonneg
+    _ = ∑ i ∈ s, w i * ((alphaPhi / 2) * stepSq i) := hsum_eq.symm
+    _ ≤ ∑ i ∈ s, w i * Dphi i := hsum
+
+/-- Finite-support non-smooth raw expected-model bound. -/
+theorem chewi121_nonsmooth_finite_raw_component_bound
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {w Fplus lip grad Dphi psi : ι -> ℝ} {h psiNext : ℝ}
+    (hw_nonneg : ∀ i ∈ s, 0 ≤ w i)
+    (hpoint : ∀ i ∈ s,
+      Fplus i - lip i - grad i + (1 / h) * Dphi i ≤ psi i)
+    (hpsi : (∑ i ∈ s, w i * psi i) ≤ psiNext) :
+    (∑ i ∈ s, w i * Fplus i) - (∑ i ∈ s, w i * lip i) -
+        (∑ i ∈ s, w i * grad i) +
+          (1 / h) * (∑ i ∈ s, w i * Dphi i) ≤ psiNext := by
+  have hsum :
+      (∑ i ∈ s, w i *
+        (Fplus i - lip i - grad i + (1 / h) * Dphi i)) ≤
+        ∑ i ∈ s, w i * psi i := by
+    refine Finset.sum_le_sum ?_
+    intro i hi
+    exact mul_le_mul_of_nonneg_left (hpoint i hi) (hw_nonneg i hi)
+  have hsum_eq :
+      (∑ i ∈ s, w i *
+        (Fplus i - lip i - grad i + (1 / h) * Dphi i)) =
+        (∑ i ∈ s, w i * Fplus i) - (∑ i ∈ s, w i * lip i) -
+          (∑ i ∈ s, w i * grad i) +
+            (1 / h) * (∑ i ∈ s, w i * Dphi i) := by
+    calc
+      (∑ i ∈ s, w i *
+        (Fplus i - lip i - grad i + (1 / h) * Dphi i))
+          =
+        ∑ i ∈ s,
+          (w i * Fplus i - w i * lip i - w i * grad i +
+            (1 / h) * (w i * Dphi i)) := by
+            refine Finset.sum_congr rfl ?_
+            intro i hi
+            ring
+      _ =
+        (∑ i ∈ s, w i * Fplus i) - (∑ i ∈ s, w i * lip i) -
+          (∑ i ∈ s, w i * grad i) +
+            (1 / h) * (∑ i ∈ s, w i * Dphi i) := by
+            rw [Finset.sum_add_distrib, Finset.sum_sub_distrib,
+              Finset.sum_sub_distrib, Finset.mul_sum]
+  exact hsum_eq ▸ hsum.trans hpsi
+
+/--
+Finite-support lifting for one linear non-smooth term, e.g. the Lipschitz term
+or the stochastic-gradient term.
+-/
+theorem chewi121_finite_linear_component_bound
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {w term stepNorm : ι -> ℝ} {L stepRms : ℝ}
+    (hL_nonneg : 0 ≤ L)
+    (hw_nonneg : ∀ i ∈ s, 0 ≤ w i)
+    (hstep_avg : (∑ i ∈ s, w i * stepNorm i) ≤ stepRms)
+    (hpoint : ∀ i ∈ s, term i ≤ L * stepNorm i) :
+    (∑ i ∈ s, w i * term i) ≤ L * stepRms := by
+  have hsum :
+      (∑ i ∈ s, w i * term i) ≤
+        ∑ i ∈ s, w i * (L * stepNorm i) := by
+    refine Finset.sum_le_sum ?_
+    intro i hi
+    exact mul_le_mul_of_nonneg_left (hpoint i hi) (hw_nonneg i hi)
+  have hsum_eq :
+      (∑ i ∈ s, w i * (L * stepNorm i)) =
+        L * (∑ i ∈ s, w i * stepNorm i) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl ?_
+    intro i hi
+    ring
+  calc
+    (∑ i ∈ s, w i * term i) ≤ ∑ i ∈ s, w i * (L * stepNorm i) := hsum
+    _ = L * (∑ i ∈ s, w i * stepNorm i) := hsum_eq
+    _ ≤ L * stepRms := mul_le_mul_of_nonneg_left hstep_avg hL_nonneg
+
+/--
+Finite-support smooth `hcore` theorem.  The hypotheses are exactly the
+per-sample model inequality, relative-smoothness absorption, mirror lower
+bound, and a supplied finite Cauchy-Schwarz noise estimate.
+-/
+theorem chewi121_smooth_hcore_of_finite_components
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {w Fplus Df Dphi noise psi stepSq : ι -> ℝ}
+    {alphaPhi h psiNext varianceRms stepRms : ℝ}
+    (hh : 0 < h) (halphaPhi_nonneg : 0 ≤ alphaPhi)
+    (hw_nonneg : ∀ i ∈ s, 0 ≤ w i)
+    (hraw_point : ∀ i ∈ s,
+      Fplus i - Df i + (1 / h) * Dphi i - noise i ≤ psi i)
+    (hpsi : (∑ i ∈ s, w i * psi i) ≤ psiNext)
+    (hdf_point : ∀ i ∈ s, Df i ≤ (1 / (2 * h)) * Dphi i)
+    (hstepRms_sq :
+      stepRms ^ (2 : ℕ) ≤ ∑ i ∈ s, w i * stepSq i)
+    (hphi_point : ∀ i ∈ s, (alphaPhi / 2) * stepSq i ≤ Dphi i)
+    (hnoise : (∑ i ∈ s, w i * noise i) ≤ varianceRms * stepRms) :
+    (∑ i ∈ s, w i * Fplus i) +
+        (alphaPhi / (4 * h)) * stepRms ^ (2 : ℕ) -
+          varianceRms * stepRms ≤ psiNext := by
+  have hraw :=
+    chewi121_smooth_finite_raw_component_bound
+      (s := s) (w := w) (Fplus := Fplus) (Df := Df) (Dphi := Dphi)
+      (noise := noise) (psi := psi) (h := h) (psiNext := psiNext)
+      hw_nonneg hraw_point hpsi
+  have hdf_absorb :=
+    chewi121_smooth_finite_absorb_component_bound
+      (s := s) (w := w) (Df := Df) (Dphi := Dphi) (h := h)
+      hw_nonneg hdf_point
+  have hphi_lower :=
+    chewi121_finite_mirror_lower_component_bound
+      (s := s) (w := w) (Dphi := Dphi) (stepSq := stepSq)
+      (alphaPhi := alphaPhi) (stepRms := stepRms)
+      halphaPhi_nonneg hw_nonneg hstepRms_sq hphi_point
+  exact
+    chewi121_smooth_hcore_of_expected_components
+      (alphaPhi := alphaPhi) (h := h)
+      (expectedNext := ∑ i ∈ s, w i * Fplus i) (psiNext := psiNext)
+      (DfAvg := ∑ i ∈ s, w i * Df i)
+      (DphiAvg := ∑ i ∈ s, w i * Dphi i)
+      (noiseTerm := ∑ i ∈ s, w i * noise i)
+      (varianceRms := varianceRms) (stepRms := stepRms)
+      hh hraw hdf_absorb hphi_lower hnoise
+
+/--
+Finite-support non-smooth `hcore` theorem.  This packages the pointwise
+Lipschitz and stochastic-gradient linear estimates into the scalar
+component-hcore theorem.
+-/
+theorem chewi121_nonsmooth_hcore_of_finite_components
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {w Fplus lip grad Dphi psi stepSq stepNorm : ι -> ℝ}
+    {alphaPhi L h psiNext stepRms : ℝ}
+    (hh : 0 < h) (halphaPhi_nonneg : 0 ≤ alphaPhi) (hL_nonneg : 0 ≤ L)
+    (hw_nonneg : ∀ i ∈ s, 0 ≤ w i)
+    (hraw_point : ∀ i ∈ s,
+      Fplus i - lip i - grad i + (1 / h) * Dphi i ≤ psi i)
+    (hpsi : (∑ i ∈ s, w i * psi i) ≤ psiNext)
+    (hstepRms_sq :
+      stepRms ^ (2 : ℕ) ≤ ∑ i ∈ s, w i * stepSq i)
+    (hphi_point : ∀ i ∈ s, (alphaPhi / 2) * stepSq i ≤ Dphi i)
+    (hstep_avg : (∑ i ∈ s, w i * stepNorm i) ≤ stepRms)
+    (hlip_point : ∀ i ∈ s, lip i ≤ L * stepNorm i)
+    (hgrad_point : ∀ i ∈ s, grad i ≤ L * stepNorm i) :
+    (∑ i ∈ s, w i * Fplus i) +
+        (alphaPhi / (2 * h)) * stepRms ^ (2 : ℕ) -
+          (2 * L) * stepRms ≤ psiNext := by
+  have hraw :=
+    chewi121_nonsmooth_finite_raw_component_bound
+      (s := s) (w := w) (Fplus := Fplus) (lip := lip) (grad := grad)
+      (Dphi := Dphi) (psi := psi) (h := h) (psiNext := psiNext)
+      hw_nonneg hraw_point hpsi
+  have hphi_lower :=
+    chewi121_finite_mirror_lower_component_bound
+      (s := s) (w := w) (Dphi := Dphi) (stepSq := stepSq)
+      (alphaPhi := alphaPhi) (stepRms := stepRms)
+      halphaPhi_nonneg hw_nonneg hstepRms_sq hphi_point
+  have hlip :=
+    chewi121_finite_linear_component_bound
+      (s := s) (w := w) (term := lip) (stepNorm := stepNorm)
+      (L := L) (stepRms := stepRms)
+      hL_nonneg hw_nonneg hstep_avg hlip_point
+  have hgrad :=
+    chewi121_finite_linear_component_bound
+      (s := s) (w := w) (term := grad) (stepNorm := stepNorm)
+      (L := L) (stepRms := stepRms)
+      hL_nonneg hw_nonneg hstep_avg hgrad_point
+  exact
+    chewi121_nonsmooth_hcore_of_expected_components
+      (alphaPhi := alphaPhi) (L := L) (h := h)
+      (expectedNext := ∑ i ∈ s, w i * Fplus i) (psiNext := psiNext)
+      (DphiAvg := ∑ i ∈ s, w i * Dphi i)
+      (lipTerm := ∑ i ∈ s, w i * lip i)
+      (gradTerm := ∑ i ∈ s, w i * grad i)
+      (stepRms := stepRms)
+      hh hraw hphi_lower hlip hgrad
+
+/--
 Smooth-case Chewi Theorem 12.1 rate from the expected model bounds plus the
 source stochastic lower-bound estimate for `E psi_x(x+)`.
 -/
@@ -705,6 +984,127 @@ theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_rms_model_bounds
       (stepRms := stepRms n) (expectedNext := expectedNext n)
       (psiNext := psiNext n)
       hh halphaPhi (hnext_core n hn)
+
+/--
+Finite-support smooth Chewi Theorem 12.1 rate.  This is the finite
+stochastic-gradient theorem obtained by combining the per-sample component
+model bounds with the already verified SMPGD Gronwall/rate layer.
+-/
+theorem chewi121_smooth_weightedAverageGap_le_geometric_of_finite_components
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {alphaF alphaG alphaPhi sigma dim h Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap psiNext psiStar varianceRms stepRms : ℕ -> ℝ)
+    (w Fplus Df Dphi noise psi stepSq : ℕ -> ι -> ℝ)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hgrowth : ∀ n, n < N ->
+      (alphaG + 1 / h) * D (n + 1) + psiNext n ≤ psiStar n)
+    (hstar_upper : ∀ n, n < N ->
+      psiStar n ≤ Fstar + ((1 - alphaF * h) / h) * D n)
+    (hw_nonneg : ∀ n, n < N -> ∀ i ∈ s, 0 ≤ w n i)
+    (hraw_point : ∀ n, n < N -> ∀ i ∈ s,
+      Fplus n i - Df n i + (1 / h) * Dphi n i - noise n i ≤ psi n i)
+    (hpsi : ∀ n, n < N ->
+      (∑ i ∈ s, w n i * psi n i) ≤ psiNext n)
+    (hdf_point : ∀ n, n < N -> ∀ i ∈ s,
+      Df n i ≤ (1 / (2 * h)) * Dphi n i)
+    (hstepRms_sq : ∀ n, n < N ->
+      stepRms n ^ (2 : ℕ) ≤ ∑ i ∈ s, w n i * stepSq n i)
+    (hphi_point : ∀ n, n < N -> ∀ i ∈ s,
+      (alphaPhi / 2) * stepSq n i ≤ Dphi n i)
+    (hnoise : ∀ n, n < N ->
+      (∑ i ∈ s, w n i * noise n i) ≤ varianceRms n * stepRms n)
+    (hvariance : ∀ n, n < N ->
+      varianceRms n ^ (2 : ℕ) ≤ sigma ^ (2 : ℕ) * dim)
+    (hgap_sum : ∀ n, n < N ->
+      Fstar + gap (n + 1) = ∑ i ∈ s, w n i * Fplus n i) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        sigma ^ (2 : ℕ) * dim * h / alphaPhi := by
+  refine
+    chewi121_smooth_weightedAverageGap_le_geometric_of_rms_model_bounds
+      (alphaF := alphaF) (alphaG := alphaG) (alphaPhi := alphaPhi)
+      (sigma := sigma) (dim := dim) (h := h) (Fstar := Fstar)
+      htotal_pos hh halphaPhi hden_pos hlambda_pos D gap psiNext psiStar
+      (fun n => ∑ i ∈ s, w n i * Fplus n i) varianceRms stepRms
+      hN hD_N_nonneg hgrowth hstar_upper hvariance ?_ hgap_sum
+  intro n hn
+  exact
+    chewi121_smooth_hcore_of_finite_components
+      (s := s) (w := w n) (Fplus := Fplus n) (Df := Df n)
+      (Dphi := Dphi n) (noise := noise n) (psi := psi n)
+      (stepSq := stepSq n) (alphaPhi := alphaPhi) (h := h)
+      (psiNext := psiNext n) (varianceRms := varianceRms n)
+      (stepRms := stepRms n)
+      hh halphaPhi.le (hw_nonneg n hn) (hraw_point n hn) (hpsi n hn)
+      (hdf_point n hn) (hstepRms_sq n hn) (hphi_point n hn) (hnoise n hn)
+
+/-- Finite-support non-smooth Chewi Theorem 12.1 rate. -/
+theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_finite_components
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {alphaF alphaG alphaPhi L h Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi) (hL_nonneg : 0 ≤ L)
+    (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap psiNext psiStar stepRms : ℕ -> ℝ)
+    (w Fplus lip grad Dphi psi stepSq stepNorm : ℕ -> ι -> ℝ)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hgrowth : ∀ n, n < N ->
+      (alphaG + 1 / h) * D (n + 1) + psiNext n ≤ psiStar n)
+    (hstar_upper : ∀ n, n < N ->
+      psiStar n ≤ Fstar + ((1 - alphaF * h) / h) * D n)
+    (hw_nonneg : ∀ n, n < N -> ∀ i ∈ s, 0 ≤ w n i)
+    (hraw_point : ∀ n, n < N -> ∀ i ∈ s,
+      Fplus n i - lip n i - grad n i + (1 / h) * Dphi n i ≤ psi n i)
+    (hpsi : ∀ n, n < N ->
+      (∑ i ∈ s, w n i * psi n i) ≤ psiNext n)
+    (hstepRms_sq : ∀ n, n < N ->
+      stepRms n ^ (2 : ℕ) ≤ ∑ i ∈ s, w n i * stepSq n i)
+    (hphi_point : ∀ n, n < N -> ∀ i ∈ s,
+      (alphaPhi / 2) * stepSq n i ≤ Dphi n i)
+    (hstep_avg : ∀ n, n < N ->
+      (∑ i ∈ s, w n i * stepNorm n i) ≤ stepRms n)
+    (hlip_point : ∀ n, n < N -> ∀ i ∈ s,
+      lip n i ≤ L * stepNorm n i)
+    (hgrad_point : ∀ n, n < N -> ∀ i ∈ s,
+      grad n i ≤ L * stepNorm n i)
+    (hgap_sum : ∀ n, n < N ->
+      Fstar + gap (n + 1) = ∑ i ∈ s, w n i * Fplus n i) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  refine
+    chewi121_nonsmooth_weightedAverageGap_le_geometric_of_rms_model_bounds
+      (alphaF := alphaF) (alphaG := alphaG) (alphaPhi := alphaPhi)
+      (L := L) (h := h) (Fstar := Fstar)
+      htotal_pos hh halphaPhi hden_pos hlambda_pos D gap psiNext psiStar
+      (fun n => ∑ i ∈ s, w n i * Fplus n i) stepRms
+      hN hD_N_nonneg hgrowth hstar_upper ?_ hgap_sum
+  intro n hn
+  exact
+    chewi121_nonsmooth_hcore_of_finite_components
+      (s := s) (w := w n) (Fplus := Fplus n) (lip := lip n)
+      (grad := grad n) (Dphi := Dphi n) (psi := psi n)
+      (stepSq := stepSq n) (stepNorm := stepNorm n)
+      (alphaPhi := alphaPhi) (L := L) (h := h)
+      (psiNext := psiNext n) (stepRms := stepRms n)
+      hh halphaPhi.le hL_nonneg (hw_nonneg n hn) (hraw_point n hn)
+      (hpsi n hn) (hstepRms_sq n hn) (hphi_point n hn)
+      (hstep_avg n hn) (hlip_point n hn) (hgrad_point n hn)
 
 /--
 Smooth-case Chewi Theorem 12.1 rate from expected model components: this is
