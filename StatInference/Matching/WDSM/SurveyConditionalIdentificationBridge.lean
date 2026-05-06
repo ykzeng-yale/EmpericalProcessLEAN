@@ -23,6 +23,72 @@ variable {scoreSigma : MeasurableSpace Sample}
 variable {sampleLaw : Measure[mSample] Sample}
 
 /--
+The abstract PATE population target equals the score-space PATE when its arm
+targets are the potential-outcome integrals and those outcomes have
+score-sigma conditional-mean versions.
+-/
+theorem populationPATE_eq_scorePATE_of_condExp_scoreVersions
+    (hsub : scoreSigma ≤ mSample) [SigmaFinite (sampleLaw.trim hsub)]
+    (repr : PATERepresentation)
+    (treatedOutcome controlOutcome treatedScoreVersion controlScoreVersion :
+      Sample -> Real)
+    (hreprT :
+      repr.treated.population_target =
+        ∫ sample, treatedOutcome sample ∂sampleLaw)
+    (hreprC :
+      repr.control.population_target =
+        ∫ sample, controlOutcome sample ∂sampleLaw)
+    (htreated :
+      sampleLaw[treatedOutcome | scoreSigma] =ᵐ[sampleLaw]
+        treatedScoreVersion)
+    (hcontrol :
+      sampleLaw[controlOutcome | scoreSigma] =ᵐ[sampleLaw]
+        controlScoreVersion) :
+    repr.populationPATE =
+      (∫ sample, treatedScoreVersion sample ∂sampleLaw) -
+        (∫ sample, controlScoreVersion sample ∂sampleLaw) := by
+  simp [PATERepresentation.populationPATE]
+  rw [hreprT, hreprC]
+  exact
+    populationPATE_integral_eq_scorePATE_of_condExp_ae_eq
+      (mSample := mSample) (scoreSigma := scoreSigma)
+      (sampleLaw := sampleLaw) hsub treatedOutcome controlOutcome
+      treatedScoreVersion controlScoreVersion htreated hcontrol
+
+/--
+The abstract PATT population target equals the score-space PATT when its
+numerator and denominator targets are population integrals with score-sigma
+conditional-mean versions.
+-/
+theorem populationPATT_eq_scorePATT_of_condExp_scoreVersions
+    (hsub : scoreSigma ≤ mSample) [SigmaFinite (sampleLaw.trim hsub)]
+    (repr : PATTRepresentation)
+    (treatedEffectNumerator treatedMass
+      scoreEffectNumerator scoreTreatedMass : Sample -> Real)
+    (hreprNumerator :
+      repr.population_treated_effect_numerator =
+        ∫ sample, treatedEffectNumerator sample ∂sampleLaw)
+    (hreprMass :
+      repr.population_treated_mass =
+        ∫ sample, treatedMass sample ∂sampleLaw)
+    (hnumerator :
+      sampleLaw[treatedEffectNumerator | scoreSigma] =ᵐ[sampleLaw]
+        scoreEffectNumerator)
+    (hmass :
+      sampleLaw[treatedMass | scoreSigma] =ᵐ[sampleLaw] scoreTreatedMass) :
+    repr.populationPATT =
+      (∫ sample, scoreEffectNumerator sample ∂sampleLaw) /
+        (∫ sample, scoreTreatedMass sample ∂sampleLaw) := by
+  simp [PATTRepresentation.populationPATT]
+  rw [hreprNumerator, hreprMass]
+  rw [integral_eq_scoreVersion_of_condExp_ae_eq
+    (mSample := mSample) (scoreSigma := scoreSigma) (sampleLaw := sampleLaw)
+    hsub treatedEffectNumerator scoreEffectNumerator hnumerator]
+  rw [integral_eq_scoreVersion_of_condExp_ae_eq
+    (mSample := mSample) (scoreSigma := scoreSigma) (sampleLaw := sampleLaw)
+    hsub treatedMass scoreTreatedMass hmass]
+
+/--
 Selected-sample Hájek PATE recovers the score-space PATE when the
 inverse-selection population targets are the potential-outcome integrals and
 those outcomes have score-sigma conditional-mean versions.
@@ -51,13 +117,12 @@ theorem selectedHajekPATE_eq_scorePATE_of_condExp_scoreVersions
         (∫ sample, controlScoreVersion sample ∂sampleLaw) := by
   rw [PATERepresentation.selectedHajekPATE_eq_populationPATE repr
     htreatedSampling hcontrolSampling]
-  simp [PATERepresentation.populationPATE]
-  rw [hreprT, hreprC]
   exact
-    populationPATE_integral_eq_scorePATE_of_condExp_ae_eq
+    populationPATE_eq_scorePATE_of_condExp_scoreVersions
       (mSample := mSample) (scoreSigma := scoreSigma)
-      (sampleLaw := sampleLaw) hsub treatedOutcome controlOutcome
-      treatedScoreVersion controlScoreVersion htreated hcontrol
+      (sampleLaw := sampleLaw) hsub repr treatedOutcome controlOutcome
+      treatedScoreVersion controlScoreVersion hreprT hreprC
+      htreated hcontrol
 
 /--
 Selected-sample Hájek PATT recovers the score-space PATT when the
@@ -87,20 +152,51 @@ theorem selectedHajekPATT_eq_scorePATT_of_condExp_scoreVersions
         (∫ sample, scoreTreatedMass sample ∂sampleLaw) := by
   rw [PATTRepresentation.selectedHajekPATT_eq_populationPATT repr
     hsampling htreatedMass]
-  simp [PATTRepresentation.populationPATT]
-  rw [hreprNumerator, hreprMass]
-  rw [integral_eq_scoreVersion_of_condExp_ae_eq
-    (mSample := mSample) (scoreSigma := scoreSigma) (sampleLaw := sampleLaw)
-    hsub treatedEffectNumerator scoreEffectNumerator hnumerator]
-  rw [integral_eq_scoreVersion_of_condExp_ae_eq
-    (mSample := mSample) (scoreSigma := scoreSigma) (sampleLaw := sampleLaw)
-    hsub treatedMass scoreTreatedMass hmass]
+  exact
+    populationPATT_eq_scorePATT_of_condExp_scoreVersions
+      (mSample := mSample) (scoreSigma := scoreSigma)
+      (sampleLaw := sampleLaw) hsub repr treatedEffectNumerator treatedMass
+      scoreEffectNumerator scoreTreatedMass hreprNumerator hreprMass
+      hnumerator hmass
 
 /--
 Selected-sample Hájek PATE recovers the score-space PATE when the
 potential-outcome integrals agree a.e. with score-sigma measurable, integrable
 score versions.
 -/
+theorem populationPATE_eq_scorePATE_of_ae_scoreVersions
+    (hsub : scoreSigma ≤ mSample) [SigmaFinite (sampleLaw.trim hsub)]
+    (repr : PATERepresentation)
+    (treatedOutcome controlOutcome treatedScoreVersion controlScoreVersion :
+      Sample -> Real)
+    (hreprT :
+      repr.treated.population_target =
+        ∫ sample, treatedOutcome sample ∂sampleLaw)
+    (hreprC :
+      repr.control.population_target =
+        ∫ sample, controlOutcome sample ∂sampleLaw)
+    (htreated :
+      treatedOutcome =ᵐ[sampleLaw] treatedScoreVersion)
+    (hcontrol :
+      controlOutcome =ᵐ[sampleLaw] controlScoreVersion)
+    (htreatedMeas :
+      AEStronglyMeasurable[scoreSigma] treatedScoreVersion sampleLaw)
+    (hcontrolMeas :
+      AEStronglyMeasurable[scoreSigma] controlScoreVersion sampleLaw)
+    (htreatedIntegrable : Integrable treatedScoreVersion sampleLaw)
+    (hcontrolIntegrable : Integrable controlScoreVersion sampleLaw) :
+    repr.populationPATE =
+      (∫ sample, treatedScoreVersion sample ∂sampleLaw) -
+        (∫ sample, controlScoreVersion sample ∂sampleLaw) := by
+  simp [PATERepresentation.populationPATE]
+  rw [hreprT, hreprC]
+  exact
+    populationPATE_integral_eq_scorePATE_of_ae_eq_scoreVersions
+      (mSample := mSample) (scoreSigma := scoreSigma)
+      (sampleLaw := sampleLaw) hsub treatedOutcome controlOutcome
+      treatedScoreVersion controlScoreVersion htreated hcontrol htreatedMeas
+      hcontrolMeas htreatedIntegrable hcontrolIntegrable
+
 theorem selectedHajekPATE_eq_scorePATE_of_ae_scoreVersions
     (hsub : scoreSigma ≤ mSample) [SigmaFinite (sampleLaw.trim hsub)]
     (repr : PATERepresentation)
@@ -129,20 +225,52 @@ theorem selectedHajekPATE_eq_scorePATE_of_ae_scoreVersions
         (∫ sample, controlScoreVersion sample ∂sampleLaw) := by
   rw [PATERepresentation.selectedHajekPATE_eq_populationPATE repr
     htreatedSampling hcontrolSampling]
-  simp [PATERepresentation.populationPATE]
-  rw [hreprT, hreprC]
   exact
-    populationPATE_integral_eq_scorePATE_of_ae_eq_scoreVersions
+    populationPATE_eq_scorePATE_of_ae_scoreVersions
       (mSample := mSample) (scoreSigma := scoreSigma)
-      (sampleLaw := sampleLaw) hsub treatedOutcome controlOutcome
-      treatedScoreVersion controlScoreVersion htreated hcontrol htreatedMeas
-      hcontrolMeas htreatedIntegrable hcontrolIntegrable
+      (sampleLaw := sampleLaw) hsub repr treatedOutcome controlOutcome
+      treatedScoreVersion controlScoreVersion hreprT hreprC htreated hcontrol
+      htreatedMeas hcontrolMeas htreatedIntegrable hcontrolIntegrable
 
 /--
 Selected-sample Hájek PATT recovers the score-space PATT when the numerator
 and denominator agree a.e. with score-sigma measurable, integrable score
 versions.
 -/
+theorem populationPATT_eq_scorePATT_of_ae_scoreVersions
+    (hsub : scoreSigma ≤ mSample) [SigmaFinite (sampleLaw.trim hsub)]
+    (repr : PATTRepresentation)
+    (treatedEffectNumerator treatedMass
+      scoreEffectNumerator scoreTreatedMass : Sample -> Real)
+    (hreprNumerator :
+      repr.population_treated_effect_numerator =
+        ∫ sample, treatedEffectNumerator sample ∂sampleLaw)
+    (hreprMass :
+      repr.population_treated_mass =
+        ∫ sample, treatedMass sample ∂sampleLaw)
+    (hnumerator :
+      treatedEffectNumerator =ᵐ[sampleLaw] scoreEffectNumerator)
+    (hmass :
+      treatedMass =ᵐ[sampleLaw] scoreTreatedMass)
+    (hnumeratorMeas :
+      AEStronglyMeasurable[scoreSigma] scoreEffectNumerator sampleLaw)
+    (hmassMeas :
+      AEStronglyMeasurable[scoreSigma] scoreTreatedMass sampleLaw)
+    (hnumeratorIntegrable : Integrable scoreEffectNumerator sampleLaw)
+    (hmassIntegrable : Integrable scoreTreatedMass sampleLaw) :
+    repr.populationPATT =
+      (∫ sample, scoreEffectNumerator sample ∂sampleLaw) /
+        (∫ sample, scoreTreatedMass sample ∂sampleLaw) := by
+  simp [PATTRepresentation.populationPATT]
+  rw [hreprNumerator, hreprMass]
+  rw [integral_eq_scoreVersion_of_ae_eq_scoreVersion
+    (mSample := mSample) (scoreSigma := scoreSigma) (sampleLaw := sampleLaw)
+    hsub treatedEffectNumerator scoreEffectNumerator hnumerator
+    hnumeratorMeas hnumeratorIntegrable]
+  rw [integral_eq_scoreVersion_of_ae_eq_scoreVersion
+    (mSample := mSample) (scoreSigma := scoreSigma) (sampleLaw := sampleLaw)
+    hsub treatedMass scoreTreatedMass hmass hmassMeas hmassIntegrable]
+
 theorem selectedHajekPATT_eq_scorePATT_of_ae_scoreVersions
     (hsub : scoreSigma ≤ mSample) [SigmaFinite (sampleLaw.trim hsub)]
     (repr : PATTRepresentation)
@@ -171,15 +299,13 @@ theorem selectedHajekPATT_eq_scorePATT_of_ae_scoreVersions
         (∫ sample, scoreTreatedMass sample ∂sampleLaw) := by
   rw [PATTRepresentation.selectedHajekPATT_eq_populationPATT repr
     hsampling htreatedMass]
-  simp [PATTRepresentation.populationPATT]
-  rw [hreprNumerator, hreprMass]
-  rw [integral_eq_scoreVersion_of_ae_eq_scoreVersion
-    (mSample := mSample) (scoreSigma := scoreSigma) (sampleLaw := sampleLaw)
-    hsub treatedEffectNumerator scoreEffectNumerator hnumerator
-    hnumeratorMeas hnumeratorIntegrable]
-  rw [integral_eq_scoreVersion_of_ae_eq_scoreVersion
-    (mSample := mSample) (scoreSigma := scoreSigma) (sampleLaw := sampleLaw)
-    hsub treatedMass scoreTreatedMass hmass hmassMeas hmassIntegrable]
+  exact
+    populationPATT_eq_scorePATT_of_ae_scoreVersions
+      (mSample := mSample) (scoreSigma := scoreSigma)
+      (sampleLaw := sampleLaw) hsub repr treatedEffectNumerator treatedMass
+      scoreEffectNumerator scoreTreatedMass hreprNumerator hreprMass
+      hnumerator hmass hnumeratorMeas hmassMeas hnumeratorIntegrable
+      hmassIntegrable
 
 end WDSM
 end Matching
