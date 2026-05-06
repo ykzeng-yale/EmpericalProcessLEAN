@@ -49,6 +49,178 @@ theorem IsRelativeSubgradientAt.lower_model
   h.2 hy
 
 /--
+Weighted stochastic averaged iterate used by Chewi Theorem 12.1.  The weights
+are intentionally left unnormalized; `Finset.centerMass` divides by their sum.
+-/
+noncomputable def weightedSampleAverage
+    {Ω E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (w : ℕ -> ℝ) (x : ℕ -> Ω -> E) (N : ℕ) (ω : Ω) : E :=
+  (Finset.range N).centerMass w (fun n => x n ω)
+
+/--
+Jensen bridge from a weighted average of expected gaps to the expected
+objective gap at the weighted stochastic averaged iterate.
+-/
+theorem integral_weightedSampleAverage_gap_le_of_weighted_gap_bound
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {F : E -> ℝ}
+    {w gap : ℕ -> ℝ} {x : ℕ -> Ω -> E}
+    {Fstar B : ℝ} {N : ℕ}
+    (hconvF : ConvexOn ℝ C F)
+    (hw_nonneg : ∀ n, n < N -> 0 ≤ w n)
+    (hsum_pos : 0 < ∑ n ∈ Finset.range N, w n)
+    (hx : ∀ n, n < N -> ∀ᵐ ω ∂μ, x n ω ∈ C)
+    (havg_int :
+      Integrable (fun ω => F (weightedSampleAverage w x N ω)) μ)
+    (hF_int : ∀ n, n < N -> Integrable (fun ω => F (x n ω)) μ)
+    (hgap : ∀ n, n < N -> Fstar + gap n = ∫ ω, F (x n ω) ∂μ)
+    (hbound :
+      (1 / (∑ n ∈ Finset.range N, w n)) *
+          (∑ n ∈ Finset.range N, w n * gap n) ≤ B) :
+    (∫ ω, F (weightedSampleAverage w x N ω) ∂μ) - Fstar ≤ B := by
+  let S : ℝ := ∑ n ∈ Finset.range N, w n
+  have hS_ne : S ≠ 0 := by
+    simpa [S] using ne_of_gt hsum_pos
+  have hx_ae :
+      ∀ᵐ ω ∂μ, ∀ n, n ∈ Finset.range N -> x n ω ∈ C := by
+    rw [eventually_finset_ball]
+    intro n hn
+    exact hx n (Finset.mem_range.mp hn)
+  have hpoint :
+      (fun ω => F (weightedSampleAverage w x N ω)) ≤ᵐ[μ]
+        fun ω => (1 / S) *
+          (∑ n ∈ Finset.range N, w n * F (x n ω)) := by
+    filter_upwards [hx_ae] with ω hω
+    have hjensen :=
+      hconvF.map_centerMass_le
+        (t := Finset.range N) (w := w) (p := fun n => x n ω)
+        (fun n hn => hw_nonneg n (Finset.mem_range.mp hn))
+        hsum_pos
+        (fun n hn => hω n hn)
+    simpa [weightedSampleAverage, Finset.centerMass, S, one_div, Function.comp] using hjensen
+  have hsum_int :
+      Integrable
+        (fun ω => ∑ n ∈ Finset.range N, w n * F (x n ω)) μ := by
+    refine integrable_finsetSum (Finset.range N) ?_
+    intro n hn
+    exact (hF_int n (Finset.mem_range.mp hn)).const_mul (w n)
+  have hR_int :
+      Integrable
+        (fun ω => (1 / S) *
+          (∑ n ∈ Finset.range N, w n * F (x n ω))) μ :=
+    hsum_int.const_mul (1 / S)
+  have hint_le :
+      (∫ ω, F (weightedSampleAverage w x N ω) ∂μ) ≤
+        ∫ ω, (1 / S) *
+          (∑ n ∈ Finset.range N, w n * F (x n ω)) ∂μ :=
+    integral_mono_ae havg_int hR_int hpoint
+  have hint_rhs :
+      (∫ ω, (1 / S) *
+          (∑ n ∈ Finset.range N, w n * F (x n ω)) ∂μ) =
+        (1 / S) *
+          (∑ n ∈ Finset.range N, w n * ∫ ω, F (x n ω) ∂μ) := by
+    rw [integral_const_mul]
+    rw [integral_finsetSum]
+    · refine congrArg ((HMul.hMul) (1 / S)) ?_
+      refine Finset.sum_congr rfl ?_
+      intro n hn
+      rw [integral_const_mul]
+    · intro n hn
+      exact (hF_int n (Finset.mem_range.mp hn)).const_mul (w n)
+  have hsum_gap :
+      (∑ n ∈ Finset.range N, w n * ∫ ω, F (x n ω) ∂μ) =
+        ∑ n ∈ Finset.range N, w n * (Fstar + gap n) := by
+    refine Finset.sum_congr rfl ?_
+    intro n hn
+    rw [← hgap n (Finset.mem_range.mp hn)]
+  have hsum_split :
+      (∑ n ∈ Finset.range N, w n * (Fstar + gap n)) =
+        S * Fstar + ∑ n ∈ Finset.range N, w n * gap n := by
+    calc
+      (∑ n ∈ Finset.range N, w n * (Fstar + gap n)) =
+          ∑ n ∈ Finset.range N, (w n * Fstar + w n * gap n) := by
+            refine Finset.sum_congr rfl ?_
+            intro n hn
+            ring
+      _ =
+          (∑ n ∈ Finset.range N, w n * Fstar) +
+            ∑ n ∈ Finset.range N, w n * gap n := by
+            rw [Finset.sum_add_distrib]
+      _ = S * Fstar + ∑ n ∈ Finset.range N, w n * gap n := by
+            rw [Finset.sum_mul]
+  have hgap_rewrite :
+      (1 / S) *
+          (∑ n ∈ Finset.range N, w n * ∫ ω, F (x n ω) ∂μ) - Fstar =
+        (1 / S) * (∑ n ∈ Finset.range N, w n * gap n) := by
+    rw [hsum_gap, hsum_split]
+    field_simp [hS_ne]
+    ring
+  calc
+    (∫ ω, F (weightedSampleAverage w x N ω) ∂μ) - Fstar ≤
+        (∫ ω, (1 / S) *
+          (∑ n ∈ Finset.range N, w n * F (x n ω)) ∂μ) - Fstar := by
+          nlinarith
+    _ = (1 / S) * (∑ n ∈ Finset.range N, w n * gap n) := by
+          rw [hint_rhs, hgap_rewrite]
+    _ ≤ B := by
+          simpa [S] using hbound
+
+/--
+Chewi-weighted version of the stochastic Jensen bridge.  This turns the
+geometric weighted expected-gap bound from Theorem 12.1 into the same bound for
+the objective value at the stochastic weighted averaged iterate.
+-/
+theorem chewi121_weightedSampleAverage_gap_le_geometric_of_weightedAverageGap
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {F : E -> ℝ}
+    {alphaF alphaG h Fstar B : ℝ} {N : ℕ}
+    {gap : ℕ -> ℝ} {x : ℕ -> Ω -> E}
+    (hconvF : ConvexOn ℝ C F)
+    (hN : N ≠ 0)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (hx : ∀ n, n < N -> ∀ᵐ ω ∂μ, x n ω ∈ C)
+    (havg_int : Integrable
+      (fun ω =>
+        F (weightedSampleAverage
+          (fun n => (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))
+          x N ω)) μ)
+    (hF_int : ∀ n, n < N -> Integrable (fun ω => F (x n ω)) μ)
+    (hgap : ∀ n, n < N ->
+      Fstar + gap (n + 1) = ∫ ω, F (x n ω) ∂μ)
+    (hbound :
+      (1 / (∑ n ∈ Finset.range N,
+            (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+          (∑ n ∈ Finset.range N,
+            (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) *
+              gap (n + 1)) ≤ B) :
+    (∫ ω,
+        F (weightedSampleAverage
+          (fun n => (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))
+          x N ω) ∂μ) - Fstar ≤ B := by
+  let A : ℝ := chewi109Lambda alphaF alphaG h
+  let weights : ℕ -> ℝ := fun n => A ^ (N - 1 - n)
+  have hA_nonneg : 0 ≤ A := le_of_lt (by simpa [A] using hlambda_pos)
+  have hweights_nonneg : ∀ n, n < N -> 0 ≤ weights n := by
+    intro n hn
+    exact pow_nonneg hA_nonneg _
+  have hweights_sum_pos :
+      0 < ∑ n ∈ Finset.range N, weights n := by
+    simpa [weights, A] using geometricWeights_sum_pos (A := A) hA_nonneg hN
+  have hbound' :
+      (1 / (∑ n ∈ Finset.range N, weights n)) *
+          (∑ n ∈ Finset.range N, weights n * (fun k => gap (k + 1)) n) ≤ B := by
+    simpa [weights, A] using hbound
+  exact
+    integral_weightedSampleAverage_gap_le_of_weighted_gap_bound
+      (μ := μ) (C := C) (F := F) (w := weights)
+      (gap := fun n => gap (n + 1)) (x := x) (Fstar := Fstar)
+      (B := B) hconvF hweights_nonneg hweights_sum_pos hx
+      (by simpa [weights, A] using havg_int) hF_int
+      (by simpa using hgap) hbound'
+
+/--
 Weighted-sum consequence of a discrete Gronwall recurrence with an additive
 stochastic error term.
 

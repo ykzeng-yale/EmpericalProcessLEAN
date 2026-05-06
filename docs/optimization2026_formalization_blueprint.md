@@ -58,9 +58,10 @@ exact source/report packaging or a dependency.
 
 Current manual goal frontier after the Chapter 12 finite sampled rate packet,
 smooth integral-L2 sampled-model endpoint packet, smooth Bochner-unbiased
-growth/star-upper packet, non-smooth source-L2 sampled endpoint packet, and
-smooth source variance-bound bridge for Chewi Theorem 12.1 SMPGD, plus the
-non-smooth relative-subgradient growth/star-upper bridge:
+growth/star-upper packet, non-smooth source-L2 sampled endpoint packet, smooth
+source variance-bound bridge for Chewi Theorem 12.1 SMPGD, the non-smooth
+relative-subgradient growth/star-upper bridge, and the weighted stochastic
+averaged-iterate/Jensen bridge:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -371,11 +372,18 @@ weighted-average rate.  The non-smooth relative-subgradient packet adds
 so a.e. sampled MPGD growth and the source condition that the mean sampled
 oracle is a relative subgradient now discharge the non-smooth growth/star
 upper fields.
+The weighted stochastic averaged-iterate packet adds `weightedSampleAverage`,
+`integral_weightedSampleAverage_gap_le_of_weighted_gap_bound`, and
+`chewi121_weightedSampleAverage_gap_le_geometric_of_weightedAverageGap`, using
+mathlib `ConvexOn.map_centerMass_le` and Bochner finite-sum integral APIs to
+move from the closed weighted expected-gap rate to the source-shaped objective
+gap at the weighted stochastic averaged iterate.
 The active Chapter 12 lane is now the remaining exact source probability
 discharge behind those wrappers: any exact conditional-expectation/process
-packaging needed for source reporting, and a final source-shaped Chewi Theorem
-12.1 wrapper combining those process fields with the compiled sampled
-endpoints, before the ASGD CLT material.
+packaging needed for source reporting, and final smooth/non-smooth
+source-shaped Chewi Theorem 12.1 wrappers combining those process fields with
+the compiled sampled endpoints and weightedSampleAverage bridge, before the
+ASGD CLT material.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
