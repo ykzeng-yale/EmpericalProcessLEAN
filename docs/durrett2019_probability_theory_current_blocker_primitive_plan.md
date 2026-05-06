@@ -91,6 +91,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`
 - `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`
 - `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`
+- `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`
 
@@ -132,7 +133,8 @@ compile, via
 `durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`,
 `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`,
-`durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`, and
+`durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`,
+`durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`, and
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`.
 The remaining theorem-core step is the arbitrary finite middle CDF partition
 existence consumed by
@@ -146,8 +148,11 @@ The new non-atomic local ingredient
 `exists_realOpenInterval_measureReal_lt_of_noAtoms` supplies small open
 neighborhoods from `tendsto_measure_Icc_nhdsWithin_right'`, and
 `exists_finset_realOpenInterval_cover_Icc_measureReal_lt_of_noAtoms` packages
-those neighborhoods into a finite compact cover of `[a, b]`.  The next
-non-atomic packet should order the selected interval endpoints into a strict
+those neighborhoods into a finite compact cover of `[a, b]`.
+`exists_monotone_subdivision_Icc_measureReal_lt_of_noAtoms` then refines that
+cover into a monotone closed-subinterval subdivision using mathlib's
+`exists_monotone_Icc_subset_open_cover_Icc`.  The next non-atomic packet
+should erase repeated subdivision points and package the resulting strict real
 endpoint grid.  The fully arbitrary distribution route still needs atom-aware
 endpoint selection.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
@@ -234,13 +239,14 @@ this file plus the Durrett dashboard and blueprint, and scanning the current
 Durrett Theorem 2.4.9 arbitrary-distribution finite middle CDF partition
 constructor beyond the compiled one-cell/two-cell/right-append/cutpoint-chain,
 endpoint-grid-to-chain, non-atomic local small-neighborhood,
-non-atomic finite compact-cover, and cutpoint-chain-to-GC consumers.  The
-likely next primitive is now the non-atomic finite-cover-to-endpoint-grid
-construction, followed by the actual quantile or measure regularity argument
-that constructs a strict finite endpoint grid with small adjacent CDF
-left-limit increments for arbitrary distributions and any bounded
-interval/positive `epsilon`, with atom-aware handling if naive splitting at a
-real cutpoint blocks.  Parallel target:
+non-atomic finite compact-cover, non-atomic monotone-subdivision, and
+cutpoint-chain-to-GC consumers.  The likely next primitive is now the
+monotone-subdivision-to-strict-endpoint-grid construction: erase repeated
+points from the eventually constant monotone sequence, preserve the assigned
+small cover interval for each nondegenerate adjacent cell, and feed
+`SuppliedRealMiddleCDFPartitionChain.of_endpointGrid`.  After that, handle
+arbitrary distributions with atom-aware endpoint selection if naive splitting
+at a real cutpoint blocks.  Parallel target:
 optional Chapter 2.1 iid/product notation polish only if the GC grid blocks.
 Verify, update docs, commit/push, and keep this in-thread `/goal` state
 current.  Report progress and blockers in Chinese/English mix.
