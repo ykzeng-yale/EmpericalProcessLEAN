@@ -58,6 +58,7 @@ compiles and root-imports the new namespace.  Compiled declarations:
 - `durrett2019_theorem_2_1_13_iIndepFun_integral_prod_eq_prod_integral`;
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_supplied_endpoint_grids`;
 - `durrett2019_theorem_2_4_9_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`;
+- `durrett2019_theorem_2_4_9_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt`;
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
 
 The first aggressive full-theorem target is now Durrett Theorem 2.4.9,
@@ -71,9 +72,9 @@ Immediate proof route:
 1. inspect and reuse `realHalfLineIndicator_integral_eq_cdf`,
    `realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid`, and nearby
    grid/squeezing handoffs;
-2. extend the compiled one-cell middle CDF partition base case to the
-   arbitrary-distribution finite middle partition constructor consumed by the
-   compiled middle-partition-to-GC handoff;
+2. extend the compiled one-cell and two-cell middle CDF partition constructors
+   to the arbitrary-distribution finite middle partition constructor consumed
+   by the compiled middle-partition-to-GC handoff;
 3. package the empirical CDF statement once the uniform squeezing proof closes;
 4. keep Chapter 2.1 as optional iid/product notation polish while the main
    proof effort returns to the GC grid constructor;
@@ -91,7 +92,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 1 measure/probability foundations | source-wrapper/reused-local | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/GeneratedSigma.lean`; `Tail.lean`; `ProductMeasure.lean` | Durrett wrappers for Theorem 1.1.1 measure properties and Theorems 1.3.1/1.3.4 measurability facts now compile over mathlib/local generator APIs. |
 | Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact iid/product notation polish. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
-| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids or supplied middle CDF partitions. The one-cell middle partition base case compiles; remaining blocker: construct arbitrary finite middle partitions for intervals whose total CDF increment is not already small. |
+| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids or supplied middle CDF partitions. The one-cell and two-cell middle partition constructors compile; remaining blocker: construct arbitrary finite middle partitions for intervals whose total CDF increment is not already small. |
 | Chapter 3 CLT/characteristic functions | pending-local | none | Needs mathlib API search for characteristic functions, normal laws, weak convergence, and scalar asymptotics. |
 | Chapter 4 martingales | pending-local | none | Search mathlib martingale/conditional expectation APIs first. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
@@ -136,7 +137,7 @@ The next in-thread goal cycle should not just reread the source.  It should
 either:
 
 - advance Durrett Theorem 2.4.9 by proving the arbitrary-distribution finite
-  middle CDF partition existence theorem beyond the compiled one-cell base case
-  consumed by the compiled GC handoff; or
+  middle CDF partition existence theorem beyond the compiled one-cell/two-cell
+  constructors consumed by the compiled GC handoff; or
 - if that blocks, do only optional Chapter 2.1 iid/product notation polish and
   record the exact GC partition blocker.

@@ -54,14 +54,29 @@ The initial Lean target is Chapter 2 plus Chapter 3 substrate:
   scaled-statistic `O_P(1)` field from distributional convergence:
   `vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution` and
   `vaart1998_theorem_3_1_delta_method_of_localization_distribution`.
+- analytic scaled-ball smallness from an `o(‖h‖)` deterministic remainder:
+  `vaart1998_delta_remainder_small_on_scaled_ball_of_isLittleO`.
+- scaled-ball smallness from `HasFDerivAt` and divergent rates:
+  `vaart1998_delta_remainder_small_on_scaled_ball_of_hasFDerivAt_norm_atTop`
+  and `vaart1998_delta_remainder_small_on_scaled_ball_of_hasFDerivAt`.
+- Theorem 3.1 compact sequence wrapper from differentiability, `r_n -> ∞`,
+  and distributional convergence of the scaled statistic:
+  `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`.
+- scaled delta-remainder a.e.-measurability helpers:
+  `vaart1998_delta_remainder_aemeasurable` and
+  `vaart1998_delta_remainder_aemeasurable_of_measurable`.
+- Theorem 3.1 compact sequence wrappers that derive the technical
+  `hR_meas` side condition from either `T_n` plus `phi ∘ T_n`, or from
+  global measurability of `phi`:
+  `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_aemeasurable`
+  and
+  `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_measurable`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`c3cb275`, on remote main `fb090b2`:
+`06ca46f`:
 
 - `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
 - `lake build StatInference.AsymptoticStatistics.Basic`
-- `lake env lean StatInference.lean`
-- `lake build StatInference`
 
 Current Vaart packet verification passed for:
 
@@ -70,19 +85,18 @@ Current Vaart packet verification passed for:
 
 ## Next Aggressive Target
 
-Close the full finite-dimensional Theorem 3.1 delta method by discharging the
-remaining local-remainder certificate field:
+Move beyond the now-compiled Chapter 3.1 probability, analytic, and
+measurability plumbing:
 
-1. derive the scaled-ball smallness field from
-   `vaart1998_hasFDerivAt_delta_remainder_isLittleO`, `r_n -> ∞`, and
-   `T_n - theta -> 0` in probability.
-2. feed the result to
-   `vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution`, whose
-   scaled-statistic tightness is now supplied automatically by convergence in
-   distribution.
+1. start Chapter 4 method-of-moments wrappers using the CLT wrapper
+   plus `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`;
+2. add only those moment-estimator certificates whose SLLN/CLT/delta fields
+   are already available locally;
+3. only write an exact Theorem 3.1 source report after capturing the theorem
+   statement and assumptions from the Markdown/PDF.
 
-If this blocks, record the exact missing theorem shape and move to Chapter 4
-method-of-moments wrappers from CLT plus supplied delta.
+If this blocks, record the exact missing SLLN/CLT/delta theorem shape and
+continue with the widest Chapter 4 wrapper that compiles.
 
 ## Reuse Dependencies
 

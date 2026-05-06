@@ -85,6 +85,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_1_13_iIndepFun_integral_prod_eq_prod_integral`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_supplied_endpoint_grids`
 - `durrett2019_theorem_2_4_9_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`
+- `durrett2019_theorem_2_4_9_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`
 
 Existing reusable probability-measure modules cover much of the early-book
@@ -108,12 +109,16 @@ strong-law wrappers:
 - `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`
 - `StatInference/ProbabilityMeasure/StrongLaw.lean`
 
-The current missing piece is now narrower: the one-cell base case for middle
-CDF partitions compiles, via
+The current missing piece is now narrower: the one-cell and two-cell base
+constructors for middle CDF partitions compile, via
 `SuppliedRealMiddleCDFPartition.oneCell`,
-`exists_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`, and the
-Durrett wrapper
-`durrett2019_theorem_2_4_9_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`.
+`SuppliedRealMiddleCDFPartition.twoCell`,
+`exists_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`,
+`exists_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt`, and the Durrett
+wrappers
+`durrett2019_theorem_2_4_9_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`
+and
+`durrett2019_theorem_2_4_9_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt`.
 The remaining theorem-core step is the arbitrary finite middle CDF partition
 existence consumed by
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
@@ -199,10 +204,11 @@ this file plus the Durrett dashboard and blueprint, and scanning the current
 `StatInference/ProbabilityTheory`, `StatInference/ProbabilityMeasure`, and
 `StatInference/EmpiricalProcess/RealHalfLineGC.lean` modules.  Primary target:
 Durrett Theorem 2.4.9 arbitrary-distribution finite middle CDF partition
-constructor beyond the compiled one-cell base case.  The likely next primitive
-is a cutpoint/quantile induction for intervals whose total left-limit CDF
-increment is not already below `epsilon`, with atom-aware handling if naive
-splitting at a real cutpoint blocks.  Parallel target: optional Chapter 2.1
-iid/product notation polish only if the GC grid blocks.  Verify, update docs,
-commit/push, and keep this in-thread `/goal` state current.  Report progress
-and blockers in Chinese/English mix.
+constructor beyond the compiled one-cell and two-cell base constructors.  The
+likely next primitive is either a concatenation constructor for adjacent
+supplied middle partitions or a cutpoint/quantile induction for intervals whose
+total left-limit CDF increment is not already below `epsilon`, with atom-aware
+handling if naive splitting at a real cutpoint blocks.  Parallel target:
+optional Chapter 2.1 iid/product notation polish only if the GC grid blocks.
+Verify, update docs, commit/push, and keep this in-thread `/goal` state current.
+Report progress and blockers in Chinese/English mix.

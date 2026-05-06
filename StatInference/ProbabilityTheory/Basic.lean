@@ -624,6 +624,25 @@ theorem durrett2019_theorem_2_4_9_realMiddleCDFPartition_oneCell_of_cdf_leftLim_
   exists_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt hab hinc
 
 /--
+Durrett 2019, Theorem 2.4.9 middle-partition split step.
+
+If a strict interior cutpoint splits a bounded interval into two pieces whose
+CDF left-limit increments are below the requested radius, the endpoint list
+`[a, c, b]` is a supplied middle CDF partition.
+-/
+theorem durrett2019_theorem_2_4_9_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt
+    {P : Measure ℝ} {epsilon a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hleft :
+      Function.leftLim (ProbabilityTheory.cdf P) c -
+        ProbabilityTheory.cdf P a < epsilon)
+    (hright :
+      Function.leftLim (ProbabilityTheory.cdf P) b -
+        ProbabilityTheory.cdf P c < epsilon) :
+    ∃ middleCells, Nonempty
+      (SuppliedRealMiddleCDFPartition P epsilon a b middleCells) :=
+  exists_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt hac hcb hleft hright
+
+/--
 Durrett 2019, Theorem 2.4.9, middle-partition-to-GC package.
 
 This isolates the remaining arbitrary-distribution primitive: for every

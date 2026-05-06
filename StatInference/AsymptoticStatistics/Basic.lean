@@ -585,6 +585,122 @@ theorem vaart1998_delta_remainder_local_subset_of_eventually_small_on_scaled_bal
   exact (not_le_of_gt (hn ω hW_lt)) hω
 
 /--
+An `o(‖h‖)` deterministic remainder is uniformly small on every fixed scaled
+ball once the scaling norms diverge.
+
+This is the analytic core of Vaart's delta-method proof.  On the event
+`‖r_n • h_n‖ < M`, divergence of `‖r_n‖` forces `h_n` into the derivative
+neighborhood; the little-o bound then gives
+`‖r_n • remainder(h_n)‖ < ε`.
+-/
+theorem vaart1998_delta_remainder_small_on_scaled_ball_of_isLittleO
+    {Ω E F : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {Tn : ℕ -> Ω -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ} (L : E →L[ℝ] F)
+    (hrem :
+      (fun h : E => phi (theta + h) - phi theta - L h) =o[𝓝 0]
+        fun h => h)
+    (hr : Tendsto (fun n => ‖r n‖) atTop atTop) :
+    ∀ ε : ℝ, 0 < ε -> ∀ M : ℝ, 0 < M ->
+      ∀ᶠ n in atTop, ∀ ω,
+        ‖r n • (Tn n ω - theta)‖ < M ->
+        ‖r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))‖ < ε := by
+  intro ε hε M hM
+  let c : ℝ := ε / (2 * M)
+  have hc : 0 < c := by
+    positivity
+  have hbound_nhds :
+      ∀ᶠ h : E in 𝓝 0,
+        ‖phi (theta + h) - phi theta - L h‖ ≤ c * ‖h‖ :=
+    hrem.bound hc
+  rcases Metric.eventually_nhds_iff.mp hbound_nhds with
+    ⟨δ, hδ, hδ_bound⟩
+  have hscale_event : ∀ᶠ n in atTop, M / δ < ‖r n‖ :=
+    hr (eventually_gt_atTop (M / δ))
+  filter_upwards [hscale_event] with n hn ω hscaled
+  let h : E := Tn n ω - theta
+  have hM_lt_rδ : M < ‖r n‖ * δ := by
+    exact (div_lt_iff₀ hδ).mp hn
+  have hnorm_h_lt : ‖h‖ < δ := by
+    by_contra hnot
+    have hδ_le : δ ≤ ‖h‖ := not_lt.mp hnot
+    have hM_lt_scaled : M < ‖r n • h‖ := by
+      calc
+        M < ‖r n‖ * δ := hM_lt_rδ
+        _ ≤ ‖r n‖ * ‖h‖ :=
+          mul_le_mul_of_nonneg_left hδ_le (norm_nonneg (r n))
+        _ = ‖r n • h‖ := (norm_smul (r n) h).symm
+    exact (not_lt_of_ge hscaled.le) hM_lt_scaled
+  have hrem_bound :
+      ‖phi (Tn n ω) - phi theta - L h‖ ≤ c * ‖h‖ := by
+    have hlocal := hδ_bound (by simpa [dist_eq_norm] using hnorm_h_lt)
+    simpa [h, sub_eq_add_neg, add_assoc, add_left_comm, add_comm] using hlocal
+  have hscaled_norm : ‖r n‖ * ‖h‖ < M := by
+    simpa [h, norm_smul] using hscaled
+  have hmul_le :
+      ‖r n • (phi (Tn n ω) - phi theta - L h)‖ ≤
+        c * (‖r n‖ * ‖h‖) := by
+    calc
+      ‖r n • (phi (Tn n ω) - phi theta - L h)‖
+          = ‖r n‖ * ‖phi (Tn n ω) - phi theta - L h‖ := by
+            rw [norm_smul]
+      _ ≤ ‖r n‖ * (c * ‖h‖) :=
+          mul_le_mul_of_nonneg_left hrem_bound (norm_nonneg (r n))
+      _ = c * (‖r n‖ * ‖h‖) := by ring
+  have hcM_lt : c * M < ε := by
+    have hMne : M ≠ 0 := ne_of_gt hM
+    have hcM_eq : c * M = ε / 2 := by
+      dsimp [c]
+      field_simp [hMne]
+    linarith
+  have hmul_lt : c * (‖r n‖ * ‖h‖) < ε := by
+    exact (mul_lt_mul_of_pos_left hscaled_norm hc).trans hcM_lt
+  exact lt_of_le_of_lt (by simpa [h] using hmul_le) hmul_lt
+
+/--
+Fréchet differentiability gives the scaled-ball smallness field used by the
+delta-method wrapper, assuming the scalar rates diverge in norm.
+-/
+theorem vaart1998_delta_remainder_small_on_scaled_ball_of_hasFDerivAt_norm_atTop
+    {Ω E F : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {Tn : ℕ -> Ω -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ} (L : E →L[ℝ] F)
+    (hphi : HasFDerivAt phi L theta)
+    (hr : Tendsto (fun n => ‖r n‖) atTop atTop) :
+    ∀ ε : ℝ, 0 < ε -> ∀ M : ℝ, 0 < M ->
+      ∀ᶠ n in atTop, ∀ ω,
+        ‖r n • (Tn n ω - theta)‖ < M ->
+        ‖r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))‖ < ε :=
+  vaart1998_delta_remainder_small_on_scaled_ball_of_isLittleO
+    (L := L) (vaart1998_hasFDerivAt_delta_remainder_isLittleO hphi) hr
+
+/--
+Fréchet differentiability gives the scaled-ball smallness field used by the
+delta-method wrapper, in the textbook rate form `r_n -> ∞`.
+-/
+theorem vaart1998_delta_remainder_small_on_scaled_ball_of_hasFDerivAt
+    {Ω E F : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {Tn : ℕ -> Ω -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ} (L : E →L[ℝ] F)
+    (hphi : HasFDerivAt phi L theta)
+    (hr : Tendsto r atTop atTop) :
+    ∀ ε : ℝ, 0 < ε -> ∀ M : ℝ, 0 < M ->
+      ∀ᶠ n in atTop, ∀ ω,
+        ‖r n • (Tn n ω - theta)‖ < M ->
+        ‖r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))‖ < ε := by
+  have hr_norm : Tendsto (fun n => ‖r n‖) atTop atTop := by
+    simpa [Real.norm_eq_abs] using (tendsto_abs_atTop_atTop.comp hr)
+  exact
+    vaart1998_delta_remainder_small_on_scaled_ball_of_hasFDerivAt_norm_atTop
+      (L := L) hphi hr_norm
+
+/--
 van der Vaart 1998, Theorem 3.1, sequence form with an `O_P(1)` scaled
 statistic and a scaled-ball remainder estimate.
 
@@ -661,6 +777,154 @@ theorem vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution
     (L := L) hW hsmall
     (vaart1998_stochasticBounded_of_tendstoInDistribution hW)
     hR_meas
+
+/--
+van der Vaart 1998, Theorem 3.1, sequence form with differentiability and
+distributional convergence of the scaled statistic.
+
+This is the most compact compiled Chapter 3.1 wrapper in the current lane:
+the scaled-statistic tightness is derived from convergence in distribution,
+and the local scaled-ball remainder field is derived from Fréchet
+differentiability plus `r_n -> ∞`.
+-/
+theorem vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution
+    {Ω : Type v} {Ω' : Type w} {E : Type x} {F : Type y}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E] [CompleteSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {T : Ω' -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ}
+    (L : E →L[ℝ] F)
+    (hphi : HasFDerivAt phi L theta)
+    (hr : Tendsto r atTop atTop)
+    (hW : TendstoInDistribution
+      (fun n ω => r n • (Tn n ω - theta)) atTop T (fun _ => P) Q)
+    (hR_meas : ∀ n, AEMeasurable
+      (fun ω => r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))) P) :
+    TendstoInDistribution
+      (fun n ω => r n • (phi (Tn n ω) - phi theta)) atTop
+      (fun ω => L (T ω)) (fun _ => P) Q :=
+  vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution
+    (L := L) hW
+    (vaart1998_delta_remainder_small_on_scaled_ball_of_hasFDerivAt
+      (Tn := Tn) (L := L) hphi hr)
+    hR_meas
+
+/--
+A.e.-measurability of the scaled delta-method remainder from the two natural
+composition measurability fields.
+
+This discharges the technical `hR_meas` side condition in the compact
+Theorem 3.1 wrappers whenever `T_n` and `phi ∘ T_n` are a.e.-measurable.
+-/
+theorem vaart1998_delta_remainder_aemeasurable
+    {Ω E F : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ} (L : E →L[ℝ] F)
+    (hTn : ∀ n, AEMeasurable (Tn n) P)
+    (hphiTn : ∀ n, AEMeasurable (fun ω => phi (Tn n ω)) P) :
+    ∀ n, AEMeasurable
+      (fun ω => r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))) P := by
+  intro n
+  have hTdiff : AEMeasurable (fun ω => Tn n ω - theta) P :=
+    (hTn n).sub aemeasurable_const
+  have hL : AEMeasurable (fun ω => L (Tn n ω - theta)) P :=
+    L.continuous.measurable.comp_aemeasurable hTdiff
+  exact (((hphiTn n).sub aemeasurable_const).sub hL).const_smul (r n)
+
+/--
+Measurable-function version of
+`vaart1998_delta_remainder_aemeasurable`.
+-/
+theorem vaart1998_delta_remainder_aemeasurable_of_measurable
+    {Ω E F : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ} (L : E →L[ℝ] F)
+    (hTn : ∀ n, AEMeasurable (Tn n) P) (hphi : Measurable phi) :
+    ∀ n, AEMeasurable
+      (fun ω => r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))) P :=
+  vaart1998_delta_remainder_aemeasurable (Tn := Tn) (phi := phi)
+    (theta := theta) (r := r) L hTn
+    (fun n => hphi.comp_aemeasurable (hTn n))
+
+/--
+van der Vaart 1998, Theorem 3.1, compact sequence form with a.e.-measurability
+of the remainder derived from `T_n` and `phi ∘ T_n`.
+-/
+theorem vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_aemeasurable
+    {Ω : Type v} {Ω' : Type w} {E : Type x} {F : Type y}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E] [CompleteSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {T : Ω' -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ}
+    (L : E →L[ℝ] F)
+    (hphi : HasFDerivAt phi L theta)
+    (hr : Tendsto r atTop atTop)
+    (hW : TendstoInDistribution
+      (fun n ω => r n • (Tn n ω - theta)) atTop T (fun _ => P) Q)
+    (hTn : ∀ n, AEMeasurable (Tn n) P)
+    (hphiTn : ∀ n, AEMeasurable (fun ω => phi (Tn n ω)) P) :
+    TendstoInDistribution
+      (fun n ω => r n • (phi (Tn n ω) - phi theta)) atTop
+      (fun ω => L (T ω)) (fun _ => P) Q :=
+  vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution
+    (L := L) hphi hr hW
+    (vaart1998_delta_remainder_aemeasurable (Tn := Tn) (phi := phi)
+      (theta := theta) (r := r) L hTn hphiTn)
+
+/--
+van der Vaart 1998, Theorem 3.1, compact sequence form with the remainder's
+a.e.-measurability derived from measurability of `phi`.
+-/
+theorem vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_measurable
+    {Ω : Type v} {Ω' : Type w} {E : Type x} {F : Type y}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E] [CompleteSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {T : Ω' -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ}
+    (L : E →L[ℝ] F)
+    (hphi_deriv : HasFDerivAt phi L theta)
+    (hphi_meas : Measurable phi)
+    (hr : Tendsto r atTop atTop)
+    (hW : TendstoInDistribution
+      (fun n ω => r n • (Tn n ω - theta)) atTop T (fun _ => P) Q)
+    (hTn : ∀ n, AEMeasurable (Tn n) P) :
+    TendstoInDistribution
+      (fun n ω => r n • (phi (Tn n ω) - phi theta)) atTop
+      (fun ω => L (T ω)) (fun _ => P) Q :=
+  vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_aemeasurable
+    (Tn := Tn) (T := T) (phi := phi) (theta := theta) (r := r)
+    (L := L) hphi_deriv hr hW hTn
+    (fun n => hphi_meas.comp_aemeasurable (hTn n))
 
 /--
 van der Vaart 1998, Theorem 3.1, sequence form with an `O_P(1)` scaled

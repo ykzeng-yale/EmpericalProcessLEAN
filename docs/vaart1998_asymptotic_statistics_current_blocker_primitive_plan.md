@@ -105,28 +105,44 @@ Chapter 3 theorem-facing wrappers compiling:
 19. Theorem 3.1 localization wrapper that derives the `O_P(1)` scaled-statistic
    field from distributional convergence:
    `vaart1998_theorem_3_1_delta_method_of_localization_distribution`.
+20. Analytic scaled-ball smallness from an `o(‖h‖)` deterministic remainder:
+   `vaart1998_delta_remainder_small_on_scaled_ball_of_isLittleO`.
+21. Scaled-ball smallness from `HasFDerivAt` and divergent rate norms:
+   `vaart1998_delta_remainder_small_on_scaled_ball_of_hasFDerivAt_norm_atTop`.
+22. Textbook-rate scaled-ball smallness from `HasFDerivAt` and `r_n -> ∞`:
+   `vaart1998_delta_remainder_small_on_scaled_ball_of_hasFDerivAt`.
+23. Theorem 3.1 compact sequence wrapper from differentiability,
+   `r_n -> ∞`, and distributional convergence of the scaled statistic:
+   `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`.
+24. A.e.-measurability of the scaled delta remainder from `T_n` and
+   `phi ∘ T_n`:
+   `vaart1998_delta_remainder_aemeasurable`.
+25. Measurable-function version:
+   `vaart1998_delta_remainder_aemeasurable_of_measurable`.
+26. Theorem 3.1 compact sequence wrapper deriving the remainder measurability
+   from `T_n` and `phi ∘ T_n`:
+   `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_aemeasurable`.
+27. Theorem 3.1 compact sequence wrapper deriving the remainder measurability
+   from global measurability of `phi`:
+   `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution_measurable`.
 
-Latest pushed Vaart packet before this run: `c3cb275`
-(`Add Vaart law-tail stochastic bounded bridge`), included in remote `main` at
-`fb090b2`.
+Latest pushed Vaart packet before this run: `06ca46f`
+(`Add Vaart delta scaled-ball derivative bridge`).
 
-The current theorem-sized packet has closed the law-tightness side of Vaart's
-Chapter 2-3 route.  VdV&W tightness of law ranges now produces the real
-norm-tail bounds consumed by `StochasticBounded`, and convergence in
-distribution now automatically supplies `O_P(1)`.  The delta-method
-localization/scaled-ball wrappers can therefore derive the tight scaled-statistic
-field directly from `hW : r_n • (T_n - theta) ⇒ T`.
+The current theorem-sized packet has closed the cheap Chapter 3.1 measurability
+bookkeeping layer.  The compact differentiability/distribution wrapper no
+longer asks users to hand-prove `hR_meas` when `T_n` and either `phi ∘ T_n` or
+globally measurable `phi` are available.
 
-The next aggressive packet is to discharge the remaining local-remainder
-certificate field:
+The next aggressive packet should move out of Chapter 3 plumbing:
 
-1. derive the scaled-ball smallness field from
-   `vaart1998_hasFDerivAt_delta_remainder_isLittleO`, `r_n -> ∞`, and
-   `T_n - theta -> 0` in probability;
-2. feed that field to
-   `vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution` to remove
-   the last supplied probabilistic certificate from the finite-dimensional
-   Chapter 3.1 route.
+1. start Chapter 4 method-of-moments wrappers by combining the CLT
+   wrapper with
+   `vaart1998_theorem_3_1_delta_method_of_hasFDerivAt_distribution`;
+2. add source-shaped moment estimator consistency/asymptotic-normality
+   certificates only as far as existing SLLN/CLT/delta APIs discharge them;
+3. begin exact source capture for Vaart Theorem 3.1 only when the Markdown/PDF
+   theorem statement and assumptions are explicitly quoted in a report file.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
@@ -183,11 +199,12 @@ bridge is now compiled: `vaart1998_law_real_norm_tail_of_tight_range`,
 `vaart1998_law_real_norm_tail_of_weak_convergence`, and
 `vaart1998_stochasticBounded_of_tendstoInDistribution`.
 
-Search result for the remaining delta-method layer: the open proof obligation
-is no longer law tightness.  It is the scaled-ball smallness theorem converting
-the deterministic `HasFDerivAt` little-o display plus probabilistic
-localization of `T_n` around `theta` into the `hsmall` field consumed by
-`vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution`.
+Search result for the remaining delta-method layer: the scaled-ball smallness
+theorem is now compiled.  The proof only needs the fixed scaled-ball event and
+`‖r_n‖ -> ∞`; a separate probabilistic `T_n -> theta` assumption is not needed
+for this certificate.  The Chapter 3 technical `AEMeasurable` side condition is
+now also compiled from standard composition, subtraction, continuous-linear
+composition, and constant-scaling APIs in mathlib.
 
 ## Primitive Sequence
 
