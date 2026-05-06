@@ -7,11 +7,12 @@ Durrett-specific theorem packaging should live in the content-based folder
 `StatInference/ProbabilityTheory/`; reusable lower-level probability-measure
 infrastructure should continue to live in `StatInference/ProbabilityMeasure/`.
 
-The lane follows the existing Billingsley and Optimization automation style:
-search first, reuse mathlib and local wrappers aggressively, prove theorem-sized
-Lean packets, verify locally, update the route docs, then sync GitHub.  The
-goal is full-book coverage over time, but each run should choose the next
-largest theorem step that can actually compile.
+The lane follows the existing Billingsley and Optimization proof-orchestration
+style inside this chat: search first, reuse mathlib and local wrappers
+aggressively, prove theorem-sized Lean packets, verify locally, update the
+route docs, then sync GitHub.  The goal is full-book coverage over time, but
+each in-thread cycle should choose the next largest theorem step that can
+actually compile.
 
 ## Local Sources
 
@@ -24,20 +25,20 @@ largest theorem step that can actually compile.
   - `Textbooks/Durrett2019ProbabilityTheory/PDF/Durrett2019 - Probability Theory and Examples.pdf`
   - matching split PDFs in the same directory.
 
-## Automation Prompt Maintenance
+## In-Thread Goal Maintenance
 
-The recurring Durrett automation is an active proof orchestrator.  At the end
-of every run that proves, blocks, merges, commits, pushes, or materially changes
-the route, refresh the live automation prompt from:
+The Durrett lane is an active `/goal` in this chat, not a recurring automation.
+At the end of every cycle that proves, blocks, merges, commits, pushes, or
+materially changes the route, refresh the route state from:
 
 1. `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`;
 2. `docs/durrett2019_probability_theory_progress_dashboard.md`;
 3. this blueprint;
 4. the latest pushed commit and current remote contributions.
 
-Each refreshed prompt should name the latest verified declarations, one primary
-theorem target, parallel support targets, search-first scope, verification gate,
-and report gate.  Do not let a run replay a solved target.
+Each refreshed in-thread target should name the latest verified declarations,
+one primary theorem target, parallel support targets, search-first scope,
+verification gate, and report gate.  Do not replay a solved target.
 
 ## Status Vocabulary
 
@@ -145,9 +146,10 @@ Compiled first source wrappers:
   `probabilityMeasure_ext_of_generate_finite`.
 - Durrett Theorem 1.1.1 measure-property wrappers and Theorems 1.3.1/1.3.4
   measurability wrappers.
-- Durrett Theorem 2.1.10 product-coordinate independence, 2.1.11 product law,
-  2.1.12 product/Fubini expectation, and 2.1.13 expectation-factorization
-  wrappers.
+- Durrett Theorem 2.1.7 generated-pi-system independence, Theorem 2.1.10
+  measurable-function preservation/product-coordinate independence, 2.1.11
+  product law, 2.1.12 product/Fubini expectation, and 2.1.13
+  expectation-factorization wrappers.
 - Durrett Theorem 2.4.9 conditional Glivenko-Cantelli handoffs from supplied
   endpoint grids and supplied middle CDF partitions.
 

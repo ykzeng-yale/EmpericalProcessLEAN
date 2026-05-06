@@ -107,6 +107,82 @@ theorem durrett2019_theorem_1_3_4_measurable_comp
 /-! ## Durrett, Section 2.1 -/
 
 /--
+Durrett 2019, Theorem 2.1.7, indexed pi-system form.
+
+Independent pi-systems generate independent sigma-fields.  The generator
+measurability hypotheses record that each generated sigma-field sits below the
+ambient measurable space on which `P` is defined.
+-/
+theorem durrett2019_theorem_2_1_7_iIndep_generatedSigma_of_iIndepSets
+    {Ω : Type u} [mΩ : MeasurableSpace Ω] {ι : Type v} {P : Measure Ω}
+    {C : ι -> Set (Set Ω)}
+    (hC_meas : ∀ i s, s ∈ C i -> MeasurableSet s)
+    (hC_pi : ∀ i, IsPiSystem (C i))
+    (hC_indep : _root_.ProbabilityTheory.iIndepSets C P) :
+    _root_.ProbabilityTheory.iIndep
+      (fun i => StatInference.ProbabilityMeasure.GeneratedSigma Ω (C i)) P := by
+  exact _root_.ProbabilityTheory.iIndepSets.iIndep
+    (m := fun i => StatInference.ProbabilityMeasure.GeneratedSigma Ω (C i))
+    (μ := P)
+    (fun i => StatInference.ProbabilityMeasure.generatedSigma_le (hC_meas i))
+    C hC_pi (fun i => rfl) hC_indep
+
+/--
+Durrett 2019, Theorem 2.1.7, two-pi-system form.
+
+This is the two-sigma-field version used repeatedly before product laws:
+independence checked on two generating pi-systems extends to the generated
+sigma-fields.
+-/
+theorem durrett2019_theorem_2_1_7_indep_generatedSigma_of_indepSets
+    {Ω : Type u} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsZeroOrProbabilityMeasure P]
+    {C D : Set (Set Ω)}
+    (hC_meas : ∀ s, s ∈ C -> MeasurableSet s)
+    (hD_meas : ∀ s, s ∈ D -> MeasurableSet s)
+    (hC_pi : IsPiSystem C) (hD_pi : IsPiSystem D)
+    (hCD_indep : _root_.ProbabilityTheory.IndepSets C D P) :
+    _root_.ProbabilityTheory.Indep
+      (StatInference.ProbabilityMeasure.GeneratedSigma Ω C)
+      (StatInference.ProbabilityMeasure.GeneratedSigma Ω D) P := by
+  exact _root_.ProbabilityTheory.IndepSets.indep'
+    hC_meas hD_meas hC_pi hD_pi hCD_indep
+
+/--
+Durrett 2019, Theorem 2.1.10, indexed measurable-function form.
+
+Measurable functions of an independent family remain independent.
+-/
+theorem durrett2019_theorem_2_1_10_iIndepFun_comp
+    {Ω : Type u} [MeasurableSpace Ω] {ι : Type v} {P : Measure Ω}
+    {S : ι -> Type*} {T : ι -> Type*}
+    [∀ i, MeasurableSpace (S i)] [∀ i, MeasurableSpace (T i)]
+    {X : ∀ i, Ω -> S i}
+    (hX : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    {f : ∀ i, S i -> T i}
+    (hf : ∀ i, Measurable (f i)) :
+    _root_.ProbabilityTheory.iIndepFun (μ := P) (fun i => f i ∘ X i) := by
+  exact hX.comp f hf
+
+/--
+Durrett 2019, Theorem 2.1.10, two-variable measurable-function form.
+
+Measurable functions of two independent random variables are independent.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_comp
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type v} {T : Type w} {U : Type*} {V : Type*}
+    [MeasurableSpace S] [MeasurableSpace T]
+    [MeasurableSpace U] [MeasurableSpace V]
+    {X : Ω -> S} {Y : Ω -> T}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    {f : S -> U} {g : T -> V}
+    (hf : Measurable f) (hg : Measurable g) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => f (X ω)) (fun ω => g (Y ω)) := by
+  simpa [Function.comp_def] using hXY.comp hf hg
+
+/--
 Durrett 2019, Theorem 2.1.10, product-coordinate function form.
 
 Measurable functions of the two coordinates on a product probability space are

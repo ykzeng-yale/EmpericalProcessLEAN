@@ -16,9 +16,9 @@ must reuse Billingsley/local probability primitives whenever possible.
 - Formal theorem reports: none yet.
 - Proof-hole policy: no Durrett report until the exact textbook statement
   compiles with no `sorry`, `admit`, unreviewed `axiom`, or `unsafe`.
-- Automation policy: the Durrett automation runs every 15 minutes and should
-  refresh its live prompt after each verified proof step, blocker refinement,
-  merge, or route change.
+- Goal policy: Durrett is tracked by the active in-thread `/goal`, not a
+  recurring automation.  Refresh the route docs and next target after each
+  verified proof step, blocker refinement, merge, or route change.
 
 ## Current Active Target
 
@@ -39,6 +39,10 @@ compiles and root-imports the new namespace.  Compiled declarations:
 - `durrett2019_theorem_1_1_1_tendsto_measure_from_above`;
 - `durrett2019_theorem_1_3_1_measurable_of_generator_preimages`;
 - `durrett2019_theorem_1_3_4_measurable_comp`.
+- `durrett2019_theorem_2_1_7_iIndep_generatedSigma_of_iIndepSets`;
+- `durrett2019_theorem_2_1_7_indep_generatedSigma_of_indepSets`;
+- `durrett2019_theorem_2_1_10_iIndepFun_comp`;
+- `durrett2019_theorem_2_1_10_indepFun_comp`;
 - `durrett2019_theorem_2_1_10_product_coordinate_functions_independent`;
 - `durrett2019_theorem_2_1_11_indepFun_hasLaw_prod`;
 - `durrett2019_theorem_2_1_12_product_integral`;
@@ -62,9 +66,8 @@ Immediate proof route:
 2. prove the remaining arbitrary-distribution middle CDF partition constructor
    consumed by the compiled middle-partition-to-GC handoff;
 3. package the empirical CDF statement once the uniform squeezing proof closes;
-4. in parallel, deepen generated-independence bridges
-   needed for
-   Theorems 2.1.7-2.1.13;
+4. in parallel, deepen grouped/disjoint-block independence bridges
+   needed for Theorems 2.1.9-2.1.10;
 5. promote exact source statements once the wrapper statements line up with the
    PDF/Markdown.
 
@@ -77,7 +80,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Lane | Status | Current Lean anchor | Notes |
 | --- | --- | --- | --- |
 | Chapter 1 measure/probability foundations | source-wrapper/reused-local | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/GeneratedSigma.lean`; `Tail.lean`; `ProductMeasure.lean` | Durrett wrappers for Theorem 1.1.1 measure properties and Theorems 1.3.1/1.3.4 measurability facts now compile over mathlib/local generator APIs. |
-| Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Product-coordinate independence, product-law, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining exact-source work: generated sigma-field independence Theorems 2.1.7-2.1.10 in greater generality. |
+| Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, measurable-function preservation, product-coordinate independence, product-law, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining exact-source work: grouped/disjoint-block independence for Theorems 2.1.9-2.1.10 in greater generality. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
 | Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids or supplied middle CDF partitions. Remaining blocker: construct those middle partitions for arbitrary distributions. |
 | Chapter 3 CLT/characteristic functions | pending-local | none | Needs mathlib API search for characteristic functions, normal laws, weak convergence, and scalar asymptotics. |
@@ -118,12 +121,13 @@ Every Lean packet should pass:
 - changed-file secret scan;
 - `git diff --check`.
 
-## Current Next Run Contract
+## Current Next Goal Cycle Contract
 
-The next automation run should not just reread the source.  It should either:
+The next in-thread goal cycle should not just reread the source.  It should
+either:
 
 - advance Durrett Theorem 2.4.9 by proving the arbitrary-distribution middle
   CDF partition existence theorem consumed by the compiled GC handoff; or
-- if that blocks, prove and verify the smallest generated-sigma-field
-  independence wrapper needed for Theorems 2.1.7-2.1.10 and record the exact GC
+- if that blocks, prove and verify the smallest grouped/disjoint-block
+  independence wrapper needed for Theorems 2.1.9-2.1.10 and record the exact GC
   partition blocker.

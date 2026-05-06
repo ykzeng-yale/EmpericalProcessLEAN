@@ -1,16 +1,17 @@
 # Durrett 2019 Current Blocker And Primitive Plan
 
 This file is the active blocker register for the Durrett probability-theory
-lane.  It should be checked at the start of each automation run before choosing
-a proof target.
+lane.  It should be checked at the start of each in-thread goal cycle before
+choosing a proof target.
 
-## Adaptive Automation Prompt Rule
+## Adaptive In-Thread Goal Rule
 
-The recurring Durrett automation is part of the proof state.  Every run should
-finish by checking whether its live prompt is stale relative to this file, the
-dashboard, the blueprint, and the latest verified commit.
+The Durrett work is an active `/goal` in this chat, not a recurring
+automation.  Every substantial cycle should finish by checking whether the
+live in-thread goal prompt is stale relative to this file, the dashboard, the
+blueprint, and the latest verified commit.
 
-Refresh the prompt whenever a run:
+Refresh the route docs and in-thread target whenever a cycle:
 
 - proves a Lean declaration;
 - narrows or discovers a blocker;
@@ -18,7 +19,7 @@ Refresh the prompt whenever a run:
 - changes the next atomic target;
 - records a material mathlib/local-code search result.
 
-The refreshed prompt should name:
+The refreshed in-thread target should name:
 
 - the latest pushed commit and new declarations or blocker refinement;
 - one primary theorem/proof target plus independent support targets;
@@ -31,7 +32,7 @@ The refreshed prompt should name:
 
 ## Throughput Policy
 
-Each run should make concrete verified Lean progress or document a precise
+Each cycle should make concrete verified Lean progress or document a precise
 blocker with attempted APIs.  Prefer theorem-sized source wrappers and
 certificate bridges that unlock multiple later chapters.  A tiny primitive is
 acceptable only when it is the fastest verified dependency for the current
@@ -65,6 +66,10 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_1_1_1_tendsto_measure_from_above`
 - `durrett2019_theorem_1_3_1_measurable_of_generator_preimages`
 - `durrett2019_theorem_1_3_4_measurable_comp`
+- `durrett2019_theorem_2_1_7_iIndep_generatedSigma_of_iIndepSets`
+- `durrett2019_theorem_2_1_7_indep_generatedSigma_of_indepSets`
+- `durrett2019_theorem_2_1_10_iIndepFun_comp`
+- `durrett2019_theorem_2_1_10_indepFun_comp`
 - `durrett2019_theorem_2_1_10_product_coordinate_functions_independent`
 - `durrett2019_theorem_2_1_11_indepFun_hasLaw_prod`
 - `durrett2019_theorem_2_1_12_product_integral`
@@ -100,8 +105,9 @@ middle CDF partition existence consumed by
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
-Parallel target: Theorems 2.1.7-2.1.13 independence/product-law wrappers, after
-a search-first audit of mathlib independence APIs.
+Parallel target: grouped sigma-field and disjoint-block independence wrappers
+for Theorems 2.1.9-2.1.10, now that the Theorem 2.1.7 generated-pi-system
+bridge and basic measurable-function preservation wrappers compile.
 
 Do not start with raw Chapter 1 extension theorem formalization, Stieltjes
 measure construction, or appendix foundations unless an exact Durrett theorem
@@ -159,20 +165,22 @@ Pinned mathlib search scope:
 6. Search and package independence/product-law wrappers for Theorems 2.1.7,
    2.1.10, 2.1.11, 2.1.12, and 2.1.13.  Reuse finite-`Pi` and product measure
    wrappers from `ProbabilityMeasure/ProductMeasure.lean` wherever possible.
-   Product-coordinate and expectation-factorization wrappers now compile;
-   remaining work is generated sigma-field grouped independence.
+   Generated pi-system independence, measurable-function preservation,
+   product-coordinate independence, product-law, and expectation-factorization
+   wrappers now compile; remaining work is grouped/disjoint-block independence
+   in the exact source shape of Theorems 2.1.9-2.1.10.
 7. After Chapter 2 has a stable theorem spine, start Chapter 3 by searching
    characteristic-function, normal-law, and weak-convergence APIs.
 
 ## Current In-Thread Goal Prompt Seed
 
-Start every run by inspecting git status, fetching origin/main, reviewing recent
-remote commits for other-agent Lean contributions, reading this file plus the
-Durrett dashboard and blueprint, and scanning the current
+Start every in-thread cycle by inspecting git status, fetching origin/main,
+reviewing recent remote commits for other-agent Lean contributions, reading
+this file plus the Durrett dashboard and blueprint, and scanning the current
 `StatInference/ProbabilityTheory`, `StatInference/ProbabilityMeasure`, and
 `StatInference/EmpiricalProcess/RealHalfLineGC.lean` modules.  Primary target:
 Durrett Theorem 2.4.9 arbitrary-distribution middle CDF partition constructor.
-Parallel target: generated-sigma grouped-independence wrappers for Theorems
-2.1.7-2.1.10 if the GC grid blocks.  Verify, update docs, commit/push, and keep
-this in-thread `/goal` state current.  Report progress and blockers in
+Parallel target: grouped/disjoint-block independence wrappers for Theorems
+2.1.9-2.1.10 if the GC grid blocks.  Verify, update docs, commit/push, and
+keep this in-thread `/goal` state current.  Report progress and blockers in
 Chinese/English mix.
