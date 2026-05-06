@@ -2402,3 +2402,12 @@ extended-real arbitrary-map and process/FDD blockers remain open.
 replacement, and reindexing style already available for ordinary
 asymptotic-tightness.  This supports Chapter 1 product/FDD and subsequence
 arguments while leaving exact arbitrary-map/process weak convergence open.
+
+2026-05-06 signed arbitrary-map reindexing follow-up:
+`WeakConvergence.lean` now gives both common-domain and varying-domain signed
+bounded-continuous arbitrary-map weak-convergence packages `comp_tendsto`
+reindexing lemmas.  The new declarations cover the signed outer convergence
+field, the signed asymptotic-measurability field, and the proof-carrying
+packages.  This rounds out the filter/replacement/reindexing support layer
+for Chapter 1 arbitrary-map arguments; exact nonmeasurable cover and
+process/FDD converse blockers remain open.

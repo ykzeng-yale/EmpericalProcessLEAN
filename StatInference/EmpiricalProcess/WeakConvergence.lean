@@ -342,6 +342,23 @@ theorem VdVWWeakConvergenceSignedOuterBoundedContinuous.congr_eventually
   simp [hνμ, hYX]
 
 /--
+Signed-outer bounded-continuous weak convergence is stable under reindexing
+along a map that tends to the original index filter.
+-/
+theorem VdVWWeakConvergenceSignedOuterBoundedContinuous.comp_tendsto
+    {Ω : Type u} {S : Type v} {ι : Type w} {κ : Type x}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l : Filter ι} {l' : Filter κ} {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l μ)
+    {u : κ -> ι} (hu : Tendsto u l' l) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous
+      (fun k => μs (u k)) (fun k ω => X (u k) ω) l' μ := by
+  intro f
+  exact (h f).comp hu
+
+/--
 Signed bounded-continuous outer/inner expectation gap for an arbitrary real
 map.
 
@@ -592,6 +609,22 @@ theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.congr_eventually
   simp [hνμ, hYX]
 
 /--
+Signed bounded-continuous asymptotic measurability is stable under reindexing
+along a map that tends to the original index filter.
+-/
+theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.comp_tendsto
+    {Ω : Type u} {S : Type v} {ι : Type w} {κ : Type x}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l : Filter ι} {l' : Filter κ}
+    (h : VdVWAsymptoticallyMeasurableSignedBoundedContinuous μs X l)
+    {u : κ -> ι} (hu : Tendsto u l' l) :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuous
+      (fun k => μs (u k)) (fun k ω => X (u k) ω) l' := by
+  intro f
+  exact (h f).comp hu
+
+/--
 Proof-carrying signed bounded-continuous arbitrary-map weak convergence.
 
 The structure packages the signed-outer bounded-continuous convergence
@@ -662,6 +695,23 @@ theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.congr_eventually
   { weakConvergence := h.weakConvergence.congr_eventually hμ hX
     asymptoticMeasurability :=
       h.asymptoticMeasurability.congr_eventually hμ hX }
+
+/--
+The proof-carrying signed arbitrary-map weak-convergence package is stable
+under reindexing along a map that tends to the original index filter.
+-/
+theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.comp_tendsto
+    {Ω : Type u} {S : Type v} {ι : Type w} {κ : Type x}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l : Filter ι} {l' : Filter κ} {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ)
+    {u : κ -> ι} (hu : Tendsto u l' l) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap
+      (fun k => μs (u k)) (fun k ω => X (u k) ω) l' μ :=
+  { weakConvergence := h.weakConvergence.comp_tendsto hu
+    asymptoticMeasurability := h.asymptoticMeasurability.comp_tendsto hu }
 
 /--
 First-coordinate product lift for signed-outer bounded-continuous weak
@@ -867,6 +917,27 @@ theorem
   simp [hνμ, hYX]
 
 /--
+Varying-domain signed-outer bounded-continuous weak convergence is stable
+under reindexing along a map that tends to the original index filter.
+-/
+theorem
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.comp_tendsto
+    {ι : Type w} {κ : Type x} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)}
+    {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι} {l' : Filter κ} {μ : ProbabilityMeasure S}
+    (h :
+      VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains Ω μs X l μ)
+    {u : κ -> ι} (hu : Tendsto u l' l) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains
+      (fun k => Ω (u k)) (fun k => μs (u k))
+      (fun k ω => X (u k) ω) l' μ := by
+  intro f
+  exact (h f).comp hu
+
+/--
 Varying-domain signed bounded-continuous asymptotic measurability.
 -/
 def VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
@@ -1026,6 +1097,27 @@ theorem
   simp [hνμ, hYX]
 
 /--
+Varying-domain signed bounded-continuous asymptotic measurability is stable
+under reindexing along a map that tends to the original index filter.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.comp_tendsto
+    {ι : Type w} {κ : Type x} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    {μs : (i : ι) -> Measure (Ω i)}
+    {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι} {l' : Filter κ}
+    (h :
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
+        Ω μs X l)
+    {u : κ -> ι} (hu : Tendsto u l' l) :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
+      (fun k => Ω (u k)) (fun k => μs (u k))
+      (fun k ω => X (u k) ω) l' := by
+  intro f
+  exact (h f).comp hu
+
+/--
 Proof-carrying varying-domain signed bounded-continuous weak convergence.
 
 This packages the varying-domain weak-convergence and asymptotic-measurability
@@ -1102,6 +1194,27 @@ theorem
   { weakConvergence := h.weakConvergence.congr_eventually hμ hX
     asymptoticMeasurability :=
       h.asymptoticMeasurability.congr_eventually hμ hX }
+
+/--
+The proof-carrying varying-domain signed bounded-continuous weak-convergence
+package is stable under reindexing along a map that tends to the original
+index filter.
+-/
+theorem
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.comp_tendsto
+    {ι : Type w} {κ : Type x} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : (i : ι) -> Measure (Ω i)}
+    {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι} {l' : Filter κ} {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ)
+    {u : κ -> ι} (hu : Tendsto u l' l) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains
+      (fun k => Ω (u k)) (fun k => μs (u k))
+      (fun k ω => X (u k) ω) l' μ :=
+  { weakConvergence := h.weakConvergence.comp_tendsto hu
+    asymptoticMeasurability := h.asymptoticMeasurability.comp_tendsto hu }
 
 /--
 First-coordinate product lift for varying-domain signed-outer

@@ -6327,3 +6327,20 @@ convergence wrapper itself.  `WeakConvergence.lean` now proves
 `Tendsto` stability facts, but they remove a small Chapter 1 product/FDD and
 subsequence/reindexing support gap without changing the remaining exact
 arbitrary-map/nonmeasurable process blockers.
+
+2026-05-06 signed arbitrary-map reindexing follow-up:
+local search found `mono_filter` and `congr_eventually` for the signed
+outer/asymptotic-measurability arbitrary-map packages, but no corresponding
+`comp_tendsto` reindexing lemmas.  `WeakConvergence.lean` now proves
+`VdVWWeakConvergenceSignedOuterBoundedContinuous.comp_tendsto`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous.comp_tendsto`,
+`VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.comp_tendsto`, and the
+varying-domain analogues
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.comp_tendsto`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.comp_tendsto`,
+and
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.comp_tendsto`.
+These close the basic subsequence/net reindexing layer for the current signed
+bounded-continuous arbitrary-map weak-convergence foundations.  They do not
+prove the still-missing signed extended-real measurable-cover existence,
+arbitrary-map asymptotic tightness, or arbitrary-index FDD converse.
