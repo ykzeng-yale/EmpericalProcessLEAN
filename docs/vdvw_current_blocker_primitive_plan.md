@@ -5789,3 +5789,12 @@ These let polynomial/VC trace-count proofs feed the selected fixed-radius
 Theorem 2.4.3 route uniformly over all positive truncation levels.  They do
 not remove the exact random-entropy tail/UI gap when no deterministic
 log-succ-linear or trace-count bound is available.
+
+2026-05-05 Theorem 2.4.3 natural-polynomial constructor follow-up: the same
+search found fixed-`M` natural-polynomial selected tail/UI constructors but no
+all-positive-`M` version.  `Theorem243.lean` now adds
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_logCardinality_nat_poly_bound`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_trace_image_cardinality_bound_nat_poly`.
+These are the direct all-truncation-level consumers for VC/Sauer-style bounds
+of the form `cardinality + 1 <= C(M, eta) * (n + 1) ^ d(M, eta)`.

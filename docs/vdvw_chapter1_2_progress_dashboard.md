@@ -2113,3 +2113,8 @@ constructors from shifted log-linear bounds and finite-trace shifted
 log-linear bounds.  These are theorem-facing bridges for polynomial/VC
 trace-count routes; the non-deterministic random-entropy tail/UI bridge remains
 open.
+
+2026-05-05 Theorem 2.4.3 natural-polynomial constructor follow-up:
+`Theorem243.lean` now also has all-positive-`M` selected fixed-radius tail/UI
+constructors from natural-polynomial cardinality bounds and finite-trace
+natural-polynomial bounds, matching the standard VC/Sauer growth form.
