@@ -221,6 +221,122 @@ theorem chewi121_weightedSampleAverage_gap_le_geometric_of_weightedAverageGap
       (by simpa using hgap) hbound'
 
 /--
+Upgrade a stronger smooth-case Chewi 12.1 averaged-iterate bound to the
+constant displayed in the source theorem.  The compiled stochastic wrappers
+prove the same estimate without the harmless factor `1 + alphaG * h`; this
+lemma packages the exact displayed RHS under `0 <= alphaG`.
+-/
+theorem chewi121_smooth_displayed_error_rhs_of_stronger
+    {lhs init alphaG sigma dim h alphaPhi : ℝ}
+    (halphaG_nonneg : 0 ≤ alphaG) (hh : 0 < h)
+    (halphaPhi : 0 < alphaPhi) (hdim_nonneg : 0 ≤ dim)
+    (hstrong : lhs ≤ init + sigma ^ (2 : ℕ) * dim * h / alphaPhi) :
+    lhs ≤ init + (1 + alphaG * h) *
+        (sigma ^ (2 : ℕ) * dim * h / alphaPhi) := by
+  let base : ℝ := sigma ^ (2 : ℕ) * dim * h / alphaPhi
+  have hbase_nonneg : 0 ≤ base := by
+    have hnum : 0 ≤ sigma ^ (2 : ℕ) * dim * h :=
+      mul_nonneg (mul_nonneg (sq_nonneg sigma) hdim_nonneg) hh.le
+    exact div_nonneg hnum halphaPhi.le
+  have hfactor_ge_one : 1 ≤ 1 + alphaG * h := by
+    have hmul : 0 ≤ alphaG * h := mul_nonneg halphaG_nonneg hh.le
+    nlinarith
+  have hbase_le : base ≤ (1 + alphaG * h) * base := by
+    simpa using mul_le_mul_of_nonneg_right hfactor_ge_one hbase_nonneg
+  nlinarith [hstrong]
+
+/--
+Smooth Chewi 12.1 averaged-iterate bound with the exact displayed stochastic
+constant, as a corollary of any stronger bound at the same averaged iterate.
+-/
+theorem chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_stronger
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {f g : E -> ℝ}
+    {alphaF alphaG alphaPhi sigma dim h Fstar : ℝ} {N : ℕ}
+    {D : ℕ -> ℝ} {xPlus : ℕ -> Ω -> E}
+    (halphaG_nonneg : 0 ≤ alphaG) (hh : 0 < h)
+    (halphaPhi : 0 < alphaPhi) (hdim_nonneg : 0 ≤ dim)
+    (hstrong :
+      (∫ ω,
+          compositeObjective f g
+            (weightedSampleAverage
+              (fun n => (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))
+              xPlus N ω) ∂μ) - Fstar ≤
+        (alphaF + alphaG) /
+            (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+          sigma ^ (2 : ℕ) * dim * h / alphaPhi) :
+    (∫ ω,
+        compositeObjective f g
+          (weightedSampleAverage
+            (fun n => (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))
+            xPlus N ω) ∂μ) - Fstar ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        (1 + alphaG * h) *
+          (sigma ^ (2 : ℕ) * dim * h / alphaPhi) :=
+  chewi121_smooth_displayed_error_rhs_of_stronger
+    halphaG_nonneg hh halphaPhi hdim_nonneg hstrong
+
+/--
+Upgrade a stronger non-smooth Chewi 12.1 averaged-iterate bound to the exact
+constant displayed in the source theorem.
+-/
+theorem chewi121_nonsmooth_displayed_error_rhs_of_stronger
+    {lhs init alphaG L h alphaPhi : ℝ}
+    (halphaG_nonneg : 0 ≤ alphaG) (hh : 0 < h)
+    (halphaPhi : 0 < alphaPhi)
+    (hstrong : lhs ≤ init + 2 * L ^ (2 : ℕ) * h / alphaPhi) :
+    lhs ≤ init + (1 + alphaG * h) *
+        (2 * L ^ (2 : ℕ) * h / alphaPhi) := by
+  let base : ℝ := 2 * L ^ (2 : ℕ) * h / alphaPhi
+  have hbase_nonneg : 0 ≤ base := by
+    have htwo : 0 ≤ (2 : ℝ) := by norm_num
+    have hnum : 0 ≤ 2 * L ^ (2 : ℕ) * h :=
+      mul_nonneg (mul_nonneg htwo (sq_nonneg L)) hh.le
+    exact div_nonneg hnum halphaPhi.le
+  have hfactor_ge_one : 1 ≤ 1 + alphaG * h := by
+    have hmul : 0 ≤ alphaG * h := mul_nonneg halphaG_nonneg hh.le
+    nlinarith
+  have hbase_le : base ≤ (1 + alphaG * h) * base := by
+    simpa using mul_le_mul_of_nonneg_right hfactor_ge_one hbase_nonneg
+  nlinarith [hstrong]
+
+/--
+Non-smooth Chewi 12.1 averaged-iterate bound with the exact displayed
+stochastic constant, as a corollary of any stronger bound at the same averaged
+iterate.
+-/
+theorem chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_stronger
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {f g : E -> ℝ}
+    {alphaF alphaG alphaPhi L h Fstar : ℝ} {N : ℕ}
+    {D : ℕ -> ℝ} {xPlus : ℕ -> Ω -> E}
+    (halphaG_nonneg : 0 ≤ alphaG) (hh : 0 < h)
+    (halphaPhi : 0 < alphaPhi)
+    (hstrong :
+      (∫ ω,
+          compositeObjective f g
+            (weightedSampleAverage
+              (fun n => (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))
+              xPlus N ω) ∂μ) - Fstar ≤
+        (alphaF + alphaG) /
+            (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+          2 * L ^ (2 : ℕ) * h / alphaPhi) :
+    (∫ ω,
+        compositeObjective f g
+          (weightedSampleAverage
+            (fun n => (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))
+            xPlus N ω) ∂μ) - Fstar ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        (1 + alphaG * h) *
+          (2 * L ^ (2 : ℕ) * h / alphaPhi) :=
+  chewi121_nonsmooth_displayed_error_rhs_of_stronger
+    halphaG_nonneg hh halphaPhi hstrong
+
+/--
 Weighted-sum consequence of a discrete Gronwall recurrence with an additive
 stochastic error term.
 
