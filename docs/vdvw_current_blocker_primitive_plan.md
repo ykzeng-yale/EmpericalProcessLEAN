@@ -5910,3 +5910,22 @@ book assumptions.  If that remains blocked after search and Lean attempts,
 advance to theorem-critical Chapter 1 arbitrary-map/asymptotic-measurability or
 nonmeasurable outer-cover primitives that remove countability/measurability
 mismatches in the exact Chapter 1-2 statements.
+
+2026-05-05 probability finite-net handoff follow-up: local search found the
+compiled stochastic-entropy-to-Hoeffding convergence theorem
+`vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero`
+and the new fixed-radius outer-probability chooser, but no existing theorem
+comparing the centered truncated supremum bad event directly to the
+finite-net-Hoeffding bad event.  `Theorem243.lean` now adds
+`VdVWConvergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_add_bound`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_finiteNetHoeffdingUpper`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_finiteNetHoeffdingUpper`.
+Thus the book stochastic entropy input now reaches fixed-`M`
+centered-truncated convergence modulo one explicit theorem-critical event
+comparison:
+`P^*( centered-truncated > epsilon ) <= P^*( finiteNetHoeffdingUpper_eta + eta > epsilon )`
+eventually for every fixed `eta > 0` and `epsilon > 0`.  This is now the next
+non-duplicative Theorem 2.4.3 proof target; do not replace it by another
+ordinary-mean or tail/UI wrapper unless a later exact assembly requires that
+route.

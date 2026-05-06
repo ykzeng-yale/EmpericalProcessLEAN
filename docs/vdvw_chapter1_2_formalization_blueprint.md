@@ -1834,6 +1834,16 @@ finite-net comparison, prove a structural selected-cover cardinality/tail
 condition from the book assumptions, or move to the Chapter 1 arbitrary-map and
 outer-cover primitives needed by the exact statements.
 
+2026-05-05 probability finite-net handoff:
+`Theorem243.lean` now adds the fixed-radius pure outer-probability handoff
+`VdVWConvergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_add_bound`
+and the theorem-facing fixed-`M` consumers ending in
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_finiteNetHoeffdingUpper`.
+The blueprint target is now sharper: prove the event comparison between the
+centered truncated supremum and `finiteNetHoeffdingUpper + eta` at fixed radius,
+or prove a structural selected-cover theorem that supplies one of the existing
+honest side-condition routes.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

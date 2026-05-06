@@ -2182,3 +2182,14 @@ zero in outer probability, then a fixed small radius makes `error_eta + eta`
 eventually small in outer probability.  It is useful for a faithful stochastic
 entropy route to Theorem 2.4.3, but it does not by itself derive the missing
 finite-net comparison from the textbook random entropy hypothesis.
+
+2026-05-05 probability finite-net handoff follow-up:
+`Theorem243.lean` now proves the pure outer-probability fixed-radius handoff
+`VdVWConvergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_add_bound`
+and its fixed-`M` Theorem 2.4.3 specializations
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_finiteNetHoeffdingUpper`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_finiteNetHoeffdingUpper`.
+The stochastic entropy hypothesis can now feed fixed-`M` centered-truncated
+convergence once the remaining event comparison with
+`finiteNetHoeffdingUpper_eta + eta` is proved.

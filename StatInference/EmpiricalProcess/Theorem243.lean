@@ -19663,6 +19663,46 @@ theorem
     _ ≤ delta := hi
 
 /--
+Pure outer-probability fixed-radius perturbation.
+
+This is the theorem-facing probability analogue of the existing mean/Markov
+fixed-radius handoff.  If every fixed positive radius supplies a nonnegative
+error process converging to zero in outer probability, and the target bad event
+is eventually bounded by the bad event for `error_eta + eta`, then the target
+converges to zero in outer probability.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_add_bound
+    {ι : Type v} {Ω : ι -> Type u}
+    [(i : ι) -> MeasurableSpace (Ω i)]
+    (μ : (i : ι) -> Measure (Ω i)) {l : Filter ι}
+    {X : (i : ι) -> Ω i -> ℝ} {error : ℝ -> (i : ι) -> Ω i -> ℝ}
+    (herror_nonneg :
+      ∀ eta i (ω : Ω i), 0 ≤ error eta i ω)
+    (herror :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ
+          (error eta) l (0 : ℝ))
+    (hbound :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ i in l,
+          @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω : Ω i | epsilon < dist (X i ω) (0 : ℝ)}
+            ≤
+          @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω : Ω i | epsilon < dist (error eta i ω + eta) (0 : ℝ)}) :
+    VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ X l
+      (0 : ℝ) := by
+  intro epsilon hepsilon
+  refine ENNReal.tendsto_nhds_zero.2 ?_
+  intro delta hdelta
+  obtain ⟨eta, heta_pos, hsmall⟩ :=
+    exists_pos_radius_eventually_outerProbability_add_const_le_of_forall_convergesInOuterProbabilityConst
+      μ error herror_nonneg herror hepsilon delta hdelta
+  filter_upwards [hbound eta heta_pos epsilon hepsilon, hsmall] with i hi hsmall_i
+  exact hi.trans hsmall_i
+
+/--
 Bounded variable-domain convergence of the random finite-net Hoeffding upper
 implies convergence of its ordinary real mean.
 
@@ -25165,6 +25205,158 @@ theorem
         tendsto_integral_finiteNetHoeffdingUpper_add_coverRadius_of_tendsto_integral_finiteNetHoeffdingUpper
           hfiniteNetUpperIntegrable hfiniteNetUpperIntegral_tendsto_zero
           hcoverRadius_tendsto_zero)
+
+/--
+Fixed-`M` centered-truncated convergence from a pure outer-probability finite-net
+comparison.
+
+This isolates the remaining probability-level symmetrization/net step in the
+textbook Theorem 2.4.3 route.  Once a fixed-radius finite-net Hoeffding upper
+converges to zero in outer probability and the centered truncated bad event is
+eventually bounded by the corresponding `upper + eta` bad event, the centered
+truncated supremum converges to zero in outer probability without passing
+through ordinary means or tail/UI.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_finiteNetHoeffdingUpper
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M)
+    (hfiniteNetUpper :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality eta n sample n) n M)
+          atTop (0 : ℝ))
+    (hprob_bound :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)}
+            ≤
+          VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWTheorem243FiniteNetHoeffdingUpper
+                        (cardinality eta n sample n) n M + eta)
+                    (0 : ℝ)}) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWConvergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_add_bound
+      (μ := fun n : ℕ => vdVWProductMeasure P n)
+      (X := fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      (error := fun eta n sample =>
+        vdVWTheorem243FiniteNetHoeffdingUpper
+          (cardinality eta n sample n) n M)
+      (herror_nonneg := by
+        intro eta n sample
+        exact
+          vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+            (cardinality eta n sample n) n hM_pos.le)
+      (herror := hfiniteNetUpper)
+      (hbound := hprob_bound)
+
+/--
+Fixed-`M` centered-truncated convergence from the actual stochastic entropy
+input plus the remaining pure probability finite-net comparison.
+
+The entropy hypothesis supplies convergence in outer probability of the
+finite-net Hoeffding upper at every fixed positive radius.  The only remaining
+assumption is the theorem-critical event comparison between the centered
+truncated supremum and that finite-net upper plus the fixed radius.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_finiteNetHoeffdingUpper
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hprob_bound :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)}
+            ≤
+          VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWTheorem243FiniteNetHoeffdingUpper
+                        (cardinality eta n sample n) n M + eta)
+                    (0 : ℝ)}) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_finiteNetHoeffdingUpper
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (cardinality := cardinality) hM_pos
+      (hfiniteNetUpper := by
+        intro eta heta
+        exact
+          vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero
+            (P := P) (M := M) (cardinality := cardinality eta)
+            (hlog eta heta) hM_pos)
+      (hprob_bound := hprob_bound)
 
 /--
 Fixed-`M` centered-truncated convergence from the faithful fixed-radius
