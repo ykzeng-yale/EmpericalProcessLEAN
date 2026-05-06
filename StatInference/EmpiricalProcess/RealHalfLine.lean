@@ -376,6 +376,39 @@ structure SuppliedRealMiddleCDFPartition
 
 namespace SuppliedRealMiddleCDFPartition
 
+/--
+The one-cell middle partition of a bounded interval.
+
+This is the base case for the distribution-dependent middle-CDF partition
+constructor: if the entire interval already has CDF left-limit increment below
+the requested radius, the endpoint list `[a, b]` is sufficient.
+-/
+noncomputable def oneCell
+    {μ : Measure ℝ} {epsilon a b : ℝ} (hab : a < b)
+    (hinc :
+      Function.leftLim (ProbabilityTheory.cdf μ) b -
+        ProbabilityTheory.cdf μ a < epsilon) :
+    SuppliedRealMiddleCDFPartition μ epsilon a b 1 where
+  endpoint := fun endpointIndex => if endpointIndex = 0 then a else b
+  strictMono := by
+    intro i j hij
+    fin_cases i <;> fin_cases j <;> simp at hij ⊢
+    exact hab
+  left_eq := by simp
+  right_eq := by simp
+  bracketOf := fun _ _ _ => 0
+  left_le_index := by
+    intro c hleft hright
+    simp [Fin.castSucc]
+    exact hleft
+  index_lt_right := by
+    intro c hleft hright
+    simpa using hright
+  cdf_increment_lt := by
+    intro cell
+    fin_cases cell
+    simpa using hinc
+
 /-- Adjacent endpoints in a supplied middle partition are strictly ordered. -/
 theorem endpoint_left_lt_right
     {μ : Measure ℝ} {epsilon a b : ℝ} {middleCells : ℕ}
@@ -399,6 +432,19 @@ theorem cell_width_lt
     (partition.cdf_increment_lt cell)
 
 end SuppliedRealMiddleCDFPartition
+
+/--
+If the whole bounded interval already has small CDF increment, a one-cell
+middle CDF partition exists.
+-/
+theorem exists_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt
+    {μ : Measure ℝ} {epsilon a b : ℝ} (hab : a < b)
+    (hinc :
+      Function.leftLim (ProbabilityTheory.cdf μ) b -
+        ProbabilityTheory.cdf μ a < epsilon) :
+    ∃ middleCells, Nonempty
+      (SuppliedRealMiddleCDFPartition μ epsilon a b middleCells) :=
+  ⟨1, ⟨SuppliedRealMiddleCDFPartition.oneCell hab hinc⟩⟩
 
 /--
 Finite Borel measures on the real line have finite real cutpoints with

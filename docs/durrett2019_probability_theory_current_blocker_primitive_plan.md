@@ -84,6 +84,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral`
 - `durrett2019_theorem_2_1_13_iIndepFun_integral_prod_eq_prod_integral`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_supplied_endpoint_grids`
+- `durrett2019_theorem_2_4_9_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`
 
 Existing reusable probability-measure modules cover much of the early-book
@@ -107,8 +108,14 @@ strong-law wrappers:
 - `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`
 - `StatInference/ProbabilityMeasure/StrongLaw.lean`
 
-The current missing piece is now narrower: prove the arbitrary-distribution
-middle CDF partition existence consumed by
+The current missing piece is now narrower: the one-cell base case for middle
+CDF partitions compiles, via
+`SuppliedRealMiddleCDFPartition.oneCell`,
+`exists_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`, and the
+Durrett wrapper
+`durrett2019_theorem_2_4_9_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`.
+The remaining theorem-core step is the arbitrary finite middle CDF partition
+existence consumed by
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
@@ -191,7 +198,11 @@ reviewing recent remote commits for other-agent Lean contributions, reading
 this file plus the Durrett dashboard and blueprint, and scanning the current
 `StatInference/ProbabilityTheory`, `StatInference/ProbabilityMeasure`, and
 `StatInference/EmpiricalProcess/RealHalfLineGC.lean` modules.  Primary target:
-Durrett Theorem 2.4.9 arbitrary-distribution middle CDF partition constructor.
-Parallel target: optional Chapter 2.1 iid/product notation polish if the GC
-grid blocks.  Verify, update docs, commit/push, and keep this in-thread `/goal`
-state current.  Report progress and blockers in Chinese/English mix.
+Durrett Theorem 2.4.9 arbitrary-distribution finite middle CDF partition
+constructor beyond the compiled one-cell base case.  The likely next primitive
+is a cutpoint/quantile induction for intervals whose total left-limit CDF
+increment is not already below `epsilon`, with atom-aware handling if naive
+splitting at a real cutpoint blocks.  Parallel target: optional Chapter 2.1
+iid/product notation polish only if the GC grid blocks.  Verify, update docs,
+commit/push, and keep this in-thread `/goal` state current.  Report progress
+and blockers in Chinese/English mix.

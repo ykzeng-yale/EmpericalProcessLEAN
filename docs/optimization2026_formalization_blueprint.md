@@ -56,10 +56,9 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after pushed Optimization commit `bba710e`
-(`Open Chewi stochastic gradient lane`) on 2026-05-06 and focused Lean/module
-verification of the Chewi Theorem 12.1 source recurrence and smooth/non-smooth
-scalar rate wrappers:
+Current manual goal frontier after the Chapter 12 source-rate packet and
+focused Lean/module verification of the Chewi Theorem 12.1 expected-model
+one-step bridge:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -276,9 +275,13 @@ source-rate packet adds `chewi121_weightedAverageGap_le_of_source_oneStep`,
 `chewi121_smooth_weightedAverageGap_le_of_source_oneStep`, and
 `chewi121_nonsmooth_weightedAverageGap_le_of_source_oneStep`, so the displayed
 SMPGD recurrence now feeds the closed geometric denominator and the
-smooth/non-smooth stochastic error floors directly.  The active Chapter 12
-lane is now the stochastic/proximal one-step proof itself, before the ASGD CLT
-material.
+smooth/non-smooth stochastic error floors directly.  The current local packet
+adds `chewi121_source_oneStep_of_model_bounds` and
+`chewi121_weightedAverageGap_le_geometric_of_model_bounds`, turning Chewi's
+three expected `psi_x` bounds into the displayed SMPGD one-step recurrence and
+then into the closed weighted-average rate.  The active Chapter 12 lane is now
+the smooth variance and non-smooth bounded-gradient model lower-bound
+estimates, before the ASGD CLT material.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

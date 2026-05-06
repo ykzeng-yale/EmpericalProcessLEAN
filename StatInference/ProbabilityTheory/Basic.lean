@@ -608,6 +608,22 @@ theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_supplied_endpoint
       X hLaw hindep endpointGridExists
 
 /--
+Durrett 2019, Theorem 2.4.9 middle-partition base case.
+
+If a bounded interval already has CDF left-limit increment below the requested
+radius, the one-cell middle partition `[a, b]` is a supplied middle CDF
+partition.
+-/
+theorem durrett2019_theorem_2_4_9_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt
+    {P : Measure ℝ} {epsilon a b : ℝ} (hab : a < b)
+    (hinc :
+      Function.leftLim (ProbabilityTheory.cdf P) b -
+        ProbabilityTheory.cdf P a < epsilon) :
+    ∃ middleCells, Nonempty
+      (SuppliedRealMiddleCDFPartition P epsilon a b middleCells) :=
+  exists_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt hab hinc
+
+/--
 Durrett 2019, Theorem 2.4.9, middle-partition-to-GC package.
 
 This isolates the remaining arbitrary-distribution primitive: for every

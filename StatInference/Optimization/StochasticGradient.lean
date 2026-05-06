@@ -183,6 +183,50 @@ theorem chewi121_weightedAverageGap_le_of_source_oneStep
   simpa [A, rho, herr] using hmain
 
 /--
+Chewi Theorem 12.1 one-step algebra from the three expected model bounds in
+the proof: relative growth of `psi_x`, the upper bound on `E psi_x(y)`, and
+the lower bound on `E psi_x(x+)` up to a stochastic error floor.
+-/
+theorem chewi121_source_oneStep_of_model_bounds
+    {alphaF alphaG h Dcur Dnext Fstar gap psiNext psiStar modelError : ℝ}
+    (hh : 0 < h)
+    (hgrowth : (alphaG + 1 / h) * Dnext + psiNext ≤ psiStar)
+    (hstar_upper : psiStar ≤ Fstar + ((1 - alphaF * h) / h) * Dcur)
+    (hnext_lower : Fstar + gap - modelError ≤ psiNext) :
+    (1 + alphaG * h) * Dnext ≤
+      (1 - alphaF * h) * Dcur - h * gap + h * modelError := by
+  have hmodel :
+      (alphaG + 1 / h) * Dnext + (Fstar + gap - modelError) ≤
+        Fstar + ((1 - alphaF * h) / h) * Dcur := by
+    calc
+      (alphaG + 1 / h) * Dnext + (Fstar + gap - modelError)
+          ≤ (alphaG + 1 / h) * Dnext + psiNext := by
+              nlinarith
+      _ ≤ psiStar := hgrowth
+      _ ≤ Fstar + ((1 - alphaF * h) / h) * Dcur := hstar_upper
+  have hmul :
+      (1 + alphaG * h) * Dnext + h * Fstar + h * gap - h * modelError ≤
+        h * Fstar + (1 - alphaF * h) * Dcur := by
+    have hleft :
+        h * ((alphaG + 1 / h) * Dnext + (Fstar + gap - modelError)) =
+          (1 + alphaG * h) * Dnext + h * Fstar + h * gap -
+            h * modelError := by
+      field_simp [hh.ne']
+      ring
+    have hright :
+        h * (Fstar + ((1 - alphaF * h) / h) * Dcur) =
+          h * Fstar + (1 - alphaF * h) * Dcur := by
+      field_simp [hh.ne']
+    calc
+      (1 + alphaG * h) * Dnext + h * Fstar + h * gap - h * modelError
+          = h * ((alphaG + 1 / h) * Dnext + (Fstar + gap - modelError)) :=
+              hleft.symm
+      _ ≤ h * (Fstar + ((1 - alphaF * h) / h) * Dcur) :=
+              mul_le_mul_of_nonneg_left hmodel hh.le
+      _ = h * Fstar + (1 - alphaF * h) * Dcur := hright
+  nlinarith
+
+/--
 Chewi Theorem 12.1 weighted-average bound in the closed geometric-denominator
 form, from the displayed source one-step recurrence.
 -/
@@ -248,6 +292,51 @@ theorem chewi121_weightedAverageGap_le_geometric_of_source_oneStep
         (alphaF + alphaG) / ((A ^ N)⁻¹ - 1) * D 0 + err / h := by
     rw [hfirst]
   simpa [A, rho] using hfinite.trans_eq hrhs
+
+/--
+Chewi Theorem 12.1 source-rate theorem from expected model bounds.  This
+packages the proof skeleton before the smooth/non-smooth stochastic estimates
+discharge `modelError`.
+-/
+theorem chewi121_weightedAverageGap_le_geometric_of_model_bounds
+    {alphaF alphaG h modelError Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap psiNext psiStar : ℕ -> ℝ) {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hgrowth : ∀ n, n < N ->
+      (alphaG + 1 / h) * D (n + 1) + psiNext n ≤ psiStar n)
+    (hstar_upper : ∀ n, n < N ->
+      psiStar n ≤ Fstar + ((1 - alphaF * h) / h) * D n)
+    (hnext_lower : ∀ n, n < N ->
+      Fstar + gap (n + 1) - modelError ≤ psiNext n) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        modelError := by
+  have hone_step : ∀ n, n < N ->
+      (1 + alphaG * h) * D (n + 1) ≤
+        (1 - alphaF * h) * D n - h * gap (n + 1) + h * modelError := by
+    intro n hn
+    exact
+      chewi121_source_oneStep_of_model_bounds
+        (alphaF := alphaF) (alphaG := alphaG) (h := h)
+        (Dcur := D n) (Dnext := D (n + 1)) (Fstar := Fstar)
+        (gap := gap (n + 1)) (psiNext := psiNext n)
+        (psiStar := psiStar n) (modelError := modelError)
+        hh (hgrowth n hn) (hstar_upper n hn) (hnext_lower n hn)
+  have hmain :=
+    chewi121_weightedAverageGap_le_geometric_of_source_oneStep
+      (alphaF := alphaF) (alphaG := alphaG) (h := h)
+      (err := h * modelError)
+      htotal_pos hh hden_pos hlambda_pos D gap hN hD_N_nonneg hone_step
+  have herr : h * modelError / h = modelError := by
+    field_simp [hh.ne']
+  simpa [herr] using hmain
 
 /--
 Chewi Theorem 12.1 smooth-case scalar rate, after the stochastic/proximal
