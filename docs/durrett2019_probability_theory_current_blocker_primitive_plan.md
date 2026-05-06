@@ -90,9 +90,12 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`
+- `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`
+- `durrett2019_theorem_2_4_9_punctured_small_open_interval`
+- `durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`
 - `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`
 - `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`
 - `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`
@@ -139,9 +142,12 @@ compile, via
 `durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`,
+`durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`,
+`durrett2019_theorem_2_4_9_punctured_small_open_interval`,
+`durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`,
 `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`,
 `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`,
 `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`,
@@ -183,8 +189,14 @@ skips repeated adjacent values by induction, and
 now turns the non-atomic monotone subdivision directly into a cutpoint chain.
 Consequently the non-atomic half-line GC wrapper
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms` now compiles.
-The fully arbitrary distribution route still needs atom-aware endpoint
-selection.
+For arbitrary laws, the atom-aware local primitives
+`exists_realOpenInterval_diff_singleton_measureReal_lt` and
+`exists_finset_realOpenInterval_punctured_cover_Icc_measureReal_lt` now provide
+finite punctured neighborhoods with small mass, and
+`SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refinement`
+is the compiled consumer once strict endpoints are ordered so each open cell
+avoids its selected atom center.  The fully arbitrary distribution route still
+needs that finite ordering/splitting theorem.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
 Parallel target: Chapter 2.1 exact iid/product notation refinements only if

@@ -718,6 +718,28 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_ref
     endpoint hstrict hrefine
 
 /--
+Durrett 2019, Theorem 2.4.9 atom-aware endpoint-grid refinement package.
+
+Once the source proof has extracted strict endpoints whose open adjacent cells
+avoid the selected atom center inside a small punctured neighborhood, this
+wrapper packages them as the cutpoint chain consumed by the GC handoff.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement
+    {P : Measure ℝ} [IsProbabilityMeasure P] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers,
+        Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) \ {x} ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refinement
+    endpoint hstrict hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9 strict-subdivision-prefix package.
 
 After repeated values have been erased from the monotone subdivision, a strict
@@ -795,6 +817,36 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision
     SuppliedRealMiddleCDFPartitionChain P epsilon a b :=
   _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_closed_cover
     ht0 (fun i j hij => by simpa using hmono hij) heventually hab hrefine
+
+/--
+Durrett 2019, Theorem 2.4.9 atom-aware local grid ingredient.
+
+For locally finite real measures, every point has an open neighborhood whose
+punctured version has small real measure.  This isolates the possible atom at
+the center and is the local input for arbitrary-law endpoint selection.
+-/
+theorem durrett2019_theorem_2_4_9_punctured_small_open_interval
+    {P : Measure ℝ} [IsFiniteMeasureOnCompacts P]
+    {epsilon x : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ l r : ℝ, l < x ∧ x < r ∧ P.real (Set.Ioo l r \ {x}) < epsilon :=
+  exists_realOpenInterval_diff_singleton_measureReal_lt P hepsilon
+
+/--
+Durrett 2019, Theorem 2.4.9 atom-aware compact-cover ingredient.
+
+Every compact interval is covered by finitely many open neighborhoods whose
+punctured versions have small real measure.  The selected centers are the
+candidate atom endpoints for the arbitrary-distribution grid.
+-/
+theorem durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover
+    {P : Measure ℝ} [IsFiniteMeasureOnCompacts P]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ centers : Finset ℝ, ∃ l r : ℝ -> ℝ,
+      (∀ x ∈ centers, x ∈ Set.Icc a b) ∧
+      (∀ x ∈ centers,
+        l x < x ∧ x < r x ∧ P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) ∧
+      Set.Icc a b ⊆ ⋃ x ∈ centers, Set.Ioo (l x) (r x) :=
+  exists_finset_realOpenInterval_punctured_cover_Icc_measureReal_lt P hepsilon
 
 /--
 Durrett 2019, Theorem 2.4.9 non-atomic local grid ingredient.

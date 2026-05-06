@@ -347,6 +347,89 @@ theorem measureReal_Ioo_lt_of_cdf_leftLim_sub_lt
   exact hcdf
 
 /--
+For any locally finite real measure, every point has a punctured open
+neighborhood of arbitrarily small real measure.
+
+This is the atom-aware replacement for the non-atomic local small-neighborhood
+lemma: the possible atom at the center is removed, so finite-measure continuity
+around the singleton suffices.
+-/
+theorem exists_realOpenInterval_diff_singleton_measureReal_lt
+    (μ : Measure ℝ) [IsFiniteMeasureOnCompacts μ]
+    {epsilon x : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ l r : ℝ,
+      l < x ∧ x < r ∧ μ.real (Set.Ioo l r \ {x}) < epsilon := by
+  have htarget :
+      Set.Iio (μ.real ({x} : Set ℝ) + epsilon) ∈ 𝓝 (μ.real ({x} : Set ℝ)) :=
+    Iio_mem_nhds (lt_add_of_pos_right _ hepsilon)
+  have hsingleton_ne_top : μ ({x} : Set ℝ) ≠ ∞ :=
+    isCompact_singleton.measure_ne_top
+  have htendsto :
+      Tendsto (fun δ : ℝ => μ.real (Set.Icc (x - δ) (x + δ)))
+        (𝓝[>] (0 : ℝ)) (𝓝 (μ.real ({x} : Set ℝ))) := by
+    simpa [measureReal_def] using
+      (ENNReal.tendsto_toReal hsingleton_ne_top).comp
+        (tendsto_measure_Icc_nhdsWithin_right' μ x)
+  have hsmall : ∀ᶠ δ : ℝ in 𝓝[>] (0 : ℝ),
+      μ.real (Set.Icc (x - δ) (x + δ)) < μ.real ({x} : Set ℝ) + epsilon :=
+    htendsto htarget
+  have hpos : ∀ᶠ δ : ℝ in 𝓝[>] (0 : ℝ), δ ∈ Set.Ioi (0 : ℝ) :=
+    self_mem_nhdsWithin
+  rcases (hsmall.and hpos).exists with ⟨δ, hδsmall, hδpos⟩
+  have hδpos' : 0 < δ := hδpos
+  refine ⟨x - δ, x + δ, sub_lt_self x hδpos',
+    lt_add_of_pos_right x hδpos', ?_⟩
+  have hsingleton_subset : ({x} : Set ℝ) ⊆ Set.Icc (x - δ) (x + δ) := by
+    intro y hy
+    rw [Set.mem_singleton_iff] at hy
+    subst y
+    exact ⟨by linarith, by linarith⟩
+  have hIcc_diff :
+      μ.real (Set.Icc (x - δ) (x + δ) \ ({x} : Set ℝ)) < epsilon := by
+    exact measureReal_diff_lt_of_lt_add
+      (μ := μ) (s := ({x} : Set ℝ)) (t := Set.Icc (x - δ) (x + δ))
+      (measurableSet_singleton x) hsingleton_subset epsilon hδsmall
+      isCompact_Icc.measure_ne_top
+  have hsubset :
+      Set.Ioo (x - δ) (x + δ) \ ({x} : Set ℝ) ⊆
+        Set.Icc (x - δ) (x + δ) \ ({x} : Set ℝ) := by
+    intro y hy
+    exact ⟨Set.Ioo_subset_Icc_self hy.1, hy.2⟩
+  exact (measureReal_mono hsubset
+    (measure_ne_top_of_subset Set.diff_subset isCompact_Icc.measure_ne_top)).trans_lt hIcc_diff
+
+/--
+For any locally finite real measure, every compact real interval is covered by
+finitely many open intervals whose punctured versions have arbitrarily small
+real measure.
+
+The finite centers are the candidate atom endpoints for the arbitrary-law
+Glivenko-Cantelli grid construction.
+-/
+theorem exists_finset_realOpenInterval_punctured_cover_Icc_measureReal_lt
+    (μ : Measure ℝ) [IsFiniteMeasureOnCompacts μ]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ centers : Finset ℝ, ∃ l r : ℝ -> ℝ,
+      (∀ x ∈ centers, x ∈ Set.Icc a b) ∧
+      (∀ x ∈ centers,
+        l x < x ∧ x < r x ∧ μ.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) ∧
+      Set.Icc a b ⊆ ⋃ x ∈ centers, Set.Ioo (l x) (r x) := by
+  classical
+  have hlocal : ∀ x : ℝ,
+      ∃ l r : ℝ, l < x ∧ x < r ∧
+        μ.real (Set.Ioo l r \ ({x} : Set ℝ)) < epsilon := fun x =>
+    exists_realOpenInterval_diff_singleton_measureReal_lt μ (x := x) hepsilon
+  choose l r hlr using hlocal
+  have hnhds : ∀ x ∈ Set.Icc a b, Set.Ioo (l x) (r x) ∈ 𝓝 x := by
+    intro x _hx
+    exact isOpen_Ioo.mem_nhds ⟨(hlr x).1, (hlr x).2.1⟩
+  rcases isCompact_Icc.elim_nhds_subcover (fun x : ℝ => Set.Ioo (l x) (r x)) hnhds with
+    ⟨centers, hcenters, hcover⟩
+  refine ⟨centers, l, r, hcenters, ?_, hcover⟩
+  intro x _hx
+  exact hlr x
+
+/--
 For a non-atomic locally finite real measure, every point has an open
 neighborhood of arbitrarily small real measure.
 
@@ -859,6 +942,31 @@ theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinem
   rcases hrefine cell with ⟨x, _hx, hclosed, hsmall⟩
   refine ⟨Set.Ioo (l x) (r x), ?_, hsmall⟩
   exact Set.Ioo_subset_Icc_self.trans hclosed
+
+/--
+A strict finite endpoint grid whose open adjacent cells refine finite
+punctured neighborhoods produces a cutpoint chain.
+
+This is the atom-aware analogue of the closed-cover refinement consumer: the
+candidate atom at the selected center is removed from the controlling set.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refinement
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers,
+        Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) \ {x} ∧
+        μ.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) := by
+  refine SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_measureReal_refinement
+    endpoint hstrict ?_
+  intro cell
+  rcases hrefine cell with ⟨x, _hx, hpunctured, hsmall⟩
+  exact ⟨Set.Ioo (l x) (r x) \ {x}, hpunctured, hsmall⟩
 
 /--
 A strict finite prefix of a monotone subdivision, together with the closed-cover

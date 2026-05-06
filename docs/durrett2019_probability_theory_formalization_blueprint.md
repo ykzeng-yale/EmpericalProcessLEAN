@@ -176,6 +176,10 @@ Compiled first source wrappers:
   `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement`
   and
   `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`.
+- Durrett Theorem 2.4.9 atom-aware endpoint-grid handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refinement`
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement`.
 - Durrett Theorem 2.4.9 strict-subdivision-prefix handoff:
   `SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`
   and
@@ -189,6 +193,11 @@ Compiled first source wrappers:
   `SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_closed_cover`,
   and
   `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`.
+- Durrett Theorem 2.4.9 arbitrary-law atom-aware local ingredients:
+  `exists_realOpenInterval_diff_singleton_measureReal_lt`,
+  `exists_finset_realOpenInterval_punctured_cover_Icc_measureReal_lt`,
+  `durrett2019_theorem_2_4_9_punctured_small_open_interval`, and
+  `durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`.
 - Durrett Theorem 2.4.9 non-atomic local grid ingredient:
   `exists_realOpenInterval_measureReal_lt_of_noAtoms` and
   `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`.
@@ -248,10 +257,13 @@ non-atomic local small-neighborhood lemma, a non-atomic finite compact-cover
 lemma, a non-atomic monotone-subdivision lemma, strict-prefix and extracted-gap
 closed-cover handoffs, a monotone-prefix duplicate-skip induction, a non-atomic
 cutpoint-chain package, a Durrett-named cutpoint-chain-to-GC handoff, and the
-non-atomic half-line Glivenko-Cantelli package also compile.  The remaining
-arbitrary-distribution primitive is the atom-aware construction of strict
-finite endpoint grids for intervals whose total CDF increment is not already
-below the requested radius.
+non-atomic half-line Glivenko-Cantelli package also compile.  For arbitrary
+laws, punctured local neighborhoods and finite compact punctured covers now
+compile, together with the endpoint-grid consumer for open cells that avoid
+the selected atom center.  The remaining arbitrary-distribution primitive is
+the finite ordering/splitting construction that turns the punctured compact
+cover into strict endpoint grids for intervals whose total CDF increment is not
+already below the requested radius.
 
 ### Lane D: CLT and characteristic functions
 
