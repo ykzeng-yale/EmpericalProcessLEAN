@@ -2347,3 +2347,16 @@ and
 `VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.comp_continuous_of_lowerShifted`,
 matching the existing common-domain and signed varying-domain continuous-map
 closures for this Chapter 1 asymptotic-measurability layer.
+
+2026-05-06 full-subgraph package follow-up:
+`Theorem243.lean` now has
+`VdVWTheorem243FullSubgraphSideConditions.variableTruncatedEntropyCondition`,
+`VdVWTheorem243FullSubgraphSideConditions.selectedFixedRadiusTailSideConditions`,
+and
+`VdVWTheorem243FullSubgraphSideConditions.entropy_and_selectedFixedRadiusTailSideConditions`.
+The existing full-subgraph side-condition record therefore feeds both the
+book-style variable-domain entropy condition and the selected fixed-radius
+tail/UI package.  This is a theorem-facing assembly bridge, not a new final
+textbook theorem.  The remaining productive targets are the exact random
+empirical-entropy event/tail bridge, a genuinely new structural cardinality
+discharge, or the Lemma 2.4.5 / Chapter 1 arbitrary-map blockers.

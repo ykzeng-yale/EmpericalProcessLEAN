@@ -6246,3 +6246,23 @@ This removes the per-threshold VC side condition for the entropy layer.  The
 remaining productive work is to connect the book's named subgraph/VC class
 hypothesis and measurability/envelope hypotheses to this constructor and the
 already compiled selected tail/UI/final endpoints.
+
+2026-05-06 full-subgraph side-condition package follow-up:
+`Theorem243.lean` now exposes the canonical full-subgraph route through the
+same proof-carrying side-condition record used by the convergence endpoint.
+New declarations are
+`VdVWTheorem243FullSubgraphSideConditions.variableTruncatedEntropyCondition`,
+`VdVWTheorem243FullSubgraphSideConditions.selectedFixedRadiusTailSideConditions`,
+and
+`VdVWTheorem243FullSubgraphSideConditions.entropy_and_selectedFixedRadiusTailSideConditions`.
+Together they show that `VdVWTheorem243FullSubgraphSideConditions` supplies
+both the book-style variable-domain entropy condition and the selected
+fixed-radius tail/UI package for the canonical integer-grid/full-subgraph VC
+route.  This closes the packaging gap between the named full-subgraph
+side-condition record and the entropy/selected-tail machinery.  The next
+non-duplicative proof target is not another full-subgraph endpoint alias:
+either prove the genuine random empirical-entropy-to-selected-tail/event
+comparison for the exact non-finite textbook theorem, discharge a concrete
+structural cardinality/quantizer hypothesis not already covered by the
+threshold/grid/full-subgraph packages, or move to the theorem-critical
+Lemma 2.4.5 reverse/cofiltration or Chapter 1 arbitrary-map/process blockers.
