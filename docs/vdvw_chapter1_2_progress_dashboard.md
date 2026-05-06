@@ -14,28 +14,30 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Authoritative current `/goal` override, 2026-05-06 after verified pushed head
-`c99bb86 Add Theorem 2.4.3 finite code convergence endpoint`: local `main`
-equals `origin/main`, the worktree is clean, and the broad Codex goal object
-should be treated only as an orchestration label.  The fixed finite-code
-scalar-quantizer path now reaches the centered untruncated Theorem 2.4.3
-convergence endpoint
-`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_fintype_scalarQuantizer_decode_error_nat_poly`.
-The next run should therefore skip endpoint aliases, selected-route
-restatements, finite-code variants, finite-index process wrappers, and
-process/FDD congruence wrappers unless a new exact theorem consumes them
-immediately.
+`398c303 Add finite code-set Theorem 2.4.3 endpoints`: local `main` equals
+`origin/main`, the worktree is clean, and the broad Codex goal object should be
+treated only as an orchestration label.  The current Lean state has already
+closed the main Theorem 2.4.3 endpoint plumbing for selected fixed-radius
+tail/UI, finite code-set and natural-polynomial code-set routes,
+threshold/grid/finite-trace/full-subgraph VC routes, canonical iid
+sample-process specializations, finite-class SLLN endpoints, full-subgraph
+`P`-GC plus in-mean packages, and Lemma 2.4.5 reverse/cofiltration consumers.
+Chapter 1 support also includes the measure-level weak-convergence/tightness
+wrappers and raw bounded-process forward FDD/tightness/congruence interfaces.
 
-The operative target is to close a non-duplicative theorem-facing batch:
-(1) a structural entropy/cardinality theorem beyond fixed finite codes, such
-as sample-size-dependent compression/code images, VC/Sauer, finite-trace,
-threshold-grid, or quantizer growth not already covered by existing packages;
-(2) a selected empirical-cover event, tail/UI, ordinary-mean, or
-uniform-integrability theorem from assumptions strong enough to imply it; or
-(3) an exact Chapter 1 process/arbitrary-map primitive such as arbitrary-index
-FDD converse, separability/tightness/asymptotic-measurability, nonmeasurable
-signed outer-cover weak convergence, or full arbitrary-map extended-real
-measurable-cover existence.  Historical target paragraphs below are retained
-for audit context only.
+The operative target is no longer another endpoint alias.  The remaining exact
+Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
+block, the theorem that turns
+`log N(epsilon, F_M, L1(P_n)) = o_P^*(n)` for fixed positive `epsilon, M` into
+the selected finite-net tail/UI or ordinary-mean/uniform-integrability input
+used by the compiled fixed-radius route.  If that cannot be proved from the
+textbook hypothesis alone, record the exact missing hypothesis/theorem shape
+and then move to either a source-supported full-subgraph/finite-class corollary
+or a real Chapter 1 primitive: arbitrary-index FDD converse,
+separability/tightness/asymptotic-measurability, nonmeasurable signed
+outer-cover weak convergence, or full arbitrary-map extended-real measurable
+cover existence.  Historical target paragraphs below are retained for audit
+context only.
 
 2026-05-06 fixed-FDD selected-coordinate congruence: `FiniteDimensional.lean`
 now has `aemeasurable_fdd_congr_finite_coord_ae` and

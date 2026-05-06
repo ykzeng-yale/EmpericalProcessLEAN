@@ -90,29 +90,34 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current operational target, 2026-05-06 after verified pushed head
-`c99bb86 Add Theorem 2.4.3 finite code convergence endpoint`: the active Codex
+`398c303 Add finite code-set Theorem 2.4.3 endpoints`: the active Codex
 `/goal` object is broad and cannot be edited in place, so this paragraph is
-the blueprint-level replacement target.  The selected fixed-radius,
-finite-code scalar-quantizer route now reaches centered untruncated convergence
-through
-`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_fintype_scalarQuantizer_decode_error_nat_poly`.
-The surrounding Theorem 2.4.3 endpoint infrastructure, raw bounded
-`ell_infty(T)` process-law wrappers, weak-convergence congruence support, and
-centered pointwise-separability endpoints should be treated as closed support.
-Do not spend the next batch on another wrapper or endpoint alias around these
-same routes.
+the blueprint-level replacement target.  Treat the existing Theorem 2.4.3
+plumbing as closed support: selected fixed-radius tail/UI, finite code-set and
+natural-polynomial code-set routes, threshold/grid/finite-trace/full-subgraph
+VC routes, canonical iid sample-process specializations, finite-class SLLN
+endpoints, full-subgraph `P`-GC plus in-mean packages, Lemma 2.4.5
+reverse/cofiltration consumers, raw bounded `ell_infty(T)` process-law forward
+FDD/tightness wrappers, weak-convergence congruence support, and centered
+pointwise-separability endpoints.  Do not spend the next batch on another
+wrapper or endpoint alias around these same routes unless an exact textbook
+statement immediately consumes it.
 
-The next proof batch should supply new upstream content.  Preferred order:
-first, a structural entropy/cardinality theorem beyond fixed finite codes
-(sample-size-dependent compression/code images, VC/Sauer, finite-trace,
-threshold-grid, or quantizer estimates not already covered by existing
-threshold/full-subgraph packages); second, a selected empirical-cover
-tail/UI/ordinary-mean bridge from hypotheses strong enough to imply it; third,
-an exact Chapter 1 process/arbitrary-map primitive such as arbitrary-index FDD
-converse, separability/tightness/asymptotic-measurability, nonmeasurable signed
-outer-cover weak convergence, or full arbitrary-map extended-real
-measurable-cover existence.  Older current-target paragraphs below are
-historical context and should not override this target.
+The exact Theorem 2.4.3 gap is now sharper: the textbook assumption is the
+generic random entropy condition
+`log N(epsilon, F_M, L1(P_n)) = o_P^*(n)` for every positive `epsilon, M`.
+The Lean library has many structural corollaries under finite-class,
+full-subgraph VC, threshold-grid, finite-trace, quantizer, and explicit
+tail/UI hypotheses, but not the theorem turning bare random-entropy
+outer-probability convergence into selected finite-net tail/UI or
+ordinary-mean/uniform-integrability.  The next proof batch should therefore
+attack that entropy-to-tail/UI bridge first; if it blocks after search and Lean
+attempts, move to an exact full-subgraph/finite-class textbook corollary only
+when source text supports it, or to a Chapter 1 arbitrary-map/process primitive
+such as arbitrary-index FDD converse, separability/tightness/asymptotic-
+measurability, nonmeasurable signed outer-cover weak convergence, or full
+arbitrary-map extended-real measurable-cover existence.  Older current-target
+paragraphs below are historical context and should not override this target.
 
 2026-05-06 fixed-FDD congruence refinement: after search, the local FDD
 replacement layer now includes

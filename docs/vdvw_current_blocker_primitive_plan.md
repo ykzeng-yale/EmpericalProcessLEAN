@@ -71,36 +71,47 @@ unless a new exact statement directly consumes them.
 ## Current `/goal` Target
 
 Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
-`c99bb86 Add Theorem 2.4.3 finite code convergence endpoint`: local `main`
-is synced with `origin/main`, the worktree is clean, and the active Codex goal
-object is still a broad orchestration label because it cannot be edited in
-place.  Use this paragraph, not the historical target paragraphs below, as the
-operative continuation prompt.  The fixed finite-code scalar-quantizer route is
-closed through the selected fixed-radius tail/UI package and the centered
-untruncated convergence endpoint
-`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_fintype_scalarQuantizer_decode_error_nat_poly`.
-Recent Chapter 1/process and centered-separability support is also closed
-infrastructure, including the raw bounded `ell_infty(T)` process weak-
-convergence/tightness wrappers, source/target weak-convergence congruence, and
-pointwise-approximable centered `P`-measurability endpoints.
+`398c303 Add finite code-set Theorem 2.4.3 endpoints`: local `main` is synced
+with `origin/main`, and the active Codex goal object remains a broad
+orchestration label because it cannot be edited in place.  Use this paragraph,
+not older rebase paragraphs below, as the operative continuation prompt.
 
-The next `/goal` continuation must not add another endpoint alias, another
-finite-code special case, another selected fixed-radius restatement, or another
-finite-index/process congruence wrapper unless it is immediately consumed by a
-new exact theorem statement.  The next high-value batch should close actual
-upstream mathematics in one of three lanes: (1) a sample-size-dependent
-compression/code-image, VC/Sauer, finite-trace, threshold-grid, or quantizer
-cardinality theorem not already covered by the existing threshold/full-subgraph
-packages, feeding the compiled selected fixed-radius Theorem 2.4.3 route; (2)
-a genuine selected empirical-cover event, tail/UI, ordinary-mean, or
-uniform-integrability bridge from hypotheses strong enough to imply it, not
-bare outer-probability convergence of normalized random entropy alone; or (3)
-an exact Chapter 1 process/arbitrary-map primitive such as the arbitrary-index
+Current closed support is much stronger than the older finite-code target
+paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
+infrastructure for selected fixed-radius tail/UI, finite code-set and
+natural-polynomial code-set routes, threshold/grid/finite-trace/full-subgraph
+VC routes, canonical iid sample-process specializations, finite-class SLLN
+endpoints, full-subgraph `P`-GC plus in-mean packages, and Lemma 2.4.5
+reverse/cofiltration consumers.  Chapter 1 support also includes measure-level
+weak-convergence/tightness/product/FDD wrappers, raw bounded `ell_infty(T)`
+process-law forward FDD/tightness wrappers, source/target/reindexing
+congruence, and centered separability-to-`P`-measurability bridges.
+
+The exact textbook Theorem 2.4.3 is not yet closed because the book assumes the
+generic random entropy condition
+`log N(epsilon, F_M, L1(P_n)) = o_P^*(n)` for each fixed positive
+`epsilon, M` and concludes outer-probability/outer-a.s./in-mean GC.  The
+compiled structural routes prove strong theorem-facing corollaries under
+finite-class, full-subgraph VC, threshold-grid, finite-trace, quantizer, or
+explicit tail/UI hypotheses, but they do not prove that bare outer-probability
+random-entropy convergence supplies the selected finite-net tail/UI or
+ordinary-mean/uniform-integrability side condition.  Do not add more aliases
+around already closed endpoint packages unless an exact textbook statement
+immediately consumes them.
+
+Next high-capacity `/goal` batch should do one of the following, in order:
+(1) prove the genuine random empirical-entropy event/tail/UI or ordinary-mean
+bridge from assumptions strong enough to imply it, clearly separating what
+follows from the textbook `o_P^*(n)` condition and what requires an extra
+uniform-integrability/tail hypothesis; (2) align and state the strongest
+current full-subgraph or finite-class route as an exact theorem-facing
+corollary only if the textbook item/corollary statement really matches those
+structural hypotheses; (3) attack a real Chapter 1 blocker: arbitrary-index
 VdV&W 1.4.8 FDD converse, process separability/tightness/asymptotic-
 measurability, nonmeasurable signed outer-cover weak convergence, or full
 arbitrary-map extended-real measurable-cover existence.  If a lane blocks,
-record the searched APIs, the failing theorem shape, and the next patchable
-edit before switching lanes.
+record searched APIs, the failing theorem shape, and the next patchable edit
+before switching lanes.
 
 2026-05-06 fixed-FDD selected-coordinate congruence follow-up: local search
 found only the whole-sample-path finite-dimensional congruence wrappers
