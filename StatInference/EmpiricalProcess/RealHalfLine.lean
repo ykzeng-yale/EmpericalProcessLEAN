@@ -454,6 +454,78 @@ noncomputable def twoCell
     intro cell
     fin_cases cell <;> simp [hleft, hright]
 
+/--
+Append one small CDF-increment cell to the right of a supplied middle
+partition.
+
+This is the induction step for building longer distribution-dependent middle
+partitions once a sequence of cutpoints has been chosen.
+-/
+noncomputable def snocCell
+    {μ : Measure ℝ} {epsilon a c b : ℝ} {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition μ epsilon a c middleCells)
+    (hcb : c < b)
+    (hinc :
+      Function.leftLim (ProbabilityTheory.cdf μ) b -
+        ProbabilityTheory.cdf μ c < epsilon) :
+    SuppliedRealMiddleCDFPartition μ epsilon a b (middleCells + 1) where
+  endpoint := Fin.snoc partition.endpoint b
+  strictMono := by
+    intro i j hij
+    cases j using Fin.lastCases with
+    | last =>
+        have hi_ne : i ≠ Fin.last (middleCells + 1) := Fin.ne_last_of_lt hij
+        rcases Fin.eq_castSucc_of_ne_last hi_ne with ⟨i', rfl⟩
+        rw [Fin.snoc_castSucc, Fin.snoc_last]
+        by_cases hi' : i' = Fin.last middleCells
+        · rw [hi', partition.right_eq]
+          exact hcb
+        · have hi'_lt_last : i' < Fin.last middleCells :=
+            Fin.lt_last_iff_ne_last.mpr hi'
+          have hp_lt_c : partition.endpoint i' < c := by
+            simpa [partition.right_eq] using partition.strictMono hi'_lt_last
+          exact hp_lt_c.trans hcb
+    | cast j' =>
+        have hj_lt_last : j'.castSucc < Fin.last (middleCells + 1) :=
+          Fin.castSucc_lt_last j'
+        have hi_lt_last : i < Fin.last (middleCells + 1) := lt_trans hij hj_lt_last
+        have hi_ne : i ≠ Fin.last (middleCells + 1) := Fin.ne_last_of_lt hi_lt_last
+        rcases Fin.eq_castSucc_of_ne_last hi_ne with ⟨i', rfl⟩
+        rw [Fin.snoc_castSucc, Fin.snoc_castSucc]
+        exact partition.strictMono (Fin.castSucc_lt_castSucc_iff.mp hij)
+  left_eq := by
+    simpa [Fin.snoc] using partition.left_eq
+  right_eq := by
+    rw [Fin.snoc_last]
+  bracketOf := fun x hleft hright =>
+    if hxc : x < c then Fin.castSucc (partition.bracketOf x hleft hxc)
+    else Fin.last middleCells
+  left_le_index := by
+    intro x hleft hright
+    by_cases hxc : x < c
+    · simp [hxc, Fin.snoc_castSucc]
+      exact partition.left_le_index x hleft hxc
+    · have hcx : c ≤ x := le_of_not_gt hxc
+      simp [hxc, Fin.snoc_castSucc, partition.right_eq]
+      exact hcx
+  index_lt_right := by
+    intro x hleft hright
+    by_cases hxc : x < c
+    · simp [hxc]
+      rw [← Fin.castSucc_succ, Fin.snoc_castSucc]
+      exact partition.index_lt_right x hleft hxc
+    · simp [hxc, Fin.snoc_last]
+      exact hright
+  cdf_increment_lt := by
+    intro cell
+    by_cases hlast : cell = Fin.last middleCells
+    · rw [hlast]
+      simp [Fin.snoc_castSucc, Fin.snoc_last, partition.right_eq]
+      exact hinc
+    · rcases Fin.eq_castSucc_of_ne_last hlast with ⟨cell', rfl⟩
+      rw [← Fin.castSucc_succ, Fin.snoc_castSucc, Fin.snoc_castSucc]
+      exact partition.cdf_increment_lt cell'
+
 /-- Adjacent endpoints in a supplied middle partition are strictly ordered. -/
 theorem endpoint_left_lt_right
     {μ : Measure ℝ} {epsilon a b : ℝ} {middleCells : ℕ}
@@ -506,6 +578,40 @@ theorem exists_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt
     ∃ middleCells, Nonempty
       (SuppliedRealMiddleCDFPartition μ epsilon a b middleCells) :=
   ⟨2, ⟨SuppliedRealMiddleCDFPartition.twoCell hac hcb hleft hright⟩⟩
+
+/--
+Appending one small CDF-increment cell to an existing supplied middle partition
+gives a larger supplied middle partition.
+-/
+theorem exists_realMiddleCDFPartition_snocCell_of_partition
+    {μ : Measure ℝ} {epsilon a c b : ℝ} {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition μ epsilon a c middleCells)
+    (hcb : c < b)
+    (hinc :
+      Function.leftLim (ProbabilityTheory.cdf μ) b -
+        ProbabilityTheory.cdf μ c < epsilon) :
+    ∃ nextCells, Nonempty
+      (SuppliedRealMiddleCDFPartition μ epsilon a b nextCells) :=
+  ⟨middleCells + 1, ⟨SuppliedRealMiddleCDFPartition.snocCell partition hcb hinc⟩⟩
+
+/--
+Existence form of the right-append constructor for supplied middle CDF
+partitions.
+-/
+theorem exists_realMiddleCDFPartition_snocCell_of_exists
+    {μ : Measure ℝ} {epsilon a c b : ℝ}
+    (partitionExists :
+      ∃ middleCells, Nonempty
+        (SuppliedRealMiddleCDFPartition μ epsilon a c middleCells))
+    (hcb : c < b)
+    (hinc :
+      Function.leftLim (ProbabilityTheory.cdf μ) b -
+        ProbabilityTheory.cdf μ c < epsilon) :
+    ∃ nextCells, Nonempty
+      (SuppliedRealMiddleCDFPartition μ epsilon a b nextCells) := by
+  rcases partitionExists with ⟨middleCells, partitionNonempty⟩
+  exact partitionNonempty.elim fun partition =>
+    exists_realMiddleCDFPartition_snocCell_of_partition partition hcb hinc
 
 /--
 Finite Borel measures on the real line have finite real cutpoints with

@@ -643,6 +643,26 @@ theorem durrett2019_theorem_2_4_9_realMiddleCDFPartition_twoCell_of_cdf_leftLim_
   exists_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt hac hcb hleft hright
 
 /--
+Durrett 2019, Theorem 2.4.9 middle-partition right-append step.
+
+Once a supplied middle partition has been built up to a cutpoint `c`, a final
+small CDF-increment cell `(c, b)` extends it to a supplied partition of
+`[a, b]`.
+-/
+theorem durrett2019_theorem_2_4_9_realMiddleCDFPartition_snocCell_of_exists
+    {P : Measure ℝ} {epsilon a c b : ℝ}
+    (partitionExists :
+      ∃ middleCells, Nonempty
+        (SuppliedRealMiddleCDFPartition P epsilon a c middleCells))
+    (hcb : c < b)
+    (hinc :
+      Function.leftLim (ProbabilityTheory.cdf P) b -
+        ProbabilityTheory.cdf P c < epsilon) :
+    ∃ nextCells, Nonempty
+      (SuppliedRealMiddleCDFPartition P epsilon a b nextCells) :=
+  exists_realMiddleCDFPartition_snocCell_of_exists partitionExists hcb hinc
+
+/--
 Durrett 2019, Theorem 2.4.9, middle-partition-to-GC package.
 
 This isolates the remaining arbitrary-distribution primitive: for every
