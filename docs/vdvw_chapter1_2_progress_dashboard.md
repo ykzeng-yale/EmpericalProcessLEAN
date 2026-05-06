@@ -199,6 +199,10 @@ through
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_image_cardinality_bound_nat_poly`
 and
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_codeSet_cardinality_bound_nat_poly`.
+The threshold VC/Sauer routes now have entropy-side constructors as well:
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`
+and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_coordinate_thresholds_separate_uniform_vc`.
 Thus deterministic normalized-log bounds, including natural-polynomial
 VC/Sauer-style cardinality growth, now supply the first-sample `nnnorm`
 condition directly.  The next non-finite theorem task is upstream: prove such

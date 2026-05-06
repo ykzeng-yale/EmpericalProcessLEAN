@@ -6216,3 +6216,18 @@ book entropy condition and the selected fixed-radius tail/UI package.  The next
 proof should specialize the trace/code cardinality estimate from a concrete
 VC/Sauer, threshold-grid, or quantizer theorem rather than adding more
 generic nat-poly constructors.
+
+2026-05-06 threshold VC/Sauer entropy-side follow-up: local search found
+selected fixed-radius threshold-code and coordinate-threshold VC/Sauer
+packages, but no matching constructors for the variable-domain book entropy
+condition.  `Theorem243.lean` now proves
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`
+and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_coordinate_thresholds_separate_uniform_vc`.
+These consume the concrete `thresholdTraceCodeSet` VC/Sauer cardinality bound
+and the exact coordinate-threshold trace-cardinality theorem, respectively,
+and output the book-facing entropy condition.  The threshold/grid/VC route
+therefore now feeds both entropy and selected finite-net tail/UI sides; the
+next useful theorem should remove or discharge the remaining structural
+assumptions, such as coordinatewise threshold approximation, exact separation,
+finite grid construction, or uniform subgraph VC input.

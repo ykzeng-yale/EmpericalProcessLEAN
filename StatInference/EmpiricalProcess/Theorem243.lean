@@ -19098,6 +19098,267 @@ theorem
       hcovering_all hconstant_ge_one hpoly_bound
 
 /--
+Threshold-signature code sets with coordinatewise approximation and uniform
+fixed-threshold VC/Sauer bounds build the variable-domain book entropy
+condition.
+
+This is the entropy-side analogue of the selected fixed-radius threshold-code
+package: the approximate threshold-code cover supplies empirical covering
+number domination, while `thresholdTraceCodeSet_card_add_one_real_le_uniform_vc`
+supplies the natural-polynomial cardinality estimate.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (thresholds :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Finset ℝ)
+    {thresholdCount : ℝ -> ℝ -> ℕ} {vcDegree : ℝ -> ℝ -> ℕ}
+    (hcoordinate :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ∀ sampleIndex : Fin m,
+            ∀ index, index ∈ indexClass ->
+              ∀ center, center ∈ indexClass ->
+                (∀ threshold : {threshold // threshold ∈ thresholds M eta n sample m},
+                  (threshold.1 <
+                      vdVWTruncatedClassFun classFun envelope M index
+                        ((samplePath (X M n) sample m) sampleIndex) ↔
+                    threshold.1 <
+                      vdVWTruncatedClassFun classFun envelope M center
+                        ((samplePath (X M n) sample m) sampleIndex))) ->
+                |vdVWTruncatedClassFun classFun envelope M index
+                    ((samplePath (X M n) sample m) sampleIndex) -
+                  vdVWTruncatedClassFun classFun envelope M center
+                    ((samplePath (X M n) sample m) sampleIndex)| ≤ eta)
+    (hthresholds_card :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          (thresholds M eta n sample n).card ≤ thresholdCount M eta)
+    (hvc :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ∀ threshold : {threshold // threshold ∈ thresholds M eta n sample n},
+            (empiricalBinaryTraceSetFamily (samplePath (X M n) sample n) indexClass
+              (thresholdIndicatorClassFun
+                (vdVWTruncatedClassFun classFun envelope M) threshold.1)).vcDim ≤
+              vcDegree M eta) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope
+      (fun M eta n sample m =>
+        (thresholdTraceCodeSet (samplePath (X M n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (thresholds M eta n sample m)).card) := by
+  classical
+  let selectedCardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun M eta n sample m =>
+      (thresholdTraceCodeSet (samplePath (X M n) sample m) indexClass
+        (vdVWTruncatedClassFun classFun envelope M)
+        (thresholds M eta n sample m)).card
+  have hcovering_all :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (selectedCardinality M eta n) := by
+    intro M hM eta heta
+    exact
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_thresholdTraceCode_coordinate_approx_codeSet_cardinality_bound_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (cardinality := fun eta n sample m =>
+          selectedCardinality M eta n sample m)
+        (X M) (thresholds M)
+        (fun eta heta n sample m sampleIndex index hindex center hcenter hsig =>
+          hcoordinate M hM eta heta n sample m sampleIndex index hindex center
+            hcenter hsig)
+        (by
+          intro eta _heta n sample m
+          rfl)
+        eta heta
+  have hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        1 ≤ ((((vcDegree M eta + 2 : ℕ) : ℝ) ^
+          thresholdCount M eta) + 1) := by
+    intro M _hM eta _heta
+    have hnonneg :
+        0 ≤ (((vcDegree M eta + 2 : ℕ) : ℝ) ^
+          thresholdCount M eta) :=
+      pow_nonneg (Nat.cast_nonneg _) _
+    linarith
+  have hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((selectedCardinality M eta n sample n : ℝ) + 1) ≤
+            ((((vcDegree M eta + 2 : ℕ) : ℝ) ^ thresholdCount M eta) + 1) *
+              (((n + 1 : ℕ) : ℝ) ^
+                (vcDegree M eta * thresholdCount M eta)) := by
+    intro M hM eta heta n sample
+    exact
+      thresholdTraceCodeSet_card_add_one_real_le_uniform_vc
+        (sample := samplePath (X M n) sample n)
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (thresholds := thresholds M eta n sample n)
+        (d := vcDegree M eta) (k := thresholdCount M eta)
+        (hthresholds_card M hM eta heta n sample)
+        (hvc M hM eta heta n sample)
+  simpa [selectedCardinality] using
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (constant := fun M eta =>
+        ((((vcDegree M eta + 2 : ℕ) : ℝ) ^ thresholdCount M eta) + 1))
+      (degree := fun M eta => vcDegree M eta * thresholdCount M eta)
+      (cardinality := selectedCardinality)
+      hcovering_all hconstant_ge_one hpoly_bound
+
+/--
+Exact coordinatewise threshold separation with uniform fixed-threshold VC/Sauer
+bounds builds the variable-domain book entropy condition.
+
+This is the entropy-side structural route for finite threshold families that
+separate all truncated coordinate values on the realized sample.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_coordinate_thresholds_separate_uniform_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (thresholds :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Finset ℝ)
+    {thresholdCount : ℝ -> ℝ -> ℕ} {vcDegree : ℝ -> ℝ -> ℕ}
+    (hcoordinate :
+      ∀ M eta n (sample : SampleAt Observation n) m,
+        ∀ sampleIndex : Fin m,
+          ∀ index₁, index₁ ∈ indexClass ->
+            ∀ index₂, index₂ ∈ indexClass ->
+              (∀ threshold : {threshold // threshold ∈ thresholds M eta n sample m},
+                (threshold.1 <
+                    vdVWTruncatedClassFun classFun envelope M index₁
+                      ((samplePath (X M n) sample m) sampleIndex) ↔
+                  threshold.1 <
+                    vdVWTruncatedClassFun classFun envelope M index₂
+                      ((samplePath (X M n) sample m) sampleIndex))) ->
+              vdVWTruncatedClassFun classFun envelope M index₁
+                  ((samplePath (X M n) sample m) sampleIndex) =
+                vdVWTruncatedClassFun classFun envelope M index₂
+                  ((samplePath (X M n) sample m) sampleIndex))
+    (hthresholds_card :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          (thresholds M eta n sample n).card ≤ thresholdCount M eta)
+    (hvc :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ∀ threshold : {threshold // threshold ∈ thresholds M eta n sample n},
+            (empiricalBinaryTraceSetFamily (samplePath (X M n) sample n) indexClass
+              (thresholdIndicatorClassFun
+                (vdVWTruncatedClassFun classFun envelope M) threshold.1)).vcDim ≤
+              vcDegree M eta) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope
+      (fun M eta n sample m =>
+        (finite_empiricalTrace_image_of_coordinate_thresholds_separate
+          (sample := samplePath (X M n) sample m)
+          (indexClass := indexClass)
+          (classFun := vdVWTruncatedClassFun classFun envelope M)
+          (thresholds := thresholds M eta n sample m)
+          (hcoordinate M eta n sample m)).toFinset.card) := by
+  classical
+  let selectedCardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun M eta n sample m =>
+      (finite_empiricalTrace_image_of_coordinate_thresholds_separate
+        (sample := samplePath (X M n) sample m)
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (thresholds := thresholds M eta n sample m)
+        (hcoordinate M eta n sample m)).toFinset.card
+  let htrace_finite :
+      ∀ M n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X M n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite :=
+    fun M n sample m =>
+      finite_empiricalTrace_image_of_coordinate_thresholds_separate
+        (sample := samplePath (X M n) sample m)
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (thresholds := thresholds M 1 n sample m)
+        (hcoordinate M 1 n sample m)
+  have htrace_finite_selected :
+      ∀ M n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X M n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite :=
+    fun M n sample m =>
+      finite_empiricalTrace_image_of_coordinate_thresholds_separate
+        (sample := samplePath (X M n) sample m)
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (thresholds := thresholds M 1 n sample m)
+        (hcoordinate M 1 n sample m)
+  have hcardinality_dom :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          (htrace_finite_selected M n sample m).toFinset.card ≤
+            selectedCardinality M eta n sample m := by
+    intro M hM eta heta n sample m
+    -- Both finite witnesses prove finiteness of the same trace image; use the
+    -- eta-indexed witness for the selected cardinality and the trace image
+    -- itself for the actual covering bound.
+    change
+      (htrace_finite_selected M n sample m).toFinset.card ≤
+        (finite_empiricalTrace_image_of_coordinate_thresholds_separate
+          (sample := samplePath (X M n) sample m)
+          (indexClass := indexClass)
+          (classFun := vdVWTruncatedClassFun classFun envelope M)
+          (thresholds := thresholds M eta n sample m)
+          (hcoordinate M eta n sample m)).toFinset.card
+    simp
+  have hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        1 ≤ ((((vcDegree M eta + 2 : ℕ) : ℝ) ^
+          thresholdCount M eta) + 1) := by
+    intro M _hM eta _heta
+    have hnonneg :
+        0 ≤ (((vcDegree M eta + 2 : ℕ) : ℝ) ^
+          thresholdCount M eta) :=
+      pow_nonneg (Nat.cast_nonneg _) _
+    linarith
+  have hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((selectedCardinality M eta n sample n : ℝ) + 1) ≤
+            ((((vcDegree M eta + 2 : ℕ) : ℝ) ^ thresholdCount M eta) + 1) *
+              (((n + 1 : ℕ) : ℝ) ^
+                (vcDegree M eta * thresholdCount M eta)) := by
+    intro M hM eta heta n sample
+    exact
+      empiricalTrace_image_card_add_one_real_le_of_coordinate_thresholds_separate_uniform_vc
+        (sample := samplePath (X M n) sample n)
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (thresholds := thresholds M eta n sample n)
+        (d := vcDegree M eta) (k := thresholdCount M eta)
+        (hcoordinate M eta n sample n)
+        (hthresholds_card M hM eta heta n sample)
+        (hvc M hM eta heta n sample)
+  simpa [selectedCardinality] using
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_image_cardinality_bound_nat_poly
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (constant := fun M eta =>
+        ((((vcDegree M eta + 2 : ℕ) : ℝ) ^ thresholdCount M eta) + 1))
+      (degree := fun M eta => vcDegree M eta * thresholdCount M eta)
+      (cardinality := selectedCardinality)
+      htrace_finite_selected hcardinality_dom hconstant_ge_one hpoly_bound
+
+/--
 The variable-domain book entropy condition supplies the entropy and covering
 fields of the selected fixed-radius package for each fixed truncation level.
 

@@ -241,6 +241,13 @@ and
 turn finite empirical trace images or injective finite trace-code sets plus a
 natural-polynomial cardinality estimate into the book-facing entropy
 condition.
+The concrete threshold VC/Sauer entropy-side constructors are now compiled too:
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`
+and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_coordinate_thresholds_separate_uniform_vc`
+feed `thresholdTraceCodeSet` VC/Sauer cardinality and exact
+coordinate-threshold separation directly into the variable-domain entropy
+condition.
 The remaining useful work is a concrete quantizer/grid/VC cardinality estimate
 for the coordinate code sets, not another endpoint wrapper.
 For Chapter 1 varying-domain asymptotic-measurability,
