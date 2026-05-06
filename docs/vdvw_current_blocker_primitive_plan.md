@@ -170,6 +170,20 @@ Each continuation should close a theorem-facing batch in one of these lanes or
 record the precise missing theorem shape and next patchable edit.  Do not
 create a formal theorem report from this rebase alone.
 
+2026-05-06 finite code-set endpoint consumption: after the generic code-set
+random-cover bridge, `Theorem243.lean` now also exposes the selected
+fixed-radius and centered untruncated consumers
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_codeSet_cardinality_bound_logCardinality_div_tendsto_bound`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_pointwise_approx_codeSet_cardinality_bound_logCardinality_div_tendsto_bound`,
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_finite_pointwise_approx_codeSet_logCardinality_div_tendsto_bound`,
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_finite_pointwise_approx_codeSet_nat_poly`.
+The code-set route is therefore now consumable all the way to the centered
+Theorem 2.4.3 convergence conclusion.  The next non-duplicative theorem-line
+step should prove an actual structural code-image/cardinality estimate feeding
+one of these endpoints, or move to selected tail/UI or exact Chapter 1 process
+primitives if that structural estimate blocks after search.
+
 Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: local `main`
 is synced with `origin/main`, the worktree is clean, and the active Codex goal

@@ -154,6 +154,16 @@ separability/tightness/asymptotic-measurability, nonmeasurable signed weak
 convergence, or full arbitrary-map extended-real measurable-cover existence.
 Older current-target paragraphs below are historical context only.
 
+2026-05-06 finite code-set endpoint handoff: `Theorem243.lean` now carries the
+generic finite pointwise-code-set route through selected fixed-radius tail/UI
+and centered untruncated convergence, both for deterministic normalized
+log-cardinality rates and for natural-polynomial code-set cardinality bounds.
+This means future structural compression, trace, or VC/Sauer work can target
+the code-set cardinality hypotheses directly.  Do not add another code-set
+consumer unless it removes a genuinely new hypothesis; prove the structural
+cardinality theorem or switch to selected tail/UI or Chapter 1 process
+primitives.
+
 Current operational target, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: the active
 Codex `/goal` remains broad and cannot be edited in place, so this paragraph

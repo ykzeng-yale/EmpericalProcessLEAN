@@ -64,6 +64,13 @@ tightness, nonmeasurable signed weak convergence, or full arbitrary-map
 extended-real cover existence.  Historical target paragraphs below are audit
 context only.
 
+2026-05-06 code-set endpoint handoff: the generic finite code-set route now has
+selected tail/UI constructors from deterministic log-rate and centered
+untruncated convergence endpoints from both deterministic log-rate and
+natural-polynomial code-set cardinality bounds.  The important next work is no
+longer plumbing from code-set covers into Theorem 2.4.3; it is proving a real
+structural code-image/cardinality estimate that supplies those hypotheses.
+
 Current `/goal` target override, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: local `main`
 equals `origin/main` and the worktree is clean.  The broad Codex goal object
