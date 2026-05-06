@@ -262,13 +262,19 @@ compiles the supplied scalar recurrence layer for Chewi Theorem 11.5:
 `IsChewi115RAMStrongGapCertificate.gap_le_geometric`,
 `chewi115_zero_quadratic_recurrence_of_jensen`,
 `chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence`,
+`chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence_nonneg`,
 `chewi115_zero_expected_gap_le_source_rate_of_recurrence`,
+`chewi115_zero_expected_gap_le_source_rate_of_recurrence_nonneg`,
 `chewi115_zero_expected_gap_le_eps_of_recurrence`,
+`chewi115_zero_expected_gap_le_eps_of_recurrence_nonneg`,
 `IsChewi115RAMZeroGapCertificate`,
-`IsChewi115RAMZeroGapCertificate.gap_le_source_rate`, and
-`IsChewi115RAMZeroGapCertificate.gap_le_eps`.  The strong case reuses
+`IsChewi115RAMZeroGapCertificate.gap_le_source_rate`,
+`IsChewi115RAMZeroGapCertificate.gap_le_source_rate_nonneg`,
+`IsChewi115RAMZeroGapCertificate.gap_le_eps`, and
+`IsChewi115RAMZeroGapCertificate.gap_le_eps_nonneg`.  The strong case reuses
 `scalarRecurrence_le_pow`; the weak case reuses the Chapter 11.4 inverse-gap
-telescope with `K = 2 * D * R_beta^2`.
+telescope with `K = 2 * D * R_beta^2`, and the nonnegative wrappers handle
+zero-hit trajectories by proving the gap remains zero after the first hit.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, relative smoothness, OMD, online
@@ -312,10 +318,10 @@ Active aggressive target ladder:
    prove the source analytic one-step bridge from the conditional expectation
    display plus the Hopf-Lax/Exercise 9.3 supplied bounds into
    `IsChewi115RAMStrongGapCertificate` and
-   `IsChewi115RAMZeroGapCertificate`.  If cheap, remove the strict-positive
-   side condition in the zero-curvature rate by a zero-hit induction wrapper.
-   Do not build full probability/process infrastructure unless it is the
-   shortest route; expectation-level supplied interfaces are the fast lane.
+   `IsChewi115RAMZeroGapCertificate`.  The zero-hit/nonnegative weak-rate
+   wrapper is already compiled; do not repeat it.  Do not build full
+   probability/process infrastructure unless it is the shortest route;
+   expectation-level supplied interfaces are the fast lane.
 3. Package Sinkhorn Theorems 11.7 and 11.8 from the compiled ABP and mirror
    descent layers using supplied finite KL/Pinsker/marginal identities; do not
    expand full EOT duality unless exact Theorem 11.6 reporting is requested.

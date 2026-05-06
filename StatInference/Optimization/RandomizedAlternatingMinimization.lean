@@ -122,6 +122,59 @@ theorem chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence
         (g' := expectedGap (n0 + (m + 1))) (hrec m hm))
 
 /--
+Zero-curvature RAM scalar rate without a strict-positivity side condition.  If
+the expected gap ever reaches zero, nonnegativity and the recurrence keep it at
+zero; otherwise the positive inverse-gap telescope applies.
+-/
+theorem chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence_nonneg
+    {expectedGap : ℕ -> ℝ} {K : ℝ} {n0 M : ℕ}
+    (hK : 0 < K) (hM : M ≠ 0)
+    (hnonneg : ∀ m, m ≤ M -> 0 ≤ expectedGap (n0 + m))
+    (hrec : ∀ m, m < M ->
+      expectedGap (n0 + (m + 1)) ≤
+        (1 - expectedGap (n0 + m) / K) * expectedGap (n0 + m)) :
+    expectedGap (n0 + M) ≤ K / (M : ℝ) := by
+  classical
+  by_cases hzero : ∃ m, m ≤ M ∧ expectedGap (n0 + m) = 0
+  · rcases hzero with ⟨b, hbM, hbzero⟩
+    have hzero_tail :
+        ∀ k, b + k ≤ M -> expectedGap (n0 + (b + k)) = 0 := by
+      intro k
+      induction k with
+      | zero =>
+          intro _hk
+          simpa using hbzero
+      | succ k ih =>
+          intro hbk
+          have hbk_prev : b + k ≤ M := by omega
+          have hlt : b + k < M := by omega
+          have hprev : expectedGap (n0 + (b + k)) = 0 := ih hbk_prev
+          have hstep := hrec (b + k) hlt
+          have hstep' :
+              expectedGap (n0 + (b + (k + 1))) ≤ 0 := by
+            simpa [Nat.add_assoc, hprev] using hstep
+          exact le_antisymm hstep' (hnonneg (b + (k + 1)) hbk)
+    have hMzero : expectedGap (n0 + M) = 0 := by
+      have htail := hzero_tail (M - b) (by omega)
+      have hidx : b + (M - b) = M := by omega
+      simpa [hidx] using htail
+    have hdiv_nonneg : 0 ≤ K / (M : ℝ) := by
+      have hM_pos : 0 < (M : ℝ) := by exact_mod_cast Nat.pos_of_ne_zero hM
+      positivity
+    simpa [hMzero] using hdiv_nonneg
+  · have hpos : ∀ m, m ≤ M -> 0 < expectedGap (n0 + m) := by
+      intro m hm
+      have hne : expectedGap (n0 + m) ≠ 0 := by
+        intro hz
+        exact hzero ⟨m, hm, hz⟩
+      exact lt_of_le_of_ne (hnonneg m hm) (by
+        intro h
+        exact hne h.symm)
+    exact chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence
+      (expectedGap := expectedGap) (K := K) (n0 := n0) (M := M)
+      hK hM hpos hrec
+
+/--
 Source-denominator form of the zero-curvature RAM expected-gap rate:
 `E gap_N <= 2 * D * R_beta^2 / N`.
 -/
@@ -138,6 +191,23 @@ theorem chewi115_zero_expected_gap_le_source_rate_of_recurrence
     (expectedGap := expectedGap) (K := chewi115ZeroK D Rbeta)
     (n0 := n0) (M := M) (chewi115ZeroK_pos hD hRbeta) hM hpos hrec
 
+/--
+Source-denominator zero-curvature RAM rate using only nonnegativity of the
+expected gap.
+-/
+theorem chewi115_zero_expected_gap_le_source_rate_of_recurrence_nonneg
+    {expectedGap : ℕ -> ℝ} {D n0 M : ℕ} {Rbeta : ℝ}
+    (hD : 0 < D) (hRbeta : 0 < Rbeta) (hM : M ≠ 0)
+    (hnonneg : ∀ m, m ≤ M -> 0 ≤ expectedGap (n0 + m))
+    (hrec : ∀ m, m < M ->
+      expectedGap (n0 + (m + 1)) ≤
+        (1 - expectedGap (n0 + m) / chewi115ZeroK D Rbeta) *
+          expectedGap (n0 + m)) :
+    expectedGap (n0 + M) ≤ chewi115ZeroK D Rbeta / (M : ℝ) :=
+  chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence_nonneg
+    (expectedGap := expectedGap) (K := chewi115ZeroK D Rbeta)
+    (n0 := n0) (M := M) (chewi115ZeroK_pos hD hRbeta) hM hnonneg hrec
+
 /-- Epsilon form of the zero-curvature RAM expected-gap rate. -/
 theorem chewi115_zero_expected_gap_le_eps_of_recurrence
     {expectedGap : ℕ -> ℝ} {D n0 M : ℕ} {Rbeta eps : ℝ}
@@ -152,6 +222,21 @@ theorem chewi115_zero_expected_gap_le_eps_of_recurrence
   (chewi115_zero_expected_gap_le_source_rate_of_recurrence
     (expectedGap := expectedGap) (D := D) (n0 := n0) (M := M)
     (Rbeta := Rbeta) hD hRbeta hM hpos hrec).trans hK_div_le
+
+/-- Epsilon form using only nonnegativity of the expected gap. -/
+theorem chewi115_zero_expected_gap_le_eps_of_recurrence_nonneg
+    {expectedGap : ℕ -> ℝ} {D n0 M : ℕ} {Rbeta eps : ℝ}
+    (hD : 0 < D) (hRbeta : 0 < Rbeta) (hM : M ≠ 0)
+    (hnonneg : ∀ m, m ≤ M -> 0 ≤ expectedGap (n0 + m))
+    (hrec : ∀ m, m < M ->
+      expectedGap (n0 + (m + 1)) ≤
+        (1 - expectedGap (n0 + m) / chewi115ZeroK D Rbeta) *
+          expectedGap (n0 + m))
+    (hK_div_le : chewi115ZeroK D Rbeta / (M : ℝ) ≤ eps) :
+    expectedGap (n0 + M) ≤ eps :=
+  (chewi115_zero_expected_gap_le_source_rate_of_recurrence_nonneg
+    (expectedGap := expectedGap) (D := D) (n0 := n0) (M := M)
+    (Rbeta := Rbeta) hD hRbeta hM hnonneg hrec).trans hK_div_le
 
 /--
 Source-shaped zero-curvature RAM gap certificate after Jensen in Chewi Theorem
@@ -179,6 +264,22 @@ theorem IsChewi115RAMZeroGapCertificate.gap_le_source_rate
     (fun m hm => by
       simpa [Nat.add_assoc] using hcert.one_step (n0 + m))
 
+/--
+The zero-curvature RAM certificate gives the source rate without a
+strict-positivity side condition.
+-/
+theorem IsChewi115RAMZeroGapCertificate.gap_le_source_rate_nonneg
+    {expectedGap : ℕ -> ℝ} {D n0 M : ℕ} {Rbeta : ℝ}
+    (hcert : IsChewi115RAMZeroGapCertificate expectedGap D Rbeta)
+    (hD : 0 < D) (hRbeta : 0 < Rbeta) (hM : M ≠ 0) :
+    expectedGap (n0 + M) ≤ chewi115ZeroK D Rbeta / (M : ℝ) :=
+  chewi115_zero_expected_gap_le_source_rate_of_recurrence_nonneg
+    (expectedGap := expectedGap) (D := D) (n0 := n0) (M := M)
+    (Rbeta := Rbeta) hD hRbeta hM
+    (fun m _hm => hcert.gap_nonneg (n0 + m))
+    (fun m hm => by
+      simpa [Nat.add_assoc] using hcert.one_step (n0 + m))
+
 /-- Epsilon form of the zero-curvature RAM certificate rate. -/
 theorem IsChewi115RAMZeroGapCertificate.gap_le_eps
     {expectedGap : ℕ -> ℝ} {D n0 M : ℕ} {Rbeta eps : ℝ}
@@ -188,6 +289,15 @@ theorem IsChewi115RAMZeroGapCertificate.gap_le_eps
     (hK_div_le : chewi115ZeroK D Rbeta / (M : ℝ) ≤ eps) :
     expectedGap (n0 + M) ≤ eps :=
   (hcert.gap_le_source_rate hD hRbeta hM hpos).trans hK_div_le
+
+/-- Epsilon form of the nonnegative zero-curvature RAM certificate rate. -/
+theorem IsChewi115RAMZeroGapCertificate.gap_le_eps_nonneg
+    {expectedGap : ℕ -> ℝ} {D n0 M : ℕ} {Rbeta eps : ℝ}
+    (hcert : IsChewi115RAMZeroGapCertificate expectedGap D Rbeta)
+    (hD : 0 < D) (hRbeta : 0 < Rbeta) (hM : M ≠ 0)
+    (hK_div_le : chewi115ZeroK D Rbeta / (M : ℝ) ≤ eps) :
+    expectedGap (n0 + M) ≤ eps :=
+  (hcert.gap_le_source_rate_nonneg hD hRbeta hM).trans hK_div_le
 
 end
 

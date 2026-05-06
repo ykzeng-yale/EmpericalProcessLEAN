@@ -180,16 +180,22 @@ The new `RandomizedAlternatingMinimization.lean` module is imported by
 `IsChewi115RAMStrongGapCertificate.gap_le_geometric`,
 `chewi115_zero_quadratic_recurrence_of_jensen`,
 `chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence`,
+`chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence_nonneg`,
 `chewi115_zero_expected_gap_le_source_rate_of_recurrence`,
+`chewi115_zero_expected_gap_le_source_rate_of_recurrence_nonneg`,
 `chewi115_zero_expected_gap_le_eps_of_recurrence`,
+`chewi115_zero_expected_gap_le_eps_of_recurrence_nonneg`,
 `IsChewi115RAMZeroGapCertificate`,
-`IsChewi115RAMZeroGapCertificate.gap_le_source_rate`, and
-`IsChewi115RAMZeroGapCertificate.gap_le_eps`.  Search-first reuse: no local
-RAM theorem existed; the strong case reuses `scalarRecurrence_le_pow`, while
-the zero-curvature case reuses the compiled Chapter 11.4 inverse-gap telescope.
-The next RAM packet should prove the conditional-expectation/Hopf-Lax source
-bridge into these certificates, and only then decide whether full probability
-formalization is needed.
+`IsChewi115RAMZeroGapCertificate.gap_le_source_rate`,
+`IsChewi115RAMZeroGapCertificate.gap_le_source_rate_nonneg`,
+`IsChewi115RAMZeroGapCertificate.gap_le_eps`, and
+`IsChewi115RAMZeroGapCertificate.gap_le_eps_nonneg`.  Search-first reuse: no
+local RAM theorem existed; the strong case reuses `scalarRecurrence_le_pow`,
+while the zero-curvature case reuses the compiled Chapter 11.4 inverse-gap
+telescope.  The nonnegative wrappers remove the earlier strict-positive
+side-condition by a zero-hit induction.  The next RAM packet should prove the
+conditional-expectation/Hopf-Lax source bridge into these certificates, and
+only then decide whether full probability formalization is needed.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
