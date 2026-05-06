@@ -213,6 +213,17 @@ entropy, selected empirical covers, ghost samples, and Rademacher
 symmetrization without adding measurability assumptions that the book does not
 make.
 
+For the faithful Markov/symmetrization route, the source input has also been
+lowered from finite-net Hoeffding tail/UI to selected normalized-log tail/UI:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_tailExpectation`.
+This consumes the variable-domain book entropy package and the selected
+normalized log-cardinality measurability/integrability/tail fields, then uses
+the existing selected fixed-radius tail-condition bridge and large-`M`
+untruncation.  The remaining exact-theorem issue is not a downstream endpoint:
+prove selected normalized-log tail/UI from the textbook `o_P^*(n)` entropy
+assumption, or record the precise arbitrary-map outer-entropy primitive needed
+for that implication.
+
 2026-05-06 fixed-FDD congruence refinement: after search, the local FDD
 replacement layer now includes
 `aemeasurable_fdd_congr_finite_coord_ae` and

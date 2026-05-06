@@ -3011,3 +3011,10 @@ is now compiled as well, using the existing envelope-tail untruncation
 handoff.  No final textbook theorem is claimed; this narrows the remaining
 work to proving the scaled a.e. source domination for all positive truncation
 levels.
+
+The fixed-radius route now also has a selected-log tail/UI source bridge:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_tailExpectation`.
+This avoids asking directly for tail/UI of the finite-net Hoeffding upper and
+instead consumes tail/UI of the selected normalized log-cardinality process.
+The exact Theorem 2.4.3 blocker is therefore the book entropy-to-selected-log
+tail/UI step, or a direct outer-probability source comparison replacing it.

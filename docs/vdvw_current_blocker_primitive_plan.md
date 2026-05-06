@@ -7481,3 +7481,16 @@ untruncated centered convergence route is now blocked only by the source
 `hae` theorem: for every positive truncation level and fixed radius, derive
 eventual `vdVWProductMeasure P n`-a.e. scaled finite-net domination from
 ghost samples, Rademacher signs, and selected empirical covers.
+
+2026-05-06 Theorem 2.4.3 selected-log tail/UI source bridge:
+`Theorem243.lean` now proves
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_tailExpectation`.
+This is the more faithful fixed-radius Markov/symmetrization route when the
+source theorem is not a pointwise or a.e. domination statement: the variable
+book entropy package plus measurability, integrability, and tail/UI for the
+selected normalized log-cardinality process imply untruncated centered
+convergence.  The remaining generic option-1 blocker is now sharply upstream:
+derive that selected normalized-log tail/UI from the textbook
+`o_P^*(n)` entropy hypothesis, or register the exact VdV&W arbitrary-map
+outer-entropy primitive if the implication is not derivable from current
+mathlib/local foundations.
