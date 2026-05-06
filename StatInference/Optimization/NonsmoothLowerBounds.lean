@@ -1351,6 +1351,27 @@ theorem chewi625_cutUpper_le {d : ℕ}
         chewi625_midpoint_le_right (a := a) (b := b) hab i
     · simp [chewi625CutUpper, chewi625Midpoint, h', hji]
 
+/-- The retained lower endpoint remains below the retained upper endpoint. -/
+theorem chewi625_cutLower_le_cutUpper {d : ℕ}
+    {a b x : EuclideanSpace ℝ (Fin d)} (hab : ∀ j : Fin d, a j ≤ b j)
+    (i j : Fin d) :
+    chewi625CutLower a b x i j ≤ chewi625CutUpper a b x i j := by
+  by_cases h : x i ≤ chewi625Midpoint a b i
+  · have h' : x i ≤ (a i + b i) / 2 := by
+      simpa using h
+    by_cases hji : j = i
+    · simpa [chewi625CutLower, chewi625CutUpper, chewi625Midpoint, h', hji] using
+        chewi625_midpoint_le_right (a := a) (b := b) hab i
+    · simpa [chewi625CutLower, chewi625CutUpper, chewi625Midpoint, h', hji] using
+        hab j
+  · have h' : ¬ x i ≤ (a i + b i) / 2 := by
+      simpa using h
+    by_cases hji : j = i
+    · simpa [chewi625CutLower, chewi625CutUpper, chewi625Midpoint, h', hji] using
+        chewi625_left_le_midpoint (a := a) (b := b) hab i
+    · simpa [chewi625CutLower, chewi625CutUpper, chewi625Midpoint, h', hji] using
+        hab j
+
 /-- The retained half-box is nested inside the previous box. -/
 theorem chewi625_cut_box_subset {d : ℕ}
     {a b x : EuclideanSpace ℝ (Fin d)} (hab : ∀ j : Fin d, a j ≤ b j)
@@ -1464,6 +1485,176 @@ theorem chewi625_no_closedBall_subset_of_short_side {d : ℕ}
     have hbox := (hsubset hyminus_mem i).1
     simpa [yminus, e] using hbox
   nlinarith
+
+/-- Constant finite Euclidean vector, used for the initial cube. -/
+noncomputable def chewi625ConstVec {d : ℕ} (c : ℝ) :
+    EuclideanSpace ℝ (Fin d) :=
+  WithLp.toLp 2 fun _i : Fin d => c
+
+@[simp] theorem chewi625ConstVec_apply {d : ℕ} (c : ℝ) (i : Fin d) :
+    chewi625ConstVec (d := d) c i = c := by
+  simp [chewi625ConstVec, PiLp.toLp_apply]
+
+/-- Chewi's cyclic coordinate schedule for the feasibility resisting oracle. -/
+def chewi625CycleCoord {d : ℕ} [NeZero d] (n : ℕ) : Fin d :=
+  ⟨n % d, Nat.mod_lt n (Nat.pos_of_neZero d)⟩
+
+@[simp] theorem chewi625CycleCoord_val {d : ℕ} [NeZero d] (n : ℕ) :
+    (chewi625CycleCoord (d := d) n).1 = n % d := rfl
+
+/--
+Recursive lower/upper endpoints of the resisting box.  At step `n`, the query
+`x n` cuts coordinate `n % d`.
+-/
+noncomputable def chewi625BoxState {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) :
+    ℕ -> EuclideanSpace ℝ (Fin d) × EuclideanSpace ℝ (Fin d)
+  | 0 => (chewi625ConstVec (d := d) (-R), chewi625ConstVec (d := d) R)
+  | n + 1 =>
+      let state := chewi625BoxState R x n
+      let a := state.1
+      let b := state.2
+      let i := chewi625CycleCoord (d := d) n
+      (chewi625CutLower a b (x n) i, chewi625CutUpper a b (x n) i)
+
+noncomputable def chewi625BoxLower {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    EuclideanSpace ℝ (Fin d) :=
+  (chewi625BoxState (d := d) R x n).1
+
+noncomputable def chewi625BoxUpper {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    EuclideanSpace ℝ (Fin d) :=
+  (chewi625BoxState (d := d) R x n).2
+
+@[simp] theorem chewi625BoxLower_zero {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) :
+    chewi625BoxLower (d := d) R x 0 = chewi625ConstVec (d := d) (-R) := rfl
+
+@[simp] theorem chewi625BoxUpper_zero {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) :
+    chewi625BoxUpper (d := d) R x 0 = chewi625ConstVec (d := d) R := rfl
+
+@[simp] theorem chewi625BoxLower_zero_apply {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    chewi625BoxLower (d := d) R x 0 i = -R := by
+  simp [chewi625BoxLower, chewi625BoxState]
+
+@[simp] theorem chewi625BoxUpper_zero_apply {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    chewi625BoxUpper (d := d) R x 0 i = R := by
+  simp [chewi625BoxUpper, chewi625BoxState]
+
+@[simp] theorem chewi625BoxLower_succ {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    chewi625BoxLower (d := d) R x (n + 1) =
+      chewi625CutLower (chewi625BoxLower (d := d) R x n)
+        (chewi625BoxUpper (d := d) R x n) (x n)
+        (chewi625CycleCoord (d := d) n) := by
+  rfl
+
+@[simp] theorem chewi625BoxUpper_succ {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    chewi625BoxUpper (d := d) R x (n + 1) =
+      chewi625CutUpper (chewi625BoxLower (d := d) R x n)
+        (chewi625BoxUpper (d := d) R x n) (x n)
+        (chewi625CycleCoord (d := d) n) := by
+  rfl
+
+/-- Every recursive resisting box has ordered endpoints. -/
+theorem chewi625BoxState_ordered {d : ℕ} [NeZero d]
+    {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) :
+    ∀ n, ∀ i : Fin d,
+      chewi625BoxLower (d := d) R x n i ≤
+        chewi625BoxUpper (d := d) R x n i := by
+  intro n
+  induction n with
+  | zero =>
+      intro i
+      simp
+      nlinarith
+  | succ n ih =>
+      intro j
+      simpa using
+        chewi625_cutLower_le_cutUpper
+          (a := chewi625BoxLower (d := d) R x n)
+          (b := chewi625BoxUpper (d := d) R x n)
+          (x := x n) ih (chewi625CycleCoord (d := d) n) j
+
+/-- Step `n` returns a valid separator for the retained recursive box. -/
+theorem chewi625BoxState_step_isSeparationVector {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    IsSeparationVector
+      (chewi625CoordinateBox
+        (chewi625BoxLower (d := d) R x (n + 1))
+        (chewi625BoxUpper (d := d) R x (n + 1)))
+      (x n)
+      (chewi625CutVector
+        (chewi625BoxLower (d := d) R x n)
+        (chewi625BoxUpper (d := d) R x n) (x n)
+        (chewi625CycleCoord (d := d) n)) := by
+  simpa using
+    chewi625CutVector_isSeparationVector
+      (chewi625BoxLower (d := d) R x n)
+      (chewi625BoxUpper (d := d) R x n) (x n)
+      (chewi625CycleCoord (d := d) n)
+
+/-- The query at step `n` is not in the strict interior of the retained box. -/
+theorem chewi625BoxState_query_not_mem_next_strict_box {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    x n ∉ chewi625StrictCoordinateBox
+      (chewi625BoxLower (d := d) R x (n + 1))
+      (chewi625BoxUpper (d := d) R x (n + 1)) := by
+  simpa using
+    chewi625_query_not_mem_strict_cut_box
+      (chewi625BoxLower (d := d) R x n)
+      (chewi625BoxUpper (d := d) R x n) (x n)
+      (chewi625CycleCoord (d := d) n)
+
+/-- Each recursive box is nested in the previous one. -/
+theorem chewi625BoxState_step_subset {d : ℕ} [NeZero d]
+    {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    chewi625CoordinateBox
+        (chewi625BoxLower (d := d) R x (n + 1))
+        (chewi625BoxUpper (d := d) R x (n + 1)) ⊆
+      chewi625CoordinateBox
+        (chewi625BoxLower (d := d) R x n)
+        (chewi625BoxUpper (d := d) R x n) := by
+  simpa using
+    chewi625_cut_box_subset
+      (a := chewi625BoxLower (d := d) R x n)
+      (b := chewi625BoxUpper (d := d) R x n)
+      (x := x n)
+      (chewi625BoxState_ordered (d := d) hR_nonneg x n)
+      (chewi625CycleCoord (d := d) n)
+
+/-- Selected-coordinate width update for the recursive resisting box. -/
+theorem chewi625BoxState_selected_width_succ {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    chewi625BoxUpper (d := d) R x (n + 1) (chewi625CycleCoord (d := d) n) -
+        chewi625BoxLower (d := d) R x (n + 1) (chewi625CycleCoord (d := d) n) =
+      (chewi625BoxUpper (d := d) R x n (chewi625CycleCoord (d := d) n) -
+          chewi625BoxLower (d := d) R x n (chewi625CycleCoord (d := d) n)) / 2 := by
+  simpa using
+    chewi625_cut_selected_width
+      (chewi625BoxLower (d := d) R x n)
+      (chewi625BoxUpper (d := d) R x n) (x n)
+      (chewi625CycleCoord (d := d) n)
+
+/-- Nonselected-coordinate widths are unchanged in one recursive step. -/
+theorem chewi625BoxState_unselected_width_succ {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) {n : ℕ} {j : Fin d}
+    (hjn : j ≠ chewi625CycleCoord (d := d) n) :
+    chewi625BoxUpper (d := d) R x (n + 1) j -
+        chewi625BoxLower (d := d) R x (n + 1) j =
+      chewi625BoxUpper (d := d) R x n j -
+        chewi625BoxLower (d := d) R x n j := by
+  simpa using
+    chewi625_cut_unselected_width
+      (chewi625BoxLower (d := d) R x n)
+      (chewi625BoxUpper (d := d) R x n) (x n) hjn
 
 end Optimization
 end StatInference
