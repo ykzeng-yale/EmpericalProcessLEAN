@@ -253,27 +253,47 @@ Chapter 3 theorem-facing wrappers compiling:
 79. Theorem 4.1 textbook `sqrt n` delta-method handoff using
    a.e.-measurability of the composed local inverse:
    `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_aemeasurable`.
+80. Finite-coordinate strong-law Theorem 4.1 assembler using only
+   a.e.-measurability of the composed local inverse:
+   `vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_aemeasurable_real`.
+81. Finite-coordinate strong-law Theorem 4.1 assembler deriving composed
+   local-inverse a.e.-measurability from a.e. localization in the open moment
+   range:
+   `vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_of_ae_mem_open_momentRange_real`.
+82. Measurable-coordinate Theorem 4.1 source wrapper using only
+   a.e.-measurability of the composed local inverse:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_aemeasurable_real`.
+83. Measurable-coordinate Theorem 4.1 source wrapper deriving composed
+   local-inverse a.e.-measurability from a.e. localization in the open moment
+   range:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_of_ae_mem_open_momentRange_real`.
+84. Measurable-coordinate Theorem 4.1 Gaussian-limit wrapper using only
+   a.e.-measurability of the composed local inverse:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_aemeasurable_real`.
+85. Measurable-coordinate Theorem 4.1 Gaussian-limit wrapper deriving composed
+   local-inverse a.e.-measurability from a.e. localization in the open moment
+   range:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_of_ae_mem_open_momentRange_real`.
 
-Latest remote base after rebase before this packet: `7bfd3e1`.
-Latest pushed Vaart packet before this run: `9e16530`
-(`Add Vaart local inverse aemeasurability bridge`).
+Latest remote base after rebase before this packet: `0fcff2a`.
+Latest pushed Vaart packet before this run: `8ca8bed`
+(`Add Vaart aemeasurable delta handoff wrappers`).
 
-The current theorem-sized packet connects that local-inverse measurability
-layer to the Chapter 4 delta-method handoff.  If an empirical moment is
-a.e.-localized in the inverse-function-theorem target, then composing it with
-the local inverse is a.e.-measurable; the Theorem 4.1 delta wrappers can now
-consume this composed a.e.-measurability directly instead of requiring global
-measurability of the off-target local inverse.  The multivariate
-empirical-moment CLT and finite-matrix specialization remain explicit next
-source layers.
+The current theorem-sized packet carries the a.e.-localized local-inverse
+handoff into the finite-coordinate Theorem 4.1 source assemblers.  The
+strong-law and measurable-coordinate wrappers now have variants that either
+take composed local-inverse a.e.-measurability directly or derive it from
+per-`n` a.e. localization in the inverse-function-theorem target.  The supplied
+Gaussian-limit source wrapper has the same a.e.-measurable and localized
+variants.  This removes global local-inverse measurability from the main
+finite-coordinate delta/Gaussian route whenever true a.e. localization is
+available.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. connect the a.e.-measurable local inverse convenience to the delta-method
-   wrapper inside the finite-coordinate/source assemblers, replacing global
-   local-inverse measurability hypotheses where a.e. target localization is
-   available;
+1. cascade the a.e.-measurable finite-coordinate route through the
+   covariance-display and covarianceBilinDual source wrappers;
 2. keep a true multivariate empirical-moment CLT supplied until a local vector
    CLT is formalized from the scalar mathlib CLT.
 

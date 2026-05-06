@@ -1315,6 +1315,162 @@ theorem vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_me
         (Z := Z) hCLT (fun n => (hstrong n).aemeasurable)
 
 /--
+Finite-coordinate source-shaped Theorem 4.1 wrapper using only
+a.e.-measurability of the composed local inverse.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_aemeasurable_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 =
+        (fun coordinate : Coordinate => ∫ sample, X coordinate 0 sample ∂P))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hstrong : ∀ n : ℕ,
+      AEStronglyMeasurable
+        (fun ω : Ω => fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n) P)
+    (hmeas : ∀ n : ℕ,
+      Measurable
+        (fun ω : Ω => fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n))
+    (hInvEmpirical : ∀ n : ℕ,
+      AEMeasurable
+        (fun ω : Ω =>
+          he.localInverse e De theta0
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)) P)
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q := by
+  constructor
+  · exact
+      vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_finiteCoordinateStrongLaw_real
+        e De he X heta0 hX_integrable hX_indep hX_ident hstrong hmeas
+  · simpa using
+      vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_aemeasurable
+        (empiricalMoment := fun n : ℕ => fun ω : Ω =>
+          fun coordinate : Coordinate =>
+            (∑ i ∈ Finset.range n, X coordinate i ω) / n)
+        (Z := Z) (eInv := he.localInverse e De theta0)
+        (eta0 := e theta0) (theta0 := theta0)
+        (Dinv := (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ))
+        he.to_localInverse.hasFDerivAt he.localInverse_apply_image hCLT
+        (fun n => (hstrong n).aemeasurable) hInvEmpirical
+
+/--
+Finite-coordinate source-shaped Theorem 4.1 wrapper deriving composed
+local-inverse a.e.-measurability from a.e. localization in the open moment
+range.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_of_ae_mem_open_momentRange_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 =
+        (fun coordinate : Coordinate => ∫ sample, X coordinate 0 sample ∂P))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hstrong : ∀ n : ℕ,
+      AEStronglyMeasurable
+        (fun ω : Ω => fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n) P)
+    (hmeas : ∀ n : ℕ,
+      Measurable
+        (fun ω : Ω => fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n))
+    (hTarget : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        (fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n) ∈
+            (he.toOpenPartialHomeomorph e).target)
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q :=
+  vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_aemeasurable_real
+    e De he X heta0 hX_integrable hX_indep hX_ident hstrong hmeas
+    (fun n =>
+      vaart1998_localInverse_comp_empiricalMoment_aemeasurable_of_ae_mem_open_momentRange
+        e De he (hstrong n).aemeasurable (hTarget n))
+    hCLT
+
+/--
 Finite-coordinate Theorem 4.1 wrapper with empirical-moment measurability
 derived from coordinate measurability.
 -/
@@ -1374,6 +1530,142 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_m
     (vaart1998_finiteCoordinate_empiricalMoment_aestronglyMeasurable_real
       X hX_meas)
     (vaart1998_finiteCoordinate_empiricalMoment_measurable_real X hX_meas)
+    hCLT
+
+/--
+Measurable-coordinate Theorem 4.1 wrapper using only a.e.-measurability of the
+composed local inverse.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_aemeasurable_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 =
+        (fun coordinate : Coordinate => ∫ sample, X coordinate 0 sample ∂P))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hInvEmpirical : ∀ n : ℕ,
+      AEMeasurable
+        (fun ω : Ω =>
+          he.localInverse e De theta0
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)) P)
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q :=
+  vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_aemeasurable_real
+    e De he X heta0 hX_integrable hX_indep hX_ident
+    (vaart1998_finiteCoordinate_empiricalMoment_aestronglyMeasurable_real
+      X hX_meas)
+    (vaart1998_finiteCoordinate_empiricalMoment_measurable_real X hX_meas)
+    hInvEmpirical hCLT
+
+/--
+Measurable-coordinate Theorem 4.1 wrapper deriving composed local-inverse
+a.e.-measurability from a.e. localization in the open moment range.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_of_ae_mem_open_momentRange_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 =
+        (fun coordinate : Coordinate => ∫ sample, X coordinate 0 sample ∂P))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hTarget : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        (fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n) ∈
+            (he.toOpenPartialHomeomorph e).target)
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q :=
+  vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_aemeasurable_real
+    e De he X heta0 hX_integrable hX_indep hX_ident hX_meas
+    (fun n =>
+      vaart1998_localInverse_comp_empiricalMoment_aemeasurable_of_ae_mem_open_momentRange
+        e De he
+        (vaart1998_finiteCoordinate_empiricalMoment_aestronglyMeasurable_real
+          X hX_meas n).aemeasurable
+        (hTarget n))
     hCLT
 
 /--
@@ -1447,6 +1739,151 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gauss
     ⟨hbase.1, hbase.2,
       vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative
         (Dinv := (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ)) hZ_gaussian⟩
+
+/--
+Finite-coordinate Theorem 4.1 Gaussian-limit wrapper using only
+a.e.-measurability of the composed local inverse.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_aemeasurable_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 =
+        (fun coordinate : Coordinate => ∫ sample, X coordinate 0 sample ∂P))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hInvEmpirical : ∀ n : ℕ,
+      AEMeasurable
+        (fun ω : Ω =>
+          he.localInverse e De theta0
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)) P)
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q)
+    (hZ_gaussian : HasGaussianLaw Z Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q := by
+  have hbase :=
+    vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_aemeasurable_real
+      e De he X heta0 hX_integrable hX_indep hX_ident hX_meas
+      hInvEmpirical hCLT
+  exact
+    ⟨hbase.1, hbase.2,
+      vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative
+        (Dinv := (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ)) hZ_gaussian⟩
+
+/--
+Finite-coordinate Theorem 4.1 Gaussian-limit wrapper deriving composed
+local-inverse a.e.-measurability from a.e. localization in the open moment
+range.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_of_ae_mem_open_momentRange_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 =
+        (fun coordinate : Coordinate => ∫ sample, X coordinate 0 sample ∂P))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hTarget : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        (fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n) ∈
+            (he.toOpenPartialHomeomorph e).target)
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q)
+    (hZ_gaussian : HasGaussianLaw Z Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q :=
+  vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_aemeasurable_real
+    e De he X heta0 hX_integrable hX_indep hX_ident hX_meas
+    (fun n =>
+      vaart1998_localInverse_comp_empiricalMoment_aemeasurable_of_ae_mem_open_momentRange
+        e De he
+        (vaart1998_finiteCoordinate_empiricalMoment_aestronglyMeasurable_real
+          X hX_meas n).aemeasurable
+        (hTarget n))
+    hCLT hZ_gaussian
 
 /--
 Finite-coordinate Theorem 4.1 wrapper with the covariance display for the

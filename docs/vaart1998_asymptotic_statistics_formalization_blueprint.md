@@ -173,10 +173,14 @@ Initial modules:
   for measures concentrated on that range.  The current handoff layer composes
   this localized local inverse with empirical moments and adds Chapter 4.1
   delta-method wrappers that consume a.e.-measurability of the composed local
-  inverse directly.  It still deliberately leaves replacement of global
-  local-inverse measurability in the finite-coordinate source assemblers, the
-  multivariate empirical-moment CLT, and a finite-matrix specialization as
-  explicit next layers.
+  inverse directly.  The newest finite-coordinate source layer pushes that
+  interface through the strong-law, measurable-coordinate, and supplied
+  Gaussian-limit Theorem 4.1 assemblers: these wrappers now either take
+  composed local-inverse a.e.-measurability directly or derive it from
+  per-`n` a.e. localization in the open moment range.  It still deliberately
+  leaves the same cascade through covariance-display and covarianceBilinDual
+  wrappers, the multivariate empirical-moment CLT, and a finite-matrix
+  specialization as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

@@ -177,9 +177,20 @@ Chapter 4 handoff:
   composed local inverse:
   `vaart1998_theorem_4_1_moment_estimator_delta_method_aemeasurable` and
   `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_aemeasurable`.
+- finite-coordinate Theorem 4.1 source assemblers that replace global
+  local-inverse measurability by composed a.e.-measurability or by a.e.
+  localization in the open moment range:
+  `vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_aemeasurable_real`,
+  `vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_of_ae_mem_open_momentRange_real`,
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_aemeasurable_real`, and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_of_ae_mem_open_momentRange_real`.
+- measurable-coordinate Gaussian-limit Theorem 4.1 source wrappers with the
+  same a.e.-measurable/localized local-inverse interface:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_aemeasurable_real` and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_of_ae_mem_open_momentRange_real`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`9e16530`; the current packet is rebased over remote base `7bfd3e1`:
+`8ca8bed`; the current packet is rebased over remote base `0fcff2a`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -203,12 +214,11 @@ targeted Vaart module build.
 ## Next Aggressive Target
 
 Continue Vaart Chapter 4.1 from the compiled Gaussian, canonical
-covarianceBilinDual source wrapper, and a.e.-measurable local-inverse delta
-handoff:
+covarianceBilinDual source wrapper, and a.e.-localized finite-coordinate
+delta/Gaussian source assemblers:
 
-1. replace global local-inverse measurability hypotheses in finite-coordinate
-   Chapter 4 source assemblers by the compiled a.e.-localized local-inverse
-   composition theorem where the empirical-moment target event is available;
+1. cascade the a.e.-measurable finite-coordinate route through the
+   covariance-display and covarianceBilinDual source wrappers;
 2. keep the actual multivariate CLT supplied until a local vector CLT is
    formalized from the scalar mathlib CLT or another local dependency.
 
