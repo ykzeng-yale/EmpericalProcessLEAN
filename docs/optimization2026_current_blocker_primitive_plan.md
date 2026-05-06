@@ -83,6 +83,40 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after focused Lean verification of the
+Chapter 8 Proximal packet rebased over pushed frontier `a874d02`
+(`Add Theorem 2.4.3 finite-code set nat-poly package`), building on `b757a49`
+(`Add Chewi theorem 7.3 Frank-Wolfe layer`): aggressively formalize and prove
+all main theorem content of Sinho Chewi's Optimization 2026 notes in Lean
+under `StatInference/Optimization`, with exercise statements and cheap
+reusable exercise proofs kept in `StatInference/Optimization/Exercises.lean`
+without slowing the main-text theorem lane.  Do not route back to stale
+Chapter 3/4/5 setup, solved Chapter 6 lower-bound/feasibility infrastructure,
+or the compiled Chapter 7 Theorem 7.3 layer unless exact source/report
+packaging needs them.  Treat `StatInference/Optimization/Proximal.lean` as
+the live Chapter 8 frontier: it now compiles `compositeObjective`,
+`proximalGradientModel`, `IsProximalGradientStep`,
+`proximalGradientModel_le_composite_add_sqdist`,
+`composite_le_proximalGradientModel`, `proximalGradient_oneStep_ineq` for
+Chewi Theorem 8.5 inequality `(8.1)`, and
+`chewi85_final_gap_le_geometric_denominator_of_oneStep`, which reuses Chapter
+3's weighted recurrence with effective step `h / (1 + alphaG * h)`.  Search
+results to preserve: pinned mathlib has no direct proximal/Moreau/
+proximal-gradient theorem; use mathlib convex/strong-convex function APIs,
+`IsMinOn`/argmin, projection primitives, and quadratic derivative facts only
+when they discharge concrete source obligations.  Local reuse is
+`FirstOrderStrongConvexOn.lower_model`, `SmoothWithGradientOn.upper_model`,
+`chewi34_final_gap_le_geometric_denominator_of_one_step`, and for the next
+packet `chewi510Lambda`, `chewi510Theta`, and Theorem 5.10 telescope algebra.
+Next aggressive target: Chewi Theorem 8.6 APGD/FISTA.  Define an APGD
+trajectory whose step is PGD with `h = 1 / beta`, reuse the Chapter 5.10
+lambda/energy/telescope machinery, and replace GD `(3.3)` by the compiled
+PGD `(8.1)` with `alphaF = alphaG = 0`.  Verification gate: focused
+`lake env lean`, promoted `lake build StatInference.Optimization.Proximal`
+and `lake build StatInference`, proof-hole scan, secret scan, route-doc
+refresh, rebase over remote main when needed, then one clean commit/push
+batch.
+
+Historical live replacement prompt after focused Lean verification of the
 Chapter 7 Frank-Wolfe packet rebased over pushed frontier `4d4601c`
 (`Add Theorem 2.4.3 coordinate-code selected package`), building on `bb0a297`
 (`Add Chewi theorem 6.25 feasibility instance wrapper`): aggressively
@@ -661,17 +695,18 @@ the concrete `d = N + 1` hard family.  Add an arbitrary-d embedding/report
 wrapper only if it is needed for exact source reporting.  Definition
 6.24/Theorem 6.25 now has the closed-convex feasibility-instance and
 topological interior no-success wrapper, and Chapter 7 `FrankWolfe.lean` now
-has the supplied Theorem 7.3 rate wrapper, so the next non-report proof lane is
-Chapter 8 `Proximal.lean`.
+has the supplied Theorem 7.3 rate wrapper, and Chapter 8 `Proximal.lean` now
+has the supplied Theorem 8.5 PGD one-step/final-rate wrapper, so the next
+non-report proof lane is Theorem 8.6 APGD/FISTA.
 Lemma 6.20 now has a compiled trajectory/rate frontier, and Lemma 6.18/Theorem
 6.19 already have a supplied-interface algebraic spine; their exact
 source-audited report remains blocked only by the genuine Grünbaum/centroid
 measure theorem.
-After Chapter 6 and the first Chapter 7 Frank-Wolfe rate packet have a stable
-main-text spine, split future packets by chapter surface rather than by tiny
-lemmas: optional Chapter 7 Carathéodory/report wrappers only when needed,
-Chapter 8 `Proximal.lean` for Theorems 8.5 and
-8.6 reusing Chapter 5 AGD algebra, Chapters 9-10 `Fenchel.lean` and
+After Chapter 6, the first Chapter 7 Frank-Wolfe rate packet, and Chapter 8
+Theorem 8.5 have a stable main-text spine, split future packets by chapter
+surface rather than by tiny lemmas: optional Chapter 7 Carathéodory/report
+wrappers only when needed, Chapter 8 Theorem 8.6 reusing Chapter 5 AGD
+algebra, Chapters 9-10 `Fenchel.lean` and
 `MirrorDescent.lean` for Fenchel-Young/Bregman/OMD telescopes, Chapter 11
 `AlternatingProjection.lean` for ABP/AM/RAM recurrences, Chapter 12
 `StochasticGradient.lean`/`SMPGD.lean` reusing local probability modules, and

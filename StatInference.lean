@@ -40,6 +40,7 @@ import StatInference.Optimization.LowerBounds
 import StatInference.Optimization.Minimizer
 import StatInference.Optimization.NonsmoothLowerBounds
 import StatInference.Optimization.ProjectedSubgradient
+import StatInference.Optimization.Proximal
 import StatInference.Optimization.Reductions
 import StatInference.Optimization.Theorem27
 import StatInference.Optimization.Theorem28
