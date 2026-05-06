@@ -16,6 +16,8 @@ namespace Optimization
 
 noncomputable section
 
+open Finset
+
 /--
 The geometric factor in Chewi Theorem 11.5 when
 `alphaF + alphaG > 0`.
@@ -158,6 +160,201 @@ theorem IsChewi115RAMStrongHopfLaxCertificate.gap_le_geometric
       expectedGap N ≤
         chewi115StrongFactor alphaF alphaG D ^ N * expectedGap 0 :=
   (hcert.toGapCertificate hD halphaG).gap_le_geometric hfactor_nonneg
+
+/--
+Finite-uniform block averaging in Chewi's RAM proof.  If every block update is
+bounded by its smooth one-block model, then the conditional expectation over a
+uniform block is bounded by the averaged model.  The inputs `lin`, `normSq`,
+`Gx`, and `Gy` are the source displays after summing the block linear terms,
+anisotropic quadratic terms, and blockwise `g` replacements.
+-/
+theorem chewi115_uniform_average_le_of_block_model
+    {D : ℕ} (hD : 0 < D)
+    {nextValue Fx lin normSq Gx Gy : ℝ}
+    {blockValue gradTerm quadTerm gReplace : Fin D -> ℝ}
+    (hnext :
+      nextValue ≤
+        (1 / (D : ℝ)) * ∑ i : Fin D, blockValue i)
+    (hblock : ∀ i : Fin D,
+      blockValue i ≤ Fx + gradTerm i + quadTerm i + gReplace i)
+    (hgrad_sum : (∑ i : Fin D, gradTerm i) = lin)
+    (hquad_sum : (∑ i : Fin D, quadTerm i) = normSq / 2)
+    (hg_sum : (∑ i : Fin D, gReplace i) = ((D : ℝ) - 1) * Gx + Gy) :
+    nextValue ≤
+      Fx + (1 / (D : ℝ)) * lin + (1 / (2 * (D : ℝ))) * normSq +
+        (((D : ℝ) - 1) / (D : ℝ)) * Gx + (1 / (D : ℝ)) * Gy := by
+  have hD_real : 0 < (D : ℝ) := by exact_mod_cast hD
+  have hsum_le :
+      (∑ i : Fin D, blockValue i) ≤
+        ∑ i : Fin D, (Fx + gradTerm i + quadTerm i + gReplace i) :=
+    Finset.sum_le_sum fun i _hi => hblock i
+  have hscaled :
+      (1 / (D : ℝ)) * (∑ i : Fin D, blockValue i) ≤
+        (1 / (D : ℝ)) *
+          ∑ i : Fin D, (Fx + gradTerm i + quadTerm i + gReplace i) :=
+    mul_le_mul_of_nonneg_left hsum_le (by positivity)
+  have hsum_model :
+      (∑ i : Fin D, (Fx + gradTerm i + quadTerm i + gReplace i)) =
+        (D : ℝ) * Fx + lin + normSq / 2 + (((D : ℝ) - 1) * Gx + Gy) := by
+    rw [Finset.sum_add_distrib, Finset.sum_add_distrib, Finset.sum_add_distrib,
+      hgrad_sum, hquad_sum, hg_sum]
+    simp [Finset.sum_const, nsmul_eq_mul]
+  calc
+    nextValue
+        ≤ (1 / (D : ℝ)) * ∑ i : Fin D, blockValue i := hnext
+    _ ≤ (1 / (D : ℝ)) *
+          ∑ i : Fin D, (Fx + gradTerm i + quadTerm i + gReplace i) := hscaled
+    _ = Fx + (1 / (D : ℝ)) * lin + (1 / (2 * (D : ℝ))) * normSq +
+          (((D : ℝ) - 1) / (D : ℝ)) * Gx + (1 / (D : ℝ)) * Gy := by
+          rw [hsum_model]
+          field_simp [hD_real.ne']
+          ring
+
+/--
+The averaged model display in Chewi's RAM proof implies the conditional gap
+upper bound used by the Hopf-Lax certificates.  The assumptions `hfirst` and
+`hmodel` are respectively the source first-order convexity step for `f` and
+the selected Hopf-Lax/Moreau model value.
+-/
+theorem chewi115_conditional_gap_upper_of_averaged_model
+    {D : ℕ} (hD : 0 < D)
+    {nextValue Fx Gx Fy Gy modelValue fstar lin normSq alphaF : ℝ}
+    (havg :
+      nextValue ≤
+        Fx + (1 / (D : ℝ)) * lin + (1 / (2 * (D : ℝ))) * normSq +
+          (((D : ℝ) - 1) / (D : ℝ)) * Gx + (1 / (D : ℝ)) * Gy)
+    (hfirst : Fx + lin + (alphaF / 2) * normSq ≤ Fy)
+    (hmodel : Fy + Gy + ((1 - alphaF) / 2) * normSq ≤ modelValue) :
+    nextValue - fstar ≤
+      (((D : ℝ) - 1) / (D : ℝ)) * (Fx + Gx - fstar) +
+        (1 / (D : ℝ)) * (modelValue - fstar) := by
+  have hD_real : 0 < (D : ℝ) := by exact_mod_cast hD
+  have hfirst_scaled :
+      (1 / (D : ℝ)) * (Fx + lin + (alphaF / 2) * normSq) ≤
+        (1 / (D : ℝ)) * Fy :=
+    mul_le_mul_of_nonneg_left hfirst (by positivity)
+  have hmodel_scaled :
+      (1 / (D : ℝ)) * (Fy + Gy + ((1 - alphaF) / 2) * normSq) ≤
+        (1 / (D : ℝ)) * modelValue :=
+    mul_le_mul_of_nonneg_left hmodel (by positivity)
+  have hupper :
+      nextValue ≤
+        (((D : ℝ) - 1) / (D : ℝ)) * (Fx + Gx) +
+          (1 / (D : ℝ)) * modelValue := by
+    have hsplit :
+        Fx + (1 / (D : ℝ)) * lin + (1 / (2 * (D : ℝ))) * normSq +
+            (((D : ℝ) - 1) / (D : ℝ)) * Gx + (1 / (D : ℝ)) * Gy =
+          (((D : ℝ) - 1) / (D : ℝ)) * (Fx + Gx) +
+            (1 / (D : ℝ)) * (Fx + lin + (alphaF / 2) * normSq) +
+            (1 / (D : ℝ)) * (Gy + ((1 - alphaF) / 2) * normSq) := by
+      field_simp [hD_real.ne']
+      ring
+    have hmodel_scaled' :
+        (1 / (D : ℝ)) * Fy +
+            (1 / (D : ℝ)) * (Gy + ((1 - alphaF) / 2) * normSq) ≤
+          (1 / (D : ℝ)) * modelValue := by
+      calc
+        (1 / (D : ℝ)) * Fy +
+            (1 / (D : ℝ)) * (Gy + ((1 - alphaF) / 2) * normSq)
+            = (1 / (D : ℝ)) *
+                (Fy + Gy + ((1 - alphaF) / 2) * normSq) := by ring
+        _ ≤ (1 / (D : ℝ)) * modelValue := hmodel_scaled
+    calc
+      nextValue
+          ≤ Fx + (1 / (D : ℝ)) * lin + (1 / (2 * (D : ℝ))) * normSq +
+              (((D : ℝ) - 1) / (D : ℝ)) * Gx + (1 / (D : ℝ)) * Gy := havg
+      _ = (((D : ℝ) - 1) / (D : ℝ)) * (Fx + Gx) +
+            (1 / (D : ℝ)) * (Fx + lin + (alphaF / 2) * normSq) +
+            (1 / (D : ℝ)) * (Gy + ((1 - alphaF) / 2) * normSq) := hsplit
+      _ ≤ (((D : ℝ) - 1) / (D : ℝ)) * (Fx + Gx) +
+            (1 / (D : ℝ)) * Fy +
+            (1 / (D : ℝ)) * (Gy + ((1 - alphaF) / 2) * normSq) := by
+          nlinarith [hfirst_scaled]
+      _ ≤ (((D : ℝ) - 1) / (D : ℝ)) * (Fx + Gx) +
+            (1 / (D : ℝ)) * modelValue := by
+          nlinarith [hmodel_scaled']
+  calc
+    nextValue - fstar
+        ≤ ((((D : ℝ) - 1) / (D : ℝ)) * (Fx + Gx) +
+            (1 / (D : ℝ)) * modelValue) - fstar := by
+          exact sub_le_sub_right hupper fstar
+    _ = (((D : ℝ) - 1) / (D : ℝ)) * (Fx + Gx - fstar) +
+          (1 / (D : ℝ)) * (modelValue - fstar) := by
+          field_simp [hD_real.ne']
+          ring
+
+/--
+Source-shaped one-step conditional gap bound from pointwise block models.  This
+combines the uniform block averaging, the first-order convexity step, and the
+selected Hopf-Lax model value into the exact `conditional_upper` field used by
+the RAM certificates.
+-/
+theorem chewi115_conditional_gap_upper_of_block_model
+    {D : ℕ} (hD : 0 < D)
+    {nextValue Fx Gx Fy Gy modelValue fstar lin normSq alphaF : ℝ}
+    {blockValue gradTerm quadTerm gReplace : Fin D -> ℝ}
+    (hnext :
+      nextValue ≤
+        (1 / (D : ℝ)) * ∑ i : Fin D, blockValue i)
+    (hblock : ∀ i : Fin D,
+      blockValue i ≤ Fx + gradTerm i + quadTerm i + gReplace i)
+    (hgrad_sum : (∑ i : Fin D, gradTerm i) = lin)
+    (hquad_sum : (∑ i : Fin D, quadTerm i) = normSq / 2)
+    (hg_sum : (∑ i : Fin D, gReplace i) = ((D : ℝ) - 1) * Gx + Gy)
+    (hfirst : Fx + lin + (alphaF / 2) * normSq ≤ Fy)
+    (hmodel : Fy + Gy + ((1 - alphaF) / 2) * normSq ≤ modelValue) :
+    nextValue - fstar ≤
+      (((D : ℝ) - 1) / (D : ℝ)) * (Fx + Gx - fstar) +
+        (1 / (D : ℝ)) * (modelValue - fstar) :=
+  chewi115_conditional_gap_upper_of_averaged_model (D := D) hD
+    (chewi115_uniform_average_le_of_block_model (D := D) hD
+      hnext hblock hgrad_sum hquad_sum hg_sum)
+    hfirst hmodel
+
+/--
+Sequence form of the RAM conditional upper bound.  This is the source-facing
+handoff from per-iteration block model estimates to the `conditional_upper`
+field of the strong and weak Hopf-Lax RAM certificates.
+-/
+theorem chewi115_conditional_upper_of_block_model_sequence
+    {D : ℕ} (hD : 0 < D)
+    {expectedGap hopfGap nextValue Fx Gx Fy Gy modelValue lin normSq alphaF :
+      ℕ -> ℝ}
+    {fstar : ℝ}
+    {blockValue gradTerm quadTerm gReplace : ℕ -> Fin D -> ℝ}
+    (hgap : ∀ n, expectedGap n = Fx n + Gx n - fstar)
+    (hnext_gap : ∀ n, expectedGap (n + 1) = nextValue n - fstar)
+    (hhopf_gap : ∀ n, hopfGap n = modelValue n - fstar)
+    (hnext :
+      ∀ n,
+        nextValue n ≤
+          (1 / (D : ℝ)) * ∑ i : Fin D, blockValue n i)
+    (hblock : ∀ n i,
+      blockValue n i ≤
+        Fx n + gradTerm n i + quadTerm n i + gReplace n i)
+    (hgrad_sum : ∀ n, (∑ i : Fin D, gradTerm n i) = lin n)
+    (hquad_sum : ∀ n, (∑ i : Fin D, quadTerm n i) = normSq n / 2)
+    (hg_sum : ∀ n,
+      (∑ i : Fin D, gReplace n i) = ((D : ℝ) - 1) * Gx n + Gy n)
+    (hfirst : ∀ n, Fx n + lin n + (alphaF n / 2) * normSq n ≤ Fy n)
+    (hmodel : ∀ n,
+      Fy n + Gy n + ((1 - alphaF n) / 2) * normSq n ≤ modelValue n) :
+    ∀ n,
+      expectedGap (n + 1) ≤
+        (((D : ℝ) - 1) / (D : ℝ)) * expectedGap n +
+          (1 / (D : ℝ)) * hopfGap n := by
+  intro n
+  have hstep :=
+    chewi115_conditional_gap_upper_of_block_model (D := D) hD
+      (nextValue := nextValue n) (Fx := Fx n) (Gx := Gx n)
+      (Fy := Fy n) (Gy := Gy n) (modelValue := modelValue n)
+      (fstar := fstar) (lin := lin n) (normSq := normSq n)
+      (alphaF := alphaF n) (blockValue := blockValue n)
+      (gradTerm := gradTerm n) (quadTerm := quadTerm n)
+      (gReplace := gReplace n)
+      (hnext n) (hblock n) (hgrad_sum n) (hquad_sum n) (hg_sum n)
+      (hfirst n) (hmodel n)
+  simpa [hgap n, hnext_gap n, hhopf_gap n] using hstep
 
 /--
 The Jensen-shaped zero-curvature RAM recurrence is exactly the quadratic

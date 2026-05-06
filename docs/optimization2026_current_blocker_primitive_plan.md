@@ -88,11 +88,10 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after root `lake build StatInference`
-verification of the Chapter 11.5 RAM Hopf-Lax bridge layer on 2026-05-06,
-rebased over `origin/main` at `9cb8173` (`Rebase VdVW goal after separability
-handoff`) and building on pushed Optimization frontier `f44e363`
-(`Remove RAM weak-rate positivity side condition`):
+Current live replacement `/goal` prompt after focused Lean verification of the
+Chapter 11.5 RAM block-model conditional-upper layer on 2026-05-06, building
+on pushed Optimization frontier `a2770ef`
+(`Add Chewi RAM Hopf-Lax bridge layer`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -108,11 +107,12 @@ substrate, and `StatInference/Optimization/RandomizedAlternatingMinimization.lea
 as the current active Chapter 11.5 promotion gate.
 
 Immediate aggressive target: instantiate Chewi Theorem 11.5 RAM beyond the
-scalar certificate layer by proving the randomized-block conditional upper
-bound and, only where bounded, enough Hopf-Lax source theory to discharge the
-certificate fields.  In parallel, scout Sinkhorn Theorems 11.7/11.8 from the
-compiled ABP/mirror-descent interfaces and Chapter 12 SMPGD theorem packets,
-so the next run can move directly after RAM without routing back to old setup.
+finite block-model conditional-upper layer by discharging the remaining
+selected Hopf-Lax/Moreau model and Exercise 9.3 source bounds for the strong
+and zero-curvature certificate fields.  In parallel, scout Sinkhorn Theorems
+11.7/11.8 from the compiled ABP/mirror-descent interfaces and Chapter 12
+SMPGD theorem packets, so the next run can move directly after RAM without
+routing back to old setup.
 
 Latest verified Optimization proof frontier:
 `StatInference/Optimization/RandomizedAlternatingMinimization.lean` compiles
@@ -131,7 +131,14 @@ turns Chewi's conditional-expectation display plus the Hopf-Lax contraction
 `hopfGap <= ((1-alphaF)/(1+alphaG))*gap` into the geometric RAM certificate.
 The weak bridge turns the zero-curvature Hopf-Lax estimate
 `hopfGap <= (1 - gap/(2*Rbeta^2))*gap` into the inverse-gap RAM certificate,
-reusing the compiled Chapter 11.4 telescope.  `MirrorDescent.lean` now
+reusing the compiled Chapter 11.4 telescope.  The newest block-model layer
+adds `chewi115_uniform_average_le_of_block_model`,
+`chewi115_conditional_gap_upper_of_averaged_model`,
+`chewi115_conditional_gap_upper_of_block_model`, and
+`chewi115_conditional_upper_of_block_model_sequence`, turning pointwise
+per-block smooth model estimates, finite `Fin D` sums, first-order convexity,
+and a selected Hopf-Lax model value into the exact `conditional_upper` field
+for `expectedGap`/`hopfGap`.  `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
 `mirrorProximalGradientModel_le_composite_add_bregman`,
@@ -309,7 +316,14 @@ telescope with `K = 2 * D * R_beta^2`, and the nonnegative wrappers handle
 zero-hit trajectories by proving the gap remains zero after the first hit.  The
 new Hopf-Lax bridge layer packages Chewi's conditional-expectation display and
 the two Exercise 9.3 Hopf-Lax estimates into the strong and weak RAM
-certificates without introducing full probability infrastructure.
+certificates without introducing full probability infrastructure.  The newest
+block-model conditional-upper layer adds
+`chewi115_uniform_average_le_of_block_model`,
+`chewi115_conditional_gap_upper_of_averaged_model`,
+`chewi115_conditional_gap_upper_of_block_model`, and
+`chewi115_conditional_upper_of_block_model_sequence`, so the finite uniform
+block expectation and source convexity algebra no longer remain as opaque
+assumptions.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, relative smoothness, OMD, online
@@ -349,14 +363,15 @@ Active aggressive target ladder:
    `IsChewi114AMDescentCertificate` from actual coordinate/proximal
    minimization proof obligations if bounded, or move immediately to Theorem
    11.5 RAM.
-2. Continue Chewi Theorem 11.5 RAM from the compiled scalar recurrence and
-   Hopf-Lax bridge layer: instantiate the conditional-expectation upper bound
-   from the randomized block update and, if bounded, formalize enough of
-   Definition 9.3/Exercise 9.3's Hopf-Lax estimate to discharge the supplied
+2. Continue Chewi Theorem 11.5 RAM from the compiled scalar recurrence,
+   Hopf-Lax bridge, and finite block-model conditional-upper layer: discharge
+   the selected Hopf-Lax/Moreau model value and enough of
+   Definition 9.3/Exercise 9.3's Hopf-Lax estimate to fill the strong and weak
    `hopf_lax_bound` fields.  The scalar RAM recurrence, nonnegative weak-rate
-   wrapper, and Hopf-Lax-to-rate bridge are already compiled; do not repeat
-   them.  Do not build full probability/process infrastructure unless it is
-   the shortest route; expectation-level supplied interfaces are the fast lane.
+   wrapper, Hopf-Lax-to-rate bridge, and finite `Fin D` conditional-upper
+   algebra are already compiled; do not repeat them.  Do not build full
+   probability/process infrastructure unless it is the shortest route;
+   expectation-level supplied interfaces are the fast lane.
 3. Package Sinkhorn Theorems 11.7 and 11.8 from the compiled ABP and mirror
    descent layers using supplied finite KL/Pinsker/marginal identities; do not
    expand full EOT duality unless exact Theorem 11.6 reporting is requested.
