@@ -161,6 +161,20 @@ repeating the measurable cover/Markov argument, but they still do not prove the
 missing textbook random-entropy-to-tail/UI or random-entropy-to-mean
 implication.
 
+2026-05-06 finite-net mean-to-probability consumer: after the ordinary-mean
+outer-probability bridges were added, local search found fixed-radius
+Theorem 2.4.3 consumers from finite-net integrals and from finite-net
+outer-probability convergence, but no named theorem converting the random
+finite-net Hoeffding upper's ordinary mean convergence into its own
+outer-probability convergence.  `Theorem243.lean` now proves
+`finiteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_integral_tendsto_zero`,
+using the new varying-domain mean bridge and
+`vdVWTheorem243FiniteNetHoeffdingUpper_nonneg`.  This connects the mean route
+to the pure probability finite-net comparison route.  The remaining exact
+source problem is still upstream: prove the finite-net mean/tail/UI input from
+the book random-entropy hypothesis, or state the extra UI/structural
+assumption honestly.
+
 2026-05-06 fixed-FDD selected-coordinate congruence follow-up: local search
 found only the whole-sample-path finite-dimensional congruence wrappers
 `aemeasurable_fdd_congr_forall_coord_ae` and
