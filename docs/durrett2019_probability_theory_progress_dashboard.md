@@ -65,11 +65,14 @@ compiles and root-imports the new namespace.  Compiled declarations:
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`;
 - `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`;
 - `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`;
+- `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`;
 - `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`;
 - `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`;
 - `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`;
+- `durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms`;
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`.
+- `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms`.
 
 The first aggressive full-theorem target is now Durrett Theorem 2.4.9,
 Glivenko-Cantelli for empirical CDFs, cross-listed with the later empirical
@@ -83,12 +86,10 @@ Immediate proof route:
    `realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid`, and nearby
    grid/squeezing handoffs;
 2. construct a strict finite endpoint grid with small adjacent CDF left-limit
-   increments for every bounded interval and positive radius: first erase
-   repeated points from the non-atomic monotone subdivision to get strict
-   finite endpoints ending at the right endpoint, together with an original
-   adjacent subdivision-cell witness for each strict gap, then add atom-aware
-   endpoint selection for arbitrary distributions, and finally feed the
-   compiled extracted-gap and cutpoint-chain-to-GC handoffs;
+   increments for every bounded interval and positive radius: the non-atomic
+   route now skips repeated monotone-subdivision values and feeds the
+   cutpoint-chain-to-GC handoff; the remaining full-theorem step is atom-aware
+   endpoint selection for arbitrary distributions;
 3. package the empirical CDF statement once the uniform squeezing proof closes;
 4. keep Chapter 2.1 as optional iid/product notation polish while the main
    proof effort returns to the GC grid constructor;
@@ -106,7 +107,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 1 measure/probability foundations | source-wrapper/reused-local | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/GeneratedSigma.lean`; `Tail.lean`; `ProductMeasure.lean` | Durrett wrappers for Theorem 1.1.1 measure properties and Theorems 1.3.1/1.3.4 measurability facts now compile over mathlib/local generator APIs. |
 | Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact iid/product notation polish. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
-| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, or supplied cutpoint chains. The one-cell, two-cell, right-append, finite cutpoint-chain, endpoint-grid-to-chain, closed-cover endpoint-grid refinement, strict-subdivision-prefix, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, and cutpoint-chain-to-GC consumers compile; remaining blocker: construct strict finite endpoint grids for arbitrary distributions. |
+| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, or supplied cutpoint chains. The one-cell, two-cell, right-append, finite cutpoint-chain, endpoint-grid-to-chain, closed-cover endpoint-grid refinement, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, and non-atomic GC packages compile; remaining blocker: construct strict finite endpoint grids for arbitrary distributions. |
 | Chapter 3 CLT/characteristic functions | pending-local | none | Needs mathlib API search for characteristic functions, normal laws, weak convergence, and scalar asymptotics. |
 | Chapter 4 martingales | pending-local | none | Search mathlib martingale/conditional expectation APIs first. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
@@ -152,9 +153,8 @@ either:
 
 - advance Durrett Theorem 2.4.9 by constructing
   strict finite endpoint grids with small adjacent CDF left-limit increments
-  for arbitrary bounded intervals and positive radii, first by erasing
-  repeated points from the non-atomic monotone subdivision into a strict finite
-  prefix with closed-cover cell assignments and then with atom-aware endpoint
-  selection; or
+  for arbitrary bounded intervals and positive radii via atom-aware endpoint
+  selection, now that the non-atomic monotone-subdivision route compiles through
+  the GC wrapper; or
 - if that blocks, do only optional Chapter 2.1 iid/product notation polish and
   record the exact GC partition blocker.

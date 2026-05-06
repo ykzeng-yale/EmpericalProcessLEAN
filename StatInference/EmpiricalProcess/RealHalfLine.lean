@@ -969,6 +969,125 @@ theorem SuppliedRealMiddleCDFPartitionChain.of_extracted_subdivision_adjacencies
   simpa [hzero, hlast] using hchain
 
 /--
+One strict adjacent cell of a closed-cover subdivision has small CDF
+left-limit increment.
+
+This is the local conversion used by the monotone-prefix induction below: the
+cover proof controls the closed subtype cell, hence also the open real cell,
+and the real measure of that open cell is the CDF left-limit increment.
+-/
+theorem cdf_leftLim_sub_lt_of_subdivision_closed_cover_cell
+    {μ : Measure ℝ} [IsProbabilityMeasure μ]
+    {epsilon a b : ℝ} {t : ℕ -> Set.Icc a b} {n : ℕ}
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hlt : (t n : ℝ) < (t (n + 1) : ℝ))
+    (hrefine :
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        μ.real (Set.Ioo (l x) (r x)) < epsilon) :
+    Function.leftLim (ProbabilityTheory.cdf μ) (t (n + 1)) -
+      ProbabilityTheory.cdf μ (t n) < epsilon := by
+  rcases hrefine with ⟨x, _hx, hclosed, hsmall⟩
+  have hsubset :
+      Set.Ioo (t n : ℝ) (t (n + 1) : ℝ) ⊆ Set.Ioo (l x) (r x) := by
+    intro z hz
+    have hzab : z ∈ Set.Icc a b := by
+      exact ⟨(t n).2.1.trans hz.1.le,
+        hz.2.le.trans (t (n + 1)).2.2⟩
+    have hzsub :
+        (⟨z, hzab⟩ : Set.Icc a b) ∈ Set.Icc (t n) (t (n + 1)) := by
+      exact ⟨hz.1.le, hz.2.le⟩
+    exact hclosed hzsub
+  have hmeasure :
+      μ.real (Set.Ioo (t n : ℝ) (t (n + 1) : ℝ)) < epsilon :=
+    (measureReal_mono hsubset).trans_lt hsmall
+  rw [← measureReal_Ioo_eq_cdf_leftLim_sub μ hlt]
+  exact hmeasure
+
+/--
+A finite monotone subdivision prefix with closed-cover assignments produces a
+cutpoint chain to its final value.
+
+The induction skips zero-width adjacent cells and appends exactly the strict
+jumps. This discharges the duplicate-erasure step at the chain level without
+first materializing an explicit deduplicated endpoint list.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_monotone_subdivision_prefix_closed_cover_to_index
+    {μ : Measure ℝ} [IsProbabilityMeasure μ]
+    {epsilon a b : ℝ} {t : ℕ -> Set.Icc a b} {m : ℕ}
+    (ht0 : (t 0 : ℝ) = a)
+    (hmono : Monotone fun n => (t n : ℝ))
+    (hpos : a < (t m : ℝ))
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ n < m,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        μ.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon a (t m) := by
+  induction m with
+  | zero =>
+      exfalso
+      rw [ht0] at hpos
+      exact (lt_irrefl a) hpos
+  | succ k ih =>
+      have hstep_le : (t k : ℝ) ≤ (t (k + 1) : ℝ) :=
+        hmono (Nat.le_succ k)
+      rcases lt_or_eq_of_le hstep_le with hstep | hstep_eq
+      · have hinc :
+            Function.leftLim (ProbabilityTheory.cdf μ) (t (k + 1)) -
+              ProbabilityTheory.cdf μ (t k) < epsilon :=
+          cdf_leftLim_sub_lt_of_subdivision_closed_cover_cell
+            hstep (hrefine k (Nat.lt_succ_self k))
+        have hleft_le : a ≤ (t k : ℝ) := by
+          have h0k : (t 0 : ℝ) ≤ (t k : ℝ) := hmono (Nat.zero_le k)
+          simpa [ht0] using h0k
+        rcases lt_or_eq_of_le hleft_le with hleft | hleft_eq
+        · exact SuppliedRealMiddleCDFPartitionChain.snoc
+            (ih hleft (fun n hn =>
+              hrefine n (Nat.lt_trans hn (Nat.lt_succ_self k))))
+            hstep hinc
+        · exact SuppliedRealMiddleCDFPartitionChain.one hpos
+            (by simpa [hleft_eq] using hinc)
+      · have hpos_k : a < (t k : ℝ) := by
+          simpa [hstep_eq] using hpos
+        simpa [hstep_eq] using
+          ih hpos_k (fun n hn =>
+            hrefine n (Nat.lt_trans hn (Nat.lt_succ_self k)))
+
+/--
+A monotone subdivision that is eventually constant at the right endpoint,
+together with closed-cover assignments for all adjacent cells, produces the
+cutpoint chain on `[a, b]`.
+
+Repeated adjacent subdivision values are skipped by the finite-prefix
+induction; only strict jumps become cutpoints.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_closed_cover
+    {μ : Measure ℝ} [IsProbabilityMeasure μ]
+    {epsilon a b : ℝ} {t : ℕ -> Set.Icc a b}
+    (ht0 : (t 0 : ℝ) = a)
+    (hmono : Monotone fun n => (t n : ℝ))
+    (heventually : ∃ m, ∀ n ≥ m, (t n : ℝ) = b)
+    (hab : a < b)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ n,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        μ.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon a b := by
+  rcases heventually with ⟨m, hm⟩
+  have hm_eq : (t m : ℝ) = b := hm m le_rfl
+  have hpos : a < (t m : ℝ) := by
+    simpa [hm_eq] using hab
+  have hchain :=
+    SuppliedRealMiddleCDFPartitionChain.of_monotone_subdivision_prefix_closed_cover_to_index
+      ht0 hmono hpos (fun n _hn => hrefine n)
+  simpa [hm_eq] using hchain
+
+/--
 Every finite small-increment cutpoint chain supplies a bounded middle CDF
 partition.
 -/

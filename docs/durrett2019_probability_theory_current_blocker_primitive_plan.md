@@ -92,11 +92,14 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`
+- `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`
 - `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`
 - `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`
 - `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`
+- `durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`
+- `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -138,12 +141,15 @@ compile, via
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`,
+`durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`,
 `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`,
 `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`,
-`durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`, and
-`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`.
-The remaining theorem-core step is the arbitrary finite middle CDF partition
-existence consumed by
+`durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`,
+`durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms`,
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`, and
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms`.
+The remaining full-theorem-core step is the arbitrary finite middle CDF
+partition existence consumed by
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
 Equivalently, the next proof obligation can be phrased as constructing a
 strict finite endpoint grid with small adjacent CDF left-limit increments for
@@ -170,10 +176,15 @@ flexible consumer
 `SuppliedRealMiddleCDFPartitionChain.of_extracted_subdivision_adjacencies_closed_cover`
 now accepts the true duplicate-erasure output shape: strict endpoints plus, for
 each strict adjacent gap, the original adjacent subdivision cell that realizes
-that gap.  The next non-atomic packet should prove the finite
-duplicate-erasure/extraction theorem that constructs those endpoints and
-adjacency witnesses from a monotone eventually-constant subdivision.  The fully
-arbitrary distribution route still needs atom-aware endpoint selection.
+that gap.  The stronger consumer
+`SuppliedRealMiddleCDFPartitionChain.of_monotone_subdivision_prefix_closed_cover_to_index`
+skips repeated adjacent values by induction, and
+`SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_closed_cover`
+now turns the non-atomic monotone subdivision directly into a cutpoint chain.
+Consequently the non-atomic half-line GC wrapper
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms` now compiles.
+The fully arbitrary distribution route still needs atom-aware endpoint
+selection.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
 Parallel target: Chapter 2.1 exact iid/product notation refinements only if

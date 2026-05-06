@@ -184,6 +184,11 @@ Compiled first source wrappers:
   `SuppliedRealMiddleCDFPartitionChain.of_extracted_subdivision_adjacencies_closed_cover`
   and
   `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`.
+- Durrett Theorem 2.4.9 monotone-subdivision duplicate-skip handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_monotone_subdivision_prefix_closed_cover_to_index`,
+  `SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_closed_cover`,
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`.
 - Durrett Theorem 2.4.9 non-atomic local grid ingredient:
   `exists_realOpenInterval_measureReal_lt_of_noAtoms` and
   `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`.
@@ -193,6 +198,9 @@ Compiled first source wrappers:
 - Durrett Theorem 2.4.9 non-atomic monotone-subdivision ingredient:
   `exists_monotone_subdivision_Icc_measureReal_lt_of_noAtoms` and
   `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`.
+- Durrett Theorem 2.4.9 non-atomic cutpoint-chain and GC packages:
+  `durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms` and
+  `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms`.
 - Durrett Theorem 2.4.9 cutpoint-chain-to-GC handoff:
   `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`.
 
@@ -238,16 +246,12 @@ consumers now compile.  A strict endpoint-grid-to-cutpoint-chain handoff, a
 closed-cover endpoint-grid refinement handoff, a
 non-atomic local small-neighborhood lemma, a non-atomic finite compact-cover
 lemma, a non-atomic monotone-subdivision lemma, strict-prefix and extracted-gap
-closed-cover handoffs, and a Durrett-named cutpoint-chain-to-GC handoff also
-compile.  The next non-atomic theorem-core primitive is the
-monotone-subdivision-to-strict-endpoint-grid construction: erase repeated
-subdivision points while preserving, for each nondegenerate adjacent output
-gap, the original adjacent subdivision cell that realizes that gap.  That
-should feed
-`SuppliedRealMiddleCDFPartitionChain.of_extracted_subdivision_adjacencies_closed_cover`.
-The remaining arbitrary-distribution primitive is the atom-aware construction
-of strict finite endpoint grids for intervals whose total CDF increment is not
-already below the requested radius.
+closed-cover handoffs, a monotone-prefix duplicate-skip induction, a non-atomic
+cutpoint-chain package, a Durrett-named cutpoint-chain-to-GC handoff, and the
+non-atomic half-line Glivenko-Cantelli package also compile.  The remaining
+arbitrary-distribution primitive is the atom-aware construction of strict
+finite endpoint grids for intervals whose total CDF increment is not already
+below the requested radius.
 
 ### Lane D: CLT and characteristic functions
 

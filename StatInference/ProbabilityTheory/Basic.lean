@@ -773,6 +773,30 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacen
     endpoint hzero hlast hstrict origin hleft hright hrefine
 
 /--
+Durrett 2019, Theorem 2.4.9 monotone-subdivision package.
+
+A monotone subdivision that is eventually constant at the right endpoint
+directly produces the cutpoint chain: repeated adjacent values are skipped and
+strict jumps are appended as CDF-increment cells.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b : ℝ} {t : ℕ -> Set.Icc a b}
+    (ht0 : (t 0 : ℝ) = a)
+    (hmono : Monotone t)
+    (heventually : ∃ m, ∀ n ≥ m, (t n : ℝ) = b)
+    (hab : a < b)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ n,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_closed_cover
+    ht0 (fun i j hij => by simpa using hmono hij) heventually hab hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9 non-atomic local grid ingredient.
 
 For non-atomic locally finite real measures, every point has an open
@@ -827,6 +851,24 @@ theorem durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms
   exists_monotone_subdivision_Icc_measureReal_lt_of_noAtoms P hepsilon hab
 
 /--
+Durrett 2019, Theorem 2.4.9 non-atomic cutpoint-chain package.
+
+For non-atomic locally finite probability measures, the compact-cover
+subdivision route supplies a finite cutpoint chain on every strict bounded
+interval.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) (hab : a < b) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b := by
+  rcases durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms
+      (P := P) hepsilon hab.le with
+    ⟨centers, l, r, t, _hcenters, _hsmall, ht0, hmono, heventually, hrefine⟩
+  exact durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision
+    ht0 hmono heventually hab hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9, middle-partition-to-GC package.
 
 This isolates the remaining arbitrary-distribution primitive: for every
@@ -875,6 +917,27 @@ theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains
       (fun hepsilon hab =>
         exists_realMiddleCDFPartition_of_cutpoint_chain
           (cutpointChainExists hepsilon hab))
+
+/--
+Durrett 2019, Theorem 2.4.9, non-atomic half-line
+Glivenko-Cantelli package.
+
+For non-atomic locally finite probability laws on the real line, the verified
+compact-cover and monotone-subdivision route supplies the cutpoint chains
+needed by the empirical-CDF Glivenko-Cantelli handoff.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator X :=
+  durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains
+    X hLaw hindep
+    (fun hepsilon hab =>
+      durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms hepsilon hab)
 
 /--
 Durrett early-chapter pi-system uniqueness shape.
