@@ -241,6 +241,10 @@ The weak-convergence interface also has limit-side replacement through
 `VdVWEllInftyProcessWeakConvergence.congr_limit_forall_coord_ae`, closing the
 raw-process congruence support needed to swap in canonical/separable versions
 on either the source or limit side.
+The finite-dimensional law layer now has the matching whole-path congruence
+wrappers `aemeasurable_fdd_congr_forall_coord_ae` and
+`vdVWFDDProcessLaw_congr_forall_coord_ae`, so FDD measurability and FDD laws
+can also be transported across the same canonical-version replacements.
 For Definition 2.3.3, bounded pointwise approximability by a countable
 measurable subclass now directly gives `P`-measurability through
 `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`.

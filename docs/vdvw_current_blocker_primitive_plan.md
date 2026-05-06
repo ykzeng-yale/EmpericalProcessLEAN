@@ -89,7 +89,10 @@ closed Lean support is:
   `VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_forall_coord_ae`,
   plus the weak-convergence limit-process replacements
   `VdVWEllInftyProcessWeakConvergence.congr_limit_ae` and
-  `VdVWEllInftyProcessWeakConvergence.congr_limit_forall_coord_ae`;
+  `VdVWEllInftyProcessWeakConvergence.congr_limit_forall_coord_ae`, and the
+  finite-dimensional law congruence wrappers
+  `aemeasurable_fdd_congr_forall_coord_ae` and
+  `vdVWFDDProcessLaw_congr_forall_coord_ae`;
 * Chapter 2.3 separability/measurability support:
   `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`,
   `VdVWPointwiseApproximableByCountableSubclass.tendsto_integral_of_uniform_bound`,

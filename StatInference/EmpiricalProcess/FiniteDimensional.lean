@@ -1098,6 +1098,40 @@ noncomputable def vdVWFDDProcessLaw
   ⟨P.map (fun ω => fun t : I => X ω t.1), Measure.isProbabilityMeasure_map hX⟩
 
 /--
+Finite-dimensional a.e.-measurability is unchanged by replacing a raw process
+with another one whose whole sample path is coordinatewise equal a.e.
+-/
+theorem aemeasurable_fdd_congr_forall_coord_ae
+    [MeasurableSpace Ω]
+    {P : Measure Ω} (I : Finset T) [MeasurableSpace (I -> ℝ)]
+    {X Y : Ω -> T -> ℝ}
+    (hX : AEMeasurable (fun ω => fun t : I => X ω t.1) P)
+    (hYX : ∀ᵐ ω ∂P, ∀ t, Y ω t = X ω t) :
+    AEMeasurable (fun ω => fun t : I => Y ω t.1) P := by
+  exact hX.congr (hYX.mono fun ω hω => by
+    funext t
+    exact (hω t.1).symm)
+
+/--
+The finite-dimensional law of a raw process is unchanged by replacing the
+process with a sample-path a.e.-equal version.
+-/
+theorem vdVWFDDProcessLaw_congr_forall_coord_ae
+    [MeasurableSpace Ω]
+    (P : Measure Ω) [IsProbabilityMeasure P]
+    (I : Finset T) [MeasurableSpace (I -> ℝ)]
+    (X Y : Ω -> T -> ℝ)
+    (hX : AEMeasurable (fun ω => fun t : I => X ω t.1) P)
+    (hY : AEMeasurable (fun ω => fun t : I => Y ω t.1) P)
+    (hYX : ∀ᵐ ω ∂P, ∀ t, Y ω t = X ω t) :
+    vdVWFDDProcessLaw P I Y hY = vdVWFDDProcessLaw P I X hX := by
+  ext s hs
+  exact congrArg (fun m : Measure (I -> ℝ) => m s)
+    (Measure.map_congr (hYX.mono fun ω hω => by
+      funext t
+      exact hω t.1))
+
+/--
 Finite-dimensional a.e.-measurability follows from a.e.-measurability of the
 associated bounded `ell_infty(T)` process.
 -/

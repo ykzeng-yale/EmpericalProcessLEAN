@@ -147,6 +147,12 @@ The weak-convergence side also has limit-process replacement wrappers
 `VdVWEllInftyProcessWeakConvergence.congr_limit_forall_coord_ae`, so later
 canonical or separable limit versions can be substituted without changing the
 law-level convergence statement.
+The finite-dimensional law layer now has the matching raw sample-path
+congruence support:
+`aemeasurable_fdd_congr_forall_coord_ae` and
+`vdVWFDDProcessLaw_congr_forall_coord_ae`.
+These keep FDD measurability and FDD laws stable under the same whole-path
+a.e.-equal replacements.
 The Definition 2.3.3 separability lane also has a bounded route:
 `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`
 combines pointwise approximability by a countable measurable subclass with a
