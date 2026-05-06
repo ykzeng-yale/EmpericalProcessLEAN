@@ -106,6 +106,17 @@ a.s. centered-supremum convergence.  This is a closed finite-class building
 block; the main non-finite Theorem 2.4.3 gap remains the book random-entropy
 tail/UI or structural cardinality bridge.
 
+2026-05-05 first-sample entropy-tail follow-up:
+`Theorem243.lean` now exposes
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_eLpNormTail`.
+The theorem consumes the variable-domain book entropy package plus the lifted
+selected normalized-entropy `eLpNorm` tail criterion on the canonical infinite
+iid product space, then reaches untruncated centered convergence through the
+compiled selected fixed-radius and large-`M` handoffs.  The remaining
+non-finite Theorem 2.4.3 gap is therefore sharper: prove that explicit
+first-sample selected-entropy tail condition, or prove a structural
+cardinality/VC/finite-trace bound that implies it.
+
 2026-05-05 separability/`P`-measurability follow-up:
 `PMeasurable.lean` now adds
 `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_bddAbove`,

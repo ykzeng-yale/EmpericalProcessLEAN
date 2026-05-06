@@ -5798,3 +5798,15 @@ and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_trace_image_cardinality_bound_nat_poly`.
 These are the direct all-truncation-level consumers for VC/Sauer-style bounds
 of the form `cardinality + 1 <= C(M, eta) * (n + 1) ^ d(M, eta)`.
+
+2026-05-05 Theorem 2.4.3 first-sample tail bridge follow-up: local search
+found the compiled selected fixed-radius side-condition constructor from the
+first-sample `eLpNorm` tail criterion, but not the corresponding untruncated
+centered convergence endpoint.  `Theorem243.lean` now adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_eLpNormTail`,
+which composes the variable-domain book entropy condition, selected
+first-sample `eLpNorm` tail/UI input, fixed-radius finite-net route, and
+large-`M` untruncation handoff.  This does not prove the textbook
+random-entropy implication by itself; it isolates the remaining proof target
+to an explicit lifted selected-entropy `eLpNorm` tail condition or a
+structural cardinality theorem implying that condition.
