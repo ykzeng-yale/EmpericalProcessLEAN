@@ -56,6 +56,18 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
+Current manual goal frontier after focused Lean verification of Chapter 8
+`StatInference/Optimization/Proximal.lean` on top of pushed frontier
+`a874d02`, building on `b757a49`: Theorem 8.5 now has a compiled finite-valued supplied-interface
+layer with `compositeObjective`, `proximalGradientModel`,
+`IsProximalGradientStep`, the source one-step inequality
+`proximalGradient_oneStep_ineq`, and the final positive-total-convexity bound
+`chewi85_final_gap_le_geometric_denominator_of_oneStep`.  No direct
+mathlib proximal-gradient or Moreau theorem was found; the route uses local
+first-order/smooth model APIs and Chapter 3 weighted recurrence.  The next
+active main-text route is Theorem 8.6 APGD/FISTA by reusing Chapter 5.10
+lambda/telescope algebra with the compiled PGD `(8.1)` replacing GD `(3.3)`.
+
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
 lane has moved from Lemma 6.20 packaging through Chapter 6 Theorems 6.21 and

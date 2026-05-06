@@ -28,6 +28,28 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
+- Current manual frontier after focused Lean verification of Chapter 8
+  `StatInference/Optimization/Proximal.lean` rebased over pushed frontier
+  `a874d02` (`Add Theorem 2.4.3 finite-code set nat-poly package`), building on
+  `b757a49` (`Add Chewi theorem 7.3 Frank-Wolfe layer`): Chapter 8 is now open
+  with a compiled supplied-interface Theorem 8.5 packet.  It defines the
+  finite-valued composite objective `compositeObjective`, the local
+  proximal-gradient model `proximalGradientModel`, and the source-shaped
+  minimizer/quadratic-growth certificate `IsProximalGradientStep`.  Compiled
+  declarations include `proximalGradientModel_le_composite_add_sqdist`,
+  `composite_le_proximalGradientModel`, `proximalGradient_oneStep_ineq` for
+  Chewi inequality `(8.1)`, and
+  `chewi85_final_gap_le_geometric_denominator_of_oneStep`, which reuses the
+  Chapter 3 Theorem 3.4 weighted-recurrence machinery with effective step
+  `h / (1 + alphaG * h)`.  Search-first result: no pinned mathlib direct
+  proximal/Moreau/proximal-gradient theorem was found; useful mathlib support
+  is convex/strong-convex function APIs, `IsMinOn`/argmin, projection
+  primitives, and quadratic derivative APIs.  Local reuse is
+  `FirstOrderStrongConvexOn.lower_model`, `SmoothWithGradientOn.upper_model`,
+  and `chewi34_final_gap_le_geometric_denominator_of_one_step`.  Next
+  aggressive target: Theorem 8.6 APGD/FISTA by defining an APGD trajectory
+  using the PGD step and reusing the Chapter 5.10 lambda/telescope algebra
+  instead of reproving acceleration from scratch.
 - Current manual frontier after focused Lean verification rebased over pushed
   frontier `4d4601c` (`Add Theorem 2.4.3 coordinate-code selected package`), building
   on `bb0a297` (`Add Chewi theorem 6.25 feasibility instance wrapper`):
@@ -198,7 +220,8 @@ This dashboard tracks the Chewi optimization formalization lane for
 | Chapter 5 acceleration and conjugate gradient | local-layer | `StatInference/Optimization/ConjugateGradient.lean`, `StatInference/Optimization/Theorem54.lean`, `StatInference/Optimization/Theorem58.lean`, `StatInference/Optimization/Theorem59.lean`, `StatInference/Optimization/Theorem510.lean` | The Chapter 5 quadratic/CG substrate, Lemma 5.1 Krylov equality, Theorem 5.3 finite-dimensional termination-facing wrappers, and Theorem 5.4 descent/halving/log-rate layers now compile. The latest CG endpoint is the displayed restarted-CG specialization `chewi54_log_rate_of_displayed_cg_blocks_blockSize`. Theorem 5.8 has the AGF trajectory/friction interface, Lyapunov derivative formula, continuity wrappers, monotone-to-rate consumers, and source wrapper `chewi58_gap_le_of_agf_firstOrderConvex`. Theorem 5.9 compiles through the source-shaped exponential gap theorem and `chewi59_gap_le_exp_decay_of_firstOrderStrongConvex_of_isMinOn`. Theorem 5.10 now compiles through the full discrete AGD source-rate chain: `chewi510Lambda`, `chewi510Theta`, `chewi510TrialPoint`, `IsChewi510AGDTrajectory`, lambda positivity/nonzero/recurrence/growth, `chewi510Lambda_ge_nat_half`, telescope alignment, `(3.3)` reuse, rearranged gap bounds, `chewi510_weighted_two_point_bound_telescope`, `chewi510_weighted_sum_bound`, `chewi510_lambda_sq_gap_le_initial_energy`, `chewi510_gap_le_initial_distance_over_lambda_sq`, and final `chewi510_gap_le_two_beta_dist_sq_over_nat_sq`. Search-first result: source `(3.3)` reuses `oneStepRecurrence_of_firstOrderStrongConvexOn`; lambda and telescope algebra reuse local `sum_range_sub_succ`, `norm_add_sq_real`, `Real.sq_sqrt`, `Real.le_sqrt_of_sq_le`, `field_simp`, `module`, `ring`, and `nlinarith`. Next Chapter 5 work is optional source-report packaging or Example 5.11/logistic-regression modeling, not the main active lane. |
 | Chapter 6 nonsmooth convex optimization | local-layer | `StatInference/Optimization/ProjectedSubgradient.lean`, `StatInference/Optimization/CuttingPlane.lean`, `StatInference/Optimization/Ellipsoid.lean`, `StatInference/Optimization/NonsmoothLowerBounds.lean` | The Chapter 6 PSD layer now compiles through finite-valued Theorems 6.14 and 6.16 in source-facing supplied-interface form. It defines `IsSubgradientAt`, projection/subgradient trajectories, Jensen/telescoping wrappers, Theorem 6.14 wrappers, and `chewi616_exists_functionalConstraintSuccess`. `CuttingPlane.lean` proves the supplied-interface CoGM Theorem 6.19 spine through `chewi619_gap_le_display_rate_of_scaled_candidates`. `Ellipsoid.lean` proves the supplied Lemma 6.20 ellipsoid trajectory/rate layer, scalar central-cut containment, determinant-ratio core, coordinate-free containment, affine transport, Euclidean matrix/PosDef cancellation, pullback-standard-cut certificate, current `Σ⁻¹` identification, displayed center update, rank-one determinant collapse, source-volume determinant ratio, determinant-unit inverse-shape reduction, normalized forward/inverse cancellation, forward-shape transport reductions, rank-one/displayed-action expansion, square-root current/rank-inner transport, `chewi620_matrixCutScale_mul_self_of_pos`, `chewi620_displayedShapeUpdate_forwardShape_transport_of_sqrt`, displayed next-shape certificate `chewi620_sqrtAffineTransport_stepCertificate_of_displayedMatrices`, local real Haar/matrix image-volume scaling through `addHaar_image_linearMap_real`, `addHaar_image_add_left_real`, `matrix_toEuclideanLin_det`, `matrixInvShape_image_volume_real`, and `matrixInvShape_image_add_volume_real`, the generic determinant-square volume bridge `chewi620_hvolume_of_matrix_image_volume_models` and its displayed-certificate consumer `chewi620_displayedMatrices_stepCertificate_of_matrix_image_volume_models`, plus `ellipsoidSet_eq_matrix_image_closedBall_of_quadratic`, `cfcSqrt_det_sq_of_posSemidef`, `chewi620_displayedMatrices_stepCertificate_of_squareRoot_image_models`, `cfcSqrt_quadratic_inv_of_posDef`, `chewi620_displayedMatrices_stepCertificate_of_cfcSqrt_posDef`, `cfcSqrt_inner_matrixInvShape_left`, `chewi620_matrix_rankOne_cauchy_schwarz`, `chewi620_displayedShapeUpdateCore_isHermitian`, `chewi620_displayedShapeUpdate_isHermitian`, `chewi620_displayedShapeUpdateCore_quadratic_pos`, `chewi620_displayedShapeUpdate_quadratic_pos`, `chewi620_displayedShapeUpdate_posDef`, `chewi620_displayedMatrices_stepCertificate_of_cfcSqrt`, `chewi620_displayedMatrices_trajectory_of_cfcSqrt`, and `chewi620_displayedMatrices_volume_ratio_and_gap_bound_of_scaled_candidates`. `NonsmoothLowerBounds.lean` now advances Theorems 6.21/6.22 with the max-coordinate hard objective, source minimizer/value, first-max resisting oracle, prefix-support induction, concrete `gamma^2/(2 alpha d)` gap, 6.21 source-rate lower bound, centered `B(x_*, R)` Lipschitz and first-order convex/strong-convex certificates, 6.22 displayed radius and `x0` membership, 6.22 source-rate lower bound `L^2/(32 alpha (N+1))`, and 6.22 source strong-convex/Lipschitz wrappers. It also starts Definition 6.24/Theorem 6.25 with coordinate boxes, strict interiors, midpoint half-box updates, nonzero separating cut vectors, valid retained-box separation, query-exclusion, nesting, recursive cyclic state, selected-coordinate width halving, unselected width preservation, closed-ball containment, short-side no-ball obstruction, full-cycle side-length closed form, full-cycle `eps`-ball obstruction wrappers, scalar/log success-side ball-containment wrappers, deterministic replay, and the final closed-convex feasibility-instance/topological-interior no-success package. Search-first result: reused local `IsSubgradientAt` from `ProjectedSubgradient.lean`, `coordinatePrefixSubmodule`, `coordinatePrefixSubmodule_eq_top_of_le`, `coordinatePrefixSubmodule_mono`, and `gradientSpanTrajectory_mem_coordinatePrefixSubmodule_of_grad_mem_next` from `LowerBounds.lean`, local Euclidean norm-sum patterns, plus mathlib `Finset.max'`, `Finset.min'`, `EuclideanSpace.real_norm_sq_eq`, `PiLp.toLp_apply`, `PiLp.inner_apply`, `PiLp.dist_apply_le`, `PiLp.norm_apply_le`, `PiLp.continuous_apply`, `Metric.nhds_basis_closedBall`, `isClosed_Ici`, `isClosed_Iic`, `convex_iff_add_mem`, `Real.sq_sqrt`, `Real.sqrt_pos`, `Real.log_div`, `Real.log_pow`, `Real.log_le_log_iff`, `field_simp`, and scalar `ring`/`nlinarith`; no direct mathlib/local Chewi nonsmooth lower-bound or feasibility theorem was found. Current aggressive packet: exact Theorem 6.25 source/report packaging if bounded, otherwise open Chapter 7 Frank-Wolfe; add arbitrary-`d > N` embedding/report wrappers for 6.21/6.22 only if exact theorem reporting requires them. |
 | Chapter 7 Frank-Wolfe | local-layer | `StatInference/Optimization/FrankWolfe.lean` | The Chapter 7 lane is now open with a compiled supplied-interface Theorem 7.3 packet. `LinearOptimizationOracleOn` models Chewi's LOO, `HasDiameterBound` packages the diameter hypothesis, `frankWolfeStep` and `IsFrankWolfeTrajectory` model the displayed update with `h_n = 2/(n+2)`, and `chewi73_gap_le_two_beta_mul_diam_sq_div` proves the source rate `f(x_N)-f_* <= 2 beta D^2/(N+1)` from first-order convexity, smoothness, the LOO certificate, diameter bound, and trajectory membership. Search-first result: reused local first-order/smooth upper-model interfaces and mathlib convex-combination/inner-product algebra; no direct Frank-Wolfe theorem was available locally or in mathlib. Next Chapter 7 work is optional Carathéodory/LOO/report packaging; main active lane should move to Chapter 8 unless exact Theorem 7.3 reporting is requested. |
-| Chapters 8-11 deterministic algorithms | pending-local | none | Proximal methods, Fenchel duality, mirror methods, and alternating minimization are the next theorem-sized main-text lanes after the compiled Chapter 7 Frank-Wolfe packet. |
+| Chapter 8 proximal methods | local-layer | `StatInference/Optimization/Proximal.lean` | The Chapter 8 lane is now open with a compiled supplied-interface Theorem 8.5 packet. `compositeObjective` packages `F = f + g`, `proximalGradientModel` is the model minimized by PGD, and `IsProximalGradientStep` records the model minimizer/quadratic-growth certificate. The compiled one-step theorem `proximalGradient_oneStep_ineq` proves Chewi inequality `(8.1)` from first-order convexity of `f`, smoothness of `f`, and the proximal-growth certificate; `chewi85_final_gap_le_geometric_denominator_of_oneStep` reuses Chapter 3's `chewi34_final_gap_le_geometric_denominator_of_one_step` with effective step `h / (1 + alphaG * h)` to get the displayed positive-total-convexity geometric denominator. Search-first result: no direct mathlib proximal-gradient/Moreau theorem was found; useful local reuse is `FirstOrderStrongConvexOn.lower_model`, `SmoothWithGradientOn.upper_model`, and Chapter 3 weighted recurrence. Next Chapter 8 target is Theorem 8.6 APGD/FISTA by reusing Chapter 5.10 lambda/telescope algebra with `(8.1)` replacing GD `(3.3)`. |
+| Chapters 9-11 deterministic algorithms | pending-local | none | Fenchel duality, mirror methods, and alternating minimization are the next theorem-sized main-text lanes after Chapter 8 proximal/APGD coverage. |
 | Chapter 12 stochastic optimization | pending-local | none | Should reuse `StatInference/ProbabilityMeasure` and empirical-process probability wrappers where possible. |
 | Chapter 13 and Appendix A | pending-local/mathlib-foundation | none | Matrix, PSD, eigenvalue, operator norm, Newton, self-concordance, and barrier material should reuse mathlib linear algebra and matrix APIs before local definitions. |
 
@@ -233,17 +256,19 @@ High-value local files:
 
 ## Current Active Target
 
-Current active target after the verified local Chapter 7 Frank-Wolfe packet
-rebased over pushed frontier `4d4601c`: keep Chapter 6 lower-bound/feasibility as
-stable background through Theorems 6.21, 6.22, and the supplied
-Definition 6.24/Theorem 6.25 no-interior-success package, and keep Chapter 7
-stable through `chewi73_gap_le_two_beta_mul_diam_sq_div`.  The live manual
-`/goal` frontier should now move to Chapter 8 `Proximal.lean` for the next
-main-text theorem-sized packet, reusing the Chapter 3/5 descent, AGD, finite
-sum, and recurrence machinery where possible.  Return to Theorem 6.25 or
-Theorem 7.3 only for exact source/report packaging, source screenshots, or a
-dependency needed by Chapter 8.  This paragraph supersedes older Lemma 6.20,
-Chapter 6, and "open Chapter 7" next-target language below.
+Current active target after the verified local Chapter 8 Proximal packet
+rebased over pushed frontier `a874d02`: keep Chapter 6 and Chapter 7 as stable
+background, and treat `StatInference/Optimization/Proximal.lean` as the live
+manual `/goal` frontier.  Theorem 8.5 now has the supplied PGD model-growth
+interface, one-step inequality `(8.1)`, and positive-total-convexity
+geometric-denominator wrapper compiled.  The next theorem-sized packet is
+Theorem 8.6 APGD/FISTA: define a proximal-gradient trajectory using the PGD
+step interface, reuse `chewi510Lambda`, `chewi510Theta`, energy/telescope
+identities, and replace the GD `(3.3)` proof obligation with the compiled
+`proximalGradient_oneStep_ineq` at `alphaF = alphaG = 0`, `h = 1 / beta`.
+Return to Theorem 6.25, 7.3, or 8.5 only for exact source/report packaging or
+a dependency needed by APGD.  This paragraph supersedes older Lemma 6.20,
+Chapter 6, "open Chapter 7", and "open Chapter 8" next-target language below.
 
 Latest proof target after the standard-cut scalar containment,
 determinant-ratio, coordinate-free half-space, affine-transport certificate,
