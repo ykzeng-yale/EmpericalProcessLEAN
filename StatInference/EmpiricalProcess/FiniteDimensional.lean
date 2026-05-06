@@ -2125,4 +2125,101 @@ theorem VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_asymptoticallyTi
     μ μlim X Z hbounded hZbounded hX hZ h).finiteDimensionalLaw
       μ X hbounded hX I
 
+/--
+Sequential weak convergence of bounded process laws implies asymptotic
+tightness of every ordinary raw coordinate law.
+-/
+theorem VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw_asymptoticallyTight_atTop
+    {Ω : ℕ -> Type*} {Ωlim : Type*}
+    {mΩ : (n : ℕ) -> MeasurableSpace (Ω n)}
+    (μ : (n : ℕ) -> @Measure (Ω n) (mΩ n)) [∀ n, IsProbabilityMeasure (μ n)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)] [SecondCountableTopology (VdVWEllInfty T)]
+    [CompleteSpace (VdVWEllInfty T)]
+    (X : (n : ℕ) -> Ω n -> T -> ℝ)
+    (Z : Ωlim -> T -> ℝ)
+    (hbounded : ∀ n, VdVWEllInfty.IsBoundedSamplePath (X n))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hX : ∀ n,
+      AEMeasurable (VdVWEllInfty.processMap (X n) (hbounded n)) (μ n))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ Filter.atTop)
+    (t : T) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => vdVWCoordinateProcessLaw (μ n) (X n) t
+        ((VdVWEllInfty.evalCLM (T := T) t).continuous.measurable.aemeasurable.comp_aemeasurable
+          (hX n)))
+      Filter.atTop :=
+  (VdVWEllInftyProcessWeakConvergence.asymptoticallyTight_atTop
+    μ μlim X Z hbounded hZbounded hX hZ h).rawCoordinateLaw
+      μ X hbounded hX t
+
+/--
+Sequential weak convergence of bounded process laws implies asymptotic
+tightness of replacement finite-dimensional laws when only the selected finite
+coordinates are eventually a.e.-equal.
+-/
+theorem
+    VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_congr_eventually_finite_coord_ae_asymptoticallyTight_atTop
+    {Ω : ℕ -> Type*} {Ωlim : Type*}
+    {mΩ : (n : ℕ) -> MeasurableSpace (Ω n)}
+    (μ : (n : ℕ) -> @Measure (Ω n) (mΩ n)) [∀ n, IsProbabilityMeasure (μ n)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)] [SecondCountableTopology (VdVWEllInfty T)]
+    [CompleteSpace (VdVWEllInfty T)]
+    (X Y : (n : ℕ) -> Ω n -> T -> ℝ)
+    (Z : Ωlim -> T -> ℝ)
+    (hbounded : ∀ n, VdVWEllInfty.IsBoundedSamplePath (X n))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hX : ∀ n,
+      AEMeasurable (VdVWEllInfty.processMap (X n) (hbounded n)) (μ n))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ Filter.atTop)
+    (I : Finset T) [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)]
+    [T2Space (I -> ℝ)]
+    (hY : ∀ n, AEMeasurable (fun ω => fun t : I => Y n ω t.1) (μ n))
+    (hYX : ∀ᶠ n in Filter.atTop, ∀ᵐ ω ∂(μ n), ∀ t : I, Y n ω t.1 = X n ω t.1) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => vdVWFDDProcessLaw (μ n) I (Y n) (hY n)) Filter.atTop :=
+  (VdVWEllInftyProcessWeakConvergence.asymptoticallyTight_atTop
+    μ μlim X Z hbounded hZbounded hX hZ h).finiteDimensionalLaw_congr_eventually_finite_coord_ae
+      μ X Y hbounded hX I hY hYX
+
+/--
+Sequential weak convergence of bounded process laws implies asymptotic
+tightness of replacement raw coordinate laws when that coordinate is eventually
+a.e.-equal.
+-/
+theorem
+    VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw_congr_eventually_ae_asymptoticallyTight_atTop
+    {Ω : ℕ -> Type*} {Ωlim : Type*}
+    {mΩ : (n : ℕ) -> MeasurableSpace (Ω n)}
+    (μ : (n : ℕ) -> @Measure (Ω n) (mΩ n)) [∀ n, IsProbabilityMeasure (μ n)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)] [SecondCountableTopology (VdVWEllInfty T)]
+    [CompleteSpace (VdVWEllInfty T)]
+    (X Y : (n : ℕ) -> Ω n -> T -> ℝ)
+    (Z : Ωlim -> T -> ℝ)
+    (hbounded : ∀ n, VdVWEllInfty.IsBoundedSamplePath (X n))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hX : ∀ n,
+      AEMeasurable (VdVWEllInfty.processMap (X n) (hbounded n)) (μ n))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ Filter.atTop)
+    (t : T)
+    (hY : ∀ n, AEMeasurable (fun ω => Y n ω t) (μ n))
+    (hYX : ∀ᶠ n in Filter.atTop, ∀ᵐ ω ∂(μ n), Y n ω t = X n ω t) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => vdVWCoordinateProcessLaw (μ n) (Y n) t (hY n))
+      Filter.atTop :=
+  (VdVWEllInftyProcessWeakConvergence.asymptoticallyTight_atTop
+    μ μlim X Z hbounded hZbounded hX hZ h).rawCoordinateLaw_congr_eventually_ae
+      μ X Y hbounded hX t hY hYX
+
 end StatInference

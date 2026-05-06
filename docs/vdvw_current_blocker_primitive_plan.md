@@ -70,11 +70,11 @@ unless a new exact statement directly consumes them.
 
 ## Current `/goal` Target
 
-Authoritative `/goal` rebase, 2026-05-06 after the selected fixed-radius
-endpoint consumer: local `main` should be kept synced with `origin/main`, and
-the active Codex goal object remains a broad orchestration label because it
-cannot be edited in place.  Use this paragraph, not older rebase paragraphs
-below, as the operative continuation prompt.
+Authoritative `/goal` rebase, 2026-05-06 after the finite-FDD/raw-coordinate
+atTop tightness replacement consumers: local `main` should be kept synced with
+`origin/main`, and the active Codex goal object remains a broad orchestration
+label because it cannot be edited in place.  Use this paragraph, not older
+rebase paragraphs below, as the operative continuation prompt.
 
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
@@ -84,7 +84,8 @@ VC routes, canonical iid sample-process specializations, finite-class SLLN
 endpoints, full-subgraph `P`-GC plus in-mean packages, and Lemma 2.4.5
 reverse/cofiltration consumers.  Chapter 1 support also includes measure-level
 weak-convergence/tightness/product/FDD wrappers, raw bounded `ell_infty(T)`
-process-law forward FDD/tightness wrappers, source/target/reindexing
+process-law forward FDD/tightness wrappers, finite-FDD/raw-coordinate
+replacement and atTop tightness consumers, source/target/reindexing
 congruence, and centered separability-to-`P`-measurability bridges.
 
 The exact textbook Theorem 2.4.3 is not yet closed because the book assumes the
@@ -505,6 +506,23 @@ These let later Chapter 1 arguments replace only the selected finite
 coordinates of FDD laws a.e. on source and limit spaces.  They are still
 finite-FDD forward support, not the arbitrary-index weak-convergence/FDD
 converse.
+
+2026-05-06 finite-FDD/raw-coordinate atTop tightness replacement consumers:
+search found existing
+`VdVWEllInftyProcessWeakConvergence.asymptoticallyTight_atTop`,
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_asymptoticallyTight_atTop`,
+and the finite-FDD/raw-coordinate replacement consumers, but no direct atTop
+tightness consequences for replacement FDD or raw coordinate laws.
+`FiniteDimensional.lean` now proves
+`VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw_asymptoticallyTight_atTop`,
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_congr_eventually_finite_coord_ae_asymptoticallyTight_atTop`,
+and
+`VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw_congr_eventually_ae_asymptoticallyTight_atTop`.
+These connect sequential bounded-process weak convergence to fixed-FDD and
+raw-coordinate tightness after selected-coordinate replacement.  This is still
+forward finite-dimensional support; it does not prove the arbitrary-index
+VdV&W 1.4.8 converse or the process separability/asymptotic-measurability
+interfaces.
 
 Authoritative operational prompt, 2026-05-06 after the verified
 original-cover truncation/polynomial entropy bridges and the quantizer

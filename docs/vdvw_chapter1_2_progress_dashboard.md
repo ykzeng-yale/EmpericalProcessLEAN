@@ -13,10 +13,10 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Authoritative current `/goal` override, 2026-05-06 after the selected
-fixed-radius endpoint consumer: local `main` should equal `origin/main` after
-the verified push, and the broad Codex goal object should be treated only as
-an orchestration label.  The current Lean state has already
+Authoritative current `/goal` override, 2026-05-06 after the finite-FDD/raw
+coordinate atTop tightness replacement consumers: local `main` should equal
+`origin/main` after the verified push, and the broad Codex goal object should
+be treated only as an orchestration label.  The current Lean state has already
 closed the main Theorem 2.4.3 endpoint plumbing for selected fixed-radius
 tail/UI, finite code-set and natural-polynomial code-set routes,
 threshold/grid/finite-trace/full-subgraph VC routes, canonical iid
@@ -41,7 +41,12 @@ The finite-FDD analogue is also compiled as
 and
 `VdVWEllInftyProcessAsymptoticallyTight.finiteDimensionalLaw_congr_eventually_finite_coord_ae`,
 so fixed finite-dimensional laws can be transported after replacing only the
-selected coordinates a.e.
+selected coordinates a.e.  Sequential weak convergence now also feeds the
+raw-coordinate and replacement FDD tightness consequences through
+`VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw_asymptoticallyTight_atTop`,
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_congr_eventually_finite_coord_ae_asymptoticallyTight_atTop`,
+and
+`VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw_congr_eventually_ae_asymptoticallyTight_atTop`.
 This run additionally closes the generic centered-convergence endpoint bundle
 and the explicit selected finite-net tail/UI route to `P`-GC plus in-mean via
 `VdVWTheorem243_pGlivenkoCantelli_and_inMean_of_centered_untruncated_convergesInOuterProbabilityConst_zero`
