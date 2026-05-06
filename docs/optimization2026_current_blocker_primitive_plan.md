@@ -127,19 +127,33 @@ Theorem 6.22 now compiles in the same module through
 `chewi622HardObjective_lipschitzOnWith_source_closedBall_minimizer`,
 `chewi622_gap_ge_source_parameters`, and
 `chewi622HardObjective_firstOrderStrongConvexOn_source_univ`.
+The current local 6.25 feasibility packet now starts the resisting-oracle box
+lower bound with compiled declarations `chewi625CoordinateBox`,
+`chewi625StrictCoordinateBox`, `IsSeparationVector`, `chewi625Midpoint`,
+`chewi625ReplaceCoord`, `chewi625CutLower`, `chewi625CutUpper`,
+`chewi625CutVector`, `chewi625CutVector_norm`,
+`chewi625CutVector_ne_zero`, `chewi625_query_not_mem_strict_cut_box`,
+`chewi625CutVector_separates_cut_box`,
+`chewi625CutVector_isSeparationVector`, box nesting and selected/unselected
+width lemmas, `chewi625_closedBall_subset_coordinateBox`, and
+`chewi625_no_closedBall_subset_of_short_side`.
 
 Immediate aggressive target: do not loop on "small source-shape gaps" for
-6.21/6.22.  Either add a literal arbitrary-`d > N` embedding/report wrapper
-only if required for exact theorem reporting, or move directly to Theorem 6.23
-and Definition 6.24/Theorem 6.25 feasibility lower bound.  Then open Chapters
+6.21/6.22 and do not try to prove Theorem 6.23 directly, since the source
+explicitly switches to feasibility.  Continue Theorem 6.25 by adding the
+cyclic coordinate schedule, iterated side-length/radius lower bound, and a
+supplied deterministic replay interface; add arbitrary-`d > N` wrappers for
+6.21/6.22 only if exact theorem reporting requires them.  Then open Chapters
 7-13 as theorem-sized packets, with scouts only for search/reuse and large
 parallelizable theorem surfaces, not tiny algebra wrappers.  Do the
 mandatory search-first pass before new primitives: local `IsSubgradientAt` and
 Lipschitz bridges in `ProjectedSubgradient.lean`, prefix-span machinery in
 `LowerBounds.lean`, mathlib `LipschitzOnWith`, finite `Finset.max'` APIs,
 convex `sup`/finite max APIs, Euclidean norm-sum formulas, feasibility/oracle
-APIs in the Optimization lane, and matrix/PSD APIs if a feasibility theorem
-touches separation geometry.  Verification gate: focused `lake env lean` while
+APIs in the Optimization lane, mathlib `PiLp.dist_apply_le`,
+`PiLp.norm_apply_le`, `interior_pi_set`, `interior_Icc`, `Box`/`Set.pi`
+interval APIs, and matrix/PSD APIs if a feasibility theorem touches separation
+geometry.  Verification gate: focused `lake env lean` while
 developing, targeted `lake build` for promoted Optimization modules,
 proof-hole scan, secret scan, route-doc refresh, rebase over remote main when
 needed, then a single commit/push batch.
@@ -443,10 +457,13 @@ subgradient of `chewi621HardObjective`, prove the displayed source radius facts
 `‖x_*‖ = R` and `dist 0 x_* <= R`, promote the hard family to centered
 `B(x_*, R)` Lipschitz and first-order strong-convexity certificates, and prove
 the Chewi 6.22 source-rate packet with displayed radius, `x0` membership,
-strong-convexity, and Lipschitz side conditions.  The next aggressive theorem
-packet should target Theorem 6.23 or Definition 6.24/Theorem 6.25 feasibility;
-add an arbitrary-`d > N` embedding/report wrapper for 6.21/6.22 only if the
-fully literal theorem statement or report needs it.  Search the local PSD, CoGM,
+strong-convexity, and Lipschitz side conditions.  The current 6.25 packet also
+compiles the box-halving resisting-oracle geometry, retained-box separation,
+query exclusion, side-width facts, closed-ball containment, and short-side
+no-ball obstruction.  The next aggressive theorem packet should continue
+Theorem 6.25 with the cyclic coordinate schedule and scalar side-length/radius
+iteration; add an arbitrary-`d > N` embedding/report wrapper for 6.21/6.22 only
+if the fully literal theorem statement or report needs it.  Search the local PSD, CoGM,
 ellipsoid, lower-bound, nonsmooth-lower-bound, and exercises modules first; if
 the next source theorem needs a missing nonsmooth lower-bound primitive, record
 that precise API and prove the smallest wrapper that removes it.

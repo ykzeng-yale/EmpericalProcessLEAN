@@ -1115,5 +1115,355 @@ theorem chewi622HardObjective_firstOrderStrongConvexOn_source_univ
       (d := N + 1) (alpha := alpha) (gamma := L / 4)
       (div_nonneg hL_nonneg (by norm_num))
 
+/-
+## Theorem 6.25 feasibility lower-bound primitives
+
+The feasibility lower bound uses a resisting separation oracle that repeatedly
+halves an axis-aligned box along one coordinate.  This packet keeps the
+geometric state elementary: a coordinate box, its strict coordinate interior,
+the midpoint cut, and the separation vector returned by the resisting oracle.
+-/
+
+/-- Axis-aligned coordinate box `{x : a <= x <= b}`. -/
+def chewi625CoordinateBox {d : ℕ}
+    (a b : EuclideanSpace ℝ (Fin d)) : Set (EuclideanSpace ℝ (Fin d)) :=
+  {x | ∀ i : Fin d, a i ≤ x i ∧ x i ≤ b i}
+
+/--
+The source proof only needs the strict coordinate interior of an axis-aligned
+box.  A later report wrapper can bridge this to topological interior if needed.
+-/
+def chewi625StrictCoordinateBox {d : ℕ}
+    (a b : EuclideanSpace ℝ (Fin d)) : Set (EuclideanSpace ℝ (Fin d)) :=
+  {x | ∀ i : Fin d, a i < x i ∧ x i < b i}
+
+/-- Separation-certificate interface for the feasibility resisting oracle. -/
+def IsSeparationVector {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (C : Set E) (x p : E) : Prop :=
+  p ≠ 0 ∧ ∀ y ∈ C, inner ℝ p y ≤ inner ℝ p x
+
+/-- Coordinatewise midpoint of a box. -/
+noncomputable def chewi625Midpoint {d : ℕ}
+    (a b : EuclideanSpace ℝ (Fin d)) : EuclideanSpace ℝ (Fin d) :=
+  WithLp.toLp 2 fun i : Fin d => (a i + b i) / 2
+
+@[simp] theorem chewi625Midpoint_apply {d : ℕ}
+    (a b : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    chewi625Midpoint a b i = (a i + b i) / 2 := by
+  simp [chewi625Midpoint, PiLp.toLp_apply]
+
+/-- Replace one coordinate of a finite Euclidean vector. -/
+noncomputable def chewi625ReplaceCoord {d : ℕ}
+    (v : EuclideanSpace ℝ (Fin d)) (i : Fin d) (t : ℝ) :
+    EuclideanSpace ℝ (Fin d) :=
+  WithLp.toLp 2 fun j : Fin d => if j = i then t else v j
+
+@[simp] theorem chewi625ReplaceCoord_apply_same {d : ℕ}
+    (v : EuclideanSpace ℝ (Fin d)) (i : Fin d) (t : ℝ) :
+    chewi625ReplaceCoord v i t i = t := by
+  simp [chewi625ReplaceCoord, PiLp.toLp_apply]
+
+@[simp] theorem chewi625ReplaceCoord_apply_ne {d : ℕ}
+    (v : EuclideanSpace ℝ (Fin d)) {i j : Fin d} (hji : j ≠ i) (t : ℝ) :
+    chewi625ReplaceCoord v i t j = v j := by
+  simp [chewi625ReplaceCoord, PiLp.toLp_apply, hji]
+
+/--
+Lower endpoint after the resisting half-box cut in coordinate `i`.  If the
+query is on the lower side of the midpoint, keep the upper half.
+-/
+noncomputable def chewi625CutLower {d : ℕ}
+    (a b x : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    EuclideanSpace ℝ (Fin d) :=
+  if x i ≤ chewi625Midpoint a b i then
+    chewi625ReplaceCoord a i (chewi625Midpoint a b i)
+  else
+    a
+
+/--
+Upper endpoint after the resisting half-box cut in coordinate `i`.  If the
+query is on the upper side of the midpoint, keep the lower half.
+-/
+noncomputable def chewi625CutUpper {d : ℕ}
+    (a b x : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    EuclideanSpace ℝ (Fin d) :=
+  if x i ≤ chewi625Midpoint a b i then
+    b
+  else
+    chewi625ReplaceCoord b i (chewi625Midpoint a b i)
+
+/--
+The separation vector returned by the resisting oracle for the half-box cut:
+`-e_i` when the retained box is above the query, and `+e_i` when it is below.
+-/
+noncomputable def chewi625CutVector {d : ℕ}
+    (a b x : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    EuclideanSpace ℝ (Fin d) :=
+  if x i ≤ chewi625Midpoint a b i then
+    -chewi621CoordinateBasis i
+  else
+    chewi621CoordinateBasis i
+
+/-- The resisting separation vector is nonzero. -/
+theorem chewi625CutVector_norm {d : ℕ}
+    (a b x : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    ‖chewi625CutVector a b x i‖ = 1 := by
+  by_cases h : x i ≤ chewi625Midpoint a b i
+  · have h' : x i ≤ (a i + b i) / 2 := by
+      simpa using h
+    simp [chewi625CutVector, chewi625Midpoint, h', chewi621CoordinateBasis_norm]
+  · have h' : ¬ x i ≤ (a i + b i) / 2 := by
+      simpa using h
+    simp [chewi625CutVector, chewi625Midpoint, h', chewi621CoordinateBasis_norm]
+
+theorem chewi625CutVector_ne_zero {d : ℕ}
+    (a b x : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    chewi625CutVector a b x i ≠ 0 := by
+  intro hzero
+  have hnorm := chewi625CutVector_norm a b x i
+  rw [hzero, norm_zero] at hnorm
+  norm_num at hnorm
+
+/--
+After the resisting oracle halves the box, the queried point lies outside the
+strict coordinate interior of the retained box.
+-/
+theorem chewi625_query_not_mem_strict_cut_box {d : ℕ}
+    (a b x : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    x ∉ chewi625StrictCoordinateBox
+      (chewi625CutLower a b x i) (chewi625CutUpper a b x i) := by
+  intro hx
+  by_cases h : x i ≤ chewi625Midpoint a b i
+  · have hleft : chewi625CutLower a b x i i = chewi625Midpoint a b i := by
+      have h' : x i ≤ (a i + b i) / 2 := by
+        simpa using h
+      simp [chewi625CutLower, chewi625Midpoint, h']
+    have hxleft := (hx i).1
+    rw [hleft] at hxleft
+    exact (not_lt_of_ge h) hxleft
+  · have hright : chewi625CutUpper a b x i i = chewi625Midpoint a b i := by
+      have h' : ¬ x i ≤ (a i + b i) / 2 := by
+        simpa using h
+      simp [chewi625CutUpper, chewi625Midpoint, h']
+    have hxright := (hx i).2
+    rw [hright] at hxright
+    exact (not_lt_of_ge (le_of_lt (lt_of_not_ge h))) hxright
+
+/--
+The resisting vector is a valid separation certificate for the retained
+half-box: every point in the new box lies on the oracle side of the query.
+-/
+theorem chewi625CutVector_separates_cut_box {d : ℕ}
+    (a b x : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    ∀ y ∈ chewi625CoordinateBox
+        (chewi625CutLower a b x i) (chewi625CutUpper a b x i),
+      inner ℝ (chewi625CutVector a b x i) y ≤
+        inner ℝ (chewi625CutVector a b x i) x := by
+  intro y hy
+  by_cases h : x i ≤ chewi625Midpoint a b i
+  · have hyi : chewi625Midpoint a b i ≤ y i := by
+      have hbox := (hy i).1
+      have h' : x i ≤ (a i + b i) / 2 := by
+        simpa using h
+      simpa [chewi625CutLower, chewi625Midpoint, h'] using hbox
+    have hp : chewi625CutVector a b x i = -chewi621CoordinateBasis i := by
+      have h' : x i ≤ (a i + b i) / 2 := by
+        simpa using h
+      simp [chewi625CutVector, chewi625Midpoint, h']
+    calc
+      inner ℝ (chewi625CutVector a b x i) y = -y i := by
+        rw [hp, inner_neg_left, chewi621CoordinateBasis_inner]
+      _ ≤ -x i := by nlinarith
+      _ = inner ℝ (chewi625CutVector a b x i) x := by
+        rw [hp, inner_neg_left, chewi621CoordinateBasis_inner]
+  · have hyi : y i ≤ chewi625Midpoint a b i := by
+      have hbox := (hy i).2
+      have h' : ¬ x i ≤ (a i + b i) / 2 := by
+        simpa using h
+      simpa [chewi625CutUpper, chewi625Midpoint, h'] using hbox
+    have hmid_le_x : chewi625Midpoint a b i ≤ x i :=
+      le_of_lt (lt_of_not_ge h)
+    have hp : chewi625CutVector a b x i = chewi621CoordinateBasis i := by
+      have h' : ¬ x i ≤ (a i + b i) / 2 := by
+        simpa using h
+      simp [chewi625CutVector, chewi625Midpoint, h']
+    calc
+      inner ℝ (chewi625CutVector a b x i) y = y i := by
+        rw [hp, chewi621CoordinateBasis_inner]
+      _ ≤ x i := by nlinarith
+      _ = inner ℝ (chewi625CutVector a b x i) x := by
+        rw [hp, chewi621CoordinateBasis_inner]
+
+/-- Interface wrapper: the retained half-box has a valid nonzero separator. -/
+theorem chewi625CutVector_isSeparationVector {d : ℕ}
+    (a b x : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    IsSeparationVector
+      (chewi625CoordinateBox
+        (chewi625CutLower a b x i) (chewi625CutUpper a b x i))
+      x (chewi625CutVector a b x i) :=
+  ⟨chewi625CutVector_ne_zero a b x i,
+    chewi625CutVector_separates_cut_box a b x i⟩
+
+/-- The midpoint lies between the two endpoints in one coordinate. -/
+theorem chewi625_left_le_midpoint {d : ℕ}
+    {a b : EuclideanSpace ℝ (Fin d)} (hab : ∀ j : Fin d, a j ≤ b j)
+    (i : Fin d) :
+    a i ≤ chewi625Midpoint a b i := by
+  simp [chewi625Midpoint]
+  nlinarith [hab i]
+
+theorem chewi625_midpoint_le_right {d : ℕ}
+    {a b : EuclideanSpace ℝ (Fin d)} (hab : ∀ j : Fin d, a j ≤ b j)
+    (i : Fin d) :
+    chewi625Midpoint a b i ≤ b i := by
+  simp [chewi625Midpoint]
+  nlinarith [hab i]
+
+/-- The retained lower endpoint is coordinatewise above the old lower endpoint. -/
+theorem chewi625_le_cutLower {d : ℕ}
+    {a b x : EuclideanSpace ℝ (Fin d)} (hab : ∀ j : Fin d, a j ≤ b j)
+    (i j : Fin d) :
+    a j ≤ chewi625CutLower a b x i j := by
+  by_cases h : x i ≤ chewi625Midpoint a b i
+  · have h' : x i ≤ (a i + b i) / 2 := by
+      simpa using h
+    by_cases hji : j = i
+    · simpa [chewi625CutLower, chewi625Midpoint, h', hji] using
+        chewi625_left_le_midpoint (a := a) (b := b) hab i
+    · simp [chewi625CutLower, chewi625Midpoint, h', hji]
+  · have h' : ¬ x i ≤ (a i + b i) / 2 := by
+      simpa using h
+    simp [chewi625CutLower, chewi625Midpoint, h']
+
+/-- The retained upper endpoint is coordinatewise below the old upper endpoint. -/
+theorem chewi625_cutUpper_le {d : ℕ}
+    {a b x : EuclideanSpace ℝ (Fin d)} (hab : ∀ j : Fin d, a j ≤ b j)
+    (i j : Fin d) :
+    chewi625CutUpper a b x i j ≤ b j := by
+  by_cases h : x i ≤ chewi625Midpoint a b i
+  · have h' : x i ≤ (a i + b i) / 2 := by
+      simpa using h
+    simp [chewi625CutUpper, chewi625Midpoint, h']
+  · have h' : ¬ x i ≤ (a i + b i) / 2 := by
+      simpa using h
+    by_cases hji : j = i
+    · simpa [chewi625CutUpper, chewi625Midpoint, h', hji] using
+        chewi625_midpoint_le_right (a := a) (b := b) hab i
+    · simp [chewi625CutUpper, chewi625Midpoint, h', hji]
+
+/-- The retained half-box is nested inside the previous box. -/
+theorem chewi625_cut_box_subset {d : ℕ}
+    {a b x : EuclideanSpace ℝ (Fin d)} (hab : ∀ j : Fin d, a j ≤ b j)
+    (i : Fin d) :
+    chewi625CoordinateBox
+        (chewi625CutLower a b x i) (chewi625CutUpper a b x i) ⊆
+      chewi625CoordinateBox a b := by
+  intro y hy j
+  exact ⟨(chewi625_le_cutLower (a := a) (b := b) (x := x) hab i j).trans (hy j).1,
+    (hy j).2.trans (chewi625_cutUpper_le (a := a) (b := b) (x := x) hab i j)⟩
+
+/-- The selected coordinate width is halved by the resisting cut. -/
+theorem chewi625_cut_selected_width {d : ℕ}
+    (a b x : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    chewi625CutUpper a b x i i - chewi625CutLower a b x i i =
+      (b i - a i) / 2 := by
+  by_cases h : x i ≤ chewi625Midpoint a b i
+  · have h' : x i ≤ (a i + b i) / 2 := by
+      simpa using h
+    simp [chewi625CutUpper, chewi625CutLower, chewi625Midpoint, h']
+    ring
+  · have h' : ¬ x i ≤ (a i + b i) / 2 := by
+      simpa using h
+    simp [chewi625CutUpper, chewi625CutLower, chewi625Midpoint, h']
+    ring
+
+/-- Non-selected coordinate widths are unchanged by the resisting cut. -/
+theorem chewi625_cut_unselected_width {d : ℕ}
+    (a b x : EuclideanSpace ℝ (Fin d)) {i j : Fin d} (hji : j ≠ i) :
+    chewi625CutUpper a b x i j - chewi625CutLower a b x i j =
+      b j - a j := by
+  by_cases h : x i ≤ chewi625Midpoint a b i
+  · have h' : x i ≤ (a i + b i) / 2 := by
+      simpa using h
+    simp [chewi625CutUpper, chewi625CutLower, chewi625Midpoint, h', hji]
+  · have h' : ¬ x i ≤ (a i + b i) / 2 := by
+      simpa using h
+    simp [chewi625CutUpper, chewi625CutLower, chewi625Midpoint, h', hji]
+
+/--
+If every coordinate half-side of a box around `center` is at least `rho`, then
+the Euclidean closed ball of radius `rho` around `center` is contained in the
+coordinate box.  This is the reusable ball-containment primitive in Definition
+6.24 / Theorem 6.25.
+-/
+theorem chewi625_closedBall_subset_coordinateBox {d : ℕ}
+    {a b center : EuclideanSpace ℝ (Fin d)} {rho : ℝ}
+    (hleft : ∀ i : Fin d, rho ≤ center i - a i)
+    (hright : ∀ i : Fin d, rho ≤ b i - center i) :
+    Metric.closedBall center rho ⊆ chewi625CoordinateBox a b := by
+  intro y hy i
+  have hynorm : ‖y - center‖ ≤ rho := by
+    simpa [Metric.mem_closedBall, dist_eq_norm] using hy
+  have hcoord_abs : |y i - center i| ≤ rho := by
+    have hinner_abs :=
+      abs_real_inner_le_norm (chewi621CoordinateBasis i) (y - center)
+    have hcoord :
+        inner ℝ (chewi621CoordinateBasis i) (y - center) = y i - center i := by
+      rw [chewi621CoordinateBasis_inner]
+      simp
+    calc
+      |y i - center i| =
+          |inner ℝ (chewi621CoordinateBasis i) (y - center)| := by rw [hcoord]
+      _ ≤ ‖chewi621CoordinateBasis i‖ * ‖y - center‖ := hinner_abs
+      _ = ‖y - center‖ := by
+            rw [chewi621CoordinateBasis_norm]
+            ring
+      _ ≤ rho := hynorm
+  have hlow_coord : -rho ≤ y i - center i := (abs_le.mp hcoord_abs).1
+  have hhigh_coord : y i - center i ≤ rho := (abs_le.mp hcoord_abs).2
+  constructor <;> nlinarith [hleft i, hright i]
+
+/--
+A box with a coordinate side shorter than `2 * eps` cannot contain a Euclidean
+closed ball of radius `eps`.  This is the geometric obstruction behind the
+feasibility lower bound once repeated coordinate cuts make some side too short.
+-/
+theorem chewi625_no_closedBall_subset_of_short_side {d : ℕ}
+    {a b : EuclideanSpace ℝ (Fin d)} {eps : ℝ} (heps : 0 < eps)
+    {i : Fin d} (hside : b i - a i < 2 * eps) :
+    ¬ ∃ center : EuclideanSpace ℝ (Fin d),
+      Metric.closedBall center eps ⊆ chewi625CoordinateBox a b := by
+  rintro ⟨center, hsubset⟩
+  let e := chewi621CoordinateBasis i
+  let yplus : EuclideanSpace ℝ (Fin d) := center + eps • e
+  let yminus : EuclideanSpace ℝ (Fin d) := center + (-eps) • e
+  have hdist_plus : dist yplus center = eps := by
+    rw [dist_eq_norm]
+    have hsub : yplus - center = eps • e := by
+      simp [yplus]
+    rw [hsub, norm_smul, chewi621CoordinateBasis_norm]
+    rw [Real.norm_of_nonneg heps.le]
+    ring
+  have hdist_minus : dist yminus center = eps := by
+    rw [dist_eq_norm]
+    have hsub : yminus - center = (-eps) • e := by
+      simp [yminus]
+    rw [hsub, norm_smul, chewi621CoordinateBasis_norm]
+    have hneg_norm : ‖(-eps : ℝ)‖ = eps := by
+      rw [Real.norm_eq_abs, abs_neg, abs_of_pos heps]
+    rw [hneg_norm]
+    ring
+  have hyplus_mem : yplus ∈ Metric.closedBall center eps := by
+    simp [Metric.mem_closedBall, hdist_plus]
+  have hyminus_mem : yminus ∈ Metric.closedBall center eps := by
+    simp [Metric.mem_closedBall, hdist_minus]
+  have hplus_upper : center i + eps ≤ b i := by
+    have hbox := (hsubset hyplus_mem i).2
+    simpa [yplus, e] using hbox
+  have hminus_lower : a i + eps ≤ center i := by
+    have hbox := (hsubset hyminus_mem i).1
+    simpa [yminus, e] using hbox
+  nlinarith
+
 end Optimization
 end StatInference

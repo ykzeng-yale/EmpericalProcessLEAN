@@ -56,10 +56,16 @@ the concrete `d = N + 1` hard instance now compiles through first-max oracle
 source first-order convexity, centered source bounded-domain Lipschitz facts,
 and reusable first-order strong-convexity facts.  The same module now compiles
 the 6.22 displayed radius, `x0 = 0` radius membership, source-rate gap
-`L^2/(32 alpha (N+1))`, and source strong-convex/Lipschitz wrappers.  The next
-theorem-sized packet should only add a literal arbitrary `d > N`
-embedding/report wrapper for 6.21/6.22 if exact theorem reporting requires it;
-otherwise advance directly to Theorem 6.23 and Definition 6.24/Theorem 6.25.
+`L^2/(32 alpha (N+1))`, and source strong-convex/Lipschitz wrappers.  The same
+module now also starts Definition 6.24/Theorem 6.25 with coordinate boxes,
+strict box interiors, midpoint half-box updates, nonzero separating cut
+vectors, retained-box separation, query-exclusion from strict interior,
+box-nesting and side-width lemmas, Euclidean ball containment in boxes, and the
+short-side obstruction to containing an `eps`-ball.  The next theorem-sized
+packet should continue Theorem 6.25 with the cyclic coordinate schedule and
+side-length/radius iteration.  Add a literal arbitrary `d > N`
+embedding/report wrapper for 6.21/6.22 only if exact theorem reporting requires
+it.
 The detailed Lemma 6.20 frontier below is retained only as dependency context
 and should not be used as the active route.
 
@@ -291,10 +297,15 @@ displayed radius facts `‖x_*‖ = R` and `dist 0 x_* <= R`, promotes the hard
 family to centered `B(x_*, R)` Lipschitz and first-order strong-convexity
 certificates, and proves the Chewi 6.22 source-rate packet with displayed
 radius, `x0` membership, strong-convexity, and Lipschitz side conditions.  The
-next target is Theorem 6.23 or Definition 6.24/Theorem 6.25 feasibility; add an
-arbitrary-`d > N` embedding/report wrapper for 6.21/6.22 only if the literal
-statement/report requires it.  Search local PSD, CoGM, ellipsoid, lower-bound,
-nonsmooth-lower-bound, and exercise APIs first before adding new wrappers.  The
+current packet also proves the first Definition 6.24/Theorem 6.25 feasibility
+geometry: coordinate boxes, strict interiors, half-box cut update, nonzero
+separator, retained-box separation, query exclusion, box nesting, width
+halving/preservation, closed-ball containment, and short-side no-ball
+obstruction.  The next target is the cyclic coordinate schedule and scalar
+iteration/radius lower-bound layer for Theorem 6.25; Theorem 6.23 is source
+context, not a direct proof target.  Search local PSD, CoGM, ellipsoid,
+lower-bound, nonsmooth-lower-bound, and exercise APIs first before adding new
+wrappers.  The
 closed ellipsoid matrix packet remains reusable background:
 the current matrix quadratic, positive denominator, normalized cut direction
 algebra, raw symmetric square-root cut bridge, PosDef invertibility/cancellation
