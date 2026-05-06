@@ -167,9 +167,13 @@ Initial modules:
   pullback now needs only the original square-integrable limit law.  The
   current source wrapper packages that canonical covarianceBilinDual pullback
   together with local existence, delta-method convergence, and Gaussianity in
-  the measurable finite-coordinate Theorem 4.1 statement.  It still deliberately
-  leaves local-inverse measurability, the multivariate empirical-moment CLT,
-  and a finite-matrix specialization as explicit next layers.
+  the measurable finite-coordinate Theorem 4.1 statement.  The newest
+  local-inverse measurability layer proves the inverse of the open partial
+  homeomorphism is a.e.-measurable on its open target/local moment range and
+  for measures concentrated on that range.  It still deliberately leaves an
+  a.e.-measurable delta-method wrapper or safe concrete global-measurability
+  wrapper, the multivariate empirical-moment CLT, and a finite-matrix
+  specialization as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

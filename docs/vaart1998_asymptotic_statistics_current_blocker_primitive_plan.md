@@ -237,25 +237,33 @@ Chapter 3 theorem-facing wrappers compiling:
 73. Measurable-coordinate Theorem 4.1 Gaussian-limit wrapper with the canonical
    covarianceBilinDual display:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_real`.
+74. Open-partial-homeomorphism inverse a.e.-measurability on its target:
+   `vaart1998_openPartialHomeomorph_symm_aemeasurable_on_target`.
+75. Inverse-function-theorem local inverse a.e.-measurability on the local
+   moment range:
+   `vaart1998_localInverse_aemeasurable_on_open_momentRange`.
+76. Concentrated-measure local inverse a.e.-measurability:
+   `vaart1998_localInverse_aemeasurable_of_ae_mem_open_momentRange`.
 
-Latest pushed Vaart packet before this run: `c7fc5aa`
-(`Add Vaart inverse derivative covariance MemLp bridge`).
+Latest pushed Vaart packet before this run: `64fc50a`
+(`Add Vaart theorem 4.1 covariance bilinear wrapper`).
 
-The current theorem-sized packet packages the canonical covarianceBilinDual
-pullback directly into the measurable finite-coordinate Theorem 4.1 wrapper.
-The source theorem now returns local existence, delta-method convergence,
-Gaussianity of the estimator limit, and the mathlib covariance bilinear-form
-display under one original-law square-integrability hypothesis
-`MemLp id 2 (Q.map Z)`.  Local-inverse measurability, the multivariate
-empirical-moment CLT, and finite-matrix specialization remain explicit next
-source layers.
+The current theorem-sized packet adds the honest local-inverse measurability
+convenience supplied by the open partial homeomorphism API.  The inverse is
+a.e.-measurable on the open target/local moment range, and therefore
+a.e.-measurable for any measure concentrated on that range.  This avoids
+claiming global measurability of arbitrary off-target partial-equivalence
+values while matching the probabilistic localization used in Vaart's proof.
+The multivariate empirical-moment CLT and finite-matrix specialization remain
+explicit next source layers.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. add a local-inverse measurability convenience if a clean continuity/open
-   partial homeomorphism API can discharge it without broad topological
-   refactoring;
+1. connect the a.e.-measurable local inverse convenience to the delta-method
+   wrapper, either by adding an a.e.-measurable delta-method variant or by
+   proving a safe global-measurability wrapper for the concrete `invFunOn`
+   construction;
 2. keep a true multivariate empirical-moment CLT supplied until a local vector
    CLT is formalized from the scalar mathlib CLT.
 
