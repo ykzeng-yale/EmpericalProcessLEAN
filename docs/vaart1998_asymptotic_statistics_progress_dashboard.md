@@ -188,9 +188,16 @@ Chapter 4 handoff:
   same a.e.-measurable/localized local-inverse interface:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_aemeasurable_real` and
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_of_ae_mem_open_momentRange_real`.
+- measurable-coordinate covariance-display and covarianceBilinDual Theorem
+  4.1 source wrappers with the same a.e.-measurable/localized local-inverse
+  interface:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_aemeasurable_real`,
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_of_ae_mem_open_momentRange_real`,
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_aemeasurable_real`, and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_ae_mem_open_momentRange_real`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`8ca8bed`; the current packet is rebased over remote base `0fcff2a`:
+`989ea80`; the current packet is rebased over remote base `c497ee0`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -215,12 +222,14 @@ targeted Vaart module build.
 
 Continue Vaart Chapter 4.1 from the compiled Gaussian, canonical
 covarianceBilinDual source wrapper, and a.e.-localized finite-coordinate
-delta/Gaussian source assemblers:
+delta/Gaussian/covariance source assemblers:
 
-1. cascade the a.e.-measurable finite-coordinate route through the
-   covariance-display and covarianceBilinDual source wrappers;
-2. keep the actual multivariate CLT supplied until a local vector CLT is
-   formalized from the scalar mathlib CLT or another local dependency.
+1. build the next source-shaped multivariate empirical-moment CLT interface,
+   keeping the actual vector CLT supplied if mathlib/local APIs still only
+   expose scalar CLT directly;
+2. add the finite-matrix covariance specialization only if it can reuse the
+   compiled covarianceBilinDual pullback without opening a large matrix
+   algebra detour.
 
 If this blocks, record the exact missing theorem shape for the supplied
 empirical-moment CLT, covariance-display, or local-inverse measurability field

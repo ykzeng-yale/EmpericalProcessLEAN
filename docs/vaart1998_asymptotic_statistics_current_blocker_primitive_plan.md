@@ -274,28 +274,43 @@ Chapter 3 theorem-facing wrappers compiling:
    local-inverse a.e.-measurability from a.e. localization in the open moment
    range:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_of_ae_mem_open_momentRange_real`.
+86. Measurable-coordinate covariance-display Theorem 4.1 wrapper using only
+   a.e.-measurability of the composed local inverse:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_aemeasurable_real`.
+87. Measurable-coordinate covariance-display Theorem 4.1 wrapper deriving
+   composed local-inverse a.e.-measurability from a.e. localization in the open
+   moment range:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_of_ae_mem_open_momentRange_real`.
+88. Measurable-coordinate covarianceBilinDual Theorem 4.1 wrapper using only
+   a.e.-measurability of the composed local inverse:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_aemeasurable_real`.
+89. Measurable-coordinate covarianceBilinDual Theorem 4.1 wrapper deriving
+   composed local-inverse a.e.-measurability from a.e. localization in the open
+   moment range:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_ae_mem_open_momentRange_real`.
 
-Latest remote base after rebase before this packet: `0fcff2a`.
-Latest pushed Vaart packet before this run: `8ca8bed`
-(`Add Vaart aemeasurable delta handoff wrappers`).
+Latest remote base after rebase before this packet: `c497ee0`.
+Latest pushed Vaart packet before this run: `989ea80`
+(`Add Vaart localized finite-coordinate wrappers`).
 
 The current theorem-sized packet carries the a.e.-localized local-inverse
-handoff into the finite-coordinate Theorem 4.1 source assemblers.  The
-strong-law and measurable-coordinate wrappers now have variants that either
+handoff through the covariance-display and covarianceBilinDual Theorem 4.1
+source wrappers.  The canonical covariance route now has variants that either
 take composed local-inverse a.e.-measurability directly or derive it from
-per-`n` a.e. localization in the inverse-function-theorem target.  The supplied
-Gaussian-limit source wrapper has the same a.e.-measurable and localized
-variants.  This removes global local-inverse measurability from the main
-finite-coordinate delta/Gaussian route whenever true a.e. localization is
-available.
+per-`n` a.e. localization in the inverse-function-theorem target.  This removes
+global local-inverse measurability from the finite-coordinate delta, Gaussian,
+covariance-display, and covarianceBilinDual source route whenever true a.e.
+localization is available.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. cascade the a.e.-measurable finite-coordinate route through the
-   covariance-display and covarianceBilinDual source wrappers;
-2. keep a true multivariate empirical-moment CLT supplied until a local vector
-   CLT is formalized from the scalar mathlib CLT.
+1. build the next source-shaped multivariate empirical-moment CLT interface,
+   keeping the actual vector CLT supplied if mathlib/local APIs still only
+   expose scalar CLT directly;
+2. add the finite-matrix covariance specialization only if it can reuse the
+   existing covarianceBilinDual pullback without opening a large matrix
+   algebra detour.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

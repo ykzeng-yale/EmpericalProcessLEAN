@@ -177,10 +177,12 @@ Initial modules:
   interface through the strong-law, measurable-coordinate, and supplied
   Gaussian-limit Theorem 4.1 assemblers: these wrappers now either take
   composed local-inverse a.e.-measurability directly or derive it from
-  per-`n` a.e. localization in the open moment range.  It still deliberately
-  leaves the same cascade through covariance-display and covarianceBilinDual
-  wrappers, the multivariate empirical-moment CLT, and a finite-matrix
-  specialization as explicit next layers.
+  per-`n` a.e. localization in the open moment range.  The current covariance
+  layer pushes the same localized interface through the covariance-display and
+  covarianceBilinDual wrappers, so the canonical covariance route no longer
+  needs global local-inverse measurability when a.e. target localization is
+  available.  It still deliberately leaves the multivariate empirical-moment
+  CLT and a finite-matrix specialization as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
