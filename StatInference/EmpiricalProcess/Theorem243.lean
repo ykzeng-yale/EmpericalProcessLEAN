@@ -30587,6 +30587,91 @@ theorem
       (hbound := hprob_bound)
 
 /--
+Fixed-`M` centered-truncated convergence from finite-net ordinary mean
+convergence plus the pure probability finite-net comparison.
+
+This composes the source-side finite-net mean-to-outer-probability bridge with
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_finiteNetHoeffdingUpper`.
+It is useful when the analytic work proves ordinary mean convergence of the
+finite-net Hoeffding upper, while the remaining symmetrization/net step is
+available only as an outer-probability event comparison.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_integral_outerProbability_finiteNetHoeffdingUpper
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M)
+    (hfiniteNetUpperMeasurable :
+      ∀ eta, 0 < eta -> ∀ n,
+        Measurable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality eta n sample n) n M))
+    (hfiniteNetUpperIntegrable :
+      ∀ eta, 0 < eta -> ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality eta n sample n) n M)
+          (vdVWProductMeasure P n))
+    (hfiniteNetUpperIntegral_tendsto_zero :
+      ∀ eta, 0 < eta ->
+        Tendsto
+          (fun n : ℕ =>
+            ∫ sample : SampleAt Observation n,
+              vdVWTheorem243FiniteNetHoeffdingUpper
+                (cardinality eta n sample n) n M ∂(vdVWProductMeasure P n))
+          atTop (𝓝 0))
+    (hprob_bound :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)}
+            ≤
+          VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWTheorem243FiniteNetHoeffdingUpper
+                        (cardinality eta n sample n) n M + eta)
+                    (0 : ℝ)}) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_finiteNetHoeffdingUpper
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (cardinality := cardinality) hM_pos
+      (hfiniteNetUpper := by
+        intro eta heta
+        exact
+          finiteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_integral_tendsto_zero
+            (P := P) (M := M) (cardinality := cardinality eta)
+            (hfiniteNetUpperMeasurable eta heta)
+            (hfiniteNetUpperIntegrable eta heta) hM_pos.le
+            (hfiniteNetUpperIntegral_tendsto_zero eta heta))
+      (hprob_bound := hprob_bound)
+
+/--
 Fixed-`M` centered-truncated convergence from the actual stochastic entropy
 input plus the remaining pure probability finite-net comparison.
 
