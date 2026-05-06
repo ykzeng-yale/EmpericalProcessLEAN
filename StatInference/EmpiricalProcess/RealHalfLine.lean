@@ -18,7 +18,8 @@ half-lines.  The finite grid existence theorem is kept separate.
 
 namespace StatInference
 
-open MeasureTheory Set
+open MeasureTheory Set Filter
+open scoped ENNReal Topology
 
 universe u
 
@@ -344,6 +345,66 @@ theorem measureReal_Ioo_lt_of_cdf_leftLim_sub_lt
     μ.real (Set.Ioo a b) < epsilon := by
   rw [measureReal_Ioo_eq_cdf_leftLim_sub μ hab]
   exact hcdf
+
+/--
+For a non-atomic locally finite real measure, every point has an open
+neighborhood of arbitrarily small real measure.
+
+This is the local continuity ingredient for the future finite endpoint-grid
+construction in the Durrett/Glivenko-Cantelli route.
+-/
+theorem exists_realOpenInterval_measureReal_lt_of_noAtoms
+    (μ : Measure ℝ) [IsFiniteMeasureOnCompacts μ] [NoAtoms μ]
+    {epsilon x : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ l r : ℝ, l < x ∧ x < r ∧ μ.real (Set.Ioo l r) < epsilon := by
+  have htarget : Set.Iio (ENNReal.ofReal epsilon) ∈ 𝓝 (0 : ℝ≥0∞) := by
+    exact Iio_mem_nhds (ENNReal.ofReal_pos.mpr hepsilon)
+  have htendsto :
+      Tendsto (fun δ : ℝ => μ (Set.Icc (x - δ) (x + δ))) (𝓝[>] (0 : ℝ))
+        (𝓝 (0 : ℝ≥0∞)) := by
+    simpa [measure_singleton] using tendsto_measure_Icc_nhdsWithin_right' μ x
+  have hsmall : ∀ᶠ δ : ℝ in 𝓝[>] (0 : ℝ),
+      μ (Set.Icc (x - δ) (x + δ)) < ENNReal.ofReal epsilon :=
+    htendsto htarget
+  have hpos : ∀ᶠ δ : ℝ in 𝓝[>] (0 : ℝ), δ ∈ Set.Ioi (0 : ℝ) :=
+    self_mem_nhdsWithin
+  rcases (hsmall.and hpos).exists with ⟨δ, hδsmall, hδpos⟩
+  have hδpos' : 0 < δ := hδpos
+  refine ⟨x - δ, x + δ, sub_lt_self x hδpos', lt_add_of_pos_right x hδpos', ?_⟩
+  have hsubset : Set.Ioo (x - δ) (x + δ) ⊆ Set.Icc (x - δ) (x + δ) :=
+    Set.Ioo_subset_Icc_self
+  have hIoo_lt : μ (Set.Ioo (x - δ) (x + δ)) < ENNReal.ofReal epsilon :=
+    (measure_mono hsubset).trans_lt hδsmall
+  exact ENNReal.toReal_lt_of_lt_ofReal hIoo_lt
+
+/--
+For a non-atomic locally finite real measure, every compact real interval is
+covered by finitely many open intervals of arbitrarily small real measure.
+
+This packages the compactness step needed before a future endpoint-grid
+constructor orders the resulting endpoints.
+-/
+theorem exists_finset_realOpenInterval_cover_Icc_measureReal_lt_of_noAtoms
+    (μ : Measure ℝ) [IsFiniteMeasureOnCompacts μ] [NoAtoms μ]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ centers : Finset ℝ, ∃ l r : ℝ -> ℝ,
+      (∀ x ∈ centers, x ∈ Set.Icc a b) ∧
+      (∀ x ∈ centers,
+        l x < x ∧ x < r x ∧ μ.real (Set.Ioo (l x) (r x)) < epsilon) ∧
+      Set.Icc a b ⊆ ⋃ x ∈ centers, Set.Ioo (l x) (r x) := by
+  classical
+  have hlocal : ∀ x : ℝ,
+      ∃ l r : ℝ, l < x ∧ x < r ∧ μ.real (Set.Ioo l r) < epsilon := fun x =>
+    exists_realOpenInterval_measureReal_lt_of_noAtoms μ (x := x) hepsilon
+  choose l r hlr using hlocal
+  have hnhds : ∀ x ∈ Set.Icc a b, Set.Ioo (l x) (r x) ∈ 𝓝 x := by
+    intro x _hx
+    exact isOpen_Ioo.mem_nhds ⟨(hlr x).1, (hlr x).2.1⟩
+  rcases isCompact_Icc.elim_nhds_subcover (fun x : ℝ => Set.Ioo (l x) (r x)) hnhds with
+    ⟨centers, hcenters, hcover⟩
+  refine ⟨centers, l, r, hcenters, ?_, hcover⟩
+  intro x _hx
+  exact hlr x
 
 /--
 A proof-carrying bounded middle CDF partition for the empirical-CDF

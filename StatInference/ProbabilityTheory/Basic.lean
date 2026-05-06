@@ -696,6 +696,37 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid
     endpoint hstrict hinc
 
 /--
+Durrett 2019, Theorem 2.4.9 non-atomic local grid ingredient.
+
+For non-atomic locally finite real measures, every point has an open
+neighborhood whose real measure is below any positive radius.  This is the
+local compactness/continuity ingredient used by the finite endpoint-grid
+construction before atom handling is added.
+-/
+theorem durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms
+    {P : Measure ℝ} [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    {epsilon x : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ l r : ℝ, l < x ∧ x < r ∧ P.real (Set.Ioo l r) < epsilon :=
+  exists_realOpenInterval_measureReal_lt_of_noAtoms P hepsilon
+
+/--
+Durrett 2019, Theorem 2.4.9 non-atomic compact-cover ingredient.
+
+For non-atomic locally finite real measures, every compact interval is covered
+by finitely many open intervals whose real measures are below any positive
+radius.  The next endpoint-grid packet will order the selected endpoints.
+-/
+theorem durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms
+    {P : Measure ℝ} [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ centers : Finset ℝ, ∃ l r : ℝ -> ℝ,
+      (∀ x ∈ centers, x ∈ Set.Icc a b) ∧
+      (∀ x ∈ centers,
+        l x < x ∧ x < r x ∧ P.real (Set.Ioo (l x) (r x)) < epsilon) ∧
+      Set.Icc a b ⊆ ⋃ x ∈ centers, Set.Ioo (l x) (r x) :=
+  exists_finset_realOpenInterval_cover_Icc_measureReal_lt_of_noAtoms P hepsilon
+
+/--
 Durrett 2019, Theorem 2.4.9, middle-partition-to-GC package.
 
 This isolates the remaining arbitrary-distribution primitive: for every

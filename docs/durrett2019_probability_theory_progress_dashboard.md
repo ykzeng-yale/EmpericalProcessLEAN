@@ -62,6 +62,8 @@ compiles and root-imports the new namespace.  Compiled declarations:
 - `durrett2019_theorem_2_4_9_realMiddleCDFPartition_snocCell_of_exists`;
 - `durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain`;
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`;
+- `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`;
+- `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`;
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`.
 
@@ -77,7 +79,9 @@ Immediate proof route:
    `realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid`, and nearby
    grid/squeezing handoffs;
 2. construct a strict finite endpoint grid with small adjacent CDF left-limit
-   increments for every bounded interval and positive radius, then feed the
+   increments for every bounded interval and positive radius: first order the
+   non-atomic finite compact cover into an endpoint grid, then add atom-aware
+   endpoint selection for arbitrary distributions, and finally feed the
    compiled endpoint-grid-to-chain and cutpoint-chain-to-GC handoffs;
 3. package the empirical CDF statement once the uniform squeezing proof closes;
 4. keep Chapter 2.1 as optional iid/product notation polish while the main
@@ -96,7 +100,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 1 measure/probability foundations | source-wrapper/reused-local | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/GeneratedSigma.lean`; `Tail.lean`; `ProductMeasure.lean` | Durrett wrappers for Theorem 1.1.1 measure properties and Theorems 1.3.1/1.3.4 measurability facts now compile over mathlib/local generator APIs. |
 | Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact iid/product notation polish. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
-| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, or supplied cutpoint chains. The one-cell, two-cell, right-append, finite cutpoint-chain, endpoint-grid-to-chain, and cutpoint-chain-to-GC consumers compile; remaining blocker: construct strict finite endpoint grids for arbitrary distributions. |
+| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, or supplied cutpoint chains. The one-cell, two-cell, right-append, finite cutpoint-chain, endpoint-grid-to-chain, non-atomic local small-neighborhood, non-atomic finite compact-cover, and cutpoint-chain-to-GC consumers compile; remaining blocker: construct strict finite endpoint grids for arbitrary distributions. |
 | Chapter 3 CLT/characteristic functions | pending-local | none | Needs mathlib API search for characteristic functions, normal laws, weak convergence, and scalar asymptotics. |
 | Chapter 4 martingales | pending-local | none | Search mathlib martingale/conditional expectation APIs first. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
@@ -142,7 +146,8 @@ either:
 
 - advance Durrett Theorem 2.4.9 by constructing
   strict finite endpoint grids with small adjacent CDF left-limit increments
-  for arbitrary bounded intervals and positive radii, beyond the compiled
-  endpoint-grid-to-chain and cutpoint-chain-to-GC consumers; or
+  for arbitrary bounded intervals and positive radii, first by ordering the
+  non-atomic compact cover into a strict endpoint grid and then with
+  atom-aware endpoint selection; or
 - if that blocks, do only optional Chapter 2.1 iid/product notation polish and
   record the exact GC partition blocker.
