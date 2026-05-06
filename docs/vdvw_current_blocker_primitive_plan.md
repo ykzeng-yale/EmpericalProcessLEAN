@@ -1,6 +1,6 @@
 # VdV&W Current Blocker Primitive Plan
 
-Status date: 2026-05-05.
+Status date: 2026-05-06.
 
 This file pins down the active blocker and the primitive Lean declarations
 needed to close it.  It is not a theorem report.  A formal report is created
@@ -68,8 +68,9 @@ unless a new exact statement directly consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-06 after the verified
-truncated threshold trace algebra and fixed-mask cardinality transfer, plus
-the earlier first-sample uniform-integrability endpoint
+original-cover truncation/polynomial entropy bridges and the quantizer
+random-cover lifts, plus the earlier truncated threshold trace algebra,
+fixed-mask cardinality transfer, and first-sample uniform-integrability endpoint
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`
 and the earlier natural-polynomial variable-domain entropy constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
@@ -89,15 +90,16 @@ selected empirical-cover entropy tail/UI or ordinary-mean input from the
 book's fixed-radius condition, or prove a concrete structural cardinality
 theorem such as VC/Sauer, finite-trace, threshold-grid, or quantizer
 cardinality that feeds the existing natural-polynomial selected fixed-radius
-route.  The current concrete structural route is to use the compiled
-truncation trace identities and fixed-mask cardinality transfer for threshold
-traces to prove an all-threshold truncated trace-family/VC transfer, then
-instantiate `VdVWUniformSubgraphVCBound` or a Sauer-style
-natural-polynomial trace bound for `vdVWTruncatedClassFun`.  If those
-entropy/cardinality attempts are genuinely blocked after search and Lean
-attempts, move to a theorem-critical Chapter 1 process primitive:
-arbitrary-index FDD converse, separability/tightness/asymptotic measurability,
-or nonmeasurable outer-cover signed weak convergence.
+route.  The raw nearest-integer quantizer bridge
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_roundingQuantizer_uniform_abs_bound_cardinality_bound_samplePath`
+is only a covering lift; by itself it gives exponential-in-sample-size
+cardinality and does not close Theorem 2.4.3.  Consume it only together with a
+real subexponential/natural-polynomial structural bound or a new finite-code
+compression theorem.  If those entropy/cardinality attempts are genuinely
+blocked after search and Lean attempts, move to a theorem-critical Chapter 1
+process primitive: arbitrary-index FDD converse, separability/tightness/
+asymptotic measurability, or nonmeasurable outer-cover signed weak
+convergence.
 
 Verified compiled foundation that should not be repeated:
 `vdVW_theorem_2_4_1_glivenkoCantelli`;

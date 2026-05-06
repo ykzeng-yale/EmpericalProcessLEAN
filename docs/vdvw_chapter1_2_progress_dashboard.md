@@ -14,8 +14,9 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-06 after the verified
-truncated threshold trace algebra and fixed-mask cardinality transfer, plus
-the earlier first-sample uniform-integrability endpoint
+original-cover truncation/polynomial entropy bridges and quantizer random-cover
+lifts, plus the earlier truncated threshold trace algebra, fixed-mask
+cardinality transfer, and first-sample uniform-integrability endpoint
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`
 and the earlier natural-polynomial variable-domain entropy constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
@@ -93,12 +94,16 @@ adapters.  The next non-duplicative Theorem 2.4.3 `/goal` batch should return
 to the genuine book entropy tail/UI bridge, prove ordinary mean/UI/tail input
 from a structural theorem, or prove a concrete VC/Sauer, finite-trace,
 threshold-grid, or quantizer cardinality estimate that feeds the closed
-natural-polynomial selected fixed-radius route.  Do not add another endpoint
-alias for a closed route unless it consumes a genuinely new theorem
-hypothesis.  If those attempts are blocked after search and Lean attempts,
-switch to a theorem-critical Chapter 1 process primitive: arbitrary-index FDD
-converse, separability/tightness/asymptotic measurability, or nonmeasurable
-outer-cover signed weak convergence.  The VdV&W 1.4.1
+natural-polynomial selected fixed-radius route.  The raw nearest-integer
+quantizer random-cover lifts are not enough by themselves: their naive product
+cardinality is exponential in the sample size, so they should be consumed only
+with a real finite-code compression, VC/Sauer, or other subexponential/
+natural-polynomial bound.  Do not add another endpoint alias for a closed
+route unless it consumes a genuinely new theorem hypothesis.  If those
+attempts are blocked after search and Lean attempts, switch to a
+theorem-critical Chapter 1 process primitive: arbitrary-index FDD converse,
+separability/tightness/asymptotic measurability, or nonmeasurable outer-cover
+signed weak convergence.  The VdV&W 1.4.1
 product Borel-space equality is
 also now
 compiled as `vdVW141_prod_borel_eq_product_borel`; do not repeat that wrapper.
