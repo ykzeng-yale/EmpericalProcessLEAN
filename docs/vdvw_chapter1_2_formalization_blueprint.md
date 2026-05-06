@@ -100,24 +100,23 @@ route through
 and
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`,
 on top of the previously compiled Chapter 1 process/weak-convergence
-congruence and Theorem 2.4.3 endpoint infrastructure.  Do not rebuild those
-closed endpoints or add more aliases around them.
+congruence and Theorem 2.4.3 endpoint infrastructure.  The finite
+vector-code-set scalar-quantizer decoder-error bridge is also compiled as
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_scalarQuantizer_decode_error_codeSet_cardinality_bound_nat_poly`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_scalarQuantizer_decode_error_codeSet_cardinality_bound_nat_poly`.
+Do not rebuild those closed endpoints or add more aliases around them.
 
 The next proof batch should target new upstream mathematics.  The most
-patchable Theorem 2.4.3 target, after local search, is a finite
-vector-code-set scalar-quantizer decoder-error bridge: local code already has
-finite pointwise-code-set natural-polynomial constructors and scalar-quantizer
-coordinate-cardinality constructors, but no `scalarQuantizer.*codeSet` /
-`decode_error.*codeSet` / `finite_pointwise_approx_codeSet.*scalar` theorem.
-This bridge should reuse `abs_sub_le_of_abs_sub_decode_le_half` and the
-finite pointwise-code-set constructor, then immediately feed a genuine
-finite-code/compression, VC/Sauer, finite-trace, threshold-grid, or quantizer
-polynomial cardinality theorem.  If that route blocks, the fallback lanes
-remain a selected empirical-cover tail/UI/ordinary-mean bridge from strong
-enough assumptions, or an exact Chapter 1 process primitive
-(arbitrary-index FDD converse, separability/tightness/asymptotic-measurability,
-nonmeasurable signed outer-cover weak convergence, or full arbitrary-map
-extended-real measurable-cover existence).
+important Theorem 2.4.3 target is now the actual structural estimate feeding
+the selected fixed-radius route: a genuine finite-code/compression, VC/Sauer,
+finite-trace, threshold-grid, or quantizer polynomial cardinality theorem, or
+a selected empirical-cover tail/UI/ordinary-mean bridge from strong enough
+assumptions.  If those routes block, the fallback lane remains an exact
+Chapter 1 process primitive (arbitrary-index FDD converse,
+separability/tightness/asymptotic-measurability, nonmeasurable signed
+outer-cover weak convergence, or full arbitrary-map extended-real measurable
+cover existence).
 
 Current operational target, 2026-05-06 after verified pushed head
 `fc98144 Add weak convergence target congruence`: the active Codex `/goal`

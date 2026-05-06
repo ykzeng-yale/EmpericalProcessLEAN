@@ -82,26 +82,23 @@ coordinate-cardinality natural-polynomial bridge
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`,
 and
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`.
+The finite vector-code-set scalar-quantizer decoder-error bridge is also now
+compiled as
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_scalarQuantizer_decode_error_codeSet_cardinality_bound_nat_poly`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_scalarQuantizer_decode_error_codeSet_cardinality_bound_nat_poly`;
+it reuses `abs_sub_le_of_abs_sub_decode_le_half` and the existing finite
+pointwise-code-set constructor.
 
 Do not spend the next `/goal` continuation on another final endpoint alias,
 another finite-index/FDD/process congruence wrapper, another selected-route
 restatement, or another coordinate-cardinality quantizer wrapper unless a new
 exact theorem consumes it immediately.  The next theorem-facing batch should
-start from the current search result: local code has finite pointwise-code-set
-natural-polynomial constructors and scalar-quantizer coordinate-cardinality
-constructors, but no finite vector-code-set scalar-quantizer decoder-error
-bridge (`scalarQuantizer.*codeSet`, `decode_error.*codeSet`,
-`finite_pointwise_approx_codeSet.*scalar` were absent).  First patchable target:
-prove the finite vector-code-set scalar-quantizer bridge by reusing
-`abs_sub_le_of_abs_sub_decode_le_half` and
-`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_codeSet_cardinality_bound_nat_poly`.
-If that compiles quickly, continue in the same run to the actual structural
-cardinality/compression theorem that supplies the code-set polynomial bound.
-If this route is already closed by remote work or blocks after real Lean/search
-attempts, switch to one of the remaining high-value lanes: a genuine
-VC/Sauer/finite-trace/threshold-grid/quantizer entropy estimate feeding
-Theorem 2.4.3, a selected empirical-cover tail/UI/ordinary-mean bridge from
-strong enough assumptions, or an exact Chapter 1 process primitive
+now supply actual upstream mathematics: a finite-code/compression theorem,
+VC/Sauer/finite-trace/threshold-grid/quantizer cardinality estimate, or
+selected empirical-cover tail/UI/ordinary-mean theorem that feeds the compiled
+fixed-radius route.  If those Theorem 2.4.3 entropy/tail lanes block after
+real Lean/search attempts, switch to an exact Chapter 1 process primitive
 (arbitrary-index VdV&W 1.4.8 FDD converse, separability/tightness/
 asymptotic-measurability, nonmeasurable signed outer-cover weak convergence,
 or full arbitrary-map extended-real measurable-cover existence).

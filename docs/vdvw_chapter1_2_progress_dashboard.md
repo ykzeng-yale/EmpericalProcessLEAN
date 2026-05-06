@@ -18,11 +18,12 @@ Current `/goal` target override, 2026-05-06 after verified pushed head
 equals `origin/main` and the worktree is clean.  The broad Codex goal object
 is only an orchestration label.  Treat the operative next target as:
 
-1. close the missing finite vector-code-set scalar-quantizer decoder-error
-   bridge if it is still absent after fetch, reusing the existing finite
-   pointwise-code-set natural-polynomial constructor and
-   `abs_sub_le_of_abs_sub_decode_le_half`;
-2. then push immediately to the real structural entropy/cardinality estimate
+1. treat the finite vector-code-set scalar-quantizer decoder-error bridge as
+   closed support through
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_scalarQuantizer_decode_error_codeSet_cardinality_bound_nat_poly`
+   and
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_scalarQuantizer_decode_error_codeSet_cardinality_bound_nat_poly`;
+2. push immediately to the real structural entropy/cardinality estimate
    that supplies the code-set polynomial bound, or another non-duplicative
    VC/Sauer, finite-trace, threshold-grid, or quantizer estimate feeding the
    selected fixed-radius Theorem 2.4.3 route;
@@ -38,6 +39,9 @@ wrappers, selected-route restatements, or another scalar-quantizer
 coordinate-cardinality wrapper.  The coordinate-cardinality natural-polynomial
 route is already compiled through
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`.
+The vector-code-set route is now compiled too; the next useful work is the
+actual finite-code/compression or VC/Sauer cardinality theorem that supplies
+its polynomial bound.
 
 Current `/goal` target override, 2026-05-06 after verified pushed head
 `fc98144 Add weak convergence target congruence`: treat the broad Codex goal
