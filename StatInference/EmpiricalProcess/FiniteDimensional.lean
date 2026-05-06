@@ -1043,6 +1043,26 @@ noncomputable def vdVWEllInftyProcessLaw
     ProbabilityMeasure (VdVWEllInfty T) :=
   ⟨P.map (VdVWEllInfty.processMap X hbounded), Measure.isProbabilityMeasure_map hX⟩
 
+/--
+The `ell_infty(T)` process law is unchanged by replacing the bounded process
+map with an a.e.-equal version.
+-/
+theorem vdVWEllInftyProcessLaw_congr_ae
+    [MeasurableSpace Ω] [MeasurableSpace (VdVWEllInfty T)]
+    (P : Measure Ω) [IsProbabilityMeasure P]
+    (X Y : Ω -> T -> ℝ)
+    (hXbounded : VdVWEllInfty.IsBoundedSamplePath X)
+    (hYbounded : VdVWEllInfty.IsBoundedSamplePath Y)
+    (hX : AEMeasurable (VdVWEllInfty.processMap X hXbounded) P)
+    (hY : AEMeasurable (VdVWEllInfty.processMap Y hYbounded) P)
+    (hXY :
+      VdVWEllInfty.processMap Y hYbounded =ᵐ[P]
+        VdVWEllInfty.processMap X hXbounded) :
+    vdVWEllInftyProcessLaw (T := T) P Y hYbounded hY =
+      vdVWEllInftyProcessLaw (T := T) P X hXbounded hX := by
+  ext s hs
+  exact congrArg (fun m : Measure (VdVWEllInfty T) => m s) (Measure.map_congr hXY)
+
 /-- Finite-dimensional law of a raw real-valued process. -/
 noncomputable def vdVWFDDProcessLaw
     [MeasurableSpace Ω] (P : Measure Ω) [IsProbabilityMeasure P]
@@ -1191,6 +1211,45 @@ theorem VdVWEllInftyProcessWeakConvergence.comp_tendsto
       (vdVWEllInftyProcessLaw (T := T) μlim Z hZbounded hZ) from h) hφ
 
 /--
+Process weak convergence is unchanged by replacing the source processes by
+a.e.-equal bounded process maps eventually along the index filter.
+-/
+theorem VdVWEllInftyProcessWeakConvergence.congr_eventually_ae
+    {ι : Type*} {Ω : ι -> Type*} {Ωlim : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    (X Y : (i : ι) -> Ω i -> T -> ℝ)
+    (Z : Ωlim -> T -> ℝ)
+    (hXbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hYbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (Y i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hXbounded i)) (μ i))
+    (hY : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (Y i) (hYbounded i)) (μ i))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hXbounded hZbounded hX hZ l)
+    (hXY : ∀ᶠ i in l,
+      VdVWEllInfty.processMap (Y i) (hYbounded i) =ᵐ[μ i]
+        VdVWEllInfty.processMap (X i) (hXbounded i)) :
+    VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim Y Z hYbounded hZbounded hY hZ l :=
+  VdVWWeakConvergenceProbabilityMeasures.congr_eventually
+    (show VdVWWeakConvergenceProbabilityMeasures
+      (fun i => vdVWEllInftyProcessLaw (T := T) (μ i) (X i) (hXbounded i) (hX i))
+      l
+      (vdVWEllInftyProcessLaw (T := T) μlim Z hZbounded hZ) from h)
+    (hXY.mono fun i hi =>
+      vdVWEllInftyProcessLaw_congr_ae
+        (T := T) (P := μ i) (X := X i) (Y := Y i)
+        (hXbounded := hXbounded i) (hYbounded := hYbounded i)
+        (hX := hX i) (hY := hY i) hi)
+
+/--
 Process-level weak convergence implies weak convergence of every
 finite-dimensional law.
 
@@ -1313,6 +1372,37 @@ theorem VdVWEllInftyProcessAsymptoticallyTight.comp_tendsto
     (show VdVWProbabilityMeasuresAsymptoticallyTight
       (fun i => vdVWEllInftyProcessLaw (T := T) (μ i) (X i) (hbounded i) (hX i)) l from h)
     hφ
+
+/--
+Process-level asymptotic tightness is unchanged by replacing the source
+processes by a.e.-equal bounded process maps eventually along the index filter.
+-/
+theorem VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae
+    {ι : Type*} {Ω : ι -> Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace (VdVWEllInfty T)]
+    (X Y : (i : ι) -> Ω i -> T -> ℝ)
+    (hXbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hYbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (Y i))
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hXbounded i)) (μ i))
+    (hY : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (Y i) (hYbounded i)) (μ i))
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessAsymptoticallyTight (T := T) μ X hXbounded hX l)
+    (hXY : ∀ᶠ i in l,
+      VdVWEllInfty.processMap (Y i) (hYbounded i) =ᵐ[μ i]
+        VdVWEllInfty.processMap (X i) (hXbounded i)) :
+    VdVWEllInftyProcessAsymptoticallyTight (T := T) μ Y hYbounded hY l :=
+  VdVWProbabilityMeasuresAsymptoticallyTight.congr_eventually
+    (show VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun i => vdVWEllInftyProcessLaw (T := T) (μ i) (X i) (hXbounded i) (hX i)) l from h)
+    (hXY.mono fun i hi =>
+      vdVWEllInftyProcessLaw_congr_ae
+        (T := T) (P := μ i) (X := X i) (Y := Y i)
+        (hXbounded := hXbounded i) (hYbounded := hYbounded i)
+        (hX := hX i) (hY := hY i) hi)
 
 /--
 Process-level tightness implies tightness of every finite-dimensional law.

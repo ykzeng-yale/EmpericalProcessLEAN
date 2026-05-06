@@ -213,6 +213,12 @@ stability from the measure-level weak-convergence/tightness APIs through
 `VdVWEllInftyProcessAsymptoticallyTight.mono_filter`, and
 `VdVWEllInftyProcessAsymptoticallyTight.comp_tendsto`.  This is support for
 subsequence/subnet arguments, not the arbitrary-index VdV&W 1.4.8 converse.
+The same process-law layer now has a.e.-congruence support:
+`vdVWEllInftyProcessLaw_congr_ae`,
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_ae`, and
+`VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae`.  These lemmas are
+intended for replacing raw processes by a.e.-equal measurable or canonical
+versions in later separability/asymptotic-measurability arguments.
 
 2026-05-06 scalar-quantizer cover update: `Theorem243.lean` now lifts the
 deterministic coordinate scalar-quantizer decoder-error covering bound from

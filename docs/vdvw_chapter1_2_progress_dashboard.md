@@ -121,6 +121,13 @@ filter-refinement and reindexing stability wrappers:
 `VdVWEllInftyProcessAsymptoticallyTight.mono_filter`, and
 `VdVWEllInftyProcessAsymptoticallyTight.comp_tendsto`.  These support
 subsequence/subnet arguments without claiming the arbitrary-index FDD converse.
+The process law and process-level convergence/tightness predicates are also
+stable under a.e.-equal source-process replacement through
+`vdVWEllInftyProcessLaw_congr_ae`,
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_ae`, and
+`VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae`.  This is the
+needed raw-process congruence support for later measurable-version and
+separability arguments.
 
 The scalar-quantizer structural-cover lift is also compiled:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`

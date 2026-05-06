@@ -6816,3 +6816,16 @@ do not change the main blockers: arbitrary-index VdV&W 1.4.8 converse,
 process separability/asymptotic-measurability, nonmeasurable signed
 outer-cover weak convergence, and real Theorem 2.4.3 entropy/cardinality
 inputs remain the high-value next targets.
+
+2026-05-06 process a.e.-congruence follow-up: local search found mathlib
+`Measure.map_congr`, local `processLaw_eq_of_forall_ae_eq`, and the
+measure-level `congr_eventually` APIs, but no raw bounded-process law
+congruence theorem for the `VdVWEllInftyProcessWeakConvergence`/
+`VdVWEllInftyProcessAsymptoticallyTight` interfaces.  `FiniteDimensional.lean`
+now proves `vdVWEllInftyProcessLaw_congr_ae`,
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_ae`, and
+`VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae`.  These let later
+Chapter 1 process arguments replace source processes by a.e.-equal measurable
+or canonical versions without changing process weak convergence or process
+asymptotic tightness.  They are support for separability/measurability routes,
+not the arbitrary-index FDD converse itself.
