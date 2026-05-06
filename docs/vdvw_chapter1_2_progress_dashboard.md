@@ -141,6 +141,13 @@ The Definition 2.3.3 separability lane also has a bounded route:
 combines pointwise approximability by a countable measurable subclass with a
 global absolute bound on that subclass to prove `P`-measurability of the
 original class.
+The same lane now has the centered bounded route:
+`VdVWPointwiseApproximableByCountableSubclass.tendsto_integral_of_uniform_bound`,
+`VdVWPointwiseApproximableByCountableSubclass.centered_of_uniform_bound`, and
+`VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound`.
+These use mathlib dominated convergence to move pointwise approximation
+through population integrals and then prove centered `P`-measurability under a
+uniform absolute bound on the original class.
 
 The scalar-quantizer structural-cover lift is also compiled:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`

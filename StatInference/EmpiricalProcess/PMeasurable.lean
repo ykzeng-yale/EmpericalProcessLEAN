@@ -1,6 +1,7 @@
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.MeasureTheory.Group.Arithmetic
+import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.MeasureTheory.Measure.NullMeasurable
 import Mathlib.Probability.HasLawExists
 import Mathlib.Probability.ProductMeasure
@@ -1574,6 +1575,91 @@ structure VdVWPointwiseApproximableByCountableSubclass
               (𝓝 (classFun index x))
 
 /--
+Dominated-convergence handoff for one pointwise approximating sequence from a
+uniformly bounded coordinate-measurable class.
+
+This is the analytic ingredient needed to center separability statements:
+pointwise convergence of uniformly bounded measurable coordinates also
+converges after taking population integrals.
+-/
+theorem VdVWPointwiseApproximableByCountableSubclass.tendsto_integral_of_uniform_bound
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsFiniteMeasure P]
+    {indexClass subclass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    (happrox :
+      VdVWPointwiseApproximableByCountableSubclass
+        indexClass subclass classFun)
+    (hmeas : VdVWClassCoordinateMeasurable indexClass classFun)
+    {bound : ℝ}
+    (hbound :
+      ∀ index, index ∈ indexClass -> ∀ observation,
+        |classFun index observation| ≤ bound)
+    {index : Index}
+    {approx : ℕ -> Index}
+    (hmem : ∀ m, approx m ∈ subclass)
+    (hlim :
+      ∀ observation : Observation,
+        Tendsto (fun m => classFun (approx m) observation) atTop
+          (𝓝 (classFun index observation))) :
+    Tendsto (fun m => ∫ x, classFun (approx m) x ∂P) atTop
+      (𝓝 (∫ x, classFun index x ∂P)) := by
+  let boundFun : Observation -> ℝ := fun _ => max bound 0
+  refine
+    MeasureTheory.tendsto_integral_of_dominated_convergence
+      (μ := P) (F := fun m x => classFun (approx m) x)
+      (f := fun x => classFun index x) boundFun ?_ ?_ ?_ ?_
+  · intro m
+    exact (hmeas (approx m) (happrox.subset (hmem m))).aestronglyMeasurable
+  · exact integrable_const (max bound 0)
+  · intro m
+    exact Filter.Eventually.of_forall fun x => by
+      have hle : |classFun (approx m) x| ≤ bound :=
+        hbound (approx m) (happrox.subset (hmem m)) x
+      exact (by simpa [Real.norm_eq_abs, boundFun] using
+        (hle.trans (le_max_left bound 0)))
+  · exact Filter.Eventually.of_forall hlim
+
+/--
+Uniformly bounded pointwise approximability survives centering by population
+integrals.
+
+The proof uses the dominated-convergence handoff above to pass the pointwise
+approximating sequence through `f ↦ ∫ f dP`.  This is the centered
+separability primitive needed before turning bounded separability into
+centered `P`-measurability.
+-/
+theorem VdVWPointwiseApproximableByCountableSubclass.centered_of_uniform_bound
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsFiniteMeasure P]
+    {indexClass subclass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    (happrox :
+      VdVWPointwiseApproximableByCountableSubclass
+        indexClass subclass classFun)
+    (hmeas : VdVWClassCoordinateMeasurable indexClass classFun)
+    {bound : ℝ}
+    (hbound :
+      ∀ index, index ∈ indexClass -> ∀ observation,
+        |classFun index observation| ≤ bound) :
+    VdVWPointwiseApproximableByCountableSubclass indexClass subclass
+      (fun index : Index => fun observation : Observation =>
+        classFun index observation - ∫ x, classFun index x ∂P) where
+  subset := happrox.subset
+  countable := happrox.countable
+  approximates := by
+    intro index hindex
+    rcases happrox.approximates index hindex with ⟨approx, hmem, hlim⟩
+    refine ⟨approx, hmem, ?_⟩
+    intro observation
+    have hintegral :
+        Tendsto (fun m => ∫ x, classFun (approx m) x ∂P) atTop
+          (𝓝 (∫ x, classFun index x ∂P)) :=
+      happrox.tendsto_integral_of_uniform_bound
+        hmeas hbound hmem hlim
+    exact (hlim observation).sub hintegral
+
+/--
 Pointwise approximability transfers boundedness of the weighted value set from
 the countable subclass to the original class.
 -/
@@ -1789,5 +1875,66 @@ theorem VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_unif
       bddAbove_vdVWWeightedClassValueSet_of_uniform_bound
         (indexClass := subclass) (classFun := classFun) weights sample hbound)
     hmeas
+
+/--
+Uniformly bounded pointwise approximability by a countable measurable subclass
+also gives `P`-measurability after centering by population integrals.
+
+This is the centered version of
+`VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`.
+The proof uses dominated convergence to show that the pointwise approximating
+sequences remain approximating after subtracting their integrals, and the
+finite-measure constant bound controls the centered subclass.
+-/
+theorem VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsFiniteMeasure P]
+    {indexClass subclass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    (happrox :
+      VdVWPointwiseApproximableByCountableSubclass
+        indexClass subclass classFun)
+    (hmeas : VdVWClassCoordinateMeasurable indexClass classFun)
+    {bound : ℝ}
+    (hbound :
+      ∀ index, index ∈ indexClass -> ∀ observation,
+        |classFun index observation| ≤ bound) :
+    VdVWPMeasurableClass P indexClass
+      (fun index : Index => fun observation : Observation =>
+        classFun index observation - ∫ x, classFun index x ∂P) := by
+  refine
+    VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound
+      (P := P)
+      (classFun := fun index : Index => fun observation : Observation =>
+        classFun index observation - ∫ x, classFun index x ∂P)
+      (happrox.centered_of_uniform_bound hmeas hbound)
+      (bound := max bound 0 + max bound 0 * P.real Set.univ) ?_ ?_
+  · intro index hindex observation
+    have hpoint :
+        |classFun index observation| ≤ max bound 0 :=
+      (hbound index (happrox.subset hindex) observation).trans
+        (le_max_left bound 0)
+    have hintegral :
+        |∫ x, classFun index x ∂P| ≤ max bound 0 * P.real Set.univ := by
+      simpa [Real.norm_eq_abs] using
+        (norm_integral_le_of_norm_le_const
+          (μ := P) (f := fun x : Observation => classFun index x)
+          (C := max bound 0)
+          (Filter.Eventually.of_forall fun x => by
+            have hx :
+                |classFun index x| ≤ max bound 0 :=
+              (hbound index (happrox.subset hindex) x).trans
+                (le_max_left bound 0)
+            simpa [Real.norm_eq_abs] using hx))
+    calc
+      |classFun index observation - ∫ x, classFun index x ∂P|
+          ≤ |classFun index observation| + |∫ x, classFun index x ∂P| := by
+            simpa [sub_eq_add_neg, abs_neg] using
+              (abs_add_le (classFun index observation)
+                (-(∫ x, classFun index x ∂P)))
+      _ ≤ max bound 0 + max bound 0 * P.real Set.univ :=
+            add_le_add hpoint hintegral
+  · intro index hindex
+    exact (hmeas index (happrox.subset hindex)).sub measurable_const
 
 end StatInference

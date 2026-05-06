@@ -230,6 +230,15 @@ measurable subclass now directly gives `P`-measurability through
 `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`.
 This composes the existing pointwise-approximability handoff with the uniform
 weighted-value-set boundedness primitive.
+The centered version is compiled as well:
+`VdVWPointwiseApproximableByCountableSubclass.tendsto_integral_of_uniform_bound`
+uses mathlib dominated convergence to pass pointwise approximation through
+population integrals,
+`VdVWPointwiseApproximableByCountableSubclass.centered_of_uniform_bound`
+packages centered pointwise approximability, and
+`VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound`
+gives centered `P`-measurability under finite-measure and uniform-bound
+hypotheses.
 
 2026-05-06 scalar-quantizer cover update: `Theorem243.lean` now lifts the
 deterministic coordinate scalar-quantizer decoder-error covering bound from

@@ -6903,3 +6903,21 @@ This discharges Definition 2.3.3 for a class pointwise approximable by a
 countable measurable subclass under a global absolute bound on that subclass.
 It is a genuine bounded separability/measurability handoff for Chapter 2
 applications and avoids making another Theorem 2.4.3 endpoint alias.
+
+2026-05-06 centered bounded separability follow-up: local search found pinned
+mathlib dominated convergence as
+`MeasureTheory.tendsto_integral_of_dominated_convergence`, local pointwise
+approximability via `VdVWPointwiseApproximableByCountableSubclass`, and the
+bounded separability handoff above, but no centered pointwise-approximability
+or centered bounded-separability theorem.  `PMeasurable.lean` now proves
+`VdVWPointwiseApproximableByCountableSubclass.tendsto_integral_of_uniform_bound`,
+`VdVWPointwiseApproximableByCountableSubclass.centered_of_uniform_bound`, and
+`VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound`.
+This closes the planned centered Definition 2.3.3 separability lane under a
+finite measure and a uniform absolute bound on the original index class.  The
+next `/goal` target should therefore move to a non-duplicative upstream
+Theorem 2.4.3 entropy/cardinality or selected tail/UI/ordinary-mean theorem,
+or to an exact Chapter 1 process primitive such as arbitrary-index FDD
+converse, separability/tightness/asymptotic-measurability, nonmeasurable
+signed outer-cover weak convergence, or full arbitrary-map extended-real
+measurable-cover existence.
