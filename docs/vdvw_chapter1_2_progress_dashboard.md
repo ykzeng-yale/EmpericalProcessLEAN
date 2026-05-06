@@ -136,7 +136,11 @@ normalized-log convergence yields the truncated variable-domain entropy
 condition by the truncation monotonicity bridge.  Next work should consume this
 constructor in structural entropy/cardinality routes or prove the real
 book-entropy-to-tail/UI bridge; it is not itself a final Theorem 2.4.3 endpoint.
-endpoint alias for the same route.
+The adjacent natural-polynomial constructor
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_original_coveringNumber_le_nat_poly_bound`
+is also compiled, so original-class empirical-cover domination plus a pointwise
+polynomial cardinality bound now directly yields the truncated book entropy
+side condition.
 2026-05-06 post-UI-endpoint search audit: the Theorem 2.4.3 selected
 fixed-radius endpoint surface is exhausted for the current hypotheses.  Local
 search found consumers for raw tail expectation, ordinary selected normalized

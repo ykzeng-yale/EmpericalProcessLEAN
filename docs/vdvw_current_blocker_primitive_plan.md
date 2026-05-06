@@ -6522,6 +6522,16 @@ theorem-facing work should use it to instantiate a structural
 entropy/cardinality route, or return to the genuine book random-entropy
 tail/UI/event bridge.
 
+2026-05-06 follow-up: the same original-cover truncation bridge now has the
+natural-polynomial constructor
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_original_coveringNumber_le_nat_poly_bound`.
+It composes original-class random empirical-cover domination with a pointwise
+bound `cardinality + 1 <= C(M,eta) * (n+1)^d`, producing the truncated
+variable-domain book entropy condition directly.  This is the intended
+structural input shape for original-class VC/Sauer, trace, grid, or quantizer
+arguments; remaining work is to instantiate those hypotheses or prove the true
+random-entropy tail/UI/event bridge, not another endpoint wrapper.
+
 2026-05-06 nonnegative/canonical asymptotic-measurability reindexing
 follow-up: after the signed arbitrary-map reindexing batch, local search still
 found `mono_filter` and `congr_eventually` but no `comp_tendsto` for the

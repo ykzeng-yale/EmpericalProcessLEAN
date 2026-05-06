@@ -19506,6 +19506,47 @@ theorem
         div_le_div_of_nonneg_right hlog_succ_linear (Nat.cast_nonneg n)
 
 /--
+Natural-polynomial original-class empirical-cover growth builds the truncated
+variable-domain book entropy condition.
+
+This composes the original-cover truncation bridge with the existing
+natural-polynomial log-rate constructor.  It is the direct input shape for
+structural routes that first bound empirical covers of the untruncated class
+and then pass to `F_M`.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_original_coveringNumber_le_nat_poly_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {constant : ℝ -> ℝ -> ℝ} {degree : ℝ -> ℝ -> ℕ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hcovering_original :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n)
+          indexClass classFun eta (cardinality M eta n))
+    (hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 1 ≤ constant M eta)
+    (hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((cardinality M eta n sample n : ℝ) + 1) ≤
+            constant M eta *
+              (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope cardinality :=
+  VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound
+    (P := P) (X := X) (indexClass := indexClass)
+    (classFun := classFun) (envelope := envelope)
+    (constant := constant) (degree := degree) (cardinality := cardinality)
+    (fun M hM eta heta n =>
+      (hcovering_original M hM eta heta n).truncated_of_original)
+    hconstant_ge_one hpoly_bound
+
+/--
 Finite empirical trace images plus natural-polynomial cardinality growth build
 the variable-domain book entropy condition.
 
