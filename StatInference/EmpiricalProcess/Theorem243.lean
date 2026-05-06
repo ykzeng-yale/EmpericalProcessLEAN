@@ -22366,6 +22366,58 @@ theorem
       hTail
 
 /--
+Ordinary mean convergence of the random finite-net Hoeffding upper implies its
+convergence in outer probability.
+
+This is the theorem-specific consumer of the Chapter 1.2 ordinary-mean Markov
+bridge `VdVWConvergesInOuterProbabilityConst_zero_of_integral_tendsto_zero_nonneg`.
+It gives the pure outer-probability finite-net route a direct source-side input
+when the analytic work has already produced ordinary mean convergence.
+-/
+theorem
+    finiteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_integral_tendsto_zero
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {M : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hupperMeasurable :
+      ∀ n,
+        Measurable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M))
+    (hupperIntegrable :
+      ∀ n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M)
+          (vdVWProductMeasure P n))
+    (hM_nonneg : 0 ≤ M)
+    (hIntegral :
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0)) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality n sample n) n M)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWConvergesInOuterProbabilityConst_zero_of_integral_tendsto_zero_nonneg
+      (fun n : ℕ => vdVWProductMeasure P n)
+      hupperMeasurable hupperIntegrable
+      (fun n sample =>
+        vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+          (cardinality n sample n) n hM_nonneg)
+      hIntegral
+
+/--
 A deterministic eventual bound on the finite-net Hoeffding upper supplies the
 explicit tail-expectation/UI hypothesis used by the non-bounded mean route.
 -/
