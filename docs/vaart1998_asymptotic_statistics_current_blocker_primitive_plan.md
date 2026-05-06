@@ -85,6 +85,10 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_theorem_3_1_delta_method_of_localization_tight`.
 10. Theorem 3.1 ordinary-sequence `O_P(1)` wrapper:
    `vaart1998_theorem_3_1_delta_method_of_localization_stochasticBounded`.
+11. Scaled-ball remainder-to-localization bridge:
+   `vaart1998_delta_remainder_local_subset_of_eventually_small_on_scaled_ball`.
+12. Theorem 3.1 scaled-ball plus `O_P(1)` wrapper:
+   `vaart1998_theorem_3_1_delta_method_of_scaled_ball_stochasticBounded`.
 
 Verified Vaart packet: `4afbd3b` (`Add Vaart asymptotic statistics Lean lane`),
 included in remote `main` at `b36be5f`.
@@ -93,13 +97,15 @@ The current theorem-sized packet has inserted the stochastic localization
 bridge used in Vaart's proof of Theorem 3.1: a local remainder-subset
 certificate plus real-tail tightness of `r_n • (T_n - theta)` now produces the
 scaled `o_P(1)` remainder and feeds the compiled delta handoff.
+The newest follow-up also removes the raw set-subset field whenever the scaled
+remainder is eventually small on every fixed scaled ball.
 
-The next aggressive packet is to discharge those two certificate fields:
+The next aggressive packet is to discharge the remaining certificate fields:
 
 1. derive real-tail tightness of `r_n • (T_n - theta)` from convergence in
    distribution, reusing `VdVWProbabilityMeasuresAsymptoticallyTight` and the
    local norm-tail tightness lemmas in `StatInference/EmpiricalProcess`;
-2. derive the local remainder-subset certificate from
+2. derive the scaled-ball smallness field from
    `vaart1998_hasFDerivAt_delta_remainder_isLittleO`, `r_n -> ∞`, and
    `T_n - theta -> 0` in probability.
 

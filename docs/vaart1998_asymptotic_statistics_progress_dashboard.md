@@ -36,6 +36,10 @@ The initial Lean target is Chapter 2 plus Chapter 3 substrate:
   `vaart1998_theorem_3_1_delta_method_of_localization_tight`.
 - Theorem 3.1 ordinary-sequence `O_P(1)` wrapper
   `vaart1998_theorem_3_1_delta_method_of_localization_stochasticBounded`.
+- scaled-ball remainder-to-localization bridge
+  `vaart1998_delta_remainder_local_subset_of_eventually_small_on_scaled_ball`.
+- Theorem 3.1 scaled-ball plus `O_P(1)` wrapper
+  `vaart1998_theorem_3_1_delta_method_of_scaled_ball_stochasticBounded`.
 
 Verification passed for the pushed Vaart packet `4afbd3b` on remote main
 `b36be5f`:
@@ -58,7 +62,7 @@ two new certificate fields:
 1. derive the real-tail tightness field for `r_n • (T_n - theta)` from
    convergence in distribution, using local VdV&W/ProbabilityMeasure
    asymptotic-tightness APIs;
-2. derive the local remainder-subset field from
+2. derive the scaled-ball smallness field from
    `vaart1998_hasFDerivAt_delta_remainder_isLittleO`, `r_n -> ∞`, and
    `T_n - theta -> 0` in probability.
 

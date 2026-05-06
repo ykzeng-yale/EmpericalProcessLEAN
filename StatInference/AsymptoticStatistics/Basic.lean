@@ -378,6 +378,77 @@ theorem vaart1998_theorem_3_1_delta_method_of_localization_tight
     (L := L) hW hR hR_meas
 
 /--
+Convert a scaled-ball remainder estimate into the local event-subset
+certificate used by the delta-method localization theorem.
+
+This is the set-theoretic form of the textbook proof sentence: on the event
+where the tight statistic `r_n • (T_n - theta)` stays in a fixed ball, the
+scaled differentiability remainder is eventually smaller than any fixed
+epsilon.
+-/
+theorem vaart1998_delta_remainder_local_subset_of_eventually_small_on_scaled_ball
+    {ι Ω E F : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {Tn : ι -> Ω -> E} {phi : E -> F} {theta : E}
+    {r : ι -> ℝ} {l : Filter ι} (L : E →L[ℝ] F)
+    (hsmall : ∀ ε : ℝ, 0 < ε -> ∀ M : ℝ, 0 < M ->
+      ∀ᶠ n in l, ∀ ω,
+        ‖r n • (Tn n ω - theta)‖ < M ->
+        ‖r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))‖ < ε) :
+    ∀ ε : ℝ, 0 < ε -> ∀ M : ℝ, 0 < M ->
+      ∀ᶠ n in l,
+        {ω |
+          ε ≤ ‖r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))‖} ⊆
+        {ω | M ≤ ‖r n • (Tn n ω - theta)‖} := by
+  intro ε hε M hM
+  filter_upwards [hsmall ε hε M hM] with n hn
+  intro ω hω
+  by_contra hnot
+  have hW_lt : ‖r n • (Tn n ω - theta)‖ < M := not_le.mp hnot
+  exact (not_le_of_gt (hn ω hW_lt)) hω
+
+/--
+van der Vaart 1998, Theorem 3.1, sequence form with an `O_P(1)` scaled
+statistic and a scaled-ball remainder estimate.
+
+This packages the two probabilistic ingredients used in the proof: tightness of
+`r_n • (T_n - theta)` and negligibility of the scaled remainder on every fixed
+tight ball.
+-/
+theorem vaart1998_theorem_3_1_delta_method_of_scaled_ball_stochasticBounded
+    {Ω : Type v} {Ω' : Type w} {E : Type x} {F : Type y}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {T : Ω' -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ}
+    (L : E →L[ℝ] F)
+    (hW : TendstoInDistribution
+      (fun n ω => r n • (Tn n ω - theta)) atTop T (fun _ => P) Q)
+    (hsmall : ∀ ε : ℝ, 0 < ε -> ∀ M : ℝ, 0 < M ->
+      ∀ᶠ n in atTop, ∀ ω,
+        ‖r n • (Tn n ω - theta)‖ < M ->
+        ‖r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))‖ < ε)
+    (hW_OP : StochasticBounded P
+      (fun n ω => r n • (Tn n ω - theta)))
+    (hR_meas : ∀ n, AEMeasurable
+      (fun ω => r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))) P) :
+    TendstoInDistribution
+      (fun n ω => r n • (phi (Tn n ω) - phi theta)) atTop
+      (fun ω => L (T ω)) (fun _ => P) Q :=
+  vaart1998_theorem_3_1_delta_method_of_localization_tight
+    (L := L) hW
+    (vaart1998_delta_remainder_local_subset_of_eventually_small_on_scaled_ball
+      (L := L) hsmall)
+    hW_OP hR_meas
+
+/--
 van der Vaart 1998, Theorem 3.1, sequence form with an `O_P(1)` scaled
 statistic.
 
