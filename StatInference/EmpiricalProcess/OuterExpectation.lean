@@ -243,6 +243,26 @@ theorem VdVWInnerExpectation_mono
   exact le_iSup_of_le LT le_rfl
 
 /--
+VdV&W nonnegative inner expectation is bounded above by nonnegative outer
+expectation.
+
+Every measurable minorant is pointwise below every measurable majorant, so the
+supremum of minorant integrals is below the infimum of majorant integrals.
+This is the basic order fact behind the local outer/inner expectation-gap
+predicates.
+-/
+theorem VdVWInnerExpectation_le_outerExpectation
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} :
+    VdVWInnerExpectation μ T ≤ VdVWOuterExpectation μ T := by
+  dsimp [VdVWInnerExpectation, VdVWOuterExpectation]
+  refine iSup_le ?_
+  intro L
+  refine le_iInf ?_
+  intro U
+  exact lintegral_mono fun ω => le_trans (L.minorizes ω) (U.majorizes ω)
+
+/--
 A proof-carrying nonnegative lower measurable cover, or maximal measurable
 minorant.
 

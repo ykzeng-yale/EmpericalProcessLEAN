@@ -2077,3 +2077,11 @@ process random elements.  These complement the `ell_infty(T)` and raw bounded
 process coordinate wrappers and close the generic one-coordinate
 law/IdentDistrib/convergence-in-distribution support layer.  They do not close
 the random-entropy tail/UI bridge or the arbitrary-index process/FDD converse.
+
+2026-05-05 outer/inner order bridge follow-up:
+`OuterExpectation.lean` now proves `VdVWInnerExpectation_le_outerExpectation`,
+the basic Chapter 1.2 nonnegative order relation between the supremum over
+measurable minorants and the infimum over measurable majorants.  This supports
+the local outer/inner expectation-gap predicates while leaving the full signed
+extended-real arbitrary-map cover-existence and nonmeasurable
+asymptotic-measurability primitives open.

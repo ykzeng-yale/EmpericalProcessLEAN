@@ -5735,3 +5735,14 @@ closes the direct one-coordinate law-level weak-convergence and tightness
 feeders.  The real arbitrary-index FDD converse remains dependent on
 separability, process asymptotic tightness, and the exact
 nonmeasurable/asymptotic-measurability primitives.
+
+2026-05-05 outer/inner order bridge follow-up: local search found the
+nonnegative outer/inner expectation definitions, monotonicity lemmas, and
+measurable-collapse bridges in `OuterExpectation.lean`, but no basic global
+order theorem between the inner and outer envelopes.  `OuterExpectation.lean`
+now proves `VdVWInnerExpectation_le_outerExpectation`: every measurable
+minorant is below every measurable majorant pointwise, hence the supremum of
+minorant `lintegral`s is bounded by the infimum of majorant `lintegral`s.  This
+is the Chapter 1.2 support relation needed by local outer/inner gap predicates.
+It does not close the full signed extended-real arbitrary-map measurable-cover
+existence theorem or the nonmeasurable asymptotic-measurability layer.
