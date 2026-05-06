@@ -33,6 +33,7 @@ import StatInference.Optimization.ConjugateGradient
 import StatInference.Optimization.CuttingPlane
 import StatInference.Optimization.DiscreteGronwall
 import StatInference.Optimization.Ellipsoid
+import StatInference.Optimization.FrankWolfe
 import StatInference.Optimization.GradientDescent
 import StatInference.Optimization.GradientFlow
 import StatInference.Optimization.LowerBounds
