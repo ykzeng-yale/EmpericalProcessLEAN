@@ -157,12 +157,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi93_hopf_lax_zero_gap_bound_of_interpolant`,
   `chewi115_strong_hopf_lax_bound_of_chewi93`, and
   `chewi115_strong_hopf_lax_bound_of_interpolant`.  The newest source
+  candidate packet adds `chewi93_selected_model_value_le_interpolant`,
+  `chewi115_strong_selected_model_value_le_interpolant`, and
+  `chewi115_zero_selected_model_value_le_interpolant`, turning Chewi's
+  selected Exercise 9.3 test point into the exact `hmodel_interp` displays.
+  The newest source
   certificate packet adds `chewi93_hopf_lax_zero_gap_bound_of_radius`,
   `chewi115_zero_hopf_lax_bound_of_interpolant`,
   `chewi115_strong_hopf_lax_certificate_of_interpolants`, and
   `chewi115_zero_hopf_lax_certificate_of_interpolants`, so the remaining 11.5
-  work is the selected Hopf-Lax/Moreau model value and candidate side
-  conditions, not another scalar-recurrence or finite-average loop.  The newest
+  work is direct strong/zero RAM assembly from candidate-value hypotheses plus
+  radius/admissibility side conditions, not another scalar-recurrence or
+  finite-average loop.  The newest
   block-selected assembly packet adds
   `chewi115_strong_hopf_lax_certificate_of_block_model_interpolants` and
   `chewi115_zero_hopf_lax_certificate_of_block_model_interpolants`, combining
@@ -382,10 +388,10 @@ Chapters 3-8, Chapter 9/10 mirror-descent substrate, Chapter 11.2/11.3 ABP
 telescope, and Chapter 11.4 AM as stable infrastructure.  The live manual
 `/goal` frontier is
 `StatInference/Optimization/RandomizedAlternatingMinimization.lean`.  Next
-theorem-sized packet: finish Chewi Theorem 11.5 RAM by proving the selected
-Hopf-Lax/Moreau model value from the source candidate and discharging the
-remaining admissibility/radius side conditions needed by the compiled
-block-model plus selected-interpolant certificate assemblers.  After that, move directly
+theorem-sized packet: finish Chewi Theorem 11.5 RAM by combining the selected
+Hopf-Lax/Moreau source-candidate bridges with the block-model certificate
+assemblers and discharging the remaining admissibility/radius side conditions.
+After that, move directly
 to Sinkhorn Theorems 11.7/11.8 from ABP/mirror-descent supplied finite
 KL/Pinsker/marginal interfaces, then open Chapter 12 SMPGD.  This paragraph
 supersedes older Chapter 6, Chapter 7, Chapter 8, and Chapter 11.4 next-target
