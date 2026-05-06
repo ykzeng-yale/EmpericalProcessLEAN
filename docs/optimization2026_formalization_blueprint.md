@@ -57,12 +57,11 @@ Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
 Current manual goal frontier after focused Lean verification and targeted
-module build of the Chapter 11.4 scalar alternating-minimization packet on
-2026-05-06, building from Optimization route-doc frontier `fab42c1` and
-verified ABP code frontier `4656409`:
+module build of the Chapter 11.4 source-recurrence alternating-minimization
+bridge on 2026-05-06, building on pushed frontier `29b2a60` (`Add Chewi
+theorem 11.4 scalar AM packet`):
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
-stable dependencies, not active routing targets.  Latest verified Optimization
-proof frontier: `4656409`.
+stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
 trajectory interfaces, the model-to-composite Bregman upper/lower comparisons,
 the supplied-interface Chewi Theorem 10.9 one-step inequality, the descent
@@ -119,15 +118,23 @@ in the pinned tree; the relevant reuse is local `Bregman.lean`,
 `FirstOrderStrongConvexOn.lower_model`; Chapter 11 ABP reuses
 `bregmanDivergence` and `sum_range_sub_succ`, with no direct mathlib/local ABP
 theorem found.  `AlternatingMinimization.lean` now compiles the scalar
-Theorem 11.4 post-threshold inverse-gap/telescope layer:
-`sum_range_succ_sub`, `chewi114_inverse_gap_step_growth`,
+Theorem 11.4 post-threshold inverse-gap/telescope layer and source
+recurrence/half-threshold bridge: `sum_range_succ_sub`,
+`chewi114_inverse_gap_step_growth`,
 `chewi114_inverse_gap_growth_of_quadratic_descent`,
 `chewi114_gap_le_K_div_iterations_of_quadratic_descent`,
-`chewi114_gap_le_eps_of_quadratic_descent`, `chewi114K`, and
-`chewi114_gap_le_source_K_div_iterations`.  The active route is now the
-supplied AM recurrence bridge for Theorem 11.4, immediately followed by
-Theorem 11.5 RAM expectation recurrences, Sinkhorn Theorems 11.7/11.8 from
-ABP/mirror-descent supplied interfaces, and Chapter 12 SMPGD before the ASGD
+`chewi114_gap_le_eps_of_quadratic_descent`,
+`chewi114_quadratic_descent_of_next_gap_sq`,
+`chewi114_quadratic_descent_recurrence_of_source`,
+`chewi114_gap_le_K_div_iterations_of_source_recurrence`, `chewi114A`,
+`chewi114K`, `chewi114K_eq_four_chewi114A`,
+`chewi114_gap_le_source_K_div_iterations`,
+`chewi114_gap_le_source_K_div_iterations_of_source_recurrence`, and
+`chewi114_gap_le_eps_of_source_recurrence`.  The active route is now the
+algorithm-facing AM trajectory/certificate bridge for exact Theorem 11.4,
+immediately followed by Theorem 11.5 RAM expectation recurrences, Sinkhorn
+Theorems 11.7/11.8 from ABP/mirror-descent supplied interfaces, and Chapter 12
+SMPGD before the ASGD
 CLT.  Generalize 10.11/10.13 to a custom arbitrary
 norm/dual-norm interface or add an exact `sInf` wrapper only when source-report
 packaging or a later theorem demands it.  In parallel, map Chapter 13

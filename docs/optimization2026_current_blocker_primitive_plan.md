@@ -89,10 +89,9 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after focused Lean verification and
-targeted module build of the Chapter 11.4 scalar alternating-minimization
-packet on 2026-05-06, building from Optimization route-doc frontier `fab42c1`
-(`Update Chewi route after ABP telescope packet`) and verified ABP code
-frontier `4656409` (`Add Chewi chapter 11 ABP telescope packet`):
+targeted module build of the Chapter 11.4 source-recurrence
+alternating-minimization bridge on 2026-05-06, building on pushed frontier
+`29b2a60` (`Add Chewi theorem 11.4 scalar AM packet`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -193,10 +192,17 @@ The new `AlternatingMinimization.lean` module is imported by
 `chewi114_inverse_gap_step_growth`,
 `chewi114_inverse_gap_growth_of_quadratic_descent`,
 `chewi114_gap_le_K_div_iterations_of_quadratic_descent`,
-`chewi114_gap_le_eps_of_quadratic_descent`, `chewi114K`, and
-`chewi114_gap_le_source_K_div_iterations`.  This proves the post-threshold
+`chewi114_gap_le_eps_of_quadratic_descent`,
+`chewi114_quadratic_descent_of_next_gap_sq`,
+`chewi114_quadratic_descent_recurrence_of_source`,
+`chewi114_gap_le_K_div_iterations_of_source_recurrence`, `chewi114A`,
+`chewi114K`, `chewi114K_eq_four_chewi114A`,
+`chewi114_gap_le_source_K_div_iterations`,
+`chewi114_gap_le_source_K_div_iterations_of_source_recurrence`, and
+`chewi114_gap_le_eps_of_source_recurrence`.  This proves the post-threshold
 inverse-gap/telescope layer of Chewi Theorem 11.4 in the source constant
-`K = 8 * beta * D^2 * R^2` form.
+`K = 8 * beta * D^2 * R^2` form and discharges the displayed source recurrence
+with denominator `2 * beta * D^2 * R^2` plus the half-gap threshold.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, relative smoothness, OMD, online
@@ -213,9 +219,10 @@ the OMD theorem packet covers the ordinary Hilbert norm specialization.
 The 2026-05-06 route rebase searched the Chapter 11/12 source and local/mathlib
 recurrence/probability APIs.  Result: Corollary 11.3 is topology-heavy
 compactness/subsequence work, while Theorem 11.4 exposes a clean scalar
-inverse-gap recurrence that can reuse `sum_range_sub_succ`, the Chapter 3/5
-recurrence/telescope style, and ordinary real algebra.  No local/mathlib
-coordinate-descent or alternating-minimization theorem was found.  Chapter 12
+inverse-gap recurrence that reuses `sum_range_sub_succ`, the Chapter 3/5
+recurrence/telescope style, `sq_le_sq₀`, `div_le_iff₀`, `field_simp`, `ring`,
+and ordinary real algebra.  No local/mathlib coordinate-descent or
+alternating-minimization theorem was found.  Chapter 12
 has usable mathlib probability foundations for conditional expectation,
 conditional Jensen, martingales, and process convergence, but the fast initial
 route should use supplied expectation-level SMPGD one-step inequalities before
@@ -223,13 +230,13 @@ attempting full martingale/CLT formalization.
 
 Active aggressive target ladder:
 
-1. Complete Chewi Theorem 11.4 as the active primary target.  The scalar
-   inverse-gap layer is done; next prove the supplied-interface AM recurrence
-   bridge from Chewi's block-coordinate descent estimate:
-   `gap (n+1) - gap n <= -(gap (n+1)^2)/(2 * beta * D^2 * R^2)`, its
-   threshold implication
-   `gap (n+1) <= gap n - gap n^2 / chewi114K beta D R`, and then apply the
-   compiled `chewi114_gap_le_source_K_div_iterations`/epsilon wrappers.
+1. Finish Chewi Theorem 11.4 as an algorithm-facing AM theorem.  The scalar
+   inverse-gap layer and the source-recurrence/half-threshold bridge now
+   compile, so the remaining theorem-sized task is to define the alternating
+   minimization trajectory/certificate and derive the displayed source
+   recurrence from the block-coordinate descent estimate.  Then route the exact
+   statement through the compiled `chewi114_gap_le_source_K_div_iterations` and
+   `chewi114_gap_le_eps_of_source_recurrence` consumers.
 2. Immediately continue to Theorem 11.5 RAM using expectation-level
    source-shaped interfaces: conditional one-step expectation, convex/strongly
    convex Hopf-Lax supplied bounds, exponential rate for
