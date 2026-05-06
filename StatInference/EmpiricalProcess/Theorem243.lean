@@ -19349,6 +19349,45 @@ structure VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM
         atTop (0 : ℝ)
 
 /--
+Original-class random empirical-cover domination supplies the truncated
+book entropy condition.
+
+The logarithmic process is unchanged; only the covering-number domination field
+is transported through VdV&W truncation using
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.truncated_of_original`.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_original_coveringNumber_le
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hcovering_original :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n)
+          indexClass classFun eta (cardinality M eta n))
+    (hlog :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality M eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ)) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope cardinality := by
+  refine
+    { coveringNumber_le := ?_
+      log_cardinality_div_converges := hlog }
+  intro M hM eta heta n
+  exact (hcovering_original M hM eta heta n).truncated_of_original
+
+/--
 Build the variable-domain book entropy condition from a deterministic
 normalized log-cardinality rate.
 

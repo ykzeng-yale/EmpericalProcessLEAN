@@ -6506,6 +6506,22 @@ bounded-continuous arbitrary-map weak-convergence foundations.  They do not
 prove the still-missing signed extended-real measurable-cover existence,
 arbitrary-map asymptotic tightness, or arbitrary-index FDD converse.
 
+2026-05-06 generic original-cover truncation entropy bridge:
+local search found the compiled truncation covering-number monotonicity
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.truncated_of_original`, but
+no generic constructor consuming original-class random empirical-cover
+domination in the variable truncated entropy side-condition record.
+`Theorem243.lean` now proves
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_original_coveringNumber_le`.
+It keeps the same normalized-log cardinality process and transports only the
+covering-number domination field from `classFun` to
+`vdVWTruncatedClassFun classFun envelope M`.  This removes a structural
+plumbing mismatch for routes that naturally estimate empirical covers of the
+original class before truncation.  It is not a final endpoint; the next
+theorem-facing work should use it to instantiate a structural
+entropy/cardinality route, or return to the genuine book random-entropy
+tail/UI/event bridge.
+
 2026-05-06 nonnegative/canonical asymptotic-measurability reindexing
 follow-up: after the signed arbitrary-map reindexing batch, local search still
 found `mono_filter` and `congr_eventually` but no `comp_tendsto` for the

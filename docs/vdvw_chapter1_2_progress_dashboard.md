@@ -127,7 +127,15 @@ fixed-radius package and existing large-`M` untruncation.  It reaches local
 The exact threshold-separation route now has the matching endpoint
 `VdVWTheorem243_coordinate_thresholds_separate_uniform_vc_pGlivenkoCantelli_and_inMean`.
 The next non-duplicative work is a concrete grid/quantizer/VC structural
-estimate or the genuine selected empirical-entropy tail/UI bridge, not another
+estimate or the genuine selected empirical-entropy tail/UI bridge.  The generic
+original-cover truncation
+constructor
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_original_coveringNumber_le`
+is now compiled: original-class random empirical-cover domination plus the same
+normalized-log convergence yields the truncated variable-domain entropy
+condition by the truncation monotonicity bridge.  Next work should consume this
+constructor in structural entropy/cardinality routes or prove the real
+book-entropy-to-tail/UI bridge; it is not itself a final Theorem 2.4.3 endpoint.
 endpoint alias for the same route.
 2026-05-06 post-UI-endpoint search audit: the Theorem 2.4.3 selected
 fixed-radius endpoint surface is exhausted for the current hypotheses.  Local
