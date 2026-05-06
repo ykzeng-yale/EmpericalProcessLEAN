@@ -7471,3 +7471,13 @@ It composes stochastic fixed-radius log-cardinality entropy with an eventual
 target for the remaining ghost/Rademacher/random-cover proof: produce that
 `hae` input from the textbook symmetrization and selected empirical-cover
 machinery, with `C = 2` or another explicit positive constant.
+
+2026-05-06 Theorem 2.4.3 untruncated scaled a.e. consumer: `Theorem243.lean`
+now proves
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledFiniteNetHoeffdingUpper`.
+This composes the fixed-`M` scaled a.e. entropy consumer with the already
+compiled large-`M` envelope-tail untruncation handoff.  Thus the generic
+untruncated centered convergence route is now blocked only by the source
+`hae` theorem: for every positive truncation level and fixed radius, derive
+eventual `vdVWProductMeasure P n`-a.e. scaled finite-net domination from
+ghost samples, Rademacher signs, and selected empirical covers.

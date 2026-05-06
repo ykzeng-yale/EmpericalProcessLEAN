@@ -201,6 +201,18 @@ prove its eventual a.e. scaled finite-net domination hypothesis from
 ghost-sample/Rademacher selected-cover arguments, then this theorem consumes
 the stochastic entropy hypothesis directly.
 
+The same source target now propagates through the large-`M` untruncation layer
+via
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledFiniteNetHoeffdingUpper`.
+This removes another endpoint as a blocker: once the eventual a.e. scaled
+finite-net domination is proved for every positive truncation level and fixed
+radius, the untruncated centered convergence follows from the existing
+envelope-tail argument.  The remaining option-1 blocker is therefore upstream:
+derive that a.e./outer-probability source domination from the textbook random
+entropy, selected empirical covers, ghost samples, and Rademacher
+symmetrization without adding measurability assumptions that the book does not
+make.
+
 2026-05-06 fixed-FDD congruence refinement: after search, the local FDD
 replacement layer now includes
 `aemeasurable_fdd_congr_finite_coord_ae` and
