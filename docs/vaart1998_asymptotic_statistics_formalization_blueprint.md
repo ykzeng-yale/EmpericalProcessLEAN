@@ -215,7 +215,10 @@ Initial modules:
   `vaart1998_finiteCoordinateCovarianceTable`.  Its current consumer endpoint,
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_real`,
   returns those finite table entries directly from the supplied multivariate
-  empirical-moment CLT certificate.
+  empirical-moment CLT certificate, and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cramerWoldBridge_real`
+  now feeds the same table endpoint directly from a finite-coordinate
+  Cramér-Wold bridge.
   It still deliberately leaves a concrete finite-dimensional Cramér-Wold
   law-convergence proof and any downstream table consumers as explicit next
   layers.

@@ -236,9 +236,11 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinateCovarianceTable`.
 - CLT-certificate covariance-table endpoint:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_real`.
+- Cramér-Wold bridge covariance-table endpoint:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cramerWoldBridge_real`.
 
-Latest remote base after rebase before this packet: `dc35b8a`.  Latest pushed Vaart packet
-before this packet: `58e6cf9` (`Add Vaart projected law Cramer Wold bridge`).
+Latest remote base before this packet: `cb52a7f`.  Latest pushed Vaart packet
+before this packet: `2269b4d` (`Add Vaart covariance table certificate endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`

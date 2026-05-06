@@ -362,18 +362,20 @@ Chapter 3 theorem-facing wrappers compiling:
 116. Theorem 4.1 finite-coordinate CLT-certificate endpoint returning a finite
    covariance table for chosen parameter coordinates:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_real`.
+117. Theorem 4.1 finite-coordinate covariance-table endpoint fed directly by a
+   Cramér-Wold bridge:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cramerWoldBridge_real`.
 
-Latest remote base after rebase before this packet: `dc35b8a`.
-Latest pushed Vaart packet before this packet: `58e6cf9`
-(`Add Vaart projected law Cramer Wold bridge`).
+Latest remote base before this packet: `cb52a7f`.
+Latest pushed Vaart packet before this packet: `2269b4d`
+(`Add Vaart covariance table certificate endpoint`).
 
-The current theorem-sized packet adds the finite covariance-table display and
-consumer layer for Vaart Theorem 4.1.  It turns the existing coordinate-free
-covarianceBilinDual pullback into finite entrywise covariance tables for any
-chosen finite family of continuous linear parameter coordinates, names the
-coordinate evaluation functionals and coordinate-indexed covariance table for
-finite real moment vectors, and promotes the CLT-certificate endpoint so it
-returns the finite table entries directly.
+The current theorem-sized packet adds the Cramér-Wold bridge covariance-table
+consumer for Vaart Theorem 4.1.  It reuses the bridge-to-CLT-certificate
+constructor and the CLT-certificate covariance-table endpoint, so callers with a
+finite-coordinate Cramér-Wold bridge now get the local inverse, Gaussian limit,
+and finite covariance-table display without manually constructing the
+multivariate empirical-moment CLT certificate.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
