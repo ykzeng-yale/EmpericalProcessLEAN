@@ -98,8 +98,9 @@ Current live replacement `/goal` prompt after the Chapter 12 finite sampled
 rate packet, smooth integral-L2 sampled-model endpoint packet, smooth
 Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
 endpoint packet, smooth source variance-bound bridge for Chewi Theorem 12.1
-SMPGD, the non-smooth relative-subgradient growth/star-upper bridge, and the
-final smooth/non-smooth weighted stochastic averaged-iterate wrappers:
+SMPGD, the non-smooth relative-subgradient growth/star-upper bridge, the final
+smooth/non-smooth weighted stochastic averaged-iterate wrappers, and the exact
+source-displayed stochastic-error RHS bridge:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -125,7 +126,7 @@ integral-component final-rate wrappers, the smooth L2 noise wrapper, the
 finite sampled smooth/pointwise-bounded non-smooth rate endpoints, the
 non-smooth `(12.2)` source-L2 endpoint, the smooth `(12.1)` variance-root
 bridge, and the compiled final smooth/non-smooth weighted stochastic
-averaged-iterate wrappers.  Do
+averaged-iterate wrappers with exact displayed stochastic-error constants.  Do
 not redo the 10.11
 average-gap telescope, the 11.5 RAM recurrences, the 11.7 selector wrappers,
 the 11.8 certificate endpoint, the Chapter 12 weighted-average algebra, the
@@ -145,7 +146,8 @@ source-L2 sampled `hcore`, non-smooth source-L2 sampled weighted-average
 endpoint, smooth source variance-bound wrapper, non-smooth
 relative-subgradient growth/star-upper wrapper, or the Jensen/center-mass
 transport from weighted expected gaps to the weighted stochastic averaged
-iterate, or the final smooth/non-smooth weightedSampleAverage wrappers.  First search local
+iterate, the final smooth/non-smooth weightedSampleAverage wrappers, or the
+source-displayed `(1 + alphaG * h)` error-factor upgrade.  First search local
 `MirrorDescent.lean`, `Bregman.lean`, `ProjectedSubgradient.lean`,
 `StochasticGradient.lean`, local probability/expectation wrappers, and pinned
 mathlib expectation/Jensen/conditional expectation/Bochner/L2 APIs.  Then
@@ -265,7 +267,12 @@ plus the weighted stochastic averaged-iterate packet
 the final smooth/non-smooth source-shaped wrappers
 `chewi121_smooth_weightedSampleAverage_gap_le_geometric_of_integral_l2_sampled_models_unbiased_of_variance_bound`
 and
-`chewi121_nonsmooth_weightedSampleAverage_gap_le_geometric_of_integral_l2_sampled_models_relativeSubgradient`.
+`chewi121_nonsmooth_weightedSampleAverage_gap_le_geometric_of_integral_l2_sampled_models_relativeSubgradient`,
+plus the exact source-displayed RHS bridges
+`chewi121_smooth_displayed_error_rhs_of_stronger`,
+`chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_stronger`,
+`chewi121_nonsmooth_displayed_error_rhs_of_stronger`, and
+`chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_stronger`.
 This proves the source recurrence-to-rate algebra, smooth/non-smooth
 stochastic error instantiations, the expected-model algebra turning Chewi's
 three `psi_x` bounds into the displayed SMPGD one-step recurrence, the direct
@@ -288,10 +295,11 @@ sampled growth, Bochner unbiased star-upper transport, smooth `(12.1)`
 variance domination, non-smooth relative-subgradient star upper, or the
 non-smooth `(12.2)` sampled lower-model/rate endpoint, or the Jensen
 transition from weighted expected gaps to the weighted stochastic averaged
-iterate, or the final smooth/non-smooth weightedSampleAverage wrappers; it is
-the remaining exact source probability discharge: any conditional
-expectation/process packaging needed for exact source reporting, then ASGD CLT
-once the SMPGD source packaging is sufficiently complete.
+iterate, the final smooth/non-smooth weightedSampleAverage wrappers, or the
+exact source-displayed stochastic-error RHS factor; it is the remaining exact
+source probability discharge: any conditional expectation/process packaging
+needed for exact source reporting, then ASGD CLT once the SMPGD source
+packaging is sufficiently complete.
 
 Fresh Chapter 12 Bochner search result: mathlib has `integral_mono_ae` and
 `integral_mono` for pointwise or a.e. real integral inequalities,
@@ -612,10 +620,11 @@ Active aggressive target ladder:
    weighted-average endpoint, probability L2-to-L1 bridge, non-smooth `(12.2)`
    sampled `hcore`, non-smooth source-L2 sampled weighted-average endpoint,
    smooth `(12.1)` source variance-root wrapper, and non-smooth
-   relative-subgradient endpoint are closed.  Next prove any exact
-   conditional-expectation/process packaging needed for source reporting, and
-   a final source-shaped Chewi Theorem 12.1 wrapper combining those process
-   fields with the compiled smooth/non-smooth sampled endpoints.
+   relative-subgradient endpoint are closed, as are the final weighted
+   averaged-iterate wrappers and displayed RHS factor bridges.  Next prove any
+   exact conditional-expectation/process packaging needed for source reporting,
+   then move to ASGD CLT once the SMPGD source packaging is sufficiently
+   complete.
 2. Instantiate the compiled Chewi Theorem 11.8 Sinkhorn/mirror-descent
    certificate with concrete finite row/column-normalization KL identities.
    Reuse `IsChewi118SinkhornMirrorDescentCertificate`,
