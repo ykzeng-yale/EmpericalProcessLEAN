@@ -69,6 +69,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_1_7_iIndep_generatedSigma_of_iIndepSets`
 - `durrett2019_theorem_2_1_7_indep_generatedSigma_of_indepSets`
 - `durrett2019_theorem_2_1_8_iIndepFun_of_generator_rectangles`
+- `durrett2019_theorem_2_1_8_iIndepFun_real_of_Iic_rectangles`
 - `durrett2019_theorem_2_1_9_indep_iSup_of_disjoint`
 - `durrett2019_theorem_2_1_10_iIndepFun_comp`
 - `durrett2019_theorem_2_1_10_indepFun_finset_blocks`
@@ -111,11 +112,11 @@ middle CDF partition existence consumed by
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
-Parallel target: Chapter 2.1 product-law/source-shape refinements after the
-Theorem 2.1.7 generated-pi-system bridge, Theorem 2.1.8 generated-rectangle
-criterion, Theorem 2.1.9 grouped sigma-field bridge, Theorem 2.1.10 finite
-disjoint-block function bridges, and Theorem 2.1.11 finite product-law wrappers
-now compile.
+Parallel target: Chapter 2.1 exact iid/product notation refinements only if
+the GC grid blocks.  Theorem 2.1.7 generated-pi-system bridges, Theorem 2.1.8
+generated-rectangle and real lower-halfline criteria, Theorem 2.1.9 grouped
+sigma-field bridge, Theorem 2.1.10 finite disjoint-block function bridges, and
+Theorem 2.1.11 finite product-law wrappers now compile.
 
 Do not start with raw Chapter 1 extension theorem formalization, Stieltjes
 measure construction, or appendix foundations unless an exact Durrett theorem
@@ -174,12 +175,12 @@ Pinned mathlib search scope:
    2.1.10, 2.1.11, 2.1.12, and 2.1.13.  Reuse finite-`Pi` and product measure
    wrappers from `ProbabilityMeasure/ProductMeasure.lean` wherever possible.
    Generated pi-system independence, generated-rectangle independence
-   criterion, grouped sigma-field independence, measurable-function
-   preservation, finite disjoint-block functions, product-coordinate
-   independence, pair and finite product-law, and expectation-factorization
-   wrappers now compile; remaining Chapter 2.1 work is source-shape refinement
-   around the exact real lower-halfline distribution-function statement and
-   iid/product notation.
+   criterion, real lower-halfline distribution-function criterion, grouped
+   sigma-field independence, measurable-function preservation, finite
+   disjoint-block functions, product-coordinate independence, pair and finite
+   product-law, and expectation-factorization wrappers now compile; remaining
+   Chapter 2.1 work is optional source-shape polish around exact iid/product
+   notation.
 7. After Chapter 2 has a stable theorem spine, start Chapter 3 by searching
    characteristic-function, normal-law, and weak-convergence APIs.
 
@@ -191,7 +192,6 @@ this file plus the Durrett dashboard and blueprint, and scanning the current
 `StatInference/ProbabilityTheory`, `StatInference/ProbabilityMeasure`, and
 `StatInference/EmpiricalProcess/RealHalfLineGC.lean` modules.  Primary target:
 Durrett Theorem 2.4.9 arbitrary-distribution middle CDF partition constructor.
-Parallel target: specialize the new 2.1.8 generated-rectangle criterion to
-real lower halflines, or refine iid/product notation, if the GC grid blocks.
-Verify, update docs, commit/push, and keep this in-thread `/goal` state
-current.  Report progress and blockers in Chinese/English mix.
+Parallel target: optional Chapter 2.1 iid/product notation polish if the GC
+grid blocks.  Verify, update docs, commit/push, and keep this in-thread `/goal`
+state current.  Report progress and blockers in Chinese/English mix.
