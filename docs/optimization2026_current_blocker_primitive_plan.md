@@ -83,8 +83,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after focused Lean verification of the
-Theorem 6.25 full-cycle width packet on top of pushed frontier `24a859c`
-(`Add Chewi theorem 6.25 width counting bridge`): aggressively formalize and
+Theorem 6.25 scalar/log containment packet on top of pushed frontier `7f9272e`
+(`Add Chewi theorem 6.25 full-cycle width bound`): aggressively formalize and
 prove all main theorem content of Sinho Chewi's Optimization 2026 notes in
 Lean under `StatInference/Optimization`, with all exercise statements and any
 cheap exercise proofs kept in `StatInference/Optimization/Exercises.lean`
@@ -159,17 +159,35 @@ packet now compiles through `chewi625BoxWidth_add_eq_of_no_cycle_hits`,
 `chewi625BoxWidth_full_cycle_succ`,
 `chewi625BoxWidth_full_cycles`,
 `chewi625BoxState_no_closedBall_subset_of_full_cycles_width_lt`, and
-`chewi625_full_cycles_width_ge_two_eps_of_closedBall_subset`.
+`chewi625_full_cycles_width_ge_two_eps_of_closedBall_subset`.  The scalar/log
+success-side packet now compiles through `chewi625BoxState_subset_add`,
+`chewi625BoxState_subset_of_le`,
+`chewi625BoxLower_mem_coordinateBox`,
+`chewi625BoxUpper_mem_coordinateBox`,
+`chewi625BoxLower_le_of_le`, `chewi625BoxUpper_le_of_le`,
+`chewi625StrictBoxState_subset_of_le`,
+`chewi625BoxState_query_not_mem_final_strict_box`,
+`chewi625_closedBall_subset_full_cycles_of_two_eps_le_width`,
+`chewi625_closedBall_subset_full_cycles_of_eps_le_radius`,
+`chewi625_eps_le_half_pow_mul_of_nat_mul_log_le`,
+`chewi625_eps_le_radius_of_nat_mul_log_le`,
+`chewi625_closedBall_subset_full_cycles_of_log_bound`,
+`chewi625_closedBall_subset_of_le_full_cycle`, and
+`chewi625_closedBall_subset_of_le_full_cycle_log_bound`.
 
 Immediate aggressive target: do not loop on "small source-shape gaps" for
 6.21/6.22 and do not try to prove Theorem 6.23 directly, since the source
-explicitly switches to feasibility.  Continue Theorem 6.25 by proving the
-source scalar/log query-count wrapper from the full-cycle bound, then add a
+explicitly switches to feasibility.  Continue Theorem 6.25 by adding the
 supplied deterministic replay/separation-oracle interface that turns the box
-state into the theorem's black-box feasibility lower bound.  If that replay
-interface starts ballooning, open Chapters 7-13 in parallel theorem-sized
-packets while one worker continues the 6.25 wrapper; add arbitrary-`d > N`
-wrappers for 6.21/6.22 only if exact theorem reporting requires them.  Do the
+state plus scalar/log containment into the theorem's black-box feasibility
+lower bound.  The next useful subpacket is a deterministic transcript/replay
+interface for algorithms: package the returned cut vectors as valid
+separation-oracle answers for the final box and connect deterministic replay to
+the fact that all queried points are outside the strict final box.  If that
+replay interface starts
+ballooning, open Chapters 7-13 in parallel theorem-sized packets while one
+worker continues the 6.25 wrapper; add arbitrary-`d > N` wrappers for 6.21/6.22
+only if exact theorem reporting requires them.  Do the
 mandatory search-first pass before new primitives: local `IsSubgradientAt` and
 Lipschitz bridges in `ProjectedSubgradient.lean`, prefix-span machinery in
 `LowerBounds.lean`, mathlib `LipschitzOnWith`, finite `Finset.max'` APIs,
