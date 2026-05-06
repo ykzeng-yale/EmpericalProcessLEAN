@@ -195,9 +195,15 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_of_ae_mem_open_momentRange_real`,
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_aemeasurable_real`, and
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_ae_mem_open_momentRange_real`.
+- finite-coordinate empirical-moment CLT interface for Vaart Example 2.18:
+  `vaart1998_finiteCoordinateEmpiricalMoment`,
+  `vaart1998_finiteCoordinatePopulationMoment`, and
+  `Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate`.
+- certificate-fed localized covarianceBilinDual Theorem 4.1 source wrapper:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_real`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`989ea80`; the current packet is rebased over remote base `c497ee0`:
+`7977bf0`; the current packet starts from remote base `7977bf0`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -222,11 +228,11 @@ targeted Vaart module build.
 
 Continue Vaart Chapter 4.1 from the compiled Gaussian, canonical
 covarianceBilinDual source wrapper, and a.e.-localized finite-coordinate
-delta/Gaussian/covariance source assemblers:
+delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
+certificate interface:
 
-1. build the next source-shaped multivariate empirical-moment CLT interface,
-   keeping the actual vector CLT supplied if mathlib/local APIs still only
-   expose scalar CLT directly;
+1. discharge the CLT certificate from scalar projected CLTs via a Cramér-Wold
+   interface, or record the exact missing mathlib/local weak-convergence API;
 2. add the finite-matrix covariance specialization only if it can reuse the
    compiled covarianceBilinDual pullback without opening a large matrix
    algebra detour.

@@ -288,26 +288,31 @@ Chapter 3 theorem-facing wrappers compiling:
    composed local-inverse a.e.-measurability from a.e. localization in the open
    moment range:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_ae_mem_open_momentRange_real`.
+90. Named finite-coordinate empirical moment vector:
+   `vaart1998_finiteCoordinateEmpiricalMoment`.
+91. Named finite-coordinate population moment vector:
+   `vaart1998_finiteCoordinatePopulationMoment`.
+92. Supplied multivariate empirical-moment CLT/Gaussian/MemLp interface:
+   `Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate`.
+93. Theorem 4.1 localized covarianceBilinDual source wrapper fed by that CLT
+   certificate:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_real`.
 
-Latest remote base after rebase before this packet: `c497ee0`.
-Latest pushed Vaart packet before this run: `989ea80`
-(`Add Vaart localized finite-coordinate wrappers`).
+Latest remote base after rebase before this packet: `7977bf0`.
+Latest pushed Vaart packet before this run: `7977bf0`
+(`Add Vaart localized covariance wrappers`).
 
-The current theorem-sized packet carries the a.e.-localized local-inverse
-handoff through the covariance-display and covarianceBilinDual Theorem 4.1
-source wrappers.  The canonical covariance route now has variants that either
-take composed local-inverse a.e.-measurability directly or derive it from
-per-`n` a.e. localization in the inverse-function-theorem target.  This removes
-global local-inverse measurability from the finite-coordinate delta, Gaussian,
-covariance-display, and covarianceBilinDual source route whenever true a.e.
-localization is available.
+The current theorem-sized packet introduces the source-shaped multivariate
+empirical-moment CLT interface for Vaart Example 2.18 as used in Theorem 4.1.
+The interface names the empirical and population moment vectors, packages the
+supplied vector CLT/Gaussian/MemLp limit facts, and proves that this certificate
+feeds the localized covarianceBilinDual Theorem 4.1 source wrapper.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. build the next source-shaped multivariate empirical-moment CLT interface,
-   keeping the actual vector CLT supplied if mathlib/local APIs still only
-   expose scalar CLT directly;
+1. discharge the CLT certificate from scalar projected CLTs via a Cramér-Wold
+   interface, or record the exact missing mathlib/local weak-convergence API;
 2. add the finite-matrix covariance specialization only if it can reuse the
    existing covarianceBilinDual pullback without opening a large matrix
    algebra detour.
@@ -396,6 +401,15 @@ certificates.  The open source/target API comes from
 `OpenPartialHomeomorph.left_inv`.  The probability-localization bridge uses
 `MeasureTheory.tendstoInMeasure_iff_measureReal_dist` plus real probability
 complement algebra.
+
+Search result for Vaart Example 2.18: the source multivariate CLT statement is
+in `VanDerVaart_Asymptotic_Statistics_1-115.md` around lines 780-792.  The text
+uses the Cramér-Wold device to reduce convergence of finite vectors to
+convergence of all real linear projections, then applies the univariate CLT to
+`t^T Y_i - t^T μ`.  The current Lean packet records the vector CLT as
+`Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate`; the next proof layer
+should either discharge this certificate from scalar projected CLTs or record
+the exact missing Cramér-Wold/weak-convergence API.
 
 Search result for the finite-coordinate LLN layer: local
 `ProbabilityMeasure.StrongLaw` and `ProbabilityTheory.Basic` expose real-valued

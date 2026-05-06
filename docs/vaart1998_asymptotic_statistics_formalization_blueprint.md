@@ -181,8 +181,13 @@ Initial modules:
   layer pushes the same localized interface through the covariance-display and
   covarianceBilinDual wrappers, so the canonical covariance route no longer
   needs global local-inverse measurability when a.e. target localization is
-  available.  It still deliberately leaves the multivariate empirical-moment
-  CLT and a finite-matrix specialization as explicit next layers.
+  available.  The current CLT-interface layer names the finite-coordinate
+  empirical and population moment vectors, packages the supplied multivariate
+  empirical-moment CLT/Gaussian/MemLp facts as
+  `Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate`, and proves that
+  this certificate feeds the localized covarianceBilinDual Theorem 4.1 source
+  wrapper.  It still deliberately leaves the Cramér-Wold/scalar-CLT proof of
+  that certificate and a finite-matrix specialization as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
