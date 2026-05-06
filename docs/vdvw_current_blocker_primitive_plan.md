@@ -5943,3 +5943,14 @@ assert that arbitrary VdV&W classes satisfy the inequality; it provides a clean
 endpoint for structural finite-code/finite-trace/VC routes that can prove it.
 The non-finite arbitrary-class blocker remains the weaker probability-level
 event comparison or a genuine structural selected-cover theorem.
+
+2026-05-05 untruncated pointwise route follow-up: the fixed-`M` pointwise
+consumer now composes with the large-`M` envelope-tail handoff.  `Theorem243.lean`
+adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_pointwise_finiteNetHoeffdingUpper`.
+This gives an untruncated centered convergence endpoint from fixed-radius
+stochastic entropy plus eventual pointwise finite-net control at every positive
+truncation level, without introducing Rademacher/sign or tail/UI assumptions in
+the statement.  The exact arbitrary-class blocker remains proving that
+pointwise/event comparison or a structural selected-cover theorem from the
+textbook hypotheses.

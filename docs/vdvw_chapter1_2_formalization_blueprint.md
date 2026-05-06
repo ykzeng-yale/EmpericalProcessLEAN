@@ -1852,6 +1852,13 @@ This supports structural finite-code/trace/VC proof routes while preserving the
 general arbitrary-class blocker as the weaker probability-level event
 comparison.
 
+2026-05-05 untruncated pointwise route:
+`Theorem243.lean` now adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_pointwise_finiteNetHoeffdingUpper`,
+so a structural proof of fixed-radius pointwise finite-net control at all
+positive truncation levels now reaches the untruncated centered convergence
+statement directly.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

@@ -2201,3 +2201,10 @@ This is a structural sufficient-condition endpoint: fixed-radius stochastic
 entropy plus eventual pointwise control of the centered truncated supremum by
 `finiteNetHoeffdingUpper_eta + eta` implies fixed-`M` centered-truncated
 convergence.
+
+2026-05-05 untruncated pointwise route follow-up:
+`Theorem243.lean` now proves
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_pointwise_finiteNetHoeffdingUpper`,
+composing the fixed-`M` pointwise finite-net consumer with the large-`M`
+envelope-tail handoff.  The remaining work is to prove the pointwise/event
+finite-net comparison, not another endpoint wrapper.
