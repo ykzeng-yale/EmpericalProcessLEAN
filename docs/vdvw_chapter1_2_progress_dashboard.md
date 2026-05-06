@@ -155,10 +155,13 @@ and
 The canonical envelope/grid original-VC route is now available for both
 selected fixed-radius side conditions and variable-domain book entropy,
 including the uniform original threshold-VC and original full-subgraph-VC
-specializations.  The next `/goal` target should consume these packages in the
-existing full-subgraph side-condition/final route or prove a genuinely new
-class-geometry/cardinality theorem; add a `P`-GC/in-mean endpoint adapter only
-if it is immediately consumed.
+specializations.  It now also reaches centered untruncated convergence via
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc`,
+with the usual analytic side conditions kept explicit.  The next `/goal`
+target should discharge those analytic side conditions in a compact original-
+VC side-condition/integrable constructor or prove a genuinely new class-
+geometry/cardinality theorem; add a `P`-GC/in-mean endpoint adapter only if it
+is immediately consumed.
 The a.e.-measurable map-law bridge is now also available for common-domain
 arbitrary maps and varying-domain endpoints through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable`,

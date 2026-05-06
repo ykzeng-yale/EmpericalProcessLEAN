@@ -291,9 +291,16 @@ The entropy side adds
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_subgraph_vc`,
 and
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc`.
-The next useful proof is to consume this original-VC canonical grid route in
-the existing full-subgraph side-condition/final theorem packages, or prove a
-new concrete class-geometry/cardinality theorem.  Do not add another endpoint
+The original-VC canonical grid route now feeds the centered untruncated
+Theorem 2.4.3 convergence machinery through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc`.
+This is an actual final-machinery consumer, not another wrapper around the
+same selected package: it keeps the analytic side conditions explicit while
+reducing the structural input from truncated-class full-subgraph VC to
+original-class full-subgraph VC.  The next useful proof is to discharge those
+analytic side conditions in a compact original-VC side-condition/integrable
+constructor, prove a new concrete class-geometry/cardinality theorem, or move
+to the genuine random-entropy tail/UI bridge.  Do not add another endpoint
 alias for the same selected fixed-radius cardinality route unless final
 theorem assembly consumes it.
 

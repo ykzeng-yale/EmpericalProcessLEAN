@@ -190,11 +190,15 @@ The entropy side has
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_subgraph_vc`,
 and
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc`.
-The immediate next structural target is to consume these original-VC
-canonical grid packages in the existing full-subgraph side-condition/final
-route, or prove a genuinely new class-geometry/cardinality theorem.  Do not
-add another endpoint alias for this same route unless final theorem assembly
-consumes it.
+The original-VC canonical grid package is now consumed by the centered
+untruncated convergence machinery through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc`.
+This keeps the analytic side conditions explicit but reduces the structural
+VC input from truncated-class full-subgraph VC to original-class full-subgraph
+VC.  The immediate next structural target is to discharge those analytic side
+conditions in a compact original-VC side-condition/integrable constructor, or
+prove a genuinely new class-geometry/cardinality theorem.  Do not add another
+endpoint alias for this same route unless final theorem assembly consumes it.
 The finite pointwise-code covering lift is now also available:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
 and
