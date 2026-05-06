@@ -5989,7 +5989,14 @@ polynomial^#thresholds`, and then transfers the same bound to the realized
 `card + 1 <= C * (n + 1)^d` entropy shapes.  This is a genuine structural
 input for finite-code/threshold-grid Theorem 2.4.3 routes; next work should
 consume it in concrete selected-cover or grid-cardinality instantiations
-instead of rebuilding the product-code estimate.
+instead of rebuilding the product-code estimate.  The approximate-cover layer
+can now consume threshold code-set cardinality directly through
+`nonempty_finiteEmpiricalL1CoverAtCard_of_thresholdTraceCode_coordinate_approx_codeSet_card_le`
+and
+`empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_codeSet_card_le`,
+so later selected-cover routes no longer need to re-enter the product API
+when the available structural estimate is already stated for
+`thresholdTraceCodeSet.card`.
 
 2026-05-06 coordinate-code random-cover follow-up: local search found the
 deterministic coordinate pointwise-code covering primitive

@@ -158,7 +158,11 @@ and `thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly` in
 threshold-code image by the Sauer-polynomial product under the appropriate VC
 hypothesis, including the real `card + 1` shape consumed by entropy routes.
 Future VC/grid instantiations should consume these lemmas rather than
-reproving the threshold-code/product-cardinality chain.
+reproving the threshold-code/product-cardinality chain.  The lower-level
+empirical-cover interface now also has direct code-set-cardinality bridges
+`nonempty_finiteEmpiricalL1CoverAtCard_of_thresholdTraceCode_coordinate_approx_codeSet_card_le`
+and
+`empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_codeSet_card_le`.
 The coordinate-code structural route also now lifts into the random
 empirical-cover interface through
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_pointwise_approx_code_product_cardinality_bound_samplePath`

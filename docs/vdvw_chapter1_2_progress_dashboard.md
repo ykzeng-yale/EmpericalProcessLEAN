@@ -2270,7 +2270,11 @@ These package the full threshold-code-set and realized threshold-code image
 bounds from fixed-threshold or full-subgraph VC hypotheses through the product
 of fixed-threshold binary trace families and Sauer-Shelah, including the real
 `card + 1` entropy shape.  This is a structural cardinality input for
-VC/threshold-grid Theorem 2.4.3 routes, not another convergence endpoint.
+VC/threshold-grid Theorem 2.4.3 routes, not another convergence endpoint.  The
+same layer now exposes direct threshold-code-set empirical-cover bridges
+`nonempty_finiteEmpiricalL1CoverAtCard_of_thresholdTraceCode_coordinate_approx_codeSet_card_le`
+and
+`empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_codeSet_card_le`.
 
 2026-05-06 coordinate-code random-cover follow-up:
 `Theorem243.lean` now lifts coordinatewise finite pointwise approximation codes

@@ -588,6 +588,39 @@ theorem nonempty_finiteEmpiricalL1CoverAtCard_of_thresholdTraceCode_coordinate_a
       hindexClass hcard_le
 
 /--
+Approximate empirical-cover witness from threshold signatures with the terminal
+cardinality bounded directly by the full finite threshold-code set.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_thresholdTraceCode_coordinate_approx_codeSet_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {epsilon : ℝ} {cardinality : ℕ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hcoordinate :
+      ∀ sampleIndex : Fin n,
+        ∀ index, index ∈ indexClass ->
+          ∀ center, center ∈ indexClass ->
+            (∀ threshold : {threshold // threshold ∈ thresholds},
+              (threshold.1 < classFun index (sample sampleIndex) ↔
+                threshold.1 < classFun center (sample sampleIndex))) ->
+            |classFun index (sample sampleIndex) -
+              classFun center (sample sampleIndex)| ≤ epsilon)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le :
+      (thresholdTraceCodeSet sample indexClass classFun thresholds).card ≤
+        cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  exact
+    nonempty_finiteEmpiricalL1CoverAtCard_of_thresholdTraceCode_coordinate_approx_card_le
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) hepsilon_nonneg hcoordinate hindexClass
+      ((thresholdTraceCode_image_toFinset_card_le_thresholdTraceCodeSet_card
+        sample indexClass classFun thresholds).trans hcard_le)
+
+/--
 Numeric empirical-covering-number bound from finite threshold signatures and a
 coordinatewise approximate-separation hypothesis.
 -/
@@ -626,6 +659,42 @@ theorem empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_car
                   threshold sampleIndex
               simpa [empiricalTrace] using hiff))
       hcard_le
+
+/--
+Approximate empirical-cover bridge from threshold signatures with the terminal
+cardinality bounded directly by the full finite threshold-code set.
+
+This is the code-set form of
+`empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_card_le`;
+it lets later VC/grid arguments consume `thresholdTraceCodeSet` cardinality
+estimates without reopening the product-of-threshold-families proof.
+-/
+theorem empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_codeSet_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {thresholds : Finset ℝ} {epsilon : ℝ} {cardinality : ℕ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hcoordinate :
+      ∀ sampleIndex : Fin n,
+        ∀ index, index ∈ indexClass ->
+          ∀ center, center ∈ indexClass ->
+            (∀ threshold : {threshold // threshold ∈ thresholds},
+              (threshold.1 < classFun index (sample sampleIndex) ↔
+                threshold.1 < classFun center (sample sampleIndex))) ->
+            |classFun index (sample sampleIndex) -
+              classFun center (sample sampleIndex)| ≤ epsilon)
+    (hcard_le :
+      (thresholdTraceCodeSet sample indexClass classFun thresholds).card ≤
+        cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_thresholdTraceCode_coordinate_approx_card_le
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (thresholds := thresholds) hepsilon_nonneg hcoordinate
+      ((thresholdTraceCode_image_toFinset_card_le_thresholdTraceCodeSet_card
+        sample indexClass classFun thresholds).trans hcard_le)
 
 /--
 Approximate empirical-cover bridge from threshold signatures with the terminal
