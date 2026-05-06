@@ -6155,3 +6155,20 @@ requires it; the productive next target is upstream structural input
 (grid/quantizer/VC cardinality or selected empirical-cover tail/UI from the
 book entropy hypothesis) or a theorem-critical Chapter 1 arbitrary-map
 primitive.
+
+2026-05-06 selected fixed-radius nat-poly tail/UI bridge: local search found
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.firstSample_nnnorm_bound_of_logCardinality_nat_poly_bound`
+and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_nnnorm_bound`,
+but no direct constructor composing natural-polynomial structural cardinality
+growth into the selected fixed-radius tail/UI package.  `Theorem243.lean` now
+proves
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`.
+This is an upstream side-condition bridge for VC/Sauer, finite-trace, and
+quantizer/grid routes: once a route proves
+`cardinality + 1 <= C(M,eta) * (n+1)^d`, the selected finite-net tail/UI
+package can be built without manually restating first-sample `nnnorm`
+boundedness.  The next useful work is to supply concrete structural
+cardinality estimates or prove the genuinely random selected empirical-cover
+tail/UI theorem; do not spend another run on endpoint aliases for already
+closed routes.

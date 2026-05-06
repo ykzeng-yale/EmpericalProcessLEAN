@@ -213,6 +213,13 @@ package and endpoint
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_pointwise_approx_code_product_cardinality_bound_nat_poly`,
 and
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_coordinate_pointwise_approx_code_product_nat_poly`.
+The variable-domain book-entropy package now also has the direct
+natural-polynomial selected fixed-radius tail/UI bridge
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`,
+which composes the first-sample bounded-entropy route with the selected
+tail/UI package.  Future VC/Sauer, finite-trace, and quantizer/grid arguments
+should feed this constructor rather than restating the intermediate
+first-sample `nnnorm` side condition.
 The remaining useful work is a concrete quantizer/grid/VC cardinality estimate
 for the coordinate code sets, not another endpoint wrapper.
 For Chapter 1 varying-domain asymptotic-measurability,

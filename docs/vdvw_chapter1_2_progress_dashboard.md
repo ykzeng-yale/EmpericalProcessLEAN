@@ -174,6 +174,11 @@ The structural input is now fed by two reusable bridges:
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.firstSample_nnnorm_bound_of_logCardinality_div_bound`
 and
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.firstSample_nnnorm_bound_of_logCardinality_nat_poly_bound`.
+The natural-polynomial route now also feeds the selected fixed-radius
+tail/UI package directly through
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`,
+so structural VC/Sauer and grid routes no longer need to expose the
+intermediate first-sample `nnnorm` hypothesis by hand.
 Thus deterministic normalized-log bounds, including natural-polynomial
 VC/Sauer-style cardinality growth, now supply the first-sample `nnnorm`
 condition directly.  The next non-finite theorem task is upstream: prove such
