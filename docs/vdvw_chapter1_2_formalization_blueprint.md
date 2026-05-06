@@ -212,6 +212,14 @@ It now also reaches in-mean centered-supremum convergence via
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_originalFullSubgraph_integrable_of_countable_canonical`,
 and the combined package
 `VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical`.
+It now also feeds the Lemma 2.4.5 finite-product and a.s. centered-supremum
+layer through
+`tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_originalFullSubgraph_integrable_canonical`,
+`VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_originalFullSubgraph_integrable_canonical`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_originalFullSubgraph_integrable_canonical_of_countable_integrable`,
+`VdVWAlmostSureGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical_of_countable_integrable`,
+and the strong package
+`VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable`.
 Do not add another endpoint alias for this same route unless final theorem
 assembly consumes a genuinely new proof input.  The next non-duplicative target
 is a new class-geometry/cardinality theorem or the book random-entropy

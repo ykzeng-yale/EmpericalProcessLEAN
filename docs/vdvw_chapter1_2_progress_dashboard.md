@@ -174,6 +174,14 @@ centered-supremum convergence through
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_originalFullSubgraph_integrable_of_countable_canonical`,
 and the combined local `P`-GC/in-mean package
 `VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical`.
+It now also reaches the fixed-product Lemma 2.4.5 centered-supremum layer and
+the current strongest original-class endpoint through
+`tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_originalFullSubgraph_integrable_canonical`,
+`VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_originalFullSubgraph_integrable_canonical`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_originalFullSubgraph_integrable_canonical_of_countable_integrable`,
+`VdVWAlmostSureGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical_of_countable_integrable`,
+and
+`VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable`.
 The next useful `/goal` target is not another alias for this same route:
 prove a genuinely new class-geometry/cardinality theorem, add a final theorem
 statement only if it consumes a new proof input, or return to the book

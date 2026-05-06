@@ -315,6 +315,14 @@ through
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_originalFullSubgraph_integrable_of_countable_canonical`,
 and the combined canonical `P`-GC/in-mean package
 `VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical`.
+The same route now reaches the Lemma 2.4.5 finite-product/a.s.
+centered-supremum layer through
+`tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_originalFullSubgraph_integrable_canonical`,
+`VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_originalFullSubgraph_integrable_canonical`,
+`vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_originalFullSubgraph_integrable_canonical_of_countable_integrable`,
+`VdVWAlmostSureGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical_of_countable_integrable`,
+and the strong endpoint
+`VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable`.
 The next useful proof is to prove a new concrete class-geometry/cardinality
 theorem or move to the genuine random-entropy tail/UI bridge.  Do not add
 another endpoint alias for the same selected fixed-radius cardinality route

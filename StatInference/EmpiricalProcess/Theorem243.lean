@@ -39096,6 +39096,121 @@ theorem
         hvc hindexClass henvelope hclass henv henv_integrable
 
 /--
+Canonical original full-subgraph Theorem 2.4.3 in-mean conclusion transported
+to the fixed infinite iid product space and the Lemma 2.4.5 centered-supremum
+statistic.
+-/
+theorem
+    tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_originalFullSubgraph_integrable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sequence : ℕ -> Observation,
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence
+          ∂(vdVWInfiniteProductMeasure P))
+      atTop (𝓝 0) := by
+  exact
+    tendsto_integral_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (Set.to_countable indexClass)
+      henvelope hclass henv_integrable
+      (integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_originalFullSubgraph_integrable_of_countable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable)
+
+/--
+Canonical original full-subgraph Theorem 2.4.3 centered-supremum convergence
+transported to the fixed infinite iid product space used by Lemma 2.4.5.
+-/
+theorem
+    VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_originalFullSubgraph_integrable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+      (fun n sequence =>
+        vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun n sequence)
+      atTop (fun _ => 0) := by
+  exact
+    VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable)
+
+/--
+Canonical original full-subgraph Lemma 2.4.5 a.s. zero endpoint with the
+reverse/cofiltration handoff discharged by the proved order-dual theorem.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_originalFullSubgraph_integrable_canonical_of_countable_integrable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) := by
+  have hprob :
+      VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+        (fun n sequence =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        atTop (fun _ => (0 : ℝ)) :=
+    VdVWConvergesInOuterProbability_nat_succ
+      (VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_originalFullSubgraph_integrable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable)
+  exact
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_textbookReverseComparisonHandoff_of_outerProbability_invNat_geometric
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (Set.to_countable indexClass)
+      henvelope hclass henv_integrable hprob
+      (VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope)
+        (Set.to_countable indexClass) henvelope hclass henv_integrable)
+
+/--
 Canonical-sample full-subgraph route to the book-style variable-domain entropy
 condition.
 
@@ -41332,6 +41447,118 @@ theorem
           sequence := by
     simpa [hsample] using hmember_le
   exact hmember_le_samplePath.trans (le_of_lt hsup_lt)
+
+/--
+Canonical original full-subgraph almost-sure `P`-Glivenko-Cantelli endpoint.
+-/
+theorem
+    VdVWAlmostSureGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical_of_countable_integrable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWAlmostSureGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i) where
+  law := fun i => vdVWInfiniteProductMeasure_coordinate_hasLaw P i
+  independent := fun _i _j hij =>
+    (vdVWInfiniteProductMeasure_iIndepFun_coordinates P).indepFun hij
+  uniform_deviation_ae := by
+    have hsup :=
+      vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_originalFullSubgraph_integrable_canonical_of_countable_integrable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable
+    filter_upwards [hsup] with sequence hsequence
+    exact
+      UniformDeviationTendstoZeroOn_of_vdVWLemma245CenteredEmpiricalSupremum_tendsto_zero_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) henvelope hclass henv_integrable hsequence
+
+/--
+Canonical original full-subgraph Theorem 2.4.3/Lemma 2.4.5 package with
+outer-probability and outer-a.s. `P`-GC, local `P`-GC, in-mean convergence,
+and a.s. centered-supremum convergence.
+-/
+theorem
+    VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWOuterProbabilityPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWOuterAlmostSurePGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) := by
+  constructor
+  · exact
+      VdVWOuterProbabilityPGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable
+  · constructor
+    · exact
+        vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_almostSure
+          (VdVWAlmostSureGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical_of_countable_integrable
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (vcDegree := vcDegree)
+            hvc hindexClass henvelope hclass henv henv_integrable).uniform_deviation_ae
+    · constructor
+      · exact
+          (VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (vcDegree := vcDegree)
+            hvc hindexClass henvelope hclass henv henv_integrable).1
+      · constructor
+        · exact
+            (VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical
+              (P := P) (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (vcDegree := vcDegree)
+              hvc hindexClass henvelope hclass henv henv_integrable).2
+        · exact
+            vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_originalFullSubgraph_integrable_canonical_of_countable_integrable
+              (P := P) (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (vcDegree := vcDegree)
+              hvc hindexClass henvelope hclass henv henv_integrable
 
 /--
 Canonical full-subgraph almost-sure `P`-Glivenko-Cantelli record from the
