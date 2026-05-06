@@ -67,14 +67,26 @@ unless a new exact statement directly consumes them.
 
 ## Current `/goal` Target
 
-Authoritative operational prompt, 2026-05-05 after the verified finite-trace
-structural Theorem 2.4.3 `P`-GC/in-mean endpoint: finish VdV&W Chapters 1-2
-in Lean by dependency order, with
-proof-hole-free code, search-first reuse of pinned mathlib and local
+Authoritative operational prompt, 2026-05-06 after pushed head `2263fb4`
+(`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`):
+finish VdV&W Chapters 1-2 in Lean by dependency order, with proof-hole-free
+code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
 objective is intentionally broad and currently cannot be edited in place; this
 paragraph is the replacement target for ongoing `/goal` work.
+
+Rebased next-target rule: do not add another alias or endpoint wrapper for a
+route already listed below unless it consumes a genuinely new theorem
+hypothesis.  The highest-value Theorem 2.4.3 work is now upstream: prove the
+selected empirical-cover entropy tail/UI or ordinary-mean input from the
+book's fixed-radius condition, or prove a concrete structural cardinality
+theorem such as VC/Sauer, finite-trace, threshold-grid, or quantizer
+cardinality that feeds the existing natural-polynomial selected fixed-radius
+route.  If those entropy/cardinality attempts are genuinely blocked after
+search and Lean attempts, move to a theorem-critical Chapter 1 process
+primitive: arbitrary-index FDD converse, separability/tightness/asymptotic
+measurability, or nonmeasurable outer-cover signed weak convergence.
 
 Verified compiled foundation that should not be repeated:
 `vdVW_theorem_2_4_1_glivenkoCantelli`;

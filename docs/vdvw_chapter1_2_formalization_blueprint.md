@@ -89,8 +89,9 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 after the verified finite-trace
-structural Theorem 2.4.3 `P`-GC/in-mean endpoint: the strong
+Current operational target, 2026-05-06 after pushed head `2263fb4`
+(`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`):
+the strong
 Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
@@ -105,13 +106,18 @@ exact textbook mismatch layer: prove a real tail/UI, uniform-integrability,
 deterministic structural cardinality, or ordinary mean-convergence input from
 the book random entropy condition
 `log N(η, F_M, L1(P_n)) = o_P^*(n)`, or prove/record the precise structural
-primitive needed to justify that step.  Do not rebuild closed Theorem 2.4.3
-endpoint packages.  If the entropy bridge is blocked, produce the cleanest
+primitive needed to justify that step.  The productive structural fallback is
+not another endpoint alias: prove a concrete VC/Sauer, finite-trace,
+threshold-grid, or quantizer cardinality theorem that feeds the compiled
+natural-polynomial selected fixed-radius route.  Do not rebuild closed
+Theorem 2.4.3 endpoint packages.  If the entropy/cardinality bridge is
+blocked after real search and Lean attempts, produce the cleanest
 final-current Theorem 2.4.3/Lemma 2.4.5 statement from the full-subgraph or
 structural-rate packages and classify its assumptions before moving to
 Chapter 1 arbitrary-map/`P`-measurable foundations, nonmeasurable envelope-tail
-outer-cover clauses, or separability primitives required by exact Chapter 1-2
-statements.  The finite-trace natural-polynomial structural route now directly
+outer-cover clauses, arbitrary-index FDD converse, or separability primitives
+required by exact Chapter 1-2 statements.  The finite-trace
+natural-polynomial structural route now directly
 reaches centered untruncated convergence through
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_finite_trace_image_cardinality_bound_nat_poly`;
 the paired endpoint
