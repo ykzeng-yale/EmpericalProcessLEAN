@@ -128,6 +128,16 @@ Theorem 2.4.3 route.  Remaining structural work is still the actual finite
 code-set cardinality/compression or VC/Sauer estimate, not another endpoint
 alias.
 
+2026-05-06 scalar-quantizer coordinate-cardinality follow-up: the same route
+now has product-cardinality convenience wrappers
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_samplePath`.
+They use mathlib `Finset.prod_le_pow_card` to reduce the product domination
+side condition to a uniform per-coordinate code-set cardinality bound plus
+`coordinateCard ^ m` domination.  Future compression/grid proofs should supply
+that per-coordinate bound or a sharper structural bound.
+
 Rebased next-target rule: do not add another alias or endpoint wrapper for a
 route already listed below unless it consumes a genuinely new theorem
 hypothesis.  The highest-value Theorem 2.4.3 work is now upstream: prove the

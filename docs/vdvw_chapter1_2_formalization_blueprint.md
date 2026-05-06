@@ -159,6 +159,9 @@ and its all-positive-radius wrapper.  Future grid/compression work can now
 feed Theorem 2.4.3 by proving finite coordinate code-set cardinality and
 decoder-error hypotheses, rather than manually rebuilding the selected
 fixed-radius package.
+The paired coordinate-cardinality wrappers now further reduce the product
+bound to per-coordinate code-set cardinality estimates and
+`coordinateCard ^ m` domination.
 
 The first-sample `UnifIntegrable` route now also reaches untruncated centered
 convergence directly, so future work should prove the UI/tail/mean or

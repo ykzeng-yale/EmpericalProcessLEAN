@@ -67,6 +67,12 @@ turn finite coordinate code sets and decoder error `eta / 2` into the random
 empirical-cover domination required by the selected fixed-radius Theorem 2.4.3
 route.  This is a structural input; the remaining hard step is a real
 cardinality/compression or VC/Sauer estimate for the code sets.
+The route now also has coordinate-cardinality convenience wrappers
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_samplePath`,
+reducing product-cardinality domination to per-coordinate cardinality bounds
+via `Finset.prod_le_pow_card`.
 
 The measure-level Portmanteau continuity-set
 implication and closed/open converse wrappers are now compiled as well.  The
