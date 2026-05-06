@@ -1777,6 +1777,48 @@ theorem
     BoundedContinuousFunction.neg_norm_le_apply f (X i ω)
 
 /--
+Continuous maps preserve varying-domain lower-shifted bounded-continuous
+asymptotic measurability.
+
+This is the sample-size-varying analogue of
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.comp_continuous`.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.comp_continuous
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v} {T : Type x}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S] [TopologicalSpace T]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+        Ω μs X l)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+      Ω μs (fun i ω => g (X i ω)) l := by
+  intro f c hlower
+  let gC : C(S, T) := ⟨g, hg⟩
+  simpa [gC] using h (f.compContinuous gC) c hlower
+
+/--
+Continuous maps preserve the varying-domain canonical shifted predicate when
+the source has the stronger all-lower-shifts version.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.comp_continuous_of_lowerShifted
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v} {T : Type x}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S] [TopologicalSpace T]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+        Ω μs X l)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+      Ω μs (fun i ω => g (X i ω)) l :=
+  VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.of_lowerShifted
+    (h.comp_continuous hg)
+
+/--
 The varying-domain lower-shifted predicate is stable under passing to a finer
 index filter.
 -/

@@ -5998,3 +5998,14 @@ These turn coordinate finite code sets plus product-cardinality domination into
 the random covering-number domination used by the pointwise-code endpoint.
 This is a structural input closure; next work can specialize it to concrete
 threshold grids, quantizers, or VC code-set cardinalities.
+
+2026-05-06 varying-domain lower-shifted continuous-map follow-up: local search
+found common-domain lower-shifted continuous-map closure and varying-domain
+signed continuous-map closure, but no matching varying-domain lower-shifted
+bridge.  `WeakConvergence.lean` now proves
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.comp_continuous`
+and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.comp_continuous_of_lowerShifted`.
+This closes a self-contained Chapter 1 foundation gap for sample-size-varying
+statistics while leaving the deeper signed extended-real arbitrary-map
+cover-existence and process tightness/converse blockers open.

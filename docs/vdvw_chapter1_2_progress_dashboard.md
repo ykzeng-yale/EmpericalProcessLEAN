@@ -2242,3 +2242,11 @@ into the random empirical covering-number interface through
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_pointwise_approx_code_product_cardinality_bound_samplePath`
 and its all-positive-radius version.  This lets finite coordinate code-set
 products feed the selected fixed-radius Theorem 2.4.3 route directly.
+
+2026-05-06 varying-domain lower-shifted continuous-map follow-up:
+`WeakConvergence.lean` now adds
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.comp_continuous`
+and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.comp_continuous_of_lowerShifted`,
+matching the existing common-domain and signed varying-domain continuous-map
+closures for this Chapter 1 asymptotic-measurability layer.
