@@ -28,8 +28,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
-- Current manual frontier after rebasing over remote main `986347c` (`Rebase
-  VdVW goal after current Theorem 2.4.3 progress`) on 2026-05-06 and focused Lean
+- Current manual frontier after rebasing over remote main `64526db` (`Merge
+  remote-tracking branch 'origin/main'`) on 2026-05-06 and focused Lean
   verification of the Chapter 11.5 RAM block-model plus selected Exercise 9.3
   Hopf-Lax interpolation assembly layer:
   Chapter 9/10 now has a compiled finite-valued
@@ -173,7 +173,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi115_strong_hopf_lax_certificate_of_block_model_interpolants` and
   `chewi115_zero_hopf_lax_certificate_of_block_model_interpolants`, combining
   the finite block-model conditional-upper theorem with the selected
-  interpolation estimates into the exact RAM Hopf-Lax certificates.
+  interpolation estimates into the exact RAM Hopf-Lax certificates.  The
+  newest direct source-candidate assembly packet adds
+  `chewi115_strong_hopf_lax_certificate_of_block_model_source_candidates` and
+  `chewi115_zero_hopf_lax_certificate_of_block_model_source_candidates`, so the
+  block model plus Chewi's selected Exercise 9.3 test point now produce strong
+  and weak RAM Hopf-Lax certificates without an intermediate supplied
+  `hmodel_interp`.
   Exact 10.13 `sInf` or arbitrary norm/dual-norm packaging is deferred until
   source-report exactness or a later theorem demands it.
 - Current manual frontier after focused Lean verification rebased over pushed
@@ -383,15 +389,14 @@ High-value local files:
 ## Current Active Target
 
 Current active target after the verified Chapter 11.5 RAM block-model and
-Exercise 9.3 interpolation assembly packet rebased over remote main `986347c`: treat
+Exercise 9.3 interpolation assembly packet rebased over remote main `64526db`: treat
 Chapters 3-8, Chapter 9/10 mirror-descent substrate, Chapter 11.2/11.3 ABP
 telescope, and Chapter 11.4 AM as stable infrastructure.  The live manual
 `/goal` frontier is
 `StatInference/Optimization/RandomizedAlternatingMinimization.lean`.  Next
-theorem-sized packet: finish Chewi Theorem 11.5 RAM by combining the selected
-Hopf-Lax/Moreau source-candidate bridges with the block-model certificate
-assemblers and discharging the remaining admissibility/radius side conditions.
-After that, move directly
+theorem-sized packet: finish Chewi Theorem 11.5 RAM by promoting the direct
+source-candidate certificates to displayed strong geometric and weak
+`2 * D * R_beta^2 / N` rate wrappers.  After that, move directly
 to Sinkhorn Theorems 11.7/11.8 from ABP/mirror-descent supplied finite
 KL/Pinsker/marginal interfaces, then open Chapter 12 SMPGD.  This paragraph
 supersedes older Chapter 6, Chapter 7, Chapter 8, and Chapter 11.4 next-target
