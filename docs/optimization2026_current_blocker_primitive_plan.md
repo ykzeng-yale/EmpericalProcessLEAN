@@ -143,13 +143,21 @@ packet adds `chewi625_cutLower_le_cutUpper`, `chewi625ConstVec`,
 `chewi625BoxState_ordered`, `chewi625BoxState_step_isSeparationVector`,
 `chewi625BoxState_query_not_mem_next_strict_box`,
 `chewi625BoxState_step_subset`, `chewi625BoxState_selected_width_succ`, and
-`chewi625BoxState_unselected_width_succ`.
+`chewi625BoxState_unselected_width_succ`.  The newest width/counting bridge
+adds `chewi625BoxWidth`, `chewi625BoxWidth_zero`,
+`chewi625BoxWidth_selected_succ`, `chewi625BoxWidth_unselected_succ`,
+`chewi625BoxWidth_succ_of_cycleCoord_eq`,
+`chewi625BoxWidth_succ_of_cycleCoord_ne`,
+`chewi625CycleCoord_add_mul_eq`, `chewi625BoxWidth_succ_add_mul_self`,
+`chewi625_side_ge_two_eps_of_closedBall_subset`,
+`chewi625BoxWidth_ge_two_eps_of_closedBall_subset`, and
+`chewi625BoxState_no_closedBall_subset_of_width_lt`.
 
 Immediate aggressive target: do not loop on "small source-shape gaps" for
 6.21/6.22 and do not try to prove Theorem 6.23 directly, since the source
 explicitly switches to feasibility.  Continue Theorem 6.25 by adding the
-coordinate cut-count / iterated side-length/radius lower bound and a supplied
-deterministic replay interface; add arbitrary-`d > N` wrappers for
+full-cycle side-length/radius iteration from the cyclic-hit width lemmas and a
+supplied deterministic replay interface; add arbitrary-`d > N` wrappers for
 6.21/6.22 only if exact theorem reporting requires them.  Then open Chapters
 7-13 as theorem-sized packets, with scouts only for search/reuse and large
 parallelizable theorem surfaces, not tiny algebra wrappers.  Do the

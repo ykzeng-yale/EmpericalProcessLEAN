@@ -1656,5 +1656,112 @@ theorem chewi625BoxState_unselected_width_succ {d : ℕ} [NeZero d]
       (chewi625BoxLower (d := d) R x n)
       (chewi625BoxUpper (d := d) R x n) (x n) hjn
 
+/-- Coordinate side width of the recursive resisting box. -/
+noncomputable def chewi625BoxWidth {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) (i : Fin d) : ℝ :=
+  chewi625BoxUpper (d := d) R x n i -
+    chewi625BoxLower (d := d) R x n i
+
+@[simp] theorem chewi625BoxWidth_zero {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    chewi625BoxWidth (d := d) R x 0 i = 2 * R := by
+  simp [chewi625BoxWidth]
+  ring
+
+/-- Width form of the selected-coordinate update. -/
+theorem chewi625BoxWidth_selected_succ {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    chewi625BoxWidth (d := d) R x (n + 1) (chewi625CycleCoord (d := d) n) =
+      chewi625BoxWidth (d := d) R x n (chewi625CycleCoord (d := d) n) / 2 := by
+  simpa [chewi625BoxWidth] using
+    chewi625BoxState_selected_width_succ (d := d) R x n
+
+/-- Width form of the nonselected-coordinate update. -/
+theorem chewi625BoxWidth_unselected_succ {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) {n : ℕ} {j : Fin d}
+    (hjn : j ≠ chewi625CycleCoord (d := d) n) :
+    chewi625BoxWidth (d := d) R x (n + 1) j =
+      chewi625BoxWidth (d := d) R x n j := by
+  simpa [chewi625BoxWidth] using
+    chewi625BoxState_unselected_width_succ (d := d) R x hjn
+
+/-- If the cyclic schedule selects `j` at step `n`, then `j`'s width halves. -/
+theorem chewi625BoxWidth_succ_of_cycleCoord_eq {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) {n : ℕ} {j : Fin d}
+    (hjn : chewi625CycleCoord (d := d) n = j) :
+    chewi625BoxWidth (d := d) R x (n + 1) j =
+      chewi625BoxWidth (d := d) R x n j / 2 := by
+  rw [← hjn]
+  exact chewi625BoxWidth_selected_succ (d := d) R x n
+
+/-- If the cyclic schedule does not select `j` at step `n`, then `j`'s width is unchanged. -/
+theorem chewi625BoxWidth_succ_of_cycleCoord_ne {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) {n : ℕ} {j : Fin d}
+    (hjn : chewi625CycleCoord (d := d) n ≠ j) :
+    chewi625BoxWidth (d := d) R x (n + 1) j =
+      chewi625BoxWidth (d := d) R x n j := by
+  exact chewi625BoxWidth_unselected_succ (d := d) R x (Ne.symm hjn)
+
+/-- In the cyclic schedule, coordinate `j` is selected at every step `j + m*d`. -/
+theorem chewi625CycleCoord_add_mul_eq {d : ℕ} [NeZero d]
+    (j : Fin d) (m : ℕ) :
+    chewi625CycleCoord (d := d) ((j : ℕ) + m * d) = j := by
+  ext
+  simp [chewi625CycleCoord, Nat.mod_eq_of_lt j.is_lt]
+
+/-- Width halving at the explicit cyclic hit time `j + m*d`. -/
+theorem chewi625BoxWidth_succ_add_mul_self {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (j : Fin d) (m : ℕ) :
+    chewi625BoxWidth (d := d) R x (((j : ℕ) + m * d) + 1) j =
+      chewi625BoxWidth (d := d) R x ((j : ℕ) + m * d) j / 2 := by
+  exact
+    chewi625BoxWidth_succ_of_cycleCoord_eq
+      (d := d) R x (n := (j : ℕ) + m * d) (j := j)
+      (chewi625CycleCoord_add_mul_eq (d := d) j m)
+
+/-- A box containing an `eps`-ball has every coordinate width at least `2 * eps`. -/
+theorem chewi625_side_ge_two_eps_of_closedBall_subset {d : ℕ}
+    {a b : EuclideanSpace ℝ (Fin d)} {eps : ℝ} (heps : 0 < eps)
+    (hball : ∃ center : EuclideanSpace ℝ (Fin d),
+      Metric.closedBall center eps ⊆ chewi625CoordinateBox a b)
+    (i : Fin d) :
+    2 * eps ≤ b i - a i := by
+  by_contra hnot
+  have hlt : b i - a i < 2 * eps := lt_of_not_ge hnot
+  exact
+    (chewi625_no_closedBall_subset_of_short_side
+      (d := d) (a := a) (b := b) heps (i := i) hlt) hball
+
+/-- Recursive-box version of the necessary side-width condition for containing an `eps`-ball. -/
+theorem chewi625BoxWidth_ge_two_eps_of_closedBall_subset {d : ℕ} [NeZero d]
+    {R eps : ℝ} (heps : 0 < eps)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {n : ℕ}
+    (hball : ∃ center : EuclideanSpace ℝ (Fin d),
+      Metric.closedBall center eps ⊆
+        chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x n)
+          (chewi625BoxUpper (d := d) R x n))
+    (i : Fin d) :
+    2 * eps ≤ chewi625BoxWidth (d := d) R x n i := by
+  simpa [chewi625BoxWidth] using
+    chewi625_side_ge_two_eps_of_closedBall_subset
+      (d := d) heps hball i
+
+/-- Recursive-box obstruction: a side shorter than `2 * eps` rules out an `eps`-ball. -/
+theorem chewi625BoxState_no_closedBall_subset_of_width_lt {d : ℕ} [NeZero d]
+    {R eps : ℝ} (heps : 0 < eps)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {n : ℕ} {i : Fin d}
+    (hwidth : chewi625BoxWidth (d := d) R x n i < 2 * eps) :
+    ¬ ∃ center : EuclideanSpace ℝ (Fin d),
+      Metric.closedBall center eps ⊆
+        chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x n)
+          (chewi625BoxUpper (d := d) R x n) := by
+  intro hball
+  have hge :=
+    chewi625BoxWidth_ge_two_eps_of_closedBall_subset
+      (d := d) (R := R) heps (x := x) (n := n) hball i
+  nlinarith
+
 end Optimization
 end StatInference

@@ -135,9 +135,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `eps`-ball.  The newest recursive-state packet adds the cyclic coordinate
   schedule, initial cube, recursive lower/upper endpoints, endpoint ordering,
   per-step valid separation, per-step query exclusion, recursive nesting, and
-  recursive selected/unselected width update facts.  The next target is the
-  coordinate cut-count / scalar side-length/radius iteration; Theorem 6.23
-  remains source context rather than a direct proof target.  The exact
+  recursive selected/unselected width update facts.  The newest width/counting
+  bridge adds a reusable width abstraction, zero/selected/unselected width
+  lemmas, explicit cyclic-hit selection at `j + m*d`, width halving at those
+  hit times, and the recursive-box `eps`-ball necessary side-width condition
+  plus its short-side contradiction wrapper.  The next target is the full-cycle
+  scalar side-length/radius iteration; Theorem 6.23 remains source context
+  rather than a direct proof target.  The exact
   Grünbaum/centroid theorem remains a
   supplied blocker for exact CoGM reporting.
 
