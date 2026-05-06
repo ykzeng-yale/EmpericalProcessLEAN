@@ -26980,6 +26980,112 @@ theorem
       (hconstant_ge_one M hM_pos) hM_pos (hpoly_bound M hM_pos)
 
 /--
+Fixed finite-code scalar-quantizer constructor for selected fixed-radius
+tail/UI side conditions.
+
+If all sample-vector quantizer codes take values in a fixed finite type
+`Code`, then the finite code set is `Finset.univ` and its normalized logarithm
+has degree-zero polynomial growth.  This is the compression-facing special case
+of the finite code-set scalar-quantizer bridge.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_fintype_scalarQuantizer_decode_error_nat_poly
+    {Observation : Type v} {Index : Type w} {Code : Type*}
+    [Fintype Code] [MeasurableSpace Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (code :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Index -> Code)
+    (decode :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> Code -> ℝ)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hdecode_close :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ sampleIndex : Fin m,
+            |vdVWTruncatedClassFun classFun envelope M index
+                ((samplePath (X n) sample m) sampleIndex) -
+              decode eta n sample m sampleIndex
+                (code eta n sample m index)| ≤ eta / 2)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun _eta _n _sample _m => Fintype.card Code) := by
+  classical
+  simpa using
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_scalarQuantizer_decode_error_codeSet_cardinality_bound_nat_poly
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (constant := fun _eta => ((Fintype.card Code : ℝ) + 1))
+      (degree := fun _eta => 0)
+      (code := code) (decode := decode)
+      (codeSet := fun _eta _n _sample _m => (Finset.univ : Finset Code))
+      hX_samplePath
+      (by
+        intro eta heta n sample m index hindex
+        exact Finset.mem_univ _)
+      hdecode_close hclass henvelope_meas
+      (by
+        intro eta heta
+        have hnonneg : (0 : ℝ) ≤ (Fintype.card Code : ℝ) := by
+          exact_mod_cast Nat.zero_le (Fintype.card Code)
+        linarith)
+      hM_pos
+      (by
+        intro eta heta n sample
+        simp)
+
+/--
+All-positive-`M` fixed finite-code scalar-quantizer side-condition packages.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_fintype_scalarQuantizer_decode_error_nat_poly
+    {Observation : Type v} {Index : Type w} {Code : Type*}
+    [Fintype Code] [MeasurableSpace Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (code :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Index -> Code)
+    (decode :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> Code -> ℝ)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hdecode_close :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ∀ index, index ∈ indexClass ->
+            ∀ sampleIndex : Fin m,
+              |vdVWTruncatedClassFun classFun envelope M index
+                  ((samplePath (X M n) sample m) sampleIndex) -
+                decode M eta n sample m sampleIndex
+                  (code M eta n sample m index)| ≤ eta / 2)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M
+        (fun _eta _n _sample _m => Fintype.card Code) := by
+  intro M hM_pos
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_fintype_scalarQuantizer_decode_error_nat_poly
+      (P := P) (X := X M) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (code := code M) (decode := decode M)
+      (hX_samplePath M) (hdecode_close M hM_pos)
+      hclass henvelope_meas hM_pos
+
+/--
 Coordinate-code selected fixed-radius package from a natural-polynomial
 product-cardinality bound.
 

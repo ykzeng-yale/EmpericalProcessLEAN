@@ -42,6 +42,14 @@ route is already compiled through
 The vector-code-set route is now compiled too; the next useful work is the
 actual finite-code/compression or VC/Sauer cardinality theorem that supplies
 its polynomial bound.
+The fixed finite-code compression special case is also closed through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_fintype_scalarQuantizer_decode_error_nat_poly`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_fintype_scalarQuantizer_decode_error_nat_poly`;
+it uses `Finset.univ` and degree-zero growth.  The next structural target
+therefore needs to go beyond fixed finite codes: sample-size-dependent
+compression/code images, or a genuine VC/Sauer/grid/threshold estimate not
+already covered by existing endpoint packages.
 
 Current `/goal` target override, 2026-05-06 after verified pushed head
 `fc98144 Add weak convergence target congruence`: treat the broad Codex goal

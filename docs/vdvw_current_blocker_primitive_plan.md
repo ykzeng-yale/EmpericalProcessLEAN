@@ -88,7 +88,12 @@ compiled as
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_scalarQuantizer_decode_error_codeSet_cardinality_bound_nat_poly`;
 it reuses `abs_sub_le_of_abs_sub_decode_le_half` and the existing finite
-pointwise-code-set constructor.
+pointwise-code-set constructor.  The fixed finite-code compression special case
+is also compiled through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_fintype_scalarQuantizer_decode_error_nat_poly`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_fintype_scalarQuantizer_decode_error_nat_poly`,
+using `Finset.univ` and a degree-zero polynomial bound.
 
 Do not spend the next `/goal` continuation on another final endpoint alias,
 another finite-index/FDD/process congruence wrapper, another selected-route
@@ -97,11 +102,15 @@ exact theorem consumes it immediately.  The next theorem-facing batch should
 now supply actual upstream mathematics: a finite-code/compression theorem,
 VC/Sauer/finite-trace/threshold-grid/quantizer cardinality estimate, or
 selected empirical-cover tail/UI/ordinary-mean theorem that feeds the compiled
-fixed-radius route.  If those Theorem 2.4.3 entropy/tail lanes block after
-real Lean/search attempts, switch to an exact Chapter 1 process primitive
-(arbitrary-index VdV&W 1.4.8 FDD converse, separability/tightness/
-asymptotic-measurability, nonmeasurable signed outer-cover weak convergence,
-or full arbitrary-map extended-real measurable-cover existence).
+fixed-radius route.  The fixed-finite-code route is now closed, so the next
+non-duplicative structural target should handle sample-size-dependent
+compression/code images or a true VC/Sauer/grid/threshold estimate not already
+covered by the existing threshold/full-subgraph packages.  If those
+Theorem 2.4.3 entropy/tail lanes block after real Lean/search attempts, switch
+to an exact Chapter 1 process primitive (arbitrary-index VdV&W 1.4.8 FDD
+converse, separability/tightness/asymptotic-measurability, nonmeasurable
+signed outer-cover weak convergence, or full arbitrary-map extended-real
+measurable-cover existence).
 
 Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
 `fc98144 Add weak convergence target congruence`: local `main` is synced with

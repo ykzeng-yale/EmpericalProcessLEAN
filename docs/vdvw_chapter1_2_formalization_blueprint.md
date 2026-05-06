@@ -105,18 +105,24 @@ vector-code-set scalar-quantizer decoder-error bridge is also compiled as
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_scalarQuantizer_decode_error_codeSet_cardinality_bound_nat_poly`
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_scalarQuantizer_decode_error_codeSet_cardinality_bound_nat_poly`.
+The fixed finite-code compression special case is also compiled as
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_fintype_scalarQuantizer_decode_error_nat_poly`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_fintype_scalarQuantizer_decode_error_nat_poly`,
+where `Finset.univ` supplies the code set and the normalized logarithmic
+growth is degree zero.
 Do not rebuild those closed endpoints or add more aliases around them.
 
 The next proof batch should target new upstream mathematics.  The most
 important Theorem 2.4.3 target is now the actual structural estimate feeding
-the selected fixed-radius route: a genuine finite-code/compression, VC/Sauer,
-finite-trace, threshold-grid, or quantizer polynomial cardinality theorem, or
-a selected empirical-cover tail/UI/ordinary-mean bridge from strong enough
-assumptions.  If those routes block, the fallback lane remains an exact
-Chapter 1 process primitive (arbitrary-index FDD converse,
-separability/tightness/asymptotic-measurability, nonmeasurable signed
-outer-cover weak convergence, or full arbitrary-map extended-real measurable
-cover existence).
+the selected fixed-radius route beyond fixed finite codes: a sample-size
+dependent compression/code-image theorem, a genuine VC/Sauer finite-trace,
+threshold-grid, or quantizer polynomial cardinality theorem, or a selected
+empirical-cover tail/UI/ordinary-mean bridge from strong enough assumptions.
+If those routes block, the fallback lane remains an exact Chapter 1 process
+primitive (arbitrary-index FDD converse, separability/tightness/
+asymptotic-measurability, nonmeasurable signed outer-cover weak convergence,
+or full arbitrary-map extended-real measurable-cover existence).
 
 Current operational target, 2026-05-06 after verified pushed head
 `fc98144 Add weak convergence target congruence`: the active Codex `/goal`
