@@ -162,6 +162,8 @@ input to the selected fixed-radius Theorem 2.4.3 routes.
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_code_cardinality_bound_logCardinality_div_tendsto_bound`
 and the all-positive-truncation wrapper
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_pointwise_approx_code_cardinality_bound_logCardinality_div_tendsto_bound`.
+The same finite-code input now reaches centered untruncated convergence through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_finite_pointwise_approx_code_logCardinality_div_tendsto_bound`.
 The remaining work is to prove deterministic log-cardinality, VC/Sauer, or
 tail/UI bounds for such code images; this selected-package bridge should not
 be rediscovered.

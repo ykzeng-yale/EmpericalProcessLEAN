@@ -179,6 +179,9 @@ routes.  The route is now consumed by the selected fixed-radius package through
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_code_cardinality_bound_logCardinality_div_tendsto_bound`
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_pointwise_approx_code_cardinality_bound_logCardinality_div_tendsto_bound`.
+The route now reaches the centered untruncated Theorem 2.4.3 convergence
+conclusion through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_finite_pointwise_approx_code_logCardinality_div_tendsto_bound`.
 This is a genuine structural-cardinality input route; future work should prove
 deterministic log-cardinality/tail/UI bounds for concrete code images, not add
 another endpoint wrapper.
