@@ -103,10 +103,13 @@ pointwise-separability endpoints.  The newest reusable endpoint closure adds
 `VdVWTheorem243_pGlivenkoCantelli_and_inMean_of_centered_untruncated_convergesInOuterProbabilityConst_zero`
 and
 `VdVWTheorem243_variableEntropy_tailExpectation_pGlivenkoCantelli_and_inMean`,
-so any future theorem that proves the explicit selected finite-net tail/UI
-condition can now directly produce both endpoint conclusions.  Do not spend
-the next batch on another wrapper or endpoint alias around these same routes
-unless an exact textbook statement immediately consumes it.  The central
+plus the selected normalized-log tail/UI final endpoint
+`VdVWTheorem243_variableEntropy_logCardinality_div_tailExpectation_pGlivenkoCantelli_and_inMean`,
+so future theorem work that proves either explicit selected finite-net tail/UI
+or selected normalized-log tail/UI can now directly produce both endpoint
+conclusions.  Do not spend the next batch on another wrapper or endpoint alias
+around these same routes unless an exact textbook statement immediately
+consumes it.  The central
 selected route is now exposed as
 `VdVWTheorem243_selectedFixedRadiusTail_pGlivenkoCantelli_and_inMean`; the
 next theorem-facing proof should supply `VdVWTheorem243SelectedFixedRadiusTailSideConditions`

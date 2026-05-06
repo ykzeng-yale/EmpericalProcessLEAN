@@ -7511,3 +7511,19 @@ real option-1 target is now sharper: prove the eventual a.e. scaled selected
 finite-net domination itself from the VdV&W symmetrization/random-cover
 argument, or prove a direct outer-probability comparison; do not add another
 endpoint wrapper around already-closed tail/UI or deterministic-bound routes.
+
+2026-05-06 Theorem 2.4.3 selected normalized-log tail/UI final endpoint:
+after checking that only the raw finite-net tail/UI route had a `P`-GC plus
+in-mean endpoint package, `Theorem243.lean` now proves
+`VdVWTheorem243_variableEntropy_logCardinality_div_tailExpectation_pGlivenkoCantelli_and_inMean`.
+It composes the already compiled source bridge
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_tailExpectation`
+with the generic centered endpoint bundle.  This closes the final-facing
+assembly for the strongest honest selected normalized-log tail/UI route:
+future work can feed selected log measurability/integrability/tail conditions
+directly into both `P`-Glivenko-Cantelli and in-mean conclusions.  The exact
+generic textbook blocker is unchanged and now even more isolated: prove those
+selected normalized-log tail/UI inputs from the bare outer-probability entropy
+assumption, or register the precise VdV&W nonmeasurable selected-entropy
+primitive needed to do so.  Do not add another endpoint package unless it
+strictly consumes a new upstream entropy/cardinality theorem.

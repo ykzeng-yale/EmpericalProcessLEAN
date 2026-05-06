@@ -57,6 +57,9 @@ and the explicit selected finite-net tail/UI route to `P`-GC plus in-mean via
 `VdVWTheorem243_pGlivenkoCantelli_and_inMean_of_centered_untruncated_convergesInOuterProbabilityConst_zero`
 and
 `VdVWTheorem243_variableEntropy_tailExpectation_pGlivenkoCantelli_and_inMean`.
+The selected normalized-log tail/UI route now reaches the same final endpoint
+through
+`VdVWTheorem243_variableEntropy_logCardinality_div_tailExpectation_pGlivenkoCantelli_and_inMean`.
 The central selected fixed-radius route now also has
 `VdVWTheorem243_selectedFixedRadiusTail_pGlivenkoCantelli_and_inMean`, so the
 next proof target is the source theorem for selected side conditions, not more
