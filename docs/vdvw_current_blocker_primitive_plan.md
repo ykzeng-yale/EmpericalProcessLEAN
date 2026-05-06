@@ -5746,3 +5746,13 @@ minorant `lintegral`s is bounded by the infimum of majorant `lintegral`s.  This
 is the Chapter 1.2 support relation needed by local outer/inner gap predicates.
 It does not close the full signed extended-real arbitrary-map measurable-cover
 existence theorem or the nonmeasurable asymptotic-measurability layer.
+
+2026-05-05 outer/inner gap-equivalence follow-up: after the basic order bridge
+compiled, `WeakConvergence.lean` now proves
+`VdVWNonnegativeOuterInnerExpectationGap_eq_zero_iff_outer_eq_inner`.  The
+proof uses mathlib `tsub_eq_zero_iff_le` for the outer-minus-inner gap and the
+new `VdVWInnerExpectation_le_outerExpectation` for the reverse inequality.
+This turns the local Chapter 1 asymptotic-measurability gap predicate into the
+expected equality criterion whenever an outer-to-inner inequality can be
+supplied.  It still does not provide the missing arbitrary-map signed
+extended-real cover existence theorem.

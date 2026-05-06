@@ -2085,3 +2085,10 @@ measurable minorants and the infimum over measurable majorants.  This supports
 the local outer/inner expectation-gap predicates while leaving the full signed
 extended-real arbitrary-map cover-existence and nonmeasurable
 asymptotic-measurability primitives open.
+
+2026-05-05 outer/inner gap-equivalence follow-up:
+`WeakConvergence.lean` now proves
+`VdVWNonnegativeOuterInnerExpectationGap_eq_zero_iff_outer_eq_inner`, converting
+the nonnegative Chapter 1 outer/inner expectation-gap predicate into the exact
+outer-equals-inner criterion using `tsub_eq_zero_iff_le` and
+`VdVWInnerExpectation_le_outerExpectation`.

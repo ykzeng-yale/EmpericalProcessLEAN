@@ -40,6 +40,25 @@ noncomputable def VdVWNonnegativeOuterInnerExpectationGap
   VdVWOuterExpectation μ T - VdVWInnerExpectation μ T
 
 /--
+The nonnegative outer/inner expectation gap vanishes exactly when the outer and
+inner expectations coincide.
+-/
+theorem VdVWNonnegativeOuterInnerExpectationGap_eq_zero_iff_outer_eq_inner
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {T : Ω -> ℝ≥0∞} :
+    VdVWNonnegativeOuterInnerExpectationGap μ T = 0 ↔
+      VdVWOuterExpectation μ T = VdVWInnerExpectation μ T := by
+  constructor
+  · intro hgap
+    have hle :
+        VdVWOuterExpectation μ T ≤ VdVWInnerExpectation μ T := by
+      simpa [VdVWNonnegativeOuterInnerExpectationGap] using
+        (tsub_eq_zero_iff_le.mp hgap)
+    exact le_antisymm hle VdVWInnerExpectation_le_outerExpectation
+  · intro hEq
+    simp [VdVWNonnegativeOuterInnerExpectationGap, hEq]
+
+/--
 Measurable nonnegative maps have zero VdV&W nonnegative outer/inner
 expectation gap.
 -/
