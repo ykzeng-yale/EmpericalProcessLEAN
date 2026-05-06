@@ -219,6 +219,11 @@ block expectation and source convexity algebra now feed the certificate
 `chewi115_strong_hopf_lax_bound_of_interpolant`, proving the scalar
 positive-curvature cancellation, zero-curvature optimized-interpolant algebra,
 and source factor rewrite needed by Theorem 11.5.  The newest source
+candidate packet adds `chewi93_selected_model_value_le_interpolant`,
+`chewi115_strong_selected_model_value_le_interpolant`, and
+`chewi115_zero_selected_model_value_le_interpolant`, turning Chewi's selected
+Exercise 9.3 test point into the exact strong/zero `hmodel_interp` displays.
+The newest source
 certificate packet adds `chewi93_hopf_lax_zero_gap_bound_of_radius`,
 `chewi115_zero_hopf_lax_bound_of_interpolant`,
 `chewi115_strong_hopf_lax_certificate_of_interpolants`, and
@@ -229,8 +234,9 @@ The newest block-selected assembly packet adds
 `chewi115_zero_hopf_lax_certificate_of_block_model_interpolants`, combining the
 finite block-model conditional-upper theorem with selected interpolation
 estimates into the exact RAM Hopf-Lax certificates.  The next RAM packet should
-discharge the selected Hopf-Lax/Moreau model value and its candidate side
-conditions, not redo scalar recurrence or block averaging.
+assemble direct strong/zero Theorem 11.5 wrappers from the candidate-value
+bridges and discharge the remaining radius/admissibility side conditions, not
+redo scalar recurrence or block averaging.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

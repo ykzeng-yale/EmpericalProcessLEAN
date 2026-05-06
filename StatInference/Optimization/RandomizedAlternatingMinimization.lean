@@ -357,6 +357,221 @@ theorem chewi115_conditional_upper_of_block_model_sequence
   simpa [hgap n, hnext_gap n, hhopf_gap n] using hstep
 
 /--
+Chewi Exercise 9.3 source-candidate estimate.  If the Hopf-Lax/Moreau model
+value is bounded by the test point `(1 - t) x_* + t x`, strong convexity turns
+that selected candidate into the interpolation inequality used by the RAM
+certificates.
+-/
+theorem chewi93_selected_model_value_le_interpolant
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {F : E -> ℝ} {alpha h t modelValue fstar gap distSq : ℝ}
+    {x xStar : E}
+    (hstrong : StrongConvexOn C F alpha)
+    (hxStar : xStar ∈ C) (hx : x ∈ C)
+    (ht0 : 0 ≤ t) (ht1 : t ≤ 1)
+    (hstar : F xStar = fstar)
+    (hgap : gap = F x - fstar)
+    (hdist : distSq = ‖x - xStar‖ ^ (2 : ℕ))
+    (hselected :
+      modelValue ≤
+        F ((1 - t) • xStar + t • x) +
+          (1 / (2 * h)) *
+            ‖((1 - t) • xStar + t • x) - x‖ ^ (2 : ℕ)) :
+    modelValue - fstar ≤
+      t * gap +
+        (((1 - t) ^ (2 : ℕ)) / (2 * h) -
+            (alpha / 2) * t * (1 - t)) *
+          distSq := by
+  have htIcc : t ∈ Set.Icc (0 : ℝ) 1 := ⟨ht0, ht1⟩
+  have hseg := hstrong.segment_ineq hxStar hx (t := t) htIcc
+  have hnorm :
+      ‖((1 - t) • xStar + t • x) - x‖ ^ (2 : ℕ) =
+        (1 - t) ^ (2 : ℕ) * ‖x - xStar‖ ^ (2 : ℕ) := by
+    have hsub :
+        ((1 - t) • xStar + t • x) - x = (1 - t) • (xStar - x) := by
+      module
+    calc
+      ‖((1 - t) • xStar + t • x) - x‖ ^ (2 : ℕ)
+          = ‖(1 - t) • (xStar - x)‖ ^ (2 : ℕ) := by rw [hsub]
+      _ = ‖(1 - t)‖ ^ (2 : ℕ) * ‖xStar - x‖ ^ (2 : ℕ) := by
+          rw [norm_smul, mul_pow]
+      _ = (1 - t) ^ (2 : ℕ) * ‖x - xStar‖ ^ (2 : ℕ) := by
+          rw [Real.norm_of_nonneg (by nlinarith), norm_sub_rev]
+  have hupper :
+      modelValue ≤
+        ((1 - t) * F xStar + t * F x -
+            (alpha / 2) * t * (1 - t) * ‖x - xStar‖ ^ (2 : ℕ)) +
+          (1 / (2 * h)) *
+            ((1 - t) ^ (2 : ℕ) * ‖x - xStar‖ ^ (2 : ℕ)) := by
+    calc
+      modelValue
+          ≤ F ((1 - t) • xStar + t • x) +
+              (1 / (2 * h)) *
+                ‖((1 - t) • xStar + t • x) - x‖ ^ (2 : ℕ) := hselected
+      _ ≤ ((1 - t) * F xStar + t * F x -
+              (alpha / 2) * t * (1 - t) * ‖x - xStar‖ ^ (2 : ℕ)) +
+            (1 / (2 * h)) *
+              ‖((1 - t) • xStar + t • x) - x‖ ^ (2 : ℕ) := by
+          exact add_le_add hseg le_rfl
+      _ = ((1 - t) * F xStar + t * F x -
+              (alpha / 2) * t * (1 - t) * ‖x - xStar‖ ^ (2 : ℕ)) +
+            (1 / (2 * h)) *
+              ((1 - t) ^ (2 : ℕ) * ‖x - xStar‖ ^ (2 : ℕ)) := by
+          rw [hnorm]
+  calc
+    modelValue - fstar
+        ≤ (((1 - t) * F xStar + t * F x -
+              (alpha / 2) * t * (1 - t) * ‖x - xStar‖ ^ (2 : ℕ)) +
+            (1 / (2 * h)) *
+              ((1 - t) ^ (2 : ℕ) * ‖x - xStar‖ ^ (2 : ℕ))) - fstar := by
+          exact sub_le_sub_right hupper fstar
+    _ = t * gap +
+        (((1 - t) ^ (2 : ℕ)) / (2 * h) -
+            (alpha / 2) * t * (1 - t)) *
+          distSq := by
+          rw [hstar, hgap, hdist]
+          ring
+
+/--
+Chewi Theorem 11.5 positive-curvature specialization of the Exercise 9.3
+source candidate.  This packages the source choice
+`h = 1 / (1 - alphaF)` and
+`t = 1 / (1 + (alphaF + alphaG) * h)` into the exact interpolation display
+required by the strong RAM certificate.
+-/
+theorem chewi115_strong_selected_model_value_le_interpolant
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {F : E -> ℝ}
+    {alphaF alphaG modelValue fstar gap distSq : ℝ} {x xStar : E}
+    (hstrong : StrongConvexOn C F (alphaF + alphaG))
+    (hxStar : xStar ∈ C) (hx : x ∈ C)
+    (halphaF : alphaF < 1)
+    (hsum_nonneg : 0 ≤ alphaF + alphaG)
+    (hstar : F xStar = fstar)
+    (hgap : gap = F x - fstar)
+    (hdist : distSq = ‖x - xStar‖ ^ (2 : ℕ))
+    (hselected :
+      modelValue ≤
+        F ((1 -
+                1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) •
+              xStar +
+            (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) •
+              x) +
+          (1 / (2 * (1 / (1 - alphaF)))) *
+            ‖((1 -
+                    1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) •
+                  xStar +
+                (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) •
+                  x) -
+                x‖ ^ (2 : ℕ)) :
+    modelValue - fstar ≤
+      (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) * gap +
+        (((1 -
+                  1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) ^
+                (2 : ℕ)) /
+              (2 * (1 / (1 - alphaF))) -
+            ((alphaF + alphaG) / 2) *
+              (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) *
+                (1 -
+                  1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF))))) *
+          distSq := by
+  have hdenF_pos : 0 < 1 - alphaF := by nlinarith
+  have hstep_pos : 0 < 1 / (1 - alphaF) := one_div_pos.mpr hdenF_pos
+  have hden_pos :
+      0 < 1 + (alphaF + alphaG) * (1 / (1 - alphaF)) := by
+    nlinarith [mul_nonneg hsum_nonneg (le_of_lt hstep_pos)]
+  have ht0 :
+      0 ≤ 1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF))) :=
+    le_of_lt (one_div_pos.mpr hden_pos)
+  have ht1 :
+      1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF))) ≤ 1 := by
+    rw [div_le_iff₀ hden_pos]
+    nlinarith [mul_nonneg hsum_nonneg (le_of_lt hstep_pos)]
+  exact
+    chewi93_selected_model_value_le_interpolant
+      (hstrong := hstrong) (hxStar := hxStar) (hx := hx)
+      (alpha := alphaF + alphaG) (h := 1 / (1 - alphaF))
+      (t := 1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF))))
+      (modelValue := modelValue) (fstar := fstar) (gap := gap)
+      (distSq := distSq) (x := x) (xStar := xStar)
+      ht0 ht1 hstar hgap hdist hselected
+
+/--
+Chewi Theorem 11.5 zero-curvature specialization of the Exercise 9.3 source
+candidate.  The side condition `h * gap <= distSq` is exactly what makes the
+optimized test point `t = 1 - h * gap / distSq` belong to the segment.
+-/
+theorem chewi115_zero_selected_model_value_le_interpolant
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {F : E -> ℝ}
+    {alphaF modelValue fstar gap distSq : ℝ} {x xStar : E}
+    (hconv : ChewiConvexOn C F)
+    (hxStar : xStar ∈ C) (hx : x ∈ C)
+    (halphaF : alphaF < 1)
+    (hgap_nonneg : 0 ≤ gap)
+    (hdist_pos : 0 < distSq)
+    (hgap_le_dist : (1 / (1 - alphaF)) * gap ≤ distSq)
+    (hstar : F xStar = fstar)
+    (hgap : gap = F x - fstar)
+    (hdist : distSq = ‖x - xStar‖ ^ (2 : ℕ))
+    (hselected :
+      modelValue ≤
+        F ((1 -
+                (1 - (1 / (1 - alphaF)) * gap / distSq)) • xStar +
+            (1 - (1 / (1 - alphaF)) * gap / distSq) • x) +
+          (1 / (2 * (1 / (1 - alphaF)))) *
+            ‖((1 -
+                    (1 - (1 / (1 - alphaF)) * gap / distSq)) • xStar +
+                (1 - (1 / (1 - alphaF)) * gap / distSq) • x) -
+                x‖ ^ (2 : ℕ)) :
+    modelValue - fstar ≤
+      (1 - (1 / (1 - alphaF)) * gap / distSq) * gap +
+        ((((1 / (1 - alphaF)) * gap / distSq) ^ (2 : ℕ)) /
+            (2 * (1 / (1 - alphaF)))) *
+          distSq := by
+  have hstrong : StrongConvexOn C F 0 := by
+    simpa [ChewiConvexOn] using hconv
+  have hdenF_pos : 0 < 1 - alphaF := by nlinarith
+  have hstep_pos : 0 < 1 / (1 - alphaF) := one_div_pos.mpr hdenF_pos
+  have hcoef_nonneg :
+      0 ≤ (1 / (1 - alphaF)) * gap / distSq := by
+    exact div_nonneg (mul_nonneg (le_of_lt hstep_pos) hgap_nonneg)
+      (le_of_lt hdist_pos)
+  have hcoef_le_one :
+      (1 / (1 - alphaF)) * gap / distSq ≤ 1 := by
+    rw [div_le_iff₀ hdist_pos]
+    nlinarith
+  have ht0 :
+      0 ≤ 1 - (1 / (1 - alphaF)) * gap / distSq := by
+    nlinarith
+  have ht1 :
+      1 - (1 / (1 - alphaF)) * gap / distSq ≤ 1 := by
+    nlinarith
+  have hbase :=
+    chewi93_selected_model_value_le_interpolant
+      (hstrong := hstrong) (hxStar := hxStar) (hx := hx)
+      (alpha := 0) (h := 1 / (1 - alphaF))
+      (t := 1 - (1 / (1 - alphaF)) * gap / distSq)
+      (modelValue := modelValue) (fstar := fstar) (gap := gap)
+      (distSq := distSq) (x := x) (xStar := xStar)
+      ht0 ht1 hstar hgap hdist hselected
+  calc
+    modelValue - fstar
+        ≤ (1 - (1 / (1 - alphaF)) * gap / distSq) * gap +
+          (((1 - (1 - (1 / (1 - alphaF)) * gap / distSq)) ^ (2 : ℕ)) /
+              (2 * (1 / (1 - alphaF))) -
+              (0 / 2) *
+                (1 - (1 / (1 - alphaF)) * gap / distSq) *
+                  (1 - (1 - (1 / (1 - alphaF)) * gap / distSq))) *
+            distSq := hbase
+    _ = (1 - (1 / (1 - alphaF)) * gap / distSq) * gap +
+        ((((1 / (1 - alphaF)) * gap / distSq) ^ (2 : ℕ)) /
+            (2 * (1 / (1 - alphaF)))) *
+          distSq := by
+          field_simp [hstep_pos.ne', hdist_pos.ne']
+          ring
+
+/--
 Chewi Exercise 9.3, scalar interpolation algebra in the positive-curvature
 case.  Once the Hopf-Lax value is bounded by the interpolant with
 `t = 1 / (1 + alpha * h)`, the quadratic correction cancels and gives

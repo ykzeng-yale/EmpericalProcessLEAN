@@ -109,12 +109,13 @@ as the current active Chapter 11.5 promotion gate.
 Immediate aggressive target: finish Chewi Theorem 11.5 RAM as a theorem-sized
 packet, not another wrapper loop.  The scalar recurrence, strong/weak
 Hopf-Lax-to-rate bridges, finite uniform block conditional-upper algebra,
-Exercise 9.3 scalar interpolation/radius constructors, and the block-model plus
-selected-interpolant certificate assemblers are now the reusable substrate.
-The next proof work should discharge the actual selected Hopf-Lax/Moreau model
-value from Chewi's source candidate, including interpolant admissibility,
-distance positivity/radius domination, and the source `0 <= alphaF < 1` facts
-needed by the weak constructor.  In parallel, scout Sinkhorn
+Exercise 9.3 scalar interpolation/radius constructors, block-model plus
+selected-interpolant certificate assemblers, and source-candidate
+interpolation bridges are now the reusable substrate.  The next proof work
+should combine the selected Hopf-Lax/Moreau source-candidate bounds with the
+block-model certificate assemblers into direct strong/zero RAM theorem
+wrappers, discharging the remaining distance positivity/radius domination and
+`0 <= alphaF < 1` side conditions.  In parallel, scout Sinkhorn
 Theorems 11.7/11.8 from the compiled ABP/mirror-descent interfaces and Chapter
 12 SMPGD theorem packets, so the next route moves immediately after RAM
 without routing back to old setup.
@@ -151,6 +152,10 @@ for `expectedGap`/`hopfGap`.  The newest Exercise 9.3 interpolation packet adds
 quadratic cancellation, the zero-curvature optimized-interpolant algebra, and
 the source factor rewrite
 `(1 + (alphaF + alphaG)/(1-alphaF))^{-1} = (1-alphaF)/(1+alphaG)`.  The newest
+source-candidate packet adds `chewi93_selected_model_value_le_interpolant`,
+`chewi115_strong_selected_model_value_le_interpolant`, and
+`chewi115_zero_selected_model_value_le_interpolant`, turning Chewi's Exercise
+9.3 test point into the exact strong/zero `hmodel_interp` displays.  The newest
 source-certificate packet adds `chewi93_hopf_lax_zero_gap_bound_of_radius`,
 `chewi115_zero_hopf_lax_bound_of_interpolant`,
 `chewi115_strong_hopf_lax_certificate_of_interpolants`, and
