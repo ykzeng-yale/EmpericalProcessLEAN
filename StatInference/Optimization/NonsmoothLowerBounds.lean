@@ -1922,5 +1922,309 @@ theorem chewi625_full_cycles_width_ge_two_eps_of_closedBall_subset {d : ℕ}
   rw [chewi625BoxWidth_full_cycles (d := d) R x j m] at hge
   exact hge
 
+/-- Recursive resisting boxes are nested over any finite block of later steps. -/
+theorem chewi625BoxState_subset_add {d : ℕ} [NeZero d]
+    {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    ∀ k : ℕ,
+      chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x (n + k))
+          (chewi625BoxUpper (d := d) R x (n + k)) ⊆
+        chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x n)
+          (chewi625BoxUpper (d := d) R x n) := by
+  intro k
+  induction k with
+  | zero =>
+      intro y hy
+      simpa using hy
+  | succ k ih =>
+      intro y hy
+      have hidx : n + (k + 1) = (n + k) + 1 := by omega
+      have hstep :
+          y ∈ chewi625CoordinateBox
+              (chewi625BoxLower (d := d) R x (n + k))
+              (chewi625BoxUpper (d := d) R x (n + k)) := by
+        exact
+          chewi625BoxState_step_subset
+            (d := d) (R := R) hR_nonneg x (n + k)
+            (by simpa [hidx] using hy)
+      exact ih hstep
+
+/-- Later recursive resisting boxes are nested inside earlier boxes. -/
+theorem chewi625BoxState_subset_of_le {d : ℕ} [NeZero d]
+    {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) {n m : ℕ} (hnm : n ≤ m) :
+    chewi625CoordinateBox
+        (chewi625BoxLower (d := d) R x m)
+        (chewi625BoxUpper (d := d) R x m) ⊆
+      chewi625CoordinateBox
+        (chewi625BoxLower (d := d) R x n)
+        (chewi625BoxUpper (d := d) R x n) := by
+  have hsubset :=
+    chewi625BoxState_subset_add
+      (d := d) (R := R) hR_nonneg x n (m - n)
+  have hidx : n + (m - n) = m := Nat.add_sub_of_le hnm
+  simpa [hidx] using hsubset
+
+/-- The lower endpoint of an ordered recursive box belongs to that box. -/
+theorem chewi625BoxLower_mem_coordinateBox {d : ℕ} [NeZero d]
+    {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    chewi625BoxLower (d := d) R x n ∈
+      chewi625CoordinateBox
+        (chewi625BoxLower (d := d) R x n)
+        (chewi625BoxUpper (d := d) R x n) := by
+  intro i
+  exact ⟨le_rfl, chewi625BoxState_ordered (d := d) hR_nonneg x n i⟩
+
+/-- The upper endpoint of an ordered recursive box belongs to that box. -/
+theorem chewi625BoxUpper_mem_coordinateBox {d : ℕ} [NeZero d]
+    {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    chewi625BoxUpper (d := d) R x n ∈
+      chewi625CoordinateBox
+        (chewi625BoxLower (d := d) R x n)
+        (chewi625BoxUpper (d := d) R x n) := by
+  intro i
+  exact ⟨chewi625BoxState_ordered (d := d) hR_nonneg x n i, le_rfl⟩
+
+/-- Lower endpoints increase coordinatewise along the recursive box sequence. -/
+theorem chewi625BoxLower_le_of_le {d : ℕ} [NeZero d]
+    {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) {n m : ℕ} (hnm : n ≤ m)
+    (i : Fin d) :
+    chewi625BoxLower (d := d) R x n i ≤
+      chewi625BoxLower (d := d) R x m i := by
+  have hsubset :=
+    chewi625BoxState_subset_of_le
+      (d := d) (R := R) hR_nonneg x hnm
+  exact
+    (hsubset
+      (chewi625BoxLower_mem_coordinateBox
+        (d := d) (R := R) hR_nonneg x m) i).1
+
+/-- Upper endpoints decrease coordinatewise along the recursive box sequence. -/
+theorem chewi625BoxUpper_le_of_le {d : ℕ} [NeZero d]
+    {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) {n m : ℕ} (hnm : n ≤ m)
+    (i : Fin d) :
+    chewi625BoxUpper (d := d) R x m i ≤
+      chewi625BoxUpper (d := d) R x n i := by
+  have hsubset :=
+    chewi625BoxState_subset_of_le
+      (d := d) (R := R) hR_nonneg x hnm
+  exact
+    (hsubset
+      (chewi625BoxUpper_mem_coordinateBox
+        (d := d) (R := R) hR_nonneg x m) i).2
+
+/-- Strict interiors of later recursive boxes are nested in strict interiors of earlier boxes. -/
+theorem chewi625StrictBoxState_subset_of_le {d : ℕ} [NeZero d]
+    {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) {n m : ℕ} (hnm : n ≤ m) :
+    chewi625StrictCoordinateBox
+        (chewi625BoxLower (d := d) R x m)
+        (chewi625BoxUpper (d := d) R x m) ⊆
+      chewi625StrictCoordinateBox
+        (chewi625BoxLower (d := d) R x n)
+        (chewi625BoxUpper (d := d) R x n) := by
+  intro y hy i
+  exact
+    ⟨lt_of_le_of_lt
+        (chewi625BoxLower_le_of_le
+          (d := d) (R := R) hR_nonneg x hnm i)
+        (hy i).1,
+      lt_of_lt_of_le
+        (hy i).2
+        (chewi625BoxUpper_le_of_le
+          (d := d) (R := R) hR_nonneg x hnm i)⟩
+
+/--
+Every previous query is excluded from the strict interior of the final
+recursive box.  This is the main geometric replay fact for the deterministic
+resisting oracle construction in Theorem 6.25.
+-/
+theorem chewi625BoxState_query_not_mem_final_strict_box {d : ℕ} [NeZero d]
+    {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) {n N : ℕ} (hnN : n < N) :
+    x n ∉ chewi625StrictCoordinateBox
+      (chewi625BoxLower (d := d) R x N)
+      (chewi625BoxUpper (d := d) R x N) := by
+  intro hx_final
+  have hnext_le : n + 1 ≤ N := Nat.succ_le_of_lt hnN
+  have hx_next :
+      x n ∈ chewi625StrictCoordinateBox
+        (chewi625BoxLower (d := d) R x (n + 1))
+        (chewi625BoxUpper (d := d) R x (n + 1)) :=
+    chewi625StrictBoxState_subset_of_le
+      (d := d) (R := R) hR_nonneg x hnext_le hx_final
+  exact chewi625BoxState_query_not_mem_next_strict_box (d := d) R x n hx_next
+
+/--
+At a complete cycle, if every side is still at least `2 * eps`, then the
+recursive box contains an `eps`-ball around its midpoint.
+-/
+theorem chewi625_closedBall_subset_full_cycles_of_two_eps_le_width {d : ℕ}
+    [NeZero d] {R eps : ℝ}
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {m : ℕ}
+    (hwidth : 2 * eps ≤ (2 * R) / (2 : ℝ) ^ m) :
+    ∃ center : EuclideanSpace ℝ (Fin d),
+      Metric.closedBall center eps ⊆
+        chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x (m * d))
+          (chewi625BoxUpper (d := d) R x (m * d)) := by
+  let a := chewi625BoxLower (d := d) R x (m * d)
+  let b := chewi625BoxUpper (d := d) R x (m * d)
+  let center := chewi625Midpoint a b
+  refine ⟨center, chewi625_closedBall_subset_coordinateBox ?_ ?_⟩
+  · intro i
+    have hcoordwidth : 2 * eps ≤ b i - a i := by
+      have h := hwidth
+      rw [← chewi625BoxWidth_full_cycles (d := d) R x i m] at h
+      simpa [chewi625BoxWidth, a, b] using h
+    simp [center, a, b, chewi625Midpoint]
+    nlinarith
+  · intro i
+    have hcoordwidth : 2 * eps ≤ b i - a i := by
+      have h := hwidth
+      rw [← chewi625BoxWidth_full_cycles (d := d) R x i m] at h
+      simpa [chewi625BoxWidth, a, b] using h
+    simp [center, a, b, chewi625Midpoint]
+    nlinarith
+
+/--
+Full-cycle source radius form: if `eps <= R / 2^m`, the recursive box after
+`m` complete coordinate cycles still contains an `eps`-ball.
+-/
+theorem chewi625_closedBall_subset_full_cycles_of_eps_le_radius {d : ℕ}
+    [NeZero d] {R eps : ℝ}
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {m : ℕ}
+    (hradius : eps ≤ R / (2 : ℝ) ^ m) :
+    ∃ center : EuclideanSpace ℝ (Fin d),
+      Metric.closedBall center eps ⊆
+        chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x (m * d))
+          (chewi625BoxUpper (d := d) R x (m * d)) := by
+  have hwidth : 2 * eps ≤ (2 * R) / (2 : ℝ) ^ m := by
+    calc
+      2 * eps ≤ 2 * (R / (2 : ℝ) ^ m) := by nlinarith [hradius]
+      _ = (2 * R) / (2 : ℝ) ^ m := by ring
+  exact
+    chewi625_closedBall_subset_full_cycles_of_two_eps_le_width
+      (d := d) (R := R) (eps := eps) (x := x) (m := m) hwidth
+
+/--
+Logarithmic lower-bound scalar helper: if the number of complete cycles is at
+most `log_2 (R / eps)`, then the exact full-cycle radius is still at least
+`eps`.
+-/
+theorem chewi625_eps_le_half_pow_mul_of_nat_mul_log_le
+    {R eps : ℝ} {m : ℕ}
+    (hR_pos : 0 < R) (heps_pos : 0 < eps)
+    (hM_log : (m : ℝ) * Real.log (2 : ℝ) ≤ Real.log (R / eps)) :
+    eps ≤ (1 / 2 : ℝ) ^ m * R := by
+  have hhalf_pos : 0 < (1 / 2 : ℝ) := by norm_num
+  have hpow_pos : 0 < (1 / 2 : ℝ) ^ m := pow_pos hhalf_pos m
+  have hright_pos : 0 < (1 / 2 : ℝ) ^ m * R :=
+    mul_pos hpow_pos hR_pos
+  have hlog_half : Real.log (1 / 2 : ℝ) = -Real.log (2 : ℝ) := by
+    have hhalf : (1 / 2 : ℝ) = (2 : ℝ)⁻¹ := by norm_num
+    rw [hhalf, Real.log_inv]
+  have hlog_ratio :
+      Real.log (R / eps) = Real.log R - Real.log eps := by
+    rw [Real.log_div hR_pos.ne' heps_pos.ne']
+  have hlog_right :
+      Real.log ((1 / 2 : ℝ) ^ m * R) =
+        (m : ℝ) * Real.log (1 / 2 : ℝ) + Real.log R := by
+    rw [Real.log_mul hpow_pos.ne' hR_pos.ne', Real.log_pow]
+  have hlog_le : Real.log eps ≤ Real.log ((1 / 2 : ℝ) ^ m * R) := by
+    rw [hlog_right, hlog_half]
+    have hM_log' :
+        (m : ℝ) * Real.log (2 : ℝ) ≤ Real.log R - Real.log eps := by
+      simpa [hlog_ratio] using hM_log
+    linarith
+  exact (Real.log_le_log_iff heps_pos hright_pos).mp hlog_le
+
+/-- Division-by-powers form of `chewi625_eps_le_half_pow_mul_of_nat_mul_log_le`. -/
+theorem chewi625_eps_le_radius_of_nat_mul_log_le
+    {R eps : ℝ} {m : ℕ}
+    (hR_pos : 0 < R) (heps_pos : 0 < eps)
+    (hM_log : (m : ℝ) * Real.log (2 : ℝ) ≤ Real.log (R / eps)) :
+    eps ≤ R / (2 : ℝ) ^ m := by
+  have h :=
+    chewi625_eps_le_half_pow_mul_of_nat_mul_log_le
+      (R := R) (eps := eps) (m := m) hR_pos heps_pos hM_log
+  have hpow :
+      (1 / 2 : ℝ) ^ m * R = R / (2 : ℝ) ^ m := by
+    have hhalf : (1 / 2 : ℝ) = (2 : ℝ)⁻¹ := by norm_num
+    rw [hhalf, inv_pow]
+    ring
+  rw [hpow] at h
+  exact h
+
+/--
+Full-cycle logarithmic source wrapper for the feasibility construction:
+`m * log 2 <= log (R / eps)` guarantees that the box after `m` cycles still
+contains an `eps`-ball.
+-/
+theorem chewi625_closedBall_subset_full_cycles_of_log_bound {d : ℕ}
+    [NeZero d] {R eps : ℝ}
+    (hR_pos : 0 < R) (heps_pos : 0 < eps)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {m : ℕ}
+    (hM_log : (m : ℝ) * Real.log (2 : ℝ) ≤ Real.log (R / eps)) :
+    ∃ center : EuclideanSpace ℝ (Fin d),
+      Metric.closedBall center eps ⊆
+        chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x (m * d))
+          (chewi625BoxUpper (d := d) R x (m * d)) := by
+  exact
+    chewi625_closedBall_subset_full_cycles_of_eps_le_radius
+      (d := d) (R := R) (eps := eps) (x := x) (m := m)
+      (chewi625_eps_le_radius_of_nat_mul_log_le
+        (R := R) (eps := eps) (m := m) hR_pos heps_pos hM_log)
+
+/--
+If a later full cycle still contains an `eps`-ball, then every earlier
+recursive box contains that same ball by nesting.
+-/
+theorem chewi625_closedBall_subset_of_le_full_cycle {d : ℕ} [NeZero d]
+    {R eps : ℝ} (hR_nonneg : 0 ≤ R)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {n m : ℕ}
+    (hnm : n ≤ m * d) (hradius : eps ≤ R / (2 : ℝ) ^ m) :
+    ∃ center : EuclideanSpace ℝ (Fin d),
+      Metric.closedBall center eps ⊆
+        chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x n)
+          (chewi625BoxUpper (d := d) R x n) := by
+  rcases
+    chewi625_closedBall_subset_full_cycles_of_eps_le_radius
+      (d := d) (R := R) (eps := eps) (x := x) (m := m) hradius with
+    ⟨center, hball⟩
+  refine ⟨center, ?_⟩
+  exact
+    hball.trans
+      (chewi625BoxState_subset_of_le
+        (d := d) (R := R) hR_nonneg x hnm)
+
+/-- Logarithmic earlier-step wrapper for the source query-count lower bound. -/
+theorem chewi625_closedBall_subset_of_le_full_cycle_log_bound {d : ℕ}
+    [NeZero d] {R eps : ℝ}
+    (hR_pos : 0 < R) (heps_pos : 0 < eps)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {n m : ℕ}
+    (hnm : n ≤ m * d)
+    (hM_log : (m : ℝ) * Real.log (2 : ℝ) ≤ Real.log (R / eps)) :
+    ∃ center : EuclideanSpace ℝ (Fin d),
+      Metric.closedBall center eps ⊆
+        chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x n)
+          (chewi625BoxUpper (d := d) R x n) := by
+  exact
+    chewi625_closedBall_subset_of_le_full_cycle
+      (d := d) (R := R) (eps := eps) hR_pos.le (x := x)
+      (n := n) (m := m) hnm
+      (chewi625_eps_le_radius_of_nat_mul_log_le
+        (R := R) (eps := eps) (m := m) hR_pos heps_pos hM_log)
+
 end Optimization
 end StatInference
