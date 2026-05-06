@@ -182,6 +182,8 @@ the current strongest original-class endpoint through
 `VdVWAlmostSureGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical_of_countable_integrable`,
 and
 `VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable`.
+The original-class strong package now also has the empty-class branch
+`VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`.
 The next useful `/goal` target is not another alias for this same route:
 prove a genuinely new class-geometry/cardinality theorem, add a final theorem
 statement only if it consumes a new proof input, or return to the book

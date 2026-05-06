@@ -323,6 +323,9 @@ centered-supremum layer through
 `VdVWAlmostSureGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical_of_countable_integrable`,
 and the strong endpoint
 `VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable`.
+The matching no-nonempty endpoint
+`VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`
+is compiled too.
 The next useful proof is to prove a new concrete class-geometry/cardinality
 theorem or move to the genuine random-entropy tail/UI bridge.  Do not add
 another endpoint alias for the same selected fixed-radius cardinality route

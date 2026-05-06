@@ -220,6 +220,9 @@ layer through
 `VdVWAlmostSureGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical_of_countable_integrable`,
 and the strong package
 `VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_of_countable_integrable`.
+The no-nonempty version
+`VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`
+is compiled as well.
 Do not add another endpoint alias for this same route unless final theorem
 assembly consumes a genuinely new proof input.  The next non-duplicative target
 is a new class-geometry/cardinality theorem or the book random-entropy
