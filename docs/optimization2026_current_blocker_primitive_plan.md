@@ -88,10 +88,11 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after the 2026-05-06 status/rebase
-pass, building from Optimization route-doc frontier `fab42c1` (`Update Chewi
-route after ABP telescope packet`) and verified code frontier `4656409`
-(`Add Chewi chapter 11 ABP telescope packet`):
+Current live replacement `/goal` prompt after focused Lean verification and
+targeted module build of the Chapter 11.4 scalar alternating-minimization
+packet on 2026-05-06, building from Optimization route-doc frontier `fab42c1`
+(`Update Chewi route after ABP telescope packet`) and verified ABP code
+frontier `4656409` (`Add Chewi chapter 11 ABP telescope packet`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -103,10 +104,13 @@ substrate unless an exact source report or later theorem dependency demands it.
 Do not spend a run on wording-only route churn or a single wrapper if a
 theorem-sized packet is available.  Treat Chapters 3-8 as stable reusable
 infrastructure and treat `Fenchel.lean`, `Bregman.lean`, `MirrorDescent.lean`,
-and `AlternatingBregman.lean` as the active Chapter 9-11 promotion gate.
+`AlternatingBregman.lean`, and `AlternatingMinimization.lean` as the active
+Chapter 9-11 promotion gate.
 
-Latest verified Optimization proof frontier: `4656409` (`Add Chewi chapter 11
-ABP telescope packet`).  `MirrorDescent.lean` now compiles through
+Latest verified Optimization proof frontier: Chapter 11.4 scalar AM packet in
+`StatInference/Optimization/AlternatingMinimization.lean`, promoted through
+the root import after the earlier `4656409` (`Add Chewi chapter 11 ABP
+telescope packet`).  `MirrorDescent.lean` now compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
 `mirrorProximalGradientModel_le_composite_add_bregman`,
 `composite_le_mirrorProximalGradientModel`,
@@ -184,6 +188,15 @@ wrapper, the one-cycle decrease
 `chewi112_finite_sum_with_terminal_le`, `chewi112_finite_sum_le`, and
 `chewi113_exists_small_abp_cycle_gap`.  This proves the finite-source content
 behind Lemma 11.2 and the finite-minimum display `(11.1)` in existential form.
+The new `AlternatingMinimization.lean` module is imported by
+`StatInference.lean` and compiles through `sum_range_succ_sub`,
+`chewi114_inverse_gap_step_growth`,
+`chewi114_inverse_gap_growth_of_quadratic_descent`,
+`chewi114_gap_le_K_div_iterations_of_quadratic_descent`,
+`chewi114_gap_le_eps_of_quadratic_descent`, `chewi114K`, and
+`chewi114_gap_le_source_K_div_iterations`.  This proves the post-threshold
+inverse-gap/telescope layer of Chewi Theorem 11.4 in the source constant
+`K = 8 * beta * D^2 * R^2` form.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, relative smoothness, OMD, online
@@ -210,12 +223,13 @@ attempting full martingale/CLT formalization.
 
 Active aggressive target ladder:
 
-1. Prove Chewi Theorem 11.4 as the active primary target.  Add a theorem-sized
-   alternating-minimization packet in `AlternatingBregman.lean` or a new
-   `AlternatingMinimization.lean`: first scalar inverse-gap growth from
-   `gap (n+1) <= gap n - gap n^2 / K`, then the closed
-   `gap (n0+M) <= K / M` corollary, then a supplied-interface AM wrapper for
-   the source recurrence with `K = 8 * beta * D^2 * R^2`.
+1. Complete Chewi Theorem 11.4 as the active primary target.  The scalar
+   inverse-gap layer is done; next prove the supplied-interface AM recurrence
+   bridge from Chewi's block-coordinate descent estimate:
+   `gap (n+1) - gap n <= -(gap (n+1)^2)/(2 * beta * D^2 * R^2)`, its
+   threshold implication
+   `gap (n+1) <= gap n - gap n^2 / chewi114K beta D R`, and then apply the
+   compiled `chewi114_gap_le_source_K_div_iterations`/epsilon wrappers.
 2. Immediately continue to Theorem 11.5 RAM using expectation-level
    source-shaped interfaces: conditional one-step expectation, convex/strongly
    convex Hopf-Lax supplied bounds, exponential rate for

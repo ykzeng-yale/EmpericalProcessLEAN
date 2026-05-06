@@ -29,6 +29,7 @@ import StatInference.EmpiricalProcess.OuterProbabilityExpectation
 import StatInference.EmpiricalProcess.RealHalfLine
 import StatInference.EmpiricalProcess.RealHalfLineGC
 import StatInference.Optimization.AlternatingBregman
+import StatInference.Optimization.AlternatingMinimization
 import StatInference.Optimization.Basic
 import StatInference.Optimization.Bregman
 import StatInference.Optimization.ConjugateGradient

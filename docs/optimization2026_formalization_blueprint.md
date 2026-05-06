@@ -56,10 +56,10 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after the 2026-05-06 manual-goal rebase, building
-from Optimization route-doc frontier `fab42c1` and verified code frontier
-`4656409` in
-`StatInference/Optimization/AlternatingBregman.lean`:
+Current manual goal frontier after focused Lean verification and targeted
+module build of the Chapter 11.4 scalar alternating-minimization packet on
+2026-05-06, building from Optimization route-doc frontier `fab42c1` and
+verified ABP code frontier `4656409`:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.  Latest verified Optimization
 proof frontier: `4656409`.
@@ -118,12 +118,17 @@ in the pinned tree; the relevant reuse is local `Bregman.lean`,
 `LipschitzOnWith.le_add_mul`, `abs_real_inner_le_norm`, and
 `FirstOrderStrongConvexOn.lower_model`; Chapter 11 ABP reuses
 `bregmanDivergence` and `sum_range_sub_succ`, with no direct mathlib/local ABP
-theorem found.  The active route is now §11.2 alternating minimization rather
-than Corollary 11.3 topology: prove Theorem 11.4 with a scalar inverse-gap
-telescope packet and supplied source recurrence, immediately follow with
-Theorem 11.5 RAM expectation recurrences, package Sinkhorn Theorems 11.7/11.8
-from ABP/mirror-descent supplied interfaces, and then open Chapter 12 SMPGD
-before the ASGD CLT.  Generalize 10.11/10.13 to a custom arbitrary
+theorem found.  `AlternatingMinimization.lean` now compiles the scalar
+Theorem 11.4 post-threshold inverse-gap/telescope layer:
+`sum_range_succ_sub`, `chewi114_inverse_gap_step_growth`,
+`chewi114_inverse_gap_growth_of_quadratic_descent`,
+`chewi114_gap_le_K_div_iterations_of_quadratic_descent`,
+`chewi114_gap_le_eps_of_quadratic_descent`, `chewi114K`, and
+`chewi114_gap_le_source_K_div_iterations`.  The active route is now the
+supplied AM recurrence bridge for Theorem 11.4, immediately followed by
+Theorem 11.5 RAM expectation recurrences, Sinkhorn Theorems 11.7/11.8 from
+ABP/mirror-descent supplied interfaces, and Chapter 12 SMPGD before the ASGD
+CLT.  Generalize 10.11/10.13 to a custom arbitrary
 norm/dual-norm interface or add an exact `sInf` wrapper only when source-report
 packaging or a later theorem demands it.  In parallel, map Chapter 13
 Newton/self-concordance theorem packets with source-shaped supplied interfaces
