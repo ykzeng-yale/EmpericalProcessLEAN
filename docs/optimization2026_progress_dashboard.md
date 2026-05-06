@@ -149,8 +149,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   scalar helper `m * log 2 <= log (R / eps) -> eps <= R / 2^m`, full-cycle
   ball containment from that log bound, and the earlier-step wrapper from any
   later full cycle.  It also proves strict-box nesting and excludes every
-  previous query from the strict final box.  The next target is a deterministic
-  transcript/replay interface for the feasibility lower bound; Theorem 6.23 remains source
+  previous query from the strict final box.  The newest replay-certificate
+  packet packages returned cut vectors as valid final-box separators and
+  combines the replay certificate with log-bound `eps`-ball containment.  The
+  next target is the remaining supplied algorithm-level deterministic replay
+  abstraction; Theorem 6.23 remains source
   context rather than a direct proof target.  The exact
   Grünbaum/centroid theorem remains a
   supplied blocker for exact CoGM reporting.
@@ -218,10 +221,11 @@ no-`eps`-ball obstruction, the recursive cyclic box state with per-step
 separation, query-exclusion, nesting, width-update facts, and the full-cycle
 width closed form plus full-cycle `eps`-ball obstruction wrappers, multi-step
 nesting, full-cycle midpoint ball-containment success wrappers, and log-bound
-ball containment through `m * log 2 <= log (R / eps)`, strict-box nesting, and
-final strict-box query exclusion.  The next theorem packet should close the
-supplied deterministic transcript/replay and separation-oracle theorem
-interface; add literal
+ball containment through `m * log 2 <= log (R / eps)`, strict-box nesting,
+final strict-box query exclusion, final-box separation transcript packaging,
+and the source-shaped replay-certificate plus ball-containment package.  The
+next theorem packet should close the remaining supplied algorithm-level
+deterministic replay abstraction; add literal
 arbitrary-`d > N`
 wrappers for 6.21/6.22 only if needed for exact theorem reporting.
 This paragraph supersedes older Lemma 6.20 "next manual packet" language below.

@@ -1142,6 +1142,14 @@ def IsSeparationVector {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ
     (C : Set E) (x p : E) : Prop :=
   p ≠ 0 ∧ ∀ y ∈ C, inner ℝ p y ≤ inner ℝ p x
 
+/-- A separator for a set is also a separator for every subset. -/
+theorem IsSeparationVector.mono {E : Type*}
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C D : Set E} {x p : E}
+    (hsep : IsSeparationVector C x p) (hsub : D ⊆ C) :
+    IsSeparationVector D x p :=
+  ⟨hsep.1, fun y hy => hsep.2 y (hsub hy)⟩
+
 /-- Coordinatewise midpoint of a box. -/
 noncomputable def chewi625Midpoint {d : ℕ}
     (a b : EuclideanSpace ℝ (Fin d)) : EuclideanSpace ℝ (Fin d) :=
@@ -2061,6 +2069,102 @@ theorem chewi625BoxState_query_not_mem_final_strict_box {d : ℕ} [NeZero d]
       (d := d) (R := R) hR_nonneg x hnext_le hx_final
   exact chewi625BoxState_query_not_mem_next_strict_box (d := d) R x n hx_next
 
+/-- The cut vector returned by the resisting oracle at step `n`. -/
+noncomputable def chewi625ReturnedCutVector {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (n : ℕ) :
+    EuclideanSpace ℝ (Fin d) :=
+  chewi625CutVector
+    (chewi625BoxLower (d := d) R x n)
+    (chewi625BoxUpper (d := d) R x n) (x n)
+    (chewi625CycleCoord (d := d) n)
+
+/--
+Every returned resisting-oracle vector is a valid separator for the eventual
+final box, not only for the immediate retained box.  This is the post-hoc
+separator validity statement used in Chewi's deterministic replay argument.
+-/
+theorem chewi625ReturnedCutVector_isSeparationVector_final_box {d : ℕ}
+    [NeZero d] {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) {n N : ℕ} (hnN : n < N) :
+    IsSeparationVector
+      (chewi625CoordinateBox
+        (chewi625BoxLower (d := d) R x N)
+        (chewi625BoxUpper (d := d) R x N))
+      (x n) (chewi625ReturnedCutVector (d := d) R x n) := by
+  have hnext_le : n + 1 ≤ N := Nat.succ_le_of_lt hnN
+  have hsub :
+      chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x N)
+          (chewi625BoxUpper (d := d) R x N) ⊆
+        chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x (n + 1))
+          (chewi625BoxUpper (d := d) R x (n + 1)) :=
+    chewi625BoxState_subset_of_le
+      (d := d) (R := R) hR_nonneg x hnext_le
+  exact
+    (chewi625BoxState_step_isSeparationVector
+      (d := d) R x n).mono hsub
+
+/--
+Finite transcript interface for a deterministic feasibility replay: for the
+final set `C`, every one of the first `N` oracle replies is a valid separating
+vector for the corresponding query.
+-/
+def IsFeasibilitySeparationTranscript {E : Type*}
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (C : Set E) (x p : ℕ -> E) (N : ℕ) : Prop :=
+  ∀ n : ℕ, n < N -> IsSeparationVector C (x n) (p n)
+
+/--
+The resisting box construction supplies a valid separation transcript for its
+final coordinate box.
+-/
+theorem chewi625BoxState_final_separationTranscript {d : ℕ} [NeZero d]
+    {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) (N : ℕ) :
+    IsFeasibilitySeparationTranscript
+      (chewi625CoordinateBox
+        (chewi625BoxLower (d := d) R x N)
+        (chewi625BoxUpper (d := d) R x N))
+      x (chewi625ReturnedCutVector (d := d) R x) N := by
+  intro n hnN
+  exact
+    chewi625ReturnedCutVector_isSeparationVector_final_box
+      (d := d) (R := R) hR_nonneg x hnN
+
+/--
+Final-box replay certificate: all first `N` replies are valid separators for
+the final box, and all first `N` queries fail final strict feasibility.
+-/
+def IsFeasibilityReplayCertificate {E : Type*}
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (C Cstrict : Set E) (x p : ℕ -> E) (N : ℕ) : Prop :=
+  IsFeasibilitySeparationTranscript C x p N ∧
+    ∀ n : ℕ, n < N -> x n ∉ Cstrict
+
+/--
+The resisting box construction gives the full geometric certificate needed by
+the deterministic post-hoc replay step: valid separation replies for the final
+box and exclusion of every previous query from its strict coordinate interior.
+-/
+theorem chewi625BoxState_final_replayCertificate {d : ℕ} [NeZero d]
+    {R : ℝ} (hR_nonneg : 0 ≤ R)
+    (x : ℕ -> EuclideanSpace ℝ (Fin d)) (N : ℕ) :
+    IsFeasibilityReplayCertificate
+      (chewi625CoordinateBox
+        (chewi625BoxLower (d := d) R x N)
+        (chewi625BoxUpper (d := d) R x N))
+      (chewi625StrictCoordinateBox
+        (chewi625BoxLower (d := d) R x N)
+        (chewi625BoxUpper (d := d) R x N))
+      x (chewi625ReturnedCutVector (d := d) R x) N := by
+  exact
+    ⟨chewi625BoxState_final_separationTranscript
+        (d := d) (R := R) hR_nonneg x N,
+      fun n hnN =>
+        chewi625BoxState_query_not_mem_final_strict_box
+          (d := d) (R := R) hR_nonneg x hnN⟩
+
 /--
 At a complete cycle, if every side is still at least `2 * eps`, then the
 recursive box contains an `eps`-ball around its midpoint.
@@ -2225,6 +2329,37 @@ theorem chewi625_closedBall_subset_of_le_full_cycle_log_bound {d : ℕ}
       (n := n) (m := m) hnm
       (chewi625_eps_le_radius_of_nat_mul_log_le
         (R := R) (eps := eps) (m := m) hR_pos heps_pos hM_log)
+
+/--
+Source-shaped supplied-interface package for Chewi Theorem 6.25: under the log
+query-count condition, the final box both admits a valid separation transcript
+for all previous queries and still contains an `eps`-ball.
+-/
+theorem chewi625_final_replayCertificate_and_closedBall_of_le_full_cycle_log_bound
+    {d : ℕ} [NeZero d] {R eps : ℝ}
+    (hR_pos : 0 < R) (heps_pos : 0 < eps)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {N m : ℕ}
+    (hNm : N ≤ m * d)
+    (hM_log : (m : ℝ) * Real.log (2 : ℝ) ≤ Real.log (R / eps)) :
+    IsFeasibilityReplayCertificate
+        (chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x N)
+          (chewi625BoxUpper (d := d) R x N))
+        (chewi625StrictCoordinateBox
+          (chewi625BoxLower (d := d) R x N)
+          (chewi625BoxUpper (d := d) R x N))
+        x (chewi625ReturnedCutVector (d := d) R x) N ∧
+      ∃ center : EuclideanSpace ℝ (Fin d),
+        Metric.closedBall center eps ⊆
+          chewi625CoordinateBox
+            (chewi625BoxLower (d := d) R x N)
+            (chewi625BoxUpper (d := d) R x N) := by
+  exact
+    ⟨chewi625BoxState_final_replayCertificate
+        (d := d) (R := R) hR_pos.le x N,
+      chewi625_closedBall_subset_of_le_full_cycle_log_bound
+        (d := d) (R := R) (eps := eps) hR_pos heps_pos
+        (x := x) (n := N) (m := m) hNm hM_log⟩
 
 end Optimization
 end StatInference
