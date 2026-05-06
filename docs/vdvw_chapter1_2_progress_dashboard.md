@@ -32,7 +32,10 @@ process asymptotic tightness.  The raw one-coordinate law adapters
 later Chapter 1 process arguments can state ordinary coordinate laws directly
 rather than mapped `ell_infty(T)` eval-pushforwards.  The corresponding
 coordinatewise a.e.-replacement support is also compiled as
-`aemeasurable_coordinate_congr_ae` and `vdVWCoordinateProcessLaw_congr_ae`.
+`aemeasurable_coordinate_congr_ae`, `vdVWCoordinateProcessLaw_congr_ae`,
+`VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw_congr_eventually_ae`,
+and
+`VdVWEllInftyProcessAsymptoticallyTight.rawCoordinateLaw_congr_eventually_ae`.
 This run additionally closes the generic centered-convergence endpoint bundle
 and the explicit selected finite-net tail/UI route to `P`-GC plus in-mean via
 `VdVWTheorem243_pGlivenkoCantelli_and_inMean_of_centered_untruncated_convergesInOuterProbabilityConst_zero`

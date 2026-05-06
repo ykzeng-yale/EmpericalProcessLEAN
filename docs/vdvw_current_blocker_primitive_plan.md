@@ -478,6 +478,19 @@ These make the new raw coordinate-law bridge stable under coordinatewise
 a.e. replacement, which is needed before later separability or canonical
 measurable-version arguments can use ordinary coordinate laws.
 
+2026-05-06 raw coordinate-law replacement consumers: search found the
+measure-level replacement APIs
+`VdVWWeakConvergenceProbabilityMeasures.congr_eventually_limit` and
+`VdVWProbabilityMeasuresAsymptoticallyTight.congr_eventually`, together with
+the new `vdVWCoordinateProcessLaw_congr_ae`, but no raw bounded-process
+single-coordinate consumers for coordinatewise a.e. replacement.
+`FiniteDimensional.lean` now proves
+`VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw_congr_eventually_ae` and
+`VdVWEllInftyProcessAsymptoticallyTight.rawCoordinateLaw_congr_eventually_ae`.
+These close the one-coordinate replacement layer while still not claiming a
+whole-process a.e. replacement from only one-coordinate equality, nor the
+arbitrary-index VdV&W 1.4.8 converse.
+
 Authoritative operational prompt, 2026-05-06 after the verified
 original-cover truncation/polynomial entropy bridges and the quantizer
 random-cover lifts, plus the earlier truncated threshold trace algebra,

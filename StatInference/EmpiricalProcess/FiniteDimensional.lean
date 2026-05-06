@@ -1670,6 +1670,57 @@ theorem VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw
   simpa [hlim] using hcoord.congr_eventually hsrc
 
 /--
+Raw coordinate-law weak convergence is stable under eventually replacing the
+source coordinates and the limiting coordinate by a.e.-equal versions.
+
+This is a one-coordinate replacement primitive for later separability and
+canonical measurable-version arguments.  It does not replace the whole
+`ell_infty(T)` process law.
+-/
+theorem VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw_congr_eventually_ae
+    {ι : Type*} {Ω : ι -> Type*} {Ωlim : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    (X Y : (i : ι) -> Ω i -> T -> ℝ)
+    (Z W : Ωlim -> T -> ℝ)
+    (hbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hbounded i)) (μ i))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ l)
+    (t : T)
+    (hY : ∀ i, AEMeasurable (fun ω => Y i ω t) (μ i))
+    (hW : AEMeasurable (fun ω => W ω t) μlim)
+    (hYX : ∀ᶠ i in l, ∀ᵐ ω ∂(μ i), Y i ω t = X i ω t)
+    (hWZ : ∀ᵐ ω ∂μlim, W ω t = Z ω t) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun i => vdVWCoordinateProcessLaw (μ i) (Y i) t (hY i))
+      l
+      (vdVWCoordinateProcessLaw μlim W t hW) := by
+  have hcoord :=
+    VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ h t
+  refine hcoord.congr_eventually_limit ?_ ?_
+  · exact hYX.mono fun i hi =>
+      vdVWCoordinateProcessLaw_congr_ae
+        (P := μ i) (X := X i) (Y := Y i) (t := t)
+        ((VdVWEllInfty.evalCLM (T := T) t).continuous.measurable.aemeasurable.comp_aemeasurable
+          (hX i))
+        (hY i) hi
+  · exact
+      vdVWCoordinateProcessLaw_congr_ae
+        (P := μlim) (X := Z) (Y := W) (t := t)
+        ((VdVWEllInfty.evalCLM (T := T) t).continuous.measurable.aemeasurable.comp_aemeasurable
+          hZ)
+        hW hWZ
+
+/--
 Process-level asymptotic tightness for bounded raw processes, expressed as
 ordinary asymptotic tightness of their `ell_infty(T)` laws.
 
@@ -1887,6 +1938,42 @@ theorem VdVWEllInftyProcessAsymptoticallyTight.rawCoordinateLaw
   exact hcoord.congr_eventually (Filter.Eventually.of_forall fun i =>
     (vdVWEllInftyProcessLaw_map_eval
       (T := T) (P := μ i) (X := X i) (hbounded := hbounded i) (hX := hX i) t).symm)
+
+/--
+Raw coordinate-law asymptotic tightness is stable under eventually replacing
+the source coordinates by a.e.-equal versions.
+
+This is the tightness analogue of
+`VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw_congr_eventually_ae`.
+-/
+theorem VdVWEllInftyProcessAsymptoticallyTight.rawCoordinateLaw_congr_eventually_ae
+    {ι : Type*} {Ω : ι -> Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    (X Y : (i : ι) -> Ω i -> T -> ℝ)
+    (hbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hbounded i)) (μ i))
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessAsymptoticallyTight
+      (T := T) μ X hbounded hX l)
+    (t : T)
+    (hY : ∀ i, AEMeasurable (fun ω => Y i ω t) (μ i))
+    (hYX : ∀ᶠ i in l, ∀ᵐ ω ∂(μ i), Y i ω t = X i ω t) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun i => vdVWCoordinateProcessLaw (μ i) (Y i) t (hY i))
+      l := by
+  have hcoord :=
+    VdVWEllInftyProcessAsymptoticallyTight.rawCoordinateLaw
+      (T := T) μ X hbounded hX h t
+  exact hcoord.congr_eventually (hYX.mono fun i hi =>
+    vdVWCoordinateProcessLaw_congr_ae
+      (P := μ i) (X := X i) (Y := Y i) (t := t)
+      ((VdVWEllInfty.evalCLM (T := T) t).continuous.measurable.aemeasurable.comp_aemeasurable
+        (hX i))
+      (hY i) hi)
 
 /--
 Sequential weak convergence of bounded `ell_infty(T)` process laws implies
