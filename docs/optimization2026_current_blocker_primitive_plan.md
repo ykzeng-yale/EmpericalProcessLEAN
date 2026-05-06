@@ -48,14 +48,19 @@ single `lake build StatInference`/scan/commit/push gate for the batch.  Use
 read-only scout agents to map future chapters and mathlib APIs while the main
 thread proves the active theorem layer.  The current 2-4 hour route is:
 
-- finish Lemma 6.20 as one theorem-sized ellipsoid packet by splitting only
-  along the real blockers: concrete matrix transport and actual
-  determinant-to-volume scaling;
-- immediately continue Chapter 6 through Theorems 6.21-6.25, reusing the
-  compiled PSD/cutting-plane/ellipsoid interfaces instead of re-opening
-  scalar setup;
-- open Chapters 7-13 in parallel module packets with source-shaped theorem
-  interfaces first, then fill proof bodies by dependency order;
+- treat Chapters 3-10 and the finite Chapter 11 ABP telescope as reusable
+  infrastructure, not active routing targets;
+- skip Corollary 11.3 topology unless a report or later theorem requires it,
+  because the compactness/subsequence proof is not the fastest route to book
+  coverage;
+- prove Theorem 11.4 as a theorem-sized alternating-minimization packet:
+  source-shaped AM descent certificate, scalar inverse-gap/telescoping rate,
+  and displayed complexity wrapper with `K = 8 * beta * D^2 * R^2`;
+- immediately follow with Theorem 11.5 RAM using expectation-level supplied
+  interfaces and the already-compiled recurrence/averaging APIs;
+- package Sinkhorn Theorems 11.7/11.8 from ABP plus Pinsker/mirror-descent
+  supplied interfaces, then open Chapter 12 SMPGD with a stochastic
+  one-step-to-rate packet before attempting the ASGD CLT material;
 - keep exercise statements and any cheap reusable exercise proofs in
   `StatInference/Optimization/Exercises.lean`, but never let exercises block
   the main-text theorem lane.
@@ -67,7 +72,7 @@ The current scout map says:
   using source-shaped algorithmic interfaces before heavy extended-real
   convex analysis.
 - Chapters 9-11 should start with `Fenchel.lean`, `Bregman.lean`,
-  `MirrorDescent.lean`, and `AlternatingProjection.lean`, emphasizing
+  `MirrorDescent.lean`, and `AlternatingBregman.lean`, emphasizing
   the now-started finite-valued Fenchel-Young/double-conjugate,
   convexity-smoothness duality, Bregman divergence, relative
   convexity/smoothness, and ABP telescoping wrappers.
@@ -83,10 +88,10 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after focused Lean verification,
-promoted module build, and root `StatInference` build of the Chewi Chapter 11
-alternating Bregman projection packet on 2026-05-06, based on verified code
-frontier `4656409` (`Add Chewi chapter 11 ABP telescope packet`):
+Current live replacement `/goal` prompt after the 2026-05-06 status/rebase
+pass, building from Optimization route-doc frontier `fab42c1` (`Update Chewi
+route after ABP telescope packet`) and verified code frontier `4656409`
+(`Add Chewi chapter 11 ABP telescope packet`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -192,23 +197,44 @@ confirms the useful APIs are the compiled `Fenchel.lean`, `Bregman.lean`,
 `abs_real_inner_le_norm`, and `FirstOrderStrongConvexOn.lower_model`.  There is
 still no arbitrary norm/dual norm abstraction in local code or pinned mathlib;
 the OMD theorem packet covers the ordinary Hilbert norm specialization.
+The 2026-05-06 route rebase searched the Chapter 11/12 source and local/mathlib
+recurrence/probability APIs.  Result: Corollary 11.3 is topology-heavy
+compactness/subsequence work, while Theorem 11.4 exposes a clean scalar
+inverse-gap recurrence that can reuse `sum_range_sub_succ`, the Chapter 3/5
+recurrence/telescope style, and ordinary real algebra.  No local/mathlib
+coordinate-descent or alternating-minimization theorem was found.  Chapter 12
+has usable mathlib probability foundations for conditional expectation,
+conditional Jensen, martingales, and process convergence, but the fast initial
+route should use supplied expectation-level SMPGD one-step inequalities before
+attempting full martingale/CLT formalization.
 
 Active aggressive target ladder:
 
-1. Continue Chapter 11 beyond the ABP telescope.  First try a supplied-interface
-   Corollary 11.3 convergence/finiteness packet if it can be kept theorem-sized
-   under Chewi's two technical assumptions; otherwise move directly to §11.2
-   alternating minimization and build source-shaped block-coordinate descent
-   interfaces and the first smooth AM descent/telescope theorem.
-2. If exact Theorem 10.13 source-report packaging is requested, add an `sInf`
+1. Prove Chewi Theorem 11.4 as the active primary target.  Add a theorem-sized
+   alternating-minimization packet in `AlternatingBregman.lean` or a new
+   `AlternatingMinimization.lean`: first scalar inverse-gap growth from
+   `gap (n+1) <= gap n - gap n^2 / K`, then the closed
+   `gap (n0+M) <= K / M` corollary, then a supplied-interface AM wrapper for
+   the source recurrence with `K = 8 * beta * D^2 * R^2`.
+2. Immediately continue to Theorem 11.5 RAM using expectation-level
+   source-shaped interfaces: conditional one-step expectation, convex/strongly
+   convex Hopf-Lax supplied bounds, exponential rate for
+   `alpha_f + alpha_g > 0`, and inverse-gap/average rate for the zero-curvature
+   case.
+3. Package Sinkhorn Theorems 11.7 and 11.8 from the compiled ABP and mirror
+   descent layers using supplied finite KL/Pinsker/marginal identities; do not
+   expand full EOT duality unless exact Theorem 11.6 reporting is requested.
+4. Open Chapter 12 with `StochasticGradient.lean`/`SMPGD.lean`: build the
+   supplied stochastic one-step inequalities and Chewi Theorem 12.1 rate
+   wrappers first, then only after that map ASGD Theorems 12.3/12.7/12.8.
+5. Open Chapter 13 with `Newton.lean`/`SelfConcordance.lean` in parallel scout
+   mode, reusing mathlib matrix/spectral/operator-norm APIs and the existing
+   ellipsoid matrix infrastructure.
+6. If exact Theorem 10.13 source-report packaging is requested, add an `sInf`
    wrapper for the fixed-comparator regret theorem and/or a proof-carrying
    arbitrary norm/dual-norm interface.  If exact Lemma 11.2 reporting is
    requested, package the finite telescope into source screenshots/report form;
    do not block the main-text theorem lane on reports.
-3. In parallel, keep mapping Chapter 12 stochastic mirror-proximal-gradient and
-   Chapter 13 Newton/self-concordance theorem packets.  Use source-shaped
-   supplied interfaces first when exact analytic dependencies would otherwise
-   stall the main-text theorem lane.
 
 Verification gate remains: focused `lake env lean` during development,
 promoted `lake build StatInference` after theorem packets, proof-hole scan,
@@ -528,14 +554,15 @@ needed for the next Chapter 6 theorem packet.
 The app-level
 `/goal` objective text still mentions the obsolete Theorem 3.4 frontier and
 cannot be edited directly through the current tool surface unless the full
-textbook goal is marked complete, so this paragraph is the operative manual
-`/goal` target.
+textbook goal is marked complete.  This older Lemma 6.20 paragraph is retained
+only as historical dependency context; the operative manual `/goal` target is
+the 2026-05-06 live replacement prompt near the top of this file.
 
-Immediate target for the next manual goal run: move past Lemma 6.20 packaging
-and start Chapter 6 nonsmooth lower-bound/feasibility coverage, beginning with
-Theorems 6.21-6.23 unless the source scan shows Definition 6.24/Theorem 6.25 is
-the faster theorem-sized packet.  The displayed determinant ratio is now in the
-exact source shape
+Superseded historical target: the lane already moved past Lemma 6.20 packaging,
+Theorems 6.21-6.25, Chapter 7 Frank-Wolfe, Chapter 8 proximal methods, and
+Chapter 10 mirror-descent packets.  Do not route new manual-goal time to this
+paragraph unless exact source-report packaging needs one of these dependencies.
+The displayed determinant ratio is now in the exact source shape
 `(chewi620DisplayedShapeUpdate d Sigma p).det / Sigma.det =
 ellipsoidVolumeRatio d ^ 2`, the scalar bridge
 `chewi620_volume_le_of_sq_le_displayedShapeUpdate_det_ratio` converts squared
@@ -808,7 +835,8 @@ Theorem 8.5 have a stable main-text spine, split future packets by chapter
 surface rather than by tiny lemmas: optional Chapter 7 Carathéodory/report
 wrappers only when needed, Chapters 9-10 `Fenchel.lean` and
 `MirrorDescent.lean` for Fenchel-Young/Bregman/OMD telescopes, Chapter 11
-`AlternatingProjection.lean` for ABP/AM/RAM recurrences, Chapter 12
+`AlternatingBregman.lean`/`AlternatingMinimization.lean` for ABP/AM/RAM
+recurrences, Chapter 12
 `StochasticGradient.lean`/`SMPGD.lean` reusing local probability modules, and
 Chapter 13/Appendix `Newton.lean`/`SelfConcordance.lean` with mathlib matrix
 and spectral APIs.  Scouts may map later APIs in parallel, but the commit gate

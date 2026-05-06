@@ -56,10 +56,10 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after focused Lean verification, promoted module
-build, and root `StatInference` build of the Chewi Chapter 11 alternating
-Bregman projection packet on 2026-05-06, based on verified code frontier
-`4656409` in `StatInference/Optimization/AlternatingBregman.lean`:
+Current manual goal frontier after the 2026-05-06 manual-goal rebase, building
+from Optimization route-doc frontier `fab42c1` and verified code frontier
+`4656409` in
+`StatInference/Optimization/AlternatingBregman.lean`:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.  Latest verified Optimization
 proof frontier: `4656409`.
@@ -118,14 +118,16 @@ in the pinned tree; the relevant reuse is local `Bregman.lean`,
 `LipschitzOnWith.le_add_mul`, `abs_real_inner_le_norm`, and
 `FirstOrderStrongConvexOn.lower_model`; Chapter 11 ABP reuses
 `bregmanDivergence` and `sum_range_sub_succ`, with no direct mathlib/local ABP
-theorem found.  The active route is now Corollary 11.3 convergence under
-supplied compactness/separation assumptions if bounded; otherwise move directly
-to §11.2 alternating minimization and build source-shaped block-coordinate
-descent interfaces.  Generalize 10.11/10.13 to a custom arbitrary
+theorem found.  The active route is now §11.2 alternating minimization rather
+than Corollary 11.3 topology: prove Theorem 11.4 with a scalar inverse-gap
+telescope packet and supplied source recurrence, immediately follow with
+Theorem 11.5 RAM expectation recurrences, package Sinkhorn Theorems 11.7/11.8
+from ABP/mirror-descent supplied interfaces, and then open Chapter 12 SMPGD
+before the ASGD CLT.  Generalize 10.11/10.13 to a custom arbitrary
 norm/dual-norm interface or add an exact `sInf` wrapper only when source-report
-packaging or a later theorem demands it.  In parallel, map Chapter 12/13
-stochastic/Newton theorem packets with source-shaped supplied interfaces first
-when exact analytic dependencies would otherwise stall progress.
+packaging or a later theorem demands it.  In parallel, map Chapter 13
+Newton/self-concordance theorem packets with source-shaped supplied interfaces
+first when exact analytic dependencies would otherwise stall progress.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
