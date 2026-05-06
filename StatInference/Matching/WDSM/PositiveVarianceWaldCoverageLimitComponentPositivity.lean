@@ -1399,6 +1399,502 @@ theorem twoSidedPositiveVarianceWaldCoverage_tendsto_of_twoArmResidualVariance_c
       hcontrolShare_pos htreatedVariance_nonneg hcontrolVariance_pos
       hscale_positive htwoSided
 
+/-! ## PATT residual variance -/
+
+/--
+Absolute PATT residual-variance Wald coverage where the positive limiting
+variance is derived from positive treated share and treated direct
+residual-variance limits.
+-/
+theorem absolutePositiveVarianceWaldCoverage_tendsto_of_pattResidualVariance_components_treated_pos_limit
+    (sampleLawSeq : Index -> Measure Sample)
+    (estimator scaledStatistic : Index -> Sample -> Real)
+    (denominator treatedShare controlShare treatedDirectVariance
+      matchedControlVariance : Index -> Sample -> Real)
+    (target criticalValue scale : Index -> Real)
+    (limit : LimitSample -> Real)
+    (denominatorLimit treatedShareLimit controlShareLimit
+      treatedDirectVarianceLimit matchedControlVarianceLimit : Real)
+    (coverageLimit : Real)
+    (hscaled :
+      TendstoInDistribution scaledStatistic l limit
+        (fun _index => sampleLaw) limitLaw)
+    (hdenominator :
+      TendstoInMeasure sampleLaw denominator l
+        (fun _sample => denominatorLimit))
+    (htreatedShare :
+      TendstoInMeasure sampleLaw treatedShare l
+        (fun _sample => treatedShareLimit))
+    (hcontrolShare :
+      TendstoInMeasure sampleLaw controlShare l
+        (fun _sample => controlShareLimit))
+    (htreatedVariance :
+      TendstoInMeasure sampleLaw treatedDirectVariance l
+        (fun _sample => treatedDirectVarianceLimit))
+    (hcontrolVariance :
+      TendstoInMeasure sampleLaw matchedControlVariance l
+        (fun _sample => matchedControlVarianceLimit))
+    (hdenominatorLimit : denominatorLimit ≠ 0)
+    (htreatedShareLimit_pos : 0 < treatedShareLimit)
+    (hcontrolShareLimit_nonneg : 0 ≤ controlShareLimit)
+    (htreatedVarianceLimit_pos : 0 < treatedDirectVarianceLimit)
+    (hcontrolVarianceLimit_nonneg : 0 ≤ matchedControlVarianceLimit)
+    (hinverse_meas :
+      ∀ index,
+        AEMeasurable
+          (fun sample =>
+            (standardError
+              (pattWeightedResidualVariance (denominator index sample)
+                (treatedShare index sample) (controlShare index sample)
+                (treatedDirectVariance index sample)
+                (matchedControlVariance index sample)))⁻¹)
+          sampleLaw)
+    (hdenominator_ne :
+      ∀ᶠ index in l, ∀ sample, denominator index sample ≠ 0)
+    (htreatedShare_pos :
+      ∀ᶠ index in l, ∀ sample, 0 < treatedShare index sample)
+    (hcontrolShare_nonneg :
+      ∀ᶠ index in l, ∀ sample, 0 ≤ controlShare index sample)
+    (htreatedVariance_pos :
+      ∀ᶠ index in l, ∀ sample, 0 < treatedDirectVariance index sample)
+    (hcontrolVariance_nonneg :
+      ∀ᶠ index in l, ∀ sample, 0 ≤ matchedControlVariance index sample)
+    (hscale_positive : ∀ᶠ index in l, 0 < scale index)
+    (habsolute :
+      Tendsto
+        (fun index =>
+          eventProbabilityReal (sampleLawSeq index)
+            (fun sample =>
+              |waldStudentized (estimator index sample) (target index)
+                (standardError
+                  (pattWeightedResidualVariance (denominator index sample)
+                    (treatedShare index sample) (controlShare index sample)
+                    (treatedDirectVariance index sample)
+                    (matchedControlVariance index sample)))
+                (scale index)| ≤ criticalValue index)) l
+        (nhds coverageLimit)) :
+    TendstoInDistribution
+        (fun index sample =>
+          scaledStatistic index sample *
+            (standardError
+              (pattWeightedResidualVariance (denominator index sample)
+                (treatedShare index sample) (controlShare index sample)
+                (treatedDirectVariance index sample)
+                (matchedControlVariance index sample)))⁻¹)
+        l
+        (fun limitSample =>
+          limit limitSample *
+            (standardError
+              (pattWeightedResidualVariance denominatorLimit treatedShareLimit
+                controlShareLimit treatedDirectVarianceLimit
+                matchedControlVarianceLimit))⁻¹)
+        (fun _index => sampleLaw) limitLaw ∧
+      Tendsto
+        (fun index =>
+          eventProbabilityReal (sampleLawSeq index)
+            (fun sample =>
+              waldCovers (estimator index sample) (target index)
+                (criticalValue index)
+                (standardError
+                  (pattWeightedResidualVariance (denominator index sample)
+                    (treatedShare index sample) (controlShare index sample)
+                    (treatedDirectVariance index sample)
+                    (matchedControlVariance index sample)))
+                (scale index)))
+        l (nhds coverageLimit) := by
+  exact
+    absolutePositiveVarianceWaldCoverage_tendsto_of_pattResidualVariance_components_treated_pos
+      (sampleLaw := sampleLaw) (limitLaw := limitLaw) (l := l)
+      sampleLawSeq estimator scaledStatistic denominator treatedShare
+      controlShare treatedDirectVariance matchedControlVariance target
+      criticalValue scale limit denominatorLimit treatedShareLimit
+      controlShareLimit treatedDirectVarianceLimit matchedControlVarianceLimit
+      coverageLimit hscaled hdenominator htreatedShare hcontrolShare
+      htreatedVariance hcontrolVariance hdenominatorLimit
+      (pattWeightedResidualVarianceLimit_pos_of_treated_pos
+        denominatorLimit treatedShareLimit controlShareLimit
+        treatedDirectVarianceLimit matchedControlVarianceLimit
+        hdenominatorLimit htreatedShareLimit_pos hcontrolShareLimit_nonneg
+        htreatedVarianceLimit_pos hcontrolVarianceLimit_nonneg)
+      hinverse_meas hdenominator_ne htreatedShare_pos
+      hcontrolShare_nonneg htreatedVariance_pos hcontrolVariance_nonneg
+      hscale_positive habsolute
+
+/--
+Two-sided PATT residual-variance Wald coverage where the positive limiting
+variance is derived from positive treated share and treated direct
+residual-variance limits.
+-/
+theorem twoSidedPositiveVarianceWaldCoverage_tendsto_of_pattResidualVariance_components_treated_pos_limit
+    (sampleLawSeq : Index -> Measure Sample)
+    (estimator scaledStatistic : Index -> Sample -> Real)
+    (denominator treatedShare controlShare treatedDirectVariance
+      matchedControlVariance : Index -> Sample -> Real)
+    (target criticalValue scale : Index -> Real)
+    (limit : LimitSample -> Real)
+    (denominatorLimit treatedShareLimit controlShareLimit
+      treatedDirectVarianceLimit matchedControlVarianceLimit : Real)
+    (coverageLimit : Real)
+    (hscaled :
+      TendstoInDistribution scaledStatistic l limit
+        (fun _index => sampleLaw) limitLaw)
+    (hdenominator :
+      TendstoInMeasure sampleLaw denominator l
+        (fun _sample => denominatorLimit))
+    (htreatedShare :
+      TendstoInMeasure sampleLaw treatedShare l
+        (fun _sample => treatedShareLimit))
+    (hcontrolShare :
+      TendstoInMeasure sampleLaw controlShare l
+        (fun _sample => controlShareLimit))
+    (htreatedVariance :
+      TendstoInMeasure sampleLaw treatedDirectVariance l
+        (fun _sample => treatedDirectVarianceLimit))
+    (hcontrolVariance :
+      TendstoInMeasure sampleLaw matchedControlVariance l
+        (fun _sample => matchedControlVarianceLimit))
+    (hdenominatorLimit : denominatorLimit ≠ 0)
+    (htreatedShareLimit_pos : 0 < treatedShareLimit)
+    (hcontrolShareLimit_nonneg : 0 ≤ controlShareLimit)
+    (htreatedVarianceLimit_pos : 0 < treatedDirectVarianceLimit)
+    (hcontrolVarianceLimit_nonneg : 0 ≤ matchedControlVarianceLimit)
+    (hinverse_meas :
+      ∀ index,
+        AEMeasurable
+          (fun sample =>
+            (standardError
+              (pattWeightedResidualVariance (denominator index sample)
+                (treatedShare index sample) (controlShare index sample)
+                (treatedDirectVariance index sample)
+                (matchedControlVariance index sample)))⁻¹)
+          sampleLaw)
+    (hdenominator_ne :
+      ∀ᶠ index in l, ∀ sample, denominator index sample ≠ 0)
+    (htreatedShare_pos :
+      ∀ᶠ index in l, ∀ sample, 0 < treatedShare index sample)
+    (hcontrolShare_nonneg :
+      ∀ᶠ index in l, ∀ sample, 0 ≤ controlShare index sample)
+    (htreatedVariance_pos :
+      ∀ᶠ index in l, ∀ sample, 0 < treatedDirectVariance index sample)
+    (hcontrolVariance_nonneg :
+      ∀ᶠ index in l, ∀ sample, 0 ≤ matchedControlVariance index sample)
+    (hscale_positive : ∀ᶠ index in l, 0 < scale index)
+    (htwoSided :
+      Tendsto
+        (fun index =>
+          eventProbabilityReal (sampleLawSeq index)
+            (fun sample =>
+              -criticalValue index ≤
+                  waldStudentized (estimator index sample) (target index)
+                    (standardError
+                      (pattWeightedResidualVariance (denominator index sample)
+                        (treatedShare index sample)
+                        (controlShare index sample)
+                        (treatedDirectVariance index sample)
+                        (matchedControlVariance index sample)))
+                    (scale index) ∧
+                waldStudentized (estimator index sample) (target index)
+                  (standardError
+                    (pattWeightedResidualVariance (denominator index sample)
+                      (treatedShare index sample) (controlShare index sample)
+                      (treatedDirectVariance index sample)
+                      (matchedControlVariance index sample)))
+                  (scale index) ≤ criticalValue index)) l
+        (nhds coverageLimit)) :
+    TendstoInDistribution
+        (fun index sample =>
+          scaledStatistic index sample *
+            (standardError
+              (pattWeightedResidualVariance (denominator index sample)
+                (treatedShare index sample) (controlShare index sample)
+                (treatedDirectVariance index sample)
+                (matchedControlVariance index sample)))⁻¹)
+        l
+        (fun limitSample =>
+          limit limitSample *
+            (standardError
+              (pattWeightedResidualVariance denominatorLimit treatedShareLimit
+                controlShareLimit treatedDirectVarianceLimit
+                matchedControlVarianceLimit))⁻¹)
+        (fun _index => sampleLaw) limitLaw ∧
+      Tendsto
+        (fun index =>
+          eventProbabilityReal (sampleLawSeq index)
+            (fun sample =>
+              waldCovers (estimator index sample) (target index)
+                (criticalValue index)
+                (standardError
+                  (pattWeightedResidualVariance (denominator index sample)
+                    (treatedShare index sample) (controlShare index sample)
+                    (treatedDirectVariance index sample)
+                    (matchedControlVariance index sample)))
+                (scale index)))
+        l (nhds coverageLimit) := by
+  exact
+    twoSidedPositiveVarianceWaldCoverage_tendsto_of_pattResidualVariance_components_treated_pos
+      (sampleLaw := sampleLaw) (limitLaw := limitLaw) (l := l)
+      sampleLawSeq estimator scaledStatistic denominator treatedShare
+      controlShare treatedDirectVariance matchedControlVariance target
+      criticalValue scale limit denominatorLimit treatedShareLimit
+      controlShareLimit treatedDirectVarianceLimit matchedControlVarianceLimit
+      coverageLimit hscaled hdenominator htreatedShare hcontrolShare
+      htreatedVariance hcontrolVariance hdenominatorLimit
+      (pattWeightedResidualVarianceLimit_pos_of_treated_pos
+        denominatorLimit treatedShareLimit controlShareLimit
+        treatedDirectVarianceLimit matchedControlVarianceLimit
+        hdenominatorLimit htreatedShareLimit_pos hcontrolShareLimit_nonneg
+        htreatedVarianceLimit_pos hcontrolVarianceLimit_nonneg)
+      hinverse_meas hdenominator_ne htreatedShare_pos
+      hcontrolShare_nonneg htreatedVariance_pos hcontrolVariance_nonneg
+      hscale_positive htwoSided
+
+/--
+Absolute PATT residual-variance Wald coverage where the positive limiting
+variance is derived from positive control share and matched-control
+residual-variance limits.
+-/
+theorem absolutePositiveVarianceWaldCoverage_tendsto_of_pattResidualVariance_components_control_pos_limit
+    (sampleLawSeq : Index -> Measure Sample)
+    (estimator scaledStatistic : Index -> Sample -> Real)
+    (denominator treatedShare controlShare treatedDirectVariance
+      matchedControlVariance : Index -> Sample -> Real)
+    (target criticalValue scale : Index -> Real)
+    (limit : LimitSample -> Real)
+    (denominatorLimit treatedShareLimit controlShareLimit
+      treatedDirectVarianceLimit matchedControlVarianceLimit : Real)
+    (coverageLimit : Real)
+    (hscaled :
+      TendstoInDistribution scaledStatistic l limit
+        (fun _index => sampleLaw) limitLaw)
+    (hdenominator :
+      TendstoInMeasure sampleLaw denominator l
+        (fun _sample => denominatorLimit))
+    (htreatedShare :
+      TendstoInMeasure sampleLaw treatedShare l
+        (fun _sample => treatedShareLimit))
+    (hcontrolShare :
+      TendstoInMeasure sampleLaw controlShare l
+        (fun _sample => controlShareLimit))
+    (htreatedVariance :
+      TendstoInMeasure sampleLaw treatedDirectVariance l
+        (fun _sample => treatedDirectVarianceLimit))
+    (hcontrolVariance :
+      TendstoInMeasure sampleLaw matchedControlVariance l
+        (fun _sample => matchedControlVarianceLimit))
+    (hdenominatorLimit : denominatorLimit ≠ 0)
+    (htreatedShareLimit_nonneg : 0 ≤ treatedShareLimit)
+    (hcontrolShareLimit_pos : 0 < controlShareLimit)
+    (htreatedVarianceLimit_nonneg : 0 ≤ treatedDirectVarianceLimit)
+    (hcontrolVarianceLimit_pos : 0 < matchedControlVarianceLimit)
+    (hinverse_meas :
+      ∀ index,
+        AEMeasurable
+          (fun sample =>
+            (standardError
+              (pattWeightedResidualVariance (denominator index sample)
+                (treatedShare index sample) (controlShare index sample)
+                (treatedDirectVariance index sample)
+                (matchedControlVariance index sample)))⁻¹)
+          sampleLaw)
+    (hdenominator_ne :
+      ∀ᶠ index in l, ∀ sample, denominator index sample ≠ 0)
+    (htreatedShare_nonneg :
+      ∀ᶠ index in l, ∀ sample, 0 ≤ treatedShare index sample)
+    (hcontrolShare_pos :
+      ∀ᶠ index in l, ∀ sample, 0 < controlShare index sample)
+    (htreatedVariance_nonneg :
+      ∀ᶠ index in l, ∀ sample, 0 ≤ treatedDirectVariance index sample)
+    (hcontrolVariance_pos :
+      ∀ᶠ index in l, ∀ sample, 0 < matchedControlVariance index sample)
+    (hscale_positive : ∀ᶠ index in l, 0 < scale index)
+    (habsolute :
+      Tendsto
+        (fun index =>
+          eventProbabilityReal (sampleLawSeq index)
+            (fun sample =>
+              |waldStudentized (estimator index sample) (target index)
+                (standardError
+                  (pattWeightedResidualVariance (denominator index sample)
+                    (treatedShare index sample) (controlShare index sample)
+                    (treatedDirectVariance index sample)
+                    (matchedControlVariance index sample)))
+                (scale index)| ≤ criticalValue index)) l
+        (nhds coverageLimit)) :
+    TendstoInDistribution
+        (fun index sample =>
+          scaledStatistic index sample *
+            (standardError
+              (pattWeightedResidualVariance (denominator index sample)
+                (treatedShare index sample) (controlShare index sample)
+                (treatedDirectVariance index sample)
+                (matchedControlVariance index sample)))⁻¹)
+        l
+        (fun limitSample =>
+          limit limitSample *
+            (standardError
+              (pattWeightedResidualVariance denominatorLimit treatedShareLimit
+                controlShareLimit treatedDirectVarianceLimit
+                matchedControlVarianceLimit))⁻¹)
+        (fun _index => sampleLaw) limitLaw ∧
+      Tendsto
+        (fun index =>
+          eventProbabilityReal (sampleLawSeq index)
+            (fun sample =>
+              waldCovers (estimator index sample) (target index)
+                (criticalValue index)
+                (standardError
+                  (pattWeightedResidualVariance (denominator index sample)
+                    (treatedShare index sample) (controlShare index sample)
+                    (treatedDirectVariance index sample)
+                    (matchedControlVariance index sample)))
+                (scale index)))
+        l (nhds coverageLimit) := by
+  exact
+    absolutePositiveVarianceWaldCoverage_tendsto_of_pattResidualVariance_components_control_pos
+      (sampleLaw := sampleLaw) (limitLaw := limitLaw) (l := l)
+      sampleLawSeq estimator scaledStatistic denominator treatedShare
+      controlShare treatedDirectVariance matchedControlVariance target
+      criticalValue scale limit denominatorLimit treatedShareLimit
+      controlShareLimit treatedDirectVarianceLimit matchedControlVarianceLimit
+      coverageLimit hscaled hdenominator htreatedShare hcontrolShare
+      htreatedVariance hcontrolVariance hdenominatorLimit
+      (pattWeightedResidualVarianceLimit_pos_of_control_pos
+        denominatorLimit treatedShareLimit controlShareLimit
+        treatedDirectVarianceLimit matchedControlVarianceLimit
+        hdenominatorLimit htreatedShareLimit_nonneg hcontrolShareLimit_pos
+        htreatedVarianceLimit_nonneg hcontrolVarianceLimit_pos)
+      hinverse_meas hdenominator_ne htreatedShare_nonneg
+      hcontrolShare_pos htreatedVariance_nonneg hcontrolVariance_pos
+      hscale_positive habsolute
+
+/--
+Two-sided PATT residual-variance Wald coverage where the positive limiting
+variance is derived from positive control share and matched-control
+residual-variance limits.
+-/
+theorem twoSidedPositiveVarianceWaldCoverage_tendsto_of_pattResidualVariance_components_control_pos_limit
+    (sampleLawSeq : Index -> Measure Sample)
+    (estimator scaledStatistic : Index -> Sample -> Real)
+    (denominator treatedShare controlShare treatedDirectVariance
+      matchedControlVariance : Index -> Sample -> Real)
+    (target criticalValue scale : Index -> Real)
+    (limit : LimitSample -> Real)
+    (denominatorLimit treatedShareLimit controlShareLimit
+      treatedDirectVarianceLimit matchedControlVarianceLimit : Real)
+    (coverageLimit : Real)
+    (hscaled :
+      TendstoInDistribution scaledStatistic l limit
+        (fun _index => sampleLaw) limitLaw)
+    (hdenominator :
+      TendstoInMeasure sampleLaw denominator l
+        (fun _sample => denominatorLimit))
+    (htreatedShare :
+      TendstoInMeasure sampleLaw treatedShare l
+        (fun _sample => treatedShareLimit))
+    (hcontrolShare :
+      TendstoInMeasure sampleLaw controlShare l
+        (fun _sample => controlShareLimit))
+    (htreatedVariance :
+      TendstoInMeasure sampleLaw treatedDirectVariance l
+        (fun _sample => treatedDirectVarianceLimit))
+    (hcontrolVariance :
+      TendstoInMeasure sampleLaw matchedControlVariance l
+        (fun _sample => matchedControlVarianceLimit))
+    (hdenominatorLimit : denominatorLimit ≠ 0)
+    (htreatedShareLimit_nonneg : 0 ≤ treatedShareLimit)
+    (hcontrolShareLimit_pos : 0 < controlShareLimit)
+    (htreatedVarianceLimit_nonneg : 0 ≤ treatedDirectVarianceLimit)
+    (hcontrolVarianceLimit_pos : 0 < matchedControlVarianceLimit)
+    (hinverse_meas :
+      ∀ index,
+        AEMeasurable
+          (fun sample =>
+            (standardError
+              (pattWeightedResidualVariance (denominator index sample)
+                (treatedShare index sample) (controlShare index sample)
+                (treatedDirectVariance index sample)
+                (matchedControlVariance index sample)))⁻¹)
+          sampleLaw)
+    (hdenominator_ne :
+      ∀ᶠ index in l, ∀ sample, denominator index sample ≠ 0)
+    (htreatedShare_nonneg :
+      ∀ᶠ index in l, ∀ sample, 0 ≤ treatedShare index sample)
+    (hcontrolShare_pos :
+      ∀ᶠ index in l, ∀ sample, 0 < controlShare index sample)
+    (htreatedVariance_nonneg :
+      ∀ᶠ index in l, ∀ sample, 0 ≤ treatedDirectVariance index sample)
+    (hcontrolVariance_pos :
+      ∀ᶠ index in l, ∀ sample, 0 < matchedControlVariance index sample)
+    (hscale_positive : ∀ᶠ index in l, 0 < scale index)
+    (htwoSided :
+      Tendsto
+        (fun index =>
+          eventProbabilityReal (sampleLawSeq index)
+            (fun sample =>
+              -criticalValue index ≤
+                  waldStudentized (estimator index sample) (target index)
+                    (standardError
+                      (pattWeightedResidualVariance (denominator index sample)
+                        (treatedShare index sample)
+                        (controlShare index sample)
+                        (treatedDirectVariance index sample)
+                        (matchedControlVariance index sample)))
+                    (scale index) ∧
+                waldStudentized (estimator index sample) (target index)
+                  (standardError
+                    (pattWeightedResidualVariance (denominator index sample)
+                      (treatedShare index sample) (controlShare index sample)
+                      (treatedDirectVariance index sample)
+                      (matchedControlVariance index sample)))
+                  (scale index) ≤ criticalValue index)) l
+        (nhds coverageLimit)) :
+    TendstoInDistribution
+        (fun index sample =>
+          scaledStatistic index sample *
+            (standardError
+              (pattWeightedResidualVariance (denominator index sample)
+                (treatedShare index sample) (controlShare index sample)
+                (treatedDirectVariance index sample)
+                (matchedControlVariance index sample)))⁻¹)
+        l
+        (fun limitSample =>
+          limit limitSample *
+            (standardError
+              (pattWeightedResidualVariance denominatorLimit treatedShareLimit
+                controlShareLimit treatedDirectVarianceLimit
+                matchedControlVarianceLimit))⁻¹)
+        (fun _index => sampleLaw) limitLaw ∧
+      Tendsto
+        (fun index =>
+          eventProbabilityReal (sampleLawSeq index)
+            (fun sample =>
+              waldCovers (estimator index sample) (target index)
+                (criticalValue index)
+                (standardError
+                  (pattWeightedResidualVariance (denominator index sample)
+                    (treatedShare index sample) (controlShare index sample)
+                    (treatedDirectVariance index sample)
+                    (matchedControlVariance index sample)))
+                (scale index)))
+        l (nhds coverageLimit) := by
+  exact
+    twoSidedPositiveVarianceWaldCoverage_tendsto_of_pattResidualVariance_components_control_pos
+      (sampleLaw := sampleLaw) (limitLaw := limitLaw) (l := l)
+      sampleLawSeq estimator scaledStatistic denominator treatedShare
+      controlShare treatedDirectVariance matchedControlVariance target
+      criticalValue scale limit denominatorLimit treatedShareLimit
+      controlShareLimit treatedDirectVarianceLimit matchedControlVarianceLimit
+      coverageLimit hscaled hdenominator htreatedShare hcontrolShare
+      htreatedVariance hcontrolVariance hdenominatorLimit
+      (pattWeightedResidualVarianceLimit_pos_of_control_pos
+        denominatorLimit treatedShareLimit controlShareLimit
+        treatedDirectVarianceLimit matchedControlVarianceLimit
+        hdenominatorLimit htreatedShareLimit_nonneg hcontrolShareLimit_pos
+        htreatedVarianceLimit_nonneg hcontrolVarianceLimit_pos)
+      hinverse_meas hdenominator_ne htreatedShare_nonneg
+      hcontrolShare_pos htreatedVariance_nonneg hcontrolVariance_pos
+      hscale_positive htwoSided
+
 end WDSM
 end Matching
 end StatInference
