@@ -19359,6 +19359,124 @@ theorem
       htrace_finite_selected hcardinality_dom hconstant_ge_one hpoly_bound
 
 /--
+Canonical integer-grid/full-subgraph VC assumptions build the variable-domain
+book entropy condition.
+
+This is the entropy-side analogue of the strongest local integer-grid
+Theorem 2.4.3 route: the truncated envelope gives the grid boundedness, the
+canonical radius `ceil(M / eta)` gives `M <= radius * eta`, and the uniform
+full-subgraph VC bound supplies every fixed-threshold Sauer estimate.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {vcDegree : ℝ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M)) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope
+      (fun M eta _n _sample m =>
+        (((vcDegree M + 2) * (m + 1) ^ vcDegree M) ^
+          (2 * vdVWIntegerGridRadius M eta + 1))) := by
+  classical
+  let selectedCardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun M eta _n _sample m =>
+      (((vcDegree M + 2) * (m + 1) ^ vcDegree M) ^
+        (2 * vdVWIntegerGridRadius M eta + 1))
+  have hcovering_all :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (selectedCardinality M eta n) := by
+    intro M hM eta heta n
+    exact
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_empiricalL1CoveringNumber_le_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (cardinality := selectedCardinality M)
+        (X M)
+        (by
+          intro eta heta n sample m
+          exact
+            empiricalL1CoveringNumber_le_of_integerMultipleThresholdGrid_nat_uniform_abs_bound_vc_card_le
+              (sample := samplePath (X M n) sample m)
+              (indexClass := indexClass)
+              (classFun := vdVWTruncatedClassFun classFun envelope M)
+              (epsilon := eta)
+              (bound := vdVWIntegerGridRadius M eta)
+              (d := vcDegree M)
+              (cardinality := selectedCardinality M eta n sample m)
+              heta
+              (by
+                intro index hindex sampleIndex
+                exact
+                  (abs_vdVWTruncatedClassFun_le_M
+                    (indexClass := indexClass) (classFun := classFun)
+                    (envelope := envelope) (M := M)
+                    henvelope hM.le hindex
+                    ((samplePath (X M n) sample m) sampleIndex)).trans
+                    (vdVWIntegerGridRadius_mul_eta_ge
+                      (M := M) (eta := eta) heta))
+              (by
+                intro threshold
+                exact
+                  VdVWUniformThresholdVCSubgraphBound.empiricalBinaryTraceSetFamily_vcDim_le
+                    (VdVWUniformSubgraphVCBound.toUniformThresholdVCSubgraphBound
+                      (hvc M hM))
+                    (sample := samplePath (X M n) sample m) threshold.1)
+              (by rfl))
+        eta heta n
+  have hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        1 ≤ ((((vcDegree M + 2 : ℕ) : ℝ) ^
+          (2 * vdVWIntegerGridRadius M eta + 1)) + 1) := by
+    intro M _hM eta _heta
+    have hnonneg :
+        0 ≤ (((vcDegree M + 2 : ℕ) : ℝ) ^
+          (2 * vdVWIntegerGridRadius M eta + 1)) :=
+      pow_nonneg (Nat.cast_nonneg _) _
+    linarith
+  have hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((selectedCardinality M eta n sample n : ℝ) + 1) ≤
+            ((((vcDegree M + 2 : ℕ) : ℝ) ^
+                (2 * vdVWIntegerGridRadius M eta + 1)) + 1) *
+              (((n + 1 : ℕ) : ℝ) ^
+                (vcDegree M * (2 * vdVWIntegerGridRadius M eta + 1))) := by
+    intro M _hM eta _heta n sample
+    have hbase_growth :
+        (((vcDegree M + 2) * (n + 1) ^ vcDegree M : ℕ) : ℝ) ≤
+          ((vcDegree M + 2 : ℕ) : ℝ) *
+            (((n + 1 : ℕ) : ℝ) ^ vcDegree M) := by
+      norm_num [Nat.cast_mul, Nat.cast_pow]
+    simpa [selectedCardinality] using
+      nat_pow_add_one_real_le_nat_poly_of_base_le
+        (base := (vcDegree M + 2) * (n + 1) ^ vcDegree M)
+        (n := n) (a := vcDegree M)
+        (k := 2 * vdVWIntegerGridRadius M eta + 1)
+        (B := ((vcDegree M + 2 : ℕ) : ℝ))
+        (Nat.cast_nonneg _) hbase_growth
+  simpa [selectedCardinality] using
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (constant := fun M eta =>
+        ((((vcDegree M + 2 : ℕ) : ℝ) ^
+          (2 * vdVWIntegerGridRadius M eta + 1)) + 1))
+      (degree := fun M eta =>
+        vcDegree M * (2 * vdVWIntegerGridRadius M eta + 1))
+      (cardinality := selectedCardinality)
+      hcovering_all hconstant_ge_one hpoly_bound
+
+/--
 The variable-domain book entropy condition supplies the entropy and covering
 fields of the selected fixed-radius package for each fixed truncation level.
 

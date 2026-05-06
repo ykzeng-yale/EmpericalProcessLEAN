@@ -248,6 +248,11 @@ and
 feed `thresholdTraceCodeSet` VC/Sauer cardinality and exact
 coordinate-threshold separation directly into the variable-domain entropy
 condition.
+The canonical integer-grid/full-subgraph entropy constructor is also compiled:
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`
+turns the truncated-envelope bound plus `VdVWUniformSubgraphVCBound` into the
+same book-facing entropy condition with the explicit canonical grid
+cardinality.
 The remaining useful work is a concrete quantizer/grid/VC cardinality estimate
 for the coordinate code sets, not another endpoint wrapper.
 For Chapter 1 varying-domain asymptotic-measurability,

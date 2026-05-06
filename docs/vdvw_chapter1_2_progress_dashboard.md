@@ -203,6 +203,9 @@ The threshold VC/Sauer routes now have entropy-side constructors as well:
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`
 and
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_coordinate_thresholds_separate_uniform_vc`.
+The canonical integer-grid/full-subgraph VC route also now feeds the
+variable-domain book entropy condition through
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`.
 Thus deterministic normalized-log bounds, including natural-polynomial
 VC/Sauer-style cardinality growth, now supply the first-sample `nnnorm`
 condition directly.  The next non-finite theorem task is upstream: prove such

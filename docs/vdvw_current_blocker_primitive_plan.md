@@ -6231,3 +6231,18 @@ therefore now feeds both entropy and selected finite-net tail/UI sides; the
 next useful theorem should remove or discharge the remaining structural
 assumptions, such as coordinatewise threshold approximation, exact separation,
 finite grid construction, or uniform subgraph VC input.
+
+2026-05-06 canonical integer-grid/full-subgraph entropy follow-up: local search
+found selected fixed-radius and final endpoint consumers for the canonical
+integer-grid/full-subgraph VC route, but no variable-domain book-entropy
+constructor for the same strongest structural assumptions.  `Theorem243.lean`
+now proves
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`.
+It uses the truncated-envelope bound, canonical grid radius
+`vdVWIntegerGridRadius M eta`, and
+`VdVWUniformSubgraphVCBound.toUniformThresholdVCSubgraphBound` to produce the
+book entropy condition with the explicit Sauer-polynomial grid cardinality.
+This removes the per-threshold VC side condition for the entropy layer.  The
+remaining productive work is to connect the book's named subgraph/VC class
+hypothesis and measurability/envelope hypotheses to this constructor and the
+already compiled selected tail/UI/final endpoints.
