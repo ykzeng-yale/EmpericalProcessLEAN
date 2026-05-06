@@ -5835,3 +5835,15 @@ Any centered-supremum convergence route, including the first-sample `eLpNorm`
 tail route, can now feed the in-mean endpoint through this single adapter.
 The selected-entropy tail/structural-cardinality proof remains the real
 non-finite Theorem 2.4.3 blocker.
+
+2026-05-05 Theorem 2.4.3 structural entropy follow-up: local search found the
+selected fixed-radius constructor from a uniform first-sample selected
+normalized-entropy `nnnorm` bound, but no final centered convergence theorem
+consuming that structural bound.  `Theorem243.lean` now adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_nnnorm_bound`.
+This is the deterministic structural specialization of the first-sample
+`eLpNorm` tail route: a VC/Sauer, finite-trace, or finite-code cardinality
+argument that proves the displayed uniform bound now feeds directly into
+untruncated centered convergence.  The remaining non-finite theorem blocker is
+to prove such a structural bound for the selected empirical-cover entropy, or
+to prove the more general first-sample `eLpNorm` tail condition directly.

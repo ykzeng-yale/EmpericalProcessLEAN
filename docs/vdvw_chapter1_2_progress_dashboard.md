@@ -124,6 +124,11 @@ The in-mean endpoint has the analogous reusable adapter
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_integrable_envelope`,
 which upgrades centered convergence to ordinary mean convergence under the
 standard countable-coordinate and integrable-envelope hypotheses.
+The deterministic structural version of the first-sample entropy route is now
+compiled too:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_nnnorm_bound`
+turns a uniform bound on the lifted selected normalized empirical-cover
+entropy into untruncated centered convergence.
 
 2026-05-05 separability/`P`-measurability follow-up:
 `PMeasurable.lean` now adds
