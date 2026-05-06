@@ -69,10 +69,10 @@ Theorem 8.5 has a compiled finite-valued supplied-interface layer with
 `chewi86_weighted_two_point_bound_telescope`,
 `chewi86_weighted_sum_bound`, and
 `chewi86_gap_le_two_beta_dist_sq_over_nat_sq`, reusing Chapter 5.10
-lambda/telescope algebra with PGD `(8.1)` replacing GD `(3.3)`.  Immediate
-route: promoted build/scans/rebase/commit/push for Chapter 8, then open
-Chapter 9 `Fenchel.lean`/`Bregman.lean`/mirror-descent theorem packets instead
-of looping on small Chapter 8 source-shape cleanup.
+lambda/telescope algebra with PGD `(8.1)` replacing GD `(3.3)`.  Latest pushed
+Optimization frontier: `5479054` (`Add Chewi theorem 8.6 APGD layer`).  The
+active route is now Chapter 9 `Fenchel.lean`/`Bregman.lean`/mirror-descent
+theorem packets instead of looping on small Chapter 8 source-shape cleanup.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

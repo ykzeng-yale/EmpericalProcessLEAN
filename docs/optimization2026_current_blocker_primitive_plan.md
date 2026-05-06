@@ -105,14 +105,14 @@ pinned mathlib has no direct proximal/Moreau/proximal-gradient theorem; Chapter
 `SmoothWithGradientOn.upper_model`, Chapter 3's weighted recurrence for 8.5,
 and Chapter 5.10's `chewi510Lambda`, `chewi510Theta`,
 `chewi510EnergyVector`, weighted telescope, and denominator-growth algebra for
-8.6.  Immediate aggressive target: promote the APGD packet by rebasing over
-`origin/main`, running `lake build StatInference.Optimization.Proximal
-StatInference`, proof-hole and secret scans, then commit/push one clean batch.
-After that, jump to Chapter 9 rather than polishing small Chapter 8 source
-shape: create `Fenchel.lean`/`Bregman.lean` theorem packets for Fenchel-Young,
-Fenchel duality interfaces, Bregman divergence, and mirror-descent
-telescoping, using search-first mathlib/local API discovery before adding any
-new convex-analysis primitive.
+8.6.  Latest pushed Optimization frontier: `5479054`
+(`Add Chewi theorem 8.6 APGD layer`), now followed on `origin/main` by other
+agents' empirical-process commits.  Active aggressive target: jump to Chapter
+9 rather than polishing small Chapter 8 source shape.  Create
+`Fenchel.lean`/`Bregman.lean` theorem packets for Fenchel-Young, Fenchel
+duality interfaces, Bregman divergence, and mirror-descent telescoping, using
+search-first mathlib/local API discovery before adding any new convex-analysis
+primitive.
 
 Historical live replacement prompt after focused Lean verification of the
 Chapter 7 Frank-Wolfe packet rebased over pushed frontier `4d4601c`
@@ -694,10 +694,9 @@ wrapper only if it is needed for exact source reporting.  Definition
 6.24/Theorem 6.25 now has the closed-convex feasibility-instance and
 topological interior no-success wrapper, and Chapter 7 `FrankWolfe.lean` now
 has the supplied Theorem 7.3 rate wrapper, and Chapter 8 `Proximal.lean` now
-has the supplied Theorem 8.5 PGD one-step/final-rate wrapper plus a focused
-Lean-verified local Theorem 8.6 APGD/FISTA packet.  The immediate non-report
-gate is promotion/build/rebase/commit for 8.6, then Chapter 9 Fenchel/Bregman
-rather than another small Chapter 8 cleanup loop.
+has the supplied Theorem 8.5 PGD one-step/final-rate wrapper plus the pushed
+Theorem 8.6 APGD/FISTA packet.  The current non-report lane is Chapter 9
+Fenchel/Bregman rather than another small Chapter 8 cleanup loop.
 Lemma 6.20 now has a compiled trajectory/rate frontier, and Lemma 6.18/Theorem
 6.19 already have a supplied-interface algebraic spine; their exact
 source-audited report remains blocked only by the genuine Grünbaum/centroid
@@ -705,8 +704,7 @@ measure theorem.
 After Chapter 6, the first Chapter 7 Frank-Wolfe rate packet, and Chapter 8
 Theorem 8.5 have a stable main-text spine, split future packets by chapter
 surface rather than by tiny lemmas: optional Chapter 7 Carathéodory/report
-wrappers only when needed, Chapter 8 Theorem 8.6 promotion, Chapters 9-10
-`Fenchel.lean` and
+wrappers only when needed, Chapters 9-10 `Fenchel.lean` and
 `MirrorDescent.lean` for Fenchel-Young/Bregman/OMD telescopes, Chapter 11
 `AlternatingProjection.lean` for ABP/AM/RAM recurrences, Chapter 12
 `StochasticGradient.lean`/`SMPGD.lean` reusing local probability modules, and
