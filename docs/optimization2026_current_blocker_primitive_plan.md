@@ -167,24 +167,30 @@ success-side packet now compiles through `chewi625BoxState_subset_add`,
 `chewi625BoxLower_le_of_le`, `chewi625BoxUpper_le_of_le`,
 `chewi625StrictBoxState_subset_of_le`,
 `chewi625BoxState_query_not_mem_final_strict_box`,
+`chewi625ReturnedCutVector`,
+`chewi625ReturnedCutVector_isSeparationVector_final_box`,
+`IsFeasibilitySeparationTranscript`,
+`chewi625BoxState_final_separationTranscript`,
+`IsFeasibilityReplayCertificate`,
+`chewi625BoxState_final_replayCertificate`,
 `chewi625_closedBall_subset_full_cycles_of_two_eps_le_width`,
 `chewi625_closedBall_subset_full_cycles_of_eps_le_radius`,
 `chewi625_eps_le_half_pow_mul_of_nat_mul_log_le`,
 `chewi625_eps_le_radius_of_nat_mul_log_le`,
 `chewi625_closedBall_subset_full_cycles_of_log_bound`,
 `chewi625_closedBall_subset_of_le_full_cycle`, and
-`chewi625_closedBall_subset_of_le_full_cycle_log_bound`.
+`chewi625_closedBall_subset_of_le_full_cycle_log_bound`, plus the
+source-shaped package
+`chewi625_final_replayCertificate_and_closedBall_of_le_full_cycle_log_bound`.
 
 Immediate aggressive target: do not loop on "small source-shape gaps" for
 6.21/6.22 and do not try to prove Theorem 6.23 directly, since the source
 explicitly switches to feasibility.  Continue Theorem 6.25 by adding the
-supplied deterministic replay/separation-oracle interface that turns the box
-state plus scalar/log containment into the theorem's black-box feasibility
-lower bound.  The next useful subpacket is a deterministic transcript/replay
-interface for algorithms: package the returned cut vectors as valid
-separation-oracle answers for the final box and connect deterministic replay to
-the fact that all queried points are outside the strict final box.  If that
-replay interface starts
+remaining algorithm-level deterministic replay abstraction on top of the now
+compiled final-box replay certificate and log-bound ball-containment package.
+The next useful subpacket should model the deterministic update functional
+only as a supplied recurrence/transcript equality, not as a full program
+semantics layer.  If that replay abstraction starts
 ballooning, open Chapters 7-13 in parallel theorem-sized packets while one
 worker continues the 6.25 wrapper; add arbitrary-`d > N` wrappers for 6.21/6.22
 only if exact theorem reporting requires them.  Do the

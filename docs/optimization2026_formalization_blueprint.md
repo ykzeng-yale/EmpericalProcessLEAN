@@ -77,10 +77,13 @@ adds multi-step nesting, full-cycle midpoint ball-containment from side-width
 and radius hypotheses, the logarithmic scalar helper
 `m * log 2 <= log (R / eps) -> eps <= R / 2^m`, and full-cycle/earlier-step
 ball-containment wrappers from that log bound.  It also adds strict-box nesting
-and final strict-box query exclusion for every previous query.  The next
-theorem-sized packet should close Theorem 6.25's supplied deterministic
-transcript/replay and separation-oracle interface.  Add a literal arbitrary
-`d > N` embedding/report wrapper for 6.21/6.22
+and final strict-box query exclusion for every previous query.  The newest
+replay-certificate packet adds returned cut vectors, final-box separator
+validity, finite separation transcript and replay-certificate interfaces, and
+the source-shaped package combining replay validity with log-bound `eps`-ball
+containment.  The next theorem-sized packet should close Theorem 6.25's
+remaining supplied algorithm-level deterministic replay abstraction.  Add a
+literal arbitrary `d > N` embedding/report wrapper for 6.21/6.22
 only if exact theorem reporting requires it.
 The detailed Lemma 6.20 frontier below is retained only as dependency context
 and should not be used as the active route.
