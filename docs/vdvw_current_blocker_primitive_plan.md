@@ -309,6 +309,12 @@ uniform-deviation endpoint
 `VdVWOuterProbabilityUniformDeviationConstOn_of_originalFullSubgraph_integrable_canonical`
 and the canonical outer-probability `P`-GC endpoint
 `VdVWOuterProbabilityPGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical`.
+The same original full-subgraph hypothesis now also feeds the in-mean route
+through
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_originalFullSubgraph_integrable_tailExpectation_of_countable_canonical`,
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_originalFullSubgraph_integrable_of_countable_canonical`,
+and the combined canonical `P`-GC/in-mean package
+`VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical`.
 The next useful proof is to prove a new concrete class-geometry/cardinality
 theorem or move to the genuine random-entropy tail/UI bridge.  Do not add
 another endpoint alias for the same selected fixed-radius cardinality route

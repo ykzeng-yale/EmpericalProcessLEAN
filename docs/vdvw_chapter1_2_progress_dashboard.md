@@ -168,6 +168,12 @@ and canonical outer-probability `P`-GC endpoints
 `VdVWOuterProbabilityUniformDeviationConstOn_of_originalFullSubgraph_integrable_canonical`
 and
 `VdVWOuterProbabilityPGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical`.
+The same original full-subgraph hypothesis now also reaches in-mean
+centered-supremum convergence through
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_originalFullSubgraph_integrable_tailExpectation_of_countable_canonical`,
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_originalFullSubgraph_integrable_of_countable_canonical`,
+and the combined local `P`-GC/in-mean package
+`VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical`.
 The next useful `/goal` target is not another alias for this same route:
 prove a genuinely new class-geometry/cardinality theorem, add a final theorem
 statement only if it consumes a new proof input, or return to the book

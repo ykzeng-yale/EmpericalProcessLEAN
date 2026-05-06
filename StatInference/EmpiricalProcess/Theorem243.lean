@@ -38943,6 +38943,159 @@ theorem
         hvc hindexClass henvelope hclass henv henv_integrable)
 
 /--
+Canonical original full-subgraph Theorem 2.4.3 in-mean route under the
+explicit centered-supremum tail/UI condition.
+
+This uses the original-class VC centered convergence endpoint and the generic
+tail-expectation-to-mean bridge; it does not assert that outer-probability
+entropy alone supplies the tail/UI input.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_originalFullSubgraph_integrable_tailExpectation_of_countable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hTail :
+      ∀ ε > 0, ∃ R, 0 ≤ R ∧
+        ∀ᶠ n in atTop,
+          ∫ sample,
+            Set.indicator
+              {sample' : SampleAt Observation n |
+                R <
+                  vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      classFun index observation - ∫ x, classFun index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample'}
+              (fun sample' : SampleAt Observation n =>
+                vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    classFun index observation - ∫ x, classFun index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample') sample
+              ∂(vdVWProductMeasure P n) ≤ ε) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (hcentered :=
+        VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_canonical
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (vcDegree := vcDegree)
+          hvc hindexClass henvelope hclass henv henv_integrable)
+      (fun n =>
+        measurable_vdVWWeightedClassSupremum_centered_of_countable
+          (P := P) (Set.to_countable indexClass) hclass
+          (fun _ : Fin n => (n : ℝ)⁻¹))
+      (fun n =>
+        integrable_vdVWWeightedClassSupremum_centered_of_countable
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (Set.to_countable indexClass)
+          henvelope hclass henv_integrable (fun _ : Fin n => (n : ℝ)⁻¹))
+      hTail
+
+/--
+Canonical original full-subgraph Theorem 2.4.3 in-mean route with the
+centered-supremum tail/UI condition discharged from the integrable envelope.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_originalFullSubgraph_integrable_of_countable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_originalFullSubgraph_integrable_tailExpectation_of_countable_canonical
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (vcDegree := vcDegree)
+      hvc hindexClass henvelope hclass henv henv_integrable
+      (centered_vdVWWeightedClassSupremum_tailExpectation_condition_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (Set.to_countable indexClass)
+        henvelope hclass henv henv_integrable)
+
+/--
+Canonical original full-subgraph Theorem 2.4.3 route, packaged as local
+`P`-Glivenko-Cantelli plus in-mean centered-supremum convergence.
+-/
+theorem
+    VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_and_inMean_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) := by
+  constructor
+  · exact
+      vdVWPGlivenkoCantelliClass_of_outerProbability
+        (VdVWOuterProbabilityPGlivenkoCantelliClass_of_originalFullSubgraph_integrable_canonical
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (vcDegree := vcDegree)
+          hvc hindexClass henvelope hclass henv henv_integrable)
+  · exact
+      integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_originalFullSubgraph_integrable_of_countable_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc hindexClass henvelope hclass henv henv_integrable
+
+/--
 Canonical-sample full-subgraph route to the book-style variable-domain entropy
 condition.
 
