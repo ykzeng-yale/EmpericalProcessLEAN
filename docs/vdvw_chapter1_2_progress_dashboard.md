@@ -2919,3 +2919,13 @@ and
 These close the honest reindexing support case while keeping the all-index
 lower-bound assumption explicit.  They do not close the full arbitrary-map
 asymptotic-measurability or process/FDD converse blockers.
+
+2026-05-06 process source/limit congruence follow-up:
+`FiniteDimensional.lean` now combines the previously separate process-source
+and process-limit replacement layers in
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_limit_ae` and
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_limit_forall_coord_ae`.
+This lets Chapter 1 process/FDD arguments canonicalize both the source family
+and the limiting process by a.e.-equal bounded representatives in one proof
+step.  It remains a support layer, not the arbitrary-index VdV&W 1.4.8
+converse.

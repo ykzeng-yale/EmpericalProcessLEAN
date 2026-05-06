@@ -2454,6 +2454,16 @@ This is a Chapter 1 support primitive for subsequence/reindexing arguments; it
 intentionally does not claim that reindexed lower bounds imply the original
 all-index lower-bound side condition.
 
+2026-05-06 process source/limit congruence support:
+`FiniteDimensional.lean` now proves
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_limit_ae` and
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_limit_forall_coord_ae`.
+These combine eventual a.e. replacement of the source process family with
+a.e. replacement of the limiting process for the raw bounded
+`ell_infty(T)` weak-convergence interface.  This supports later separability
+and canonical-version routes without claiming the arbitrary-index FDD
+converse.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

@@ -7325,3 +7325,18 @@ arbitrary-map asymptotic tightness, process separability, and arbitrary-index
 FDD converse; the remaining Theorem 2.4.3 upstream blocker is still a genuine
 entropy/cardinality or selected tail/UI/ordinary-mean theorem rather than
 another endpoint alias.
+
+2026-05-06 process source/limit congruence follow-up: search found separate
+raw bounded-process weak-convergence replacement lemmas
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_ae` and
+`VdVWEllInftyProcessWeakConvergence.congr_limit_ae`, plus their coordinatewise
+forms, but no single theorem combining eventual source canonicalization with
+limiting-process canonicalization.  `FiniteDimensional.lean` now proves
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_limit_ae` and
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_limit_forall_coord_ae`.
+These are Chapter 1 process/FDD support lemmas for separability and canonical
+version arguments: later proofs can replace both the source family and the
+limit process by a.e.-equal bounded `ell_infty(T)` representatives in one
+step.  They do not prove the arbitrary-index VdV&W 1.4.8 FDD converse; that
+still needs the separability/asymptotic-measurability/tightness and
+nonmeasurable outer-cover ingredients.

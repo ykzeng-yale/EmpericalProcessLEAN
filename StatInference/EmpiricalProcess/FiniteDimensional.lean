@@ -1580,6 +1580,87 @@ theorem VdVWEllInftyProcessWeakConvergence.congr_limit_forall_coord_ae
     (VdVWEllInfty.processMap_congr_ae hZbounded hWbounded hWZ)
 
 /--
+Process weak convergence is unchanged by simultaneous a.e.-equal replacement
+of the source process family eventually along the index filter and the limiting
+process.
+
+This packages the two common canonicalization steps used in separability/FDD
+arguments without changing the underlying weak-convergence statement.
+-/
+theorem VdVWEllInftyProcessWeakConvergence.congr_eventually_limit_ae
+    {ι : Type*} {Ω : ι -> Type*} {Ωlim : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    (X Y : (i : ι) -> Ω i -> T -> ℝ)
+    (Z W : Ωlim -> T -> ℝ)
+    (hXbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hYbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (Y i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hWbounded : VdVWEllInfty.IsBoundedSamplePath W)
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hXbounded i)) (μ i))
+    (hY : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (Y i) (hYbounded i)) (μ i))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    (hW : AEMeasurable (VdVWEllInfty.processMap W hWbounded) μlim)
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hXbounded hZbounded hX hZ l)
+    (hYX : ∀ᶠ i in l,
+      VdVWEllInfty.processMap (Y i) (hYbounded i) =ᵐ[μ i]
+        VdVWEllInfty.processMap (X i) (hXbounded i))
+    (hWZ :
+      VdVWEllInfty.processMap W hWbounded =ᵐ[μlim]
+        VdVWEllInfty.processMap Z hZbounded) :
+    VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim Y W hYbounded hWbounded hY hW l := by
+  exact
+    VdVWEllInftyProcessWeakConvergence.congr_limit_ae
+      (T := T) μ μlim Y Z W hYbounded hZbounded hWbounded hY hZ hW
+      (VdVWEllInftyProcessWeakConvergence.congr_eventually_ae
+        (T := T) μ μlim X Y Z hXbounded hYbounded hZbounded hX hY hZ h hYX)
+      hWZ
+
+/--
+Coordinatewise a.e. form of
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_limit_ae`.
+-/
+theorem VdVWEllInftyProcessWeakConvergence.congr_eventually_limit_forall_coord_ae
+    {ι : Type*} {Ω : ι -> Type*} {Ωlim : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    (X Y : (i : ι) -> Ω i -> T -> ℝ)
+    (Z W : Ωlim -> T -> ℝ)
+    (hXbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hYbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (Y i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hWbounded : VdVWEllInfty.IsBoundedSamplePath W)
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hXbounded i)) (μ i))
+    (hY : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (Y i) (hYbounded i)) (μ i))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    (hW : AEMeasurable (VdVWEllInfty.processMap W hWbounded) μlim)
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hXbounded hZbounded hX hZ l)
+    (hYX : ∀ᶠ i in l, ∀ᵐ ω ∂μ i, ∀ t, Y i ω t = X i ω t)
+    (hWZ : ∀ᵐ ω ∂μlim, ∀ t, W ω t = Z ω t) :
+    VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim Y W hYbounded hWbounded hY hW l := by
+  exact
+    VdVWEllInftyProcessWeakConvergence.congr_eventually_limit_ae
+      (T := T) μ μlim X Y Z W hXbounded hYbounded hZbounded hWbounded
+      hX hY hZ hW h
+      (hYX.mono fun i hi =>
+        VdVWEllInfty.processMap_congr_ae (hXbounded i) (hYbounded i) hi)
+      (VdVWEllInfty.processMap_congr_ae hZbounded hWbounded hWZ)
+
+/--
 Process-level weak convergence implies weak convergence of every
 finite-dimensional law.
 
