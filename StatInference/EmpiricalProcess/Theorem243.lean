@@ -15740,6 +15740,86 @@ theorem
       (hpoint eta heta) (hcardinality_dom eta heta)
 
 /--
+Nearest-integer coordinate rounding under a uniform samplewise absolute bound
+gives a random empirical covering-number domination.
+
+This is the theorem-facing random-cover lift of
+`empiricalL1CoveringNumber_le_of_roundingQuantizer_uniform_abs_bound_card_le`.
+It is a structural input for quantizer/grid entropy routes where all sampled
+class values lie in a fixed interval and the selected cardinality dominates the
+terminal grid count.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_roundingQuantizer_uniform_abs_bound_cardinality_bound_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon M : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (bound : ℤ)
+    (hepsilon_pos : 0 < epsilon)
+    (habs :
+      ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ sampleIndex : Fin m,
+            |classFun index ((samplePath (X n) sample m) sampleIndex)| ≤ M)
+    (hbound : M / epsilon + 1 / 2 ≤ (bound : ℝ))
+    (hcardinality_dom :
+      ∀ n (sample : SampleAt Observation n) m,
+        ((2 * bound + 1).toNat) ^ m ≤ cardinality n sample m) :
+    ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun epsilon (cardinality n) := by
+  intro n
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_empiricalL1CoveringNumber_le_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (epsilon := epsilon) (cardinality := cardinality) X
+      (fun n sample m =>
+        empiricalL1CoveringNumber_le_of_roundingQuantizer_uniform_abs_bound_card_le
+          (sample := samplePath (X n) sample m)
+          (indexClass := indexClass) (classFun := classFun)
+          (epsilon := epsilon) (M := M)
+          (cardinality := cardinality n sample m)
+          bound hepsilon_pos (habs n sample m) hbound
+          (hcardinality_dom n sample m)) n
+
+/--
+All-positive-radius nearest-integer rounding random-cover domination.
+
+The value bound and integer grid bound may depend on the radius.  This is the
+fixed-radius quantizer input form expected by Theorem 2.4.3 entropy packages.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_roundingQuantizer_uniform_abs_bound_cardinality_bound_samplePath
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {radiusBound : ℝ -> ℝ} {bound : ℝ -> ℤ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (habs :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ sampleIndex : Fin m,
+            |classFun index ((samplePath (X n) sample m) sampleIndex)| ≤
+              radiusBound eta)
+    (hbound :
+      ∀ eta, 0 < eta -> radiusBound eta / eta + 1 / 2 ≤ (bound eta : ℝ))
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ((2 * bound eta + 1).toNat) ^ m ≤ cardinality eta n sample m) :
+    ∀ eta, 0 < eta -> ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun eta (cardinality eta n) := by
+  intro eta heta
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_roundingQuantizer_uniform_abs_bound_cardinality_bound_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (epsilon := eta) (M := radiusBound eta)
+      (cardinality := cardinality eta) X (bound eta) heta
+      (habs eta heta) (hbound eta heta) (hcardinality_dom eta heta)
+
+/--
 Threshold-signature finite code sets give a random empirical covering-number
 domination when equality of threshold signatures is a coordinatewise
 `epsilon`-approximation and the selected cardinality dominates the finite

@@ -140,7 +140,12 @@ The adjacent natural-polynomial constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_original_coveringNumber_le_nat_poly_bound`
 is also compiled, so original-class empirical-cover domination plus a pointwise
 polynomial cardinality bound now directly yields the truncated book entropy
-side condition.
+side condition.  The quantizer/grid route now has random empirical-cover lifts
+for nearest-integer coordinate rounding under a uniform samplewise absolute
+bound:
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_roundingQuantizer_uniform_abs_bound_cardinality_bound_samplePath`
+and its all-positive-radius form
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_roundingQuantizer_uniform_abs_bound_cardinality_bound_samplePath`.
 2026-05-06 post-UI-endpoint search audit: the Theorem 2.4.3 selected
 fixed-radius endpoint surface is exhausted for the current hypotheses.  Local
 search found consumers for raw tail expectation, ordinary selected normalized

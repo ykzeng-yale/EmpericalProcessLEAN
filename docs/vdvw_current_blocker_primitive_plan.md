@@ -6532,6 +6532,22 @@ structural input shape for original-class VC/Sauer, trace, grid, or quantizer
 arguments; remaining work is to instantiate those hypotheses or prove the true
 random-entropy tail/UI/event bridge, not another endpoint wrapper.
 
+2026-05-06 quantizer random-cover lift: local search found deterministic
+nearest-integer quantizer empirical-cover bounds in `CoveringPrimitive.lean`,
+including
+`empiricalL1CoveringNumber_le_of_roundingQuantizer_uniform_abs_bound_card_le`,
+but no theorem-facing random empirical-cover domination wrapper in
+`Theorem243.lean`.  New compiled declarations are
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_roundingQuantizer_uniform_abs_bound_cardinality_bound_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_roundingQuantizer_uniform_abs_bound_cardinality_bound_samplePath`.
+They turn a uniform samplewise absolute bound, the integer grid inclusion
+condition `M / eta + 1/2 <= bound`, and domination of `(2 * bound + 1)^n` by a
+selected cardinality process into the random empirical-cover domination used
+by the Theorem 2.4.3 entropy packages.  Remaining work is to compose these
+with selected fixed-radius/variable entropy constructors or prove sharper
+grid/cardinality estimates; this is structural input, not an endpoint alias.
+
 2026-05-06 nonnegative/canonical asymptotic-measurability reindexing
 follow-up: after the signed arbitrary-map reindexing batch, local search still
 found `mono_filter` and `congr_eventually` but no `comp_tendsto` for the
