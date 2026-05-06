@@ -6002,7 +6002,15 @@ bridges into the random empirical-cover interface as
 and
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_thresholdTraceCode_coordinate_approx_codeSet_cardinality_bound_samplePath`.
 These are the theorem-facing random-cover inputs for threshold-grid/VC routes
-whose cardinality estimate is already on the finite threshold-code set.
+whose cardinality estimate is already on the finite threshold-code set.  The
+route now reaches the selected fixed-radius tail/UI package through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`,
+under coordinatewise threshold-approximation and fixed-threshold VC/Sauer
+hypotheses.  The next non-duplicative step is to combine this selected package
+with existing large-`M` untruncation, or specialize the coordinatewise
+approximation hypothesis to concrete integer grids.
 
 2026-05-06 coordinate-code random-cover follow-up: local search found the
 deterministic coordinate pointwise-code covering primitive

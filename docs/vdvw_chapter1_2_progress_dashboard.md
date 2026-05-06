@@ -2278,7 +2278,11 @@ and
 `Theorem243.lean` now lifts this threshold-code-set shape into random
 empirical-cover domination through
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_thresholdTraceCode_coordinate_approx_codeSet_cardinality_bound_samplePath`
-and its all-positive-radius wrapper.
+and its all-positive-radius wrapper.  It now also reaches the selected
+fixed-radius tail/UI package through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`.
 
 2026-05-06 coordinate-code random-cover follow-up:
 `Theorem243.lean` now lifts coordinatewise finite pointwise approximation codes
