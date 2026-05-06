@@ -5657,3 +5657,36 @@ binary product-law weak-convergence-to-tightness, and finite product-law
 weak-convergence-to-tightness handoffs.  They still do not prove the
 arbitrary-map/process asymptotic-tightness, asymptotic-independence, or
 arbitrary-index FDD-converse theorem.
+
+2026-05-05 signed eventual-congruence follow-up: local search found
+filter-refinement closures for the signed arbitrary-map weak-convergence and
+asymptotic-measurability packages, but no eventual-equality transport for
+measure families or arbitrary maps.  `WeakConvergence.lean` now adds
+`VdVWWeakConvergenceSignedOuterBoundedContinuous.congr_eventually`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous.congr_eventually`,
+`VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.congr_eventually`, and
+the varying-domain analogues
+`VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.congr_eventually`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.congr_eventually`,
+and
+`VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.congr_eventually`.
+These let later Chapter 1 and Theorem 2.4.3 endpoints replace sample laws or
+statistics by eventually equal versions without rebuilding signed
+outer/inner-expectation proofs.
+
+2026-05-05 centered `P`-measurability follow-up: Theorem 2.4.3 already had
+centered-supremum consumers requiring a centered `VdVWPMeasurableClass`
+hypothesis, but `PMeasurable.lean` only exposed the uncentered countable
+coordinate-measurable constructor.  `PMeasurable.lean` now adds
+`VdVWPMeasurableClass.centered_of_countable_of_coordinate`, proving that a
+countable coordinate-measurable class remains `P`-measurable after subtracting
+the population integral from every coordinate.  This is a direct Definition
+2.3.3 bridge for centered Theorem 2.4.3 endpoints.
+
+2026-05-05 coordinate `ell_infty` law follow-up: local search found the
+finite-dimensional `ell_infty(T)` law wrapper but no direct single-coordinate
+law wrapper.  `FiniteDimensional.lean` now adds
+`vdVW148_ellInfty_coordinate_hasLaw`, using `VdVWEllInfty.evalCLM` and
+`HasLaw.comp`.  This closes a small Chapter 1 process/FDD entry point while
+leaving the arbitrary-index FDD converse dependent on separability, tightness,
+and nonmeasurable/asymptotic-measurability primitives.

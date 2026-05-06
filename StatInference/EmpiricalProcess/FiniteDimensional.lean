@@ -320,6 +320,26 @@ theorem vdVW148_ellInfty_finiteDimensional_hasLaw
         ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable)
       map_eq := rfl }
 
+/-- Coordinate law of an `ell_infty(T)`-valued random element. -/
+theorem vdVW148_ellInfty_coordinate_hasLaw
+    [MeasurableSpace Ω] [MeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    {X : Ω -> VdVWEllInfty T} {P : Measure Ω}
+    {μ : Measure (VdVWEllInfty T)}
+    (hX : HasLaw X μ P) (t : T) :
+    HasLaw
+      (fun ω => X ω t)
+      (μ.map (VdVWEllInfty.evalCLM t))
+      P := by
+  simpa [Function.comp_def] using
+    (HasLaw.comp
+      (Y := VdVWEllInfty.evalCLM (T := T) t)
+      (ν := μ.map (VdVWEllInfty.evalCLM t))
+      { aemeasurable :=
+          ((VdVWEllInfty.evalCLM (T := T) t).continuous.measurable.aemeasurable)
+        map_eq := rfl }
+      hX)
+
 /-- Identical distribution of `ell_infty(T)` processes implies identical FDDs. -/
 theorem vdVW148_ellInfty_finiteDimensional_identDistrib
     [MeasurableSpace Ω] [MeasurableSpace Ω']

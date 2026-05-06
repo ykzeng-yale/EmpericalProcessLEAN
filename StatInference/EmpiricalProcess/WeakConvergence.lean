@@ -304,6 +304,25 @@ theorem VdVWWeakConvergenceSignedOuterBoundedContinuous.mono_filter
   exact (h f).mono_left hl
 
 /--
+Signed-outer bounded-continuous weak convergence is unchanged by eventually
+equal measure families and eventually equal arbitrary maps.
+-/
+theorem VdVWWeakConvergenceSignedOuterBoundedContinuous.congr_eventually
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs νs : ι -> Measure Ω} {X Y : ι -> Ω -> S}
+    {l : Filter ι} {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l μ)
+    (hμ : ∀ᶠ i in l, νs i = μs i)
+    (hX : ∀ᶠ i in l, Y i = X i) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous νs Y l μ := by
+  intro f
+  refine Tendsto.congr' ?_ (h f)
+  filter_upwards [hμ, hX] with i hνμ hYX
+  simp [hνμ, hYX]
+
+/--
 Signed bounded-continuous outer/inner expectation gap for an arbitrary real
 map.
 
@@ -520,6 +539,24 @@ theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.mono_filter
   exact (h f).mono_left hl
 
 /--
+Signed bounded-continuous asymptotic measurability is unchanged by eventually
+equal measure families and eventually equal arbitrary maps.
+-/
+theorem VdVWAsymptoticallyMeasurableSignedBoundedContinuous.congr_eventually
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs νs : ι -> Measure Ω} {X Y : ι -> Ω -> S}
+    {l : Filter ι}
+    (h : VdVWAsymptoticallyMeasurableSignedBoundedContinuous μs X l)
+    (hμ : ∀ᶠ i in l, νs i = μs i)
+    (hX : ∀ᶠ i in l, Y i = X i) :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuous νs Y l := by
+  intro f
+  refine Tendsto.congr' ?_ (h f)
+  filter_upwards [hμ, hX] with i hνμ hYX
+  simp [hνμ, hYX]
+
+/--
 Proof-carrying signed bounded-continuous arbitrary-map weak convergence.
 
 The structure packages the signed-outer bounded-continuous convergence
@@ -572,6 +609,24 @@ theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.mono_filter
     VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l' μ :=
   { weakConvergence := h.weakConvergence.mono_filter hl
     asymptoticMeasurability := h.asymptoticMeasurability.mono_filter hl }
+
+/--
+The proof-carrying signed arbitrary-map weak-convergence package is unchanged
+by eventually equal measure families and eventually equal arbitrary maps.
+-/
+theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.congr_eventually
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs νs : ι -> Measure Ω} {X Y : ι -> Ω -> S}
+    {l : Filter ι} {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ)
+    (hμ : ∀ᶠ i in l, νs i = μs i)
+    (hX : ∀ᶠ i in l, Y i = X i) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap νs Y l μ :=
+  { weakConvergence := h.weakConvergence.congr_eventually hμ hX
+    asymptoticMeasurability :=
+      h.asymptoticMeasurability.congr_eventually hμ hX }
 
 /--
 First-coordinate product lift for signed-outer bounded-continuous weak
@@ -755,6 +810,28 @@ theorem
   exact (h f).mono_left hl
 
 /--
+Varying-domain signed-outer bounded-continuous weak convergence is unchanged by
+eventually equal measure families and eventually equal arbitrary maps.
+-/
+theorem
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains.congr_eventually
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs νs : (i : ι) -> Measure (Ω i)}
+    {X Y : (i : ι) -> Ω i -> S}
+    {l : Filter ι} {μ : ProbabilityMeasure S}
+    (h :
+      VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains Ω μs X l μ)
+    (hμ : ∀ᶠ i in l, νs i = μs i)
+    (hX : ∀ᶠ i in l, Y i = X i) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuousVaryingDomains Ω νs Y l μ := by
+  intro f
+  refine Tendsto.congr' ?_ (h f)
+  filter_upwards [hμ, hX] with i hνμ hYX
+  simp [hνμ, hYX]
+
+/--
 Varying-domain signed bounded-continuous asymptotic measurability.
 -/
 def VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains
@@ -893,6 +970,27 @@ theorem
   exact (h f).mono_left hl
 
 /--
+Varying-domain signed bounded-continuous asymptotic measurability is unchanged
+by eventually equal measure families and eventually equal arbitrary maps.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains.congr_eventually
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    {μs νs : (i : ι) -> Measure (Ω i)}
+    {X Y : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains Ω μs X l)
+    (hμ : ∀ᶠ i in l, νs i = μs i)
+    (hX : ∀ᶠ i in l, Y i = X i) :
+    VdVWAsymptoticallyMeasurableSignedBoundedContinuousVaryingDomains Ω νs Y l := by
+  intro f
+  refine Tendsto.congr' ?_ (h f)
+  filter_upwards [hμ, hX] with i hνμ hYX
+  simp [hνμ, hYX]
+
+/--
 Proof-carrying varying-domain signed bounded-continuous weak convergence.
 
 This packages the varying-domain weak-convergence and asymptotic-measurability
@@ -948,6 +1046,27 @@ theorem
   { weakConvergence := h.weakConvergence.mono_filter hl
     asymptoticMeasurability :=
       h.asymptoticMeasurability.mono_filter hl }
+
+/--
+The proof-carrying varying-domain signed bounded-continuous weak-convergence
+package is unchanged by eventually equal measure families and eventually equal
+arbitrary maps.
+-/
+theorem
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains.congr_eventually
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs νs : (i : ι) -> Measure (Ω i)}
+    {X Y : (i : ι) -> Ω i -> S}
+    {l : Filter ι} {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ)
+    (hμ : ∀ᶠ i in l, νs i = μs i)
+    (hX : ∀ᶠ i in l, Y i = X i) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω νs Y l μ :=
+  { weakConvergence := h.weakConvergence.congr_eventually hμ hX
+    asymptoticMeasurability :=
+      h.asymptoticMeasurability.congr_eventually hμ hX }
 
 /--
 First-coordinate product lift for varying-domain signed-outer

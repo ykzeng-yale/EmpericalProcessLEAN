@@ -1516,6 +1516,22 @@ theorem VdVWPMeasurableClass.of_countable_of_measurable
     ).nullMeasurable
 
 /--
+Countable coordinate-measurable classes are `P`-measurable after centering by
+their population integrals.
+-/
+theorem VdVWPMeasurableClass.centered_of_countable_of_coordinate
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun) :
+    VdVWPMeasurableClass P indexClass
+      (fun index : Index => fun observation : Observation =>
+        classFun index observation - ∫ x, classFun index x ∂P) :=
+  VdVWPMeasurableClass.of_countable_of_measurable hcount
+    (fun index hindex => (hclass index hindex).sub measurable_const)
+
+/--
 Proof-carrying form of the separability handoff used after VdV&W
 Example 2.3.4.
 

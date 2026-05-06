@@ -2029,3 +2029,19 @@ are also compiled.  These close the binary and finite-product
 weak-convergence-to-tightness feeders, while the exact arbitrary-map/process
 asymptotic-tightness, asymptotic-independence, and arbitrary-index FDD converse
 remain open.
+
+2026-05-05 signed congruence / centered measurability / coordinate-law batch:
+`WeakConvergence.lean` now has eventual-equality transport for the signed
+common-domain and varying-domain weak-convergence/asymptotic-measurability
+packages:
+`VdVWWeakConvergenceSignedOuterBoundedContinuous.congr_eventually`,
+`VdVWAsymptoticallyMeasurableSignedBoundedContinuous.congr_eventually`,
+`VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.congr_eventually`, and
+the three corresponding varying-domain declarations.  `PMeasurable.lean` adds
+`VdVWPMeasurableClass.centered_of_countable_of_coordinate`, giving a direct
+countable coordinate-measurable route to centered Definition 2.3.3
+`P`-measurability for Theorem 2.4.3 endpoints.  `FiniteDimensional.lean` adds
+`vdVW148_ellInfty_coordinate_hasLaw`, the one-coordinate law bridge from an
+`ell_infty(T)`-valued random element.  These are theorem-facing support
+closures; they do not close the exact random-entropy tail/UI bridge or the
+arbitrary-index process/FDD converse.
