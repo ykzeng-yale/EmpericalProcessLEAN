@@ -182,6 +182,11 @@ The same finite-code input now reaches centered untruncated convergence through
 The remaining work is to prove deterministic log-cardinality, VC/Sauer, or
 tail/UI bounds for such code images; this selected-package bridge should not
 be rediscovered.
+2026-05-06 follow-up: finite pointwise-code arguments can now feed polynomial
+cardinality bounds directly through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_code_cardinality_bound_nat_poly`
+and its all-positive-`M` wrapper.  The next non-duplicative step is a concrete
+finite-code/VC/Sauer/quantizer theorem supplying those polynomial bounds.
 
 2026-05-05 separability/`P`-measurability follow-up:
 `PMeasurable.lean` now adds

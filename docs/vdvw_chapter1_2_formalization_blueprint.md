@@ -132,9 +132,12 @@ and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_pointwise_approx_code_cardinality_bound_logCardinality_div_tendsto_bound`.
 The resulting route now has the centered untruncated convergence consumer
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_finite_pointwise_approx_code_logCardinality_div_tendsto_bound`.
-This should be used for quantized-trace or finite-code structural entropy
-arguments; the remaining theorem work is the concrete code-image
-log-cardinality/tail/UI estimate, not another selected endpoint.
+It also now has a direct natural-polynomial selected fixed-radius package,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_code_cardinality_bound_nat_poly`
+and its all-positive-`M` wrapper.  This should be used for quantized-trace or
+finite-code structural entropy arguments; the remaining theorem work is the
+concrete code-image log-cardinality, VC/Sauer polynomial, or tail/UI estimate,
+not another selected endpoint.
 The threshold-code structural cardinality layer also now has the raw
 full-subgraph VC input
 `thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly` in

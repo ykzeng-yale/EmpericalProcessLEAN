@@ -6033,6 +6033,21 @@ and the untruncated endpoint
 The next non-duplicative theorem should supply a real VC/Sauer, threshold-grid,
 or quantizer product-cardinality estimate in this natural-polynomial shape.
 
+2026-05-06 finite pointwise-code natural-polynomial follow-up: local search
+found the finite pointwise-code selected fixed-radius route only in the
+deterministic normalized-log-rate form, while the generic
+`of_logCardinality_nat_poly_bound` and finite-code/trace cardinality APIs
+already support VC/Sauer-style polynomial estimates.  `Theorem243.lean` now
+adds
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_code_cardinality_bound_nat_poly`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_pointwise_approx_code_cardinality_bound_nat_poly`.
+This lets finite approximate-code arguments feed polynomial cardinality
+estimates directly into the selected fixed-radius Theorem 2.4.3 machinery.
+The next useful theorem should instantiate these hypotheses from a concrete
+finite-code image, VC/Sauer, threshold-grid, or quantizer construction rather
+than adding another endpoint alias.
+
 2026-05-06 varying-domain lower-shifted continuous-map follow-up: local search
 found common-domain lower-shifted continuous-map closure and varying-domain
 signed continuous-map closure, but no matching varying-domain lower-shifted
