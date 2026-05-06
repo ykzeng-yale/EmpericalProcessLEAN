@@ -1,6 +1,7 @@
 import StatInference.AsymptoticStatistics.Basic
 import StatInference.ProbabilityMeasure.StrongLaw
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
+import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
 
 /-!
 # van der Vaart 1998 Chapter 4 moment-estimator interfaces
@@ -921,6 +922,20 @@ theorem vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_certificate
     hEmpiricalMoment
 
 /--
+Gaussian limits are preserved by the linear inverse-derivative map appearing
+in van der Vaart Theorem 4.1.
+-/
+theorem vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative
+    {Ω' M Θ : Type*} [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [NormedAddCommGroup M] [NormedSpace ℝ M] [MeasurableSpace M]
+    [BorelSpace M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [MeasurableSpace Θ]
+    [BorelSpace Θ]
+    {Z : Ω' -> M} (Dinv : M →L[ℝ] Θ) (hZ : HasGaussianLaw Z Q) :
+    HasGaussianLaw (fun ω => Dinv (Z ω)) Q :=
+  hZ.map_fun Dinv
+
+/--
 Finite-coordinate source-shaped form of van der Vaart Theorem 4.1.
 
 For finitely many real moment coordinates, coordinatewise iid strong laws give
@@ -1062,6 +1077,78 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_m
       X hX_meas)
     (vaart1998_finiteCoordinate_empiricalMoment_measurable_real X hX_meas)
     hCLT
+
+/--
+Finite-coordinate Theorem 4.1 wrapper with a Gaussian supplied
+empirical-moment limit.
+
+The first two conclusions are the existence/local-solving and delta-method
+limits.  The third conclusion records that the transformed estimator limit is
+Gaussian, obtained by mapping the supplied Gaussian empirical-moment limit by
+the inverse derivative.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (hInv_meas : Measurable (he.localInverse e De theta0))
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 =
+        (fun coordinate : Coordinate => ∫ sample, X coordinate 0 sample ∂P))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q)
+    (hZ_gaussian : HasGaussianLaw Z Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q := by
+  have hbase :=
+    vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_real
+      e De he hInv_meas X heta0 hX_integrable hX_indep hX_ident hX_meas
+      hCLT
+  exact
+    ⟨hbase.1, hbase.2,
+      vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative
+        (Dinv := (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ)) hZ_gaussian⟩
 
 end AsymptoticStatistics
 end StatInference

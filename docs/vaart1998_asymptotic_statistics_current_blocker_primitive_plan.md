@@ -208,22 +208,26 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_finiteCoordinate_empiricalMoment_aestronglyMeasurable_real`.
 61. Measurable-coordinate Theorem 4.1 source wrapper:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_real`.
+62. Linear inverse-derivative Gaussian limit bridge:
+   `vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative`.
+63. Measurable-coordinate Theorem 4.1 Gaussian-limit source wrapper:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_real`.
 
-Latest pushed Vaart packet before this run: `2066363`
-(`Add Vaart theorem 4.1 finite coordinate assembler`).
+Latest pushed Vaart packet before this run: `1d574e8`
+(`Add Vaart finite coordinate measurability wrapper`).
 
-The current theorem-sized packet removes the explicit vector empirical-moment
-measurability burden from the clean finite-coordinate Theorem 4.1 wrapper.
-Coordinate measurability now implies measurability and a.e.-strong
-measurability of the vector empirical moment sequence, and the source-facing
-wrapper consumes those derived fields automatically.  Local-inverse
-measurability and the multivariate empirical-moment CLT remain explicit.
+The current theorem-sized packet propagates a supplied Gaussian
+empirical-moment limit through the inverse derivative.  The measurable
+finite-coordinate Chapter 4.1 wrapper now returns local existence, the
+delta-method distributional convergence, and the fact that the estimator limit
+is Gaussian.  Local-inverse measurability, the multivariate empirical-moment
+CLT, and the exact covariance matrix display remain explicit.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. package a Gaussian/covariance display certificate for the supplied
-   empirical-moment CLT so the conclusion visibly matches Vaart's
+1. package the exact covariance display for the Gaussian estimator limit so
+   the conclusion visibly matches Vaart's
    `N(0, e'_theta0^{-1} P f f^T (e'_theta0^{-1})^T)` statement;
 2. add a local-inverse measurability convenience if a clean continuity/open
    partial homeomorphism API can discharge it without broad topological

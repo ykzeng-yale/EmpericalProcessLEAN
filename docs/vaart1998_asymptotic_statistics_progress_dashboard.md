@@ -146,9 +146,13 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinate_empiricalMoment_aestronglyMeasurable_real`.
 - measurable-coordinate Theorem 4.1 source wrapper:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_real`.
+- linear inverse-derivative Gaussian limit bridge:
+  `vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative`.
+- measurable-coordinate Theorem 4.1 Gaussian-limit source wrapper:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_real`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`2066363`:
+`1d574e8`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -173,9 +177,9 @@ targeted Vaart module build.
 
 Continue Vaart Chapter 4.1 from the compiled delta handoff:
 
-1. package a Gaussian/covariance display certificate for the supplied
-   empirical-moment CLT so the theorem statement visibly matches Vaart's
-   covariance formula after applying the inverse derivative;
+1. package the exact covariance display for the Gaussian estimator limit so the
+   theorem statement visibly matches Vaart's covariance formula after applying
+   the inverse derivative;
 2. add a local-inverse measurability convenience from the open partial
    homeomorphism/local continuity API if it can be done without widening the
    topology assumptions too much;
