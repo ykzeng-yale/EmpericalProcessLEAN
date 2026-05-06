@@ -7527,3 +7527,41 @@ selected normalized-log tail/UI inputs from the bare outer-probability entropy
 assumption, or register the precise VdV&W nonmeasurable selected-entropy
 primitive needed to do so.  Do not add another endpoint package unless it
 strictly consumes a new upstream entropy/cardinality theorem.
+
+2026-05-06 post-`5353f95` search-first blocker audit: fetched `origin/main`
+and rechecked the current Theorem 2.4.3 API before adding more code.  Local
+search covered `SelectedFixedRadiusTailSideConditions`,
+`toSelectedFixedRadiusTailSideConditions`, `logCardinality_div`,
+`tailExpectation`, `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison`,
+`eventualAe_scaledSelectedFiniteNetHoeffdingUpper`,
+`VdVWTheorem243SymmetrizationPrecursor`, `measure_mono_ae`,
+`UniformIntegrable`/`UnifIntegrable`, and fixed-domain Vitali/TendstoInMeasure
+support in local `StatInference`, `StatInference/ProbabilityMeasure`, and
+pinned mathlib.  Reusable support found:
+`logCardinality_div_tailExpectation_condition_of_integral_tendsto_zero`,
+the selected-log integral/tail constructors, selected fixed-radius tail/UI
+consumers, full-subgraph canonical `P`-GC plus in-mean endpoints, scaled
+a.e. selected finite-net consumers, and mathlib `measure_mono_ae` plus
+fixed-domain uniform-integrability APIs.  API not found: an exact or adaptable
+varying-domain theorem deriving selected normalized-log tail/UI, ordinary
+mean, or the scaled selected finite-net event comparison from the bare
+textbook condition
+`log N(eta, F_M, L1(P_n)) / n -> 0` in outer probability.  The next useful
+Lean theorem is therefore not another endpoint alias.  It must prove one of
+these source shapes:
+
+1. `forall M > 0, forall eta > 0`, selected normalized-log measurability,
+   integrability, and tail/UI for
+   `vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard` from the
+   book outer-entropy hypothesis plus the existing arbitrary-map cover layer;
+2. a direct
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledSelectedFiniteNetHoeffdingUpper`
+   input by proving eventual a.e. scaled selected finite-net domination from
+   ghost samples, Rademacher signs, and selected empirical covers; or
+3. a precise VdV&W primitive for the missing nonmeasurable selected-entropy
+   comparison, with the statement matching one of the two shapes above.
+
+Until one of these source theorems is proved, the exact arbitrary-class
+Theorem 2.4.3 remains blocked at the textbook random-entropy bridge, even
+though structural full-subgraph/VC-style and honest selected-tail/UI routes now
+compile through final theorem-facing endpoints.
