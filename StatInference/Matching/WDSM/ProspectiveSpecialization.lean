@@ -25,6 +25,36 @@ theorem populationPropensityFromSelected_common_weight_eq
   field_simp [hweight]
   ring
 
+/--
+Under common sampling and common survey weights, the selected-sample propensity
+recovers the population propensity directly.
+-/
+theorem populationPropensityFromSelected_common_weight_common_sampling_eq
+    {populationPropensity samplingProbability commonWeight : Real}
+    (hsampling : samplingProbability ≠ 0)
+    (hweight : commonWeight ≠ 0) :
+    populationPropensityFromSelected commonWeight commonWeight
+        (selectedPropensity populationPropensity samplingProbability
+          samplingProbability) =
+      populationPropensity := by
+  rw [populationPropensityFromSelected_common_weight_eq commonWeight _ hweight,
+    selectedPropensity_eq_population_of_common_sampling hsampling]
+
+/--
+Under common sampling, using the common inverse sampling weight also recovers
+the population propensity directly.
+-/
+theorem populationPropensityFromSelected_common_inverse_sampling_eq
+    {populationPropensity samplingProbability : Real}
+    (hsampling : samplingProbability ≠ 0) :
+    populationPropensityFromSelected (1 / samplingProbability)
+        (1 / samplingProbability)
+        (selectedPropensity populationPropensity samplingProbability
+          samplingProbability) =
+      populationPropensity :=
+  populationPropensityFromSelected_common_weight_common_sampling_eq hsampling
+    (one_div_ne_zero hsampling)
+
 theorem weight_ratio_eq_one_of_common_weight
     (commonWeight : Real) (hweight : commonWeight ≠ 0) :
     commonWeight / commonWeight = 1 := by
