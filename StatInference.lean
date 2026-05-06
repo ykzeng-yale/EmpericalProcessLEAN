@@ -46,6 +46,7 @@ import StatInference.Optimization.MirrorDescent
 import StatInference.Optimization.NonsmoothLowerBounds
 import StatInference.Optimization.ProjectedSubgradient
 import StatInference.Optimization.Proximal
+import StatInference.Optimization.RandomizedAlternatingMinimization
 import StatInference.Optimization.Reductions
 import StatInference.Optimization.Theorem27
 import StatInference.Optimization.Theorem28

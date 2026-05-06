@@ -89,8 +89,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after focused Lean verification of the
-Chapter 11.4 log-burn-in rate layer on 2026-05-06, building on pushed frontier
-`613bf36` (`Add Chewi theorem 11.4 threshold tail layer`):
+Chapter 11.5 RAM scalar recurrence layer on 2026-05-06, building on pushed
+frontier `0e411d9` (`Add Chewi theorem 11.4 log burn-in layer`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -102,8 +102,9 @@ substrate unless an exact source report or later theorem dependency demands it.
 Do not spend a run on wording-only route churn or a single wrapper if a
 theorem-sized packet is available.  Treat Chapters 3-8 as stable reusable
 infrastructure and treat `Fenchel.lean`, `Bregman.lean`, `MirrorDescent.lean`,
-`AlternatingBregman.lean`, and `AlternatingMinimization.lean` as the active
-Chapter 9-11 promotion gate.
+`AlternatingBregman.lean`, `AlternatingMinimization.lean`, and
+`RandomizedAlternatingMinimization.lean` as the active Chapter 9-11 promotion
+gate.
 
 Latest verified Optimization proof frontier: Chapter 11.4 scalar AM packet in
 `StatInference/Optimization/AlternatingMinimization.lean`, promoted through
@@ -252,6 +253,22 @@ into an existing threshold index and epsilon tail endpoint, and turns the two
 source block-coordinate descent estimates
 `energy/(2*beta) <= gap n - gap (n+1)` and
 `gap(n+1)^2 <= D^2 R^2 * energy` into the AM source certificate.
+The new `RandomizedAlternatingMinimization.lean` module is root-imported and
+compiles the supplied scalar recurrence layer for Chewi Theorem 11.5:
+`chewi115StrongFactor`, `chewi115ZeroK`,
+`chewi115StrongFactor_nonneg`, `chewi115ZeroK_pos`,
+`chewi115_strong_expected_gap_le_of_recurrence`,
+`IsChewi115RAMStrongGapCertificate`,
+`IsChewi115RAMStrongGapCertificate.gap_le_geometric`,
+`chewi115_zero_quadratic_recurrence_of_jensen`,
+`chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence`,
+`chewi115_zero_expected_gap_le_source_rate_of_recurrence`,
+`chewi115_zero_expected_gap_le_eps_of_recurrence`,
+`IsChewi115RAMZeroGapCertificate`,
+`IsChewi115RAMZeroGapCertificate.gap_le_source_rate`, and
+`IsChewi115RAMZeroGapCertificate.gap_le_eps`.  The strong case reuses
+`scalarRecurrence_le_pow`; the weak case reuses the Chapter 11.4 inverse-gap
+telescope with `K = 2 * D * R_beta^2`.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, relative smoothness, OMD, online
@@ -291,11 +308,14 @@ Active aggressive target ladder:
    `IsChewi114AMDescentCertificate` from actual coordinate/proximal
    minimization proof obligations if bounded, or move immediately to Theorem
    11.5 RAM.
-2. Immediately continue to Theorem 11.5 RAM using expectation-level
-   source-shaped interfaces: conditional one-step expectation, convex/strongly
-   convex Hopf-Lax supplied bounds, exponential rate for
-   `alpha_f + alpha_g > 0`, and inverse-gap/average rate for the zero-curvature
-   case.
+2. Continue Chewi Theorem 11.5 RAM from the compiled scalar recurrence layer:
+   prove the source analytic one-step bridge from the conditional expectation
+   display plus the Hopf-Lax/Exercise 9.3 supplied bounds into
+   `IsChewi115RAMStrongGapCertificate` and
+   `IsChewi115RAMZeroGapCertificate`.  If cheap, remove the strict-positive
+   side condition in the zero-curvature rate by a zero-hit induction wrapper.
+   Do not build full probability/process infrastructure unless it is the
+   shortest route; expectation-level supplied interfaces are the fast lane.
 3. Package Sinkhorn Theorems 11.7 and 11.8 from the compiled ABP and mirror
    descent layers using supplied finite KL/Pinsker/marginal identities; do not
    expand full EOT duality unless exact Theorem 11.6 reporting is requested.

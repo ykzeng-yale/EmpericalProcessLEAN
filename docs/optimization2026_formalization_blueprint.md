@@ -57,8 +57,8 @@ Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
 Current manual goal frontier after focused Lean verification of the Chapter
-11.4 log-burn-in rate layer on 2026-05-06, building on pushed frontier
-`613bf36` (`Add Chewi theorem 11.4 threshold tail layer`):
+11.5 RAM scalar recurrence layer on 2026-05-06, building on pushed frontier
+`0e411d9` (`Add Chewi theorem 11.4 log burn-in layer`):
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -171,6 +171,25 @@ norm/dual-norm interface or add an exact `sInf` wrapper only when source-report
 packaging or a later theorem demands it.  In parallel, map Chapter 13
 Newton/self-concordance theorem packets with source-shaped supplied interfaces
 first when exact analytic dependencies would otherwise stall progress.
+The new `RandomizedAlternatingMinimization.lean` module is imported by
+`StatInference.lean` and compiles the scalar expected-gap layer for Theorem
+11.5: `chewi115StrongFactor`, `chewi115ZeroK`,
+`chewi115StrongFactor_nonneg`, `chewi115ZeroK_pos`,
+`chewi115_strong_expected_gap_le_of_recurrence`,
+`IsChewi115RAMStrongGapCertificate`,
+`IsChewi115RAMStrongGapCertificate.gap_le_geometric`,
+`chewi115_zero_quadratic_recurrence_of_jensen`,
+`chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence`,
+`chewi115_zero_expected_gap_le_source_rate_of_recurrence`,
+`chewi115_zero_expected_gap_le_eps_of_recurrence`,
+`IsChewi115RAMZeroGapCertificate`,
+`IsChewi115RAMZeroGapCertificate.gap_le_source_rate`, and
+`IsChewi115RAMZeroGapCertificate.gap_le_eps`.  Search-first reuse: no local
+RAM theorem existed; the strong case reuses `scalarRecurrence_le_pow`, while
+the zero-curvature case reuses the compiled Chapter 11.4 inverse-gap telescope.
+The next RAM packet should prove the conditional-expectation/Hopf-Lax source
+bridge into these certificates, and only then decide whether full probability
+formalization is needed.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
