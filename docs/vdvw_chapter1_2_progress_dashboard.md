@@ -134,6 +134,14 @@ stable under a.e.-equal source-process replacement through
 `VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae`.  This is the
 needed raw-process congruence support for later measurable-version and
 separability arguments.
+The same congruence layer now has a raw sample-path coordinate-equality entry:
+`VdVWEllInfty.processMap_congr_ae`,
+`vdVWEllInftyProcessLaw_congr_forall_coord_ae`,
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_forall_coord_ae`, and
+`VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_forall_coord_ae`.
+These require a.e. equality of whole sample paths `∀ t, Y ω t = X ω t`, not
+separate coordinatewise a.e. equality, so they do not overclaim the
+arbitrary-index FDD converse.
 The Definition 2.3.3 separability lane also has a bounded route:
 `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`
 combines pointwise approximability by a countable measurable subclass with a

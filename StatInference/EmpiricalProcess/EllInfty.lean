@@ -96,6 +96,23 @@ theorem processMap_apply (X : Ω -> T -> ℝ) (hX : IsBoundedSamplePath X) (ω :
   rfl
 
 /--
+The `ell_infty(T)` process map is unchanged a.e. by replacing a raw bounded
+process with another one whose whole sample path is coordinatewise equal a.e.
+
+The hypothesis is deliberately sample-path a.e. equality
+`∀ᵐ ω, ∀ t, Y ω t = X ω t`; pointwise a.e. equality for each fixed `t` alone
+does not imply equality of arbitrary-index sample paths.
+-/
+theorem processMap_congr_ae [MeasurableSpace Ω] {P : Measure Ω}
+    {X Y : Ω -> T -> ℝ}
+    (hX : IsBoundedSamplePath X) (hY : IsBoundedSamplePath Y)
+    (hXY : ∀ᵐ ω ∂P, ∀ t, Y ω t = X ω t) :
+    processMap Y hY =ᵐ[P] processMap X hX := by
+  filter_upwards [hXY] with ω hω
+  ext t
+  exact hω t
+
+/--
 Canonical `ell_infty(T)` process map for finite index sets, where boundedness
 of every sample path is automatic.
 -/

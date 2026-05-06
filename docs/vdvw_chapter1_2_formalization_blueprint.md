@@ -228,6 +228,14 @@ The same process-law layer now has a.e.-congruence support:
 `VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae`.  These lemmas are
 intended for replacing raw processes by a.e.-equal measurable or canonical
 versions in later separability/asymptotic-measurability arguments.
+The congruence support now also accepts raw whole-sample-path coordinate
+equality through `VdVWEllInfty.processMap_congr_ae`,
+`vdVWEllInftyProcessLaw_congr_forall_coord_ae`,
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_forall_coord_ae`, and
+`VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_forall_coord_ae`.
+The hypothesis is `∀ᵐ ω, ∀ t, Y ω t = X ω t`, not separate a.e. equality for
+each fixed coordinate; this keeps the arbitrary-index FDD converse open and
+honest.
 For Definition 2.3.3, bounded pointwise approximability by a countable
 measurable subclass now directly gives `P`-measurability through
 `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`.

@@ -81,7 +81,12 @@ closed Lean support is:
   `VdVWEllInftyProcessAsymptoticallyTight.comp_tendsto`,
   `vdVWEllInftyProcessLaw_congr_ae`,
   `VdVWEllInftyProcessWeakConvergence.congr_eventually_ae`, and
-  `VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae`;
+  `VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae`, plus the raw
+  whole-sample-path coordinate equality wrappers
+  `VdVWEllInfty.processMap_congr_ae`,
+  `vdVWEllInftyProcessLaw_congr_forall_coord_ae`,
+  `VdVWEllInftyProcessWeakConvergence.congr_eventually_forall_coord_ae`, and
+  `VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_forall_coord_ae`;
 * Chapter 2.3 separability/measurability support:
   `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`,
   `VdVWPointwiseApproximableByCountableSubclass.tendsto_integral_of_uniform_bound`,
