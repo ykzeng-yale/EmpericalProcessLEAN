@@ -90,6 +90,13 @@ finite-net/Rademacher expectation support, not this event comparison.  Do not
 continue endpoint packaging until this source-side comparison, or an exact
 primitive for it, is in place.
 
+The exact comparison target is now compiled as
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison`, with the
+minimal consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbabilityComparison`.
+This is not a theorem completion; it is the source-side proof target for the
+next batch.
+
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
 block, the theorem that turns

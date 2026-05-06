@@ -164,6 +164,14 @@ existing ghost-sample/Rademacher/product/Fubini support.  If this exact event
 comparison cannot be proved without a new VdV&W primitive, register precisely
 that primitive and only then switch lanes.
 
+The target is now represented in Lean by
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison`, and the
+fixed-`M` centered truncated convergence consumer from this comparison and
+stochastic log-cardinality entropy is compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbabilityComparison`.
+Future work should prove this comparison structure, not restate downstream
+endpoint packages.
+
 2026-05-06 fixed-FDD congruence refinement: after search, the local FDD
 replacement layer now includes
 `aemeasurable_fdd_congr_finite_coord_ae` and
