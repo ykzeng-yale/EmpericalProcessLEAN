@@ -108,21 +108,21 @@ and Chapter 5.10's `chewi510Lambda`, `chewi510Theta`,
 `chewi510EnergyVector`, weighted telescope, and denominator-growth algebra for
 8.6.  Latest pushed Optimization frontier: `5479054`
 (`Add Chewi theorem 8.6 APGD layer`), now followed on `origin/main` by other
-agents' empirical-process commits.  Current local frontier: Chapter 9/10
-foundation files `StatInference/Optimization/Fenchel.lean` and
-`StatInference/Optimization/Bregman.lean` focused-check in Lean.  `Fenchel`
+agents' empirical-process commits.  Latest pushed Optimization frontier:
+`7899c07` (`Start Chewi Fenchel and Bregman layer`).  Chapter 9/10 foundation
+files `StatInference/Optimization/Fenchel.lean` and
+`StatInference/Optimization/Bregman.lean` now build through the promoted
+`StatInference` gate.  `Fenchel`
 records finite-valued conjugate terms, exact conjugate-value certificates,
 Fenchel-Young, equality iff primal subgradient, equality iff dual subgradient
 under supplied biconjugate equality, weak double-conjugate inequality, and the
 Lemma 9.12 strong-subgradient-monotonicity-to-Lipschitz core estimate.
 `Bregman` records Bregman divergence, relative strong convexity/smoothness,
 the lower/upper model orientations of Propositions 10.5/10.6, and Lemma 10.7
-relative growth with stationarity exposed.  Active aggressive target: promote
-these modules with `lake build StatInference.Optimization.Fenchel
-StatInference.Optimization.Bregman StatInference`, then open
+relative growth with stationarity exposed.  Active aggressive target: open
 `MirrorDescent.lean` for Theorem 10.9 MPGD one-step inequality and OMD
-telescoping.  Continue search-first mathlib/local API discovery before adding
-any new convex-analysis primitive.
+telescoping, reusing `Bregman.lean` relative lower/upper models and searching
+mathlib/local APIs before adding any new convex-analysis primitive.
 
 Historical live replacement prompt after focused Lean verification of the
 Chapter 7 Frank-Wolfe packet rebased over pushed frontier `4d4601c`
@@ -705,9 +705,9 @@ wrapper only if it is needed for exact source reporting.  Definition
 topological interior no-success wrapper, and Chapter 7 `FrankWolfe.lean` now
 has the supplied Theorem 7.3 rate wrapper, and Chapter 8 `Proximal.lean` now
 has the supplied Theorem 8.5 PGD one-step/final-rate wrapper plus the pushed
-Theorem 8.6 APGD/FISTA packet.  The current non-report lane is promotion of
-the Chapter 9/10 Fenchel/Bregman substrate, then MirrorDescent/MPGD
-telescoping, rather than another small Chapter 8 cleanup loop.
+Theorem 8.6 APGD/FISTA packet and the Chapter 9/10 Fenchel/Bregman substrate.
+The current non-report lane is MirrorDescent/MPGD telescoping, rather than
+another small Chapter 8 cleanup loop.
 Lemma 6.20 now has a compiled trajectory/rate frontier, and Lemma 6.18/Theorem
 6.19 already have a supplied-interface algebraic spine; their exact
 source-audited report remains blocked only by the genuine Grünbaum/centroid
