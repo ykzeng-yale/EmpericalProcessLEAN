@@ -83,9 +83,9 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after focused Lean verification of the
-Chapter 10 nonsmooth MPGD ordinary-norm analytic packet on 2026-05-06, based
-on pushed frontier `50cac18` (`Add Chewi theorem 10.11 step-size layer`):
+Current live replacement `/goal` prompt after checking the live manual goal,
+route docs, source text, and synced repo on 2026-05-06, based on pushed
+frontier `f192ed6` (`Add Chewi theorem 10.11 ordinary norm layer`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -99,8 +99,8 @@ theorem-sized packet is available.  Treat Chapters 3-8 as stable reusable
 infrastructure and treat `Fenchel.lean`, `Bregman.lean`, and
 `MirrorDescent.lean` as the active Chapter 9/10 promotion gate.
 
-Latest verified Optimization proof frontier: `ced0653` (`Add Chewi theorem
-10.11 MPGD average layer`).  `MirrorDescent.lean` now compiles through
+Latest verified Optimization proof frontier: `f192ed6` (`Add Chewi theorem
+10.11 ordinary norm layer`).  `MirrorDescent.lean` now compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
 `mirrorProximalGradientModel_le_composite_add_bregman`,
 `composite_le_mirrorProximalGradientModel`,
@@ -168,7 +168,12 @@ Active aggressive target ladder:
 
 1. Package Theorem 10.13 OMD regret by exposing the linear-loss version of the
    mirror step and telescoping `D_phi(y, x_n)`.  Reuse the 10.11 one-step
-   machinery wherever the algebra is identical.
+   machinery wherever the algebra is identical.  The first theorem packet
+   should introduce an `onlineMirrorDescentModel`, an
+   `IsOnlineMirrorDescentStep` growth certificate, the one-step regret
+   inequality, the scalar Young lower bound with constant
+   `L^2 * h / (2 * alphaPhi)`, the ordinary Hilbert-norm analytic discharge,
+   and a finite comparator regret telescope before spending time on `sInf`.
 2. If later source/report exactness requires Chewi's arbitrary norm
    `|||\cdot|||`, add a small proof-carrying custom norm/dual-norm interface
    that generalizes the ordinary-norm packet; do not block Theorem 10.13 on

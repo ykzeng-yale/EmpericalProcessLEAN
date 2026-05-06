@@ -56,12 +56,12 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after focused Lean verification of the Chapter 10
-nonsmooth MPGD ordinary-norm analytic packet on 2026-05-06, based on pushed
-code frontier `50cac18` in `StatInference/Optimization/MirrorDescent.lean`:
+Current manual goal frontier after checking the live manual goal, route docs,
+source text, and synced repo on 2026-05-06, based on pushed code frontier
+`f192ed6` in `StatInference/Optimization/MirrorDescent.lean`:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.  Latest verified Optimization
-proof frontier: `ced0653`.
+proof frontier: `f192ed6`.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
 trajectory interfaces, the model-to-composite Bregman upper/lower comparisons,
 the supplied-interface Chewi Theorem 10.9 one-step inequality, the descent
@@ -98,9 +98,11 @@ in the pinned tree; the relevant reuse is local `Bregman.lean`,
 `ProjectedSubgradient.lean` finite-average/Jensen APIs,
 `LipschitzOnWith.le_add_mul`, `abs_real_inner_le_norm`, and
 `FirstOrderStrongConvexOn.lower_model`.  The active route is now Theorem 10.13
-OMD regret if bounded; generalize 10.11 to a custom arbitrary norm/dual-norm
-interface only when exact source/report packaging demands it.  In parallel, map
-and open Chapter 11
+OMD regret if bounded, starting with the linear-loss OMD model/step interface,
+one-step regret inequality, ordinary Hilbert-norm Young lower bound, and finite
+comparator telescope; generalize 10.11/10.13 to a custom arbitrary
+norm/dual-norm interface only when exact source/report packaging demands it.  In
+parallel, map and open Chapter 11
 alternating Bregman projection/minimization and Chapter 12/13
 stochastic/Newton theorem packets with source-shaped supplied interfaces first
 when exact analytic dependencies would otherwise stall progress.
