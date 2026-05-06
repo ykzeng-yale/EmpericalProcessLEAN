@@ -1310,6 +1310,71 @@ theorem VdVWEllInftyProcessWeakConvergence.congr_eventually_forall_coord_ae
       VdVWEllInfty.processMap_congr_ae (hXbounded i) (hYbounded i) hi)
 
 /--
+Process weak convergence is unchanged by replacing the limiting process by an
+a.e.-equal bounded process map.
+-/
+theorem VdVWEllInftyProcessWeakConvergence.congr_limit_ae
+    {ι : Type*} {Ω : ι -> Type*} {Ωlim : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    (X : (i : ι) -> Ω i -> T -> ℝ)
+    (Z W : Ωlim -> T -> ℝ)
+    (hbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hWbounded : VdVWEllInfty.IsBoundedSamplePath W)
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hbounded i)) (μ i))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    (hW : AEMeasurable (VdVWEllInfty.processMap W hWbounded) μlim)
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ l)
+    (hWZ :
+      VdVWEllInfty.processMap W hWbounded =ᵐ[μlim]
+        VdVWEllInfty.processMap Z hZbounded) :
+    VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X W hbounded hWbounded hX hW l := by
+  have hLaw :
+      vdVWEllInftyProcessLaw (T := T) μlim W hWbounded hW =
+        vdVWEllInftyProcessLaw (T := T) μlim Z hZbounded hZ :=
+    vdVWEllInftyProcessLaw_congr_ae
+      (T := T) (P := μlim) (X := Z) (Y := W)
+      (hXbounded := hZbounded) (hYbounded := hWbounded)
+      (hX := hZ) (hY := hW) hWZ
+  simpa [VdVWEllInftyProcessWeakConvergence, hLaw] using h
+
+/--
+Process weak convergence is unchanged by replacing the limiting raw process by
+a sample-path a.e.-equal version.
+-/
+theorem VdVWEllInftyProcessWeakConvergence.congr_limit_forall_coord_ae
+    {ι : Type*} {Ω : ι -> Type*} {Ωlim : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    (X : (i : ι) -> Ω i -> T -> ℝ)
+    (Z W : Ωlim -> T -> ℝ)
+    (hbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hWbounded : VdVWEllInfty.IsBoundedSamplePath W)
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hbounded i)) (μ i))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    (hW : AEMeasurable (VdVWEllInfty.processMap W hWbounded) μlim)
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ l)
+    (hWZ : ∀ᵐ ω ∂μlim, ∀ t, W ω t = Z ω t) :
+    VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X W hbounded hWbounded hX hW l :=
+  VdVWEllInftyProcessWeakConvergence.congr_limit_ae
+    (T := T) μ μlim X Z W hbounded hZbounded hWbounded hX hZ hW h
+    (VdVWEllInfty.processMap_congr_ae hZbounded hWbounded hWZ)
+
+/--
 Process-level weak convergence implies weak convergence of every
 finite-dimensional law.
 

@@ -142,6 +142,11 @@ The same congruence layer now has a raw sample-path coordinate-equality entry:
 These require a.e. equality of whole sample paths `∀ t, Y ω t = X ω t`, not
 separate coordinatewise a.e. equality, so they do not overclaim the
 arbitrary-index FDD converse.
+The weak-convergence side also has limit-process replacement wrappers
+`VdVWEllInftyProcessWeakConvergence.congr_limit_ae` and
+`VdVWEllInftyProcessWeakConvergence.congr_limit_forall_coord_ae`, so later
+canonical or separable limit versions can be substituted without changing the
+law-level convergence statement.
 The Definition 2.3.3 separability lane also has a bounded route:
 `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`
 combines pointwise approximability by a countable measurable subclass with a

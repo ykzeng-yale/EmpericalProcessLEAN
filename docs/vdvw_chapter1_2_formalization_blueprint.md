@@ -236,6 +236,11 @@ equality through `VdVWEllInfty.processMap_congr_ae`,
 The hypothesis is `∀ᵐ ω, ∀ t, Y ω t = X ω t`, not separate a.e. equality for
 each fixed coordinate; this keeps the arbitrary-index FDD converse open and
 honest.
+The weak-convergence interface also has limit-side replacement through
+`VdVWEllInftyProcessWeakConvergence.congr_limit_ae` and
+`VdVWEllInftyProcessWeakConvergence.congr_limit_forall_coord_ae`, closing the
+raw-process congruence support needed to swap in canonical/separable versions
+on either the source or limit side.
 For Definition 2.3.3, bounded pointwise approximability by a countable
 measurable subclass now directly gives `P`-measurability through
 `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`.
