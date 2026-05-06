@@ -5977,14 +5977,16 @@ textbook hypotheses.
 threshold-code image/product-cardinality chain and the full-subgraph VC
 predicate, but no single raw structural cardinality lemma exposing that chain.
 `ThresholdCoding.lean` now proves
-`thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly`.
+`thresholdTraceCodeSet_card_add_one_real_le_uniform_vc`,
+`thresholdTraceCodeSet_card_add_one_real_le_uniform_subgraph_vc_nat_poly`,
+and `thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly`.
 It packages
-`finite_thresholdTraceCode_image <= thresholdTraceCodeSet <= product of binary
-trace families <= Sauer polynomial^#thresholds` under
-`VdVWUniformSubgraphVCBound`.  This is a genuine structural input for
-finite-code/threshold-grid Theorem 2.4.3 routes; next work should consume it in
-concrete selected-cover or grid-cardinality instantiations instead of
-rebuilding the product-code estimate.
+`thresholdTraceCodeSet <= product of binary trace families <= Sauer
+polynomial^#thresholds`, and then transfers the same bound to the realized
+`finite_thresholdTraceCode_image` under `VdVWUniformSubgraphVCBound`.  This is
+a genuine structural input for finite-code/threshold-grid Theorem 2.4.3 routes;
+next work should consume it in concrete selected-cover or grid-cardinality
+instantiations instead of rebuilding the product-code estimate.
 
 2026-05-06 coordinate-code random-cover follow-up: local search found the
 deterministic coordinate pointwise-code covering primitive

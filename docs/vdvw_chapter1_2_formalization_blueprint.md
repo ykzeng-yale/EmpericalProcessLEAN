@@ -148,12 +148,14 @@ arguments; the remaining theorem work is the concrete code-image
 log-cardinality, VC/Sauer polynomial, or tail/UI estimate, not another
 selected endpoint.
 The threshold-code structural cardinality layer also now has the raw
-full-subgraph VC input
+fixed-threshold and full-subgraph VC inputs
+`thresholdTraceCodeSet_card_add_one_real_le_uniform_vc`,
+`thresholdTraceCodeSet_card_add_one_real_le_uniform_subgraph_vc_nat_poly`, and
 `thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly` in
-`ThresholdCoding.lean`, bounding realized threshold-code images by the
-Sauer-polynomial product under `VdVWUniformSubgraphVCBound`.  Future VC/grid
-instantiations should consume this lemma rather than reproving the
-threshold-code/product-cardinality chain.
+`ThresholdCoding.lean`, bounding the whole threshold-code set and the realized
+threshold-code image by the Sauer-polynomial product under the appropriate VC
+hypothesis.  Future VC/grid instantiations should consume these lemmas rather
+than reproving the threshold-code/product-cardinality chain.
 The coordinate-code structural route also now lifts into the random
 empirical-cover interface through
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_pointwise_approx_code_product_cardinality_bound_samplePath`

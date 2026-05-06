@@ -2261,11 +2261,14 @@ finite-net comparison, not another endpoint wrapper.
 
 2026-05-06 threshold-code cardinality follow-up:
 `ThresholdCoding.lean` now proves
-`thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly`,
-which packages the realized threshold-code image bound from
-`VdVWUniformSubgraphVCBound` through the product of fixed-threshold binary
-trace families and Sauer-Shelah.  This is a structural cardinality input for
-VC/threshold-grid Theorem 2.4.3 routes, not another convergence endpoint.
+`thresholdTraceCodeSet_card_add_one_real_le_uniform_vc`,
+`thresholdTraceCodeSet_card_add_one_real_le_uniform_subgraph_vc_nat_poly`, and
+`thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly`.
+These package the full threshold-code-set and realized threshold-code image
+bounds from fixed-threshold or full-subgraph VC hypotheses through the product
+of fixed-threshold binary trace families and Sauer-Shelah.  This is a
+structural cardinality input for VC/threshold-grid Theorem 2.4.3 routes, not
+another convergence endpoint.
 
 2026-05-06 coordinate-code random-cover follow-up:
 `Theorem243.lean` now lifts coordinatewise finite pointwise approximation codes

@@ -1355,6 +1355,81 @@ theorem threshold_binaryTraceSetFamily_product_card_le_uniform_vc
       sample indexClass classFun thresholds hbase_pos hthresholds_card hbase
 
 /--
+The finite threshold-code set itself satisfies the same natural-polynomial
+cardinality shape as the threshold-code image when every fixed-threshold
+binary trace family has VC dimension at most `d`.
+
+This is the code-set cardinality estimate consumed by finite trace-code-set
+Theorem 2.4.3 routes: it bounds the whole finite target code set, not only the
+realized threshold-code image.
+-/
+theorem thresholdTraceCodeSet_card_add_one_real_le_uniform_vc
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {thresholds : Finset ℝ}
+    (hthresholds_card : thresholds.card ≤ k)
+    (hvc :
+      ∀ threshold : {threshold // threshold ∈ thresholds},
+        (empiricalBinaryTraceSetFamily sample indexClass
+          (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤ d) :
+    (((thresholdTraceCodeSet sample indexClass classFun thresholds).card : ℝ) + 1) ≤
+      ((((d + 2 : ℕ) : ℝ) ^ k) + 1) *
+        (((n + 1 : ℕ) : ℝ) ^ (d * k)) := by
+  let base : ℕ := (d + 2) * (n + 1) ^ d
+  have hproduct_nat :
+      (∏ threshold ∈ thresholds.attach,
+          (empiricalBinaryTraceSetFamily sample indexClass
+            (thresholdIndicatorClassFun classFun threshold.1)).card) ≤
+        base ^ k := by
+    simpa [base] using
+      threshold_binaryTraceSetFamily_product_card_le_uniform_vc
+        sample indexClass classFun hthresholds_card hvc
+  have hcode_nat :
+      (thresholdTraceCodeSet sample indexClass classFun thresholds).card ≤
+        base ^ k :=
+    (thresholdTraceCodeSet_card_le_pi_binaryTraceSetFamily_card
+      sample indexClass classFun thresholds).trans hproduct_nat
+  have hcode_real :
+      (((thresholdTraceCodeSet sample indexClass classFun thresholds).card : ℝ) + 1) ≤
+        (((base ^ k : ℕ) : ℝ) + 1) := by
+    exact_mod_cast Nat.add_le_add_right hcode_nat 1
+  have hbase_growth :
+      (base : ℝ) ≤ ((d + 2 : ℕ) : ℝ) * (((n + 1 : ℕ) : ℝ) ^ d) := by
+    dsimp [base]
+    norm_num [Nat.cast_mul, Nat.cast_pow]
+  exact hcode_real.trans
+    (nat_pow_add_one_real_le_nat_poly_of_base_le
+      (base := base) (n := n) (a := d) (k := k)
+      (B := ((d + 2 : ℕ) : ℝ)) (Nat.cast_nonneg _) hbase_growth)
+
+/--
+Uniform full-subgraph VC/Sauer bounds control the full finite
+threshold-code-set cardinality, not just the realized code image.
+
+This is the raw code-set cardinality input for finite trace-code-set
+Theorem 2.4.3 routes whose code set is `thresholdTraceCodeSet`.
+-/
+theorem thresholdTraceCodeSet_card_add_one_real_le_uniform_subgraph_vc_nat_poly
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {thresholds : Finset ℝ}
+    (hthresholds_card : thresholds.card ≤ k)
+    (hvc : VdVWUniformSubgraphVCBound indexClass classFun d) :
+    (((thresholdTraceCodeSet sample indexClass classFun thresholds).card : ℝ) + 1) ≤
+      ((((d + 2 : ℕ) : ℝ) ^ k) + 1) *
+        (((n + 1 : ℕ) : ℝ) ^ (d * k)) := by
+  exact
+    thresholdTraceCodeSet_card_add_one_real_le_uniform_vc
+      sample indexClass classFun hthresholds_card
+      (fun threshold =>
+        VdVWUniformThresholdVCSubgraphBound.empiricalBinaryTraceSetFamily_vcDim_le
+          (sample := sample)
+          (VdVWUniformSubgraphVCBound.toUniformThresholdVCSubgraphBound hvc)
+          threshold.1)
+
+/--
 Uniform full-subgraph VC/Sauer bounds control the realized threshold-code
 image cardinality.
 
