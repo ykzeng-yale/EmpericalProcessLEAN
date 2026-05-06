@@ -83,6 +83,23 @@ corresponding theorem statement compiles.  The active Codex `/goal` tool
 objective is intentionally broad and currently cannot be edited in place; this
 paragraph is the replacement target for ongoing `/goal` work.
 
+2026-05-06 `/goal` rebase after `2d2b441`: the next continuation should start
+from the verified finite-restriction process measurability and finite-index
+FDD/converse layers.  Do not rebuild `ell_infty(T)` wrappers, selected
+fixed-radius/inverse-radius packages, full-subgraph/finite-class/quantizer/
+threshold/grid endpoint packages, or generic Theorem 2.4.3 final consumers
+already listed here.  The next high-capacity proof batch should try, in order:
+prove a genuine structural entropy/cardinality theorem feeding the selected
+fixed-radius Theorem 2.4.3 route; prove a real selected empirical-cover
+tail/UI/ordinary-mean bridge from a hypothesis strong enough to imply it; or,
+if those theorem-line routes block after search and Lean attempts, move to a
+theorem-critical Chapter 1 process primitive such as arbitrary-index FDD
+converse, separability/tightness/asymptotic-measurability, or nonmeasurable
+outer-cover signed weak convergence.  The finite-coordinate measurability,
+finite-index law, identically-distributed, weak-convergence, and
+asymptotic-tightness wrappers are support infrastructure already compiled, not
+the next target.
+
 Rebased next-target rule: do not add another alias or endpoint wrapper for a
 route already listed below unless it consumes a genuinely new theorem
 hypothesis.  The highest-value Theorem 2.4.3 work is now upstream: prove the

@@ -131,6 +131,15 @@ the paired endpoint
 now upgrades it to canonical `P`-GC and in-mean convergence.  Future work
 should return to the true random-entropy tail/UI bridge or prove a new
 structural cardinality theorem rather than rebuild selected-package routes.
+
+2026-05-06 `/goal` rebase after `2d2b441`: finite-coordinate raw-process
+measurability and finite-index FDD/converse wrappers are closed support.  The
+next continuation should target a new structural entropy/cardinality theorem,
+a real selected empirical-cover tail/UI/ordinary-mean bridge from hypotheses
+strong enough to imply it, or a Chapter 1 process primitive upstream of the
+arbitrary-index VdV&W 1.4.8 converse.  Do not spend the next run on another
+endpoint alias for an already-consumed Theorem 2.4.3 route.
+
 The first-sample `UnifIntegrable` route now also reaches untruncated centered
 convergence directly, so future work should prove the UI/tail/mean or
 structural-cardinality input consumed by that endpoint rather than add another

@@ -37,7 +37,20 @@ measurability through
 `VdVWEllInfty.measurable_finiteRestrict_processMap` and
 `VdVWEllInfty.aemeasurable_finiteRestrict_processMap`; this is only a
 finite-dimensional bridge and does not assert full `ell_infty(T)` process
-measurability.  The measure-level Portmanteau continuity-set
+measurability.
+
+2026-05-06 `/goal` rebase after `2d2b441`: finite-coordinate measurability and
+finite-index FDD/converse wrappers are closed support, not the next target.
+The next useful run should either prove a new structural entropy/cardinality
+theorem for a concrete VC/Sauer, finite-code, threshold-grid, finite-trace, or
+quantizer-compression route; prove a selected empirical-cover
+tail/UI/ordinary-mean bridge from a hypothesis strong enough to imply it; or
+switch to a real Chapter 1 process blocker such as arbitrary-index FDD
+converse, separability/tightness/asymptotic-measurability, or nonmeasurable
+outer-cover signed weak convergence.  Do not add more endpoint aliases around
+already-closed Theorem 2.4.3 routes.
+
+The measure-level Portmanteau continuity-set
 implication and closed/open converse wrappers are now compiled as well.  The
 norm-tail tightness characterization for probability-measure families on
 normed/proper normed spaces is compiled, including the sequence/range limsup
