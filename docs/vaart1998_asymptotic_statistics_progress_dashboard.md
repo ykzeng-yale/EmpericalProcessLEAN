@@ -167,9 +167,13 @@ Chapter 4 handoff:
 - measurable-coordinate Theorem 4.1 Gaussian-limit source wrapper with the
   canonical covarianceBilinDual display:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_real`.
+- local-inverse a.e.-measurability helpers:
+  `vaart1998_openPartialHomeomorph_symm_aemeasurable_on_target`,
+  `vaart1998_localInverse_aemeasurable_on_open_momentRange`, and
+  `vaart1998_localInverse_aemeasurable_of_ae_mem_open_momentRange`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`c7fc5aa`:
+`64fc50a`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -192,12 +196,13 @@ targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled Gaussian and canonical
-covarianceBilinDual source wrapper:
+Continue Vaart Chapter 4.1 from the compiled Gaussian, canonical
+covarianceBilinDual source wrapper, and local-inverse a.e.-measurability layer:
 
-1. add a local-inverse measurability convenience from the open partial
-   homeomorphism/local continuity API if it can be done without widening the
-   topology assumptions too much;
+1. connect the a.e.-measurable local inverse convenience to the delta-method
+   wrapper, either by adding an a.e.-measurable delta-method variant or by
+   proving a safe global-measurability wrapper for the concrete `invFunOn`
+   construction;
 2. keep the actual multivariate CLT supplied until a local vector CLT is
    formalized from the scalar mathlib CLT or another local dependency.
 
