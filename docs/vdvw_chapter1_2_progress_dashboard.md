@@ -14,7 +14,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-05 after the verified finite-trace
-structural Theorem 2.4.3 consumer: closed
+structural Theorem 2.4.3 `P`-GC/in-mean endpoint: closed
 finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
@@ -55,10 +55,13 @@ tightness/independence, arbitrary-index FDD converse, and separability/
 `P`-measurable class support.  The finite-trace natural-polynomial route now
 has a direct centered untruncated convergence consumer,
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_finite_trace_image_cardinality_bound_nat_poly`.
-The next non-duplicative Theorem 2.4.3 `/goal` batch should either add the
-corresponding structural `P`-GC/in-mean endpoint by consuming that theorem
-through the existing endpoint adapters, or return to the genuine book entropy
-tail/UI bridge.  The VdV&W 1.4.1 product Borel-space equality is
+The corresponding structural endpoint
+`VdVWTheorem243_finite_trace_image_cardinality_bound_nat_poly_pGlivenkoCantelli_and_inMean`
+now consumes that theorem through the existing centered-to-`P`-GC and in-mean
+adapters.  The next non-duplicative Theorem 2.4.3 `/goal` batch should return
+to the genuine book entropy tail/UI bridge or prove a new structural
+cardinality theorem that feeds one of the closed routes.  The VdV&W 1.4.1
+product Borel-space equality is
 also now
 compiled as `vdVW141_prod_borel_eq_product_borel`; do not repeat that wrapper.
 The signed arbitrary-map asymptotic-measurability layer now also implies the

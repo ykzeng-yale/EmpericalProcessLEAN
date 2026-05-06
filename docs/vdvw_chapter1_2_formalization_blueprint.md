@@ -90,7 +90,7 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current operational target, 2026-05-05 after the verified finite-trace
-structural Theorem 2.4.3 consumer: the strong
+structural Theorem 2.4.3 `P`-GC/in-mean endpoint: the strong
 Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
@@ -114,8 +114,12 @@ outer-cover clauses, or separability primitives required by exact Chapter 1-2
 statements.  The finite-trace natural-polynomial structural route now directly
 reaches centered untruncated convergence through
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_finite_trace_image_cardinality_bound_nat_poly`;
-future endpoint work should consume that theorem rather than rebuild the
-selected-package route.  The VdV&W 1.4.1 product Borel-space equality is also closed as
+the paired endpoint
+`VdVWTheorem243_finite_trace_image_cardinality_bound_nat_poly_pGlivenkoCantelli_and_inMean`
+now upgrades it to canonical `P`-GC and in-mean convergence.  Future work
+should return to the true random-entropy tail/UI bridge or prove a new
+structural cardinality theorem rather than rebuild selected-package routes.
+The VdV&W 1.4.1 product Borel-space equality is also closed as
 `vdVW141_prod_borel_eq_product_borel`.  The next small but theorem-facing
 Chapter 1 foundation closure is now closed: filter-refinement stability for
 the signed weak-convergence packages in `WeakConvergence.lean`, covering
