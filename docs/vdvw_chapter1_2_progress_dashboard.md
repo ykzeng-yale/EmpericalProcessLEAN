@@ -14,35 +14,33 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-06 after verified pushed head
-`1307590 Add bounded separability P-measurability handoff`: treat the broad
+`57037fa Add separable centered weak convergence endpoints`: treat the broad
 Codex goal objective as an orchestration label only, because the active goal
-object cannot be edited in place.  The latest closed support is the bounded
-separability/Definition 2.3.3 handoff
-`VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`,
-after the process reindexing and a.e.-congruence wrappers
-`VdVWEllInftyProcessWeakConvergence.comp_tendsto`,
-`VdVWEllInftyProcessAsymptoticallyTight.comp_tendsto`,
-`vdVWEllInftyProcessLaw_congr_ae`,
-`VdVWEllInftyProcessWeakConvergence.congr_eventually_ae`, and
-`VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae`.
+object cannot be edited in place.  The latest closed support is the full
+bounded centered separability handoff:
+`VdVWPointwiseApproximableByCountableSubclass.tendsto_integral_of_uniform_bound`,
+`VdVWPointwiseApproximableByCountableSubclass.centered_of_uniform_bound`,
+`VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound`,
+and the Theorem 2.4.3 law endpoints
+`VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst`
+and
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst`.
 
 The next useful `/goal` run should not rebuild finite-net/Hoeffding/Mills,
 selected fixed-radius/inverse-radius, untruncation, reverse-cofiltration,
 selected-entropy, full-subgraph, finite-class, threshold/grid/quantizer,
-Dirac-law, finite-index `ell_infty(T)`, or forward process-law endpoint
-packages already compiled.  It should close a non-duplicative theorem-facing
-batch in one of these lanes:
+Dirac-law, finite-index `ell_infty(T)`, forward process-law endpoint packages,
+or the centered separability endpoints already compiled.  It should close a
+non-duplicative theorem-facing batch in one of these lanes:
 
-1. centered separability/`P`-measurability: use mathlib dominated convergence
-   and the pointwise-approximable APIs to prove that uniformly bounded
-   countable-subclass approximability survives centering
-   `f ↦ f - ∫ f dP`, then produce a centered `VdVWPMeasurableClass` handoff;
-2. a real structural entropy/cardinality theorem feeding Theorem 2.4.3,
-   such as finite-code/compression, VC/Sauer, finite-trace, threshold-grid, or
-   quantizer sublinear normalized-log growth;
-3. a genuine selected empirical-cover tail/UI/ordinary-mean bridge from
-   assumptions strong enough to imply it;
-4. an exact Chapter 1 process primitive, especially arbitrary-index FDD
+1. a real structural entropy/cardinality theorem feeding Theorem 2.4.3, such
+   as finite-code/compression, VC/Sauer, finite-trace, threshold-grid, or
+   quantizer sublinear normalized-log growth, only if it is not already covered
+   by the existing threshold/grid/full-subgraph/finite-trace routes;
+2. a genuine selected empirical-cover event, tail/UI, or ordinary-mean bridge
+   from hypotheses strong enough to imply it; bare outer-probability convergence
+   of normalized random entropy is not enough;
+3. an exact Chapter 1 process primitive, especially arbitrary-index FDD
    converse, separability/tightness/asymptotic-measurability, nonmeasurable
    signed outer-cover weak convergence, or full arbitrary-map extended-real
    measurable-cover existence.

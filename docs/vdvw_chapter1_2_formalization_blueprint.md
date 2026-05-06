@@ -90,28 +90,31 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current operational target, 2026-05-06 after verified pushed head
-`1307590 Add bounded separability P-measurability handoff`: the active Codex
+`57037fa Add separable centered weak convergence endpoints`: the active Codex
 `/goal` remains broad and cannot be edited in place, so this paragraph is the
 blueprint-level replacement target.  Do not rebuild forward FDD/process-law
-support, finite-index `ell_infty(T)` wrappers, or Theorem 2.4.3 endpoint
-packages unless a new exact theorem consumes them immediately.  The newest
-proof state adds the bounded pointwise-approximable constructor
-`VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`
-on top of the recent process reindexing and a.e.-congruence wrappers.  The
-next proof work should close a new upstream theorem-facing blocker:
+support, finite-index `ell_infty(T)` wrappers, Theorem 2.4.3 endpoint
+packages, or centered separability wrappers unless a new exact theorem consumes
+them immediately.  The newest proof state adds the centered
+pointwise-approximable and `P`-measurable constructor chain
+`VdVWPointwiseApproximableByCountableSubclass.tendsto_integral_of_uniform_bound`,
+`VdVWPointwiseApproximableByCountableSubclass.centered_of_uniform_bound`, and
+`VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound`,
+plus the law-level Theorem 2.4.3 endpoints
+`VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst`
+and
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst`.
+The next proof work should close a new upstream theorem-facing blocker:
 
-1. centered separability/`P`-measurability: prove, using the searched mathlib
-   dominated-convergence APIs, that uniformly bounded countable-subclass
-   pointwise approximability survives centering `f ↦ f - ∫ f dP`, then package
-   the resulting centered `VdVWPMeasurableClass` handoff;
-2. structural entropy/cardinality: prove a genuine finite-code/compression,
+1. structural entropy/cardinality: prove a genuine finite-code/compression,
    VC/Sauer, finite-trace, threshold-grid, or quantizer estimate with
    sublinear normalized logarithmic growth feeding the selected fixed-radius
-   Theorem 2.4.3 route;
-3. selected empirical-cover tail/UI/ordinary-mean: prove such a bridge from
+   Theorem 2.4.3 route, after searching the existing
+   threshold/grid/full-subgraph/finite-trace routes to avoid duplication;
+2. selected empirical-cover tail/UI/ordinary-mean: prove such a bridge from
    hypotheses strong enough to imply it, without treating bare
    outer-probability random-entropy convergence as uniform integrability;
-4. exact Chapter 1 process primitives: arbitrary-index FDD converse,
+3. exact Chapter 1 process primitives: arbitrary-index FDD converse,
    separability/tightness/asymptotic-measurability, nonmeasurable signed
    outer-cover weak convergence, or full arbitrary-map extended-real
    measurable-cover existence.

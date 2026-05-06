@@ -68,7 +68,7 @@ unless a new exact statement directly consumes them.
 ## Current `/goal` Target
 
 Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
-`1307590 Add bounded separability P-measurability handoff`: local `main` is
+`57037fa Add separable centered weak convergence endpoints`: local `main` is
 synced with `origin/main`, the worktree is clean, and the active Codex goal
 object remains broad because the goal API cannot edit an active objective in
 place.  Use this paragraph as the operative replacement prompt.  The latest
@@ -83,7 +83,14 @@ closed Lean support is:
   `VdVWEllInftyProcessWeakConvergence.congr_eventually_ae`, and
   `VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae`;
 * Chapter 2.3 separability/measurability support:
-  `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`;
+  `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`,
+  `VdVWPointwiseApproximableByCountableSubclass.tendsto_integral_of_uniform_bound`,
+  `VdVWPointwiseApproximableByCountableSubclass.centered_of_uniform_bound`, and
+  `VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound`;
+* Theorem 2.4.3 law-level endpoints consuming that separability route:
+  `VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst`
+  and
+  `VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst`;
 * all earlier Theorem 2.4.3 endpoint packages, selected fixed-radius and
   inverse-radius routes, finite-net/Hoeffding/Mills/untruncation packages,
   finite-class/full-subgraph/threshold/grid/quantizer routes, finite-index
@@ -91,37 +98,27 @@ closed Lean support is:
   listed below.
 
 Do not spend the next `/goal` continuation on another endpoint alias, another
-finite-index process wrapper, or another selected-route restatement unless a
-new exact theorem consumes it immediately.  The next high-capacity proof batch
-should choose the first lane below that can make genuine Lean progress after
-search:
+finite-index process wrapper, another selected-route restatement, or another
+centered-separability wrapper unless a new exact theorem consumes it
+immediately.  The next high-capacity proof batch should choose the first lane
+below that can make genuine Lean progress after search:
 
-1. **Centered separability / Definition 2.3.3 lane.**  Search already found
-   mathlib dominated-convergence APIs such as
-   `MeasureTheory.tendsto_integral_of_dominated_convergence` and local
-   pointwise-approximable/separable `P`-measurability APIs, but no centered
-   pointwise-approximability or centered bounded-separability theorem.  Try to
-   prove that pointwise approximability by a countable uniformly bounded
-   coordinate-measurable subclass survives centering
-   `f ↦ f - ∫ f dP`, then use it to produce a centered
-   `VdVWPMeasurableClass` handoff.  This directly supports Definition 2.3.3,
-   Theorem 2.4.3 centered supremum measurability, and later separability
-   arguments.
-2. **Theorem 2.4.3 structural entropy lane.**  Prove a real structural
+1. **Theorem 2.4.3 structural entropy lane.**  Prove a real structural
    entropy/cardinality theorem feeding an already compiled selected
    fixed-radius route, such as a finite-code/compression, VC/Sauer,
    finite-trace, threshold-grid, or quantizer estimate with sublinear
-   normalized logarithmic growth.  Do not confuse this with another
-   endpoint-package adapter.
-3. **Selected empirical-cover tail/UI/mean lane.**  Prove a genuine selected
+   normalized logarithmic growth.  First search the existing
+   threshold/grid/full-subgraph/finite-trace routes to avoid duplicating a
+   closed endpoint package.
+2. **Selected empirical-cover tail/UI/mean lane.**  Prove a genuine selected
    empirical-cover event, tail-expectation, uniform-integrability, or ordinary
    mean-convergence bridge from hypotheses strong enough to imply it.  Bare
    outer-probability convergence of normalized random entropy is not enough.
-4. **Chapter 1 process primitive lane.**  If the theorem-line entropy and
-   centered-separability lanes block after real Lean/search attempts, attack an
-   exact Chapter 1 blocker: arbitrary-index VdV&W 1.4.8 FDD converse,
-   process separability/tightness/asymptotic-measurability, nonmeasurable
-   signed outer-cover weak convergence, or full arbitrary-map extended-real
+3. **Chapter 1 process primitive lane.**  If the theorem-line entropy or
+   selected-cover mean lanes block after real Lean/search attempts, attack an
+   exact Chapter 1 blocker: arbitrary-index VdV&W 1.4.8 FDD converse, process
+   separability/tightness/asymptotic-measurability, nonmeasurable signed
+   outer-cover weak convergence, or full arbitrary-map extended-real
    measurable-cover existence.
 
 Each continuation should close a theorem-facing batch in one of these lanes or
