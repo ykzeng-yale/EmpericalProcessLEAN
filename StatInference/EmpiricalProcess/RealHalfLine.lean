@@ -409,6 +409,51 @@ noncomputable def oneCell
     fin_cases cell
     simpa using hinc
 
+/--
+The two-cell middle partition obtained by splitting a bounded interval at a
+strict interior cutpoint.
+
+This is the first nontrivial finite-partition constructor for the
+distribution-dependent middle-CDF grid used in the Glivenko-Cantelli route.
+-/
+noncomputable def twoCell
+    {μ : Measure ℝ} {epsilon a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hleft :
+      Function.leftLim (ProbabilityTheory.cdf μ) c -
+        ProbabilityTheory.cdf μ a < epsilon)
+    (hright :
+      Function.leftLim (ProbabilityTheory.cdf μ) b -
+        ProbabilityTheory.cdf μ c < epsilon) :
+    SuppliedRealMiddleCDFPartition μ epsilon a b 2 where
+  endpoint := fun endpointIndex =>
+    if endpointIndex = 0 then a else if endpointIndex = 1 then c else b
+  strictMono := by
+    intro i j hij
+    fin_cases i <;> fin_cases j <;> simp at hij ⊢
+    · exact hac
+    · exact hac.trans hcb
+    · exact hcb
+  left_eq := by simp
+  right_eq := by simp
+  bracketOf := fun x _ _ => if x < c then 0 else 1
+  left_le_index := by
+    intro x hleftBound hrightBound
+    by_cases hxc : x < c
+    · simp [hxc, Fin.castSucc]
+      exact hleftBound
+    · have hcx : c ≤ x := le_of_not_gt hxc
+      simp [hxc, Fin.castSucc]
+      exact hcx
+  index_lt_right := by
+    intro x hleftBound hrightBound
+    by_cases hxc : x < c
+    · simp [hxc]
+    · simp [hxc]
+      exact hrightBound
+  cdf_increment_lt := by
+    intro cell
+    fin_cases cell <;> simp [hleft, hright]
+
 /-- Adjacent endpoints in a supplied middle partition are strictly ordered. -/
 theorem endpoint_left_lt_right
     {μ : Measure ℝ} {epsilon a b : ℝ} {middleCells : ℕ}
@@ -445,6 +490,22 @@ theorem exists_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt
     ∃ middleCells, Nonempty
       (SuppliedRealMiddleCDFPartition μ epsilon a b middleCells) :=
   ⟨1, ⟨SuppliedRealMiddleCDFPartition.oneCell hab hinc⟩⟩
+
+/--
+If an interior cutpoint splits a bounded interval into two small CDF-increment
+pieces, a two-cell middle CDF partition exists.
+-/
+theorem exists_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt
+    {μ : Measure ℝ} {epsilon a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hleft :
+      Function.leftLim (ProbabilityTheory.cdf μ) c -
+        ProbabilityTheory.cdf μ a < epsilon)
+    (hright :
+      Function.leftLim (ProbabilityTheory.cdf μ) b -
+        ProbabilityTheory.cdf μ c < epsilon) :
+    ∃ middleCells, Nonempty
+      (SuppliedRealMiddleCDFPartition μ epsilon a b middleCells) :=
+  ⟨2, ⟨SuppliedRealMiddleCDFPartition.twoCell hac hcb hleft hright⟩⟩
 
 /--
 Finite Borel measures on the real line have finite real cutpoints with
