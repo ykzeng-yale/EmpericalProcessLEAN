@@ -124,9 +124,15 @@ Initial modules:
   solve/uniqueness/local-domain wrappers.  The third packet connects
   `HasStrictFDerivAt.localInverse` and `HasStrictFDerivAt.to_localInverse` to
   the local inverse and local range certificates, with global measurability of
-  the chosen local inverse still explicit.  It deliberately leaves open
-  neighborhood packaging, vector LLN/local-range probability discharge, and
-  multivariate CLT/covariance identification as explicit next layers.
+  the chosen local inverse still explicit.  The current packet exposes the
+  actual open source and target neighborhoods from
+  `HasStrictFDerivAt.toOpenPartialHomeomorph`, builds an open-neighborhood
+  local range certificate from them, and proves that convergence in probability
+  of empirical moments to the true moment implies local-range probability
+  tending to one for any open local range containing the true moment.  It now
+  deliberately leaves the iid/vector LLN producing that convergence, the
+  multivariate empirical-moment CLT, and covariance identification as explicit
+  next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

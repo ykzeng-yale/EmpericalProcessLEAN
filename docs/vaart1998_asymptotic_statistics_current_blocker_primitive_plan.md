@@ -152,25 +152,41 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_momentLocalInverseCertificate_of_hasStrictFDerivAt`.
 38. Inverse-function-theorem bridge to a canonical local range certificate:
    `vaart1998_momentLocalRangeCertificate_of_hasStrictFDerivAt`.
+39. Open inverse-function-theorem source and target facts:
+   `vaart1998_hasStrictFDerivAt_open_local_parameterDomain` and
+   `vaart1998_hasStrictFDerivAt_open_local_momentRange`.
+40. True-parameter and true-moment membership facts for those neighborhoods:
+   `vaart1998_hasStrictFDerivAt_theta0_mem_local_parameterDomain` and
+   `vaart1998_hasStrictFDerivAt_eta0_mem_local_momentRange`.
+41. Open-neighborhood local range certificate from
+   `HasStrictFDerivAt.toOpenPartialHomeomorph`:
+   `vaart1998_momentLocalRangeCertificate_of_hasStrictFDerivAt_openPartialHomeomorph`.
+42. Open-neighborhood probability localization from convergence in probability:
+   `vaart1998_local_range_probability_of_tendstoInMeasure_const`.
+43. Local-range probability certificate constructor from convergence in
+   probability:
+   `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_tendstoInMeasure`.
 
-Latest pushed Vaart packet before this run: `261bc0d`
-(`Add Vaart moment estimator local range layer`).
+Latest pushed Vaart packet before this run: `460542b`
+(`Add Vaart moment inverse theorem bridge`).
 
-The current theorem-sized packet connects mathlib's inverse-function theorem
-API to the Vaart Chapter 4 certificates.  A strict derivative with invertible
-continuous-linear derivative now produces the Vaart local inverse certificate,
-with global measurability of the chosen local inverse kept explicit.  The same
-mathlib local inverse also produces a canonical local range certificate whose
-moment and parameter sets are the points where the right/left inverse
-identities hold.
+The current theorem-sized packet upgrades Chapter 4.1 local existence plumbing.
+Mathlib's `HasStrictFDerivAt.toOpenPartialHomeomorph` now supplies the actual
+open `U`/`V` neighborhoods used in van der Vaart's inverse-function-theorem
+proof, and the resulting open local range is connected to the existing
+moment-equation certificate.  Separately, convergence in probability of
+empirical moments to the true moment now implies that empirical moments fall in
+any open local range containing the true moment with probability tending to
+one, producing the existing local-range probability certificate.
 
-The next aggressive packet should continue Chapter 4 without overclaiming the
-existence sentence:
+The next aggressive packet should continue Chapter 4 by discharging the
+remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. strengthen the inverse-function bridge from canonical identity-validity sets
-   to explicit open neighborhoods from `HasStrictFDerivAt.toOpenPartialHomeomorph`;
-2. start vector LLN/local-range probability discharge for
-   `Vaart1998MomentEstimatorLocalRangeProbabilityCertificate`;
+1. prove or package the empirical-moment convergence-in-probability field from
+   an iid/vector LLN interface, feeding
+   `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_tendstoInMeasure`;
+2. assemble the full Theorem 4.1 existence-plus-delta handoff by combining the
+   open local range, local-range probability, and local inverse certificates;
 3. keep the multivariate empirical-moment CLT/covariance display supplied for
    now, since the current pinned mathlib CLT is scalar.
 
@@ -251,10 +267,13 @@ scalar CLT in `Mathlib.Probability.CentralLimitTheorem`; no ready multivariate
 CLT was found.  Mathlib does provide inverse-function APIs in
 `Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv` and differentiability
 of continuous linear equivalences in `Mathlib.Analysis.Calculus.FDeriv.Equiv`;
-these should be used to discharge the local inverse certificate later.
-The first bridge is now compiled using `HasStrictFDerivAt.localInverse`,
-`HasStrictFDerivAt.localInverse_apply_image`, and
-`HasStrictFDerivAt.to_localInverse`.
+these are now used to discharge the local inverse and open local range
+certificates.  The open source/target API comes from
+`OpenPartialHomeomorph.open_source`, `OpenPartialHomeomorph.open_target`,
+`OpenPartialHomeomorph.map_target`, `OpenPartialHomeomorph.right_inv`, and
+`OpenPartialHomeomorph.left_inv`.  The probability-localization bridge uses
+`MeasureTheory.tendstoInMeasure_iff_measureReal_dist` plus real probability
+complement algebra.
 
 ## Primitive Sequence
 

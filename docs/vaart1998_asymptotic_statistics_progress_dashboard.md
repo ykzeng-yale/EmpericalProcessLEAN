@@ -98,12 +98,24 @@ Chapter 4 handoff:
 - inverse-function-theorem constructors:
   `vaart1998_momentLocalInverseCertificate_of_hasStrictFDerivAt` and
   `vaart1998_momentLocalRangeCertificate_of_hasStrictFDerivAt`.
+- open inverse-function-theorem neighborhood facts:
+  `vaart1998_hasStrictFDerivAt_open_local_parameterDomain`,
+  `vaart1998_hasStrictFDerivAt_open_local_momentRange`,
+  `vaart1998_hasStrictFDerivAt_theta0_mem_local_parameterDomain`, and
+  `vaart1998_hasStrictFDerivAt_eta0_mem_local_momentRange`.
+- open-neighborhood local range certificate:
+  `vaart1998_momentLocalRangeCertificate_of_hasStrictFDerivAt_openPartialHomeomorph`.
+- convergence-in-probability to local-range probability bridge:
+  `vaart1998_local_range_probability_of_tendstoInMeasure_const`.
+- local-range probability certificate constructor from convergence in
+  probability:
+  `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_tendstoInMeasure`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`14c3424`:
+`460542b`:
 
-- `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
-- `lake build StatInference.AsymptoticStatistics.Basic`
+- `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
+- `lake build StatInference.AsymptoticStatistics.MomentEstimators`
 
 Current Vaart packet verification passed for:
 
@@ -123,16 +135,17 @@ targeted Vaart module build.
 
 Continue Vaart Chapter 4.1 from the compiled delta handoff:
 
-1. refine the inverse-function local-range bridge from identity-validity sets
-   to explicit open neighborhoods from mathlib's open partial homeomorphism;
-2. vector LLN/local-range probability discharge for
-   `Vaart1998MomentEstimatorLocalRangeProbabilityCertificate`;
+1. prove or package an iid/vector LLN interface that yields convergence in
+   probability of empirical moments to the true moment, then feed
+   `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_tendstoInMeasure`;
+2. assemble the full Theorem 4.1 existence-plus-delta wrapper from the open
+   local range, local-range probability, and local inverse certificates;
 3. keep the multivariate CLT and covariance display as supplied fields until a
    local vector CLT is formalized.
 
-If this blocks, record the exact missing local inverse, local range, vector LLN,
-or multivariate CLT theorem shape and continue with the widest Chapter 4
-wrapper that compiles.
+If this blocks, record the exact missing iid/vector LLN, multivariate CLT, or
+covariance-display theorem shape and continue with the widest Chapter 4 wrapper
+that compiles.
 
 ## Reuse Dependencies
 
