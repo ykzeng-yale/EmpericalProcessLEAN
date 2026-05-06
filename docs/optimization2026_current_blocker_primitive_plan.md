@@ -83,22 +83,23 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after promoted Lean verification of
-the Chapter 10 nonsmooth MPGD average packet in
-`StatInference/Optimization/MirrorDescent.lean`, rebased over current
-`origin/main` at `bb6ea25`: aggressively formalize and prove all main theorem
-content of Sinho Chewi's Optimization 2026 notes in Lean under
+Current live replacement `/goal` prompt after checking the clean synced
+frontier `0d265ff` (`Refresh Chewi route after MPGD average layer`) on
+2026-05-06, with latest promoted Lean proof commit `ced0653`
+(`Add Chewi theorem 10.11 MPGD average layer`): aggressively formalize and
+prove all main theorem content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
 exercise proofs kept in `StatInference/Optimization/Exercises.lean` without
 slowing the main-text theorem lane.  Do not route back to stale Chapter 3/4/5
 setup, solved Chapter 6 lower-bound/feasibility infrastructure, Chapter 7
 Frank-Wolfe, Chapter 8 PGD/APGD, or already-compiled Chapter 9 Fenchel/Bregman
-substrate unless an exact source report or later theorem dependency demands
-it.  Treat Chapters 3-8 as stable reusable infrastructure and treat
-`Fenchel.lean`, `Bregman.lean`, and `MirrorDescent.lean` as the active Chapter
-9/10 promotion gate.
+substrate unless an exact source report or later theorem dependency demands it.
+Do not spend a run on wording-only route churn or a single wrapper if a
+theorem-sized packet is available.  Treat Chapters 3-8 as stable reusable
+infrastructure and treat `Fenchel.lean`, `Bregman.lean`, and
+`MirrorDescent.lean` as the active Chapter 9/10 promotion gate.
 
-Latest verified Optimization proof frontier: `e2c8237` (`Add Chewi theorem
+Latest verified Optimization proof frontier: `ced0653` (`Add Chewi theorem
 10.11 MPGD average layer`).  `MirrorDescent.lean` now compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
 `mirrorProximalGradientModel_le_composite_add_bregman`,
@@ -134,25 +135,41 @@ Search-first results to preserve: pinned mathlib search for
 direct Bregman/mirror-descent/MPGD theorem; the `MirrorImage` hits in
 `Analysis/Convex/Deriv.lean` are unrelated symmetry lemmas.  Local search
 confirms the useful APIs are the compiled `Fenchel.lean`, `Bregman.lean`,
-`Proximal.lean`, and Chapter 3/5 scalar recurrence/telescope machinery.
+`Proximal.lean`, and Chapter 3/5 scalar recurrence/telescope machinery.  The
+current scalar-Young reuse point is
+`polyakLojasiewiczOn_of_firstOrderStrongConvexOn` in
+`Theorem27.lean`, which proves a completing-square bound using
+`real_inner_le_norm`, `sq_nonneg`, `le_div_iff₀`, and `nlinarith`; adapt that
+style for the 10.11 model lower-bound bridge.
 
-Active aggressive target: finish the analytic side of Chewi Theorem 10.11 by
-removing the supplied model-lower-bound.  Search first for mathlib/local dual
-norm, Cauchy-Schwarz, Lipschitz/subgradient, Young-inequality, and
-norm-relative strong-convexity APIs; if no reusable dual-norm abstraction is
-available, add the smallest proof-carrying supplied interface that turns
-`D_f(x⁺,x) <= 2 L |||x⁺-x|||` and
-`D_phi(x⁺,x) >= alphaPhi/2 * |||x⁺-x|||^2` into
-`ψ_x(x⁺) >= F(x⁺) - 2 L^2 h / alphaPhi`, then close the source
-step-size corollary.  After that, package Theorem 10.13 OMD regret by exposing
-the linear-loss version of the mirror step and telescoping `D_phi(y,x_n)`.
-If the analytic dual-norm route balloons, open `AlternatingProjection.lean`
-for Chapter 11 while scouts map Chapter 12 stochastic mirror-proximal-gradient
-and Chapter 13 Newton/self-concordance dependencies.  Verification gate
-remains: focused `lake env lean` during development, promoted
-`lake build StatInference` after theorem packets, proof-hole scan, secret
-scan, route-doc refresh, rebase over remote main, then one clean commit/push
-batch.
+Active aggressive target ladder:
+
+1. Finish the analytic side of Chewi Theorem 10.11 by removing or sharply
+   reducing the supplied model-lower-bound.  Search first for mathlib/local
+   dual norm, Cauchy-Schwarz, Lipschitz/subgradient, Young-inequality, and
+   norm-relative strong-convexity APIs.  If no reusable dual-norm abstraction is
+   available, add the smallest proof-carrying interface that turns
+   `D_f(x⁺,x) <= 2 L |||x⁺-x|||` and
+   `D_phi(x⁺,x) >= alphaPhi/2 * |||x⁺-x|||^2` into
+   `ψ_x(x⁺) >= F(x⁺) - 2 L^2 h / alphaPhi`, then connect it to the existing
+   trajectory wrappers.
+2. Close the Theorem 10.11 source step-size corollary
+   `h^2 = alphaPhi * R_phi^2 / (2 * L^2 * N)` giving
+   `L * R_phi * sqrt (8 / (alphaPhi * N))`, using the compiled average and
+   Jensen wrappers rather than rebuilding the recurrence.
+3. Package Theorem 10.13 OMD regret by exposing the linear-loss version of the
+   mirror step and telescoping `D_phi(y, x_n)`.  Reuse the 10.11 one-step
+   machinery wherever the algebra is identical.
+4. In parallel, map and then open theorem-packet modules for Chapter 11
+   alternating Bregman projections/minimization, Chapter 12 stochastic
+   mirror-proximal-gradient, and Chapter 13 Newton/self-concordance.  Use
+   source-shaped supplied interfaces first when exact analytic dependencies
+   would otherwise stall the main-text theorem lane.
+
+Verification gate remains: focused `lake env lean` during development,
+promoted `lake build StatInference` after theorem packets, proof-hole scan,
+secret scan, route-doc refresh, rebase over remote main, then one clean
+commit/push batch.
 
 Historical live replacement prompt after focused Lean verification of the
 Chapter 7 Frank-Wolfe packet rebased over pushed frontier `4d4601c`

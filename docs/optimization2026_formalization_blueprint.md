@@ -56,13 +56,13 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after promoted Lean verification of the Chapter
-10 nonsmooth MPGD average packet in
-`StatInference/Optimization/MirrorDescent.lean`, rebased over current
-`origin/main` at `bb6ea25`:
+Current manual goal frontier after checking the clean synced route-doc
+frontier `0d265ff` on 2026-05-06, with latest promoted Lean proof commit
+`ced0653` (`Add Chewi theorem 10.11 MPGD average layer`) in
+`StatInference/Optimization/MirrorDescent.lean`:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.  Latest verified Optimization
-proof frontier: `e2c8237` (`Add Chewi theorem 10.11 MPGD average layer`).
+proof frontier: `ced0653`.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
 trajectory interfaces, the model-to-composite Bregman upper/lower comparisons,
 the supplied-interface Chewi Theorem 10.9 one-step inequality, the descent
@@ -75,11 +75,17 @@ average-gap bound, Jensen averaged-iterate bound, and trajectory wrappers.
 Search-first result: mathlib has no direct Bregman/mirror-descent/MPGD theorem
 in the pinned tree; the relevant reuse is local `Bregman.lean`,
 `Proximal.lean`, Chapter 3 geometric-weight/Gronwall APIs, and
-`ProjectedSubgradient.lean` finite-average/Jensen APIs.  The active route is
-now the analytic 10.11 Cauchy-Schwarz/Lipschitz/mirror-strong-convexity model
-lower-bound discharge, the 10.11 step-size corollary, and Theorem 10.13 OMD
-regret if bounded; otherwise open Chapter 11 alternating Bregman
-projection/minimization while scouts map Chapters 12-13.
+`ProjectedSubgradient.lean` finite-average/Jensen APIs.  The current
+scalar-Young reuse point is the completing-square proof style in
+`Theorem27.lean`'s
+`polyakLojasiewiczOn_of_firstOrderStrongConvexOn`.  The active route is now the
+analytic 10.11 Cauchy-Schwarz/Lipschitz/mirror-strong-convexity model
+lower-bound discharge or reduction to the minimal proof-carrying
+`D_f`/`D_phi` interface, the 10.11 step-size corollary, and Theorem 10.13 OMD
+regret if bounded.  In parallel, map and open Chapter 11 alternating Bregman
+projection/minimization and Chapter 12/13 stochastic/Newton theorem packets
+with source-shaped supplied interfaces first when exact analytic dependencies
+would otherwise stall progress.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
