@@ -77,6 +77,19 @@ The fixed-`M` event-comparison route also now consumes this mean input through
 The remaining exact-textbook gap is therefore sharper: prove that mean/tail/UI
 input from the random entropy hypothesis, or add a stronger honest hypothesis.
 
+2026-05-06 option-1 correction: after searching local `StatInference`,
+`StatInference/ProbabilityMeasure`, pinned mathlib, and the recorded local
+Lean checkouts, no reusable theorem was found for the actual probability-level
+symmetrization/net comparison needed by the fixed-radius route.  The next
+Theorem 2.4.3 batch should attack the `hprob_bound` consumed by
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_finiteNetHoeffdingUpper`:
+outer probability of the fixed-`M` centered truncated bad event must be
+controlled by the outer probability of the selected finite-net Hoeffding upper
+plus the fixed radius.  Existing deterministic cover and precursor lemmas give
+finite-net/Rademacher expectation support, not this event comparison.  Do not
+continue endpoint packaging until this source-side comparison, or an exact
+primitive for it, is in place.
+
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
 block, the theorem that turns
