@@ -157,9 +157,14 @@ interface through
 and
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_pointwise_approx_code_cardinality_bound_samplePath`.
 This gives quantized-trace/finite-code entropy arguments a direct structural
-input to the selected fixed-radius Theorem 2.4.3 routes.  The remaining work
-is to prove deterministic log-cardinality, VC/Sauer, or tail/UI bounds for
-such code images; the lift itself should not be rediscovered.
+input to the selected fixed-radius Theorem 2.4.3 routes.
+`Theorem243.lean` now also consumes that lift through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_code_cardinality_bound_logCardinality_div_tendsto_bound`
+and the all-positive-truncation wrapper
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_pointwise_approx_code_cardinality_bound_logCardinality_div_tendsto_bound`.
+The remaining work is to prove deterministic log-cardinality, VC/Sauer, or
+tail/UI bounds for such code images; this selected-package bridge should not
+be rediscovered.
 
 2026-05-05 separability/`P`-measurability follow-up:
 `PMeasurable.lean` now adds

@@ -21613,6 +21613,149 @@ theorem
       hM_pos hK_nonneg hrate_le_K hlog_rate_bound
 
 /--
+Finite pointwise-code constructor for the selected fixed-radius tail/UI package
+from a deterministic normalized log-cardinality rate.
+
+This is the approximate-code analogue of
+`...of_finite_trace_image_cardinality_bound_logCardinality_div_tendsto_bound`:
+instead of exact finite traces, a finite code whose equal-code classes are
+pointwise `eta`-close on the realized empirical sample supplies the empirical
+`L1(P_n)` covering domination.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_code_cardinality_bound_logCardinality_div_tendsto_bound
+    {Observation : Type v} {Index : Type w} {Code : Type*}
+    [MeasurableSpace Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {K : ℝ -> ℝ} {rate : ℝ -> ℕ -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (code :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Index -> Code)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcode_finite :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ((code eta n sample m) '' indexClass).Finite)
+    (hpoint :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ center, center ∈ indexClass ->
+            code eta n sample m index = code eta n sample m center ->
+              ∀ sampleIndex : Fin m,
+                |vdVWTruncatedClassFun classFun envelope M index
+                    ((samplePath (X n) sample m) sampleIndex) -
+                  vdVWTruncatedClassFun classFun envelope M center
+                    ((samplePath (X n) sample m) sampleIndex)| ≤ eta)
+    (hcardinality_dom :
+      ∀ eta (heta : 0 < eta), ∀ n (sample : SampleAt Observation n) m,
+        (hcode_finite eta heta n sample m).toFinset.card ≤
+          cardinality eta n sample m)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hrate_tendsto :
+      ∀ eta, 0 < eta -> Tendsto (rate eta) atTop (𝓝 0))
+    (hM_pos : 0 < M)
+    (hK_nonneg : ∀ eta, 0 < eta -> 0 ≤ K eta)
+    (hrate_le_K : ∀ eta, 0 < eta -> ∀ n, rate eta n ≤ K eta)
+    (hlog_rate_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        Real.log ((cardinality eta n sample n : ℝ) + 1) /
+            (n : ℝ) ≤ rate eta n) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  have hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n) :=
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_pointwise_approx_code_cardinality_bound_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (cardinality := cardinality) X code hcode_finite hpoint
+      hcardinality_dom
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_div_tendsto_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (K := K) (rate := rate) (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas hrate_tendsto
+      hM_pos hK_nonneg hrate_le_K hlog_rate_bound
+
+/--
+All-positive-`M` finite pointwise-code selected fixed-radius tail/UI packages
+from deterministic normalized log-cardinality rates.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_pointwise_approx_code_cardinality_bound_logCardinality_div_tendsto_bound
+    {Observation : Type v} {Index : Type w} {Code : Type*}
+    [MeasurableSpace Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {K : ℝ -> ℝ -> ℝ} {rate : ℝ -> ℝ -> ℕ -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (code :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Index -> Code)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hcode_finite :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ((code M eta n sample m) '' indexClass).Finite)
+    (hpoint :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ∀ index, index ∈ indexClass ->
+            ∀ center, center ∈ indexClass ->
+              code M eta n sample m index =
+                code M eta n sample m center ->
+                ∀ sampleIndex : Fin m,
+                  |vdVWTruncatedClassFun classFun envelope M index
+                      ((samplePath (X M n) sample m) sampleIndex) -
+                    vdVWTruncatedClassFun classFun envelope M center
+                      ((samplePath (X M n) sample m) sampleIndex)| ≤ eta)
+    (hcardinality_dom :
+      ∀ M (hM : 0 < M), ∀ eta (heta : 0 < eta),
+        ∀ n (sample : SampleAt Observation n) m,
+          (hcode_finite M hM eta heta n sample m).toFinset.card ≤
+            cardinality M eta n sample m)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hrate_tendsto :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        Tendsto (rate M eta) atTop (𝓝 0))
+    (hK_nonneg : ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ K M eta)
+    (hrate_le_K :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        rate M eta n ≤ K M eta)
+    (hlog_rate_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) /
+              (n : ℝ) ≤ rate M eta n) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M (cardinality M) := by
+  intro M hM_pos
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_code_cardinality_bound_logCardinality_div_tendsto_bound
+      (P := P) (X := X M) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (K := K M) (rate := rate M) (cardinality := cardinality M)
+      (code M) (hX_samplePath M)
+      (hcode_finite M hM_pos) (hpoint M hM_pos)
+      (hcardinality_dom M hM_pos) hclass henvelope_meas
+      (hrate_tendsto M hM_pos) hM_pos (hK_nonneg M hM_pos)
+      (hrate_le_K M hM_pos) (hlog_rate_bound M hM_pos)
+
+/--
 Build the selected fixed-radius tail/UI package from a log-linear
 cardinality estimate.
 

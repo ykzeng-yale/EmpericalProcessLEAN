@@ -175,9 +175,13 @@ and
 turn samplewise finite approximate codes, whose equal-code classes are
 pointwise close on the realized empirical sample, into the random empirical
 covering-number domination required by the selected fixed-radius Theorem 2.4.3
-routes.  This is a genuine structural-cardinality input route; future work
-should consume it by proving deterministic log-cardinality or tail/UI bounds
-for the code image, not by adding another endpoint wrapper.
+routes.  The route is now consumed by the selected fixed-radius package through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_code_cardinality_bound_logCardinality_div_tendsto_bound`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_pointwise_approx_code_cardinality_bound_logCardinality_div_tendsto_bound`.
+This is a genuine structural-cardinality input route; future work should prove
+deterministic log-cardinality/tail/UI bounds for concrete code images, not add
+another endpoint wrapper.
 
 Next high-capacity proof batches, in order:
 
@@ -185,8 +189,8 @@ Next high-capacity proof batches, in order:
    The finite-net/Hoeffding/Mills, selected fixed-radius and inverse-radius,
    untruncation, signed endpoint, full-subgraph, finite-class, Lemma 2.4.5
    reverse/cofiltration, deterministic normalized-log, raw tail/UI, L1
-   ordinary-mean packages, and finite pointwise-code covering lifts are already
-   compiled.  The remaining non-duplicative
+   ordinary-mean packages, and finite pointwise-code selected fixed-radius
+   consumers are already compiled.  The remaining non-duplicative
    theorem target is the structural bridge from the book condition
    `log N(η, F_M, L1(P_n)) = o_P^*(n)` for each fixed `η > 0` to a real
    tail/UI, uniform-integrability, deterministic cardinality, or ordinary
