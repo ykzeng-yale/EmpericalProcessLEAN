@@ -244,26 +244,36 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_localInverse_aemeasurable_on_open_momentRange`.
 76. Concentrated-measure local inverse a.e.-measurability:
    `vaart1998_localInverse_aemeasurable_of_ae_mem_open_momentRange`.
+77. Empirical-moment composition bridge for the local inverse under a.e.
+   target localization:
+   `vaart1998_localInverse_comp_empiricalMoment_aemeasurable_of_ae_mem_open_momentRange`.
+78. Theorem 4.1 delta-method handoff using a.e.-measurability of the composed
+   local inverse:
+   `vaart1998_theorem_4_1_moment_estimator_delta_method_aemeasurable`.
+79. Theorem 4.1 textbook `sqrt n` delta-method handoff using
+   a.e.-measurability of the composed local inverse:
+   `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_aemeasurable`.
 
-Latest pushed Vaart packet before this run: `64fc50a`
-(`Add Vaart theorem 4.1 covariance bilinear wrapper`).
+Latest remote base after rebase before this packet: `7bfd3e1`.
+Latest pushed Vaart packet before this run: `9e16530`
+(`Add Vaart local inverse aemeasurability bridge`).
 
-The current theorem-sized packet adds the honest local-inverse measurability
-convenience supplied by the open partial homeomorphism API.  The inverse is
-a.e.-measurable on the open target/local moment range, and therefore
-a.e.-measurable for any measure concentrated on that range.  This avoids
-claiming global measurability of arbitrary off-target partial-equivalence
-values while matching the probabilistic localization used in Vaart's proof.
-The multivariate empirical-moment CLT and finite-matrix specialization remain
-explicit next source layers.
+The current theorem-sized packet connects that local-inverse measurability
+layer to the Chapter 4 delta-method handoff.  If an empirical moment is
+a.e.-localized in the inverse-function-theorem target, then composing it with
+the local inverse is a.e.-measurable; the Theorem 4.1 delta wrappers can now
+consume this composed a.e.-measurability directly instead of requiring global
+measurability of the off-target local inverse.  The multivariate
+empirical-moment CLT and finite-matrix specialization remain explicit next
+source layers.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
 1. connect the a.e.-measurable local inverse convenience to the delta-method
-   wrapper, either by adding an a.e.-measurable delta-method variant or by
-   proving a safe global-measurability wrapper for the concrete `invFunOn`
-   construction;
+   wrapper inside the finite-coordinate/source assemblers, replacing global
+   local-inverse measurability hypotheses where a.e. target localization is
+   available;
 2. keep a true multivariate empirical-moment CLT supplied until a local vector
    CLT is formalized from the scalar mathlib CLT.
 

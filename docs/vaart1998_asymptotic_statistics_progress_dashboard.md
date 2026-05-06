@@ -171,9 +171,15 @@ Chapter 4 handoff:
   `vaart1998_openPartialHomeomorph_symm_aemeasurable_on_target`,
   `vaart1998_localInverse_aemeasurable_on_open_momentRange`, and
   `vaart1998_localInverse_aemeasurable_of_ae_mem_open_momentRange`.
+- empirical-moment composition bridge for localized local inverses:
+  `vaart1998_localInverse_comp_empiricalMoment_aemeasurable_of_ae_mem_open_momentRange`.
+- Chapter 4.1 delta handoffs that require only a.e.-measurability of the
+  composed local inverse:
+  `vaart1998_theorem_4_1_moment_estimator_delta_method_aemeasurable` and
+  `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_aemeasurable`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`64fc50a`:
+`9e16530`; the current packet is rebased over remote base `7bfd3e1`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -197,12 +203,12 @@ targeted Vaart module build.
 ## Next Aggressive Target
 
 Continue Vaart Chapter 4.1 from the compiled Gaussian, canonical
-covarianceBilinDual source wrapper, and local-inverse a.e.-measurability layer:
+covarianceBilinDual source wrapper, and a.e.-measurable local-inverse delta
+handoff:
 
-1. connect the a.e.-measurable local inverse convenience to the delta-method
-   wrapper, either by adding an a.e.-measurable delta-method variant or by
-   proving a safe global-measurability wrapper for the concrete `invFunOn`
-   construction;
+1. replace global local-inverse measurability hypotheses in finite-coordinate
+   Chapter 4 source assemblers by the compiled a.e.-localized local-inverse
+   composition theorem where the empirical-moment target event is available;
 2. keep the actual multivariate CLT supplied until a local vector CLT is
    formalized from the scalar mathlib CLT or another local dependency.
 

@@ -170,10 +170,13 @@ Initial modules:
   the measurable finite-coordinate Theorem 4.1 statement.  The newest
   local-inverse measurability layer proves the inverse of the open partial
   homeomorphism is a.e.-measurable on its open target/local moment range and
-  for measures concentrated on that range.  It still deliberately leaves an
-  a.e.-measurable delta-method wrapper or safe concrete global-measurability
-  wrapper, the multivariate empirical-moment CLT, and a finite-matrix
-  specialization as explicit next layers.
+  for measures concentrated on that range.  The current handoff layer composes
+  this localized local inverse with empirical moments and adds Chapter 4.1
+  delta-method wrappers that consume a.e.-measurability of the composed local
+  inverse directly.  It still deliberately leaves replacement of global
+  local-inverse measurability in the finite-coordinate source assemblers, the
+  multivariate empirical-moment CLT, and a finite-matrix specialization as
+  explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
