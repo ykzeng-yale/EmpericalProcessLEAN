@@ -297,22 +297,33 @@ Chapter 3 theorem-facing wrappers compiling:
 93. Theorem 4.1 localized covarianceBilinDual source wrapper fed by that CLT
    certificate:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_real`.
+94. Projected scalar CLT family for the Cramér-Wold route:
+   `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT`.
+95. Source-shaped Cramér-Wold bridge from projected scalar CLTs to the vector
+   empirical-moment CLT:
+   `Vaart1998FiniteCoordinateCramerWoldCLTBridge`.
+96. Projection theorem from an existing vector CLT certificate:
+   `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_cltCertificate`.
+97. CLT-certificate constructor from the Cramér-Wold bridge:
+   `vaart1998_finiteCoordinateEmpiricalMomentCLTCertificate_of_cramerWoldBridge`.
 
-Latest remote base after rebase before this packet: `7977bf0`.
-Latest pushed Vaart packet before this run: `7977bf0`
-(`Add Vaart localized covariance wrappers`).
+Latest remote base after rebase before this packet: `558ca16`.
+Latest pushed Vaart packet before this run: `c56dde0`
+(`Add Vaart finite-coordinate CLT certificate interface`).
 
-The current theorem-sized packet introduces the source-shaped multivariate
-empirical-moment CLT interface for Vaart Example 2.18 as used in Theorem 4.1.
-The interface names the empirical and population moment vectors, packages the
-supplied vector CLT/Gaussian/MemLp limit facts, and proves that this certificate
-feeds the localized covarianceBilinDual Theorem 4.1 source wrapper.
+The current theorem-sized packet introduces the projected scalar CLT family and
+the source-shaped Cramér-Wold bridge for Vaart Example 2.18.  It proves that a
+completed vector CLT certificate yields all scalar projections by the
+continuous mapping theorem, and it packages the exact missing implication
+from all projected scalar CLTs to the vector CLT as
+`Vaart1998FiniteCoordinateCramerWoldCLTBridge`.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. discharge the CLT certificate from scalar projected CLTs via a Cramér-Wold
-   interface, or record the exact missing mathlib/local weak-convergence API;
+1. instantiate `Vaart1998FiniteCoordinateCramerWoldCLTBridge` from a reusable
+   mathlib/local Cramér-Wold theorem, or prove the weakest finite-dimensional
+   Cramér-Wold implication needed for `Coordinate -> ℝ`;
 2. add the finite-matrix covariance specialization only if it can reuse the
    existing covarianceBilinDual pullback without opening a large matrix
    algebra detour.

@@ -579,6 +579,109 @@ structure Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate
   limit_memLp : MemLp id 2 (Q.map Z)
 
 /--
+The projected scalar CLT family appearing in the Cramér-Wold proof of Vaart
+1998, Example 2.18.
+-/
+def vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (Z : Ω' -> Coordinate -> ℝ) : Prop :=
+  ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        L (√(n : ℝ) •
+          (vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+            vaart1998_finiteCoordinatePopulationMoment P X)))
+      atTop (fun ω => L (Z ω)) (fun _ => P) Q
+
+/--
+A Cramér-Wold bridge from projected scalar CLTs to the vector empirical-moment
+CLT in Vaart 1998, Example 2.18.
+
+The bridge records exactly the missing weak-convergence ingredient: once every
+continuous linear projection has the scalar CLT, the full finite-coordinate
+vector has the supplied vector CLT.
+-/
+structure Vaart1998FiniteCoordinateCramerWoldCLTBridge
+    (Coordinate Ω Ω' : Type*) [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    (P : Measure Ω) [IsProbabilityMeasure P]
+    (Q : Measure Ω') [IsProbabilityMeasure Q] where
+  /-- The coordinate functions whose empirical averages form the moment vector. -/
+  X : Coordinate -> ℕ -> Ω -> ℝ
+  /-- The supplied vector limit. -/
+  Z : Ω' -> Coordinate -> ℝ
+  /-- Scalar CLTs for every continuous linear projection. -/
+  projected_clt :
+    vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT (P := P) (Q := Q) X Z
+  /-- The Cramér-Wold implication from projected CLTs to vector convergence. -/
+  cramerWold_vector_clt :
+    vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT (P := P) (Q := Q) X Z ->
+      TendstoInDistribution
+        (fun (n : ℕ) ω =>
+          √(n : ℝ) •
+            (vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+              vaart1998_finiteCoordinatePopulationMoment P X))
+        atTop Z (fun _ => P) Q
+
+/--
+The vector CLT certificate implies every projected scalar CLT by the continuous
+mapping theorem.
+-/
+theorem vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_cltCertificate
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    (CLT :
+      Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate
+        Coordinate Ω Ω' P Q) :
+    vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT
+      (P := P) (Q := Q) CLT.X CLT.Z := by
+  intro L
+  simpa [Function.comp_def] using
+    (TendstoInDistribution.continuous_comp (g := fun x : Coordinate -> ℝ => L x)
+      L.continuous CLT.empiricalMoment_clt)
+
+/--
+Build the vector CLT certificate from a Cramér-Wold bridge plus Gaussian and
+square-integrability facts for the supplied vector limit.
+-/
+def vaart1998_finiteCoordinateEmpiricalMomentCLTCertificate_of_cramerWoldBridge
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    (B : Vaart1998FiniteCoordinateCramerWoldCLTBridge Coordinate Ω Ω' P Q)
+    (hZ_gaussian : HasGaussianLaw B.Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map B.Z)) :
+    Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate
+      Coordinate Ω Ω' P Q where
+  X := B.X
+  Z := B.Z
+  empiricalMoment_clt := B.cramerWold_vector_clt B.projected_clt
+  gaussian_limit := hZ_gaussian
+  limit_memLp := hZ_memLp
+
+/--
 Local-range probability certificate from almost-sure empirical-moment
 convergence to the true moment.
 -/

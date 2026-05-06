@@ -186,8 +186,13 @@ Initial modules:
   empirical-moment CLT/Gaussian/MemLp facts as
   `Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate`, and proves that
   this certificate feeds the localized covarianceBilinDual Theorem 4.1 source
-  wrapper.  It still deliberately leaves the Cramér-Wold/scalar-CLT proof of
-  that certificate and a finite-matrix specialization as explicit next layers.
+  wrapper.  The newest Cramér-Wold-facing layer names the projected scalar CLT
+  family, proves that a vector CLT certificate gives every projection by the
+  continuous mapping theorem, and records
+  `Vaart1998FiniteCoordinateCramerWoldCLTBridge` as the exact remaining
+  implication from all scalar projection CLTs to vector convergence.  It still
+  deliberately leaves a concrete finite-dimensional Cramér-Wold proof and a
+  finite-matrix specialization as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

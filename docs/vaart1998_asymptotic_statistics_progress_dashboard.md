@@ -201,9 +201,14 @@ Chapter 4 handoff:
   `Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate`.
 - certificate-fed localized covarianceBilinDual Theorem 4.1 source wrapper:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_real`.
+- Cramér-Wold-facing projected scalar CLT layer:
+  `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT`,
+  `Vaart1998FiniteCoordinateCramerWoldCLTBridge`,
+  `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_cltCertificate`, and
+  `vaart1998_finiteCoordinateEmpiricalMomentCLTCertificate_of_cramerWoldBridge`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`7977bf0`; the current packet starts from remote base `7977bf0`:
+`c56dde0`; the current packet is rebased over remote base `558ca16`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -231,8 +236,9 @@ covarianceBilinDual source wrapper, and a.e.-localized finite-coordinate
 delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface:
 
-1. discharge the CLT certificate from scalar projected CLTs via a Cramér-Wold
-   interface, or record the exact missing mathlib/local weak-convergence API;
+1. instantiate `Vaart1998FiniteCoordinateCramerWoldCLTBridge` from a reusable
+   mathlib/local Cramér-Wold theorem, or prove the weakest finite-dimensional
+   Cramér-Wold implication needed for `Coordinate -> ℝ`;
 2. add the finite-matrix covariance specialization only if it can reuse the
    compiled covarianceBilinDual pullback without opening a large matrix
    algebra detour.
