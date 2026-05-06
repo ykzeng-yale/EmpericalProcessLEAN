@@ -1,4 +1,4 @@
-import StatInference.Optimization.Theorem37
+import StatInference.Optimization.Theorem54
 
 /-!
 # Chewi Chapter 11 alternating minimization
@@ -710,6 +710,33 @@ theorem IsChewi114AMSourceCertificate.gap_le_threshold_of_geometric_burnin
   (hcert.gap_le_half_pow_mul_of_threshold_phase hA hthreshold).trans hpow_le
 
 /--
+Existence form of Chewi's burn-in phase: if the geometric halving envelope is
+below the threshold by time `M`, then some iterate no later than `M` is already
+below the threshold.
+-/
+theorem IsChewi114AMSourceCertificate.exists_threshold_index_of_geometric_burnin
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R)
+    (hpow_le :
+      (1 / 2 : ℝ) ^ M * gap n0 ≤ chewi114K beta D R / 2) :
+    ∃ m, m ≤ M ∧ gap (n0 + m) ≤ chewi114K beta D R / 2 := by
+  classical
+  by_cases hex : ∃ m, m ≤ M ∧ gap (n0 + m) ≤ chewi114K beta D R / 2
+  · exact hex
+  · have hthreshold :
+        ∀ m, m < M -> chewi114K beta D R / 2 ≤ gap (n0 + m) := by
+      intro m hm
+      have hnot : ¬ gap (n0 + m) ≤ chewi114K beta D R / 2 := by
+        intro hle
+        exact hex ⟨m, Nat.le_of_lt hm, hle⟩
+      exact (not_le.mp hnot).le
+    have hM :
+        gap (n0 + M) ≤ chewi114K beta D R / 2 :=
+      hcert.gap_le_threshold_of_geometric_burnin hA hthreshold hpow_le
+    exact False.elim (hex ⟨M, le_rfl, hM⟩)
+
+/--
 The AM source certificate supplies the post-threshold `K / M` rate once the
 half-gap condition holds on a tail segment.
 -/
@@ -838,6 +865,84 @@ theorem IsChewi114AMSourceCertificate.gap_le_eps_of_initial_threshold
     hA hM hpos hinit).trans hK_div_le
 
 /--
+Burn-in plus tail epsilon endpoint: if the geometric envelope enters the
+threshold region by time `B`, then some burn-in index `b <= B` starts a tail
+whose endpoint is `eps`-accurate.
+-/
+theorem IsChewi114AMSourceCertificate.exists_tail_gap_le_eps_of_geometric_burnin
+    {gap : ℕ -> ℝ} {beta R eps : ℝ} {D n0 B M : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R) (hM : M ≠ 0)
+    (hpow_le :
+      (1 / 2 : ℝ) ^ B * gap n0 ≤ chewi114K beta D R / 2)
+    (hpos : ∀ b, b ≤ B -> gap (n0 + b) ≤ chewi114K beta D R / 2 ->
+      ∀ m, m ≤ M -> 0 < gap ((n0 + b) + m))
+    (hK_div_le : chewi114K beta D R / (M : ℝ) ≤ eps) :
+    ∃ b, b ≤ B ∧ gap ((n0 + b) + M) ≤ eps := by
+  rcases hcert.exists_threshold_index_of_geometric_burnin
+    hA hpow_le with ⟨b, hb, hinit⟩
+  refine ⟨b, hb, ?_⟩
+  exact hcert.gap_le_eps_of_initial_threshold
+    (n0 := n0 + b) (M := M) hA hM (hpos b hb hinit) hinit hK_div_le
+
+/--
+Logarithmic sufficient condition for Chewi 11.4's geometric burn-in envelope.
+This reuses the Chapter 5 scalar halving/log calculation.
+-/
+theorem chewi114_half_pow_mul_gap_le_threshold_of_log
+    {gap0 K : ℝ} {B : ℕ}
+    (hgap0_pos : 0 < gap0) (hK : 0 < K)
+    (hB_log : Real.log (gap0 / (K / 2)) ≤ (B : ℝ) * Real.log (2 : ℝ)) :
+    (1 / 2 : ℝ) ^ B * gap0 ≤ K / 2 :=
+  chewi54_half_pow_mul_le_eps_of_log_ratio_le
+    hgap0_pos (half_pos hK) hB_log
+
+/--
+Logarithmic burn-in existence for the AM source certificate.
+-/
+theorem IsChewi114AMSourceCertificate.exists_threshold_index_of_log_burnin
+    {gap : ℕ -> ℝ} {beta R : ℝ} {D n0 B : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R)
+    (hgap0_pos : 0 < gap n0)
+    (hB_log :
+      Real.log (gap n0 / (chewi114K beta D R / 2)) ≤
+        (B : ℝ) * Real.log (2 : ℝ)) :
+    ∃ b, b ≤ B ∧ gap (n0 + b) ≤ chewi114K beta D R / 2 := by
+  have hK_pos : 0 < chewi114K beta D R := by
+    rw [chewi114K_eq_four_chewi114A beta D R]
+    nlinarith
+  exact hcert.exists_threshold_index_of_geometric_burnin hA
+    (chewi114_half_pow_mul_gap_le_threshold_of_log
+      (gap0 := gap n0) (K := chewi114K beta D R) (B := B)
+      hgap0_pos hK_pos hB_log)
+
+/--
+Logarithmic burn-in plus tail epsilon endpoint for the AM source certificate.
+-/
+theorem IsChewi114AMSourceCertificate.exists_tail_gap_le_eps_of_log_burnin
+    {gap : ℕ -> ℝ} {beta R eps : ℝ} {D n0 B M : ℕ}
+    (hcert : IsChewi114AMSourceCertificate gap beta R D)
+    (hA : 0 < chewi114A beta D R) (hM : M ≠ 0)
+    (hgap0_pos : 0 < gap n0)
+    (hB_log :
+      Real.log (gap n0 / (chewi114K beta D R / 2)) ≤
+        (B : ℝ) * Real.log (2 : ℝ))
+    (hpos : ∀ b, b ≤ B -> gap (n0 + b) ≤ chewi114K beta D R / 2 ->
+      ∀ m, m ≤ M -> 0 < gap ((n0 + b) + m))
+    (hK_div_le : chewi114K beta D R / (M : ℝ) ≤ eps) :
+    ∃ b, b ≤ B ∧ gap ((n0 + b) + M) ≤ eps := by
+  have hK_pos : 0 < chewi114K beta D R := by
+    rw [chewi114K_eq_four_chewi114A beta D R]
+    nlinarith
+  exact hcert.exists_tail_gap_le_eps_of_geometric_burnin
+    hA hM
+    (chewi114_half_pow_mul_gap_le_threshold_of_log
+      (gap0 := gap n0) (K := chewi114K beta D R) (B := B)
+      hgap0_pos hK_pos hB_log)
+    hpos hK_div_le
+
+/--
 Post-threshold `K/M` rate from a block-coordinate descent certificate and a
 single initial threshold certificate.
 -/
@@ -872,6 +977,90 @@ theorem IsChewi114AMDescentCertificate.gap_le_eps_of_initial_threshold
     gap (n0 + M) ≤ eps :=
   (hcert.gap_le_source_K_div_iterations_of_initial_threshold
     hbeta hscale hM hpos hinit).trans hK_div_le
+
+/--
+Existence form of the burn-in phase from a block-coordinate descent
+certificate.
+-/
+theorem IsChewi114AMDescentCertificate.exists_threshold_index_of_geometric_burnin
+    {gap energy : ℕ -> ℝ} {beta R : ℝ} {D n0 M : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    (hpow_le :
+      (1 / 2 : ℝ) ^ M * gap n0 ≤ chewi114K beta D R / 2) :
+    ∃ m, m ≤ M ∧ gap (n0 + m) ≤ chewi114K beta D R / 2 := by
+  have hsource := hcert.sourceCertificate hbeta hscale
+  have hA : 0 < chewi114A beta D R := by
+    have hprod : 0 < (2 * beta) * ((D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ)) :=
+      mul_pos (by positivity) hscale
+    simpa [chewi114A, mul_assoc] using hprod
+  exact hsource.exists_threshold_index_of_geometric_burnin hA hpow_le
+
+/--
+Burn-in plus tail epsilon endpoint from a block-coordinate descent certificate.
+-/
+theorem IsChewi114AMDescentCertificate.exists_tail_gap_le_eps_of_geometric_burnin
+    {gap energy : ℕ -> ℝ} {beta R eps : ℝ} {D n0 B M : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    (hM : M ≠ 0)
+    (hpow_le :
+      (1 / 2 : ℝ) ^ B * gap n0 ≤ chewi114K beta D R / 2)
+    (hpos : ∀ b, b ≤ B -> gap (n0 + b) ≤ chewi114K beta D R / 2 ->
+      ∀ m, m ≤ M -> 0 < gap ((n0 + b) + m))
+    (hK_div_le : chewi114K beta D R / (M : ℝ) ≤ eps) :
+    ∃ b, b ≤ B ∧ gap ((n0 + b) + M) ≤ eps := by
+  have hsource := hcert.sourceCertificate hbeta hscale
+  have hA : 0 < chewi114A beta D R := by
+    have hprod : 0 < (2 * beta) * ((D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ)) :=
+      mul_pos (by positivity) hscale
+    simpa [chewi114A, mul_assoc] using hprod
+  exact hsource.exists_tail_gap_le_eps_of_geometric_burnin
+    hA hM hpow_le hpos hK_div_le
+
+/--
+Logarithmic burn-in existence from a block-coordinate descent certificate.
+-/
+theorem IsChewi114AMDescentCertificate.exists_threshold_index_of_log_burnin
+    {gap energy : ℕ -> ℝ} {beta R : ℝ} {D n0 B : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    (hgap0_pos : 0 < gap n0)
+    (hB_log :
+      Real.log (gap n0 / (chewi114K beta D R / 2)) ≤
+        (B : ℝ) * Real.log (2 : ℝ)) :
+    ∃ b, b ≤ B ∧ gap (n0 + b) ≤ chewi114K beta D R / 2 := by
+  have hsource := hcert.sourceCertificate hbeta hscale
+  have hA : 0 < chewi114A beta D R := by
+    have hprod : 0 < (2 * beta) * ((D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ)) :=
+      mul_pos (by positivity) hscale
+    simpa [chewi114A, mul_assoc] using hprod
+  exact hsource.exists_threshold_index_of_log_burnin hA hgap0_pos hB_log
+
+/--
+Logarithmic burn-in plus tail epsilon endpoint from a block-coordinate descent
+certificate.
+-/
+theorem IsChewi114AMDescentCertificate.exists_tail_gap_le_eps_of_log_burnin
+    {gap energy : ℕ -> ℝ} {beta R eps : ℝ} {D n0 B M : ℕ}
+    (hcert : IsChewi114AMDescentCertificate gap energy beta R D)
+    (hbeta : 0 < beta) (hscale : 0 < (D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ))
+    (hM : M ≠ 0)
+    (hgap0_pos : 0 < gap n0)
+    (hB_log :
+      Real.log (gap n0 / (chewi114K beta D R / 2)) ≤
+        (B : ℝ) * Real.log (2 : ℝ))
+    (hpos : ∀ b, b ≤ B -> gap (n0 + b) ≤ chewi114K beta D R / 2 ->
+      ∀ m, m ≤ M -> 0 < gap ((n0 + b) + m))
+    (hK_div_le : chewi114K beta D R / (M : ℝ) ≤ eps) :
+    ∃ b, b ≤ B ∧ gap ((n0 + b) + M) ≤ eps := by
+  have hsource := hcert.sourceCertificate hbeta hscale
+  have hA : 0 < chewi114A beta D R := by
+    have hprod : 0 < (2 * beta) * ((D : ℝ) ^ (2 : ℕ) * R ^ (2 : ℕ)) :=
+      mul_pos (by positivity) hscale
+    simpa [chewi114A, mul_assoc] using hprod
+  exact hsource.exists_tail_gap_le_eps_of_log_burnin
+    hA hM hgap0_pos hB_log hpos hK_div_le
 
 end Optimization
 end StatInference

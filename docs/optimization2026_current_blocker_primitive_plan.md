@@ -89,8 +89,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after focused Lean verification of the
-Chapter 11.4 threshold-tail rate bridge on 2026-05-06, building on pushed
-frontier `deaaf1a` (`Add Chewi theorem 11.4 descent certificate bridge`):
+Chapter 11.4 log-burn-in rate layer on 2026-05-06, building on pushed frontier
+`613bf36` (`Add Chewi theorem 11.4 threshold tail layer`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -231,15 +231,25 @@ The new `AlternatingMinimization.lean` module is imported by
 `IsChewi114AMDescentCertificate.gap_le_source_K_div_iterations_of_threshold_tail`,
 `IsChewi114AMDescentCertificate.gap_le_eps_of_threshold_tail`,
 `IsChewi114AMDescentCertificate.gap_le_source_K_div_iterations_of_initial_threshold`,
-and `IsChewi114AMDescentCertificate.gap_le_eps_of_initial_threshold`.  This
+`IsChewi114AMDescentCertificate.gap_le_eps_of_initial_threshold`,
+`IsChewi114AMSourceCertificate.exists_threshold_index_of_geometric_burnin`,
+`IsChewi114AMSourceCertificate.exists_tail_gap_le_eps_of_geometric_burnin`,
+`chewi114_half_pow_mul_gap_le_threshold_of_log`,
+`IsChewi114AMSourceCertificate.exists_threshold_index_of_log_burnin`,
+`IsChewi114AMSourceCertificate.exists_tail_gap_le_eps_of_log_burnin`,
+`IsChewi114AMDescentCertificate.exists_threshold_index_of_geometric_burnin`,
+`IsChewi114AMDescentCertificate.exists_tail_gap_le_eps_of_geometric_burnin`,
+`IsChewi114AMDescentCertificate.exists_threshold_index_of_log_burnin`, and
+`IsChewi114AMDescentCertificate.exists_tail_gap_le_eps_of_log_burnin`.  This
 proves the post-threshold inverse-gap/telescope layer of Chewi Theorem 11.4 in
 the source constant `K = 8 * beta * D^2 * R^2` form, discharges the displayed
 source recurrence with denominator `2 * beta * D^2 * R^2`, derives Chewi's max
 recurrence without a pre-supplied half-gap assumption, proves the scalar
-burn-in halving/threshold consumers, proves that below `K/2` the max recurrence
-is automatically the quadratic recurrence, propagates a single initial
-threshold bound along the tail, and turns the two source block-coordinate
-descent estimates
+burn-in halving/threshold/log consumers, proves that below `K/2` the max
+recurrence is automatically the quadratic recurrence, propagates a single
+initial threshold bound along the tail, turns the logarithmic burn-in condition
+into an existing threshold index and epsilon tail endpoint, and turns the two
+source block-coordinate descent estimates
 `energy/(2*beta) <= gap n - gap (n+1)` and
 `gap(n+1)^2 <= D^2 R^2 * energy` into the AM source certificate.
 
@@ -251,7 +261,9 @@ Bregman/mirror-descent/MPGD/OMD regret/ABP theorem; the `MirrorImage` hits in
 `Analysis/Convex/Deriv.lean` are unrelated symmetry lemmas.  Local search
 confirms the useful APIs are the compiled `Fenchel.lean`, `Bregman.lean`,
 `Proximal.lean`, Chapter 3/5 scalar recurrence/telescope machinery, local
-`sum_range_sub_succ`, mathlib/local `LipschitzOnWith.le_add_mul`,
+`sum_range_sub_succ`, local Chapter 5
+`chewi54_half_pow_mul_le_eps_of_log_ratio_le`, mathlib/local
+`LipschitzOnWith.le_add_mul`,
 `abs_real_inner_le_norm`, and `FirstOrderStrongConvexOn.lower_model`.  There is
 still no arbitrary norm/dual norm abstraction in local code or pinned mathlib;
 the OMD theorem packet covers the ordinary Hilbert norm specialization.
@@ -271,12 +283,14 @@ Active aggressive target ladder:
 
 1. Finish Chewi Theorem 11.4 as an algorithm-facing AM theorem.  The scalar
    inverse-gap layer, max recurrence, source-recurrence bridge, burn-in
-   threshold consumers, supplied block-descent-to-source-certificate bridge,
-   and initial-threshold tail `K/M`/epsilon consumers now compile.  The
-   remaining theorem-sized tasks are: add the exact log/ceil-to-geometric
-   burn-in wrapper proving the first threshold time, and instantiate
+   threshold consumers, log-burn-in threshold existence, supplied
+   block-descent-to-source-certificate bridge, and initial-threshold/log-tail
+   `K/M`/epsilon consumers now compile.  The only remaining 11.4 display
+   nicety is a Nat.ceil/positive-part wrapper for the textbook iteration-count
+   notation if it is cheap.  Do not stall on that wrapper: either instantiate
    `IsChewi114AMDescentCertificate` from actual coordinate/proximal
-   minimization proof obligations if bounded.
+   minimization proof obligations if bounded, or move immediately to Theorem
+   11.5 RAM.
 2. Immediately continue to Theorem 11.5 RAM using expectation-level
    source-shaped interfaces: conditional one-step expectation, convex/strongly
    convex Hopf-Lax supplied bounds, exponential rate for

@@ -57,8 +57,8 @@ Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
 Current manual goal frontier after focused Lean verification of the Chapter
-11.4 threshold-tail rate bridge on 2026-05-06, building on pushed frontier
-`deaaf1a` (`Add Chewi theorem 11.4 descent certificate bridge`):
+11.4 log-burn-in rate layer on 2026-05-06, building on pushed frontier
+`613bf36` (`Add Chewi theorem 11.4 threshold tail layer`):
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -147,10 +147,23 @@ burn-in, threshold, tail-rate, and epsilon consumers,
 `IsChewi114AMDescentCertificate.gap_le_eps_of_tail_half`,
 below-threshold quadratic recurrence theorems, threshold-tail `K/M`/epsilon
 theorems, and initial-threshold propagation/rate theorems for both source and
-descent certificates.  The active route is now exact log/ceil burn-in packaging
-for entering the threshold region and, if bounded, instantiating the descent
-certificate from actual coordinate or proximal-minimization proof obligations,
-immediately followed by Theorem 11.5 RAM expectation recurrences, Sinkhorn
+descent certificates.  The newest local layer imports
+`StatInference.Optimization.Theorem54` and reuses
+`chewi54_half_pow_mul_le_eps_of_log_ratio_le` to compile
+`chewi114_half_pow_mul_gap_le_threshold_of_log`,
+`IsChewi114AMSourceCertificate.exists_threshold_index_of_geometric_burnin`,
+`IsChewi114AMSourceCertificate.exists_tail_gap_le_eps_of_geometric_burnin`,
+`IsChewi114AMSourceCertificate.exists_threshold_index_of_log_burnin`,
+`IsChewi114AMSourceCertificate.exists_tail_gap_le_eps_of_log_burnin`,
+`IsChewi114AMDescentCertificate.exists_threshold_index_of_geometric_burnin`,
+`IsChewi114AMDescentCertificate.exists_tail_gap_le_eps_of_geometric_burnin`,
+`IsChewi114AMDescentCertificate.exists_threshold_index_of_log_burnin`, and
+`IsChewi114AMDescentCertificate.exists_tail_gap_le_eps_of_log_burnin`.
+The active route is now only a cheap Nat.ceil/positive-part display wrapper
+for the textbook iteration-count notation if it does not balloon, plus
+instantiating the descent certificate from actual coordinate or
+proximal-minimization proof obligations if bounded, immediately followed by
+Theorem 11.5 RAM expectation recurrences, Sinkhorn
 Theorems 11.7/11.8 from ABP/mirror-descent supplied interfaces, and Chapter 12
 SMPGD before the ASGD
 CLT.  Generalize 10.11/10.13 to a custom arbitrary
