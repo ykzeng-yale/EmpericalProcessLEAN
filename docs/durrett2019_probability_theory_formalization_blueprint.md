@@ -145,6 +145,11 @@ Compiled first source wrappers:
   `probabilityMeasure_ext_of_generate_finite`.
 - Durrett Theorem 1.1.1 measure-property wrappers and Theorems 1.3.1/1.3.4
   measurability wrappers.
+- Durrett Theorem 2.1.10 product-coordinate independence, 2.1.11 product law,
+  2.1.12 product/Fubini expectation, and 2.1.13 expectation-factorization
+  wrappers.
+- Durrett Theorem 2.4.9 conditional Glivenko-Cantelli handoffs from supplied
+  endpoint grids and supplied middle CDF partitions.
 
 The subsequence and continuous-mapping theorems are higher value but may require
 more topological convergence API packaging.
@@ -181,7 +186,10 @@ source-wrapper over that theorem; this wrapper is now compiled in
 `StatInference/ProbabilityTheory/Basic.lean`.  The next aggressive target is
 Durrett Theorem 2.4.9, Glivenko-Cantelli for empirical CDFs, by reusing the
 existing `RealHalfLineGC.lean` fixed-endpoint and half-line infrastructure and
-filling the arbitrary-CDF finite quantile grid/squeezing layer.
+filling the arbitrary-CDF finite quantile grid/squeezing layer.  The supplied
+endpoint-grid and supplied middle-CDF-partition handoffs now compile, so the
+remaining theorem-core primitive is the arbitrary-distribution middle partition
+constructor.
 
 ### Lane D: CLT and characteristic functions
 

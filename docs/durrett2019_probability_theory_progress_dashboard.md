@@ -39,6 +39,14 @@ compiles and root-imports the new namespace.  Compiled declarations:
 - `durrett2019_theorem_1_1_1_tendsto_measure_from_above`;
 - `durrett2019_theorem_1_3_1_measurable_of_generator_preimages`;
 - `durrett2019_theorem_1_3_4_measurable_comp`.
+- `durrett2019_theorem_2_1_10_product_coordinate_functions_independent`;
+- `durrett2019_theorem_2_1_11_indepFun_hasLaw_prod`;
+- `durrett2019_theorem_2_1_12_product_integral`;
+- `durrett2019_theorem_2_1_12_product_integral_mul`;
+- `durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral`;
+- `durrett2019_theorem_2_1_13_iIndepFun_integral_prod_eq_prod_integral`;
+- `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_supplied_endpoint_grids`;
+- `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
 
 The first aggressive full-theorem target is now Durrett Theorem 2.4.9,
 Glivenko-Cantelli for empirical CDFs, cross-listed with the later empirical
@@ -51,15 +59,14 @@ Immediate proof route:
 1. inspect and reuse `realHalfLineIndicator_integral_eq_cdf`,
    `realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid`, and nearby
    grid/squeezing handoffs;
-2. formalize the missing finite quantile/endpoint grid construction for an
-   arbitrary distribution function, or record the exact missing API if blocked;
-3. package the empirical CDF statement as the first Durrett Theorem 2.4.9
-   wrapper once the uniform squeezing proof compiles;
-4. in parallel, search mathlib/local APIs for generated-independence bridges
+2. prove the remaining arbitrary-distribution middle CDF partition constructor
+   consumed by the compiled middle-partition-to-GC handoff;
+3. package the empirical CDF statement once the uniform squeezing proof closes;
+4. in parallel, deepen generated-independence bridges
    needed for
    Theorems 2.1.7-2.1.13;
-5. promote the strongest cheap independence/product-law wrappers into the
-   Durrett namespace.
+5. promote exact source statements once the wrapper statements line up with the
+   PDF/Markdown.
 
 The route should not duplicate raw measure theory from Chapter 1 unless an
 exact source theorem needs a missing local theorem.  Chapter 1 is currently
@@ -70,9 +77,9 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Lane | Status | Current Lean anchor | Notes |
 | --- | --- | --- | --- |
 | Chapter 1 measure/probability foundations | source-wrapper/reused-local | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/GeneratedSigma.lean`; `Tail.lean`; `ProductMeasure.lean` | Durrett wrappers for Theorem 1.1.1 measure properties and Theorems 1.3.1/1.3.4 measurability facts now compile over mathlib/local generator APIs. |
-| Chapter 2.1 independence/product laws | pending-local | `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Highest-value new theorem lane after Borel-Cantelli wrappers. Search before editing: `iIndep`, `IndepFun`, `Independent`, `HasLaw`, product measure, finite `Pi` law wrappers. |
+| Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Product-coordinate independence, product-law, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining exact-source work: generated sigma-field independence Theorems 2.1.7-2.1.10 in greater generality. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
-| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Theorem 2.4.9 Glivenko-Cantelli is the current aggressive target. |
+| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids or supplied middle CDF partitions. Remaining blocker: construct those middle partitions for arbitrary distributions. |
 | Chapter 3 CLT/characteristic functions | pending-local | none | Needs mathlib API search for characteristic functions, normal laws, weak convergence, and scalar asymptotics. |
 | Chapter 4 martingales | pending-local | none | Search mathlib martingale/conditional expectation APIs first. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
@@ -115,7 +122,8 @@ Every Lean packet should pass:
 
 The next automation run should not just reread the source.  It should either:
 
-- advance Durrett Theorem 2.4.9 by proving the missing arbitrary-CDF finite-grid
-  or empirical-CDF squeezing layer; or
-- if that blocks, prove and verify the smallest independence/product-law wrapper
-  needed for Theorems 2.1.7-2.1.13 and record the exact GC blocker.
+- advance Durrett Theorem 2.4.9 by proving the arbitrary-distribution middle
+  CDF partition existence theorem consumed by the compiled GC handoff; or
+- if that blocks, prove and verify the smallest generated-sigma-field
+  independence wrapper needed for Theorems 2.1.7-2.1.10 and record the exact GC
+  partition blocker.

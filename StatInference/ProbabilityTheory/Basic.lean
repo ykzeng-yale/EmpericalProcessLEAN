@@ -1,5 +1,7 @@
+import StatInference.EmpiricalProcess.RealHalfLineGC
 import StatInference.ProbabilityMeasure.BorelCantelli
 import StatInference.ProbabilityMeasure.GeneratedSigma
+import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.StrongLaw
 
 /-!
@@ -17,7 +19,7 @@ open Filter MeasureTheory
 
 open scoped BigOperators ENNReal Topology Function
 
-universe u v
+universe u v w
 
 /-! ## Durrett, Theorem 1.1.1 -/
 
@@ -101,6 +103,105 @@ theorem durrett2019_theorem_1_3_4_measurable_comp
     (hf : Measurable f) (hX : Measurable X) :
     Measurable (fun ω => f (X ω)) := by
   exact hf.comp hX
+
+/-! ## Durrett, Section 2.1 -/
+
+/--
+Durrett 2019, Theorem 2.1.10, product-coordinate function form.
+
+Measurable functions of the two coordinates on a product probability space are
+independent.  This is the concrete product-space version of the grouped
+independence theorem.
+-/
+theorem durrett2019_theorem_2_1_10_product_coordinate_functions_independent
+    {S : Type u} [MeasurableSpace S]
+    {T : Type v} [MeasurableSpace T]
+    {U : Type*} [MeasurableSpace U]
+    {V : Type*} [MeasurableSpace V]
+    (ν : MeasureTheory.ProbabilityMeasure S)
+    (κ : MeasureTheory.ProbabilityMeasure T)
+    {X : S -> U} {Y : T -> V}
+    (hX : Measurable X) (hY : Measurable Y) :
+    _root_.ProbabilityTheory.IndepFun
+      (μ := ((ν : Measure S).prod (κ : Measure T)))
+      (fun z : S × T => X z.1) (fun z : S × T => Y z.2) := by
+  exact
+    (StatInference.ProbabilityMeasure.probability_prod_independent_mapped_copies_with_joint_law
+      ν κ hX hY).2.2.2
+
+/--
+Durrett 2019, Theorem 2.1.11 product-law form.
+
+Independent random variables with marginal laws `ν` and `κ` have joint law
+`ν.prod κ`.
+-/
+theorem durrett2019_theorem_2_1_11_indepFun_hasLaw_prod
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {T : Type*} [MeasurableSpace T]
+    {P : Measure Ω} [IsFiniteMeasure P] {ν : Measure S} {κ : Measure T}
+    {X : Ω -> S} {Y : Ω -> T}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X ν P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y κ P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => (X ω, Y ω)) (ν.prod κ) P := by
+  exact hXY.hasLaw_prod hX hY
+
+/--
+Durrett 2019, Theorem 2.1.12 product-measure/Fubini form.
+
+This is the reusable product-measure integral identity behind the independent
+pair expectation formula.
+-/
+theorem durrett2019_theorem_2_1_12_product_integral
+    {S : Type u} [MeasurableSpace S]
+    {T : Type v} [MeasurableSpace T]
+    {E : Type w} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {ν : Measure S} {κ : Measure T} [SFinite ν] [SFinite κ]
+    (f : S × T -> E) (hf : Integrable f (ν.prod κ)) :
+    ∫ z, f z ∂ν.prod κ = ∫ x, ∫ y, f (x, y) ∂κ ∂ν := by
+  exact StatInference.ProbabilityMeasure.integral_prod f hf
+
+/--
+Durrett 2019, Theorem 2.1.12, separated product-expectation form.
+-/
+theorem durrett2019_theorem_2_1_12_product_integral_mul
+    {S : Type u} [MeasurableSpace S]
+    {T : Type v} [MeasurableSpace T]
+    {𝕜 : Type*} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure S)
+    (κ : MeasureTheory.ProbabilityMeasure T)
+    (f : S -> 𝕜) (g : T -> 𝕜) :
+    ∫ z, f z.1 * g z.2 ∂((ν : Measure S).prod (κ : Measure T)) =
+      (∫ x, f x ∂(ν : Measure S)) * ∫ y, g y ∂(κ : Measure T) := by
+  exact StatInference.ProbabilityMeasure.probability_integral_prod_mul
+    ν κ f g
+
+/--
+Durrett 2019, Theorem 2.1.13, two-variable expectation factorization.
+-/
+theorem durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X Y : Ω -> 𝕜}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : AEStronglyMeasurable X P)
+    (hY : AEStronglyMeasurable Y P) :
+    ∫ ω, X ω * Y ω ∂P = (∫ ω, X ω ∂P) * ∫ ω, Y ω ∂P := by
+  exact StatInference.ProbabilityMeasure.indepFun_integral_mul_eq_mul_integral
+    hXY hX hY
+
+/--
+Durrett 2019, Theorem 2.1.13, finite-family expectation factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_prod_eq_prod_integral
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [Fintype ι] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ι -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P) :
+    ∫ ω, ∏ i, X i ω ∂P = ∏ i, ∫ ω, X i ω ∂P := by
+  exact StatInference.ProbabilityMeasure.iIndepFun_integral_prod_eq_prod_integral
+    hX mX
 
 /-! ## Durrett, Section 2.3 -/
 
@@ -189,6 +290,53 @@ theorem durrett2019_theorem_2_4_1_centeredStrongLaw_ae_real
         atTop (𝓝 0) := by
   exact StatInference.ProbabilityMeasure.centeredStrongLaw_ae_real
     X hX_integrable hX_indep hX_ident
+
+/--
+Durrett 2019, Theorem 2.4.9, conditional half-line Glivenko-Cantelli handoff.
+
+This packages the current verified route: once finite adjacent extended-real
+endpoint grids exist at every positive `L1(P)` radius, the empirical CDF
+half-line class is Glivenko-Cantelli for iid real observations.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_supplied_endpoint_grids
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X))
+    (endpointGridExists :
+      ∀ epsilon, 0 < epsilon ->
+        ∃ cellCount, Nonempty
+          (SuppliedERealHalfLineEndpointGrid P epsilon cellCount)) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator X := by
+  exact
+    StatInference.vdVW_realHalfLine_glivenkoCantelli_of_suppliedERealHalfLineEndpointGrids
+      X hLaw hindep endpointGridExists
+
+/--
+Durrett 2019, Theorem 2.4.9, middle-partition-to-GC package.
+
+This isolates the remaining arbitrary-distribution primitive: for every
+bounded interval `[a, b]` and positive radius, construct a finite middle CDF
+partition with small left-limit CDF increments. The existing tail and endpoint
+assembly layer then proves the half-line Glivenko-Cantelli predicate.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X))
+    (middlePartitionExists :
+      ∀ {epsilon a b : ℝ}, 0 < epsilon -> a < b ->
+        ∃ middleCells, Nonempty
+          (SuppliedRealMiddleCDFPartition P epsilon a b middleCells)) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator X := by
+  exact
+    durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_supplied_endpoint_grids
+      X hLaw hindep
+      (SuppliedERealHalfLineEndpointGrid.exists_forall_of_forall_realMiddleCDFPartition
+        P middlePartitionExists)
 
 /--
 Durrett early-chapter pi-system uniqueness shape.

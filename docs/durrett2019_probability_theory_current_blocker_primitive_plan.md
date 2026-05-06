@@ -65,6 +65,14 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_1_1_1_tendsto_measure_from_above`
 - `durrett2019_theorem_1_3_1_measurable_of_generator_preimages`
 - `durrett2019_theorem_1_3_4_measurable_comp`
+- `durrett2019_theorem_2_1_10_product_coordinate_functions_independent`
+- `durrett2019_theorem_2_1_11_indepFun_hasLaw_prod`
+- `durrett2019_theorem_2_1_12_product_integral`
+- `durrett2019_theorem_2_1_12_product_integral_mul`
+- `durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral`
+- `durrett2019_theorem_2_1_13_iIndepFun_integral_prod_eq_prod_integral`
+- `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_supplied_endpoint_grids`
+- `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -87,10 +95,10 @@ strong-law wrappers:
 - `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`
 - `StatInference/ProbabilityMeasure/StrongLaw.lean`
 
-The current missing piece appears to be the arbitrary-distribution finite
-quantile/endpoint grid and squeezing package that turns fixed-endpoint
-convergence of `F_n(x)` and `F_n(x-)` into uniform convergence
-`sup_x |F_n(x) - F(x)| -> 0`.
+The current missing piece is now narrower: prove the arbitrary-distribution
+middle CDF partition existence consumed by
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
+The supplied-grid and middle-partition-to-GC handoffs already compile.
 
 Parallel target: Theorems 2.1.7-2.1.13 independence/product-law wrappers, after
 a search-first audit of mathlib independence APIs.
@@ -145,23 +153,26 @@ Pinned mathlib search scope:
    mathlib-backed stronger-hypothesis/source-wrapper route, not the full
    Etemadi proof package.  Done in the first Durrett packet.
 5. Attack Durrett Theorem 2.4.9 Glivenko-Cantelli:
-   inspect `RealHalfLineGC.lean`, prove or package the arbitrary-CDF grid
-   construction, then assemble the uniform empirical-CDF convergence theorem.
+   inspect `RealHalfLineGC.lean`, prove the arbitrary-distribution middle CDF
+   partition constructor, then feed
+   `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
 6. Search and package independence/product-law wrappers for Theorems 2.1.7,
    2.1.10, 2.1.11, 2.1.12, and 2.1.13.  Reuse finite-`Pi` and product measure
    wrappers from `ProbabilityMeasure/ProductMeasure.lean` wherever possible.
+   Product-coordinate and expectation-factorization wrappers now compile;
+   remaining work is generated sigma-field grouped independence.
 7. After Chapter 2 has a stable theorem spine, start Chapter 3 by searching
    characteristic-function, normal-law, and weak-convergence APIs.
 
-## Current Automation Prompt Seed
+## Current In-Thread Goal Prompt Seed
 
 Start every run by inspecting git status, fetching origin/main, reviewing recent
 remote commits for other-agent Lean contributions, reading this file plus the
 Durrett dashboard and blueprint, and scanning the current
 `StatInference/ProbabilityTheory`, `StatInference/ProbabilityMeasure`, and
 `StatInference/EmpiricalProcess/RealHalfLineGC.lean` modules.  Primary target:
-Durrett Theorem 2.4.9 Glivenko-Cantelli finite-grid/squeezing layer.  Parallel
-target: independence/product-law wrappers for Theorems 2.1.7-2.1.13 if the GC
-grid blocks.  Verify, update docs, commit/push, and refresh the automation
-prompt when the frontier changes.  Report progress and blockers in
+Durrett Theorem 2.4.9 arbitrary-distribution middle CDF partition constructor.
+Parallel target: generated-sigma grouped-independence wrappers for Theorems
+2.1.7-2.1.10 if the GC grid blocks.  Verify, update docs, commit/push, and keep
+this in-thread `/goal` state current.  Report progress and blockers in
 Chinese/English mix.
