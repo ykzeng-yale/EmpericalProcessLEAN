@@ -210,6 +210,47 @@ side-condition constructor with the large-`M` untruncation handoff.  This is an
 honest endpoint under explicit UI; it does not prove that the textbook
 outer-probability entropy condition implies UI.
 
+2026-05-06 search-first blocker audit after the first-sample UI endpoint:
+local search in `Theorem243.lean`, `PMeasurable.lean`,
+`OuterProbabilityExpectation.lean`, `ProbabilityMeasure`, `ThresholdCoding.lean`,
+`TraceCoding.lean`, `VCSauer.lean`, and `CoveringPrimitive.lean` found that the
+usable endpoint surface is already compiled.  Existing consumers cover raw
+selected finite-net tail expectation, ordinary selected normalized-log mean
+convergence, first-sample `UnifIntegrable`, first-sample `eLpNorm` tail,
+first-sample uniform `nnnorm` bounds, deterministic normalized-log bounds,
+natural-polynomial cardinality growth, finite trace/code-set routes,
+threshold-code routes, integer-grid/full-subgraph routes, finite-class routes,
+and the centered-to-`P`-GC/in-mean endpoint adapters.  No non-duplicative
+endpoint theorem is currently missing.
+
+The tempting theorem
+`selected first-sample UnifIntegrable from
+VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM` is blocked as
+stated: outer-probability convergence of
+`log N(η, F_M, L1(P_n)) / n` does not imply uniform integrability, tail
+expectation control, or ordinary mean convergence on varying sample spaces.
+The next proof must add real mathematics upstream, not another wrapper:
+either prove a structural theorem implying one of the compiled UI/tail/mean
+inputs, or instantiate the existing
+`VdVWUniformSubgraphVCBound indexClass (vdVWTruncatedClassFun classFun envelope M)`
+for a concrete class/truncation geometry.  A generic quantizer/grid product
+bound alone is insufficient when it only gives exponential-in-`n` growth,
+because the selected fixed-radius routes require subexponential or
+natural-polynomial cardinality growth so that `log(cardinality_n) / n -> 0`.
+
+The parallel Chapter 1 audit reached the same conclusion on the process side:
+`WeakConvergence.lean`, `EllInfty.lean`, `BallSigma.lean`, and
+`FiniteDimensional.lean` already contain the measure-level weak convergence,
+Portmanteau/tightness/product/FDD wrappers, signed bounded-continuous
+arbitrary-map filter/reindex/congruence layers, `ell_infty(T)` substrate,
+finite-coordinate restriction wrappers, and finite-index `ell_infty(T)`/raw
+bounded-process FDD converses.  The missing VdV&W 1.4.8 shape is the
+arbitrary-index process converse, which should not be faked as another
+finite-index wrapper.  A future exact statement needs primitives like
+`VdVWProcessAsymptoticallyTight μs l` and `VdVWSeparableLimitProcess μ`, plus a
+proof that finite-dimensional weak convergence under those hypotheses implies
+weak convergence of the full `ell_infty(T)` process laws.
+
 Next high-capacity proof batches, in order:
 
 1. Return to the exact book entropy mismatch.

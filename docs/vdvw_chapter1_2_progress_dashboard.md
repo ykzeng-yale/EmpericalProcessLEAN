@@ -104,6 +104,17 @@ The exact threshold-separation route now has the matching endpoint
 The next non-duplicative work is a concrete grid/quantizer/VC structural
 estimate or the genuine selected empirical-entropy tail/UI bridge, not another
 endpoint alias for the same route.
+2026-05-06 post-UI-endpoint search audit: the Theorem 2.4.3 selected
+fixed-radius endpoint surface is exhausted for the current hypotheses.  Local
+search found consumers for raw tail expectation, ordinary selected normalized
+log-mean convergence, first-sample `UnifIntegrable`, first-sample `eLpNorm`
+tail, bounded first-sample selected entropy, deterministic normalized-log
+bounds, natural-polynomial cardinality, finite trace/code-set, threshold-code,
+integer-grid/full-subgraph, finite-class, and centered-to-`P`-GC/in-mean
+routes.  The remaining gap is not an alias: prove a real structural
+UI/tail/mean or VC/Sauer cardinality theorem, especially an instantiation of
+`VdVWUniformSubgraphVCBound` for a concrete class, or record the exact missing
+class-geometry assumption.
 The a.e.-measurable map-law bridge is now also available for common-domain
 arbitrary maps and varying-domain endpoints through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable`,

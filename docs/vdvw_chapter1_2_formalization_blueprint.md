@@ -134,6 +134,18 @@ The first-sample `UnifIntegrable` route now also reaches untruncated centered
 convergence directly, so future work should prove the UI/tail/mean or
 structural-cardinality input consumed by that endpoint rather than add another
 alias around the same selected fixed-radius package.
+The 2026-05-06 post-endpoint search audit found no remaining non-duplicative
+Theorem 2.4.3 endpoint consumer: raw tail expectation, ordinary selected
+normalized-log mean convergence, first-sample `UnifIntegrable`, first-sample
+`eLpNorm` tail, bounded first-sample selected entropy, deterministic
+normalized-log, natural-polynomial cardinality, finite trace/code-set,
+threshold-code, integer-grid/full-subgraph, finite-class, and
+centered-to-`P`-GC/in-mean routes are all already available.  The next theorem
+work is upstream: prove UI/tail/mean from a real structural assumption, or
+instantiate `VdVWUniformSubgraphVCBound`/VC-Sauer cardinality for a concrete
+class.  Do not try to prove UI from bare outer-probability entropy convergence;
+that implication is false without additional uniform-integrability/tail or
+structural-cardinality input.
 The finite pointwise-code covering lift is now also available:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
 and
