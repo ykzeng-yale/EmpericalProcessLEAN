@@ -610,6 +610,46 @@ theorem vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_aestronglyMeasu
       P X hX_meas n).aestronglyMeasurable
 
 /--
+Law of the scaled centered finite-coordinate empirical moment vector.
+-/
+noncomputable def vaart1998_finiteCoordinateScaledCenteredEmpiricalMomentLaw
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i)) (n : ℕ) :
+    ProbabilityMeasure (Coordinate -> ℝ) :=
+  ⟨P.map (vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment P X n),
+    Measure.isProbabilityMeasure_map
+      (vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_aemeasurable_real
+        (P := P) X hX_meas n)⟩
+
+/--
+Law of the finite-coordinate vector limit.
+-/
+noncomputable def vaart1998_finiteCoordinateVectorLimitLaw
+    {Coordinate Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω']
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    (Z : Ω' -> Coordinate -> ℝ) (hZ_aemeas : AEMeasurable Z Q) :
+    ProbabilityMeasure (Coordinate -> ℝ) :=
+  ⟨Q.map Z, Measure.isProbabilityMeasure_map hZ_aemeas⟩
+
+/--
+Pure law-level projected convergence for finite-coordinate vector laws.
+-/
+def vaart1998_finiteCoordinateProjectedLawConvergence
+    {Coordinate : Type*} [Fintype Coordinate]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    (μs : ℕ -> ProbabilityMeasure (Coordinate -> ℝ))
+    (μ : ProbabilityMeasure (Coordinate -> ℝ)) : Prop :=
+  ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+    Tendsto (β := ProbabilityMeasure ℝ)
+      (fun n => (μs n).map L.continuous.measurable.aemeasurable)
+      atTop (𝓝 (μ.map L.continuous.measurable.aemeasurable))
+
+/--
 Source-shaped interface for the multivariate empirical-moment CLT in van der
 Vaart 1998, Example 2.18, as used by Theorem 4.1.
 
@@ -894,6 +934,110 @@ def vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_lawTends
   cramerWold_vector_clt := fun hprojected =>
     vaart1998_finiteCoordinateEmpiricalMomentCLT_of_law_tendsto
       (P := P) (Q := Q) hX_meas hZ_aemeas (hCramerWoldLaw hprojected)
+
+/--
+Projected random-variable CLTs imply projected convergence of the corresponding
+vector laws.
+-/
+theorem vaart1998_finiteCoordinateProjectedLawConvergence_of_projectedCLT
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hprojected :
+      vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT (P := P) (Q := Q) X Z) :
+    vaart1998_finiteCoordinateProjectedLawConvergence
+      (fun n =>
+        vaart1998_finiteCoordinateScaledCenteredEmpiricalMomentLaw
+          (P := P) X hX_meas n)
+      (vaart1998_finiteCoordinateVectorLimitLaw (Q := Q) Z hZ_aemeas) := by
+  intro L
+  have h := (hprojected L).tendsto
+  have hseq_eq :
+      (fun n =>
+        (vaart1998_finiteCoordinateScaledCenteredEmpiricalMomentLaw
+          (P := P) X hX_meas n).map L.continuous.measurable.aemeasurable) =
+        (fun n : ℕ =>
+          (⟨P.map
+            (fun ω =>
+              L (√(n : ℝ) •
+                (vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+                  vaart1998_finiteCoordinatePopulationMoment P X))),
+            Measure.isProbabilityMeasure_map ((hprojected L).forall_aemeasurable n)⟩ :
+            ProbabilityMeasure ℝ)) := by
+    funext n
+    ext s
+    change
+      ((P.map
+          (vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment P X n)).map L) s =
+        (P.map
+          (fun ω =>
+            L (√(n : ℝ) •
+              (vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+                vaart1998_finiteCoordinatePopulationMoment P X)))) s
+    rw [AEMeasurable.map_map_of_aemeasurable
+      L.continuous.measurable.aemeasurable
+      (vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_aemeasurable_real
+        (P := P) X hX_meas n)]
+    simp [Function.comp_def, vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment]
+  have hlim_eq :
+      (vaart1998_finiteCoordinateVectorLimitLaw (Q := Q) Z hZ_aemeas).map
+          L.continuous.measurable.aemeasurable =
+        (⟨Q.map (fun ω => L (Z ω)),
+          Measure.isProbabilityMeasure_map ((hprojected L).aemeasurable_limit)⟩ :
+          ProbabilityMeasure ℝ) := by
+    ext s
+    change ((Q.map Z).map L) s = (Q.map (fun ω => L (Z ω))) s
+    rw [AEMeasurable.map_map_of_aemeasurable
+      L.continuous.measurable.aemeasurable hZ_aemeas]
+    rfl
+  simpa [hseq_eq, hlim_eq] using h
+
+/--
+Build the Cramér-Wold bridge from projected scalar CLTs and a pure law-level
+Cramér-Wold theorem.
+-/
+def vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (Z : Ω' -> Coordinate -> ℝ)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hscalar : vaart1998_finiteCoordinateProjectedScalarCLT (P := P) (Q := Q) X Z)
+    (hCramerWoldLaw :
+      vaart1998_finiteCoordinateProjectedLawConvergence
+          (fun n =>
+            vaart1998_finiteCoordinateScaledCenteredEmpiricalMomentLaw
+              (P := P) X hX_meas n)
+          (vaart1998_finiteCoordinateVectorLimitLaw (Q := Q) Z hZ_aemeas) ->
+        Tendsto (β := ProbabilityMeasure (Coordinate -> ℝ))
+          (fun n =>
+            vaart1998_finiteCoordinateScaledCenteredEmpiricalMomentLaw
+              (P := P) X hX_meas n)
+          atTop
+          (𝓝 (vaart1998_finiteCoordinateVectorLimitLaw (Q := Q) Z hZ_aemeas))) :
+    Vaart1998FiniteCoordinateCramerWoldCLTBridge Coordinate Ω Ω' P Q :=
+  vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_lawTendsto
+    (P := P) (Q := Q) X Z hX_meas hZ_aemeas hscalar
+    (fun hprojected => by
+      simpa [vaart1998_finiteCoordinateScaledCenteredEmpiricalMomentLaw,
+        vaart1998_finiteCoordinateVectorLimitLaw] using
+        hCramerWoldLaw
+          (vaart1998_finiteCoordinateProjectedLawConvergence_of_projectedCLT
+            (P := P) (Q := Q) hX_meas hZ_aemeas hprojected))
 
 /--
 The vector CLT certificate implies every projected scalar CLT by the continuous

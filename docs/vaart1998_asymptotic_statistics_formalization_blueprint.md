@@ -203,6 +203,10 @@ Initial modules:
   exact empirical-moment `TendstoInDistribution` field through
   `vaart1998_finiteCoordinateEmpiricalMomentCLT_of_law_tendsto` and
   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_lawTendsto`.
+  The newest projected-law layer names the vector laws, proves that projected
+  random-variable CLTs imply projected convergence of those laws, and repackages
+  the remaining Cramér-Wold step as the pure law implication consumed by
+  `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`.
   It still deliberately leaves a concrete finite-dimensional Cramér-Wold
   law-convergence proof and a finite-matrix specialization as explicit next
   layers.

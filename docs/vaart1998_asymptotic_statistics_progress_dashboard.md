@@ -221,11 +221,16 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_aestronglyMeasurable_real`,
   `vaart1998_finiteCoordinateEmpiricalMomentCLT_of_law_tendsto`, and
   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_lawTendsto`.
+- Projected probability-law Cramér-Wold layer:
+  `vaart1998_finiteCoordinateScaledCenteredEmpiricalMomentLaw`,
+  `vaart1998_finiteCoordinateVectorLimitLaw`,
+  `vaart1998_finiteCoordinateProjectedLawConvergence`,
+  `vaart1998_finiteCoordinateProjectedLawConvergence_of_projectedCLT`, and
+  `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`.
 
-Latest remote base after rebase before this packet: `ed9745c`.  Latest pushed
-Vaart packet before this packet: `87a192f`
-(`Add Vaart projected scalar CLT bridge`).  Current packet verification passed
-for:
+Latest remote base after rebase before this packet: `b352fa0`.  Latest pushed Vaart packet
+before this packet: `ecaee8e` (`Add Vaart law-level Cramer Wold handoff`).
+Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -245,10 +250,10 @@ Continue Vaart Chapter 4.1 from the compiled Gaussian, canonical
 covarianceBilinDual source wrapper, and a.e.-localized finite-coordinate
 delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
-law-level vector CLT handoff:
+projected probability-law Cramér-Wold handoff:
 
-1. prove the law-level finite-dimensional Cramér-Wold implication feeding
-   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_lawTendsto`;
+1. prove the pure law-level finite-dimensional Cramér-Wold implication feeding
+   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`;
 2. add the finite-matrix covariance specialization only if it can reuse the
    compiled covarianceBilinDual pullback without opening a large matrix
    algebra detour.

@@ -334,27 +334,35 @@ Chapter 3 theorem-facing wrappers compiling:
 106. Cramér-Wold bridge constructor from real-valued projected scalar CLTs once
    the remaining Cramér-Wold theorem has been proved as law convergence:
    `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_lawTendsto`.
+107. Named probability laws for the scaled centered vector and vector limit:
+   `vaart1998_finiteCoordinateScaledCenteredEmpiricalMomentLaw` and
+   `vaart1998_finiteCoordinateVectorLimitLaw`.
+108. Pure probability-law projected convergence for finite-coordinate vector
+   laws:
+   `vaart1998_finiteCoordinateProjectedLawConvergence`.
+109. Conversion from projected random-variable CLTs to projected convergence of
+   the corresponding vector laws:
+   `vaart1998_finiteCoordinateProjectedLawConvergence_of_projectedCLT`.
+110. Cramér-Wold bridge constructor from projected scalar CLTs and a pure
+   law-level Cramér-Wold theorem:
+   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`.
 
-Latest remote base after rebase before this packet: `ed9745c`.
-Latest pushed Vaart packet before this packet: `87a192f`
-(`Add Vaart projected scalar CLT bridge`).
+Latest remote base after rebase before this packet: `b352fa0`.
+Latest pushed Vaart packet before this packet: `ecaee8e`
+(`Add Vaart law-level Cramer Wold handoff`).
 
 The current theorem-sized packet refines the Cramér-Wold route one layer
-further.  The real-valued centered-average scalar CLTs already feed the
-projected vector CLT family; now the scaled centered finite-coordinate vector
-has named measurability/a.e.-measurability wrappers, and a law-level weak
-convergence theorem feeds the exact
-`TendstoInDistribution` empirical-moment CLT.  Thus the remaining
-Cramér-Wold proof obligation is no longer mixed with random-variable
-measurability: it is a pure probability-law weak-convergence step from all
-linear projections to the vector law.
+further.  It names the scaled centered vector law and vector limit law, defines
+pure projected law convergence for finite-coordinate vector laws, proves that
+the projected random-variable CLTs imply projected law convergence by map-map
+algebra, and packages the remaining Cramér-Wold theorem as a pure law-level
+implication from projected law convergence to vector-law convergence.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. instantiate `Vaart1998FiniteCoordinateCramerWoldCLTBridge` from a reusable
-   mathlib/local Cramér-Wold theorem, or prove the weakest finite-dimensional
-   Cramér-Wold implication needed for `Coordinate -> ℝ`;
+1. prove the pure law-level finite-dimensional Cramér-Wold implication feeding
+   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`;
 2. add the finite-matrix covariance specialization only if it can reuse the
    existing covarianceBilinDual pullback without opening a large matrix
    algebra detour.
