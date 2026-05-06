@@ -2068,3 +2068,12 @@ asymptotic-tightness feeders from process laws.  They close the coordinate
 version of the forward FDD/tightness support layer, while the arbitrary-index
 converse still needs separability, process asymptotic tightness, and
 nonmeasurable/asymptotic-measurability primitives.
+
+2026-05-05 generic coordinate law follow-up:
+`FiniteDimensional.lean` now adds `vdVW148_coordinate_hasLaw`,
+`vdVW148_coordinate_identDistrib`, and
+`vdVW148_coordinate_tendstoInDistribution` for dependent-product-valued
+process random elements.  These complement the `ell_infty(T)` and raw bounded
+process coordinate wrappers and close the generic one-coordinate
+law/IdentDistrib/convergence-in-distribution support layer.  They do not close
+the random-entropy tail/UI bridge or the arbitrary-index process/FDD converse.

@@ -5707,6 +5707,18 @@ process/FDD entry points while leaving the arbitrary-index FDD converse
 dependent on separability, tightness, and
 nonmeasurable/asymptotic-measurability primitives.
 
+2026-05-05 generic coordinate law follow-up: local search found the
+`ell_infty(T)` coordinate law/IdentDistrib/Tendsto-in-distribution wrappers
+but no corresponding generic dependent-product coordinate wrappers.
+`FiniteDimensional.lean` now adds `vdVW148_coordinate_hasLaw`,
+`vdVW148_coordinate_identDistrib`, and
+`vdVW148_coordinate_tendstoInDistribution`, using `continuous_apply`,
+`HasLaw.comp`, `IdentDistrib.comp`, and
+`TendstoInDistribution.continuous_comp`.  This closes the generic
+single-coordinate random-element side of the VdV&W 1.4.8 forward FDD layer;
+the arbitrary-index converse still depends on separability/tightness and the
+nonmeasurable/asymptotic-measurability primitives.
+
 2026-05-05 coordinate weak-convergence/tightness follow-up: local search found
 the finite-coordinate weak-convergence and asymptotic-tightness feeders for
 dependent product process laws and `ell_infty(T)` laws, but no direct

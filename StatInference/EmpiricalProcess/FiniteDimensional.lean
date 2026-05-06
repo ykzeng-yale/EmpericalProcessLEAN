@@ -376,6 +376,69 @@ theorem vdVW148_ellInfty_map_symm_asymptoticallyTight_of_finiteProduct_asymptoti
       l :=
   hν.map_continuous (VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm.continuous
 
+/-- Coordinate law of a dependent-product-valued random element. -/
+theorem vdVW148_coordinate_hasLaw
+    [MeasurableSpace Ω]
+    [∀ t, TopologicalSpace (𝓧 t)] [∀ t, OpensMeasurableSpace (𝓧 t)]
+    [MeasurableSpace ((t : T) -> 𝓧 t)] [OpensMeasurableSpace ((t : T) -> 𝓧 t)]
+    {X : Ω -> (t : T) -> 𝓧 t} {P : Measure Ω}
+    {μ : Measure ((t : T) -> 𝓧 t)}
+    (hX : HasLaw X μ P) (t : T) [BorelSpace (𝓧 t)] :
+    HasLaw
+      (fun ω => X ω t)
+      (μ.map (fun x => x t))
+      P := by
+  simpa [Function.comp_def] using
+    (HasLaw.comp
+      (Y := fun x : (t : T) -> 𝓧 t => x t)
+      (ν := μ.map (fun x : (t : T) -> 𝓧 t => x t))
+      { aemeasurable := (continuous_apply t).measurable.aemeasurable
+        map_eq := rfl }
+      hX)
+
+/--
+Identical distribution of dependent-product-valued random elements implies
+identical single-coordinate laws.
+-/
+theorem vdVW148_coordinate_identDistrib
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [∀ t, TopologicalSpace (𝓧 t)] [∀ t, OpensMeasurableSpace (𝓧 t)]
+    [MeasurableSpace ((t : T) -> 𝓧 t)] [OpensMeasurableSpace ((t : T) -> 𝓧 t)]
+    {X : Ω -> (t : T) -> 𝓧 t} {Y : Ω' -> (t : T) -> 𝓧 t}
+    {P : Measure Ω} {Q : Measure Ω'}
+    (hXY : IdentDistrib X Y P Q) (t : T) [BorelSpace (𝓧 t)] :
+    IdentDistrib
+      (fun ω => X ω t)
+      (fun ω' => Y ω' t)
+      P Q := by
+  simpa [Function.comp_def] using
+    hXY.comp (continuous_apply t).measurable
+
+/--
+Coordinate form of the forward FDD implication for dependent product process
+random elements.
+-/
+theorem vdVW148_coordinate_tendstoInDistribution
+    {ι : Type*} {Ω : ι -> Type*} {Ω' : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [∀ t, TopologicalSpace (𝓧 t)] [∀ t, OpensMeasurableSpace (𝓧 t)]
+    [MeasurableSpace ((t : T) -> 𝓧 t)] [OpensMeasurableSpace ((t : T) -> 𝓧 t)]
+    {X : (i : ι) -> Ω i -> (t : T) -> 𝓧 t}
+    {Z : Ω' -> (t : T) -> 𝓧 t} {l : Filter ι}
+    (hX : TendstoInDistribution X l Z μ μ')
+    (t : T) [BorelSpace (𝓧 t)] :
+    TendstoInDistribution
+      (fun i ω => X i ω t)
+      l
+      (fun ω' => Z ω' t)
+      μ μ' := by
+  simpa [Function.comp_def] using
+    hX.continuous_comp (continuous_apply t)
+
 /-- Finite-dimensional law of an `ell_infty(T)`-valued random element. -/
 theorem vdVW148_ellInfty_finiteDimensional_hasLaw
     [MeasurableSpace Ω] [MeasurableSpace (VdVWEllInfty T)]
