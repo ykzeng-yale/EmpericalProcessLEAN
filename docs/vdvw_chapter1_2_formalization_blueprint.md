@@ -114,6 +114,15 @@ outer-cover weak convergence, or full arbitrary-map extended-real
 measurable-cover existence.  Older current-target paragraphs below are
 historical context and should not override this target.
 
+2026-05-06 fixed-FDD congruence refinement: after search, the local FDD
+replacement layer now includes
+`aemeasurable_fdd_congr_finite_coord_ae` and
+`vdVWFDDProcessLaw_congr_finite_coord_ae`.  These require a.e. equality only
+on the selected finite coordinate set for the FDD law, improving the earlier
+whole-sample-path congruence wrappers.  This remains a finite-dimensional
+replacement primitive only; arbitrary-index FDD converse and process
+separability/tightness/asymptotic-measurability remain open.
+
 Current operational target, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: the active
 Codex `/goal` remains broad and cannot be edited in place, so this paragraph

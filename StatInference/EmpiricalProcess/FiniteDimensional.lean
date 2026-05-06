@@ -1113,6 +1113,24 @@ theorem aemeasurable_fdd_congr_forall_coord_ae
     exact (hω t.1).symm)
 
 /--
+Finite-dimensional a.e.-measurability only needs a.e. equality on the selected
+finite coordinate set.
+
+This is weaker than `aemeasurable_fdd_congr_forall_coord_ae`: it is sufficient
+for a fixed FDD law and does not assert whole-sample-path equality.
+-/
+theorem aemeasurable_fdd_congr_finite_coord_ae
+    [MeasurableSpace Ω]
+    {P : Measure Ω} (I : Finset T) [MeasurableSpace (I -> ℝ)]
+    {X Y : Ω -> T -> ℝ}
+    (hX : AEMeasurable (fun ω => fun t : I => X ω t.1) P)
+    (hYX : ∀ᵐ ω ∂P, ∀ t : I, Y ω t.1 = X ω t.1) :
+    AEMeasurable (fun ω => fun t : I => Y ω t.1) P := by
+  exact hX.congr (hYX.mono fun ω hω => by
+    funext t
+    exact (hω t).symm)
+
+/--
 The finite-dimensional law of a raw process is unchanged by replacing the
 process with a sample-path a.e.-equal version.
 -/
@@ -1130,6 +1148,28 @@ theorem vdVWFDDProcessLaw_congr_forall_coord_ae
     (Measure.map_congr (hYX.mono fun ω hω => by
       funext t
       exact hω t.1))
+
+/--
+The finite-dimensional law of a raw process is unchanged by replacing only the
+selected finite coordinates a.e.
+
+This is the fixed-FDD congruence form used before any arbitrary-index
+separability or process-law converse is available.
+-/
+theorem vdVWFDDProcessLaw_congr_finite_coord_ae
+    [MeasurableSpace Ω]
+    (P : Measure Ω) [IsProbabilityMeasure P]
+    (I : Finset T) [MeasurableSpace (I -> ℝ)]
+    (X Y : Ω -> T -> ℝ)
+    (hX : AEMeasurable (fun ω => fun t : I => X ω t.1) P)
+    (hY : AEMeasurable (fun ω => fun t : I => Y ω t.1) P)
+    (hYX : ∀ᵐ ω ∂P, ∀ t : I, Y ω t.1 = X ω t.1) :
+    vdVWFDDProcessLaw P I Y hY = vdVWFDDProcessLaw P I X hX := by
+  ext s hs
+  exact congrArg (fun m : Measure (I -> ℝ) => m s)
+    (Measure.map_congr (hYX.mono fun ω hω => by
+      funext t
+      exact hω t))
 
 /--
 Finite-dimensional a.e.-measurability follows from a.e.-measurability of the

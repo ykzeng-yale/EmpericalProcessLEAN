@@ -102,6 +102,21 @@ arbitrary-map extended-real measurable-cover existence.  If a lane blocks,
 record the searched APIs, the failing theorem shape, and the next patchable
 edit before switching lanes.
 
+2026-05-06 fixed-FDD selected-coordinate congruence follow-up: local search
+found only the whole-sample-path finite-dimensional congruence wrappers
+`aemeasurable_fdd_congr_forall_coord_ae` and
+`vdVWFDDProcessLaw_congr_forall_coord_ae`, plus mathlib `Measure.map_congr`.
+For a fixed finite-dimensional law, whole-path equality is unnecessarily
+strong.  `FiniteDimensional.lean` now proves
+`aemeasurable_fdd_congr_finite_coord_ae` and
+`vdVWFDDProcessLaw_congr_finite_coord_ae`, requiring a.e. equality only on the
+selected finite coordinate set `I`.  This closes a small Chapter 1 FDD
+replacement primitive without claiming the arbitrary-index VdV&W 1.4.8
+converse, process separability, asymptotic tightness, or nonmeasurable
+arbitrary-map weak convergence.  Next work should return to the upstream
+Theorem 2.4.3 entropy/cardinality or selected tail/UI/ordinary-mean lanes, or
+to a genuinely stronger Chapter 1 process primitive.
+
 Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: local `main`
 is synced with `origin/main`, the worktree is clean, and the active Codex goal

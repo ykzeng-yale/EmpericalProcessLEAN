@@ -37,6 +37,12 @@ signed outer-cover weak convergence, or full arbitrary-map extended-real
 measurable-cover existence.  Historical target paragraphs below are retained
 for audit context only.
 
+2026-05-06 fixed-FDD selected-coordinate congruence: `FiniteDimensional.lean`
+now has `aemeasurable_fdd_congr_finite_coord_ae` and
+`vdVWFDDProcessLaw_congr_finite_coord_ae`, so fixed finite-dimensional laws can
+be transported under a.e. equality on just the selected coordinate set.  This
+is a finite-FDD support primitive, not the arbitrary-index FDD converse.
+
 Current `/goal` target override, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: local `main`
 equals `origin/main` and the worktree is clean.  The broad Codex goal object
