@@ -6044,9 +6044,14 @@ and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_pointwise_approx_code_cardinality_bound_nat_poly`.
 This lets finite approximate-code arguments feed polynomial cardinality
 estimates directly into the selected fixed-radius Theorem 2.4.3 machinery.
-The next useful theorem should instantiate these hypotheses from a concrete
-finite-code image, VC/Sauer, threshold-grid, or quantizer construction rather
-than adding another endpoint alias.
+The same batch adds the concrete finite-code-set versions
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_codeSet_cardinality_bound_nat_poly`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_pointwise_approx_codeSet_cardinality_bound_nat_poly`,
+which derive finite image and domination fields from membership in a supplied
+`Finset` code set.  The next useful theorem should instantiate these
+hypotheses from a concrete finite-code image, VC/Sauer, threshold-grid, or
+quantizer construction rather than adding another endpoint alias.
 
 2026-05-06 varying-domain lower-shifted continuous-map follow-up: local search
 found common-domain lower-shifted continuous-map closure and varying-domain
