@@ -42,16 +42,28 @@ The initial Lean target is Chapter 2 plus Chapter 3 substrate:
   `vaart1998_delta_remainder_local_subset_of_eventually_small_on_scaled_ball`.
 - Theorem 3.1 scaled-ball plus `O_P(1)` wrapper
   `vaart1998_theorem_3_1_delta_method_of_scaled_ball_stochasticBounded`.
+- VdV&W tight-law-range to real norm-tail bridge
+  `vaart1998_law_real_norm_tail_of_tight_range`.
+- tight law range to `O_P(1)` bridge
+  `vaart1998_stochasticBounded_of_tight_law_range`.
+- weak convergence of laws to real norm-tail bridge
+  `vaart1998_law_real_norm_tail_of_weak_convergence`.
+- convergence in distribution implies `O_P(1)`
+  `vaart1998_stochasticBounded_of_tendstoInDistribution`.
+- Theorem 3.1 scaled-ball and localization wrappers that derive the
+  scaled-statistic `O_P(1)` field from distributional convergence:
+  `vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution` and
+  `vaart1998_theorem_3_1_delta_method_of_localization_distribution`.
 
-Verification passed for the pushed Vaart packet `4afbd3b` on remote main
-`b36be5f`:
+Verification passed for the latest pushed Vaart packet before this run,
+`c3cb275`, on remote main `fb090b2`:
 
 - `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
 - `lake build StatInference.AsymptoticStatistics.Basic`
 - `lake env lean StatInference.lean`
 - `lake build StatInference`
 
-Current unpushed Vaart packet verification passed for:
+Current Vaart packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
 - `lake build StatInference.AsymptoticStatistics.Basic`
@@ -59,15 +71,15 @@ Current unpushed Vaart packet verification passed for:
 ## Next Aggressive Target
 
 Close the full finite-dimensional Theorem 3.1 delta method by discharging the
-two new certificate fields:
+remaining local-remainder certificate field:
 
-1. derive law-level real-tail tightness for `r_n • (T_n - theta)` from
-   convergence in distribution, using local VdV&W/ProbabilityMeasure
-   asymptotic-tightness APIs, then feed
-   `vaart1998_stochasticBounded_of_law_real_norm_tail`;
-2. derive the scaled-ball smallness field from
+1. derive the scaled-ball smallness field from
    `vaart1998_hasFDerivAt_delta_remainder_isLittleO`, `r_n -> ∞`, and
    `T_n - theta -> 0` in probability.
+2. feed the result to
+   `vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution`, whose
+   scaled-statistic tightness is now supplied automatically by convergence in
+   distribution.
 
 If this blocks, record the exact missing theorem shape and move to Chapter 4
 method-of-moments wrappers from CLT plus supplied delta.

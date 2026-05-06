@@ -88,6 +88,153 @@ theorem vaart1998_stochasticBounded_of_law_real_norm_tail
   exact hmap ▸ hn
 
 /--
+VdV&W tightness of a sequence of laws gives the real-valued norm-tail bound
+used by van der Vaart's `O_P(1)` criterion.
+
+The VdV&W/mathlib tightness API is stated with `ℝ≥0∞` measures and strict
+norm tails.  This wrapper chooses a slightly larger radius and converts the
+result to the `Measure.real` closed-tail form used throughout the Vaart lane.
+-/
+theorem vaart1998_law_real_norm_tail_of_tight_range
+    {E : Type*} [MeasurableSpace E] [NormedAddCommGroup E]
+    {μ : ℕ -> ProbabilityMeasure E}
+    (hμ : VdVWProbabilityMeasuresTight (Set.range μ)) :
+    ∀ ε : ℝ, 0 < ε ->
+      ∃ M : ℝ, 0 < M ∧
+        ∀ᶠ n in atTop,
+          ((μ n : ProbabilityMeasure E) : Measure E).real
+            {x : E | M ≤ ‖x‖} < ε := by
+  intro ε hε
+  have hε_en : (0 : ENNReal) < ENNReal.ofReal ε :=
+    ENNReal.ofReal_pos.mpr hε
+  have htail := hμ.tendsto_norm_tail
+  have hevent_tail :
+      ∀ᶠ r : ℝ in atTop,
+        (⨆ ν ∈ {((ρ : ProbabilityMeasure E) : Measure E) | ρ ∈ Set.range μ},
+          ν {x : E | r < ‖x‖}) < ENNReal.ofReal ε :=
+    (tendsto_order.1 htail).2 (ENNReal.ofReal ε) hε_en
+  have hevent_pos : ∀ᶠ r : ℝ in atTop, 0 < r := eventually_gt_atTop 0
+  rcases (hevent_tail.and hevent_pos).exists with ⟨r, hr_tail, hr_pos⟩
+  let M : ℝ := r + 1
+  have hr_lt_M : r < M := by
+    simp [M]
+  have hMpos : 0 < M := by
+    linarith
+  refine ⟨M, hMpos, Eventually.of_forall ?_⟩
+  intro n
+  have hsubset : {x : E | M ≤ ‖x‖} ⊆ {x : E | r < ‖x‖} := by
+    intro x hx
+    exact hr_lt_M.trans_le hx
+  have hmeasure_le :
+      ((μ n : ProbabilityMeasure E) : Measure E) {x : E | M ≤ ‖x‖} ≤
+        ((μ n : ProbabilityMeasure E) : Measure E) {x : E | r < ‖x‖} :=
+    measure_mono hsubset
+  have hmem :
+      ((μ n : ProbabilityMeasure E) : Measure E) ∈
+        {((ρ : ProbabilityMeasure E) : Measure E) | ρ ∈ Set.range μ} :=
+    ⟨μ n, ⟨n, rfl⟩, rfl⟩
+  have hmeasure_le_sup :
+      ((μ n : ProbabilityMeasure E) : Measure E) {x : E | r < ‖x‖} ≤
+        (⨆ ν ∈ {((ρ : ProbabilityMeasure E) : Measure E) | ρ ∈ Set.range μ},
+          ν {x : E | r < ‖x‖}) :=
+    le_iSup₂_of_le ((μ n : ProbabilityMeasure E) : Measure E) hmem le_rfl
+  have hmeasure_lt :
+      ((μ n : ProbabilityMeasure E) : Measure E) {x : E | M ≤ ‖x‖} <
+        ENNReal.ofReal ε :=
+    (hmeasure_le.trans hmeasure_le_sup).trans_lt hr_tail
+  rw [measureReal_def]
+  exact ENNReal.toReal_lt_of_lt_ofReal hmeasure_lt
+
+/--
+Tightness of the range of the laws of random variables implies stochastic
+boundedness.  This is the Vaart-facing `O_P(1)` bridge after VdV&W tightness
+has been proved at the measure level.
+-/
+theorem vaart1998_stochasticBounded_of_tight_law_range
+    {Ω E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E]
+    {X : ℕ -> Ω -> E}
+    (hX : ∀ n, AEMeasurable (X n) P)
+    (htight :
+      VdVWProbabilityMeasuresTight
+        (Set.range fun n : ℕ =>
+          (⟨P.map (X n), Measure.isProbabilityMeasure_map (hX n)⟩ :
+            ProbabilityMeasure E))) :
+    StochasticBounded P X := by
+  refine vaart1998_stochasticBounded_of_law_real_norm_tail hX ?_
+  intro ε hε
+  rcases vaart1998_law_real_norm_tail_of_tight_range htight ε hε with
+    ⟨M, hMpos, htail⟩
+  refine ⟨M, hMpos, ?_⟩
+  filter_upwards [htail] with n hn
+  simpa using hn
+
+/--
+Sequential weak convergence of probability laws gives the real-valued norm-tail
+bound used by Vaart's stochastic boundedness criterion.
+
+This packages the Prokhorov/tightness consequence already available in the
+VdV&W weak-convergence lane and then applies
+`vaart1998_law_real_norm_tail_of_tight_range`.
+-/
+theorem vaart1998_law_real_norm_tail_of_weak_convergence
+    {E : Type*} [MeasurableSpace E] [NormedAddCommGroup E]
+    [OpensMeasurableSpace E] [BorelSpace E]
+    [SecondCountableTopology E] [CompleteSpace E]
+    {μ : ℕ -> ProbabilityMeasure E} {ν : ProbabilityMeasure E}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μ atTop ν) :
+    ∀ ε : ℝ, 0 < ε ->
+      ∃ M : ℝ, 0 < M ∧
+        ∀ᶠ n in atTop,
+          ((μ n : ProbabilityMeasure E) : Measure E).real
+            {x : E | M ≤ ‖x‖} < ε := by
+  have hcompact_insert : IsCompact (insert ν (Set.range μ)) :=
+    hμ.isCompact_insert_range
+  have hclosed_insert : IsClosed (insert ν (Set.range μ)) :=
+    hcompact_insert.isClosed
+  have hclosure_subset : closure (Set.range μ) ⊆ insert ν (Set.range μ) :=
+    closure_minimal (Set.subset_insert ν (Set.range μ)) hclosed_insert
+  have hcompact_closure : IsCompact (closure (Set.range μ)) :=
+    hcompact_insert.of_isClosed_subset isClosed_closure hclosure_subset
+  have htight : VdVWProbabilityMeasuresTight (Set.range μ) := by
+    simpa [VdVWProbabilityMeasuresTight] using
+      (MeasureTheory.isTightMeasureSet_of_isCompact_closure
+        (𝓧 := E) (S := Set.range μ) hcompact_closure)
+  exact vaart1998_law_real_norm_tail_of_tight_range htight
+
+/--
+Convergence in distribution implies stochastic boundedness (`O_P(1)`).
+
+This is the direct van der Vaart Chapter 2 handoff: convergence in distribution
+is weak convergence of laws; weak convergence makes the law range tight; tight
+law ranges give the real tail criterion for `O_P(1)`.
+-/
+theorem vaart1998_stochasticBounded_of_tendstoInDistribution
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {Q : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure Q]
+    [MeasurableSpace E] [NormedAddCommGroup E]
+    [OpensMeasurableSpace E] [BorelSpace E]
+    [SecondCountableTopology E] [CompleteSpace E]
+    {X : ℕ -> Ω -> E} {Z : Ω' -> E}
+    (hX : TendstoInDistribution X atTop Z (fun _ => P) Q) :
+    StochasticBounded P X := by
+  let μ : ℕ -> ProbabilityMeasure E := fun n =>
+    ⟨P.map (X n), Measure.isProbabilityMeasure_map (hX.forall_aemeasurable n)⟩
+  let ν : ProbabilityMeasure E :=
+    ⟨Q.map Z, Measure.isProbabilityMeasure_map hX.aemeasurable_limit⟩
+  have hweak : VdVWWeakConvergenceProbabilityMeasures μ atTop ν := by
+    simpa [VdVWWeakConvergenceProbabilityMeasures, μ, ν] using hX.tendsto
+  refine vaart1998_stochasticBounded_of_law_real_norm_tail hX.forall_aemeasurable ?_
+  intro ε hε
+  rcases vaart1998_law_real_norm_tail_of_weak_convergence hweak ε hε with
+    ⟨M, hMpos, htail⟩
+  refine ⟨M, hMpos, ?_⟩
+  filter_upwards [htail] with n hn
+  simpa [μ] using hn
+
+/--
 van der Vaart 1998, Theorem 2.3, continuous mapping theorem.
 
 This source wrapper keeps the theorem in the Vaart namespace while delegating
@@ -478,6 +625,44 @@ theorem vaart1998_theorem_3_1_delta_method_of_scaled_ball_stochasticBounded
     hW_OP hR_meas
 
 /--
+van der Vaart 1998, Theorem 3.1, sequence scaled-ball form with stochastic
+boundedness derived from convergence in distribution.
+
+This removes the explicit `O_P(1)` scaled-statistic hypothesis from
+`vaart1998_theorem_3_1_delta_method_of_scaled_ball_stochasticBounded` by using
+the Chapter 2 fact that convergence in distribution implies stochastic
+boundedness.
+-/
+theorem vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution
+    {Ω : Type v} {Ω' : Type w} {E : Type x} {F : Type y}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E] [CompleteSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {T : Ω' -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ}
+    (L : E →L[ℝ] F)
+    (hW : TendstoInDistribution
+      (fun n ω => r n • (Tn n ω - theta)) atTop T (fun _ => P) Q)
+    (hsmall : ∀ ε : ℝ, 0 < ε -> ∀ M : ℝ, 0 < M ->
+      ∀ᶠ n in atTop, ∀ ω,
+        ‖r n • (Tn n ω - theta)‖ < M ->
+        ‖r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))‖ < ε)
+    (hR_meas : ∀ n, AEMeasurable
+      (fun ω => r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))) P) :
+    TendstoInDistribution
+      (fun n ω => r n • (phi (Tn n ω) - phi theta)) atTop
+      (fun ω => L (T ω)) (fun _ => P) Q :=
+  vaart1998_theorem_3_1_delta_method_of_scaled_ball_stochasticBounded
+    (L := L) hW hsmall
+    (vaart1998_stochasticBounded_of_tendstoInDistribution hW)
+    hR_meas
+
+/--
 van der Vaart 1998, Theorem 3.1, sequence form with an `O_P(1)` scaled
 statistic.
 
@@ -514,6 +699,40 @@ theorem vaart1998_theorem_3_1_delta_method_of_localization_stochasticBounded
       (fun ω => L (T ω)) (fun _ => P) Q :=
   vaart1998_theorem_3_1_delta_method_of_localization_tight
     (L := L) hW hR_local hW_OP hR_meas
+
+/--
+van der Vaart 1998, Theorem 3.1, sequence localization form with stochastic
+boundedness derived from convergence in distribution.
+-/
+theorem vaart1998_theorem_3_1_delta_method_of_localization_distribution
+    {Ω : Type v} {Ω' : Type w} {E : Type x} {F : Type y}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E] [CompleteSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {T : Ω' -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ}
+    (L : E →L[ℝ] F)
+    (hW : TendstoInDistribution
+      (fun n ω => r n • (Tn n ω - theta)) atTop T (fun _ => P) Q)
+    (hR_local : ∀ ε : ℝ, 0 < ε -> ∀ M : ℝ, 0 < M ->
+      ∀ᶠ n in atTop,
+        {ω |
+          ε ≤ ‖r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))‖} ⊆
+        {ω | M ≤ ‖r n • (Tn n ω - theta)‖})
+    (hR_meas : ∀ n, AEMeasurable
+      (fun ω => r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))) P) :
+    TendstoInDistribution
+      (fun n ω => r n • (phi (Tn n ω) - phi theta)) atTop
+      (fun ω => L (T ω)) (fun _ => P) Q :=
+  vaart1998_theorem_3_1_delta_method_of_localization_stochasticBounded
+    (L := L) hW hR_local
+    (vaart1998_stochasticBounded_of_tendstoInDistribution hW)
+    hR_meas
 
 end AsymptoticStatistics
 end StatInference

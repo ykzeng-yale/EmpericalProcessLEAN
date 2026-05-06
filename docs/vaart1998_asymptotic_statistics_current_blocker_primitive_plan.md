@@ -91,26 +91,42 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_delta_remainder_local_subset_of_eventually_small_on_scaled_ball`.
 13. Theorem 3.1 scaled-ball plus `O_P(1)` wrapper:
    `vaart1998_theorem_3_1_delta_method_of_scaled_ball_stochasticBounded`.
+14. VdV&W tight-law-range to real norm-tail bridge:
+   `vaart1998_law_real_norm_tail_of_tight_range`.
+15. Tight law range to `O_P(1)` bridge:
+   `vaart1998_stochasticBounded_of_tight_law_range`.
+16. Weak convergence of laws to real norm-tail bridge:
+   `vaart1998_law_real_norm_tail_of_weak_convergence`.
+17. Chapter 2 fact that convergence in distribution implies `O_P(1)`:
+   `vaart1998_stochasticBounded_of_tendstoInDistribution`.
+18. Theorem 3.1 scaled-ball wrapper that derives the `O_P(1)` scaled-statistic
+   field from distributional convergence:
+   `vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution`.
+19. Theorem 3.1 localization wrapper that derives the `O_P(1)` scaled-statistic
+   field from distributional convergence:
+   `vaart1998_theorem_3_1_delta_method_of_localization_distribution`.
 
-Verified Vaart packet: `4afbd3b` (`Add Vaart asymptotic statistics Lean lane`),
-included in remote `main` at `b36be5f`.
+Latest pushed Vaart packet before this run: `c3cb275`
+(`Add Vaart law-tail stochastic bounded bridge`), included in remote `main` at
+`fb090b2`.
 
-The current theorem-sized packet has inserted the stochastic localization
-bridge used in Vaart's proof of Theorem 3.1: a local remainder-subset
-certificate plus real-tail tightness of `r_n • (T_n - theta)` now produces the
-scaled `o_P(1)` remainder and feeds the compiled delta handoff.
-The newest follow-up also removes the raw set-subset field whenever the scaled
-remainder is eventually small on every fixed scaled ball.
+The current theorem-sized packet has closed the law-tightness side of Vaart's
+Chapter 2-3 route.  VdV&W tightness of law ranges now produces the real
+norm-tail bounds consumed by `StochasticBounded`, and convergence in
+distribution now automatically supplies `O_P(1)`.  The delta-method
+localization/scaled-ball wrappers can therefore derive the tight scaled-statistic
+field directly from `hW : r_n • (T_n - theta) ⇒ T`.
 
-The next aggressive packet is to discharge the remaining certificate fields:
+The next aggressive packet is to discharge the remaining local-remainder
+certificate field:
 
-1. derive law-level real norm-tail tightness of `r_n • (T_n - theta)` from
-   convergence in distribution, reusing `VdVWProbabilityMeasuresAsymptoticallyTight`
-   and the local norm-tail tightness lemmas in `StatInference/EmpiricalProcess`,
-   then feed `vaart1998_stochasticBounded_of_law_real_norm_tail`;
-2. derive the scaled-ball smallness field from
+1. derive the scaled-ball smallness field from
    `vaart1998_hasFDerivAt_delta_remainder_isLittleO`, `r_n -> ∞`, and
-   `T_n - theta -> 0` in probability.
+   `T_n - theta -> 0` in probability;
+2. feed that field to
+   `vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution` to remove
+   the last supplied probabilistic certificate from the finite-dimensional
+   Chapter 3.1 route.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
@@ -162,11 +178,16 @@ instead of reproving derivative foundations.
 Search result for the tightness layer: local VdV&W weak-convergence files
 already provide `VdVWProbabilityMeasuresAsymptoticallyTight`,
 `VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_atTop`, and norm-tail
-criteria such as `VdVWProbabilityMeasuresTight.tendsto_norm_tail`.  The missing
-Vaart bridge is the random-variable law/tail specialization that turns
-distributional convergence of `r_n • (T_n - theta)` into the real-tail
-`hW_tight` field consumed by
-`vaart1998_theorem_3_1_delta_method_of_localization_tight`.
+criteria such as `VdVWProbabilityMeasuresTight.tendsto_norm_tail`.  The Vaart
+bridge is now compiled: `vaart1998_law_real_norm_tail_of_tight_range`,
+`vaart1998_law_real_norm_tail_of_weak_convergence`, and
+`vaart1998_stochasticBounded_of_tendstoInDistribution`.
+
+Search result for the remaining delta-method layer: the open proof obligation
+is no longer law tightness.  It is the scaled-ball smallness theorem converting
+the deterministic `HasFDerivAt` little-o display plus probabilistic
+localization of `T_n` around `theta` into the `hsmall` field consumed by
+`vaart1998_theorem_3_1_delta_method_of_scaled_ball_distribution`.
 
 ## Primitive Sequence
 
