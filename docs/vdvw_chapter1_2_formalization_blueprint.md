@@ -2443,6 +2443,17 @@ so a structural proof of fixed-radius pointwise finite-net control at all
 positive truncation levels now reaches the untruncated centered convergence
 statement directly.
 
+2026-05-06 lower-shifted reindexing support:
+`WeakConvergence.lean` now fills the non-generic lower-shifted reindexing case
+with explicit lifted lower-bound hypotheses:
+`VdVWAsymptoticallyMeasurableLowerShiftedReal.comp_tendsto_of_lower_bound`,
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.comp_tendsto_of_lower_bound`,
+and
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.comp_tendsto_of_lower_bound`.
+This is a Chapter 1 support primitive for subsequence/reindexing arguments; it
+intentionally does not claim that reindexed lower bounds imply the original
+all-index lower-bound side condition.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

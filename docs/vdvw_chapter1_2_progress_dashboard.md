@@ -2908,3 +2908,14 @@ follow-up:
 The lower-shifted predicates remain intentionally without generic
 reindexing because their all-index lower-bound hypotheses do not follow from
 a bound on only the reindexed subfamily.
+
+2026-05-06 lower-shifted lifted-bound reindexing follow-up:
+`WeakConvergence.lean` now adds the explicit lifted-bound versions that the
+generic reindexing note above requires:
+`VdVWAsymptoticallyMeasurableLowerShiftedReal.comp_tendsto_of_lower_bound`,
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.comp_tendsto_of_lower_bound`,
+and
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.comp_tendsto_of_lower_bound`.
+These close the honest reindexing support case while keeping the all-index
+lower-bound assumption explicit.  They do not close the full arbitrary-map
+asymptotic-measurability or process/FDD converse blockers.

@@ -1625,6 +1625,30 @@ theorem VdVWAsymptoticallyMeasurableLowerShiftedReal.congr_eventually
     simpa [← hX i] using hlower i ω
 
 /--
+Reindexing for the lower-shifted real asymptotic-measurability predicate when
+the all-index lower-bound side condition can be lifted back from the reindexed
+subfamily.
+
+The extra hypothesis is necessary: the target predicate only supplies a lower
+bound along the reindexed family, while the source predicate requires one for
+all original indices.
+-/
+theorem VdVWAsymptoticallyMeasurableLowerShiftedReal.comp_tendsto_of_lower_bound
+    {Ω : Type u} {S : Type v} {ι : Type w} {κ : Type x}
+    [MeasurableSpace Ω]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l : Filter ι} {l' : Filter κ} {tests : (S -> ℝ) -> Prop}
+    (h : VdVWAsymptoticallyMeasurableLowerShiftedReal μs X l tests)
+    {u : κ -> ι} (hu : Tendsto u l' l)
+    (hlift :
+      ∀ f c, tests f ->
+        (∀ k ω, c ≤ f (X (u k) ω)) -> ∀ i ω, c ≤ f (X i ω)) :
+    VdVWAsymptoticallyMeasurableLowerShiftedReal
+      (fun k => μs (u k)) (fun k ω => X (u k) ω) l' tests := by
+  intro f c hf hlower
+  exact (h f c hf (hlift f c hf hlower)).comp hu
+
+/--
 Bounded-continuous lower-shifted asymptotic measurability.
 
 This is the closest current local bridge to VdV&W Definition 1.3.7: it ranges
@@ -1722,6 +1746,27 @@ theorem VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.congr_eventual
     simp [hνμ, hX i]
   · intro i ω
     simpa [← hX i] using hlower i ω
+
+/--
+Reindexing for the bounded-continuous lower-shifted asymptotic-measurability
+predicate when lower bounds along the reindexed subfamily lift to all original
+indices.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.comp_tendsto_of_lower_bound
+    {Ω : Type u} {S : Type v} {ι : Type w} {κ : Type x}
+    [MeasurableSpace Ω] [TopologicalSpace S]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
+    {l : Filter ι} {l' : Filter κ}
+    (h : VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted μs X l)
+    {u : κ -> ι} (hu : Tendsto u l' l)
+    (hlift :
+      ∀ (f : S →ᵇ ℝ) c,
+        (∀ k ω, c ≤ f (X (u k) ω)) -> ∀ i ω, c ≤ f (X i ω)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted
+      (fun k => μs (u k)) (fun k ω => X (u k) ω) l' := by
+  intro f c hlower
+  exact (h f c (hlift f c hlower)).comp hu
 
 /--
 Bounded-continuous asymptotic measurability with the canonical lower shift
@@ -2091,6 +2136,32 @@ theorem
     simp [hνμ, hX i]
   · intro i ω
     simpa [← hX i] using hlower i ω
+
+/--
+Reindexing for the varying-domain lower-shifted bounded-continuous
+asymptotic-measurability predicate when the reindexed lower-bound side
+condition can be lifted to all original domains.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.comp_tendsto_of_lower_bound
+    {ι : Type w} {κ : Type x} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    {μs : (i : ι) -> Measure (Ω i)}
+    {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι} {l' : Filter κ}
+    (h :
+      VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+        Ω μs X l)
+    {u : κ -> ι} (hu : Tendsto u l' l)
+    (hlift :
+      ∀ (f : S →ᵇ ℝ) c,
+        (∀ k (ω : Ω (u k)), c ≤ f (X (u k) ω)) ->
+          ∀ i (ω : Ω i), c ≤ f (X i ω)) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+      (fun k => Ω (u k)) (fun k => μs (u k))
+      (fun k ω => X (u k) ω) l' := by
+  intro f c hlower
+  exact (h f c (hlift f c hlower)).comp hu
 
 /--
 The varying-domain canonical shifted predicate is stable under passing to a

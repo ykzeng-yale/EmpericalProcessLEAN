@@ -7305,3 +7305,23 @@ endpoints while keeping the actual convergence hypothesis explicit.  The next
 non-duplicative target remains upstream: prove a real entropy/cardinality
 input, a selected tail/UI/ordinary-mean bridge, or an exact Chapter 1 process
 primitive.
+
+2026-05-06 lower-shifted reindexing with lifted lower bounds: search found the
+previous common/varying-domain `mono_filter` and `congr_eventually` lower-
+shifted asymptotic-measurability wrappers, and the canonical shifted
+`comp_tendsto` wrappers, but no lower-shifted `comp_tendsto` theorem that
+accounts for the all-index lower-bound side condition.  `WeakConvergence.lean`
+now proves
+`VdVWAsymptoticallyMeasurableLowerShiftedReal.comp_tendsto_of_lower_bound`,
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted.comp_tendsto_of_lower_bound`,
+and
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.comp_tendsto_of_lower_bound`.
+Each theorem requires an explicit hypothesis lifting lower bounds from the
+reindexed subfamily back to all original indices/domains.  This closes the
+honest reindexing support case without making the false claim that a
+subsequence lower bound implies a global lower bound.  The remaining Chapter 1
+arbitrary-map blockers are still signed extended-real cover existence,
+arbitrary-map asymptotic tightness, process separability, and arbitrary-index
+FDD converse; the remaining Theorem 2.4.3 upstream blocker is still a genuine
+entropy/cardinality or selected tail/UI/ordinary-mean theorem rather than
+another endpoint alias.
