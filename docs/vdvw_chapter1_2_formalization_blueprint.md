@@ -135,6 +135,13 @@ The resulting route now has the centered untruncated convergence consumer
 This should be used for quantized-trace or finite-code structural entropy
 arguments; the remaining theorem work is the concrete code-image
 log-cardinality/tail/UI estimate, not another selected endpoint.
+The threshold-code structural cardinality layer also now has the raw
+full-subgraph VC input
+`thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly` in
+`ThresholdCoding.lean`, bounding realized threshold-code images by the
+Sauer-polynomial product under `VdVWUniformSubgraphVCBound`.  Future VC/grid
+instantiations should consume this lemma rather than reproving the
+threshold-code/product-cardinality chain.
 The VdV&W 1.4.1 product Borel-space equality is also closed as
 `vdVW141_prod_borel_eq_product_borel`.  The next small but theorem-facing
 Chapter 1 foundation closure is now closed: filter-refinement stability for

@@ -2227,3 +2227,11 @@ convergence.
 composing the fixed-`M` pointwise finite-net consumer with the large-`M`
 envelope-tail handoff.  The remaining work is to prove the pointwise/event
 finite-net comparison, not another endpoint wrapper.
+
+2026-05-06 threshold-code cardinality follow-up:
+`ThresholdCoding.lean` now proves
+`thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly`,
+which packages the realized threshold-code image bound from
+`VdVWUniformSubgraphVCBound` through the product of fixed-threshold binary
+trace families and Sauer-Shelah.  This is a structural cardinality input for
+VC/threshold-grid Theorem 2.4.3 routes, not another convergence endpoint.

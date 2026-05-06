@@ -5972,3 +5972,16 @@ truncation level, without introducing Rademacher/sign or tail/UI assumptions in
 the statement.  The exact arbitrary-class blocker remains proving that
 pointwise/event comparison or a structural selected-cover theorem from the
 textbook hypotheses.
+
+2026-05-06 threshold-code cardinality follow-up: local search found the
+threshold-code image/product-cardinality chain and the full-subgraph VC
+predicate, but no single raw structural cardinality lemma exposing that chain.
+`ThresholdCoding.lean` now proves
+`thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly`.
+It packages
+`finite_thresholdTraceCode_image <= thresholdTraceCodeSet <= product of binary
+trace families <= Sauer polynomial^#thresholds` under
+`VdVWUniformSubgraphVCBound`.  This is a genuine structural input for
+finite-code/threshold-grid Theorem 2.4.3 routes; next work should consume it in
+concrete selected-cover or grid-cardinality instantiations instead of
+rebuilding the product-code estimate.

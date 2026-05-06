@@ -1355,6 +1355,39 @@ theorem threshold_binaryTraceSetFamily_product_card_le_uniform_vc
       sample indexClass classFun thresholds hbase_pos hthresholds_card hbase
 
 /--
+Uniform full-subgraph VC/Sauer bounds control the realized threshold-code
+image cardinality.
+
+This is the raw structural cardinality handoff behind the threshold-grid
+Theorem 2.4.3 route: a full-subgraph VC bound gives a uniform bound for each
+fixed threshold trace family, the product code bounds the threshold-code image,
+and Sauer-Shelah supplies the polynomial growth rate.
+-/
+theorem thresholdTraceCode_image_toFinset_card_le_uniform_subgraph_vc_nat_poly
+    {Observation : Type u} {Index : Type v} {n d k : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {thresholds : Finset ℝ}
+    (hthresholds_card : thresholds.card ≤ k)
+    (hvc : VdVWUniformSubgraphVCBound indexClass classFun d) :
+    (finite_thresholdTraceCode_image sample indexClass classFun thresholds).toFinset.card ≤
+      (((d + 2) * (n + 1) ^ d) ^ k) := by
+  refine
+    (thresholdTraceCode_image_toFinset_card_le_thresholdTraceCodeSet_card
+      sample indexClass classFun thresholds).trans ?_
+  refine
+    (thresholdTraceCodeSet_card_le_pi_binaryTraceSetFamily_card
+      sample indexClass classFun thresholds).trans ?_
+  exact
+    threshold_binaryTraceSetFamily_product_card_le_uniform_vc
+      sample indexClass classFun hthresholds_card
+      (fun threshold =>
+        VdVWUniformThresholdVCSubgraphBound.empiricalBinaryTraceSetFamily_vcDim_le
+          (sample := sample)
+          (VdVWUniformSubgraphVCBound.toUniformThresholdVCSubgraphBound hvc)
+          threshold.1)
+
+/--
 Finite threshold grids plus uniform fixed-threshold VC/Sauer bounds yield a
 numeric empirical covering-number bound through approximate threshold coding.
 -/
