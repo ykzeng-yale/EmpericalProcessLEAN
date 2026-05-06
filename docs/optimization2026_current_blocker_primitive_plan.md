@@ -88,9 +88,11 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after focused Lean verification of the
-Chapter 11.5 RAM scalar recurrence layer on 2026-05-06, building on pushed
-frontier `0e411d9` (`Add Chewi theorem 11.4 log burn-in layer`):
+Current live replacement `/goal` prompt after root `lake build StatInference`
+verification of the Chapter 11.5 RAM Hopf-Lax bridge layer on 2026-05-06,
+rebased over `origin/main` at `9cb8173` (`Rebase VdVW goal after separability
+handoff`) and building on pushed Optimization frontier `f44e363`
+(`Remove RAM weak-rate positivity side condition`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -99,17 +101,38 @@ slowing the main-text theorem lane.  Do not route back to stale Chapter 3/4/5
 setup, solved Chapter 6 lower-bound/feasibility infrastructure, Chapter 7
 Frank-Wolfe, Chapter 8 PGD/APGD, or already-compiled Chapter 9 Fenchel/Bregman
 substrate unless an exact source report or later theorem dependency demands it.
-Do not spend a run on wording-only route churn or a single wrapper if a
+Do not spend a run on wording-only route churn or a single wrapper when a
 theorem-sized packet is available.  Treat Chapters 3-8 as stable reusable
-infrastructure and treat `Fenchel.lean`, `Bregman.lean`, `MirrorDescent.lean`,
-`AlternatingBregman.lean`, `AlternatingMinimization.lean`, and
-`RandomizedAlternatingMinimization.lean` as the active Chapter 9-11 promotion
-gate.
+infrastructure, Chapter 9/10/11.2-11.4 as reusable Bregman/MPGD/ABP/AM
+substrate, and `StatInference/Optimization/RandomizedAlternatingMinimization.lean`
+as the current active Chapter 11.5 promotion gate.
 
-Latest verified Optimization proof frontier: Chapter 11.4 scalar AM packet in
-`StatInference/Optimization/AlternatingMinimization.lean`, promoted through
-the root import after the earlier `4656409` (`Add Chewi chapter 11 ABP
-telescope packet`).  `MirrorDescent.lean` now compiles through
+Immediate aggressive target: instantiate Chewi Theorem 11.5 RAM beyond the
+scalar certificate layer by proving the randomized-block conditional upper
+bound and, only where bounded, enough Hopf-Lax source theory to discharge the
+certificate fields.  In parallel, scout Sinkhorn Theorems 11.7/11.8 from the
+compiled ABP/mirror-descent interfaces and Chapter 12 SMPGD theorem packets,
+so the next run can move directly after RAM without routing back to old setup.
+
+Latest verified Optimization proof frontier:
+`StatInference/Optimization/RandomizedAlternatingMinimization.lean` compiles
+the Chewi 11.5 strong and weak scalar expected-gap certificates, nonnegative
+weak wrappers, and Hopf-Lax bridge wrappers:
+`chewi115_strong_one_step_of_hopf_lax_gap_bound`,
+`IsChewi115RAMStrongHopfLaxCertificate`,
+`IsChewi115RAMStrongHopfLaxCertificate.toGapCertificate`,
+`IsChewi115RAMStrongHopfLaxCertificate.gap_le_geometric`,
+`chewi115_zero_one_step_of_hopf_lax_gap_bound`,
+`IsChewi115RAMZeroHopfLaxCertificate`,
+`IsChewi115RAMZeroHopfLaxCertificate.toGapCertificate`,
+`IsChewi115RAMZeroHopfLaxCertificate.gap_le_source_rate_nonneg`, and
+`IsChewi115RAMZeroHopfLaxCertificate.gap_le_eps_nonneg`.  The strong bridge
+turns Chewi's conditional-expectation display plus the Hopf-Lax contraction
+`hopfGap <= ((1-alphaF)/(1+alphaG))*gap` into the geometric RAM certificate.
+The weak bridge turns the zero-curvature Hopf-Lax estimate
+`hopfGap <= (1 - gap/(2*Rbeta^2))*gap` into the inverse-gap RAM certificate,
+reusing the compiled Chapter 11.4 telescope.  `MirrorDescent.lean` now
+compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
 `mirrorProximalGradientModel_le_composite_add_bregman`,
 `composite_le_mirrorProximalGradientModel`,
@@ -260,6 +283,10 @@ compiles the supplied scalar recurrence layer for Chewi Theorem 11.5:
 `chewi115_strong_expected_gap_le_of_recurrence`,
 `IsChewi115RAMStrongGapCertificate`,
 `IsChewi115RAMStrongGapCertificate.gap_le_geometric`,
+`chewi115_strong_one_step_of_hopf_lax_gap_bound`,
+`IsChewi115RAMStrongHopfLaxCertificate`,
+`IsChewi115RAMStrongHopfLaxCertificate.toGapCertificate`,
+`IsChewi115RAMStrongHopfLaxCertificate.gap_le_geometric`,
 `chewi115_zero_quadratic_recurrence_of_jensen`,
 `chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence`,
 `chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence_nonneg`,
@@ -271,10 +298,18 @@ compiles the supplied scalar recurrence layer for Chewi Theorem 11.5:
 `IsChewi115RAMZeroGapCertificate.gap_le_source_rate`,
 `IsChewi115RAMZeroGapCertificate.gap_le_source_rate_nonneg`,
 `IsChewi115RAMZeroGapCertificate.gap_le_eps`, and
-`IsChewi115RAMZeroGapCertificate.gap_le_eps_nonneg`.  The strong case reuses
+`IsChewi115RAMZeroGapCertificate.gap_le_eps_nonneg`,
+`chewi115_zero_one_step_of_hopf_lax_gap_bound`,
+`IsChewi115RAMZeroHopfLaxCertificate`,
+`IsChewi115RAMZeroHopfLaxCertificate.toGapCertificate`,
+`IsChewi115RAMZeroHopfLaxCertificate.gap_le_source_rate_nonneg`, and
+`IsChewi115RAMZeroHopfLaxCertificate.gap_le_eps_nonneg`.  The strong case reuses
 `scalarRecurrence_le_pow`; the weak case reuses the Chapter 11.4 inverse-gap
 telescope with `K = 2 * D * R_beta^2`, and the nonnegative wrappers handle
-zero-hit trajectories by proving the gap remains zero after the first hit.
+zero-hit trajectories by proving the gap remains zero after the first hit.  The
+new Hopf-Lax bridge layer packages Chewi's conditional-expectation display and
+the two Exercise 9.3 Hopf-Lax estimates into the strong and weak RAM
+certificates without introducing full probability infrastructure.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, relative smoothness, OMD, online
@@ -314,14 +349,14 @@ Active aggressive target ladder:
    `IsChewi114AMDescentCertificate` from actual coordinate/proximal
    minimization proof obligations if bounded, or move immediately to Theorem
    11.5 RAM.
-2. Continue Chewi Theorem 11.5 RAM from the compiled scalar recurrence layer:
-   prove the source analytic one-step bridge from the conditional expectation
-   display plus the Hopf-Lax/Exercise 9.3 supplied bounds into
-   `IsChewi115RAMStrongGapCertificate` and
-   `IsChewi115RAMZeroGapCertificate`.  The zero-hit/nonnegative weak-rate
-   wrapper is already compiled; do not repeat it.  Do not build full
-   probability/process infrastructure unless it is the shortest route;
-   expectation-level supplied interfaces are the fast lane.
+2. Continue Chewi Theorem 11.5 RAM from the compiled scalar recurrence and
+   Hopf-Lax bridge layer: instantiate the conditional-expectation upper bound
+   from the randomized block update and, if bounded, formalize enough of
+   Definition 9.3/Exercise 9.3's Hopf-Lax estimate to discharge the supplied
+   `hopf_lax_bound` fields.  The scalar RAM recurrence, nonnegative weak-rate
+   wrapper, and Hopf-Lax-to-rate bridge are already compiled; do not repeat
+   them.  Do not build full probability/process infrastructure unless it is
+   the shortest route; expectation-level supplied interfaces are the fast lane.
 3. Package Sinkhorn Theorems 11.7 and 11.8 from the compiled ABP and mirror
    descent layers using supplied finite KL/Pinsker/marginal identities; do not
    expand full EOT duality unless exact Theorem 11.6 reporting is requested.

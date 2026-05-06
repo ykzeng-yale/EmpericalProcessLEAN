@@ -56,9 +56,11 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after focused Lean verification of the Chapter
-11.5 RAM scalar recurrence layer on 2026-05-06, building on pushed frontier
-`0e411d9` (`Add Chewi theorem 11.4 log burn-in layer`):
+Current manual goal frontier after root `lake build StatInference`
+verification of the Chapter 11.5 RAM Hopf-Lax bridge layer on 2026-05-06,
+rebased over `origin/main` at `9cb8173` (`Rebase VdVW goal after separability
+handoff`) and building on pushed Optimization frontier `f44e363`
+(`Remove RAM weak-rate positivity side condition`):
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -159,14 +161,12 @@ descent certificates.  The newest local layer imports
 `IsChewi114AMDescentCertificate.exists_tail_gap_le_eps_of_geometric_burnin`,
 `IsChewi114AMDescentCertificate.exists_threshold_index_of_log_burnin`, and
 `IsChewi114AMDescentCertificate.exists_tail_gap_le_eps_of_log_burnin`.
-The active route is now only a cheap Nat.ceil/positive-part display wrapper
-for the textbook iteration-count notation if it does not balloon, plus
-instantiating the descent certificate from actual coordinate or
-proximal-minimization proof obligations if bounded, immediately followed by
-Theorem 11.5 RAM expectation recurrences, Sinkhorn
-Theorems 11.7/11.8 from ABP/mirror-descent supplied interfaces, and Chapter 12
-SMPGD before the ASGD
-CLT.  Generalize 10.11/10.13 to a custom arbitrary
+Chapter 11.4 is now stable substrate rather than the active target.  The
+active route is Theorem 11.5 RAM: instantiate the randomized-block conditional
+upper bound and, only if bounded, enough Hopf-Lax source theory to discharge
+the supplied fields, then move immediately to Sinkhorn Theorems 11.7/11.8
+from ABP/mirror-descent supplied interfaces and Chapter 12 SMPGD before the
+ASGD CLT.  Generalize 10.11/10.13 to a custom arbitrary
 norm/dual-norm interface or add an exact `sInf` wrapper only when source-report
 packaging or a later theorem demands it.  In parallel, map Chapter 13
 Newton/self-concordance theorem packets with source-shaped supplied interfaces
@@ -178,6 +178,10 @@ The new `RandomizedAlternatingMinimization.lean` module is imported by
 `chewi115_strong_expected_gap_le_of_recurrence`,
 `IsChewi115RAMStrongGapCertificate`,
 `IsChewi115RAMStrongGapCertificate.gap_le_geometric`,
+`chewi115_strong_one_step_of_hopf_lax_gap_bound`,
+`IsChewi115RAMStrongHopfLaxCertificate`,
+`IsChewi115RAMStrongHopfLaxCertificate.toGapCertificate`,
+`IsChewi115RAMStrongHopfLaxCertificate.gap_le_geometric`,
 `chewi115_zero_quadratic_recurrence_of_jensen`,
 `chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence`,
 `chewi115_zero_expected_gap_le_K_div_iterations_of_recurrence_nonneg`,
@@ -189,13 +193,21 @@ The new `RandomizedAlternatingMinimization.lean` module is imported by
 `IsChewi115RAMZeroGapCertificate.gap_le_source_rate`,
 `IsChewi115RAMZeroGapCertificate.gap_le_source_rate_nonneg`,
 `IsChewi115RAMZeroGapCertificate.gap_le_eps`, and
-`IsChewi115RAMZeroGapCertificate.gap_le_eps_nonneg`.  Search-first reuse: no
-local RAM theorem existed; the strong case reuses `scalarRecurrence_le_pow`,
+`IsChewi115RAMZeroGapCertificate.gap_le_eps_nonneg`,
+`chewi115_zero_one_step_of_hopf_lax_gap_bound`,
+`IsChewi115RAMZeroHopfLaxCertificate`,
+`IsChewi115RAMZeroHopfLaxCertificate.toGapCertificate`,
+`IsChewi115RAMZeroHopfLaxCertificate.gap_le_source_rate_nonneg`, and
+`IsChewi115RAMZeroHopfLaxCertificate.gap_le_eps_nonneg`.  Search-first reuse:
+no local RAM theorem existed; the strong case reuses `scalarRecurrence_le_pow`,
 while the zero-curvature case reuses the compiled Chapter 11.4 inverse-gap
 telescope.  The nonnegative wrappers remove the earlier strict-positive
-side-condition by a zero-hit induction.  The next RAM packet should prove the
-conditional-expectation/Hopf-Lax source bridge into these certificates, and
-only then decide whether full probability formalization is needed.
+side-condition by a zero-hit induction.  The Hopf-Lax bridge layer packages
+Chewi's conditional-expectation display and Exercise 9.3 bounds into the
+compiled strong/weak RAM certificates without adding full probability
+infrastructure.  The next RAM packet should instantiate the randomized-block
+conditional upper bound and, only if bounded, formalize enough Hopf-Lax theory
+to discharge the supplied fields.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

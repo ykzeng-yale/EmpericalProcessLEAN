@@ -91,6 +91,75 @@ theorem IsChewi115RAMStrongGapCertificate.gap_le_geometric
   chewi115_strong_expected_gap_le_of_recurrence hfactor_nonneg hcert.one_step
 
 /--
+Algebraic bridge from Chewi's conditional-expectation/Hopf-Lax display to the
+strong RAM one-step recurrence.
+-/
+theorem chewi115_strong_one_step_of_hopf_lax_gap_bound
+    {nextGap gap hopfGap alphaF alphaG : ℝ} {D : ℕ}
+    (hD : 0 < D) (halphaG : -1 < alphaG)
+    (hcond :
+      nextGap ≤
+        (((D : ℝ) - 1) / (D : ℝ)) * gap + (1 / (D : ℝ)) * hopfGap)
+    (hhopf : hopfGap ≤ ((1 - alphaF) / (1 + alphaG)) * gap) :
+    nextGap ≤ chewi115StrongFactor alphaF alphaG D * gap := by
+  have hD_real : 0 < (D : ℝ) := by exact_mod_cast hD
+  have hden_pos : 0 < 1 + alphaG := by nlinarith
+  have hscale :
+      (1 / (D : ℝ)) * hopfGap ≤
+        (1 / (D : ℝ)) * (((1 - alphaF) / (1 + alphaG)) * gap) :=
+    mul_le_mul_of_nonneg_left hhopf (by positivity)
+  calc
+    nextGap
+        ≤ (((D : ℝ) - 1) / (D : ℝ)) * gap + (1 / (D : ℝ)) * hopfGap :=
+          hcond
+    _ ≤ (((D : ℝ) - 1) / (D : ℝ)) * gap +
+          (1 / (D : ℝ)) * (((1 - alphaF) / (1 + alphaG)) * gap) := by
+          exact add_le_add le_rfl hscale
+    _ = chewi115StrongFactor alphaF alphaG D * gap := by
+          rw [chewi115StrongFactor]
+          field_simp [hD_real.ne', hden_pos.ne']
+          ring
+
+/--
+Source-shaped strong RAM bridge certificate: the conditional expectation
+upper bound plus the positive-curvature Hopf-Lax estimate from Exercise 9.3.
+-/
+structure IsChewi115RAMStrongHopfLaxCertificate
+    (expectedGap hopfGap : ℕ -> ℝ) (alphaF alphaG : ℝ) (D : ℕ) : Prop where
+  gap_nonneg : ∀ n, 0 ≤ expectedGap n
+  conditional_upper : ∀ n,
+    expectedGap (n + 1) ≤
+      (((D : ℝ) - 1) / (D : ℝ)) * expectedGap n +
+        (1 / (D : ℝ)) * hopfGap n
+  hopf_lax_bound : ∀ n,
+    hopfGap n ≤ ((1 - alphaF) / (1 + alphaG)) * expectedGap n
+
+/-- The strong Hopf-Lax bridge supplies the strong RAM gap certificate. -/
+theorem IsChewi115RAMStrongHopfLaxCertificate.toGapCertificate
+    {expectedGap hopfGap : ℕ -> ℝ} {alphaF alphaG : ℝ} {D : ℕ}
+    (hcert :
+      IsChewi115RAMStrongHopfLaxCertificate expectedGap hopfGap alphaF alphaG D)
+    (hD : 0 < D) (halphaG : -1 < alphaG) :
+    IsChewi115RAMStrongGapCertificate expectedGap alphaF alphaG D := by
+  refine ⟨hcert.gap_nonneg, ?_⟩
+  intro n
+  exact chewi115_strong_one_step_of_hopf_lax_gap_bound
+    (D := D) (alphaF := alphaF) (alphaG := alphaG)
+    hD halphaG (hcert.conditional_upper n) (hcert.hopf_lax_bound n)
+
+/-- Geometric strong RAM rate directly from the source Hopf-Lax bridge. -/
+theorem IsChewi115RAMStrongHopfLaxCertificate.gap_le_geometric
+    {expectedGap hopfGap : ℕ -> ℝ} {alphaF alphaG : ℝ} {D : ℕ}
+    (hcert :
+      IsChewi115RAMStrongHopfLaxCertificate expectedGap hopfGap alphaF alphaG D)
+    (hD : 0 < D) (halphaG : -1 < alphaG)
+    (hfactor_nonneg : 0 ≤ chewi115StrongFactor alphaF alphaG D) :
+    ∀ N,
+      expectedGap N ≤
+        chewi115StrongFactor alphaF alphaG D ^ N * expectedGap 0 :=
+  (hcert.toGapCertificate hD halphaG).gap_le_geometric hfactor_nonneg
+
+/--
 The Jensen-shaped zero-curvature RAM recurrence is exactly the quadratic
 inverse-gap recurrence with denominator `K`.
 -/
@@ -294,6 +363,81 @@ theorem IsChewi115RAMZeroGapCertificate.gap_le_eps
 theorem IsChewi115RAMZeroGapCertificate.gap_le_eps_nonneg
     {expectedGap : ℕ -> ℝ} {D n0 M : ℕ} {Rbeta eps : ℝ}
     (hcert : IsChewi115RAMZeroGapCertificate expectedGap D Rbeta)
+    (hD : 0 < D) (hRbeta : 0 < Rbeta) (hM : M ≠ 0)
+    (hK_div_le : chewi115ZeroK D Rbeta / (M : ℝ) ≤ eps) :
+    expectedGap (n0 + M) ≤ eps :=
+  (hcert.gap_le_source_rate_nonneg hD hRbeta hM).trans hK_div_le
+
+/--
+Algebraic bridge from Chewi's conditional-expectation/Hopf-Lax display to the
+zero-curvature RAM one-step recurrence.
+-/
+theorem chewi115_zero_one_step_of_hopf_lax_gap_bound
+    {nextGap gap hopfGap Rbeta : ℝ} {D : ℕ}
+    (hD : 0 < D) (hRbeta : 0 < Rbeta)
+    (hcond :
+      nextGap ≤
+        (((D : ℝ) - 1) / (D : ℝ)) * gap + (1 / (D : ℝ)) * hopfGap)
+    (hhopf : hopfGap ≤ (1 - gap / (2 * Rbeta ^ (2 : ℕ))) * gap) :
+    nextGap ≤ (1 - gap / chewi115ZeroK D Rbeta) * gap := by
+  have hD_real : 0 < (D : ℝ) := by exact_mod_cast hD
+  have hR_sq_pos : 0 < Rbeta ^ (2 : ℕ) := pow_pos hRbeta _
+  have hscale :
+      (1 / (D : ℝ)) * hopfGap ≤
+        (1 / (D : ℝ)) * ((1 - gap / (2 * Rbeta ^ (2 : ℕ))) * gap) :=
+    mul_le_mul_of_nonneg_left hhopf (by positivity)
+  calc
+    nextGap
+        ≤ (((D : ℝ) - 1) / (D : ℝ)) * gap + (1 / (D : ℝ)) * hopfGap :=
+          hcond
+    _ ≤ (((D : ℝ) - 1) / (D : ℝ)) * gap +
+          (1 / (D : ℝ)) * ((1 - gap / (2 * Rbeta ^ (2 : ℕ))) * gap) := by
+          exact add_le_add le_rfl hscale
+    _ = (1 - gap / chewi115ZeroK D Rbeta) * gap := by
+          rw [chewi115ZeroK]
+          field_simp [hD_real.ne', hR_sq_pos.ne']
+          ring
+
+/--
+Source-shaped zero-curvature RAM bridge certificate: the conditional
+expectation upper bound plus the weak Hopf-Lax/Jensen estimate from the proof
+of Theorem 11.5.
+-/
+structure IsChewi115RAMZeroHopfLaxCertificate
+    (expectedGap hopfGap : ℕ -> ℝ) (D : ℕ) (Rbeta : ℝ) : Prop where
+  gap_nonneg : ∀ n, 0 ≤ expectedGap n
+  conditional_upper : ∀ n,
+    expectedGap (n + 1) ≤
+      (((D : ℝ) - 1) / (D : ℝ)) * expectedGap n +
+        (1 / (D : ℝ)) * hopfGap n
+  hopf_lax_bound : ∀ n,
+    hopfGap n ≤
+      (1 - expectedGap n / (2 * Rbeta ^ (2 : ℕ))) * expectedGap n
+
+/-- The weak Hopf-Lax bridge supplies the zero-curvature RAM gap certificate. -/
+theorem IsChewi115RAMZeroHopfLaxCertificate.toGapCertificate
+    {expectedGap hopfGap : ℕ -> ℝ} {D : ℕ} {Rbeta : ℝ}
+    (hcert : IsChewi115RAMZeroHopfLaxCertificate expectedGap hopfGap D Rbeta)
+    (hD : 0 < D) (hRbeta : 0 < Rbeta) :
+    IsChewi115RAMZeroGapCertificate expectedGap D Rbeta := by
+  refine ⟨hcert.gap_nonneg, ?_⟩
+  intro n
+  exact chewi115_zero_one_step_of_hopf_lax_gap_bound
+    (D := D) (Rbeta := Rbeta)
+    hD hRbeta (hcert.conditional_upper n) (hcert.hopf_lax_bound n)
+
+/-- Source-rate weak RAM bound directly from the weak Hopf-Lax bridge. -/
+theorem IsChewi115RAMZeroHopfLaxCertificate.gap_le_source_rate_nonneg
+    {expectedGap hopfGap : ℕ -> ℝ} {D n0 M : ℕ} {Rbeta : ℝ}
+    (hcert : IsChewi115RAMZeroHopfLaxCertificate expectedGap hopfGap D Rbeta)
+    (hD : 0 < D) (hRbeta : 0 < Rbeta) (hM : M ≠ 0) :
+    expectedGap (n0 + M) ≤ chewi115ZeroK D Rbeta / (M : ℝ) :=
+  (hcert.toGapCertificate hD hRbeta).gap_le_source_rate_nonneg hD hRbeta hM
+
+/-- Epsilon weak RAM bound directly from the weak Hopf-Lax bridge. -/
+theorem IsChewi115RAMZeroHopfLaxCertificate.gap_le_eps_nonneg
+    {expectedGap hopfGap : ℕ -> ℝ} {D n0 M : ℕ} {Rbeta eps : ℝ}
+    (hcert : IsChewi115RAMZeroHopfLaxCertificate expectedGap hopfGap D Rbeta)
     (hD : 0 < D) (hRbeta : 0 < Rbeta) (hM : M ≠ 0)
     (hK_div_le : chewi115ZeroK D Rbeta / (M : ℝ) ≤ eps) :
     expectedGap (n0 + M) ≤ eps :=
