@@ -696,6 +696,28 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid
     endpoint hstrict hinc
 
 /--
+Durrett 2019, Theorem 2.4.9 endpoint-grid refinement package.
+
+Once the source proof has extracted a strict finite endpoint sequence from the
+monotone subdivision, it is enough to show each closed adjacent cell lies in
+one of the finite small-measure cover intervals.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement
+    {P : Measure ℝ} [IsProbabilityMeasure P] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers,
+        Set.Icc (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) ∧
+        P.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement
+    endpoint hstrict hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9 non-atomic local grid ingredient.
 
 For non-atomic locally finite real measures, every point has an open
