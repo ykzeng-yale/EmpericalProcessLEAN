@@ -192,6 +192,12 @@ and
 also discharge finite-image and domination fields from membership in a
 supplied `Finset` code set.  The next non-duplicative step is a concrete
 finite-code/VC/Sauer/quantizer theorem supplying those polynomial bounds.
+The trace-code analogue is now available too:
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_codeSet_cardinality_bound_nat_poly`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_trace_codeSet_cardinality_bound_nat_poly`
+consume an injective finite code on the realized empirical trace image plus a
+natural-polynomial code-set cardinality estimate.
 
 2026-05-05 separability/`P`-measurability follow-up:
 `PMeasurable.lean` now adds

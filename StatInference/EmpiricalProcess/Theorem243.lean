@@ -23000,6 +23000,159 @@ theorem
       hconstant_ge_one hM_pos hpoly_bound
 
 /--
+Finite trace-code-set constructor for the selected fixed-radius tail/UI
+package from a natural-polynomial code-set cardinality bound.
+
+This is the trace-coding analogue of the finite pointwise-code constructor:
+the caller supplies a finite code set for empirical traces, injective on the
+realized trace image, and a polynomial bound on the code-set cardinality.
+The finite trace image and domination hypotheses are then discharged by
+`TraceCoding.lean`.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_codeSet_cardinality_bound_nat_poly
+    {Observation : Type v} {Index : Type w} {Code : Type*}
+    [MeasurableSpace Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {constant : ℝ -> ℝ} {degree : ℝ -> ℕ}
+    (code :
+      ℝ -> (n : ℕ) -> SampleAt Observation n ->
+        (m : ℕ) -> (Fin m -> ℝ) -> Code)
+    (codeSet :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Finset Code)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcode_mem :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          code eta n sample m
+              (empiricalTrace (samplePath (X n) sample m)
+                (vdVWTruncatedClassFun classFun envelope M) index) ∈
+            codeSet eta n sample m)
+    (hinj :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        Set.InjOn (code eta n sample m)
+          (empiricalTrace (samplePath (X n) sample m)
+            (vdVWTruncatedClassFun classFun envelope M) '' indexClass))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hconstant_ge_one : ∀ eta, 0 < eta -> 1 ≤ constant eta)
+    (hM_pos : 0 < M)
+    (hpoly_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        (((codeSet eta n sample n).card : ℝ) + 1) ≤
+          constant eta * (((n + 1 : ℕ) : ℝ) ^ degree eta)) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta n sample m => (codeSet eta n sample m).card) := by
+  classical
+  let cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun eta n sample m => (codeSet eta n sample m).card
+  let htrace_finite :
+      ∀ n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite :=
+    fun n sample m =>
+      finite_empiricalTrace_image_of_finite_code
+        (sample := samplePath (X n) sample m)
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (code := code 1 n sample m)
+        (codeSet := codeSet 1 n sample m)
+        (by
+          intro index hindex
+          exact hcode_mem 1 zero_lt_one n sample m index hindex)
+        (hinj 1 zero_lt_one n sample m)
+  have hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        (htrace_finite n sample m).toFinset.card ≤
+          cardinality eta n sample m := by
+    intro eta heta n sample m
+    simpa [htrace_finite, cardinality] using
+      empiricalTrace_image_toFinset_card_le_finite_code
+        (sample := samplePath (X n) sample m)
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (code := code eta n sample m)
+        (codeSet := codeSet eta n sample m)
+        (by
+          intro index hindex
+          exact hcode_mem eta heta n sample m index hindex)
+        (hinj eta heta n sample m)
+  simpa [cardinality] using
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_image_cardinality_bound_nat_poly
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (constant := constant) (degree := degree)
+      (cardinality := cardinality)
+      hX_samplePath htrace_finite hcardinality_dom hclass
+      henvelope_meas hconstant_ge_one hM_pos hpoly_bound
+
+/--
+All-positive-`M` finite trace-code-set selected fixed-radius packages from
+natural-polynomial code-set cardinality bounds.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_trace_codeSet_cardinality_bound_nat_poly
+    {Observation : Type v} {Index : Type w} {Code : Type*}
+    [MeasurableSpace Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {constant : ℝ -> ℝ -> ℝ} {degree : ℝ -> ℝ -> ℕ}
+    (code :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n ->
+        (m : ℕ) -> (Fin m -> ℝ) -> Code)
+    (codeSet :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Finset Code)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hcode_mem :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ∀ index, index ∈ indexClass ->
+            code M eta n sample m
+                (empiricalTrace (samplePath (X M n) sample m)
+                  (vdVWTruncatedClassFun classFun envelope M) index) ∈
+              codeSet M eta n sample m)
+    (hinj :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          Set.InjOn (code M eta n sample m)
+            (empiricalTrace (samplePath (X M n) sample m)
+              (vdVWTruncatedClassFun classFun envelope M) '' indexClass))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 1 ≤ constant M eta)
+    (hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          (((codeSet M eta n sample n).card : ℝ) + 1) ≤
+            constant M eta *
+              (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M
+        (fun eta n sample m => (codeSet M eta n sample m).card) := by
+  intro M hM_pos
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_codeSet_cardinality_bound_nat_poly
+      (P := P) (X := X M) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (constant := constant M) (degree := degree M)
+      (code := code M) (codeSet := codeSet M)
+      (hX_samplePath M) (hcode_mem M hM_pos) (hinj M hM_pos)
+      hclass henvelope_meas (hconstant_ge_one M hM_pos) hM_pos
+      (hpoly_bound M hM_pos)
+
+/--
 All-positive-`M` selected fixed-radius tail/UI packages from natural
 polynomial cardinality bounds.
 

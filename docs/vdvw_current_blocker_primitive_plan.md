@@ -6053,6 +6053,19 @@ which derive finite image and domination fields from membership in a supplied
 hypotheses from a concrete finite-code image, VC/Sauer, threshold-grid, or
 quantizer construction rather than adding another endpoint alias.
 
+2026-05-06 finite trace-code-set natural-polynomial follow-up: local search
+found `TraceCoding.lean` already proves finite trace-code image finiteness,
+cardinality domination, and transfer of polynomial code-set cardinality
+bounds, but `Theorem243.lean` did not yet expose this as a selected
+fixed-radius Theorem 2.4.3 input.  It now proves
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_codeSet_cardinality_bound_nat_poly`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_trace_codeSet_cardinality_bound_nat_poly`.
+These wrappers consume a finite trace-code set, injectivity on the realized
+trace image, and a natural-polynomial code-set cardinality estimate.  The next
+non-duplicative theorem should prove such a trace-code estimate from an actual
+VC/Sauer, threshold-code, or quantizer construction.
+
 2026-05-06 varying-domain lower-shifted continuous-map follow-up: local search
 found common-domain lower-shifted continuous-map closure and varying-domain
 signed continuous-map closure, but no matching varying-domain lower-shifted

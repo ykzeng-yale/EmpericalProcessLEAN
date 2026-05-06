@@ -138,6 +138,11 @@ and its all-positive-`M` wrapper, plus the concrete finite-code-set variants
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_codeSet_cardinality_bound_nat_poly`
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_pointwise_approx_codeSet_cardinality_bound_nat_poly`.
+The trace-code-set analogue is also compiled as
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_trace_codeSet_cardinality_bound_nat_poly`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_trace_codeSet_cardinality_bound_nat_poly`,
+using the finite-code image and cardinality transfer from `TraceCoding.lean`.
 This should be used for quantized-trace or finite-code structural entropy
 arguments; the remaining theorem work is the concrete code-image
 log-cardinality, VC/Sauer polynomial, or tail/UI estimate, not another
