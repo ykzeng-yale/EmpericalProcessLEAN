@@ -191,6 +191,31 @@ product-sign expectation route.  The remaining theorem gap is still the
 upstream derivation of the finite-net mean/tail/UI or event-comparison input
 from the book entropy hypothesis.
 
+2026-05-06 option-1 recalibration after direct search: the correct current
+Theorem 2.4.3 target is not another endpoint consumer.  Local search in
+`Theorem243.lean`, `OuterProbabilityExpectation.lean`,
+`StatInference/ProbabilityMeasure`, pinned mathlib, the local AI-Statistician
+checkout, the empirical-blueprint worktree, and the local Aristotle download
+found no exact theorem proving the needed VdV&W probability-level
+symmetrization/net comparison.  The precise missing source-side theorem is the
+`hprob_bound` field consumed by
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_finiteNetHoeffdingUpper`:
+for every fixed `eta > 0` and `epsilon > 0`, eventually in `n`, the outer
+probability of the fixed-`M` centered truncated supremum bad event is bounded
+by the outer probability of the bad event for
+`vdVWTheorem243FiniteNetHoeffdingUpper (cardinality eta n sample n) n M + eta`.
+The deterministic finite-cover inequalities and the
+`VdVWTheorem243SymmetrizationPrecursor` currently supply finite-net
+Rademacher and expectation/outer-expectation routes, but they do not prove this
+probability-event comparison.  Next proof work should attack this exact
+`hprob_bound` via ghost-sample/Rademacher/outer-probability symmetrization, or
+primitive-register exactly this comparison if a self-contained Lean proof
+requires a new VdV&W nonmeasurable empirical-process primitive.  Do not spend
+the next batch on selected fixed-radius/inverse-radius endpoint aliases,
+finite-class/full-subgraph endpoint packaging, or another consumer of already
+closed side-condition structures unless it immediately proves this
+`hprob_bound` or the exact textbook theorem.
+
 2026-05-06 fixed-FDD selected-coordinate congruence follow-up: local search
 found only the whole-sample-path finite-dimensional congruence wrappers
 `aemeasurable_fdd_congr_forall_coord_ae` and

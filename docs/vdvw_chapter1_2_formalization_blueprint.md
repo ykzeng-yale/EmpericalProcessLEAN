@@ -152,6 +152,18 @@ measurability, nonmeasurable signed outer-cover weak convergence, or full
 arbitrary-map extended-real measurable-cover existence.  Older current-target
 paragraphs below are historical context and should not override this target.
 
+2026-05-06 option-1 route sharpening: direct search found no existing
+mathlib/local/open-checkout theorem for the VdV&W probability-event
+symmetrization comparison.  Therefore the immediate source-side Theorem 2.4.3
+target is the fixed-radius `hprob_bound` used by
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_finiteNetHoeffdingUpper`,
+not another endpoint alias.  Prove that the outer probability of the centered
+truncated empirical-process bad event is eventually bounded by the outer
+probability of the selected finite-net Hoeffding upper plus radius, using the
+existing ghost-sample/Rademacher/product/Fubini support.  If this exact event
+comparison cannot be proved without a new VdV&W primitive, register precisely
+that primitive and only then switch lanes.
+
 2026-05-06 fixed-FDD congruence refinement: after search, the local FDD
 replacement layer now includes
 `aemeasurable_fdd_congr_finite_coord_ae` and
