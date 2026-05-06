@@ -157,9 +157,12 @@ Chapter 4 handoff:
 - measurable-coordinate Theorem 4.1 Gaussian-limit source wrapper with
   covariance display:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_real`.
+- covarianceBilinDual bridges for square-integrable laws:
+  `vaart1998_limitCovarianceFunctional_eq_covarianceBilinDual_map` and
+  `vaart1998_covarianceBilinDual_inverseDerivative_map_apply`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`75caaef`:
+`1d967e9`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -182,11 +185,12 @@ targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled Gaussian and covariance-display
+Continue Vaart Chapter 4.1 from the compiled Gaussian and covarianceBilinDual
 handoff:
 
-1. connect the covariance display to mathlib's `covarianceBilinDual` or a
-   finite-coordinate matrix statement under the required moment assumptions;
+1. derive the inverse-derivative pushed-law `MemLp` hypothesis from the
+   original empirical-moment limit's `MemLp` hypothesis and package the
+   covarianceBilinDual bridge directly into the source Theorem 4.1 wrapper;
 2. add a local-inverse measurability convenience from the open partial
    homeomorphism/local continuity API if it can be done without widening the
    topology assumptions too much;
