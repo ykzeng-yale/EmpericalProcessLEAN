@@ -1,3 +1,4 @@
+import Mathlib.MeasureTheory.Function.L2Space
 import StatInference.Optimization.MirrorDescent
 
 /-!
@@ -13,6 +14,7 @@ namespace StatInference
 namespace Optimization
 
 open Finset
+open MeasureTheory
 open scoped InnerProductSpace
 
 /--
@@ -817,6 +819,234 @@ theorem chewi121_nonsmooth_hcore_of_finite_components
       hh hraw hphi_lower hlip hgrad
 
 /--
+Bochner-integral smooth raw expected-model bound.  This is the measure-level
+version of `chewi121_smooth_finite_raw_component_bound`; the pointwise or
+almost-everywhere stochastic model inequality is lifted by `integral_mono_ae`.
+-/
+theorem chewi121_smooth_integral_raw_component_bound
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Fplus Df Dphi noise psi : Ω -> ℝ} {h psiNext : ℝ}
+    (hFplus : Integrable Fplus μ) (hDf : Integrable Df μ)
+    (hDphi : Integrable Dphi μ) (hnoise_int : Integrable noise μ)
+    (hpsi_int : Integrable psi μ)
+    (hpoint : (fun ω =>
+      Fplus ω - Df ω + (1 / h) * Dphi ω - noise ω) ≤ᵐ[μ] psi)
+    (hpsi : (∫ ω, psi ω ∂μ) ≤ psiNext) :
+    (∫ ω, Fplus ω ∂μ) - (∫ ω, Df ω ∂μ) +
+        (1 / h) * (∫ ω, Dphi ω ∂μ) -
+          (∫ ω, noise ω ∂μ) ≤ psiNext := by
+  have hFD : Integrable (fun ω => Fplus ω - Df ω) μ := hFplus.sub hDf
+  have hscaled : Integrable (fun ω => (1 / h) * Dphi ω) μ :=
+    hDphi.const_mul _
+  have hpre :
+      Integrable (fun ω => Fplus ω - Df ω + (1 / h) * Dphi ω) μ :=
+    hFD.add hscaled
+  have hcomb :
+      Integrable (fun ω =>
+        Fplus ω - Df ω + (1 / h) * Dphi ω - noise ω) μ :=
+    hpre.sub hnoise_int
+  have hmono : (∫ ω, Fplus ω - Df ω + (1 / h) * Dphi ω - noise ω ∂μ) ≤
+      ∫ ω, psi ω ∂μ :=
+    integral_mono_ae hcomb hpsi_int hpoint
+  have hsplit :
+      (∫ ω, Fplus ω - Df ω + (1 / h) * Dphi ω - noise ω ∂μ) =
+        (∫ ω, Fplus ω ∂μ) - (∫ ω, Df ω ∂μ) +
+          (1 / h) * (∫ ω, Dphi ω ∂μ) -
+            (∫ ω, noise ω ∂μ) := by
+    rw [integral_sub hpre hnoise_int, integral_add hFD hscaled,
+      integral_sub hFplus hDf, integral_const_mul]
+  exact hsplit ▸ hmono.trans hpsi
+
+/--
+Bochner-integral lifting of the smooth relative-smoothness absorption
+`D_f <= (1/(2h)) D_phi`.
+-/
+theorem chewi121_smooth_integral_absorb_component_bound
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Df Dphi : Ω -> ℝ} {h : ℝ}
+    (hDf : Integrable Df μ) (hDphi : Integrable Dphi μ)
+    (hpoint : Df ≤ᵐ[μ] fun ω => (1 / (2 * h)) * Dphi ω) :
+    (∫ ω, Df ω ∂μ) ≤ (1 / (2 * h)) * (∫ ω, Dphi ω ∂μ) := by
+  have hscaled : Integrable (fun ω => (1 / (2 * h)) * Dphi ω) μ :=
+    hDphi.const_mul _
+  have hmono := integral_mono_ae hDf hscaled hpoint
+  simpa [integral_const_mul] using hmono
+
+/--
+Bochner-integral lifting of the mirror strong-convexity lower bound
+`D_phi >= alpha_phi / 2 * ||x+ - x||^2`.
+-/
+theorem chewi121_integral_mirror_lower_component_bound
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Dphi stepSq : Ω -> ℝ} {alphaPhi stepRms : ℝ}
+    (halphaPhi_nonneg : 0 ≤ alphaPhi)
+    (hDphi : Integrable Dphi μ) (hstepSq : Integrable stepSq μ)
+    (hstepRms_sq : stepRms ^ (2 : ℕ) ≤ ∫ ω, stepSq ω ∂μ)
+    (hpoint : (fun ω => (alphaPhi / 2) * stepSq ω) ≤ᵐ[μ] Dphi) :
+    (alphaPhi / 2) * stepRms ^ (2 : ℕ) ≤ ∫ ω, Dphi ω ∂μ := by
+  have hcoef_nonneg : 0 ≤ alphaPhi / 2 := by positivity
+  have hscaled : Integrable (fun ω => (alphaPhi / 2) * stepSq ω) μ :=
+    hstepSq.const_mul _
+  have hmono := integral_mono_ae hscaled hDphi hpoint
+  calc
+    (alphaPhi / 2) * stepRms ^ (2 : ℕ) ≤
+        (alphaPhi / 2) * (∫ ω, stepSq ω ∂μ) :=
+          mul_le_mul_of_nonneg_left hstepRms_sq hcoef_nonneg
+    _ = ∫ ω, (alphaPhi / 2) * stepSq ω ∂μ := by
+          rw [integral_const_mul]
+    _ ≤ ∫ ω, Dphi ω ∂μ := hmono
+
+/-- Bochner-integral non-smooth raw expected-model bound. -/
+theorem chewi121_nonsmooth_integral_raw_component_bound
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Fplus lip grad Dphi psi : Ω -> ℝ} {h psiNext : ℝ}
+    (hFplus : Integrable Fplus μ) (hlip_int : Integrable lip μ)
+    (hgrad_int : Integrable grad μ) (hDphi : Integrable Dphi μ)
+    (hpsi_int : Integrable psi μ)
+    (hpoint : (fun ω =>
+      Fplus ω - lip ω - grad ω + (1 / h) * Dphi ω) ≤ᵐ[μ] psi)
+    (hpsi : (∫ ω, psi ω ∂μ) ≤ psiNext) :
+    (∫ ω, Fplus ω ∂μ) - (∫ ω, lip ω ∂μ) -
+        (∫ ω, grad ω ∂μ) + (1 / h) * (∫ ω, Dphi ω ∂μ) ≤
+      psiNext := by
+  have hFl : Integrable (fun ω => Fplus ω - lip ω) μ :=
+    hFplus.sub hlip_int
+  have hFlg : Integrable (fun ω => Fplus ω - lip ω - grad ω) μ :=
+    hFl.sub hgrad_int
+  have hscaled : Integrable (fun ω => (1 / h) * Dphi ω) μ :=
+    hDphi.const_mul _
+  have hcomb :
+      Integrable (fun ω => Fplus ω - lip ω - grad ω + (1 / h) * Dphi ω) μ :=
+    hFlg.add hscaled
+  have hmono :
+      (∫ ω, Fplus ω - lip ω - grad ω + (1 / h) * Dphi ω ∂μ) ≤
+        ∫ ω, psi ω ∂μ :=
+    integral_mono_ae hcomb hpsi_int hpoint
+  have hsplit :
+      (∫ ω, Fplus ω - lip ω - grad ω + (1 / h) * Dphi ω ∂μ) =
+        (∫ ω, Fplus ω ∂μ) - (∫ ω, lip ω ∂μ) -
+          (∫ ω, grad ω ∂μ) + (1 / h) * (∫ ω, Dphi ω ∂μ) := by
+    rw [integral_add hFlg hscaled, integral_sub hFl hgrad_int,
+      integral_sub hFplus hlip_int, integral_const_mul]
+  exact hsplit ▸ hmono.trans hpsi
+
+/--
+Bochner-integral lifting for one linear non-smooth term, e.g. the Lipschitz
+term or the stochastic-gradient term.
+-/
+theorem chewi121_integral_linear_component_bound
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {term stepNorm : Ω -> ℝ} {L stepRms : ℝ}
+    (hL_nonneg : 0 ≤ L)
+    (hterm : Integrable term μ) (hstepNorm : Integrable stepNorm μ)
+    (hstep_avg : (∫ ω, stepNorm ω ∂μ) ≤ stepRms)
+    (hpoint : term ≤ᵐ[μ] fun ω => L * stepNorm ω) :
+    (∫ ω, term ω ∂μ) ≤ L * stepRms := by
+  have hscaled : Integrable (fun ω => L * stepNorm ω) μ :=
+    hstepNorm.const_mul _
+  have hmono := integral_mono_ae hterm hscaled hpoint
+  calc
+    (∫ ω, term ω ∂μ) ≤ ∫ ω, L * stepNorm ω ∂μ := hmono
+    _ = L * (∫ ω, stepNorm ω ∂μ) := by rw [integral_const_mul]
+    _ ≤ L * stepRms := mul_le_mul_of_nonneg_left hstep_avg hL_nonneg
+
+/--
+Bochner-integral smooth `hcore` theorem, reducing the stochastic-gradient
+expectation proof to integral raw/absorption/mirror/noise component fields.
+-/
+theorem chewi121_smooth_hcore_of_integral_components
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Fplus Df Dphi noise psi stepSq : Ω -> ℝ}
+    {alphaPhi h psiNext varianceRms stepRms : ℝ}
+    (hh : 0 < h) (halphaPhi_nonneg : 0 ≤ alphaPhi)
+    (hFplus : Integrable Fplus μ) (hDf : Integrable Df μ)
+    (hDphi : Integrable Dphi μ) (hnoise_int : Integrable noise μ)
+    (hpsi_int : Integrable psi μ) (hstepSq : Integrable stepSq μ)
+    (hraw_point : (fun ω =>
+      Fplus ω - Df ω + (1 / h) * Dphi ω - noise ω) ≤ᵐ[μ] psi)
+    (hpsi : (∫ ω, psi ω ∂μ) ≤ psiNext)
+    (hdf_point : Df ≤ᵐ[μ] fun ω => (1 / (2 * h)) * Dphi ω)
+    (hstepRms_sq : stepRms ^ (2 : ℕ) ≤ ∫ ω, stepSq ω ∂μ)
+    (hphi_point : (fun ω => (alphaPhi / 2) * stepSq ω) ≤ᵐ[μ] Dphi)
+    (hnoise : (∫ ω, noise ω ∂μ) ≤ varianceRms * stepRms) :
+    (∫ ω, Fplus ω ∂μ) +
+        (alphaPhi / (4 * h)) * stepRms ^ (2 : ℕ) -
+          varianceRms * stepRms ≤ psiNext := by
+  have hraw :=
+    chewi121_smooth_integral_raw_component_bound
+      (Fplus := Fplus) (Df := Df) (Dphi := Dphi) (noise := noise)
+      (psi := psi) (h := h) (psiNext := psiNext)
+      hFplus hDf hDphi hnoise_int hpsi_int hraw_point hpsi
+  have hdf_absorb :=
+    chewi121_smooth_integral_absorb_component_bound
+      (Df := Df) (Dphi := Dphi) (h := h) hDf hDphi hdf_point
+  have hphi_lower :=
+    chewi121_integral_mirror_lower_component_bound
+      (Dphi := Dphi) (stepSq := stepSq) (alphaPhi := alphaPhi)
+      (stepRms := stepRms)
+      halphaPhi_nonneg hDphi hstepSq hstepRms_sq hphi_point
+  exact
+    chewi121_smooth_hcore_of_expected_components
+      (alphaPhi := alphaPhi) (h := h)
+      (expectedNext := ∫ ω, Fplus ω ∂μ) (psiNext := psiNext)
+      (DfAvg := ∫ ω, Df ω ∂μ)
+      (DphiAvg := ∫ ω, Dphi ω ∂μ)
+      (noiseTerm := ∫ ω, noise ω ∂μ)
+      (varianceRms := varianceRms) (stepRms := stepRms)
+      hh hraw hdf_absorb hphi_lower hnoise
+
+/--
+Bochner-integral non-smooth `hcore` theorem.
+-/
+theorem chewi121_nonsmooth_hcore_of_integral_components
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Fplus lip grad Dphi psi stepSq stepNorm : Ω -> ℝ}
+    {alphaPhi L h psiNext stepRms : ℝ}
+    (hh : 0 < h) (halphaPhi_nonneg : 0 ≤ alphaPhi) (hL_nonneg : 0 ≤ L)
+    (hFplus : Integrable Fplus μ) (hlip_int : Integrable lip μ)
+    (hgrad_int : Integrable grad μ) (hDphi : Integrable Dphi μ)
+    (hpsi_int : Integrable psi μ) (hstepSq : Integrable stepSq μ)
+    (hstepNorm : Integrable stepNorm μ)
+    (hraw_point : (fun ω =>
+      Fplus ω - lip ω - grad ω + (1 / h) * Dphi ω) ≤ᵐ[μ] psi)
+    (hpsi : (∫ ω, psi ω ∂μ) ≤ psiNext)
+    (hstepRms_sq : stepRms ^ (2 : ℕ) ≤ ∫ ω, stepSq ω ∂μ)
+    (hphi_point : (fun ω => (alphaPhi / 2) * stepSq ω) ≤ᵐ[μ] Dphi)
+    (hstep_avg : (∫ ω, stepNorm ω ∂μ) ≤ stepRms)
+    (hlip_point : lip ≤ᵐ[μ] fun ω => L * stepNorm ω)
+    (hgrad_point : grad ≤ᵐ[μ] fun ω => L * stepNorm ω) :
+    (∫ ω, Fplus ω ∂μ) +
+        (alphaPhi / (2 * h)) * stepRms ^ (2 : ℕ) -
+          (2 * L) * stepRms ≤ psiNext := by
+  have hraw :=
+    chewi121_nonsmooth_integral_raw_component_bound
+      (Fplus := Fplus) (lip := lip) (grad := grad) (Dphi := Dphi)
+      (psi := psi) (h := h) (psiNext := psiNext)
+      hFplus hlip_int hgrad_int hDphi hpsi_int hraw_point hpsi
+  have hphi_lower :=
+    chewi121_integral_mirror_lower_component_bound
+      (Dphi := Dphi) (stepSq := stepSq) (alphaPhi := alphaPhi)
+      (stepRms := stepRms)
+      halphaPhi_nonneg hDphi hstepSq hstepRms_sq hphi_point
+  have hlip :=
+    chewi121_integral_linear_component_bound
+      (term := lip) (stepNorm := stepNorm) (L := L) (stepRms := stepRms)
+      hL_nonneg hlip_int hstepNorm hstep_avg hlip_point
+  have hgrad :=
+    chewi121_integral_linear_component_bound
+      (term := grad) (stepNorm := stepNorm) (L := L) (stepRms := stepRms)
+      hL_nonneg hgrad_int hstepNorm hstep_avg hgrad_point
+  exact
+    chewi121_nonsmooth_hcore_of_expected_components
+      (alphaPhi := alphaPhi) (L := L) (h := h)
+      (expectedNext := ∫ ω, Fplus ω ∂μ) (psiNext := psiNext)
+      (DphiAvg := ∫ ω, Dphi ω ∂μ)
+      (lipTerm := ∫ ω, lip ω ∂μ)
+      (gradTerm := ∫ ω, grad ω ∂μ)
+      (stepRms := stepRms)
+      hh hraw hphi_lower hlip hgrad
+
+/--
 Smooth-case Chewi Theorem 12.1 rate from the expected model bounds plus the
 source stochastic lower-bound estimate for `E psi_x(x+)`.
 -/
@@ -1103,6 +1333,138 @@ theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_finite_components
       (alphaPhi := alphaPhi) (L := L) (h := h)
       (psiNext := psiNext n) (stepRms := stepRms n)
       hh halphaPhi.le hL_nonneg (hw_nonneg n hn) (hraw_point n hn)
+      (hpsi n hn) (hstepRms_sq n hn) (hphi_point n hn)
+      (hstep_avg n hn) (hlip_point n hn) (hgrad_point n hn)
+
+/--
+Bochner-integral smooth Chewi Theorem 12.1 rate.  This lifts the
+finite-support route to a supplied measure-level expectation interface.
+-/
+theorem chewi121_smooth_weightedAverageGap_le_geometric_of_integral_components
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {alphaF alphaG alphaPhi sigma dim h Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap psiNext psiStar varianceRms stepRms : ℕ -> ℝ)
+    (Fplus Df Dphi noise psi stepSq : ℕ -> Ω -> ℝ)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hgrowth : ∀ n, n < N ->
+      (alphaG + 1 / h) * D (n + 1) + psiNext n ≤ psiStar n)
+    (hstar_upper : ∀ n, n < N ->
+      psiStar n ≤ Fstar + ((1 - alphaF * h) / h) * D n)
+    (hFplus : ∀ n, n < N -> Integrable (Fplus n) μ)
+    (hDf_int : ∀ n, n < N -> Integrable (Df n) μ)
+    (hDphi_int : ∀ n, n < N -> Integrable (Dphi n) μ)
+    (hnoise_int : ∀ n, n < N -> Integrable (noise n) μ)
+    (hpsi_int : ∀ n, n < N -> Integrable (psi n) μ)
+    (hstepSq_int : ∀ n, n < N -> Integrable (stepSq n) μ)
+    (hraw_point : ∀ n, n < N ->
+      (fun ω => Fplus n ω - Df n ω + (1 / h) * Dphi n ω - noise n ω) ≤ᵐ[μ]
+        psi n)
+    (hpsi : ∀ n, n < N -> (∫ ω, psi n ω ∂μ) ≤ psiNext n)
+    (hdf_point : ∀ n, n < N ->
+      Df n ≤ᵐ[μ] fun ω => (1 / (2 * h)) * Dphi n ω)
+    (hstepRms_sq : ∀ n, n < N ->
+      stepRms n ^ (2 : ℕ) ≤ ∫ ω, stepSq n ω ∂μ)
+    (hphi_point : ∀ n, n < N ->
+      (fun ω => (alphaPhi / 2) * stepSq n ω) ≤ᵐ[μ] Dphi n)
+    (hnoise : ∀ n, n < N ->
+      (∫ ω, noise n ω ∂μ) ≤ varianceRms n * stepRms n)
+    (hvariance : ∀ n, n < N ->
+      varianceRms n ^ (2 : ℕ) ≤ sigma ^ (2 : ℕ) * dim)
+    (hgap_sum : ∀ n, n < N ->
+      Fstar + gap (n + 1) = ∫ ω, Fplus n ω ∂μ) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        sigma ^ (2 : ℕ) * dim * h / alphaPhi := by
+  refine
+    chewi121_smooth_weightedAverageGap_le_geometric_of_rms_model_bounds
+      (alphaF := alphaF) (alphaG := alphaG) (alphaPhi := alphaPhi)
+      (sigma := sigma) (dim := dim) (h := h) (Fstar := Fstar)
+      htotal_pos hh halphaPhi hden_pos hlambda_pos D gap psiNext psiStar
+      (fun n => ∫ ω, Fplus n ω ∂μ) varianceRms stepRms
+      hN hD_N_nonneg hgrowth hstar_upper hvariance ?_ hgap_sum
+  intro n hn
+  exact
+    chewi121_smooth_hcore_of_integral_components
+      (μ := μ) (Fplus := Fplus n) (Df := Df n) (Dphi := Dphi n)
+      (noise := noise n) (psi := psi n) (stepSq := stepSq n)
+      (alphaPhi := alphaPhi) (h := h) (psiNext := psiNext n)
+      (varianceRms := varianceRms n) (stepRms := stepRms n)
+      hh halphaPhi.le (hFplus n hn) (hDf_int n hn) (hDphi_int n hn)
+      (hnoise_int n hn) (hpsi_int n hn) (hstepSq_int n hn)
+      (hraw_point n hn) (hpsi n hn) (hdf_point n hn)
+      (hstepRms_sq n hn) (hphi_point n hn) (hnoise n hn)
+
+/-- Bochner-integral non-smooth Chewi Theorem 12.1 rate. -/
+theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {alphaF alphaG alphaPhi L h Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi) (hL_nonneg : 0 ≤ L)
+    (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap psiNext psiStar stepRms : ℕ -> ℝ)
+    (Fplus lip grad Dphi psi stepSq stepNorm : ℕ -> Ω -> ℝ)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hgrowth : ∀ n, n < N ->
+      (alphaG + 1 / h) * D (n + 1) + psiNext n ≤ psiStar n)
+    (hstar_upper : ∀ n, n < N ->
+      psiStar n ≤ Fstar + ((1 - alphaF * h) / h) * D n)
+    (hFplus : ∀ n, n < N -> Integrable (Fplus n) μ)
+    (hlip_int : ∀ n, n < N -> Integrable (lip n) μ)
+    (hgrad_int : ∀ n, n < N -> Integrable (grad n) μ)
+    (hDphi_int : ∀ n, n < N -> Integrable (Dphi n) μ)
+    (hpsi_int : ∀ n, n < N -> Integrable (psi n) μ)
+    (hstepSq_int : ∀ n, n < N -> Integrable (stepSq n) μ)
+    (hstepNorm_int : ∀ n, n < N -> Integrable (stepNorm n) μ)
+    (hraw_point : ∀ n, n < N ->
+      (fun ω => Fplus n ω - lip n ω - grad n ω + (1 / h) * Dphi n ω) ≤ᵐ[μ]
+        psi n)
+    (hpsi : ∀ n, n < N -> (∫ ω, psi n ω ∂μ) ≤ psiNext n)
+    (hstepRms_sq : ∀ n, n < N ->
+      stepRms n ^ (2 : ℕ) ≤ ∫ ω, stepSq n ω ∂μ)
+    (hphi_point : ∀ n, n < N ->
+      (fun ω => (alphaPhi / 2) * stepSq n ω) ≤ᵐ[μ] Dphi n)
+    (hstep_avg : ∀ n, n < N -> (∫ ω, stepNorm n ω ∂μ) ≤ stepRms n)
+    (hlip_point : ∀ n, n < N ->
+      lip n ≤ᵐ[μ] fun ω => L * stepNorm n ω)
+    (hgrad_point : ∀ n, n < N ->
+      grad n ≤ᵐ[μ] fun ω => L * stepNorm n ω)
+    (hgap_sum : ∀ n, n < N ->
+      Fstar + gap (n + 1) = ∫ ω, Fplus n ω ∂μ) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  refine
+    chewi121_nonsmooth_weightedAverageGap_le_geometric_of_rms_model_bounds
+      (alphaF := alphaF) (alphaG := alphaG) (alphaPhi := alphaPhi)
+      (L := L) (h := h) (Fstar := Fstar)
+      htotal_pos hh halphaPhi hden_pos hlambda_pos D gap psiNext psiStar
+      (fun n => ∫ ω, Fplus n ω ∂μ) stepRms
+      hN hD_N_nonneg hgrowth hstar_upper ?_ hgap_sum
+  intro n hn
+  exact
+    chewi121_nonsmooth_hcore_of_integral_components
+      (μ := μ) (Fplus := Fplus n) (lip := lip n) (grad := grad n)
+      (Dphi := Dphi n) (psi := psi n) (stepSq := stepSq n)
+      (stepNorm := stepNorm n) (alphaPhi := alphaPhi) (L := L)
+      (h := h) (psiNext := psiNext n) (stepRms := stepRms n)
+      hh halphaPhi.le hL_nonneg (hFplus n hn) (hlip_int n hn)
+      (hgrad_int n hn) (hDphi_int n hn) (hpsi_int n hn)
+      (hstepSq_int n hn) (hstepNorm_int n hn) (hraw_point n hn)
       (hpsi n hn) (hstepRms_sq n hn) (hphi_point n hn)
       (hstep_avg n hn) (hlip_point n hn) (hgrad_point n hn)
 
