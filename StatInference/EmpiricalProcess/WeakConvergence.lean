@@ -357,6 +357,22 @@ noncomputable def VdVWSignedBoundedContinuousOuterInnerExpectationGap
     VdVWNonnegativeOuterInnerExpectationGap μ (fun ω => ENNReal.ofReal (-Y ω))
 
 /--
+The signed positive/negative outer/inner expectation gap vanishes exactly when
+both nonnegative positive-part and negative-part outer expectations coincide
+with their corresponding inner expectations.
+-/
+theorem VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_iff
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Y : Ω -> ℝ} :
+    VdVWSignedBoundedContinuousOuterInnerExpectationGap μ Y = 0 ↔
+      (VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (Y ω)) =
+          VdVWInnerExpectation μ (fun ω => ENNReal.ofReal (Y ω))) ∧
+        (VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (-Y ω)) =
+          VdVWInnerExpectation μ (fun ω => ENNReal.ofReal (-Y ω))) := by
+  simp [VdVWSignedBoundedContinuousOuterInnerExpectationGap,
+    VdVWNonnegativeOuterInnerExpectationGap_eq_zero_iff_outer_eq_inner]
+
+/--
 Measurable real maps have zero signed positive/negative outer/inner
 expectation gap.
 -/

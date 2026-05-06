@@ -5756,3 +5756,14 @@ This turns the local Chapter 1 asymptotic-measurability gap predicate into the
 expected equality criterion whenever an outer-to-inner inequality can be
 supplied.  It still does not provide the missing arbitrary-map signed
 extended-real cover existence theorem.
+
+2026-05-05 signed gap-equivalence follow-up: local search found only the
+measurable/null-measurable/a.e.-measurable zero lemmas for
+`VdVWSignedBoundedContinuousOuterInnerExpectationGap`, not a criterion reducing
+the signed gap to positive/negative outer-inner equality.  `WeakConvergence.lean`
+now proves `VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_iff`
+by splitting the two nonnegative gaps and reusing
+`VdVWNonnegativeOuterInnerExpectationGap_eq_zero_iff_outer_eq_inner`.  This is
+a Chapter 1 arbitrary-map/asymptotic-measurability support bridge for
+bounded-continuous real tests; the exact full signed extended-real arbitrary-map
+cover theorem remains open.

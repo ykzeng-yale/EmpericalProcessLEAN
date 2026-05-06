@@ -2092,3 +2092,11 @@ asymptotic-measurability primitives open.
 the nonnegative Chapter 1 outer/inner expectation-gap predicate into the exact
 outer-equals-inner criterion using `tsub_eq_zero_iff_le` and
 `VdVWInnerExpectation_le_outerExpectation`.
+
+2026-05-05 signed gap-equivalence follow-up:
+`WeakConvergence.lean` now proves
+`VdVWSignedBoundedContinuousOuterInnerExpectationGap_eq_zero_iff`, reducing the
+signed bounded-continuous outer/inner gap to the two positive/negative
+nonnegative outer-equals-inner criteria.  This narrows the local arbitrary-map
+asymptotic-measurability support layer while preserving the remaining full
+signed extended-real cover-existence gap.
