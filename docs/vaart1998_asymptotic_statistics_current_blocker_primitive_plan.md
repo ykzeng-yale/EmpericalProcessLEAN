@@ -79,16 +79,27 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_hasFDerivAt_delta_remainder_isLittleO`.
 7. Theorem 3.1 scaled-remainder handoff:
    `vaart1998_theorem_3_1_delta_method_of_scaled_remainder`.
+8. Localization criterion:
+   `vaart1998_tendstoInMeasure_zero_of_eventually_subset_tight`.
+9. Theorem 3.1 tight-localization wrapper:
+   `vaart1998_theorem_3_1_delta_method_of_localization_tight`.
 
 Verified Vaart packet: `4afbd3b` (`Add Vaart asymptotic statistics Lean lane`),
 included in remote `main` at `b36be5f`.
 
-The next aggressive theorem-sized packet is the stochastic
-differentiability-to-delta remainder layer: combine the compiled
-`HasFDerivAt` little-o display with tightness or convergence in distribution of
-`r_n • (T_n - theta)` to prove the scaled remainder is `o_P(1)`, then feed it
-into `vaart1998_theorem_3_1_delta_method_of_scaled_remainder` to close a fully
-source-shaped finite-dimensional Theorem 3.1 wrapper.
+The current theorem-sized packet has inserted the stochastic localization
+bridge used in Vaart's proof of Theorem 3.1: a local remainder-subset
+certificate plus real-tail tightness of `r_n • (T_n - theta)` now produces the
+scaled `o_P(1)` remainder and feeds the compiled delta handoff.
+
+The next aggressive packet is to discharge those two certificate fields:
+
+1. derive real-tail tightness of `r_n • (T_n - theta)` from convergence in
+   distribution, reusing `VdVWProbabilityMeasuresAsymptoticallyTight` and the
+   local norm-tail tightness lemmas in `StatInference/EmpiricalProcess`;
+2. derive the local remainder-subset certificate from
+   `vaart1998_hasFDerivAt_delta_remainder_isLittleO`, `r_n -> ∞`, and
+   `T_n - theta -> 0` in probability.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
@@ -136,6 +147,15 @@ Search result for the delta-method layer: mathlib already provides
 `Mathlib.Analysis.Calculus.FDeriv.Basic`, which exactly packages Vaart's
 deterministic differentiability display.  The local Vaart lane now wraps it
 instead of reproving derivative foundations.
+
+Search result for the tightness layer: local VdV&W weak-convergence files
+already provide `VdVWProbabilityMeasuresAsymptoticallyTight`,
+`VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_atTop`, and norm-tail
+criteria such as `VdVWProbabilityMeasuresTight.tendsto_norm_tail`.  The missing
+Vaart bridge is the random-variable law/tail specialization that turns
+distributional convergence of `r_n • (T_n - theta)` into the real-tail
+`hW_tight` field consumed by
+`vaart1998_theorem_3_1_delta_method_of_localization_tight`.
 
 ## Primitive Sequence
 

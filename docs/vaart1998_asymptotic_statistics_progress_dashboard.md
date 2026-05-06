@@ -12,7 +12,7 @@ Source folder: `Textbooks/VaartAsymStat1998/`
 
 ## Verified Frontier
 
-Initial scaffold and the first Chapter 3 delta-method handoff layer compile:
+Initial scaffold and the next Chapter 3 delta-method localization layer compile:
 
 - `StatInference/AsymptoticStatistics/Basic.lean`
 - root import from `StatInference.lean`
@@ -30,6 +30,10 @@ The initial Lean target is Chapter 2 plus Chapter 3 substrate:
   `vaart1998_hasFDerivAt_delta_remainder_isLittleO`.
 - Theorem 3.1 source-shaped scaled-remainder handoff
   `vaart1998_theorem_3_1_delta_method_of_scaled_remainder`.
+- localization criterion
+  `vaart1998_tendstoInMeasure_zero_of_eventually_subset_tight`.
+- Theorem 3.1 tight-localization wrapper
+  `vaart1998_theorem_3_1_delta_method_of_localization_tight`.
 
 Verification passed for the pushed Vaart packet `4afbd3b` on remote main
 `b36be5f`:
@@ -39,14 +43,22 @@ Verification passed for the pushed Vaart packet `4afbd3b` on remote main
 - `lake env lean StatInference.lean`
 - `lake build StatInference`
 
+Current unpushed Vaart packet verification passed for:
+
+- `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
+- `lake build StatInference.AsymptoticStatistics.Basic`
+
 ## Next Aggressive Target
 
-Close the full finite-dimensional Theorem 3.1 delta method:
+Close the full finite-dimensional Theorem 3.1 delta method by discharging the
+two new certificate fields:
 
-1. turn the compiled deterministic `HasFDerivAt` remainder display into an
-   `o_P(1)` stochastic remainder when
-   `r_n * (T_n - theta)` is tight or convergent in distribution;
-2. feed the result into the compiled scaled-remainder delta handoff.
+1. derive the real-tail tightness field for `r_n • (T_n - theta)` from
+   convergence in distribution, using local VdV&W/ProbabilityMeasure
+   asymptotic-tightness APIs;
+2. derive the local remainder-subset field from
+   `vaart1998_hasFDerivAt_delta_remainder_isLittleO`, `r_n -> ∞`, and
+   `T_n - theta -> 0` in probability.
 
 If this blocks, record the exact missing theorem shape and move to Chapter 4
 method-of-moments wrappers from CLT plus supplied delta.
