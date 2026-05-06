@@ -94,9 +94,9 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after the Chapter 12 sampled-model
-bridge packet and focused Lean verification of the Chewi Theorem 12.1 SMPGD
-finite raw/growth/star-upper bridge:
+Current live replacement `/goal` prompt after the Chapter 12 finite sampled
+rate packet and focused Lean verification of the Chewi Theorem 12.1 SMPGD
+smooth and pointwise-bounded non-smooth finite sampled endpoints:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -116,10 +116,11 @@ Sinkhorn/mirror-descent certificate endpoint, and
 `StatInference/Optimization/StochasticGradient.lean` as the current Chapter
 12 active theorem gate.
 
-Immediate aggressive target: discharge the remaining genuine sampled
-stochastic-gradient model fields for Chewi Theorem 12.1 SMPGD on top of the
+Immediate aggressive target: discharge the remaining exact L2/Bochner
+sampled-gradient probability fields for Chewi Theorem 12.1 SMPGD on top of the
 compiled integral-component final-rate wrappers, the smooth L2 noise wrapper,
-and the finite sampled raw/growth/star-upper bridge.  Do not redo the 10.11
+and the finite sampled smooth/pointwise-bounded non-smooth rate endpoints.  Do
+not redo the 10.11
 average-gap telescope, the 11.5 RAM recurrences, the 11.7 selector wrappers,
 the 11.8 certificate endpoint, the Chapter 12 weighted-average algebra, the
 compiled smooth/non-smooth scalar rate wrappers, expected-model one-step
@@ -127,18 +128,22 @@ algebra, RMS wrappers, component-to-`hcore` scalar algebra, finite-support
 component wrappers, or the verified Bochner `integral_mono_ae` transport
 wrappers, the verified L2/Hölder noise bound, or the verified sampled
 `ψ_x` raw inequalities, finite sampled growth, relative-smoothness absorption,
-and finite unbiased star-upper averaging.  First search local
+finite unbiased star-upper averaging, finite sampled smooth `hcore`, finite
+sampled smooth rate endpoint, finite sampled pointwise-bounded non-smooth
+`hcore`, or finite sampled pointwise-bounded non-smooth rate endpoint.  First
+search local
 `MirrorDescent.lean`, `Bregman.lean`, `ProjectedSubgradient.lean`,
 `StochasticGradient.lean`, local probability/expectation wrappers, and pinned
 mathlib expectation/Jensen/conditional expectation/Bochner/L2 APIs.  Then
 formalize the remaining concrete sampled SMPGD fields: variance domination
-from (12.1), finite or Bochner unbiasedness transport beyond the finite
-star-upper wrapper, and the pointwise/a.e. relative-smoothness and mirror
-strong-convexity hypotheses needed by
+from (12.1), Bochner unbiasedness transport beyond the finite star-upper
+wrapper, and the a.e. relative-smoothness and mirror strong-convexity
+hypotheses needed by
 `chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_noise_components`.
-In parallel, formalize the non-smooth Lipschitz/bounded-gradient component
-bounds and finite weighted Cauchy route from (12.2) for
-`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components`.
+In parallel, upgrade the non-smooth pointwise-bounded finite sampled endpoint
+to the source `(12.2)` L2 route: expectation-level Lipschitz/subgradient norm
+bound, finite/Bochner Cauchy-Schwarz for the sampled inner product, and a final
+wrapper feeding `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components`.
 Keep the concrete Sinkhorn row/column KL identity layer as the next Chapter
 11.8 blocker, but do not let it stall Chapter 12 coverage.
 
@@ -160,9 +165,8 @@ compiled Chapter 10 MPGD recurrence/weighted-denominator infrastructure,
 probability modules for later expectation-side discharges.
 
 Latest verified Optimization proof frontier:
-after pushed Optimization commit `d338891`
-(`Add Chewi SMPGD L2 noise wrappers`), the current focused Lean check also
-verifies the sampled SMPGD model bridge packet in
+the current finite sampled endpoint packet verifies the smooth and
+pointwise-bounded non-smooth sampled rate layer in
 `StatInference/Optimization/StochasticGradient.lean` with
 `weightedSumBound_of_gronwall_negative_forcing_with_error`,
 `weightedAverageGap_le_of_gronwall_negative_forcing_with_error`, and
@@ -218,7 +222,13 @@ plus the sampled-model bridge packet
 `chewi121_nonsmooth_raw_point_of_sampled_model`,
 `chewi121_smooth_absorb_of_relativeSmoothOn`,
 `chewi121_finite_sampled_growth_of_steps`, and
-`chewi121_finite_sampled_star_upper_of_unbiased`.
+`chewi121_finite_sampled_star_upper_of_unbiased`, plus the newest finite
+sampled endpoint packet
+`chewi121_smooth_hcore_of_finite_sampled_models`,
+`chewi121_nonsmooth_hcore_of_finite_sampled_models`,
+`chewi121_smooth_weightedAverageGap_le_geometric_of_finite_sampled_models`,
+and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_finite_sampled_models`.
 This proves the source recurrence-to-rate algebra, smooth/non-smooth
 stochastic error instantiations, the expected-model algebra turning Chewi's
 three `psi_x` bounds into the displayed SMPGD one-step recurrence, the direct
@@ -227,14 +237,14 @@ rates, the scalar RMS/Young algebra used in Chewi's displayed smooth and
 non-smooth lower estimates, and the deterministic component-to-`hcore`
 assembly for both smooth and non-smooth SMPGD, including a finite-support
 stochastic-gradient route, a general Bochner-integral route from supplied
-a.e. model inequalities to the final weighted-average rate, and the sampled
-`ψ_x` raw/growth/star-upper finite bridge.  The remaining Theorem 12.1
-blocker is now not integral transport, smooth Cauchy-Schwarz/Hölder, or finite
-unbiased star averaging; it is the remaining stochastic model discharge:
-variance domination from (12.1), finite/Bochner expectation transport for the
-sampled oracles, and the source pointwise/a.e. relative-smoothness,
-mirror-strong-convexity, Lipschitz, and bounded-gradient estimates from
-(12.2).
+a.e. model inequalities to the final weighted-average rate, the sampled
+`ψ_x` raw/growth/star-upper finite bridge, and the finite sampled smooth and
+pointwise-bounded non-smooth endpoints.  The remaining Theorem 12.1 blocker is
+now not integral transport, smooth Cauchy-Schwarz/Hölder, finite unbiased star
+averaging, or finite sampled model assembly; it is the remaining exact source
+probability discharge: variance domination from (12.1), Bochner expectation
+transport for the sampled oracles, and the non-smooth upgrade from pointwise
+bounded sampled gradients to the source L2 assumption (12.2).
 
 Fresh Chapter 12 Bochner search result: mathlib has `integral_mono_ae` and
 `integral_mono` for pointwise or a.e. real integral inequalities,
