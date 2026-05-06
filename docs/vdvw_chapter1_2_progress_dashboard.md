@@ -13,8 +13,11 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current `/goal` target override, 2026-05-06 after pushed head `2263fb4`
-(`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`):
+Current `/goal` target override, 2026-05-06 after the verified
+natural-polynomial variable-domain entropy constructor
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
+and selected tail/UI bridge
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`:
 closed
 finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
@@ -187,6 +190,10 @@ tail/UI package directly through
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`,
 so structural VC/Sauer and grid routes no longer need to expose the
 intermediate first-sample `nnnorm` hypothesis by hand.
+The variable-domain entropy package itself now also has the direct constructor
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`,
+so the same pointwise natural-polynomial cardinality estimate supplies the
+book-facing entropy condition and the selected tail/UI package.
 Thus deterministic normalized-log bounds, including natural-polynomial
 VC/Sauer-style cardinality growth, now supply the first-sample `nnnorm`
 condition directly.  The next non-finite theorem task is upstream: prove such

@@ -89,8 +89,11 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-06 after pushed head `2263fb4`
-(`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`):
+Current operational target, 2026-05-06 after the verified
+natural-polynomial variable-domain entropy constructor
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
+and selected tail/UI bridge
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`:
 the strong
 Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
@@ -226,6 +229,11 @@ which composes the first-sample bounded-entropy route with the selected
 tail/UI package.  Future VC/Sauer, finite-trace, and quantizer/grid arguments
 should feed this constructor rather than restating the intermediate
 first-sample `nnnorm` side condition.
+The matching variable-domain book-entropy constructor is also compiled:
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
+turns the same pointwise natural-polynomial cardinality growth into the
+book-facing varying-domain entropy condition itself.  This closes the generic
+nat-poly plumbing on both the entropy and selected tail/UI sides.
 The remaining useful work is a concrete quantizer/grid/VC cardinality estimate
 for the coordinate code sets, not another endpoint wrapper.
 For Chapter 1 varying-domain asymptotic-measurability,

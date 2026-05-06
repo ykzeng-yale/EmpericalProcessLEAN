@@ -67,8 +67,11 @@ unless a new exact statement directly consumes them.
 
 ## Current `/goal` Target
 
-Authoritative operational prompt, 2026-05-06 after pushed head `2263fb4`
-(`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`):
+Authoritative operational prompt, 2026-05-06 after the verified
+natural-polynomial variable-domain entropy constructor
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
+and selected tail/UI bridge
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`:
 finish VdV&W Chapters 1-2 in Lean by dependency order, with proof-hole-free
 code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
@@ -6184,3 +6187,18 @@ boundedness.  The next useful work is to supply concrete structural
 cardinality estimates or prove the genuinely random selected empirical-cover
 tail/UI theorem; do not spend another run on endpoint aliases for already
 closed routes.
+
+2026-05-06 variable-domain nat-poly entropy constructor follow-up: local search
+found the deterministic-rate constructor
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_div_tendsto_bound`
+and the selected fixed-radius natural-polynomial tail/UI bridge above, but no
+direct constructor producing the variable-domain book entropy condition itself
+from natural-polynomial cardinality growth.  `Theorem243.lean` now proves
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`.
+This is the upstream VC/Sauer/finite-trace/grid constructor: a pointwise bound
+`cardinality + 1 <= C(M,eta) * (n+1)^d` now directly yields the book-style
+varying-domain entropy condition, and the existing selected tail/UI bridge can
+then consume the same structural bound.  The next non-duplicative proof must
+instantiate this polynomial cardinality hypothesis from a real VC/Sauer,
+finite-trace, threshold-grid, or quantizer theorem, or prove the genuinely
+random selected empirical-cover tail/UI theorem.

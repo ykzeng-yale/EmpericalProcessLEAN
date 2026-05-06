@@ -18860,6 +18860,80 @@ theorem
       (hlog_rate_bound M hM_pos eta heta)
 
 /--
+Natural-polynomial cardinality growth builds the variable-domain book entropy
+condition.
+
+This is the structural VC/Sauer/finite-trace constructor for the random
+entropy field: a pointwise polynomial cardinality bound gives a deterministic
+normalized-log rate tending to zero, then
+`of_logCardinality_div_tendsto_bound` supplies the varying-domain entropy
+condition.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {constant : ℝ -> ℝ -> ℝ} {degree : ℝ -> ℝ -> ℕ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hcovering_all :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality M eta n))
+    (hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 1 ≤ constant M eta)
+    (hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((cardinality M eta n sample n : ℝ) + 1) ≤
+            constant M eta *
+              (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope cardinality := by
+  refine
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_div_tendsto_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (cardinality := cardinality)
+      (rate := fun M eta n =>
+        (Real.log (constant M eta) + (degree M eta : ℝ) *
+          Real.log (((n + 1 : ℕ) : ℝ))) / (n : ℝ))
+      hcovering_all ?_ ?_
+  · intro M hM eta heta
+    exact
+      tendsto_const_add_mul_log_nat_succ_div_atTop_nhds_zero
+        (Real.log (constant M eta)) (degree M eta : ℝ)
+  · intro M hM eta heta
+    exact Eventually.of_forall fun n sample => by
+      have hleft_pos :
+          0 < ((cardinality M eta n sample n : ℝ) + 1) := by
+        positivity
+      have hconstant_pos : 0 < constant M eta :=
+        lt_of_lt_of_le zero_lt_one (hconstant_ge_one M hM eta heta)
+      have hsucc_pos : 0 < (((n + 1 : ℕ) : ℝ)) := by
+        positivity
+      have hpow_pos : 0 < (((n + 1 : ℕ) : ℝ) ^ degree M eta) :=
+        pow_pos hsucc_pos _
+      have hlog_succ_linear :
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) ≤
+            Real.log (constant M eta) + (degree M eta : ℝ) *
+              Real.log (((n + 1 : ℕ) : ℝ)) := by
+        calc
+          Real.log ((cardinality M eta n sample n : ℝ) + 1)
+              ≤ Real.log (constant M eta *
+                  (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :=
+            Real.log_le_log hleft_pos (hpoly_bound M hM eta heta n sample)
+          _ = Real.log (constant M eta) + (degree M eta : ℝ) *
+                Real.log (((n + 1 : ℕ) : ℝ)) := by
+            rw [Real.log_mul hconstant_pos.ne' hpow_pos.ne', Real.log_pow]
+      exact
+        div_le_div_of_nonneg_right hlog_succ_linear (Nat.cast_nonneg n)
+
+/--
 The variable-domain book entropy condition supplies the entropy and covering
 fields of the selected fixed-radius package for each fixed truncation level.
 
