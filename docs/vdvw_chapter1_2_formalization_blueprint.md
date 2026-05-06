@@ -173,6 +173,13 @@ through
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`.
+The exact coordinatewise threshold-separation variant now also feeds selected
+fixed-radius side conditions through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_thresholds_separate_uniform_vc`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_thresholds_separate_uniform_vc`,
+using the finite trace image and VC/Sauer cardinality theorem from
+`ThresholdCoding.lean`.
 It now also reaches the untruncated centered convergence conclusion through
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`,
 which composes that selected package with the existing large-`M`

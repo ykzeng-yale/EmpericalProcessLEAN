@@ -3166,6 +3166,19 @@ feeds the pointwise separation condition and therefore the finite-image,
 product-cardinality, and uniform-VC natural-polynomial consumers.  This is a
 more local target for the next subgraph/truncated-class geometry proof.
 
+2026-05-06 follow-up: `Theorem243.lean` now consumes this exact
+coordinatewise threshold-separation layer directly as a selected fixed-radius
+Theorem 2.4.3 input through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_thresholds_separate_uniform_vc`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_thresholds_separate_uniform_vc`.
+The bridge reuses the finite empirical trace image and VC/Sauer
+trace-cardinality theorem
+`empiricalTrace_image_card_add_one_real_le_of_coordinate_thresholds_separate_uniform_vc`,
+then feeds the result into the selected fixed-radius tail/UI package.  This is
+upstream structural progress: endpoint aliases should only be added if a
+later final assembly consumes this exact coordinate-threshold route.
+
 The value-membership declarations give a concrete exact-separation sufficient
 condition: if the finite threshold set contains every realized coordinate
 value, then matching threshold predicates forces equality of those values.

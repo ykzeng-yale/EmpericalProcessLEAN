@@ -23039,6 +23039,209 @@ theorem
       hvc.toUniformThresholdVCSubgraphBound
 
 /--
+Selected fixed-radius tail/UI package from exact coordinatewise
+threshold separation and uniform fixed-threshold VC/Sauer bounds.
+
+This uses the trace-cardinality theorem
+`empiricalTrace_image_card_add_one_real_le_of_coordinate_thresholds_separate_uniform_vc`:
+matching all threshold predicates at each sample coordinate identifies the
+truncated coordinate value, so the realized empirical trace image is finite
+with the Sauer-polynomial bound.  This is stronger than the approximate
+threshold-code route, but it is a clean structural bridge for exact finite
+threshold separations.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_thresholds_separate_uniform_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (thresholds : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Finset ℝ)
+    {thresholdCount : ℝ -> ℕ} {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcoordinate :
+      ∀ eta n (sample : SampleAt Observation n) m,
+        ∀ sampleIndex : Fin m,
+          ∀ index₁, index₁ ∈ indexClass ->
+            ∀ index₂, index₂ ∈ indexClass ->
+              (∀ threshold : {threshold // threshold ∈ thresholds eta n sample m},
+                (threshold.1 <
+                    vdVWTruncatedClassFun classFun envelope M index₁
+                      ((samplePath (X n) sample m) sampleIndex) ↔
+                  threshold.1 <
+                    vdVWTruncatedClassFun classFun envelope M index₂
+                      ((samplePath (X n) sample m) sampleIndex))) ->
+              vdVWTruncatedClassFun classFun envelope M index₁
+                  ((samplePath (X n) sample m) sampleIndex) =
+                vdVWTruncatedClassFun classFun envelope M index₂
+                  ((samplePath (X n) sample m) sampleIndex))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hthresholds_card :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        (thresholds eta n sample n).card ≤ thresholdCount eta)
+    (hvc :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        ∀ threshold : {threshold // threshold ∈ thresholds eta n sample n},
+          (empiricalBinaryTraceSetFamily (samplePath (X n) sample n) indexClass
+            (thresholdIndicatorClassFun
+              (vdVWTruncatedClassFun classFun envelope M) threshold.1)).vcDim ≤
+            vcDegree eta) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta n sample m =>
+        (finite_empiricalTrace_image_of_coordinate_thresholds_separate
+          (sample := samplePath (X n) sample m)
+          (indexClass := indexClass)
+          (classFun := vdVWTruncatedClassFun classFun envelope M)
+          (thresholds := thresholds eta n sample m)
+          (hcoordinate eta n sample m)).toFinset.card) := by
+  classical
+  let selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun eta n sample m =>
+      (finite_empiricalTrace_image_of_coordinate_thresholds_separate
+        (sample := samplePath (X n) sample m)
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (thresholds := thresholds eta n sample m)
+        (hcoordinate eta n sample m)).toFinset.card
+  have hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (selectedCardinality eta n) := by
+    intro eta heta
+    let htrace_finite :
+        ∀ n (sample : SampleAt Observation n) m,
+          (empiricalTrace (samplePath (X n) sample m)
+            (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite :=
+      fun n sample m =>
+        finite_empiricalTrace_image_of_coordinate_thresholds_separate
+          (sample := samplePath (X n) sample m)
+          (indexClass := indexClass)
+          (classFun := vdVWTruncatedClassFun classFun envelope M)
+          (thresholds := thresholds eta n sample m)
+          (hcoordinate eta n sample m)
+    exact
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_trace_image_cardinality_bound_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (epsilon := eta) (cardinality := selectedCardinality eta) X
+        htrace_finite
+        (by
+          intro n sample m
+          rfl)
+        heta.le
+  have hconstant_ge_one :
+      ∀ eta, 0 < eta ->
+        1 ≤ ((((vcDegree eta + 2 : ℕ) : ℝ) ^ thresholdCount eta) + 1) := by
+    intro eta _heta
+    have hnonneg :
+        0 ≤ (((vcDegree eta + 2 : ℕ) : ℝ) ^ thresholdCount eta) :=
+      pow_nonneg (Nat.cast_nonneg _) _
+    linarith
+  have hpoly_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        ((selectedCardinality eta n sample n : ℝ) + 1) ≤
+          ((((vcDegree eta + 2 : ℕ) : ℝ) ^ thresholdCount eta) + 1) *
+            (((n + 1 : ℕ) : ℝ) ^ (vcDegree eta * thresholdCount eta)) := by
+    intro eta heta n sample
+    exact
+      empiricalTrace_image_card_add_one_real_le_of_coordinate_thresholds_separate_uniform_vc
+        (sample := samplePath (X n) sample n)
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (thresholds := thresholds eta n sample n)
+        (d := vcDegree eta) (k := thresholdCount eta)
+        (hcoordinate eta n sample n)
+        (hthresholds_card eta heta n sample)
+        (hvc eta heta n sample)
+  simpa [selectedCardinality] using
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_nat_poly_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (constant := fun eta =>
+        ((((vcDegree eta + 2 : ℕ) : ℝ) ^ thresholdCount eta) + 1))
+      (degree := fun eta => vcDegree eta * thresholdCount eta)
+      (cardinality := selectedCardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas
+      hconstant_ge_one hM_pos hpoly_bound
+
+/--
+All-positive-`M` selected fixed-radius packages from exact coordinatewise
+threshold separation and uniform fixed-threshold VC/Sauer bounds.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_thresholds_separate_uniform_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (thresholds :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Finset ℝ)
+    {thresholdCount : ℝ -> ℝ -> ℕ} {vcDegree : ℝ -> ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hcoordinate :
+      ∀ M eta n (sample : SampleAt Observation n) m,
+        ∀ sampleIndex : Fin m,
+          ∀ index₁, index₁ ∈ indexClass ->
+            ∀ index₂, index₂ ∈ indexClass ->
+              (∀ threshold : {threshold // threshold ∈ thresholds M eta n sample m},
+                (threshold.1 <
+                    vdVWTruncatedClassFun classFun envelope M index₁
+                      ((samplePath (X M n) sample m) sampleIndex) ↔
+                  threshold.1 <
+                    vdVWTruncatedClassFun classFun envelope M index₂
+                      ((samplePath (X M n) sample m) sampleIndex))) ->
+              vdVWTruncatedClassFun classFun envelope M index₁
+                  ((samplePath (X M n) sample m) sampleIndex) =
+                vdVWTruncatedClassFun classFun envelope M index₂
+                  ((samplePath (X M n) sample m) sampleIndex))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hthresholds_card :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          (thresholds M eta n sample n).card ≤ thresholdCount M eta)
+    (hvc :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ∀ threshold : {threshold // threshold ∈ thresholds M eta n sample n},
+            (empiricalBinaryTraceSetFamily (samplePath (X M n) sample n) indexClass
+              (thresholdIndicatorClassFun
+                (vdVWTruncatedClassFun classFun envelope M) threshold.1)).vcDim ≤
+              vcDegree M eta) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M
+        (fun eta n sample m =>
+          (finite_empiricalTrace_image_of_coordinate_thresholds_separate
+            (sample := samplePath (X M n) sample m)
+            (indexClass := indexClass)
+            (classFun := vdVWTruncatedClassFun classFun envelope M)
+            (thresholds := thresholds M eta n sample m)
+            (hcoordinate M eta n sample m)).toFinset.card) := by
+  intro M hM_pos
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_thresholds_separate_uniform_vc
+      (P := P) (X := X M) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (thresholds := thresholds M)
+      (thresholdCount := thresholdCount M) (vcDegree := vcDegree M)
+      (hX_samplePath M) (hcoordinate M) hclass henvelope_meas
+      hM_pos (hthresholds_card M hM_pos) (hvc M hM_pos)
+
+/--
 Selected fixed-radius tail/UI package from finite-threshold value separation
 and uniform fixed-threshold VC/Sauer bounds.
 
