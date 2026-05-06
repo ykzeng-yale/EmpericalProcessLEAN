@@ -114,6 +114,13 @@ new Theorem 2.4.3 endpoint.  The corresponding centered untruncated
 convergence endpoint is now compiled as
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_roundingQuantizer_uniform_abs_bound_nat_poly`,
 again with the polynomial cardinality/compression hypothesis explicit.
+The same hypothesis now also feeds the book-facing variable truncated entropy
+package through
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_roundingQuantizer_uniform_abs_bound_nat_poly`.
+The remaining non-duplicative quantizer task is therefore not another
+selected/entropy endpoint; it is a genuine finite-code compression,
+VC/Sauer-style, or other structural theorem that supplies the polynomial
+cardinality bound.
 
 Verified compiled foundation that should not be repeated:
 `vdVW_theorem_2_4_1_glivenkoCantelli`;

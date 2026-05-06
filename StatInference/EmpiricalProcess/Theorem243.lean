@@ -19586,6 +19586,74 @@ theorem
         div_le_div_of_nonneg_right hlog_succ_linear (Nat.cast_nonneg n)
 
 /--
+Nearest-integer rounding grids supply the variable-domain book entropy
+condition when their selected cardinalities have natural-polynomial growth.
+
+The polynomial cardinality bound is an explicit structural/compression
+hypothesis.  The raw coordinate product grid is only the covering lift and is
+not, by itself, a Theorem 2.4.3 entropy-rate proof.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_roundingQuantizer_uniform_abs_bound_nat_poly
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {bound : ℝ -> ℝ -> ℤ}
+    {constant : ℝ -> ℝ -> ℝ} {degree : ℝ -> ℝ -> ℕ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hbound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        M / eta + 1 / 2 ≤ (bound M eta : ℝ))
+    (hcardinality_dom :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ((2 * bound M eta + 1).toNat) ^ m ≤
+            cardinality M eta n sample m)
+    (hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 1 ≤ constant M eta)
+    (hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((cardinality M eta n sample n : ℝ) + 1) ≤
+            constant M eta *
+              (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope cardinality := by
+  have hcovering_all :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality M eta n) := by
+    intro M hM_pos
+    exact
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_roundingQuantizer_uniform_abs_bound_cardinality_bound_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (radiusBound := fun _ => M)
+        (bound := bound M)
+        (cardinality := cardinality M) (X M)
+        (by
+          intro eta _heta n sample m index hindex sampleIndex
+          exact
+            abs_vdVWTruncatedClassFun_le_M
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M)
+              henvelope hM_pos.le hindex
+              ((samplePath (X M n) sample m) sampleIndex))
+        (hbound M hM_pos) (hcardinality_dom M hM_pos)
+  exact
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (constant := constant) (degree := degree)
+      (cardinality := cardinality)
+      hcovering_all hconstant_ge_one hpoly_bound
+
+/--
 Natural-polynomial original-class empirical-cover growth builds the truncated
 variable-domain book entropy condition.
 

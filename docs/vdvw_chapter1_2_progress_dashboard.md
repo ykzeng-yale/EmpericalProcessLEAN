@@ -117,7 +117,11 @@ cardinality bound is proved; the raw nearest-integer grid remains
 exponential-sized in the sample length.  The route now reaches centered
 untruncated convergence through
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_roundingQuantizer_uniform_abs_bound_nat_poly`,
-with that structural cardinality hypothesis still explicit.
+with that structural cardinality hypothesis still explicit.  It also feeds the
+book-facing variable truncated entropy condition through
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_roundingQuantizer_uniform_abs_bound_nat_poly`.
+Future quantizer progress should prove the actual compression/VC/Sauer
+cardinality estimate, not another entropy or selected-side wrapper.
 The signed arbitrary-map asymptotic-measurability layer now also implies the
 lower-shifted/canonical shifted predicates through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_lowerShifted` and
