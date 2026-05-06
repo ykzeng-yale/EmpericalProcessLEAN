@@ -115,6 +115,32 @@ theorem weightedDenominator_constant_weight_eq_card
   rw [weightedDenominator_constant_weight_eq, finiteUnitMass_eq_card]
 
 /--
+A positive common survey weight and nonempty sample give a positive Hájek
+denominator.
+-/
+theorem weightedDenominator_constant_weight_pos_of_pos_of_nonempty
+    (sample : Finset Unit) (commonWeight : Real)
+    (hweight_pos : 0 < commonWeight)
+    (hnonempty : sample.Nonempty) :
+    0 < weightedDenominator sample (fun _unit => commonWeight) := by
+  rw [weightedDenominator_constant_weight_eq_card]
+  have hcard_pos : 0 < (sample.card : Real) := by
+    exact_mod_cast (Finset.card_pos.mpr hnonempty)
+  exact mul_pos hweight_pos hcard_pos
+
+/--
+A positive common survey weight and nonempty sample give a nonzero Hájek
+denominator.
+-/
+theorem weightedDenominator_constant_weight_ne_zero_of_pos_of_nonempty
+    (sample : Finset Unit) (commonWeight : Real)
+    (hweight_pos : 0 < commonWeight)
+    (hnonempty : sample.Nonempty) :
+    weightedDenominator sample (fun _unit => commonWeight) ≠ 0 :=
+  (weightedDenominator_constant_weight_pos_of_pos_of_nonempty sample
+    commonWeight hweight_pos hnonempty).ne'
+
+/--
 With a nonzero common survey weight and nonzero finite sample mass, every
 normalized survey weight reduces to the inverse of the finite unit mass.
 -/
@@ -160,6 +186,22 @@ theorem normalizedSurveyWeight_constant_weight_eq_inv_card_of_nonempty
     hweight (sampleCard_ne_zero_of_nonempty sample hnonempty) unit
 
 /--
+With a positive common survey weight and a nonempty sample, every normalized
+survey weight is positive.
+-/
+theorem normalizedSurveyWeight_constant_weight_pos_of_pos_of_nonempty
+    (sample : Finset Unit) (commonWeight : Real)
+    (hweight_pos : 0 < commonWeight)
+    (hnonempty : sample.Nonempty)
+    (unit : Unit) :
+    0 < normalizedSurveyWeight sample (fun _unit => commonWeight) unit := by
+  rw [normalizedSurveyWeight_constant_weight_eq_inv_card_of_nonempty
+    sample commonWeight hweight_pos.ne' hnonempty unit]
+  have hcard_pos : 0 < (sample.card : Real) := by
+    exact_mod_cast (Finset.card_pos.mpr hnonempty)
+  exact div_pos zero_lt_one hcard_pos
+
+/--
 With a nonzero common survey weight, the Hajek mean equals the ratio formed by
 the unweighted finite sum and the finite unit mass `sum 1`.
 -/
@@ -202,6 +244,19 @@ theorem hajekMean_constant_weight_eq_card_average_of_nonempty
       (∑ unit ∈ sample, value unit) / (sample.card : Real) :=
   hajekMean_constant_weight_eq_card_average sample value commonWeight hweight
     (sampleCard_ne_zero_of_nonempty sample hnonempty)
+
+/--
+Positive common weights are enough for the nonempty-sample ordinary finite
+sample average specialization.
+-/
+theorem hajekMean_constant_weight_eq_card_average_of_pos_nonempty
+    (sample : Finset Unit) (value : Unit -> Real) (commonWeight : Real)
+    (hweight_pos : 0 < commonWeight)
+    (hnonempty : sample.Nonempty) :
+    hajekMean sample (fun _unit => commonWeight) value =
+      (∑ unit ∈ sample, value unit) / (sample.card : Real) :=
+  hajekMean_constant_weight_eq_card_average_of_nonempty sample value
+    commonWeight hweight_pos.ne' hnonempty
 
 end WDSM
 end Matching
