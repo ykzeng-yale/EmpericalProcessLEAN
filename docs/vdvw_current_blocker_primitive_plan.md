@@ -70,11 +70,11 @@ unless a new exact statement directly consumes them.
 
 ## Current `/goal` Target
 
-Authoritative `/goal` rebase, 2026-05-06 after the finite-FDD/raw-coordinate
-atTop tightness replacement consumers: local `main` should be kept synced with
-`origin/main`, and the active Codex goal object remains a broad orchestration
-label because it cannot be edited in place.  Use this paragraph, not older
-rebase paragraphs below, as the operative continuation prompt.
+Authoritative `/goal` rebase, 2026-05-06 after the finite-index 1.4.8
+weak-convergence/tightness iff wrappers: local `main` should be kept synced
+with `origin/main`, and the active Codex goal object remains a broad
+orchestration label because it cannot be edited in place.  Use this paragraph,
+not older rebase paragraphs below, as the operative continuation prompt.
 
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
@@ -83,10 +83,12 @@ natural-polynomial code-set routes, threshold/grid/finite-trace/full-subgraph
 VC routes, canonical iid sample-process specializations, finite-class SLLN
 endpoints, full-subgraph `P`-GC plus in-mean packages, and Lemma 2.4.5
 reverse/cofiltration consumers.  Chapter 1 support also includes measure-level
-weak-convergence/tightness/product/FDD wrappers, raw bounded `ell_infty(T)`
-process-law forward FDD/tightness wrappers, finite-FDD/raw-coordinate
-replacement and atTop tightness consumers, source/target/reindexing
-congruence, and centered separability-to-`P`-measurability bridges.
+weak-convergence/tightness/product/FDD wrappers, finite-index
+`ell_infty(T)` weak-convergence/tightness iff wrappers, raw bounded
+`ell_infty(T)` process-law forward FDD/tightness wrappers,
+finite-FDD/raw-coordinate replacement and atTop tightness consumers,
+source/target/reindexing congruence, and centered separability-to-`P`-
+measurability bridges.
 
 The exact textbook Theorem 2.4.3 is not yet closed because the book assumes the
 generic random entropy condition
@@ -523,6 +525,18 @@ raw-coordinate tightness after selected-coordinate replacement.  This is still
 forward finite-dimensional support; it does not prove the arbitrary-index
 VdV&W 1.4.8 converse or the process separability/asymptotic-measurability
 interfaces.
+
+2026-05-06 finite-index VdV&W 1.4.8 iff wrappers: search in local
+`FiniteDimensional.lean`, `StatInference/ProbabilityMeasure`, and pinned
+mathlib found the already compiled finite-product forward/converse directions
+but no named iff criteria.  `FiniteDimensional.lean` now proves
+`vdVW148_ellInfty_weakConvergence_iff_finiteProduct_weakConvergence_finite`
+and
+`vdVW148_ellInfty_asymptoticallyTight_iff_finiteProduct_asymptoticallyTight_finite`.
+These are self-contained finite-index versions of the VdV&W 1.4.8
+weak-convergence and tightness criteria.  They deliberately do not close the
+arbitrary-index FDD converse, separability, asymptotic-measurability, or
+nonmeasurable outer-cover weak-convergence blockers.
 
 Authoritative operational prompt, 2026-05-06 after the verified
 original-cover truncation/polynomial entropy bridges and the quantizer

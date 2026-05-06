@@ -309,6 +309,38 @@ theorem vdVW148_ellInfty_weakConvergence_of_finiteProduct_weakConvergence_finite
   simpa [e] using hback
 
 /--
+Finite-index weak-convergence criterion for `ell_infty(T)`.
+
+When the index set is finite, the finite-dimensional map given by the
+canonical continuous linear equivalence is a genuine equivalence, so weak
+convergence of `ell_infty(T)` laws is equivalent to weak convergence of the
+ordinary finite-product image laws.  This is the finite-index version only,
+not the arbitrary-index VdV&W 1.4.8 converse.
+-/
+theorem vdVW148_ellInfty_weakConvergence_iff_finiteProduct_weakConvergence_finite
+    {ι : Type*} {l : Filter ι}
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {μs : ι -> ProbabilityMeasure (VdVWEllInfty T)}
+    {μ : ProbabilityMeasure (VdVWEllInfty T)} :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ ↔
+      VdVWWeakConvergenceProbabilityMeasures
+        (fun n => (μs n).map
+          ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).continuous.measurable.aemeasurable))
+        l
+        (μ.map
+          ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).continuous.measurable.aemeasurable)) := by
+  constructor
+  · intro h
+    exact h.map_continuous (VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).continuous
+  · intro h
+    exact
+      vdVW148_ellInfty_weakConvergence_of_finiteProduct_weakConvergence_finite
+        (T := T) h
+
+/--
 Direct finite-index measure-level converse: weak convergence of probability
 measures on the ordinary finite product `T -> ℝ` pushes back to weak
 convergence of their corresponding `ell_infty(T)` laws.
@@ -375,6 +407,34 @@ theorem vdVW148_ellInfty_map_symm_asymptoticallyTight_of_finiteProduct_asymptoti
         ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm.continuous.measurable.aemeasurable))
       l :=
   hν.map_continuous (VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm.continuous
+
+/--
+Finite-index asymptotic-tightness criterion for `ell_infty(T)`.
+
+For finite `T`, ordinary asymptotic tightness of `ell_infty(T)` laws is
+equivalent to asymptotic tightness of the finite-product image laws under the
+canonical continuous linear equivalence.  This is a finite-index support
+theorem and does not assert the arbitrary-index VdV&W tightness criterion.
+-/
+theorem vdVW148_ellInfty_asymptoticallyTight_iff_finiteProduct_asymptoticallyTight_finite
+    {ι : Type*} {l : Filter ι}
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {μs : ι -> ProbabilityMeasure (VdVWEllInfty T)} :
+    VdVWProbabilityMeasuresAsymptoticallyTight μs l ↔
+      VdVWProbabilityMeasuresAsymptoticallyTight
+        (fun n => (μs n).map
+          ((VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).continuous.measurable.aemeasurable))
+        l := by
+  constructor
+  · intro h
+    exact h.map_continuous (VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).continuous
+  · intro h
+    exact
+      vdVW148_ellInfty_asymptoticallyTight_of_finiteProduct_asymptoticallyTight_finite
+        (T := T) h
 
 /-- Coordinate law of a dependent-product-valued random element. -/
 theorem vdVW148_coordinate_hasLaw

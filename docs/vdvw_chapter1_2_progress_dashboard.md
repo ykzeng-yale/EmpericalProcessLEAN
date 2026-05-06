@@ -13,8 +13,8 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Authoritative current `/goal` override, 2026-05-06 after the finite-FDD/raw
-coordinate atTop tightness replacement consumers: local `main` should equal
+Authoritative current `/goal` override, 2026-05-06 after the finite-index
+1.4.8 weak-convergence/tightness iff wrappers: local `main` should equal
 `origin/main` after the verified push, and the broad Codex goal object should
 be treated only as an orchestration label.  The current Lean state has already
 closed the main Theorem 2.4.3 endpoint plumbing for selected fixed-radius
@@ -47,6 +47,11 @@ raw-coordinate and replacement FDD tightness consequences through
 `VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_congr_eventually_finite_coord_ae_asymptoticallyTight_atTop`,
 and
 `VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw_congr_eventually_ae_asymptoticallyTight_atTop`.
+For finite index sets, the forward/backward finite-product criteria are now
+packaged as iff theorems:
+`vdVW148_ellInfty_weakConvergence_iff_finiteProduct_weakConvergence_finite`
+and
+`vdVW148_ellInfty_asymptoticallyTight_iff_finiteProduct_asymptoticallyTight_finite`.
 This run additionally closes the generic centered-convergence endpoint bundle
 and the explicit selected finite-net tail/UI route to `P`-GC plus in-mean via
 `VdVWTheorem243_pGlivenkoCantelli_and_inMean_of_centered_untruncated_convergesInOuterProbabilityConst_zero`
