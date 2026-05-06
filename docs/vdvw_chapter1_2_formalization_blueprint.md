@@ -180,7 +180,15 @@ and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_thresholds_separate_uniform_vc`,
 using the finite trace image and VC/Sauer cardinality theorem from
 `ThresholdCoding.lean`.
-It now also reaches the untruncated centered convergence conclusion through
+The exact-separation route now also reaches the local `P`-Glivenko-Cantelli
+and in-mean centered-supremum endpoint via
+`VdVWTheorem243_coordinate_thresholds_separate_uniform_vc_pGlivenkoCantelli_and_inMean`.
+Do not add another endpoint alias for the same exact threshold-separation
+input unless final theorem assembly needs it; future progress should supply
+concrete grid/quantizer/VC cardinality hypotheses or the genuine random
+entropy tail/UI bridge.
+The threshold-signature approximate route now also reaches the untruncated
+centered convergence conclusion through
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`,
 which composes that selected package with the existing large-`M`
 untruncation consumer.  The same structural route is now packaged with the

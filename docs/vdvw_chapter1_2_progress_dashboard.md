@@ -81,11 +81,13 @@ The exact coordinatewise threshold-separation trace-cardinality theorem now
 also feeds selected fixed-radius side conditions directly through
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_thresholds_separate_uniform_vc`
 and its all-positive-`M` wrapper.
-It consumes coordinatewise threshold approximation and fixed-threshold
-VC/Sauer hypotheses through the selected fixed-radius package and existing
-large-`M` untruncation.  The same route now reaches local `P`-GC and in-mean
-centered-supremum convergence through
+The threshold-signature approximate route consumes coordinatewise threshold
+approximation and fixed-threshold VC/Sauer hypotheses through the selected
+fixed-radius package and existing large-`M` untruncation.  It reaches local
+`P`-GC and in-mean centered-supremum convergence through
 `VdVWTheorem243_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc_pGlivenkoCantelli_and_inMean`.
+The exact threshold-separation route now has the matching endpoint
+`VdVWTheorem243_coordinate_thresholds_separate_uniform_vc_pGlivenkoCantelli_and_inMean`.
 The next non-duplicative work is a concrete grid/quantizer/VC structural
 estimate or the genuine selected empirical-entropy tail/UI bridge, not another
 endpoint alias for the same route.

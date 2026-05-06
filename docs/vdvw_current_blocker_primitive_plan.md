@@ -6139,3 +6139,19 @@ and
 This closes a self-contained Chapter 1 foundation gap for sample-size-varying
 statistics while leaving the deeper signed extended-real arbitrary-map
 cover-existence and process tightness/converse blockers open.
+
+2026-05-06 coordinate-threshold endpoint follow-up: local search found the
+exact coordinate-threshold selected fixed-radius package
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_thresholds_separate_uniform_vc`
+and the standard centered-convergence-to-`P`-GC/in-mean adapters, but no direct
+endpoint consuming that stronger exact-separation input.  `Theorem243.lean`
+now proves
+`VdVWTheorem243_coordinate_thresholds_separate_uniform_vc_pGlivenkoCantelli_and_inMean`.
+This consumes exact threshold-predicate separation, threshold-cardinality
+control, and fixed-threshold VC/Sauer hypotheses through the already compiled
+selected fixed-radius/untruncation route.  Do not add another endpoint alias
+for this same coordinate-threshold route unless final exact theorem assembly
+requires it; the productive next target is upstream structural input
+(grid/quantizer/VC cardinality or selected empirical-cover tail/UI from the
+book entropy hypothesis) or a theorem-critical Chapter 1 arbitrary-map
+primitive.
