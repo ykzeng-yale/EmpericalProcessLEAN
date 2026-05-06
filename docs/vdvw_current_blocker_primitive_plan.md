@@ -456,6 +456,19 @@ continuous-image process primitives for Chapter 1.4/1.5 arguments; they do
 not assert the arbitrary-index VdV&W 1.4.8 FDD converse or process
 separability/tightness criteria.
 
+2026-05-06 raw coordinate-law follow-up: local search found the mapped
+`ell_infty(T)` coordinate-law consequences above and mathlib's generic
+`AEMeasurable.map_map_of_aemeasurable`, but no ordinary raw coordinate process
+law adapter.  `FiniteDimensional.lean` now adds `vdVWCoordinateProcessLaw`,
+`vdVWEllInftyProcessLaw_map_eval`,
+`VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw`, and
+`VdVWEllInftyProcessAsymptoticallyTight.rawCoordinateLaw`.  These let later
+Chapter 1 process arguments consume ordinary one-coordinate laws directly
+instead of carrying mapped `ell_infty(T)` eval-pushforward measures.  This is
+still only the forward continuous-mapping direction; the exact arbitrary-index
+FDD converse and process separability/asymptotic-measurability blockers remain
+open.
+
 Authoritative operational prompt, 2026-05-06 after the verified
 original-cover truncation/polynomial entropy bridges and the quantizer
 random-cover lifts, plus the earlier truncated threshold trace algebra,

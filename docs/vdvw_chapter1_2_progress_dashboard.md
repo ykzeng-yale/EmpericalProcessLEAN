@@ -25,7 +25,12 @@ sample-process specializations, finite-class SLLN endpoints, full-subgraph
 Chapter 1 support also includes the measure-level weak-convergence/tightness
 wrappers and raw bounded-process forward FDD/tightness/congruence interfaces,
 including direct coordinate-law consequences for process weak convergence and
-process asymptotic tightness.
+process asymptotic tightness.  The raw one-coordinate law adapters
+`vdVWCoordinateProcessLaw`, `vdVWEllInftyProcessLaw_map_eval`,
+`VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw`, and
+`VdVWEllInftyProcessAsymptoticallyTight.rawCoordinateLaw` are now compiled, so
+later Chapter 1 process arguments can state ordinary coordinate laws directly
+rather than mapped `ell_infty(T)` eval-pushforwards.
 This run additionally closes the generic centered-convergence endpoint bundle
 and the explicit selected finite-net tail/UI route to `P`-GC plus in-mean via
 `VdVWTheorem243_pGlivenkoCantelli_and_inMean_of_centered_untruncated_convergesInOuterProbabilityConst_zero`
