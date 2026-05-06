@@ -5810,3 +5810,15 @@ large-`M` untruncation handoff.  This does not prove the textbook
 random-entropy implication by itself; it isolates the remaining proof target
 to an explicit lifted selected-entropy `eLpNorm` tail condition or a
 structural cardinality theorem implying that condition.
+
+2026-05-05 Theorem 2.4.3 endpoint bridge follow-up: local search found the
+two endpoint handoffs from centered finite-product convergence to finite
+uniform-deviation convergence and then to the canonical infinite iid process,
+but no single reusable book-style `P`-GC endpoint theorem.  `Theorem243.lean`
+now adds
+`VdVWPGlivenkoCantelliClass_of_centered_weightedSupremum_convergesInOuterProbabilityConst`,
+so every centered-supremum route, including the new first-sample `eLpNorm`
+tail route, can feed the canonical `P`-Glivenko-Cantelli endpoint without
+duplicating the projection argument.  This is endpoint plumbing only; the
+remaining mathematical blocker is still the selected-entropy tail/structural
+cardinality proof.

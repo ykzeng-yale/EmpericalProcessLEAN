@@ -116,6 +116,10 @@ compiled selected fixed-radius and large-`M` handoffs.  The remaining
 non-finite Theorem 2.4.3 gap is therefore sharper: prove that explicit
 first-sample selected-entropy tail condition, or prove a structural
 cardinality/VC/finite-trace bound that implies it.
+The canonical `P`-GC endpoint also now has the reusable bridge
+`VdVWPGlivenkoCantelliClass_of_centered_weightedSupremum_convergesInOuterProbabilityConst`,
+which packages the centered finite-product convergence to uniform-deviation
+and infinite-product projection handoff for all current Theorem 2.4.3 routes.
 
 2026-05-05 separability/`P`-measurability follow-up:
 `PMeasurable.lean` now adds

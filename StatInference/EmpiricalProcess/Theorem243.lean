@@ -3285,6 +3285,49 @@ theorem
       (fun _ : Fin n => (n : ℝ)⁻¹) sample
   simpa [Real.dist_eq, sub_zero, abs_of_nonneg hsup_nonneg] using hsup_bad
 
+/--
+Centered finite-product weighted-supremum convergence gives the canonical
+book-style `P`-Glivenko-Cantelli endpoint.
+
+This packages the two standard endpoint handoffs used by Theorem 2.4.3 routes:
+centered-supremum convergence implies finite-product uniform-deviation
+convergence, and first-coordinate projection transfers that statement to the
+canonical infinite iid process.
+-/
+theorem
+    VdVWPGlivenkoCantelliClass_of_centered_weightedSupremum_convergesInOuterProbabilityConst
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hbdd_centered :
+      ∀ n (sample : SampleAt Observation n),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hcentered :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        atTop (0 : ℝ)) :
+    VdVWPGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i) := by
+  exact
+    vdVWPGlivenkoCantelliClass_of_outerProbability
+      (VdVWOuterProbabilityPGlivenkoCantelliClass_of_uniformDeviationConstOn_canonical
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (VdVWOuterProbabilityUniformDeviationConstOn_of_centered_weightedSupremum
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          hbdd_centered hcentered))
+
 /-- An integrable envelope bounds the absolute population mean of each class member. -/
 theorem abs_integral_classFun_le_integral_envelope
     {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
