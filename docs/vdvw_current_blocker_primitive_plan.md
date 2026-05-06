@@ -5709,13 +5709,17 @@ nonmeasurable/asymptotic-measurability primitives.
 
 2026-05-05 coordinate weak-convergence/tightness follow-up: local search found
 the finite-coordinate weak-convergence and asymptotic-tightness feeders for
-`ell_infty(T)` laws, but no direct single-coordinate measure-level versions.
-`FiniteDimensional.lean` now adds
+dependent product process laws and `ell_infty(T)` laws, but no direct
+single-coordinate measure-level versions.  `FiniteDimensional.lean` now adds
+the generic dependent-product wrappers
+`vdVW148_coordinate_weakConvergence_of_processLaw_weakConvergence` and
+`vdVW148_coordinate_asymptoticallyTight_of_processLaw_asymptoticallyTight`,
+using `continuous_apply`, plus the `ell_infty(T)` wrappers
 `vdVW148_ellInfty_coordinate_weakConvergence_of_processLaw_weakConvergence`
 and
 `vdVW148_ellInfty_coordinate_asymptoticallyTight_of_processLaw_asymptoticallyTight`,
-both using the continuous coordinate evaluation map
-`VdVWEllInfty.evalCLM`.  This closes the direct one-coordinate law-level
-weak-convergence and tightness feeders.  The real arbitrary-index FDD
-converse remains dependent on separability, process asymptotic tightness, and
-the exact nonmeasurable/asymptotic-measurability primitives.
+using the continuous coordinate evaluation map `VdVWEllInfty.evalCLM`.  This
+closes the direct one-coordinate law-level weak-convergence and tightness
+feeders.  The real arbitrary-index FDD converse remains dependent on
+separability, process asymptotic tightness, and the exact
+nonmeasurable/asymptotic-measurability primitives.

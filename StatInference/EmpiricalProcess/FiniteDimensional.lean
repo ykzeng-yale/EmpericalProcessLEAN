@@ -140,6 +140,26 @@ theorem vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence
   exact VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict hμ I
 
 /--
+Forward coordinate weak-convergence layer for dependent product process laws:
+weak convergence of process laws implies weak convergence of every
+single-coordinate marginal law.
+-/
+theorem vdVW148_coordinate_weakConvergence_of_processLaw_weakConvergence
+    {ι : Type*} {l : Filter ι}
+    [∀ t, TopologicalSpace (𝓧 t)] [∀ t, OpensMeasurableSpace (𝓧 t)]
+    [MeasurableSpace ((t : T) -> 𝓧 t)] [OpensMeasurableSpace ((t : T) -> 𝓧 t)]
+    {μs : ι -> ProbabilityMeasure ((t : T) -> 𝓧 t)}
+    {μ : ProbabilityMeasure ((t : T) -> 𝓧 t)}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    (t : T)
+    [MeasurableSpace (𝓧 t)] [BorelSpace (𝓧 t)] :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun n => (μs n).map ((continuous_apply t).measurable.aemeasurable))
+      l
+      (μ.map ((continuous_apply t).measurable.aemeasurable)) := by
+  exact hμ.map_continuous (continuous_apply t)
+
+/--
 Forward finite-dimensional weak-convergence layer for laws on
 `ell_infty(T)`.  This is the process-space version of the easy direction of
 VdV&W 1.4.8: weak convergence of `ell_infty(T)` laws implies weak convergence
@@ -219,6 +239,24 @@ theorem vdVW148_ellInfty_coordinate_asymptoticallyTight_of_processLaw_asymptotic
         ((VdVWEllInfty.evalCLM (T := T) t).continuous.measurable.aemeasurable))
       l := by
   exact hμ.map_continuous (VdVWEllInfty.evalCLM (T := T) t).continuous
+
+/--
+Forward coordinate asymptotic-tightness layer for dependent product process
+laws: ordinary asymptotic tightness of process laws implies ordinary
+asymptotic tightness of every single-coordinate marginal law.
+-/
+theorem vdVW148_coordinate_asymptoticallyTight_of_processLaw_asymptoticallyTight
+    {ι : Type*} {l : Filter ι}
+    [∀ t, TopologicalSpace (𝓧 t)] [∀ t, OpensMeasurableSpace (𝓧 t)]
+    [MeasurableSpace ((t : T) -> 𝓧 t)] [OpensMeasurableSpace ((t : T) -> 𝓧 t)]
+    {μs : ι -> ProbabilityMeasure ((t : T) -> 𝓧 t)}
+    (hμ : VdVWProbabilityMeasuresAsymptoticallyTight μs l)
+    (t : T)
+    [MeasurableSpace (𝓧 t)] [BorelSpace (𝓧 t)] [T2Space (𝓧 t)] :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => (μs n).map ((continuous_apply t).measurable.aemeasurable))
+      l := by
+  exact hμ.map_continuous (continuous_apply t)
 
 /--
 For finite index sets, mapping an `ell_infty(T)` law to the ordinary finite
