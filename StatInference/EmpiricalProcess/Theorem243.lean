@@ -24152,6 +24152,136 @@ theorem
       hconstant_ge_one hM_pos hpoly_bound
 
 /--
+Selected fixed-radius integer-grid package from original fixed-threshold
+VC/Sauer bounds.
+
+The deterministic integer grid supplies the coordinatewise threshold
+approximation for the truncated class, while the fixed-mask transfer above
+lets the entropy cardinality use VC bounds for the original class.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {bound : ℝ -> ℕ} {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hbounded_abs :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ sampleIndex : Fin m,
+            |vdVWTruncatedClassFun classFun envelope M index
+              ((samplePath (X n) sample m) sampleIndex)| ≤
+                ((bound eta : ℤ) : ℝ) * eta)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hvc :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        ∀ threshold : {threshold // threshold ∈
+            integerMultipleThresholdGrid eta (bound eta : ℤ)},
+          (empiricalBinaryTraceSetFamily (samplePath (X n) sample n)
+            indexClass
+            (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤
+            vcDegree eta) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta n sample m =>
+        (thresholdTraceCodeSet (samplePath (X n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (integerMultipleThresholdGrid eta (bound eta : ℤ))).card) := by
+  classical
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (thresholds := fun eta _n _sample _m =>
+        integerMultipleThresholdGrid eta (bound eta : ℤ))
+      (thresholdCount := fun eta => 2 * bound eta + 1)
+      (vcDegree := vcDegree)
+      hX_samplePath
+      (by
+        intro eta heta n sample m sampleIndex index hindex center hcenter hsig
+        have hindex_bounds :=
+          abs_le.mp (hbounded_abs eta heta n sample m index hindex sampleIndex)
+        have hcenter_bounds :=
+          abs_le.mp (hbounded_abs eta heta n sample m center hcenter sampleIndex)
+        exact
+          abs_sub_le_of_forall_bounded_gap_exists_threshold
+            (epsilon := eta)
+            (lower := -((bound eta : ℤ) : ℝ) * eta)
+            (upper := ((bound eta : ℤ) : ℝ) * eta)
+            heta.le
+            (by simpa [neg_mul] using hindex_bounds)
+            (by simpa [neg_mul] using hcenter_bounds)
+            (fun a b ha hb hab hgap =>
+              exists_integerMultipleThresholdGrid_between_of_bounds
+                (epsilon := eta) (bound := (bound eta : ℤ))
+                heta ha hb hab hgap)
+            hsig)
+      hclass henvelope_meas hM_pos
+      (by
+        intro eta _heta n sample
+        exact integerMultipleThresholdGrid_nat_card_le eta (bound eta))
+      hvc
+
+/--
+All-positive-`M` selected fixed-radius integer-grid packages from original
+fixed-threshold VC/Sauer bounds.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {bound : ℝ -> ℝ -> ℕ} {vcDegree : ℝ -> ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hbounded_abs :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ∀ index, index ∈ indexClass ->
+            ∀ sampleIndex : Fin m,
+              |vdVWTruncatedClassFun classFun envelope M index
+                ((samplePath (X M n) sample m) sampleIndex)| ≤
+                  ((bound M eta : ℤ) : ℝ) * eta)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hvc :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ∀ threshold : {threshold // threshold ∈
+              integerMultipleThresholdGrid eta (bound M eta : ℤ)},
+            (empiricalBinaryTraceSetFamily (samplePath (X M n) sample n)
+              indexClass
+              (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤
+              vcDegree M eta) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M
+        (fun eta n sample m =>
+          (thresholdTraceCodeSet (samplePath (X M n) sample m) indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (integerMultipleThresholdGrid eta (bound M eta : ℤ))).card) := by
+  intro M hM_pos
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc
+      (P := P) (X := X M) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (bound := bound M) (vcDegree := vcDegree M)
+      (hX_samplePath M) (hbounded_abs M hM_pos)
+      hclass henvelope_meas hM_pos (hvc M hM_pos)
+
+/--
 Selected fixed-radius tail/UI package from the integer-grid route, with the
 sampled absolute bound discharged by the truncated-envelope bound.
 

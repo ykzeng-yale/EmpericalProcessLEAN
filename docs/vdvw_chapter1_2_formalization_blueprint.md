@@ -172,9 +172,16 @@ and
 The original-VC threshold-code package now reaches untruncated centered
 convergence through
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
-The immediate next structural target is to prove concrete threshold
-approximation/count hypotheses for an exact class geometry, or add the narrow
-`P`-GC/in-mean endpoint adapter only if it is immediately consumed.
+The integer-grid specialization now also consumes original fixed-threshold
+VC/Sauer input without requiring VC bounds for the already truncated class:
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc`.
+The immediate next structural target is to discharge the integer-grid
+sampled absolute-bound hypothesis from a canonical envelope/grid radius or an
+exact class geometry, then use an existing final endpoint only if it is
+immediately needed.  Do not add another endpoint alias for this same route
+unless final theorem assembly consumes it.
 The finite pointwise-code covering lift is now also available:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
 and

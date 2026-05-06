@@ -147,9 +147,15 @@ and
 The original-VC threshold-code package now reaches the untruncated centered
 Theorem 2.4.3 convergence endpoint through
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
-The next `/goal` target should prove concrete threshold approximation/count
-hypotheses for an exact class geometry, or add the narrow `P`-GC/in-mean
-adapter only if it is immediately needed.
+The integer-grid selected fixed-radius package now also works with original
+fixed-threshold VC/Sauer bounds through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc`.
+The next `/goal` target should discharge the sampled absolute-bound/grid
+radius hypothesis from the canonical envelope/grid setup or a concrete exact
+class geometry; add a `P`-GC/in-mean endpoint adapter only if it is immediately
+consumed.
 The a.e.-measurable map-law bridge is now also available for common-domain
 arbitrary maps and varying-domain endpoints through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable`,

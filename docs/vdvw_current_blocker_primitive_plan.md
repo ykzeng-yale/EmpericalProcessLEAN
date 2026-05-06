@@ -270,10 +270,19 @@ and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
 The package now reaches untruncated centered convergence through
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
-The next useful proof is to prove the concrete coordinate-threshold
-approximation/count hypotheses for an exact class geometry, or add the narrow
-`P`-GC/in-mean endpoint adapter only if it is immediately consumed.  Do not add
-another selected fixed-radius endpoint for the same cardinality route.
+The integer-grid selected fixed-radius route now has the same original-VC
+cardinality transfer through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc`.
+This uses local searches around `integerMultipleThresholdGrid`,
+`exists_integerMultipleThresholdGrid_between_of_bounds`,
+`abs_sub_le_of_forall_bounded_gap_exists_threshold`, and the compiled
+original-VC threshold-code package.  The next useful proof is to discharge the
+sampled absolute-bound/grid-radius hypothesis from the canonical
+envelope/grid setup or a concrete exact class geometry.  Do not add another
+endpoint alias for the same selected fixed-radius cardinality route unless
+final theorem assembly consumes it.
 
 The parallel Chapter 1 audit reached the same conclusion on the process side:
 `WeakConvergence.lean`, `EllInfty.lean`, `BallSigma.lean`, and
