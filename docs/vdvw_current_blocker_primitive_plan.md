@@ -257,10 +257,21 @@ trace family is contained in a fixed image of the original threshold-trace
 family, so finite cardinality cannot increase.  The same file also now has
 `empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_add_one_real_le_nat_poly_of_original_vc`,
 which combines the fixed-mask cardinality inequality with the existing local
-Sauer wrapper.  The next useful proof is to feed this threshold-level bound
-into the existing threshold-grid/finite-trace Theorem 2.4.3 route or promote it
-to the exact truncated `VdVWUniformSubgraphVCBound` side condition, not another
-selected fixed-radius endpoint.
+Sauer wrapper.  It also pushes that result through finite threshold products
+and threshold-code sets via
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le_nat_poly_of_original_vc`,
+`threshold_binaryTraceSetFamily_product_card_le_truncated_of_original_uniform_vc`,
+and
+`thresholdTraceCodeSet_vdVWTruncatedClassFun_card_add_one_real_le_original_uniform_vc`.
+The selected fixed-radius route now consumes the original fixed-threshold VC
+input directly through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
+The next useful proof is to connect this package to the untruncated Theorem
+2.4.3 endpoint, or prove the concrete coordinate-threshold
+approximation/count hypotheses for an exact class geometry.  Do not add
+another selected fixed-radius endpoint for the same cardinality route.
 
 The parallel Chapter 1 audit reached the same conclusion on the process side:
 `WeakConvergence.lean`, `EllInfty.lean`, `BallSigma.lean`, and

@@ -162,9 +162,16 @@ and
 `empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le_of_neg`.
 The threshold-level Sauer transfer is now compiled as
 `empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_add_one_real_le_nat_poly_of_original_vc`.
-The immediate next structural target is to feed this threshold-level bound into
-the existing threshold-grid/finite-trace Theorem 2.4.3 route, or promote it to
-the exact truncated `VdVWUniformSubgraphVCBound` side condition.
+The product/code-set and selected fixed-radius consumer layer is now compiled
+as
+`threshold_binaryTraceSetFamily_product_card_le_truncated_of_original_uniform_vc`,
+`thresholdTraceCodeSet_vdVWTruncatedClassFun_card_add_one_real_le_original_uniform_vc`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`,
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
+The immediate next structural target is to connect this original-VC
+threshold-code package to the untruncated Theorem 2.4.3 endpoint, or prove the
+concrete threshold approximation/count hypotheses for an exact class geometry.
 The finite pointwise-code covering lift is now also available:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
 and

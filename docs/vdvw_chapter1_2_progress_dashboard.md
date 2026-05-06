@@ -137,9 +137,16 @@ and
 It also adds
 `empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_add_one_real_le_nat_poly_of_original_vc`,
 which transfers a fixed-threshold original VC/Sauer bound to the truncated
-threshold-trace family.  The next `/goal` target should feed this into the
-threshold-grid/finite-trace Theorem 2.4.3 route or promote it to the exact
-truncated `VdVWUniformSubgraphVCBound` side condition.
+threshold-trace family.  The product/code-set layer and selected fixed-radius
+consumer are now compiled too:
+`threshold_binaryTraceSetFamily_product_card_le_truncated_of_original_uniform_vc`,
+`thresholdTraceCodeSet_vdVWTruncatedClassFun_card_add_one_real_le_original_uniform_vc`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`,
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
+The next `/goal` target should connect this original-VC threshold-code package
+to the untruncated Theorem 2.4.3 endpoint, or prove the concrete threshold
+approximation/count hypotheses for an exact class geometry.
 The a.e.-measurable map-law bridge is now also available for common-domain
 arbitrary maps and varying-domain endpoints through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable`,
