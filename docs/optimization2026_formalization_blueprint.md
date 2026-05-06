@@ -57,23 +57,29 @@ Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
 Current manual goal frontier after promoted Lean verification of the Chapter
-10 MPGD full-rate packet in `StatInference/Optimization/MirrorDescent.lean`,
-rebased over current `origin/main` at `39ffd75`:
+10 nonsmooth MPGD average packet in
+`StatInference/Optimization/MirrorDescent.lean`, rebased over current
+`origin/main` at `bb6ea25`:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.  Latest verified Optimization
-proof frontier: `7ff76c8` (`Add Chewi theorem 10.9 MPGD rate layer`).
+proof frontier: `e2c8237` (`Add Chewi theorem 10.11 MPGD average layer`).
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
 trajectory interfaces, the model-to-composite Bregman upper/lower comparisons,
 the supplied-interface Chewi Theorem 10.9 one-step inequality, the descent
 corollary, trajectory one-step accessors, the Chapter 10 scalar
 Gronwall/weighted-denominator wrappers, `chewi109Lambda`, `chewi109Rho`, and
 the final displayed MPGD rate from `lambda_h` in both supplied-one-step and
-trajectory forms.  Search-first result: mathlib has no direct
-Bregman/mirror-descent/MPGD theorem in the pinned tree; the relevant reuse is
-local `Bregman.lean`, `Proximal.lean`, and Chapter 3 geometric-weight
-Gronwall APIs.  The active route is now Theorem 10.11 nonsmooth MPGD and
-Theorem 10.13 OMD regret if bounded; otherwise open Chapter 11 alternating
-Bregman projection/minimization while scouts map Chapters 12-13.
+trajectory forms.  It also compiles the Theorem 10.11 nonsmooth MPGD
+one-step bridge from a supplied model lower bound, recurrence telescope,
+average-gap bound, Jensen averaged-iterate bound, and trajectory wrappers.
+Search-first result: mathlib has no direct Bregman/mirror-descent/MPGD theorem
+in the pinned tree; the relevant reuse is local `Bregman.lean`,
+`Proximal.lean`, Chapter 3 geometric-weight/Gronwall APIs, and
+`ProjectedSubgradient.lean` finite-average/Jensen APIs.  The active route is
+now the analytic 10.11 Cauchy-Schwarz/Lipschitz/mirror-strong-convexity model
+lower-bound discharge, the 10.11 step-size corollary, and Theorem 10.13 OMD
+regret if bounded; otherwise open Chapter 11 alternating Bregman
+projection/minimization while scouts map Chapters 12-13.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
