@@ -125,6 +125,38 @@ theorem
               ENNReal.ofReal_ne_top
 
 /--
+Common-domain Markov bridge from vanishing ordinary means to convergence in
+outer probability for nonnegative measurable real processes.
+
+This is the fixed-space version of
+`VdVWConvergesInOuterProbabilityConst_zero_of_integral_tendsto_zero_nonneg`.
+-/
+theorem
+    VdVWConvergesInOuterProbability_zero_of_integral_tendsto_zero_nonneg
+    {Ω : Type u} {ι : Type v} [MeasurableSpace Ω] {μ : Measure Ω}
+    {l : Filter ι} {Y : ι -> Ω -> ℝ}
+    (hY_meas : ∀ i, Measurable (Y i))
+    (hY_integrable : ∀ i, Integrable (Y i) μ)
+    (hY_nonneg : ∀ i ω, 0 ≤ Y i ω)
+    (hIntegral : Tendsto (fun i => ∫ ω, Y i ω ∂μ) l (𝓝 0)) :
+    VdVWConvergesInOuterProbability μ Y l (fun _ => 0) := by
+  let U : ∀ i, VdVWMeasurableCover μ (fun ω => ENNReal.ofReal (Y i ω)) :=
+    fun i =>
+      VdVWMeasurableCover.ofNullMeasurable_ofReal μ ((hY_meas i).nullMeasurable)
+  refine
+    VdVWConvergesInOuterProbability_zero_of_outerExpectation_tendsto_zero_ofReal
+      hY_nonneg U ?_
+  have hE_eq :
+      (fun i => VdVWOuterExpectation μ (fun ω => ENNReal.ofReal (Y i ω))) =
+        (fun i => ENNReal.ofReal (∫ ω, Y i ω ∂μ)) := by
+    funext i
+    exact
+      VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg
+        (U i) (hY_integrable i) (ae_of_all _ (hY_nonneg i))
+  rw [hE_eq]
+  simpa [ENNReal.ofReal_zero] using ENNReal.tendsto_ofReal hIntegral
+
+/--
 Markov-style convergence bridge with a supplied vanishing upper bound for the
 nonnegative outer expectations.
 -/

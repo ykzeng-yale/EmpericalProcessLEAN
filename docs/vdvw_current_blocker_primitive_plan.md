@@ -146,18 +146,20 @@ still leaves the exact textbook issue unchanged: bare outer-probability
 random entropy must be strengthened by, or proved to imply, this ordinary-mean
 input or another valid tail/UI source.
 
-2026-05-06 ordinary-mean outer-probability bridge: local search found
+2026-05-06 ordinary-mean outer-probability bridges: local search found
 `tailExpectation_condition_of_integral_tendsto_zero_nonneg` and the
-outer-expectation Markov bridges, but no direct varying-domain theorem from
-ordinary nonnegative means to VdV&W outer-probability convergence.  Search in
-mathlib confirmed the reusable continuity API `ENNReal.tendsto_ofReal`; the
-existing local cover equality
+outer-expectation Markov bridges, but no direct common-domain or
+varying-domain theorem from ordinary nonnegative means to VdV&W
+outer-probability convergence.  Search in mathlib confirmed the reusable
+continuity API `ENNReal.tendsto_ofReal`; the existing local cover equality
 `VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg` supplies
 the remaining bridge.  `OuterProbabilityExpectation.lean` now proves
+`VdVWConvergesInOuterProbability_zero_of_integral_tendsto_zero_nonneg` and
 `VdVWConvergesInOuterProbabilityConst_zero_of_integral_tendsto_zero_nonneg`.
-This is useful for finite-net mean routes and avoids repeating the measurable
-cover/Markov argument, but it still does not prove the missing textbook
-random-entropy-to-tail/UI or random-entropy-to-mean implication.
+These are useful for fixed-space and finite-net mean routes and avoid
+repeating the measurable cover/Markov argument, but they still do not prove the
+missing textbook random-entropy-to-tail/UI or random-entropy-to-mean
+implication.
 
 2026-05-06 fixed-FDD selected-coordinate congruence follow-up: local search
 found only the whole-sample-path finite-dimensional congruence wrappers
