@@ -140,6 +140,37 @@ code-image/cardinality theorem, prove a selected tail/UI/ordinary-mean
 condition, or move to a stronger Chapter 1 arbitrary-map/process primitive.
 
 Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
+`109ab17 Add finite code-set random cover bridge`: local `main` is synced with
+`origin/main`, and the newest closed Lean support is the generic finite
+pointwise-code-set empirical-cover bridge in `CoveringPrimitive.lean` plus its
+Theorem 2.4.3 random-cover lift in `Theorem243.lean`.  Treat the active Codex
+goal object as broad orchestration only; this paragraph is the current
+operational target and supersedes older rebase paragraphs below.  Do not replay
+closed endpoint aliases, finite-index/FDD congruence wrappers, scalar-quantizer
+packages, selected fixed-radius/inverse-radius consumers, or the new generic
+finite code-set bridge unless a new exact theorem consumes them immediately.
+The next high-capacity proof batch should choose the first lane that can make
+real Lean progress after search:
+
+1. instantiate the finite code-set bridge with a genuinely new polynomial
+   code-image/cardinality theorem, VC/Sauer/finite-trace/threshold-grid
+   estimate, or sample-size-dependent compression theorem feeding an already
+   compiled selected fixed-radius Theorem 2.4.3 route;
+2. prove a selected empirical-cover event, tail/UI, or ordinary-mean theorem
+   from hypotheses strong enough to imply the finite-net mean/tail side
+   conditions, without pretending bare outer-probability entropy convergence
+   gives uniform integrability;
+3. if those theorem-line entropy/tail lanes block after real Lean/search
+   attempts, prove a stronger exact Chapter 1 process primitive: arbitrary-index
+   VdV&W 1.4.8 FDD converse, process separability/tightness or
+   asymptotic-measurability, nonmeasurable signed outer-cover weak convergence,
+   or full arbitrary-map extended-real measurable-cover existence.
+
+Each continuation should close a theorem-facing batch in one of these lanes or
+record the precise missing theorem shape and next patchable edit.  Do not
+create a formal theorem report from this rebase alone.
+
+Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: local `main`
 is synced with `origin/main`, the worktree is clean, and the active Codex goal
 object remains a broad orchestration label because it cannot be edited in

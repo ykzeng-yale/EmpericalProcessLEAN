@@ -51,6 +51,20 @@ and its all-positive-radius wrapper.  This feeds future compression/code-image
 entropy routes without adding a new endpoint alias.
 
 Current `/goal` target override, 2026-05-06 after verified pushed head
+`109ab17 Add finite code-set random cover bridge`: the broad active Codex goal
+remains valid, but the operative next target is no longer another endpoint
+alias or scalar-quantizer wrapper.  The next proof batch should instantiate the
+new finite code-set random-cover bridge with a real polynomial code-image,
+VC/Sauer, finite-trace, threshold-grid, quantizer, or sample-size-dependent
+compression estimate; or prove selected empirical-cover tail/UI/ordinary-mean
+inputs strong enough for the fixed-radius Theorem 2.4.3 route; or, if those
+block after search and Lean attempts, switch to a stronger Chapter 1 process
+primitive such as arbitrary-index FDD converse, asymptotic measurability or
+tightness, nonmeasurable signed weak convergence, or full arbitrary-map
+extended-real cover existence.  Historical target paragraphs below are audit
+context only.
+
+Current `/goal` target override, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: local `main`
 equals `origin/main` and the worktree is clean.  The broad Codex goal object
 is only an orchestration label.  Treat the operative next target as:

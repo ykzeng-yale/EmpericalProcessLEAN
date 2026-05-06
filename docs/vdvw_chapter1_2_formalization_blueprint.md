@@ -139,6 +139,22 @@ the next target is to instantiate it with new polynomial code-image bounds or
 to work on selected tail/UI and Chapter 1 arbitrary-map/process blockers.
 
 Current operational target, 2026-05-06 after verified pushed head
+`109ab17 Add finite code-set random cover bridge`: the active `/goal` remains
+the full Chapter 1-2 formalization in dependency order, but the next local
+target should not replay closed endpoint aliases, finite-index/FDD congruence
+wrappers, scalar-quantizer packages, selected fixed-radius/inverse-radius
+consumers, or this new generic finite code-set bridge.  Push next on one of:
+(1) a real structural entropy/cardinality theorem instantiating the finite
+code-set bridge with polynomial code-image, VC/Sauer, finite-trace,
+threshold-grid, quantizer, or sample-size-dependent compression control;
+(2) a selected empirical-cover tail/UI/ordinary-mean theorem strong enough to
+feed the fixed-radius Theorem 2.4.3 side conditions; or (3) a genuine Chapter
+1 arbitrary-map/process primitive such as arbitrary-index FDD converse,
+separability/tightness/asymptotic-measurability, nonmeasurable signed weak
+convergence, or full arbitrary-map extended-real measurable-cover existence.
+Older current-target paragraphs below are historical context only.
+
+Current operational target, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: the active
 Codex `/goal` remains broad and cannot be edited in place, so this paragraph
 is the blueprint-level replacement target.  The latest closed structural
