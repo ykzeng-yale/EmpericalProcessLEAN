@@ -146,10 +146,11 @@ Compiled first source wrappers:
   `probabilityMeasure_ext_of_generate_finite`.
 - Durrett Theorem 1.1.1 measure-property wrappers and Theorems 1.3.1/1.3.4
   measurability wrappers.
-- Durrett Theorem 2.1.7 generated-pi-system independence, Theorem 2.1.10
-  measurable-function preservation/product-coordinate independence, 2.1.11
-  product law, 2.1.12 product/Fubini expectation, and 2.1.13
-  expectation-factorization wrappers.
+- Durrett Theorem 2.1.7 generated-pi-system independence, Theorem 2.1.9
+  grouped sigma-field independence, Theorem 2.1.10 measurable-function
+  preservation/finite disjoint-block/product-coordinate independence, 2.1.11
+  pair and finite-family product laws, 2.1.12 product/Fubini expectation, and
+  2.1.13 expectation-factorization wrappers.
 - Durrett Theorem 2.4.9 conditional Glivenko-Cantelli handoffs from supplied
   endpoint grids and supplied middle CDF partitions.
 

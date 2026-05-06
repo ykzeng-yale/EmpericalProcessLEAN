@@ -68,10 +68,15 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_1_3_4_measurable_comp`
 - `durrett2019_theorem_2_1_7_iIndep_generatedSigma_of_iIndepSets`
 - `durrett2019_theorem_2_1_7_indep_generatedSigma_of_indepSets`
+- `durrett2019_theorem_2_1_9_indep_iSup_of_disjoint`
 - `durrett2019_theorem_2_1_10_iIndepFun_comp`
+- `durrett2019_theorem_2_1_10_indepFun_finset_blocks`
+- `durrett2019_theorem_2_1_10_indepFun_finset_block_functions`
 - `durrett2019_theorem_2_1_10_indepFun_comp`
 - `durrett2019_theorem_2_1_10_product_coordinate_functions_independent`
 - `durrett2019_theorem_2_1_11_indepFun_hasLaw_prod`
+- `durrett2019_theorem_2_1_11_iIndepFun_hasLaw_pi`
+- `durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_pi`
 - `durrett2019_theorem_2_1_12_product_integral`
 - `durrett2019_theorem_2_1_12_product_integral_mul`
 - `durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral`
@@ -105,9 +110,10 @@ middle CDF partition existence consumed by
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
-Parallel target: grouped sigma-field and disjoint-block independence wrappers
-for Theorems 2.1.9-2.1.10, now that the Theorem 2.1.7 generated-pi-system
-bridge and basic measurable-function preservation wrappers compile.
+Parallel target: Chapter 2.1 product-law/source-shape refinements after the
+Theorem 2.1.7 generated-pi-system bridge, Theorem 2.1.9 grouped sigma-field
+bridge, Theorem 2.1.10 finite disjoint-block function bridges, and Theorem
+2.1.11 finite product-law wrappers now compile.
 
 Do not start with raw Chapter 1 extension theorem formalization, Stieltjes
 measure construction, or appendix foundations unless an exact Durrett theorem
@@ -165,10 +171,12 @@ Pinned mathlib search scope:
 6. Search and package independence/product-law wrappers for Theorems 2.1.7,
    2.1.10, 2.1.11, 2.1.12, and 2.1.13.  Reuse finite-`Pi` and product measure
    wrappers from `ProbabilityMeasure/ProductMeasure.lean` wherever possible.
-   Generated pi-system independence, measurable-function preservation,
-   product-coordinate independence, product-law, and expectation-factorization
-   wrappers now compile; remaining work is grouped/disjoint-block independence
-   in the exact source shape of Theorems 2.1.9-2.1.10.
+   Generated pi-system independence, grouped sigma-field independence,
+   measurable-function preservation, finite disjoint-block functions,
+   product-coordinate independence, pair and finite product-law, and
+   expectation-factorization wrappers now compile; remaining Chapter 2.1 work
+   is source-shape refinement around distribution-function independence
+   criteria and exact iid/product notation.
 7. After Chapter 2 has a stable theorem spine, start Chapter 3 by searching
    characteristic-function, normal-law, and weak-convergence APIs.
 
@@ -180,7 +188,6 @@ this file plus the Durrett dashboard and blueprint, and scanning the current
 `StatInference/ProbabilityTheory`, `StatInference/ProbabilityMeasure`, and
 `StatInference/EmpiricalProcess/RealHalfLineGC.lean` modules.  Primary target:
 Durrett Theorem 2.4.9 arbitrary-distribution middle CDF partition constructor.
-Parallel target: grouped/disjoint-block independence wrappers for Theorems
-2.1.9-2.1.10 if the GC grid blocks.  Verify, update docs, commit/push, and
-keep this in-thread `/goal` state current.  Report progress and blockers in
-Chinese/English mix.
+Parallel target: Chapter 2.1 distribution-function/product-law refinements if
+the GC grid blocks.  Verify, update docs, commit/push, and keep this in-thread
+`/goal` state current.  Report progress and blockers in Chinese/English mix.

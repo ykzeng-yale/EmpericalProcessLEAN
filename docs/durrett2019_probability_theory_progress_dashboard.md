@@ -41,10 +41,15 @@ compiles and root-imports the new namespace.  Compiled declarations:
 - `durrett2019_theorem_1_3_4_measurable_comp`.
 - `durrett2019_theorem_2_1_7_iIndep_generatedSigma_of_iIndepSets`;
 - `durrett2019_theorem_2_1_7_indep_generatedSigma_of_indepSets`;
+- `durrett2019_theorem_2_1_9_indep_iSup_of_disjoint`;
 - `durrett2019_theorem_2_1_10_iIndepFun_comp`;
+- `durrett2019_theorem_2_1_10_indepFun_finset_blocks`;
+- `durrett2019_theorem_2_1_10_indepFun_finset_block_functions`;
 - `durrett2019_theorem_2_1_10_indepFun_comp`;
 - `durrett2019_theorem_2_1_10_product_coordinate_functions_independent`;
 - `durrett2019_theorem_2_1_11_indepFun_hasLaw_prod`;
+- `durrett2019_theorem_2_1_11_iIndepFun_hasLaw_pi`;
+- `durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_pi`;
 - `durrett2019_theorem_2_1_12_product_integral`;
 - `durrett2019_theorem_2_1_12_product_integral_mul`;
 - `durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral`;
@@ -66,8 +71,8 @@ Immediate proof route:
 2. prove the remaining arbitrary-distribution middle CDF partition constructor
    consumed by the compiled middle-partition-to-GC handoff;
 3. package the empirical CDF statement once the uniform squeezing proof closes;
-4. in parallel, deepen grouped/disjoint-block independence bridges
-   needed for Theorems 2.1.9-2.1.10;
+4. in parallel, refine Chapter 2.1 distribution-function/product-law source
+   shapes now that generated/grouped/block independence wrappers compile;
 5. promote exact source statements once the wrapper statements line up with the
    PDF/Markdown.
 
@@ -80,7 +85,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Lane | Status | Current Lean anchor | Notes |
 | --- | --- | --- | --- |
 | Chapter 1 measure/probability foundations | source-wrapper/reused-local | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/GeneratedSigma.lean`; `Tail.lean`; `ProductMeasure.lean` | Durrett wrappers for Theorem 1.1.1 measure properties and Theorems 1.3.1/1.3.4 measurability facts now compile over mathlib/local generator APIs. |
-| Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, measurable-function preservation, product-coordinate independence, product-law, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining exact-source work: grouped/disjoint-block independence for Theorems 2.1.9-2.1.10 in greater generality. |
+| Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining exact-source work: distribution-function independence criteria and exact iid/product notation. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
 | Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids or supplied middle CDF partitions. Remaining blocker: construct those middle partitions for arbitrary distributions. |
 | Chapter 3 CLT/characteristic functions | pending-local | none | Needs mathlib API search for characteristic functions, normal laws, weak convergence, and scalar asymptotics. |
@@ -128,6 +133,6 @@ either:
 
 - advance Durrett Theorem 2.4.9 by proving the arbitrary-distribution middle
   CDF partition existence theorem consumed by the compiled GC handoff; or
-- if that blocks, prove and verify the smallest grouped/disjoint-block
-  independence wrapper needed for Theorems 2.1.9-2.1.10 and record the exact GC
+- if that blocks, prove and verify the smallest Chapter 2.1
+  distribution-function/product-law refinement and record the exact GC
   partition blocker.
