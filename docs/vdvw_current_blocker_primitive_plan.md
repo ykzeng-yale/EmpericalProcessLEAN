@@ -7419,3 +7419,21 @@ to use the direct a.e.-measurable bridges and removes the unnecessary
 `[MeasurableSpace.CountablyGenerated S]` assumption from these theorem
 statements.  This is Chapter 1 arbitrary-map support cleanup, not an exact
 Theorem 2.4.3 completion.
+
+2026-05-06 Theorem 2.4.3 fixed-radius comparison constructor: search over
+local `Theorem243.lean`, `OuterProbabilityExpectation.lean`, and
+`ProbabilityMeasure` support found integrated/outer-expectation
+symmetrization outputs such as
+`VdVWTheorem243SymmetrizationPrecursor.randomSign_outerExpectation_le_finiteNetHoeffdingUpper_add`,
+but no existing theorem proving the required generic probability-event
+comparison from ghost/Rademacher arguments.  `Theorem243.lean` now proves
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_pointwise_bound`,
+which turns an eventual pointwise finite-net domination into the exact
+proof-carrying `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison`
+structure, and refactors the older pointwise fixed-`M` consumer through that
+structure instead of duplicating the outer-probability monotonicity proof.
+This is theorem-facing source plumbing, not a final 2.4.3 proof: the remaining
+option-1 blocker is still to prove the weaker generic comparison from the
+textbook ghost/Rademacher/nonmeasurable selected-cover argument, or to produce
+a genuine structural selected-cover theorem that supplies the pointwise
+constructor without over-strong assumptions.

@@ -172,6 +172,15 @@ stochastic log-cardinality entropy is compiled as
 Future work should prove this comparison structure, not restate downstream
 endpoint packages.
 
+The structural pointwise route now feeds the same target via
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_pointwise_bound`.
+This constructor is useful for finite-cover/VC/separability arguments that can
+prove actual pointwise finite-net domination, and the older pointwise
+fixed-`M` consumer now reuses it.  It does not solve the generic VdV&W
+random-entropy theorem: the immediate option-1 target remains the weaker
+probability-level comparison from ghost samples, Rademacher symmetrization,
+outer probability, and selected empirical covers.
+
 2026-05-06 fixed-FDD congruence refinement: after search, the local FDD
 replacement layer now includes
 `aemeasurable_fdd_congr_finite_coord_ae` and

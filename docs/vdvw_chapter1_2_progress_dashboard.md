@@ -2974,3 +2974,13 @@ weak-convergence map-law bridge without a countably-generated target-space
 assumption.  The common-domain and varying-domain `HasLaw` weak-convergence
 consumers now use the direct a.e.-measurable route as well, removing the same
 unnecessary countably-generated assumption from those support statements.
+
+2026-05-06 Theorem 2.4.3 fixed-radius comparison constructor:
+`Theorem243.lean` now has
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_pointwise_bound`,
+and the existing pointwise finite-net fixed-`M` convergence consumer has been
+refactored to flow through the proof-carrying comparison structure.  This
+removes duplicated event-monotonicity proof code and makes the true remaining
+gap explicit: prove the generic fixed-radius probability comparison from the
+VdV&W ghost/Rademacher selected-cover argument, or prove a structural selected
+finite-cover theorem strong enough to feed the pointwise constructor.
