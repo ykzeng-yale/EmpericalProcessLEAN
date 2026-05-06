@@ -31,14 +31,13 @@ The initial Lean target is Chapter 2 plus Chapter 3 substrate:
 - Theorem 3.1 source-shaped scaled-remainder handoff
   `vaart1998_theorem_3_1_delta_method_of_scaled_remainder`.
 
-Focused verification passed for:
+Verification passed for the pushed Vaart packet `4afbd3b` on remote main
+`b36be5f`:
 
 - `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
 - `lake build StatInference.AsymptoticStatistics.Basic`
-
-The full `lake build StatInference` is currently blocked by unrelated dirty
-work in `StatInference/ProbabilityTheory/Basic.lean` around `⟂ᵢ` notation, not
-by the Vaart module.
+- `lake env lean StatInference.lean`
+- `lake build StatInference`
 
 ## Next Aggressive Target
 

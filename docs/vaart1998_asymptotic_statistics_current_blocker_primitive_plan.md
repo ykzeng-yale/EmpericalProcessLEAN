@@ -80,6 +80,9 @@ Chapter 3 theorem-facing wrappers compiling:
 7. Theorem 3.1 scaled-remainder handoff:
    `vaart1998_theorem_3_1_delta_method_of_scaled_remainder`.
 
+Verified Vaart packet: `4afbd3b` (`Add Vaart asymptotic statistics Lean lane`),
+included in remote `main` at `b36be5f`.
+
 The next aggressive theorem-sized packet is the stochastic
 differentiability-to-delta remainder layer: combine the compiled
 `HasFDerivAt` little-o display with tightness or convergence in distribution of
