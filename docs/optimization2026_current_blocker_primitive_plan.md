@@ -89,7 +89,7 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after rebasing over remote main
-`76d0628` (`Rebase VdVW goal after weak convergence congruence`) on 2026-05-06 and
+`c99bb86` (`Add Theorem 2.4.3 finite code convergence endpoint`) on 2026-05-06 and
 focused Lean verification of the Chapter 11.5 RAM block-model plus Exercise
 9.3 scalar Hopf-Lax interpolation layer:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
@@ -109,10 +109,12 @@ as the current active Chapter 11.5 promotion gate.
 Immediate aggressive target: finish Chewi Theorem 11.5 RAM as a theorem-sized
 packet, not another wrapper loop.  The scalar recurrence, strong/weak
 Hopf-Lax-to-rate bridges, finite uniform block conditional-upper algebra, and
-the Exercise 9.3 scalar interpolation cancellations are now the reusable
-substrate.  The next proof work should discharge the selected Hopf-Lax/Moreau
-model value from the source candidate and instantiate the strong and
-zero-curvature certificate fields end-to-end.  In parallel, scout Sinkhorn
+the Exercise 9.3 scalar interpolation/radius/certificate constructors are now
+the reusable substrate.  The next proof work should discharge the selected
+Hopf-Lax/Moreau model value from Chewi's source candidate, including the
+interpolant admissibility, distance positivity/radius domination, and the
+source `0 <= alphaF < 1` facts needed by the weak constructor.  In parallel,
+scout Sinkhorn
 Theorems 11.7/11.8 from the compiled ABP/mirror-descent interfaces and Chapter
 12 SMPGD theorem packets, so the next route moves immediately after RAM
 without routing back to old setup.
@@ -148,7 +150,13 @@ for `expectedGap`/`hopfGap`.  The newest Exercise 9.3 interpolation packet adds
 `chewi115_strong_hopf_lax_bound_of_interpolant`, proving the positive-curvature
 quadratic cancellation, the zero-curvature optimized-interpolant algebra, and
 the source factor rewrite
-`(1 + (alphaF + alphaG)/(1-alphaF))^{-1} = (1-alphaF)/(1+alphaG)`.
+`(1 + (alphaF + alphaG)/(1-alphaF))^{-1} = (1-alphaF)/(1+alphaG)`.  The newest
+source-certificate packet adds `chewi93_hopf_lax_zero_gap_bound_of_radius`,
+`chewi115_zero_hopf_lax_bound_of_interpolant`,
+`chewi115_strong_hopf_lax_certificate_of_interpolants`, and
+`chewi115_zero_hopf_lax_certificate_of_interpolants`, so the strong and weak
+RAM Hopf-Lax certificate fields can now be built directly from source
+interpolant bounds plus the block conditional upper theorem.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
@@ -366,14 +374,16 @@ Active aggressive target ladder:
 
 1. Finish Chewi Theorem 11.5 RAM from the compiled scalar recurrence,
    Hopf-Lax bridge, finite block-model conditional-upper layer, and Exercise
-   9.3 interpolation algebra.  Do not repeat those layers.  The next theorem
-   packet should prove or cleanly package the selected Hopf-Lax/Moreau model
-   value from Chewi's source candidate, instantiate the strong
-   `hopf_lax_bound` field via
-   `chewi115_strong_hopf_lax_bound_of_interpolant`, and add the matching
-   zero-curvature source bridge to fill the weak certificate field.  Keep the
-   route expectation-level unless full probability infrastructure is clearly
-   shorter.
+   9.3 interpolation/radius certificate constructors.  Do not repeat those
+   layers.  The next theorem packet should prove or cleanly package the
+   selected Hopf-Lax/Moreau model value from Chewi's interpolant source
+   candidate and discharge the remaining candidate side conditions
+   (interpolant admissibility, distance positivity, radius domination, and
+   source `0 <= alphaF < 1`) so
+   `chewi115_strong_hopf_lax_certificate_of_interpolants` and
+   `chewi115_zero_hopf_lax_certificate_of_interpolants` can feed the strong and
+   weak RAM rate wrappers directly.  Keep the route expectation-level unless
+   full probability infrastructure is clearly shorter.
 2. Package Sinkhorn Theorems 11.7 and 11.8 from the compiled ABP and mirror
    descent layers using supplied finite KL/Pinsker/marginal identities; do not
    expand full EOT duality unless exact Theorem 11.6 reporting is requested.
