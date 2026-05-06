@@ -1024,6 +1024,66 @@ theorem vaart1998_covarianceBilinDual_inverseDerivative_map_apply
   rfl
 
 /--
+Continuous linear inverse derivatives preserve a.e. measurability of the
+limit variable.
+-/
+theorem vaart1998_inverseDerivative_aemeasurable_of_aemeasurable
+    {Ω' M Θ : Type*} [MeasurableSpace Ω']
+    [MeasurableSpace M] [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [BorelSpace M]
+    [MeasurableSpace Θ] [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [BorelSpace Θ]
+    {Q : Measure Ω'} (Z : Ω' -> M) (Dinv : M →L[ℝ] Θ)
+    (hZ : AEMeasurable Z Q) :
+    AEMeasurable (fun ω => Dinv (Z ω)) Q :=
+  Dinv.continuous.aemeasurable.comp_aemeasurable hZ
+
+/--
+Continuous linear inverse derivatives preserve square-integrability of the
+limit law.
+-/
+theorem vaart1998_inverseDerivative_map_memLp_of_memLp
+    {Ω' M Θ : Type*} [MeasurableSpace Ω']
+    [MeasurableSpace M] [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [BorelSpace M]
+    [MeasurableSpace Θ] [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [SecondCountableTopology Θ] [BorelSpace Θ]
+    {Q : Measure Ω'} (Z : Ω' -> M) (Dinv : M →L[ℝ] Θ)
+    (hZ : AEMeasurable Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z)) :
+    MemLp id 2 (Q.map fun ω => Dinv (Z ω)) := by
+  have hDinvZ : AEMeasurable (fun ω => Dinv (Z ω)) Q :=
+    vaart1998_inverseDerivative_aemeasurable_of_aemeasurable Z Dinv hZ
+  rw [MeasureTheory.memLp_map_measure_iff aestronglyMeasurable_id hDinvZ]
+  have hZ_memLp_Q : MemLp Z 2 Q := by
+    simpa [Function.comp_def] using hZ_memLp.comp_of_map hZ
+  simpa [Function.comp_def] using hZ_memLp_Q.continuousLinearMap_comp Dinv
+
+/--
+The inverse-derivative covarianceBilinDual pullback using only the original
+square-integrable law hypothesis.
+-/
+theorem vaart1998_covarianceBilinDual_inverseDerivative_map_apply_of_memLp
+    {Ω' M Θ : Type*} [MeasurableSpace Ω']
+    [MeasurableSpace M] [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [CompleteSpace M] [BorelSpace M]
+    [MeasurableSpace Θ] [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [CompleteSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    {Q : Measure Ω'} [IsFiniteMeasure Q]
+    (Z : Ω' -> M) (Dinv : M →L[ℝ] Θ)
+    (hZ : AEMeasurable Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (L K : StrongDual ℝ Θ) :
+    ProbabilityTheory.covarianceBilinDual (Q.map fun ω => Dinv (Z ω)) L K =
+      vaart1998_inverseDerivativeCovarianceFunctional Dinv
+        (fun L0 K0 => ProbabilityTheory.covarianceBilinDual (Q.map Z) L0 K0) L K := by
+  exact vaart1998_covarianceBilinDual_inverseDerivative_map_apply Z Dinv hZ
+    (vaart1998_inverseDerivative_aemeasurable_of_aemeasurable Z Dinv hZ)
+    hZ_memLp
+    (vaart1998_inverseDerivative_map_memLp_of_memLp Z Dinv hZ hZ_memLp)
+    L K
+
+/--
 Finite-coordinate source-shaped form of van der Vaart Theorem 4.1.
 
 For finitely many real moment coordinates, coordinatewise iid strong laws give

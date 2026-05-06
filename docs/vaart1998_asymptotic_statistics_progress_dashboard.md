@@ -160,9 +160,13 @@ Chapter 4 handoff:
 - covarianceBilinDual bridges for square-integrable laws:
   `vaart1998_limitCovarianceFunctional_eq_covarianceBilinDual_map` and
   `vaart1998_covarianceBilinDual_inverseDerivative_map_apply`.
+- inverse-derivative measurability and square-integrability propagation:
+  `vaart1998_inverseDerivative_aemeasurable_of_aemeasurable`,
+  `vaart1998_inverseDerivative_map_memLp_of_memLp`, and
+  `vaart1998_covarianceBilinDual_inverseDerivative_map_apply_of_memLp`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`1d967e9`:
+`e18d286`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -185,12 +189,11 @@ targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled Gaussian and covarianceBilinDual
-handoff:
+Continue Vaart Chapter 4.1 from the compiled Gaussian, covarianceBilinDual, and
+MemLp-propagation handoff:
 
-1. derive the inverse-derivative pushed-law `MemLp` hypothesis from the
-   original empirical-moment limit's `MemLp` hypothesis and package the
-   covarianceBilinDual bridge directly into the source Theorem 4.1 wrapper;
+1. package the covarianceBilinDual pullback directly into the source Theorem
+   4.1 wrapper under a single original-law `MemLp` hypothesis;
 2. add a local-inverse measurability convenience from the open partial
    homeomorphism/local continuity API if it can be done without widening the
    topology assumptions too much;

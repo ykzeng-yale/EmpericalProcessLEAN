@@ -227,26 +227,32 @@ Chapter 3 theorem-facing wrappers compiling:
 69. Inverse-derivative pushed-law covariance bilinear form as the pullback of
    the original covariance bilinear form:
    `vaart1998_covarianceBilinDual_inverseDerivative_map_apply`.
+70. Inverse-derivative a.e. measurability propagation:
+   `vaart1998_inverseDerivative_aemeasurable_of_aemeasurable`.
+71. Inverse-derivative square-integrable law propagation:
+   `vaart1998_inverseDerivative_map_memLp_of_memLp`.
+72. CovarianceBilinDual inverse-derivative pullback using only the original
+   square-integrable law hypothesis:
+   `vaart1998_covarianceBilinDual_inverseDerivative_map_apply_of_memLp`.
 
-Latest pushed Vaart packet before this run: `1d967e9`
-(`Add Vaart theorem 4.1 covariance display bridge`).
+Latest pushed Vaart packet before this run: `e18d286`
+(`Add Vaart covariance bilinear law bridge`).
 
-The current theorem-sized packet connects the coordinate-free covariance
-display to mathlib's canonical covariance bilinear form.  Under the natural
-square-integrable-law hypothesis `MemLp id 2 (Q.map Z)`, the local covariance
-functional is `covarianceBilinDual (Q.map Z)`.  The inverse-derivative pushed
-law also has the expected pullback covariance bilinear form, giving the
-canonical mathlib expression for `Dinv * Sigma * Dinv^T`.  Local-inverse
-measurability, propagation or discharge of the needed `MemLp` hypotheses, and
-the multivariate empirical-moment CLT remain explicit next source layers.
+The current theorem-sized packet discharges the inverse-derivative
+measurability and square-integrability side conditions for the covariance
+bridge.  A continuous linear inverse derivative sends an a.e.-measurable,
+square-integrable limit law to an a.e.-measurable, square-integrable estimator
+limit law, and the covarianceBilinDual pullback theorem now needs only the
+original `MemLp id 2 (Q.map Z)` hypothesis.  Local-inverse measurability, the
+multivariate empirical-moment CLT, and finite-matrix specialization remain
+explicit next source layers.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. derive the inverse-derivative pushed-law `MemLp` hypothesis from the
-   original empirical-moment limit's `MemLp` hypothesis using continuous linear
-   map composition, then package the covarianceBilinDual bridge directly into
-   the Theorem 4.1 wrapper;
+1. package the covarianceBilinDual pullback directly into the measurable
+   finite-coordinate Theorem 4.1 wrapper under a single original-law `MemLp`
+   hypothesis;
 2. add a local-inverse measurability convenience if a clean continuity/open
    partial homeomorphism API can discharge it without broad topological
    refactoring;
