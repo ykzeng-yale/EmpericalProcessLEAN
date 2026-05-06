@@ -6026,6 +6026,16 @@ coordinatewise approximation to a concrete grid/quantizer, prove a new
 VC/Sauer/structural cardinality estimate, or attack the broader selected
 empirical-entropy tail/UI bridge.
 
+2026-05-06 threshold-code-set `P`-GC/in-mean package follow-up: the same
+centered untruncated threshold-code-set route is now consumed by the standard
+`P`-Glivenko-Cantelli and in-mean adapters.  `Theorem243.lean` proves
+`VdVWTheorem243_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc_pGlivenkoCantelli_and_inMean`.
+This is the current strongest threshold-signature code-set endpoint: it
+packages local `P`-GC and finite-product in-mean centered-supremum convergence
+from coordinatewise threshold approximation, threshold-cardinality control,
+and fixed-threshold VC/Sauer hypotheses.  The remaining productive work is
+upstream structural content, not another endpoint wrapper for this same route.
+
 2026-05-06 coordinate-code random-cover follow-up: local search found the
 deterministic coordinate pointwise-code covering primitive
 `empiricalL1CoveringNumber_le_of_coordinate_pointwise_approx_code_card_le`,

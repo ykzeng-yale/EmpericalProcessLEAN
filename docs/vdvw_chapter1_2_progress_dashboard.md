@@ -79,9 +79,12 @@ Theorem 2.4.3 consumer
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`.
 It consumes coordinatewise threshold approximation and fixed-threshold
 VC/Sauer hypotheses through the selected fixed-radius package and existing
-large-`M` untruncation.  The next non-duplicative work is a concrete
-grid/quantizer/VC structural estimate or the genuine selected empirical-
-entropy tail/UI bridge, not another endpoint alias for the same route.
+large-`M` untruncation.  The same route now reaches local `P`-GC and in-mean
+centered-supremum convergence through
+`VdVWTheorem243_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc_pGlivenkoCantelli_and_inMean`.
+The next non-duplicative work is a concrete grid/quantizer/VC structural
+estimate or the genuine selected empirical-entropy tail/UI bridge, not another
+endpoint alias for the same route.
 The a.e.-measurable map-law bridge is now also available for common-domain
 arbitrary maps and varying-domain endpoints through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable`,

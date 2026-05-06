@@ -176,7 +176,9 @@ and
 It now also reaches the untruncated centered convergence conclusion through
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc`,
 which composes that selected package with the existing large-`M`
-untruncation consumer.
+untruncation consumer.  The same structural route is now packaged with the
+local `P`-Glivenko-Cantelli and in-mean conclusions as
+`VdVWTheorem243_thresholdTraceCode_coordinate_approx_codeSet_uniform_vc_pGlivenkoCantelli_and_inMean`.
 The coordinate-code structural route also now lifts into the random
 empirical-cover interface through
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_pointwise_approx_code_product_cardinality_bound_samplePath`
