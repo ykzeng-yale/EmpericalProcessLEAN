@@ -193,26 +193,35 @@ Chapter 3 theorem-facing wrappers compiling:
 54. Strict-derivative solved-with-probability wrapper from a.s.
    empirical-moment convergence:
    `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_ae_tendsto`.
+55. Finite-coordinate real empirical-moment strong-law handoff:
+   `vaart1998_finiteCoordinate_empiricalMoment_tendsto_ae_real`.
+56. Finite-coordinate real empirical-moment convergence-in-probability handoff:
+   `vaart1998_finiteCoordinate_empiricalMoment_tendstoInMeasure_real`.
+57. Strict-derivative finite-coordinate strong-law solved-with-probability
+   wrapper:
+   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_finiteCoordinateStrongLaw_real`.
 
-Latest pushed Vaart packet before this run: `39d4964`
-(`Add Vaart moment equation probability bridge`).
+Latest pushed Vaart packet before this run: `3a24d69`
+(`Add Vaart almost sure moment handoff`).
 
-The current theorem-sized packet connects strong-law-style outputs to the
-Chapter 4.1 local existence machinery.  Chapter 2 now has a Vaart-facing
-wrapper around mathlib's theorem that almost-sure convergence implies
-convergence in probability.  Chapter 4 now consumes a.s. convergence of
-empirical moments directly, producing local-range probability certificates and
-the strict-derivative solved-with-probability conclusion without requiring a
-separate convergence-in-probability hypothesis.
+The current theorem-sized packet discharges the next finite-coordinate strong
+law interface for Chapter 4.1.  For a finite real moment vector, coordinatewise
+iid strong laws now give almost-sure convergence of empirical moments to the
+population moment vector, then convergence in probability, then the
+strict-derivative local inverse candidate solves the moment equation with
+probability tending to one.  The vector empirical moment measurability fields
+remain explicit.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. prove or package a finite-coordinate iid/vector LLN interface that yields
-   a.s. empirical-moment convergence, feeding the new a.s. constructors;
-2. assemble the full Theorem 4.1 source wrapper that reports both
+1. assemble the full Theorem 4.1 source wrapper that reports both
    solved-with-probability and the already-compiled delta-method asymptotic
-   normality conclusion under supplied empirical-moment CLT;
+   normality conclusion under supplied empirical-moment CLT and the new
+   finite-coordinate LLN local existence bridge;
+2. package the source statement so the assumptions visibly match Vaart's
+   finite-dimensional method-of-moments theorem: strict derivative/invertible
+   derivative, finite coordinate moments, iid strong law, and supplied CLT;
 3. keep the multivariate empirical-moment CLT/covariance display supplied for
    now, since the current pinned mathlib CLT is scalar.
 
@@ -301,13 +310,14 @@ certificates.  The open source/target API comes from
 `MeasureTheory.tendstoInMeasure_iff_measureReal_dist` plus real probability
 complement algebra.
 
-Search result for the next LLN layer: local `ProbabilityMeasure.StrongLaw` and
-`ProbabilityTheory.Basic` currently expose real-valued iid strong-law wrappers
-such as `strongLaw_ae_real`, `centeredStrongLaw_ae_real`, and
-`finite_centeredStrongLaw_ae_real`.  A true vector-valued empirical-moment LLN
-is not yet present as a ready API, so the next run should either build a finite
-coordinate vector wrapper from these real SLLN facts or introduce a supplied
-vector-LLN certificate that can later be discharged.
+Search result for the finite-coordinate LLN layer: local
+`ProbabilityMeasure.StrongLaw` and `ProbabilityTheory.Basic` expose real-valued
+iid strong-law wrappers such as `strongLaw_ae_real`,
+`centeredStrongLaw_ae_real`, and `finite_centeredStrongLaw_ae_real`.  The Vaart
+lane now wraps `finite_centeredStrongLaw_ae_real` with `tendsto_pi_nhds` to
+obtain vector empirical-moment convergence for finite real coordinate types.
+The measurability of the vector empirical moments is still an explicit
+assumption for the convergence-in-probability and local-existence consumers.
 
 Search result for the a.s.-to-probability handoff: pinned mathlib already
 provides `MeasureTheory.tendstoInMeasure_of_tendsto_ae` in

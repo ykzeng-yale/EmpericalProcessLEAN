@@ -132,9 +132,16 @@ Chapter 4 handoff:
 - strict-differentiability plus a.s. empirical-moment convergence solved-with
   probability wrapper:
   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_ae_tendsto`.
+- finite-coordinate real empirical-moment strong-law and convergence-in
+  probability handoffs:
+  `vaart1998_finiteCoordinate_empiricalMoment_tendsto_ae_real` and
+  `vaart1998_finiteCoordinate_empiricalMoment_tendstoInMeasure_real`.
+- strict-differentiability plus finite-coordinate strong-law local-existence
+  wrapper:
+  `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_finiteCoordinateStrongLaw_real`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`39d4964`:
+`3a24d69`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -159,17 +166,18 @@ targeted Vaart module build.
 
 Continue Vaart Chapter 4.1 from the compiled delta handoff:
 
-1. prove or package a finite-coordinate iid/vector LLN interface that yields
-   a.s. empirical-moment convergence, then feed the new a.s. local-range
-   probability constructors;
-2. assemble the full Theorem 4.1 existence-plus-delta wrapper from the
-   solved-with-probability conclusion and the local inverse delta certificate;
+1. assemble the full Theorem 4.1 existence-plus-delta wrapper from the
+   finite-coordinate strong-law solved-with-probability conclusion and the
+   local inverse delta certificate;
+2. package the source-facing finite-dimensional method-of-moments theorem so
+   the strong-law local existence layer and the supplied empirical-moment CLT
+   appear in one theorem statement;
 3. keep the multivariate CLT and covariance display as supplied fields until a
    local vector CLT is formalized.
 
-If this blocks, record the exact missing iid/vector LLN, multivariate CLT, or
-covariance-display theorem shape and continue with the widest Chapter 4 wrapper
-that compiles.
+If this blocks, record the exact missing theorem shape for the supplied
+empirical-moment CLT, covariance-display, or local-inverse measurability field
+and continue with the widest Chapter 4 wrapper that compiles.
 
 ## Reuse Dependencies
 

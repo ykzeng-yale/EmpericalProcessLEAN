@@ -140,10 +140,14 @@ Initial modules:
   convergence-in-probability wrapper.  The current handoff layer also accepts
   almost-sure empirical-moment convergence directly, producing the local-range
   probability certificate and strict-derivative solved-with-probability
-  conclusion through `vaart1998_tendstoInMeasure_of_tendsto_ae`.  It now
-  deliberately leaves the finite-coordinate/vector LLN producing that a.s.
-  empirical-moment convergence, the multivariate empirical-moment CLT, and
-  covariance identification as explicit next layers.
+  conclusion through `vaart1998_tendstoInMeasure_of_tendsto_ae`.  The newest
+  layer discharges the finite-coordinate real LLN route from
+  `ProbabilityMeasure.finite_centeredStrongLaw_ae_real` and `tendsto_pi_nhds`:
+  coordinatewise iid strong laws now yield vector empirical-moment convergence
+  a.s., convergence in probability, and the strict-derivative
+  solved-with-probability local existence conclusion.  It still deliberately
+  leaves vector empirical-moment measurability, the multivariate
+  empirical-moment CLT, and covariance identification as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

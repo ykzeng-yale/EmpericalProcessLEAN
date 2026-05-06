@@ -1,4 +1,5 @@
 import StatInference.AsymptoticStatistics.Basic
+import StatInference.ProbabilityMeasure.StrongLaw
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 
 /-!
@@ -341,6 +342,74 @@ theorem vaart1998_empiricalMoment_tendstoInMeasure_of_ae_tendsto_const
   vaart1998_tendstoInMeasure_of_tendsto_ae hstrong hAE
 
 /--
+Finite-coordinate empirical-moment strong-law handoff.
+
+For finitely many real moment coordinates, the local real-valued strong law
+implies almost-sure convergence of the vector of empirical moments to the
+vector of population moments.
+-/
+theorem vaart1998_finiteCoordinate_empiricalMoment_tendsto_ae_real
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n)
+        atTop
+        (𝓝 fun coordinate : Coordinate => ∫ ω, X coordinate 0 ω ∂P) := by
+  have hcenter :=
+    StatInference.ProbabilityMeasure.finite_centeredStrongLaw_ae_real
+      X hX_integrable hX_indep hX_ident
+  filter_upwards [hcenter] with ω hω
+  rw [tendsto_pi_nhds]
+  intro coordinate
+  have hcoord := hω coordinate
+  have hconst :
+      Tendsto
+        (fun _n : ℕ => ∫ sample, X coordinate 0 sample ∂P)
+        atTop (𝓝 (∫ sample, X coordinate 0 sample ∂P)) :=
+    tendsto_const_nhds
+  simpa using hcoord.add hconst
+
+/--
+Finite-coordinate empirical-moment convergence in probability.
+
+The only extra input beyond the finite-coordinate strong law is the standard
+strong measurability of the vector empirical moment sequence.
+-/
+theorem vaart1998_finiteCoordinate_empiricalMoment_tendstoInMeasure_real
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hstrong : ∀ n : ℕ,
+      AEStronglyMeasurable
+        (fun ω : Ω => fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n) P) :
+    TendstoInMeasure P
+      (fun n : ℕ => fun ω : Ω => fun coordinate : Coordinate =>
+        (∑ i ∈ Finset.range n, X coordinate i ω) / n)
+      atTop
+      (fun _ : Ω => fun coordinate : Coordinate =>
+        ∫ sample, X coordinate 0 sample ∂P) :=
+  vaart1998_empiricalMoment_tendstoInMeasure_of_ae_tendsto_const
+    hstrong
+    (vaart1998_finiteCoordinate_empiricalMoment_tendsto_ae_real
+      X hX_integrable hX_indep hX_ident)
+
+/--
 Local-range probability certificate from almost-sure empirical-moment
 convergence to the true moment.
 -/
@@ -634,6 +703,57 @@ theorem vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStri
     e De he
     (vaart1998_empiricalMoment_tendstoInMeasure_of_ae_tendsto_const
       hstrong hAE)
+    hmeas
+
+/--
+Finite-coordinate strong-law version of the Theorem 4.1 local existence step.
+
+For a finite real moment vector, coordinatewise iid strong laws feed the
+inverse-function-theorem local range and imply that the local inverse candidate
+solves the moment equation with probability tending to one.
+-/
+theorem vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_finiteCoordinateStrongLaw_real
+    {Coordinate Ω Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 =
+        (fun coordinate : Coordinate => ∫ sample, X coordinate 0 sample ∂P))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hstrong : ∀ n : ℕ,
+      AEStronglyMeasurable
+        (fun ω : Ω => fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n) P)
+    (hmeas : ∀ n : ℕ,
+      Measurable
+        (fun ω : Ω => fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n)) :
+    Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1) :=
+  vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_tendstoInMeasure
+    e De he
+    (by
+      simpa [heta0] using
+        vaart1998_finiteCoordinate_empiricalMoment_tendstoInMeasure_real
+          X hX_integrable hX_indep hX_ident hstrong)
     hmeas
 
 /--
