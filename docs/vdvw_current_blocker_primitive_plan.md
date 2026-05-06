@@ -71,6 +71,42 @@ unless a new exact statement directly consumes them.
 ## Current `/goal` Target
 
 Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
+`ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: local `main`
+is synced with `origin/main`, the worktree is clean, and the active Codex goal
+object remains a broad orchestration label because it cannot be edited in
+place.  Use this paragraph as the operative replacement prompt.  Closed
+support now includes all previously listed Chapter 1 weak-convergence/process
+congruence and centered separability endpoints, plus the scalar-quantizer
+coordinate-cardinality natural-polynomial bridge
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`,
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`.
+
+Do not spend the next `/goal` continuation on another final endpoint alias,
+another finite-index/FDD/process congruence wrapper, another selected-route
+restatement, or another coordinate-cardinality quantizer wrapper unless a new
+exact theorem consumes it immediately.  The next theorem-facing batch should
+start from the current search result: local code has finite pointwise-code-set
+natural-polynomial constructors and scalar-quantizer coordinate-cardinality
+constructors, but no finite vector-code-set scalar-quantizer decoder-error
+bridge (`scalarQuantizer.*codeSet`, `decode_error.*codeSet`,
+`finite_pointwise_approx_codeSet.*scalar` were absent).  First patchable target:
+prove the finite vector-code-set scalar-quantizer bridge by reusing
+`abs_sub_le_of_abs_sub_decode_le_half` and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_finite_pointwise_approx_codeSet_cardinality_bound_nat_poly`.
+If that compiles quickly, continue in the same run to the actual structural
+cardinality/compression theorem that supplies the code-set polynomial bound.
+If this route is already closed by remote work or blocks after real Lean/search
+attempts, switch to one of the remaining high-value lanes: a genuine
+VC/Sauer/finite-trace/threshold-grid/quantizer entropy estimate feeding
+Theorem 2.4.3, a selected empirical-cover tail/UI/ordinary-mean bridge from
+strong enough assumptions, or an exact Chapter 1 process primitive
+(arbitrary-index VdV&W 1.4.8 FDD converse, separability/tightness/
+asymptotic-measurability, nonmeasurable signed outer-cover weak convergence,
+or full arbitrary-map extended-real measurable-cover existence).
+
+Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
 `fc98144 Add weak convergence target congruence`: local `main` is synced with
 `origin/main`, the worktree is clean, and the active Codex goal object remains
 broad because the goal API cannot edit an active objective in place.  Use this

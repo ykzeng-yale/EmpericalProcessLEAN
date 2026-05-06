@@ -14,6 +14,32 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-06 after verified pushed head
+`ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: local `main`
+equals `origin/main` and the worktree is clean.  The broad Codex goal object
+is only an orchestration label.  Treat the operative next target as:
+
+1. close the missing finite vector-code-set scalar-quantizer decoder-error
+   bridge if it is still absent after fetch, reusing the existing finite
+   pointwise-code-set natural-polynomial constructor and
+   `abs_sub_le_of_abs_sub_decode_le_half`;
+2. then push immediately to the real structural entropy/cardinality estimate
+   that supplies the code-set polynomial bound, or another non-duplicative
+   VC/Sauer, finite-trace, threshold-grid, or quantizer estimate feeding the
+   selected fixed-radius Theorem 2.4.3 route;
+3. if structural entropy blocks after search and Lean attempts, switch to a
+   selected empirical-cover tail/UI/ordinary-mean theorem from strong enough
+   assumptions or an exact Chapter 1 process primitive such as arbitrary-index
+   FDD converse, separability/tightness/asymptotic-measurability, signed
+   nonmeasurable outer-cover weak convergence, or full arbitrary-map
+   extended-real measurable-cover existence.
+
+Do not spend the next continuation on endpoint aliases, finite-index process
+wrappers, selected-route restatements, or another scalar-quantizer
+coordinate-cardinality wrapper.  The coordinate-cardinality natural-polynomial
+route is already compiled through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`.
+
+Current `/goal` target override, 2026-05-06 after verified pushed head
 `fc98144 Add weak convergence target congruence`: treat the broad Codex goal
 objective as an orchestration label only, because the active goal object cannot
 be edited in place.  The latest closed support includes measure-level
