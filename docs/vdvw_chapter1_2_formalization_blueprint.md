@@ -131,6 +131,13 @@ expectation, outer-probability/a.s./local `P`-GC, in-mean convergence, and
 Lemma 2.4.5 a.s. centered-supremum convergence.  Treat this as closed
 finite-class infrastructure; the remaining main-line gap is still the
 non-finite book entropy/tail-UI or structural cardinality bridge.
+The separability-to-Definition 2.3.3 route now also has the direct local
+handoff
+`VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_bddAbove`,
+which turns a countable pointwise-approximating measurable subclass and
+bounded finite weighted value sets into `P`-measurability of the original
+class.  The remaining separability gap is therefore the full arbitrary-map /
+nonmeasurable process asymptotic-measurability and weak-convergence layer.
 The canonical infinite iid
 product substrate is already present in `PMeasurable.lean` via
 `vdVWInfiniteProductMeasure`, coordinate `HasLaw`, and coordinate

@@ -106,6 +106,18 @@ a.s. centered-supremum convergence.  This is a closed finite-class building
 block; the main non-finite Theorem 2.4.3 gap remains the book random-entropy
 tail/UI or structural cardinality bridge.
 
+2026-05-05 separability/`P`-measurability follow-up:
+`PMeasurable.lean` now adds
+`VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_bddAbove`,
+the direct handoff from the literal countable pointwise-approximability
+separability hypothesis plus bounded finite weighted value sets to
+Definition 2.3.3 `P`-measurability.  This closes the local theorem-facing
+combination of the previously proved pointwise-approximability-to-supremum
+equality bridge and the countable-subclass `P`-measurability constructor; the
+remaining separability/process gap is the full arbitrary-map/nonmeasurable
+asymptotic-measurability and weak-convergence layer, not this bounded
+measurable-subclass route.
+
 2026-05-05 tightness sequence follow-up: `WeakConvergence.lean` now wraps
 mathlib's sequence/range norm-tail criterion as
 `vdVWProbabilityMeasuresTight_range_of_tendsto_limsup_norm_tail` and

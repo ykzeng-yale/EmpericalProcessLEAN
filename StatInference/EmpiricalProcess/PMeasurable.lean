@@ -1720,4 +1720,29 @@ theorem VdVWPMeasurableClass.of_pointwiseSupremumSeparable
     funext fun sample => hsep.supremum_eq n weights sample
   simpa [hfun] using hsub
 
+/--
+Bounded pointwise approximability by a countable measurable subclass gives
+`P`-measurability of the original class.
+
+This is the direct theorem-facing handoff from the literal VdV&W
+Example 2.3.4-style separability hypothesis to Definition 2.3.3.  The bounded
+value-set assumption is kept explicit because the current real-valued supremum
+formalization requires bounded conditional suprema.
+-/
+theorem VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_bddAbove
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} {indexClass subclass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    (happrox :
+      VdVWPointwiseApproximableByCountableSubclass
+        indexClass subclass classFun)
+    (hbdd :
+      ∀ (n : ℕ) (weights : Fin n -> ℝ)
+        (sample : Fin n -> Observation),
+        BddAbove (vdVWWeightedClassValueSet subclass classFun weights sample))
+    (hmeas : VdVWClassCoordinateMeasurable subclass classFun) :
+    VdVWPMeasurableClass P indexClass classFun :=
+  VdVWPMeasurableClass.of_pointwiseSupremumSeparable
+    (happrox.to_pointwiseSupremumSeparable_of_bddAbove hbdd) hmeas
+
 end StatInference
