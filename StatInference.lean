@@ -37,6 +37,7 @@ import StatInference.Optimization.GradientDescent
 import StatInference.Optimization.GradientFlow
 import StatInference.Optimization.LowerBounds
 import StatInference.Optimization.Minimizer
+import StatInference.Optimization.NonsmoothLowerBounds
 import StatInference.Optimization.ProjectedSubgradient
 import StatInference.Optimization.Reductions
 import StatInference.Optimization.Theorem27

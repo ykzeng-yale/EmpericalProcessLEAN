@@ -360,22 +360,22 @@ compiles in the proof-carrying existential form of display (6.5), the
 source-shaped CoGM Theorem 6.19 wrapper compiles after isolating the genuine
 centroid/volume fact as `HasScaledOutsideCandidatesAbove`, and Lemma 6.20 now
 has a compiled supplied-interface ellipsoid trajectory/rate layer plus the
-normalized scalar central-cut containment, determinant-ratio inequalities, and
-coordinate-free normalized half-space containment, and an abstract
-affine-transport `IsEllipsoidStepCertificate` bridge.  The current-ellipsoid
-matrix quadratic, positive-denominator, normalized cut-direction algebra, raw
-symmetric square-root cut bridge, PosDef invertibility/cancellation layer,
-pullback-standard-cut certificate, current `Σ⁻¹` identification, and displayed
-center-update bridge now compile via `matrixInvShape`,
-PosDef/PosSemidef dot-product APIs, `Real.sqrt` normalization, mathlib
-`LinearMap.IsSymmetric`, mathlib nonsingular-inverse APIs, mathlib rank-one
-determinant APIs, Haar image-volume APIs, CFC square roots, and
-`real_inner_mul_inner_self_le`.  The next aggressive theorem packet should
-leave the now-compiled Lemma 6.20 sequence/rate wrappers alone and move to
-Chapter 6 Theorems 6.21-6.25.  Search the local PSD, CoGM, ellipsoid, lower-bound,
-and exercises modules first; if the next source theorem needs a missing
-nonsmooth lower-bound primitive, record that precise API and prove the smallest
-wrapper that removes it.
+normalized scalar central-cut containment, determinant-ratio inequalities,
+coordinate-free normalized half-space containment, abstract affine-transport
+certificate bridge, matrix/CFC displayed-shape positivity, and final
+trajectory/rate wrappers.  The current lower-bound packet in
+`StatInference/Optimization/NonsmoothLowerBounds.lean` starts Theorem 6.21 and
+compiles the max-coordinate hard objective, prefix-subspace nonnegativity,
+gradient-span prefix induction consumer, and supplied final gap obstruction
+`chewi621_hardObjective_gap_ge_of_gradientSpan`.  The next aggressive theorem
+packet should instantiate Chewi's source minimizer `x_*[k] = -γ/(α d)`, prove
+`f x_* = -γ^2/(2 α d)` and the radius/Lipschitz/rate parameter choices for
+Theorem 6.21, or prove the concrete first-max subgradient oracle prefix-support
+if that is the bounded dependency.  Then move to the strongly convex Theorem
+6.22 and feasibility Definition 6.24/Theorem 6.25.  Search the local PSD, CoGM,
+ellipsoid, lower-bound, nonsmooth-lower-bound, and exercises modules first; if
+the next source theorem needs a missing nonsmooth lower-bound primitive, record
+that precise API and prove the smallest wrapper that removes it.
 Do not spend a run only polishing a minor wrapper unless it is the fastest
 verified dependency for this theorem packet.
 
@@ -468,11 +468,13 @@ so the later exercise sweep remains source-trackable.
 
 Book-level target map for the next 2-4 hour acceleration window: stay in
 Chapter 6 and finish theorem-sized packets instead of jumping past the chapter:
-Lemma 6.20 for exact ellipsoid update geometry, then Theorems 6.21-6.23 for
-nonsmooth lower bounds and Definition 6.24/Theorem 6.25 for feasibility.
-Lemma 6.18 and Theorem 6.19 already have a supplied-interface algebraic spine;
-their exact source-audited report remains blocked only by the genuine
-Grünbaum/centroid measure theorem.
+Theorem 6.21 source minimizer/oracle/rate instantiation first, then Theorem
+6.22 for the strongly convex nonsmooth lower bound, then Theorem 6.23's
+optimization-to-feasibility context plus Definition 6.24/Theorem 6.25 for the
+feasibility lower bound.  Lemma 6.20 now has a compiled trajectory/rate
+frontier, and Lemma 6.18/Theorem 6.19 already have a supplied-interface
+algebraic spine; their exact source-audited report remains blocked only by the
+genuine Grünbaum/centroid measure theorem.
 After Chapter 6 has a stable main-text spine, split future packets by chapter
 surface rather than by tiny lemmas: Chapter 7 `FrankWolfe.lean` for Theorem
 7.3 and Carathéodory wrappers, Chapter 8 `Proximal.lean` for Theorems 8.5 and
