@@ -89,26 +89,32 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-06 after the verified truncated threshold
-trace algebra and fixed-mask cardinality transfer, plus the earlier
-first-sample uniform-integrability endpoint
-`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`
-and the earlier natural-polynomial variable-domain entropy constructor
-`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
-and selected tail/UI bridge
-`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`:
-after the verified `50f88c7` raw bounded-process weak-convergence/tightness
-closure, the next work should not rebuild forward FDD/process-law support or
-Theorem 2.4.3 endpoint packages.  The operative `/goal` target is to close a
-new upstream theorem-facing blocker: a structural entropy/cardinality theorem
-feeding the selected fixed-radius Theorem 2.4.3 route; a real selected
-empirical-cover tail/UI/ordinary-mean theorem from strong hypotheses; or an
-exact Chapter 1 process primitive such as arbitrary-index FDD converse,
-separability/tightness/asymptotic-measurability, nonmeasurable signed
-outer-cover weak convergence, or full arbitrary-map extended-real
-measurable-cover existence.  This replaces stale local goal prompts that point
-at already-closed finite-index, inverse-radius, quantizer/grid endpoint, or
-forward process wrappers.
+Current operational target, 2026-05-06 after verified pushed head
+`1307590 Add bounded separability P-measurability handoff`: the active Codex
+`/goal` remains broad and cannot be edited in place, so this paragraph is the
+blueprint-level replacement target.  Do not rebuild forward FDD/process-law
+support, finite-index `ell_infty(T)` wrappers, or Theorem 2.4.3 endpoint
+packages unless a new exact theorem consumes them immediately.  The newest
+proof state adds the bounded pointwise-approximable constructor
+`VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`
+on top of the recent process reindexing and a.e.-congruence wrappers.  The
+next proof work should close a new upstream theorem-facing blocker:
+
+1. centered separability/`P`-measurability: prove, using the searched mathlib
+   dominated-convergence APIs, that uniformly bounded countable-subclass
+   pointwise approximability survives centering `f ↦ f - ∫ f dP`, then package
+   the resulting centered `VdVWPMeasurableClass` handoff;
+2. structural entropy/cardinality: prove a genuine finite-code/compression,
+   VC/Sauer, finite-trace, threshold-grid, or quantizer estimate with
+   sublinear normalized logarithmic growth feeding the selected fixed-radius
+   Theorem 2.4.3 route;
+3. selected empirical-cover tail/UI/ordinary-mean: prove such a bridge from
+   hypotheses strong enough to imply it, without treating bare
+   outer-probability random-entropy convergence as uniform integrability;
+4. exact Chapter 1 process primitives: arbitrary-index FDD converse,
+   separability/tightness/asymptotic-measurability, nonmeasurable signed
+   outer-cover weak convergence, or full arbitrary-map extended-real
+   measurable-cover existence.
 
 Earlier context for the same target:
 the strong

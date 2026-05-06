@@ -13,31 +13,39 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current `/goal` target override, 2026-05-06 after the verified
-original-cover truncation/polynomial entropy bridges and quantizer random-cover
-lifts, plus the earlier truncated threshold trace algebra, fixed-mask
-cardinality transfer, and first-sample uniform-integrability endpoint
-`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`
-and the earlier natural-polynomial variable-domain entropy constructor
-`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
-and selected tail/UI bridge
-`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`:
-closed
-finite-net/Hoeffding/Mills, selected fixed-radius and
-inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
-full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
-Dirac-law endpoint, deterministic normalized-log, raw tail/UI, and
-ordinary-mean/L1 normalized-log packages should not be rebuilt.  The
-varying-domain signed continuous-mapping and signed filter-refinement closures,
-the `ell_infty(T)` process-space substrate, finite-coordinate law wrappers,
-finite-index product equivalence, and finite-index `ell_infty(T)` FDD converse
-wrappers are also compiled.  Finite-coordinate restrictions of raw bounded
-sample-path processes are now measurable/a.e.-measurable from coordinate
-measurability through
-`VdVWEllInfty.measurable_finiteRestrict_processMap` and
-`VdVWEllInfty.aemeasurable_finiteRestrict_processMap`; this is only a
-finite-dimensional bridge and does not assert full `ell_infty(T)` process
-measurability.
+Current `/goal` target override, 2026-05-06 after verified pushed head
+`1307590 Add bounded separability P-measurability handoff`: treat the broad
+Codex goal objective as an orchestration label only, because the active goal
+object cannot be edited in place.  The latest closed support is the bounded
+separability/Definition 2.3.3 handoff
+`VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`,
+after the process reindexing and a.e.-congruence wrappers
+`VdVWEllInftyProcessWeakConvergence.comp_tendsto`,
+`VdVWEllInftyProcessAsymptoticallyTight.comp_tendsto`,
+`vdVWEllInftyProcessLaw_congr_ae`,
+`VdVWEllInftyProcessWeakConvergence.congr_eventually_ae`, and
+`VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae`.
+
+The next useful `/goal` run should not rebuild finite-net/Hoeffding/Mills,
+selected fixed-radius/inverse-radius, untruncation, reverse-cofiltration,
+selected-entropy, full-subgraph, finite-class, threshold/grid/quantizer,
+Dirac-law, finite-index `ell_infty(T)`, or forward process-law endpoint
+packages already compiled.  It should close a non-duplicative theorem-facing
+batch in one of these lanes:
+
+1. centered separability/`P`-measurability: use mathlib dominated convergence
+   and the pointwise-approximable APIs to prove that uniformly bounded
+   countable-subclass approximability survives centering
+   `f ↦ f - ∫ f dP`, then produce a centered `VdVWPMeasurableClass` handoff;
+2. a real structural entropy/cardinality theorem feeding Theorem 2.4.3,
+   such as finite-code/compression, VC/Sauer, finite-trace, threshold-grid, or
+   quantizer sublinear normalized-log growth;
+3. a genuine selected empirical-cover tail/UI/ordinary-mean bridge from
+   assumptions strong enough to imply it;
+4. an exact Chapter 1 process primitive, especially arbitrary-index FDD
+   converse, separability/tightness/asymptotic-measurability, nonmeasurable
+   signed outer-cover weak convergence, or full arbitrary-map extended-real
+   measurable-cover existence.
 
 Latest `/goal` rebase after `50f88c7`: local `main` equals `origin/main`, and
 the newest verified Chapter 1 closure is the raw bounded-process
