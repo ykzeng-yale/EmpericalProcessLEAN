@@ -102,12 +102,22 @@ prefix-support induction, concrete `gamma^2 / (2 * alpha * d)` gap, source
 parameter identity, `d = N + 1` lower bound
 `L * R / (8 * sqrt (N + 1))`, and displayed source-radius facts
 `‖x_*‖ = R` and `dist 0 x_* <= R` for
-`alpha = gamma / (R * sqrt d)`.
+`alpha = gamma / (R * sqrt d)`.  The newest 6.21 side-condition packet also
+compiles `chewi621CoordinateBasis_norm`,
+`chewi621FirstMaxOracle_norm_le_of_norm_le`,
+`chewi621HardObjective_firstOrderConvexOn_univ`,
+`chewi621HardObjective_lipschitzOnWith_closedBall_zero`,
+`chewi621_source_lipschitz_constant_le`,
+`chewi621HardObjective_lipschitzOnWith_source_closedBall_zero`, and
+`chewi621HardObjective_firstOrderConvexOn_source_univ`; this certifies the
+mathematically correct radius-local Lipschitz and first-order convex source
+side conditions for the concrete `d = N + 1` hard instance.
 
-Immediate aggressive target: finish literal Theorem 6.21 certification around
-the concrete hard instance by adding the mathematically correct bounded-domain
-Lipschitz/convex/source side conditions, and only then add an arbitrary
-`d > N` embedding if the source-shaped theorem/report needs it.  Do the
+Immediate aggressive target: close the remaining literal Theorem 6.21 packaging
+around the concrete hard instance: add an arbitrary `d > N` embedding only if
+the source-shaped theorem/report needs it, otherwise proceed directly to the
+strongly convex lower bound Theorem 6.22 and then Definition 6.24/Theorem 6.25
+feasibility.  Do the
 mandatory search-first pass before new primitives: local `IsSubgradientAt` and
 Lipschitz bridges in `ProjectedSubgradient.lean`, prefix-span machinery in
 `LowerBounds.lean`, mathlib `LipschitzOnWith`, finite `Finset.max'` APIs,

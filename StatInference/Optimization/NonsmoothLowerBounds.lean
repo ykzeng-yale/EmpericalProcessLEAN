@@ -82,6 +82,19 @@ theorem chewi621CoordinateBasis_inner {d : ℕ}
     inner ℝ (chewi621CoordinateBasis i) z = z i := by
   simp [chewi621CoordinateBasis, PiLp.inner_apply, RCLike.inner_apply]
 
+/-- Coordinate basis vectors have unit Euclidean norm. -/
+theorem chewi621CoordinateBasis_norm {d : ℕ}
+    (i : Fin d) :
+    ‖chewi621CoordinateBasis i‖ = 1 := by
+  have hinner :
+      inner ℝ (chewi621CoordinateBasis i) (chewi621CoordinateBasis i) = 1 := by
+    rw [chewi621CoordinateBasis_inner]
+    simp
+  have hsq :
+      ‖chewi621CoordinateBasis i‖ ^ (2 : ℕ) = 1 := by
+    rw [← hinner, real_inner_self_eq_norm_sq]
+  nlinarith [norm_nonneg (chewi621CoordinateBasis i)]
+
 /--
 Chewi's displayed candidate minimizer for Theorem 6.21:
 `x_*[k] = -gamma / (alpha * d)`.
@@ -184,6 +197,39 @@ noncomputable def chewi621FirstMaxOracle {d : ℕ} [NeZero d]
     EuclideanSpace ℝ (Fin d) :=
   alpha • x + gamma • chewi621CoordinateBasis (chewi621FirstMaxIndex (d := d) x)
 
+/--
+On a radius-`R` set, Chewi's first-max oracle has norm at most
+`gamma + alpha * R`.  This is the bounded-domain replacement for the false
+global Lipschitz statement when `alpha > 0`.
+-/
+theorem chewi621FirstMaxOracle_norm_le_of_norm_le
+    {d : ℕ} [NeZero d] {alpha gamma R : ℝ}
+    {x : EuclideanSpace ℝ (Fin d)}
+    (halpha_nonneg : 0 ≤ alpha) (hgamma_nonneg : 0 ≤ gamma)
+    (hxnorm : ‖x‖ ≤ R) :
+    ‖chewi621FirstMaxOracle (d := d) alpha gamma x‖ ≤
+      gamma + alpha * R := by
+  let e := chewi621CoordinateBasis (chewi621FirstMaxIndex (d := d) x)
+  have htri :
+      ‖chewi621FirstMaxOracle (d := d) alpha gamma x‖ ≤
+        ‖alpha • x‖ + ‖gamma • e‖ := by
+    simpa [chewi621FirstMaxOracle, e] using
+      norm_add_le (alpha • x) (gamma • e)
+  have hnorm_eq :
+      ‖alpha • x‖ + ‖gamma • e‖ =
+        alpha * ‖x‖ + gamma := by
+    rw [norm_smul, norm_smul, Real.norm_of_nonneg halpha_nonneg,
+      Real.norm_of_nonneg hgamma_nonneg, chewi621CoordinateBasis_norm]
+    ring
+  have hscaled : alpha * ‖x‖ ≤ alpha * R :=
+    mul_le_mul_of_nonneg_left hxnorm halpha_nonneg
+  calc
+    ‖chewi621FirstMaxOracle (d := d) alpha gamma x‖ ≤
+        ‖alpha • x‖ + ‖gamma • e‖ := htri
+    _ = alpha * ‖x‖ + gamma := hnorm_eq
+    _ ≤ alpha * R + gamma := by nlinarith
+    _ = gamma + alpha * R := by ring
+
 /-- The quadratic part's first-order lower model. -/
 theorem chewi621_quadratic_subgradient_ineq {d : ℕ}
     {alpha : ℝ} (halpha_nonneg : 0 ≤ alpha)
@@ -253,6 +299,26 @@ theorem chewi621FirstMaxOracle_isSubgradientAt_univ
         (alpha / 2) * ‖y‖ ^ (2 : ℕ) := add_le_add hmax hquad
     _ = chewi621HardObjective (d := d) alpha gamma y := by
       rfl
+
+/--
+First-order convexity certificate for the max-plus-quadratic hard objective.
+This packages the everywhere-valid first-max subgradient as the local
+`FirstOrderStrongConvexOn ... 0` interface used by earlier theorem layers.
+-/
+theorem chewi621HardObjective_firstOrderConvexOn_univ
+    {d : ℕ} [NeZero d] {alpha gamma : ℝ}
+    (halpha_nonneg : 0 ≤ alpha) (hgamma_nonneg : 0 ≤ gamma) :
+    FirstOrderStrongConvexOn Set.univ
+      (chewi621HardObjective (d := d) alpha gamma)
+      (chewi621FirstMaxOracle (d := d) alpha gamma) 0 := by
+  refine ⟨convex_univ, ?_⟩
+  intro x _hx y _hy
+  have hsub :=
+    chewi621FirstMaxOracle_isSubgradientAt_univ
+      (d := d) (alpha := alpha) (gamma := gamma)
+      halpha_nonneg hgamma_nonneg x
+  simpa using hsub.2 (by simp : y ∈ (Set.univ :
+    Set (EuclideanSpace ℝ (Fin d))))
 
 /--
 The support calculation for Chewi's first-max oracle: if an iterate is in
@@ -354,6 +420,154 @@ theorem chewi621_zero_dist_minimizer_le_radius_source_alpha
   rw [dist_eq_norm, zero_sub, norm_neg]
   exact (chewi621Minimizer_norm_eq_radius_source_alpha
     (d := d) (R := R) (gamma := gamma) hR_pos hgamma).le
+
+/--
+Bounded-domain Lipschitz certificate for Chewi's hard instance on the ball
+`‖x‖ <= R`.  The quadratic term prevents a global Lipschitz theorem for
+`alpha > 0`, so Theorem 6.21 should use this radius-local statement.
+-/
+theorem chewi621HardObjective_lipschitzOnWith_closedBall_zero
+    {d : ℕ} [NeZero d] {alpha gamma R : ℝ}
+    (halpha_nonneg : 0 ≤ alpha) (hgamma_nonneg : 0 ≤ gamma) :
+    LipschitzOnWith (Real.toNNReal (gamma + alpha * R))
+      (chewi621HardObjective (d := d) alpha gamma)
+      (Metric.closedBall (0 : EuclideanSpace ℝ (Fin d)) R) := by
+  refine LipschitzOnWith.of_le_add_mul' (gamma + alpha * R) ?_
+  intro x hx y _hy
+  have hxnorm : ‖x‖ ≤ R := by
+    simpa [Metric.mem_closedBall, dist_eq_norm] using hx
+  let p := chewi621FirstMaxOracle (d := d) alpha gamma x
+  have hgap :
+      chewi621HardObjective (d := d) alpha gamma x -
+          chewi621HardObjective (d := d) alpha gamma y ≤
+        inner ℝ p (x - y) := by
+    simpa [p] using
+      (chewi621FirstMaxOracle_isSubgradientAt_univ
+        (d := d) (alpha := alpha) (gamma := gamma)
+        halpha_nonneg hgamma_nonneg x).gap_le_inner
+        (C := Set.univ) (y := y) (by simp)
+  have hinner :
+      inner ℝ p (x - y) ≤ ‖p‖ * ‖x - y‖ :=
+    real_inner_le_norm p (x - y)
+  have hp_norm :
+      ‖p‖ ≤ gamma + alpha * R := by
+    simpa [p] using
+      chewi621FirstMaxOracle_norm_le_of_norm_le
+        (d := d) (alpha := alpha) (gamma := gamma) (R := R)
+        halpha_nonneg hgamma_nonneg hxnorm
+  have hmul :
+      ‖p‖ * ‖x - y‖ ≤
+        (gamma + alpha * R) * ‖x - y‖ :=
+    mul_le_mul_of_nonneg_right hp_norm (norm_nonneg _)
+  have hdist : dist x y = ‖x - y‖ := by
+    simpa using (dist_eq_norm x y)
+  have hgap_dist :
+      chewi621HardObjective (d := d) alpha gamma x -
+          chewi621HardObjective (d := d) alpha gamma y ≤
+        (gamma + alpha * R) * dist x y := by
+    calc
+      chewi621HardObjective (d := d) alpha gamma x -
+          chewi621HardObjective (d := d) alpha gamma y ≤
+            inner ℝ p (x - y) := hgap
+      _ ≤ ‖p‖ * ‖x - y‖ := hinner
+      _ ≤ (gamma + alpha * R) * dist x y := by simpa [hdist] using hmul
+  nlinarith
+
+/-- Chewi's displayed 6.21 parameters have local Lipschitz constant at most `L`. -/
+theorem chewi621_source_lipschitz_constant_le
+    {N : ℕ} {L R : ℝ} (hL_nonneg : 0 ≤ L) (hR_pos : 0 < R) :
+    L / 4 +
+        ((L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ))) * R ≤
+      L := by
+  have hsqrt_pos : 0 < Real.sqrt ((N + 1 : ℕ) : ℝ) := by positivity
+  have hR_ne : R ≠ 0 := ne_of_gt hR_pos
+  have hsqrt_ne :
+      Real.sqrt ((N + 1 : ℕ) : ℝ) ≠ 0 := ne_of_gt hsqrt_pos
+  have hsqrt_ge_one :
+      1 ≤ Real.sqrt ((N + 1 : ℕ) : ℝ) := by
+    rw [Real.one_le_sqrt]
+    norm_num
+  have hL4_nonneg : 0 ≤ L / 4 := by positivity
+  have hterm_eq :
+      ((L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ))) * R =
+        (L / 4) / Real.sqrt ((N + 1 : ℕ) : ℝ) := by
+    field_simp [hR_ne, hsqrt_ne]
+  have hterm_le :
+      (L / 4) / Real.sqrt ((N + 1 : ℕ) : ℝ) ≤ L / 4 := by
+    rw [div_le_iff₀ hsqrt_pos]
+    nlinarith [mul_le_mul_of_nonneg_left hsqrt_ge_one hL4_nonneg]
+  rw [hterm_eq]
+  nlinarith
+
+/--
+Source-shaped bounded-domain Lipschitz certificate for the concrete
+`d = N + 1` Theorem 6.21 hard instance.  On the radius-`R` ball around the
+initial point, the hard objective is `L`-Lipschitz for Chewi's displayed
+choices `gamma = L/4` and `alpha = (L/4)/(R sqrt(N+1))`.
+-/
+theorem chewi621HardObjective_lipschitzOnWith_source_closedBall_zero
+    {N : ℕ} {L R : ℝ} (hL_nonneg : 0 ≤ L) (hR_pos : 0 < R) :
+    LipschitzOnWith (Real.toNNReal L)
+      (chewi621HardObjective (d := N + 1)
+        ((L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ))) (L / 4))
+      (Metric.closedBall (0 : EuclideanSpace ℝ (Fin (N + 1))) R) := by
+  let alpha := (L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ))
+  let gamma := L / 4
+  have hsqrt_pos : 0 < Real.sqrt ((N + 1 : ℕ) : ℝ) := by positivity
+  have hden_pos : 0 < R * Real.sqrt ((N + 1 : ℕ) : ℝ) :=
+    mul_pos hR_pos hsqrt_pos
+  have halpha_nonneg : 0 ≤ alpha := by
+    exact div_nonneg (div_nonneg hL_nonneg (by norm_num)) hden_pos.le
+  have hgamma_nonneg : 0 ≤ gamma := by
+    exact div_nonneg hL_nonneg (by norm_num)
+  have hbase :
+      LipschitzOnWith (Real.toNNReal (gamma + alpha * R))
+        (chewi621HardObjective (d := N + 1) alpha gamma)
+        (Metric.closedBall (0 : EuclideanSpace ℝ (Fin (N + 1))) R) :=
+    chewi621HardObjective_lipschitzOnWith_closedBall_zero
+      (d := N + 1) (alpha := alpha) (gamma := gamma) (R := R)
+      halpha_nonneg hgamma_nonneg
+  refine LipschitzOnWith.of_le_add_mul' L ?_
+  intro x hx y hy
+  have hraw := hbase.le_add_mul hx hy
+  have hK_nonneg : 0 ≤ gamma + alpha * R := by
+    exact add_nonneg hgamma_nonneg (mul_nonneg halpha_nonneg hR_pos.le)
+  have hK_le : gamma + alpha * R ≤ L := by
+    simpa [alpha, gamma, add_comm, add_left_comm, add_assoc, mul_comm,
+      mul_left_comm, mul_assoc] using
+      chewi621_source_lipschitz_constant_le
+        (N := N) (L := L) (R := R) hL_nonneg hR_pos
+  have hcoef :
+      (Real.toNNReal (gamma + alpha * R) : ℝ) * dist x y ≤
+        L * dist x y := by
+    rw [Real.coe_toNNReal _ hK_nonneg]
+    exact mul_le_mul_of_nonneg_right hK_le dist_nonneg
+  nlinarith
+
+/--
+Source-shaped first-order convexity certificate for the concrete `d = N + 1`
+Theorem 6.21 hard instance.
+-/
+theorem chewi621HardObjective_firstOrderConvexOn_source_univ
+    {N : ℕ} {L R : ℝ} (hL_nonneg : 0 ≤ L) (hR_pos : 0 < R) :
+    FirstOrderStrongConvexOn Set.univ
+      (chewi621HardObjective (d := N + 1)
+        ((L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ))) (L / 4))
+      (chewi621FirstMaxOracle (d := N + 1)
+        ((L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ))) (L / 4)) 0 := by
+  have hsqrt_pos : 0 < Real.sqrt ((N + 1 : ℕ) : ℝ) := by positivity
+  have hden_pos : 0 < R * Real.sqrt ((N + 1 : ℕ) : ℝ) :=
+    mul_pos hR_pos hsqrt_pos
+  have halpha_nonneg :
+      0 ≤ (L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ)) :=
+    div_nonneg (div_nonneg hL_nonneg (by norm_num)) hden_pos.le
+  have hgamma_nonneg : 0 ≤ L / 4 :=
+    div_nonneg hL_nonneg (by norm_num)
+  exact
+    chewi621HardObjective_firstOrderConvexOn_univ
+      (d := N + 1)
+      (alpha := (L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ)))
+      (gamma := L / 4) halpha_nonneg hgamma_nonneg
 
 /--
 If a vector is supported on the first `N` coordinates and `N < d`, its maximum

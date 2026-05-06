@@ -52,10 +52,11 @@ Theorems 6.14/6.16, the supplied CoGM 6.19 rate spine, and the supplied Lemma
 6.20 ellipsoid trajectory/rate with displayed matrix certificates.  The active
 Lean anchor is `StatInference/Optimization/NonsmoothLowerBounds.lean`, where
 the concrete `d = N + 1` hard instance now compiles through first-max oracle
-`IsSubgradientAt`, prefix support, source-rate gap, and source-radius facts.
-The next theorem-sized packet should finish literal Theorem 6.21 certification
-via bounded-domain Lipschitz/convex/source side conditions and any required
-`d > N` embedding, then advance to Theorem 6.22 and Definition 6.24/Theorem
+`IsSubgradientAt`, prefix support, source-rate gap, source-radius facts,
+source first-order convexity, and source bounded-domain Lipschitz facts.  The
+next theorem-sized packet should either add the literal arbitrary `d > N`
+embedding/report wrapper for Theorem 6.21, if the source-matched statement
+needs it, or advance directly to Theorem 6.22 and Definition 6.24/Theorem
 6.25.  The detailed Lemma 6.20 frontier below is retained only as dependency
 context and should not be used as the active route.
 

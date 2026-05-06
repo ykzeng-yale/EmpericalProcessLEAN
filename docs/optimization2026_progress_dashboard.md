@@ -115,9 +115,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   first-max oracle is a whole-space `IsSubgradientAt`, proves the quadratic and
   max-part subgradient inequalities, and proves the displayed source radius
   facts `‖x_*‖ = R` and `dist 0 x_* <= R` for
-  `alpha = gamma / (R * sqrt d)`.  The next target is literal Theorem 6.21
-  certification around this packet: bounded-domain Lipschitz and/or arbitrary
-  `d > N` embedding if needed, then the strongly convex Theorem 6.22 and
+  `alpha = gamma / (R * sqrt d)`.  The newest side-condition packet proves the
+  coordinate-basis norm, first-max oracle norm bound, whole-space first-order
+  convexity certificate, bounded-domain Lipschitz certificate on
+  `Metric.closedBall 0 R`, the displayed source constant bound by `L`, and
+  source-shaped first-order convexity/Lipschitz wrappers for the concrete
+  `d = N + 1` instance.  The next target is literal Theorem 6.21 packaging:
+  arbitrary `d > N` embedding only if needed, then the strongly convex Theorem 6.22 and
   feasibility Definition 6.24/Theorem 6.25, while the exact Grünbaum/centroid
   theorem remains a supplied blocker for exact CoGM reporting.
 
@@ -168,18 +172,17 @@ High-value local files:
 
 ## Current Active Target
 
-Current active target after rebasing local `main` onto `origin/main` at
-`1b3ae5b` and verifying the local packet `Certify Chewi theorem 6.21 oracle and
-radius`: Chapter 6 Theorem 6.21 is the live manual `/goal` frontier.  The
+Current active target after the verified local side-condition packet on top of
+`9906f2a`: Chapter 6 Theorem 6.21 is the live manual `/goal` frontier.  The
 Chapter 6 infrastructure through Theorems 6.14/6.16, the supplied CoGM 6.19
 spine, and the supplied Lemma 6.20 ellipsoid trajectory/rate layer should be
 treated as stable background.  `NonsmoothLowerBounds.lean` now proves the hard
 max-coordinate objective, first-max oracle subgradient correctness, prefix
-support, source-rate gap, and source-radius facts for the concrete
-`d = N + 1` instance.  The next theorem packet should finish the literal
-Theorem 6.21 side conditions, especially the correct bounded-domain
-Lipschitz/convex/source assumptions and any necessary arbitrary `d > N`
-embedding, then move directly to Theorem 6.22 and Definition 6.24/Theorem 6.25.
+support, source-rate gap, source-radius facts, source first-order convexity, and
+bounded-domain Lipschitz-on-ball facts for the concrete `d = N + 1` instance.
+The next theorem packet should either add the literal arbitrary `d > N`
+embedding/report wrapper for Theorem 6.21 or move directly to Theorem 6.22 and
+Definition 6.24/Theorem 6.25.
 This paragraph supersedes older Lemma 6.20 "next manual packet" language below.
 
 Latest proof target after the standard-cut scalar containment,
