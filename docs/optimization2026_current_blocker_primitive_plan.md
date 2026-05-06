@@ -136,13 +136,20 @@ lower bound with compiled declarations `chewi625CoordinateBox`,
 `chewi625CutVector_separates_cut_box`,
 `chewi625CutVector_isSeparationVector`, box nesting and selected/unselected
 width lemmas, `chewi625_closedBall_subset_coordinateBox`, and
-`chewi625_no_closedBall_subset_of_short_side`.
+`chewi625_no_closedBall_subset_of_short_side`.  The newest recursive-state
+packet adds `chewi625_cutLower_le_cutUpper`, `chewi625ConstVec`,
+`chewi625CycleCoord`, `chewi625BoxState`, `chewi625BoxLower`,
+`chewi625BoxUpper`, zero/successor simp wrappers,
+`chewi625BoxState_ordered`, `chewi625BoxState_step_isSeparationVector`,
+`chewi625BoxState_query_not_mem_next_strict_box`,
+`chewi625BoxState_step_subset`, `chewi625BoxState_selected_width_succ`, and
+`chewi625BoxState_unselected_width_succ`.
 
 Immediate aggressive target: do not loop on "small source-shape gaps" for
 6.21/6.22 and do not try to prove Theorem 6.23 directly, since the source
 explicitly switches to feasibility.  Continue Theorem 6.25 by adding the
-cyclic coordinate schedule, iterated side-length/radius lower bound, and a
-supplied deterministic replay interface; add arbitrary-`d > N` wrappers for
+coordinate cut-count / iterated side-length/radius lower bound and a supplied
+deterministic replay interface; add arbitrary-`d > N` wrappers for
 6.21/6.22 only if exact theorem reporting requires them.  Then open Chapters
 7-13 as theorem-sized packets, with scouts only for search/reuse and large
 parallelizable theorem surfaces, not tiny algebra wrappers.  Do the

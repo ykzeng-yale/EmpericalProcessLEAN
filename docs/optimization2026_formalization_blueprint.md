@@ -61,8 +61,11 @@ module now also starts Definition 6.24/Theorem 6.25 with coordinate boxes,
 strict box interiors, midpoint half-box updates, nonzero separating cut
 vectors, retained-box separation, query-exclusion from strict interior,
 box-nesting and side-width lemmas, Euclidean ball containment in boxes, and the
-short-side obstruction to containing an `eps`-ball.  The next theorem-sized
-packet should continue Theorem 6.25 with the cyclic coordinate schedule and
+short-side obstruction to containing an `eps`-ball.  It now also has the
+recursive cyclic box state: initial cube, cyclic coordinate selector,
+recursive lower/upper endpoints, endpoint ordering, per-step separation,
+query-exclusion, nesting, and selected/unselected width update facts.  The next
+theorem-sized packet should continue Theorem 6.25 with coordinate cut-count and
 side-length/radius iteration.  Add a literal arbitrary `d > N`
 embedding/report wrapper for 6.21/6.22 only if exact theorem reporting requires
 it.
@@ -301,7 +304,10 @@ current packet also proves the first Definition 6.24/Theorem 6.25 feasibility
 geometry: coordinate boxes, strict interiors, half-box cut update, nonzero
 separator, retained-box separation, query exclusion, box nesting, width
 halving/preservation, closed-ball containment, and short-side no-ball
-obstruction.  The next target is the cyclic coordinate schedule and scalar
+obstruction.  The recursive state packet now adds cyclic coordinates, initial
+cube, lower/upper endpoint recursion, endpoint ordering, per-step separation,
+query exclusion, nesting, and width updates.  The next target is coordinate
+cut-count and scalar
 iteration/radius lower-bound layer for Theorem 6.25; Theorem 6.23 is source
 context, not a direct proof target.  Search local PSD, CoGM, ellipsoid,
 lower-bound, nonsmooth-lower-bound, and exercise APIs first before adding new

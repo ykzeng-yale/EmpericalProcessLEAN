@@ -132,9 +132,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   boxes, query-exclusion from the retained strict box, box nesting, selected
   coordinate width halving, unselected width preservation, Euclidean ball
   containment in boxes, and the short-side obstruction to containing an
-  `eps`-ball.  The next target is the cyclic coordinate schedule plus scalar
-  side-length/radius iteration; Theorem 6.23 remains source context rather than
-  a direct proof target.  The exact Grünbaum/centroid theorem remains a
+  `eps`-ball.  The newest recursive-state packet adds the cyclic coordinate
+  schedule, initial cube, recursive lower/upper endpoints, endpoint ordering,
+  per-step valid separation, per-step query exclusion, recursive nesting, and
+  recursive selected/unselected width update facts.  The next target is the
+  coordinate cut-count / scalar side-length/radius iteration; Theorem 6.23
+  remains source context rather than a direct proof target.  The exact
+  Grünbaum/centroid theorem remains a
   supplied blocker for exact CoGM reporting.
 
 ## Coverage By Lane
@@ -195,11 +199,12 @@ source-radius facts, centered Lipschitz-on-`B(x_*, R)` facts, first-order
 convexity, and first-order strong-convexity reusable certificates.  It also
 proves the 6.22 source-rate lower-bound packet with the displayed radius and
 source strong-convex/Lipschitz certificates.  It now also starts Theorem 6.25
-with compiled box-halving/separation geometry and the short-side no-`eps`-ball
-obstruction.  The next theorem packet should continue Theorem 6.25 by proving
-the cyclic coordinate schedule and side-length/radius lower-bound iteration;
-add literal arbitrary-`d > N` wrappers for 6.21/6.22 only if needed for exact
-theorem reporting.
+with compiled box-halving/separation geometry, the short-side no-`eps`-ball
+obstruction, and the recursive cyclic box state with per-step separation,
+query-exclusion, nesting, and width-update facts.  The next theorem packet
+should continue Theorem 6.25 by proving coordinate cut-count and
+side-length/radius lower-bound iteration; add literal arbitrary-`d > N`
+wrappers for 6.21/6.22 only if needed for exact theorem reporting.
 This paragraph supersedes older Lemma 6.20 "next manual packet" language below.
 
 Latest proof target after the standard-cut scalar containment,
