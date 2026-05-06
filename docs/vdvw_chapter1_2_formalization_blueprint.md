@@ -181,6 +181,13 @@ random-entropy theorem: the immediate option-1 target remains the weaker
 probability-level comparison from ghost samples, Rademacher symmetrization,
 outer probability, and selected empirical covers.
 
+The comparison target now also accepts eventual a.e. domination through
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_bound`.
+This is the preferred next source theorem shape for the generic route: prove
+the fixed-radius finite-net domination under `vdVWProductMeasure P n` almost
+everywhere, or prove the comparison structure directly, instead of requiring a
+pointwise all-sample inequality.
+
 2026-05-06 fixed-FDD congruence refinement: after search, the local FDD
 replacement layer now includes
 `aemeasurable_fdd_congr_finite_coord_ae` and

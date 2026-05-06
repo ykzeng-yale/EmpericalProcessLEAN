@@ -7437,3 +7437,15 @@ option-1 blocker is still to prove the weaker generic comparison from the
 textbook ghost/Rademacher/nonmeasurable selected-cover argument, or to produce
 a genuine structural selected-cover theorem that supplies the pointwise
 constructor without over-strong assumptions.
+
+2026-05-06 Theorem 2.4.3 a.e. comparison constructor: search found mathlib
+`measure_mono_ae` / `Filter.EventuallyLE.measure_le`, so the next weakening did
+not need a primitive.  `Theorem243.lean` now proves
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_bound`.
+It upgrades eventual `vdVWProductMeasure P n`-a.e. finite-net domination of the
+centered truncated supremum by the selected Hoeffding upper plus radius into
+the same fixed-radius outer-probability comparison structure.  This is closer
+to the expected ghost/Fubini/selected-cover proof shape than the all-sample
+pointwise constructor.  The remaining blocker is now sharper: prove that
+eventual a.e. domination, or directly prove the comparison structure, from the
+VdV&W symmetrization and random empirical-cover argument.

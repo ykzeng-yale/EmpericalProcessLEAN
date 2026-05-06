@@ -2984,3 +2984,9 @@ removes duplicated event-monotonicity proof code and makes the true remaining
 gap explicit: prove the generic fixed-radius probability comparison from the
 VdV&W ghost/Rademacher selected-cover argument, or prove a structural selected
 finite-cover theorem strong enough to feed the pointwise constructor.
+
+The same comparison target now also has the weaker a.e. constructor
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_bound`,
+proved using mathlib `measure_mono_ae`.  Future Theorem 2.4.3 work should aim
+to prove this eventual a.e. selected finite-net domination, or the comparison
+structure directly, from the textbook symmetrization/random-cover argument.
