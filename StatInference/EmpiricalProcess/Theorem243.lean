@@ -21399,9 +21399,9 @@ and raw normalized-log tail/UI for the selected cardinality process.
 
 This removes the caller-facing affine normalized-log tail hypotheses from
 `toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation`.
-The remaining finite-net upper integrability field is still explicit, because
-it is a separate varying-domain integrability input rather than a consequence
-of convergence in outer probability alone.
+The finite-net upper integrability field is derived from selected normalized
+log-cardinality integrability by
+`integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_logCardinality_div_integrable`.
 -/
 theorem
     VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation_raw
@@ -21415,18 +21415,6 @@ theorem
     (hentropy :
       VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
         indexClass classFun envelope cardinality)
-    (hfiniteNetUpperIntegrable :
-      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWTheorem243FiniteNetHoeffdingUpper
-              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
-                (indexClass := indexClass) (classFun := classFun)
-                (envelope := envelope) (M := M) (eta := eta)
-                (cardinality := cardinality M) (X M)
-                (hentropy.coveringNumber_le M hM) heta) n sample n)
-              n M)
-          (vdVWProductMeasure P n))
     (hselectedLogMeasurable :
       ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
         Measurable fun sample : SampleAt Observation n =>
@@ -21484,7 +21472,19 @@ theorem
     VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation
       (P := P) (X := X) (indexClass := indexClass)
       (classFun := classFun) (envelope := envelope)
-      (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
+      (cardinality := cardinality) hentropy
+      (fun M hM eta heta n =>
+        integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_logCardinality_div_integrable
+          (μ := vdVWProductMeasure P n)
+          (cardinality := fun sample : SampleAt Observation n => fun m : ℕ =>
+            (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (cardinality := cardinality M) (X M)
+              (hentropy.coveringNumber_le M hM) heta) n sample m)
+          (n := n) (M := M)
+          (hselectedLogMeasurable M hM eta heta n)
+          (hselectedLogIntegrable M hM eta heta n) hM.le)
       (fun M hM eta heta R =>
         logCardinality_div_affineTailIntegrable_of_measurable_integrable
           (P := P)
@@ -21535,18 +21535,6 @@ theorem
     (hentropy :
       VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
         indexClass classFun envelope cardinality)
-    (hfiniteNetUpperIntegrable :
-      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWTheorem243FiniteNetHoeffdingUpper
-              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
-                (indexClass := indexClass) (classFun := classFun)
-                (envelope := envelope) (M := M) (eta := eta)
-                (cardinality := cardinality M) (X M)
-                (hentropy.coveringNumber_le M hM) heta) n sample n)
-              n M)
-          (vdVWProductMeasure P n))
     (hselectedLogMeasurable :
       ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
         Measurable fun sample : SampleAt Observation n =>
@@ -21590,22 +21578,20 @@ theorem
         indexClass classFun envelope M (cardinality M) := by
   intro M hM
   exact
-    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation_raw
       (P := P) (X := X) (indexClass := indexClass)
       (classFun := classFun) (envelope := envelope)
-      (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
+      (cardinality := cardinality) hentropy hselectedLogMeasurable
+      hselectedLogIntegrable
       (fun M hM eta heta =>
-        finiteNetHoeffdingUpper_tailExpectation_condition_of_raw_logCardinality_div_integral_tendsto_zero
-          (P := P) (M := M)
+        logCardinality_div_tailExpectation_condition_of_integral_tendsto_zero
+          (P := P)
           (cardinality := fun n sample m =>
             (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
               (indexClass := indexClass) (classFun := classFun)
               (envelope := envelope) (M := M) (eta := eta)
               (cardinality := cardinality M) (X M)
               (hentropy.coveringNumber_le M hM) heta) n sample m)
-          hM
-          (hselectedLogMeasurable M hM eta heta)
-          (hselectedLogIntegrable M hM eta heta)
           (hselectedLogIntegral M hM eta heta))
       M hM
 
@@ -23311,18 +23297,6 @@ theorem
     (hentropy :
       VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
         indexClass classFun envelope cardinality)
-    (hfiniteNetUpperIntegrable :
-      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWTheorem243FiniteNetHoeffdingUpper
-              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
-                (indexClass := indexClass) (classFun := classFun)
-                (envelope := envelope) (M := M) (eta := eta)
-                (cardinality := cardinality M) (X M)
-                (hentropy.coveringNumber_le M hM) heta) n sample n)
-              n M)
-          (vdVWProductMeasure P n))
     (hselectedLogMeasurable :
       ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
         Measurable fun sample : SampleAt Observation n =>
@@ -23368,8 +23342,8 @@ theorem
     VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_integral_tendsto_zero
       (P := P) (X := X) (indexClass := indexClass)
       (classFun := classFun) (envelope := envelope)
-      (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
-      hselectedLogMeasurable hselectedLogIntegrable ?_
+      (cardinality := cardinality) hentropy hselectedLogMeasurable
+      hselectedLogIntegrable ?_
   intro M hM eta heta
   exact
     tendsto_integral_vdVWProductMeasure_of_VdVWConvergesInOuterProbabilityConst_firstNSample_unifIntegrable
@@ -23417,18 +23391,6 @@ theorem
     (hentropy :
       VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
         indexClass classFun envelope cardinality)
-    (hfiniteNetUpperIntegrable :
-      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWTheorem243FiniteNetHoeffdingUpper
-              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
-                (indexClass := indexClass) (classFun := classFun)
-                (envelope := envelope) (M := M) (eta := eta)
-                (cardinality := cardinality M) (X M)
-                (hentropy.coveringNumber_le M hM) heta) n sample n)
-              n M)
-          (vdVWProductMeasure P n))
     (hselectedLogMeasurable :
       ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
         Measurable fun sample : SampleAt Observation n =>
@@ -23486,8 +23448,8 @@ theorem
     VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_unifIntegrable
       (P := P) (X := X) (indexClass := indexClass)
       (classFun := classFun) (envelope := envelope)
-      (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
-      hselectedLogMeasurable hselectedLogIntegrable ?_
+      (cardinality := cardinality) hentropy hselectedLogMeasurable
+      hselectedLogIntegrable ?_
   intro M hM eta heta
   exact
     MeasureTheory.unifIntegrable_of
@@ -23520,18 +23482,6 @@ theorem
     (hentropy :
       VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
         indexClass classFun envelope cardinality)
-    (hfiniteNetUpperIntegrable :
-      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWTheorem243FiniteNetHoeffdingUpper
-              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
-                (indexClass := indexClass) (classFun := classFun)
-                (envelope := envelope) (M := M) (eta := eta)
-                (cardinality := cardinality M) (X M)
-                (hentropy.coveringNumber_le M hM) heta) n sample n)
-              n M)
-          (vdVWProductMeasure P n))
     (hselectedLogMeasurable :
       ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
         Measurable fun sample : SampleAt Observation n =>
@@ -23575,8 +23525,8 @@ theorem
     VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_eLpNormTail
       (P := P) (X := X) (indexClass := indexClass)
       (classFun := classFun) (envelope := envelope)
-      (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
-      hselectedLogMeasurable hselectedLogIntegrable ?_
+      (cardinality := cardinality) hentropy hselectedLogMeasurable
+      hselectedLogIntegrable ?_
   intro M hM eta heta
   exact
     eLpNorm_one_tail_condition_of_nnnorm_bound
@@ -23789,18 +23739,6 @@ theorem
     (hentropy :
       VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
         indexClass classFun envelope cardinality)
-    (hfiniteNetUpperIntegrable :
-      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWTheorem243FiniteNetHoeffdingUpper
-              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
-                (indexClass := indexClass) (classFun := classFun)
-                (envelope := envelope) (M := M) (eta := eta)
-                (cardinality := cardinality M) (X M)
-                (hentropy.coveringNumber_le M hM) heta) n sample n)
-              n M)
-          (vdVWProductMeasure P n))
     (hselectedLogMeasurable :
       ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
         Measurable fun sample : SampleAt Observation n =>
@@ -23840,8 +23778,8 @@ theorem
     VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_nnnorm_bound
       (P := P) (X := X) (indexClass := indexClass)
       (classFun := classFun) (envelope := envelope)
-      (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
-      hselectedLogMeasurable hselectedLogIntegrable
+      (cardinality := cardinality) hentropy hselectedLogMeasurable
+      hselectedLogIntegrable
       (hentropy.firstSample_nnnorm_bound_of_logCardinality_nat_poly_bound
         hconstant_ge_one hpoly_bound)
 
@@ -36164,18 +36102,6 @@ theorem
     (hentropy :
       VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
         indexClass classFun envelope cardinality)
-    (hfiniteNetUpperIntegrable :
-      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWTheorem243FiniteNetHoeffdingUpper
-              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
-                (indexClass := indexClass) (classFun := classFun)
-                (envelope := envelope) (M := M) (eta := eta)
-                (cardinality := cardinality M) (X M)
-                (hentropy.coveringNumber_le M hM) heta) n sample n)
-              n M)
-          (vdVWProductMeasure P n))
     (hselectedLogMeasurable :
       ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
         Measurable fun sample : SampleAt Observation n =>
@@ -36359,8 +36285,8 @@ theorem
         VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_tailExpectation_raw
           (P := P) (X := X) (indexClass := indexClass)
           (classFun := classFun) (envelope := envelope)
-          (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
-          hselectedLogMeasurable hselectedLogIntegrable hselectedLogTail)
+          (cardinality := cardinality) hentropy hselectedLogMeasurable
+          hselectedLogIntegrable hselectedLogTail)
       hindexClass henvelope hclass henv henv_integrable sign hsign hindep
       hsubG htruncIntegrable hbdd_truncated hpairSupIntegrable
       hcenteredSupIntegrable hghostExpectationIntegrable
@@ -36395,18 +36321,6 @@ theorem
     (hentropy :
       VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
         indexClass classFun envelope cardinality)
-    (hfiniteNetUpperIntegrable :
-      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWTheorem243FiniteNetHoeffdingUpper
-              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
-                (indexClass := indexClass) (classFun := classFun)
-                (envelope := envelope) (M := M) (eta := eta)
-                (cardinality := cardinality M) (X M)
-                (hentropy.coveringNumber_le M hM) heta) n sample n)
-              n M)
-          (vdVWProductMeasure P n))
     (hselectedLogMeasurable :
       ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
         Measurable fun sample : SampleAt Observation n =>
@@ -36599,8 +36513,8 @@ theorem
         (μsign := μsign) (P := P) (indexClass := indexClass)
         (classFun := classFun) (envelope := envelope)
         (cardinality := cardinality) X hX_samplePath hentropy
-        hfiniteNetUpperIntegrable hselectedLogMeasurable
-        hselectedLogIntegrable hselectedLogTail hindexClass henvelope hclass
+        hselectedLogMeasurable hselectedLogIntegrable hselectedLogTail
+        hindexClass henvelope hclass
         henv henv_integrable sign hsign hindep hsubG htruncIntegrable
         hbdd_truncated hpairSupIntegrable hcenteredSupIntegrable
         hghostExpectationIntegrable hsplitSupIntegrable hsampleSupIntegrable
@@ -36846,18 +36760,6 @@ theorem
     (hentropy :
       VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
         indexClass classFun envelope cardinality)
-    (hfiniteNetUpperIntegrable :
-      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWTheorem243FiniteNetHoeffdingUpper
-              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
-                (indexClass := indexClass) (classFun := classFun)
-                (envelope := envelope) (M := M) (eta := eta)
-                (cardinality := cardinality M) (X M)
-                (hentropy.coveringNumber_le M hM) heta) n sample n)
-              n M)
-          (vdVWProductMeasure P n))
     (hselectedLogMeasurable :
       ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
         Measurable fun sample : SampleAt Observation n =>
@@ -37030,8 +36932,8 @@ theorem
         VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_unifIntegrable
           (P := P) (X := X) (indexClass := indexClass)
           (classFun := classFun) (envelope := envelope)
-          (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
-          hselectedLogMeasurable hselectedLogIntegrable hselectedLogUI)
+          (cardinality := cardinality) hentropy hselectedLogMeasurable
+          hselectedLogIntegrable hselectedLogUI)
       hindexClass henvelope hclass henv henv_integrable sign hsign hindep
       hsubG htruncIntegrable hbdd_truncated hpairSupIntegrable
       hcenteredSupIntegrable hghostExpectationIntegrable
@@ -37065,18 +36967,6 @@ theorem
     (hentropy :
       VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
         indexClass classFun envelope cardinality)
-    (hfiniteNetUpperIntegrable :
-      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWTheorem243FiniteNetHoeffdingUpper
-              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
-                (indexClass := indexClass) (classFun := classFun)
-                (envelope := envelope) (M := M) (eta := eta)
-                (cardinality := cardinality M) (X M)
-                (hentropy.coveringNumber_le M hM) heta) n sample n)
-              n M)
-          (vdVWProductMeasure P n))
     (hselectedLogMeasurable :
       ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
         Measurable fun sample : SampleAt Observation n =>
@@ -37261,8 +37151,8 @@ theorem
         VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_eLpNormTail
           (P := P) (X := X) (indexClass := indexClass)
           (classFun := classFun) (envelope := envelope)
-          (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
-          hselectedLogMeasurable hselectedLogIntegrable hselectedLogTail)
+          (cardinality := cardinality) hentropy hselectedLogMeasurable
+          hselectedLogIntegrable hselectedLogTail)
       hindexClass henvelope hclass henv henv_integrable sign hsign hindep
       hsubG htruncIntegrable hbdd_truncated hpairSupIntegrable
       hcenteredSupIntegrable hghostExpectationIntegrable
@@ -37297,18 +37187,6 @@ theorem
     (hentropy :
       VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
         indexClass classFun envelope cardinality)
-    (hfiniteNetUpperIntegrable :
-      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWTheorem243FiniteNetHoeffdingUpper
-              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
-                (indexClass := indexClass) (classFun := classFun)
-                (envelope := envelope) (M := M) (eta := eta)
-                (cardinality := cardinality M) (X M)
-                (hentropy.coveringNumber_le M hM) heta) n sample n)
-              n M)
-          (vdVWProductMeasure P n))
     (hselectedLogMeasurable :
       ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
         Measurable fun sample : SampleAt Observation n =>
@@ -37479,8 +37357,8 @@ theorem
         VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_firstSample_nnnorm_bound
           (P := P) (X := X) (indexClass := indexClass)
           (classFun := classFun) (envelope := envelope)
-          (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
-          hselectedLogMeasurable hselectedLogIntegrable hselectedLogBound)
+          (cardinality := cardinality) hentropy hselectedLogMeasurable
+          hselectedLogIntegrable hselectedLogBound)
       hindexClass henvelope hclass henv henv_integrable sign hsign hindep
       hsubG htruncIntegrable hbdd_truncated hpairSupIntegrable
       hcenteredSupIntegrable hghostExpectationIntegrable
@@ -37515,18 +37393,6 @@ theorem
     (hentropy :
       VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
         indexClass classFun envelope cardinality)
-    (hfiniteNetUpperIntegrable :
-      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
-        Integrable
-          (fun sample : SampleAt Observation n =>
-            vdVWTheorem243FiniteNetHoeffdingUpper
-              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
-                (indexClass := indexClass) (classFun := classFun)
-                (envelope := envelope) (M := M) (eta := eta)
-                (cardinality := cardinality M) (X M)
-                (hentropy.coveringNumber_le M hM) heta) n sample n)
-              n M)
-          (vdVWProductMeasure P n))
     (hselectedLogMeasurable :
       ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
         Measurable fun sample : SampleAt Observation n =>
@@ -37699,8 +37565,8 @@ theorem
         VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_integral_tendsto_zero
           (P := P) (X := X) (indexClass := indexClass)
           (classFun := classFun) (envelope := envelope)
-          (cardinality := cardinality) hentropy hfiniteNetUpperIntegrable
-          hselectedLogMeasurable hselectedLogIntegrable hselectedLogIntegral)
+          (cardinality := cardinality) hentropy hselectedLogMeasurable
+          hselectedLogIntegrable hselectedLogIntegral)
       hindexClass henvelope hclass henv henv_integrable sign hsign hindep
       hsubG htruncIntegrable hbdd_truncated hpairSupIntegrable
       hcenteredSupIntegrable hghostExpectationIntegrable

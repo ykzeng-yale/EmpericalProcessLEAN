@@ -7582,3 +7582,19 @@ is integrable automatically.  It does not solve the exact generic blocker:
 the remaining theorem is still to derive selected normalized-log tail/UI,
 ordinary mean, or scaled selected finite-net event comparison from the
 textbook outer-probability entropy hypothesis.
+
+2026-05-06 Theorem 2.4.3 selected-log route assumption reduction: after the
+integrability bridge compiled, `Theorem243.lean` was refactored so the
+selected normalized-log tail/UI, ordinary-mean, first-sample UI/eLpNorm, and
+first-sample bounded-entropy constructors no longer ask callers to supply
+finite-net Hoeffding upper integrability separately.  The affected source
+bridges now derive that field internally from selected normalized-log
+measurability and integrability via
+`integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_logCardinality_div_integrable`.
+This is theorem-facing cleanup rather than a new endpoint: the downstream
+untruncated centered consumers and the `P`-GC plus in-mean selected-log
+endpoint now need one fewer artificial analytic side condition.  The exact
+generic VdV&W 2.4.3 blocker is unchanged and remains source-side: prove
+selected normalized-log tail/UI or a direct scaled selected finite-net event
+comparison from the textbook outer-probability entropy hypothesis, without
+smuggling in ordinary mean/UI assumptions.

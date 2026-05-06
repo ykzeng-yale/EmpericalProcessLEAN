@@ -3041,3 +3041,13 @@ finite-net Hoeffding display scale.  The exact generic 2.4.3 blocker remains
 unchanged: selected normalized-log tail/UI, ordinary mean, or scaled selected
 finite-net event comparison still must be derived from the textbook
 outer-probability random entropy hypothesis.
+
+2026-05-06 selected-log route interface cleanup:
+the selected normalized-log tail/UI, ordinary-mean, first-sample UI/eLpNorm,
+and first-sample bounded-entropy constructors now derive finite-net Hoeffding
+upper integrability internally from selected normalized-log integrability.
+Downstream untruncated centered and `P`-GC plus in-mean consumers therefore
+carry one fewer artificial side condition.  This does not claim the generic
+textbook theorem: the remaining high-priority source bridge is still the
+outer-entropy-to-selected-tail/UI or scaled selected finite-net event
+comparison.
