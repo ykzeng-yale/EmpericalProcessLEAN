@@ -33,6 +33,12 @@ The central selected fixed-radius route now also has
 `VdVWTheorem243_selectedFixedRadiusTail_pGlivenkoCantelli_and_inMean`, so the
 next proof target is the source theorem for selected side conditions, not more
 endpoint composition.
+The first source-side bridge is now compiled:
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_finiteNetUpper_integral_tendsto_zero`
+constructs the selected side-condition package from variable entropy plus
+ordinary mean convergence of the selected finite-net Hoeffding upper.  The
+remaining exact-textbook gap is therefore sharper: prove that mean/tail/UI
+input from the random entropy hypothesis, or add a stronger honest hypothesis.
 
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely

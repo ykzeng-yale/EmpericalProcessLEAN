@@ -111,6 +111,12 @@ selected route is now exposed as
 `VdVWTheorem243_selectedFixedRadiusTail_pGlivenkoCantelli_and_inMean`; the
 next theorem-facing proof should supply `VdVWTheorem243SelectedFixedRadiusTailSideConditions`
 from a real entropy/tail/UI, ordinary-mean, or structural cardinality source.
+One source-side ordinary-mean bridge is now available:
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_finiteNetUpper_integral_tendsto_zero`
+turns variable entropy plus selected finite-net Hoeffding-upper mean
+convergence into the selected side-condition package.  The remaining
+Theorem 2.4.3 work should therefore target the finite-net upper mean/tail/UI
+input itself, not the downstream selected endpoint.
 
 The exact Theorem 2.4.3 gap is now sharper: the textbook assumption is the
 generic random entropy condition

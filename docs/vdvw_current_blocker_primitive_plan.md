@@ -135,6 +135,17 @@ real entropy/tail/UI source, then consume this theorem directly.  Do not add
 more endpoint aliases unless an exact textbook corollary immediately needs a
 different statement shape.
 
+2026-05-06 finite-net-upper mean source bridge: search found generic
+`tailExpectation_condition_of_integral_tendsto_zero_nonneg` and the selected
+fixed-radius package, but no constructor taking ordinary mean convergence of
+the selected finite-net Hoeffding upper directly.  `Theorem243.lean` now proves
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_finiteNetUpper_integral_tendsto_zero`.
+This is a genuine source-side bridge: variable entropy plus finite-net upper
+integrability and mean convergence supplies the selected tail/UI package.  It
+still leaves the exact textbook issue unchanged: bare outer-probability
+random entropy must be strengthened by, or proved to imply, this ordinary-mean
+input or another valid tail/UI source.
+
 2026-05-06 fixed-FDD selected-coordinate congruence follow-up: local search
 found only the whole-sample-path finite-dimensional congruence wrappers
 `aemeasurable_fdd_congr_forall_coord_ae` and
