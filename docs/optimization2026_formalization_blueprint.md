@@ -44,7 +44,7 @@ directly in this tool surface unless the goal is complete, so
 replacement prompt for manual runs.
 
 Current manual goal frontier after focused Lean verification of the Theorem
-6.25 scalar/log containment packet on top of pushed frontier `7f9272e`: the
+6.25 deterministic no-success packet on top of pushed frontier `e906bd1`: the
 lane has moved from Lemma 6.20 packaging through Chapter 6 Theorems 6.21 and
 6.22 nonsmooth lower-bound source packets and into Theorem 6.25 feasibility
 lower bound.  Treat `ProjectedSubgradient.lean`,
@@ -81,9 +81,12 @@ and final strict-box query exclusion for every previous query.  The newest
 replay-certificate packet adds returned cut vectors, final-box separator
 validity, finite separation transcript and replay-certificate interfaces, and
 the source-shaped package combining replay validity with log-bound `eps`-ball
-containment.  The next theorem-sized packet should close Theorem 6.25's
-remaining supplied algorithm-level deterministic replay abstraction.  Add a
-literal arbitrary `d > N` embedding/report wrapper for 6.21/6.22
+containment.  The deterministic replay abstraction now adds prefix-causal
+query functionals, finite deterministic runs, transcript-equality replay, and
+the source-shaped no-strict-success wrapper.  The next theorem-sized packet
+should either package exact Theorem 6.25 for reporting or open the next
+main-text chapter packet.  Add a literal arbitrary `d > N`
+embedding/report wrapper for 6.21/6.22
 only if exact theorem reporting requires it.
 The detailed Lemma 6.20 frontier below is retained only as dependency context
 and should not be used as the active route.
