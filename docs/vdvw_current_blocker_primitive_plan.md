@@ -491,6 +491,21 @@ These close the one-coordinate replacement layer while still not claiming a
 whole-process a.e. replacement from only one-coordinate equality, nor the
 arbitrary-index VdV&W 1.4.8 converse.
 
+2026-05-06 finite-FDD selected-coordinate replacement consumers: search found
+the fixed-FDD congruence theorem `vdVWFDDProcessLaw_congr_finite_coord_ae`,
+mathlib `Measure.map_congr`, and the measure-level
+`VdVWWeakConvergenceProbabilityMeasures.congr_eventually_limit` /
+`VdVWProbabilityMeasuresAsymptoticallyTight.congr_eventually`, but no
+process-facing consumers combining them with the forward bounded-process FDD
+wrappers.  `FiniteDimensional.lean` now proves
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_congr_eventually_finite_coord_ae`
+and
+`VdVWEllInftyProcessAsymptoticallyTight.finiteDimensionalLaw_congr_eventually_finite_coord_ae`.
+These let later Chapter 1 arguments replace only the selected finite
+coordinates of FDD laws a.e. on source and limit spaces.  They are still
+finite-FDD forward support, not the arbitrary-index weak-convergence/FDD
+converse.
+
 Authoritative operational prompt, 2026-05-06 after the verified
 original-cover truncation/polynomial entropy bridges and the quantizer
 random-cover lifts, plus the earlier truncated threshold trace algebra,

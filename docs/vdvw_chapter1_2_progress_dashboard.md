@@ -36,6 +36,12 @@ coordinatewise a.e.-replacement support is also compiled as
 `VdVWEllInftyProcessWeakConvergence.rawCoordinateLaw_congr_eventually_ae`,
 and
 `VdVWEllInftyProcessAsymptoticallyTight.rawCoordinateLaw_congr_eventually_ae`.
+The finite-FDD analogue is also compiled as
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_congr_eventually_finite_coord_ae`
+and
+`VdVWEllInftyProcessAsymptoticallyTight.finiteDimensionalLaw_congr_eventually_finite_coord_ae`,
+so fixed finite-dimensional laws can be transported after replacing only the
+selected coordinates a.e.
 This run additionally closes the generic centered-convergence endpoint bundle
 and the explicit selected finite-net tail/UI route to `P`-GC plus in-mean via
 `VdVWTheorem243_pGlivenkoCantelli_and_inMean_of_centered_untruncated_convergesInOuterProbabilityConst_zero`

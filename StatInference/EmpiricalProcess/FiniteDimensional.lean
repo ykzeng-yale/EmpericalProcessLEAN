@@ -1578,6 +1578,55 @@ theorem VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw
   simpa [hlim] using hmap.congr_eventually hsrc
 
 /--
+Finite-dimensional weak convergence from a process law is stable under
+eventually replacing only the selected finite coordinates a.e. and replacing
+the limiting selected coordinates a.e.
+
+This is a fixed-FDD replacement primitive.  It is weaker than whole-process
+a.e. congruence and still only proves the forward FDD direction.
+-/
+theorem VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_congr_eventually_finite_coord_ae
+    {ι : Type*} {Ω : ι -> Type*} {Ωlim : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    (X Y : (i : ι) -> Ω i -> T -> ℝ)
+    (Z W : Ωlim -> T -> ℝ)
+    (hbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hbounded i)) (μ i))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ l)
+    (I : Finset T) [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)]
+    (hY : ∀ i, AEMeasurable (fun ω => fun t : I => Y i ω t.1) (μ i))
+    (hW : AEMeasurable (fun ω => fun t : I => W ω t.1) μlim)
+    (hYX : ∀ᶠ i in l, ∀ᵐ ω ∂(μ i), ∀ t : I, Y i ω t.1 = X i ω t.1)
+    (hWZ : ∀ᵐ ω ∂μlim, ∀ t : I, W ω t.1 = Z ω t.1) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun i => vdVWFDDProcessLaw (μ i) I (Y i) (hY i))
+      l
+      (vdVWFDDProcessLaw μlim I W hW) := by
+  have hfdd :=
+    VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ h I
+  refine hfdd.congr_eventually_limit ?_ ?_
+  · exact hYX.mono fun i hi =>
+      vdVWFDDProcessLaw_congr_finite_coord_ae
+        (P := μ i) I (X i) (Y i)
+        (aemeasurable_fdd_of_aemeasurable_ellInftyProcessMap (T := T) I (hX i))
+        (hY i) hi
+  · exact
+      vdVWFDDProcessLaw_congr_finite_coord_ae
+        (P := μlim) I Z W
+        (aemeasurable_fdd_of_aemeasurable_ellInftyProcessMap (T := T) I hZ)
+        hW hWZ
+
+/--
 Process-level weak convergence implies weak convergence of every single
 coordinate law.
 
@@ -1877,6 +1926,41 @@ theorem VdVWEllInftyProcessAsymptoticallyTight.finiteDimensionalLaw
   exact hmap.congr_eventually (Filter.Eventually.of_forall fun i =>
     (vdVWEllInftyProcessLaw_map_finiteRestrict
       (T := T) (P := μ i) (X := X i) (hbounded := hbounded i) (hX := hX i) I).symm)
+
+/--
+Finite-dimensional asymptotic tightness from a process law is stable under
+eventually replacing only the selected finite coordinates a.e.
+
+This is a fixed-FDD tightness replacement primitive, not the arbitrary-index
+tightness/FDD converse.
+-/
+theorem VdVWEllInftyProcessAsymptoticallyTight.finiteDimensionalLaw_congr_eventually_finite_coord_ae
+    {ι : Type*} {Ω : ι -> Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    (X Y : (i : ι) -> Ω i -> T -> ℝ)
+    (hbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hbounded i)) (μ i))
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessAsymptoticallyTight
+      (T := T) μ X hbounded hX l)
+    (I : Finset T) [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)]
+    [T2Space (I -> ℝ)]
+    (hY : ∀ i, AEMeasurable (fun ω => fun t : I => Y i ω t.1) (μ i))
+    (hYX : ∀ᶠ i in l, ∀ᵐ ω ∂(μ i), ∀ t : I, Y i ω t.1 = X i ω t.1) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun i => vdVWFDDProcessLaw (μ i) I (Y i) (hY i)) l := by
+  have hfdd :=
+    VdVWEllInftyProcessAsymptoticallyTight.finiteDimensionalLaw
+      (T := T) μ X hbounded hX h I
+  exact hfdd.congr_eventually (hYX.mono fun i hi =>
+    vdVWFDDProcessLaw_congr_finite_coord_ae
+      (P := μ i) I (X i) (Y i)
+      (aemeasurable_fdd_of_aemeasurable_ellInftyProcessMap (T := T) I (hX i))
+      (hY i) hi)
 
 /--
 Process-level asymptotic tightness implies asymptotic tightness of every
