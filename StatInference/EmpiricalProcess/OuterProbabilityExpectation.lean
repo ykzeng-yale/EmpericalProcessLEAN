@@ -228,6 +228,47 @@ theorem
               ENNReal.ofReal_ne_top
 
 /--
+Varying-sample-space Markov bridge from vanishing ordinary means to convergence
+in outer probability for nonnegative measurable real processes.
+
+This packages the Chapter 1.2 measurable-cover equality
+`E* (ofReal Y_i) = ofReal (∫ Y_i)` with the outer-probability Markov bridge.
+It is a source-side helper for Theorem 2.4.3 finite-net routes whose
+Hoeffding-scale upper bounds are ordinary measurable nonnegative random
+variables.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst_zero_of_integral_tendsto_zero_nonneg
+    {ι : Type v} {Ω : ι -> Type u}
+    [(i : ι) -> MeasurableSpace (Ω i)]
+    (μ : (i : ι) -> Measure (Ω i))
+    {l : Filter ι} {Y : (i : ι) -> Ω i -> ℝ}
+    (hY_meas : ∀ i, Measurable (Y i))
+    (hY_integrable : ∀ i, Integrable (Y i) (μ i))
+    (hY_nonneg : ∀ i (ω : Ω i), 0 ≤ Y i ω)
+    (hIntegral : Tendsto (fun i => ∫ ω, Y i ω ∂(μ i)) l (𝓝 0)) :
+    VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ Y l (0 : ℝ) := by
+  let U :
+      ∀ i,
+        @VdVWMeasurableCover (Ω i) inferInstance (μ i)
+          (fun ω => ENNReal.ofReal (Y i ω)) := fun i =>
+    VdVWMeasurableCover.ofNullMeasurable_ofReal (μ i) ((hY_meas i).nullMeasurable)
+  refine
+    VdVWConvergesInOuterProbabilityConst_zero_of_outerExpectation_tendsto_zero_ofReal
+      (fun _ => inferInstance) μ hY_nonneg U ?_
+  have hE_eq :
+      (fun i =>
+          @VdVWOuterExpectation (Ω i) inferInstance (μ i)
+            (fun ω => ENNReal.ofReal (Y i ω))) =
+        (fun i => ENNReal.ofReal (∫ ω, Y i ω ∂(μ i))) := by
+    funext i
+    exact
+      VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg
+        (U i) (hY_integrable i) (ae_of_all _ (hY_nonneg i))
+  rw [hE_eq]
+  simpa [ENNReal.ofReal_zero] using ENNReal.tendsto_ofReal hIntegral
+
+/--
 Varying-sample-space Markov bridge with a supplied vanishing upper bound for
 the nonnegative outer expectations.
 -/
