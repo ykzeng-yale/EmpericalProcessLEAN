@@ -99,10 +99,14 @@ Initial modules:
 - `Basic.lean`: Chapter 2 stochastic convergence wrappers and Chapter 3
   supplied-linearization delta bridge, the `HasFDerivAt` deterministic
   remainder display, the scaled-remainder delta handoff, and the
-  tight-localization bridge for the stochastic delta remainder.
+  tight-localization bridge for the stochastic delta remainder.  It also now
+  contains the VdV&W tight-law-range to real-tail bridge, the Chapter 2
+  theorem that convergence in distribution implies `O_P(1)`, and Chapter 3
+  delta wrappers that derive scaled-statistic stochastic boundedness from
+  distributional convergence.
 - `DeltaMethod.lean`: full finite-dimensional delta method and uniform delta
-  method, starting by deriving the tightness and local-remainder certificate
-  fields consumed by `Basic.lean`.
+  method, starting by deriving the remaining scaled-ball local-remainder
+  certificate field consumed by `Basic.lean`.
 - `MomentEstimators.lean`: Chapter 4 wrappers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
