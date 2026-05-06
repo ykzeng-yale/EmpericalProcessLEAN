@@ -166,7 +166,10 @@ plus the signed endpoint consumer
 the `ell_infty(T)` substrate in `EllInfty.lean`, including
 `VdVWEllInfty.ofBounded`, coordinate norm/evaluation wrappers,
 bounded-sample-path process maps, finite-coordinate restrictions, the forward
-FDD weak-convergence/HasLaw/IdentDistrib/TendstoInDistribution wrappers, and
+FDD weak-convergence/HasLaw/IdentDistrib/TendstoInDistribution wrappers,
+finite-coordinate measurable/a.e.-measurable raw process restriction bridges
+`VdVWEllInfty.measurable_finiteRestrict_processMap` and
+`VdVWEllInfty.aemeasurable_finiteRestrict_processMap`, and
 the finite-index product identification
 `VdVWEllInfty.finiteContinuousLinearEquiv`; and the finite-index converse
 wrappers

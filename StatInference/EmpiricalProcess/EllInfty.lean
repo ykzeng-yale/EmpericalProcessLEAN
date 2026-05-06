@@ -132,6 +132,36 @@ theorem measurable_finiteRestrict
   (continuous_finiteRestrict (T := T) I).measurable
 
 /--
+Finite-coordinate restrictions of bounded sample-path processes are measurable
+as finite-dimensional random vectors when the selected coordinates are
+measurable.
+
+This is a finite-dimensional process wrapper only; it does not assert
+measurability of the full `ell_infty(T)`-valued process.
+-/
+theorem measurable_finiteRestrict_processMap [MeasurableSpace Ω]
+    (I : Finset T) {X : Ω -> T -> ℝ} (hX : IsBoundedSamplePath X)
+    (hcoord : ∀ t, t ∈ I -> Measurable fun ω => X ω t) :
+    Measurable fun ω => finiteRestrict I (processMap X hX ω) := by
+  exact measurable_pi_lambda _ fun t =>
+    by simpa using hcoord t.1 t.2
+
+/--
+A.e.-measurable finite-coordinate restriction of a bounded sample-path process.
+
+This is the a.e.-measurable analogue of
+`measurable_finiteRestrict_processMap`, useful for FDD and law-level Chapter 1
+wrappers without requiring full `ell_infty(T)` measurability.
+-/
+theorem aemeasurable_finiteRestrict_processMap [MeasurableSpace Ω]
+    {μ : Measure Ω} (I : Finset T) {X : Ω -> T -> ℝ}
+    (hX : IsBoundedSamplePath X)
+    (hcoord : ∀ t, t ∈ I -> AEMeasurable (fun ω => X ω t) μ) :
+    AEMeasurable (fun ω => finiteRestrict I (processMap X hX ω)) μ := by
+  exact aemeasurable_pi_lambda _ fun t =>
+    by simpa using hcoord t.1 t.2
+
+/--
 For finite index sets, `ell_infty(T)` is linearly homeomorphic to the ordinary
 finite product `T -> ℝ`.
 -/

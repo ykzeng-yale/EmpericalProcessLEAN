@@ -31,7 +31,13 @@ ordinary-mean/L1 normalized-log packages should not be rebuilt.  The
 varying-domain signed continuous-mapping and signed filter-refinement closures,
 the `ell_infty(T)` process-space substrate, finite-coordinate law wrappers,
 finite-index product equivalence, and finite-index `ell_infty(T)` FDD converse
-wrappers are also compiled.  The measure-level Portmanteau continuity-set
+wrappers are also compiled.  Finite-coordinate restrictions of raw bounded
+sample-path processes are now measurable/a.e.-measurable from coordinate
+measurability through
+`VdVWEllInfty.measurable_finiteRestrict_processMap` and
+`VdVWEllInfty.aemeasurable_finiteRestrict_processMap`; this is only a
+finite-dimensional bridge and does not assert full `ell_infty(T)` process
+measurability.  The measure-level Portmanteau continuity-set
 implication and closed/open converse wrappers are now compiled as well.  The
 norm-tail tightness characterization for probability-measure families on
 normed/proper normed spaces is compiled, including the sequence/range limsup

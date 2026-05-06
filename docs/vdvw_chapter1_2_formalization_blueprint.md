@@ -1910,6 +1910,15 @@ restriction wrappers.  This should be treated as the base substrate for later
 VdV&W process statements, not as a proof of separability, asymptotic
 tightness, Donsker, or the FDD converse.
 
+2026-05-06 finite-coordinate raw-process measurability follow-up:
+`EllInfty.lean` now adds
+`VdVWEllInfty.measurable_finiteRestrict_processMap` and
+`VdVWEllInfty.aemeasurable_finiteRestrict_processMap`, which turn coordinate
+measurability/a.e.-measurability of a raw bounded sample-path process into
+measurability/a.e.-measurability of each finite-dimensional restriction.  This
+is deliberately finite-dimensional and does not assert full `ell_infty(T)`
+process measurability.
+
 2026-05-05 finite-index `ell_infty(T)` follow-up: the finite-index process
 space is now explicitly identified with the ordinary product through
 `VdVWEllInfty.finiteContinuousLinearEquiv`.  This reuses mathlib's
