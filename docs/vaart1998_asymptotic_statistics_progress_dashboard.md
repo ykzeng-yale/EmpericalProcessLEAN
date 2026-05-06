@@ -214,10 +214,18 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_projectedScalarCLT`,
   and
   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT`.
+- Law-level Cramér-Wold handoff layer:
+  `vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment`,
+  `vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_measurable_real`,
+  `vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_aemeasurable_real`,
+  `vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_aestronglyMeasurable_real`,
+  `vaart1998_finiteCoordinateEmpiricalMomentCLT_of_law_tendsto`, and
+  `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_lawTendsto`.
 
-Latest pushed Vaart packet before this run: `01b6cbc`
-(`Add Vaart Cramer Wold CLT bridge interface`).  Current packet verification
-passed for:
+Latest remote base after rebase before this packet: `ed9745c`.  Latest pushed
+Vaart packet before this packet: `87a192f`
+(`Add Vaart projected scalar CLT bridge`).  Current packet verification passed
+for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -236,11 +244,11 @@ targeted Vaart module build.
 Continue Vaart Chapter 4.1 from the compiled Gaussian, canonical
 covarianceBilinDual source wrapper, and a.e.-localized finite-coordinate
 delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
-certificate interface and the real-valued projected scalar CLT conversion:
+certificate interface, real-valued projected scalar CLT conversion, and
+law-level vector CLT handoff:
 
-1. instantiate `Vaart1998FiniteCoordinateCramerWoldCLTBridge` from a reusable
-   mathlib/local Cramér-Wold theorem, or prove the weakest finite-dimensional
-   Cramér-Wold implication needed for `Coordinate -> ℝ`;
+1. prove the law-level finite-dimensional Cramér-Wold implication feeding
+   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_lawTendsto`;
 2. add the finite-matrix covariance specialization only if it can reuse the
    compiled covarianceBilinDual pullback without opening a large matrix
    algebra detour.

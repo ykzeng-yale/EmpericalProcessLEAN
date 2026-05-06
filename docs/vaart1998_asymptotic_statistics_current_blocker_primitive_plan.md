@@ -320,19 +320,34 @@ Chapter 3 theorem-facing wrappers compiling:
 102. Cramér-Wold bridge constructor from real-valued projected scalar CLTs plus
    the remaining finite-dimensional Cramér-Wold implication:
    `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT`.
+103. Scaled centered finite-coordinate empirical moment vector:
+   `vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment`.
+104. Measurability, a.e.-measurability, and a.e.-strong measurability for that
+   scaled centered vector under coordinate measurability:
+   `vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_measurable_real`,
+   `vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_aemeasurable_real`,
+   and
+   `vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_aestronglyMeasurable_real`.
+105. Law-level weak-convergence handoff into the finite-coordinate
+   empirical-moment CLT:
+   `vaart1998_finiteCoordinateEmpiricalMomentCLT_of_law_tendsto`.
+106. Cramér-Wold bridge constructor from real-valued projected scalar CLTs once
+   the remaining Cramér-Wold theorem has been proved as law convergence:
+   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_lawTendsto`.
 
-Latest remote base before this packet: `01b6cbc`.
-Latest pushed Vaart packet before this run: `01b6cbc`
-(`Add Vaart Cramer Wold CLT bridge interface`).
+Latest remote base after rebase before this packet: `ed9745c`.
+Latest pushed Vaart packet before this packet: `87a192f`
+(`Add Vaart projected scalar CLT bridge`).
 
-The current theorem-sized packet refines the Cramér-Wold route by separating
-real-valued centered-average scalar CLTs from the already named projected
-vector CLT family.  It adds projected empirical/population scalar moments,
-proves the continuous-linear centering/scaling identity, converts the
-real-valued projected scalar CLT family into
-`vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT`, and builds
-`Vaart1998FiniteCoordinateCramerWoldCLTBridge` from scalar CLTs plus the one
-remaining finite-dimensional Cramér-Wold implication.
+The current theorem-sized packet refines the Cramér-Wold route one layer
+further.  The real-valued centered-average scalar CLTs already feed the
+projected vector CLT family; now the scaled centered finite-coordinate vector
+has named measurability/a.e.-measurability wrappers, and a law-level weak
+convergence theorem feeds the exact
+`TendstoInDistribution` empirical-moment CLT.  Thus the remaining
+Cramér-Wold proof obligation is no longer mixed with random-variable
+measurability: it is a pure probability-law weak-convergence step from all
+linear projections to the vector law.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:

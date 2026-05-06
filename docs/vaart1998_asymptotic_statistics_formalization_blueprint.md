@@ -196,9 +196,16 @@ Initial modules:
   moments and the continuous-linear centered scaling identity now feed
   `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_projectedScalarCLT`
   and
-  `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT`.  It
-  still deliberately leaves a concrete finite-dimensional Cramér-Wold proof and
-  a finite-matrix specialization as explicit next layers.
+  `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT`.  The
+  newest law-level handoff names the scaled centered finite-coordinate vector,
+  proves its measurability/a.e.-measurability wrappers from coordinate
+  measurability, and turns law-level weak convergence of that vector into the
+  exact empirical-moment `TendstoInDistribution` field through
+  `vaart1998_finiteCoordinateEmpiricalMomentCLT_of_law_tendsto` and
+  `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_lawTendsto`.
+  It still deliberately leaves a concrete finite-dimensional Cramér-Wold
+  law-convergence proof and a finite-matrix specialization as explicit next
+  layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
