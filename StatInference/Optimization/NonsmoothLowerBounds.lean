@@ -1763,5 +1763,164 @@ theorem chewi625BoxState_no_closedBall_subset_of_width_lt {d : ℕ} [NeZero d]
       (d := d) (R := R) heps (x := x) (n := n) hball i
   nlinarith
 
+/--
+If a coordinate is not selected over a block of steps, its recursive box width
+is unchanged across that block.
+-/
+theorem chewi625BoxWidth_add_eq_of_no_cycle_hits {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d))
+    (j : Fin d) (n : ℕ) :
+    ∀ l : ℕ,
+      (∀ t, t < l -> chewi625CycleCoord (d := d) (n + t) ≠ j) ->
+      chewi625BoxWidth (d := d) R x (n + l) j =
+        chewi625BoxWidth (d := d) R x n j := by
+  intro l
+  induction l with
+  | zero =>
+      intro _hno
+      simp
+  | succ l ih =>
+      intro hno
+      have hlast :
+          chewi625CycleCoord (d := d) (n + l) ≠ j :=
+        hno l (Nat.lt_succ_self l)
+      have hno' :
+          ∀ t, t < l -> chewi625CycleCoord (d := d) (n + t) ≠ j := by
+        intro t ht
+        exact hno t (Nat.lt_trans ht (Nat.lt_succ_self l))
+      have hstep :
+          chewi625BoxWidth (d := d) R x ((n + l) + 1) j =
+            chewi625BoxWidth (d := d) R x (n + l) j :=
+        chewi625BoxWidth_succ_of_cycleCoord_ne
+          (d := d) R x (n := n + l) (j := j) hlast
+      have hidx : n + (l + 1) = (n + l) + 1 := by omega
+      rw [hidx, hstep, ih hno']
+
+/-- A full cycle selects coordinate `j` exactly at offset `j`. -/
+theorem chewi625CycleCoord_mul_add_eq {d : ℕ} [NeZero d]
+    (j : Fin d) (m : ℕ) :
+    chewi625CycleCoord (d := d) (m * d + (j : ℕ)) = j := by
+  simpa [Nat.add_comm] using chewi625CycleCoord_add_mul_eq (d := d) j m
+
+/-- Before offset `j` in a cycle, the cyclic schedule has not yet selected `j`. -/
+theorem chewi625CycleCoord_mul_add_ne_of_lt {d : ℕ} [NeZero d]
+    (j : Fin d) {m t : ℕ} (ht : t < j.1) :
+    chewi625CycleCoord (d := d) (m * d + t) ≠ j := by
+  intro h
+  have hval := congrArg Fin.val h
+  have ht_d : t < d := lt_trans ht j.is_lt
+  simp [chewi625CycleCoord, Nat.mod_eq_of_lt ht_d] at hval
+  omega
+
+/-- After offset `j` in a cycle, the remaining offsets do not select `j`. -/
+theorem chewi625CycleCoord_after_mul_add_ne_of_lt {d : ℕ} [NeZero d]
+    (j : Fin d) {m t : ℕ} (ht : t < d - (j.1 + 1)) :
+    chewi625CycleCoord (d := d) (m * d + (j.1 + 1 + t)) ≠ j := by
+  intro h
+  have hval := congrArg Fin.val h
+  have hoff_lt_d : j.1 + 1 + t < d := by
+    omega
+  simp [chewi625CycleCoord, Nat.mod_eq_of_lt hoff_lt_d] at hval
+  omega
+
+/--
+One complete cycle halves every coordinate width exactly once.  This is the
+core side-length recurrence in Chewi's proof of Theorem 6.25.
+-/
+theorem chewi625BoxWidth_full_cycle_succ {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (j : Fin d) (m : ℕ) :
+    chewi625BoxWidth (d := d) R x ((m + 1) * d) j =
+      chewi625BoxWidth (d := d) R x (m * d) j / 2 := by
+  have hpre :
+      chewi625BoxWidth (d := d) R x (m * d + j.1) j =
+        chewi625BoxWidth (d := d) R x (m * d) j := by
+    simpa using
+      chewi625BoxWidth_add_eq_of_no_cycle_hits
+        (d := d) R x j (m * d) j.1
+        (by
+          intro t ht
+          exact chewi625CycleCoord_mul_add_ne_of_lt (d := d) j (m := m) ht)
+  have hhit :
+      chewi625BoxWidth (d := d) R x ((m * d + j.1) + 1) j =
+        chewi625BoxWidth (d := d) R x (m * d + j.1) j / 2 := by
+    exact
+      chewi625BoxWidth_succ_of_cycleCoord_eq
+        (d := d) R x (n := m * d + j.1) (j := j)
+        (chewi625CycleCoord_mul_add_eq (d := d) j m)
+  let afterLen : ℕ := d - (j.1 + 1)
+  have hpost :
+      chewi625BoxWidth (d := d) R x ((m * d + j.1 + 1) + afterLen) j =
+        chewi625BoxWidth (d := d) R x (m * d + j.1 + 1) j := by
+    simpa [afterLen, Nat.add_assoc] using
+      chewi625BoxWidth_add_eq_of_no_cycle_hits
+        (d := d) R x j (m * d + j.1 + 1) afterLen
+        (by
+          intro t ht
+          simpa [Nat.add_assoc] using
+            chewi625CycleCoord_after_mul_add_ne_of_lt
+              (d := d) j (m := m) ht)
+  have hidx_left :
+      ((m * d + j.1 + 1) + afterLen) = (m + 1) * d := by
+    have hj_lt : j.1 < d := j.is_lt
+    have htail : j.1 + 1 + afterLen = d := by
+      dsimp [afterLen]
+      omega
+    calc
+      ((m * d + j.1 + 1) + afterLen)
+          = m * d + (j.1 + 1 + afterLen) := by omega
+      _ = m * d + d := by rw [htail]
+      _ = (m + 1) * d := by ring
+  rw [← hidx_left, hpost, hhit, hpre]
+
+/-- Closed form after `m` complete coordinate cycles. -/
+theorem chewi625BoxWidth_full_cycles {d : ℕ} [NeZero d]
+    (R : ℝ) (x : ℕ -> EuclideanSpace ℝ (Fin d)) (j : Fin d) :
+    ∀ m : ℕ,
+      chewi625BoxWidth (d := d) R x (m * d) j =
+        (2 * R) / (2 : ℝ) ^ m := by
+  intro m
+  induction m with
+  | zero =>
+      simp [chewi625BoxWidth]
+      ring
+  | succ m ih =>
+      rw [chewi625BoxWidth_full_cycle_succ (d := d) R x j m, ih]
+      ring_nf
+
+/-- If the full-cycle width is below `2 * eps`, the recursive box cannot contain an `eps`-ball. -/
+theorem chewi625BoxState_no_closedBall_subset_of_full_cycles_width_lt {d : ℕ}
+    [NeZero d] {R eps : ℝ} (heps : 0 < eps)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {m : ℕ} (j : Fin d)
+    (hwidth : (2 * R) / (2 : ℝ) ^ m < 2 * eps) :
+    ¬ ∃ center : EuclideanSpace ℝ (Fin d),
+      Metric.closedBall center eps ⊆
+        chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x (m * d))
+          (chewi625BoxUpper (d := d) R x (m * d)) := by
+  have hwidth_box :
+      chewi625BoxWidth (d := d) R x (m * d) j < 2 * eps := by
+    rw [chewi625BoxWidth_full_cycles (d := d) R x j m]
+    exact hwidth
+  exact
+    chewi625BoxState_no_closedBall_subset_of_width_lt
+      (d := d) (R := R) heps (x := x) (n := m * d) (i := j) hwidth_box
+
+/-- Any `eps`-ball inside the box after `m` full cycles forces the source scalar width bound. -/
+theorem chewi625_full_cycles_width_ge_two_eps_of_closedBall_subset {d : ℕ}
+    [NeZero d] {R eps : ℝ} (heps : 0 < eps)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {m : ℕ}
+    (hball : ∃ center : EuclideanSpace ℝ (Fin d),
+      Metric.closedBall center eps ⊆
+        chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x (m * d))
+          (chewi625BoxUpper (d := d) R x (m * d)))
+    (j : Fin d) :
+    2 * eps ≤ (2 * R) / (2 : ℝ) ^ m := by
+  have hge :=
+    chewi625BoxWidth_ge_two_eps_of_closedBall_subset
+      (d := d) (R := R) heps (x := x) (n := m * d) hball j
+  rw [chewi625BoxWidth_full_cycles (d := d) R x j m] at hge
+  exact hge
+
 end Optimization
 end StatInference

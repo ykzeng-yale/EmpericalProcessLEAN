@@ -43,10 +43,11 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Current manual goal frontier after fetching `origin/main` at `c8916aa` and
-verifying the local packet `Add Chewi theorem 6.22 lower bound packet`: the
-lane has moved from Lemma 6.20 packaging through Chapter 6 Theorems 6.21 and
-6.22 nonsmooth lower-bound source packets.  Treat `ProjectedSubgradient.lean`,
+Current manual goal frontier after focused Lean verification of the Theorem
+6.25 full-cycle width packet on top of pushed frontier `24a859c`: the lane has
+moved from Lemma 6.20 packaging through Chapter 6 Theorems 6.21 and 6.22
+nonsmooth lower-bound source packets and into Theorem 6.25 feasibility lower
+bound.  Treat `ProjectedSubgradient.lean`,
 `CuttingPlane.lean`, and `Ellipsoid.lean` as stable infrastructure through
 Theorems 6.14/6.16, the supplied CoGM 6.19 rate spine, and the supplied Lemma
 6.20 ellipsoid trajectory/rate with displayed matrix certificates.  The active
@@ -68,11 +69,14 @@ query-exclusion, nesting, and selected/unselected width update facts.  The
 width/counting bridge now adds a coordinate width abstraction, zero and
 selected/unselected successor forms, explicit cyclic-hit selection at
 `j + m*d`, width halving at those hit times, and recursive-box `eps`-ball
-side-width necessary/contradiction wrappers.  The next theorem-sized packet
-should continue Theorem 6.25 with full-cycle side-length/radius iteration.  Add
-a literal arbitrary `d > N`
-embedding/report wrapper for 6.21/6.22 only if exact theorem reporting requires
-it.
+side-width necessary/contradiction wrappers.  The newest full-cycle packet
+adds no-hit width preservation, pre/post-hit cycle miss lemmas, one-cycle
+halving, the closed form `(2 * R) / 2^m` after `m` cycles, and full-cycle
+`eps`-ball obstruction/necessary-width wrappers.  The next theorem-sized
+packet should close Theorem 6.25's scalar/log query-count wrapper and a
+supplied deterministic replay/separation-oracle interface.  Add a literal
+arbitrary `d > N` embedding/report wrapper for 6.21/6.22 only if exact theorem
+reporting requires it.
 The detailed Lemma 6.20 frontier below is retained only as dependency context
 and should not be used as the active route.
 

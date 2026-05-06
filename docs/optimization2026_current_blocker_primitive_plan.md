@@ -82,15 +82,15 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after fetching `origin/main` at
-`c8916aa` and verifying the local packet
-`Add Chewi theorem 6.22 lower bound packet`: aggressively formalize and
+Current live replacement `/goal` prompt after focused Lean verification of the
+Theorem 6.25 full-cycle width packet on top of pushed frontier `24a859c`
+(`Add Chewi theorem 6.25 width counting bridge`): aggressively formalize and
 prove all main theorem content of Sinho Chewi's Optimization 2026 notes in
 Lean under `StatInference/Optimization`, with all exercise statements and any
 cheap exercise proofs kept in `StatInference/Optimization/Exercises.lean`
 without slowing the main-text theorem lane.  Do not route back to the stale
 Chapter 3 Theorem 3.4 goal, finished Chapter 5/6 setup, or already-certified
-Theorem 6.21/6.22 source side conditions.  Treat
+Theorem 6.21/6.22 source side conditions and 6.25 box/width setup.  Treat
 `StatInference/Optimization/ProjectedSubgradient.lean`,
 `CuttingPlane.lean`, and `Ellipsoid.lean` as stable Chapter 6 infrastructure:
 Theorems 6.14/6.16, the supplied CoGM Theorem 6.19 spine, and the supplied
@@ -151,16 +151,25 @@ adds `chewi625BoxWidth`, `chewi625BoxWidth_zero`,
 `chewi625CycleCoord_add_mul_eq`, `chewi625BoxWidth_succ_add_mul_self`,
 `chewi625_side_ge_two_eps_of_closedBall_subset`,
 `chewi625BoxWidth_ge_two_eps_of_closedBall_subset`, and
-`chewi625BoxState_no_closedBall_subset_of_width_lt`.
+`chewi625BoxState_no_closedBall_subset_of_width_lt`.  The full-cycle width
+packet now compiles through `chewi625BoxWidth_add_eq_of_no_cycle_hits`,
+`chewi625CycleCoord_mul_add_eq`,
+`chewi625CycleCoord_mul_add_ne_of_lt`,
+`chewi625CycleCoord_after_mul_add_ne_of_lt`,
+`chewi625BoxWidth_full_cycle_succ`,
+`chewi625BoxWidth_full_cycles`,
+`chewi625BoxState_no_closedBall_subset_of_full_cycles_width_lt`, and
+`chewi625_full_cycles_width_ge_two_eps_of_closedBall_subset`.
 
 Immediate aggressive target: do not loop on "small source-shape gaps" for
 6.21/6.22 and do not try to prove Theorem 6.23 directly, since the source
-explicitly switches to feasibility.  Continue Theorem 6.25 by adding the
-full-cycle side-length/radius iteration from the cyclic-hit width lemmas and a
-supplied deterministic replay interface; add arbitrary-`d > N` wrappers for
-6.21/6.22 only if exact theorem reporting requires them.  Then open Chapters
-7-13 as theorem-sized packets, with scouts only for search/reuse and large
-parallelizable theorem surfaces, not tiny algebra wrappers.  Do the
+explicitly switches to feasibility.  Continue Theorem 6.25 by proving the
+source scalar/log query-count wrapper from the full-cycle bound, then add a
+supplied deterministic replay/separation-oracle interface that turns the box
+state into the theorem's black-box feasibility lower bound.  If that replay
+interface starts ballooning, open Chapters 7-13 in parallel theorem-sized
+packets while one worker continues the 6.25 wrapper; add arbitrary-`d > N`
+wrappers for 6.21/6.22 only if exact theorem reporting requires them.  Do the
 mandatory search-first pass before new primitives: local `IsSubgradientAt` and
 Lipschitz bridges in `ProjectedSubgradient.lean`, prefix-span machinery in
 `LowerBounds.lean`, mathlib `LipschitzOnWith`, finite `Finset.max'` APIs,
