@@ -150,9 +150,16 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative`.
 - measurable-coordinate Theorem 4.1 Gaussian-limit source wrapper:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_real`.
+- coordinate-free covariance display helpers:
+  `vaart1998_limitCovarianceFunctional`,
+  `vaart1998_inverseDerivativeCovarianceFunctional`, and
+  `vaart1998_limitCovarianceFunctional_inverseDerivative_apply`.
+- measurable-coordinate Theorem 4.1 Gaussian-limit source wrapper with
+  covariance display:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_real`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`1d574e8`:
+`75caaef`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -175,11 +182,11 @@ targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled delta handoff:
+Continue Vaart Chapter 4.1 from the compiled Gaussian and covariance-display
+handoff:
 
-1. package the exact covariance display for the Gaussian estimator limit so the
-   theorem statement visibly matches Vaart's covariance formula after applying
-   the inverse derivative;
+1. connect the covariance display to mathlib's `covarianceBilinDual` or a
+   finite-coordinate matrix statement under the required moment assumptions;
 2. add a local-inverse measurability convenience from the open partial
    homeomorphism/local continuity API if it can be done without widening the
    topology assumptions too much;

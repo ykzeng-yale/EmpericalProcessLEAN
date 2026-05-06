@@ -212,23 +212,35 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative`.
 63. Measurable-coordinate Theorem 4.1 Gaussian-limit source wrapper:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_real`.
+64. Limit covariance functional tested against continuous linear coordinates:
+   `vaart1998_limitCovarianceFunctional`.
+65. Inverse-derivative covariance pullback functional:
+   `vaart1998_inverseDerivativeCovarianceFunctional`.
+66. Inverse-derivative covariance pullback identity:
+   `vaart1998_limitCovarianceFunctional_inverseDerivative_apply`.
+67. Measurable-coordinate Theorem 4.1 Gaussian-limit wrapper with covariance
+   display:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_real`.
 
-Latest pushed Vaart packet before this run: `1d574e8`
-(`Add Vaart finite coordinate measurability wrapper`).
+Latest pushed Vaart packet before this run: `75caaef`
+(`Add Vaart theorem 4.1 Gaussian limit bridge`).
 
-The current theorem-sized packet propagates a supplied Gaussian
-empirical-moment limit through the inverse derivative.  The measurable
-finite-coordinate Chapter 4.1 wrapper now returns local existence, the
-delta-method distributional convergence, and the fact that the estimator limit
-is Gaussian.  Local-inverse measurability, the multivariate empirical-moment
-CLT, and the exact covariance matrix display remain explicit.
+The current theorem-sized packet adds the coordinate-free covariance display
+for the supplied Gaussian estimator limit.  The display is stated as a
+pullback identity for all continuous linear coordinates, which is the Banach
+space form of Vaart's finite-dimensional matrix formula
+`Dinv * Sigma * Dinv^T`.  The measurable finite-coordinate Chapter 4.1 wrapper
+now returns local existence, delta-method distributional convergence,
+Gaussianity of the estimator limit, and this covariance pullback display.
+Local-inverse measurability and the multivariate empirical-moment CLT remain
+explicit source hypotheses.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. package the exact covariance display for the Gaussian estimator limit so
-   the conclusion visibly matches Vaart's
-   `N(0, e'_theta0^{-1} P f f^T (e'_theta0^{-1})^T)` statement;
+1. connect the covariance display to mathlib's `covarianceBilinDual` or a
+   finite-coordinate matrix form under the needed `MemLp`/integrability
+   hypotheses;
 2. add a local-inverse measurability convenience if a clean continuity/open
    partial homeomorphism API can discharge it without broad topological
    refactoring;

@@ -155,9 +155,12 @@ Initial modules:
   and `hmeas` fields.  The latest Gaussian-limit wrapper uses mathlib's
   `HasGaussianLaw.map_fun` to propagate a supplied Gaussian empirical-moment
   limit through the inverse derivative, so the estimator limit is now certified
-  Gaussian.  It still deliberately leaves local-inverse measurability, the
-  multivariate empirical-moment CLT, and exact covariance identification as
-  explicit next layers.
+  Gaussian.  The newest covariance-display layer records the coordinate-free
+  pullback formula for all continuous linear coordinates, matching the
+  finite-dimensional `Dinv * Sigma * Dinv^T` statement without prematurely
+  committing to a concrete matrix representation.  It still deliberately leaves
+  local-inverse measurability, the multivariate empirical-moment CLT, and a
+  `covarianceBilinDual`/finite-matrix identification as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

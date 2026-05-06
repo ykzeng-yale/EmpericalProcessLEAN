@@ -936,6 +936,50 @@ theorem vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative
   hZ.map_fun Dinv
 
 /--
+Covariance functional of a vector-valued limit, tested against continuous
+linear coordinates.
+
+For finite-dimensional Euclidean coordinates this is the coordinate-free
+version of the covariance matrix.
+-/
+noncomputable def vaart1998_limitCovarianceFunctional
+    {Ω' E : Type*} [MeasurableSpace Ω']
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (Z : Ω' -> E) (Q : Measure Ω') :
+    StrongDual ℝ E -> StrongDual ℝ E -> ℝ :=
+  fun L K =>
+    ProbabilityTheory.covariance (fun ω => L (Z ω)) (fun ω => K (Z ω)) Q
+
+/--
+The covariance functional obtained after applying the inverse derivative.
+
+This is the coordinate-free form of the textbook covariance display
+`Dinv * Sigma * Dinv^T`.
+-/
+noncomputable def vaart1998_inverseDerivativeCovarianceFunctional
+    {M Θ : Type*} [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (Dinv : M →L[ℝ] Θ)
+    (Sigma : StrongDual ℝ M -> StrongDual ℝ M -> ℝ) :
+    StrongDual ℝ Θ -> StrongDual ℝ Θ -> ℝ :=
+  fun L K => Sigma (L.comp Dinv) (K.comp Dinv)
+
+/--
+Applying the inverse derivative pulls back covariance functionals by
+precomposition of continuous linear coordinates.
+-/
+theorem vaart1998_limitCovarianceFunctional_inverseDerivative_apply
+    {Ω' M Θ : Type*} [MeasurableSpace Ω']
+    [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (Z : Ω' -> M) (Q : Measure Ω') (Dinv : M →L[ℝ] Θ)
+    (L K : StrongDual ℝ Θ) :
+    vaart1998_limitCovarianceFunctional (fun ω => Dinv (Z ω)) Q L K =
+      vaart1998_inverseDerivativeCovarianceFunctional Dinv
+        (vaart1998_limitCovarianceFunctional Z Q) L K := by
+  rfl
+
+/--
 Finite-coordinate source-shaped form of van der Vaart Theorem 4.1.
 
 For finitely many real moment coordinates, coordinatewise iid strong laws give
@@ -1149,6 +1193,83 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gauss
     ⟨hbase.1, hbase.2,
       vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative
         (Dinv := (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ)) hZ_gaussian⟩
+
+/--
+Finite-coordinate Theorem 4.1 wrapper with the covariance display for the
+Gaussian estimator limit.
+
+The covariance statement is written as the pullback identity for all continuous
+linear coordinates.  In Euclidean coordinates this is the textbook matrix
+display `e'_theta0^{-1} Sigma (e'_theta0^{-1})^T`.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (hInv_meas : Measurable (he.localInverse e De theta0))
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 =
+        (fun coordinate : Coordinate => ∫ sample, X coordinate 0 sample ∂P))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q)
+    (hZ_gaussian : HasGaussianLaw Z Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q ∧
+    (∀ L K : StrongDual ℝ Θ,
+      vaart1998_limitCovarianceFunctional
+          (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q L K =
+        vaart1998_inverseDerivativeCovarianceFunctional
+          (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ)
+          (vaart1998_limitCovarianceFunctional Z Q) L K) := by
+  have hbase :=
+    vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_real
+      e De he hInv_meas X heta0 hX_integrable hX_indep hX_ident hX_meas
+      hCLT hZ_gaussian
+  exact
+    ⟨hbase.1, hbase.2.1, hbase.2.2, fun L K =>
+      vaart1998_limitCovarianceFunctional_inverseDerivative_apply
+        Z Q (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) L K⟩
 
 end AsymptoticStatistics
 end StatInference
