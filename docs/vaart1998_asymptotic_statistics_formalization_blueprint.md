@@ -148,8 +148,11 @@ Initial modules:
   solved-with-probability local existence conclusion.  The latest assembler
   theorem combines this finite-coordinate local existence layer with the
   supplied empirical-moment CLT and the Chapter 3 delta method, returning both
-  Vaart Theorem 4.1 conclusions in one source-shaped statement.  It still
-  deliberately leaves vector empirical-moment measurability, local-inverse
+  Vaart Theorem 4.1 conclusions in one source-shaped statement.  The current
+  measurable-coordinate wrapper derives vector empirical-moment measurability
+  and a.e.-strong measurability from coordinate measurability, so the clean
+  finite-coordinate source wrapper no longer exposes the internal `hstrong`
+  and `hmeas` fields.  It still deliberately leaves local-inverse
   measurability, the multivariate empirical-moment CLT, and covariance
   identification as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic

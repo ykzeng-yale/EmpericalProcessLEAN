@@ -141,9 +141,14 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_finiteCoordinateStrongLaw_real`.
 - finite-coordinate real Theorem 4.1 existence-plus-delta assembler:
   `vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_real`.
+- finite-coordinate empirical-moment measurability helpers:
+  `vaart1998_finiteCoordinate_empiricalMoment_measurable_real` and
+  `vaart1998_finiteCoordinate_empiricalMoment_aestronglyMeasurable_real`.
+- measurable-coordinate Theorem 4.1 source wrapper:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_real`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`6f98255`:
+`2066363`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -171,9 +176,9 @@ Continue Vaart Chapter 4.1 from the compiled delta handoff:
 1. package a Gaussian/covariance display certificate for the supplied
    empirical-moment CLT so the theorem statement visibly matches Vaart's
    covariance formula after applying the inverse derivative;
-2. add finite-coordinate empirical-moment measurability conveniences from
-   coordinate measurability, reducing the explicit `hstrong` and `hmeas`
-   fields in the source-facing wrapper;
+2. add a local-inverse measurability convenience from the open partial
+   homeomorphism/local continuity API if it can be done without widening the
+   topology assumptions too much;
 3. keep the actual multivariate CLT supplied until a local vector CLT is
    formalized from the scalar mathlib CLT or another local dependency.
 
