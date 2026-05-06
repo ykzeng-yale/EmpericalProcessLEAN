@@ -37,7 +37,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   endpoint packet, smooth source variance-bound bridge for Chewi Theorem 12.1
   SMPGD, the non-smooth relative-subgradient growth/star-upper bridge, and the
   final smooth/non-smooth weighted stochastic averaged-iterate wrappers plus
-  exact source-displayed stochastic-error RHS bridges:
+  exact source-displayed stochastic-error RHS bridges and full source-displayed
+  averaged-iterate wrappers:
   Chapter 9/10 now has a compiled finite-valued
   Fenchel/Bregman/mirror substrate.  `MirrorDescent.lean` compiles
   `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
@@ -428,6 +429,15 @@ RHS packet adds `chewi121_smooth_displayed_error_rhs_of_stronger`,
 `chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_stronger`,
 recovering Chewi's exact displayed `(1 + alphaG * h)` stochastic-error factor
 from the stronger compiled averaged-iterate bounds.
+
+The newest source-displayed wrapper packet adds
+`chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_unbiased_of_variance_bound`
+and
+`chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_relativeSubgradient`,
+so the exact displayed smooth and non-smooth Theorem 12.1 averaged-iterate
+rates now compile directly from the source variance-bound and relative
+subgradient hypotheses.  The active Chapter 12 blocker is only the exact
+source probability/process packaging needed before ASGD CLT material.
 
 ## Initial Reuse Audit
 

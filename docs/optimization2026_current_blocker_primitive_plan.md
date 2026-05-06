@@ -99,8 +99,9 @@ rate packet, smooth integral-L2 sampled-model endpoint packet, smooth
 Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
 endpoint packet, smooth source variance-bound bridge for Chewi Theorem 12.1
 SMPGD, the non-smooth relative-subgradient growth/star-upper bridge, the final
-smooth/non-smooth weighted stochastic averaged-iterate wrappers, and the exact
-source-displayed stochastic-error RHS bridge:
+smooth/non-smooth weighted stochastic averaged-iterate wrappers, the exact
+source-displayed stochastic-error RHS bridges, and the full source-displayed
+smooth/non-smooth averaged-iterate wrappers:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -272,7 +273,11 @@ plus the exact source-displayed RHS bridges
 `chewi121_smooth_displayed_error_rhs_of_stronger`,
 `chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_stronger`,
 `chewi121_nonsmooth_displayed_error_rhs_of_stronger`, and
-`chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_stronger`.
+`chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_stronger`, plus
+the full source-displayed averaged-iterate wrappers
+`chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_unbiased_of_variance_bound`
+and
+`chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_relativeSubgradient`.
 This proves the source recurrence-to-rate algebra, smooth/non-smooth
 stochastic error instantiations, the expected-model algebra turning Chewi's
 three `psi_x` bounds into the displayed SMPGD one-step recurrence, the direct
@@ -296,10 +301,11 @@ variance domination, non-smooth relative-subgradient star upper, or the
 non-smooth `(12.2)` sampled lower-model/rate endpoint, or the Jensen
 transition from weighted expected gaps to the weighted stochastic averaged
 iterate, the final smooth/non-smooth weightedSampleAverage wrappers, or the
-exact source-displayed stochastic-error RHS factor; it is the remaining exact
-source probability discharge: any conditional expectation/process packaging
-needed for exact source reporting, then ASGD CLT once the SMPGD source
-packaging is sufficiently complete.
+exact source-displayed stochastic-error RHS factor, or the full
+source-displayed averaged-iterate wrappers; it is the remaining exact source
+probability discharge: any conditional expectation/process packaging needed
+for exact source reporting, then ASGD CLT once the SMPGD source packaging is
+sufficiently complete.
 
 Fresh Chapter 12 Bochner search result: mathlib has `integral_mono_ae` and
 `integral_mono` for pointwise or a.e. real integral inequalities,
