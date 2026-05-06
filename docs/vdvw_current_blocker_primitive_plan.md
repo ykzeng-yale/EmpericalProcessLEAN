@@ -6283,3 +6283,17 @@ packages.  The remaining exact non-finite-class gap is still the general
 random empirical-entropy event/tail bridge, or a genuinely new structural
 cardinality/quantizer theorem beyond the already covered threshold/grid/
 full-subgraph routes.
+
+2026-05-06 Chapter 1 shifted varying-domain congruence follow-up:
+`WeakConvergence.lean` now adds congruence/replacement stability for the
+varying-domain lower-shifted and canonical shifted bounded-continuous
+asymptotic-measurability predicates:
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.congr_eventually`
+and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.congr_eventually`.
+This closes a small Chapter 1 arbitrary-map support gap for sample-size-varying
+statistics and reindexing.  The lower-shifted bridge intentionally requires
+pointwise equality of maps because its lower-bound hypothesis is global in the
+index; the canonical shifted bridge permits eventually equal maps.  This does
+not close the deeper signed extended-real cover-existence or process/FDD
+converse blockers.

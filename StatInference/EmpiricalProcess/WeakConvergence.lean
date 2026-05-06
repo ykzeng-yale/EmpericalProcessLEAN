@@ -1838,6 +1838,35 @@ theorem
   exact (h f c hlower).mono_left hl
 
 /--
+The varying-domain lower-shifted bounded-continuous asymptotic-measurability
+predicate is unchanged by eventually equal measure families and pointwise equal
+arbitrary maps.
+
+The map equality is kept pointwise, not merely eventual, because the
+lower-shifted predicate carries an all-index lower-bound hypothesis.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.congr_eventually
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    {μs νs : (i : ι) -> Measure (Ω i)}
+    {X Y : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+        Ω μs X l)
+    (hμ : ∀ᶠ i in l, νs i = μs i)
+    (hX : ∀ i, Y i = X i) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains
+      Ω νs Y l := by
+  intro f c hlower
+  refine Tendsto.congr' ?_ (h f c ?_)
+  · filter_upwards [hμ] with i hνμ
+    simp [hνμ, hX i]
+  · intro i ω
+    simpa [← hX i] using hlower i ω
+
+/--
 The varying-domain canonical shifted predicate is stable under passing to a
 finer index filter.
 -/
@@ -1855,6 +1884,30 @@ theorem
       Ω μs X l' := by
   intro f
   exact (h f).mono_left hl
+
+/--
+The varying-domain canonical shifted bounded-continuous asymptotic-measurability
+predicate is unchanged by eventually equal measure families and eventually
+equal arbitrary maps.
+-/
+theorem
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.congr_eventually
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v}
+    [∀ i, MeasurableSpace (Ω i)] [TopologicalSpace S]
+    {μs νs : (i : ι) -> Measure (Ω i)}
+    {X Y : (i : ι) -> Ω i -> S}
+    {l : Filter ι}
+    (h :
+      VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+        Ω μs X l)
+    (hμ : ∀ᶠ i in l, νs i = μs i)
+    (hX : ∀ᶠ i in l, Y i = X i) :
+    VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains
+      Ω νs Y l := by
+  intro f
+  refine Tendsto.congr' ?_ (h f)
+  filter_upwards [hμ, hX] with i hνμ hYX
+  simp [hνμ, hYX]
 
 /--
 Varying-domain signed bounded-continuous asymptotic measurability implies the

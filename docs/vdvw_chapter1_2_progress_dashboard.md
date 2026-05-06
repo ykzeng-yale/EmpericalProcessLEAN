@@ -2371,3 +2371,14 @@ These discharge the canonical `samplePath` identity for
 `vdVWCanonicalSampleProcess`, so the full-subgraph entropy and selected
 tail/UI side conditions are available directly on the iid product-space sample
 process used by the strongest current Theorem 2.4.3/Lemma 2.4.5 packages.
+
+2026-05-06 varying-domain shifted congruence follow-up:
+`WeakConvergence.lean` now proves
+`VdVWAsymptoticallyMeasurableBoundedContinuousLowerShiftedVaryingDomains.congr_eventually`
+and
+`VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShiftedVaryingDomains.congr_eventually`.
+These add the missing replacement stability for the Chapter 1 lower-shifted
+and canonical shifted asymptotic-measurability predicates over varying sample
+spaces.  The lower-shifted theorem keeps pointwise map equality because its
+definition carries an all-index lower-bound hypothesis; the canonical theorem
+allows eventually equal maps.
