@@ -95,6 +95,17 @@ The same ignored-product-coordinate closure is now available for the
 varying-domain signed weak-convergence package used by finite-sample
 Theorem 2.4.3 endpoints.
 
+2026-05-05 finite-class Theorem 2.4.3 package follow-up:
+`Theorem243.lean` now exposes the direct finite-class route in the same
+textbook-facing shape as the strongest full-subgraph package through
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln`.  The
+compiled theorem packages finite-class `P`-measurability, finite measurable
+integrable-envelope outer expectation, outer-probability `P`-GC, outer-a.s.
+`P`-GC, local `P`-GC, in-mean centered-supremum convergence, and Lemma 2.4.5
+a.s. centered-supremum convergence.  This is a closed finite-class building
+block; the main non-finite Theorem 2.4.3 gap remains the book random-entropy
+tail/UI or structural cardinality bridge.
+
 2026-05-05 tightness sequence follow-up: `WeakConvergence.lean` now wraps
 mathlib's sequence/range norm-tail criterion as
 `vdVWProbabilityMeasuresTight_range_of_tendsto_limsup_norm_tail` and

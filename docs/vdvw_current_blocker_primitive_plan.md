@@ -145,7 +145,13 @@ and the measurable independent-coordinate joint-law convergence wrappers
 `vdVWTendstoInDistribution_pi_laws_of_iIndepFun`, plus the corresponding
 ordinary convergence-in-distribution wrappers
 `vdVWTendstoInDistribution_prodMk_of_indepFun` and
-`vdVWTendstoInDistribution_pi_of_iIndepFun`.
+`vdVWTendstoInDistribution_pi_of_iIndepFun`;
+and the direct finite-class Theorem 2.4.3/Lemma 2.4.5 package
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln`, which
+collects finite-class `P`-measurability, finite measurable integrable-envelope
+outer expectation, outer-probability/a.s./local `P`-GC, in-mean convergence,
+and Lemma 2.4.5 a.s. centered-supremum convergence without invoking the
+full-subgraph/VC route.
 
 Next high-capacity proof batches, in order:
 

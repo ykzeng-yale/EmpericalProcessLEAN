@@ -123,7 +123,15 @@ and finite-coordinate forms: the compiled wrappers are
 `vdVWTendstoInDistribution_pi_laws_of_iIndepFun`, plus their corresponding
 ordinary `TendstoInDistribution` wrappers
 `vdVWTendstoInDistribution_prodMk_of_indepFun` and
-`vdVWTendstoInDistribution_pi_of_iIndepFun`.  The canonical infinite iid
+`vdVWTendstoInDistribution_pi_of_iIndepFun`.  The finite-class Theorem 2.4.3
+route also now has a textbook-facing package
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln`, combining
+finite-class `P`-measurability, finite measurable integrable-envelope outer
+expectation, outer-probability/a.s./local `P`-GC, in-mean convergence, and
+Lemma 2.4.5 a.s. centered-supremum convergence.  Treat this as closed
+finite-class infrastructure; the remaining main-line gap is still the
+non-finite book entropy/tail-UI or structural cardinality bridge.
+The canonical infinite iid
 product substrate is already present in `PMeasurable.lean` via
 `vdVWInfiniteProductMeasure`, coordinate `HasLaw`, and coordinate
 `iIndepFun` wrappers over mathlib `Measure.infinitePi`, so the next Chapter 1
