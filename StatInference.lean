@@ -1,5 +1,6 @@
 import StatInference.Asymptotics.Basic
 import StatInference.ProbabilityMeasure.Basic
+import StatInference.ProbabilityTheory.Basic
 import StatInference.EmpiricalProcess.Basic
 import StatInference.EmpiricalProcess.Average
 import StatInference.EmpiricalProcess.Finite
