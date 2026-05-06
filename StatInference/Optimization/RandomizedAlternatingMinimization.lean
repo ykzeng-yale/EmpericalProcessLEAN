@@ -1356,6 +1356,170 @@ theorem chewi115_zero_hopf_lax_certificate_of_block_model_source_candidates
     (x := x n) (xStar := xStar)
     hstar (hcombined_gap n) (hdist n) (hsource_candidate n)
 
+/--
+Displayed positive-curvature rate in Chewi Theorem 11.5, assembled directly
+from the block-model conditional upper bound and Chewi's selected Exercise 9.3
+source candidate.
+-/
+theorem chewi115_strong_rate_of_block_model_source_candidates
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {F : E -> ℝ} {x : ℕ -> E} {xStar : E}
+    {D N : ℕ} (hD : 0 < D)
+    {expectedGap hopfGap nextValue Fx Gx Fy Gy modelValue lin normSq distSq :
+      ℕ -> ℝ}
+    {fstar alphaF alphaG : ℝ}
+    {blockValue gradTerm quadTerm gReplace : ℕ -> Fin D -> ℝ}
+    (hstrong : StrongConvexOn C F (alphaF + alphaG))
+    (hxStar : xStar ∈ C) (hx : ∀ n, x n ∈ C)
+    (halphaF : alphaF < 1) (halphaG : -1 < alphaG)
+    (hsum_pos : 0 < alphaF + alphaG)
+    (hgap_nonneg : ∀ n, 0 ≤ expectedGap n)
+    (hcombined_gap : ∀ n, expectedGap n = F (x n) - fstar)
+    (hdist : ∀ n, distSq n = ‖x n - xStar‖ ^ (2 : ℕ))
+    (hstar : F xStar = fstar)
+    (hgap : ∀ n, expectedGap n = Fx n + Gx n - fstar)
+    (hnext_gap : ∀ n, expectedGap (n + 1) = nextValue n - fstar)
+    (hhopf_gap : ∀ n, hopfGap n = modelValue n - fstar)
+    (hnext :
+      ∀ n,
+        nextValue n ≤
+          (1 / (D : ℝ)) * ∑ i : Fin D, blockValue n i)
+    (hblock : ∀ n i,
+      blockValue n i ≤
+        Fx n + gradTerm n i + quadTerm n i + gReplace n i)
+    (hgrad_sum : ∀ n, (∑ i : Fin D, gradTerm n i) = lin n)
+    (hquad_sum : ∀ n, (∑ i : Fin D, quadTerm n i) = normSq n / 2)
+    (hg_sum : ∀ n,
+      (∑ i : Fin D, gReplace n i) = ((D : ℝ) - 1) * Gx n + Gy n)
+    (hfirst : ∀ n, Fx n + lin n + (alphaF / 2) * normSq n ≤ Fy n)
+    (hselected : ∀ n,
+      Fy n + Gy n + ((1 - alphaF) / 2) * normSq n ≤ modelValue n)
+    (hsource_candidate : ∀ n,
+      modelValue n ≤
+        F ((1 -
+                1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) •
+              xStar +
+            (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) •
+              x n) +
+          (1 / (2 * (1 / (1 - alphaF)))) *
+            ‖((1 -
+                    1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) •
+                  xStar +
+                (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) •
+                  x n) -
+                x n‖ ^ (2 : ℕ)) :
+    expectedGap N ≤
+      (1 - (alphaF + alphaG) / ((1 + alphaG) * (D : ℝ))) ^ N *
+        expectedGap 0 := by
+  have hcert :
+      IsChewi115RAMStrongHopfLaxCertificate
+        expectedGap hopfGap alphaF alphaG D :=
+    chewi115_strong_hopf_lax_certificate_of_block_model_source_candidates
+      (D := D) hD (expectedGap := expectedGap) (hopfGap := hopfGap)
+      (nextValue := nextValue) (Fx := Fx) (Gx := Gx)
+      (Fy := Fy) (Gy := Gy) (modelValue := modelValue)
+      (lin := lin) (normSq := normSq) (distSq := distSq)
+      (fstar := fstar) (alphaF := alphaF) (alphaG := alphaG)
+      (blockValue := blockValue) (gradTerm := gradTerm)
+      (quadTerm := quadTerm) (gReplace := gReplace)
+      hstrong hxStar hx halphaF halphaG (le_of_lt hsum_pos) hgap_nonneg
+      hcombined_gap hdist hstar hgap hnext_gap hhopf_gap hnext hblock
+      hgrad_sum hquad_sum hg_sum hfirst hselected hsource_candidate
+  have hD_ge_one : (1 : ℝ) ≤ (D : ℝ) := by
+    exact_mod_cast Nat.succ_le_of_lt hD
+  have hfactor_nonneg : 0 ≤ chewi115StrongFactor alphaF alphaG D := by
+    refine chewi115StrongFactor_nonneg (D := D)
+      (alphaF := alphaF) (alphaG := alphaG) hD halphaG ?_
+    have hscale :
+        (1 + alphaG) * (1 : ℝ) ≤ (1 + alphaG) * (D : ℝ) :=
+      mul_le_mul_of_nonneg_left hD_ge_one (by nlinarith)
+    nlinarith
+  simpa [chewi115StrongFactor] using
+    hcert.gap_le_geometric hD halphaG hfactor_nonneg N
+
+/--
+Displayed zero-curvature rate in Chewi Theorem 11.5, assembled directly from
+the block-model conditional upper bound and Chewi's selected Exercise 9.3
+source candidate.
+-/
+theorem chewi115_zero_rate_of_block_model_source_candidates
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {F : E -> ℝ} {x : ℕ -> E} {xStar : E}
+    {D N : ℕ} (hD : 0 < D) (hN : N ≠ 0)
+    {expectedGap hopfGap nextValue Fx Gx Fy Gy modelValue lin normSq distSq :
+      ℕ -> ℝ}
+    {fstar alphaF Rbeta : ℝ}
+    {blockValue gradTerm quadTerm gReplace : ℕ -> Fin D -> ℝ}
+    (hconv : ChewiConvexOn C F)
+    (hxStar : xStar ∈ C) (hx : ∀ n, x n ∈ C)
+    (halphaF_nonneg : 0 ≤ alphaF) (halphaF_lt : alphaF < 1)
+    (hRbeta : 0 < Rbeta)
+    (hgap_nonneg : ∀ n, 0 ≤ expectedGap n)
+    (hdist_pos : ∀ n, 0 < distSq n)
+    (hdist_le_radius : ∀ n, distSq n ≤ Rbeta ^ (2 : ℕ))
+    (hgap_le_dist : ∀ n, (1 / (1 - alphaF)) * expectedGap n ≤ distSq n)
+    (hcombined_gap : ∀ n, expectedGap n = F (x n) - fstar)
+    (hdist : ∀ n, distSq n = ‖x n - xStar‖ ^ (2 : ℕ))
+    (hstar : F xStar = fstar)
+    (hgap : ∀ n, expectedGap n = Fx n + Gx n - fstar)
+    (hnext_gap : ∀ n, expectedGap (n + 1) = nextValue n - fstar)
+    (hhopf_gap : ∀ n, hopfGap n = modelValue n - fstar)
+    (hnext :
+      ∀ n,
+        nextValue n ≤
+          (1 / (D : ℝ)) * ∑ i : Fin D, blockValue n i)
+    (hblock : ∀ n i,
+      blockValue n i ≤
+        Fx n + gradTerm n i + quadTerm n i + gReplace n i)
+    (hgrad_sum : ∀ n, (∑ i : Fin D, gradTerm n i) = lin n)
+    (hquad_sum : ∀ n, (∑ i : Fin D, quadTerm n i) = normSq n / 2)
+    (hg_sum : ∀ n,
+      (∑ i : Fin D, gReplace n i) = ((D : ℝ) - 1) * Gx n + Gy n)
+    (hfirst : ∀ n, Fx n + lin n + (alphaF / 2) * normSq n ≤ Fy n)
+    (hselected : ∀ n,
+      Fy n + Gy n + ((1 - alphaF) / 2) * normSq n ≤ modelValue n)
+    (hsource_candidate : ∀ n,
+      modelValue n ≤
+        F ((1 -
+                (1 - (1 / (1 - alphaF)) * expectedGap n / distSq n)) •
+              xStar +
+            (1 - (1 / (1 - alphaF)) * expectedGap n / distSq n) •
+              x n) +
+          (1 / (2 * (1 / (1 - alphaF)))) *
+            ‖((1 -
+                    (1 - (1 / (1 - alphaF)) * expectedGap n / distSq n)) •
+                  xStar +
+                (1 - (1 / (1 - alphaF)) * expectedGap n / distSq n) •
+                  x n) -
+                x n‖ ^ (2 : ℕ)) :
+    expectedGap N ≤ 2 * (D : ℝ) * Rbeta ^ (2 : ℕ) / (N : ℝ) := by
+  have hcert :
+      IsChewi115RAMZeroHopfLaxCertificate expectedGap hopfGap D Rbeta :=
+    chewi115_zero_hopf_lax_certificate_of_block_model_source_candidates
+      (D := D) hD (expectedGap := expectedGap) (hopfGap := hopfGap)
+      (nextValue := nextValue) (Fx := Fx) (Gx := Gx)
+      (Fy := Fy) (Gy := Gy) (modelValue := modelValue)
+      (lin := lin) (normSq := normSq) (distSq := distSq)
+      (fstar := fstar) (alphaF := alphaF) (Rbeta := Rbeta)
+      (blockValue := blockValue) (gradTerm := gradTerm)
+      (quadTerm := quadTerm) (gReplace := gReplace)
+      hconv hxStar hx halphaF_nonneg halphaF_lt hRbeta hgap_nonneg
+      hdist_pos hdist_le_radius hgap_le_dist hcombined_gap hdist hstar hgap
+      hnext_gap hhopf_gap hnext hblock hgrad_sum hquad_sum hg_sum hfirst
+      hselected hsource_candidate
+  have hrate :
+      expectedGap (0 + N) ≤ chewi115ZeroK D Rbeta / (N : ℝ) :=
+    chewi115_zero_expected_gap_le_source_rate_of_recurrence_nonneg
+      (expectedGap := expectedGap) (D := D) (n0 := 0) (M := N)
+      (Rbeta := Rbeta) hD hRbeta hN
+      (fun m _hm => by
+        simpa using hcert.gap_nonneg m)
+      (fun m _hm => by
+        simpa using chewi115_zero_one_step_of_hopf_lax_gap_bound
+          (D := D) (Rbeta := Rbeta)
+          hD hRbeta (hcert.conditional_upper m) (hcert.hopf_lax_bound m))
+  simpa [chewi115ZeroK] using hrate
+
 /-- The weak Hopf-Lax bridge supplies the zero-curvature RAM gap certificate. -/
 theorem IsChewi115RAMZeroHopfLaxCertificate.toGapCertificate
     {expectedGap hopfGap : ℕ -> ℝ} {D : ℕ} {Rbeta : ℝ}

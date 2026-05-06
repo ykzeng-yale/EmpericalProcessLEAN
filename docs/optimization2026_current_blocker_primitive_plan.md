@@ -89,7 +89,7 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after rebasing over remote main
-`64526db` (`Merge remote-tracking branch 'origin/main'`) on 2026-05-06 and
+`e03fdad` (`Merge remote-tracking branch 'origin/main'`) on 2026-05-06 and
 focused Lean verification of the Chapter 11.5 RAM block-model plus selected
 Exercise 9.3 Hopf-Lax interpolation assembly layer:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
@@ -110,12 +110,10 @@ Immediate aggressive target: finish Chewi Theorem 11.5 RAM as a theorem-sized
 packet, not another wrapper loop.  The scalar recurrence, strong/weak
 Hopf-Lax-to-rate bridges, finite uniform block conditional-upper algebra,
 Exercise 9.3 scalar interpolation/radius constructors, block-model plus
-selected-interpolant certificate assemblers, and source-candidate
-interpolation bridges are now the reusable substrate.  The next proof work
-should combine the selected Hopf-Lax/Moreau source-candidate bounds with the
-block-model certificate assemblers into direct strong/zero RAM theorem
-wrappers, discharging the remaining distance positivity/radius domination and
-`0 <= alphaF < 1` side conditions.  In parallel, scout Sinkhorn
+selected-interpolant certificate assemblers, source-candidate interpolation
+bridges, direct source-candidate certificates, and displayed strong/weak rate
+wrappers are now the reusable substrate.  The next proof work should move to
+Sinkhorn
 Theorems 11.7/11.8 from the compiled ABP/mirror-descent interfaces and Chapter
 12 SMPGD theorem packets, so the next route moves immediately after RAM
 without routing back to old setup.
@@ -172,7 +170,11 @@ certificates.  The newest direct source-candidate assembly packet adds
 `chewi115_zero_hopf_lax_certificate_of_block_model_source_candidates`, so the
 block model plus Chewi's selected Exercise 9.3 test point now produce strong
 and weak RAM Hopf-Lax certificates without an intermediate supplied
-`hmodel_interp`.
+`hmodel_interp`.  The newest displayed-rate packet adds
+`chewi115_strong_rate_of_block_model_source_candidates` and
+`chewi115_zero_rate_of_block_model_source_candidates`, proving the source
+Theorem 11.5 geometric rate and weak `2 * D * R_beta^2 / N` rate directly from
+the block model plus selected source-candidate assumptions.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
