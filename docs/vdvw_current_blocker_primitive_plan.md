@@ -6022,6 +6022,17 @@ convergence conclusion.  The next target should be an actual
 quantizer/grid/VC cardinality estimate feeding these hypotheses, or the
 broader selected empirical-entropy tail/UI theorem.
 
+2026-05-06 coordinate-code natural-polynomial follow-up: the same coordinate
+code route now consumes structural natural-polynomial product-cardinality
+bounds directly, without forcing callers to construct an intermediate
+normalized-log rate.  `Theorem243.lean` proves
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_pointwise_approx_code_product_cardinality_bound_nat_poly`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_pointwise_approx_code_product_cardinality_bound_nat_poly`,
+and the untruncated endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_coordinate_pointwise_approx_code_product_nat_poly`.
+The next non-duplicative theorem should supply a real VC/Sauer, threshold-grid,
+or quantizer product-cardinality estimate in this natural-polynomial shape.
+
 2026-05-06 varying-domain lower-shifted continuous-map follow-up: local search
 found common-domain lower-shifted continuous-map closure and varying-domain
 signed continuous-map closure, but no matching varying-domain lower-shifted
