@@ -260,14 +260,18 @@ source-audited CoGM report, but Lemma 6.20 now has a compiled supplied
 trajectory/rate frontier.  The current lower-bound packet in
 `StatInference/Optimization/NonsmoothLowerBounds.lean` compiles the Theorem
 6.21 max-coordinate hard objective, prefix-subspace nonnegativity, gradient-span
-prefix-induction consumer, and supplied final gap obstruction.  The next
-target is the source instantiation of Theorem 6.21: define the constant
-minimizer `x_*[k] = -γ/(α d)`, prove its objective value
-`-γ^2/(2 α d)`, prove or package the first-max subgradient oracle's
-prefix-support, and specialize `γ = L / 4`, `α = γ / (R sqrt d)` to the
-displayed `LR / sqrt N` lower bound.  Search local PSD, CoGM, ellipsoid,
-lower-bound, nonsmooth-lower-bound, and exercise APIs first before adding
-new wrappers.  The closed ellipsoid matrix packet remains reusable background:
+prefix-induction consumer, and supplied final gap obstruction.  It now also
+compiles the constant minimizer `x_*[k] = -γ/(α d)`, its objective value
+`-γ^2/(2 α d)`, the first-max resisting oracle, oracle prefix-support, the
+concrete `γ^2/(2αd)` obstruction, and the source-parameter
+`d = N + 1`, `γ = L / 4`, `α = γ / (R sqrt d)` lower bound
+`L * R / (8 * sqrt (N + 1))`.  The next target is to certify the remaining
+source side conditions for Theorem 6.21: bounded-domain Lipschitz and radius
+facts, first-max oracle subgradient correctness via the local `IsSubgradientAt`
+interface, and an arbitrary-`d > N` embedding only if the literal statement
+needs it before moving to Theorem 6.22.  Search local PSD, CoGM, ellipsoid,
+lower-bound, nonsmooth-lower-bound, and exercise APIs first before adding new
+wrappers.  The closed ellipsoid matrix packet remains reusable background:
 the current matrix quadratic, positive denominator, normalized cut direction
 algebra, raw symmetric square-root cut bridge, PosDef invertibility/cancellation
 bridge, pullback-standard-cut certificate, current `Σ⁻¹` identification, and
