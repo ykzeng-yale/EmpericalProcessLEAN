@@ -57,6 +57,26 @@ theorem finiteUnitMass_eq_card (sample : Finset Unit) :
     (∑ _unit ∈ sample, (1 : Real)) = (sample.card : Real) := by
   simp
 
+/-- A nonempty finite sample has positive finite unit mass. -/
+theorem finiteUnitMass_pos_of_nonempty
+    (sample : Finset Unit) (hnonempty : sample.Nonempty) :
+    0 < (∑ _unit ∈ sample, (1 : Real)) := by
+  rw [finiteUnitMass_eq_card]
+  exact_mod_cast (Finset.card_pos.mpr hnonempty)
+
+/-- A nonempty finite sample has nonzero finite unit mass. -/
+theorem finiteUnitMass_ne_zero_of_nonempty
+    (sample : Finset Unit) (hnonempty : sample.Nonempty) :
+    (∑ _unit ∈ sample, (1 : Real)) ≠ 0 :=
+  (finiteUnitMass_pos_of_nonempty sample hnonempty).ne'
+
+/-- A nonempty finite sample has nonzero cardinality after coercion to `Real`. -/
+theorem sampleCard_ne_zero_of_nonempty
+    (sample : Finset Unit) (hnonempty : sample.Nonempty) :
+    (sample.card : Real) ≠ 0 := by
+  simpa [finiteUnitMass_eq_card] using
+    finiteUnitMass_ne_zero_of_nonempty sample hnonempty
+
 /-- A constant-weight Hájek denominator is the common weight times sample size. -/
 theorem weightedDenominator_constant_weight_eq_card
     (sample : Finset Unit) (commonWeight : Real) :
@@ -96,6 +116,20 @@ theorem normalizedSurveyWeight_constant_weight_eq_inv_card
   · simpa [finiteUnitMass_eq_card] using hcard
 
 /--
+With a nonzero common survey weight and a nonempty sample, every normalized
+survey weight reduces to the inverse sample size.
+-/
+theorem normalizedSurveyWeight_constant_weight_eq_inv_card_of_nonempty
+    (sample : Finset Unit) (commonWeight : Real)
+    (hweight : commonWeight ≠ 0)
+    (hnonempty : sample.Nonempty)
+    (unit : Unit) :
+    normalizedSurveyWeight sample (fun _unit => commonWeight) unit =
+      (1 : Real) / (sample.card : Real) :=
+  normalizedSurveyWeight_constant_weight_eq_inv_card sample commonWeight
+    hweight (sampleCard_ne_zero_of_nonempty sample hnonempty) unit
+
+/--
 With a nonzero common survey weight, the Hajek mean equals the ratio formed by
 the unweighted finite sum and the finite unit mass `sum 1`.
 -/
@@ -125,6 +159,19 @@ theorem hajekMean_constant_weight_eq_card_average
     sample value commonWeight hweight _]
   · rw [finiteUnitMass_eq_card]
   · simpa [finiteUnitMass_eq_card] using hcard
+
+/--
+With a nonzero common survey weight and a nonempty sample, the Hájek mean is
+the ordinary finite sample average with denominator `sample.card`.
+-/
+theorem hajekMean_constant_weight_eq_card_average_of_nonempty
+    (sample : Finset Unit) (value : Unit -> Real) (commonWeight : Real)
+    (hweight : commonWeight ≠ 0)
+    (hnonempty : sample.Nonempty) :
+    hajekMean sample (fun _unit => commonWeight) value =
+      (∑ unit ∈ sample, value unit) / (sample.card : Real) :=
+  hajekMean_constant_weight_eq_card_average sample value commonWeight hweight
+    (sampleCard_ne_zero_of_nonempty sample hnonempty)
 
 end WDSM
 end Matching
