@@ -1,4 +1,4 @@
-import StatInference.Optimization.Theorem34
+import StatInference.Optimization.Theorem510
 
 /-!
 # Chewi Chapter 8 proximal-gradient layer
@@ -12,6 +12,7 @@ quadratic-growth certificate for the local model minimized in the PGD update.
 namespace StatInference
 namespace Optimization
 
+open Finset
 open scoped InnerProductSpace
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -231,6 +232,326 @@ theorem chewi85_final_gap_le_geometric_denominator_of_oneStep
       (alpha := alphaF + alphaG) (h := hEff)
       htotal_pos hhEff hfactor_eff_pos hN hone_eff hmono
   simpa [hfactor_eq] using hbound
+
+/--
+Source-shaped accelerated proximal-gradient trajectory for Chewi Theorem 8.6.
+
+The sequence `y` is the Nesterov trial point sequence, and each `x (n+1)` is a
+PGD step from `y n` with step size `1 / beta`.
+-/
+def IsChewi86APGDTrajectory
+    (C : Set E) (f g : E -> ℝ) (grad : E -> E) (beta : ℝ)
+    (x y : ℕ -> E) : Prop :=
+  y 0 = x 0 ∧
+    (∀ n, y (n + 1) =
+      x (n + 1) + chewi510Theta (n + 1) • (x (n + 1) - x n)) ∧
+    ∀ n, IsProximalGradientStep C f g grad 0 (1 / beta) (y n) (x (n + 1))
+
+theorem IsChewi86APGDTrajectory.y_zero
+    {C : Set E} {f g : E -> ℝ} {grad : E -> E} {beta : ℝ}
+    {x y : ℕ -> E}
+    (h : IsChewi86APGDTrajectory C f g grad beta x y) :
+    y 0 = x 0 :=
+  h.1
+
+theorem IsChewi86APGDTrajectory.y_succ
+    {C : Set E} {f g : E -> ℝ} {grad : E -> E} {beta : ℝ}
+    {x y : ℕ -> E}
+    (h : IsChewi86APGDTrajectory C f g grad beta x y) (n : ℕ) :
+    y (n + 1) =
+      x (n + 1) + chewi510Theta (n + 1) • (x (n + 1) - x n) :=
+  h.2.1 n
+
+theorem IsChewi86APGDTrajectory.step
+    {C : Set E} {f g : E -> ℝ} {grad : E -> E} {beta : ℝ}
+    {x y : ℕ -> E}
+    (h : IsChewi86APGDTrajectory C f g grad beta x y) (n : ℕ) :
+    IsProximalGradientStep C f g grad 0 (1 / beta) (y n) (x (n + 1)) :=
+  h.2.2 n
+
+theorem IsChewi86APGDTrajectory.telescopeAlignment
+    {C : Set E} {f g : E -> ℝ} {grad : E -> E} {beta : ℝ}
+    {x y : ℕ -> E}
+    (h : IsChewi86APGDTrajectory C f g grad beta x y) (n : ℕ) :
+    chewi510Lambda (n + 1) • x (n + 1) -
+        (chewi510Lambda (n + 1) - 1) • x n =
+      chewi510Lambda (n + 2) • y (n + 1) -
+        (chewi510Lambda (n + 2) - 1) • x (n + 1) :=
+  chewi510_telescopeAlignment_of_trial_succ x y n (h.y_succ n)
+
+theorem IsChewi86APGDTrajectory.energyVector_zero
+    {C : Set E} {f g : E -> ℝ} {grad : E -> E} {beta : ℝ}
+    {x y : ℕ -> E}
+    (h : IsChewi86APGDTrajectory C f g grad beta x y)
+    {xStar : E} :
+    chewi510EnergyVector x y xStar 0 = x 0 - xStar := by
+  unfold chewi510EnergyVector
+  simp [h.y_zero]
+
+/--
+PGD analogue of the Chapter 5.10 inner-product one-step form.  This is the
+formal replacement of GD `(3.3)` by Chewi `(8.1)` in the APGD proof.
+-/
+theorem proximalGradient_gap_le_inner_form
+    {C : Set E} {f g : E -> ℝ} {grad : E -> E} {beta : ℝ}
+    {y xPlus z : E}
+    (hfirst : FirstOrderStrongConvexOn C f grad 0)
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (hstep : IsProximalGradientStep C f g grad 0 (1 / beta) y xPlus)
+    (hz : z ∈ C)
+    (hbeta_pos : 0 < beta) :
+    compositeObjective f g xPlus - compositeObjective f g z ≤
+      -(beta / 2) * ‖xPlus - y‖ ^ (2 : ℕ) -
+        beta * inner ℝ (xPlus - y) (y - z) := by
+  have hone :
+      ‖xPlus - z‖ ^ (2 : ℕ) ≤
+        ‖y - z‖ ^ (2 : ℕ) -
+          (2 / beta) *
+          (compositeObjective f g xPlus - compositeObjective f g z) := by
+    have hstepSize : beta * (1 / beta) ≤ 1 := by
+      field_simp [hbeta_pos.ne']
+      norm_num
+    have hraw :=
+      proximalGradient_oneStep_ineq
+        (C := C) (f := f) (g := g) (grad := grad)
+        (alphaF := 0) (alphaG := 0) (betaF := beta)
+        (h := 1 / beta) (x := y) (xPlus := xPlus) (y := z)
+        hfirst hsmooth hstep (one_div_pos.mpr hbeta_pos) hstepSize hz
+    simpa [norm_sub_rev, one_div, div_eq_mul_inv, mul_assoc] using hraw
+  have hgap :=
+    chewi510_gap_le_norm_sq_diff_of_oneStep
+      (beta := beta)
+      (A := ‖y - z‖ ^ (2 : ℕ))
+      (B := ‖xPlus - z‖ ^ (2 : ℕ))
+      (gap := compositeObjective f g xPlus - compositeObjective f g z)
+      hone hbeta_pos
+  have hident :=
+    chewi510_norm_sq_diff_step_identity beta xPlus y z
+  exact hgap.trans_eq hident
+
+/--
+The APGD two-point estimate for Chapter 8.6, in the same telescope-ready form
+as the Chapter 5.10 AGD proof.
+-/
+theorem chewi86_weighted_two_point_bound_telescope
+    {C : Set E} {f g : E -> ℝ} {grad : E -> E} {beta : ℝ}
+    {x y : ℕ -> E} {xStar : E} (n : ℕ)
+    (hfirst : FirstOrderStrongConvexOn C f grad 0)
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (htraj : IsChewi86APGDTrajectory C f g grad beta x y)
+    (hx_mem : ∀ k, x k ∈ C)
+    (hxStar_mem : xStar ∈ C)
+    (hbeta_pos : 0 < beta) :
+    (chewi510Lambda (n + 1) - 1) *
+        (compositeObjective f g (x (n + 1)) -
+          compositeObjective f g (x n)) +
+      (compositeObjective f g (x (n + 1)) -
+        compositeObjective f g xStar) ≤
+      beta / (2 * chewi510Lambda (n + 1)) *
+        (‖chewi510EnergyVector x y xStar n‖ ^ (2 : ℕ) -
+          ‖chewi510EnergyVector x y xStar (n + 1)‖ ^ (2 : ℕ)) := by
+  have hstep := htraj.step n
+  have hgapX :
+      compositeObjective f g (x (n + 1)) - compositeObjective f g (x n) ≤
+        -(beta / 2) * ‖x (n + 1) - y n‖ ^ (2 : ℕ) -
+          beta * inner ℝ (x (n + 1) - y n) (y n - x n) :=
+    proximalGradient_gap_le_inner_form
+      (C := C) (f := f) (g := g) (grad := grad) (beta := beta)
+      (y := y n) (xPlus := x (n + 1)) (z := x n)
+      hfirst hsmooth hstep (hx_mem n) hbeta_pos
+  have hgapStar :
+      compositeObjective f g (x (n + 1)) - compositeObjective f g xStar ≤
+        -(beta / 2) * ‖x (n + 1) - y n‖ ^ (2 : ℕ) -
+          beta * inner ℝ (x (n + 1) - y n) (y n - xStar) :=
+    proximalGradient_gap_le_inner_form
+      (C := C) (f := f) (g := g) (grad := grad) (beta := beta)
+      (y := y n) (xPlus := x (n + 1)) (z := xStar)
+      hfirst hsmooth hstep hxStar_mem hbeta_pos
+  have hscaled :=
+    chewi510_weighted_two_gap_le_scaled_norm_diff
+      (beta := beta) (lambda := chewi510Lambda (n + 1))
+      (gapX := compositeObjective f g (x (n + 1)) -
+        compositeObjective f g (x n))
+      (gapStar := compositeObjective f g (x (n + 1)) -
+        compositeObjective f g xStar)
+      (a := x (n + 1) - y n) (y := y n) (x := x n)
+      (xStar := xStar)
+      (chewi510Lambda_pos_succ n) (chewi510Lambda_one_le_succ n)
+      hgapX hgapStar
+  have hrewrite :
+      chewi510Lambda (n + 1) • y n -
+            (chewi510Lambda (n + 1) - 1) • x n - xStar +
+          chewi510Lambda (n + 1) • (x (n + 1) - y n) =
+        chewi510Lambda (n + 1) • x (n + 1) -
+            (chewi510Lambda (n + 1) - 1) • x n - xStar := by
+    module
+  have halign :
+      chewi510Lambda (n + 1) • x (n + 1) -
+          (chewi510Lambda (n + 1) - 1) • x n =
+        chewi510Lambda (n + 2) • y (n + 1) -
+          (chewi510Lambda (n + 2) - 1) • x (n + 1) :=
+    htraj.telescopeAlignment n
+  have hsecond :
+      chewi510Lambda (n + 1) • x (n + 1) -
+            (chewi510Lambda (n + 1) - 1) • x n - xStar =
+        chewi510EnergyVector x y xStar (n + 1) := by
+    unfold chewi510EnergyVector
+    rw [halign]
+  simpa [chewi510EnergyVector, hrewrite, hsecond] using hscaled
+
+/-- Summed APGD estimate for Chewi Theorem 8.6. -/
+theorem chewi86_weighted_sum_bound
+    {C : Set E} {f g : E -> ℝ} {grad : E -> E} {beta : ℝ}
+    {x y : ℕ -> E} {xStar : E} (N : ℕ)
+    (hfirst : FirstOrderStrongConvexOn C f grad 0)
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (htraj : IsChewi86APGDTrajectory C f g grad beta x y)
+    (hx_mem : ∀ k, x k ∈ C)
+    (hxStar_mem : xStar ∈ C)
+    (hbeta_pos : 0 < beta) :
+    (∑ n ∈ Finset.range N,
+        (chewi510Lambda (n + 1) ^ (2 : ℕ) *
+            (compositeObjective f g (x (n + 1)) -
+              compositeObjective f g xStar) -
+          chewi510Lambda n ^ (2 : ℕ) *
+            (compositeObjective f g (x n) -
+              compositeObjective f g xStar))) ≤
+      beta / 2 *
+        (‖chewi510EnergyVector x y xStar 0‖ ^ (2 : ℕ) -
+          ‖chewi510EnergyVector x y xStar N‖ ^ (2 : ℕ)) := by
+  let gap : ℕ -> ℝ := fun k => compositeObjective f g (x k) -
+    compositeObjective f g xStar
+  let energySq : ℕ -> ℝ :=
+    fun k => ‖chewi510EnergyVector x y xStar k‖ ^ (2 : ℕ)
+  have hstep : ∀ n,
+      (chewi510Lambda (n + 1) - 1) * (gap (n + 1) - gap n) +
+          gap (n + 1) ≤
+        beta / (2 * chewi510Lambda (n + 1)) *
+          (energySq n - energySq (n + 1)) := by
+    intro n
+    have hp :=
+      chewi86_weighted_two_point_bound_telescope
+        (C := C) (f := f) (g := g) (grad := grad) (beta := beta)
+        (x := x) (y := y) (xStar := xStar) n
+        hfirst hsmooth htraj hx_mem hxStar_mem hbeta_pos
+    have hleft :
+        (chewi510Lambda (n + 1) - 1) * (gap (n + 1) - gap n) +
+            gap (n + 1) =
+          (chewi510Lambda (n + 1) - 1) *
+              (compositeObjective f g (x (n + 1)) -
+                compositeObjective f g (x n)) +
+            (compositeObjective f g (x (n + 1)) -
+              compositeObjective f g xStar) := by
+      simp [gap]
+    simpa [energySq, hleft] using hp
+  simpa [gap, energySq] using
+    chewi510_weighted_sum_bound_of_step beta gap energySq N hstep
+
+/-- Chewi Theorem 8.6 APGD/FISTA rate in supplied-interface form. -/
+theorem chewi86_gap_le_two_beta_dist_sq_over_nat_sq
+    {C : Set E} {f g : E -> ℝ} {grad : E -> E} {beta : ℝ}
+    {x y : ℕ -> E} {xStar : E} {N : ℕ}
+    (hfirst : FirstOrderStrongConvexOn C f grad 0)
+    (hsmooth : SmoothWithGradientOn C f grad beta)
+    (htraj : IsChewi86APGDTrajectory C f g grad beta x y)
+    (hx_mem : ∀ k, x k ∈ C)
+    (hxStar_mem : xStar ∈ C)
+    (hbeta_pos : 0 < beta)
+    (hN : N ≠ 0) :
+    compositeObjective f g (x N) - compositeObjective f g xStar ≤
+      2 * beta * ‖x 0 - xStar‖ ^ (2 : ℕ) / (N : ℝ) ^ (2 : ℕ) := by
+  have hsum :=
+    chewi86_weighted_sum_bound
+      (C := C) (f := f) (g := g) (grad := grad) (beta := beta)
+      (x := x) (y := y) (xStar := xStar) N
+      hfirst hsmooth htraj hx_mem hxStar_mem hbeta_pos
+  have htel :=
+    chewi510_weighted_sum_telescope
+      (fun k => compositeObjective f g (x k) - compositeObjective f g xStar) N
+  rw [htel] at hsum
+  have hmain :
+      chewi510Lambda N ^ (2 : ℕ) *
+          (compositeObjective f g (x N) - compositeObjective f g xStar) ≤
+        beta / 2 * ‖chewi510EnergyVector x y xStar 0‖ ^ (2 : ℕ) := by
+    have hsum' :
+        chewi510Lambda N ^ (2 : ℕ) *
+            (compositeObjective f g (x N) - compositeObjective f g xStar) ≤
+          beta / 2 *
+            (‖chewi510EnergyVector x y xStar 0‖ ^ (2 : ℕ) -
+              ‖chewi510EnergyVector x y xStar N‖ ^ (2 : ℕ)) := by
+      simpa [chewi510Lambda_zero] using hsum
+    have hterminal_nonneg :
+        0 ≤ ‖chewi510EnergyVector x y xStar N‖ ^ (2 : ℕ) :=
+      sq_nonneg _
+    have hdrop :
+        beta / 2 *
+            (‖chewi510EnergyVector x y xStar 0‖ ^ (2 : ℕ) -
+              ‖chewi510EnergyVector x y xStar N‖ ^ (2 : ℕ)) ≤
+          beta / 2 * ‖chewi510EnergyVector x y xStar 0‖ ^ (2 : ℕ) := by
+      have hcoef_nonneg : 0 ≤ beta / 2 := by positivity
+      have hdiff :
+          ‖chewi510EnergyVector x y xStar 0‖ ^ (2 : ℕ) -
+              ‖chewi510EnergyVector x y xStar N‖ ^ (2 : ℕ) ≤
+            ‖chewi510EnergyVector x y xStar 0‖ ^ (2 : ℕ) := by
+        nlinarith
+      exact mul_le_mul_of_nonneg_left hdiff hcoef_nonneg
+    exact hsum'.trans hdrop
+  have hmain' :
+      chewi510Lambda N ^ (2 : ℕ) *
+          (compositeObjective f g (x N) - compositeObjective f g xStar) ≤
+        beta / 2 * ‖x 0 - xStar‖ ^ (2 : ℕ) := by
+    simpa [htraj.energyVector_zero] using hmain
+  have hlambda_pos : 0 < chewi510Lambda N := by
+    cases N with
+    | zero =>
+        contradiction
+    | succ n =>
+        exact chewi510Lambda_pos_succ n
+  have hden_pos : 0 < chewi510Lambda N ^ (2 : ℕ) :=
+    pow_pos hlambda_pos _
+  have hden :
+      compositeObjective f g (x N) - compositeObjective f g xStar ≤
+        (beta / 2 * ‖x 0 - xStar‖ ^ (2 : ℕ)) /
+          chewi510Lambda N ^ (2 : ℕ) := by
+    apply (le_div_iff₀ hden_pos).mpr
+    nlinarith
+  have hN_pos : 0 < (N : ℝ) := by
+    exact_mod_cast Nat.pos_of_ne_zero hN
+  have hhalf_pos : 0 < (N : ℝ) / 2 := by positivity
+  have hlambda_ge : (N : ℝ) / 2 ≤ chewi510Lambda N :=
+    chewi510Lambda_ge_nat_half N
+  have hlambda_nonneg : 0 ≤ chewi510Lambda N :=
+    chewi510Lambda_nonneg N
+  have hlambda_sq_ge :
+      ((N : ℝ) / 2) ^ (2 : ℕ) ≤ chewi510Lambda N ^ (2 : ℕ) :=
+    (sq_le_sq₀ hhalf_pos.le hlambda_nonneg).mpr hlambda_ge
+  have hhalf_sq_pos : 0 < ((N : ℝ) / 2) ^ (2 : ℕ) :=
+    pow_pos hhalf_pos _
+  have hinv_le :
+      1 / chewi510Lambda N ^ (2 : ℕ) ≤
+        1 / (((N : ℝ) / 2) ^ (2 : ℕ)) :=
+    one_div_le_one_div_of_le hhalf_sq_pos hlambda_sq_ge
+  have hcoef_nonneg :
+      0 ≤ beta / 2 * ‖x 0 - xStar‖ ^ (2 : ℕ) :=
+    mul_nonneg (by positivity) (sq_nonneg _)
+  have hcompare :
+      (beta / 2 * ‖x 0 - xStar‖ ^ (2 : ℕ)) /
+          chewi510Lambda N ^ (2 : ℕ) ≤
+        (beta / 2 * ‖x 0 - xStar‖ ^ (2 : ℕ)) /
+          (((N : ℝ) / 2) ^ (2 : ℕ)) := by
+    have hinv_le' :
+        (chewi510Lambda N ^ (2 : ℕ))⁻¹ ≤
+          (((N : ℝ) / 2) ^ (2 : ℕ))⁻¹ := by
+      simpa [one_div] using hinv_le
+    simpa [div_eq_mul_inv, mul_assoc] using
+      mul_le_mul_of_nonneg_left hinv_le' hcoef_nonneg
+  have hfinal_rhs :
+      (beta / 2 * ‖x 0 - xStar‖ ^ (2 : ℕ)) /
+          (((N : ℝ) / 2) ^ (2 : ℕ)) =
+        2 * beta * ‖x 0 - xStar‖ ^ (2 : ℕ) /
+          (N : ℝ) ^ (2 : ℕ) := by
+    field_simp [hN_pos.ne']
+  exact hden.trans (hcompare.trans_eq hfinal_rhs)
 
 end Optimization
 end StatInference
