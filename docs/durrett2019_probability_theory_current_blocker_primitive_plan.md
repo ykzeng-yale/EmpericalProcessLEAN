@@ -90,6 +90,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`
+- `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`
 - `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`
 - `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`
 - `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`
@@ -134,6 +135,7 @@ compile, via
 `durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`,
+`durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`,
 `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`,
 `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`,
 `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`, and
@@ -158,10 +160,13 @@ cover into a monotone closed-subinterval subdivision using mathlib's
 and
 `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement`
 now turn any extracted strict endpoint tuple with small-cover cell assignments
-directly into the cutpoint chain.  The next non-atomic packet should erase
-repeated subdivision points and package the resulting strict real endpoint
-grid.  The fully arbitrary distribution route still needs atom-aware endpoint
-selection.
+directly into the cutpoint chain.  The stricter consumer
+`SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`
+now accepts the most convenient post-dedup output shape: a strict finite prefix
+of the monotone subdivision ending at the right endpoint.  The next non-atomic
+packet should prove the duplicate-erasure/extraction theorem that supplies
+that prefix.  The fully arbitrary distribution route still needs atom-aware
+endpoint selection.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
 Parallel target: Chapter 2.1 exact iid/product notation refinements only if
@@ -248,10 +253,11 @@ constructor beyond the compiled one-cell/two-cell/right-append/cutpoint-chain,
 endpoint-grid-to-chain, non-atomic local small-neighborhood,
 non-atomic finite compact-cover, non-atomic monotone-subdivision, and
 closed-cover endpoint-grid-refinement consumers.  The likely next primitive is
-now the monotone-subdivision-to-strict-endpoint-grid construction: erase
-repeated points from the eventually constant monotone sequence, preserve the
-assigned small cover interval for each nondegenerate adjacent cell, and feed
-`SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement`.
+now the monotone-subdivision-to-strict-prefix construction: erase repeated
+points from the eventually constant monotone sequence, preserve the assigned
+small cover interval for each nondegenerate adjacent cell, prove the strict
+finite prefix starts at `a` and ends at `b`, and feed
+`SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`.
 After that, handle arbitrary distributions with atom-aware endpoint selection
 if naive splitting at a real cutpoint blocks.  Parallel target:
 optional Chapter 2.1 iid/product notation polish only if the GC grid blocks.

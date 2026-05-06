@@ -176,6 +176,10 @@ Compiled first source wrappers:
   `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement`
   and
   `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`.
+- Durrett Theorem 2.4.9 strict-subdivision-prefix handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`.
 - Durrett Theorem 2.4.9 non-atomic local grid ingredient:
   `exists_realOpenInterval_measureReal_lt_of_noAtoms` and
   `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`.
@@ -234,10 +238,12 @@ cutpoint-chain-to-GC handoff also compile.  The next non-atomic theorem-core
 primitive is the monotone-subdivision-to-strict-endpoint-grid construction:
 erase repeated subdivision points while preserving the small-cover assignment
 for each nondegenerate adjacent cell, then feed
-`SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement`.
-The remaining arbitrary-distribution primitive is the atom-aware construction
-of strict finite endpoint grids for intervals whose total CDF increment is not
-already below the requested radius.
+`SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`.
+The exact post-dedup shape needed now is a strict finite prefix of the monotone
+subdivision that starts at `a`, ends at `b`, and carries the inherited
+closed-cover cell assignments.  The remaining arbitrary-distribution primitive
+is the atom-aware construction of strict finite endpoint grids for intervals
+whose total CDF increment is not already below the requested radius.
 
 ### Lane D: CLT and characteristic functions
 

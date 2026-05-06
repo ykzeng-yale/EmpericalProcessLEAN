@@ -861,6 +861,60 @@ theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinem
   exact Set.Ioo_subset_Icc_self.trans hclosed
 
 /--
+A strict finite prefix of a monotone subdivision, together with the closed-cover
+assignment inherited from the compact-cover refinement, produces a cutpoint
+chain.
+
+This is the consumer for the future duplicate-erasure step: once repeated
+subdivision values have been removed and the remaining finite prefix is strict,
+no additional CDF algebra remains.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover
+    {μ : Measure ℝ} [IsProbabilityMeasure μ]
+    {epsilon a b : ℝ} {cells : ℕ}
+    {t : ℕ -> Set.Icc a b}
+    (ht0 : (t 0 : ℝ) = a)
+    (htlast : (t (cells + 1) : ℝ) = b)
+    (hstrictStep : ∀ n ≤ cells, (t n : ℝ) < (t (n + 1) : ℝ))
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ n ≤ cells,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        μ.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon a b := by
+  let endpoint : Fin (cells + 2) -> ℝ := fun i => (t i.1 : ℝ)
+  have hstrict : StrictMono endpoint := by
+    rw [Fin.strictMono_iff_lt_succ]
+    intro i
+    have hi_le : i.1 ≤ cells := Nat.le_of_lt_succ i.2
+    simpa [endpoint, Fin.val_castSucc, Fin.val_succ] using hstrictStep i.1 hi_le
+  have hrefineEndpoint : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers,
+        Set.Icc (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) ∧
+        μ.real (Set.Ioo (l x) (r x)) < epsilon := by
+    intro cell
+    have hcell_le : cell.1 ≤ cells := Nat.le_of_lt_succ cell.2
+    rcases hrefine cell.1 hcell_le with ⟨x, hx, hclosed, hsmall⟩
+    refine ⟨x, hx, ?_, hsmall⟩
+    intro z hz
+    have hzab : z ∈ Set.Icc a b := by
+      constructor
+      · exact (t cell.1).2.1.trans hz.1
+      · have hz_right : z ≤ (t (cell.1 + 1) : ℝ) := by
+          simpa [endpoint, Fin.val_succ] using hz.2
+        exact hz_right.trans (t (cell.1 + 1)).2.2
+    have hzsub : (⟨z, hzab⟩ : Set.Icc a b) ∈ Set.Icc (t cell.1) (t (cell.1 + 1)) := by
+      constructor
+      · exact hz.1
+      · simpa [endpoint, Fin.val_succ] using hz.2
+    exact hclosed hzsub
+  have hchain := SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement
+    endpoint hstrict hrefineEndpoint
+  simpa [endpoint, ht0, htlast] using hchain
+
+/--
 Every finite small-increment cutpoint chain supplies a bounded middle CDF
 partition.
 -/

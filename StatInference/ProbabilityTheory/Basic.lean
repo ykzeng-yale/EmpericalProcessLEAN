@@ -718,6 +718,30 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_ref
     endpoint hstrict hrefine
 
 /--
+Durrett 2019, Theorem 2.4.9 strict-subdivision-prefix package.
+
+After repeated values have been erased from the monotone subdivision, a strict
+finite prefix ending at the right endpoint produces the cutpoint chain directly
+from the inherited closed-cover assignments.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b : ℝ} {cells : ℕ}
+    {t : ℕ -> Set.Icc a b}
+    (ht0 : (t 0 : ℝ) = a)
+    (htlast : (t (cells + 1) : ℝ) = b)
+    (hstrictStep : ∀ n ≤ cells, (t n : ℝ) < (t (n + 1) : ℝ))
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ n ≤ cells,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover
+    ht0 htlast hstrictStep hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9 non-atomic local grid ingredient.
 
 For non-atomic locally finite real measures, every point has an open
