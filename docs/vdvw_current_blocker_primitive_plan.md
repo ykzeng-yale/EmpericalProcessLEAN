@@ -7494,3 +7494,20 @@ derive that selected normalized-log tail/UI from the textbook
 `o_P^*(n)` entropy hypothesis, or register the exact VdV&W arbitrary-map
 outer-entropy primitive if the implication is not derivable from current
 mathlib/local foundations.
+
+2026-05-06 Theorem 2.4.3 selected-to-external finite-net scale bridge:
+local search found selected fixed-radius log convergence, selected tail/UI,
+and deterministic-bound consumers, but no monotonicity bridge transferring a
+selected-cover finite-net comparison to the larger cardinality process
+controlled by the textbook entropy hypothesis.  `Theorem243.lean` now proves
+`vdVWTheorem243FiniteNetHoeffdingUpper_mono_cardinality` and the
+source-facing untruncated consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledSelectedFiniteNetHoeffdingUpper`.
+This lets a future ghost/Rademacher selected-cover proof establish a.e.
+domination using the selected least empirical-cover cardinality, then transfer
+that domination to the entropy-controlled external cardinality by monotonicity,
+without introducing a varying-domain UI or ordinary-mean hypothesis.  The next
+real option-1 target is now sharper: prove the eventual a.e. scaled selected
+finite-net domination itself from the VdV&W symmetrization/random-cover
+argument, or prove a direct outer-probability comparison; do not add another
+endpoint wrapper around already-closed tail/UI or deterministic-bound routes.

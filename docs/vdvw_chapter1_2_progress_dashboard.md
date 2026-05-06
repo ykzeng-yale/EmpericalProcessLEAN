@@ -3018,3 +3018,13 @@ This avoids asking directly for tail/UI of the finite-net Hoeffding upper and
 instead consumes tail/UI of the selected normalized log-cardinality process.
 The exact Theorem 2.4.3 blocker is therefore the book entropy-to-selected-log
 tail/UI step, or a direct outer-probability source comparison replacing it.
+
+The source comparison route now has the selected-to-external cardinality
+bridge needed by the actual random-cover proof shape:
+`vdVWTheorem243FiniteNetHoeffdingUpper_mono_cardinality` and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledSelectedFiniteNetHoeffdingUpper`.
+Thus a future proof may work with the selected least empirical-cover
+cardinality in the a.e. finite-net domination step, while the stochastic
+entropy hypothesis remains on the larger external cardinality.  Remaining
+work: prove that selected a.e. scaled domination from ghost/Rademacher
+symmetrization, or prove the direct outer-probability comparison.

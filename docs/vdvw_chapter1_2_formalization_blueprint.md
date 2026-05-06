@@ -224,6 +224,17 @@ prove selected normalized-log tail/UI from the textbook `o_P^*(n)` entropy
 assumption, or record the precise arbitrary-map outer-entropy primitive needed
 for that implication.
 
+2026-05-06 selected-to-external finite-net bridge:
+`Theorem243.lean` now proves the monotonicity lemma
+`vdVWTheorem243FiniteNetHoeffdingUpper_mono_cardinality` and the source-side
+consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledSelectedFiniteNetHoeffdingUpper`.
+This aligns the Lean target with the textbook proof shape: selected empirical
+covers may supply the a.e. finite-net domination, while the random entropy
+hypothesis controls a larger finite-valued cardinality.  The next proof target
+is the selected-cover ghost/Rademacher a.e. domination or direct
+outer-probability comparison, not another endpoint wrapper.
+
 2026-05-06 fixed-FDD congruence refinement: after search, the local FDD
 replacement layer now includes
 `aemeasurable_fdd_congr_finite_coord_ae` and
