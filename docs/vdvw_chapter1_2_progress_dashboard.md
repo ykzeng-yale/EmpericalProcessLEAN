@@ -120,6 +120,10 @@ The canonical `P`-GC endpoint also now has the reusable bridge
 `VdVWPGlivenkoCantelliClass_of_centered_weightedSupremum_convergesInOuterProbabilityConst`,
 which packages the centered finite-product convergence to uniform-deviation
 and infinite-product projection handoff for all current Theorem 2.4.3 routes.
+The in-mean endpoint has the analogous reusable adapter
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_integrable_envelope`,
+which upgrades centered convergence to ordinary mean convergence under the
+standard countable-coordinate and integrable-envelope hypotheses.
 
 2026-05-05 separability/`P`-measurability follow-up:
 `PMeasurable.lean` now adds

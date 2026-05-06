@@ -8660,6 +8660,63 @@ theorem
     _ ≤ ε := htail_bound
 
 /--
+Centered finite-product weighted-supremum convergence upgrades to in-mean
+convergence for countable coordinate-measurable classes with an integrable
+measurable envelope.
+
+This discharges the generic in-mean adapter's measurability, integrability,
+and tail/UI hypotheses from the standard VdV&W envelope assumptions.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_integrable_envelope
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hcentered :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        atTop (0 : ℝ)) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      hcentered
+      (fun n =>
+        measurable_vdVWWeightedClassSupremum_centered_of_countable
+          (P := P) (Set.to_countable indexClass) hclass
+          (fun _ : Fin n => (n : ℝ)⁻¹))
+      (fun n =>
+        integrable_vdVWWeightedClassSupremum_centered_of_countable
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (Set.to_countable indexClass)
+          henvelope hclass henv_integrable (fun _ : Fin n => (n : ℝ)⁻¹))
+      (centered_vdVWWeightedClassSupremum_tailExpectation_condition_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (Set.to_countable indexClass)
+        henvelope hclass henv henv_integrable)
+
+/--
 Countable truncated weighted class suprema are integrable under the empirical
 product law, using only coordinate measurability and the uniform truncation
 bound.

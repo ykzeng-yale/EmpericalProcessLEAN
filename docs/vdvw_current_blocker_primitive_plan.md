@@ -5822,3 +5822,16 @@ tail route, can feed the canonical `P`-Glivenko-Cantelli endpoint without
 duplicating the projection argument.  This is endpoint plumbing only; the
 remaining mathematical blocker is still the selected-entropy tail/structural
 cardinality proof.
+
+2026-05-05 Theorem 2.4.3 in-mean endpoint follow-up: local search found the
+generic tail/UI in-mean adapter
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation`
+and repeated route-specific uses, but no reusable theorem discharging its
+measurability, integrability, and tail/UI hypotheses from the standard
+countable class plus integrable-envelope assumptions.  `Theorem243.lean` now
+adds
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_integrable_envelope`.
+Any centered-supremum convergence route, including the first-sample `eLpNorm`
+tail route, can now feed the in-mean endpoint through this single adapter.
+The selected-entropy tail/structural-cardinality proof remains the real
+non-finite Theorem 2.4.3 blocker.
