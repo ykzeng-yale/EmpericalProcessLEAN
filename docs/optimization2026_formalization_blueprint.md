@@ -70,16 +70,16 @@ Theorem 8.5 has a compiled finite-valued supplied-interface layer with
 `chewi86_weighted_sum_bound`, and
 `chewi86_gap_le_two_beta_dist_sq_over_nat_sq`, reusing Chapter 5.10
 lambda/telescope algebra with PGD `(8.1)` replacing GD `(3.3)`.  Latest pushed
-Optimization frontier: `5479054` (`Add Chewi theorem 8.6 APGD layer`).  The
-local Chapter 9/10 route now starts with focused-checked
+Optimization frontier: `7899c07` (`Start Chewi Fenchel and Bregman layer`).
+The Chapter 9/10 route now has promoted-build
 `StatInference/Optimization/Fenchel.lean` and
 `StatInference/Optimization/Bregman.lean`: finite-valued Fenchel conjugate
 certificates, Fenchel-Young/subgradient equivalences, weak double
 conjugation, Lemma 9.12's strong-convexity/smoothness-duality core estimate,
 Bregman divergence, relative convexity/smoothness lower/upper models, and
-Lemma 10.7 relative growth.  The active route is to promote this packet and
-then open `MirrorDescent.lean` for Theorem 10.9 MPGD/OMD telescoping instead
-of looping on small Chapter 8 source-shape cleanup.
+Lemma 10.7 relative growth.  The active route is now `MirrorDescent.lean` for
+Theorem 10.9 MPGD/OMD telescoping instead of looping on small Chapter 8
+source-shape cleanup.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
