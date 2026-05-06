@@ -56,30 +56,22 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after focused Lean verification of the local
-Chapter 8 APGD/FISTA packet in
-`StatInference/Optimization/Proximal.lean`, rebased over current
-`origin/main`:
-Theorem 8.5 has a compiled finite-valued supplied-interface layer with
-`compositeObjective`, `proximalGradientModel`, `IsProximalGradientStep`,
-`proximalGradient_oneStep_ineq`, and
-`chewi85_final_gap_le_geometric_denominator_of_oneStep`.  The local Theorem
-8.6/APGD packet is focused-verified through `IsChewi86APGDTrajectory`,
-`proximalGradient_gap_le_inner_form`,
-`chewi86_weighted_two_point_bound_telescope`,
-`chewi86_weighted_sum_bound`, and
-`chewi86_gap_le_two_beta_dist_sq_over_nat_sq`, reusing Chapter 5.10
-lambda/telescope algebra with PGD `(8.1)` replacing GD `(3.3)`.  Latest pushed
-Optimization frontier: `7899c07` (`Start Chewi Fenchel and Bregman layer`).
-The Chapter 9/10 route now has promoted-build
-`StatInference/Optimization/Fenchel.lean` and
-`StatInference/Optimization/Bregman.lean`: finite-valued Fenchel conjugate
-certificates, Fenchel-Young/subgradient equivalences, weak double
-conjugation, Lemma 9.12's strong-convexity/smoothness-duality core estimate,
-Bregman divergence, relative convexity/smoothness lower/upper models, and
-Lemma 10.7 relative growth.  The active route is now `MirrorDescent.lean` for
-Theorem 10.9 MPGD/OMD telescoping instead of looping on small Chapter 8
-source-shape cleanup.
+Current manual goal frontier after promoted Lean verification of the Chapter
+10 MPGD one-step packet in `StatInference/Optimization/MirrorDescent.lean`,
+rebased over current `origin/main` at `5b35a16`:
+Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
+stable dependencies, not active routing targets.  Latest verified Optimization
+proof frontier: `9b618de` (`Add Chewi theorem 10.9 MPGD one-step layer`).
+`MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
+trajectory interfaces, the model-to-composite Bregman upper/lower comparisons,
+the supplied-interface Chewi Theorem 10.9 one-step inequality, the descent
+corollary, and trajectory one-step accessors.  Search-first result:
+mathlib has no direct Bregman/mirror-descent/MPGD theorem in the pinned tree;
+the relevant reuse is local `Bregman.lean`, `Proximal.lean`, and Chapter 3/5
+scalar recurrence/telescope APIs.  The active route is now the full Theorem
+10.9 rate from the one-step inequality, followed by Theorem 10.11 nonsmooth
+MPGD and Theorem 10.13 OMD regret if bounded; otherwise open Chapter 11
+alternating Bregman projection/minimization while scouts map Chapters 12-13.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
