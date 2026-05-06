@@ -234,29 +234,29 @@ Chapter 3 theorem-facing wrappers compiling:
 72. CovarianceBilinDual inverse-derivative pullback using only the original
    square-integrable law hypothesis:
    `vaart1998_covarianceBilinDual_inverseDerivative_map_apply_of_memLp`.
+73. Measurable-coordinate Theorem 4.1 Gaussian-limit wrapper with the canonical
+   covarianceBilinDual display:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_real`.
 
-Latest pushed Vaart packet before this run: `e18d286`
-(`Add Vaart covariance bilinear law bridge`).
+Latest pushed Vaart packet before this run: `c7fc5aa`
+(`Add Vaart inverse derivative covariance MemLp bridge`).
 
-The current theorem-sized packet discharges the inverse-derivative
-measurability and square-integrability side conditions for the covariance
-bridge.  A continuous linear inverse derivative sends an a.e.-measurable,
-square-integrable limit law to an a.e.-measurable, square-integrable estimator
-limit law, and the covarianceBilinDual pullback theorem now needs only the
-original `MemLp id 2 (Q.map Z)` hypothesis.  Local-inverse measurability, the
-multivariate empirical-moment CLT, and finite-matrix specialization remain
-explicit next source layers.
+The current theorem-sized packet packages the canonical covarianceBilinDual
+pullback directly into the measurable finite-coordinate Theorem 4.1 wrapper.
+The source theorem now returns local existence, delta-method convergence,
+Gaussianity of the estimator limit, and the mathlib covariance bilinear-form
+display under one original-law square-integrability hypothesis
+`MemLp id 2 (Q.map Z)`.  Local-inverse measurability, the multivariate
+empirical-moment CLT, and finite-matrix specialization remain explicit next
+source layers.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. package the covarianceBilinDual pullback directly into the measurable
-   finite-coordinate Theorem 4.1 wrapper under a single original-law `MemLp`
-   hypothesis;
-2. add a local-inverse measurability convenience if a clean continuity/open
+1. add a local-inverse measurability convenience if a clean continuity/open
    partial homeomorphism API can discharge it without broad topological
    refactoring;
-3. keep a true multivariate empirical-moment CLT supplied until a local vector
+2. keep a true multivariate empirical-moment CLT supplied until a local vector
    CLT is formalized from the scalar mathlib CLT.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent

@@ -164,10 +164,12 @@ Initial modules:
   pushed-law covariance bilinear form is the pullback of the original one.  The
   newest side-condition layer proves a.e. measurability and `MemLp` propagate
   through the continuous linear inverse derivative, so the covarianceBilinDual
-  pullback now needs only the original square-integrable limit law.  It still
-  deliberately leaves local-inverse measurability, the multivariate
-  empirical-moment CLT, and a finite-matrix specialization as explicit next
-  layers.
+  pullback now needs only the original square-integrable limit law.  The
+  current source wrapper packages that canonical covarianceBilinDual pullback
+  together with local existence, delta-method convergence, and Gaussianity in
+  the measurable finite-coordinate Theorem 4.1 statement.  It still deliberately
+  leaves local-inverse measurability, the multivariate empirical-moment CLT,
+  and a finite-matrix specialization as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

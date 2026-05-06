@@ -164,9 +164,12 @@ Chapter 4 handoff:
   `vaart1998_inverseDerivative_aemeasurable_of_aemeasurable`,
   `vaart1998_inverseDerivative_map_memLp_of_memLp`, and
   `vaart1998_covarianceBilinDual_inverseDerivative_map_apply_of_memLp`.
+- measurable-coordinate Theorem 4.1 Gaussian-limit source wrapper with the
+  canonical covarianceBilinDual display:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_real`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`e18d286`:
+`c7fc5aa`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -189,15 +192,13 @@ targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled Gaussian, covarianceBilinDual, and
-MemLp-propagation handoff:
+Continue Vaart Chapter 4.1 from the compiled Gaussian and canonical
+covarianceBilinDual source wrapper:
 
-1. package the covarianceBilinDual pullback directly into the source Theorem
-   4.1 wrapper under a single original-law `MemLp` hypothesis;
-2. add a local-inverse measurability convenience from the open partial
+1. add a local-inverse measurability convenience from the open partial
    homeomorphism/local continuity API if it can be done without widening the
    topology assumptions too much;
-3. keep the actual multivariate CLT supplied until a local vector CLT is
+2. keep the actual multivariate CLT supplied until a local vector CLT is
    formalized from the scalar mathlib CLT or another local dependency.
 
 If this blocks, record the exact missing theorem shape for the supplied
