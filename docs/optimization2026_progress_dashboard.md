@@ -28,10 +28,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
-- Current manual frontier after rebasing over remote main `c99bb86` (`Add
-  Theorem 2.4.3 finite code convergence endpoint`) on 2026-05-06 and focused Lean
-  verification of the Chapter 11.5 RAM block-model plus Exercise 9.3 scalar
-  Hopf-Lax interpolation layer:
+- Current manual frontier after rebasing over remote main `986347c` (`Rebase
+  VdVW goal after current Theorem 2.4.3 progress`) on 2026-05-06 and focused Lean
+  verification of the Chapter 11.5 RAM block-model plus selected Exercise 9.3
+  Hopf-Lax interpolation assembly layer:
   Chapter 9/10 now has a compiled finite-valued
   Fenchel/Bregman/mirror substrate.  `MirrorDescent.lean` compiles
   `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
@@ -112,9 +112,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   Chapter 11.4 is now stable substrate.  The active lane is to finish Theorem
   11.5 RAM as a theorem-sized packet: discharge the selected Hopf-Lax/Moreau
   model value from Chewi's source candidate and discharge the remaining
-  interpolant admissibility/radius side conditions so the compiled strong and
-  weak Exercise 9.3 certificate constructors can feed the RAM rate wrappers;
-  then move immediately to Sinkhorn 11.7/11.8 and Chapter 12 SMPGD.
+  interpolant admissibility/radius side conditions so the compiled block-model
+  plus selected-interpolant certificate assemblers can feed the RAM rate
+  wrappers; then move immediately to Sinkhorn 11.7/11.8 and Chapter 12 SMPGD.
   The new root-imported `RandomizedAlternatingMinimization.lean` module starts
   Chewi Theorem 11.5 and compiles the source scalar expected-gap recurrence
   layer: `chewi115StrongFactor`, `chewi115ZeroK`,
@@ -162,7 +162,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi115_strong_hopf_lax_certificate_of_interpolants`, and
   `chewi115_zero_hopf_lax_certificate_of_interpolants`, so the remaining 11.5
   work is the selected Hopf-Lax/Moreau model value and candidate side
-  conditions, not another scalar-recurrence or finite-average loop.
+  conditions, not another scalar-recurrence or finite-average loop.  The newest
+  block-selected assembly packet adds
+  `chewi115_strong_hopf_lax_certificate_of_block_model_interpolants` and
+  `chewi115_zero_hopf_lax_certificate_of_block_model_interpolants`, combining
+  the finite block-model conditional-upper theorem with the selected
+  interpolation estimates into the exact RAM Hopf-Lax certificates.
   Exact 10.13 `sInf` or arbitrary norm/dual-norm packaging is deferred until
   source-report exactness or a later theorem demands it.
 - Current manual frontier after focused Lean verification rebased over pushed
@@ -372,15 +377,15 @@ High-value local files:
 ## Current Active Target
 
 Current active target after the verified Chapter 11.5 RAM block-model and
-Exercise 9.3 interpolation packet rebased over remote main `c99bb86`: treat
+Exercise 9.3 interpolation assembly packet rebased over remote main `986347c`: treat
 Chapters 3-8, Chapter 9/10 mirror-descent substrate, Chapter 11.2/11.3 ABP
 telescope, and Chapter 11.4 AM as stable infrastructure.  The live manual
 `/goal` frontier is
 `StatInference/Optimization/RandomizedAlternatingMinimization.lean`.  Next
 theorem-sized packet: finish Chewi Theorem 11.5 RAM by proving the selected
 Hopf-Lax/Moreau model value from the source candidate and discharging the
-remaining admissibility/radius side conditions needed by the compiled strong
-and weak Exercise 9.3 certificate constructors.  After that, move directly
+remaining admissibility/radius side conditions needed by the compiled
+block-model plus selected-interpolant certificate assemblers.  After that, move directly
 to Sinkhorn Theorems 11.7/11.8 from ABP/mirror-descent supplied finite
 KL/Pinsker/marginal interfaces, then open Chapter 12 SMPGD.  This paragraph
 supersedes older Chapter 6, Chapter 7, Chapter 8, and Chapter 11.4 next-target

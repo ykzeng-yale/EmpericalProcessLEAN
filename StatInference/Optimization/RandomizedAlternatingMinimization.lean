@@ -856,6 +856,139 @@ theorem chewi115_zero_hopf_lax_certificate_of_interpolants
         halphaF_nonneg halphaF_lt (hgap_nonneg n) (hdist_pos n) hRbeta
         (hdist_le_radius n) (hinterp n)⟩
 
+/--
+Strong RAM certificate assembled from the finite block-model conditional upper
+bound and the selected Hopf-Lax/Moreau interpolant value.  This is the
+source-facing handoff for Chewi Theorem 11.5: the block model supplies
+`conditional_upper`, while the selected candidate estimate supplies the
+positive-curvature Exercise 9.3 bound.
+-/
+theorem chewi115_strong_hopf_lax_certificate_of_block_model_interpolants
+    {D : ℕ} (hD : 0 < D)
+    {expectedGap hopfGap nextValue Fx Gx Fy Gy modelValue lin normSq distSq :
+      ℕ -> ℝ}
+    {fstar alphaF alphaG : ℝ}
+    {blockValue gradTerm quadTerm gReplace : ℕ -> Fin D -> ℝ}
+    (halphaF : alphaF < 1) (halphaG : -1 < alphaG)
+    (hgap_nonneg : ∀ n, 0 ≤ expectedGap n)
+    (hgap : ∀ n, expectedGap n = Fx n + Gx n - fstar)
+    (hnext_gap : ∀ n, expectedGap (n + 1) = nextValue n - fstar)
+    (hhopf_gap : ∀ n, hopfGap n = modelValue n - fstar)
+    (hnext :
+      ∀ n,
+        nextValue n ≤
+          (1 / (D : ℝ)) * ∑ i : Fin D, blockValue n i)
+    (hblock : ∀ n i,
+      blockValue n i ≤
+        Fx n + gradTerm n i + quadTerm n i + gReplace n i)
+    (hgrad_sum : ∀ n, (∑ i : Fin D, gradTerm n i) = lin n)
+    (hquad_sum : ∀ n, (∑ i : Fin D, quadTerm n i) = normSq n / 2)
+    (hg_sum : ∀ n,
+      (∑ i : Fin D, gReplace n i) = ((D : ℝ) - 1) * Gx n + Gy n)
+    (hfirst : ∀ n, Fx n + lin n + (alphaF / 2) * normSq n ≤ Fy n)
+    (hselected : ∀ n,
+      Fy n + Gy n + ((1 - alphaF) / 2) * normSq n ≤ modelValue n)
+    (hmodel_interp : ∀ n,
+      modelValue n - fstar ≤
+        (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) *
+            expectedGap n +
+          (((1 -
+                    1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) ^
+                  (2 : ℕ)) /
+                (2 * (1 / (1 - alphaF))) -
+              ((alphaF + alphaG) / 2) *
+                (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) *
+                  (1 -
+                    1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF))))) *
+            distSq n) :
+    IsChewi115RAMStrongHopfLaxCertificate expectedGap hopfGap alphaF alphaG D := by
+  have hcond :
+      ∀ n,
+        expectedGap (n + 1) ≤
+          (((D : ℝ) - 1) / (D : ℝ)) * expectedGap n +
+            (1 / (D : ℝ)) * hopfGap n :=
+    chewi115_conditional_upper_of_block_model_sequence (D := D) hD
+      (expectedGap := expectedGap) (hopfGap := hopfGap)
+      (nextValue := nextValue) (Fx := Fx) (Gx := Gx)
+      (Fy := Fy) (Gy := Gy) (modelValue := modelValue)
+      (lin := lin) (normSq := normSq) (alphaF := fun _ => alphaF)
+      (fstar := fstar) (blockValue := blockValue)
+      (gradTerm := gradTerm) (quadTerm := quadTerm) (gReplace := gReplace)
+      hgap hnext_gap hhopf_gap hnext hblock hgrad_sum hquad_sum hg_sum
+      hfirst hselected
+  exact chewi115_strong_hopf_lax_certificate_of_interpolants
+    (expectedGap := expectedGap) (hopfGap := hopfGap) (distSq := distSq)
+    (alphaF := alphaF) (alphaG := alphaG) (D := D)
+    halphaF halphaG hgap_nonneg hcond
+    (fun n => by
+      rw [hhopf_gap n]
+      exact hmodel_interp n)
+
+/--
+Zero-curvature RAM certificate assembled from the finite block-model
+conditional upper bound and the selected Hopf-Lax/Moreau interpolant value.
+The extra distance and radius assumptions are precisely the source-side
+conditions used to pass from Exercise 9.3's optimized coefficient to the
+Theorem 11.5 denominator `R_beta^2`.
+-/
+theorem chewi115_zero_hopf_lax_certificate_of_block_model_interpolants
+    {D : ℕ} (hD : 0 < D)
+    {expectedGap hopfGap nextValue Fx Gx Fy Gy modelValue lin normSq distSq :
+      ℕ -> ℝ}
+    {fstar alphaF Rbeta : ℝ}
+    {blockValue gradTerm quadTerm gReplace : ℕ -> Fin D -> ℝ}
+    (halphaF_nonneg : 0 ≤ alphaF) (halphaF_lt : alphaF < 1)
+    (hRbeta : 0 < Rbeta)
+    (hgap_nonneg : ∀ n, 0 ≤ expectedGap n)
+    (hdist_pos : ∀ n, 0 < distSq n)
+    (hdist_le_radius : ∀ n, distSq n ≤ Rbeta ^ (2 : ℕ))
+    (hgap : ∀ n, expectedGap n = Fx n + Gx n - fstar)
+    (hnext_gap : ∀ n, expectedGap (n + 1) = nextValue n - fstar)
+    (hhopf_gap : ∀ n, hopfGap n = modelValue n - fstar)
+    (hnext :
+      ∀ n,
+        nextValue n ≤
+          (1 / (D : ℝ)) * ∑ i : Fin D, blockValue n i)
+    (hblock : ∀ n i,
+      blockValue n i ≤
+        Fx n + gradTerm n i + quadTerm n i + gReplace n i)
+    (hgrad_sum : ∀ n, (∑ i : Fin D, gradTerm n i) = lin n)
+    (hquad_sum : ∀ n, (∑ i : Fin D, quadTerm n i) = normSq n / 2)
+    (hg_sum : ∀ n,
+      (∑ i : Fin D, gReplace n i) = ((D : ℝ) - 1) * Gx n + Gy n)
+    (hfirst : ∀ n, Fx n + lin n + (alphaF / 2) * normSq n ≤ Fy n)
+    (hselected : ∀ n,
+      Fy n + Gy n + ((1 - alphaF) / 2) * normSq n ≤ modelValue n)
+    (hmodel_interp : ∀ n,
+      modelValue n - fstar ≤
+        (1 - (1 / (1 - alphaF)) * expectedGap n / distSq n) *
+            expectedGap n +
+          ((((1 / (1 - alphaF)) * expectedGap n / distSq n) ^ (2 : ℕ)) /
+              (2 * (1 / (1 - alphaF)))) *
+            distSq n) :
+    IsChewi115RAMZeroHopfLaxCertificate expectedGap hopfGap D Rbeta := by
+  have hcond :
+      ∀ n,
+        expectedGap (n + 1) ≤
+          (((D : ℝ) - 1) / (D : ℝ)) * expectedGap n +
+            (1 / (D : ℝ)) * hopfGap n :=
+    chewi115_conditional_upper_of_block_model_sequence (D := D) hD
+      (expectedGap := expectedGap) (hopfGap := hopfGap)
+      (nextValue := nextValue) (Fx := Fx) (Gx := Gx)
+      (Fy := Fy) (Gy := Gy) (modelValue := modelValue)
+      (lin := lin) (normSq := normSq) (alphaF := fun _ => alphaF)
+      (fstar := fstar) (blockValue := blockValue)
+      (gradTerm := gradTerm) (quadTerm := quadTerm) (gReplace := gReplace)
+      hgap hnext_gap hhopf_gap hnext hblock hgrad_sum hquad_sum hg_sum
+      hfirst hselected
+  exact chewi115_zero_hopf_lax_certificate_of_interpolants
+    (expectedGap := expectedGap) (hopfGap := hopfGap) (distSq := distSq)
+    (alphaF := alphaF) (Rbeta := Rbeta) (D := D)
+    halphaF_nonneg halphaF_lt hRbeta hgap_nonneg hdist_pos hdist_le_radius hcond
+    (fun n => by
+      rw [hhopf_gap n]
+      exact hmodel_interp n)
+
 /-- The weak Hopf-Lax bridge supplies the zero-curvature RAM gap certificate. -/
 theorem IsChewi115RAMZeroHopfLaxCertificate.toGapCertificate
     {expectedGap hopfGap : ℕ -> ℝ} {D : ℕ} {Rbeta : ℝ}
