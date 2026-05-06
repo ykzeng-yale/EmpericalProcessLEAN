@@ -56,7 +56,7 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after rebasing over remote main `e03fdad`
+Current manual goal frontier after rebasing over remote main `87536c1`
 (`Merge remote-tracking branch 'origin/main'`) on 2026-05-06 and focused Lean
 verification of the Chapter 11.5 RAM block-model plus selected Exercise 9.3
 Hopf-Lax interpolation assembly layer:
@@ -243,9 +243,14 @@ and weak RAM Hopf-Lax certificates without an intermediate supplied
 `chewi115_strong_rate_of_block_model_source_candidates` and
 `chewi115_zero_rate_of_block_model_source_candidates`, proving the source
 Theorem 11.5 geometric rate and weak `2 * D * R_beta^2 / N` rate directly from
-the block model plus selected source-candidate assumptions.  The next main lane
-should move to Sinkhorn Theorems 11.7/11.8, not redo RAM scalar recurrence or
-block averaging.
+the block model plus selected source-candidate assumptions.  The newest
+Sinkhorn selector packet in `AlternatingBregman.lean` adds
+`chewi117_exists_sinkhorn_marginal_errors_le_of_abp`, combining the compiled
+Lemma 11.2 finite-minimum wrapper with supplied Pinsker lower bounds to produce
+the selected marginal-error iterate for Theorem 11.7.  The next main lane
+should instantiate the selector with finite marginal/KL identities and then
+move to Sinkhorn Theorem 11.8, not redo RAM scalar recurrence or block
+averaging.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

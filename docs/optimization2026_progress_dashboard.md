@@ -28,7 +28,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
-- Current manual frontier after rebasing over remote main `e03fdad` (`Merge
+- Current manual frontier after rebasing over remote main `87536c1` (`Merge
   remote-tracking branch 'origin/main'`) on 2026-05-06 and focused Lean
   verification of the Chapter 11.5 RAM block-model plus selected Exercise 9.3
   Hopf-Lax interpolation assembly layer:
@@ -183,7 +183,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi115_strong_rate_of_block_model_source_candidates` and
   `chewi115_zero_rate_of_block_model_source_candidates`, proving the source
   Theorem 11.5 geometric rate and weak `2 * D * R_beta^2 / N` rate directly
-  from the block model plus selected source-candidate assumptions.
+  from the block model plus selected source-candidate assumptions.  The newest
+  Sinkhorn selector packet in `AlternatingBregman.lean` adds
+  `chewi117_exists_sinkhorn_marginal_errors_le_of_abp`, combining the compiled
+  Lemma 11.2 finite-minimum wrapper with supplied Pinsker lower bounds to
+  produce the selected marginal-error iterate for Theorem 11.7.
   Exact 10.13 `sInf` or arbitrary norm/dual-norm packaging is deferred until
   source-report exactness or a later theorem demands it.
 - Current manual frontier after focused Lean verification rebased over pushed
@@ -393,12 +397,13 @@ High-value local files:
 ## Current Active Target
 
 Current active target after the verified Chapter 11.5 RAM block-model and
-Exercise 9.3 interpolation assembly packet rebased over remote main `e03fdad`: treat
+Exercise 9.3 interpolation assembly packet rebased over remote main `87536c1`: treat
 Chapters 3-8, Chapter 9/10 mirror-descent substrate, Chapter 11.2/11.3 ABP
 telescope, and Chapter 11.4 AM as stable infrastructure.  The live manual
 `/goal` frontier is
-`StatInference/Optimization/RandomizedAlternatingMinimization.lean`.  Next
-theorem-sized packet: move directly to Sinkhorn Theorems 11.7/11.8 from
+`StatInference/Optimization/AlternatingBregman.lean`.  Next theorem-sized
+packet: continue Sinkhorn Theorem 11.7 by instantiating the supplied ABP/Pinsker
+selector with finite marginal/KL identities, then move to Theorem 11.8 from
 ABP/mirror-descent supplied finite
 KL/Pinsker/marginal interfaces, then open Chapter 12 SMPGD.  This paragraph
 supersedes older Chapter 6, Chapter 7, Chapter 8, and Chapter 11.4 next-target

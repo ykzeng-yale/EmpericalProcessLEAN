@@ -219,5 +219,48 @@ theorem chewi113_exists_small_abp_cycle_gap
       (B := bregmanDivergence phi gradPhi xStar (y 0) / (N : ℝ))
       hN hsum_avg
 
+/--
+Chewi Theorem 11.7, supplied-interface Sinkhorn selector.  Lemma 11.2 gives a
+cycle with small total KL movement; Pinsker lower bounds for the two Sinkhorn
+half-steps then give one row-normalized and one column-normalized iterate with
+small marginal error.
+-/
+theorem chewi117_exists_sinkhorn_marginal_errors_le_of_abp
+    {C₁ C₂ : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {x y : ℕ -> E} {xStar : E} {N : ℕ}
+    {rowErr colErr : ℕ -> ℝ} {eps : ℝ}
+    (htraj : IsAlternatingBregmanProjectionTrajectory C₁ C₂ phi gradPhi x y)
+    (hxStar₁ : xStar ∈ C₁) (hxStar₂ : xStar ∈ C₂)
+    (hterminal_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (y N))
+    (hN : N ≠ 0) (heps_nonneg : 0 ≤ eps)
+    (hbudget :
+      bregmanDivergence phi gradPhi xStar (y 0) / (N : ℝ) ≤
+        eps ^ (2 : ℕ) / 2)
+    (hrow_nonneg : ∀ n, 0 ≤ rowErr n)
+    (hcol_nonneg : ∀ n, 0 ≤ colErr n)
+    (hrow_pinsker : ∀ n,
+      rowErr n ^ (2 : ℕ) / 2 ≤
+        bregmanDivergence phi gradPhi (x (n + 1)) (y n))
+    (hcol_pinsker : ∀ n,
+      colErr n ^ (2 : ℕ) / 2 ≤
+        bregmanDivergence phi gradPhi (y (n + 1)) (x (n + 1))) :
+    ∃ n, n < N ∧ rowErr n ≤ eps ∧ colErr n ≤ eps := by
+  obtain ⟨n, hn, hcycle⟩ :=
+    chewi113_exists_small_abp_cycle_gap
+      (C₁ := C₁) (C₂ := C₂) (phi := phi) (gradPhi := gradPhi)
+      (x := x) (y := y) (xStar := xStar) (N := N)
+      htraj hxStar₁ hxStar₂ hterminal_nonneg hN
+  have hx_nonneg := (htraj.x_step n).divergence_nonneg
+  have hy_nonneg := (htraj.y_step n).divergence_nonneg
+  have hrow_sq_le : rowErr n ^ (2 : ℕ) ≤ eps ^ (2 : ℕ) := by
+    nlinarith [hrow_pinsker n, hy_nonneg, hcycle, hbudget]
+  have hcol_sq_le : colErr n ^ (2 : ℕ) ≤ eps ^ (2 : ℕ) := by
+    nlinarith [hcol_pinsker n, hx_nonneg, hcycle, hbudget]
+  have hrow_le : rowErr n ≤ eps :=
+    (sq_le_sq₀ (hrow_nonneg n) heps_nonneg).mp hrow_sq_le
+  have hcol_le : colErr n ≤ eps :=
+    (sq_le_sq₀ (hcol_nonneg n) heps_nonneg).mp hcol_sq_le
+  exact ⟨n, hn, hrow_le, hcol_le⟩
+
 end Optimization
 end StatInference

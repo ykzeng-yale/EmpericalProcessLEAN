@@ -89,7 +89,7 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after rebasing over remote main
-`e03fdad` (`Merge remote-tracking branch 'origin/main'`) on 2026-05-06 and
+`87536c1` (`Merge remote-tracking branch 'origin/main'`) on 2026-05-06 and
 focused Lean verification of the Chapter 11.5 RAM block-model plus selected
 Exercise 9.3 Hopf-Lax interpolation assembly layer:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
@@ -112,11 +112,11 @@ Hopf-Lax-to-rate bridges, finite uniform block conditional-upper algebra,
 Exercise 9.3 scalar interpolation/radius constructors, block-model plus
 selected-interpolant certificate assemblers, source-candidate interpolation
 bridges, direct source-candidate certificates, and displayed strong/weak rate
-wrappers are now the reusable substrate.  The next proof work should move to
-Sinkhorn
-Theorems 11.7/11.8 from the compiled ABP/mirror-descent interfaces and Chapter
-12 SMPGD theorem packets, so the next route moves immediately after RAM
-without routing back to old setup.
+wrappers are now the reusable substrate.  The next proof work should continue
+Sinkhorn Theorem 11.7 by instantiating the supplied ABP/Pinsker selector with
+finite marginal/KL identities, then move to Theorem 11.8 from the compiled
+mirror-descent interfaces and Chapter 12 SMPGD theorem packets, so the next
+route moves immediately after RAM without routing back to old setup.
 
 Latest verified Optimization proof frontier:
 `StatInference/Optimization/RandomizedAlternatingMinimization.lean` compiles
@@ -174,7 +174,11 @@ and weak RAM Hopf-Lax certificates without an intermediate supplied
 `chewi115_strong_rate_of_block_model_source_candidates` and
 `chewi115_zero_rate_of_block_model_source_candidates`, proving the source
 Theorem 11.5 geometric rate and weak `2 * D * R_beta^2 / N` rate directly from
-the block model plus selected source-candidate assumptions.
+the block model plus selected source-candidate assumptions.  The newest
+Sinkhorn selector packet in `AlternatingBregman.lean` adds
+`chewi117_exists_sinkhorn_marginal_errors_le_of_abp`, combining the compiled
+Lemma 11.2 finite-minimum wrapper with supplied Pinsker lower bounds to produce
+the selected marginal-error iterate for Theorem 11.7.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
