@@ -969,6 +969,38 @@ theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refi
   exact ⟨Set.Ioo (l x) (r x) \ {x}, hpunctured, hsmall⟩
 
 /--
+A strict finite endpoint grid whose open adjacent cells refine finite open
+neighborhoods and avoid the selected center produces a cutpoint chain.
+
+This is the most convenient consumer for the future finite ordering/splitting
+theorem over punctured compact covers: once each open cell avoids its selected
+atom center, ordinary open-cover refinement implies punctured-cover refinement.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_avoids_center_refinement
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers,
+        Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) ∧
+        x ∉ Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ∧
+        μ.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) := by
+  refine SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refinement
+    (centers := centers) (l := l) (r := r) endpoint hstrict ?_
+  intro cell
+  rcases hrefine cell with ⟨x, hx, hopen, havoid, hsmall⟩
+  refine ⟨x, hx, ?_, hsmall⟩
+  intro z hz
+  refine ⟨hopen hz, ?_⟩
+  intro hzsingleton
+  have hzx : z = x := Set.mem_singleton_iff.mp hzsingleton
+  exact havoid (by simpa [hzx] using hz)
+
+/--
 A strict finite prefix of a monotone subdivision, together with the closed-cover
 assignment inherited from the compact-cover refinement, produces a cutpoint
 chain.

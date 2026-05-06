@@ -91,6 +91,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement`
+- `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_avoids_center_refinement`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`
@@ -143,6 +144,7 @@ compile, via
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement`,
+`durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_avoids_center_refinement`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`,
@@ -195,8 +197,11 @@ For arbitrary laws, the atom-aware local primitives
 finite punctured neighborhoods with small mass, and
 `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refinement`
 is the compiled consumer once strict endpoints are ordered so each open cell
-avoids its selected atom center.  The fully arbitrary distribution route still
-needs that finite ordering/splitting theorem.
+avoids its selected atom center.  The convenience bridge
+`SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_avoids_center_refinement`
+now reduces that consumer to ordinary open-cover refinement plus the center
+avoidance fact.  The fully arbitrary distribution route still needs the finite
+ordering/splitting theorem that constructs such a grid.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
 Parallel target: Chapter 2.1 exact iid/product notation refinements only if

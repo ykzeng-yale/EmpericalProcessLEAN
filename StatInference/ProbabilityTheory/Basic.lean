@@ -740,6 +740,29 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_
     endpoint hstrict hrefine
 
 /--
+Durrett 2019, Theorem 2.4.9 atom-aware open-cover/avoidance package.
+
+For a strict endpoint grid, it is enough to prove each open adjacent cell lies
+inside one selected finite cover interval and avoids that interval's selected
+center.  The punctured-cover handoff then gives the cutpoint chain.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_avoids_center_refinement
+    {P : Measure ℝ} [IsProbabilityMeasure P] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers,
+        Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) ∧
+        x ∉ Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_avoids_center_refinement
+    endpoint hstrict hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9 strict-subdivision-prefix package.
 
 After repeated values have been erased from the monotone subdivision, a strict

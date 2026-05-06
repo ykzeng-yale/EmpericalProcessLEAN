@@ -180,6 +180,10 @@ Compiled first source wrappers:
   `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refinement`
   and
   `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement`.
+- Durrett Theorem 2.4.9 atom-aware open-cover/avoidance handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_avoids_center_refinement`
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_avoids_center_refinement`.
 - Durrett Theorem 2.4.9 strict-subdivision-prefix handoff:
   `SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`
   and
@@ -260,10 +264,12 @@ cutpoint-chain package, a Durrett-named cutpoint-chain-to-GC handoff, and the
 non-atomic half-line Glivenko-Cantelli package also compile.  For arbitrary
 laws, punctured local neighborhoods and finite compact punctured covers now
 compile, together with the endpoint-grid consumer for open cells that avoid
-the selected atom center.  The remaining arbitrary-distribution primitive is
-the finite ordering/splitting construction that turns the punctured compact
-cover into strict endpoint grids for intervals whose total CDF increment is not
-already below the requested radius.
+the selected atom center.  The open-cover/avoidance bridge now reduces the
+punctured-cover consumer to ordinary open-cover refinement plus the fact that
+the selected center is not inside the open cell.  The remaining
+arbitrary-distribution primitive is the finite ordering/splitting construction
+that turns the punctured compact cover into strict endpoint grids for intervals
+whose total CDF increment is not already below the requested radius.
 
 ### Lane D: CLT and characteristic functions
 
