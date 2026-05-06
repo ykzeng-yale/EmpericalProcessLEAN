@@ -6763,3 +6763,16 @@ law consequence through `vdVWEllInftyProcessLaw_map_finiteRestrict`.  This is
 still the forward direction only: the arbitrary-index VdV&W 1.4.8 converse and
 the separability/asymptotic-measurability/nonmeasurable-cover primitives
 remain open.
+
+2026-05-06 process Prokhorov/tightness consequence: local search found the
+measure-level
+`VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_atTop`, but no
+raw-process theorem consuming `VdVWEllInftyProcessWeakConvergence`.
+`FiniteDimensional.lean` now proves
+`VdVWEllInftyProcessWeakConvergence.asymptoticallyTight_atTop` and
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_asymptoticallyTight_atTop`.
+Thus sequential weak convergence of bounded `ell_infty(T)` process laws gives
+process-law asymptotic tightness and finite-dimensional law tightness.  This
+closes another forward Chapter 1 process consequence while leaving the
+arbitrary-index converse and separability/asymptotic-measurability blockers
+open.

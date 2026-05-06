@@ -95,6 +95,11 @@ convergence of bounded `ell_infty(T)` process laws and project it to weak
 convergence of each finite-dimensional raw coordinate law.  This keeps the
 direction honest: it is forward FDD support, not the arbitrary-index VdV&W
 1.4.8 converse.
+The process Prokhorov/tightness consequence is also available:
+`VdVWEllInftyProcessWeakConvergence.asymptoticallyTight_atTop` and
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_asymptoticallyTight_atTop`
+turn sequential weak convergence of bounded process laws into process-law
+asymptotic tightness and finite-dimensional law tightness.
 
 The scalar-quantizer structural-cover lift is also compiled:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`

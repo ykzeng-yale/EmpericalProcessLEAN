@@ -1242,4 +1242,70 @@ theorem VdVWEllInftyProcessAsymptoticallyTight.finiteDimensionalLaw
     (vdVWEllInftyProcessLaw_map_finiteRestrict
       (T := T) (P := μ i) (X := X i) (hbounded := hbounded i) (hX := hX i) I).symm)
 
+/--
+Sequential weak convergence of bounded `ell_infty(T)` process laws implies
+process-level asymptotic tightness.
+
+This is the raw-process form of the measure-level Prokhorov/tightness
+consequence already available in `WeakConvergence.lean`.
+-/
+theorem VdVWEllInftyProcessWeakConvergence.asymptoticallyTight_atTop
+    {Ω : ℕ -> Type*} {Ωlim : Type*}
+    {mΩ : (n : ℕ) -> MeasurableSpace (Ω n)}
+    (μ : (n : ℕ) -> @Measure (Ω n) (mΩ n)) [∀ n, IsProbabilityMeasure (μ n)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)] [SecondCountableTopology (VdVWEllInfty T)]
+    [CompleteSpace (VdVWEllInfty T)]
+    (X : (n : ℕ) -> Ω n -> T -> ℝ)
+    (Z : Ωlim -> T -> ℝ)
+    (hbounded : ∀ n, VdVWEllInfty.IsBoundedSamplePath (X n))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hX : ∀ n,
+      AEMeasurable (VdVWEllInfty.processMap (X n) (hbounded n)) (μ n))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ Filter.atTop) :
+    VdVWEllInftyProcessAsymptoticallyTight μ X hbounded hX Filter.atTop := by
+  exact
+    VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_atTop
+      (S := VdVWEllInfty T)
+      (μs := fun n => vdVWEllInftyProcessLaw (T := T) (μ n) (X n) (hbounded n) (hX n))
+      (μ := vdVWEllInftyProcessLaw (T := T) μlim Z hZbounded hZ)
+      (show VdVWWeakConvergenceProbabilityMeasures
+        (fun n => vdVWEllInftyProcessLaw (T := T) (μ n) (X n) (hbounded n) (hX n))
+        Filter.atTop
+        (vdVWEllInftyProcessLaw (T := T) μlim Z hZbounded hZ) from h)
+
+/--
+Sequential weak convergence of bounded process laws implies asymptotic
+tightness of every finite-dimensional raw coordinate law.
+-/
+theorem VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_asymptoticallyTight_atTop
+    {Ω : ℕ -> Type*} {Ωlim : Type*}
+    {mΩ : (n : ℕ) -> MeasurableSpace (Ω n)}
+    (μ : (n : ℕ) -> @Measure (Ω n) (mΩ n)) [∀ n, IsProbabilityMeasure (μ n)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)] [SecondCountableTopology (VdVWEllInfty T)]
+    [CompleteSpace (VdVWEllInfty T)]
+    (X : (n : ℕ) -> Ω n -> T -> ℝ)
+    (Z : Ωlim -> T -> ℝ)
+    (hbounded : ∀ n, VdVWEllInfty.IsBoundedSamplePath (X n))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hX : ∀ n,
+      AEMeasurable (VdVWEllInfty.processMap (X n) (hbounded n)) (μ n))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ Filter.atTop)
+    (I : Finset T) [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)]
+    [T2Space (I -> ℝ)] :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => vdVWFDDProcessLaw (μ n) I (X n)
+        (aemeasurable_fdd_of_aemeasurable_ellInftyProcessMap (T := T) I (hX n)))
+      Filter.atTop :=
+  (VdVWEllInftyProcessWeakConvergence.asymptoticallyTight_atTop
+    μ μlim X Z hbounded hZbounded hX hZ h).finiteDimensionalLaw
+      μ X hbounded hX I
+
 end StatInference

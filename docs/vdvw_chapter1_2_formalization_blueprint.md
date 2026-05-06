@@ -186,6 +186,12 @@ The weak-convergence analogue is now compiled as
 bounded `ell_infty(T)` process laws implies weak convergence of every
 finite-dimensional raw coordinate law.  This is still forward FDD support only
 and should not be reported as the full VdV&W 1.4.8 converse.
+The same raw-process interface now consumes the measure-level Prokhorov
+tightness consequence through
+`VdVWEllInftyProcessWeakConvergence.asymptoticallyTight_atTop` and
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw_asymptoticallyTight_atTop`,
+giving process-law and finite-dimensional-law asymptotic tightness from
+sequential weak convergence of bounded process laws.
 
 2026-05-06 scalar-quantizer cover update: `Theorem243.lean` now lifts the
 deterministic coordinate scalar-quantizer decoder-error covering bound from
