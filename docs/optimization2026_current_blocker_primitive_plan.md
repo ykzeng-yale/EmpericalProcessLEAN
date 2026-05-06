@@ -113,10 +113,11 @@ Exercise 9.3 scalar interpolation/radius constructors, block-model plus
 selected-interpolant certificate assemblers, source-candidate interpolation
 bridges, direct source-candidate certificates, and displayed strong/weak rate
 wrappers are now the reusable substrate.  The next proof work should continue
-Sinkhorn Theorem 11.7 by instantiating the supplied ABP/Pinsker selector with
-finite marginal/KL identities, then move to Theorem 11.8 from the compiled
-mirror-descent interfaces and Chapter 12 SMPGD theorem packets, so the next
-route moves immediately after RAM without routing back to old setup.
+Sinkhorn Theorem 11.7 by instantiating the supplied ABP/Pinsker selectors with
+the finite KL identities for row/column normalization, then move to Theorem
+11.8 from the compiled mirror-descent interfaces and Chapter 12 SMPGD theorem
+packets, so the next route moves immediately after RAM without routing back to
+old setup.
 
 Latest verified Optimization proof frontier:
 `StatInference/Optimization/RandomizedAlternatingMinimization.lean` compiles
@@ -178,7 +179,12 @@ the block model plus selected source-candidate assumptions.  The newest
 Sinkhorn selector packet in `AlternatingBregman.lean` adds
 `chewi117_exists_sinkhorn_marginal_errors_le_of_abp`, combining the compiled
 Lemma 11.2 finite-minimum wrapper with supplied Pinsker lower bounds to produce
-the selected marginal-error iterate for Theorem 11.7.
+the selected marginal-error iterate for Theorem 11.7.  The newest source-shaped
+selectors add `chewi117_exists_sinkhorn_full_iterate_error_sum_le_of_abp` and
+`chewi117_exists_sinkhorn_half_iterate_error_sum_le_of_abp`, choosing
+respectively the column-correct full iterate `gamma^n` or row-correct half
+iterate `gamma^(n+1/2)` and proving the displayed total marginal-error bound
+from one finite marginal identity plus one Pinsker/KL lower bound.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,

@@ -262,5 +262,81 @@ theorem chewi117_exists_sinkhorn_marginal_errors_le_of_abp
     (sq_le_sq₀ (hcol_nonneg n) heps_nonneg).mp hcol_sq_le
   exact ⟨n, hn, hrow_le, hcol_le⟩
 
+/--
+Chewi Theorem 11.7 selector in the source orientation that chooses the
+column-correct full Sinkhorn iterate `γⁿ`.  The supplied `hcol_zero` is the
+finite marginal identity saying this iterate already has the correct
+`Y`-marginal; the row Pinsker lower bound controls the remaining marginal
+error.
+-/
+theorem chewi117_exists_sinkhorn_full_iterate_error_sum_le_of_abp
+    {C₁ C₂ : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {x y : ℕ -> E} {xStar : E} {N : ℕ}
+    {rowErr colErr : ℕ -> ℝ} {eps : ℝ}
+    (htraj : IsAlternatingBregmanProjectionTrajectory C₁ C₂ phi gradPhi x y)
+    (hxStar₁ : xStar ∈ C₁) (hxStar₂ : xStar ∈ C₂)
+    (hterminal_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (y N))
+    (hN : N ≠ 0) (heps_nonneg : 0 ≤ eps)
+    (hbudget :
+      bregmanDivergence phi gradPhi xStar (y 0) / (N : ℝ) ≤
+        eps ^ (2 : ℕ) / 2)
+    (hrow_nonneg : ∀ n, 0 ≤ rowErr n)
+    (hcol_zero : ∀ n, colErr n = 0)
+    (hrow_pinsker : ∀ n,
+      rowErr n ^ (2 : ℕ) / 2 ≤
+        bregmanDivergence phi gradPhi (x (n + 1)) (y n)) :
+    ∃ n, n < N ∧ rowErr n + colErr n ≤ eps := by
+  obtain ⟨n, hn, hcycle⟩ :=
+    chewi113_exists_small_abp_cycle_gap
+      (C₁ := C₁) (C₂ := C₂) (phi := phi) (gradPhi := gradPhi)
+      (x := x) (y := y) (xStar := xStar) (N := N)
+      htraj hxStar₁ hxStar₂ hterminal_nonneg hN
+  have hy_nonneg := (htraj.y_step n).divergence_nonneg
+  have hrow_sq_le : rowErr n ^ (2 : ℕ) ≤ eps ^ (2 : ℕ) := by
+    nlinarith [hrow_pinsker n, hy_nonneg, hcycle, hbudget]
+  have hrow_le : rowErr n ≤ eps :=
+    (sq_le_sq₀ (hrow_nonneg n) heps_nonneg).mp hrow_sq_le
+  refine ⟨n, hn, ?_⟩
+  rw [hcol_zero n]
+  nlinarith
+
+/--
+Chewi Theorem 11.7 selector in the source orientation that chooses the
+row-correct half Sinkhorn iterate `γⁿ⁺¹ᐟ²`.  The supplied `hrow_zero` is the
+finite marginal identity saying this half-step already has the correct
+`X`-marginal; the column Pinsker lower bound controls the remaining marginal
+error.
+-/
+theorem chewi117_exists_sinkhorn_half_iterate_error_sum_le_of_abp
+    {C₁ C₂ : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {x y : ℕ -> E} {xStar : E} {N : ℕ}
+    {rowErr colErr : ℕ -> ℝ} {eps : ℝ}
+    (htraj : IsAlternatingBregmanProjectionTrajectory C₁ C₂ phi gradPhi x y)
+    (hxStar₁ : xStar ∈ C₁) (hxStar₂ : xStar ∈ C₂)
+    (hterminal_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (y N))
+    (hN : N ≠ 0) (heps_nonneg : 0 ≤ eps)
+    (hbudget :
+      bregmanDivergence phi gradPhi xStar (y 0) / (N : ℝ) ≤
+        eps ^ (2 : ℕ) / 2)
+    (hrow_zero : ∀ n, rowErr n = 0)
+    (hcol_nonneg : ∀ n, 0 ≤ colErr n)
+    (hcol_pinsker : ∀ n,
+      colErr n ^ (2 : ℕ) / 2 ≤
+        bregmanDivergence phi gradPhi (y (n + 1)) (x (n + 1))) :
+    ∃ n, n < N ∧ rowErr n + colErr n ≤ eps := by
+  obtain ⟨n, hn, hcycle⟩ :=
+    chewi113_exists_small_abp_cycle_gap
+      (C₁ := C₁) (C₂ := C₂) (phi := phi) (gradPhi := gradPhi)
+      (x := x) (y := y) (xStar := xStar) (N := N)
+      htraj hxStar₁ hxStar₂ hterminal_nonneg hN
+  have hx_nonneg := (htraj.x_step n).divergence_nonneg
+  have hcol_sq_le : colErr n ^ (2 : ℕ) ≤ eps ^ (2 : ℕ) := by
+    nlinarith [hcol_pinsker n, hx_nonneg, hcycle, hbudget]
+  have hcol_le : colErr n ≤ eps :=
+    (sq_le_sq₀ (hcol_nonneg n) heps_nonneg).mp hcol_sq_le
+  refine ⟨n, hn, ?_⟩
+  rw [hrow_zero n]
+  nlinarith
+
 end Optimization
 end StatInference

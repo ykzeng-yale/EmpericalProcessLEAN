@@ -187,7 +187,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   Sinkhorn selector packet in `AlternatingBregman.lean` adds
   `chewi117_exists_sinkhorn_marginal_errors_le_of_abp`, combining the compiled
   Lemma 11.2 finite-minimum wrapper with supplied Pinsker lower bounds to
-  produce the selected marginal-error iterate for Theorem 11.7.
+  produce the selected marginal-error iterate for Theorem 11.7.  The newest
+  source-shaped selectors add
+  `chewi117_exists_sinkhorn_full_iterate_error_sum_le_of_abp` and
+  `chewi117_exists_sinkhorn_half_iterate_error_sum_le_of_abp`, choosing
+  respectively the column-correct full iterate `gamma^n` or row-correct half
+  iterate `gamma^(n+1/2)` and proving the displayed total marginal-error bound
+  from one finite marginal identity plus one Pinsker/KL lower bound.
   Exact 10.13 `sInf` or arbitrary norm/dual-norm packaging is deferred until
   source-report exactness or a later theorem demands it.
 - Current manual frontier after focused Lean verification rebased over pushed
@@ -402,8 +408,9 @@ Chapters 3-8, Chapter 9/10 mirror-descent substrate, Chapter 11.2/11.3 ABP
 telescope, and Chapter 11.4 AM as stable infrastructure.  The live manual
 `/goal` frontier is
 `StatInference/Optimization/AlternatingBregman.lean`.  Next theorem-sized
-packet: continue Sinkhorn Theorem 11.7 by instantiating the supplied ABP/Pinsker
-selector with finite marginal/KL identities, then move to Theorem 11.8 from
+packet: continue Sinkhorn Theorem 11.7 by instantiating the supplied
+ABP/Pinsker selectors with finite row/column normalization KL identities, then
+move to Theorem 11.8 from
 ABP/mirror-descent supplied finite
 KL/Pinsker/marginal interfaces, then open Chapter 12 SMPGD.  This paragraph
 supersedes older Chapter 6, Chapter 7, Chapter 8, and Chapter 11.4 next-target

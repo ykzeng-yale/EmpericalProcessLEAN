@@ -247,10 +247,16 @@ the block model plus selected source-candidate assumptions.  The newest
 Sinkhorn selector packet in `AlternatingBregman.lean` adds
 `chewi117_exists_sinkhorn_marginal_errors_le_of_abp`, combining the compiled
 Lemma 11.2 finite-minimum wrapper with supplied Pinsker lower bounds to produce
-the selected marginal-error iterate for Theorem 11.7.  The next main lane
-should instantiate the selector with finite marginal/KL identities and then
-move to Sinkhorn Theorem 11.8, not redo RAM scalar recurrence or block
-averaging.
+the selected marginal-error iterate for Theorem 11.7.  The newest
+source-shaped selectors add
+`chewi117_exists_sinkhorn_full_iterate_error_sum_le_of_abp` and
+`chewi117_exists_sinkhorn_half_iterate_error_sum_le_of_abp`, choosing
+respectively the column-correct full iterate `gamma^n` or row-correct half
+iterate `gamma^(n+1/2)` and proving the displayed total marginal-error bound
+from one finite marginal identity plus one Pinsker/KL lower bound.  The next
+main lane should instantiate the selector with finite row/column normalization
+KL identities and then move to Sinkhorn Theorem 11.8, not redo RAM scalar
+recurrence or block averaging.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
