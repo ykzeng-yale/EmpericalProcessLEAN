@@ -2235,3 +2235,10 @@ which packages the realized threshold-code image bound from
 `VdVWUniformSubgraphVCBound` through the product of fixed-threshold binary
 trace families and Sauer-Shelah.  This is a structural cardinality input for
 VC/threshold-grid Theorem 2.4.3 routes, not another convergence endpoint.
+
+2026-05-06 coordinate-code random-cover follow-up:
+`Theorem243.lean` now lifts coordinatewise finite pointwise approximation codes
+into the random empirical covering-number interface through
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_pointwise_approx_code_product_cardinality_bound_samplePath`
+and its all-positive-radius version.  This lets finite coordinate code-set
+products feed the selected fixed-radius Theorem 2.4.3 route directly.

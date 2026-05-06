@@ -5985,3 +5985,16 @@ trace families <= Sauer polynomial^#thresholds` under
 finite-code/threshold-grid Theorem 2.4.3 routes; next work should consume it in
 concrete selected-cover or grid-cardinality instantiations instead of
 rebuilding the product-code estimate.
+
+2026-05-06 coordinate-code random-cover follow-up: local search found the
+deterministic coordinate pointwise-code covering primitive
+`empiricalL1CoveringNumber_le_of_coordinate_pointwise_approx_code_card_le`,
+but no random empirical-cover lift into the Theorem 2.4.3 selected-cardinality
+interface.  `Theorem243.lean` now proves
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_pointwise_approx_code_product_cardinality_bound_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_coordinate_pointwise_approx_code_product_cardinality_bound_samplePath`.
+These turn coordinate finite code sets plus product-cardinality domination into
+the random covering-number domination used by the pointwise-code endpoint.
+This is a structural input closure; next work can specialize it to concrete
+threshold grids, quantizers, or VC code-set cardinalities.

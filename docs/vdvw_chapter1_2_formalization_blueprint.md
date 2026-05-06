@@ -142,6 +142,13 @@ full-subgraph VC input
 Sauer-polynomial product under `VdVWUniformSubgraphVCBound`.  Future VC/grid
 instantiations should consume this lemma rather than reproving the
 threshold-code/product-cardinality chain.
+The coordinate-code structural route also now lifts into the random
+empirical-cover interface through
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_pointwise_approx_code_product_cardinality_bound_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_coordinate_pointwise_approx_code_product_cardinality_bound_samplePath`,
+so finite coordinate code-set products can feed the pointwise-code Theorem
+2.4.3 endpoint directly.
 The VdV&W 1.4.1 product Borel-space equality is also closed as
 `vdVW141_prod_borel_eq_product_borel`.  The next small but theorem-facing
 Chapter 1 foundation closure is now closed: filter-refinement stability for
