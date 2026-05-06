@@ -212,7 +212,10 @@ Initial modules:
   `vaart1998_covarianceTable`,
   `vaart1998_covarianceBilinDual_inverseDerivative_table_apply_of_memLp`, and
   the finite-coordinate evaluation table
-  `vaart1998_finiteCoordinateCovarianceTable`.
+  `vaart1998_finiteCoordinateCovarianceTable`.  Its current consumer endpoint,
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_real`,
+  returns those finite table entries directly from the supplied multivariate
+  empirical-moment CLT certificate.
   It still deliberately leaves a concrete finite-dimensional Cramér-Wold
   law-convergence proof and any downstream table consumers as explicit next
   layers.

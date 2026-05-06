@@ -234,6 +234,8 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinateEvalCLM`,
   `vaart1998_finiteCoordinateEvalCLM_apply`, and
   `vaart1998_finiteCoordinateCovarianceTable`.
+- CLT-certificate covariance-table endpoint:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_real`.
 
 Latest remote base after rebase before this packet: `dc35b8a`.  Latest pushed Vaart packet
 before this packet: `58e6cf9` (`Add Vaart projected law Cramer Wold bridge`).
@@ -261,8 +263,8 @@ projected probability-law Cramér-Wold handoff:
 
 1. prove the pure law-level finite-dimensional Cramér-Wold implication feeding
    `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`;
-2. add direct consumers of the covariance table only if they feed an existing
-   Theorem 4.1 wrapper without opening a large matrix algebra detour.
+2. add further covariance-table consumers only if they remove a real caller-side
+   hypothesis from an existing Theorem 4.1 wrapper.
 
 If this blocks, record the exact missing theorem shape for the supplied
 empirical-moment CLT, covariance-display, or local-inverse measurability field

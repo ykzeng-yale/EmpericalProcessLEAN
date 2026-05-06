@@ -359,25 +359,29 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_finiteCoordinateEvalCLM_apply`.
 115. Coordinate-indexed covariance table for finite real vector laws:
    `vaart1998_finiteCoordinateCovarianceTable`.
+116. Theorem 4.1 finite-coordinate CLT-certificate endpoint returning a finite
+   covariance table for chosen parameter coordinates:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_real`.
 
 Latest remote base after rebase before this packet: `dc35b8a`.
 Latest pushed Vaart packet before this packet: `58e6cf9`
 (`Add Vaart projected law Cramer Wold bridge`).
 
-The current theorem-sized packet adds the finite covariance-table display
-layer for Vaart Theorem 4.1.  It turns the existing coordinate-free
+The current theorem-sized packet adds the finite covariance-table display and
+consumer layer for Vaart Theorem 4.1.  It turns the existing coordinate-free
 covarianceBilinDual pullback into finite entrywise covariance tables for any
-chosen finite family of continuous linear parameter coordinates, and it names
-the coordinate evaluation functionals and coordinate-indexed covariance table
-for finite real moment vectors.
+chosen finite family of continuous linear parameter coordinates, names the
+coordinate evaluation functionals and coordinate-indexed covariance table for
+finite real moment vectors, and promotes the CLT-certificate endpoint so it
+returns the finite table entries directly.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
 1. prove the pure law-level finite-dimensional Cramér-Wold implication feeding
    `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`;
-2. add direct consumers of the covariance table only if they feed an existing
-   Theorem 4.1 wrapper without opening a large matrix algebra detour.
+2. add further covariance-table consumers only if they remove a real caller-side
+   hypothesis from an existing Theorem 4.1 wrapper.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
