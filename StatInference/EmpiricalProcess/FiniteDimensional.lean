@@ -1027,4 +1027,134 @@ theorem vdVW148_finiteProcess_tendstoInDistribution_of_finiteProduct_tendstoInDi
       (hZbounded := VdVWEllInfty.isBoundedSamplePath_of_finite Z)
       (l := l) hX)
 
+/--
+Law of a bounded raw process viewed as an `ell_infty(T)`-valued random
+element.
+
+This is a process-level Chapter 1 interface: it packages the ordinary law of
+`VdVWEllInfty.processMap` as a probability measure, but it does not assert
+full VdV&W separability, asymptotic measurability, or the FDD converse.
+-/
+noncomputable def vdVWEllInftyProcessLaw
+    [MeasurableSpace Ω] [MeasurableSpace (VdVWEllInfty T)]
+    (P : Measure Ω) [IsProbabilityMeasure P]
+    (X : Ω -> T -> ℝ) (hbounded : VdVWEllInfty.IsBoundedSamplePath X)
+    (hX : AEMeasurable (VdVWEllInfty.processMap X hbounded) P) :
+    ProbabilityMeasure (VdVWEllInfty T) :=
+  ⟨P.map (VdVWEllInfty.processMap X hbounded), Measure.isProbabilityMeasure_map hX⟩
+
+/-- Finite-dimensional law of a raw real-valued process. -/
+noncomputable def vdVWFDDProcessLaw
+    [MeasurableSpace Ω] (P : Measure Ω) [IsProbabilityMeasure P]
+    (I : Finset T) [MeasurableSpace (I -> ℝ)]
+    (X : Ω -> T -> ℝ)
+    (hX : AEMeasurable (fun ω => fun t : I => X ω t.1) P) :
+    ProbabilityMeasure (I -> ℝ) :=
+  ⟨P.map (fun ω => fun t : I => X ω t.1), Measure.isProbabilityMeasure_map hX⟩
+
+/--
+Finite-dimensional a.e.-measurability follows from a.e.-measurability of the
+associated bounded `ell_infty(T)` process.
+-/
+theorem aemeasurable_fdd_of_aemeasurable_ellInftyProcessMap
+    [MeasurableSpace Ω]
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    {P : Measure Ω} (I : Finset T) [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)]
+    {X : Ω -> T -> ℝ} {hbounded : VdVWEllInfty.IsBoundedSamplePath X}
+    (hX : AEMeasurable (VdVWEllInfty.processMap X hbounded) P) :
+    AEMeasurable (fun ω => fun t : I => X ω t.1) P := by
+  have hcomp :
+      AEMeasurable
+        (fun ω => VdVWEllInfty.finiteRestrict I
+          (VdVWEllInfty.processMap X hbounded ω)) P :=
+    (VdVWEllInfty.measurable_finiteRestrict (T := T) I).comp_aemeasurable hX
+  simpa [Function.comp_def, VdVWEllInfty.finiteRestrict, VdVWEllInfty.processMap]
+    using hcomp
+
+/--
+The finite-dimensional restriction of an `ell_infty(T)` process law is the
+ordinary finite-dimensional law of the raw coordinate process.
+-/
+theorem vdVWEllInftyProcessLaw_map_finiteRestrict
+    [MeasurableSpace Ω]
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    (P : Measure Ω) [IsProbabilityMeasure P]
+    (X : Ω -> T -> ℝ) (hbounded : VdVWEllInfty.IsBoundedSamplePath X)
+    (hX : AEMeasurable (VdVWEllInfty.processMap X hbounded) P)
+    (I : Finset T) [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)] :
+    (vdVWEllInftyProcessLaw (T := T) P X hbounded hX).map
+        ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable) =
+      vdVWFDDProcessLaw P I X
+        (aemeasurable_fdd_of_aemeasurable_ellInftyProcessMap (T := T) I hX) := by
+  ext s hs
+  change
+    Measure.map (VdVWEllInfty.finiteRestrict (T := T) I)
+        (Measure.map (VdVWEllInfty.processMap X hbounded) P) s =
+      Measure.map (fun ω => fun t : I => X ω t.1) P s
+  rw [AEMeasurable.map_map_of_aemeasurable
+    ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable) hX]
+  have hfg :
+      (VdVWEllInfty.finiteRestrict (T := T) I ∘
+          VdVWEllInfty.processMap X hbounded) =ᵐ[P]
+        (fun ω => fun t : I => X ω t.1) :=
+    Filter.Eventually.of_forall fun ω => by
+      funext t
+      rfl
+  exact congrArg (fun m : Measure (I -> ℝ) => m s) (Measure.map_congr hfg)
+
+/--
+Process-level asymptotic tightness for bounded raw processes, expressed as
+ordinary asymptotic tightness of their `ell_infty(T)` laws.
+
+This is the honest Chapter 1 process interface currently available locally; it
+does not assert the full arbitrary-index VdV&W tightness/FDD converse.
+-/
+def VdVWEllInftyProcessAsymptoticallyTight
+    {ι : Type*} {Ω : ι -> Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace (VdVWEllInfty T)]
+    (X : (i : ι) -> Ω i -> T -> ℝ)
+    (hbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hbounded i)) (μ i))
+    (l : Filter ι) : Prop :=
+  VdVWProbabilityMeasuresAsymptoticallyTight
+    (fun i => vdVWEllInftyProcessLaw (T := T) (μ i) (X i) (hbounded i) (hX i)) l
+
+/--
+Process-level tightness implies tightness of every finite-dimensional law.
+
+This packages the existing measure-level continuous-image tightness theorem
+with the raw-process finite-dimensional law identity above.
+-/
+theorem VdVWEllInftyProcessAsymptoticallyTight.finiteDimensionalLaw
+    {ι : Type*} {Ω : ι -> Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    (X : (i : ι) -> Ω i -> T -> ℝ)
+    (hbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hbounded i)) (μ i))
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessAsymptoticallyTight
+      (T := T) μ X hbounded hX l)
+    (I : Finset T) [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)]
+    [T2Space (I -> ℝ)] :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun i => vdVWFDDProcessLaw (μ i) I (X i)
+        (aemeasurable_fdd_of_aemeasurable_ellInftyProcessMap (T := T) I (hX i))) l := by
+  have hmap :
+      VdVWProbabilityMeasuresAsymptoticallyTight
+        (fun i =>
+          (vdVWEllInftyProcessLaw (T := T) (μ i) (X i) (hbounded i) (hX i)).map
+            ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable))
+        l :=
+    h.map_continuous (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
+  exact hmap.congr_eventually (Filter.Eventually.of_forall fun i =>
+    (vdVWEllInftyProcessLaw_map_finiteRestrict
+      (T := T) (P := μ i) (X := X i) (hbounded := hbounded i) (hX := hX i) I).symm)
+
 end StatInference

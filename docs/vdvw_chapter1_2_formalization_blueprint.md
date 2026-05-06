@@ -170,6 +170,16 @@ The finite-index nuisance boundedness assumption is also removed:
 `vdVW148_finiteProcess_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite`
 consume ordinary finite-product law/FDD hypotheses directly.  This remains a
 finite-index bridge only.
+The process-level tightness interface is now also explicit:
+`vdVWEllInftyProcessLaw` and `vdVWFDDProcessLaw` name the bounded
+`ell_infty(T)` process law and finite-dimensional raw coordinate law,
+`vdVWEllInftyProcessLaw_map_finiteRestrict` identifies finite restrictions of
+the process law with ordinary FDD laws, and
+`VdVWEllInftyProcessAsymptoticallyTight.finiteDimensionalLaw` proves the
+forward tightness implication for every finite-dimensional law.  This is a
+Chapter 1 process primitive, but it still leaves the arbitrary-index FDD
+converse, separability/asymptotic-measurability, and nonmeasurable outer-cover
+weak-convergence layers open.
 
 2026-05-06 scalar-quantizer cover update: `Theorem243.lean` now lifts the
 deterministic coordinate scalar-quantizer decoder-error covering bound from

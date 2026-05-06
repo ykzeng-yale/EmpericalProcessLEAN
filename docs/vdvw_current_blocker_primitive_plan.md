@@ -6734,3 +6734,19 @@ and
 These are measure-level FDD support wrappers only; the exact arbitrary-index
 FDD converse, process asymptotic-tightness/asymptotic-independence, and full
 nonmeasurable signed extended-real cover primitives remain open.
+
+2026-05-06 process asymptotic-tightness interface follow-up: local search found
+measure-level `VdVWProbabilityMeasuresAsymptoticallyTight.map_continuous` and
+finite-dimensional restriction wrappers, but no raw bounded-process law
+interface that packages `ell_infty(T)` process laws and projects them back to
+ordinary finite-dimensional coordinate laws.  `FiniteDimensional.lean` now
+adds `vdVWEllInftyProcessLaw`, `vdVWFDDProcessLaw`,
+`aemeasurable_fdd_of_aemeasurable_ellInftyProcessMap`,
+`vdVWEllInftyProcessLaw_map_finiteRestrict`,
+`VdVWEllInftyProcessAsymptoticallyTight`, and
+`VdVWEllInftyProcessAsymptoticallyTight.finiteDimensionalLaw`.  This closes an
+honest Chapter 1 process-tightness interface layer: tightness of bounded
+`ell_infty(T)` process laws now feeds tightness of every finite-dimensional
+law.  It still does not prove the arbitrary-index VdV&W 1.4.8 converse,
+separability/asymptotic-measurability, or nonmeasurable signed outer-cover
+weak-convergence primitives.

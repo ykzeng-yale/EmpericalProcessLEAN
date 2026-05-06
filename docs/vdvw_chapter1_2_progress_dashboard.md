@@ -79,6 +79,16 @@ and convergence-in-distribution converse wrappers
 remove the manual boundedness assumption only in the finite-index case; the
 arbitrary-index VdV&W 1.4.8 converse remains open.
 
+The Chapter 1 process-tightness interface now has a raw-process law layer:
+`vdVWEllInftyProcessLaw`, `vdVWFDDProcessLaw`,
+`vdVWEllInftyProcessLaw_map_finiteRestrict`,
+`VdVWEllInftyProcessAsymptoticallyTight`, and
+`VdVWEllInftyProcessAsymptoticallyTight.finiteDimensionalLaw`.  This proves
+that tightness of bounded `ell_infty(T)` process laws implies tightness of each
+finite-dimensional law.  It is a real process-level support bridge, but still
+not the arbitrary-index FDD converse or separability/asymptotic-measurability
+theorem.
+
 The scalar-quantizer structural-cover lift is also compiled:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`
 and
