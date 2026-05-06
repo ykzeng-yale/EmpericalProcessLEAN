@@ -57,8 +57,8 @@ Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
 Current manual goal frontier after focused Lean verification of the Chapter 10
-nonsmooth MPGD step-size packet on 2026-05-06, based on pushed code frontier
-`63868ff` in `StatInference/Optimization/MirrorDescent.lean`:
+nonsmooth MPGD ordinary-norm analytic packet on 2026-05-06, based on pushed
+code frontier `50cac18` in `StatInference/Optimization/MirrorDescent.lean`:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.  Latest verified Optimization
 proof frontier: `ced0653`.
@@ -84,16 +84,23 @@ compiles `chewi1011_stepsize_rhs_bound`,
 `chewi1011_average_gap_le_of_trajectory_bregman_bounds_stepsize`, and
 `chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds_stepsize`,
 closing the displayed `h^2 = alphaPhi * R_phi^2 / (2 * L^2 * N)` corollary.
+The newest ordinary Hilbert-norm packet compiles
+`bregmanDivergence_le_two_mul_lipschitz_norm`,
+`bregmanDivergence_lower_of_firstOrderStrongConvexOn`,
+`mirrorProximalGradientModel_lower_of_lipschitz_norm`,
+`chewi1011_average_gap_le_of_trajectory_lipschitz_norm`,
+`chewi1011_iterateAverage_gap_le_of_trajectory_lipschitz_norm`,
+`chewi1011_average_gap_le_of_trajectory_lipschitz_norm_stepsize`, and
+`chewi1011_iterateAverage_gap_le_of_trajectory_lipschitz_norm_stepsize`.
 Search-first result: mathlib has no direct Bregman/mirror-descent/MPGD theorem
 in the pinned tree; the relevant reuse is local `Bregman.lean`,
-`Proximal.lean`, Chapter 3 geometric-weight/Gronwall APIs, and
-`ProjectedSubgradient.lean` finite-average/Jensen APIs.  The current
-scalar-Young reuse point is the completing-square proof style in
-`Theorem27.lean`'s
-`polyakLojasiewiczOn_of_firstOrderStrongConvexOn`.  The active route is now
-production of the `D_f`/`D_phi` estimates from the smallest reusable
-norm/dual-norm interface and Theorem 10.13 OMD regret if bounded.  In parallel,
-map and open Chapter 11
+`Proximal.lean`, Chapter 3 geometric-weight/Gronwall APIs,
+`ProjectedSubgradient.lean` finite-average/Jensen APIs,
+`LipschitzOnWith.le_add_mul`, `abs_real_inner_le_norm`, and
+`FirstOrderStrongConvexOn.lower_model`.  The active route is now Theorem 10.13
+OMD regret if bounded; generalize 10.11 to a custom arbitrary norm/dual-norm
+interface only when exact source/report packaging demands it.  In parallel, map
+and open Chapter 11
 alternating Bregman projection/minimization and Chapter 12/13
 stochastic/Newton theorem packets with source-shaped supplied interfaces first
 when exact analytic dependencies would otherwise stall progress.

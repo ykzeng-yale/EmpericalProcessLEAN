@@ -501,6 +501,82 @@ theorem mirrorProximalGradientModel_lower_of_bregman_bounds
   nlinarith
 
 /--
+Ordinary Hilbert-norm version of the Cauchy-Schwarz/Lipschitz estimate in
+Chewi Theorem 10.11:
+`D_f(x⁺,x) <= 2 L ||x⁺-x||`.
+-/
+theorem bregmanDivergence_le_two_mul_lipschitz_norm
+    {C : Set E} {f : E -> ℝ} {gradF : E -> E}
+    {L : ℝ} {x xPlus : E}
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hL_nonneg : 0 ≤ L)
+    (hx : x ∈ C) (hxPlus : xPlus ∈ C)
+    (hgrad_norm : ‖gradF x‖ ≤ L) :
+    bregmanDivergence f gradF xPlus x ≤
+      2 * L * ‖xPlus - x‖ := by
+  let r : ℝ := ‖xPlus - x‖
+  have hLip_upper :
+      f xPlus ≤ f x + L * r := by
+    have hraw := hLip.le_add_mul hxPlus hx
+    simpa [r, Real.coe_toNNReal L hL_nonneg, dist_eq_norm] using hraw
+  have hneg_inner_le_norm :
+      -inner ℝ (gradF x) (xPlus - x) ≤ ‖gradF x‖ * r := by
+    have habs := abs_real_inner_le_norm (gradF x) (xPlus - x)
+    exact (neg_le_abs _).trans (by simpa [r] using habs)
+  have hnorm_mul_le :
+      ‖gradF x‖ * r ≤ L * r :=
+    mul_le_mul_of_nonneg_right hgrad_norm (by positivity)
+  unfold bregmanDivergence
+  nlinarith
+
+/--
+First-order strong convexity of the mirror map gives the norm lower bound on
+the Bregman divergence used in Chewi Theorem 10.11.
+-/
+theorem bregmanDivergence_lower_of_firstOrderStrongConvexOn
+    {C : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {alphaPhi : ℝ} {x xPlus : E}
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hx : x ∈ C) (hxPlus : xPlus ∈ C) :
+    (alphaPhi / 2) * ‖xPlus - x‖ ^ (2 : ℕ) ≤
+      bregmanDivergence phi gradPhi xPlus x := by
+  have hmodel := hphi.lower_model hx hxPlus
+  unfold bregmanDivergence
+  nlinarith
+
+/--
+Ordinary Hilbert-norm analytic discharge of the Chewi 10.11 local model lower
+bound from Lipschitzness of `f`, a gradient/subgradient norm bound, and
+first-order strong convexity of the mirror map.
+-/
+theorem mirrorProximalGradientModel_lower_of_lipschitz_norm
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {L alphaPhi h : ℝ} {x xPlus : E}
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hL_nonneg : 0 ≤ L)
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hx : x ∈ C) (hxPlus : xPlus ∈ C)
+    (hgrad_norm : ‖gradF x‖ ≤ L) :
+    compositeObjective f g xPlus - 2 * L ^ (2 : ℕ) * h / alphaPhi ≤
+      mirrorProximalGradientModel f g gradF phi gradPhi h x xPlus :=
+  mirrorProximalGradientModel_lower_of_bregman_bounds
+    (f := f) (g := g) (gradF := gradF)
+    (phi := phi) (gradPhi := gradPhi)
+    (L := L) (alphaPhi := alphaPhi) (h := h)
+    (r := ‖xPlus - x‖) (x := x) (xPlus := xPlus)
+    hh halphaPhi
+    (bregmanDivergence_le_two_mul_lipschitz_norm
+      (C := C) (f := f) (gradF := gradF)
+      (L := L) (x := x) (xPlus := xPlus)
+      hLip hL_nonneg hx hxPlus hgrad_norm)
+    (bregmanDivergence_lower_of_firstOrderStrongConvexOn
+      (C := C) (phi := phi) (gradPhi := gradPhi)
+      (alphaPhi := alphaPhi) (x := x) (xPlus := xPlus)
+      hphi hx hxPlus)
+
+/--
 Chewi Theorem 10.11 nonsmooth MPGD one-step recurrence from the source proof,
 with the Cauchy-Schwarz/Lipschitz lower bound on the local mirror model
 supplied as an interface.
@@ -1126,6 +1202,208 @@ theorem chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds_stepsize
       (x := x n) (xPlus := x (n + 1)) (xStar := xStar)
       hconvFmodel (htraj.step n) hh halphaPhi hxStar
       (hDf_upper n hn) (hDphi_lower n hn)
+
+/--
+Chewi Theorem 10.11 trajectory average-gap bound in the ordinary Hilbert norm:
+the two analytic Bregman estimates are produced from Lipschitzness,
+gradient/subgradient norm bounds, and first-order strong convexity of `phi`.
+-/
+theorem chewi1011_average_gap_le_of_trajectory_lipschitz_norm
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {x : ℕ -> E} {xStar : E} {L alphaPhi h : ℝ} {N : ℕ}
+    (htraj : IsMirrorProximalGradientTrajectory
+      C f g gradF phi gradPhi 0 h x)
+    (hconvF : RelativelyStrongConvexOn C f gradF phi gradPhi 0)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hL_nonneg : 0 ≤ L)
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hxStar : xStar ∈ C)
+    (hgrad_norm : ∀ n, n < N -> ‖gradF (x n)‖ ≤ L)
+    (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N)) :
+    (1 / (N : ℝ)) *
+        (∑ n ∈ Finset.range N,
+          (compositeObjective f g (x (n + 1)) -
+            compositeObjective f g xStar)) ≤
+      bregmanDivergence phi gradPhi xStar (x 0) / ((N : ℝ) * h) +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  refine
+    chewi1011_average_gap_le_of_trajectory_bregman_bounds
+      (C := C) (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (x := x) (xStar := xStar) (L := L)
+      (alphaPhi := alphaPhi) (h := h)
+      (r := fun n => ‖x (n + 1) - x n‖) (N := N)
+      htraj hconvF hh halphaPhi hxStar ?_ ?_ hN hD_N_nonneg
+  · intro n hn
+    exact
+      bregmanDivergence_le_two_mul_lipschitz_norm
+        (C := C) (f := f) (gradF := gradF)
+        (L := L) (x := x n) (xPlus := x (n + 1))
+        hLip hL_nonneg (htraj.mem n) (htraj.mem (n + 1))
+        (hgrad_norm n hn)
+  · intro n _hn
+    exact
+      bregmanDivergence_lower_of_firstOrderStrongConvexOn
+        (C := C) (phi := phi) (gradPhi := gradPhi)
+        (alphaPhi := alphaPhi) (x := x n) (xPlus := x (n + 1))
+        hphi (htraj.mem n) (htraj.mem (n + 1))
+
+/--
+Chewi Theorem 10.11 trajectory averaged-iterate bound in the ordinary Hilbert
+norm.
+-/
+theorem chewi1011_iterateAverage_gap_le_of_trajectory_lipschitz_norm
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {x : ℕ -> E} {xStar : E} {L alphaPhi h : ℝ} {N : ℕ}
+    (htraj : IsMirrorProximalGradientTrajectory
+      C f g gradF phi gradPhi 0 h x)
+    (hconvFmodel : RelativelyStrongConvexOn C f gradF phi gradPhi 0)
+    (hconvComposite : ConvexOn ℝ C (compositeObjective f g))
+    (hmem : ∀ n, n < N -> x (n + 1) ∈ C)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hL_nonneg : 0 ≤ L)
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hxStar : xStar ∈ C)
+    (hgrad_norm : ∀ n, n < N -> ‖gradF (x n)‖ ≤ L)
+    (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N)) :
+    compositeObjective f g (iterateAverage (fun n => x (n + 1)) N) -
+        compositeObjective f g xStar ≤
+      bregmanDivergence phi gradPhi xStar (x 0) / ((N : ℝ) * h) +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  refine
+    chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds
+      (C := C) (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (x := x) (xStar := xStar) (L := L)
+      (alphaPhi := alphaPhi) (h := h)
+      (r := fun n => ‖x (n + 1) - x n‖) (N := N)
+      htraj hconvFmodel hconvComposite hmem hh halphaPhi hxStar
+      ?_ ?_ hN hD_N_nonneg
+  · intro n hn
+    exact
+      bregmanDivergence_le_two_mul_lipschitz_norm
+        (C := C) (f := f) (gradF := gradF)
+        (L := L) (x := x n) (xPlus := x (n + 1))
+        hLip hL_nonneg (htraj.mem n) (htraj.mem (n + 1))
+        (hgrad_norm n hn)
+  · intro n _hn
+    exact
+      bregmanDivergence_lower_of_firstOrderStrongConvexOn
+        (C := C) (phi := phi) (gradPhi := gradPhi)
+        (alphaPhi := alphaPhi) (x := x n) (xPlus := x (n + 1))
+        hphi (htraj.mem n) (htraj.mem (n + 1))
+
+/--
+Chewi Theorem 10.11 trajectory average-gap bound in the ordinary Hilbert norm
+with the displayed positive step-size choice.
+-/
+theorem chewi1011_average_gap_le_of_trajectory_lipschitz_norm_stepsize
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {x : ℕ -> E} {xStar : E} {L Rphi alphaPhi h : ℝ} {N : ℕ}
+    (htraj : IsMirrorProximalGradientTrajectory
+      C f g gradF phi gradPhi 0 h x)
+    (hconvF : RelativelyStrongConvexOn C f gradF phi gradPhi 0)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hL : 0 < L) (hRphi : 0 < Rphi)
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hxStar : xStar ∈ C)
+    (hD0_le :
+      bregmanDivergence phi gradPhi xStar (x 0) ≤ Rphi ^ (2 : ℕ))
+    (hh_sq :
+      h ^ (2 : ℕ) =
+        alphaPhi * Rphi ^ (2 : ℕ) /
+          (2 * L ^ (2 : ℕ) * (N : ℝ)))
+    (hgrad_norm : ∀ n, n < N -> ‖gradF (x n)‖ ≤ L)
+    (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N)) :
+    (1 / (N : ℝ)) *
+        (∑ n ∈ Finset.range N,
+          (compositeObjective f g (x (n + 1)) -
+            compositeObjective f g xStar)) ≤
+      L * Rphi * Real.sqrt (8 / (alphaPhi * (N : ℝ))) := by
+  refine
+    chewi1011_average_gap_le_of_trajectory_bregman_bounds_stepsize
+      (C := C) (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (x := x) (xStar := xStar) (L := L) (Rphi := Rphi)
+      (alphaPhi := alphaPhi) (h := h)
+      (r := fun n => ‖x (n + 1) - x n‖) (N := N)
+      htraj hconvF hL hRphi hh halphaPhi hxStar
+      hD0_le hh_sq ?_ ?_ hN hD_N_nonneg
+  · intro n hn
+    exact
+      bregmanDivergence_le_two_mul_lipschitz_norm
+        (C := C) (f := f) (gradF := gradF)
+        (L := L) (x := x n) (xPlus := x (n + 1))
+        hLip hL.le (htraj.mem n) (htraj.mem (n + 1))
+        (hgrad_norm n hn)
+  · intro n _hn
+    exact
+      bregmanDivergence_lower_of_firstOrderStrongConvexOn
+        (C := C) (phi := phi) (gradPhi := gradPhi)
+        (alphaPhi := alphaPhi) (x := x n) (xPlus := x (n + 1))
+        hphi (htraj.mem n) (htraj.mem (n + 1))
+
+/--
+Chewi Theorem 10.11 trajectory averaged-iterate bound in the ordinary Hilbert
+norm with the displayed positive step-size choice.
+-/
+theorem chewi1011_iterateAverage_gap_le_of_trajectory_lipschitz_norm_stepsize
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {x : ℕ -> E} {xStar : E} {L Rphi alphaPhi h : ℝ} {N : ℕ}
+    (htraj : IsMirrorProximalGradientTrajectory
+      C f g gradF phi gradPhi 0 h x)
+    (hconvFmodel : RelativelyStrongConvexOn C f gradF phi gradPhi 0)
+    (hconvComposite : ConvexOn ℝ C (compositeObjective f g))
+    (hmem : ∀ n, n < N -> x (n + 1) ∈ C)
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hL : 0 < L) (hRphi : 0 < Rphi)
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hxStar : xStar ∈ C)
+    (hD0_le :
+      bregmanDivergence phi gradPhi xStar (x 0) ≤ Rphi ^ (2 : ℕ))
+    (hh_sq :
+      h ^ (2 : ℕ) =
+        alphaPhi * Rphi ^ (2 : ℕ) /
+          (2 * L ^ (2 : ℕ) * (N : ℝ)))
+    (hgrad_norm : ∀ n, n < N -> ‖gradF (x n)‖ ≤ L)
+    (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N)) :
+    compositeObjective f g (iterateAverage (fun n => x (n + 1)) N) -
+        compositeObjective f g xStar ≤
+      L * Rphi * Real.sqrt (8 / (alphaPhi * (N : ℝ))) := by
+  refine
+    chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds_stepsize
+      (C := C) (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (x := x) (xStar := xStar) (L := L) (Rphi := Rphi)
+      (alphaPhi := alphaPhi) (h := h)
+      (r := fun n => ‖x (n + 1) - x n‖) (N := N)
+      htraj hconvFmodel hconvComposite hmem hL hRphi hh halphaPhi
+      hxStar hD0_le hh_sq ?_ ?_ hN hD_N_nonneg
+  · intro n hn
+    exact
+      bregmanDivergence_le_two_mul_lipschitz_norm
+        (C := C) (f := f) (gradF := gradF)
+        (L := L) (x := x n) (xPlus := x (n + 1))
+        hLip hL.le (htraj.mem n) (htraj.mem (n + 1))
+        (hgrad_norm n hn)
+  · intro n _hn
+    exact
+      bregmanDivergence_lower_of_firstOrderStrongConvexOn
+        (C := C) (phi := phi) (gradPhi := gradPhi)
+        (alphaPhi := alphaPhi) (x := x n) (xPlus := x (n + 1))
+        hphi (htraj.mem n) (htraj.mem (n + 1))
 
 end Optimization
 end StatInference

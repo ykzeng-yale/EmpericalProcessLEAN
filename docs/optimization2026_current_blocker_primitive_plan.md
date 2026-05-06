@@ -84,8 +84,8 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after focused Lean verification of the
-Chapter 10 nonsmooth MPGD step-size packet on 2026-05-06, based on pushed
-frontier `63868ff` (`Add Chewi theorem 10.11 analytic bridge`):
+Chapter 10 nonsmooth MPGD ordinary-norm analytic packet on 2026-05-06, based
+on pushed frontier `50cac18` (`Add Chewi theorem 10.11 step-size layer`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -141,31 +141,38 @@ step-size packet adds `chewi1011_stepsize_rhs_bound`,
 `chewi1011_iterateAverage_gap_le_of_trajectory_bregman_bounds_stepsize`,
 closing the displayed
 `h^2 = alphaPhi * R_phi^2 / (2 * L^2 * N)` corollary in supplied-interface
-and trajectory forms.
+and trajectory forms.  The newest ordinary Hilbert-norm packet adds
+`bregmanDivergence_le_two_mul_lipschitz_norm`,
+`bregmanDivergence_lower_of_firstOrderStrongConvexOn`,
+`mirrorProximalGradientModel_lower_of_lipschitz_norm`,
+`chewi1011_average_gap_le_of_trajectory_lipschitz_norm`,
+`chewi1011_iterateAverage_gap_le_of_trajectory_lipschitz_norm`,
+`chewi1011_average_gap_le_of_trajectory_lipschitz_norm_stepsize`, and
+`chewi1011_iterateAverage_gap_le_of_trajectory_lipschitz_norm_stepsize`.  This
+produces the two source analytic estimates internally for the ordinary norm
+from `LipschitzOnWith (Real.toNNReal L) f C`, `‖gradF (x n)‖ <= L`, and
+`FirstOrderStrongConvexOn C phi gradPhi alphaPhi`.
 
 Search-first results to preserve: pinned mathlib search for
 `Bregman`, `Mirror`, `proximal`, `Fenchel`, and relative smoothness found no
 direct Bregman/mirror-descent/MPGD theorem; the `MirrorImage` hits in
 `Analysis/Convex/Deriv.lean` are unrelated symmetry lemmas.  Local search
 confirms the useful APIs are the compiled `Fenchel.lean`, `Bregman.lean`,
-`Proximal.lean`, and Chapter 3/5 scalar recurrence/telescope machinery.  The
-current scalar-Young reuse point is
-`polyakLojasiewiczOn_of_firstOrderStrongConvexOn` in
-`Theorem27.lean`, which proves a completing-square bound using
-`real_inner_le_norm`, `sq_nonneg`, `le_div_iff₀`, and `nlinarith`; adapt that
-style for the 10.11 model lower-bound bridge.
+`Proximal.lean`, Chapter 3/5 scalar recurrence/telescope machinery,
+mathlib/local `LipschitzOnWith.le_add_mul`, `abs_real_inner_le_norm`, and
+`FirstOrderStrongConvexOn.lower_model`.  There is still no arbitrary norm/dual
+norm abstraction in local code or pinned mathlib; the new theorem packet covers
+the ordinary Hilbert norm specialization.
 
 Active aggressive target ladder:
 
-1. Search again for mathlib/local dual norm,
-   Cauchy-Schwarz, Lipschitz/subgradient, and norm-relative strong-convexity
-   APIs.  If no reusable abstraction is available, add the smallest
-   proof-carrying norm interface that produces the two estimates needed by
-   `mirrorProximalGradientModel_lower_of_bregman_bounds`; do not reintroduce an
-   opaque model-lower-bound.
-2. Package Theorem 10.13 OMD regret by exposing the linear-loss version of the
+1. Package Theorem 10.13 OMD regret by exposing the linear-loss version of the
    mirror step and telescoping `D_phi(y, x_n)`.  Reuse the 10.11 one-step
    machinery wherever the algebra is identical.
+2. If later source/report exactness requires Chewi's arbitrary norm
+   `|||\cdot|||`, add a small proof-carrying custom norm/dual-norm interface
+   that generalizes the ordinary-norm packet; do not block Theorem 10.13 on
+   that abstraction unless it is directly needed.
 3. In parallel, map and then open theorem-packet modules for Chapter 11
    alternating Bregman projections/minimization, Chapter 12 stochastic
    mirror-proximal-gradient, and Chapter 13 Newton/self-concordance.  Use
