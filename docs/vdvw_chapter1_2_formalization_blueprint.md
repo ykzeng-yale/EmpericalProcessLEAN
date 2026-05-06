@@ -150,6 +150,15 @@ compiled declarations are
 `vdVW148_boundedProcess_finiteRestrict_tendstoInDistribution_of_tendstoInDistribution`.
 This is still finite-dimensional support only, not the arbitrary-index VdV&W
 1.4.8 converse.
+The finite-index nuisance boundedness assumption is also removed:
+`VdVWEllInfty.isBoundedSamplePath_of_finite` and
+`VdVWEllInfty.processMapFinite` provide the canonical finite-index
+`ell_infty(T)` process map, and
+`vdVW148_finiteProcess_hasLaw_of_finiteProduct_hasLaw_finite`,
+`vdVW148_finiteProcess_identDistrib_of_finiteProduct_identDistrib_finite`, and
+`vdVW148_finiteProcess_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite`
+consume ordinary finite-product law/FDD hypotheses directly.  This remains a
+finite-index bridge only.
 
 2026-05-06 scalar-quantizer cover update: `Theorem243.lean` now lifts the
 deterministic coordinate scalar-quantizer decoder-error covering bound from

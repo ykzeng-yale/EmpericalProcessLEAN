@@ -58,6 +58,15 @@ These close direct finite-dimensional HasLaw/IdentDistrib/weak-convergence
 transport to finite restrictions of bounded `ell_infty(T)` process maps, while
 leaving the arbitrary-index FDD converse and process separability/tightness
 blockers open.
+Finite-index real processes now also have automatic bounded sample paths via
+`VdVWEllInfty.isBoundedSamplePath_of_finite` and canonical maps
+`VdVWEllInfty.processMapFinite`.  The finite-index law, identical-distribution,
+and convergence-in-distribution converse wrappers
+`vdVW148_finiteProcess_hasLaw_of_finiteProduct_hasLaw_finite`,
+`vdVW148_finiteProcess_identDistrib_of_finiteProduct_identDistrib_finite`, and
+`vdVW148_finiteProcess_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite`
+remove the manual boundedness assumption only in the finite-index case; the
+arbitrary-index VdV&W 1.4.8 converse remains open.
 
 The scalar-quantizer structural-cover lift is also compiled:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`

@@ -79,6 +79,12 @@ an element of `ell_infty(T)`.
 def IsBoundedSamplePath (X : Ω -> T -> ℝ) : Prop :=
   ∀ ω, BddAbove (Set.range fun t => ‖X ω t‖)
 
+/-- Every finite-index real process has bounded sample paths. -/
+theorem isBoundedSamplePath_of_finite [Finite T] (X : Ω -> T -> ℝ) :
+    IsBoundedSamplePath X := by
+  intro ω
+  exact Finite.bddAbove_range fun t : T => ‖X ω t‖
+
 /-- Turn a process with bounded sample paths into an `ell_infty(T)`-valued map. -/
 def processMap (X : Ω -> T -> ℝ) (hX : IsBoundedSamplePath X) :
     Ω -> VdVWEllInfty T :=
@@ -87,6 +93,19 @@ def processMap (X : Ω -> T -> ℝ) (hX : IsBoundedSamplePath X) :
 @[simp]
 theorem processMap_apply (X : Ω -> T -> ℝ) (hX : IsBoundedSamplePath X) (ω : Ω) (t : T) :
     processMap X hX ω t = X ω t :=
+  rfl
+
+/--
+Canonical `ell_infty(T)` process map for finite index sets, where boundedness
+of every sample path is automatic.
+-/
+def processMapFinite [Finite T] (X : Ω -> T -> ℝ) :
+    Ω -> VdVWEllInfty T :=
+  processMap X (isBoundedSamplePath_of_finite X)
+
+@[simp]
+theorem processMapFinite_apply [Finite T] (X : Ω -> T -> ℝ) (ω : Ω) (t : T) :
+    processMapFinite X ω t = X ω t :=
   rfl
 
 /-- Measurability of an `ell_infty(T)`-valued process implies coordinate measurability. -/
@@ -179,6 +198,12 @@ theorem finiteContinuousLinearEquiv_apply [Fintype T] (x : VdVWEllInfty T) :
 theorem finiteContinuousLinearEquiv_processMap_apply [Fintype T]
     (X : Ω -> T -> ℝ) (hX : IsBoundedSamplePath X) (ω : Ω) :
     finiteContinuousLinearEquiv (T := T) (processMap X hX ω) = X ω :=
+  rfl
+
+@[simp]
+theorem finiteContinuousLinearEquiv_processMapFinite_apply [Fintype T]
+    (X : Ω -> T -> ℝ) (ω : Ω) :
+    finiteContinuousLinearEquiv (T := T) (processMapFinite X ω) = X ω :=
   rfl
 
 @[simp]

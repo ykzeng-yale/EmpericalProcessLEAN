@@ -114,6 +114,19 @@ gap only; the arbitrary-index VdV&W 1.4.8 converse, process separability,
 asymptotic tightness/measurability, and nonmeasurable outer-cover signed weak
 convergence remain the Chapter 1 process blockers.
 
+2026-05-06 finite-index boundedness cleanup: local search found mathlib
+`Finite.bddAbove_range`, which proves boundedness of finite real coordinate
+ranges without an empirical-process primitive.  `EllInfty.lean` now adds
+`VdVWEllInfty.isBoundedSamplePath_of_finite`, the canonical finite-index map
+`VdVWEllInfty.processMapFinite`, and compatibility with
+`finiteContinuousLinearEquiv`.  `FiniteDimensional.lean` now adds
+`vdVW148_finiteProcess_hasLaw_of_finiteProduct_hasLaw_finite`,
+`vdVW148_finiteProcess_identDistrib_of_finiteProduct_identDistrib_finite`,
+and
+`vdVW148_finiteProcess_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite`.
+These remove a nuisance boundedness hypothesis only for finite `T`; they do
+not close the arbitrary-index VdV&W 1.4.8 converse.
+
 2026-05-06 scalar-quantizer structural-cover lift: local search found
 deterministic coordinate scalar-quantizer empirical-cover bounds in
 `CoveringPrimitive.lean`, especially

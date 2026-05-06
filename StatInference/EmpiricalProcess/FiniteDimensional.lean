@@ -854,6 +854,30 @@ theorem vdVW148_boundedProcess_hasLaw_of_finiteProduct_hasLaw_finite
   simpa [e, Function.comp_def, VdVWEllInfty.processMap] using hmap
 
 /--
+Finite-index law converse without a separate bounded-sample-path hypothesis:
+for finite `T`, boundedness of all sample paths is automatic.
+
+This is still a finite-index support layer for VdV&W 1.4.8, not the
+arbitrary-index FDD converse.
+-/
+theorem vdVW148_finiteProcess_hasLaw_of_finiteProduct_hasLaw_finite
+    [MeasurableSpace Ω]
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {X : Ω -> T -> ℝ} {P : Measure Ω} {ν : Measure (T -> ℝ)}
+    (hX : HasLaw X ν P) :
+    HasLaw
+      (VdVWEllInfty.processMapFinite X)
+      (ν.map (VdVWEllInfty.finiteContinuousLinearEquiv (T := T)).symm)
+      P := by
+  simpa [VdVWEllInfty.processMapFinite] using
+    (vdVW148_boundedProcess_hasLaw_of_finiteProduct_hasLaw_finite
+      (T := T) (Ω := Ω)
+      (hbounded := VdVWEllInfty.isBoundedSamplePath_of_finite X)
+      (P := P) (ν := ν) hX)
+
+/--
 Finite-index identical-distribution converse for bounded raw processes:
 identical finite-product distributions induce identical `ell_infty(T)` process
 distributions.
@@ -876,6 +900,29 @@ theorem vdVW148_boundedProcess_identDistrib_of_finiteProduct_identDistrib_finite
   have hmap : IdentDistrib (e.symm ∘ X) (e.symm ∘ Y) P Q :=
     hXY.comp e.symm.continuous.measurable
   simpa [e, Function.comp_def, VdVWEllInfty.processMap] using hmap
+
+/--
+Finite-index identical-distribution converse without explicit boundedness
+hypotheses.  Finite index sets make every real sample path bounded.
+-/
+theorem vdVW148_finiteProcess_identDistrib_of_finiteProduct_identDistrib_finite
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {X : Ω -> T -> ℝ} {Y : Ω' -> T -> ℝ}
+    {P : Measure Ω} {Q : Measure Ω'}
+    (hXY : IdentDistrib X Y P Q) :
+    IdentDistrib
+      (VdVWEllInfty.processMapFinite X)
+      (VdVWEllInfty.processMapFinite Y)
+      P Q := by
+  simpa [VdVWEllInfty.processMapFinite] using
+    (vdVW148_boundedProcess_identDistrib_of_finiteProduct_identDistrib_finite
+      (T := T) (Ω := Ω) (Ω' := Ω')
+      (hXbounded := VdVWEllInfty.isBoundedSamplePath_of_finite X)
+      (hYbounded := VdVWEllInfty.isBoundedSamplePath_of_finite Y)
+      (P := P) (Q := Q) hXY)
 
 /--
 Random-variable finite-index converse for `ell_infty(T)`: if `T` is finite,
@@ -944,5 +991,40 @@ theorem vdVW148_boundedProcess_tendstoInDistribution_of_finiteProduct_tendstoInD
       (X := fun i => VdVWEllInfty.processMap (X i) (hXbounded i))
       (Z := VdVWEllInfty.processMap Z hZbounded) (l := l) ?_
   simpa [Function.comp_def, VdVWEllInfty.processMap] using hX
+
+/--
+Raw finite-index converse without explicit boundedness hypotheses: for finite
+`T`, convergence in distribution of the ordinary finite-coordinate processes
+implies convergence in distribution of their canonical `ell_infty(T)` process
+maps.
+
+This removes a finite-index nuisance assumption while keeping the
+arbitrary-index VdV&W 1.4.8 converse separate.
+-/
+theorem vdVW148_finiteProcess_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite
+    {ι : Type*} {Ω : ι -> Type*} {Ω' : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [Fintype T]
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    [MeasurableSpace (T -> ℝ)] [BorelSpace (T -> ℝ)]
+    {X : (i : ι) -> Ω i -> T -> ℝ} {Z : Ω' -> T -> ℝ}
+    {l : Filter ι}
+    (hX : TendstoInDistribution X l Z μ μ') :
+    TendstoInDistribution
+      (fun i => VdVWEllInfty.processMapFinite (X i))
+      l
+      (VdVWEllInfty.processMapFinite Z)
+      μ μ' := by
+  haveI : Nonempty (VdVWEllInfty T) := ⟨0⟩
+  simpa [VdVWEllInfty.processMapFinite] using
+    (vdVW148_boundedProcess_tendstoInDistribution_of_finiteProduct_tendstoInDistribution_finite
+      (T := T) (Ω := Ω) (Ω' := Ω') (μ := μ) (μ' := μ')
+      (hXbounded := fun i => VdVWEllInfty.isBoundedSamplePath_of_finite (X i))
+      (hZbounded := VdVWEllInfty.isBoundedSamplePath_of_finite Z)
+      (l := l) hX)
 
 end StatInference
