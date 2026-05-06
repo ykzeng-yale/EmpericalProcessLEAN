@@ -116,26 +116,27 @@ Sinkhorn/mirror-descent certificate endpoint, and
 `StatInference/Optimization/StochasticGradient.lean` as the current Chapter
 12 active theorem gate.
 
-Immediate aggressive target: discharge the remaining genuine probability and
-Hilbert/Bochner side conditions for Chewi Theorem 12.1 SMPGD on top of the
-compiled integral-component final-rate wrappers.  Do not redo the 10.11
+Immediate aggressive target: discharge the remaining genuine sampled
+stochastic-gradient model fields for Chewi Theorem 12.1 SMPGD on top of the
+compiled integral-component final-rate wrappers and the smooth L2 noise
+wrapper.  Do not redo the 10.11
 average-gap telescope, the 11.5 RAM recurrences, the 11.7 selector wrappers,
 the 11.8 certificate endpoint, the Chapter 12 weighted-average algebra, the
 compiled smooth/non-smooth scalar rate wrappers, expected-model one-step
 algebra, RMS wrappers, component-to-`hcore` scalar algebra, finite-support
 component wrappers, or the verified Bochner `integral_mono_ae` transport
-wrappers.  First search local `MirrorDescent.lean`, `Bregman.lean`,
-`ProjectedSubgradient.lean`, `StochasticGradient.lean`, local
-probability/expectation wrappers, and pinned mathlib
-expectation/Jensen/conditional expectation/Bochner/L2 APIs.  Then formalize
-the concrete smooth stochastic-gradient model fields: inner-product/CLM
-transport through Bochner integrals, unbiasedness turning the noise inner
-product into a mean-zero/error term, Cauchy-Schwarz/Hölder noise estimate,
-variance domination from (12.1), and the relative-smoothness and mirror
-strong-convexity pointwise/a.e. hypotheses needed by
-`chewi121_smooth_weightedAverageGap_le_geometric_of_integral_components`.
+wrappers, or the verified L2/Hölder noise bound.  First search local
+`MirrorDescent.lean`, `Bregman.lean`, `ProjectedSubgradient.lean`,
+`StochasticGradient.lean`, local probability/expectation wrappers, and pinned
+mathlib expectation/Jensen/conditional expectation/Bochner/L2 APIs.  Then
+formalize the concrete sampled SMPGD fields: `ψ_x` raw model inequalities from
+`mirrorProximalGradientModel` with a sampled constant oracle, growth from
+`IsMirrorProximalGradientStep.growth`, unbiased finite/star upper model
+averaging, variance domination from (12.1), and the relative-smoothness and
+mirror strong-convexity pointwise/a.e. hypotheses needed by
+`chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_noise_components`.
 In parallel, formalize the non-smooth Lipschitz/bounded-gradient component
-bounds from (12.2) for
+bounds and finite weighted Cauchy route from (12.2) for
 `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components`.
 Keep the concrete Sinkhorn row/column KL identity layer as the next Chapter
 11.8 blocker, but do not let it stall Chapter 12 coverage.
@@ -206,7 +207,11 @@ and the Bochner-integral expectation packet
 `chewi121_smooth_hcore_of_integral_components`,
 `chewi121_nonsmooth_hcore_of_integral_components`,
 `chewi121_smooth_weightedAverageGap_le_geometric_of_integral_components`, and
-`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components`.
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components`,
+plus the smooth L2/Hölder probability packet
+`chewi121_integral_noise_bound_of_l2_roots`,
+`chewi121_smooth_hcore_of_integral_l2_noise_components`, and
+`chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_noise_components`.
 This proves the source recurrence-to-rate algebra, smooth/non-smooth
 stochastic error instantiations, the expected-model algebra turning Chewi's
 three `psi_x` bounds into the displayed SMPGD one-step recurrence, the direct
@@ -217,10 +222,11 @@ assembly for both smooth and non-smooth SMPGD, including a finite-support
 stochastic-gradient route and a general Bochner-integral route from supplied
 a.e. model inequalities to the final weighted-average rate.  The remaining
 Theorem 12.1 blocker is now not integral transport; it is the actual stochastic
-model discharge: CLM/inner-product Bochner transport, unbiasedness/noise
-centering, Hölder/Cauchy-Schwarz L2 estimate, variance domination from (12.1),
-and the source pointwise/a.e. relative-smoothness, mirror-strong-convexity,
-Lipschitz, and bounded-gradient estimates from (12.2).
+model discharge: sampled `ψ_x` raw inequalities, finite/Bochner unbiasedness
+or star-upper averaging, variance domination from (12.1), and the source
+pointwise/a.e. relative-smoothness, mirror-strong-convexity, Lipschitz, and
+bounded-gradient estimates from (12.2).  The smooth Cauchy-Schwarz/Hölder L2
+noise estimate is now verified as a reusable wrapper.
 
 Fresh Chapter 12 Bochner search result: mathlib has `integral_mono_ae` and
 `integral_mono` for pointwise or a.e. real integral inequalities,
@@ -230,6 +236,9 @@ linear maps/inner products through Bochner integrals, and
 the scalar L2 Cauchy-Schwarz/Hölder step.  The integral transport part now
 compiles through the `chewi121_*_integral_*` wrappers, so future work should
 reuse those declarations rather than adding more copies of integral algebra.
+The L2/Hölder noise part now compiles through
+`chewi121_integral_noise_bound_of_l2_roots`, with the typeclass instance
+`Real.HolderConjugate.two_two.ennrealOfReal` used for `MemLp.integrable_mul`.
 Local reuse remains
 `Bregman.lean`'s `RelativelySmoothOn.upper_model` and
 `RelativelyStrongConvexOn.lower_model`, `MirrorDescent.lean`'s
@@ -529,17 +538,18 @@ attempting full martingale/CLT formalization.
 
 Active aggressive target ladder:
 
-1. Finish Chewi Theorem 12.1 SMPGD beyond the compiled finite-support and
-   Bochner-integral routes by discharging the genuine stochastic model fields:
-   CLM/inner-product Bochner transport, unbiasedness/noise centering,
-   Hölder/Cauchy-Schwarz noise estimate via
-   `integral_mul_le_Lp_mul_Lq_of_nonneg`, variance domination from (12.1),
-   and source pointwise/a.e. relative-smoothness, mirror strong-convexity,
-   Lipschitz, and bounded-gradient estimates from (12.2).  Feed the result
-   into
-   `chewi121_smooth_weightedAverageGap_le_geometric_of_integral_components`
-   and
-   `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components`.
+1. Finish Chewi Theorem 12.1 SMPGD beyond the compiled finite-support,
+   Bochner-integral, and smooth L2-noise routes by discharging the sampled
+   stochastic model fields: raw `ψ_x` inequalities from
+   `mirrorProximalGradientModel`, growth from
+   `IsMirrorProximalGradientStep.growth`, finite/Bochner unbiased star-upper
+   averaging, variance domination from (12.1), and source pointwise/a.e.
+   relative-smoothness, mirror strong-convexity, Lipschitz, and
+   bounded-gradient estimates from (12.2).  Feed the smooth result into
+   `chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_noise_components`
+   and the non-smooth result into
+   `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components`
+   or a future non-smooth L2 finite-weighted wrapper.
 2. Instantiate the compiled Chewi Theorem 11.8 Sinkhorn/mirror-descent
    certificate with concrete finite row/column-normalization KL identities.
    Reuse `IsChewi118SinkhornMirrorDescentCertificate`,

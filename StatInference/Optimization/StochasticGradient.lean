@@ -951,6 +951,71 @@ theorem chewi121_integral_linear_component_bound
     _ ≤ L * stepRms := mul_le_mul_of_nonneg_left hstep_avg hL_nonneg
 
 /--
+L2/Hölder noise bound for the smooth stochastic-gradient model in Chewi
+Theorem 12.1.  The pointwise stochastic error is dominated by the product of a
+variance norm and the step norm; the two root-mean-square bounds then give the
+displayed Cauchy-Schwarz estimate.
+-/
+theorem chewi121_integral_noise_bound_of_l2_roots
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {noise varianceNorm stepNorm : Ω -> ℝ} {varianceRms stepRms : ℝ}
+    (hnoise_int : Integrable noise μ)
+    (hvariance_nonneg : 0 ≤ᵐ[μ] varianceNorm)
+    (hstep_nonneg : 0 ≤ᵐ[μ] stepNorm)
+    (hvariance_mem : MemLp varianceNorm (ENNReal.ofReal (2 : ℝ)) μ)
+    (hstep_mem : MemLp stepNorm (ENNReal.ofReal (2 : ℝ)) μ)
+    (hnoise_point : noise ≤ᵐ[μ] fun ω => varianceNorm ω * stepNorm ω)
+    (hvariance_root :
+      (∫ ω, varianceNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ varianceRms)
+    (hstep_root :
+      (∫ ω, stepNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ stepRms) :
+    (∫ ω, noise ω ∂μ) ≤ varianceRms * stepRms := by
+  haveI : ENNReal.HolderTriple
+      (ENNReal.ofReal (2 : ℝ)) (ENNReal.ofReal (2 : ℝ)) 1 := by
+    simpa using Real.HolderConjugate.two_two.ennrealOfReal
+  have hprod_int : Integrable (fun ω => varianceNorm ω * stepNorm ω) μ := by
+    simpa [Pi.mul_apply] using hvariance_mem.integrable_mul hstep_mem
+  have hmono :
+      (∫ ω, noise ω ∂μ) ≤ ∫ ω, varianceNorm ω * stepNorm ω ∂μ :=
+    integral_mono_ae hnoise_int hprod_int hnoise_point
+  have hholder :
+      (∫ ω, varianceNorm ω * stepNorm ω ∂μ) ≤
+        (∫ ω, varianceNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) *
+          (∫ ω, stepNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) :=
+    integral_mul_le_Lp_mul_Lq_of_nonneg
+      Real.HolderConjugate.two_two hvariance_nonneg hstep_nonneg
+      hvariance_mem hstep_mem
+  have hvariance_sq_nonneg :
+      0 ≤ ∫ ω, varianceNorm ω ^ (2 : ℝ) ∂μ :=
+    integral_nonneg_of_ae <| by
+      filter_upwards [hvariance_nonneg] with ω hω
+      exact Real.rpow_nonneg hω _
+  have hstep_sq_nonneg :
+      0 ≤ ∫ ω, stepNorm ω ^ (2 : ℝ) ∂μ :=
+    integral_nonneg_of_ae <| by
+      filter_upwards [hstep_nonneg] with ω hω
+      exact Real.rpow_nonneg hω _
+  have hvariance_root_nonneg :
+      0 ≤ (∫ ω, varianceNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) :=
+    Real.rpow_nonneg hvariance_sq_nonneg _
+  have hstep_root_nonneg :
+      0 ≤ (∫ ω, stepNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) :=
+    Real.rpow_nonneg hstep_sq_nonneg _
+  have hstepRms_nonneg : 0 ≤ stepRms :=
+    hstep_root_nonneg.trans hstep_root
+  calc
+    (∫ ω, noise ω ∂μ) ≤
+        (∫ ω, varianceNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) *
+          (∫ ω, stepNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) :=
+      hmono.trans hholder
+    _ ≤ varianceRms *
+          (∫ ω, stepNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) :=
+      mul_le_mul_of_nonneg_right hvariance_root hstep_root_nonneg
+    _ ≤ varianceRms * stepRms :=
+      mul_le_mul_of_nonneg_left hstep_root
+        (hvariance_root_nonneg.trans hvariance_root)
+
+/--
 Bochner-integral smooth `hcore` theorem, reducing the stochastic-gradient
 expectation proof to integral raw/absorption/mirror/noise component fields.
 -/
@@ -994,6 +1059,51 @@ theorem chewi121_smooth_hcore_of_integral_components
       (noiseTerm := ∫ ω, noise ω ∂μ)
       (varianceRms := varianceRms) (stepRms := stepRms)
       hh hraw hdf_absorb hphi_lower hnoise
+
+/--
+Smooth integral `hcore` with the Cauchy-Schwarz noise estimate discharged from
+pointwise stochastic-error domination and L2 root bounds.
+-/
+theorem chewi121_smooth_hcore_of_integral_l2_noise_components
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Fplus Df Dphi noise psi stepSq varianceNorm stepNorm : Ω -> ℝ}
+    {alphaPhi h psiNext varianceRms stepRms : ℝ}
+    (hh : 0 < h) (halphaPhi_nonneg : 0 ≤ alphaPhi)
+    (hFplus : Integrable Fplus μ) (hDf : Integrable Df μ)
+    (hDphi : Integrable Dphi μ) (hnoise_int : Integrable noise μ)
+    (hpsi_int : Integrable psi μ) (hstepSq : Integrable stepSq μ)
+    (hraw_point : (fun ω =>
+      Fplus ω - Df ω + (1 / h) * Dphi ω - noise ω) ≤ᵐ[μ] psi)
+    (hpsi : (∫ ω, psi ω ∂μ) ≤ psiNext)
+    (hdf_point : Df ≤ᵐ[μ] fun ω => (1 / (2 * h)) * Dphi ω)
+    (hstepRms_sq : stepRms ^ (2 : ℕ) ≤ ∫ ω, stepSq ω ∂μ)
+    (hphi_point : (fun ω => (alphaPhi / 2) * stepSq ω) ≤ᵐ[μ] Dphi)
+    (hvariance_nonneg : 0 ≤ᵐ[μ] varianceNorm)
+    (hstep_nonneg : 0 ≤ᵐ[μ] stepNorm)
+    (hvariance_mem : MemLp varianceNorm (ENNReal.ofReal (2 : ℝ)) μ)
+    (hstep_mem : MemLp stepNorm (ENNReal.ofReal (2 : ℝ)) μ)
+    (hnoise_point : noise ≤ᵐ[μ] fun ω => varianceNorm ω * stepNorm ω)
+    (hvariance_root :
+      (∫ ω, varianceNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ varianceRms)
+    (hstep_root :
+      (∫ ω, stepNorm ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ stepRms) :
+    (∫ ω, Fplus ω ∂μ) +
+        (alphaPhi / (4 * h)) * stepRms ^ (2 : ℕ) -
+          varianceRms * stepRms ≤ psiNext := by
+  have hnoise :=
+    chewi121_integral_noise_bound_of_l2_roots
+      (noise := noise) (varianceNorm := varianceNorm) (stepNorm := stepNorm)
+      (varianceRms := varianceRms) (stepRms := stepRms)
+      hnoise_int hvariance_nonneg hstep_nonneg hvariance_mem hstep_mem
+      hnoise_point hvariance_root hstep_root
+  exact
+    chewi121_smooth_hcore_of_integral_components
+      (μ := μ) (Fplus := Fplus) (Df := Df) (Dphi := Dphi)
+      (noise := noise) (psi := psi) (stepSq := stepSq)
+      (alphaPhi := alphaPhi) (h := h) (psiNext := psiNext)
+      (varianceRms := varianceRms) (stepRms := stepRms)
+      hh halphaPhi_nonneg hFplus hDf hDphi hnoise_int hpsi_int hstepSq
+      hraw_point hpsi hdf_point hstepRms_sq hphi_point hnoise
 
 /--
 Bochner-integral non-smooth `hcore` theorem.
@@ -1402,6 +1512,87 @@ theorem chewi121_smooth_weightedAverageGap_le_geometric_of_integral_components
       (hnoise_int n hn) (hpsi_int n hn) (hstepSq_int n hn)
       (hraw_point n hn) (hpsi n hn) (hdf_point n hn)
       (hstepRms_sq n hn) (hphi_point n hn) (hnoise n hn)
+
+/--
+Smooth Bochner-integral Chewi Theorem 12.1 rate with the stochastic
+Cauchy-Schwarz estimate discharged from L2 root bounds.  This is the next
+probability-facing wrapper after the raw integral component transport.
+-/
+theorem chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_noise_components
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {alphaF alphaG alphaPhi sigma dim h Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap psiNext psiStar varianceRms stepRms : ℕ -> ℝ)
+    (Fplus Df Dphi noise psi stepSq varianceNorm stepNorm : ℕ -> Ω -> ℝ)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hgrowth : ∀ n, n < N ->
+      (alphaG + 1 / h) * D (n + 1) + psiNext n ≤ psiStar n)
+    (hstar_upper : ∀ n, n < N ->
+      psiStar n ≤ Fstar + ((1 - alphaF * h) / h) * D n)
+    (hFplus : ∀ n, n < N -> Integrable (Fplus n) μ)
+    (hDf_int : ∀ n, n < N -> Integrable (Df n) μ)
+    (hDphi_int : ∀ n, n < N -> Integrable (Dphi n) μ)
+    (hnoise_int : ∀ n, n < N -> Integrable (noise n) μ)
+    (hpsi_int : ∀ n, n < N -> Integrable (psi n) μ)
+    (hstepSq_int : ∀ n, n < N -> Integrable (stepSq n) μ)
+    (hraw_point : ∀ n, n < N ->
+      (fun ω => Fplus n ω - Df n ω + (1 / h) * Dphi n ω - noise n ω) ≤ᵐ[μ]
+        psi n)
+    (hpsi : ∀ n, n < N -> (∫ ω, psi n ω ∂μ) ≤ psiNext n)
+    (hdf_point : ∀ n, n < N ->
+      Df n ≤ᵐ[μ] fun ω => (1 / (2 * h)) * Dphi n ω)
+    (hstepRms_sq : ∀ n, n < N ->
+      stepRms n ^ (2 : ℕ) ≤ ∫ ω, stepSq n ω ∂μ)
+    (hphi_point : ∀ n, n < N ->
+      (fun ω => (alphaPhi / 2) * stepSq n ω) ≤ᵐ[μ] Dphi n)
+    (hvariance_nonneg : ∀ n, n < N -> 0 ≤ᵐ[μ] varianceNorm n)
+    (hstep_nonneg : ∀ n, n < N -> 0 ≤ᵐ[μ] stepNorm n)
+    (hvariance_mem : ∀ n, n < N ->
+      MemLp (varianceNorm n) (ENNReal.ofReal (2 : ℝ)) μ)
+    (hstep_mem : ∀ n, n < N ->
+      MemLp (stepNorm n) (ENNReal.ofReal (2 : ℝ)) μ)
+    (hnoise_point : ∀ n, n < N ->
+      noise n ≤ᵐ[μ] fun ω => varianceNorm n ω * stepNorm n ω)
+    (hvariance_root : ∀ n, n < N ->
+      (∫ ω, varianceNorm n ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ varianceRms n)
+    (hstep_root : ∀ n, n < N ->
+      (∫ ω, stepNorm n ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ stepRms n)
+    (hvariance : ∀ n, n < N ->
+      varianceRms n ^ (2 : ℕ) ≤ sigma ^ (2 : ℕ) * dim)
+    (hgap_sum : ∀ n, n < N ->
+      Fstar + gap (n + 1) = ∫ ω, Fplus n ω ∂μ) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        sigma ^ (2 : ℕ) * dim * h / alphaPhi := by
+  refine
+    chewi121_smooth_weightedAverageGap_le_geometric_of_rms_model_bounds
+      (alphaF := alphaF) (alphaG := alphaG) (alphaPhi := alphaPhi)
+      (sigma := sigma) (dim := dim) (h := h) (Fstar := Fstar)
+      htotal_pos hh halphaPhi hden_pos hlambda_pos D gap psiNext psiStar
+      (fun n => ∫ ω, Fplus n ω ∂μ) varianceRms stepRms
+      hN hD_N_nonneg hgrowth hstar_upper hvariance ?_ hgap_sum
+  intro n hn
+  exact
+    chewi121_smooth_hcore_of_integral_l2_noise_components
+      (μ := μ) (Fplus := Fplus n) (Df := Df n) (Dphi := Dphi n)
+      (noise := noise n) (psi := psi n) (stepSq := stepSq n)
+      (varianceNorm := varianceNorm n) (stepNorm := stepNorm n)
+      (alphaPhi := alphaPhi) (h := h) (psiNext := psiNext n)
+      (varianceRms := varianceRms n) (stepRms := stepRms n)
+      hh halphaPhi.le (hFplus n hn) (hDf_int n hn) (hDphi_int n hn)
+      (hnoise_int n hn) (hpsi_int n hn) (hstepSq_int n hn)
+      (hraw_point n hn) (hpsi n hn) (hdf_point n hn)
+      (hstepRms_sq n hn) (hphi_point n hn) (hvariance_nonneg n hn)
+      (hstep_nonneg n hn) (hvariance_mem n hn) (hstep_mem n hn)
+      (hnoise_point n hn) (hvariance_root n hn) (hstep_root n hn)
 
 /-- Bochner-integral non-smooth Chewi Theorem 12.1 rate. -/
 theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components
