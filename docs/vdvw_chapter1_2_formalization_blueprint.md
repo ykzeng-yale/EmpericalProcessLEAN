@@ -110,7 +110,9 @@ The fixed finite-code compression special case is also compiled as
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_fintype_scalarQuantizer_decode_error_nat_poly`,
 where `Finset.univ` supplies the code set and the normalized logarithmic
-growth is degree zero.
+growth is degree zero.  The theorem-facing centered untruncated convergence
+consumer for this fixed finite-code route is
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_fintype_scalarQuantizer_decode_error_nat_poly`.
 Do not rebuild those closed endpoints or add more aliases around them.
 
 The next proof batch should target new upstream mathematics.  The most

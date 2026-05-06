@@ -93,7 +93,10 @@ is also compiled through
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_fintype_scalarQuantizer_decode_error_nat_poly`
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_fintype_scalarQuantizer_decode_error_nat_poly`,
-using `Finset.univ` and a degree-zero polynomial bound.
+using `Finset.univ` and a degree-zero polynomial bound.  This finite-code
+side-condition package is now consumed by the theorem-facing centered
+untruncated convergence endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_fintype_scalarQuantizer_decode_error_nat_poly`.
 
 Do not spend the next `/goal` continuation on another final endpoint alias,
 another finite-index/FDD/process congruence wrapper, another selected-route
@@ -102,10 +105,11 @@ exact theorem consumes it immediately.  The next theorem-facing batch should
 now supply actual upstream mathematics: a finite-code/compression theorem,
 VC/Sauer/finite-trace/threshold-grid/quantizer cardinality estimate, or
 selected empirical-cover tail/UI/ordinary-mean theorem that feeds the compiled
-fixed-radius route.  The fixed-finite-code route is now closed, so the next
-non-duplicative structural target should handle sample-size-dependent
-compression/code images or a true VC/Sauer/grid/threshold estimate not already
-covered by the existing threshold/full-subgraph packages.  If those
+fixed-radius route.  The fixed-finite-code route is now closed through the
+centered untruncated convergence endpoint, so the next non-duplicative
+structural target should handle sample-size-dependent compression/code images
+or a true VC/Sauer/grid/threshold estimate not already covered by the existing
+threshold/full-subgraph packages.  If those
 Theorem 2.4.3 entropy/tail lanes block after real Lean/search attempts, switch
 to an exact Chapter 1 process primitive (arbitrary-index VdV&W 1.4.8 FDD
 converse, separability/tightness/asymptotic-measurability, nonmeasurable

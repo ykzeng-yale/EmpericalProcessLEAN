@@ -46,10 +46,13 @@ The fixed finite-code compression special case is also closed through
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_fintype_scalarQuantizer_decode_error_nat_poly`
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_fintype_scalarQuantizer_decode_error_nat_poly`;
-it uses `Finset.univ` and degree-zero growth.  The next structural target
-therefore needs to go beyond fixed finite codes: sample-size-dependent
-compression/code images, or a genuine VC/Sauer/grid/threshold estimate not
-already covered by existing endpoint packages.
+it uses `Finset.univ` and degree-zero growth.  It now reaches centered
+untruncated convergence through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_fintype_scalarQuantizer_decode_error_nat_poly`.
+The next structural target therefore needs to go beyond fixed finite codes:
+sample-size-dependent compression/code images, or a genuine
+VC/Sauer/grid/threshold estimate not already covered by existing endpoint
+packages.
 
 Current `/goal` target override, 2026-05-06 after verified pushed head
 `fc98144 Add weak convergence target congruence`: treat the broad Codex goal
