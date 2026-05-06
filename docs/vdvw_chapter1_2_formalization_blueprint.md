@@ -123,6 +123,21 @@ whole-sample-path congruence wrappers.  This remains a finite-dimensional
 replacement primitive only; arbitrary-index FDD converse and process
 separability/tightness/asymptotic-measurability remain open.
 
+2026-05-06 finite pointwise-code-set structural bridge: the generic empirical
+cover layer now has finite code-set primitives
+`finite_pointwiseApproxCode_image_of_mem_codeSet`,
+`pointwiseApproxCode_image_toFinset_card_le_codeSet`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_pointwise_approx_codeSet_card_le`,
+and
+`empiricalL1CoveringNumber_le_of_finite_pointwise_approx_codeSet_card_le`.
+The Theorem 2.4.3 random-cover layer consumes them through
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_codeSet_cardinality_bound_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_pointwise_approx_codeSet_cardinality_bound_samplePath`.
+This is the reusable upstream bridge for finite compression/code-image routes;
+the next target is to instantiate it with new polynomial code-image bounds or
+to work on selected tail/UI and Chapter 1 arbitrary-map/process blockers.
+
 Current operational target, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: the active
 Codex `/goal` remains broad and cannot be edited in place, so this paragraph

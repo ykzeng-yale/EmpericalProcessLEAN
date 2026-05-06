@@ -117,6 +117,28 @@ arbitrary-map weak convergence.  Next work should return to the upstream
 Theorem 2.4.3 entropy/cardinality or selected tail/UI/ordinary-mean lanes, or
 to a genuinely stronger Chapter 1 process primitive.
 
+2026-05-06 finite pointwise-code-set random-cover bridge: local search found
+the finite-image pointwise-code empirical-cover primitive
+`empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le`, the
+coordinate-code and threshold-code-set specializations, and mathlib finite
+image/cardinality lemmas, but no reusable generic finite code-set bridge at
+the `CoveringPrimitive` layer or generic random-cover lift.  `CoveringPrimitive.lean`
+now proves
+`finite_pointwiseApproxCode_image_of_mem_codeSet`,
+`pointwiseApproxCode_image_toFinset_card_le_codeSet`,
+`nonempty_finiteEmpiricalL1CoverAtCard_of_finite_pointwise_approx_codeSet_card_le`,
+and
+`empiricalL1CoveringNumber_le_of_finite_pointwise_approx_codeSet_card_le`.
+`Theorem243.lean` now lifts this to
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_codeSet_cardinality_bound_samplePath`
+and the all-positive-radius wrapper
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_pointwise_approx_codeSet_cardinality_bound_samplePath`.
+This is upstream structural content for sample-size-dependent compression and
+code-image arguments; it is not another endpoint alias.  Next proof work
+should either instantiate this bridge with a genuinely new polynomial
+code-image/cardinality theorem, prove a selected tail/UI/ordinary-mean
+condition, or move to a stronger Chapter 1 arbitrary-map/process primitive.
+
 Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: local `main`
 is synced with `origin/main`, the worktree is clean, and the active Codex goal

@@ -43,6 +43,13 @@ now has `aemeasurable_fdd_congr_finite_coord_ae` and
 be transported under a.e. equality on just the selected coordinate set.  This
 is a finite-FDD support primitive, not the arbitrary-index FDD converse.
 
+2026-05-06 finite code-set compression bridge: `CoveringPrimitive.lean` now
+has generic finite pointwise-code-set empirical-cover/cardinality primitives,
+and `Theorem243.lean` now lifts them to random empirical-cover domination via
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_codeSet_cardinality_bound_samplePath`
+and its all-positive-radius wrapper.  This feeds future compression/code-image
+entropy routes without adding a new endpoint alias.
+
 Current `/goal` target override, 2026-05-06 after verified pushed head
 `ce2bb2c Add Theorem 2.4.3 scalar quantizer polynomial route`: local `main`
 equals `origin/main` and the worktree is clean.  The broad Codex goal object

@@ -1329,6 +1329,102 @@ theorem empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le
       hcard_le
 
 /--
+If all pointwise approximation codes lie in a supplied finite code set, then
+the realized code image is finite.
+-/
+theorem finite_pointwiseApproxCode_image_of_mem_codeSet
+    {Index : Type v} {Code : Type*} {indexClass : Set Index}
+    (code : Index -> Code) (codeSet : Finset Code)
+    (hcode_mem : ∀ index, index ∈ indexClass -> code index ∈ codeSet) :
+    (code '' indexClass).Finite := by
+  classical
+  refine codeSet.finite_toSet.subset ?_
+  rintro coded ⟨index, hindex, rfl⟩
+  exact hcode_mem index hindex
+
+/--
+The realized code-image cardinality is bounded by the supplied finite code-set
+cardinality.
+-/
+theorem pointwiseApproxCode_image_toFinset_card_le_codeSet
+    {Index : Type v} {Code : Type*} {indexClass : Set Index}
+    (code : Index -> Code) (codeSet : Finset Code)
+    (hcode_mem : ∀ index, index ∈ indexClass -> code index ∈ codeSet) :
+    (finite_pointwiseApproxCode_image_of_mem_codeSet code codeSet hcode_mem).toFinset.card ≤
+      codeSet.card := by
+  classical
+  apply Finset.card_le_card
+  intro coded hcoded
+  have hcoded_set :
+      coded ∈ code '' indexClass :=
+    ((finite_pointwiseApproxCode_image_of_mem_codeSet code codeSet hcode_mem).mem_toFinset).1
+      hcoded
+  rcases hcoded_set with ⟨index, hindex, rfl⟩
+  exact hcode_mem index hindex
+
+/--
+Padded-cardinality cover from a finite code set whose equal-code classes are
+pointwise close on the empirical sample.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_of_finite_pointwise_approx_codeSet_card_le
+    {Observation : Type u} {Index : Type v} {Code : Type*} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (code : Index -> Code) (codeSet : Finset Code)
+    (hcode_mem : ∀ index, index ∈ indexClass -> code index ∈ codeSet)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hpoint :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          code index = code center ->
+            ∀ sampleIndex : Fin n,
+              |classFun index (sample sampleIndex) -
+                classFun center (sample sampleIndex)| ≤ epsilon)
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (hcard_le : codeSet.card ≤ cardinality) :
+    Nonempty
+      (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality) := by
+  exact
+    nonempty_finiteEmpiricalL1CoverAtCard_of_finite_pointwise_approx_code_card_le
+      code
+      (finite_pointwiseApproxCode_image_of_mem_codeSet code codeSet hcode_mem)
+      hepsilon_nonneg hpoint hindexClass
+      ((pointwiseApproxCode_image_toFinset_card_le_codeSet code codeSet hcode_mem).trans
+        hcard_le)
+
+/--
+Numeric empirical-covering-number bound from a finite code set whose equal-code
+classes are pointwise close on the empirical sample.
+-/
+theorem empiricalL1CoveringNumber_le_of_finite_pointwise_approx_codeSet_card_le
+    {Observation : Type u} {Index : Type v} {Code : Type*} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (code : Index -> Code) (codeSet : Finset Code)
+    (hcode_mem : ∀ index, index ∈ indexClass -> code index ∈ codeSet)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hpoint :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          code index = code center ->
+            ∀ sampleIndex : Fin n,
+              |classFun index (sample sampleIndex) -
+                classFun center (sample sampleIndex)| ≤ epsilon)
+    (hcard_le : codeSet.card ≤ cardinality) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+      (cardinality : ℕ∞) := by
+  exact
+    empiricalL1CoveringNumber_le_of_finite_pointwise_approx_code_card_le
+      code
+      (finite_pointwiseApproxCode_image_of_mem_codeSet code codeSet hcode_mem)
+      hepsilon_nonneg hpoint
+      ((pointwiseApproxCode_image_toFinset_card_le_codeSet code codeSet hcode_mem).trans
+        hcard_le)
+
+/--
 If each sample coordinate of a code takes values in a finite coordinate code
 set, then the realized vector-code image is finite.
 -/
