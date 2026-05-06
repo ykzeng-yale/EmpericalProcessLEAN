@@ -638,6 +638,43 @@ inductive SuppliedRealMiddleCDFPartitionChain
       SuppliedRealMiddleCDFPartitionChain μ epsilon a b
 
 /--
+A strict finite endpoint grid with small adjacent CDF left-limit increments
+produces a cutpoint chain.
+
+This is the endpoint-list handoff for the future quantile construction in
+Durrett Theorem 2.4.9: after choosing finitely many real cutpoints, it is
+enough to prove strict order and adjacent increment bounds.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid
+    {μ : Measure ℝ} {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    (hinc : ∀ cell : Fin (cells + 1),
+      Function.leftLim (ProbabilityTheory.cdf μ) (endpoint (Fin.succ cell)) -
+        ProbabilityTheory.cdf μ (endpoint (Fin.castSucc cell)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) := by
+  induction cells with
+  | zero =>
+      refine SuppliedRealMiddleCDFPartitionChain.one ?_ ?_
+      · simpa using hstrict (show (0 : Fin 2) < Fin.last 1 by decide)
+      · simpa using hinc (0 : Fin 1)
+  | succ cells ih =>
+      let endpoint' : Fin (cells + 2) -> ℝ := fun i => endpoint (Fin.castSucc i)
+      have hstrict' : StrictMono endpoint' := by
+        intro i j hij
+        exact hstrict (Fin.castSucc_lt_castSucc_iff.mpr hij)
+      have hinc' : ∀ cell : Fin (cells + 1),
+          Function.leftLim (ProbabilityTheory.cdf μ) (endpoint' (Fin.succ cell)) -
+            ProbabilityTheory.cdf μ (endpoint' (Fin.castSucc cell)) < epsilon := by
+        intro cell
+        simpa [endpoint'] using hinc (Fin.castSucc cell)
+      have hchain := ih endpoint' hstrict' hinc'
+      refine SuppliedRealMiddleCDFPartitionChain.snoc hchain ?_ ?_
+      · simpa [endpoint'] using hstrict (Fin.castSucc_lt_last (Fin.last (cells + 1)))
+      · simpa [endpoint'] using hinc (Fin.last (cells + 1))
+
+/--
 Every finite small-increment cutpoint chain supplies a bounded middle CDF
 partition.
 -/

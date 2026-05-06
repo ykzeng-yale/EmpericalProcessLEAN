@@ -170,6 +170,9 @@ Compiled first source wrappers:
   `SuppliedRealMiddleCDFPartitionChain`,
   `exists_realMiddleCDFPartition_of_cutpoint_chain`, and
   `durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain`.
+- Durrett Theorem 2.4.9 endpoint-grid-to-cutpoint-chain handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid` and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`.
 - Durrett Theorem 2.4.9 cutpoint-chain-to-GC handoff:
   `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`.
 
@@ -211,10 +214,11 @@ existing `RealHalfLineGC.lean` fixed-endpoint and half-line infrastructure and
 filling the arbitrary-CDF finite quantile grid/squeezing layer.  The supplied
 endpoint-grid and supplied middle-CDF-partition handoffs now compile, and the
 one-cell, two-cell, right-append, and finite cutpoint-chain middle-partition
-consumers now compile.  A Durrett-named cutpoint-chain-to-GC handoff also
-compiles.  The remaining theorem-core primitive is the arbitrary-distribution
-construction of those cutpoint chains for intervals whose total CDF increment
-is not already below the requested radius.
+consumers now compile.  A strict endpoint-grid-to-cutpoint-chain handoff and a
+Durrett-named cutpoint-chain-to-GC handoff also compile.  The remaining
+theorem-core primitive is the arbitrary-distribution construction of those
+strict finite endpoint grids for intervals whose total CDF increment is not
+already below the requested radius.
 
 ### Lane D: CLT and characteristic functions
 

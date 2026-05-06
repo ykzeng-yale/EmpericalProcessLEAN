@@ -677,6 +677,25 @@ theorem durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain
   exists_realMiddleCDFPartition_of_cutpoint_chain chain
 
 /--
+Durrett 2019, Theorem 2.4.9 endpoint-grid-to-cutpoint-chain package.
+
+After the source proof has chosen finitely many strict real endpoints with
+small adjacent CDF left-limit increments, this wrapper packages them as the
+cutpoint chain consumed by the middle-partition and GC handoffs.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid
+    {P : Measure ℝ} {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    (hinc : ∀ cell : Fin (cells + 1),
+      Function.leftLim (ProbabilityTheory.cdf P) (endpoint (Fin.succ cell)) -
+        ProbabilityTheory.cdf P (endpoint (Fin.castSucc cell)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_endpointGrid
+    endpoint hstrict hinc
+
+/--
 Durrett 2019, Theorem 2.4.9, middle-partition-to-GC package.
 
 This isolates the remaining arbitrary-distribution primitive: for every
