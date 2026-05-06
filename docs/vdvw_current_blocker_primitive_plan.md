@@ -117,8 +117,10 @@ again with the polynomial cardinality/compression hypothesis explicit.
 The same hypothesis now also feeds the book-facing variable truncated entropy
 package through
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_roundingQuantizer_uniform_abs_bound_nat_poly`.
+The same route now reaches the final local `P`-GC and in-mean package
+`VdVWTheorem243_roundingQuantizer_uniform_abs_bound_nat_poly_pGlivenkoCantelli_and_inMean`.
 The remaining non-duplicative quantizer task is therefore not another
-selected/entropy endpoint; it is a genuine finite-code compression,
+selected/entropy/final endpoint; it is a genuine finite-code compression,
 VC/Sauer-style, or other structural theorem that supplies the polynomial
 cardinality bound.
 

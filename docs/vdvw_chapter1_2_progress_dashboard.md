@@ -120,8 +120,10 @@ untruncated convergence through
 with that structural cardinality hypothesis still explicit.  It also feeds the
 book-facing variable truncated entropy condition through
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_roundingQuantizer_uniform_abs_bound_nat_poly`.
+The same route reaches the final local `P`-GC and in-mean package
+`VdVWTheorem243_roundingQuantizer_uniform_abs_bound_nat_poly_pGlivenkoCantelli_and_inMean`.
 Future quantizer progress should prove the actual compression/VC/Sauer
-cardinality estimate, not another entropy or selected-side wrapper.
+cardinality estimate, not another selected, entropy, or endpoint wrapper.
 The signed arbitrary-map asymptotic-measurability layer now also implies the
 lower-shifted/canonical shifted predicates through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_lowerShifted` and
