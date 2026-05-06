@@ -50,6 +50,15 @@ converse, separability/tightness/asymptotic-measurability, or nonmeasurable
 outer-cover signed weak convergence.  Do not add more endpoint aliases around
 already-closed Theorem 2.4.3 routes.
 
+The adjacent raw finite-vector transport is now compiled as
+`vdVW148_boundedProcess_finiteRestrict_hasLaw_of_hasLaw`,
+`vdVW148_boundedProcess_finiteRestrict_identDistrib_of_identDistrib`, and
+`vdVW148_boundedProcess_finiteRestrict_tendstoInDistribution_of_tendstoInDistribution`.
+These close direct finite-dimensional HasLaw/IdentDistrib/weak-convergence
+transport to finite restrictions of bounded `ell_infty(T)` process maps, while
+leaving the arbitrary-index FDD converse and process separability/tightness
+blockers open.
+
 The measure-level Portmanteau continuity-set
 implication and closed/open converse wrappers are now compiled as well.  The
 norm-tail tightness characterization for probability-measure families on

@@ -140,6 +140,17 @@ strong enough to imply it, or a Chapter 1 process primitive upstream of the
 arbitrary-index VdV&W 1.4.8 converse.  Do not spend the next run on another
 endpoint alias for an already-consumed Theorem 2.4.3 route.
 
+2026-05-06 finite-dimensional process transport update:
+`FiniteDimensional.lean` now proves direct transport from raw finite-vector
+HasLaw, IdentDistrib, and TendstoInDistribution hypotheses to the corresponding
+finite-coordinate restrictions of bounded `ell_infty(T)` process maps.  The
+compiled declarations are
+`vdVW148_boundedProcess_finiteRestrict_hasLaw_of_hasLaw`,
+`vdVW148_boundedProcess_finiteRestrict_identDistrib_of_identDistrib`, and
+`vdVW148_boundedProcess_finiteRestrict_tendstoInDistribution_of_tendstoInDistribution`.
+This is still finite-dimensional support only, not the arbitrary-index VdV&W
+1.4.8 converse.
+
 The first-sample `UnifIntegrable` route now also reaches untruncated centered
 convergence directly, so future work should prove the UI/tail/mean or
 structural-cardinality input consumed by that endpoint rather than add another

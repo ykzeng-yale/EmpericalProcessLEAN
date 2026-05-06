@@ -100,6 +100,20 @@ finite-index law, identically-distributed, weak-convergence, and
 asymptotic-tightness wrappers are support infrastructure already compiled, not
 the next target.
 
+2026-05-06 Chapter 1 FDD transport closure: local search found mathlib
+`HasLaw.congr`, `IdentDistrib.of_ae_eq`, and `TendstoInDistribution.congr`,
+but no local raw finite-vector law transport to the finite-coordinate
+restriction of `VdVWEllInfty.processMap`.  `FiniteDimensional.lean` now adds
+`vdVW148_boundedProcess_finiteRestrict_hasLaw_of_hasLaw`,
+`vdVW148_boundedProcess_finiteRestrict_identDistrib_of_identDistrib`, and
+`vdVW148_boundedProcess_finiteRestrict_tendstoInDistribution_of_tendstoInDistribution`.
+These let raw finite-dimensional HasLaw/IdentDistrib/TendstoInDistribution
+hypotheses be consumed directly by finite restrictions of bounded
+`ell_infty(T)` process maps.  This closes another finite-dimensional support
+gap only; the arbitrary-index VdV&W 1.4.8 converse, process separability,
+asymptotic tightness/measurability, and nonmeasurable outer-cover signed weak
+convergence remain the Chapter 1 process blockers.
+
 Rebased next-target rule: do not add another alias or endpoint wrapper for a
 route already listed below unless it consumes a genuinely new theorem
 hypothesis.  The highest-value Theorem 2.4.3 work is now upstream: prove the
