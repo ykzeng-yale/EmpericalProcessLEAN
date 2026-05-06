@@ -56,8 +56,8 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after rebasing over remote main `76d0628`
-(`Rebase VdVW goal after weak convergence congruence`) on 2026-05-06 and
+Current manual goal frontier after rebasing over remote main `c99bb86`
+(`Add Theorem 2.4.3 finite code convergence endpoint`) on 2026-05-06 and
 focused Lean verification of the Chapter 11.5 RAM block-model plus Exercise
 9.3 scalar Hopf-Lax interpolation layer:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
@@ -162,9 +162,9 @@ descent certificates.  The newest local layer imports
 `IsChewi114AMDescentCertificate.exists_tail_gap_le_eps_of_log_burnin`.
 Chapter 11.4 is now stable substrate rather than the active target.  The
 active route is to finish Theorem 11.5 RAM as a theorem-sized packet: discharge
-the selected Hopf-Lax/Moreau model value from Chewi's source candidate, wire
-the compiled strong Exercise 9.3 interpolation bridge into the strong RAM
-certificate, add the analogous zero-curvature source bridge, and then move
+the selected Hopf-Lax/Moreau model value from Chewi's source candidate and the
+remaining interpolant admissibility/radius side conditions needed by the
+compiled strong and weak Exercise 9.3 certificate constructors, and then move
 immediately to Sinkhorn Theorems 11.7/11.8 from ABP/mirror-descent supplied
 interfaces and Chapter 12 SMPGD before the ASGD CLT.  Generalize 10.11/10.13
 to a custom arbitrary norm/dual-norm interface or add an exact `sInf` wrapper
@@ -218,9 +218,15 @@ block expectation and source convexity algebra now feed the certificate
 `chewi115_strong_hopf_lax_bound_of_chewi93`, and
 `chewi115_strong_hopf_lax_bound_of_interpolant`, proving the scalar
 positive-curvature cancellation, zero-curvature optimized-interpolant algebra,
-and source factor rewrite needed by Theorem 11.5.  The next RAM packet should
-discharge the selected Hopf-Lax/Moreau model value and the remaining weak
-source `hopf_lax_bound` field, not redo scalar recurrence or block averaging.
+and source factor rewrite needed by Theorem 11.5.  The newest source
+certificate packet adds `chewi93_hopf_lax_zero_gap_bound_of_radius`,
+`chewi115_zero_hopf_lax_bound_of_interpolant`,
+`chewi115_strong_hopf_lax_certificate_of_interpolants`, and
+`chewi115_zero_hopf_lax_certificate_of_interpolants`, so both strong and weak
+`hopf_lax_bound` fields can be built directly from source interpolant bounds.
+The next RAM packet should discharge the selected Hopf-Lax/Moreau model value
+and its candidate side conditions, not redo scalar recurrence or block
+averaging.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

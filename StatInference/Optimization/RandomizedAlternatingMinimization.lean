@@ -470,6 +470,105 @@ theorem chewi115_strong_hopf_lax_bound_of_interpolant
       hh hden hinterp)
 
 /--
+Chewi Exercise 9.3 zero-curvature bound with the radius comparison separated
+out.  The scalar Exercise 9.3 interpolant gives the coefficient
+`h / distSq`; the source radius estimate `distSq <= h * R^2` weakens it to the
+Theorem 11.5 form with denominator `R^2`.
+-/
+theorem chewi93_hopf_lax_zero_gap_bound_of_radius
+    {hopfGap gap distSq h R : ℝ}
+    (hh : 0 < h) (hgap : 0 ≤ gap) (hdist : 0 < distSq) (hR : 0 < R)
+    (hradius : distSq ≤ h * R ^ (2 : ℕ))
+    (hinterp :
+      hopfGap ≤
+        (1 - h * gap / distSq) * gap +
+          ((h * gap / distSq) ^ (2 : ℕ) / (2 * h)) * distSq) :
+    hopfGap ≤ (1 - gap / (2 * R ^ (2 : ℕ))) * gap := by
+  have hzero :=
+    chewi93_hopf_lax_zero_gap_bound_of_interpolant
+      (hopfGap := hopfGap) (gap := gap) (distSq := distSq) (h := h)
+      hh hdist.ne' hinterp
+  have hR_sq_pos : 0 < R ^ (2 : ℕ) := pow_pos hR _
+  have hcoef :
+      gap / (2 * R ^ (2 : ℕ)) ≤ h * gap / (2 * distSq) := by
+    rw [div_le_div_iff₀ (by positivity : 0 < 2 * R ^ (2 : ℕ))
+      (by positivity : 0 < 2 * distSq)]
+    nlinarith [mul_le_mul_of_nonneg_left hradius hgap]
+  have hfactor :
+      1 - h * gap / (2 * distSq) ≤ 1 - gap / (2 * R ^ (2 : ℕ)) := by
+    nlinarith
+  exact hzero.trans (mul_le_mul_of_nonneg_right hfactor hgap)
+
+/--
+Chewi Theorem 11.5 zero-curvature source bridge from the Exercise 9.3
+interpolant.  In the RAM proof `h = 1/(1-alphaF)`; if `0 <= alphaF < 1`, then
+`h >= 1`, so the source distance bound `distSq <= R_beta^2` is enough for the
+radius comparison needed by `chewi93_hopf_lax_zero_gap_bound_of_radius`.
+-/
+theorem chewi115_zero_hopf_lax_bound_of_interpolant
+    {hopfGap gap distSq alphaF Rbeta : ℝ}
+    (halphaF_nonneg : 0 ≤ alphaF) (halphaF_lt : alphaF < 1)
+    (hgap : 0 ≤ gap) (hdist : 0 < distSq) (hRbeta : 0 < Rbeta)
+    (hdist_le_radius : distSq ≤ Rbeta ^ (2 : ℕ))
+    (hinterp :
+      hopfGap ≤
+        (1 - (1 / (1 - alphaF)) * gap / distSq) * gap +
+          ((((1 / (1 - alphaF)) * gap / distSq) ^ (2 : ℕ)) /
+              (2 * (1 / (1 - alphaF)))) *
+            distSq) :
+    hopfGap ≤ (1 - gap / (2 * Rbeta ^ (2 : ℕ))) * gap := by
+  have hdenF_pos : 0 < 1 - alphaF := by nlinarith
+  have hh : 0 < 1 / (1 - alphaF) := one_div_pos.mpr hdenF_pos
+  have hstep_ge_one : 1 ≤ 1 / (1 - alphaF) := by
+    rw [le_div_iff₀ hdenF_pos]
+    nlinarith
+  have hdist_le_scaled :
+      distSq ≤ (1 / (1 - alphaF)) * Rbeta ^ (2 : ℕ) := by
+    calc
+      distSq ≤ Rbeta ^ (2 : ℕ) := hdist_le_radius
+      _ = 1 * Rbeta ^ (2 : ℕ) := by ring
+      _ ≤ (1 / (1 - alphaF)) * Rbeta ^ (2 : ℕ) :=
+          mul_le_mul_of_nonneg_right hstep_ge_one (sq_nonneg Rbeta)
+  exact chewi93_hopf_lax_zero_gap_bound_of_radius
+    (hopfGap := hopfGap) (gap := gap) (distSq := distSq)
+    (h := 1 / (1 - alphaF)) (R := Rbeta)
+    hh hgap hdist hRbeta hdist_le_scaled hinterp
+
+/--
+Source-facing strong RAM certificate constructor from Exercise 9.3 interpolant
+bounds.  This packages the compiled conditional-upper layer together with the
+positive-curvature Hopf-Lax interpolation algebra into the exact certificate
+used by the strong Theorem 11.5 rate.
+-/
+theorem chewi115_strong_hopf_lax_certificate_of_interpolants
+    {expectedGap hopfGap distSq : ℕ -> ℝ} {alphaF alphaG : ℝ} {D : ℕ}
+    (halphaF : alphaF < 1) (halphaG : -1 < alphaG)
+    (hgap_nonneg : ∀ n, 0 ≤ expectedGap n)
+    (hcond : ∀ n,
+      expectedGap (n + 1) ≤
+        (((D : ℝ) - 1) / (D : ℝ)) * expectedGap n +
+          (1 / (D : ℝ)) * hopfGap n)
+    (hinterp : ∀ n,
+      hopfGap n ≤
+        (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) * expectedGap n +
+          (((1 -
+                    1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) ^
+                  (2 : ℕ)) /
+                (2 * (1 / (1 - alphaF))) -
+              ((alphaF + alphaG) / 2) *
+                (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) *
+                  (1 -
+                    1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF))))) *
+            distSq n) :
+    IsChewi115RAMStrongHopfLaxCertificate expectedGap hopfGap alphaF alphaG D :=
+  ⟨hgap_nonneg, hcond,
+    fun n =>
+      chewi115_strong_hopf_lax_bound_of_interpolant
+        (hopfGap := hopfGap n) (gap := expectedGap n) (distSq := distSq n)
+        (alphaF := alphaF) (alphaG := alphaG)
+        halphaF halphaG (hinterp n)⟩
+
+/--
 The Jensen-shaped zero-curvature RAM recurrence is exactly the quadratic
 inverse-gap recurrence with denominator `K`.
 -/
@@ -723,6 +822,39 @@ structure IsChewi115RAMZeroHopfLaxCertificate
   hopf_lax_bound : ∀ n,
     hopfGap n ≤
       (1 - expectedGap n / (2 * Rbeta ^ (2 : ℕ))) * expectedGap n
+
+/--
+Source-facing zero-curvature RAM certificate constructor from Exercise 9.3
+interpolant bounds.  The radius and `0 <= alphaF < 1` side conditions are the
+source-side facts that weaken Exercise 9.3's `h / distSq` denominator to the
+Theorem 11.5 denominator `R_beta^2`.
+-/
+theorem chewi115_zero_hopf_lax_certificate_of_interpolants
+    {expectedGap hopfGap distSq : ℕ -> ℝ} {alphaF Rbeta : ℝ} {D : ℕ}
+    (halphaF_nonneg : 0 ≤ alphaF) (halphaF_lt : alphaF < 1)
+    (hRbeta : 0 < Rbeta)
+    (hgap_nonneg : ∀ n, 0 ≤ expectedGap n)
+    (hdist_pos : ∀ n, 0 < distSq n)
+    (hdist_le_radius : ∀ n, distSq n ≤ Rbeta ^ (2 : ℕ))
+    (hcond : ∀ n,
+      expectedGap (n + 1) ≤
+        (((D : ℝ) - 1) / (D : ℝ)) * expectedGap n +
+          (1 / (D : ℝ)) * hopfGap n)
+    (hinterp : ∀ n,
+      hopfGap n ≤
+        (1 - (1 / (1 - alphaF)) * expectedGap n / distSq n) *
+            expectedGap n +
+          ((((1 / (1 - alphaF)) * expectedGap n / distSq n) ^ (2 : ℕ)) /
+              (2 * (1 / (1 - alphaF)))) *
+            distSq n) :
+    IsChewi115RAMZeroHopfLaxCertificate expectedGap hopfGap D Rbeta :=
+  ⟨hgap_nonneg, hcond,
+    fun n =>
+      chewi115_zero_hopf_lax_bound_of_interpolant
+        (hopfGap := hopfGap n) (gap := expectedGap n) (distSq := distSq n)
+        (alphaF := alphaF) (Rbeta := Rbeta)
+        halphaF_nonneg halphaF_lt (hgap_nonneg n) (hdist_pos n) hRbeta
+        (hdist_le_radius n) (hinterp n)⟩
 
 /-- The weak Hopf-Lax bridge supplies the zero-curvature RAM gap certificate. -/
 theorem IsChewi115RAMZeroHopfLaxCertificate.toGapCertificate
