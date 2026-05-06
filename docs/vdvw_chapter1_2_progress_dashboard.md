@@ -23,7 +23,9 @@ threshold/grid/finite-trace/full-subgraph VC routes, canonical iid
 sample-process specializations, finite-class SLLN endpoints, full-subgraph
 `P`-GC plus in-mean packages, and Lemma 2.4.5 reverse/cofiltration consumers.
 Chapter 1 support also includes the measure-level weak-convergence/tightness
-wrappers and raw bounded-process forward FDD/tightness/congruence interfaces.
+wrappers and raw bounded-process forward FDD/tightness/congruence interfaces,
+including direct coordinate-law consequences for process weak convergence and
+process asymptotic tightness.
 This run additionally closes the generic centered-convergence endpoint bundle
 and the explicit selected finite-net tail/UI route to `P`-GC plus in-mean via
 `VdVWTheorem243_pGlivenkoCantelli_and_inMean_of_centered_untruncated_convergesInOuterProbabilityConst_zero`

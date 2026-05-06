@@ -1513,6 +1513,41 @@ theorem VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw
   simpa [hlim] using hmap.congr_eventually hsrc
 
 /--
+Process-level weak convergence implies weak convergence of every single
+coordinate law.
+
+This is a coordinate version of `finiteDimensionalLaw` for the local bounded
+`ell_infty(T)` process interface.  It remains the forward direction only, not
+the arbitrary-index FDD converse in VdV&W 1.4.8.
+-/
+theorem VdVWEllInftyProcessWeakConvergence.coordinateLaw
+    {ι : Type*} {Ω : ι -> Type*} {Ωlim : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    (X : (i : ι) -> Ω i -> T -> ℝ)
+    (Z : Ωlim -> T -> ℝ)
+    (hbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hbounded i)) (μ i))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ l)
+    (t : T) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun i =>
+        (vdVWEllInftyProcessLaw (T := T) (μ i) (X i) (hbounded i) (hX i)).map
+          ((VdVWEllInfty.evalCLM (T := T) t).continuous.measurable.aemeasurable))
+      l
+      ((vdVWEllInftyProcessLaw (T := T) μlim Z hZbounded hZ).map
+        ((VdVWEllInfty.evalCLM (T := T) t).continuous.measurable.aemeasurable)) :=
+  h.map_continuous (VdVWEllInfty.evalCLM (T := T) t).continuous
+
+/--
 Process-level asymptotic tightness for bounded raw processes, expressed as
 ordinary asymptotic tightness of their `ell_infty(T)` laws.
 
@@ -1669,6 +1704,35 @@ theorem VdVWEllInftyProcessAsymptoticallyTight.finiteDimensionalLaw
   exact hmap.congr_eventually (Filter.Eventually.of_forall fun i =>
     (vdVWEllInftyProcessLaw_map_finiteRestrict
       (T := T) (P := μ i) (X := X i) (hbounded := hbounded i) (hX := hX i) I).symm)
+
+/--
+Process-level asymptotic tightness implies asymptotic tightness of every
+single-coordinate law.
+
+This is the coordinate version of the forward finite-dimensional tightness
+handoff.  It is still a continuous-image result, not the VdV&W arbitrary-index
+tightness/FDD converse.
+-/
+theorem VdVWEllInftyProcessAsymptoticallyTight.coordinateLaw
+    {ι : Type*} {Ω : ι -> Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    (X : (i : ι) -> Ω i -> T -> ℝ)
+    (hbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hbounded i)) (μ i))
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessAsymptoticallyTight
+      (T := T) μ X hbounded hX l)
+    (t : T) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun i =>
+        (vdVWEllInftyProcessLaw (T := T) (μ i) (X i) (hbounded i) (hX i)).map
+          ((VdVWEllInfty.evalCLM (T := T) t).continuous.measurable.aemeasurable))
+      l :=
+  h.map_continuous (VdVWEllInfty.evalCLM (T := T) t).continuous
 
 /--
 Sequential weak convergence of bounded `ell_infty(T)` process laws implies

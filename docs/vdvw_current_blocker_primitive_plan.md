@@ -445,6 +445,17 @@ process separability/tightness/asymptotic-measurability, nonmeasurable signed
 outer-cover weak convergence, or full arbitrary-map extended-real measurable
 cover existence.
 
+2026-05-06 process coordinate-law follow-up: local search found raw
+bounded-process finite-dimensional law consequences and measure-level
+coordinate weak-convergence/tightness wrappers, but no direct single-coordinate
+law consequence for the `VdVWEllInftyProcessWeakConvergence` and
+`VdVWEllInftyProcessAsymptoticallyTight` interfaces.  `FiniteDimensional.lean`
+now proves `VdVWEllInftyProcessWeakConvergence.coordinateLaw` and
+`VdVWEllInftyProcessAsymptoticallyTight.coordinateLaw`.  These are forward
+continuous-image process primitives for Chapter 1.4/1.5 arguments; they do
+not assert the arbitrary-index VdV&W 1.4.8 FDD converse or process
+separability/tightness criteria.
+
 Authoritative operational prompt, 2026-05-06 after the verified
 original-cover truncation/polynomial entropy bridges and the quantizer
 random-cover lifts, plus the earlier truncated threshold trace algebra,
