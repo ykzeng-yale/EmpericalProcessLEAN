@@ -70,11 +70,11 @@ unless a new exact statement directly consumes them.
 
 ## Current `/goal` Target
 
-Authoritative `/goal` rebase, 2026-05-06 after the centered endpoint bundle
-and explicit-tail/UI endpoint consumer: local `main` should be kept synced
-with `origin/main`, and the active Codex goal object remains a broad
-orchestration label because it cannot be edited in place.  Use this paragraph,
-not older rebase paragraphs below, as the operative continuation prompt.
+Authoritative `/goal` rebase, 2026-05-06 after the selected fixed-radius
+endpoint consumer: local `main` should be kept synced with `origin/main`, and
+the active Codex goal object remains a broad orchestration label because it
+cannot be edited in place.  Use this paragraph, not older rebase paragraphs
+below, as the operative continuation prompt.
 
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
@@ -124,6 +124,16 @@ and
 This closes the theorem-facing endpoint for the honest extra-tail/UI route.
 It still does not prove that the bare textbook outer-probability random
 entropy assumption supplies selected tail/UI or ordinary-mean/UI.
+
+2026-05-06 selected fixed-radius endpoint consumer: after checking that no
+central `P`-GC plus in-mean consumer existed for
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions`, `Theorem243.lean` now
+proves `VdVWTheorem243_selectedFixedRadiusTail_pGlivenkoCantelli_and_inMean`.
+This is the canonical endpoint for the selected fixed-radius route: future
+Theorem 2.4.3 work should prove the selected side-condition package from a
+real entropy/tail/UI source, then consume this theorem directly.  Do not add
+more endpoint aliases unless an exact textbook corollary immediately needs a
+different statement shape.
 
 2026-05-06 fixed-FDD selected-coordinate congruence follow-up: local search
 found only the whole-sample-path finite-dimensional congruence wrappers

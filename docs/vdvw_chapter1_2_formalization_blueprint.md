@@ -89,10 +89,10 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-06 after the centered endpoint bundle and
-explicit-tail/UI endpoint consumer: the active Codex `/goal` object is broad
-and cannot be edited in place, so this paragraph is the blueprint-level
-replacement target.  Treat the existing Theorem 2.4.3
+Current operational target, 2026-05-06 after the selected fixed-radius
+endpoint consumer: the active Codex `/goal` object is broad and cannot be
+edited in place, so this paragraph is the blueprint-level replacement target.
+Treat the existing Theorem 2.4.3
 plumbing as closed support: selected fixed-radius tail/UI, finite code-set and
 natural-polynomial code-set routes, threshold/grid/finite-trace/full-subgraph
 VC routes, canonical iid sample-process specializations, finite-class SLLN
@@ -106,7 +106,11 @@ and
 so any future theorem that proves the explicit selected finite-net tail/UI
 condition can now directly produce both endpoint conclusions.  Do not spend
 the next batch on another wrapper or endpoint alias around these same routes
-unless an exact textbook statement immediately consumes it.
+unless an exact textbook statement immediately consumes it.  The central
+selected route is now exposed as
+`VdVWTheorem243_selectedFixedRadiusTail_pGlivenkoCantelli_and_inMean`; the
+next theorem-facing proof should supply `VdVWTheorem243SelectedFixedRadiusTailSideConditions`
+from a real entropy/tail/UI, ordinary-mean, or structural cardinality source.
 
 The exact Theorem 2.4.3 gap is now sharper: the textbook assumption is the
 generic random entropy condition

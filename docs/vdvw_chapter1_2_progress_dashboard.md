@@ -13,10 +13,10 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Authoritative current `/goal` override, 2026-05-06 after the centered endpoint
-bundle and explicit-tail/UI endpoint consumer: local `main` should equal
-`origin/main` after the verified push, and the broad Codex goal object should
-be treated only as an orchestration label.  The current Lean state has already
+Authoritative current `/goal` override, 2026-05-06 after the selected
+fixed-radius endpoint consumer: local `main` should equal `origin/main` after
+the verified push, and the broad Codex goal object should be treated only as
+an orchestration label.  The current Lean state has already
 closed the main Theorem 2.4.3 endpoint plumbing for selected fixed-radius
 tail/UI, finite code-set and natural-polynomial code-set routes,
 threshold/grid/finite-trace/full-subgraph VC routes, canonical iid
@@ -29,6 +29,10 @@ and the explicit selected finite-net tail/UI route to `P`-GC plus in-mean via
 `VdVWTheorem243_pGlivenkoCantelli_and_inMean_of_centered_untruncated_convergesInOuterProbabilityConst_zero`
 and
 `VdVWTheorem243_variableEntropy_tailExpectation_pGlivenkoCantelli_and_inMean`.
+The central selected fixed-radius route now also has
+`VdVWTheorem243_selectedFixedRadiusTail_pGlivenkoCantelli_and_inMean`, so the
+next proof target is the source theorem for selected side conditions, not more
+endpoint composition.
 
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
