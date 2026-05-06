@@ -2193,3 +2193,11 @@ and
 The stochastic entropy hypothesis can now feed fixed-`M` centered-truncated
 convergence once the remaining event comparison with
 `finiteNetHoeffdingUpper_eta + eta` is proved.
+
+2026-05-05 pointwise finite-net comparison consumer:
+`Theorem243.lean` now also proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_pointwise_finiteNetHoeffdingUpper`.
+This is a structural sufficient-condition endpoint: fixed-radius stochastic
+entropy plus eventual pointwise control of the centered truncated supremum by
+`finiteNetHoeffdingUpper_eta + eta` implies fixed-`M` centered-truncated
+convergence.

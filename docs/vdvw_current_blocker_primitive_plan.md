@@ -5929,3 +5929,17 @@ eventually for every fixed `eta > 0` and `epsilon > 0`.  This is now the next
 non-duplicative Theorem 2.4.3 proof target; do not replace it by another
 ordinary-mean or tail/UI wrapper unless a later exact assembly requires that
 route.
+
+2026-05-05 pointwise finite-net comparison consumer: local search confirmed the
+existing product-space symmetrization gives integrated/outer-expectation
+comparisons and that the old `hphi_id` pointwise product target was too strong
+for arbitrary classes.  `Theorem243.lean` now adds the exact sufficient
+condition
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_pointwise_finiteNetHoeffdingUpper`.
+It consumes the stochastic fixed-radius entropy hypothesis plus an eventual
+pointwise inequality
+`centeredTruncatedSup <= finiteNetHoeffdingUpper_eta + eta`.  This does not
+assert that arbitrary VdV&W classes satisfy the inequality; it provides a clean
+endpoint for structural finite-code/finite-trace/VC routes that can prove it.
+The non-finite arbitrary-class blocker remains the weaker probability-level
+event comparison or a genuine structural selected-cover theorem.

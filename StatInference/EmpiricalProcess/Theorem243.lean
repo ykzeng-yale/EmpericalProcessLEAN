@@ -25359,6 +25359,124 @@ theorem
       (hprob_bound := hprob_bound)
 
 /--
+Fixed-`M` centered-truncated convergence from stochastic entropy and an eventual
+pointwise finite-net comparison.
+
+This names the strongest useful event-comparison target: for every fixed
+positive radius, eventually the centered truncated supremum is pointwise bounded
+by the finite-net Hoeffding upper plus that radius.  Earlier proof searches
+showed that the old product-space `hphi_id` target was too strong in general;
+this declaration isolates the exact pointwise inequality that would be enough
+when a structural class argument can prove it.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_pointwise_finiteNetHoeffdingUpper
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hpointwise :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ≤
+          vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality eta n sample n) n M + eta) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_finiteNetHoeffdingUpper
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (cardinality := cardinality)
+      hM_pos hlog
+      (hprob_bound := by
+        intro eta heta epsilon hepsilon
+        filter_upwards [hpointwise eta heta] with n hpointwise_n
+        dsimp [VdVWOuterProbability]
+        refine measure_mono ?_
+        intro sample hsample
+        have hcentered_nonneg :
+            0 ≤
+              vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample :=
+          vdVWWeightedClassSupremum_nonneg indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        have hupper_nonneg :
+            0 ≤
+              vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality eta n sample n) n M + eta := by
+          have hfinite_nonneg :
+              0 ≤ vdVWTheorem243FiniteNetHoeffdingUpper
+                (cardinality eta n sample n) n M :=
+            vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+              (cardinality eta n sample n) n hM_pos.le
+          linarith
+        have hbad :
+            epsilon <
+              vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample := by
+          have hsample' :
+              epsilon <
+                dist
+                  (vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      vdVWTruncatedClassFun classFun envelope M index observation -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                  (0 : ℝ) := by
+            simpa using hsample
+          rw [Real.dist_eq, sub_zero, abs_of_nonneg hcentered_nonneg] at hsample'
+          exact hsample'
+        have hbad_upper :
+            epsilon <
+              vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality eta n sample n) n M + eta :=
+          lt_of_lt_of_le hbad (hpointwise_n sample)
+        have hmem :
+            epsilon <
+              dist
+                (vdVWTheorem243FiniteNetHoeffdingUpper
+                    (cardinality eta n sample n) n M + eta)
+                (0 : ℝ) := by
+          rw [Real.dist_eq, sub_zero, abs_of_nonneg hupper_nonneg]
+          exact hbad_upper
+        simpa using hmem)
+
+/--
 Fixed-`M` centered-truncated convergence from the faithful fixed-radius
 Theorem 2.4.3 handoff.
 

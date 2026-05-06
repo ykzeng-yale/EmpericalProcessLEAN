@@ -1844,6 +1844,14 @@ centered truncated supremum and `finiteNetHoeffdingUpper + eta` at fixed radius,
 or prove a structural selected-cover theorem that supplies one of the existing
 honest side-condition routes.
 
+2026-05-05 pointwise finite-net comparison endpoint:
+`Theorem243.lean` now records the corresponding pointwise sufficient condition
+as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_pointwise_finiteNetHoeffdingUpper`.
+This supports structural finite-code/trace/VC proof routes while preserving the
+general arbitrary-class blocker as the weaker probability-level event
+comparison.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
