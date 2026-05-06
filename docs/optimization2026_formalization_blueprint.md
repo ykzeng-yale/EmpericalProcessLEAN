@@ -56,10 +56,9 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after pushed Optimization commit `fcfa359`
-(`Add Chewi Sinkhorn last iterate wrapper`) on 2026-05-06 and focused Lean
-verification of the local Chewi Theorem 11.8 Sinkhorn mirror-descent
-certificate endpoint:
+Current manual goal frontier after pushed Optimization commit `1d21a6d`
+(`Add Chewi Sinkhorn mirror certificate`) on 2026-05-06 and focused
+Lean/module verification of the new Chapter 12 scalar SMPGD averaging spine:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -264,7 +263,16 @@ has now promoted this last-iterate wrapper to
 certificate with finite row/column Sinkhorn normalization KL identities,
 terminal KL nonnegativity, monotone row-marginal KL gap, and the zero-error
 Bregman recurrence for Theorem 11.8, not redo RAM scalar recurrence, block
-averaging, 11.7 selector algebra, or the 11.8 endpoint algebra.
+averaging, 11.7 selector algebra, or the 11.8 endpoint algebra.  The newest
+Chapter 12 packet creates root-imported
+`StatInference/Optimization/StochasticGradient.lean` and compiles
+`weightedSumBound_of_gronwall_negative_forcing_with_error`,
+`weightedAverageGap_le_of_gronwall_negative_forcing_with_error`, and
+`chewi121_weightedAverageGap_le_of_oneStep`, proving the scalar
+weighted-average consequence at the end of Chewi Theorem 12.1.  The active
+Chapter 12 lane is now the stochastic/proximal one-step recurrence interface
+and smooth/non-smooth error instantiations feeding that scalar theorem, before
+the ASGD CLT material.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
