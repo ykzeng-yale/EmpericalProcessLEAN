@@ -36773,6 +36773,119 @@ theorem samplePath_vdVWCanonicalSampleProcess
   simp [samplePath, vdVWCanonicalSampleProcess, i.isLt]
 
 /--
+Canonical-sample full-subgraph route to the book-style variable-domain entropy
+condition.
+
+This is the canonical iid-product specialization of
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc`:
+the sample-path identity is discharged by `vdVWCanonicalSampleProcess`.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_canonical_variableTruncatedEntropyCondition
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M)) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P
+      (fun _M n => vdVWCanonicalSampleProcess n)
+      indexClass classFun envelope
+      (fun M eta _n _sample m =>
+        (((vcDegree M + 2) * (m + 1) ^ vcDegree M) ^
+          (2 * vdVWIntegerGridRadius M eta + 1))) := by
+  exact
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc
+      (P := P) (X := fun _M n => vdVWCanonicalSampleProcess n)
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (vcDegree := vcDegree) henvelope hvc
+
+/--
+Canonical-sample full-subgraph route to selected fixed-radius tail/UI side
+conditions for every positive truncation level.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_canonical_selectedFixedRadiusTailSideConditions
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M)) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P
+        (vdVWCanonicalSampleProcess (Observation := Observation))
+        indexClass classFun envelope M
+        (fun eta _n _sample m =>
+          (((vcDegree M + 2) * (m + 1) ^ vcDegree M) ^
+            (2 * vdVWIntegerGridRadius M eta + 1))) := by
+  intro M hM
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_full_subgraph_vc
+      (P := P) (X := vdVWCanonicalSampleProcess (Observation := Observation))
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (vcDegree := vcDegree M)
+      (samplePath_vdVWCanonicalSampleProcess (Observation := Observation))
+      henvelope hclass henv hM (hvc M hM)
+
+/--
+Canonical-sample full-subgraph package supplying both the book entropy
+condition and the selected fixed-radius tail/UI side conditions.
+
+This is the canonical version of
+`VdVWTheorem243FullSubgraphSideConditions.entropy_and_selectedFixedRadiusTailSideConditions`,
+with no auxiliary sign space or side-condition record in the statement.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_canonical_entropy_and_selectedFixedRadiusTailSideConditions
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M)) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P
+      (fun _M n => vdVWCanonicalSampleProcess n)
+      indexClass classFun envelope
+      (fun M eta _n _sample m =>
+        (((vcDegree M + 2) * (m + 1) ^ vcDegree M) ^
+          (2 * vdVWIntegerGridRadius M eta + 1))) ∧
+      (∀ M, 0 < M ->
+        VdVWTheorem243SelectedFixedRadiusTailSideConditions P
+          (vdVWCanonicalSampleProcess (Observation := Observation))
+          indexClass classFun envelope M
+          (fun eta _n _sample m =>
+            (((vcDegree M + 2) * (m + 1) ^ vcDegree M) ^
+              (2 * vdVWIntegerGridRadius M eta + 1)))) := by
+  exact
+    ⟨VdVWTheorem243_fullSubgraph_canonical_variableTruncatedEntropyCondition
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree) henvelope hvc,
+      VdVWTheorem243_fullSubgraph_canonical_selectedFixedRadiusTailSideConditions
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        henvelope hclass henv hvc⟩
+
+/--
 Full-subgraph integrable Theorem 2.4.3 route with canonical iid Rademacher
 signs and the canonical terminal sample-path process.
 -/

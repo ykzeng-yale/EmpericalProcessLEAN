@@ -2360,3 +2360,14 @@ tail/UI package.  This is a theorem-facing assembly bridge, not a new final
 textbook theorem.  The remaining productive targets are the exact random
 empirical-entropy event/tail bridge, a genuinely new structural cardinality
 discharge, or the Lemma 2.4.5 / Chapter 1 arbitrary-map blockers.
+
+2026-05-06 canonical sample-process follow-up:
+`Theorem243.lean` now also proves
+`VdVWTheorem243_fullSubgraph_canonical_variableTruncatedEntropyCondition`,
+`VdVWTheorem243_fullSubgraph_canonical_selectedFixedRadiusTailSideConditions`,
+and
+`VdVWTheorem243_fullSubgraph_canonical_entropy_and_selectedFixedRadiusTailSideConditions`.
+These discharge the canonical `samplePath` identity for
+`vdVWCanonicalSampleProcess`, so the full-subgraph entropy and selected
+tail/UI side conditions are available directly on the iid product-space sample
+process used by the strongest current Theorem 2.4.3/Lemma 2.4.5 packages.

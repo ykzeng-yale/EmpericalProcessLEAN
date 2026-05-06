@@ -6266,3 +6266,20 @@ comparison for the exact non-finite textbook theorem, discharge a concrete
 structural cardinality/quantizer hypothesis not already covered by the
 threshold/grid/full-subgraph packages, or move to the theorem-critical
 Lemma 2.4.5 reverse/cofiltration or Chapter 1 arbitrary-map/process blockers.
+
+2026-05-06 canonical full-subgraph entropy/selected-tail follow-up:
+`Theorem243.lean` now specializes the full-subgraph entropy and selected
+fixed-radius tail/UI bridge to the canonical terminal sample process
+`vdVWCanonicalSampleProcess`, discharging the `samplePath ... = sample`
+plumbing used by the iid product-space route.  New declarations are
+`VdVWTheorem243_fullSubgraph_canonical_variableTruncatedEntropyCondition`,
+`VdVWTheorem243_fullSubgraph_canonical_selectedFixedRadiusTailSideConditions`,
+and
+`VdVWTheorem243_fullSubgraph_canonical_entropy_and_selectedFixedRadiusTailSideConditions`.
+This is not a new endpoint alias: it turns the strongest structural
+full-subgraph assumptions into the two theorem-facing side-condition packages
+on the exact canonical sample process used by the final `P`-GC/Lemma 2.4.5
+packages.  The remaining exact non-finite-class gap is still the general
+random empirical-entropy event/tail bridge, or a genuinely new structural
+cardinality/quantizer theorem beyond the already covered threshold/grid/
+full-subgraph routes.
