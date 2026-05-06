@@ -154,6 +154,10 @@ Compiled first source wrappers:
   product/Fubini expectation, and 2.1.13 expectation-factorization wrappers.
 - Durrett Theorem 2.4.9 conditional Glivenko-Cantelli handoffs from supplied
   endpoint grids and supplied middle CDF partitions.
+- Durrett Theorem 2.4.9 one-cell middle CDF partition base case:
+  `SuppliedRealMiddleCDFPartition.oneCell`,
+  `exists_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`, and
+  `durrett2019_theorem_2_4_9_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`.
 
 The subsequence and continuous-mapping theorems are higher value but may require
 more topological convergence API packaging.
@@ -191,9 +195,10 @@ source-wrapper over that theorem; this wrapper is now compiled in
 Durrett Theorem 2.4.9, Glivenko-Cantelli for empirical CDFs, by reusing the
 existing `RealHalfLineGC.lean` fixed-endpoint and half-line infrastructure and
 filling the arbitrary-CDF finite quantile grid/squeezing layer.  The supplied
-endpoint-grid and supplied middle-CDF-partition handoffs now compile, so the
-remaining theorem-core primitive is the arbitrary-distribution middle partition
-constructor.
+endpoint-grid and supplied middle-CDF-partition handoffs now compile, and the
+one-cell middle-partition base case now compiles.  The remaining theorem-core
+primitive is the arbitrary-distribution finite middle partition constructor for
+intervals whose total CDF increment is not already below the requested radius.
 
 ### Lane D: CLT and characteristic functions
 
