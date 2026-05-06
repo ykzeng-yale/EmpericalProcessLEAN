@@ -951,6 +951,188 @@ theorem chewi121_integral_linear_component_bound
     _ ≤ L * stepRms := mul_le_mul_of_nonneg_left hstep_avg hL_nonneg
 
 /--
+Smooth sampled-model raw inequality for Chewi Theorem 12.1.  It rewrites the
+local model with sampled oracle `p` into the smooth lower-model shape plus the
+stochastic noise term.
+-/
+theorem chewi121_smooth_raw_point_of_sampled_model
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {f g : E -> ℝ} {gradF : E -> E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {h noise : ℝ} {x xPlus p : E}
+    (hnoise : -inner ℝ (p - gradF x) (xPlus - x) ≤ noise) :
+    compositeObjective f g xPlus -
+        bregmanDivergence f gradF xPlus x +
+        (1 / h) * bregmanDivergence phi gradPhi xPlus x - noise ≤
+      mirrorProximalGradientModel f g (fun _ : E => p) phi gradPhi h x xPlus := by
+  unfold mirrorProximalGradientModel compositeObjective bregmanDivergence at *
+  rw [inner_sub_left] at hnoise
+  nlinarith
+
+/--
+Non-smooth sampled-model raw inequality for Chewi Theorem 12.1.  The two
+source linear terms are left as supplied bounds, matching the later
+Lipschitz/bounded-gradient route.
+-/
+theorem chewi121_nonsmooth_raw_point_of_sampled_model
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {f g : E -> ℝ} {phi : E -> ℝ} {gradPhi : E -> E}
+    {h lip grad : ℝ} {x xPlus p : E}
+    (hlip : f xPlus - f x ≤ lip)
+    (hgrad : -inner ℝ p (xPlus - x) ≤ grad) :
+    compositeObjective f g xPlus - lip - grad +
+        (1 / h) * bregmanDivergence phi gradPhi xPlus x ≤
+      mirrorProximalGradientModel f g (fun _ : E => p) phi gradPhi h x xPlus := by
+  unfold mirrorProximalGradientModel compositeObjective at *
+  nlinarith
+
+/--
+Relative-smoothness absorption for the smooth SMPGD component proof:
+`D_f(x+,x) <= beta_f D_phi(x+,x)` and `beta_f <= 1/(2h)`.
+-/
+theorem chewi121_smooth_absorb_of_relativeSmoothOn
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {f : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E} {betaF h : ℝ} {x xPlus : E}
+    (hsmooth : RelativelySmoothOn C f gradF phi gradPhi betaF)
+    (hbeta : betaF ≤ 1 / (2 * h))
+    (hDphi_nonneg : 0 ≤ bregmanDivergence phi gradPhi xPlus x)
+    (hx : x ∈ C) (hxPlus : xPlus ∈ C) :
+    bregmanDivergence f gradF xPlus x ≤
+      (1 / (2 * h)) * bregmanDivergence phi gradPhi xPlus x := by
+  have hrel := hsmooth hxPlus hx
+  exact hrel.trans (mul_le_mul_of_nonneg_right hbeta hDphi_nonneg)
+
+/--
+Finite sampled growth inequality obtained by averaging the growth field of
+each sampled mirror-proximal step.
+-/
+theorem chewi121_finite_sampled_growth_of_steps
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {C : Set E} {f g : E -> ℝ} {phi : E -> ℝ} {gradPhi : E -> E}
+    {alphaG h : ℝ} {x y : E} {p xPlus : ι -> E} {w : ι -> ℝ}
+    (hw_nonneg : ∀ i ∈ s, 0 ≤ w i)
+    (hstep : ∀ i ∈ s,
+      IsMirrorProximalGradientStep C f g (fun _ : E => p i)
+        phi gradPhi alphaG h x (xPlus i))
+    (hy : y ∈ C) :
+    (alphaG + 1 / h) *
+        (∑ i ∈ s, w i * bregmanDivergence phi gradPhi y (xPlus i)) +
+      (∑ i ∈ s, w i *
+        mirrorProximalGradientModel f g (fun _ : E => p i)
+          phi gradPhi h x (xPlus i)) ≤
+    ∑ i ∈ s, w i *
+      mirrorProximalGradientModel f g (fun _ : E => p i) phi gradPhi h x y := by
+  have hsum :
+      (∑ i ∈ s, w i *
+        (mirrorProximalGradientModel f g (fun _ : E => p i) phi gradPhi h x (xPlus i) +
+          (alphaG + 1 / h) * bregmanDivergence phi gradPhi y (xPlus i))) ≤
+        ∑ i ∈ s, w i *
+          mirrorProximalGradientModel f g (fun _ : E => p i) phi gradPhi h x y := by
+    refine Finset.sum_le_sum ?_
+    intro i hi
+    exact
+      mul_le_mul_of_nonneg_left
+        ((hstep i hi).growth hy) (hw_nonneg i hi)
+  have hsplit :
+      (alphaG + 1 / h) *
+          (∑ i ∈ s, w i * bregmanDivergence phi gradPhi y (xPlus i)) +
+        (∑ i ∈ s, w i *
+          mirrorProximalGradientModel f g (fun _ : E => p i)
+            phi gradPhi h x (xPlus i)) =
+      (∑ i ∈ s, w i *
+        (mirrorProximalGradientModel f g (fun _ : E => p i) phi gradPhi h x (xPlus i) +
+          (alphaG + 1 / h) * bregmanDivergence phi gradPhi y (xPlus i))) := by
+    rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl ?_
+    intro i hi
+    ring
+  exact hsplit.trans_le hsum
+
+/--
+Finite sampled star-model upper bound for Chewi Theorem 12.1.  Averaging
+sampled mirror models at the comparison point `y` recovers the deterministic
+model when the sampled oracle is unbiased, then relative strong convexity gives
+the usual `F(y) + ((1 - alphaF h)/h) D_phi(y,x)` upper bound.
+-/
+theorem chewi121_finite_sampled_star_upper_of_unbiased
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E} {alphaF h : ℝ}
+    {x y : E} {p : ι -> E} {w : ι -> ℝ}
+    (hh : 0 < h)
+    (hmass : ∑ i ∈ s, w i = 1)
+    (hunbiased : (∑ i ∈ s, w i • p i) = gradF x)
+    (hconvF : RelativelyStrongConvexOn C f gradF phi gradPhi alphaF)
+    (hx : x ∈ C) (hy : y ∈ C) :
+    (∑ i ∈ s, w i *
+      mirrorProximalGradientModel f g (fun _ : E => p i) phi gradPhi h x y) ≤
+      compositeObjective f g y +
+        ((1 - alphaF * h) / h) * bregmanDivergence phi gradPhi y x := by
+  have hinner :
+      (∑ i ∈ s, w i * inner ℝ (p i) (y - x)) =
+        inner ℝ (gradF x) (y - x) := by
+    calc
+      (∑ i ∈ s, w i * inner ℝ (p i) (y - x)) =
+          ∑ i ∈ s, inner ℝ (w i • p i) (y - x) := by
+            refine Finset.sum_congr rfl ?_
+            intro i hi
+            simp [real_inner_smul_left]
+      _ = inner ℝ (∑ i ∈ s, w i • p i) (y - x) := by
+            rw [sum_inner]
+      _ = inner ℝ (gradF x) (y - x) := by
+            rw [hunbiased]
+  have havg :
+      (∑ i ∈ s, w i *
+        mirrorProximalGradientModel f g (fun _ : E => p i) phi gradPhi h x y) =
+        mirrorProximalGradientModel f g gradF phi gradPhi h x y := by
+    unfold mirrorProximalGradientModel
+    let q : ℝ := (1 / h) * bregmanDivergence phi gradPhi y x
+    have hsplit :
+        (∑ i ∈ s,
+          w i * (f x + inner ℝ (p i) (y - x) + g y + q)) =
+          (∑ i ∈ s, w i * (f x + g y + q)) +
+            ∑ i ∈ s, w i * inner ℝ (p i) (y - x) := by
+      rw [← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl ?_
+      intro i hi
+      ring
+    calc
+      (∑ i ∈ s,
+        w i *
+          (f x + inner ℝ ((fun _ : E => p i) x) (y - x) + g y +
+            (1 / h) * bregmanDivergence phi gradPhi y x)) =
+          (∑ i ∈ s,
+            w i * (f x + inner ℝ (p i) (y - x) + g y + q)) := by
+              simp [q]
+      _ =
+          (∑ i ∈ s, w i * (f x + g y + q)) +
+            ∑ i ∈ s, w i * inner ℝ (p i) (y - x) := hsplit
+      _ =
+          (∑ i ∈ s, w i) * (f x + g y + q) +
+            ∑ i ∈ s, w i * inner ℝ (p i) (y - x) := by
+              rw [Finset.sum_mul]
+      _ =
+          f x + inner ℝ (gradF x) (y - x) + g y +
+            (1 / h) * bregmanDivergence phi gradPhi y x := by
+              rw [hmass, hinner]
+              dsimp [q]
+              ring
+  have hdet :
+      mirrorProximalGradientModel f g gradF phi gradPhi h x y ≤
+        compositeObjective f g y +
+          (1 / h - alphaF) * bregmanDivergence phi gradPhi y x :=
+    mirrorProximalGradientModel_le_composite_add_bregman
+      hconvF hx hy
+  have hcoeff :
+      1 / h - alphaF = (1 - alphaF * h) / h := by
+    field_simp [hh.ne']
+  rw [hcoeff] at hdet
+  rw [havg]
+  simpa [one_div] using hdet
+
+/--
 L2/Hölder noise bound for the smooth stochastic-gradient model in Chewi
 Theorem 12.1.  The pointwise stochastic error is dominated by the product of a
 variance norm and the step norm; the two root-mean-square bounds then give the

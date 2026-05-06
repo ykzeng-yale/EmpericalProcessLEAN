@@ -56,9 +56,9 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after the Chapter 12 Bochner component packet and
-focused Lean verification of the Chewi Theorem 12.1 SMPGD integral-rate
-bridge:
+Current manual goal frontier after the Chapter 12 sampled-model bridge packet
+and focused Lean verification of the Chewi Theorem 12.1 SMPGD finite
+raw/growth/star-upper bridge:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -327,13 +327,18 @@ The newest smooth L2/Hölder probability packet adds
 `chewi121_smooth_hcore_of_integral_l2_noise_components`, and
 `chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_noise_components`,
 so Chewi's smooth Cauchy-Schwarz/RMS noise estimate now feeds the final
-Chapter 12 weighted-average rate directly.  The active Chapter 12 lane is now
-the concrete sampled stochastic model discharge behind those wrappers: raw
-`ψ_x` inequalities from `mirrorProximalGradientModel`, growth from
-`IsMirrorProximalGradientStep.growth`, unbiased star-upper averaging, variance
-domination from (12.1), and source pointwise/a.e. relative-smoothness, mirror
-strong-convexity, Lipschitz, and bounded-gradient estimates from (12.2), before
-the ASGD CLT material.
+Chapter 12 weighted-average rate directly.  The newest sampled-model bridge
+packet adds `chewi121_smooth_raw_point_of_sampled_model`,
+`chewi121_nonsmooth_raw_point_of_sampled_model`,
+`chewi121_smooth_absorb_of_relativeSmoothOn`,
+`chewi121_finite_sampled_growth_of_steps`, and
+`chewi121_finite_sampled_star_upper_of_unbiased`, so the finite sampled
+`ψ_x` raw/growth/star-upper algebra is no longer an opaque assumption.  The
+active Chapter 12 lane is now the remaining concrete sampled stochastic model
+discharge behind those wrappers: variance domination from (12.1),
+finite/Bochner expectation transport for sampled oracles, and source
+pointwise/a.e. relative-smoothness, mirror strong-convexity, Lipschitz, and
+bounded-gradient estimates from (12.2), before the ASGD CLT material.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
