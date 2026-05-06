@@ -3129,6 +3129,47 @@ theorem VdVWProbabilityMeasuresAsymptoticallyTight.map_continuous
     _ ≤ ε := hi
 
 /--
+Continuous images of a weakly convergent sequence are asymptotically tight at
+`atTop`.
+
+This is a measure-level Chapter 1 continuous-mapping/tightness foundation.  It
+does not assert the full VdV&W arbitrary-map asymptotic-tightness theorem.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.map_asymptoticallyTight_atTop
+    {S : Type u} {T : Type v}
+    [MeasurableSpace S] [PseudoMetricSpace S] [OpensMeasurableSpace S]
+    [BorelSpace S] [SecondCountableTopology S] [CompleteSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [BorelSpace T] [T2Space T]
+    {μs : ℕ -> ProbabilityMeasure S} {μ : ProbabilityMeasure S}
+    {g : S -> T}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs atTop μ)
+    (hg : Continuous g) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => (μs n).map hg.measurable.aemeasurable) atTop :=
+  hμ.asymptoticallyTight_atTop.map_continuous hg
+
+/--
+Reindexed continuous images of a weakly convergent sequence are
+asymptotically tight along any filter tending to `atTop`.
+
+This packages the two standard measure-level steps needed by subsequence and
+finite-dimensional process arguments: weak convergence gives asymptotic
+tightness, then continuous images and reindexing preserve it.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.map_asymptoticallyTight_comp_tendsto_atTop
+    {S : Type u} {T : Type v} {ι : Type w}
+    [MeasurableSpace S] [PseudoMetricSpace S] [OpensMeasurableSpace S]
+    [BorelSpace S] [SecondCountableTopology S] [CompleteSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [BorelSpace T] [T2Space T]
+    {μs : ℕ -> ProbabilityMeasure S} {μ : ProbabilityMeasure S}
+    {g : S -> T} {φ : ι -> ℕ} {l : Filter ι}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs atTop μ)
+    (hg : Continuous g) (hφ : Tendsto φ l atTop) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun i => (μs (φ i)).map hg.measurable.aemeasurable) l :=
+  (hμ.map_asymptoticallyTight_atTop hg).comp_tendsto hφ
+
+/--
 Binary product stability for measure-level asymptotic tightness.
 
 If two probability-measure families are asymptotically tight along the same

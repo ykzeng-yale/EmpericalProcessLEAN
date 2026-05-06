@@ -138,6 +138,12 @@ which turns a countable pointwise-approximating measurable subclass and
 bounded finite weighted value sets into `P`-measurability of the original
 class.  The remaining separability gap is therefore the full arbitrary-map /
 nonmeasurable process asymptotic-measurability and weak-convergence layer.
+The measure-level continuous-image/reindexed asymptotic-tightness handoff is
+now closed too:
+`VdVWWeakConvergenceProbabilityMeasures.map_asymptoticallyTight_atTop` and
+`VdVWWeakConvergenceProbabilityMeasures.map_asymptoticallyTight_comp_tendsto_atTop`
+combine sequential weak convergence, Prokhorov tightness, continuous-map
+stability, and reindexing along filters tending to `atTop`.
 The canonical infinite iid
 product substrate is already present in `PMeasurable.lean` via
 `vdVWInfiniteProductMeasure`, coordinate `HasLaw`, and coordinate

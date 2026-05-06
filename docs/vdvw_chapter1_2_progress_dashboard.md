@@ -118,6 +118,16 @@ remaining separability/process gap is the full arbitrary-map/nonmeasurable
 asymptotic-measurability and weak-convergence layer, not this bounded
 measurable-subclass route.
 
+2026-05-05 continuous-image asymptotic-tightness follow-up:
+`WeakConvergence.lean` now composes the existing sequential
+weak-convergence-to-asymptotic-tightness theorem with the continuous-map and
+reindexing stability layers as
+`VdVWWeakConvergenceProbabilityMeasures.map_asymptoticallyTight_atTop` and
+`VdVWWeakConvergenceProbabilityMeasures.map_asymptoticallyTight_comp_tendsto_atTop`.
+This closes the measure-level continuous-image/reindexed tightness handoff for
+complete second-countable pseudometric Borel source spaces; the arbitrary-map
+process asymptotic-tightness theorem remains a separate primitive.
+
 2026-05-05 tightness sequence follow-up: `WeakConvergence.lean` now wraps
 mathlib's sequence/range norm-tail criterion as
 `vdVWProbabilityMeasuresTight_range_of_tendsto_limsup_norm_tail` and

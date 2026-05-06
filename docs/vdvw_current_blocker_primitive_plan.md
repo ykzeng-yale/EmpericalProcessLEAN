@@ -155,7 +155,10 @@ full-subgraph/VC route;
 and the direct bounded separability-to-Definition 2.3.3 handoff
 `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_bddAbove`,
 which combines the existing pointwise-approximability supremum-equality bridge
-with the countable-subclass `P`-measurability constructor.
+with the countable-subclass `P`-measurability constructor;
+and the measure-level continuous-image/reindexed asymptotic-tightness wrappers
+`VdVWWeakConvergenceProbabilityMeasures.map_asymptoticallyTight_atTop` and
+`VdVWWeakConvergenceProbabilityMeasures.map_asymptoticallyTight_comp_tendsto_atTop`.
 
 Next high-capacity proof batches, in order:
 
