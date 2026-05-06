@@ -151,6 +151,15 @@ compiled declarations are
 This is still finite-dimensional support only, not the arbitrary-index VdV&W
 1.4.8 converse.
 
+2026-05-06 scalar-quantizer cover update: `Theorem243.lean` now lifts the
+deterministic coordinate scalar-quantizer decoder-error covering bound from
+`CoveringPrimitive.lean` to the random empirical-cover interface through
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`
+and its all-positive-radius wrapper.  Future grid/compression work can now
+feed Theorem 2.4.3 by proving finite coordinate code-set cardinality and
+decoder-error hypotheses, rather than manually rebuilding the selected
+fixed-radius package.
+
 The first-sample `UnifIntegrable` route now also reaches untruncated centered
 convergence directly, so future work should prove the UI/tail/mean or
 structural-cardinality input consumed by that endpoint rather than add another

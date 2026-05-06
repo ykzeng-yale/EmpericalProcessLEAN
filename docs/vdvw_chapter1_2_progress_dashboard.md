@@ -59,6 +59,15 @@ transport to finite restrictions of bounded `ell_infty(T)` process maps, while
 leaving the arbitrary-index FDD converse and process separability/tightness
 blockers open.
 
+The scalar-quantizer structural-cover lift is also compiled:
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`
+turn finite coordinate code sets and decoder error `eta / 2` into the random
+empirical-cover domination required by the selected fixed-radius Theorem 2.4.3
+route.  This is a structural input; the remaining hard step is a real
+cardinality/compression or VC/Sauer estimate for the code sets.
+
 The measure-level Portmanteau continuity-set
 implication and closed/open converse wrappers are now compiled as well.  The
 norm-tail tightness characterization for probability-measure families on

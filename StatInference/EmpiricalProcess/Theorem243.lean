@@ -15649,6 +15649,73 @@ theorem
           (hcardinality_dom n sample m)) n
 
 /--
+Coordinate scalar quantizers with decoder-error bounds give a random empirical
+covering-number domination by the product of coordinate code-set sizes.
+
+This is the sample-path random-cover lift of
+`empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_decode_error_card_le`.
+It is a structural input for grid and compression arguments: callers prove
+that each sampled class value has a finite coordinate code and is within
+`epsilon / 2` of its decoded representative, while the selected cardinality
+dominates the product of coordinate code-set sizes.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath
+    {Observation : Type v} {Index : Type w} {CoordCode : Type*}
+    [DecidableEq CoordCode]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (quantizer :
+      (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> ℝ -> CoordCode)
+    (decode :
+      (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> CoordCode -> ℝ)
+    (codeSets :
+      (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> Finset CoordCode)
+    (hquantizer_mem :
+      ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ sampleIndex : Fin m,
+            quantizer n sample m sampleIndex
+                (classFun index ((samplePath (X n) sample m) sampleIndex)) ∈
+              codeSets n sample m sampleIndex)
+    (hdecode_close :
+      ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ sampleIndex : Fin m,
+            |classFun index ((samplePath (X n) sample m) sampleIndex) -
+              decode n sample m sampleIndex
+                (quantizer n sample m sampleIndex
+                  (classFun index
+                    ((samplePath (X n) sample m) sampleIndex)))| ≤
+                epsilon / 2)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hcardinality_dom :
+      ∀ n (sample : SampleAt Observation n) m,
+        (∏ sampleIndex : Fin m, (codeSets n sample m sampleIndex).card) ≤
+          cardinality n sample m) :
+    ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun epsilon (cardinality n) := by
+  intro n
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_empiricalL1CoveringNumber_le_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (epsilon := epsilon) (cardinality := cardinality) X
+      (fun n sample m =>
+        empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_decode_error_card_le
+          (sample := samplePath (X n) sample m)
+          (indexClass := indexClass) (classFun := classFun)
+          (epsilon := epsilon) (cardinality := cardinality n sample m)
+          (quantizer n sample m) (decode n sample m) (codeSets n sample m)
+          (hquantizer_mem n sample m) (hdecode_close n sample m)
+          hepsilon_nonneg (hcardinality_dom n sample m)) n
+
+/--
 All-positive-radius finite pointwise-code random empirical covering-number
 domination, ready for the selected fixed-radius Theorem 2.4.3 route.
 -/
@@ -15738,6 +15805,63 @@ theorem
       (epsilon := eta) (cardinality := cardinality eta) X
       (code eta) (codeSets eta) (hcode_mem eta heta) heta.le
       (hpoint eta heta) (hcardinality_dom eta heta)
+
+/--
+All-positive-radius coordinate scalar-quantizer random empirical
+covering-number domination.
+
+This is the fixed-radius Theorem 2.4.3 input for scalar grid/compression
+arguments with finite coordinate code sets and decoder error at each positive
+radius.
+-/
+theorem
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath
+    {Observation : Type v} {Index : Type w} {CoordCode : Type*}
+    [DecidableEq CoordCode]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (quantizer :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> ℝ -> CoordCode)
+    (decode :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> CoordCode -> ℝ)
+    (codeSets :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> Finset CoordCode)
+    (hquantizer_mem :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ sampleIndex : Fin m,
+            quantizer eta n sample m sampleIndex
+                (classFun index ((samplePath (X n) sample m) sampleIndex)) ∈
+              codeSets eta n sample m sampleIndex)
+    (hdecode_close :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ sampleIndex : Fin m,
+            |classFun index ((samplePath (X n) sample m) sampleIndex) -
+              decode eta n sample m sampleIndex
+                (quantizer eta n sample m sampleIndex
+                  (classFun index
+                    ((samplePath (X n) sample m) sampleIndex)))| ≤
+                eta / 2)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        (∏ sampleIndex : Fin m, (codeSets eta n sample m sampleIndex).card) ≤
+          cardinality eta n sample m) :
+    ∀ eta, 0 < eta -> ∀ n,
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+        classFun eta (cardinality eta n) := by
+  intro eta heta
+  exact
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath
+      (indexClass := indexClass) (classFun := classFun)
+      (epsilon := eta) (cardinality := cardinality eta) X
+      (quantizer eta) (decode eta) (codeSets eta)
+      (hquantizer_mem eta heta) (hdecode_close eta heta) heta.le
+      (hcardinality_dom eta heta)
 
 /--
 Nearest-integer coordinate rounding under a uniform samplewise absolute bound

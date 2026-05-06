@@ -114,6 +114,20 @@ gap only; the arbitrary-index VdV&W 1.4.8 converse, process separability,
 asymptotic tightness/measurability, and nonmeasurable outer-cover signed weak
 convergence remain the Chapter 1 process blockers.
 
+2026-05-06 scalar-quantizer structural-cover lift: local search found
+deterministic coordinate scalar-quantizer empirical-cover bounds in
+`CoveringPrimitive.lean`, especially
+`empiricalL1CoveringNumber_le_of_coordinate_scalarQuantizer_decode_error_card_le`,
+but no Theorem 2.4.3 random empirical-cover lift.  `Theorem243.lean` now adds
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`
+and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`.
+These convert finite coordinate code sets plus decoder error `eta / 2` into
+the selected random empirical-cover domination used by the fixed-radius
+Theorem 2.4.3 route.  Remaining structural work is still the actual finite
+code-set cardinality/compression or VC/Sauer estimate, not another endpoint
+alias.
+
 Rebased next-target rule: do not add another alias or endpoint wrapper for a
 route already listed below unless it consumes a genuinely new theorem
 hypothesis.  The highest-value Theorem 2.4.3 work is now upstream: prove the
