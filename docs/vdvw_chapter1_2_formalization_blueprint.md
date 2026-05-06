@@ -162,6 +162,14 @@ fixed-radius package.
 The paired coordinate-cardinality wrappers now further reduce the product
 bound to per-coordinate code-set cardinality estimates and
 `coordinateCard ^ m` domination.
+The route now also feeds the selected fixed-radius tail/UI side-condition
+package directly through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_logCardinality_div_tendsto_bound`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_logCardinality_div_tendsto_bound`.
+The remaining useful theorem work is still upstream: prove a genuine
+finite-code/compression, VC/Sauer, or other structural cardinality estimate
+that makes the normalized log-cardinality side condition true.
 
 The first-sample `UnifIntegrable` route now also reaches untruncated centered
 convergence directly, so future work should prove the UI/tail/mean or

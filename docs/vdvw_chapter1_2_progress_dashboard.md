@@ -73,6 +73,15 @@ and
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_samplePath`,
 reducing product-cardinality domination to per-coordinate cardinality bounds
 via `Finset.prod_le_pow_card`.
+The same coordinate-cardinality route now reaches the selected fixed-radius
+tail/UI side-condition package through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_logCardinality_div_tendsto_bound`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_logCardinality_div_tendsto_bound`.
+This is still an upstream structural route, not a final textbook entropy
+closure: the next proof target is the actual finite-code/compression or
+VC/Sauer cardinality estimate that supplies the coordinate-cardinality and
+normalized-log hypotheses.
 
 The measure-level Portmanteau continuity-set
 implication and closed/open converse wrappers are now compiled as well.  The

@@ -138,6 +138,20 @@ side condition to a uniform per-coordinate code-set cardinality bound plus
 `coordinateCard ^ m` domination.  Future compression/grid proofs should supply
 that per-coordinate bound or a sharper structural bound.
 
+2026-05-06 scalar-quantizer selected fixed-radius package update: the
+coordinate-cardinality route now feeds the selected fixed-radius tail/UI side
+condition interface through
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_logCardinality_div_tendsto_bound`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_logCardinality_div_tendsto_bound`.
+This removes another manual conversion layer for quantizer/grid/compression
+arguments stated in terms of coordinate code sets, decoder error, and a
+deterministic normalized log-cardinality bound.  It is still not the missing
+cardinality theorem: the next non-duplicative step is a real finite-code,
+compression, VC/Sauer, or other structural estimate supplying the
+per-coordinate/product cardinality hypotheses with sublinear normalized log
+growth.
+
 Rebased next-target rule: do not add another alias or endpoint wrapper for a
 route already listed below unless it consumes a genuinely new theorem
 hypothesis.  The highest-value Theorem 2.4.3 work is now upstream: prove the
