@@ -68,7 +68,9 @@ unless a new exact statement directly consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-06 after the verified
-natural-polynomial variable-domain entropy constructor
+first-sample uniform-integrability endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`
+and the earlier natural-polynomial variable-domain entropy constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
 and selected tail/UI bridge
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`:
@@ -200,6 +202,13 @@ conclusion through
 This is a genuine structural-cardinality input route; future work should prove
 deterministic log-cardinality/tail/UI bounds for concrete code images, not add
 another endpoint wrapper.
+The first-sample UI route also now has the direct untruncated centered
+convergence endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`,
+which composes the existing selected first-sample `UnifIntegrable`
+side-condition constructor with the large-`M` untruncation handoff.  This is an
+honest endpoint under explicit UI; it does not prove that the textbook
+outer-probability entropy condition implies UI.
 
 Next high-capacity proof batches, in order:
 

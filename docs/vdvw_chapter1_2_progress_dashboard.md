@@ -14,7 +14,9 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-06 after the verified
-natural-polynomial variable-domain entropy constructor
+first-sample uniform-integrability endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`
+and the earlier natural-polynomial variable-domain entropy constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
 and selected tail/UI bridge
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`:
@@ -145,14 +147,17 @@ tail/UI or structural cardinality bridge.
 
 2026-05-05 first-sample entropy-tail follow-up:
 `Theorem243.lean` now exposes
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`
+and
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_eLpNormTail`.
-The theorem consumes the variable-domain book entropy package plus the lifted
-selected normalized-entropy `eLpNorm` tail criterion on the canonical infinite
-iid product space, then reaches untruncated centered convergence through the
-compiled selected fixed-radius and large-`M` handoffs.  The remaining
-non-finite Theorem 2.4.3 gap is therefore sharper: prove that explicit
-first-sample selected-entropy tail condition, or prove a structural
-cardinality/VC/finite-trace bound that implies it.
+These theorems consume the variable-domain book entropy package plus either
+lifted selected normalized-entropy `UnifIntegrable` or the concrete `eLpNorm`
+tail criterion on the canonical infinite iid product space, then reach
+untruncated centered convergence through the compiled selected fixed-radius
+and large-`M` handoffs.  The remaining non-finite Theorem 2.4.3 gap is
+therefore sharper: prove that explicit first-sample selected-entropy UI/tail
+condition, or prove a structural cardinality/VC/finite-trace bound that
+implies it.
 The canonical `P`-GC endpoint also now has the reusable bridge
 `VdVWPGlivenkoCantelliClass_of_centered_weightedSupremum_convergesInOuterProbabilityConst`,
 which packages the centered finite-product convergence to uniform-deviation

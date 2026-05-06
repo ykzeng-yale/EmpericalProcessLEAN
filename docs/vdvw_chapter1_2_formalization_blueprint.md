@@ -89,8 +89,10 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-06 after the verified
-natural-polynomial variable-domain entropy constructor
+Current operational target, 2026-05-06 after the verified first-sample
+uniform-integrability endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`
+and the earlier natural-polynomial variable-domain entropy constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
 and selected tail/UI bridge
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_nat_poly_bound`:
@@ -128,6 +130,10 @@ the paired endpoint
 now upgrades it to canonical `P`-GC and in-mean convergence.  Future work
 should return to the true random-entropy tail/UI bridge or prove a new
 structural cardinality theorem rather than rebuild selected-package routes.
+The first-sample `UnifIntegrable` route now also reaches untruncated centered
+convergence directly, so future work should prove the UI/tail/mean or
+structural-cardinality input consumed by that endpoint rather than add another
+alias around the same selected fixed-radius package.
 The finite pointwise-code covering lift is now also available:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
 and
@@ -460,6 +466,14 @@ the selected normalized empirical-cover entropy.  The next target is therefore
 sharper: prove the explicit lifted selected-entropy `eLpNorm` tail condition
 from a genuine structural entropy theorem, or record the exact missing
 cardinality/VC/finite-trace primitive.
+
+2026-05-06 first-sample UI endpoint follow-up: `Theorem243.lean` now exposes
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`.
+It composes the existing selected first-sample `UnifIntegrable`
+side-condition constructor with the selected fixed-radius finite-net route and
+the large-`M` untruncation handoff.  This is an honest theorem-facing endpoint
+under explicit UI; it does not prove that the textbook random entropy
+condition supplies UI.
 
 2026-05-05 bounded first-sample tail follow-up: the deterministic sufficient
 condition for that `eLpNorm` route is now compiled.  The reusable
