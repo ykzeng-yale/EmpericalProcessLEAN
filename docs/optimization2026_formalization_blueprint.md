@@ -64,9 +64,13 @@ box-nesting and side-width lemmas, Euclidean ball containment in boxes, and the
 short-side obstruction to containing an `eps`-ball.  It now also has the
 recursive cyclic box state: initial cube, cyclic coordinate selector,
 recursive lower/upper endpoints, endpoint ordering, per-step separation,
-query-exclusion, nesting, and selected/unselected width update facts.  The next
-theorem-sized packet should continue Theorem 6.25 with coordinate cut-count and
-side-length/radius iteration.  Add a literal arbitrary `d > N`
+query-exclusion, nesting, and selected/unselected width update facts.  The
+width/counting bridge now adds a coordinate width abstraction, zero and
+selected/unselected successor forms, explicit cyclic-hit selection at
+`j + m*d`, width halving at those hit times, and recursive-box `eps`-ball
+side-width necessary/contradiction wrappers.  The next theorem-sized packet
+should continue Theorem 6.25 with full-cycle side-length/radius iteration.  Add
+a literal arbitrary `d > N`
 embedding/report wrapper for 6.21/6.22 only if exact theorem reporting requires
 it.
 The detailed Lemma 6.20 frontier below is retained only as dependency context
