@@ -56,9 +56,10 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after focused Lean verification of the Chapter
-11.5 RAM block-model conditional-upper layer on 2026-05-06, building on pushed
-Optimization frontier `a2770ef` (`Add Chewi RAM Hopf-Lax bridge layer`):
+Current manual goal frontier after rebasing over remote main `76d0628`
+(`Rebase VdVW goal after weak convergence congruence`) on 2026-05-06 and
+focused Lean verification of the Chapter 11.5 RAM block-model plus Exercise
+9.3 scalar Hopf-Lax interpolation layer:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -160,16 +161,17 @@ descent certificates.  The newest local layer imports
 `IsChewi114AMDescentCertificate.exists_threshold_index_of_log_burnin`, and
 `IsChewi114AMDescentCertificate.exists_tail_gap_le_eps_of_log_burnin`.
 Chapter 11.4 is now stable substrate rather than the active target.  The
-active route is Theorem 11.5 RAM: discharge the selected Hopf-Lax/Moreau model
-value and Exercise 9.3 strong/weak source bounds after the compiled scalar
-recurrence, Hopf-Lax-to-rate bridge, and finite block-model conditional-upper
-layer, then move immediately to Sinkhorn Theorems 11.7/11.8 from
-ABP/mirror-descent supplied interfaces and Chapter 12 SMPGD before the ASGD
-CLT.  Generalize 10.11/10.13 to a custom arbitrary
-norm/dual-norm interface or add an exact `sInf` wrapper only when source-report
-packaging or a later theorem demands it.  In parallel, map Chapter 13
-Newton/self-concordance theorem packets with source-shaped supplied interfaces
-first when exact analytic dependencies would otherwise stall progress.
+active route is to finish Theorem 11.5 RAM as a theorem-sized packet: discharge
+the selected Hopf-Lax/Moreau model value from Chewi's source candidate, wire
+the compiled strong Exercise 9.3 interpolation bridge into the strong RAM
+certificate, add the analogous zero-curvature source bridge, and then move
+immediately to Sinkhorn Theorems 11.7/11.8 from ABP/mirror-descent supplied
+interfaces and Chapter 12 SMPGD before the ASGD CLT.  Generalize 10.11/10.13
+to a custom arbitrary norm/dual-norm interface or add an exact `sInf` wrapper
+only when source-report packaging or a later theorem demands it.  In parallel,
+map Chapter 13 Newton/self-concordance theorem packets with source-shaped
+supplied interfaces first when exact analytic dependencies would otherwise
+stall progress.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,
@@ -210,9 +212,15 @@ infrastructure.  The block-model conditional-upper layer adds
 `chewi115_conditional_gap_upper_of_block_model`, and
 `chewi115_conditional_upper_of_block_model_sequence`, so the finite uniform
 block expectation and source convexity algebra now feed the certificate
-`conditional_upper` field directly.  The next RAM packet should discharge the
-selected Hopf-Lax/Moreau model value and the Exercise 9.3 strong/weak
-`hopf_lax_bound` fields.
+`conditional_upper` field directly.  The Exercise 9.3 interpolation packet adds
+`chewi93_hopf_lax_strong_gap_bound_of_interpolant`,
+`chewi93_hopf_lax_zero_gap_bound_of_interpolant`,
+`chewi115_strong_hopf_lax_bound_of_chewi93`, and
+`chewi115_strong_hopf_lax_bound_of_interpolant`, proving the scalar
+positive-curvature cancellation, zero-curvature optimized-interpolant algebra,
+and source factor rewrite needed by Theorem 11.5.  The next RAM packet should
+discharge the selected Hopf-Lax/Moreau model value and the remaining weak
+source `hopf_lax_bound` field, not redo scalar recurrence or block averaging.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

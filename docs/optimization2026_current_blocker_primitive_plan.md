@@ -88,10 +88,10 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after focused Lean verification of the
-Chapter 11.5 RAM block-model conditional-upper layer on 2026-05-06, building
-on pushed Optimization frontier `a2770ef`
-(`Add Chewi RAM Hopf-Lax bridge layer`):
+Current live replacement `/goal` prompt after rebasing over remote main
+`76d0628` (`Rebase VdVW goal after weak convergence congruence`) on 2026-05-06 and
+focused Lean verification of the Chapter 11.5 RAM block-model plus Exercise
+9.3 scalar Hopf-Lax interpolation layer:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -106,13 +106,16 @@ infrastructure, Chapter 9/10/11.2-11.4 as reusable Bregman/MPGD/ABP/AM
 substrate, and `StatInference/Optimization/RandomizedAlternatingMinimization.lean`
 as the current active Chapter 11.5 promotion gate.
 
-Immediate aggressive target: instantiate Chewi Theorem 11.5 RAM beyond the
-finite block-model conditional-upper layer by discharging the remaining
-selected Hopf-Lax/Moreau model and Exercise 9.3 source bounds for the strong
-and zero-curvature certificate fields.  In parallel, scout Sinkhorn Theorems
-11.7/11.8 from the compiled ABP/mirror-descent interfaces and Chapter 12
-SMPGD theorem packets, so the next run can move directly after RAM without
-routing back to old setup.
+Immediate aggressive target: finish Chewi Theorem 11.5 RAM as a theorem-sized
+packet, not another wrapper loop.  The scalar recurrence, strong/weak
+Hopf-Lax-to-rate bridges, finite uniform block conditional-upper algebra, and
+the Exercise 9.3 scalar interpolation cancellations are now the reusable
+substrate.  The next proof work should discharge the selected Hopf-Lax/Moreau
+model value from the source candidate and instantiate the strong and
+zero-curvature certificate fields end-to-end.  In parallel, scout Sinkhorn
+Theorems 11.7/11.8 from the compiled ABP/mirror-descent interfaces and Chapter
+12 SMPGD theorem packets, so the next route moves immediately after RAM
+without routing back to old setup.
 
 Latest verified Optimization proof frontier:
 `StatInference/Optimization/RandomizedAlternatingMinimization.lean` compiles
@@ -138,7 +141,15 @@ adds `chewi115_uniform_average_le_of_block_model`,
 `chewi115_conditional_upper_of_block_model_sequence`, turning pointwise
 per-block smooth model estimates, finite `Fin D` sums, first-order convexity,
 and a selected Hopf-Lax model value into the exact `conditional_upper` field
-for `expectedGap`/`hopfGap`.  `MirrorDescent.lean` now
+for `expectedGap`/`hopfGap`.  The newest Exercise 9.3 interpolation packet adds
+`chewi93_hopf_lax_strong_gap_bound_of_interpolant`,
+`chewi93_hopf_lax_zero_gap_bound_of_interpolant`,
+`chewi115_strong_hopf_lax_bound_of_chewi93`, and
+`chewi115_strong_hopf_lax_bound_of_interpolant`, proving the positive-curvature
+quadratic cancellation, the zero-curvature optimized-interpolant algebra, and
+the source factor rewrite
+`(1 + (alphaF + alphaG)/(1-alphaF))^{-1} = (1-alphaF)/(1+alphaG)`.
+`MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
 `mirrorProximalGradientModel_le_composite_add_bregman`,
@@ -353,29 +364,20 @@ attempting full martingale/CLT formalization.
 
 Active aggressive target ladder:
 
-1. Finish Chewi Theorem 11.4 as an algorithm-facing AM theorem.  The scalar
-   inverse-gap layer, max recurrence, source-recurrence bridge, burn-in
-   threshold consumers, log-burn-in threshold existence, supplied
-   block-descent-to-source-certificate bridge, and initial-threshold/log-tail
-   `K/M`/epsilon consumers now compile.  The only remaining 11.4 display
-   nicety is a Nat.ceil/positive-part wrapper for the textbook iteration-count
-   notation if it is cheap.  Do not stall on that wrapper: either instantiate
-   `IsChewi114AMDescentCertificate` from actual coordinate/proximal
-   minimization proof obligations if bounded, or move immediately to Theorem
-   11.5 RAM.
-2. Continue Chewi Theorem 11.5 RAM from the compiled scalar recurrence,
-   Hopf-Lax bridge, and finite block-model conditional-upper layer: discharge
-   the selected Hopf-Lax/Moreau model value and enough of
-   Definition 9.3/Exercise 9.3's Hopf-Lax estimate to fill the strong and weak
-   `hopf_lax_bound` fields.  The scalar RAM recurrence, nonnegative weak-rate
-   wrapper, Hopf-Lax-to-rate bridge, and finite `Fin D` conditional-upper
-   algebra are already compiled; do not repeat them.  Do not build full
-   probability/process infrastructure unless it is the shortest route;
-   expectation-level supplied interfaces are the fast lane.
-3. Package Sinkhorn Theorems 11.7 and 11.8 from the compiled ABP and mirror
+1. Finish Chewi Theorem 11.5 RAM from the compiled scalar recurrence,
+   Hopf-Lax bridge, finite block-model conditional-upper layer, and Exercise
+   9.3 interpolation algebra.  Do not repeat those layers.  The next theorem
+   packet should prove or cleanly package the selected Hopf-Lax/Moreau model
+   value from Chewi's source candidate, instantiate the strong
+   `hopf_lax_bound` field via
+   `chewi115_strong_hopf_lax_bound_of_interpolant`, and add the matching
+   zero-curvature source bridge to fill the weak certificate field.  Keep the
+   route expectation-level unless full probability infrastructure is clearly
+   shorter.
+2. Package Sinkhorn Theorems 11.7 and 11.8 from the compiled ABP and mirror
    descent layers using supplied finite KL/Pinsker/marginal identities; do not
    expand full EOT duality unless exact Theorem 11.6 reporting is requested.
-4. Open Chapter 12 with `StochasticGradient.lean`/`SMPGD.lean`: build the
+3. Open Chapter 12 with `StochasticGradient.lean`/`SMPGD.lean`: build the
    supplied stochastic one-step inequalities and Chewi Theorem 12.1 rate
    wrappers first, then only after that map ASGD Theorems 12.3/12.7/12.8.
 5. Open Chapter 13 with `Newton.lean`/`SelfConcordance.lean` in parallel scout
@@ -427,7 +429,7 @@ focused `lake env lean` during development, root import plus targeted
 route-doc refresh, rebase over remote main when needed, then one clean
 commit/push batch.
 
-Current live replacement `/goal` prompt after focused Lean verification of the
+Superseded historical `/goal` prompt after focused Lean verification of the
 Theorem 6.25 deterministic no-success packet on top of pushed frontier
 `e906bd1` (`Add Chewi theorem 6.25 replay certificate`): aggressively formalize and
 prove all main theorem content of Sinho Chewi's Optimization 2026 notes in
@@ -533,7 +535,7 @@ The supplied deterministic replay abstraction now compiles through
 `IsFeasibilityReplayCertificate.no_strict_success_of_deterministic_run`, and
 `chewi625_deterministic_run_no_strict_success_of_log_bound`.
 
-Immediate aggressive target: do not loop on "small source-shape gaps" for
+Historical immediate target: do not loop on narrow cleanup wrappers for
 6.21/6.22 and do not try to prove Theorem 6.23 directly, since the source
 explicitly switches to feasibility.  Theorem 6.25 now has the supplied
 deterministic replay core, final-box separation transcript, final-query

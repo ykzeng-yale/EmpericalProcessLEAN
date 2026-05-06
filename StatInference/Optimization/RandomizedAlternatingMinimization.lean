@@ -357,6 +357,119 @@ theorem chewi115_conditional_upper_of_block_model_sequence
   simpa [hgap n, hnext_gap n, hhopf_gap n] using hstep
 
 /--
+Chewi Exercise 9.3, scalar interpolation algebra in the positive-curvature
+case.  Once the Hopf-Lax value is bounded by the interpolant with
+`t = 1 / (1 + alpha * h)`, the quadratic correction cancels and gives
+`Q_h f(x) - f_* <= (1 + alpha h)^{-1} (f(x)-f_*)`.
+-/
+theorem chewi93_hopf_lax_strong_gap_bound_of_interpolant
+    {hopfGap gap distSq alpha h : ℝ}
+    (hh : 0 < h) (hden : 0 < 1 + alpha * h)
+    (hinterp :
+      hopfGap ≤
+        (1 / (1 + alpha * h)) * gap +
+          (((1 - 1 / (1 + alpha * h)) ^ (2 : ℕ)) / (2 * h) -
+              (alpha / 2) * (1 / (1 + alpha * h)) *
+                (1 - 1 / (1 + alpha * h))) *
+            distSq) :
+    hopfGap ≤ (1 / (1 + alpha * h)) * gap := by
+  have hcancel :
+      (((1 - 1 / (1 + alpha * h)) ^ (2 : ℕ)) / (2 * h) -
+          (alpha / 2) * (1 / (1 + alpha * h)) *
+            (1 - 1 / (1 + alpha * h))) = 0 := by
+    field_simp [hh.ne', hden.ne']
+    ring_nf
+  rw [hcancel, zero_mul, add_zero] at hinterp
+  exact hinterp
+
+/--
+Chewi Exercise 9.3, scalar interpolation algebra in the zero-curvature case.
+This is the optimized test point `t = 1 - h * gap / distSq`; the side
+conditions ensuring this is a valid interpolant are kept outside this algebraic
+lemma and should be discharged by the source-facing Hopf-Lax candidate bound.
+-/
+theorem chewi93_hopf_lax_zero_gap_bound_of_interpolant
+    {hopfGap gap distSq h : ℝ}
+    (hh : 0 < h) (hdist : distSq ≠ 0)
+    (hinterp :
+      hopfGap ≤
+        (1 - h * gap / distSq) * gap +
+          ((h * gap / distSq) ^ (2 : ℕ) / (2 * h)) * distSq) :
+    hopfGap ≤ (1 - h * gap / (2 * distSq)) * gap := by
+  calc
+    hopfGap
+        ≤ (1 - h * gap / distSq) * gap +
+            ((h * gap / distSq) ^ (2 : ℕ) / (2 * h)) * distSq := hinterp
+    _ = (1 - h * gap / (2 * distSq)) * gap := by
+          have hh_ne : h ≠ 0 := hh.ne'
+          field_simp [hh_ne, hdist]
+          ring
+
+/--
+Chewi Theorem 11.5 strong-case specialization of Exercise 9.3 with
+`h = 1 / (1 - alphaF)` and `alpha = alphaF + alphaG`.  This rewrites the
+Exercise 9.3 factor into the source RAM factor
+`(1-alphaF)/(1+alphaG)`.
+-/
+theorem chewi115_strong_hopf_lax_bound_of_chewi93
+    {hopfGap gap alphaF alphaG : ℝ}
+    (halphaF : alphaF < 1) (halphaG : -1 < alphaG)
+    (hchewi93 :
+      hopfGap ≤
+        (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) * gap) :
+    hopfGap ≤ ((1 - alphaF) / (1 + alphaG)) * gap := by
+  have hdenF : 1 - alphaF ≠ 0 := by nlinarith
+  have hdenG : 1 + alphaG ≠ 0 := by nlinarith
+  have hden_rewrite :
+      1 + (alphaF + alphaG) * (1 - alphaF)⁻¹ =
+        (1 + alphaG) / (1 - alphaF) := by
+    field_simp [hdenF]
+    ring
+  have hfactor :
+      ((1 + alphaG) / (1 - alphaF))⁻¹ =
+        (1 - alphaF) / (1 + alphaG) := by
+    field_simp [hdenF, hdenG]
+  simpa [one_div, hden_rewrite, hfactor] using hchewi93
+
+/--
+Chewi Theorem 11.5 strong-case source bridge from the Exercise 9.3 interpolant
+directly to the RAM Hopf-Lax certificate field.
+-/
+theorem chewi115_strong_hopf_lax_bound_of_interpolant
+    {hopfGap gap distSq alphaF alphaG : ℝ}
+    (halphaF : alphaF < 1) (halphaG : -1 < alphaG)
+    (hinterp :
+      hopfGap ≤
+        (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) * gap +
+          (((1 -
+                    1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) ^
+                  (2 : ℕ)) /
+                (2 * (1 / (1 - alphaF))) -
+              ((alphaF + alphaG) / 2) *
+                (1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF)))) *
+                  (1 -
+                    1 / (1 + (alphaF + alphaG) * (1 / (1 - alphaF))))) *
+            distSq) :
+    hopfGap ≤ ((1 - alphaF) / (1 + alphaG)) * gap := by
+  have hdenF_pos : 0 < 1 - alphaF := by nlinarith
+  have hh : 0 < 1 / (1 - alphaF) := one_div_pos.mpr hdenF_pos
+  have hden :
+      0 < 1 + (alphaF + alphaG) * (1 / (1 - alphaF)) := by
+    have hnum : 0 < 1 + alphaG := by nlinarith
+    have hrewrite :
+        1 + (alphaF + alphaG) * (1 / (1 - alphaF)) =
+          (1 + alphaG) / (1 - alphaF) := by
+      field_simp [hdenF_pos.ne']
+      ring
+    rw [hrewrite]
+    exact div_pos hnum hdenF_pos
+  exact chewi115_strong_hopf_lax_bound_of_chewi93 halphaF halphaG
+    (chewi93_hopf_lax_strong_gap_bound_of_interpolant
+      (hopfGap := hopfGap) (gap := gap) (distSq := distSq)
+      (alpha := alphaF + alphaG) (h := 1 / (1 - alphaF))
+      hh hden hinterp)
+
+/--
 The Jensen-shaped zero-curvature RAM recurrence is exactly the quadratic
 inverse-gap recurrence with denominator `K`.
 -/

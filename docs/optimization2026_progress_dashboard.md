@@ -28,9 +28,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
-- Current manual frontier after focused Lean verification of the Chapter 11.5
-  RAM block-model conditional-upper layer on 2026-05-06, building on pushed
-  Optimization frontier `a2770ef` (`Add Chewi RAM Hopf-Lax bridge layer`):
+- Current manual frontier after rebasing over remote main `76d0628` (`Rebase
+  VdVW goal after weak convergence congruence`) on 2026-05-06 and focused Lean
+  verification of the Chapter 11.5 RAM block-model plus Exercise 9.3 scalar
+  Hopf-Lax interpolation layer:
   Chapter 9/10 now has a compiled finite-valued
   Fenchel/Bregman/mirror substrate.  `MirrorDescent.lean` compiles
   `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
@@ -108,12 +109,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `IsChewi114AMDescentCertificate.exists_tail_gap_le_eps_of_geometric_burnin`,
   `IsChewi114AMDescentCertificate.exists_threshold_index_of_log_burnin`, and
   `IsChewi114AMDescentCertificate.exists_tail_gap_le_eps_of_log_burnin`.
-  Chapter 11.4 is now stable substrate.  The active lane is Theorem 11.5 RAM:
-  discharge the remaining selected Hopf-Lax/Moreau model value and Exercise
-  9.3 strong/weak source bounds, since the scalar recurrence, Hopf-Lax-to-rate
-  bridge, and finite block-model conditional-upper algebra now compile.  In
-  parallel, scout Sinkhorn 11.7/11.8 from ABP/mirror-descent wrappers and
-  Chapter 12 SMPGD.
+  Chapter 11.4 is now stable substrate.  The active lane is to finish Theorem
+  11.5 RAM as a theorem-sized packet: discharge the selected Hopf-Lax/Moreau
+  model value from Chewi's source candidate, instantiate the strong
+  Exercise 9.3 certificate field with the compiled interpolation cancellation,
+  add the matching zero-curvature source bridge, and then move immediately to
+  Sinkhorn 11.7/11.8 and Chapter 12 SMPGD.
   The new root-imported `RandomizedAlternatingMinimization.lean` module starts
   Chewi Theorem 11.5 and compiles the source scalar expected-gap recurrence
   layer: `chewi115StrongFactor`, `chewi115ZeroK`,
@@ -145,15 +146,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   weak wrappers remove the earlier strict-positive side condition by a
   zero-hit induction, and the Hopf-Lax bridge layer turns Chewi's displayed
   conditional-expectation plus Exercise 9.3 bounds into the strong/weak RAM
-  certificates.  The active 11.5 lane is now instantiating the randomized-block
-  conditional upper bound and, if bounded, enough Hopf-Lax theory to discharge
-  the supplied fields.  The newest block-model layer adds
+  certificates.  The newest block-model layer adds
   `chewi115_uniform_average_le_of_block_model`,
   `chewi115_conditional_gap_upper_of_averaged_model`,
   `chewi115_conditional_gap_upper_of_block_model`, and
   `chewi115_conditional_upper_of_block_model_sequence`, so finite uniform
   block averaging and the source first-order convexity algebra now feed the
-  certificate `conditional_upper` field directly.
+  certificate `conditional_upper` field directly.  The newest Exercise 9.3
+  interpolation packet adds `chewi93_hopf_lax_strong_gap_bound_of_interpolant`,
+  `chewi93_hopf_lax_zero_gap_bound_of_interpolant`,
+  `chewi115_strong_hopf_lax_bound_of_chewi93`, and
+  `chewi115_strong_hopf_lax_bound_of_interpolant`, so the remaining 11.5 work
+  is the selected Hopf-Lax/Moreau model value and weak source-field packaging,
+  not another scalar-recurrence or finite-average loop.
   Exact 10.13 `sInf` or arbitrary norm/dual-norm packaging is deferred until
   source-report exactness or a later theorem demands it.
 - Current manual frontier after focused Lean verification rebased over pushed
@@ -362,19 +367,20 @@ High-value local files:
 
 ## Current Active Target
 
-Current active target after the verified local Chapter 8 Proximal packet
-rebased over pushed frontier `a874d02`: keep Chapter 6 and Chapter 7 as stable
-background, and treat `StatInference/Optimization/Proximal.lean` as the live
-manual `/goal` frontier.  Theorem 8.5 now has the supplied PGD model-growth
-interface, one-step inequality `(8.1)`, and positive-total-convexity
-geometric-denominator wrapper compiled.  The next theorem-sized packet is
-Theorem 8.6 APGD/FISTA: define a proximal-gradient trajectory using the PGD
-step interface, reuse `chewi510Lambda`, `chewi510Theta`, energy/telescope
-identities, and replace the GD `(3.3)` proof obligation with the compiled
-`proximalGradient_oneStep_ineq` at `alphaF = alphaG = 0`, `h = 1 / beta`.
-Return to Theorem 6.25, 7.3, or 8.5 only for exact source/report packaging or
-a dependency needed by APGD.  This paragraph supersedes older Lemma 6.20,
-Chapter 6, "open Chapter 7", and "open Chapter 8" next-target language below.
+Current active target after the verified Chapter 11.5 RAM block-model and
+Exercise 9.3 interpolation packet rebased over remote main `76d0628`: treat
+Chapters 3-8, Chapter 9/10 mirror-descent substrate, Chapter 11.2/11.3 ABP
+telescope, and Chapter 11.4 AM as stable infrastructure.  The live manual
+`/goal` frontier is
+`StatInference/Optimization/RandomizedAlternatingMinimization.lean`.  Next
+theorem-sized packet: finish Chewi Theorem 11.5 RAM by proving the selected
+Hopf-Lax/Moreau model value from the source candidate, wiring the compiled
+strong Exercise 9.3 interpolation bridge into the strong RAM certificate, and
+adding the analogous zero-curvature source bridge.  After that, move directly
+to Sinkhorn Theorems 11.7/11.8 from ABP/mirror-descent supplied finite
+KL/Pinsker/marginal interfaces, then open Chapter 12 SMPGD.  This paragraph
+supersedes older Chapter 6, Chapter 7, Chapter 8, and Chapter 11.4 next-target
+language below.
 
 Latest proof target after the standard-cut scalar containment,
 determinant-ratio, coordinate-free half-space, affine-transport certificate,
