@@ -89,19 +89,24 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-06 after verified pushed head
-`398c303 Add finite code-set Theorem 2.4.3 endpoints`: the active Codex
-`/goal` object is broad and cannot be edited in place, so this paragraph is
-the blueprint-level replacement target.  Treat the existing Theorem 2.4.3
+Current operational target, 2026-05-06 after the centered endpoint bundle and
+explicit-tail/UI endpoint consumer: the active Codex `/goal` object is broad
+and cannot be edited in place, so this paragraph is the blueprint-level
+replacement target.  Treat the existing Theorem 2.4.3
 plumbing as closed support: selected fixed-radius tail/UI, finite code-set and
 natural-polynomial code-set routes, threshold/grid/finite-trace/full-subgraph
 VC routes, canonical iid sample-process specializations, finite-class SLLN
 endpoints, full-subgraph `P`-GC plus in-mean packages, Lemma 2.4.5
 reverse/cofiltration consumers, raw bounded `ell_infty(T)` process-law forward
 FDD/tightness wrappers, weak-convergence congruence support, and centered
-pointwise-separability endpoints.  Do not spend the next batch on another
-wrapper or endpoint alias around these same routes unless an exact textbook
-statement immediately consumes it.
+pointwise-separability endpoints.  The newest reusable endpoint closure adds
+`VdVWTheorem243_pGlivenkoCantelli_and_inMean_of_centered_untruncated_convergesInOuterProbabilityConst_zero`
+and
+`VdVWTheorem243_variableEntropy_tailExpectation_pGlivenkoCantelli_and_inMean`,
+so any future theorem that proves the explicit selected finite-net tail/UI
+condition can now directly produce both endpoint conclusions.  Do not spend
+the next batch on another wrapper or endpoint alias around these same routes
+unless an exact textbook statement immediately consumes it.
 
 The exact Theorem 2.4.3 gap is now sharper: the textbook assumption is the
 generic random entropy condition

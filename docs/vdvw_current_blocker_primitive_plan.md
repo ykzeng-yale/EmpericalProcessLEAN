@@ -70,8 +70,8 @@ unless a new exact statement directly consumes them.
 
 ## Current `/goal` Target
 
-Authoritative `/goal` rebase, 2026-05-06 after verified pushed head
-`398c303 Add finite code-set Theorem 2.4.3 endpoints`: local `main` is synced
+Authoritative `/goal` rebase, 2026-05-06 after the centered endpoint bundle
+and explicit-tail/UI endpoint consumer: local `main` should be kept synced
 with `origin/main`, and the active Codex goal object remains a broad
 orchestration label because it cannot be edited in place.  Use this paragraph,
 not older rebase paragraphs below, as the operative continuation prompt.
@@ -112,6 +112,18 @@ measurability, nonmeasurable signed outer-cover weak convergence, or full
 arbitrary-map extended-real measurable-cover existence.  If a lane blocks,
 record searched APIs, the failing theorem shape, and the next patchable edit
 before switching lanes.
+
+2026-05-06 explicit tail/UI endpoint closure: search found existing centered
+untruncated convergence routes, `P`-GC projection, and in-mean envelope
+adapters, but no generic theorem bundling the endpoint conclusions and no
+direct endpoint theorem for the explicit selected finite-net tail/UI route.
+`Theorem243.lean` now proves
+`VdVWTheorem243_pGlivenkoCantelli_and_inMean_of_centered_untruncated_convergesInOuterProbabilityConst_zero`
+and
+`VdVWTheorem243_variableEntropy_tailExpectation_pGlivenkoCantelli_and_inMean`.
+This closes the theorem-facing endpoint for the honest extra-tail/UI route.
+It still does not prove that the bare textbook outer-probability random
+entropy assumption supplies selected tail/UI or ordinary-mean/UI.
 
 2026-05-06 fixed-FDD selected-coordinate congruence follow-up: local search
 found only the whole-sample-path finite-dimensional congruence wrappers
