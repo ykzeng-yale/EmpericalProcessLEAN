@@ -202,17 +202,22 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_finiteCoordinateStrongLaw_real`.
 58. Finite-coordinate real Theorem 4.1 existence-plus-delta assembler:
    `vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_real`.
+59. Finite-coordinate empirical-moment measurability helper:
+   `vaart1998_finiteCoordinate_empiricalMoment_measurable_real`.
+60. Finite-coordinate empirical-moment a.e.-strong measurability helper:
+   `vaart1998_finiteCoordinate_empiricalMoment_aestronglyMeasurable_real`.
+61. Measurable-coordinate Theorem 4.1 source wrapper:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_real`.
 
-Latest pushed Vaart packet before this run: `6f98255`
-(`Add Vaart finite coordinate moment LLN bridge`).
+Latest pushed Vaart packet before this run: `2066363`
+(`Add Vaart theorem 4.1 finite coordinate assembler`).
 
-The current theorem-sized packet assembles the finite-coordinate source-facing
-Theorem 4.1 spine.  For a finite real moment vector, coordinatewise iid strong
-laws now give the local existence / moment-equation solving statement, and a
-supplied empirical-moment CLT feeds the local inverse through the Chapter 3
-delta method.  The theorem returns both conclusions at once.  The vector
-empirical-moment measurability fields, local-inverse measurability, and
-multivariate empirical-moment CLT remain explicit.
+The current theorem-sized packet removes the explicit vector empirical-moment
+measurability burden from the clean finite-coordinate Theorem 4.1 wrapper.
+Coordinate measurability now implies measurability and a.e.-strong
+measurability of the vector empirical moment sequence, and the source-facing
+wrapper consumes those derived fields automatically.  Local-inverse
+measurability and the multivariate empirical-moment CLT remain explicit.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
@@ -220,9 +225,9 @@ remaining source hypotheses without overclaiming unavailable infrastructure:
 1. package a Gaussian/covariance display certificate for the supplied
    empirical-moment CLT so the conclusion visibly matches Vaart's
    `N(0, e'_theta0^{-1} P f f^T (e'_theta0^{-1})^T)` statement;
-2. add measurability conveniences for finite-coordinate empirical moments from
-   coordinate measurability, reducing the explicit `hstrong`/`hmeas` fields
-   where possible;
+2. add a local-inverse measurability convenience if a clean continuity/open
+   partial homeomorphism API can discharge it without broad topological
+   refactoring;
 3. keep a true multivariate empirical-moment CLT supplied until a local vector
    CLT is formalized from the scalar mathlib CLT.
 

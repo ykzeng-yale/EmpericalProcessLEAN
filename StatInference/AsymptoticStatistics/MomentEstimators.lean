@@ -410,6 +410,41 @@ theorem vaart1998_finiteCoordinate_empiricalMoment_tendstoInMeasure_real
       X hX_integrable hX_indep hX_ident)
 
 /--
+Finite-coordinate empirical-moment measurability from coordinate measurability.
+-/
+theorem vaart1998_finiteCoordinate_empiricalMoment_measurable_real
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i)) :
+    ∀ n : ℕ,
+      Measurable
+        (fun ω : Ω => fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n) := by
+  intro n
+  exact measurable_pi_lambda _ fun coordinate =>
+    ((Finset.range n).measurable_fun_sum
+      (fun i _hi => hX_meas coordinate i)).div_const (n : ℝ)
+
+/--
+Finite-coordinate empirical-moment a.e.-strong measurability from coordinate
+measurability.
+-/
+theorem vaart1998_finiteCoordinate_empiricalMoment_aestronglyMeasurable_real
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω}
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i)) :
+    ∀ n : ℕ,
+      AEStronglyMeasurable
+        (fun ω : Ω => fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n) P :=
+  fun n =>
+    (vaart1998_finiteCoordinate_empiricalMoment_measurable_real X hX_meas n).aestronglyMeasurable
+
+/--
 Local-range probability certificate from almost-sure empirical-moment
 convergence to the true moment.
 -/
@@ -965,6 +1000,68 @@ theorem vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_me
           fun coordinate : Coordinate =>
             (∑ i ∈ Finset.range n, X coordinate i ω) / n)
         (Z := Z) hCLT (fun n => (hstrong n).aemeasurable)
+
+/--
+Finite-coordinate Theorem 4.1 wrapper with empirical-moment measurability
+derived from coordinate measurability.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (hInv_meas : Measurable (he.localInverse e De theta0))
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 =
+        (fun coordinate : Coordinate => ∫ sample, X coordinate 0 sample ∂P))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q :=
+  vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_real
+    e De he hInv_meas X heta0 hX_integrable hX_indep hX_ident
+    (vaart1998_finiteCoordinate_empiricalMoment_aestronglyMeasurable_real
+      X hX_meas)
+    (vaart1998_finiteCoordinate_empiricalMoment_measurable_real X hX_meas)
+    hCLT
 
 end AsymptoticStatistics
 end StatInference
