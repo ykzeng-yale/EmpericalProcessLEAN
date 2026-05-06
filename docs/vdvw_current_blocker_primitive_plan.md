@@ -469,6 +469,15 @@ still only the forward continuous-mapping direction; the exact arbitrary-index
 FDD converse and process separability/asymptotic-measurability blockers remain
 open.
 
+2026-05-06 raw coordinate-law congruence follow-up: local search found the
+finite-dimensional/process a.e.-congruence lemmas and mathlib
+`Measure.map_congr`/`AEMeasurable.congr`, but no ordinary one-coordinate law
+replacement theorem.  `FiniteDimensional.lean` now proves
+`aemeasurable_coordinate_congr_ae` and `vdVWCoordinateProcessLaw_congr_ae`.
+These make the new raw coordinate-law bridge stable under coordinatewise
+a.e. replacement, which is needed before later separability or canonical
+measurable-version arguments can use ordinary coordinate laws.
+
 Authoritative operational prompt, 2026-05-06 after the verified
 original-cover truncation/polynomial entropy bridges and the quantizer
 random-cover lifts, plus the earlier truncated threshold trace algebra,

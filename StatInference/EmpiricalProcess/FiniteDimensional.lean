@@ -1106,6 +1106,18 @@ noncomputable def vdVWCoordinateProcessLaw
   ⟨P.map (fun ω => X ω t), Measure.isProbabilityMeasure_map hX⟩
 
 /--
+Single-coordinate a.e.-measurability is unchanged by replacing that coordinate
+a.e.
+-/
+theorem aemeasurable_coordinate_congr_ae
+    [MeasurableSpace Ω]
+    {P : Measure Ω} {X Y : Ω -> T -> ℝ} {t : T}
+    (hX : AEMeasurable (fun ω => X ω t) P)
+    (hYX : ∀ᵐ ω ∂P, Y ω t = X ω t) :
+    AEMeasurable (fun ω => Y ω t) P :=
+  hX.congr (hYX.mono fun _ hω => hω.symm)
+
+/--
 Finite-dimensional a.e.-measurability is unchanged by replacing a raw process
 with another one whose whole sample path is coordinatewise equal a.e.
 -/
@@ -1178,6 +1190,21 @@ theorem vdVWFDDProcessLaw_congr_finite_coord_ae
     (Measure.map_congr (hYX.mono fun ω hω => by
       funext t
       exact hω t))
+
+/--
+The single-coordinate law of a raw process is unchanged by replacing that
+coordinate a.e.
+-/
+theorem vdVWCoordinateProcessLaw_congr_ae
+    [MeasurableSpace Ω]
+    (P : Measure Ω) [IsProbabilityMeasure P]
+    (X Y : Ω -> T -> ℝ) (t : T)
+    (hX : AEMeasurable (fun ω => X ω t) P)
+    (hY : AEMeasurable (fun ω => Y ω t) P)
+    (hYX : ∀ᵐ ω ∂P, Y ω t = X ω t) :
+    vdVWCoordinateProcessLaw P Y t hY = vdVWCoordinateProcessLaw P X t hX := by
+  ext s hs
+  exact congrArg (fun m : Measure ℝ => m s) (Measure.map_congr hYX)
 
 /--
 Finite-dimensional a.e.-measurability follows from a.e.-measurability of the
