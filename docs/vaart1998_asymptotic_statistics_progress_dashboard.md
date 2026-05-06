@@ -139,9 +139,11 @@ Chapter 4 handoff:
 - strict-differentiability plus finite-coordinate strong-law local-existence
   wrapper:
   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_finiteCoordinateStrongLaw_real`.
+- finite-coordinate real Theorem 4.1 existence-plus-delta assembler:
+  `vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_real`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`3a24d69`:
+`6f98255`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -166,14 +168,14 @@ targeted Vaart module build.
 
 Continue Vaart Chapter 4.1 from the compiled delta handoff:
 
-1. assemble the full Theorem 4.1 existence-plus-delta wrapper from the
-   finite-coordinate strong-law solved-with-probability conclusion and the
-   local inverse delta certificate;
-2. package the source-facing finite-dimensional method-of-moments theorem so
-   the strong-law local existence layer and the supplied empirical-moment CLT
-   appear in one theorem statement;
-3. keep the multivariate CLT and covariance display as supplied fields until a
-   local vector CLT is formalized.
+1. package a Gaussian/covariance display certificate for the supplied
+   empirical-moment CLT so the theorem statement visibly matches Vaart's
+   covariance formula after applying the inverse derivative;
+2. add finite-coordinate empirical-moment measurability conveniences from
+   coordinate measurability, reducing the explicit `hstrong` and `hmeas`
+   fields in the source-facing wrapper;
+3. keep the actual multivariate CLT supplied until a local vector CLT is
+   formalized from the scalar mathlib CLT or another local dependency.
 
 If this blocks, record the exact missing theorem shape for the supplied
 empirical-moment CLT, covariance-display, or local-inverse measurability field

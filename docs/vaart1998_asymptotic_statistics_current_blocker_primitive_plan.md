@@ -200,30 +200,31 @@ Chapter 3 theorem-facing wrappers compiling:
 57. Strict-derivative finite-coordinate strong-law solved-with-probability
    wrapper:
    `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_finiteCoordinateStrongLaw_real`.
+58. Finite-coordinate real Theorem 4.1 existence-plus-delta assembler:
+   `vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_real`.
 
-Latest pushed Vaart packet before this run: `3a24d69`
-(`Add Vaart almost sure moment handoff`).
+Latest pushed Vaart packet before this run: `6f98255`
+(`Add Vaart finite coordinate moment LLN bridge`).
 
-The current theorem-sized packet discharges the next finite-coordinate strong
-law interface for Chapter 4.1.  For a finite real moment vector, coordinatewise
-iid strong laws now give almost-sure convergence of empirical moments to the
-population moment vector, then convergence in probability, then the
-strict-derivative local inverse candidate solves the moment equation with
-probability tending to one.  The vector empirical moment measurability fields
-remain explicit.
+The current theorem-sized packet assembles the finite-coordinate source-facing
+Theorem 4.1 spine.  For a finite real moment vector, coordinatewise iid strong
+laws now give the local existence / moment-equation solving statement, and a
+supplied empirical-moment CLT feeds the local inverse through the Chapter 3
+delta method.  The theorem returns both conclusions at once.  The vector
+empirical-moment measurability fields, local-inverse measurability, and
+multivariate empirical-moment CLT remain explicit.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. assemble the full Theorem 4.1 source wrapper that reports both
-   solved-with-probability and the already-compiled delta-method asymptotic
-   normality conclusion under supplied empirical-moment CLT and the new
-   finite-coordinate LLN local existence bridge;
-2. package the source statement so the assumptions visibly match Vaart's
-   finite-dimensional method-of-moments theorem: strict derivative/invertible
-   derivative, finite coordinate moments, iid strong law, and supplied CLT;
-3. keep the multivariate empirical-moment CLT/covariance display supplied for
-   now, since the current pinned mathlib CLT is scalar.
+1. package a Gaussian/covariance display certificate for the supplied
+   empirical-moment CLT so the conclusion visibly matches Vaart's
+   `N(0, e'_theta0^{-1} P f f^T (e'_theta0^{-1})^T)` statement;
+2. add measurability conveniences for finite-coordinate empirical moments from
+   coordinate measurability, reducing the explicit `hstrong`/`hmeas` fields
+   where possible;
+3. keep a true multivariate empirical-moment CLT supplied until a local vector
+   CLT is formalized from the scalar mathlib CLT.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

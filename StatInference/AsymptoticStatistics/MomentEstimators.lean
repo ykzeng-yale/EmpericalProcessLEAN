@@ -885,5 +885,86 @@ theorem vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_certificate
     C.inverse_deriv C.inverse_measurable C.inverse_at_eta0 hCLT
     hEmpiricalMoment
 
+/--
+Finite-coordinate source-shaped form of van der Vaart Theorem 4.1.
+
+For finitely many real moment coordinates, coordinatewise iid strong laws give
+the existence/local-solving statement, while a supplied empirical-moment CLT
+and the inverse-function-theorem local inverse give the `sqrt n` asymptotic
+distribution by the Chapter 3 delta method.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (hInv_meas : Measurable (he.localInverse e De theta0))
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 =
+        (fun coordinate : Coordinate => ∫ sample, X coordinate 0 sample ∂P))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hstrong : ∀ n : ℕ,
+      AEStronglyMeasurable
+        (fun ω : Ω => fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n) P)
+    (hmeas : ∀ n : ℕ,
+      Measurable
+        (fun ω : Ω => fun coordinate : Coordinate =>
+          (∑ i ∈ Finset.range n, X coordinate i ω) / n))
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q := by
+  constructor
+  · exact
+      vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_finiteCoordinateStrongLaw_real
+        e De he X heta0 hX_integrable hX_indep hX_ident hstrong hmeas
+  · let C :=
+      vaart1998_momentLocalInverseCertificate_of_hasStrictFDerivAt
+        e De he hInv_meas
+    simpa [C] using
+      vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_certificate
+        (C := C)
+        (empiricalMoment := fun n : ℕ => fun ω : Ω =>
+          fun coordinate : Coordinate =>
+            (∑ i ∈ Finset.range n, X coordinate i ω) / n)
+        (Z := Z) hCLT (fun n => (hstrong n).aemeasurable)
+
 end AsymptoticStatistics
 end StatInference

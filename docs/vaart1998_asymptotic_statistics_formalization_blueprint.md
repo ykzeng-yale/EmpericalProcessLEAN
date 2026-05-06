@@ -145,9 +145,13 @@ Initial modules:
   `ProbabilityMeasure.finite_centeredStrongLaw_ae_real` and `tendsto_pi_nhds`:
   coordinatewise iid strong laws now yield vector empirical-moment convergence
   a.s., convergence in probability, and the strict-derivative
-  solved-with-probability local existence conclusion.  It still deliberately
-  leaves vector empirical-moment measurability, the multivariate
-  empirical-moment CLT, and covariance identification as explicit next layers.
+  solved-with-probability local existence conclusion.  The latest assembler
+  theorem combines this finite-coordinate local existence layer with the
+  supplied empirical-moment CLT and the Chapter 3 delta method, returning both
+  Vaart Theorem 4.1 conclusions in one source-shaped statement.  It still
+  deliberately leaves vector empirical-moment measurability, local-inverse
+  measurability, the multivariate empirical-moment CLT, and covariance
+  identification as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
