@@ -216,6 +216,18 @@ finite-class/full-subgraph endpoint packaging, or another consumer of already
 closed side-condition structures unless it immediately proves this
 `hprob_bound` or the exact textbook theorem.
 
+2026-05-06 compiled comparison target: `Theorem243.lean` now names the exact
+missing event comparison as the proof-carrying structure
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison` and adds the
+single non-duplicative consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbabilityComparison`.
+This does not assert the comparison as an axiom; it makes the source-side
+VdV&W symmetrization/net theorem a concrete Lean target.  The next proof work
+should construct this structure from the existing product-copy, ghost-sample,
+Rademacher, finite-cover, and outer-probability APIs.  If construction blocks,
+record the exact lower-level primitive missing from that construction rather
+than adding another endpoint alias.
+
 2026-05-06 fixed-FDD selected-coordinate congruence follow-up: local search
 found only the whole-sample-path finite-dimensional congruence wrappers
 `aemeasurable_fdd_congr_forall_coord_ae` and
