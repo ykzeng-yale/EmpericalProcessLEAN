@@ -129,10 +129,13 @@ Initial modules:
   `HasStrictFDerivAt.toOpenPartialHomeomorph`, builds an open-neighborhood
   local range certificate from them, and proves that convergence in probability
   of empirical moments to the true moment implies local-range probability
-  tending to one for any open local range containing the true moment.  It now
-  deliberately leaves the iid/vector LLN producing that convergence, the
-  multivariate empirical-moment CLT, and covariance identification as explicit
-  next layers.
+  tending to one for any open local range containing the true moment.  The
+  newest layer assembles these ingredients into the Chapter 4.1 local
+  existence conclusion: the local inverse candidate solves the moment equation
+  with probability tending to one, including a strict-derivative plus
+  convergence-in-probability wrapper.  It now deliberately leaves the
+  iid/vector LLN producing empirical-moment convergence, the multivariate
+  empirical-moment CLT, and covariance identification as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

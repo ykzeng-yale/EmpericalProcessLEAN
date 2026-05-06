@@ -110,9 +110,19 @@ Chapter 4 handoff:
 - local-range probability certificate constructor from convergence in
   probability:
   `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_tendstoInMeasure`.
+- open inverse-function-theorem local-range probability:
+  `vaart1998_theorem_4_1_open_local_range_probability_of_hasStrictFDerivAt`.
+- strict-differentiability plus convergence-in-probability local-range
+  probability certificate constructor:
+  `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_hasStrictFDerivAt_tendstoInMeasure`.
+- moment-equation solved-with-probability wrappers:
+  `vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to_one`,
+  `vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to_one_of_certificate`,
+  and
+  `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_tendstoInMeasure`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`460542b`:
+`4156f00`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -136,10 +146,10 @@ targeted Vaart module build.
 Continue Vaart Chapter 4.1 from the compiled delta handoff:
 
 1. prove or package an iid/vector LLN interface that yields convergence in
-   probability of empirical moments to the true moment, then feed
-   `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_tendstoInMeasure`;
-2. assemble the full Theorem 4.1 existence-plus-delta wrapper from the open
-   local range, local-range probability, and local inverse certificates;
+   probability of empirical moments to the true moment, then feed the
+   strict-derivative local-range probability constructor;
+2. assemble the full Theorem 4.1 existence-plus-delta wrapper from the
+   solved-with-probability conclusion and the local inverse delta certificate;
 3. keep the multivariate CLT and covariance display as supplied fields until a
    local vector CLT is formalized.
 
