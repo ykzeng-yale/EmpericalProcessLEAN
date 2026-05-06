@@ -52,7 +52,10 @@ the already compiled Theorem 2.4.3 endpoint infrastructure and Chapter 1
 measure-level wrappers instead of rebuilding them.  The finite-index
 `ell_infty(T)`/FDD converse, Portmanteau converse, norm-tail tightness,
 π-system convergence-determining, VdV&W 1.4.2 product-test uniqueness, and
-measurable independent-product law convergence layers are now compiled.  The
+measurable independent-product law convergence layers are now compiled, and
+measure-level weak convergence has target/source congruence via
+`VdVWWeakConvergenceProbabilityMeasures.congr_limit` and
+`VdVWWeakConvergenceProbabilityMeasures.congr_eventually_limit`.  The
 highest-value remaining Chapter 1 process blockers are the arbitrary-index
 VdV&W 1.4.8 converse, separability/tightness/asymptotic-measurability
 interfaces, and the nonmeasurable outer-cover signed weak-convergence layer.

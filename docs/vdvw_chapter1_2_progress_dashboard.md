@@ -213,7 +213,12 @@ ordinary convergence-in-distribution wrappers
 local search also shows that the canonical infinite iid product substrate is
 already compiled in `PMeasurable.lean` through `vdVWInfiniteProductMeasure`,
 coordinate law, and coordinate independence wrappers, so the next fallback
-should not be another duplicate infinite-product wrapper.  The current
+should not be another duplicate infinite-product wrapper.  The
+measure-level weak-convergence interface also has target-limit congruence via
+`VdVWWeakConvergenceProbabilityMeasures.congr_limit` and combined
+source/target congruence via
+`VdVWWeakConvergenceProbabilityMeasures.congr_eventually_limit`.
+The current
 Theorem 2.4.3 gap remains the exact book
 random-entropy bridge: derive a real tail/UI,
 uniform-integrability,

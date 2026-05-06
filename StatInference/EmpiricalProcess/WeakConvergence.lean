@@ -2354,6 +2354,35 @@ theorem VdVWWeakConvergenceProbabilityMeasures.congr_eventually
   Tendsto.congr' (h_eq.mono fun _ hi => hi.symm) h
 
 /--
+Measure-level weak convergence is unchanged by replacing the limiting
+probability measure by an equal one.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.congr_limit
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ ν : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    (h_eq : ν = μ) :
+    VdVWWeakConvergenceProbabilityMeasures μs l ν := by
+  simpa [h_eq] using h
+
+/--
+Measure-level weak convergence is unchanged by eventually equal source
+families and an equal limiting probability measure.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.congr_eventually_limit
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ ν : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    (h_src : ∀ᶠ i in l, νs i = μs i)
+    (h_lim : ν = μ) :
+    VdVWWeakConvergenceProbabilityMeasures νs l ν :=
+  (h.congr_eventually h_src).congr_limit h_lim
+
+/--
 Measure-level weak convergence is stable under reindexing along a map that
 tends to the original index filter.
 -/

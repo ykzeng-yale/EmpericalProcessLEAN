@@ -1377,7 +1377,13 @@ theorem VdVWEllInftyProcessWeakConvergence.congr_limit_ae
       (T := T) (P := μlim) (X := Z) (Y := W)
       (hXbounded := hZbounded) (hYbounded := hWbounded)
       (hX := hZ) (hY := hW) hWZ
-  simpa [VdVWEllInftyProcessWeakConvergence, hLaw] using h
+  exact
+    VdVWWeakConvergenceProbabilityMeasures.congr_limit
+      (show VdVWWeakConvergenceProbabilityMeasures
+        (fun i => vdVWEllInftyProcessLaw (T := T) (μ i) (X i) (hbounded i) (hX i))
+        l
+        (vdVWEllInftyProcessLaw (T := T) μlim Z hZbounded hZ) from h)
+      hLaw
 
 /--
 Process weak convergence is unchanged by replacing the limiting raw process by
