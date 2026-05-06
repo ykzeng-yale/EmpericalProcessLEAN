@@ -128,6 +128,11 @@ stable under a.e.-equal source-process replacement through
 `VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae`.  This is the
 needed raw-process congruence support for later measurable-version and
 separability arguments.
+The Definition 2.3.3 separability lane also has a bounded route:
+`VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`
+combines pointwise approximability by a countable measurable subclass with a
+global absolute bound on that subclass to prove `P`-measurability of the
+original class.
 
 The scalar-quantizer structural-cover lift is also compiled:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`

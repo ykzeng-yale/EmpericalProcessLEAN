@@ -219,6 +219,11 @@ The same process-law layer now has a.e.-congruence support:
 `VdVWEllInftyProcessAsymptoticallyTight.congr_eventually_ae`.  These lemmas are
 intended for replacing raw processes by a.e.-equal measurable or canonical
 versions in later separability/asymptotic-measurability arguments.
+For Definition 2.3.3, bounded pointwise approximability by a countable
+measurable subclass now directly gives `P`-measurability through
+`VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`.
+This composes the existing pointwise-approximability handoff with the uniform
+weighted-value-set boundedness primitive.
 
 2026-05-06 scalar-quantizer cover update: `Theorem243.lean` now lifts the
 deterministic coordinate scalar-quantizer decoder-error covering bound from

@@ -1761,4 +1761,33 @@ theorem VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_bddA
   VdVWPMeasurableClass.of_pointwiseSupremumSeparable
     (happrox.to_pointwiseSupremumSeparable_of_bddAbove hbdd) hmeas
 
+/--
+Uniformly bounded pointwise approximability by a countable measurable subclass
+gives `P`-measurability of the original class.
+
+This discharges the bounded value-set side condition in
+`VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_bddAbove`
+from a global absolute bound on the approximating subclass.  It is the bounded
+separable-class route to VdV&W Definition 2.3.3.
+-/
+theorem VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} {indexClass subclass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    (happrox :
+      VdVWPointwiseApproximableByCountableSubclass
+        indexClass subclass classFun)
+    {bound : ℝ}
+    (hbound :
+      ∀ index, index ∈ subclass -> ∀ observation,
+        |classFun index observation| ≤ bound)
+    (hmeas : VdVWClassCoordinateMeasurable subclass classFun) :
+    VdVWPMeasurableClass P indexClass classFun :=
+    VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_bddAbove
+    happrox
+    (fun _n weights sample =>
+      bddAbove_vdVWWeightedClassValueSet_of_uniform_bound
+        (indexClass := subclass) (classFun := classFun) weights sample hbound)
+    hmeas
+
 end StatInference

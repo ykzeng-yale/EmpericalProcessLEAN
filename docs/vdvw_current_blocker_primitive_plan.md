@@ -6829,3 +6829,15 @@ Chapter 1 process arguments replace source processes by a.e.-equal measurable
 or canonical versions without changing process weak convergence or process
 asymptotic tightness.  They are support for separability/measurability routes,
 not the arbitrary-index FDD converse itself.
+
+2026-05-06 bounded separability-to-`P`-measurability follow-up: local search
+found the existing pointwise-approximable route
+`VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_bddAbove`
+and the boundedness primitive
+`bddAbove_vdVWWeightedClassValueSet_of_uniform_bound`, but no theorem
+combining them.  `PMeasurable.lean` now proves
+`VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_uniform_bound`.
+This discharges Definition 2.3.3 for a class pointwise approximable by a
+countable measurable subclass under a global absolute bound on that subclass.
+It is a genuine bounded separability/measurability handoff for Chapter 2
+applications and avoids making another Theorem 2.4.3 endpoint alias.
