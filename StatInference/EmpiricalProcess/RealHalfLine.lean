@@ -614,6 +614,45 @@ theorem exists_realMiddleCDFPartition_snocCell_of_exists
     exists_realMiddleCDFPartition_snocCell_of_partition partition hcb hinc
 
 /--
+A finite chain of real cutpoints whose adjacent CDF left-limit increments are
+all below the requested radius.
+
+This is the proof target for the future quantile construction in the
+Glivenko-Cantelli route: once the source proof has produced such a chain,
+`exists_realMiddleCDFPartition_of_cutpoint_chain` turns it into the supplied
+middle partition consumed by the endpoint-grid layer.
+-/
+inductive SuppliedRealMiddleCDFPartitionChain
+    (μ : Measure ℝ) (epsilon a : ℝ) : ℝ -> Prop where
+  | one {b : ℝ} (hab : a < b)
+      (hinc :
+        Function.leftLim (ProbabilityTheory.cdf μ) b -
+          ProbabilityTheory.cdf μ a < epsilon) :
+      SuppliedRealMiddleCDFPartitionChain μ epsilon a b
+  | snoc {c b : ℝ}
+      (chain : SuppliedRealMiddleCDFPartitionChain μ epsilon a c)
+      (hcb : c < b)
+      (hinc :
+        Function.leftLim (ProbabilityTheory.cdf μ) b -
+          ProbabilityTheory.cdf μ c < epsilon) :
+      SuppliedRealMiddleCDFPartitionChain μ epsilon a b
+
+/--
+Every finite small-increment cutpoint chain supplies a bounded middle CDF
+partition.
+-/
+theorem exists_realMiddleCDFPartition_of_cutpoint_chain
+    {μ : Measure ℝ} {epsilon a b : ℝ}
+    (chain : SuppliedRealMiddleCDFPartitionChain μ epsilon a b) :
+    ∃ middleCells, Nonempty
+      (SuppliedRealMiddleCDFPartition μ epsilon a b middleCells) := by
+  induction chain with
+  | one hab hinc =>
+      exact exists_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt hab hinc
+  | snoc chain hcb hinc ih =>
+      exact exists_realMiddleCDFPartition_snocCell_of_exists ih hcb hinc
+
+/--
 Finite Borel measures on the real line have finite real cutpoints with
 arbitrarily small lower and upper tails.
 

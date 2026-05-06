@@ -663,6 +663,20 @@ theorem durrett2019_theorem_2_4_9_realMiddleCDFPartition_snocCell_of_exists
   exists_realMiddleCDFPartition_snocCell_of_exists partitionExists hcb hinc
 
 /--
+Durrett 2019, Theorem 2.4.9 middle-partition cutpoint-chain package.
+
+A finite chain of strict cutpoints with small adjacent CDF left-limit
+increments gives the supplied middle CDF partition needed by the
+middle-partition-to-GC handoff.
+-/
+theorem durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain
+    {P : Measure ℝ} {epsilon a b : ℝ}
+    (chain : SuppliedRealMiddleCDFPartitionChain P epsilon a b) :
+    ∃ middleCells, Nonempty
+      (SuppliedRealMiddleCDFPartition P epsilon a b middleCells) :=
+  exists_realMiddleCDFPartition_of_cutpoint_chain chain
+
+/--
 Durrett 2019, Theorem 2.4.9, middle-partition-to-GC package.
 
 This isolates the remaining arbitrary-distribution primitive: for every

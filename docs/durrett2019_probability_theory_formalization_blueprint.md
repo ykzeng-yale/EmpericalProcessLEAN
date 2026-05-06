@@ -166,6 +166,10 @@ Compiled first source wrappers:
   `SuppliedRealMiddleCDFPartition.snocCell`,
   `exists_realMiddleCDFPartition_snocCell_of_exists`, and
   `durrett2019_theorem_2_4_9_realMiddleCDFPartition_snocCell_of_exists`.
+- Durrett Theorem 2.4.9 finite cutpoint-chain consumer:
+  `SuppliedRealMiddleCDFPartitionChain`,
+  `exists_realMiddleCDFPartition_of_cutpoint_chain`, and
+  `durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain`.
 
 The subsequence and continuous-mapping theorems are higher value but may require
 more topological convergence API packaging.
@@ -204,10 +208,10 @@ Durrett Theorem 2.4.9, Glivenko-Cantelli for empirical CDFs, by reusing the
 existing `RealHalfLineGC.lean` fixed-endpoint and half-line infrastructure and
 filling the arbitrary-CDF finite quantile grid/squeezing layer.  The supplied
 endpoint-grid and supplied middle-CDF-partition handoffs now compile, and the
-one-cell, two-cell, and right-append middle-partition constructors now compile.
-The remaining theorem-core primitive is the arbitrary-distribution finite
-middle partition constructor for intervals whose total CDF increment is not
-already below the requested radius.
+one-cell, two-cell, right-append, and finite cutpoint-chain middle-partition
+consumers now compile.  The remaining theorem-core primitive is the
+arbitrary-distribution construction of those cutpoint chains for intervals
+whose total CDF increment is not already below the requested radius.
 
 ### Lane D: CLT and characteristic functions
 

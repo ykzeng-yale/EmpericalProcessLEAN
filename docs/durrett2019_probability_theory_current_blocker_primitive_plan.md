@@ -87,6 +87,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`
 - `durrett2019_theorem_2_4_9_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt`
 - `durrett2019_theorem_2_4_9_realMiddleCDFPartition_snocCell_of_exists`
+- `durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`
 
 Existing reusable probability-measure modules cover much of the early-book
@@ -110,23 +111,27 @@ strong-law wrappers:
 - `StatInference/EmpiricalProcess/EndpointStrongLaw.lean`
 - `StatInference/ProbabilityMeasure/StrongLaw.lean`
 
-The current missing piece is now narrower: the one-cell, two-cell, and
-right-append constructors for middle CDF partitions compile, via
+The current missing piece is now narrower: the one-cell, two-cell,
+right-append, and finite cutpoint-chain consumers for middle CDF partitions
+compile, via
 `SuppliedRealMiddleCDFPartition.oneCell`,
 `SuppliedRealMiddleCDFPartition.twoCell`,
 `SuppliedRealMiddleCDFPartition.snocCell`,
+`SuppliedRealMiddleCDFPartitionChain`,
 `exists_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`,
-`exists_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt`, and the Durrett
-wrappers
+`exists_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt`,
+`exists_realMiddleCDFPartition_snocCell_of_exists`,
+`exists_realMiddleCDFPartition_of_cutpoint_chain`, and the Durrett wrappers
 `durrett2019_theorem_2_4_9_realMiddleCDFPartition_oneCell_of_cdf_leftLim_sub_lt`
-and
-`durrett2019_theorem_2_4_9_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt`;
-the existence-form right-append wrapper
-`durrett2019_theorem_2_4_9_realMiddleCDFPartition_snocCell_of_exists` also
-compiles.
+`durrett2019_theorem_2_4_9_realMiddleCDFPartition_twoCell_of_cdf_leftLim_sub_lt`,
+`durrett2019_theorem_2_4_9_realMiddleCDFPartition_snocCell_of_exists`, and
+`durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain`.
 The remaining theorem-core step is the arbitrary finite middle CDF partition
 existence consumed by
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
+Equivalently, the next proof obligation can be phrased as constructing a
+`SuppliedRealMiddleCDFPartitionChain` for every bounded interval and positive
+radius.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
 Parallel target: Chapter 2.1 exact iid/product notation refinements only if
@@ -209,10 +214,11 @@ this file plus the Durrett dashboard and blueprint, and scanning the current
 `StatInference/ProbabilityTheory`, `StatInference/ProbabilityMeasure`, and
 `StatInference/EmpiricalProcess/RealHalfLineGC.lean` modules.  Primary target:
 Durrett Theorem 2.4.9 arbitrary-distribution finite middle CDF partition
-constructor beyond the compiled one-cell/two-cell/right-append constructors.
-The likely next primitive is now the cutpoint/quantile induction that repeatedly
-uses `SuppliedRealMiddleCDFPartition.snocCell`, with atom-aware handling if
-naive splitting at a real cutpoint blocks.  Parallel target: optional Chapter
-2.1 iid/product notation polish only if the GC grid blocks.  Verify, update
-docs, commit/push, and keep this in-thread `/goal` state current.  Report
-progress and blockers in Chinese/English mix.
+constructor beyond the compiled one-cell/two-cell/right-append/cutpoint-chain
+consumers.  The likely next primitive is now the actual quantile or measure
+regularity argument that constructs a `SuppliedRealMiddleCDFPartitionChain` for
+any bounded interval and positive `epsilon`, with atom-aware handling if naive
+splitting at a real cutpoint blocks.  Parallel target: optional Chapter 2.1
+iid/product notation polish only if the GC grid blocks.  Verify, update docs,
+commit/push, and keep this in-thread `/goal` state current.  Report progress
+and blockers in Chinese/English mix.
