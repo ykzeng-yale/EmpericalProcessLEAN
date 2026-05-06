@@ -2020,6 +2020,12 @@ Borel spaces.
 now combines sequential weak convergence with any reindexing map tending to
 `atTop`, and `VdVWWeakConvergenceProbabilityMeasures.pi_asymptoticallyTight_atTop`
 combines finite product-law weak convergence with the ordinary measure-level
-asymptotic-tightness consequence.  These close the finite-product
-weak-convergence-to-tightness feeder, while the exact arbitrary-map/process
-asymptotic-tightness and arbitrary-index FDD converse remain open.
+asymptotic-tightness consequence.  The adjacent binary/reindexed consumers
+`VdVWWeakConvergenceProbabilityMeasures.prod_asymptoticallyTight_atTop`,
+`VdVWWeakConvergenceProbabilityMeasures.prod_asymptoticallyTight_comp_tendsto_atTop`,
+and
+`VdVWWeakConvergenceProbabilityMeasures.pi_asymptoticallyTight_comp_tendsto_atTop`
+are also compiled.  These close the binary and finite-product
+weak-convergence-to-tightness feeders, while the exact arbitrary-map/process
+asymptotic-tightness, asymptotic-independence, and arbitrary-index FDD converse
+remain open.

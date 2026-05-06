@@ -5646,7 +5646,14 @@ than adding a fragile finite-union measure proof, `WeakConvergence.lean` now
 adds the theorem-facing consumers
 `VdVWWeakConvergenceProbabilityMeasures.asymptoticallyTight_comp_tendsto_atTop`
 and `VdVWWeakConvergenceProbabilityMeasures.pi_asymptoticallyTight_atTop`.
-These close the ordinary subsequence/reindexed weak-convergence-to-tightness
-handoff and the finite product-law weak-convergence-to-tightness handoff.
-They still do not prove the arbitrary-map/process asymptotic-tightness or
+Follow-up search found no binary product or reindexed finite-product
+weak-convergence-to-tightness consumers.  The same file now also adds
+`VdVWWeakConvergenceProbabilityMeasures.prod_asymptoticallyTight_atTop`,
+`VdVWWeakConvergenceProbabilityMeasures.prod_asymptoticallyTight_comp_tendsto_atTop`,
+and
+`VdVWWeakConvergenceProbabilityMeasures.pi_asymptoticallyTight_comp_tendsto_atTop`.
+These close the ordinary subsequence/reindexed weak-convergence-to-tightness,
+binary product-law weak-convergence-to-tightness, and finite product-law
+weak-convergence-to-tightness handoffs.  They still do not prove the
+arbitrary-map/process asymptotic-tightness, asymptotic-independence, or
 arbitrary-index FDD-converse theorem.

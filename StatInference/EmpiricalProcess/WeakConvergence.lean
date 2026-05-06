@@ -3714,6 +3714,79 @@ theorem VdVWWeakConvergenceProbabilityMeasures.pi_asymptoticallyTight_atTop
   (VdVWWeakConvergenceProbabilityMeasures.pi hμ).asymptoticallyTight_atTop
 
 /--
+Binary product-law weak convergence implies measure-level asymptotic tightness
+of the product laws.
+
+This is the binary analogue of `pi_asymptoticallyTight_atTop`.  It remains an
+ordinary probability-measure statement, not the full VdV&W arbitrary-map
+asymptotic-independence theorem.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.prod_asymptoticallyTight_atTop
+    {S : Type u} {T : Type v}
+    [MeasurableSpace S] [PseudoMetricSpace S] [SecondCountableTopology S]
+    [OpensMeasurableSpace S]
+    [MeasurableSpace T] [PseudoMetricSpace T] [SecondCountableTopology T]
+    [OpensMeasurableSpace T]
+    [OpensMeasurableSpace (S × T)] [BorelSpace (S × T)]
+    [SecondCountableTopology (S × T)] [CompleteSpace (S × T)]
+    {μs : ℕ -> ProbabilityMeasure S} {νs : ℕ -> ProbabilityMeasure T}
+    {μ : ProbabilityMeasure S} {ν : ProbabilityMeasure T}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs atTop μ)
+    (hν : VdVWWeakConvergenceProbabilityMeasures νs atTop ν) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun n => (μs n).prod (νs n)) atTop :=
+  (VdVWWeakConvergenceProbabilityMeasures.prod hμ hν).asymptoticallyTight_atTop
+
+/--
+Reindexed binary product-law weak convergence gives measure-level asymptotic
+tightness along any filter tending to `atTop`.
+
+This packages the product-law weak convergence, Prokhorov tightness, and
+subsequence/reindexing steps used in Chapter 1 product arguments.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.prod_asymptoticallyTight_comp_tendsto_atTop
+    {S : Type u} {T : Type v} {κ : Type w}
+    [MeasurableSpace S] [PseudoMetricSpace S] [SecondCountableTopology S]
+    [OpensMeasurableSpace S]
+    [MeasurableSpace T] [PseudoMetricSpace T] [SecondCountableTopology T]
+    [OpensMeasurableSpace T]
+    [OpensMeasurableSpace (S × T)] [BorelSpace (S × T)]
+    [SecondCountableTopology (S × T)] [CompleteSpace (S × T)]
+    {μs : ℕ -> ProbabilityMeasure S} {νs : ℕ -> ProbabilityMeasure T}
+    {μ : ProbabilityMeasure S} {ν : ProbabilityMeasure T}
+    {φ : κ -> ℕ} {l : Filter κ}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs atTop μ)
+    (hν : VdVWWeakConvergenceProbabilityMeasures νs atTop ν)
+    (hφ : Tendsto φ l atTop) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun k => (μs (φ k)).prod (νs (φ k))) l :=
+  (hμ.prod_asymptoticallyTight_atTop hν).comp_tendsto hφ
+
+/--
+Reindexed finite product-law weak convergence gives measure-level asymptotic
+tightness along any filter tending to `atTop`.
+
+This is the finite-coordinate/FDD tightness feeder for subsequences and other
+sample-size reindexing maps.  It does not assert the arbitrary-index process
+FDD converse.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.pi_asymptoticallyTight_comp_tendsto_atTop
+    {J : Type u} [Fintype J] {S : J -> Type v} {κ : Type w}
+    [∀ j, MeasurableSpace (S j)] [∀ j, PseudoMetricSpace (S j)]
+    [∀ j, SecondCountableTopology (S j)] [∀ j, OpensMeasurableSpace (S j)]
+    [OpensMeasurableSpace ((j : J) -> S j)]
+    [BorelSpace ((j : J) -> S j)] [SecondCountableTopology ((j : J) -> S j)]
+    [CompleteSpace ((j : J) -> S j)]
+    {μs : ℕ -> (j : J) -> ProbabilityMeasure (S j)}
+    {μ : (j : J) -> ProbabilityMeasure (S j)}
+    {φ : κ -> ℕ} {l : Filter κ}
+    (hμ : ∀ j, VdVWWeakConvergenceProbabilityMeasures (fun n => μs n j) atTop (μ j))
+    (hφ : Tendsto φ l atTop) :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun k => ProbabilityMeasure.pi (μs (φ k))) l :=
+  (VdVWWeakConvergenceProbabilityMeasures.pi_asymptoticallyTight_atTop hμ).comp_tendsto hφ
+
+/--
 Independent random-variable product-law convergence.
 
 This is the measurable random-variable form of the VdV&W Section 1.4
