@@ -152,9 +152,12 @@ Initial modules:
   measurable-coordinate wrapper derives vector empirical-moment measurability
   and a.e.-strong measurability from coordinate measurability, so the clean
   finite-coordinate source wrapper no longer exposes the internal `hstrong`
-  and `hmeas` fields.  It still deliberately leaves local-inverse
-  measurability, the multivariate empirical-moment CLT, and covariance
-  identification as explicit next layers.
+  and `hmeas` fields.  The latest Gaussian-limit wrapper uses mathlib's
+  `HasGaussianLaw.map_fun` to propagate a supplied Gaussian empirical-moment
+  limit through the inverse derivative, so the estimator limit is now certified
+  Gaussian.  It still deliberately leaves local-inverse measurability, the
+  multivariate empirical-moment CLT, and exact covariance identification as
+  explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
