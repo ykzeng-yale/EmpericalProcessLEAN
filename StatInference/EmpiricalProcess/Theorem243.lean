@@ -19639,6 +19639,277 @@ theorem
       hcovering_all hconstant_ge_one hpoly_bound
 
 /--
+Threshold-signature code sets with coordinatewise approximation and original
+fixed-threshold VC/Sauer bounds build the variable-domain book entropy
+condition.
+
+This is the entropy-side counterpart of
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`.
+The empirical cover is still built from truncated threshold codes, but the
+cardinality estimate is transferred from the original threshold traces by the
+fixed-mask theorem.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (thresholds :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> Finset ℝ)
+    {thresholdCount : ℝ -> ℝ -> ℕ} {vcDegree : ℝ -> ℝ -> ℕ}
+    (hcoordinate :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ∀ sampleIndex : Fin m,
+            ∀ index, index ∈ indexClass ->
+              ∀ center, center ∈ indexClass ->
+                (∀ threshold : {threshold // threshold ∈ thresholds M eta n sample m},
+                  (threshold.1 <
+                      vdVWTruncatedClassFun classFun envelope M index
+                        ((samplePath (X M n) sample m) sampleIndex) ↔
+                    threshold.1 <
+                      vdVWTruncatedClassFun classFun envelope M center
+                        ((samplePath (X M n) sample m) sampleIndex))) ->
+                |vdVWTruncatedClassFun classFun envelope M index
+                    ((samplePath (X M n) sample m) sampleIndex) -
+                  vdVWTruncatedClassFun classFun envelope M center
+                    ((samplePath (X M n) sample m) sampleIndex)| ≤ eta)
+    (hthresholds_card :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          (thresholds M eta n sample n).card ≤ thresholdCount M eta)
+    (hvc :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ∀ threshold : {threshold // threshold ∈ thresholds M eta n sample n},
+            (empiricalBinaryTraceSetFamily (samplePath (X M n) sample n) indexClass
+              (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤
+              vcDegree M eta) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope
+      (fun M eta n sample m =>
+        (thresholdTraceCodeSet (samplePath (X M n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (thresholds M eta n sample m)).card) := by
+  classical
+  let selectedCardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun M eta n sample m =>
+      (thresholdTraceCodeSet (samplePath (X M n) sample m) indexClass
+        (vdVWTruncatedClassFun classFun envelope M)
+        (thresholds M eta n sample m)).card
+  have hcovering_all :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (selectedCardinality M eta n) := by
+    intro M hM eta heta
+    exact
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_thresholdTraceCode_coordinate_approx_codeSet_cardinality_bound_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (cardinality := fun eta n sample m =>
+          selectedCardinality M eta n sample m)
+        (X M) (thresholds M)
+        (fun eta heta n sample m sampleIndex index hindex center hcenter hsig =>
+          hcoordinate M hM eta heta n sample m sampleIndex index hindex center
+            hcenter hsig)
+        (by
+          intro eta _heta n sample m
+          rfl)
+        eta heta
+  have hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        1 ≤ ((((vcDegree M eta + 2 : ℕ) : ℝ) ^
+          thresholdCount M eta) + 1) := by
+    intro M _hM eta _heta
+    have hnonneg :
+        0 ≤ (((vcDegree M eta + 2 : ℕ) : ℝ) ^
+          thresholdCount M eta) :=
+      pow_nonneg (Nat.cast_nonneg _) _
+    linarith
+  have hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((selectedCardinality M eta n sample n : ℝ) + 1) ≤
+            ((((vcDegree M eta + 2 : ℕ) : ℝ) ^ thresholdCount M eta) + 1) *
+              (((n + 1 : ℕ) : ℝ) ^
+                (vcDegree M eta * thresholdCount M eta)) := by
+    intro M hM eta heta n sample
+    exact
+      thresholdTraceCodeSet_vdVWTruncatedClassFun_card_add_one_real_le_original_uniform_vc
+        (sample := samplePath (X M n) sample n)
+        (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M)
+        (thresholds := thresholds M eta n sample n)
+        (d := vcDegree M eta) (k := thresholdCount M eta)
+        (hthresholds_card M hM eta heta n sample)
+        (hvc M hM eta heta n sample)
+  simpa [selectedCardinality] using
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (constant := fun M eta =>
+        ((((vcDegree M eta + 2 : ℕ) : ℝ) ^ thresholdCount M eta) + 1))
+      (degree := fun M eta => vcDegree M eta * thresholdCount M eta)
+      (cardinality := selectedCardinality)
+      hcovering_all hconstant_ge_one hpoly_bound
+
+/--
+Canonical integer-grid/original fixed-threshold VC assumptions build the
+variable-domain book entropy condition.
+
+The envelope and canonical grid radius supply the coordinatewise approximate
+threshold cover for the truncated class; the fixed-mask transfer keeps the VC
+input on the original class.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {vcDegree : ℝ -> ℝ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hvc :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ∀ threshold : {threshold // threshold ∈
+              integerMultipleThresholdGrid eta (vdVWIntegerGridRadius M eta : ℤ)},
+            (empiricalBinaryTraceSetFamily (samplePath (X M n) sample n)
+              indexClass
+              (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤
+              vcDegree M eta) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope
+      (fun M eta n sample m =>
+        (thresholdTraceCodeSet (samplePath (X M n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (integerMultipleThresholdGrid eta (vdVWIntegerGridRadius M eta : ℤ))).card) := by
+  exact
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (thresholds := fun M eta _n _sample _m =>
+        integerMultipleThresholdGrid eta (vdVWIntegerGridRadius M eta : ℤ))
+      (thresholdCount := fun M eta => 2 * vdVWIntegerGridRadius M eta + 1)
+      (vcDegree := vcDegree)
+      (by
+        intro M hM eta heta n sample m sampleIndex index hindex center hcenter hsig
+        have hindex_bounds :
+            -((vdVWIntegerGridRadius M eta : ℤ) : ℝ) * eta ≤
+                vdVWTruncatedClassFun classFun envelope M index
+                  ((samplePath (X M n) sample m) sampleIndex) ∧
+              vdVWTruncatedClassFun classFun envelope M index
+                  ((samplePath (X M n) sample m) sampleIndex) ≤
+                ((vdVWIntegerGridRadius M eta : ℤ) : ℝ) * eta := by
+          have habs :=
+            (abs_vdVWTruncatedClassFun_le_M
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M)
+              henvelope hM.le hindex
+              ((samplePath (X M n) sample m) sampleIndex)).trans
+              (vdVWIntegerGridRadius_mul_eta_ge (M := M) (eta := eta) heta)
+          simpa [neg_mul] using abs_le.mp habs
+        have hcenter_bounds :
+            -((vdVWIntegerGridRadius M eta : ℤ) : ℝ) * eta ≤
+                vdVWTruncatedClassFun classFun envelope M center
+                  ((samplePath (X M n) sample m) sampleIndex) ∧
+              vdVWTruncatedClassFun classFun envelope M center
+                  ((samplePath (X M n) sample m) sampleIndex) ≤
+                ((vdVWIntegerGridRadius M eta : ℤ) : ℝ) * eta := by
+          have habs :=
+            (abs_vdVWTruncatedClassFun_le_M
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M)
+              henvelope hM.le hcenter
+              ((samplePath (X M n) sample m) sampleIndex)).trans
+              (vdVWIntegerGridRadius_mul_eta_ge (M := M) (eta := eta) heta)
+          simpa [neg_mul] using abs_le.mp habs
+        exact
+          abs_sub_le_of_forall_bounded_gap_exists_threshold
+            (epsilon := eta)
+            (lower := -((vdVWIntegerGridRadius M eta : ℤ) : ℝ) * eta)
+            (upper := ((vdVWIntegerGridRadius M eta : ℤ) : ℝ) * eta)
+            heta.le hindex_bounds hcenter_bounds
+            (fun a b ha hb hab hgap =>
+              exists_integerMultipleThresholdGrid_between_of_bounds
+                (epsilon := eta) (bound := (vdVWIntegerGridRadius M eta : ℤ))
+                heta ha hb hab hgap)
+            hsig)
+      (by
+        intro M _hM eta _heta n sample
+        exact integerMultipleThresholdGrid_nat_card_le eta (vdVWIntegerGridRadius M eta))
+      hvc
+
+/--
+Canonical integer-grid/original uniform threshold-VC assumptions build the
+variable-domain book entropy condition.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_subgraph_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {vcDegree : ℝ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformThresholdVCSubgraphBound indexClass classFun (vcDegree M)) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope
+      (fun M eta n sample m =>
+        (thresholdTraceCodeSet (samplePath (X M n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (integerMultipleThresholdGrid eta (vdVWIntegerGridRadius M eta : ℤ))).card) := by
+  exact
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (vcDegree := fun M _eta => vcDegree M)
+      henvelope
+      (by
+        intro M hM eta _heta n sample threshold
+        exact
+          VdVWUniformThresholdVCSubgraphBound.empiricalBinaryTraceSetFamily_vcDim_le
+            (sample := samplePath (X M n) sample n)
+            (hvc M hM) threshold.1)
+
+/--
+Canonical integer-grid/original full-subgraph VC assumptions build the
+variable-domain book entropy condition.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {vcDegree : ℝ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M)) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope
+      (fun M eta n sample m =>
+        (thresholdTraceCodeSet (samplePath (X M n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (integerMultipleThresholdGrid eta (vdVWIntegerGridRadius M eta : ℤ))).card) := by
+  exact
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_subgraph_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (vcDegree := vcDegree)
+      henvelope
+      (fun M hM =>
+        VdVWUniformSubgraphVCBound.toUniformThresholdVCSubgraphBound
+          (hvc M hM))
+
+/--
 Exact coordinatewise threshold separation with uniform fixed-threshold VC/Sauer
 bounds builds the variable-domain book entropy condition.
 
@@ -24280,6 +24551,182 @@ theorem
       (bound := bound M) (vcDegree := vcDegree M)
       (hX_samplePath M) (hbounded_abs M hM_pos)
       hclass henvelope_meas hM_pos (hvc M hM_pos)
+
+/--
+Selected fixed-radius integer-grid package from original fixed-threshold
+VC/Sauer bounds, with the sampled absolute bound discharged by the class
+envelope and the supplied grid-radius domination.
+
+This removes the sampled boundedness hypothesis from
+`...of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc` while still
+keeping the VC input on the original, untruncated threshold class.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_bound_original_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {bound : ℝ -> ℕ} {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hbound :
+      ∀ eta, 0 < eta -> M ≤ ((bound eta : ℤ) : ℝ) * eta)
+    (hvc :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        ∀ threshold : {threshold // threshold ∈
+            integerMultipleThresholdGrid eta (bound eta : ℤ)},
+          (empiricalBinaryTraceSetFamily (samplePath (X n) sample n)
+            indexClass
+            (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤
+            vcDegree eta) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta n sample m =>
+        (thresholdTraceCodeSet (samplePath (X n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (integerMultipleThresholdGrid eta (bound eta : ℤ))).card) := by
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (bound := bound) (vcDegree := vcDegree)
+      hX_samplePath
+      (by
+        intro eta heta n sample m index hindex sampleIndex
+        exact
+          (abs_vdVWTruncatedClassFun_le_M
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M)
+            henvelope hM_pos.le hindex
+            ((samplePath (X n) sample m) sampleIndex)).trans
+            (hbound eta heta))
+      hclass henvelope_meas hM_pos hvc
+
+/--
+Selected fixed-radius integer-grid package from original fixed-threshold
+VC/Sauer bounds using the canonical grid radius `ceil(M / eta)`.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hvc :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        ∀ threshold : {threshold // threshold ∈
+            integerMultipleThresholdGrid eta (vdVWIntegerGridRadius M eta : ℤ)},
+          (empiricalBinaryTraceSetFamily (samplePath (X n) sample n)
+            indexClass
+            (thresholdIndicatorClassFun classFun threshold.1)).vcDim ≤
+            vcDegree eta) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta n sample m =>
+        (thresholdTraceCodeSet (samplePath (X n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (integerMultipleThresholdGrid eta (vdVWIntegerGridRadius M eta : ℤ))).card) := by
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_bound_original_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (bound := fun eta => vdVWIntegerGridRadius M eta)
+      (vcDegree := vcDegree)
+      hX_samplePath henvelope hclass henvelope_meas hM_pos
+      (fun eta heta => vdVWIntegerGridRadius_mul_eta_ge (M := M) (eta := eta) heta)
+      hvc
+
+/--
+Selected fixed-radius integer-grid package from a uniform original
+fixed-threshold VC bound, using the canonical envelope/grid radius.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_subgraph_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {vcDegree : ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hvc : VdVWUniformThresholdVCSubgraphBound indexClass classFun vcDegree) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta n sample m =>
+        (thresholdTraceCodeSet (samplePath (X n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (integerMultipleThresholdGrid eta (vdVWIntegerGridRadius M eta : ℤ))).card) := by
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (vcDegree := fun _eta => vcDegree)
+      hX_samplePath henvelope hclass henvelope_meas hM_pos
+      (by
+        intro eta _heta n sample threshold
+        exact
+          hvc.empiricalBinaryTraceSetFamily_vcDim_le
+            (sample := samplePath (X n) sample n) threshold.1)
+
+/--
+Selected fixed-radius integer-grid package from a uniform original full
+subgraph VC bound, using the canonical envelope/grid radius.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {vcDegree : ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hvc : VdVWUniformSubgraphVCBound indexClass classFun vcDegree) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M
+      (fun eta n sample m =>
+        (thresholdTraceCodeSet (samplePath (X n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (integerMultipleThresholdGrid eta (vdVWIntegerGridRadius M eta : ℤ))).card) := by
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_subgraph_vc
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (vcDegree := vcDegree)
+      hX_samplePath henvelope hclass henvelope_meas hM_pos
+      hvc.toUniformThresholdVCSubgraphBound
 
 /--
 Selected fixed-radius tail/UI package from the integer-grid route, with the

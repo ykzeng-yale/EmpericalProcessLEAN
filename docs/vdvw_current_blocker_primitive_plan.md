@@ -278,11 +278,24 @@ and
 This uses local searches around `integerMultipleThresholdGrid`,
 `exists_integerMultipleThresholdGrid_between_of_bounds`,
 `abs_sub_le_of_forall_bounded_gap_exists_threshold`, and the compiled
-original-VC threshold-code package.  The next useful proof is to discharge the
-sampled absolute-bound/grid-radius hypothesis from the canonical
-envelope/grid setup or a concrete exact class geometry.  Do not add another
-endpoint alias for the same selected fixed-radius cardinality route unless
-final theorem assembly consumes it.
+original-VC threshold-code package.  The canonical envelope/grid original-VC
+route is now also compiled.  The selected side adds
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_bound_original_vc`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_vc`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_subgraph_vc`,
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc`.
+The entropy side adds
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`,
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_vc`,
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_subgraph_vc`,
+and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc`.
+The next useful proof is to consume this original-VC canonical grid route in
+the existing full-subgraph side-condition/final theorem packages, or prove a
+new concrete class-geometry/cardinality theorem.  Do not add another endpoint
+alias for the same selected fixed-radius cardinality route unless final
+theorem assembly consumes it.
 
 The parallel Chapter 1 audit reached the same conclusion on the process side:
 `WeakConvergence.lean`, `EllInfty.lean`, `BallSigma.lean`, and

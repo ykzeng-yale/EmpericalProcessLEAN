@@ -152,10 +152,13 @@ fixed-threshold VC/Sauer bounds through
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc`
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc`.
-The next `/goal` target should discharge the sampled absolute-bound/grid
-radius hypothesis from the canonical envelope/grid setup or a concrete exact
-class geometry; add a `P`-GC/in-mean endpoint adapter only if it is immediately
-consumed.
+The canonical envelope/grid original-VC route is now available for both
+selected fixed-radius side conditions and variable-domain book entropy,
+including the uniform original threshold-VC and original full-subgraph-VC
+specializations.  The next `/goal` target should consume these packages in the
+existing full-subgraph side-condition/final route or prove a genuinely new
+class-geometry/cardinality theorem; add a `P`-GC/in-mean endpoint adapter only
+if it is immediately consumed.
 The a.e.-measurable map-law bridge is now also available for common-domain
 arbitrary maps and varying-domain endpoints through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable`,

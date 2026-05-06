@@ -177,11 +177,24 @@ VC/Sauer input without requiring VC bounds for the already truncated class:
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc`
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_integerMultipleThresholdGrid_uniform_abs_bound_original_vc`.
-The immediate next structural target is to discharge the integer-grid
-sampled absolute-bound hypothesis from a canonical envelope/grid radius or an
-exact class geometry, then use an existing final endpoint only if it is
-immediately needed.  Do not add another endpoint alias for this same route
-unless final theorem assembly consumes it.
+The canonical envelope/grid version is now compiled on both sides of the
+Theorem 2.4.3 machinery.  The selected side has
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_bound_original_vc`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_vc`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_subgraph_vc`,
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc`.
+The entropy side has
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_thresholdTraceCode_coordinate_approx_codeSet_original_uniform_vc`,
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_vc`,
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_subgraph_vc`,
+and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc`.
+The immediate next structural target is to consume these original-VC
+canonical grid packages in the existing full-subgraph side-condition/final
+route, or prove a genuinely new class-geometry/cardinality theorem.  Do not
+add another endpoint alias for this same route unless final theorem assembly
+consumes it.
 The finite pointwise-code covering lift is now also available:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
 and
