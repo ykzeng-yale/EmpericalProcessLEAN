@@ -3031,3 +3031,13 @@ cardinality in the a.e. finite-net domination step, while the stochastic
 entropy hypothesis remains on the larger external cardinality.  Remaining
 work: prove that selected a.e. scaled domination from ghost/Rademacher
 symmetrization, or prove the direct outer-probability comparison.
+
+2026-05-06 selected-log integrability cleanup:
+`Theorem243.lean` now proves
+`integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_logCardinality_div_integrable`.
+This is a source-side assumption reduction: integrability of the normalized
+selected log-cardinality process automatically gives integrability of the
+finite-net Hoeffding display scale.  The exact generic 2.4.3 blocker remains
+unchanged: selected normalized-log tail/UI, ordinary mean, or scaled selected
+finite-net event comparison still must be derived from the textbook
+outer-probability random entropy hypothesis.

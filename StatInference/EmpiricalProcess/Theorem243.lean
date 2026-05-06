@@ -18587,6 +18587,102 @@ theorem
       exact (hbound ω).trans (le_max_left C 0))
 
 /--
+Integrability of the selected normalized log-cardinality process supplies
+integrability of the corresponding finite-net Hoeffding display scale.
+
+This removes a redundant side condition from future selected-entropy routes:
+the Hoeffding upper is only a deterministic square-root transform of the
+log-cardinality, and `sqrt (1 + x) <= 1 + x` for the nonnegative logarithms
+appearing here.
+-/
+theorem
+    integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_logCardinality_div_integrable
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {cardinality : Ω -> ℕ -> ℕ} {n : ℕ} {M : ℝ}
+    (hlogMeasurable :
+      Measurable fun ω : Ω =>
+        vdVWLogEmpiricalL1CoveringCardinality cardinality ω n / (n : ℝ))
+    (hlogIntegrable :
+      Integrable
+        (fun ω : Ω =>
+          vdVWLogEmpiricalL1CoveringCardinality cardinality ω n / (n : ℝ)) μ)
+    (hM_nonneg : 0 ≤ M) :
+    Integrable
+      (fun ω : Ω =>
+        vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M) μ := by
+  by_cases hn_pos : 0 < n
+  · have hn_real_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn_pos
+    have hlog_meas :
+        Measurable fun ω : Ω =>
+          vdVWLogEmpiricalL1CoveringCardinality cardinality ω n := by
+      convert hlogMeasurable.const_mul (n : ℝ) using 1
+      ext ω
+      field_simp [hn_real_pos.ne']
+    have hlog_integrable :
+        Integrable
+          (fun ω : Ω =>
+            vdVWLogEmpiricalL1CoveringCardinality cardinality ω n) μ := by
+      convert hlogIntegrable.const_mul (n : ℝ) using 1
+      ext ω
+      field_simp [hn_real_pos.ne']
+    have hdominant :
+        Integrable
+          (fun ω : Ω =>
+            (Real.sqrt (6 / (n : ℝ)) * M) *
+              (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n)) μ := by
+      exact (integrable_const 1).add hlog_integrable |>.const_mul
+        (Real.sqrt (6 / (n : ℝ)) * M)
+    have hupper_meas :
+        Measurable fun ω : Ω =>
+          vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M := by
+      have hrepr :
+          (fun ω : Ω =>
+            vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M) =
+          fun ω : Ω =>
+            Real.sqrt (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n) *
+              (Real.sqrt (6 / (n : ℝ)) * M) := by
+        funext ω
+        exact vdVWTheorem243FiniteNetHoeffdingUpper_eq_logCardinality cardinality ω n M
+      rw [hrepr]
+      exact ((hlog_meas.const_add 1).sqrt).mul measurable_const
+    refine Integrable.mono' hdominant hupper_meas.aestronglyMeasurable ?_
+    exact Eventually.of_forall fun ω => by
+      have hlog_nonneg :
+          0 ≤ vdVWLogEmpiricalL1CoveringCardinality cardinality ω n :=
+        vdVWLogEmpiricalL1CoveringCardinality_nonneg cardinality ω n
+      have hone_log_pos :
+          0 ≤ 1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n := by
+        linarith
+      have hsqrt_le :
+          Real.sqrt (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n) ≤
+            1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n := by
+        rw [Real.sqrt_le_left hone_log_pos]
+        nlinarith [hlog_nonneg]
+      have hscale_nonneg : 0 ≤ Real.sqrt (6 / (n : ℝ)) * M :=
+        mul_nonneg (Real.sqrt_nonneg _) hM_nonneg
+      have hupper_nonneg :
+          0 ≤ vdVWTheorem243FiniteNetHoeffdingUpper (cardinality ω n) n M :=
+        vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+          (cardinality ω n) n hM_nonneg
+      have hdominant_nonneg :
+          0 ≤
+            (Real.sqrt (6 / (n : ℝ)) * M) *
+              (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n) :=
+        mul_nonneg hscale_nonneg hone_log_pos
+      rw [Real.norm_eq_abs, abs_of_nonneg hupper_nonneg]
+      rw [vdVWTheorem243FiniteNetHoeffdingUpper_eq_logCardinality]
+      rw [mul_comm (Real.sqrt (1 + vdVWLogEmpiricalL1CoveringCardinality cardinality ω n))]
+      exact mul_le_mul_of_nonneg_left hsqrt_le hscale_nonneg
+  · have hn_zero : n = 0 := Nat.eq_zero_of_not_pos hn_pos
+    subst n
+    convert
+      (integrable_const (0 : ℝ) : Integrable (fun _ : Ω => (0 : ℝ)) μ)
+        using 1
+    ext ω
+    simp [vdVWTheorem243FiniteNetHoeffdingUpper,
+      vdVWTheorem243FiniteNetMaximalUpper, vdVWTheorem243HoeffdingCenterScale]
+
+/--
 A deterministic normalized log-cardinality bound gives a pointwise deterministic
 upper bound for the finite-net Hoeffding scale.
 

@@ -7565,3 +7565,20 @@ Until one of these source theorems is proved, the exact arbitrary-class
 Theorem 2.4.3 remains blocked at the textbook random-entropy bridge, even
 though structural full-subgraph/VC-style and honest selected-tail/UI routes now
 compile through final theorem-facing endpoints.
+
+2026-05-06 Theorem 2.4.3 selected-log integrability bridge: after searching
+for an existing `sqrt`/finite-net integrability transfer, no local or mathlib
+lemma was found that converted integrability of the normalized selected
+log-cardinality process into integrability of the finite-net Hoeffding display
+scale.  `Theorem243.lean` now proves
+`integrable_vdVWTheorem243FiniteNetHoeffdingUpper_of_logCardinality_div_integrable`.
+The proof uses the compiled log-cardinality rewrite
+`vdVWTheorem243FiniteNetHoeffdingUpper_eq_logCardinality`, nonnegativity of
+`vdVWLogEmpiricalL1CoveringCardinality`, and the elementary bound
+`sqrt (1 + x) <= 1 + x` for `0 <= x`.  This removes one artificial source
+assumption from future selected normalized-log routes: if the selected
+normalized entropy is integrable, the corresponding finite-net Hoeffding upper
+is integrable automatically.  It does not solve the exact generic blocker:
+the remaining theorem is still to derive selected normalized-log tail/UI,
+ordinary mean, or scaled selected finite-net event comparison from the
+textbook outer-probability entropy hypothesis.
