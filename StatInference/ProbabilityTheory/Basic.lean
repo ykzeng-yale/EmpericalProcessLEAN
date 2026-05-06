@@ -702,6 +702,31 @@ theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partit
         P middlePartitionExists)
 
 /--
+Durrett 2019, Theorem 2.4.9, cutpoint-chain-to-GC package.
+
+This is the current sharp handoff for the source proof: once every bounded
+interval admits a finite chain of strict cutpoints with small adjacent CDF
+left-limit increments, the empirical CDF half-line class is
+Glivenko-Cantelli.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X))
+    (cutpointChainExists :
+      ∀ {epsilon a b : ℝ}, 0 < epsilon -> a < b ->
+        SuppliedRealMiddleCDFPartitionChain P epsilon a b) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator X := by
+  exact
+    durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions
+      X hLaw hindep
+      (fun hepsilon hab =>
+        exists_realMiddleCDFPartition_of_cutpoint_chain
+          (cutpointChainExists hepsilon hab))
+
+/--
 Durrett early-chapter pi-system uniqueness shape.
 
 Probability laws agreeing on a pi-system that generates the measurable space
