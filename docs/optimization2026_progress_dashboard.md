@@ -436,8 +436,19 @@ and
 `chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_relativeSubgradient`,
 so the exact displayed smooth and non-smooth Theorem 12.1 averaged-iterate
 rates now compile directly from the source variance-bound and relative
-subgradient hypotheses.  The active Chapter 12 blocker is only the exact
-source probability/process packaging needed before ASGD CLT material.
+subgradient hypotheses.
+
+The newest process wrapper packet adds
+`integral_eq_const_of_condExp_ae_eq_const`,
+`integral_eq_const_of_filtration_condExp_ae_eq_const`,
+`chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_filtration_condExp_unbiased_of_variance_bound`,
+and
+`chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_filtration_condExp_relativeSubgradient`.
+These wrappers turn filtration-level conditional mean assumptions into the
+unconditional unbiasedness and relative-subgradient mean fields consumed by
+the exact displayed SMPGD rates.  The active Chapter 12 blocker is now the
+ASGD/martingale layer: conditional mean-zero and covariance packaging,
+quadratic ASGD decomposition, and then martingale CLT infrastructure.
 
 ## Initial Reuse Audit
 

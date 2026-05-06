@@ -63,7 +63,7 @@ source variance-bound bridge for Chewi Theorem 12.1 SMPGD, the non-smooth
 relative-subgradient growth/star-upper bridge, the final smooth/non-smooth
 weighted stochastic averaged-iterate wrappers, and the exact source-displayed
 stochastic-error RHS bridges plus full source-displayed smooth/non-smooth
-averaged-iterate wrappers:
+averaged-iterate wrappers and filtration-level conditional-mean wrappers:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -399,10 +399,17 @@ and
 `chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_relativeSubgradient`,
 so the exact displayed smooth and non-smooth Chewi Theorem 12.1 averaged-rate
 statements now compile directly from the source variance-bound and relative
-subgradient hypotheses.  The active Chapter 12 lane is now the remaining exact
-source probability discharge behind those wrappers: any exact
-conditional-expectation/process packaging needed for source reporting before
-the ASGD CLT material.
+subgradient hypotheses.
+The filtration/process wrapper packet adds
+`integral_eq_const_of_condExp_ae_eq_const`,
+`integral_eq_const_of_filtration_condExp_ae_eq_const`,
+`chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_filtration_condExp_unbiased_of_variance_bound`,
+and
+`chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_filtration_condExp_relativeSubgradient`,
+so conditional mean assumptions now discharge the unconditional mean fields in
+the exact displayed SMPGD rates.  The active Chapter 12 lane is now the ASGD
+martingale layer: conditional mean-zero and covariance packaging, quadratic
+ASGD decomposition, and then martingale CLT infrastructure.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
