@@ -101,6 +101,17 @@ process primitive: arbitrary-index FDD converse, separability/tightness/
 asymptotic measurability, or nonmeasurable outer-cover signed weak
 convergence.
 
+2026-05-06 follow-up: the quantizer lift now has exactly that honest selected
+fixed-radius consumer under an explicit natural-polynomial cardinality
+assumption:
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_roundingQuantizer_uniform_abs_bound_nat_poly`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_roundingQuantizer_uniform_abs_bound_nat_poly`.
+These theorems do not assert that the raw nearest-integer product grid has
+polynomial size; future progress must prove a real compression/VC/Sauer
+cardinality bound or use another structural entropy input before claiming a
+new Theorem 2.4.3 endpoint.
+
 Verified compiled foundation that should not be repeated:
 `vdVW_theorem_2_4_1_glivenkoCantelli`;
 the strong countable/full-subgraph Theorem 2.4.3 and Lemma 2.4.5 endpoint

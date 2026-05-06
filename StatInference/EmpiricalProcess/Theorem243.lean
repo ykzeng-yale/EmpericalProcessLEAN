@@ -24207,6 +24207,127 @@ theorem
         rw [Real.log_mul hconstant_pos.ne' hpow_pos.ne', Real.log_pow]
 
 /--
+Selected fixed-radius tail/UI package from nearest-integer rounding grids
+under a uniform truncated envelope bound, provided the chosen grid
+cardinality has natural-polynomial growth.
+
+The raw rounding grid usually has exponential sample-size growth.  The
+polynomial bound is therefore an explicit structural/compression input, not a
+consequence of quantization alone.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_roundingQuantizer_uniform_abs_bound_nat_poly
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {bound : ℝ -> ℤ}
+    {constant : ℝ -> ℝ} {degree : ℝ -> ℕ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hbound :
+      ∀ eta, 0 < eta -> M / eta + 1 / 2 ≤ (bound eta : ℝ))
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ((2 * bound eta + 1).toNat) ^ m ≤ cardinality eta n sample m)
+    (hconstant_ge_one : ∀ eta, 0 < eta -> 1 ≤ constant eta)
+    (hpoly_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        ((cardinality eta n sample n : ℝ) + 1) ≤
+          constant eta * (((n + 1 : ℕ) : ℝ) ^ degree eta)) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  have hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n) := by
+    exact
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_roundingQuantizer_uniform_abs_bound_cardinality_bound_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (radiusBound := fun _ => M)
+        (bound := bound)
+        (cardinality := cardinality) X
+        (by
+          intro eta _heta n sample m index hindex sampleIndex
+          exact
+            abs_vdVWTruncatedClassFun_le_M
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M)
+              henvelope hM_pos.le hindex
+              ((samplePath (X n) sample m) sampleIndex))
+        hbound hcardinality_dom
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_nat_poly_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (constant := constant) (degree := degree)
+      (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas
+      hconstant_ge_one hM_pos hpoly_bound
+
+/--
+All-positive-`M` version of the polynomial nearest-integer rounding selected
+fixed-radius package.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_roundingQuantizer_uniform_abs_bound_nat_poly
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {bound : ℝ -> ℝ -> ℤ}
+    {constant : ℝ -> ℝ -> ℝ} {degree : ℝ -> ℝ -> ℕ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hbound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        M / eta + 1 / 2 ≤ (bound M eta : ℝ))
+    (hcardinality_dom :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ((2 * bound M eta + 1).toNat) ^ m ≤
+            cardinality M eta n sample m)
+    (hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 1 ≤ constant M eta)
+    (hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((cardinality M eta n sample n : ℝ) + 1) ≤
+            constant M eta *
+              (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M (cardinality M) := by
+  intro M hM_pos
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_roundingQuantizer_uniform_abs_bound_nat_poly
+      (P := P) (X := X M) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (bound := bound M) (constant := constant M)
+      (degree := degree M) (cardinality := cardinality M)
+      (hX_samplePath M) henvelope hclass henvelope_meas hM_pos
+      (hbound M hM_pos) (hcardinality_dom M hM_pos)
+      (hconstant_ge_one M hM_pos) (hpoly_bound M hM_pos)
+
+/--
 Selected fixed-radius tail/UI package from threshold-signature finite code
 sets, coordinatewise threshold approximation, and uniform fixed-threshold
 VC/Sauer bounds.

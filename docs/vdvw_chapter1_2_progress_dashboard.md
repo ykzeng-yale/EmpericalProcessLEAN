@@ -107,6 +107,14 @@ signed weak convergence.  The VdV&W 1.4.1
 product Borel-space equality is
 also now
 compiled as `vdVW141_prod_borel_eq_product_borel`; do not repeat that wrapper.
+The honest quantizer-to-selected-side bridge is now compiled under an
+explicit polynomial cardinality/compression hypothesis:
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_roundingQuantizer_uniform_abs_bound_nat_poly`
+and
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_roundingQuantizer_uniform_abs_bound_nat_poly`.
+This should be consumed only after a real subexponential/natural-polynomial
+cardinality bound is proved; the raw nearest-integer grid remains
+exponential-sized in the sample length.
 The signed arbitrary-map asymptotic-measurability layer now also implies the
 lower-shifted/canonical shifted predicates through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.to_lowerShifted` and
