@@ -56,8 +56,8 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after rebasing over remote main `986347c`
-(`Rebase VdVW goal after current Theorem 2.4.3 progress`) on 2026-05-06 and focused Lean
+Current manual goal frontier after rebasing over remote main `64526db`
+(`Merge remote-tracking branch 'origin/main'`) on 2026-05-06 and focused Lean
 verification of the Chapter 11.5 RAM block-model plus selected Exercise 9.3
 Hopf-Lax interpolation assembly layer:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
@@ -233,10 +233,15 @@ The newest block-selected assembly packet adds
 `chewi115_strong_hopf_lax_certificate_of_block_model_interpolants` and
 `chewi115_zero_hopf_lax_certificate_of_block_model_interpolants`, combining the
 finite block-model conditional-upper theorem with selected interpolation
-estimates into the exact RAM Hopf-Lax certificates.  The next RAM packet should
-assemble direct strong/zero Theorem 11.5 wrappers from the candidate-value
-bridges and discharge the remaining radius/admissibility side conditions, not
-redo scalar recurrence or block averaging.
+estimates into the exact RAM Hopf-Lax certificates.  The newest direct
+source-candidate assembly packet adds
+`chewi115_strong_hopf_lax_certificate_of_block_model_source_candidates` and
+`chewi115_zero_hopf_lax_certificate_of_block_model_source_candidates`, so the
+block model plus Chewi's selected Exercise 9.3 test point now produce strong
+and weak RAM Hopf-Lax certificates without an intermediate supplied
+`hmodel_interp`.  The next RAM packet should promote these direct certificates
+to displayed strong geometric and weak `2 * D * R_beta^2 / N` rate wrappers,
+not redo scalar recurrence or block averaging.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

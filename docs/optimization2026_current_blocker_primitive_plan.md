@@ -89,7 +89,7 @@ not complete, this document is the live replacement prompt for manual goal
 runs.
 
 Current live replacement `/goal` prompt after rebasing over remote main
-`986347c` (`Rebase VdVW goal after current Theorem 2.4.3 progress`) on 2026-05-06 and
+`64526db` (`Merge remote-tracking branch 'origin/main'`) on 2026-05-06 and
 focused Lean verification of the Chapter 11.5 RAM block-model plus selected
 Exercise 9.3 Hopf-Lax interpolation assembly layer:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
@@ -167,7 +167,12 @@ block-selected assembly packet adds
 `chewi115_zero_hopf_lax_certificate_of_block_model_interpolants`, which combine
 the finite block-model conditional upper layer with the selected
 Hopf-Lax/Moreau interpolation estimate to produce the exact strong and weak RAM
-certificates.
+certificates.  The newest direct source-candidate assembly packet adds
+`chewi115_strong_hopf_lax_certificate_of_block_model_source_candidates` and
+`chewi115_zero_hopf_lax_certificate_of_block_model_source_candidates`, so the
+block model plus Chewi's selected Exercise 9.3 test point now produce strong
+and weak RAM Hopf-Lax certificates without an intermediate supplied
+`hmodel_interp`.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
