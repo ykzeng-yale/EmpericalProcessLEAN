@@ -2394,3 +2394,11 @@ This closes the replacement-stability gap for the Chapter 1 nonnegative and
 shifted asymptotic-measurability layer in common-domain form, matching the
 previous varying-domain shifted congruence closures; the deeper signed
 extended-real arbitrary-map and process/FDD blockers remain open.
+
+2026-05-06 measure-level weak-convergence stability follow-up:
+`WeakConvergence.lean` now adds
+`VdVWWeakConvergenceProbabilityMeasures.congr_eventually` and
+`VdVWWeakConvergenceProbabilityMeasures.comp_tendsto`, matching the filter,
+replacement, and reindexing style already available for ordinary
+asymptotic-tightness.  This supports Chapter 1 product/FDD and subsequence
+arguments while leaving exact arbitrary-map/process weak convergence open.

@@ -2174,6 +2174,34 @@ theorem VdVWWeakConvergenceProbabilityMeasures.mono_filter
   h.mono_left hl
 
 /--
+Measure-level weak convergence is unchanged by eventually equal
+probability-measure families.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.congr_eventually
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    (h_eq : ∀ᶠ i in l, νs i = μs i) :
+    VdVWWeakConvergenceProbabilityMeasures νs l μ :=
+  Tendsto.congr' (h_eq.mono fun _ hi => hi.symm) h
+
+/--
+Measure-level weak convergence is stable under reindexing along a map that
+tends to the original index filter.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.comp_tendsto
+    {S : Type u} {ι : Type v} {κ : Type w}
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι} {l' : Filter κ}
+    {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    {u : κ -> ι} (hu : Tendsto u l' l) :
+    VdVWWeakConvergenceProbabilityMeasures (fun k => μs (u k)) l' μ :=
+  h.comp hu
+
+/--
 VdV&W weak convergence of probability measures is characterized by convergence
 of integrals of all bounded continuous real-valued test functions.
 

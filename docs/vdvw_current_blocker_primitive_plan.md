@@ -6316,3 +6316,14 @@ keep pointwise map equality because their lower-bound side conditions are
 global in the index.  The remaining Chapter 1 blockers are still the full signed
 extended-real arbitrary-map cover-existence layer and the process/FDD
 converse, separability, and asymptotic-tightness primitives.
+
+2026-05-06 measure-level weak-convergence stability follow-up:
+local search found `VdVWWeakConvergenceProbabilityMeasures.mono_filter` and
+the analogous asymptotic-tightness replacement/reindexing lemmas, but no
+matching replacement or reindexing theorem for the measure-level weak-
+convergence wrapper itself.  `WeakConvergence.lean` now proves
+`VdVWWeakConvergenceProbabilityMeasures.congr_eventually` and
+`VdVWWeakConvergenceProbabilityMeasures.comp_tendsto`.  These are ordinary
+`Tendsto` stability facts, but they remove a small Chapter 1 product/FDD and
+subsequence/reindexing support gap without changing the remaining exact
+arbitrary-map/nonmeasurable process blockers.
