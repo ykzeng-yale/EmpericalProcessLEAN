@@ -44,7 +44,7 @@ directly in this tool surface unless the goal is complete, so
 replacement prompt for manual runs.
 
 Manual goal frontier after rebasing local `main` onto `origin/main` at
-`b21bcbd` (`Add asymptotic tightness reindexing`) with the verified pushed
+`038e7e3` (`Add weak convergence asymptotic tightness bridge`) with the verified pushed
 source-volume determinant, determinant-unit inverse-shape reduction,
 normalized forward/inverse algebra, forward-shape transport reduction,
 rank-one/displayed-action support, concrete displayed-to-normalized
@@ -253,17 +253,25 @@ theorems, plus the pullback-standard-cut declarations
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedCenter`, and
 `chewi620_sqrtAffineTransport_stepCertificate_of_displayedCurrentAndCenter`.
 
-The next active packet should stay in Chapter 6 and prove a theorem-sized part
-of ellipsoid Lemma 6.20, not drip minor wrappers.  The exact
+The next active packet should stay in Chapter 6 and prove theorem-sized
+nonsmooth lower-bound/feasibility steps, not drip minor wrappers.  The exact
 Grünbaum/centroid measure theorem remains a precise supplied blocker before a
-source-audited CoGM report, and the exact Lemma 6.20 matrix proof remains the
-next ellipsoid blocker.  Search mathlib matrix/PSD/inverse/determinant and
-volume-scaling APIs first, then identify the pullback certificate objects with
-Chewi's displayed `Σ_n^{-1}` and `Σ_{n+1}^{-1}` matrix updates.  The current
-matrix quadratic, positive denominator, normalized cut direction algebra, raw
-symmetric square-root cut bridge, PosDef invertibility/cancellation bridge,
-pullback-standard-cut certificate, current `Σ⁻¹` identification, and displayed
-center-update bridge are now local; the rank-one collapse
+source-audited CoGM report, but Lemma 6.20 now has a compiled supplied
+trajectory/rate frontier.  The current lower-bound packet in
+`StatInference/Optimization/NonsmoothLowerBounds.lean` compiles the Theorem
+6.21 max-coordinate hard objective, prefix-subspace nonnegativity, gradient-span
+prefix-induction consumer, and supplied final gap obstruction.  The next
+target is the source instantiation of Theorem 6.21: define the constant
+minimizer `x_*[k] = -γ/(α d)`, prove its objective value
+`-γ^2/(2 α d)`, prove or package the first-max subgradient oracle's
+prefix-support, and specialize `γ = L / 4`, `α = γ / (R sqrt d)` to the
+displayed `LR / sqrt N` lower bound.  Search local PSD, CoGM, ellipsoid,
+lower-bound, nonsmooth-lower-bound, and exercise APIs first before adding
+new wrappers.  The closed ellipsoid matrix packet remains reusable background:
+the current matrix quadratic, positive denominator, normalized cut direction
+algebra, raw symmetric square-root cut bridge, PosDef invertibility/cancellation
+bridge, pullback-standard-cut certificate, current `Σ⁻¹` identification, and
+displayed center-update bridge are now local; the rank-one collapse
 `(Σp)^T Σ⁻¹ (Σp) = <p, Σp>` also now compiles as
 `chewi620_matrix_rankOne_collapse`, and the determinant side of the displayed
 forward-shape update now compiles through
