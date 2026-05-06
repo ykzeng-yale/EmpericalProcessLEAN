@@ -20750,6 +20750,189 @@ theorem
       (hselectedLogBound M hM eta heta)
 
 /--
+A deterministic normalized log-cardinality bound supplies the first-sample
+`nnnorm` bound required by the fixed-domain selected-entropy tail route.
+
+This is the structural-cardinality bridge for the new first-sample route:
+VC/Sauer, finite-trace, or finite-code estimates usually bound the supplied
+finite-valued covering envelope.  The selected least empirical-cover
+cardinality is no larger, so the same bound controls the selected normalized
+log-cardinality after lifting to the canonical infinite iid product space.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.firstSample_nnnorm_bound_of_logCardinality_div_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {K : ℝ -> ℝ -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hK_nonneg : ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ K M eta)
+    (hbound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) /
+              (n : ℝ) ≤ K M eta) :
+    ∀ M (hM : 0 < M) eta (heta : 0 < eta), ∃ C : ℝ≥0,
+      ∀ n sequence,
+        ‖(vdVWLogEmpiricalL1CoveringCardinality
+          (fun sample' : SampleAt Observation n => fun m : ℕ =>
+            (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (cardinality := cardinality M) (X M)
+              (hentropy.coveringNumber_le M hM) heta) n sample' m)
+          (vdVWFirstNSample (Observation := Observation) n sequence) n /
+            (n : ℝ))‖₊ ≤ C := by
+  intro M hM eta heta
+  refine ⟨⟨K M eta, hK_nonneg M hM eta heta⟩, ?_⟩
+  intro n sequence
+  let selectedCardinality :
+      (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (cardinality := cardinality M) (X M)
+      (hentropy.coveringNumber_le M hM) heta
+  let y : ℝ :=
+    vdVWLogEmpiricalL1CoveringCardinality
+      (fun sample' : SampleAt Observation n => fun m : ℕ =>
+        selectedCardinality n sample' m)
+      (vdVWFirstNSample (Observation := Observation) n sequence) n /
+        (n : ℝ)
+  have hy_nonneg : 0 ≤ y := by
+    dsimp [y]
+    exact
+      div_nonneg
+        (vdVWLogEmpiricalL1CoveringCardinality_nonneg
+          (fun sample' : SampleAt Observation n => fun m : ℕ =>
+            selectedCardinality n sample' m)
+          (vdVWFirstNSample (Observation := Observation) n sequence) n)
+        (Nat.cast_nonneg n)
+  have hfinite :
+      ∀ n (sample : SampleAt Observation n) m,
+        HasFiniteEmpiricalL1Cover (samplePath (X M n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta :=
+    hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (coverRadius := fun _ : ℕ => eta)
+      (cardinality := cardinality M) (X M)
+      (hentropy.coveringNumber_le M hM) (by intro _; exact heta)
+  have hselected_le :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWLogEmpiricalL1CoveringCardinality
+            (fun sample m =>
+              finiteEmpiricalL1CoveringNumberCard (hfinite n sample m))
+            sample n / (n : ℝ) ≤ K M eta := by
+    exact
+      vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (coverRadius := fun _ : ℕ => eta)
+        (cardinality := fun n => cardinality M eta n)
+        (K := K M eta) (X M)
+        (VdVWRandomEmpiricalL1CoveringNumberLeCardinality.coverRadius_of_forAllRadius_samplePath
+          (indexClass := indexClass)
+          (classFun := vdVWTruncatedClassFun classFun envelope M)
+          (coverRadius := fun _ : ℕ => eta)
+          (cardinality := cardinality M) (X M)
+          (hentropy.coveringNumber_le M hM) (by intro _; exact heta))
+        hfinite
+        (hbound M hM eta heta)
+  have hy_le : y ≤ K M eta := by
+    dsimp [y, selectedCardinality]
+    simpa [hfinite] using
+      hselected_le n (vdVWFirstNSample (Observation := Observation) n sequence)
+  have hnorm_le : (‖y‖₊ : ℝ) ≤ K M eta := by
+    rw [coe_nnnorm, Real.norm_eq_abs, abs_of_nonneg hy_nonneg]
+    exact hy_le
+  exact NNReal.coe_le_coe.mp hnorm_le
+
+/--
+Natural-polynomial cardinality growth gives the first-sample `nnnorm` bound
+for selected normalized empirical-cover entropy.
+
+This is the form targeted by VC/Sauer and finite-trace counting arguments:
+after proving
+`cardinality + 1 <= constant * (n + 1) ^ degree`, the selected empirical
+covering number is uniformly controlled on the canonical first-sample lift.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.firstSample_nnnorm_bound_of_logCardinality_nat_poly_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {constant : ℝ -> ℝ -> ℝ} {degree : ℝ -> ℝ -> ℕ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 1 ≤ constant M eta)
+    (hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((cardinality M eta n sample n : ℝ) + 1) ≤
+            constant M eta *
+              (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :
+    ∀ M (hM : 0 < M) eta (heta : 0 < eta), ∃ C : ℝ≥0,
+      ∀ n sequence,
+        ‖(vdVWLogEmpiricalL1CoveringCardinality
+          (fun sample' : SampleAt Observation n => fun m : ℕ =>
+            (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (cardinality := cardinality M) (X M)
+              (hentropy.coveringNumber_le M hM) heta) n sample' m)
+          (vdVWFirstNSample (Observation := Observation) n sequence) n /
+            (n : ℝ))‖₊ ≤ C := by
+  refine
+    hentropy.firstSample_nnnorm_bound_of_logCardinality_div_bound
+      (K := fun M eta =>
+        Real.log (constant M eta) + (degree M eta : ℝ)) ?_ ?_
+  · intro M hM eta heta
+    exact
+      add_nonneg (Real.log_nonneg (hconstant_ge_one M hM eta heta))
+        (Nat.cast_nonneg _)
+  · intro M hM eta heta n sample
+    have hleft_pos :
+        0 < ((cardinality M eta n sample n : ℝ) + 1) := by
+      positivity
+    have hconstant_pos : 0 < constant M eta :=
+      lt_of_lt_of_le zero_lt_one (hconstant_ge_one M hM eta heta)
+    have hsucc_pos : 0 < (((n + 1 : ℕ) : ℝ)) := by
+      positivity
+    have hpow_pos : 0 < (((n + 1 : ℕ) : ℝ) ^ degree M eta) :=
+      pow_pos hsucc_pos _
+    have hlog_succ_linear :
+        Real.log ((cardinality M eta n sample n : ℝ) + 1) ≤
+          Real.log (constant M eta) + (degree M eta : ℝ) *
+            Real.log (((n + 1 : ℕ) : ℝ)) := by
+      calc
+        Real.log ((cardinality M eta n sample n : ℝ) + 1)
+            ≤ Real.log (constant M eta *
+                (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :=
+          Real.log_le_log hleft_pos (hpoly_bound M hM eta heta n sample)
+        _ = Real.log (constant M eta) + (degree M eta : ℝ) *
+              Real.log (((n + 1 : ℕ) : ℝ)) := by
+          rw [Real.log_mul hconstant_pos.ne' hpow_pos.ne', Real.log_pow]
+    exact
+      (div_le_div_of_nonneg_right hlog_succ_linear
+        (Nat.cast_nonneg n)).trans
+        (const_add_mul_log_nat_succ_div_le_const_add
+          (Real.log_nonneg (hconstant_ge_one M hM eta heta))
+          (Nat.cast_nonneg (degree M eta)) n)
+
+/--
 All-positive-radius version of the selected fixed-radius finite-net mean
 handoff.
 

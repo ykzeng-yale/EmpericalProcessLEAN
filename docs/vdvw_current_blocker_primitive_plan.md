@@ -5847,3 +5847,19 @@ argument that proves the displayed uniform bound now feeds directly into
 untruncated centered convergence.  The remaining non-finite theorem blocker is
 to prove such a structural bound for the selected empirical-cover entropy, or
 to prove the more general first-sample `eLpNorm` tail condition directly.
+
+2026-05-05 Theorem 2.4.3 selected-entropy structural-bound follow-up: local
+search found existing selected terminal log-bound transfer lemmas and
+natural-polynomial cardinality arithmetic, but no bridge that produced the
+new first-sample `nnnorm` hypothesis itself.  `Theorem243.lean` now adds
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.firstSample_nnnorm_bound_of_logCardinality_div_bound`
+and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.firstSample_nnnorm_bound_of_logCardinality_nat_poly_bound`.
+These close the deterministic structural route into the first-sample
+selected-entropy input: a real normalized-log bound, or a VC/Sauer-style
+`cardinality + 1 <= C(M, eta) * (n + 1)^d(M, eta)` estimate, now yields the
+uniform first-sample `nnnorm` bound consumed by the centered untruncated
+Theorem 2.4.3 route.  The remaining exact non-finite theorem blocker is no
+longer this transfer; it is the upstream proof of such structural cardinality
+estimates for the selected empirical-cover entropy from the textbook class
+hypotheses, or the genuinely random first-sample `eLpNorm` tail/UI condition.

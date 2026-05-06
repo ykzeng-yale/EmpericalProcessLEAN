@@ -129,6 +129,16 @@ compiled too:
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_nnnorm_bound`
 turns a uniform bound on the lifted selected normalized empirical-cover
 entropy into untruncated centered convergence.
+The structural input is now fed by two reusable bridges:
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.firstSample_nnnorm_bound_of_logCardinality_div_bound`
+and
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.firstSample_nnnorm_bound_of_logCardinality_nat_poly_bound`.
+Thus deterministic normalized-log bounds, including natural-polynomial
+VC/Sauer-style cardinality growth, now supply the first-sample `nnnorm`
+condition directly.  The next non-finite theorem task is upstream: prove such
+cardinality bounds for the selected empirical-cover entropy from the actual
+textbook structural class hypotheses, or prove the genuinely random
+first-sample `eLpNorm` tail/UI condition.
 
 2026-05-05 separability/`P`-measurability follow-up:
 `PMeasurable.lean` now adds
