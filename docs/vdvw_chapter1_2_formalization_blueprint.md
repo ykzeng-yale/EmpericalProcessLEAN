@@ -131,8 +131,10 @@ process separability/asymptotic tightness/asymptotic measurability,
 nonmeasurable signed outer-cover weak convergence, or full arbitrary-map
 extended-real measurable-cover existence.  The current support batch also adds
 local empirical-cover to mathlib-covering-number reverse comparison and a
-direct varying-domain a.e.-measurable weak-convergence map-law bridge; these
-are useful dependencies, not exact textbook theorem completion.
+finite-cover equality with mathlib's internal covering number, plus direct
+a.e.-measurable weak-convergence map-law and `HasLaw` bridges without the
+previous countably-generated detour; these are useful dependencies, not exact
+textbook theorem completion.
 
 The exact Theorem 2.4.3 gap is now sharper: the textbook assumption is the
 generic random entropy condition

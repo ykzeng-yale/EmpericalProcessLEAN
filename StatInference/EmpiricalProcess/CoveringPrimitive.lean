@@ -2697,6 +2697,48 @@ theorem empiricalL1Index_coveringNumber_le_empiricalL1CoveringNumber
   simpa [empiricalL1CoveringNumber_eq_find hfinite] using hcovering
 
 /--
+For finite local empirical covers, the VdV&W empirical `L1(P_n)` covering
+number agrees with mathlib's internal covering number on the induced empirical
+pseudometric wrapper.
+-/
+theorem empiricalL1CoveringNumber_eq_empiricalL1Index_coveringNumber
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon) :
+    empiricalL1CoveringNumber sample indexClass classFun epsilon =
+      Metric.coveringNumber (⟨epsilon, hepsilon_nonneg⟩ : ℝ≥0)
+        (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass) := by
+  have hmetric_le :
+      Metric.coveringNumber (⟨epsilon, hepsilon_nonneg⟩ : ℝ≥0)
+          (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+            indexClass) ≤
+        empiricalL1CoveringNumber sample indexClass classFun epsilon :=
+    empiricalL1Index_coveringNumber_le_empiricalL1CoveringNumber
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      hepsilon_nonneg hfinite
+  have hmetric_lt :
+      Metric.coveringNumber (⟨epsilon, hepsilon_nonneg⟩ : ℝ≥0)
+          (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+            indexClass) < ⊤ :=
+    lt_of_le_of_lt hmetric_le
+      (empiricalL1CoveringNumber_lt_top_of_hasFinite hfinite)
+  have hlocal_le :
+      empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+        Metric.coveringNumber (⟨epsilon, hepsilon_nonneg⟩ : ℝ≥0)
+          (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+            indexClass) := by
+    simpa using
+      empiricalL1CoveringNumber_le_empiricalL1Index_coveringNumber
+        (sample := sample) (indexClass := indexClass) (classFun := classFun)
+        (radius := (⟨epsilon, hepsilon_nonneg⟩ : ℝ≥0))
+        (ne_of_lt hmetric_lt)
+  exact le_antisymm hlocal_le hmetric_le
+
+/--
 If the induced empirical internal covering number is bounded by a finite
 cardinality, then the local empirical finite-cover witness can be padded to
 that cardinality.

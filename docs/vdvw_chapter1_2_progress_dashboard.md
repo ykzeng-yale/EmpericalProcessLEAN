@@ -2947,6 +2947,10 @@ convergence, or full arbitrary-map extended-real measurable-cover existence.
 This recalibration batch also closes two support gaps without overclaiming the
 exact textbook theorem: `CoveringPrimitive.lean` now proves reverse comparison
 from local proof-carrying empirical covers to mathlib
-`Metric.coveringNumber`, and `WeakConvergence.lean` now gives the direct
-varying-domain a.e.-measurable weak-convergence map-law bridge without a
-countably-generated target-space assumption.
+`Metric.coveringNumber`, packages the finite-cover case as the equality
+`empiricalL1CoveringNumber_eq_empiricalL1Index_coveringNumber`, and
+`WeakConvergence.lean` now gives the direct varying-domain a.e.-measurable
+weak-convergence map-law bridge without a countably-generated target-space
+assumption.  The common-domain and varying-domain `HasLaw` weak-convergence
+consumers now use the direct a.e.-measurable route as well, removing the same
+unnecessary countably-generated assumption from those support statements.

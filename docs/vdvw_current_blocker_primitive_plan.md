@@ -7348,11 +7348,13 @@ handoff from proof-carrying VdV&W finite empirical covers back to mathlib's
 internal `Metric.coveringNumber` on the induced empirical pseudometric.
 `CoveringPrimitive.lean` now proves
 `empiricalL1Index_coveringNumber_le_of_finiteEmpiricalL1CoverAtCard` and
-`empiricalL1Index_coveringNumber_le_empiricalL1CoveringNumber`.  This closes a
-comparability gap needed by future entropy arguments that move between local
-finite empirical nets and mathlib covering-number displays.  It still does not
-prove the selected entropy tail/UI or ordinary-mean bridge from the textbook
-random entropy hypothesis.
+`empiricalL1Index_coveringNumber_le_empiricalL1CoveringNumber`, and the two
+directions are packaged as
+`empiricalL1CoveringNumber_eq_empiricalL1Index_coveringNumber` under a finite
+local-cover witness.  This closes a comparability gap needed by future entropy
+arguments that move between local finite empirical nets and mathlib
+covering-number displays.  It still does not prove the selected entropy
+tail/UI or ordinary-mean bridge from the textbook random entropy hypothesis.
 
 2026-05-06 varying-domain a.e.-measurable map-law bridge: search found the
 existing measurable and null-measurable varying-domain weak-convergence map-law
@@ -7367,3 +7369,16 @@ real Chapter 1 varying-domain arbitrary-map support improvement; the remaining
 Chapter 1 blockers are still the full signed extended-real arbitrary-map
 measurable-cover existence layer, nonmeasurable outer-cover weak convergence,
 process separability/asymptotic tightness, and arbitrary-index FDD converse.
+
+2026-05-06 HasLaw a.e.-measurable map-law cleanup: after the direct
+a.e.-measurable map-law bridges above, local search showed that the common-
+domain and varying-domain `HasLaw` weak-convergence consumers were still
+routing through null-measurable variants.  `WeakConvergence.lean` now updates
+`VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_hasLaw_aemeasurable`,
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_hasLaw_aemeasurable`,
+and
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_hasLaw_aemeasurable`
+to use the direct a.e.-measurable bridges and removes the unnecessary
+`[MeasurableSpace.CountablyGenerated S]` assumption from these theorem
+statements.  This is Chapter 1 arbitrary-map support cleanup, not an exact
+Theorem 2.4.3 completion.

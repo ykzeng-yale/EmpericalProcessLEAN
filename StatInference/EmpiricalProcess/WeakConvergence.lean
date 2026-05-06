@@ -2958,8 +2958,8 @@ identity needed for the local null-measurable signed outer-expectation bridge.
 -/
 theorem VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_hasLaw_aemeasurable
     {Ω : Type u} {S : Type v} {ι : Type w}
-    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
-    [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
     {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
     {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
     {μ : ProbabilityMeasure S}
@@ -2968,9 +2968,9 @@ theorem VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_o
     VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l μ := by
   haveI : ∀ i, IsFiniteMeasure (μs i) := fun i => (hlaw i).isFiniteMeasure
   exact
-    VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq_nullMeasurable
+    VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq_aemeasurable
       (μs := μs) (X := X) (νs := νs)
-      (fun i => (hlaw i).aemeasurable.nullMeasurable)
+      (fun i => (hlaw i).aemeasurable)
       hν (fun i => (hlaw i).map_eq.symm)
 
 /--
@@ -2981,8 +2981,8 @@ measurability hypothesis.
 theorem
     VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_hasLaw_aemeasurable
     {Ω : Type u} {S : Type v} {ι : Type w}
-    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
-    [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
     {μs : ι -> Measure Ω} {X : ι -> Ω -> S}
     {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
     {μ : ProbabilityMeasure S}
@@ -2991,9 +2991,9 @@ theorem
     VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ := by
   haveI : ∀ i, IsFiniteMeasure (μs i) := fun i => (hlaw i).isFiniteMeasure
   exact
-    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_map_eq_nullMeasurable
+    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_map_eq_aemeasurable
       (μs := μs) (X := X) (νs := νs)
-      (fun i => (hlaw i).aemeasurable.nullMeasurable)
+      (fun i => (hlaw i).aemeasurable)
       hweak (fun i => (hlaw i).map_eq.symm)
 
 /--
@@ -3005,8 +3005,7 @@ theorem
     VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_hasLaw_aemeasurable
     {ι : Type w} {Ω : ι -> Type u} {S : Type v}
     [∀ i, MeasurableSpace (Ω i)]
-    [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
-    [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
     {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
     {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
     {μ : ProbabilityMeasure S}
@@ -3015,9 +3014,9 @@ theorem
     VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ := by
   haveI : ∀ i, IsFiniteMeasure (μs i) := fun i => (hlaw i).isFiniteMeasure
   exact
-    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_map_eq_nullMeasurable
+    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousVaryingDomains_of_map_eq_aemeasurable
       (Ω := Ω) (μs := μs) (X := X) (νs := νs)
-      (fun i => (hlaw i).aemeasurable.nullMeasurable)
+      (fun i => (hlaw i).aemeasurable)
       hweak (fun i => (hlaw i).map_eq.symm)
 
 /--
