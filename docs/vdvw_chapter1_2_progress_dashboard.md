@@ -157,11 +157,16 @@ selected fixed-radius side conditions and variable-domain book entropy,
 including the uniform original threshold-VC and original full-subgraph-VC
 specializations.  It now also reaches centered untruncated convergence via
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc`,
-with the usual analytic side conditions kept explicit.  The next `/goal`
-target should discharge those analytic side conditions in a compact original-
-VC side-condition/integrable constructor or prove a genuinely new class-
-geometry/cardinality theorem; add a `P`-GC/in-mean endpoint adapter only if it
-is immediately consumed.
+with the usual analytic side conditions kept explicit.  Those analytic
+side-condition/integrable witnesses are now discharged by the compiled
+original full-subgraph route
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable`,
+its iid-Rademacher variant, and the canonical endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_canonical`.
+The next useful `/goal` target is not another alias for this same route:
+either consume this centered convergence in a final theorem statement, prove a
+genuinely new class-geometry/cardinality theorem, or return to the book
+random-entropy tail/UI/mean bridge.
 The a.e.-measurable map-law bridge is now also available for common-domain
 arbitrary maps and varying-domain endpoints through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable`,

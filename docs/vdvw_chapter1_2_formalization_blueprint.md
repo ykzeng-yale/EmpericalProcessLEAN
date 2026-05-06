@@ -195,10 +195,17 @@ untruncated convergence machinery through
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc`.
 This keeps the analytic side conditions explicit but reduces the structural
 VC input from truncated-class full-subgraph VC to original-class full-subgraph
-VC.  The immediate next structural target is to discharge those analytic side
-conditions in a compact original-VC side-condition/integrable constructor, or
-prove a genuinely new class-geometry/cardinality theorem.  Do not add another
-endpoint alias for this same route unless final theorem assembly consumes it.
+VC.  The compact original-VC side-condition/integrable constructor is now
+compiled through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable`,
+the iid-Rademacher variant
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_iidRademacher`,
+and the canonical endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_canonical`.
+Do not add another endpoint alias for this same route unless final theorem
+assembly consumes it.  The next non-duplicative target is a real final
+statement consuming this route, a new class-geometry/cardinality theorem, or
+the book random-entropy tail/UI/mean bridge.
 The finite pointwise-code covering lift is now also available:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
 and

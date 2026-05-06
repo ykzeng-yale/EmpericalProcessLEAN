@@ -36463,6 +36463,247 @@ theorem
           henv_integrable hsign hindep hsubG)
 
 /--
+Theorem-facing original full-subgraph VC route with the analytic
+integrability and measurable-cover witnesses discharged by the measurable
+integrable envelope.
+
+Compared with
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_fullSubgraph_integrable`,
+the structural VC input is on the original class `classFun`, not on every
+truncated class `vdVWTruncatedClassFun classFun envelope M`.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
+    (hsign :
+      ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
+        (fun i : Fin n => sign n i ω))
+    (hindep : ∀ n, iIndepFun (sign n) μsign)
+    (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (X := X)
+      (vcDegree := vcDegree) hX_samplePath hvc hindexClass
+      henvelope hclass henv henv_integrable sign hsign hindep hsubG
+      (htruncIntegrable := by
+        intro M index hindex
+        exact
+          integrable_vdVWTruncatedClassFun_of_integrable
+            (hclass index hindex) henv
+            (integrable_classFun_of_integrable_envelope
+              (μ := P) henvelope hclass henv_integrable hindex))
+      (hbdd_truncated := by
+        intro M n sample
+        exact
+          bddAbove_vdVWWeightedClassValueSet_centered_truncated
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample henvelope
+            (fun index hindex =>
+              integrable_vdVWTruncatedClassFun_of_integrable
+                (hclass index hindex) henv
+                (integrable_classFun_of_integrable_envelope
+                  (μ := P) henvelope hclass henv_integrable hindex)))
+      (hpairSupIntegrable := by
+        intro M n sample
+        exact
+          integrable_vdVWWeightedClassSupremum_pairDifference_ghost_of_countable
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (Set.to_countable indexClass)
+            henvelope hclass henv (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      (hcenteredSupIntegrable := by
+        intro M n
+        exact
+          integrable_vdVWWeightedClassSupremum_centered_truncated_of_countable
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (Set.to_countable indexClass)
+            henvelope hclass henv
+            (fun index hindex =>
+              integrable_vdVWTruncatedClassFun_of_integrable
+                (hclass index hindex) henv
+                (integrable_classFun_of_integrable_envelope
+                  (μ := P) henvelope hclass henv_integrable hindex))
+            (fun _ : Fin n => (n : ℝ)⁻¹))
+      (hghostExpectationIntegrable := by
+        intro M n
+        have hsplit :
+            Integrable
+              (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+                vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun z : Observation × Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index z.1 -
+                      vdVWTruncatedClassFun classFun envelope M index z.2)
+                  (fun _ : Fin n => (n : ℝ)⁻¹)
+                  (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+              ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) :=
+          integrable_vdVWWeightedClassSupremum_pairDifference_split_of_countable
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (Set.to_countable indexClass)
+            henvelope hclass henv (fun _ : Fin n => (n : ℝ)⁻¹)
+        simpa using hsplit.integral_prod_left)
+      (hsplitSupIntegrable := by
+        intro M n
+        exact
+          integrable_vdVWWeightedClassSupremum_pairDifference_split_of_countable
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (Set.to_countable indexClass)
+            henvelope hclass henv (fun _ : Fin n => (n : ℝ)⁻¹))
+      (hsampleSupIntegrable := by
+        intro M n ω
+        exact
+          integrable_vdVWWeightedClassSupremum_truncated_of_countable
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (Set.to_countable indexClass)
+            henvelope hclass henv
+            (vdVWRademacherWeights (fun i : Fin n => sign n i ω)))
+      (hrandomIntegralIntegrable := by
+        intro M n
+        have hproduct :
+            Integrable
+              (fun z : Ωsign × SampleAt Observation n =>
+                vdVWWeightedClassSupremum indexClass
+                  (vdVWTruncatedClassFun classFun envelope M)
+                  (vdVWRademacherWeights (fun i : Fin n => sign n i z.1)) z.2)
+              (μsign.prod (vdVWProductMeasure P n)) :=
+          integrable_vdVWWeightedClassSupremum_truncated_rademacher_product_of_countable
+            (μsign := μsign) (P := P) (indexClass := indexClass)
+            (classFun := classFun) (envelope := envelope) (M := M)
+            (Set.to_countable indexClass) henvelope hclass henv
+            (fun index hindex =>
+              integrable_classFun_of_integrable_envelope
+                (μ := P) henvelope hclass henv_integrable hindex)
+            (sign n) (hsubG n)
+        simpa using hproduct.integral_prod_left)
+      (Urandom := by
+        intro M n
+        exact
+          VdVWMeasurableCover.truncated_rademacher_product_of_countable
+            (μsign := μsign) (P := P) (indexClass := indexClass)
+            (classFun := classFun) (envelope := envelope) (M := M)
+            (Set.to_countable indexClass) henvelope hclass henv
+            (fun index hindex =>
+              integrable_classFun_of_integrable_envelope
+                (μ := P) henvelope hclass henv_integrable hindex)
+            (sign n) (hsubG n))
+      (hproductSupIntegrable := by
+        intro M n
+        exact
+          integrable_vdVWWeightedClassSupremum_truncated_rademacher_product_of_countable
+            (μsign := μsign) (P := P) (indexClass := indexClass)
+            (classFun := classFun) (envelope := envelope) (M := M)
+            (Set.to_countable indexClass) henvelope hclass henv
+            (fun index hindex =>
+              integrable_classFun_of_integrable_envelope
+                (μ := P) henvelope hclass henv_integrable hindex)
+            (sign n) (hsubG n))
+      (hsignSupIntegrable := by
+        intro M n sample
+        exact
+          integrable_vdVWWeightedClassSupremum_truncated_rademacher_sign_of_countable
+            (μsign := μsign) (indexClass := indexClass)
+            (classFun := classFun) (envelope := envelope) (M := M)
+            (Set.to_countable indexClass) henvelope (sign n) (hsubG n) sample)
+      (Ucentered := by
+        intro M n
+        exact
+          VdVWMeasurableCover.centered_truncated_of_countable_of_coordinate
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (Set.to_countable indexClass)
+            hclass henv n)
+
+/--
+Original full-subgraph VC route with canonical iid real-valued Rademacher
+signs.
+
+This removes the caller-facing auxiliary sign probability space from
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable`.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_iidRademacher
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    {vcDegree : ℝ -> ℕ}
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  obtain ⟨Ωsign, mΩsign, μsign, signNat, _hmeas, _hlaw,
+      hindepNat, hprob, hsubGNat, hsupportNat⟩ :=
+    exists_common_iid_vdVWRademacherSigns
+  letI : MeasurableSpace Ωsign := mΩsign
+  haveI : IsProbabilityMeasure μsign := hprob
+  let sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ :=
+    fun _n i => signNat (i : ℕ)
+  exact
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (X := X)
+      (vcDegree := vcDegree) hX_samplePath hvc hindexClass
+      henvelope hclass henv henv_integrable sign
+      (by
+        intro n
+        exact hsupportNat.mono (fun ω hω i => hω (i : ℕ)))
+      (by
+        intro n
+        simpa [sign] using
+          hindepNat.precomp (g := fun i : Fin n => (i : ℕ)) Fin.val_injective)
+      (by
+        intro n i
+        simpa [sign] using hsubGNat (i : ℕ))
+
+/--
 Full-subgraph integrable Theorem 2.4.3 route, expressed as finite-product
 outer-probability uniform-deviation convergence.
 
@@ -38590,6 +38831,46 @@ theorem samplePath_vdVWCanonicalSampleProcess
     samplePath (vdVWCanonicalSampleProcess n) sample n = sample := by
   funext i
   simp [samplePath, vdVWCanonicalSampleProcess, i.isLt]
+
+/--
+Original full-subgraph VC route on the canonical terminal sample process.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_canonical
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_iidRademacher
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      (X := fun _M n => vdVWCanonicalSampleProcess n)
+      (vcDegree := vcDegree)
+      (fun _M n sample =>
+        samplePath_vdVWCanonicalSampleProcess
+          (Observation := Observation) n sample)
+      hvc hindexClass henvelope hclass henv henv_integrable
 
 /--
 Canonical-sample full-subgraph route to the book-style variable-domain entropy

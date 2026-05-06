@@ -297,10 +297,16 @@ Theorem 2.4.3 convergence machinery through
 This is an actual final-machinery consumer, not another wrapper around the
 same selected package: it keeps the analytic side conditions explicit while
 reducing the structural input from truncated-class full-subgraph VC to
-original-class full-subgraph VC.  The next useful proof is to discharge those
-analytic side conditions in a compact original-VC side-condition/integrable
-constructor, prove a new concrete class-geometry/cardinality theorem, or move
-to the genuine random-entropy tail/UI bridge.  Do not add another endpoint
+original-class full-subgraph VC.  The compact original-VC
+side-condition/integrable constructor is now compiled through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable`,
+its iid-Rademacher variant
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_iidRademacher`,
+and the canonical endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_originalFullSubgraph_integrable_canonical`.
+The next useful proof is to consume this centered convergence in a final
+theorem statement, prove a new concrete class-geometry/cardinality theorem, or
+move to the genuine random-entropy tail/UI bridge.  Do not add another endpoint
 alias for the same selected fixed-radius cardinality route unless final
 theorem assembly consumes it.
 
