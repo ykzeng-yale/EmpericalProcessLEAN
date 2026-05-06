@@ -5247,6 +5247,60 @@ theorem
     hconv
 
 /--
+Bounded pointwise-separable centered untruncated finite-product endpoints feed
+weak convergence of their pushforward laws to the Dirac law once the
+corresponding outer-probability convergence is known.
+
+This is the Definition 2.3.3 separability version of the preceding countable
+coordinate endpoint: the countable subclass approximates the original class
+pointwise, and the uniform bound lets dominated convergence pass the
+approximation through centering.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass subclass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (happrox :
+      VdVWPointwiseApproximableByCountableSubclass
+        indexClass subclass classFun)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    {bound : ℝ}
+    (hbound :
+      ∀ index, index ∈ indexClass -> ∀ observation,
+        |classFun index observation| ≤ bound)
+    (hconv :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        atTop (0 : ℝ)) :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun n : ℕ =>
+        ⟨Measure.map
+          (fun sample =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+          (vdVWProductMeasure P n),
+          Measure.isProbabilityMeasure_map
+            (((VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound
+              (P := P) happrox hclass hbound)
+              n (fun _ : Fin n => (n : ℝ)⁻¹)).aemeasurable)⟩)
+      atTop
+      ⟨Measure.dirac (0 : ℝ), Measure.dirac.isProbabilityMeasure⟩ :=
+  VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pMeasurableClass_convergesInOuterProbabilityConst
+    (VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound
+      (P := P) happrox hclass hbound)
+    hconv
+
+/--
 `P`-measurable centered untruncated finite-product endpoints feed the signed
 bounded-continuous varying-domain weak-convergence package once the
 corresponding outer-probability convergence is known.
@@ -5328,6 +5382,55 @@ theorem
   VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pMeasurableClass_convergesInOuterProbabilityConst
     (VdVWPMeasurableClass.centered_of_countable_of_coordinate
       (P := P) hcount hclass)
+    hconv
+
+/--
+Bounded pointwise-separable centered untruncated finite-product endpoints feed
+the signed bounded-continuous varying-domain weak-convergence package once the
+corresponding outer-probability convergence is known.
+
+This consumes the centered bounded-separability `P`-measurability theorem
+from `PMeasurable.lean`, replacing the countability assumption at this
+endpoint with a VdV&W-style countable approximating subclass and a uniform
+bound.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass subclass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (happrox :
+      VdVWPointwiseApproximableByCountableSubclass
+        indexClass subclass classFun)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    {bound : ℝ}
+    (hbound :
+      ∀ index, index ∈ indexClass -> ∀ observation,
+        |classFun index observation| ≤ bound)
+    (hconv :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        atTop (0 : ℝ)) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains
+      (fun n : ℕ => SampleAt Observation n)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop
+      ⟨Measure.dirac (0 : ℝ), Measure.dirac.isProbabilityMeasure⟩ :=
+  VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pMeasurableClass_convergesInOuterProbabilityConst
+    (VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound
+      (P := P) happrox hclass hbound)
     hconv
 
 /--

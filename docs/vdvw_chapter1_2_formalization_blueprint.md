@@ -239,6 +239,11 @@ packages centered pointwise approximability, and
 `VdVWPMeasurableClass.centered_of_pointwiseApproximableByCountableSubclass_of_uniform_bound`
 gives centered `P`-measurability under finite-measure and uniform-bound
 hypotheses.
+The Theorem 2.4.3 weak-convergence endpoint layer now has the matching
+bounded-separable consumers:
+`VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst`
+and
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst`.
 
 2026-05-06 scalar-quantizer cover update: `Theorem243.lean` now lifts the
 deterministic coordinate scalar-quantizer decoder-error covering bound from

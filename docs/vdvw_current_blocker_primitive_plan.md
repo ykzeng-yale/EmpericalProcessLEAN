@@ -6921,3 +6921,17 @@ or to an exact Chapter 1 process primitive such as arbitrary-index FDD
 converse, separability/tightness/asymptotic-measurability, nonmeasurable
 signed outer-cover weak convergence, or full arbitrary-map extended-real
 measurable-cover existence.
+
+2026-05-06 centered separability endpoint consumers: local search found the
+generic Theorem 2.4.3 `P`-measurable weak-convergence and signed
+varying-domain endpoints, plus countable-coordinate consumers, but no bounded
+pointwise-separable consumer using the centered `P`-measurability theorem.
+`Theorem243.lean` now proves
+`VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst`
+and
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst`.
+These consume the centered separability lane in the Theorem 2.4.3 law-level
+endpoints while keeping the actual convergence hypothesis explicit.  The next
+non-duplicative target remains upstream: prove a real entropy/cardinality
+input, a selected tail/UI/ordinary-mean bridge, or an exact Chapter 1 process
+primitive.

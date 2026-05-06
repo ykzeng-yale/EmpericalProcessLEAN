@@ -148,6 +148,12 @@ The same lane now has the centered bounded route:
 These use mathlib dominated convergence to move pointwise approximation
 through population integrals and then prove centered `P`-measurability under a
 uniform absolute bound on the original class.
+The Theorem 2.4.3 law-level endpoints now consume this separability route via
+`VdVWTheorem243_centered_untruncated_weakConvergenceProbabilityMeasures_map_dirac_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst`
+and
+`VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_pointwiseApproximable_uniform_bound_convergesInOuterProbabilityConst`.
+They replace countability at those endpoints with bounded pointwise
+approximability plus coordinate measurability.
 
 The scalar-quantizer structural-cover lift is also compiled:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`
