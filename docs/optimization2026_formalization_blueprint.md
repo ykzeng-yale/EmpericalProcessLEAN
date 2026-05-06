@@ -56,8 +56,8 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after the Chapter 12 component-hcore packet and
-focused Lean verification of the Chewi Theorem 12.1 SMPGD component-rate
+Current manual goal frontier after the Chapter 12 Bochner component packet and
+focused Lean verification of the Chewi Theorem 12.1 SMPGD integral-rate
 bridge:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
@@ -310,13 +310,25 @@ finite-support stochastic-gradient packet adds
 `chewi121_smooth_weightedAverageGap_le_geometric_of_finite_components`, and
 `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_finite_components`,
 giving a finite-distribution version of the Chapter 12 SMPGD rate from
-per-sample component inequalities.  The active Chapter 12 lane is now the
-general Bochner/probability proof of the component fields behind those
-wrappers: smooth raw expected model decomposition, relative-smoothness
-absorption, mirror strong-convexity lower bound, Hölder/Cauchy-Schwarz noise
-estimate via `integral_mul_le_Lp_mul_Lq_of_nonneg`, variance domination from
-(12.1), and non-smooth Lipschitz/bounded-gradient component bounds from
-(12.2), before the ASGD CLT material.
+per-sample component inequalities.  The newest Bochner-integral packet adds
+`chewi121_smooth_integral_raw_component_bound`,
+`chewi121_smooth_integral_absorb_component_bound`,
+`chewi121_integral_mirror_lower_component_bound`,
+`chewi121_nonsmooth_integral_raw_component_bound`,
+`chewi121_integral_linear_component_bound`,
+`chewi121_smooth_hcore_of_integral_components`,
+`chewi121_nonsmooth_hcore_of_integral_components`,
+`chewi121_smooth_weightedAverageGap_le_geometric_of_integral_components`, and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components`,
+giving the general expectation route from supplied integrability and a.e.
+component inequalities to the final Chapter 12 SMPGD weighted-average rates.
+The active Chapter 12 lane is now the concrete stochastic model discharge
+behind those wrappers: CLM/inner-product Bochner transport, unbiasedness/noise
+centering, Hölder/Cauchy-Schwarz noise estimate via
+`integral_mul_le_Lp_mul_Lq_of_nonneg`, variance domination from (12.1), and
+source pointwise/a.e. relative-smoothness, mirror strong-convexity,
+Lipschitz, and bounded-gradient estimates from (12.2), before the ASGD CLT
+material.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
