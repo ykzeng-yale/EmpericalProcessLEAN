@@ -6750,3 +6750,16 @@ honest Chapter 1 process-tightness interface layer: tightness of bounded
 law.  It still does not prove the arbitrary-index VdV&W 1.4.8 converse,
 separability/asymptotic-measurability, or nonmeasurable signed outer-cover
 weak-convergence primitives.
+
+2026-05-06 process weak-convergence interface follow-up: local search found
+the existing measure-level forward FDD wrappers
+`vdVW148_ellInfty_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`
+and `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict`, but no
+raw bounded-process law interface matching the process-tightness package.
+`FiniteDimensional.lean` now adds `VdVWEllInftyProcessWeakConvergence` and
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw`.  These package weak
+convergence of bounded `ell_infty(T)` process laws and prove the forward FDD
+law consequence through `vdVWEllInftyProcessLaw_map_finiteRestrict`.  This is
+still the forward direction only: the arbitrary-index VdV&W 1.4.8 converse and
+the separability/asymptotic-measurability/nonmeasurable-cover primitives
+remain open.

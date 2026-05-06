@@ -88,6 +88,13 @@ that tightness of bounded `ell_infty(T)` process laws implies tightness of each
 finite-dimensional law.  It is a real process-level support bridge, but still
 not the arbitrary-index FDD converse or separability/asymptotic-measurability
 theorem.
+The matching process weak-convergence interface is also compiled:
+`VdVWEllInftyProcessWeakConvergence` and
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw` package weak
+convergence of bounded `ell_infty(T)` process laws and project it to weak
+convergence of each finite-dimensional raw coordinate law.  This keeps the
+direction honest: it is forward FDD support, not the arbitrary-index VdV&W
+1.4.8 converse.
 
 The scalar-quantizer structural-cover lift is also compiled:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_coordinate_scalarQuantizer_decode_error_cardinality_bound_samplePath`

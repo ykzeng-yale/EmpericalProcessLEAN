@@ -1103,6 +1103,91 @@ theorem vdVWEllInftyProcessLaw_map_finiteRestrict
   exact congrArg (fun m : Measure (I -> ℝ) => m s) (Measure.map_congr hfg)
 
 /--
+Weak convergence of bounded raw processes, expressed as weak convergence of
+their ordinary `ell_infty(T)` process laws.
+
+This is a process-law interface only.  It deliberately does not assert the
+arbitrary-index VdV&W FDD converse or separability/asymptotic-measurability
+clauses.
+-/
+def VdVWEllInftyProcessWeakConvergence
+    {ι : Type*} {Ω : ι -> Type*} {Ωlim : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    (X : (i : ι) -> Ω i -> T -> ℝ)
+    (Z : Ωlim -> T -> ℝ)
+    (hbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hbounded i)) (μ i))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    (l : Filter ι) : Prop :=
+  VdVWWeakConvergenceProbabilityMeasures
+    (fun i => vdVWEllInftyProcessLaw (T := T) (μ i) (X i) (hbounded i) (hX i))
+    l
+    (vdVWEllInftyProcessLaw (T := T) μlim Z hZbounded hZ)
+
+/--
+Process-level weak convergence implies weak convergence of every
+finite-dimensional law.
+
+This is the forward FDD direction for the local raw-process law interface.  It
+does not prove the converse direction of VdV&W 1.4.8.
+-/
+theorem VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw
+    {ι : Type*} {Ω : ι -> Type*} {Ωlim : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    (μ : (i : ι) -> @Measure (Ω i) (mΩ i)) [∀ i, IsProbabilityMeasure (μ i)]
+    [MeasurableSpace Ωlim] (μlim : Measure Ωlim) [IsProbabilityMeasure μlim]
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    (X : (i : ι) -> Ω i -> T -> ℝ)
+    (Z : Ωlim -> T -> ℝ)
+    (hbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    (hX : ∀ i,
+      AEMeasurable (VdVWEllInfty.processMap (X i) (hbounded i)) (μ i))
+    (hZ : AEMeasurable (VdVWEllInfty.processMap Z hZbounded) μlim)
+    {l : Filter ι}
+    (h : VdVWEllInftyProcessWeakConvergence
+      (T := T) μ μlim X Z hbounded hZbounded hX hZ l)
+    (I : Finset T) [MeasurableSpace (I -> ℝ)] [BorelSpace (I -> ℝ)] :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun i => vdVWFDDProcessLaw (μ i) I (X i)
+        (aemeasurable_fdd_of_aemeasurable_ellInftyProcessMap (T := T) I (hX i)))
+      l
+      (vdVWFDDProcessLaw μlim I Z
+        (aemeasurable_fdd_of_aemeasurable_ellInftyProcessMap (T := T) I hZ)) := by
+  have hmap :
+      VdVWWeakConvergenceProbabilityMeasures
+        (fun i =>
+          (vdVWEllInftyProcessLaw (T := T) (μ i) (X i) (hbounded i) (hX i)).map
+            ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable))
+        l
+        ((vdVWEllInftyProcessLaw (T := T) μlim Z hZbounded hZ).map
+          ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable)) :=
+    h.map_continuous (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
+  have hsrc :
+      ∀ᶠ i in l,
+        vdVWFDDProcessLaw (μ i) I (X i)
+            (aemeasurable_fdd_of_aemeasurable_ellInftyProcessMap (T := T) I (hX i)) =
+          (vdVWEllInftyProcessLaw (T := T) (μ i) (X i) (hbounded i) (hX i)).map
+            ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable) :=
+    Filter.Eventually.of_forall fun i =>
+      (vdVWEllInftyProcessLaw_map_finiteRestrict
+        (T := T) (P := μ i) (X := X i) (hbounded := hbounded i) (hX := hX i) I).symm
+  have hlim :
+      (vdVWEllInftyProcessLaw (T := T) μlim Z hZbounded hZ).map
+          ((VdVWEllInfty.continuous_finiteRestrict (T := T) I).measurable.aemeasurable) =
+        vdVWFDDProcessLaw μlim I Z
+          (aemeasurable_fdd_of_aemeasurable_ellInftyProcessMap (T := T) I hZ) :=
+    vdVWEllInftyProcessLaw_map_finiteRestrict
+      (T := T) (P := μlim) (X := Z) (hbounded := hZbounded) (hX := hZ) I
+  simpa [hlim] using hmap.congr_eventually hsrc
+
+/--
 Process-level asymptotic tightness for bounded raw processes, expressed as
 ordinary asymptotic tightness of their `ell_infty(T)` laws.
 

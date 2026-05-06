@@ -180,6 +180,12 @@ forward tightness implication for every finite-dimensional law.  This is a
 Chapter 1 process primitive, but it still leaves the arbitrary-index FDD
 converse, separability/asymptotic-measurability, and nonmeasurable outer-cover
 weak-convergence layers open.
+The weak-convergence analogue is now compiled as
+`VdVWEllInftyProcessWeakConvergence` and
+`VdVWEllInftyProcessWeakConvergence.finiteDimensionalLaw`: weak convergence of
+bounded `ell_infty(T)` process laws implies weak convergence of every
+finite-dimensional raw coordinate law.  This is still forward FDD support only
+and should not be reported as the full VdV&W 1.4.8 converse.
 
 2026-05-06 scalar-quantizer cover update: `Theorem243.lean` now lifts the
 deterministic coordinate scalar-quantizer decoder-error covering bound from
