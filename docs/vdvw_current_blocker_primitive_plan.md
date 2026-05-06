@@ -251,6 +251,24 @@ finite-index wrapper.  A future exact statement needs primitives like
 proof that finite-dimensional weak convergence under those hypotheses implies
 weak convergence of the full `ell_infty(T)` process laws.
 
+2026-05-06 structural-cardinality primitive progress: `Theorem243.lean` now
+has the exact threshold-trace algebra for VdV&W truncation
+`f 1{F <= M}`:
+`empiricalBinaryTraceSet_thresholdIndicator_vdVWTruncatedClassFun_eq_filter`,
+`empiricalBinaryTraceSet_thresholdIndicator_vdVWTruncatedClassFun_eq_filter_of_nonneg`,
+and
+`empiricalBinaryTraceSet_thresholdIndicator_vdVWTruncatedClassFun_eq_filter_of_neg`.
+These lemmas describe the threshold trace of the truncated class as the
+original threshold trace restricted to the realized envelope sublevel mask,
+with a fixed outside-mask contribution for negative thresholds.  This is the
+first algebraic step toward replacing the current opaque assumption
+`∀ M > 0, VdVWUniformSubgraphVCBound indexClass
+  (vdVWTruncatedClassFun classFun envelope M) (vcDegree M)` by a real
+structural transfer theorem.  The next Lean target is a finite trace-family
+cardinality/VC transfer for the operation
+`trace ↦ fixedMask ∪ (trace ∩ insideMask)` on `Finset (Fin n)`, then apply it
+to threshold traces of `vdVWTruncatedClassFun`.
+
 Next high-capacity proof batches, in order:
 
 1. Return to the exact book entropy mismatch.

@@ -978,6 +978,96 @@ theorem vdVWTruncatedClassFun_eq_zero_of_lt_envelope
     vdVWTruncatedClassFun classFun envelope M index observation = 0 := by
   simp [vdVWTruncatedClassFun, not_le.mpr hlt]
 
+/--
+Samplewise threshold trace of the truncated class.  This is the exact
+algebraic bridge needed before transferring VC/Sauer bounds through the
+VdV&W truncation `f 1{F <= M}`: on the envelope sublevel set the trace is the
+original threshold trace, and off that set it is the fixed comparison
+`threshold < 0`.
+-/
+theorem empiricalBinaryTraceSet_thresholdIndicator_vdVWTruncatedClassFun_eq_filter
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) (envelope : Observation -> ℝ)
+    (M threshold : ℝ) (index : Index) :
+    empiricalBinaryTraceSet sample
+        (thresholdIndicatorClassFun
+          (vdVWTruncatedClassFun classFun envelope M) threshold) index =
+      Finset.univ.filter fun sampleIndex : Fin n =>
+        if envelope (sample sampleIndex) ≤ M then
+          threshold < classFun index (sample sampleIndex)
+        else
+          threshold < 0 := by
+  classical
+  ext sampleIndex
+  by_cases hle : envelope (sample sampleIndex) ≤ M
+  · by_cases hlt : threshold < classFun index (sample sampleIndex)
+    · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+        vdVWTruncatedClassFun, hle, hlt]
+    · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+        vdVWTruncatedClassFun, hle, hlt]
+  · by_cases hlt0 : threshold < (0 : ℝ)
+    · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+        vdVWTruncatedClassFun, hle, hlt0]
+    · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+        vdVWTruncatedClassFun, hle, hlt0]
+
+/--
+For nonnegative thresholds, truncation only restricts the original threshold
+trace to the realized envelope sublevel mask.
+-/
+theorem empiricalBinaryTraceSet_thresholdIndicator_vdVWTruncatedClassFun_eq_filter_of_nonneg
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) (envelope : Observation -> ℝ)
+    (M threshold : ℝ) (index : Index) (hthreshold : 0 ≤ threshold) :
+    empiricalBinaryTraceSet sample
+        (thresholdIndicatorClassFun
+          (vdVWTruncatedClassFun classFun envelope M) threshold) index =
+      Finset.univ.filter fun sampleIndex : Fin n =>
+        envelope (sample sampleIndex) ≤ M ∧
+          threshold < classFun index (sample sampleIndex) := by
+  classical
+  ext sampleIndex
+  by_cases hle : envelope (sample sampleIndex) ≤ M
+  · by_cases hlt : threshold < classFun index (sample sampleIndex)
+    · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+        vdVWTruncatedClassFun, hle, hlt]
+    · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+        vdVWTruncatedClassFun, hle, hlt]
+  · have hnot_lt_zero : ¬ threshold < (0 : ℝ) := not_lt.mpr hthreshold
+    simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+      vdVWTruncatedClassFun, hle, hnot_lt_zero]
+
+/--
+For negative thresholds, the truncated threshold trace is the union of the
+fixed outside-envelope mask and the original threshold trace restricted to the
+inside-envelope mask.
+-/
+theorem empiricalBinaryTraceSet_thresholdIndicator_vdVWTruncatedClassFun_eq_filter_of_neg
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) (envelope : Observation -> ℝ)
+    (M threshold : ℝ) (index : Index) (hthreshold : threshold < 0) :
+    empiricalBinaryTraceSet sample
+        (thresholdIndicatorClassFun
+          (vdVWTruncatedClassFun classFun envelope M) threshold) index =
+      Finset.univ.filter fun sampleIndex : Fin n =>
+        M < envelope (sample sampleIndex) ∨
+          threshold < classFun index (sample sampleIndex) := by
+  classical
+  ext sampleIndex
+  by_cases hle : envelope (sample sampleIndex) ≤ M
+  · have hnot_out : ¬ M < envelope (sample sampleIndex) := not_lt.mpr hle
+    by_cases hlt : threshold < classFun index (sample sampleIndex)
+    · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+        vdVWTruncatedClassFun, hle, hnot_out, hlt]
+    · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+        vdVWTruncatedClassFun, hle, hnot_out, hlt]
+  · have hout : M < envelope (sample sampleIndex) := lt_of_not_ge hle
+    simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+      vdVWTruncatedClassFun, hle, hthreshold, hout]
+
 /-- Truncation cannot increase pointwise absolute values. -/
 theorem abs_vdVWTruncatedClassFun_le_abs
     {Observation : Type u} {Index : Type v}

@@ -115,6 +115,15 @@ routes.  The remaining gap is not an alias: prove a real structural
 UI/tail/mean or VC/Sauer cardinality theorem, especially an instantiation of
 `VdVWUniformSubgraphVCBound` for a concrete class, or record the exact missing
 class-geometry assumption.
+2026-05-06 truncation trace algebra progress:
+`Theorem243.lean` now proves the threshold-trace identities
+`empiricalBinaryTraceSet_thresholdIndicator_vdVWTruncatedClassFun_eq_filter`,
+`empiricalBinaryTraceSet_thresholdIndicator_vdVWTruncatedClassFun_eq_filter_of_nonneg`,
+and
+`empiricalBinaryTraceSet_thresholdIndicator_vdVWTruncatedClassFun_eq_filter_of_neg`.
+These are upstream of the full-subgraph route: they expose exactly how
+`f 1{F <= M}` modifies threshold traces, reducing the next structural task to
+a finite set-family cardinality/VC transfer under fixed masks.
 The a.e.-measurable map-law bridge is now also available for common-domain
 arbitrary maps and varying-domain endpoints through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable`,

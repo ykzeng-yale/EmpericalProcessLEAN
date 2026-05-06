@@ -146,6 +146,13 @@ instantiate `VdVWUniformSubgraphVCBound`/VC-Sauer cardinality for a concrete
 class.  Do not try to prove UI from bare outer-probability entropy convergence;
 that implication is false without additional uniform-integrability/tail or
 structural-cardinality input.
+The structural-cardinality line now has its first truncation-specific algebra:
+`empiricalBinaryTraceSet_thresholdIndicator_vdVWTruncatedClassFun_eq_filter`
+and its nonnegative/negative threshold specializations identify the threshold
+traces of `f 1{F <= M}` with fixed-mask transforms of the original threshold
+traces.  The next proof target is not another full-subgraph endpoint; it is a
+finite-family cardinality or VC-dimension lemma for these fixed-mask transforms
+and then a transfer theorem for truncated-class threshold traces.
 The finite pointwise-code covering lift is now also available:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
 and
