@@ -83,9 +83,10 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after checking the live manual goal,
-route docs, source text, and synced repo on 2026-05-06, based on pushed
-frontier `f192ed6` (`Add Chewi theorem 10.11 ordinary norm layer`):
+Current live replacement `/goal` prompt after focused Lean verification and
+root `StatInference` build of the Chewi Theorem 10.13 OMD regret packet on
+2026-05-06, based on verified code frontier `2c62fec` (`Add Chewi theorem
+10.13 OMD regret packet`):
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -99,8 +100,8 @@ theorem-sized packet is available.  Treat Chapters 3-8 as stable reusable
 infrastructure and treat `Fenchel.lean`, `Bregman.lean`, and
 `MirrorDescent.lean` as the active Chapter 9/10 promotion gate.
 
-Latest verified Optimization proof frontier: `f192ed6` (`Add Chewi theorem
-10.11 ordinary norm layer`).  `MirrorDescent.lean` now compiles through
+Latest verified Optimization proof frontier: `2c62fec` (`Add Chewi theorem
+10.13 OMD regret packet`).  `MirrorDescent.lean` now compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
 `mirrorProximalGradientModel_le_composite_add_bregman`,
 `composite_le_mirrorProximalGradientModel`,
@@ -151,38 +152,51 @@ and trajectory forms.  The newest ordinary Hilbert-norm packet adds
 `chewi1011_iterateAverage_gap_le_of_trajectory_lipschitz_norm_stepsize`.  This
 produces the two source analytic estimates internally for the ordinary norm
 from `LipschitzOnWith (Real.toNNReal L) f C`, `‖gradF (x n)‖ <= L`, and
-`FirstOrderStrongConvexOn C phi gradPhi alphaPhi`.
+`FirstOrderStrongConvexOn C phi gradPhi alphaPhi`.  The newest OMD packet adds
+`onlineMirrorDescentModel`, `IsOnlineMirrorDescentStep`,
+`IsOnlineMirrorDescentTrajectory`, trajectory accessors,
+`chewi1013_young_lower_bound`,
+`bregmanDivergence_nonneg_of_firstOrderStrongConvexOn`,
+`onlineMirrorDescentModel_lower_of_norm_bound`,
+`onlineMirrorDescent_oneStep_regret`,
+`onlineMirrorDescent_regret_gap_sum_le_of_oneStep`,
+`chewi1013_regret_bound_of_oneStep`,
+`chewi1013_regret_bound_of_trajectory`,
+`chewi1013_regret_bound_of_trajectory_norm_bound`,
+`chewi1013_stepsize_rhs_bound`, and
+`chewi1013_regret_bound_of_trajectory_norm_bound_stepsize`.  This proves the
+fixed-comparator form of Chewi Theorem 10.13 and the displayed positive
+step-size corollary in the ordinary Hilbert norm, avoiding `sInf` until exact
+source-report packaging requires it.
 
 Search-first results to preserve: pinned mathlib search for
-`Bregman`, `Mirror`, `proximal`, `Fenchel`, and relative smoothness found no
-direct Bregman/mirror-descent/MPGD theorem; the `MirrorImage` hits in
+`Bregman`, `Mirror`, `proximal`, `Fenchel`, relative smoothness, OMD, online
+mirror descent, regret, and dual-norm abstractions found no direct
+Bregman/mirror-descent/MPGD/OMD regret theorem; the `MirrorImage` hits in
 `Analysis/Convex/Deriv.lean` are unrelated symmetry lemmas.  Local search
 confirms the useful APIs are the compiled `Fenchel.lean`, `Bregman.lean`,
-`Proximal.lean`, Chapter 3/5 scalar recurrence/telescope machinery,
-mathlib/local `LipschitzOnWith.le_add_mul`, `abs_real_inner_le_norm`, and
-`FirstOrderStrongConvexOn.lower_model`.  There is still no arbitrary norm/dual
-norm abstraction in local code or pinned mathlib; the new theorem packet covers
-the ordinary Hilbert norm specialization.
+`Proximal.lean`, Chapter 3/5 scalar recurrence/telescope machinery, local
+`sum_range_sub_succ`, mathlib/local `LipschitzOnWith.le_add_mul`,
+`abs_real_inner_le_norm`, and `FirstOrderStrongConvexOn.lower_model`.  There is
+still no arbitrary norm/dual norm abstraction in local code or pinned mathlib;
+the OMD theorem packet covers the ordinary Hilbert norm specialization.
 
 Active aggressive target ladder:
 
-1. Package Theorem 10.13 OMD regret by exposing the linear-loss version of the
-   mirror step and telescoping `D_phi(y, x_n)`.  Reuse the 10.11 one-step
-   machinery wherever the algebra is identical.  The first theorem packet
-   should introduce an `onlineMirrorDescentModel`, an
-   `IsOnlineMirrorDescentStep` growth certificate, the one-step regret
-   inequality, the scalar Young lower bound with constant
-   `L^2 * h / (2 * alphaPhi)`, the ordinary Hilbert-norm analytic discharge,
-   and a finite comparator regret telescope before spending time on `sInf`.
-2. If later source/report exactness requires Chewi's arbitrary norm
-   `|||\cdot|||`, add a small proof-carrying custom norm/dual-norm interface
-   that generalizes the ordinary-norm packet; do not block Theorem 10.13 on
-   that abstraction unless it is directly needed.
-3. In parallel, map and then open theorem-packet modules for Chapter 11
-   alternating Bregman projections/minimization, Chapter 12 stochastic
-   mirror-proximal-gradient, and Chapter 13 Newton/self-concordance.  Use
-   source-shaped supplied interfaces first when exact analytic dependencies
-   would otherwise stall the main-text theorem lane.
+1. Open Chapter 11 alternating Bregman projections/minimization as the next
+   theorem-sized packet.  Source-scout anchors are §11.1 around
+   `Optimization_SinhoChewi_sp26.md` lines 3064-3135: define a Bregman
+   projection step certificate, an alternating Bregman projection trajectory,
+   and prove the Lemma 11.2-style finite telescoping inequality before
+   convergence/report packaging.
+2. If exact Theorem 10.13 source-report packaging is requested, add an `sInf`
+   wrapper for the fixed-comparator regret theorem and/or a proof-carrying
+   arbitrary norm/dual-norm interface.  Do not block Chapter 11 on those unless
+   a later theorem needs them.
+3. In parallel, keep mapping Chapter 12 stochastic mirror-proximal-gradient and
+   Chapter 13 Newton/self-concordance theorem packets.  Use source-shaped
+   supplied interfaces first when exact analytic dependencies would otherwise
+   stall the main-text theorem lane.
 
 Verification gate remains: focused `lake env lean` during development,
 promoted `lake build StatInference` after theorem packets, proof-hole scan,

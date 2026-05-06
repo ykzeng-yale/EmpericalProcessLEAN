@@ -1405,5 +1405,406 @@ theorem chewi1011_iterateAverage_gap_le_of_trajectory_lipschitz_norm_stepsize
         (alphaPhi := alphaPhi) (x := x n) (xPlus := x (n + 1))
         hphi (htraj.mem n) (htraj.mem (n + 1))
 
+/-- The linear-loss OMD model from Chewi `(OMD)`. -/
+noncomputable def onlineMirrorDescentModel
+    (p : E) (phi : E -> ℝ) (gradPhi : E -> E)
+    (h : ℝ) (x z : E) : ℝ :=
+  inner ℝ p (z - x) + (1 / h) * bregmanDivergence phi gradPhi z x
+
+/--
+Source-shaped certificate that `xPlus` is one online mirror descent step from
+`x` for the linear loss vector `p`.
+
+The growth field records the first-order/Bregman projection inequality used in
+the proof of Chewi Theorem 10.13.
+-/
+structure IsOnlineMirrorDescentStep
+    (C : Set E) (phi : E -> ℝ) (gradPhi : E -> E)
+    (h : ℝ) (p x xPlus : E) : Prop where
+  mem_start : x ∈ C
+  mem_next : xPlus ∈ C
+  growth : ∀ ⦃y : E⦄, y ∈ C ->
+    onlineMirrorDescentModel p phi gradPhi h x xPlus +
+        (1 / h) * bregmanDivergence phi gradPhi y xPlus ≤
+      onlineMirrorDescentModel p phi gradPhi h x y
+
+/-- Source-shaped OMD trajectory interface. -/
+def IsOnlineMirrorDescentTrajectory
+    (C : Set E) (phi : E -> ℝ) (gradPhi : E -> E)
+    (h : ℝ) (p x : ℕ -> E) : Prop :=
+  ∀ n, IsOnlineMirrorDescentStep C phi gradPhi h (p n) (x n) (x (n + 1))
+
+theorem IsOnlineMirrorDescentTrajectory.step
+    {C : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {h : ℝ} {p x : ℕ -> E}
+    (htraj : IsOnlineMirrorDescentTrajectory C phi gradPhi h p x)
+    (n : ℕ) :
+    IsOnlineMirrorDescentStep C phi gradPhi h (p n) (x n) (x (n + 1)) :=
+  htraj n
+
+theorem IsOnlineMirrorDescentTrajectory.mem
+    {C : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {h : ℝ} {p x : ℕ -> E}
+    (htraj : IsOnlineMirrorDescentTrajectory C phi gradPhi h p x)
+    (n : ℕ) :
+    x n ∈ C := by
+  cases n with
+  | zero => exact (htraj 0).mem_start
+  | succ n => exact (htraj n).mem_next
+
+/--
+Scalar Young/completing-square inequality used in Chewi Theorem 10.13:
+`-L r + alpha/(2h) r^2` is bounded below by `-L^2 h/(2 alpha)`.
+-/
+theorem chewi1013_young_lower_bound
+    {L alphaPhi h r : ℝ} (hh : 0 < h) (halphaPhi : 0 < alphaPhi) :
+    -(L ^ (2 : ℕ) * h / (2 * alphaPhi)) ≤
+      -L * r + (alphaPhi / (2 * h)) * r ^ (2 : ℕ) := by
+  have hden : 0 < 2 * h * alphaPhi := by positivity
+  have hsquare : 0 ≤ (alphaPhi * r - L * h) ^ (2 : ℕ) := sq_nonneg _
+  have hnonneg :
+      0 ≤
+        (alphaPhi * r - L * h) ^ (2 : ℕ) /
+          (2 * h * alphaPhi) :=
+    div_nonneg hsquare hden.le
+  have hidentity :
+      (alphaPhi * r - L * h) ^ (2 : ℕ) /
+          (2 * h * alphaPhi) =
+        -L * r + (alphaPhi / (2 * h)) * r ^ (2 : ℕ) +
+          L ^ (2 : ℕ) * h / (2 * alphaPhi) := by
+    field_simp [hh.ne', halphaPhi.ne']
+    ring
+  rw [hidentity] at hnonneg
+  nlinarith
+
+/--
+First-order strong convexity of the mirror map gives nonnegativity of the
+Bregman divergence in the ordinary Hilbert-norm specialization.
+-/
+theorem bregmanDivergence_nonneg_of_firstOrderStrongConvexOn
+    {C : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {alphaPhi : ℝ} {x y : E}
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (halphaPhi : 0 ≤ alphaPhi) (hx : x ∈ C) (hy : y ∈ C) :
+    0 ≤ bregmanDivergence phi gradPhi y x := by
+  have hlower :=
+    bregmanDivergence_lower_of_firstOrderStrongConvexOn
+      (C := C) (phi := phi) (gradPhi := gradPhi)
+      (alphaPhi := alphaPhi) (x := x) (xPlus := y)
+      hphi hx hy
+  have hleft_nonneg :
+      0 ≤ (alphaPhi / 2) * ‖y - x‖ ^ (2 : ℕ) := by positivity
+  nlinarith
+
+/--
+Ordinary Hilbert-norm analytic lower bound for the OMD local model from
+`||p|| <= L` and first-order strong convexity of the mirror map.
+-/
+theorem onlineMirrorDescentModel_lower_of_norm_bound
+    {C : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {p x xPlus : E} {L alphaPhi h : ℝ}
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hpnorm : ‖p‖ ≤ L)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hx : x ∈ C) (hxPlus : xPlus ∈ C) :
+    -(L ^ (2 : ℕ) * h / (2 * alphaPhi)) ≤
+      onlineMirrorDescentModel p phi gradPhi h x xPlus := by
+  let r : ℝ := ‖xPlus - x‖
+  have hneg_inner_le_norm :
+      -inner ℝ p (xPlus - x) ≤ ‖p‖ * r := by
+    have habs := abs_real_inner_le_norm p (xPlus - x)
+    exact (neg_le_abs _).trans (by simpa [r] using habs)
+  have hnorm_mul_le : ‖p‖ * r ≤ L * r :=
+    mul_le_mul_of_nonneg_right hpnorm (by positivity)
+  have hinner_lower : -L * r ≤ inner ℝ p (xPlus - x) := by
+    nlinarith
+  have hD_lower :
+      (alphaPhi / 2) * r ^ (2 : ℕ) ≤
+        bregmanDivergence phi gradPhi xPlus x := by
+    simpa [r] using
+      bregmanDivergence_lower_of_firstOrderStrongConvexOn
+        (C := C) (phi := phi) (gradPhi := gradPhi)
+        (alphaPhi := alphaPhi) (x := x) (xPlus := xPlus)
+        hphi hx hxPlus
+  have hD_scaled :
+      (alphaPhi / (2 * h)) * r ^ (2 : ℕ) ≤
+        (1 / h) * bregmanDivergence phi gradPhi xPlus x := by
+    have hmul :=
+      mul_le_mul_of_nonneg_left hD_lower (by positivity : 0 ≤ (1 / h))
+    calc
+      (alphaPhi / (2 * h)) * r ^ (2 : ℕ) =
+          (1 / h) * ((alphaPhi / 2) * r ^ (2 : ℕ)) := by
+            field_simp [hh.ne']
+      _ ≤ (1 / h) * bregmanDivergence phi gradPhi xPlus x := hmul
+  have hyoung :=
+    chewi1013_young_lower_bound
+      (L := L) (alphaPhi := alphaPhi) (h := h) (r := r)
+      hh halphaPhi
+  unfold onlineMirrorDescentModel
+  nlinarith
+
+/--
+Chewi Theorem 10.13 one-step OMD regret inequality, from the OMD growth
+certificate and the Young/Cauchy-Schwarz lower bound on the local model.
+-/
+theorem onlineMirrorDescent_oneStep_regret
+    {C : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {p x xPlus y : E} {L alphaPhi h : ℝ}
+    (hstep : IsOnlineMirrorDescentStep C phi gradPhi h p x xPlus)
+    (hy : y ∈ C)
+    (hmodel_lower :
+      -(L ^ (2 : ℕ) * h / (2 * alphaPhi)) ≤
+        onlineMirrorDescentModel p phi gradPhi h x xPlus) :
+    inner ℝ p (x - y) ≤
+      (1 / h) *
+          (bregmanDivergence phi gradPhi y x -
+            bregmanDivergence phi gradPhi y xPlus) +
+        L ^ (2 : ℕ) * h / (2 * alphaPhi) := by
+  have hgrowth := hstep.growth hy
+  have hinner_sym :
+      inner ℝ p (x - y) = -inner ℝ p (y - x) := by
+    rw [← neg_sub y x, inner_neg_right]
+  unfold onlineMirrorDescentModel at hgrowth hmodel_lower
+  nlinarith
+
+/--
+Finite comparator-regret telescope from the one-step OMD inequality.
+-/
+theorem onlineMirrorDescent_regret_gap_sum_le_of_oneStep
+    {phi : E -> ℝ} {gradPhi : E -> E} {p x : ℕ -> E} {y : E}
+    {h err : ℝ} (hh : 0 < h) {T : ℕ}
+    (hD_T_nonneg : 0 ≤ bregmanDivergence phi gradPhi y (x T))
+    (hone_step : ∀ n, n < T ->
+      inner ℝ (p n) (x n - y) ≤
+        (1 / h) *
+          (bregmanDivergence phi gradPhi y (x n) -
+            bregmanDivergence phi gradPhi y (x (n + 1))) + err) :
+    (∑ n ∈ Finset.range T, inner ℝ (p n) (x n - y)) ≤
+      bregmanDivergence phi gradPhi y (x 0) / h + (T : ℝ) * err := by
+  let D : ℕ -> ℝ := fun n => bregmanDivergence phi gradPhi y (x n)
+  have hsum :
+      (∑ n ∈ Finset.range T, inner ℝ (p n) (x n - y)) ≤
+        ∑ n ∈ Finset.range T, ((1 / h) * (D n - D (n + 1)) + err) := by
+    exact Finset.sum_le_sum fun n hn => by
+      simpa [D] using hone_step n (Finset.mem_range.mp hn)
+  have hright :
+      (∑ n ∈ Finset.range T, ((1 / h) * (D n - D (n + 1)) + err)) =
+        (1 / h) * (D 0 - D T) + (T : ℝ) * err := by
+    rw [Finset.sum_add_distrib, ← Finset.mul_sum, sum_range_sub_succ]
+    simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+  have htel_bound :
+      (1 / h) * (D 0 - D T) + (T : ℝ) * err ≤
+        D 0 / h + (T : ℝ) * err := by
+    have hinv_nonneg : 0 ≤ 1 / h := by positivity
+    have hdrop_nonneg : 0 ≤ D T := by simpa [D] using hD_T_nonneg
+    have hdrop : D 0 - D T ≤ D 0 := by nlinarith
+    have hmul :
+        (1 / h) * (D 0 - D T) ≤ (1 / h) * D 0 :=
+      mul_le_mul_of_nonneg_left hdrop hinv_nonneg
+    have hmul_add :
+        (1 / h) * (D 0 - D T) + (T : ℝ) * err ≤
+          (1 / h) * D 0 + (T : ℝ) * err := by
+      simpa [add_comm, add_left_comm, add_assoc] using
+        add_le_add_right hmul ((T : ℝ) * err)
+    calc
+      (1 / h) * (D 0 - D T) + (T : ℝ) * err
+          ≤ (1 / h) * D 0 + (T : ℝ) * err := hmul_add
+      _ = D 0 / h + (T : ℝ) * err := by ring
+  calc
+    (∑ n ∈ Finset.range T, inner ℝ (p n) (x n - y))
+        ≤ ∑ n ∈ Finset.range T, ((1 / h) * (D n - D (n + 1)) + err) := hsum
+    _ = (1 / h) * (D 0 - D T) + (T : ℝ) * err := hright
+    _ ≤ D 0 / h + (T : ℝ) * err := htel_bound
+
+/--
+Chewi Theorem 10.13 comparator form from supplied one-step regret
+inequalities.  This is stronger than the displayed `inf` statement for each
+fixed comparator `y ∈ C`.
+-/
+theorem chewi1013_regret_bound_of_oneStep
+    {phi : E -> ℝ} {gradPhi : E -> E} {p x : ℕ -> E} {y : E}
+    {L alphaPhi h : ℝ} (hh : 0 < h) {T : ℕ}
+    (hD_T_nonneg : 0 ≤ bregmanDivergence phi gradPhi y (x T))
+    (hone_step : ∀ n, n < T ->
+      inner ℝ (p n) (x n - y) ≤
+        (1 / h) *
+          (bregmanDivergence phi gradPhi y (x n) -
+            bregmanDivergence phi gradPhi y (x (n + 1))) +
+          L ^ (2 : ℕ) * h / (2 * alphaPhi)) :
+    (∑ n ∈ Finset.range T, inner ℝ (p n) (x n)) ≤
+      (∑ n ∈ Finset.range T, inner ℝ (p n) y) +
+        bregmanDivergence phi gradPhi y (x 0) / h +
+          (T : ℝ) * (L ^ (2 : ℕ) * h / (2 * alphaPhi)) := by
+  have hgap :=
+    onlineMirrorDescent_regret_gap_sum_le_of_oneStep
+      (phi := phi) (gradPhi := gradPhi) (p := p) (x := x)
+      (y := y) (h := h)
+      (err := L ^ (2 : ℕ) * h / (2 * alphaPhi))
+      hh hD_T_nonneg hone_step
+  have hsum_sub :
+      (∑ n ∈ Finset.range T, inner ℝ (p n) (x n - y)) =
+        (∑ n ∈ Finset.range T, inner ℝ (p n) (x n)) -
+          ∑ n ∈ Finset.range T, inner ℝ (p n) y := by
+    simp [inner_sub_right, Finset.sum_sub_distrib]
+  nlinarith
+
+/--
+Chewi Theorem 10.13 comparator-regret bound for a source-shaped OMD
+trajectory, with the local model lower bound supplied at each step.
+-/
+theorem chewi1013_regret_bound_of_trajectory
+    {C : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {p x : ℕ -> E} {y : E} {L alphaPhi h : ℝ} {T : ℕ}
+    (htraj : IsOnlineMirrorDescentTrajectory C phi gradPhi h p x)
+    (hy : y ∈ C) (hh : 0 < h)
+    (hmodel_lower : ∀ n, n < T ->
+      -(L ^ (2 : ℕ) * h / (2 * alphaPhi)) ≤
+        onlineMirrorDescentModel (p n) phi gradPhi h (x n) (x (n + 1)))
+    (hD_T_nonneg : 0 ≤ bregmanDivergence phi gradPhi y (x T)) :
+    (∑ n ∈ Finset.range T, inner ℝ (p n) (x n)) ≤
+      (∑ n ∈ Finset.range T, inner ℝ (p n) y) +
+        bregmanDivergence phi gradPhi y (x 0) / h +
+          (T : ℝ) * (L ^ (2 : ℕ) * h / (2 * alphaPhi)) := by
+  refine
+    chewi1013_regret_bound_of_oneStep
+      (phi := phi) (gradPhi := gradPhi) (p := p) (x := x)
+      (y := y) (L := L) (alphaPhi := alphaPhi) (h := h)
+      hh hD_T_nonneg ?_
+  intro n hn
+  exact
+    onlineMirrorDescent_oneStep_regret
+      (C := C) (phi := phi) (gradPhi := gradPhi)
+      (p := p n) (x := x n) (xPlus := x (n + 1))
+      (y := y) (L := L) (alphaPhi := alphaPhi) (h := h)
+      (htraj.step n) hy (hmodel_lower n hn)
+
+/--
+Chewi Theorem 10.13 comparator-regret bound for OMD in the ordinary Hilbert
+norm.  The local model lower bound and terminal Bregman nonnegativity are
+derived from `||p_n|| <= L` and first-order strong convexity of `phi`.
+-/
+theorem chewi1013_regret_bound_of_trajectory_norm_bound
+    {C : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {p x : ℕ -> E} {y : E} {L alphaPhi h : ℝ} {T : ℕ}
+    (htraj : IsOnlineMirrorDescentTrajectory C phi gradPhi h p x)
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hpnorm : ∀ n, n < T -> ‖p n‖ ≤ L)
+    (hy : y ∈ C) (hh : 0 < h) (halphaPhi : 0 < alphaPhi) :
+    (∑ n ∈ Finset.range T, inner ℝ (p n) (x n)) ≤
+      (∑ n ∈ Finset.range T, inner ℝ (p n) y) +
+        bregmanDivergence phi gradPhi y (x 0) / h +
+          (T : ℝ) * (L ^ (2 : ℕ) * h / (2 * alphaPhi)) := by
+  refine
+    chewi1013_regret_bound_of_trajectory
+      (C := C) (phi := phi) (gradPhi := gradPhi)
+      (p := p) (x := x) (y := y)
+      (L := L) (alphaPhi := alphaPhi) (h := h) (T := T)
+      htraj hy hh ?_ ?_
+  · intro n hn
+    exact
+      onlineMirrorDescentModel_lower_of_norm_bound
+        (C := C) (phi := phi) (gradPhi := gradPhi)
+        (p := p n) (x := x n) (xPlus := x (n + 1))
+        (L := L) (alphaPhi := alphaPhi) (h := h)
+        hphi (hpnorm n hn) hh halphaPhi
+        (htraj.mem n) (htraj.mem (n + 1))
+  · exact
+      bregmanDivergence_nonneg_of_firstOrderStrongConvexOn
+        (C := C) (phi := phi) (gradPhi := gradPhi)
+        (alphaPhi := alphaPhi) (x := x T) (y := y)
+        hphi halphaPhi.le (htraj.mem T) hy
+
+/--
+Scalar closing step for Chewi Theorem 10.13.  With the displayed positive
+step-size choice, recorded as
+`h^2 = 2 * alphaPhi * Rphi^2 / (L^2 * T)`, the comparator-regret right-hand
+side is at most `L Rphi sqrt(2T/alphaPhi)`.
+-/
+theorem chewi1013_stepsize_rhs_bound
+    {D0 L Rphi alphaPhi h : ℝ} {T : ℕ}
+    (hL : 0 < L) (hRphi : 0 < Rphi)
+    (halphaPhi : 0 < alphaPhi) (hh : 0 < h)
+    (hT : T ≠ 0)
+    (hD0_le : D0 ≤ Rphi ^ (2 : ℕ))
+    (hh_sq :
+      h ^ (2 : ℕ) =
+        2 * alphaPhi * Rphi ^ (2 : ℕ) /
+          (L ^ (2 : ℕ) * (T : ℝ))) :
+    D0 / h + (T : ℝ) * (L ^ (2 : ℕ) * h / (2 * alphaPhi)) ≤
+      L * Rphi * Real.sqrt (2 * (T : ℝ) / alphaPhi) := by
+  have hT_pos_nat : 0 < T := Nat.pos_of_ne_zero hT
+  have hT_pos : 0 < (T : ℝ) := by
+    exact_mod_cast hT_pos_nat
+  have hD_scaled :
+      D0 / h ≤ Rphi ^ (2 : ℕ) / h :=
+    div_le_div_of_nonneg_right hD0_le hh.le
+  have hterm :
+      Rphi ^ (2 : ℕ) / h =
+        (T : ℝ) * (L ^ (2 : ℕ) * h / (2 * alphaPhi)) := by
+    field_simp [hT_pos.ne', hh.ne', hL.ne', halphaPhi.ne'] at hh_sq ⊢
+    nlinarith
+  have hclosed_core :
+      Rphi ^ (2 : ℕ) / h +
+          (T : ℝ) * (L ^ (2 : ℕ) * h / (2 * alphaPhi)) =
+        (T : ℝ) * L ^ (2 : ℕ) * h / alphaPhi := by
+    rw [hterm]
+    ring
+  have hsqrt_arg_nonneg :
+      0 ≤ 2 * (T : ℝ) / alphaPhi := by positivity
+  have hleft_nonneg :
+      0 ≤ (T : ℝ) * L ^ (2 : ℕ) * h / alphaPhi := by positivity
+  have hright_nonneg :
+      0 ≤ L * Rphi * Real.sqrt (2 * (T : ℝ) / alphaPhi) := by
+    positivity
+  have hclosed_squares :
+      ((T : ℝ) * L ^ (2 : ℕ) * h / alphaPhi) ^ (2 : ℕ) =
+        (L * Rphi * Real.sqrt (2 * (T : ℝ) / alphaPhi)) ^ (2 : ℕ) := by
+    rw [mul_pow, mul_pow, Real.sq_sqrt hsqrt_arg_nonneg]
+    have hh_sq' := hh_sq
+    field_simp [hT_pos.ne', hL.ne', halphaPhi.ne'] at hh_sq' ⊢
+    nlinarith
+  have hclosed :
+      (T : ℝ) * L ^ (2 : ℕ) * h / alphaPhi =
+        L * Rphi * Real.sqrt (2 * (T : ℝ) / alphaPhi) :=
+    (sq_eq_sq₀ hleft_nonneg hright_nonneg).mp hclosed_squares
+  nlinarith
+
+/--
+Chewi Theorem 10.13 ordinary Hilbert-norm comparator-regret bound with the
+displayed positive step-size choice.
+-/
+theorem chewi1013_regret_bound_of_trajectory_norm_bound_stepsize
+    {C : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {p x : ℕ -> E} {y : E} {L Rphi alphaPhi h : ℝ} {T : ℕ}
+    (htraj : IsOnlineMirrorDescentTrajectory C phi gradPhi h p x)
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hpnorm : ∀ n, n < T -> ‖p n‖ ≤ L)
+    (hy : y ∈ C)
+    (hL : 0 < L) (hRphi : 0 < Rphi)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hT : T ≠ 0)
+    (hD0_le :
+      bregmanDivergence phi gradPhi y (x 0) ≤ Rphi ^ (2 : ℕ))
+    (hh_sq :
+      h ^ (2 : ℕ) =
+        2 * alphaPhi * Rphi ^ (2 : ℕ) /
+          (L ^ (2 : ℕ) * (T : ℝ))) :
+    (∑ n ∈ Finset.range T, inner ℝ (p n) (x n)) ≤
+      (∑ n ∈ Finset.range T, inner ℝ (p n) y) +
+        L * Rphi * Real.sqrt (2 * (T : ℝ) / alphaPhi) := by
+  have hbase :=
+    chewi1013_regret_bound_of_trajectory_norm_bound
+      (C := C) (phi := phi) (gradPhi := gradPhi)
+      (p := p) (x := x) (y := y)
+      (L := L) (alphaPhi := alphaPhi) (h := h) (T := T)
+      htraj hphi hpnorm hy hh halphaPhi
+  have hclosed :=
+    chewi1013_stepsize_rhs_bound
+      (D0 := bregmanDivergence phi gradPhi y (x 0))
+      (L := L) (Rphi := Rphi) (alphaPhi := alphaPhi)
+      (h := h) (T := T)
+      hL hRphi halphaPhi hh hT hD0_le hh_sq
+  nlinarith
+
 end Optimization
 end StatInference
