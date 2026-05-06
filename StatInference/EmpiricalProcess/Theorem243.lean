@@ -26999,6 +26999,182 @@ theorem
       (hconstant_ge_one M hM_pos) hM_pos (hpoly_bound M hM_pos)
 
 /--
+Scalar-quantizer selected fixed-radius package from a natural-polynomial
+cardinality bound.
+
+This is the polynomial-growth version of
+`...of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_logCardinality_div_tendsto_bound`:
+finite coordinate scalar code sets provide the empirical covers, while the
+selected cardinality has a deterministic natural-polynomial bound.  The
+coordinate-cardinality and decoder-error hypotheses are structural inputs for
+grid/compression routes toward Theorem 2.4.3.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly
+    {Observation : Type v} {Index : Type w} {CoordCode : Type*}
+    [DecidableEq CoordCode] [MeasurableSpace Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {constant : ℝ -> ℝ} {degree : ℝ -> ℕ}
+    {coordinateCard : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (quantizer :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> ℝ -> CoordCode)
+    (decode :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> CoordCode -> ℝ)
+    (codeSets :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> Finset CoordCode)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hquantizer_mem :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ sampleIndex : Fin m,
+            quantizer eta n sample m sampleIndex
+                (vdVWTruncatedClassFun classFun envelope M index
+                  ((samplePath (X n) sample m) sampleIndex)) ∈
+              codeSets eta n sample m sampleIndex)
+    (hdecode_close :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        ∀ index, index ∈ indexClass ->
+          ∀ sampleIndex : Fin m,
+            |vdVWTruncatedClassFun classFun envelope M index
+                ((samplePath (X n) sample m) sampleIndex) -
+              decode eta n sample m sampleIndex
+                (quantizer eta n sample m sampleIndex
+                  (vdVWTruncatedClassFun classFun envelope M index
+                    ((samplePath (X n) sample m) sampleIndex)))| ≤
+                eta / 2)
+    (hcode_card_le :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m sampleIndex,
+        (codeSets eta n sample m sampleIndex).card ≤
+          coordinateCard eta n sample m)
+    (hcardinality_dom :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n) m,
+        (coordinateCard eta n sample m) ^ m ≤ cardinality eta n sample m)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hconstant_ge_one : ∀ eta, 0 < eta -> 1 ≤ constant eta)
+    (hM_pos : 0 < M)
+    (hpoly_bound :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        ((cardinality eta n sample n : ℝ) + 1) ≤
+          constant eta * (((n + 1 : ℕ) : ℝ) ^ degree eta)) :
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions P X indexClass
+      classFun envelope M cardinality := by
+  have hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n) :=
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (coordinateCard := coordinateCard) (cardinality := cardinality) X
+      quantizer decode codeSets hquantizer_mem hdecode_close
+      hcode_card_le hcardinality_dom
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_logCardinality_nat_poly_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (constant := constant) (degree := degree)
+      (cardinality := cardinality)
+      hX_samplePath hcovering_all hclass henvelope_meas
+      hconstant_ge_one hM_pos hpoly_bound
+
+/--
+All-positive-`M` scalar-quantizer selected fixed-radius packages from
+natural-polynomial coordinate-cardinality bounds.
+-/
+theorem
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly
+    {Observation : Type v} {Index : Type w} {CoordCode : Type*}
+    [DecidableEq CoordCode] [MeasurableSpace Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {constant : ℝ -> ℝ -> ℝ} {degree : ℝ -> ℝ -> ℕ}
+    {coordinateCard :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (quantizer :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> ℝ -> CoordCode)
+    (decode :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> CoordCode -> ℝ)
+    (codeSets :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> Finset CoordCode)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hquantizer_mem :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ∀ index, index ∈ indexClass ->
+            ∀ sampleIndex : Fin m,
+              quantizer M eta n sample m sampleIndex
+                  (vdVWTruncatedClassFun classFun envelope M index
+                    ((samplePath (X M n) sample m) sampleIndex)) ∈
+                codeSets M eta n sample m sampleIndex)
+    (hdecode_close :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ∀ index, index ∈ indexClass ->
+            ∀ sampleIndex : Fin m,
+              |vdVWTruncatedClassFun classFun envelope M index
+                  ((samplePath (X M n) sample m) sampleIndex) -
+                decode M eta n sample m sampleIndex
+                  (quantizer M eta n sample m sampleIndex
+                    (vdVWTruncatedClassFun classFun envelope M index
+                      ((samplePath (X M n) sample m) sampleIndex)))| ≤
+                  eta / 2)
+    (hcode_card_le :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m sampleIndex,
+          (codeSets M eta n sample m sampleIndex).card ≤
+            coordinateCard M eta n sample m)
+    (hcardinality_dom :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          (coordinateCard M eta n sample m) ^ m ≤
+            cardinality M eta n sample m)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 1 ≤ constant M eta)
+    (hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((cardinality M eta n sample n : ℝ) + 1) ≤
+            constant M eta *
+              (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M (cardinality M) := by
+  intro M hM_pos
+  exact
+    VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly
+      (P := P) (X := X M) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (constant := constant M) (degree := degree M)
+      (coordinateCard := coordinateCard M) (cardinality := cardinality M)
+      (quantizer M) (decode M) (codeSets M) (hX_samplePath M)
+      (hquantizer_mem M hM_pos) (hdecode_close M hM_pos)
+      (hcode_card_le M hM_pos) (hcardinality_dom M hM_pos)
+      hclass henvelope_meas (hconstant_ge_one M hM_pos) hM_pos
+      (hpoly_bound M hM_pos)
+
+/--
 All-positive-`M` finite-trace-image selected fixed-radius packages from natural
 polynomial trace-count estimates.
 -/
@@ -32845,6 +33021,227 @@ theorem
           (cardinality := cardinality)
           code codeSets hX_samplePath hcode_mem hpoint hcardinality_dom
           hclass henv hconstant_ge_one hpoly_bound)
+      hindexClass henvelope hclass henv henv_integrable sign hsign hindep
+      hsubG htruncIntegrable hbdd_truncated hpairSupIntegrable
+      hcenteredSupIntegrable hghostExpectationIntegrable
+      hsplitSupIntegrable hsampleSupIntegrable hrandomIntegralIntegrable
+      Urandom hproductSupIntegrable hsignSupIntegrable Ucentered
+
+/--
+Untruncated centered convergence from coordinate scalar quantizers and
+natural-polynomial coordinate-cardinality bounds.
+
+This is the scalar-quantizer structural-cardinality endpoint between the
+generic coordinate-code route and the nearest-integer rounding route.  The
+caller supplies finite coordinate scalar code sets, decoder error at radius
+`eta / 2`, per-coordinate cardinality bounds, domination by the selected
+cardinality, and a natural-polynomial bound on that selected cardinality.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} {CoordCode : Type*}
+    [DecidableEq CoordCode] [MeasurableSpace Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    {constant : ℝ -> ℝ -> ℝ} {degree : ℝ -> ℝ -> ℕ}
+    {coordinateCard :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (quantizer :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> ℝ -> CoordCode)
+    (decode :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> CoordCode -> ℝ)
+    (codeSets :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> (m : ℕ) ->
+        Fin m -> Finset CoordCode)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hquantizer_mem :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ∀ index, index ∈ indexClass ->
+            ∀ sampleIndex : Fin m,
+              quantizer M eta n sample m sampleIndex
+                  (vdVWTruncatedClassFun classFun envelope M index
+                    ((samplePath (X M n) sample m) sampleIndex)) ∈
+                codeSets M eta n sample m sampleIndex)
+    (hdecode_close :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          ∀ index, index ∈ indexClass ->
+            ∀ sampleIndex : Fin m,
+              |vdVWTruncatedClassFun classFun envelope M index
+                  ((samplePath (X M n) sample m) sampleIndex) -
+                decode M eta n sample m sampleIndex
+                  (quantizer M eta n sample m sampleIndex
+                    (vdVWTruncatedClassFun classFun envelope M index
+                      ((samplePath (X M n) sample m) sampleIndex)))| ≤
+                  eta / 2)
+    (hcode_card_le :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m sampleIndex,
+          (codeSets M eta n sample m sampleIndex).card ≤
+            coordinateCard M eta n sample m)
+    (hcardinality_dom :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          (coordinateCard M eta n sample m) ^ m ≤
+            cardinality M eta n sample m)
+    (hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 1 ≤ constant M eta)
+    (hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((cardinality M eta n sample n : ℝ) + 1) ≤
+            constant M eta *
+              (((n + 1 : ℕ) : ℝ) ^ degree M eta))
+    (hindexClass : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
+    (hsign :
+      ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
+        (fun i : Fin n => sign n i ω))
+    (hindep : ∀ n, iIndepFun (sign n) μsign)
+    (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign)
+    (htruncIntegrable :
+      ∀ M index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hbdd_truncated :
+      ∀ M n (sample : SampleAt Observation n),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hpairSupIntegrable :
+      ∀ M n (sample : SampleAt Observation n),
+        Integrable
+          (fun ghostSample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (sample i, ghostSample i)))
+          (vdVWProductMeasure P n))
+    (hcenteredSupIntegrable :
+      ∀ M n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+          (vdVWProductMeasure P n))
+    (hghostExpectationIntegrable :
+      ∀ M n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            ∫ ghostSample : SampleAt Observation n,
+              vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index z.1 -
+                    vdVWTruncatedClassFun classFun envelope M index z.2)
+                (fun _ : Fin n => (n : ℝ)⁻¹)
+                (fun i : Fin n => (sample i, ghostSample i))
+                ∂(vdVWProductMeasure P n))
+          (vdVWProductMeasure P n))
+    (hsplitSupIntegrable :
+      ∀ M n,
+        Integrable
+          (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+          ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)))
+    (hsampleSupIntegrable :
+      ∀ M n (ω : Ωsign),
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i ω)) sample)
+          (vdVWProductMeasure P n))
+    (hrandomIntegralIntegrable :
+      ∀ M n,
+        Integrable
+          (fun ω : Ωsign =>
+            ∫ sample : SampleAt Observation n,
+              vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (fun i : Fin n => sign n i ω)) sample
+              ∂(vdVWProductMeasure P n))
+          μsign)
+    (Urandom :
+      ∀ M n, VdVWMeasurableCover (μsign.prod (vdVWProductMeasure P n))
+        (fun z : Ωsign × SampleAt Observation n => ENNReal.ofReal
+          (vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights (fun i : Fin n => sign n i z.1)) z.2)))
+    (hproductSupIntegrable :
+      ∀ M n,
+        Integrable
+          (fun z : Ωsign × SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i z.1)) z.2)
+          (μsign.prod (vdVWProductMeasure P n)))
+    (hsignSupIntegrable :
+      ∀ M n (sample : SampleAt Observation n),
+        Integrable
+          (fun ωsign =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i ωsign)) sample)
+          μsign)
+    (Ucentered :
+      ∀ M n, VdVWMeasurableCover (vdVWProductMeasure P n)
+        (fun sample : SampleAt Observation n => ENNReal.ofReal
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedFixedRadiusTailSideConditions
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (cardinality := cardinality) X hX_samplePath
+      (hselected :=
+        VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly
+          (P := P) (X := X) (indexClass := indexClass)
+          (classFun := classFun) (envelope := envelope)
+          (constant := constant) (degree := degree)
+          (coordinateCard := coordinateCard) (cardinality := cardinality)
+          quantizer decode codeSets hX_samplePath hquantizer_mem
+          hdecode_close hcode_card_le hcardinality_dom hclass henv
+          hconstant_ge_one hpoly_bound)
       hindexClass henvelope hclass henv henv_integrable sign hsign hindep
       hsubG htruncIntegrable hbdd_truncated hpairSupIntegrable
       hcenteredSupIntegrable hghostExpectationIntegrable

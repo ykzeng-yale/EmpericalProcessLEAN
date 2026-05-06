@@ -197,10 +197,16 @@ tail/UI side-condition package through
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_logCardinality_div_tendsto_bound`
 and
 `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_logCardinality_div_tendsto_bound`.
+The scalar-quantizer coordinate-cardinality route now also has the
+natural-polynomial closure
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`,
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`.
 This is still an upstream structural route, not a final textbook entropy
-closure: the next proof target is the actual finite-code/compression or
-VC/Sauer cardinality estimate that supplies the coordinate-cardinality and
-normalized-log hypotheses.
+closure: the next proof target is the actual finite-code/compression,
+grid/quantizer, or VC/Sauer cardinality estimate that supplies the
+coordinate-cardinality and polynomial-growth hypotheses.
 
 The measure-level Portmanteau continuity-set
 implication and closed/open converse wrappers are now compiled as well.  The

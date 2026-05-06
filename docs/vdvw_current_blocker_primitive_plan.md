@@ -297,6 +297,20 @@ compression, VC/Sauer, or other structural estimate supplying the
 per-coordinate/product cardinality hypotheses with sublinear normalized log
 growth.
 
+2026-05-06 scalar-quantizer natural-polynomial closure: local search found no
+existing nat-polynomial selected fixed-radius package for the coordinate
+scalar-quantizer coordinate-cardinality route.  `Theorem243.lean` now adds
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`,
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`,
+and the centered untruncated convergence consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_coordinate_scalarQuantizer_decode_error_coordinateCard_bound_nat_poly`.
+This is a structural bridge that consumes a genuine polynomial cardinality
+input; it should not be followed by another scalar-quantizer endpoint alias.
+The next useful theorem should prove the actual VC/Sauer, grid, finite-code, or
+compression estimate supplying the coordinate-cardinality and polynomial
+growth hypotheses, or switch to the selected tail/UI or Chapter 1 process
+blocker lanes.
+
 Rebased next-target rule: do not add another alias or endpoint wrapper for a
 route already listed below unless it consumes a genuinely new theorem
 hypothesis.  The highest-value Theorem 2.4.3 work is now upstream: prove the
