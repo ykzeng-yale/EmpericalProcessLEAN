@@ -2475,6 +2475,67 @@ theorem
       VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_measurable hX }
 
 /--
+A.e.-measurable map-law form of the signed-outer bounded-continuous
+weak-convergence bridge.
+
+This is the direct a.e.-measurable analogue of
+`to_signedOuterBoundedContinuous_of_map_eq`; it avoids strengthening the target
+space to a countably generated space merely to pass through
+`NullMeasurable`.
+-/
+theorem
+    VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq_aemeasurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} [∀ i, IsFiniteMeasure (μs i)]
+    {X : ι -> Ω -> S} (hX : ∀ i, AEMeasurable (X i) (μs i))
+    {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (hν : VdVWWeakConvergenceProbabilityMeasures νs l μ)
+    (hmap : ∀ i, (νs i : Measure S) = Measure.map (X i) (μs i)) :
+    VdVWWeakConvergenceSignedOuterBoundedContinuous μs X l μ := by
+  intro f
+  have houter :
+      (fun i =>
+        VdVWSignedOuterExpectationPosNeg (μs i) (fun ω => f (X i ω))) =
+        fun i => ∫ s, f s ∂(νs i : Measure S) := by
+    funext i
+    calc
+      VdVWSignedOuterExpectationPosNeg (μs i) (fun ω => f (X i ω))
+          = ∫ ω, f (X i ω) ∂μs i := by
+            exact VdVWSignedOuterExpectationPosNeg_eq_integral_of_boundedContinuous_comp_aemeasurable
+              (μ := μs i) (X := X i) (hX i) f
+      _ = ∫ s, f s ∂Measure.map (X i) (μs i) := by
+            exact (integral_map (hX i)
+              f.continuous.measurable.aestronglyMeasurable).symm
+      _ = ∫ s, f s ∂(νs i : Measure S) := by
+            rw [← hmap i]
+  simpa [VdVWWeakConvergenceSignedOuterBoundedContinuous, houter] using
+    (vdVWWeakConvergenceProbabilityMeasures_iff_forall_integral_tendsto.mp hν f)
+
+/--
+A.e.-measurable law-level weak convergence gives the proof-carrying signed
+bounded-continuous arbitrary-map layer.
+-/
+theorem
+    VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_map_eq_aemeasurable
+    {Ω : Type u} {S : Type v} {ι : Type w}
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> Measure Ω} [∀ i, IsFiniteMeasure (μs i)]
+    {X : ι -> Ω -> S} (hX : ∀ i, AEMeasurable (X i) (μs i))
+    {νs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (hweak : VdVWWeakConvergenceProbabilityMeasures νs l μ)
+    (hmap : ∀ i, (νs i : Measure S) = Measure.map (X i) (μs i)) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ :=
+  { weakConvergence :=
+      hweak.to_signedOuterBoundedContinuous_of_map_eq_aemeasurable hX hmap
+    asymptoticMeasurability :=
+      VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable hX }
+
+/--
 Common-domain null-measurable map-law form of the signed-outer
 bounded-continuous weak-convergence bridge.
 
@@ -2563,8 +2624,8 @@ bridge for a.e.-measurable maps.
 theorem
     VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_maps_aemeasurable
     {Ω : Type u} {S : Type v} {ι : Type w}
-    [MeasurableSpace Ω] [MeasurableSpace S] [MeasurableSpace.CountablyGenerated S]
-    [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace Ω] [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S]
     {μs : ι -> Measure Ω} [∀ i, IsProbabilityMeasure (μs i)]
     {X : ι -> Ω -> S} (hX : ∀ i, AEMeasurable (X i) (μs i))
     {l : Filter ι} {μ : ProbabilityMeasure S}
@@ -2575,10 +2636,10 @@ theorem
             Measure.isProbabilityMeasure_map (hX i)⟩)
         l μ) :
     VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ :=
-  VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_map_eq_nullMeasurable
+  VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_map_eq_aemeasurable
     (μs := μs) (X := X) (νs := fun i =>
       ⟨Measure.map (X i) (μs i), Measure.isProbabilityMeasure_map (hX i)⟩)
-    (fun i => (hX i).nullMeasurable) hweak (fun _ => rfl)
+    hX hweak (fun _ => rfl)
 
 /--
 Varying-domain map-law form of the signed bounded-continuous
@@ -4677,6 +4738,29 @@ theorem VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict
   exact hμ.map_continuous (Finset.continuous_restrict s)
 
 /--
+Reindexed finite-dimensional restriction of a weakly convergent process law.
+
+This packages the forward FDD direction with the standard subsequence/filter
+reindexing step.  It remains a measure-level statement and does not assert the
+full VdV&W arbitrary-index FDD converse.
+-/
+theorem VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict_comp_tendsto
+    {I : Type u} {S : I -> Type v} {ι : Type w} {κ : Type x}
+    [∀ i, MeasurableSpace (S i)] [∀ i, TopologicalSpace (S i)]
+    [∀ i, OpensMeasurableSpace (S i)]
+    [MeasurableSpace ((i : I) -> S i)] [OpensMeasurableSpace ((i : I) -> S i)]
+    {μs : ι -> ProbabilityMeasure ((i : I) -> S i)}
+    {l : Filter ι} {l' : Filter κ} {μ : ProbabilityMeasure ((i : I) -> S i)}
+    (hμ : VdVWWeakConvergenceProbabilityMeasures μs l μ)
+    {φ : κ -> ι} (hφ : Tendsto φ l' l)
+    (s : Finset I)
+    [MeasurableSpace ((i : s) -> S i)] [BorelSpace ((i : s) -> S i)] :
+    VdVWWeakConvergenceProbabilityMeasures
+      (fun k => (μs (φ k)).map ((Finset.continuous_restrict s).measurable.aemeasurable)) l'
+      (μ.map ((Finset.continuous_restrict s).measurable.aemeasurable)) := by
+  exact (hμ.finiteDimensionalRestrict s).comp_tendsto hφ
+
+/--
 Finite-dimensional restriction of an asymptotically tight process-law family.
 
 This is the measure-level tightness analogue of the forward FDD direction:
@@ -4698,6 +4782,31 @@ theorem VdVWProbabilityMeasuresAsymptoticallyTight.finiteDimensionalRestrict
     VdVWProbabilityMeasuresAsymptoticallyTight
       (fun n => (μs n).map ((Finset.continuous_restrict s).measurable.aemeasurable)) l := by
   exact hμ.map_continuous (Finset.continuous_restrict s)
+
+/--
+Reindexed finite-dimensional restriction of an asymptotically tight
+process-law family.
+
+This is the tightness analogue of
+`VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict_comp_tendsto`.
+It supplies a reusable subsequence/filter handoff for finite FDD tightness
+without claiming the full arbitrary-index process tightness theorem.
+-/
+theorem VdVWProbabilityMeasuresAsymptoticallyTight.finiteDimensionalRestrict_comp_tendsto
+    {I : Type u} {S : I -> Type v} {ι : Type w} {κ : Type x}
+    [∀ i, MeasurableSpace (S i)] [∀ i, TopologicalSpace (S i)]
+    [∀ i, OpensMeasurableSpace (S i)]
+    [MeasurableSpace ((i : I) -> S i)] [OpensMeasurableSpace ((i : I) -> S i)]
+    {μs : ι -> ProbabilityMeasure ((i : I) -> S i)}
+    {l : Filter ι} {l' : Filter κ}
+    (hμ : VdVWProbabilityMeasuresAsymptoticallyTight μs l)
+    {φ : κ -> ι} (hφ : Tendsto φ l' l)
+    (s : Finset I)
+    [MeasurableSpace ((i : s) -> S i)] [BorelSpace ((i : s) -> S i)]
+    [T2Space ((i : s) -> S i)] :
+    VdVWProbabilityMeasuresAsymptoticallyTight
+      (fun k => (μs (φ k)).map ((Finset.continuous_restrict s).measurable.aemeasurable)) l' := by
+  exact (hμ.finiteDimensionalRestrict s).comp_tendsto hφ
 
 /--
 Measurable-random-variable continuous mapping theorem for convergence in

@@ -979,6 +979,93 @@ theorem vdVWTruncatedClassFun_eq_zero_of_lt_envelope
   simp [vdVWTruncatedClassFun, not_le.mpr hlt]
 
 /--
+Truncation by a common envelope sublevel set is a contraction for fixed-sample
+empirical `L1(P_n)` distances.
+
+On each sampled observation both class members are either left unchanged or
+both set to zero, so the pointwise absolute difference cannot increase.
+-/
+theorem empiricalL1Distance_vdVWTruncatedClassFun_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) (envelope : Observation -> ℝ)
+    (M : ℝ) (index center : Index) :
+    empiricalL1Distance sample
+        (vdVWTruncatedClassFun classFun envelope M index)
+        (vdVWTruncatedClassFun classFun envelope M center) ≤
+      empiricalL1Distance sample (classFun index) (classFun center) := by
+  unfold empiricalL1Distance empiricalAverage
+  have hsum :
+      (∑ sampleIndex : Fin n,
+          |vdVWTruncatedClassFun classFun envelope M index (sample sampleIndex) -
+            vdVWTruncatedClassFun classFun envelope M center (sample sampleIndex)|) ≤
+        ∑ sampleIndex : Fin n,
+          |classFun index (sample sampleIndex) -
+            classFun center (sample sampleIndex)| := by
+    refine Finset.sum_le_sum fun sampleIndex _hsampleIndex => ?_
+    by_cases hle : envelope (sample sampleIndex) ≤ M
+    · simp [vdVWTruncatedClassFun, hle]
+    · simp [vdVWTruncatedClassFun, hle]
+  exact div_le_div_of_nonneg_right hsum (Nat.cast_nonneg n)
+
+namespace FiniteEmpiricalL1CoverAtCard
+
+/--
+An empirical `L1(P_n)` cover of the original class is also an empirical cover
+of the VdV&W truncated class at the same radius and cardinality.
+-/
+def truncate_vdVWTruncatedClassFun
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M epsilon : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality) :
+    FiniteEmpiricalL1CoverAtCard sample indexClass
+      (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality :=
+  { center := cover.center
+    center_mem := cover.center_mem
+    centerOf := cover.centerOf
+    dist_le := fun index hindex =>
+      (empiricalL1Distance_vdVWTruncatedClassFun_le
+        sample classFun envelope M index
+        (cover.center (cover.centerOf index hindex))).trans
+        (cover.dist_le index hindex) }
+
+end FiniteEmpiricalL1CoverAtCard
+
+/--
+Fixed-sample empirical covering numbers do not increase under the VdV&W
+truncation `f ↦ f 1{F <= M}`.
+-/
+theorem empiricalL1CoveringNumber_vdVWTruncatedClassFun_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ) (M epsilon : ℝ) :
+    empiricalL1CoveringNumber sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon ≤
+      empiricalL1CoveringNumber sample indexClass classFun epsilon := by
+  classical
+  by_cases hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon
+  · rcases empiricalL1CoveringNumber_find_spec hfinite with ⟨cover⟩
+    have hcover_truncated :
+        Nonempty
+          (FiniteEmpiricalL1CoverAtCard sample indexClass
+            (vdVWTruncatedClassFun classFun envelope M) epsilon
+            (finiteEmpiricalL1CoveringNumberCard hfinite)) :=
+      ⟨cover.truncate_vdVWTruncatedClassFun⟩
+    calc
+      empiricalL1CoveringNumber sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) epsilon
+          ≤ (finiteEmpiricalL1CoveringNumberCard hfinite : ℕ∞) :=
+        empiricalL1CoveringNumber_le_of_coverAtCard hcover_truncated
+      _ = empiricalL1CoveringNumber sample indexClass classFun epsilon := by
+        rw [empiricalL1CoveringNumber_eq_find hfinite]
+  · simp [empiricalL1CoveringNumber, hfinite]
+
+/--
 Samplewise threshold trace of the truncated class.  This is the exact
 algebraic bridge needed before transferring VC/Sauer bounds through the
 VdV&W truncation `f 1{F <= M}`: on the envelope sublevel set the trace is the
@@ -15113,6 +15200,30 @@ def VdVWRandomEmpiricalL1CoveringNumberLeCardinality
   ∀ ω n,
     vdVWRandomEmpiricalL1CoveringNumber X indexClass classFun epsilon ω n ≤
       (cardinality ω n : ℕ∞)
+
+/--
+Random empirical covering-number domination is preserved by VdV&W truncation.
+
+This is the stochastic counterpart of
+`empiricalL1CoveringNumber_vdVWTruncatedClassFun_le`: any finite-cardinality
+upper envelope for the original empirical cover also bounds the truncated
+empirical cover at the same radius.
+-/
+theorem VdVWRandomEmpiricalL1CoveringNumberLeCardinality.truncated_of_original
+    {Ω : Type u} {Observation : Type v} {Index : Type w}
+    {X : ℕ -> Ω -> Observation} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M epsilon : ℝ} {cardinality : Ω -> ℕ -> ℕ}
+    (hcovering :
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass
+        classFun epsilon cardinality) :
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality X indexClass
+      (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality := by
+  intro ω n
+  exact
+    (empiricalL1CoveringNumber_vdVWTruncatedClassFun_le
+      (samplePath X ω n) indexClass classFun envelope M epsilon).trans
+      (hcovering ω n)
 
 /--
 Sample-path deterministic empirical-covering-number bounds supply the random

@@ -59,7 +59,31 @@ that bridge is blocked after real Lean/search attempts, move to theorem-
 critical Chapter 1-2 primitives rather than adding more endpoint wrappers:
 arbitrary-map/nonmeasurable outer-cover weak convergence, asymptotic
 tightness/independence, arbitrary-index FDD converse, and separability/
-`P`-measurable class support.  The finite-trace natural-polynomial route now
+`P`-measurable class support.  The truncation/covering route now
+has an additional structural support lemma: truncating by the common envelope
+sublevel set does not increase fixed-sample empirical `L1(P_n)` distances or
+covering numbers, via
+`empiricalL1Distance_vdVWTruncatedClassFun_le`,
+`FiniteEmpiricalL1CoverAtCard.truncate_vdVWTruncatedClassFun`,
+`empiricalL1CoveringNumber_vdVWTruncatedClassFun_le`, and the random
+cardinality adapter
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.truncated_of_original`.
+This is a genuine structural/truncation bridge; it should be consumed by later
+entropy/cover routes rather than followed by another endpoint alias.  The
+Chapter 1 a.e.-measurable map-law layer also now has the direct bridge
+`VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq_aemeasurable`
+and proof-carrying companion
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_map_eq_aemeasurable`,
+so the automatic a.e.-measurable map wrapper no longer needs a countably
+generated target-space detour.  Reindexed finite-dimensional restriction
+wrappers for weak convergence and asymptotic tightness are compiled as
+`VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict_comp_tendsto`
+and
+`VdVWProbabilityMeasuresAsymptoticallyTight.finiteDimensionalRestrict_comp_tendsto`.
+The remaining Chapter 1 process blockers are still the arbitrary-index FDD
+converse, separability/tightness/asymptotic measurability, and full
+nonmeasurable outer-cover signed weak convergence.  The finite-trace
+natural-polynomial route now
 has a direct centered untruncated convergence consumer,
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_finite_trace_image_cardinality_bound_nat_poly`.
 The corresponding structural endpoint

@@ -6520,3 +6520,34 @@ an all-index lower-bound side condition, and a lower bound on the reindexed
 subfamily alone does not imply the original all-index lower bound.  Such a
 lemma should only be introduced later with an explicit lifted lower-bound
 hypothesis if a theorem needs it.
+
+2026-05-06 structural truncation-cover and Chapter 1 FDD/map-law follow-up:
+local search found no existing theorem stating that the VdV&W truncation
+`f ↦ f 1{F <= M}` preserves empirical `L1(P_n)` covering numbers.  The proof is
+samplewise: at each observed point both indexed functions are either left
+unchanged or both zeroed, so the absolute difference cannot increase.
+`Theorem243.lean` now proves
+`empiricalL1Distance_vdVWTruncatedClassFun_le`,
+`FiniteEmpiricalL1CoverAtCard.truncate_vdVWTruncatedClassFun`,
+`empiricalL1CoveringNumber_vdVWTruncatedClassFun_le`, and
+`VdVWRandomEmpiricalL1CoveringNumberLeCardinality.truncated_of_original`.
+This is a theorem-facing structural input for entropy/cover routes; next work
+should consume it in a genuine random-entropy, selected-cover, or concrete
+class-geometry argument rather than adding another already-closed endpoint
+alias.
+
+The same run closes two Chapter 1 support gaps after search.  First,
+`WeakConvergence.lean` now has the direct a.e.-measurable map-law bridge
+`VdVWWeakConvergenceProbabilityMeasures.to_signedOuterBoundedContinuous_of_map_eq_aemeasurable`
+and proof-carrying companion
+`VdVWWeakConvergenceProbabilityMeasures.to_signedBoundedContinuousArbitraryMap_of_map_eq_aemeasurable`;
+the automatic a.e.-measurable map wrapper now uses this direct bridge and no
+longer requires `MeasurableSpace.CountablyGenerated S`.  Second, finite-
+dimensional restrictions can now be combined directly with subsequence/filter
+reindexing through
+`VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict_comp_tendsto`
+and
+`VdVWProbabilityMeasuresAsymptoticallyTight.finiteDimensionalRestrict_comp_tendsto`.
+These are measure-level FDD support wrappers only; the exact arbitrary-index
+FDD converse, process asymptotic-tightness/asymptotic-independence, and full
+nonmeasurable signed extended-real cover primitives remain open.
