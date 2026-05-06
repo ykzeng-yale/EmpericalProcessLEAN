@@ -1133,6 +1133,143 @@ theorem chewi121_finite_sampled_star_upper_of_unbiased
   simpa [one_div] using hdet
 
 /--
+Bochner-integral sampled growth inequality obtained by integrating the growth
+field of an a.e. sampled mirror-proximal step.
+-/
+theorem chewi121_integral_sampled_growth_of_steps
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {C : Set E} {f g : E -> ℝ} {phi : E -> ℝ} {gradPhi : E -> E}
+    {alphaG h psiNext psiStar Dnext : ℝ}
+    {x y : E} {p xPlus : Ω -> E}
+    (hpsiNext_int :
+      Integrable (fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p ω)
+          phi gradPhi h x (xPlus ω)) μ)
+    (hDnext_int :
+      Integrable (fun ω => bregmanDivergence phi gradPhi y (xPlus ω)) μ)
+    (hpsiStar_int :
+      Integrable (fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p ω)
+          phi gradPhi h x y) μ)
+    (hstep : ∀ᵐ ω ∂μ,
+      IsMirrorProximalGradientStep C f g (fun _ : E => p ω)
+        phi gradPhi alphaG h x (xPlus ω))
+    (hy : y ∈ C)
+    (hDnext :
+      Dnext = ∫ ω, bregmanDivergence phi gradPhi y (xPlus ω) ∂μ)
+    (hpsiNext :
+      psiNext =
+        ∫ ω,
+          mirrorProximalGradientModel f g (fun _ : E => p ω)
+            phi gradPhi h x (xPlus ω) ∂μ)
+    (hpsiStar :
+      psiStar =
+        ∫ ω,
+          mirrorProximalGradientModel f g (fun _ : E => p ω)
+            phi gradPhi h x y ∂μ) :
+    (alphaG + 1 / h) * Dnext + psiNext ≤ psiStar := by
+  let A : ℝ := alphaG + 1 / h
+  let psiPlus : Ω -> ℝ := fun ω =>
+    mirrorProximalGradientModel f g (fun _ : E => p ω)
+      phi gradPhi h x (xPlus ω)
+  let Dfun : Ω -> ℝ := fun ω =>
+    bregmanDivergence phi gradPhi y (xPlus ω)
+  let psiY : Ω -> ℝ := fun ω =>
+    mirrorProximalGradientModel f g (fun _ : E => p ω)
+      phi gradPhi h x y
+  have hpoint : (fun ω => psiPlus ω + A * Dfun ω) ≤ᵐ[μ] psiY := by
+    filter_upwards [hstep] with ω hω
+    simpa [psiPlus, Dfun, psiY, A] using hω.growth hy
+  have hmono :
+      (∫ ω, psiPlus ω + A * Dfun ω ∂μ) ≤ ∫ ω, psiY ω ∂μ :=
+    integral_mono_ae (hpsiNext_int.add (hDnext_int.const_mul A))
+      hpsiStar_int hpoint
+  have hsplit :
+      (∫ ω, psiPlus ω + A * Dfun ω ∂μ) =
+        (∫ ω, psiPlus ω ∂μ) + A * (∫ ω, Dfun ω ∂μ) := by
+    rw [integral_add hpsiNext_int (hDnext_int.const_mul A),
+      integral_const_mul]
+  have hmain :
+      (∫ ω, psiPlus ω ∂μ) + A * (∫ ω, Dfun ω ∂μ) ≤
+        ∫ ω, psiY ω ∂μ := by
+    simpa [hsplit] using hmono
+  rw [hDnext, hpsiNext, hpsiStar]
+  simpa [psiPlus, Dfun, psiY, A, add_comm, add_left_comm, add_assoc] using hmain
+
+/--
+Bochner-integral sampled star-model upper bound for Chewi Theorem 12.1.
+Unbiasedness of the sampled oracle recovers the deterministic mirror model
+inside the integral, then relative strong convexity gives the usual star upper
+bound.
+-/
+theorem chewi121_integral_sampled_star_upper_of_unbiased
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E} {alphaF h : ℝ}
+    {x y : E} {p : Ω -> E}
+    (hh : 0 < h)
+    (hp_int : Integrable p μ)
+    (hunbiased : (∫ ω, p ω ∂μ) = gradF x)
+    (hconvF : RelativelyStrongConvexOn C f gradF phi gradPhi alphaF)
+    (hx : x ∈ C) (hy : y ∈ C) :
+    (∫ ω,
+      mirrorProximalGradientModel f g (fun _ : E => p ω) phi gradPhi h x y ∂μ) ≤
+      compositeObjective f g y +
+        ((1 - alphaF * h) / h) * bregmanDivergence phi gradPhi y x := by
+  have hinner :
+      (∫ ω, inner ℝ (p ω) (y - x) ∂μ) =
+        inner ℝ (gradF x) (y - x) := by
+    calc
+      (∫ ω, inner ℝ (p ω) (y - x) ∂μ) =
+          ∫ ω, inner ℝ (y - x) (p ω) ∂μ := by
+            simp [real_inner_comm]
+      _ = inner ℝ (y - x) (∫ ω, p ω ∂μ) := by
+            simpa using integral_inner hp_int (y - x)
+      _ = inner ℝ (gradF x) (y - x) := by
+            rw [hunbiased]
+            rw [real_inner_comm]
+  have havg :
+      (∫ ω,
+        mirrorProximalGradientModel f g (fun _ : E => p ω) phi gradPhi h x y ∂μ) =
+        mirrorProximalGradientModel f g gradF phi gradPhi h x y := by
+    unfold mirrorProximalGradientModel
+    let q : ℝ := f x + g y + (1 / h) * bregmanDivergence phi gradPhi y x
+    have hinner_int : Integrable (fun ω => inner ℝ (p ω) (y - x)) μ :=
+      hp_int.inner_const (y - x)
+    calc
+      (∫ ω,
+        f x + inner ℝ ((fun _ : E => p ω) x) (y - x) + g y +
+          (1 / h) * bregmanDivergence phi gradPhi y x ∂μ) =
+          ∫ ω, q + inner ℝ (p ω) (y - x) ∂μ := by
+            congr 1
+            ext ω
+            dsimp [q]
+            ring
+      _ = q + ∫ ω, inner ℝ (p ω) (y - x) ∂μ := by
+            rw [integral_add (integrable_const q) hinner_int]
+            simp [q]
+      _ =
+          f x + inner ℝ (gradF x) (y - x) + g y +
+            (1 / h) * bregmanDivergence phi gradPhi y x := by
+            rw [hinner]
+            dsimp [q]
+            ring
+  have hdet :
+      mirrorProximalGradientModel f g gradF phi gradPhi h x y ≤
+        compositeObjective f g y +
+          (1 / h - alphaF) * bregmanDivergence phi gradPhi y x :=
+    mirrorProximalGradientModel_le_composite_add_bregman
+      hconvF hx hy
+  have hcoeff :
+      1 / h - alphaF = (1 - alphaF * h) / h := by
+    field_simp [hh.ne']
+  rw [hcoeff] at hdet
+  rw [havg]
+  simpa [one_div] using hdet
+
+/--
 Finite smooth sampled-model `hcore` theorem.  This discharges the pointwise
 raw model inequality, relative-smoothness absorption, and mirror
 strong-convexity lower bound from the actual sampled model data.
@@ -2366,6 +2503,135 @@ theorem chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_m
       (hpsi n hn) (hstepRms_sq n hn) (hvariance_nonneg n hn)
       (hstep_nonneg n hn) (hvariance_mem n hn) (hstep_mem n hn)
       (hnoise_point n hn) (hvariance_root n hn) (hstep_root n hn)
+
+/--
+Smooth Bochner-integral sampled-model Chewi Theorem 12.1 rate with the
+growth and star-upper fields discharged from a.e. sampled MPGD steps and
+Bochner unbiasedness of the sampled oracle.
+-/
+theorem chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models_unbiased
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {alphaF alphaG alphaPhi betaF sigma dim h Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap varianceRms stepRms : ℕ -> ℝ)
+    (x : ℕ -> E) (xStar : E)
+    (p xPlus : ℕ -> Ω -> E)
+    (noise varianceNorm stepNorm : ℕ -> Ω -> ℝ)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hconvF : RelativelyStrongConvexOn C f gradF phi gradPhi alphaF)
+    (hsmooth : RelativelySmoothOn C f gradF phi gradPhi betaF)
+    (hbeta : betaF ≤ 1 / (2 * h))
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hx : ∀ n, n < N -> x n ∈ C)
+    (hxStar : xStar ∈ C)
+    (hxPlus : ∀ n, n < N -> ∀ᵐ ω ∂μ, xPlus n ω ∈ C)
+    (hFstar : Fstar = compositeObjective f g xStar)
+    (hD_current : ∀ n, n < N ->
+      D n = bregmanDivergence phi gradPhi xStar (x n))
+    (hD_next : ∀ n, n < N ->
+      D (n + 1) =
+        ∫ ω, bregmanDivergence phi gradPhi xStar (xPlus n ω) ∂μ)
+    (hstep : ∀ n, n < N -> ∀ᵐ ω ∂μ,
+      IsMirrorProximalGradientStep C f g (fun _ : E => p n ω)
+        phi gradPhi alphaG h (x n) (xPlus n ω))
+    (hp_int : ∀ n, n < N -> Integrable (p n) μ)
+    (hunbiased : ∀ n, n < N ->
+      (∫ ω, p n ω ∂μ) = gradF (x n))
+    (hFplus : ∀ n, n < N ->
+      Integrable (fun ω => compositeObjective f g (xPlus n ω)) μ)
+    (hDf : ∀ n, n < N ->
+      Integrable (fun ω => bregmanDivergence f gradF (xPlus n ω) (x n)) μ)
+    (hDphi : ∀ n, n < N ->
+      Integrable
+        (fun ω => bregmanDivergence phi gradPhi (xPlus n ω) (x n)) μ)
+    (hDnext_int : ∀ n, n < N ->
+      Integrable
+        (fun ω => bregmanDivergence phi gradPhi xStar (xPlus n ω)) μ)
+    (hnoise_int : ∀ n, n < N -> Integrable (noise n) μ)
+    (hpsi_int : ∀ n, n < N ->
+      Integrable (fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p n ω)
+          phi gradPhi h (x n) (xPlus n ω)) μ)
+    (hpsiStar_int : ∀ n, n < N ->
+      Integrable (fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p n ω)
+          phi gradPhi h (x n) xStar) μ)
+    (hstepSq : ∀ n, n < N ->
+      Integrable (fun ω => ‖xPlus n ω - x n‖ ^ (2 : ℕ)) μ)
+    (hnoise_raw : ∀ n, n < N -> ∀ᵐ ω ∂μ,
+      -inner ℝ (p n ω - gradF (x n)) (xPlus n ω - x n) ≤ noise n ω)
+    (hstepRms_sq : ∀ n, n < N ->
+      stepRms n ^ (2 : ℕ) ≤ ∫ ω, ‖xPlus n ω - x n‖ ^ (2 : ℕ) ∂μ)
+    (hvariance_nonneg : ∀ n, n < N -> 0 ≤ᵐ[μ] varianceNorm n)
+    (hstep_nonneg : ∀ n, n < N -> 0 ≤ᵐ[μ] stepNorm n)
+    (hvariance_mem : ∀ n, n < N ->
+      MemLp (varianceNorm n) (ENNReal.ofReal (2 : ℝ)) μ)
+    (hstep_mem : ∀ n, n < N ->
+      MemLp (stepNorm n) (ENNReal.ofReal (2 : ℝ)) μ)
+    (hnoise_point : ∀ n, n < N ->
+      noise n ≤ᵐ[μ] fun ω => varianceNorm n ω * stepNorm n ω)
+    (hvariance_root : ∀ n, n < N ->
+      (∫ ω, varianceNorm n ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ varianceRms n)
+    (hstep_root : ∀ n, n < N ->
+      (∫ ω, stepNorm n ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ stepRms n)
+    (hvariance : ∀ n, n < N ->
+      varianceRms n ^ (2 : ℕ) ≤ sigma ^ (2 : ℕ) * dim)
+    (hgap_sum : ∀ n, n < N ->
+      Fstar + gap (n + 1) =
+        ∫ ω, compositeObjective f g (xPlus n ω) ∂μ) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        sigma ^ (2 : ℕ) * dim * h / alphaPhi := by
+  refine
+    chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models
+      (μ := μ) (C := C) (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (alphaF := alphaF) (alphaG := alphaG) (alphaPhi := alphaPhi)
+      (betaF := betaF) (sigma := sigma) (dim := dim) (h := h)
+      (Fstar := Fstar) htotal_pos hh halphaPhi hden_pos hlambda_pos D gap
+      (fun n =>
+        ∫ ω,
+          mirrorProximalGradientModel f g (fun _ : E => p n ω)
+            phi gradPhi h (x n) (xPlus n ω) ∂μ)
+      (fun n =>
+        ∫ ω,
+          mirrorProximalGradientModel f g (fun _ : E => p n ω)
+            phi gradPhi h (x n) xStar ∂μ)
+      varianceRms stepRms x p xPlus noise varianceNorm stepNorm hN
+      hD_N_nonneg hsmooth hbeta hphi hx hxPlus ?_ ?_
+      hFplus hDf hDphi hnoise_int hpsi_int hstepSq hnoise_raw
+      ?_ hstepRms_sq hvariance_nonneg hstep_nonneg hvariance_mem
+      hstep_mem hnoise_point hvariance_root hstep_root hvariance hgap_sum
+  · intro n hn
+    exact
+      chewi121_integral_sampled_growth_of_steps
+        (μ := μ) (C := C) (f := f) (g := g) (phi := phi)
+        (gradPhi := gradPhi) (alphaG := alphaG) (h := h)
+        (x := x n) (y := xStar) (p := p n) (xPlus := xPlus n)
+        (hpsiNext_int := hpsi_int n hn) (hDnext_int := hDnext_int n hn)
+        (hpsiStar_int := hpsiStar_int n hn)
+        (hstep := hstep n hn) hxStar (hD_next n hn) rfl rfl
+  · intro n hn
+    have hupper :=
+      chewi121_integral_sampled_star_upper_of_unbiased
+        (μ := μ) (C := C) (f := f) (g := g) (gradF := gradF)
+        (phi := phi) (gradPhi := gradPhi) (alphaF := alphaF)
+        (h := h) (x := x n) (y := xStar) (p := p n)
+        hh (hp_int n hn) (hunbiased n hn) hconvF (hx n hn) hxStar
+    simpa [hFstar, hD_current n hn] using hupper
+  · intro n hn
+    exact le_rfl
 
 /-- Bochner-integral non-smooth Chewi Theorem 12.1 rate. -/
 theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components

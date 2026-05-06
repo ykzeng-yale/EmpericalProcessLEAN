@@ -56,9 +56,9 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after the Chapter 12 finite sampled rate packet
-and smooth integral-L2 sampled-model endpoint packet for Chewi Theorem 12.1
-SMPGD:
+Current manual goal frontier after the Chapter 12 finite sampled rate packet,
+smooth integral-L2 sampled-model endpoint packet, and smooth Bochner-unbiased
+growth/star-upper packet for Chewi Theorem 12.1 SMPGD:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -346,11 +346,17 @@ fields directly.  The smooth integral-L2 sampled-model packet adds
 `chewi121_smooth_hcore_of_integral_l2_sampled_models` and
 `chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models`,
 closing the smooth sampled source-L2 route to the final weighted-average rate.
+The smooth Bochner-unbiased packet adds
+`chewi121_integral_sampled_growth_of_steps`,
+`chewi121_integral_sampled_star_upper_of_unbiased`, and
+`chewi121_smooth_weightedAverageGap_le_geometric_of_integral_l2_sampled_models_unbiased`,
+so a.e. sampled MPGD growth and Bochner-unbiased star upper now feed the
+smooth integral-L2 sampled weighted-average rate directly.
 The active Chapter 12 lane is now the remaining exact source probability
-discharge behind those wrappers: Bochner expectation transport for sampled
-oracles, measure-level sampled growth/star-upper transport, variance domination
-from (12.1), and the non-smooth upgrade from pointwise bounded sampled
-gradients to the source L2 assumption (12.2), before the ASGD CLT material.
+discharge behind those wrappers: variance domination from (12.1), any exact
+conditional-expectation/process packaging needed for source reporting, and the
+non-smooth upgrade from pointwise bounded sampled gradients to the source L2
+assumption (12.2), before the ASGD CLT material.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
