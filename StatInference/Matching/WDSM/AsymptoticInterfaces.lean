@@ -586,6 +586,69 @@ theorem estimated_score_asymptotic_normality_of_bridge
   b.bridge hknown hfirst hlocal hgodambe
 
 /--
+More explicit estimated-score local-experiment input.
+
+This is a named probability/local-asymptotic interface, not a local proof of
+the nonsmooth matching expansion.  It separates the broad
+`matching_functional_local_expansion` premise into the score-estimator local
+linearity, the matching-functional local derivative/expansion, and stochastic
+equicontinuity of the local matching process.
+-/
+structure EstimatedScoreLocalExperimentInput where
+  known_score_asymptotic_normality : Prop
+  first_step_asymptotic_linearization : Prop
+  score_estimator_local_asymptotic_linearity : Prop
+  matching_functional_local_derivative : Prop
+  local_stochastic_equicontinuity : Prop
+  godambe_variance_identity : Prop
+  estimated_score_asymptotic_normality : Prop
+  local_experiment_bridge :
+    known_score_asymptotic_normality ->
+    first_step_asymptotic_linearization ->
+    score_estimator_local_asymptotic_linearity ->
+    matching_functional_local_derivative ->
+    local_stochastic_equicontinuity ->
+    godambe_variance_identity ->
+    estimated_score_asymptotic_normality
+
+theorem estimated_score_asymptotic_normality_of_local_experiment_input
+    (b : EstimatedScoreLocalExperimentInput)
+    (hknown : b.known_score_asymptotic_normality)
+    (hfirst : b.first_step_asymptotic_linearization)
+    (hscore :
+      b.score_estimator_local_asymptotic_linearity)
+    (hfunctional : b.matching_functional_local_derivative)
+    (hequicontinuity : b.local_stochastic_equicontinuity)
+    (hgodambe : b.godambe_variance_identity) :
+    b.estimated_score_asymptotic_normality :=
+  b.local_experiment_bridge hknown hfirst hscore hfunctional
+    hequicontinuity hgodambe
+
+/--
+Package an explicit local-experiment input as the existing estimated-score
+asymptotic bridge.  The broad local-expansion premise in the packaged bridge
+is the conjunction of score-estimator local linearity, matching-functional
+local derivative, and local stochastic equicontinuity.
+-/
+def estimatedScoreAsymptoticBridgeOfLocalExperimentInput
+    (b : EstimatedScoreLocalExperimentInput) :
+    EstimatedScoreAsymptoticBridge where
+  known_score_asymptotic_normality := b.known_score_asymptotic_normality
+  first_step_asymptotic_linearization :=
+    b.first_step_asymptotic_linearization
+  matching_functional_local_expansion :=
+    b.score_estimator_local_asymptotic_linearity ∧
+      b.matching_functional_local_derivative ∧
+        b.local_stochastic_equicontinuity
+  godambe_variance_identity := b.godambe_variance_identity
+  estimated_score_asymptotic_normality :=
+    b.estimated_score_asymptotic_normality
+  bridge := by
+    intro hknown hfirst hlocal hgodambe
+    exact b.local_experiment_bridge hknown hfirst hlocal.1 hlocal.2.1
+      hlocal.2.2 hgodambe
+
+/--
 Interface for the estimated-score limiting variance formula.  The deterministic
 variance algebra proves the scalar and finite quadratic-form identities; this
 bridge records the remaining probability/local-experiment step that connects a
@@ -653,6 +716,54 @@ theorem estimated_score_asymptotic_normality_of_geometry_residual_average_radius
       hbias_transfer hdecomp hden hheterogeneity
   exact estimated_score_asymptotic_normality_of_bridge estimated
     (hknown_transfer hknown) hfirst hlocal hgodambe
+
+/--
+Estimated-score composition using the explicit local-experiment input.  This
+theorem exposes the estimated-score probability/local-asymptotic obligations as
+first-step linearization, score-estimator local linearity,
+matching-functional local derivative, local stochastic equicontinuity, and the
+Godambe identity.
+-/
+theorem estimated_score_asymptotic_normality_of_geometry_residual_average_radius_local_experiment
+    (geometry : WeightedGeometryMomentBridge)
+    (residual : ResidualArrayCLTBridge)
+    (bias : AverageRadiusBiasBridge)
+    (known : KnownScoreAsymptoticBridge)
+    (estimated : EstimatedScoreLocalExperimentInput)
+    (hregular : geometry.score_space_regularity)
+    (hchen_han : geometry.chen_han_catchment_input)
+    (hmoment_transfer :
+      geometry.exact_weighted_reuse_moment_limits ->
+        residual.exact_weighted_reuse_moment_limits)
+    (hresidual_reg : residual.residual_moment_regularity)
+    (hquad : residual.quadratic_variation_stabilization)
+    (hresidual_transfer : residual.residual_clt -> known.residual_clt)
+    (hfinite : bias.eventual_finite_matching_regular)
+    (hlipschitz : bias.lipschitz_score_mean_regular)
+    (hradius : bias.weighted_average_radius_rate)
+    (hbias_transfer :
+      bias.matching_discrepancy_negligible ->
+        known.matching_discrepancy_negligible)
+    (hdecomp : known.aggregate_hajek_decomposition)
+    (hden : known.denominator_stabilization)
+    (hheterogeneity : known.heterogeneity_clt)
+    (hknown_transfer :
+      known.asymptotic_normality ->
+        estimated.known_score_asymptotic_normality)
+    (hfirst : estimated.first_step_asymptotic_linearization)
+    (hscore : estimated.score_estimator_local_asymptotic_linearity)
+    (hfunctional : estimated.matching_functional_local_derivative)
+    (hequicontinuity : estimated.local_stochastic_equicontinuity)
+    (hgodambe : estimated.godambe_variance_identity) :
+    estimated.estimated_score_asymptotic_normality := by
+  have hknown : known.asymptotic_normality :=
+    known_score_asymptotic_normality_of_geometry_residual_and_average_radius
+      geometry residual bias known hregular hchen_han hmoment_transfer
+      hresidual_reg hquad hresidual_transfer hfinite hlipschitz hradius
+      hbias_transfer hdecomp hden hheterogeneity
+  exact estimated_score_asymptotic_normality_of_local_experiment_input
+    estimated (hknown_transfer hknown) hfirst hscore hfunctional
+    hequicontinuity hgodambe
 
 /--
 Full abstract WDSM estimated-score composition carrying the estimated-score
