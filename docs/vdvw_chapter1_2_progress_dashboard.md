@@ -13,8 +13,8 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current `/goal` target override, 2026-05-05 after verified pushed head
-`39bd06e Add a.e.-measurable Dirac endpoint bridges`: closed
+Current `/goal` target override, 2026-05-05 after the verified finite-trace
+structural Theorem 2.4.3 consumer: closed
 finite-net/Hoeffding/Mills, selected fixed-radius and
 inverse-radius, untruncation, reverse-cofiltration, selected-entropy,
 full-subgraph, finite-class, measurable/null-measurable signed weak-convergence,
@@ -52,14 +52,13 @@ that bridge is blocked after real Lean/search attempts, move to theorem-
 critical Chapter 1-2 primitives rather than adding more endpoint wrappers:
 arbitrary-map/nonmeasurable outer-cover weak convergence, asymptotic
 tightness/independence, arbitrary-index FDD converse, and separability/
-`P`-measurable class support.  The next non-duplicative Theorem 2.4.3
-`/goal` batch should first compose the finite-trace natural-polynomial
-selected fixed-radius package with the selected fixed-radius untruncated
-consumer, so finite-trace/Sauer-style structural cardinality estimates feed
-centered untruncated convergence directly.  If that compiles, continue to the
-corresponding structural `P`-GC/in-mean endpoint only if it consumes that new
-theorem rather than duplicating existing endpoint infrastructure.  The VdV&W
-1.4.1 product Borel-space equality is
+`P`-measurable class support.  The finite-trace natural-polynomial route now
+has a direct centered untruncated convergence consumer,
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_finite_trace_image_cardinality_bound_nat_poly`.
+The next non-duplicative Theorem 2.4.3 `/goal` batch should either add the
+corresponding structural `P`-GC/in-mean endpoint by consuming that theorem
+through the existing endpoint adapters, or return to the genuine book entropy
+tail/UI bridge.  The VdV&W 1.4.1 product Borel-space equality is
 also now
 compiled as `vdVW141_prod_borel_eq_product_borel`; do not repeat that wrapper.
 The signed arbitrary-map asymptotic-measurability layer now also implies the

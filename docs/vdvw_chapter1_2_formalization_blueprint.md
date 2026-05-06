@@ -89,8 +89,8 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-05 after verified pushed head
-`39bd06e Add a.e.-measurable Dirac endpoint bridges`: the strong
+Current operational target, 2026-05-05 after the verified finite-trace
+structural Theorem 2.4.3 consumer: the strong
 Theorem 2.4.3/Lemma 2.4.5 endpoint packages, selected
 fixed-radius/inverse-radius entropy packages, deterministic untruncation and
 envelope-tail bridges, finite-class and full-subgraph structural routes,
@@ -111,12 +111,11 @@ final-current Theorem 2.4.3/Lemma 2.4.5 statement from the full-subgraph or
 structural-rate packages and classify its assumptions before moving to
 Chapter 1 arbitrary-map/`P`-measurable foundations, nonmeasurable envelope-tail
 outer-cover clauses, or separability primitives required by exact Chapter 1-2
-statements.  The immediate non-duplicative theorem-facing batch is the
-finite-trace natural-polynomial structural consumer: compose the compiled
-finite-trace selected fixed-radius package with the compiled selected
-fixed-radius untruncated consumer so Sauer/finite-trace cardinality estimates
-directly reach centered untruncated convergence before any additional endpoint
-packaging.  The VdV&W 1.4.1 product Borel-space equality is also closed as
+statements.  The finite-trace natural-polynomial structural route now directly
+reaches centered untruncated convergence through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_finite_trace_image_cardinality_bound_nat_poly`;
+future endpoint work should consume that theorem rather than rebuild the
+selected-package route.  The VdV&W 1.4.1 product Borel-space equality is also closed as
 `vdVW141_prod_borel_eq_product_borel`.  The next small but theorem-facing
 Chapter 1 foundation closure is now closed: filter-refinement stability for
 the signed weak-convergence packages in `WeakConvergence.lean`, covering

@@ -67,9 +67,9 @@ unless a new exact statement directly consumes them.
 
 ## Current `/goal` Target
 
-Authoritative operational prompt, 2026-05-05 after verified pushed head
-`39bd06e Add a.e.-measurable Dirac endpoint bridges`: finish VdV&W Chapters
-1-2 in Lean by dependency order, with
+Authoritative operational prompt, 2026-05-05 after the verified finite-trace
+structural Theorem 2.4.3 consumer: finish VdV&W Chapters 1-2 in Lean by
+dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -159,22 +159,18 @@ with the countable-subclass `P`-measurability constructor;
 and the measure-level continuous-image/reindexed asymptotic-tightness wrappers
 `VdVWWeakConvergenceProbabilityMeasures.map_asymptoticallyTight_atTop` and
 `VdVWWeakConvergenceProbabilityMeasures.map_asymptoticallyTight_comp_tendsto_atTop`.
+The finite-trace natural-polynomial structural route now also has the direct
+centered untruncated convergence consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_finite_trace_image_cardinality_bound_nat_poly`,
+which composes finite-trace/Sauer-style cardinality estimates with the compiled
+selected fixed-radius untruncation route.
 
 Next high-capacity proof batches, in order:
 
-1. Close or precisely isolate the exact Theorem 2.4.3 random-entropy mismatch,
-   but do not spend the next run on generic endpoint plumbing.  The immediate
-   non-duplicative theorem-facing target is the finite-trace natural-polynomial
-   structural consumer: compose
-   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_trace_image_cardinality_bound_nat_poly`
-   with
-   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedFixedRadiusTailSideConditions`
-   so finite-trace/Sauer-style cardinality estimates directly imply centered
-   untruncated convergence.  If that compiles, continue in the same context to
-   the corresponding `P`-Glivenko-Cantelli/in-mean endpoint only if it consumes
-   the new structural theorem rather than duplicating an already closed route.
-2. After the finite-trace structural consumer, return to the exact book
-   entropy mismatch.
+1. Add the corresponding finite-trace natural-polynomial `P`-GC/in-mean
+   endpoint only if it consumes the newly closed centered convergence theorem
+   through the existing endpoint adapters; otherwise skip endpoint duplication.
+2. Return to the exact book entropy mismatch.
    The finite-net/Hoeffding/Mills, selected fixed-radius and inverse-radius,
    untruncation, signed endpoint, full-subgraph, finite-class, Lemma 2.4.5
    reverse/cofiltration, deterministic normalized-log, raw tail/UI, and L1
