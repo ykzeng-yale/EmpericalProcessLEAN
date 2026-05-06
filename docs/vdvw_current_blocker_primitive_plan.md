@@ -67,9 +67,9 @@ unless a new exact statement directly consumes them.
 
 ## Current `/goal` Target
 
-Authoritative operational prompt, 2026-05-05 after the verified fixed-domain UI
-mean closures and first-sample event recoding layer: finish VdV&W Chapters 1-2
-in Lean by dependency order, with
+Authoritative operational prompt, 2026-05-05 after verified pushed head
+`39bd06e Add a.e.-measurable Dirac endpoint bridges`: finish VdV&W Chapters
+1-2 in Lean by dependency order, with
 proof-hole-free code, search-first reuse of pinned mathlib and local
 `StatInference/ProbabilityMeasure`, and no exact textbook claim until the
 corresponding theorem statement compiles.  The active Codex `/goal` tool
@@ -162,7 +162,19 @@ and the measure-level continuous-image/reindexed asymptotic-tightness wrappers
 
 Next high-capacity proof batches, in order:
 
-1. Close or precisely isolate the exact Theorem 2.4.3 random-entropy mismatch.
+1. Close or precisely isolate the exact Theorem 2.4.3 random-entropy mismatch,
+   but do not spend the next run on generic endpoint plumbing.  The immediate
+   non-duplicative theorem-facing target is the finite-trace natural-polynomial
+   structural consumer: compose
+   `VdVWTheorem243SelectedFixedRadiusTailSideConditions.forall_pos_of_finite_trace_image_cardinality_bound_nat_poly`
+   with
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedFixedRadiusTailSideConditions`
+   so finite-trace/Sauer-style cardinality estimates directly imply centered
+   untruncated convergence.  If that compiles, continue in the same context to
+   the corresponding `P`-Glivenko-Cantelli/in-mean endpoint only if it consumes
+   the new structural theorem rather than duplicating an already closed route.
+2. After the finite-trace structural consumer, return to the exact book
+   entropy mismatch.
    The finite-net/Hoeffding/Mills, selected fixed-radius and inverse-radius,
    untruncation, signed endpoint, full-subgraph, finite-class, Lemma 2.4.5
    reverse/cofiltration, deterministic normalized-log, raw tail/UI, and L1
@@ -173,7 +185,7 @@ Next high-capacity proof batches, in order:
    mean-convergence input consumed by those compiled routes.  Do not add
    another endpoint or selected-package wrapper unless it directly consumes a
    new theorem hypothesis.
-2. Search and try the strongest honest entropy closure first:
+3. Search and try the strongest honest entropy closure first:
    prove a structural varying-domain uniform-integrability theorem for
    `Y_n = log(cardinality_n + 1) / n`, derive ordinary mean convergence of
    `Y_n`, or instantiate the compiled deterministic normalized-log route from
@@ -226,7 +238,7 @@ Next high-capacity proof batches, in order:
    selected fixed-radius package.  Next proof work should instantiate that
    bound or the stronger tail criterion from an actual structural entropy
    theorem, not add another package endpoint.
-3. In parallel only when it directly supports exact Chapter 1-2 statements or
+4. In parallel only when it directly supports exact Chapter 1-2 statements or
    Theorem 2.4.3 endpoints, close reusable arbitrary-map/process foundation
    gaps that are already search-isolated.  The signed weak-convergence
    filter-refinement package and the binary/finite independent product
