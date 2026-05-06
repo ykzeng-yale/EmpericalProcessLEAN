@@ -2190,13 +2190,15 @@ above, so they do not change the theorem-level dashboard counts.
    a genuine varying-domain uniform-integrability primitive or structural
    entropy bound is missing.
    The generic ordinary-mean route now also has the direct Chapter 1.2/Markov
-   bridge
+   bridges
+   `VdVWConvergesInOuterProbability_zero_of_integral_tendsto_zero_nonneg` and
    `VdVWConvergesInOuterProbabilityConst_zero_of_integral_tendsto_zero_nonneg`,
-   which turns nonnegative measurable varying-domain ordinary mean convergence
-   into VdV&W outer-probability convergence.  This closes a reusable proof
-   step for finite-net mean arguments, while leaving the same substantive
-   source problem: prove the selected finite-net mean/tail/UI input from the
-   book random-entropy hypothesis or state the needed stronger assumption.
+   which turn nonnegative measurable ordinary mean convergence into VdV&W
+   outer-probability convergence in both fixed and varying sample spaces.  This
+   closes a reusable proof step for fixed-space and finite-net mean arguments,
+   while leaving the same substantive source problem: prove the selected
+   finite-net mean/tail/UI input from the book random-entropy hypothesis or
+   state the needed stronger assumption.
 4. Defer exact example closures by default.  The Example 2.4.2 endpoint-grid
    and CDF/Stieltjes layers remain available if a theorem needs them, but the
    main line now moves directly to Theorem 2.4.3 and its Chapter 2

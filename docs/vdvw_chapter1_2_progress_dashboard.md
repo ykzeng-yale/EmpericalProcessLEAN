@@ -37,12 +37,13 @@ The first source-side bridge is now compiled:
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_finiteNetUpper_integral_tendsto_zero`
 constructs the selected side-condition package from variable entropy plus
 ordinary mean convergence of the selected finite-net Hoeffding upper.  The
-generic varying-domain ordinary-mean Markov bridge is also compiled as
+ordinary-mean Markov bridges are also compiled as
+`VdVWConvergesInOuterProbability_zero_of_integral_tendsto_zero_nonneg` and
 `VdVWConvergesInOuterProbabilityConst_zero_of_integral_tendsto_zero_nonneg`,
-so nonnegative measurable finite-net mean routes can feed outer-probability
-convergence directly.  The remaining exact-textbook gap is therefore sharper:
-prove that mean/tail/UI input from the random entropy hypothesis, or add a
-stronger honest hypothesis.
+so nonnegative measurable fixed-space and finite-net mean routes can feed
+outer-probability convergence directly.  The remaining exact-textbook gap is
+therefore sharper: prove that mean/tail/UI input from the random entropy
+hypothesis, or add a stronger honest hypothesis.
 
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
