@@ -68,7 +68,8 @@ unless a new exact statement directly consumes them.
 ## Current `/goal` Target
 
 Authoritative operational prompt, 2026-05-06 after the verified
-first-sample uniform-integrability endpoint
+truncated threshold trace algebra and fixed-mask cardinality transfer, plus
+the earlier first-sample uniform-integrability endpoint
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`
 and the earlier natural-polynomial variable-domain entropy constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
@@ -88,10 +89,15 @@ selected empirical-cover entropy tail/UI or ordinary-mean input from the
 book's fixed-radius condition, or prove a concrete structural cardinality
 theorem such as VC/Sauer, finite-trace, threshold-grid, or quantizer
 cardinality that feeds the existing natural-polynomial selected fixed-radius
-route.  If those entropy/cardinality attempts are genuinely blocked after
-search and Lean attempts, move to a theorem-critical Chapter 1 process
-primitive: arbitrary-index FDD converse, separability/tightness/asymptotic
-measurability, or nonmeasurable outer-cover signed weak convergence.
+route.  The current concrete structural route is to use the compiled
+truncation trace identities and fixed-mask cardinality transfer for threshold
+traces to prove an all-threshold truncated trace-family/VC transfer, then
+instantiate `VdVWUniformSubgraphVCBound` or a Sauer-style
+natural-polynomial trace bound for `vdVWTruncatedClassFun`.  If those
+entropy/cardinality attempts are genuinely blocked after search and Lean
+attempts, move to a theorem-critical Chapter 1 process primitive:
+arbitrary-index FDD converse, separability/tightness/asymptotic measurability,
+or nonmeasurable outer-cover signed weak convergence.
 
 Verified compiled foundation that should not be repeated:
 `vdVW_theorem_2_4_1_glivenkoCantelli`;
@@ -237,6 +243,24 @@ for a concrete class/truncation geometry.  A generic quantizer/grid product
 bound alone is insufficient when it only gives exponential-in-`n` growth,
 because the selected fixed-radius routes require subexponential or
 natural-polynomial cardinality growth so that `log(cardinality_n) / n -> 0`.
+
+2026-05-06 fixed-mask cardinality transfer: `Theorem243.lean` now adds
+`vdVWTraceMaskTransform`, `vdVWTraceMaskTransform_image_card_le`, and the
+all-threshold cardinality bound
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le`
+with its nonnegative/negative threshold-family specializations
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le_of_nonneg`
+and
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le_of_neg`.
+The reusable search result is `Finset.card_image_le`: the truncated threshold
+trace family is contained in a fixed image of the original threshold-trace
+family, so finite cardinality cannot increase.  The same file also now has
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_add_one_real_le_nat_poly_of_original_vc`,
+which combines the fixed-mask cardinality inequality with the existing local
+Sauer wrapper.  The next useful proof is to feed this threshold-level bound
+into the existing threshold-grid/finite-trace Theorem 2.4.3 route or promote it
+to the exact truncated `VdVWUniformSubgraphVCBound` side condition, not another
+selected fixed-radius endpoint.
 
 The parallel Chapter 1 audit reached the same conclusion on the process side:
 `WeakConvergence.lean`, `EllInfty.lean`, `BallSigma.lean`, and

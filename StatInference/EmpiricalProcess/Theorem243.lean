@@ -1068,6 +1068,205 @@ theorem empiricalBinaryTraceSet_thresholdIndicator_vdVWTruncatedClassFun_eq_filt
     simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
       vdVWTruncatedClassFun, hle, hthreshold, hout]
 
+/--
+Fixed-mask transform on finite trace sets: keep the part of a trace inside a
+mask and adjoin a fixed outside-mask contribution.
+-/
+def vdVWTraceMaskTransform {n : ℕ}
+    (insideMask outsideMask trace : Finset (Fin n)) : Finset (Fin n) :=
+  outsideMask ∪ (trace ∩ insideMask)
+
+/-- Applying a fixed-mask transform to a finite family cannot increase cardinality. -/
+theorem vdVWTraceMaskTransform_image_card_le {n : ℕ}
+    (family : Finset (Finset (Fin n))) (insideMask outsideMask : Finset (Fin n)) :
+    (family.image (vdVWTraceMaskTransform insideMask outsideMask)).card ≤ family.card :=
+  Finset.card_image_le
+
+/--
+For nonnegative thresholds, the truncated threshold trace family is no larger
+than the original threshold trace family.  The proof is purely finite and uses
+the fixed inside-envelope mask.
+-/
+theorem empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le_of_nonneg
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ) (M threshold : ℝ)
+    (hthreshold : 0 ≤ threshold) :
+    (empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun
+        (vdVWTruncatedClassFun classFun envelope M) threshold)).card ≤
+      (empiricalBinaryTraceSetFamily sample indexClass
+        (thresholdIndicatorClassFun classFun threshold)).card := by
+  classical
+  let insideMask : Finset (Fin n) :=
+    Finset.univ.filter fun sampleIndex : Fin n =>
+      envelope (sample sampleIndex) ≤ M
+  let originalFamily : Finset (Finset (Fin n)) :=
+    empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun classFun threshold)
+  let truncatedFamily : Finset (Finset (Fin n)) :=
+    empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun
+        (vdVWTruncatedClassFun classFun envelope M) threshold)
+  have hsubset :
+      truncatedFamily ⊆ originalFamily.image (fun trace => trace ∩ insideMask) := by
+    intro trace htrace
+    simp [truncatedFamily, empiricalBinaryTraceSetFamily] at htrace
+    rcases htrace with ⟨index, hindex, htrace⟩
+    refine Finset.mem_image.mpr ?_
+    refine ⟨empiricalBinaryTraceSet sample
+        (thresholdIndicatorClassFun classFun threshold) index, ?_, ?_⟩
+    · simp [originalFamily, empiricalBinaryTraceSetFamily]
+      exact ⟨index, hindex, rfl⟩
+    · rw [← htrace]
+      ext sampleIndex
+      by_cases hle : envelope (sample sampleIndex) ≤ M
+      · by_cases hlt : threshold < classFun index (sample sampleIndex)
+        · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+            vdVWTruncatedClassFun, insideMask, hle, hlt]
+        · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+            vdVWTruncatedClassFun, insideMask, hle, hlt]
+      · have hnot_lt_zero : ¬ threshold < (0 : ℝ) := not_lt.mpr hthreshold
+        simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+          vdVWTruncatedClassFun, insideMask, hle, hnot_lt_zero]
+  have hcard_subset :
+      truncatedFamily.card ≤ (originalFamily.image (fun trace => trace ∩ insideMask)).card :=
+    Finset.card_le_card hsubset
+  have hcard_image :
+      (originalFamily.image (fun trace => trace ∩ insideMask)).card ≤ originalFamily.card :=
+    Finset.card_image_le
+  simpa [truncatedFamily, originalFamily] using hcard_subset.trans hcard_image
+
+/--
+For negative thresholds, the truncated threshold trace family is no larger
+than the original threshold trace family after adjoining the fixed
+outside-envelope mask.
+-/
+theorem empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le_of_neg
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ) (M threshold : ℝ)
+    (hthreshold : threshold < 0) :
+    (empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun
+        (vdVWTruncatedClassFun classFun envelope M) threshold)).card ≤
+      (empiricalBinaryTraceSetFamily sample indexClass
+        (thresholdIndicatorClassFun classFun threshold)).card := by
+  classical
+  let insideMask : Finset (Fin n) :=
+    Finset.univ.filter fun sampleIndex : Fin n =>
+      envelope (sample sampleIndex) ≤ M
+  let outsideMask : Finset (Fin n) :=
+    Finset.univ.filter fun sampleIndex : Fin n =>
+      M < envelope (sample sampleIndex)
+  let originalFamily : Finset (Finset (Fin n)) :=
+    empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun classFun threshold)
+  let truncatedFamily : Finset (Finset (Fin n)) :=
+    empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun
+        (vdVWTruncatedClassFun classFun envelope M) threshold)
+  have hsubset :
+      truncatedFamily ⊆
+        originalFamily.image (vdVWTraceMaskTransform insideMask outsideMask) := by
+    intro trace htrace
+    simp [truncatedFamily, empiricalBinaryTraceSetFamily] at htrace
+    rcases htrace with ⟨index, hindex, htrace⟩
+    refine Finset.mem_image.mpr ?_
+    refine ⟨empiricalBinaryTraceSet sample
+        (thresholdIndicatorClassFun classFun threshold) index, ?_, ?_⟩
+    · simp [originalFamily, empiricalBinaryTraceSetFamily]
+      exact ⟨index, hindex, rfl⟩
+    · rw [← htrace]
+      ext sampleIndex
+      by_cases hle : envelope (sample sampleIndex) ≤ M
+      · have hnot_out : ¬ M < envelope (sample sampleIndex) := not_lt.mpr hle
+        by_cases hlt : threshold < classFun index (sample sampleIndex)
+        · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+            vdVWTruncatedClassFun, vdVWTraceMaskTransform, insideMask,
+            outsideMask, hle, hnot_out, hlt]
+        · simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+            vdVWTruncatedClassFun, vdVWTraceMaskTransform, insideMask,
+            outsideMask, hle, hnot_out, hlt]
+      · have hout : M < envelope (sample sampleIndex) := lt_of_not_ge hle
+        simp [empiricalBinaryTraceSet, thresholdIndicatorClassFun,
+          vdVWTruncatedClassFun, vdVWTraceMaskTransform, insideMask,
+          outsideMask, hle, hthreshold, hout]
+  have hcard_subset :
+      truncatedFamily.card ≤
+        (originalFamily.image (vdVWTraceMaskTransform insideMask outsideMask)).card :=
+    Finset.card_le_card hsubset
+  have hcard_image :
+      (originalFamily.image (vdVWTraceMaskTransform insideMask outsideMask)).card ≤
+        originalFamily.card :=
+    vdVWTraceMaskTransform_image_card_le originalFamily insideMask outsideMask
+  simpa [truncatedFamily, originalFamily] using hcard_subset.trans hcard_image
+
+/--
+For every threshold, truncating a class by a fixed envelope level cannot
+increase the realized threshold-trace family cardinality.
+-/
+theorem empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ) (M threshold : ℝ) :
+    (empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun
+        (vdVWTruncatedClassFun classFun envelope M) threshold)).card ≤
+      (empiricalBinaryTraceSetFamily sample indexClass
+        (thresholdIndicatorClassFun classFun threshold)).card := by
+  by_cases hthreshold : threshold < 0
+  · exact
+      empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le_of_neg
+        sample indexClass classFun envelope M threshold hthreshold
+  · exact
+      empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le_of_nonneg
+        sample indexClass classFun envelope M threshold (le_of_not_gt hthreshold)
+
+/--
+Sauer-style cardinality transfer for truncation: if the original fixed-threshold
+trace family has VC dimension at most `d`, then the corresponding truncated
+threshold trace family obeys the same coarse polynomial cardinality bound.
+-/
+theorem
+    empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_add_one_real_le_nat_poly_of_original_vc
+    {Observation : Type u} {Index : Type v} {n d : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ) (M threshold : ℝ)
+    (hvc :
+      (empiricalBinaryTraceSetFamily sample indexClass
+        (thresholdIndicatorClassFun classFun threshold)).vcDim ≤ d) :
+    (((empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun
+        (vdVWTruncatedClassFun classFun envelope M) threshold)).card : ℝ) + 1) ≤
+      ((d + 2 : ℕ) : ℝ) * (((n + 1 : ℕ) : ℝ) ^ d) := by
+  classical
+  let originalFamily : Finset (Finset (Fin n)) :=
+    empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun classFun threshold)
+  let truncatedFamily : Finset (Finset (Fin n)) :=
+    empiricalBinaryTraceSetFamily sample indexClass
+      (thresholdIndicatorClassFun
+        (vdVWTruncatedClassFun classFun envelope M) threshold)
+  have hcard_le : truncatedFamily.card ≤ originalFamily.card := by
+    simpa [truncatedFamily, originalFamily] using
+      empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le
+        sample indexClass classFun envelope M threshold
+  have hcard_succ :
+      ((truncatedFamily.card : ℝ) + 1) ≤ ((originalFamily.card : ℝ) + 1) := by
+    exact_mod_cast Nat.succ_le_succ hcard_le
+  have horiginal :
+      ((originalFamily.card : ℝ) + 1) ≤
+        ((d + 2 : ℕ) : ℝ) * (((n + 1 : ℕ) : ℝ) ^ d) := by
+    simpa [originalFamily] using
+      vdVWSauerShelah_card_add_one_real_le_nat_poly_of_vcDim_le
+        (family := originalFamily) (N := n) (d := d) (by simp) hvc
+  exact hcard_succ.trans horiginal
+
 /-- Truncation cannot increase pointwise absolute values. -/
 theorem abs_vdVWTruncatedClassFun_le_abs
     {Observation : Type u} {Index : Type v}

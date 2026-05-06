@@ -14,7 +14,8 @@ docs/vdvw_current_blocker_primitive_plan.md
 ```
 
 Current `/goal` target override, 2026-05-06 after the verified
-first-sample uniform-integrability endpoint
+truncated threshold trace algebra and fixed-mask cardinality transfer, plus
+the earlier first-sample uniform-integrability endpoint
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`
 and the earlier natural-polynomial variable-domain entropy constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
@@ -124,6 +125,21 @@ and
 These are upstream of the full-subgraph route: they expose exactly how
 `f 1{F <= M}` modifies threshold traces, reducing the next structural task to
 a finite set-family cardinality/VC transfer under fixed masks.
+2026-05-06 fixed-mask cardinality transfer:
+`Theorem243.lean` now adds `vdVWTraceMaskTransform`,
+`vdVWTraceMaskTransform_image_card_le`, and the all-threshold truncated
+threshold-family cardinality bound
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le`
+with its nonnegative/negative specializations
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le_of_nonneg`
+and
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le_of_neg`.
+It also adds
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_add_one_real_le_nat_poly_of_original_vc`,
+which transfers a fixed-threshold original VC/Sauer bound to the truncated
+threshold-trace family.  The next `/goal` target should feed this into the
+threshold-grid/finite-trace Theorem 2.4.3 route or promote it to the exact
+truncated `VdVWUniformSubgraphVCBound` side condition.
 The a.e.-measurable map-law bridge is now also available for common-domain
 arbitrary maps and varying-domain endpoints through
 `VdVWAsymptoticallyMeasurableSignedBoundedContinuous.of_forall_aemeasurable`,

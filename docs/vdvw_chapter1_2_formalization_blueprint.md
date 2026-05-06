@@ -89,8 +89,9 @@ The active frontier blocker is pinned separately in:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Current operational target, 2026-05-06 after the verified first-sample
-uniform-integrability endpoint
+Current operational target, 2026-05-06 after the verified truncated threshold
+trace algebra and fixed-mask cardinality transfer, plus the earlier
+first-sample uniform-integrability endpoint
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_firstSample_unifIntegrable`
 and the earlier natural-polynomial variable-domain entropy constructor
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
@@ -153,6 +154,17 @@ traces of `f 1{F <= M}` with fixed-mask transforms of the original threshold
 traces.  The next proof target is not another full-subgraph endpoint; it is a
 finite-family cardinality or VC-dimension lemma for these fixed-mask transforms
 and then a transfer theorem for truncated-class threshold traces.
+The fixed-mask cardinality half of that target is now compiled through
+`vdVWTraceMaskTransform`, `vdVWTraceMaskTransform_image_card_le`,
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le`,
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le_of_nonneg`,
+and
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_le_of_neg`.
+The threshold-level Sauer transfer is now compiled as
+`empiricalBinaryTraceSetFamily_thresholdIndicator_vdVWTruncatedClassFun_card_add_one_real_le_nat_poly_of_original_vc`.
+The immediate next structural target is to feed this threshold-level bound into
+the existing threshold-grid/finite-trace Theorem 2.4.3 route, or promote it to
+the exact truncated `VdVWUniformSubgraphVCBound` side condition.
 The finite pointwise-code covering lift is now also available:
 `VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_finite_pointwise_approx_code_cardinality_bound_samplePath`
 and
