@@ -83,46 +83,55 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after focused Lean verification of the
-local Chapter 8 APGD/FISTA packet in
-`StatInference/Optimization/Proximal.lean`, rebased over current
-`origin/main`: aggressively formalize and prove all
-main theorem content of Sinho Chewi's Optimization 2026 notes in Lean under
+Current live replacement `/goal` prompt after promoted Lean verification of
+the Chapter 10 MPGD one-step packet in
+`StatInference/Optimization/MirrorDescent.lean`, rebased over current
+`origin/main` at `5b35a16`: aggressively formalize and prove all main theorem
+content of Sinho Chewi's Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
 exercise proofs kept in `StatInference/Optimization/Exercises.lean` without
 slowing the main-text theorem lane.  Do not route back to stale Chapter 3/4/5
 setup, solved Chapter 6 lower-bound/feasibility infrastructure, Chapter 7
-Frank-Wolfe, or already-compiled Theorem 8.5 proximal-gradient setup unless
-exact source/report packaging needs them.  Treat
-`StatInference/Optimization/Proximal.lean` as the live promotion gate: focused
-Lean now verifies the supplied-interface Theorem 8.6/APGD layer through
-`IsChewi86APGDTrajectory`, accessors and telescope alignment,
-`proximalGradient_gap_le_inner_form`,
-`chewi86_weighted_two_point_bound_telescope`,
-`chewi86_weighted_sum_bound`, and
-`chewi86_gap_le_two_beta_dist_sq_over_nat_sq`.  Search results to preserve:
-pinned mathlib has no direct proximal/Moreau/proximal-gradient theorem; Chapter
-8 reuses local `FirstOrderStrongConvexOn.lower_model`,
-`SmoothWithGradientOn.upper_model`, Chapter 3's weighted recurrence for 8.5,
-and Chapter 5.10's `chewi510Lambda`, `chewi510Theta`,
-`chewi510EnergyVector`, weighted telescope, and denominator-growth algebra for
-8.6.  Latest pushed Optimization frontier: `5479054`
-(`Add Chewi theorem 8.6 APGD layer`), now followed on `origin/main` by other
-agents' empirical-process commits.  Latest pushed Optimization frontier:
-`7899c07` (`Start Chewi Fenchel and Bregman layer`).  Chapter 9/10 foundation
-files `StatInference/Optimization/Fenchel.lean` and
-`StatInference/Optimization/Bregman.lean` now build through the promoted
-`StatInference` gate.  `Fenchel`
-records finite-valued conjugate terms, exact conjugate-value certificates,
-Fenchel-Young, equality iff primal subgradient, equality iff dual subgradient
-under supplied biconjugate equality, weak double-conjugate inequality, and the
-Lemma 9.12 strong-subgradient-monotonicity-to-Lipschitz core estimate.
-`Bregman` records Bregman divergence, relative strong convexity/smoothness,
-the lower/upper model orientations of Propositions 10.5/10.6, and Lemma 10.7
-relative growth with stationarity exposed.  Active aggressive target: open
-`MirrorDescent.lean` for Theorem 10.9 MPGD one-step inequality and OMD
-telescoping, reusing `Bregman.lean` relative lower/upper models and searching
-mathlib/local APIs before adding any new convex-analysis primitive.
+Frank-Wolfe, Chapter 8 PGD/APGD, or already-compiled Chapter 9 Fenchel/Bregman
+substrate unless an exact source report or later theorem dependency demands
+it.  Treat Chapters 3-8 as stable reusable infrastructure and treat
+`Fenchel.lean`, `Bregman.lean`, and `MirrorDescent.lean` as the active Chapter
+9/10 promotion gate.
+
+Latest verified Optimization proof frontier: `9b618de` (`Add Chewi theorem
+10.9 MPGD one-step layer`).  `MirrorDescent.lean` now compiles through
+`mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
+`mirrorProximalGradientModel_le_composite_add_bregman`,
+`composite_le_mirrorProximalGradientModel`,
+`mirrorProximalGradient_oneStep_ineq`, `mirrorProximalGradient_descent`,
+`IsMirrorProximalGradientTrajectory`, trajectory membership, and trajectory
+one-step accessors.  The proof reuses `Bregman.lean` relative lower/upper
+models, Lemma 10.7-style relative growth as a supplied minimizer certificate,
+and `Proximal.lean`'s `compositeObjective`.
+
+Search-first results to preserve: pinned mathlib search for
+`Bregman`, `Mirror`, `proximal`, `Fenchel`, and relative smoothness found no
+direct Bregman/mirror-descent/MPGD theorem; the `MirrorImage` hits in
+`Analysis/Convex/Deriv.lean` are unrelated symmetry lemmas.  Local search
+confirms the useful APIs are the compiled `Fenchel.lean`, `Bregman.lean`,
+`Proximal.lean`, and Chapter 3/5 scalar recurrence/telescope machinery.
+
+Active aggressive target: finish Chewi Theorem 10.9, not just another wrapper.
+First prove the scalar/telescoping rate from the compiled one-step inequality:
+derive the recurrence for
+`D_phi(x_star, x_n)` with
+`lambda_h = (1 - alphaF * h) / (1 + alphaG * h)`, reuse local discrete
+Gronwall/geometric-denominator APIs where they fit, and close the displayed
+function-value rate
+`F(x_N) - F_* <= (alphaF + alphaG) / (lambda_h^{-N} - 1) *
+D_phi(x_*, x_0)` in supplied-interface form.  Immediately after that, use the
+same module to package Theorem 10.11 nonsmooth MPGD and Theorem 10.13 OMD
+regret if bounded; otherwise open `AlternatingProjection.lean` for Chapter 11
+while scouts map the Chapter 12 stochastic mirror-proximal-gradient and
+Chapter 13 Newton/self-concordance dependencies.  Verification gate remains:
+focused `lake env lean` during development, promoted `lake build StatInference`
+after theorem packets, proof-hole scan, secret scan, route-doc refresh, rebase
+over remote main, then one clean commit/push batch.
 
 Historical live replacement prompt after focused Lean verification of the
 Chapter 7 Frank-Wolfe packet rebased over pushed frontier `4d4601c`
