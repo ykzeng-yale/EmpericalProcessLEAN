@@ -365,24 +365,32 @@ Chapter 3 theorem-facing wrappers compiling:
 117. Theorem 4.1 finite-coordinate covariance-table endpoint fed directly by a
    Cramér-Wold bridge:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cramerWoldBridge_real`.
+118. Projected-law convergence to pointwise convergence of Banach-space
+   characteristic functions:
+   `vaart1998_finiteCoordinateProjectedLawConvergence_charFunDual`.
 
-Latest remote base before this packet: `cb52a7f`.
-Latest pushed Vaart packet before this packet: `2269b4d`
-(`Add Vaart covariance table certificate endpoint`).
+Latest remote base before this packet: `d11e367`.
+Latest pushed Vaart packet before this packet: `d11e367`
+(`Add Vaart Cramer Wold table endpoint`).
 
-The current theorem-sized packet adds the Cramér-Wold bridge covariance-table
-consumer for Vaart Theorem 4.1.  It reuses the bridge-to-CLT-certificate
-constructor and the CLT-certificate covariance-table endpoint, so callers with a
-finite-coordinate Cramér-Wold bridge now get the local inverse, Gaussian limit,
-and finite covariance-table display without manually constructing the
-multivariate empirical-moment CLT certificate.
+The current theorem-sized packet adds the characteristic-function handoff for
+the finite-dimensional Cramér-Wold route.  Projected probability-law
+convergence now implies pointwise convergence of `charFunDual` for every
+continuous linear functional.  The proof uses the one-dimensional Lévy
+characteristic-function characterization for the projected real laws and the
+identity `charFunDual μ L = charFun (μ.map L) 1`.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. prove the pure law-level finite-dimensional Cramér-Wold implication feeding
+1. upgrade the compiled `charFunDual` convergence endpoint to the pure
+   law-level finite-dimensional Cramér-Wold implication feeding
    `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`;
-2. add further covariance-table consumers only if they remove a real caller-side
+2. if direct Lévy convergence on `(Coordinate -> ℝ)` blocks, add the smallest
+   reusable finite-vector Hilbert/`PiLp 2` transfer that converts the current
+   Banach-space `charFunDual` convergence into the `charFun` convergence needed
+   by `ProbabilityMeasure.tendsto_iff_tendsto_charFun`;
+3. add further covariance-table consumers only if they remove a real caller-side
    hypothesis from an existing Theorem 4.1 wrapper.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent

@@ -238,9 +238,11 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_real`.
 - Cramér-Wold bridge covariance-table endpoint:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cramerWoldBridge_real`.
+- Projected-law characteristic-function bridge:
+  `vaart1998_finiteCoordinateProjectedLawConvergence_charFunDual`.
 
-Latest remote base before this packet: `cb52a7f`.  Latest pushed Vaart packet
-before this packet: `2269b4d` (`Add Vaart covariance table certificate endpoint`).
+Latest remote base before this packet: `d11e367`.  Latest pushed Vaart packet
+before this packet: `d11e367` (`Add Vaart Cramer Wold table endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -265,7 +267,10 @@ projected probability-law Cramér-Wold handoff:
 
 1. prove the pure law-level finite-dimensional Cramér-Wold implication feeding
    `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`;
-2. add further covariance-table consumers only if they remove a real caller-side
+2. if direct Lévy convergence on `(Coordinate -> ℝ)` blocks, transfer through
+   the smallest finite-vector Hilbert/`PiLp 2` presentation needed to turn the
+   compiled `charFunDual` convergence into `charFun` convergence;
+3. add further covariance-table consumers only if they remove a real caller-side
    hypothesis from an existing Theorem 4.1 wrapper.
 
 If this blocks, record the exact missing theorem shape for the supplied

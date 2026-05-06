@@ -218,10 +218,14 @@ Initial modules:
   empirical-moment CLT certificate, and
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cramerWoldBridge_real`
   now feeds the same table endpoint directly from a finite-coordinate
-  Cramér-Wold bridge.
+  Cramér-Wold bridge.  The characteristic-function handoff
+  `vaart1998_finiteCoordinateProjectedLawConvergence_charFunDual` now shows
+  that projected law convergence gives pointwise convergence of `charFunDual`
+  for every continuous linear functional.
   It still deliberately leaves a concrete finite-dimensional Cramér-Wold
-  law-convergence proof and any downstream table consumers as explicit next
-  layers.
+  law-convergence proof, namely the Levy/finite-vector transfer from this
+  `charFunDual` convergence to weak convergence, and any downstream table
+  consumers as explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

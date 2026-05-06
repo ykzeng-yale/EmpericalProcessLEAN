@@ -1,6 +1,7 @@
 import StatInference.AsymptoticStatistics.Basic
 import StatInference.ProbabilityMeasure.StrongLaw
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
+import Mathlib.MeasureTheory.Measure.LevyConvergence
 import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
 import Mathlib.Probability.Moments.CovarianceBilinDual
 
@@ -648,6 +649,38 @@ def vaart1998_finiteCoordinateProjectedLawConvergence
     Tendsto (β := ProbabilityMeasure ℝ)
       (fun n => (μs n).map L.continuous.measurable.aemeasurable)
       atTop (𝓝 (μ.map L.continuous.measurable.aemeasurable))
+
+/--
+Projected law convergence implies pointwise convergence of the Banach-space
+characteristic functions.
+
+This is the characteristic-function half of the finite-dimensional
+Cramér-Wold route: testing all one-dimensional projections gives convergence
+of `charFunDual` at every continuous linear functional.
+-/
+theorem vaart1998_finiteCoordinateProjectedLawConvergence_charFunDual
+    {Coordinate : Type*} [Fintype Coordinate]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {μs : ℕ -> ProbabilityMeasure (Coordinate -> ℝ)}
+    {μ : ProbabilityMeasure (Coordinate -> ℝ)}
+    (hproj : vaart1998_finiteCoordinateProjectedLawConvergence μs μ) :
+    ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFunDual
+            ((μs n : ProbabilityMeasure (Coordinate -> ℝ)) :
+              Measure (Coordinate -> ℝ)) L)
+        atTop
+        (𝓝 (MeasureTheory.charFunDual
+          ((μ : ProbabilityMeasure (Coordinate -> ℝ)) :
+            Measure (Coordinate -> ℝ)) L)) := by
+  intro L
+  have hchar :=
+    (ProbabilityMeasure.tendsto_iff_tendsto_charFun.mp (hproj L)) 1
+  simpa [MeasureTheory.charFunDual_eq_charFun_map_one] using hchar
 
 /--
 Source-shaped interface for the multivariate empirical-moment CLT in van der
