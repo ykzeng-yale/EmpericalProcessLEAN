@@ -279,9 +279,15 @@ smooth/non-smooth stochastic error floors directly.  The current local packet
 adds `chewi121_source_oneStep_of_model_bounds` and
 `chewi121_weightedAverageGap_le_geometric_of_model_bounds`, turning Chewi's
 three expected `psi_x` bounds into the displayed SMPGD one-step recurrence and
-then into the closed weighted-average rate.  The active Chapter 12 lane is now
-the smooth variance and non-smooth bounded-gradient model lower-bound
-estimates, before the ASGD CLT material.
+then into the closed weighted-average rate.  The newest expected-lower-model
+handoff packet adds `chewi121_smooth_next_lower_of_expected_model_error`,
+`chewi121_nonsmooth_next_lower_of_expected_model_error`,
+`chewi121_smooth_weightedAverageGap_le_geometric_of_model_bounds`, and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_model_bounds`, so the
+smooth and non-smooth source expected lower estimates can now feed the closed
+rates directly.  The active Chapter 12 lane is now the
+analytic/probabilistic proof of those expected lower estimates, before the
+ASGD CLT material.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

@@ -152,14 +152,20 @@ local `main` has been fast-forwarded through remote `origin/main` commit
 `chewi121_weightedAverageGap_le_of_source_oneStep`,
 `chewi121_weightedAverageGap_le_geometric_of_source_oneStep`,
 `chewi121_smooth_weightedAverageGap_le_of_source_oneStep`, and
-`chewi121_nonsmooth_weightedAverageGap_le_of_source_oneStep`, plus the current
-local packet `chewi121_source_oneStep_of_model_bounds` and
-`chewi121_weightedAverageGap_le_geometric_of_model_bounds`.  This proves the
-source recurrence-to-rate algebra, smooth/non-smooth stochastic error
-instantiations, and the expected-model algebra turning Chewi's three
-`psi_x` bounds into the displayed SMPGD one-step recurrence.  The remaining
-Theorem 12.1 blocker is the analytic/probabilistic proof of the smooth and
-non-smooth model lower bounds.
+`chewi121_nonsmooth_weightedAverageGap_le_of_source_oneStep`, the expected
+model packet `chewi121_source_oneStep_of_model_bounds` and
+`chewi121_weightedAverageGap_le_geometric_of_model_bounds`, and the newest
+expected-lower-model packet
+`chewi121_smooth_next_lower_of_expected_model_error`,
+`chewi121_nonsmooth_next_lower_of_expected_model_error`,
+`chewi121_smooth_weightedAverageGap_le_geometric_of_model_bounds`, and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_model_bounds`.  This
+proves the source recurrence-to-rate algebra, smooth/non-smooth stochastic
+error instantiations, the expected-model algebra turning Chewi's three
+`psi_x` bounds into the displayed SMPGD one-step recurrence, and the direct
+handoff from expected `E F(x+)` lower estimates to the closed weighted-average
+rates.  The remaining Theorem 12.1 blocker is the analytic/probabilistic proof
+of those smooth and non-smooth expected lower estimates.
 The previous verified `StatInference/Optimization/AlternatingBregman.lean`
 packet adds
 `IsChewi118SinkhornMirrorDescentCertificate`,

@@ -339,6 +339,115 @@ theorem chewi121_weightedAverageGap_le_geometric_of_model_bounds
   simpa [herr] using hmain
 
 /--
+Smooth-case bridge from the stochastic lower model for `E psi_x(x+)` to the
+exact `F_* + gap - error <= E psi_x(x+)` field consumed by the model-bound
+recurrence.
+-/
+theorem chewi121_smooth_next_lower_of_expected_model_error
+    {Fstar gap expectedNext psiNext sigma dim alphaPhi h : ℝ}
+    (hmodel_lower :
+      expectedNext - sigma ^ (2 : ℕ) * dim * h / alphaPhi ≤ psiNext)
+    (hgap_sum : Fstar + gap = expectedNext) :
+    Fstar + gap - sigma ^ (2 : ℕ) * dim * h / alphaPhi ≤ psiNext := by
+  simpa [hgap_sum] using hmodel_lower
+
+/--
+Non-smooth-case bridge from the stochastic lower model for `E psi_x(x+)` to
+the exact `F_* + gap - error <= E psi_x(x+)` field consumed by the model-bound
+recurrence.
+-/
+theorem chewi121_nonsmooth_next_lower_of_expected_model_error
+    {Fstar gap expectedNext psiNext L alphaPhi h : ℝ}
+    (hmodel_lower :
+      expectedNext - 2 * L ^ (2 : ℕ) * h / alphaPhi ≤ psiNext)
+    (hgap_sum : Fstar + gap = expectedNext) :
+    Fstar + gap - 2 * L ^ (2 : ℕ) * h / alphaPhi ≤ psiNext := by
+  simpa [hgap_sum] using hmodel_lower
+
+/--
+Smooth-case Chewi Theorem 12.1 rate from the expected model bounds plus the
+source stochastic lower-bound estimate for `E psi_x(x+)`.
+-/
+theorem chewi121_smooth_weightedAverageGap_le_geometric_of_model_bounds
+    {alphaF alphaG alphaPhi sigma dim h Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap psiNext psiStar expectedNext : ℕ -> ℝ) {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hgrowth : ∀ n, n < N ->
+      (alphaG + 1 / h) * D (n + 1) + psiNext n ≤ psiStar n)
+    (hstar_upper : ∀ n, n < N ->
+      psiStar n ≤ Fstar + ((1 - alphaF * h) / h) * D n)
+    (hmodel_lower : ∀ n, n < N ->
+      expectedNext n - sigma ^ (2 : ℕ) * dim * h / alphaPhi ≤ psiNext n)
+    (hgap_sum : ∀ n, n < N -> Fstar + gap (n + 1) = expectedNext n) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        sigma ^ (2 : ℕ) * dim * h / alphaPhi := by
+  have hnext_lower : ∀ n, n < N ->
+      Fstar + gap (n + 1) -
+          sigma ^ (2 : ℕ) * dim * h / alphaPhi ≤ psiNext n := by
+    intro n hn
+    exact
+      chewi121_smooth_next_lower_of_expected_model_error
+        (Fstar := Fstar) (gap := gap (n + 1))
+        (expectedNext := expectedNext n) (psiNext := psiNext n)
+        (sigma := sigma) (dim := dim) (alphaPhi := alphaPhi) (h := h)
+        (hmodel_lower n hn) (hgap_sum n hn)
+  exact
+    chewi121_weightedAverageGap_le_geometric_of_model_bounds
+      (alphaF := alphaF) (alphaG := alphaG) (h := h)
+      (modelError := sigma ^ (2 : ℕ) * dim * h / alphaPhi) (Fstar := Fstar)
+      htotal_pos hh hden_pos hlambda_pos D gap psiNext psiStar hN
+      hD_N_nonneg hgrowth hstar_upper hnext_lower
+
+/--
+Non-smooth-case Chewi Theorem 12.1 rate from the expected model bounds plus
+the source stochastic lower-bound estimate for `E psi_x(x+)`.
+-/
+theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_model_bounds
+    {alphaF alphaG alphaPhi L h Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap psiNext psiStar expectedNext : ℕ -> ℝ) {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hgrowth : ∀ n, n < N ->
+      (alphaG + 1 / h) * D (n + 1) + psiNext n ≤ psiStar n)
+    (hstar_upper : ∀ n, n < N ->
+      psiStar n ≤ Fstar + ((1 - alphaF * h) / h) * D n)
+    (hmodel_lower : ∀ n, n < N ->
+      expectedNext n - 2 * L ^ (2 : ℕ) * h / alphaPhi ≤ psiNext n)
+    (hgap_sum : ∀ n, n < N -> Fstar + gap (n + 1) = expectedNext n) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  have hnext_lower : ∀ n, n < N ->
+      Fstar + gap (n + 1) - 2 * L ^ (2 : ℕ) * h / alphaPhi ≤ psiNext n := by
+    intro n hn
+    exact
+      chewi121_nonsmooth_next_lower_of_expected_model_error
+        (Fstar := Fstar) (gap := gap (n + 1))
+        (expectedNext := expectedNext n) (psiNext := psiNext n)
+        (L := L) (alphaPhi := alphaPhi) (h := h)
+        (hmodel_lower n hn) (hgap_sum n hn)
+  exact
+    chewi121_weightedAverageGap_le_geometric_of_model_bounds
+      (alphaF := alphaF) (alphaG := alphaG) (h := h)
+      (modelError := 2 * L ^ (2 : ℕ) * h / alphaPhi) (Fstar := Fstar)
+      htotal_pos hh hden_pos hlambda_pos D gap psiNext psiStar hN
+      hD_N_nonneg hgrowth hstar_upper hnext_lower
+
+/--
 Chewi Theorem 12.1 smooth-case scalar rate, after the stochastic/proximal
 one-step estimate has supplied the variance error
 `sigma^2 * dim * h^2 / alphaPhi`.
