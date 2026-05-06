@@ -458,6 +458,86 @@ theorem chewi121_nonsmooth_expected_model_lower_of_rms_bound
   exact hlocal_lower.trans hcore
 
 /--
+Smooth-case `hcore` estimate from the expected model components in Chewi's
+proof.  The later Bochner layer should supply `hraw`, the smooth absorption
+`D_f <= (1/(2h)) D_phi`, the mirror strong-convexity lower bound, and the
+Cauchy-Schwarz noise estimate.
+-/
+theorem chewi121_smooth_hcore_of_expected_components
+    {alphaPhi h expectedNext psiNext DfAvg DphiAvg noiseTerm varianceRms
+      stepRms : ℝ}
+    (hh : 0 < h)
+    (hraw :
+      expectedNext - DfAvg + (1 / h) * DphiAvg - noiseTerm ≤ psiNext)
+    (hdf_absorb : DfAvg ≤ (1 / (2 * h)) * DphiAvg)
+    (hphi_lower :
+      (alphaPhi / 2) * stepRms ^ (2 : ℕ) ≤ DphiAvg)
+    (hnoise : noiseTerm ≤ varianceRms * stepRms) :
+    expectedNext + (alphaPhi / (4 * h)) * stepRms ^ (2 : ℕ) -
+        varianceRms * stepRms ≤ psiNext := by
+  have hscale_nonneg : 0 ≤ 1 / (2 * h) := by positivity
+  have hphi_scaled :
+      (alphaPhi / (4 * h)) * stepRms ^ (2 : ℕ) ≤
+        (1 / (2 * h)) * DphiAvg := by
+    have hmul := mul_le_mul_of_nonneg_left hphi_lower hscale_nonneg
+    calc
+      (alphaPhi / (4 * h)) * stepRms ^ (2 : ℕ) =
+          (1 / (2 * h)) * ((alphaPhi / 2) * stepRms ^ (2 : ℕ)) := by
+            field_simp [hh.ne']
+            ring
+      _ ≤ (1 / (2 * h)) * DphiAvg := hmul
+  have hquad_model :
+      (alphaPhi / (4 * h)) * stepRms ^ (2 : ℕ) ≤
+        -DfAvg + (1 / h) * DphiAvg := by
+    calc
+      (alphaPhi / (4 * h)) * stepRms ^ (2 : ℕ) ≤
+          (1 / (2 * h)) * DphiAvg := hphi_scaled
+      _ = -(1 / (2 * h)) * DphiAvg + (1 / h) * DphiAvg := by
+            field_simp [hh.ne']
+            ring
+      _ ≤ -DfAvg + (1 / h) * DphiAvg := by
+            nlinarith
+  have hleft :
+      expectedNext + (alphaPhi / (4 * h)) * stepRms ^ (2 : ℕ) -
+          varianceRms * stepRms ≤
+        expectedNext - DfAvg + (1 / h) * DphiAvg - noiseTerm := by
+    nlinarith
+  exact hleft.trans hraw
+
+/--
+Non-smooth-case `hcore` estimate from Chewi's expected model components.  The
+two linear terms correspond to Lipschitzness of `f` and the bounded stochastic
+gradient term.
+-/
+theorem chewi121_nonsmooth_hcore_of_expected_components
+    {alphaPhi L h expectedNext psiNext DphiAvg lipTerm gradTerm stepRms : ℝ}
+    (hh : 0 < h)
+    (hraw :
+      expectedNext - lipTerm - gradTerm + (1 / h) * DphiAvg ≤ psiNext)
+    (hphi_lower :
+      (alphaPhi / 2) * stepRms ^ (2 : ℕ) ≤ DphiAvg)
+    (hlip : lipTerm ≤ L * stepRms)
+    (hgrad : gradTerm ≤ L * stepRms) :
+    expectedNext + (alphaPhi / (2 * h)) * stepRms ^ (2 : ℕ) -
+        (2 * L) * stepRms ≤ psiNext := by
+  have hscale_nonneg : 0 ≤ 1 / h := by positivity
+  have hphi_scaled :
+      (alphaPhi / (2 * h)) * stepRms ^ (2 : ℕ) ≤
+        (1 / h) * DphiAvg := by
+    have hmul := mul_le_mul_of_nonneg_left hphi_lower hscale_nonneg
+    calc
+      (alphaPhi / (2 * h)) * stepRms ^ (2 : ℕ) =
+          (1 / h) * ((alphaPhi / 2) * stepRms ^ (2 : ℕ)) := by
+            field_simp [hh.ne']
+      _ ≤ (1 / h) * DphiAvg := hmul
+  have hleft :
+      expectedNext + (alphaPhi / (2 * h)) * stepRms ^ (2 : ℕ) -
+          (2 * L) * stepRms ≤
+        expectedNext - lipTerm - gradTerm + (1 / h) * DphiAvg := by
+    nlinarith
+  exact hleft.trans hraw
+
+/--
 Smooth-case Chewi Theorem 12.1 rate from the expected model bounds plus the
 source stochastic lower-bound estimate for `E psi_x(x+)`.
 -/
@@ -625,6 +705,106 @@ theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_rms_model_bounds
       (stepRms := stepRms n) (expectedNext := expectedNext n)
       (psiNext := psiNext n)
       hh halphaPhi (hnext_core n hn)
+
+/--
+Smooth-case Chewi Theorem 12.1 rate from expected model components: this is
+the theorem-facing wrapper just before the full Bochner stochastic-gradient
+discharge.
+-/
+theorem chewi121_smooth_weightedAverageGap_le_geometric_of_component_model_bounds
+    {alphaF alphaG alphaPhi sigma dim h Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap psiNext psiStar expectedNext DfAvg DphiAvg noiseTerm varianceRms
+      stepRms : ℕ -> ℝ)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hgrowth : ∀ n, n < N ->
+      (alphaG + 1 / h) * D (n + 1) + psiNext n ≤ psiStar n)
+    (hstar_upper : ∀ n, n < N ->
+      psiStar n ≤ Fstar + ((1 - alphaF * h) / h) * D n)
+    (hraw : ∀ n, n < N ->
+      expectedNext n - DfAvg n + (1 / h) * DphiAvg n - noiseTerm n ≤
+        psiNext n)
+    (hdf_absorb : ∀ n, n < N ->
+      DfAvg n ≤ (1 / (2 * h)) * DphiAvg n)
+    (hphi_lower : ∀ n, n < N ->
+      (alphaPhi / 2) * stepRms n ^ (2 : ℕ) ≤ DphiAvg n)
+    (hnoise : ∀ n, n < N -> noiseTerm n ≤ varianceRms n * stepRms n)
+    (hvariance : ∀ n, n < N ->
+      varianceRms n ^ (2 : ℕ) ≤ sigma ^ (2 : ℕ) * dim)
+    (hgap_sum : ∀ n, n < N -> Fstar + gap (n + 1) = expectedNext n) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        sigma ^ (2 : ℕ) * dim * h / alphaPhi := by
+  refine
+    chewi121_smooth_weightedAverageGap_le_geometric_of_rms_model_bounds
+      (alphaF := alphaF) (alphaG := alphaG) (alphaPhi := alphaPhi)
+      (sigma := sigma) (dim := dim) (h := h) (Fstar := Fstar)
+      htotal_pos hh halphaPhi hden_pos hlambda_pos D gap psiNext psiStar
+      expectedNext varianceRms stepRms hN hD_N_nonneg hgrowth hstar_upper
+      hvariance ?_ hgap_sum
+  intro n hn
+  exact
+    chewi121_smooth_hcore_of_expected_components
+      (alphaPhi := alphaPhi) (h := h) (expectedNext := expectedNext n)
+      (psiNext := psiNext n) (DfAvg := DfAvg n) (DphiAvg := DphiAvg n)
+      (noiseTerm := noiseTerm n) (varianceRms := varianceRms n)
+      (stepRms := stepRms n)
+      hh (hraw n hn) (hdf_absorb n hn) (hphi_lower n hn) (hnoise n hn)
+
+/--
+Non-smooth-case Chewi Theorem 12.1 rate from expected model components.
+-/
+theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_component_model_bounds
+    {alphaF alphaG alphaPhi L h Fstar : ℝ}
+    (htotal_pos : 0 < alphaF + alphaG)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap psiNext psiStar expectedNext DphiAvg lipTerm gradTerm stepRms :
+      ℕ -> ℝ)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hgrowth : ∀ n, n < N ->
+      (alphaG + 1 / h) * D (n + 1) + psiNext n ≤ psiStar n)
+    (hstar_upper : ∀ n, n < N ->
+      psiStar n ≤ Fstar + ((1 - alphaF * h) / h) * D n)
+    (hraw : ∀ n, n < N ->
+      expectedNext n - lipTerm n - gradTerm n + (1 / h) * DphiAvg n ≤
+        psiNext n)
+    (hphi_lower : ∀ n, n < N ->
+      (alphaPhi / 2) * stepRms n ^ (2 : ℕ) ≤ DphiAvg n)
+    (hlip : ∀ n, n < N -> lipTerm n ≤ L * stepRms n)
+    (hgrad : ∀ n, n < N -> gradTerm n ≤ L * stepRms n)
+    (hgap_sum : ∀ n, n < N -> Fstar + gap (n + 1) = expectedNext n) :
+    (1 / (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))) *
+        (∑ n ∈ Finset.range N,
+          (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n) * gap (n + 1)) ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  refine
+    chewi121_nonsmooth_weightedAverageGap_le_geometric_of_rms_model_bounds
+      (alphaF := alphaF) (alphaG := alphaG) (alphaPhi := alphaPhi)
+      (L := L) (h := h) (Fstar := Fstar)
+      htotal_pos hh halphaPhi hden_pos hlambda_pos D gap psiNext psiStar
+      expectedNext stepRms hN hD_N_nonneg hgrowth hstar_upper ?_ hgap_sum
+  intro n hn
+  exact
+    chewi121_nonsmooth_hcore_of_expected_components
+      (alphaPhi := alphaPhi) (L := L) (h := h)
+      (expectedNext := expectedNext n) (psiNext := psiNext n)
+      (DphiAvg := DphiAvg n) (lipTerm := lipTerm n)
+      (gradTerm := gradTerm n) (stepRms := stepRms n)
+      hh (hraw n hn) (hphi_lower n hn) (hlip n hn) (hgrad n hn)
 
 /--
 Chewi Theorem 12.1 smooth-case scalar rate, after the stochastic/proximal

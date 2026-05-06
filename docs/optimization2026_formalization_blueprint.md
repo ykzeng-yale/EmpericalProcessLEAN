@@ -43,7 +43,7 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Current manual goal frontier after focused Lean verification of Chapter 7
+Historical manual frontier after focused Lean verification of Chapter 7
 `StatInference/Optimization/FrankWolfe.lean` rebased over pushed frontier
 `4d4601c`, building on `bb0a297`: Chapter 6 should be treated as stable through the supplied
 Definition 6.24/Theorem 6.25 feasibility-instance and no-interior-success
@@ -56,9 +56,9 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after the Chapter 12 source-rate packet and
-focused Lean/module verification of the Chewi Theorem 12.1 expected-model
-one-step bridge:
+Current manual goal frontier after the Chapter 12 component-hcore packet and
+focused Lean verification of the Chewi Theorem 12.1 SMPGD component-rate
+bridge:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -292,11 +292,20 @@ rates directly.  The newest RMS analytic packet adds
 `chewi121_smooth_weightedAverageGap_le_geometric_of_rms_model_bounds`, and
 `chewi121_nonsmooth_weightedAverageGap_le_geometric_of_rms_model_bounds`,
 formalizing the scalar Young/Cauchy-Schwarz handoff in Chewi's smooth and
-non-smooth lower estimates.  The active Chapter 12 lane is now the
-Bochner/probability proof of the RMS hypotheses behind those wrappers, before
-the ASGD CLT material.
+non-smooth lower estimates.  The current focused component packet adds
+`chewi121_smooth_hcore_of_expected_components`,
+`chewi121_nonsmooth_hcore_of_expected_components`,
+`chewi121_smooth_weightedAverageGap_le_geometric_of_component_model_bounds`,
+and
+`chewi121_nonsmooth_weightedAverageGap_le_geometric_of_component_model_bounds`,
+so deterministic component-to-rate assembly is verified.  The active Chapter
+12 lane is now the Bochner/probability proof of the component fields behind
+those wrappers: smooth raw expected model decomposition, relative-smoothness
+absorption, mirror strong-convexity lower bound, Cauchy-Schwarz noise estimate,
+variance domination from (12.1), and non-smooth Lipschitz/bounded-gradient
+component bounds from (12.2), before the ASGD CLT material.
 
-Current manual goal frontier after focused Lean and promoted module build of
+Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
 lane has moved from Lemma 6.20 packaging through Chapter 6 Theorems 6.21 and
 6.22 nonsmooth lower-bound source packets and into Theorem 6.25 feasibility
