@@ -56,12 +56,13 @@ recurrence, scalar rate induction, trajectory recurrence, and
 Chapter 8 `Proximal.lean`; return to Theorem 6.25 or Theorem 7.3 only for
 exact source/report packaging or a dependency.
 
-Current manual goal frontier after checking the live manual goal, route docs,
-source text, and synced repo on 2026-05-06, based on pushed code frontier
-`f192ed6` in `StatInference/Optimization/MirrorDescent.lean`:
+Current manual goal frontier after focused Lean verification and root
+`StatInference` build of the Chewi Theorem 10.13 OMD regret packet on
+2026-05-06, based on verified code frontier `2c62fec` in
+`StatInference/Optimization/MirrorDescent.lean`:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.  Latest verified Optimization
-proof frontier: `f192ed6`.
+proof frontier: `2c62fec`.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
 trajectory interfaces, the model-to-composite Bregman upper/lower comparisons,
 the supplied-interface Chewi Theorem 10.9 one-step inequality, the descent
@@ -91,21 +92,32 @@ The newest ordinary Hilbert-norm packet compiles
 `chewi1011_average_gap_le_of_trajectory_lipschitz_norm`,
 `chewi1011_iterateAverage_gap_le_of_trajectory_lipschitz_norm`,
 `chewi1011_average_gap_le_of_trajectory_lipschitz_norm_stepsize`, and
-`chewi1011_iterateAverage_gap_le_of_trajectory_lipschitz_norm_stepsize`.
+`chewi1011_iterateAverage_gap_le_of_trajectory_lipschitz_norm_stepsize`.  The
+newest OMD packet compiles `onlineMirrorDescentModel`,
+`IsOnlineMirrorDescentStep`, `IsOnlineMirrorDescentTrajectory`, trajectory
+accessors, `chewi1013_young_lower_bound`,
+`bregmanDivergence_nonneg_of_firstOrderStrongConvexOn`,
+`onlineMirrorDescentModel_lower_of_norm_bound`,
+`onlineMirrorDescent_oneStep_regret`,
+`onlineMirrorDescent_regret_gap_sum_le_of_oneStep`,
+`chewi1013_regret_bound_of_oneStep`,
+`chewi1013_regret_bound_of_trajectory`,
+`chewi1013_regret_bound_of_trajectory_norm_bound`,
+`chewi1013_stepsize_rhs_bound`, and
+`chewi1013_regret_bound_of_trajectory_norm_bound_stepsize`.
 Search-first result: mathlib has no direct Bregman/mirror-descent/MPGD theorem
 in the pinned tree; the relevant reuse is local `Bregman.lean`,
 `Proximal.lean`, Chapter 3 geometric-weight/Gronwall APIs,
 `ProjectedSubgradient.lean` finite-average/Jensen APIs,
 `LipschitzOnWith.le_add_mul`, `abs_real_inner_le_norm`, and
-`FirstOrderStrongConvexOn.lower_model`.  The active route is now Theorem 10.13
-OMD regret if bounded, starting with the linear-loss OMD model/step interface,
-one-step regret inequality, ordinary Hilbert-norm Young lower bound, and finite
-comparator telescope; generalize 10.11/10.13 to a custom arbitrary
-norm/dual-norm interface only when exact source/report packaging demands it.  In
-parallel, map and open Chapter 11
-alternating Bregman projection/minimization and Chapter 12/13
-stochastic/Newton theorem packets with source-shaped supplied interfaces first
-when exact analytic dependencies would otherwise stall progress.
+`FirstOrderStrongConvexOn.lower_model`.  The active route is now Chapter 11
+alternating Bregman projection/minimization, starting with a Bregman projection
+step certificate, ABP trajectory interface, and Lemma 11.2 finite telescoping
+packet.  Generalize 10.11/10.13 to a custom arbitrary norm/dual-norm interface
+or add an exact `sInf` wrapper only when source-report packaging or a later
+theorem demands it.  In parallel, map Chapter 12/13 stochastic/Newton theorem
+packets with source-shaped supplied interfaces first when exact analytic
+dependencies would otherwise stall progress.
 
 Current manual goal frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
