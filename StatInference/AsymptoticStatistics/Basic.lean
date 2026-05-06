@@ -377,5 +377,43 @@ theorem vaart1998_theorem_3_1_delta_method_of_localization_tight
   exact vaart1998_theorem_3_1_delta_method_of_scaled_remainder
     (L := L) hW hR hR_meas
 
+/--
+van der Vaart 1998, Theorem 3.1, sequence form with an `O_P(1)` scaled
+statistic.
+
+For ordinary sequences, the real-tail tightness field in
+`vaart1998_theorem_3_1_delta_method_of_localization_tight` is exactly the local
+`StochasticBounded` predicate.
+-/
+theorem vaart1998_theorem_3_1_delta_method_of_localization_stochasticBounded
+    {Ω : Type v} {Ω' : Type w} {E : Type x} {F : Type y}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [MeasurableSpace F] [SecondCountableTopology F] [BorelSpace F]
+    [OpensMeasurableSpace F]
+    {Tn : ℕ -> Ω -> E} {T : Ω' -> E} {phi : E -> F} {theta : E}
+    {r : ℕ -> ℝ}
+    (L : E →L[ℝ] F)
+    (hW : TendstoInDistribution
+      (fun n ω => r n • (Tn n ω - theta)) atTop T (fun _ => P) Q)
+    (hR_local : ∀ ε : ℝ, 0 < ε -> ∀ M : ℝ, 0 < M ->
+      ∀ᶠ n in atTop,
+        {ω |
+          ε ≤ ‖r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))‖} ⊆
+        {ω | M ≤ ‖r n • (Tn n ω - theta)‖})
+    (hW_OP : StochasticBounded P
+      (fun n ω => r n • (Tn n ω - theta)))
+    (hR_meas : ∀ n, AEMeasurable
+      (fun ω => r n • (phi (Tn n ω) - phi theta - L (Tn n ω - theta))) P) :
+    TendstoInDistribution
+      (fun n ω => r n • (phi (Tn n ω) - phi theta)) atTop
+      (fun ω => L (T ω)) (fun _ => P) Q :=
+  vaart1998_theorem_3_1_delta_method_of_localization_tight
+    (L := L) hW hR_local hW_OP hR_meas
+
 end AsymptoticStatistics
 end StatInference

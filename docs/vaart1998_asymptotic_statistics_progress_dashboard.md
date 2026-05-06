@@ -34,6 +34,8 @@ The initial Lean target is Chapter 2 plus Chapter 3 substrate:
   `vaart1998_tendstoInMeasure_zero_of_eventually_subset_tight`.
 - Theorem 3.1 tight-localization wrapper
   `vaart1998_theorem_3_1_delta_method_of_localization_tight`.
+- Theorem 3.1 ordinary-sequence `O_P(1)` wrapper
+  `vaart1998_theorem_3_1_delta_method_of_localization_stochasticBounded`.
 
 Verification passed for the pushed Vaart packet `4afbd3b` on remote main
 `b36be5f`:

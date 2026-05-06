@@ -83,6 +83,8 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_tendstoInMeasure_zero_of_eventually_subset_tight`.
 9. Theorem 3.1 tight-localization wrapper:
    `vaart1998_theorem_3_1_delta_method_of_localization_tight`.
+10. Theorem 3.1 ordinary-sequence `O_P(1)` wrapper:
+   `vaart1998_theorem_3_1_delta_method_of_localization_stochasticBounded`.
 
 Verified Vaart packet: `4afbd3b` (`Add Vaart asymptotic statistics Lean lane`),
 included in remote `main` at `b36be5f`.
