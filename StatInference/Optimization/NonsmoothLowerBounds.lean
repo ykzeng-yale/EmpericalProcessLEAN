@@ -245,6 +245,20 @@ theorem chewi621_quadratic_subgradient_ineq {d : ℕ}
   rw [hdiff]
   nlinarith [mul_nonneg halpha_nonneg hsq_nonneg]
 
+/-- The quadratic part's exact `alpha`-strong first-order lower model. -/
+theorem chewi621_quadratic_strong_subgradient_ineq {d : ℕ}
+    (alpha : ℝ) (x y : EuclideanSpace ℝ (Fin d)) :
+    (alpha / 2) * ‖x‖ ^ (2 : ℕ) + inner ℝ (alpha • x) (y - x) +
+        (alpha / 2) * ‖y - x‖ ^ (2 : ℕ) =
+      (alpha / 2) * ‖y‖ ^ (2 : ℕ) := by
+  have hdecomp : y = x + (y - x) := by
+    module
+  rw [hdecomp, norm_add_sq_real, real_inner_smul_left]
+  have hdiff : x + (y - x) - x = y - x := by
+    module
+  rw [hdiff]
+  ring
+
 /-- The first-max part's subgradient inequality. -/
 theorem chewi621_firstMax_subgradient_ineq {d : ℕ} [NeZero d]
     {gamma : ℝ} (hgamma_nonneg : 0 ≤ gamma)
@@ -319,6 +333,47 @@ theorem chewi621HardObjective_firstOrderConvexOn_univ
       halpha_nonneg hgamma_nonneg x
   simpa using hsub.2 (by simp : y ∈ (Set.univ :
     Set (EuclideanSpace ℝ (Fin d))))
+
+/--
+First-order strong-convexity certificate for the hard objective.  The max part
+is convex via the first-max subgradient; the quadratic part supplies the
+`alpha` lower-model correction exactly.
+-/
+theorem chewi621HardObjective_firstOrderStrongConvexOn_univ
+    {d : ℕ} [NeZero d] {alpha gamma : ℝ}
+    (hgamma_nonneg : 0 ≤ gamma) :
+    FirstOrderStrongConvexOn Set.univ
+      (chewi621HardObjective (d := d) alpha gamma)
+      (chewi621FirstMaxOracle (d := d) alpha gamma) alpha := by
+  refine ⟨convex_univ, ?_⟩
+  intro x _hx y _hy
+  have hmax :=
+    chewi621_firstMax_subgradient_ineq
+      (d := d) (gamma := gamma) hgamma_nonneg x y
+  have hquad :=
+    chewi621_quadratic_strong_subgradient_ineq
+      (d := d) alpha x y
+  calc
+    chewi621HardObjective (d := d) alpha gamma x +
+        inner ℝ (chewi621FirstMaxOracle (d := d) alpha gamma x) (y - x) +
+          (alpha / 2) * ‖y - x‖ ^ (2 : ℕ)
+        =
+      (gamma * chewi621CoordinateMax x +
+          inner ℝ
+            (gamma • chewi621CoordinateBasis (chewi621FirstMaxIndex (d := d) x))
+            (y - x)) +
+        ((alpha / 2) * ‖x‖ ^ (2 : ℕ) + inner ℝ (alpha • x) (y - x) +
+          (alpha / 2) * ‖y - x‖ ^ (2 : ℕ)) := by
+          simp [chewi621HardObjective, chewi621FirstMaxOracle, inner_add_left]
+          ring
+    _ ≤ gamma * chewi621CoordinateMax y +
+        (alpha / 2) * ‖y‖ ^ (2 : ℕ) := by
+          rw [hquad]
+          have hmax' :=
+            add_le_add_right hmax ((alpha / 2) * ‖y‖ ^ (2 : ℕ))
+          simpa [add_assoc, add_comm, add_left_comm] using hmax'
+    _ = chewi621HardObjective (d := d) alpha gamma y := by
+      rfl
 
 /--
 The support calculation for Chewi's first-max oracle: if an iterate is in
@@ -473,6 +528,68 @@ theorem chewi621HardObjective_lipschitzOnWith_closedBall_zero
       _ ≤ (gamma + alpha * R) * dist x y := by simpa [hdist] using hmul
   nlinarith
 
+/--
+Bounded-domain Lipschitz certificate on a ball with arbitrary center.  This is
+the source-shaped form needed for Theorems 6.21 and 6.22, whose local domain is
+`B(x_*, R)`.
+-/
+theorem chewi621HardObjective_lipschitzOnWith_closedBall
+    {d : ℕ} [NeZero d] {alpha gamma R : ℝ}
+    (center : EuclideanSpace ℝ (Fin d))
+    (halpha_nonneg : 0 ≤ alpha) (hgamma_nonneg : 0 ≤ gamma) :
+    LipschitzOnWith (Real.toNNReal (gamma + alpha * (‖center‖ + R)))
+      (chewi621HardObjective (d := d) alpha gamma)
+      (Metric.closedBall center R) := by
+  refine LipschitzOnWith.of_le_add_mul'
+    (gamma + alpha * (‖center‖ + R)) ?_
+  intro x hx y _hy
+  have hxcenter : ‖x - center‖ ≤ R := by
+    simpa [Metric.mem_closedBall, dist_eq_norm] using hx
+  have hxnorm : ‖x‖ ≤ ‖center‖ + R := by
+    have hdecomp : center + (x - center) = x := by
+      module
+    calc
+      ‖x‖ = ‖center + (x - center)‖ := by rw [hdecomp]
+      _ ≤ ‖center‖ + ‖x - center‖ := norm_add_le _ _
+      _ ≤ ‖center‖ + R := by nlinarith
+  let p := chewi621FirstMaxOracle (d := d) alpha gamma x
+  have hgap :
+      chewi621HardObjective (d := d) alpha gamma x -
+          chewi621HardObjective (d := d) alpha gamma y ≤
+        inner ℝ p (x - y) := by
+    simpa [p] using
+      (chewi621FirstMaxOracle_isSubgradientAt_univ
+        (d := d) (alpha := alpha) (gamma := gamma)
+        halpha_nonneg hgamma_nonneg x).gap_le_inner
+        (C := Set.univ) (y := y) (by simp)
+  have hinner :
+      inner ℝ p (x - y) ≤ ‖p‖ * ‖x - y‖ :=
+    real_inner_le_norm p (x - y)
+  have hp_norm :
+      ‖p‖ ≤ gamma + alpha * (‖center‖ + R) := by
+    simpa [p] using
+      chewi621FirstMaxOracle_norm_le_of_norm_le
+        (d := d) (alpha := alpha) (gamma := gamma)
+        (R := ‖center‖ + R) halpha_nonneg hgamma_nonneg hxnorm
+  have hmul :
+      ‖p‖ * ‖x - y‖ ≤
+        (gamma + alpha * (‖center‖ + R)) * ‖x - y‖ :=
+    mul_le_mul_of_nonneg_right hp_norm (norm_nonneg _)
+  have hdist : dist x y = ‖x - y‖ := by
+    simpa using (dist_eq_norm x y)
+  have hgap_dist :
+      chewi621HardObjective (d := d) alpha gamma x -
+          chewi621HardObjective (d := d) alpha gamma y ≤
+        (gamma + alpha * (‖center‖ + R)) * dist x y := by
+    calc
+      chewi621HardObjective (d := d) alpha gamma x -
+          chewi621HardObjective (d := d) alpha gamma y ≤
+            inner ℝ p (x - y) := hgap
+      _ ≤ ‖p‖ * ‖x - y‖ := hinner
+      _ ≤ (gamma + alpha * (‖center‖ + R)) * dist x y := by
+          simpa [hdist] using hmul
+  nlinarith
+
 /-- Chewi's displayed 6.21 parameters have local Lipschitz constant at most `L`. -/
 theorem chewi621_source_lipschitz_constant_le
     {N : ℕ} {L R : ℝ} (hL_nonneg : 0 ≤ L) (hR_pos : 0 < R) :
@@ -539,6 +656,86 @@ theorem chewi621HardObjective_lipschitzOnWith_source_closedBall_zero
         (N := N) (L := L) (R := R) hL_nonneg hR_pos
   have hcoef :
       (Real.toNNReal (gamma + alpha * R) : ℝ) * dist x y ≤
+        L * dist x y := by
+    rw [Real.coe_toNNReal _ hK_nonneg]
+    exact mul_le_mul_of_nonneg_right hK_le dist_nonneg
+  nlinarith
+
+/-- Chewi's displayed 6.21 parameters are `L`-Lipschitz on `B(x_*, R)`. -/
+theorem chewi621_source_center_lipschitz_constant_le
+    {N : ℕ} {L R : ℝ} (hL_nonneg : 0 ≤ L) (hR_pos : 0 < R) :
+    L / 4 +
+        ((L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ))) * (R + R) ≤
+      L := by
+  have hsqrt_pos : 0 < Real.sqrt ((N + 1 : ℕ) : ℝ) := by positivity
+  have hR_ne : R ≠ 0 := ne_of_gt hR_pos
+  have hsqrt_ne :
+      Real.sqrt ((N + 1 : ℕ) : ℝ) ≠ 0 := ne_of_gt hsqrt_pos
+  have hsqrt_ge_one :
+      1 ≤ Real.sqrt ((N + 1 : ℕ) : ℝ) := by
+    rw [Real.one_le_sqrt]
+    norm_num
+  have hL2_nonneg : 0 ≤ L / 2 := by positivity
+  have hterm_eq :
+      ((L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ))) * (R + R) =
+        (L / 2) / Real.sqrt ((N + 1 : ℕ) : ℝ) := by
+    field_simp [hR_ne, hsqrt_ne]
+    ring
+  have hterm_le :
+      (L / 2) / Real.sqrt ((N + 1 : ℕ) : ℝ) ≤ L / 2 := by
+    rw [div_le_iff₀ hsqrt_pos]
+    nlinarith [mul_le_mul_of_nonneg_left hsqrt_ge_one hL2_nonneg]
+  rw [hterm_eq]
+  nlinarith
+
+/--
+Source-shaped centered-domain Lipschitz certificate for Theorem 6.21: Chewi's
+hard objective is `L`-Lipschitz on `B(x_*, R)`.
+-/
+theorem chewi621HardObjective_lipschitzOnWith_source_closedBall_minimizer
+    {N : ℕ} {L R : ℝ} (hL_pos : 0 < L) (hR_pos : 0 < R) :
+    LipschitzOnWith (Real.toNNReal L)
+      (chewi621HardObjective (d := N + 1)
+        ((L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ))) (L / 4))
+      (Metric.closedBall
+        (chewi621Minimizer (d := N + 1)
+          ((L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ))) (L / 4)) R) := by
+  let alpha := (L / 4) / (R * Real.sqrt ((N + 1 : ℕ) : ℝ))
+  let gamma := L / 4
+  let center : EuclideanSpace ℝ (Fin (N + 1)) :=
+    chewi621Minimizer (d := N + 1) alpha gamma
+  have hsqrt_pos : 0 < Real.sqrt ((N + 1 : ℕ) : ℝ) := by positivity
+  have hden_pos : 0 < R * Real.sqrt ((N + 1 : ℕ) : ℝ) :=
+    mul_pos hR_pos hsqrt_pos
+  have halpha_nonneg : 0 ≤ alpha :=
+    div_nonneg (div_nonneg hL_pos.le (by norm_num)) hden_pos.le
+  have hgamma_nonneg : 0 ≤ gamma :=
+    div_nonneg hL_pos.le (by norm_num)
+  have hcenter_norm : ‖center‖ = R := by
+    simpa [center, alpha, gamma] using
+      chewi621Minimizer_norm_eq_radius_source_alpha
+        (d := N + 1) (R := R) (gamma := L / 4)
+        hR_pos (ne_of_gt (by positivity : 0 < L / 4))
+  have hbase :
+      LipschitzOnWith (Real.toNNReal (gamma + alpha * (‖center‖ + R)))
+        (chewi621HardObjective (d := N + 1) alpha gamma)
+        (Metric.closedBall center R) :=
+    chewi621HardObjective_lipschitzOnWith_closedBall
+      (d := N + 1) (alpha := alpha) (gamma := gamma) (R := R)
+      center halpha_nonneg hgamma_nonneg
+  refine LipschitzOnWith.of_le_add_mul' L ?_
+  intro x hx y hy
+  have hraw := hbase.le_add_mul hx hy
+  have hK_nonneg : 0 ≤ gamma + alpha * (‖center‖ + R) := by
+    rw [hcenter_norm]
+    positivity
+  have hK_le : gamma + alpha * (‖center‖ + R) ≤ L := by
+    rw [hcenter_norm]
+    simpa [alpha, gamma] using
+      chewi621_source_center_lipschitz_constant_le
+        (N := N) (L := L) (R := R) hL_pos.le hR_pos
+  have hcoef :
+      (Real.toNNReal (gamma + alpha * (‖center‖ + R)) : ℝ) * dist x y ≤
         L * dist x y := by
     rw [Real.coe_toNNReal _ hK_nonneg]
     exact mul_le_mul_of_nonneg_right hK_le dist_nonneg
@@ -749,6 +946,174 @@ theorem chewi621_gap_ge_source_parameters
       halpha_pos hgamma_nonneg (Nat.lt_succ_self N) hx0 hspan
   rw [chewi621_source_parameter_gap_eq hL hR] at hgap
   exact hgap
+
+/-- Scalar simplification for Chewi Theorem 6.22 parameters. -/
+theorem chewi622_source_parameter_gap_eq
+    {N : ℕ} {alpha L : ℝ} (halpha : alpha ≠ 0) :
+    (L / 4) ^ (2 : ℕ) /
+        (2 * alpha * ((N + 1 : ℕ) : ℝ)) =
+      L ^ (2 : ℕ) / (32 * alpha * ((N + 1 : ℕ) : ℝ)) := by
+  have hN : ((N + 1 : ℕ) : ℝ) ≠ 0 := by positivity
+  field_simp [halpha, hN]
+  ring
+
+/-- Chewi Theorem 6.22's displayed radius for the strongly-convex hard instance. -/
+noncomputable def chewi622Radius (N : ℕ) (alpha L : ℝ) : ℝ :=
+  (L / 4) / (alpha * Real.sqrt ((N + 1 : ℕ) : ℝ))
+
+theorem chewi622Radius_pos
+    {N : ℕ} {alpha L : ℝ} (halpha : 0 < alpha) (hL : 0 < L) :
+    0 < chewi622Radius N alpha L := by
+  unfold chewi622Radius
+  positivity
+
+theorem chewi622_alpha_eq_source_radius
+    {N : ℕ} {alpha L : ℝ} (halpha : 0 < alpha) (hL : 0 < L) :
+    (L / 4) /
+        (chewi622Radius N alpha L * Real.sqrt ((N + 1 : ℕ) : ℝ)) =
+      alpha := by
+  have halpha_ne : alpha ≠ 0 := ne_of_gt halpha
+  have hL_ne : L ≠ 0 := ne_of_gt hL
+  have hsqrt_pos : 0 < Real.sqrt ((N + 1 : ℕ) : ℝ) := by positivity
+  have hsqrt_ne :
+      Real.sqrt ((N + 1 : ℕ) : ℝ) ≠ 0 := ne_of_gt hsqrt_pos
+  unfold chewi622Radius
+  field_simp [halpha_ne, hL_ne, hsqrt_ne]
+
+theorem chewi622Minimizer_norm_eq_radius
+    {N : ℕ} {alpha L : ℝ} (halpha : 0 < alpha) (hL : 0 < L) :
+    ‖chewi621Minimizer (d := N + 1) alpha (L / 4)‖ =
+      chewi622Radius N alpha L := by
+  have hR_pos := chewi622Radius_pos (N := N) halpha hL
+  have hgamma_ne : L / 4 ≠ 0 := ne_of_gt (by positivity : 0 < L / 4)
+  have hnorm :=
+    chewi621Minimizer_norm_eq_radius_source_alpha
+      (d := N + 1) (R := chewi622Radius N alpha L) (gamma := L / 4)
+      hR_pos hgamma_ne
+  rw [chewi622_alpha_eq_source_radius (N := N) halpha hL] at hnorm
+  exact hnorm
+
+theorem chewi622_zero_dist_minimizer_le_radius
+    {N : ℕ} {alpha L : ℝ} (halpha : 0 < alpha) (hL : 0 < L) :
+    dist (0 : EuclideanSpace ℝ (Fin (N + 1)))
+        (chewi621Minimizer (d := N + 1) alpha (L / 4)) ≤
+      chewi622Radius N alpha L := by
+  rw [dist_eq_norm, zero_sub, norm_neg]
+  exact (chewi622Minimizer_norm_eq_radius (N := N) halpha hL).le
+
+/-- Chewi's displayed 6.22 parameters are `L`-Lipschitz on `B(x_*, R)`. -/
+theorem chewi622_source_lipschitz_constant_le
+    {N : ℕ} {alpha L : ℝ} (halpha : 0 < alpha) (hL : 0 < L) :
+    L / 4 + alpha * (chewi622Radius N alpha L + chewi622Radius N alpha L) ≤
+      L := by
+  have halpha_ne : alpha ≠ 0 := ne_of_gt halpha
+  have hsqrt_pos : 0 < Real.sqrt ((N + 1 : ℕ) : ℝ) := by positivity
+  have hsqrt_ne :
+      Real.sqrt ((N + 1 : ℕ) : ℝ) ≠ 0 := ne_of_gt hsqrt_pos
+  have hsqrt_ge_one :
+      1 ≤ Real.sqrt ((N + 1 : ℕ) : ℝ) := by
+    rw [Real.one_le_sqrt]
+    norm_num
+  have hL2_nonneg : 0 ≤ L / 2 := by positivity
+  have hterm_eq :
+      alpha * (chewi622Radius N alpha L + chewi622Radius N alpha L) =
+        (L / 2) / Real.sqrt ((N + 1 : ℕ) : ℝ) := by
+    unfold chewi622Radius
+    field_simp [halpha_ne, hsqrt_ne]
+    ring
+  have hterm_le :
+      (L / 2) / Real.sqrt ((N + 1 : ℕ) : ℝ) ≤ L / 2 := by
+    rw [div_le_iff₀ hsqrt_pos]
+    nlinarith [mul_le_mul_of_nonneg_left hsqrt_ge_one hL2_nonneg]
+  rw [hterm_eq]
+  nlinarith
+
+/--
+Source-shaped centered-domain Lipschitz certificate for Theorem 6.22: the
+strongly-convex hard objective is `L`-Lipschitz on `B(x_*, R)`.
+-/
+theorem chewi622HardObjective_lipschitzOnWith_source_closedBall_minimizer
+    {N : ℕ} {alpha L : ℝ} (halpha : 0 < alpha) (hL : 0 < L) :
+    LipschitzOnWith (Real.toNNReal L)
+      (chewi621HardObjective (d := N + 1) alpha (L / 4))
+      (Metric.closedBall
+        (chewi621Minimizer (d := N + 1) alpha (L / 4))
+        (chewi622Radius N alpha L)) := by
+  let center : EuclideanSpace ℝ (Fin (N + 1)) :=
+    chewi621Minimizer (d := N + 1) alpha (L / 4)
+  let R := chewi622Radius N alpha L
+  have hR_pos : 0 < R := by
+    simpa [R] using chewi622Radius_pos (N := N) halpha hL
+  have hgamma_nonneg : 0 ≤ L / 4 := by positivity
+  have hcenter_norm : ‖center‖ = R := by
+    simpa [center, R] using
+      chewi622Minimizer_norm_eq_radius (N := N) halpha hL
+  have hbase :
+      LipschitzOnWith (Real.toNNReal (L / 4 + alpha * (‖center‖ + R)))
+        (chewi621HardObjective (d := N + 1) alpha (L / 4))
+        (Metric.closedBall center R) :=
+    chewi621HardObjective_lipschitzOnWith_closedBall
+      (d := N + 1) (alpha := alpha) (gamma := L / 4) (R := R)
+      center halpha.le hgamma_nonneg
+  refine LipschitzOnWith.of_le_add_mul' L ?_
+  intro x hx y hy
+  have hraw := hbase.le_add_mul hx hy
+  have hK_nonneg : 0 ≤ L / 4 + alpha * (‖center‖ + R) := by
+    rw [hcenter_norm]
+    nlinarith [halpha, hL, hR_pos]
+  have hK_le : L / 4 + alpha * (‖center‖ + R) ≤ L := by
+    rw [hcenter_norm]
+    simpa [R] using
+      chewi622_source_lipschitz_constant_le
+        (N := N) (alpha := alpha) (L := L) halpha hL
+  have hcoef :
+      (Real.toNNReal (L / 4 + alpha * (‖center‖ + R)) : ℝ) * dist x y ≤
+        L * dist x y := by
+    rw [Real.coe_toNNReal _ hK_nonneg]
+    exact mul_le_mul_of_nonneg_right hK_le dist_nonneg
+  nlinarith
+
+/--
+Chewi Theorem 6.22 source-rate lower-bound packet for the concrete
+`d = N + 1` hard instance.  The same first-max oracle lower-bound construction
+with `gamma = L / 4` yields a strongly-convex nonsmooth obstruction of order
+`L^2 / (alpha * N)`.
+-/
+theorem chewi622_gap_ge_source_parameters
+    {N : ℕ} {alpha L : ℝ}
+    {x : ℕ -> EuclideanSpace ℝ (Fin (N + 1))}
+    (halpha : 0 < alpha) (hL : 0 < L)
+    (hx0 : x 0 = 0)
+    (hspan :
+      IsGradientSpanTrajectory
+        (chewi621FirstMaxOracle (d := N + 1) alpha (L / 4)) x) :
+    L ^ (2 : ℕ) / (32 * alpha * ((N + 1 : ℕ) : ℝ)) ≤
+      chewi621HardObjective (d := N + 1) alpha (L / 4) (x N) -
+        chewi621HardObjective (d := N + 1) alpha (L / 4)
+          (chewi621Minimizer (d := N + 1) alpha (L / 4)) := by
+  have hgamma_nonneg : 0 ≤ L / 4 := by positivity
+  have hgap :=
+    chewi621_gap_ge_minimizer_value_of_firstMaxGradientSpan
+      (d := N + 1) (N := N)
+      (alpha := alpha) (gamma := L / 4) (x := x)
+      halpha hgamma_nonneg (Nat.lt_succ_self N) hx0 hspan
+  rw [chewi622_source_parameter_gap_eq (N := N) (alpha := alpha) (L := L)
+    (ne_of_gt halpha)] at hgap
+  exact hgap
+
+/--
+Source-shaped first-order strong-convexity certificate for the concrete
+Theorem 6.22 hard instance.
+-/
+theorem chewi622HardObjective_firstOrderStrongConvexOn_source_univ
+    {N : ℕ} {alpha L : ℝ} (hL_nonneg : 0 ≤ L) :
+    FirstOrderStrongConvexOn Set.univ
+      (chewi621HardObjective (d := N + 1) alpha (L / 4))
+      (chewi621FirstMaxOracle (d := N + 1) alpha (L / 4)) alpha := by
+  exact
+    chewi621HardObjective_firstOrderStrongConvexOn_univ
+      (d := N + 1) (alpha := alpha) (gamma := L / 4)
+      (div_nonneg hL_nonneg (by norm_num))
 
 end Optimization
 end StatInference

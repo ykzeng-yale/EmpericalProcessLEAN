@@ -43,22 +43,25 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
-Current manual goal frontier after rebasing local `main` onto `origin/main` at
-`1b3ae5b` and verifying the local packet `Certify Chewi theorem 6.21 oracle and
-radius`: the lane has moved from Lemma 6.20 packaging into Chapter 6 Theorem
-6.21 nonsmooth lower bounds.  Treat `ProjectedSubgradient.lean`,
+Current manual goal frontier after fetching `origin/main` at `c8916aa` and
+verifying the local packet `Add Chewi theorem 6.22 lower bound packet`: the
+lane has moved from Lemma 6.20 packaging through Chapter 6 Theorems 6.21 and
+6.22 nonsmooth lower-bound source packets.  Treat `ProjectedSubgradient.lean`,
 `CuttingPlane.lean`, and `Ellipsoid.lean` as stable infrastructure through
 Theorems 6.14/6.16, the supplied CoGM 6.19 rate spine, and the supplied Lemma
 6.20 ellipsoid trajectory/rate with displayed matrix certificates.  The active
 Lean anchor is `StatInference/Optimization/NonsmoothLowerBounds.lean`, where
 the concrete `d = N + 1` hard instance now compiles through first-max oracle
 `IsSubgradientAt`, prefix support, source-rate gap, source-radius facts,
-source first-order convexity, and source bounded-domain Lipschitz facts.  The
-next theorem-sized packet should either add the literal arbitrary `d > N`
-embedding/report wrapper for Theorem 6.21, if the source-matched statement
-needs it, or advance directly to Theorem 6.22 and Definition 6.24/Theorem
-6.25.  The detailed Lemma 6.20 frontier below is retained only as dependency
-context and should not be used as the active route.
+source first-order convexity, centered source bounded-domain Lipschitz facts,
+and reusable first-order strong-convexity facts.  The same module now compiles
+the 6.22 displayed radius, `x0 = 0` radius membership, source-rate gap
+`L^2/(32 alpha (N+1))`, and source strong-convex/Lipschitz wrappers.  The next
+theorem-sized packet should only add a literal arbitrary `d > N`
+embedding/report wrapper for 6.21/6.22 if exact theorem reporting requires it;
+otherwise advance directly to Theorem 6.23 and Definition 6.24/Theorem 6.25.
+The detailed Lemma 6.20 frontier below is retained only as dependency context
+and should not be used as the active route.
 
 Historical manual goal frontier after rebasing local `main` onto `origin/main` at
 `038e7e3` (`Add weak convergence asymptotic tightness bridge`) with the verified pushed
@@ -283,14 +286,16 @@ compiles the constant minimizer `x_*[k] = -γ/(α d)`, its objective value
 concrete `γ^2/(2αd)` obstruction, and the source-parameter
 `d = N + 1`, `γ = L / 4`, `α = γ / (R sqrt d)` lower bound
 `L * R / (8 * sqrt (N + 1))`.  The latest packet also proves the first-max
-oracle is a whole-space `IsSubgradientAt` of the hard objective and proves the
-displayed radius facts `‖x_*‖ = R` and `dist 0 x_* <= R`.  The next target is
-to certify the remaining source side conditions for Theorem 6.21:
-bounded-domain Lipschitz and an arbitrary-`d > N` embedding only if the literal
-statement needs it before moving to Theorem 6.22.  Search local PSD, CoGM,
-ellipsoid, lower-bound, nonsmooth-lower-bound, and exercise APIs first before
-adding new wrappers.  The closed ellipsoid matrix packet remains reusable
-background:
+oracle is a whole-space `IsSubgradientAt` of the hard objective, proves the
+displayed radius facts `‖x_*‖ = R` and `dist 0 x_* <= R`, promotes the hard
+family to centered `B(x_*, R)` Lipschitz and first-order strong-convexity
+certificates, and proves the Chewi 6.22 source-rate packet with displayed
+radius, `x0` membership, strong-convexity, and Lipschitz side conditions.  The
+next target is Theorem 6.23 or Definition 6.24/Theorem 6.25 feasibility; add an
+arbitrary-`d > N` embedding/report wrapper for 6.21/6.22 only if the literal
+statement/report requires it.  Search local PSD, CoGM, ellipsoid, lower-bound,
+nonsmooth-lower-bound, and exercise APIs first before adding new wrappers.  The
+closed ellipsoid matrix packet remains reusable background:
 the current matrix quadratic, positive denominator, normalized cut direction
 algebra, raw symmetric square-root cut bridge, PosDef invertibility/cancellation
 bridge, pullback-standard-cut certificate, current `Σ⁻¹` identification, and
