@@ -28,9 +28,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
   work.
-- Current manual frontier after rebasing over remote main `22397e5` (`Update
-  Vaart proof lane dashboard`) on 2026-05-06 and focused Lean verification of
-  the local Chewi Theorem 11.8 last-iterate mirror-descent wrapper:
+- Current manual frontier after pushed Optimization commit `fcfa359` (`Add
+  Chewi Sinkhorn last iterate wrapper`) on 2026-05-06 and focused Lean
+  verification of the local Chewi Theorem 11.8 Sinkhorn mirror-descent
+  certificate endpoint:
   Chapter 9/10 now has a compiled finite-valued
   Fenchel/Bregman/mirror substrate.  `MirrorDescent.lean` compiles
   `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
@@ -197,7 +198,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi118_last_gap_le_of_recurrence` and
   `chewi118_last_gap_le_of_oneStep` in `MirrorDescent.lean`, turning the
   zero-error Bregman recurrence plus monotone objective/KL gaps into Chewi
-  Theorem 11.8's last-iterate `D_0 / N` rate.
+  Theorem 11.8's last-iterate `D_0 / N` rate.  The newest local
+  `AlternatingBregman.lean` packet adds
+  `IsChewi118SinkhornMirrorDescentCertificate`,
+  `IsChewi118SinkhornMirrorDescentCertificate.last_rowMarginalKL_le`, and
+  `chewi118_sinkhorn_last_rowMarginalKL_le_of_mirrorDescent`, isolating the
+  concrete finite row-normalization/KL identities as certificate fields and
+  proving the source-shaped last `X`-marginal KL rate from them.
   Exact 10.13 `sInf` or arbitrary norm/dual-norm packaging is deferred until
   source-report exactness or a later theorem demands it.
 - Current manual frontier after focused Lean verification rebased over pushed
@@ -406,17 +413,18 @@ High-value local files:
 
 ## Current Active Target
 
-Current active target after rebasing over remote main `22397e5` and focused
-Lean verification of the local Theorem 11.8 last-iterate wrapper: treat
+Current active target after focused Lean and module-build verification of the
+local Theorem 11.8 Sinkhorn/mirror-descent certificate endpoint: treat
 Chapters 3-8, Chapter 9/10 mirror-descent substrate, Chapter 11.2/11.3 ABP
 telescope, Chapter 11.4 AM, Chapter 11.5 RAM, and the 11.7 selector layer as
-stable infrastructure.  The live manual `/goal` frontier is
-`StatInference/Optimization/MirrorDescent.lean` plus the Sinkhorn-facing KL
-interfaces that will consume it.  Next theorem-sized packet: instantiate
-`chewi118_last_gap_le_of_oneStep` with finite row/column Sinkhorn
-normalization identities, terminal KL nonnegativity, monotone KL gap, and the
-zero-error Bregman recurrence to prove the source-shaped Theorem 11.8
-`KL(mu^N || mu) <= KL(gamma* || gamma^0) / N`; then open Chapter 12 SMPGD.
+stable infrastructure.  The live manual `/goal` frontier is now the concrete
+finite Sinkhorn KL identity layer that must instantiate
+`IsChewi118SinkhornMirrorDescentCertificate`.  Next theorem-sized packet:
+prove the row/column normalization identities, terminal KL nonnegativity,
+monotone row-marginal KL gap, zero-error Bregman recurrence, and
+initial-divergence identification needed by
+`chewi118_sinkhorn_last_rowMarginalKL_le_of_mirrorDescent`; then open Chapter
+12 SMPGD.
 This paragraph supersedes older Chapter 6, Chapter 7, Chapter 8, Chapter 11.4,
 and RAM next-target language below.
 Fresh search result: reuse local 11.7 selectors and 11.8 wrappers, local

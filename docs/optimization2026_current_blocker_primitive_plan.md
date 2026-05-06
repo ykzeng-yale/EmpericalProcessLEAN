@@ -88,10 +88,10 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after rebasing over remote main
-`22397e5` (`Update Vaart proof lane dashboard`) on 2026-05-06 and focused
-Lean verification of the local Chewi Theorem 11.8 last-iterate
-mirror-descent wrapper:
+Current live replacement `/goal` prompt after the pushed Optimization frontier
+`fcfa359` (`Add Chewi Sinkhorn last iterate wrapper`) on 2026-05-06 and
+focused Lean verification of the local Chewi Theorem 11.8 Sinkhorn
+mirror-descent certificate endpoint:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -106,27 +106,27 @@ infrastructure, Chapter 9/10/11.2-11.4 as reusable Bregman/MPGD/ABP/AM
 substrate, `StatInference/Optimization/RandomizedAlternatingMinimization.lean`
 as stable through the source-shaped Chewi Theorem 11.5 strong/weak RAM rates,
 `StatInference/Optimization/AlternatingBregman.lean` as stable through the
-Theorem 11.7 ABP/Pinsker selector layer, and
-`StatInference/Optimization/MirrorDescent.lean` as the current active Theorem
-11.8 promotion gate.
+Theorem 11.7 ABP/Pinsker selector layer and the Theorem 11.8
+Sinkhorn/mirror-descent certificate endpoint.
 
-Immediate aggressive target: promote Chewi Theorem 11.8 from the newly
-verified scalar last-iterate mirror-descent wrapper to a Sinkhorn-facing
-theorem packet.  Do not redo the 10.11 average-gap telescope, the 11.5 RAM
-recurrences, or the 11.7 selector wrappers.  First search local
-`MirrorDescent.lean`, `AlternatingBregman.lean`, `Bregman.lean`, probability
-KL wrappers, and pinned mathlib finite-sum/KL/Pinsker/marginal APIs.  Then
-instantiate the zero-error Bregman recurrence, monotone KL gap, terminal
-nonnegativity, and finite row/column-normalization identities needed to turn
-`chewi118_last_gap_le_of_oneStep` into the source-shaped Sinkhorn
-`KL(mu^N || mu) <= KL(gamma* || gamma^0) / N` statement.  If the concrete
+Immediate aggressive target: instantiate the compiled
+`IsChewi118SinkhornMirrorDescentCertificate` fields for concrete finite
+Sinkhorn row-normalization/KL identities.  Do not redo the 10.11 average-gap
+telescope, the 11.5 RAM recurrences, the 11.7 selector wrappers, or the 11.8
+certificate endpoint.  First search local `MirrorDescent.lean`,
+`AlternatingBregman.lean`, `Bregman.lean`, probability KL wrappers, and pinned
+mathlib finite-sum/KL/Pinsker/marginal APIs.  Then prove the missing
+row/column-normalization KL identities that supply the zero-error Bregman
+recurrence, monotone row-marginal KL gap, terminal nonnegativity, and initial
+Bregman-to-`KL(gammaStar || gamma^0)` identification.  If those concrete
 finite KL identities balloon, record the exact missing identities and open
 Chapter 12 SMPGD with supplied stochastic one-step/rate interfaces in parallel.
 
 Fresh search-first result for this target: local Optimization now has the
-11.7 Sinkhorn selectors in `AlternatingBregman.lean` and the 11.8 last-iterate
-wrappers in `MirrorDescent.lean`; local probability support has product-law
-and marginal expectation wrappers in `StatInference/ProbabilityMeasure` and
+11.7 Sinkhorn selectors and 11.8 Sinkhorn/mirror-descent certificate endpoint
+in `AlternatingBregman.lean`, plus the 11.8 last-iterate wrappers in
+`MirrorDescent.lean`; local probability support has product-law and marginal
+expectation wrappers in `StatInference/ProbabilityMeasure` and
 `StatInference/ProbabilityTheory`; pinned mathlib has
 `Mathlib.InformationTheory.KullbackLeibler.Basic`,
 `Mathlib.InformationTheory.KullbackLeibler.ChainRule`, and
@@ -135,13 +135,20 @@ Sinkhorn normalization KL identity was found, so that is the next missing
 formal layer before the source-shaped 11.8 statement.
 
 Latest verified Optimization proof frontier:
-remote `origin/main` is at `22397e5`, the latest pushed Optimization commit is
-`d85b78c` (`Add Chewi Sinkhorn full half selectors`), and the current local
-focused Lean check verifies `StatInference/Optimization/MirrorDescent.lean`
-with `chewi118_last_gap_le_of_recurrence` and
-`chewi118_last_gap_le_of_oneStep`.  These two wrappers derive Chewi Theorem
-11.8's last-iterate `D_0 / N` rate from a zero-error Bregman descent
-recurrence plus monotonicity of the displayed objective/KL gaps.
+remote `origin/main` is at `fcfa359`, and the current local focused Lean and
+module build verify `StatInference/Optimization/AlternatingBregman.lean` with
+`IsChewi118SinkhornMirrorDescentCertificate`,
+`IsChewi118SinkhornMirrorDescentCertificate.last_rowMarginalKL_le`, and
+`chewi118_sinkhorn_last_rowMarginalKL_le_of_mirrorDescent`.  This packet turns
+the generic 11.8 last-iterate wrapper into the source-shaped Sinkhorn endpoint:
+once the finite KL normalization identities supply the certificate fields, the
+last `X`-marginal KL is bounded by
+`KL(gammaStar || gamma^0) / N`.
+`StatInference/Optimization/MirrorDescent.lean` verifies
+`chewi118_last_gap_le_of_recurrence` and `chewi118_last_gap_le_of_oneStep`.
+These two wrappers derive Chewi Theorem 11.8's last-iterate `D_0 / N` rate
+from a zero-error Bregman descent recurrence plus monotonicity of the displayed
+objective/KL gaps.
 `StatInference/Optimization/RandomizedAlternatingMinimization.lean` compiles
 the Chewi 11.5 strong and weak scalar expected-gap certificates, nonnegative
 weak wrappers, and Hopf-Lax bridge wrappers:
@@ -422,11 +429,13 @@ attempting full martingale/CLT formalization.
 
 Active aggressive target ladder:
 
-1. Promote Chewi Theorem 11.8 from the compiled mirror-descent last-iterate
-   wrapper to the Sinkhorn-facing theorem.  Reuse `chewi118_last_gap_le_of_oneStep`,
-   the 11.7 ABP/Pinsker selectors, and existing finite KL/Pinsker/marginal
-   interfaces; only formalize the missing row/column-normalization KL
-   identities and monotone gap/zero-error recurrence fields.
+1. Instantiate the compiled Chewi Theorem 11.8 Sinkhorn/mirror-descent
+   certificate with concrete finite row/column-normalization KL identities.
+   Reuse `IsChewi118SinkhornMirrorDescentCertificate`,
+   `chewi118_sinkhorn_last_rowMarginalKL_le_of_mirrorDescent`, the 11.7
+   ABP/Pinsker selectors, and existing finite KL/Pinsker/marginal interfaces;
+   only formalize the missing row/column-normalization KL identities and
+   monotone gap/zero-error recurrence fields.
 2. Finish exact Sinkhorn Theorem 11.7/11.8 source packaging from the compiled
    ABP and mirror-descent layers; do not expand full EOT duality unless exact
    Theorem 11.6 reporting is requested.

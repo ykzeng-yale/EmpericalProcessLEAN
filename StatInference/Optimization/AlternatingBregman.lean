@@ -338,5 +338,58 @@ theorem chewi117_exists_sinkhorn_half_iterate_error_sum_le_of_abp
   rw [hrow_zero n]
   nlinarith
 
+/--
+Source-shaped certificate for Chewi Theorem 11.8 after interpreting Sinkhorn
+as mirror descent.  The concrete finite Sinkhorn/KL work is isolated in these
+fields: the zero-error Bregman recurrence, monotonicity of the marginal KL
+gaps, nonnegativity of the terminal divergence, and identification of the
+initial Bregman divergence with `KL(gammaStar || gamma^0)`.
+-/
+structure IsChewi118SinkhornMirrorDescentCertificate
+    (phi : E -> ℝ) (gradPhi : E -> E) (gamma : ℕ -> E) (gammaStar : E)
+    (rowMarginalKL : ℕ -> ℝ) (initialCouplingKL : ℝ) (N : ℕ) : Prop where
+  terminal_nonneg : 0 ≤ bregmanDivergence phi gradPhi gammaStar (gamma N)
+  one_step : ∀ n, n < N ->
+    bregmanDivergence phi gradPhi gammaStar (gamma (n + 1)) ≤
+      bregmanDivergence phi gradPhi gammaStar (gamma n) -
+        rowMarginalKL (n + 1)
+  monotone_to_last : ∀ n, n < N ->
+    rowMarginalKL N ≤ rowMarginalKL (n + 1)
+  initial_eq : bregmanDivergence phi gradPhi gammaStar (gamma 0) =
+    initialCouplingKL
+
+/--
+Chewi Theorem 11.8, supplied-interface Sinkhorn/mirror-descent form:
+once the finite row-normalization identities supply the certificate, the last
+`X`-marginal KL obeys the displayed `KL(gammaStar || gamma^0) / N` rate.
+-/
+theorem IsChewi118SinkhornMirrorDescentCertificate.last_rowMarginalKL_le
+    {phi : E -> ℝ} {gradPhi : E -> E} {gamma : ℕ -> E} {gammaStar : E}
+    {rowMarginalKL : ℕ -> ℝ} {initialCouplingKL : ℝ} {N : ℕ}
+    (hcert : IsChewi118SinkhornMirrorDescentCertificate
+      phi gradPhi gamma gammaStar rowMarginalKL initialCouplingKL N)
+    (hN : N ≠ 0) :
+    rowMarginalKL N ≤ initialCouplingKL / (N : ℝ) := by
+  have hmain :=
+    chewi118_last_gap_le_of_recurrence
+      (D := fun n => bregmanDivergence phi gradPhi gammaStar (gamma n))
+      (gap := rowMarginalKL) hN
+      hcert.terminal_nonneg hcert.one_step hcert.monotone_to_last
+  simpa [hcert.initial_eq] using hmain
+
+/--
+Chewi Theorem 11.8, theorem-facing wrapper.  This is the source-shaped endpoint
+to instantiate for Sinkhorn after the finite KL row/column normalization
+identities are proved.
+-/
+theorem chewi118_sinkhorn_last_rowMarginalKL_le_of_mirrorDescent
+    {phi : E -> ℝ} {gradPhi : E -> E} {gamma : ℕ -> E} {gammaStar : E}
+    {rowMarginalKL : ℕ -> ℝ} {initialCouplingKL : ℝ} {N : ℕ}
+    (hcert : IsChewi118SinkhornMirrorDescentCertificate
+      phi gradPhi gamma gammaStar rowMarginalKL initialCouplingKL N)
+    (hN : N ≠ 0) :
+    rowMarginalKL N ≤ initialCouplingKL / (N : ℝ) :=
+  hcert.last_rowMarginalKL_le hN
+
 end Optimization
 end StatInference
