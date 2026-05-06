@@ -324,6 +324,55 @@ def vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_tendstoInMeasur
       hOpen heta0 hconv hmeas
 
 /--
+Open inverse-function-theorem local-range probability.
+
+This specializes the open-neighborhood localization lemma to the target
+neighborhood produced by `HasStrictFDerivAt.toOpenPartialHomeomorph`.
+-/
+theorem vaart1998_theorem_4_1_open_local_range_probability_of_hasStrictFDerivAt
+    {Ω M Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup M] [NormedSpace ℝ M] [MeasurableSpace M]
+    [OpensMeasurableSpace M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> M) {theta0 : Θ} (De : Θ ≃L[ℝ] M)
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] M) theta0)
+    {empiricalMoment : ℕ -> Ω -> M}
+    (hconv : TendstoInMeasure P empiricalMoment atTop (fun _ : Ω => e theta0))
+    (hmeas : ∀ n : ℕ, Measurable (empiricalMoment n)) :
+    Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          empiricalMoment n ω ∈ (he.toOpenPartialHomeomorph e).target})
+        atTop (𝓝 1) :=
+  vaart1998_local_range_probability_of_tendstoInMeasure_const
+    (hOpen := (he.toOpenPartialHomeomorph e).open_target)
+    (heta0 := he.image_mem_toOpenPartialHomeomorph_target)
+    hconv hmeas
+
+/--
+Local-range probability certificate generated from the inverse function theorem
+and convergence in probability of empirical moments to the true moment.
+-/
+def vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_hasStrictFDerivAt_tendstoInMeasure
+    {Ω M Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup M] [NormedSpace ℝ M] [MeasurableSpace M]
+    [OpensMeasurableSpace M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> M) {theta0 : Θ} (De : Θ ≃L[ℝ] M)
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] M) theta0)
+    (empiricalMoment : ℕ -> Ω -> M)
+    (hconv : TendstoInMeasure P empiricalMoment atTop (fun _ : Ω => e theta0))
+    (hmeas : ∀ n : ℕ, Measurable (empiricalMoment n)) :
+    Vaart1998MomentEstimatorLocalRangeProbabilityCertificate Ω M P where
+  empiricalMoment := empiricalMoment
+  momentRange := (he.toOpenPartialHomeomorph e).target
+  localRange_probability :=
+    vaart1998_theorem_4_1_open_local_range_probability_of_hasStrictFDerivAt
+      e De he hconv hmeas
+
+/--
 If the empirical moment lies in the local range, the inverse candidate solves
 the moment equation.
 -/
@@ -382,6 +431,91 @@ theorem vaart1998_theorem_4_1_local_range_probability_of_certificate
     Tendsto (fun n : ℕ =>
       P.real {ω : Ω | C.empiricalMoment n ω ∈ C.momentRange}) atTop (𝓝 1) :=
   C.localRange_probability
+
+/--
+If the local-range event has probability tending to one, then the local-inverse
+candidate solves the moment equation with probability tending to one.
+-/
+theorem vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to_one
+    {Ω M Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    (C : Vaart1998MomentLocalRangeCertificate M Θ)
+    {empiricalMoment : ℕ -> Ω -> M}
+    (hprob : Tendsto (fun n : ℕ =>
+      P.real {ω : Ω | empiricalMoment n ω ∈ C.momentRange}) atTop (𝓝 1)) :
+    Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          C.e (C.eInv (empiricalMoment n ω)) = empiricalMoment n ω})
+        atTop (𝓝 1) := by
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le
+    hprob tendsto_const_nhds ?_ ?_
+  · intro n
+    refine measureReal_mono ?_
+    intro ω hmem
+    exact C.right_inverse_on_momentRange hmem
+  · intro n
+    have hle :
+        P.real
+            {ω : Ω |
+              C.e (C.eInv (empiricalMoment n ω)) = empiricalMoment n ω} ≤
+          P.real Set.univ :=
+      measureReal_mono (μ := P) (Set.subset_univ _)
+    simpa using hle
+
+/--
+Certificate form of the moment-equation solved-with-probability statement.
+-/
+theorem vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to_one_of_certificate
+    {Ω M Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    (C : Vaart1998MomentLocalRangeCertificate M Θ)
+    (Pcert : Vaart1998MomentEstimatorLocalRangeProbabilityCertificate Ω M P)
+    (hRange : Pcert.momentRange = C.momentRange) :
+    Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          C.e (C.eInv (Pcert.empiricalMoment n ω)) =
+            Pcert.empiricalMoment n ω})
+        atTop (𝓝 1) :=
+  vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to_one
+    (C := C) (empiricalMoment := Pcert.empiricalMoment) <| by
+      simpa [hRange] using Pcert.localRange_probability
+
+/--
+The inverse-function theorem plus convergence in probability of empirical
+moments yields a moment-equation solution with probability tending to one.
+-/
+theorem vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_tendstoInMeasure
+    {Ω M Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup M] [NormedSpace ℝ M] [MeasurableSpace M]
+    [OpensMeasurableSpace M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> M) {theta0 : Θ} (De : Θ ≃L[ℝ] M)
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] M) theta0)
+    {empiricalMoment : ℕ -> Ω -> M}
+    (hconv : TendstoInMeasure P empiricalMoment atTop (fun _ : Ω => e theta0))
+    (hmeas : ∀ n : ℕ, Measurable (empiricalMoment n)) :
+    Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm (empiricalMoment n ω)) =
+            empiricalMoment n ω})
+        atTop (𝓝 1) := by
+  let C :=
+    vaart1998_momentLocalRangeCertificate_of_hasStrictFDerivAt_openPartialHomeomorph
+      e De he
+  have hprob :
+      Tendsto (fun n : ℕ =>
+        P.real {ω : Ω | empiricalMoment n ω ∈ C.momentRange}) atTop
+          (𝓝 1) := by
+    simpa [C] using
+      vaart1998_theorem_4_1_open_local_range_probability_of_hasStrictFDerivAt
+        e De he hconv hmeas
+  simpa [C] using
+    vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to_one
+      (C := C) (empiricalMoment := empiricalMoment) hprob
 
 /--
 van der Vaart 1998, Theorem 4.1, method-of-moments delta handoff.

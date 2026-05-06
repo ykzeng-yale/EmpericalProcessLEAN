@@ -166,27 +166,41 @@ Chapter 3 theorem-facing wrappers compiling:
 43. Local-range probability certificate constructor from convergence in
    probability:
    `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_tendstoInMeasure`.
+44. Open inverse-function-theorem local-range probability:
+   `vaart1998_theorem_4_1_open_local_range_probability_of_hasStrictFDerivAt`.
+45. Local-range probability certificate constructor from strict differentiability
+   and convergence in probability:
+   `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_hasStrictFDerivAt_tendstoInMeasure`.
+46. Moment-equation solved-with-probability wrapper:
+   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to_one`.
+47. Certificate form of the solved-with-probability wrapper:
+   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to_one_of_certificate`.
+48. Strict-derivative plus convergence-in-probability solved-with-probability
+   wrapper:
+   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_hasStrictFDerivAt_tendstoInMeasure`.
 
-Latest pushed Vaart packet before this run: `460542b`
-(`Add Vaart moment inverse theorem bridge`).
+Latest pushed Vaart packet before this run: `4156f00`
+(`Add Vaart open local range probability bridge`).
 
-The current theorem-sized packet upgrades Chapter 4.1 local existence plumbing.
-Mathlib's `HasStrictFDerivAt.toOpenPartialHomeomorph` now supplies the actual
-open `U`/`V` neighborhoods used in van der Vaart's inverse-function-theorem
-proof, and the resulting open local range is connected to the existing
-moment-equation certificate.  Separately, convergence in probability of
-empirical moments to the true moment now implies that empirical moments fall in
-any open local range containing the true moment with probability tending to
-one, producing the existing local-range probability certificate.
+The current theorem-sized packet assembles the Chapter 4.1 local existence
+side.  The open local range supplied by
+`HasStrictFDerivAt.toOpenPartialHomeomorph`, together with convergence in
+probability of empirical moments to the true moment, now yields the
+local-range probability certificate and a direct conclusion that the local
+inverse candidate solves the moment equation with probability tending to one.
+This is the Lean version of the proof step "the empirical moment lies in `V`
+with probability tending to one, hence the inverse-function-theorem estimator
+exists and solves the moment equation."
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
 1. prove or package the empirical-moment convergence-in-probability field from
-   an iid/vector LLN interface, feeding
-   `vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_tendstoInMeasure`;
-2. assemble the full Theorem 4.1 existence-plus-delta handoff by combining the
-   open local range, local-range probability, and local inverse certificates;
+   an iid/vector LLN interface, feeding the strict-derivative local-range
+   probability constructor;
+2. assemble the full Theorem 4.1 source wrapper that reports both
+   solved-with-probability and the already-compiled delta-method asymptotic
+   normality conclusion under supplied empirical-moment CLT;
 3. keep the multivariate empirical-moment CLT/covariance display supplied for
    now, since the current pinned mathlib CLT is scalar.
 
@@ -274,6 +288,14 @@ certificates.  The open source/target API comes from
 `OpenPartialHomeomorph.left_inv`.  The probability-localization bridge uses
 `MeasureTheory.tendstoInMeasure_iff_measureReal_dist` plus real probability
 complement algebra.
+
+Search result for the next LLN layer: local `ProbabilityMeasure.StrongLaw` and
+`ProbabilityTheory.Basic` currently expose real-valued iid strong-law wrappers
+such as `strongLaw_ae_real`, `centeredStrongLaw_ae_real`, and
+`finite_centeredStrongLaw_ae_real`.  A true vector-valued empirical-moment LLN
+is not yet present as a ready API, so the next run should either build a finite
+coordinate vector wrapper from these real SLLN facts or introduce a supplied
+vector-LLN certificate that can later be discharged.
 
 ## Primitive Sequence
 
