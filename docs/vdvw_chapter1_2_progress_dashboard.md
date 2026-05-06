@@ -2172,3 +2172,13 @@ These close a small Chapter 1 / Theorem 2.4.3 endpoint API gap for
 `AEMeasurable` sample-size-varying statistics.  The main non-finite
 Theorem 2.4.3 gap remains the selected empirical-cover entropy tail/UI or
 structural cardinality theorem.
+
+2026-05-05 probability fixed-radius chooser follow-up:
+`Theorem243.lean` now proves
+`exists_pos_radius_eventually_outerProbability_add_const_le_of_forall_convergesInOuterProbabilityConst`.
+This is the outer-probability analogue of the existing mean/radius chooser:
+if each fixed positive radius has a nonnegative finite-net error converging to
+zero in outer probability, then a fixed small radius makes `error_eta + eta`
+eventually small in outer probability.  It is useful for a faithful stochastic
+entropy route to Theorem 2.4.3, but it does not by itself derive the missing
+finite-net comparison from the textbook random entropy hypothesis.

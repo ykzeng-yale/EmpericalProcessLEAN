@@ -5888,3 +5888,25 @@ tail/UI or structural cardinality theorem, while the deeper Chapter 1
 arbitrary-map blockers remain nonmeasurable outer-cover signed weak
 convergence, asymptotic-tightness/asymptotic-independence, arbitrary-index FDD
 converse, and separability/`P`-measurable class primitives.
+
+2026-05-05 `/goal` recalibration and probability-radius closure: targeted
+search of the active Theorem 2.4.3 route confirmed that the already compiled
+mean/tail/UI and structural-cardinality packages are not the same as the book
+random entropy assumption.  `Theorem243.lean` now adds
+`exists_pos_radius_eventually_outerProbability_add_const_le_of_forall_convergesInOuterProbabilityConst`,
+the direct outer-probability fixed-radius chooser.  It lets a future pure
+probability proof choose a fixed positive net radius and absorb the deterministic
+radius term once the finite-net error itself is known to converge in outer
+probability.  This avoids forcing every fixed-radius route through ordinary
+mean/Markov tail/UI.
+
+Updated active `/goal` target: continue the broad Chapter 1-2 formalization in
+dependency order, but stop adding generic Theorem 2.4.3 endpoint wrappers unless
+they consume a new proof input.  The next high-value proof target is a
+probability-level centered-truncated finite-net comparison using the stochastic
+entropy convergence already available, or a structural selected-cover theorem
+that proves the existing tail/UI or cardinality-growth hypotheses from exact
+book assumptions.  If that remains blocked after search and Lean attempts,
+advance to theorem-critical Chapter 1 arbitrary-map/asymptotic-measurability or
+nonmeasurable outer-cover primitives that remove countability/measurability
+mismatches in the exact Chapter 1-2 statements.

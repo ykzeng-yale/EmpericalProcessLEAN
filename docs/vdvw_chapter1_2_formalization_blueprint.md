@@ -1822,6 +1822,18 @@ This closes a finite-product FDD/tightness feeder without claiming the
 arbitrary-index VdV&W FDD converse or arbitrary-map process asymptotic
 tightness theorem.
 
+2026-05-05 `/goal` target refresh:
+`Theorem243.lean` now includes the probability-level fixed-radius chooser
+`exists_pos_radius_eventually_outerProbability_add_const_le_of_forall_convergesInOuterProbabilityConst`.
+This keeps the active goal aligned with the exact textbook route: use the
+already proved stochastic entropy convergence in outer probability if a
+centered-truncated finite-net comparison can be proved at probability level,
+instead of repeatedly wrapping the older mean/tail/UI route.  The next
+Theorem 2.4.3 work should therefore either prove that probability-level
+finite-net comparison, prove a structural selected-cover cardinality/tail
+condition from the book assumptions, or move to the Chapter 1 arbitrary-map and
+outer-cover primitives needed by the exact statements.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

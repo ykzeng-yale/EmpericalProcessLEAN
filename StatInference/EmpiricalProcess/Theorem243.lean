@@ -19585,6 +19585,84 @@ theorem exists_pos_radius_eventually_two_mul_ofReal_add_div_le_of_forall_tendsto
     exact hmono.trans hright
 
 /--
+Outer-probability fixed-radius chooser.
+
+If every fixed positive radius has a nonnegative error process converging to
+zero in outer probability, then for each final tolerance one can choose a
+fixed positive radius so that the radius-added error is eventually small in
+outer probability.  This is the direct-probability analogue of
+`exists_pos_radius_eventually_two_mul_ofReal_add_div_le_of_forall_tendsto_zero`
+and is the honest route needed before replacing mean/tail-UI arguments by a
+pure stochastic-entropy proof.
+-/
+theorem
+    exists_pos_radius_eventually_outerProbability_add_const_le_of_forall_convergesInOuterProbabilityConst
+    {ι : Type v} {Ω : ι -> Type u}
+    [(i : ι) -> MeasurableSpace (Ω i)]
+    (μ : (i : ι) -> Measure (Ω i)) {l : Filter ι}
+    (error : ℝ -> (i : ι) -> Ω i -> ℝ)
+    (herror_nonneg :
+      ∀ eta i (ω : Ω i), 0 ≤ error eta i ω)
+    (herror :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ
+          (error eta) l (0 : ℝ))
+    {epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ∀ delta > 0, ∃ eta, 0 < eta ∧
+      ∀ᶠ i in l,
+        @VdVWOuterProbability (Ω i) inferInstance (μ i)
+          {ω : Ω i | epsilon < dist (error eta i ω + eta) (0 : ℝ)}
+          ≤ delta := by
+  intro delta hdelta
+  let eta : ℝ := epsilon / 4
+  have heta_pos : 0 < eta := by
+    dsimp [eta]
+    linarith
+  have hhalf_pos : 0 < epsilon / 2 := by
+    linarith
+  have hsmall :
+      ∀ᶠ i in l,
+        @VdVWOuterProbability (Ω i) inferInstance (μ i)
+          {ω : Ω i | epsilon / 2 < dist (error eta i ω) (0 : ℝ)}
+          ≤ delta :=
+    (ENNReal.tendsto_nhds_zero.1
+      ((herror eta heta_pos) (epsilon / 2) hhalf_pos)) delta hdelta
+  refine ⟨eta, heta_pos, ?_⟩
+  filter_upwards [hsmall] with i hi
+  calc
+    @VdVWOuterProbability (Ω i) inferInstance (μ i)
+        {ω : Ω i | epsilon < dist (error eta i ω + eta) (0 : ℝ)}
+        ≤ @VdVWOuterProbability (Ω i) inferInstance (μ i)
+            {ω : Ω i | epsilon / 2 < dist (error eta i ω) (0 : ℝ)} := by
+          dsimp [VdVWOuterProbability]
+          refine measure_mono ?_
+          intro ω hω
+          have herr_nonneg : 0 ≤ error eta i ω :=
+            herror_nonneg eta i ω
+          have herr_eta_nonneg : 0 ≤ error eta i ω + eta := by
+            linarith
+          have hdist_add :
+              dist (error eta i ω + eta) (0 : ℝ) =
+                error eta i ω + eta := by
+            rw [Real.dist_eq, sub_zero, abs_of_nonneg herr_eta_nonneg]
+          have hdist_error :
+              dist (error eta i ω) (0 : ℝ) = error eta i ω := by
+            rw [Real.dist_eq, sub_zero, abs_of_nonneg herr_nonneg]
+          have hgt : epsilon < error eta i ω + eta := by
+            have hω' : epsilon < dist (error eta i ω + eta) (0 : ℝ) := by
+              simpa using hω
+            rw [hdist_add] at hω'
+            exact hω'
+          have hhalf : epsilon / 2 < error eta i ω := by
+            dsimp [eta] at hgt
+            linarith
+          have hmem : epsilon / 2 < dist (error eta i ω) (0 : ℝ) := by
+            rw [hdist_error]
+            exact hhalf
+          simpa using hmem
+    _ ≤ delta := hi
+
+/--
 Bounded variable-domain convergence of the random finite-net Hoeffding upper
 implies convergence of its ordinary real mean.
 
