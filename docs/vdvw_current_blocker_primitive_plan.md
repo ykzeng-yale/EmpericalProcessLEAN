@@ -5691,9 +5691,18 @@ Dirac-law weak convergence and signed varying-domain weak convergence without
 carrying a separate centered `P`-measurability hypothesis.
 
 2026-05-05 coordinate `ell_infty` law follow-up: local search found the
-finite-dimensional `ell_infty(T)` law wrapper but no direct single-coordinate
-law wrapper.  `FiniteDimensional.lean` now adds
-`vdVW148_ellInfty_coordinate_hasLaw`, using `VdVWEllInfty.evalCLM` and
-`HasLaw.comp`.  This closes a small Chapter 1 process/FDD entry point while
-leaving the arbitrary-index FDD converse dependent on separability, tightness,
-and nonmeasurable/asymptotic-measurability primitives.
+finite-dimensional `ell_infty(T)` law/IdentDistrib/Tendsto-in-distribution
+wrappers but no direct single-coordinate wrappers.  `FiniteDimensional.lean`
+now adds `vdVW148_ellInfty_coordinate_hasLaw`,
+`vdVW148_ellInfty_coordinate_identDistrib`, and
+`vdVW148_ellInfty_coordinate_tendstoInDistribution`, using
+`VdVWEllInfty.evalCLM`, `HasLaw.comp`, `IdentDistrib.comp`, and
+`TendstoInDistribution.continuous_comp`.  The same file also exposes the raw
+bounded-process coordinate forms
+`vdVW148_boundedProcess_coordinate_hasLaw`,
+`vdVW148_boundedProcess_coordinate_identDistrib`, and
+`vdVW148_boundedProcess_coordinate_tendstoInDistribution` via
+`VdVWEllInfty.processMap`.  This closes the direct one-coordinate
+process/FDD entry points while leaving the arbitrary-index FDD converse
+dependent on separability, tightness, and
+nonmeasurable/asymptotic-measurability primitives.

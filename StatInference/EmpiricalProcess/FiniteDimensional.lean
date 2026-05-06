@@ -340,6 +340,20 @@ theorem vdVW148_ellInfty_coordinate_hasLaw
         map_eq := rfl }
       hX)
 
+/-- Identical distribution of `ell_infty(T)` processes implies identical single-coordinate laws. -/
+theorem vdVW148_ellInfty_coordinate_identDistrib
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    {X : Ω -> VdVWEllInfty T} {Y : Ω' -> VdVWEllInfty T}
+    {P : Measure Ω} {Q : Measure Ω'}
+    (hXY : IdentDistrib X Y P Q) (t : T) :
+    IdentDistrib
+      (fun ω => X ω t)
+      (fun ω' => Y ω' t)
+      P Q := by
+  simpa [Function.comp_def] using
+    hXY.comp (VdVWEllInfty.evalCLM (T := T) t).continuous.measurable
+
 /-- Identical distribution of `ell_infty(T)` processes implies identical FDDs. -/
 theorem vdVW148_ellInfty_finiteDimensional_identDistrib
     [MeasurableSpace Ω] [MeasurableSpace Ω']
@@ -384,6 +398,31 @@ theorem vdVW148_ellInfty_finiteDimensional_tendstoInDistribution
   hX.continuous_comp (VdVWEllInfty.continuous_finiteRestrict (T := T) I)
 
 /--
+Coordinate form of the forward FDD implication for `ell_infty(T)`: convergence
+in distribution of `ell_infty(T)`-valued random elements implies convergence
+in distribution of every single coordinate.
+-/
+theorem vdVW148_ellInfty_coordinate_tendstoInDistribution
+    {ι : Type*} {Ω : ι -> Type*} {Ω' : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    {X : (i : ι) -> Ω i -> VdVWEllInfty T}
+    {Z : Ω' -> VdVWEllInfty T} {l : Filter ι}
+    (hX : TendstoInDistribution X l Z μ μ')
+    (t : T) :
+    TendstoInDistribution
+      (fun i ω => X i ω t)
+      l
+      (fun ω' => Z ω' t)
+      μ μ' := by
+  simpa [Function.comp_def] using
+    hX.continuous_comp (VdVWEllInfty.evalCLM (T := T) t).continuous
+
+/--
 Finite-dimensional law of a bounded raw process, routed through its
 `ell_infty(T)` process law.  This is the raw-process version of the forward
 FDD handoff used in VdV&W 1.4.8.
@@ -405,6 +444,26 @@ theorem vdVW148_boundedProcess_finiteDimensional_hasLaw
       (vdVW148_ellInfty_finiteDimensional_hasLaw
         (T := T) (Ω := Ω) (X := VdVWEllInfty.processMap X hbounded)
         (P := P) (μ := μ) hX I)
+
+/--
+Single-coordinate law of a bounded raw process, routed through its
+`ell_infty(T)` process law.
+-/
+theorem vdVW148_boundedProcess_coordinate_hasLaw
+    [MeasurableSpace Ω] [MeasurableSpace (VdVWEllInfty T)]
+    [BorelSpace (VdVWEllInfty T)]
+    {X : Ω -> T -> ℝ} (hbounded : VdVWEllInfty.IsBoundedSamplePath X)
+    {P : Measure Ω} {μ : Measure (VdVWEllInfty T)}
+    (hX : HasLaw (VdVWEllInfty.processMap X hbounded) μ P)
+    (t : T) :
+    HasLaw
+      (fun ω => X ω t)
+      (μ.map (VdVWEllInfty.evalCLM t))
+      P := by
+  simpa [Function.comp_def, VdVWEllInfty.processMap] using
+    (vdVW148_ellInfty_coordinate_hasLaw
+      (T := T) (Ω := Ω) (X := VdVWEllInfty.processMap X hbounded)
+      (P := P) (μ := μ) hX t)
 
 /--
 Identical `ell_infty(T)` laws of bounded raw processes imply identical
@@ -433,6 +492,32 @@ theorem vdVW148_boundedProcess_finiteDimensional_identDistrib
         (X := VdVWEllInfty.processMap X hXbounded)
         (Y := VdVWEllInfty.processMap Y hYbounded)
         (P := P) (Q := Q) hXY I)
+
+/--
+Identical `ell_infty(T)` laws of bounded raw processes imply identical
+single-coordinate distributions of the original coordinate processes.
+-/
+theorem vdVW148_boundedProcess_coordinate_identDistrib
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [MeasurableSpace (VdVWEllInfty T)] [BorelSpace (VdVWEllInfty T)]
+    {X : Ω -> T -> ℝ} {Y : Ω' -> T -> ℝ}
+    (hXbounded : VdVWEllInfty.IsBoundedSamplePath X)
+    (hYbounded : VdVWEllInfty.IsBoundedSamplePath Y)
+    {P : Measure Ω} {Q : Measure Ω'}
+    (hXY : IdentDistrib
+      (VdVWEllInfty.processMap X hXbounded)
+      (VdVWEllInfty.processMap Y hYbounded) P Q)
+    (t : T) :
+    IdentDistrib
+      (fun ω => X ω t)
+      (fun ω => Y ω t)
+      P Q := by
+  simpa [Function.comp_def, VdVWEllInfty.processMap] using
+    (vdVW148_ellInfty_coordinate_identDistrib
+      (T := T) (Ω := Ω) (Ω' := Ω')
+      (X := VdVWEllInfty.processMap X hXbounded)
+      (Y := VdVWEllInfty.processMap Y hYbounded)
+      (P := P) (Q := Q) hXY t)
 
 /--
 Raw-process form of the forward FDD implication: convergence in distribution
@@ -469,6 +554,40 @@ theorem vdVW148_boundedProcess_finiteDimensional_tendstoInDistribution
         (T := T) (Ω := Ω) (Ω' := Ω') (μ := μ) (μ' := μ')
         (X := fun i => VdVWEllInfty.processMap (X i) (hXbounded i))
         (Z := VdVWEllInfty.processMap Z hZbounded) (l := l) hX I)
+
+/--
+Raw-process coordinate form of the forward FDD implication: convergence in
+distribution of the associated bounded `ell_infty(T)` processes implies
+convergence in distribution of every single coordinate.
+-/
+theorem vdVW148_boundedProcess_coordinate_tendstoInDistribution
+    {ι : Type*} {Ω : ι -> Type*} {Ω' : Type*}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [MeasurableSpace (VdVWEllInfty T)] [OpensMeasurableSpace (VdVWEllInfty T)]
+    {X : (i : ι) -> Ω i -> T -> ℝ} {Z : Ω' -> T -> ℝ}
+    (hXbounded : ∀ i, VdVWEllInfty.IsBoundedSamplePath (X i))
+    (hZbounded : VdVWEllInfty.IsBoundedSamplePath Z)
+    {l : Filter ι}
+    (hX : TendstoInDistribution
+      (fun i => VdVWEllInfty.processMap (X i) (hXbounded i))
+      l
+      (VdVWEllInfty.processMap Z hZbounded)
+      μ μ')
+    (t : T) :
+    TendstoInDistribution
+      (fun i ω => X i ω t)
+      l
+      (fun ω => Z ω t)
+      μ μ' := by
+  simpa [Function.comp_def, VdVWEllInfty.processMap] using
+    (vdVW148_ellInfty_coordinate_tendstoInDistribution
+      (T := T) (Ω := Ω) (Ω' := Ω') (μ := μ) (μ' := μ')
+      (X := fun i => VdVWEllInfty.processMap (X i) (hXbounded i))
+      (Z := VdVWEllInfty.processMap Z hZbounded) (l := l) hX t)
 
 /--
 Finite-index law converse for bounded raw processes: a law for the ordinary

@@ -2046,7 +2046,11 @@ that bridge in
 and
 `VdVWTheorem243_centered_untruncated_signedWeakConvergenceVaryingDomains_real_of_countable_coordinate_convergesInOuterProbabilityConst`.
 `FiniteDimensional.lean` adds
-`vdVW148_ellInfty_coordinate_hasLaw`, the one-coordinate law bridge from an
-`ell_infty(T)`-valued random element.  These are theorem-facing support
-closures; they do not close the exact random-entropy tail/UI bridge or the
-arbitrary-index process/FDD converse.
+`vdVW148_ellInfty_coordinate_hasLaw`,
+`vdVW148_ellInfty_coordinate_identDistrib`, and
+`vdVW148_ellInfty_coordinate_tendstoInDistribution`, plus the raw
+bounded-process coordinate forms `vdVW148_boundedProcess_coordinate_hasLaw`,
+`vdVW148_boundedProcess_coordinate_identDistrib`, and
+`vdVW148_boundedProcess_coordinate_tendstoInDistribution`.  These close the
+direct one-coordinate process/FDD entry points; they do not close the exact
+random-entropy tail/UI bridge or the arbitrary-index process/FDD converse.
