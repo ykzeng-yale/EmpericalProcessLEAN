@@ -635,6 +635,119 @@ structure Vaart1998FiniteCoordinateCramerWoldCLTBridge
         atTop Z (fun _ => P) Q
 
 /--
+Scalar empirical average obtained by testing the finite-coordinate empirical
+moment with a continuous linear functional.
+-/
+noncomputable def vaart1998_finiteCoordinateProjectedEmpiricalAverage
+    {Coordinate Ω : Type*} [Fintype Coordinate]
+    (L : StrongDual ℝ (Coordinate -> ℝ))
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  L (vaart1998_finiteCoordinateEmpiricalMoment X n ω)
+
+/--
+Scalar population moment obtained by testing the finite-coordinate population
+moment with a continuous linear functional.
+-/
+noncomputable def vaart1998_finiteCoordinateProjectedPopulationMoment
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    (L : StrongDual ℝ (Coordinate -> ℝ)) (P : Measure Ω)
+    (X : Coordinate -> ℕ -> Ω -> ℝ) : ℝ :=
+  L (vaart1998_finiteCoordinatePopulationMoment P X)
+
+/--
+Linearity identity for projected centered empirical moments.
+-/
+theorem vaart1998_finiteCoordinateProjected_scaled_centered_empiricalMoment_eq
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    (L : StrongDual ℝ (Coordinate -> ℝ)) (P : Measure Ω)
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (n : ℕ) (ω : Ω) :
+    L (√(n : ℝ) •
+        (vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+          vaart1998_finiteCoordinatePopulationMoment P X)) =
+      √(n : ℝ) *
+        (vaart1998_finiteCoordinateProjectedEmpiricalAverage L X n ω -
+          vaart1998_finiteCoordinateProjectedPopulationMoment L P X) := by
+  simp [vaart1998_finiteCoordinateProjectedEmpiricalAverage,
+    vaart1998_finiteCoordinateProjectedPopulationMoment, smul_eq_mul]
+
+/--
+Scalar projected empirical-moment CLT family in the usual real-valued
+centered-average form.
+-/
+def vaart1998_finiteCoordinateProjectedScalarCLT
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (Z : Ω' -> Coordinate -> ℝ) : Prop :=
+  ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) *
+          (vaart1998_finiteCoordinateProjectedEmpiricalAverage L X n ω -
+            vaart1998_finiteCoordinateProjectedPopulationMoment L P X))
+      atTop (fun ω => L (Z ω)) (fun _ => P) Q
+
+/--
+The scalar projected CLT family feeds the projected vector CLT family by
+continuous-linear algebra.
+-/
+theorem vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_projectedScalarCLT
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hscalar : vaart1998_finiteCoordinateProjectedScalarCLT (P := P) (Q := Q) X Z) :
+    vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT (P := P) (Q := Q) X Z := by
+  intro L
+  exact TendstoInDistribution.congr
+    (fun n => Filter.Eventually.of_forall fun ω =>
+      (vaart1998_finiteCoordinateProjected_scaled_centered_empiricalMoment_eq
+        L P X n ω).symm)
+    (Filter.EventuallyEq.rfl)
+    (hscalar L)
+
+/--
+Build the Cramér-Wold bridge from scalar projected CLTs plus the remaining
+Cramér-Wold implication.
+-/
+def vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (Z : Ω' -> Coordinate -> ℝ)
+    (hscalar : vaart1998_finiteCoordinateProjectedScalarCLT (P := P) (Q := Q) X Z)
+    (hCramerWold :
+      vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT (P := P) (Q := Q) X Z ->
+        TendstoInDistribution
+          (fun (n : ℕ) ω =>
+            √(n : ℝ) •
+              (vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+                vaart1998_finiteCoordinatePopulationMoment P X))
+          atTop Z (fun _ => P) Q) :
+    Vaart1998FiniteCoordinateCramerWoldCLTBridge Coordinate Ω Ω' P Q where
+  X := X
+  Z := Z
+  projected_clt :=
+    vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_projectedScalarCLT
+      (P := P) (Q := Q) hscalar
+  cramerWold_vector_clt := hCramerWold
+
+/--
 The vector CLT certificate implies every projected scalar CLT by the continuous
 mapping theorem.
 -/

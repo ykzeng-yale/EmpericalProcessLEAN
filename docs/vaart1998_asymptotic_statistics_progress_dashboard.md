@@ -206,17 +206,19 @@ Chapter 4 handoff:
   `Vaart1998FiniteCoordinateCramerWoldCLTBridge`,
   `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_cltCertificate`, and
   `vaart1998_finiteCoordinateEmpiricalMomentCLTCertificate_of_cramerWoldBridge`.
+- Real-valued projected centered-average CLT bridge layer:
+  `vaart1998_finiteCoordinateProjectedEmpiricalAverage`,
+  `vaart1998_finiteCoordinateProjectedPopulationMoment`,
+  `vaart1998_finiteCoordinateProjected_scaled_centered_empiricalMoment_eq`,
+  `vaart1998_finiteCoordinateProjectedScalarCLT`,
+  `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_projectedScalarCLT`,
+  and
+  `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT`.
 
-Verification passed for the latest pushed Vaart packet before this run,
-`c56dde0`; the current packet is rebased over remote base `558ca16`:
+Latest pushed Vaart packet before this run: `01b6cbc`
+(`Add Vaart Cramer Wold CLT bridge interface`).  Current packet verification
+passed for:
 
-- `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
-- `lake build StatInference.AsymptoticStatistics.MomentEstimators`
-
-Current Vaart packet verification passed for:
-
-- `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
-- `lake build StatInference.AsymptoticStatistics.Basic`
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
 - `git diff --check`
@@ -234,7 +236,7 @@ targeted Vaart module build.
 Continue Vaart Chapter 4.1 from the compiled Gaussian, canonical
 covarianceBilinDual source wrapper, and a.e.-localized finite-coordinate
 delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
-certificate interface:
+certificate interface and the real-valued projected scalar CLT conversion:
 
 1. instantiate `Vaart1998FiniteCoordinateCramerWoldCLTBridge` from a reusable
    mathlib/local Cramér-Wold theorem, or prove the weakest finite-dimensional

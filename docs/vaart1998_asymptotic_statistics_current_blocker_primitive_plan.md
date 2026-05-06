@@ -297,7 +297,7 @@ Chapter 3 theorem-facing wrappers compiling:
 93. Theorem 4.1 localized covarianceBilinDual source wrapper fed by that CLT
    certificate:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_real`.
-94. Projected scalar CLT family for the Cramér-Wold route:
+94. Projected vector CLT family for the Cramér-Wold route:
    `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT`.
 95. Source-shaped Cramér-Wold bridge from projected scalar CLTs to the vector
    empirical-moment CLT:
@@ -306,17 +306,33 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_cltCertificate`.
 97. CLT-certificate constructor from the Cramér-Wold bridge:
    `vaart1998_finiteCoordinateEmpiricalMomentCLTCertificate_of_cramerWoldBridge`.
+98. Scalar projected empirical average and population moment definitions:
+   `vaart1998_finiteCoordinateProjectedEmpiricalAverage` and
+   `vaart1998_finiteCoordinateProjectedPopulationMoment`.
+99. Continuous-linear algebra identity between projected centered vectors and
+   centered scalar projected moments:
+   `vaart1998_finiteCoordinateProjected_scaled_centered_empiricalMoment_eq`.
+100. Real-valued centered-average scalar CLT family for the Cramér-Wold route:
+   `vaart1998_finiteCoordinateProjectedScalarCLT`.
+101. Conversion from real-valued projected scalar CLTs to the projected vector
+   CLT family:
+   `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_projectedScalarCLT`.
+102. Cramér-Wold bridge constructor from real-valued projected scalar CLTs plus
+   the remaining finite-dimensional Cramér-Wold implication:
+   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT`.
 
-Latest remote base after rebase before this packet: `558ca16`.
-Latest pushed Vaart packet before this run: `c56dde0`
-(`Add Vaart finite-coordinate CLT certificate interface`).
+Latest remote base before this packet: `01b6cbc`.
+Latest pushed Vaart packet before this run: `01b6cbc`
+(`Add Vaart Cramer Wold CLT bridge interface`).
 
-The current theorem-sized packet introduces the projected scalar CLT family and
-the source-shaped Cramér-Wold bridge for Vaart Example 2.18.  It proves that a
-completed vector CLT certificate yields all scalar projections by the
-continuous mapping theorem, and it packages the exact missing implication
-from all projected scalar CLTs to the vector CLT as
-`Vaart1998FiniteCoordinateCramerWoldCLTBridge`.
+The current theorem-sized packet refines the Cramér-Wold route by separating
+real-valued centered-average scalar CLTs from the already named projected
+vector CLT family.  It adds projected empirical/population scalar moments,
+proves the continuous-linear centering/scaling identity, converts the
+real-valued projected scalar CLT family into
+`vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT`, and builds
+`Vaart1998FiniteCoordinateCramerWoldCLTBridge` from scalar CLTs plus the one
+remaining finite-dimensional Cramér-Wold implication.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
