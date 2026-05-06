@@ -1,4 +1,5 @@
 import StatInference.Optimization.Bregman
+import StatInference.Optimization.ProjectedSubgradient
 import StatInference.Optimization.Proximal
 
 /-!
@@ -430,6 +431,271 @@ theorem chewi109_final_gap_le_geometric_denominator_of_trajectory
   exact
     htraj.oneStep_ineq hconvF hsmoothF hh hbeta_step
       hD_next_nonneg hxStar n
+
+/--
+Chewi Theorem 10.11 nonsmooth MPGD one-step recurrence from the source proof,
+with the Cauchy-Schwarz/Lipschitz lower bound on the local mirror model
+supplied as an interface.
+
+The supplied lower bound corresponds to
+`ψ_x(x⁺) >= F(x⁺) - 2 L^2 h / alphaPhi`.
+-/
+theorem mirrorProximalGradient_nonsmooth_oneStep_ineq
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {L alphaPhi h : ℝ} {x xPlus xStar : E}
+    (hconvF : RelativelyStrongConvexOn C f gradF phi gradPhi 0)
+    (hstep : IsMirrorProximalGradientStep C f g gradF phi gradPhi 0 h x xPlus)
+    (hh : 0 < h)
+    (hxStar : xStar ∈ C)
+    (hmodel_lower :
+      compositeObjective f g xPlus - 2 * L ^ (2 : ℕ) * h / alphaPhi ≤
+        mirrorProximalGradientModel f g gradF phi gradPhi h x xPlus) :
+    bregmanDivergence phi gradPhi xStar xPlus ≤
+      bregmanDivergence phi gradPhi xStar x -
+        h * (compositeObjective f g xPlus - compositeObjective f g xStar) +
+          2 * L ^ (2 : ℕ) * h ^ (2 : ℕ) / alphaPhi := by
+  have hgrowth := hstep.growth hxStar
+  have hmodel_star :
+      mirrorProximalGradientModel f g gradF phi gradPhi h x xStar ≤
+        compositeObjective f g xStar +
+          (1 / h) * bregmanDivergence phi gradPhi xStar x := by
+    have hraw :=
+      mirrorProximalGradientModel_le_composite_add_bregman
+        (C := C) (f := f) (g := g) (gradF := gradF)
+        (phi := phi) (gradPhi := gradPhi) (alphaF := 0) (h := h)
+        hconvF hstep.mem_start hxStar
+    simpa using hraw
+  have hcore :
+      compositeObjective f g xPlus - 2 * L ^ (2 : ℕ) * h / alphaPhi +
+          (1 / h) * bregmanDivergence phi gradPhi xStar xPlus ≤
+        compositeObjective f g xStar +
+          (1 / h) * bregmanDivergence phi gradPhi xStar x := by
+    nlinarith
+  have hmul := mul_le_mul_of_nonneg_left hcore hh.le (a := h)
+  have hleft :
+      h *
+        (compositeObjective f g xPlus - 2 * L ^ (2 : ℕ) * h / alphaPhi +
+          (1 / h) * bregmanDivergence phi gradPhi xStar xPlus) =
+        h * (compositeObjective f g xPlus) -
+          2 * L ^ (2 : ℕ) * h ^ (2 : ℕ) / alphaPhi +
+            bregmanDivergence phi gradPhi xStar xPlus := by
+    field_simp [hh.ne']
+  have hright :
+      h *
+        (compositeObjective f g xStar +
+          (1 / h) * bregmanDivergence phi gradPhi xStar x) =
+        h * (compositeObjective f g xStar) +
+          bregmanDivergence phi gradPhi xStar x := by
+    field_simp [hh.ne']
+  rw [hleft, hright] at hmul
+  nlinarith
+
+/--
+Telescoping average-gap consequence of the nonsmooth MPGD recurrence in
+Chewi Theorem 10.11.
+-/
+theorem chewi1011_average_gap_le_of_recurrence
+    {D gap : ℕ -> ℝ} {h err : ℝ}
+    (hh : 0 < h) {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hrec : ∀ n, n < N ->
+      D (n + 1) ≤ D n - h * gap (n + 1) + err) :
+    (1 / (N : ℝ)) *
+        (∑ n ∈ Finset.range N, gap (n + 1)) ≤
+      D 0 / ((N : ℝ) * h) + err / h := by
+  have hN_pos_nat : 0 < N := Nat.pos_of_ne_zero hN
+  have hN_pos : 0 < (N : ℝ) := by
+    exact_mod_cast hN_pos_nat
+  let S : ℝ := ∑ n ∈ Finset.range N, gap (n + 1)
+  have hstep : ∀ n, n < N ->
+      h * gap (n + 1) ≤ D n - D (n + 1) + err := by
+    intro n hn
+    have h := hrec n hn
+    nlinarith
+  have hsum :
+      ∑ n ∈ Finset.range N, h * gap (n + 1) ≤
+        ∑ n ∈ Finset.range N, (D n - D (n + 1) + err) := by
+    exact Finset.sum_le_sum fun n hn => hstep n (Finset.mem_range.mp hn)
+  have hleft :
+      ∑ n ∈ Finset.range N, h * gap (n + 1) = h * S := by
+    simp [S, Finset.mul_sum]
+  have hright :
+      (∑ n ∈ Finset.range N, (D n - D (n + 1) + err)) =
+        D 0 - D N + (N : ℝ) * err := by
+    rw [Finset.sum_add_distrib, sum_range_sub_succ]
+    simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+  have hsum_bound : h * S ≤ D 0 + (N : ℝ) * err := by
+    rw [hleft, hright] at hsum
+    nlinarith
+  have hS_bound : S ≤ (D 0 + (N : ℝ) * err) / h :=
+    (le_div_iff₀ hh).2 (by simpa [mul_comm] using hsum_bound)
+  have havg_bound :
+      (1 / (N : ℝ)) * S ≤
+        (1 / (N : ℝ)) * ((D 0 + (N : ℝ) * err) / h) := by
+    exact mul_le_mul_of_nonneg_left hS_bound (by positivity)
+  have hrhs :
+      (1 / (N : ℝ)) * ((D 0 + (N : ℝ) * err) / h) =
+        D 0 / ((N : ℝ) * h) + err / h := by
+    field_simp [hN_pos.ne', hh.ne']
+  rw [hrhs] at havg_bound
+  simpa [S] using havg_bound
+
+/--
+Chewi Theorem 10.11 average-gap bound from the displayed nonsmooth MPGD
+one-step recurrence.
+-/
+theorem chewi1011_average_gap_le_of_oneStep
+    {F phi : E -> ℝ} {gradPhi : E -> E} {x : ℕ -> E} {xStar : E}
+    {L alphaPhi h : ℝ}
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N))
+    (hone_step : ∀ n, n < N ->
+      bregmanDivergence phi gradPhi xStar (x (n + 1)) ≤
+        bregmanDivergence phi gradPhi xStar (x n) -
+          h * (F (x (n + 1)) - F xStar) +
+            2 * L ^ (2 : ℕ) * h ^ (2 : ℕ) / alphaPhi) :
+    (1 / (N : ℝ)) *
+        (∑ n ∈ Finset.range N, (F (x (n + 1)) - F xStar)) ≤
+      bregmanDivergence phi gradPhi xStar (x 0) / ((N : ℝ) * h) +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  let D : ℕ -> ℝ := fun n => bregmanDivergence phi gradPhi xStar (x n)
+  let gap : ℕ -> ℝ := fun n => F (x n) - F xStar
+  let err : ℝ := 2 * L ^ (2 : ℕ) * h ^ (2 : ℕ) / alphaPhi
+  have hmain :=
+    chewi1011_average_gap_le_of_recurrence
+      (D := D) (gap := gap) (h := h) (err := err)
+      hh hN (by simpa [D] using hD_N_nonneg)
+      (by
+        intro n hn
+        simpa [D, gap, err] using hone_step n hn)
+  have herr :
+      err / h = 2 * L ^ (2 : ℕ) * h / alphaPhi := by
+    dsimp [err]
+    field_simp [hh.ne', halphaPhi.ne']
+  simpa [D, gap, err, herr] using hmain
+
+/--
+Chewi Theorem 10.11 source-facing averaged-iterate bound.  The Jensen step is
+reused from the Chapter 6 projected-subgradient layer by applying it to the
+shifted sequence `n ↦ x_{n+1}`.
+-/
+theorem chewi1011_iterateAverage_gap_le_of_oneStep
+    {C : Set E} {F phi : E -> ℝ} {gradPhi : E -> E}
+    {x : ℕ -> E} {xStar : E}
+    {L alphaPhi h : ℝ} {N : ℕ}
+    (hconvF : ConvexOn ℝ C F)
+    (hmem : ∀ n, n < N -> x (n + 1) ∈ C)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N))
+    (hone_step : ∀ n, n < N ->
+      bregmanDivergence phi gradPhi xStar (x (n + 1)) ≤
+        bregmanDivergence phi gradPhi xStar (x n) -
+          h * (F (x (n + 1)) - F xStar) +
+            2 * L ^ (2 : ℕ) * h ^ (2 : ℕ) / alphaPhi) :
+    F (iterateAverage (fun n => x (n + 1)) N) - F xStar ≤
+      bregmanDivergence phi gradPhi xStar (x 0) / ((N : ℝ) * h) +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  have hjensen :=
+    convex_value_iterateAverage_sub_le_average_gap
+      (C := C) (f := F) (x := fun n => x (n + 1))
+      (xStar := xStar) (N := N) hconvF hmem hN
+  have havg :=
+    chewi1011_average_gap_le_of_oneStep
+      (F := F) (phi := phi) (gradPhi := gradPhi)
+      (x := x) (xStar := xStar) (L := L)
+      (alphaPhi := alphaPhi) (h := h)
+      hh halphaPhi hN hD_N_nonneg hone_step
+  exact hjensen.trans havg
+
+/--
+Chewi Theorem 10.11 average-gap bound for a source-shaped MPGD trajectory,
+assuming the nonsmooth model lower bound from the Cauchy-Schwarz/Lipschitz
+part of the proof at each step.
+-/
+theorem chewi1011_average_gap_le_of_trajectory
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {x : ℕ -> E} {xStar : E} {L alphaPhi h : ℝ} {N : ℕ}
+    (htraj : IsMirrorProximalGradientTrajectory
+      C f g gradF phi gradPhi 0 h x)
+    (hconvF : RelativelyStrongConvexOn C f gradF phi gradPhi 0)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hxStar : xStar ∈ C)
+    (hmodel_lower : ∀ n, n < N ->
+      compositeObjective f g (x (n + 1)) -
+          2 * L ^ (2 : ℕ) * h / alphaPhi ≤
+        mirrorProximalGradientModel f g gradF phi gradPhi h (x n) (x (n + 1)))
+    (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N)) :
+    (1 / (N : ℝ)) *
+        (∑ n ∈ Finset.range N,
+          (compositeObjective f g (x (n + 1)) -
+            compositeObjective f g xStar)) ≤
+      bregmanDivergence phi gradPhi xStar (x 0) / ((N : ℝ) * h) +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  refine
+    chewi1011_average_gap_le_of_oneStep
+      (F := compositeObjective f g) (phi := phi) (gradPhi := gradPhi)
+      (x := x) (xStar := xStar) (L := L)
+      (alphaPhi := alphaPhi) (h := h)
+      hh halphaPhi hN hD_N_nonneg ?_
+  intro n hn
+  exact
+    mirrorProximalGradient_nonsmooth_oneStep_ineq
+      (C := C) (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (L := L) (alphaPhi := alphaPhi) (h := h)
+      (x := x n) (xPlus := x (n + 1)) (xStar := xStar)
+      hconvF (htraj.step n) hh hxStar (hmodel_lower n hn)
+
+/--
+Chewi Theorem 10.11 averaged-iterate bound for a source-shaped MPGD
+trajectory.
+-/
+theorem chewi1011_iterateAverage_gap_le_of_trajectory
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {x : ℕ -> E} {xStar : E} {L alphaPhi h : ℝ} {N : ℕ}
+    (htraj : IsMirrorProximalGradientTrajectory
+      C f g gradF phi gradPhi 0 h x)
+    (hconvFmodel : RelativelyStrongConvexOn C f gradF phi gradPhi 0)
+    (hconvComposite : ConvexOn ℝ C (compositeObjective f g))
+    (hmem : ∀ n, n < N -> x (n + 1) ∈ C)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hxStar : xStar ∈ C)
+    (hmodel_lower : ∀ n, n < N ->
+      compositeObjective f g (x (n + 1)) -
+          2 * L ^ (2 : ℕ) * h / alphaPhi ≤
+        mirrorProximalGradientModel f g gradF phi gradPhi h (x n) (x (n + 1)))
+    (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N)) :
+    compositeObjective f g (iterateAverage (fun n => x (n + 1)) N) -
+        compositeObjective f g xStar ≤
+      bregmanDivergence phi gradPhi xStar (x 0) / ((N : ℝ) * h) +
+        2 * L ^ (2 : ℕ) * h / alphaPhi := by
+  have hone : ∀ n, n < N ->
+      bregmanDivergence phi gradPhi xStar (x (n + 1)) ≤
+        bregmanDivergence phi gradPhi xStar (x n) -
+          h * (compositeObjective f g (x (n + 1)) -
+            compositeObjective f g xStar) +
+            2 * L ^ (2 : ℕ) * h ^ (2 : ℕ) / alphaPhi := by
+    intro n hn
+    exact
+      mirrorProximalGradient_nonsmooth_oneStep_ineq
+        (C := C) (f := f) (g := g) (gradF := gradF)
+        (phi := phi) (gradPhi := gradPhi)
+        (L := L) (alphaPhi := alphaPhi) (h := h)
+        (x := x n) (xPlus := x (n + 1)) (xStar := xStar)
+        hconvFmodel (htraj.step n) hh hxStar (hmodel_lower n hn)
+  exact
+    chewi1011_iterateAverage_gap_le_of_oneStep
+      (C := C) (F := compositeObjective f g) (phi := phi)
+      (gradPhi := gradPhi) (x := x) (xStar := xStar)
+      (L := L) (alphaPhi := alphaPhi) (h := h)
+      (N := N) hconvComposite hmem hh halphaPhi hN hD_N_nonneg hone
 
 end Optimization
 end StatInference
