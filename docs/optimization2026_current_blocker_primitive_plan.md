@@ -510,13 +510,19 @@ subgradient of `chewi621HardObjective`, prove the displayed source radius facts
 `‖x_*‖ = R` and `dist 0 x_* <= R`, promote the hard family to centered
 `B(x_*, R)` Lipschitz and first-order strong-convexity certificates, and prove
 the Chewi 6.22 source-rate packet with displayed radius, `x0` membership,
-strong-convexity, and Lipschitz side conditions.  The current 6.25 packet also
+strong-convexity, and Lipschitz side conditions.  The current 6.25 packet now
 compiles the box-halving resisting-oracle geometry, retained-box separation,
-query exclusion, side-width facts, closed-ball containment, and short-side
-no-ball obstruction.  The next aggressive theorem packet should continue
-Theorem 6.25 with the cyclic coordinate schedule and scalar side-length/radius
-iteration; add an arbitrary-`d > N` embedding/report wrapper for 6.21/6.22 only
-if the fully literal theorem statement or report needs it.  Search the local PSD, CoGM,
+query exclusion, side-width facts, closed-ball containment, short-side
+no-ball obstruction, cyclic coordinate schedule, full-cycle side-length/log
+iteration, final replay certificate, deterministic transcript replay, closed
+convex Definition 6.24-style feasibility instance, and topological
+`interior C` no-success wrapper
+`chewi625_deterministic_run_no_interior_success_of_log_bound`.  The next
+aggressive theorem packet should either package exact Theorem 6.25 for
+source/report use, or, if that becomes report/topology drag, open Chapter 7
+Frank-Wolfe in a theorem-sized module; add an arbitrary-`d > N`
+embedding/report wrapper for 6.21/6.22 only if the fully literal theorem
+statement or report needs it.  Search the local PSD, CoGM,
 ellipsoid, lower-bound, nonsmooth-lower-bound, and exercises modules first; if
 the next source theorem needs a missing nonsmooth lower-bound primitive, record
 that precise API and prove the smallest wrapper that removes it.
@@ -611,13 +617,16 @@ should live in the single module `StatInference/Optimization/Exercises.lean`,
 so the later exercise sweep remains source-trackable.
 
 Book-level target map for the next 2-4 hour acceleration window: stay in
-Chapter 6 and finish theorem-sized packets instead of jumping past the chapter:
+Chapter 6 only for exact 6.25 source/report packaging; otherwise jump to the
+next theorem-sized main-text chapter packet rather than polishing small
+wrappers:
 Theorem 6.21's centered-domain Lipschitz/convexity side conditions and Theorem
 6.22's strongly convex nonsmooth lower-bound source packet are now compiled for
 the concrete `d = N + 1` hard family.  Add an arbitrary-d embedding/report
-wrapper only if it is needed for exact source reporting; otherwise move
-directly to Theorem 6.23's optimization-to-feasibility context plus Definition
-6.24/Theorem 6.25 for the feasibility lower bound.
+wrapper only if it is needed for exact source reporting.  Definition
+6.24/Theorem 6.25 now has the closed-convex feasibility-instance and
+topological interior no-success wrapper, so the next non-report proof lane is
+Chapter 7 `FrankWolfe.lean`.
 Lemma 6.20 now has a compiled trajectory/rate frontier, and Lemma 6.18/Theorem
 6.19 already have a supplied-interface algebraic spine; their exact
 source-audited report remains blocked only by the genuine Grünbaum/centroid
