@@ -401,10 +401,17 @@ Chapter 4 handoff:
   `.of_finiteCoordinateStrongLaw_real`
   construct it from convergence in probability and from the coordinatewise
   strong law.
+- Target-probability consumers:
+  `vaart1998_theorem_4_1_moment_estimator_mem_parameterDomain_with_probability_tending_to_one`
+  packages the generic local-parameter-domain probability handoff, while
+  `vaart1998_theorem_4_1_local_inverse_mem_parameterDomain_of_targetProbabilityLocalization_real`
+  and
+  `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_targetProbabilityLocalization_real`
+  consume the finite-coordinate target-probability certificate directly.
 
-Latest remote base before this packet: `ff791d1`.  Latest pushed Vaart packet
-before this packet: `232407b`
-(`Add Vaart empirical local inverse certificate`).
+Latest remote base before this packet: `548d7a7`.  Latest pushed Vaart packet
+before this packet: `3186ff7`
+(`Add Vaart target probability localization certificate`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -417,10 +424,10 @@ for this packet is the focused Lean check and targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled target-probability localization
-certificate route.  The next useful proof step is to connect probability
-localization to a localized measurable estimator/asymptotic-equivalence route,
-or prove a measurable extension of the local inverse if mathlib supports it.
+Continue Vaart Chapter 4.1 from the localized high-probability local-inverse
+candidate route.  The next useful proof step is to connect this route to an
+asymptotic-equivalence or measurable-selection theorem, or prove a measurable
+extension of the local inverse if mathlib supports it.
 
 ## Reuse Dependencies
 

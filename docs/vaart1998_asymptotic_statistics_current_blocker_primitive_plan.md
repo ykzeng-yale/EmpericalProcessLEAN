@@ -594,22 +594,31 @@ Chapter 3 theorem-facing wrappers compiling:
    `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_tendstoInMeasure_real`
    and
    `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_finiteCoordinateStrongLaw_real`.
+190. Generic probability consumer for the local parameter domain:
+   `vaart1998_theorem_4_1_moment_estimator_mem_parameterDomain_with_probability_tending_to_one`.
+191. Finite-coordinate target-probability consumer proving that the local
+   inverse candidate enters the inverse-function-theorem source neighborhood
+   with probability tending to one:
+   `vaart1998_theorem_4_1_local_inverse_mem_parameterDomain_of_targetProbabilityLocalization_real`.
+192. Finite-coordinate target-probability consumer proving that the local
+   inverse candidate solves the empirical moment equation with probability
+   tending to one:
+   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_targetProbabilityLocalization_real`.
 
-Latest remote base before this packet: `ff791d1`.
-Latest pushed Vaart packet before this packet: `232407b`
-(`Add Vaart empirical local inverse certificate`).
+Latest remote base before this packet: `548d7a7`.
+Latest pushed Vaart packet before this packet: `3186ff7`
+(`Add Vaart target probability localization certificate`).
 
-The current theorem-sized packet separates target-probability localization from
-the stronger a.e. target-localization needed for local-inverse measurability.
-It packages Vaart's existence/local-range probability conclusion as a named
-finite-coordinate certificate and discharges it from either convergence in
-probability of empirical moments or the finite-coordinate strong law.
+The current theorem-sized packet consumes the target-probability localization
+certificate without confusing it with a.e. target localization.  It proves that
+the local inverse candidate lies in the inverse-function-theorem source
+neighborhood with probability tending to one and solves the empirical moment
+equation with probability tending to one.
 
 The next aggressive packet should continue Chapter 4 by connecting this
-probability-localization certificate to a localized measurable estimator route
-or by proving a measurable extension of the local inverse when that is
-available from mathlib.  Do not use probability tending to one as a substitute
-for per-`n` a.e. target membership.
+localized high-probability candidate route to asymptotic-equivalence or
+measurable-selection infrastructure.  Do not use probability tending to one as
+a substitute for per-`n` a.e. target membership.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

@@ -365,6 +365,15 @@ Initial modules:
   strong law, and
   `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.to_momentEstimatorLocalRangeProbabilityCertificate`
   bridges it back to the generic local-range probability certificate.
+  The local-parameter-domain consumer
+  `vaart1998_theorem_4_1_moment_estimator_mem_parameterDomain_with_probability_tending_to_one`
+  turns local-range probability into high-probability source-neighborhood
+  membership for the local-inverse candidate.  The finite-coordinate endpoints
+  `vaart1998_theorem_4_1_local_inverse_mem_parameterDomain_of_targetProbabilityLocalization_real`
+  and
+  `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_targetProbabilityLocalization_real`
+  consume the target-probability certificate directly while keeping it
+  separate from the stronger a.e. target-localization/measurability route.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

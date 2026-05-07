@@ -2782,6 +2782,38 @@ theorem vaart1998_theorem_4_1_moment_estimator_mem_parameterDomain_on_local_rang
   C.eInv_mem_parameterDomain hmem
 
 /--
+If empirical moments enter the local range with probability tending to one, then
+the local-inverse candidate lies in the local parameter domain with probability
+tending to one.
+-/
+theorem vaart1998_theorem_4_1_moment_estimator_mem_parameterDomain_with_probability_tending_to_one
+    {Ω M Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    (C : Vaart1998MomentLocalRangeCertificate M Θ)
+    {empiricalMoment : ℕ -> Ω -> M}
+    (hprob : Tendsto (fun n : ℕ =>
+      P.real {ω : Ω | empiricalMoment n ω ∈ C.momentRange}) atTop (𝓝 1)) :
+    Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          C.eInv (empiricalMoment n ω) ∈ C.parameterDomain})
+        atTop (𝓝 1) := by
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le
+    hprob tendsto_const_nhds ?_ ?_
+  · intro n
+    refine measureReal_mono ?_
+    intro ω hmem
+    exact C.eInv_mem_parameterDomain hmem
+  · intro n
+    have hle :
+        P.real
+            {ω : Ω |
+              C.eInv (empiricalMoment n ω) ∈ C.parameterDomain} ≤
+          P.real Set.univ :=
+      measureReal_mono (μ := P) (Set.subset_univ _)
+    simpa using hle
+
+/--
 Certificate form of the Theorem 4.1 existence-localization sentence: empirical
 moments fall in the local range with probability tending to one.
 -/
@@ -2841,6 +2873,74 @@ theorem vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to
   vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to_one
     (C := C) (empiricalMoment := Pcert.empiricalMoment) <| by
       simpa [hRange] using Pcert.localRange_probability
+
+/--
+Finite-coordinate target-probability localization implies that the
+inverse-function-theorem local-inverse candidate lies in the source
+neighborhood with probability tending to one.
+-/
+theorem vaart1998_theorem_4_1_local_inverse_mem_parameterDomain_of_targetProbabilityLocalization_real
+    {Coordinate Ω Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (targetProbability :
+      Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+        Coordinate Ω Θ P e theta0 De he X) :
+    Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          he.localInverse e De theta0
+              (vaart1998_finiteCoordinateEmpiricalMoment X n ω) ∈
+            (he.toOpenPartialHomeomorph e).source})
+        atTop (𝓝 1) := by
+  simpa [vaart1998_momentLocalRangeCertificate_of_hasStrictFDerivAt_openPartialHomeomorph,
+    HasStrictFDerivAt.localInverse_def] using
+    (vaart1998_theorem_4_1_moment_estimator_mem_parameterDomain_with_probability_tending_to_one
+      (P := P)
+      (C :=
+        vaart1998_momentLocalRangeCertificate_of_hasStrictFDerivAt_openPartialHomeomorph
+          e De he)
+      (empiricalMoment := fun n : ℕ =>
+        vaart1998_finiteCoordinateEmpiricalMoment X n)
+      targetProbability.empiricalMoment_mem_target_probability)
+
+/--
+Finite-coordinate target-probability localization implies that the
+inverse-function-theorem local-inverse candidate solves the empirical moment
+equation with probability tending to one.
+-/
+theorem vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_targetProbabilityLocalization_real
+    {Coordinate Ω Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (targetProbability :
+      Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+        Coordinate Ω Θ P e theta0 De he X) :
+    Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e (he.localInverse e De theta0
+              (vaart1998_finiteCoordinateEmpiricalMoment X n ω)) =
+            vaart1998_finiteCoordinateEmpiricalMoment X n ω})
+        atTop (𝓝 1) := by
+  simpa [vaart1998_momentLocalRangeCertificate_of_hasStrictFDerivAt_openPartialHomeomorph,
+    HasStrictFDerivAt.localInverse_def] using
+    (vaart1998_theorem_4_1_moment_equation_solved_with_probability_tending_to_one
+      (P := P)
+      (C :=
+        vaart1998_momentLocalRangeCertificate_of_hasStrictFDerivAt_openPartialHomeomorph
+          e De he)
+      (empiricalMoment := fun n : ℕ =>
+        vaart1998_finiteCoordinateEmpiricalMoment X n)
+      targetProbability.empiricalMoment_mem_target_probability)
 
 /--
 The inverse-function theorem plus convergence in probability of empirical
