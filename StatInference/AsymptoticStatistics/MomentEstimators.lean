@@ -916,6 +916,15 @@ noncomputable def vaart1998_finiteCoordinateProjectedPopulationMoment
   L (vaart1998_finiteCoordinatePopulationMoment P X)
 
 /--
+The finite-coordinate sample vector at a single observation index.
+-/
+noncomputable def vaart1998_finiteCoordinateSampleVector
+    {Coordinate Ω : Type*}
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (i : ℕ) (ω : Ω) :
+    Coordinate -> ℝ :=
+  fun coordinate => X coordinate i ω
+
+/--
 Scalar summand obtained by testing one finite-coordinate sample vector with a
 continuous linear functional.
 -/
@@ -923,7 +932,50 @@ noncomputable def vaart1998_finiteCoordinateProjectedSample
     {Coordinate Ω : Type*} [Fintype Coordinate]
     (L : StrongDual ℝ (Coordinate -> ℝ))
     (X : Coordinate -> ℕ -> Ω -> ℝ) (i : ℕ) (ω : Ω) : ℝ :=
-  L (fun coordinate => X coordinate i ω)
+  L (vaart1998_finiteCoordinateSampleVector X i ω)
+
+/--
+Projected samples inherit `MemLp` from the finite-coordinate sample vector.
+-/
+theorem vaart1998_finiteCoordinateProjectedSample_memLp_of_vectorMemLp
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : Coordinate -> ℕ -> Ω -> ℝ}
+    (L : StrongDual ℝ (Coordinate -> ℝ))
+    (hX_memLp : MemLp (vaart1998_finiteCoordinateSampleVector X 0) 2 P) :
+    MemLp (vaart1998_finiteCoordinateProjectedSample L X 0) 2 P := by
+  simpa [vaart1998_finiteCoordinateProjectedSample, Function.comp_def] using
+    (hX_memLp.continuousLinearMap_comp L)
+
+/--
+Projected samples inherit independence from the finite-coordinate sample-vector
+sequence.
+-/
+theorem vaart1998_finiteCoordinateProjectedSample_iIndepFun_of_vector_iIndepFun
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : Coordinate -> ℕ -> Ω -> ℝ}
+    (L : StrongDual ℝ (Coordinate -> ℝ))
+    (hX_indep : iIndepFun (fun i => vaart1998_finiteCoordinateSampleVector X i) P) :
+    iIndepFun (vaart1998_finiteCoordinateProjectedSample L X) P := by
+  simpa [vaart1998_finiteCoordinateProjectedSample, Function.comp_def] using
+    hX_indep.comp (fun _ => L) (fun _ => L.continuous.measurable)
+
+/--
+Projected samples inherit identical distribution from the finite-coordinate
+sample vectors.
+-/
+theorem vaart1998_finiteCoordinateProjectedSample_identDistrib_of_vector_identDistrib
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : Coordinate -> ℕ -> Ω -> ℝ}
+    (L : StrongDual ℝ (Coordinate -> ℝ)) (i : ℕ)
+    (hX_ident :
+      IdentDistrib
+        (vaart1998_finiteCoordinateSampleVector X i)
+        (vaart1998_finiteCoordinateSampleVector X 0) P P) :
+    IdentDistrib
+      (vaart1998_finiteCoordinateProjectedSample L X i)
+      (vaart1998_finiteCoordinateProjectedSample L X 0) P P := by
+  simpa [vaart1998_finiteCoordinateProjectedSample, Function.comp_def] using
+    hX_ident.comp L.continuous.measurable
 
 /--
 Testing the finite-coordinate population moment agrees with the integral of the
@@ -976,9 +1028,12 @@ theorem vaart1998_finiteCoordinateProjectedEmpiricalAverage_eq_inv_mul_sum_sampl
         = L ((n : ℝ)⁻¹ • ∑ i ∈ Finset.range n, v i) := by
           simp [vaart1998_finiteCoordinateProjectedEmpiricalAverage, hemp]
     _ = (n : ℝ)⁻¹ *
+        ∑ i ∈ Finset.range n, L (v i) := by
+          simp
+    _ = (n : ℝ)⁻¹ *
         ∑ i ∈ Finset.range n,
           vaart1998_finiteCoordinateProjectedSample L X i ω := by
-          simp [vaart1998_finiteCoordinateProjectedSample, v]
+          congr 1
 
 /--
 Projected centered empirical averages can be written in the usual scalar
@@ -1185,6 +1240,46 @@ theorem vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_integrableMe
         (P := P) (X := X) L hX_integrable)
     (hLimitLaw := hLimitLaw) (hMemLp := hMemLp)
     (hIndep := hIndep) (hIdent := hIdent)
+
+/--
+Vector-valued finite-coordinate source fields feed the projected summand CLT
+through continuous linear projections and mathlib's one-dimensional CLT.
+-/
+theorem vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorSource
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hLimitLaw : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      HasLaw (fun ω => L (Z ω))
+        (gaussianReal 0
+          (Var[vaart1998_finiteCoordinateProjectedSample L X 0; P]).toNNReal) Q)
+    (hX_memLp : MemLp (vaart1998_finiteCoordinateSampleVector X 0) 2 P)
+    (hX_indep : iIndepFun (fun i => vaart1998_finiteCoordinateSampleVector X i) P)
+    (hX_ident : ∀ i : ℕ,
+      IdentDistrib
+        (vaart1998_finiteCoordinateSampleVector X i)
+        (vaart1998_finiteCoordinateSampleVector X 0) P P) :
+    vaart1998_finiteCoordinateProjectedSummandCLT (P := P) (Q := Q) X Z :=
+  vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_integrableMean
+    (P := P) (Q := Q) (X := X) (Z := Z)
+    (hX_integrable := hX_integrable)
+    (hLimitLaw := hLimitLaw)
+    (hMemLp := fun L =>
+      vaart1998_finiteCoordinateProjectedSample_memLp_of_vectorMemLp
+        (P := P) (X := X) L hX_memLp)
+    (hIndep := fun L =>
+      vaart1998_finiteCoordinateProjectedSample_iIndepFun_of_vector_iIndepFun
+        (P := P) (X := X) L hX_indep)
+    (hIdent := fun L i =>
+      vaart1998_finiteCoordinateProjectedSample_identDistrib_of_vector_identDistrib
+        (P := P) (X := X) L i (hX_ident i))
 
 /--
 The scalar projected CLT family feeds the projected vector CLT family by

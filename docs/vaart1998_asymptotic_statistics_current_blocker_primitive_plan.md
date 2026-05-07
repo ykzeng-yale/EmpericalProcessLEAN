@@ -403,27 +403,42 @@ Chapter 3 theorem-facing wrappers compiling:
 131. Mathlib one-dimensional CLT instantiation with the projected mean field
    discharged from finite-coordinate integrability:
    `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_integrableMean`.
+132. Finite-coordinate sample-vector alias:
+   `vaart1998_finiteCoordinateSampleVector`.
+133. Projected samples inherit `MemLp` from the finite-coordinate sample
+   vector:
+   `vaart1998_finiteCoordinateProjectedSample_memLp_of_vectorMemLp`.
+134. Projected samples inherit indexed independence from the
+   finite-coordinate sample-vector sequence:
+   `vaart1998_finiteCoordinateProjectedSample_iIndepFun_of_vector_iIndepFun`.
+135. Projected samples inherit identical distribution from the
+   finite-coordinate sample vectors:
+   `vaart1998_finiteCoordinateProjectedSample_identDistrib_of_vector_identDistrib`.
+136. Vector-valued finite-coordinate source fields feed the projected summand
+   CLT through continuous linear projections and mathlib's one-dimensional CLT:
+   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorSource`.
 
-Latest remote base before this packet: `06031c3`.
-Latest pushed Vaart packet before this packet: `e7a9852`
-(`Add Vaart projected summand mathlib CLT`).
+Latest remote base before this packet: `19e90a8`.
+Latest pushed Vaart packet before this packet: `eb9319c`
+(`Add Vaart projected summand mean bridge`).
 
-The current theorem-sized packet removes the ad hoc projected mean hypothesis
-from the mathlib one-dimensional CLT handoff.  Finite-coordinate integrability
-now proves that the integral of the tested first summand equals the tested
-population moment, and the new integrable-mean wrapper feeds that fact into
-`vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT`.
+The current theorem-sized packet removes the projection-level `MemLp`,
+`iIndepFun`, and `IdentDistrib` obligations from the mathlib one-dimensional
+CLT handoff whenever vector-valued finite-coordinate source fields are already
+available.  Continuous linear maps now transport those fields to every
+projection, and the vector-source wrapper feeds them into the existing
+integrable-mean CLT constructor.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. prove the projected summand independence/identical-distribution/measurability
-   obligations from the existing coordinate assumptions only when they are
-   directly needed by that scalar CLT instantiation;
-2. package the Gaussian projected `HasLaw` field from the finite-coordinate
+1. package the Gaussian projected `HasLaw` field from the finite-coordinate
    Gaussian limit and covariance bilinear form, adding covariance-table
    consumers only if they remove a real caller-side hypothesis from an existing
    Theorem 4.1 wrapper.
+2. only after the vector-source wrapper is being used by a caller, prove
+   coordinate-assumption-to-vector-source constructors for `MemLp`,
+   `iIndepFun`, and `IdentDistrib`.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

@@ -263,9 +263,17 @@ Chapter 4 handoff:
 - Mathlib one-dimensional CLT source theorem with the mean field discharged
   from finite-coordinate integrability:
   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_integrableMean`.
+- Vector-valued finite-coordinate source fields transported to projected
+  summand source fields:
+  `vaart1998_finiteCoordinateSampleVector`,
+  `vaart1998_finiteCoordinateProjectedSample_memLp_of_vectorMemLp`,
+  `vaart1998_finiteCoordinateProjectedSample_iIndepFun_of_vector_iIndepFun`,
+  `vaart1998_finiteCoordinateProjectedSample_identDistrib_of_vector_identDistrib`,
+  and
+  `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorSource`.
 
-Latest remote base before this packet: `06031c3`.  Latest pushed Vaart packet
-before this packet: `e7a9852` (`Add Vaart projected summand mathlib CLT`).
+Latest remote base before this packet: `19e90a8`.  Latest pushed Vaart packet
+before this packet: `eb9319c` (`Add Vaart projected summand mean bridge`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -288,12 +296,13 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. prove projected summand independence/identical-distribution/measurability
-   obligations from coordinate assumptions only when they are directly needed;
-2. package the Gaussian projected `HasLaw` field from the finite-coordinate
+1. package the Gaussian projected `HasLaw` field from the finite-coordinate
    Gaussian limit and covariance bilinear form, adding further covariance-table
    consumers only if they remove a real caller-side hypothesis from an existing
    Theorem 4.1 wrapper.
+2. only after the vector-source wrapper is being used by a caller, prove
+   coordinate-assumption-to-vector-source constructors for `MemLp`,
+   `iIndepFun`, and `IdentDistrib`.
 
 If this blocks, record the exact missing theorem shape for the supplied
 empirical-moment CLT, covariance-display, or local-inverse measurability field

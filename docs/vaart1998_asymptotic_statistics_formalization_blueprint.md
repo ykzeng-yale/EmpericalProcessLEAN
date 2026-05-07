@@ -243,6 +243,10 @@ Initial modules:
   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_integrableMean`
   now discharges the tested mean field from finite-coordinate integrability and
   `vaart1998_finiteCoordinateProjectedSample_integral_eq_populationMoment`.
+  The vector-source wrapper
+  `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorSource`
+  transports finite-coordinate sample-vector `MemLp`, `iIndepFun`, and
+  `IdentDistrib` fields through every continuous linear projection.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
