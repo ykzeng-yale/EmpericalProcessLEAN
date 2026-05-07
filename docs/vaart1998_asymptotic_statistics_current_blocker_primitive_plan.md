@@ -4,160 +4,32 @@ This file is the active blocker register for the van der Vaart 1998
 asymptotic-statistics lane.  It should be checked at the start of each
 manual `/goal` continuation before selecting a proof target.
 
-## Adaptive Goal Prompt Rule
+## Live Continuation Prompt
 
-The active Vaart `/goal` in this chat is part of the proof state.  Every manual
-goal run should finish by checking whether the live continuation prompt is
-stale relative to this file, the dashboard, the blueprint, and the latest
-verified commit.
+Continue the Vaart 1998 Lean formalization from the verified frontier at
+`a00062a`.  Do not spend the next run on process text or Gaussian endpoint
+packaging unless it directly unblocks the source theorem.  The primary target
+is Vaart Theorem 5.41 in
+`StatInference/AsymptoticStatistics/MEstimators.lean`: discharge the
+source-shaped Taylor/LLN inputs that feed
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_twoResiduals`.
 
-Refresh the manual continuation prompt whenever a run:
+Next proof packet:
 
-- proves a Lean declaration;
-- narrows or discovers a blocker;
-- merges other-agent work;
-- changes the next atomic target;
-- records a material mathlib/local-code search result.
+- Define/package the derivative LLN residual from the Taylor expansion and
+  prove it is `o_P(1)` using existing LLN/convergence-in-probability
+  infrastructure.
+- Define/package the dominated second-derivative Taylor residual and prove it
+  is `o_P(1)` from consistency plus bounded/dominated second derivatives.
+- Prove the a.e. four-term Taylor zero display consumed by the compiled
+  separated-residual bridge:
+  `score_n + V (scaledEstimator_n) + derivativeResidual_n +
+    secondResidual_n = 0`.
 
-The refreshed prompt should name:
-
-- the latest pushed commit and the exact new declarations or blocker
-  refinement;
-- one primary theorem/proof target plus independent support targets;
-- the search-first scope: pinned mathlib, local `StatInference`, existing
-  `ProbabilityMeasure`, `ProbabilityTheory`, `Asymptotics`, `EmpiricalProcess`,
-  and recent remote contributions;
-- the verification gate: focused `lake env lean` on the actual Vaart worktree
-  source, targeted `lake build` only when the `.lake` build root is known to
-  match this worktree, root build only when imports changed and the build root
-  is correct, `git diff --check`, proof-hole scan, and secret scan;
-- the report gate: no Vaart theorem report until an exact source theorem
-  compiles and source evidence is captured from Markdown/PDF.
-
-Do not update the prompt for wording-only churn.  Do update it when an old
-prompt would point at a solved target, omit a newly discovered reusable API, or
-hide the current blocker.
-
-## Throughput Policy
-
-Each run should make concrete verified Lean progress or document a precise
-blocker with attempted APIs.  Prefer theorem-sized source wrappers and
-certificate bridges that unlock multiple later chapters.  A tiny primitive is
-acceptable only when it is the fastest verified dependency for the current
-theorem route.
-
-This lane is a manual `/goal` continuation, not a recurring automation.  Do not
-create or update Codex automations for the Vaart textbook route.  Keep the live
-goal state in this chat and mirror the exact frontier in this file, the
-dashboard, and the blueprint.
-
-Use the same manual loop on every continuation:
-
-1. Read the active `/goal`, this blocker file, the dashboard, and the
-   blueprint.
-2. Fetch `origin/main`, identify other-agent changes, and choose the dedicated
-   Vaart worktree unless a fresh disjoint worktree would reduce conflict risk.
-3. Check the source anchor in the Vaart Markdown/PDF and record the exact
-   textbook statement before selecting a Lean target.
-4. Search pinned mathlib and local `StatInference` reuse before adding a new
-   primitive.
-5. Prove one source-facing theorem packet, then run the focused direct Lean
-   gate before editing route docs.
-6. Update docs only after the Lean theorem or exact blocker is known.
-7. Fetch/rebase immediately before staging, rerun focused direct Lean and
-   hygiene scans on the exact tree to be pushed, then commit and push.
-8. In the final report, name the verified declarations, source theorem, tests,
-   and remote head without implying the textbook goal is complete.
-
-Use worktrees when they improve coordination with other local textbook agents,
-but keep every packet small and rebase-aware:
-
-- start by checking `git status`, `origin/main`, the active `/goal`, this
-  blocker file, the dashboard, and the blueprint;
-- treat the Vaart worktree's symlinked `.lake` directory as a verification
-  hazard: use direct artifact compilation such as
-  `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .lake/build/lib/lean/StatInference/AsymptoticStatistics/MomentEstimators.olean -i .lake/build/lib/lean/StatInference/AsymptoticStatistics/MomentEstimators.ilean`
-  unless the build root has been fixed or revalidated;
-- search pinned mathlib and local `StatInference` before introducing a new
-  primitive;
-- prove one theorem-sized packet at a time, with names and comments in English;
-- keep every repository file, Lean declaration, doc update, and code comment in
-  English even when the chat discussion mixes English and Chinese;
-- run the focused Lean file before editing docs;
-- update route docs only after a real Lean declaration or precise blocker is
-  known;
-- fetch once early for awareness and once immediately before commit/push; after
-  the final rebase, rerun the focused direct Lean gate and scans on the exact
-  tree to be pushed;
-- push only clean verified packets and preserve unrelated user or agent
-  changes.
-
-Spawn a useful independent agent team in this chat when slots permit:
-
-- source scout for Vaart anchors and theorem ordering;
-- Lean reuse scout for mathlib/local APIs;
-- bounded worker for a disjoint Lean or docs write scope;
-- verifier/reviewer when a packet is ready.
-
-Keep write scopes disjoint and never revert unrelated local changes.
-
-## Manual Proof Packet Contract
-
-This section records the May 7 process audit for this manual Vaart `/goal`.
-It is meant to reduce stale-target work, unnecessary rebuilds, and conflicts
-with the other local textbook agents.
-
-Each continuation should start with a five-minute orientation gate:
-
-1. Confirm the active `/goal` is still the Vaart textbook formalization lane.
-   Do not create, update, or route through a recurring automation.
-2. Use the dedicated Vaart worktree by default.  If the main worktree has dirty
-   Durrett, optimization, VdV&W, or shared-probability changes, leave them
-   untouched unless the user explicitly asks for integration.
-3. Fetch `origin/main`, record whether upstream touched shared Lean files, and
-   read the latest Vaart route-doc frontier before selecting a theorem.
-4. Pin the exact textbook source lines from the Markdown/PDF before naming the
-   next Lean statement.  A route-doc entry should identify whether it is a
-   source theorem, a certificate bridge, or a blocker-discovery note.
-5. Search local reuse and pinned mathlib before adding a primitive.  Search
-   recent remote commits as well, because other agents may have just added a
-   reusable probability or asymptotics lemma.
-
-Each proof packet should have one primary target and at most two support
-targets:
-
-- The main thread owns the critical proof path.  Spawn helper agents only for
-  read-only source/API scouting, independent verification, or a disjoint write
-  scope that cannot conflict with the main edit.
-- Prefer a theorem-sized bridge that removes source-facing assumptions or
-  packages an entire textbook display.  Avoid spending a cycle on a tiny alias
-  unless it is the fastest dependency for the current theorem.
-- Keep Gaussian-bearing or heavy-import endpoints in a separate module when
-  possible, so `MEstimators.lean` remains fast enough for repeated focused
-  checks.
-- Do not update route docs until the Lean theorem compiles or the blocker is
-  precise enough to be useful to the next run.
-
-Use a tiered verification gate:
-
-- Docs-only protocol changes: run `git diff --check` and a focused review of
-  the edited docs.  Lean does not need to be rebuilt for wording-only changes.
-- Vaart Lean file changed: run direct artifact compilation for that file in the
-  Vaart worktree, using explicit `-o` and `-i` outputs when `.lake` is
-  symlinked.
-- Import graph changed: compile the new/changed imported module directly, then
-  compile `StatInference.lean` directly.
-- Lean-bearing packet rebased over a changed shared probability/asymptotics
-  dependency: rebuild the changed shared artifact first, then rerun the Vaart
-  focused gate.
-- Before every push: fetch, rebase if needed, update route-doc base hashes only
-  after the final rebase, rerun the applicable focused gate and hygiene scans,
-  then commit and push the exact verified tree.
-
-Final reports should state the pushed commit, verified declarations or docs,
-the exact checks run, and the current next blocker.  They should not mark the
-full textbook goal complete unless the entire Vaart formalization has actually
-been audited as complete.
+Efficiency rules for the next run: search local `StatInference` and mathlib
+reuse first, keep edits in the Vaart worktree, make one theorem-sized Lean
+packet, compile the changed Vaart file directly with explicit artifacts, then
+update route docs and push only after the exact rebased tree is verified.
 
 ## Current Blocker
 

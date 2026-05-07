@@ -590,23 +590,10 @@ Current packet verification passed for:
 Root build note: this worktree uses a symlinked `.lake` directory; focused
 checks must compile the Vaart-worktree artifacts directly.
 
-Process note: this is a manual `/goal` lane, not a recurring automation.  The
-continuation loop is to read the active goal and route docs, fetch and account
-for other-agent changes, verify the exact Vaart source theorem, search local
-reuse, prove one theorem-sized packet, compile it directly in the Vaart
-worktree, update docs after the theorem/blocker is known, then rebase and
-verify again before push.
-
-Process upgrade from the May 7 audit: future runs use the manual proof packet
-contract in
+Live continuation prompt: use the compact prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
-The contract makes the workflow source-first, reuse-first, and worktree-aware:
-pin the textbook Markdown/PDF lines before selecting a Lean theorem, search
-recent local and remote reuse before adding primitives, keep the main thread on
-the critical proof path, reserve helper agents for independent scouting or
-disjoint write scopes, and apply a tiered verification gate so docs-only
-protocol patches do not trigger expensive Lean rebuilds while Lean-bearing
-packets still compile the exact Vaart worktree artifacts before push.
+Avoid repeating settled process issues; spend the next run on the Theorem 5.41
+source Taylor/LLN proof packet.
 
 ## Next Aggressive Target
 
