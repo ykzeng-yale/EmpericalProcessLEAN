@@ -506,7 +506,12 @@ Initial modules:
   layer adds `vaart1998_theorem_5_41_scoreResidual_add_tendstoInMeasure` and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_twoResiduals`,
   reducing the next source obligations to derivative and second-derivative
-  residuals proved negligible separately.
+  residuals proved negligible separately.  The derivative LLN packet now adds
+  `vaart1998_tendstoInMeasure_zero_of_norm_le_mul_stochasticBounded`,
+  `vaart1998_theorem_5_41_derivativeResidual_tendstoInMeasure_of_opNorm`, and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN`,
+  so the remaining critical path is the dominated second-derivative Taylor
+  residual plus the a.e. four-term Taylor display.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

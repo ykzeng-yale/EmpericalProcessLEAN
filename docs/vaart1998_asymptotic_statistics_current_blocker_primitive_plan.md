@@ -6,23 +6,18 @@ manual `/goal` continuation before selecting a proof target.
 
 ## Live Continuation Prompt
 
-Continue the Vaart 1998 Lean formalization from the verified frontier at
-`a00062a`.  Do not spend the next run on process text or Gaussian endpoint
-packaging unless it directly unblocks the source theorem.  The primary target
-is Vaart Theorem 5.41 in
-`StatInference/AsymptoticStatistics/MEstimators.lean`: discharge the
-source-shaped Taylor/LLN inputs that feed
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_twoResiduals`.
+Continue the Vaart 1998 Lean formalization from the latest pushed frontier.
+Do not spend the next run on process text or Gaussian endpoint packaging
+unless it directly unblocks the source theorem.  The primary target is Vaart
+Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`: finish
+the source-shaped Taylor inputs that feed the derivative-LLN handoff.
 
 Next proof packet:
 
-- Define/package the derivative LLN residual from the Taylor expansion and
-  prove it is `o_P(1)` using existing LLN/convergence-in-probability
-  infrastructure.
 - Define/package the dominated second-derivative Taylor residual and prove it
   is `o_P(1)` from consistency plus bounded/dominated second derivatives.
 - Prove the a.e. four-term Taylor zero display consumed by the compiled
-  separated-residual bridge:
+  derivative-LLN bridge:
   `score_n + V (scaledEstimator_n) + derivativeResidual_n +
     secondResidual_n = 0`.
 
@@ -703,25 +698,30 @@ Chapter 3 theorem-facing wrappers compiling:
 252. Theorem 5.41 Taylor-zero handoff with separated derivative and
    second-derivative residuals:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_twoResiduals`.
+253. Theorem 5.41 probability product bridge:
+   `vaart1998_tendstoInMeasure_zero_of_norm_le_mul_stochasticBounded`.
+254. Theorem 5.41 derivative LLN residual from operator-norm convergence:
+   `vaart1998_theorem_5_41_derivativeResidual_tendstoInMeasure_of_opNorm`.
+255. Theorem 5.41 Taylor-zero handoff with the derivative LLN residual
+   discharged:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN`.
 
-Latest verified repository base before this packet: `9b67bbd`
-(`Add Durrett scalar Taylor bound bridge`).
+Latest verified repository base before this packet: `9e7f024`
+(`Condense Chewi optimization live goal prompt`).
 
 The current theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators.  It packages the probabilistic
-addition step that combines the derivative LLN residual and the
-second-derivative Taylor residual into one Score-space `o_P(1)` residual, then
-feeds the compiled Taylor-zero handoff.
+asymptotic-normality route for Z-estimators by proving the derivative LLN
+residual from source-shaped assumptions: empirical derivative convergence in
+probability in operator norm and stochastic boundedness of the scaled
+estimator.  The remaining Taylor bridge no longer needs a supplied
+`hDerivativeResidual`; it can consume the empirical derivative LLN directly.
 
-The next aggressive packet should discharge the source-shaped Taylor/LLN
-inputs for Theorem 5.41: separately prove the derivative LLN residual and the
-bounded second-derivative Taylor residual are `o_P(1)`, and prove the a.e.
-four-term Taylor zero display
+The next aggressive packet should discharge the source-shaped second-derivative
+Taylor residual and the a.e. four-term Taylor zero display
 `sqrt n Psi_n(theta0)
  + (P dot psi_theta0) (sqrt n (thetaHat_n - theta0))
- + derivativeResidual_n + secondResidual_n = 0`.
-Keep Gaussian-law preservation in a Gaussian-bearing module or as a separate
-lightweight packet so `MEstimators.lean` remains fast to verify.
+ + (dotPsi_n(theta0) - P dot psi_theta0) (sqrt n (thetaHat_n - theta0))
+ + secondResidual_n = 0`.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

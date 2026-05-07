@@ -577,13 +577,23 @@ Chapter 4 handoff:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_twoResiduals`
   consumes the four-term Taylor display with separate derivative and
   second-derivative residuals.
+- Chapter 5.41 derivative LLN residual bridge:
+  `vaart1998_tendstoInMeasure_zero_of_norm_le_mul_stochasticBounded` packages
+  the source probability step that scalar `o_P(1)` times an `O_P(1)` statistic
+  is `o_P(1)`.  The specialized residual theorem
+  `vaart1998_theorem_5_41_derivativeResidual_tendstoInMeasure_of_opNorm`
+  instantiates this for
+  `(dotPsi_n(theta0) - P dot psi_theta0) (sqrt n (thetaHat_n - theta0))`.
+  The consumer
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN`
+  feeds the empirical derivative LLN directly into the compiled separated
+  residual handoff.
 
-Latest verified repository base before this packet: `9b67bbd`
-(`Add Durrett scalar Taylor bound bridge`).
+Latest verified repository base before this packet: `9e7f024`
+(`Condense Chewi optimization live goal prompt`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
-- manual direct root import check for `StatInference.lean`
 - `git diff --check`
 - proof-hole and secret scans on changed Vaart files
 
@@ -597,11 +607,12 @@ source Taylor/LLN proof packet.
 
 ## Next Aggressive Target
 
-Discharge the source-shaped Taylor/LLN inputs for Vaart Theorem 5.41: prove
-the derivative LLN residual and the dominated second-derivative Taylor residual
-are separately `o_P(1)`, and prove the four-term Taylor zero display consumed
-by the compiled separated-residual bridge.  Keep Gaussian-law preservation as a
-separate lightweight packet or in a module that already imports Gaussian APIs.
+Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41:
+prove the dominated second-derivative Taylor residual is `o_P(1)` from
+consistency plus bounded/dominated second derivatives, then prove the a.e.
+four-term Taylor zero display consumed by the derivative-LLN handoff.  Keep
+Gaussian-law preservation out of the critical path until the source Taylor
+bridge is complete.
 
 ## Reuse Dependencies
 
