@@ -482,24 +482,27 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_finiteCoordinateCanonicalSample_coordinate_memLp`.
 158. Canonical iid product-sample coordinate source package for Theorem 4.1:
    `vaart1998_finiteCoordinateCanonicalSample_coordinateSource`.
+159. Canonical iid product-space Theorem 4.1 covariance-table endpoint:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalProductSource_real`.
 
-Latest remote base before this packet: `2b1488e`.
-Latest pushed Vaart packet before this packet: `2b1488e`
-(`Add Vaart theorem 4.1 coordinate source endpoint`).
+Latest remote base before this packet: `c1cad8d`.
+Latest pushed Vaart packet before this packet: `f6f3504`
+(`Add Vaart canonical coordinate source fields`).
 
-The current theorem-sized packet supplies canonical product-space coordinate
-measurability and coordinate `MemLp` source fields.  This is the concrete
-sample-space layer needed before a canonical-product Theorem 4.1 endpoint.
+The current theorem-sized packet instantiates the Theorem 4.1 covariance-table
+endpoint for the canonical iid product sample space.  The remaining source
+hypotheses are now the non-sample-space fields: Gaussian limit law, covariance
+identity, inverse-function target event, true-moment identity, coordinate
+evaluation measurability, and coordinate-projection `MemLp` under the vector
+law.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. instantiate the Theorem 4.1 endpoint for the canonical product sample space
-   using the canonical vector-law source and the new coordinate source package;
-2. keep the endpoint assumption list honest: the Gaussian limit, covariance
-   identity, inverse-function target event, true-moment identity, coordinate
-   evaluation measurability, and coordinate-projection `MemLp` under the vector
-   law still remain source hypotheses;
+1. prove or package the true-moment identity and coordinate-projection `MemLp`
+   fields under reusable assumptions on the common vector law `ν`;
+2. attack the remaining inverse-function target event only through a real
+   local-inverse/measurability theorem or keep it as a named source certificate;
 3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 

@@ -291,6 +291,9 @@ Initial modules:
   `vaart1998_finiteCoordinateCanonicalSample_coordinateSource` provide the
   remaining coordinate measurability and `MemLp` fields for the canonical iid
   sample space.
+  The endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalProductSource_real`
+  specializes Theorem 4.1 to that canonical product sample space.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
