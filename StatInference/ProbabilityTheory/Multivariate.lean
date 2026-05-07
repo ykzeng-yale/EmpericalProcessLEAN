@@ -19,6 +19,268 @@ open scoped BigOperators BoundedContinuousFunction ENNReal Topology Function Pro
 /-! ## Durrett, Section 3.10 -/
 
 /--
+Durrett 2019, Theorem 3.10.7, the finite covariance-table quadratic form
+appearing in the multivariate normal characteristic function.
+-/
+noncomputable def durrett2019_theorem_3_10_7_covarianceTableQuadratic
+    {Coordinate : Type*} [Fintype Coordinate]
+    (theta : Coordinate -> ℝ) (Gamma : Coordinate -> Coordinate -> ℝ) : ℝ :=
+  ∑ i, ∑ j, theta i * theta j * Gamma i j
+
+/--
+Durrett's projection `x ↦ theta · x` as a continuous linear functional on a
+finite real coordinate space.
+-/
+noncomputable def durrett2019_theorem_3_10_7_thetaProjection
+    {Coordinate : Type*} [Fintype Coordinate]
+    (theta : Coordinate -> ℝ) :
+    StrongDual ℝ (Coordinate -> ℝ) :=
+  ∑ i,
+    theta i •
+      StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+        (Coordinate := Coordinate) i
+
+@[simp]
+theorem durrett2019_theorem_3_10_7_thetaProjection_apply
+    {Coordinate : Type*} [Fintype Coordinate]
+    (theta : Coordinate -> ℝ) (x : Coordinate -> ℝ) :
+    durrett2019_theorem_3_10_7_thetaProjection theta x =
+      ∑ i, theta i * x i := by
+  classical
+  simp [durrett2019_theorem_3_10_7_thetaProjection]
+
+/--
+The covariance bilinear form of Durrett's projection is the double sum of the
+coordinate covariance table.
+-/
+theorem durrett2019_theorem_3_10_7_covarianceBilinDual_thetaProjection
+    {Coordinate : Type*} [Fintype Coordinate]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    (μ : Measure (Coordinate -> ℝ)) (theta : Coordinate -> ℝ) :
+    _root_.ProbabilityTheory.covarianceBilinDual μ
+        (durrett2019_theorem_3_10_7_thetaProjection theta)
+        (durrett2019_theorem_3_10_7_thetaProjection theta) =
+      ∑ i, ∑ j, theta i * theta j *
+        _root_.ProbabilityTheory.covarianceBilinDual μ
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j) := by
+  classical
+  simp [durrett2019_theorem_3_10_7_thetaProjection,
+    _root_.ProbabilityTheory.covarianceBilinDual_comm, Finset.mul_sum, mul_assoc]
+
+/--
+Durrett's projected variance is the covariance-table quadratic form when the
+coordinate covariance table is supplied by `covarianceBilinDual`.
+-/
+theorem durrett2019_theorem_3_10_7_thetaProjection_variance_eq_covarianceTableQuadratic
+    {Coordinate : Type*} [Fintype Coordinate]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {μ : Measure (Coordinate -> ℝ)} [IsFiniteMeasure μ]
+    (hμ_memLp : MemLp id 2 μ)
+    (Gamma : Coordinate -> Coordinate -> ℝ) (theta : Coordinate -> ℝ)
+    (hGamma : ∀ i j,
+      Gamma i j =
+        _root_.ProbabilityTheory.covarianceBilinDual μ
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j)) :
+    _root_.ProbabilityTheory.variance
+        (durrett2019_theorem_3_10_7_thetaProjection theta) μ =
+      durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma := by
+  rw [← _root_.ProbabilityTheory.covarianceBilinDual_self_eq_variance
+    hμ_memLp (durrett2019_theorem_3_10_7_thetaProjection theta)]
+  rw [durrett2019_theorem_3_10_7_covarianceBilinDual_thetaProjection]
+  simp [durrett2019_theorem_3_10_7_covarianceTableQuadratic, hGamma]
+
+/--
+Durrett 2019, Theorem 3.10.7, Gaussian projected characteristic-function
+display.
+
+For a Gaussian finite-coordinate vector, every continuous linear projection has
+the textbook one-dimensional Gaussian characteristic function with its
+projected mean and variance.
+-/
+theorem durrett2019_theorem_3_10_7_gaussianProjectedCharacteristic_display
+    {Coordinate Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (L : StrongDual ℝ (Coordinate -> ℝ)) :
+    MeasureTheory.charFunDual (Q.map Z) L =
+      Complex.exp
+        (((∫ ω, L (Z ω) ∂Q : ℝ) : ℂ) * Complex.I -
+          ((_root_.ProbabilityTheory.variance (fun ω => L (Z ω)) Q : ℝ) : ℂ) / 2) := by
+  simpa [_root_.ProbabilityTheory.variance] using
+    (_root_.ProbabilityTheory.HasGaussianLaw.charFunDual_map_eq_fun
+      (X := Z) (P := Q) L hZ_gaussian)
+
+/--
+Durrett 2019, Theorem 3.10.7, centered Gaussian projected
+characteristic-function display from a supplied projected-variance
+identification.
+
+This is the exact exponential shape used in the proof before expanding the
+projected variance into the coordinate covariance table.
+-/
+theorem durrett2019_theorem_3_10_7_centeredGaussianProjectedCharacteristic_display_of_variance
+    {Coordinate Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (projectedVariance : StrongDual ℝ (Coordinate -> ℝ) -> ℝ)
+    (hZ_mean : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      (∫ ω, L (Z ω) ∂Q) = 0)
+    (hZ_variance : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      _root_.ProbabilityTheory.variance (fun ω => L (Z ω)) Q =
+        projectedVariance L)
+    (L : StrongDual ℝ (Coordinate -> ℝ)) :
+    MeasureTheory.charFunDual (Q.map Z) L =
+      Complex.exp (-((projectedVariance L : ℂ) / 2)) := by
+  rw [durrett2019_theorem_3_10_7_gaussianProjectedCharacteristic_display
+    (Q := Q) (Z := Z) hZ_gaussian L]
+  rw [hZ_mean L, hZ_variance L]
+  congr 1
+  simp
+
+/--
+Durrett 2019, Theorem 3.10.7, centered Gaussian characteristic-function display
+after identifying the projected variance with Durrett's finite covariance-table
+quadratic form.
+-/
+theorem durrett2019_theorem_3_10_7_centeredGaussianProjectedCharacteristic_display_of_covarianceTable
+    {Coordinate Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (theta : Coordinate -> ℝ)
+    (L : StrongDual ℝ (Coordinate -> ℝ))
+    (hZ_mean : (∫ ω, L (Z ω) ∂Q) = 0)
+    (hZ_variance :
+      _root_.ProbabilityTheory.variance (fun ω => L (Z ω)) Q =
+        durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma) :
+    MeasureTheory.charFunDual (Q.map Z) L =
+      Complex.exp
+        (-((durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma : ℂ) / 2)) := by
+  rw [durrett2019_theorem_3_10_7_gaussianProjectedCharacteristic_display
+    (Q := Q) (Z := Z) hZ_gaussian L]
+  rw [hZ_mean, hZ_variance]
+  congr 1
+  simp
+
+/--
+Durrett 2019, Theorem 3.10.7, centered Gaussian characteristic-function display
+for the textbook projection `theta · chi`.
+-/
+theorem durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_covarianceTable
+    {Coordinate Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (theta : Coordinate -> ℝ)
+    (hZ_mean :
+      (∫ ω, (∑ i, theta i * Z ω i) ∂Q) = 0)
+    (hZ_variance :
+      _root_.ProbabilityTheory.variance
+          (fun ω => ∑ i, theta i * Z ω i) Q =
+        durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma) :
+    MeasureTheory.charFunDual (Q.map Z)
+        (durrett2019_theorem_3_10_7_thetaProjection theta) =
+      Complex.exp
+        (-((durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma : ℂ) / 2)) := by
+  exact
+    durrett2019_theorem_3_10_7_centeredGaussianProjectedCharacteristic_display_of_covarianceTable
+      (Q := Q) (Z := Z) (hZ_gaussian := hZ_gaussian)
+      (Gamma := Gamma) (theta := theta)
+      (L := durrett2019_theorem_3_10_7_thetaProjection theta)
+      (hZ_mean := by
+        simpa using hZ_mean)
+      (hZ_variance := by
+        simpa using hZ_variance)
+
+/--
+Durrett 2019, Theorem 3.10.7, centered Gaussian characteristic-function display
+from the covariance table of the Gaussian limit law.
+
+This closes the textbook step
+`Var(theta · chi) = sum_i sum_j theta_i theta_j Gamma_ij` when `Gamma` is the
+coordinate covariance table of the law of `chi`.
+-/
+theorem durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_covarianceBilinDualTable
+    {Coordinate Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (theta : Coordinate -> ℝ)
+    (hZ_mean :
+      (∫ ω, (∑ i, theta i * Z ω i) ∂Q) = 0)
+    (hGamma : ∀ i j,
+      Gamma i j =
+        _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j)) :
+    MeasureTheory.charFunDual (Q.map Z)
+        (durrett2019_theorem_3_10_7_thetaProjection theta) =
+      Complex.exp
+        (-((durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma : ℂ) / 2)) := by
+  have hvar_projection :
+      _root_.ProbabilityTheory.variance
+          (durrett2019_theorem_3_10_7_thetaProjection theta) (Q.map Z) =
+        durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma :=
+    durrett2019_theorem_3_10_7_thetaProjection_variance_eq_covarianceTableQuadratic
+      (μ := Q.map Z) hZ_memLp Gamma theta hGamma
+  have hvar_map :
+      _root_.ProbabilityTheory.variance
+          (durrett2019_theorem_3_10_7_thetaProjection theta) (Q.map Z) =
+        _root_.ProbabilityTheory.variance
+          (fun ω => durrett2019_theorem_3_10_7_thetaProjection theta (Z ω)) Q := by
+    simpa [Function.comp_def] using
+      (_root_.ProbabilityTheory.variance_map
+        (X := durrett2019_theorem_3_10_7_thetaProjection theta)
+        (Y := Z) (μ := Q) (by fun_prop) hZ_gaussian.aemeasurable)
+  exact
+    durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_covarianceTable
+      (Q := Q) (Z := Z) (hZ_gaussian := hZ_gaussian)
+      (Gamma := Gamma) (theta := theta)
+      (hZ_mean := hZ_mean)
+      (hZ_variance := by
+        simpa using hvar_map.symm.trans hvar_projection)
+
+/--
 Durrett 2019, Theorem 3.10.6, Cramér-Wold device, finite-coordinate law form.
 
 For finite real coordinate spaces, weak convergence of every continuous linear

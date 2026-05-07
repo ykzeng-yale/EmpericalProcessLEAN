@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V5
+## Live In-Thread Goal Prompt V6
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -13,14 +13,19 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Current lane only: Section 3.10 finite-dimensional limit theory
 in `StatInference/ProbabilityTheory/Multivariate.lean`.
 
-Next packet only: formalize Durrett Theorem 3.10.7's centered Gaussian
-characteristic-function and covariance-table display,
-`E exp(i theta dot chi) = exp(-(sum_i sum_j theta_i theta_j Gamma_ij) / 2)`,
-reusing mathlib `HasGaussianLaw` characteristic-function APIs and local Vaart
-finite-coordinate CLT/Cramer-Wold wrappers.  If the coordinate-table
-identification is too heavy for one packet, first land the compiled
-projected-variance display wrapper and record the exact remaining coordinate
-basis bridge.
+Preserve the compiled Durrett Theorem 3.10.7 Gaussian characteristic-function
+and covariance-table display layer: `thetaProjection`, covariance-bilinear
+double-sum expansion, projected-variance table equality, and the centered
+Gaussian theta-display from `covarianceBilinDual (Q.map Z)`.
+
+Next packet only: close the all-dual covariance source handoff for Theorem
+3.10.7.  Prove or package that every `StrongDual R (Coordinate -> R)` is the
+corresponding `thetaProjection` in finite coordinates, then use that
+representation to turn coordinate covariance-table equalities into the existing
+all-projection covariance hypothesis consumed by the compiled multivariate CLT
+wrappers.  If the dual representation is too heavy, first land a compiled
+source wrapper for theta-projection Cramer-Wold inputs and document the exact
+remaining all-dual bridge.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -506,6 +511,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V5` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V6` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
