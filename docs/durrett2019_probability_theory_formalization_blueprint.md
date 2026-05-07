@@ -40,6 +40,11 @@ Each refreshed in-thread target should name the latest verified declarations,
 one primary theorem target, independent support targets, search-first scope,
 verification gate, and report gate.  Do not replay a solved target.
 
+If the app-level `/goal` objective lags behind the latest pushed proof packets,
+do not create an automation or a duplicate goal.  Treat the route docs and the
+latest commit as the live target, then update the docs so the next compaction
+or agent handoff starts from the same frontier.
+
 Use subagents only when the user explicitly authorizes parallel agent work.
 Otherwise, keep the active proof in this thread and improve throughput with
 search caching, isolated worktrees for long builds or disjoint local lanes, and
@@ -327,19 +332,44 @@ center lies inside the cell, finite prefixes are assembled by chain append, and
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine` compiles for arbitrary
 probability laws on the real line.
 
-### Lane D: CLT and characteristic functions
+### Lane D: Weak convergence, CLT, and characteristic functions
 
 Chapter 3 is the next large probability-theory spine after laws of large
-numbers.  Search mathlib for characteristic functions, weak convergence, normal
-distribution APIs, and finite-dimensional weak convergence before formalizing.
+numbers.  Search mathlib and local files for weak convergence, characteristic
+functions, normal distribution APIs, and finite-dimensional weak convergence
+before formalizing.
+
+Current first packet:
+
+- Durrett Theorem 3.2.10, continuous mapping theorem, continuous case.  Reuse
+  `MeasureTheory.TendstoInDistribution.continuous_comp` or the local
+  `tendstoInDistribution_continuous_comp` wrapper.
 
 Likely initial source items:
 
+- Section 3.2 weak convergence of random variables.
+- Theorem 3.2.9, bounded-continuous test functions.
+- Theorem 3.2.10, continuous mapping theorem.
+- Theorem 3.2.11, Portmanteau alternatives.
 - Lemma 3.1.1, scalar exponential limit.
 - Theorem 3.1.2, de Moivre-Laplace local limit.
 - Section 3.3 characteristic functions and inversion formula.
 - Section 3.4 central limit theorems.
 - Section 3.10 limit theorems in `R^d`.
+
+Source anchors:
+
+- `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`
+  contains Section 3.2 near line 41, Theorem 3.2.9 near line 158, Theorem
+  3.2.10 near line 188, Theorem 3.2.11 near line 197, Section 3.3 near line
+  411, and Section 3.10 near line 3643.
+
+Initial Lean reuse anchors:
+
+- `StatInference/ProbabilityMeasure/WeakConvergence.lean`
+- `StatInference/EmpiricalProcess/WeakConvergence.lean`
+- `StatInference/AsymptoticStatistics/MomentEstimators.lean`
+- `.lake/packages/mathlib/Mathlib/MeasureTheory/Function/ConvergenceInDistribution.lean`
 
 ### Lane E: martingales, Markov chains, Brownian motion
 

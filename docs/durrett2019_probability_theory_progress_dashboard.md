@@ -99,29 +99,28 @@ compiles and root-imports the new namespace.  Compiled declarations:
 - `realEmpiricalCDFGlivenkoCantelliClass_of_realHalfLine`;
 - `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`.
 
-The first aggressive full-theorem target is now Durrett Theorem 2.4.9,
-Glivenko-Cantelli for empirical CDFs, cross-listed with the later empirical
-distribution-function spine.  The source scout identified this as the best
-large target because the repo already has fixed-endpoint empirical-CDF and
-half-line GC support in `StatInference/EmpiricalProcess/RealHalfLineGC.lean`.
+The current aggressive theorem frontier is Chapter 3.  The old large Chapter
+2 targets are closed as reusable source wrappers:
 
-Immediate proof route:
+Current proof route:
 
-1. inspect and reuse `realHalfLineIndicator_integral_eq_cdf`,
-   `realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid`, and nearby
-   grid/squeezing handoffs;
-2. use finite punctured compact covers for arbitrary laws: the selected atom
-   center is removed from the controlling set, each strict monotone-subdivision
-   cell is split at that center only when necessary, and the resulting cutpoint
-   chain feeds `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`;
-3. source-facing empirical-CDF notation now compiles: the finite-sample
-   `F_n(x)` notation, the population `F(x)` bridge, and the local
-   `sup_x |F_n(x) - F(x)| -> 0` predicate are packaged;
-4. Chapter 2.1 iid/product notation polish now includes common-law finite
-   product laws, the iid product-law criterion, and canonical iid
-   product-coordinate support;
-5. promote exact source statements once the wrapper statements line up with the
-   PDF/Markdown.
+1. Durrett Theorem 2.4.9 now has arbitrary-law half-line Glivenko-Cantelli
+   wrappers and the source-facing empirical distribution-function statement;
+2. Durrett Chapter 2.1 now has generated-independence, finite disjoint-block,
+   finite product-law, iid common-law product, iid criterion, and canonical iid
+   product-coordinate wrappers;
+3. start Section 3.2 weak convergence, reusing mathlib
+   `TendstoInDistribution` and
+   `StatInference/ProbabilityMeasure/WeakConvergence.lean`;
+4. first compile Durrett Theorem 3.2.10, continuous mapping theorem,
+   continuous case, over `TendstoInDistribution.continuous_comp` or the local
+   wrapper;
+5. then decide between Durrett Theorem 3.2.9 bounded-continuous test functions
+   and Theorem 3.2.11 Portmanteau based on which local bridge has the smallest
+   statement gap;
+6. search Section 3.3 characteristic-function and Section 3.10 multivariate
+   weak-convergence anchors before introducing any new characteristic-function
+   primitives.
 
 The route should not duplicate raw measure theory from Chapter 1 unless an
 exact source theorem needs a missing local theorem.  Chapter 1 is currently
@@ -134,8 +133,8 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 1 measure/probability foundations | source-wrapper/reused-local | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/GeneratedSigma.lean`; `Tail.lean`; `ProductMeasure.lean` | Durrett wrappers for Theorem 1.1.1 measure properties and Theorems 1.3.1/1.3.4 measurability facts now compile over mathlib/local generator APIs. |
 | Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, iid same-law finite product law, iid product-law criterion, canonical iid product-coordinate support, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact polish only when a later theorem route demands it. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
-| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, supplied cutpoint chains, or supplied center-range monotone subdivisions. The one-cell, two-cell, right-append, finite cutpoint-chain, cutpoint-chain append, endpoint-grid-to-chain, closed-cover, punctured-cover, punctured-cover inserted-subcell CDF increment, punctured-cover cell splitting, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, monotone center-range, arbitrary-law punctured local/finite compact-cover, arbitrary-law punctured monotone-subdivision, arbitrary-law punctured monotone-subdivision cutpoint-chain, arbitrary-law cutpoint-chain, arbitrary-law half-line GC, source-facing empirical-CDF predicate, EDF theorem wrapper, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, center-range subdivision-to-GC, and non-atomic GC packages compile. Next work is Chapter 2.1 iid/product polish, not center insertion or EDF notation. |
-| Chapter 3 CLT/characteristic functions | pending-local | none | Needs mathlib API search for characteristic functions, normal laws, weak convergence, and scalar asymptotics. |
+| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, supplied cutpoint chains, or supplied center-range monotone subdivisions. The one-cell, two-cell, right-append, finite cutpoint-chain, cutpoint-chain append, endpoint-grid-to-chain, closed-cover, punctured-cover, punctured-cover inserted-subcell CDF increment, punctured-cover cell splitting, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, monotone center-range, arbitrary-law punctured local/finite compact-cover, arbitrary-law punctured monotone-subdivision, arbitrary-law punctured monotone-subdivision cutpoint-chain, arbitrary-law cutpoint-chain, arbitrary-law half-line GC, source-facing empirical-CDF predicate, EDF theorem wrapper, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, center-range subdivision-to-GC, and non-atomic GC packages compile. Treat this lane as reusable support unless a later theorem reopens an exact source-shape gap. |
+| Chapter 3 weak convergence, CLT, and characteristic functions | next-active | `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution` | Start with Section 3.2 weak convergence. First target: Durrett Theorem 3.2.10 continuous mapping, continuous case. Next candidates: Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.11 Portmanteau, Section 3.3 characteristic-function properties/product law, and Section 3.10 Cramer-Wold/multivariate CLT. |
 | Chapter 4 martingales | pending-local | none | Search mathlib martingale/conditional expectation APIs first. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
 | Chapters 6-8 ergodic/Brownian/Donsker | pending-local | none | Defer until early probability spine is stable or remote agents land reusable support. |
