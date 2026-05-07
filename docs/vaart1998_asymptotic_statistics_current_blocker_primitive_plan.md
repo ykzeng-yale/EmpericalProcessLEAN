@@ -647,22 +647,30 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceDisplay_of_targetProbabilityLocalization_real`.
 210. CovarianceBilinDual display endpoint for the canonical selected estimator:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceBilinDual_of_targetProbabilityLocalization_real`.
+211. CLT-certificate covarianceBilinDual endpoint for the canonical selected
+   estimator:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_targetProbabilityLocalization_real`.
+212. Finite covariance-table display endpoint for the canonical selected
+   estimator:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceTable_of_targetProbabilityLocalization_real`.
+213. CLT-certificate finite covariance-table endpoint for the canonical
+   selected estimator:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceTable_of_cltCertificate_targetProbabilityLocalization_real`.
 
-Latest remote base before this packet: `f2245f7`.
-Latest pushed Vaart packet before this packet: `f2245f7`
-(`Add Vaart local inverse fallback extension`).
+Latest remote base before this packet: `0fa69bb`.
+Latest pushed Vaart packet before this packet: `aa4d7d4`
+(`Add Vaart selected estimator Gaussian covariance wrappers`).
 
-The current theorem-sized packet propagates the fallback-extension selected
-estimator through the Gaussian-limit, covariance-functional, and
-covarianceBilinDual displays.  These wrappers consume only the target
-probability localization certificate, coordinatewise sample measurability, the
-empirical-moment CLT, and the Gaussian/MemLp source fields; they do not assume
-global measurability of `he.localInverse e De theta0`.
+The current theorem-sized packet lifts the fallback-extension selected
+estimator through the covarianceBilinDual CLT-certificate layer and finite
+covariance-table displays.  It packages the actual fallback-selected estimator,
+not just the raw local-inverse candidate, against the supplied empirical-moment
+CLT certificate and target-probability localization certificate.
 
-The next aggressive packet should lift the selected-estimator
-covarianceBilinDual endpoint into finite covariance-table and CLT-certificate
-wrappers, so source-facing Chapter 4 statements can conclude the displayed
-covariance table for the actual fallback-selected estimator.  Keep
+The next aggressive packet should connect target-probability localization to
+the strongest existing finite-coordinate source certificates, especially the
+canonical vector-law/covariance source endpoints, so the source-facing Chapter
+4 table display can be stated directly for the selected estimator.  Keep
 probability-tending-to-one target localization separate from per-`n` a.e.
 localization; use the selected estimator only where equality on the
 high-probability target event is sufficient.

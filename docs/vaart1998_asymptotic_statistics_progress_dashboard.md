@@ -458,10 +458,17 @@ Chapter 4 handoff:
   push that canonical fallback-selected estimator through the Gaussian limit,
   coordinate-free covariance display, and covarianceBilinDual display without
   assuming global raw local-inverse measurability.
+- Selected-estimator CLT-certificate and covariance-table endpoints:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_targetProbabilityLocalization_real`,
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceTable_of_targetProbabilityLocalization_real`,
+  and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceTable_of_cltCertificate_targetProbabilityLocalization_real`
+  package the actual fallback-selected estimator through the CLT certificate
+  and finite covariance-table displays.
 
-Latest remote base before this packet: `f2245f7`.  Latest pushed Vaart packet
-before this packet: `f2245f7`
-(`Add Vaart local inverse fallback extension`).
+Latest remote base before this packet: `0fa69bb`.  Latest pushed Vaart packet
+before this packet: `aa4d7d4`
+(`Add Vaart selected estimator Gaussian covariance wrappers`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .../MomentEstimators.olean -i .../MomentEstimators.ilean`
@@ -473,10 +480,10 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 by lifting the selected-estimator
-covarianceBilinDual endpoint into finite covariance-table and CLT-certificate
-wrappers, so source-facing statements can display the covariance table for the
-actual fallback-selected estimator.
+Continue Vaart Chapter 4.1 by connecting target-probability localization to the
+strongest existing finite-coordinate source certificates, so canonical
+vector-law/covariance source statements can display the table for the actual
+fallback-selected estimator.
 
 ## Reuse Dependencies
 
