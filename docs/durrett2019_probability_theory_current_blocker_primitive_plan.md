@@ -179,8 +179,14 @@ namespace now has a compiled starter module:
 - `RealEmpiricalCDFGlivenkoCantelliClass`
 - `realEmpiricalCDFGlivenkoCantelliClass_of_realHalfLine`
 - `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`
+- `durrett2019_theorem_3_2_9_tendstoInDistribution_iff_forall_boundedContinuous_integral`
 - `durrett2019_theorem_3_2_10_continuous_mapping`
 - `durrett2019_theorem_3_2_10_continuous_mapping_common_probability_space`
+- `durrett2019_theorem_3_2_11_portmanteau_open_of_tendstoInDistribution`
+- `durrett2019_theorem_3_2_11_portmanteau_closed_of_tendstoInDistribution`
+- `durrett2019_theorem_3_2_11_portmanteau_continuity_set_of_tendstoInDistribution`
+- `durrett2019_theorem_3_2_11_tendstoInDistribution_of_forall_closed_limsup_le`
+- `durrett2019_theorem_3_2_11_tendstoInDistribution_of_forall_open_le_liminf`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -207,29 +213,30 @@ wrappers:
 Do not spend the next cycle on center insertion, EDF notation, or Chapter 2.1
 polish unless a later Chapter 3 statement exposes an exact missing dependency.
 
-Current aggressive target: continue Chapter 3 with theorem-sized wrappers
-around the weak-convergence surface already present in mathlib and local
-files.  The first Section 3.2 packet now compiles: Durrett Theorem 3.2.10,
-continuous mapping theorem, continuous case, over the local
-`tendstoInDistribution_continuous_comp` wrapper.
+Current aggressive target: move from Chapter 3.2 weak-convergence foundations
+to the Chapter 3.3 characteristic-function spine.  The first Section 3.2
+packets now compile:
 
-The next likely packet should stay in Durrett Section 3.2 before moving to
-characteristic functions:
+- Durrett Theorem 3.2.9 bounded-continuous test characterization, including
+  the `integral_map` bridge from map-law integrals to textbook expectations
+  `E g(X_i)`.
+- Durrett Theorem 3.2.10 continuous mapping theorem, continuous case, over the
+  local `tendstoInDistribution_continuous_comp` wrapper.
+- Durrett Theorem 3.2.11 Portmanteau open-set, closed-set, continuity-set, and
+  open/closed converse wrappers for `TendstoInDistribution`.
+
+The next likely packet should search characteristic-function reuse before
+adding new primitives:
 
 - Definition/Section 3.2 weak convergence of random variables: reuse
   `MeasureTheory.TendstoInDistribution` and
   `StatInference/ProbabilityMeasure/WeakConvergence.lean`.
-- Durrett Theorem 3.2.10, continuous mapping theorem, continuous case:
-  compiled in `StatInference/ProbabilityTheory/Basic.lean`.
-- Durrett Theorem 3.2.9 bounded-continuous test characterization: search first
-  for the local `ProbabilityMeasure` weak-convergence characterization and
-  only formalize the random-variable integral bridge if the map-law integral
-  algebra is immediate.
-- Durrett Theorem 3.2.11 portmanteau alternatives: reuse the local
-  Portmanteau wrappers if their assumptions match source needs.
-- Section 3.3/3.10 characteristic-function convergence, Cramer-Wold, and
-  multivariate CLT: search local asymptotic-statistics files before adding new
-  primitives.
+- Section 3.3 characteristic functions: start with Theorem 3.3.1 basic
+  properties or Theorem 3.3.2 product law for independent sums, depending on
+  available mathlib/local characteristic-function APIs.
+- Section 3.10 characteristic-function convergence, Cramer-Wold, and
+  multivariate CLT: search `StatInference/AsymptoticStatistics` and local
+  weak-convergence files before adding new primitives.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -313,10 +320,10 @@ Pinned mathlib search scope:
    sharper source shape.
 7. After Chapter 2 has a stable theorem spine, start Chapter 3 by searching
    weak-convergence, characteristic-function, normal-law, convolution, and
-   finite-dimensional limit APIs.  Durrett Theorem 3.2.10 continuous mapping
-   theorem, continuous case, now compiles.  Next decide whether Theorem 3.2.9
-   bounded-continuous tests or Theorem 3.2.11 Portmanteau is the next fastest
-   source wrapper.
+   finite-dimensional limit APIs.  Durrett Theorems 3.2.9, 3.2.10
+   continuous case, and 3.2.11 now compile as source-facing weak-convergence
+   wrappers.  Next start Section 3.3 characteristic functions unless an exact
+   later theorem needs additional common-probability-space convenience wrappers.
 
 ## Current In-Thread Goal Prompt Seed
 
@@ -326,10 +333,10 @@ this file plus the Durrett dashboard and blueprint, and scanning the current
 `StatInference/ProbabilityTheory`, `StatInference/ProbabilityMeasure`, and
 `StatInference/EmpiricalProcess/RealHalfLineGC.lean` modules.  Primary target:
 do not return to the old center-insertion, EDF notation, or Chapter 2.1 iid
-polish blockers.  Chapter 3.2 weak convergence has started with compiled
-Durrett Theorem 3.2.10 continuous-mapping wrappers.  Next decide between
-Theorem 3.2.9 bounded-continuous test functions, Theorem 3.2.11 Portmanteau,
-and Section 3.3 characteristic-function wrappers based on the fastest
-available local/mathlib reuse.  Verify, update docs, commit/push, and keep
-this in-thread `/goal` state current.  Report progress and blockers in
-Chinese/English mix.
+polish blockers.  Chapter 3.2 weak convergence now has compiled Durrett
+Theorem 3.2.9 bounded-continuous test, 3.2.10 continuous-mapping continuous
+case, and 3.2.11 Portmanteau wrappers.  Next search Section 3.3
+characteristic-function APIs, especially product laws for independent sums and
+the convergence theorem, while checking local asymptotic-statistics reuse
+first.  Verify, update docs, commit/push, and keep this in-thread `/goal`
+state current.  Report progress and blockers in Chinese/English mix.

@@ -98,8 +98,14 @@ compiles and root-imports the new namespace.  Compiled declarations:
 - `RealEmpiricalCDFGlivenkoCantelliClass`;
 - `realEmpiricalCDFGlivenkoCantelliClass_of_realHalfLine`;
 - `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`.
+- `durrett2019_theorem_3_2_9_tendstoInDistribution_iff_forall_boundedContinuous_integral`;
 - `durrett2019_theorem_3_2_10_continuous_mapping`;
 - `durrett2019_theorem_3_2_10_continuous_mapping_common_probability_space`.
+- `durrett2019_theorem_3_2_11_portmanteau_open_of_tendstoInDistribution`;
+- `durrett2019_theorem_3_2_11_portmanteau_closed_of_tendstoInDistribution`;
+- `durrett2019_theorem_3_2_11_portmanteau_continuity_set_of_tendstoInDistribution`;
+- `durrett2019_theorem_3_2_11_tendstoInDistribution_of_forall_closed_limsup_le`;
+- `durrett2019_theorem_3_2_11_tendstoInDistribution_of_forall_open_le_liminf`.
 
 The current aggressive theorem frontier is Chapter 3.  The old large Chapter
 2 targets are closed as reusable source wrappers:
@@ -116,10 +122,11 @@ Current proof route:
    `StatInference/ProbabilityMeasure/WeakConvergence.lean`;
 4. Durrett Theorem 3.2.10, continuous mapping theorem, continuous case, now
    compiles in both varying-domain and common-probability-space forms;
-5. next decide between Durrett Theorem 3.2.9 bounded-continuous test functions
-   and Theorem 3.2.11 Portmanteau based on which local bridge has the smallest
-   statement gap;
-6. search Section 3.3 characteristic-function and Section 3.10 multivariate
+5. Durrett Theorem 3.2.9 now compiles as a bounded-continuous test-function
+   iff, with the map-law-to-expectation integral bridge;
+6. Durrett Theorem 3.2.11 now compiles in open-set, closed-set,
+   continuity-set, closed-converse, and open-converse forms;
+7. search Section 3.3 characteristic-function and Section 3.10 multivariate
    weak-convergence anchors before introducing any new characteristic-function
    primitives.
 
@@ -135,7 +142,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, iid same-law finite product law, iid product-law criterion, canonical iid product-coordinate support, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact polish only when a later theorem route demands it. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
 | Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, supplied cutpoint chains, or supplied center-range monotone subdivisions. The one-cell, two-cell, right-append, finite cutpoint-chain, cutpoint-chain append, endpoint-grid-to-chain, closed-cover, punctured-cover, punctured-cover inserted-subcell CDF increment, punctured-cover cell splitting, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, monotone center-range, arbitrary-law punctured local/finite compact-cover, arbitrary-law punctured monotone-subdivision, arbitrary-law punctured monotone-subdivision cutpoint-chain, arbitrary-law cutpoint-chain, arbitrary-law half-line GC, source-facing empirical-CDF predicate, EDF theorem wrapper, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, center-range subdivision-to-GC, and non-atomic GC packages compile. Treat this lane as reusable support unless a later theorem reopens an exact source-shape gap. |
-| Chapter 3 weak convergence, CLT, and characteristic functions | next-active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution` | Section 3.2 weak convergence has started. Durrett Theorem 3.2.10 continuous mapping, continuous case, compiles in varying-domain and common-probability-space forms. Next candidates: Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.11 Portmanteau, Section 3.3 characteristic-function properties/product law, and Section 3.10 Cramer-Wold/multivariate CLT. |
+| Chapter 3 weak convergence, CLT, and characteristic functions | next-active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution` | Section 3.2 weak convergence now has compiled wrappers for Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.10 continuous mapping continuous case, and Theorem 3.2.11 Portmanteau. Next candidates: Section 3.3 characteristic-function properties/product law, Section 3.4 CLT wrappers, and Section 3.10 Cramer-Wold/multivariate CLT. |
 | Chapter 4 martingales | pending-local | none | Search mathlib martingale/conditional expectation APIs first. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
 | Chapters 6-8 ergodic/Brownian/Donsker | pending-local | none | Defer until early probability spine is stable or remote agents land reusable support. |
@@ -178,9 +185,9 @@ Every Lean packet should pass:
 The next in-thread goal cycle should not just reread the source.  It should
 continue the Chapter 3 theorem-spine search by checking mathlib/local APIs for
 weak convergence, characteristic functions, normal laws, convolutions, and
-finite-dimensional real/vector limit statements.  Durrett Theorem 3.2.10,
-continuous mapping theorem, continuous case, is now compiled.  The previous
-EDF target is
+finite-dimensional real/vector limit statements.  Durrett Theorems 3.2.9,
+3.2.10 continuous case, and 3.2.11 now compile as weak-convergence wrappers.
+The previous EDF target is
 closed by
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`,
 and the Chapter 2.1 iid/product notation target is closed by the common-law
