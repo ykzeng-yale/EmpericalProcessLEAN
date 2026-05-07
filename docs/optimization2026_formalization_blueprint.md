@@ -40,8 +40,20 @@ another agent has already moved the frontier.
 The recurring automation is currently paused while this thread runs under a
 manual `/goal`.  The current app-level goal objective text cannot be edited
 directly in this tool surface unless the goal is complete, so
+the current frontier contract near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
-replacement prompt for manual runs.
+replacement prompt for manual runs.  Archived long prompts in that file are
+historical route context, not the current target selector.
+
+Manual goal execution now follows a theorem-packet protocol.  Use the isolated
+Optimization worktree for broad packets, search cached mathlib/local results
+before inventing primitives, keep the main thread on the active proof while
+scouts handle disjoint read-only questions when explicitly authorized, verify
+with focused Lean/module builds during development, and batch route-doc
+updates, scans, final rebase, commit, and push once per verified packet.  The
+current active sequence after the ASGD scalar projection data packet is the
+actual one-dimensional bounded martingale CLT proof, source ASGD endpoint
+assembly, then the concrete Sinkhorn KL identity layer if ASGD stalls.
 
 Historical manual frontier after focused Lean verification of Chapter 7
 `StatInference/Optimization/FrankWolfe.lean` rebased over pushed frontier
@@ -63,7 +75,8 @@ source variance-bound bridge for Chewi Theorem 12.1 SMPGD, the non-smooth
 relative-subgradient growth/star-upper bridge, the final smooth/non-smooth
 weighted stochastic averaged-iterate wrappers, and the exact source-displayed
 stochastic-error RHS bridges plus full source-displayed smooth/non-smooth
-averaged-iterate wrappers:
+averaged-iterate wrappers, filtration-level conditional-mean wrappers, and the
+first ASGD quadratic-decomposition algebra packet:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -399,10 +412,84 @@ and
 `chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_relativeSubgradient`,
 so the exact displayed smooth and non-smooth Chewi Theorem 12.1 averaged-rate
 statements now compile directly from the source variance-bound and relative
-subgradient hypotheses.  The active Chapter 12 lane is now the remaining exact
-source probability discharge behind those wrappers: any exact
-conditional-expectation/process packaging needed for source reporting before
-the ASGD CLT material.
+subgradient hypotheses.
+The filtration/process wrapper packet adds
+`integral_eq_const_of_condExp_ae_eq_const`,
+`integral_eq_const_of_filtration_condExp_ae_eq_const`,
+`chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_filtration_condExp_unbiased_of_variance_bound`,
+and
+`chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_filtration_condExp_relativeSubgradient`,
+so conditional mean assumptions now discharge the unconditional mean fields in
+the exact displayed SMPGD rates.  The active Chapter 12 lane is now the ASGD
+martingale layer: conditional mean-zero and covariance packaging, quadratic
+ASGD decomposition, and then martingale CLT infrastructure.
+The root-imported `StatInference/Optimization/ASGD.lean` module now compiles
+`chewi123_asgd_noise_sum_split`,
+`chewi123_asgd_scaled_average_decomposition`, and
+`chewi123_asgd_sqrt_average_decomposition`, giving the source `(12.5)`
+finite-sum split needed before the martingale CLT handoff.  It also now
+compiles `chewi123_asgd_neg_linear_noise_clt`,
+`chewi123_asgd_neg_linear_gaussian_limit`, and
+`chewi123_asgd_distribution_limit_of_noise_and_remainders`, reusing mathlib's
+continuous-mapping theorem, Gaussian linear-map closure, and Slutsky additive
+handoff to turn Chewi's martingale CLT term plus two `o_P(1)` remainders into
+the scaled averaged-iterate weak limit.  The next packet compiles
+`Chewi127MartingaleDifferenceProcess`,
+`Chewi127ConditionalCovarianceProcess`,
+`Chewi127MartingaleCLTCertificate`,
+`Chewi127MartingaleDifferenceProcess.integral_next_eq_zero`,
+`Chewi127MartingaleCLTCertificate.asgd_distribution_limit`,
+`Chewi127MartingaleCLTCertificate.neg_linear_covarianceBilinDual`,
+`Chewi127MartingaleCLTCertificate.neg_linear_covarianceTable`, and
+`chewi123_asgd_limit_package_of_martingale_certificate`, reusing the Vaart
+covarianceBilinDual/table pullback primitives for the Chewi `-A^{-1}` pushed
+Gaussian limit.  The next packet compiles `chewi127ScaledNoiseSum`,
+`chewi127AverageConditionalCovariance`,
+`Chewi127AveragedConditionalCovarianceLimit`,
+`chewi127_martingaleCLTCertificate_of_scaledNoiseSum`,
+`Chewi127MartingaleDifferenceProcess.integral_linear_next_eq_zero`, and
+`Chewi127ConditionalCovarianceProcess.integral_Xi_next_eq_integral_second_moment`.
+These definitions and integral identities are the exact source interfaces for
+`n^{-1/2} sum xi_k` and `n^{-1} sum Xi_k`.  The newest recurrence packet adds
+the source quadratic-ASGD update interface, ordered transition products,
+noise coefficients, finite pointwise unrolling, and averaged nested unrolling:
+`chewi123QuadraticStepMap`, `chewi123_quadratic_delta_step`,
+`IsChewi123QuadraticASGDTrajectory.delta_step`,
+`chewi123_quadratic_delta_unroll`, and
+`chewi123_quadratic_average_delta_unroll_nested` are now compiled.  The newest
+triangular-regrouping packet adds `chewi123InitialCoefficient`,
+`chewi123SourceNoiseCoefficient`,
+`chewi123_nested_noise_sum_eq_source_coefficients`,
+`chewi123_quadratic_average_delta_unroll_source_coefficients`,
+`chewi123_quadratic_average_delta_source_decomposition`, and
+`chewi123_quadratic_sqrt_average_delta_source_decomposition`, so Chewi's
+`M_k^n` source coefficients, split around `A^{-1}`, and `sqrt n` display are
+now compiled.  The projected martingale-CLT bridge packet adds
+`chewi127ScaledProjectedNoiseSum`,
+`chewi127ScaledProjectedNoiseSum_eq_apply_scaledNoiseSum`,
+`chewi127AverageConditionalVariance`,
+`Chewi127AveragedConditionalCovarianceLimit.variance_tendstoInMeasure`,
+`chewi127_projected_clt_of_scaledNoiseSum_clt`,
+`Chewi127ProjectedMartingaleCLTBridge`,
+`Chewi127ProjectedMartingaleCLTBridge.toMartingaleCLTCertificate`,
+`Chewi127BoundedMartingaleCLTSource`,
+`Chewi127BoundedMartingaleCLTSource.toProjectedBridge`, and
+`Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate`.  The scalar
+projection data packet adds `chewi127ScalarScaledSum`,
+`chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum`, the source
+`same_filtration` field,
+`Chewi127MartingaleDifferenceProcess.projected_stronglyAdapted`,
+`Chewi127MartingaleDifferenceProcess.projected_integrable`,
+`Chewi127MartingaleDifferenceProcess.condExp_linear_next_eq_zero`,
+`Chewi127MartingaleDifferenceProcess.projected_uniform_bound`,
+`Chewi127ConditionalCovarianceProcess.condExp_projected_square_eq`,
+`Chewi127BoundedMartingaleCLTSource.projected_condExp_zero`,
+`Chewi127BoundedMartingaleCLTSource.projected_conditional_second_moment`,
+`Chewi127BoundedMartingaleCLTSource.projected_variance_tendstoInMeasure`,
+`Chewi127BoundedMartingaleCLTSource.projected_uniform_bound`, and
+`Chewi127BoundedMartingaleCLTSource.projected_scalar_clt`.  The next ASGD
+target is the actual one-dimensional bounded martingale CLT proof behind the
+`projected_clt` field, then the exact endpoint handoff to Theorem 12.7/12.3.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

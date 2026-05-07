@@ -53,23 +53,111 @@ different textbook lanes, prefer isolated `git worktree` checkouts named by
 book/lane for broad packets.  Keep shared `main` for narrow verified handoffs
 only, never revert another lane's dirty or committed work, and merge/push
 after a scoped Lean build and hygiene scan.
+Do not share mutable `.lake/build` artifacts across active proof worktrees when
+running root builds; a symlinked `.lake` can make unrelated local agents delete
+or invalidate `.olean` files mid-build.  Use focused module Lean checks during
+development, and treat missing-artifact root-build failures as infrastructure
+until a focused proof/module check points to an actual theorem error.
 
-- treat Chapters 3-10 and the finite Chapter 11 ABP telescope as reusable
-  infrastructure, not active routing targets;
-- skip Corollary 11.3 topology unless a report or later theorem requires it,
-  because the compactness/subsequence proof is not the fastest route to book
-  coverage;
-- prove Theorem 11.4 as a theorem-sized alternating-minimization packet:
-  source-shaped AM descent certificate, scalar inverse-gap/telescoping rate,
-  and displayed complexity wrapper with `K = 8 * beta * D^2 * R^2`;
-- immediately follow with Theorem 11.5 RAM using expectation-level supplied
-  interfaces and the already-compiled recurrence/averaging APIs;
-- package Sinkhorn Theorems 11.7/11.8 from ABP plus Pinsker/mirror-descent
-  supplied interfaces, then open Chapter 12 SMPGD with a stochastic
-  one-step-to-rate packet before attempting the ASGD CLT material;
-- keep exercise statements and any cheap reusable exercise proofs in
-  `StatInference/Optimization/Exercises.lean`, but never let exercises block
-  the main-text theorem lane.
+## High-Accuracy High-Throughput Protocol
+
+This section is the operating discipline for manual `/goal` runs.  It is meant
+to prevent the two observed failure modes in this lane: stale route replay and
+micro-packet overhead.
+
+1. Source of truth.  The immutable app-level `/goal` objective is stale and
+   still names the old Theorem 3.4 frontier.  Until the full book is complete,
+   route from this file's top sections plus the dashboard snapshot, not from
+   the old app-level wording.
+2. Packet size.  A normal run should target a theorem-sized packet: one
+   primary Lean theorem layer plus any directly needed algebra/interface
+   support and route-doc updates.  Do not commit a search-only or
+   wording-only change unless it records a genuine blocker or prevents a
+   wrong next run.
+3. Search cache.  Search mathlib and local `StatInference` before adding a
+   primitive, but write down only material results that change the route.
+   Reuse the cached search results in this document before repeating broad
+   `rg` passes.
+4. Worktree discipline.  Broad Optimization proof packets should run in the
+   isolated `/private/tmp/chewi-smpgd-probability` worktree.  Fetch/rebase at
+   the start and once immediately before push; avoid repeated fetch/rebase
+   loops while a focused proof packet is still being developed.
+5. Verification tiers.  During development, use focused
+   `lake env lean StatInference/Optimization/<module>.lean` checks.  Promote
+   with `lake build StatInference.Optimization.<Module>` after a public theorem
+   layer compiles.  Reserve root `lake build StatInference` for root-import or
+   broad cross-module changes, especially while `.lake` artifacts are shared
+   with other active agents.
+6. Git cadence.  Batch code, docs, proof-hole scan, secret scan, and final
+   rebase into one push.  If the push is rejected, rebase once, rerun the
+   focused module build and scans, then push.  Do not restart source search or
+   route planning merely because `origin/main` moved.
+7. Agent ownership.  When the user explicitly authorizes subagents, the main
+   thread owns the active proof and proof integration.  Scouts should be
+   read-only or have disjoint write sets: mathlib API scout, local reuse scout,
+   source-anchor scout, one bounded Lean worker for the adjacent theorem, and
+   one verification/cleanup scout.
+8. Proof-gap policy.  Supplied interfaces are allowed only as named temporary
+   gates with a recorded discharge route.  Exact theorem reports remain
+   blocked until the source theorem/lemma statement itself is fully proved with
+   no `sorry`, `admit`, unreviewed `axiom`, or `unsafe`.
+9. Exercise policy.  Exercise statements and cheap reusable exercise proofs may
+   accumulate in `StatInference/Optimization/Exercises.lean`, but exercise work
+   must not consume the main theorem packet budget unless it unlocks a
+   main-text theorem.
+
+## Current Frontier Contract
+
+This is the authoritative manual route after pushed frontier `2c1a160`
+(`Add Chewi ASGD triangular decomposition`).  The app-level `/goal` objective
+and the archived long prompt below may still mention older Chapter 3 or
+`029d017` frontiers; do not use those older references to choose work.
+
+Stable substrate:
+
+- Chapters 3-8: deterministic convex optimization, lower bounds,
+  Frank-Wolfe, PGD/APGD, and supporting algebra are reusable infrastructure.
+- Chapters 9-11: finite-valued Fenchel/Bregman/mirror-descent, ABP,
+  alternating minimization, RAM, Sinkhorn selectors, and the 11.8 supplied
+  mirror-descent endpoint are reusable infrastructure.
+- Chapter 12 SMPGD: `StochasticGradient.lean` is stable through the
+  source-displayed smooth/non-smooth averaged-iterate wrappers and
+  filtration-level conditional-mean handoffs.
+- Chapter 12 ASGD: `ASGD.lean` is stable through the supplied martingale CLT
+  handoff/covariance package, exact scaled-noise and averaged-covariance
+  definitions, quadratic ASGD recurrence/unrolling, triangular regrouping
+  around `A^{-1}`, the `sqrt N` source display, exact projected scaled-noise
+  sums, the projected variance convergence accessor, and the source-shaped
+  projected Cramér-Wold martingale CLT bridge/source constructor, plus scalar
+  projected martingale-data accessors for adaptedness, integrability,
+  conditional mean-zero, conditional second moment, variance convergence, and
+  uniform boundedness.
+
+Current priority packet sequence:
+
+1. `ASGD-scalar-martingale-CLT`: prove or sharply source-package the actual
+   one-dimensional bounded martingale CLT from the compiled scalar projection
+   data: conditional mean-zero, conditional second moment, averaged conditional
+   variance convergence, and uniform boundedness.  The vector-to-scalar
+   plumbing is now compiled; do not repeat it.
+2. `ASGD-endpoint`: connect the exact scaled noise sum, recurrence-derived
+   decomposition, and certificate to the source Theorem 12.7/12.3 ASGD limit
+   statement.
+3. `Sinkhorn-concrete`: return to the concrete row/column KL normalization
+   identities for Theorem 11.8 only after the current ASGD packet would
+   otherwise stall.
+
+Execution rule for the next proof run: spend at most one bounded search pass
+refreshing mathlib/local scalar martingale CLT, characteristic-function,
+Lévy continuity theorem, Gaussian characteristic functions, Taylor remainder,
+conditional expectation tower/product APIs, and bounded/Lindeberg estimates;
+then implement the highest-leverage scalar martingale CLT theorem layer.  The
+reusable projected-sum/Cramér-Wold bridge and scalar projection side-condition
+accessors are now compiled, so do not repeat them.
+
+Keep exercise statements and cheap reusable exercise proofs in
+`StatInference/Optimization/Exercises.lean`, but never let exercises block the
+main-text theorem lane.
 
 The current scout map says:
 
@@ -82,26 +170,33 @@ The current scout map says:
   the now-started finite-valued Fenchel-Young/double-conjugate,
   convexity-smoothness duality, Bregman divergence, relative
   convexity/smoothness, and ABP telescoping wrappers.
-- Chapters 12-13/Appendix A should start with `MatrixOrder.lean`,
-  `StochasticGradient.lean`, `SMPGD.lean`, `Newton.lean`, and
+- Chapters 12-13/Appendix A should continue from `StochasticGradient.lean` and
+  `ASGD.lean`, then open `MatrixOrder.lean`, `Newton.lean`, and
   `SelfConcordance.lean`, reusing local empirical/probability wrappers plus
   mathlib matrix/spectral and finite-dimensional APIs.
 
-## Manual Goal Prompt
+## Archived Manual Goal Prompt
 
 The active app-level `/goal` text is immutable in the current tool surface
 except for marking the goal complete.  Since the full textbook formalization is
-not complete, this document is the live replacement prompt for manual goal
-runs.
+not complete, the current frontier contract above is the live replacement
+prompt for manual goal runs.  The old long prompt below is preserved only as
+history and may contain stale commits, solved targets, and archived route
+context.
 
-Current live replacement `/goal` prompt after the Chapter 12 finite sampled
+Archived long replacement `/goal` prompt after pushed frontier `029d017`
+(`Add Chewi ASGD scaled noise interfaces`) and the Chapter 12 finite sampled
 rate packet, smooth integral-L2 sampled-model endpoint packet, smooth
 Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
 endpoint packet, smooth source variance-bound bridge for Chewi Theorem 12.1
 SMPGD, the non-smooth relative-subgradient growth/star-upper bridge, the final
 smooth/non-smooth weighted stochastic averaged-iterate wrappers, the exact
 source-displayed stochastic-error RHS bridges, and the full source-displayed
-smooth/non-smooth averaged-iterate wrappers:
+smooth/non-smooth averaged-iterate wrappers, plus the filtration-level
+conditional-mean wrappers and the first ASGD quadratic-decomposition algebra
+packet, the first ASGD probabilistic CLT handoff packet, and the
+martingale-CLT certificate/covariance package, plus the exact scaled-noise and
+averaged-conditional-covariance definitions:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -117,12 +212,23 @@ substrate, `StatInference/Optimization/RandomizedAlternatingMinimization.lean`
 as stable through the source-shaped Chewi Theorem 11.5 strong/weak RAM rates,
 `StatInference/Optimization/AlternatingBregman.lean` as stable through the
 Theorem 11.7 ABP/Pinsker selector layer and the Theorem 11.8
-Sinkhorn/mirror-descent certificate endpoint, and
-`StatInference/Optimization/StochasticGradient.lean` as the current Chapter
-12 active theorem gate.
+Sinkhorn/mirror-descent certificate endpoint,
+`StatInference/Optimization/StochasticGradient.lean` as stable through the
+conditional-mean SMPGD source wrappers, and
+`StatInference/Optimization/ASGD.lean` as the current Chapter 12 active theorem
+gate.
 
-Immediate aggressive target: discharge the remaining exact process-level
-probability fields for Chewi Theorem 12.1 SMPGD on top of the compiled
+Immediate aggressive target: move from the now-compiled ASGD finite-sum
+decomposition algebra, Slutsky/continuous-mapping handoff, process-level
+martingale-difference/covariance interfaces, supplied martingale-CLT
+certificate, covarianceBilinDual/table pushforward package, exact scaled
+martingale sum, averaged conditional covariance interface, and
+conditional-expectation integral bridges toward the actual Theorem 12.7 proof
+obligations: derive the supplied CLT certificate from bounded martingale
+differences and the averaged conditional covariance convergence interface,
+then connect it to the source quadratic ASGD recurrence.  Theorem 12.1 SMPGD
+now sits on
+top of the compiled
 integral-component final-rate wrappers, the smooth L2 noise wrapper, the
 finite sampled smooth/pointwise-bounded non-smooth rate endpoints, the
 non-smooth `(12.2)` source-L2 endpoint, the smooth `(12.1)` variance-root
@@ -147,15 +253,25 @@ source-L2 sampled `hcore`, non-smooth source-L2 sampled weighted-average
 endpoint, smooth source variance-bound wrapper, non-smooth
 relative-subgradient growth/star-upper wrapper, or the Jensen/center-mass
 transport from weighted expected gaps to the weighted stochastic averaged
-iterate, the final smooth/non-smooth weightedSampleAverage wrappers, or the
-source-displayed `(1 + alphaG * h)` error-factor upgrade.  First search local
+iterate, the final smooth/non-smooth weightedSampleAverage wrappers, the
+source-displayed `(1 + alphaG * h)` error-factor upgrade, the full
+source-displayed averaged-iterate wrappers, or the filtration conditional-mean
+handoff to unconditional unbiasedness/relative-subgradient mean fields, or the
+ASGD `(12.5)` finite-sum splitting/scaled-average algebra, or the ASGD
+continuous-mapping/Slutsky handoff from the martingale CLT term plus
+`o_P(1)` initial/remainder terms to the averaged-iterate weak limit, or the
+new supplied martingale-CLT/covariance certificate package, or the exact
+scaled-noise/averaged-covariance definitions and their conditional-expectation
+integral consequences.  First search local
 `MirrorDescent.lean`, `Bregman.lean`, `ProjectedSubgradient.lean`,
-`StochasticGradient.lean`, local probability/expectation wrappers, and pinned
-mathlib expectation/Jensen/conditional expectation/Bochner/L2 APIs.  Then
-formalize the remaining concrete sampled SMPGD fields: source/process
-conditional-expectation packaging above the already-compiled smooth/non-smooth
-sampled L2 wrappers if needed for exact source reporting, then move to ASGD
-CLT material once those process fields are source-shaped enough.
+`StochasticGradient.lean`, `ASGD.lean`, local probability/expectation and
+asymptotic-statistics wrappers, and pinned mathlib expectation/Jensen/
+conditional expectation/Bochner/L2/process/martingale/covariance APIs.  The
+quadratic ASGD recurrence/unrolling layer now compiles through the ordered
+transition product, Chewi's `M_k^n` triangular regrouping, the split around
+`A^{-1}`, and the `sqrt N`-scaled display, so the next ASGD primitive is the
+source-shaped bounded martingale CLT proof/certificate constructor from the
+already-defined process/covariance interfaces.
 Keep the concrete Sinkhorn row/column KL identity layer as the next Chapter
 11.8 blocker, but do not let it stall Chapter 12 coverage.
 
@@ -277,7 +393,13 @@ plus the exact source-displayed RHS bridges
 the full source-displayed averaged-iterate wrappers
 `chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_unbiased_of_variance_bound`
 and
-`chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_relativeSubgradient`.
+`chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_relativeSubgradient`,
+plus the conditional-expectation/process bridge declarations
+`integral_eq_const_of_condExp_ae_eq_const`,
+`integral_eq_const_of_filtration_condExp_ae_eq_const`,
+`chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_filtration_condExp_unbiased_of_variance_bound`,
+and
+`chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_filtration_condExp_relativeSubgradient`.
 This proves the source recurrence-to-rate algebra, smooth/non-smooth
 stochastic error instantiations, the expected-model algebra turning Chewi's
 three `psi_x` bounds into the displayed SMPGD one-step recurrence, the direct
@@ -302,10 +424,32 @@ non-smooth `(12.2)` sampled lower-model/rate endpoint, or the Jensen
 transition from weighted expected gaps to the weighted stochastic averaged
 iterate, the final smooth/non-smooth weightedSampleAverage wrappers, or the
 exact source-displayed stochastic-error RHS factor, or the full
-source-displayed averaged-iterate wrappers; it is the remaining exact source
-probability discharge: any conditional expectation/process packaging needed
-for exact source reporting, then ASGD CLT once the SMPGD source packaging is
-sufficiently complete.
+source-displayed averaged-iterate wrappers, or the filtration conditional-mean
+handoff, or the ASGD `(12.5)` finite-sum splitting/scaled-average algebra; it
+handoff, or the ASGD `(12.5)` finite-sum splitting/scaled-average algebra, or
+the first ASGD continuous-mapping/Slutsky weak-limit handoff, or the
+process-level martingale-difference/covariance interfaces and supplied CLT
+certificate/covariance-pushforward package, or the exact scaled-noise/
+averaged-covariance definitions and conditional-expectation integral bridges,
+or the exact source quadratic ASGD one-step recurrence, ordered transition
+product, finite unrolling, averaged nested unrolling, triangular regrouping
+into Chewi's `M_k^n` coefficients, split around `A^{-1}`, or `sqrt N`-scaled
+display; it is now the ASGD martingale proof frontier: build the bounded
+martingale CLT constructor, then connect the exact scaled noise sum and source
+decomposition to the Theorem 12.7/12.3 endpoint.
+
+Fresh Chapter 12 ASGD recurrence search result: local Optimization had no
+source-shaped ASGD unrolling theorem, and pinned mathlib gives generic
+noncommutative `List`/monoid product and `Finset.sum_range_succ`/`sum_Ico`
+APIs but no ordered continuous-linear-map recurrence package.  The local
+solution therefore uses a recursive ordered endomorphism product rather than
+`Finset.prod`, since CLM composition is order-sensitive.
+
+Fresh Chapter 12 ASGD triangular-sum search result: mathlib's
+`Finset.sum_comm'`, `Finset.sum_Ico_eq_sum_range`, and
+`ContinuousLinearMap.sum_apply` discharge the source regrouping without a
+custom finite-sum induction.  Reuse those APIs for any later `M_k^n`
+coefficient refinement.
 
 Fresh Chapter 12 Bochner search result: mathlib has `integral_mono_ae` and
 `integral_mono` for pointwise or a.e. real integral inequalities,

@@ -45,6 +45,27 @@ certificate bridges that unlock multiple later chapters.  A tiny primitive is
 acceptable only when it is the fastest verified dependency for the current
 theorem route.
 
+This lane is a manual `/goal` continuation, not a recurring automation.  Do not
+create or update Codex automations for the Vaart textbook route.  Keep the live
+goal state in this chat and mirror the exact frontier in this file, the
+dashboard, and the blueprint.
+
+Use worktrees when they improve coordination with other local textbook agents,
+but keep every packet small and rebase-aware:
+
+- start by checking `git status`, `origin/main`, this blocker file, the
+  dashboard, and the blueprint;
+- search pinned mathlib and local `StatInference` before introducing a new
+  primitive;
+- prove one theorem-sized packet at a time, with names and comments in English;
+- run the focused Lean file before editing docs;
+- update route docs only after a real Lean declaration or precise blocker is
+  known;
+- fetch and rebase immediately before commit/push, then rerun at least the
+  focused Lean gate on the rebased tree;
+- push only clean verified packets and preserve unrelated user or agent
+  changes.
+
 Spawn a useful independent agent team in this chat when slots permit:
 
 - source scout for Vaart anchors and theorem ordering;
@@ -253,29 +274,303 @@ Chapter 3 theorem-facing wrappers compiling:
 79. Theorem 4.1 textbook `sqrt n` delta-method handoff using
    a.e.-measurability of the composed local inverse:
    `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_aemeasurable`.
+80. Finite-coordinate strong-law Theorem 4.1 assembler using only
+   a.e.-measurability of the composed local inverse:
+   `vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_aemeasurable_real`.
+81. Finite-coordinate strong-law Theorem 4.1 assembler deriving composed
+   local-inverse a.e.-measurability from a.e. localization in the open moment
+   range:
+   `vaart1998_theorem_4_1_finiteCoordinateStrongLaw_sqrt_exists_and_delta_method_of_ae_mem_open_momentRange_real`.
+82. Measurable-coordinate Theorem 4.1 source wrapper using only
+   a.e.-measurability of the composed local inverse:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_aemeasurable_real`.
+83. Measurable-coordinate Theorem 4.1 source wrapper deriving composed
+   local-inverse a.e.-measurability from a.e. localization in the open moment
+   range:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_of_ae_mem_open_momentRange_real`.
+84. Measurable-coordinate Theorem 4.1 Gaussian-limit wrapper using only
+   a.e.-measurability of the composed local inverse:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_aemeasurable_real`.
+85. Measurable-coordinate Theorem 4.1 Gaussian-limit wrapper deriving composed
+   local-inverse a.e.-measurability from a.e. localization in the open moment
+   range:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_of_ae_mem_open_momentRange_real`.
+86. Measurable-coordinate covariance-display Theorem 4.1 wrapper using only
+   a.e.-measurability of the composed local inverse:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_aemeasurable_real`.
+87. Measurable-coordinate covariance-display Theorem 4.1 wrapper deriving
+   composed local-inverse a.e.-measurability from a.e. localization in the open
+   moment range:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_of_ae_mem_open_momentRange_real`.
+88. Measurable-coordinate covarianceBilinDual Theorem 4.1 wrapper using only
+   a.e.-measurability of the composed local inverse:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_aemeasurable_real`.
+89. Measurable-coordinate covarianceBilinDual Theorem 4.1 wrapper deriving
+   composed local-inverse a.e.-measurability from a.e. localization in the open
+   moment range:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_ae_mem_open_momentRange_real`.
+90. Named finite-coordinate empirical moment vector:
+   `vaart1998_finiteCoordinateEmpiricalMoment`.
+91. Named finite-coordinate population moment vector:
+   `vaart1998_finiteCoordinatePopulationMoment`.
+92. Supplied multivariate empirical-moment CLT/Gaussian/MemLp interface:
+   `Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate`.
+93. Theorem 4.1 localized covarianceBilinDual source wrapper fed by that CLT
+   certificate:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_real`.
+94. Projected vector CLT family for the Cramér-Wold route:
+   `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT`.
+95. Source-shaped Cramér-Wold bridge from projected scalar CLTs to the vector
+   empirical-moment CLT:
+   `Vaart1998FiniteCoordinateCramerWoldCLTBridge`.
+96. Projection theorem from an existing vector CLT certificate:
+   `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_cltCertificate`.
+97. CLT-certificate constructor from the Cramér-Wold bridge:
+   `vaart1998_finiteCoordinateEmpiricalMomentCLTCertificate_of_cramerWoldBridge`.
+98. Scalar projected empirical average and population moment definitions:
+   `vaart1998_finiteCoordinateProjectedEmpiricalAverage` and
+   `vaart1998_finiteCoordinateProjectedPopulationMoment`.
+99. Continuous-linear algebra identity between projected centered vectors and
+   centered scalar projected moments:
+   `vaart1998_finiteCoordinateProjected_scaled_centered_empiricalMoment_eq`.
+100. Real-valued centered-average scalar CLT family for the Cramér-Wold route:
+   `vaart1998_finiteCoordinateProjectedScalarCLT`.
+101. Conversion from real-valued projected scalar CLTs to the projected vector
+   CLT family:
+   `vaart1998_finiteCoordinateProjectedEmpiricalMomentCLT_of_projectedScalarCLT`.
+102. Cramér-Wold bridge constructor from real-valued projected scalar CLTs plus
+   the remaining finite-dimensional Cramér-Wold implication:
+   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT`.
+103. Scaled centered finite-coordinate empirical moment vector:
+   `vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment`.
+104. Measurability, a.e.-measurability, and a.e.-strong measurability for that
+   scaled centered vector under coordinate measurability:
+   `vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_measurable_real`,
+   `vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_aemeasurable_real`,
+   and
+   `vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_aestronglyMeasurable_real`.
+105. Law-level weak-convergence handoff into the finite-coordinate
+   empirical-moment CLT:
+   `vaart1998_finiteCoordinateEmpiricalMomentCLT_of_law_tendsto`.
+106. Cramér-Wold bridge constructor from real-valued projected scalar CLTs once
+   the remaining Cramér-Wold theorem has been proved as law convergence:
+   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_lawTendsto`.
+107. Named probability laws for the scaled centered vector and vector limit:
+   `vaart1998_finiteCoordinateScaledCenteredEmpiricalMomentLaw` and
+   `vaart1998_finiteCoordinateVectorLimitLaw`.
+108. Pure probability-law projected convergence for finite-coordinate vector
+   laws:
+   `vaart1998_finiteCoordinateProjectedLawConvergence`.
+109. Conversion from projected random-variable CLTs to projected convergence of
+   the corresponding vector laws:
+   `vaart1998_finiteCoordinateProjectedLawConvergence_of_projectedCLT`.
+110. Cramér-Wold bridge constructor from projected scalar CLTs and a pure
+   law-level Cramér-Wold theorem:
+   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`.
+111. Finite-indexed covariance table for a chosen family of continuous linear
+   coordinates:
+   `vaart1998_covarianceTable`.
+112. Inverse-derivative covariance table pullback:
+   `vaart1998_inverseDerivativeCovarianceTable_apply`.
+113. Finite-indexed covarianceBilinDual table version of the Vaart
+   `Dinv * Sigma * Dinv^T` display:
+   `vaart1998_covarianceBilinDual_inverseDerivative_table_apply_of_memLp`.
+114. Coordinate evaluation continuous linear functional:
+   `vaart1998_finiteCoordinateEvalCLM` and
+   `vaart1998_finiteCoordinateEvalCLM_apply`.
+115. Coordinate-indexed covariance table for finite real vector laws:
+   `vaart1998_finiteCoordinateCovarianceTable`.
+116. Theorem 4.1 finite-coordinate CLT-certificate endpoint returning a finite
+   covariance table for chosen parameter coordinates:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_real`.
+117. Theorem 4.1 finite-coordinate covariance-table endpoint fed directly by a
+   Cramér-Wold bridge:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cramerWoldBridge_real`.
+118. Projected-law convergence to pointwise convergence of Banach-space
+   characteristic functions:
+   `vaart1998_finiteCoordinateProjectedLawConvergence_charFunDual`.
+119. Euclidean/`PiLp 2` law convergence from projected finite-coordinate laws:
+   `vaart1998_finiteCoordinateProjectedLawConvergence_euclideanLaw`.
+120. Pure law-level finite-dimensional Cramér-Wold theorem:
+   `vaart1998_finiteCoordinateProjectedLawConvergence_lawTendsto`.
+121. Projected-scalar-CLT Cramér-Wold bridge constructor using the compiled
+   finite-dimensional theorem:
+   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_finiteDimensional`.
+122. Theorem 4.1 finite-coordinate covariance-table endpoint fed directly by
+   projected scalar CLTs:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedScalarCLT_real`.
+123. Projected scalar summand for a continuous linear projection:
+   `vaart1998_finiteCoordinateProjectedSample`.
+124. Projected empirical average as an ordinary scalar average of projected
+   summands:
+   `vaart1998_finiteCoordinateProjectedEmpiricalAverage_eq_inv_mul_sum_sample`.
+125. Projected centered-average expression as the usual scalar CLT
+   sum-centered normalization:
+   `vaart1998_finiteCoordinateProjectedScalarCLT_expression_eq_sum`.
+126. Source-shaped projected summand scalar CLT family:
+   `vaart1998_finiteCoordinateProjectedSummandCLT`.
+127. Projected summand scalar CLTs imply the projected scalar empirical-moment
+   CLT family:
+   `vaart1998_finiteCoordinateProjectedScalarCLT_of_projectedSummandCLT`.
+128. Theorem 4.1 finite-coordinate covariance-table endpoint fed directly by
+   projected summand scalar CLTs:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_real`.
+129. Mathlib one-dimensional CLT instantiates the source-shaped projected
+   summand scalar CLT family:
+   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT`.
+130. Projected first-summand mean equals the tested population moment under
+   finite-coordinate integrability:
+   `vaart1998_finiteCoordinateProjectedSample_integral_eq_populationMoment`.
+131. Mathlib one-dimensional CLT instantiation with the projected mean field
+   discharged from finite-coordinate integrability:
+   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_integrableMean`.
+132. Finite-coordinate sample-vector alias:
+   `vaart1998_finiteCoordinateSampleVector`.
+133. Projected samples inherit `MemLp` from the finite-coordinate sample
+   vector:
+   `vaart1998_finiteCoordinateProjectedSample_memLp_of_vectorMemLp`.
+134. Projected samples inherit indexed independence from the
+   finite-coordinate sample-vector sequence:
+   `vaart1998_finiteCoordinateProjectedSample_iIndepFun_of_vector_iIndepFun`.
+135. Projected samples inherit identical distribution from the
+   finite-coordinate sample vectors:
+   `vaart1998_finiteCoordinateProjectedSample_identDistrib_of_vector_identDistrib`.
+136. Vector-valued finite-coordinate source fields feed the projected summand
+   CLT through continuous linear projections and mathlib's one-dimensional CLT:
+   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorSource`.
+137. Finite-coordinate Gaussian limit supplies projected scalar Gaussian laws
+   from zero projected mean and variance identification:
+   `vaart1998_finiteCoordinateProjectedGaussianLimitLaw_of_zeroMean_variance`.
+138. Covariance-bilinear identification supplies the same projected scalar
+   Gaussian laws:
+   `vaart1998_finiteCoordinateProjectedGaussianLimitLaw_of_covarianceBilinDual`.
+139. Vector-valued finite-coordinate source fields plus Gaussian/covariance
+   source fields feed the projected summand CLT:
+   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorGaussianSource`.
+140. Theorem 4.1 finite-coordinate covariance-table endpoint consuming the
+   vector-Gaussian source wrapper directly:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_vectorGaussianSource_real`.
+141. Finite-coordinate sample-vector `MemLp` from coordinatewise `MemLp`:
+   `vaart1998_finiteCoordinateSampleVector_memLp_of_coordinate_memLp`.
+142. Projected summand CLT source wrapper using coordinatewise `MemLp 2` to
+   discharge both finite-coordinate integrability and vector `MemLp`:
+   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_vectorGaussianSource`.
+143. Theorem 4.1 covariance-table endpoint variant consuming coordinatewise
+   `MemLp 2` instead of separate integrability and vector `MemLp` fields:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_vectorGaussianSource_real`.
+144. Finite-coordinate sample-vector independence from a strong joint
+   infinite-product law:
+   `vaart1998_finiteCoordinateSampleVector_iIndepFun_of_hasLaw_infinitePi`.
+145. Finite-coordinate sample-vector identical distribution from a common
+   vector law:
+   `vaart1998_finiteCoordinateSampleVector_identDistrib_of_common_hasLaw`.
+146. Projected summand CLT source wrapper using coordinatewise `MemLp 2`, a
+   common vector law, and the infinite-product law of the sample-vector
+   sequence:
+   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_commonVectorLawGaussianSource`.
+147. Theorem 4.1 covariance-table endpoint variant using coordinatewise
+   `MemLp 2`, a common vector law, and the infinite-product law of the
+   sample-vector sequence:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_commonVectorLawGaussianSource_real`.
+148. Canonical iid finite-coordinate sample-vector common law on the
+   infinite-product space:
+   `vaart1998_finiteCoordinateCanonicalSampleVector_hasLaw`.
+149. Canonical iid finite-coordinate sample-vector sequence infinite-product
+   law:
+   `vaart1998_finiteCoordinateCanonicalSampleVector_sequence_hasLaw`.
+150. Canonical iid finite-coordinate sample-vector common-law source package:
+   `vaart1998_finiteCoordinateCanonicalSampleVector_commonVectorLawSource`.
+151. Coordinate-projected `iIndepFun` from vector `iIndepFun` and coordinate
+   evaluation measurability:
+   `vaart1998_finiteCoordinateCoordinate_iIndepFun_of_vector_iIndepFun`.
+152. Coordinate-projected pairwise `IndepFun` from vector `iIndepFun`:
+   `vaart1998_finiteCoordinateCoordinate_pairwise_indepFun_of_vector_iIndepFun`.
+153. Coordinate-projected `IdentDistrib` from vector `IdentDistrib`:
+   `vaart1998_finiteCoordinateCoordinate_identDistrib_of_vector_identDistrib`.
+154. Coordinate LLN source package from a common vector law, infinite-product
+   sequence law, and coordinate evaluation measurability:
+   `vaart1998_finiteCoordinateCoordinateLLNSource_of_commonVectorLaw`.
+155. Theorem 4.1 covariance-table endpoint variant using coordinatewise
+   `MemLp 2`, a common vector law, the infinite-product law of the sample-vector
+   sequence, and coordinate evaluation measurability to discharge both vector
+   and coordinate LLN source fields:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_commonVectorLawCoordinateSource_real`.
+156. Canonical iid product-sample coordinate measurability from coordinate
+   evaluation measurability:
+   `vaart1998_finiteCoordinateCanonicalSample_coordinate_measurable`.
+157. Canonical iid product-sample coordinate `MemLp` from coordinate-projection
+   `MemLp` under the common vector law:
+   `vaart1998_finiteCoordinateCanonicalSample_coordinate_memLp`.
+158. Canonical iid product-sample coordinate source package for Theorem 4.1:
+   `vaart1998_finiteCoordinateCanonicalSample_coordinateSource`.
+159. Canonical iid product-space Theorem 4.1 covariance-table endpoint:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalProductSource_real`.
+160. Canonical iid product-sample population-moment identity:
+   `vaart1998_finiteCoordinateCanonicalSample_populationMoment_eq_integral`.
+161. Canonical iid product-sample projected variance identity:
+   `vaart1998_finiteCoordinateCanonicalProjectedSample_variance_eq`.
+162. Canonical product true-moment source conversion from vector-law means:
+   `vaart1998_finiteCoordinateCanonicalSample_trueMoment_eq_populationMoment`.
+163. Canonical product covariance source conversion from vector-law projection
+   variances:
+   `vaart1998_finiteCoordinateCanonicalSample_covariance_eq_projectedVariance`.
+164. Canonical iid product-space Theorem 4.1 covariance-table endpoint with
+   true moment and covariance hypotheses stated under the common vector law:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalVectorLawSource_real`.
+165. Vector-law mean-zero to projected mean-zero bridge:
+   `vaart1998_finiteCoordinateProjectedMean_eq_zero_of_map_mean_zero`.
+166. Canonical iid product-space Theorem 4.1 covariance-table endpoint with
+   the Gaussian limit mean-zero hypothesis stated as `(Q.map Z)[id] = 0`:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawSource_real`.
+167. Symmetric continuous bilinear forms are determined by their diagonal
+   quadratic forms:
+   `vaart1998_continuousBilinearMap_eq_of_diagonal`.
+168. CovarianceBilinDual off-diagonal polarization bridge from projected
+   variance identities:
+   `vaart1998_covarianceBilinDual_eq_of_diagonal_variance`.
+169. Canonical iid product-space Theorem 4.1 covariance-table endpoint whose
+   final covariance display is stated under the common vector law `ν`:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSource_real`.
+170. Finite-coordinate vector-law source certificate:
+   `Vaart1998FiniteCoordinateVectorLawSource`.
+171. Vector-law source certificate consumers:
+   `Vaart1998FiniteCoordinateVectorLawSource.memLp_id` and
+   `Vaart1998FiniteCoordinateVectorLawSource.canonicalCoordinateSource`.
+172. Canonical iid product-space Theorem 4.1 covariance-table endpoint using
+   the vector-law source certificate for coordinate measurability and
+   square-integrability:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`.
+173. CLT-certificate covarianceBilinDual endpoint with direct a.e.
+   measurability of the composed empirical local inverse:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_aemeasurable_real`.
+174. CLT-certificate covariance-table endpoint with the same direct
+   `AEMeasurable` local-inverse statistic interface:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_aemeasurable_real`.
+175. Projected-summand CLT covariance-table endpoint that bypasses the
+   per-`n` target-membership field and consumes direct a.e. measurability of
+   `he.localInverse e De theta0 (vaart1998_finiteCoordinateEmpiricalMoment X n ω)`:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_aemeasurable_real`.
+176. Canonical iid product-space covariance-table endpoint using the vector-law
+   source certificate and direct a.e. measurability of the empirical
+   local-inverse statistic:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_aemeasurable_real`.
 
-Latest remote base after rebase before this packet: `7bfd3e1`.
-Latest pushed Vaart packet before this run: `9e16530`
-(`Add Vaart local inverse aemeasurability bridge`).
+Latest remote base before this packet: `7a3d6c1`.
+Latest pushed Vaart packet before this packet: `7a3d6c1`
+(`Add Vaart aemeasurable projected summand endpoint`).
 
-The current theorem-sized packet connects that local-inverse measurability
-layer to the Chapter 4 delta-method handoff.  If an empirical moment is
-a.e.-localized in the inverse-function-theorem target, then composing it with
-the local inverse is a.e.-measurable; the Theorem 4.1 delta wrappers can now
-consume this composed a.e.-measurability directly instead of requiring global
-measurability of the off-target local inverse.  The multivariate
-empirical-moment CLT and finite-matrix specialization remain explicit next
-source layers.
+The current theorem-sized packet lifts the direct a.e.-measurable local-inverse
+route to the canonical iid product source with a vector-law source certificate.
+It reuses the projected-summand CLT endpoint, canonical product-law source
+fields, vector-law mean and covariance identities, and the covariance
+polarization bridge to expose the final Vaart Theorem 4.1 covariance table
+under the common vector law `ν`.
 
-The next aggressive packet should continue Chapter 4 by discharging the
-remaining source hypotheses without overclaiming unavailable infrastructure:
-
-1. connect the a.e.-measurable local inverse convenience to the delta-method
-   wrapper inside the finite-coordinate/source assemblers, replacing global
-   local-inverse measurability hypotheses where a.e. target localization is
-   available;
-2. keep a true multivariate empirical-moment CLT supplied until a local vector
-   CLT is formalized from the scalar mathlib CLT.
+The next aggressive packet should continue Chapter 4 by proving or packaging
+the canonical product empirical local-inverse `AEMeasurable` field itself from
+honest local inverse measurability/localization assumptions.  Do not collapse
+that obligation back into an unnamed target-event assumption; keep the older
+target-event route as a separate explicit certificate path.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
@@ -361,6 +656,15 @@ certificates.  The open source/target API comes from
 `OpenPartialHomeomorph.left_inv`.  The probability-localization bridge uses
 `MeasureTheory.tendstoInMeasure_iff_measureReal_dist` plus real probability
 complement algebra.
+
+Search result for Vaart Example 2.18: the source multivariate CLT statement is
+in `VanDerVaart_Asymptotic_Statistics_1-115.md` around lines 780-792.  The text
+uses the Cramér-Wold device to reduce convergence of finite vectors to
+convergence of all real linear projections, then applies the univariate CLT to
+`t^T Y_i - t^T μ`.  The current Lean packet records the vector CLT as
+`Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate`; the next proof layer
+should either discharge this certificate from scalar projected CLTs or record
+the exact missing Cramér-Wold/weak-convergence API.
 
 Search result for the finite-coordinate LLN layer: local
 `ProbabilityMeasure.StrongLaw` and `ProbabilityTheory.Basic` expose real-valued

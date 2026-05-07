@@ -426,6 +426,25 @@ theorem durrett2019_theorem_2_1_11_iIndepFun_hasLaw_pi
   exact hX_indep.hasLaw_pi hX_law
 
 /--
+Durrett 2019, Theorem 2.1.11, iid finite-family product-law form.
+
+Independent random variables with a common marginal law `ν` have joint law
+`ν × ... × ν`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_hasLaw_pi
+    {Ω : Type u} [MeasurableSpace Ω] {ι : Type v} [Fintype ι]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {ν : Measure S}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_law : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω i => X i ω)
+      (Measure.pi fun _ : ι => ν) P := by
+  exact durrett2019_theorem_2_1_11_iIndepFun_hasLaw_pi
+    (P := P) (S := fun _ : ι => S) (X := X)
+    (ν := fun _ : ι => ν) hX_indep hX_law
+
+/--
 Durrett 2019, Theorem 2.1.11 finite-family product-law criterion.
 
 For a finite family on a probability space, independence is equivalent to the
@@ -440,6 +459,48 @@ theorem durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_pi
     _root_.ProbabilityTheory.iIndepFun (μ := P) X ↔
       _root_.ProbabilityTheory.HasLaw (fun ω i => X i ω) (Measure.pi ν) P := by
   exact _root_.ProbabilityTheory.iIndepFun_iff_hasLaw_pi_pi hX_law
+
+/--
+Durrett 2019, Theorem 2.1.11, iid finite-family product-law criterion.
+
+For a finite family with common law `ν`, independence is equivalent to the
+joint law being the finite product `ν × ... × ν`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_iff_hasLaw_pi
+    {Ω : Type u} [MeasurableSpace Ω] {ι : Type v} [Fintype ι]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {ν : Measure S}
+    (hX_law : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν P) :
+    _root_.ProbabilityTheory.iIndepFun (μ := P) X ↔
+      _root_.ProbabilityTheory.HasLaw (fun ω i => X i ω)
+        (Measure.pi fun _ : ι => ν) P := by
+  exact durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_pi
+    (P := P) (S := fun _ : ι => S) (X := X)
+    (ν := fun _ : ι => ν) hX_law
+
+/--
+Durrett 2019, Theorem 2.1.11, canonical iid product-space coordinates.
+
+On the finite product probability space `ν × ... × ν`, the coordinate
+projections are independent, have common law `ν`, and have joint product law.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_product_coordinates
+    {ι : Type v} [Fintype ι]
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S) :
+    (∀ i,
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : (ι -> S) => sample i) (ν : Measure S)
+        (Measure.pi fun _ : ι => (ν : Measure S))) ∧
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i => fun sample : (ι -> S) => sample i)
+        (Measure.pi fun _ : ι => (ν : Measure S)) ∧
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : (ι -> S) => sample)
+        (Measure.pi fun _ : ι => (ν : Measure S))
+        (Measure.pi fun _ : ι => (ν : Measure S)) :=
+  StatInference.ProbabilityMeasure.probability_pi_iid_coordinates_with_joint_law ν
 
 /--
 Durrett 2019, Theorem 2.1.12 product-measure/Fubini form.
@@ -718,6 +779,360 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_ref
     endpoint hstrict hrefine
 
 /--
+Durrett 2019, Theorem 2.4.9 atom-aware endpoint-grid refinement package.
+
+Once the source proof has extracted strict endpoints whose open adjacent cells
+avoid the selected atom center inside a small punctured neighborhood, this
+wrapper packages them as the cutpoint chain consumed by the GC handoff.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement
+    {P : Measure ℝ} [IsProbabilityMeasure P] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers,
+        Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) \ {x} ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refinement
+    endpoint hstrict hrefine
+
+/--
+Durrett 2019, Theorem 2.4.9 atom-aware open-cover/avoidance package.
+
+For a strict endpoint grid, it is enough to prove each open adjacent cell lies
+inside one selected finite cover interval and avoids that interval's selected
+center.  The punctured-cover handoff then gives the cutpoint chain.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_avoids_center_refinement
+    {P : Measure ℝ} [IsProbabilityMeasure P] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers,
+        Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) ∧
+        x ∉ Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_avoids_center_refinement
+    endpoint hstrict hrefine
+
+/--
+Durrett 2019, Theorem 2.4.9 endpoint-center open-cover package.
+
+If the selected center for each open adjacent cell is itself one of the strict
+grid endpoints, then the center-avoidance condition is automatic and the
+atom-aware open-cover handoff gives the cutpoint chain.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_endpoint_center_refinement
+    {P : Measure ℝ} [IsProbabilityMeasure P] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers, ∃ point : Fin (cells + 2),
+        endpoint point = x ∧
+        Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_endpoint_center_refinement
+    endpoint hstrict hrefine
+
+/--
+Durrett 2019, Theorem 2.4.9 cutpoint-chain concatenation package.
+
+This is the finite splitting primitive used by the arbitrary-law route: chains
+proved on adjacent subintervals can be assembled into one chain on the whole
+interval.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_append
+    {P : Measure ℝ} {epsilon a b c : ℝ}
+    (left : SuppliedRealMiddleCDFPartitionChain P epsilon a b)
+    (right : SuppliedRealMiddleCDFPartitionChain P epsilon b c) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a c :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.append left right
+
+/--
+Durrett 2019, Theorem 2.4.9 punctured-cover subinterval CDF-increment bridge.
+
+After a finite atom center has been inserted as a cutpoint, each strict
+subinterval of the original subdivision cell inherits the original punctured
+cover assignment and has small CDF left-limit increment once it avoids the
+selected center.
+-/
+theorem durrett2019_theorem_2_4_9_cdfIncrement_of_subdivision_punctured_cover_subinterval
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b u v : ℝ} {t : ℕ -> Set.Icc a b} {n : ℕ}
+    (huv : u < v)
+    (hleft : (t n : ℝ) ≤ u)
+    (hright : v ≤ (t (n + 1) : ℝ))
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine :
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        x ∉ Set.Ioo u v ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    Function.leftLim (ProbabilityTheory.cdf P) v -
+      ProbabilityTheory.cdf P u < epsilon :=
+  _root_.StatInference.cdf_leftLim_sub_lt_of_subdivision_punctured_cover_subinterval
+    huv hleft hright hrefine
+
+/--
+Durrett 2019, Theorem 2.4.9 punctured-cover cell-splitting package.
+
+One strict subdivision cell whose closed cell refines a selected punctured-cover
+neighborhood already supplies a cutpoint chain: split at the selected center if
+that center lies inside the cell, otherwise use the cell directly.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_subdivision_punctured_cover_cell
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b : ℝ} {t : ℕ -> Set.Icc a b} {n : ℕ}
+    (hlt : (t n : ℝ) < (t (n + 1) : ℝ))
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine :
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon (t n) (t (n + 1)) :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_subdivision_punctured_cover_cell
+    hlt hrefine
+
+/--
+Durrett 2019, Theorem 2.4.9 strict-subdivision-prefix package.
+
+After repeated values have been erased from the monotone subdivision, a strict
+finite prefix ending at the right endpoint produces the cutpoint chain directly
+from the inherited closed-cover assignments.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b : ℝ} {cells : ℕ}
+    {t : ℕ -> Set.Icc a b}
+    (ht0 : (t 0 : ℝ) = a)
+    (htlast : (t (cells + 1) : ℝ) = b)
+    (hstrictStep : ∀ n ≤ cells, (t n : ℝ) < (t (n + 1) : ℝ))
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ n ≤ cells,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover
+    ht0 htlast hstrictStep hrefine
+
+/--
+Durrett 2019, Theorem 2.4.9 extracted-subdivision-adjacency package.
+
+After duplicate erasure has produced strict endpoints, it remains enough to
+record which original adjacent subdivision cell realizes each strict gap. The
+small closed-cover assignment for that original cell then gives the cutpoint
+chain.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b : ℝ} {cells : ℕ}
+    {t : ℕ -> Set.Icc a b}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hzero : endpoint 0 = a)
+    (hlast : endpoint (Fin.last (cells + 1)) = b)
+    (hstrict : StrictMono endpoint)
+    (origin : Fin (cells + 1) -> ℕ)
+    (hleft : ∀ cell : Fin (cells + 1),
+      endpoint (Fin.castSucc cell) = (t (origin cell) : ℝ))
+    (hright : ∀ cell : Fin (cells + 1),
+      endpoint (Fin.succ cell) = (t (origin cell + 1) : ℝ))
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ n,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_extracted_subdivision_adjacencies_closed_cover
+    endpoint hzero hlast hstrict origin hleft hright hrefine
+
+/--
+Durrett 2019, Theorem 2.4.9 monotone-subdivision package.
+
+A monotone subdivision that is eventually constant at the right endpoint
+directly produces the cutpoint chain: repeated adjacent values are skipped and
+strict jumps are appended as CDF-increment cells.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b : ℝ} {t : ℕ -> Set.Icc a b}
+    (ht0 : (t 0 : ℝ) = a)
+    (hmono : Monotone t)
+    (heventually : ∃ m, ∀ n ≥ m, (t n : ℝ) = b)
+    (hab : a < b)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ n,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_closed_cover
+    ht0 (fun i j hij => by simpa using hmono hij) heventually hab hrefine
+
+/--
+Durrett 2019, Theorem 2.4.9 endpoint-center monotone-subdivision package.
+
+This atom-aware variant uses punctured finite-cover cells.  It is enough that
+the selected center for each subdivision cell is itself a value of the monotone
+subdivision; monotonicity then keeps that center out of the adjacent open cell.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_endpoint_center_cover
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b : ℝ} {t : ℕ -> Set.Icc a b}
+    (ht0 : (t 0 : ℝ) = a)
+    (hmono : Monotone t)
+    (heventually : ∃ m, ∀ n ≥ m, (t n : ℝ) = b)
+    (hab : a < b)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ n,
+      ∃ x ∈ centers, ∃ k : ℕ,
+        (t k : ℝ) = x ∧
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_endpoint_center_cover
+    ht0 (fun i j hij => by simpa using hmono hij) heventually hab hrefine
+
+/--
+Durrett 2019, Theorem 2.4.9 center-range monotone-subdivision package.
+
+If every selected finite-cover center occurs somewhere in the monotone
+subdivision, then the endpoint-center monotone-subdivision handoff can consume
+ordinary cell refinement assignments into punctured cover neighborhoods.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_center_mem_cover
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b : ℝ} {t : ℕ -> Set.Icc a b}
+    (ht0 : (t 0 : ℝ) = a)
+    (hmono : Monotone t)
+    (heventually : ∃ m, ∀ n ≥ m, (t n : ℝ) = b)
+    (hab : a < b)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hcenter : ∀ x ∈ centers, ∃ k : ℕ, (t k : ℝ) = x)
+    (hrefine : ∀ n,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_center_mem_cover
+    ht0 (fun i j hij => by simpa using hmono hij) heventually hab hcenter hrefine
+
+/--
+Durrett 2019, Theorem 2.4.9 punctured-cover monotone-subdivision package.
+
+This is the arbitrary-law chain handoff: a monotone subdivision with finite
+punctured-cover assignments gives the cutpoint chain directly by splitting each
+strict adjacent cell at its selected atom center when needed.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_punctured_cover
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b : ℝ} {t : ℕ -> Set.Icc a b}
+    (ht0 : (t 0 : ℝ) = a)
+    (hmono : Monotone t)
+    (heventually : ∃ m, ∀ n ≥ m, (t n : ℝ) = b)
+    (hab : a < b)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ n,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_punctured_cover
+    ht0 (fun i j hij => by simpa using hmono hij) heventually hab hrefine
+
+/--
+Durrett 2019, Theorem 2.4.9 atom-aware local grid ingredient.
+
+For locally finite real measures, every point has an open neighborhood whose
+punctured version has small real measure.  This isolates the possible atom at
+the center and is the local input for arbitrary-law endpoint selection.
+-/
+theorem durrett2019_theorem_2_4_9_punctured_small_open_interval
+    {P : Measure ℝ} [IsFiniteMeasureOnCompacts P]
+    {epsilon x : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ l r : ℝ, l < x ∧ x < r ∧ P.real (Set.Ioo l r \ {x}) < epsilon :=
+  exists_realOpenInterval_diff_singleton_measureReal_lt P hepsilon
+
+/--
+Durrett 2019, Theorem 2.4.9 atom-aware compact-cover ingredient.
+
+Every compact interval is covered by finitely many open neighborhoods whose
+punctured versions have small real measure.  The selected centers are the
+candidate atom endpoints for the arbitrary-distribution grid.
+-/
+theorem durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover
+    {P : Measure ℝ} [IsFiniteMeasureOnCompacts P]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ centers : Finset ℝ, ∃ l r : ℝ -> ℝ,
+      (∀ x ∈ centers, x ∈ Set.Icc a b) ∧
+      (∀ x ∈ centers,
+        l x < x ∧ x < r x ∧ P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) ∧
+      Set.Icc a b ⊆ ⋃ x ∈ centers, Set.Ioo (l x) (r x) :=
+  exists_finset_realOpenInterval_punctured_cover_Icc_measureReal_lt P hepsilon
+
+/--
+Durrett 2019, Theorem 2.4.9 atom-aware monotone-subdivision ingredient.
+
+The finite punctured compact cover can be refined into a monotone subdivision
+of the compact interval.  This packages the arbitrary-law compactness and
+Lebesgue-number step; the remaining center-insertion step must prove the
+selected centers occur as subdivision values.
+-/
+theorem durrett2019_theorem_2_4_9_monotone_subdivision_punctured_cover
+    {P : Measure ℝ} [IsFiniteMeasureOnCompacts P]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) (hab : a ≤ b) :
+    ∃ centers : Finset ℝ, ∃ l r : ℝ -> ℝ, ∃ t : ℕ -> Set.Icc a b,
+      (∀ x ∈ centers, x ∈ Set.Icc a b) ∧
+      (∀ x ∈ centers,
+        l x < x ∧ x < r x ∧ P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) ∧
+      (t 0 : ℝ) = a ∧
+      Monotone t ∧
+      (∃ m, ∀ n ≥ m, (t n : ℝ) = b) ∧
+      ∀ n, ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon :=
+  exists_monotone_subdivision_Icc_punctured_measureReal_lt P hepsilon hab
+
+/--
+Durrett 2019, Theorem 2.4.9 arbitrary-law cutpoint-chain package.
+
+Finite punctured compact covers and the punctured-cover monotone-subdivision
+chain handoff supply the finite cutpoint chain on every strict bounded
+interval.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) (hab : a < b) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b := by
+  rcases durrett2019_theorem_2_4_9_monotone_subdivision_punctured_cover
+      (P := P) hepsilon hab.le with
+    ⟨centers, l, r, t, _hcenters, _hsmall, ht0, hmono, heventually, hrefine⟩
+  exact
+    durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_punctured_cover
+      ht0 hmono heventually hab hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9 non-atomic local grid ingredient.
 
 For non-atomic locally finite real measures, every point has an open
@@ -772,6 +1187,24 @@ theorem durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms
   exists_monotone_subdivision_Icc_measureReal_lt_of_noAtoms P hepsilon hab
 
 /--
+Durrett 2019, Theorem 2.4.9 non-atomic cutpoint-chain package.
+
+For non-atomic locally finite probability measures, the compact-cover
+subdivision route supplies a finite cutpoint chain on every strict bounded
+interval.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) (hab : a < b) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b := by
+  rcases durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms
+      (P := P) hepsilon hab.le with
+    ⟨centers, l, r, t, _hcenters, _hsmall, ht0, hmono, heventually, hrefine⟩
+  exact durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision
+    ht0 hmono heventually hab hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9, middle-partition-to-GC package.
 
 This isolates the remaining arbitrary-distribution primitive: for every
@@ -820,6 +1253,104 @@ theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains
       (fun hepsilon hab =>
         exists_realMiddleCDFPartition_of_cutpoint_chain
           (cutpointChainExists hepsilon hab))
+
+/--
+Durrett 2019, Theorem 2.4.9, center-range subdivision-to-GC package.
+
+This is the sharp arbitrary-law handoff after the atom-aware bridge: it is
+enough to construct, on every bounded interval and positive radius, a monotone
+subdivision that is eventually constant at the right endpoint, whose values
+include every selected finite-cover center, and whose adjacent cells refine
+the corresponding punctured open neighborhoods.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_monotone_subdivision_center_mem_cover
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X))
+    (subdivisionExists :
+      ∀ {epsilon a b : ℝ}, 0 < epsilon -> a < b ->
+        ∃ t : ℕ -> Set.Icc a b, ∃ centers : Finset ℝ, ∃ l r : ℝ -> ℝ,
+          (t 0 : ℝ) = a ∧
+          Monotone t ∧
+          (∃ m, ∀ n ≥ m, (t n : ℝ) = b) ∧
+          (∀ x ∈ centers, ∃ k : ℕ, (t k : ℝ) = x) ∧
+          ∀ n,
+            ∃ x ∈ centers,
+              Set.Icc (t n) (t (n + 1)) ⊆
+                {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+              P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator X :=
+  durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains
+    X hLaw hindep
+    (fun hepsilon hab => by
+      rcases subdivisionExists hepsilon hab with
+        ⟨t, centers, l, r, ht0, hmono, heventually, hcenter, hrefine⟩
+      exact
+        durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_center_mem_cover
+          ht0 hmono heventually hab hcenter hrefine)
+
+/--
+Durrett 2019, Theorem 2.4.9, Glivenko-Cantelli theorem for empirical
+distribution functions on the real line.
+
+The arbitrary-law proof uses finite punctured compact covers to handle atoms,
+splits each finite subdivision cell at its selected atom center when needed,
+and feeds the resulting finite cutpoint chains into the half-line empirical-CDF
+Glivenko-Cantelli handoff.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator X :=
+  durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains
+    X hLaw hindep
+    (fun hepsilon hab =>
+      durrett2019_theorem_2_4_9_cutpointChain hepsilon hab)
+
+/--
+Durrett 2019, Theorem 2.4.9, source-facing empirical distribution-function
+form.
+
+In Durrett's notation, if `F_n(x) = n^{-1} * sum_{m <= n} 1{X_m <= x}` and
+`F(x) = P((-infty, x])`, then the local uniform-deviation predicate states
+`sup_x |F_n(x) - F(x)| -> 0` in the book-style outer probability or outer
+almost-sure sense.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    _root_.StatInference.RealEmpiricalCDFGlivenkoCantelliClass μ P X :=
+  _root_.StatInference.realEmpiricalCDFGlivenkoCantelliClass_of_realHalfLine
+    (durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine X hLaw hindep)
+
+/--
+Durrett 2019, Theorem 2.4.9, non-atomic half-line
+Glivenko-Cantelli package.
+
+For non-atomic locally finite probability laws on the real line, the verified
+compact-cover and monotone-subdivision route supplies the cutpoint chains
+needed by the empirical-CDF Glivenko-Cantelli handoff.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator X :=
+  durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains
+    X hLaw hindep
+    (fun hepsilon hab =>
+      durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms hepsilon hab)
 
 /--
 Durrett early-chapter pi-system uniqueness shape.

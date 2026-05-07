@@ -1,4 +1,5 @@
 import Mathlib.MeasureTheory.Function.L2Space
+import Mathlib.Probability.Process.Filtration
 import StatInference.Optimization.MirrorDescent
 
 /-!
@@ -15,7 +16,44 @@ namespace Optimization
 
 open Finset
 open MeasureTheory
-open scoped InnerProductSpace
+open scoped InnerProductSpace MeasureTheory
+
+/--
+If a conditional expectation is a constant vector, then the unconditional
+Bochner integral is that vector under a probability law.
+-/
+theorem integral_eq_const_of_condExp_ae_eq_const
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω}
+    [IsProbabilityMeasure μ]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {m : MeasurableSpace Ω} (hsub : m ≤ mΩ)
+    [SigmaFinite (μ.trim hsub)]
+    (p : Ω -> E) (c : E)
+    (hcond : μ[p | m] =ᵐ[μ] fun _ => c) :
+    (∫ ω, p ω ∂μ) = c := by
+  rw [← integral_condExp
+    (m := m) (m₀ := mΩ) (μ := μ) (f := p) hsub]
+  calc
+    (∫ ω, μ[p | m] ω ∂μ) = ∫ _ω, c ∂μ :=
+      integral_congr_ae hcond
+    _ = c := by simp
+
+/--
+Filtration-shaped version of the constant conditional-expectation bridge.
+This is the source-facing handoff from a process conditional-mean assumption
+to the unconditional mean used by the SMPGD rate theorem.
+-/
+theorem integral_eq_const_of_filtration_condExp_ae_eq_const
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω}
+    [IsProbabilityMeasure μ]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (Ffiltration : Filtration ℕ mΩ) (n : ℕ)
+    (p : Ω -> E) (c : E)
+    (hcond : μ[p | Ffiltration n] =ᵐ[μ] fun _ => c) :
+    (∫ ω, p ω ∂μ) = c :=
+  integral_eq_const_of_condExp_ae_eq_const
+    (μ := μ) (m := Ffiltration n) (hsub := Ffiltration.le n)
+    p c hcond
 
 /--
 Relative finite-valued subgradient interface for the non-smooth branch of
@@ -3562,6 +3600,124 @@ theorem chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sa
       hstep_nonneg hvariance_mem hstep_mem hnoise_point hvariance_root
       hstep_root hgap_sum
 
+/--
+Smooth Chewi Theorem 12.1 source-shaped averaged-iterate rate from a
+filtration-level conditional unbiasedness assumption.
+-/
+theorem chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_filtration_condExp_unbiased_of_variance_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    {C : Set E} {f g : E -> ℝ} {gradF : E -> E}
+    {phi : E -> ℝ} {gradPhi : E -> E}
+    {alphaF alphaG alphaPhi betaF sigma dim h Fstar : ℝ}
+    (Ffiltration : Filtration ℕ mΩ)
+    (htotal_pos : 0 < alphaF + alphaG)
+    (halphaG_nonneg : 0 ≤ alphaG)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi) (hdim_nonneg : 0 ≤ dim)
+    (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap stepRms : ℕ -> ℝ)
+    (x : ℕ -> E) (xStar : E)
+    (p xPlus : ℕ -> Ω -> E)
+    (noise varianceNorm stepNorm : ℕ -> Ω -> ℝ)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hconvComposite : ConvexOn ℝ C (compositeObjective f g))
+    (hconvF : RelativelyStrongConvexOn C f gradF phi gradPhi alphaF)
+    (hsmooth : RelativelySmoothOn C f gradF phi gradPhi betaF)
+    (hbeta : betaF ≤ 1 / (2 * h))
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hx : ∀ n, n < N -> x n ∈ C)
+    (hxStar : xStar ∈ C)
+    (hxPlus : ∀ n, n < N -> ∀ᵐ ω ∂μ, xPlus n ω ∈ C)
+    (havg_int : Integrable
+      (fun ω =>
+        compositeObjective f g
+          (weightedSampleAverage
+            (fun n => (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))
+            xPlus N ω)) μ)
+    (hFstar : Fstar = compositeObjective f g xStar)
+    (hD_current : ∀ n, n < N ->
+      D n = bregmanDivergence phi gradPhi xStar (x n))
+    (hD_next : ∀ n, n < N ->
+      D (n + 1) =
+        ∫ ω, bregmanDivergence phi gradPhi xStar (xPlus n ω) ∂μ)
+    (hstep : ∀ n, n < N -> ∀ᵐ ω ∂μ,
+      IsMirrorProximalGradientStep C f g (fun _ : E => p n ω)
+        phi gradPhi alphaG h (x n) (xPlus n ω))
+    (hp_int : ∀ n, n < N -> Integrable (p n) μ)
+    (hcond_unbiased : ∀ n, n < N ->
+      μ[p n | Ffiltration n] =ᵐ[μ] fun _ => gradF (x n))
+    (hFplus : ∀ n, n < N ->
+      Integrable (fun ω => compositeObjective f g (xPlus n ω)) μ)
+    (hDf : ∀ n, n < N ->
+      Integrable (fun ω => bregmanDivergence f gradF (xPlus n ω) (x n)) μ)
+    (hDphi : ∀ n, n < N ->
+      Integrable
+        (fun ω => bregmanDivergence phi gradPhi (xPlus n ω) (x n)) μ)
+    (hDnext_int : ∀ n, n < N ->
+      Integrable
+        (fun ω => bregmanDivergence phi gradPhi xStar (xPlus n ω)) μ)
+    (hnoise_int : ∀ n, n < N -> Integrable (noise n) μ)
+    (hpsi_int : ∀ n, n < N ->
+      Integrable (fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p n ω)
+          phi gradPhi h (x n) (xPlus n ω)) μ)
+    (hpsiStar_int : ∀ n, n < N ->
+      Integrable (fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p n ω)
+          phi gradPhi h (x n) xStar) μ)
+    (hstepSq : ∀ n, n < N ->
+      Integrable (fun ω => ‖xPlus n ω - x n‖ ^ (2 : ℕ)) μ)
+    (hnoise_raw : ∀ n, n < N -> ∀ᵐ ω ∂μ,
+      -inner ℝ (p n ω - gradF (x n)) (xPlus n ω - x n) ≤ noise n ω)
+    (hstepRms_sq : ∀ n, n < N ->
+      stepRms n ^ (2 : ℕ) ≤ ∫ ω, ‖xPlus n ω - x n‖ ^ (2 : ℕ) ∂μ)
+    (hvariance_nonneg : ∀ n, n < N -> 0 ≤ᵐ[μ] varianceNorm n)
+    (hstep_nonneg : ∀ n, n < N -> 0 ≤ᵐ[μ] stepNorm n)
+    (hvariance_mem : ∀ n, n < N ->
+      MemLp (varianceNorm n) (ENNReal.ofReal (2 : ℝ)) μ)
+    (hstep_mem : ∀ n, n < N ->
+      MemLp (stepNorm n) (ENNReal.ofReal (2 : ℝ)) μ)
+    (hnoise_point : ∀ n, n < N ->
+      noise n ≤ᵐ[μ] fun ω => varianceNorm n ω * stepNorm n ω)
+    (hvariance_root : ∀ n, n < N ->
+      (∫ ω, varianceNorm n ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤
+        Real.sqrt (sigma ^ (2 : ℕ) * dim))
+    (hstep_root : ∀ n, n < N ->
+      (∫ ω, stepNorm n ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ stepRms n)
+    (hgap_sum : ∀ n, n < N ->
+      Fstar + gap (n + 1) =
+        ∫ ω, compositeObjective f g (xPlus n ω) ∂μ) :
+    (∫ ω,
+        compositeObjective f g
+          (weightedSampleAverage
+            (fun n => (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))
+            xPlus N ω) ∂μ) - Fstar ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        (1 + alphaG * h) *
+          (sigma ^ (2 : ℕ) * dim * h / alphaPhi) := by
+  exact
+    chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_unbiased_of_variance_bound
+      (μ := μ) (C := C) (f := f) (g := g) (gradF := gradF)
+      (phi := phi) (gradPhi := gradPhi)
+      (alphaF := alphaF) (alphaG := alphaG) (alphaPhi := alphaPhi)
+      (betaF := betaF) (sigma := sigma) (dim := dim) (h := h)
+      (Fstar := Fstar) htotal_pos halphaG_nonneg hh halphaPhi
+      hdim_nonneg hden_pos hlambda_pos D gap stepRms x xStar p xPlus
+      noise varianceNorm stepNorm hN hD_N_nonneg hconvComposite hconvF
+      hsmooth hbeta hphi hx hxStar hxPlus havg_int hFstar hD_current
+      hD_next hstep hp_int
+      (fun n hn =>
+        integral_eq_const_of_filtration_condExp_ae_eq_const
+          (μ := μ) Ffiltration n (p n) (gradF (x n))
+          (hcond_unbiased n hn))
+      hFplus hDf hDphi hDnext_int hnoise_int hpsi_int hpsiStar_int
+      hstepSq hnoise_raw hstepRms_sq hvariance_nonneg hstep_nonneg
+      hvariance_mem hstep_mem hnoise_point hvariance_root hstep_root
+      hgap_sum
+
 /-- Bochner-integral non-smooth Chewi Theorem 12.1 rate. -/
 theorem chewi121_nonsmooth_weightedAverageGap_le_geometric_of_integral_components
     {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
@@ -4055,6 +4211,122 @@ theorem chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_integral_l2
       hpsi_int hpsiStar_int hstepSq hstepRms_sq hstep_point
       hpNorm_nonneg hstep_nonneg hpNorm_mem hstep_mem hpNorm_point
       hpNorm_root hstep_root hgap_sum
+
+/--
+Non-smooth Chewi Theorem 12.1 source-shaped averaged-iterate rate from a
+filtration-level conditional mean oracle and a relative-subgradient version of
+that conditional mean.
+-/
+theorem chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_filtration_condExp_relativeSubgradient
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    {C : Set E} {f g : E -> ℝ} {phi : E -> ℝ} {gradPhi : E -> E}
+    {alphaF alphaG alphaPhi L h Fstar : ℝ}
+    (Ffiltration : Filtration ℕ mΩ)
+    (htotal_pos : 0 < alphaF + alphaG)
+    (halphaG_nonneg : 0 ≤ alphaG)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi) (hL_nonneg : 0 ≤ L)
+    (hden_pos : 0 < 1 + alphaG * h)
+    (hlambda_pos : 0 < chewi109Lambda alphaF alphaG h)
+    (D gap stepRms : ℕ -> ℝ)
+    (x : ℕ -> E) (xStar : E)
+    (p xPlus : ℕ -> Ω -> E)
+    (meanOracle : ℕ -> E)
+    (pNorm stepNorm : ℕ -> Ω -> ℝ)
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hconvComposite : ConvexOn ℝ C (compositeObjective f g))
+    (hLip : LipschitzOnWith (Real.toNNReal L) f C)
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hx : ∀ n, n < N -> x n ∈ C)
+    (hxStar : xStar ∈ C)
+    (hFstar : Fstar = compositeObjective f g xStar)
+    (hD_current : ∀ n, n < N ->
+      D n = bregmanDivergence phi gradPhi xStar (x n))
+    (hD_next : ∀ n, n < N ->
+      D (n + 1) =
+        ∫ ω, bregmanDivergence phi gradPhi xStar (xPlus n ω) ∂μ)
+    (hstep : ∀ n, n < N -> ∀ᵐ ω ∂μ,
+      IsMirrorProximalGradientStep C f g (fun _ : E => p n ω)
+        phi gradPhi alphaG h (x n) (xPlus n ω))
+    (hp_int : ∀ n, n < N -> Integrable (p n) μ)
+    (hcond_mean : ∀ n, n < N ->
+      μ[p n | Ffiltration n] =ᵐ[μ] fun _ => meanOracle n)
+    (hmean_sub : ∀ n, n < N ->
+      IsRelativeSubgradientAt C f (meanOracle n)
+        phi gradPhi alphaF (x n))
+    (hxPlus : ∀ n, n < N -> ∀ᵐ ω ∂μ, xPlus n ω ∈ C)
+    (havg_int : Integrable
+      (fun ω =>
+        compositeObjective f g
+          (weightedSampleAverage
+            (fun n => (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))
+            xPlus N ω)) μ)
+    (hFplus : ∀ n, n < N ->
+      Integrable (fun ω => compositeObjective f g (xPlus n ω)) μ)
+    (hDphi : ∀ n, n < N ->
+      Integrable
+        (fun ω => bregmanDivergence phi gradPhi (xPlus n ω) (x n)) μ)
+    (hDnext_int : ∀ n, n < N ->
+      Integrable
+        (fun ω => bregmanDivergence phi gradPhi xStar (xPlus n ω)) μ)
+    (hpsi_int : ∀ n, n < N ->
+      Integrable (fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p n ω)
+          phi gradPhi h (x n) (xPlus n ω)) μ)
+    (hpsiStar_int : ∀ n, n < N ->
+      Integrable (fun ω =>
+        mirrorProximalGradientModel f g (fun _ : E => p n ω)
+          phi gradPhi h (x n) xStar) μ)
+    (hstepSq : ∀ n, n < N ->
+      Integrable (fun ω => ‖xPlus n ω - x n‖ ^ (2 : ℕ)) μ)
+    (hstepRms_sq : ∀ n, n < N ->
+      stepRms n ^ (2 : ℕ) ≤ ∫ ω, ‖xPlus n ω - x n‖ ^ (2 : ℕ) ∂μ)
+    (hstep_point : ∀ n, n < N ->
+      (fun ω => ‖xPlus n ω - x n‖) ≤ᵐ[μ] stepNorm n)
+    (hpNorm_nonneg : ∀ n, n < N -> 0 ≤ᵐ[μ] pNorm n)
+    (hstep_nonneg : ∀ n, n < N -> 0 ≤ᵐ[μ] stepNorm n)
+    (hpNorm_mem : ∀ n, n < N ->
+      MemLp (pNorm n) (ENNReal.ofReal (2 : ℝ)) μ)
+    (hstep_mem : ∀ n, n < N ->
+      MemLp (stepNorm n) (ENNReal.ofReal (2 : ℝ)) μ)
+    (hpNorm_point : ∀ n, n < N ->
+      (fun ω => ‖p n ω‖) ≤ᵐ[μ] pNorm n)
+    (hpNorm_root : ∀ n, n < N ->
+      (∫ ω, pNorm n ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ L)
+    (hstep_root : ∀ n, n < N ->
+      (∫ ω, stepNorm n ω ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤ stepRms n)
+    (hgap_sum : ∀ n, n < N ->
+      Fstar + gap (n + 1) =
+        ∫ ω, compositeObjective f g (xPlus n ω) ∂μ) :
+    (∫ ω,
+        compositeObjective f g
+          (weightedSampleAverage
+            (fun n => (chewi109Lambda alphaF alphaG h) ^ (N - 1 - n))
+            xPlus N ω) ∂μ) - Fstar ≤
+      (alphaF + alphaG) /
+          (((chewi109Lambda alphaF alphaG h) ^ N)⁻¹ - 1) * D 0 +
+        (1 + alphaG * h) *
+          (2 * L ^ (2 : ℕ) * h / alphaPhi) := by
+  exact
+    chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_relativeSubgradient
+      (μ := μ) (C := C) (f := f) (g := g) (phi := phi)
+      (gradPhi := gradPhi) (alphaF := alphaF) (alphaG := alphaG)
+      (alphaPhi := alphaPhi) (L := L) (h := h) (Fstar := Fstar)
+      htotal_pos halphaG_nonneg hh halphaPhi hL_nonneg hden_pos
+      hlambda_pos D gap stepRms x xStar p xPlus pNorm stepNorm hN
+      hD_N_nonneg hconvComposite hLip hphi hx hxStar hFstar hD_current
+      hD_next hstep hp_int
+      (fun n hn => by
+        have hmean :
+            (∫ ω, p n ω ∂μ) = meanOracle n :=
+          integral_eq_const_of_filtration_condExp_ae_eq_const
+            (μ := μ) Ffiltration n (p n) (meanOracle n)
+            (hcond_mean n hn)
+        simpa [hmean] using hmean_sub n hn)
+      hxPlus havg_int hFplus hDphi hDnext_int hpsi_int hpsiStar_int
+      hstepSq hstepRms_sq hstep_point hpNorm_nonneg hstep_nonneg
+      hpNorm_mem hstep_mem hpNorm_point hpNorm_root hstep_root hgap_sum
 
 /--
 Smooth-case Chewi Theorem 12.1 rate from expected model components: this is

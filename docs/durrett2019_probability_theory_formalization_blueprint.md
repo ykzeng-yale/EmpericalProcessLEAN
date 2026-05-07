@@ -37,8 +37,18 @@ materially changes the route, refresh the route state from:
 4. the latest pushed commit and current remote contributions.
 
 Each refreshed in-thread target should name the latest verified declarations,
-one primary theorem target, parallel support targets, search-first scope,
+one primary theorem target, independent support targets, search-first scope,
 verification gate, and report gate.  Do not replay a solved target.
+
+If the app-level `/goal` objective lags behind the latest pushed proof packets,
+do not create an automation or a duplicate goal.  Treat the route docs and the
+latest commit as the live target, then update the docs so the next compaction
+or agent handoff starts from the same frontier.
+
+Use subagents only when the user explicitly authorizes parallel agent work.
+Otherwise, keep the active proof in this thread and improve throughput with
+search caching, isolated worktrees for long builds or disjoint local lanes, and
+one fetch/rebase pass at the start plus one immediately before push.
 
 ## Status Vocabulary
 
@@ -152,6 +162,12 @@ Compiled first source wrappers:
   measurable-function preservation/finite disjoint-block/product-coordinate
   independence, 2.1.11 pair and finite-family product laws, 2.1.12
   product/Fubini expectation, and 2.1.13 expectation-factorization wrappers.
+- Durrett Theorem 2.1.11 iid notation polish:
+  `probability_pi_iid_coordinates_with_joint_law`,
+  `durrett2019_theorem_2_1_11_iid_hasLaw_pi`,
+  `durrett2019_theorem_2_1_11_iid_iff_hasLaw_pi`, and
+  `durrett2019_theorem_2_1_11_canonical_iid_product_coordinates` package the
+  common-law finite product and canonical iid product-space source shapes.
 - Durrett Theorem 2.4.9 conditional Glivenko-Cantelli handoffs from supplied
   endpoint grids and supplied middle CDF partitions.
 - Durrett Theorem 2.4.9 one-cell middle CDF partition base case:
@@ -176,6 +192,73 @@ Compiled first source wrappers:
   `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement`
   and
   `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`.
+- Durrett Theorem 2.4.9 source-facing empirical distribution-function layer:
+  `empiricalDistributionFunction`,
+  `RealEmpiricalCDFGlivenkoCantelliClass`, and
+  `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`
+  package the local `sup_x |F_n(x) - F(x)| -> 0` predicate.
+- Durrett Theorem 2.4.9 atom-aware endpoint-grid handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refinement`
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement`.
+- Durrett Theorem 2.4.9 atom-aware open-cover/avoidance handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_avoids_center_refinement`
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_avoids_center_refinement`.
+- Durrett Theorem 2.4.9 endpoint-center handoff:
+  `endpoint_not_mem_adjacent_Ioo_of_strictMono`,
+  `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_endpoint_center_refinement`,
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_endpoint_center_refinement`.
+- Durrett Theorem 2.4.9 cutpoint-chain splitting handoff:
+  `SuppliedRealMiddleCDFPartitionChain.append` and
+  `durrett2019_theorem_2_4_9_cutpointChain_append`.
+- Durrett Theorem 2.4.9 inserted-subcell punctured-cover handoff:
+  `cdf_leftLim_sub_lt_of_Ioo_subset_punctured_cover`,
+  `cdf_leftLim_sub_lt_of_subdivision_punctured_cover_subinterval`, and
+  `durrett2019_theorem_2_4_9_cdfIncrement_of_subdivision_punctured_cover_subinterval`.
+- Durrett Theorem 2.4.9 punctured-cover cell-splitting handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_subdivision_punctured_cover_cell`
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_subdivision_punctured_cover_cell`.
+- Durrett Theorem 2.4.9 strict-subdivision-prefix handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`.
+- Durrett Theorem 2.4.9 extracted-subdivision-adjacency handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_extracted_subdivision_adjacencies_closed_cover`
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`.
+- Durrett Theorem 2.4.9 monotone-subdivision duplicate-skip handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_monotone_subdivision_prefix_closed_cover_to_index`,
+  `SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_closed_cover`,
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`.
+- Durrett Theorem 2.4.9 monotone-subdivision endpoint-center handoff:
+  `subdivision_value_not_mem_adjacent_Ioo_of_monotone`,
+  `cdf_leftLim_sub_lt_of_subdivision_endpoint_center_cover_cell`,
+  `SuppliedRealMiddleCDFPartitionChain.of_monotone_subdivision_prefix_endpoint_center_cover_to_index`,
+  `SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_endpoint_center_cover`,
+  `SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_center_mem_cover`,
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_endpoint_center_cover`;
+  the Durrett center-range wrapper is
+  `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_center_mem_cover`.
+- Durrett Theorem 2.4.9 arbitrary-law atom-aware local ingredients:
+  `exists_realOpenInterval_diff_singleton_measureReal_lt`,
+  `exists_finset_realOpenInterval_punctured_cover_Icc_measureReal_lt`,
+  `exists_monotone_subdivision_of_finset_realOpenInterval_punctured_cover_Icc`,
+  `exists_monotone_subdivision_Icc_punctured_measureReal_lt`,
+  `durrett2019_theorem_2_4_9_punctured_small_open_interval`,
+  `durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`, and
+  `durrett2019_theorem_2_4_9_monotone_subdivision_punctured_cover`.
+- Durrett Theorem 2.4.9 arbitrary-law punctured-subdivision chain and GC
+  packages:
+  `SuppliedRealMiddleCDFPartitionChain.of_monotone_subdivision_prefix_punctured_cover_to_index`,
+  `SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_punctured_cover`,
+  `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_punctured_cover`,
+  `durrett2019_theorem_2_4_9_cutpointChain`, and
+  `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`.
 - Durrett Theorem 2.4.9 non-atomic local grid ingredient:
   `exists_realOpenInterval_measureReal_lt_of_noAtoms` and
   `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`.
@@ -185,8 +268,13 @@ Compiled first source wrappers:
 - Durrett Theorem 2.4.9 non-atomic monotone-subdivision ingredient:
   `exists_monotone_subdivision_Icc_measureReal_lt_of_noAtoms` and
   `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`.
+- Durrett Theorem 2.4.9 non-atomic cutpoint-chain and GC packages:
+  `durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms` and
+  `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms`.
 - Durrett Theorem 2.4.9 cutpoint-chain-to-GC handoff:
   `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`.
+- Durrett Theorem 2.4.9 center-range subdivision-to-GC handoff:
+  `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_monotone_subdivision_center_mem_cover`.
 
 The subsequence and continuous-mapping theorems are higher value but may require
 more topological convergence API packaging.
@@ -229,29 +317,59 @@ one-cell, two-cell, right-append, and finite cutpoint-chain middle-partition
 consumers now compile.  A strict endpoint-grid-to-cutpoint-chain handoff, a
 closed-cover endpoint-grid refinement handoff, a
 non-atomic local small-neighborhood lemma, a non-atomic finite compact-cover
-lemma, a non-atomic monotone-subdivision lemma, and a Durrett-named
-cutpoint-chain-to-GC handoff also compile.  The next non-atomic theorem-core
-primitive is the monotone-subdivision-to-strict-endpoint-grid construction:
-erase repeated subdivision points while preserving the small-cover assignment
-for each nondegenerate adjacent cell, then feed
-`SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement`.
-The remaining arbitrary-distribution primitive is the atom-aware construction
-of strict finite endpoint grids for intervals whose total CDF increment is not
-already below the requested radius.
+lemma, a non-atomic monotone-subdivision lemma, strict-prefix and extracted-gap
+closed-cover handoffs, a monotone-prefix duplicate-skip induction, a non-atomic
+cutpoint-chain package, a Durrett-named cutpoint-chain-to-GC handoff, and the
+non-atomic half-line Glivenko-Cantelli package also compile.  For arbitrary
+laws, punctured local neighborhoods and finite compact punctured covers now
+compile, together with the endpoint-grid consumer for open cells that avoid
+the selected atom center.  The open-cover/avoidance bridge now reduces the
+punctured-cover consumer to ordinary open-cover refinement plus the fact that
+the selected center is not inside the open cell.  The arbitrary-distribution
+core now avoids a separate global endpoint-insertion construction: each strict
+monotone-subdivision cell is split at its selected atom center only when that
+center lies inside the cell, finite prefixes are assembled by chain append, and
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine` compiles for arbitrary
+probability laws on the real line.
 
-### Lane D: CLT and characteristic functions
+### Lane D: Weak convergence, CLT, and characteristic functions
 
 Chapter 3 is the next large probability-theory spine after laws of large
-numbers.  Search mathlib for characteristic functions, weak convergence, normal
-distribution APIs, and finite-dimensional weak convergence before formalizing.
+numbers.  Search mathlib and local files for weak convergence, characteristic
+functions, normal distribution APIs, and finite-dimensional weak convergence
+before formalizing.
+
+Current first packet:
+
+- Durrett Theorem 3.2.10, continuous mapping theorem, continuous case.  Reuse
+  `MeasureTheory.TendstoInDistribution.continuous_comp` or the local
+  `tendstoInDistribution_continuous_comp` wrapper.
 
 Likely initial source items:
 
+- Section 3.2 weak convergence of random variables.
+- Theorem 3.2.9, bounded-continuous test functions.
+- Theorem 3.2.10, continuous mapping theorem.
+- Theorem 3.2.11, Portmanteau alternatives.
 - Lemma 3.1.1, scalar exponential limit.
 - Theorem 3.1.2, de Moivre-Laplace local limit.
 - Section 3.3 characteristic functions and inversion formula.
 - Section 3.4 central limit theorems.
 - Section 3.10 limit theorems in `R^d`.
+
+Source anchors:
+
+- `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`
+  contains Section 3.2 near line 41, Theorem 3.2.9 near line 158, Theorem
+  3.2.10 near line 188, Theorem 3.2.11 near line 197, Section 3.3 near line
+  411, and Section 3.10 near line 3643.
+
+Initial Lean reuse anchors:
+
+- `StatInference/ProbabilityMeasure/WeakConvergence.lean`
+- `StatInference/EmpiricalProcess/WeakConvergence.lean`
+- `StatInference/AsymptoticStatistics/MomentEstimators.lean`
+- `.lake/packages/mathlib/Mathlib/MeasureTheory/Function/ConvergenceInDistribution.lean`
 
 ### Lane E: martingales, Markov chains, Brownian motion
 

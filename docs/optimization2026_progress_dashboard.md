@@ -25,12 +25,33 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
+  the current frontier contract near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
-  replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
-  work.
+  replacement goal prompt.  Older long prompts in that file are archived
+  history and must not override the current `2c1a160` ASGD frontier.
 - Collaboration policy: for broad future packets, use isolated `git worktree`
   checkouts per book/lane when several local agents are active, then merge only
   scoped verified work back to shared `main`.
+- Efficiency protocol: the Optimization manual goal now uses theorem-sized
+  packets, not one-wrapper loops.  Route from the top of
+  `docs/optimization2026_current_blocker_primitive_plan.md`; reuse cached
+  mathlib/local search notes before repeating broad searches; develop with
+  focused `lake env lean` checks; promote with targeted
+  `lake build StatInference.Optimization.<Module>`; root-build only after
+  root-import or broad cross-module changes; batch final docs, scans, rebase,
+  commit, and push once per verified packet.
+- Current proof worktree: use `/private/tmp/chewi-smpgd-probability` for the
+  active Optimization packet so unrelated textbook agents can keep their own
+  local state without `.lake` or working-tree interference.
+- Current priority sequence: `ASGD-scalar-martingale-CLT` projected scalar
+  bounded martingale CLT discharge, `ASGD-endpoint` source ASGD limit wrapper,
+  then the concrete Sinkhorn row/column KL identity layer if ASGD stalls.
+- Process audit: the speed bottleneck was not only Lean difficulty; it was
+  stale route replay, repeated broad searches, micro-packet commit overhead,
+  and shared-worktree/build-artifact contention.  The active protocol is now:
+  one bounded search pass, one theorem-sized Lean packet, focused module
+  verification, route-doc update only when material, then one final
+  fetch/rebase/scan/commit/push gate.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
@@ -436,8 +457,109 @@ and
 `chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_integral_l2_sampled_models_relativeSubgradient`,
 so the exact displayed smooth and non-smooth Theorem 12.1 averaged-iterate
 rates now compile directly from the source variance-bound and relative
-subgradient hypotheses.  The active Chapter 12 blocker is only the exact
-source probability/process packaging needed before ASGD CLT material.
+subgradient hypotheses.
+
+The newest process wrapper packet adds
+`integral_eq_const_of_condExp_ae_eq_const`,
+`integral_eq_const_of_filtration_condExp_ae_eq_const`,
+`chewi121_smooth_weightedSampleAverage_gap_le_displayed_of_filtration_condExp_unbiased_of_variance_bound`,
+and
+`chewi121_nonsmooth_weightedSampleAverage_gap_le_displayed_of_filtration_condExp_relativeSubgradient`.
+These wrappers turn filtration-level conditional mean assumptions into the
+unconditional unbiasedness and relative-subgradient mean fields consumed by
+the exact displayed SMPGD rates.  The active Chapter 12 blocker is now the
+ASGD/martingale layer: conditional mean-zero and covariance packaging,
+quadratic ASGD decomposition, and then martingale CLT infrastructure.
+
+The ASGD lane is now root-imported through `StatInference/Optimization/ASGD.lean`.
+The first packet compiles `chewi123_asgd_noise_sum_split`,
+`chewi123_asgd_scaled_average_decomposition`, and
+`chewi123_asgd_sqrt_average_decomposition`, isolating the source `(12.5)`
+finite-sum split into the martingale term with coefficient `Ainv` and the
+remainder term with coefficient `M_k^n - Ainv`.  The next packet compiles
+`chewi123_asgd_neg_linear_noise_clt`,
+`chewi123_asgd_neg_linear_gaussian_limit`, and
+`chewi123_asgd_distribution_limit_of_noise_and_remainders`, reusing mathlib
+continuous mapping, Gaussian linear-map closure, and additive Slutsky to prove
+that the scaled averaged ASGD error has the `-Ainv`-pushed weak limit once the
+martingale CLT term is supplied and the initial/remainder terms are `o_P(1)`.
+The newest ASGD packet compiles `Chewi127MartingaleDifferenceProcess`,
+`Chewi127ConditionalCovarianceProcess`,
+`Chewi127MartingaleCLTCertificate`,
+`Chewi127MartingaleDifferenceProcess.integral_next_eq_zero`,
+`Chewi127MartingaleCLTCertificate.asgd_distribution_limit`,
+`Chewi127MartingaleCLTCertificate.neg_linear_covarianceBilinDual`,
+`Chewi127MartingaleCLTCertificate.neg_linear_covarianceTable`, and
+`chewi123_asgd_limit_package_of_martingale_certificate`.  This packages Chewi
+Theorem 12.7 as a supplied martingale CLT certificate and reuses the Vaart
+covarianceBilinDual/table pullback primitives to identify the `-Ainv` pushed
+Gaussian covariance.  The newest source-interface packet compiles
+`chewi127ScaledNoiseSum`, `chewi127AverageConditionalCovariance`,
+`Chewi127AveragedConditionalCovarianceLimit`,
+`chewi127_martingaleCLTCertificate_of_scaledNoiseSum`,
+`Chewi127MartingaleDifferenceProcess.integral_linear_next_eq_zero`, and
+`Chewi127ConditionalCovarianceProcess.integral_Xi_next_eq_integral_second_moment`.
+The newest quadratic-ASGD recurrence packet compiles
+`chewi123QuadraticStepMap`, `chewi123_quadratic_delta_step`,
+`IsChewi123QuadraticASGDTrajectory`,
+`IsChewi123QuadraticASGDTrajectory.delta_step`,
+`chewi123TransitionProductFrom`,
+`chewi123TransitionProductFrom_succ_apply`, `chewi123NoiseCoefficient`,
+`chewi123_stepMap_noiseCoefficient_apply`,
+`chewi123_quadratic_delta_unroll`,
+`IsChewi123QuadraticASGDTrajectory.delta_unroll`,
+`chewi123_quadratic_average_delta_unroll_nested`, and
+`IsChewi123QuadraticASGDTrajectory.average_delta_unroll_nested`.  This closes
+the exact source one-step recurrence, ordered transition product, finite
+unrolling, and averaged nested display before `(12.5)`.  The newest
+triangular-regrouping packet compiles `chewi123InitialCoefficient`,
+`chewi123SourceNoiseCoefficient`, their apply lemmas,
+`chewi123_nested_noise_sum_eq_source_indexed`,
+`chewi123_source_indexed_nested_noise_sum_eq_source_coefficients`,
+`chewi123_nested_noise_sum_eq_source_coefficients`,
+`chewi123_quadratic_average_delta_unroll_source_coefficients`,
+`chewi123_quadratic_average_delta_source_decomposition`,
+`IsChewi123QuadraticASGDTrajectory.average_delta_source_decomposition`,
+`chewi123_quadratic_sqrt_average_delta_source_decomposition`, and
+`IsChewi123QuadraticASGDTrajectory.sqrt_average_delta_source_decomposition`.
+It uses mathlib `Finset.sum_comm'`, `Finset.sum_Ico_eq_sum_range`, and
+`ContinuousLinearMap.sum_apply`, and closes the source `M_k^N` regrouping,
+the split around `A^{-1}`, and the `sqrt N`-scaled display.  The active
+Chapter 12 blocker is now the actual one-dimensional bounded martingale CLT
+proof behind the projected CLT field, then final ASGD endpoint wiring.  The
+projected martingale-CLT packet compiles `chewi127ScaledProjectedNoiseSum`,
+`chewi127ScaledProjectedNoiseSum_eq_apply_scaledNoiseSum`,
+`chewi127AverageConditionalVariance`,
+`Chewi127AveragedConditionalCovarianceLimit.variance_tendstoInMeasure`,
+`chewi127_projected_clt_of_scaledNoiseSum_clt`,
+`Chewi127ProjectedMartingaleCLTBridge`,
+`Chewi127ProjectedMartingaleCLTBridge.toMartingaleCLTCertificate`,
+`Chewi127BoundedMartingaleCLTSource`,
+`Chewi127BoundedMartingaleCLTSource.toProjectedBridge`, and
+`Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate`.  Search-first
+result: no direct pinned mathlib or local Chewi-style bounded martingale CLT
+was found; local reuse is the finite-dimensional Cramér-Wold and projected CLT
+infrastructure in `StatInference/AsymptoticStatistics/MomentEstimators.lean`,
+plus mathlib continuous mapping and local conditional-expectation/covariance
+interfaces.  The newest scalar projection side-condition packet adds
+`chewi127ScalarScaledSum`,
+`chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum`,
+the `same_filtration` source field,
+`Chewi127MartingaleDifferenceProcess.projected_stronglyAdapted`,
+`Chewi127MartingaleDifferenceProcess.projected_integrable`,
+`Chewi127MartingaleDifferenceProcess.condExp_linear_next_eq_zero`,
+`Chewi127MartingaleDifferenceProcess.projected_uniform_bound`,
+`Chewi127ConditionalCovarianceProcess.condExp_projected_square_eq`,
+`Chewi127BoundedMartingaleCLTSource.projected_condExp_zero`,
+`Chewi127BoundedMartingaleCLTSource.projected_conditional_second_moment`,
+`Chewi127BoundedMartingaleCLTSource.projected_variance_tendstoInMeasure`,
+`Chewi127BoundedMartingaleCLTSource.projected_uniform_bound`, and
+`Chewi127BoundedMartingaleCLTSource.projected_scalar_clt`.  Search-first
+result for this layer: mathlib's
+`ContinuousLinearMap.comp_condExp_comm`, `condExp_smul`, Lévy/characteristic
+function APIs, local Cramér-Wold wrappers, and `ContinuousLinearMap.le_opNorm`
+are the relevant reuse; still no direct scalar martingale CLT theorem was
+found.
 
 ## Initial Reuse Audit
 

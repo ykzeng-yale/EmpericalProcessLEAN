@@ -35,6 +35,87 @@ theorem realHalfLineIndicator_integral_eq_cdf
       (ProbabilityTheory.cdf_eq_real P c).symm
 
 /--
+The empirical distribution function of a finite real sample.
+
+For a sample `x_0, ..., x_{n-1}`, this is the textbook
+`F_n(c) = n^{-1} * #{i : x_i <= c}`, represented through the local empirical
+average of the closed-half-line indicator.
+-/
+noncomputable def empiricalDistributionFunction {n : ℕ}
+    (sample : SampleAt ℝ n) (c : ℝ) : ℝ :=
+  empiricalAverage sample (realHalfLineIndicator c)
+
+/-- Unfolding lemma for the empirical distribution function. -/
+theorem empiricalDistributionFunction_eq_sum_div {n : ℕ}
+    (sample : SampleAt ℝ n) (c : ℝ) :
+    empiricalDistributionFunction sample c =
+      (∑ i : Fin n, realHalfLineIndicator c (sample i)) / (n : ℝ) :=
+  rfl
+
+/--
+Empirical distribution functions along an observation process are the usual
+range-indexed averages of half-line indicators.
+-/
+theorem empiricalDistributionFunction_samplePath_eq_range_sum
+    {Ω : Type u} (X : ℕ -> Ω -> ℝ) (ω : Ω) (n : ℕ) (c : ℝ) :
+    empiricalDistributionFunction (samplePath X ω n) c =
+      (∑ i ∈ Finset.range n, realHalfLineIndicator c (X i ω)) / (n : ℝ) := by
+  simpa [empiricalDistributionFunction] using
+    empiricalAverage_samplePath_eq_range_sum X ω n (realHalfLineIndicator c)
+
+/--
+The population risk of a closed-half-line indicator is the distribution
+function value at the endpoint.
+-/
+theorem populationRisk_realHalfLineIndicator_eq_cdf
+    (P : Measure ℝ) [IsProbabilityMeasure P] (c : ℝ) :
+    populationRiskOfFunction P (realHalfLineIndicator c) =
+      ProbabilityTheory.cdf P c := by
+  simpa [populationRiskOfFunction] using realHalfLineIndicator_integral_eq_cdf P c
+
+/--
+Source-facing empirical-CDF Glivenko-Cantelli predicate for real observations.
+
+This is the local uniform-deviation formulation of Durrett's
+`sup_x |F_n(x) - F(x)| -> 0`, using either outer probability or outer almost
+sure convergence according to the existing book-style predicate convention.
+-/
+def RealEmpiricalCDFGlivenkoCantelliClass
+    {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) (P : Measure ℝ) (X : ℕ -> Ω -> ℝ) : Prop :=
+  VdVWOuterProbabilityUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) ∨
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c)
+
+/--
+The half-line indicator class predicate is exactly the source-facing empirical
+CDF predicate after unfolding `F_n` and `F`.
+-/
+theorem realEmpiricalCDFGlivenkoCantelliClass_of_realHalfLine
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (h :
+      VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator X) :
+    RealEmpiricalCDFGlivenkoCantelliClass μ P X := by
+  rcases h with h | h
+  · left
+    simpa [RealEmpiricalCDFGlivenkoCantelliClass,
+      VdVWOuterProbabilityPGlivenkoCantelliClass,
+      empiricalDistributionFunction, populationRiskOfFunction,
+      realHalfLineIndicator_integral_eq_cdf] using h
+  · right
+    simpa [RealEmpiricalCDFGlivenkoCantelliClass,
+      VdVWOuterAlmostSurePGlivenkoCantelliClass,
+      empiricalDistributionFunction, populationRiskOfFunction,
+      realHalfLineIndicator_integral_eq_cdf] using h
+
+/--
 Pointwise empirical-distribution convergence for one closed half-line.
 
 For iid real observations with law `P`, the sample average of
