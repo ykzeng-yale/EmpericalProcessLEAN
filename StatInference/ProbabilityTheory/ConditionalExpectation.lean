@@ -1,4 +1,5 @@
 import Mathlib.Probability.ConditionalExpectation
+import Mathlib.MeasureTheory.Function.ConditionalExpectation.PullOut
 import StatInference.ProbabilityTheory.Basic
 
 /-!
@@ -120,6 +121,106 @@ theorem durrett2019_example_4_1_4_condExp_eq_integral_of_independent
   simpa using
     (_root_.MeasureTheory.condExp_indep_eq (μ := μ) (m₁ := mX) (m₂ := m)
       (f := X) hmX hm hX_meas hindep)
+
+/-! ## Durrett, Section 4.1.2 properties -/
+
+/--
+Durrett 2019, Theorem 4.1.9(a), linearity.
+
+Conditional expectation is linear on integrable random variables.
+-/
+theorem durrett2019_theorem_4_1_9_condExp_linear
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {μ : Measure Ω} (m : MeasurableSpace Ω) {X Y : Ω -> E} (a : ℝ)
+    (hX_int : Integrable X μ) (hY_int : Integrable Y μ) :
+    μ[(a • X + Y) | m] =ᵐ[μ] a • μ[X | m] + μ[Y | m] :=
+  (condExp_add (hX_int.smul a) hY_int m).trans
+    ((condExp_smul (μ := μ) (m := m) a X).add Filter.EventuallyEq.rfl)
+
+/--
+Durrett 2019, Theorem 4.1.9(b), monotonicity.
+
+If `X <= Y` almost surely, then the same ordering holds for their conditional
+expectations.
+-/
+theorem durrett2019_theorem_4_1_9_condExp_mono_real
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ : Measure Ω} (m : MeasurableSpace Ω) {X Y : Ω -> ℝ}
+    (hX_int : Integrable X μ) (hY_int : Integrable Y μ)
+    (hXY : X ≤ᵐ[μ] Y) :
+    μ[X | m] ≤ᵐ[μ] μ[Y | m] :=
+  condExp_mono hX_int hY_int hXY
+
+/--
+Durrett 2019, Theorem 4.1.12.
+
+If `m₁ <= m₂` and the `m₂`-conditional expectation is already `m₁`-measurable,
+then conditioning on `m₁` gives the same version.
+-/
+theorem durrett2019_theorem_4_1_12_condExp_eq_of_larger_condExp_stronglyMeasurable
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {μ : Measure Ω} {m₁ m₂ : MeasurableSpace Ω} {X : Ω -> E}
+    (hm₁₂ : m₁ ≤ m₂) (hm₂ : m₂ ≤ mΩ)
+    [SigmaFinite (μ.trim (hm₁₂.trans hm₂))]
+    [SigmaFinite (μ.trim hm₂)]
+    (hX_int : Integrable X μ)
+    (h_cond_meas : StronglyMeasurable[m₁] (μ[X | m₂])) :
+    μ[X | m₁] =ᵐ[μ] μ[X | m₂] := by
+  have _ : Integrable X μ := hX_int
+  have hleft :
+      μ[μ[X | m₂] | m₁] =ᵐ[μ] μ[X | m₂] :=
+    (condExp_of_stronglyMeasurable (μ := μ) (hm₁₂.trans hm₂)
+      h_cond_meas integrable_condExp).eventuallyEq
+  exact (condExp_condExp_of_le hm₁₂ hm₂).symm.trans hleft
+
+/--
+Durrett 2019, Theorem 4.1.13(i), first tower identity.
+
+If `m₁ <= m₂`, conditioning an `m₁`-conditional expectation again on `m₂`
+leaves it unchanged.
+-/
+theorem durrett2019_theorem_4_1_13_condExp_tower_larger_of_smaller
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {μ : Measure Ω} {m₁ m₂ : MeasurableSpace Ω} {X : Ω -> E}
+    (hm₁₂ : m₁ ≤ m₂) (hm₂ : m₂ ≤ mΩ) [SigmaFinite (μ.trim hm₂)]
+    (hX_int : Integrable X μ) :
+    μ[μ[X | m₁] | m₂] =ᵐ[μ] μ[X | m₁] := by
+  have _ : Integrable X μ := hX_int
+  exact (condExp_of_stronglyMeasurable (μ := μ) hm₂
+    (stronglyMeasurable_condExp.mono hm₁₂) integrable_condExp).eventuallyEq
+
+/--
+Durrett 2019, Theorem 4.1.13(ii), second tower identity.
+
+If `m₁ <= m₂`, conditioning first on the larger sigma-field and then on the
+smaller one is the same as conditioning on the smaller sigma-field.
+-/
+theorem durrett2019_theorem_4_1_13_condExp_tower_smaller_of_larger
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {μ : Measure Ω} {m₁ m₂ : MeasurableSpace Ω} {X : Ω -> E}
+    (hm₁₂ : m₁ ≤ m₂) (hm₂ : m₂ ≤ mΩ) [SigmaFinite (μ.trim hm₂)]
+    (hX_int : Integrable X μ) :
+    μ[μ[X | m₂] | m₁] =ᵐ[μ] μ[X | m₁] := by
+  have _ : Integrable X μ := hX_int
+  exact condExp_condExp_of_le hm₁₂ hm₂
+
+/--
+Durrett 2019, Theorem 4.1.14, pull-out property for real-valued variables.
+
+An `m`-measurable factor can be brought outside the conditional expectation.
+-/
+theorem durrett2019_theorem_4_1_14_condExp_mul_of_stronglyMeasurable_left
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ : Measure Ω} {m : MeasurableSpace Ω} {X Y : Ω -> ℝ}
+    (hX_meas : StronglyMeasurable[m] X)
+    (hXY_int : Integrable (X * Y) μ)
+    (hY_int : Integrable Y μ) :
+    μ[X * Y | m] =ᵐ[μ] X * μ[Y | m] :=
+  condExp_mul_of_stronglyMeasurable_left hX_meas hXY_int hY_int
 
 end ProbabilityTheory
 end StatInference
