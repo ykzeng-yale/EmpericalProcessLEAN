@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V19
+## Live In-Thread Goal Prompt V20
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -18,19 +18,20 @@ distribution route for Theorem 4.1.16 was not immediate from the first
 `condExpKernel`/kernel search, so do not loop there unless a later targeted
 search finds a source-shaped theorem.
 
-Current compiled Chapter 4.2 starter layer packages mathlib's `Martingale`,
+Current compiled Chapter 4.2 layer packages mathlib's `Martingale`,
 `Submartingale`, and `Supermartingale` API into Durrett-facing adaptedness,
 integrability, all-times conditional-expectation identities/inequalities,
-one-step `n+1 | n` identities/inequalities, and real-valued one-step
-constructors.
+one-step `n+1 | n` identities/inequalities, real-valued one-step constructors,
+and Example 4.2.1 linear random-walk martingale/supermartingale/submartingale
+wrappers over the natural filtration of independent increments.
 
-Next theorem-sized packet: attack Example 4.2.1 linear random-walk
-martingale/supermartingale wrappers if the existing independence and conditional
-expectation wrappers make the one-step conditional expectation direct.  If not
-direct, add the narrow missing bridge only: independent increment conditional
-expectation, adapted finite-sum support, or an already-mathlib stopped/predictable
-martingale wrapper.  Do not repackage solved Chapter 4.1 facts or the new
-definition-level Chapter 4.2 wrappers.
+Next theorem-sized packet: finish the remaining Example 4.2.1 centered display
+`S_n - n * μ` if it is immediate from the compiled linear layer; otherwise move
+to Example 4.2.2 quadratic martingale and add only the narrow bridge needed for
+the source calculation, such as conditional expectation of `ξ_{n+1}^2`, pull-out
+of the `S_n * ξ_{n+1}` cross term, or finite-square integrability support.  Do
+not repackage solved Chapter 4.1 facts or the compiled Chapter 4.2 starter and
+linear-random-walk wrappers.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -327,9 +328,10 @@ polish, Lindeberg-Feller estimates, Section 3.10 vector-limit polish, or
 Chapter 4.1 conditional-expectation repackaging unless the active Chapter 4.2
 theorem exposes an exact missing dependency.
 
-Current aggressive target: continue the Chapter 4.2 martingale spine, starting
-with Example 4.2.1 linear random-walk martingale/supermartingale wrappers.  The
-following Chapter 3, Chapter 4.1, and Chapter 4.2 packets now compile:
+Current aggressive target: continue the Chapter 4.2 martingale spine beyond the
+compiled Example 4.2.1 linear random-walk martingale/supermartingale/
+submartingale wrappers.  The following Chapter 3, Chapter 4.1, and Chapter 4.2
+packets now compile:
 
 - Durrett Theorem 3.2.9 bounded-continuous test characterization, including
   the `integral_map` bridge from map-law integrals to textbook expectations
@@ -390,10 +392,10 @@ following Chapter 3, Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should search the regular conditional probability APIs
-after Theorem 4.1.15.  Package Theorem 4.1.16 only if `condExpKernel`/kernel
-support is direct; otherwise start Chapter 4.2 martingale wrappers.  Prefer
-theorem-sized wrappers over new primitives.
+The next likely packet should finish the remaining Example 4.2.1 centered
+display if it is cheap; otherwise move directly to Example 4.2.2 quadratic
+martingale.  Keep Theorem 4.1.16 deferred unless a targeted kernel search finds
+a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -505,6 +507,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V19` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V20` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
