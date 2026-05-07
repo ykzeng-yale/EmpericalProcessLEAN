@@ -4,28 +4,36 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt
+## Live In-Thread Goal Prompt V3
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue the Durrett 2019 probability-theory Lean formalization from the latest
 pushed commit and these route docs.  Current frontier: Chapter 3.4.10
-Lindeberg-Feller in `StatInference/ProbabilityTheory/Basic.lean`.  Do not
-return to the solved Chapter 2 Glivenko-Cantelli or Chapter 2.1 product-law
-work unless a new compiler or source dependency reopens it.  Next proof packet:
-prove or instantiate
-`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`
-from Durrett's Lemma 3.3.19 / formula (3.3.3) characteristic-function Taylor
-estimate; the integration/splitting bridge from this predicate to
-`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
-already compiles.  Then route to Section 3.10 Cramer-Wold and multivariate CLT.
-Each cycle should sync GitHub,
-inspect only relevant route/source/API anchors, name the exact source item,
-Lean declaration, and consumed primitive, implement one theorem-sized Lean
-packet, run focused Lean plus targeted build and scans, update the route docs,
-commit, and push.  Keep all code, comments, docs, and commit messages in
-English.
+Lindeberg-Feller in `StatInference/ProbabilityTheory/Basic.lean`.  Ignore the
+stale app-level wording that routes to Chapter 2; Chapter 2 Glivenko-Cantelli,
+Chapter 2.1 product-law work, Chapter 3.2 weak convergence, Chapter 3.3
+basic characteristic-function wrappers, Theorem 3.4.1, Exercise 3.1.1, and the
+3.4.10 certificate plumbing are already route context, not active targets.
+
+Immediate packet: close the earliest uncompiled link in Durrett formula (3.3.3)
+for the Lindeberg-Feller proof.  Search mathlib/local code first, then prove the
+largest theorem-sized bridge that compiles in this chain:
+`durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound`
+from Durrett Lemma 3.3.19 with `n = 2`, its expectation-level bridge
+`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_pointwiseTaylorRemainderBound`,
+then the existing expansion-bound/final Lindeberg-Feller consumers.  If any
+link already compiles, skip it and move to the next uncompiled link.  After this
+chain closes, route directly to Section 3.10 Cramer-Wold and multivariate CLT.
+
+Cycle discipline: fetch/rebase, inspect only relevant remote/local Lean
+contributions and Durrett source anchors, implement one theorem-sized packet,
+run focused Lean plus targeted build and proof/secret scans, update these route
+docs only when the frontier changes, commit, and push.  Use a separate worktree
+only for dirty checkouts, long builds, or disjoint local lanes.  Do not create
+automations or spawn subagents unless the user explicitly asks in the current
+turn.  Keep all code, comments, docs, and commit messages in English.
 
 ## Minimal Operating Contract
 
@@ -480,29 +488,8 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Start every in-thread cycle by inspecting git status, fetching origin/main,
-reviewing recent remote commits for other-agent Lean contributions, reading
-this file plus the Durrett dashboard and blueprint, and scanning the current
-`StatInference/ProbabilityTheory`, `StatInference/ProbabilityMeasure`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean` modules.  Primary target:
-do not return to the old center-insertion, EDF notation, or Chapter 2.1 iid
-polish blockers.  Chapter 3.2 weak convergence now has compiled Durrett
-Theorem 3.2.9 bounded-continuous test, 3.2.10 continuous-mapping continuous
-case, and 3.2.11 Portmanteau wrappers.  Chapter 3.3 now has compiled
-characteristic-function notation, Theorem 3.3.1 basic property wrappers, and
-Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem,
-and Theorem 3.3.20 centered second-order Taylor wrapper.  Chapter 3.4 now has
-Theorem 3.4.1 i.i.d. CLT wrappers and Theorem 3.4.10
-triangular-array characteristic-function/product/certificate plumbing,
-including a final source-facing constructor from square-integrable rows plus
-the finite-row Taylor/Lindeberg bound predicate.  Exercise 3.1.1 is now proved
-locally and feeds the quadratic product route without a supplied theorem
-assumption.  The variance-tail split is now proved from square-integrable rows,
-and the remainder-bound-to-final-source-wrapper bridge now compiles, so the
-next aggressive target is proving or instantiating
-`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`
-from Durrett Lemma 3.3.19 / formula (3.3.3) before moving to Section
-3.10 Cramer-Wold/multivariate CLT wrappers while checking local
-asymptotic-statistics reuse first.
-Verify, update docs, commit/push, and keep this in-thread `/goal` state current.
-Report progress and blockers in Chinese/English mix.
+Use `Live In-Thread Goal Prompt V3` at the top of this file.  This older seed
+is retained only to record that the active route has moved past Chapter 2 and
+past the compiled Chapter 3.2/3.3/3.4.1/Exercise 3.1.1 setup.  Do not replay
+those solved setup tasks unless a new dependency failure explicitly reopens
+one of them.

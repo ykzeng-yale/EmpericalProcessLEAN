@@ -32,6 +32,15 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
+Route from `Live In-Thread Goal Prompt V3` in
+`docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
+The active theorem lane is Chapter 3.4.10 Lindeberg-Feller in
+`StatInference/ProbabilityTheory/Basic.lean`: close the earliest uncompiled
+link in the Durrett Lemma 3.3.19 / formula (3.3.3) Taylor-remainder chain, then
+move to Section 3.10 Cramer-Wold and multivariate CLT.  The compiled
+declaration inventory below is dependency context only; it is not a prompt to
+revisit solved Chapter 2 or early Chapter 3 work.
+
 Current verified Durrett Lean frontier: `StatInference/ProbabilityTheory/Basic.lean`
 compiles and root-imports the new namespace.  Compiled declarations:
 

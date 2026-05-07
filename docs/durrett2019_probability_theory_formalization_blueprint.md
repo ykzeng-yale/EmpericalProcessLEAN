@@ -27,9 +27,10 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains the live `/goal` replacement prompt.  Use it
-when the app-level objective is older than the verified route docs; do not
-create a duplicate goal or recurring automation.
+The current blocker plan contains `Live In-Thread Goal Prompt V3`, the live
+`/goal` replacement prompt.  Use it when the app-level objective is older than
+the verified route docs; do not create a duplicate goal or recurring
+automation.
 
 For each cycle, route from:
 
@@ -38,9 +39,11 @@ For each cycle, route from:
 3. this blueprint;
 4. the latest pushed commit and current remote contributions.
 
-Keep the cycle small and source-facing: sync, inspect the current theorem
-anchors, name the source item, target declaration, and consumed primitive,
-implement one theorem-sized Lean packet, verify, update docs, commit, and push.
+Keep the cycle small and source-facing: sync, inspect only the current theorem
+anchors and relevant local/GitHub Lean contributions, name the source item,
+target declaration, and consumed primitive, implement one theorem-sized Lean
+packet, verify, update docs only when the frontier changes, commit, and push.
+Use a separate worktree for dirty checkouts, long builds, or disjoint lanes.
 Use subagents only when the user explicitly authorizes parallel agent work.
 
 ## Status Vocabulary
