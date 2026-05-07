@@ -59,6 +59,69 @@ or invalidate `.olean` files mid-build.  Use focused module Lean checks during
 development, and treat missing-artifact root-build failures as infrastructure
 until a focused proof/module check points to an actual theorem error.
 
+## High-Accuracy High-Throughput Protocol
+
+This section is the operating discipline for manual `/goal` runs.  It is meant
+to prevent the two observed failure modes in this lane: stale route replay and
+micro-packet overhead.
+
+1. Source of truth.  The immutable app-level `/goal` objective is stale and
+   still names the old Theorem 3.4 frontier.  Until the full book is complete,
+   route from this file's top sections plus the dashboard snapshot, not from
+   the old app-level wording.
+2. Packet size.  A normal run should target a theorem-sized packet: one
+   primary Lean theorem layer plus any directly needed algebra/interface
+   support and route-doc updates.  Do not commit a search-only or
+   wording-only change unless it records a genuine blocker or prevents a
+   wrong next run.
+3. Search cache.  Search mathlib and local `StatInference` before adding a
+   primitive, but write down only material results that change the route.
+   Reuse the cached search results in this document before repeating broad
+   `rg` passes.
+4. Worktree discipline.  Broad Optimization proof packets should run in the
+   isolated `/private/tmp/chewi-smpgd-probability` worktree.  Fetch/rebase at
+   the start and once immediately before push; avoid repeated fetch/rebase
+   loops while a focused proof packet is still being developed.
+5. Verification tiers.  During development, use focused
+   `lake env lean StatInference/Optimization/<module>.lean` checks.  Promote
+   with `lake build StatInference.Optimization.<Module>` after a public theorem
+   layer compiles.  Reserve root `lake build StatInference` for root-import or
+   broad cross-module changes, especially while `.lake` artifacts are shared
+   with other active agents.
+6. Git cadence.  Batch code, docs, proof-hole scan, secret scan, and final
+   rebase into one push.  If the push is rejected, rebase once, rerun the
+   focused module build and scans, then push.  Do not restart source search or
+   route planning merely because `origin/main` moved.
+7. Agent ownership.  When the user explicitly authorizes subagents, the main
+   thread owns the active proof and proof integration.  Scouts should be
+   read-only or have disjoint write sets: mathlib API scout, local reuse scout,
+   source-anchor scout, one bounded Lean worker for the adjacent theorem, and
+   one verification/cleanup scout.
+8. Proof-gap policy.  Supplied interfaces are allowed only as named temporary
+   gates with a recorded discharge route.  Exact theorem reports remain
+   blocked until the source theorem/lemma statement itself is fully proved with
+   no `sorry`, `admit`, unreviewed `axiom`, or `unsafe`.
+9. Exercise policy.  Exercise statements and cheap reusable exercise proofs may
+   accumulate in `StatInference/Optimization/Exercises.lean`, but exercise work
+   must not consume the main theorem packet budget unless it unlocks a
+   main-text theorem.
+
+Current priority packet sequence:
+
+1. `ASGD-rec`: source-shaped quadratic ASGD one-step recurrence and transition
+   map algebra, then the finite unrolling/averaging bridge into the existing
+   `(12.5)` decomposition.
+2. `ASGD-CLT`: bounded martingale CLT certificate constructor from
+   `Chewi127MartingaleDifferenceProcess`,
+   `Chewi127ConditionalCovarianceProcess`, and
+   `Chewi127AveragedConditionalCovarianceLimit`.
+3. `ASGD-endpoint`: connect the exact scaled noise sum, recurrence-derived
+   decomposition, and certificate to the source Theorem 12.7/12.3 ASGD limit
+   statement.
+4. `Sinkhorn-concrete`: return to the concrete row/column KL normalization
+   identities for Theorem 11.8 only after the current ASGD packet would
+   otherwise stall.
+
 - treat Chapters 3-10 and the finite Chapter 11 ABP telescope as reusable
   infrastructure, not active routing targets;
 - skip Corollary 11.3 topology unless a report or later theorem requires it,
@@ -99,7 +162,8 @@ except for marking the goal complete.  Since the full textbook formalization is
 not complete, this document is the live replacement prompt for manual goal
 runs.
 
-Current live replacement `/goal` prompt after the Chapter 12 finite sampled
+Current live replacement `/goal` prompt after pushed frontier `029d017`
+(`Add Chewi ASGD scaled noise interfaces`) and the Chapter 12 finite sampled
 rate packet, smooth integral-L2 sampled-model endpoint packet, smooth
 Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
 endpoint packet, smooth source variance-bound bridge for Chewi Theorem 12.1

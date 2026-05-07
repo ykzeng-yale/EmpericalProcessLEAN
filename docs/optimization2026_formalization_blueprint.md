@@ -43,6 +43,16 @@ directly in this tool surface unless the goal is complete, so
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
 replacement prompt for manual runs.
 
+Manual goal execution now follows a theorem-packet protocol.  Use the isolated
+Optimization worktree for broad packets, search cached mathlib/local results
+before inventing primitives, keep the main thread on the active proof while
+scouts handle disjoint read-only questions when explicitly authorized, verify
+with focused Lean/module builds during development, and batch route-doc
+updates, scans, final rebase, commit, and push once per verified packet.  The
+current active sequence is ASGD quadratic recurrence/unrolling, bounded
+martingale CLT certificate construction, source ASGD endpoint assembly, then
+the concrete Sinkhorn KL identity layer if ASGD stalls.
+
 Historical manual frontier after focused Lean verification of Chapter 7
 `StatInference/Optimization/FrankWolfe.lean` rebased over pushed frontier
 `4d4601c`, building on `bb0a297`: Chapter 6 should be treated as stable through the supplied

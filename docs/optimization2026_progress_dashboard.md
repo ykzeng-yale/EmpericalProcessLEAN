@@ -31,6 +31,21 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Collaboration policy: for broad future packets, use isolated `git worktree`
   checkouts per book/lane when several local agents are active, then merge only
   scoped verified work back to shared `main`.
+- Efficiency protocol: the Optimization manual goal now uses theorem-sized
+  packets, not one-wrapper loops.  Route from the top of
+  `docs/optimization2026_current_blocker_primitive_plan.md`; reuse cached
+  mathlib/local search notes before repeating broad searches; develop with
+  focused `lake env lean` checks; promote with targeted
+  `lake build StatInference.Optimization.<Module>`; root-build only after
+  root-import or broad cross-module changes; batch final docs, scans, rebase,
+  commit, and push once per verified packet.
+- Current proof worktree: use `/private/tmp/chewi-smpgd-probability` for the
+  active Optimization packet so unrelated textbook agents can keep their own
+  local state without `.lake` or working-tree interference.
+- Current priority sequence: `ASGD-rec` quadratic recurrence/unrolling,
+  `ASGD-CLT` bounded martingale certificate constructor, `ASGD-endpoint`
+  source ASGD limit wrapper, then the concrete Sinkhorn row/column KL identity
+  layer if ASGD stalls.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
