@@ -469,25 +469,31 @@ Chapter 3 theorem-facing wrappers compiling:
 154. Coordinate LLN source package from a common vector law, infinite-product
    sequence law, and coordinate evaluation measurability:
    `vaart1998_finiteCoordinateCoordinateLLNSource_of_commonVectorLaw`.
+155. Theorem 4.1 covariance-table endpoint variant using coordinatewise
+   `MemLp 2`, a common vector law, the infinite-product law of the sample-vector
+   sequence, and coordinate evaluation measurability to discharge both vector
+   and coordinate LLN source fields:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_commonVectorLawCoordinateSource_real`.
 
-Latest remote base before this packet: `04f304`.
-Latest pushed Vaart packet before this packet: `1060ecc`
-(`Add Vaart canonical product law source`).
+Latest remote base before this packet: `4ae19cd`.
+Latest pushed Vaart packet before this packet: `bd7b8fb`
+(`Add Vaart coordinate LLN source projections`).
 
-The current theorem-sized packet projects vector source assumptions into the
-coordinate LLN independence and identical-distribution fields, using explicit
-coordinate evaluation measurability rather than assuming any particular
-measurable-space implementation for `(Coordinate -> ℝ)`.
+The current theorem-sized packet exposes the common-vector-law and
+coordinate-evaluation-measurability source package at the Theorem 4.1
+covariance-table boundary.  It removes the caller-side vector source fields and
+the caller-side coordinate LLN independence/identical-distribution fields,
+while still keeping plain coordinate measurability explicit.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. expose a Theorem 4.1 endpoint wrapper that consumes the common-vector-law
-   and coordinate-evaluation-measurability source package, while keeping plain
-   coordinate measurability explicit;
-2. instantiate the Theorem 4.1 endpoint for the canonical product sample space
+1. instantiate the Theorem 4.1 endpoint for the canonical product sample space
    only if the remaining coordinate `MemLp`, measurability, and LLN fields can
    be supplied without adding opaque assumptions;
+2. prove reusable coordinate `MemLp` and coordinate measurability constructors
+   from concrete product-law/sample-space hypotheses, not from opaque endpoint
+   assumptions;
 3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 

@@ -306,9 +306,12 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinateCoordinate_pairwise_indepFun_of_vector_iIndepFun`,
   `vaart1998_finiteCoordinateCoordinate_identDistrib_of_vector_identDistrib`,
   and `vaart1998_finiteCoordinateCoordinateLLNSource_of_commonVectorLaw`.
+- Theorem 4.1 covariance-table endpoint variant using the common-vector-law and
+  coordinate-evaluation-measurability source package:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_commonVectorLawCoordinateSource_real`.
 
-Latest remote base before this packet: `04f304`.  Latest pushed Vaart packet
-before this packet: `1060ecc` (`Add Vaart canonical product law source`).
+Latest remote base before this packet: `4ae19cd`.  Latest pushed Vaart packet
+before this packet: `bd7b8fb` (`Add Vaart coordinate LLN source projections`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -331,12 +334,12 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. expose a Theorem 4.1 endpoint wrapper that consumes the common-vector-law
-   and coordinate-evaluation-measurability source package, while keeping plain
-   coordinate measurability explicit;
-2. instantiate the Theorem 4.1 endpoint for the canonical product sample space
+1. instantiate the Theorem 4.1 endpoint for the canonical product sample space
    only if the remaining coordinate `MemLp`, measurability, and LLN fields can
    be supplied without adding opaque assumptions;
+2. prove reusable coordinate `MemLp` and coordinate measurability constructors
+   from concrete product-law/sample-space hypotheses, not from opaque endpoint
+   assumptions;
 3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 

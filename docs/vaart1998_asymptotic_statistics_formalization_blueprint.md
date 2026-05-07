@@ -281,6 +281,10 @@ Initial modules:
   `vaart1998_finiteCoordinateCoordinateLLNSource_of_commonVectorLaw` projects
   those vector laws to coordinate pairwise independence and identical
   distribution when coordinate evaluation is measurable.
+  The endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_commonVectorLawCoordinateSource_real`
+  consumes the same source package at the Theorem 4.1 covariance-table
+  boundary while leaving plain coordinate measurability explicit.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
