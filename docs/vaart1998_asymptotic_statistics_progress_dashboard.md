@@ -597,6 +597,17 @@ reuse, prove one theorem-sized packet, compile it directly in the Vaart
 worktree, update docs after the theorem/blocker is known, then rebase and
 verify again before push.
 
+Process upgrade from the May 7 audit: future runs use the manual proof packet
+contract in
+`docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
+The contract makes the workflow source-first, reuse-first, and worktree-aware:
+pin the textbook Markdown/PDF lines before selecting a Lean theorem, search
+recent local and remote reuse before adding primitives, keep the main thread on
+the critical proof path, reserve helper agents for independent scouting or
+disjoint write scopes, and apply a tiered verification gate so docs-only
+protocol patches do not trigger expensive Lean rebuilds while Lean-bearing
+packets still compile the exact Vaart worktree artifacts before push.
+
 ## Next Aggressive Target
 
 Discharge the source-shaped Taylor/LLN inputs for Vaart Theorem 5.41: prove

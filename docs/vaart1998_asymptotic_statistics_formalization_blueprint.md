@@ -15,6 +15,11 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    fully proved in Lean and source evidence from Markdown/PDF is captured.
 5. Coordinate with the VdV&W empirical-process lane; do not duplicate GC,
    Donsker, bracketing, covering, or outer-probability foundations.
+6. Run this lane as a manual in-thread `/goal`, not as a recurring automation.
+   The current blocker plan contains the operational proof packet contract:
+   source-line pinning before theorem selection, reuse search before new
+   primitives, worktree-aware rebase discipline, tiered verification, and
+   small theorem-sized packets that preserve other agents' changes.
 
 ## Chapter Map
 
