@@ -6,6 +6,7 @@ import Mathlib.MeasureTheory.Measure.LevyConvergence
 import Mathlib.MeasureTheory.SpecificCodomains.Pi
 import Mathlib.Probability.CentralLimitTheorem
 import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
+import Mathlib.Probability.Independence.InfinitePi
 import Mathlib.Probability.Moments.CovarianceBilinDual
 
 /-!
@@ -938,6 +939,45 @@ theorem vaart1998_finiteCoordinateSampleVector_memLp_of_coordinate_memLp
       X coordinate i ω) hX_memLp)
 
 /--
+Finite-coordinate sample vectors are independent when their full sequence has
+the infinite product law of its marginal vector laws.
+-/
+theorem vaart1998_finiteCoordinateSampleVector_iIndepFun_of_hasLaw_infinitePi
+    {Coordinate Ω : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : Coordinate -> ℕ -> Ω -> ℝ}
+    {ν : ℕ -> Measure (Coordinate -> ℝ)}
+    (hX_law : ∀ i,
+      HasLaw (vaart1998_finiteCoordinateSampleVector X i) (ν i) P)
+    (hX_joint_law :
+      HasLaw (fun ω i => vaart1998_finiteCoordinateSampleVector X i ω)
+        (Measure.infinitePi ν) P) :
+    iIndepFun (fun i => vaart1998_finiteCoordinateSampleVector X i) P := by
+  exact
+    (ProbabilityTheory.iIndepFun_iff_hasLaw_Pi_infinitePi
+      (X := fun i => vaart1998_finiteCoordinateSampleVector X i)
+      (μ := ν) hX_law hX_joint_law.aemeasurable).2 hX_joint_law
+
+/--
+Finite-coordinate sample vectors are identically distributed when they share a
+common vector law.
+-/
+theorem vaart1998_finiteCoordinateSampleVector_identDistrib_of_common_hasLaw
+    {Coordinate Ω : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} {X : Coordinate -> ℕ -> Ω -> ℝ}
+    {ν : Measure (Coordinate -> ℝ)}
+    (hX_law : ∀ i,
+      HasLaw (vaart1998_finiteCoordinateSampleVector X i) ν P) :
+    ∀ i : ℕ,
+      IdentDistrib
+        (vaart1998_finiteCoordinateSampleVector X i)
+        (vaart1998_finiteCoordinateSampleVector X 0) P P := by
+  intro i
+  exact (hX_law i).identDistrib (hX_law 0)
+
+/--
 Scalar summand obtained by testing one finite-coordinate sample vector with a
 continuous linear functional.
 -/
@@ -1457,6 +1497,49 @@ theorem vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMe
       vaart1998_finiteCoordinateSampleVector_memLp_of_coordinate_memLp
         (P := P) (X := X) 0 hX_coordinate_memLp)
     (hX_indep := hX_indep) (hX_ident := hX_ident)
+
+/--
+Coordinatewise `MemLp 2`, a common finite-coordinate vector law, the infinite
+product law of the sample-vector sequence, and a finite-coordinate Gaussian
+limit feed the projected summand CLT.
+-/
+theorem vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_commonVectorLawGaussianSource
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    {ν : Measure (Coordinate -> ℝ)}
+    (hX_coordinate_memLp : ∀ coordinate, MemLp (X coordinate 0) 2 P)
+    (hZ_gaussian : HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      Q[fun ω => L (Z ω)] = 0)
+    (hZ_covariance : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        Var[vaart1998_finiteCoordinateProjectedSample L X 0; P])
+    (hX_vector_law : ∀ i : ℕ,
+      HasLaw (vaart1998_finiteCoordinateSampleVector X i) ν P)
+    (hX_sequence_law :
+      HasLaw (fun ω i => vaart1998_finiteCoordinateSampleVector X i ω)
+        (Measure.infinitePi (fun _ : ℕ => ν)) P) :
+    vaart1998_finiteCoordinateProjectedSummandCLT (P := P) (Q := Q) X Z :=
+  vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_vectorGaussianSource
+    (P := P) (Q := Q) (X := X) (Z := Z)
+    (hX_coordinate_memLp := hX_coordinate_memLp)
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (hZ_mean := hZ_mean) (hZ_covariance := hZ_covariance)
+    (hX_indep :=
+      vaart1998_finiteCoordinateSampleVector_iIndepFun_of_hasLaw_infinitePi
+        (P := P) (X := X) (ν := fun _ : ℕ => ν)
+        hX_vector_law hX_sequence_law)
+    (hX_ident :=
+      vaart1998_finiteCoordinateSampleVector_identDistrib_of_common_hasLaw
+        (P := P) (X := X) hX_vector_law)
 
 /--
 The scalar projected CLT family feeds the projected vector CLT family by

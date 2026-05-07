@@ -287,9 +287,14 @@ Chapter 4 handoff:
 - Theorem 4.1 covariance-table endpoint variant consuming coordinatewise
   `MemLp 2` instead of separate integrability and vector `MemLp` fields:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_vectorGaussianSource_real`.
+- Strong vector-law source constructors for the finite-coordinate sample-vector
+  sequence:
+  `vaart1998_finiteCoordinateSampleVector_iIndepFun_of_hasLaw_infinitePi`,
+  `vaart1998_finiteCoordinateSampleVector_identDistrib_of_common_hasLaw`, and
+  `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_commonVectorLawGaussianSource`.
 
-Latest remote base before this packet: `a93ef24`.  Latest pushed Vaart packet
-before this packet: `a93ef24` (`Add Vaart coordinate MemLp source bridge`).
+Latest remote base before this packet: `51b06b5`.  Latest pushed Vaart packet
+before this packet: `51b06b5` (`Add Vaart coordinate MemLp theorem 4.1 endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -312,11 +317,11 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. prove joint/vector-source constructors for `iIndepFun` and
-   `IdentDistrib` from appropriately strong joint law assumptions.  Do not
-   claim that coordinatewise pairwise independence alone implies vector
-   independence.
-2. keep endpoint variants narrow and add them only when they remove a real
+1. expose the common-vector-law source bridge at the Theorem 4.1 covariance
+   table endpoint if it removes the remaining caller-side vector source fields;
+2. prove concrete iid sample-space/product-law constructors that supply the
+   common vector law and infinite-product sequence law;
+3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 
 If this blocks, record the exact missing theorem shape for the supplied

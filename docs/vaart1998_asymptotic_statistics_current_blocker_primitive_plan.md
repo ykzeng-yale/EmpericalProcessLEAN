@@ -437,24 +437,36 @@ Chapter 3 theorem-facing wrappers compiling:
 143. Theorem 4.1 covariance-table endpoint variant consuming coordinatewise
    `MemLp 2` instead of separate integrability and vector `MemLp` fields:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_vectorGaussianSource_real`.
+144. Finite-coordinate sample-vector independence from a strong joint
+   infinite-product law:
+   `vaart1998_finiteCoordinateSampleVector_iIndepFun_of_hasLaw_infinitePi`.
+145. Finite-coordinate sample-vector identical distribution from a common
+   vector law:
+   `vaart1998_finiteCoordinateSampleVector_identDistrib_of_common_hasLaw`.
+146. Projected summand CLT source wrapper using coordinatewise `MemLp 2`, a
+   common vector law, and the infinite-product law of the sample-vector
+   sequence:
+   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_commonVectorLawGaussianSource`.
 
-Latest remote base before this packet: `a93ef24`.
-Latest pushed Vaart packet before this packet: `a93ef24`
-(`Add Vaart coordinate MemLp source bridge`).
+Latest remote base before this packet: `51b06b5`.
+Latest pushed Vaart packet before this packet: `51b06b5`
+(`Add Vaart coordinate MemLp theorem 4.1 endpoint`).
 
-The current theorem-sized packet exposes the coordinatewise `MemLp 2` source
-bridge at the Theorem 4.1 covariance-table endpoint.  Callers no longer need to
-separately provide finite-coordinate integrability and the vector `MemLp`
-source field.
+The current theorem-sized packet discharges the remaining vector
+`iIndepFun`/`IdentDistrib` source fields from strong vector-law assumptions:
+a common law for each finite-coordinate sample vector and an infinite-product
+law for the full sample-vector sequence.  This is intentionally stronger than
+coordinatewise pairwise independence, and avoids the false implication from
+coordinatewise data to vector independence.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. prove joint/vector-source constructors for `iIndepFun` and
-   `IdentDistrib` from appropriately strong joint law assumptions.  Do not
-   claim that coordinatewise pairwise independence alone implies vector
-   independence.
-2. keep endpoint variants narrow and add them only when they remove a real
+1. expose the common-vector-law source bridge at the Theorem 4.1 covariance
+   table endpoint if it removes the remaining caller-side vector source fields;
+2. prove concrete iid sample-space/product-law constructors that supply the
+   common vector law and infinite-product sequence law;
+3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent

@@ -261,6 +261,13 @@ Initial modules:
   The endpoint
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_vectorGaussianSource_real`
   exposes this at the Theorem 4.1 covariance-table boundary.
+  The strong vector-law source constructors
+  `vaart1998_finiteCoordinateSampleVector_iIndepFun_of_hasLaw_infinitePi` and
+  `vaart1998_finiteCoordinateSampleVector_identDistrib_of_common_hasLaw` derive
+  the vector `iIndepFun` and `IdentDistrib` fields from a common vector law and
+  an infinite-product law for the full sample-vector sequence.  The wrapper
+  `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_commonVectorLawGaussianSource`
+  feeds those fields directly into the coordinate-`MemLp` projected summand CLT.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
