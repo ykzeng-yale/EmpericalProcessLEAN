@@ -108,17 +108,14 @@ micro-packet overhead.
 
 Current priority packet sequence:
 
-1. `ASGD-triangle`: triangularly regroup the compiled averaged nested
-   quadratic-ASGD unrolling into Chewi's source coefficients `M_k^n`, then
-   feed the existing `(12.5)` split/scaled-decomposition wrappers.
-2. `ASGD-CLT`: bounded martingale CLT certificate constructor from
+1. `ASGD-CLT`: bounded martingale CLT certificate constructor from
    `Chewi127MartingaleDifferenceProcess`,
    `Chewi127ConditionalCovarianceProcess`, and
    `Chewi127AveragedConditionalCovarianceLimit`.
-3. `ASGD-endpoint`: connect the exact scaled noise sum, recurrence-derived
+2. `ASGD-endpoint`: connect the exact scaled noise sum, recurrence-derived
    decomposition, and certificate to the source Theorem 12.7/12.3 ASGD limit
    statement.
-4. `Sinkhorn-concrete`: return to the concrete row/column KL normalization
+3. `Sinkhorn-concrete`: return to the concrete row/column KL normalization
    identities for Theorem 11.8 only after the current ASGD packet would
    otherwise stall.
 
@@ -246,8 +243,8 @@ integral consequences.  First search local
 asymptotic-statistics wrappers, and pinned mathlib expectation/Jensen/
 conditional expectation/Bochner/L2/process/martingale/covariance APIs.  The
 quadratic ASGD recurrence/unrolling layer now compiles through the ordered
-transition product and averaged nested display, so the next ASGD primitive is
-the triangular regrouping into Chewi's `M_k^n` coefficients, followed by the
+transition product, Chewi's `M_k^n` triangular regrouping, the split around
+`A^{-1}`, and the `sqrt N`-scaled display, so the next ASGD primitive is the
 source-shaped bounded martingale CLT proof/certificate constructor from the
 already-defined process/covariance interfaces.
 Keep the concrete Sinkhorn row/column KL identity layer as the next Chapter
@@ -410,10 +407,11 @@ process-level martingale-difference/covariance interfaces and supplied CLT
 certificate/covariance-pushforward package, or the exact scaled-noise/
 averaged-covariance definitions and conditional-expectation integral bridges,
 or the exact source quadratic ASGD one-step recurrence, ordered transition
-product, finite unrolling, or averaged nested unrolling; it is the ASGD
-triangular-regrouping and martingale proof frontier: package the nested noise
-sum as Chewi's `M_k^n` coefficients, then build the bounded martingale CLT
-constructor.
+product, finite unrolling, averaged nested unrolling, triangular regrouping
+into Chewi's `M_k^n` coefficients, split around `A^{-1}`, or `sqrt N`-scaled
+display; it is now the ASGD martingale proof frontier: build the bounded
+martingale CLT constructor, then connect the exact scaled noise sum and source
+decomposition to the Theorem 12.7/12.3 endpoint.
 
 Fresh Chapter 12 ASGD recurrence search result: local Optimization had no
 source-shaped ASGD unrolling theorem, and pinned mathlib gives generic
@@ -421,6 +419,12 @@ noncommutative `List`/monoid product and `Finset.sum_range_succ`/`sum_Ico`
 APIs but no ordered continuous-linear-map recurrence package.  The local
 solution therefore uses a recursive ordered endomorphism product rather than
 `Finset.prod`, since CLM composition is order-sensitive.
+
+Fresh Chapter 12 ASGD triangular-sum search result: mathlib's
+`Finset.sum_comm'`, `Finset.sum_Ico_eq_sum_range`, and
+`ContinuousLinearMap.sum_apply` discharge the source regrouping without a
+custom finite-sum induction.  Reuse those APIs for any later `M_k^n`
+coefficient refinement.
 
 Fresh Chapter 12 Bochner search result: mathlib has `integral_mono_ae` and
 `integral_mono` for pointwise or a.e. real integral inequalities,

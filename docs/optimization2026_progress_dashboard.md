@@ -42,8 +42,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current proof worktree: use `/private/tmp/chewi-smpgd-probability` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
-- Current priority sequence: `ASGD-triangle` triangular regrouping into
-  Chewi's `M_k^n` coefficients, `ASGD-CLT` bounded martingale certificate
+- Current priority sequence: `ASGD-CLT` bounded martingale certificate
   constructor, `ASGD-endpoint` source ASGD limit wrapper, then the concrete
   Sinkhorn row/column KL identity layer if ASGD stalls.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
@@ -505,10 +504,22 @@ The newest quadratic-ASGD recurrence packet compiles
 `chewi123_quadratic_average_delta_unroll_nested`, and
 `IsChewi123QuadraticASGDTrajectory.average_delta_unroll_nested`.  This closes
 the exact source one-step recurrence, ordered transition product, finite
-unrolling, and averaged nested display before `(12.5)`.  The active Chapter 12
-blocker is now triangular regrouping of the nested noise sum into Chewi's
-`M_k^n` coefficients, then a bounded martingale CLT certificate constructor
-from the process/covariance interfaces.
+unrolling, and averaged nested display before `(12.5)`.  The newest
+triangular-regrouping packet compiles `chewi123InitialCoefficient`,
+`chewi123SourceNoiseCoefficient`, their apply lemmas,
+`chewi123_nested_noise_sum_eq_source_indexed`,
+`chewi123_source_indexed_nested_noise_sum_eq_source_coefficients`,
+`chewi123_nested_noise_sum_eq_source_coefficients`,
+`chewi123_quadratic_average_delta_unroll_source_coefficients`,
+`chewi123_quadratic_average_delta_source_decomposition`,
+`IsChewi123QuadraticASGDTrajectory.average_delta_source_decomposition`,
+`chewi123_quadratic_sqrt_average_delta_source_decomposition`, and
+`IsChewi123QuadraticASGDTrajectory.sqrt_average_delta_source_decomposition`.
+It uses mathlib `Finset.sum_comm'`, `Finset.sum_Ico_eq_sum_range`, and
+`ContinuousLinearMap.sum_apply`, and closes the source `M_k^N` regrouping,
+the split around `A^{-1}`, and the `sqrt N`-scaled display.  The active
+Chapter 12 blocker is now a bounded martingale CLT certificate constructor
+from the process/covariance interfaces, then final ASGD endpoint wiring.
 
 ## Initial Reuse Audit
 

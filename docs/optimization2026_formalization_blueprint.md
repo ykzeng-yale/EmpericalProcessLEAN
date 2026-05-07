@@ -454,10 +454,17 @@ noise coefficients, finite pointwise unrolling, and averaged nested unrolling:
 `chewi123QuadraticStepMap`, `chewi123_quadratic_delta_step`,
 `IsChewi123QuadraticASGDTrajectory.delta_step`,
 `chewi123_quadratic_delta_unroll`, and
-`chewi123_quadratic_average_delta_unroll_nested` are now compiled.  The next
-ASGD target is the triangular reindexing that packages the nested noise sum
-as Chewi's `M_k^n` coefficients, then the bounded martingale CLT certificate
-constructor from the process/covariance interfaces.
+`chewi123_quadratic_average_delta_unroll_nested` are now compiled.  The newest
+triangular-regrouping packet adds `chewi123InitialCoefficient`,
+`chewi123SourceNoiseCoefficient`,
+`chewi123_nested_noise_sum_eq_source_coefficients`,
+`chewi123_quadratic_average_delta_unroll_source_coefficients`,
+`chewi123_quadratic_average_delta_source_decomposition`, and
+`chewi123_quadratic_sqrt_average_delta_source_decomposition`, so Chewi's
+`M_k^n` source coefficients, split around `A^{-1}`, and `sqrt n` display are
+now compiled.  The next ASGD target is the bounded martingale CLT certificate
+constructor from the process/covariance interfaces, then the exact endpoint
+handoff to Theorem 12.7/12.3.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
