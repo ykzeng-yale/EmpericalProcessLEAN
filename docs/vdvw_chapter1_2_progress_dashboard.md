@@ -220,6 +220,12 @@ and
 The remaining source theorem is the VdV&W Lemma 2.3.7 selected-cover/Rademacher
 outer-probability comparison carrying
 `ofReal (1 - 16 * M^2 / ((n + 1) * epsilon^2))`.
+The exact missing source proposition is now named in Lean as
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison`, with
+the fixed-`M` entropy consumer
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality`.
+This is the next theorem to prove from the ghost-sample/Rademacher
+selected-cover argument.
 
 The operative target is no longer another endpoint alias.  The immediate exact
 Theorem 2.4.3 mismatch is the selected-cover/Rademacher probability comparison

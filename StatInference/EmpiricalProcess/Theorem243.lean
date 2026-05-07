@@ -33224,6 +33224,103 @@ theorem
       hbeta_selected
 
 /--
+Named source primitive for the remaining VdV&W Lemma 2.3.7
+selected-cover/Rademacher probability comparison.
+
+This is not a downstream Theorem 2.4.3 endpoint.  It records the exact missing
+nonmeasurable source theorem after the Chebyshev beta calculation has been
+specialized to uniform empirical weights: the centered bad event, multiplied by
+`ofReal (1 - 16 M^2 / ((n + 1) epsilon^2))`, is eventually dominated by the
+selected finite-net Hoeffding event.
+-/
+structure VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ) (M C : ℝ) (A : ℝ≥0∞)
+    (selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ) : Prop where
+  constant_ne_top : A ≠ ∞
+  scale_pos : 0 < C
+  outerProbability_bound :
+    ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+      ∀ᶠ n : ℕ in atTop,
+        ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) *
+          VdVWOuterProbability (vdVWProductMeasure P n)
+            {sample : SampleAt Observation n |
+              epsilon <
+                dist
+                  (vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      vdVWTruncatedClassFun classFun envelope M index observation -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                  (0 : ℝ)}
+          ≤
+        A *
+          VdVWOuterProbability (vdVWProductMeasure P n)
+            {sample : SampleAt Observation n |
+              epsilon <
+                dist
+                  (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                      (selectedCardinality eta n sample n) n M + eta)
+                  (0 : ℝ)}
+
+/--
+The named displayed-Chebyshev-beta source primitive feeds the compiled fixed-`M`
+stochastic-entropy route.
+
+After this handoff, the next mathematical task is proving
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison` itself
+from the ghost-sample/Rademacher selected-cover argument.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ} {A : ℝ≥0∞}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (primitive :
+      VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison
+        P indexClass classFun envelope M C A selectedCardinality)
+    (hM_pos : 0 < M)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_displayedUniformChebyshevBeta_scaledSelectedFiniteNetHoeffdingUpper
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := C) (A := A)
+      (selectedCardinality := selectedCardinality) (cardinality := cardinality)
+      primitive.constant_ne_top hM_pos primitive.scale_pos hlog hselected_le
+      primitive.outerProbability_bound
+
+/--
 Fixed-`M` centered-truncated convergence from stochastic entropy and eventual
 a.e. scaled finite-net domination.
 

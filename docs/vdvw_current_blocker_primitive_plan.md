@@ -241,6 +241,14 @@ left factor
 `ofReal (1 - 16 * M^2 / ((n + 1) * epsilon^2))`, not another deterministic
 Chebyshev or endpoint wrapper.
 
+That missing source theorem is now registered as the Lean proposition
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison`, with
+the consumer
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality`.
+Future Theorem 2.4.3 work should prove this proposition from the
+ghost-sample/Rademacher selected-cover argument, or move to a separate
+dependency only after documenting why this exact proposition is blocked.
+
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
 infrastructure for selected fixed-radius tail/UI, finite code-set and
