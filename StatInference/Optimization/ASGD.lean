@@ -150,6 +150,78 @@ noncomputable def chewi127ScalarScaledSum
   (Real.sqrt (n : ℝ))⁻¹ * ∑ k ∈ Finset.range n, x (k + 1) ω
 
 /--
+Scalar Lindeberg tail summand for Chewi's one-dimensional martingale CLT
+route.  It is the source expression
+`x_{k+1}^2 1_{ε sqrt(N) < |x_{k+1}|}`.
+-/
+noncomputable def chewi127ScalarLindebergSummand
+    {Ω : Type*} (x : ℕ -> Ω -> ℝ) (ε : ℝ) (N k : ℕ) (ω : Ω) : ℝ :=
+  Set.indicator {ω' : Ω | ε * Real.sqrt (N : ℝ) < |x (k + 1) ω'|}
+    (fun ω' => (x (k + 1) ω') ^ 2) ω
+
+/--
+Scalar Lindeberg average associated with Chewi's bounded martingale CLT route.
+-/
+noncomputable def chewi127ScalarLindebergAverage
+    {Ω : Type*} (x : ℕ -> Ω -> ℝ) (ε : ℝ) (N : ℕ) (ω : Ω) : ℝ :=
+  (N : ℝ)⁻¹ *
+    ∑ k ∈ Finset.range N, chewi127ScalarLindebergSummand x ε N k ω
+
+/--
+A uniform almost-sure bound makes every scalar Lindeberg tail summand
+eventually vanish almost surely.  This is the bounded-increment half of the
+one-dimensional martingale CLT used in Chewi Theorem 12.7.
+-/
+theorem chewi127ScalarLindebergSummand_eventually_ae_eq_zero_of_uniform_bound
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {x : ℕ -> Ω -> ℝ} {ε : ℝ}
+    (hε : 0 < ε)
+    (hbound : ∃ B : ℝ, 0 ≤ B ∧
+      ∀ k : ℕ, ∀ᵐ ω ∂P, |x (k + 1) ω| ≤ B) :
+    ∀ᶠ N in atTop, ∀ᵐ ω ∂P, ∀ k : ℕ,
+      chewi127ScalarLindebergSummand x ε N k ω = 0 := by
+  rcases hbound with ⟨B, _hB_nonneg, hB⟩
+  have hB_all : ∀ᵐ ω ∂P, ∀ k : ℕ, |x (k + 1) ω| ≤ B :=
+    ae_all_iff.2 hB
+  have hscale :
+      Tendsto (fun N : ℕ => ε * Real.sqrt (N : ℝ)) atTop atTop :=
+    Tendsto.const_mul_atTop hε vaart1998_sqrt_nat_tendsto_atTop
+  have hthreshold : ∀ᶠ N : ℕ in atTop, B ≤ ε * Real.sqrt (N : ℝ) :=
+    hscale.eventually_ge_atTop B
+  filter_upwards [hthreshold] with N hN
+  filter_upwards [hB_all] with ω hω k
+  have hnot :
+      ω ∉ {ω' : Ω | ε * Real.sqrt (N : ℝ) < |x (k + 1) ω'|} := by
+    intro htail
+    have hxB : |x (k + 1) ω| ≤ B := hω k
+    have : ε * Real.sqrt (N : ℝ) < ε * Real.sqrt (N : ℝ) :=
+      lt_of_lt_of_le htail (hxB.trans hN)
+    exact (lt_irrefl _ this).elim
+  rw [chewi127ScalarLindebergSummand, Set.indicator_of_notMem hnot]
+
+/--
+The scalar Lindeberg average is eventually zero almost surely under a uniform
+almost-sure bound.
+-/
+theorem chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {x : ℕ -> Ω -> ℝ} {ε : ℝ}
+    (hε : 0 < ε)
+    (hbound : ∃ B : ℝ, 0 ≤ B ∧
+      ∀ k : ℕ, ∀ᵐ ω ∂P, |x (k + 1) ω| ≤ B) :
+    ∀ᶠ N in atTop, ∀ᵐ ω ∂P,
+      chewi127ScalarLindebergAverage x ε N ω = 0 := by
+  filter_upwards
+    [chewi127ScalarLindebergSummand_eventually_ae_eq_zero_of_uniform_bound
+      (P := P) hε hbound] with N hN
+  filter_upwards [hN] with ω hω
+  have hsum :
+      (∑ k ∈ Finset.range N,
+        chewi127ScalarLindebergSummand x ε N k ω) = 0 := by
+    exact Finset.sum_eq_zero fun k _hk => hω k
+  simp [chewi127ScalarLindebergAverage, hsum]
+
+/--
 The projected vector sum is the scalar sum of the projected increments.
 -/
 theorem chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum
@@ -601,6 +673,42 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_uniform_bound
     ∃ B : ℝ, 0 ≤ B ∧
       ∀ n : ℕ, ∀ᵐ ω ∂P, |L (S.martingale.xi (n + 1) ω)| ≤ B :=
   S.martingale.projected_uniform_bound L S.uniform_bound
+
+/--
+The projected scalar Lindeberg summands vanish eventually almost surely for
+the source package.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_lindeberg_summand_eventually_ae_eq_zero
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N in atTop, ∀ᵐ ω ∂P, ∀ k : ℕ,
+      chewi127ScalarLindebergSummand
+        (fun n ω => L (S.martingale.xi n ω)) ε N k ω = 0 :=
+  chewi127ScalarLindebergSummand_eventually_ae_eq_zero_of_uniform_bound
+    (P := P) hε (S.projected_uniform_bound L)
+
+/--
+The projected scalar Lindeberg average vanishes eventually almost surely for
+the source package.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_lindeberg_average_eventually_ae_eq_zero
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N in atTop, ∀ᵐ ω ∂P,
+      chewi127ScalarLindebergAverage
+        (fun n ω => L (S.martingale.xi n ω)) ε N ω = 0 :=
+  chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound
+    (P := P) hε (S.projected_uniform_bound L)
 
 /--
 The projected CLT field can be read in the pure scalar-sum notation used by a

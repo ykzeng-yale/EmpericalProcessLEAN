@@ -145,10 +145,10 @@ archived automation prompts and should override them when they conflict.
 
 ## Current Frontier Contract
 
-This is the authoritative manual route after pushed frontier `2c1a160`
-(`Add Chewi ASGD triangular decomposition`).  The app-level `/goal` objective
-and the archived long prompt below may still mention older Chapter 3 or
-`029d017` frontiers; do not use those older references to choose work.
+This is the authoritative manual route after the ASGD scalar-projection and
+scalar-Lindeberg packets.  The app-level `/goal` objective and the archived
+long prompt below may still mention older Chapter 3 or `029d017` frontiers; do
+not use those older references to choose work.
 
 Stable substrate:
 
@@ -167,16 +167,18 @@ Stable substrate:
   sums, the projected variance convergence accessor, and the source-shaped
   projected Cramér-Wold martingale CLT bridge/source constructor, plus scalar
   projected martingale-data accessors for adaptedness, integrability,
-  conditional mean-zero, conditional second moment, variance convergence, and
-  uniform boundedness.
+  conditional mean-zero, conditional second moment, variance convergence,
+  uniform boundedness, and boundedness-implied scalar Lindeberg summand/average
+  eventual a.e. vanishing.
 
 Current priority packet sequence:
 
 1. `ASGD-scalar-martingale-CLT`: prove or sharply source-package the actual
    one-dimensional bounded martingale CLT from the compiled scalar projection
    data: conditional mean-zero, conditional second moment, averaged conditional
-   variance convergence, and uniform boundedness.  The vector-to-scalar
-   plumbing is now compiled; do not repeat it.
+   variance convergence, uniform boundedness, and the now-compiled scalar
+   Lindeberg a.e.-zero layer.  The vector-to-scalar plumbing and Lindeberg
+   bounded-tail discharge are compiled; do not repeat them.
 2. `ASGD-endpoint`: connect the exact scaled noise sum, recurrence-derived
    decomposition, and certificate to the source Theorem 12.7/12.3 ASGD limit
    statement.
@@ -187,10 +189,11 @@ Current priority packet sequence:
 Execution rule for the next proof run: spend at most one bounded search pass
 refreshing mathlib/local scalar martingale CLT, characteristic-function,
 Lévy continuity theorem, Gaussian characteristic functions, Taylor remainder,
-conditional expectation tower/product APIs, and bounded/Lindeberg estimates;
-then implement the highest-leverage scalar martingale CLT theorem layer.  The
-reusable projected-sum/Cramér-Wold bridge and scalar projection side-condition
-accessors are now compiled, so do not repeat them.
+and conditional expectation tower/product APIs; then implement the
+highest-leverage scalar martingale CLT theorem layer.  The reusable
+projected-sum/Cramér-Wold bridge, scalar projection side-condition accessors,
+and boundedness-to-Lindeberg a.e.-zero layer are now compiled, so do not repeat
+them.
 
 Keep exercise statements and cheap reusable exercise proofs in
 `StatInference/Optimization/Exercises.lean`, but never let exercises block the

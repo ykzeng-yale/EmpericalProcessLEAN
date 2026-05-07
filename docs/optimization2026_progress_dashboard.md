@@ -45,7 +45,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   local state without `.lake` or working-tree interference.
 - Current priority sequence: `ASGD-scalar-martingale-CLT` projected scalar
   bounded martingale CLT discharge, `ASGD-endpoint` source ASGD limit wrapper,
-  then the concrete Sinkhorn row/column KL identity layer if ASGD stalls.
+  then the concrete Sinkhorn row/column KL identity layer if ASGD stalls.  The
+  boundedness-to-Lindeberg scalar tail layer now compiles, so the remaining
+  scalar CLT work should focus on characteristic functions, conditional
+  variance convergence, and the martingale product/Taylor argument rather than
+  tail control.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
   stale route replay, repeated broad searches, micro-packet commit overhead,
   and shared-worktree/build-artifact contention.  The active protocol is now:
@@ -58,6 +62,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   read-only scouting or disjoint adjacent files, verify in focused tiers, push
   once after a final rebase, and record a sharp Lean blocker if the endpoint
   cannot close.
+- New ASGD scalar Lindeberg declarations:
+  `chewi127ScalarLindebergSummand`,
+  `chewi127ScalarLindebergAverage`,
+  `chewi127ScalarLindebergSummand_eventually_ae_eq_zero_of_uniform_bound`,
+  `chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound`,
+  `Chewi127BoundedMartingaleCLTSource.projected_lindeberg_summand_eventually_ae_eq_zero`,
+  and
+  `Chewi127BoundedMartingaleCLTSource.projected_lindeberg_average_eventually_ae_eq_zero`.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
