@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V14`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V15`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -394,16 +394,20 @@ Next packet:
 - Chapter 4.1: continue the conditional-expectation layer.  The Section 3.10
   multivariate CLT chain, Gaussian-coordinate independence criterion, Exercise
   3.10.8 linear-combination characterization wrappers, Durrett conditional
-  expectation version predicate, mathlib-condExp version wrapper, and Example
-  4.1.3 self/constant wrappers now compile and should be treated as closed
-  support.  Next search mathlib `condExp_indep_eq`, `condExp_congr_ae`,
-  set-integral uniqueness, and local conditional-expectation wrappers before
-  packaging Example 4.1.4.
+  expectation version predicate, mathlib-condExp version wrapper, Example 4.1.3
+  self/constant wrappers, and Example 4.1.4 independence wrapper now compile
+  and should be treated as closed support.  Next inspect the Durrett source
+  after Example 4.1.4.  Package Example 4.1.5 only if the partition/indicator
+  conditional-expectation API is direct; otherwise package the first
+  mathlib-backed algebra, tower, or pull-out wrapper from Theorems 4.1.9,
+  4.1.13, and 4.1.14 using `condExp_add`, `condExp_smul`, `condExp_mono`,
+  `condExp_condExp_of_le`, `condExp_congr_ae`, `setIntegral_condExp`, and
+  conditional-expectation pull-out APIs.
 
 Support-only dependencies:
 
 - Use Section 3.3 inversion or uniqueness support only when it directly blocks
-  the Section 3.10 convergence route.
+  the active Chapter 4.1 theorem or a later theorem with a real dependency.
 - Treat Section 3.4 Lindeberg-Feller analytic estimates, including the direct
   square-integrable source wrapper and variance-tail split machinery, as closed
   support to consume rather than re-prove.
@@ -418,7 +422,8 @@ Chapter 3 source inventory:
 - Theorem 3.1.2, de Moivre-Laplace local limit.
 - Section 3.3 characteristic functions and inversion formula.
 - Section 3.4 central limit theorems.
-- Active frontier: Section 3.10 limit theorems in `R^d`.
+- Section 3.10 limit theorems in `R^d`.
+- Active frontier: Chapter 4.1 conditional expectation.
 
 Source anchors:
 
@@ -428,6 +433,10 @@ Source anchors:
   411, Theorem 3.3.17 near line 748, Theorem 3.3.20 near line 898, Section
   3.4 near line 1228, Theorem 3.4.1 near line 1234, and Section 3.10 near line
   3643.
+- The same Markdown chunk contains Chapter 4.1 conditional expectation:
+  Lemma 4.1.1 near line 3894, Theorem 4.1.2 near line 3920, Example 4.1.4
+  near line 3969, Example 4.1.5 near line 3982, Theorem 4.1.9 near line 4081,
+  Theorem 4.1.13 near line 4183, and Theorem 4.1.14 near line 4196.
 
 Initial Lean reuse anchors:
 
@@ -444,8 +453,8 @@ Initial Lean reuse anchors:
 ### Lane E: martingales, Markov chains, Brownian motion
 
 These later chapters should be prepared by read-only search first.  They are
-valuable, but should not block the active Section 3.10 lane unless a remote
-agent has already landed directly reusable support.
+valuable, but should not block the active Chapter 4.1 conditional-expectation
+lane unless a remote agent has already landed directly reusable support.
 
 Likely anchors:
 

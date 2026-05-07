@@ -100,5 +100,26 @@ theorem durrett2019_example_4_1_3_condExp_const
     μ[(fun _ : Ω => c) | m] = fun _ => c :=
   condExp_const (μ := μ) hm c
 
+/--
+Durrett 2019, Example 4.1.4.
+
+If a random variable is measurable with respect to a sigma-field independent of
+the conditioning sigma-field, then its conditional expectation is its ordinary
+expectation.
+-/
+theorem durrett2019_example_4_1_4_condExp_eq_integral_of_independent
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {μ : Measure Ω} {mX m : MeasurableSpace Ω} {X : Ω -> E}
+    (hmX : mX ≤ mΩ) (hm : m ≤ mΩ) [SigmaFinite (μ.trim hm)]
+    (hX_meas : StronglyMeasurable[mX] X)
+    (hX_int : Integrable X μ)
+    (hindep : _root_.ProbabilityTheory.Indep mX m μ) :
+    μ[X | m] =ᵐ[μ] fun _ => ∫ ω, X ω ∂μ := by
+  have _ : Integrable X μ := hX_int
+  simpa using
+    (_root_.MeasureTheory.condExp_indep_eq (μ := μ) (m₁ := mX) (m₂ := m)
+      (f := X) hmX hm hX_meas hindep)
+
 end ProbabilityTheory
 end StatInference

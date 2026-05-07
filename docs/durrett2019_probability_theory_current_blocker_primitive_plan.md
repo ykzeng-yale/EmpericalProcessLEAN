@@ -4,34 +4,41 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V14
+## Live In-Thread Goal Prompt V15
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Treat the compiled Chapter 2 / Chapter 3 support, including the
-Section 3.10 multivariate CLT, Gaussian-coordinate independence criterion, and
-Exercise 3.10.8 linear-combination characterization, as closed dependencies.
+synced `main`.  Active lane only: Durrett Chapter 4.1 conditional expectation
+in `StatInference/ProbabilityTheory/ConditionalExpectation.lean`.  Treat all
+Chapter 2/3 support and the compiled Chapter 4.1 starter layer through Example
+4.1.4 as closed dependencies:
+`durrett2019_section_4_1_IsConditionalExpectationVersion`,
+`durrett2019_section_4_1_condExp_isConditionalExpectationVersion`,
+`durrett2019_example_4_1_3_self_isConditionalExpectationVersion`,
+`durrett2019_example_4_1_3_condExp_eq_of_stronglyMeasurable`,
+`durrett2019_example_4_1_3_condExp_const`, and
+`durrett2019_example_4_1_4_condExp_eq_integral_of_independent`.
 
-Next theorem-sized packet: continue Chapter 4.1 conditional expectation after
-the compiled Durrett version predicate, mathlib-condExp version wrapper, and
-Example 4.1.3 self/constant wrappers in
-`StatInference/ProbabilityTheory/ConditionalExpectation.lean`.  Search and
-reuse mathlib `condExp_indep_eq`, `condExp_congr_ae`, set-integral uniqueness,
-and local conditional-expectation wrappers first.  The preferred next source
-target is Example 4.1.4, conditional expectation of a random variable
-independent of the conditioning sigma-field equals its expectation.
+Next theorem-sized packet: inspect the Durrett source immediately after Example
+4.1.4 and choose the largest mathlib-backed Chapter 4.1 wrapper that can
+compile quickly.  First try Example 4.1.5 finite/countable partition only if
+the needed indicator/partition conditional-expectation API is direct;
+otherwise move to Theorem 4.1.9/4.1.13/4.1.14 style algebra and tower
+wrappers using `condExp_add`, `condExp_smul`, `condExp_mono`,
+`condExp_condExp_of_le`, `condExp_congr_ae`, `setIntegral_condExp`, and
+conditional-expectation pull-out APIs.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
 check, proof-hole scan, secret scan, and root build only when imports changed;
 update route docs only if the frontier changes; commit and push.  Do not
-revisit completed Chapter 2 or earlier Chapter 3 support unless this Section
-3.10 packet requires a dependency.  No automations or subagents unless the user
-asks in the current turn.  Use a worktree only for dirty, long, or disjoint
-local work.  Chat with the user bilingually; keep all files, code, comments,
-docs, and commit messages in English.
+route back to Chapter 2, Chapter 3, or solved Chapter 4.1 starter wrappers
+unless the current theorem exposes a real dependency.  No automations or
+subagents unless the user asks in the current turn.  Use a worktree only for
+dirty, long, or disjoint local work.  Chat with the user bilingually; keep all
+files, code, comments, docs, and commit messages in English.
 
 ## Minimal Operating Contract
 
@@ -272,6 +279,12 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedSummandCLT`
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianSource`
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianSource`
+- `durrett2019_section_4_1_IsConditionalExpectationVersion`
+- `durrett2019_section_4_1_condExp_isConditionalExpectationVersion`
+- `durrett2019_example_4_1_3_self_isConditionalExpectationVersion`
+- `durrett2019_example_4_1_3_condExp_eq_of_stronglyMeasurable`
+- `durrett2019_example_4_1_3_condExp_const`
+- `durrett2019_example_4_1_4_condExp_eq_integral_of_independent`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -284,9 +297,8 @@ substrate:
 - weak convergence and finite-dimensional law wrappers;
 - empirical-process fixed-endpoint empirical-CDF support.
 
-The immediate blocker has shifted from Chapter 2 completion to the Chapter 3
-weak-convergence and CLT spine.  The prior large targets are closed as source
-wrappers:
+The immediate blocker is now Chapter 4.1 conditional expectation.  The prior
+large Chapter 2 and Chapter 3 targets are closed as source wrappers:
 
 - Durrett Theorem 2.4.9 now has the arbitrary-law half-line GC handoff and the
   source-facing empirical distribution-function wrapper
@@ -295,13 +307,12 @@ wrappers:
   finite product-law, iid common-law product, iid criterion, and canonical iid
   product-coordinate wrappers.
 
-Do not spend the next cycle on center insertion, EDF notation, or Chapter 2.1
-polish unless a later Chapter 3 statement exposes an exact missing dependency.
+Do not spend the next cycle on center insertion, EDF notation, Chapter 2.1
+polish, Lindeberg-Feller estimates, or Section 3.10 vector-limit polish unless
+the active Chapter 4.1 theorem exposes an exact missing dependency.
 
-Current aggressive target: move from the Chapter 3.2 weak-convergence
-foundations and Chapter 3.3 characteristic-function spine into Chapter 3.4
-central-limit support.  The first Section 3.2, 3.3, and 3.4 packets now
-compile:
+Current aggressive target: continue the Chapter 4.1 conditional-expectation
+spine.  The following Chapter 3 and Chapter 4.1 packets now compile:
 
 - Durrett Theorem 3.2.9 bounded-continuous test characterization, including
   the `integral_map` bridge from map-law integrals to textbook expectations
@@ -347,59 +358,21 @@ compile:
   rewriting to the scalar Taylor bound, one-factor bound, finite-row bound,
   row-sum error convergence, analytic certificate, and final
   convergence-in-distribution constructor.
+- Durrett Section 3.10 now has compiled Cramér-Wold, multivariate CLT,
+  Gaussian-coordinate independence, and Exercise 3.10.8 linear-combination
+  Gaussian-characterization wrappers in
+  `StatInference/ProbabilityTheory/Multivariate.lean`.
+- Durrett Chapter 4.1 now has the conditional-expectation starter module in
+  `StatInference/ProbabilityTheory/ConditionalExpectation.lean`, including
+  the source version predicate, the mathlib `condExp` version wrapper, Example
+  4.1.3 self/constant wrappers, and Example 4.1.4 independence wrapper
+  `durrett2019_example_4_1_4_condExp_eq_integral_of_independent`.
 
-The next likely packet should attack the analytic Lindeberg-Feller estimate
-layer before moving to multivariate CLT reuse:
-
-- Definition/Section 3.2 weak convergence of random variables: reuse
-  `MeasureTheory.TendstoInDistribution` and
-  `StatInference/ProbabilityMeasure/WeakConvergence.lean`.
-- Section 3.3 characteristic functions: the basic, continuity-theorem, and
-  centered second-order Taylor wrappers now compile; only add inversion or
-  uniqueness support when a later source theorem needs it directly.
-- Section 3.4 central limit theorems: prove the remaining analytic obligations.
-  The scalar expansion-bound predicate
-  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
-  now feeds the scalar Taylor-bound predicate
-  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound`,
-  the variance-based one-factor bound
-  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound`, then the
-  finite-row bound
-  `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound`, which
-  then feeds
-  `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
-  through compiled bridges.  The pointwise truncation split of the minimum term
-  also compiles.  Durrett Lemma 3.3.19 `n = 2` now proves the pure scalar
-  minimum-form Taylor estimate, the source-facing pointwise predicate, the
-  pointwise-to-expectation bridge, and the final square-integrable
-  Lindeberg-Feller source wrapper.  Do not route new work back to the
-  (3.3.3) Taylor chain unless a dependency breaks.
-  The
-  quadratic-product obligation
-  `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp` now has
-  a compiled bridge from variance-sum convergence and max-row-variance
-  smallness using the proved Exercise 3.1.1 real triangular-array product
-  theorem; with the variance-tail split, it also has a compiled bridge
-  directly from Lindeberg.  A final source-facing constructor now assembles the
-  analytic certificate and the convergence-in-distribution theorem from
-  square-integrable rows plus the finite-row Taylor/Lindeberg bound predicate.
-  Exercise 3.1.1 itself now compiles: max-smallness gives
-  eventual positivity and the relative logarithmic remainder estimate, uniform
-  absolute row-sum boundedness turns that into row-sum log-remainder
-  convergence, and the logarithmic product bridge proves the source theorem.
-  The variance-tail split bridge now proves Durrett's source inequality
-  `variance <= cutoff ^ 2 + tail row sum` from row `AEMeasurable` plus
-  square-integrability assumptions, then packages it into the existing
-  `durrett2019_lindebergFellerVarianceSplitByTailRowSum` predicate.  The next
-  max-row-variance work should therefore not re-prove this split, but consume
-  `durrett2019_lindebergFellerVarianceSplitByTailRowSum_of_integrableSq`.
-- Section 3.10 characteristic-function convergence, Cramér-Wold, and
-  multivariate CLT: the finite-coordinate law-level Cramér-Wold wrapper and the
-  Durrett Theorem 3.10.7 projected scalar/summand and covariance/Gaussian
-  source wrappers now compile in
-  `StatInference/ProbabilityTheory/Multivariate.lean`.  Next, package the
-  textbook covariance-table and Gaussian characteristic-function display for
-  Durrett's statement before adding any new vector probability primitives.
+The next likely packet should inspect the Durrett source after Example 4.1.4,
+then package either Example 4.1.5 if the partition/indicator API is direct, or
+the first mathlib-backed conditional-expectation algebra/tower/pull-out wrapper
+from Theorems 4.1.9, 4.1.13, and 4.1.14.  Prefer theorem-sized wrappers over
+new primitives.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -420,6 +393,10 @@ High-value Chapter 3 source anchors are in
 - Section 3.10 multivariate weak convergence starts near line 3643.
 - Theorems 3.10.1, 3.10.5, 3.10.6, and 3.10.7 appear near lines
   3647, 3778, 3784, and 3789.
+- Section 4.1 conditional expectation starts near line 3894 in the same
+  Markdown chunk.  Example 4.1.4 appears near line 3969, Example 4.1.5 near
+  line 3982, Theorem 4.1.9 near line 4081, Theorem 4.1.13 near line 4183, and
+  Theorem 4.1.14 near line 4196.
 
 Do not start with raw Chapter 1 extension theorem formalization, Stieltjes
 measure construction, or appendix foundations unless an exact Durrett theorem
@@ -507,6 +484,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V14` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V15` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
