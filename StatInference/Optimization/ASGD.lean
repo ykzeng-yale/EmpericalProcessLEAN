@@ -301,6 +301,120 @@ theorem chewi127_complex_exp_I_mul_quadratic_remainder_norm_le (u : ℝ) :
   · simp [Real.norm_eq_abs]
 
 /--
+The pointwise Taylor remainder in the scalar characteristic-function expansion
+for a real increment `x`.
+-/
+noncomputable def chewi127ScalarCharFunTaylorRemainder
+    {Ω : Type*} (a : ℝ) (x : Ω -> ℝ) (ω : Ω) : ℂ :=
+  Complex.exp (((a * x ω : ℝ) : ℂ) * Complex.I) -
+    (1 + ((a * x ω : ℝ) : ℂ) * Complex.I -
+      (((a * x ω) ^ 2 / 2 : ℝ) : ℂ))
+
+/--
+Pointwise decomposition of the scalar characteristic-function factor into its
+quadratic Taylor model plus the named remainder.
+-/
+theorem chewi127ScalarCharFunTaylor_decomposition
+    {Ω : Type*} (a : ℝ) (x : Ω -> ℝ) (ω : Ω) :
+    Complex.exp (((a * x ω : ℝ) : ℂ) * Complex.I) =
+      1 + ((a * x ω : ℝ) : ℂ) * Complex.I -
+        (((a * x ω) ^ 2 / 2 : ℝ) : ℂ) +
+          chewi127ScalarCharFunTaylorRemainder a x ω := by
+  simp [chewi127ScalarCharFunTaylorRemainder]
+
+/--
+Pointwise norm bound for the scalar Taylor remainder.
+-/
+theorem chewi127ScalarCharFunTaylorRemainder_norm_le
+    {Ω : Type*} (a : ℝ) (x : Ω -> ℝ) (ω : Ω) :
+    ‖chewi127ScalarCharFunTaylorRemainder a x ω‖
+      ≤ |a * x ω| ^ 3 * Real.exp |a * x ω| := by
+  simpa [chewi127ScalarCharFunTaylorRemainder] using
+    chewi127_complex_exp_I_mul_quadratic_remainder_norm_le (a * x ω)
+
+/--
+The scalar characteristic-function factor is integrable because it has norm
+one.
+-/
+theorem chewi127ScalarCharFunFactor_integrable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] {x : Ω -> ℝ}
+    (hx : AEMeasurable x P) (a : ℝ) :
+    Integrable
+      (fun ω => Complex.exp (((a * x ω : ℝ) : ℂ) * Complex.I)) P := by
+  have hmeas :
+      AEStronglyMeasurable
+        (fun ω => Complex.exp (((a * x ω : ℝ) : ℂ) * Complex.I)) P := by
+    exact (by fun_prop : AEMeasurable
+      (fun ω => Complex.exp (((a * x ω : ℝ) : ℂ) * Complex.I)) P).aestronglyMeasurable
+  refine Integrable.mono' (integrable_const (1 : ℝ)) hmeas ?_
+  exact ae_of_all P fun ω => by
+    exact (Complex.norm_exp_ofReal_mul_I (a * x ω)).le
+
+/--
+A bounded scalar increment is integrable under a probability measure.
+-/
+theorem chewi127Scalar_integrable_of_uniform_bound
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] {x : Ω -> ℝ}
+    (hx : AEMeasurable x P)
+    (hbound : ∃ B : ℝ, 0 ≤ B ∧ ∀ᵐ ω ∂P, |x ω| ≤ B) :
+    Integrable x P := by
+  rcases hbound with ⟨B, _hB_nonneg, hB⟩
+  refine Integrable.mono' (integrable_const B) hx.aestronglyMeasurable ?_
+  filter_upwards [hB] with ω hω
+  simpa [Real.norm_eq_abs] using hω
+
+/--
+A bounded scalar increment has an integrable square under a probability
+measure.
+-/
+theorem chewi127Scalar_sq_integrable_of_uniform_bound
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] {x : Ω -> ℝ}
+    (hx : AEMeasurable x P)
+    (hbound : ∃ B : ℝ, 0 ≤ B ∧ ∀ᵐ ω ∂P, |x ω| ≤ B) :
+    Integrable (fun ω => (x ω) ^ 2) P := by
+  rcases hbound with ⟨B, hB_nonneg, hB⟩
+  have hmeas : AEStronglyMeasurable (fun ω => (x ω) ^ 2) P := by
+    exact (by fun_prop : AEMeasurable (fun ω => (x ω) ^ 2) P).aestronglyMeasurable
+  refine Integrable.mono' (integrable_const (B ^ 2)) hmeas ?_
+  filter_upwards [hB] with ω hω
+  have hsq : |x ω| ^ 2 ≤ B ^ 2 := by
+    have hx_nonneg : 0 ≤ |x ω| := abs_nonneg _
+    nlinarith
+  simpa [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg (x ω))] using hsq
+
+/--
+Under Chewi's bounded-increment hypothesis, the scalar Taylor remainder is
+integrable.  This is the integrability gate needed before applying conditional
+expectation linearity to the one-step expansion.
+-/
+theorem chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] {x : Ω -> ℝ}
+    (hx : AEMeasurable x P) (a : ℝ)
+    (hbound : ∃ B : ℝ, 0 ≤ B ∧ ∀ᵐ ω ∂P, |x ω| ≤ B) :
+    Integrable (chewi127ScalarCharFunTaylorRemainder a x) P := by
+  rcases hbound with ⟨B, hB_nonneg, hB⟩
+  have hmeas :
+      AEStronglyMeasurable (chewi127ScalarCharFunTaylorRemainder a x) P := by
+    exact (by
+      unfold chewi127ScalarCharFunTaylorRemainder
+      fun_prop : AEMeasurable
+        (chewi127ScalarCharFunTaylorRemainder a x) P).aestronglyMeasurable
+  refine Integrable.mono'
+    (integrable_const ((|a| * B) ^ 3 * Real.exp (|a| * B))) hmeas ?_
+  filter_upwards [hB] with ω hω
+  have hscale_nonneg : 0 ≤ |a| * B := mul_nonneg (abs_nonneg a) hB_nonneg
+  have hax_le : |a * x ω| ≤ |a| * B := by
+    rw [abs_mul]
+    exact mul_le_mul_of_nonneg_left hω (abs_nonneg a)
+  exact (chewi127ScalarCharFunTaylorRemainder_norm_le a x ω).trans (by
+    have hax_nonneg : 0 ≤ |a * x ω| := abs_nonneg _
+    gcongr)
+
+/--
 The projected vector sum is the scalar sum of the projected increments.
 -/
 theorem chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum

@@ -252,7 +252,11 @@ Stable substrate:
   characteristic-function proof is also compiled:
   `chewi127_complex_exp_quadratic_remainder_norm_le` and its source-shaped
   real specialization
-  `chewi127_complex_exp_I_mul_quadratic_remainder_norm_le`.
+  `chewi127_complex_exp_I_mul_quadratic_remainder_norm_le`.  The next
+  random-variable layer is compiled too: the named scalar Taylor remainder,
+  its exact pointwise decomposition and norm bound, the norm-one integrability
+  of the scalar characteristic-function factor, and boundedness-to-integrability
+  lemmas for `x`, `x^2`, and the Taylor remainder.
 
 Current priority packet sequence:
 
@@ -273,11 +277,11 @@ Current priority packet sequence:
    identities for Theorem 11.8 only after the current ASGD packet would
    otherwise stall.
 
-Execution rule for the next proof run: use the compiled quadratic exponential
-remainder layer to implement the conditional one-step
-characteristic-function expansion, rather than another certificate wrapper.
-Cached scout results found no direct martingale CLT in pinned mathlib/local
-code.  Useful mathlib APIs are
+Execution rule for the next proof run: use the compiled scalar Taylor
+remainder and boundedness-to-integrability layer to implement the conditional
+one-step characteristic-function expansion, rather than another certificate
+wrapper.  Cached scout results found no direct martingale CLT in pinned
+mathlib/local code.  Useful mathlib APIs are
 `MeasureTheory.Filtration.condExp_condExp`,
 `MeasureTheory.condExp_condExp_of_le`, `MeasureTheory.integral_condExp`,
 `condExp_mul_of_aestronglyMeasurable_left/right`,
@@ -292,9 +296,13 @@ code.  Useful mathlib APIs are
 `chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound`,
 `chewi127ScalarScaledSum_tendstoInDistribution_of_charFun`, the new
 `Chewi127BoundedMartingaleCharFunCLTSource` conversion layer, and the new
-quadratic exponential remainder lemmas.  The next packet should target the
-conditional one-step characteristic-function expansion, then the finite
-product/telescoping inequality that feeds
+quadratic exponential/scalar Taylor remainder lemmas.  The next packet should
+target the conditional one-step characteristic-function expansion: unfold the
+compiled pointwise decomposition, use `condExp_add`/`condExp_sub`/`condExp_smul`,
+kill the linear term with projected conditional mean-zero, identify the
+quadratic term with projected conditional second moment, and retain the named
+conditional remainder.  After that, prove the finite product/telescoping
+inequality that feeds
 `projected_charFun_tendsto_exp`.
 
 Keep exercise statements and cheap reusable exercise proofs in

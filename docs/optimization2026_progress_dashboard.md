@@ -125,6 +125,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   with projected conditional mean-zero, identify the quadratic term with
   projected conditional second moment, and then pass to the finite
   product/tower estimate.
+- New ASGD scalar Taylor random-variable declarations:
+  `chewi127ScalarCharFunTaylorRemainder`,
+  `chewi127ScalarCharFunTaylor_decomposition`,
+  `chewi127ScalarCharFunTaylorRemainder_norm_le`,
+  `chewi127ScalarCharFunFactor_integrable`,
+  `chewi127Scalar_integrable_of_uniform_bound`,
+  `chewi127Scalar_sq_integrable_of_uniform_bound`, and
+  `chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound`.  These
+  are the bounded-increment integrability and pointwise expansion gates needed
+  before applying conditional-expectation linearity to the martingale one-step
+  characteristic-function expansion.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
