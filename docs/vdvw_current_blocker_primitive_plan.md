@@ -7915,3 +7915,13 @@ symmetrization/Markov route when the selected-cover expected-maximal input is
 only sample-a.e.  The next proof-facing closure should connect this projected
 bound to centered-truncated convergence, assuming the already isolated
 selected finite-net integral convergence input.
+
+2026-05-07 selected expected-maximal centered-integral projection:
+`Theorem243.lean` now proves
+`integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_ae_expectedMaximal`
+and
+`eventually_integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_selectedHalfRadius_expectedMaximal`.
+These compose the centered product random-sign symmetrization inequality with
+the sample-a.e. selected expected-maximal outer projection.  The next
+non-duplicative step is the Markov convergence handoff from this centered
+integral bound plus selected finite-net integral convergence.

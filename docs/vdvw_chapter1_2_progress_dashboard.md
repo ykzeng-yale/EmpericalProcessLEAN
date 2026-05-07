@@ -3252,3 +3252,10 @@ and
 `eventually_VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_selectedHalfRadius_expectedMaximal`.
 This prepares the centered symmetrization/Markov route to consume sample-a.e.
 selected covers directly.
+
+The selected route now also has the centered-integral bridge:
+`integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_ae_expectedMaximal`
+and
+`eventually_integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_selectedHalfRadius_expectedMaximal`.
+This is the last projection layer before Markov; the remaining proof-facing
+input is selected finite-net integral convergence at the chosen radius.
