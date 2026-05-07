@@ -1353,5 +1353,75 @@ theorem vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_vector_o
     uniformError approxError h_uniform h_near_zero
     h_uniform_outer h_approx_outer h_zero h_separated
 
+/--
+van der Vaart 1998, Theorem 5.41, score-linearization handoff for
+Z-estimators.
+
+This is the Slutsky/delta-method endpoint of the theorem: if the score term has
+a weak limit and the Taylor remainder is `o_P(1)`, then the linearized
+estimator expression has the inverse-derivative image as its weak limit.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scoreLinearization_handoff
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (Vinv : Score →L[ℝ] Θ)
+    {score : ℕ -> Ω -> Score} {Z : Ω' -> Score} {R : ℕ -> Ω -> Θ}
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hR : TendstoInMeasure P R atTop 0)
+    (hR_meas : ∀ n, AEMeasurable (R n) P) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        (-Vinv : Score →L[ℝ] Θ) (score n ω) + R n ω) atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  exact
+    vaart1998_theorem_3_1_delta_method_linearized
+      (ι := ℕ) (Ω := Ω) (Ω' := Ω') (E := Score) (F := Θ)
+      (P := P) (Q := Q) (W := score) (R := R) (T := Z) (l := atTop)
+      (-Vinv : Score →L[ℝ] Θ) hScoreCLT hR hR_meas
+
+/--
+van der Vaart 1998, Theorem 5.41, scaled-estimator handoff for Z-estimators.
+
+The Taylor/LLN part of the proof supplies that the scaled estimator is a.s.
+equal to the score-linearized expression.  This wrapper transfers the compiled
+score-linearization endpoint to that scaled estimator.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (Vinv : Score →L[ℝ] Θ)
+    {score : ℕ -> Ω -> Score} {scaledEstimator : ℕ -> Ω -> Θ}
+    {Z : Ω' -> Score} {R : ℕ -> Ω -> Θ}
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hLinearization : ∀ n : ℕ,
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (score n ω) + R n ω)
+        =ᵐ[P] scaledEstimator n)
+    (hR : TendstoInMeasure P R atTop 0)
+    (hR_meas : ∀ n, AEMeasurable (R n) P) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hlin :
+      TendstoInDistribution
+        (fun (n : ℕ) ω =>
+          (-Vinv : Score →L[ℝ] Θ) (score n ω) + R n ω) atTop
+        (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q :=
+    vaart1998_theorem_5_41_zEstimator_scoreLinearization_handoff
+      (Vinv := Vinv) hScoreCLT hR hR_meas
+  exact hlin.congr hLinearization (ae_of_all _ fun _ => rfl)
+
 end AsymptoticStatistics
 end StatInference

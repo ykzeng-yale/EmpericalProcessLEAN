@@ -550,9 +550,15 @@ Chapter 4 handoff:
   `vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWPGlivenkoCantelliClass_empiricalAverage_real`
   accept either the outer-probability GC branch directly or the outer-a.s.
   branch with countability and coordinate a.e.-measurability.
+- Chapter 5.41 Z-estimator asymptotic-normality handoff:
+  `vaart1998_theorem_5_41_zEstimator_scoreLinearization_handoff` packages the
+  score CLT plus `o_P(1)` remainder into the inverse-derivative weak limit, and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff` transfers that
+  compiled linearized limit to any scaled estimator that is a.e. equal to the
+  Taylor/LLN linearization.
 
-Latest verified Vaart head: `9415813`
-(`Add Vaart book-style P-GC empirical-average endpoints`).
+Latest verified repository base before this packet: `6ce0ca3`
+(`Refine Vaart goal operating protocol`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -572,10 +578,11 @@ verify again before push.
 
 ## Next Aggressive Target
 
-Move to Chapter 5 asymptotic normality for Z-estimators or the M-estimator
-rate/argmax layer, reusing the Chapter 3 delta method and existing
-empirical-process/Donsker interfaces instead of adding more consistency
-plumbing.
+Discharge the source-shaped Taylor/LLN inputs for Vaart Theorem 5.41:
+construct the empirical estimating-equation linearization, prove the remainder
+is `o_P(1)`, and feed the compiled scaled-estimator handoff.  Keep
+Gaussian-law preservation as a separate lightweight packet or in a module that
+already imports Gaussian APIs.
 
 ## Reuse Dependencies
 

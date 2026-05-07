@@ -482,7 +482,12 @@ Initial modules:
   and
   `vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWPGlivenkoCantelliClass_empiricalAverage_real`
   also accept an outer-a.s. `P`-GC branch when countability and coordinate
-  a.e.-measurability discharge the VdV&W bridge.
+  a.e.-measurability discharge the VdV&W bridge.  The Chapter 5.41
+  asymptotic-normality route has now started with
+  `vaart1998_theorem_5_41_zEstimator_scoreLinearization_handoff` and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff`, which isolate
+  the final score-CLT plus `o_P(1)` remainder handoff from the source Taylor
+  and LLN proof obligations.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

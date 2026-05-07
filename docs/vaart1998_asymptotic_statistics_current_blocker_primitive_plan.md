@@ -755,20 +755,26 @@ Chapter 3 theorem-facing wrappers compiling:
 244. Theorem 5.9 book-style VdV&W `P`-Glivenko-Cantelli scalar
    empirical-average endpoint:
    `vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWPGlivenkoCantelliClass_empiricalAverage_real`.
+245. Theorem 5.41 score-linearization weak-limit handoff:
+   `vaart1998_theorem_5_41_zEstimator_scoreLinearization_handoff`.
+246. Theorem 5.41 scaled-estimator weak-limit handoff:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff`.
 
-Latest verified Vaart head: `9415813`
-(`Add Vaart book-style P-GC empirical-average endpoints`).
+Latest verified repository base before this packet: `6ce0ca3`
+(`Refine Vaart goal operating protocol`).
 
-The current theorem-sized packet adds book-style
-`VdVWPGlivenkoCantelliClass` consumers for real empirical criteria and scalar
-estimating equations.  The outer-probability branch is used directly; the
-outer-a.s. branch is converted through the existing countable/a.e.-measurable
-VdV&W bridge.
+The current theorem-sized packet starts the Chapter 5.41 asymptotic-normality
+route for Z-estimators.  It packages the final probabilistic handoff: a score
+CLT plus an `o_P(1)` Taylor remainder gives the inverse-derivative weak limit,
+and an a.e. linearization transfers that limit to the scaled estimator.
 
-The next aggressive packet should move to Chapter 5 asymptotic normality for
-Z-estimators or the M-estimator rate/argmax layer, reusing the Chapter 3 delta
-method and existing empirical-process/Donsker interfaces instead of adding more
-consistency plumbing.
+The next aggressive packet should discharge the source-shaped Taylor/LLN
+inputs for Theorem 5.41: build the empirical estimating-equation linearization
+`sqrt n (thetaHat_n - theta0) =
+-(P dot psi_theta0)^{-1} sqrt n Psi_n(theta0) + R_n`, prove `R_n = o_P(1)`,
+and then feed the compiled scaled-estimator handoff.  Keep Gaussian-law
+preservation in a Gaussian-bearing module or as a separate lightweight packet
+so `MEstimators.lean` remains fast to verify.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
