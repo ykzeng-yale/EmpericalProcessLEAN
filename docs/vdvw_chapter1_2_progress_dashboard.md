@@ -3259,3 +3259,12 @@ and
 `eventually_integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_selectedHalfRadius_expectedMaximal`.
 This is the last projection layer before Markov; the remaining proof-facing
 input is selected finite-net integral convergence at the chosen radius.
+
+The selected expected-maximal mean route now reaches Markov convergence through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedHalfRadius_expectedMaximal_integral_tendsto_zero`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedHalfRadius_expectedMaximal_integral_real_tendsto_zero`.
+The next non-duplicative mean-route target is to prove the selected finite-net
+Hoeffding-upper integral convergence from the stochastic entropy/tail/UI
+condition; the event-route blocker remains the selected-cover `Phi(x)=x`
+comparison plus pathwise finite-center Hoeffding event.

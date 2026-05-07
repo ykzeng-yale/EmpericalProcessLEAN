@@ -7925,3 +7925,18 @@ These compose the centered product random-sign symmetrization inequality with
 the sample-a.e. selected expected-maximal outer projection.  The next
 non-duplicative step is the Markov convergence handoff from this centered
 integral bound plus selected finite-net integral convergence.
+
+2026-05-07 selected half-radius Markov convergence handoff:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedHalfRadius_expectedMaximal_integral_tendsto_zero`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedHalfRadius_expectedMaximal_integral_real_tendsto_zero`.
+These are the diagonal selected-cover analogues of the older random-cover
+Markov assembly: selected covers at radius `coverRadius n / 2`, together with
+convergence of the integrated selected finite-net Hoeffding upper plus that
+half-radius, now imply fixed-`M` centered-truncated convergence in outer
+probability.  The mean route's next real blocker is therefore the analytic
+source theorem deriving that selected finite-net integral convergence from the
+book's random empirical entropy/tail/UI hypothesis; the event route remains
+the selected-cover `Phi(x)=x` comparison and pathwise finite-center Hoeffding
+event.
