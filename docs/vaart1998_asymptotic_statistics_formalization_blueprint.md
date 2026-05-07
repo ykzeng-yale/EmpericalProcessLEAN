@@ -15,9 +15,9 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    fully proved in Lean and source evidence from Markdown/PDF is captured.
 5. Coordinate with the VdV&W empirical-process lane; do not duplicate GC,
    Donsker, bracketing, covering, or outer-probability foundations.
-6. Use the compact live continuation prompt in the current blocker plan for
-   the next proof packet; avoid process churn once the operating constraints
-   are settled.
+6. Use only the compact live `/goal` prompt in the current blocker plan for
+   the next proof packet; the solved-progress ledgers are evidence, not
+   instructions to replay.
 
 ## Chapter Map
 
@@ -530,8 +530,12 @@ Initial modules:
   `vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_half_bound`,
   and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeHalfBound`,
-  so the remaining critical path is the analytic Taylor-expansion display and
-  the source half-bound from the actual quadratic second-derivative form.
+  and the quadratic-residual packet adds
+  `vaart1998_theorem_5_41_secondDerivativeResidual_half_bound_of_bilinear_opNorm_bound`
+  plus
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeQuadraticBound`,
+  so the remaining critical path is the analytic Taylor-expansion display, the
+  quadratic residual identity, and the dominated operator-norm bound.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

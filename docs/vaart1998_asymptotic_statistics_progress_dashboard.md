@@ -10,6 +10,11 @@ Active Lean folder: `StatInference/AsymptoticStatistics/`
 
 Source folder: `Textbooks/VaartAsymStat1998/`
 
+Live `/goal` continuation: use the compact prompt at the top of
+`docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
+The long verified-frontier list below is a progress ledger, not a queue to
+revisit.
+
 ## Verified Frontier
 
 Initial scaffold through the first Chapter 4 method-of-moments layer compiles:
@@ -608,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 half residual bound handoff`).
+(`Add Vaart theorem 5.41 quadratic residual bound handoff`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -625,8 +630,9 @@ Live continuation prompt: use the compact prompt in
 
 Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41 in
 `MEstimators.lean`: the analytic Taylor-expansion display for
-`Psi_n(thetaHat_n)` and the source half-bound for the second-derivative
-residual consumed by the compiled root-and-Taylor-expansion handoff.
+`Psi_n(thetaHat_n)`, the quadratic residual identity, and the dominated
+operator-norm bound for the random second-derivative action consumed by the
+compiled root-and-Taylor-expansion handoff.
 
 ## Reuse Dependencies
 

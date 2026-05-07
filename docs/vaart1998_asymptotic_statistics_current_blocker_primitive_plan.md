@@ -4,24 +4,24 @@ This file is the active blocker register for the van der Vaart 1998
 asymptotic-statistics lane.  It should be checked at the start of each
 manual `/goal` continuation before selecting a proof target.
 
-## Live Continuation Prompt
+## Live `/goal` Prompt
 
-Continue the Vaart 1998 Lean formalization from the latest pushed Vaart
-frontier.  Work in `StatInference/AsymptoticStatistics/MEstimators.lean` on
-Theorem 5.41 only.
+Continue manually, with no automation.  The active Vaart target is Theorem
+5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
-Next packet: discharge the remaining source Taylor inputs for the compiled
-handoff
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeHalfBound`:
-prove the analytic Taylor-expansion display for `Psi_n(thetaHat_n)` and the
-source half-bound for the second-derivative residual from the quadratic
-Taylor term and dominated second-derivative average.
+Current packet: finish the source Taylor layer feeding
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeQuadraticBound`.
+Prove/package the Taylor zero equation from `Psi_n(thetaHat_n) = 0`, the
+quadratic second-residual identity, and the dominated operator-norm bound for
+the random second-derivative action.
 
-Reuse local/mathlib APIs before inventing infrastructure.  Skip solved
-Chapter 2-4 routing, Gaussian endpoints, and broad process edits unless they
-directly unblock this packet.  Verify with focused direct compilation of the
-changed Vaart Lean file, then update these route docs, rebase over current
-`origin/main`, rerun the focused checks, and push the verified packet.
+Search and reuse local/mathlib APIs first; do not revisit completed Chapter
+2-4 substrate, Gaussian endpoints, or general empirical-process plumbing except
+when a direct dependency is needed for this packet.  If parallel work helps,
+use disjoint worktrees and preserve other agents' changes.  Each packet should
+be theorem-sized Lean progress, focused Vaart compilation, targeted module
+build, hygiene scans, fetch/rebase over `origin/main`, rerun affected checks,
+route-doc update, commit, and push.
 
 ## Current Blocker
 
@@ -33,10 +33,11 @@ The Vaart source assets are present in:
 - `Textbooks/VaartAsymStat1998/Markdown/VanDerVaart_Asymptotic_Statistics_346-460.md`
 - `Textbooks/VaartAsymStat1998/PDF/VanDerVaart_Asymptotic_Statistics.pdf`
 
-The immediate source-shaped Vaart namespace is now started and reuses the
-existing probability, empirical-process, and deterministic asymptotics lanes
-instead of duplicating foundations.  The first Lean packet keeps Chapter 2 and
-Chapter 3 theorem-facing wrappers compiling:
+The long ledger below is historical progress evidence, not a prompt to revisit
+old work.  The immediate source-shaped Vaart namespace reuses the existing
+probability, empirical-process, and deterministic asymptotics lanes instead of
+duplicating foundations.  Earlier packets keep these theorem-facing wrappers
+compiling:
 
 1. Chapter 2 notation for convergence in probability/distribution and
    stochastic `o_P`/`O_P`;
@@ -731,15 +732,20 @@ Chapter 3 theorem-facing wrappers compiling:
 266. Theorem 5.41 source root-and-Taylor-expansion handoff with the source
    `1 / 2` second-derivative residual factor:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeHalfBound`.
+267. Theorem 5.41 source half-bound from a quadratic second-derivative form:
+   `vaart1998_theorem_5_41_secondDerivativeResidual_half_bound_of_bilinear_opNorm_bound`.
+268. Theorem 5.41 source root-and-Taylor-expansion handoff from a quadratic
+   second-derivative residual:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeQuadraticBound`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 half residual bound handoff`).
+(`Add Vaart theorem 5.41 quadratic residual bound handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by accepting the textbook
-`1 / 2` factor in the second-derivative Taylor residual bound directly.  The
-most advanced handoff still derives the source Taylor equation from the root
-equation `Psi_n(thetaHat_n) = 0` and the Taylor expansion of
+asymptotic-normality route for Z-estimators by deriving the source half-bound
+from a bilinear second-derivative action and a dominated operator-norm bound.
+The most advanced handoff still derives the source Taylor equation from the
+root equation `Psi_n(thetaHat_n) = 0` and the Taylor expansion of
 `Psi_n(thetaHat_n)`, then performs the algebraic split
 `dotPsi_n(theta0) x_n =
   (P dot psi_theta0) x_n + (dotPsi_n(theta0) - P dot psi_theta0) x_n`
@@ -747,9 +753,9 @@ internally before applying the derivative and second-derivative residual
 bridge.
 
 The next aggressive packet should prove the remaining source Taylor fields:
-the analytic Taylor-expansion display for `Psi_n(thetaHat_n)` and the
-source half-bound for the second-derivative residual from the actual
-quadratic form and dominated second-derivative average.
+the analytic Taylor-expansion display for `Psi_n(thetaHat_n)`, the quadratic
+residual identity, and the dominated operator-norm bound for the random
+second-derivative action.
 
 ## Execution Notes
 
