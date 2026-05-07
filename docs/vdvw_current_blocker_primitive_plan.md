@@ -216,6 +216,19 @@ weighted-square penalty.  The remaining source theorem is therefore the
 selected-cover/Rademacher probability comparison carrying this beta factor,
 not the Chebyshev variance estimate.
 
+The empirical-average specialization of that beta lower bound is now packaged
+as
+`VdVWChebyshev_betaLower_productSample_centeredTruncated_uniformWeights_succ_abs_lt_half`.
+It uses the compiled squared-uniform-weight identity
+`fin_sum_uniform_inv_sq_eq_inv_nat` and produces the explicit penalty
+`16 * M^2 / ((n + 1) * epsilon^2)`.  The matching deterministic convergence
+and eventual half-beta lower-bound consumers are compiled as
+`VdVWTheorem243_uniformChebyshevPenalty_tendsto_zero` and
+`VdVWTheorem243_eventualBetaLower_half_of_uniformChebyshevPenalty_eq`.  Thus
+the beta lower-bound half of Lemma 2.3.7 is ready for empirical-average
+weights; the missing theorem is the selected-cover/Rademacher probability
+comparison itself.
+
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
 infrastructure for selected fixed-radius tail/UI, finite code-set and

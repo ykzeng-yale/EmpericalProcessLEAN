@@ -32544,6 +32544,79 @@ theorem VdVWChebyshev_betaLower_productSample_centeredTruncated_weightedSum_abs_
       hweighted_variance_le)
 
 /--
+The squared uniform empirical weights sum to the inverse sample size.
+-/
+theorem fin_sum_uniform_inv_sq_eq_inv_nat {n : ℕ} (hn : 0 < n) :
+    (∑ _i : Fin n, ((n : ℝ)⁻¹) ^ 2) = (n : ℝ)⁻¹ := by
+  have hn_ne : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.ne_of_gt hn)
+  calc
+    (∑ _i : Fin n, ((n : ℝ)⁻¹) ^ 2)
+        = (n : ℝ) * ((n : ℝ)⁻¹) ^ 2 := by
+          simp [Finset.sum_const, Fintype.card_fin, nsmul_eq_mul]
+    _ = (n : ℝ)⁻¹ := by
+          field_simp [hn_ne]
+
+/--
+Uniform-weight product-sample Chebyshev beta lower bound for one centered
+fixed-`M` truncated class member.
+
+The sample size is written as `n + 1` so the deterministic penalty has the
+`C / (n + 1)` shape consumed by
+`VdVWTheorem243_chebyshevPenalty_tendsto_zero_of_eventual_invNat_bound`.
+-/
+theorem VdVWChebyshev_betaLower_productSample_centeredTruncated_uniformWeights_succ_abs_lt_half
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M x : ℝ}
+    {n : ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M) {index : Index} (hindex : index ∈ indexClass)
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hx : 0 < x) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / ((((n + 1 : ℕ) : ℝ)) * x ^ 2)) ≤
+      (vdVWProductMeasure P (n + 1))
+        {sample : SampleAt Observation (n + 1) |
+          |vdVWWeightedSampleSum
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+            index sample| < x / 2} := by
+  let sampleSize : ℕ := n + 1
+  have hsampleSize_pos : 0 < sampleSize := Nat.succ_pos n
+  have hsampleSize_ne : (sampleSize : ℝ) ≠ 0 :=
+    Nat.cast_ne_zero.mpr (Nat.ne_of_gt hsampleSize_pos)
+  have hx_ne : x ≠ 0 := ne_of_gt hx
+  have hsum_weights :
+      (∑ _i : Fin sampleSize, ((sampleSize : ℝ)⁻¹) ^ 2) =
+        (sampleSize : ℝ)⁻¹ :=
+    fin_sum_uniform_inv_sq_eq_inv_nat hsampleSize_pos
+  have hweighted_variance :
+      (((∑ _i : Fin sampleSize, ((sampleSize : ℝ)⁻¹) ^ 2) *
+          (2 * M) ^ 2) / (x / 2) ^ 2) ≤
+        (16 * M ^ 2) / ((sampleSize : ℝ) * x ^ 2) := by
+    refine le_of_eq ?_
+    rw [hsum_weights]
+    field_simp [hsampleSize_ne, hx_ne]
+    ring
+  have hpenalty_nonneg :
+      0 ≤ (16 * M ^ 2) / ((sampleSize : ℝ) * x ^ 2) := by
+    positivity
+  simpa [sampleSize, Nat.succ_eq_add_one] using
+    VdVWChebyshev_betaLower_productSample_centeredTruncated_weightedSum_abs_lt_half
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M)
+      (x := x)
+      (penalty := (16 * M ^ 2) / ((sampleSize : ℝ) * x ^ 2))
+      (n := sampleSize)
+      (weights := fun _ : Fin sampleSize => ((sampleSize : ℝ)⁻¹))
+      henvelope hM hindex htruncIntegrable hx hpenalty_nonneg
+      hweighted_variance
+
+/--
 Deterministic convergence criterion for the Chebyshev beta penalty.
 
 For the normalized fixed-`M` truncated coordinates in Theorem 2.4.3, the
@@ -32579,6 +32652,69 @@ theorem VdVWTheorem243_chebyshevPenalty_tendsto_zero_of_eventual_invNat_bound
       hupper
       (hpenalty_nonneg epsilon hepsilon)
       hle
+
+/--
+The explicit uniform-weight Chebyshev penalty from the fixed-`M` truncated
+coordinate bound tends to zero.
+
+Together with
+`VdVWChebyshev_betaLower_productSample_centeredTruncated_uniformWeights_succ_abs_lt_half`,
+this discharges the deterministic beta-lower-bound side of Lemma 2.3.7 for
+empirical-average weights.
+-/
+theorem VdVWTheorem243_uniformChebyshevPenalty_tendsto_zero
+    {M : ℝ} :
+    ∀ epsilon, 0 < epsilon ->
+      Tendsto
+        (fun n : ℕ => (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2))
+        atTop (𝓝 0) := by
+  let penalty : ℝ -> ℕ -> ℝ :=
+    fun epsilon n => (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)
+  have hpenalty_nonneg :
+      ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop, 0 ≤ penalty epsilon n := by
+    intro epsilon hepsilon
+    exact Eventually.of_forall fun n => by
+      dsimp [penalty]
+      positivity
+  have hpenalty_le :
+      ∀ epsilon, 0 < epsilon ->
+        ∃ C : ℝ, 0 ≤ C ∧
+          ∀ᶠ n in atTop,
+            penalty epsilon n ≤ C / ((n : ℝ) + 1) := by
+    intro epsilon hepsilon
+    refine ⟨(16 * M ^ 2) / epsilon ^ 2, by positivity, ?_⟩
+    exact Eventually.of_forall fun n => by
+      dsimp [penalty]
+      have hn_pos : 0 < (n : ℝ) + 1 := by positivity
+      have hn_ne : (n : ℝ) + 1 ≠ 0 := ne_of_gt hn_pos
+      have hepsilon_ne : epsilon ≠ 0 := ne_of_gt hepsilon
+      refine le_of_eq ?_
+      field_simp [hn_ne, hepsilon_ne]
+  simpa [penalty] using
+    VdVWTheorem243_chebyshevPenalty_tendsto_zero_of_eventual_invNat_bound
+      hpenalty_nonneg hpenalty_le
+
+/--
+Eventual `1/2` beta lower bound for the explicit uniform-weight Chebyshev
+penalty generated by the fixed-`M` truncated coordinate variance estimate.
+-/
+theorem VdVWTheorem243_eventualBetaLower_half_of_uniformChebyshevPenalty_eq
+    {M : ℝ} {beta : ℝ -> ℕ -> ℝ≥0∞}
+    (hbeta_eq :
+      ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          beta epsilon n =
+            ENNReal.ofReal
+              (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2))) :
+    ∀ epsilon, 0 < epsilon ->
+      ∀ᶠ n in atTop, ENNReal.ofReal (1 / 2 : ℝ) ≤ beta epsilon n := by
+  exact
+    VdVWTheorem243_eventualBetaLower_half_of_eventually_eq_one_sub_penalty
+      (penalty := fun epsilon n =>
+        (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2))
+      (VdVWTheorem243_uniformChebyshevPenalty_tendsto_zero (M := M))
+      hbeta_eq
 
 /--
 Fixed-`M` centered-truncated convergence from stochastic entropy and a

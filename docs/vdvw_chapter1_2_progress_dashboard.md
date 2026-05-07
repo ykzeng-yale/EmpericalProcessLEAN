@@ -206,6 +206,13 @@ The finite-sample variance calculation is now compiled through
 `VdVWChebyshev_betaLower_productSample_centeredTruncated_weightedSum_abs_lt_half`.
 The beta-side blocker is now the selected-cover/Rademacher probability
 comparison itself, with the deterministic weighted-square penalty supplied.
+The uniform empirical-weight specialization is also compiled through
+`fin_sum_uniform_inv_sq_eq_inv_nat`,
+`VdVWChebyshev_betaLower_productSample_centeredTruncated_uniformWeights_succ_abs_lt_half`,
+`VdVWTheorem243_uniformChebyshevPenalty_tendsto_zero`, and
+`VdVWTheorem243_eventualBetaLower_half_of_uniformChebyshevPenalty_eq`, giving
+the explicit `16 * M^2 / ((n + 1) * epsilon^2)` penalty and its eventual
+`1/2` beta lower bound.
 
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
