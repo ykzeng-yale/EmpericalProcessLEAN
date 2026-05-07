@@ -19,6 +19,10 @@ must reuse Billingsley/local probability primitives whenever possible.
 - Goal policy: Durrett is tracked by the active in-thread `/goal`, not a
   recurring automation.  Refresh the route docs and next target after each
   verified proof step, blocker refinement, merge, or route change.
+- Throughput policy: default to single-thread theorem-sized proof packets with
+  search-first reuse, start/final GitHub sync checks, and isolated worktrees for
+  long Durrett builds or disjoint local lanes.  Use subagents only after
+  explicit user authorization.
 
 ## Current Active Target
 
@@ -167,3 +171,8 @@ either:
   distribution-function notation, and the Durrett Markdown/PDF anchors; or
 - polish the remaining Chapter 2.1 iid/product notation wrappers before moving
   to the next Durrett chapter spine.
+
+Before choosing, apply the high-accuracy protocol from the current blocker
+plan: sync remote once, check whether other-agent work changed the route,
+reuse cached source/API anchors, and pick one theorem-sized packet rather than
+a search-only cycle.

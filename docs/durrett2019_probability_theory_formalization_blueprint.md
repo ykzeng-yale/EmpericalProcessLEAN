@@ -37,8 +37,13 @@ materially changes the route, refresh the route state from:
 4. the latest pushed commit and current remote contributions.
 
 Each refreshed in-thread target should name the latest verified declarations,
-one primary theorem target, parallel support targets, search-first scope,
+one primary theorem target, independent support targets, search-first scope,
 verification gate, and report gate.  Do not replay a solved target.
+
+Use subagents only when the user explicitly authorizes parallel agent work.
+Otherwise, keep the active proof in this thread and improve throughput with
+search caching, isolated worktrees for long builds or disjoint local lanes, and
+one fetch/rebase pass at the start plus one immediately before push.
 
 ## Status Vocabulary
 
