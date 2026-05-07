@@ -1,5 +1,6 @@
 import Mathlib.Probability.BorelCantelli
 import Mathlib.Probability.Martingale.Basic
+import Mathlib.Probability.Martingale.Convergence
 import Mathlib.Probability.Martingale.OptionalStopping
 import Mathlib.Probability.Martingale.Upcrossing
 import StatInference.ProbabilityTheory.ConditionalExpectation
@@ -17,7 +18,7 @@ namespace ProbabilityTheory
 
 open Filter MeasureTheory
 
-open scoped BigOperators MeasureTheory ProbabilityTheory
+open scoped BigOperators ENNReal MeasureTheory NNReal ProbabilityTheory Topology
 
 /-! ## Durrett, Section 4.2 -/
 
@@ -649,6 +650,83 @@ theorem durrett2019_theorem_4_2_10_upcrossing_inequality_sub_initial
       rw [upcrossingsBefore_pos_eq (f := X) (N := n) (ω := ω) hab] at hpoint
       simpa [sub_zero, Finset.sum_apply, Pi.mul_apply, Pi.sub_apply] using hpoint
   exact hfirst.trans (hY.sum_mul_upcrossingStrat_le (a := 0) (b := b - a) (N := n) (n := n))
+
+/--
+Durrett 2019, Theorem 4.2.11, L1-bounded source form: an L1-bounded
+submartingale has an almost-sure finite limit.
+
+Durrett states the hypothesis using `sup_n E X_n^+ < ∞`.  This wrapper records
+the compiled mathlib convergence theorem under its direct `eLpNorm`-bounded
+hypothesis; the positive-part bridge is a separate source-facing algebra layer.
+-/
+theorem durrett2019_theorem_4_2_11_submartingale_exists_ae_tendsto_of_eLpNorm_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ μ)
+    {R : ℝ≥0} (hR : ∀ n, eLpNorm (X n) 1 μ ≤ R) :
+    ∀ᵐ ω ∂μ, ∃ x : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 x) :=
+  hX.exists_ae_tendsto_of_bdd hR
+
+/--
+Durrett 2019, Theorem 4.2.11, canonical limit-process form: the almost-sure
+limit can be chosen as mathlib's filtration limit process.
+-/
+theorem durrett2019_theorem_4_2_11_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ μ)
+    {R : ℝ≥0} (hR : ∀ n, eLpNorm (X n) 1 μ ≤ R) :
+    ∀ᵐ ω ∂μ, Tendsto (fun n => X n ω) atTop (𝓝 (ℱ.limitProcess X μ ω)) :=
+  hX.ae_tendsto_limitProcess hR
+
+/--
+Durrett 2019, Theorem 4.2.11: the canonical almost-sure limit is L1.
+-/
+theorem durrett2019_theorem_4_2_11_submartingale_limitProcess_memLp_one_of_eLpNorm_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ μ)
+    {R : ℝ≥0} (hR : ∀ n, eLpNorm (X n) 1 μ ≤ R) :
+    MemLp (ℱ.limitProcess X μ) 1 μ :=
+  hX.memLp_limitProcess hR
+
+/--
+Durrett 2019, Theorem 4.2.11: the canonical almost-sure limit is integrable.
+-/
+theorem durrett2019_theorem_4_2_11_submartingale_limitProcess_integrable_of_eLpNorm_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ μ)
+    {R : ℝ≥0} (hR : ∀ n, eLpNorm (X n) 1 μ ≤ R) :
+    Integrable (ℱ.limitProcess X μ) μ :=
+  (durrett2019_theorem_4_2_11_submartingale_limitProcess_memLp_one_of_eLpNorm_bdd
+    hX hR).integrable le_rfl
+
+/--
+Durrett 2019, Theorem 4.2.11 martingale consequence: an L1-bounded martingale
+converges almost surely to its filtration limit process.
+-/
+theorem durrett2019_theorem_4_2_11_martingale_ae_tendsto_limitProcess_of_eLpNorm_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ μ)
+    {R : ℝ≥0} (hR : ∀ n, eLpNorm (X n) 1 μ ≤ R) :
+    ∀ᵐ ω ∂μ, Tendsto (fun n => X n ω) atTop (𝓝 (ℱ.limitProcess X μ ω)) :=
+  durrett2019_theorem_4_2_11_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd
+    hX.submartingale hR
+
+/--
+Durrett 2019, Theorem 4.2.11 martingale consequence: the canonical martingale
+limit is integrable under the same L1-boundedness hypothesis.
+-/
+theorem durrett2019_theorem_4_2_11_martingale_limitProcess_integrable_of_eLpNorm_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ μ)
+    {R : ℝ≥0} (hR : ∀ n, eLpNorm (X n) 1 μ ≤ R) :
+    Integrable (ℱ.limitProcess X μ) μ :=
+  durrett2019_theorem_4_2_11_submartingale_limitProcess_integrable_of_eLpNorm_bdd
+    hX.submartingale hR
 
 /-! ## Durrett, Example 4.2.1 -/
 
