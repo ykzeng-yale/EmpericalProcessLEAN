@@ -807,5 +807,159 @@ theorem durrett2019_example_4_2_2_linearRandomWalk_quadraticMartingale_of_iIndep
         (μ := μ) hξ_sm hξ_indep n] with ω hω
     simpa [hξ_second_moment (n + 1)] using hω
 
+/-! ## Durrett, Example 4.2.3 -/
+
+/--
+Durrett 2019, Example 4.2.3, the product martingale candidate
+`M_n = Y_1 * ... * Y_n`.
+
+The Lean sequence `Y` is zero-indexed, so the textbook factor `Y_i` is
+represented by `Y i` and the finite product uses `Y (k + 1)`.
+-/
+def durrett2019_example_4_2_3_productProcess
+    {Ω : Type*} (Y : ℕ -> Ω -> ℝ) : ℕ -> Ω -> ℝ :=
+  fun n => ∏ k ∈ Finset.range n, Y (k + 1)
+
+@[simp]
+theorem durrett2019_example_4_2_3_productProcess_zero
+    {Ω : Type*} (Y : ℕ -> Ω -> ℝ) :
+    durrett2019_example_4_2_3_productProcess Y 0 = fun _ => 1 := by
+  ext ω
+  simp [durrett2019_example_4_2_3_productProcess]
+
+/--
+Durrett 2019, Example 4.2.3: product-process one-step identity
+`M_{n+1} = M_n * Y_{n+1}`.
+-/
+theorem durrett2019_example_4_2_3_productProcess_succ
+    {Ω : Type*} (Y : ℕ -> Ω -> ℝ) (n : ℕ) :
+    durrett2019_example_4_2_3_productProcess Y (n + 1) =
+      durrett2019_example_4_2_3_productProcess Y n * Y (n + 1) := by
+  ext ω
+  simp [durrett2019_example_4_2_3_productProcess, Finset.prod_range_succ]
+
+/--
+Durrett 2019, Example 4.2.3: the finite product is adapted to the natural
+filtration of its factors.
+-/
+theorem durrett2019_example_4_2_3_productProcess_stronglyAdapted_natural
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {Y : ℕ -> Ω -> ℝ}
+    (hY_sm : ∀ n, StronglyMeasurable (Y n)) :
+    StronglyAdapted (Filtration.natural Y hY_sm)
+      (durrett2019_example_4_2_3_productProcess Y) := by
+  intro n
+  change StronglyMeasurable[Filtration.natural Y hY_sm n]
+    (∏ k ∈ Finset.range n, Y (k + 1))
+  refine Finset.stronglyMeasurable_prod (s := Finset.range n)
+    (f := fun k => Y (k + 1)) fun k hk => ?_
+  exact
+    (Filtration.stronglyAdapted_natural (u := Y) hY_sm).stronglyMeasurable_le
+      (Nat.succ_le_of_lt (Finset.mem_range.mp hk))
+
+/--
+Durrett 2019, Example 4.2.3: finite products of independent integrable factors
+are integrable.
+-/
+theorem durrett2019_example_4_2_3_productProcess_integrable_of_iIndepFun
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Y : ℕ -> Ω -> ℝ}
+    (hY_sm : ∀ n, StronglyMeasurable (Y n))
+    (hY_int : ∀ n, Integrable (Y n) μ)
+    (hY_indep : _root_.ProbabilityTheory.iIndepFun Y μ) :
+    ∀ n, Integrable (durrett2019_example_4_2_3_productProcess Y n) μ := by
+  have hY_shift_indep :
+      _root_.ProbabilityTheory.iIndepFun (fun k => Y (k + 1)) μ :=
+    _root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hY_indep
+  intro n
+  induction n with
+  | zero =>
+      simp
+  | succ n ih =>
+      have hpast_future :
+          _root_.ProbabilityTheory.IndepFun
+            (durrett2019_example_4_2_3_productProcess Y n) (Y (n + 1)) μ := by
+        simpa [durrett2019_example_4_2_3_productProcess] using
+          hY_shift_indep.indepFun_prod_range_succ
+            (fun k => (hY_sm (k + 1)).measurable) n
+      have hmul_int :
+          Integrable
+            (durrett2019_example_4_2_3_productProcess Y n * Y (n + 1)) μ :=
+        hpast_future.integrable_mul ih (hY_int (n + 1))
+      simpa [durrett2019_example_4_2_3_productProcess_succ] using hmul_int
+
+/--
+Durrett 2019, Example 4.2.3, source conditional-expectation calculation:
+`E(M_{n+1} | F_n) = M_n * E(Y_{n+1} | F_n)`.
+-/
+theorem durrett2019_example_4_2_3_productProcess_condExp_succ_eq_past_mul_incrementMean
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {M Y : ℕ -> Ω -> ℝ}
+    (hM_adapted : StronglyAdapted ℱ M)
+    (hY_int : ∀ n, Integrable (Y n) μ)
+    (hMY_int : ∀ n, Integrable (M n * Y (n + 1)) μ)
+    (hStep : ∀ n, M (n + 1) =ᵐ[μ] M n * Y (n + 1))
+    (hY_cond : ∀ n, μ[Y (n + 1) | ℱ n] =ᵐ[μ]
+      fun _ => ∫ ω, Y (n + 1) ω ∂μ) (n : ℕ) :
+    μ[M (n + 1) | ℱ n] =ᵐ[μ]
+      fun ω => M n ω * ∫ ω', Y (n + 1) ω' ∂μ := by
+  refine (condExp_congr_ae (hStep n)).trans ?_
+  refine (condExp_mul_of_stronglyMeasurable_left
+    (hM_adapted n) (hMY_int n) (hY_int (n + 1))).trans ?_
+  simpa [Pi.mul_apply] using EventuallyEq.rfl.mul (hY_cond n)
+
+/--
+Durrett 2019, Example 4.2.3: the product process is a martingale when the
+factors are independent, integrable, and have mean one.
+-/
+theorem durrett2019_example_4_2_3_productProcess_martingale_of_iIndepFun_meanOne
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Y : ℕ -> Ω -> ℝ}
+    (hY_sm : ∀ n, StronglyMeasurable (Y n))
+    (hY_int : ∀ n, Integrable (Y n) μ)
+    (hY_indep : _root_.ProbabilityTheory.iIndepFun Y μ)
+    (hY_mean_one : ∀ n, (∫ ω, Y n ω ∂μ) = 1) :
+    Martingale
+      (durrett2019_example_4_2_3_productProcess Y)
+      (Filtration.natural Y hY_sm) μ := by
+  have hM_int :
+      ∀ n, Integrable (durrett2019_example_4_2_3_productProcess Y n) μ :=
+    durrett2019_example_4_2_3_productProcess_integrable_of_iIndepFun
+      (μ := μ) hY_sm hY_int hY_indep
+  have hY_shift_indep :
+      _root_.ProbabilityTheory.iIndepFun (fun k => Y (k + 1)) μ :=
+    _root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hY_indep
+  refine durrett2019_section_4_2_real_martingale_nat_of_condExp_succ
+    (durrett2019_example_4_2_3_productProcess_stronglyAdapted_natural hY_sm)
+    hM_int
+    ?_
+  intro n
+  have hMY_int :
+      ∀ n, Integrable
+        (durrett2019_example_4_2_3_productProcess Y n * Y (n + 1)) μ :=
+    fun n => by
+      have hpast_future_n :
+          _root_.ProbabilityTheory.IndepFun
+            (durrett2019_example_4_2_3_productProcess Y n) (Y (n + 1)) μ := by
+        simpa [durrett2019_example_4_2_3_productProcess] using
+          hY_shift_indep.indepFun_prod_range_succ
+            (fun k => (hY_sm (k + 1)).measurable) n
+      exact hpast_future_n.integrable_mul (hM_int n) (hY_int (n + 1))
+  filter_upwards
+    [durrett2019_example_4_2_3_productProcess_condExp_succ_eq_past_mul_incrementMean
+      (μ := μ) (ℱ := Filtration.natural Y hY_sm)
+      (M := durrett2019_example_4_2_3_productProcess Y) (Y := Y)
+      (durrett2019_example_4_2_3_productProcess_stronglyAdapted_natural hY_sm)
+      hY_int
+      hMY_int
+      (fun n =>
+        EventuallyEq.of_eq
+          (durrett2019_example_4_2_3_productProcess_succ Y n))
+      (fun n =>
+        durrett2019_example_4_2_1_increment_condExp_natural_ae_eq_integral_of_iIndepFun
+          (μ := μ) hY_sm hY_indep n)
+      n] with ω hω
+  simpa [hY_mean_one (n + 1)] using hω
+
 end ProbabilityTheory
 end StatInference
