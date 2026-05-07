@@ -132,57 +132,56 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V3
+## Live Goal Prompt V4
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Mission: finish the main-text Chewi Optimization 2026 formalization in Lean
-under `StatInference/Optimization` as fast as correctness allows.  Exercises
-may live in `StatInference/Optimization/Exercises.lean`, but they are not the
-main packet unless they unlock a source theorem.  Keep code/docs/comments in
-English; chat status may be Chinese/English mix.
+Mission: finish the main-text Chewi Optimization 2026 Lean formalization under
+`StatInference/Optimization` as fast as correctness allows.  Keep all
+code/docs/comments in English; chat updates may be Chinese/English mix.
+Exercises live only in `StatInference/Optimization/Exercises.lean` and must not
+consume the main theorem packet unless they unlock a main-text proof.
 
-Active packet: Chapter 12 ASGD Theorem 12.7/12.3 in
-`StatInference/Optimization/ASGD.lean`.  Reuse the compiled ASGD stack through
-the concrete scaled factors, random product bridge, characteristic-product
-integrability, the arbitrary `F_n`-measurable multiplier tower step
-`Chewi127BoundedMartingaleCLTSource.projected_charFun_taylor_step_mul_scaled`,
-and the proved conditional Taylor-remainder row convergence
-`Chewi127BoundedMartingaleCLTSource.projected_remainder_row_integral_tendsto_zero`.
+Current frontier: latest pushed Optimization commit is `a94b579 Prove Chewi
+ASGD remainder row convergence`.  The active module is
+`StatInference/Optimization/ASGD.lean`; the active source packet is Chapter 12
+ASGD Theorem 12.7/12.3, specifically the scalar bounded-martingale
+characteristic-function proof behind `projected_charFun_tendsto_exp`.
 
-Next endpoint: formalize Chewi's compensated martingale characteristic-function
-iteration
-`E exp(i X_N + compensated conditional variance) -> 1` using the arbitrary
-multiplier step; do not return to the exact random full-product model unless an
-extra future-factor measurability hypothesis is explicitly supplied.  Then
-close the remaining variance/convergence comparison from
-`n⁻¹ ∑ Xi_k -> S_infty` in probability to the Gaussian characteristic-function
-limit.
+Next theorem packet: prove Chewi's compensated martingale
+characteristic-function iteration
+`E exp(i X_N + compensated conditional variance) -> 1` using the compiled
+arbitrary-multiplier tower step
+`Chewi127BoundedMartingaleCLTSource.projected_charFun_taylor_step_mul_scaled`.
+Then discharge the variance/convergence comparison from
+`n⁻¹ ∑ Xi_k -> S_infty` in probability to the Gaussian
+`exp (-(S_infty L L) t^2 / 2)` characteristic-function limit, and wire it into
+the existing Theorem 12.7/12.3 certificate constructors.
 
-Reuse boundary: start from
-`StatInference.norm_prod_sub_prod_le_sum_norm_sub`,
-`chewi127_norm_prod_sub_prod_le_sum_norm_sub`, `integral_norm_condExp_le_integral_norm`,
-`chewi127ScalarCharFunTaylorRemainder_row_integral_le_of_uniform_bound`,
-`chewi127ScalarCharFunTaylorRemainder_row_bound_tendsto_zero`, the
-`chewi127ScalarCharFunProduct` measurability/integrability/norm lemmas, the
-named Chewi 12.7 factor definitions, and mathlib conditional Jensen
-`norm_condExp_le`.  Run at most one bounded API search for the exact missing
-compensated-iteration or variance-convergence estimate; then prove instead of
-re-planning.
+Reuse boundary: do not redo scaled-sum definitions, Cramér-Wold plumbing,
+bounded-tail/Lindeberg, Taylor expansion, conditional mean-zero/quadratic
+substitution, product measurability/integrability, finite product bounds, or
+conditional Taylor-remainder row convergence.  Reuse
+`projected_charFun_taylor_step_mul_scaled`,
+`projected_remainder_row_integral_tendsto_zero`, the named projected variance
+and remainder factors, `integral_norm_condExp_le_integral_norm`,
+`chewi127ScalarCharFunProduct` lemmas, and local product perturbation bridges.
+One bounded API search is allowed only for the exact compensated-iteration or
+bounded-continuous variance-convergence estimate; after that, prove.
 
-Execution gate: work in `/private/tmp/chewi-smpgd-probability`; state the exact
-Lean theorem before editing; run
-`lake env lean StatInference/Optimization/ASGD.lean`; promote public layers with
+Execution gate: use `/private/tmp/chewi-smpgd-probability`; before Lean edits
+state the exact theorem-sized target and fallback blocker.  Verify with
+`lake env lean StatInference/Optimization/ASGD.lean`; promote with
 `lake build StatInference.Optimization.ASGD`; scan for
-`sorry`/`admit`/`axiom`/`unsafe`, secrets, and `git diff --check`; update route
-docs only when the frontier or blocker changes; batch one final rebase, commit,
-and push.
+`sorry`/`admit`/`axiom`/`unsafe`, secrets, and `git diff --check`; update docs
+only for material frontier/blocker changes; fetch/rebase once before the final
+commit/push.
 
-Failure gate: record the exact theorem attempted, the stuck Lean goal or
-missing API, the bounded search performed, and two concrete continuation
-routes.  No vague "small gap" language and no prompt churn without verified
-proof progress or a precise blocker.
+Failure gate: if the theorem does not close, record the exact Lean statement,
+the stuck goal or missing API, the bounded search already tried, and two
+concrete continuation routes.  Avoid vague labels such as "next small gap" and
+avoid wording-only prompt churn.
 
 ## Accuracy And Speed Corrections From Process Audit
 
@@ -190,7 +189,7 @@ The main observed slowdown was not a lack of effort; it was spending too much
 of each run rediscovering context and producing small verified wrappers that
 did not remove the current endpoint assumption.  The current process is:
 
-1. Use `Live Goal Prompt V3` above before reading any archived route history.  Read
+1. Use `Live Goal Prompt V4` above before reading any archived route history.  Read
    older sections only when a named declaration cannot be found.
 2. Start each proof packet by writing or checking the exact target statement in
    Lean.  This prevents proving a convenient lemma that does not compose into
@@ -261,7 +260,7 @@ Use this shorter loop for each live `/goal` turn.  It is stricter than the
 archived automation prompts and should override them when they conflict.
 
 1. Orient once.  Check the worktree status, `origin/main`, the latest local
-   Optimization commit, and this file's `Live Goal Prompt V3`.  Do not
+   Optimization commit, and this file's `Live Goal Prompt V4`.  Do not
    spend the proof budget rereading old archived prompts unless a named
    dependency is missing.
 2. State the packet.  Before editing Lean, name one primary theorem-sized
