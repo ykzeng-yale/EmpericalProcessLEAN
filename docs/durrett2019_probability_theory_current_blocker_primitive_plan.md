@@ -212,10 +212,22 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_varianceGaussian`
 - `durrett2019_lindebergFellerRowSum`
 - `durrett2019_lindebergFellerRowIndependent`
+- `durrett2019_lindebergFellerMeanZero`
+- `durrett2019_lindebergFellerVarianceRowSum`
+- `durrett2019_lindebergFellerVarianceSumConvergence`
+- `durrett2019_lindebergFellerTailSecondMomentRowSum`
+- `durrett2019_lindebergFellerCondition`
 - `durrett2019_lindebergFellerGaussianProductConvergence`
+- `durrett2019_lindebergFellerGaussianProductConvergenceExp`
+- `Durrett2019LindebergFellerAnalyticCertificate`
+- `durrett2019_theorem_3_4_10_gaussian_characteristicFunction_eq_exp`
+- `durrett2019_theorem_3_4_10_gaussianProductConvergence_of_exp_tendsto`
+- `Durrett2019LindebergFellerAnalyticCertificate.gaussianProductConvergence`
 - `durrett2019_theorem_3_4_10_characteristicFunction_rowSum_eq_product`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_product_tendsto`
+- `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_exp_of_product_tendsto_exp`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_characteristicFunction_product_tendsto`
+- `durrett2019_theorem_3_4_10_lindebergFeller_of_analyticCertificate`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -266,9 +278,11 @@ compile:
 - Durrett Theorem 3.4.1 i.i.d. central limit theorem wrappers, both centered
   unit-variance and variance-Gaussian display forms.
 - Durrett Theorem 3.4.10 now has triangular-array row-sum notation, row-wise
-  independence, the row characteristic-function product formula, and a
-  source-facing bridge from supplied Gaussian product convergence to
-  convergence in distribution.
+  independence, textbook mean-zero/variance-sum/Lindeberg-tail predicates, the
+  explicit `exp(-sigma^2 t^2 / 2)` product-convergence interface, the Gaussian
+  characteristic-function display, the row characteristic-function product
+  formula, and source-facing bridges from supplied analytic product convergence
+  to convergence in distribution.
 
 The next likely packet should attack the analytic Lindeberg-Feller estimate
 layer before moving to multivariate CLT reuse:
@@ -279,10 +293,11 @@ layer before moving to multivariate CLT reuse:
 - Section 3.3 characteristic functions: the basic, continuity-theorem, and
   centered second-order Taylor wrappers now compile; only add inversion or
   uniqueness support when a later source theorem needs it directly.
-- Section 3.4 central limit theorems: prove or package that Durrett's
-  variance-sum and Lindeberg conditions imply
-  `durrett2019_lindebergFellerGaussianProductConvergence`; the finite-row
-  independence/product and Levy-continuity plumbing now compiles.
+- Section 3.4 central limit theorems: prove the remaining field
+  `Durrett2019LindebergFellerAnalyticCertificate.product_tendsto_exp` from the
+  mean-zero, variance-sum, and Lindeberg-tail hypotheses.  The finite-row
+  independence/product, explicit Gaussian characteristic-function display, and
+  Levy-continuity plumbing now compile.
 - Section 3.10 characteristic-function convergence, Cramer-Wold, and
   multivariate CLT: search `StatInference/AsymptoticStatistics` and local
   weak-convergence files before adding new primitives.
@@ -405,8 +420,11 @@ case, and 3.2.11 Portmanteau wrappers.  Chapter 3.3 now has compiled
 characteristic-function notation, Theorem 3.3.1 basic property wrappers, and
 Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem,
 and Theorem 3.3.20 centered second-order Taylor wrapper.  Chapter 3.4 now has
-Theorem 3.4.1 i.i.d. CLT wrappers.  Next search Lindeberg-Feller Theorem 3.4.10,
-triangular-array support, and Section 3.10 Cramer-Wold/multivariate CLT wrappers
-while checking local asymptotic-statistics reuse first.
+Theorem 3.4.1 i.i.d. CLT wrappers and Theorem 3.4.10
+triangular-array characteristic-function/product/certificate plumbing.  Next
+prove the Lindeberg-Feller analytic `product_tendsto_exp` field from the
+textbook variance and tail hypotheses before moving to Section 3.10
+Cramer-Wold/multivariate CLT wrappers while checking local asymptotic-statistics
+reuse first.
 Verify, update docs, commit/push, and keep this in-thread `/goal` state current.
 Report progress and blockers in Chinese/English mix.

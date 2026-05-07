@@ -1921,6 +1921,56 @@ def durrett2019_lindebergFellerRowIndependent
       ((Finset.range n).restrict (fun m : ℕ => X n m)) P
 
 /--
+Durrett 2019, Theorem 3.4.10, row-wise mean-zero assumption.
+-/
+def durrett2019_lindebergFellerMeanZero
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) : Prop :=
+  ∀ n m : ℕ, ∫ ω, X n m ω ∂P = 0
+
+/--
+Durrett 2019, Theorem 3.4.10, sum of the row variances.
+-/
+noncomputable def durrett2019_lindebergFellerVarianceRowSum
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (n : ℕ) : ℝ :=
+  ∑ m ∈ Finset.range n, _root_.ProbabilityTheory.variance (X n m) P
+
+/--
+Durrett 2019, Theorem 3.4.10, variance-sum convergence hypothesis.
+-/
+def durrett2019_lindebergFellerVarianceSumConvergence
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (varianceLimit : ℝ) : Prop :=
+  Tendsto
+    (fun n : ℕ => durrett2019_lindebergFellerVarianceRowSum P X n)
+    atTop (𝓝 varianceLimit)
+
+/--
+Durrett 2019, Theorem 3.4.10, one row's Lindeberg truncated second-moment sum
+at threshold `epsilon`.
+-/
+noncomputable def durrett2019_lindebergFellerTailSecondMomentRowSum
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (epsilon : ℝ) (n : ℕ) : ℝ :=
+  ∑ m ∈ Finset.range n,
+    ∫ ω,
+      Set.indicator {ω' : Ω | epsilon < |X n m ω'|}
+        (fun ω' : Ω => (X n m ω') ^ 2) ω ∂P
+
+/--
+Durrett 2019, Theorem 3.4.10, Lindeberg condition.
+-/
+def durrett2019_lindebergFellerCondition
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) : Prop :=
+  ∀ epsilon : ℝ, 0 < epsilon ->
+    Tendsto
+      (fun n : ℕ =>
+        durrett2019_lindebergFellerTailSecondMomentRowSum P X epsilon n)
+      atTop (𝓝 0)
+
+/--
 Durrett 2019, Theorem 3.4.10, characteristic-function convergence obligation
 after the Lindeberg estimates have reduced the proof to a product limit.
 -/
@@ -1935,6 +1985,86 @@ def durrett2019_lindebergFellerGaussianProductConvergence
       atTop
       (𝓝 (durrett2019_characteristicFunction
         (_root_.ProbabilityTheory.gaussianReal 0 varianceLimit.toNNReal) t))
+
+/--
+Durrett 2019, Theorem 3.4.10, explicit characteristic-function product limit
+used in the textbook proof:
+`prod_m phi_{n,m}(t) -> exp(-sigma^2 t^2 / 2)`.
+-/
+def durrett2019_lindebergFellerGaussianProductConvergenceExp
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (varianceLimit : ℝ) : Prop :=
+  ∀ t : ℝ,
+    Tendsto
+      (fun n : ℕ =>
+        ∏ m ∈ Finset.range n,
+          durrett2019_characteristicFunction (P.map (X n m)) t)
+      atTop
+      (𝓝 (Complex.exp (-(varianceLimit * t ^ 2 / 2 : ℝ))))
+
+/--
+Durrett 2019, Theorem 3.4.10, analytic certificate shape.
+
+The first three fields are the textbook hypotheses.  The final field is the
+remaining analytic estimate: those hypotheses imply the characteristic-product
+limit `exp(-sigma^2 t^2 / 2)`.
+-/
+structure Durrett2019LindebergFellerAnalyticCertificate
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (varianceLimit : ℝ) : Prop where
+  variance_pos : 0 < varianceLimit
+  mean_zero : durrett2019_lindebergFellerMeanZero P X
+  variance_sum :
+    durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit
+  lindeberg : durrett2019_lindebergFellerCondition P X
+  product_tendsto_exp :
+    durrett2019_lindebergFellerGaussianProductConvergenceExp P X varianceLimit
+
+/--
+Durrett 2019, Theorem 3.4.10, the Gaussian characteristic function in the
+explicit display used by the Lindeberg-Feller proof.
+-/
+theorem durrett2019_theorem_3_4_10_gaussian_characteristicFunction_eq_exp
+    {varianceLimit : ℝ} (hvariance_nonneg : 0 ≤ varianceLimit) (t : ℝ) :
+    durrett2019_characteristicFunction
+        (_root_.ProbabilityTheory.gaussianReal 0 varianceLimit.toNNReal) t =
+      Complex.exp (-(varianceLimit * t ^ 2 / 2 : ℝ)) := by
+  rw [durrett2019_characteristicFunction,
+    _root_.ProbabilityTheory.charFun_gaussianReal]
+  rw [Real.coe_toNNReal _ hvariance_nonneg]
+  simp
+
+/--
+Durrett 2019, Theorem 3.4.10, convert the textbook explicit product limit
+`exp(-sigma^2 t^2 / 2)` into the Gaussian-law characteristic-function limit.
+-/
+theorem durrett2019_theorem_3_4_10_gaussianProductConvergence_of_exp_tendsto
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hvariance_nonneg : 0 ≤ varianceLimit)
+    (hexp :
+      durrett2019_lindebergFellerGaussianProductConvergenceExp
+        P X varianceLimit) :
+    durrett2019_lindebergFellerGaussianProductConvergence
+      P X varianceLimit := by
+  intro t
+  simpa [durrett2019_theorem_3_4_10_gaussian_characteristicFunction_eq_exp
+      hvariance_nonneg t] using hexp t
+
+/--
+Durrett 2019, Theorem 3.4.10, a full analytic certificate supplies the Gaussian
+characteristic-product convergence consumed by the Lévy bridge.
+-/
+theorem Durrett2019LindebergFellerAnalyticCertificate.gaussianProductConvergence
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (C :
+      Durrett2019LindebergFellerAnalyticCertificate
+        P X varianceLimit) :
+    durrett2019_lindebergFellerGaussianProductConvergence
+      P X varianceLimit :=
+  durrett2019_theorem_3_4_10_gaussianProductConvergence_of_exp_tendsto
+    C.variance_pos.le C.product_tendsto_exp
 
 /--
 Durrett 2019, Theorem 3.4.10 proof bridge: row-wise independence gives the
@@ -1981,6 +2111,29 @@ theorem durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_prod
       (P := P) (X := X) hX hindep] using hprod t
 
 /--
+Durrett 2019, Theorem 3.4.10 proof bridge with the textbook's explicit
+Gaussian characteristic-function display.
+-/
+theorem durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_exp_of_product_tendsto_exp
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (hexp :
+      durrett2019_lindebergFellerGaussianProductConvergenceExp
+        P X varianceLimit) :
+    ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          durrett2019_characteristicFunction
+            (P.map (durrett2019_lindebergFellerRowSum X n)) t)
+        atTop
+        (𝓝 (Complex.exp (-(varianceLimit * t ^ 2 / 2 : ℝ)))) := by
+  intro t
+  simpa [durrett2019_theorem_3_4_10_characteristicFunction_rowSum_eq_product
+      (P := P) (X := X) hX hindep] using hexp t
+
+/--
 Durrett 2019, Theorem 3.4.10, Lindeberg-Feller source bridge.
 
 Once the Lindeberg-Feller estimates have supplied the row-wise characteristic
@@ -2012,6 +2165,28 @@ theorem durrett2019_theorem_3_4_10_lindebergFeller_of_characteristicFunction_pro
       durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_product_tendsto
         (P := P) (X := X) (varianceLimit := varianceLimit) hX hindep hprod t
     simpa [hY.map_eq] using hrow
+
+/--
+Durrett 2019, Theorem 3.4.10, source-facing bridge from the analytic
+Lindeberg-Feller certificate to convergence in distribution.
+-/
+theorem durrett2019_theorem_3_4_10_lindebergFeller_of_analyticCertificate
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ} {Y : Ω' -> ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (C :
+      Durrett2019LindebergFellerAnalyticCertificate
+        P X varianceLimit)
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 varianceLimit.toNNReal) P') :
+    TendstoInDistribution
+      (fun n => durrett2019_lindebergFellerRowSum X n)
+      atTop Y (fun _ => P) P' :=
+  durrett2019_theorem_3_4_10_lindebergFeller_of_characteristicFunction_product_tendsto
+    hX hindep C.gaussianProductConvergence hY
 
 /--
 Durrett early-chapter pi-system uniqueness shape.

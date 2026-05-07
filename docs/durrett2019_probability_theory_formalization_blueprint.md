@@ -367,14 +367,16 @@ Compiled Section 3.2 packets:
 - Durrett Theorem 3.4.10, Lindeberg-Feller for triangular arrays.  The
   compiled bridge covers row-sum notation, row-wise independence, finite-row
   characteristic-function products, product-to-row characteristic-function
-  convergence, and the Levy-continuity handoff from supplied Gaussian product
-  convergence to convergence in distribution.
+  convergence, textbook mean-zero/variance-sum/Lindeberg-tail predicates, the
+  explicit `exp(-sigma^2 t^2 / 2)` product-convergence interface, Gaussian
+  characteristic-function display, and the Levy-continuity handoff from a
+  supplied analytic certificate to convergence in distribution.
 
 Next packet candidates:
 
 - Section 3.4 Lindeberg-Feller analytic estimates: show that the variance-sum
   and Lindeberg tail hypotheses imply
-  `durrett2019_lindebergFellerGaussianProductConvergence`.
+  `Durrett2019LindebergFellerAnalyticCertificate.product_tendsto_exp`.
 - Section 3.3 inversion or uniqueness support, only when it is directly needed
   for the convergence theorem route.
 - Section 3.10 Cramer-Wold and multivariate CLT wrappers over existing local
