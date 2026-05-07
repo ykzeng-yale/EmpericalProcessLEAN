@@ -63,6 +63,8 @@ but keep every packet small and rebase-aware:
 - search pinned mathlib and local `StatInference` before introducing a new
   primitive;
 - prove one theorem-sized packet at a time, with names and comments in English;
+- keep every repository file, Lean declaration, doc update, and code comment in
+  English even when the chat discussion mixes English and Chinese;
 - run the focused Lean file before editing docs;
 - update route docs only after a real Lean declaration or precise blocker is
   known;
@@ -663,21 +665,28 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_mem_source_of_targetProbabilityLocalization_real`.
 216. Moment-equation solving probability for the canonical selected estimator:
    `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_solves_momentEquation_with_probability_of_targetProbabilityLocalization_real`.
+217. Bundled Chapter 4.1 selected-estimator conclusion package:
+   `Vaart1998FiniteCoordinateSelectedEstimatorTheorem41Conclusion`.
+218. Target-localization constructor for the bundled selected-estimator
+   conclusion:
+   `vaart1998_finiteCoordinateSelectedEstimatorTheorem41Conclusion_of_targetProbabilityLocalization_real`.
+219. Canonical vector-law/covariance source constructor for the bundled
+   selected-estimator conclusion:
+   `vaart1998_finiteCoordinateSelectedEstimatorTheorem41Conclusion_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`.
 
-Latest remote base before this packet: `41698a9`.
-Latest pushed Vaart packet before this packet: `aad7833`
-(`Add Vaart selected estimator canonical source wrapper`).
+Latest remote base before this packet: `54bb599`.
+Latest pushed Vaart packet before this packet: `455a207`
+(`Add Vaart selected estimator source probability wrappers`).
 
-The current theorem-sized packet adds the source-neighborhood and
-moment-equation solving probability consumers for the actual fallback-selected
-estimator.  Both are event-subset consequences of target-probability
-localization: on the target event the selected estimator is the local inverse.
+The current theorem-sized packet packages the selected-estimator Chapter 4.1
+source route behind a named conclusion structure.  The package bundles
+source-neighborhood probability, moment-equation solving probability, the
+`sqrt n` weak limit, Gaussianity of the limit, and the covariance-table display.
 
-The next aggressive packet should package the selected-estimator Chapter 4.1
-source route behind a smaller named source certificate, bundling the canonical
-source-neighborhood, moment-equation, weak-limit, Gaussian, and covariance-table
-conclusions.  Keep probability-tending-to-one target localization separate
-from per-`n` a.e. localization.
+The next aggressive packet should use this package as the stable handoff for
+Chapter 4.1 and then move to the next textbook theorem cluster: Chapter 5
+M-estimator/Z-estimator consistency or any remaining Chapter 4 corollary that
+can be stated from the bundled selected-estimator conclusion.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
@@ -687,6 +696,8 @@ spine is stable.  Those later chapters should be scouted in parallel only.
 
 - Treat this chat's `/goal` as the active Vaart formalization lane; do not
   create recurring automations for this work.
+- Keep all repository-facing text in English.  The chat can use mixed
+  English/Chinese, but files, Lean names, comments, and route docs should not.
 - Keep Vaart work in the dedicated Vaart worktree, and preserve unrelated
   commits or dirty files from other local agents.
 - Verify Vaart Lean packets with direct artifact compilation for the exact

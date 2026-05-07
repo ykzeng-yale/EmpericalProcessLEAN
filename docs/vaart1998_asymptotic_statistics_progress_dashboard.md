@@ -477,10 +477,18 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_solves_momentEquation_with_probability_of_targetProbabilityLocalization_real`
   transfer the target-probability localization event to the actual
   fallback-selected estimator.
+- Bundled selected-estimator Chapter 4.1 conclusion package:
+  `Vaart1998FiniteCoordinateSelectedEstimatorTheorem41Conclusion`,
+  `vaart1998_finiteCoordinateSelectedEstimatorTheorem41Conclusion_of_targetProbabilityLocalization_real`,
+  and
+  `vaart1998_finiteCoordinateSelectedEstimatorTheorem41Conclusion_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`
+  package source-neighborhood probability, moment-equation solving probability,
+  the weak limit, Gaussianity, and the covariance-table display into one
+  reusable theorem-facing object.
 
-Latest remote base before this packet: `41698a9`.  Latest pushed Vaart packet
-before this packet: `aad7833`
-(`Add Vaart selected estimator canonical source wrapper`).
+Latest remote base before this packet: `54bb599`.  Latest pushed Vaart packet
+before this packet: `455a207`
+(`Add Vaart selected estimator source probability wrappers`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .../MomentEstimators.olean -i .../MomentEstimators.ilean`
@@ -492,9 +500,10 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 by packaging the selected-estimator source route
-behind a smaller named source certificate, bundling the source-neighborhood,
-moment-equation, weak-limit, Gaussian, and covariance-table conclusions.
+Use the selected-estimator conclusion package as the stable Chapter 4.1 handoff,
+then move to the next theorem cluster: Chapter 5 M-estimator/Z-estimator
+consistency or any remaining Chapter 4 corollary that can be stated from the
+package.
 
 ## Reuse Dependencies
 

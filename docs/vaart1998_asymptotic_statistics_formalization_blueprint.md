@@ -440,6 +440,10 @@ Initial modules:
   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_solves_momentEquation_with_probability_of_targetProbabilityLocalization_real`
   move the remaining Chapter 4.1 existence/probability statements from the raw
   local-inverse candidate to the actual fallback-selected estimator.
+  The bundled conclusion package
+  `Vaart1998FiniteCoordinateSelectedEstimatorTheorem41Conclusion` and its
+  target-localization/canonical-source constructors now provide a compact
+  theorem-facing object for the selected-estimator Chapter 4.1 route.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
