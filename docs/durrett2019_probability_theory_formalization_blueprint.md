@@ -27,43 +27,21 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The Durrett lane is an active `/goal` in this chat, not a recurring automation.
-At the end of every cycle that proves, blocks, merges, commits, pushes, or
-materially changes the route, refresh the route state from:
+The current blocker plan contains the live `/goal` replacement prompt.  Use it
+when the app-level objective is older than the verified route docs; do not
+create a duplicate goal or recurring automation.
+
+For each cycle, route from:
 
 1. `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`;
 2. `docs/durrett2019_probability_theory_progress_dashboard.md`;
 3. this blueprint;
 4. the latest pushed commit and current remote contributions.
 
-Each refreshed in-thread target should name the latest verified declarations,
-one primary theorem target, independent support targets, search-first scope,
-verification gate, and report gate.  Do not replay a solved target.
-
-If the app-level `/goal` objective lags behind the latest pushed proof packets,
-do not create an automation or a duplicate goal.  Treat the route docs and the
-latest commit as the live target, then update the docs so the next compaction
-or agent handoff starts from the same frontier.
-
+Keep the cycle small and source-facing: sync, inspect the current theorem
+anchors, name the source item, target declaration, and consumed primitive,
+implement one theorem-sized Lean packet, verify, update docs, commit, and push.
 Use subagents only when the user explicitly authorizes parallel agent work.
-Otherwise, keep the active proof in this thread and improve throughput with
-search caching, isolated worktrees for long builds or disjoint local lanes, and
-one fetch/rebase pass at the start plus one immediately before push.
-
-Accuracy gates for each proof packet:
-
-1. Start from the latest route docs and pushed commit when the app-level
-   `/goal` text is stale.
-2. Name the source theorem/exercise, target Lean declaration, and consumed
-   local/mathlib primitive before editing.
-3. Prefer a compiled theorem-sized packet over broad exploration.  A new
-   assumption or certificate field must either match a textbook hypothesis or
-   shrink a named blocker into a smaller primitive.
-4. Report conditional wrappers as wrappers or bridges, not as completed exact
-   textbook theorem reports.
-5. End with focused verification for touched Lean files, promoted builds only
-   when the touched import surface requires them, scans, docs, final GitHub
-   sync, and a pushed commit.
 
 ## Status Vocabulary
 
