@@ -115,6 +115,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   distance/norm estimates; locally reuse the projected conditional mean-zero,
   projected conditional second-moment, averaged variance convergence,
   bounded-Lindeberg, scalar Lévy, and new charFun-source certificate layers.
+- New ASGD Taylor remainder declarations:
+  `chewi127_complex_exp_quadratic_remainder_norm_le` and
+  `chewi127_complex_exp_I_mul_quadratic_remainder_norm_le`.  These reuse
+  mathlib `Complex.norm_exp_sub_sum_le_norm_mul_exp` and give the analytic
+  one-step bound `exp(I*u) = 1 + I*u - u^2/2 + remainder`, with the remainder
+  norm controlled by `|u|^3 * exp |u|`.  The next scalar martingale CLT packet
+  should integrate this through conditional expectation, kill the linear term
+  with projected conditional mean-zero, identify the quadratic term with
+  projected conditional second moment, and then pass to the finite
+  product/tower estimate.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

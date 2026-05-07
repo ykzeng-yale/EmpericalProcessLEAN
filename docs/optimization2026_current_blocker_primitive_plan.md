@@ -248,7 +248,11 @@ Stable substrate:
   source is now compiled: it replaces the old `projected_clt` field by
   projected mean-zero plus explicit projected characteristic-function
   convergence, then constructs the old bounded source and the source-facing
-  martingale CLT certificate.
+  martingale CLT certificate.  The first analytic Taylor layer for the scalar
+  characteristic-function proof is also compiled:
+  `chewi127_complex_exp_quadratic_remainder_norm_le` and its source-shaped
+  real specialization
+  `chewi127_complex_exp_I_mul_quadratic_remainder_norm_le`.
 
 Current priority packet sequence:
 
@@ -269,10 +273,11 @@ Current priority packet sequence:
    identities for Theorem 11.8 only after the current ASGD packet would
    otherwise stall.
 
-Execution rule for the next proof run: implement the first hard scalar
-martingale characteristic-function theorem rather than another certificate
-wrapper.  Cached scout results found no direct martingale CLT in pinned
-mathlib/local code.  Useful mathlib APIs are
+Execution rule for the next proof run: use the compiled quadratic exponential
+remainder layer to implement the conditional one-step
+characteristic-function expansion, rather than another certificate wrapper.
+Cached scout results found no direct martingale CLT in pinned mathlib/local
+code.  Useful mathlib APIs are
 `MeasureTheory.Filtration.condExp_condExp`,
 `MeasureTheory.condExp_condExp_of_le`, `MeasureTheory.integral_condExp`,
 `condExp_mul_of_aestronglyMeasurable_left/right`,
@@ -285,10 +290,11 @@ mathlib/local code.  Useful mathlib APIs are
 `Chewi127ConditionalCovarianceProcess.condExp_projected_square_eq`,
 `Chewi127AveragedConditionalCovarianceLimit.variance_tendstoInMeasure`,
 `chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound`,
-`chewi127ScalarScaledSum_tendstoInDistribution_of_charFun`, and the new
-`Chewi127BoundedMartingaleCharFunCLTSource` conversion layer.  The next packet
-should target the conditional one-step characteristic-function expansion or the
-finite product/telescoping inequality that feeds
+`chewi127ScalarScaledSum_tendstoInDistribution_of_charFun`, the new
+`Chewi127BoundedMartingaleCharFunCLTSource` conversion layer, and the new
+quadratic exponential remainder lemmas.  The next packet should target the
+conditional one-step characteristic-function expansion, then the finite
+product/telescoping inequality that feeds
 `projected_charFun_tendsto_exp`.
 
 Keep exercise statements and cheap reusable exercise proofs in

@@ -1,5 +1,6 @@
 import StatInference.AsymptoticStatistics.MomentEstimators
 import StatInference.Optimization.StochasticGradient
+import Mathlib.Analysis.Complex.Exponential
 import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
 import Mathlib.Probability.Process.Adapted
 
@@ -264,6 +265,40 @@ theorem chewi127ScalarScaledSum_tendstoInDistribution_of_charFun
     refine ProbabilityMeasure.tendsto_iff_tendsto_charFun.mpr ?_
     intro t
     simpa using hchar t
+
+/--
+Quadratic Taylor remainder for the complex exponential.  This is the analytic
+one-step estimate behind the scalar martingale characteristic-function route:
+after substituting `z = I * u`, the displayed quadratic term is
+`1 + I u - u^2 / 2`.
+-/
+theorem chewi127_complex_exp_quadratic_remainder_norm_le (z : ℂ) :
+    ‖Complex.exp z - (1 + z + z ^ 2 / 2)‖ ≤ ‖z‖ ^ 3 * Real.exp ‖z‖ := by
+  simpa [Finset.sum_range_succ, Nat.factorial, div_eq_mul_inv, add_assoc,
+    add_comm, add_left_comm, mul_assoc, mul_comm, mul_left_comm] using
+    (Complex.norm_exp_sub_sum_le_norm_mul_exp z 3)
+
+/--
+Real scalar form of the quadratic exponential remainder used in the
+one-dimensional characteristic-function expansion.
+-/
+theorem chewi127_complex_exp_I_mul_quadratic_remainder_norm_le (u : ℝ) :
+    ‖Complex.exp ((u : ℂ) * Complex.I) -
+        (1 + (u : ℂ) * Complex.I - ((u ^ 2 / 2 : ℝ) : ℂ))‖
+      ≤ |u| ^ 3 * Real.exp |u| := by
+  have h := chewi127_complex_exp_quadratic_remainder_norm_le
+    ((u : ℂ) * Complex.I)
+  convert h using 1
+  · congr 1
+    have hsq :
+        ((u : ℂ) * Complex.I) ^ 2 / 2 =
+          -((u ^ 2 / 2 : ℝ) : ℂ) := by
+      rw [mul_pow, Complex.I_sq]
+      norm_num
+      ring_nf
+    rw [hsq]
+    ring_nf
+  · simp [Real.norm_eq_abs]
 
 /--
 The projected vector sum is the scalar sum of the projected increments.
