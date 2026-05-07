@@ -268,6 +268,10 @@ Initial modules:
   an infinite-product law for the full sample-vector sequence.  The wrapper
   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_commonVectorLawGaussianSource`
   feeds those fields directly into the coordinate-`MemLp` projected summand CLT.
+  The endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_commonVectorLawGaussianSource_real`
+  consumes the same strong vector-law source package at the Theorem 4.1
+  covariance-table boundary.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

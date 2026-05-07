@@ -292,9 +292,13 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinateSampleVector_iIndepFun_of_hasLaw_infinitePi`,
   `vaart1998_finiteCoordinateSampleVector_identDistrib_of_common_hasLaw`, and
   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_commonVectorLawGaussianSource`.
+- Theorem 4.1 covariance-table endpoint variant using coordinatewise `MemLp 2`,
+  a common vector law, and the infinite-product law of the sample-vector
+  sequence:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_commonVectorLawGaussianSource_real`.
 
-Latest remote base before this packet: `51b06b5`.  Latest pushed Vaart packet
-before this packet: `51b06b5` (`Add Vaart coordinate MemLp theorem 4.1 endpoint`).
+Latest remote base before this packet: `072e519`.  Latest pushed Vaart packet
+before this packet: `072e519` (`Add Vaart vector law source constructors`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -317,10 +321,11 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. expose the common-vector-law source bridge at the Theorem 4.1 covariance
-   table endpoint if it removes the remaining caller-side vector source fields;
-2. prove concrete iid sample-space/product-law constructors that supply the
+1. prove concrete iid sample-space/product-law constructors that supply the
    common vector law and infinite-product sequence law;
+2. prove coordinate LLN source constructors from vector laws only when the
+   theorem shape actually gives coordinate independence and identical
+   distribution by measurable projections;
 3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 

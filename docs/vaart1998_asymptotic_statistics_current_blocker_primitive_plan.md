@@ -447,25 +447,28 @@ Chapter 3 theorem-facing wrappers compiling:
    common vector law, and the infinite-product law of the sample-vector
    sequence:
    `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_commonVectorLawGaussianSource`.
+147. Theorem 4.1 covariance-table endpoint variant using coordinatewise
+   `MemLp 2`, a common vector law, and the infinite-product law of the
+   sample-vector sequence:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_commonVectorLawGaussianSource_real`.
 
-Latest remote base before this packet: `51b06b5`.
-Latest pushed Vaart packet before this packet: `51b06b5`
-(`Add Vaart coordinate MemLp theorem 4.1 endpoint`).
+Latest remote base before this packet: `072e519`.
+Latest pushed Vaart packet before this packet: `072e519`
+(`Add Vaart vector law source constructors`).
 
-The current theorem-sized packet discharges the remaining vector
-`iIndepFun`/`IdentDistrib` source fields from strong vector-law assumptions:
-a common law for each finite-coordinate sample vector and an infinite-product
-law for the full sample-vector sequence.  This is intentionally stronger than
-coordinatewise pairwise independence, and avoids the false implication from
-coordinatewise data to vector independence.
+The current theorem-sized packet exposes the common-vector-law source bridge at
+the Theorem 4.1 covariance-table endpoint.  It removes the caller-side vector
+`iIndepFun` and vector `IdentDistrib` fields, while intentionally keeping the
+coordinate LLN fields explicit because they belong to a separate source layer.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. expose the common-vector-law source bridge at the Theorem 4.1 covariance
-   table endpoint if it removes the remaining caller-side vector source fields;
-2. prove concrete iid sample-space/product-law constructors that supply the
+1. prove concrete iid sample-space/product-law constructors that supply the
    common vector law and infinite-product sequence law;
+2. prove coordinate LLN source constructors from vector laws only when the
+   theorem shape actually gives coordinate independence and identical
+   distribution by measurable projections;
 3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 
