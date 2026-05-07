@@ -1252,6 +1252,25 @@ theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine
       durrett2019_theorem_2_4_9_cutpointChain hepsilon hab)
 
 /--
+Durrett 2019, Theorem 2.4.9, source-facing empirical distribution-function
+form.
+
+In Durrett's notation, if `F_n(x) = n^{-1} * sum_{m <= n} 1{X_m <= x}` and
+`F(x) = P((-infty, x])`, then the local uniform-deviation predicate states
+`sup_x |F_n(x) - F(x)| -> 0` in the book-style outer probability or outer
+almost-sure sense.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    _root_.StatInference.RealEmpiricalCDFGlivenkoCantelliClass μ P X :=
+  _root_.StatInference.realEmpiricalCDFGlivenkoCantelliClass_of_realHalfLine
+    (durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine X hLaw hindep)
+
+/--
 Durrett 2019, Theorem 2.4.9, non-atomic half-line
 Glivenko-Cantelli package.
 

@@ -163,6 +163,13 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_monotone_subdivision_center_mem_cover`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms`
+- `empiricalDistributionFunction`
+- `empiricalDistributionFunction_eq_sum_div`
+- `empiricalDistributionFunction_samplePath_eq_range_sum`
+- `populationRisk_realHalfLineIndicator_eq_cdf`
+- `RealEmpiricalCDFGlivenkoCantelliClass`
+- `realEmpiricalCDFGlivenkoCantelliClass_of_realHalfLine`
+- `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -310,9 +317,16 @@ cell has small CDF increment once it avoids the selected center.
 The Durrett wrappers `durrett2019_theorem_2_4_9_cutpointChain`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_punctured_cover`,
 and `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine` now compile.
+The source-facing empirical distribution-function statement also compiles:
+`empiricalDistributionFunction` is the finite-sample `F_n(x)` notation,
+`RealEmpiricalCDFGlivenkoCantelliClass` spells out the local uniform
+`sup_x |F_n(x) - F(x)| -> 0` predicate, and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`
+bridges the arbitrary-law half-line GC theorem to Durrett's Theorem 2.4.9
+source notation.
 
 Parallel target: Chapter 2.1 exact iid/product notation refinements only if
-the GC grid blocks.  Theorem 2.1.7 generated-pi-system bridges, Theorem 2.1.8
+the next chapter route blocks.  Theorem 2.1.7 generated-pi-system bridges, Theorem 2.1.8
 generated-rectangle and real lower-halfline criteria, Theorem 2.1.9 grouped
 sigma-field bridge, Theorem 2.1.10 finite disjoint-block function bridges, and
 Theorem 2.1.11 finite product-law wrappers now compile.
@@ -370,6 +384,8 @@ Pinned mathlib search scope:
    inspect `RealHalfLineGC.lean`, prove the arbitrary-distribution middle CDF
    partition constructor, then feed
    `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
+   Done through the arbitrary-law half-line theorem and the source-facing
+   empirical distribution-function wrapper.
 6. Search and package independence/product-law wrappers for Theorems 2.1.7,
    2.1.10, 2.1.11, 2.1.12, and 2.1.13.  Reuse finite-`Pi` and product measure
    wrappers from `ProbabilityMeasure/ProductMeasure.lean` wherever possible.
@@ -392,10 +408,11 @@ this file plus the Durrett dashboard and blueprint, and scanning the current
 `StatInference/EmpiricalProcess/RealHalfLineGC.lean` modules.  Primary target:
 do not return to the old center-insertion blocker.  Durrett Theorem 2.4.9
 arbitrary-law half-line GC now compiles through the punctured-cell splitting
-route.  The next aggressive primitive should either tighten the source-facing
-empirical-distribution-function statement around the exact Durrett notation, or
-polish Chapter 2.1 iid/product notation wrappers now that the GC grid core is
-closed.  After that, start the next high-value Durrett chapter spine by
-searching mathlib/local weak-convergence, characteristic-function, and normal
-law APIs.  Verify, update docs, commit/push, and keep this in-thread `/goal`
-state current.  Report progress and blockers in Chinese/English mix.
+route, and the source-facing empirical-distribution-function statement around
+Durrett's `F_n` notation now compiles.  The next aggressive primitive should
+polish Chapter 2.1 iid/product notation wrappers now that the GC grid and EDF
+source statement are closed.  After that, start the next high-value Durrett
+chapter spine by searching mathlib/local weak-convergence,
+characteristic-function, and normal-law APIs.  Verify, update docs,
+commit/push, and keep this in-thread `/goal` state current.  Report progress
+and blockers in Chinese/English mix.

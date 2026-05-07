@@ -181,6 +181,11 @@ Compiled first source wrappers:
   `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement`
   and
   `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`.
+- Durrett Theorem 2.4.9 source-facing empirical distribution-function layer:
+  `empiricalDistributionFunction`,
+  `RealEmpiricalCDFGlivenkoCantelliClass`, and
+  `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`
+  package the local `sup_x |F_n(x) - F(x)| -> 0` predicate.
 - Durrett Theorem 2.4.9 atom-aware endpoint-grid handoff:
   `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refinement`
   and
