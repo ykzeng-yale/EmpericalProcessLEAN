@@ -364,12 +364,19 @@ Compiled Section 3.2 packets:
   exposes the Taylor estimate used in the i.i.d. CLT proof.
 - Durrett Theorem 3.4.1, i.i.d. central limit theorem.  The compiled wrappers
   cover centered unit-variance and variance-Gaussian display forms.
+- Durrett Theorem 3.4.10, Lindeberg-Feller for triangular arrays.  The
+  compiled bridge covers row-sum notation, row-wise independence, finite-row
+  characteristic-function products, product-to-row characteristic-function
+  convergence, and the Levy-continuity handoff from supplied Gaussian product
+  convergence to convergence in distribution.
 
 Next packet candidates:
 
+- Section 3.4 Lindeberg-Feller analytic estimates: show that the variance-sum
+  and Lindeberg tail hypotheses imply
+  `durrett2019_lindebergFellerGaussianProductConvergence`.
 - Section 3.3 inversion or uniqueness support, only when it is directly needed
   for the convergence theorem route.
-- Section 3.4 Lindeberg-Feller Theorem 3.4.10 and triangular-array CLT support.
 - Section 3.10 Cramer-Wold and multivariate CLT wrappers over existing local
   asymptotic-statistics finite-dimensional convergence code.
 

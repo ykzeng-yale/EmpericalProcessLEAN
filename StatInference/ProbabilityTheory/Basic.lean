@@ -1900,6 +1900,120 @@ theorem durrett2019_theorem_3_4_1_centralLimitTheorem_varianceGaussian
     hY hX hindep hident
 
 /--
+Durrett 2019, Theorem 3.4.10, triangular-array row sum notation.
+
+The textbook indexes row `n` by `1 <= m <= n`; this Lean wrapper uses the
+zero-based row `m in Finset.range n`.
+-/
+def durrett2019_lindebergFellerRowSum
+    {Ω : Type u} (X : ℕ -> ℕ -> Ω -> ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  ∑ m ∈ Finset.range n, X n m ω
+
+/--
+Durrett 2019, Theorem 3.4.10, row-wise finite independence for a triangular
+array.
+-/
+def durrett2019_lindebergFellerRowIndependent
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) : Prop :=
+  ∀ n : ℕ,
+    _root_.ProbabilityTheory.iIndepFun
+      ((Finset.range n).restrict (fun m : ℕ => X n m)) P
+
+/--
+Durrett 2019, Theorem 3.4.10, characteristic-function convergence obligation
+after the Lindeberg estimates have reduced the proof to a product limit.
+-/
+def durrett2019_lindebergFellerGaussianProductConvergence
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (varianceLimit : ℝ) : Prop :=
+  ∀ t : ℝ,
+    Tendsto
+      (fun n : ℕ =>
+        ∏ m ∈ Finset.range n,
+          durrett2019_characteristicFunction (P.map (X n m)) t)
+      atTop
+      (𝓝 (durrett2019_characteristicFunction
+        (_root_.ProbabilityTheory.gaussianReal 0 varianceLimit.toNNReal) t))
+
+/--
+Durrett 2019, Theorem 3.4.10 proof bridge: row-wise independence gives the
+product formula for the characteristic function of each triangular-array row
+sum.
+-/
+theorem durrett2019_theorem_3_4_10_characteristicFunction_rowSum_eq_product
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (n : ℕ) (t : ℝ) :
+    durrett2019_characteristicFunction
+        (P.map (durrett2019_lindebergFellerRowSum X n)) t =
+      ∏ m ∈ Finset.range n,
+        durrett2019_characteristicFunction (P.map (X n m)) t := by
+  have hfun :=
+    _root_.ProbabilityTheory.iIndepFun.charFun_map_fun_finsetSum_eq_prod
+      (P := P) (X := fun m : ℕ => X n m) (s := Finset.range n)
+      (fun m _hm => hX n m) (hindep n)
+  simpa [durrett2019_characteristicFunction, durrett2019_lindebergFellerRowSum,
+    Pi.mul_apply] using congrFun hfun t
+
+/--
+Durrett 2019, Theorem 3.4.10 proof bridge: a supplied product convergence
+estimate gives convergence of the row-sum characteristic functions.
+-/
+theorem durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_product_tendsto
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (hprod : durrett2019_lindebergFellerGaussianProductConvergence P X varianceLimit) :
+    ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          durrett2019_characteristicFunction
+            (P.map (durrett2019_lindebergFellerRowSum X n)) t)
+        atTop
+        (𝓝 (durrett2019_characteristicFunction
+          (_root_.ProbabilityTheory.gaussianReal 0 varianceLimit.toNNReal) t)) := by
+  intro t
+  simpa [durrett2019_theorem_3_4_10_characteristicFunction_rowSum_eq_product
+      (P := P) (X := X) hX hindep] using hprod t
+
+/--
+Durrett 2019, Theorem 3.4.10, Lindeberg-Feller source bridge.
+
+Once the Lindeberg-Feller estimates have supplied the row-wise characteristic
+function product convergence to the Gaussian limit, Lévy's continuity theorem
+gives convergence in distribution of the triangular-array row sums.
+-/
+theorem durrett2019_theorem_3_4_10_lindebergFeller_of_characteristicFunction_product_tendsto
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ} {Y : Ω' -> ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (hprod : durrett2019_lindebergFellerGaussianProductConvergence P X varianceLimit)
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 varianceLimit.toNNReal) P') :
+    TendstoInDistribution
+      (fun n => durrett2019_lindebergFellerRowSum X n)
+      atTop Y (fun _ => P) P' := by
+  refine
+    durrett2019_theorem_3_3_17_tendstoInDistribution_of_characteristicFunction_tendsto
+      (X := fun n => durrett2019_lindebergFellerRowSum X n) (Z := Y)
+      ?_ hY.aemeasurable ?_
+  · intro n
+    unfold durrett2019_lindebergFellerRowSum
+    exact Finset.aemeasurable_fun_sum _ fun m _hm => hX n m
+  · intro t
+    have hrow :=
+      durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_product_tendsto
+        (P := P) (X := X) (varianceLimit := varianceLimit) hX hindep hprod t
+    simpa [hY.map_eq] using hrow
+
+/--
 Durrett early-chapter pi-system uniqueness shape.
 
 Probability laws agreeing on a pi-system that generates the measurable space

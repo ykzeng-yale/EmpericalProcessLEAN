@@ -102,6 +102,12 @@ micro-packets that do not move a source theorem.
     file because the tool can only complete the goal, not rewrite it.  When the
     objective is stale, route from this file, the dashboard, the blueprint, and
     the latest pushed commit.  Do not create an automation as a workaround.
+13. User-correction handling.  If the user corrects the workflow, codify the
+    correction in this file and the dashboard before the next handoff.  In this
+    lane the standing correction is: keep the Durrett work in the current chat,
+    do not create recurring automations, do not spawn agents without explicit
+    authorization, and keep all file/code text in English while using bilingual
+    chat updates.
 
 ## Current Blocker
 
@@ -204,6 +210,12 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_3_20_characteristicFunction_secondOrder_centered_unitVariance`
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_centered_unitVariance`
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_varianceGaussian`
+- `durrett2019_lindebergFellerRowSum`
+- `durrett2019_lindebergFellerRowIndependent`
+- `durrett2019_lindebergFellerGaussianProductConvergence`
+- `durrett2019_theorem_3_4_10_characteristicFunction_rowSum_eq_product`
+- `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_product_tendsto`
+- `durrett2019_theorem_3_4_10_lindebergFeller_of_characteristicFunction_product_tendsto`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -253,9 +265,13 @@ compile:
   function expansion at zero.
 - Durrett Theorem 3.4.1 i.i.d. central limit theorem wrappers, both centered
   unit-variance and variance-Gaussian display forms.
+- Durrett Theorem 3.4.10 now has triangular-array row-sum notation, row-wise
+  independence, the row characteristic-function product formula, and a
+  source-facing bridge from supplied Gaussian product convergence to
+  convergence in distribution.
 
-The next likely packet should search Lindeberg-Feller and multivariate CLT reuse before
-adding new primitives:
+The next likely packet should attack the analytic Lindeberg-Feller estimate
+layer before moving to multivariate CLT reuse:
 
 - Definition/Section 3.2 weak convergence of random variables: reuse
   `MeasureTheory.TendstoInDistribution` and
@@ -263,8 +279,10 @@ adding new primitives:
 - Section 3.3 characteristic functions: the basic, continuity-theorem, and
   centered second-order Taylor wrappers now compile; only add inversion or
   uniqueness support when a later source theorem needs it directly.
-- Section 3.4 central limit theorems: search for Lindeberg-Feller and
-  triangular-array support before building local abstractions.
+- Section 3.4 central limit theorems: prove or package that Durrett's
+  variance-sum and Lindeberg conditions imply
+  `durrett2019_lindebergFellerGaussianProductConvergence`; the finite-row
+  independence/product and Levy-continuity plumbing now compiles.
 - Section 3.10 characteristic-function convergence, Cramer-Wold, and
   multivariate CLT: search `StatInference/AsymptoticStatistics` and local
   weak-convergence files before adding new primitives.
@@ -283,6 +301,8 @@ High-value Chapter 3 source anchors are in
 - Theorem 3.3.20 appears near line 898.
 - Section 3.4 Central Limit Theorems starts near line 1228.
 - Theorem 3.4.1 appears near line 1234.
+- Theorem 3.4.10 Lindeberg-Feller for triangular arrays appears near
+  lines 1413-1465.
 - Section 3.10 multivariate weak convergence starts near line 3643.
 - Theorems 3.10.1, 3.10.5, 3.10.6, and 3.10.7 appear near lines
   3647, 3778, 3784, and 3789.
