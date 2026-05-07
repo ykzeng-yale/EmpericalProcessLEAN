@@ -459,21 +459,32 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_finiteCoordinateCanonicalSampleVector_sequence_hasLaw`.
 150. Canonical iid finite-coordinate sample-vector common-law source package:
    `vaart1998_finiteCoordinateCanonicalSampleVector_commonVectorLawSource`.
+151. Coordinate-projected `iIndepFun` from vector `iIndepFun` and coordinate
+   evaluation measurability:
+   `vaart1998_finiteCoordinateCoordinate_iIndepFun_of_vector_iIndepFun`.
+152. Coordinate-projected pairwise `IndepFun` from vector `iIndepFun`:
+   `vaart1998_finiteCoordinateCoordinate_pairwise_indepFun_of_vector_iIndepFun`.
+153. Coordinate-projected `IdentDistrib` from vector `IdentDistrib`:
+   `vaart1998_finiteCoordinateCoordinate_identDistrib_of_vector_identDistrib`.
+154. Coordinate LLN source package from a common vector law, infinite-product
+   sequence law, and coordinate evaluation measurability:
+   `vaart1998_finiteCoordinateCoordinateLLNSource_of_commonVectorLaw`.
 
-Latest remote base before this packet: `5a2efe`.
-Latest pushed Vaart packet before this packet: `bad8249`
-(`Add Vaart common vector law theorem 4.1 endpoint`).
+Latest remote base before this packet: `04f304`.
+Latest pushed Vaart packet before this packet: `1060ecc`
+(`Add Vaart canonical product law source`).
 
-The current theorem-sized packet supplies a concrete canonical iid product
-sample-space constructor for the common vector law and infinite-product
-sequence law consumed by the new Theorem 4.1 endpoint wrappers.
+The current theorem-sized packet projects vector source assumptions into the
+coordinate LLN independence and identical-distribution fields, using explicit
+coordinate evaluation measurability rather than assuming any particular
+measurable-space implementation for `(Coordinate -> ℝ)`.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. prove coordinate LLN source constructors from vector laws only when the
-   theorem shape actually gives coordinate independence and identical
-   distribution by measurable projections;
+1. expose a Theorem 4.1 endpoint wrapper that consumes the common-vector-law
+   and coordinate-evaluation-measurability source package, while keeping plain
+   coordinate measurability explicit;
 2. instantiate the Theorem 4.1 endpoint for the canonical product sample space
    only if the remaining coordinate `MemLp`, measurability, and LLN fields can
    be supplied without adding opaque assumptions;

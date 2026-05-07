@@ -978,6 +978,98 @@ theorem vaart1998_finiteCoordinateSampleVector_identDistrib_of_common_hasLaw
   exact (hX_law i).identDistrib (hX_law 0)
 
 /--
+Coordinate projections of independent finite-coordinate sample vectors are
+independent scalar samples.
+-/
+theorem vaart1998_finiteCoordinateCoordinate_iIndepFun_of_vector_iIndepFun
+    {Coordinate Ω : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} {X : Coordinate -> ℕ -> Ω -> ℝ}
+    (coordinate : Coordinate)
+    (hcoordinate_meas :
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate))
+    (hX_indep : iIndepFun (fun i => vaart1998_finiteCoordinateSampleVector X i) P) :
+    iIndepFun (fun i => X coordinate i) P := by
+  have h :=
+    hX_indep.comp
+      (fun _ => fun sampleVector : Coordinate -> ℝ => sampleVector coordinate)
+      (fun _ => hcoordinate_meas)
+  simpa [vaart1998_finiteCoordinateSampleVector, Function.comp_def] using h
+
+/--
+Coordinate projections of independent finite-coordinate sample vectors are
+pairwise independent scalar samples.
+-/
+theorem vaart1998_finiteCoordinateCoordinate_pairwise_indepFun_of_vector_iIndepFun
+    {Coordinate Ω : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} {X : Coordinate -> ℕ -> Ω -> ℝ}
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate))
+    (hX_indep : iIndepFun (fun i => vaart1998_finiteCoordinateSampleVector X i) P) :
+    ∀ coordinate, Pairwise fun i j =>
+      _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P := by
+  intro coordinate i j hij
+  exact
+    (vaart1998_finiteCoordinateCoordinate_iIndepFun_of_vector_iIndepFun
+      (P := P) (X := X) coordinate (hcoordinate_meas coordinate) hX_indep).indepFun hij
+
+/--
+Coordinate projections of identically distributed finite-coordinate sample
+vectors are identically distributed scalar samples.
+-/
+theorem vaart1998_finiteCoordinateCoordinate_identDistrib_of_vector_identDistrib
+    {Coordinate Ω : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} {X : Coordinate -> ℕ -> Ω -> ℝ}
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate))
+    (hX_ident : ∀ i : ℕ,
+      IdentDistrib
+        (vaart1998_finiteCoordinateSampleVector X i)
+        (vaart1998_finiteCoordinateSampleVector X 0) P P) :
+    ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P := by
+  intro coordinate i
+  simpa [vaart1998_finiteCoordinateSampleVector, Function.comp_def] using
+    (hX_ident i).comp (hcoordinate_meas coordinate)
+
+/--
+A common finite-coordinate vector law plus the infinite-product law of the
+sample-vector sequence supplies the coordinate LLN independence and identical
+distribution source fields.
+-/
+theorem vaart1998_finiteCoordinateCoordinateLLNSource_of_commonVectorLaw
+    {Coordinate Ω : Type*} [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {ν : Measure (Coordinate -> ℝ)}
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate))
+    (hX_vector_law : ∀ i : ℕ,
+      HasLaw (vaart1998_finiteCoordinateSampleVector X i) ν P)
+    (hX_sequence_law :
+      HasLaw (fun ω i => vaart1998_finiteCoordinateSampleVector X i ω)
+        (Measure.infinitePi (fun _ : ℕ => ν)) P) :
+    (∀ coordinate, Pairwise fun i j =>
+      _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P) ∧
+    (∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P) := by
+  have hX_vector_indep :
+      iIndepFun (fun i => vaart1998_finiteCoordinateSampleVector X i) P :=
+    vaart1998_finiteCoordinateSampleVector_iIndepFun_of_hasLaw_infinitePi
+      (P := P) (X := X) (ν := fun _ : ℕ => ν) hX_vector_law hX_sequence_law
+  have hX_vector_ident : ∀ i : ℕ,
+      IdentDistrib
+        (vaart1998_finiteCoordinateSampleVector X i)
+        (vaart1998_finiteCoordinateSampleVector X 0) P P :=
+    vaart1998_finiteCoordinateSampleVector_identDistrib_of_common_hasLaw
+      (P := P) (X := X) hX_vector_law
+  exact
+    ⟨vaart1998_finiteCoordinateCoordinate_pairwise_indepFun_of_vector_iIndepFun
+        (P := P) (X := X) hcoordinate_meas hX_vector_indep,
+      vaart1998_finiteCoordinateCoordinate_identDistrib_of_vector_identDistrib
+        (P := P) (X := X) hcoordinate_meas hX_vector_ident⟩
+
+/--
 Canonical iid finite-coordinate samples on the infinite-product space have the
 common vector law.
 -/

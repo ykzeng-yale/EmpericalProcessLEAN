@@ -277,6 +277,10 @@ Initial modules:
   `vaart1998_finiteCoordinateCanonicalSampleVector_sequence_hasLaw`, and
   `vaart1998_finiteCoordinateCanonicalSampleVector_commonVectorLawSource`
   instantiate that source package on `Measure.infinitePi (fun _ : ℕ => ν)`.
+  The coordinate LLN source wrapper
+  `vaart1998_finiteCoordinateCoordinateLLNSource_of_commonVectorLaw` projects
+  those vector laws to coordinate pairwise independence and identical
+  distribution when coordinate evaluation is measurable.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

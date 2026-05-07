@@ -300,9 +300,15 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinateCanonicalSampleVector_hasLaw`,
   `vaart1998_finiteCoordinateCanonicalSampleVector_sequence_hasLaw`, and
   `vaart1998_finiteCoordinateCanonicalSampleVector_commonVectorLawSource`.
+- Coordinate LLN source constructors from vector source assumptions plus
+  coordinate evaluation measurability:
+  `vaart1998_finiteCoordinateCoordinate_iIndepFun_of_vector_iIndepFun`,
+  `vaart1998_finiteCoordinateCoordinate_pairwise_indepFun_of_vector_iIndepFun`,
+  `vaart1998_finiteCoordinateCoordinate_identDistrib_of_vector_identDistrib`,
+  and `vaart1998_finiteCoordinateCoordinateLLNSource_of_commonVectorLaw`.
 
-Latest remote base before this packet: `5a2efe`.  Latest pushed Vaart packet
-before this packet: `bad8249` (`Add Vaart common vector law theorem 4.1 endpoint`).
+Latest remote base before this packet: `04f304`.  Latest pushed Vaart packet
+before this packet: `1060ecc` (`Add Vaart canonical product law source`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -325,9 +331,9 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. prove coordinate LLN source constructors from vector laws only when the
-   theorem shape actually gives coordinate independence and identical
-   distribution by measurable projections;
+1. expose a Theorem 4.1 endpoint wrapper that consumes the common-vector-law
+   and coordinate-evaluation-measurability source package, while keeping plain
+   coordinate measurability explicit;
 2. instantiate the Theorem 4.1 endpoint for the canonical product sample space
    only if the remaining coordinate `MemLp`, measurability, and LLN fields can
    be supplied without adding opaque assumptions;
