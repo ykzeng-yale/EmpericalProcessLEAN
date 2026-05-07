@@ -448,9 +448,16 @@ Gaussian limit.  The next packet compiles `chewi127ScaledNoiseSum`,
 `Chewi127MartingaleDifferenceProcess.integral_linear_next_eq_zero`, and
 `Chewi127ConditionalCovarianceProcess.integral_Xi_next_eq_integral_second_moment`.
 These definitions and integral identities are the exact source interfaces for
-`n^{-1/2} sum xi_k` and `n^{-1} sum Xi_k`.  The next ASGD target is a bounded
-martingale CLT certificate constructor from these process/covariance
-interfaces and exact quadratic ASGD recurrence assembly.
+`n^{-1/2} sum xi_k` and `n^{-1} sum Xi_k`.  The newest recurrence packet adds
+the source quadratic-ASGD update interface, ordered transition products,
+noise coefficients, finite pointwise unrolling, and averaged nested unrolling:
+`chewi123QuadraticStepMap`, `chewi123_quadratic_delta_step`,
+`IsChewi123QuadraticASGDTrajectory.delta_step`,
+`chewi123_quadratic_delta_unroll`, and
+`chewi123_quadratic_average_delta_unroll_nested` are now compiled.  The next
+ASGD target is the triangular reindexing that packages the nested noise sum
+as Chewi's `M_k^n` coefficients, then the bounded martingale CLT certificate
+constructor from the process/covariance interfaces.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

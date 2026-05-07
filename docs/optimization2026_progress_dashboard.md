@@ -42,10 +42,10 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current proof worktree: use `/private/tmp/chewi-smpgd-probability` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
-- Current priority sequence: `ASGD-rec` quadratic recurrence/unrolling,
-  `ASGD-CLT` bounded martingale certificate constructor, `ASGD-endpoint`
-  source ASGD limit wrapper, then the concrete Sinkhorn row/column KL identity
-  layer if ASGD stalls.
+- Current priority sequence: `ASGD-triangle` triangular regrouping into
+  Chewi's `M_k^n` coefficients, `ASGD-CLT` bounded martingale certificate
+  constructor, `ASGD-endpoint` source ASGD limit wrapper, then the concrete
+  Sinkhorn row/column KL identity layer if ASGD stalls.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
@@ -493,9 +493,22 @@ Gaussian covariance.  The newest source-interface packet compiles
 `chewi127_martingaleCLTCertificate_of_scaledNoiseSum`,
 `Chewi127MartingaleDifferenceProcess.integral_linear_next_eq_zero`, and
 `Chewi127ConditionalCovarianceProcess.integral_Xi_next_eq_integral_second_moment`.
-The active Chapter 12 blocker is now a bounded martingale CLT certificate
-constructor from these process/covariance interfaces and exact quadratic ASGD
-recurrence assembly.
+The newest quadratic-ASGD recurrence packet compiles
+`chewi123QuadraticStepMap`, `chewi123_quadratic_delta_step`,
+`IsChewi123QuadraticASGDTrajectory`,
+`IsChewi123QuadraticASGDTrajectory.delta_step`,
+`chewi123TransitionProductFrom`,
+`chewi123TransitionProductFrom_succ_apply`, `chewi123NoiseCoefficient`,
+`chewi123_stepMap_noiseCoefficient_apply`,
+`chewi123_quadratic_delta_unroll`,
+`IsChewi123QuadraticASGDTrajectory.delta_unroll`,
+`chewi123_quadratic_average_delta_unroll_nested`, and
+`IsChewi123QuadraticASGDTrajectory.average_delta_unroll_nested`.  This closes
+the exact source one-step recurrence, ordered transition product, finite
+unrolling, and averaged nested display before `(12.5)`.  The active Chapter 12
+blocker is now triangular regrouping of the nested noise sum into Chewi's
+`M_k^n` coefficients, then a bounded martingale CLT certificate constructor
+from the process/covariance interfaces.
 
 ## Initial Reuse Audit
 
