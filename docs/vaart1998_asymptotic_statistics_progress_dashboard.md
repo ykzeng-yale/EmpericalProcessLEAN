@@ -629,10 +629,11 @@ Live continuation prompt: use the compact prompt in
 ## Next Aggressive Target
 
 Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41 in
-`MEstimators.lean`: the analytic Taylor-expansion display for
-`Psi_n(thetaHat_n)`, the quadratic residual identity, and the dominated
-operator-norm bound for the random second-derivative action consumed by the
-compiled root-and-Taylor-expansion handoff.
+`MEstimators.lean`: construct the selected analytic Taylor witness/action for
+`Psi_n(thetaHat_n)` and prove the dominated empirical operator-norm bound for
+that random second-derivative action.  The auxiliary quadratic residual object
+is no longer a blocker; the current frontier derives it from the literal
+Taylor display.
 
 ## Reuse Dependencies
 

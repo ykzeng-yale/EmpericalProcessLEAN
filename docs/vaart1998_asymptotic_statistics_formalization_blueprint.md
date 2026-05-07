@@ -534,8 +534,12 @@ Initial modules:
   `vaart1998_theorem_5_41_secondDerivativeResidual_half_bound_of_bilinear_opNorm_bound`
   plus
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeQuadraticBound`,
-  so the remaining critical path is the analytic Taylor-expansion display, the
-  quadratic residual identity, and the dominated operator-norm bound.
+  and the literal quadratic-Taylor packet adds
+  `vaart1998_theorem_5_41_secondDerivativeResidual_aemeasurable_of_operator`
+  plus
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN`,
+  so the remaining critical path is the selected analytic Taylor witness/action
+  and the dominated empirical operator-norm bound.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

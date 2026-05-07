@@ -1553,6 +1553,50 @@ theorem vaart1998_theorem_5_41_derivativeResidual_aemeasurable_of_operator
   exact hEval.comp_aemeasurable (hDerivative.prodMk (hScaledEstimator_meas n))
 
 /--
+van der Vaart 1998, Theorem 5.41, quadratic second-derivative residual
+measurability.
+
+The source Taylor term
+`(1 / 2) • ddotPsi_n(tildeTheta_n) delta_n scaledEstimator_n` is a.e.
+measurable once the selected second-derivative action, the unscaled estimator
+difference, and the scaled estimator are a.e. measurable.
+-/
+theorem vaart1998_theorem_5_41_secondDerivativeResidual_aemeasurable_of_operator
+    {Ω Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [BorelSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    {secondDerivativeAction : ℕ -> Ω -> Θ →L[ℝ] Θ →L[ℝ] Score}
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    (hSecondDerivativeAction_meas :
+      ∀ n, AEMeasurable (secondDerivativeAction n) P)
+    (hDelta_meas : ∀ n, AEMeasurable (delta n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P) :
+    ∀ n,
+      AEMeasurable
+        (fun ω =>
+          (1 / 2 : ℝ) •
+            secondDerivativeAction n ω (delta n ω) (scaledEstimator n ω)) P := by
+  intro n
+  have hFirstEval :
+      Measurable
+        fun p : (Θ →L[ℝ] Θ →L[ℝ] Score) × Θ => p.1 p.2 :=
+    (isBoundedBilinearMap_apply
+      (𝕜 := ℝ) (E := Θ) (F := Θ →L[ℝ] Score)).continuous.measurable
+  have hActionDelta :
+      AEMeasurable
+        (fun ω => secondDerivativeAction n ω (delta n ω)) P :=
+    hFirstEval.comp_aemeasurable
+      ((hSecondDerivativeAction_meas n).prodMk (hDelta_meas n))
+  have hSecondEval :
+      Measurable fun p : (Θ →L[ℝ] Score) × Θ => p.1 p.2 :=
+    (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Θ) (F := Score)).continuous.measurable
+  exact
+    (hSecondEval.comp_aemeasurable
+      (hActionDelta.prodMk (hScaledEstimator_meas n))).const_smul (1 / 2 : ℝ)
+
+/--
 van der Vaart 1998, Theorem 5.41, second-derivative Taylor residual.
 
 The second-derivative average is bounded in probability, the scaled estimator
@@ -2615,6 +2659,86 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylor
       hDerivativeLLN hDelta hCurvatureBounded hScaledEstimator
       hSecondHalfBound hEmpiricalDerivative_meas hScaledEstimator_meas
       hSecondResidual_meas hRoot hTaylorExpansion
+
+/--
+van der Vaart 1998, Theorem 5.41, source handoff from the literal quadratic
+Taylor expansion.
+
+This wrapper removes the auxiliary `secondResidual` object from the source
+interface.  It consumes the Taylor display exactly as it appears in the proof,
+with the quadratic term
+`(1 / 2) • ddotPsi_n(tildeTheta_n) delta_n scaledEstimator_n`, derives the
+residual identity and residual measurability, and then feeds the compiled
+quadratic-bound handoff.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {curvatureBound : ℕ -> Ω -> ℝ}
+    {secondDerivativeAction : ℕ -> Ω -> Θ →L[ℝ] Θ →L[ℝ] Score}
+    {score estimatingEquationAtEstimator : ℕ -> Ω -> Score}
+    {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω => ‖empiricalDerivative n ω - V‖) atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hCurvatureBounded : StochasticBounded P curvatureBound)
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hCurvatureOpBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondDerivativeAction n ω‖ ≤ ‖curvatureBound n ω‖)
+    (hEmpiricalDerivative_meas : ∀ n, AEMeasurable (empiricalDerivative n) P)
+    (hSecondDerivativeAction_meas :
+      ∀ n, AEMeasurable (secondDerivativeAction n) P)
+    (hDelta_meas : ∀ n, AEMeasurable (delta n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P)
+    (hRoot : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, estimatingEquationAtEstimator n ω = 0)
+    (hTaylorExpansion : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + empiricalDerivative n ω (scaledEstimator n ω) +
+          (1 / 2 : ℝ) •
+            secondDerivativeAction n ω (delta n ω) (scaledEstimator n ω) =
+          estimatingEquationAtEstimator n ω) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  let secondResidual : ℕ -> Ω -> Score :=
+    fun n ω =>
+      (1 / 2 : ℝ) •
+        secondDerivativeAction n ω (delta n ω) (scaledEstimator n ω)
+  have hSecondResidual_eq : ∀ᶠ n in atTop, ∀ ω,
+      secondResidual n ω =
+        (1 / 2 : ℝ) •
+          secondDerivativeAction n ω (delta n ω) (scaledEstimator n ω) :=
+    Eventually.of_forall fun _ _ => rfl
+  have hSecondResidual_meas : ∀ n, AEMeasurable (secondResidual n) P :=
+    vaart1998_theorem_5_41_secondDerivativeResidual_aemeasurable_of_operator
+      (P := P) (secondDerivativeAction := secondDerivativeAction)
+      (delta := delta) (scaledEstimator := scaledEstimator)
+      hSecondDerivativeAction_meas hDelta_meas hScaledEstimator_meas
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeQuadraticBound
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (empiricalDerivative := empiricalDerivative) (delta := delta)
+      (scaledEstimator := scaledEstimator) (curvatureBound := curvatureBound)
+      (secondDerivativeAction := secondDerivativeAction)
+      (score := score)
+      (estimatingEquationAtEstimator := estimatingEquationAtEstimator)
+      (secondResidual := secondResidual) (Z := Z) hLeftInverse hScoreCLT
+      hDerivativeLLN hDelta hCurvatureBounded hScaledEstimator
+      hSecondResidual_eq hCurvatureOpBound hEmpiricalDerivative_meas
+      hScaledEstimator_meas hSecondResidual_meas hRoot hTaylorExpansion
 
 end AsymptoticStatistics
 end StatInference

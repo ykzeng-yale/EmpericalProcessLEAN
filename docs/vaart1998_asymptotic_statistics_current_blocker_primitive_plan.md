@@ -9,11 +9,18 @@ manual `/goal` continuation before selecting a proof target.
 Continue manually, with no automation.  The active Vaart target is Theorem
 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
-Current packet: finish the source Taylor layer feeding
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeQuadraticBound`.
-Prove/package the Taylor zero equation from `Psi_n(thetaHat_n) = 0`, the
-quadratic second-residual identity, and the dominated operator-norm bound for
-the random second-derivative action.
+Current frontier:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN`
+consumes the literal quadratic Taylor display, derives the auxiliary residual
+identity and measurability internally, and feeds the compiled Theorem 5.41
+probability handoff.
+
+Next packet: instantiate the remaining source Taylor hypotheses.  Target the
+selected Taylor witness/action for `Psi_n(thetaHat_n)`, and prove the
+dominated operator-norm bound for the empirical second-derivative action from
+the textbook envelope on second partial derivatives.  If the full analytic
+Taylor theorem is too large, first package the empirical-Hessian dominated
+average bound as a source-shaped theorem consumed by the current frontier.
 
 Search and reuse local/mathlib APIs first; do not revisit completed Chapter
 2-4 substrate, Gaussian endpoints, or general empirical-process plumbing except
@@ -737,15 +744,20 @@ compiling:
 268. Theorem 5.41 source root-and-Taylor-expansion handoff from a quadratic
    second-derivative residual:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeQuadraticBound`.
+269. Theorem 5.41 a.e. measurability of the literal quadratic Taylor residual:
+   `vaart1998_theorem_5_41_secondDerivativeResidual_aemeasurable_of_operator`.
+270. Theorem 5.41 source handoff from the literal quadratic Taylor expansion:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 quadratic residual bound handoff`).
+(`Add Vaart theorem 5.41 literal quadratic Taylor handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by deriving the source half-bound
-from a bilinear second-derivative action and a dominated operator-norm bound.
-The most advanced handoff still derives the source Taylor equation from the
-root equation `Psi_n(thetaHat_n) = 0` and the Taylor expansion of
+asymptotic-normality route for Z-estimators by accepting the literal source
+Taylor expansion with the quadratic second-derivative term and deriving the
+auxiliary residual identity and residual measurability internally.  The most
+advanced handoff still derives the source Taylor equation from the root
+equation `Psi_n(thetaHat_n) = 0` and the Taylor expansion of
 `Psi_n(thetaHat_n)`, then performs the algebraic split
 `dotPsi_n(theta0) x_n =
   (P dot psi_theta0) x_n + (dotPsi_n(theta0) - P dot psi_theta0) x_n`
@@ -753,9 +765,9 @@ internally before applying the derivative and second-derivative residual
 bridge.
 
 The next aggressive packet should prove the remaining source Taylor fields:
-the analytic Taylor-expansion display for `Psi_n(thetaHat_n)`, the quadratic
-residual identity, and the dominated operator-norm bound for the random
-second-derivative action.
+the selected analytic Taylor witness/action for `Psi_n(thetaHat_n)` and the
+dominated empirical operator-norm bound for the random second-derivative
+action.
 
 ## Execution Notes
 
