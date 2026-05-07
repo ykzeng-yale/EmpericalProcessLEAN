@@ -202,6 +202,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   prove the concrete `hproduct_model` from repeated tower peels, then discharge
   the concrete variance and remainder estimates; it should not re-prove the
   abstract product perturbation bridge.
+- New ASGD random expected-product convergence declarations:
+  `chewi127_integral_product_sub_product_tendsto_zero_of_integral_sum_norm`,
+  `chewi127_integral_product_with_remainder_tendsto_exp_of_variance_product`,
+  and
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_random_product_model`.
+  These correct the martingale route to allow filtration-dependent conditional
+  variance and Taylor-remainder factors.  The next ASGD packet should prove the
+  actual expected-product model from the tower recursion and then discharge the
+  expected row-sum and variance expected-product convergence obligations for
+  those random factors.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

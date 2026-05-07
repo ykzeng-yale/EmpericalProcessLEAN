@@ -278,6 +278,156 @@ theorem chewi127_charFun_tendsto_exp_of_eventually_eq_product_with_remainder
         (hphi.mono fun _ hN => hN.symm)
 
 /--
+Random finite-product perturbation bound in `L1` form.  This is the martingale
+version of the deterministic product estimate: if two rows of random complex
+factors are eventually bounded by one almost surely and the expected row-sum
+of one-factor errors tends to zero, then the difference of the expected
+products tends to zero.
+-/
+theorem chewi127_integral_product_sub_product_tendsto_zero_of_integral_sum_norm
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    (z w : ℕ -> ℕ -> Ω -> ℂ)
+    (hz : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N, ‖z N k ω‖ ≤ 1)
+    (hw : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N, ‖w N k ω‖ ≤ 1)
+    (hz_int :
+      ∀ N : ℕ, Integrable (fun ω => ∏ k ∈ Finset.range N, z N k ω) P)
+    (hw_int :
+      ∀ N : ℕ, Integrable (fun ω => ∏ k ∈ Finset.range N, w N k ω) P)
+    (herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω => ∑ k ∈ Finset.range N, ‖z N k ω - w N k ω‖) P)
+    (herror :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∑ k ∈ Finset.range N, ‖z N k ω - w N k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        (∫ ω, ∏ k ∈ Finset.range N, z N k ω ∂P) -
+          ∫ ω, ∏ k ∈ Finset.range N, w N k ω ∂P)
+      atTop (𝓝 0) := by
+  rw [tendsto_zero_iff_norm_tendsto_zero]
+  refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ herror
+  filter_upwards [hz, hw] with N hzN hwN
+  calc
+    ‖(∫ ω, ∏ k ∈ Finset.range N, z N k ω ∂P) -
+        ∫ ω, ∏ k ∈ Finset.range N, w N k ω ∂P‖
+        = ‖∫ ω,
+            (∏ k ∈ Finset.range N, z N k ω) -
+              ∏ k ∈ Finset.range N, w N k ω ∂P‖ := by
+            rw [integral_sub (hz_int N) (hw_int N)]
+    _ ≤ ∫ ω,
+          ‖(∏ k ∈ Finset.range N, z N k ω) -
+            ∏ k ∈ Finset.range N, w N k ω‖ ∂P :=
+          norm_integral_le_integral_norm _
+    _ ≤ ∫ ω, ∑ k ∈ Finset.range N, ‖z N k ω - w N k ω‖ ∂P := by
+          refine integral_mono_of_nonneg
+            (Eventually.of_forall fun _ => norm_nonneg _) (herror_int N) ?_
+          filter_upwards [hzN, hwN] with ω hzω hwω
+          exact chewi127_norm_prod_sub_prod_le_sum_norm_sub
+            N (fun k => z N k ω) (fun k => w N k ω) hzω hwω
+
+/--
+Random product convergence with additive remainder factors.  The expected
+variance-only product gives the Gaussian exponential limit, and the expected
+row-sum of conditional Taylor remainders makes the full product share that
+same limit.
+-/
+theorem chewi127_integral_product_with_remainder_tendsto_exp_of_variance_product
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    (varianceFactor remainderFactor : ℕ -> ℕ -> Ω -> ℂ)
+    (varianceLimit t : ℝ)
+    (hvariance_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N, ‖varianceFactor N k ω‖ ≤ 1)
+    (hfull_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖varianceFactor N k ω + remainderFactor N k ω‖ ≤ 1)
+    (hfull_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              (varianceFactor N k ω + remainderFactor N k ω)) P)
+    (hvariance_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω => ∏ k ∈ Finset.range N, varianceFactor N k ω) P)
+    (hremainder_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω => ∑ k ∈ Finset.range N, ‖remainderFactor N k ω‖) P)
+    (hremainder :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∑ k ∈ Finset.range N, ‖remainderFactor N k ω‖ ∂P)
+        atTop (𝓝 0))
+    (hvariance_product :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N, varianceFactor N k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp (-(varianceLimit * t ^ 2 / 2 : ℝ))))) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω, ∏ k ∈ Finset.range N,
+          (varianceFactor N k ω + remainderFactor N k ω) ∂P)
+      atTop
+      (𝓝 (Complex.exp (-(varianceLimit * t ^ 2 / 2 : ℝ)))) := by
+  have herror :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              ‖(varianceFactor N k ω + remainderFactor N k ω) -
+                varianceFactor N k ω‖ ∂P)
+        atTop (𝓝 0) := by
+    refine hremainder.congr' (Eventually.of_forall fun N => ?_)
+    refine integral_congr_ae <| ae_of_all P fun ω => ?_
+    refine Finset.sum_congr rfl ?_
+    intro k _hk
+    have hterm :
+        (varianceFactor N k ω + remainderFactor N k ω) -
+          varianceFactor N k ω = remainderFactor N k ω := by
+      abel
+    rw [hterm]
+  have herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖(varianceFactor N k ω + remainderFactor N k ω) -
+                varianceFactor N k ω‖) P := by
+    intro N
+    refine (hremainder_error_int N).congr ?_
+    filter_upwards with ω
+    refine Finset.sum_congr rfl ?_
+    intro k _hk
+    have hterm :
+        (varianceFactor N k ω + remainderFactor N k ω) -
+          varianceFactor N k ω = remainderFactor N k ω := by
+      abel
+    rw [hterm]
+  have hdiff :
+      Tendsto
+        (fun N : ℕ =>
+          (∫ ω,
+              ∏ k ∈ Finset.range N,
+                (varianceFactor N k ω + remainderFactor N k ω) ∂P) -
+            ∫ ω, ∏ k ∈ Finset.range N, varianceFactor N k ω ∂P)
+        atTop (𝓝 0) :=
+    chewi127_integral_product_sub_product_tendsto_zero_of_integral_sum_norm
+      (fun N k ω => varianceFactor N k ω + remainderFactor N k ω)
+      varianceFactor hfull_bound hvariance_bound hfull_int hvariance_int
+      herror_int herror
+  have hcombined := hdiff.add hvariance_product
+  simpa only [zero_add] using
+    hcombined.congr' (Eventually.of_forall fun N => by
+      ring)
+
+/--
 Scalar Lindeberg tail summand for Chewi's one-dimensional martingale CLT
 route.  It is the source expression
 `x_{k+1}^2 1_{ε sqrt(N) < |x_{k+1}|}`.
@@ -1531,6 +1681,77 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_prod
             (fun n ω => L (S.martingale.xi n ω)) N)) t)
     varianceFactor remainderFactor (S.covariance_limit.S_infty L L) t
     hproduct_model hvariance_bound hfull_bound hremainder hvariance_product
+
+/--
+Projected characteristic-function convergence from the random finite-product
+model left by the martingale tower argument.  This is the faithful martingale
+version of the product-model bridge: conditional variances and conditional
+Taylor remainders may still depend on `ω`, so the bridge works at the level of
+expected products.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_random_product_model
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (varianceFactor remainderFactor : ℕ -> ℕ -> Ω -> ℂ)
+    (hproduct_model :
+      ∀ᶠ N : ℕ in atTop,
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t =
+          ∫ ω, ∏ k ∈ Finset.range N,
+            (varianceFactor N k ω + remainderFactor N k ω) ∂P)
+    (hvariance_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N, ‖varianceFactor N k ω‖ ≤ 1)
+    (hfull_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖varianceFactor N k ω + remainderFactor N k ω‖ ≤ 1)
+    (hfull_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              (varianceFactor N k ω + remainderFactor N k ω)) P)
+    (hvariance_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω => ∏ k ∈ Finset.range N, varianceFactor N k ω) P)
+    (hremainder_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω => ∑ k ∈ Finset.range N, ‖remainderFactor N k ω‖) P)
+    (hremainder :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∑ k ∈ Finset.range N, ‖remainderFactor N k ω‖ ∂P)
+        atTop (𝓝 0))
+    (hvariance_product :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N, varianceFactor N k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ))))) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+  exact
+    (chewi127_integral_product_with_remainder_tendsto_exp_of_variance_product
+      varianceFactor remainderFactor (S.covariance_limit.S_infty L L) t
+      hvariance_bound hfull_bound hfull_int hvariance_int
+      hremainder_error_int hremainder hvariance_product).congr'
+        (hproduct_model.mono fun _ hN => hN.symm)
 
 /--
 The source package supplies uniform boundedness of every scalar projection.
