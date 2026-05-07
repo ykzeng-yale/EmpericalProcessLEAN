@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V16
+## Live In-Thread Goal Prompt V17
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -12,7 +12,7 @@ older than the verified route docs:
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane only: Durrett Chapter 4.1 conditional expectation
 in `StatInference/ProbabilityTheory/ConditionalExpectation.lean`.  Treat all
-Chapter 2/3 support and the compiled Chapter 4.1 layer through Theorem 4.1.14
+Chapter 2/3 support and the compiled Chapter 4.1 layer through Theorem 4.1.11
 as closed dependencies:
 `durrett2019_section_4_1_IsConditionalExpectationVersion`,
 `durrett2019_section_4_1_condExp_isConditionalExpectationVersion`,
@@ -22,17 +22,18 @@ as closed dependencies:
 `durrett2019_example_4_1_4_condExp_eq_integral_of_independent`, plus the
 compiled Theorem 4.1.9 linearity/monotonicity wrappers, Theorem 4.1.12
 measurability-collapse wrapper, Theorem 4.1.13 tower wrappers, and Theorem
-4.1.14 real pull-out wrapper.
+4.1.14 real pull-out wrapper, plus Theorem 4.1.10 conditional Jensen and the
+direct Theorem 4.1.11 `L¹`/`L²` contraction wrappers.
 
-Next theorem-sized packet: continue Chapter 4.1 from the first unsolved
-source-facing property.  Search mathlib `ConditionalExpectation.CondJensen`,
-`ConditionalExpectation.Real`, `eLpNorm_condExp_le`,
-`eLpNorm_one_condExp_le_eLpNorm`, `MemLp.condExp`, and local wrappers first.
-Prefer Theorem 4.1.10 conditional Jensen or Theorem 4.1.11 contraction if a
-direct source-shaped wrapper compiles quickly; otherwise only add Example
-4.1.5 finite/countable partition support if the needed partition/indicator API
-is direct.  Do not repackage the solved linearity, monotonicity, tower, or
-pull-out facts.
+Next theorem-sized packet: search the remaining Chapter 4.1 conditional
+expectation frontier.  First check whether Theorem 4.1.9(c) monotone
+conditional convergence can be packaged from existing dominated/monotone
+conditional-expectation APIs.  If not direct, move to Theorem 4.1.15 L2
+projection using `condExpL2`, `Submodule.orthogonalProjection`,
+`inner_condExpL2_eq_inner_fun`, and the compiled `MemLp.condExpL2_ae_eq_condExp`
+bridge.  Only return to Example 4.1.5 partition support if the
+partition/indicator API is direct.  Do not repackage the solved 4.1.9(a,b),
+4.1.10, 4.1.11, 4.1.12, 4.1.13, or 4.1.14 facts.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -295,6 +296,10 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_4_1_13_condExp_tower_larger_of_smaller`
 - `durrett2019_theorem_4_1_13_condExp_tower_smaller_of_larger`
 - `durrett2019_theorem_4_1_14_condExp_mul_of_stronglyMeasurable_left`
+- `durrett2019_theorem_4_1_10_conditional_jensen_real`
+- `durrett2019_theorem_4_1_11_condExp_L1_contraction_real`
+- `durrett2019_theorem_4_1_11_condExp_L2_contraction`
+- `durrett2019_theorem_4_1_11_condExp_memLp_two`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -378,13 +383,13 @@ spine.  The following Chapter 3 and Chapter 4.1 packets now compile:
   4.1.3 self/constant wrappers, and Example 4.1.4 independence wrapper
   `durrett2019_example_4_1_4_condExp_eq_integral_of_independent`, plus
   Theorem 4.1.9 linearity/monotonicity, Theorem 4.1.12 measurability collapse,
-  Theorem 4.1.13 tower, and Theorem 4.1.14 pull-out wrappers.
+  Theorem 4.1.13 tower, Theorem 4.1.14 pull-out, Theorem 4.1.10 conditional
+  Jensen, and Theorem 4.1.11 `L¹`/`L²` contraction wrappers.
 
-The next likely packet should search conditional Jensen and `L^p` contraction
-APIs, then package Durrett Theorem 4.1.10 or 4.1.11 if a direct source-shaped
-wrapper is available.  Only return to Example 4.1.5 partition support if the
-partition/indicator API is direct.  Prefer theorem-sized wrappers over new
-primitives.
+The next likely packet should search for a direct 4.1.9(c) monotone
+conditional-convergence route.  If that is not direct, use the `condExpL2`
+orthogonal-projection API to package Durrett Theorem 4.1.15.  Prefer
+theorem-sized wrappers over new primitives.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -496,6 +501,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V16` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V17` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

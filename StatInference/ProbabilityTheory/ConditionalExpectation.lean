@@ -1,5 +1,7 @@
 import Mathlib.Probability.ConditionalExpectation
+import Mathlib.MeasureTheory.Function.ConditionalExpectation.CondJensen
 import Mathlib.MeasureTheory.Function.ConditionalExpectation.PullOut
+import Mathlib.MeasureTheory.Function.ConditionalExpectation.Real
 import StatInference.ProbabilityTheory.Basic
 
 /-!
@@ -221,6 +223,61 @@ theorem durrett2019_theorem_4_1_14_condExp_mul_of_stronglyMeasurable_left
     (hY_int : Integrable Y μ) :
     μ[X * Y | m] =ᵐ[μ] X * μ[Y | m] :=
   condExp_mul_of_stronglyMeasurable_left hX_meas hXY_int hY_int
+
+/--
+Durrett 2019, Theorem 4.1.10, conditional Jensen inequality.
+
+For a convex real function `φ`, conditional expectation preserves Jensen's
+inequality.
+-/
+theorem durrett2019_theorem_4_1_10_conditional_jensen_real
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} {m : MeasurableSpace Ω} {X : Ω -> ℝ} {φ : ℝ -> ℝ}
+    (hm : m ≤ mΩ) [SigmaFinite (μ.trim hm)]
+    (hφ_cvx : ConvexOn ℝ Set.univ φ)
+    (hX_int : Integrable X μ)
+    (hφX_int : Integrable (φ ∘ X) μ) :
+    φ ∘ μ[X | m] ≤ᵐ[μ] μ[φ ∘ X | m] :=
+  hφ_cvx.map_condExp_le_of_finiteDimensional hm hX_int hφX_int
+
+/--
+Durrett 2019, Theorem 4.1.11, `L¹` contraction for real-valued conditional
+expectations.
+-/
+theorem durrett2019_theorem_4_1_11_condExp_L1_contraction_real
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ : Measure Ω} (m : MeasurableSpace Ω) {X : Ω -> ℝ}
+    (hX_int : Integrable X μ) :
+    eLpNorm (μ[X | m]) 1 μ ≤ eLpNorm X 1 μ := by
+  have _ : Integrable X μ := hX_int
+  exact eLpNorm_one_condExp_le_eLpNorm (μ := μ) (m := m) X
+
+/--
+Durrett 2019, Theorem 4.1.11, Hilbert-space `L²` contraction.
+
+This is the `p = 2` contraction form used by the later projection
+interpretation of conditional expectation.
+-/
+theorem durrett2019_theorem_4_1_11_condExp_L2_contraction
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    {μ : Measure Ω} (m : MeasurableSpace Ω) {X : Ω -> E}
+    (hX_memLp : MemLp X 2 μ) :
+    eLpNorm (μ[X | m]) 2 μ ≤ eLpNorm X 2 μ := by
+  have _ : MemLp X 2 μ := hX_memLp
+  exact eLpNorm_condExp_le (μ := μ) (m := m) (f := X)
+
+/--
+Durrett 2019, Theorem 4.1.11, `L²` membership is preserved by conditional
+expectation.
+-/
+theorem durrett2019_theorem_4_1_11_condExp_memLp_two
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    {μ : Measure Ω} (m : MeasurableSpace Ω) {X : Ω -> E}
+    (hX_memLp : MemLp X 2 μ) :
+    MemLp (μ[X | m]) 2 μ :=
+  hX_memLp.condExp
 
 end ProbabilityTheory
 end StatInference

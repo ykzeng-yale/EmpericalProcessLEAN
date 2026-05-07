@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V16`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V17`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -396,14 +396,15 @@ Next packet:
   3.10.8 linear-combination characterization wrappers, Durrett conditional
   expectation version predicate, mathlib-condExp version wrapper, Example 4.1.3
   self/constant wrappers, Example 4.1.4 independence wrapper, Theorem 4.1.9
-  linearity/monotonicity wrappers, Theorem 4.1.12 measurability-collapse
-  wrapper, Theorem 4.1.13 tower wrappers, and Theorem 4.1.14 pull-out wrapper
-  now compile and should be treated as closed support.  Next search mathlib
-  `ConditionalExpectation.CondJensen`, `ConditionalExpectation.Real`,
-  `eLpNorm_condExp_le`, `eLpNorm_one_condExp_le_eLpNorm`, and `MemLp.condExp`
-  before packaging Durrett Theorem 4.1.10 conditional Jensen or Theorem 4.1.11
-  contraction.  Only return to Example 4.1.5 if the partition/indicator API is
-  direct.
+  linearity/monotonicity wrappers, Theorem 4.1.10 conditional Jensen, Theorem
+  4.1.11 `L¹`/`L²` contraction wrappers, Theorem 4.1.12
+  measurability-collapse wrapper, Theorem 4.1.13 tower wrappers, and Theorem
+  4.1.14 pull-out wrapper now compile and should be treated as closed support.
+  Next search for a direct 4.1.9(c) monotone conditional-convergence route.  If
+  that is not direct, package Theorem 4.1.15 using `condExpL2`,
+  `Submodule.orthogonalProjection`, `inner_condExpL2_eq_inner_fun`, and
+  `MemLp.condExpL2_ae_eq_condExp`.  Only return to Example 4.1.5 if the
+  partition/indicator API is direct.
 
 Support-only dependencies:
 
