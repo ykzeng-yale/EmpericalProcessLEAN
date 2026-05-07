@@ -1354,6 +1354,58 @@ theorem vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_vector_o
     h_uniform_outer h_approx_outer h_zero h_separated
 
 /--
+van der Vaart 1998, Theorem 5.41, inverse-derivative preservation of
+negligible score residuals.
+
+The Taylor proof produces a residual in the estimating-equation space.  This
+lemma records the deterministic continuous-linear-map step that its image under
+`-(P dot psi_theta0)^{-1}` is still `o_P(1)`.
+-/
+theorem vaart1998_theorem_5_41_inverseDerivative_remainder_tendstoInMeasure
+    {Ω Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (Vinv : Score →L[ℝ] Θ)
+    {residual : ℕ -> Ω -> Score}
+    (hResidual : TendstoInMeasure P residual atTop 0) :
+    TendstoInMeasure P
+      (fun (n : ℕ) ω => (-Vinv : Score →L[ℝ] Θ) (residual n ω)) atTop
+      0 := by
+  rw [MeasureTheory.tendstoInMeasure_iff_measureReal_norm]
+  intro ε hε
+  let L : Score →L[ℝ] Θ := (-Vinv : Score →L[ℝ] Θ)
+  let c : ℝ := ‖L‖ + 1
+  have hc_pos : 0 < c := by
+    have hL_nonneg : 0 ≤ ‖L‖ := norm_nonneg L
+    linarith
+  have hδ_pos : 0 < ε / c := div_pos hε hc_pos
+  have hResidual_tail :
+      Tendsto
+        (fun n : ℕ => P.real {ω : Ω | ε / c ≤ ‖residual n ω - 0‖})
+        atTop (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm.mp hResidual)
+      (ε / c) hδ_pos
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
+    hResidual_tail ?_ ?_
+  · intro n
+    exact measureReal_nonneg
+  · intro n
+    refine measureReal_mono ?_
+    intro ω hω
+    have hω_norm : ε ≤ ‖L (residual n ω)‖ := by
+      simpa [L, sub_zero] using hω
+    have hL_bound : ‖L (residual n ω)‖ ≤ ‖L‖ * ‖residual n ω‖ :=
+      L.le_opNorm (residual n ω)
+    have hc_bound : ‖L‖ * ‖residual n ω‖ ≤ c * ‖residual n ω‖ := by
+      exact mul_le_mul_of_nonneg_right (by simp [c]) (norm_nonneg _)
+    have hε_le : ε ≤ c * ‖residual n ω‖ := by
+      exact hω_norm.trans (hL_bound.trans hc_bound)
+    have hδ_le : ε / c ≤ ‖residual n ω‖ := by
+      exact (div_le_iff₀ hc_pos).2 (by simpa [mul_comm] using hε_le)
+    simpa [sub_zero] using hδ_le
+
+/--
 van der Vaart 1998, Theorem 5.41, score-linearization handoff for
 Z-estimators.
 
@@ -1422,6 +1474,63 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff
     vaart1998_theorem_5_41_zEstimator_scoreLinearization_handoff
       (Vinv := Vinv) hScoreCLT hR hR_meas
   exact hlin.congr hLinearization (ae_of_all _ fun _ => rfl)
+
+/--
+van der Vaart 1998, Theorem 5.41, scaled-estimator handoff from a
+Score-valued Taylor residual.
+
+After Taylor expansion and root simplification, the source proof aims to show
+that the scaled estimator is a.e. equal to
+`-(P dot psi_theta0)^{-1} (score_n + residual_n)` with
+`residual_n = o_P(1)`.  This wrapper maps that residual through the inverse
+derivative and feeds the compiled weak-limit handoff.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreResidual
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (Vinv : Score →L[ℝ] Θ)
+    {score residual : ℕ -> Ω -> Score}
+    {scaledEstimator : ℕ -> Ω -> Θ} {Z : Ω' -> Score}
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hResidual : TendstoInMeasure P residual atTop 0)
+    (hResidual_meas : ∀ n, AEMeasurable (residual n) P)
+    (hLinearization : ∀ n : ℕ,
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (score n ω + residual n ω))
+        =ᵐ[P] scaledEstimator n) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  let R : ℕ -> Ω -> Θ :=
+    fun n ω => (-Vinv : Score →L[ℝ] Θ) (residual n ω)
+  have hR : TendstoInMeasure P R atTop 0 :=
+    vaart1998_theorem_5_41_inverseDerivative_remainder_tendstoInMeasure
+      (P := P) Vinv hResidual
+  have hR_meas : ∀ n, AEMeasurable (R n) P := by
+    intro n
+    exact
+      (-Vinv : Score →L[ℝ] Θ).continuous.measurable.comp_aemeasurable
+        (hResidual_meas n)
+  have hLinearization_split : ∀ n : ℕ,
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (score n ω) + R n ω)
+        =ᵐ[P] scaledEstimator n := by
+    intro n
+    exact (hLinearization n).mono fun ω hω => by
+      calc
+        (-Vinv : Score →L[ℝ] Θ) (score n ω) + R n ω
+            = (-Vinv : Score →L[ℝ] Θ) (score n ω + residual n ω) := by
+                simp [R, map_add]
+        _ = scaledEstimator n ω := hω
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff
+      (P := P) (Q := Q) (Vinv := Vinv) (score := score)
+      (scaledEstimator := scaledEstimator) (Z := Z) (R := R)
+      hScoreCLT hLinearization_split hR hR_meas
 
 end AsymptoticStatistics
 end StatInference

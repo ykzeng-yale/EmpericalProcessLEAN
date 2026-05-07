@@ -487,7 +487,12 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scoreLinearization_handoff` and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff`, which isolate
   the final score-CLT plus `o_P(1)` remainder handoff from the source Taylor
-  and LLN proof obligations.
+  and LLN proof obligations.  The newest Score-residual bridge adds
+  `vaart1998_theorem_5_41_inverseDerivative_remainder_tendstoInMeasure` and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreResidual`,
+  so the remaining Theorem 5.41 source work can focus on producing a
+  Score-space Taylor residual and a.e. linearization from derivative LLN and
+  dominated second derivatives.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
