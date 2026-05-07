@@ -194,7 +194,11 @@ Current proof route:
     bridges from the supplied Exercise 3.1.1 theorem to the quadratic-product
     convergence obligation, including the Lindeberg plus variance-tail-split
     route;
-19. next prove the Taylor/Lindeberg one-factor row-sum obligation
+19. Durrett Theorem 3.4.10 now has a final source-facing assembly constructor:
+    the one-factor Taylor/Lindeberg row-sum estimate, variance-tail split, and
+    real Exercise 3.1.1 theorem directly produce the analytic certificate and
+    the convergence-in-distribution theorem;
+20. next prove the Taylor/Lindeberg one-factor row-sum obligation
     `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
     plus the real Exercise 3.1.1 triangular-array product theorem; after that,
     prove the lower-level integral/truncation primitive behind the supplied
@@ -267,9 +271,10 @@ The highest-value next proof targets are the remaining Lindeberg-Feller
 analytic estimates:
 `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
 from Taylor expansion plus the Lindeberg-tail field,
-the real Exercise 3.1.1 triangular-array product theorem that supplies
-`durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp`, and the
-lower-level integral/truncation proof of the supplied variance-tail split.  Search
+the real Exercise 3.1.1 triangular-array product theorem, and the lower-level
+integral/truncation proof of the supplied variance-tail split.  These three
+primitive obligations now feed a final source-facing Lindeberg-Feller
+constructor directly.  Search
 mathlib/local APIs for truncated second moments, characteristic-function Taylor
 bounds, finite-row products, max-smallness of row variances, and `Tendsto`
 product/exponential estimates before adding new primitives.

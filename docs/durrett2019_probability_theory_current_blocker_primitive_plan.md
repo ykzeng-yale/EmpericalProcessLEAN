@@ -301,11 +301,13 @@ namespace now has a compiled starter module:
 - `Durrett2019LindebergFellerAnalyticCertificate.of_productApproximationToRowGaussianExp`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_quadraticVarianceProductApproximations`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_characteristicQuadraticApproximation_and_exercise311`
+- `Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_varianceSplit_and_exercise311`
 - `durrett2019_theorem_3_4_10_characteristicFunction_rowSum_eq_product`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_product_tendsto`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_exp_of_product_tendsto_exp`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_characteristicFunction_product_tendsto`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_analyticCertificate`
+- `durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSum_varianceSplit_and_exercise311`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -388,8 +390,11 @@ layer before moving to multivariate CLT reuse:
   a compiled bridge from variance-sum convergence, max-row-variance smallness,
   and the supplied Exercise 3.1.1 real triangular-array product theorem; with
   the variance-tail split, it also has a compiled bridge directly from
-  Lindeberg.  The remaining Exercise 3.1.1 work is proving the real
-  triangular-array product theorem itself.
+  Lindeberg.  A final source-facing constructor now assembles the analytic
+  certificate and the convergence-in-distribution theorem from exactly the
+  current primitive frontier: the one-factor error row sum, the variance-tail
+  split, and the real Exercise 3.1.1 theorem.  The remaining Exercise 3.1.1
+  work is proving the real triangular-array product theorem itself.
   The variance-tail split bridge now packages Durrett's source inequality
   `variance <= cutoff ^ 2 + tail row sum` as a supplied theorem-shaped
   predicate and proves that the Lindeberg condition implies
@@ -519,10 +524,11 @@ characteristic-function notation, Theorem 3.3.1 basic property wrappers, and
 Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem,
 and Theorem 3.3.20 centered second-order Taylor wrapper.  Chapter 3.4 now has
 Theorem 3.4.1 i.i.d. CLT wrappers and Theorem 3.4.10
-triangular-array characteristic-function/product/certificate plumbing.  Next
-prove the one-factor Taylor/Lindeberg error row-sum estimate, the real
-Exercise 3.1.1 triangular-array product theorem, and the lower-level
-variance-tail split primitive before moving to Section 3.10
+triangular-array characteristic-function/product/certificate plumbing,
+including a final source-facing constructor from the three remaining primitive
+obligations.  Next prove the one-factor Taylor/Lindeberg error row-sum
+estimate, the real Exercise 3.1.1 triangular-array product theorem, and the
+lower-level variance-tail split primitive before moving to Section 3.10
 Cramer-Wold/multivariate CLT wrappers while checking local
 asymptotic-statistics reuse first.
 Verify, update docs, commit/push, and keep this in-thread `/goal` state current.

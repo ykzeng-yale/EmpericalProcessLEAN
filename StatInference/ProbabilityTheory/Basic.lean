@@ -2902,6 +2902,53 @@ theorem Durrett2019LindebergFellerAnalyticCertificate.of_characteristicQuadratic
       hvariance hexercise)
 
 /--
+Durrett 2019, Theorem 3.4.10, assemble the analytic certificate from the
+current source-primitive frontier: the one-factor Taylor/Lindeberg row-sum
+estimate, the variance-tail split, and Exercise 3.1.1 for real triangular
+arrays.
+-/
+theorem Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_varianceSplit_and_exercise311
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hsplit : durrett2019_lindebergFellerVarianceSplitByTailRowSum P X)
+    (herror :
+      durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero
+        P X)
+    (hexercise311 :
+      durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem) :
+    Durrett2019LindebergFellerAnalyticCertificate
+      P X varianceLimit := by
+  have hsmall :
+      durrett2019_lindebergFellerVarianceRowsEventuallySmall P X :=
+    durrett2019_theorem_3_4_10_varianceRowsEventuallySmall_of_lindeberg_and_varianceSplitByTailRowSum
+      hlindeberg hsplit
+  have hfactor :
+      durrett2019_lindebergFellerQuadraticVarianceFactorsEventuallyNormLeOne
+        P X :=
+    durrett2019_theorem_3_4_10_quadraticVarianceFactorsEventuallyNormLeOne_of_varianceRowsEventuallySmall
+      hsmall
+  have hchar_quad :
+      durrett2019_lindebergFellerCharacteristicProductApproximationToQuadraticVarianceProduct
+        P X :=
+    durrett2019_theorem_3_4_10_characteristicProductApproximationToQuadraticVarianceProduct_of_errorRowSum
+      (P := P) (X := X) hX hfactor herror
+  have hexercise :
+      durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp
+        P X varianceLimit :=
+    durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_varianceSum_lindeberg_varianceSplit_and_exercise311
+      (P := P) (X := X) (varianceLimit := varianceLimit)
+      hexercise311 hvariance hlindeberg hsplit
+  exact
+    Durrett2019LindebergFellerAnalyticCertificate.of_characteristicQuadraticApproximation_and_exercise311
+      hvariance_pos hmean_zero hvariance hlindeberg hchar_quad hexercise
+
+/--
 Durrett 2019, Theorem 3.4.10 proof bridge: row-wise independence gives the
 product formula for the characteristic function of each triangular-array row
 sum.
@@ -3022,6 +3069,42 @@ theorem durrett2019_theorem_3_4_10_lindebergFeller_of_analyticCertificate
       atTop Y (fun _ => P) P' :=
   durrett2019_theorem_3_4_10_lindebergFeller_of_characteristicFunction_product_tendsto
     hX hindep C.gaussianProductConvergence hY
+
+/--
+Durrett 2019, Theorem 3.4.10, source-facing Lindeberg-Feller bridge from the
+current primitive frontier: row-wise independence, the one-factor
+Taylor/Lindeberg error row sum, the variance-tail split, and Exercise 3.1.1.
+-/
+theorem durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSum_varianceSplit_and_exercise311
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ} {Y : Ω' -> ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hsplit : durrett2019_lindebergFellerVarianceSplitByTailRowSum P X)
+    (herror :
+      durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero
+        P X)
+    (hexercise311 :
+      durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem)
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 varianceLimit.toNNReal) P') :
+    TendstoInDistribution
+      (fun n => durrett2019_lindebergFellerRowSum X n)
+      atTop Y (fun _ => P) P' :=
+  durrett2019_theorem_3_4_10_lindebergFeller_of_analyticCertificate
+    hX hindep
+    (Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_varianceSplit_and_exercise311
+      (P := P) (X := X) (varianceLimit := varianceLimit)
+      hX hvariance_pos hmean_zero hvariance hlindeberg hsplit herror
+      hexercise311)
+    hY
 
 /--
 Durrett early-chapter pi-system uniqueness shape.

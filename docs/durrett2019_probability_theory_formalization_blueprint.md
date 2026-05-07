@@ -376,8 +376,10 @@ Compiled Section 3.2 packets:
   max-row-variance smallness, specialized Exercise 3.1.1 bridges for the
   quadratic coefficients, max-row-variance-to-factor-norm bridges, Lemma 3.4.3
   product-difference control, the variance-sum-to-row-target convergence
-  bridge, and the Levy-continuity handoff from a supplied analytic certificate
-  to convergence in distribution.
+  bridge, the Levy-continuity handoff from a supplied analytic certificate to
+  convergence in distribution, and a final source-facing constructor from the
+  three remaining primitive obligations to the convergence-in-distribution
+  theorem.
 
 Next packet candidates:
 
@@ -385,7 +387,8 @@ Next packet candidates:
   Taylor/Lindeberg row-sum estimate, the real Exercise 3.1.1 triangular-array
   product theorem, and the lower-level integral/truncation primitive that
   supplies the variance-tail split inequality
-  `variance <= cutoff ^ 2 + tail row sum`.
+  `variance <= cutoff ^ 2 + tail row sum`.  These are now the only primitive
+  gaps before the compiled source-facing Lindeberg-Feller constructor applies.
 - Section 3.3 inversion or uniqueness support, only when it is directly needed
   for the convergence theorem route.
 - Section 3.10 Cramer-Wold and multivariate CLT wrappers over existing local
