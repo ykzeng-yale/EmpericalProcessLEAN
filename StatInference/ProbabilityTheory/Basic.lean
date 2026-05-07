@@ -2230,6 +2230,104 @@ def durrett2019_lindebergFellerQuadraticVarianceFactorsEventuallyNormLeOne
         ‖durrett2019_lindebergFellerQuadraticVarianceFactor P X t n m‖ ≤ 1
 
 /--
+Durrett 2019, Theorem 3.4.10, row-wise max-smallness of variances:
+`sup_m sigma_{n,m}^2 -> 0`, expressed without choosing a finite-row maximum.
+-/
+def durrett2019_lindebergFellerVarianceRowsEventuallySmall
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) : Prop :=
+  ∀ epsilon : ℝ, 0 < epsilon ->
+    ∀ᶠ n : ℕ in atTop,
+      ∀ m ∈ Finset.range n,
+        _root_.ProbabilityTheory.variance (X n m) P < epsilon
+
+/--
+Durrett 2019, Theorem 3.4.10, scaled variance condition sufficient for
+`|1 - t^2 sigma_{n,m}^2 / 2| <= 1`.
+-/
+def durrett2019_lindebergFellerQuadraticVarianceScaledEventuallyLeTwo
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) : Prop :=
+  ∀ t : ℝ,
+    ∀ᶠ n : ℕ in atTop,
+      ∀ m ∈ Finset.range n,
+        _root_.ProbabilityTheory.variance (X n m) P * t ^ 2 / 2 ≤ 2
+
+/--
+Durrett 2019, Theorem 3.4.10, max-smallness of row variances implies the
+scaled variance condition needed by Lemma 3.4.3.
+-/
+theorem durrett2019_theorem_3_4_10_scaledVarianceEventuallyLeTwo_of_varianceRowsEventuallySmall
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hsmall : durrett2019_lindebergFellerVarianceRowsEventuallySmall P X) :
+    durrett2019_lindebergFellerQuadraticVarianceScaledEventuallyLeTwo P X := by
+  intro t
+  by_cases ht : t = 0
+  · filter_upwards with n m hm
+    simp [ht]
+  · have ht_sq_pos : 0 < t ^ 2 := sq_pos_of_ne_zero ht
+    have hthreshold_pos : 0 < 4 / t ^ 2 := by
+      exact div_pos (by norm_num) ht_sq_pos
+    filter_upwards [hsmall (4 / t ^ 2) hthreshold_pos] with n hn m hm
+    have hv_lt :
+        _root_.ProbabilityTheory.variance (X n m) P < 4 / t ^ 2 :=
+      hn m hm
+    have hmul :=
+      mul_lt_mul_of_pos_right hv_lt ht_sq_pos
+    have hright : (4 / t ^ 2) * t ^ 2 = 4 := by
+      field_simp [ht_sq_pos.ne']
+    nlinarith
+
+/--
+Durrett 2019, Theorem 3.4.10, scaled variance control gives eventual
+unit-norm control for the quadratic variance factors.
+-/
+theorem durrett2019_theorem_3_4_10_quadraticVarianceFactorsEventuallyNormLeOne_of_scaledVarianceEventuallyLeTwo
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hscaled :
+      durrett2019_lindebergFellerQuadraticVarianceScaledEventuallyLeTwo
+        P X) :
+    durrett2019_lindebergFellerQuadraticVarianceFactorsEventuallyNormLeOne
+      P X := by
+  intro t
+  filter_upwards [hscaled t] with n hn m hm
+  have hscaled_nm :
+      _root_.ProbabilityTheory.variance (X n m) P * t ^ 2 / 2 ≤ 2 :=
+    hn m hm
+  have hnonneg :
+      0 ≤ _root_.ProbabilityTheory.variance (X n m) P * t ^ 2 / 2 := by
+    exact div_nonneg
+      (mul_nonneg (_root_.ProbabilityTheory.variance_nonneg (X n m) P) (sq_nonneg t))
+      (by norm_num)
+  have habs :
+      |1 - _root_.ProbabilityTheory.variance (X n m) P * t ^ 2 / 2| ≤ 1 := by
+    rw [abs_le]
+    constructor <;> nlinarith
+  have hfactor :
+      durrett2019_lindebergFellerQuadraticVarianceFactor P X t n m =
+        ((1 - _root_.ProbabilityTheory.variance (X n m) P * t ^ 2 / 2 : ℝ) : ℂ) := by
+    simp [durrett2019_lindebergFellerQuadraticVarianceFactor]
+  rw [hfactor]
+  rw [Complex.norm_real, Real.norm_eq_abs]
+  exact habs
+
+/--
+Durrett 2019, Theorem 3.4.10, max-smallness of row variances gives eventual
+unit-norm control for the quadratic variance factors.
+-/
+theorem durrett2019_theorem_3_4_10_quadraticVarianceFactorsEventuallyNormLeOne_of_varianceRowsEventuallySmall
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hsmall : durrett2019_lindebergFellerVarianceRowsEventuallySmall P X) :
+    durrett2019_lindebergFellerQuadraticVarianceFactorsEventuallyNormLeOne
+      P X :=
+  durrett2019_theorem_3_4_10_quadraticVarianceFactorsEventuallyNormLeOne_of_scaledVarianceEventuallyLeTwo
+    (durrett2019_theorem_3_4_10_scaledVarianceEventuallyLeTwo_of_varianceRowsEventuallySmall
+      hsmall)
+
+/--
 Durrett 2019, Theorem 3.4.10, Lemma 3.4.3 bridge: row-sum control of
 one-factor Taylor/Lindeberg errors implies the characteristic-product to
 quadratic-product approximation.

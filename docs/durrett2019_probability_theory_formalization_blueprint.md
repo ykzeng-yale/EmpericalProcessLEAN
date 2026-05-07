@@ -371,15 +371,16 @@ Compiled Section 3.2 packets:
   explicit `exp(-sigma^2 t^2 / 2)` product-convergence interface, Gaussian
   characteristic-function display, row Gaussian exponential targets, quadratic
   variance coefficients/factors/products, Exercise 3.1.1 triangular-array
-  row-sum/product interfaces, Lemma 3.4.3 product-difference control, the
-  variance-sum-to-row-target convergence bridge, and the Levy-continuity handoff
-  from a supplied analytic certificate to convergence in distribution.
+  row-sum/product interfaces, max-row-variance-to-factor-norm bridges, Lemma
+  3.4.3 product-difference control, the variance-sum-to-row-target convergence
+  bridge, and the Levy-continuity handoff from a supplied analytic certificate
+  to convergence in distribution.
 
 Next packet candidates:
 
 - Section 3.4 Lindeberg-Feller analytic estimates: prove the
-  one-factor Taylor/Lindeberg row-sum estimate, eventual unit-norm control for
-  quadratic variance factors, and the Exercise 3.1.1 quadratic-product
+  Lindeberg-implied max-row-variance smallness, the one-factor
+  Taylor/Lindeberg row-sum estimate, and the Exercise 3.1.1 quadratic-product
   convergence statement.
 - Section 3.3 inversion or uniqueness support, only when it is directly needed
   for the convergence theorem route.
