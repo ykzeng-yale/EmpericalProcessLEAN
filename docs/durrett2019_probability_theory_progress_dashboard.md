@@ -183,16 +183,18 @@ Current proof route:
     one-factor error row-sum convergence and eventual unit-norm control of the
     quadratic factors to the characteristic-product-to-quadratic-product
     approximation;
-17. Durrett Theorem 3.4.10 now has max-row-variance smallness and scaled
-    variance interfaces, and compiled bridges from max-smallness to eventual
+17. Durrett Theorem 3.4.10 now has max-row-variance smallness, a
+    variance-tail split interface, scaled variance interfaces, a compiled
+    bridge from Lindeberg plus the supplied variance-tail split to
+    max-smallness, and compiled bridges from max-smallness to eventual
     unit-norm control of the quadratic variance factors;
 18. next prove the Taylor/Lindeberg one-factor row-sum obligation
     `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
-    plus the Lindeberg-implied max-row-variance smallness
-    `durrett2019_lindebergFellerVarianceRowsEventuallySmall`
-    and the Exercise 3.1.1 product-convergence obligation
+    plus the Exercise 3.1.1 product-convergence obligation
     `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp`; after
-    that, search Section 3.10 Cramer-Wold/multivariate CLT anchors.
+    that, prove the lower-level integral/truncation primitive behind the
+    supplied variance-tail split or search Section 3.10 Cramer-Wold/multivariate
+    CLT anchors.
 
 The route should not duplicate raw measure theory from Chapter 1 unless an
 exact source theorem needs a missing local theorem.  Chapter 1 is currently
@@ -260,13 +262,11 @@ The highest-value next proof targets are the remaining Lindeberg-Feller
 analytic estimates:
 `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
 from Taylor expansion plus the Lindeberg-tail field,
-`durrett2019_lindebergFellerQuadraticVarianceFactorsEventuallyNormLeOne` from
-the max-smallness of row variances, now reduced to
-`durrett2019_lindebergFellerVarianceRowsEventuallySmall`, and
 `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp` from
-Exercise 3.1.1 finite-product/exponential estimates.  Search mathlib/local APIs
-for truncated second moments, characteristic-function Taylor bounds,
-finite-row products, max-smallness of row variances, and `Tendsto`
+Exercise 3.1.1 finite-product/exponential estimates, and the lower-level
+integral/truncation proof of the supplied variance-tail split.  Search
+mathlib/local APIs for truncated second moments, characteristic-function Taylor
+bounds, finite-row products, max-smallness of row variances, and `Tendsto`
 product/exponential estimates before adding new primitives.
 
 Before choosing, apply the high-accuracy protocol from the current blocker
@@ -277,10 +277,9 @@ a search-only cycle.
 Process correction for the next cycle: treat the route docs and latest pushed
 commit as the live target when the app-level `/goal` wording lags.  Do not
 create an automation or spawn subagents unless the user explicitly asks for
-parallel agent work.  The next efficient first packet is the source-shaped
-variance-tail split bridge proving
+parallel agent work.  The source-shaped variance-tail split bridge now proves
 `durrett2019_lindebergFellerVarianceRowsEventuallySmall` from the Lindeberg
 condition plus a supplied Durrett inequality
-`variance <= cutoff ^ 2 + tail row sum`; after that, return to the
-one-factor Taylor/Lindeberg row-sum estimate and the Exercise 3.1.1
-quadratic-product convergence.
+`variance <= cutoff ^ 2 + tail row sum`; next return to the one-factor
+Taylor/Lindeberg row-sum estimate, the Exercise 3.1.1 quadratic-product
+convergence, or the lower-level proof of that supplied split.

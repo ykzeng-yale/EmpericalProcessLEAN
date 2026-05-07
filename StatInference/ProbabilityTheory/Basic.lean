@@ -1971,6 +1971,24 @@ def durrett2019_lindebergFellerCondition
       atTop (𝓝 0)
 
 /--
+Durrett 2019, Theorem 3.4.10, source-shaped variance split used to derive
+`sup_m sigma_{n,m}^2 -> 0` from the Lindeberg condition.
+
+The textbook obtains this from
+`sigma_{n,m}^2 <= epsilon^2 + E(|X_{n,m}|^2; |X_{n,m}| > epsilon)`.
+Here the one-factor tail term is bounded by the row tail sum, so the statement
+is packaged at the exact level needed by the row-smallness argument.
+-/
+def durrett2019_lindebergFellerVarianceSplitByTailRowSum
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) : Prop :=
+  ∀ cutoff : ℝ, 0 < cutoff ->
+    ∀ n m : ℕ, m ∈ Finset.range n ->
+      _root_.ProbabilityTheory.variance (X n m) P ≤
+        cutoff ^ 2 +
+          durrett2019_lindebergFellerTailSecondMomentRowSum P X cutoff n
+
+/--
 Durrett 2019, Theorem 3.4.10, finite row product of characteristic functions.
 -/
 noncomputable def durrett2019_lindebergFellerCharacteristicProduct
@@ -2240,6 +2258,56 @@ def durrett2019_lindebergFellerVarianceRowsEventuallySmall
     ∀ᶠ n : ℕ in atTop,
       ∀ m ∈ Finset.range n,
         _root_.ProbabilityTheory.variance (X n m) P < epsilon
+
+/--
+Durrett 2019, Theorem 3.4.10, the Lindeberg condition implies row-wise
+max-smallness of the variances once the textbook variance-tail split is
+available.
+-/
+theorem durrett2019_theorem_3_4_10_varianceRowsEventuallySmall_of_lindeberg_and_varianceSplitByTailRowSum
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hsplit : durrett2019_lindebergFellerVarianceSplitByTailRowSum P X) :
+    durrett2019_lindebergFellerVarianceRowsEventuallySmall P X := by
+  intro epsilon hepsilon
+  let cutoff : ℝ := min 1 (epsilon / 4)
+  have hcutoff_pos : 0 < cutoff := by
+    dsimp [cutoff]
+    exact lt_min zero_lt_one (div_pos hepsilon (by norm_num))
+  have hcutoff_sq_le : cutoff ^ 2 ≤ epsilon / 4 := by
+    have hcutoff_nonneg : 0 ≤ cutoff := le_of_lt hcutoff_pos
+    have hcutoff_le_one : cutoff ≤ 1 := by
+      dsimp [cutoff]
+      exact min_le_left 1 (epsilon / 4)
+    have hcutoff_le_eps4 : cutoff ≤ epsilon / 4 := by
+      dsimp [cutoff]
+      exact min_le_right 1 (epsilon / 4)
+    have hsq_le_cutoff : cutoff ^ 2 ≤ cutoff := by
+      calc
+        cutoff ^ 2 = cutoff * cutoff := by ring
+        _ ≤ cutoff * 1 := mul_le_mul_of_nonneg_left hcutoff_le_one hcutoff_nonneg
+        _ = cutoff := by ring
+    exact hsq_le_cutoff.trans hcutoff_le_eps4
+  have htail_eventually :
+      ∀ᶠ n : ℕ in atTop,
+        durrett2019_lindebergFellerTailSecondMomentRowSum P X cutoff n <
+          3 * epsilon / 4 := by
+    have htarget_pos : 0 < 3 * epsilon / 4 := by
+      nlinarith
+    exact (hlindeberg cutoff hcutoff_pos).eventually_lt_const htarget_pos
+  filter_upwards [htail_eventually] with n htail_lt m hm
+  have hvariance_le :
+      _root_.ProbabilityTheory.variance (X n m) P ≤
+        cutoff ^ 2 +
+          durrett2019_lindebergFellerTailSecondMomentRowSum P X cutoff n :=
+    hsplit cutoff hcutoff_pos n m hm
+  have hsum_lt :
+      cutoff ^ 2 +
+          durrett2019_lindebergFellerTailSecondMomentRowSum P X cutoff n <
+        epsilon := by
+    nlinarith
+  exact lt_of_le_of_lt hvariance_le hsum_lt
 
 /--
 Durrett 2019, Theorem 3.4.10, scaled variance condition sufficient for
