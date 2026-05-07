@@ -171,6 +171,14 @@ therefore not ENNReal/order algebra; it is the probability theorem giving the
 penalty formula and its convergence to zero for the fixed-`M` normalized
 truncated coordinate sums.
 
+The order/topology part of that penalty convergence is also compiled as
+`VdVWTheorem243_chebyshevPenalty_tendsto_zero_of_eventual_invNat_bound`.
+It reduces the deterministic side of the beta lower bound to an eventual
+nonnegative `C(epsilon) / (n + 1)` upper bound on the Chebyshev penalty.  The
+remaining source proof should therefore focus on the variance/Chebyshev
+calculation that supplies this inverse-`n` penalty bound from the bounded
+fixed-`M` truncated variables.
+
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
 infrastructure for selected fixed-radius tail/UI, finite code-set and

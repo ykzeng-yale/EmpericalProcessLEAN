@@ -32145,6 +32145,43 @@ theorem VdVWTheorem243_eventualBetaLower_half_of_eventually_eq_one_sub_penalty
   simpa [hbeta_n] using hhalf
 
 /--
+Deterministic convergence criterion for the Chebyshev beta penalty.
+
+For the normalized fixed-`M` truncated coordinates in Theorem 2.4.3, the
+variance calculation should yield a bound of order `1 / (n + 1)`.  This lemma
+isolates the order/topology part: any nonnegative penalty eventually bounded
+by `C(epsilon) / (n + 1)` tends to zero.
+-/
+theorem VdVWTheorem243_chebyshevPenalty_tendsto_zero_of_eventual_invNat_bound
+    {penalty : ℝ -> ℕ -> ℝ}
+    (hpenalty_nonneg :
+      ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop, 0 ≤ penalty epsilon n)
+    (hpenalty_le :
+      ∀ epsilon, 0 < epsilon ->
+        ∃ C : ℝ, 0 ≤ C ∧
+          ∀ᶠ n in atTop,
+            penalty epsilon n ≤ C / ((n : ℝ) + 1)) :
+    ∀ epsilon, 0 < epsilon ->
+      Tendsto (fun n : ℕ => penalty epsilon n) atTop (𝓝 0) := by
+  intro epsilon hepsilon
+  rcases hpenalty_le epsilon hepsilon with ⟨C, hC_nonneg, hle⟩
+  have hupper :
+      Tendsto (fun n : ℕ => C / ((n : ℝ) + 1)) atTop (𝓝 0) := by
+    have hbase :
+        Tendsto (fun n : ℕ => (1 : ℝ) / ((n : ℝ) + 1)) atTop (𝓝 0) :=
+      tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
+    simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using
+      hbase.const_mul C
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0) from
+        tendsto_const_nhds)
+      hupper
+      (hpenalty_nonneg epsilon hepsilon)
+      hle
+
+/--
 Fixed-`M` centered-truncated convergence from stochastic entropy and a
 constant-loss scaled selected outer-probability comparison.
 

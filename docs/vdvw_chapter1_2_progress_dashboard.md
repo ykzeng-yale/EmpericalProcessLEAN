@@ -179,6 +179,10 @@ The deterministic lower-bound postprocessor is also compiled as
 `VdVWTheorem243_eventualBetaLower_half_of_eventually_eq_one_sub_penalty`, so
 Chebyshev only needs to provide the displayed `1 - penalty_n(epsilon)` beta
 formula and penalty convergence to zero.
+The deterministic convergence of such a penalty is now reduced further by
+`VdVWTheorem243_chebyshevPenalty_tendsto_zero_of_eventual_invNat_bound`: an
+eventual nonnegative `C(epsilon) / (n + 1)` bound is enough.  The remaining
+beta work is the variance/Chebyshev source proof producing that bound.
 
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
