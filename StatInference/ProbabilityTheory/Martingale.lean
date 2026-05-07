@@ -343,6 +343,95 @@ theorem durrett2019_theorem_4_2_6_abs_rpow_submartingale
       (μ := μ) (ℱ := ℱ) (X := X) (φ := fun x : ℝ => |x| ^ p)
       hX (durrett2019_theorem_4_2_6_abs_rpow_convex hp) hφ_int
 
+/--
+Durrett 2019, Theorem 4.2.7: applying an integrable increasing convex real
+function to a real-valued submartingale gives a submartingale.
+-/
+theorem durrett2019_theorem_4_2_7_increasing_convex_comp_submartingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} {φ : ℝ -> ℝ}
+    (hX : Submartingale X ℱ μ)
+    (hφ_cvx : ConvexOn ℝ Set.univ φ)
+    (hφ_mono : Monotone φ)
+    (hφX_int : ∀ n, Integrable (φ ∘ X n) μ) :
+    Submartingale (fun n => φ ∘ X n) ℱ μ := by
+  have hφ_cont : Continuous φ := by
+    rw [← continuousOn_univ]
+    exact hφ_cvx.continuousOn isOpen_univ
+  refine durrett2019_section_4_2_real_submartingale_nat_of_condExp_succ
+    (X := fun n => φ ∘ X n) ?_ hφX_int ?_
+  · intro n
+    exact hφ_cont.comp_stronglyMeasurable (hX.stronglyMeasurable n)
+  · intro n
+    have hMono :
+        φ ∘ X n ≤ᵐ[μ] φ ∘ μ[X (n + 1) | ℱ n] :=
+      (hX.ae_le_condExp n.le_succ).mono fun ω hω => by
+        exact hφ_mono hω
+    have hJensen :
+        φ ∘ μ[X (n + 1) | ℱ n] ≤ᵐ[μ] μ[φ ∘ X (n + 1) | ℱ n] :=
+      durrett2019_theorem_4_1_10_conditional_jensen_real
+        (μ := μ) (m := ℱ n) (X := X (n + 1)) (φ := φ)
+        (ℱ.le n) hφ_cvx (hX.integrable (n + 1)) (hφX_int (n + 1))
+    exact hMono.trans hJensen
+
+/--
+Durrett 2019, Theorem 4.2.7 consequence: the positive part
+`(X_n - a)^+` of a real submartingale shifted by a level is a submartingale.
+-/
+theorem durrett2019_theorem_4_2_7_positivePart_submartingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ μ) (a : ℝ) :
+    Submartingale (fun n ω => max (X n ω - a) 0) ℱ μ := by
+  have hφ_cvx : ConvexOn ℝ (Set.univ : Set ℝ) (fun x : ℝ => max (x - a) 0) := by
+    have hline : ConvexOn ℝ (Set.univ : Set ℝ) (fun x : ℝ => x - a) := by
+      have hid : ConvexOn ℝ (Set.univ : Set ℝ) (fun x : ℝ => x) := by
+        simpa [id] using
+          (convexOn_id (𝕜 := ℝ) (s := (Set.univ : Set ℝ))
+            (convex_univ : Convex ℝ (Set.univ : Set ℝ)))
+      simpa [Pi.add_apply, sub_eq_add_neg] using hid.add_const (-a)
+    have hzero : ConvexOn ℝ (Set.univ : Set ℝ) (fun _ : ℝ => (0 : ℝ)) :=
+      convexOn_const (𝕜 := ℝ) (s := (Set.univ : Set ℝ)) (0 : ℝ)
+        (convex_univ : Convex ℝ (Set.univ : Set ℝ))
+    simpa [Pi.sup_apply] using hline.sup hzero
+  have hφ_mono : Monotone (fun x : ℝ => max (x - a) 0) := by
+    intro x y hxy
+    exact max_le_max (sub_le_sub_right hxy a) le_rfl
+  have hφX_int : ∀ n,
+      Integrable ((fun x : ℝ => max (x - a) 0) ∘ X n) μ := by
+    intro n
+    have hshift : Integrable (fun ω => X n ω - a) μ := by
+      simpa using (hX.integrable n).sub (integrable_const (μ := μ) a)
+    simpa [Function.comp_def] using hshift.pos_part
+  simpa [Function.comp_def] using
+    durrett2019_theorem_4_2_7_increasing_convex_comp_submartingale
+      (μ := μ) (ℱ := ℱ) (X := X)
+      (φ := fun x : ℝ => max (x - a) 0) hX hφ_cvx hφ_mono hφX_int
+
+/--
+Durrett 2019, Theorem 4.2.7 consequence: truncating a real supermartingale
+from above at a level gives a supermartingale.
+-/
+theorem durrett2019_theorem_4_2_7_min_supermartingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Supermartingale X ℱ μ) (a : ℝ) :
+    Supermartingale (fun n ω => min (X n ω) a) ℱ μ := by
+  have hneg : Submartingale (fun n ω => -X n ω) ℱ μ := by
+    simpa using hX.neg
+  have hconst :
+      Submartingale (fun _ : ℕ => fun _ : Ω => (-a : ℝ)) ℱ μ :=
+    (martingale_const ℱ μ (-a)).submartingale
+  have hsup :
+      Submartingale
+        ((fun n ω => -X n ω) ⊔ (fun _ : ℕ => fun _ : Ω => (-a : ℝ)))
+        ℱ μ :=
+    hneg.sup hconst
+  have hmax_neg : Supermartingale (fun n ω => -max (-X n ω) (-a)) ℱ μ := by
+    simpa [Pi.sup_apply] using hsup.neg
+  simpa [max_neg_neg] using hmax_neg
+
 /-! ## Durrett, Example 4.2.1 -/
 
 /--

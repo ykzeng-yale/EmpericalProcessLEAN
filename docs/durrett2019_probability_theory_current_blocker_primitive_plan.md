@@ -4,54 +4,35 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V27
+## Live In-Thread Goal Prompt V28
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane only: Durrett Chapter 4.2 martingales in
-`StatInference/ProbabilityTheory/Martingale.lean`.  Treat all Chapter 2/3
-support and the compiled Chapter 4.1 conditional-expectation layer through
-Theorem 4.1.15 as closed dependencies.  The direct regular-conditional
-distribution route for Theorem 4.1.16 was not immediate from the first
-`condExpKernel`/kernel search, so do not loop there unless a later targeted
-search finds a source-shaped theorem.
+`StatInference/ProbabilityTheory/Martingale.lean`.  Treat compiled Chapter 2,
+Chapter 3, Chapter 4.1 through Theorem 4.1.15, Examples 4.2.1-4.2.3, and
+Theorems 4.2.4-4.2.7 as closed dependencies.  Theorem 4.1.16 remains deferred
+unless a future targeted kernel search finds a direct source-shaped API.
 
-Current compiled Chapter 4.2 layer packages mathlib's `Martingale`,
-`Submartingale`, and `Supermartingale` API into Durrett-facing adaptedness,
-integrability, all-times conditional-expectation identities/inequalities,
-one-step `n+1 | n` identities/inequalities, real-valued one-step constructors,
-and Example 4.2.1 linear random-walk martingale/supermartingale/submartingale
-wrappers over the natural filtration of independent increments, including the
-centered-increment display `S_n - n * μ`, plus the Example 4.2.2 quadratic
-martingale source bridge from the textbook square expansion, pull-out cross
-term, centered increment condition, and conditional second moment.  The
-natural-random-walk quadratic martingale instantiation now also compiles from
-`MemLp 2` increments, independence, zero mean, and common second moment.
-Example 4.2.3 now has the product process `M_n = ∏_{m ≤ n} Y_m`, its one-step
-product identity, adaptedness, finite-product integrability from independent
-integrable factors, the pull-out conditional-expectation calculation, and the
-natural-filtration mean-one product martingale wrapper.  The normalized
-exponential-martingale display now also compiles: normalized factors
-`exp(θ ξ_i) / φ`, factor independence/measurability/integrability/mean-one
-bridges, the finite-product display
-`∏_{i=1}^n exp(θ ξ_i) / φ = exp(θ S_n) / φ^n`, and the martingale wrapper from
-a nonzero common exponential moment.  Theorem 4.2.4 and Theorem 4.2.5 now have
-source-facing all-times and strict-index conditional-expectation wrappers for
-supermartingales, submartingales, and martingales.  The generic Theorem 4.2.6
-convex-image submartingale wrapper now compiles from the Chapter 4.1
-conditional Jensen theorem.
-Theorem 4.2.6 now also has the textbook `|X_n|^p` consequence for `p ≥ 1`,
-using a reusable convexity wrapper for `x ↦ |x|^p`.
+Current compiled Chapter 4.2 frontier: Durrett-facing martingale,
+submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
+quadratic, product, and normalized exponential martingales; Theorems
+4.2.4/4.2.5 conditional-expectation wrappers; Theorem 4.2.6 convex-image and
+`|X_n|^p` consequences; and Theorem 4.2.7 increasing-convex, positive-part,
+and minimum-truncation consequences.
 
-Next theorem-sized packet: move to Theorem 4.2.7 increasing-convex transforms.
-Package the source theorem for a real submartingale `X_n` and an increasing
-convex `φ`, using conditional Jensen plus the compiled submartingale
-one-step inequality.  If direct, add the positive-part consequence
-`(X_n - a)^+` as a submartingale and the supermartingale minimum consequence
-`X_n ∧ a` via negation.  Do not repackage solved Chapter 4.1 facts, examples
-4.2.1-4.2.3, or Theorems 4.2.4-4.2.6.
+Next theorem-sized packet: package Theorem 4.2.8, the predictable transform
+`(H · X)_n = ∑_{m=1}^n H_m (X_m - X_{m-1})` of a supermartingale.  First
+search mathlib/local APIs for predictable processes, stochastic transforms, and
+bounded multiplication integrability.  If no direct API exists, add a
+source-shaped finite-sum wrapper with explicit hypotheses for predictability
+(`H_{n+1}` measurable with `ℱ n`), bounded/integrable products, nonnegativity
+of `H`, and the pull-out conditional-expectation step, then derive the
+supermartingale constructor.  If direct, also add the submartingale and
+martingale variants from the textbook remark.  Do not revisit solved Chapter
+4.1 facts, examples, or Theorems 4.2.4-4.2.7.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -414,8 +395,9 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should package Theorem 4.2.7 increasing-convex
-transforms and, if direct, its positive-part/minimum consequences.  Keep
+The next likely packet should package Theorem 4.2.8 predictable transforms of
+supermartingales, starting with a local/mathlib API search for predictable
+processes, stochastic transforms, and bounded product integrability.  Keep
 Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
 source-shaped API.
 
@@ -529,6 +511,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V27` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V28` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
