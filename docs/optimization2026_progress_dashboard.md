@@ -167,15 +167,20 @@ This dashboard tracks the Chewi optimization formalization lane for
   moment identities and leave the finite product/tower characteristic-function
   estimate as the next hard ASGD scalar CLT step.
 - New ASGD finite product/tower declarations:
-  `chewi127ScalarScaledSum_charFun_eq_integral_prod` and
-  `integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left`.  These
-  rewrite the scalar scaled-sum characteristic function as an integral of
-  one-step exponential products and provide the complex conditional pull-out
-  step needed to peel a filtration-measurable product prefix.  The next ASGD
-  packet should use them with
-  `Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`
-  to start the recursive finite product/tower estimate toward
-  `projected_charFun_tendsto_exp`.
+  `chewi127ScalarScaledSum_charFun_eq_integral_prod`,
+  `integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left`,
+  `chewi127ScalarCharFunFactor`, `chewi127ScalarCharFunProduct`,
+  `Chewi127MartingaleDifferenceProcess.projected_charFun_prefix_aestronglyMeasurable`,
+  and
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ`.
+  These rewrite the scalar scaled-sum characteristic function as an integral of
+  one-step exponential products, provide the complex conditional pull-out step,
+  prove the product prefix is filtration-measurable, and compile the first
+  recursive tower peel that substitutes the conditional Taylor model for the
+  final factor.  The next ASGD packet should accumulate these one-step peels
+  into a finite product/error estimate toward `projected_charFun_tendsto_exp`,
+  focusing on conditional variance product convergence and accumulated
+  remainder control rather than prefix measurability or Taylor substitution.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

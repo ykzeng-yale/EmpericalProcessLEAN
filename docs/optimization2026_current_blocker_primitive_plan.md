@@ -137,36 +137,45 @@ objective and should be preferred over archived prompts.
 This card is the fastest entry point for the next manual `/goal` run.  It
 should be updated only when the actual frontier changes.
 
-- Latest pushed Optimization frontier: `41698a9 Add Chewi ASGD finite product
-  tower layer`.
+- Latest verified Optimization proof frontier: the ASGD scalar product/tower
+  peel packet after `41698a9 Add Chewi ASGD finite product tower layer`.
 - Active source theorem lane: Chewi Chapter 12 ASGD, Theorem 12.7/12.3
   martingale-CLT handoff.
 - Active Lean module: `StatInference/Optimization/ASGD.lean`.
-- Primary packet: prove the first recursive product/tower peel for the scalar
-  projected martingale characteristic function, using the compiled one-step
-  conditional Taylor expansion and a filtration-measurable product prefix.
-- Candidate owner theorem name:
-  `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ`.
+- Primary packet: prove the finite recursive product estimate that accumulates
+  the one-step Taylor/tower peels toward
+  `projected_charFun_tendsto_exp`, separating the conditional variance product
+  from the accumulated conditional remainders.
+- Candidate owner theorem names:
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_bound`
+  or
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_error_le`.
 - Required reuse:
+  `chewi127ScalarCharFunFactor`,
+  `chewi127ScalarCharFunProduct`,
   `chewi127ScalarScaledSum_charFun_eq_integral_prod`,
   `integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`,
+  `Chewi127MartingaleDifferenceProcess.projected_charFun_prefix_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ`,
   `chewi127ScalarCharFunFactor_integrable`,
   mathlib `StronglyAdapted.stronglyMeasurable_le`,
   `Finset.prod_range_succ`, `Finset.aestronglyMeasurable_fun_prod`, and
   `AEStronglyMeasurable.cexp`.
-- One bounded extra search pass is allowed only for product-prefix
-  measurability or conditional-expectation pull-out APIs.  Do not repeat broad
-  searches for Taylor, Lindeberg, Levy, Gaussian target, or Chapter 3
-  deterministic GD material.
+- One bounded extra search pass is allowed only for finite product norm/error
+  bounds, scalar exponential-product comparison, or convergence of accumulated
+  conditional variance/remainder terms.  Do not repeat broad searches for
+  Taylor, prefix measurability, conditional pull-out, Lindeberg, Levy,
+  Gaussian target, or Chapter 3 deterministic GD material.
 - Verification:
   `lake env lean StatInference/Optimization/ASGD.lean`, then
   `lake build StatInference.Optimization.ASGD`, then proof-hole scan, secret
   scan, and `git diff --check`.
 - Failure record requirement: if the theorem does not close, record the exact
-  Lean statement attempted, whether the blocker is prefix measurability,
-  integrability of the product, conditional-expectation rewrite shape, or
-  Taylor-step substitution, plus two concrete next routes.
+  Lean statement attempted, whether the blocker is product-error algebra,
+  integrability of products, conditional-remainder accumulation, variance
+  product convergence, or exponential comparison, plus two concrete next
+  routes.
 
 ## Accuracy And Speed Corrections From Process Audit
 
