@@ -63,6 +63,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   read-only scouting or disjoint adjacent files, verify in focused tiers, push
   once after a final rebase, and record a sharp Lean blocker if the endpoint
   cannot close.
+- Process upgrade: each manual run now has a required proof packet contract:
+  primary theorem endpoint, reuse boundary, edit set, verification gate, and
+  failure gate.  Multi-agent work should use explicit ownership: main thread
+  for the active proof/integration, read-only scouts for mathlib/local/source
+  mapping, at most one disjoint Lean worker, and a verification scout after the
+  diff stabilizes.
 - New ASGD scalar Lindeberg declarations:
   `chewi127ScalarLindebergSummand`,
   `chewi127ScalarLindebergAverage`,
