@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Complex.Basic
+import Mathlib.Topology.Basic
 import Mathlib.Tactic
 
 /-!
@@ -10,7 +11,8 @@ by characteristic-function arguments.
 
 namespace StatInference
 
-open scoped BigOperators
+open Filter
+open scoped BigOperators Topology
 
 /--
 If two finite families of complex numbers are bounded by one in norm, then the
@@ -70,5 +72,75 @@ theorem norm_prod_sub_prod_le_sum_norm_sub
             add_le_add hfirst hsecond
       _ = ∑ i ∈ insert a s, ‖z i - w i‖ := by
             simp [Finset.sum_insert ha]
+
+/--
+If a row of bounded complex product factors is perturbed by additive errors
+whose row-sum of norms tends to zero, then the product perturbation tends to
+zero.
+-/
+theorem product_add_error_sub_product_tendsto_zero_of_sum_norm
+    (z r : ℕ -> ℕ -> ℂ)
+    (hz : ∀ᶠ N : ℕ in atTop, ∀ k ∈ Finset.range N, ‖z N k‖ ≤ 1)
+    (hzr : ∀ᶠ N : ℕ in atTop,
+      ∀ k ∈ Finset.range N, ‖z N k + r N k‖ ≤ 1)
+    (hr :
+      Tendsto
+        (fun N : ℕ => ∑ k ∈ Finset.range N, ‖r N k‖)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        (∏ k ∈ Finset.range N, (z N k + r N k)) -
+          ∏ k ∈ Finset.range N, z N k)
+      atTop (𝓝 0) := by
+  rw [tendsto_zero_iff_norm_tendsto_zero]
+  refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ hr
+  filter_upwards [hz, hzr] with N hzN hzrN
+  calc
+    ‖(∏ k ∈ Finset.range N, (z N k + r N k)) -
+        ∏ k ∈ Finset.range N, z N k‖
+        ≤ ∑ k ∈ Finset.range N, ‖(z N k + r N k) - z N k‖ :=
+          norm_prod_sub_prod_le_sum_norm_sub
+            (Finset.range N)
+            (fun k : ℕ => z N k + r N k)
+            (fun k : ℕ => z N k) hzrN hzN
+    _ = ∑ k ∈ Finset.range N, ‖r N k‖ := by
+          refine Finset.sum_congr rfl ?_
+          intro k _hk
+          have hterm : (z N k + r N k) - z N k = r N k := by
+            abel
+          rw [hterm]
+
+/--
+The previous product perturbation estimate as a convergence theorem: if the
+unperturbed products tend to a target and the additive-error row sum vanishes,
+then the perturbed products have the same limit.
+-/
+theorem product_add_error_tendsto_of_product_tendsto
+    (z r : ℕ -> ℕ -> ℂ) {target : ℂ}
+    (hz : ∀ᶠ N : ℕ in atTop, ∀ k ∈ Finset.range N, ‖z N k‖ ≤ 1)
+    (hzr : ∀ᶠ N : ℕ in atTop,
+      ∀ k ∈ Finset.range N, ‖z N k + r N k‖ ≤ 1)
+    (hr :
+      Tendsto
+        (fun N : ℕ => ∑ k ∈ Finset.range N, ‖r N k‖)
+        atTop (𝓝 0))
+    (hzprod :
+      Tendsto
+        (fun N : ℕ => ∏ k ∈ Finset.range N, z N k)
+        atTop (𝓝 target)) :
+    Tendsto
+      (fun N : ℕ => ∏ k ∈ Finset.range N, (z N k + r N k))
+      atTop (𝓝 target) := by
+  have hdiff :
+      Tendsto
+        (fun N : ℕ =>
+          (∏ k ∈ Finset.range N, (z N k + r N k)) -
+            ∏ k ∈ Finset.range N, z N k)
+        atTop (𝓝 0) :=
+    product_add_error_sub_product_tendsto_zero_of_sum_norm z r hz hzr hr
+  have hcombined := hdiff.add hzprod
+  simpa only [zero_add] using
+    hcombined.congr' (Eventually.of_forall fun N => by
+      ring)
 
 end StatInference

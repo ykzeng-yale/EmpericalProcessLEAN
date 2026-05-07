@@ -143,32 +143,32 @@ allowing exercise statements/proofs in `Exercises.lean` when they unlock
 main-text theorems.  All code/docs/comments stay in English; chat reports may
 be Chinese/English mix.
 
-Current frontier: the ASGD finite product/error bridge is verified.  The active
-source lane is Chapter 12 ASGD Theorem 12.7/12.3.  The active Lean module is
-`StatInference/Optimization/ASGD.lean`, with the lightweight shared helper
-`StatInference/ProbabilityTheory/ProductBounds.lean` available for finite
-complex product estimates.
+Current frontier: the ASGD product-model characteristic-function bridge is
+verified.  The active source lane is Chapter 12 ASGD Theorem 12.7/12.3.  The
+active Lean module is `StatInference/Optimization/ASGD.lean`, with the
+lightweight shared helper `StatInference/ProbabilityTheory/ProductBounds.lean`
+available for finite complex product estimates.
 
-Next theorem-sized packet: instantiate the product/error bridge toward
-`Chewi127BoundedMartingaleCharFunCLTSource.projected_charFun_tendsto_exp`.
-This should consume the compiled tower peel and
-`chewi127_product_sub_product_tendsto_zero_of_sum_norm`, reducing the scalar
-martingale characteristic-function proof to explicit variance-product
-convergence plus conditional-remainder row-sum control.
+Next theorem-sized packet: prove the actual projected tower product model used
+as `hproduct_model` in
+`Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_product_model`,
+then discharge the concrete variance-product convergence and conditional
+Taylor-remainder row-sum estimates for those factors.
 
 Do not redo these solved layers: Chapter 3 GD, Taylor expansion, scalar
 Lindeberg tail vanishing, Levy/Gaussian target, conditional mean-zero/second
 moment substitution, finite product representation, prefix measurability, or
-the first tower peel, or the deterministic finite product/error accumulation
-bound.
+the first tower peel, the deterministic finite product/error accumulation
+bound, or the product-model-to-characteristic-function convergence bridge.
 
 Search-first budget: one bounded API search only for the current blocker.
 First reuse `StatInference.norm_prod_sub_prod_le_sum_norm_sub`,
 `chewi127_norm_prod_sub_prod_le_sum_norm_sub`, and
-`chewi127_product_sub_product_tendsto_zero_of_sum_norm`; then search only for
-the current missing variance-product or conditional-remainder row-sum API.  Do
-not import heavy unrelated modules into ASGD unless the build cost is justified
-by the theorem endpoint.
+`Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_product_model`;
+then search only for the current missing tower-product recursion,
+variance-product, or conditional-remainder row-sum API.  Do not import heavy
+unrelated modules into ASGD unless the build cost is justified by the theorem
+endpoint.
 
 Execution loop: state the exact Lean theorem before editing, prove it in the
 isolated worktree `/private/tmp/chewi-smpgd-probability`, run

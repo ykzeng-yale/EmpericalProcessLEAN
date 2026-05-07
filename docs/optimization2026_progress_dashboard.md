@@ -189,6 +189,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   instantiate this bridge with the Chewi tower factors, prove the variance
   product limit, and prove the conditional Taylor-remainder row-sum control;
   it should not re-search or re-prove the finite product estimate.
+- New ASGD product-model convergence declarations:
+  `StatInference.product_add_error_sub_product_tendsto_zero_of_sum_norm`,
+  `StatInference.product_add_error_tendsto_of_product_tendsto`,
+  `chewi127_product_with_remainder_tendsto_exp_of_variance_product`,
+  `chewi127_charFun_tendsto_exp_of_eventually_eq_product_with_remainder`,
+  and
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_product_model`.
+  These reduce the hard projected characteristic-function convergence field to
+  the actual tower product model, variance-product convergence, and
+  conditional Taylor-remainder row-sum control.  The next ASGD packet should
+  prove the concrete `hproduct_model` from repeated tower peels, then discharge
+  the concrete variance and remainder estimates; it should not re-prove the
+  abstract product perturbation bridge.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
