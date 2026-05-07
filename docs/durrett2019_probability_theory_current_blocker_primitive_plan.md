@@ -4,174 +4,39 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Adaptive In-Thread Goal Rule
+## Live In-Thread Goal Prompt
 
-The Durrett work is an active `/goal` in this chat, not a recurring
-automation.  Every substantial cycle should finish by checking whether the
-live in-thread goal prompt is stale relative to this file, the dashboard, the
-blueprint, and the latest verified commit.
+Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
+older than the verified route docs:
 
-Refresh the route docs and in-thread target whenever a cycle:
+Continue the Durrett 2019 probability-theory Lean formalization from the latest
+pushed commit and these route docs.  Current frontier: Chapter 3.4.10
+Lindeberg-Feller in `StatInference/ProbabilityTheory/Basic.lean`.  Do not
+return to the solved Chapter 2 Glivenko-Cantelli or Chapter 2.1 product-law
+work unless a new compiler or source dependency reopens it.  Next proof packet:
+derive
+`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
+from Durrett's characteristic-function Taylor estimate (3.3.3) and the compiled
+pointwise split
+`durrett2019_lindebergFeller_min_taylor_remainder_le_split`; then route to
+Section 3.10 Cramer-Wold and multivariate CLT.  Each cycle should sync GitHub,
+inspect only relevant route/source/API anchors, name the exact source item,
+Lean declaration, and consumed primitive, implement one theorem-sized Lean
+packet, run focused Lean plus targeted build and scans, update the route docs,
+commit, and push.  Keep all code, comments, docs, and commit messages in
+English.
 
-- proves a Lean declaration;
-- narrows or discovers a blocker;
-- merges other-agent work;
-- changes the next atomic target;
-- records a material mathlib/local-code search result.
+## Minimal Operating Contract
 
-The refreshed in-thread target should name:
-
-- the latest pushed commit and new declarations or blocker refinement;
-- one primary theorem/proof target plus independent support targets;
-- the search-first scope: pinned mathlib, local `StatInference`, existing
-  `ProbabilityMeasure`, and remote contributions;
-- the verification gate: focused `lake env lean`, targeted `lake build`, root
-  build if imports changed, proof-hole scan, secret scan, and `git diff --check`;
-- the report gate: no Durrett report until an exact source theorem compiles and
-  source evidence is captured.
-
-## Throughput Policy
-
-Each cycle should make concrete verified Lean progress or document a precise
-blocker with attempted APIs.  Prefer theorem-sized source wrappers and
-certificate bridges that unlock multiple later chapters.  A tiny primitive is
-acceptable only when it is the fastest verified dependency for the current
-theorem route.
-
-## High-Accuracy High-Throughput Protocol
-
-This section is the operating discipline for manual Durrett `/goal` runs.  It
-is meant to prevent the observed failure modes in this lane: accidentally
-treating the goal as an automation, replaying solved blockers after context
-compaction, repeating broad source searches, and spending a full cycle on
-micro-packets that do not move a source theorem.
-
-1. Goal interpretation.  The Durrett lane is an active in-thread `/goal`, not a
-   recurring automation.  The app-level objective can lag after verified
-   packets; route from this file, the dashboard, the blueprint, and the latest
-   pushed commit.
-2. Start-state sync.  Begin every substantial cycle with `git status`, `git
-   fetch origin`, and a short `HEAD..origin/main` review.  Fast-forward before
-   planning when the worktree is clean, then inspect whether the remote commit
-   touched Durrett, reusable probability, empirical-process, or only unrelated
-   lanes.
-3. Source anchoring.  Use the local Durrett Markdown/PDF anchors only for the
-   theorem currently being packaged.  Record the exact source crosswalk when it
-   changes the Lean target; do not reread whole chapters merely to restart
-   route planning.
-4. Packet size.  A normal run should target one theorem-sized Lean packet:
-   either a source-facing Durrett wrapper, a reusable certificate bridge, or a
-   narrow primitive that unlocks the current theorem.  Search-only or docs-only
-   commits are reserved for genuine blocker discoveries or protocol fixes.
-5. Search cache.  Search mathlib, local `StatInference`, and recent remote
-   contributions before adding a primitive.  Reuse the cached anchors in this
-   file and the dashboard before launching broad `rg` passes.
-6. Target choice.  Prefer the largest source theorem layer that can plausibly
-   compile today.  Do not return to solved center-insertion or cutpoint-chain
-   blockers unless a new compiler error shows that one reopened.
-7. Worktree discipline.  If multiple local agents are active or a proof packet
-   needs long-running builds, consider an isolated worktree for the Durrett lane
-   and keep this main checkout clean for sync and route docs.  Rebase/fetch at
-   the start and immediately before push, not after every small search.
-8. Agent authorization.  Do not spawn subagents merely because this document
-   mentions scouts.  Use subagents only when the user explicitly asks for
-   parallel agent work.  Treat this Durrett lane as manual in-thread work, not
-   as a background automation.  If authorized, the main thread owns the active
-   proof and integration; scouts are read-only or have disjoint write scopes
-   such as:
-
-- source scout for Durrett anchors and theorem ordering;
-- Lean reuse scout for mathlib/local APIs;
-- bounded worker for a disjoint Lean or docs write scope;
-- verifier/reviewer when a packet is ready.
-
-9. Verification tiers.  During development, use focused `lake env lean` checks
-   for touched modules.  Promote with targeted `lake build
-   StatInference.ProbabilityTheory.<Module>` after a public theorem layer
-   compiles.  Run root `lake build StatInference` before push when imports or
-   reusable modules changed; for docs-only protocol changes, `git diff --check`
-   and status/fetch are enough.
-10. Git cadence.  Batch code, docs, proof-hole scan, secret scan, final
-    fast-forward/rebase check, commit, and push.  If the push is rejected,
-    rebase once, rerun the focused module build and scans relevant to the
-    touched files, then push.
-11. Communication.  Chat with the user in Chinese/English mix, but keep all
-    code, file names, documentation, theorem comments, and commit messages in
-    English.
-12. Stale-goal handling.  The app-level `/goal` objective may lag behind this
-    file because the tool can only complete the goal, not rewrite it.  When the
-    objective is stale, route from this file, the dashboard, the blueprint, and
-    the latest pushed commit.  Do not create an automation as a workaround.
-13. User-correction handling.  If the user corrects the workflow, codify the
-    correction in this file and the dashboard before the next handoff.  In this
-    lane the standing correction is: keep the Durrett work in the current chat,
-    do not create recurring automations, do not spawn agents without explicit
-    authorization, and keep all file/code text in English while using bilingual
-    chat updates.
-
-## Process Audit And Efficiency Corrections
-
-This audit records the current operating improvements for future Durrett
-cycles.  It should be treated as the practical runbook whenever the app-level
-`/goal` wording is older than the verified route docs.
-
-Observed risks:
-
-- stale-goal drift: the app-level `/goal` may still mention an older Chapter 2
-  target even though the verified frontier is Chapter 3.4.10;
-- automation drift: the user asked for an in-thread goal, not a recurring
-  automation;
-- over-delegation drift: subagents are useful only when explicitly authorized
-  for a bounded parallel task;
-- search churn: broad source/mathlib searches after every compaction waste time
-  when the current theorem already has cached anchors;
-- packet fragmentation: small algebra packets are useful only when they remove
-  a named source-facing blocker.
-
-Corrections for the next cycle:
-
-1. Route from this file, the dashboard, the blueprint, and the latest pushed
-   commit before trusting the app-level objective.
-2. Start with one sync pass, one route-doc read, and one focused source/API
-   check for the current theorem; avoid whole-chapter rereads unless the route
-   changes.
-3. Choose the first proof packet that removes a named theorem blocker, then
-   stop expanding scope until it compiles.
-4. Prefer a Durrett-shaped assumption or certificate bridge when the underlying
-   measure-theoretic primitive would otherwise consume the whole cycle.
-5. Use an isolated worktree only when this main checkout would be blocked by a
-   long build, dirty unrelated local work, or disjoint authorized agent work.
-6. Verify at the narrowest sound tier first, then promote only as needed:
-   focused Lean for touched Lean files, targeted `lake build` for theorem
-   packets, root build only when imports or shared modules changed.
-7. Commit docs-only protocol changes only when they encode a user correction or
-   a blocker discovery that materially improves the next handoff.
-
-Additional accuracy gates after the conversation review:
-
-1. Before editing Lean, write down the exact source item, the intended Lean
-   declaration name, and the existing theorem or primitive it will consume.
-   If one of the three is missing, search for it before inventing a new layer.
-2. Do not call a conditional certificate bridge an exact textbook theorem.
-   Report it as a bridge or wrapper until the primitive obligations are proved
-   and the final source-shaped theorem compiles.
-3. Avoid "progress by assumption growth": a new assumption is acceptable only
-   when it replaces a larger opaque blocker with a named smaller primitive, or
-   when it packages a textbook hypothesis verbatim for downstream reuse.
-4. Prefer one locally checkable proof packet over parallel activity.  Use an
-   isolated worktree only when the main checkout is dirty, a build is long
-   enough to block sync, or the user explicitly authorizes disjoint local lanes.
-5. Treat other agents' GitHub contributions as a reuse cache, not as permission
-   to spawn new agents.  Sync and inspect their commits; delegate only after a
-   fresh explicit user request for parallel agent work.
-6. Stop a cycle with one of two artifacts: a pushed verified Lean packet, or a
-   precise blocker note naming the failed theorem shape, attempted APIs, and
-   next smallest proof obligation.
-7. In large analytic proofs, introduce named row-level or factor-level
-   definitions before proving convergence.  Avoid broad `ring_nf`,
-   `field_simp`, or global simplification over full characteristic-function
-   expressions when a local cancellation lemma or smaller named expression
-   will do.
+- Treat other agents' commits as reusable context: fetch once at the start and
+  once before push, then rebase or fast-forward if needed.
+- Use the local Durrett Markdown/PDF anchors only for the theorem currently
+  being packaged.
+- Prefer a compiled theorem-sized bridge or wrapper over broad exploration.
+- Use an isolated worktree only for dirty checkouts, long builds, or explicitly
+  authorized disjoint lanes.
+- Do not create recurring automations or spawn subagents unless the user asks
+  for them in the current turn.
 
 ## Current Blocker
 

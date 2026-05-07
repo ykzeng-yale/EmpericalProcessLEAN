@@ -15,11 +15,9 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    fully proved in Lean and source evidence from Markdown/PDF is captured.
 5. Coordinate with the VdV&W empirical-process lane; do not duplicate GC,
    Donsker, bracketing, covering, or outer-probability foundations.
-6. Run this lane as a manual in-thread `/goal`, not as a recurring automation.
-   The current blocker plan contains the operational proof packet contract:
-   source-line pinning before theorem selection, reuse search before new
-   primitives, worktree-aware rebase discipline, tiered verification, and
-   small theorem-sized packets that preserve other agents' changes.
+6. Use the compact live continuation prompt in the current blocker plan for
+   the next proof packet; avoid process churn once the operating constraints
+   are settled.
 
 ## Chapter Map
 
@@ -508,7 +506,18 @@ Initial modules:
   layer adds `vaart1998_theorem_5_41_scoreResidual_add_tendstoInMeasure` and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_twoResiduals`,
   reducing the next source obligations to derivative and second-derivative
-  residuals proved negligible separately.
+  residuals proved negligible separately.  The derivative LLN packet now adds
+  `vaart1998_tendstoInMeasure_zero_of_norm_le_mul_stochasticBounded`,
+  `vaart1998_theorem_5_41_derivativeResidual_tendstoInMeasure_of_opNorm`, and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN`,
+  discharging the derivative residual from the empirical derivative LLN.  The
+  second-derivative residual packet now adds
+  `vaart1998_stochasticBounded_of_norm_le_mul_stochasticBounded`,
+  `vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_bound`,
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeBound`,
+  so the remaining critical path is the deterministic Taylor residual bound,
+  residual measurability, and the a.e. four-term Taylor display.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

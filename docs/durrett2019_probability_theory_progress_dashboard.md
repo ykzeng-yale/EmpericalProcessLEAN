@@ -298,42 +298,21 @@ Every Lean packet should pass:
 
 ## Current Next Goal Cycle Contract
 
-The next in-thread goal cycle should not just reread the source.  It should
-continue from the compiled Chapter 3 theorem spine: Durrett Theorems 3.2.9,
-3.2.10 continuous case, 3.2.11, 3.3.1, 3.3.2, 3.3.17, 3.3.20, 3.4.1, and the
-3.4.10 triangular-array characteristic-function and analytic-certificate
-bridges now compile as wrappers.
-The previous EDF target is closed by
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
-the Chapter 2.1 iid/product notation target is closed by the common-law finite
-product and canonical iid product-coordinate wrappers.
+Use the current blocker plan's live prompt as the active `/goal` replacement
+whenever the app-level wording lags.  Current frontier: Chapter 3.4.10
+Lindeberg-Feller in `StatInference/ProbabilityTheory/Basic.lean`.
 
-The highest-value next proof target is the scalar expansion-bound estimate
-`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`.
-The bridge from this expansion-bound predicate through mean-zero cancellation,
-variance rewriting, the finite-row bound, row-sum convergence, analytic
-certificate, and final source wrapper now compiles.  The pointwise truncation
-split also compiles.  The next cycle should focus on integrating Durrett's
-characteristic-function Taylor estimate (3.3.3).  Exercise 3.1.1 is proved
-locally, and the variance-tail split is proved from square-integrable rows.
+The next proof packet is:
+`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
+from Durrett's characteristic-function Taylor estimate (3.3.3) plus the compiled
+pointwise split
+`durrett2019_lindebergFeller_min_taylor_remainder_le_split`.
 
-Before choosing, apply the high-accuracy protocol from the current blocker
-plan: sync remote once, check whether other-agent work changed the route,
-reuse cached source/API anchors, and pick one theorem-sized packet rather than
-a search-only cycle.
+Already closed and not part of the live target unless reopened by a dependency:
+Chapter 2.4 Glivenko-Cantelli wrappers, Chapter 2.1 product-law/iid wrappers,
+Exercise 3.1.1, variance-tail split, row-bound-to-row-sum convergence,
+one-factor cancellation, and downstream expansion-bound consumers.
 
-Process correction for the next cycle: treat the route docs and latest pushed
-commit as the live target when the app-level `/goal` wording lags.  Do not
-create an automation or spawn subagents unless the user explicitly asks for
-parallel agent work.  First name the exact source item, intended Lean
-declaration, and consumed local/mathlib primitive before editing; this prevents
-assumption-only drift and broad search churn.  The source-shaped variance-tail
-split bridge now proves
-`durrett2019_lindebergFellerVarianceRowsEventuallySmall` from the Lindeberg
-condition plus a supplied Durrett inequality
-`variance <= cutoff ^ 2 + tail row sum`; Exercise 3.1.1 now feeds the source
-theorem bridge as a proved local theorem.  The lower-level proof of that split
-now compiles from square-integrable rows, and the row-bound-to-row-sum
-convergence bridge now compiles too.  Next return to the pointwise
-characteristic-function Taylor estimate that proves the finite-row
-Taylor/Lindeberg bound.
+Cycle rule: sync GitHub, inspect only relevant source/API anchors, implement
+one theorem-sized Lean packet, verify focused Lean plus targeted build and
+scans, update route docs, commit, and push.

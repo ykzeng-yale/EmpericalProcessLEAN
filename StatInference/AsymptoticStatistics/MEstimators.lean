@@ -1354,6 +1354,220 @@ theorem vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_vector_o
     h_uniform_outer h_approx_outer h_zero h_separated
 
 /--
+van der Vaart 1998, Theorem 5.41, scalar-small times stochastically bounded
+input is negligible.
+
+The derivative LLN part of the Taylor proof uses this probability bookkeeping:
+if the derivative matrix error is `o_P(1)` in operator norm and the scaled
+estimator is `O_P(1)`, then their product is `o_P(1)`.
+-/
+theorem vaart1998_tendstoInMeasure_zero_of_norm_le_mul_stochasticBounded
+    {Ω E F : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsFiniteMeasure P]
+    [SeminormedAddCommGroup E] [SeminormedAddCommGroup F]
+    {a : ℕ -> Ω -> ℝ} {X : ℕ -> Ω -> E} {Y : ℕ -> Ω -> F}
+    (ha : TendstoInMeasure P a atTop 0)
+    (hX : StochasticBounded P X)
+    (hbound : ∀ᶠ n in atTop, ∀ ω, ‖Y n ω‖ ≤ ‖a n ω‖ * ‖X n ω‖) :
+    TendstoInMeasure P Y atTop 0 := by
+  rw [MeasureTheory.tendstoInMeasure_iff_measureReal_norm]
+  intro ε hε
+  rw [tendsto_order]
+  constructor
+  · intro b hb
+    exact Eventually.of_forall fun _ =>
+      lt_of_lt_of_le hb measureReal_nonneg
+  · intro b hb
+    have hb_half : 0 < b / 2 := by linarith
+    rcases hX (b / 2) hb_half with ⟨M, hMpos, hX_tail⟩
+    have hε_div_pos : 0 < ε / M := div_pos hε hMpos
+    have ha_tail :
+        Tendsto
+          (fun n : ℕ => P.real {ω : Ω | ε / M ≤ ‖a n ω - 0‖})
+          atTop (𝓝 0) :=
+      (MeasureTheory.tendstoInMeasure_iff_measureReal_norm.mp ha)
+        (ε / M) hε_div_pos
+    have ha_tail_small :
+        ∀ᶠ n in atTop,
+          P.real {ω : Ω | ε / M ≤ ‖a n ω - 0‖} < b / 2 :=
+      ha_tail.eventually_lt_const hb_half
+    filter_upwards [hbound, hX_tail, ha_tail_small] with n hbnd hXn han
+    have hsubset :
+        {ω : Ω | ε ≤ ‖Y n ω - 0‖} ⊆
+          {ω : Ω | ε / M ≤ ‖a n ω - 0‖} ∪
+            {ω : Ω | M ≤ ‖X n ω‖} := by
+      intro ω hω
+      by_cases haω : ε / M ≤ ‖a n ω - 0‖
+      · exact Or.inl haω
+      · right
+        by_contra hXω
+        have ha_lt : ‖a n ω‖ < ε / M := by
+          simpa [sub_zero] using not_le.mp haω
+        have hX_lt : ‖X n ω‖ < M := not_le.mp hXω
+        have hmul_lt : ‖a n ω‖ * ‖X n ω‖ < ε := by
+          have hmul_le :
+              ‖a n ω‖ * ‖X n ω‖ ≤ (ε / M) * ‖X n ω‖ :=
+            mul_le_mul_of_nonneg_right (le_of_lt ha_lt) (norm_nonneg _)
+          have hmul_lt' : (ε / M) * ‖X n ω‖ < (ε / M) * M :=
+            mul_lt_mul_of_pos_left hX_lt hε_div_pos
+          have hmul_lt'' : ‖a n ω‖ * ‖X n ω‖ < (ε / M) * M :=
+            lt_of_le_of_lt hmul_le hmul_lt'
+          simpa [div_mul_cancel₀ _ (ne_of_gt hMpos)] using hmul_lt''
+        have hY_lt : ‖Y n ω‖ < ε := lt_of_le_of_lt (hbnd ω) hmul_lt
+        have hY_big : ε ≤ ‖Y n ω‖ := by
+          simpa [sub_zero] using hω
+        exact not_lt_of_ge hY_big hY_lt
+    have hle :
+        P.real {ω : Ω | ε ≤ ‖Y n ω - 0‖} ≤
+          P.real {ω : Ω | ε / M ≤ ‖a n ω - 0‖} +
+            P.real {ω : Ω | M ≤ ‖X n ω‖} :=
+      (measureReal_mono hsubset).trans
+        (measureReal_union_le
+          {ω : Ω | ε / M ≤ ‖a n ω - 0‖}
+          {ω : Ω | M ≤ ‖X n ω‖})
+    have hsum_lt :
+        P.real {ω : Ω | ε / M ≤ ‖a n ω - 0‖} +
+          P.real {ω : Ω | M ≤ ‖X n ω‖} < b := by
+      linarith
+    exact lt_of_le_of_lt hle hsum_lt
+
+/--
+van der Vaart 1998, Theorem 5.41, product of stochastically bounded terms.
+
+This is the `O_P(1) * O_P(1) = O_P(1)` tail bookkeeping needed for the
+second-derivative Taylor residual.
+-/
+theorem vaart1998_stochasticBounded_of_norm_le_mul_stochasticBounded
+    {Ω E F : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsFiniteMeasure P]
+    [SeminormedAddCommGroup E] [SeminormedAddCommGroup F]
+    {a : ℕ -> Ω -> ℝ} {X : ℕ -> Ω -> E} {Y : ℕ -> Ω -> F}
+    (ha : StochasticBounded P a)
+    (hX : StochasticBounded P X)
+    (hbound : ∀ᶠ n in atTop, ∀ ω, ‖Y n ω‖ ≤ ‖a n ω‖ * ‖X n ω‖) :
+    StochasticBounded P Y := by
+  intro ε hε
+  have hhalf_pos : 0 < ε / 2 := by linarith
+  rcases ha (ε / 2) hhalf_pos with ⟨A, hApos, ha_tail⟩
+  rcases hX (ε / 2) hhalf_pos with ⟨M, hMpos, hX_tail⟩
+  refine ⟨A * M, mul_pos hApos hMpos, ?_⟩
+  filter_upwards [hbound, ha_tail, hX_tail] with n hbnd han hXn
+  have hsubset :
+      {ω : Ω | A * M ≤ ‖Y n ω‖} ⊆
+        {ω : Ω | A ≤ ‖a n ω‖} ∪
+          {ω : Ω | M ≤ ‖X n ω‖} := by
+    intro ω hω
+    by_cases haω : A ≤ ‖a n ω‖
+    · exact Or.inl haω
+    · right
+      by_contra hXω
+      have ha_lt : ‖a n ω‖ < A := not_le.mp haω
+      have hX_lt : ‖X n ω‖ < M := not_le.mp hXω
+      have hmul_lt : ‖a n ω‖ * ‖X n ω‖ < A * M := by
+        have hmul_le :
+            ‖a n ω‖ * ‖X n ω‖ ≤ A * ‖X n ω‖ :=
+          mul_le_mul_of_nonneg_right (le_of_lt ha_lt) (norm_nonneg _)
+        have hmul_lt' : A * ‖X n ω‖ < A * M :=
+          mul_lt_mul_of_pos_left hX_lt hApos
+        exact lt_of_le_of_lt hmul_le hmul_lt'
+      have hY_lt : ‖Y n ω‖ < A * M :=
+        lt_of_le_of_lt (hbnd ω) hmul_lt
+      exact not_lt_of_ge hω hY_lt
+  have hle :
+      P.real {ω : Ω | A * M ≤ ‖Y n ω‖} ≤
+        P.real {ω : Ω | A ≤ ‖a n ω‖} +
+          P.real {ω : Ω | M ≤ ‖X n ω‖} :=
+    (measureReal_mono hsubset).trans
+      (measureReal_union_le
+        {ω : Ω | A ≤ ‖a n ω‖}
+        {ω : Ω | M ≤ ‖X n ω‖})
+  have hsum_lt :
+      P.real {ω : Ω | A ≤ ‖a n ω‖} +
+        P.real {ω : Ω | M ≤ ‖X n ω‖} < ε := by
+    linarith
+  exact lt_of_le_of_lt hle hsum_lt
+
+/--
+van der Vaart 1998, Theorem 5.41, derivative LLN residual.
+
+The derivative average satisfies an LLN in operator norm.  Multiplying its
+operator error by the scaled estimator, which is `O_P(1)` at this stage of the
+Taylor proof, gives the derivative residual required by the separated-residual
+handoff.
+-/
+theorem vaart1998_theorem_5_41_derivativeResidual_tendstoInMeasure_of_opNorm
+    {Ω Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsFiniteMeasure P]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    (V : Θ →L[ℝ] Score)
+    {scaledEstimator : ℕ -> Ω -> Θ}
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω => ‖empiricalDerivative n ω - V‖) atTop 0)
+    (hScaledEstimator : StochasticBounded P scaledEstimator) :
+    TendstoInMeasure P
+      (fun n ω => (empiricalDerivative n ω - V) (scaledEstimator n ω))
+      atTop 0 := by
+  refine
+    vaart1998_tendstoInMeasure_zero_of_norm_le_mul_stochasticBounded
+      (P := P) (a := fun n ω => ‖empiricalDerivative n ω - V‖)
+      (X := scaledEstimator)
+      (Y := fun n ω => (empiricalDerivative n ω - V) (scaledEstimator n ω))
+      hDerivativeLLN hScaledEstimator ?_
+  exact Eventually.of_forall fun n ω => by
+    have hop :=
+      (empiricalDerivative n ω - V).le_opNorm (scaledEstimator n ω)
+    simpa [Real.norm_of_nonneg (norm_nonneg (empiricalDerivative n ω - V))]
+      using hop
+
+/--
+van der Vaart 1998, Theorem 5.41, second-derivative Taylor residual.
+
+The second-derivative average is bounded in probability, the scaled estimator
+is `O_P(1)`, and consistency gives the unscaled estimator difference
+`o_P(1)`.  The Taylor quadratic term is therefore `o_P(1)`.
+-/
+theorem vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_bound
+    {Ω Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsFiniteMeasure P]
+    [NormedAddCommGroup Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {curvatureBound : ℕ -> Ω -> ℝ}
+    {secondResidual : ℕ -> Ω -> Score}
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hCurvatureBounded : StochasticBounded P curvatureBound)
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hSecondBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        ‖delta n ω‖ * (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖)) :
+    TendstoInMeasure P secondResidual atTop 0 := by
+  let curvatureScaled : ℕ -> Ω -> Θ :=
+    fun n ω => curvatureBound n ω • scaledEstimator n ω
+  have hCurvatureScaled : StochasticBounded P curvatureScaled := by
+    refine
+      vaart1998_stochasticBounded_of_norm_le_mul_stochasticBounded
+        (P := P) (a := curvatureBound) (X := scaledEstimator)
+        (Y := curvatureScaled) hCurvatureBounded hScaledEstimator ?_
+    exact Eventually.of_forall fun n ω => by
+      simp [curvatureScaled, norm_smul]
+  refine
+    vaart1998_tendstoInMeasure_zero_of_norm_le_mul_stochasticBounded
+      (P := P) (a := fun n ω => ‖delta n ω‖)
+      (X := curvatureScaled) (Y := secondResidual) hDelta
+      hCurvatureScaled ?_
+  filter_upwards [hSecondBound] with n hbnd
+  intro ω
+  calc
+    ‖secondResidual n ω‖
+        ≤ ‖delta n ω‖ *
+            (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖) := hbnd ω
+    _ = ‖(‖delta n ω‖ : ℝ)‖ * ‖curvatureScaled n ω‖ := by
+        simp [curvatureScaled, norm_smul]
+
+/--
 van der Vaart 1998, Theorem 5.41, addition of negligible Score-space
 residuals.
 
@@ -1748,6 +1962,126 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_
       (P := P) (Q := Q) (V := V) (Vinv := Vinv) (score := score)
       (residual := residual) (scaledEstimator := scaledEstimator) (Z := Z)
       hLeftInverse hScoreCLT hResidual hResidual_meas hTaylorZero_sum
+
+/--
+van der Vaart 1998, Theorem 5.41, Taylor-zero handoff with the derivative LLN
+residual discharged.
+
+This is the next source-shaped step after the separated-residual bridge: the
+derivative residual is instantiated as
+`(dotPsi_n(theta0) - P dot psi_theta0) (sqrt n (thetaHat_n - theta0))`.
+Its negligibility follows from convergence in probability of the empirical
+derivative in operator norm and stochastic boundedness of the scaled estimator.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    {score secondResidual : ℕ -> Ω -> Score}
+    {scaledEstimator : ℕ -> Ω -> Θ} {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω => ‖empiricalDerivative n ω - V‖) atTop 0)
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hSecondResidual : TendstoInMeasure P secondResidual atTop 0)
+    (hDerivativeResidual_meas : ∀ n,
+      AEMeasurable
+        (fun ω => (empiricalDerivative n ω - V) (scaledEstimator n ω)) P)
+    (hSecondResidual_meas : ∀ n, AEMeasurable (secondResidual n) P)
+    (hTaylorZero : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + V (scaledEstimator n ω) +
+          (empiricalDerivative n ω - V) (scaledEstimator n ω) +
+          secondResidual n ω = 0) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hDerivativeResidual :
+      TendstoInMeasure P
+        (fun n ω => (empiricalDerivative n ω - V) (scaledEstimator n ω))
+        atTop 0 :=
+    vaart1998_theorem_5_41_derivativeResidual_tendstoInMeasure_of_opNorm
+      (P := P) (V := V) hDerivativeLLN hScaledEstimator
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_twoResiduals
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv) (score := score)
+      (derivativeResidual := fun n ω =>
+        (empiricalDerivative n ω - V) (scaledEstimator n ω))
+      (secondResidual := secondResidual) (scaledEstimator := scaledEstimator)
+      (Z := Z) hLeftInverse hScoreCLT hDerivativeResidual hSecondResidual
+      hDerivativeResidual_meas hSecondResidual_meas hTaylorZero
+
+/--
+van der Vaart 1998, Theorem 5.41, Taylor-zero handoff with derivative and
+second-derivative residual negligibility discharged.
+
+The remaining assumptions are now source-shaped: derivative LLN in operator
+norm, consistency of the unscaled estimator difference, stochastic boundedness
+of the dominated second-derivative average, stochastic boundedness of the
+scaled estimator, the deterministic Taylor bound for the quadratic residual,
+and the a.e. Taylor-zero display.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeBound
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {curvatureBound : ℕ -> Ω -> ℝ}
+    {score secondResidual : ℕ -> Ω -> Score}
+    {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω => ‖empiricalDerivative n ω - V‖) atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hCurvatureBounded : StochasticBounded P curvatureBound)
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hSecondBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        ‖delta n ω‖ * (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖))
+    (hDerivativeResidual_meas : ∀ n,
+      AEMeasurable
+        (fun ω => (empiricalDerivative n ω - V) (scaledEstimator n ω)) P)
+    (hSecondResidual_meas : ∀ n, AEMeasurable (secondResidual n) P)
+    (hTaylorZero : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + V (scaledEstimator n ω) +
+          (empiricalDerivative n ω - V) (scaledEstimator n ω) +
+          secondResidual n ω = 0) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hSecondResidual :
+      TendstoInMeasure P secondResidual atTop 0 :=
+    vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_bound
+      (P := P) (delta := delta) (scaledEstimator := scaledEstimator)
+      (curvatureBound := curvatureBound) (secondResidual := secondResidual)
+      hDelta hCurvatureBounded hScaledEstimator hSecondBound
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (empiricalDerivative := empiricalDerivative) (score := score)
+      (secondResidual := secondResidual) (scaledEstimator := scaledEstimator)
+      (Z := Z) hLeftInverse hScoreCLT hDerivativeLLN hScaledEstimator
+      hSecondResidual hDerivativeResidual_meas hSecondResidual_meas
+      hTaylorZero
 
 end AsymptoticStatistics
 end StatInference

@@ -577,44 +577,54 @@ Chapter 4 handoff:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_twoResiduals`
   consumes the four-term Taylor display with separate derivative and
   second-derivative residuals.
+- Chapter 5.41 derivative LLN residual bridge:
+  `vaart1998_tendstoInMeasure_zero_of_norm_le_mul_stochasticBounded` packages
+  the source probability step that scalar `o_P(1)` times an `O_P(1)` statistic
+  is `o_P(1)`.  The specialized residual theorem
+  `vaart1998_theorem_5_41_derivativeResidual_tendstoInMeasure_of_opNorm`
+  instantiates this for
+  `(dotPsi_n(theta0) - P dot psi_theta0) (sqrt n (thetaHat_n - theta0))`.
+  The consumer
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN`
+  feeds the empirical derivative LLN directly into the compiled separated
+  residual handoff.
+- Chapter 5.41 second-derivative residual bridge:
+  `vaart1998_stochasticBounded_of_norm_le_mul_stochasticBounded` packages
+  `O_P(1) * O_P(1) = O_P(1)`.  The source-shaped residual theorem
+  `vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_bound`
+  proves the quadratic Taylor residual is `o_P(1)` from consistency,
+  stochastic boundedness of the dominated second-derivative average, stochastic
+  boundedness of the scaled estimator, and the deterministic residual bound.
+  The consumer
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeBound`
+  feeds both the empirical derivative LLN and second-derivative residual bound
+  into the compiled Taylor-zero handoff.
 
-Latest verified repository base before this packet: `9b67bbd`
-(`Add Durrett scalar Taylor bound bridge`).
+Latest verified repository base before this packet: `5d8b858`
+(`Add Chewi ASGD product error bridge`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
-- manual direct root import check for `StatInference.lean`
 - `git diff --check`
 - proof-hole and secret scans on changed Vaart files
 
 Root build note: this worktree uses a symlinked `.lake` directory; focused
 checks must compile the Vaart-worktree artifacts directly.
 
-Process note: this is a manual `/goal` lane, not a recurring automation.  The
-continuation loop is to read the active goal and route docs, fetch and account
-for other-agent changes, verify the exact Vaart source theorem, search local
-reuse, prove one theorem-sized packet, compile it directly in the Vaart
-worktree, update docs after the theorem/blocker is known, then rebase and
-verify again before push.
-
-Process upgrade from the May 7 audit: future runs use the manual proof packet
-contract in
+Live continuation prompt: use the compact prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
-The contract makes the workflow source-first, reuse-first, and worktree-aware:
-pin the textbook Markdown/PDF lines before selecting a Lean theorem, search
-recent local and remote reuse before adding primitives, keep the main thread on
-the critical proof path, reserve helper agents for independent scouting or
-disjoint write scopes, and apply a tiered verification gate so docs-only
-protocol patches do not trigger expensive Lean rebuilds while Lean-bearing
-packets still compile the exact Vaart worktree artifacts before push.
+Avoid repeating settled process issues; spend the next run on the Theorem 5.41
+source Taylor/LLN proof packet.
 
 ## Next Aggressive Target
 
-Discharge the source-shaped Taylor/LLN inputs for Vaart Theorem 5.41: prove
-the derivative LLN residual and the dominated second-derivative Taylor residual
-are separately `o_P(1)`, and prove the four-term Taylor zero display consumed
-by the compiled separated-residual bridge.  Keep Gaussian-law preservation as a
-separate lightweight packet or in a module that already imports Gaussian APIs.
+Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41:
+prove the deterministic/a.e. second-derivative residual bound from Taylor's
+theorem and the dominated second-derivative average, package the residual
+measurability fields, then prove the a.e. four-term Taylor zero display
+consumed by the derivative and second-derivative residual handoff.  Keep
+Gaussian-law preservation out of the critical path until this source Taylor
+bridge is complete.
 
 ## Reuse Dependencies
 

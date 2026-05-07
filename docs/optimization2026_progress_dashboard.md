@@ -25,11 +25,10 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  the current frontier contract near the top of
+  `Live Goal Prompt V2` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
-  history and must not override the current `41698a9` ASGD frontier and its
-  one-screen run card.
+  history and must not override the current `b6bc4cf` ASGD frontier.
 - Collaboration policy: for broad future packets, use isolated `git worktree`
   checkouts per book/lane when several local agents are active, then merge only
   scoped verified work back to shared `main`.
@@ -74,14 +73,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   precisely block that diff before doing strategy/doc-only work.  No uncompiled
   theorem should be carried across a process update.
 - Process correction from the May 7 audit: future manual runs should enter
-  through the one-screen current run card in
+  through `Live Goal Prompt V2` in
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
-  route-planning or wrapper loop: it is the ASGD scalar product/tower peel in
-  `ASGD.lean`, consuming the compiled conditional Taylor step and prefix
-  conditional-expectation pull-out.  Broad searches, old Chapter 3 routing, and
-  repeated Git sync loops are explicitly out of budget unless they answer the
-  active proof blocker.
+  route-planning loop and not the already-solved ASGD tower peel; it is finite
+  product/error accumulation toward the scalar martingale characteristic-
+  function limit.  Broad searches, old Chapter 3 routing, and repeated Git
+  sync loops are explicitly out of budget unless they answer that blocker.
 - New ASGD scalar Lindeberg declarations:
   `chewi127ScalarLindebergSummand`,
   `chewi127ScalarLindebergAverage`,
@@ -181,6 +179,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   into a finite product/error estimate toward `projected_charFun_tendsto_exp`,
   focusing on conditional variance product convergence and accumulated
   remainder control rather than prefix measurability or Taylor substitution.
+- New ASGD finite product/error accumulation declarations:
+  `StatInference.norm_prod_sub_prod_le_sum_norm_sub` in
+  `StatInference/ProbabilityTheory/ProductBounds.lean`,
+  `chewi127_norm_prod_sub_prod_le_sum_norm_sub`, and
+  `chewi127_product_sub_product_tendsto_zero_of_sum_norm`.  These give the
+  deterministic complex product-distance bound and the row-sum-to-zero bridge
+  needed after the martingale tower peel.  The next ASGD packet should
+  instantiate this bridge with the Chewi tower factors, prove the variance
+  product limit, and prove the conditional Taylor-remainder row-sum control;
+  it should not re-search or re-prove the finite product estimate.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
