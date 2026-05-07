@@ -4,33 +4,33 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V4
+## Live In-Thread Goal Prompt V5
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
-Continue Durrett 2019 Probability Theory formalization from the latest synced
-`main` and these route docs.  Active frontier only: Section 3.10
-finite-dimensional limit theory in
-`StatInference/ProbabilityTheory/Multivariate.lean`.
-Preserve the compiled Theorem 3.10.6 Cramér-Wold law wrapper and the compiled
-Theorem 3.10.7 projected scalar/summand and covariance/Gaussian source
-wrappers.  Next theorem-sized packet: exact Durrett covariance-table and
-Gaussian characteristic-function display for Theorem 3.10.7, plus a centered
-source wrapper only if it directly discharges those display assumptions.
+Continue Durrett 2019 Probability Theory formalization in Lean from latest
+synced `main`.  Current lane only: Section 3.10 finite-dimensional limit theory
+in `StatInference/ProbabilityTheory/Multivariate.lean`.
 
-Operating loop: fetch/rebase, inspect only APIs/source anchors needed for this
-theorem, reuse mathlib/local/GitHub contributions, write one compiled
-wrapper/bridge packet, run focused Lean plus targeted build/scans and root build
-when imports changed, update route docs only if the frontier changes, commit,
-and push.
+Next packet only: formalize Durrett Theorem 3.10.7's centered Gaussian
+characteristic-function and covariance-table display,
+`E exp(i theta dot chi) = exp(-(sum_i sum_j theta_i theta_j Gamma_ij) / 2)`,
+reusing mathlib `HasGaussianLaw` characteristic-function APIs and local Vaart
+finite-coordinate CLT/Cramer-Wold wrappers.  If the coordinate-table
+identification is too heavy for one packet, first land the compiled
+projected-variance display wrapper and record the exact remaining coordinate
+basis bridge.
 
-Stale-route guard: the app-level `/goal` still mentions Chapter 2; ignore that
-wording.  Treat Chapter 2, Chapter 3.2/3.3, Theorem 3.4.1, Exercise 3.1.1, and
-Theorem 3.4.10 as completed support unless Section 3.10 explicitly needs a
-dependency.  Do not create automations or spawn agents unless the user asks in
-the current turn.  Use worktrees only for dirty, long, or disjoint lanes.  Keep
-all code, comments, docs, and commit messages in English.
+Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
+one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
+check, proof-hole scan, secret scan, and root build only when imports changed;
+update route docs only if the frontier changes; commit and push.  Do not
+revisit completed Chapter 2 or earlier Chapter 3 support unless this Section
+3.10 packet requires a dependency.  No automations or subagents unless the user
+asks in the current turn.  Use a worktree only for dirty, long, or disjoint
+local work.  Chat with the user bilingually; keep all files, code, comments,
+docs, and commit messages in English.
 
 ## Minimal Operating Contract
 
@@ -506,6 +506,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V4` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V5` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

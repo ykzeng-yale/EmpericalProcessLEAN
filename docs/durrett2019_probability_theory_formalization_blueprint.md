@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V4`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V5`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -391,13 +391,14 @@ Compiled Section 3.2 packets:
 
 Next packet:
 
-- Section 3.10 Cramér-Wold and multivariate CLT wrappers over existing local
-  finite-dimensional law-convergence machinery.  The finite-coordinate law-level
-  Durrett Theorem 3.10.6 wrapper and the Durrett Theorem 3.10.7 projected
-  scalar/summand and covariance/Gaussian source wrappers now compile in
-  `StatInference/ProbabilityTheory/Multivariate.lean`; next package Durrett's
-  exact covariance-table and Gaussian characteristic-function display by reusing
-  the local Vaart projected one-dimensional CLT constructors.
+- Section 3.10, Durrett Theorem 3.10.7 only: package the centered Gaussian
+  characteristic-function and covariance-table display in
+  `StatInference/ProbabilityTheory/Multivariate.lean`.  Reuse mathlib
+  `HasGaussianLaw` characteristic-function APIs and the local Vaart
+  finite-coordinate CLT/Cramer-Wold wrappers.  If the coordinate-table
+  identification cannot be closed immediately, land the projected-variance
+  display wrapper first and document the exact remaining coordinate-basis
+  bridge.
 
 Support-only dependencies:
 
@@ -443,8 +444,8 @@ Initial Lean reuse anchors:
 ### Lane E: martingales, Markov chains, Brownian motion
 
 These later chapters should be prepared by read-only search first.  They are
-valuable, but should not block the early Chapter 2 coverage unless a remote
-agent has already landed reusable support.
+valuable, but should not block the active Section 3.10 lane unless a remote
+agent has already landed directly reusable support.
 
 Likely anchors:
 

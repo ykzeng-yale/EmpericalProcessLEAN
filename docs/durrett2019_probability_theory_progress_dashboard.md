@@ -32,19 +32,20 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V4` in
+Route from `Live In-Thread Goal Prompt V5` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Section 3.10 in
-`StatInference/ProbabilityTheory/Multivariate.lean`: build finite-coordinate
-Cramér-Wold and multivariate CLT wrappers by reusing local Vaart
-Cramér-Wold/finite-coordinate CLT machinery.  The projected scalar/summand and
-covariance/Gaussian source wrappers now compile; next package the textbook
-covariance-table and Gaussian characteristic-function display.  The compiled
-declaration inventory below is dependency context only; it is not a prompt to
-revisit solved Chapter 2 or early Chapter 3 work.
+`StatInference/ProbabilityTheory/Multivariate.lean`.  The next packet is only
+Durrett Theorem 3.10.7's centered Gaussian characteristic-function and
+covariance-table display, reusing mathlib `HasGaussianLaw` APIs and local Vaart
+finite-coordinate CLT/Cramer-Wold machinery.  The compiled declaration
+inventory below is dependency context only; it is not a prompt to revisit
+solved Chapter 2 or early Chapter 3 work.
 
-Current verified Durrett Lean frontier: `StatInference/ProbabilityTheory/Basic.lean`
-compiles and root-imports the new namespace.  Compiled declarations:
+Current verified Durrett Lean frontier:
+`StatInference/ProbabilityTheory/Multivariate.lean` compiles with the Section
+3.10 wrappers; `StatInference/ProbabilityTheory/Basic.lean` remains compiled
+root-imported support.  Compiled declarations:
 
 - `durrett2019_theorem_2_3_1_borelCantelli_first`;
 - `durrett2019_theorem_2_3_1_eventually_notMem`;
