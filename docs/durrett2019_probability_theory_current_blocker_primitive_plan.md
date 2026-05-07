@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V29
+## Live In-Thread Goal Prompt V30
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -13,7 +13,7 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane only: Durrett Chapter 4.2 martingales in
 `StatInference/ProbabilityTheory/Martingale.lean`.  Treat compiled Chapter 2,
 Chapter 3, Chapter 4.1 through Theorem 4.1.15, Examples 4.2.1-4.2.3, and
-Theorems 4.2.4-4.2.8 as closed dependencies.  Theorem 4.1.16 remains deferred
+Theorems 4.2.4-4.2.9 as closed dependencies.  Theorem 4.1.16 remains deferred
 unless a future targeted kernel search finds a direct source-shaped API.
 
 Current compiled Chapter 4.2 frontier: Durrett-facing martingale,
@@ -23,16 +23,19 @@ quadratic, product, and normalized exponential martingales; Theorems
 `|X_n|^p` consequences; and Theorem 4.2.7 increasing-convex, positive-part,
 and minimum-truncation consequences; and Theorem 4.2.8 predictable-transform
 wrappers for submartingales, supermartingales, and nonnegative martingale
-transforms.
+transforms; and Theorem 4.2.9 stopped-process wrappers for submartingales,
+supermartingales, and martingales.
 
-Next theorem-sized packet: package Theorem 4.2.9, stopped supermartingales
-`X_{N ∧ n}` for a stopping time `N`.  First search mathlib/local APIs around
-`IsStoppingTime`, `stoppedProcess`, `stoppedValue`, and optional-sampling
-support.  If no direct martingale wrapper exists, use the compiled Theorem
-4.2.8 transform with `H_m = 1_{N ≥ m}` plus the finite telescoping identity
-`(H · X)_n = X_{N ∧ n} - X_0`, then add the constant process back.  If direct,
-also add the submartingale and martingale stopped-process variants.  Do not
-revisit solved Chapter 4.1 facts, examples, or Theorems 4.2.4-4.2.8.
+Next theorem-sized packet: package Theorem 4.2.10, the upcrossing inequality.
+First reuse mathlib `Probability/Martingale/Upcrossing.lean` APIs:
+`upcrossingStrat`, `upcrossingsBefore`,
+`Submartingale.sum_upcrossingStrat_mul`, and
+`Submartingale.mul_integral_upcrossingsBefore_le_integral_pos_part`.  Add a
+Durrett-facing wrapper for the textbook inequality, including the exact
+positive-part display if it is direct; otherwise add the compiled mathlib
+upcrossing estimate and document the remaining initial-positive-part display
+gap as the next narrow target.  Do not revisit solved Chapter 4.1 facts,
+examples, or Theorems 4.2.4-4.2.9.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -395,11 +398,10 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should package Theorem 4.2.9 stopped supermartingales,
-starting with a local/mathlib API search for `IsStoppingTime`,
-`stoppedProcess`, `stoppedValue`, and optional-sampling support.  Keep Theorem
-4.1.16 deferred unless a targeted kernel search finds a direct source-shaped
-API.
+The next likely packet should package Theorem 4.2.10 upcrossing inequality,
+starting with a local/mathlib API search in
+`Mathlib/Probability/Martingale/Upcrossing.lean`.  Keep Theorem 4.1.16
+deferred unless a targeted kernel search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -511,6 +513,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V29` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V30` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

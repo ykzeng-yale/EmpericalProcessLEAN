@@ -1,5 +1,6 @@
 import Mathlib.Probability.BorelCantelli
 import Mathlib.Probability.Martingale.Basic
+import Mathlib.Probability.Martingale.OptionalStopping
 import StatInference.ProbabilityTheory.ConditionalExpectation
 
 /-!
@@ -556,6 +557,52 @@ theorem durrett2019_theorem_4_2_8_martingale_transform_nonnegative_of_predictabl
     Martingale (durrett2019_stochasticTransform H X) ℱ μ :=
   durrett2019_theorem_4_2_8_martingale_transform_nonnegative
     hX hH_pred.measurable_add_one hH_bdd hH_nonneg
+
+/--
+Durrett 2019, Theorem 4.2.9 submartingale variant: stopping a submartingale
+at a stopping time preserves the submartingale property.
+-/
+theorem durrett2019_theorem_4_2_9_submartingale_stoppedProcess
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞}
+    (hX : Submartingale X ℱ μ) (hN : IsStoppingTime ℱ N) :
+    Submartingale (stoppedProcess X N) ℱ μ :=
+  hX.stoppedProcess hN
+
+/--
+Durrett 2019, Theorem 4.2.9: stopping a supermartingale at a stopping time
+preserves the supermartingale property.
+-/
+theorem durrett2019_theorem_4_2_9_supermartingale_stoppedProcess
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞}
+    (hX : Supermartingale X ℱ μ) (hN : IsStoppingTime ℱ N) :
+    Supermartingale (stoppedProcess X N) ℱ μ := by
+  have hneg : Submartingale (fun n ω => -X n ω) ℱ μ := by
+    simpa using hX.neg
+  have hstopped_neg : Submartingale (stoppedProcess (fun n ω => -X n ω) N) ℱ μ :=
+    hneg.stoppedProcess hN
+  have hneg_stopped : Submartingale (-(stoppedProcess X N)) ℱ μ := by
+    convert hstopped_neg using 2
+  simpa using hneg_stopped.neg
+
+/--
+Durrett 2019, Theorem 4.2.9 martingale variant: stopping a martingale at a
+stopping time preserves the martingale property.
+-/
+theorem durrett2019_theorem_4_2_9_martingale_stoppedProcess
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞}
+    (hX : Martingale X ℱ μ) (hN : IsStoppingTime ℱ N) :
+    Martingale (stoppedProcess X N) ℱ μ :=
+  (martingale_iff (f := stoppedProcess X N) (ℱ := ℱ) (μ := μ)).2
+    ⟨durrett2019_theorem_4_2_9_supermartingale_stoppedProcess
+        hX.supermartingale hN,
+      durrett2019_theorem_4_2_9_submartingale_stoppedProcess
+        hX.submartingale hN⟩
 
 /-! ## Durrett, Example 4.2.1 -/
 
