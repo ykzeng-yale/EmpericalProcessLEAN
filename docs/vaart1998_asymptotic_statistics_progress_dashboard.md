@@ -436,17 +436,24 @@ Chapter 4 handoff:
   consumes the inverse-function-theorem target-probability certificate and an
   equality-on-target field for the selected estimator.
 - Canonical selected-estimator endpoint:
+  `vaart1998_localInverseFallbackExtension`,
+  `vaart1998_localInverseFallbackExtension_measurable`,
+  `vaart1998_localInverseFallbackExtension_hasFDerivAt`, and
+  `vaart1998_localInverseFallbackExtension_apply_true_moment` remove the need
+  for global measurability of the raw local inverse in the canonical selected
+  estimator route.
   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator`,
   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_measurable_real`,
   and
   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_eq_on_target_real`
   package the local-inverse-on-target/fallback-outside-target construction.
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_selectedEstimator_delta_method_of_targetProbabilityLocalization_real`
-  consumes that construction and the target-localization certificate.
+  now consumes that construction and the target-localization certificate without
+  assuming `Measurable (he.localInverse e De theta0)`.
 
-Latest remote base before this packet: `6a599be`.  Latest pushed Vaart packet
-before this packet: `6a599be`
-(`Add Vaart target event estimator bridge`).
+Latest remote base before this packet: `10f2a08`.  Latest pushed Vaart packet
+before this packet: `45caa71`
+(`Add Vaart selected estimator target wrapper`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .../MomentEstimators.olean -i .../MomentEstimators.ilean`
@@ -458,10 +465,10 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 by reducing the remaining global
-`Measurable (he.localInverse e De theta0)` assumption, using local target
-measurability or a measurable extension of the open-partial-homeomorphism
-inverse.  After that, continue toward measurable-extension infrastructure.
+Continue Vaart Chapter 4.1 by propagating the fallback-extension selected
+estimator route into the Gaussian-limit and covariance display endpoints, so
+the source-facing Theorem 4.1 display no longer needs global local-inverse
+measurability.
 
 ## Reuse Dependencies
 

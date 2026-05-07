@@ -632,26 +632,49 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_eq_on_target_real`.
 203. Finite-coordinate selected-estimator Theorem 4.1 endpoint:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_selectedEstimator_delta_method_of_targetProbabilityLocalization_real`.
+204. Moment-space fallback extension of the local inverse:
+   `vaart1998_localInverseFallbackExtension`.
+205. Measurability of the fallback extension from piecewise continuity:
+   `vaart1998_localInverseFallbackExtension_measurable`.
+206. Derivative of the fallback extension at the true moment:
+   `vaart1998_localInverseFallbackExtension_hasFDerivAt`.
+207. True-moment value of the fallback extension:
+   `vaart1998_localInverseFallbackExtension_apply_true_moment`.
 
-Latest remote base before this packet: `6a599be`.
-Latest pushed Vaart packet before this packet: `6a599be`
-(`Add Vaart target event estimator bridge`).
+Latest remote base before this packet: `10f2a08`.
+Latest pushed Vaart packet before this packet: `45caa71`
+(`Add Vaart selected estimator target wrapper`).
 
-The current theorem-sized packet constructs the canonical selected moment
-estimator: use the local inverse on the inverse-function-theorem target event
-and a fixed fallback outside it.  It proves measurability, equality on target,
-and the selected estimator's `sqrt n` weak limit from the target-localization
-certificate.
+The current theorem-sized packet removes the global local-inverse measurability
+assumption from the canonical selected-estimator endpoint.  It builds a
+moment-space fallback extension, proves it measurable by piecewise continuity,
+proves it has the local-inverse derivative at the true moment, and reroutes the
+selected-estimator delta endpoint through this extension.
 
-The next aggressive packet should reduce the remaining global
-`Measurable (he.localInverse e De theta0)` assumption by building the selected
-estimator from local target measurability or a measurable extension of the
-open-partial-homeomorphism inverse.  Do not use probability tending to one as a
-substitute for per-`n` a.e. target membership.
+The next aggressive packet should propagate the fallback-extension selected
+estimator route into the Gaussian-limit/covariance display endpoints, so the
+source-facing Theorem 4.1 display no longer needs global local-inverse
+measurability.  Do not use probability tending to one as a substitute for
+per-`n` a.e. target membership.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
 spine is stable.  Those later chapters should be scouted in parallel only.
+
+## Chat Operating Protocol Corrections
+
+- Treat this chat's `/goal` as the active Vaart formalization lane; do not
+  create recurring automations for this work.
+- Keep Vaart work in the dedicated Vaart worktree, and preserve unrelated
+  commits or dirty files from other local agents.
+- Verify Vaart Lean packets with direct artifact compilation for the exact
+  worktree source when `.lake` is symlinked, rather than relying only on
+  module-level `lake build` output.
+- Rebase over current `origin/main` before staging, update the route-document
+  base hash, rerun focused Lean and hygiene scans, then push.
+- Prefer theorem-sized Lean packets that remove source-facing assumptions or
+  package a textbook statement, and update the next blocker only after the
+  packet compiles.
 
 ## Search-First Record
 

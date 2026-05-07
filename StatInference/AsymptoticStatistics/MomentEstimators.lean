@@ -4206,6 +4206,92 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimat
           exact hThetaHat_eq_on_target n hω)
 
 /--
+Moment-space fallback extension of the inverse-function-theorem local inverse:
+use the local inverse on the target and a fixed fallback outside it.
+-/
+noncomputable def vaart1998_localInverseFallbackExtension
+    {M Θ : Type*}
+    [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> M) {theta0 : Θ} (De : Θ ≃L[ℝ] M)
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] M) theta0)
+    (fallback : Θ) : M -> Θ :=
+  by
+    classical
+    exact
+      (he.toOpenPartialHomeomorph e).target.piecewise
+        (he.localInverse e De theta0) (fun _ => fallback)
+
+/--
+The local-inverse fallback extension is measurable without assuming global
+measurability of `he.localInverse e De theta0`.
+-/
+theorem vaart1998_localInverseFallbackExtension_measurable
+    {M Θ : Type*}
+    [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [MeasurableSpace M] [OpensMeasurableSpace M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [BorelSpace Θ]
+    (e : Θ -> M) {theta0 : Θ} (De : Θ ≃L[ℝ] M)
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] M) theta0)
+    (fallback : Θ) :
+    Measurable (vaart1998_localInverseFallbackExtension e De he fallback) := by
+  classical
+  have hlocal :
+      ContinuousOn (he.localInverse e De theta0)
+        (he.toOpenPartialHomeomorph e).target := by
+    simpa [HasStrictFDerivAt.localInverse_def] using
+      (he.toOpenPartialHomeomorph e).continuousOn_symm
+  have hfallback :
+      ContinuousOn (fun _ : M => fallback)
+        ((he.toOpenPartialHomeomorph e).target)ᶜ :=
+    continuous_const.continuousOn
+  simpa [vaart1998_localInverseFallbackExtension] using
+    hlocal.measurable_piecewise hfallback
+      (he.toOpenPartialHomeomorph e).open_target.measurableSet
+
+/--
+Near the true moment, the fallback extension equals the local inverse, so it has
+the same derivative.
+-/
+theorem vaart1998_localInverseFallbackExtension_hasFDerivAt
+    {M Θ : Type*}
+    [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [MeasurableSpace M] [OpensMeasurableSpace M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [BorelSpace Θ]
+    (e : Θ -> M) {theta0 : Θ} (De : Θ ≃L[ℝ] M)
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] M) theta0)
+    (fallback : Θ) :
+    HasFDerivAt (vaart1998_localInverseFallbackExtension e De he fallback)
+      (De.symm : M →L[ℝ] Θ) (e theta0) := by
+  classical
+  have hevent :
+      vaart1998_localInverseFallbackExtension e De he fallback
+        =ᶠ[𝓝 (e theta0)] he.localInverse e De theta0 := by
+    filter_upwards
+      [(he.toOpenPartialHomeomorph e).open_target.eventually_mem
+        he.image_mem_toOpenPartialHomeomorph_target] with m hm
+    simp [vaart1998_localInverseFallbackExtension, hm]
+  exact he.to_localInverse.hasFDerivAt.congr_of_eventuallyEq hevent
+
+/--
+The fallback extension sends the true moment to the true parameter.
+-/
+theorem vaart1998_localInverseFallbackExtension_apply_true_moment
+    {M Θ : Type*}
+    [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> M) {theta0 : Θ} (De : Θ ≃L[ℝ] M)
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] M) theta0)
+    (fallback : Θ) :
+    vaart1998_localInverseFallbackExtension e De he fallback (e theta0) =
+      theta0 := by
+  classical
+  simp [vaart1998_localInverseFallbackExtension,
+    he.image_mem_toOpenPartialHomeomorph_target]
+
+/--
 Selected finite-coordinate moment estimator: use the local inverse on the
 inverse-function-theorem target event and a fixed fallback outside the event.
 -/
@@ -4228,7 +4314,8 @@ noncomputable def vaart1998_finiteCoordinateLocalInverseSelectedEstimator
 
 /--
 The selected finite-coordinate local-inverse estimator is measurable whenever
-the local inverse and coordinates are measurable.
+the coordinates are measurable.  The local inverse is used through its
+measurable fallback extension on moment space.
 -/
 theorem vaart1998_finiteCoordinateLocalInverseSelectedEstimator_measurable_real
     {Coordinate Ω Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
@@ -4243,7 +4330,6 @@ theorem vaart1998_finiteCoordinateLocalInverseSelectedEstimator_measurable_real
     (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
     (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
     (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
-    (hInv_meas : Measurable (he.localInverse e De theta0))
     (X : Coordinate -> ℕ -> Ω -> ℝ)
     (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
     (fallback : Θ) :
@@ -4253,22 +4339,11 @@ theorem vaart1998_finiteCoordinateLocalInverseSelectedEstimator_measurable_real
           e De he X fallback n) := by
   intro n
   classical
-  have htarget :
-      MeasurableSet
-        {ω : Ω |
-          vaart1998_finiteCoordinateEmpiricalMoment X n ω ∈
-            (he.toOpenPartialHomeomorph e).target} :=
-    (vaart1998_finiteCoordinate_empiricalMoment_measurable_real X hX_meas n)
-      (he.toOpenPartialHomeomorph e).open_target.measurableSet
-  have hlocal :
-      Measurable
-        (fun ω : Ω =>
-          he.localInverse e De theta0
-            (vaart1998_finiteCoordinateEmpiricalMoment X n ω)) :=
-    hInv_meas.comp
-      (vaart1998_finiteCoordinate_empiricalMoment_measurable_real X hX_meas n)
-  simpa [vaart1998_finiteCoordinateLocalInverseSelectedEstimator] using
-    Measurable.ite htarget hlocal measurable_const
+  simpa [vaart1998_finiteCoordinateLocalInverseSelectedEstimator,
+    vaart1998_localInverseFallbackExtension] using
+      (vaart1998_localInverseFallbackExtension_measurable e De he fallback).comp
+        (vaart1998_finiteCoordinate_empiricalMoment_measurable_real
+          X hX_meas n)
 
 /--
 On the target event, the selected finite-coordinate estimator is exactly the
@@ -4310,7 +4385,6 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_selecte
     (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
     (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
     (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
-    (hInv_meas : Measurable (he.localInverse e De theta0))
     (X : Coordinate -> ℕ -> Ω -> ℝ)
     (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
     (targetProbability :
@@ -4340,16 +4414,38 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_selecte
               e De he X fallback n ω - theta0))
       atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
       (fun _ => P) Q :=
-  vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimator_delta_method_of_targetProbabilityLocalization_eq_on_target_real
-    (P := P) (Q := Q) e De he hInv_meas X hX_meas targetProbability
-    (thetaHat :=
-      vaart1998_finiteCoordinateLocalInverseSelectedEstimator
-        e De he X fallback)
-    (vaart1998_finiteCoordinateLocalInverseSelectedEstimator_measurable_real
-      e De he hInv_meas X hX_meas fallback)
-    (vaart1998_finiteCoordinateLocalInverseSelectedEstimator_eq_on_target_real
-      e De he X fallback)
-    hCLT
+  by
+    refine ⟨?_, ?_⟩
+    · exact
+        vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_targetProbabilityLocalization_real
+          e De he X targetProbability
+    · have hdist :
+          TendstoInDistribution
+            (fun (n : ℕ) ω =>
+              √(n : ℝ) •
+                (vaart1998_localInverseFallbackExtension e De he fallback
+                    (vaart1998_finiteCoordinateEmpiricalMoment X n ω) -
+                  theta0))
+            atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+            (fun _ => P) Q :=
+        vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method
+          (P := P) (Q := Q)
+          (empiricalMoment := fun n : ℕ =>
+            vaart1998_finiteCoordinateEmpiricalMoment X n)
+          (Z := Z)
+          (eInv := vaart1998_localInverseFallbackExtension e De he fallback)
+          (eta0 := e theta0) (theta0 := theta0)
+          (Dinv := (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ))
+          (vaart1998_localInverseFallbackExtension_hasFDerivAt e De he fallback)
+          (vaart1998_localInverseFallbackExtension_measurable e De he fallback)
+          (vaart1998_localInverseFallbackExtension_apply_true_moment e De he fallback)
+          (by
+            simpa [vaart1998_finiteCoordinateEmpiricalMoment] using hCLT)
+          (fun n =>
+            (vaart1998_finiteCoordinate_empiricalMoment_measurable_real
+              X hX_meas n).aemeasurable)
+      simpa [vaart1998_finiteCoordinateLocalInverseSelectedEstimator,
+        vaart1998_localInverseFallbackExtension] using hdist
 
 /--
 Measurable-coordinate Theorem 4.1 wrapper deriving composed local-inverse

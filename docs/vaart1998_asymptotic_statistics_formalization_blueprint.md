@@ -402,13 +402,19 @@ Initial modules:
   consumes the inverse-function-theorem target-probability certificate and an
   equality-on-target proof for the selected estimator.
   The canonical selected-estimator layer
+  `vaart1998_localInverseFallbackExtension`,
+  `vaart1998_localInverseFallbackExtension_measurable`,
+  `vaart1998_localInverseFallbackExtension_hasFDerivAt`,
+  `vaart1998_localInverseFallbackExtension_apply_true_moment`,
   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator`,
   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_measurable_real`,
   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_eq_on_target_real`,
   and
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_selectedEstimator_delta_method_of_targetProbabilityLocalization_real`
   realizes the textbook construction: local inverse on the target event and a
-  fixed fallback outside it.
+  fixed fallback outside it, with measurability and the local derivative coming
+  from the fallback extension rather than global measurability of the raw local
+  inverse.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
