@@ -155,14 +155,17 @@ compile, via
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_endpoint_center_refinement`,
 `durrett2019_theorem_2_4_9_cutpointChain_append`,
 `durrett2019_theorem_2_4_9_cdfIncrement_of_subdivision_punctured_cover_subinterval`,
+`durrett2019_theorem_2_4_9_cutpointChain_of_subdivision_punctured_cover_cell`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_endpoint_center_cover`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_center_mem_cover`,
+`durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_punctured_cover`,
 `durrett2019_theorem_2_4_9_punctured_small_open_interval`,
 `durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`,
 `durrett2019_theorem_2_4_9_monotone_subdivision_punctured_cover`,
+`durrett2019_theorem_2_4_9_cutpointChain`,
 `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`,
 `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`,
 `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`,
@@ -170,15 +173,12 @@ compile, via
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`, and
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_monotone_subdivision_center_mem_cover`,
 and
-`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms`.
-The remaining full-theorem-core step is the arbitrary finite middle CDF
-partition existence consumed by
-`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`.
-Equivalently, the next proof obligation can be phrased as constructing a
-strict finite endpoint grid with small adjacent CDF left-limit increments for
-every bounded interval and positive radius.  The compiled endpoint-grid,
-cutpoint-chain, and cutpoint-chain-to-GC handoffs then give the Durrett 2.4.9
-half-line GC wrapper directly.
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms`, and
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`.
+The arbitrary-law full-theorem core now compiles: finite punctured compact
+covers are refined into monotone subdivisions, each strict subdivision cell is
+split at its selected atom center only when needed, and the resulting finite
+cutpoint chains feed the existing half-line GC handoff.
 The new non-atomic local ingredient
 `exists_realOpenInterval_measureReal_lt_of_noAtoms` supplies small open
 neighborhoods from `tendsto_measure_Icc_nhdsWithin_right'`, and
@@ -235,22 +235,29 @@ bridge
 reduces the per-cell witness to the global statement that every finite cover
 center occurs in the subdivision range.  The GC handoff
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_monotone_subdivision_center_mem_cover`
-now consumes those center-range subdivisions directly.  The fully arbitrary
-distribution route still needs the finite ordering/splitting theorem that
-inserts all selected centers into the monotone subdivision and makes each
-closed adjacent cell refine a selected finite cover interval.
+now consumes those center-range subdivisions directly.  The arbitrary-law route
+no longer needs a separate global center-insertion theorem:
+`SuppliedRealMiddleCDFPartitionChain.of_subdivision_punctured_cover_cell`
+splits one strict cell at its selected center when necessary,
+`SuppliedRealMiddleCDFPartitionChain.of_monotone_subdivision_prefix_punctured_cover_to_index`
+assembles finite prefixes, and
+`SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_punctured_cover`
+turns the punctured monotone subdivision into a cutpoint chain.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 The splitting primitive
 `SuppliedRealMiddleCDFPartitionChain.append` and its Durrett wrapper
 `durrett2019_theorem_2_4_9_cutpointChain_append` now concatenate adjacent
-chains, so the finite center-insertion proof can be assembled from subinterval
-pieces if direct global subdivision insertion becomes too brittle.
+chains, so the cell-splitting route is assembled without materializing a new
+global endpoint list.
 The subinterval bridge
 `cdf_leftLim_sub_lt_of_subdivision_punctured_cover_subinterval`, with Durrett
 wrapper
 `durrett2019_theorem_2_4_9_cdfIncrement_of_subdivision_punctured_cover_subinterval`,
 now proves that any strict inserted subcell of a punctured-cover subdivision
 cell has small CDF increment once it avoids the selected center.
+The Durrett wrappers `durrett2019_theorem_2_4_9_cutpointChain`,
+`durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_punctured_cover`,
+and `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine` now compile.
 
 Parallel target: Chapter 2.1 exact iid/product notation refinements only if
 the GC grid blocks.  Theorem 2.1.7 generated-pi-system bridges, Theorem 2.1.8
@@ -331,18 +338,12 @@ reviewing recent remote commits for other-agent Lean contributions, reading
 this file plus the Durrett dashboard and blueprint, and scanning the current
 `StatInference/ProbabilityTheory`, `StatInference/ProbabilityMeasure`, and
 `StatInference/EmpiricalProcess/RealHalfLineGC.lean` modules.  Primary target:
-Durrett Theorem 2.4.9 arbitrary-distribution finite middle CDF partition
-constructor beyond the compiled one-cell/two-cell/right-append/cutpoint-chain,
-endpoint-grid-to-chain, non-atomic local small-neighborhood,
-non-atomic finite compact-cover, non-atomic monotone-subdivision, and
-closed-cover endpoint-grid-refinement consumers.  The likely next primitive is
-now the monotone-subdivision-to-strict-prefix construction: erase repeated
-points from the eventually constant monotone sequence, preserve the assigned
-small cover interval for each nondegenerate adjacent cell, prove the strict
-finite prefix starts at `a` and ends at `b`, and feed
-`SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`.
-After that, handle arbitrary distributions with atom-aware endpoint selection
-if naive splitting at a real cutpoint blocks.  Parallel target:
-optional Chapter 2.1 iid/product notation polish only if the GC grid blocks.
-Verify, update docs, commit/push, and keep this in-thread `/goal` state
-current.  Report progress and blockers in Chinese/English mix.
+do not return to the old center-insertion blocker.  Durrett Theorem 2.4.9
+arbitrary-law half-line GC now compiles through the punctured-cell splitting
+route.  The next aggressive primitive should either tighten the source-facing
+empirical-distribution-function statement around the exact Durrett notation, or
+polish Chapter 2.1 iid/product notation wrappers now that the GC grid core is
+closed.  After that, start the next high-value Durrett chapter spine by
+searching mathlib/local weak-convergence, characteristic-function, and normal
+law APIs.  Verify, update docs, commit/push, and keep this in-thread `/goal`
+state current.  Report progress and blockers in Chinese/English mix.

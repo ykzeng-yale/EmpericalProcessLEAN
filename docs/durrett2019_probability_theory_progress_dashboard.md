@@ -96,17 +96,12 @@ Immediate proof route:
 1. inspect and reuse `realHalfLineIndicator_integral_eq_cdf`,
    `realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid`, and nearby
    grid/squeezing handoffs;
-2. construct a strict finite endpoint grid with small adjacent CDF left-limit
-   increments for every bounded interval and positive radius: the non-atomic
-   route now skips repeated monotone-subdivision values and feeds the
-   cutpoint-chain-to-GC handoff; the arbitrary-law route now has finite
-   punctured compact covers, automatic center avoidance when selected centers
-   are grid endpoints or monotone subdivision values, and needs the finite
-   ordering/splitting theorem that proves all selected centers occur in the
-   subdivision range while making adjacent cells refine finite cover intervals;
-   the resulting subdivision feeds the GC handoff directly through
-   `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_monotone_subdivision_center_mem_cover`;
-3. package the empirical CDF statement once the uniform squeezing proof closes;
+2. use finite punctured compact covers for arbitrary laws: the selected atom
+   center is removed from the controlling set, each strict monotone-subdivision
+   cell is split at that center only when necessary, and the resulting cutpoint
+   chain feeds `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`;
+3. tighten the empirical-CDF source-facing notation now that the uniform
+   squeezing proof closes;
 4. keep Chapter 2.1 as optional iid/product notation polish while the main
    proof effort returns to the GC grid constructor;
 5. promote exact source statements once the wrapper statements line up with the
@@ -123,7 +118,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 1 measure/probability foundations | source-wrapper/reused-local | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/GeneratedSigma.lean`; `Tail.lean`; `ProductMeasure.lean` | Durrett wrappers for Theorem 1.1.1 measure properties and Theorems 1.3.1/1.3.4 measurability facts now compile over mathlib/local generator APIs. |
 | Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact iid/product notation polish. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
-| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, supplied cutpoint chains, or supplied center-range monotone subdivisions. The one-cell, two-cell, right-append, finite cutpoint-chain, cutpoint-chain append, endpoint-grid-to-chain, closed-cover, punctured-cover, punctured-cover inserted-subcell CDF increment, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, monotone center-range, arbitrary-law punctured local/finite compact-cover, arbitrary-law punctured monotone-subdivision, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, center-range subdivision-to-GC, and non-atomic GC packages compile; remaining blocker: refine/insert centers into the arbitrary-law monotone subdivision so all selected centers are subdivision values. |
+| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, supplied cutpoint chains, or supplied center-range monotone subdivisions. The one-cell, two-cell, right-append, finite cutpoint-chain, cutpoint-chain append, endpoint-grid-to-chain, closed-cover, punctured-cover, punctured-cover inserted-subcell CDF increment, punctured-cover cell splitting, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, monotone center-range, arbitrary-law punctured local/finite compact-cover, arbitrary-law punctured monotone-subdivision, arbitrary-law punctured monotone-subdivision cutpoint-chain, arbitrary-law cutpoint-chain, arbitrary-law half-line GC, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, center-range subdivision-to-GC, and non-atomic GC packages compile. Next work is source-facing empirical-CDF notation polish and Chapter 2.1 iid/product polish, not center insertion. |
 | Chapter 3 CLT/characteristic functions | pending-local | none | Needs mathlib API search for characteristic functions, normal laws, weak convergence, and scalar asymptotics. |
 | Chapter 4 martingales | pending-local | none | Search mathlib martingale/conditional expectation APIs first. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
@@ -167,10 +162,8 @@ Every Lean packet should pass:
 The next in-thread goal cycle should not just reread the source.  It should
 either:
 
-- advance Durrett Theorem 2.4.9 by constructing
-  strict finite endpoint grids with small adjacent CDF left-limit increments
-  for arbitrary bounded intervals and positive radii by turning the finite
-  punctured compact cover into an ordered strict grid whose open cells avoid
-  their selected atom centers; or
-- if that blocks, do only optional Chapter 2.1 iid/product notation polish and
-  record the exact GC partition blocker.
+- tighten the exact source-facing statement around
+  `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`, empirical
+  distribution-function notation, and the Durrett Markdown/PDF anchors; or
+- polish the remaining Chapter 2.1 iid/product notation wrappers before moving
+  to the next Durrett chapter spine.

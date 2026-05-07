@@ -196,6 +196,10 @@ Compiled first source wrappers:
   `cdf_leftLim_sub_lt_of_Ioo_subset_punctured_cover`,
   `cdf_leftLim_sub_lt_of_subdivision_punctured_cover_subinterval`, and
   `durrett2019_theorem_2_4_9_cdfIncrement_of_subdivision_punctured_cover_subinterval`.
+- Durrett Theorem 2.4.9 punctured-cover cell-splitting handoff:
+  `SuppliedRealMiddleCDFPartitionChain.of_subdivision_punctured_cover_cell`
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_subdivision_punctured_cover_cell`.
 - Durrett Theorem 2.4.9 strict-subdivision-prefix handoff:
   `SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`
   and
@@ -227,6 +231,13 @@ Compiled first source wrappers:
   `durrett2019_theorem_2_4_9_punctured_small_open_interval`,
   `durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`, and
   `durrett2019_theorem_2_4_9_monotone_subdivision_punctured_cover`.
+- Durrett Theorem 2.4.9 arbitrary-law punctured-subdivision chain and GC
+  packages:
+  `SuppliedRealMiddleCDFPartitionChain.of_monotone_subdivision_prefix_punctured_cover_to_index`,
+  `SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_punctured_cover`,
+  `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_punctured_cover`,
+  `durrett2019_theorem_2_4_9_cutpointChain`, and
+  `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`.
 - Durrett Theorem 2.4.9 non-atomic local grid ingredient:
   `exists_realOpenInterval_measureReal_lt_of_noAtoms` and
   `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`.
@@ -293,10 +304,12 @@ laws, punctured local neighborhoods and finite compact punctured covers now
 compile, together with the endpoint-grid consumer for open cells that avoid
 the selected atom center.  The open-cover/avoidance bridge now reduces the
 punctured-cover consumer to ordinary open-cover refinement plus the fact that
-the selected center is not inside the open cell.  The remaining
-arbitrary-distribution primitive is the finite ordering/splitting construction
-that turns the punctured compact cover into strict endpoint grids for intervals
-whose total CDF increment is not already below the requested radius.
+the selected center is not inside the open cell.  The arbitrary-distribution
+core now avoids a separate global endpoint-insertion construction: each strict
+monotone-subdivision cell is split at its selected atom center only when that
+center lies inside the cell, finite prefixes are assembled by chain append, and
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine` compiles for arbitrary
+probability laws on the real line.
 
 ### Lane D: CLT and characteristic functions
 
