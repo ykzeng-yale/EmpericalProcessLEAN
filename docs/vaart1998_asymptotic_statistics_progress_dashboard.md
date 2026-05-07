@@ -485,13 +485,24 @@ Chapter 4 handoff:
   package source-neighborhood probability, moment-equation solving probability,
   the weak limit, Gaussianity, and the covariance-table display into one
   reusable theorem-facing object.
+- Chapter 5.7 M-estimator consistency start:
+  `StatInference/AsymptoticStatistics/MEstimators.lean`,
+  `vaart1998_theorem_5_7_populationCriterion_gap_le_of_uniformDeviation_approxMax`,
+  `vaart1998_theorem_5_7_dist_lt_of_uniformDeviation_approxMax`,
+  `Vaart1998MEstimatorUniformConsistencyCertificate`,
+  `Vaart1998MEstimatorUniformConsistencyCertificate.oracleBound_tendsto_zero`,
+  and
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_uniformConsistencyCertificate`
+  package the deterministic proof and high-probability event handoff for
+  convergence in probability of approximate M-estimators.
 
-Latest remote base before this packet: `54bb599`.  Latest pushed Vaart packet
-before this packet: `455a207`
-(`Add Vaart selected estimator source probability wrappers`).
+Latest remote base before this packet: `b6bc4cf`.  Latest pushed Vaart packet
+before this packet: `f7c8b1c`
+(`Add Vaart selected estimator conclusion package`).
 Current packet verification passed for:
 
-- manual `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .../MomentEstimators.olean -i .../MomentEstimators.ilean`
+- manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
+- manual direct root import check for `StatInference.lean`
 - `git diff --check`
 - proof-hole and secret scans on changed Vaart files
 
@@ -500,10 +511,9 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Use the selected-estimator conclusion package as the stable Chapter 4.1 handoff,
-then move to the next theorem cluster: Chapter 5 M-estimator/Z-estimator
-consistency or any remaining Chapter 4 corollary that can be stated from the
-package.
+Derive the Z-estimator consistency theorem 5.9 from Theorem 5.7 by applying the
+M-estimator certificate to `theta ↦ -‖Psi theta‖`, then add compact/GC source
+wrappers for the uniform-convergence assumption.
 
 ## Reuse Dependencies
 

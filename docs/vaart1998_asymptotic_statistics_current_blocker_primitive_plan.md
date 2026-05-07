@@ -673,20 +673,31 @@ Chapter 3 theorem-facing wrappers compiling:
 219. Canonical vector-law/covariance source constructor for the bundled
    selected-estimator conclusion:
    `vaart1998_finiteCoordinateSelectedEstimatorTheorem41Conclusion_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`.
+220. New Chapter 5 M-estimator consistency module:
+   `StatInference/AsymptoticStatistics/MEstimators.lean`.
+221. Theorem 5.7 deterministic criterion-gap and separated-maximum wrappers:
+   `vaart1998_theorem_5_7_populationCriterion_gap_le_of_uniformDeviation_approxMax`
+   and
+   `vaart1998_theorem_5_7_dist_lt_of_uniformDeviation_approxMax`.
+222. High-probability Theorem 5.7 source certificate:
+   `Vaart1998MEstimatorUniformConsistencyCertificate`.
+223. Theorem 5.7 convergence-in-probability endpoint:
+   `vaart1998_theorem_5_7_mEstimator_consistent_of_uniformConsistencyCertificate`.
 
-Latest remote base before this packet: `54bb599`.
-Latest pushed Vaart packet before this packet: `455a207`
-(`Add Vaart selected estimator source probability wrappers`).
+Latest remote base before this packet: `b6bc4cf`.
+Latest pushed Vaart packet before this packet: `f7c8b1c`
+(`Add Vaart selected estimator conclusion package`).
 
-The current theorem-sized packet packages the selected-estimator Chapter 4.1
-source route behind a named conclusion structure.  The package bundles
-source-neighborhood probability, moment-equation solving probability, the
-`sqrt n` weak limit, Gaussianity of the limit, and the covariance-table display.
+The current theorem-sized packet opens Chapter 5 by formalizing the deterministic
+core of Theorem 5.7 and a high-probability certificate: on a good event whose
+probability tends to one, uniform criterion convergence plus approximate
+maximization and a well-separated population maximum imply convergence in
+probability of the approximate M-estimator.
 
-The next aggressive packet should use this package as the stable handoff for
-Chapter 4.1 and then move to the next textbook theorem cluster: Chapter 5
-M-estimator/Z-estimator consistency or any remaining Chapter 4 corollary that
-can be stated from the bundled selected-estimator conclusion.
+The next aggressive packet should derive the Z-estimator consistency theorem
+5.9 from the M-estimator theorem by applying the Chapter 5.7 certificate to the
+criterion `theta ↦ -‖Psi theta‖`, then move toward compact/GC source wrappers
+for uniform convergence assumptions.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

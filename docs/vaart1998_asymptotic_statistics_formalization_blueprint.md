@@ -444,8 +444,11 @@ Initial modules:
   `Vaart1998FiniteCoordinateSelectedEstimatorTheorem41Conclusion` and its
   target-localization/canonical-source constructors now provide a compact
   theorem-facing object for the selected-estimator Chapter 4.1 route.
-- `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
-  normality certificates.
+- `MEstimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
+  normality certificates.  The first layer proves the deterministic Theorem 5.7
+  population-criterion gap bound, the separated-maximum exclusion wrapper, and
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_uniformConsistencyCertificate`
+  from a high-probability uniform-consistency certificate.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
