@@ -509,29 +509,37 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_finiteCoordinateCanonicalSample_populationMoment_eq_integral`.
 161. Canonical iid product-sample projected variance identity:
    `vaart1998_finiteCoordinateCanonicalProjectedSample_variance_eq`.
+162. Canonical product true-moment source conversion from vector-law means:
+   `vaart1998_finiteCoordinateCanonicalSample_trueMoment_eq_populationMoment`.
+163. Canonical product covariance source conversion from vector-law projection
+   variances:
+   `vaart1998_finiteCoordinateCanonicalSample_covariance_eq_projectedVariance`.
+164. Canonical iid product-space Theorem 4.1 covariance-table endpoint with
+   true moment and covariance hypotheses stated under the common vector law:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalVectorLawSource_real`.
 
-Latest remote base before this packet: `a10a328`.
-Latest pushed Vaart packet before this packet: `a10a328`
-(`Add Vaart canonical product theorem 4.1 endpoint`).
+Latest remote base before this packet: `423187e`.
+Latest pushed Vaart packet before this packet: `af5c4c4`
+(`Add Vaart canonical moment variance sources`).
 
-The current theorem-sized packet begins discharging the remaining
-canonical-product source fields.  The population moment of the canonical sample
-is now identified with the coordinatewise mean under the common vector law, and
-the variance of every projected canonical summand is identified with the
-variance of the same projection under that vector law.  The remaining
-non-sample-space source hypotheses are now Gaussian limit law, covariance
-identity, inverse-function target event, true-moment equality at `theta0`,
-coordinate evaluation measurability, and coordinate-projection `MemLp` under
-the vector law.
+The current theorem-sized packet packages those canonical identities into the
+Theorem 4.1 endpoint.  The canonical vector-law endpoint now accepts the true
+moment as `e theta0 = fun coordinate => ∫ sampleVector, sampleVector coordinate
+∂ν` and the Gaussian covariance source as
+`covarianceBilinDual (Q.map Z) L L = Var[L; ν]`, then derives the product-space
+population moment and projected summand variances internally.  The remaining
+non-sample-space source hypotheses are now Gaussian limit law, zero projected
+mean, inverse-function target event, coordinate evaluation measurability, and
+coordinate-projection `MemLp` under the vector law.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. package the `e theta0 = ∫ sampleVector, sampleVector coordinate ∂ν` source
-   assumption together with the new canonical population-moment identity;
-2. turn projection variance/covariance equalities under `ν` into the exact
-   covariance-table or Gaussian-source fields consumed by the canonical
-   endpoint;
+1. package the zero projected mean field from a mean-zero Gaussian vector law
+   or a reusable covariance/mean certificate;
+2. search for a real covarianceBilinDual polarization/off-diagonal API that can
+   turn diagonal variance identities into full covariance-table identities when
+   needed;
 3. attack the remaining inverse-function target event only through a real
    local-inverse/measurability theorem or keep it as a named source certificate;
 4. keep endpoint variants narrow and add them only when they remove a real

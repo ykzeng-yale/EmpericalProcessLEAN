@@ -301,6 +301,12 @@ Initial modules:
   It identifies the product population moment with coordinatewise vector-law
   means and every projected product-sample summand variance with its vector-law
   projection variance.
+  The canonical vector-law endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalVectorLawSource_real`
+  now consumes those `ν`-side true-moment and covariance hypotheses directly,
+  leaving the Gaussian law, zero projected mean, target localization, coordinate
+  measurability, and vector-law coordinate `MemLp` fields as the live source
+  obligations.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
