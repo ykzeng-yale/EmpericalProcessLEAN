@@ -299,10 +299,10 @@ Initial Lean anchors:
 
 Mathlib currently supplies a real-valued strong law under pairwise independence
 and identical distribution through the local wrapper
-`strongLaw_ae_real`.  Durrett Theorem 2.4.1 should therefore start as a
-source-wrapper over that theorem; this wrapper is now compiled in
-`StatInference/ProbabilityTheory/Basic.lean`.  The next aggressive target is
-Durrett Theorem 2.4.9, Glivenko-Cantelli for empirical CDFs, by reusing the
+`strongLaw_ae_real`.  Durrett Theorem 2.4.1 starts as a source-wrapper over
+that theorem; this wrapper now compiles in
+`StatInference/ProbabilityTheory/Basic.lean`.  The previous Chapter 2.4 target
+was Durrett Theorem 2.4.9, Glivenko-Cantelli for empirical CDFs, by reusing the
 existing `RealHalfLineGC.lean` fixed-endpoint and half-line infrastructure and
 filling the arbitrary-CDF finite quantile grid/squeezing layer.  The supplied
 endpoint-grid and supplied middle-CDF-partition handoffs now compile, and the
@@ -387,14 +387,17 @@ Next packet candidates:
 - Section 3.4 Lindeberg-Feller analytic estimates: prove or instantiate the
   scalar expansion-bound predicate
   `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
-  from Durrett's characteristic-function Taylor estimate (3.3.3).  The
-  pointwise truncation split of the minimum term already compiles as
+  from the named (3.3.3) Taylor remainder predicate.  The pointwise truncation
+  split of the minimum term already compiles as
   `durrett2019_lindebergFeller_min_taylor_remainder_le_split`, and the bridges
-  from the expansion bound to the scalar Taylor bound, variance-based
-  one-factor bound, finite-row bound, and
-  `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
-  already compile, so do not re-prove the finite-row summation or limiting
-  epsilon argument.  The lower-level variance-tail split inequality
+  from the remainder bound to the expansion bound, scalar Taylor bound,
+  variance-based one-factor bound, finite-row bound, analytic certificate, and
+  final Lindeberg-Feller source wrapper already compile.  Next prove or
+  instantiate
+  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`
+  from Durrett Lemma 3.3.19 / formula (3.3.3), so do not re-prove the
+  integration split, finite-row summation, or limiting epsilon argument.  The
+  lower-level variance-tail split inequality
   `variance <= cutoff ^ 2 + tail row sum` now compiles from row
   `AEMeasurable` plus square-integrability assumptions, so it should be
   consumed rather than reproved in the next route.

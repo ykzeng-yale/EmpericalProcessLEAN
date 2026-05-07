@@ -14,12 +14,13 @@ pushed commit and these route docs.  Current frontier: Chapter 3.4.10
 Lindeberg-Feller in `StatInference/ProbabilityTheory/Basic.lean`.  Do not
 return to the solved Chapter 2 Glivenko-Cantelli or Chapter 2.1 product-law
 work unless a new compiler or source dependency reopens it.  Next proof packet:
-derive
+prove or instantiate
+`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`
+from Durrett's Lemma 3.3.19 / formula (3.3.3) characteristic-function Taylor
+estimate; the integration/splitting bridge from this predicate to
 `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
-from Durrett's characteristic-function Taylor estimate (3.3.3) and the compiled
-pointwise split
-`durrett2019_lindebergFeller_min_taylor_remainder_le_split`; then route to
-Section 3.10 Cramer-Wold and multivariate CLT.  Each cycle should sync GitHub,
+already compiles.  Then route to Section 3.10 Cramer-Wold and multivariate CLT.
+Each cycle should sync GitHub,
 inspect only relevant route/source/API anchors, name the exact source item,
 Lean declaration, and consumed primitive, implement one theorem-sized Lean
 packet, run focused Lean plus targeted build and scans, update the route docs,
@@ -187,17 +188,23 @@ namespace now has a compiled starter module:
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
+- `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`
 - `durrett2019_lindebergFeller_min_taylor_remainder_le_split`
+- `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound_of_remainderBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound_of_expansionBound`
+- `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound_of_remainderBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound_of_taylorBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound_of_expansionBound`
+- `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound_of_remainderBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_oneFactorBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_taylorBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_expansionBound`
+- `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_remainderBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_rowBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_oneFactorBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_taylorBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_expansionBound`
+- `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_remainderBound`
 - `durrett2019_lindebergFellerQuadraticVarianceFactorsEventuallyNormLeOne`
 - `durrett2019_lindebergFellerVarianceRowsEventuallySmall`
 - `durrett2019_theorem_3_4_10_varianceRowsEventuallySmall_of_lindeberg_and_varianceSplitByTailRowSum`
@@ -229,6 +236,7 @@ namespace now has a compiled starter module:
 - `Durrett2019LindebergFellerAnalyticCertificate.of_oneFactorBound_integrableSq`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_taylorBound_integrableSq`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_expansionBound_integrableSq`
+- `Durrett2019LindebergFellerAnalyticCertificate.of_remainderBound_integrableSq`
 - `durrett2019_theorem_3_4_10_characteristicFunction_rowSum_eq_product`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_product_tendsto`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_exp_of_product_tendsto_exp`
@@ -241,6 +249,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_oneFactorBound_integrableSq`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_taylorBound_integrableSq`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_expansionBound_integrableSq`
+- `durrett2019_theorem_3_4_10_lindebergFeller_of_remainderBound_integrableSq`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -338,8 +347,11 @@ layer before moving to multivariate CLT reuse:
   then feeds
   `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
   through compiled bridges.  The pointwise truncation split of the minimum term
-  also compiles, so the next proof target is the integrated
-  characteristic-function Taylor expansion bound from Durrett (3.3.3).  The
+  also compiles.  The integrated split bridge from Durrett's (3.3.3) remainder
+  predicate to the scalar expansion-bound predicate now compiles, so the next
+  proof target is the characteristic-function Taylor remainder primitive itself:
+  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`.
+  The
   quadratic-product obligation
   `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp` now has
   a compiled bridge from variance-sum convergence and max-row-variance
@@ -486,11 +498,10 @@ including a final source-facing constructor from square-integrable rows plus
 the finite-row Taylor/Lindeberg bound predicate.  Exercise 3.1.1 is now proved
 locally and feeds the quadratic product route without a supplied theorem
 assumption.  The variance-tail split is now proved from square-integrable rows,
-and the expansion-bound-to-final-source-wrapper bridge now compiles, so the
-next aggressive target is
-`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
-from Durrett's characteristic-function Taylor estimate (3.3.3) plus the
-compiled pointwise truncation split before moving to Section
+and the remainder-bound-to-final-source-wrapper bridge now compiles, so the
+next aggressive target is proving or instantiating
+`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`
+from Durrett Lemma 3.3.19 / formula (3.3.3) before moving to Section
 3.10 Cramer-Wold/multivariate CLT wrappers while checking local
 asymptotic-statistics reuse first.
 Verify, update docs, commit/push, and keep this in-thread `/goal` state current.

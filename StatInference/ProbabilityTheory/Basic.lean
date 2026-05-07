@@ -2768,6 +2768,19 @@ def durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBo
                 (fun ω' : Ω => (X n m ω') ^ 2) ω ∂P
 
 /--
+Durrett 2019, formula (3.3.3), specialized to the quadratic characteristic
+function Taylor expansion used in Theorem 3.4.10.
+-/
+def durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) : Prop :=
+  ∀ t : ℝ, ∀ n m : ℕ,
+    ‖durrett2019_characteristicFunction (P.map (X n m)) t -
+      (1 + (((∫ ω, X n m ω ∂P) * t : ℝ) : ℂ) * Complex.I -
+        (((∫ ω, (X n m ω) ^ 2 ∂P) * t ^ 2 / 2 : ℝ) : ℂ))‖ ≤
+      ∫ ω, min (|t * X n m ω| ^ 3) (2 * |t * X n m ω| ^ 2) ∂P
+
+/--
 Durrett 2019, Theorem 3.4.10, pointwise truncation split for the scalar
 Taylor remainder in (3.3.3).
 -/
@@ -2813,6 +2826,95 @@ theorem durrett2019_lindebergFeller_min_taylor_remainder_le_split
         simp [hx]
 
 /--
+Durrett 2019, Theorem 3.4.10, the integrated Taylor remainder estimate (3.3.3)
+implies the split scalar Taylor/Lindeberg expansion bound.
+-/
+theorem durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound_of_remainderBound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hX : ∀ n m : ℕ, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m : ℕ, Integrable (fun ω => (X n m ω) ^ 2) P)
+    (hremainder :
+      durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound
+        P X) :
+    durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound
+      P X := by
+  intro t cutoff hcutoff n m
+  let tailSet : Set Ω := {ω : Ω | cutoff < |X n m ω|}
+  let tailFun : Ω -> ℝ :=
+    Set.indicator tailSet (fun ω : Ω => (X n m ω) ^ 2)
+  let splitFun : Ω -> ℝ :=
+    fun ω : Ω =>
+      cutoff * |t| ^ 3 * (X n m ω) ^ 2 + 2 * t ^ 2 * tailFun ω
+  have htail_null : NullMeasurableSet tailSet P := by
+    dsimp [tailSet]
+    exact
+      nullMeasurableSet_lt
+        (aemeasurable_const : AEMeasurable (fun _ : Ω => cutoff) P)
+        (continuous_abs.measurable.comp_aemeasurable (hX n m))
+  have htail_integrable : Integrable tailFun P := by
+    dsimp [tailFun]
+    exact (hX2 n m).indicator₀ htail_null
+  have hsq_scaled_integrable :
+      Integrable (fun ω : Ω =>
+        cutoff * |t| ^ 3 * (X n m ω) ^ 2) P := by
+    simpa using
+      (hX2 n m).const_mul (cutoff * |t| ^ 3)
+  have htail_scaled_integrable :
+      Integrable (fun ω : Ω => 2 * t ^ 2 * tailFun ω) P := by
+    simpa using
+      htail_integrable.const_mul (2 * t ^ 2)
+  have hsplit_integrable : Integrable splitFun P := by
+    dsimp [splitFun]
+    exact hsq_scaled_integrable.add htail_scaled_integrable
+  have hmin_nonneg :
+      0 ≤ᵐ[P] (fun ω : Ω =>
+        min (|t * X n m ω| ^ 3) (2 * |t * X n m ω| ^ 2)) := by
+    exact Eventually.of_forall fun ω =>
+      le_min (by positivity) (by positivity)
+  have hpoint :
+      (fun ω : Ω =>
+        min (|t * X n m ω| ^ 3) (2 * |t * X n m ω| ^ 2)) ≤ᵐ[P]
+          splitFun := by
+    exact Eventually.of_forall fun ω => by
+      have hsplit :=
+        durrett2019_lindebergFeller_min_taylor_remainder_le_split
+          t cutoff (X n m ω) hcutoff
+      by_cases htail : cutoff < |X n m ω|
+      · simpa [splitFun, tailFun, tailSet, htail, mul_assoc] using hsplit
+      · simpa [splitFun, tailFun, tailSet, htail, mul_assoc] using hsplit
+  have hintegral_split_le :
+      (∫ ω, min (|t * X n m ω| ^ 3)
+            (2 * |t * X n m ω| ^ 2) ∂P) ≤
+        ∫ ω, splitFun ω ∂P :=
+    integral_mono_of_nonneg hmin_nonneg hsplit_integrable hpoint
+  have hsplit_integral_eq :
+      (∫ ω, splitFun ω ∂P) =
+        cutoff * |t| ^ 3 * (∫ ω, (X n m ω) ^ 2 ∂P) +
+          (2 * t ^ 2) *
+            ∫ ω,
+              Set.indicator {ω' : Ω | cutoff < |X n m ω'|}
+                (fun ω' : Ω => (X n m ω') ^ 2) ω ∂P := by
+    dsimp [splitFun]
+    rw [integral_add hsq_scaled_integrable htail_scaled_integrable]
+    rw [integral_const_mul, integral_const_mul]
+  calc
+    ‖durrett2019_characteristicFunction (P.map (X n m)) t -
+        (1 + (((∫ ω, X n m ω ∂P) * t : ℝ) : ℂ) * Complex.I -
+          (((∫ ω, (X n m ω) ^ 2 ∂P) * t ^ 2 / 2 : ℝ) : ℂ))‖
+        ≤ ∫ ω, min (|t * X n m ω| ^ 3)
+            (2 * |t * X n m ω| ^ 2) ∂P :=
+          hremainder t n m
+    _ ≤ ∫ ω, splitFun ω ∂P :=
+          hintegral_split_le
+    _ = cutoff * |t| ^ 3 * (∫ ω, (X n m ω) ^ 2 ∂P) +
+          (2 * t ^ 2) *
+            ∫ ω,
+              Set.indicator {ω' : Ω | cutoff < |X n m ω'|}
+                (fun ω' : Ω => (X n m ω') ^ 2) ω ∂P :=
+          hsplit_integral_eq
+
+/--
 Durrett 2019, Theorem 3.4.10, mean-zero rows remove the linear term from the
 scalar Taylor/Lindeberg expansion bound.
 -/
@@ -2827,6 +2929,26 @@ theorem durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound_o
       P X := by
   intro t cutoff hcutoff n m
   simpa [hmean_zero n m] using hexpansion t cutoff hcutoff n m
+
+/--
+Durrett 2019, Theorem 3.4.10, Durrett's Taylor remainder estimate (3.3.3)
+gives the mean-zero scalar Taylor/Lindeberg bound.
+-/
+theorem durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound_of_remainderBound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hX : ∀ n m : ℕ, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m : ℕ, Integrable (fun ω => (X n m ω) ^ 2) P)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hremainder :
+      durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound
+        P X) :
+    durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound
+      P X :=
+  durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound_of_expansionBound
+    (P := P) (X := X) hmean_zero
+    (durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound_of_remainderBound
+      (P := P) (X := X) hX hX2 hremainder)
 
 /--
 Durrett 2019, Theorem 3.4.10, mean-zero rows turn the scalar Taylor/Lindeberg
@@ -2869,6 +2991,26 @@ theorem durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound_of_expa
     (P := P) (X := X) hX hmean_zero
     (durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound_of_expansionBound
       (P := P) (X := X) hmean_zero hexpansion)
+
+/--
+Durrett 2019, Theorem 3.4.10, Durrett's Taylor remainder estimate (3.3.3)
+gives the variance-based one-factor bound after mean-zero cancellation.
+-/
+theorem durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound_of_remainderBound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hX : ∀ n m : ℕ, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m : ℕ, Integrable (fun ω => (X n m ω) ^ 2) P)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hremainder :
+      durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound
+        P X) :
+    durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound
+      P X :=
+  durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound_of_expansionBound
+    (P := P) (X := X) hX hmean_zero
+    (durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound_of_remainderBound
+      (P := P) (X := X) hX hX2 hremainder)
 
 /--
 Durrett 2019, Theorem 3.4.10, summing the one-factor Taylor/Lindeberg bound
@@ -2952,6 +3094,26 @@ theorem durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_ex
     (P := P) (X := X)
     (durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound_of_expansionBound
       (P := P) (X := X) hX hmean_zero hexpansion)
+
+/--
+Durrett 2019, Theorem 3.4.10, Durrett's Taylor remainder estimate (3.3.3)
+gives the finite-row Taylor/Lindeberg bound after mean-zero cancellation.
+-/
+theorem durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_remainderBound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hX : ∀ n m : ℕ, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m : ℕ, Integrable (fun ω => (X n m ω) ^ 2) P)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hremainder :
+      durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound
+        P X) :
+    durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound
+      P X :=
+  durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_oneFactorBound
+    (P := P) (X := X)
+    (durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound_of_remainderBound
+      (P := P) (X := X) hX hX2 hmean_zero hremainder)
 
 /--
 Durrett 2019, Theorem 3.4.10, the finite-row Taylor/Lindeberg estimate implies
@@ -3147,6 +3309,30 @@ theorem durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero
     hvariance hlindeberg
     (durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_expansionBound
       (P := P) (X := X) hX hmean_zero hexpansion)
+
+/--
+Durrett 2019, Theorem 3.4.10, Durrett's Taylor remainder estimate (3.3.3)
+implies the row-sum error convergence used by Lemma 3.4.3.
+-/
+theorem durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_remainderBound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hX : ∀ n m : ℕ, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m : ℕ, Integrable (fun ω => (X n m ω) ^ 2) P)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hremainder :
+      durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound
+        P X) :
+    durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero
+      P X :=
+  durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_rowBound
+    (P := P) (X := X) (varianceLimit := varianceLimit)
+    hvariance hlindeberg
+    (durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_remainderBound
+      (P := P) (X := X) hX hX2 hmean_zero hremainder)
 
 /--
 Durrett 2019, Theorem 3.4.10, eventual unit-norm control for the quadratic
@@ -3976,6 +4162,31 @@ theorem Durrett2019LindebergFellerAnalyticCertificate.of_expansionBound_integrab
       (P := P) (X := X) hX hmean_zero hexpansion)
 
 /--
+Durrett 2019, Theorem 3.4.10, assemble the analytic certificate from Durrett's
+Taylor remainder estimate (3.3.3) and square-integrable rows.
+-/
+theorem Durrett2019LindebergFellerAnalyticCertificate.of_remainderBound_integrableSq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m, Integrable (fun ω => X n m ω ^ 2) P)
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hremainder :
+      durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound
+        P X) :
+    Durrett2019LindebergFellerAnalyticCertificate
+      P X varianceLimit :=
+  Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSumBound_integrableSq
+    (P := P) (X := X) (varianceLimit := varianceLimit)
+    hX hX2 hvariance_pos hmean_zero hvariance hlindeberg
+    (durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_remainderBound
+      (P := P) (X := X) hX hX2 hmean_zero hremainder)
+
+/--
 Durrett 2019, Theorem 3.4.10 proof bridge: row-wise independence gives the
 product formula for the characteristic function of each triangular-array row
 sum.
@@ -4322,6 +4533,37 @@ theorem durrett2019_theorem_3_4_10_lindebergFeller_of_expansionBound_integrableS
     hX hX2 hindep hvariance_pos hmean_zero hvariance hlindeberg
     (durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_expansionBound
       (P := P) (X := X) hX hmean_zero hexpansion)
+    hY
+
+/--
+Durrett 2019, Theorem 3.4.10, source-facing Lindeberg-Feller bridge from
+Durrett's Taylor remainder estimate (3.3.3) and square-integrable rows.
+-/
+theorem durrett2019_theorem_3_4_10_lindebergFeller_of_remainderBound_integrableSq
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ} {Y : Ω' -> ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m, Integrable (fun ω => X n m ω ^ 2) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hremainder :
+      durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound
+        P X)
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 varianceLimit.toNNReal) P') :
+    TendstoInDistribution
+      (fun n => durrett2019_lindebergFellerRowSum X n)
+      atTop Y (fun _ => P) P' :=
+  durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSumBound_integrableSq
+    hX hX2 hindep hvariance_pos hmean_zero hvariance hlindeberg
+    (durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_remainderBound
+      (P := P) (X := X) hX hX2 hmean_zero hremainder)
     hY
 
 /--
