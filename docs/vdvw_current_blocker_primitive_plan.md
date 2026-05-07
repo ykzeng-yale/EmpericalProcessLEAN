@@ -229,6 +229,18 @@ the beta lower-bound half of Lemma 2.3.7 is ready for empirical-average
 weights; the missing theorem is the selected-cover/Rademacher probability
 comparison itself.
 
+The fixed-`M` convergence route now also accepts that explicit Chebyshev beta
+factor directly through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_uniformChebyshevBeta_scaledSelectedFiniteNetHoeffdingUpper`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_displayedUniformChebyshevBeta_scaledSelectedFiniteNetHoeffdingUpper`.
+After local search, no existing local or pinned-mathlib theorem proves the
+nonmeasurable selected-cover probability comparison itself.  The remaining
+source primitive is therefore exactly the VdV&W Lemma 2.3.7 comparison with
+left factor
+`ofReal (1 - 16 * M^2 / ((n + 1) * epsilon^2))`, not another deterministic
+Chebyshev or endpoint wrapper.
+
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
 infrastructure for selected fixed-radius tail/UI, finite code-set and

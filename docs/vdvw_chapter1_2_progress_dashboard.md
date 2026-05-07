@@ -213,16 +213,23 @@ The uniform empirical-weight specialization is also compiled through
 `VdVWTheorem243_eventualBetaLower_half_of_uniformChebyshevPenalty_eq`, giving
 the explicit `16 * M^2 / ((n + 1) * epsilon^2)` penalty and its eventual
 `1/2` beta lower bound.
+The fixed-`M` route now consumes that displayed factor directly through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_uniformChebyshevBeta_scaledSelectedFiniteNetHoeffdingUpper`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_displayedUniformChebyshevBeta_scaledSelectedFiniteNetHoeffdingUpper`.
+The remaining source theorem is the VdV&W Lemma 2.3.7 selected-cover/Rademacher
+outer-probability comparison carrying
+`ofReal (1 - 16 * M^2 / ((n + 1) * epsilon^2))`.
 
-The operative target is no longer another endpoint alias.  The remaining exact
-Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
-block, the theorem that turns
+The operative target is no longer another endpoint alias.  The immediate exact
+Theorem 2.4.3 mismatch is the selected-cover/Rademacher probability comparison
+above; after that, the remaining generic random-entropy step is to turn
 `log N(epsilon, F_M, L1(P_n)) = o_P^*(n)` for fixed positive `epsilon, M` into
 the selected finite-net tail/UI or ordinary-mean/uniform-integrability input
-used by the compiled fixed-radius route.  If that cannot be proved from the
-textbook hypothesis alone, record the exact missing hypothesis/theorem shape
-and then move to either a source-supported full-subgraph/finite-class corollary
-or a real Chapter 1 primitive: arbitrary-index FDD converse,
+used by the compiled fixed-radius route.  If those cannot be proved from the
+textbook hypothesis alone, record the exact missing hypothesis/theorem shape and
+then move to either a source-supported full-subgraph/finite-class corollary or a
+real Chapter 1 primitive: arbitrary-index FDD converse,
 separability/tightness/asymptotic-measurability, nonmeasurable signed
 outer-cover weak convergence, or full arbitrary-map extended-real measurable
 cover existence.  Historical target paragraphs below are retained for audit
