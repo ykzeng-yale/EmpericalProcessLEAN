@@ -388,7 +388,8 @@ Compiled Section 3.2 packets:
   variance coefficients/factors/products, Exercise 3.1.1 triangular-array
   row-sum, max-absolute, absolute-row-sum boundedness, product interfaces, the
   positivity/log-remainder proof route, and the proved source theorem, a
-  variance-tail split bridge from Lindeberg to max-row-variance smallness,
+  variance-tail split bridge from Lindeberg to max-row-variance smallness, a
+  proof of the textbook variance-tail split from square-integrable rows,
   specialized Exercise 3.1.1 bridges for the quadratic coefficients,
   max-row-variance-to-factor-norm bridges, Lemma 3.4.3 product-difference
   control, the variance-sum-to-row-target convergence bridge, the
@@ -399,10 +400,12 @@ Compiled Section 3.2 packets:
 Next packet candidates:
 
 - Section 3.4 Lindeberg-Feller analytic estimates: prove the one-factor
-  Taylor/Lindeberg row-sum estimate and the lower-level integral/truncation
-  primitive that supplies the variance-tail split inequality
-  `variance <= cutoff ^ 2 + tail row sum`.  These are now the only primitive
-  gaps before the compiled source-facing Lindeberg-Feller constructor applies.
+  Taylor/Lindeberg row-sum estimate
+  `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`.
+  The lower-level variance-tail split inequality
+  `variance <= cutoff ^ 2 + tail row sum` now compiles from row
+  `AEMeasurable` plus square-integrability assumptions, so it should be
+  consumed rather than reproved in the next route.
 - Section 3.3 inversion or uniqueness support, only when it is directly needed
   for the convergence theorem route.
 - Section 3.10 Cramer-Wold and multivariate CLT wrappers over existing local

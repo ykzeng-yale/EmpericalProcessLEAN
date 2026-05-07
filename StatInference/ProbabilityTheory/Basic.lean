@@ -1989,6 +1989,107 @@ def durrett2019_lindebergFellerVarianceSplitByTailRowSum
           durrett2019_lindebergFellerTailSecondMomentRowSum P X cutoff n
 
 /--
+Durrett 2019, Theorem 3.4.10, one-factor variance-tail inequality.
+
+This is the textbook estimate
+`sigma_{n,m}^2 <= epsilon^2 + E(|X_{n,m}|^2; |X_{n,m}| > epsilon)` in a
+single-random-variable form.  The proof uses the general bound
+`Var X <= E[X^2]`, so it does not need the mean-zero hypothesis.
+-/
+theorem durrett2019_lindebergFeller_oneFactorVariance_le_cutoff_sq_add_tailSecondMoment
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : Ω -> ℝ}
+    (hX : AEMeasurable X P)
+    (hX2 : Integrable (fun ω => X ω ^ 2) P)
+    {cutoff : ℝ} (_hcutoff : 0 < cutoff) :
+    _root_.ProbabilityTheory.variance X P ≤
+      cutoff ^ 2 +
+        ∫ ω,
+          Set.indicator {ω' : Ω | cutoff < |X ω'|}
+            (fun ω' : Ω => X ω' ^ 2) ω ∂P := by
+  let tailSet : Set Ω := {ω : Ω | cutoff < |X ω|}
+  let tailFun : Ω -> ℝ := Set.indicator tailSet (fun ω : Ω => X ω ^ 2)
+  have htail_null : NullMeasurableSet tailSet P := by
+    dsimp [tailSet]
+    exact
+      nullMeasurableSet_lt
+        (aemeasurable_const : AEMeasurable (fun _ : Ω => cutoff) P)
+        (continuous_abs.measurable.comp_aemeasurable hX)
+  have htail_integrable : Integrable tailFun P := by
+    dsimp [tailFun]
+    exact hX2.indicator₀ htail_null
+  have hrhs_integrable :
+      Integrable (fun ω : Ω => cutoff ^ 2 + tailFun ω) P :=
+    (integrable_const (cutoff ^ 2)).add htail_integrable
+  have hvariance_le_second :
+      _root_.ProbabilityTheory.variance X P ≤ ∫ ω, X ω ^ 2 ∂P := by
+    simpa [Pi.pow_apply] using
+      (_root_.ProbabilityTheory.variance_le_expectation_sq
+        (μ := P) hX.aestronglyMeasurable)
+  have hpoint :
+      ∀ ω : Ω, X ω ^ 2 ≤ cutoff ^ 2 + tailFun ω := by
+    intro ω
+    by_cases htail : cutoff < |X ω|
+    · simpa [tailFun, tailSet, htail] using
+        (le_add_of_nonneg_left (sq_nonneg cutoff) :
+          X ω ^ 2 ≤ cutoff ^ 2 + X ω ^ 2)
+    · have habs_le : |X ω| ≤ cutoff := le_of_not_gt htail
+      have hsquare_le : X ω ^ 2 ≤ cutoff ^ 2 := by
+        have hpow := pow_le_pow_left₀ (abs_nonneg (X ω)) habs_le 2
+        simpa [sq_abs] using hpow
+      simpa [tailFun, tailSet, htail] using hsquare_le
+  have hintegral_le :
+      (∫ ω, X ω ^ 2 ∂P) ≤
+        ∫ ω, cutoff ^ 2 + tailFun ω ∂P := by
+    exact integral_mono hX2 hrhs_integrable hpoint
+  calc
+    _root_.ProbabilityTheory.variance X P ≤ ∫ ω, X ω ^ 2 ∂P :=
+      hvariance_le_second
+    _ ≤ ∫ ω, cutoff ^ 2 + tailFun ω ∂P :=
+      hintegral_le
+    _ = cutoff ^ 2 + ∫ ω, tailFun ω ∂P := by
+      rw [integral_add (integrable_const (cutoff ^ 2)) htail_integrable]
+      simp
+
+/--
+Durrett 2019, Theorem 3.4.10, the textbook variance-tail estimate packaged at
+the row-sum level used by the Lindeberg-Feller proof.
+-/
+theorem durrett2019_lindebergFellerVarianceSplitByTailRowSum_of_integrableSq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hX : ∀ n m : ℕ, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m : ℕ, Integrable (fun ω => X n m ω ^ 2) P) :
+    durrett2019_lindebergFellerVarianceSplitByTailRowSum P X := by
+  intro cutoff hcutoff n m hm
+  have hfactor :
+      _root_.ProbabilityTheory.variance (X n m) P ≤
+        cutoff ^ 2 +
+          ∫ ω,
+            Set.indicator {ω' : Ω | cutoff < |X n m ω'|}
+              (fun ω' : Ω => X n m ω' ^ 2) ω ∂P :=
+    durrett2019_lindebergFeller_oneFactorVariance_le_cutoff_sq_add_tailSecondMoment
+      (P := P) (X := X n m) (hX n m) (hX2 n m) hcutoff
+  have htail_le_rowsum :
+      (∫ ω,
+        Set.indicator {ω' : Ω | cutoff < |X n m ω'|}
+          (fun ω' : Ω => X n m ω' ^ 2) ω ∂P) ≤
+        durrett2019_lindebergFellerTailSecondMomentRowSum P X cutoff n := by
+    exact
+      Finset.single_le_sum
+        (f := fun k : ℕ =>
+          ∫ ω,
+            Set.indicator {ω' : Ω | cutoff < |X n k ω'|}
+              (fun ω' : Ω => X n k ω' ^ 2) ω ∂P)
+        (fun k _hk =>
+          integral_nonneg fun ω => by
+            by_cases htail : cutoff < |X n k ω|
+            · simpa [htail] using (sq_nonneg (X n k ω))
+            · simp [htail])
+        hm
+  exact hfactor.trans (add_le_add le_rfl htail_le_rowsum)
+
+/--
 Durrett 2019, Theorem 3.4.10, finite row product of characteristic functions.
 -/
 noncomputable def durrett2019_lindebergFellerCharacteristicProduct
@@ -3272,6 +3373,33 @@ theorem Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_varianceSpl
     durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem_from_logEstimate
 
 /--
+Durrett 2019, Theorem 3.4.10, assemble the analytic certificate after both
+Exercise 3.1.1 and the textbook variance-tail split have been proved from
+square-integrable triangular-array rows.
+-/
+theorem Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_integrableSq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m, Integrable (fun ω => X n m ω ^ 2) P)
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (herror :
+      durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero
+        P X) :
+    Durrett2019LindebergFellerAnalyticCertificate
+      P X varianceLimit :=
+  Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_varianceSplit
+    (P := P) (X := X) (varianceLimit := varianceLimit)
+    hX hvariance_pos hmean_zero hvariance hlindeberg
+    (durrett2019_lindebergFellerVarianceSplitByTailRowSum_of_integrableSq
+      (P := P) (X := X) hX hX2)
+    herror
+
+/--
 Durrett 2019, Theorem 3.4.10 proof bridge: row-wise independence gives the
 product formula for the characteristic function of each triangular-array row
 sum.
@@ -3460,6 +3588,40 @@ theorem durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSum_varianceSplit
     (P := P) (P' := P') (X := X) (varianceLimit := varianceLimit) (Y := Y)
     hX hindep hvariance_pos hmean_zero hvariance hlindeberg hsplit herror
     durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem_from_logEstimate
+    hY
+
+/--
+Durrett 2019, Theorem 3.4.10, source-facing Lindeberg-Feller bridge after the
+variance-tail split has been proved from square-integrable rows.  The remaining
+source primitive is the one-factor Taylor/Lindeberg characteristic-function
+error row-sum estimate.
+-/
+theorem durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSum_integrableSq
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ} {Y : Ω' -> ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m, Integrable (fun ω => X n m ω ^ 2) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (herror :
+      durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero
+        P X)
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 varianceLimit.toNNReal) P') :
+    TendstoInDistribution
+      (fun n => durrett2019_lindebergFellerRowSum X n)
+      atTop Y (fun _ => P) P' :=
+  durrett2019_theorem_3_4_10_lindebergFeller_of_analyticCertificate
+    hX hindep
+    (Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_integrableSq
+      (P := P) (X := X) (varianceLimit := varianceLimit)
+      hX hX2 hvariance_pos hmean_zero hvariance hlindeberg herror)
     hY
 
 /--
