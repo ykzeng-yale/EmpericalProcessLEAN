@@ -843,6 +843,79 @@ theorem durrett2019_theorem_4_2_11_martingale_ae_tendsto_limitProcess_of_integra
   durrett2019_theorem_4_2_11_submartingale_ae_tendsto_limitProcess_of_integral_posPart_bdd
     hX.submartingale hB
 
+/--
+Durrett 2019, Theorem 4.2.12 support: if `X` is nonnegative, then the
+positive part of `-X` has zero expectation at every time.
+-/
+theorem durrett2019_theorem_4_2_12_neg_posPart_integral_le_zero_of_nonneg
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (h_nonneg : ∀ n, 0 ≤ᵐ[μ] X n) :
+    ∀ n, ∫ ω, (-(X n ω))⁺ ∂μ ≤ 0 := by
+  intro n
+  have hzero : (fun ω => (-(X n ω))⁺) =ᵐ[μ] fun _ => (0 : ℝ) := by
+    filter_upwards [h_nonneg n] with ω hω
+    exact posPart_eq_zero.2 (neg_nonpos.2 hω)
+  rw [integral_congr_ae hzero, integral_zero]
+
+/--
+Durrett 2019, Theorem 4.2.12, convergence component: a nonnegative
+supermartingale converges almost surely to a finite real limit.
+-/
+theorem durrett2019_theorem_4_2_12_nonnegative_supermartingale_exists_ae_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Supermartingale X ℱ μ)
+    (h_nonneg : ∀ n, 0 ≤ᵐ[μ] X n) :
+    ∀ᵐ ω ∂μ, ∃ x : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 x) := by
+  let Y : ℕ -> Ω -> ℝ := fun n ω => -X n ω
+  have hY : Submartingale Y ℱ μ := by
+    simpa [Y] using hX.neg
+  have hB : ∀ n, ∫ ω, (Y n ω)⁺ ∂μ ≤ 0 := by
+    simpa [Y] using
+      (durrett2019_theorem_4_2_12_neg_posPart_integral_le_zero_of_nonneg
+        (X := X) h_nonneg)
+  have hconv :
+      ∀ᵐ ω ∂μ, ∃ y : ℝ, Tendsto (fun n => Y n ω) atTop (𝓝 y) :=
+    durrett2019_theorem_4_2_11_submartingale_exists_ae_tendsto_of_integral_posPart_bdd
+      hY hB
+  filter_upwards [hconv] with ω hω
+  rcases hω with ⟨y, hy⟩
+  exact ⟨-y, by simpa [Y] using hy.neg⟩
+
+/--
+Durrett 2019, Theorem 4.2.12, integrable-limit component: a nonnegative
+supermartingale has an integrable almost-sure limit, chosen as the negative of
+the limit process of the negated submartingale.
+
+The remaining source-display inequality `E X ≤ E X_0` is a separate Fatou
+bridge.
+-/
+theorem durrett2019_theorem_4_2_12_nonnegative_supermartingale_exists_integrable_limit
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Supermartingale X ℱ μ)
+    (h_nonneg : ∀ n, 0 ≤ᵐ[μ] X n) :
+    ∃ Z : Ω -> ℝ, Integrable Z μ ∧
+      ∀ᵐ ω ∂μ, Tendsto (fun n => X n ω) atTop (𝓝 (Z ω)) := by
+  let Y : ℕ -> Ω -> ℝ := fun n ω => -X n ω
+  have hY : Submartingale Y ℱ μ := by
+    simpa [Y] using hX.neg
+  have hB : ∀ n, ∫ ω, (Y n ω)⁺ ∂μ ≤ 0 := by
+    simpa [Y] using
+      (durrett2019_theorem_4_2_12_neg_posPart_integral_le_zero_of_nonneg
+        (X := X) h_nonneg)
+  refine ⟨fun ω => -ℱ.limitProcess Y μ ω, ?_, ?_⟩
+  · exact
+      (durrett2019_theorem_4_2_11_submartingale_limitProcess_integrable_of_integral_posPart_bdd
+        hY hB).neg
+  · have hconv :
+        ∀ᵐ ω ∂μ, Tendsto (fun n => Y n ω) atTop (𝓝 (ℱ.limitProcess Y μ ω)) :=
+      durrett2019_theorem_4_2_11_submartingale_ae_tendsto_limitProcess_of_integral_posPart_bdd
+        hY hB
+    filter_upwards [hconv] with ω hω
+    simpa [Y] using hω.neg
+
 /-! ## Durrett, Example 4.2.1 -/
 
 /--
