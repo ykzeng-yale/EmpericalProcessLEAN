@@ -146,10 +146,10 @@ archived automation prompts and should override them when they conflict.
 ## Current Frontier Contract
 
 This is the authoritative manual route after the ASGD scalar-projection,
-scalar-Lindeberg, and scalar characteristic-function bridge packets.  The
-app-level `/goal` objective and the archived long prompt below may still
-mention older Chapter 3 or `029d017` frontiers; do not use those older
-references to choose work.
+scalar-Lindeberg, scalar characteristic-function bridge, and projected
+Gaussian characteristic-function target packets.  The app-level `/goal`
+objective and the archived long prompt below may still mention older Chapter 3
+or `029d017` frontiers; do not use those older references to choose work.
 
 Stable substrate:
 
@@ -173,7 +173,10 @@ Stable substrate:
   eventual a.e. vanishing.  The scalar scaled-sum measurability and
   Lévy/characteristic-function bridge are also compiled, reducing each
   projected scalar CLT to pointwise convergence of characteristic functions for
-  the scalar scaled sums.
+  the scalar scaled sums.  The projected Gaussian limit has a compiled
+  source-shaped scalar law and characteristic-function display
+  `exp (-(S_infty L L) t^2 / 2)` once the projected Gaussian mean is identified
+  as zero.
 
 Current priority packet sequence:
 
@@ -181,10 +184,10 @@ Current priority packet sequence:
    one-dimensional bounded martingale CLT from the compiled scalar projection
    data: conditional mean-zero, conditional second moment, averaged conditional
    variance convergence, uniform boundedness, and the now-compiled scalar
-   Lindeberg a.e.-zero and characteristic-function bridge layers.  The
-   vector-to-scalar plumbing, Lindeberg bounded-tail discharge, and
-   distribution-from-characteristic-functions bridge are compiled; do not
-   repeat them.
+   Lindeberg a.e.-zero, characteristic-function bridge, and projected Gaussian
+   target layers.  The vector-to-scalar plumbing, Lindeberg bounded-tail
+   discharge, distribution-from-characteristic-functions bridge, and Gaussian
+   target identification are compiled; do not repeat them.
 2. `ASGD-endpoint`: connect the exact scaled noise sum, recurrence-derived
    decomposition, and certificate to the source Theorem 12.7/12.3 ASGD limit
    statement.
@@ -198,7 +201,8 @@ functions, Taylor remainder, and conditional expectation tower/product APIs;
 then implement the highest-leverage characteristic-function convergence layer
 for scalar martingale arrays.  The reusable projected-sum/Cramér-Wold bridge,
 scalar projection side-condition accessors, boundedness-to-Lindeberg a.e.-zero
-layer, and scalar Lévy bridge are now compiled, so do not repeat them.
+layer, scalar Lévy bridge, and explicit projected Gaussian characteristic target
+are now compiled, so do not repeat them.
 
 Keep exercise statements and cheap reusable exercise proofs in
 `StatInference/Optimization/Exercises.lean`, but never let exercises block the

@@ -791,6 +791,104 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_charFun
   · exact (S.gaussian_limit.map_fun L).aemeasurable
 
 /--
+The projected Gaussian limit has the scalar Gaussian law with variance
+`S_infty L L`, once its projected mean is identified as zero.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_gaussian_hasLaw
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0) :
+    HasLaw (fun ω => L (S.Z ω))
+      (gaussianReal 0 (S.covariance_limit.S_infty L L).toNNReal) Q := by
+  let Y : Ω' -> ℝ := fun ω => L (S.Z ω)
+  have hY_gaussian : HasGaussianLaw Y Q := S.gaussian_limit.map_fun L
+  refine ⟨hY_gaussian.aemeasurable, ?_⟩
+  have hmap :
+      Q.map Y =
+        gaussianReal (Q.map Y)[id] (Var[id; Q.map Y]).toNNReal :=
+    ProbabilityTheory.IsGaussian.eq_gaussianReal
+      (Q.map Y) hY_gaussian.isGaussian_map
+  calc
+    Q.map (fun ω => L (S.Z ω)) = Q.map Y := rfl
+    _ = gaussianReal (Q.map Y)[id] (Var[id; Q.map Y]).toNNReal := hmap
+    _ = gaussianReal (Q[Y]) (Var[Y; Q]).toNNReal := by
+          rw [integral_map hY_gaussian.aemeasurable (by fun_prop),
+            variance_map (by fun_prop) hY_gaussian.aemeasurable]
+          rfl
+    _ = gaussianReal 0 (S.covariance_limit.S_infty L L).toNNReal := by
+          rw [hmean]
+          have hvar_map :
+              Var[L; Q.map S.Z] = Var[Y; Q] := by
+            simpa [Y, Function.comp_def] using
+              (variance_map (X := L) (Y := S.Z) (μ := Q) (by fun_prop)
+                S.gaussian_limit.aemeasurable)
+          have hvar_eq :
+              Var[Y; Q] = S.covariance_limit.S_infty L L := by
+            calc
+              Var[Y; Q] = Var[L; Q.map S.Z] := hvar_map.symm
+              _ = ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L L :=
+                    (ProbabilityTheory.covarianceBilinDual_self_eq_variance
+                      S.limit_memLp L).symm
+              _ = S.covariance_limit.S_infty L L := S.limit_covariance L L
+          rw [hvar_eq]
+
+/--
+Source-shaped characteristic function of the projected Gaussian limit.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_gaussian_charFun_eq
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0) (t : ℝ) :
+    MeasureTheory.charFun (Q.map (fun ω => L (S.Z ω))) t =
+      Complex.exp (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)) := by
+  have hLaw := S.projected_gaussian_hasLaw L hmean
+  have hnonneg : 0 ≤ S.covariance_limit.S_infty L L := by
+    rw [← S.limit_covariance L L]
+    exact ProbabilityTheory.covarianceBilinDual_self_nonneg L
+  rw [hLaw.map_eq, ProbabilityTheory.charFun_gaussianReal]
+  rw [Real.coe_toNNReal _ hnonneg]
+  simp
+
+/--
+Projected scalar CLT from convergence to the explicit Gaussian characteristic
+function `exp (-(S_infty L L) t^2 / 2)`.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_charFun_exp
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0)
+    (hchar : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          MeasureTheory.charFun
+            (P.map
+              (chewi127ScalarScaledSum
+                (fun n ω => L (S.martingale.xi n ω)) N)) t)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ))))) :
+    TendstoInDistribution
+      (chewi127ScalarScaledSum (fun n ω => L (S.martingale.xi n ω)))
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q :=
+  S.projected_scalar_clt_of_charFun L fun t => by
+    simpa [S.projected_gaussian_charFun_eq L hmean t] using hchar t
+
+/--
 The projected CLT field can be read in the pure scalar-sum notation used by a
 one-dimensional martingale CLT theorem.
 -/

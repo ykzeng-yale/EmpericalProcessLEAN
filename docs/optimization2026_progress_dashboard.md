@@ -80,6 +80,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   pointwise characteristic-function convergence from the martingale
   conditional mean-zero, conditional variance convergence, and Lindeberg
   layers.
+- New ASGD projected Gaussian characteristic target declarations:
+  `Chewi127BoundedMartingaleCLTSource.projected_gaussian_hasLaw`,
+  `Chewi127BoundedMartingaleCLTSource.projected_gaussian_charFun_eq`, and
+  `Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_charFun_exp`.
+  These reuse mathlib `IsGaussian.eq_gaussianReal`, `charFun_gaussianReal`,
+  `variance_map`, and `covarianceBilinDual_self_eq_variance`, plus the source
+  covariance identity `limit_covariance`.  The next martingale CLT packet can
+  target the explicit limit `exp (-(S_infty L L) t^2 / 2)` directly.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
