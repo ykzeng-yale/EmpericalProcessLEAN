@@ -209,6 +209,13 @@ def durrett2019_example_4_2_1_linearRandomWalk
     {Ω : Type*} (s0 : ℝ) (ξ : ℕ -> Ω -> ℝ) : ℕ -> Ω -> ℝ :=
   fun n ω => s0 + ∑ k ∈ Finset.range n, ξ (k + 1) ω
 
+/--
+Durrett 2019, Example 4.2.1: centered increments `ξ_i - μ`.
+-/
+def durrett2019_example_4_2_1_centeredIncrement
+    {Ω : Type*} (drift : ℝ) (ξ : ℕ -> Ω -> ℝ) : ℕ -> Ω -> ℝ :=
+  fun n ω => ξ n ω - drift
+
 @[simp]
 theorem durrett2019_example_4_2_1_linearRandomWalk_zero
     {Ω : Type*} (s0 : ℝ) (ξ : ℕ -> Ω -> ℝ) :
@@ -227,6 +234,22 @@ theorem durrett2019_example_4_2_1_linearRandomWalk_succ
   ext ω
   simp [durrett2019_example_4_2_1_linearRandomWalk, Finset.sum_range_succ,
     add_assoc]
+
+/--
+Durrett 2019, Example 4.2.1: random walks built from centered increments have
+the textbook display `S_n - n * μ`.
+-/
+theorem durrett2019_example_4_2_1_centeredLinearRandomWalk_eq_sub_mul
+    {Ω : Type*} (s0 drift : ℝ) (ξ : ℕ -> Ω -> ℝ) (n : ℕ) :
+    durrett2019_example_4_2_1_linearRandomWalk s0
+        (durrett2019_example_4_2_1_centeredIncrement drift ξ) n =
+      fun ω =>
+        durrett2019_example_4_2_1_linearRandomWalk s0 ξ n ω - (n : ℝ) * drift := by
+  ext ω
+  simp [durrett2019_example_4_2_1_linearRandomWalk,
+    durrett2019_example_4_2_1_centeredIncrement, Finset.sum_sub_distrib,
+    Finset.sum_const, nsmul_eq_mul]
+  ring
 
 /--
 Durrett 2019, Example 4.2.1: the linear random walk is adapted to the natural
@@ -255,6 +278,60 @@ theorem durrett2019_example_4_2_1_linearRandomWalk_integrable
   intro n
   refine (integrable_const (α := Ω) (μ := μ) s0).add ?_
   exact integrable_finsetSum _ fun k _hk => hξ_int (k + 1)
+
+/--
+Durrett 2019, Example 4.2.1: centered increments are strongly measurable.
+-/
+theorem durrett2019_example_4_2_1_centeredIncrement_stronglyMeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ξ : ℕ -> Ω -> ℝ}
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n)) (drift : ℝ) :
+    ∀ n, StronglyMeasurable
+      (durrett2019_example_4_2_1_centeredIncrement drift ξ n) :=
+  fun n => (hξ_sm n).sub stronglyMeasurable_const
+
+/--
+Durrett 2019, Example 4.2.1: centered increments are integrable.
+-/
+theorem durrett2019_example_4_2_1_centeredIncrement_integrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {ξ : ℕ -> Ω -> ℝ} (hξ_int : ∀ n, Integrable (ξ n) μ) (drift : ℝ) :
+    ∀ n, Integrable
+      (durrett2019_example_4_2_1_centeredIncrement drift ξ n) μ :=
+  fun n => (hξ_int n).sub (integrable_const drift)
+
+/--
+Durrett 2019, Example 4.2.1: measurable coordinatewise centering preserves
+independence of increments.
+-/
+theorem durrett2019_example_4_2_1_centeredIncrement_iIndepFun
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω}
+    {ξ : ℕ -> Ω -> ℝ} (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ μ)
+    (drift : ℝ) :
+    _root_.ProbabilityTheory.iIndepFun
+      (durrett2019_example_4_2_1_centeredIncrement drift ξ) μ := by
+  simpa [durrett2019_example_4_2_1_centeredIncrement, Function.comp_def] using
+    (durrett2019_theorem_2_1_10_iIndepFun_comp
+      (P := μ) (X := ξ) hξ_indep
+      (f := fun _ : ℕ => fun x : ℝ => x - drift)
+      (fun _ => measurable_id.sub measurable_const))
+
+/--
+Durrett 2019, Example 4.2.1: centered increments have mean zero when the
+original increments have common mean `drift`.
+-/
+theorem durrett2019_example_4_2_1_centeredIncrement_integral_eq_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {ξ : ℕ -> Ω -> ℝ} (hξ_int : ∀ n, Integrable (ξ n) μ)
+    {drift : ℝ} (hξ_mean : ∀ n, (∫ ω, ξ n ω ∂μ) = drift) (n : ℕ) :
+    (∫ ω, durrett2019_example_4_2_1_centeredIncrement drift ξ n ω ∂μ) = 0 := by
+  calc
+    (∫ ω, durrett2019_example_4_2_1_centeredIncrement drift ξ n ω ∂μ)
+        = (∫ ω, ξ n ω ∂μ) - ∫ _ω : Ω, drift ∂μ := by
+          simp [durrett2019_example_4_2_1_centeredIncrement,
+            integral_sub (hξ_int n) (integrable_const drift)]
+    _ = drift - drift := by
+      simp [hξ_mean n, integral_const, probReal_univ]
+    _ = 0 := sub_self drift
 
 /--
 Durrett 2019, Example 4.2.1, independence-to-conditional-expectation bridge
@@ -403,6 +480,42 @@ theorem durrett2019_example_4_2_1_linearRandomWalk_submartingale_of_iIndepFun_no
       (μ := μ) (s0 := s0) hξ_sm hξ_int hξ_indep n] with ω hω
   rw [hω]
   exact le_add_of_nonneg_right (hξ_mean_nonneg (n + 1))
+
+/--
+Durrett 2019, Example 4.2.1, centered random-walk martingale.
+
+Applying the zero-mean linear martingale result to `ξ_i - μ` gives the textbook
+display `S_n - n * μ`, recorded by
+`durrett2019_example_4_2_1_centeredLinearRandomWalk_eq_sub_mul`.
+-/
+theorem durrett2019_example_4_2_1_centeredLinearRandomWalk_martingale_of_iIndepFun_commonMean
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    (s0 drift : ℝ) {ξ : ℕ -> Ω -> ℝ}
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n))
+    (hξ_int : ∀ n, Integrable (ξ n) μ)
+    (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ μ)
+    (hξ_mean : ∀ n, (∫ ω, ξ n ω ∂μ) = drift) :
+    Martingale
+      (durrett2019_example_4_2_1_linearRandomWalk s0
+        (durrett2019_example_4_2_1_centeredIncrement drift ξ))
+      (Filtration.natural
+        (durrett2019_example_4_2_1_centeredIncrement drift ξ)
+        (durrett2019_example_4_2_1_centeredIncrement_stronglyMeasurable
+          hξ_sm drift)) μ := by
+  refine
+    durrett2019_example_4_2_1_linearRandomWalk_martingale_of_iIndepFun_zeroMean
+      (s0 := s0)
+      (ξ := durrett2019_example_4_2_1_centeredIncrement drift ξ)
+      (durrett2019_example_4_2_1_centeredIncrement_stronglyMeasurable
+        hξ_sm drift)
+      (durrett2019_example_4_2_1_centeredIncrement_integrable
+        (μ := μ) hξ_int drift)
+      (durrett2019_example_4_2_1_centeredIncrement_iIndepFun
+        (μ := μ) hξ_indep drift)
+      ?_
+  intro n
+  exact durrett2019_example_4_2_1_centeredIncrement_integral_eq_zero
+    (μ := μ) hξ_int hξ_mean n
 
 end ProbabilityTheory
 end StatInference
