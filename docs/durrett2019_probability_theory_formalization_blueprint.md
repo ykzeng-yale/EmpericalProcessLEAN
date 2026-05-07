@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V18`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V19`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -424,7 +424,7 @@ Chapter 3 source inventory:
 - Section 3.3 characteristic functions and inversion formula.
 - Section 3.4 central limit theorems.
 - Section 3.10 limit theorems in `R^d`.
-- Active frontier: Chapter 4.1 conditional expectation.
+- Active frontier: Chapter 4.2 martingales.
 
 Source anchors:
 
@@ -438,6 +438,8 @@ Source anchors:
   Lemma 4.1.1 near line 3894, Theorem 4.1.2 near line 3920, Example 4.1.4
   near line 3969, Example 4.1.5 near line 3982, Theorem 4.1.9 near line 4081,
   Theorem 4.1.13 near line 4183, and Theorem 4.1.14 near line 4196.
+- The same Markdown chunk contains Chapter 4.2 martingales near line 4348 and
+  Example 4.2.1 linear martingales near line 4358.
 
 Initial Lean reuse anchors:
 

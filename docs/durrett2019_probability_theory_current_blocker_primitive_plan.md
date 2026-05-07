@@ -4,36 +4,33 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V18
+## Live In-Thread Goal Prompt V19
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane only: Durrett Chapter 4.1 conditional expectation
-in `StatInference/ProbabilityTheory/ConditionalExpectation.lean`.  Treat all
-Chapter 2/3 support and the compiled Chapter 4.1 layer through Theorem 4.1.15
-as closed dependencies:
-`durrett2019_section_4_1_IsConditionalExpectationVersion`,
-`durrett2019_section_4_1_condExp_isConditionalExpectationVersion`,
-`durrett2019_example_4_1_3_self_isConditionalExpectationVersion`,
-`durrett2019_example_4_1_3_condExp_eq_of_stronglyMeasurable`,
-`durrett2019_example_4_1_3_condExp_const`, and
-`durrett2019_example_4_1_4_condExp_eq_integral_of_independent`, plus the
-compiled Theorem 4.1.9 linearity/monotonicity wrappers, Theorem 4.1.12
-measurability-collapse wrapper, Theorem 4.1.13 tower wrappers, and Theorem
-4.1.14 real pull-out wrapper, plus Theorem 4.1.10 conditional Jensen and the
-direct Theorem 4.1.11 `L¹`/`L²` contraction wrappers, plus Theorem 4.1.15
-`condExpL2` orthogonality, minimization, and `condExp` agreement wrappers.
+synced `main`.  Active lane only: Durrett Chapter 4.2 martingales in
+`StatInference/ProbabilityTheory/Martingale.lean`.  Treat all Chapter 2/3
+support and the compiled Chapter 4.1 conditional-expectation layer through
+Theorem 4.1.15 as closed dependencies.  The direct regular-conditional
+distribution route for Theorem 4.1.16 was not immediate from the first
+`condExpKernel`/kernel search, so do not loop there unless a later targeted
+search finds a source-shaped theorem.
 
-Next theorem-sized packet: search the regular conditional probability frontier
-after Theorem 4.1.15.  Try Theorem 4.1.16 only if mathlib's
-`condExpKernel`/kernel APIs give a direct source-shaped wrapper for regular
-conditional distributions and conditional expectations.  If not direct, start
-the Chapter 4.2 martingale layer with mathlib `Probability/Martingale/Basic`
-and package the first definition-level martingale/submartingale wrappers that
-compile quickly.  Do not repackage solved Chapter 4.1 conditional-expectation
-facts.
+Current compiled Chapter 4.2 starter layer packages mathlib's `Martingale`,
+`Submartingale`, and `Supermartingale` API into Durrett-facing adaptedness,
+integrability, all-times conditional-expectation identities/inequalities,
+one-step `n+1 | n` identities/inequalities, and real-valued one-step
+constructors.
+
+Next theorem-sized packet: attack Example 4.2.1 linear random-walk
+martingale/supermartingale wrappers if the existing independence and conditional
+expectation wrappers make the one-step conditional expectation direct.  If not
+direct, add the narrow missing bridge only: independent increment conditional
+expectation, adapted finite-sum support, or an already-mathlib stopped/predictable
+martingale wrapper.  Do not repackage solved Chapter 4.1 facts or the new
+definition-level Chapter 4.2 wrappers.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -315,8 +312,8 @@ substrate:
 - weak convergence and finite-dimensional law wrappers;
 - empirical-process fixed-endpoint empirical-CDF support.
 
-The immediate blocker is now Chapter 4.1 conditional expectation.  The prior
-large Chapter 2 and Chapter 3 targets are closed as source wrappers:
+The immediate blocker is now Chapter 4.2 martingales.  The prior large Chapter
+2, Chapter 3, and Chapter 4.1 targets are closed as source wrappers:
 
 - Durrett Theorem 2.4.9 now has the arbitrary-law half-line GC handoff and the
   source-facing empirical distribution-function wrapper
@@ -326,11 +323,13 @@ large Chapter 2 and Chapter 3 targets are closed as source wrappers:
   product-coordinate wrappers.
 
 Do not spend the next cycle on center insertion, EDF notation, Chapter 2.1
-polish, Lindeberg-Feller estimates, or Section 3.10 vector-limit polish unless
-the active Chapter 4.1 theorem exposes an exact missing dependency.
+polish, Lindeberg-Feller estimates, Section 3.10 vector-limit polish, or
+Chapter 4.1 conditional-expectation repackaging unless the active Chapter 4.2
+theorem exposes an exact missing dependency.
 
-Current aggressive target: continue the Chapter 4.1 conditional-expectation
-spine.  The following Chapter 3 and Chapter 4.1 packets now compile:
+Current aggressive target: continue the Chapter 4.2 martingale spine, starting
+with Example 4.2.1 linear random-walk martingale/supermartingale wrappers.  The
+following Chapter 3, Chapter 4.1, and Chapter 4.2 packets now compile:
 
 - Durrett Theorem 3.2.9 bounded-continuous test characterization, including
   the `integral_map` bridge from map-law integrals to textbook expectations
@@ -506,6 +505,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V18` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V19` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
