@@ -452,7 +452,11 @@ Initial modules:
   layer adds the norm-criterion reduction, a Z-estimator uniform-consistency
   certificate, and
   `vaart1998_theorem_5_9_zEstimator_consistent_of_uniformConsistencyCertificate`
-  by applying Theorem 5.7 to `theta ↦ -‖Psi theta‖`.
+  by applying Theorem 5.7 to `theta ↦ -‖Psi theta‖`.  The deterministic-source
+  layer now supplies all-good-event constructors/endpoints from full-class
+  empirical deviation sequences, local `GlivenkoCantelliClass` records,
+  `FiniteClassUniformConvergence`, and deterministic estimating-function
+  uniform-deviation bounds.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

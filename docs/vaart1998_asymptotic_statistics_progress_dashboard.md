@@ -504,10 +504,22 @@ Chapter 4 handoff:
   `vaart1998_theorem_5_9_zEstimator_consistent_of_uniformConsistencyCertificate`
   reduce uniform estimating-function convergence and an approximate zero to
   Theorem 5.7 through the criterion `theta ↦ -‖Psi theta‖`.
+- Chapter 5 deterministic/GC source wrappers:
+  `Vaart1998MEstimatorUniformConsistencyCertificate.of_empiricalDeviationSequence_univ`,
+  `Vaart1998MEstimatorUniformConsistencyCertificate.of_glivenkoCantelliClass_univ`,
+  `Vaart1998MEstimatorUniformConsistencyCertificate.of_finiteClassUniformConvergence_univ`,
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_glivenkoCantelliClass_univ`,
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_finiteClassUniformConvergence_univ`,
+  `Vaart1998ZEstimatorUniformConsistencyCertificate.of_deterministicUniformDeviation_univ`,
+  and
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_deterministicUniformDeviation_univ`
+  turn full-class deterministic uniform-deviation, GC, finite-GC, and
+  estimating-function bounds into the all-good-event certificates consumed by
+  Theorems 5.7 and 5.9.
 
-Latest remote base before this packet: `5c7b711`.  Latest pushed Vaart packet
-before this packet: `0b02ee8`
-(`Add Vaart theorem 5.7 M-estimator consistency`).
+Latest remote base before this packet: `a3b0e80`.  Latest pushed Vaart packet
+before this packet: `979778d`
+(`Add Vaart theorem 5.9 Z-estimator consistency`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -520,9 +532,10 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Add compact/finite/Glivenko-Cantelli source wrappers that produce the
-good-event uniform-convergence certificates consumed by the Theorem 5.7 and
-5.9 consistency endpoints.
+Move from deterministic all-good interfaces to genuinely random empirical
+criteria: construct high-probability good events from convergence in
+probability of uniform suprema, then specialize to available empirical-process
+GC/outer-probability statements.
 
 ## Reuse Dependencies
 

@@ -693,20 +693,38 @@ Chapter 3 theorem-facing wrappers compiling:
    `Vaart1998ZEstimatorUniformConsistencyCertificate.toMEstimatorUniformConsistencyCertificate`.
 228. Theorem 5.9 convergence-in-probability endpoint:
    `vaart1998_theorem_5_9_zEstimator_consistent_of_uniformConsistencyCertificate`.
+229. Theorem 5.7 all-good-event source constructor from deterministic uniform
+   deviation:
+   `Vaart1998MEstimatorUniformConsistencyCertificate.of_empiricalDeviationSequence_univ`.
+230. Theorem 5.7 full-class GC and finite-class source constructors:
+   `Vaart1998MEstimatorUniformConsistencyCertificate.of_glivenkoCantelliClass_univ`
+   and
+   `Vaart1998MEstimatorUniformConsistencyCertificate.of_finiteClassUniformConvergence_univ`.
+231. Theorem 5.7 full-class GC and finite-class consistency endpoints:
+   `vaart1998_theorem_5_7_mEstimator_consistent_of_glivenkoCantelliClass_univ`
+   and
+   `vaart1998_theorem_5_7_mEstimator_consistent_of_finiteClassUniformConvergence_univ`.
+232. Theorem 5.9 all-good-event deterministic uniform-deviation constructor and
+   endpoint:
+   `Vaart1998ZEstimatorUniformConsistencyCertificate.of_deterministicUniformDeviation_univ`
+   and
+   `vaart1998_theorem_5_9_zEstimator_consistent_of_deterministicUniformDeviation_univ`.
 
-Latest remote base before this packet: `5c7b711`.
-Latest pushed Vaart packet before this packet: `0b02ee8`
-(`Add Vaart theorem 5.7 M-estimator consistency`).
+Latest remote base before this packet: `a3b0e80`.
+Latest pushed Vaart packet before this packet: `979778d`
+(`Add Vaart theorem 5.9 Z-estimator consistency`).
 
-The current theorem-sized packet proves the Theorem 5.9 Z-estimator
-consistency route by reducing uniform convergence of estimating functions and a
-near-zero estimator to Theorem 5.7 applied to the criterion
-`theta ↦ -‖Psi theta‖`.
+The current theorem-sized packet connects the Chapter 5.7 and 5.9 consistency
+certificates to deterministic source interfaces: full-class empirical
+deviation sequences, Glivenko-Cantelli classes, finite-class uniform
+convergence, and deterministic estimating-function uniform deviation all
+produce the all-good-event certificates consumed by the theorem endpoints.
 
-The next aggressive packet should add compact/finite/Glivenko-Cantelli source
-wrappers that produce the good-event uniform-convergence certificates consumed
-by Theorems 5.7 and 5.9, preferably reusing the existing empirical-process GC
-structures before introducing any new probability primitives.
+The next aggressive packet should move from deterministic all-good interfaces
+to genuinely random empirical criteria: build high-probability good events
+from convergence in probability of uniform suprema, then specialize those
+events to empirical-process GC/outer-probability statements already available
+in the VdV&W lane.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

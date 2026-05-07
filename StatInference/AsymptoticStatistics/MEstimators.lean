@@ -1,4 +1,5 @@
 import StatInference.AsymptoticStatistics.Basic
+import StatInference.EmpiricalProcess.Basic
 
 /-!
 # van der Vaart 1998 Chapter 5 M-estimator consistency
@@ -110,6 +111,108 @@ theorem oracleBound_tendsto_zero
   oracle_bound_tendsto_zero C.approxError C.deviation
     C.deviation_tendsto_zero C.approxError_tendsto_zero
 
+/--
+Build the Theorem 5.7 high-probability certificate from a deterministic
+uniform-deviation sequence.  The good event is `Set.univ` at every sample size.
+-/
+def of_empiricalDeviationSequence_univ
+    {Ω : Type u} {Θ : Type v} [MeasurableSpace Ω] [PseudoMetricSpace Θ]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {M : Θ -> ℝ} {deterministicCriterion : ℕ -> Θ -> ℝ}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (deviation approxError : ℕ -> ℝ)
+    (h_deviation :
+      EmpiricalDeviationSequence M deterministicCriterion deviation)
+    (h_deviation_tendsto : Tendsto deviation atTop (𝓝 0))
+    (h_approx :
+      ∀ n : ℕ, ∀ omega : Ω,
+        deterministicCriterion n theta0 ≤
+          deterministicCriterion n (thetaHat n omega) + approxError n)
+    (h_approx_tendsto : Tendsto approxError atTop (𝓝 0))
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            M theta ≤ M theta0 - eta) :
+    Vaart1998MEstimatorUniformConsistencyCertificate
+      Ω Θ P M (fun n _omega theta => deterministicCriterion n theta)
+      theta0 thetaHat where
+  good := fun _n => Set.univ
+  good_measurable := fun _n => MeasurableSet.univ
+  good_probability := by
+    simp
+  deviation := deviation
+  approxError := approxError
+  deviation_tendsto_zero := h_deviation_tendsto
+  approxError_tendsto_zero := h_approx_tendsto
+  uniform_deviation_on_good := by
+    intro n _omega _hgood theta
+    exact h_deviation n theta
+  approximate_maximizer_on_good := by
+    intro n omega _hgood
+    exact h_approx n omega
+  separated_maximum := h_separated
+
+/--
+Build the Theorem 5.7 certificate from a full-class Glivenko-Cantelli
+interface.  This is the direct Chapter 5 handoff from the local empirical
+process `GlivenkoCantelliClass` record.
+-/
+def of_glivenkoCantelliClass_univ
+    {Ω : Type u} {Θ : Type v} [MeasurableSpace Ω] [PseudoMetricSpace Θ]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {M : Θ -> ℝ} {deterministicCriterion : ℕ -> Θ -> ℝ}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (gc :
+      GlivenkoCantelliClass (Set.univ : Set Θ) M deterministicCriterion)
+    (approxError : ℕ -> ℝ)
+    (h_approx :
+      ∀ n : ℕ, ∀ omega : Ω,
+        deterministicCriterion n theta0 ≤
+          deterministicCriterion n (thetaHat n omega) + approxError n)
+    (h_approx_tendsto : Tendsto approxError atTop (𝓝 0))
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            M theta ≤ M theta0 - eta) :
+    Vaart1998MEstimatorUniformConsistencyCertificate
+      Ω Θ P M (fun n _omega theta => deterministicCriterion n theta)
+      theta0 thetaHat :=
+  of_empiricalDeviationSequence_univ
+    (deviation := gc.radius) (approxError := approxError)
+    gc.toEmpiricalDeviationSequence gc.radius_tendsto_zero
+    h_approx h_approx_tendsto h_separated
+
+/--
+Build the Theorem 5.7 certificate from a finite-class uniform-convergence
+interface on the full parameter class.
+-/
+def of_finiteClassUniformConvergence_univ
+    {Ω : Type u} {Θ : Type v} [MeasurableSpace Ω] [PseudoMetricSpace Θ]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {M : Θ -> ℝ} {deterministicCriterion : ℕ -> Θ -> ℝ}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (finite_gc :
+      FiniteClassUniformConvergence (Set.univ : Set Θ) M deterministicCriterion)
+    (approxError : ℕ -> ℝ)
+    (h_approx :
+      ∀ n : ℕ, ∀ omega : Ω,
+        deterministicCriterion n theta0 ≤
+          deterministicCriterion n (thetaHat n omega) + approxError n)
+    (h_approx_tendsto : Tendsto approxError atTop (𝓝 0))
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            M theta ≤ M theta0 - eta) :
+    Vaart1998MEstimatorUniformConsistencyCertificate
+      Ω Θ P M (fun n _omega theta => deterministicCriterion n theta)
+      theta0 thetaHat :=
+  of_glivenkoCantelliClass_univ
+    finite_gc.toGlivenkoCantelliClass approxError h_approx
+    h_approx_tendsto h_separated
+
 end Vaart1998MEstimatorUniformConsistencyCertificate
 
 /--
@@ -171,6 +274,62 @@ theorem vaart1998_theorem_5_7_mEstimator_consistent_of_uniformConsistencyCertifi
           h_separated hsmall_n
       exact (not_le_of_gt hdist_lt) hbad
     exact lt_of_le_of_lt (measureReal_mono hbad_subset) hcompl_n
+
+/--
+van der Vaart 1998, Theorem 5.7, GC-source consistency endpoint.
+
+This packages the common deterministic-criterion case: a full-class
+Glivenko-Cantelli radius and a vanishing approximate-maximizer error imply
+consistency.
+-/
+theorem vaart1998_theorem_5_7_mEstimator_consistent_of_glivenkoCantelliClass_univ
+    {Ω : Type u} {Θ : Type v} [MeasurableSpace Ω] [PseudoMetricSpace Θ]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {M : Θ -> ℝ} {deterministicCriterion : ℕ -> Θ -> ℝ}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (gc :
+      GlivenkoCantelliClass (Set.univ : Set Θ) M deterministicCriterion)
+    (approxError : ℕ -> ℝ)
+    (h_approx :
+      ∀ n : ℕ, ∀ omega : Ω,
+        deterministicCriterion n theta0 ≤
+          deterministicCriterion n (thetaHat n omega) + approxError n)
+    (h_approx_tendsto : Tendsto approxError atTop (𝓝 0))
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            M theta ≤ M theta0 - eta) :
+    TendstoInMeasure P thetaHat atTop (fun _ : Ω => theta0) :=
+  vaart1998_theorem_5_7_mEstimator_consistent_of_uniformConsistencyCertificate
+    (Vaart1998MEstimatorUniformConsistencyCertificate.of_glivenkoCantelliClass_univ
+      gc approxError h_approx h_approx_tendsto h_separated)
+
+/--
+van der Vaart 1998, Theorem 5.7, finite-class source endpoint.
+-/
+theorem vaart1998_theorem_5_7_mEstimator_consistent_of_finiteClassUniformConvergence_univ
+    {Ω : Type u} {Θ : Type v} [MeasurableSpace Ω] [PseudoMetricSpace Θ]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {M : Θ -> ℝ} {deterministicCriterion : ℕ -> Θ -> ℝ}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (finite_gc :
+      FiniteClassUniformConvergence (Set.univ : Set Θ) M deterministicCriterion)
+    (approxError : ℕ -> ℝ)
+    (h_approx :
+      ∀ n : ℕ, ∀ omega : Ω,
+        deterministicCriterion n theta0 ≤
+          deterministicCriterion n (thetaHat n omega) + approxError n)
+    (h_approx_tendsto : Tendsto approxError atTop (𝓝 0))
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            M theta ≤ M theta0 - eta) :
+    TendstoInMeasure P thetaHat atTop (fun _ : Ω => theta0) :=
+  vaart1998_theorem_5_7_mEstimator_consistent_of_uniformConsistencyCertificate
+    (Vaart1998MEstimatorUniformConsistencyCertificate.of_finiteClassUniformConvergence_univ
+      finite_gc approxError h_approx h_approx_tendsto h_separated)
 
 /--
 Norm-criterion uniform deviation used to reduce Z-estimator consistency to
@@ -307,6 +466,52 @@ def toMEstimatorUniformConsistencyCertificate
       simp [C.zero_at_theta0]
     nlinarith
 
+/--
+Build the Theorem 5.9 high-probability certificate from deterministic uniform
+convergence of the estimating functions.  The good event is `Set.univ` at every
+sample size.
+-/
+def of_deterministicUniformDeviation_univ
+    {Ω : Type u} {Θ : Type v} {E : Type*} [MeasurableSpace Ω]
+    [PseudoMetricSpace Θ] [NormedAddCommGroup E]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Psi : Θ -> E} {deterministicPsi : ℕ -> Θ -> E}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (deviation approxError : ℕ -> ℝ)
+    (h_deviation :
+      ∀ n : ℕ, ∀ theta : Θ,
+        ‖deterministicPsi n theta - Psi theta‖ ≤ deviation n)
+    (h_deviation_tendsto : Tendsto deviation atTop (𝓝 0))
+    (h_near_zero :
+      ∀ n : ℕ, ∀ omega : Ω,
+        ‖deterministicPsi n (thetaHat n omega)‖ ≤ approxError n)
+    (h_approx_tendsto : Tendsto approxError atTop (𝓝 0))
+    (h_zero : Psi theta0 = 0)
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            eta ≤ ‖Psi theta‖) :
+    Vaart1998ZEstimatorUniformConsistencyCertificate
+      Ω Θ E P Psi (fun n _omega theta => deterministicPsi n theta)
+      theta0 thetaHat where
+  good := fun _n => Set.univ
+  good_measurable := fun _n => MeasurableSet.univ
+  good_probability := by
+    simp
+  deviation := deviation
+  approxError := approxError
+  deviation_tendsto_zero := h_deviation_tendsto
+  approxError_tendsto_zero := h_approx_tendsto
+  uniform_deviation_on_good := by
+    intro n _omega _hgood theta
+    exact h_deviation n theta
+  near_zero_on_good := by
+    intro n omega _hgood
+    exact h_near_zero n omega
+  zero_at_theta0 := h_zero
+  separated_zero := h_separated
+
 end Vaart1998ZEstimatorUniformConsistencyCertificate
 
 /--
@@ -327,6 +532,39 @@ theorem vaart1998_theorem_5_9_zEstimator_consistent_of_uniformConsistencyCertifi
     TendstoInMeasure P thetaHat atTop (fun _ : Ω => theta0) :=
   vaart1998_theorem_5_7_mEstimator_consistent_of_uniformConsistencyCertificate
     C.toMEstimatorUniformConsistencyCertificate
+
+/--
+van der Vaart 1998, Theorem 5.9, deterministic-uniform-source endpoint.
+
+This is the source-facing all-good-event specialization for deterministic
+estimating-function approximations.
+-/
+theorem vaart1998_theorem_5_9_zEstimator_consistent_of_deterministicUniformDeviation_univ
+    {Ω : Type u} {Θ : Type v} {E : Type*} [MeasurableSpace Ω]
+    [PseudoMetricSpace Θ] [NormedAddCommGroup E]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Psi : Θ -> E} {deterministicPsi : ℕ -> Θ -> E}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (deviation approxError : ℕ -> ℝ)
+    (h_deviation :
+      ∀ n : ℕ, ∀ theta : Θ,
+        ‖deterministicPsi n theta - Psi theta‖ ≤ deviation n)
+    (h_deviation_tendsto : Tendsto deviation atTop (𝓝 0))
+    (h_near_zero :
+      ∀ n : ℕ, ∀ omega : Ω,
+        ‖deterministicPsi n (thetaHat n omega)‖ ≤ approxError n)
+    (h_approx_tendsto : Tendsto approxError atTop (𝓝 0))
+    (h_zero : Psi theta0 = 0)
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            eta ≤ ‖Psi theta‖) :
+    TendstoInMeasure P thetaHat atTop (fun _ : Ω => theta0) :=
+  vaart1998_theorem_5_9_zEstimator_consistent_of_uniformConsistencyCertificate
+    (Vaart1998ZEstimatorUniformConsistencyCertificate.of_deterministicUniformDeviation_univ
+      deviation approxError h_deviation h_deviation_tendsto h_near_zero
+      h_approx_tendsto h_zero h_separated)
 
 end AsymptoticStatistics
 end StatInference
