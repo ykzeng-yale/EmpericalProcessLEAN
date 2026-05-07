@@ -172,5 +172,161 @@ theorem vaart1998_theorem_5_7_mEstimator_consistent_of_uniformConsistencyCertifi
       exact (not_le_of_gt hdist_lt) hbad
     exact lt_of_le_of_lt (measureReal_mono hbad_subset) hcompl_n
 
+/--
+Norm-criterion uniform deviation used to reduce Z-estimator consistency to
+M-estimator consistency.
+
+For Theorem 5.9 we apply Theorem 5.7 to the criterion
+`theta ↦ -‖Psi theta‖`.
+-/
+theorem vaart1998_theorem_5_9_normCriterion_uniformDeviation_of_vectorUniformDeviation
+    {E : Type u} [NormedAddCommGroup E] (x y : E) {deviation : ℝ}
+    (hxy : ‖x - y‖ ≤ deviation) :
+    |(-‖x‖) - (-‖y‖)| ≤ deviation := by
+  calc
+    |(-‖x‖) - (-‖y‖)| = |-(‖x‖ - ‖y‖)| := by ring_nf
+    _ = |‖x‖ - ‖y‖| := by rw [abs_neg]
+    _ ≤ ‖x - y‖ := abs_norm_sub_norm_le x y
+    _ ≤ deviation := hxy
+
+/--
+van der Vaart 1998, Theorem 5.9 deterministic separated-zero wrapper.
+
+Uniform convergence of the estimating functions, an approximate zero, and
+separation of the zero of the limit function force the estimator into the
+epsilon-neighborhood.
+-/
+theorem vaart1998_theorem_5_9_dist_lt_of_uniformDeviation_nearZero
+    {Θ : Type u} {E : Type v} [PseudoMetricSpace Θ] [NormedAddCommGroup E]
+    (Psi : Θ -> E) (Psi_n : Θ -> E) (thetaHat theta0 : Θ)
+    (deviation approxError epsilon eta : ℝ)
+    (h_uniform : ∀ theta : Θ, ‖Psi_n theta - Psi theta‖ ≤ deviation)
+    (h_near_zero : ‖Psi_n thetaHat‖ ≤ approxError)
+    (h_zero : Psi theta0 = 0)
+    (h_separated :
+      ∀ theta : Θ, epsilon ≤ dist theta theta0 -> eta ≤ ‖Psi theta‖)
+    (h_small : 2 * deviation + approxError < eta) :
+    dist thetaHat theta0 < epsilon := by
+  refine
+    vaart1998_theorem_5_7_dist_lt_of_uniformDeviation_approxMax
+      (fun theta : Θ => -‖Psi theta‖)
+      (fun theta : Θ => -‖Psi_n theta‖)
+      thetaHat theta0 deviation approxError epsilon eta ?_ ?_ ?_ h_small
+  · intro theta
+    exact
+      vaart1998_theorem_5_9_normCriterion_uniformDeviation_of_vectorUniformDeviation
+        (Psi_n theta) (Psi theta) (h_uniform theta)
+  · have hright_nonneg : 0 ≤ -‖Psi_n thetaHat‖ + approxError := by
+      nlinarith
+    have hleft_nonpos : -‖Psi_n theta0‖ ≤ 0 := by
+      nlinarith [norm_nonneg (Psi_n theta0)]
+    nlinarith
+  · intro theta hdist
+    have hsep := h_separated theta hdist
+    have hzero_norm : ‖Psi theta0‖ = 0 := by
+      simp [h_zero]
+    nlinarith
+
+/--
+High-probability certificate for van der Vaart Theorem 5.9.
+
+The event `good n` carries uniform convergence of the estimating functions and
+the near-zero condition for the estimator.  The deterministic limit has a
+well-separated zero at `theta0`.
+-/
+structure Vaart1998ZEstimatorUniformConsistencyCertificate
+    (Ω : Type u) (Θ : Type v) (E : Type*) [MeasurableSpace Ω]
+    [PseudoMetricSpace Θ] [NormedAddCommGroup E]
+    (P : Measure Ω) (Psi : Θ -> E) (Psi_n : ℕ -> Ω -> Θ -> E)
+    (theta0 : Θ) (thetaHat : ℕ -> Ω -> Θ) where
+  good : ℕ -> Set Ω
+  good_measurable : ∀ n : ℕ, MeasurableSet (good n)
+  good_probability : Tendsto (fun n : ℕ => P.real (good n)) atTop (𝓝 1)
+  deviation : ℕ -> ℝ
+  approxError : ℕ -> ℝ
+  deviation_tendsto_zero : Tendsto deviation atTop (𝓝 0)
+  approxError_tendsto_zero : Tendsto approxError atTop (𝓝 0)
+  uniform_deviation_on_good :
+    ∀ n : ℕ, ∀ omega : Ω, omega ∈ good n ->
+      ∀ theta : Θ, ‖Psi_n n omega theta - Psi theta‖ ≤ deviation n
+  near_zero_on_good :
+    ∀ n : ℕ, ∀ omega : Ω, omega ∈ good n ->
+      ‖Psi_n n omega (thetaHat n omega)‖ ≤ approxError n
+  zero_at_theta0 : Psi theta0 = 0
+  separated_zero :
+    ∀ epsilon : ℝ, 0 < epsilon ->
+      ∃ eta : ℝ, 0 < eta ∧
+        ∀ theta : Θ, epsilon ≤ dist theta theta0 -> eta ≤ ‖Psi theta‖
+
+namespace Vaart1998ZEstimatorUniformConsistencyCertificate
+
+/--
+Convert the Theorem 5.9 Z-estimator certificate into the Theorem 5.7
+M-estimator certificate for the norm criterion `theta ↦ -‖Psi theta‖`.
+-/
+def toMEstimatorUniformConsistencyCertificate
+    {Ω : Type u} {Θ : Type v} {E : Type*} [MeasurableSpace Ω]
+    [PseudoMetricSpace Θ] [NormedAddCommGroup E]
+    {P : Measure Ω} {Psi : Θ -> E} {Psi_n : ℕ -> Ω -> Θ -> E}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (C :
+      Vaart1998ZEstimatorUniformConsistencyCertificate
+        Ω Θ E P Psi Psi_n theta0 thetaHat) :
+    Vaart1998MEstimatorUniformConsistencyCertificate
+      Ω Θ P (fun theta : Θ => -‖Psi theta‖)
+      (fun n omega theta => -‖Psi_n n omega theta‖) theta0 thetaHat where
+  good := C.good
+  good_measurable := C.good_measurable
+  good_probability := C.good_probability
+  deviation := C.deviation
+  approxError := C.approxError
+  deviation_tendsto_zero := C.deviation_tendsto_zero
+  approxError_tendsto_zero := C.approxError_tendsto_zero
+  uniform_deviation_on_good := by
+    intro n omega hgood theta
+    exact
+      vaart1998_theorem_5_9_normCriterion_uniformDeviation_of_vectorUniformDeviation
+        (Psi_n n omega theta) (Psi theta)
+        (C.uniform_deviation_on_good n omega hgood theta)
+  approximate_maximizer_on_good := by
+    intro n omega hgood
+    have hright_nonneg :
+        0 ≤ -‖Psi_n n omega (thetaHat n omega)‖ + C.approxError n := by
+      nlinarith [C.near_zero_on_good n omega hgood]
+    have hleft_nonpos : -‖Psi_n n omega theta0‖ ≤ 0 := by
+      nlinarith [norm_nonneg (Psi_n n omega theta0)]
+    nlinarith
+  separated_maximum := by
+    intro epsilon hepsilon
+    rcases C.separated_zero epsilon hepsilon with
+      ⟨eta, heta_pos, h_separated⟩
+    refine ⟨eta, heta_pos, ?_⟩
+    intro theta hdist
+    have hsep := h_separated theta hdist
+    have hzero_norm : ‖Psi theta0‖ = 0 := by
+      simp [C.zero_at_theta0]
+    nlinarith
+
+end Vaart1998ZEstimatorUniformConsistencyCertificate
+
+/--
+van der Vaart 1998, Theorem 5.9, consistency of approximate Z-estimators.
+
+This follows from Theorem 5.7 applied to the criterion
+`theta ↦ -‖Psi theta‖`.
+-/
+theorem vaart1998_theorem_5_9_zEstimator_consistent_of_uniformConsistencyCertificate
+    {Ω : Type u} {Θ : Type v} {E : Type*} [MeasurableSpace Ω]
+    [PseudoMetricSpace Θ] [NormedAddCommGroup E]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Psi : Θ -> E} {Psi_n : ℕ -> Ω -> Θ -> E}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (C :
+      Vaart1998ZEstimatorUniformConsistencyCertificate
+        Ω Θ E P Psi Psi_n theta0 thetaHat) :
+    TendstoInMeasure P thetaHat atTop (fun _ : Ω => theta0) :=
+  vaart1998_theorem_5_7_mEstimator_consistent_of_uniformConsistencyCertificate
+    C.toMEstimatorUniformConsistencyCertificate
+
 end AsymptoticStatistics
 end StatInference

@@ -683,21 +683,30 @@ Chapter 3 theorem-facing wrappers compiling:
    `Vaart1998MEstimatorUniformConsistencyCertificate`.
 223. Theorem 5.7 convergence-in-probability endpoint:
    `vaart1998_theorem_5_7_mEstimator_consistent_of_uniformConsistencyCertificate`.
+224. Theorem 5.9 norm-criterion reduction:
+   `vaart1998_theorem_5_9_normCriterion_uniformDeviation_of_vectorUniformDeviation`.
+225. Theorem 5.9 deterministic separated-zero wrapper:
+   `vaart1998_theorem_5_9_dist_lt_of_uniformDeviation_nearZero`.
+226. High-probability Theorem 5.9 source certificate:
+   `Vaart1998ZEstimatorUniformConsistencyCertificate`.
+227. Reduction from the Theorem 5.9 certificate to the Theorem 5.7 certificate:
+   `Vaart1998ZEstimatorUniformConsistencyCertificate.toMEstimatorUniformConsistencyCertificate`.
+228. Theorem 5.9 convergence-in-probability endpoint:
+   `vaart1998_theorem_5_9_zEstimator_consistent_of_uniformConsistencyCertificate`.
 
-Latest remote base before this packet: `b6bc4cf`.
-Latest pushed Vaart packet before this packet: `f7c8b1c`
-(`Add Vaart selected estimator conclusion package`).
+Latest remote base before this packet: `5c7b711`.
+Latest pushed Vaart packet before this packet: `0b02ee8`
+(`Add Vaart theorem 5.7 M-estimator consistency`).
 
-The current theorem-sized packet opens Chapter 5 by formalizing the deterministic
-core of Theorem 5.7 and a high-probability certificate: on a good event whose
-probability tends to one, uniform criterion convergence plus approximate
-maximization and a well-separated population maximum imply convergence in
-probability of the approximate M-estimator.
+The current theorem-sized packet proves the Theorem 5.9 Z-estimator
+consistency route by reducing uniform convergence of estimating functions and a
+near-zero estimator to Theorem 5.7 applied to the criterion
+`theta ↦ -‖Psi theta‖`.
 
-The next aggressive packet should derive the Z-estimator consistency theorem
-5.9 from the M-estimator theorem by applying the Chapter 5.7 certificate to the
-criterion `theta ↦ -‖Psi theta‖`, then move toward compact/GC source wrappers
-for uniform convergence assumptions.
+The next aggressive packet should add compact/finite/Glivenko-Cantelli source
+wrappers that produce the good-event uniform-convergence certificates consumed
+by Theorems 5.7 and 5.9, preferably reusing the existing empirical-process GC
+structures before introducing any new probability primitives.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

@@ -495,10 +495,19 @@ Chapter 4 handoff:
   `vaart1998_theorem_5_7_mEstimator_consistent_of_uniformConsistencyCertificate`
   package the deterministic proof and high-probability event handoff for
   convergence in probability of approximate M-estimators.
+- Chapter 5.9 Z-estimator consistency reduction:
+  `vaart1998_theorem_5_9_normCriterion_uniformDeviation_of_vectorUniformDeviation`,
+  `vaart1998_theorem_5_9_dist_lt_of_uniformDeviation_nearZero`,
+  `Vaart1998ZEstimatorUniformConsistencyCertificate`,
+  `Vaart1998ZEstimatorUniformConsistencyCertificate.toMEstimatorUniformConsistencyCertificate`,
+  and
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_uniformConsistencyCertificate`
+  reduce uniform estimating-function convergence and an approximate zero to
+  Theorem 5.7 through the criterion `theta ↦ -‖Psi theta‖`.
 
-Latest remote base before this packet: `b6bc4cf`.  Latest pushed Vaart packet
-before this packet: `f7c8b1c`
-(`Add Vaart selected estimator conclusion package`).
+Latest remote base before this packet: `5c7b711`.  Latest pushed Vaart packet
+before this packet: `0b02ee8`
+(`Add Vaart theorem 5.7 M-estimator consistency`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -511,9 +520,9 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Derive the Z-estimator consistency theorem 5.9 from Theorem 5.7 by applying the
-M-estimator certificate to `theta ↦ -‖Psi theta‖`, then add compact/GC source
-wrappers for the uniform-convergence assumption.
+Add compact/finite/Glivenko-Cantelli source wrappers that produce the
+good-event uniform-convergence certificates consumed by the Theorem 5.7 and
+5.9 consistency endpoints.
 
 ## Reuse Dependencies
 

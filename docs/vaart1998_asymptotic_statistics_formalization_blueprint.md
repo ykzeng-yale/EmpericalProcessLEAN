@@ -448,7 +448,11 @@ Initial modules:
   normality certificates.  The first layer proves the deterministic Theorem 5.7
   population-criterion gap bound, the separated-maximum exclusion wrapper, and
   `vaart1998_theorem_5_7_mEstimator_consistent_of_uniformConsistencyCertificate`
-  from a high-probability uniform-consistency certificate.
+  from a high-probability uniform-consistency certificate.  The Theorem 5.9
+  layer adds the norm-criterion reduction, a Z-estimator uniform-consistency
+  certificate, and
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_uniformConsistencyCertificate`
+  by applying Theorem 5.7 to `theta ↦ -‖Psi theta‖`.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
