@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V7`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V8`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -391,14 +391,14 @@ Compiled Section 3.2 packets:
 
 Next packet:
 
-- Section 3.10, Durrett Theorem 3.10.7 only: close the coordinate-source
+- Section 3.10, Durrett Theorem 3.10.7 only: close the covariance-table source
   endpoint in `StatInference/ProbabilityTheory/Multivariate.lean`.  The
   theta-projection display, finite-coordinate dual representation, all-dual
-  mean/covariance handoffs, and vector Gaussian coordinate-table CLT wrapper now
-  compile.  Next derive the centered theta-mean and coordinate covariance-table
-  hypotheses from Durrett's literal coordinate centering/covariance assumptions,
-  and add the common-vector-law coordinate-table wrapper if it is a direct
-  consumer of the compiled handoff.
+  handoffs, coordinatewise-zero-mean handoff, vector Gaussian
+  coordinate-table CLT wrapper, and common-vector-law coordinate-table CLT
+  wrapper now compile.  Next derive the Gaussian and first-summand
+  `covarianceBilinDual` tables from Durrett's literal coordinate covariance or
+  centered product identities.
 
 Support-only dependencies:
 
