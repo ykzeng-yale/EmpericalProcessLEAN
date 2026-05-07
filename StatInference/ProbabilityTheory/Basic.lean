@@ -1971,6 +1971,44 @@ def durrett2019_lindebergFellerCondition
       atTop (𝓝 0)
 
 /--
+Durrett 2019, Theorem 3.4.10, finite row product of characteristic functions.
+-/
+noncomputable def durrett2019_lindebergFellerCharacteristicProduct
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (t : ℝ) (n : ℕ) : ℂ :=
+  ∏ m ∈ Finset.range n,
+    durrett2019_characteristicFunction (P.map (X n m)) t
+
+/--
+Durrett 2019, Theorem 3.4.10, row Gaussian exponential target obtained from
+the finite row variance sum.
+-/
+noncomputable def durrett2019_lindebergFellerRowGaussianExpTarget
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (t : ℝ) (n : ℕ) : ℂ :=
+  Complex.exp
+    (-(durrett2019_lindebergFellerVarianceRowSum P X n * t ^ 2 / 2 : ℝ))
+
+/--
+Durrett 2019, Theorem 3.4.10, the remaining product approximation after
+separating the variance-sum convergence step.
+
+This is the precise analytic blocker left by the textbook Lindeberg argument:
+Taylor expansion and the Lindeberg tail bound should show that each row's
+characteristic-function product is asymptotic to the row Gaussian exponential
+target built from the row variance sum.
+-/
+def durrett2019_lindebergFellerProductApproximationToRowGaussianExp
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) : Prop :=
+  ∀ t : ℝ,
+    Tendsto
+      (fun n : ℕ =>
+        durrett2019_lindebergFellerCharacteristicProduct P X t n -
+          durrett2019_lindebergFellerRowGaussianExpTarget P X t n)
+      atTop (𝓝 0)
+
+/--
 Durrett 2019, Theorem 3.4.10, characteristic-function convergence obligation
 after the Lindeberg estimates have reduced the proof to a product limit.
 -/
@@ -2065,6 +2103,87 @@ theorem Durrett2019LindebergFellerAnalyticCertificate.gaussianProductConvergence
       P X varianceLimit :=
   durrett2019_theorem_3_4_10_gaussianProductConvergence_of_exp_tendsto
     C.variance_pos.le C.product_tendsto_exp
+
+/--
+Durrett 2019, Theorem 3.4.10, variance-sum convergence gives convergence of
+the row Gaussian exponential targets.
+-/
+theorem durrett2019_theorem_3_4_10_rowGaussianExpTarget_tendsto_of_varianceSum
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (t : ℝ) :
+    Tendsto
+      (fun n : ℕ =>
+        durrett2019_lindebergFellerRowGaussianExpTarget P X t n)
+      atTop
+      (𝓝 (Complex.exp (-(varianceLimit * t ^ 2 / 2 : ℝ)))) := by
+  have hreal :
+      Tendsto
+        (fun n : ℕ =>
+          -(durrett2019_lindebergFellerVarianceRowSum P X n * (t ^ 2 / 2)))
+        atTop
+        (𝓝 (-(varianceLimit * (t ^ 2 / 2)))) := by
+    exact (hvariance.mul tendsto_const_nhds).neg
+  have hcomplex :
+      Tendsto
+        (fun n : ℕ =>
+          ((-(durrett2019_lindebergFellerVarianceRowSum P X n *
+              (t ^ 2 / 2)) : ℝ) : ℂ))
+        atTop
+        (𝓝 (((-(varianceLimit * (t ^ 2 / 2)) : ℝ) : ℂ))) := by
+    exact (Complex.continuous_ofReal.tendsto _).comp hreal
+  have hexp := hcomplex.cexp
+  simpa [durrett2019_lindebergFellerRowGaussianExpTarget, div_eq_mul_inv,
+    mul_assoc, mul_comm, mul_left_comm] using hexp
+
+/--
+Durrett 2019, Theorem 3.4.10, product approximation to the row Gaussian
+exponential target plus variance-sum convergence gives the textbook explicit
+Gaussian product limit.
+-/
+theorem durrett2019_theorem_3_4_10_product_tendsto_exp_of_varianceSum_and_rowGaussianApprox
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (happrox :
+      durrett2019_lindebergFellerProductApproximationToRowGaussianExp P X) :
+    durrett2019_lindebergFellerGaussianProductConvergenceExp
+      P X varianceLimit := by
+  intro t
+  have htarget :=
+    durrett2019_theorem_3_4_10_rowGaussianExpTarget_tendsto_of_varianceSum
+      (P := P) (X := X) (varianceLimit := varianceLimit) hvariance t
+  have hsum := (happrox t).add htarget
+  simpa [durrett2019_lindebergFellerCharacteristicProduct,
+    durrett2019_lindebergFellerProductApproximationToRowGaussianExp,
+    sub_add_cancel] using hsum
+
+/--
+Durrett 2019, Theorem 3.4.10, assemble the analytic certificate once the
+remaining row-product approximation has been proved.
+-/
+theorem Durrett2019LindebergFellerAnalyticCertificate.of_productApproximationToRowGaussianExp
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (happrox :
+      durrett2019_lindebergFellerProductApproximationToRowGaussianExp P X) :
+    Durrett2019LindebergFellerAnalyticCertificate
+      P X varianceLimit where
+  variance_pos := hvariance_pos
+  mean_zero := hmean_zero
+  variance_sum := hvariance
+  lindeberg := hlindeberg
+  product_tendsto_exp :=
+    durrett2019_theorem_3_4_10_product_tendsto_exp_of_varianceSum_and_rowGaussianApprox
+      hvariance happrox
 
 /--
 Durrett 2019, Theorem 3.4.10 proof bridge: row-wise independence gives the
