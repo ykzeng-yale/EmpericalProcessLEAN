@@ -25,10 +25,10 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V2` near the top of
+  `Live Goal Prompt V3` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
-  history and must not override the current `b6bc4cf` ASGD frontier.
+  history and must not override the current ASGD frontier.
 - Collaboration policy: for broad future packets, use isolated `git worktree`
   checkouts per book/lane when several local agents are active, then merge only
   scoped verified work back to shared `main`.
@@ -73,13 +73,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   precisely block that diff before doing strategy/doc-only work.  No uncompiled
   theorem should be carried across a process update.
 - Process correction from the May 7 audit: future manual runs should enter
-  through `Live Goal Prompt V2` in
+  through `Live Goal Prompt V3` in
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
-  route-planning loop and not the already-solved ASGD tower peel; it is finite
-  product/error accumulation toward the scalar martingale characteristic-
-  function limit.  Broad searches, old Chapter 3 routing, and repeated Git
-  sync loops are explicitly out of budget unless they answer that blocker.
+  route-planning loop and not an already-solved ASGD tower peel; it is the
+  finite projected tower/telescoping estimate plus the concrete variance and
+  conditional-remainder estimates needed for the scalar martingale
+  characteristic-function limit.  Broad searches, old Chapter 3 routing, and
+  repeated Git sync loops are explicitly out of budget unless they answer that
+  blocker.
 - New ASGD scalar Lindeberg declarations:
   `chewi127ScalarLindebergSummand`,
   `chewi127ScalarLindebergAverage`,
@@ -209,20 +211,22 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_random_product_model`.
   These correct the martingale route to allow filtration-dependent conditional
   variance and Taylor-remainder factors.  The next ASGD packet should prove the
-  actual expected-product model from the tower recursion and then discharge the
-  expected row-sum and variance expected-product convergence obligations for
-  those random factors.
+  finite tower/telescoping estimate from the tower recursion and then discharge
+  the expected row-sum and variance expected-product convergence obligations
+  for those random factors.
 - New ASGD concrete Chewi tower-factor declarations:
   `Chewi127BoundedMartingaleCLTSource.projectedVarianceFactor`,
   `Chewi127BoundedMartingaleCLTSource.projectedRemainderFactor`,
   `Chewi127BoundedMartingaleCLTSource.projectedTaylorModelFactor`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_scaled`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_scaled'`,
   and
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_concrete_random_product_model`.
   These name the actual row factors with `a = t / sqrt N` and specialize the
-  random expected-product bridge to those factors.  The next ASGD packet should
-  prove the finite expected-product recursion using the scaled one-step tower
-  wrapper, then prove the concrete variance and remainder estimates.
+  random expected-product bridge to those factors; the primed tower wrapper
+  also discharges the characteristic-product integrability side condition.
+  The next ASGD packet should prove the finite tower/telescoping estimate, then
+  prove the concrete variance and remainder estimates.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

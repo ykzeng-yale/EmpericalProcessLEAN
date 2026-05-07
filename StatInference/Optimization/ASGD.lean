@@ -167,6 +167,63 @@ noncomputable def chewi127ScalarCharFunProduct
   ∏ k ∈ Finset.range n, chewi127ScalarCharFunFactor a (x (k + 1)) ω
 
 /--
+Each scalar characteristic-function factor has norm one.
+-/
+theorem chewi127ScalarCharFunFactor_norm_eq_one
+    {Ω : Type*} (a : ℝ) (x : Ω -> ℝ) (ω : Ω) :
+    ‖chewi127ScalarCharFunFactor a x ω‖ = 1 := by
+  simpa [chewi127ScalarCharFunFactor, Complex.ofReal_mul] using
+    Complex.norm_exp_ofReal_mul_I (a * x ω)
+
+/--
+Every finite product of scalar characteristic-function factors is bounded by
+one in norm.
+-/
+theorem chewi127ScalarCharFunProduct_norm_le_one
+    {Ω : Type*} (x : ℕ -> Ω -> ℝ) (n : ℕ) (a : ℝ) (ω : Ω) :
+    ‖chewi127ScalarCharFunProduct x n a ω‖ ≤ 1 := by
+  rw [chewi127ScalarCharFunProduct]
+  exact (Finset.norm_prod_le (Finset.range n)
+    (fun k => chewi127ScalarCharFunFactor a (x (k + 1)) ω)).trans
+      (Finset.prod_le_one
+        (fun k _hk => norm_nonneg
+          (chewi127ScalarCharFunFactor a (x (k + 1)) ω))
+        (fun k _hk => by
+          rw [chewi127ScalarCharFunFactor_norm_eq_one]))
+
+/--
+Measurability of finite scalar characteristic-function products follows from
+measurability of the scalar increments.
+-/
+theorem chewi127ScalarCharFunProduct_aestronglyMeasurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {x : ℕ -> Ω -> ℝ}
+    (hx : ∀ n : ℕ, AEMeasurable (x n) P) (n : ℕ) (a : ℝ) :
+    AEStronglyMeasurable (chewi127ScalarCharFunProduct x n a) P := by
+  change AEStronglyMeasurable
+    (fun ω => ∏ k ∈ Finset.range n, chewi127ScalarCharFunFactor a (x (k + 1)) ω) P
+  refine Finset.aestronglyMeasurable_fun_prod (s := Finset.range n) ?_
+  intro k _hk
+  have hfactor : AEMeasurable
+      (fun ω => Complex.exp (((a * x (k + 1) ω : ℝ) : ℂ) * Complex.I)) P := by
+    fun_prop
+  simpa [chewi127ScalarCharFunFactor, Complex.ofReal_mul] using
+    hfactor.aestronglyMeasurable
+
+/--
+Finite scalar characteristic-function products are integrable under a
+probability measure.
+-/
+theorem chewi127ScalarCharFunProduct_integrable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] {x : ℕ -> Ω -> ℝ}
+    (hx : ∀ n : ℕ, AEMeasurable (x n) P) (n : ℕ) (a : ℝ) :
+    Integrable (chewi127ScalarCharFunProduct x n a) P := by
+  refine Integrable.mono' (integrable_const (1 : ℝ))
+    (chewi127ScalarCharFunProduct_aestronglyMeasurable (P := P) hx n a) ?_
+  exact ae_of_all P fun ω => chewi127ScalarCharFunProduct_norm_le_one x n a ω
+
+/--
 Finite product error bound used in the Chewi martingale characteristic-function
 route.  This is the ASGD-facing specialization of the shared finite-product
 difference estimate.
@@ -1713,6 +1770,53 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_
     Chewi127BoundedMartingaleCLTSource.projectedRemainderFactor] using
     S.projected_charFun_product_tower_succ L n
       (t * (Real.sqrt (N : ℝ))⁻¹) hsq hremainder hproduct
+
+/--
+Scaled one-step tower peel with the product-integrability side condition
+discharged automatically from the bounded characteristic-function factors.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_scaled'
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N n : ℕ) (t : ℝ)
+    (hsq : Integrable
+      (fun ω => (L (S.martingale.xi (n + 1) ω)) ^ 2) P)
+    (hremainder : Integrable
+      (chewi127ScalarCharFunTaylorRemainder
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        (fun ω => L (S.martingale.xi (n + 1) ω))) P) :
+    (∫ ω,
+        chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) (n + 1)
+          (t * (Real.sqrt (N : ℝ))⁻¹) ω ∂P) =
+      ∫ ω,
+        chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) n
+          (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          S.projectedTaylorModelFactor L N t n ω ∂P := by
+  let x : ℕ -> Ω -> ℝ := fun k ω => L (S.martingale.xi k ω)
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  have hx : ∀ k : ℕ, AEMeasurable (x k) P := by
+    intro k
+    exact (S.martingale.projected_integrable L k).aemeasurable
+  have hprod_int :
+      Integrable
+        (fun ω =>
+          chewi127ScalarCharFunProduct x n a ω *
+          chewi127ScalarCharFunFactor a (fun ω => x (n + 1) ω) ω) P := by
+    have hprod_succ :
+        Integrable (chewi127ScalarCharFunProduct x (n + 1) a) P :=
+      chewi127ScalarCharFunProduct_integrable (P := P) hx (n + 1) a
+    refine hprod_succ.congr ?_
+    filter_upwards with ω
+    simp [x, a, chewi127ScalarCharFunProduct, Finset.prod_range_succ]
+  simpa [x, a] using
+    S.projected_charFun_product_tower_succ_scaled L N n t hsq hremainder
+      hprod_int
 
 /--
 Projected characteristic-function convergence from the finite product model
