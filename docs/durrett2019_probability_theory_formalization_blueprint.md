@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V17`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V18`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -399,12 +399,11 @@ Next packet:
   linearity/monotonicity wrappers, Theorem 4.1.10 conditional Jensen, Theorem
   4.1.11 `L¹`/`L²` contraction wrappers, Theorem 4.1.12
   measurability-collapse wrapper, Theorem 4.1.13 tower wrappers, and Theorem
-  4.1.14 pull-out wrapper now compile and should be treated as closed support.
-  Next search for a direct 4.1.9(c) monotone conditional-convergence route.  If
-  that is not direct, package Theorem 4.1.15 using `condExpL2`,
-  `Submodule.orthogonalProjection`, `inner_condExpL2_eq_inner_fun`, and
-  `MemLp.condExpL2_ae_eq_condExp`.  Only return to Example 4.1.5 if the
-  partition/indicator API is direct.
+  4.1.14 pull-out wrapper, and Theorem 4.1.15 `condExpL2` projection wrappers
+  now compile and should be treated as closed support.  Next search regular
+  conditional probability APIs, especially `condExpKernel`, for a direct
+  Theorem 4.1.16 wrapper.  If that route is not direct, start the Chapter 4.2
+  martingale layer over mathlib's martingale API.
 
 Support-only dependencies:
 

@@ -279,5 +279,61 @@ theorem durrett2019_theorem_4_1_11_condExp_memLp_two
     MemLp (μ[X | m]) 2 μ :=
   hX_memLp.condExp
 
+/--
+Durrett 2019, Theorem 4.1.15, orthogonality form.
+
+The residual after subtracting the `L²` conditional expectation is orthogonal
+to every `m`-measurable square-integrable random variable.
+-/
+theorem durrett2019_theorem_4_1_15_condExpL2_residual_inner_eq_zero
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    {μ : Measure Ω} {m : MeasurableSpace Ω} (hm : m ≤ mΩ)
+    (X : Ω →₂[μ] E) {Z : Ω →₂[μ] E}
+    (hZ_meas : AEStronglyMeasurable[m] Z μ) :
+    inner ℝ (X - (condExpL2 E ℝ hm X : Ω →₂[μ] E)) Z = 0 := by
+  rw [inner_sub_left, inner_condExpL2_eq_inner_fun hm X Z hZ_meas, sub_self]
+
+/--
+Durrett 2019, Theorem 4.1.15, projection/minimization form.
+
+The `L²` conditional expectation is the element of `L²(m)` closest to `X`.
+-/
+theorem durrett2019_theorem_4_1_15_condExpL2_minimal_norm_le
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    {μ : Measure Ω} {m : MeasurableSpace Ω} (hm : m ≤ mΩ)
+    (X Z : Ω →₂[μ] E) (hZ_meas : AEStronglyMeasurable[m] Z μ) :
+    ‖X - (condExpL2 E ℝ hm X : Ω →₂[μ] E)‖ ≤ ‖X - Z‖ := by
+  haveI : Fact (m ≤ mΩ) := ⟨hm⟩
+  let U : Submodule ℝ (Ω →₂[μ] E) := @lpMeas Ω E ℝ _ _ _ m mΩ 2 μ
+  haveI : CompleteSpace U := by
+    dsimp [U]
+    infer_instance
+  let Zm : U :=
+    ⟨Z, (mem_lpMeas_iff_aestronglyMeasurable
+      (m := m) (m0 := mΩ) (μ := μ) (f := Z)).2 hZ_meas⟩
+  have hmin := Submodule.starProjection_minimal (U := U) (y := X)
+  have hle : ‖X - U.starProjection X‖ ≤ ‖X - (Zm : Ω →₂[μ] E)‖ := by
+    rw [hmin]
+    exact ciInf_le ⟨0, Set.forall_mem_range.mpr fun _ => norm_nonneg _⟩ Zm
+  change ‖X - U.starProjection X‖ ≤ ‖X - (Zm : Ω →₂[μ] E)‖
+  exact hle
+
+/--
+Durrett 2019, Theorem 4.1.15, connection back to mathlib's `condExp`.
+
+For square-integrable variables, the Hilbert-space projection version agrees
+almost everywhere with the ordinary conditional expectation.
+-/
+theorem durrett2019_theorem_4_1_15_condExpL2_ae_eq_condExp
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    {μ : Measure Ω} {m : MeasurableSpace Ω} (hm : m ≤ mΩ)
+    [SigmaFinite (μ.trim hm)] {X : Ω -> E} (hX_memLp : MemLp X 2 μ)
+    (hX_int : Integrable X μ) :
+    condExpL2 E ℝ hm hX_memLp.toLp =ᵐ[μ] μ[X | m] :=
+  hX_memLp.condExpL2_ae_eq_condExp' hm hX_int
+
 end ProbabilityTheory
 end StatInference

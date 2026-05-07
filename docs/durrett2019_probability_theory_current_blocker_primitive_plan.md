@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V17
+## Live In-Thread Goal Prompt V18
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -12,7 +12,7 @@ older than the verified route docs:
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane only: Durrett Chapter 4.1 conditional expectation
 in `StatInference/ProbabilityTheory/ConditionalExpectation.lean`.  Treat all
-Chapter 2/3 support and the compiled Chapter 4.1 layer through Theorem 4.1.11
+Chapter 2/3 support and the compiled Chapter 4.1 layer through Theorem 4.1.15
 as closed dependencies:
 `durrett2019_section_4_1_IsConditionalExpectationVersion`,
 `durrett2019_section_4_1_condExp_isConditionalExpectationVersion`,
@@ -23,17 +23,17 @@ as closed dependencies:
 compiled Theorem 4.1.9 linearity/monotonicity wrappers, Theorem 4.1.12
 measurability-collapse wrapper, Theorem 4.1.13 tower wrappers, and Theorem
 4.1.14 real pull-out wrapper, plus Theorem 4.1.10 conditional Jensen and the
-direct Theorem 4.1.11 `L¹`/`L²` contraction wrappers.
+direct Theorem 4.1.11 `L¹`/`L²` contraction wrappers, plus Theorem 4.1.15
+`condExpL2` orthogonality, minimization, and `condExp` agreement wrappers.
 
-Next theorem-sized packet: search the remaining Chapter 4.1 conditional
-expectation frontier.  First check whether Theorem 4.1.9(c) monotone
-conditional convergence can be packaged from existing dominated/monotone
-conditional-expectation APIs.  If not direct, move to Theorem 4.1.15 L2
-projection using `condExpL2`, `Submodule.orthogonalProjection`,
-`inner_condExpL2_eq_inner_fun`, and the compiled `MemLp.condExpL2_ae_eq_condExp`
-bridge.  Only return to Example 4.1.5 partition support if the
-partition/indicator API is direct.  Do not repackage the solved 4.1.9(a,b),
-4.1.10, 4.1.11, 4.1.12, 4.1.13, or 4.1.14 facts.
+Next theorem-sized packet: search the regular conditional probability frontier
+after Theorem 4.1.15.  Try Theorem 4.1.16 only if mathlib's
+`condExpKernel`/kernel APIs give a direct source-shaped wrapper for regular
+conditional distributions and conditional expectations.  If not direct, start
+the Chapter 4.2 martingale layer with mathlib `Probability/Martingale/Basic`
+and package the first definition-level martingale/submartingale wrappers that
+compile quickly.  Do not repackage solved Chapter 4.1 conditional-expectation
+facts.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -300,6 +300,9 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_4_1_11_condExp_L1_contraction_real`
 - `durrett2019_theorem_4_1_11_condExp_L2_contraction`
 - `durrett2019_theorem_4_1_11_condExp_memLp_two`
+- `durrett2019_theorem_4_1_15_condExpL2_residual_inner_eq_zero`
+- `durrett2019_theorem_4_1_15_condExpL2_minimal_norm_le`
+- `durrett2019_theorem_4_1_15_condExpL2_ae_eq_condExp`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -385,10 +388,12 @@ spine.  The following Chapter 3 and Chapter 4.1 packets now compile:
   Theorem 4.1.9 linearity/monotonicity, Theorem 4.1.12 measurability collapse,
   Theorem 4.1.13 tower, Theorem 4.1.14 pull-out, Theorem 4.1.10 conditional
   Jensen, and Theorem 4.1.11 `L¹`/`L²` contraction wrappers.
+  Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
+  minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should search for a direct 4.1.9(c) monotone
-conditional-convergence route.  If that is not direct, use the `condExpL2`
-orthogonal-projection API to package Durrett Theorem 4.1.15.  Prefer
+The next likely packet should search the regular conditional probability APIs
+after Theorem 4.1.15.  Package Theorem 4.1.16 only if `condExpKernel`/kernel
+support is direct; otherwise start Chapter 4.2 martingale wrappers.  Prefer
 theorem-sized wrappers over new primitives.
 
 High-value Chapter 3 source anchors are in
@@ -501,6 +506,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V17` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V18` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V17` in
+Route from `Live In-Thread Goal Prompt V18` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now the Chapter 4.1 conditional-expectation starter
 layer.  Treat compiled Chapter 2 / Chapter 3 support, including the Section
@@ -42,10 +42,11 @@ Durrett conditional-expectation version predicate, mathlib-condExp version
 wrapper, Example 4.1.3 self/constant wrappers, and Example 4.1.4 independence
 wrapper, plus Theorem 4.1.9 linearity/monotonicity, Theorem 4.1.12
 measurability collapse, Theorem 4.1.13 tower, Theorem 4.1.14 pull-out, Theorem
-4.1.10 conditional Jensen, and Theorem 4.1.11 `L¹`/`L²` contraction wrappers
-now compile in `StatInference/ProbabilityTheory/ConditionalExpectation.lean`.
-The next packet should search for a direct 4.1.9(c) monotone-convergence route;
-if that is not direct, move to Theorem 4.1.15 via `condExpL2`.
+4.1.10 conditional Jensen, Theorem 4.1.11 `L¹`/`L²` contraction wrappers, and
+Theorem 4.1.15 `condExpL2` projection wrappers now compile in
+`StatInference/ProbabilityTheory/ConditionalExpectation.lean`.  The next
+packet should search the regular conditional probability frontier after Theorem
+4.1.15; if it is not direct, start Chapter 4.2 martingale wrappers.
 The compiled declaration inventory below is dependency context only; it is not
 a prompt to revisit solved work.
 
@@ -61,7 +62,7 @@ the Chapter 4.1 Durrett conditional-expectation version predicate,
 mathlib-condExp version wrapper, Example 4.1.3 self/constant wrappers, and
 Example 4.1.4 independence wrapper, plus Theorem 4.1.9, 4.1.12, 4.1.13, and
 4.1.14 property wrappers, Theorem 4.1.10 conditional Jensen, and Theorem
-4.1.11 contraction wrappers.
+4.1.11 contraction wrappers, plus Theorem 4.1.15 projection wrappers.
 `StatInference/ProbabilityTheory/Basic.lean` remains compiled root-imported
 support.  Compiled declarations:
 
@@ -371,8 +372,12 @@ Current proof route:
     `durrett2019_theorem_4_1_11_condExp_L1_contraction_real`,
     `durrett2019_theorem_4_1_11_condExp_L2_contraction`, and
     `durrett2019_theorem_4_1_11_condExp_memLp_two`.
-    Next target: search for a direct 4.1.9(c) monotone-convergence route; if
-    not direct, package Theorem 4.1.15 via `condExpL2`.
+42. Durrett Theorem 4.1.15 now has compiled Hilbert-projection wrappers:
+    `durrett2019_theorem_4_1_15_condExpL2_residual_inner_eq_zero`,
+    `durrett2019_theorem_4_1_15_condExpL2_minimal_norm_le`, and
+    `durrett2019_theorem_4_1_15_condExpL2_ae_eq_condExp`.
+    Next target: search regular conditional probability APIs for Theorem
+    4.1.16; if not direct, start Chapter 4.2 martingale wrappers.
 
 The route should not duplicate raw measure theory from Chapter 1 unless an
 exact source theorem needs a missing local theorem.  Chapter 1 is currently
@@ -387,7 +392,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
 | Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, supplied cutpoint chains, or supplied center-range monotone subdivisions. The one-cell, two-cell, right-append, finite cutpoint-chain, cutpoint-chain append, endpoint-grid-to-chain, closed-cover, punctured-cover, punctured-cover inserted-subcell CDF increment, punctured-cover cell splitting, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, monotone center-range, arbitrary-law punctured local/finite compact-cover, arbitrary-law punctured monotone-subdivision, arbitrary-law punctured monotone-subdivision cutpoint-chain, arbitrary-law cutpoint-chain, arbitrary-law half-line GC, source-facing empirical-CDF predicate, EDF theorem wrapper, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, center-range subdivision-to-GC, and non-atomic GC packages compile. Treat this lane as reusable support unless a later theorem reopens an exact source-shape gap. |
 | Chapter 3 weak convergence, CLT, and characteristic functions | source-wrapper/closed-support | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityTheory/Multivariate.lean`; `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution`, characteristic-function, Levy, Taylor, and CLT APIs | Section 3.2 weak convergence now has compiled wrappers for Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.10 continuous mapping continuous case, and Theorem 3.2.11 Portmanteau. Section 3.3 now has compiled Theorem 3.3.1 basic characteristic-function wrappers, Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem wrappers, Theorem 3.3.19 scalar Taylor remainder estimate, and Theorem 3.3.20 centered Taylor support. Section 3.4 now has Theorem 3.4.1 i.i.d. CLT wrappers plus Theorem 3.4.10 triangular-array characteristic-function product, explicit Gaussian display, row Gaussian target, quadratic variance product, Exercise 3.1.1 row-sum/max/absolute-bound/product interfaces, the proved Exercise 3.1.1 real triangular-array product theorem, variance-tail-to-max-smallness bridges, the variance-tail split proved from square-integrable rows, max-row-variance-to-factor-norm bridges, Lemma 3.4.3 product-difference control, analytic-certificate bridges from supplied split product approximations, a named characteristic/quadratic error row sum, compiled finite-row/one-factor/scalar-Taylor/expansion/remainder bridges, and a final square-integrable Lindeberg-Feller source wrapper. Section 3.10 has a finite-coordinate law-level Cramer-Wold wrapper, Theorem 3.10.7 projected scalar/summand and covariance/Gaussian source wrappers, theta-projection Gaussian characteristic-function covariance-table display, all-dual source handoffs, coordinate-mean handoff, scalar coordinate covariance and centered-product source endpoints, vector Gaussian coordinate-covariance CLT wrappers, common-vector-law coordinate-covariance wrapper, canonical i.i.d. product-sample endpoints, Gaussian-coordinate independence criterion wrappers, and Exercise 3.10.8 linear-combination characterization wrappers. |
-| Chapter 4 martingales | next-active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityTheory/ConditionalExpectation.lean`; future `StatInference/ProbabilityTheory/Martingale.lean`; mathlib `Probability/ConditionalExpectation.lean` and `Probability/Martingale/*` | Chapter 4.1 conditional expectation has the Durrett version predicate, mathlib-condExp version wrapper, Example 4.1.3 self/constant wrappers, Example 4.1.4 independence wrapper, Theorem 4.1.9 linearity/monotonicity, Theorem 4.1.10 Jensen, Theorem 4.1.11 L1/L2 contraction, Theorem 4.1.12 measurability collapse, Theorem 4.1.13 tower, and Theorem 4.1.14 pull-out wrappers. Next target: 4.1.9(c) if direct, otherwise Theorem 4.1.15 projection via `condExpL2`. |
+| Chapter 4 martingales | next-active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityTheory/ConditionalExpectation.lean`; future `StatInference/ProbabilityTheory/Martingale.lean`; mathlib `Probability/ConditionalExpectation.lean` and `Probability/Martingale/*` | Chapter 4.1 conditional expectation has the Durrett version predicate, mathlib-condExp version wrapper, Example 4.1.3 self/constant wrappers, Example 4.1.4 independence wrapper, Theorem 4.1.9 linearity/monotonicity, Theorem 4.1.10 Jensen, Theorem 4.1.11 L1/L2 contraction, Theorem 4.1.12 measurability collapse, Theorem 4.1.13 tower, Theorem 4.1.14 pull-out, and Theorem 4.1.15 projection wrappers. Next target: Theorem 4.1.16 if regular conditional probability APIs are direct; otherwise start Chapter 4.2 martingales. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
 | Chapters 6-8 ergodic/Brownian/Donsker | pending-local | none | Defer until early probability spine is stable or remote agents land reusable support. |
 
@@ -431,14 +436,14 @@ whenever the app-level wording lags.  Active frontier only: Section 3.10
 finite-dimensional limit theory is now closed support; the active frontier is
 Chapter 4.1 conditional expectation.
 
-Next proof packet: search for a direct 4.1.9(c) monotone conditional-convergence
-route via existing dominated/monotone conditional-expectation APIs.  If that is
-not direct, package Durrett Theorem 4.1.15 using `condExpL2`,
-`Submodule.orthogonalProjection`, `inner_condExpL2_eq_inner_fun`, and
-`MemLp.condExpL2_ae_eq_condExp`.
+Next proof packet: search regular conditional probability APIs, especially
+`condExpKernel` and kernel conditional-expectation support, for a direct
+Theorem 4.1.16 wrapper.  If that route is not direct, start
+`StatInference/ProbabilityTheory/Martingale.lean` with the first Chapter 4.2
+martingale/submartingale wrappers over mathlib's martingale API.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement
 one compiled Lean packet, verify focused Lean plus targeted build/scans and root
 build when imports changed, update route docs only if the frontier changes,
-commit, and push.  Closed Chapter 2 through Theorem 4.1.11 material is support,
+commit, and push.  Closed Chapter 2 through Theorem 4.1.15 material is support,
 not live prompt content, unless the active Chapter 4.1 theorem requires it.
