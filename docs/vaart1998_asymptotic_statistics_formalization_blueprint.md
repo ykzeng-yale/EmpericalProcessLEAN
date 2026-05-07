@@ -522,8 +522,11 @@ Initial modules:
   and the derivative-residual measurability packet adds
   `vaart1998_theorem_5_41_derivativeResidual_aemeasurable_of_operator` plus
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_measurableDerivativeLLN_secondDerivativeBound`,
-  so the remaining critical path is the deterministic Taylor residual bound
-  and the textbook-shaped a.e. Taylor equation.
+  and the root/Taylor-expansion packet adds
+  `vaart1998_theorem_5_41_taylorEquation_of_root_taylorExpansion` plus
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeBound`,
+  so the remaining critical path is the analytic Taylor-expansion display and
+  the deterministic Taylor residual bound.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

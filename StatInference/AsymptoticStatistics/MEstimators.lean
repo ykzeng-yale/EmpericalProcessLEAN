@@ -2114,6 +2114,37 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_
       hTaylorZero
 
 /--
+van der Vaart 1998, Theorem 5.41, Taylor equation from root and Taylor
+expansion.
+
+The source proof first has the root equation
+`Psi_n(thetaHat_n) = 0` and the Taylor display identifying
+`Psi_n(thetaHat_n)` with the score, derivative term, and second residual.
+This lemma packages their a.e. combination into the exact Taylor equation
+consumed by the asymptotic-normality handoff.
+-/
+theorem vaart1998_theorem_5_41_taylorEquation_of_root_taylorExpansion
+    {Ω Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    {score estimatingEquationAtEstimator secondResidual : ℕ -> Ω -> Score}
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    {scaledEstimator : ℕ -> Ω -> Θ}
+    (hRoot : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, estimatingEquationAtEstimator n ω = 0)
+    (hTaylorExpansion : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + empiricalDerivative n ω (scaledEstimator n ω) +
+          secondResidual n ω = estimatingEquationAtEstimator n ω) :
+    ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + empiricalDerivative n ω (scaledEstimator n ω) +
+          secondResidual n ω = 0 := by
+  intro n
+  filter_upwards [hTaylorExpansion n, hRoot n] with ω hTaylor hRoot
+  exact hTaylor.trans hRoot
+
+/--
 van der Vaart 1998, Theorem 5.41, source Taylor-equation handoff.
 
 The Taylor display is naturally produced as
@@ -2251,6 +2282,72 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquat
       hLeftInverse hScoreCLT hDerivativeLLN hDelta hCurvatureBounded
       hScaledEstimator hSecondBound hDerivativeResidual_meas
       hSecondResidual_meas hTaylorEquation
+
+/--
+van der Vaart 1998, Theorem 5.41, source root-and-Taylor-expansion handoff.
+
+This wrapper consumes the textbook source fields `Psi_n(thetaHat_n) = 0` and
+the Taylor expansion of `Psi_n(thetaHat_n)`, then feeds the resulting Taylor
+equation into the compiled derivative-LLN and second-derivative-residual
+handoff.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeBound
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {curvatureBound : ℕ -> Ω -> ℝ}
+    {score estimatingEquationAtEstimator secondResidual : ℕ -> Ω -> Score}
+    {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω => ‖empiricalDerivative n ω - V‖) atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hCurvatureBounded : StochasticBounded P curvatureBound)
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hSecondBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        ‖delta n ω‖ * (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖))
+    (hEmpiricalDerivative_meas : ∀ n, AEMeasurable (empiricalDerivative n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P)
+    (hSecondResidual_meas : ∀ n, AEMeasurable (secondResidual n) P)
+    (hRoot : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, estimatingEquationAtEstimator n ω = 0)
+    (hTaylorExpansion : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + empiricalDerivative n ω (scaledEstimator n ω) +
+          secondResidual n ω = estimatingEquationAtEstimator n ω) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hTaylorEquation : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + empiricalDerivative n ω (scaledEstimator n ω) +
+          secondResidual n ω = 0 :=
+    vaart1998_theorem_5_41_taylorEquation_of_root_taylorExpansion
+      (P := P) (score := score)
+      (estimatingEquationAtEstimator := estimatingEquationAtEstimator)
+      (secondResidual := secondResidual)
+      (empiricalDerivative := empiricalDerivative)
+      (scaledEstimator := scaledEstimator) hRoot hTaylorExpansion
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_measurableDerivativeLLN_secondDerivativeBound
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (empiricalDerivative := empiricalDerivative) (delta := delta)
+      (scaledEstimator := scaledEstimator) (curvatureBound := curvatureBound)
+      (score := score) (secondResidual := secondResidual) (Z := Z)
+      hLeftInverse hScoreCLT hDerivativeLLN hDelta hCurvatureBounded
+      hScaledEstimator hSecondBound hEmpiricalDerivative_meas
+      hScaledEstimator_meas hSecondResidual_meas hTaylorEquation
 
 end AsymptoticStatistics
 end StatInference

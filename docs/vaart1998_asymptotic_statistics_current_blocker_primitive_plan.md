@@ -12,11 +12,10 @@ Theorem 5.41 only.
 
 Next packet: discharge the remaining source Taylor inputs for the compiled
 handoff
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_measurableDerivativeLLN_secondDerivativeBound`:
-prove the textbook Taylor equation
-`score_n + dotPsi_n(theta0) x_n + secondResidual_n = 0` and the deterministic
-second-derivative residual bound from Taylor's theorem plus the dominated
-second-derivative average.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeBound`:
+prove the analytic Taylor-expansion display for `Psi_n(thetaHat_n)` and the
+deterministic second-derivative residual bound from Taylor's theorem plus the
+dominated second-derivative average.
 
 Reuse local/mathlib APIs before inventing infrastructure.  Skip solved
 Chapter 2-4 routing, Gaussian endpoints, and broad process edits unless they
@@ -720,27 +719,27 @@ Chapter 3 theorem-facing wrappers compiling:
 261. Theorem 5.41 source Taylor-equation handoff with derivative-residual
    measurability discharged:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_measurableDerivativeLLN_secondDerivativeBound`.
+262. Theorem 5.41 Taylor equation from root and Taylor expansion:
+   `vaart1998_theorem_5_41_taylorEquation_of_root_taylorExpansion`.
+263. Theorem 5.41 source root-and-Taylor-expansion handoff:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeBound`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 derivative residual measurability`).
+(`Add Vaart theorem 5.41 root Taylor expansion handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by deriving derivative-residual
-measurability from empirical-derivative and scaled-estimator measurability.
-The most advanced handoff still consumes the textbook-shaped Taylor equation
-`score_n + dotPsi_n(theta0) x_n + secondResidual_n = 0`, performs the algebraic
-split
+asymptotic-normality route for Z-estimators by deriving the source Taylor
+equation from the root equation `Psi_n(thetaHat_n) = 0` and the Taylor
+expansion of `Psi_n(thetaHat_n)`.  The most advanced handoff performs the
+algebraic split
 `dotPsi_n(theta0) x_n =
   (P dot psi_theta0) x_n + (dotPsi_n(theta0) - P dot psi_theta0) x_n`
 internally before applying the derivative and second-derivative residual
 bridge.
 
 The next aggressive packet should prove the remaining source Taylor fields:
-the deterministic/a.e. second-derivative residual bound and the
-textbook-shaped a.e. Taylor equation
-`sqrt n Psi_n(theta0)
- + dotPsi_n(theta0) (sqrt n (thetaHat_n - theta0))
- + secondResidual_n = 0`.
+the analytic Taylor-expansion display for `Psi_n(thetaHat_n)` and the
+deterministic/a.e. second-derivative residual bound.
 
 ## Execution Notes
 
