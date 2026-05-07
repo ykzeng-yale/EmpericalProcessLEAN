@@ -51,11 +51,29 @@ create or update Codex automations for the Vaart textbook route.  Keep the live
 goal state in this chat and mirror the exact frontier in this file, the
 dashboard, and the blueprint.
 
+Use the same manual loop on every continuation:
+
+1. Read the active `/goal`, this blocker file, the dashboard, and the
+   blueprint.
+2. Fetch `origin/main`, identify other-agent changes, and choose the dedicated
+   Vaart worktree unless a fresh disjoint worktree would reduce conflict risk.
+3. Check the source anchor in the Vaart Markdown/PDF and record the exact
+   textbook statement before selecting a Lean target.
+4. Search pinned mathlib and local `StatInference` reuse before adding a new
+   primitive.
+5. Prove one source-facing theorem packet, then run the focused direct Lean
+   gate before editing route docs.
+6. Update docs only after the Lean theorem or exact blocker is known.
+7. Fetch/rebase immediately before staging, rerun focused direct Lean and
+   hygiene scans on the exact tree to be pushed, then commit and push.
+8. In the final report, name the verified declarations, source theorem, tests,
+   and remote head without implying the textbook goal is complete.
+
 Use worktrees when they improve coordination with other local textbook agents,
 but keep every packet small and rebase-aware:
 
-- start by checking `git status`, `origin/main`, this blocker file, the
-  dashboard, and the blueprint;
+- start by checking `git status`, `origin/main`, the active `/goal`, this
+  blocker file, the dashboard, and the blueprint;
 - treat the Vaart worktree's symlinked `.lake` directory as a verification
   hazard: use direct artifact compilation such as
   `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .lake/build/lib/lean/StatInference/AsymptoticStatistics/MomentEstimators.olean -i .lake/build/lib/lean/StatInference/AsymptoticStatistics/MomentEstimators.ilean`
@@ -738,9 +756,8 @@ Chapter 3 theorem-facing wrappers compiling:
    empirical-average endpoint:
    `vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWPGlivenkoCantelliClass_empiricalAverage_real`.
 
-Latest remote base before this packet: `c41c519`.
-Latest pushed Vaart packet before this packet: `c41c519`
-(`Add Vaart direct P-GC empirical-average endpoints`).
+Latest verified Vaart head: `9415813`
+(`Add Vaart book-style P-GC empirical-average endpoints`).
 
 The current theorem-sized packet adds book-style
 `VdVWPGlivenkoCantelliClass` consumers for real empirical criteria and scalar
@@ -765,6 +782,9 @@ spine is stable.  Those later chapters should be scouted in parallel only.
   English/Chinese, but files, Lean names, comments, and route docs should not.
 - Keep Vaart work in the dedicated Vaart worktree, and preserve unrelated
   commits or dirty files from other local agents.
+- After a context compaction or interruption, re-read the active `/goal`, this
+  file, the latest commit log, and the current source anchor before continuing;
+  do not resume from memory alone.
 - Verify Vaart Lean packets with direct artifact compilation for the exact
   worktree source when `.lake` is symlinked, rather than relying only on
   module-level `lake build` output.
@@ -773,6 +793,9 @@ spine is stable.  Those later chapters should be scouted in parallel only.
 - Prefer theorem-sized Lean packets that remove source-facing assumptions or
   package a textbook statement, and update the next blocker only after the
   packet compiles.
+- Use helper agents only for independent source/reuse/verification tasks or
+  disjoint write scopes.  Keep the main thread on the critical proof path and
+  integrate agent output only after local verification.
 
 ## Search-First Record
 

@@ -551,9 +551,8 @@ Chapter 4 handoff:
   accept either the outer-probability GC branch directly or the outer-a.s.
   branch with countability and coordinate a.e.-measurability.
 
-Latest remote base before this packet: `c41c519`.  Latest pushed Vaart packet
-before this packet: `c41c519`
-(`Add Vaart direct P-GC empirical-average endpoints`).
+Latest verified Vaart head: `9415813`
+(`Add Vaart book-style P-GC empirical-average endpoints`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -563,6 +562,13 @@ Current packet verification passed for:
 
 Root build note: this worktree uses a symlinked `.lake` directory; focused
 checks must compile the Vaart-worktree artifacts directly.
+
+Process note: this is a manual `/goal` lane, not a recurring automation.  The
+continuation loop is to read the active goal and route docs, fetch and account
+for other-agent changes, verify the exact Vaart source theorem, search local
+reuse, prove one theorem-sized packet, compile it directly in the Vaart
+worktree, update docs after the theorem/blocker is known, then rebase and
+verify again before push.
 
 ## Next Aggressive Target
 
