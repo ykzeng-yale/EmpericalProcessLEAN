@@ -33268,6 +33268,88 @@ structure VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison
                   (0 : ℝ)}
 
 /--
+The displayed Chebyshev beta factor used in the selected-cover comparison is
+bounded by one.
+-/
+theorem VdVWTheorem243_displayedChebyshevBeta_le_one
+    (M epsilon : ℝ) (n : ℕ) (hepsilon : 0 < epsilon) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+      (1 : ℝ≥0∞) := by
+  rw [ENNReal.ofReal_le_one]
+  have hpenalty_nonneg :
+      0 ≤ (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2) := by
+    positivity
+  linarith
+
+/--
+A lossless fixed-radius finite-net comparison implies the displayed-beta source
+primitive with constants `A = 1` and `C = 1`.
+
+This is a source-target compatibility lemma: proving the stronger lossless
+outer-probability comparison remains sufficient for the exact displayed
+Chebyshev-beta Lemma 2.3.7 primitive.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_fixedRadiusComparison
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (comparison :
+      VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison P
+        indexClass classFun envelope M selectedCardinality) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M 1 1 selectedCardinality where
+  constant_ne_top := by norm_num
+  scale_pos := by norm_num
+  outerProbability_bound := by
+    intro eta heta epsilon hepsilon
+    filter_upwards [comparison.outerProbability_bound eta heta epsilon hepsilon]
+      with n hcomparison_n
+    let left : ℝ≥0∞ :=
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+              (0 : ℝ)}
+    let right : ℝ≥0∞ :=
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWTheorem243FiniteNetHoeffdingUpper
+                  (selectedCardinality eta n sample n) n M + eta)
+              (0 : ℝ)}
+    have hbeta_le_one :
+        ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+          (1 : ℝ≥0∞) :=
+      VdVWTheorem243_displayedChebyshevBeta_le_one M epsilon n hepsilon
+    have hmul_le_left :
+        ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) * left ≤
+          (1 : ℝ≥0∞) * left :=
+      mul_le_mul_left hbeta_le_one left
+    have hleft_le_right : left ≤ right := by
+      simpa [left, right] using hcomparison_n
+    have hone_mul_left_le_right : (1 : ℝ≥0∞) * left ≤ right := by
+      simpa using hleft_le_right
+    have hmul_le_right :
+        ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) * left ≤
+          right := by
+      exact hmul_le_left.trans hone_mul_left_le_right
+    simpa [left, right] using hmul_le_right
+
+/--
 The named displayed-Chebyshev-beta source primitive feeds the compiled fixed-`M`
 stochastic-entropy route.
 
