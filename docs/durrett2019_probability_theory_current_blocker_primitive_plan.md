@@ -187,6 +187,13 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_2_11_portmanteau_continuity_set_of_tendstoInDistribution`
 - `durrett2019_theorem_3_2_11_tendstoInDistribution_of_forall_closed_limsup_le`
 - `durrett2019_theorem_3_2_11_tendstoInDistribution_of_forall_open_le_liminf`
+- `durrett2019_characteristicFunction`
+- `durrett2019_theorem_3_3_1_characteristicFunction_zero`
+- `durrett2019_theorem_3_3_1_characteristicFunction_neg`
+- `durrett2019_theorem_3_3_1_characteristicFunction_norm_le_one`
+- `durrett2019_theorem_3_3_1_characteristicFunction_continuous`
+- `durrett2019_theorem_3_3_1_characteristicFunction_affine_map`
+- `durrett2019_theorem_3_3_2_characteristicFunction_independent_sum`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -213,9 +220,10 @@ wrappers:
 Do not spend the next cycle on center insertion, EDF notation, or Chapter 2.1
 polish unless a later Chapter 3 statement exposes an exact missing dependency.
 
-Current aggressive target: move from Chapter 3.2 weak-convergence foundations
-to the Chapter 3.3 characteristic-function spine.  The first Section 3.2
-packets now compile:
+Current aggressive target: move from the Chapter 3.2 weak-convergence
+foundations and basic Chapter 3.3 characteristic-function wrappers into the
+Chapter 3.3 characteristic-function convergence spine.  The first Section 3.2
+and 3.3 packets now compile:
 
 - Durrett Theorem 3.2.9 bounded-continuous test characterization, including
   the `integral_map` bridge from map-law integrals to textbook expectations
@@ -224,16 +232,20 @@ packets now compile:
   local `tendstoInDistribution_continuous_comp` wrapper.
 - Durrett Theorem 3.2.11 Portmanteau open-set, closed-set, continuity-set, and
   open/closed converse wrappers for `TendstoInDistribution`.
+- Durrett Theorem 3.3.1 characteristic-function zero, conjugation, norm bound,
+  continuity consequence, and affine-map wrappers.
+- Durrett Theorem 3.3.2 independent-sum product law for characteristic
+  functions.
 
-The next likely packet should search characteristic-function reuse before
+The next likely packet should search convergence-theorem and CLT reuse before
 adding new primitives:
 
 - Definition/Section 3.2 weak convergence of random variables: reuse
   `MeasureTheory.TendstoInDistribution` and
   `StatInference/ProbabilityMeasure/WeakConvergence.lean`.
-- Section 3.3 characteristic functions: start with Theorem 3.3.1 basic
-  properties or Theorem 3.3.2 product law for independent sums, depending on
-  available mathlib/local characteristic-function APIs.
+- Section 3.3 characteristic functions: basic law-level wrappers now compile;
+  next search characteristic-function convergence, inversion/uniqueness support,
+  and CLT-facing source wrappers.
 - Section 3.10 characteristic-function convergence, Cramer-Wold, and
   multivariate CLT: search `StatInference/AsymptoticStatistics` and local
   weak-convergence files before adding new primitives.
@@ -287,6 +299,9 @@ Pinned mathlib search scope:
 - `Mathlib.MeasureTheory.MeasurableSpace.Pi`
 - `Mathlib.MeasureTheory.Function.ConvergenceInMeasure`
 - `Mathlib.MeasureTheory.Function.ConvergenceInDistribution`
+- `Mathlib.MeasureTheory.Measure.CharacteristicFunction.Basic`
+- `Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion`
+- `Mathlib.Probability.Independence.CharacteristicFunction`
 
 ## Primitive Sequence
 
@@ -322,8 +337,11 @@ Pinned mathlib search scope:
    weak-convergence, characteristic-function, normal-law, convolution, and
    finite-dimensional limit APIs.  Durrett Theorems 3.2.9, 3.2.10
    continuous case, and 3.2.11 now compile as source-facing weak-convergence
-   wrappers.  Next start Section 3.3 characteristic functions unless an exact
-   later theorem needs additional common-probability-space convenience wrappers.
+   wrappers.  Durrett Theorem 3.3.1 characteristic-function zero, conjugation,
+   norm bound, continuity consequence, and affine-map wrappers, plus Theorem
+   3.3.2 independent-sum product law, now compile over mathlib
+   characteristic-function APIs.  Next search the characteristic-function
+   convergence theorem and CLT-facing wrappers before adding new primitives.
 
 ## Current In-Thread Goal Prompt Seed
 
@@ -335,8 +353,10 @@ this file plus the Durrett dashboard and blueprint, and scanning the current
 do not return to the old center-insertion, EDF notation, or Chapter 2.1 iid
 polish blockers.  Chapter 3.2 weak convergence now has compiled Durrett
 Theorem 3.2.9 bounded-continuous test, 3.2.10 continuous-mapping continuous
-case, and 3.2.11 Portmanteau wrappers.  Next search Section 3.3
-characteristic-function APIs, especially product laws for independent sums and
-the convergence theorem, while checking local asymptotic-statistics reuse
-first.  Verify, update docs, commit/push, and keep this in-thread `/goal`
-state current.  Report progress and blockers in Chinese/English mix.
+case, and 3.2.11 Portmanteau wrappers.  Chapter 3.3 now has compiled
+characteristic-function notation, Theorem 3.3.1 basic property wrappers, and
+Theorem 3.3.2 independent-sum product law.  Next search the
+characteristic-function convergence theorem, inversion/uniqueness support, and
+Chapter 3.4 CLT wrappers while checking local asymptotic-statistics reuse first.
+Verify, update docs, commit/push, and keep this in-thread `/goal` state current.
+Report progress and blockers in Chinese/English mix.

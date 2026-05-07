@@ -4,6 +4,8 @@ import StatInference.ProbabilityMeasure.GeneratedSigma
 import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.StrongLaw
 import StatInference.ProbabilityMeasure.WeakConvergence
+import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
+import Mathlib.Probability.Independence.CharacteristicFunction
 
 /-!
 # Durrett 2019 probability-theory wrappers
@@ -1593,6 +1595,92 @@ theorem durrett2019_theorem_3_2_11_tendstoInDistribution_of_forall_open_le_limin
           ⟨(μ i).map (X i), Measure.isProbabilityMeasure_map (hX i)⟩)
         (μ := ⟨μ'.map Z, Measure.isProbabilityMeasure_map hZ⟩)
         hopen
+
+/-! ## Durrett, Section 3.3 -/
+
+/--
+Durrett 2019, Section 3.3.1, characteristic function notation.
+
+For a real probability law `μ`, this is Durrett's
+`φ(t) = E exp(i t X)` written at the law level.
+-/
+noncomputable def durrett2019_characteristicFunction (μ : Measure ℝ) (t : ℝ) : ℂ :=
+  MeasureTheory.charFun μ t
+
+/-- Durrett 2019, Theorem 3.3.1(a), `φ(0) = 1`. -/
+theorem durrett2019_theorem_3_3_1_characteristicFunction_zero
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] :
+    durrett2019_characteristicFunction μ 0 = 1 := by
+  simp [durrett2019_characteristicFunction]
+
+/-- Durrett 2019, Theorem 3.3.1(b), `φ(-t) = conj (φ t)`. -/
+theorem durrett2019_theorem_3_3_1_characteristicFunction_neg
+    {μ : Measure ℝ} (t : ℝ) :
+    durrett2019_characteristicFunction μ (-t) =
+      star (durrett2019_characteristicFunction μ t) := by
+  simp [durrett2019_characteristicFunction]
+
+/-- Durrett 2019, Theorem 3.3.1(c), `|φ(t)| <= 1`. -/
+theorem durrett2019_theorem_3_3_1_characteristicFunction_norm_le_one
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] (t : ℝ) :
+    ‖durrett2019_characteristicFunction μ t‖ ≤ 1 := by
+  simpa [durrett2019_characteristicFunction] using
+    (MeasureTheory.norm_charFun_le_one (μ := μ) t)
+
+/--
+Durrett 2019, Theorem 3.3.1(d), continuity of characteristic functions.
+
+The textbook proves uniform continuity.  This wrapper records the compiled
+continuous consequence supplied by mathlib's characteristic-function API.
+-/
+theorem durrett2019_theorem_3_3_1_characteristicFunction_continuous
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] :
+    Continuous (durrett2019_characteristicFunction μ) := by
+  simpa [durrett2019_characteristicFunction] using
+    (MeasureTheory.continuous_charFun (μ := μ))
+
+/--
+Durrett 2019, Theorem 3.3.1(e), affine transform formula.
+
+At the law level, the characteristic function of `a X + b` is
+`φ(a t) * exp(i t b)`.
+-/
+theorem durrett2019_theorem_3_3_1_characteristicFunction_affine_map
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] (a b t : ℝ) :
+    durrett2019_characteristicFunction (μ.map (fun x => a * x + b)) t =
+      durrett2019_characteristicFunction μ (a * t) *
+        Complex.exp (t * (b * Complex.I)) := by
+  have hmap :
+      μ.map (fun x => a * x + b) =
+        (μ.map (fun x => a * x)).map (fun x => x + b) := by
+    symm
+    simpa [Function.comp_def] using
+      (AEMeasurable.map_map_of_aemeasurable
+        (μ := μ) (f := fun x : ℝ => a * x) (g := fun x : ℝ => x + b)
+        (by fun_prop) (by fun_prop))
+  rw [hmap]
+  simp [durrett2019_characteristicFunction, MeasureTheory.charFun_map_add_const,
+    MeasureTheory.charFun_map_mul, mul_assoc]
+
+/--
+Durrett 2019, Theorem 3.3.2, independent-sum product law for characteristic
+functions.
+
+If `X` and `Y` are independent real random variables, the characteristic
+function of `X + Y` is the product of the characteristic functions.
+-/
+theorem durrett2019_theorem_3_3_2_characteristicFunction_independent_sum
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X Y : Ω -> ℝ}
+    (hX : AEMeasurable X P) (hY : AEMeasurable Y P)
+    (hXY : _root_.ProbabilityTheory.IndepFun X Y P) (t : ℝ) :
+    durrett2019_characteristicFunction (P.map (fun ω => X ω + Y ω)) t =
+      durrett2019_characteristicFunction (P.map X) t *
+        durrett2019_characteristicFunction (P.map Y) t := by
+  have hfun :=
+    _root_.ProbabilityTheory.IndepFun.charFun_map_fun_add_eq_mul
+      (P := P) (X := X) (Y := Y) hX hY hXY
+  simpa [durrett2019_characteristicFunction, Pi.mul_apply] using congrFun hfun t
 
 /--
 Durrett early-chapter pi-system uniqueness shape.

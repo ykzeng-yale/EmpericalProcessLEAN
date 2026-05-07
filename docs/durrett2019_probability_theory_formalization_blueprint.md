@@ -352,14 +352,18 @@ Compiled Section 3.2 packets:
 - Durrett Theorem 3.2.11, Portmanteau alternatives.  The compiled wrappers
   cover open-set, closed-set, continuity-set, closed-converse, and open-converse
   forms for `TendstoInDistribution`.
+- Durrett Section 3.3, characteristic functions.  The compiled wrappers cover
+  law-level notation, Theorem 3.3.1 zero, conjugation, norm bound, continuous
+  consequence, affine-map formula, and Theorem 3.3.2 independent-sum product
+  law.
 
 Next packet candidates:
 
-- Section 3.3 characteristic-function basic properties and independent-sum
-  product law.
 - Section 3.3 characteristic-function convergence theorem, if local
   asymptotic-statistics characteristic-function infrastructure can be reused
   directly.
+- Section 3.3 inversion or uniqueness support, only when it is directly needed
+  for the convergence theorem route.
 - Section 3.10 Cramer-Wold and multivariate CLT wrappers over existing local
   asymptotic-statistics finite-dimensional convergence code.
 
@@ -388,6 +392,9 @@ Initial Lean reuse anchors:
 - `StatInference/EmpiricalProcess/WeakConvergence.lean`
 - `StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `.lake/packages/mathlib/Mathlib/MeasureTheory/Function/ConvergenceInDistribution.lean`
+- `.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/CharacteristicFunction/Basic.lean`
+- `.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/CharacteristicFunction/TaylorExpansion.lean`
+- `.lake/packages/mathlib/Mathlib/Probability/Independence/CharacteristicFunction.lean`
 
 ### Lane E: martingales, Markov chains, Brownian motion
 
