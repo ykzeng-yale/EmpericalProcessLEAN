@@ -12,10 +12,10 @@ Theorem 5.41 only.
 
 Next packet: discharge the remaining source Taylor inputs for the compiled
 handoff
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeBound`:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeHalfBound`:
 prove the analytic Taylor-expansion display for `Psi_n(thetaHat_n)` and the
-deterministic second-derivative residual bound from Taylor's theorem plus the
-dominated second-derivative average.
+source half-bound for the second-derivative residual from the quadratic
+Taylor term and dominated second-derivative average.
 
 Reuse local/mathlib APIs before inventing infrastructure.  Skip solved
 Chapter 2-4 routing, Gaussian endpoints, and broad process edits unless they
@@ -723,15 +723,24 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_theorem_5_41_taylorEquation_of_root_taylorExpansion`.
 263. Theorem 5.41 source root-and-Taylor-expansion handoff:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeBound`.
+264. Theorem 5.41 absorption of the `1 / 2` Taylor residual factor:
+   `vaart1998_theorem_5_41_secondDerivativeResidual_bound_of_half_bound`.
+265. Theorem 5.41 second-derivative residual convergence from the source
+   `1 / 2` bound:
+   `vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_half_bound`.
+266. Theorem 5.41 source root-and-Taylor-expansion handoff with the source
+   `1 / 2` second-derivative residual factor:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeHalfBound`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 root Taylor expansion handoff`).
+(`Add Vaart theorem 5.41 half residual bound handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by deriving the source Taylor
-equation from the root equation `Psi_n(thetaHat_n) = 0` and the Taylor
-expansion of `Psi_n(thetaHat_n)`.  The most advanced handoff performs the
-algebraic split
+asymptotic-normality route for Z-estimators by accepting the textbook
+`1 / 2` factor in the second-derivative Taylor residual bound directly.  The
+most advanced handoff still derives the source Taylor equation from the root
+equation `Psi_n(thetaHat_n) = 0` and the Taylor expansion of
+`Psi_n(thetaHat_n)`, then performs the algebraic split
 `dotPsi_n(theta0) x_n =
   (P dot psi_theta0) x_n + (dotPsi_n(theta0) - P dot psi_theta0) x_n`
 internally before applying the derivative and second-derivative residual
@@ -739,7 +748,8 @@ bridge.
 
 The next aggressive packet should prove the remaining source Taylor fields:
 the analytic Taylor-expansion display for `Psi_n(thetaHat_n)` and the
-deterministic/a.e. second-derivative residual bound.
+source half-bound for the second-derivative residual from the actual
+quadratic form and dominated second-derivative average.
 
 ## Execution Notes
 

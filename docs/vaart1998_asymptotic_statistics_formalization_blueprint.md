@@ -525,8 +525,13 @@ Initial modules:
   and the root/Taylor-expansion packet adds
   `vaart1998_theorem_5_41_taylorEquation_of_root_taylorExpansion` plus
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeBound`,
+  and the half-bound packet adds
+  `vaart1998_theorem_5_41_secondDerivativeResidual_bound_of_half_bound`,
+  `vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_half_bound`,
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeHalfBound`,
   so the remaining critical path is the analytic Taylor-expansion display and
-  the deterministic Taylor residual bound.
+  the source half-bound from the actual quadratic second-derivative form.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

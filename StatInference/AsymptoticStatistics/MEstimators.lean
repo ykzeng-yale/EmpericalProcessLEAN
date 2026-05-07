@@ -1598,6 +1598,72 @@ theorem vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_boun
         simp [curvatureScaled, norm_smul]
 
 /--
+van der Vaart 1998, Theorem 5.41, absorption of the `1 / 2` Taylor factor in
+the second-derivative residual bound.
+
+The textbook Taylor residual has a factor `1 / 2`; the probabilistic handoff
+only needs the coarser product bound.
+-/
+theorem vaart1998_theorem_5_41_secondDerivativeResidual_bound_of_half_bound
+    {Ω Score Θ : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup Score]
+    [NormedAddCommGroup Θ]
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {curvatureBound : ℕ -> Ω -> ℝ}
+    {secondResidual : ℕ -> Ω -> Score}
+    (hSecondHalfBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        (1 / 2 : ℝ) *
+          (‖delta n ω‖ *
+            (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖))) :
+    ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        ‖delta n ω‖ * (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖) := by
+  filter_upwards [hSecondHalfBound] with n hbnd
+  intro ω
+  let product : ℝ :=
+    ‖delta n ω‖ * (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖)
+  have hproduct_nonneg : 0 ≤ product := by
+    exact mul_nonneg (norm_nonneg _) (mul_nonneg (norm_nonneg _) (norm_nonneg _))
+  calc
+    ‖secondResidual n ω‖
+        ≤ (1 / 2 : ℝ) * product := by simpa [product] using hbnd ω
+    _ ≤ 1 * product := by
+        exact mul_le_mul_of_nonneg_right (by norm_num : (1 / 2 : ℝ) ≤ 1)
+          hproduct_nonneg
+    _ = product := by simp
+
+/--
+van der Vaart 1998, Theorem 5.41, second-derivative Taylor residual with the
+source `1 / 2` factor.
+-/
+theorem vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_half_bound
+    {Ω Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsFiniteMeasure P]
+    [NormedAddCommGroup Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {curvatureBound : ℕ -> Ω -> ℝ}
+    {secondResidual : ℕ -> Ω -> Score}
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hCurvatureBounded : StochasticBounded P curvatureBound)
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hSecondHalfBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        (1 / 2 : ℝ) *
+          (‖delta n ω‖ *
+            (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖))) :
+    TendstoInMeasure P secondResidual atTop 0 :=
+  vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_bound
+    (P := P) (delta := delta) (scaledEstimator := scaledEstimator)
+    (curvatureBound := curvatureBound) (secondResidual := secondResidual)
+    hDelta hCurvatureBounded hScaledEstimator
+    (vaart1998_theorem_5_41_secondDerivativeResidual_bound_of_half_bound
+      (delta := delta) (scaledEstimator := scaledEstimator)
+      (curvatureBound := curvatureBound) (secondResidual := secondResidual)
+      hSecondHalfBound)
+
+/--
 van der Vaart 1998, Theorem 5.41, addition of negligible Score-space
 residuals.
 
@@ -2348,6 +2414,73 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylor
       hLeftInverse hScoreCLT hDerivativeLLN hDelta hCurvatureBounded
       hScaledEstimator hSecondBound hEmpiricalDerivative_meas
       hScaledEstimator_meas hSecondResidual_meas hTaylorEquation
+
+/--
+van der Vaart 1998, Theorem 5.41, source root-and-Taylor-expansion handoff
+with the textbook `1 / 2` second-derivative residual factor.
+
+This is the same endpoint as
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeBound`,
+but it accepts the direct Taylor-theorem half-bound.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeHalfBound
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {curvatureBound : ℕ -> Ω -> ℝ}
+    {score estimatingEquationAtEstimator secondResidual : ℕ -> Ω -> Score}
+    {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω => ‖empiricalDerivative n ω - V‖) atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hCurvatureBounded : StochasticBounded P curvatureBound)
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hSecondHalfBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        (1 / 2 : ℝ) *
+          (‖delta n ω‖ *
+            (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖)))
+    (hEmpiricalDerivative_meas : ∀ n, AEMeasurable (empiricalDerivative n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P)
+    (hSecondResidual_meas : ∀ n, AEMeasurable (secondResidual n) P)
+    (hRoot : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, estimatingEquationAtEstimator n ω = 0)
+    (hTaylorExpansion : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + empiricalDerivative n ω (scaledEstimator n ω) +
+          secondResidual n ω = estimatingEquationAtEstimator n ω) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hSecondBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        ‖delta n ω‖ * (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖) :=
+    vaart1998_theorem_5_41_secondDerivativeResidual_bound_of_half_bound
+      (delta := delta) (scaledEstimator := scaledEstimator)
+      (curvatureBound := curvatureBound) (secondResidual := secondResidual)
+      hSecondHalfBound
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeBound
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (empiricalDerivative := empiricalDerivative) (delta := delta)
+      (scaledEstimator := scaledEstimator) (curvatureBound := curvatureBound)
+      (score := score)
+      (estimatingEquationAtEstimator := estimatingEquationAtEstimator)
+      (secondResidual := secondResidual) (Z := Z) hLeftInverse hScoreCLT
+      hDerivativeLLN hDelta hCurvatureBounded hScaledEstimator hSecondBound
+      hEmpiricalDerivative_meas hScaledEstimator_meas hSecondResidual_meas
+      hRoot hTaylorExpansion
 
 end AsymptoticStatistics
 end StatInference

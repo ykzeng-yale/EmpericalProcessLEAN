@@ -608,7 +608,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 root Taylor expansion handoff`).
+(`Add Vaart theorem 5.41 half residual bound handoff`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -625,8 +625,8 @@ Live continuation prompt: use the compact prompt in
 
 Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41 in
 `MEstimators.lean`: the analytic Taylor-expansion display for
-`Psi_n(thetaHat_n)` and the second-derivative residual bound consumed by the
-compiled root-and-Taylor-expansion handoff.
+`Psi_n(thetaHat_n)` and the source half-bound for the second-derivative
+residual consumed by the compiled root-and-Taylor-expansion handoff.
 
 ## Reuse Dependencies
 
