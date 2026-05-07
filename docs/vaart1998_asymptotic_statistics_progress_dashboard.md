@@ -277,9 +277,12 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinateProjectedGaussianLimitLaw_of_covarianceBilinDual`,
   and
   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorGaussianSource`.
+- Theorem 4.1 covariance-table endpoint consuming vector-valued source fields
+  plus Gaussian/covariance source fields directly:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_vectorGaussianSource_real`.
 
-Latest remote base before this packet: `8b635e3`.  Latest pushed Vaart packet
-before this packet: `8b635e3` (`Add Vaart projected summand vector source bridge`).
+Latest remote base before this packet: `12abb81`.  Latest pushed Vaart packet
+before this packet: `12abb81` (`Add Vaart projected summand Gaussian source bridge`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -302,12 +305,11 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. add a Theorem 4.1 covariance-table endpoint that consumes the new
-   vector-Gaussian source wrapper directly, if it removes a real caller-side
-   `hsummand`/`hLimitLaw` hypothesis from an existing endpoint.
-2. then prove
+1. prove
    coordinate-assumption-to-vector-source constructors for `MemLp`,
    `iIndepFun`, and `IdentDistrib`.
+2. then reduce duplicated coordinate-level LLN assumptions in the direct
+   Theorem 4.1 source endpoint only when a compiled constructor is available.
 
 If this blocks, record the exact missing theorem shape for the supplied
 empirical-moment CLT, covariance-display, or local-inverse measurability field

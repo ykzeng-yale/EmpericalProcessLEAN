@@ -426,27 +426,28 @@ Chapter 3 theorem-facing wrappers compiling:
 139. Vector-valued finite-coordinate source fields plus Gaussian/covariance
    source fields feed the projected summand CLT:
    `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorGaussianSource`.
+140. Theorem 4.1 finite-coordinate covariance-table endpoint consuming the
+   vector-Gaussian source wrapper directly:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_vectorGaussianSource_real`.
 
-Latest remote base before this packet: `8b635e3`.
-Latest pushed Vaart packet before this packet: `8b635e3`
-(`Add Vaart projected summand vector source bridge`).
+Latest remote base before this packet: `12abb81`.
+Latest pushed Vaart packet before this packet: `12abb81`
+(`Add Vaart projected summand Gaussian source bridge`).
 
-The current theorem-sized packet removes the projection-level Gaussian
-`HasLaw` obligation from the mathlib one-dimensional CLT handoff.  A supplied
-finite-coordinate `HasGaussianLaw` limit, zero projected mean, and
-covarianceBilinDual variance identification now produce every projected scalar
-Gaussian law, and the vector-Gaussian source wrapper feeds those laws into the
-existing vector-source CLT constructor.
+The current theorem-sized packet exposes the vector-Gaussian source wrapper at
+the Theorem 4.1 covariance-table endpoint.  Callers can now supply
+finite-coordinate vector source fields plus Gaussian/covariance source fields
+directly, instead of constructing `hsummand` or projected scalar `HasLaw`
+families by hand.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. add a Theorem 4.1 covariance-table endpoint that consumes the new
-   vector-Gaussian source wrapper directly, if it removes a real caller-side
-   `hsummand`/`hLimitLaw` hypothesis from an existing endpoint.
-2. then prove
+1. prove
    coordinate-assumption-to-vector-source constructors for `MemLp`,
    `iIndepFun`, and `IdentDistrib`.
+2. then reduce duplicated coordinate-level LLN assumptions in the direct
+   Theorem 4.1 source endpoint only when a compiled constructor is available.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

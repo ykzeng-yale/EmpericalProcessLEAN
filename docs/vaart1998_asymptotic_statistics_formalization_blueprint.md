@@ -251,7 +251,10 @@ Initial modules:
   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorGaussianSource`
   also derives the projected scalar Gaussian `HasLaw` fields from a
   finite-coordinate `HasGaussianLaw` limit, zero projected mean, and
-  covarianceBilinDual variance identification.
+  covarianceBilinDual variance identification.  The endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_vectorGaussianSource_real`
+  consumes those vector-Gaussian source fields directly at the covariance-table
+  Theorem 4.1 boundary.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
