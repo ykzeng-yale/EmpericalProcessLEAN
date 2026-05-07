@@ -315,9 +315,17 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinateCanonicalSample_coordinateSource`.
 - Canonical iid product-space Theorem 4.1 covariance-table endpoint:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalProductSource_real`.
+- Canonical iid product-sample source identities:
+  `vaart1998_finiteCoordinateCanonicalSample_populationMoment_eq_integral`
+  identifies the product-sample population moment with the coordinatewise
+  vector-law mean, and
+  `vaart1998_finiteCoordinateCanonicalProjectedSample_variance_eq` identifies
+  each projected product-sample summand variance with the corresponding
+  vector-law projection variance.
 
-Latest remote base before this packet: `c1cad8d`.  Latest pushed Vaart packet
-before this packet: `f6f3504` (`Add Vaart canonical coordinate source fields`).
+Latest remote base before this packet: `a10a328`.  Latest pushed Vaart packet
+before this packet: `a10a328`
+(`Add Vaart canonical product theorem 4.1 endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -325,12 +333,8 @@ Current packet verification passed for:
 - `git diff --check`
 - proof-hole and secret scans on changed Vaart files
 
-Root build note: `lake build StatInference` was attempted in the clean sibling
-worktree using a symlinked Lake cache.  It rebuilt the Vaart module and several
-root dependencies, then failed at the final root import because the symlinked
-cache was missing `StatInference/EmpiricalProcess/RealHalfLine.olean`.  No
-Vaart declaration failed; the reliable gate for this packet is the focused and
-targeted Vaart module build.
+Root build note: root imports did not change in this packet.  The reliable gate
+for this packet is the focused Lean check and targeted Vaart module build.
 
 ## Next Aggressive Target
 
@@ -340,11 +344,14 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. prove or package the true-moment identity and coordinate-projection `MemLp`
-   fields under reusable assumptions on the common vector law `ν`;
-2. attack the remaining inverse-function target event only through a real
+1. package the `e theta0 = ∫ sampleVector, sampleVector coordinate ∂ν` source
+   assumption together with the new canonical population-moment identity;
+2. turn projection variance/covariance equalities under `ν` into the exact
+   covariance-table or Gaussian-source fields consumed by the canonical
+   endpoint;
+3. attack the remaining inverse-function target event only through a real
    local-inverse/measurability theorem or keep it as a named source certificate;
-3. keep endpoint variants narrow and add them only when they remove a real
+4. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 
 If this blocks, record the exact missing theorem shape for the supplied

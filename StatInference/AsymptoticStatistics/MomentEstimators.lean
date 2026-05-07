@@ -1184,6 +1184,30 @@ theorem vaart1998_finiteCoordinateCanonicalSample_coordinateSource
         coordinate i (hcoordinate_meas coordinate)⟩
 
 /--
+The canonical iid product-sample population moment is the coordinatewise mean
+under the common vector law.
+-/
+theorem vaart1998_finiteCoordinateCanonicalSample_populationMoment_eq_integral
+    {Coordinate : Type*} [Fintype Coordinate] [MeasurableSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν]
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate)) :
+    vaart1998_finiteCoordinatePopulationMoment
+        (Measure.infinitePi (fun _ : ℕ => ν))
+        (fun coordinate i sample => sample i coordinate) =
+      fun coordinate : Coordinate =>
+        ∫ sampleVector, sampleVector coordinate ∂ν := by
+  ext coordinate
+  have hlaw :
+      HasLaw
+        (fun sample : ℕ -> Coordinate -> ℝ => sample 0)
+        ν (Measure.infinitePi (fun _ : ℕ => ν)) :=
+    (measurePreserving_eval_infinitePi (μ := fun _ : ℕ => ν) 0).hasLaw
+  simpa [vaart1998_finiteCoordinatePopulationMoment, Function.comp_def] using
+    (hlaw.integral_comp (f := fun sampleVector : Coordinate -> ℝ =>
+      sampleVector coordinate) (hcoordinate_meas coordinate).aestronglyMeasurable)
+
+/--
 Scalar summand obtained by testing one finite-coordinate sample vector with a
 continuous linear functional.
 -/
@@ -1192,6 +1216,26 @@ noncomputable def vaart1998_finiteCoordinateProjectedSample
     (L : StrongDual ℝ (Coordinate -> ℝ))
     (X : Coordinate -> ℕ -> Ω -> ℝ) (i : ℕ) (ω : Ω) : ℝ :=
   L (vaart1998_finiteCoordinateSampleVector X i ω)
+
+/--
+The canonical iid product-sample projected summand has the same variance as the
+corresponding projection under the common vector law.
+-/
+theorem vaart1998_finiteCoordinateCanonicalProjectedSample_variance_eq
+    {Coordinate : Type*} [Fintype Coordinate]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν]
+    (L : StrongDual ℝ (Coordinate -> ℝ)) :
+    Var[vaart1998_finiteCoordinateProjectedSample L
+        (fun coordinate i sample => sample i coordinate) 0;
+      Measure.infinitePi (fun _ : ℕ => ν)] =
+      Var[L; ν] := by
+  simpa [vaart1998_finiteCoordinateProjectedSample,
+    vaart1998_finiteCoordinateSampleVector, Function.comp_def] using
+    (measurePreserving_eval_infinitePi (μ := fun _ : ℕ => ν) 0).variance_fun_comp
+      (f := L) L.continuous.measurable.aemeasurable
 
 /--
 Projected samples inherit `MemLp` from the finite-coordinate sample vector.

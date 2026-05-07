@@ -294,6 +294,13 @@ Initial modules:
   The endpoint
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalProductSource_real`
   specializes Theorem 4.1 to that canonical product sample space.
+  The canonical source identity layer
+  `vaart1998_finiteCoordinateCanonicalSample_populationMoment_eq_integral` and
+  `vaart1998_finiteCoordinateCanonicalProjectedSample_variance_eq` starts
+  replacing caller-side assumptions by facts under the common vector law `ν`.
+  It identifies the product population moment with coordinatewise vector-law
+  means and every projected product-sample summand variance with its vector-law
+  projection variance.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

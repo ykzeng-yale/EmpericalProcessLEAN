@@ -45,6 +45,27 @@ certificate bridges that unlock multiple later chapters.  A tiny primitive is
 acceptable only when it is the fastest verified dependency for the current
 theorem route.
 
+This lane is a manual `/goal` continuation, not a recurring automation.  Do not
+create or update Codex automations for the Vaart textbook route.  Keep the live
+goal state in this chat and mirror the exact frontier in this file, the
+dashboard, and the blueprint.
+
+Use worktrees when they improve coordination with other local textbook agents,
+but keep every packet small and rebase-aware:
+
+- start by checking `git status`, `origin/main`, this blocker file, the
+  dashboard, and the blueprint;
+- search pinned mathlib and local `StatInference` before introducing a new
+  primitive;
+- prove one theorem-sized packet at a time, with names and comments in English;
+- run the focused Lean file before editing docs;
+- update route docs only after a real Lean declaration or precise blocker is
+  known;
+- fetch and rebase immediately before commit/push, then rerun at least the
+  focused Lean gate on the rebased tree;
+- push only clean verified packets and preserve unrelated user or agent
+  changes.
+
 Spawn a useful independent agent team in this chat when slots permit:
 
 - source scout for Vaart anchors and theorem ordering;
@@ -484,26 +505,36 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_finiteCoordinateCanonicalSample_coordinateSource`.
 159. Canonical iid product-space Theorem 4.1 covariance-table endpoint:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalProductSource_real`.
+160. Canonical iid product-sample population-moment identity:
+   `vaart1998_finiteCoordinateCanonicalSample_populationMoment_eq_integral`.
+161. Canonical iid product-sample projected variance identity:
+   `vaart1998_finiteCoordinateCanonicalProjectedSample_variance_eq`.
 
-Latest remote base before this packet: `c1cad8d`.
-Latest pushed Vaart packet before this packet: `f6f3504`
-(`Add Vaart canonical coordinate source fields`).
+Latest remote base before this packet: `a10a328`.
+Latest pushed Vaart packet before this packet: `a10a328`
+(`Add Vaart canonical product theorem 4.1 endpoint`).
 
-The current theorem-sized packet instantiates the Theorem 4.1 covariance-table
-endpoint for the canonical iid product sample space.  The remaining source
-hypotheses are now the non-sample-space fields: Gaussian limit law, covariance
-identity, inverse-function target event, true-moment identity, coordinate
-evaluation measurability, and coordinate-projection `MemLp` under the vector
-law.
+The current theorem-sized packet begins discharging the remaining
+canonical-product source fields.  The population moment of the canonical sample
+is now identified with the coordinatewise mean under the common vector law, and
+the variance of every projected canonical summand is identified with the
+variance of the same projection under that vector law.  The remaining
+non-sample-space source hypotheses are now Gaussian limit law, covariance
+identity, inverse-function target event, true-moment equality at `theta0`,
+coordinate evaluation measurability, and coordinate-projection `MemLp` under
+the vector law.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. prove or package the true-moment identity and coordinate-projection `MemLp`
-   fields under reusable assumptions on the common vector law `ν`;
-2. attack the remaining inverse-function target event only through a real
+1. package the `e theta0 = ∫ sampleVector, sampleVector coordinate ∂ν` source
+   assumption together with the new canonical population-moment identity;
+2. turn projection variance/covariance equalities under `ν` into the exact
+   covariance-table or Gaussian-source fields consumed by the canonical
+   endpoint;
+3. attack the remaining inverse-function target event only through a real
    local-inverse/measurability theorem or keep it as a named source certificate;
-3. keep endpoint variants narrow and add them only when they remove a real
+4. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
