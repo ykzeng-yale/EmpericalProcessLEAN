@@ -599,9 +599,16 @@ Chapter 4 handoff:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeBound`
   feeds both the empirical derivative LLN and second-derivative residual bound
   into the compiled Taylor-zero handoff.
+- Chapter 5.41 source Taylor-equation handoff:
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_derivativeLLN_secondDerivativeBound`
+  consumes the textbook-shaped Taylor equation
+  `score_n + dotPsi_n(theta0) x_n + secondResidual_n = 0` and internally
+  splits the empirical derivative into `P dot psi_theta0` plus the derivative
+  residual before applying the derivative and second-derivative residual
+  bridge.
 
-Latest verified repository base before this packet: `5d8b858`
-(`Add Chewi ASGD product error bridge`).
+Latest verified repository base before this packet: `aa67db9`
+(`Add Chewi ASGD random product bridge`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -621,10 +628,9 @@ source Taylor/LLN proof packet.
 Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41:
 prove the deterministic/a.e. second-derivative residual bound from Taylor's
 theorem and the dominated second-derivative average, package the residual
-measurability fields, then prove the a.e. four-term Taylor zero display
-consumed by the derivative and second-derivative residual handoff.  Keep
-Gaussian-law preservation out of the critical path until this source Taylor
-bridge is complete.
+measurability fields, then prove the textbook-shaped a.e. Taylor equation
+consumed by the source-equation handoff.  Keep Gaussian-law preservation out of
+the critical path until this source Taylor bridge is complete.
 
 ## Reuse Dependencies
 

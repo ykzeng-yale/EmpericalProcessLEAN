@@ -516,8 +516,11 @@ Initial modules:
   `vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_bound`,
   and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeBound`,
+  discharging the probabilistic part of both residuals.  The source-equation
+  packet now adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_derivativeLLN_secondDerivativeBound`,
   so the remaining critical path is the deterministic Taylor residual bound,
-  residual measurability, and the a.e. four-term Taylor display.
+  residual measurability, and the textbook-shaped a.e. Taylor equation.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

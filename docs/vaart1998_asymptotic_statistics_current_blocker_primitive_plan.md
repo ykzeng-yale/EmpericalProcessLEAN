@@ -17,10 +17,9 @@ Next proof packet:
 
 - Instantiate the deterministic bound for the second-derivative quadratic
   residual from Taylor's theorem and the dominated second-derivative average.
-- Prove the a.e. four-term Taylor zero display consumed by the compiled
-  derivative and second-derivative residual bridge:
-  `score_n + V (scaledEstimator_n) + derivativeResidual_n +
-    secondResidual_n = 0`.
+- Prove the textbook-shaped a.e. Taylor equation consumed by the compiled
+  source-equation bridge:
+  `score_n + dotPsi_n(theta0) (scaledEstimator_n) + secondResidual_n = 0`.
 - Package the residual measurability fields only as far as they are needed by
   that compiled handoff.
 
@@ -716,24 +715,28 @@ Chapter 3 theorem-facing wrappers compiling:
 258. Theorem 5.41 Taylor-zero handoff with derivative and second-derivative
    residual negligibility discharged:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeBound`.
+259. Theorem 5.41 source Taylor-equation handoff, splitting
+   `dotPsi_n(theta0)` into `P dot psi_theta0` plus derivative residual:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_derivativeLLN_secondDerivativeBound`.
 
-Latest verified repository base before this packet: `5d8b858`
-(`Add Chewi ASGD product error bridge`).
+Latest verified repository base before this packet: `aa67db9`
+(`Add Chewi ASGD random product bridge`).
 
 The current theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by proving the second-derivative
-Taylor residual from source-shaped assumptions: consistency of the unscaled
-estimator difference, boundedness in probability of the dominated
-second-derivative average, stochastic boundedness of the scaled estimator, and
-the deterministic quadratic residual bound.  The main handoff now consumes both
-the empirical derivative LLN and the second-derivative residual bound directly.
+asymptotic-normality route for Z-estimators by letting the main handoff consume
+the textbook-shaped Taylor equation
+`score_n + dotPsi_n(theta0) x_n + secondResidual_n = 0` directly.  It now
+performs the algebraic split
+`dotPsi_n(theta0) x_n =
+  (P dot psi_theta0) x_n + (dotPsi_n(theta0) - P dot psi_theta0) x_n`
+internally before applying the derivative and second-derivative residual
+bridge.
 
-The next aggressive packet should prove the source-shaped Taylor expansion
-fields themselves: the deterministic/a.e. second-derivative residual bound,
-the residual measurability fields, and the a.e. four-term Taylor zero display
+The next aggressive packet should prove the remaining source Taylor fields:
+the deterministic/a.e. second-derivative residual bound, residual
+measurability, and the textbook-shaped a.e. Taylor equation
 `sqrt n Psi_n(theta0)
- + (P dot psi_theta0) (sqrt n (thetaHat_n - theta0))
- + (dotPsi_n(theta0) - P dot psi_theta0) (sqrt n (thetaHat_n - theta0))
+ + dotPsi_n(theta0) (sqrt n (thetaHat_n - theta0))
  + secondResidual_n = 0`.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent

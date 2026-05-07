@@ -2083,5 +2083,84 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_
       hSecondResidual hDerivativeResidual_meas hSecondResidual_meas
       hTaylorZero
 
+/--
+van der Vaart 1998, Theorem 5.41, source Taylor-equation handoff.
+
+The Taylor display is naturally produced as
+`score_n + dotPsi_n(theta0) x_n + secondResidual_n = 0`.  This theorem splits
+the empirical derivative into `V + (dotPsi_n(theta0) - V)` and then feeds the
+compiled derivative and second-derivative residual handoff.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_derivativeLLN_secondDerivativeBound
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {curvatureBound : ℕ -> Ω -> ℝ}
+    {score secondResidual : ℕ -> Ω -> Score}
+    {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω => ‖empiricalDerivative n ω - V‖) atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hCurvatureBounded : StochasticBounded P curvatureBound)
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hSecondBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        ‖delta n ω‖ * (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖))
+    (hDerivativeResidual_meas : ∀ n,
+      AEMeasurable
+        (fun ω => (empiricalDerivative n ω - V) (scaledEstimator n ω)) P)
+    (hSecondResidual_meas : ∀ n, AEMeasurable (secondResidual n) P)
+    (hTaylorEquation : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + empiricalDerivative n ω (scaledEstimator n ω) +
+          secondResidual n ω = 0) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hTaylorZero : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + V (scaledEstimator n ω) +
+          (empiricalDerivative n ω - V) (scaledEstimator n ω) +
+          secondResidual n ω = 0 := by
+    intro n
+    exact (hTaylorEquation n).mono fun ω hω => by
+      have hsplit :
+          V (scaledEstimator n ω) +
+            (empiricalDerivative n ω - V) (scaledEstimator n ω) =
+            empiricalDerivative n ω (scaledEstimator n ω) := by
+        simp [sub_eq_add_neg]
+      calc
+        score n ω + V (scaledEstimator n ω) +
+            (empiricalDerivative n ω - V) (scaledEstimator n ω) +
+            secondResidual n ω
+            = score n ω +
+                (V (scaledEstimator n ω) +
+                  (empiricalDerivative n ω - V) (scaledEstimator n ω)) +
+                secondResidual n ω := by
+                abel
+        _ = score n ω + empiricalDerivative n ω (scaledEstimator n ω) +
+              secondResidual n ω := by rw [hsplit]
+        _ = 0 := hω
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeBound
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (empiricalDerivative := empiricalDerivative) (delta := delta)
+      (scaledEstimator := scaledEstimator) (curvatureBound := curvatureBound)
+      (score := score) (secondResidual := secondResidual) (Z := Z)
+      hLeftInverse hScoreCLT hDerivativeLLN hDelta hCurvatureBounded
+      hScaledEstimator hSecondBound hDerivativeResidual_meas
+      hSecondResidual_meas hTaylorZero
+
 end AsymptoticStatistics
 end StatInference
