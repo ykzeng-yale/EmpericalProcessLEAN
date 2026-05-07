@@ -370,15 +370,16 @@ Compiled Section 3.2 packets:
   convergence, textbook mean-zero/variance-sum/Lindeberg-tail predicates, the
   explicit `exp(-sigma^2 t^2 / 2)` product-convergence interface, Gaussian
   characteristic-function display, row Gaussian exponential targets, quadratic
-  variance factors/products, the variance-sum-to-row-target convergence bridge,
-  and the Levy-continuity handoff from a supplied analytic certificate to
-  convergence in distribution.
+  variance coefficients/factors/products, Exercise 3.1.1 triangular-array
+  row-sum/product interfaces, the variance-sum-to-row-target convergence
+  bridge, and the Levy-continuity handoff from a supplied analytic certificate
+  to convergence in distribution.
 
 Next packet candidates:
 
 - Section 3.4 Lindeberg-Feller analytic estimates: prove the
   characteristic-product-to-quadratic-product Taylor/Lindeberg approximation
-  and the quadratic-product-to-row-Gaussian-exponential approximation.
+  and the Exercise 3.1.1 quadratic-product convergence statement.
 - Section 3.3 inversion or uniqueness support, only when it is directly needed
   for the convergence theorem route.
 - Section 3.10 Cramer-Wold and multivariate CLT wrappers over existing local

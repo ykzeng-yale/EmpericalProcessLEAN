@@ -172,11 +172,17 @@ Current proof route:
 14. Durrett Theorem 3.4.10 now has quadratic variance factors/products and
     compiled assembly from two split approximation obligations to the analytic
     certificate;
-15. next prove the Taylor/Lindeberg obligation
+15. Durrett Theorem 3.4.10 now has the Exercise 3.1.1 triangular-array
+    row-sum/product interface, the specialized coefficient
+    `c_{n,m} = -t^2 sigma_{n,m}^2 / 2`, its row-sum convergence from the
+    variance-sum hypothesis, and the bridge from the Exercise 3.1.1 product
+    conclusion to the quadratic-product approximation and analytic
+    certificate;
+16. next prove the Taylor/Lindeberg obligation
     `durrett2019_lindebergFellerCharacteristicProductApproximationToQuadraticVarianceProduct`
-    and the finite-product-to-exponential obligation
-    `durrett2019_lindebergFellerQuadraticVarianceProductApproximationToRowGaussianExp`;
-    after that, search Section 3.10 Cramer-Wold/multivariate CLT anchors.
+    and the Exercise 3.1.1 product-convergence obligation
+    `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp`; after
+    that, search Section 3.10 Cramer-Wold/multivariate CLT anchors.
 
 The route should not duplicate raw measure theory from Chapter 1 unless an
 exact source theorem needs a missing local theorem.  Chapter 1 is currently
@@ -190,7 +196,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, iid same-law finite product law, iid product-law criterion, canonical iid product-coordinate support, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact polish only when a later theorem route demands it. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
 | Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, supplied cutpoint chains, or supplied center-range monotone subdivisions. The one-cell, two-cell, right-append, finite cutpoint-chain, cutpoint-chain append, endpoint-grid-to-chain, closed-cover, punctured-cover, punctured-cover inserted-subcell CDF increment, punctured-cover cell splitting, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, monotone center-range, arbitrary-law punctured local/finite compact-cover, arbitrary-law punctured monotone-subdivision, arbitrary-law punctured monotone-subdivision cutpoint-chain, arbitrary-law cutpoint-chain, arbitrary-law half-line GC, source-facing empirical-CDF predicate, EDF theorem wrapper, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, center-range subdivision-to-GC, and non-atomic GC packages compile. Treat this lane as reusable support unless a later theorem reopens an exact source-shape gap. |
-| Chapter 3 weak convergence, CLT, and characteristic functions | next-active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution`, characteristic-function, Levy, Taylor, and CLT APIs | Section 3.2 weak convergence now has compiled wrappers for Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.10 continuous mapping continuous case, and Theorem 3.2.11 Portmanteau. Section 3.3 now has compiled Theorem 3.3.1 basic characteristic-function wrappers, Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem wrappers, and Theorem 3.3.20 centered Taylor support. Section 3.4 now has Theorem 3.4.1 i.i.d. CLT wrappers plus Theorem 3.4.10 triangular-array characteristic-function product, explicit Gaussian display, row Gaussian target, quadratic variance product, and analytic-certificate bridges from supplied split product approximations. Next targets: prove the characteristic-product-to-quadratic-product Taylor/Lindeberg approximation and the quadratic-product-to-row-Gaussian-exponential approximation, then move to Section 3.10 Cramer-Wold/multivariate CLT. |
+| Chapter 3 weak convergence, CLT, and characteristic functions | next-active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution`, characteristic-function, Levy, Taylor, and CLT APIs | Section 3.2 weak convergence now has compiled wrappers for Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.10 continuous mapping continuous case, and Theorem 3.2.11 Portmanteau. Section 3.3 now has compiled Theorem 3.3.1 basic characteristic-function wrappers, Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem wrappers, and Theorem 3.3.20 centered Taylor support. Section 3.4 now has Theorem 3.4.1 i.i.d. CLT wrappers plus Theorem 3.4.10 triangular-array characteristic-function product, explicit Gaussian display, row Gaussian target, quadratic variance product, Exercise 3.1.1 coefficient/product interfaces, and analytic-certificate bridges from supplied split product approximations. Next targets: prove the characteristic-product-to-quadratic-product Taylor/Lindeberg approximation and the Exercise 3.1.1 quadratic-product convergence statement, then move to Section 3.10 Cramer-Wold/multivariate CLT. |
 | Chapter 4 martingales | pending-local | none | Search mathlib martingale/conditional expectation APIs first. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
 | Chapters 6-8 ergodic/Brownian/Donsker | pending-local | none | Defer until early probability spine is stable or remote agents land reusable support. |
@@ -244,11 +250,11 @@ The highest-value next proof targets are the two missing Lindeberg-Feller
 analytic estimates:
 `durrett2019_lindebergFellerCharacteristicProductApproximationToQuadraticVarianceProduct`
 from Taylor expansion plus the Lindeberg-tail field, and
-`durrett2019_lindebergFellerQuadraticVarianceProductApproximationToRowGaussianExp`
-from finite-product/exponential estimates.  Search mathlib/local APIs for
-truncated second moments, characteristic-function Taylor bounds, finite-row
-products, and `Tendsto` product/exponential estimates before adding new
-primitives.
+`durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp` from
+Exercise 3.1.1 finite-product/exponential estimates.  Search mathlib/local APIs
+for truncated second moments, characteristic-function Taylor bounds,
+finite-row products, max-smallness of row variances, and `Tendsto`
+product/exponential estimates before adding new primitives.
 
 Before choosing, apply the high-accuracy protocol from the current blocker
 plan: sync remote once, check whether other-agent work changed the route,

@@ -1990,6 +1990,61 @@ noncomputable def durrett2019_lindebergFellerRowGaussianExpTarget
     (-(durrett2019_lindebergFellerVarianceRowSum P X n * t ^ 2 / 2 : ℝ))
 
 /--
+Durrett 2019, Exercise 3.1.1, row-sum convergence hypothesis for a real
+triangular array `c_{n,m}`.
+-/
+def durrett2019_exercise_3_1_1_realTriangularArrayRowSumTendsto
+    (c : ℕ -> ℕ -> ℝ) (lambda : ℝ) : Prop :=
+  Tendsto
+    (fun n : ℕ => ∑ m ∈ Finset.range n, c n m)
+    atTop (𝓝 lambda)
+
+/--
+Durrett 2019, Exercise 3.1.1, product-convergence conclusion for a real
+triangular array `c_{n,m}`:
+`prod_m (1 + c_{n,m}) -> exp(lambda)`.
+-/
+def durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp
+    (c : ℕ -> ℕ -> ℝ) (lambda : ℝ) : Prop :=
+  Tendsto
+    (fun n : ℕ => ∏ m ∈ Finset.range n, (1 + ((c n m : ℝ) : ℂ)))
+    atTop (𝓝 (Complex.exp (lambda : ℂ)))
+
+/--
+Durrett 2019, Theorem 3.4.10, the Exercise 3.1.1 coefficient
+`c_{n,m} = -t^2 sigma_{n,m}^2 / 2`.
+-/
+noncomputable def durrett2019_lindebergFellerQuadraticVarianceCoefficient
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (t : ℝ) (n m : ℕ) : ℝ :=
+  -(_root_.ProbabilityTheory.variance (X n m) P * t ^ 2 / 2)
+
+/--
+Durrett 2019, Theorem 3.4.10, Exercise 3.1.1 row-sum convergence for
+`c_{n,m} = -t^2 sigma_{n,m}^2 / 2`, obtained from the variance-sum hypothesis.
+-/
+theorem durrett2019_theorem_3_4_10_quadraticVarianceCoefficient_rowSum_tendsto
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (t : ℝ) :
+    durrett2019_exercise_3_1_1_realTriangularArrayRowSumTendsto
+      (durrett2019_lindebergFellerQuadraticVarianceCoefficient P X t)
+      (-(varianceLimit * t ^ 2 / 2)) := by
+  have hscaled :
+      Tendsto
+        (fun n : ℕ =>
+          -(durrett2019_lindebergFellerVarianceRowSum P X n * (t ^ 2 / 2)))
+        atTop
+        (𝓝 (-(varianceLimit * (t ^ 2 / 2)))) := by
+    exact (hvariance.mul tendsto_const_nhds).neg
+  simpa [durrett2019_exercise_3_1_1_realTriangularArrayRowSumTendsto,
+    durrett2019_lindebergFellerQuadraticVarianceCoefficient,
+    durrett2019_lindebergFellerVarianceRowSum, Finset.sum_mul, Finset.mul_sum,
+    div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm] using hscaled
+
+/--
 Durrett 2019, Theorem 3.4.10, quadratic variance factor
 `1 - sigma_{n,m}^2 t^2 / 2` appearing after the characteristic-function Taylor
 replacement.
@@ -2000,6 +2055,20 @@ noncomputable def durrett2019_lindebergFellerQuadraticVarianceFactor
   1 - ((_root_.ProbabilityTheory.variance (X n m) P * t ^ 2 / 2 : ℝ) : ℂ)
 
 /--
+Durrett 2019, Theorem 3.4.10, the quadratic variance factor is exactly
+`1 + c_{n,m}` for the Exercise 3.1.1 coefficient.
+-/
+theorem durrett2019_lindebergFellerQuadraticVarianceFactor_eq_one_add_coefficient
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (t : ℝ) (n m : ℕ) :
+    durrett2019_lindebergFellerQuadraticVarianceFactor P X t n m =
+      1 +
+        ((durrett2019_lindebergFellerQuadraticVarianceCoefficient
+          P X t n m : ℝ) : ℂ) := by
+  simp [durrett2019_lindebergFellerQuadraticVarianceFactor,
+    durrett2019_lindebergFellerQuadraticVarianceCoefficient, sub_eq_add_neg]
+
+/--
 Durrett 2019, Theorem 3.4.10, finite product of the quadratic variance factors
 over one triangular-array row.
 -/
@@ -2008,6 +2077,54 @@ noncomputable def durrett2019_lindebergFellerQuadraticVarianceProduct
     (X : ℕ -> ℕ -> Ω -> ℝ) (t : ℝ) (n : ℕ) : ℂ :=
   ∏ m ∈ Finset.range n,
     durrett2019_lindebergFellerQuadraticVarianceFactor P X t n m
+
+/--
+Durrett 2019, Theorem 3.4.10, rewrite the quadratic variance product in the
+exact Exercise 3.1.1 form `prod_m (1 + c_{n,m})`.
+-/
+theorem durrett2019_lindebergFellerQuadraticVarianceProduct_eq_exercise311Product
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (t : ℝ) (n : ℕ) :
+    durrett2019_lindebergFellerQuadraticVarianceProduct P X t n =
+      ∏ m ∈ Finset.range n,
+        (1 +
+          ((durrett2019_lindebergFellerQuadraticVarianceCoefficient
+            P X t n m : ℝ) : ℂ)) := by
+  simp [durrett2019_lindebergFellerQuadraticVarianceProduct,
+    durrett2019_lindebergFellerQuadraticVarianceFactor_eq_one_add_coefficient]
+
+/--
+Durrett 2019, Theorem 3.4.10, Exercise 3.1.1 product conclusion specialized
+to the quadratic variance coefficients.
+-/
+def durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (varianceLimit : ℝ) : Prop :=
+  ∀ t : ℝ,
+    durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp
+      (durrett2019_lindebergFellerQuadraticVarianceCoefficient P X t)
+      (-(varianceLimit * t ^ 2 / 2))
+
+/--
+Durrett 2019, Theorem 3.4.10, turn the Exercise 3.1.1 product conclusion into
+convergence of the quadratic variance product to the Gaussian exponential.
+-/
+theorem durrett2019_theorem_3_4_10_quadraticVarianceProduct_tendsto_exp_of_exercise311
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hexercise :
+      durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp
+        P X varianceLimit)
+    (t : ℝ) :
+    Tendsto
+      (fun n : ℕ =>
+        durrett2019_lindebergFellerQuadraticVarianceProduct P X t n)
+      atTop
+      (𝓝 (Complex.exp (-(varianceLimit * t ^ 2 / 2 : ℝ)))) := by
+  simpa [durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp,
+    durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp,
+    durrett2019_lindebergFellerQuadraticVarianceProduct_eq_exercise311Product]
+    using hexercise t
 
 /--
 Durrett 2019, Theorem 3.4.10, characteristic-product approximation by the
@@ -2237,6 +2354,31 @@ theorem durrett2019_theorem_3_4_10_productApproximationToRowGaussianExp_of_quadr
     sub_eq_add_neg, add_assoc, add_comm, add_left_comm] using hsum
 
 /--
+Durrett 2019, Theorem 3.4.10, assemble the quadratic-product-to-row-Gaussian
+approximation from variance-sum convergence and the Exercise 3.1.1 product
+conclusion for `c_{n,m} = -t^2 sigma_{n,m}^2 / 2`.
+-/
+theorem durrett2019_theorem_3_4_10_quadraticVarianceProductApproximationToRowGaussianExp_of_varianceSum_and_exercise311
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hexercise :
+      durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp
+        P X varianceLimit) :
+    durrett2019_lindebergFellerQuadraticVarianceProductApproximationToRowGaussianExp
+      P X := by
+  intro t
+  have hprod :=
+    durrett2019_theorem_3_4_10_quadraticVarianceProduct_tendsto_exp_of_exercise311
+      (P := P) (X := X) (varianceLimit := varianceLimit) hexercise t
+  have htarget :=
+    durrett2019_theorem_3_4_10_rowGaussianExpTarget_tendsto_of_varianceSum
+      (P := P) (X := X) (varianceLimit := varianceLimit) hvariance t
+  simpa [durrett2019_lindebergFellerQuadraticVarianceProductApproximationToRowGaussianExp]
+    using hprod.sub htarget
+
+/--
 Durrett 2019, Theorem 3.4.10, assemble the analytic certificate once the
 remaining row-product approximation has been proved.
 -/
@@ -2284,6 +2426,32 @@ theorem Durrett2019LindebergFellerAnalyticCertificate.of_quadraticVarianceProduc
     hvariance_pos hmean_zero hvariance hlindeberg
     (durrett2019_theorem_3_4_10_productApproximationToRowGaussianExp_of_quadraticVarianceProductApproximations
       hchar_quad hquad_exp)
+
+/--
+Durrett 2019, Theorem 3.4.10, assemble the analytic certificate from the
+Taylor/Lindeberg characteristic-to-quadratic approximation and the Exercise
+3.1.1 quadratic-product conclusion.
+-/
+theorem Durrett2019LindebergFellerAnalyticCertificate.of_characteristicQuadraticApproximation_and_exercise311
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hchar_quad :
+      durrett2019_lindebergFellerCharacteristicProductApproximationToQuadraticVarianceProduct
+        P X)
+    (hexercise :
+      durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp
+        P X varianceLimit) :
+    Durrett2019LindebergFellerAnalyticCertificate
+      P X varianceLimit :=
+  Durrett2019LindebergFellerAnalyticCertificate.of_quadraticVarianceProductApproximations
+    hvariance_pos hmean_zero hvariance hlindeberg hchar_quad
+    (durrett2019_theorem_3_4_10_quadraticVarianceProductApproximationToRowGaussianExp_of_varianceSum_and_exercise311
+      hvariance hexercise)
 
 /--
 Durrett 2019, Theorem 3.4.10 proof bridge: row-wise independence gives the
