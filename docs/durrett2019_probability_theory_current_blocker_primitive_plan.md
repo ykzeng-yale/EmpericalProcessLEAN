@@ -282,8 +282,12 @@ namespace now has a compiled starter module:
 - `durrett2019_exercise_3_1_1_realTriangularArrayRowSumTendsto`
 - `durrett2019_exercise_3_1_1_realTriangularArrayMaxAbsTendstoZero`
 - `durrett2019_exercise_3_1_1_realTriangularArrayAbsRowSumBounded`
+- `durrett2019_exercise_3_1_1_realTriangularArrayFactorsEventuallyPositive`
+- `durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderTendstoZero`
 - `durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp`
 - `durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem`
+- `durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp_of_logRemainder`
+- `durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem_of_logRemainder`
 - `durrett2019_lindebergFellerQuadraticVarianceCoefficient`
 - `durrett2019_theorem_3_4_10_quadraticVarianceCoefficient_rowSum_tendsto`
 - `durrett2019_theorem_3_4_10_quadraticVarianceCoefficient_absRowSumBounded_of_varianceSum`
@@ -414,8 +418,13 @@ layer before moving to multivariate CLT reuse:
   Lindeberg.  A final source-facing constructor now assembles the analytic
   certificate and the convergence-in-distribution theorem from exactly the
   current primitive frontier: the one-factor error row sum, the variance-tail
-  split, and the real Exercise 3.1.1 theorem.  The remaining Exercise 3.1.1
-  work is proving the real triangular-array product theorem itself.
+  split, and the real Exercise 3.1.1 theorem.  The Exercise 3.1.1 product
+  route now has a compiled logarithmic bridge: eventual positivity plus
+  `sum_m (log (1 + c_{n,m}) - c_{n,m}) -> 0` implies the product conclusion,
+  and a route constructor packages this into the full Exercise 3.1.1 theorem.
+  The remaining Exercise 3.1.1 work is proving positivity from max-smallness
+  and the log-remainder estimate from max-smallness plus uniform absolute
+  row-sum boundedness.
   The variance-tail split bridge now packages Durrett's source inequality
   `variance <= cutoff ^ 2 + tail row sum` as a supplied theorem-shaped
   predicate and proves that the Lindeberg condition implies

@@ -2036,6 +2036,27 @@ def durrett2019_exercise_3_1_1_realTriangularArrayAbsRowSumBounded
   ∃ bound : ℝ, ∀ n : ℕ, ∑ m ∈ Finset.range n, |c n m| ≤ bound
 
 /--
+Durrett 2019, Exercise 3.1.1, eventual positivity of the product factors.
+
+This is the positivity side condition used by the logarithmic proof route.
+-/
+def durrett2019_exercise_3_1_1_realTriangularArrayFactorsEventuallyPositive
+    (c : ℕ -> ℕ -> ℝ) : Prop :=
+  ∀ᶠ n : ℕ in atTop,
+    ∀ m ∈ Finset.range n, 0 < 1 + c n m
+
+/--
+Durrett 2019, Exercise 3.1.1, logarithmic remainder convergence:
+`sum_m (log (1 + c_{n,m}) - c_{n,m}) -> 0`.
+-/
+def durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderTendstoZero
+    (c : ℕ -> ℕ -> ℝ) : Prop :=
+  Tendsto
+    (fun n : ℕ =>
+      ∑ m ∈ Finset.range n, (Real.log (1 + c n m) - c n m))
+    atTop (𝓝 0)
+
+/--
 Durrett 2019, Exercise 3.1.1, product-convergence conclusion for a real
 triangular array `c_{n,m}`:
 `prod_m (1 + c_{n,m}) -> exp(lambda)`.
@@ -2056,6 +2077,95 @@ def durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem : Prop :=
     durrett2019_exercise_3_1_1_realTriangularArrayRowSumTendsto c lambda ->
     durrett2019_exercise_3_1_1_realTriangularArrayAbsRowSumBounded c ->
     durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp c lambda
+
+/--
+Durrett 2019, Exercise 3.1.1, logarithmic proof bridge.
+
+Once the factors are eventually positive and the logarithmic remainders
+`log (1 + c_{n,m}) - c_{n,m}` have row sum tending to zero, the real
+triangular-array product converges to `exp(lambda)`.
+-/
+theorem durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp_of_logRemainder
+    {c : ℕ -> ℕ -> ℝ} {lambda : ℝ}
+    (hpositive :
+      durrett2019_exercise_3_1_1_realTriangularArrayFactorsEventuallyPositive c)
+    (hrow :
+      durrett2019_exercise_3_1_1_realTriangularArrayRowSumTendsto c lambda)
+    (hlog :
+      durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderTendstoZero c) :
+    durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp
+      c lambda := by
+  have hlogsum :
+      Tendsto
+        (fun n : ℕ => ∑ m ∈ Finset.range n, Real.log (1 + c n m))
+        atTop (𝓝 lambda) := by
+    have hsum := hlog.add hrow
+    have hsum_eq :
+        (fun n : ℕ =>
+          (∑ m ∈ Finset.range n, (Real.log (1 + c n m) - c n m)) +
+            ∑ m ∈ Finset.range n, c n m) =
+        (fun n : ℕ => ∑ m ∈ Finset.range n, Real.log (1 + c n m)) := by
+      funext n
+      rw [← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl ?_
+      intro m hm
+      ring
+    simpa [durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderTendstoZero,
+      durrett2019_exercise_3_1_1_realTriangularArrayRowSumTendsto,
+      zero_add, hsum_eq] using hsum
+  have hcomplex :
+      Tendsto
+        (fun n : ℕ =>
+          ((∑ m ∈ Finset.range n, Real.log (1 + c n m) : ℝ) : ℂ))
+        atTop
+        (𝓝 (lambda : ℂ)) := by
+    exact (Complex.continuous_ofReal.tendsto _).comp hlogsum
+  have hexp := hcomplex.cexp
+  refine hexp.congr' ?_
+  filter_upwards [hpositive] with n hn
+  have hprod_real :
+      (∏ m ∈ Finset.range n, (1 + c n m)) =
+        Real.exp (∑ m ∈ Finset.range n, Real.log (1 + c n m)) := by
+    rw [Real.exp_sum]
+    refine Finset.prod_congr rfl ?_
+    intro m hm
+    exact (Real.exp_log (hn m hm)).symm
+  have hprod_complex :
+      (∏ m ∈ Finset.range n, ((1 + c n m : ℝ) : ℂ)) =
+        (Real.exp (∑ m ∈ Finset.range n, Real.log (1 + c n m)) : ℂ) := by
+    simpa using congrArg (fun x : ℝ => (x : ℂ)) hprod_real
+  have hprod_eq :
+      ∏ m ∈ Finset.range n, (1 + ((c n m : ℝ) : ℂ)) =
+        Complex.exp
+          ((∑ m ∈ Finset.range n, Real.log (1 + c n m) : ℝ) : ℂ) := by
+    calc
+      ∏ m ∈ Finset.range n, (1 + ((c n m : ℝ) : ℂ))
+          = ∏ m ∈ Finset.range n, ((1 + c n m : ℝ) : ℂ) := by
+            simp
+      _ = (Real.exp (∑ m ∈ Finset.range n, Real.log (1 + c n m)) : ℂ) := by
+            exact hprod_complex
+      _ = Complex.exp
+            ((∑ m ∈ Finset.range n, Real.log (1 + c n m) : ℝ) : ℂ) := by
+            rw [Complex.ofReal_exp]
+  exact hprod_eq.symm
+
+/--
+Durrett 2019, Exercise 3.1.1, source theorem handoff through the logarithmic
+remainder route.
+-/
+theorem durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem_of_logRemainder
+    (hlogRoute :
+      ∀ c : ℕ -> ℕ -> ℝ,
+        durrett2019_exercise_3_1_1_realTriangularArrayMaxAbsTendstoZero c ->
+        durrett2019_exercise_3_1_1_realTriangularArrayAbsRowSumBounded c ->
+        durrett2019_exercise_3_1_1_realTriangularArrayFactorsEventuallyPositive c ∧
+          durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderTendstoZero c) :
+    durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem := by
+  intro c lambda hmax hrow habs
+  rcases hlogRoute c hmax habs with ⟨hpositive, hlog⟩
+  exact
+    durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp_of_logRemainder
+      hpositive hrow hlog
 
 /--
 Durrett 2019, Theorem 3.4.10, the Exercise 3.1.1 coefficient

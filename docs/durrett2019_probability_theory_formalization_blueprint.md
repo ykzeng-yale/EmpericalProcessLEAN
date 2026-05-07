@@ -386,22 +386,23 @@ Compiled Section 3.2 packets:
   explicit `exp(-sigma^2 t^2 / 2)` product-convergence interface, Gaussian
   characteristic-function display, row Gaussian exponential targets, quadratic
   variance coefficients/factors/products, Exercise 3.1.1 triangular-array
-  row-sum, max-absolute, absolute-row-sum boundedness, source theorem, and
-  product interfaces, a variance-tail split bridge from Lindeberg to
-  max-row-variance smallness, specialized Exercise 3.1.1 bridges for the
-  quadratic coefficients, max-row-variance-to-factor-norm bridges, Lemma 3.4.3
-  product-difference control, the variance-sum-to-row-target convergence
-  bridge, the Levy-continuity handoff from a supplied analytic certificate to
-  convergence in distribution, and a final source-facing constructor from the
-  three remaining primitive obligations to the convergence-in-distribution
-  theorem.
+  row-sum, max-absolute, absolute-row-sum boundedness, source theorem, product
+  interfaces, and the positivity/log-remainder-to-product bridge, a
+  variance-tail split bridge from Lindeberg to max-row-variance smallness,
+  specialized Exercise 3.1.1 bridges for the quadratic coefficients,
+  max-row-variance-to-factor-norm bridges, Lemma 3.4.3 product-difference
+  control, the variance-sum-to-row-target convergence bridge, the
+  Levy-continuity handoff from a supplied analytic certificate to convergence
+  in distribution, and a final source-facing constructor from the remaining
+  primitive obligations to the convergence-in-distribution theorem.
 
 Next packet candidates:
 
 - Section 3.4 Lindeberg-Feller analytic estimates: prove the one-factor
-  Taylor/Lindeberg row-sum estimate, the real Exercise 3.1.1 triangular-array
-  product theorem, and the lower-level integral/truncation primitive that
-  supplies the variance-tail split inequality
+  Taylor/Lindeberg row-sum estimate, the Exercise 3.1.1 positivity and
+  log-remainder estimates behind the compiled product theorem bridge, and the
+  lower-level integral/truncation primitive that supplies the variance-tail
+  split inequality
   `variance <= cutoff ^ 2 + tail row sum`.  These are now the only primitive
   gaps before the compiled source-facing Lindeberg-Feller constructor applies.
 - Section 3.3 inversion or uniqueness support, only when it is directly needed
