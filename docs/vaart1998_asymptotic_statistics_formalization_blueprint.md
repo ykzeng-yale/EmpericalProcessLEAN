@@ -461,6 +461,13 @@ Initial modules:
   `vaart1998_theorem_5_9_zEstimator_consistent_of_randomUniformErrors`, which
   convert convergence in probability of random uniform-error controls and
   approximate-max/near-zero errors into consistency via tail-union good events.
+  The VdV&W source layer now adds outer-probability wrappers and
+  empirical-average endpoints:
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_outerProbabilityUniformErrors`,
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_empiricalAverage_outerProbabilityUniformErrors`,
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_outerProbabilityUniformErrors`,
+  and
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_real_outerProbabilityUniformErrors`.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

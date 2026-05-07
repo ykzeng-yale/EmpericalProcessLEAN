@@ -713,21 +713,30 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_theorem_5_7_mEstimator_consistent_of_randomUniformErrors`.
 234. Theorem 5.9 random uniform-error source endpoint:
    `vaart1998_theorem_5_9_zEstimator_consistent_of_randomUniformErrors`.
+235. Theorem 5.7 VdV&W outer-probability random-error endpoint:
+   `vaart1998_theorem_5_7_mEstimator_consistent_of_outerProbabilityUniformErrors`.
+236. Theorem 5.7 empirical-average criterion outer-probability endpoint:
+   `vaart1998_theorem_5_7_mEstimator_consistent_of_empiricalAverage_outerProbabilityUniformErrors`.
+237. Theorem 5.9 VdV&W outer-probability random-error endpoint:
+   `vaart1998_theorem_5_9_zEstimator_consistent_of_outerProbabilityUniformErrors`.
+238. Theorem 5.9 scalar empirical-average estimating-equation endpoint:
+   `vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_real_outerProbabilityUniformErrors`.
 
-Latest remote base before this packet: `e228a75`.
-Latest pushed Vaart packet before this packet: `11b852e`
-(`Add Vaart chapter 5 GC source wrappers`).
+Latest remote base before this packet: `787df2c`.
+Latest pushed Vaart packet before this packet: `a2b8620`
+(`Add Vaart chapter 5 random uniform-error endpoints`).
 
-The current theorem-sized packet moves beyond deterministic all-good interfaces:
-random uniform criterion or estimating-function error bounds that converge to
-zero in probability, together with a random approximate-max/near-zero error
-also converging to zero in probability, now directly imply the Chapter 5.7 and
-5.9 consistency conclusions via tail-union good events.
+The current theorem-sized packet connects the Chapter 5 random-error endpoints
+to the VdV&W empirical-process language: random uniform criterion or
+estimating-function errors that converge to zero in outer probability now feed
+the Theorem 5.7 and 5.9 consistency wrappers, and the real-valued sample-average
+notation layer exposes criteria `P_n m_theta` and scalar equations
+`P_n psi_theta`.
 
-The next aggressive packet should specialize the random-uniform-error endpoints
-to empirical-process outer-probability/GC statements already available in the
-VdV&W lane, with source-shaped wrappers for sample averages `P_n m_theta` and
-estimating equations `P_n psi_theta`.
+The next aggressive packet should add vector-valued empirical-average notation
+for estimating equations, then build source-shaped GC/outer-probability
+constructors that turn existing VdV&W class-level uniform laws directly into the
+new Chapter 5 empirical-average endpoints.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

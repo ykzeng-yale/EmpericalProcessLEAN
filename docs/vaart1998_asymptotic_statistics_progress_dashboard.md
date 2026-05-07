@@ -522,10 +522,19 @@ Chapter 4 handoff:
   consistency directly from convergence in probability of random uniform
   criterion/estimating-function errors and random approximate-max/near-zero
   errors, using tail-union high-probability events.
+- Chapter 5 VdV&W outer-probability and empirical-average endpoints:
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_outerProbabilityUniformErrors`,
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_empiricalAverage_outerProbabilityUniformErrors`,
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_outerProbabilityUniformErrors`,
+  and
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_real_outerProbabilityUniformErrors`
+  bridge empirical-process outer-probability uniform-error controls into the
+  Chapter 5.7 and 5.9 consistency endpoints, including `P_n m_theta` criteria
+  and scalar `P_n psi_theta` estimating equations.
 
-Latest remote base before this packet: `e228a75`.  Latest pushed Vaart packet
-before this packet: `11b852e`
-(`Add Vaart chapter 5 GC source wrappers`).
+Latest remote base before this packet: `787df2c`.  Latest pushed Vaart packet
+before this packet: `a2b8620`
+(`Add Vaart chapter 5 random uniform-error endpoints`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -538,10 +547,10 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Specialize the random-uniform-error endpoints to empirical-process
-outer-probability/GC statements already available in the VdV&W lane, with
-source-shaped wrappers for sample averages `P_n m_theta` and estimating
-equations `P_n psi_theta`.
+Add vector-valued empirical-average notation for estimating equations, then
+build source-shaped GC/outer-probability constructors that turn existing VdV&W
+class-level uniform laws directly into the Chapter 5 empirical-average
+endpoints.
 
 ## Reuse Dependencies
 

@@ -1,5 +1,7 @@
 import StatInference.AsymptoticStatistics.Basic
+import StatInference.EmpiricalProcess.Average
 import StatInference.EmpiricalProcess.Basic
+import StatInference.EmpiricalProcess.GlivenkoCantelli
 
 /-!
 # van der Vaart 1998 Chapter 5 M-estimator consistency
@@ -15,6 +17,7 @@ namespace StatInference
 namespace AsymptoticStatistics
 
 open Filter MeasureTheory
+open scoped BigOperators
 open scoped Topology
 
 universe u v
@@ -442,6 +445,87 @@ theorem vaart1998_theorem_5_7_mEstimator_consistent_of_randomUniformErrors
     exact lt_of_le_of_lt hmeasure_le htail_lt
 
 /--
+van der Vaart 1998, Theorem 5.7, VdV&W outer-probability random-error source
+endpoint.
+
+The empirical-process lane states many uniform laws in VdV&W
+outer-probability language.  This wrapper converts those two outer-probability
+error controls into the mathlib convergence-in-measure hypotheses consumed by
+the random-uniform-error endpoint above.
+-/
+theorem vaart1998_theorem_5_7_mEstimator_consistent_of_outerProbabilityUniformErrors
+    {Ω : Type u} {Θ : Type v} [MeasurableSpace Ω] [PseudoMetricSpace Θ]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {M : Θ -> ℝ} {Mn : ℕ -> Ω -> Θ -> ℝ}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (uniformError approxError : ℕ -> Ω -> ℝ)
+    (h_uniform :
+      ∀ n : ℕ, ∀ omega : Ω, ∀ theta : Θ,
+        |Mn n omega theta - M theta| ≤ uniformError n omega)
+    (h_approx :
+      ∀ n : ℕ, ∀ omega : Ω,
+        Mn n omega theta0 ≤
+          Mn n omega (thetaHat n omega) + approxError n omega)
+    (h_uniform_outer :
+      VdVWConvergesInOuterProbability P uniformError atTop (fun _ : Ω => 0))
+    (h_approx_outer :
+      VdVWConvergesInOuterProbability P approxError atTop (fun _ : Ω => 0))
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            M theta ≤ M theta0 - eta) :
+    TendstoInMeasure P thetaHat atTop (fun _ : Ω => theta0) :=
+  vaart1998_theorem_5_7_mEstimator_consistent_of_randomUniformErrors
+    uniformError approxError h_uniform h_approx
+    (tendstoInMeasure_of_vdVWConvergesInOuterProbability h_uniform_outer)
+    (tendstoInMeasure_of_vdVWConvergesInOuterProbability h_approx_outer)
+    h_separated
+
+/--
+van der Vaart 1998, Theorem 5.7, empirical-average criterion endpoint.
+
+This is the sample-average notation layer for criteria of the form
+`P_n m_theta`.  A random uniform empirical-average error and a random
+approximate-maximizer error that converge to zero in VdV&W outer probability
+imply consistency under the separated-maximum condition.
+-/
+theorem vaart1998_theorem_5_7_mEstimator_consistent_of_empiricalAverage_outerProbabilityUniformErrors
+    {Ω : Type u} {Observation : Type*} {Θ : Type v}
+    [MeasurableSpace Ω] [PseudoMetricSpace Θ]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (loss : Θ -> Observation -> ℝ)
+    {M : Θ -> ℝ} {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (uniformError approxError : ℕ -> Ω -> ℝ)
+    (h_uniform :
+      ∀ n : ℕ, ∀ omega : Ω, ∀ theta : Θ,
+        |empiricalRiskOfLoss (samples n omega) loss theta - M theta| ≤
+          uniformError n omega)
+    (h_approx :
+      ∀ n : ℕ, ∀ omega : Ω,
+        empiricalRiskOfLoss (samples n omega) loss theta0 ≤
+          empiricalRiskOfLoss (samples n omega) loss (thetaHat n omega) +
+            approxError n omega)
+    (h_uniform_outer :
+      VdVWConvergesInOuterProbability P uniformError atTop (fun _ : Ω => 0))
+    (h_approx_outer :
+      VdVWConvergesInOuterProbability P approxError atTop (fun _ : Ω => 0))
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            M theta ≤ M theta0 - eta) :
+    TendstoInMeasure P thetaHat atTop (fun _ : Ω => theta0) :=
+  vaart1998_theorem_5_7_mEstimator_consistent_of_outerProbabilityUniformErrors
+    (M := M)
+    (Mn := fun n omega theta =>
+      empiricalRiskOfLoss (samples n omega) loss theta)
+    (theta0 := theta0) (thetaHat := thetaHat)
+    uniformError approxError h_uniform h_approx
+    h_uniform_outer h_approx_outer h_separated
+
+/--
 Norm-criterion uniform deviation used to reduce Z-estimator consistency to
 M-estimator consistency.
 
@@ -786,6 +870,87 @@ theorem vaart1998_theorem_5_9_zEstimator_consistent_of_randomUniformErrors
           P.real uniformTail + P.real approxTail :=
       (measureReal_mono hbad_subset).trans (measureReal_union_le _ _)
     exact lt_of_le_of_lt hmeasure_le htail_lt
+
+/--
+van der Vaart 1998, Theorem 5.9, VdV&W outer-probability random-error source
+endpoint.
+
+This is the estimating-equation analogue of the Theorem 5.7
+outer-probability wrapper: empirical-process uniform laws stated in VdV&W
+outer-probability form feed directly into Z-estimator consistency.
+-/
+theorem vaart1998_theorem_5_9_zEstimator_consistent_of_outerProbabilityUniformErrors
+    {Ω : Type u} {Θ : Type v} {E : Type*} [MeasurableSpace Ω]
+    [PseudoMetricSpace Θ] [NormedAddCommGroup E]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Psi : Θ -> E} {Psi_n : ℕ -> Ω -> Θ -> E}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (uniformError approxError : ℕ -> Ω -> ℝ)
+    (h_uniform :
+      ∀ n : ℕ, ∀ omega : Ω, ∀ theta : Θ,
+        ‖Psi_n n omega theta - Psi theta‖ ≤ uniformError n omega)
+    (h_near_zero :
+      ∀ n : ℕ, ∀ omega : Ω,
+        ‖Psi_n n omega (thetaHat n omega)‖ ≤ approxError n omega)
+    (h_uniform_outer :
+      VdVWConvergesInOuterProbability P uniformError atTop (fun _ : Ω => 0))
+    (h_approx_outer :
+      VdVWConvergesInOuterProbability P approxError atTop (fun _ : Ω => 0))
+    (h_zero : Psi theta0 = 0)
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            eta ≤ ‖Psi theta‖) :
+    TendstoInMeasure P thetaHat atTop (fun _ : Ω => theta0) :=
+  vaart1998_theorem_5_9_zEstimator_consistent_of_randomUniformErrors
+    uniformError approxError h_uniform h_near_zero
+    (tendstoInMeasure_of_vdVWConvergesInOuterProbability h_uniform_outer)
+    (tendstoInMeasure_of_vdVWConvergesInOuterProbability h_approx_outer)
+    h_zero h_separated
+
+/--
+van der Vaart 1998, Theorem 5.9, scalar empirical-average estimating-equation
+endpoint.
+
+This packages estimating equations of the form `P_n psi_theta = o_P(1)` in
+the real-valued case.  Vector-valued empirical averages can later reuse the
+same outer-probability wrapper once their sample-average notation is available.
+-/
+theorem vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_real_outerProbabilityUniformErrors
+    {Ω : Type u} {Observation : Type*} {Θ : Type v}
+    [MeasurableSpace Ω] [PseudoMetricSpace Θ]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (estimatingFunction : Θ -> Observation -> ℝ)
+    {Psi : Θ -> ℝ} {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (uniformError approxError : ℕ -> Ω -> ℝ)
+    (h_uniform :
+      ∀ n : ℕ, ∀ omega : Ω, ∀ theta : Θ,
+        ‖empiricalRiskOfLoss (samples n omega) estimatingFunction theta -
+          Psi theta‖ ≤ uniformError n omega)
+    (h_near_zero :
+      ∀ n : ℕ, ∀ omega : Ω,
+        ‖empiricalRiskOfLoss (samples n omega) estimatingFunction
+          (thetaHat n omega)‖ ≤ approxError n omega)
+    (h_uniform_outer :
+      VdVWConvergesInOuterProbability P uniformError atTop (fun _ : Ω => 0))
+    (h_approx_outer :
+      VdVWConvergesInOuterProbability P approxError atTop (fun _ : Ω => 0))
+    (h_zero : Psi theta0 = 0)
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            eta ≤ ‖Psi theta‖) :
+    TendstoInMeasure P thetaHat atTop (fun _ : Ω => theta0) :=
+  vaart1998_theorem_5_9_zEstimator_consistent_of_outerProbabilityUniformErrors
+    (Psi := Psi)
+    (Psi_n := fun n omega theta =>
+      empiricalRiskOfLoss (samples n omega) estimatingFunction theta)
+    (theta0 := theta0) (thetaHat := thetaHat)
+    uniformError approxError h_uniform h_near_zero
+    h_uniform_outer h_approx_outer h_zero h_separated
 
 end AsymptoticStatistics
 end StatInference
