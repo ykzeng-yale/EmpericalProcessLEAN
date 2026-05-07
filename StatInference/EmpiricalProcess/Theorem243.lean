@@ -33367,6 +33367,128 @@ theorem
     simpa [left, right] using hmul_le_right
 
 /--
+Eventual a.e. scaled finite-net domination supplies the displayed-beta
+selected-cover source primitive.
+
+This is the direct Lean target shape for the remaining ghost/Rademacher
+selected-cover proof: once the centered fixed-`M` process is a.e. dominated by
+the scaled selected finite-net Hoeffding upper plus the fixed radius, the
+displayed Chebyshev beta factor is absorbed by
+`VdVWTheorem243_displayedChebyshevBeta_le_one`.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_scaled_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_nonneg : 0 ≤ M) (hC_pos : 0 < C)
+    (hae :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ≤
+          C * vdVWTheorem243FiniteNetHoeffdingUpper
+              (selectedCardinality eta n sample n) n M + eta) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M C 1 selectedCardinality := by
+  refine
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_scaledOuterProbabilityBound
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := C) (A := 1)
+      (selectedCardinality := selectedCardinality)
+      (by norm_num) hC_pos ?_
+  intro eta heta epsilon hepsilon
+  filter_upwards [hae eta heta] with n hae_n
+  dsimp [VdVWOuterProbability]
+  have hmeasure :
+      (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+              (0 : ℝ)}
+        ≤
+      (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                  (selectedCardinality eta n sample n) n M + eta)
+              (0 : ℝ)} := by
+    refine measure_mono_ae ?_
+    filter_upwards [hae_n] with sample hle hsample
+    have hcentered_nonneg :
+        0 ≤
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample :=
+      vdVWWeightedClassSupremum_nonneg indexClass
+        (fun index : Index => fun observation : Observation =>
+          vdVWTruncatedClassFun classFun envelope M index observation -
+            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample
+    have hupper_nonneg :
+        0 ≤ C * vdVWTheorem243FiniteNetHoeffdingUpper
+            (selectedCardinality eta n sample n) n M + eta := by
+      have hfinite_nonneg :
+          0 ≤ vdVWTheorem243FiniteNetHoeffdingUpper
+            (selectedCardinality eta n sample n) n M :=
+        vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+          (selectedCardinality eta n sample n) n hM_nonneg
+      have hscaled_nonneg :
+          0 ≤ C * vdVWTheorem243FiniteNetHoeffdingUpper
+            (selectedCardinality eta n sample n) n M :=
+        mul_nonneg hC_pos.le hfinite_nonneg
+      linarith
+    have hbad :
+        epsilon <
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample := by
+      have hsample' :
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+              (0 : ℝ) := by
+        simpa using hsample
+      rw [Real.dist_eq, sub_zero, abs_of_nonneg hcentered_nonneg] at hsample'
+      exact hsample'
+    have hbad_upper :
+        epsilon <
+          C * vdVWTheorem243FiniteNetHoeffdingUpper
+              (selectedCardinality eta n sample n) n M + eta :=
+      lt_of_lt_of_le hbad hle
+    have hmem :
+        epsilon <
+          dist
+            (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                (selectedCardinality eta n sample n) n M + eta)
+            (0 : ℝ) := by
+      rw [Real.dist_eq, sub_zero, abs_of_nonneg hupper_nonneg]
+      exact hbad_upper
+    simpa using hmem
+  simpa using hmeasure
+
+/--
 A lossless fixed-radius finite-net comparison implies the displayed-beta source
 primitive with constants `A = 1` and `C = 1`.
 
