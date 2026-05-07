@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V13
+## Live In-Thread Goal Prompt V14
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -14,12 +14,14 @@ synced `main`.  Treat the compiled Chapter 2 / Chapter 3 support, including the
 Section 3.10 multivariate CLT, Gaussian-coordinate independence criterion, and
 Exercise 3.10.8 linear-combination characterization, as closed dependencies.
 
-Next theorem-sized packet: start Chapter 4.1 conditional expectation.  Search
-and reuse mathlib `Probability/ConditionalExpectation.lean`,
-`Probability/Martingale/*`, and local probability wrappers first.  Add only the
-narrow Durrett-facing wrapper needed for the first conditional-expectation
-source step, preferably Lemma 4.1.1, Theorem 4.1.2, or Example 4.1.3 if the
-mathlib API already discharges it.
+Next theorem-sized packet: continue Chapter 4.1 conditional expectation after
+the compiled Durrett version predicate, mathlib-condExp version wrapper, and
+Example 4.1.3 self/constant wrappers in
+`StatInference/ProbabilityTheory/ConditionalExpectation.lean`.  Search and
+reuse mathlib `condExp_indep_eq`, `condExp_congr_ae`, set-integral uniqueness,
+and local conditional-expectation wrappers first.  The preferred next source
+target is Example 4.1.4, conditional expectation of a random variable
+independent of the conditioning sigma-field equals its expectation.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -505,6 +507,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V13` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V14` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

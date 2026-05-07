@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V13`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V14`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -391,14 +391,14 @@ Compiled Section 3.2 packets:
 
 Next packet:
 
-- Chapter 4.1: start the conditional-expectation layer.  The Section 3.10
-  multivariate CLT chain, Gaussian-coordinate independence criterion, and
-  Exercise 3.10.8 linear-combination characterization wrappers now compile and
-  should be treated as closed support.  Next search mathlib
-  `Probability/ConditionalExpectation.lean`, `Probability/Martingale/*`, and
-  local probability wrappers, then add one narrow Durrett-facing wrapper for
-  Lemma 4.1.1, Theorem 4.1.2, or Example 4.1.3 if the API already discharges
-  it.
+- Chapter 4.1: continue the conditional-expectation layer.  The Section 3.10
+  multivariate CLT chain, Gaussian-coordinate independence criterion, Exercise
+  3.10.8 linear-combination characterization wrappers, Durrett conditional
+  expectation version predicate, mathlib-condExp version wrapper, and Example
+  4.1.3 self/constant wrappers now compile and should be treated as closed
+  support.  Next search mathlib `condExp_indep_eq`, `condExp_congr_ae`,
+  set-integral uniqueness, and local conditional-expectation wrappers before
+  packaging Example 4.1.4.
 
 Support-only dependencies:
 
