@@ -212,6 +212,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   actual expected-product model from the tower recursion and then discharge the
   expected row-sum and variance expected-product convergence obligations for
   those random factors.
+- New ASGD concrete Chewi tower-factor declarations:
+  `Chewi127BoundedMartingaleCLTSource.projectedVarianceFactor`,
+  `Chewi127BoundedMartingaleCLTSource.projectedRemainderFactor`,
+  `Chewi127BoundedMartingaleCLTSource.projectedTaylorModelFactor`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_scaled`,
+  and
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_concrete_random_product_model`.
+  These name the actual row factors with `a = t / sqrt N` and specialize the
+  random expected-product bridge to those factors.  The next ASGD packet should
+  prove the finite expected-product recursion using the scaled one-step tower
+  wrapper, then prove the concrete variance and remainder estimates.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

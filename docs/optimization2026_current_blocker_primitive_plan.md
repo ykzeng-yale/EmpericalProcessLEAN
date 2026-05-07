@@ -143,35 +143,37 @@ allowing exercise statements/proofs in `Exercises.lean` when they unlock
 main-text theorems.  All code/docs/comments stay in English; chat reports may
 be Chinese/English mix.
 
-Current frontier: the ASGD random expected-product characteristic-function
-bridge is verified.  The active source lane is Chapter 12 ASGD Theorem
-12.7/12.3.  The active Lean module is
+Current frontier: the ASGD concrete scaled Taylor-model factors and random
+expected-product characteristic-function bridge are verified.  The active
+source lane is Chapter 12 ASGD Theorem 12.7/12.3.  The active Lean module is
 `StatInference/Optimization/ASGD.lean`, with the lightweight shared helper
 `StatInference/ProbabilityTheory/ProductBounds.lean` available for finite
 complex product estimates.
 
-Next theorem-sized packet: prove the projected tower expected-product model
-used as `hproduct_model` in
-`Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_random_product_model`,
-then discharge the concrete variance expected-product convergence and
-conditional Taylor-remainder expected row-sum estimates for those random
-factors.
+Next theorem-sized packet: prove the finite projected tower expected-product
+model for the named factors
+`projectedVarianceFactor`, `projectedRemainderFactor`, and
+`projectedTaylorModelFactor`, using
+`projected_charFun_product_tower_succ_scaled`; then discharge the concrete
+variance expected-product convergence and conditional Taylor-remainder expected
+row-sum estimates for those random factors.
 
 Do not redo these solved layers: Chapter 3 GD, Taylor expansion, scalar
 Lindeberg tail vanishing, Levy/Gaussian target, conditional mean-zero/second
 moment substitution, finite product representation, prefix measurability, the
 first tower peel, deterministic finite product/error accumulation,
 deterministic product-model-to-characteristic-function convergence, or the
-random expected-product perturbation/convergence bridge.
+random expected-product perturbation/convergence bridge, concrete Chewi scaled
+factor definitions, or the scaled one-step tower wrapper.
 
 Search-first budget: one bounded API search only for the current blocker.
 First reuse `StatInference.norm_prod_sub_prod_le_sum_norm_sub`,
 `chewi127_norm_prod_sub_prod_le_sum_norm_sub`, and
-`Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_random_product_model`;
-then search only for the current missing tower expected-product recursion,
-variance expected-product convergence, or conditional-remainder expected
-row-sum API.  Do not import heavy unrelated modules into ASGD unless the build
-cost is justified by the theorem endpoint.
+`Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_scaled`;
+then search only for the current missing finite tower expected-product
+recursion, variance expected-product convergence, or conditional-remainder
+expected row-sum API.  Do not import heavy unrelated modules into ASGD unless
+the build cost is justified by the theorem endpoint.
 
 Execution loop: state the exact Lean theorem before editing, prove it in the
 isolated worktree `/private/tmp/chewi-smpgd-probability`, run

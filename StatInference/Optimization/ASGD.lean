@@ -1625,6 +1625,96 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_variance_tendstoInMeasure
   S.covariance_limit.variance_tendstoInMeasure L
 
 /--
+The variance-only factor in the scaled projected Chewi 12.7 Taylor model.
+For row length `N` and Fourier parameter `t`, this is
+`1 - (t / sqrt N)^2 Xi_{k+1}(L,L) / 2`.
+-/
+noncomputable def Chewi127BoundedMartingaleCLTSource.projectedVarianceFactor
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) (ω : Ω) : ℂ :=
+  1 -
+    ((((t * (Real.sqrt (N : ℝ))⁻¹) ^ 2 *
+        S.covariance.Xi (k + 1) ω L L) / 2 : ℝ) : ℂ)
+
+/--
+The conditional Taylor-remainder factor in the scaled projected Chewi 12.7
+model.
+-/
+noncomputable def Chewi127BoundedMartingaleCLTSource.projectedRemainderFactor
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) (ω : Ω) : ℂ :=
+  MeasureTheory.condExp (S.martingale.filtration k) P
+    (chewi127ScalarCharFunTaylorRemainder
+      (t * (Real.sqrt (N : ℝ))⁻¹)
+      (fun ω => L (S.martingale.xi (k + 1) ω))) ω
+
+/--
+The full variance-plus-remainder factor produced by the projected tower peel.
+-/
+noncomputable def Chewi127BoundedMartingaleCLTSource.projectedTaylorModelFactor
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) (ω : Ω) : ℂ :=
+  S.projectedVarianceFactor L N t k ω +
+    S.projectedRemainderFactor L N t k ω
+
+/--
+Scaled source-shaped version of the one-step tower peel, using the concrete
+Chewi row factor `t / sqrt N` and the named variance-plus-remainder model
+factor.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_scaled
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N n : ℕ) (t : ℝ)
+    (hsq : Integrable
+      (fun ω => (L (S.martingale.xi (n + 1) ω)) ^ 2) P)
+    (hremainder : Integrable
+      (chewi127ScalarCharFunTaylorRemainder
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        (fun ω => L (S.martingale.xi (n + 1) ω))) P)
+    (hproduct : Integrable
+      (fun ω =>
+        chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) n
+          (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+        chewi127ScalarCharFunFactor
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (n + 1) ω)) ω) P) :
+    (∫ ω,
+        chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) (n + 1)
+          (t * (Real.sqrt (N : ℝ))⁻¹) ω ∂P) =
+      ∫ ω,
+        chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) n
+          (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          S.projectedTaylorModelFactor L N t n ω ∂P := by
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedTaylorModelFactor,
+    Chewi127BoundedMartingaleCLTSource.projectedVarianceFactor,
+    Chewi127BoundedMartingaleCLTSource.projectedRemainderFactor] using
+    S.projected_charFun_product_tower_succ L n
+      (t * (Real.sqrt (N : ℝ))⁻¹) hsq hremainder hproduct
+
+/--
 Projected characteristic-function convergence from the finite product model
 left by the martingale tower peel.  This is the source-facing reduction of the
 hard Chewi 12.7 scalar CLT field to a variance-product limit and a conditional
@@ -1752,6 +1842,92 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_rand
       hvariance_bound hfull_bound hfull_int hvariance_int
       hremainder_error_int hremainder hvariance_product).congr'
         (hproduct_model.mono fun _ hN => hN.symm)
+
+/--
+Concrete Chewi-factor version of the random expected-product convergence
+bridge.  All remaining assumptions are now named in terms of
+`projectedVarianceFactor`, `projectedRemainderFactor`, and
+`projectedTaylorModelFactor`.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_concrete_random_product_model
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hproduct_model :
+      ∀ᶠ N : ℕ in atTop,
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t =
+          ∫ ω, ∏ k ∈ Finset.range N,
+            S.projectedTaylorModelFactor L N t k ω ∂P)
+    (hvariance_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖S.projectedVarianceFactor L N t k ω‖ ≤ 1)
+    (hfull_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖S.projectedTaylorModelFactor L N t k ω‖ ≤ 1)
+    (hfull_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedTaylorModelFactor L N t k ω) P)
+    (hvariance_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedVarianceFactor L N t k ω) P)
+    (hremainder_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hremainder :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∑ k ∈ Finset.range N,
+            ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0))
+    (hvariance_product :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N,
+            S.projectedVarianceFactor L N t k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ))))) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+  refine
+    S.projected_charFun_tendsto_exp_of_random_product_model L t
+      (fun N k ω => S.projectedVarianceFactor L N t k ω)
+      (fun N k ω => S.projectedRemainderFactor L N t k ω) ?_ ?_ ?_
+      ?_ ?_ ?_ ?_ ?_
+  · simpa [Chewi127BoundedMartingaleCLTSource.projectedTaylorModelFactor] using
+      hproduct_model
+  · exact hvariance_bound
+  · simpa [Chewi127BoundedMartingaleCLTSource.projectedTaylorModelFactor] using
+      hfull_bound
+  · simpa [Chewi127BoundedMartingaleCLTSource.projectedTaylorModelFactor] using
+      hfull_int
+  · exact hvariance_int
+  · exact hremainder_error_int
+  · exact hremainder
+  · exact hvariance_product
 
 /--
 The source package supplies uniform boundedness of every scalar projection.
