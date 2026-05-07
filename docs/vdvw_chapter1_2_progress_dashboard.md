@@ -3222,3 +3222,8 @@ The selected-cover route now reduces to two explicit source inputs: build the
 finite-sample symmetrization precursor for the selected radius-`eta / 2`
 empirical cover, and prove the fixed-sample `Phi(x)=x` comparison on the same
 eventual a.e. samples.  Those are the next proof targets.
+
+The selected half-radius precursor is now instantiated by
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_hphi_id`.
+The remaining source proof targets are the selected-cover `hphi_id` comparison
+and the finite-center Hoeffding/maximal event for those selected cover centers.

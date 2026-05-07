@@ -33690,6 +33690,97 @@ theorem
       hUcover hprecursor hphiComp
 
 /--
+Finite empirical covers plus the theorem-specific `Phi(x)=x` comparison supply
+the named displayed-Chebyshev-beta source primitive.
+
+This instantiates `VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover`
+on the eventual a.e. selected half-radius covers.  After this constructor, the
+remaining source work is the actual `hphi_id` comparison and the finite-center
+Hoeffding/maximal event for those selected covers.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_hphi_id
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
+    (hsign :
+      ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
+        (fun i : Fin n => sign n i ω))
+    (hindep : ∀ n, iIndepFun (sign n) μsign)
+    (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (hUcover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        VdVWMeasurableCover μsign
+          (fun ω => ENNReal.ofReal
+            (vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i ω))
+              sample)))
+    (hmaximal :
+      ∀ (eta : ℝ) (heta : 0 < eta),
+        ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          ∀ᵐ ω ∂μsign,
+            VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+              (vdVWTruncatedClassFun classFun envelope M)
+              (cover eta heta n sample).center (fun i : Fin n => sign n i ω) M)
+    (hphiComp :
+      ∀ (eta : ℝ), 0 < eta ->
+        ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          ENNReal.ofReal
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) ≤
+            (2 : ℝ≥0∞) *
+              VdVWOuterExpectation μsign
+                (fun ω => ENNReal.ofReal
+                  (vdVWWeightedClassSupremum indexClass
+                    (vdVWTruncatedClassFun classFun envelope M)
+                    (vdVWRademacherWeights (fun i : Fin n => sign n i ω))
+                    sample))) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M 2 1 selectedCardinality := by
+  refine
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_symmetrizationPrecursor_hphi_id
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (selectedCardinality := selectedCardinality) hM_pos.le sign cover
+      hUcover ?_ hphiComp
+  intro eta heta
+  filter_upwards [eventually_gt_atTop (0 : ℕ), hmaximal eta heta]
+    with n hn_pos hmaximal_n
+  filter_upwards [hmaximal_n] with sample hmaximal_sample
+  exact
+    VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover
+      (μ := μsign) (P := P) (sample := sample)
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (epsilon := eta / 2)
+      (cover := cover eta heta n sample) hclass henvelope_meas
+      htruncIntegrable hindexClass_nonempty henvelope hn_pos hM_pos
+      (sign n) (hsign n) (hindep n) (hsubG n) (by linarith)
+      hmaximal_sample
+
+/--
 A lossless fixed-radius finite-net comparison implies the displayed-beta source
 primitive with constants `A = 1` and `C = 1`.
 

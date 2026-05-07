@@ -7869,3 +7869,12 @@ comparison for the selected half-radius cover, and instantiate the compiled
 `VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover` hypotheses for
 that selected cover.  Do not add more endpoint wrappers before attacking those
 two inputs or recording an exact missing nonmeasurable primitive.
+
+2026-05-07 selected half-radius precursor instantiation:
+`Theorem243.lean` now proves
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_hphi_id`.
+This consumes `VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover`
+for the eventual a.e. selected radius-`eta / 2` covers.  The precursor
+instantiation is no longer a separate blocker.  The remaining source inputs
+are now exactly the fixed-sample `Phi(x)=x` comparison and the finite-center
+Hoeffding/maximal event for the selected cover centers.
