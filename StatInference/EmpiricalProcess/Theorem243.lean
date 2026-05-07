@@ -33489,6 +33489,53 @@ theorem
   simpa using hmeasure
 
 /--
+The half-radius `2 * (finiteNetHoeffdingUpper + eta / 2)` bound produced by the
+current symmetrization-precursor route supplies the displayed-beta source
+primitive with finite-net scale `2`.
+
+This is the native algebraic shape of
+`VdVWTheorem243SymmetrizationPrecursor.centered_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_two_finiteNetHoeffdingUpper_add_halfRadius_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_nonneg : 0 ≤ M)
+    (hae :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ≤
+          2 * (vdVWTheorem243FiniteNetHoeffdingUpper
+              (selectedCardinality eta n sample n) n M + eta / 2)) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M 2 1 selectedCardinality := by
+  refine
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_scaled_bound
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := 2)
+      (selectedCardinality := selectedCardinality)
+      hM_nonneg (by norm_num) ?_
+  intro eta heta
+  filter_upwards [hae eta heta] with n hn
+  filter_upwards [hn] with sample hsample
+  have hrewrite :
+      2 * (vdVWTheorem243FiniteNetHoeffdingUpper
+          (selectedCardinality eta n sample n) n M + eta / 2) =
+        2 * vdVWTheorem243FiniteNetHoeffdingUpper
+          (selectedCardinality eta n sample n) n M + eta := by
+    ring
+  simpa [hrewrite] using hsample
+
+/--
 A lossless fixed-radius finite-net comparison implies the displayed-beta source
 primitive with constants `A = 1` and `C = 1`.
 
