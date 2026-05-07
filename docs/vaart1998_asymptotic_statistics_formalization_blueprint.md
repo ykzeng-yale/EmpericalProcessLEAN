@@ -415,6 +415,13 @@ Initial modules:
   fixed fallback outside it, with measurability and the local derivative coming
   from the fallback extension rather than global measurability of the raw local
   inverse.
+  The selected-estimator Gaussian/covariance layer
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_of_targetProbabilityLocalization_real`,
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceDisplay_of_targetProbabilityLocalization_real`,
+  and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceBilinDual_of_targetProbabilityLocalization_real`
+  carries that actual fallback-selected estimator through the Gaussian limit and
+  Vaart covariance displays.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

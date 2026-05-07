@@ -4448,6 +4448,207 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_selecte
         vaart1998_localInverseFallbackExtension] using hdist
 
 /--
+Finite-coordinate Theorem 4.1 Gaussian-limit endpoint for the canonical
+selected estimator with fallback outside the inverse-function-theorem target.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_of_targetProbabilityLocalization_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (targetProbability :
+      Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+        Coordinate Ω Θ P e theta0 De he X)
+    (fallback : Θ)
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q)
+    (hZ_gaussian : HasGaussianLaw Z Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (vaart1998_finiteCoordinateLocalInverseSelectedEstimator
+              e De he X fallback n ω - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q := by
+  have hbase :=
+    vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_selectedEstimator_delta_method_of_targetProbabilityLocalization_real
+      (e := e) (theta0 := theta0) (De := De) (he := he)
+      (X := X) (hX_meas := hX_meas)
+      (targetProbability := targetProbability) (fallback := fallback)
+      (hCLT := hCLT)
+  exact
+    ⟨hbase.1, hbase.2,
+      vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative
+        (Dinv := (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ)) hZ_gaussian⟩
+
+/--
+Finite-coordinate covariance-functional display for the canonical selected
+estimator with fallback outside the target event.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceDisplay_of_targetProbabilityLocalization_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (targetProbability :
+      Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+        Coordinate Ω Θ P e theta0 De he X)
+    (fallback : Θ)
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q)
+    (hZ_gaussian : HasGaussianLaw Z Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (vaart1998_finiteCoordinateLocalInverseSelectedEstimator
+              e De he X fallback n ω - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q ∧
+    (∀ L K : StrongDual ℝ Θ,
+      vaart1998_limitCovarianceFunctional
+          (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q L K =
+        vaart1998_inverseDerivativeCovarianceFunctional
+          (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ)
+          (vaart1998_limitCovarianceFunctional Z Q) L K) := by
+  have hbase :=
+    vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_of_targetProbabilityLocalization_real
+      (e := e) (theta0 := theta0) (De := De) (he := he)
+      (X := X) (hX_meas := hX_meas)
+      (targetProbability := targetProbability) (fallback := fallback)
+      (hCLT := hCLT) (hZ_gaussian := hZ_gaussian)
+  exact
+    ⟨hbase.1, hbase.2.1, hbase.2.2, fun L K =>
+      vaart1998_limitCovarianceFunctional_inverseDerivative_apply
+        Z Q (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) L K⟩
+
+/--
+Finite-coordinate covarianceBilinDual display for the canonical selected
+estimator with fallback outside the target event.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceBilinDual_of_targetProbabilityLocalization_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (targetProbability :
+      Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+        Coordinate Ω Θ P e theta0 De he X)
+    (fallback : Θ)
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q)
+    (hZ_gaussian : HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z)) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (vaart1998_finiteCoordinateLocalInverseSelectedEstimator
+              e De he X fallback n ω - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q ∧
+    (∀ L K : StrongDual ℝ Θ,
+      ProbabilityTheory.covarianceBilinDual
+          (Q.map fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) L K =
+        vaart1998_inverseDerivativeCovarianceFunctional
+          (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ)
+          (fun L0 K0 =>
+            ProbabilityTheory.covarianceBilinDual (Q.map Z) L0 K0) L K) := by
+  have hbase :=
+    vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_of_targetProbabilityLocalization_real
+      (e := e) (theta0 := theta0) (De := De) (he := he)
+      (X := X) (hX_meas := hX_meas)
+      (targetProbability := targetProbability) (fallback := fallback)
+      (hCLT := hCLT) (hZ_gaussian := hZ_gaussian)
+  exact
+    ⟨hbase.1, hbase.2.1, hbase.2.2, fun L K =>
+      vaart1998_covarianceBilinDual_inverseDerivative_map_apply_of_memLp
+        Z (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ)
+        hCLT.aemeasurable_limit hZ_memLp L K⟩
+
+/--
 Measurable-coordinate Theorem 4.1 wrapper deriving composed local-inverse
 a.e.-measurability from a.e. localization in the open moment range.
 -/

@@ -640,22 +640,32 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_localInverseFallbackExtension_hasFDerivAt`.
 207. True-moment value of the fallback extension:
    `vaart1998_localInverseFallbackExtension_apply_true_moment`.
+208. Gaussian-limit endpoint for the canonical selected estimator:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_of_targetProbabilityLocalization_real`.
+209. Covariance-functional display endpoint for the canonical selected
+   estimator:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceDisplay_of_targetProbabilityLocalization_real`.
+210. CovarianceBilinDual display endpoint for the canonical selected estimator:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceBilinDual_of_targetProbabilityLocalization_real`.
 
-Latest remote base before this packet: `10f2a08`.
-Latest pushed Vaart packet before this packet: `45caa71`
-(`Add Vaart selected estimator target wrapper`).
+Latest remote base before this packet: `f2245f7`.
+Latest pushed Vaart packet before this packet: `f2245f7`
+(`Add Vaart local inverse fallback extension`).
 
-The current theorem-sized packet removes the global local-inverse measurability
-assumption from the canonical selected-estimator endpoint.  It builds a
-moment-space fallback extension, proves it measurable by piecewise continuity,
-proves it has the local-inverse derivative at the true moment, and reroutes the
-selected-estimator delta endpoint through this extension.
+The current theorem-sized packet propagates the fallback-extension selected
+estimator through the Gaussian-limit, covariance-functional, and
+covarianceBilinDual displays.  These wrappers consume only the target
+probability localization certificate, coordinatewise sample measurability, the
+empirical-moment CLT, and the Gaussian/MemLp source fields; they do not assume
+global measurability of `he.localInverse e De theta0`.
 
-The next aggressive packet should propagate the fallback-extension selected
-estimator route into the Gaussian-limit/covariance display endpoints, so the
-source-facing Theorem 4.1 display no longer needs global local-inverse
-measurability.  Do not use probability tending to one as a substitute for
-per-`n` a.e. target membership.
+The next aggressive packet should lift the selected-estimator
+covarianceBilinDual endpoint into finite covariance-table and CLT-certificate
+wrappers, so source-facing Chapter 4 statements can conclude the displayed
+covariance table for the actual fallback-selected estimator.  Keep
+probability-tending-to-one target localization separate from per-`n` a.e.
+localization; use the selected estimator only where equality on the
+high-probability target event is sufficient.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

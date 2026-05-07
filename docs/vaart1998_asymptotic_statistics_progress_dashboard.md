@@ -450,10 +450,18 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_selectedEstimator_delta_method_of_targetProbabilityLocalization_real`
   now consumes that construction and the target-localization certificate without
   assuming `Measurable (he.localInverse e De theta0)`.
+- Selected-estimator Gaussian and covariance endpoints:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_of_targetProbabilityLocalization_real`,
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceDisplay_of_targetProbabilityLocalization_real`,
+  and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceBilinDual_of_targetProbabilityLocalization_real`
+  push that canonical fallback-selected estimator through the Gaussian limit,
+  coordinate-free covariance display, and covarianceBilinDual display without
+  assuming global raw local-inverse measurability.
 
-Latest remote base before this packet: `10f2a08`.  Latest pushed Vaart packet
-before this packet: `45caa71`
-(`Add Vaart selected estimator target wrapper`).
+Latest remote base before this packet: `f2245f7`.  Latest pushed Vaart packet
+before this packet: `f2245f7`
+(`Add Vaart local inverse fallback extension`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .../MomentEstimators.olean -i .../MomentEstimators.ilean`
@@ -465,10 +473,10 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 by propagating the fallback-extension selected
-estimator route into the Gaussian-limit and covariance display endpoints, so
-the source-facing Theorem 4.1 display no longer needs global local-inverse
-measurability.
+Continue Vaart Chapter 4.1 by lifting the selected-estimator
+covarianceBilinDual endpoint into finite covariance-table and CLT-certificate
+wrappers, so source-facing statements can display the covariance table for the
+actual fallback-selected estimator.
 
 ## Reuse Dependencies
 
