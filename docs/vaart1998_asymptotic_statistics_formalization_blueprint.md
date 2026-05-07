@@ -551,8 +551,13 @@ Initial modules:
   `vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise_ae`,
   and the empirical source handoff packet adds
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_pointwiseTaylor_envelope`,
-  so the remaining critical path is the per-observation selected second-order
-  Taylor identity.
+  and the raw Taylor scaling packet adds
+  `vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_of_unscaled_selectedTaylor`,
+  `vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_ae_of_unscaled_selectedTaylor`,
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_unscaledPointwiseTaylor_envelope`,
+  so the remaining critical path is the analytic per-observation selected
+  second-order Taylor identity for the raw estimating map.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

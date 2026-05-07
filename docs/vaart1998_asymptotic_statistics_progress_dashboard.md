@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 empirical source Taylor handoff`).
+(`Add Vaart theorem 5.41 raw Taylor scaling bridge`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -630,10 +630,11 @@ Live continuation prompt: use the compact prompt in
 ## Next Aggressive Target
 
 Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41 in
-`MEstimators.lean`: prove the per-observation selected second-order Taylor
-identity.  The auxiliary quadratic residual object, the empirical-Hessian
-dominated operator-norm bound, and the empirical aggregation of the Taylor
-display, and the empirical-average endpoint assembly are no longer blockers.
+`MEstimators.lean`: prove the analytic per-observation selected second-order
+Taylor identity for the raw estimating map.  The scaling bridge, auxiliary
+quadratic residual object, empirical-Hessian dominated operator-norm bound,
+empirical aggregation of the Taylor display, and empirical-average endpoint
+assembly are no longer blockers.
 
 ## Reuse Dependencies
 

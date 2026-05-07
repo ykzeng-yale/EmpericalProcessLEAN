@@ -1581,6 +1581,102 @@ theorem vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise_a
       (delta := delta n ω) (scaledEstimator := scaledEstimator n ω) hω
 
 /--
+van der Vaart 1998, Theorem 5.41, scaled single-observation Taylor identity.
+
+The textbook proves the selected Taylor identity before multiplying by the
+normalizing rate.  This lemma turns the raw identity
+`rawAtTheta0 + derivative delta + 1 / 2 • secondDerivative delta delta =
+rawAtEstimator` into the scaled form consumed by the empirical-average
+handoff, assuming the score, estimating equation, and estimator increment have
+all been scaled by the same scalar.
+-/
+theorem vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_of_unscaled_selectedTaylor
+    {Score Θ : Type*}
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (scale : ℝ)
+    (rawAtTheta0 rawAtEstimator scoreAtTheta0 estimatingAtEstimator : Score)
+    (derivative : Θ →L[ℝ] Score)
+    (secondDerivative : Θ →L[ℝ] Θ →L[ℝ] Score)
+    (delta scaledEstimator : Θ)
+    (hScore_scaled : scoreAtTheta0 = scale • rawAtTheta0)
+    (hEstimator_scaled : estimatingAtEstimator = scale • rawAtEstimator)
+    (hScaledEstimator : scaledEstimator = scale • delta)
+    (hRawTaylor :
+      rawAtTheta0 + derivative delta +
+          (1 / 2 : ℝ) • secondDerivative delta delta =
+        rawAtEstimator) :
+    scoreAtTheta0 + derivative scaledEstimator +
+        (1 / 2 : ℝ) • secondDerivative delta scaledEstimator =
+      estimatingAtEstimator := by
+  subst scoreAtTheta0
+  subst estimatingAtEstimator
+  subst scaledEstimator
+  simpa [smul_add, smul_smul, mul_comm, mul_left_comm, mul_assoc] using
+    congrArg (fun z : Score => scale • z) hRawTaylor
+
+/--
+van der Vaart 1998, Theorem 5.41, a.e. sampled scaled Taylor identities from
+raw selected Taylor identities.
+
+This is the sampled random-sequence version of
+`vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_of_unscaled_selectedTaylor`.
+It is designed to feed
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_pointwiseTaylor_envelope`.
+-/
+theorem vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_ae_of_unscaled_selectedTaylor
+    {Ω Observation Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scale : ℕ -> Ω -> ℝ)
+    (rawAtTheta0 rawAtEstimator scoreAtTheta0 estimatingAtEstimator :
+      ℕ -> Ω -> Observation -> Score)
+    (derivative : ℕ -> Ω -> Observation -> Θ →L[ℝ] Score)
+    (secondDerivative : ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] Score)
+    (delta scaledEstimator : ℕ -> Ω -> Θ)
+    (hScore_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) =
+          scale n ω • rawAtTheta0 n ω (samples n ω i))
+    (hEstimator_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        estimatingAtEstimator n ω (samples n ω i) =
+          scale n ω • rawAtEstimator n ω (samples n ω i))
+    (hScaledEstimator : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, scaledEstimator n ω = scale n ω • delta n ω)
+    (hRawTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        rawAtTheta0 n ω (samples n ω i) +
+            derivative n ω (samples n ω i) (delta n ω) +
+            (1 / 2 : ℝ) •
+              secondDerivative n ω (samples n ω i) (delta n ω) (delta n ω) =
+          rawAtEstimator n ω (samples n ω i)) :
+    ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) +
+            derivative n ω (samples n ω i) (scaledEstimator n ω) +
+            (1 / 2 : ℝ) •
+              secondDerivative n ω (samples n ω i)
+                (delta n ω) (scaledEstimator n ω) =
+          estimatingAtEstimator n ω (samples n ω i) := by
+  intro n
+  filter_upwards [hScore_scaled n, hEstimator_scaled n, hScaledEstimator n,
+    hRawTaylor n] with ω hScore hEstimator hScaled hTaylor
+  intro i
+  exact
+    vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_of_unscaled_selectedTaylor
+      (scale := scale n ω)
+      (rawAtTheta0 := rawAtTheta0 n ω (samples n ω i))
+      (rawAtEstimator := rawAtEstimator n ω (samples n ω i))
+      (scoreAtTheta0 := scoreAtTheta0 n ω (samples n ω i))
+      (estimatingAtEstimator := estimatingAtEstimator n ω (samples n ω i))
+      (derivative := derivative n ω (samples n ω i))
+      (secondDerivative := secondDerivative n ω (samples n ω i))
+      (delta := delta n ω) (scaledEstimator := scaledEstimator n ω)
+      (hScore i) (hEstimator i) hScaled (hTaylor i)
+
+/--
 van der Vaart 1998, Theorem 5.41, scalar-small times stochastically bounded
 input is negligible.
 
@@ -3076,6 +3172,112 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hCurvatureBounded hScaledEstimator hCurvatureOpBound
       hEmpiricalDerivative_meas hSecondDerivativeAction_meas hDelta_meas
       hScaledEstimator_meas hRoot hTaylorExpansion
+
+/--
+van der Vaart 1998, Theorem 5.41, empirical-average source handoff from raw
+per-observation Taylor identities.
+
+This is the next source-facing wrapper after the empirical-average endpoint:
+it accepts the unscaled single-observation Taylor theorem and the common
+normalizing scalar that turns `delta` into the scaled estimator.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_unscaledPointwiseTaylor_envelope
+    {Ω Ω' Observation Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scale : ℕ -> Ω -> ℝ)
+    (rawAtTheta0 rawAtEstimator scoreAtTheta0 estimatingAtEstimator :
+      ℕ -> Ω -> Observation -> Score)
+    (derivative : ℕ -> Ω -> Observation -> Θ →L[ℝ] Score)
+    (secondDerivative : ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] Score)
+    (envelope : Observation -> ℝ)
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT :
+      TendstoInDistribution
+        (fun n ω => empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω))
+        atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω =>
+          ‖empiricalAverageVector (samples n ω) (derivative n ω) - V‖)
+        atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hEnvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (hCurvatureBounded :
+      StochasticBounded P
+        (fun n ω => empiricalAverage (samples n ω) envelope))
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hEnvelopeBound : ∀ᶠ n in atTop, ∀ ω x,
+      ‖secondDerivative n ω x‖ ≤ envelope x)
+    (hEmpiricalDerivative_meas : ∀ n,
+      AEMeasurable
+        (fun ω => empiricalAverageVector (samples n ω) (derivative n ω)) P)
+    (hSecondDerivativeAction_meas : ∀ n,
+      AEMeasurable
+        (fun ω =>
+          empiricalAverageVector (samples n ω) (secondDerivative n ω)) P)
+    (hDelta_meas : ∀ n, AEMeasurable (delta n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P)
+    (hRoot : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        empiricalAverageVector (samples n ω) (estimatingAtEstimator n ω) = 0)
+    (hScore_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) =
+          scale n ω • rawAtTheta0 n ω (samples n ω i))
+    (hEstimator_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        estimatingAtEstimator n ω (samples n ω i) =
+          scale n ω • rawAtEstimator n ω (samples n ω i))
+    (hScaledEstimator_eq : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, scaledEstimator n ω = scale n ω • delta n ω)
+    (hRawTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        rawAtTheta0 n ω (samples n ω i) +
+            derivative n ω (samples n ω i) (delta n ω) +
+            (1 / 2 : ℝ) •
+              secondDerivative n ω (samples n ω i) (delta n ω) (delta n ω) =
+          rawAtEstimator n ω (samples n ω i)) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hPointwiseTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) +
+            derivative n ω (samples n ω i) (scaledEstimator n ω) +
+            (1 / 2 : ℝ) •
+              secondDerivative n ω (samples n ω i)
+                (delta n ω) (scaledEstimator n ω) =
+          estimatingAtEstimator n ω (samples n ω i) :=
+    vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_ae_of_unscaled_selectedTaylor
+      (P := P) (samples := samples) (scale := scale)
+      (rawAtTheta0 := rawAtTheta0) (rawAtEstimator := rawAtEstimator)
+      (scoreAtTheta0 := scoreAtTheta0)
+      (estimatingAtEstimator := estimatingAtEstimator)
+      (derivative := derivative) (secondDerivative := secondDerivative)
+      (delta := delta) (scaledEstimator := scaledEstimator)
+      hScore_scaled hEstimator_scaled hScaledEstimator_eq hRawTaylor
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_pointwiseTaylor_envelope
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (samples := samples) (scoreAtTheta0 := scoreAtTheta0)
+      (estimatingAtEstimator := estimatingAtEstimator)
+      (derivative := derivative) (secondDerivative := secondDerivative)
+      (envelope := envelope) (delta := delta)
+      (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hScoreCLT hDerivativeLLN hDelta hEnvelope_nonneg
+      hCurvatureBounded hScaledEstimator hEnvelopeBound
+      hEmpiricalDerivative_meas hSecondDerivativeAction_meas hDelta_meas
+      hScaledEstimator_meas hRoot hPointwiseTaylor
 
 end AsymptoticStatistics
 end StatInference

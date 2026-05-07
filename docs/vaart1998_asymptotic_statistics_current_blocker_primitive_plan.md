@@ -10,16 +10,16 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_pointwiseTaylor_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_unscaledPointwiseTaylor_envelope`.
 It already packages the empirical score, derivative, Hessian action,
-estimating equation, and envelope hypotheses into the compiled Theorem 5.41
-probability handoff.
+estimating equation, envelope hypotheses, and common normalizing scalar into
+the compiled Theorem 5.41 probability handoff.
 
-Next packet only: prove the per-observation selected second-order Taylor
-identity that feeds this endpoint.  Do not revisit the solved auxiliary
-residual, curvature envelope, empirical Taylor aggregation, endpoint assembly,
-Chapter 2-4 substrate, Gaussian endpoints, or generic empirical-process
-plumbing unless a direct dependency is missing.
+Next packet only: prove the analytic per-observation selected second-order
+Taylor identity for the raw estimating map.  Do not revisit the solved scaling
+bridge, auxiliary residual, curvature envelope, empirical Taylor aggregation,
+endpoint assembly, Chapter 2-4 substrate, Gaussian endpoints, or generic
+empirical-process plumbing unless a direct dependency is missing.
 
 Workflow: search local/mathlib APIs first, add one theorem-sized Lean layer,
 run the focused file and target module checks plus hygiene scans, fetch/rebase
@@ -766,25 +766,28 @@ compiling:
 278. Theorem 5.41 empirical-average source handoff from pointwise Taylor
    identities and an envelope bound:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_pointwiseTaylor_envelope`.
+279. Theorem 5.41 scaled single-observation Taylor identity from the raw
+   selected Taylor identity:
+   `vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_of_unscaled_selectedTaylor`.
+280. Theorem 5.41 a.e. sampled scaled Taylor identities from raw selected
+   Taylor identities:
+   `vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_ae_of_unscaled_selectedTaylor`.
+281. Theorem 5.41 empirical-average source handoff from raw per-observation
+   Taylor identities:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_unscaledPointwiseTaylor_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 empirical source Taylor handoff`).
+(`Add Vaart theorem 5.41 raw Taylor scaling bridge`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by assembling sampled score,
-derivative, Hessian, estimating-equation, and envelope objects directly into
-the current literal quadratic Taylor handoff.  The most advanced handoff still
-derives the source Taylor equation from the root equation
-`Psi_n(thetaHat_n) = 0` and the Taylor expansion of `Psi_n(thetaHat_n)`, then
-performs the algebraic split
-`dotPsi_n(theta0) x_n =
-  (P dot psi_theta0) x_n + (dotPsi_n(theta0) - P dot psi_theta0) x_n`
-internally before applying the derivative and second-derivative residual
-bridge.
+asymptotic-normality route for Z-estimators by turning the textbook's raw
+single-observation Taylor identity into the scaled pointwise Taylor identity
+consumed by the empirical-average source handoff.  The newest endpoint now
+accepts the raw score and raw estimating equation plus the common normalizing
+scalar proving `scaledEstimator = scale • delta`.
 
-The next aggressive packet should prove the remaining source Taylor fields:
-the per-observation selected second-order Taylor identity that feeds the
-empirical Taylor-display constructor.
+The next aggressive packet should prove the analytic selected second-order
+Taylor identity for the raw estimating map itself.
 
 ## Execution Notes
 
