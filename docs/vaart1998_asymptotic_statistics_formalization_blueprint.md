@@ -558,8 +558,13 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_unscaledPointwiseTaylor_envelope`,
   and the scalar selected Taylor packet adds
   `vaart1998_theorem_5_41_scalar_selectedSecondOrderTaylor_of_derivativeTaylor`,
-  so the remaining critical path is lifting the scalar Cauchy-MVT bridge to the
-  sampled raw estimating-map interface, likely coordinatewise.
+  and the coordinate raw Taylor packet adds
+  `vaart1998_theorem_5_41_pi_rawTaylor_of_coordinate_rawTaylor`,
+  `vaart1998_theorem_5_41_pi_rawTaylor_ae_of_coordinate_rawTaylor`,
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinateRawTaylor_envelope`,
+  so the remaining critical path is deriving the coordinatewise raw Taylor
+  hypotheses from scalar Cauchy-MVT paths of the estimating map.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

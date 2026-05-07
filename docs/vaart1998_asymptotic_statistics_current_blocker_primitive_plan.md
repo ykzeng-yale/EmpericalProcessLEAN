@@ -10,17 +10,19 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_unscaledPointwiseTaylor_envelope`.
-It already packages the empirical score, derivative, Hessian action,
-estimating equation, envelope hypotheses, and common normalizing scalar into
-the compiled Theorem 5.41 probability handoff.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinateRawTaylor_envelope`.
+It already packages the finite-coordinate empirical score, derivative,
+Hessian action, estimating equation, envelope hypotheses, common normalizing
+scalar, and coordinatewise raw Taylor identities into the compiled Theorem
+5.41 probability handoff.
 
-Next packet only: lift the scalar Cauchy-MVT Taylor bridge to the sampled raw
-estimating map, preferably coordinatewise.  Do not revisit the solved scalar
-Taylor bridge, scaling bridge, auxiliary residual, curvature envelope,
-empirical Taylor aggregation, endpoint assembly, Chapter 2-4 substrate,
-Gaussian endpoints, or generic empirical-process plumbing unless a direct
-dependency is missing.
+Next packet only: connect the scalar Cauchy-MVT selected Taylor theorem to the
+coordinatewise raw Taylor hypotheses for actual one-dimensional paths of the
+estimating map.  Do not revisit the solved coordinate assembly, scalar Taylor
+bridge, scaling bridge, auxiliary residual, curvature envelope, empirical
+Taylor aggregation, endpoint assembly, Chapter 2-4 substrate, Gaussian
+endpoints, or generic empirical-process plumbing unless a direct dependency is
+missing.
 
 Workflow: search local/mathlib APIs first, add one theorem-sized Lean layer,
 run the focused file and target module checks plus hygiene scans, fetch/rebase
@@ -779,19 +781,25 @@ compiling:
 282. Theorem 5.41 scalar selected second-order Taylor bridge from Cauchy's
    mean value theorem:
    `vaart1998_theorem_5_41_scalar_selectedSecondOrderTaylor_of_derivativeTaylor`.
+283. Theorem 5.41 coordinatewise raw Taylor assembly:
+   `vaart1998_theorem_5_41_pi_rawTaylor_of_coordinate_rawTaylor`.
+284. Theorem 5.41 a.e. sampled coordinatewise raw Taylor assembly:
+   `vaart1998_theorem_5_41_pi_rawTaylor_ae_of_coordinate_rawTaylor`.
+285. Theorem 5.41 finite-coordinate empirical-average source handoff from
+   coordinatewise raw Taylor identities:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinateRawTaylor_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 scalar selected Taylor bridge`).
+(`Add Vaart theorem 5.41 coordinate raw Taylor handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by proving the scalar analytic
-selected second-order Taylor bridge with Cauchy's mean value theorem.  It
-turns a first-order Taylor identity for the derivative into a selected
-second-order Taylor identity for the raw scalar estimating map.
+asymptotic-normality route for Z-estimators by assembling coordinatewise raw
+Taylor identities into the finite-coordinate vector raw Taylor display, then
+feeding that directly into the empirical-average source endpoint.
 
-The next aggressive packet should lift this scalar bridge into the sampled raw
-estimating-map interface, likely by a coordinatewise finite-dimensional
-wrapper.
+The next aggressive packet should derive those coordinate raw Taylor
+hypotheses from the scalar Cauchy-MVT bridge applied to actual estimating-map
+paths.
 
 ## Execution Notes
 
