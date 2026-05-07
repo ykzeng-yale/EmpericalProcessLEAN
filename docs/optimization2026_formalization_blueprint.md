@@ -20,12 +20,15 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 ## Current Route Pointer
 
 For live manual `/goal` work, use the `Current Frontier Contract` near the top
-of `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot
-section of `docs/optimization2026_progress_dashboard.md`.  Later historical
-frontier paragraphs in this blueprint are retained for source crosswalk and
-dependency context only; they must not override the current ASGD scalar
-martingale CLT route.  If a run starts with a dirty Lean diff, compile or
-record the precise blocker for that diff before changing strategy docs.
+of `docs/optimization2026_current_blocker_primitive_plan.md`, especially its
+one-screen current run card, and the snapshot section of
+`docs/optimization2026_progress_dashboard.md`.  Later historical frontier
+paragraphs in this blueprint are retained for source crosswalk and dependency
+context only; they must not override the current ASGD scalar martingale CLT
+route.  If a run starts with a dirty Lean diff, compile or record the precise
+blocker for that diff before changing strategy docs.  The current speed rule is
+to move from that run card directly into one endpoint-moving Lean theorem, with
+only one bounded API search for the active blocker.
 
 ## Automation Prompt Maintenance
 

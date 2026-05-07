@@ -132,6 +132,68 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
+## One-Screen Current Run Card
+
+This card is the fastest entry point for the next manual `/goal` run.  It
+should be updated only when the actual frontier changes.
+
+- Latest pushed Optimization frontier: `41698a9 Add Chewi ASGD finite product
+  tower layer`.
+- Active source theorem lane: Chewi Chapter 12 ASGD, Theorem 12.7/12.3
+  martingale-CLT handoff.
+- Active Lean module: `StatInference/Optimization/ASGD.lean`.
+- Primary packet: prove the first recursive product/tower peel for the scalar
+  projected martingale characteristic function, using the compiled one-step
+  conditional Taylor expansion and a filtration-measurable product prefix.
+- Candidate owner theorem name:
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ`.
+- Required reuse:
+  `chewi127ScalarScaledSum_charFun_eq_integral_prod`,
+  `integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`,
+  `chewi127ScalarCharFunFactor_integrable`,
+  mathlib `StronglyAdapted.stronglyMeasurable_le`,
+  `Finset.prod_range_succ`, `Finset.aestronglyMeasurable_fun_prod`, and
+  `AEStronglyMeasurable.cexp`.
+- One bounded extra search pass is allowed only for product-prefix
+  measurability or conditional-expectation pull-out APIs.  Do not repeat broad
+  searches for Taylor, Lindeberg, Levy, Gaussian target, or Chapter 3
+  deterministic GD material.
+- Verification:
+  `lake env lean StatInference/Optimization/ASGD.lean`, then
+  `lake build StatInference.Optimization.ASGD`, then proof-hole scan, secret
+  scan, and `git diff --check`.
+- Failure record requirement: if the theorem does not close, record the exact
+  Lean statement attempted, whether the blocker is prefix measurability,
+  integrability of the product, conditional-expectation rewrite shape, or
+  Taylor-step substitution, plus two concrete next routes.
+
+## Accuracy And Speed Corrections From Process Audit
+
+The main observed slowdown was not a lack of effort; it was spending too much
+of each run rediscovering context and producing small verified wrappers that
+did not remove the current endpoint assumption.  The current process is:
+
+1. Use the run card above before reading any archived route history.  Read
+   older sections only when a named declaration cannot be found.
+2. Start each proof packet by writing or checking the exact target statement in
+   Lean.  This prevents proving a convenient lemma that does not compose into
+   the source theorem.
+3. Keep search bounded and blocker-specific.  Search must answer one concrete
+   question, such as "how do I prove this prefix product is
+   `AEStronglyMeasurable`?", not re-audit the entire optimization codebase.
+4. Prefer one endpoint-moving theorem over several cosmetic wrappers.  Helper
+   lemmas are fine when they are private to the packet or immediately consumed
+   by the primary theorem.
+5. Avoid Git churn during proof development.  Fetch/rebase at the start and
+   once immediately before final push; if the second push race fails, report
+   the verified local commit/base instead of restarting proof search.
+6. Treat subagents as scoped accelerators, not a replacement for integration.
+   Reuse or close stale completed agents before spawning new ones; new agents
+   need read-only tasks or disjoint write ownership.
+7. Never carry a dirty Lean theorem across a process update.  Either verify it
+   with the focused Lean command or record the precise unresolved subgoal.
+
 For the current ASGD frontier, acceptable primary packets are:
 
 - prove the projected scalar bounded-martingale characteristic-function
