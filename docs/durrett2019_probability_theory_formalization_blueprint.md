@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V32`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V33`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -420,10 +420,11 @@ Next packet:
   mathlib positive-part form and Durrett's textbook initial-positive-part
   subtraction display.  Theorem 4.2.11 now has direct mathlib L1/eLpNorm
   convergence wrappers: almost-sure existence, convergence to `ℱ.limitProcess`,
-  L1 membership, integrability of the limit, and martingale specializations.
-  The next active target is the exact positive-part-boundedness bridge for
-  Durrett's source hypothesis in Theorem 4.2.11.  Theorem 4.1.16 remains
-  deferred unless a direct kernel API appears.
+  L1 membership, integrability of the limit, martingale specializations, and
+  the exact positive-part-boundedness bridge for Durrett's source hypothesis.
+  The next active target is Theorem 4.2.12 nonnegative supermartingale
+  convergence.  Theorem 4.1.16 remains deferred unless a direct kernel API
+  appears.
 
 Support-only dependencies:
 

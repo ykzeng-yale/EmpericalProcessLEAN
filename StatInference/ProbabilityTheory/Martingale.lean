@@ -652,6 +652,67 @@ theorem durrett2019_theorem_4_2_10_upcrossing_inequality_sub_initial
   exact hfirst.trans (hY.sum_mul_upcrossingStrat_le (a := 0) (b := b - a) (N := n) (n := n))
 
 /--
+L1 bridge used by Durrett 2019, Theorem 4.2.11: a Bochner bound on
+`∫ ‖X‖` gives the corresponding `eLpNorm · 1` bound consumed by mathlib's
+martingale convergence theorem.
+-/
+theorem durrett2019_eLpNorm_one_le_of_integral_norm_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} {X : Ω -> ℝ} (hX : Integrable X μ)
+    {C : ℝ} (hC_nonneg : 0 ≤ C) (hC : ∫ ω, ‖X ω‖ ∂μ ≤ C) :
+    eLpNorm X 1 μ ≤ ENNReal.ofReal C := by
+  rw [eLpNorm_one_eq_lintegral_enorm]
+  refine (ENNReal.le_ofReal_iff_toReal_le ?_ hC_nonneg).2 ?_
+  · exact (hasFiniteIntegral_iff_enorm.mp hX.2).ne
+  · rwa [← integral_norm_eq_lintegral_enorm hX.1]
+
+/--
+Durrett 2019, Theorem 4.2.11 bridge: for a submartingale, a uniform bound on
+the positive-part expectations gives the L1/eLpNorm boundedness hypothesis
+used by mathlib's almost-sure convergence theorem.
+
+The estimate is Durrett's proof algebra:
+`E X_n ≥ E X_0` and `|x| = 2 x^+ - x`, hence
+`E |X_n| ≤ 2 B - E X_0` when `E X_n^+ ≤ B`.
+-/
+theorem durrett2019_theorem_4_2_11_eLpNorm_bdd_of_integral_posPart_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ μ)
+    {B : ℝ} (hB : ∀ n, ∫ ω, (X n ω)⁺ ∂μ ≤ B) :
+    ∀ n, eLpNorm (X n) 1 μ ≤
+      ENNReal.ofReal (2 * B - ∫ ω, X 0 ω ∂μ) := by
+  intro n
+  have h_integral_mono : ∫ ω, X 0 ω ∂μ ≤ ∫ ω, X n ω ∂μ := by
+    have hle : X 0 ≤ᵐ[μ] μ[X n | ℱ 0] :=
+      hX.ae_le_condExp (Nat.zero_le n)
+    have hmono := integral_mono_ae (hX.integrable 0) integrable_condExp hle
+    simpa [integral_condExp (ℱ.le 0)] using hmono
+  have hpos_int : Integrable (fun ω => (X n ω)⁺) μ := by
+    simpa using (hX.integrable n).pos_part
+  have hnorm_eq :
+      ∫ ω, ‖X n ω‖ ∂μ =
+        2 * ∫ ω, (X n ω)⁺ ∂μ - ∫ ω, X n ω ∂μ := by
+    have hpoint : (fun ω => ‖X n ω‖) =
+        fun ω => 2 * (X n ω)⁺ - X n ω := by
+      ext ω
+      have h := add_abs_eq_two_nsmul_posPart (X n ω)
+      have h' : X n ω + |X n ω| = 2 * (X n ω)⁺ := by
+        simpa [two_nsmul] using h
+      rw [Real.norm_eq_abs]
+      linarith
+    rw [hpoint]
+    rw [integral_sub (hpos_int.const_mul 2) (hX.integrable n)]
+    rw [integral_const_mul]
+  have hnorm_bound :
+      ∫ ω, ‖X n ω‖ ∂μ ≤ 2 * B - ∫ ω, X 0 ω ∂μ := by
+    rw [hnorm_eq]
+    nlinarith [hB n, h_integral_mono]
+  have hC_nonneg : 0 ≤ 2 * B - ∫ ω, X 0 ω ∂μ :=
+    (integral_nonneg fun ω => norm_nonneg (X n ω)).trans hnorm_bound
+  exact durrett2019_eLpNorm_one_le_of_integral_norm_le (hX.integrable n) hC_nonneg hnorm_bound
+
+/--
 Durrett 2019, Theorem 4.2.11, L1-bounded source form: an L1-bounded
 submartingale has an almost-sure finite limit.
 
@@ -727,6 +788,60 @@ theorem durrett2019_theorem_4_2_11_martingale_limitProcess_integrable_of_eLpNorm
     Integrable (ℱ.limitProcess X μ) μ :=
   durrett2019_theorem_4_2_11_submartingale_limitProcess_integrable_of_eLpNorm_bdd
     hX.submartingale hR
+
+/--
+Durrett 2019, Theorem 4.2.11, source positive-part form: if a submartingale
+has uniformly bounded positive-part expectations, then it has an almost-sure
+finite limit.
+-/
+theorem durrett2019_theorem_4_2_11_submartingale_exists_ae_tendsto_of_integral_posPart_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ μ)
+    {B : ℝ} (hB : ∀ n, ∫ ω, (X n ω)⁺ ∂μ ≤ B) :
+    ∀ᵐ ω ∂μ, ∃ x : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 x) :=
+  hX.exists_ae_tendsto_of_bdd
+    (durrett2019_theorem_4_2_11_eLpNorm_bdd_of_integral_posPart_bdd hX hB)
+
+/--
+Durrett 2019, Theorem 4.2.11, source positive-part form with the canonical
+mathlib limit process.
+-/
+theorem durrett2019_theorem_4_2_11_submartingale_ae_tendsto_limitProcess_of_integral_posPart_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ μ)
+    {B : ℝ} (hB : ∀ n, ∫ ω, (X n ω)⁺ ∂μ ≤ B) :
+    ∀ᵐ ω ∂μ, Tendsto (fun n => X n ω) atTop (𝓝 (ℱ.limitProcess X μ ω)) :=
+  hX.ae_tendsto_limitProcess
+    (durrett2019_theorem_4_2_11_eLpNorm_bdd_of_integral_posPart_bdd hX hB)
+
+/--
+Durrett 2019, Theorem 4.2.11, source positive-part form: the canonical
+almost-sure limit is integrable.
+-/
+theorem durrett2019_theorem_4_2_11_submartingale_limitProcess_integrable_of_integral_posPart_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ μ)
+    {B : ℝ} (hB : ∀ n, ∫ ω, (X n ω)⁺ ∂μ ≤ B) :
+    Integrable (ℱ.limitProcess X μ) μ :=
+  (hX.memLp_limitProcess
+    (durrett2019_theorem_4_2_11_eLpNorm_bdd_of_integral_posPart_bdd hX hB)).integrable le_rfl
+
+/--
+Durrett 2019, Theorem 4.2.11 martingale consequence, source positive-part
+form: a martingale with uniformly bounded positive-part expectations converges
+almost surely to its filtration limit process.
+-/
+theorem durrett2019_theorem_4_2_11_martingale_ae_tendsto_limitProcess_of_integral_posPart_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ μ)
+    {B : ℝ} (hB : ∀ n, ∫ ω, (X n ω)⁺ ∂μ ≤ B) :
+    ∀ᵐ ω ∂μ, Tendsto (fun n => X n ω) atTop (𝓝 (ℱ.limitProcess X μ ω)) :=
+  durrett2019_theorem_4_2_11_submartingale_ae_tendsto_limitProcess_of_integral_posPart_bdd
+    hX.submartingale hB
 
 /-! ## Durrett, Example 4.2.1 -/
 

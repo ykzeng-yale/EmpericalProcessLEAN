@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V32
+## Live In-Thread Goal Prompt V33
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -13,11 +13,10 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane only: Durrett Chapter 4.2 martingales in
 `StatInference/ProbabilityTheory/Martingale.lean`.  Treat compiled Chapter 2,
 Chapter 3, Chapter 4.1 through Theorem 4.1.15, Examples 4.2.1-4.2.3, and
-Theorems 4.2.4-4.2.10 as closed dependencies.  Treat Theorem 4.2.11's
-mathlib L1/eLpNorm-bounded convergence wrappers as compiled support, while the
-exact Durrett positive-part hypothesis bridge remains the active target.
-Theorem 4.1.16 remains deferred unless a future targeted kernel search finds a
-direct source-shaped API.
+Theorems 4.2.4-4.2.11 as closed dependencies, including the exact
+positive-part-boundedness source bridge for Theorem 4.2.11.  Theorem 4.1.16
+remains deferred unless a future targeted kernel search finds a direct
+source-shaped API.
 
 Current compiled Chapter 4.2 frontier: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -31,19 +30,19 @@ supermartingales, and martingales; and Theorem 4.2.10 upcrossing inequality
 wrappers, including the textbook initial-positive-part subtraction display;
 and Theorem 4.2.11 direct L1/eLpNorm convergence wrappers:
 almost-sure existence, convergence to `ℱ.limitProcess`, L1 membership,
-integrability of the limit, and martingale specializations.
+integrability of the limit, martingale specializations, and source-facing
+positive-part-boundedness wrappers matching Durrett's `sup_n E X_n^+ < ∞`
+hypothesis through a compiled `eLpNorm` bridge.
 
-Next theorem-sized packet: close the exact Durrett positive-part hypothesis
-bridge for Theorem 4.2.11.  Prove a source-facing lemma that converts a
-submartingale bound on the positive parts, together with the submartingale
-expectation lower bound from time zero, into the mathlib hypothesis
-`∀ n, eLpNorm (X n) 1 μ ≤ R`.  Then add a final wrapper whose assumption
-matches `sup_n E X_n^+ < ∞` as closely as the local integral API allows.
-Search only the relevant positive/negative part and L1 APIs before editing:
-`integral_eq_norm_posPart_sub`, `memLp_one_iff_integrable`,
-`eLpNorm_one_eq_lintegral_enorm`, `Submartingale.ae_le_condExp`, and
-monotonicity of expectations for submartingales.  Do not revisit solved Chapter
-4.1 facts, examples, or Theorems 4.2.4-4.2.10.
+Next theorem-sized packet: package Theorem 4.2.12, the nonnegative
+supermartingale convergence theorem.  Use the compiled Theorem 4.2.11
+positive-part source form on `Y_n = -X_n` for the a.s. convergence and
+integrable-limit part.  Then attempt the expectation inequality
+`E X ≤ E X_0` using the monotonicity of supermartingale expectations plus
+Fatou/lower-semicontinuity for nonnegative limits.  If the Fatou inequality is
+not immediately direct in mathlib, first add the compiled convergence wrapper
+and document the expectation bridge as the next narrow target.  Do not revisit
+solved Chapter 4.1 facts, examples, or Theorems 4.2.4-4.2.11.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -406,11 +405,10 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should close the positive-part-to-L1 bridge for the
-exact Durrett Theorem 4.2.11 hypothesis, reusing the compiled eLpNorm
-convergence wrappers in `StatInference/ProbabilityTheory/Martingale.lean`.
-Keep Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
-source-shaped API.
+The next likely packet should package Theorem 4.2.12 nonnegative
+supermartingale convergence, reusing the compiled Theorem 4.2.11 positive-part
+source wrapper on the negated supermartingale.  Keep Theorem 4.1.16 deferred
+unless a targeted kernel search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -522,6 +520,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V32` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V33` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
