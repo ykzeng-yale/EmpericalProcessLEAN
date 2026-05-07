@@ -1532,5 +1532,52 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreResidu
       (scaledEstimator := scaledEstimator) (Z := Z) (R := R)
       hScoreCLT hLinearization_split hR hR_meas
 
+/--
+van der Vaart 1998, Theorem 5.41, scaled-estimator handoff from the Taylor
+score equation.
+
+The source Taylor expansion naturally yields an equation of the form
+`V x_n = -(score_n + residual_n)`, where `V = P dot psi_theta0` and
+`x_n = sqrt n (thetaHat_n - theta0)`.  Given a left inverse `Vinv`, this
+theorem converts that equation into the inverse-derivative linearization
+consumed by the Score-residual handoff.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreEquation
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {score residual : ℕ -> Ω -> Score}
+    {scaledEstimator : ℕ -> Ω -> Θ} {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hResidual : TendstoInMeasure P residual atTop 0)
+    (hResidual_meas : ∀ n, AEMeasurable (residual n) P)
+    (hScoreEquation : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, V (scaledEstimator n ω) = -(score n ω + residual n ω)) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hLinearization : ∀ n : ℕ,
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (score n ω + residual n ω))
+        =ᵐ[P] scaledEstimator n := by
+    intro n
+    exact (hScoreEquation n).mono fun ω hω => by
+      calc
+        (-Vinv : Score →L[ℝ] Θ) (score n ω + residual n ω)
+            = Vinv (-(score n ω + residual n ω)) := by simp
+        _ = Vinv (V (scaledEstimator n ω)) := by rw [← hω]
+        _ = scaledEstimator n ω := hLeftInverse _
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreResidual
+      (P := P) (Q := Q) (Vinv := Vinv) (score := score)
+      (residual := residual) (scaledEstimator := scaledEstimator) (Z := Z)
+      hScoreCLT hResidual hResidual_meas hLinearization
+
 end AsymptoticStatistics
 end StatInference

@@ -492,7 +492,10 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreResidual`,
   so the remaining Theorem 5.41 source work can focus on producing a
   Score-space Taylor residual and a.e. linearization from derivative LLN and
-  dominated second derivatives.
+  dominated second derivatives.  The score-equation bridge
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreEquation`
+  now also packages the left-inverse algebra from
+  `V scaledEstimator = -(score + residual)` into that residual handoff.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

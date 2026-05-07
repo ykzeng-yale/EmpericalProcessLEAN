@@ -563,9 +563,13 @@ Chapter 4 handoff:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreResidual`
   consumes the source-shaped Taylor equality
   `scaledEstimator = -(P dot psi_theta0)^{-1} (score + residual)`.
+- Chapter 5.41 Taylor score-equation bridge:
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreEquation`
+  converts `V scaledEstimator = -(score + residual)` through a left inverse
+  `Vinv` and feeds the compiled Score-residual handoff.
 
-Latest verified repository base before this packet: `ba15236`
-(`Add Vaart theorem 5.41 linearization handoff`).
+Latest verified repository base before this packet: `866ab1f`
+(`Add Durrett Lindeberg row error bound bridge`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -587,9 +591,10 @@ verify again before push.
 
 Discharge the source-shaped Taylor/LLN inputs for Vaart Theorem 5.41: prove
 that derivative LLN plus the dominated second-derivative Taylor term produce a
-Score-valued residual `residual_n = o_P(1)` and the a.e. identity consumed by
-the compiled Score-residual bridge.  Keep Gaussian-law preservation as a
-separate lightweight packet or in a module that already imports Gaussian APIs.
+Score-valued residual `residual_n = o_P(1)` and the a.e. score equation
+consumed by the compiled score-equation bridge.  Keep Gaussian-law
+preservation as a separate lightweight packet or in a module that already
+imports Gaussian APIs.
 
 ## Reuse Dependencies
 

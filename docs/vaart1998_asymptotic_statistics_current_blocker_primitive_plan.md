@@ -764,25 +764,26 @@ Chapter 3 theorem-facing wrappers compiling:
 248. Theorem 5.41 scaled-estimator handoff from a Score-valued Taylor
    residual:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreResidual`.
+249. Theorem 5.41 scaled-estimator handoff from the Taylor score equation:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreEquation`.
 
-Latest verified repository base before this packet: `ba15236`
-(`Add Vaart theorem 5.41 linearization handoff`).
+Latest verified repository base before this packet: `866ab1f`
+(`Add Durrett Lindeberg row error bound bridge`).
 
 The current theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators.  It packages the continuous-linear
-map step that sends a Score-space Taylor residual `o_P(1)` to a
-parameter-space remainder, then feeds the compiled scaled-estimator handoff
-from the source-shaped equality
-`scaledEstimator = -(P dot psi_theta0)^{-1} (score + residual)`.
+asymptotic-normality route for Z-estimators.  It packages the left-inverse
+algebra step that converts the Taylor score equation
+`V scaledEstimator = -(score + residual)` into the exact inverse-derivative
+linearization consumed by the Score-residual handoff.
 
 The next aggressive packet should discharge the source-shaped Taylor/LLN
 inputs for Theorem 5.41: prove that the derivative LLN and bounded
 second-derivative Taylor term produce a Score-valued residual `residual_n =
-o_P(1)` and the a.e. identity
-`sqrt n (thetaHat_n - theta0) =
--(P dot psi_theta0)^{-1} (sqrt n Psi_n(theta0) + residual_n)`.  Keep
-Gaussian-law preservation in a Gaussian-bearing module or as a separate
-lightweight packet so `MEstimators.lean` remains fast to verify.
+o_P(1)` and the a.e. score equation
+`(P dot psi_theta0) (sqrt n (thetaHat_n - theta0)) =
+-(sqrt n Psi_n(theta0) + residual_n)`.  Keep Gaussian-law preservation in a
+Gaussian-bearing module or as a separate lightweight packet so
+`MEstimators.lean` remains fast to verify.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
