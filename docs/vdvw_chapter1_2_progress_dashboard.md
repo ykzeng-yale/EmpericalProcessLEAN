@@ -3086,3 +3086,13 @@ It converts the existing `ENNReal.ofReal` outer-expectation bound from
 `hphi_id` into the real inequality needed by the fixed-radius event-comparison
 route.  The remaining proof target is still upstream: prove the `hphi_id`
 comparison / selected-cover symmetrization source theorem.
+
+2026-05-07 selected-cardinality comparison transport:
+`Theorem243.lean` now adds
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_selected_bound`,
+which upgrades eventual a.e. domination by the selected least empirical-cover
+finite-net scale to domination by a larger entropy-controlled cardinality.
+This is theorem-facing support for the exact Theorem 2.4.3 source route, not a
+new final endpoint.  Remaining blocker: prove the selected a.e. domination or
+an equivalent VdV&W nonmeasurable entropy comparison from the textbook
+ghost/Rademacher selected-cover argument.

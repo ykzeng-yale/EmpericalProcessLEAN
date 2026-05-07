@@ -7666,3 +7666,18 @@ Hoeffding display scale.  This is not another final endpoint: it reduces the
 next source obligation to proving the actual `hphi_id` symmetrization
 comparison and then feeding the resulting real bound into the existing
 scaled selected finite-net event route.
+
+2026-05-07 Theorem 2.4.3 selected-cardinality comparison transport:
+after searching the fixed-radius comparison route and finite-net scale API,
+`Theorem243.lean` now proves
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_selected_bound`.
+This constructor lets the source proof work with the selected least empirical
+cover cardinality in the eventual a.e. finite-net domination step, while the
+outer-entropy/log-cardinality hypothesis remains attached to any larger
+entropy-controlled random cardinality.  The proof transports the selected
+bound through `vdVWTheorem243FiniteNetHoeffdingUpper_mono_cardinality` and the
+existing a.e. comparison constructor.  This closes only the selected-to-
+external cardinality transport gap; the upstream textbook blocker is still to
+prove the selected a.e. finite-net domination itself from ghost samples,
+Rademacher symmetrization, and selected empirical covers, or to prove the
+equivalent nonmeasurable entropy-to-comparison primitive.

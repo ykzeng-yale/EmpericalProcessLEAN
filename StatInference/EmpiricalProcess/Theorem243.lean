@@ -30871,6 +30871,59 @@ theorem VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual
     simpa using hmem
 
 /--
+Selected-cardinality a.e. finite-net domination supplies the fixed-radius
+outer-probability comparison for a larger entropy-controlled cardinality.
+
+The selected-cover argument naturally proves domination with the selected
+least empirical-cover cardinality.  The book entropy condition may instead be
+recorded for any larger random finite-cover cardinality.  This constructor
+keeps that source proof shape usable for the comparison record by transferring
+the selected bound through monotonicity of the Hoeffding display scale.
+-/
+theorem
+    VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_selected_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M)
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n)
+    (hae_selected :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ≤
+          vdVWTheorem243FiniteNetHoeffdingUpper
+              (selectedCardinality eta n sample n) n M + eta) :
+    VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison P
+      indexClass classFun envelope M cardinality := by
+  refine
+    VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_bound
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (cardinality := cardinality)
+      hM_pos ?_
+  intro eta heta
+  filter_upwards [hae_selected eta heta, hselected_le eta heta] with n hae_n hle_n
+  filter_upwards [hae_n] with sample hsample
+  have hupper_le :
+      vdVWTheorem243FiniteNetHoeffdingUpper
+          (selectedCardinality eta n sample n) n M ≤
+        vdVWTheorem243FiniteNetHoeffdingUpper
+          (cardinality eta n sample n) n M :=
+    vdVWTheorem243FiniteNetHoeffdingUpper_mono_cardinality hM_pos.le
+      (hle_n sample)
+  exact hsample.trans (add_le_add hupper_le le_rfl)
+
+/--
 Fixed-`M` centered-truncated convergence from a pure outer-probability finite-net
 comparison.
 
