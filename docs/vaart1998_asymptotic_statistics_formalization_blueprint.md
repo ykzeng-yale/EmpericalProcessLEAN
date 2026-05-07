@@ -538,8 +538,13 @@ Initial modules:
   `vaart1998_theorem_5_41_secondDerivativeResidual_aemeasurable_of_operator`
   plus
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN`,
+  and the empirical-Hessian envelope packet adds
+  `vaart1998_empiricalAverageVector_norm_le_empiricalAverage_envelope`,
+  `vaart1998_theorem_5_41_empiricalSecondDerivativeAction_opNorm_le_empiricalEnvelope`,
+  and
+  `vaart1998_theorem_5_41_curvatureOpBound_of_empiricalSecondDerivative_envelope`,
   so the remaining critical path is the selected analytic Taylor witness/action
-  and the dominated empirical operator-norm bound.
+  and the literal quadratic Taylor display it induces.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

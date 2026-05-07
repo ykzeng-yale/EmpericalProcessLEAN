@@ -613,10 +613,11 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 quadratic residual bound handoff`).
+(`Add Vaart theorem 5.41 empirical Hessian envelope bound`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
+- `lake build StatInference.AsymptoticStatistics.MEstimators`
 - `git diff --check`
 - proof-hole and credential-pattern scans on changed Vaart files
 
@@ -630,10 +631,9 @@ Live continuation prompt: use the compact prompt in
 
 Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41 in
 `MEstimators.lean`: construct the selected analytic Taylor witness/action for
-`Psi_n(thetaHat_n)` and prove the dominated empirical operator-norm bound for
-that random second-derivative action.  The auxiliary quadratic residual object
-is no longer a blocker; the current frontier derives it from the literal
-Taylor display.
+`Psi_n(thetaHat_n)` and package the literal quadratic Taylor display it
+induces.  The auxiliary quadratic residual object and the empirical-Hessian
+dominated operator-norm bound are no longer blockers.
 
 ## Reuse Dependencies
 

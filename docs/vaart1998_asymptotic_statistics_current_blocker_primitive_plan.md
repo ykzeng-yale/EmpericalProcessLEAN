@@ -13,14 +13,15 @@ Current frontier:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN`
 consumes the literal quadratic Taylor display, derives the auxiliary residual
 identity and measurability internally, and feeds the compiled Theorem 5.41
-probability handoff.
+probability handoff.  The empirical-Hessian envelope route now also supplies
+`vaart1998_theorem_5_41_curvatureOpBound_of_empiricalSecondDerivative_envelope`,
+which turns the textbook domination assumption into the `hCurvatureOpBound`
+field consumed by that frontier.
 
 Next packet: instantiate the remaining source Taylor hypotheses.  Target the
-selected Taylor witness/action for `Psi_n(thetaHat_n)`, and prove the
-dominated operator-norm bound for the empirical second-derivative action from
-the textbook envelope on second partial derivatives.  If the full analytic
-Taylor theorem is too large, first package the empirical-Hessian dominated
-average bound as a source-shaped theorem consumed by the current frontier.
+selected Taylor witness/action for `Psi_n(thetaHat_n)` and package the
+resulting literal quadratic Taylor display.  The auxiliary residual object and
+the empirical-Hessian dominated operator-norm bound are no longer blockers.
 
 Search and reuse local/mathlib APIs first; do not revisit completed Chapter
 2-4 substrate, Gaussian endpoints, or general empirical-process plumbing except
@@ -748,14 +749,20 @@ compiling:
    `vaart1998_theorem_5_41_secondDerivativeResidual_aemeasurable_of_operator`.
 270. Theorem 5.41 source handoff from the literal quadratic Taylor expansion:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN`.
+271. Generic finite-sample dominated empirical vector-average bound:
+   `vaart1998_empiricalAverageVector_norm_le_empiricalAverage_envelope`.
+272. Theorem 5.41 finite-sample dominated Hessian average:
+   `vaart1998_theorem_5_41_empiricalSecondDerivativeAction_opNorm_le_empiricalEnvelope`.
+273. Theorem 5.41 empirical second-derivative action operator-norm bound:
+   `vaart1998_theorem_5_41_curvatureOpBound_of_empiricalSecondDerivative_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 literal quadratic Taylor handoff`).
+(`Add Vaart theorem 5.41 empirical Hessian envelope bound`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by accepting the literal source
-Taylor expansion with the quadratic second-derivative term and deriving the
-auxiliary residual identity and residual measurability internally.  The most
+asymptotic-normality route for Z-estimators by proving the finite-sample
+empirical-Hessian envelope bound and the sequence-level `hCurvatureOpBound`
+constructor consumed by the literal quadratic Taylor handoff.  The most
 advanced handoff still derives the source Taylor equation from the root
 equation `Psi_n(thetaHat_n) = 0` and the Taylor expansion of
 `Psi_n(thetaHat_n)`, then performs the algebraic split
@@ -766,8 +773,7 @@ bridge.
 
 The next aggressive packet should prove the remaining source Taylor fields:
 the selected analytic Taylor witness/action for `Psi_n(thetaHat_n)` and the
-dominated empirical operator-norm bound for the random second-derivative
-action.
+literal quadratic Taylor display it induces.
 
 ## Execution Notes
 

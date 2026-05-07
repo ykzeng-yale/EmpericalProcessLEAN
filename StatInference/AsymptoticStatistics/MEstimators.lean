@@ -1354,6 +1354,112 @@ theorem vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_vector_o
     h_uniform_outer h_approx_outer h_zero h_separated
 
 /--
+Finite-sample dominated empirical vector average.
+
+If a vector-valued statistic is pointwise bounded in norm by a nonnegative
+envelope, then the norm of its empirical average is bounded by the scalar
+empirical average of the envelope.
+-/
+theorem vaart1998_empiricalAverageVector_norm_le_empiricalAverage_envelope
+    {Observation E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {n : ℕ} (sample : SampleAt Observation n)
+    (statistic : Observation -> E)
+    (envelope : Observation -> ℝ)
+    (hEnvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (hBound : ∀ x, ‖statistic x‖ ≤ envelope x) :
+    ‖empiricalAverageVector sample statistic‖ ≤
+      ‖empiricalAverage sample envelope‖ := by
+  by_cases hn : n = 0
+  · subst n
+    simp [empiricalAverageVector, empiricalAverage]
+  · have hn_nat_pos : 0 < n := Nat.pos_of_ne_zero hn
+    have hn_pos : 0 < (n : ℝ) := by exact_mod_cast hn_nat_pos
+    have hinv_nonneg : 0 ≤ ((n : ℝ)⁻¹) :=
+      inv_nonneg.mpr (le_of_lt hn_pos)
+    have hsum_norm_le :
+        ‖∑ i : Fin n, statistic (sample i)‖ ≤
+          ∑ i : Fin n, ‖statistic (sample i)‖ :=
+      norm_sum_le _ _
+    have hsum_bound :
+        (∑ i : Fin n, ‖statistic (sample i)‖) ≤
+          ∑ i : Fin n, envelope (sample i) :=
+      Finset.sum_le_sum fun i _hi => hBound (sample i)
+    have hvector_bound :
+        ‖empiricalAverageVector sample statistic‖ ≤
+          (n : ℝ)⁻¹ * ∑ i : Fin n, envelope (sample i) := by
+      rw [empiricalAverageVector_eq_inv_smul_sum, norm_smul,
+        Real.norm_of_nonneg hinv_nonneg]
+      exact
+        mul_le_mul_of_nonneg_left (hsum_norm_le.trans hsum_bound)
+          hinv_nonneg
+    have hsum_nonneg :
+        0 ≤ ∑ i : Fin n, envelope (sample i) :=
+      Finset.sum_nonneg fun i _hi => hEnvelope_nonneg (sample i)
+    have havg_nonneg : 0 ≤ empiricalAverage sample envelope := by
+      rw [empiricalAverage_eq_sum_div]
+      exact div_nonneg hsum_nonneg (le_of_lt hn_pos)
+    calc
+      ‖empiricalAverageVector sample statistic‖
+          ≤ (n : ℝ)⁻¹ * ∑ i : Fin n, envelope (sample i) := hvector_bound
+      _ = ‖empiricalAverage sample envelope‖ := by
+          rw [Real.norm_of_nonneg havg_nonneg,
+            empiricalAverage_eq_sum_div, div_eq_mul_inv, mul_comm]
+
+/--
+van der Vaart 1998, Theorem 5.41, finite-sample dominated Hessian average.
+
+If each selected second-derivative action is bounded in operator norm by a
+nonnegative envelope, then the operator norm of its empirical average is
+bounded by the scalar empirical average of the envelope.  This packages the
+source proof line
+`‖n⁻¹ sum ddotPsi_i‖ <= n⁻¹ sum envelope_i`.
+-/
+theorem vaart1998_theorem_5_41_empiricalSecondDerivativeAction_opNorm_le_empiricalEnvelope
+    {Observation Score Θ : Type*}
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    {n : ℕ} (sample : SampleAt Observation n)
+    (secondDerivative : Observation -> Θ →L[ℝ] Θ →L[ℝ] Score)
+    (envelope : Observation -> ℝ)
+    (hEnvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (hBound : ∀ x, ‖secondDerivative x‖ ≤ envelope x) :
+    ‖empiricalAverageVector sample secondDerivative‖ ≤
+      ‖empiricalAverage sample envelope‖ :=
+  vaart1998_empiricalAverageVector_norm_le_empiricalAverage_envelope
+    (sample := sample) (statistic := secondDerivative) (envelope := envelope)
+    hEnvelope_nonneg hBound
+
+/--
+van der Vaart 1998, Theorem 5.41, empirical second-derivative action
+operator-norm bound.
+
+This is the sequence-level source wrapper for the dominated Hessian average:
+the empirical average of selected second derivatives is bounded by the
+empirical average of the fixed envelope, exactly in the form consumed by the
+current quadratic Taylor handoff.
+-/
+theorem vaart1998_theorem_5_41_curvatureOpBound_of_empiricalSecondDerivative_envelope
+    {Ω Observation Score Θ : Type*}
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (secondDerivative : ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] Score)
+    (envelope : Observation -> ℝ)
+    (hEnvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (hBound : ∀ᶠ n in atTop, ∀ ω x,
+      ‖secondDerivative n ω x‖ ≤ envelope x) :
+    ∀ᶠ n in atTop, ∀ ω,
+      ‖empiricalAverageVector (samples n ω) (secondDerivative n ω)‖ ≤
+        ‖empiricalAverage (samples n ω) envelope‖ := by
+  filter_upwards [hBound] with n hBound_n
+  intro ω
+  exact
+    vaart1998_theorem_5_41_empiricalSecondDerivativeAction_opNorm_le_empiricalEnvelope
+      (sample := samples n ω) (secondDerivative := secondDerivative n ω)
+      (envelope := envelope) hEnvelope_nonneg (hBound_n ω)
+
+/--
 van der Vaart 1998, Theorem 5.41, scalar-small times stochastically bounded
 input is negligible.
 
