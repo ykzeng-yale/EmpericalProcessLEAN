@@ -379,6 +379,11 @@ Initial modules:
   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_targetProbabilityLocalization_real`
   consume the target-probability certificate directly while keeping it
   separate from the stronger a.e. target-localization/measurability route.
+  The measurable-estimator equivalence endpoint
+  `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_with_probability_tending_to_one`
+  transfers the local-inverse candidate's `sqrt n` delta-method limit to any
+  estimator whose scaled version agrees with that candidate with probability
+  tending to one.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

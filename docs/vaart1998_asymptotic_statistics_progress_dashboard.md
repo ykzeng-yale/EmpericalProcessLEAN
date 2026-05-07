@@ -414,29 +414,32 @@ Chapter 4 handoff:
   convergence-in-probability difference, and
   `vaart1998_tendstoInDistribution_of_eq_with_probability_tending_to_one`
   transfers convergence in distribution by Slutsky.
+- Chapter 4 measurable-estimator asymptotic equivalence:
+  `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_with_probability_tending_to_one`
+  proves that any a.e.-measurable estimator whose scaled version agrees with
+  the local-inverse candidate with probability tending to one inherits the same
+  `sqrt n` delta-method limit.
 
-Latest remote base before this packet: `3f8dd68`.  Latest pushed Vaart packet
-before this packet: `5876ba7`
-(`Add Vaart target probability consumers`).
+Latest remote base before this packet: `0f2b44f`.  Latest pushed Vaart packet
+before this packet: `1bb6ccb`
+(`Add Vaart asymptotic equivalence bridge`).
 Current packet verification passed for:
 
-- `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
-- `lake build StatInference.AsymptoticStatistics.Basic`
-- `lake build StatInference.AsymptoticStatistics.MomentEstimators`
+- manual `lake env lean StatInference/AsymptoticStatistics/Basic.lean -o .../Basic.olean -i .../Basic.ilean`
+- manual `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .../MomentEstimators.olean -i .../MomentEstimators.ilean`
 - `git diff --check`
 - proof-hole and secret scans on changed Vaart files
 
-Root build note: root imports do not change in this packet, but
-`MomentEstimators.lean` imports `Basic.lean`, so the reliable gate is the
-focused Basic check plus targeted Basic and MomentEstimators module builds.
+Root build note: this worktree uses a symlinked `.lake` directory; focused
+checks must compile the Vaart-worktree `Basic.lean` artifact before compiling
+`MomentEstimators.lean`.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 by consuming the new asymptotic-equivalence bridge:
-package the theorem that any measurable estimator equal to the local inverse
-candidate with probability tending to one inherits the same `sqrt n`
-delta-method limit.  After that, continue toward measurable-selection or
-measurable-extension infrastructure.
+Continue Vaart Chapter 4.1 by specializing the generic measurable-estimator
+asymptotic-equivalence wrapper to the finite-coordinate Theorem 4.1 source
+routes.  After that, continue toward measurable-selection or measurable-
+extension infrastructure.
 
 ## Reuse Dependencies
 

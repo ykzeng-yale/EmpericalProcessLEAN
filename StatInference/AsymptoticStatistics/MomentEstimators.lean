@@ -3201,6 +3201,96 @@ theorem vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_aemeasurable
     hEmpiricalMoment hInvEmpirical
 
 /--
+Textbook `sqrt n` delta-method handoff for any estimator that agrees with the
+local-inverse candidate with probability tending to one.
+
+This packages the usual asymptotic-equivalence step after the local inverse has
+been used as a theorem-facing candidate.
+-/
+theorem vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_with_probability_tending_to_one
+    {Ω : Type u} {Ω' : Type v} {M : Type w} {Θ : Type x}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [MeasurableSpace M] [SecondCountableTopology M] [BorelSpace M]
+    [OpensMeasurableSpace M] [CompleteSpace M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    {empiricalMoment : ℕ -> Ω -> M} {Z : Ω' -> M}
+    {eInv : M -> Θ} {eta0 : M} {theta0 : Θ}
+    {thetaHat : ℕ -> Ω -> Θ}
+    (Dinv : M →L[ℝ] Θ)
+    (hInv_deriv : HasFDerivAt eInv Dinv eta0)
+    (heta0 : eInv eta0 = theta0)
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω => √(n : ℝ) • (empiricalMoment n ω - eta0)) atTop Z
+        (fun _ => P) Q)
+    (hEmpiricalMoment : ∀ n, AEMeasurable (empiricalMoment n) P)
+    (hInvEmpirical : ∀ n, AEMeasurable (fun ω => eInv (empiricalMoment n ω)) P)
+    (hThetaHat : ∀ n, AEMeasurable (thetaHat n) P)
+    (hScaledEq_meas : ∀ n : ℕ,
+      MeasurableSet
+        {ω : Ω |
+          √(n : ℝ) • (thetaHat n ω - theta0) =
+            √(n : ℝ) • (eInv (empiricalMoment n ω) - theta0)})
+    (hEq_prob : Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω | thetaHat n ω = eInv (empiricalMoment n ω)})
+      atTop (𝓝 1)) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω => √(n : ℝ) • (thetaHat n ω - theta0)) atTop
+      (fun ω => Dinv (Z ω)) (fun _ => P) Q := by
+  have hCandidate :
+      TendstoInDistribution
+        (fun (n : ℕ) ω =>
+          √(n : ℝ) • (eInv (empiricalMoment n ω) - theta0)) atTop
+        (fun ω => Dinv (Z ω)) (fun _ => P) Q :=
+    vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_aemeasurable
+      (empiricalMoment := empiricalMoment) (Z := Z) (eInv := eInv)
+      (eta0 := eta0) (theta0 := theta0) (Dinv := Dinv)
+      hInv_deriv heta0 hCLT hEmpiricalMoment hInvEmpirical
+  have hScaledEq_prob :
+      Tendsto (fun n : ℕ =>
+        P.real
+          {ω : Ω |
+            √(n : ℝ) • (thetaHat n ω - theta0) =
+              √(n : ℝ) • (eInv (empiricalMoment n ω) - theta0)})
+        atTop (𝓝 1) := by
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le
+      hEq_prob tendsto_const_nhds ?_ ?_
+    · intro n
+      refine measureReal_mono ?_
+      intro ω hω
+      have hEq : thetaHat n ω = eInv (empiricalMoment n ω) := hω
+      simp [hEq]
+    · intro n
+      have hle :
+          P.real
+              {ω : Ω |
+                √(n : ℝ) • (thetaHat n ω - theta0) =
+                  √(n : ℝ) • (eInv (empiricalMoment n ω) - theta0)} ≤
+            P.real Set.univ :=
+        measureReal_mono (μ := P) (Set.subset_univ _)
+      simpa using hle
+  have hDiff_meas : ∀ n : ℕ,
+      AEMeasurable
+        (fun ω : Ω =>
+          √(n : ℝ) • (thetaHat n ω - theta0) -
+            √(n : ℝ) • (eInv (empiricalMoment n ω) - theta0)) P := by
+    intro n
+    exact
+      (((hThetaHat n).sub aemeasurable_const).const_smul (√(n : ℝ))).sub
+        (((hInvEmpirical n).sub aemeasurable_const).const_smul (√(n : ℝ)))
+  exact
+    vaart1998_tendstoInDistribution_of_eq_with_probability_tending_to_one
+      (P := P) (Q := Q)
+      (X := fun (n : ℕ) ω => √(n : ℝ) • (eInv (empiricalMoment n ω) - theta0))
+      (Y := fun (n : ℕ) ω => √(n : ℝ) • (thetaHat n ω - theta0))
+      (Z := fun ω => Dinv (Z ω))
+      hCandidate hScaledEq_meas hScaledEq_prob hDiff_meas
+
+/--
 Certificate form of van der Vaart Theorem 4.1's delta-method step.
 -/
 theorem vaart1998_theorem_4_1_moment_estimator_delta_method_of_certificate

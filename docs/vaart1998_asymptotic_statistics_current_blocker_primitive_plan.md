@@ -608,22 +608,22 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_tendstoInMeasure_zero_of_eq_with_probability_tending_to_one`.
 194. Chapter 2 asymptotic-equivalence distributional transfer:
    `vaart1998_tendstoInDistribution_of_eq_with_probability_tending_to_one`.
+195. Chapter 4 measurable-estimator asymptotic-equivalence wrapper:
+   `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_with_probability_tending_to_one`.
 
-Latest remote base before this packet: `3f8dd68`.
-Latest pushed Vaart packet before this packet: `5876ba7`
-(`Add Vaart target probability consumers`).
+Latest remote base before this packet: `0f2b44f`.
+Latest pushed Vaart packet before this packet: `1bb6ccb`
+(`Add Vaart asymptotic equivalence bridge`).
 
-The current theorem-sized packet adds the Chapter 2 asymptotic-equivalence
-bookkeeping needed for localized estimators: equality with probability tending
-to one gives a zero convergence-in-probability difference, and therefore
-transfers convergence in distribution by Slutsky.
+The current theorem-sized packet consumes the Chapter 2
+asymptotic-equivalence bridge in Chapter 4.  A measurable estimator whose
+scaled version agrees with the local-inverse candidate with probability tending
+to one inherits the same `sqrt n` delta-method limit.
 
-The next aggressive packet should continue Chapter 4 by connecting this
-asymptotic-equivalence infrastructure to the localized high-probability
-local-inverse candidate route.  Package the theorem that any measurable
-estimator equal to the local inverse candidate with probability tending to one
-inherits the same `sqrt n` delta-method limit.  Do not use probability tending
-to one as a substitute for per-`n` a.e. target membership.
+The next aggressive packet should specialize this generic estimator wrapper to
+the finite-coordinate Theorem 4.1 source routes, then connect it to
+measurable-selection or measurable-extension infrastructure.  Do not use
+probability tending to one as a substitute for per-`n` a.e. target membership.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
