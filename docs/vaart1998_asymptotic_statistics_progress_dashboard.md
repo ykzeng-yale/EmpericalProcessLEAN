@@ -330,10 +330,15 @@ Chapter 4 handoff:
   source fields, and
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalVectorLawSource_real`
   exposes those cleaner `ν`-side hypotheses at the Theorem 4.1 endpoint.
+- Canonical vector-law mean-zero endpoint:
+  `vaart1998_finiteCoordinateProjectedMean_eq_zero_of_map_mean_zero` derives
+  all projected zero means from `(Q.map Z)[id] = 0`, and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawSource_real`
+  exposes that mean-zero vector-law source at the Theorem 4.1 endpoint.
 
-Latest remote base before this packet: `423187e`.  Latest pushed Vaart packet
-before this packet: `af5c4c4`
-(`Add Vaart canonical moment variance sources`).
+Latest remote base before this packet: `923f3be`.  Latest pushed Vaart packet
+before this packet: `923f3be`
+(`Add Vaart canonical vector law endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -352,14 +357,12 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. package the zero projected mean field from a mean-zero Gaussian vector law
-   or a reusable covariance/mean certificate;
-2. search for a real covarianceBilinDual polarization/off-diagonal API that can
+1. search for a real covarianceBilinDual polarization/off-diagonal API that can
    turn diagonal variance identities into full covariance-table identities when
    needed;
-3. attack the remaining inverse-function target event only through a real
+2. attack the remaining inverse-function target event only through a real
    local-inverse/measurability theorem or keep it as a named source certificate;
-4. keep endpoint variants narrow and add them only when they remove a real
+3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 
 If this blocks, record the exact missing theorem shape for the supplied

@@ -1286,6 +1286,35 @@ theorem vaart1998_finiteCoordinateCanonicalSample_covariance_eq_projectedVarianc
       (ν := ν) L).symm
 
 /--
+Mean zero of the vector law gives zero mean for every continuous linear
+projection.
+-/
+theorem vaart1998_finiteCoordinateProjectedMean_eq_zero_of_map_mean_zero
+    {Coordinate Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean_zero : (Q.map Z)[id] = 0) :
+    ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      Q[fun ω => L (Z ω)] = 0 := by
+  intro L
+  haveI : IsProbabilityMeasure (Q.map Z) :=
+    Measure.isProbabilityMeasure_map hZ_aemeas
+  have hZ_integrable : Integrable id (Q.map Z) :=
+    hZ_memLp.integrable (by norm_num)
+  calc
+    Q[fun ω => L (Z ω)] = ∫ x, L x ∂Q.map Z :=
+      (integral_map hZ_aemeas (by fun_prop : AEStronglyMeasurable L (Q.map Z))).symm
+    _ = L ((Q.map Z)[id]) := L.integral_comp_comm hZ_integrable
+    _ = 0 := by rw [hZ_mean_zero, map_zero]
+
+/--
 Projected samples inherit `MemLp` from the finite-coordinate sample vector.
 -/
 theorem vaart1998_finiteCoordinateProjectedSample_memLp_of_vectorMemLp
@@ -5022,6 +5051,88 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gauss
       vaart1998_finiteCoordinateCanonicalSample_trueMoment_eq_populationMoment
         (ν := ν) e hcoordinate_meas heta0ν)
     (hTarget := hTarget)
+
+/--
+Canonical iid product-space Theorem 4.1 covariance-table endpoint with the
+Gaussian limit mean-zero hypothesis stated as a vector-law mean-zero identity.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawSource_real
+    {I Coordinate Ω' Θ : Type*} [Fintype I] [Fintype Coordinate]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (coordinates : I -> StrongDual ℝ Θ) {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hZ_gaussian : HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean_zero : (Q.map Z)[id] = 0)
+    (hZ_covarianceν : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        Var[L; ν])
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate))
+    (hν_coordinate_memLp : ∀ coordinate,
+      MemLp (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate) 2 ν)
+    (heta0ν :
+      e theta0 =
+        fun coordinate : Coordinate =>
+          ∫ sampleVector, sampleVector coordinate ∂ν)
+    (hTarget : ∀ n : ℕ,
+      ∀ᵐ sample ∂Measure.infinitePi (fun _ : ℕ => ν),
+        vaart1998_finiteCoordinateEmpiricalMoment
+            (fun coordinate i sample => sample i coordinate) n sample ∈
+          (he.toOpenPartialHomeomorph e).target) :
+    (Tendsto (fun n : ℕ =>
+      (Measure.infinitePi (fun _ : ℕ => ν)).real
+        {sample : ℕ -> Coordinate -> ℝ |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (vaart1998_finiteCoordinateEmpiricalMoment
+                (fun coordinate i sample => sample i coordinate) n sample)) =
+            vaart1998_finiteCoordinateEmpiricalMoment
+              (fun coordinate i sample => sample i coordinate) n sample})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) sample =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (vaart1998_finiteCoordinateEmpiricalMoment
+                (fun coordinate i sample => sample i coordinate) n sample) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => Measure.infinitePi (fun _ : ℕ => ν)) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q ∧
+    (∀ i j : I,
+      vaart1998_covarianceTable coordinates
+          (fun L K =>
+            ProbabilityTheory.covarianceBilinDual
+              (Q.map fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+              L K) i j =
+        vaart1998_covarianceTable
+          (fun k => (coordinates k).comp (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ))
+          (fun L K =>
+            ProbabilityTheory.covarianceBilinDual (Q.map Z) L K) i j) :=
+  vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalVectorLawSource_real
+    (e := e) (theta0 := theta0) (De := De) (he := he)
+    (coordinates := coordinates) (Z := Z)
+    (hZ_aemeas := hZ_aemeas)
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (hZ_mean :=
+      vaart1998_finiteCoordinateProjectedMean_eq_zero_of_map_mean_zero
+        (Q := Q) (Z := Z) hZ_aemeas hZ_memLp hZ_mean_zero)
+    (hZ_covarianceν := hZ_covarianceν)
+    (hcoordinate_meas := hcoordinate_meas)
+    (hν_coordinate_memLp := hν_coordinate_memLp)
+    (heta0ν := heta0ν) (hTarget := hTarget)
 
 end AsymptoticStatistics
 end StatInference

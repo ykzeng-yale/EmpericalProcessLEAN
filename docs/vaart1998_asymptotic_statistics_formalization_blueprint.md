@@ -307,6 +307,10 @@ Initial modules:
   leaving the Gaussian law, zero projected mean, target localization, coordinate
   measurability, and vector-law coordinate `MemLp` fields as the live source
   obligations.
+  The mean-zero vector-law endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawSource_real`
+  further replaces the projected zero-mean family by the vector-law source
+  identity `(Q.map Z)[id] = 0`.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

@@ -517,32 +517,33 @@ Chapter 3 theorem-facing wrappers compiling:
 164. Canonical iid product-space Theorem 4.1 covariance-table endpoint with
    true moment and covariance hypotheses stated under the common vector law:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalVectorLawSource_real`.
+165. Vector-law mean-zero to projected mean-zero bridge:
+   `vaart1998_finiteCoordinateProjectedMean_eq_zero_of_map_mean_zero`.
+166. Canonical iid product-space Theorem 4.1 covariance-table endpoint with
+   the Gaussian limit mean-zero hypothesis stated as `(Q.map Z)[id] = 0`:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawSource_real`.
 
-Latest remote base before this packet: `423187e`.
-Latest pushed Vaart packet before this packet: `af5c4c4`
-(`Add Vaart canonical moment variance sources`).
+Latest remote base before this packet: `923f3be`.
+Latest pushed Vaart packet before this packet: `923f3be`
+(`Add Vaart canonical vector law endpoint`).
 
-The current theorem-sized packet packages those canonical identities into the
-Theorem 4.1 endpoint.  The canonical vector-law endpoint now accepts the true
-moment as `e theta0 = fun coordinate => ∫ sampleVector, sampleVector coordinate
-∂ν` and the Gaussian covariance source as
-`covarianceBilinDual (Q.map Z) L L = Var[L; ν]`, then derives the product-space
-population moment and projected summand variances internally.  The remaining
-non-sample-space source hypotheses are now Gaussian limit law, zero projected
-mean, inverse-function target event, coordinate evaluation measurability, and
+The current theorem-sized packet removes the per-projection zero-mean field
+from the newest canonical endpoint.  Mean zero of the Gaussian vector law,
+`(Q.map Z)[id] = 0`, now implies `Q[fun ω => L (Z ω)] = 0` for every continuous
+linear functional `L`, using the `MemLp id 2 (Q.map Z)` field for integrability.
+The remaining non-sample-space source hypotheses are now Gaussian limit law,
+inverse-function target event, coordinate evaluation measurability, and
 coordinate-projection `MemLp` under the vector law.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. package the zero projected mean field from a mean-zero Gaussian vector law
-   or a reusable covariance/mean certificate;
-2. search for a real covarianceBilinDual polarization/off-diagonal API that can
+1. search for a real covarianceBilinDual polarization/off-diagonal API that can
    turn diagonal variance identities into full covariance-table identities when
    needed;
-3. attack the remaining inverse-function target event only through a real
+2. attack the remaining inverse-function target event only through a real
    local-inverse/measurability theorem or keep it as a named source certificate;
-4. keep endpoint variants narrow and add them only when they remove a real
+3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
