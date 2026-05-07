@@ -272,6 +272,11 @@ Initial modules:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_commonVectorLawGaussianSource_real`
   consumes the same strong vector-law source package at the Theorem 4.1
   covariance-table boundary.
+  The canonical iid product-space constructors
+  `vaart1998_finiteCoordinateCanonicalSampleVector_hasLaw`,
+  `vaart1998_finiteCoordinateCanonicalSampleVector_sequence_hasLaw`, and
+  `vaart1998_finiteCoordinateCanonicalSampleVector_commonVectorLawSource`
+  instantiate that source package on `Measure.infinitePi (fun _ : ℕ => ν)`.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

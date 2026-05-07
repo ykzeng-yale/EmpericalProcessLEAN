@@ -451,24 +451,32 @@ Chapter 3 theorem-facing wrappers compiling:
    `MemLp 2`, a common vector law, and the infinite-product law of the
    sample-vector sequence:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_commonVectorLawGaussianSource_real`.
+148. Canonical iid finite-coordinate sample-vector common law on the
+   infinite-product space:
+   `vaart1998_finiteCoordinateCanonicalSampleVector_hasLaw`.
+149. Canonical iid finite-coordinate sample-vector sequence infinite-product
+   law:
+   `vaart1998_finiteCoordinateCanonicalSampleVector_sequence_hasLaw`.
+150. Canonical iid finite-coordinate sample-vector common-law source package:
+   `vaart1998_finiteCoordinateCanonicalSampleVector_commonVectorLawSource`.
 
-Latest remote base before this packet: `072e519`.
-Latest pushed Vaart packet before this packet: `072e519`
-(`Add Vaart vector law source constructors`).
+Latest remote base before this packet: `5a2efe`.
+Latest pushed Vaart packet before this packet: `bad8249`
+(`Add Vaart common vector law theorem 4.1 endpoint`).
 
-The current theorem-sized packet exposes the common-vector-law source bridge at
-the Theorem 4.1 covariance-table endpoint.  It removes the caller-side vector
-`iIndepFun` and vector `IdentDistrib` fields, while intentionally keeping the
-coordinate LLN fields explicit because they belong to a separate source layer.
+The current theorem-sized packet supplies a concrete canonical iid product
+sample-space constructor for the common vector law and infinite-product
+sequence law consumed by the new Theorem 4.1 endpoint wrappers.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. prove concrete iid sample-space/product-law constructors that supply the
-   common vector law and infinite-product sequence law;
-2. prove coordinate LLN source constructors from vector laws only when the
+1. prove coordinate LLN source constructors from vector laws only when the
    theorem shape actually gives coordinate independence and identical
    distribution by measurable projections;
+2. instantiate the Theorem 4.1 endpoint for the canonical product sample space
+   only if the remaining coordinate `MemLp`, measurability, and LLN fields can
+   be supplied without adding opaque assumptions;
 3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 

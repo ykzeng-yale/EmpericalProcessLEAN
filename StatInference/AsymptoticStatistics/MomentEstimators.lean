@@ -978,6 +978,61 @@ theorem vaart1998_finiteCoordinateSampleVector_identDistrib_of_common_hasLaw
   exact (hX_law i).identDistrib (hX_law 0)
 
 /--
+Canonical iid finite-coordinate samples on the infinite-product space have the
+common vector law.
+-/
+theorem vaart1998_finiteCoordinateCanonicalSampleVector_hasLaw
+    {Coordinate : Type*} [MeasurableSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν] (i : ℕ) :
+    HasLaw
+      (vaart1998_finiteCoordinateSampleVector
+        (fun coordinate i sample => sample i coordinate) i)
+      ν (Measure.infinitePi (fun _ : ℕ => ν)) := by
+  simpa [vaart1998_finiteCoordinateSampleVector] using
+    (measurePreserving_eval_infinitePi (μ := fun _ : ℕ => ν) i).hasLaw
+
+/--
+The canonical iid finite-coordinate sample-vector sequence on the
+infinite-product space has the infinite product law.
+-/
+theorem vaart1998_finiteCoordinateCanonicalSampleVector_sequence_hasLaw
+    {Coordinate : Type*} [MeasurableSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} :
+    HasLaw
+      (fun sample i =>
+        vaart1998_finiteCoordinateSampleVector
+          (fun coordinate i sample => sample i coordinate) i sample)
+      (Measure.infinitePi (fun _ : ℕ => ν))
+      (Measure.infinitePi (fun _ : ℕ => ν)) := by
+  simpa [vaart1998_finiteCoordinateSampleVector] using
+    (HasLaw.id :
+      HasLaw
+        (id : (ℕ -> Coordinate -> ℝ) -> ℕ -> Coordinate -> ℝ)
+        (Measure.infinitePi (fun _ : ℕ => ν))
+        (Measure.infinitePi (fun _ : ℕ => ν)))
+
+/--
+Canonical iid finite-coordinate samples provide the common-vector-law source
+package used by the Theorem 4.1 endpoint wrappers.
+-/
+theorem vaart1998_finiteCoordinateCanonicalSampleVector_commonVectorLawSource
+    {Coordinate : Type*} [MeasurableSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν] :
+    (∀ i : ℕ,
+      HasLaw
+        (vaart1998_finiteCoordinateSampleVector
+          (fun coordinate i sample => sample i coordinate) i)
+        ν (Measure.infinitePi (fun _ : ℕ => ν))) ∧
+    HasLaw
+      (fun sample i =>
+        vaart1998_finiteCoordinateSampleVector
+          (fun coordinate i sample => sample i coordinate) i sample)
+      (Measure.infinitePi (fun _ : ℕ => ν))
+      (Measure.infinitePi (fun _ : ℕ => ν)) :=
+  ⟨fun i => vaart1998_finiteCoordinateCanonicalSampleVector_hasLaw (ν := ν) i,
+    vaart1998_finiteCoordinateCanonicalSampleVector_sequence_hasLaw (ν := ν)⟩
+
+/--
 Scalar summand obtained by testing one finite-coordinate sample vector with a
 continuous linear functional.
 -/
