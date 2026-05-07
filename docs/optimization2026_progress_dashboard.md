@@ -455,9 +455,16 @@ The first packet compiles `chewi123_asgd_noise_sum_split`,
 `chewi123_asgd_scaled_average_decomposition`, and
 `chewi123_asgd_sqrt_average_decomposition`, isolating the source `(12.5)`
 finite-sum split into the martingale term with coefficient `Ainv` and the
-remainder term with coefficient `M_k^n - Ainv`.  The active Chapter 12 blocker
-is now conditional mean-zero/covariance packaging and the first martingale CLT
-interface wrapper.
+remainder term with coefficient `M_k^n - Ainv`.  The next packet compiles
+`chewi123_asgd_neg_linear_noise_clt`,
+`chewi123_asgd_neg_linear_gaussian_limit`, and
+`chewi123_asgd_distribution_limit_of_noise_and_remainders`, reusing mathlib
+continuous mapping, Gaussian linear-map closure, and additive Slutsky to prove
+that the scaled averaged ASGD error has the `-Ainv`-pushed weak limit once the
+martingale CLT term is supplied and the initial/remainder terms are `o_P(1)`.
+The active Chapter 12 blocker is now conditional mean-zero/covariance
+packaging, a supplied martingale CLT certificate matching Chewi Theorem 12.7,
+and the finite-dimensional covariance-pushforward display.
 
 ## Initial Reuse Audit
 

@@ -53,6 +53,11 @@ different textbook lanes, prefer isolated `git worktree` checkouts named by
 book/lane for broad packets.  Keep shared `main` for narrow verified handoffs
 only, never revert another lane's dirty or committed work, and merge/push
 after a scoped Lean build and hygiene scan.
+Do not share mutable `.lake/build` artifacts across active proof worktrees when
+running root builds; a symlinked `.lake` can make unrelated local agents delete
+or invalidate `.olean` files mid-build.  Use focused module Lean checks during
+development, and treat missing-artifact root-build failures as infrastructure
+until a focused proof/module check points to an actual theorem error.
 
 - treat Chapters 3-10 and the finite Chapter 11 ABP telescope as reusable
   infrastructure, not active routing targets;
@@ -103,7 +108,7 @@ smooth/non-smooth weighted stochastic averaged-iterate wrappers, the exact
 source-displayed stochastic-error RHS bridges, and the full source-displayed
 smooth/non-smooth averaged-iterate wrappers, plus the filtration-level
 conditional-mean wrappers and the first ASGD quadratic-decomposition algebra
-packet:
+packet, and the first ASGD probabilistic CLT handoff packet:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -126,9 +131,10 @@ conditional-mean SMPGD source wrappers, and
 gate.
 
 Immediate aggressive target: move from the now-compiled ASGD finite-sum
-decomposition algebra to martingale-difference and covariance packaging,
-while adding only genuinely missing process measurability/adaptedness wrappers
-if exact Theorem 12.1 reporting demands them.  Theorem 12.1 SMPGD now sits on
+decomposition algebra and Slutsky/continuous-mapping handoff to
+martingale-difference and covariance packaging, while adding only genuinely
+missing process measurability/adaptedness wrappers if exact Theorem 12.1
+reporting demands them.  Theorem 12.1 SMPGD now sits on
 top of the compiled
 integral-component final-rate wrappers, the smooth L2 noise wrapper, the
 finite sampled smooth/pointwise-bounded non-smooth rate endpoints, the
@@ -158,14 +164,17 @@ iterate, the final smooth/non-smooth weightedSampleAverage wrappers, the
 source-displayed `(1 + alphaG * h)` error-factor upgrade, the full
 source-displayed averaged-iterate wrappers, or the filtration conditional-mean
 handoff to unconditional unbiasedness/relative-subgradient mean fields, or the
-ASGD `(12.5)` finite-sum splitting/scaled-average algebra.  First search local
+ASGD `(12.5)` finite-sum splitting/scaled-average algebra, or the ASGD
+continuous-mapping/Slutsky handoff from the martingale CLT term plus
+`o_P(1)` initial/remainder terms to the averaged-iterate weak limit.  First search local
 `MirrorDescent.lean`, `Bregman.lean`, `ProjectedSubgradient.lean`,
 `StochasticGradient.lean`, `ASGD.lean`, local probability/expectation and
 asymptotic-statistics wrappers, and pinned mathlib expectation/Jensen/
 conditional expectation/Bochner/L2/process/martingale/covariance APIs.  Then
 formalize the next ASGD primitives: martingale-difference/noise process
-interfaces, conditional mean-zero and conditional covariance handoffs, and the
-first theorem-facing wrapper from the source martingale CLT statement.
+interfaces, conditional mean-zero and conditional covariance handoffs, a
+supplied martingale CLT certificate matching Chewi Theorem 12.7, and the
+finite-dimensional covariance-pushforward display `A^{-1} S_infty A^{-1}`.
 Keep the concrete Sinkhorn row/column KL identity layer as the next Chapter
 11.8 blocker, but do not let it stall Chapter 12 coverage.
 
@@ -320,8 +329,11 @@ iterate, the final smooth/non-smooth weightedSampleAverage wrappers, or the
 exact source-displayed stochastic-error RHS factor, or the full
 source-displayed averaged-iterate wrappers, or the filtration conditional-mean
 handoff, or the ASGD `(12.5)` finite-sum splitting/scaled-average algebra; it
-is the ASGD/martingale process frontier: conditional mean-zero, conditional
-covariance, and then martingale CLT packaging.
+handoff, or the ASGD `(12.5)` finite-sum splitting/scaled-average algebra, or
+the first ASGD continuous-mapping/Slutsky weak-limit handoff; it is the
+ASGD/martingale process frontier: conditional mean-zero, conditional
+covariance, supplied martingale CLT certificate packaging, and the covariance
+pushforward display.
 
 Fresh Chapter 12 Bochner search result: mathlib has `integral_mono_ae` and
 `integral_mono` for pointwise or a.e. real integral inequalities,

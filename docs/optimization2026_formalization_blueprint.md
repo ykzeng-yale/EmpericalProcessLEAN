@@ -415,9 +415,16 @@ The root-imported `StatInference/Optimization/ASGD.lean` module now compiles
 `chewi123_asgd_noise_sum_split`,
 `chewi123_asgd_scaled_average_decomposition`, and
 `chewi123_asgd_sqrt_average_decomposition`, giving the source `(12.5)`
-finite-sum split needed before the martingale CLT handoff.  The next ASGD
-target is conditional mean-zero/covariance packaging and the first theorem-facing
-martingale CLT interface wrapper.
+finite-sum split needed before the martingale CLT handoff.  It also now
+compiles `chewi123_asgd_neg_linear_noise_clt`,
+`chewi123_asgd_neg_linear_gaussian_limit`, and
+`chewi123_asgd_distribution_limit_of_noise_and_remainders`, reusing mathlib's
+continuous-mapping theorem, Gaussian linear-map closure, and Slutsky additive
+handoff to turn Chewi's martingale CLT term plus two `o_P(1)` remainders into
+the scaled averaged-iterate weak limit.  The next ASGD target is conditional
+mean-zero/covariance packaging, a supplied martingale CLT certificate matching
+Theorem 12.7, and the finite-dimensional covariance-pushforward display
+`A^{-1} S_infty A^{-1}`.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
