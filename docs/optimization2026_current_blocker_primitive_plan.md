@@ -143,32 +143,39 @@ code/docs/comments in English; chat updates may be Chinese/English mix.
 Exercises live only in `StatInference/Optimization/Exercises.lean` and must not
 consume the main theorem packet unless they unlock a main-text proof.
 
-Current frontier: latest pushed Optimization commit is `a94b579 Prove Chewi
-ASGD remainder row convergence`.  The active module is
-`StatInference/Optimization/ASGD.lean`; the active source packet is Chapter 12
-ASGD Theorem 12.7/12.3, specifically the scalar bounded-martingale
-characteristic-function proof behind `projected_charFun_tendsto_exp`.
+Current frontier: the active module is `StatInference/Optimization/ASGD.lean`;
+the active source packet is Chapter 12 ASGD Theorem 12.7/12.3, specifically the
+scalar bounded-martingale characteristic-function proof behind
+`projected_charFun_tendsto_exp`.  The stable ASGD stack now includes the
+conditional Taylor-remainder row convergence from `a94b579` and the
+compensated one-step/error interface:
+`projectedCompensationFactor`, `projectedCompensatedTaylorErrorFactor`,
+`one_add_projectedCompensatedTaylorErrorFactor`,
+`projectedCompensatedTaylorErrorFactor_norm_le`,
+`projectedCompensatedTaylorErrorFactor_row_norm_le`, and
+`projected_charFun_compensated_taylor_step_mul_scaled`.
 
-Next theorem packet: prove Chewi's compensated martingale
-characteristic-function iteration
-`E exp(i X_N + compensated conditional variance) -> 1` using the compiled
-arbitrary-multiplier tower step
-`Chewi127BoundedMartingaleCLTSource.projected_charFun_taylor_step_mul_scaled`.
-Then discharge the variance/convergence comparison from
-`n⁻¹ ∑ Xi_k -> S_infty` in probability to the Gaussian
-`exp (-(S_infty L L) t^2 / 2)` characteristic-function limit, and wire it into
-the existing Theorem 12.7/12.3 certificate constructors.
+Next theorem packet: prove the finite compensated iteration by applying
+`projected_charFun_compensated_taylor_step_mul_scaled` recursively and bounding
+the accumulated row of `projectedCompensatedTaylorErrorFactor`.  Then prove the
+variance-only second-order row error and discharge the variance/convergence
+comparison from `n⁻¹ ∑ Xi_k -> S_infty` in probability to the Gaussian
+`exp (-(S_infty L L) t^2 / 2)` characteristic-function limit, wiring the result
+into the existing Theorem 12.7/12.3 certificate constructors.
 
 Reuse boundary: do not redo scaled-sum definitions, Cramér-Wold plumbing,
 bounded-tail/Lindeberg, Taylor expansion, conditional mean-zero/quadratic
 substitution, product measurability/integrability, finite product bounds, or
 conditional Taylor-remainder row convergence.  Reuse
 `projected_charFun_taylor_step_mul_scaled`,
+`projected_charFun_compensated_taylor_step_mul_scaled`,
 `projected_remainder_row_integral_tendsto_zero`, the named projected variance
-and remainder factors, `integral_norm_condExp_le_integral_norm`,
-`chewi127ScalarCharFunProduct` lemmas, and local product perturbation bridges.
-One bounded API search is allowed only for the exact compensated-iteration or
-bounded-continuous variance-convergence estimate; after that, prove.
+and remainder/compensation/error factors, the compensated error norm split,
+`integral_norm_condExp_le_integral_norm`, `chewi127ScalarCharFunProduct`
+lemmas, and local product perturbation bridges.  One bounded API search is
+allowed only for the exact finite compensated iteration, variance second-order
+row bound, or bounded-continuous variance-convergence estimate; after that,
+prove.
 
 Execution gate: use `/private/tmp/chewi-smpgd-probability`; before Lean edits
 state the exact theorem-sized target and fallback blocker.  Verify with

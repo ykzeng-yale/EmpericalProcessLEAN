@@ -228,6 +228,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi127ScalarCharFunTaylorRemainder_row_integral_le_of_uniform_bound`,
   `chewi127ScalarCharFunTaylorRemainder_row_bound_tendsto_zero`,
   `Chewi127BoundedMartingaleCLTSource.projected_remainder_row_integral_tendsto_zero`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorFactor`,
+  `Chewi127BoundedMartingaleCLTSource.one_add_projectedCompensatedTaylorErrorFactor`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorFactor_norm_le`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorFactor_row_norm_le`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_compensated_taylor_step_mul_scaled`,
   and
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_concrete_random_product_model`.
   These name the actual row factors with `a = t / sqrt N` and specialize the
@@ -237,10 +243,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   compensated iteration, while the row comparison reduces conditional
   Taylor-remainder control to the unconditioned bounded-remainder envelope; the
   concrete row convergence now follows from uniform boundedness and the
-  `N * (|t|B/sqrt N)^3 exp(|t|B/sqrt N) -> 0` rate.  The next ASGD packet
-  should formalize the finite compensated iteration and then close the
-  variance/convergence comparison to the Gaussian characteristic-function
-  limit.
+  `N * (|t|B/sqrt N)^3 exp(|t|B/sqrt N) -> 0` rate.  The compensated packet
+  normalizes the one-step tower output as `A * (1 + error)` and splits that
+  error into variance-only second-order error plus the conditional
+  Taylor-remainder term.  The next ASGD packet should recursively accumulate
+  this compensated one-step estimate, prove the variance-only row error bound,
+  and then close the variance/convergence comparison to the Gaussian
+  characteristic-function limit.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
