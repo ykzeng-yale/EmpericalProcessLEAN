@@ -69,6 +69,7 @@ compiles and root-imports the new namespace.  Compiled declarations:
 - `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`;
 - `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`;
 - `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`;
+- `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_endpoint_center_cover`;
 - `durrett2019_theorem_2_4_9_punctured_small_open_interval`;
 - `durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`;
 - `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`;
@@ -95,9 +96,9 @@ Immediate proof route:
    route now skips repeated monotone-subdivision values and feeds the
    cutpoint-chain-to-GC handoff; the arbitrary-law route now has finite
    punctured compact covers, automatic center avoidance when selected centers
-   are grid endpoints, and needs the finite ordering/splitting theorem that
-   inserts selected centers as strict endpoints while making open cells refine
-   finite cover intervals;
+   are grid endpoints or monotone subdivision values, and needs the finite
+   ordering/splitting theorem that inserts selected centers into the
+   subdivision while making adjacent cells refine finite cover intervals;
 3. package the empirical CDF statement once the uniform squeezing proof closes;
 4. keep Chapter 2.1 as optional iid/product notation polish while the main
    proof effort returns to the GC grid constructor;
@@ -115,7 +116,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 1 measure/probability foundations | source-wrapper/reused-local | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/GeneratedSigma.lean`; `Tail.lean`; `ProductMeasure.lean` | Durrett wrappers for Theorem 1.1.1 measure properties and Theorems 1.3.1/1.3.4 measurability facts now compile over mathlib/local generator APIs. |
 | Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact iid/product notation polish. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
-| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, or supplied cutpoint chains. The one-cell, two-cell, right-append, finite cutpoint-chain, endpoint-grid-to-chain, closed-cover, punctured-cover, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, arbitrary-law punctured local/finite compact-cover, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, and non-atomic GC packages compile; remaining blocker: construct strict finite endpoint grids for arbitrary distributions by ordering/splitting the finite punctured cover and inserting selected centers as endpoints. |
+| Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, or supplied cutpoint chains. The one-cell, two-cell, right-append, finite cutpoint-chain, endpoint-grid-to-chain, closed-cover, punctured-cover, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, arbitrary-law punctured local/finite compact-cover, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, and non-atomic GC packages compile; remaining blocker: construct monotone subdivisions for arbitrary distributions by ordering/splitting the finite punctured cover and inserting selected centers as subdivision values. |
 | Chapter 3 CLT/characteristic functions | pending-local | none | Needs mathlib API search for characteristic functions, normal laws, weak convergence, and scalar asymptotics. |
 | Chapter 4 martingales | pending-local | none | Search mathlib martingale/conditional expectation APIs first. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
