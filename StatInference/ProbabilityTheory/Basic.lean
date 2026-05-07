@@ -2057,6 +2057,20 @@ def durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderTendstoZero
     atTop (𝓝 0)
 
 /--
+Durrett 2019, Exercise 3.1.1, row-wise relative logarithmic remainder control.
+
+This isolates the calculus estimate needed for the logarithmic proof route:
+eventually each `log (1 + c_{n,m}) - c_{n,m}` is at most a small multiple of
+`|c_{n,m}|`.
+-/
+def durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderRelativeToAbs
+    (c : ℕ -> ℕ -> ℝ) : Prop :=
+  ∀ epsilon : ℝ, 0 < epsilon ->
+    ∀ᶠ n : ℕ in atTop,
+      ∀ m ∈ Finset.range n,
+        |Real.log (1 + c n m) - c n m| ≤ epsilon * |c n m|
+
+/--
 Durrett 2019, Exercise 3.1.1, product-convergence conclusion for a real
 triangular array `c_{n,m}`:
 `prod_m (1 + c_{n,m}) -> exp(lambda)`.
@@ -2077,6 +2091,128 @@ def durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem : Prop :=
     durrett2019_exercise_3_1_1_realTriangularArrayRowSumTendsto c lambda ->
     durrett2019_exercise_3_1_1_realTriangularArrayAbsRowSumBounded c ->
     durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp c lambda
+
+/--
+Durrett 2019, Exercise 3.1.1, max-smallness makes the product factors
+eventually positive.
+-/
+theorem durrett2019_exercise_3_1_1_realTriangularArrayFactorsEventuallyPositive_of_maxAbsTendstoZero
+    {c : ℕ -> ℕ -> ℝ}
+    (hmax :
+      durrett2019_exercise_3_1_1_realTriangularArrayMaxAbsTendstoZero c) :
+    durrett2019_exercise_3_1_1_realTriangularArrayFactorsEventuallyPositive
+      c := by
+  filter_upwards [hmax 1 (by norm_num)] with n hn m hm
+  have hneg : -1 < c n m := (abs_lt.mp (hn m hm)).1
+  nlinarith
+
+/--
+Scalar logarithmic remainder estimate used in Durrett 2019, Exercise 3.1.1.
+-/
+theorem durrett2019_real_abs_log_one_add_sub_self_le
+    {x : ℝ} (hx : |x| < 1) :
+    |Real.log (1 + x) - x| ≤ |x| ^ 2 / (1 - |x|) := by
+  have h :=
+    Real.abs_log_sub_add_sum_range_le (x := -x) (by simpa using hx) 1
+  simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using h
+
+/--
+Durrett 2019, Exercise 3.1.1, max-smallness supplies the row-wise relative
+logarithmic remainder control.
+-/
+theorem durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderRelativeToAbs_of_maxAbsTendstoZero
+    {c : ℕ -> ℕ -> ℝ}
+    (hmax :
+      durrett2019_exercise_3_1_1_realTriangularArrayMaxAbsTendstoZero c) :
+    durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderRelativeToAbs
+      c := by
+  intro epsilon hepsilon
+  let delta : ℝ := min (1 / 2) (epsilon / 2)
+  have hdelta_pos : 0 < delta := by
+    dsimp [delta]
+    exact lt_min (by norm_num) (div_pos hepsilon (by norm_num))
+  filter_upwards [hmax delta hdelta_pos] with n hn m hm
+  let a : ℝ := |c n m|
+  have ha_nonneg : 0 ≤ a := by
+    dsimp [a]
+    exact abs_nonneg (c n m)
+  have ha_delta : a < delta := by
+    dsimp [a]
+    exact hn m hm
+  have ha_half : a < 1 / 2 := by
+    exact ha_delta.trans_le (min_le_left (1 / 2) (epsilon / 2))
+  have ha_eps_half : a < epsilon / 2 := by
+    exact ha_delta.trans_le (min_le_right (1 / 2) (epsilon / 2))
+  have ha_one : a < 1 := by
+    nlinarith
+  have hlog :
+      |Real.log (1 + c n m) - c n m| ≤ a ^ 2 / (1 - a) := by
+    simpa [a] using
+      (durrett2019_real_abs_log_one_add_sub_self_le
+        (x := c n m) (by simpa [a] using ha_one))
+  have hden_pos : 0 < 1 - a := by
+    nlinarith
+  have hfrac : a ^ 2 / (1 - a) ≤ 2 * a ^ 2 := by
+    rw [div_le_iff₀ hden_pos]
+    nlinarith [sq_nonneg a]
+  have hquad : 2 * a ^ 2 ≤ epsilon * a := by
+    nlinarith [ha_nonneg, ha_eps_half]
+  exact hlog.trans (hfrac.trans (by simpa [a] using hquad))
+
+/--
+Durrett 2019, Exercise 3.1.1, relative logarithmic row control plus uniform
+absolute row-sum boundedness implies the logarithmic remainder row sum tends
+to zero.
+-/
+theorem durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderTendstoZero_of_relativeToAbs_and_absRowSumBounded
+    {c : ℕ -> ℕ -> ℝ}
+    (hrelative :
+      durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderRelativeToAbs
+        c)
+    (habs :
+      durrett2019_exercise_3_1_1_realTriangularArrayAbsRowSumBounded c) :
+    durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderTendstoZero
+      c := by
+  rcases habs with ⟨bound, hbound⟩
+  have hbound_nonneg : 0 ≤ bound := by
+    simpa using hbound 0
+  rw [durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderTendstoZero,
+    tendsto_zero_iff_abs_tendsto_zero, tendsto_order]
+  constructor
+  · intro a ha
+    exact Eventually.of_forall fun n => lt_of_lt_of_le ha (abs_nonneg _)
+  · intro a ha
+    let eta : ℝ := a / (bound + 1)
+    have hden_pos : 0 < bound + 1 := by
+      nlinarith
+    have heta_pos : 0 < eta := by
+      dsimp [eta]
+      exact div_pos ha hden_pos
+    filter_upwards [hrelative eta heta_pos] with n hn
+    have hsum_abs :
+        |∑ m ∈ Finset.range n, (Real.log (1 + c n m) - c n m)| ≤
+          ∑ m ∈ Finset.range n, |Real.log (1 + c n m) - c n m| :=
+      Finset.abs_sum_le_sum_abs _ _
+    have hterm_sum :
+        ∑ m ∈ Finset.range n, |Real.log (1 + c n m) - c n m| ≤
+          eta * ∑ m ∈ Finset.range n, |c n m| := by
+      calc
+        ∑ m ∈ Finset.range n, |Real.log (1 + c n m) - c n m| ≤
+            ∑ m ∈ Finset.range n, eta * |c n m| := by
+              exact Finset.sum_le_sum fun m hm => hn m hm
+        _ = eta * ∑ m ∈ Finset.range n, |c n m| := by
+              simp [Finset.mul_sum]
+    have hrow_bound :
+        eta * ∑ m ∈ Finset.range n, |c n m| ≤ eta * bound :=
+      mul_le_mul_of_nonneg_left (hbound n) (le_of_lt heta_pos)
+    have heta_bound : eta * bound < a := by
+      have hlt : eta * bound < eta * (bound + 1) := by
+        exact mul_lt_mul_of_pos_left (by nlinarith) heta_pos
+      have heq : eta * (bound + 1) = a := by
+        dsimp [eta]
+        field_simp [hden_pos.ne']
+      nlinarith
+    exact lt_of_le_of_lt (hsum_abs.trans (hterm_sum.trans hrow_bound)) heta_bound
 
 /--
 Durrett 2019, Exercise 3.1.1, logarithmic proof bridge.
@@ -2166,6 +2302,22 @@ theorem durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem_of_logRemai
   exact
     durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp_of_logRemainder
       hpositive hrow hlog
+
+/--
+Durrett 2019, Exercise 3.1.1, real triangular-array product theorem.
+-/
+theorem durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem_from_logEstimate :
+    durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem := by
+  intro c lambda hmax hrow habs
+  exact
+    durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp_of_logRemainder
+      (durrett2019_exercise_3_1_1_realTriangularArrayFactorsEventuallyPositive_of_maxAbsTendstoZero
+        hmax)
+      hrow
+      (durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderTendstoZero_of_relativeToAbs_and_absRowSumBounded
+        (durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderRelativeToAbs_of_maxAbsTendstoZero
+          hmax)
+        habs)
 
 /--
 Durrett 2019, Theorem 3.4.10, the Exercise 3.1.1 coefficient
@@ -2560,6 +2712,23 @@ theorem durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_var
       (P := P) (X := X) (varianceLimit := varianceLimit) hvariance t)
 
 /--
+Durrett 2019, Theorem 3.4.10, apply the proved Exercise 3.1.1 theorem to the
+quadratic variance coefficients.
+-/
+theorem durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_varianceSum_varianceRowsEventuallySmall
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hsmall : durrett2019_lindebergFellerVarianceRowsEventuallySmall P X) :
+    durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp
+      P X varianceLimit :=
+  durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_varianceSum_varianceRowsEventuallySmall_and_exercise311
+    (P := P) (X := X) (varianceLimit := varianceLimit)
+    durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem_from_logEstimate
+    hvariance hsmall
+
+/--
 Durrett 2019, Theorem 3.4.10, apply Exercise 3.1.1 to the quadratic variance
 coefficients using the Lindeberg route to max-row-variance smallness.
 -/
@@ -2579,6 +2748,25 @@ theorem durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_var
     hexercise311 hvariance
     (durrett2019_theorem_3_4_10_varianceRowsEventuallySmall_of_lindeberg_and_varianceSplitByTailRowSum
       hlindeberg hsplit)
+
+/--
+Durrett 2019, Theorem 3.4.10, apply the proved Exercise 3.1.1 theorem to the
+quadratic variance coefficients using the Lindeberg route to max-row-variance
+smallness.
+-/
+theorem durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_varianceSum_lindeberg_varianceSplit
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hsplit : durrett2019_lindebergFellerVarianceSplitByTailRowSum P X) :
+    durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp
+      P X varianceLimit :=
+  durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_varianceSum_lindeberg_varianceSplit_and_exercise311
+    (P := P) (X := X) (varianceLimit := varianceLimit)
+    durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem_from_logEstimate
+    hvariance hlindeberg hsplit
 
 /--
 Durrett 2019, Theorem 3.4.10, scaled variance condition sufficient for
@@ -3059,6 +3247,31 @@ theorem Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_varianceSpl
       hvariance_pos hmean_zero hvariance hlindeberg hchar_quad hexercise
 
 /--
+Durrett 2019, Theorem 3.4.10, assemble the analytic certificate from the
+current primitive frontier after Exercise 3.1.1 has been proved: the
+one-factor Taylor/Lindeberg row-sum estimate and the variance-tail split.
+-/
+theorem Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_varianceSplit
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hsplit : durrett2019_lindebergFellerVarianceSplitByTailRowSum P X)
+    (herror :
+      durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero
+        P X) :
+    Durrett2019LindebergFellerAnalyticCertificate
+      P X varianceLimit :=
+  Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_varianceSplit_and_exercise311
+    (P := P) (X := X) (varianceLimit := varianceLimit)
+    hX hvariance_pos hmean_zero hvariance hlindeberg hsplit herror
+    durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem_from_logEstimate
+
+/--
 Durrett 2019, Theorem 3.4.10 proof bridge: row-wise independence gives the
 product formula for the characteristic function of each triangular-array row
 sum.
@@ -3214,6 +3427,39 @@ theorem durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSum_varianceSplit_
       (P := P) (X := X) (varianceLimit := varianceLimit)
       hX hvariance_pos hmean_zero hvariance hlindeberg hsplit herror
       hexercise311)
+    hY
+
+/--
+Durrett 2019, Theorem 3.4.10, source-facing Lindeberg-Feller bridge from the
+current primitive frontier after Exercise 3.1.1 has been proved: row-wise
+independence, the one-factor Taylor/Lindeberg error row sum, and the
+variance-tail split.
+-/
+theorem durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSum_varianceSplit
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ} {Y : Ω' -> ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hsplit : durrett2019_lindebergFellerVarianceSplitByTailRowSum P X)
+    (herror :
+      durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero
+        P X)
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 varianceLimit.toNNReal) P') :
+    TendstoInDistribution
+      (fun n => durrett2019_lindebergFellerRowSum X n)
+      atTop Y (fun _ => P) P' :=
+  durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSum_varianceSplit_and_exercise311
+    (P := P) (P' := P') (X := X) (varianceLimit := varianceLimit) (Y := Y)
+    hX hindep hvariance_pos hmean_zero hvariance hlindeberg hsplit herror
+    durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem_from_logEstimate
     hY
 
 /--

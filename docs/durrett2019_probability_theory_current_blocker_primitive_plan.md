@@ -284,10 +284,16 @@ namespace now has a compiled starter module:
 - `durrett2019_exercise_3_1_1_realTriangularArrayAbsRowSumBounded`
 - `durrett2019_exercise_3_1_1_realTriangularArrayFactorsEventuallyPositive`
 - `durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderTendstoZero`
+- `durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderRelativeToAbs`
 - `durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp`
 - `durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem`
+- `durrett2019_exercise_3_1_1_realTriangularArrayFactorsEventuallyPositive_of_maxAbsTendstoZero`
+- `durrett2019_real_abs_log_one_add_sub_self_le`
+- `durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderRelativeToAbs_of_maxAbsTendstoZero`
+- `durrett2019_exercise_3_1_1_realTriangularArrayLogRemainderTendstoZero_of_relativeToAbs_and_absRowSumBounded`
 - `durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp_of_logRemainder`
 - `durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem_of_logRemainder`
+- `durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem_from_logEstimate`
 - `durrett2019_lindebergFellerQuadraticVarianceCoefficient`
 - `durrett2019_theorem_3_4_10_quadraticVarianceCoefficient_rowSum_tendsto`
 - `durrett2019_theorem_3_4_10_quadraticVarianceCoefficient_absRowSumBounded_of_varianceSum`
@@ -297,7 +303,9 @@ namespace now has a compiled starter module:
 - `durrett2019_lindebergFellerQuadraticVarianceProduct_eq_exercise311Product`
 - `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp`
 - `durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_varianceSum_varianceRowsEventuallySmall_and_exercise311`
+- `durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_varianceSum_varianceRowsEventuallySmall`
 - `durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_varianceSum_lindeberg_varianceSplit_and_exercise311`
+- `durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_varianceSum_lindeberg_varianceSplit`
 - `durrett2019_theorem_3_4_10_quadraticVarianceProduct_tendsto_exp_of_exercise311`
 - `durrett2019_norm_prod_sub_prod_le_sum_norm_sub`
 - `durrett2019_lindebergFellerCharacteristicProductApproximationToQuadraticVarianceProduct`
@@ -327,12 +335,14 @@ namespace now has a compiled starter module:
 - `Durrett2019LindebergFellerAnalyticCertificate.of_quadraticVarianceProductApproximations`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_characteristicQuadraticApproximation_and_exercise311`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_varianceSplit_and_exercise311`
+- `Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_varianceSplit`
 - `durrett2019_theorem_3_4_10_characteristicFunction_rowSum_eq_product`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_product_tendsto`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_exp_of_product_tendsto_exp`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_characteristicFunction_product_tendsto`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_analyticCertificate`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSum_varianceSplit_and_exercise311`
+- `durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSum_varianceSplit`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -412,19 +422,16 @@ layer before moving to multivariate CLT reuse:
   `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
   still feeds Lemma 3.4.3.  The quadratic-product obligation
   `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp` now has
-  a compiled bridge from variance-sum convergence, max-row-variance smallness,
-  and the supplied Exercise 3.1.1 real triangular-array product theorem; with
-  the variance-tail split, it also has a compiled bridge directly from
-  Lindeberg.  A final source-facing constructor now assembles the analytic
-  certificate and the convergence-in-distribution theorem from exactly the
-  current primitive frontier: the one-factor error row sum, the variance-tail
-  split, and the real Exercise 3.1.1 theorem.  The Exercise 3.1.1 product
-  route now has a compiled logarithmic bridge: eventual positivity plus
-  `sum_m (log (1 + c_{n,m}) - c_{n,m}) -> 0` implies the product conclusion,
-  and a route constructor packages this into the full Exercise 3.1.1 theorem.
-  The remaining Exercise 3.1.1 work is proving positivity from max-smallness
-  and the log-remainder estimate from max-smallness plus uniform absolute
-  row-sum boundedness.
+  a compiled bridge from variance-sum convergence and max-row-variance
+  smallness using the proved Exercise 3.1.1 real triangular-array product
+  theorem; with the variance-tail split, it also has a compiled bridge
+  directly from Lindeberg.  A final source-facing constructor now assembles the
+  analytic certificate and the convergence-in-distribution theorem from
+  exactly the current primitive frontier: the one-factor error row sum and the
+  variance-tail split.  Exercise 3.1.1 itself now compiles: max-smallness gives
+  eventual positivity and the relative logarithmic remainder estimate, uniform
+  absolute row-sum boundedness turns that into row-sum log-remainder
+  convergence, and the logarithmic product bridge proves the source theorem.
   The variance-tail split bridge now packages Durrett's source inequality
   `variance <= cutoff ^ 2 + tail row sum` as a supplied theorem-shaped
   predicate and proves that the Lindeberg condition implies
@@ -555,10 +562,11 @@ Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem,
 and Theorem 3.3.20 centered second-order Taylor wrapper.  Chapter 3.4 now has
 Theorem 3.4.1 i.i.d. CLT wrappers and Theorem 3.4.10
 triangular-array characteristic-function/product/certificate plumbing,
-including a final source-facing constructor from the three remaining primitive
-obligations.  Next prove the one-factor Taylor/Lindeberg error row-sum
-estimate, the real Exercise 3.1.1 triangular-array product theorem, and the
-lower-level variance-tail split primitive before moving to Section 3.10
+including a final source-facing constructor from the remaining primitive
+obligations.  Exercise 3.1.1 is now proved locally and feeds the quadratic
+product route without a supplied theorem assumption.  Next prove the
+one-factor Taylor/Lindeberg error row-sum estimate and the lower-level
+variance-tail split primitive before moving to Section 3.10
 Cramer-Wold/multivariate CLT wrappers while checking local
 asymptotic-statistics reuse first.
 Verify, update docs, commit/push, and keep this in-thread `/goal` state current.
