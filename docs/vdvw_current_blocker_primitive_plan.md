@@ -200,6 +200,22 @@ source work is now the finite-sample variance estimate for normalized
 fixed-`M` truncated coordinate sums, and the selected-cover/Rademacher
 probability comparison carrying that beta factor.
 
+The finite-sample variance side of that beta estimate is now also compiled.
+`VdVWVariance_pi_weightedSum` packages mathlib's product-coordinate variance
+sum formula in the weighted-sum shape of Lemma 2.3.7;
+`VdVWChebyshev_betaLower_pi_weightedSum_abs_lt_half_of_varianceSum_le_penalty`
+and
+`VdVWChebyshev_betaLower_pi_weightedSum_abs_lt_half_of_uniformVariance_le_penalty`
+turn that variance calculation into the beta lower bound.  For the actual
+fixed-`M` empirical-process coordinates,
+`memLp_centered_vdVWTruncatedClassFun_of_nonneg`,
+`VdVWVariance_centered_vdVWTruncatedClassFun_le_two_mul_M_sq`, and
+`VdVWChebyshev_betaLower_productSample_centeredTruncated_weightedSum_abs_lt_half`
+give the `P^n` weighted-sample beta lower bound from the deterministic
+weighted-square penalty.  The remaining source theorem is therefore the
+selected-cover/Rademacher probability comparison carrying this beta factor,
+not the Chebyshev variance estimate.
+
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
 infrastructure for selected fixed-radius tail/UI, finite code-set and

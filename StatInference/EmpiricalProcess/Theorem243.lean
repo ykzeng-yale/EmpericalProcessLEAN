@@ -32239,6 +32239,311 @@ theorem VdVWChebyshev_betaLower_abs_lt_half_of_mean_zero_variance_le_penalty
       (μ := μ) hX (by linarith) hmean hpenalty_nonneg hvariance_le
 
 /--
+Variance of a finite-product weighted coordinate sum.
+
+This packages mathlib's `variance_sum_pi` in the exact weighted-sum shape used
+by the Chebyshev beta source in VdV&W Lemma 2.3.7.
+-/
+theorem VdVWVariance_pi_weightedSum
+    {ι : Type w} [Fintype ι]
+    {α : ι -> Type u} [∀ i, MeasurableSpace (α i)]
+    (P : (i : ι) -> MeasureTheory.ProbabilityMeasure (α i))
+    {X : (i : ι) -> α i -> ℝ} {weights : ι -> ℝ}
+    (hX : ∀ i, MemLp (X i) 2 (P i : Measure (α i))) :
+    Var[(fun sample : (i : ι) -> α i =>
+        ∑ i : ι, weights i * X i (sample i));
+      Measure.pi fun i => (P i : Measure (α i))] =
+      ∑ i : ι, weights i ^ 2 * Var[X i; (P i : Measure (α i))] := by
+  let μ : (i : ι) -> Measure (α i) := fun i => (P i : Measure (α i))
+  have hY : ∀ i, MemLp (fun x : α i => weights i * X i x) 2 (μ i) := by
+    intro i
+    exact (hX i).const_mul (weights i)
+  have hsum_fun :
+      (fun sample : (i : ι) -> α i =>
+        ∑ i : ι, weights i * X i (sample i)) =
+        (∑ i : ι,
+          fun sample : (j : ι) -> α j => weights i * X i (sample i)) := by
+    ext sample
+    simp
+  calc
+    Var[(fun sample : (i : ι) -> α i =>
+        ∑ i : ι, weights i * X i (sample i)); Measure.pi μ]
+        = Var[(∑ i : ι,
+            fun sample : (j : ι) -> α j => weights i * X i (sample i));
+            Measure.pi μ] := by
+          rw [hsum_fun]
+    _ = ∑ i : ι, Var[(fun x : α i => weights i * X i x); μ i] := by
+          simpa using
+            (ProbabilityTheory.variance_sum_pi
+              (Ω := α) (μ := μ)
+              (X := fun i x => weights i * X i x) hY)
+    _ = ∑ i : ι, weights i ^ 2 * Var[X i; μ i] := by
+          refine Finset.sum_congr rfl ?_
+          intro i _hi
+          rw [ProbabilityTheory.variance_const_mul]
+
+/--
+Finite-product Chebyshev beta lower bound for a weighted mean-zero sum.
+
+This is the probability/variance bridge needed before instantiating the
+Theorem 2.4.3 fixed-`M` truncated coordinates: after the finite-product
+variance calculation is bounded by a penalty, Chebyshev gives the exact
+`β_n(x)` lower-bound event from VdV&W Lemma 2.3.7.
+-/
+theorem VdVWChebyshev_betaLower_pi_weightedSum_abs_lt_half_of_varianceSum_le_penalty
+    {ι : Type w} [Fintype ι]
+    {α : ι -> Type u} [∀ i, MeasurableSpace (α i)]
+    (P : (i : ι) -> MeasureTheory.ProbabilityMeasure (α i))
+    {X : (i : ι) -> α i -> ℝ} {weights : ι -> ℝ}
+    {x penalty : ℝ}
+    (hX : ∀ i, MemLp (X i) 2 (P i : Measure (α i)))
+    (hx : 0 < x)
+    (hmean : ∀ i, ∫ y, X i y ∂(P i : Measure (α i)) = 0)
+    (hpenalty_nonneg : 0 ≤ penalty)
+    (hvariance_le :
+      (∑ i : ι, weights i ^ 2 * Var[X i; (P i : Measure (α i))]) /
+          (x / 2) ^ 2 ≤ penalty) :
+    ENNReal.ofReal (1 - penalty) ≤
+      (Measure.pi fun i => (P i : Measure (α i)))
+        {sample : (i : ι) -> α i |
+          |∑ i : ι, weights i * X i (sample i)| < x / 2} := by
+  let μ : (i : ι) -> Measure (α i) := fun i => (P i : Measure (α i))
+  have hsum_memLp :
+      MemLp
+        (fun sample : (i : ι) -> α i =>
+          ∑ i : ι, weights i * X i (sample i))
+        2 (Measure.pi μ) := by
+    simpa [μ] using
+      (memLp_finsetSum
+        (μ := Measure.pi μ) (p := (2 : ℝ≥0∞))
+        (s := (Finset.univ : Finset ι))
+        (f := fun i sample => weights i * X i (sample i))
+        (by
+          intro i _hi
+          have hcoord :
+              MemLp (fun sample : (j : ι) -> α j => X i (sample i))
+                2 (Measure.pi μ) := by
+            simpa [Function.comp_def, μ] using
+              (hX i).comp_measurePreserving (measurePreserving_eval μ i)
+          exact hcoord.const_mul (weights i)))
+  have hmean_sum :
+      (Measure.pi μ)[fun sample : (i : ι) -> α i =>
+        ∑ i : ι, weights i * X i (sample i)] = 0 := by
+    change
+      ∫ sample : (i : ι) -> α i,
+          (∑ i : ι, weights i * X i (sample i)) ∂Measure.pi μ = 0
+    simpa [μ] using
+      (StatInference.ProbabilityMeasure.probability_pi_integral_weighted_sum_eq_zero
+        P (f := X) (weights := weights)
+        (fun i => (hX i).integrable one_le_two) hmean)
+  have hvariance_sum_le :
+      Var[(fun sample : (i : ι) -> α i =>
+          ∑ i : ι, weights i * X i (sample i)); Measure.pi μ] /
+          (x / 2) ^ 2 ≤ penalty := by
+    simpa [μ, VdVWVariance_pi_weightedSum (P := P) (X := X)
+      (weights := weights) hX] using hvariance_le
+  exact
+    VdVWChebyshev_betaLower_abs_lt_half_of_mean_zero_variance_le_penalty
+      (μ := Measure.pi μ) hsum_memLp hx hmean_sum hpenalty_nonneg
+      hvariance_sum_le
+
+/--
+Variance bound from an almost-everywhere absolute-value bound.
+
+For the fixed-`M` truncated coordinates, this is the local step turning
+`|Z_i| <= M` into the uniform variance bound needed by Chebyshev.
+-/
+theorem VdVWVariance_le_sq_of_ae_abs_le
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {X : Ω -> ℝ} (hX : MemLp X 2 μ) {M : ℝ}
+    (hM_nonneg : 0 ≤ M) (hbound : ∀ᵐ ω ∂μ, |X ω| ≤ M) :
+    Var[X; μ] ≤ M ^ 2 := by
+  have hsquare_le :
+      (fun ω : Ω => X ω ^ 2) ≤ᶠ[ae μ] fun _ : Ω => M ^ 2 := by
+    filter_upwards [hbound] with ω hω
+    simpa [sq_abs] using
+      (sq_le_sq₀ (abs_nonneg (X ω)) hM_nonneg).2 hω
+  have hintegral_le : μ[X ^ 2] ≤ M ^ 2 := by
+    change ∫ ω : Ω, X ω ^ 2 ∂μ ≤ M ^ 2
+    calc
+      ∫ ω : Ω, X ω ^ 2 ∂μ
+          ≤ ∫ _ : Ω, M ^ 2 ∂μ :=
+            integral_mono_ae
+              (f := fun ω : Ω => X ω ^ 2)
+              (g := fun _ : Ω => M ^ 2)
+              hX.integrable_sq (integrable_const (M ^ 2)) hsquare_le
+      _ = M ^ 2 := by simp
+  exact (ProbabilityTheory.variance_le_expectation_sq hX.1).trans hintegral_le
+
+/--
+The centered fixed-`M` truncated coordinate is in `L²` under the existing
+truncated integrability hypothesis, because it is uniformly bounded by `2M`.
+-/
+theorem memLp_centered_vdVWTruncatedClassFun_of_nonneg
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M) {index : Index} (hindex : index ∈ indexClass)
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) P) :
+    MemLp
+      (fun observation : Observation =>
+        vdVWTruncatedClassFun classFun envelope M index observation -
+          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+      2 P := by
+  have hae :
+      AEStronglyMeasurable
+        (fun observation : Observation =>
+          vdVWTruncatedClassFun classFun envelope M index observation -
+            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) P :=
+    htruncIntegrable.1.sub aestronglyMeasurable_const
+  exact
+    MemLp.of_bound hae (2 * M)
+      (Eventually.of_forall fun observation => by
+        simpa [Real.norm_eq_abs] using
+          abs_centered_vdVWTruncatedClassFun_le_two_mul_M
+            henvelope hM hindex htruncIntegrable observation)
+
+/--
+Variance bound for one centered fixed-`M` truncated coordinate.
+
+This supplies the common coordinate-variance input for the product weighted-sum
+Chebyshev beta lower bound.
+-/
+theorem VdVWVariance_centered_vdVWTruncatedClassFun_le_two_mul_M_sq
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M) {index : Index} (hindex : index ∈ indexClass)
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) P) :
+    Var[(fun observation : Observation =>
+        vdVWTruncatedClassFun classFun envelope M index observation -
+          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P); P] ≤
+      (2 * M) ^ 2 := by
+  exact
+    VdVWVariance_le_sq_of_ae_abs_le
+      (memLp_centered_vdVWTruncatedClassFun_of_nonneg
+        henvelope hM hindex htruncIntegrable)
+      (by nlinarith)
+      (Eventually.of_forall fun observation =>
+        abs_centered_vdVWTruncatedClassFun_le_two_mul_M
+          henvelope hM hindex htruncIntegrable observation)
+
+/--
+Finite-product Chebyshev beta lower bound from a uniform coordinate variance
+bound.
+
+This is the next reusable shape for the fixed-`M` truncated variables: once
+each coordinate variance is bounded by a common term, only the deterministic
+weighted-square penalty remains.
+-/
+theorem VdVWChebyshev_betaLower_pi_weightedSum_abs_lt_half_of_uniformVariance_le_penalty
+    {ι : Type w} [Fintype ι]
+    {α : ι -> Type u} [∀ i, MeasurableSpace (α i)]
+    (P : (i : ι) -> MeasureTheory.ProbabilityMeasure (α i))
+    {X : (i : ι) -> α i -> ℝ} {weights : ι -> ℝ}
+    {x varianceBound penalty : ℝ}
+    (hX : ∀ i, MemLp (X i) 2 (P i : Measure (α i)))
+    (hx : 0 < x)
+    (hmean : ∀ i, ∫ y, X i y ∂(P i : Measure (α i)) = 0)
+    (hvariance_bound :
+      ∀ i, Var[X i; (P i : Measure (α i))] ≤ varianceBound)
+    (hpenalty_nonneg : 0 ≤ penalty)
+    (hweighted_variance_le :
+      ((∑ i : ι, weights i ^ 2) * varianceBound) / (x / 2) ^ 2 ≤ penalty) :
+    ENNReal.ofReal (1 - penalty) ≤
+      (Measure.pi fun i => (P i : Measure (α i)))
+        {sample : (i : ι) -> α i |
+          |∑ i : ι, weights i * X i (sample i)| < x / 2} := by
+  have hsum_variance_le :
+      ∑ i : ι, weights i ^ 2 * Var[X i; (P i : Measure (α i))] ≤
+        (∑ i : ι, weights i ^ 2) * varianceBound := by
+    rw [Finset.sum_mul]
+    refine Finset.sum_le_sum ?_
+    intro i _hi
+    exact mul_le_mul_of_nonneg_left (hvariance_bound i) (sq_nonneg (weights i))
+  have hvariance_le :
+      (∑ i : ι, weights i ^ 2 * Var[X i; (P i : Measure (α i))]) /
+          (x / 2) ^ 2 ≤ penalty := by
+    exact
+      (div_le_div_of_nonneg_right hsum_variance_le (sq_nonneg (x / 2))).trans
+        hweighted_variance_le
+  exact
+    VdVWChebyshev_betaLower_pi_weightedSum_abs_lt_half_of_varianceSum_le_penalty
+      P (hX := hX) (weights := weights) hx hmean hpenalty_nonneg
+      hvariance_le
+
+/--
+Product-sample Chebyshev beta lower bound for one centered fixed-`M`
+truncated class member.
+
+This is the finite-sample variance side of the VdV&W Lemma 2.3.7 beta
+condition in the repository's `vdVWWeightedSampleSum` notation.  The remaining
+Theorem 2.4.3 source step is the selected-cover/Rademacher comparison carrying
+this beta factor.
+-/
+theorem VdVWChebyshev_betaLower_productSample_centeredTruncated_weightedSum_abs_lt_half
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M x penalty : ℝ}
+    {n : ℕ} {weights : Fin n -> ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M) {index : Index} (hindex : index ∈ indexClass)
+    (htruncIntegrable :
+      Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hx : 0 < x) (hpenalty_nonneg : 0 ≤ penalty)
+    (hweighted_variance_le :
+      ((∑ i : Fin n, weights i ^ 2) * (2 * M) ^ 2) / (x / 2) ^ 2 ≤
+        penalty) :
+    ENNReal.ofReal (1 - penalty) ≤
+      (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          |vdVWWeightedSampleSum
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            weights index sample| < x / 2} := by
+  let centered : Observation -> ℝ :=
+    fun observation =>
+      vdVWTruncatedClassFun classFun envelope M index observation -
+        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P
+  have hcentered_memLp : MemLp centered 2 P :=
+    memLp_centered_vdVWTruncatedClassFun_of_nonneg
+      henvelope hM hindex htruncIntegrable
+  have hcentered_mean : ∫ y, centered y ∂P = 0 := by
+    dsimp [centered]
+    rw [integral_sub htruncIntegrable (integrable_const _)]
+    simp
+  have hvariance_bound :
+      ∀ i : Fin n,
+        Var[(fun observation : Observation => centered observation); P] ≤
+          (2 * M) ^ 2 := by
+    intro _i
+    simpa [centered] using
+      VdVWVariance_centered_vdVWTruncatedClassFun_le_two_mul_M_sq
+        henvelope hM hindex htruncIntegrable
+  simpa [SampleAt, vdVWProductMeasure, vdVWWeightedSampleSum, centered] using
+    (VdVWChebyshev_betaLower_pi_weightedSum_abs_lt_half_of_uniformVariance_le_penalty
+      (P := fun _ : Fin n =>
+        (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation))
+      (X := fun _ : Fin n => centered)
+      (weights := weights)
+      (varianceBound := (2 * M) ^ 2)
+      (penalty := penalty)
+      (hX := fun _ : Fin n => hcentered_memLp)
+      hx
+      (fun _ : Fin n => hcentered_mean)
+      hvariance_bound
+      hpenalty_nonneg
+      hweighted_variance_le)
+
+/--
 Deterministic convergence criterion for the Chebyshev beta penalty.
 
 For the normalized fixed-`M` truncated coordinates in Theorem 2.4.3, the

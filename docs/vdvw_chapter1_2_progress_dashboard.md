@@ -197,6 +197,15 @@ compiled.  They supply the local probability step
 `ofReal (1 - penalty) <= P(|X| < x / 2)` from `MemLp`, mean zero, and a
 variance-ratio/penalty bound, leaving the finite-sample variance calculation
 and selected-cover/Rademacher beta comparison as the real source blocker.
+The finite-sample variance calculation is now compiled through
+`VdVWVariance_pi_weightedSum`,
+`VdVWChebyshev_betaLower_pi_weightedSum_abs_lt_half_of_varianceSum_le_penalty`,
+`VdVWChebyshev_betaLower_pi_weightedSum_abs_lt_half_of_uniformVariance_le_penalty`,
+`memLp_centered_vdVWTruncatedClassFun_of_nonneg`,
+`VdVWVariance_centered_vdVWTruncatedClassFun_le_two_mul_M_sq`, and
+`VdVWChebyshev_betaLower_productSample_centeredTruncated_weightedSum_abs_lt_half`.
+The beta-side blocker is now the selected-cover/Rademacher probability
+comparison itself, with the deterministic weighted-square penalty supplied.
 
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
