@@ -2400,6 +2400,182 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorError_row_i
             ((hremainder_int N).const_mul C), integral_const_mul]
 
 /--
+Uniform boundedness of the projected increments also bounds the projected
+conditional variances.  This is the source-shaped input needed before bounding
+the exponential compensation factors in Chewi's martingale characteristic-
+function proof.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_conditional_variance_abs_le_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) :
+    ∃ B : ℝ, 0 ≤ B ∧
+      ∀ n : ℕ, ∀ᵐ ω ∂P,
+        |S.covariance.Xi (n + 1) ω L L| ≤ B ^ 2 := by
+  rcases S.martingale.projected_uniform_bound L S.uniform_bound with
+    ⟨B, hB_nonneg, hbound⟩
+  refine ⟨B, hB_nonneg, ?_⟩
+  intro n
+  let x : Ω -> ℝ := fun ω => L (S.martingale.xi (n + 1) ω)
+  have hBsq_nonneg : (0 : ℝ) ≤ B ^ 2 := sq_nonneg B
+  let R : NNReal := NNReal.mk (B ^ 2) hBsq_nonneg
+  have hbdd_sq :
+      ∀ᵐ ω ∂P, |(x ω) ^ 2| ≤ (R : ℝ) := by
+    filter_upwards [hbound n] with ω hω
+    have hx_sq : (x ω) ^ 2 ≤ B ^ 2 := by
+      rw [sq_le_sq]
+      exact hω.trans (abs_of_nonneg hB_nonneg).ge
+    simpa [x, abs_sq] using hx_sq
+  have hcond :
+      ∀ᵐ ω ∂P,
+        |P[fun ω => (x ω) ^ 2 | S.martingale.filtration n] ω| ≤ B ^ 2 := by
+    simpa using
+      (ae_bdd_condExp_of_ae_bdd
+        (R := R)
+        (μ := P) (m := S.martingale.filtration n) hbdd_sq)
+  filter_upwards [hcond, S.projected_conditional_second_moment L n] with ω hω hXi
+  simpa [x, hXi] using hω
+
+/--
+Pointwise row bound for the scalar compensation factors from a uniform bound
+on the corresponding projected conditional variance.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_norm_le_of_variance_abs_le
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) {N : ℕ} (hN : 1 ≤ N) (t V : ℝ)
+    {k : ℕ} {ω : Ω}
+    (hV_nonneg : 0 ≤ V)
+    (hXi : |S.covariance.Xi (k + 1) ω L L| ≤ V) :
+    ‖S.projectedCompensationFactor L N t k ω‖ ≤
+      Real.exp (t ^ 2 * V / 2) := by
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  let xiVar : ℝ := S.covariance.Xi (k + 1) ω L L
+  have hN_real : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hsqrt_ge_one : 1 ≤ Real.sqrt (N : ℝ) := by
+    simpa using (Real.one_le_sqrt.mpr hN_real)
+  have hinv_nonneg : 0 ≤ (Real.sqrt (N : ℝ))⁻¹ :=
+    inv_nonneg.mpr (Real.sqrt_nonneg _)
+  have hinv_le_one : (Real.sqrt (N : ℝ))⁻¹ ≤ 1 :=
+    inv_le_one_of_one_le₀ hsqrt_ge_one
+  have hinv_sq_le_one : ((Real.sqrt (N : ℝ))⁻¹) ^ 2 ≤ 1 := by
+    simpa using
+      ((sq_le_sq₀ hinv_nonneg zero_le_one).mpr hinv_le_one)
+  have ha_sq_le : a ^ 2 ≤ t ^ 2 := by
+    calc
+      a ^ 2 = t ^ 2 * ((Real.sqrt (N : ℝ))⁻¹) ^ 2 := by
+        ring
+      _ ≤ t ^ 2 * 1 :=
+        mul_le_mul_of_nonneg_left hinv_sq_le_one (sq_nonneg t)
+      _ = t ^ 2 := by ring
+  have hXi_le : xiVar ≤ V := by
+    exact (le_abs_self xiVar).trans hXi
+  have ha_nonneg : 0 ≤ a ^ 2 := sq_nonneg a
+  have harg_le :
+      a ^ 2 * xiVar / 2 ≤ t ^ 2 * V / 2 := by
+    have hmul_left : a ^ 2 * xiVar ≤ a ^ 2 * V :=
+      mul_le_mul_of_nonneg_left hXi_le ha_nonneg
+    have hmul_right : a ^ 2 * V ≤ t ^ 2 * V :=
+      mul_le_mul_of_nonneg_right ha_sq_le hV_nonneg
+    nlinarith
+  calc
+    ‖S.projectedCompensationFactor L N t k ω‖
+        = Real.exp (a ^ 2 * xiVar / 2) := by
+          have hcomp :
+              S.projectedCompensationFactor L N t k ω =
+                Complex.exp (((a ^ 2 * xiVar) / 2 : ℝ)) := by
+            simp [a, xiVar,
+              Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor]
+          rw [hcomp]
+          rw [Complex.norm_exp_ofReal]
+    _ ≤ Real.exp (t ^ 2 * V / 2) :=
+          Real.exp_le_exp.mpr harg_le
+
+/--
+Eventually uniform row bound for the scalar compensation factors.  This is the
+exact side condition required by
+`projectedCompensatedTaylorError_row_integral_tendsto_zero`.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_eventually_row_norm_le
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ) :
+    ∃ C : ℝ, ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖S.projectedCompensationFactor L N t k ω‖ ≤ C := by
+  rcases S.projected_conditional_variance_abs_le_of_uniform_bound L with
+    ⟨B, _hB_nonneg, hXi_bound⟩
+  refine ⟨Real.exp (t ^ 2 * B ^ 2 / 2), ?_⟩
+  have hXi_all :
+      ∀ᵐ ω ∂P, ∀ k : ℕ,
+        |S.covariance.Xi (k + 1) ω L L| ≤ B ^ 2 :=
+    ae_all_iff.2 hXi_bound
+  filter_upwards [eventually_ge_atTop (1 : ℕ)] with N hN
+  filter_upwards [hXi_all] with ω hω
+  intro k _hk
+  exact
+    S.projectedCompensationFactor_norm_le_of_variance_abs_le L hN t (B ^ 2)
+      (sq_nonneg B) (hω k)
+
+/--
+Source-facing compensated row-error convergence: the compensation-factor bound
+is now discharged from the bounded martingale source, so callers only need the
+variance-only second-order row error and the routine integrability hypotheses.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorError_row_integral_tendsto_zero_of_variance_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hvariance_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          ∑ k ∈ Finset.range N,
+            ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+      atTop (𝓝 0) := by
+  rcases S.projectedCompensationFactor_eventually_row_norm_le L t with
+    ⟨C, hC⟩
+  exact
+    S.projectedCompensatedTaylorError_row_integral_tendsto_zero L t C hC
+      hvariance_error_int hremainder_int hvariance_error
+
+/--
 Scaled source-shaped version of the one-step tower peel, using the concrete
 Chewi row factor `t / sqrt N` and the named variance-plus-remainder model
 factor.

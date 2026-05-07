@@ -239,6 +239,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi127_integral_product_one_add_tendsto_one_of_integral_sum_norm`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorError_row_integral_tendsto_zero`,
+  `Chewi127BoundedMartingaleCLTSource.projected_conditional_variance_abs_le_of_uniform_bound`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_norm_le_of_variance_abs_le`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_eventually_row_norm_le`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorError_row_integral_tendsto_zero_of_variance_error`,
   and
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_concrete_random_product_model`.
   These name the actual row factors with `a = t / sqrt N` and specialize the
@@ -255,11 +259,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   to expected products of `1 + error`.  The row-error packet now consumes the
   existing conditional Taylor-remainder row convergence and reduces expected
   compensated row-error convergence to the variance-only second-order row error
-  plus a uniform compensation-factor bound.  The next ASGD packet should prove
-  those two remaining side conditions, then prove the finite compensated
-  iteration under the exact source measurability side conditions and close the
-  variance/convergence comparison to the Gaussian characteristic-function
-  limit.
+  plus a uniform compensation-factor bound.  The compensation-bound packet now
+  discharges that bound from uniform boundedness of the martingale increments,
+  so the source-facing row-error wrapper only needs the variance-only
+  second-order row error and routine integrability.  The next ASGD packet
+  should prove that remaining variance-only side condition, then prove the
+  finite compensated iteration under the exact source measurability side
+  conditions and close the variance/convergence comparison to the Gaussian
+  characteristic-function limit.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
@@ -810,9 +817,9 @@ wrappers as stable infrastructure.  The live manual `/goal` frontier is now
 scalar bounded martingale characteristic-function convergence behind
 `projected_charFun_tendsto_exp`, then wire Chewi Theorem 12.7/12.3 through the
 existing ASGD certificate constructors.  The remaining proof obligations are
-the compensation-factor bound, the variance-only second-order row bound, the
-finite compensated iteration under exact measurability/integrability side
-conditions, and the variance/convergence comparison to
+the variance-only second-order row bound, the finite compensated iteration
+under exact measurability/integrability side conditions, and the
+variance/convergence comparison to
 `exp (-(S_infty L L) t^2 / 2)`.  Do not return to old Chapter 3, SMPGD source
 probability packaging, or raw tower-peel tasks unless a regression makes them
 relevant.
