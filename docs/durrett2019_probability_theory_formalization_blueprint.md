@@ -189,6 +189,9 @@ Compiled first source wrappers:
   `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_open_cover_endpoint_center_refinement`,
   and
   `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_endpoint_center_refinement`.
+- Durrett Theorem 2.4.9 cutpoint-chain splitting handoff:
+  `SuppliedRealMiddleCDFPartitionChain.append` and
+  `durrett2019_theorem_2_4_9_cutpointChain_append`.
 - Durrett Theorem 2.4.9 strict-subdivision-prefix handoff:
   `SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`
   and

@@ -850,6 +850,24 @@ inductive SuppliedRealMiddleCDFPartitionChain
       SuppliedRealMiddleCDFPartitionChain μ epsilon a b
 
 /--
+Concatenate two supplied cutpoint chains that meet at a common endpoint.
+
+This is the splitting primitive for finite center insertion: after proving
+small-increment chains on neighboring subintervals, they can be assembled back
+into one chain on the whole interval.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.append
+    {μ : Measure ℝ} {epsilon a b c : ℝ}
+    (left : SuppliedRealMiddleCDFPartitionChain μ epsilon a b)
+    (right : SuppliedRealMiddleCDFPartitionChain μ epsilon b c) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon a c := by
+  induction right with
+  | one hbc hinc =>
+      exact SuppliedRealMiddleCDFPartitionChain.snoc left hbc hinc
+  | snoc chain hcd hinc ih =>
+      exact SuppliedRealMiddleCDFPartitionChain.snoc ih hcd hinc
+
+/--
 A strict finite endpoint grid with small adjacent CDF left-limit increments
 produces a cutpoint chain.
 

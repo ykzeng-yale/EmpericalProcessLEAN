@@ -93,6 +93,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_avoids_center_refinement`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_endpoint_center_refinement`
+- `durrett2019_theorem_2_4_9_cutpointChain_append`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`
@@ -150,6 +151,7 @@ compile, via
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_punctured_cover_refinement`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_avoids_center_refinement`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_endpoint_center_refinement`,
+`durrett2019_theorem_2_4_9_cutpointChain_append`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_strict_subdivision_prefix`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`,
@@ -229,6 +231,11 @@ distribution route still needs the finite ordering/splitting theorem that
 inserts all selected centers into the monotone subdivision and makes each
 closed adjacent cell refine a selected finite cover interval.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
+The splitting primitive
+`SuppliedRealMiddleCDFPartitionChain.append` and its Durrett wrapper
+`durrett2019_theorem_2_4_9_cutpointChain_append` now concatenate adjacent
+chains, so the finite center-insertion proof can be assembled from subinterval
+pieces if direct global subdivision insertion becomes too brittle.
 
 Parallel target: Chapter 2.1 exact iid/product notation refinements only if
 the GC grid blocks.  Theorem 2.1.7 generated-pi-system bridges, Theorem 2.1.8

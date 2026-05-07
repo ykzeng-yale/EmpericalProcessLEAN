@@ -786,6 +786,20 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_open_cover_endpo
     endpoint hstrict hrefine
 
 /--
+Durrett 2019, Theorem 2.4.9 cutpoint-chain concatenation package.
+
+This is the finite splitting primitive used by the arbitrary-law route: chains
+proved on adjacent subintervals can be assembled into one chain on the whole
+interval.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_append
+    {P : Measure ℝ} {epsilon a b c : ℝ}
+    (left : SuppliedRealMiddleCDFPartitionChain P epsilon a b)
+    (right : SuppliedRealMiddleCDFPartitionChain P epsilon b c) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a c :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.append left right
+
+/--
 Durrett 2019, Theorem 2.4.9 strict-subdivision-prefix package.
 
 After repeated values have been erased from the monotone subdivision, a strict
