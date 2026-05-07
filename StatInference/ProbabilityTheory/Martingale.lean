@@ -196,6 +196,109 @@ theorem durrett2019_section_4_2_real_supermartingale_nat_of_condExp_succ
     Supermartingale X ℱ μ :=
   supermartingale_nat hAdapted hIntegrable hCond
 
+/--
+Durrett 2019, Theorem 4.2.4: for a supermartingale, conditional expectations
+are decreasing across all later times.
+-/
+theorem durrett2019_theorem_4_2_4_supermartingale_condExp_ae_le
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] [Preorder E]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} {X : ℕ -> Ω -> E}
+    (hX : Supermartingale X ℱ μ) {m n : ℕ} (hmn : m ≤ n) :
+    μ[X n | ℱ m] ≤ᵐ[μ] X m :=
+  durrett2019_section_4_2_supermartingale_condExp_ae_le hX hmn
+
+/--
+Durrett 2019, Theorem 4.2.4, source-facing strict-index form:
+if `n > m`, then `E(X_n | F_m) ≤ X_m`.
+-/
+theorem durrett2019_theorem_4_2_4_supermartingale_condExp_strict_ae_le
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] [Preorder E]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} {X : ℕ -> Ω -> E}
+    (hX : Supermartingale X ℱ μ) {m n : ℕ} (hmn : m < n) :
+    μ[X n | ℱ m] ≤ᵐ[μ] X m :=
+  durrett2019_theorem_4_2_4_supermartingale_condExp_ae_le hX hmn.le
+
+/--
+Durrett 2019, Theorem 4.2.5(i): for a submartingale, conditional expectations
+are increasing across all later times.
+-/
+theorem durrett2019_theorem_4_2_5_submartingale_ae_le_condExp
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] [Preorder E]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} {X : ℕ -> Ω -> E}
+    (hX : Submartingale X ℱ μ) {m n : ℕ} (hmn : m ≤ n) :
+    X m ≤ᵐ[μ] μ[X n | ℱ m] :=
+  durrett2019_section_4_2_submartingale_ae_le_condExp hX hmn
+
+/--
+Durrett 2019, Theorem 4.2.5(i), source-facing strict-index form:
+if `n > m`, then `E(X_n | F_m) ≥ X_m`.
+-/
+theorem durrett2019_theorem_4_2_5_submartingale_strict_ae_le_condExp
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] [Preorder E]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} {X : ℕ -> Ω -> E}
+    (hX : Submartingale X ℱ μ) {m n : ℕ} (hmn : m < n) :
+    X m ≤ᵐ[μ] μ[X n | ℱ m] :=
+  durrett2019_theorem_4_2_5_submartingale_ae_le_condExp hX hmn.le
+
+/--
+Durrett 2019, Theorem 4.2.5(ii): for a martingale, conditional expectations
+are constant across all later times.
+-/
+theorem durrett2019_theorem_4_2_5_martingale_condExp_ae_eq
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} {X : ℕ -> Ω -> E}
+    (hX : Martingale X ℱ μ) {m n : ℕ} (hmn : m ≤ n) :
+    μ[X n | ℱ m] =ᵐ[μ] X m :=
+  durrett2019_section_4_2_martingale_condExp_ae_eq hX hmn
+
+/--
+Durrett 2019, Theorem 4.2.5(ii), source-facing strict-index form:
+if `n > m`, then `E(X_n | F_m) = X_m`.
+-/
+theorem durrett2019_theorem_4_2_5_martingale_condExp_strict_ae_eq
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} {X : ℕ -> Ω -> E}
+    (hX : Martingale X ℱ μ) {m n : ℕ} (hmn : m < n) :
+    μ[X n | ℱ m] =ᵐ[μ] X m :=
+  durrett2019_theorem_4_2_5_martingale_condExp_ae_eq hX hmn.le
+
+/--
+Durrett 2019, Theorem 4.2.6: applying an integrable convex real function to a
+real-valued martingale gives a submartingale.
+-/
+theorem durrett2019_theorem_4_2_6_convex_comp_submartingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} {φ : ℝ -> ℝ}
+    (hX : Martingale X ℱ μ)
+    (hφ_cvx : ConvexOn ℝ Set.univ φ)
+    (hφX_int : ∀ n, Integrable (φ ∘ X n) μ) :
+    Submartingale (fun n => φ ∘ X n) ℱ μ := by
+  have hφ_cont : Continuous φ := by
+    rw [← continuousOn_univ]
+    exact hφ_cvx.continuousOn isOpen_univ
+  refine durrett2019_section_4_2_real_submartingale_nat_of_condExp_succ
+    (X := fun n => φ ∘ X n) ?_ hφX_int ?_
+  · intro n
+    exact hφ_cont.comp_stronglyMeasurable (hX.stronglyMeasurable n)
+  · intro n
+    have hJensen :
+        φ ∘ μ[X (n + 1) | ℱ n] ≤ᵐ[μ] μ[φ ∘ X (n + 1) | ℱ n] :=
+      durrett2019_theorem_4_1_10_conditional_jensen_real
+        (μ := μ) (m := ℱ n) (X := X (n + 1)) (φ := φ)
+        (ℱ.le n) hφ_cvx (hX.integrable (n + 1)) (hφX_int (n + 1))
+    have hLeft :
+        φ ∘ μ[X (n + 1) | ℱ n] =ᵐ[μ] φ ∘ X n :=
+      (hX.condExp_ae_eq n.le_succ).mono fun ω hω => by
+        simp [hω]
+    exact hLeft.symm.le.trans hJensen
+
 /-! ## Durrett, Example 4.2.1 -/
 
 /--

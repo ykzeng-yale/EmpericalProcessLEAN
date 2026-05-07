@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V25
+## Live In-Thread Goal Prompt V26
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -37,17 +37,19 @@ exponential-martingale display now also compiles: normalized factors
 `exp(θ ξ_i) / φ`, factor independence/measurability/integrability/mean-one
 bridges, the finite-product display
 `∏_{i=1}^n exp(θ ξ_i) / φ = exp(θ S_n) / φ^n`, and the martingale wrapper from
-a nonzero common exponential moment.
+a nonzero common exponential moment.  Theorem 4.2.4 and Theorem 4.2.5 now have
+source-facing all-times and strict-index conditional-expectation wrappers for
+supermartingales, submartingales, and martingales.  The generic Theorem 4.2.6
+convex-image submartingale wrapper now compiles from the Chapter 4.1
+conditional Jensen theorem.
 
-Next theorem-sized packet: move to Theorems 4.2.4 and 4.2.5.  Package the
-all-times supermartingale, submartingale, and martingale conditional
-expectation consequences for `m ≤ n`, reusing mathlib's all-times
-`condExp_ae_le`, `ae_le_condExp`, and `condExp_ae_eq` APIs already wrapped near
-the start of `Martingale.lean`.  If these are already direct one-line wrappers,
-add the source-facing strict-index `m < n` variants and then continue to
-Theorem 4.2.6 convex-image submartingales.  Do not repackage solved Chapter
-4.1 facts or the compiled Chapter 4.2 starter, examples 4.2.1-4.2.3, or
-normalized exponential wrappers.
+Next theorem-sized packet: finish the remaining Theorem 4.2.6 consequence
+`|X_n|^p` for `p ≥ 1` by locating or adding the reusable convexity wrapper for
+`x ↦ |x|^p`/`x ↦ ‖x‖^p`, then feed it into the compiled generic convex-image
+submartingale theorem.  If the power-convexity route is not immediate, move to
+Theorem 4.2.7 increasing-convex transforms using the same conditional Jensen
+bridge.  Do not repackage solved Chapter 4.1 facts, examples 4.2.1-4.2.3, or
+Theorems 4.2.4-4.2.6 generic wrappers.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -410,10 +412,10 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should package Theorems 4.2.4 and 4.2.5 as
-source-facing strict-index consequences, then move to Theorem 4.2.6 if those
-are immediate.  Keep Theorem 4.1.16 deferred unless a targeted kernel search
-finds a direct source-shaped API.
+The next likely packet should finish the Theorem 4.2.6 `|X_n|^p` consequence,
+or move to Theorem 4.2.7 increasing-convex transforms if the power-convexity
+route is not immediate.  Keep Theorem 4.1.16 deferred unless a targeted kernel
+search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -525,6 +527,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V25` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V26` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
