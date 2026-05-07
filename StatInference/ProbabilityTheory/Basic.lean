@@ -2127,6 +2127,65 @@ theorem durrett2019_theorem_3_4_10_quadraticVarianceProduct_tendsto_exp_of_exerc
     using hexercise t
 
 /--
+Durrett 2019, Lemma 3.4.3 with `theta = 1`: if two finite families of complex
+numbers are bounded by one in norm, then the norm of the difference of their
+products is bounded by the sum of the one-factor differences.
+-/
+theorem durrett2019_norm_prod_sub_prod_le_sum_norm_sub
+    {ι : Type v} [DecidableEq ι] (s : Finset ι) (z w : ι -> ℂ)
+    (hz : ∀ i ∈ s, ‖z i‖ ≤ 1) (hw : ∀ i ∈ s, ‖w i‖ ≤ 1) :
+    ‖(∏ i ∈ s, z i) - ∏ i ∈ s, w i‖ ≤
+      ∑ i ∈ s, ‖z i - w i‖ := by
+  classical
+  revert hz hw
+  refine Finset.induction_on s ?base ?step
+  · intro _hz _hw
+    simp
+  · intro a s ha ih hz hw
+    have hz_s : ∀ i ∈ s, ‖z i‖ ≤ 1 := by
+      intro i hi
+      exact hz i (Finset.mem_insert_of_mem hi)
+    have hw_s : ∀ i ∈ s, ‖w i‖ ≤ 1 := by
+      intro i hi
+      exact hw i (Finset.mem_insert_of_mem hi)
+    have hw_a : ‖w a‖ ≤ 1 := hw a (Finset.mem_insert_self a s)
+    have hprod_z_s : ‖∏ i ∈ s, z i‖ ≤ 1 := by
+      exact (Finset.norm_prod_le s z).trans
+        (Finset.prod_le_one (fun i _hi => norm_nonneg (z i)) hz_s)
+    have hfirst :
+        ‖(z a - w a) * (∏ i ∈ s, z i)‖ ≤ ‖z a - w a‖ := by
+      rw [norm_mul]
+      nlinarith [hprod_z_s, norm_nonneg (z a - w a)]
+    have hsecond :
+        ‖w a * ((∏ i ∈ s, z i) - ∏ i ∈ s, w i)‖ ≤
+          ∑ i ∈ s, ‖z i - w i‖ := by
+      rw [norm_mul]
+      have hmul :
+          ‖w a‖ * ‖(∏ i ∈ s, z i) - ∏ i ∈ s, w i‖ ≤
+            ‖(∏ i ∈ s, z i) - ∏ i ∈ s, w i‖ := by
+        nlinarith [hw_a, norm_nonneg ((∏ i ∈ s, z i) - ∏ i ∈ s, w i)]
+      exact hmul.trans (ih hz_s hw_s)
+    have hrewrite :
+        z a * (∏ i ∈ s, z i) - w a * (∏ i ∈ s, w i) =
+          (z a - w a) * (∏ i ∈ s, z i) +
+            w a * ((∏ i ∈ s, z i) - ∏ i ∈ s, w i) := by
+      ring
+    calc
+      ‖(∏ i ∈ insert a s, z i) - ∏ i ∈ insert a s, w i‖
+          = ‖z a * (∏ i ∈ s, z i) - w a * (∏ i ∈ s, w i)‖ := by
+            simp [Finset.prod_insert ha]
+      _ = ‖(z a - w a) * (∏ i ∈ s, z i) +
+            w a * ((∏ i ∈ s, z i) - ∏ i ∈ s, w i)‖ := by
+            rw [hrewrite]
+      _ ≤ ‖(z a - w a) * (∏ i ∈ s, z i)‖ +
+            ‖w a * ((∏ i ∈ s, z i) - ∏ i ∈ s, w i)‖ :=
+            norm_add_le _ _
+      _ ≤ ‖z a - w a‖ + ∑ i ∈ s, ‖z i - w i‖ :=
+            add_le_add hfirst hsecond
+      _ = ∑ i ∈ insert a s, ‖z i - w i‖ := by
+            simp [Finset.sum_insert ha]
+
+/--
 Durrett 2019, Theorem 3.4.10, characteristic-product approximation by the
 quadratic variance product.
 
@@ -2141,6 +2200,68 @@ def durrett2019_lindebergFellerCharacteristicProductApproximationToQuadraticVari
         durrett2019_lindebergFellerCharacteristicProduct P X t n -
           durrett2019_lindebergFellerQuadraticVarianceProduct P X t n)
       atTop (𝓝 0)
+
+/--
+Durrett 2019, Theorem 3.4.10, the row sum of one-factor errors in the
+Taylor/Lindeberg replacement step.
+-/
+def durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) : Prop :=
+  ∀ t : ℝ,
+    Tendsto
+      (fun n : ℕ =>
+        ∑ m ∈ Finset.range n,
+          ‖durrett2019_characteristicFunction (P.map (X n m)) t -
+            durrett2019_lindebergFellerQuadraticVarianceFactor P X t n m‖)
+      atTop (𝓝 0)
+
+/--
+Durrett 2019, Theorem 3.4.10, eventual unit-norm control for the quadratic
+variance factors.  The textbook obtains this from
+`sup_m sigma_{n,m}^2 -> 0`.
+-/
+def durrett2019_lindebergFellerQuadraticVarianceFactorsEventuallyNormLeOne
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) : Prop :=
+  ∀ t : ℝ,
+    ∀ᶠ n : ℕ in atTop,
+      ∀ m ∈ Finset.range n,
+        ‖durrett2019_lindebergFellerQuadraticVarianceFactor P X t n m‖ ≤ 1
+
+/--
+Durrett 2019, Theorem 3.4.10, Lemma 3.4.3 bridge: row-sum control of
+one-factor Taylor/Lindeberg errors implies the characteristic-product to
+quadratic-product approximation.
+-/
+theorem durrett2019_theorem_3_4_10_characteristicProductApproximationToQuadraticVarianceProduct_of_errorRowSum
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hfactor :
+      durrett2019_lindebergFellerQuadraticVarianceFactorsEventuallyNormLeOne
+        P X)
+    (herror :
+      durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero
+        P X) :
+    durrett2019_lindebergFellerCharacteristicProductApproximationToQuadraticVarianceProduct
+      P X := by
+  intro t
+  rw [tendsto_zero_iff_norm_tendsto_zero]
+  refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ (herror t)
+  filter_upwards [hfactor t] with n hfactor_n
+  exact
+    durrett2019_norm_prod_sub_prod_le_sum_norm_sub
+      (Finset.range n)
+      (fun m : ℕ => durrett2019_characteristicFunction (P.map (X n m)) t)
+      (fun m : ℕ => durrett2019_lindebergFellerQuadraticVarianceFactor P X t n m)
+      (by
+        intro m _hm
+        haveI : IsProbabilityMeasure (P.map (X n m)) :=
+          Measure.isProbabilityMeasure_map (hX n m)
+        exact durrett2019_theorem_3_3_1_characteristicFunction_norm_le_one
+          (μ := P.map (X n m)) t)
+      hfactor_n
 
 /--
 Durrett 2019, Theorem 3.4.10, quadratic variance product approximation by the

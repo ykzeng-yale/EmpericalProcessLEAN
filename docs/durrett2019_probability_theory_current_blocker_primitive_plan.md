@@ -229,7 +229,11 @@ namespace now has a compiled starter module:
 - `durrett2019_lindebergFellerQuadraticVarianceProduct_eq_exercise311Product`
 - `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp`
 - `durrett2019_theorem_3_4_10_quadraticVarianceProduct_tendsto_exp_of_exercise311`
+- `durrett2019_norm_prod_sub_prod_le_sum_norm_sub`
 - `durrett2019_lindebergFellerCharacteristicProductApproximationToQuadraticVarianceProduct`
+- `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
+- `durrett2019_lindebergFellerQuadraticVarianceFactorsEventuallyNormLeOne`
+- `durrett2019_theorem_3_4_10_characteristicProductApproximationToQuadraticVarianceProduct_of_errorRowSum`
 - `durrett2019_lindebergFellerQuadraticVarianceProductApproximationToRowGaussianExp`
 - `durrett2019_lindebergFellerProductApproximationToRowGaussianExp`
 - `durrett2019_lindebergFellerGaussianProductConvergence`
@@ -304,9 +308,11 @@ compile:
   explicit `exp(-sigma^2 t^2 / 2)` product-convergence interface, the Gaussian
   characteristic-function display, the row characteristic-function product
   formula, Exercise 3.1.1 triangular-array product interfaces, quadratic
-  variance coefficients/factors/products, row Gaussian exponential targets, the
-  variance-sum-to-row-target convergence bridge, and source-facing bridges from
-  Exercise 3.1.1 quadratic-product conclusions to convergence in distribution.
+  variance coefficients/factors/products, Durrett Lemma 3.4.3 product-difference
+  control, row Gaussian exponential targets, the variance-sum-to-row-target
+  convergence bridge, and source-facing bridges from one-factor Taylor error
+  row sums and Exercise 3.1.1 quadratic-product conclusions to convergence in
+  distribution.
 
 The next likely packet should attack the analytic Lindeberg-Feller estimate
 layer before moving to multivariate CLT reuse:
@@ -319,11 +325,11 @@ layer before moving to multivariate CLT reuse:
   uniqueness support when a later source theorem needs it directly.
 - Section 3.4 central limit theorems: prove the two remaining analytic
   obligations
-  `durrett2019_lindebergFellerCharacteristicProductApproximationToQuadraticVarianceProduct`
+  `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
   and
   `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp`.  The
-  first is the Taylor/Lindeberg part; the second is the Exercise 3.1.1
-  finite-product-to-exponential part for
+  first is the one-factor Taylor/Lindeberg row-sum estimate feeding Lemma 3.4.3;
+  the second is the Exercise 3.1.1 finite-product-to-exponential part for
   `c_{n,m} = -t^2 sigma_{n,m}^2 / 2`.  Their assembly into the row-product
   approximation and the final analytic certificate now compiles.
 - Section 3.10 characteristic-function convergence, Cramer-Wold, and
@@ -450,9 +456,10 @@ Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem,
 and Theorem 3.3.20 centered second-order Taylor wrapper.  Chapter 3.4 now has
 Theorem 3.4.1 i.i.d. CLT wrappers and Theorem 3.4.10
 triangular-array characteristic-function/product/certificate plumbing.  Next
-prove the Taylor/Lindeberg characteristic-product-to-quadratic-product
-approximation and the Exercise 3.1.1 quadratic-product convergence statement
-before moving to Section 3.10 Cramer-Wold/multivariate CLT wrappers while
-checking local asymptotic-statistics reuse first.
+prove the one-factor Taylor/Lindeberg error row-sum estimate, eventual
+unit-norm control for quadratic variance factors, and the Exercise 3.1.1
+quadratic-product convergence statement before moving to Section 3.10
+Cramer-Wold/multivariate CLT wrappers while checking local asymptotic-statistics
+reuse first.
 Verify, update docs, commit/push, and keep this in-thread `/goal` state current.
 Report progress and blockers in Chinese/English mix.
