@@ -51,8 +51,8 @@ before inventing primitives, keep the main thread on the active proof while
 scouts handle disjoint read-only questions when explicitly authorized, verify
 with focused Lean/module builds during development, and batch route-doc
 updates, scans, final rebase, commit, and push once per verified packet.  The
-current active sequence after the ASGD projected martingale-CLT bridge packet
-is projected scalar bounded martingale CLT discharge, source ASGD endpoint
+current active sequence after the ASGD scalar projection data packet is the
+actual one-dimensional bounded martingale CLT proof, source ASGD endpoint
 assembly, then the concrete Sinkhorn KL identity layer if ASGD stalls.
 
 Historical manual frontier after focused Lean verification of Chapter 7
@@ -474,10 +474,22 @@ now compiled.  The projected martingale-CLT bridge packet adds
 `Chewi127ProjectedMartingaleCLTBridge.toMartingaleCLTCertificate`,
 `Chewi127BoundedMartingaleCLTSource`,
 `Chewi127BoundedMartingaleCLTSource.toProjectedBridge`, and
-`Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate`.  The next
-ASGD target is the projected scalar bounded martingale CLT discharge behind
-the `projected_clt` field, then the exact endpoint handoff to Theorem
-12.7/12.3.
+`Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate`.  The scalar
+projection data packet adds `chewi127ScalarScaledSum`,
+`chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum`, the source
+`same_filtration` field,
+`Chewi127MartingaleDifferenceProcess.projected_stronglyAdapted`,
+`Chewi127MartingaleDifferenceProcess.projected_integrable`,
+`Chewi127MartingaleDifferenceProcess.condExp_linear_next_eq_zero`,
+`Chewi127MartingaleDifferenceProcess.projected_uniform_bound`,
+`Chewi127ConditionalCovarianceProcess.condExp_projected_square_eq`,
+`Chewi127BoundedMartingaleCLTSource.projected_condExp_zero`,
+`Chewi127BoundedMartingaleCLTSource.projected_conditional_second_moment`,
+`Chewi127BoundedMartingaleCLTSource.projected_variance_tendstoInMeasure`,
+`Chewi127BoundedMartingaleCLTSource.projected_uniform_bound`, and
+`Chewi127BoundedMartingaleCLTSource.projected_scalar_clt`.  The next ASGD
+target is the actual one-dimensional bounded martingale CLT proof behind the
+`projected_clt` field, then the exact endpoint handoff to Theorem 12.7/12.3.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

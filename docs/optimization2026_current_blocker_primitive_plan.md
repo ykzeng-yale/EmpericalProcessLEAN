@@ -128,14 +128,18 @@ Stable substrate:
   definitions, quadratic ASGD recurrence/unrolling, triangular regrouping
   around `A^{-1}`, the `sqrt N` source display, exact projected scaled-noise
   sums, the projected variance convergence accessor, and the source-shaped
-  projected Cramér-Wold martingale CLT bridge/source constructor.
+  projected Cramér-Wold martingale CLT bridge/source constructor, plus scalar
+  projected martingale-data accessors for adaptedness, integrability,
+  conditional mean-zero, conditional second moment, variance convergence, and
+  uniform boundedness.
 
 Current priority packet sequence:
 
-1. `ASGD-scalar-martingale-CLT`: discharge the projected scalar bounded
-   martingale CLT field behind `Chewi127BoundedMartingaleCLTSource` using
-   the martingale-difference, boundedness, and averaged conditional variance
-   convergence interfaces.
+1. `ASGD-scalar-martingale-CLT`: prove or sharply source-package the actual
+   one-dimensional bounded martingale CLT from the compiled scalar projection
+   data: conditional mean-zero, conditional second moment, averaged conditional
+   variance convergence, and uniform boundedness.  The vector-to-scalar
+   plumbing is now compiled; do not repeat it.
 2. `ASGD-endpoint`: connect the exact scaled noise sum, recurrence-derived
    decomposition, and certificate to the source Theorem 12.7/12.3 ASGD limit
    statement.
@@ -145,10 +149,11 @@ Current priority packet sequence:
 
 Execution rule for the next proof run: spend at most one bounded search pass
 refreshing mathlib/local scalar martingale CLT, characteristic-function,
-conditional expectation, covariance/variance, uniform boundedness/Lindeberg,
-and finite-dimensional Cramér-Wold APIs; then implement the highest-leverage
-scalar martingale CLT theorem layer.  The reusable projected-sum/Cramér-Wold
-bridge is now compiled, so do not repeat it.
+Lévy continuity theorem, Gaussian characteristic functions, Taylor remainder,
+conditional expectation tower/product APIs, and bounded/Lindeberg estimates;
+then implement the highest-leverage scalar martingale CLT theorem layer.  The
+reusable projected-sum/Cramér-Wold bridge and scalar projection side-condition
+accessors are now compiled, so do not repeat them.
 
 Keep exercise statements and cheap reusable exercise proofs in
 `StatInference/Optimization/Exercises.lean`, but never let exercises block the

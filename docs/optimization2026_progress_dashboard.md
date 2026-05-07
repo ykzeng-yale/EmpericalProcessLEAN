@@ -525,9 +525,9 @@ triangular-regrouping packet compiles `chewi123InitialCoefficient`,
 It uses mathlib `Finset.sum_comm'`, `Finset.sum_Ico_eq_sum_range`, and
 `ContinuousLinearMap.sum_apply`, and closes the source `M_k^N` regrouping,
 the split around `A^{-1}`, and the `sqrt N`-scaled display.  The active
-Chapter 12 blocker is now the scalar bounded martingale CLT proof behind the
-projected CLT field, then final ASGD endpoint wiring.  The newest projected
-martingale-CLT packet compiles `chewi127ScaledProjectedNoiseSum`,
+Chapter 12 blocker is now the actual one-dimensional bounded martingale CLT
+proof behind the projected CLT field, then final ASGD endpoint wiring.  The
+projected martingale-CLT packet compiles `chewi127ScaledProjectedNoiseSum`,
 `chewi127ScaledProjectedNoiseSum_eq_apply_scaledNoiseSum`,
 `chewi127AverageConditionalVariance`,
 `Chewi127AveragedConditionalCovarianceLimit.variance_tendstoInMeasure`,
@@ -541,7 +541,25 @@ result: no direct pinned mathlib or local Chewi-style bounded martingale CLT
 was found; local reuse is the finite-dimensional Cramér-Wold and projected CLT
 infrastructure in `StatInference/AsymptoticStatistics/MomentEstimators.lean`,
 plus mathlib continuous mapping and local conditional-expectation/covariance
-interfaces.
+interfaces.  The newest scalar projection side-condition packet adds
+`chewi127ScalarScaledSum`,
+`chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum`,
+the `same_filtration` source field,
+`Chewi127MartingaleDifferenceProcess.projected_stronglyAdapted`,
+`Chewi127MartingaleDifferenceProcess.projected_integrable`,
+`Chewi127MartingaleDifferenceProcess.condExp_linear_next_eq_zero`,
+`Chewi127MartingaleDifferenceProcess.projected_uniform_bound`,
+`Chewi127ConditionalCovarianceProcess.condExp_projected_square_eq`,
+`Chewi127BoundedMartingaleCLTSource.projected_condExp_zero`,
+`Chewi127BoundedMartingaleCLTSource.projected_conditional_second_moment`,
+`Chewi127BoundedMartingaleCLTSource.projected_variance_tendstoInMeasure`,
+`Chewi127BoundedMartingaleCLTSource.projected_uniform_bound`, and
+`Chewi127BoundedMartingaleCLTSource.projected_scalar_clt`.  Search-first
+result for this layer: mathlib's
+`ContinuousLinearMap.comp_condExp_comm`, `condExp_smul`, Lévy/characteristic
+function APIs, local Cramér-Wold wrappers, and `ContinuousLinearMap.le_opNorm`
+are the relevant reuse; still no direct scalar martingale CLT theorem was
+found.
 
 ## Initial Reuse Audit
 

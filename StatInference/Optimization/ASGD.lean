@@ -142,6 +142,24 @@ noncomputable def chewi127ScaledProjectedNoiseSum
   (Real.sqrt (n : ℝ))⁻¹ * ∑ k ∈ Finset.range n, L (xi (k + 1) ω)
 
 /--
+Scalar version of Chewi's scaled martingale sum.  This is the one-dimensional
+normalization used by the projected martingale CLT.
+-/
+noncomputable def chewi127ScalarScaledSum
+    {Ω : Type*} (x : ℕ -> Ω -> ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  (Real.sqrt (n : ℝ))⁻¹ * ∑ k ∈ Finset.range n, x (k + 1) ω
+
+/--
+The projected vector sum is the scalar sum of the projected increments.
+-/
+theorem chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum
+    {Ω E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (xi : ℕ -> Ω -> E) (L : StrongDual ℝ E) (n : ℕ) (ω : Ω) :
+    chewi127ScaledProjectedNoiseSum xi L n ω =
+      chewi127ScalarScaledSum (fun k ω => L (xi k ω)) n ω :=
+  rfl
+
+/--
 The source scalar projection is exactly the coordinate applied to the vector
 scaled martingale sum.
 -/
@@ -296,6 +314,8 @@ structure Chewi127BoundedMartingaleCLTSource
   covariance : Chewi127ConditionalCovarianceProcess Ω E P
   /-- The covariance process uses the martingale increments. -/
   same_noise : covariance.xi = martingale.xi
+  /-- The covariance and martingale processes use the same filtration. -/
+  same_filtration : covariance.filtration = martingale.filtration
   /-- Averaged conditional covariance convergence in probability. -/
   covariance_limit :
     Chewi127AveragedConditionalCovarianceLimit Ω E P covariance.Xi
@@ -414,6 +434,77 @@ theorem Chewi127MartingaleDifferenceProcess.integral_linear_next_eq_zero
     _ = 0 := by rw [M.integral_next_eq_zero n, map_zero]
 
 /--
+Continuous linear projections of the martingale-difference process are
+adapted real-valued processes.
+-/
+theorem Chewi127MartingaleDifferenceProcess.projected_stronglyAdapted
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (M : Chewi127MartingaleDifferenceProcess Ω E P)
+    (L : StrongDual ℝ E) :
+    StronglyAdapted M.filtration (fun n ω => L (M.xi n ω)) := by
+  intro n
+  exact L.continuous.comp_stronglyMeasurable (M.adapted n)
+
+/--
+Continuous linear projections of the martingale-difference process remain
+integrable.
+-/
+theorem Chewi127MartingaleDifferenceProcess.projected_integrable
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (M : Chewi127MartingaleDifferenceProcess Ω E P)
+    (L : StrongDual ℝ E) (n : ℕ) :
+    Integrable (fun ω => L (M.xi n ω)) P :=
+  L.integrable_comp (M.integrable n)
+
+/--
+The conditional mean-zero property is preserved by continuous linear
+coordinates.  This is the scalar martingale-difference hypothesis needed for
+the projected bounded martingale CLT.
+-/
+theorem Chewi127MartingaleDifferenceProcess.condExp_linear_next_eq_zero
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (M : Chewi127MartingaleDifferenceProcess Ω E P)
+    (L : StrongDual ℝ E) (n : ℕ) :
+    P[fun ω => L (M.xi (n + 1) ω) | M.filtration n]
+      =ᵐ[P] fun _ => 0 := by
+  have hcomm :
+      (fun ω => L (P[M.xi (n + 1) | M.filtration n] ω))
+        =ᵐ[P] P[fun ω => L (M.xi (n + 1) ω) | M.filtration n] := by
+    simpa [Function.comp_def] using
+      (ContinuousLinearMap.comp_condExp_comm
+        (μ := P) (m := M.filtration n) (f := M.xi (n + 1))
+        (T := L) (M.integrable (n + 1)))
+  exact hcomm.symm.trans <|
+    (M.condExp_zero n).mono fun ω hω => by simp [hω]
+
+/--
+Uniform vector boundedness implies uniform boundedness of every scalar
+projection.
+-/
+theorem Chewi127MartingaleDifferenceProcess.projected_uniform_bound
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (M : Chewi127MartingaleDifferenceProcess Ω E P)
+    (L : StrongDual ℝ E)
+    (hbound : ∃ B : ℝ, 0 ≤ B ∧
+      ∀ n : ℕ, ∀ᵐ ω ∂P, ‖M.xi (n + 1) ω‖ ≤ B) :
+    ∃ B : ℝ, 0 ≤ B ∧
+      ∀ n : ℕ, ∀ᵐ ω ∂P, |L (M.xi (n + 1) ω)| ≤ B := by
+  rcases hbound with ⟨B, hB_nonneg, hB⟩
+  refine ⟨‖L‖ * B, mul_nonneg (norm_nonneg _) hB_nonneg, ?_⟩
+  intro n
+  filter_upwards [hB n] with ω hω
+  have hproj := L.le_opNorm_of_le hω
+  simpa [Real.norm_eq_abs] using hproj
+
+/--
 Integrating the conditional covariance identity recovers the unconditional
 coordinate second moment.  This is the deterministic bridge from Chewi's
 `Xi_{n+1}` field to ordinary covariance/moment expressions.
@@ -431,6 +522,104 @@ theorem Chewi127ConditionalCovarianceProcess.integral_Xi_next_eq_integral_second
     (f := fun ω => L (C.xi (n + 1) ω) * K (C.xi (n + 1) ω))
     (C.filtration.le n)]
   exact integral_congr_ae (C.conditional_second_moment n L K).symm
+
+/--
+The conditional covariance identity gives the projected conditional second
+moment on the diagonal.
+-/
+theorem Chewi127ConditionalCovarianceProcess.condExp_projected_square_eq
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (C : Chewi127ConditionalCovarianceProcess Ω E P)
+    (L : StrongDual ℝ E) (n : ℕ) :
+    P[fun ω => (L (C.xi (n + 1) ω)) ^ 2 | C.filtration n]
+      =ᵐ[P] fun ω => C.Xi (n + 1) ω L L := by
+  simpa [pow_two] using C.conditional_second_moment n L L
+
+/--
+The source package supplies scalar conditional mean-zero for every projection.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_condExp_zero
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (n : ℕ) :
+    P[fun ω => L (S.martingale.xi (n + 1) ω) | S.martingale.filtration n]
+      =ᵐ[P] fun _ => 0 :=
+  S.martingale.condExp_linear_next_eq_zero L n
+
+/--
+The source package supplies the projected conditional second-moment identity
+over the martingale filtration.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_conditional_second_moment
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (n : ℕ) :
+    P[fun ω => (L (S.martingale.xi (n + 1) ω)) ^ 2 |
+        S.martingale.filtration n]
+      =ᵐ[P] fun ω => S.covariance.Xi (n + 1) ω L L := by
+  simpa [S.same_noise, S.same_filtration] using
+    S.covariance.condExp_projected_square_eq L n
+
+/--
+The averaged conditional covariance limit gives the projected scalar variance
+limit used by the scalar martingale CLT.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_variance_tendstoInMeasure
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) :
+    TendstoInMeasure P
+      (fun N ω => chewi127AverageConditionalVariance S.covariance.Xi N ω L)
+      atTop (fun _ => S.covariance_limit.S_infty L L) :=
+  S.covariance_limit.variance_tendstoInMeasure L
+
+/--
+The source package supplies uniform boundedness of every scalar projection.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) :
+    ∃ B : ℝ, 0 ≤ B ∧
+      ∀ n : ℕ, ∀ᵐ ω ∂P, |L (S.martingale.xi (n + 1) ω)| ≤ B :=
+  S.martingale.projected_uniform_bound L S.uniform_bound
+
+/--
+The projected CLT field can be read in the pure scalar-sum notation used by a
+one-dimensional martingale CLT theorem.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) :
+    TendstoInDistribution
+      (chewi127ScalarScaledSum (fun n ω => L (S.martingale.xi n ω)))
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q := by
+  refine (S.projected_clt L).congr (fun n => ?_) Filter.EventuallyEq.rfl
+  exact Filter.Eventually.of_forall fun ω =>
+    chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum S.martingale.xi L n ω
 
 /--
 Source-facing CLT conclusion accessor for a Chewi Theorem 12.7 certificate.
