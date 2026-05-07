@@ -102,7 +102,8 @@ SMPGD, the non-smooth relative-subgradient growth/star-upper bridge, the final
 smooth/non-smooth weighted stochastic averaged-iterate wrappers, the exact
 source-displayed stochastic-error RHS bridges, and the full source-displayed
 smooth/non-smooth averaged-iterate wrappers, plus the filtration-level
-conditional-mean wrappers:
+conditional-mean wrappers and the first ASGD quadratic-decomposition algebra
+packet:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -118,14 +119,17 @@ substrate, `StatInference/Optimization/RandomizedAlternatingMinimization.lean`
 as stable through the source-shaped Chewi Theorem 11.5 strong/weak RAM rates,
 `StatInference/Optimization/AlternatingBregman.lean` as stable through the
 Theorem 11.7 ABP/Pinsker selector layer and the Theorem 11.8
-Sinkhorn/mirror-descent certificate endpoint, and
-`StatInference/Optimization/StochasticGradient.lean` as the current Chapter
-12 active theorem gate.
+Sinkhorn/mirror-descent certificate endpoint,
+`StatInference/Optimization/StochasticGradient.lean` as stable through the
+conditional-mean SMPGD source wrappers, and
+`StatInference/Optimization/ASGD.lean` as the current Chapter 12 active theorem
+gate.
 
-Immediate aggressive target: move from the now-compiled conditional-mean
-SMPGD source wrappers to the ASGD/martingale layer, while adding only genuinely
-missing process measurability/adaptedness wrappers if exact Theorem 12.1
-reporting demands them.  Theorem 12.1 SMPGD now sits on top of the compiled
+Immediate aggressive target: move from the now-compiled ASGD finite-sum
+decomposition algebra to martingale-difference and covariance packaging,
+while adding only genuinely missing process measurability/adaptedness wrappers
+if exact Theorem 12.1 reporting demands them.  Theorem 12.1 SMPGD now sits on
+top of the compiled
 integral-component final-rate wrappers, the smooth L2 noise wrapper, the
 finite sampled smooth/pointwise-bounded non-smooth rate endpoints, the
 non-smooth `(12.2)` source-L2 endpoint, the smooth `(12.1)` variance-root
@@ -153,15 +157,15 @@ transport from weighted expected gaps to the weighted stochastic averaged
 iterate, the final smooth/non-smooth weightedSampleAverage wrappers, the
 source-displayed `(1 + alphaG * h)` error-factor upgrade, the full
 source-displayed averaged-iterate wrappers, or the filtration conditional-mean
-handoff to unconditional unbiasedness/relative-subgradient mean fields.  First
-search local
+handoff to unconditional unbiasedness/relative-subgradient mean fields, or the
+ASGD `(12.5)` finite-sum splitting/scaled-average algebra.  First search local
 `MirrorDescent.lean`, `Bregman.lean`, `ProjectedSubgradient.lean`,
-`StochasticGradient.lean`, local probability/expectation wrappers, and pinned
-mathlib expectation/Jensen/conditional expectation/Bochner/L2/process APIs.
-Then formalize the first ASGD primitives: martingale-difference/noise process
+`StochasticGradient.lean`, `ASGD.lean`, local probability/expectation and
+asymptotic-statistics wrappers, and pinned mathlib expectation/Jensen/
+conditional expectation/Bochner/L2/process/martingale/covariance APIs.  Then
+formalize the next ASGD primitives: martingale-difference/noise process
 interfaces, conditional mean-zero and conditional covariance handoffs, and the
-finite-dimensional quadratic ASGD decomposition needed before attempting the
-full martingale CLT.
+first theorem-facing wrapper from the source martingale CLT statement.
 Keep the concrete Sinkhorn row/column KL identity layer as the next Chapter
 11.8 blocker, but do not let it stall Chapter 12 coverage.
 
@@ -315,9 +319,9 @@ transition from weighted expected gaps to the weighted stochastic averaged
 iterate, the final smooth/non-smooth weightedSampleAverage wrappers, or the
 exact source-displayed stochastic-error RHS factor, or the full
 source-displayed averaged-iterate wrappers, or the filtration conditional-mean
-handoff; it is the ASGD/martingale process frontier: conditional mean-zero,
-conditional covariance, quadratic ASGD decomposition, and then martingale CLT
-packaging.
+handoff, or the ASGD `(12.5)` finite-sum splitting/scaled-average algebra; it
+is the ASGD/martingale process frontier: conditional mean-zero, conditional
+covariance, and then martingale CLT packaging.
 
 Fresh Chapter 12 Bochner search result: mathlib has `integral_mono_ae` and
 `integral_mono` for pointwise or a.e. real integral inequalities,

@@ -63,7 +63,8 @@ source variance-bound bridge for Chewi Theorem 12.1 SMPGD, the non-smooth
 relative-subgradient growth/star-upper bridge, the final smooth/non-smooth
 weighted stochastic averaged-iterate wrappers, and the exact source-displayed
 stochastic-error RHS bridges plus full source-displayed smooth/non-smooth
-averaged-iterate wrappers and filtration-level conditional-mean wrappers:
+averaged-iterate wrappers, filtration-level conditional-mean wrappers, and the
+first ASGD quadratic-decomposition algebra packet:
 Theorem 8.5/8.6 PGD/APGD and the Chapter 9 Fenchel/Bregman substrate are now
 stable dependencies, not active routing targets.
 `MirrorDescent.lean` now compiles the local MPGD model, source-shaped step and
@@ -410,6 +411,13 @@ so conditional mean assumptions now discharge the unconditional mean fields in
 the exact displayed SMPGD rates.  The active Chapter 12 lane is now the ASGD
 martingale layer: conditional mean-zero and covariance packaging, quadratic
 ASGD decomposition, and then martingale CLT infrastructure.
+The root-imported `StatInference/Optimization/ASGD.lean` module now compiles
+`chewi123_asgd_noise_sum_split`,
+`chewi123_asgd_scaled_average_decomposition`, and
+`chewi123_asgd_sqrt_average_decomposition`, giving the source `(12.5)`
+finite-sum split needed before the martingale CLT handoff.  The next ASGD
+target is conditional mean-zero/covariance packaging and the first theorem-facing
+martingale CLT interface wrapper.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

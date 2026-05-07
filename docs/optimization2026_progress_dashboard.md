@@ -450,6 +450,15 @@ the exact displayed SMPGD rates.  The active Chapter 12 blocker is now the
 ASGD/martingale layer: conditional mean-zero and covariance packaging,
 quadratic ASGD decomposition, and then martingale CLT infrastructure.
 
+The ASGD lane is now root-imported through `StatInference/Optimization/ASGD.lean`.
+The first packet compiles `chewi123_asgd_noise_sum_split`,
+`chewi123_asgd_scaled_average_decomposition`, and
+`chewi123_asgd_sqrt_average_decomposition`, isolating the source `(12.5)`
+finite-sum split into the martingale term with coefficient `Ainv` and the
+remainder term with coefficient `M_k^n - Ainv`.  The active Chapter 12 blocker
+is now conditional mean-zero/covariance packaging and the first martingale CLT
+interface wrapper.
+
 ## Initial Reuse Audit
 
 High-value mathlib files to search first:
