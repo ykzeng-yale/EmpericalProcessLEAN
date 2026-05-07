@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V4
+## Live Goal Prompt V5
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -163,16 +163,19 @@ and the source compensation-bound layer
 `projected_conditional_variance_abs_le_of_uniform_bound`,
 `projectedCompensationFactor_norm_le_of_variance_abs_le`,
 `projectedCompensationFactor_eventually_row_norm_le`, and
-`projectedCompensatedTaylorError_row_integral_tendsto_zero_of_variance_error`.
+`projectedCompensatedTaylorError_row_integral_tendsto_zero_of_variance_error`,
+plus the variance-only discharge
+`chewi127_complex_exp_mul_one_sub_sub_one_norm_le`,
+`projectedCompensationVarianceError_norm_le_of_variance_abs_le`,
+`projectedCompensationVarianceError_row_integral_tendsto_zero`, and
+`projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance`.
 
 Next theorem packet: use the compensated step and product-to-one bridge to
 prove the finite compensated iteration endpoint under the exact source
-measurability/integrability side conditions.  The accumulated compensated
-row-error obligation is now reduced to the variance-only second-order row
-bound and routine integrability; the Taylor-remainder and compensation-bound
-parts are already consumed by
-`projectedCompensatedTaylorError_row_integral_tendsto_zero_of_variance_error`.
-After that, prove the variance/convergence comparison from
+measurability/integrability side conditions, reusing
+`projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance`
+for the accumulated row-error term.  After that, prove the
+variance/convergence comparison from
 `n⁻¹ ∑ Xi_k -> S_infty` in probability to the Gaussian
 `exp (-(S_infty L L) t^2 / 2)` characteristic-function limit and wire the
 result into the existing Theorem 12.7/12.3 certificate constructors.
@@ -189,8 +192,8 @@ the product-to-one, row-error, and compensation-bound bridges,
 `integral_norm_condExp_le_integral_norm`,
 `chewi127ScalarCharFunProduct` lemmas, and local product perturbation bridges.
 One bounded API search is allowed only for the exact finite compensated
-iteration measurability side condition, variance-only second-order row bound,
-or bounded-continuous variance-convergence estimate; after that, prove.
+iteration measurability side condition or bounded-continuous
+variance-convergence estimate; after that, prove.
 
 Execution gate: use `/private/tmp/chewi-smpgd-probability`; before Lean edits
 state the exact theorem-sized target and fallback blocker.  Verify with

@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V4` near the top of
+  `Live Goal Prompt V5` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current ASGD frontier.
@@ -73,7 +73,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   precisely block that diff before doing strategy/doc-only work.  No uncompiled
   theorem should be carried across a process update.
 - Process correction from the May 7 audit: future manual runs should enter
-  through `Live Goal Prompt V4` in
+  through `Live Goal Prompt V5` in
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
   route-planning loop and not an already-solved ASGD tower peel; it is Chewi's
@@ -243,6 +243,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_norm_le_of_variance_abs_le`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_eventually_row_norm_le`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorError_row_integral_tendsto_zero_of_variance_error`,
+  `chewi127_complex_exp_mul_one_sub_sub_one_norm_le`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensationVarianceError_norm_le_of_variance_abs_le`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensationVarianceError_row_integral_tendsto_zero`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance`,
   and
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_concrete_random_product_model`.
   These name the actual row factors with `a = t / sqrt N` and specialize the
@@ -258,12 +262,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   Taylor-remainder term.  The product-to-one packet lifts row-sum error control
   to expected products of `1 + error`.  The row-error packet now consumes the
   existing conditional Taylor-remainder row convergence and reduces expected
-  compensated row-error convergence to the variance-only second-order row error
-  plus a uniform compensation-factor bound.  The compensation-bound packet now
-  discharges that bound from uniform boundedness of the martingale increments,
-  so the source-facing row-error wrapper only needs the variance-only
-  second-order row error and routine integrability.  The next ASGD packet
-  should prove that remaining variance-only side condition, then prove the
+  compensated row-error convergence to variance-only second-order control plus
+  a uniform compensation-factor bound.  The compensation-bound and
+  variance-only packets now discharge those analytic row-error terms from
+  uniform boundedness of the martingale increments, modulo the displayed
+  routine integrability hypotheses.  The next ASGD packet should prove the
   finite compensated iteration under the exact source measurability side
   conditions and close the variance/convergence comparison to the Gaussian
   characteristic-function limit.
@@ -817,9 +820,8 @@ wrappers as stable infrastructure.  The live manual `/goal` frontier is now
 scalar bounded martingale characteristic-function convergence behind
 `projected_charFun_tendsto_exp`, then wire Chewi Theorem 12.7/12.3 through the
 existing ASGD certificate constructors.  The remaining proof obligations are
-the variance-only second-order row bound, the finite compensated iteration
-under exact measurability/integrability side conditions, and the
-variance/convergence comparison to
+the finite compensated iteration under exact measurability/integrability side
+conditions and the variance/convergence comparison to
 `exp (-(S_infty L L) t^2 / 2)`.  Do not return to old Chapter 3, SMPGD source
 probability packaging, or raw tower-peel tasks unless a regression makes them
 relevant.

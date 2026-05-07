@@ -776,6 +776,44 @@ theorem chewi127_complex_exp_I_mul_quadratic_remainder_norm_le (u : ℝ) :
   · simp [Real.norm_eq_abs]
 
 /--
+Second-order compensation error for the real exponential factor used in the
+variance-only part of Chewi's martingale characteristic-function proof.
+-/
+theorem chewi127_complex_exp_mul_one_sub_sub_one_norm_le (c : ℝ) :
+    ‖Complex.exp (c : ℂ) * (1 - (c : ℂ)) - 1‖ ≤
+      2 * Real.exp |c| * |c| ^ 2 := by
+  let z : ℂ := (c : ℂ)
+  have htail2 :
+      ‖Complex.exp z - (1 + z)‖ ≤ ‖z‖ ^ 2 * Real.exp ‖z‖ := by
+    simpa [Finset.sum_range_succ, Nat.factorial, div_eq_mul_inv] using
+      (Complex.norm_exp_sub_sum_le_norm_mul_exp z 2)
+  have htail1 :
+      ‖Complex.exp z - 1‖ ≤ ‖z‖ * Real.exp ‖z‖ := by
+    simpa [Finset.sum_range_succ, Nat.factorial, div_eq_mul_inv] using
+      (Complex.norm_exp_sub_sum_le_norm_mul_exp z 1)
+  have hdecomp :
+      Complex.exp z * (1 - z) - 1 =
+        (Complex.exp z - (1 + z)) - z * (Complex.exp z - 1) := by
+    ring
+  calc
+    ‖Complex.exp (c : ℂ) * (1 - (c : ℂ)) - 1‖
+        = ‖Complex.exp z * (1 - z) - 1‖ := by rfl
+    _ = ‖(Complex.exp z - (1 + z)) - z * (Complex.exp z - 1)‖ := by
+          rw [hdecomp]
+    _ ≤ ‖Complex.exp z - (1 + z)‖ + ‖z * (Complex.exp z - 1)‖ := by
+          simpa [sub_eq_add_neg] using
+            norm_add_le (Complex.exp z - (1 + z)) (-(z * (Complex.exp z - 1)))
+    _ ≤ ‖z‖ ^ 2 * Real.exp ‖z‖ + ‖z‖ * (‖z‖ * Real.exp ‖z‖) := by
+          rw [norm_mul]
+          exact add_le_add htail2
+            (mul_le_mul_of_nonneg_left htail1 (norm_nonneg z))
+    _ = 2 * Real.exp |c| * |c| ^ 2 := by
+          have hznorm : ‖z‖ = |c| := by
+            simp [z, Complex.norm_real, Real.norm_eq_abs]
+          rw [hznorm]
+          ring
+
+/--
 The pointwise Taylor remainder in the scalar characteristic-function expansion
 for a real increment `x`.
 -/
@@ -2500,6 +2538,188 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_norm_le_o
           Real.exp_le_exp.mpr harg_le
 
 /--
+Pointwise second-order bound for the variance-only compensated factor.  The
+bound is `O(N^{-2})` per row entry, so summing over `N` entries gives the
+row-level `O(N^{-1})` error used in the scalar ASGD martingale CLT.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensationVarianceError_norm_le_of_variance_abs_le
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) {N : ℕ} (hN : 1 ≤ N) (t V : ℝ)
+    {k : ℕ} {ω : Ω}
+    (hV_nonneg : 0 ≤ V)
+    (hXi : |S.covariance.Xi (k + 1) ω L L| ≤ V) :
+    ‖S.projectedCompensationFactor L N t k ω *
+        S.projectedVarianceFactor L N t k ω - 1‖ ≤
+      2 * Real.exp (t ^ 2 * V / 2) *
+        (t ^ 2 * V / 2) ^ 2 * ((N : ℝ)⁻¹) ^ 2 := by
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  let xiVar : ℝ := S.covariance.Xi (k + 1) ω L L
+  let c : ℝ := a ^ 2 * xiVar / 2
+  let D : ℝ := t ^ 2 * V / 2
+  have hN_real_one : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hN_real_pos : 0 < (N : ℝ) := lt_of_lt_of_le zero_lt_one hN_real_one
+  have hsqrt_sq : (Real.sqrt (N : ℝ)) ^ 2 = (N : ℝ) :=
+    Real.sq_sqrt hN_real_pos.le
+  have hsqrt_ne : Real.sqrt (N : ℝ) ≠ 0 :=
+    ne_of_gt (Real.sqrt_pos.2 hN_real_pos)
+  have hinv_sqrt_sq : ((Real.sqrt (N : ℝ))⁻¹) ^ 2 = (N : ℝ)⁻¹ := by
+    field_simp [hsqrt_ne]
+    nlinarith [hsqrt_sq]
+  have ha_sq_eq : a ^ 2 = t ^ 2 * (N : ℝ)⁻¹ := by
+    dsimp [a]
+    rw [mul_pow, hinv_sqrt_sq]
+  have hD_nonneg : 0 ≤ D := by
+    dsimp [D]
+    nlinarith [sq_nonneg t, hV_nonneg]
+  have hc_abs_eq : |c| = a ^ 2 * |xiVar| / 2 := by
+    simp [c, abs_mul, abs_div, abs_of_nonneg (sq_nonneg a)]
+  have hc_abs_le_scaled : |c| ≤ D * (N : ℝ)⁻¹ := by
+    calc
+      |c| = a ^ 2 * |xiVar| / 2 := hc_abs_eq
+      _ ≤ a ^ 2 * V / 2 := by
+        have hmul : a ^ 2 * |xiVar| ≤ a ^ 2 * V :=
+          mul_le_mul_of_nonneg_left hXi (sq_nonneg a)
+        nlinarith
+      _ = D * (N : ℝ)⁻¹ := by
+        rw [ha_sq_eq]
+        ring
+  have hinv_nonneg : 0 ≤ (N : ℝ)⁻¹ := inv_nonneg.mpr hN_real_pos.le
+  have hscaled_nonneg : 0 ≤ D * (N : ℝ)⁻¹ :=
+    mul_nonneg hD_nonneg hinv_nonneg
+  have hinv_le_one : (N : ℝ)⁻¹ ≤ 1 :=
+    inv_le_one_of_one_le₀ hN_real_one
+  have hc_abs_le_D : |c| ≤ D := by
+    have hscaled_le_D : D * (N : ℝ)⁻¹ ≤ D * 1 :=
+      mul_le_mul_of_nonneg_left hinv_le_one hD_nonneg
+    nlinarith [hc_abs_le_scaled, hscaled_le_D]
+  have hfactor :
+      S.projectedCompensationFactor L N t k ω *
+          S.projectedVarianceFactor L N t k ω - 1 =
+        Complex.exp (c : ℂ) * (1 - (c : ℂ)) - 1 := by
+    simp [Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor,
+      Chewi127BoundedMartingaleCLTSource.projectedVarianceFactor, a, xiVar, c]
+  have hexp_le : Real.exp |c| ≤ Real.exp D :=
+    Real.exp_le_exp.mpr hc_abs_le_D
+  have hc_sq_le : |c| ^ 2 ≤ (D * (N : ℝ)⁻¹) ^ 2 :=
+    (sq_le_sq₀ (abs_nonneg c) hscaled_nonneg).mpr hc_abs_le_scaled
+  have hmain :
+      Real.exp |c| * |c| ^ 2 ≤
+        Real.exp D * (D * (N : ℝ)⁻¹) ^ 2 :=
+    mul_le_mul hexp_le hc_sq_le (sq_nonneg _) (Real.exp_nonneg _)
+  calc
+    ‖S.projectedCompensationFactor L N t k ω *
+        S.projectedVarianceFactor L N t k ω - 1‖
+        = ‖Complex.exp (c : ℂ) * (1 - (c : ℂ)) - 1‖ := by
+          rw [hfactor]
+    _ ≤ 2 * Real.exp |c| * |c| ^ 2 :=
+          chewi127_complex_exp_mul_one_sub_sub_one_norm_le c
+    _ = 2 * (Real.exp |c| * |c| ^ 2) := by ring
+    _ ≤ 2 * (Real.exp D * (D * (N : ℝ)⁻¹) ^ 2) :=
+          mul_le_mul_of_nonneg_left hmain (by norm_num)
+    _ = 2 * Real.exp (t ^ 2 * V / 2) *
+          (t ^ 2 * V / 2) ^ 2 * ((N : ℝ)⁻¹) ^ 2 := by
+          simp [D]
+          ring
+
+/--
+The variance-only compensation error has vanishing row integral.  This
+discharges the second-order variance product error from the bounded martingale
+source, leaving only routine integrability of the displayed row norm.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensationVarianceError_row_integral_tendsto_zero
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          ∑ k ∈ Finset.range N,
+            ‖S.projectedCompensationFactor L N t k ω *
+                S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+      atTop (𝓝 0) := by
+  rcases S.projected_conditional_variance_abs_le_of_uniform_bound L with
+    ⟨B, _hB_nonneg, hXi_bound⟩
+  let V : ℝ := B ^ 2
+  let D : ℝ := t ^ 2 * V / 2
+  let C : ℝ := 2 * Real.exp D * D ^ 2
+  let rowBound : ℕ -> ℝ := fun N =>
+    (N : ℝ) * (C * ((N : ℝ)⁻¹) ^ 2)
+  let varianceError : ℕ -> Ω -> ℝ := fun N ω =>
+    ∑ k ∈ Finset.range N,
+      ‖S.projectedCompensationFactor L N t k ω *
+          S.projectedVarianceFactor L N t k ω - 1‖
+  have hV_nonneg : 0 ≤ V := by
+    dsimp [V]
+    positivity
+  have hXi_all :
+      ∀ᵐ ω ∂P, ∀ k : ℕ,
+        |S.covariance.Xi (k + 1) ω L L| ≤ V := by
+    simpa [V] using ae_all_iff.2 hXi_bound
+  have hinv_tend :
+      Tendsto (fun N : ℕ => (N : ℝ)⁻¹) atTop (𝓝 0) :=
+    tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop
+  have hmodel :
+      Tendsto (fun N : ℕ => C * (N : ℝ)⁻¹) atTop (𝓝 0) := by
+    simpa using (tendsto_const_nhds.mul hinv_tend : Tendsto
+      (fun N : ℕ => C * (N : ℝ)⁻¹) atTop (𝓝 (C * 0)))
+  have hrowBound :
+      Tendsto rowBound atTop (𝓝 0) := by
+    refine hmodel.congr' ?_
+    filter_upwards [eventually_ge_atTop (1 : ℕ)] with N hN
+    have hN_pos : 0 < N := Nat.succ_le_iff.mp hN
+    have hN_ne : (N : ℝ) ≠ 0 := by
+      exact_mod_cast (Nat.ne_of_gt hN_pos)
+    dsimp [rowBound]
+    field_simp [hN_ne]
+  refine squeeze_zero'
+    (Eventually.of_forall fun N =>
+      integral_nonneg fun ω =>
+        Finset.sum_nonneg fun k _hk => norm_nonneg
+          (S.projectedCompensationFactor L N t k ω *
+              S.projectedVarianceFactor L N t k ω - 1))
+    ?_ hrowBound
+  filter_upwards [eventually_ge_atTop (1 : ℕ)] with N hN
+  calc
+    (∫ ω,
+        ∑ k ∈ Finset.range N,
+          ‖S.projectedCompensationFactor L N t k ω *
+              S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+        ≤ ∫ _ω : Ω, rowBound N ∂P := by
+          refine integral_mono_ae (hvariance_error_int N)
+            (integrable_const (rowBound N)) ?_
+          filter_upwards [hXi_all] with ω hω
+          change varianceError N ω ≤ rowBound N
+          calc
+            varianceError N ω
+                ≤ ∑ k ∈ Finset.range N, C * ((N : ℝ)⁻¹) ^ 2 := by
+                  refine Finset.sum_le_sum ?_
+                  intro k _hk
+                  simpa [varianceError, C, D] using
+                    S.projectedCompensationVarianceError_norm_le_of_variance_abs_le
+                      L hN t V hV_nonneg (hω k)
+            _ = rowBound N := by
+                  simp [rowBound, Finset.sum_const, Finset.card_range,
+                    nsmul_eq_mul]
+    _ = rowBound N := by
+          simp
+
+/--
 Eventually uniform row bound for the scalar compensation factors.  This is the
 exact side condition required by
 `projectedCompensatedTaylorError_row_integral_tendsto_zero`.
@@ -2574,6 +2794,42 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorError_row_i
   exact
     S.projectedCompensatedTaylorError_row_integral_tendsto_zero L t C hC
       hvariance_error_int hremainder_int hvariance_error
+
+/--
+Source-facing compensated row-error convergence with the variance-only row
+error discharged from the bounded martingale source.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedRemainderFactor L N t k ω‖) P) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          ∑ k ∈ Finset.range N,
+            ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+      atTop (𝓝 0) :=
+  S.projectedCompensatedTaylorError_row_integral_tendsto_zero_of_variance_error
+    L t hvariance_error_int hremainder_int
+    (S.projectedCompensationVarianceError_row_integral_tendsto_zero
+      L t hvariance_error_int)
 
 /--
 Scaled source-shaped version of the one-step tower peel, using the concrete
