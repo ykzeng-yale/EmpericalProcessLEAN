@@ -6,34 +6,26 @@ manual `/goal` continuation before selecting a proof target.
 
 ## Live `/goal` Prompt
 
-Continue manually, with no automation.  The active Vaart target is Theorem
-5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
+Continue manually, with no automation.  Active lane: van der Vaart 1998
+Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
-Current frontier:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN`
-consumes the literal quadratic Taylor display, derives the auxiliary residual
-identity and measurability internally, and feeds the compiled Theorem 5.41
-probability handoff.  The empirical-Hessian envelope route now also supplies
-`vaart1998_theorem_5_41_curvatureOpBound_of_empiricalSecondDerivative_envelope`,
-which turns the textbook domination assumption into the `hCurvatureOpBound`
-field consumed by that frontier.  The empirical Taylor-display route now also
-supplies
-`vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise_ae`,
-which turns pointwise selected Taylor identities on each sampled observation
-into the a.e. empirical quadratic Taylor display.
+Current endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_pointwiseTaylor_envelope`.
+It already packages the empirical score, derivative, Hessian action,
+estimating equation, and envelope hypotheses into the compiled Theorem 5.41
+probability handoff.
 
-Next packet: instantiate the remaining source Taylor hypotheses.  Target the
-per-observation selected second-order Taylor identity.  The auxiliary residual
-object, empirical-Hessian dominated operator-norm bound, and empirical
-aggregation of the Taylor display are no longer blockers.
+Next packet only: prove the per-observation selected second-order Taylor
+identity that feeds this endpoint.  Do not revisit the solved auxiliary
+residual, curvature envelope, empirical Taylor aggregation, endpoint assembly,
+Chapter 2-4 substrate, Gaussian endpoints, or generic empirical-process
+plumbing unless a direct dependency is missing.
 
-Search and reuse local/mathlib APIs first; do not revisit completed Chapter
-2-4 substrate, Gaussian endpoints, or general empirical-process plumbing except
-when a direct dependency is needed for this packet.  If parallel work helps,
-use disjoint worktrees and preserve other agents' changes.  Each packet should
-be theorem-sized Lean progress, focused Vaart compilation, targeted module
-build, hygiene scans, fetch/rebase over `origin/main`, rerun affected checks,
-route-doc update, commit, and push.
+Workflow: search local/mathlib APIs first, add one theorem-sized Lean layer,
+run the focused file and target module checks plus hygiene scans, fetch/rebase
+over `origin/main`, rerun affected checks, update route docs, commit, and push.
+Use a disjoint worktree or agent only when it shortens this exact path while
+preserving other agents' changes.
 
 ## Current Blocker
 
@@ -771,17 +763,20 @@ compiling:
 277. Theorem 5.41 a.e. empirical quadratic Taylor display from pointwise
    Taylor identities:
    `vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise_ae`.
+278. Theorem 5.41 empirical-average source handoff from pointwise Taylor
+   identities and an envelope bound:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_pointwiseTaylor_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 empirical Taylor aggregation`).
+(`Add Vaart theorem 5.41 empirical source Taylor handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by proving the empirical
-aggregation of pointwise selected Taylor identities into the a.e. quadratic
-Taylor display consumed by the literal quadratic Taylor handoff.  The most
-advanced handoff still derives the source Taylor equation from the root
-equation `Psi_n(thetaHat_n) = 0` and the Taylor expansion of
-`Psi_n(thetaHat_n)`, then performs the algebraic split
+asymptotic-normality route for Z-estimators by assembling sampled score,
+derivative, Hessian, estimating-equation, and envelope objects directly into
+the current literal quadratic Taylor handoff.  The most advanced handoff still
+derives the source Taylor equation from the root equation
+`Psi_n(thetaHat_n) = 0` and the Taylor expansion of `Psi_n(thetaHat_n)`, then
+performs the algebraic split
 `dotPsi_n(theta0) x_n =
   (P dot psi_theta0) x_n + (dotPsi_n(theta0) - P dot psi_theta0) x_n`
 internally before applying the derivative and second-derivative residual
