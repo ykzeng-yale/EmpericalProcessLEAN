@@ -271,9 +271,15 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinateProjectedSample_identDistrib_of_vector_identDistrib`,
   and
   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorSource`.
+- Gaussian/covariance source fields transported to projected scalar Gaussian
+  laws and then to the projected summand CLT:
+  `vaart1998_finiteCoordinateProjectedGaussianLimitLaw_of_zeroMean_variance`,
+  `vaart1998_finiteCoordinateProjectedGaussianLimitLaw_of_covarianceBilinDual`,
+  and
+  `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorGaussianSource`.
 
-Latest remote base before this packet: `19e90a8`.  Latest pushed Vaart packet
-before this packet: `eb9319c` (`Add Vaart projected summand mean bridge`).
+Latest remote base before this packet: `8b635e3`.  Latest pushed Vaart packet
+before this packet: `8b635e3` (`Add Vaart projected summand vector source bridge`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -296,11 +302,10 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. package the Gaussian projected `HasLaw` field from the finite-coordinate
-   Gaussian limit and covariance bilinear form, adding further covariance-table
-   consumers only if they remove a real caller-side hypothesis from an existing
-   Theorem 4.1 wrapper.
-2. only after the vector-source wrapper is being used by a caller, prove
+1. add a Theorem 4.1 covariance-table endpoint that consumes the new
+   vector-Gaussian source wrapper directly, if it removes a real caller-side
+   `hsummand`/`hLimitLaw` hypothesis from an existing endpoint.
+2. then prove
    coordinate-assumption-to-vector-source constructors for `MemLp`,
    `iIndepFun`, and `IdentDistrib`.
 

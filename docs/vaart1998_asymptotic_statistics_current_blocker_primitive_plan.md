@@ -417,26 +417,34 @@ Chapter 3 theorem-facing wrappers compiling:
 136. Vector-valued finite-coordinate source fields feed the projected summand
    CLT through continuous linear projections and mathlib's one-dimensional CLT:
    `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorSource`.
+137. Finite-coordinate Gaussian limit supplies projected scalar Gaussian laws
+   from zero projected mean and variance identification:
+   `vaart1998_finiteCoordinateProjectedGaussianLimitLaw_of_zeroMean_variance`.
+138. Covariance-bilinear identification supplies the same projected scalar
+   Gaussian laws:
+   `vaart1998_finiteCoordinateProjectedGaussianLimitLaw_of_covarianceBilinDual`.
+139. Vector-valued finite-coordinate source fields plus Gaussian/covariance
+   source fields feed the projected summand CLT:
+   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorGaussianSource`.
 
-Latest remote base before this packet: `19e90a8`.
-Latest pushed Vaart packet before this packet: `eb9319c`
-(`Add Vaart projected summand mean bridge`).
+Latest remote base before this packet: `8b635e3`.
+Latest pushed Vaart packet before this packet: `8b635e3`
+(`Add Vaart projected summand vector source bridge`).
 
-The current theorem-sized packet removes the projection-level `MemLp`,
-`iIndepFun`, and `IdentDistrib` obligations from the mathlib one-dimensional
-CLT handoff whenever vector-valued finite-coordinate source fields are already
-available.  Continuous linear maps now transport those fields to every
-projection, and the vector-source wrapper feeds them into the existing
-integrable-mean CLT constructor.
+The current theorem-sized packet removes the projection-level Gaussian
+`HasLaw` obligation from the mathlib one-dimensional CLT handoff.  A supplied
+finite-coordinate `HasGaussianLaw` limit, zero projected mean, and
+covarianceBilinDual variance identification now produce every projected scalar
+Gaussian law, and the vector-Gaussian source wrapper feeds those laws into the
+existing vector-source CLT constructor.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. package the Gaussian projected `HasLaw` field from the finite-coordinate
-   Gaussian limit and covariance bilinear form, adding covariance-table
-   consumers only if they remove a real caller-side hypothesis from an existing
-   Theorem 4.1 wrapper.
-2. only after the vector-source wrapper is being used by a caller, prove
+1. add a Theorem 4.1 covariance-table endpoint that consumes the new
+   vector-Gaussian source wrapper directly, if it removes a real caller-side
+   `hsummand`/`hLimitLaw` hypothesis from an existing endpoint.
+2. then prove
    coordinate-assumption-to-vector-source constructors for `MemLp`,
    `iIndepFun`, and `IdentDistrib`.
 

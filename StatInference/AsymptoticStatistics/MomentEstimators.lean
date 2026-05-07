@@ -1282,6 +1282,131 @@ theorem vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorSource
         (P := P) (X := X) L i (hX_ident i))
 
 /--
+A finite-coordinate Gaussian limit gives the scalar Gaussian laws needed by the
+projected one-dimensional CLT once its projected mean and variance are
+identified.
+-/
+theorem vaart1998_finiteCoordinateProjectedGaussianLimitLaw_of_zeroMean_variance
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} {Q : Measure Ω'}
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_gaussian : HasGaussianLaw Z Q)
+    (hZ_mean : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      Q[fun ω => L (Z ω)] = 0)
+    (hZ_variance : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      Var[fun ω => L (Z ω); Q] =
+        Var[vaart1998_finiteCoordinateProjectedSample L X 0; P]) :
+    ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      HasLaw (fun ω => L (Z ω))
+        (gaussianReal 0
+          (Var[vaart1998_finiteCoordinateProjectedSample L X 0; P]).toNNReal) Q := by
+  intro L
+  let Y : Ω' -> ℝ := fun ω => L (Z ω)
+  have hY_gaussian : HasGaussianLaw Y Q := hZ_gaussian.map_fun L
+  refine ⟨hY_gaussian.aemeasurable, ?_⟩
+  have hmap :
+      Q.map Y =
+        gaussianReal (Q.map Y)[id] (Var[id; Q.map Y]).toNNReal :=
+    ProbabilityTheory.IsGaussian.eq_gaussianReal (Q.map Y) hY_gaussian.isGaussian_map
+  calc
+    Q.map (fun ω => L (Z ω)) = Q.map Y := rfl
+    _ = gaussianReal (Q.map Y)[id] (Var[id; Q.map Y]).toNNReal := hmap
+    _ = gaussianReal (Q[Y]) (Var[Y; Q]).toNNReal := by
+          rw [integral_map hY_gaussian.aemeasurable (by fun_prop),
+            variance_map (by fun_prop) hY_gaussian.aemeasurable]
+          rfl
+    _ = gaussianReal 0
+        (Var[vaart1998_finiteCoordinateProjectedSample L X 0; P]).toNNReal := by
+          rw [hZ_mean L, hZ_variance L]
+
+/--
+Covariance-bilinear identification of the finite-coordinate Gaussian limit
+supplies the scalar Gaussian laws needed by projected one-dimensional CLTs.
+-/
+theorem vaart1998_finiteCoordinateProjectedGaussianLimitLaw_of_covarianceBilinDual
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} {Q : Measure Ω'}
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_gaussian : HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      Q[fun ω => L (Z ω)] = 0)
+    (hZ_covariance : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        Var[vaart1998_finiteCoordinateProjectedSample L X 0; P]) :
+    ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      HasLaw (fun ω => L (Z ω))
+        (gaussianReal 0
+          (Var[vaart1998_finiteCoordinateProjectedSample L X 0; P]).toNNReal) Q :=
+  vaart1998_finiteCoordinateProjectedGaussianLimitLaw_of_zeroMean_variance
+    (P := P) (Q := Q) (X := X) (Z := Z)
+    (hZ_gaussian := hZ_gaussian) (hZ_mean := hZ_mean)
+    (hZ_variance := fun L => by
+      letI : IsGaussian (Q.map Z) := hZ_gaussian.isGaussian_map
+      have hmap :
+          Var[L; Q.map Z] = Var[fun ω => L (Z ω); Q] := by
+        simpa [Function.comp_def] using
+          (variance_map (X := L) (Y := Z) (μ := Q) (by fun_prop)
+            hZ_gaussian.aemeasurable)
+      calc
+        Var[fun ω => L (Z ω); Q] = Var[L; Q.map Z] := hmap.symm
+        _ = ProbabilityTheory.covarianceBilinDual (Q.map Z) L L :=
+              (ProbabilityTheory.covarianceBilinDual_self_eq_variance hZ_memLp L).symm
+        _ = Var[vaart1998_finiteCoordinateProjectedSample L X 0; P] :=
+              hZ_covariance L)
+
+/--
+Vector-valued finite-coordinate source fields, a finite-coordinate Gaussian
+limit, zero projected mean, and covariance identification feed the projected
+summand CLT through mathlib's one-dimensional CLT.
+-/
+theorem vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorGaussianSource
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hZ_gaussian : HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      Q[fun ω => L (Z ω)] = 0)
+    (hZ_covariance : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        Var[vaart1998_finiteCoordinateProjectedSample L X 0; P])
+    (hX_memLp : MemLp (vaart1998_finiteCoordinateSampleVector X 0) 2 P)
+    (hX_indep : iIndepFun (fun i => vaart1998_finiteCoordinateSampleVector X i) P)
+    (hX_ident : ∀ i : ℕ,
+      IdentDistrib
+        (vaart1998_finiteCoordinateSampleVector X i)
+        (vaart1998_finiteCoordinateSampleVector X 0) P P) :
+    vaart1998_finiteCoordinateProjectedSummandCLT (P := P) (Q := Q) X Z :=
+  vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorSource
+    (P := P) (Q := Q) (X := X) (Z := Z)
+    (hX_integrable := hX_integrable)
+    (hLimitLaw :=
+      vaart1998_finiteCoordinateProjectedGaussianLimitLaw_of_covarianceBilinDual
+        (P := P) (Q := Q) (X := X) (Z := Z)
+        (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+        (hZ_mean := hZ_mean) (hZ_covariance := hZ_covariance))
+    (hX_memLp := hX_memLp) (hX_indep := hX_indep)
+    (hX_ident := hX_ident)
+
+/--
 The scalar projected CLT family feeds the projected vector CLT family by
 continuous-linear algebra.
 -/

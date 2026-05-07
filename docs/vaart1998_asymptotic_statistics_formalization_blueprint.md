@@ -246,7 +246,12 @@ Initial modules:
   The vector-source wrapper
   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorSource`
   transports finite-coordinate sample-vector `MemLp`, `iIndepFun`, and
-  `IdentDistrib` fields through every continuous linear projection.
+  `IdentDistrib` fields through every continuous linear projection.  The
+  vector-Gaussian source wrapper
+  `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorGaussianSource`
+  also derives the projected scalar Gaussian `HasLaw` fields from a
+  finite-coordinate `HasGaussianLaw` limit, zero projected mean, and
+  covarianceBilinDual variance identification.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
