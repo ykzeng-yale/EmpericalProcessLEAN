@@ -2726,6 +2726,50 @@ def durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound
                 (fun ω' : Ω => (X n m ω') ^ 2) ω ∂P
 
 /--
+Durrett 2019, Theorem 3.4.10, scalar Taylor/Lindeberg bound before rewriting
+the second moment as a variance.
+
+This is the exact one-factor estimate obtained from Durrett's characteristic
+function Taylor inequality (3.3.3), after splitting the minimum at
+`|X_{n,m}| <= cutoff`.
+-/
+def durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) : Prop :=
+  ∀ t cutoff : ℝ, 0 < cutoff ->
+    ∀ n m : ℕ,
+      ‖durrett2019_characteristicFunction (P.map (X n m)) t -
+        (1 - (((∫ ω, (X n m ω) ^ 2 ∂P) * t ^ 2 / 2 : ℝ) : ℂ))‖ ≤
+        cutoff * |t| ^ 3 * (∫ ω, (X n m ω) ^ 2 ∂P) +
+          (2 * t ^ 2) *
+            ∫ ω,
+              Set.indicator {ω' : Ω | cutoff < |X n m ω'|}
+                (fun ω' : Ω => (X n m ω') ^ 2) ω ∂P
+
+/--
+Durrett 2019, Theorem 3.4.10, mean-zero rows turn the scalar Taylor/Lindeberg
+bound written with second moments into the variance-based one-factor bound.
+-/
+theorem durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound_of_taylorBound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hX : ∀ n m : ℕ, AEMeasurable (X n m) P)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (htaylor :
+      durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound
+        P X) :
+    durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound
+      P X := by
+  intro t cutoff hcutoff n m
+  have hvariance_eq :
+      _root_.ProbabilityTheory.variance (X n m) P =
+        ∫ ω, (X n m ω) ^ 2 ∂P :=
+    _root_.ProbabilityTheory.variance_of_integral_eq_zero
+      (μ := P) (X := X n m) (hX n m) (hmean_zero n m)
+  simpa [durrett2019_lindebergFellerQuadraticVarianceFactor, hvariance_eq] using
+    htaylor t cutoff hcutoff n m
+
+/--
 Durrett 2019, Theorem 3.4.10, summing the one-factor Taylor/Lindeberg bound
 gives the finite-row bound used by the Lindeberg-Feller convergence argument.
 -/
@@ -2769,6 +2813,25 @@ theorem durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_on
           simp [durrett2019_lindebergFellerVarianceRowSum,
             durrett2019_lindebergFellerTailSecondMomentRowSum,
             Finset.sum_add_distrib, Finset.mul_sum, mul_assoc, mul_comm]
+
+/--
+Durrett 2019, Theorem 3.4.10, the scalar Taylor/Lindeberg bound gives the
+finite-row bound after mean-zero rows rewrite second moments as variances.
+-/
+theorem durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_taylorBound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hX : ∀ n m : ℕ, AEMeasurable (X n m) P)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (htaylor :
+      durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound
+        P X) :
+    durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound
+      P X :=
+  durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_oneFactorBound
+    (P := P) (X := X)
+    (durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound_of_taylorBound
+      (P := P) (X := X) hX hmean_zero htaylor)
 
 /--
 Durrett 2019, Theorem 3.4.10, the finite-row Taylor/Lindeberg estimate implies
@@ -2918,6 +2981,29 @@ theorem durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero
     hvariance hlindeberg
     (durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_oneFactorBound
       (P := P) (X := X) hone)
+
+/--
+Durrett 2019, Theorem 3.4.10, the scalar Taylor/Lindeberg bound implies the
+row-sum error convergence used by Lemma 3.4.3.
+-/
+theorem durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_taylorBound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hX : ∀ n m : ℕ, AEMeasurable (X n m) P)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (htaylor :
+      durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound
+        P X) :
+    durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero
+      P X :=
+  durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_rowBound
+    (P := P) (X := X) (varianceLimit := varianceLimit)
+    hvariance hlindeberg
+    (durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_taylorBound
+      (P := P) (X := X) hX hmean_zero htaylor)
 
 /--
 Durrett 2019, Theorem 3.4.10, eventual unit-norm control for the quadratic
@@ -3697,6 +3783,31 @@ theorem Durrett2019LindebergFellerAnalyticCertificate.of_oneFactorBound_integrab
       (P := P) (X := X) hone)
 
 /--
+Durrett 2019, Theorem 3.4.10, assemble the analytic certificate from the
+scalar Taylor/Lindeberg bound and square-integrable rows.
+-/
+theorem Durrett2019LindebergFellerAnalyticCertificate.of_taylorBound_integrableSq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m, Integrable (fun ω => X n m ω ^ 2) P)
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (htaylor :
+      durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound
+        P X) :
+    Durrett2019LindebergFellerAnalyticCertificate
+      P X varianceLimit :=
+  Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSumBound_integrableSq
+    (P := P) (X := X) (varianceLimit := varianceLimit)
+    hX hX2 hvariance_pos hmean_zero hvariance hlindeberg
+    (durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_taylorBound
+      (P := P) (X := X) hX hmean_zero htaylor)
+
+/--
 Durrett 2019, Theorem 3.4.10 proof bridge: row-wise independence gives the
 product formula for the characteristic function of each triangular-array row
 sum.
@@ -3981,6 +4092,37 @@ theorem durrett2019_theorem_3_4_10_lindebergFeller_of_oneFactorBound_integrableS
     hX hX2 hindep hvariance_pos hmean_zero hvariance hlindeberg
     (durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_oneFactorBound
       (P := P) (X := X) hone)
+    hY
+
+/--
+Durrett 2019, Theorem 3.4.10, source-facing Lindeberg-Feller bridge from the
+scalar Taylor/Lindeberg bound and square-integrable rows.
+-/
+theorem durrett2019_theorem_3_4_10_lindebergFeller_of_taylorBound_integrableSq
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ} {Y : Ω' -> ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m, Integrable (fun ω => X n m ω ^ 2) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (htaylor :
+      durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound
+        P X)
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 varianceLimit.toNNReal) P') :
+    TendstoInDistribution
+      (fun n => durrett2019_lindebergFellerRowSum X n)
+      atTop Y (fun _ => P) P' :=
+  durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSumBound_integrableSq
+    hX hX2 hindep hvariance_pos hmean_zero hvariance hlindeberg
+    (durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_taylorBound
+      (P := P) (X := X) hX hmean_zero htaylor)
     hY
 
 /--

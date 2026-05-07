@@ -397,18 +397,19 @@ Compiled Section 3.2 packets:
   in distribution, a named characteristic/quadratic error row sum, a
   source-shaped finite-row Taylor/Lindeberg bound predicate, a compiled bridge
   from that finite-row bound plus Lindeberg to row-sum error convergence, a
-  source-shaped one-factor Taylor/Lindeberg bound predicate, and compiled
-  constructors from the one-factor bound to the finite-row bound, analytic
-  certificate, and final convergence-in-distribution theorem.
+  source-shaped one-factor Taylor/Lindeberg bound predicate, a scalar
+  Taylor-bound predicate written with second moments, and compiled constructors
+  from the scalar Taylor bound to the one-factor bound, finite-row bound,
+  analytic certificate, and final convergence-in-distribution theorem.
 
 Next packet candidates:
 
 - Section 3.4 Lindeberg-Feller analytic estimates: prove or instantiate the
-  one-factor Taylor/Lindeberg bound
-  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound` from
-  Durrett's scalar characteristic-function Taylor estimate (3.3.3), mean-zero
-  cancellation, and truncated second moments.  The bridges from this one-factor
-  bound to the finite-row bound and
+  scalar Taylor-bound predicate
+  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound` from
+  Durrett's characteristic-function Taylor estimate (3.3.3) and truncated
+  second moments.  The bridges from this scalar predicate to the variance-based
+  one-factor bound, finite-row bound, and
   `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
   already compile, so do not re-prove the finite-row summation or limiting
   epsilon argument.  The lower-level variance-tail split inequality

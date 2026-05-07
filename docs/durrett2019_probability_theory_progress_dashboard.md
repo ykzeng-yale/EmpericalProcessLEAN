@@ -230,10 +230,16 @@ Current proof route:
     `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound` and
     compiled bridges from that one-factor bound to the finite-row bound,
     row-sum convergence, analytic certificate, and final
-    convergence-in-distribution source wrapper.  Next prove the one-factor
-    bound from Durrett's scalar characteristic-function Taylor estimate
-    (3.3.3), mean-zero cancellation, and the truncated second-moment split;
-    after that, search Section 3.10 Cramer-Wold/multivariate CLT anchors.
+    convergence-in-distribution source wrapper;
+24. Durrett Theorem 3.4.10 now has the scalar second-moment predicate
+    `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound`
+    plus compiled bridges from that predicate through mean-zero variance
+    rewriting to the one-factor bound, finite-row bound, row-sum convergence,
+    analytic certificate, and final convergence-in-distribution source wrapper.
+    Next prove this scalar Taylor-bound predicate from Durrett's
+    characteristic-function Taylor estimate (3.3.3) and the truncated
+    second-moment split; after that, search Section 3.10 Cramer-Wold/
+    multivariate CLT anchors.
 
 The route should not duplicate raw measure theory from Chapter 1 unless an
 exact source theorem needs a missing local theorem.  Chapter 1 is currently
@@ -247,7 +253,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, iid same-law finite product law, iid product-law criterion, canonical iid product-coordinate support, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact polish only when a later theorem route demands it. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
 | Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, supplied cutpoint chains, or supplied center-range monotone subdivisions. The one-cell, two-cell, right-append, finite cutpoint-chain, cutpoint-chain append, endpoint-grid-to-chain, closed-cover, punctured-cover, punctured-cover inserted-subcell CDF increment, punctured-cover cell splitting, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, monotone center-range, arbitrary-law punctured local/finite compact-cover, arbitrary-law punctured monotone-subdivision, arbitrary-law punctured monotone-subdivision cutpoint-chain, arbitrary-law cutpoint-chain, arbitrary-law half-line GC, source-facing empirical-CDF predicate, EDF theorem wrapper, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, center-range subdivision-to-GC, and non-atomic GC packages compile. Treat this lane as reusable support unless a later theorem reopens an exact source-shape gap. |
-| Chapter 3 weak convergence, CLT, and characteristic functions | next-active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution`, characteristic-function, Levy, Taylor, and CLT APIs | Section 3.2 weak convergence now has compiled wrappers for Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.10 continuous mapping continuous case, and Theorem 3.2.11 Portmanteau. Section 3.3 now has compiled Theorem 3.3.1 basic characteristic-function wrappers, Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem wrappers, and Theorem 3.3.20 centered Taylor support. Section 3.4 now has Theorem 3.4.1 i.i.d. CLT wrappers plus Theorem 3.4.10 triangular-array characteristic-function product, explicit Gaussian display, row Gaussian target, quadratic variance product, Exercise 3.1.1 row-sum/max/absolute-bound/product interfaces, the proved Exercise 3.1.1 real triangular-array product theorem, variance-tail-to-max-smallness bridges, the variance-tail split proved from square-integrable rows, max-row-variance-to-factor-norm bridges, Lemma 3.4.3 product-difference control, analytic-certificate bridges from supplied split product approximations, a named characteristic/quadratic error row sum, a compiled finite-row-bound-to-row-sum-convergence bridge, and a compiled one-factor-bound-to-final-source-wrapper bridge. Next target: prove the one-factor Taylor/Lindeberg bound from Durrett's scalar characteristic-function Taylor estimate (3.3.3), then move to Section 3.10 Cramer-Wold/multivariate CLT. |
+| Chapter 3 weak convergence, CLT, and characteristic functions | next-active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution`, characteristic-function, Levy, Taylor, and CLT APIs | Section 3.2 weak convergence now has compiled wrappers for Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.10 continuous mapping continuous case, and Theorem 3.2.11 Portmanteau. Section 3.3 now has compiled Theorem 3.3.1 basic characteristic-function wrappers, Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem wrappers, and Theorem 3.3.20 centered Taylor support. Section 3.4 now has Theorem 3.4.1 i.i.d. CLT wrappers plus Theorem 3.4.10 triangular-array characteristic-function product, explicit Gaussian display, row Gaussian target, quadratic variance product, Exercise 3.1.1 row-sum/max/absolute-bound/product interfaces, the proved Exercise 3.1.1 real triangular-array product theorem, variance-tail-to-max-smallness bridges, the variance-tail split proved from square-integrable rows, max-row-variance-to-factor-norm bridges, Lemma 3.4.3 product-difference control, analytic-certificate bridges from supplied split product approximations, a named characteristic/quadratic error row sum, a compiled finite-row-bound-to-row-sum-convergence bridge, a compiled one-factor-bound-to-final-source-wrapper bridge, and a compiled scalar-Taylor-bound-to-final-source-wrapper bridge. Next target: prove the scalar Taylor-bound predicate from Durrett's characteristic-function Taylor estimate (3.3.3), then move to Section 3.10 Cramer-Wold/multivariate CLT. |
 | Chapter 4 martingales | pending-local | none | Search mathlib martingale/conditional expectation APIs first. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
 | Chapters 6-8 ergodic/Brownian/Donsker | pending-local | none | Defer until early probability spine is stable or remote agents land reusable support. |
@@ -297,15 +303,15 @@ The previous EDF target is closed by
 the Chapter 2.1 iid/product notation target is closed by the common-law finite
 product and canonical iid product-coordinate wrappers.
 
-The highest-value next proof target is the one-factor Lindeberg-Feller
-analytic estimate
-`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound`.
-The bridge from this one-factor bound to the finite-row bound, row-sum
-convergence, analytic certificate, and final source wrapper now compiles, so
-the next cycle should focus on Durrett's scalar characteristic-function Taylor
-estimate (3.3.3), mean-zero cancellation, and the truncated second-moment
-split.  Exercise 3.1.1 is proved locally, and the variance-tail split is proved
-from square-integrable rows.
+The highest-value next proof target is the scalar Lindeberg-Feller analytic
+estimate
+`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound`.
+The bridge from this scalar Taylor-bound predicate to the variance-based
+one-factor bound, finite-row bound, row-sum convergence, analytic certificate,
+and final source wrapper now compiles.  The next cycle should focus on
+Durrett's characteristic-function Taylor estimate (3.3.3) and the truncated
+second-moment split.  Exercise 3.1.1 is proved locally, and the variance-tail
+split is proved from square-integrable rows.
 
 Before choosing, apply the high-accuracy protocol from the current blocker
 plan: sync remote once, check whether other-agent work changed the route,
