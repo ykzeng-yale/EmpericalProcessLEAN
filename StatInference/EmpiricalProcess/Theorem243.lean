@@ -32138,11 +32138,105 @@ theorem VdVWTheorem243_eventualBetaLower_half_of_eventually_eq_one_sub_penalty
     ∀ epsilon, 0 < epsilon ->
       ∀ᶠ n in atTop, ENNReal.ofReal (1 / 2 : ℝ) ≤ beta epsilon n := by
   intro epsilon hepsilon
-  filter_upwards
-    [eventually_ennreal_ofReal_half_le_ofReal_one_sub_of_tendsto_zero
-      (hpenalty epsilon hepsilon),
-     hbeta_eq epsilon hepsilon] with n hhalf hbeta_n
-  simpa [hbeta_n] using hhalf
+  exact
+    ((eventually_ennreal_ofReal_half_le_ofReal_one_sub_of_tendsto_zero
+        (hpenalty epsilon hepsilon)).and
+      (hbeta_eq epsilon hepsilon)).mono
+      (by
+        intro n hn
+        exact hn.2.symm ▸ hn.1)
+
+/--
+Chebyshev source lower bound for the beta factor in VdV&W Lemma 2.3.7.
+
+For a real random variable with finite second moment, Chebyshev's inequality
+gives the good-event lower bound
+`ofReal (1 - Var[X] / c^2) <= P(|X - E X| < c)`.  This is the local
+probability-theoretic source primitive behind the displayed beta formula before
+the theorem-specific variance estimate is supplied.
+-/
+theorem VdVWChebyshev_betaLower_centered_abs_lt_of_variance
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {X : Ω -> ℝ} (hX : MemLp X 2 μ) {c : ℝ} (hc : 0 < c) :
+    ENNReal.ofReal (1 - Var[X; μ] / c ^ 2) ≤
+      μ {ω : Ω | |X ω - μ[X]| < c} := by
+  let bad : Set Ω := {ω : Ω | c ≤ |X ω - μ[X]|}
+  have hdiff_ae : AEStronglyMeasurable (fun ω : Ω => X ω - μ[X]) μ :=
+    hX.1.sub aestronglyMeasurable_const
+  have hnorm_ae : AEStronglyMeasurable (fun ω : Ω => ‖X ω - μ[X]‖) μ :=
+    hdiff_ae.norm
+  have hbad_null : NullMeasurableSet bad μ := by
+    dsimp [bad]
+    simpa [Real.norm_eq_abs] using
+      aestronglyMeasurable_const.nullMeasurableSet_le hnorm_ae
+  have hcheb : μ bad ≤ ENNReal.ofReal (Var[X; μ] / c ^ 2) := by
+    simpa [bad] using
+      ProbabilityTheory.meas_ge_le_variance_div_sq (μ := μ) hX hc
+  have hgood :
+      {ω : Ω | |X ω - μ[X]| < c} = badᶜ := by
+    ext ω
+    simp [bad, not_le]
+  have hratio_nonneg : 0 ≤ Var[X; μ] / c ^ 2 :=
+    div_nonneg (ProbabilityTheory.variance_nonneg X μ) (sq_nonneg c)
+  calc
+    ENNReal.ofReal (1 - Var[X; μ] / c ^ 2)
+        = (1 : ℝ≥0∞) - ENNReal.ofReal (Var[X; μ] / c ^ 2) := by
+          rw [ENNReal.ofReal_sub (1 : ℝ) hratio_nonneg]
+          norm_num
+    _ ≤ (1 : ℝ≥0∞) - μ bad := tsub_le_tsub_left hcheb 1
+    _ = μ {ω : Ω | |X ω - μ[X]| < c} := by
+      rw [hgood, prob_compl_eq_one_sub₀ hbad_null]
+
+/--
+Chebyshev beta lower bound with an externally supplied penalty dominating the
+variance ratio.  This is the shape needed when the textbook variance
+calculation produces a convenient displayed penalty term.
+-/
+theorem VdVWChebyshev_betaLower_centered_abs_lt_of_variance_le_penalty
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {X : Ω -> ℝ} (hX : MemLp X 2 μ) {c penalty : ℝ}
+    (hc : 0 < c) (_hpenalty_nonneg : 0 ≤ penalty)
+    (hvariance_le : Var[X; μ] / c ^ 2 ≤ penalty) :
+    ENNReal.ofReal (1 - penalty) ≤
+      μ {ω : Ω | |X ω - μ[X]| < c} := by
+  calc
+    ENNReal.ofReal (1 - penalty)
+        ≤ ENNReal.ofReal (1 - Var[X; μ] / c ^ 2) := by
+          exact ENNReal.ofReal_le_ofReal (by linarith)
+    _ ≤ μ {ω : Ω | |X ω - μ[X]| < c} :=
+      VdVWChebyshev_betaLower_centered_abs_lt_of_variance hX hc
+
+/--
+Mean-zero version of the Chebyshev beta lower bound.
+
+This matches the i.i.d. mean-zero clause of VdV&W Lemma 2.3.7 once the process
+coordinate has been instantiated as a single finite-sample sum.
+-/
+theorem VdVWChebyshev_betaLower_abs_lt_of_mean_zero_variance_le_penalty
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {X : Ω -> ℝ} (hX : MemLp X 2 μ) {c penalty : ℝ}
+    (hc : 0 < c) (hmean : μ[X] = 0) (hpenalty_nonneg : 0 ≤ penalty)
+    (hvariance_le : Var[X; μ] / c ^ 2 ≤ penalty) :
+    ENNReal.ofReal (1 - penalty) ≤ μ {ω : Ω | |X ω| < c} := by
+  simpa [hmean, sub_zero] using
+    VdVWChebyshev_betaLower_centered_abs_lt_of_variance_le_penalty
+      (μ := μ) hX hc hpenalty_nonneg hvariance_le
+
+/--
+Half-threshold form of the mean-zero Chebyshev beta lower bound.
+
+The event `|sum_i Z_i(f)| < x / 2` is the exact good event appearing in the
+condition for the beta factor in VdV&W Lemma 2.3.7.
+-/
+theorem VdVWChebyshev_betaLower_abs_lt_half_of_mean_zero_variance_le_penalty
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {X : Ω -> ℝ} (hX : MemLp X 2 μ) {x penalty : ℝ}
+    (hx : 0 < x) (hmean : μ[X] = 0) (hpenalty_nonneg : 0 ≤ penalty)
+    (hvariance_le : Var[X; μ] / (x / 2) ^ 2 ≤ penalty) :
+    ENNReal.ofReal (1 - penalty) ≤ μ {ω : Ω | |X ω| < x / 2} := by
+  exact
+    VdVWChebyshev_betaLower_abs_lt_of_mean_zero_variance_le_penalty
+      (μ := μ) hX (by linarith) hmean hpenalty_nonneg hvariance_le
 
 /--
 Deterministic convergence criterion for the Chebyshev beta penalty.

@@ -188,6 +188,15 @@ The combined consumer
 now composes that penalty estimate with the variable-beta selected comparison,
 so the next proof task is the actual Lemma 2.3.7 selected-cover/Rademacher
 source theorem and its variance bound.
+The Chebyshev source lower-bound lemmas
+`VdVWChebyshev_betaLower_centered_abs_lt_of_variance`,
+`VdVWChebyshev_betaLower_centered_abs_lt_of_variance_le_penalty`,
+`VdVWChebyshev_betaLower_abs_lt_of_mean_zero_variance_le_penalty`, and
+`VdVWChebyshev_betaLower_abs_lt_half_of_mean_zero_variance_le_penalty` are also
+compiled.  They supply the local probability step
+`ofReal (1 - penalty) <= P(|X| < x / 2)` from `MemLp`, mean zero, and a
+variance-ratio/penalty bound, leaving the finite-sample variance calculation
+and selected-cover/Rademacher beta comparison as the real source blocker.
 
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely

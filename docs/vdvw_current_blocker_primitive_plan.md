@@ -188,6 +188,18 @@ remaining Lean target is therefore exactly the textbook source proof: selected
 cover/Rademacher probability comparison plus the variance/Chebyshev estimate
 for that displayed penalty.
 
+The probability-theoretic Chebyshev source lower bound is now compiled as
+`VdVWChebyshev_betaLower_centered_abs_lt_of_variance`,
+`VdVWChebyshev_betaLower_centered_abs_lt_of_variance_le_penalty`,
+`VdVWChebyshev_betaLower_abs_lt_of_mean_zero_variance_le_penalty`, and
+`VdVWChebyshev_betaLower_abs_lt_half_of_mean_zero_variance_le_penalty`.
+These lemmas turn a `MemLp` real random variable plus a variance-ratio or
+supplied penalty bound into the exact good-event beta lower bound
+`ofReal (1 - penalty) <= P(|X| < x / 2)` used in Lemma 2.3.7.  The remaining
+source work is now the finite-sample variance estimate for normalized
+fixed-`M` truncated coordinate sums, and the selected-cover/Rademacher
+probability comparison carrying that beta factor.
+
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
 infrastructure for selected fixed-radius tail/UI, finite code-set and
