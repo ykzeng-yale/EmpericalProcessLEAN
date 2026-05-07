@@ -122,6 +122,89 @@ theorem durrett2019_theorem_3_10_7_thetaProjectionMean_zero_of_coordinateMean_ze
     exact (hZ_coordinate_integrable i).const_mul (theta i)
 
 /--
+For a finite-coordinate random vector, the `covarianceBilinDual` table of the
+push-forward law at coordinate evaluations is the ordinary scalar covariance
+table of the original coordinates.
+-/
+theorem durrett2019_theorem_3_10_7_covarianceBilinDual_eval_eq_coordinateCovariance
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {Y : Ω -> Coordinate -> ℝ}
+    (hY_memLp : MemLp id 2 (μ.map Y))
+    (hY_aemeas : AEMeasurable Y μ)
+    (i j : Coordinate) :
+    _root_.ProbabilityTheory.covarianceBilinDual (μ.map Y)
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+          (Coordinate := Coordinate) i)
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+          (Coordinate := Coordinate) j) =
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Y ω i) (fun ω => Y ω j) μ := by
+  letI : IsFiniteMeasure (μ.map Y) := Measure.isFiniteMeasure_map μ Y
+  rw [_root_.ProbabilityTheory.covarianceBilinDual_eq_covariance hY_memLp]
+  rw [_root_.ProbabilityTheory.covariance_map_fun]
+  · simp [StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM_apply]
+  · exact Measurable.aestronglyMeasurable (by fun_prop)
+  · exact Measurable.aestronglyMeasurable (by fun_prop)
+  · exact hY_aemeas
+
+/--
+Coordinate covariance identities give the `covarianceBilinDual` coordinate
+table required by the compiled multivariate CLT wrappers.
+-/
+theorem durrett2019_theorem_3_10_7_covarianceBilinDualTable_of_coordinateCovariance
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {Y : Ω -> Coordinate -> ℝ}
+    (hY_memLp : MemLp id 2 (μ.map Y))
+    (hY_aemeas : AEMeasurable Y μ)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hcov : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Y ω i) (fun ω => Y ω j) μ =
+        Gamma i j) :
+    ∀ i j,
+      _root_.ProbabilityTheory.covarianceBilinDual (μ.map Y)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j) =
+        Gamma i j := by
+  intro i j
+  rw [durrett2019_theorem_3_10_7_covarianceBilinDual_eval_eq_coordinateCovariance
+    (μ := μ) (Y := Y) hY_memLp hY_aemeas i j]
+  exact hcov i j
+
+/--
+Centered product identities imply coordinate covariance identities.
+-/
+theorem durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProduct
+    {Coordinate Ω : Type*} [MeasurableSpace Ω]
+    {μ : Measure Ω} [IsProbabilityMeasure μ] {Y : Ω -> Coordinate -> ℝ}
+    (hY_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Y ω coordinate) 2 μ)
+    (hY_coordinate_mean : ∀ coordinate, (∫ ω, Y ω coordinate ∂μ) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hY_centered_product : ∀ i j,
+      (∫ ω, Y ω i * Y ω j ∂μ) = Gamma i j) :
+    ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Y ω i) (fun ω => Y ω j) μ =
+        Gamma i j := by
+  intro i j
+  rw [_root_.ProbabilityTheory.covariance_eq_sub
+    (hY_coordinate_memLp i) (hY_coordinate_memLp j)]
+  change
+    (∫ ω, Y ω i * Y ω j ∂μ) -
+        (∫ ω, Y ω i ∂μ) * (∫ ω, Y ω j ∂μ) =
+      Gamma i j
+  rw [hY_centered_product i j, hY_coordinate_mean i, hY_coordinate_mean j]
+  ring
+
+/--
 The covariance bilinear form of Durrett's projection is the double sum of the
 coordinate covariance table.
 -/
@@ -825,6 +908,157 @@ theorem durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCoordinateMe
     (hX_indep := hX_indep) (hX_ident := hX_ident)
 
 /--
+Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from literal
+coordinate centering and scalar coordinate covariance identities.
+
+This is the source endpoint immediately before Durrett's covariance table
+notation: scalar coordinate covariance assumptions are converted into the
+`covarianceBilinDual` coordinate tables consumed by the compiled vector CLT.
+-/
+theorem durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCoordinateMeanCoordinateCovariance
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hX_coordinate_memLp : ∀ coordinate, MemLp (X coordinate 0) 2 P)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_integrable : ∀ coordinate, Integrable (fun ω => Z ω coordinate) Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Z ω i) (fun ω => Z ω j) Q =
+        Gamma i j)
+    (hX_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => X i 0 ω) (fun ω => X j 0 ω) P =
+        Gamma i j)
+    (hX_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i => StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        P)
+    (hX_ident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0)
+        P P) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+            StatInference.AsymptoticStatistics.vaart1998_finiteCoordinatePopulationMoment P X))
+      atTop Z (fun _ => P) Q := by
+  let sampleVector :=
+    StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0
+  have hX_vector_memLp : MemLp sampleVector 2 P := by
+    simpa [sampleVector] using
+      StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector_memLp_of_coordinate_memLp
+        (P := P) (X := X) 0 hX_coordinate_memLp
+  have hX_sample_aemeas : AEMeasurable sampleVector P :=
+    hX_vector_memLp.aemeasurable
+  have hX_sample_map_memLp : MemLp id 2 (P.map sampleVector) := by
+    simpa [sampleVector] using
+      (MeasureTheory.memLp_map_measure_iff aestronglyMeasurable_id hX_sample_aemeas).2
+        hX_vector_memLp
+  exact
+    durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCoordinateMeanCovarianceTable
+      (P := P) (Q := Q) (X := X) (Z := Z)
+      (hX_meas := hX_meas) (hZ_aemeas := hZ_aemeas)
+      (hX_coordinate_memLp := hX_coordinate_memLp)
+      (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+      (hZ_coordinate_integrable := hZ_coordinate_integrable)
+      (hZ_coordinate_mean := hZ_coordinate_mean)
+      (Gamma := Gamma)
+      (hZ_table :=
+        durrett2019_theorem_3_10_7_covarianceBilinDualTable_of_coordinateCovariance
+          (μ := Q) (Y := Z) hZ_memLp hZ_aemeas Gamma hZ_covariance)
+      (hX_table :=
+        durrett2019_theorem_3_10_7_covarianceBilinDualTable_of_coordinateCovariance
+          (μ := P) (Y := sampleVector) hX_sample_map_memLp hX_sample_aemeas Gamma
+          (fun i j => by
+            simpa [sampleVector,
+              StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector]
+              using hX_covariance i j))
+      (hX_indep := hX_indep) (hX_ident := hX_ident)
+
+/--
+Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from centered
+coordinate product identities.
+
+When the Gaussian limit and the first summand are coordinatewise centered,
+Durrett's product displays `E[Z_i Z_j] = Gamma_{ij}` and
+`E[X_i X_j] = Gamma_{ij}` are converted into scalar covariance identities and
+then into the compiled covariance-table CLT wrapper.
+-/
+theorem durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCenteredProduct
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hX_coordinate_memLp : ∀ coordinate, MemLp (X coordinate 0) 2 P)
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 Q)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (hX_coordinate_mean : ∀ coordinate, (∫ ω, X coordinate 0 ω ∂P) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_centered_product : ∀ i j,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j)
+    (hX_centered_product : ∀ i j,
+      (∫ ω, X i 0 ω * X j 0 ω ∂P) = Gamma i j)
+    (hX_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i => StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        P)
+    (hX_ident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0)
+        P P) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+            StatInference.AsymptoticStatistics.vaart1998_finiteCoordinatePopulationMoment P X))
+      atTop Z (fun _ => P) Q :=
+  durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCoordinateMeanCoordinateCovariance
+    (P := P) (Q := Q) (X := X) (Z := Z)
+    (hX_meas := hX_meas) (hZ_aemeas := hZ_aemeas)
+    (hX_coordinate_memLp := hX_coordinate_memLp)
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (hZ_coordinate_integrable := fun coordinate =>
+      (hZ_coordinate_memLp coordinate).integrable (by simp))
+    (hZ_coordinate_mean := hZ_coordinate_mean)
+    (Gamma := Gamma)
+    (hZ_covariance :=
+      durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProduct
+        (μ := Q) (Y := Z) hZ_coordinate_memLp hZ_coordinate_mean Gamma
+        hZ_centered_product)
+    (hX_covariance :=
+      durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProduct
+        (μ := P) (Y := fun ω coordinate => X coordinate 0 ω)
+        hX_coordinate_memLp hX_coordinate_mean Gamma
+        (fun i j => hX_centered_product i j))
+    (hX_indep := hX_indep) (hX_ident := hX_ident)
+
+/--
 Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from an i.i.d.
 common vector law.
 
@@ -946,6 +1180,69 @@ theorem durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianCoo
     (hZ_coordinate_integrable := hZ_coordinate_integrable)
     (hZ_coordinate_mean := hZ_coordinate_mean)
     (Gamma := Gamma) (hZ_table := hZ_table) (hX_table := hX_table)
+    (hX_indep :=
+      StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector_iIndepFun_of_hasLaw_infinitePi
+        (P := P) (X := X) (ν := fun _ : ℕ => ν) hX_vector_law hX_sequence_law)
+    (hX_ident :=
+      StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector_identDistrib_of_common_hasLaw
+        (P := P) (X := X) (ν := ν) hX_vector_law)
+
+/--
+Durrett 2019, Theorem 3.10.7, common-vector-law finite-coordinate CLT from
+literal coordinate centering and scalar coordinate covariance identities.
+-/
+theorem durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianCoordinateMeanCoordinateCovariance
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    {ν : Measure (Coordinate -> ℝ)}
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hX_coordinate_memLp : ∀ coordinate, MemLp (X coordinate 0) 2 P)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_integrable : ∀ coordinate, Integrable (fun ω => Z ω coordinate) Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Z ω i) (fun ω => Z ω j) Q =
+        Gamma i j)
+    (hX_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => X i 0 ω) (fun ω => X j 0 ω) P =
+        Gamma i j)
+    (hX_vector_law : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        ν P)
+    (hX_sequence_law :
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω i =>
+          StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i ω)
+        (Measure.infinitePi (fun _ : ℕ => ν)) P) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+            StatInference.AsymptoticStatistics.vaart1998_finiteCoordinatePopulationMoment P X))
+      atTop Z (fun _ => P) Q :=
+  durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCoordinateMeanCoordinateCovariance
+    (P := P) (Q := Q) (X := X) (Z := Z)
+    (hX_meas := hX_meas) (hZ_aemeas := hZ_aemeas)
+    (hX_coordinate_memLp := hX_coordinate_memLp)
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (hZ_coordinate_integrable := hZ_coordinate_integrable)
+    (hZ_coordinate_mean := hZ_coordinate_mean)
+    (Gamma := Gamma)
+    (hZ_covariance := hZ_covariance) (hX_covariance := hX_covariance)
     (hX_indep :=
       StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector_iIndepFun_of_hasLaw_infinitePi
         (P := P) (X := X) (ν := fun _ : ℕ => ν) hX_vector_law hX_sequence_law)

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V8
+## Live In-Thread Goal Prompt V9
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -16,15 +16,18 @@ in `StatInference/ProbabilityTheory/Multivariate.lean`.
 Preserve the compiled Durrett Theorem 3.10.7 source chain:
 theta-projection Gaussian display, finite-coordinate dual representation,
 all-dual mean/covariance handoffs, coordinatewise-zero-mean to theta-mean
-handoff, vector Gaussian CLT wrappers from coordinate covariance tables, and
-the common-vector-law coordinate-table wrapper.
+handoff, covariance-table handoff from scalar coordinate covariance, centered
+product-to-covariance handoff, vector Gaussian CLT wrappers from literal
+coordinate covariance/product assumptions, and the common-vector-law
+coordinate-covariance wrapper.
 
-Next packet only: close the covariance-table source endpoint for Theorem
-3.10.7.  Package Durrett's literal coordinate covariance or centered product
-identities into the `covarianceBilinDual` tables for the Gaussian limit and
-first summand, then feed the compiled coordinate-mean/covariance-table CLT
-wrappers.  Do not revisit theta/display, all-dual algebra, coordinate-mean
-handoff, or common-vector-law plumbing unless this covariance endpoint exposes a
+Next packet only: close the canonical i.i.d. product-sample endpoint for
+Theorem 3.10.7 if it is direct.  Use existing Chapter 2.1/product-law and
+Vaart finite-coordinate support to discharge the common-vector-law hypotheses
+for the canonical sample space `ℕ -> Coordinate -> ℝ`, then feed the compiled
+coordinate-mean/coordinate-covariance CLT wrappers.  Do not revisit
+theta/display, all-dual algebra, coordinate-mean handoff, covariance-table
+handoff, or centered-product algebra unless this canonical endpoint exposes a
 missing lemma.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
@@ -511,6 +514,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V8` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V9` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

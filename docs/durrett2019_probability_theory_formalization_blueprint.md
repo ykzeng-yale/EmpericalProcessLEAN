@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V8`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V9`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -391,14 +391,15 @@ Compiled Section 3.2 packets:
 
 Next packet:
 
-- Section 3.10, Durrett Theorem 3.10.7 only: close the covariance-table source
-  endpoint in `StatInference/ProbabilityTheory/Multivariate.lean`.  The
-  theta-projection display, finite-coordinate dual representation, all-dual
-  handoffs, coordinatewise-zero-mean handoff, vector Gaussian
-  coordinate-table CLT wrapper, and common-vector-law coordinate-table CLT
-  wrapper now compile.  Next derive the Gaussian and first-summand
-  `covarianceBilinDual` tables from Durrett's literal coordinate covariance or
-  centered product identities.
+- Section 3.10, Durrett Theorem 3.10.7 only: close the canonical i.i.d.
+  product-sample endpoint if it is direct.  The theta-projection display,
+  finite-coordinate dual representation, all-dual handoffs, coordinatewise
+  zero-mean handoff, scalar coordinate covariance and centered-product source
+  endpoints, vector Gaussian coordinate-covariance CLT wrappers, and
+  common-vector-law coordinate-covariance wrapper now compile.  Next use
+  existing product-law and Vaart finite-coordinate support to discharge the
+  common-vector-law hypotheses for the canonical sample space and feed the
+  compiled coordinate-covariance CLT wrappers.
 
 Support-only dependencies:
 
