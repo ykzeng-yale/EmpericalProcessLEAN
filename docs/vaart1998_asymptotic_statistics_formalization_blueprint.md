@@ -114,7 +114,12 @@ Initial modules:
   The newest Chapter 2 support layer wraps mathlib's theorem that almost-sure
   convergence implies convergence in probability as
   `vaart1998_tendstoInMeasure_of_tendsto_ae`, so strong-law outputs can feed
-  later estimator-localization proofs.
+  later estimator-localization proofs.  The current asymptotic-equivalence
+  layer adds
+  `vaart1998_tendstoInMeasure_zero_of_eq_with_probability_tending_to_one` and
+  `vaart1998_tendstoInDistribution_of_eq_with_probability_tending_to_one`, so
+  estimators equal to a theorem-facing candidate with probability tending to
+  one can inherit the same weak limit by Slutsky.
 - `DeltaMethod.lean`: full finite-dimensional delta method and uniform delta
   method, starting with source reports and uniform variants rather than the
   now-compiled scalar scaled-ball and measurability certificates.

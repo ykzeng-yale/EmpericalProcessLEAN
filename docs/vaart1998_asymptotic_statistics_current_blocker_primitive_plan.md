@@ -604,21 +604,26 @@ Chapter 3 theorem-facing wrappers compiling:
    inverse candidate solves the empirical moment equation with probability
    tending to one:
    `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_targetProbabilityLocalization_real`.
+193. Chapter 2 asymptotic-equivalence convergence-in-probability bridge:
+   `vaart1998_tendstoInMeasure_zero_of_eq_with_probability_tending_to_one`.
+194. Chapter 2 asymptotic-equivalence distributional transfer:
+   `vaart1998_tendstoInDistribution_of_eq_with_probability_tending_to_one`.
 
-Latest remote base before this packet: `548d7a7`.
-Latest pushed Vaart packet before this packet: `3186ff7`
-(`Add Vaart target probability localization certificate`).
+Latest remote base before this packet: `3f8dd68`.
+Latest pushed Vaart packet before this packet: `5876ba7`
+(`Add Vaart target probability consumers`).
 
-The current theorem-sized packet consumes the target-probability localization
-certificate without confusing it with a.e. target localization.  It proves that
-the local inverse candidate lies in the inverse-function-theorem source
-neighborhood with probability tending to one and solves the empirical moment
-equation with probability tending to one.
+The current theorem-sized packet adds the Chapter 2 asymptotic-equivalence
+bookkeeping needed for localized estimators: equality with probability tending
+to one gives a zero convergence-in-probability difference, and therefore
+transfers convergence in distribution by Slutsky.
 
 The next aggressive packet should continue Chapter 4 by connecting this
-localized high-probability candidate route to asymptotic-equivalence or
-measurable-selection infrastructure.  Do not use probability tending to one as
-a substitute for per-`n` a.e. target membership.
+asymptotic-equivalence infrastructure to the localized high-probability
+local-inverse candidate route.  Package the theorem that any measurable
+estimator equal to the local inverse candidate with probability tending to one
+inherits the same `sqrt n` delta-method limit.  Do not use probability tending
+to one as a substitute for per-`n` a.e. target membership.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

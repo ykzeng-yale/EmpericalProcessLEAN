@@ -336,6 +336,94 @@ theorem vaart1998_lemma_2_8_slutsky_add
   hXZ.add_of_tendstoInMeasure_const hY hY_meas
 
 /--
+Equality with probability tending to one gives a zero convergence-in-probability
+difference.
+
+This is the basic asymptotic-equivalence bookkeeping used when a textbook
+estimator is only specified on a high-probability event.
+-/
+theorem vaart1998_tendstoInMeasure_zero_of_eq_with_probability_tending_to_one
+    {ι Ω E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [SeminormedAddCommGroup E]
+    {X Y : ι -> Ω -> E} {l : Filter ι}
+    (hEq_meas : ∀ i : ι, MeasurableSet {ω : Ω | X i ω = Y i ω})
+    (hEq_prob : Tendsto (fun i : ι => P.real {ω : Ω | X i ω = Y i ω})
+      l (𝓝 1)) :
+    TendstoInMeasure P (fun i ω => X i ω - Y i ω) l 0 := by
+  have hcompl :
+      Tendsto (fun i : ι =>
+        P.real ({ω : Ω | X i ω = Y i ω}ᶜ)) l (𝓝 0) := by
+    have hsub :
+        Tendsto (fun i : ι =>
+          (1 : ℝ) - P.real {ω : Ω | X i ω = Y i ω}) l (𝓝 0) := by
+      have hconst : Tendsto (fun _ : ι => (1 : ℝ)) l (𝓝 1) :=
+        tendsto_const_nhds
+      simpa using (hconst.sub hEq_prob)
+    refine hsub.congr' ?_
+    exact Eventually.of_forall fun i => by
+      have hsum :
+          P.real {ω : Ω | X i ω = Y i ω} +
+              P.real ({ω : Ω | X i ω = Y i ω}ᶜ) = 1 :=
+        probReal_add_probReal_compl (μ := P) (hEq_meas i)
+      linarith
+  rw [MeasureTheory.tendstoInMeasure_iff_measureReal_norm]
+  intro ε hε
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le
+    tendsto_const_nhds hcompl ?_ ?_
+  · intro i
+    exact measureReal_nonneg
+  · intro i
+    refine measureReal_mono ?_
+    intro ω htail
+    show ¬ X i ω = Y i ω
+    intro heq
+    have hzero : X i ω - Y i ω = 0 := by
+      simp [heq]
+    have hle_zero : ε ≤ 0 := by
+      simpa [hzero] using htail
+    exact (not_le_of_gt hε) hle_zero
+
+/--
+Asymptotic-equivalence transfer for convergence in distribution.
+
+If `Y_i = X_i` with probability tending to one and `X_i` has a weak limit,
+then `Y_i` has the same weak limit.  This is a Slutsky consequence of the
+previous convergence-in-probability difference lemma.
+-/
+theorem vaart1998_tendstoInDistribution_of_eq_with_probability_tending_to_one
+    {ι : Type u} {E : Type v} {Ω : Type w} {Ω' : Type x}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace E] [SeminormedAddCommGroup E]
+    [SecondCountableTopology E] [BorelSpace E] [OpensMeasurableSpace E]
+    {X Y : ι -> Ω -> E} {Z : Ω' -> E} {l : Filter ι}
+    [l.IsCountablyGenerated]
+    (hX : TendstoInDistribution X l Z (fun _ => P) Q)
+    (hEq_meas : ∀ i : ι, MeasurableSet {ω : Ω | Y i ω = X i ω})
+    (hEq_prob : Tendsto (fun i : ι => P.real {ω : Ω | Y i ω = X i ω})
+      l (𝓝 1))
+    (hDiff_meas : ∀ i : ι, AEMeasurable (fun ω : Ω => Y i ω - X i ω) P) :
+    TendstoInDistribution Y l Z (fun _ => P) Q := by
+  have hdiff :
+      TendstoInMeasure P (fun i ω => Y i ω - X i ω) l 0 :=
+    vaart1998_tendstoInMeasure_zero_of_eq_with_probability_tending_to_one
+      (P := P) (X := Y) (Y := X) hEq_meas hEq_prob
+  have hsum :
+      TendstoInDistribution
+        (fun i ω => X i ω + (Y i ω - X i ω)) l
+        (fun ω => Z ω + 0) (fun _ => P) Q :=
+    vaart1998_lemma_2_8_slutsky_add
+      (P := P) (Q := Q) (X := X)
+      (Y := fun i ω => Y i ω - X i ω) (Z := Z) (c := 0)
+      hX hdiff hDiff_meas
+  refine hsum.congr (fun i => ?_) ?_
+  · exact ae_of_all _ fun ω => by
+      change X i ω + (Y i ω - X i ω) = Y i ω
+      abel
+  · exact ae_of_all _ fun ω => by
+      simp
+
+/--
 van der Vaart 1998, Proposition 2.17, iid centered unit-variance CLT.
 
 This is the standard real-valued mathlib CLT repackaged with the Vaart source

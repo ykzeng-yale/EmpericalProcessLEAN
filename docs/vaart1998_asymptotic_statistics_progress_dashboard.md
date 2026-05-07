@@ -408,26 +408,35 @@ Chapter 4 handoff:
   and
   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_targetProbabilityLocalization_real`
   consume the finite-coordinate target-probability certificate directly.
+- Chapter 2 asymptotic equivalence:
+  `vaart1998_tendstoInMeasure_zero_of_eq_with_probability_tending_to_one`
+  proves that equality with probability tending to one gives a zero
+  convergence-in-probability difference, and
+  `vaart1998_tendstoInDistribution_of_eq_with_probability_tending_to_one`
+  transfers convergence in distribution by Slutsky.
 
-Latest remote base before this packet: `548d7a7`.  Latest pushed Vaart packet
-before this packet: `3186ff7`
-(`Add Vaart target probability localization certificate`).
+Latest remote base before this packet: `3f8dd68`.  Latest pushed Vaart packet
+before this packet: `5876ba7`
+(`Add Vaart target probability consumers`).
 Current packet verification passed for:
 
-- `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
+- `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
+- `lake build StatInference.AsymptoticStatistics.Basic`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
 - `git diff --check`
 - proof-hole and secret scans on changed Vaart files
 
-Root build note: root imports did not change in this packet.  The reliable gate
-for this packet is the focused Lean check and targeted Vaart module build.
+Root build note: root imports do not change in this packet, but
+`MomentEstimators.lean` imports `Basic.lean`, so the reliable gate is the
+focused Basic check plus targeted Basic and MomentEstimators module builds.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the localized high-probability local-inverse
-candidate route.  The next useful proof step is to connect this route to an
-asymptotic-equivalence or measurable-selection theorem, or prove a measurable
-extension of the local inverse if mathlib supports it.
+Continue Vaart Chapter 4.1 by consuming the new asymptotic-equivalence bridge:
+package the theorem that any measurable estimator equal to the local inverse
+candidate with probability tending to one inherits the same `sqrt n`
+delta-method limit.  After that, continue toward measurable-selection or
+measurable-extension infrastructure.
 
 ## Reuse Dependencies
 
