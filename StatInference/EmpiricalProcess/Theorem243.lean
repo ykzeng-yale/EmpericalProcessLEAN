@@ -33434,6 +33434,115 @@ theorem
     simpa [left, right] using hmul_le_right
 
 /--
+A lossless fixed-radius finite-net comparison also implies the displayed-beta
+source primitive at every larger finite-net scale `C >= 1`.
+
+This lets future proofs target the older fixed-radius comparison while the
+displayed Lemma 2.3.7 source primitive keeps the scaled finite-net event used by
+the current Theorem 2.4.3 route.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_fixedRadiusComparison_of_one_le_scale
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (comparison :
+      VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison P
+        indexClass classFun envelope M selectedCardinality)
+    (hM_nonneg : 0 ≤ M) (hC_ge_one : 1 ≤ C) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M C 1 selectedCardinality := by
+  refine
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_scaledOuterProbabilityBound
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := C) (A := 1)
+      (selectedCardinality := selectedCardinality)
+      (by norm_num)
+      (lt_of_lt_of_le zero_lt_one hC_ge_one)
+      ?_
+  intro eta heta epsilon hepsilon
+  filter_upwards [comparison.outerProbability_bound eta heta epsilon hepsilon]
+    with n hcomparison_n
+  let left : ℝ≥0∞ :=
+    VdVWOuterProbability (vdVWProductMeasure P n)
+      {sample : SampleAt Observation n |
+        epsilon <
+          dist
+            (vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+            (0 : ℝ)}
+  let unscaledRight : ℝ≥0∞ :=
+    VdVWOuterProbability (vdVWProductMeasure P n)
+      {sample : SampleAt Observation n |
+        epsilon <
+          dist
+            (vdVWTheorem243FiniteNetHoeffdingUpper
+                (selectedCardinality eta n sample n) n M + eta)
+            (0 : ℝ)}
+  let scaledRight : ℝ≥0∞ :=
+    VdVWOuterProbability (vdVWProductMeasure P n)
+      {sample : SampleAt Observation n |
+        epsilon <
+          dist
+            (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                (selectedCardinality eta n sample n) n M + eta)
+            (0 : ℝ)}
+  have hleft_le_unscaled : left ≤ unscaledRight := by
+    simpa [left, unscaledRight] using hcomparison_n
+  have hunscaled_le_scaled : unscaledRight ≤ scaledRight := by
+    dsimp [unscaledRight, scaledRight, VdVWOuterProbability]
+    refine measure_mono ?_
+    intro sample hsample
+    let upper : ℝ :=
+      vdVWTheorem243FiniteNetHoeffdingUpper
+        (selectedCardinality eta n sample n) n M
+    have hupper_nonneg : 0 ≤ upper := by
+      exact
+        vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+          (selectedCardinality eta n sample n) n hM_nonneg
+    have hC_pos : 0 < C := lt_of_lt_of_le zero_lt_one hC_ge_one
+    have hunscaled_nonneg : 0 ≤ upper + eta := by
+      linarith
+    have hscaled_nonneg : 0 ≤ C * upper + eta := by
+      have hmul_nonneg : 0 ≤ C * upper := mul_nonneg hC_pos.le hupper_nonneg
+      linarith
+    have hbad_unscaled : epsilon < upper + eta := by
+      have hsample' :
+          epsilon <
+            dist
+              (vdVWTheorem243FiniteNetHoeffdingUpper
+                  (selectedCardinality eta n sample n) n M + eta)
+              (0 : ℝ) := by
+        simpa [upper] using hsample
+      rw [Real.dist_eq, sub_zero, abs_of_nonneg hunscaled_nonneg] at hsample'
+      exact hsample'
+    have hupper_le_scaled : upper ≤ C * upper := by
+      calc
+        upper = (1 : ℝ) * upper := by ring
+        _ ≤ C * upper := mul_le_mul_of_nonneg_right hC_ge_one hupper_nonneg
+    have hunscaled_real_le_scaled : upper + eta ≤ C * upper + eta :=
+      add_le_add hupper_le_scaled le_rfl
+    have hbad_scaled : epsilon < C * upper + eta :=
+      lt_of_lt_of_le hbad_unscaled hunscaled_real_le_scaled
+    have hmem :
+        epsilon <
+          dist
+            (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                (selectedCardinality eta n sample n) n M + eta)
+            (0 : ℝ) := by
+      rw [Real.dist_eq, sub_zero, abs_of_nonneg hscaled_nonneg]
+      simpa [upper] using hbad_scaled
+    simpa using hmem
+  have hleft_le_scaled : left ≤ scaledRight := hleft_le_unscaled.trans hunscaled_le_scaled
+  simpa [left, scaledRight] using hleft_le_scaled
+
+/--
 The named displayed-Chebyshev-beta source primitive feeds the compiled fixed-`M`
 stochastic-entropy route.
 
