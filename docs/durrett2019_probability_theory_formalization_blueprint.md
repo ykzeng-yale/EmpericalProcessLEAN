@@ -339,11 +339,24 @@ numbers.  Search mathlib and local files for weak convergence, characteristic
 functions, normal distribution APIs, and finite-dimensional weak convergence
 before formalizing.
 
-Current first packet:
+Compiled first packet:
 
 - Durrett Theorem 3.2.10, continuous mapping theorem, continuous case.  Reuse
-  `MeasureTheory.TendstoInDistribution.continuous_comp` or the local
-  `tendstoInDistribution_continuous_comp` wrapper.
+  `MeasureTheory.TendstoInDistribution.continuous_comp` through the local
+  `tendstoInDistribution_continuous_comp` wrapper.  The varying-domain and
+  common-probability-space forms now compile in
+  `StatInference/ProbabilityTheory/Basic.lean`.
+
+Next packet candidates:
+
+- Durrett Theorem 3.2.9, bounded-continuous test functions, by bridging
+  random-variable laws to local probability-measure weak-convergence
+  characterizations.
+- Durrett Theorem 3.2.11, Portmanteau alternatives, by reusing local
+  Portmanteau wrappers if the statement gap is smaller than the integral
+  bridge.
+- Section 3.3 characteristic-function wrappers if the Section 3.2 bridges
+  require too much new measure-level infrastructure.
 
 Likely initial source items:
 

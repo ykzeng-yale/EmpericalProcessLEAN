@@ -3,6 +3,7 @@ import StatInference.ProbabilityMeasure.BorelCantelli
 import StatInference.ProbabilityMeasure.GeneratedSigma
 import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.StrongLaw
+import StatInference.ProbabilityMeasure.WeakConvergence
 
 /-!
 # Durrett 2019 probability-theory wrappers
@@ -19,7 +20,7 @@ open Filter MeasureTheory
 
 open scoped BigOperators ENNReal Topology Function
 
-universe u v w
+universe u v w x
 
 /-! ## Durrett, Theorem 1.1.1 -/
 
@@ -1351,6 +1352,53 @@ theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms
     X hLaw hindep
     (fun hepsilon hab =>
       durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms hepsilon hab)
+
+/-! ## Durrett, Section 3.2 -/
+
+/--
+Durrett 2019, Theorem 3.2.10, continuous mapping theorem, continuous case.
+
+The textbook states a sharper measurable-map theorem under the condition that
+the limit law gives zero mass to the discontinuity set of `g`.  This compiled
+source wrapper records the continuous-map specialization, where that
+discontinuity condition is automatic, and delegates to the local
+weak-convergence layer.
+-/
+theorem durrett2019_theorem_3_2_10_continuous_mapping
+    {ι : Type u} {E : Type v} {F : Type w} {Ω : ι -> Type x}
+    {Ω' : Type x} {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    [TopologicalSpace F] [MeasurableSpace F] [BorelSpace F]
+    {X : (i : ι) -> Ω i -> E} {Z : Ω' -> E} {l : Filter ι}
+    {g : E -> F}
+    (h : TendstoInDistribution X l Z μ μ')
+    (hg : Continuous g) :
+    TendstoInDistribution (fun i => g ∘ X i) l (g ∘ Z) μ μ' :=
+  StatInference.ProbabilityMeasure.tendstoInDistribution_continuous_comp h hg
+
+/--
+Durrett 2019, Theorem 3.2.10, common-probability-space continuous mapping
+form.
+
+This is the common sequence-of-random-variables shape used in the text:
+if `X_i` converges in distribution to `Z` under the same probability measure
+and `g` is continuous, then `g (X_i)` converges in distribution to `g Z`.
+-/
+theorem durrett2019_theorem_3_2_10_continuous_mapping_common_probability_space
+    {ι : Type u} {Ω : Type x} {E : Type v} {F : Type w}
+    [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    [TopologicalSpace F] [MeasurableSpace F] [BorelSpace F]
+    {X : ι -> Ω -> E} {Z : Ω -> E} {l : Filter ι}
+    {g : E -> F}
+    (h : TendstoInDistribution X l Z (fun _ => μ) μ)
+    (hg : Continuous g) :
+    TendstoInDistribution (fun i => g ∘ X i) l (g ∘ Z) (fun _ => μ) μ :=
+  durrett2019_theorem_3_2_10_continuous_mapping h hg
 
 /--
 Durrett early-chapter pi-system uniqueness shape.
