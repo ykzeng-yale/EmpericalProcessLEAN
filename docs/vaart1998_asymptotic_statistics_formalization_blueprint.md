@@ -543,8 +543,14 @@ Initial modules:
   `vaart1998_theorem_5_41_empiricalSecondDerivativeAction_opNorm_le_empiricalEnvelope`,
   and
   `vaart1998_theorem_5_41_curvatureOpBound_of_empiricalSecondDerivative_envelope`,
-  so the remaining critical path is the selected analytic Taylor witness/action
-  and the literal quadratic Taylor display it induces.
+  and the empirical Taylor-aggregation packet adds
+  `vaart1998_empiricalAverageVector_clm_apply`,
+  `vaart1998_empiricalAverageVector_bilinear_apply`,
+  `vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise`,
+  and
+  `vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise_ae`,
+  so the remaining critical path is the per-observation selected second-order
+  Taylor identity.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

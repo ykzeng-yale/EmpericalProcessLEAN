@@ -16,12 +16,16 @@ identity and measurability internally, and feeds the compiled Theorem 5.41
 probability handoff.  The empirical-Hessian envelope route now also supplies
 `vaart1998_theorem_5_41_curvatureOpBound_of_empiricalSecondDerivative_envelope`,
 which turns the textbook domination assumption into the `hCurvatureOpBound`
-field consumed by that frontier.
+field consumed by that frontier.  The empirical Taylor-display route now also
+supplies
+`vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise_ae`,
+which turns pointwise selected Taylor identities on each sampled observation
+into the a.e. empirical quadratic Taylor display.
 
 Next packet: instantiate the remaining source Taylor hypotheses.  Target the
-selected Taylor witness/action for `Psi_n(thetaHat_n)` and package the
-resulting literal quadratic Taylor display.  The auxiliary residual object and
-the empirical-Hessian dominated operator-norm bound are no longer blockers.
+per-observation selected second-order Taylor identity.  The auxiliary residual
+object, empirical-Hessian dominated operator-norm bound, and empirical
+aggregation of the Taylor display are no longer blockers.
 
 Search and reuse local/mathlib APIs first; do not revisit completed Chapter
 2-4 substrate, Gaussian endpoints, or general empirical-process plumbing except
@@ -755,14 +759,26 @@ compiling:
    `vaart1998_theorem_5_41_empiricalSecondDerivativeAction_opNorm_le_empiricalEnvelope`.
 273. Theorem 5.41 empirical second-derivative action operator-norm bound:
    `vaart1998_theorem_5_41_curvatureOpBound_of_empiricalSecondDerivative_envelope`.
+274. Empirical averages commute with applying continuous-linear-map-valued
+   statistics:
+   `vaart1998_empiricalAverageVector_clm_apply`.
+275. Empirical averages commute with applying bilinear operator-valued
+   statistics:
+   `vaart1998_empiricalAverageVector_bilinear_apply`.
+276. Theorem 5.41 empirical quadratic Taylor display from pointwise Taylor
+   identities:
+   `vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise`.
+277. Theorem 5.41 a.e. empirical quadratic Taylor display from pointwise
+   Taylor identities:
+   `vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise_ae`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 empirical Hessian envelope bound`).
+(`Add Vaart theorem 5.41 empirical Taylor aggregation`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by proving the finite-sample
-empirical-Hessian envelope bound and the sequence-level `hCurvatureOpBound`
-constructor consumed by the literal quadratic Taylor handoff.  The most
+asymptotic-normality route for Z-estimators by proving the empirical
+aggregation of pointwise selected Taylor identities into the a.e. quadratic
+Taylor display consumed by the literal quadratic Taylor handoff.  The most
 advanced handoff still derives the source Taylor equation from the root
 equation `Psi_n(thetaHat_n) = 0` and the Taylor expansion of
 `Psi_n(thetaHat_n)`, then performs the algebraic split
@@ -772,8 +788,8 @@ internally before applying the derivative and second-derivative residual
 bridge.
 
 The next aggressive packet should prove the remaining source Taylor fields:
-the selected analytic Taylor witness/action for `Psi_n(thetaHat_n)` and the
-literal quadratic Taylor display it induces.
+the per-observation selected second-order Taylor identity that feeds the
+empirical Taylor-display constructor.
 
 ## Execution Notes
 

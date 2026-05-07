@@ -1460,6 +1460,127 @@ theorem vaart1998_theorem_5_41_curvatureOpBound_of_empiricalSecondDerivative_env
       (envelope := envelope) hEnvelope_nonneg (hBound_n ω)
 
 /--
+Empirical averages commute with applying a continuous linear operator-valued
+statistic.
+-/
+theorem vaart1998_empiricalAverageVector_clm_apply
+    {Observation E F : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {n : ℕ} (sample : SampleAt Observation n)
+    (statistic : Observation -> E →L[ℝ] F) (x : E) :
+    (empiricalAverageVector sample statistic) x =
+      empiricalAverageVector sample (fun z => statistic z x) := by
+  simp [empiricalAverageVector]
+
+/--
+Empirical averages commute with applying a bilinear continuous-linear-map
+statistic to two arguments.
+-/
+theorem vaart1998_empiricalAverageVector_bilinear_apply
+    {Observation E F G : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [NormedAddCommGroup G] [NormedSpace ℝ G]
+    {n : ℕ} (sample : SampleAt Observation n)
+    (statistic : Observation -> E →L[ℝ] F →L[ℝ] G) (x : E) (y : F) :
+    (empiricalAverageVector sample statistic) x y =
+      empiricalAverageVector sample (fun z => statistic z x y) := by
+  rw [vaart1998_empiricalAverageVector_clm_apply
+    (sample := sample) (statistic := statistic) (x := x)]
+  rw [vaart1998_empiricalAverageVector_clm_apply
+    (sample := sample) (statistic := fun z => statistic z x) (x := y)]
+
+/--
+van der Vaart 1998, Theorem 5.41, empirical quadratic Taylor display from
+pointwise Taylor identities.
+
+If every sampled observation satisfies the selected second-order Taylor
+identity, then the empirical averages satisfy the literal quadratic Taylor
+display consumed by the current source handoff.
+-/
+theorem vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise
+    {Observation Score Θ : Type*}
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    {n : ℕ} (sample : SampleAt Observation n)
+    (scoreAtTheta0 estimatingAtEstimator : Observation -> Score)
+    (derivative : Observation -> Θ →L[ℝ] Score)
+    (secondDerivative : Observation -> Θ →L[ℝ] Θ →L[ℝ] Score)
+    (delta scaledEstimator : Θ)
+    (hPointwise : ∀ i : Fin n,
+      scoreAtTheta0 (sample i) + derivative (sample i) scaledEstimator +
+        (1 / 2 : ℝ) •
+          secondDerivative (sample i) delta scaledEstimator =
+        estimatingAtEstimator (sample i)) :
+    empiricalAverageVector sample scoreAtTheta0 +
+        (empiricalAverageVector sample derivative) scaledEstimator +
+        (1 / 2 : ℝ) •
+          (empiricalAverageVector sample secondDerivative) delta scaledEstimator =
+      empiricalAverageVector sample estimatingAtEstimator := by
+  rw [vaart1998_empiricalAverageVector_clm_apply
+    (sample := sample) (statistic := derivative) (x := scaledEstimator)]
+  rw [vaart1998_empiricalAverageVector_bilinear_apply
+    (sample := sample) (statistic := secondDerivative)
+    (x := delta) (y := scaledEstimator)]
+  have hsum :
+      ∑ i : Fin n,
+          (n : ℝ)⁻¹ •
+            (scoreAtTheta0 (sample i) +
+              derivative (sample i) scaledEstimator +
+              (1 / 2 : ℝ) •
+                secondDerivative (sample i) delta scaledEstimator) =
+        ∑ i : Fin n,
+          (n : ℝ)⁻¹ • estimatingAtEstimator (sample i) := by
+    exact Finset.sum_congr rfl fun i _hi => by rw [hPointwise i]
+  simpa [empiricalAverageVector, Finset.sum_add_distrib, Finset.smul_sum, smul_add,
+    smul_smul, mul_comm, mul_left_comm, mul_assoc] using hsum
+
+/--
+van der Vaart 1998, Theorem 5.41, a.e. empirical quadratic Taylor display from
+pointwise Taylor identities.
+
+This is the random-sequence version of
+`vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise`.
+-/
+theorem vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise_ae
+    {Ω Observation Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scoreAtTheta0 estimatingAtEstimator : ℕ -> Ω -> Observation -> Score)
+    (derivative : ℕ -> Ω -> Observation -> Θ →L[ℝ] Score)
+    (secondDerivative : ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] Score)
+    (delta scaledEstimator : ℕ -> Ω -> Θ)
+    (hPointwise : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) +
+            derivative n ω (samples n ω i) (scaledEstimator n ω) +
+            (1 / 2 : ℝ) •
+              secondDerivative n ω (samples n ω i)
+                (delta n ω) (scaledEstimator n ω) =
+          estimatingAtEstimator n ω (samples n ω i)) :
+    ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω) +
+            (empiricalAverageVector (samples n ω) (derivative n ω))
+              (scaledEstimator n ω) +
+            (1 / 2 : ℝ) •
+              (empiricalAverageVector (samples n ω) (secondDerivative n ω))
+                (delta n ω) (scaledEstimator n ω) =
+          empiricalAverageVector (samples n ω)
+            (estimatingAtEstimator n ω) := by
+  intro n
+  exact (hPointwise n).mono fun ω hω =>
+    vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise
+      (sample := samples n ω)
+      (scoreAtTheta0 := scoreAtTheta0 n ω)
+      (estimatingAtEstimator := estimatingAtEstimator n ω)
+      (derivative := derivative n ω)
+      (secondDerivative := secondDerivative n ω)
+      (delta := delta n ω) (scaledEstimator := scaledEstimator n ω) hω
+
+/--
 van der Vaart 1998, Theorem 5.41, scalar-small times stochastically bounded
 input is negligible.
 

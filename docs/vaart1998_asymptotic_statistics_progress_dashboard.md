@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 empirical Hessian envelope bound`).
+(`Add Vaart theorem 5.41 empirical Taylor aggregation`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -630,10 +630,10 @@ Live continuation prompt: use the compact prompt in
 ## Next Aggressive Target
 
 Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41 in
-`MEstimators.lean`: construct the selected analytic Taylor witness/action for
-`Psi_n(thetaHat_n)` and package the literal quadratic Taylor display it
-induces.  The auxiliary quadratic residual object and the empirical-Hessian
-dominated operator-norm bound are no longer blockers.
+`MEstimators.lean`: prove the per-observation selected second-order Taylor
+identity.  The auxiliary quadratic residual object, the empirical-Hessian
+dominated operator-norm bound, and the empirical aggregation of the Taylor
+display are no longer blockers.
 
 ## Reuse Dependencies
 
