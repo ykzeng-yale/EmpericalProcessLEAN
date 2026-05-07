@@ -280,9 +280,13 @@ Chapter 4 handoff:
 - Theorem 4.1 covariance-table endpoint consuming vector-valued source fields
   plus Gaussian/covariance source fields directly:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_vectorGaussianSource_real`.
+- Coordinatewise `MemLp 2` source constructor for the finite-coordinate sample
+  vector and projected summand CLT:
+  `vaart1998_finiteCoordinateSampleVector_memLp_of_coordinate_memLp` and
+  `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_vectorGaussianSource`.
 
-Latest remote base before this packet: `12abb81`.  Latest pushed Vaart packet
-before this packet: `12abb81` (`Add Vaart projected summand Gaussian source bridge`).
+Latest remote base before this packet: `3890497`.  Latest pushed Vaart packet
+before this packet: `3890497` (`Add Vaart theorem 4.1 vector Gaussian endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -305,11 +309,13 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. prove
-   coordinate-assumption-to-vector-source constructors for `MemLp`,
-   `iIndepFun`, and `IdentDistrib`.
-2. then reduce duplicated coordinate-level LLN assumptions in the direct
-   Theorem 4.1 source endpoint only when a compiled constructor is available.
+1. add a Theorem 4.1 covariance-table endpoint variant that consumes
+   coordinatewise `MemLp 2` instead of separate `hX_integrable` and
+   `hX_vector_memLp` fields;
+2. then prove joint/vector-source constructors for `iIndepFun` and
+   `IdentDistrib` from appropriately strong joint law assumptions.  Do not
+   claim that coordinatewise pairwise independence alone implies vector
+   independence.
 
 If this blocks, record the exact missing theorem shape for the supplied
 empirical-moment CLT, covariance-display, or local-inverse measurability field

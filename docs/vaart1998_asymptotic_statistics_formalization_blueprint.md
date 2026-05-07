@@ -254,7 +254,10 @@ Initial modules:
   covarianceBilinDual variance identification.  The endpoint
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_vectorGaussianSource_real`
   consumes those vector-Gaussian source fields directly at the covariance-table
-  Theorem 4.1 boundary.
+  Theorem 4.1 boundary.  The coordinate-`MemLp` source wrapper
+  `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_vectorGaussianSource`
+  now derives the finite-coordinate sample-vector `MemLp` field and the
+  coordinatewise integrability field from coordinatewise `MemLp 2`.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

@@ -24,7 +24,7 @@ namespace StatInference
 namespace AsymptoticStatistics
 
 open Filter MeasureTheory ProbabilityTheory
-open scoped BigOperators Real Topology
+open scoped BigOperators ENNReal Real Topology
 
 universe u v w x
 
@@ -925,6 +925,19 @@ noncomputable def vaart1998_finiteCoordinateSampleVector
   fun coordinate => X coordinate i ω
 
 /--
+The finite-coordinate sample vector is `MemLp` when each coordinate is.
+-/
+theorem vaart1998_finiteCoordinateSampleVector_memLp_of_coordinate_memLp
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : Coordinate -> ℕ -> Ω -> ℝ}
+    {p : ℝ≥0∞} (i : ℕ)
+    (hX_memLp : ∀ coordinate, MemLp (X coordinate i) p P) :
+    MemLp (vaart1998_finiteCoordinateSampleVector X i) p P := by
+  simpa [vaart1998_finiteCoordinateSampleVector] using
+    (MemLp.of_eval (f := fun ω : Ω => fun coordinate : Coordinate =>
+      X coordinate i ω) hX_memLp)
+
+/--
 Scalar summand obtained by testing one finite-coordinate sample vector with a
 continuous linear functional.
 -/
@@ -1405,6 +1418,45 @@ theorem vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorGaussi
         (hZ_mean := hZ_mean) (hZ_covariance := hZ_covariance))
     (hX_memLp := hX_memLp) (hX_indep := hX_indep)
     (hX_ident := hX_ident)
+
+/--
+Coordinatewise `MemLp 2` supplies both integrability and vector `MemLp` for the
+vector-Gaussian projected summand CLT source wrapper.
+-/
+theorem vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_vectorGaussianSource
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_coordinate_memLp : ∀ coordinate, MemLp (X coordinate 0) 2 P)
+    (hZ_gaussian : HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      Q[fun ω => L (Z ω)] = 0)
+    (hZ_covariance : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        Var[vaart1998_finiteCoordinateProjectedSample L X 0; P])
+    (hX_indep : iIndepFun (fun i => vaart1998_finiteCoordinateSampleVector X i) P)
+    (hX_ident : ∀ i : ℕ,
+      IdentDistrib
+        (vaart1998_finiteCoordinateSampleVector X i)
+        (vaart1998_finiteCoordinateSampleVector X 0) P P) :
+    vaart1998_finiteCoordinateProjectedSummandCLT (P := P) (Q := Q) X Z :=
+  vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_vectorGaussianSource
+    (P := P) (Q := Q) (X := X) (Z := Z)
+    (hX_integrable := fun coordinate =>
+      (hX_coordinate_memLp coordinate).integrable (by norm_num))
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (hZ_mean := hZ_mean) (hZ_covariance := hZ_covariance)
+    (hX_memLp :=
+      vaart1998_finiteCoordinateSampleVector_memLp_of_coordinate_memLp
+        (P := P) (X := X) 0 hX_coordinate_memLp)
+    (hX_indep := hX_indep) (hX_ident := hX_ident)
 
 /--
 The scalar projected CLT family feeds the projected vector CLT family by

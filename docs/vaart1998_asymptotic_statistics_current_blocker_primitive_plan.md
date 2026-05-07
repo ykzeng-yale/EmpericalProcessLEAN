@@ -429,25 +429,31 @@ Chapter 3 theorem-facing wrappers compiling:
 140. Theorem 4.1 finite-coordinate covariance-table endpoint consuming the
    vector-Gaussian source wrapper directly:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_vectorGaussianSource_real`.
+141. Finite-coordinate sample-vector `MemLp` from coordinatewise `MemLp`:
+   `vaart1998_finiteCoordinateSampleVector_memLp_of_coordinate_memLp`.
+142. Projected summand CLT source wrapper using coordinatewise `MemLp 2` to
+   discharge both finite-coordinate integrability and vector `MemLp`:
+   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_vectorGaussianSource`.
 
-Latest remote base before this packet: `12abb81`.
-Latest pushed Vaart packet before this packet: `12abb81`
-(`Add Vaart projected summand Gaussian source bridge`).
+Latest remote base before this packet: `3890497`.
+Latest pushed Vaart packet before this packet: `3890497`
+(`Add Vaart theorem 4.1 vector Gaussian endpoint`).
 
-The current theorem-sized packet exposes the vector-Gaussian source wrapper at
-the Theorem 4.1 covariance-table endpoint.  Callers can now supply
-finite-coordinate vector source fields plus Gaussian/covariance source fields
-directly, instead of constructing `hsummand` or projected scalar `HasLaw`
-families by hand.
+The current theorem-sized packet starts discharging the remaining vector-source
+fields from coordinate assumptions.  Coordinatewise `MemLp 2` now produces the
+finite-coordinate sample-vector `MemLp` field and also supplies the
+coordinatewise integrability required by the mean and LLN layers.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. prove
-   coordinate-assumption-to-vector-source constructors for `MemLp`,
-   `iIndepFun`, and `IdentDistrib`.
-2. then reduce duplicated coordinate-level LLN assumptions in the direct
-   Theorem 4.1 source endpoint only when a compiled constructor is available.
+1. add a Theorem 4.1 covariance-table endpoint variant that consumes
+   coordinatewise `MemLp 2` instead of separate `hX_integrable` and
+   `hX_vector_memLp` fields;
+2. then prove joint/vector-source constructors for `iIndepFun` and
+   `IdentDistrib` from appropriately strong joint law assumptions.  Do not
+   claim that coordinatewise pairwise independence alone implies vector
+   independence.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
