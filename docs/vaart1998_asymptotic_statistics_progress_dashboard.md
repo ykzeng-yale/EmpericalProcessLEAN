@@ -571,9 +571,15 @@ Chapter 4 handoff:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero`
   converts the textbook display `score + V scaledEstimator + residual = 0`
   into the score equation consumed by the inverse-derivative handoff.
+- Chapter 5.41 separated-residual bridge:
+  `vaart1998_theorem_5_41_scoreResidual_add_tendstoInMeasure` proves that the
+  sum of two Score-space `o_P(1)` residuals is still `o_P(1)`, and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_twoResiduals`
+  consumes the four-term Taylor display with separate derivative and
+  second-derivative residuals.
 
-Latest verified repository base before this packet: `cbe02d4`
-(`Add Vaart theorem 5.41 score equation bridge`).
+Latest verified repository base before this packet: `9b67bbd`
+(`Add Durrett scalar Taylor bound bridge`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -594,11 +600,10 @@ verify again before push.
 ## Next Aggressive Target
 
 Discharge the source-shaped Taylor/LLN inputs for Vaart Theorem 5.41: prove
-that derivative LLN plus the dominated second-derivative Taylor term produce a
-Score-valued residual `residual_n = o_P(1)` and the a.e. Taylor zero display
-consumed by the compiled Taylor-zero bridge.  Keep Gaussian-law preservation as
-a separate lightweight packet or in a module that already imports Gaussian
-APIs.
+the derivative LLN residual and the dominated second-derivative Taylor residual
+are separately `o_P(1)`, and prove the four-term Taylor zero display consumed
+by the compiled separated-residual bridge.  Keep Gaussian-law preservation as a
+separate lightweight packet or in a module that already imports Gaussian APIs.
 
 ## Reuse Dependencies
 

@@ -1354,6 +1354,78 @@ theorem vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_vector_o
     h_uniform_outer h_approx_outer h_zero h_separated
 
 /--
+van der Vaart 1998, Theorem 5.41, addition of negligible Score-space
+residuals.
+
+The Taylor proof separates the derivative LLN error from the second-derivative
+remainder.  This lemma packages the elementary probabilistic step that the sum
+of two `o_P(1)` Score-valued residuals is still `o_P(1)`.
+-/
+theorem vaart1998_theorem_5_41_scoreResidual_add_tendstoInMeasure
+    {Ω Score : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsFiniteMeasure P] [NormedAddCommGroup Score]
+    {residual₁ residual₂ : ℕ -> Ω -> Score}
+    (hResidual₁ : TendstoInMeasure P residual₁ atTop 0)
+    (hResidual₂ : TendstoInMeasure P residual₂ atTop 0) :
+    TendstoInMeasure P
+      (fun (n : ℕ) ω => residual₁ n ω + residual₂ n ω) atTop 0 := by
+  rw [MeasureTheory.tendstoInMeasure_iff_measureReal_norm]
+  intro ε hε
+  have hhalf_pos : 0 < ε / 2 := by linarith
+  have htail₁ :
+      Tendsto
+        (fun n : ℕ => P.real {ω : Ω | ε / 2 ≤ ‖residual₁ n ω - 0‖})
+        atTop (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm.mp hResidual₁)
+      (ε / 2) hhalf_pos
+  have htail₂ :
+      Tendsto
+        (fun n : ℕ => P.real {ω : Ω | ε / 2 ≤ ‖residual₂ n ω - 0‖})
+        atTop (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm.mp hResidual₂)
+      (ε / 2) hhalf_pos
+  have htail_sum :
+      Tendsto
+        (fun n : ℕ =>
+          P.real {ω : Ω | ε / 2 ≤ ‖residual₁ n ω - 0‖} +
+            P.real {ω : Ω | ε / 2 ≤ ‖residual₂ n ω - 0‖})
+        atTop (𝓝 0) := by
+    simpa using htail₁.add htail₂
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
+    htail_sum ?_ ?_
+  · intro n
+    exact measureReal_nonneg
+  · intro n
+    have hsubset :
+        {ω : Ω | ε ≤ ‖(residual₁ n ω + residual₂ n ω) - 0‖} ⊆
+          {ω : Ω | ε / 2 ≤ ‖residual₁ n ω - 0‖} ∪
+            {ω : Ω | ε / 2 ≤ ‖residual₂ n ω - 0‖} := by
+      intro ω hω
+      by_cases h₁ : ε / 2 ≤ ‖residual₁ n ω - 0‖
+      · exact Or.inl h₁
+      · right
+        by_contra h₂
+        have h₁lt : ‖residual₁ n ω‖ < ε / 2 := by
+          simpa [sub_zero] using not_le.mp h₁
+        have h₂lt : ‖residual₂ n ω‖ < ε / 2 := by
+          have h₂' : ¬ ε / 2 ≤ ‖residual₂ n ω - 0‖ := h₂
+          simpa [sub_zero] using not_le.mp h₂'
+        have hnorm_le :
+            ‖residual₁ n ω + residual₂ n ω‖ ≤
+              ‖residual₁ n ω‖ + ‖residual₂ n ω‖ :=
+          norm_add_le _ _
+        have hnorm_lt : ‖residual₁ n ω + residual₂ n ω‖ < ε := by
+          exact lt_of_le_of_lt hnorm_le (by linarith)
+        have hbig : ε ≤ ‖residual₁ n ω + residual₂ n ω‖ := by
+          simpa [sub_zero] using hω
+        exact not_lt_of_ge hbig hnorm_lt
+    exact
+      (measureReal_mono hsubset).trans
+        (measureReal_union_le
+          {ω : Ω | ε / 2 ≤ ‖residual₁ n ω - 0‖}
+          {ω : Ω | ε / 2 ≤ ‖residual₂ n ω - 0‖})
+
+/--
 van der Vaart 1998, Theorem 5.41, inverse-derivative preservation of
 negligible score residuals.
 
@@ -1623,6 +1695,59 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero
       (P := P) (Q := Q) (V := V) (Vinv := Vinv) (score := score)
       (residual := residual) (scaledEstimator := scaledEstimator) (Z := Z)
       hLeftInverse hScoreCLT hResidual hResidual_meas hScoreEquation
+
+/--
+van der Vaart 1998, Theorem 5.41, Taylor-zero handoff with separated
+residuals.
+
+This is the form closest to the proof: derivative LLN and the dominated
+second-derivative Taylor term produce two negligible Score-valued residuals.
+Their sum is then fed into the compiled Taylor-zero bridge.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_twoResiduals
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {score derivativeResidual secondResidual : ℕ -> Ω -> Score}
+    {scaledEstimator : ℕ -> Ω -> Θ} {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hDerivativeResidual : TendstoInMeasure P derivativeResidual atTop 0)
+    (hSecondResidual : TendstoInMeasure P secondResidual atTop 0)
+    (hDerivativeResidual_meas : ∀ n, AEMeasurable (derivativeResidual n) P)
+    (hSecondResidual_meas : ∀ n, AEMeasurable (secondResidual n) P)
+    (hTaylorZero : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + V (scaledEstimator n ω) + derivativeResidual n ω +
+          secondResidual n ω = 0) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  let residual : ℕ -> Ω -> Score :=
+    fun n ω => derivativeResidual n ω + secondResidual n ω
+  have hResidual : TendstoInMeasure P residual atTop 0 :=
+    vaart1998_theorem_5_41_scoreResidual_add_tendstoInMeasure
+      (P := P) hDerivativeResidual hSecondResidual
+  have hResidual_meas : ∀ n, AEMeasurable (residual n) P := by
+    intro n
+    exact (hDerivativeResidual_meas n).add (hSecondResidual_meas n)
+  have hTaylorZero_sum : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + V (scaledEstimator n ω) + residual n ω = 0 := by
+    intro n
+    exact (hTaylorZero n).mono fun ω hω => by
+      simpa [residual, add_assoc, add_comm, add_left_comm] using hω
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv) (score := score)
+      (residual := residual) (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hScoreCLT hResidual hResidual_meas hTaylorZero_sum
 
 end AsymptoticStatistics
 end StatInference

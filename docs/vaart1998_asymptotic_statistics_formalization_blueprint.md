@@ -499,7 +499,11 @@ Initial modules:
   Taylor-zero bridge
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero`
   further accepts the source display
-  `score + V scaledEstimator + residual = 0` directly.
+  `score + V scaledEstimator + residual = 0` directly.  The separated-residual
+  layer adds `vaart1998_theorem_5_41_scoreResidual_add_tendstoInMeasure` and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_twoResiduals`,
+  reducing the next source obligations to derivative and second-derivative
+  residuals proved negligible separately.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

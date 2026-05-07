@@ -768,22 +768,28 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreEquation`.
 250. Theorem 5.41 scaled-estimator handoff from the Taylor zero display:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero`.
+251. Theorem 5.41 addition of negligible Score-space residuals:
+   `vaart1998_theorem_5_41_scoreResidual_add_tendstoInMeasure`.
+252. Theorem 5.41 Taylor-zero handoff with separated derivative and
+   second-derivative residuals:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_twoResiduals`.
 
-Latest verified repository base before this packet: `cbe02d4`
-(`Add Vaart theorem 5.41 score equation bridge`).
+Latest verified repository base before this packet: `9b67bbd`
+(`Add Durrett scalar Taylor bound bridge`).
 
 The current theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators.  It packages the additive algebra
-from the textbook Taylor display
-`score + V scaledEstimator + residual = 0` to the score equation consumed by
-the compiled inverse-derivative handoff.
+asymptotic-normality route for Z-estimators.  It packages the probabilistic
+addition step that combines the derivative LLN residual and the
+second-derivative Taylor residual into one Score-space `o_P(1)` residual, then
+feeds the compiled Taylor-zero handoff.
 
 The next aggressive packet should discharge the source-shaped Taylor/LLN
-inputs for Theorem 5.41: prove that the derivative LLN and bounded
-second-derivative Taylor term produce a Score-valued residual `residual_n =
-o_P(1)` and the a.e. Taylor zero display
+inputs for Theorem 5.41: separately prove the derivative LLN residual and the
+bounded second-derivative Taylor residual are `o_P(1)`, and prove the a.e.
+four-term Taylor zero display
 `sqrt n Psi_n(theta0)
- + (P dot psi_theta0) (sqrt n (thetaHat_n - theta0)) + residual_n = 0`.
+ + (P dot psi_theta0) (sqrt n (thetaHat_n - theta0))
+ + derivativeResidual_n + secondResidual_n = 0`.
 Keep Gaussian-law preservation in a Gaussian-bearing module or as a separate
 lightweight packet so `MEstimators.lean` remains fast to verify.
 
