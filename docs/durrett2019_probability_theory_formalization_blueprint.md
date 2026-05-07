@@ -192,6 +192,10 @@ Compiled first source wrappers:
 - Durrett Theorem 2.4.9 cutpoint-chain splitting handoff:
   `SuppliedRealMiddleCDFPartitionChain.append` and
   `durrett2019_theorem_2_4_9_cutpointChain_append`.
+- Durrett Theorem 2.4.9 inserted-subcell punctured-cover handoff:
+  `cdf_leftLim_sub_lt_of_Ioo_subset_punctured_cover`,
+  `cdf_leftLim_sub_lt_of_subdivision_punctured_cover_subinterval`, and
+  `durrett2019_theorem_2_4_9_cdfIncrement_of_subdivision_punctured_cover_subinterval`.
 - Durrett Theorem 2.4.9 strict-subdivision-prefix handoff:
   `SuppliedRealMiddleCDFPartitionChain.of_strict_subdivision_prefix_closed_cover`
   and

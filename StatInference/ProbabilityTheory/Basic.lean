@@ -800,6 +800,32 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_append
   _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.append left right
 
 /--
+Durrett 2019, Theorem 2.4.9 punctured-cover subinterval CDF-increment bridge.
+
+After a finite atom center has been inserted as a cutpoint, each strict
+subinterval of the original subdivision cell inherits the original punctured
+cover assignment and has small CDF left-limit increment once it avoids the
+selected center.
+-/
+theorem durrett2019_theorem_2_4_9_cdfIncrement_of_subdivision_punctured_cover_subinterval
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b u v : ℝ} {t : ℕ -> Set.Icc a b} {n : ℕ}
+    (huv : u < v)
+    (hleft : (t n : ℝ) ≤ u)
+    (hright : v ≤ (t (n + 1) : ℝ))
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine :
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        x ∉ Set.Ioo u v ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    Function.leftLim (ProbabilityTheory.cdf P) v -
+      ProbabilityTheory.cdf P u < epsilon :=
+  _root_.StatInference.cdf_leftLim_sub_lt_of_subdivision_punctured_cover_subinterval
+    huv hleft hright hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9 strict-subdivision-prefix package.
 
 After repeated values have been erased from the monotone subdivision, a strict

@@ -1301,6 +1301,62 @@ theorem cdf_leftLim_sub_lt_of_subdivision_closed_cover_cell
   exact hmeasure
 
 /--
+If an open real interval is contained in a small punctured cover interval, then
+its CDF left-limit increment is small.
+-/
+theorem cdf_leftLim_sub_lt_of_Ioo_subset_punctured_cover
+    {μ : Measure ℝ} [IsProbabilityMeasure μ]
+    {epsilon u v x left right : ℝ}
+    (huv : u < v)
+    (hsubset : Set.Ioo u v ⊆ Set.Ioo left right \ ({x} : Set ℝ))
+    (hsmall : μ.real (Set.Ioo left right \ ({x} : Set ℝ)) < epsilon) :
+    Function.leftLim (ProbabilityTheory.cdf μ) v -
+      ProbabilityTheory.cdf μ u < epsilon := by
+  have hmeasure : μ.real (Set.Ioo u v) < epsilon :=
+    (measureReal_mono hsubset).trans_lt hsmall
+  rw [← measureReal_Ioo_eq_cdf_leftLim_sub μ huv]
+  exact hmeasure
+
+/--
+A strict subinterval of one closed subdivision cell has small CDF left-limit
+increment when the larger cell refines a selected punctured cover interval and
+the subinterval avoids the selected center.
+
+This is the local bridge needed after inserting finite atom centers into a
+monotone subdivision: each smaller piece inherits the original cover
+assignment, while center avoidance is proved from the inserted endpoints.
+-/
+theorem cdf_leftLim_sub_lt_of_subdivision_punctured_cover_subinterval
+    {μ : Measure ℝ} [IsProbabilityMeasure μ]
+    {epsilon a b u v : ℝ} {t : ℕ -> Set.Icc a b} {n : ℕ}
+    (huv : u < v)
+    (hleft : (t n : ℝ) ≤ u)
+    (hright : v ≤ (t (n + 1) : ℝ))
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine :
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        x ∉ Set.Ioo u v ∧
+        μ.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    Function.leftLim (ProbabilityTheory.cdf μ) v -
+      ProbabilityTheory.cdf μ u < epsilon := by
+  rcases hrefine with ⟨x, _hx, hclosed, havoid, hsmall⟩
+  refine cdf_leftLim_sub_lt_of_Ioo_subset_punctured_cover huv ?_ hsmall
+  intro z hz
+  have hz_left : (t n : ℝ) ≤ z := hleft.trans hz.1.le
+  have hz_right : z ≤ (t (n + 1) : ℝ) := hz.2.le.trans hright
+  have hzab : z ∈ Set.Icc a b :=
+    ⟨(t n).2.1.trans hz_left, hz_right.trans (t (n + 1)).2.2⟩
+  have hzsub :
+      (⟨z, hzab⟩ : Set.Icc a b) ∈ Set.Icc (t n) (t (n + 1)) :=
+    ⟨hz_left, hz_right⟩
+  refine ⟨hclosed hzsub, ?_⟩
+  intro hzsingleton
+  have hzx : z = x := Set.mem_singleton_iff.mp hzsingleton
+  exact havoid (by simpa [hzx] using hz)
+
+/--
 One strict adjacent cell of a monotone subdivision has small CDF left-limit
 increment when its closed cell refines a selected open neighborhood and the
 selected center is itself a subdivision value.
