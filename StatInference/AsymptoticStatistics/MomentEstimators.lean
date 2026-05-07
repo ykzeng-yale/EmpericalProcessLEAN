@@ -4367,6 +4367,80 @@ theorem vaart1998_finiteCoordinateLocalInverseSelectedEstimator_eq_on_target_rea
   simp [vaart1998_finiteCoordinateLocalInverseSelectedEstimator, htarget]
 
 /--
+The canonical selected estimator lies in the inverse-function-theorem source
+with probability tending to one.
+-/
+theorem vaart1998_finiteCoordinateLocalInverseSelectedEstimator_mem_source_of_targetProbabilityLocalization_real
+    {Coordinate Ω Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (fallback : Θ)
+    (targetProbability :
+      Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+        Coordinate Ω Θ P e theta0 De he X) :
+    Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          vaart1998_finiteCoordinateLocalInverseSelectedEstimator
+              e De he X fallback n ω ∈
+            (he.toOpenPartialHomeomorph e).source})
+        atTop (𝓝 1) :=
+  vaart1998_probability_tending_to_one_of_subset
+    targetProbability.empiricalMoment_mem_target_probability
+    (fun n => by
+      intro ω htarget
+      have hEq :=
+        vaart1998_finiteCoordinateLocalInverseSelectedEstimator_eq_on_target_real
+          e De he X fallback n htarget
+      have hmem :
+          he.localInverse e De theta0
+              (vaart1998_finiteCoordinateEmpiricalMoment X n ω) ∈
+            (he.toOpenPartialHomeomorph e).source := by
+        simpa [HasStrictFDerivAt.localInverse_def] using
+          (he.toOpenPartialHomeomorph e).map_target htarget
+      simpa [hEq] using hmem)
+
+/--
+The canonical selected estimator solves the empirical moment equation with
+probability tending to one.
+-/
+theorem vaart1998_finiteCoordinateLocalInverseSelectedEstimator_solves_momentEquation_with_probability_of_targetProbabilityLocalization_real
+    {Coordinate Ω Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (fallback : Θ)
+    (targetProbability :
+      Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+        Coordinate Ω Θ P e theta0 De he X) :
+    Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e (vaart1998_finiteCoordinateLocalInverseSelectedEstimator
+              e De he X fallback n ω) =
+            vaart1998_finiteCoordinateEmpiricalMoment X n ω})
+        atTop (𝓝 1) :=
+  vaart1998_probability_tending_to_one_of_subset
+    targetProbability.empiricalMoment_mem_target_probability
+    (fun n => by
+      intro ω htarget
+      have hEq :=
+        vaart1998_finiteCoordinateLocalInverseSelectedEstimator_eq_on_target_real
+          e De he X fallback n htarget
+      have hsolve :
+          e (he.localInverse e De theta0
+              (vaart1998_finiteCoordinateEmpiricalMoment X n ω)) =
+            vaart1998_finiteCoordinateEmpiricalMoment X n ω := by
+        simpa [HasStrictFDerivAt.localInverse_def] using
+          (he.toOpenPartialHomeomorph e).right_inv htarget
+      simpa [hEq] using hsolve)
+
+/--
 Finite-coordinate Theorem 4.1 endpoint for the canonical selected estimator
 with a fixed fallback outside the inverse-function-theorem target event.
 -/

@@ -659,22 +659,25 @@ Chapter 3 theorem-facing wrappers compiling:
 214. Canonical vector-law/covariance source endpoint for the actual
    fallback-selected estimator:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`.
+215. Source-neighborhood probability for the canonical selected estimator:
+   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_mem_source_of_targetProbabilityLocalization_real`.
+216. Moment-equation solving probability for the canonical selected estimator:
+   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_solves_momentEquation_with_probability_of_targetProbabilityLocalization_real`.
 
-Latest remote base before this packet: `aace67e`.
-Latest pushed Vaart packet before this packet: `aace67e`
-(`Add Vaart selected estimator covariance table wrappers`).
+Latest remote base before this packet: `41698a9`.
+Latest pushed Vaart packet before this packet: `aad7833`
+(`Add Vaart selected estimator canonical source wrapper`).
 
-The current theorem-sized packet builds the target-probability localization
-certificate from the canonical product strong law, builds the finite-coordinate
-empirical-moment CLT certificate from the vector-law Gaussian/covariance source
-fields, and concludes the final covariance table under the common vector law
-`ν` for the actual fallback-selected estimator.
+The current theorem-sized packet adds the source-neighborhood and
+moment-equation solving probability consumers for the actual fallback-selected
+estimator.  Both are event-subset consequences of target-probability
+localization: on the target event the selected estimator is the local inverse.
 
-The next aggressive packet should either package the same selected-estimator
-source endpoint behind a smaller named source certificate, or move to the next
-Chapter 4.1 cleanup: parameter-domain membership/probability statements for
-the fallback-selected estimator.  Keep probability-tending-to-one target
-localization separate from per-`n` a.e. localization.
+The next aggressive packet should package the selected-estimator Chapter 4.1
+source route behind a smaller named source certificate, bundling the canonical
+source-neighborhood, moment-equation, weak-limit, Gaussian, and covariance-table
+conclusions.  Keep probability-tending-to-one target localization separate
+from per-`n` a.e. localization.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

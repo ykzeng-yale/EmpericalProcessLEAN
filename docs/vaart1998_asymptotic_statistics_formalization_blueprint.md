@@ -434,6 +434,12 @@ Initial modules:
   now builds the target-probability localization and CLT certificate
   internally and states the final covariance table under the common vector law
   for the actual fallback-selected estimator.
+  The selected-estimator source-neighborhood and solving-probability consumers
+  `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_mem_source_of_targetProbabilityLocalization_real`
+  and
+  `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_solves_momentEquation_with_probability_of_targetProbabilityLocalization_real`
+  move the remaining Chapter 4.1 existence/probability statements from the raw
+  local-inverse candidate to the actual fallback-selected estimator.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

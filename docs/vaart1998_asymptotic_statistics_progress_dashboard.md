@@ -471,10 +471,16 @@ Chapter 4 handoff:
   builds both the target-probability localization certificate and the
   empirical-moment CLT certificate internally, then displays the final
   covariance table under the common vector law `ν`.
+- Selected-estimator source-neighborhood and solving-probability consumers:
+  `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_mem_source_of_targetProbabilityLocalization_real`
+  and
+  `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_solves_momentEquation_with_probability_of_targetProbabilityLocalization_real`
+  transfer the target-probability localization event to the actual
+  fallback-selected estimator.
 
-Latest remote base before this packet: `aace67e`.  Latest pushed Vaart packet
-before this packet: `aace67e`
-(`Add Vaart selected estimator covariance table wrappers`).
+Latest remote base before this packet: `41698a9`.  Latest pushed Vaart packet
+before this packet: `aad7833`
+(`Add Vaart selected estimator canonical source wrapper`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .../MomentEstimators.olean -i .../MomentEstimators.ilean`
@@ -486,10 +492,9 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 by either packaging the selected-estimator source
-endpoint behind a smaller named source certificate or proving the
-parameter-domain membership/probability statements for the fallback-selected
-estimator.
+Continue Vaart Chapter 4.1 by packaging the selected-estimator source route
+behind a smaller named source certificate, bundling the source-neighborhood,
+moment-equation, weak-limit, Gaussian, and covariance-table conclusions.
 
 ## Reuse Dependencies
 
