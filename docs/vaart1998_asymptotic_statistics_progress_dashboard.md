@@ -335,10 +335,17 @@ Chapter 4 handoff:
   all projected zero means from `(Q.map Z)[id] = 0`, and
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawSource_real`
   exposes that mean-zero vector-law source at the Theorem 4.1 endpoint.
+- Canonical vector-law covariance-table endpoint:
+  `vaart1998_continuousBilinearMap_eq_of_diagonal` and
+  `vaart1998_covarianceBilinDual_eq_of_diagonal_variance` turn diagonal
+  projected-variance identities into full off-diagonal covariance identities,
+  and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSource_real`
+  states the final covariance table under the common vector law `ν`.
 
-Latest remote base before this packet: `923f3be`.  Latest pushed Vaart packet
-before this packet: `923f3be`
-(`Add Vaart canonical vector law endpoint`).
+Latest remote base before this packet: `2c1a160`.  Latest pushed Vaart packet
+before this packet: `11a07e3`
+(`Add Vaart canonical mean vector law endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -357,11 +364,11 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. search for a real covarianceBilinDual polarization/off-diagonal API that can
-   turn diagonal variance identities into full covariance-table identities when
-   needed;
-2. attack the remaining inverse-function target event only through a real
+1. attack the remaining inverse-function target event only through a real
    local-inverse/measurability theorem or keep it as a named source certificate;
+2. package coordinate evaluation measurability and coordinate `MemLp` as a
+   reusable vector-law source certificate if that removes repeated caller-side
+   fields;
 3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 

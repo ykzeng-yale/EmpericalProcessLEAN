@@ -522,27 +522,37 @@ Chapter 3 theorem-facing wrappers compiling:
 166. Canonical iid product-space Theorem 4.1 covariance-table endpoint with
    the Gaussian limit mean-zero hypothesis stated as `(Q.map Z)[id] = 0`:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawSource_real`.
+167. Symmetric continuous bilinear forms are determined by their diagonal
+   quadratic forms:
+   `vaart1998_continuousBilinearMap_eq_of_diagonal`.
+168. CovarianceBilinDual off-diagonal polarization bridge from projected
+   variance identities:
+   `vaart1998_covarianceBilinDual_eq_of_diagonal_variance`.
+169. Canonical iid product-space Theorem 4.1 covariance-table endpoint whose
+   final covariance display is stated under the common vector law `ν`:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSource_real`.
 
-Latest remote base before this packet: `923f3be`.
-Latest pushed Vaart packet before this packet: `923f3be`
-(`Add Vaart canonical vector law endpoint`).
+Latest remote base before this packet: `2c1a160`.
+Latest pushed Vaart packet before this packet: `11a07e3`
+(`Add Vaart canonical mean vector law endpoint`).
 
-The current theorem-sized packet removes the per-projection zero-mean field
-from the newest canonical endpoint.  Mean zero of the Gaussian vector law,
-`(Q.map Z)[id] = 0`, now implies `Q[fun ω => L (Z ω)] = 0` for every continuous
-linear functional `L`, using the `MemLp id 2 (Q.map Z)` field for integrability.
-The remaining non-sample-space source hypotheses are now Gaussian limit law,
-inverse-function target event, coordinate evaluation measurability, and
-coordinate-projection `MemLp` under the vector law.
+The current theorem-sized packet removes the last covariance-table plumbing
+obstacle from the canonical Chapter 4.1 endpoint.  A real polarization lemma
+now turns diagonal projected-variance identities into full off-diagonal
+`covarianceBilinDual` identities, and the newest canonical endpoint reports the
+final covariance table using the common vector law `ν` directly.  The remaining
+non-sample-space source hypotheses are now Gaussian limit law, inverse-function
+target event, coordinate evaluation measurability, and coordinate-projection
+`MemLp` under the vector law.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. search for a real covarianceBilinDual polarization/off-diagonal API that can
-   turn diagonal variance identities into full covariance-table identities when
-   needed;
-2. attack the remaining inverse-function target event only through a real
+1. attack the remaining inverse-function target event only through a real
    local-inverse/measurability theorem or keep it as a named source certificate;
+2. package coordinate evaluation measurability and coordinate `MemLp` as a
+   reusable vector-law source certificate if that removes repeated caller-side
+   fields;
 3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 

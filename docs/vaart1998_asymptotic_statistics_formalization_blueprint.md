@@ -311,6 +311,11 @@ Initial modules:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawSource_real`
   further replaces the projected zero-mean family by the vector-law source
   identity `(Q.map Z)[id] = 0`.
+  The covariance-table endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSource_real`
+  uses a polarization bridge to convert diagonal variance identities into full
+  covarianceBilinDual identities, so the final table can now be displayed
+  directly with the common vector law `ν`.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
