@@ -161,6 +161,16 @@ Lemma 2.3.7 probability comparison with the variable `β_n` factor; (2) the
 Chebyshev lower bound making `β_n(epsilon)` eventually bounded below for the
 normalized fixed-`M` centered truncated empirical-process coordinates.
 
+The deterministic postprocessing half of dependency (2) is now compiled:
+`eventually_ennreal_ofReal_half_le_ofReal_one_sub_of_tendsto_zero` and
+`VdVWTheorem243_eventualBetaLower_half_of_eventually_eq_one_sub_penalty`
+turn a vanishing real penalty and an eventual identity
+`β_n(epsilon) = ofReal (1 - penalty_n(epsilon))` into
+`ofReal (1 / 2) <= β_n(epsilon)` eventually.  The remaining Chebyshev work is
+therefore not ENNReal/order algebra; it is the probability theorem giving the
+penalty formula and its convergence to zero for the fixed-`M` normalized
+truncated coordinate sums.
+
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
 infrastructure for selected fixed-radius tail/UI, finite code-set and

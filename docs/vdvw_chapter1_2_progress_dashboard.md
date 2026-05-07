@@ -175,6 +175,10 @@ separate eventual lower bound `B <= β_n(epsilon)` freezes it to the compiled
 constant-loss route.  The next target is now sharper: prove the variable-beta
 nonmeasurable probability comparison and the Chebyshev lower bound for the
 normalized fixed-`M` truncated coordinates.
+The deterministic lower-bound postprocessor is also compiled as
+`VdVWTheorem243_eventualBetaLower_half_of_eventually_eq_one_sub_penalty`, so
+Chebyshev only needs to provide the displayed `1 - penalty_n(epsilon)` beta
+formula and penalty convergence to zero.
 
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely

@@ -32101,6 +32101,50 @@ theorem
         exact hB_mul.trans hbeta_comp)
 
 /--
+If a real penalty tends to zero, then `ofReal (1 / 2)` is eventually bounded
+by `ofReal (1 - penalty n)`.
+
+This is the deterministic postprocessing step behind the Chebyshev lower
+bound for the `β_n(x)` factor in VdV&W Lemma 2.3.7.
+-/
+theorem eventually_ennreal_ofReal_half_le_ofReal_one_sub_of_tendsto_zero
+    {penalty : ℕ -> ℝ}
+    (hpenalty : Tendsto penalty atTop (𝓝 0)) :
+    ∀ᶠ n in atTop,
+      ENNReal.ofReal (1 / 2 : ℝ) ≤ ENNReal.ofReal (1 - penalty n) := by
+  have hhalf_pos : 0 < (1 / 2 : ℝ) := by norm_num
+  have hpenalty_lt : ∀ᶠ n in atTop, penalty n < 1 / 2 :=
+    hpenalty.eventually_lt_const hhalf_pos
+  filter_upwards [hpenalty_lt] with n hn
+  exact ENNReal.ofReal_le_ofReal (by linarith)
+
+/--
+Eventual `1/2` lower bound for a beta factor represented as
+`ofReal (1 - penalty)`.
+
+The remaining source work for VdV&W Lemma 2.3.7 is to prove the Chebyshev
+penalty tends to zero for the normalized fixed-`M` truncated coordinates, and
+to identify the textbook `β_n(x)` with this displayed formula.
+-/
+theorem VdVWTheorem243_eventualBetaLower_half_of_eventually_eq_one_sub_penalty
+    {beta : ℝ -> ℕ -> ℝ≥0∞} {penalty : ℝ -> ℕ -> ℝ}
+    (hpenalty :
+      ∀ epsilon, 0 < epsilon ->
+        Tendsto (fun n : ℕ => penalty epsilon n) atTop (𝓝 0))
+    (hbeta_eq :
+      ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          beta epsilon n = ENNReal.ofReal (1 - penalty epsilon n)) :
+    ∀ epsilon, 0 < epsilon ->
+      ∀ᶠ n in atTop, ENNReal.ofReal (1 / 2 : ℝ) ≤ beta epsilon n := by
+  intro epsilon hepsilon
+  filter_upwards
+    [eventually_ennreal_ofReal_half_le_ofReal_one_sub_of_tendsto_zero
+      (hpenalty epsilon hepsilon),
+     hbeta_eq epsilon hepsilon] with n hhalf hbeta_n
+  simpa [hbeta_n] using hhalf
+
+/--
 Fixed-`M` centered-truncated convergence from stochastic entropy and a
 constant-loss scaled selected outer-probability comparison.
 
