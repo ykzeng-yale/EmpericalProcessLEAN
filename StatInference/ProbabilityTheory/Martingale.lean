@@ -432,6 +432,131 @@ theorem durrett2019_theorem_4_2_7_min_supermartingale
     simpa [Pi.sup_apply] using hsup.neg
   simpa [max_neg_neg] using hmax_neg
 
+/--
+Durrett 2019, Section 4.2: the discrete stochastic transform
+`(H · X)_n = ∑_{m=1}^n H_m (X_m - X_{m-1})`, indexed as a `Finset.range`
+sum.
+-/
+def durrett2019_stochasticTransform {Ω : Type*} (H X : ℕ -> Ω -> ℝ) :
+    ℕ -> Ω -> ℝ :=
+  fun n => ∑ k ∈ Finset.range n, H (k + 1) * (X (k + 1) - X k)
+
+/--
+Durrett 2019, Theorem 4.2.8 submartingale variant: a nonnegative bounded
+predictable transform of a submartingale is a submartingale.
+-/
+theorem durrett2019_theorem_4_2_8_submartingale_transform
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {H X : ℕ -> Ω -> ℝ} {R : ℝ}
+    (hX : Submartingale X ℱ μ)
+    (hH_pred : StronglyAdapted ℱ (fun n => H (n + 1)))
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω) :
+    Submartingale (durrett2019_stochasticTransform H X) ℱ μ := by
+  simpa [durrett2019_stochasticTransform] using
+    hX.sum_mul_sub' hH_pred hH_bdd hH_nonneg
+
+/--
+Durrett 2019, Theorem 4.2.8 submartingale variant, using mathlib's
+discrete predictable-process predicate.
+-/
+theorem durrett2019_theorem_4_2_8_submartingale_transform_of_predictable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {H X : ℕ -> Ω -> ℝ} {R : ℝ}
+    (hX : Submartingale X ℱ μ)
+    (hH_pred : IsStronglyPredictable ℱ H)
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω) :
+    Submartingale (durrett2019_stochasticTransform H X) ℱ μ :=
+  durrett2019_theorem_4_2_8_submartingale_transform
+    hX hH_pred.measurable_add_one hH_bdd hH_nonneg
+
+/--
+Durrett 2019, Theorem 4.2.8: a nonnegative bounded predictable transform of a
+supermartingale is a supermartingale.
+-/
+theorem durrett2019_theorem_4_2_8_supermartingale_transform
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {H X : ℕ -> Ω -> ℝ} {R : ℝ}
+    (hX : Supermartingale X ℱ μ)
+    (hH_pred : StronglyAdapted ℱ (fun n => H (n + 1)))
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω) :
+    Supermartingale (durrett2019_stochasticTransform H X) ℱ μ := by
+  have hnegX : Submartingale (fun n ω => -X n ω) ℱ μ := by
+    simpa using hX.neg
+  have hsub_raw :
+      Submartingale
+        (fun n =>
+          ∑ k ∈ Finset.range n,
+            H (k + 1) * ((fun n ω => -X n ω) (k + 1) - (fun n ω => -X n ω) k))
+        ℱ μ :=
+    hnegX.sum_mul_sub' hH_pred hH_bdd hH_nonneg
+  have hsub_neg :
+      Submartingale (-(durrett2019_stochasticTransform H X)) ℱ μ := by
+    convert hsub_raw using 2
+    ext n
+    simp only [durrett2019_stochasticTransform, sub_eq_add_neg, Finset.sum_apply,
+      Pi.neg_apply, Pi.mul_apply, Pi.add_apply]
+    rw [← Finset.sum_neg_distrib]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    ring
+  simpa using hsub_neg.neg
+
+/--
+Durrett 2019, Theorem 4.2.8, using mathlib's discrete predictable-process
+predicate.
+-/
+theorem durrett2019_theorem_4_2_8_supermartingale_transform_of_predictable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {H X : ℕ -> Ω -> ℝ} {R : ℝ}
+    (hX : Supermartingale X ℱ μ)
+    (hH_pred : IsStronglyPredictable ℱ H)
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω) :
+    Supermartingale (durrett2019_stochasticTransform H X) ℱ μ :=
+  durrett2019_theorem_4_2_8_supermartingale_transform
+    hX hH_pred.measurable_add_one hH_bdd hH_nonneg
+
+/--
+Durrett 2019, Theorem 4.2.8 martingale consequence for nonnegative bounded
+predictable transforms.
+-/
+theorem durrett2019_theorem_4_2_8_martingale_transform_nonnegative
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {H X : ℕ -> Ω -> ℝ} {R : ℝ}
+    (hX : Martingale X ℱ μ)
+    (hH_pred : StronglyAdapted ℱ (fun n => H (n + 1)))
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω) :
+    Martingale (durrett2019_stochasticTransform H X) ℱ μ :=
+  (martingale_iff (f := durrett2019_stochasticTransform H X) (ℱ := ℱ) (μ := μ)).2
+    ⟨durrett2019_theorem_4_2_8_supermartingale_transform
+        hX.supermartingale hH_pred hH_bdd hH_nonneg,
+      durrett2019_theorem_4_2_8_submartingale_transform
+        hX.submartingale hH_pred hH_bdd hH_nonneg⟩
+
+/--
+Durrett 2019, Theorem 4.2.8 martingale consequence for nonnegative bounded
+predictable transforms, using mathlib's discrete predictable-process predicate.
+-/
+theorem durrett2019_theorem_4_2_8_martingale_transform_nonnegative_of_predictable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {H X : ℕ -> Ω -> ℝ} {R : ℝ}
+    (hX : Martingale X ℱ μ)
+    (hH_pred : IsStronglyPredictable ℱ H)
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω) :
+    Martingale (durrett2019_stochasticTransform H X) ℱ μ :=
+  durrett2019_theorem_4_2_8_martingale_transform_nonnegative
+    hX hH_pred.measurable_add_one hH_bdd hH_nonneg
+
 /-! ## Durrett, Example 4.2.1 -/
 
 /--
