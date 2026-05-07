@@ -238,6 +238,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   `StatInference.product_one_add_tendsto_one_of_sum_norm`,
   `chewi127_integral_product_one_add_tendsto_one_of_integral_sum_norm`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorError_row_integral_tendsto_zero`,
   and
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_concrete_random_product_model`.
   These name the actual row factors with `a = t / sqrt N` and specialize the
@@ -251,13 +252,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   normalizes the one-step tower output as `A * (1 + error)` and splits that
   error into variance-only second-order error plus the conditional
   Taylor-remainder term.  The product-to-one packet lifts row-sum error control
-  to expected products of `1 + error`, so the next ASGD packet should prove the
-  finite compensated iteration under the exact source measurability side
-  conditions, discharge the row error via the variance-only second-order bound
-  plus the existing Taylor-remainder convergence, and then close the
+  to expected products of `1 + error`.  The row-error packet now consumes the
+  existing conditional Taylor-remainder row convergence and reduces expected
+  compensated row-error convergence to the variance-only second-order row error
+  plus a uniform compensation-factor bound.  The next ASGD packet should prove
+  those two remaining side conditions, then prove the finite compensated
+  iteration under the exact source measurability side conditions and close the
   variance/convergence comparison to the Gaussian characteristic-function
   limit.
-- Current manual frontier after the Chapter 12 finite sampled rate packet,
+- Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
   endpoint packet, smooth source variance-bound bridge for Chewi Theorem 12.1
@@ -457,7 +460,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   recurrence and then into the closed weighted-average rate.
   Exact 10.13 `sInf` or arbitrary norm/dual-norm packaging is deferred until
   source-report exactness or a later theorem demands it.
-- Current manual frontier after focused Lean verification rebased over pushed
+- Archived manual frontier after focused Lean verification rebased over pushed
   frontier `4d4601c` (`Add Theorem 2.4.3 coordinate-code selected package`), building
   on `bb0a297` (`Add Chewi theorem 6.25 feasibility instance wrapper`):
   Chapter 6 is a stable compiled main-text spine through the supplied
@@ -476,7 +479,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   aggressive main-text packet: open Chapter 8 `Proximal.lean` for the proximal
   gradient/composite-gradient theorems, while only returning to 6.25 for exact
   source/report packaging.
-- Current manual frontier after rebasing local `main` onto `origin/main` at
+- Archived manual frontier after rebasing local `main` onto `origin/main` at
   `038e7e3` (`Add weak convergence asymptotic tightness bridge`) with the verified
   source-volume determinant, scalar `hvolume`, determinant-unit inverse-shape
   reduction, normalized forward/inverse algebra, and forward-shape transport
@@ -797,33 +800,22 @@ High-value local files:
 
 ## Current Active Target
 
-Current active target after focused Lean verification of the Chapter 12 finite
-sampled, smooth integral-L2 sampled-model, smooth Bochner-unbiased,
-non-smooth source-L2 sampled, smooth source variance-bound, and non-smooth
-relative-subgradient rate packets, plus the weighted stochastic
-averaged-iterate/Jensen bridge, final source-shaped wrappers, and displayed
-RHS factor bridges:
-treat Chapters 3-8, Chapter 9/10
-mirror-descent substrate, Chapter 11.2/11.3 ABP telescope, Chapter 11.4 AM,
-Chapter 11.5 RAM, the 11.7 selector layer, and the 11.8
-Sinkhorn/mirror-descent endpoint as stable infrastructure.  The live manual
-`/goal` frontier is now `StatInference/Optimization/StochasticGradient.lean`.
-Next theorem-sized packet: finish the remaining exact source probability
-fields above the Bochner transport, smooth L2-noise wrappers, and finite
-smooth/pointwise-bounded non-smooth sampled endpoints.  The smooth
-integral-L2 sampled-model final rate, smooth Bochner-unbiased
-growth/star-upper wrapper, probability L2-to-L1 bridge, non-smooth `(12.2)`
-sampled `hcore`, and non-smooth source-L2 sampled weighted-average endpoint
-are instantiated; the smooth `(12.1)` source variance-root wrapper is also
-instantiated, and the non-smooth relative-subgradient wrapper now discharges
-the non-smooth growth/star-upper fields.  The weightedSampleAverage bridge now
-turns any closed weighted expected-gap endpoint into a rate for the
-source-shaped stochastic averaged iterate, and the final smooth/non-smooth
-wrappers now apply that bridge to the main sampled endpoints.  The exact
-displayed `(1 + alphaG * h)` stochastic-error RHS is also packaged.  Next
-prove any exact source conditional-expectation/process packaging that is still
-needed, then move to ASGD CLT material once SMPGD source packaging is complete
-enough.
+Current active target after focused Lean verification of the Chapter 12 SMPGD
+rate packets and ASGD scalar characteristic-function substrate:
+treat Chapters 3-8, Chapter 9/10 mirror-descent substrate, Chapter 11.2/11.3
+ABP telescope, Chapter 11.4 AM, Chapter 11.5 RAM, the 11.7 selector layer,
+the 11.8 Sinkhorn/mirror-descent endpoint, and the Chapter 12 SMPGD rate
+wrappers as stable infrastructure.  The live manual `/goal` frontier is now
+`StatInference/Optimization/ASGD.lean`.  Next theorem-sized packet: finish the
+scalar bounded martingale characteristic-function convergence behind
+`projected_charFun_tendsto_exp`, then wire Chewi Theorem 12.7/12.3 through the
+existing ASGD certificate constructors.  The remaining proof obligations are
+the compensation-factor bound, the variance-only second-order row bound, the
+finite compensated iteration under exact measurability/integrability side
+conditions, and the variance/convergence comparison to
+`exp (-(S_infty L L) t^2 / 2)`.  Do not return to old Chapter 3, SMPGD source
+probability packaging, or raw tower-peel tasks unless a regression makes them
+relevant.
 Keep the concrete finite Sinkhorn KL identity layer as the next Chapter 11.8
 blocker, but do not let it stall Chapter 12 coverage.
 This paragraph supersedes older Chapter 6, Chapter 7, Chapter 8, Chapter 11.4,

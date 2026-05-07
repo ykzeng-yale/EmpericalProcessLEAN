@@ -157,17 +157,21 @@ compensated one-step/error interface:
 bridges `StatInference.norm_prod_one_add_sub_one_le_sum_norm`,
 `StatInference.product_one_add_tendsto_one_of_sum_norm`,
 `chewi127_integral_product_one_add_tendsto_one_of_integral_sum_norm`, and
-`projectedCompensatedTaylorErrorProduct_integral_tendsto_one`.
+`projectedCompensatedTaylorErrorProduct_integral_tendsto_one`, and the
+row-error discharge bridge
+`projectedCompensatedTaylorError_row_integral_tendsto_zero`.
 
 Next theorem packet: use the compensated step and product-to-one bridge to
 prove the finite compensated iteration endpoint under the exact source
-measurability/integrability side conditions, then discharge the accumulated
-row of `projectedCompensatedTaylorErrorFactor`.  The row-error proof should now
-focus on the variance-only second-order row bound plus the already-proved
-conditional Taylor-remainder row convergence.  After that, prove the
-variance/convergence comparison from `n⁻¹ ∑ Xi_k -> S_infty` in probability to
-the Gaussian `exp (-(S_infty L L) t^2 / 2)` characteristic-function limit and
-wire the result into the existing Theorem 12.7/12.3 certificate constructors.
+measurability/integrability side conditions.  The accumulated compensated
+row-error obligation is now reduced to the variance-only second-order row
+bound plus a uniform bound on compensation factors; the Taylor-remainder part
+is already consumed by
+`projectedCompensatedTaylorError_row_integral_tendsto_zero`.  After that, prove
+the variance/convergence comparison from `n⁻¹ ∑ Xi_k -> S_infty` in probability
+to the Gaussian `exp (-(S_infty L L) t^2 / 2)` characteristic-function limit
+and wire the result into the existing Theorem 12.7/12.3 certificate
+constructors.
 
 Reuse boundary: do not redo scaled-sum definitions, Cramér-Wold plumbing,
 bounded-tail/Lindeberg, Taylor expansion, conditional mean-zero/quadratic
@@ -177,11 +181,12 @@ conditional Taylor-remainder row convergence.  Reuse
 `projected_charFun_compensated_taylor_step_mul_scaled`,
 `projected_remainder_row_integral_tendsto_zero`, the named projected variance
 and remainder/compensation/error factors, the compensated error norm split,
-the product-to-one bridges, `integral_norm_condExp_le_integral_norm`,
+the product-to-one and row-error bridges, `integral_norm_condExp_le_integral_norm`,
 `chewi127ScalarCharFunProduct` lemmas, and local product perturbation bridges.
 One bounded API search is allowed only for the exact finite compensated
-iteration measurability side condition, variance second-order row bound, or
-bounded-continuous variance-convergence estimate; after that, prove.
+iteration measurability side condition, compensation-factor bound,
+variance-only second-order row bound, or bounded-continuous variance-convergence
+estimate; after that, prove.
 
 Execution gate: use `/private/tmp/chewi-smpgd-probability`; before Lean edits
 state the exact theorem-sized target and fallback blocker.  Verify with

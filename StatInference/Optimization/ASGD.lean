@@ -2278,6 +2278,128 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorFactor
     S.projectedCompensatedTaylorErrorFactor_norm_le L N t k ω
 
 /--
+Expected row-sum convergence of the compensated one-step errors from the
+variance-only compensated row error and the already-proved Taylor-remainder
+row convergence.  The additional hypothesis is the natural boundedness of the
+variance compensation factors along the row.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorError_row_integral_tendsto_zero
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t C : ℝ)
+    (hcomp_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖S.projectedCompensationFactor L N t k ω‖ ≤ C)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hvariance_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          ∑ k ∈ Finset.range N,
+            ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+      atTop (𝓝 0) := by
+  let varianceError : ℕ -> Ω -> ℝ := fun N ω =>
+    ∑ k ∈ Finset.range N,
+      ‖S.projectedCompensationFactor L N t k ω *
+          S.projectedVarianceFactor L N t k ω - 1‖
+  let remainderError : ℕ -> Ω -> ℝ := fun N ω =>
+    ∑ k ∈ Finset.range N,
+      ‖S.projectedRemainderFactor L N t k ω‖
+  let totalError : ℕ -> Ω -> ℝ := fun N ω =>
+    ∑ k ∈ Finset.range N,
+      ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖
+  have hrem_tend :=
+    S.projected_remainder_row_integral_tendsto_zero L t
+  have hscaled_rem :
+      Tendsto
+        (fun N : ℕ => C * ∫ ω, remainderError N ω ∂P)
+        atTop (𝓝 0) := by
+    have hmul :
+        Tendsto
+          (fun N : ℕ => C * ∫ ω, remainderError N ω ∂P)
+          atTop (𝓝 (C * 0)) :=
+      (tendsto_const_nhds.mul hrem_tend)
+    simpa using hmul
+  have hupper :
+      Tendsto
+        (fun N : ℕ =>
+          (∫ ω, varianceError N ω ∂P) +
+            C * ∫ ω, remainderError N ω ∂P)
+        atTop (𝓝 0) := by
+    have hsum := hvariance_error.add hscaled_rem
+    simpa [varianceError, remainderError] using hsum
+  refine squeeze_zero'
+    (Eventually.of_forall fun N =>
+      integral_nonneg fun ω =>
+        Finset.sum_nonneg fun k _hk => norm_nonneg
+          (S.projectedCompensatedTaylorErrorFactor L N t k ω))
+    ?_ hupper
+  filter_upwards [hcomp_bound] with N hN
+  have hupper_int :
+      Integrable
+        (fun ω => varianceError N ω + C * remainderError N ω) P :=
+    (hvariance_error_int N).add ((hremainder_int N).const_mul C)
+  calc
+    (∫ ω, totalError N ω ∂P)
+        ≤ ∫ ω, varianceError N ω + C * remainderError N ω ∂P := by
+          refine integral_mono_of_nonneg
+            (Eventually.of_forall fun ω =>
+              Finset.sum_nonneg fun k _hk => norm_nonneg
+                (S.projectedCompensatedTaylorErrorFactor L N t k ω))
+            hupper_int ?_
+          filter_upwards [hN] with ω hω
+          have hrow :=
+            S.projectedCompensatedTaylorErrorFactor_row_norm_le L N t ω
+          calc
+            totalError N ω
+                ≤ ∑ k ∈ Finset.range N,
+                    (‖S.projectedCompensationFactor L N t k ω *
+                        S.projectedVarianceFactor L N t k ω - 1‖ +
+                      ‖S.projectedCompensationFactor L N t k ω‖ *
+                        ‖S.projectedRemainderFactor L N t k ω‖) := hrow
+            _ ≤ varianceError N ω + C * remainderError N ω := by
+                  simp only [varianceError, remainderError,
+                    Finset.sum_add_distrib, Finset.mul_sum]
+                  have hrem_sum :
+                      (∑ k ∈ Finset.range N,
+                        ‖S.projectedCompensationFactor L N t k ω‖ *
+                          ‖S.projectedRemainderFactor L N t k ω‖) ≤
+                        ∑ k ∈ Finset.range N,
+                          C * ‖S.projectedRemainderFactor L N t k ω‖ := by
+                    refine Finset.sum_le_sum ?_
+                    intro k hk
+                    exact mul_le_mul_of_nonneg_right (hω k hk)
+                      (norm_nonneg (S.projectedRemainderFactor L N t k ω))
+                  nlinarith [hrem_sum]
+    _ = (∫ ω, varianceError N ω ∂P) +
+          C * ∫ ω, remainderError N ω ∂P := by
+          rw [integral_add (hvariance_error_int N)
+            ((hremainder_int N).const_mul C), integral_const_mul]
+
+/--
 Scaled source-shaped version of the one-step tower peel, using the concrete
 Chewi row factor `t / sqrt N` and the named variance-plus-remainder model
 factor.
