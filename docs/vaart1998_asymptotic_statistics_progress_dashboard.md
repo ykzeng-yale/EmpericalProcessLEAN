@@ -465,10 +465,16 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceTable_of_cltCertificate_targetProbabilityLocalization_real`
   package the actual fallback-selected estimator through the CLT certificate
   and finite covariance-table displays.
+- Canonical vector-law/covariance source endpoint for the actual
+  fallback-selected estimator:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`
+  builds both the target-probability localization certificate and the
+  empirical-moment CLT certificate internally, then displays the final
+  covariance table under the common vector law `ν`.
 
-Latest remote base before this packet: `0fa69bb`.  Latest pushed Vaart packet
-before this packet: `aa4d7d4`
-(`Add Vaart selected estimator Gaussian covariance wrappers`).
+Latest remote base before this packet: `aace67e`.  Latest pushed Vaart packet
+before this packet: `aace67e`
+(`Add Vaart selected estimator covariance table wrappers`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .../MomentEstimators.olean -i .../MomentEstimators.ilean`
@@ -480,10 +486,10 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 by connecting target-probability localization to the
-strongest existing finite-coordinate source certificates, so canonical
-vector-law/covariance source statements can display the table for the actual
-fallback-selected estimator.
+Continue Vaart Chapter 4.1 by either packaging the selected-estimator source
+endpoint behind a smaller named source certificate or proving the
+parameter-domain membership/probability statements for the fallback-selected
+estimator.
 
 ## Reuse Dependencies
 

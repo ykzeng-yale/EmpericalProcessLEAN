@@ -656,24 +656,25 @@ Chapter 3 theorem-facing wrappers compiling:
 213. CLT-certificate finite covariance-table endpoint for the canonical
    selected estimator:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceTable_of_cltCertificate_targetProbabilityLocalization_real`.
+214. Canonical vector-law/covariance source endpoint for the actual
+   fallback-selected estimator:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`.
 
-Latest remote base before this packet: `0fa69bb`.
-Latest pushed Vaart packet before this packet: `aa4d7d4`
-(`Add Vaart selected estimator Gaussian covariance wrappers`).
+Latest remote base before this packet: `aace67e`.
+Latest pushed Vaart packet before this packet: `aace67e`
+(`Add Vaart selected estimator covariance table wrappers`).
 
-The current theorem-sized packet lifts the fallback-extension selected
-estimator through the covarianceBilinDual CLT-certificate layer and finite
-covariance-table displays.  It packages the actual fallback-selected estimator,
-not just the raw local-inverse candidate, against the supplied empirical-moment
-CLT certificate and target-probability localization certificate.
+The current theorem-sized packet builds the target-probability localization
+certificate from the canonical product strong law, builds the finite-coordinate
+empirical-moment CLT certificate from the vector-law Gaussian/covariance source
+fields, and concludes the final covariance table under the common vector law
+`ν` for the actual fallback-selected estimator.
 
-The next aggressive packet should connect target-probability localization to
-the strongest existing finite-coordinate source certificates, especially the
-canonical vector-law/covariance source endpoints, so the source-facing Chapter
-4 table display can be stated directly for the selected estimator.  Keep
-probability-tending-to-one target localization separate from per-`n` a.e.
-localization; use the selected estimator only where equality on the
-high-probability target event is sufficient.
+The next aggressive packet should either package the same selected-estimator
+source endpoint behind a smaller named source certificate, or move to the next
+Chapter 4.1 cleanup: parameter-domain membership/probability statements for
+the fallback-selected estimator.  Keep probability-tending-to-one target
+localization separate from per-`n` a.e. localization.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

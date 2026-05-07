@@ -429,6 +429,11 @@ Initial modules:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceTable_of_cltCertificate_targetProbabilityLocalization_real`
   exposes finite covariance-table displays for that selected estimator from a
   supplied empirical-moment CLT certificate.
+  The canonical vector-law source endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_selectedEstimator_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`
+  now builds the target-probability localization and CLT certificate
+  internally and states the final covariance table under the common vector law
+  for the actual fallback-selected estimator.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
