@@ -31135,6 +31135,88 @@ theorem
         simpa using hmem)
 
 /--
+Fixed-`M` centered-truncated convergence from stochastic entropy and eventual
+a.e. scaled finite-net domination proved for a selected cardinality.
+
+This is the fixed-`M` source bridge behind the untruncated selected-cover
+consumer.  The entropy hypothesis may be stated for a larger externally
+supplied empirical-cover cardinality, while the ghost/Rademacher selected-cover
+argument naturally proves domination for the selected least cardinality.
+Monotonicity of the Hoeffding display transfers the selected bound to the
+entropy-controlled cardinality before invoking the fixed-radius
+outer-probability route.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledSelectedFiniteNetHoeffdingUpper
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M) (hC_pos : 0 < C)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n)
+    (hae :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ≤
+          C * vdVWTheorem243FiniteNetHoeffdingUpper
+              (selectedCardinality eta n sample n) n M + eta) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledFiniteNetHoeffdingUpper
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := C) (cardinality := cardinality)
+      hM_pos hC_pos hlog
+      (by
+        intro eta heta
+        filter_upwards [hae eta heta, hselected_le eta heta]
+          with n hae_n hselected_le_n
+        filter_upwards [hae_n] with sample hsample
+        have hupper_le :
+            vdVWTheorem243FiniteNetHoeffdingUpper
+                (selectedCardinality eta n sample n) n M ≤
+              vdVWTheorem243FiniteNetHoeffdingUpper
+                (cardinality eta n sample n) n M :=
+          vdVWTheorem243FiniteNetHoeffdingUpper_mono_cardinality
+            hM_pos.le (hselected_le_n sample)
+        have hscaled_le :
+            C * vdVWTheorem243FiniteNetHoeffdingUpper
+                (selectedCardinality eta n sample n) n M + eta ≤
+              C * vdVWTheorem243FiniteNetHoeffdingUpper
+                (cardinality eta n sample n) n M + eta := by
+          gcongr
+        exact hsample.trans hscaled_le)
+
+/--
 Fixed-`M` centered-truncated convergence from stochastic entropy and the
 proof-carrying finite-net outer-probability comparison primitive.
 
@@ -31558,30 +31640,20 @@ theorem
           (fun _ : Fin n => (n : ℝ)⁻¹) sample)
       atTop (0 : ℝ) := by
   exact
-    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledFiniteNetHoeffdingUpper
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_centered_truncated
       (P := P) (indexClass := indexClass) (classFun := classFun)
-      (envelope := envelope) (C := C) (cardinality := cardinality)
-      henvelope hclass henv henv_integrable hclassIntegrable
-      htruncIntegrable hbdd_truncated hC_pos hlog
+      (envelope := envelope) henvelope hclass henv henv_integrable
+      hclassIntegrable htruncIntegrable hbdd_truncated
       (by
-        intro M hM_pos eta heta
-        filter_upwards [hae M hM_pos eta heta, hselected_le M hM_pos eta heta]
-          with n hae_n hselected_le_n
-        filter_upwards [hae_n] with sample hsample
-        have hupper_le :
-            vdVWTheorem243FiniteNetHoeffdingUpper
-                (selectedCardinality M eta n sample n) n M ≤
-              vdVWTheorem243FiniteNetHoeffdingUpper
-                (cardinality M eta n sample n) n M :=
-          vdVWTheorem243FiniteNetHoeffdingUpper_mono_cardinality
-            hM_pos.le (hselected_le_n sample)
-        have hscaled_le :
-            C * vdVWTheorem243FiniteNetHoeffdingUpper
-                (selectedCardinality M eta n sample n) n M + eta ≤
-              C * vdVWTheorem243FiniteNetHoeffdingUpper
-                (cardinality M eta n sample n) n M + eta := by
-          gcongr
-        exact hsample.trans hscaled_le)
+        intro M hM_pos
+        exact
+          VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledSelectedFiniteNetHoeffdingUpper
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (C := C)
+            (selectedCardinality := selectedCardinality M)
+            (cardinality := cardinality M)
+            hM_pos hC_pos (hlog M hM_pos) (hselected_le M hM_pos)
+            (hae M hM_pos))
 
 /--
 Untruncated centered convergence from stochastic entropy and a pointwise

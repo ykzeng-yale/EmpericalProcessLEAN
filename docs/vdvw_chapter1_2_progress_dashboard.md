@@ -80,6 +80,17 @@ The fixed-`M` event-comparison route also now consumes this mean input through
 The remaining exact-textbook gap is therefore sharper: prove that mean/tail/UI
 input from the random entropy hypothesis, or add a stronger honest hypothesis.
 
+2026-05-06 selected fixed-`M` source bridge: the selected scaled finite-net
+route now has the fixed-`M` theorem
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledSelectedFiniteNetHoeffdingUpper`.
+It removes duplicate selected-cardinality transfer from the untruncated
+consumer by proving the transfer once at fixed `M`: selected cover domination
+is pushed to the entropy-controlled external cardinality by monotonicity of
+`vdVWTheorem243FiniteNetHoeffdingUpper`.  The next source-side target is not a
+new endpoint alias; it is the proof of selected eventual a.e. finite-net
+domination, or the exact outer-probability comparison primitive, from the
+VdV&W symmetrization/random empirical-cover argument.
+
 2026-05-06 option-1 correction: after searching local `StatInference`,
 `StatInference/ProbabilityMeasure`, pinned mathlib, and the recorded local
 Lean checkouts, no reusable theorem was found for the actual probability-level

@@ -68,6 +68,21 @@ reverse-cofiltration, full-subgraph, measurable/null-measurable signed
 weak-convergence, asymptotic-measurability, or Dirac-law endpoint packages
 unless a new exact statement directly consumes them.
 
+2026-05-06 selected fixed-`M` source bridge: the fixed-`M` centered-truncated
+route now has
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledSelectedFiniteNetHoeffdingUpper`.
+This is theorem-facing source progress, not endpoint churn: it lets the
+ghost/Rademacher/random-cover side prove eventual a.e. scaled finite-net
+domination for a selected least-cardinality cover, while the entropy
+hypothesis remains stated for a larger externally supplied cardinality.
+The proof transfers selected domination to the entropy-controlled cardinality
+using `vdVWTheorem243FiniteNetHoeffdingUpper_mono_cardinality`, then consumes
+the existing fixed-radius outer-probability route.  The untruncated selected
+consumer now factors through this fixed-`M` bridge.  The remaining source
+blocker is sharper: prove the selected eventual a.e. scaled finite-net
+domination, or an exact outer-probability comparison primitive, from the
+textbook random empirical-cover/symmetrization argument.
+
 ## Current `/goal` Target
 
 Authoritative `/goal` rebase, 2026-05-06 after the finite-index 1.4.8
