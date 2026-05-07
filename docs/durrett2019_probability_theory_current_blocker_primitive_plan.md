@@ -106,6 +106,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_middle_cdf_partitions`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`
+- `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_monotone_subdivision_center_mem_cover`
 - `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms`
 
 Existing reusable probability-measure modules cover much of the early-book
@@ -161,6 +162,8 @@ compile, via
 `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms`,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`, and
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_monotone_subdivision_center_mem_cover`,
+and
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms`.
 The remaining full-theorem-core step is the arbitrary finite middle CDF
 partition existence consumed by
@@ -219,10 +222,12 @@ selected center occurs somewhere among the subdivision values.  The convenience
 bridge
 `SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_center_mem_cover`
 reduces the per-cell witness to the global statement that every finite cover
-center occurs in the subdivision range.  The fully arbitrary distribution route
-still needs the finite ordering/splitting theorem that inserts all selected
-centers into the monotone subdivision and makes each closed adjacent cell
-refine a selected finite cover interval.
+center occurs in the subdivision range.  The GC handoff
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_monotone_subdivision_center_mem_cover`
+now consumes those center-range subdivisions directly.  The fully arbitrary
+distribution route still needs the finite ordering/splitting theorem that
+inserts all selected centers into the monotone subdivision and makes each
+closed adjacent cell refine a selected finite cover interval.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
 Parallel target: Chapter 2.1 exact iid/product notation refinements only if

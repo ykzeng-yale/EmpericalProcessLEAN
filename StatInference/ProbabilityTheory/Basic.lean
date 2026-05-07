@@ -1067,6 +1067,43 @@ theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains
           (cutpointChainExists hepsilon hab))
 
 /--
+Durrett 2019, Theorem 2.4.9, center-range subdivision-to-GC package.
+
+This is the sharp arbitrary-law handoff after the atom-aware bridge: it is
+enough to construct, on every bounded interval and positive radius, a monotone
+subdivision that is eventually constant at the right endpoint, whose values
+include every selected finite-cover center, and whose adjacent cells refine
+the corresponding punctured open neighborhoods.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_monotone_subdivision_center_mem_cover
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X))
+    (subdivisionExists :
+      ∀ {epsilon a b : ℝ}, 0 < epsilon -> a < b ->
+        ∃ t : ℕ -> Set.Icc a b, ∃ centers : Finset ℝ, ∃ l r : ℝ -> ℝ,
+          (t 0 : ℝ) = a ∧
+          Monotone t ∧
+          (∃ m, ∀ n ≥ m, (t n : ℝ) = b) ∧
+          (∀ x ∈ centers, ∃ k : ℕ, (t k : ℝ) = x) ∧
+          ∀ n,
+            ∃ x ∈ centers,
+              Set.Icc (t n) (t (n + 1)) ⊆
+                {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+              P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator X :=
+  durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains
+    X hLaw hindep
+    (fun hepsilon hab => by
+      rcases subdivisionExists hepsilon hab with
+        ⟨t, centers, l, r, ht0, hmono, heventually, hcenter, hrefine⟩
+      exact
+        durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_center_mem_cover
+          ht0 hmono heventually hab hcenter hrefine)
+
+/--
 Durrett 2019, Theorem 2.4.9, non-atomic half-line
 Glivenko-Cantelli package.
 

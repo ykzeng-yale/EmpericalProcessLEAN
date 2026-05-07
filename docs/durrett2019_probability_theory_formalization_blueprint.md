@@ -231,6 +231,8 @@ Compiled first source wrappers:
   `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms`.
 - Durrett Theorem 2.4.9 cutpoint-chain-to-GC handoff:
   `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`.
+- Durrett Theorem 2.4.9 center-range subdivision-to-GC handoff:
+  `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_monotone_subdivision_center_mem_cover`.
 
 The subsequence and continuous-mapping theorems are higher value but may require
 more topological convergence API packaging.
