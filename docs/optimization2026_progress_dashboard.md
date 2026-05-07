@@ -69,6 +69,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   for the active proof/integration, read-only scouts for mathlib/local/source
   mapping, at most one disjoint Lean worker, and a verification scout after the
   diff stabilizes.
+- Accuracy upgrade: if a manual run starts with a dirty Lean diff, verify or
+  precisely block that diff before doing strategy/doc-only work.  No uncompiled
+  theorem should be carried across a process update.
 - New ASGD scalar Lindeberg declarations:
   `chewi127ScalarLindebergSummand`,
   `chewi127ScalarLindebergAverage`,
@@ -136,6 +139,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   are the bounded-increment integrability and pointwise expansion gates needed
   before applying conditional-expectation linearity to the martingale one-step
   characteristic-function expansion.
+- New ASGD conditional Taylor declaration:
+  `chewi127ScalarCharFun_condExp_taylor_expansion`.  This closes the
+  conditional-expectation linearity layer for
+  `E[exp(i a X) | m]`; the next ASGD packet should substitute projected
+  martingale mean-zero and conditional second-moment identities, retain the
+  named conditional remainder, and move to the finite product/tower estimate.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

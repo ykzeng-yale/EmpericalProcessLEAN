@@ -415,6 +415,86 @@ theorem chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
     gcongr)
 
 /--
+Conditional one-step Taylor expansion for a scalar characteristic-function
+factor.  This is the conditional-expectation algebraic core used before the
+martingale mean-zero and conditional-variance identities are substituted.
+-/
+theorem chewi127ScalarCharFun_condExp_taylor_expansion
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] (m : MeasurableSpace Ω) (hm : m ≤ mΩ)
+    {x : Ω -> ℝ} (a : ℝ)
+    (hlinear : Integrable
+      (fun ω => ((a * x ω : ℝ) : ℂ) * Complex.I) P)
+    (hquadratic : Integrable
+      (fun ω => (((a * x ω) ^ 2 / 2 : ℝ) : ℂ)) P)
+    (hremainder : Integrable (chewi127ScalarCharFunTaylorRemainder a x) P) :
+    P[fun ω => Complex.exp (((a * x ω : ℝ) : ℂ) * Complex.I) | m]
+      =ᵐ[P] fun ω =>
+        1
+          + P[fun ω => ((a * x ω : ℝ) : ℂ) * Complex.I | m] ω
+          - P[fun ω => (((a * x ω) ^ 2 / 2 : ℝ) : ℂ) | m] ω
+          + P[chewi127ScalarCharFunTaylorRemainder a x | m] ω := by
+  let linear : Ω -> ℂ := fun ω => ((a * x ω : ℝ) : ℂ) * Complex.I
+  let quadratic : Ω -> ℂ := fun ω => (((a * x ω) ^ 2 / 2 : ℝ) : ℂ)
+  let remainder : Ω -> ℂ := chewi127ScalarCharFunTaylorRemainder a x
+  have hconst : Integrable (fun _ : Ω => (1 : ℂ)) P := integrable_const _
+  have hlinear' : Integrable linear P := hlinear
+  have hquadratic' : Integrable quadratic P := hquadratic
+  have hremainder' : Integrable remainder P := hremainder
+  have hconst_linear : Integrable (fun ω => (1 : ℂ) + linear ω) P :=
+    hconst.add hlinear'
+  have hmodel0 : Integrable (fun ω => (1 : ℂ) + linear ω - quadratic ω) P :=
+    hconst_linear.sub hquadratic'
+  have hdecomp :
+      (fun ω => Complex.exp (((a * x ω : ℝ) : ℂ) * Complex.I))
+        =ᵐ[P] fun ω => (1 : ℂ) + linear ω - quadratic ω + remainder ω := by
+    exact ae_of_all P fun ω => by
+      simpa [linear, quadratic, remainder] using
+        chewi127ScalarCharFunTaylor_decomposition a x ω
+  have hstep0 :
+      P[fun ω => Complex.exp (((a * x ω : ℝ) : ℂ) * Complex.I) | m]
+        =ᵐ[P] P[fun ω => (1 : ℂ) + linear ω - quadratic ω + remainder ω | m] :=
+    condExp_congr_ae hdecomp
+  have hstep1 :
+      P[fun ω => (1 : ℂ) + linear ω - quadratic ω + remainder ω | m]
+        =ᵐ[P] fun ω =>
+          P[fun ω => (1 : ℂ) + linear ω - quadratic ω | m] ω
+            + P[remainder | m] ω := by
+    simpa [Pi.add_apply] using
+      (condExp_add (μ := P) hmodel0 hremainder' m)
+  have hstep2 :
+      P[fun ω => (1 : ℂ) + linear ω - quadratic ω | m]
+        =ᵐ[P] fun ω =>
+          P[fun ω => (1 : ℂ) + linear ω | m] ω - P[quadratic | m] ω := by
+    simpa [Pi.sub_apply] using
+      (condExp_sub (μ := P) hconst_linear hquadratic' m)
+  have hstep3 :
+      P[fun ω => (1 : ℂ) + linear ω | m]
+        =ᵐ[P] fun ω => 1 + P[linear | m] ω := by
+    have hconst_cond :
+        P[fun _ : Ω => (1 : ℂ) | m] =ᵐ[P] fun _ : Ω => (1 : ℂ) := by
+      exact (condExp_const (μ := P) hm (1 : ℂ)).eventuallyEq
+    exact (condExp_add (μ := P) hconst hlinear' m).trans
+      (hconst_cond.add EventuallyEq.rfl)
+  exact hstep0.trans <| hstep1.trans <| by
+    filter_upwards [hstep2, hstep3] with ω h2 h3
+    have hcalc :
+        P[fun ω => (1 : ℂ) + linear ω - quadratic ω | m] ω
+            + P[remainder | m] ω =
+          (1 : ℂ) + P[linear | m] ω - P[quadratic | m] ω
+            + P[remainder | m] ω := by
+      calc
+        P[fun ω => (1 : ℂ) + linear ω - quadratic ω | m] ω
+            + P[remainder | m] ω =
+          (P[fun ω => (1 : ℂ) + linear ω | m] ω - P[quadratic | m] ω)
+            + P[remainder | m] ω := by rw [h2]
+        _ = ((1 : ℂ) + P[linear | m] ω - P[quadratic | m] ω)
+            + P[remainder | m] ω := by rw [h3]
+        _ = (1 : ℂ) + P[linear | m] ω - P[quadratic | m] ω
+            + P[remainder | m] ω := by abel
+    simpa [linear, quadratic, remainder] using hcalc
+
+/--
 The projected vector sum is the scalar sum of the projected increments.
 -/
 theorem chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum
