@@ -167,6 +167,11 @@ Additional accuracy gates after the conversation review:
 6. Stop a cycle with one of two artifacts: a pushed verified Lean packet, or a
    precise blocker note naming the failed theorem shape, attempted APIs, and
    next smallest proof obligation.
+7. In large analytic proofs, introduce named row-level or factor-level
+   definitions before proving convergence.  Avoid broad `ring_nf`,
+   `field_simp`, or global simplification over full characteristic-function
+   expressions when a local cancellation lemma or smaller named expression
+   will do.
 
 ## Current Blocker
 
@@ -311,7 +316,10 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_4_10_quadraticVarianceProduct_tendsto_exp_of_exercise311`
 - `durrett2019_norm_prod_sub_prod_le_sum_norm_sub`
 - `durrett2019_lindebergFellerCharacteristicProductApproximationToQuadraticVarianceProduct`
+- `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSum`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
+- `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound`
+- `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_rowBound`
 - `durrett2019_lindebergFellerQuadraticVarianceFactorsEventuallyNormLeOne`
 - `durrett2019_lindebergFellerVarianceRowsEventuallySmall`
 - `durrett2019_theorem_3_4_10_varianceRowsEventuallySmall_of_lindeberg_and_varianceSplitByTailRowSum`
@@ -339,6 +347,7 @@ namespace now has a compiled starter module:
 - `Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_varianceSplit_and_exercise311`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_varianceSplit`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSum_integrableSq`
+- `Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSumBound_integrableSq`
 - `durrett2019_theorem_3_4_10_characteristicFunction_rowSum_eq_product`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_product_tendsto`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_exp_of_product_tendsto_exp`
@@ -347,6 +356,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSum_varianceSplit_and_exercise311`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSum_varianceSplit`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSum_integrableSq`
+- `durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSumBound_integrableSq`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -410,9 +420,12 @@ compile:
   product-difference control, row Gaussian exponential targets, the
   variance-sum-to-row-target convergence bridge, source-facing bridges from
   one-factor Taylor error row sums and Exercise 3.1.1 quadratic-product
-  conclusions to convergence in distribution, and source-facing bridges that
+  conclusions to convergence in distribution, source-facing bridges that
   replace the supplied variance-tail split with square-integrable row
-  assumptions.
+  assumptions, a named characteristic/quadratic error row sum, a source-shaped
+  finite-row Taylor/Lindeberg bound predicate, and a compiled bridge from that
+  finite-row bound plus the Lindeberg condition to the row-sum error
+  convergence and final convergence-in-distribution constructor.
 
 The next likely packet should attack the analytic Lindeberg-Feller estimate
 layer before moving to multivariate CLT reuse:
@@ -424,17 +437,21 @@ layer before moving to multivariate CLT reuse:
   centered second-order Taylor wrappers now compile; only add inversion or
   uniqueness support when a later source theorem needs it directly.
 - Section 3.4 central limit theorems: prove the remaining analytic obligations.
-  The one-factor Taylor/Lindeberg row-sum estimate
+  The source-shaped finite-row Taylor/Lindeberg bound
+  `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound`
+  now feeds
   `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
-  still feeds Lemma 3.4.3.  The quadratic-product obligation
+  through a compiled limiting bridge, so the next proof target is the
+  pointwise characteristic-function Taylor estimate that instantiates this
+  finite-row bound.  The quadratic-product obligation
   `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp` now has
   a compiled bridge from variance-sum convergence and max-row-variance
   smallness using the proved Exercise 3.1.1 real triangular-array product
   theorem; with the variance-tail split, it also has a compiled bridge
   directly from Lindeberg.  A final source-facing constructor now assembles the
   analytic certificate and the convergence-in-distribution theorem from
-  square-integrable rows plus the remaining one-factor error row-sum
-  primitive.  Exercise 3.1.1 itself now compiles: max-smallness gives
+  square-integrable rows plus the finite-row Taylor/Lindeberg bound predicate.
+  Exercise 3.1.1 itself now compiles: max-smallness gives
   eventual positivity and the relative logarithmic remainder estimate, uniform
   absolute row-sum boundedness turns that into row-sum log-remainder
   convergence, and the logarithmic product bridge proves the source theorem.
@@ -569,12 +586,14 @@ and Theorem 3.3.20 centered second-order Taylor wrapper.  Chapter 3.4 now has
 Theorem 3.4.1 i.i.d. CLT wrappers and Theorem 3.4.10
 triangular-array characteristic-function/product/certificate plumbing,
 including a final source-facing constructor from square-integrable rows plus
-the remaining one-factor error row-sum primitive.  Exercise 3.1.1 is now
-proved locally and feeds the quadratic product route without a supplied theorem
-assumption.  The variance-tail split is now proved from square-integrable
-rows, so the next aggressive target is the one-factor Taylor/Lindeberg error
-row-sum estimate before moving to Section 3.10 Cramer-Wold/multivariate CLT
-wrappers while checking local
+the finite-row Taylor/Lindeberg bound predicate.  Exercise 3.1.1 is now proved
+locally and feeds the quadratic product route without a supplied theorem
+assumption.  The variance-tail split is now proved from square-integrable rows,
+and the finite-row-bound-to-row-sum-convergence bridge now compiles, so the
+next aggressive target is
+`durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound` from the
+pointwise characteristic-function Taylor estimate before moving to Section
+3.10 Cramer-Wold/multivariate CLT wrappers while checking local
 asymptotic-statistics reuse first.
 Verify, update docs, commit/push, and keep this in-thread `/goal` state current.
 Report progress and blockers in Chinese/English mix.

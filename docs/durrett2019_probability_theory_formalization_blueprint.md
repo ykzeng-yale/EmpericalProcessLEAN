@@ -394,15 +394,22 @@ Compiled Section 3.2 packets:
   max-row-variance-to-factor-norm bridges, Lemma 3.4.3 product-difference
   control, the variance-sum-to-row-target convergence bridge, the
   Levy-continuity handoff from a supplied analytic certificate to convergence
-  in distribution, and a final source-facing constructor from the remaining
-  primitive obligations to the convergence-in-distribution theorem.
+  in distribution, a named characteristic/quadratic error row sum, a
+  source-shaped finite-row Taylor/Lindeberg bound predicate, a compiled bridge
+  from that finite-row bound plus Lindeberg to row-sum error convergence, and a
+  final source-facing constructor from square-integrable rows plus the
+  finite-row bound to the convergence-in-distribution theorem.
 
 Next packet candidates:
 
-- Section 3.4 Lindeberg-Feller analytic estimates: prove the one-factor
-  Taylor/Lindeberg row-sum estimate
-  `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`.
-  The lower-level variance-tail split inequality
+- Section 3.4 Lindeberg-Feller analytic estimates: prove or instantiate the
+  finite-row Taylor/Lindeberg bound
+  `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound` from the
+  pointwise characteristic-function Taylor estimate, mean-zero cancellation,
+  and truncated second moments.  The bridge from this finite-row bound to
+  `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
+  already compiles, so do not re-prove the limiting epsilon argument.  The
+  lower-level variance-tail split inequality
   `variance <= cutoff ^ 2 + tail row sum` now compiles from row
   `AEMeasurable` plus square-integrability assumptions, so it should be
   consumed rather than reproved in the next route.
