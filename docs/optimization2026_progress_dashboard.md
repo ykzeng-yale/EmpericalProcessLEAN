@@ -25,9 +25,10 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
+  the current frontier contract near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
-  replacement goal prompt and avoid replaying completed Theorem 3.4/3.6 setup
-  work.
+  replacement goal prompt.  Older long prompts in that file are archived
+  history and must not override the current `2c1a160` ASGD frontier.
 - Collaboration policy: for broad future packets, use isolated `git worktree`
   checkouts per book/lane when several local agents are active, then merge only
   scoped verified work back to shared `main`.
@@ -45,6 +46,12 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current priority sequence: `ASGD-CLT` bounded martingale certificate
   constructor, `ASGD-endpoint` source ASGD limit wrapper, then the concrete
   Sinkhorn row/column KL identity layer if ASGD stalls.
+- Process audit: the speed bottleneck was not only Lean difficulty; it was
+  stale route replay, repeated broad searches, micro-packet commit overhead,
+  and shared-worktree/build-artifact contention.  The active protocol is now:
+  one bounded search pass, one theorem-sized Lean packet, focused module
+  verification, route-doc update only when material, then one final
+  fetch/rebase/scan/commit/push gate.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

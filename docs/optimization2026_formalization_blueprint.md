@@ -40,8 +40,10 @@ another agent has already moved the frontier.
 The recurring automation is currently paused while this thread runs under a
 manual `/goal`.  The current app-level goal objective text cannot be edited
 directly in this tool surface unless the goal is complete, so
+the current frontier contract near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` carries the live
-replacement prompt for manual runs.
+replacement prompt for manual runs.  Archived long prompts in that file are
+historical route context, not the current target selector.
 
 Manual goal execution now follows a theorem-packet protocol.  Use the isolated
 Optimization worktree for broad packets, search cached mathlib/local results
@@ -49,9 +51,9 @@ before inventing primitives, keep the main thread on the active proof while
 scouts handle disjoint read-only questions when explicitly authorized, verify
 with focused Lean/module builds during development, and batch route-doc
 updates, scans, final rebase, commit, and push once per verified packet.  The
-current active sequence is ASGD quadratic recurrence/unrolling, bounded
-martingale CLT certificate construction, source ASGD endpoint assembly, then
-the concrete Sinkhorn KL identity layer if ASGD stalls.
+current active sequence after `2c1a160` is bounded martingale CLT certificate
+construction from the ASGD process/covariance interfaces, source ASGD endpoint
+assembly, then the concrete Sinkhorn KL identity layer if ASGD stalls.
 
 Historical manual frontier after focused Lean verification of Chapter 7
 `StatInference/Optimization/FrankWolfe.lean` rebased over pushed frontier

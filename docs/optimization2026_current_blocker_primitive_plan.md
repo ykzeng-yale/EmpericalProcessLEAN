@@ -106,6 +106,28 @@ micro-packet overhead.
    must not consume the main theorem packet budget unless it unlocks a
    main-text theorem.
 
+## Current Frontier Contract
+
+This is the authoritative manual route after pushed frontier `2c1a160`
+(`Add Chewi ASGD triangular decomposition`).  The app-level `/goal` objective
+and the archived long prompt below may still mention older Chapter 3 or
+`029d017` frontiers; do not use those older references to choose work.
+
+Stable substrate:
+
+- Chapters 3-8: deterministic convex optimization, lower bounds,
+  Frank-Wolfe, PGD/APGD, and supporting algebra are reusable infrastructure.
+- Chapters 9-11: finite-valued Fenchel/Bregman/mirror-descent, ABP,
+  alternating minimization, RAM, Sinkhorn selectors, and the 11.8 supplied
+  mirror-descent endpoint are reusable infrastructure.
+- Chapter 12 SMPGD: `StochasticGradient.lean` is stable through the
+  source-displayed smooth/non-smooth averaged-iterate wrappers and
+  filtration-level conditional-mean handoffs.
+- Chapter 12 ASGD: `ASGD.lean` is stable through the supplied martingale CLT
+  handoff/covariance package, exact scaled-noise and averaged-covariance
+  definitions, quadratic ASGD recurrence/unrolling, triangular regrouping
+  around `A^{-1}`, and the `sqrt N` source display.
+
 Current priority packet sequence:
 
 1. `ASGD-CLT`: bounded martingale CLT certificate constructor from
@@ -119,22 +141,16 @@ Current priority packet sequence:
    identities for Theorem 11.8 only after the current ASGD packet would
    otherwise stall.
 
-- treat Chapters 3-10 and the finite Chapter 11 ABP telescope as reusable
-  infrastructure, not active routing targets;
-- skip Corollary 11.3 topology unless a report or later theorem requires it,
-  because the compactness/subsequence proof is not the fastest route to book
-  coverage;
-- prove Theorem 11.4 as a theorem-sized alternating-minimization packet:
-  source-shaped AM descent certificate, scalar inverse-gap/telescoping rate,
-  and displayed complexity wrapper with `K = 8 * beta * D^2 * R^2`;
-- immediately follow with Theorem 11.5 RAM using expectation-level supplied
-  interfaces and the already-compiled recurrence/averaging APIs;
-- package Sinkhorn Theorems 11.7/11.8 from ABP plus Pinsker/mirror-descent
-  supplied interfaces, then open Chapter 12 SMPGD with a stochastic
-  one-step-to-rate packet before attempting the ASGD CLT material;
-- keep exercise statements and any cheap reusable exercise proofs in
-  `StatInference/Optimization/Exercises.lean`, but never let exercises block
-  the main-text theorem lane.
+Execution rule for the next proof run: spend at most one bounded search pass
+refreshing mathlib/local CLT, Cramér-Wold, conditional expectation, covariance,
+integral-sum, and finite-dimensional APIs; then implement the highest-leverage
+ASGD-CLT theorem layer found by that search.  If no direct martingale CLT is
+available, add a reusable projected-sum/Cramér-Wold bridge and record the
+remaining scalar bounded martingale CLT proof obligation precisely.
+
+Keep exercise statements and cheap reusable exercise proofs in
+`StatInference/Optimization/Exercises.lean`, but never let exercises block the
+main-text theorem lane.
 
 The current scout map says:
 
@@ -147,19 +163,21 @@ The current scout map says:
   the now-started finite-valued Fenchel-Young/double-conjugate,
   convexity-smoothness duality, Bregman divergence, relative
   convexity/smoothness, and ABP telescoping wrappers.
-- Chapters 12-13/Appendix A should start with `MatrixOrder.lean`,
-  `StochasticGradient.lean`, `SMPGD.lean`, `Newton.lean`, and
+- Chapters 12-13/Appendix A should continue from `StochasticGradient.lean` and
+  `ASGD.lean`, then open `MatrixOrder.lean`, `Newton.lean`, and
   `SelfConcordance.lean`, reusing local empirical/probability wrappers plus
   mathlib matrix/spectral and finite-dimensional APIs.
 
-## Manual Goal Prompt
+## Archived Manual Goal Prompt
 
 The active app-level `/goal` text is immutable in the current tool surface
 except for marking the goal complete.  Since the full textbook formalization is
-not complete, this document is the live replacement prompt for manual goal
-runs.
+not complete, the current frontier contract above is the live replacement
+prompt for manual goal runs.  The old long prompt below is preserved only as
+history and may contain stale commits, solved targets, and archived route
+context.
 
-Current live replacement `/goal` prompt after pushed frontier `029d017`
+Archived long replacement `/goal` prompt after pushed frontier `029d017`
 (`Add Chewi ASGD scaled noise interfaces`) and the Chapter 12 finite sampled
 rate packet, smooth integral-L2 sampled-model endpoint packet, smooth
 Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
