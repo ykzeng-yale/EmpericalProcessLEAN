@@ -156,6 +156,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   These consume the projected martingale mean-zero and conditional second-
   moment identities and leave the finite product/tower characteristic-function
   estimate as the next hard ASGD scalar CLT step.
+- New ASGD finite product/tower declarations:
+  `chewi127ScalarScaledSum_charFun_eq_integral_prod` and
+  `integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left`.  These
+  rewrite the scalar scaled-sum characteristic function as an integral of
+  one-step exponential products and provide the complex conditional pull-out
+  step needed to peel a filtration-measurable product prefix.  The next ASGD
+  packet should use them with
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`
+  to start the recursive finite product/tower estimate toward
+  `projected_charFun_tendsto_exp`.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

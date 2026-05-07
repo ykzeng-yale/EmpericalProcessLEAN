@@ -267,6 +267,13 @@ Stable substrate:
   to complex quadratic bridge, the combined mean-zero/square wrapper, and the
   source-facing
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`.
+  The first finite product/tower layer is compiled as well:
+  `chewi127ScalarScaledSum_charFun_eq_integral_prod` rewrites the scaled-sum
+  characteristic function as the integral of a finite product of one-step
+  exponential factors, and
+  `integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left` is the
+  reusable complex conditional-expectation pull-out step for a filtration-
+  measurable product prefix.
 
 Current priority packet sequence:
 
@@ -288,15 +295,19 @@ Current priority packet sequence:
    otherwise stall.
 
 Execution rule for the next proof run: the conditional one-step
-characteristic-function Taylor expansion and the projected mean-zero/second-
-moment substitution layer are now compiled.  Do not repeat Taylor setup,
-linear mean-zero conversion, quadratic conditional-square conversion, or the
-source-facing one-step Taylor wrapper.  The next packet should prove the finite
-product/tower characteristic-function estimate for
-`projected_charFun_tendsto_exp`, using the named conditional remainder term
-from `Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`
-and the averaged conditional variance convergence.  Cached scout results found
-no direct martingale CLT in pinned mathlib/local code.  Useful mathlib APIs are
+characteristic-function Taylor expansion, the projected mean-zero/second-
+moment substitution layer, and the first finite product/tower algebra are now
+compiled.  Do not repeat Taylor setup, linear mean-zero conversion, quadratic
+conditional-square conversion, the source-facing one-step Taylor wrapper, the
+scaled-sum characteristic-function product rewrite, or the generic complex
+conditional pull-out step.  The next packet should build the recursive finite
+product/tower estimate itself: apply
+`integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left` to peel the
+last one-step factor, substitute
+`Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`,
+and start bounding the accumulated conditional remainder/variance error toward
+`projected_charFun_tendsto_exp`.  Cached scout results found no direct
+martingale CLT in pinned mathlib/local code.  Useful mathlib APIs are
 `MeasureTheory.Filtration.condExp_condExp`,
 `MeasureTheory.condExp_condExp_of_le`, `MeasureTheory.integral_condExp`,
 `condExp_mul_of_aestronglyMeasurable_left/right`,
@@ -313,8 +324,10 @@ no direct martingale CLT in pinned mathlib/local code.  Useful mathlib APIs are
 `Chewi127BoundedMartingaleCharFunCLTSource` conversion layer, and the new
 quadratic exponential/scalar Taylor remainder and conditional substitution
 lemmas.  The next packet should reuse
+`chewi127ScalarScaledSum_charFun_eq_integral_prod`,
+`integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left`, and
 `Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`,
-not reprove its conditional-expectation algebra.
+not reprove their product or conditional-expectation algebra.
 
 Keep exercise statements and cheap reusable exercise proofs in
 `StatInference/Optimization/Exercises.lean`, but never let exercises block the

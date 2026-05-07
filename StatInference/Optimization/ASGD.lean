@@ -239,6 +239,61 @@ theorem chewi127ScalarScaledSum_aemeasurable
   exact ((Finset.range N).aemeasurable_fun_sum fun k _hk => hx (k + 1)).const_mul _
 
 /--
+The characteristic function of Chewi's scalar scaled sum is the expectation of
+the finite product of one-step characteristic-function factors.  This is the
+exact finite-product algebra used before the martingale tower argument.
+-/
+theorem chewi127ScalarScaledSum_charFun_eq_integral_prod
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] {x : ℕ -> Ω -> ℝ}
+    (hx : ∀ n : ℕ, AEMeasurable (x n) P) (N : ℕ) (t : ℝ) :
+    MeasureTheory.charFun (P.map (chewi127ScalarScaledSum x N)) t =
+      ∫ ω, ∏ k ∈ Finset.range N,
+        Complex.exp
+          (((t * (Real.sqrt (N : ℝ))⁻¹ * x (k + 1) ω : ℝ) : ℂ) *
+            Complex.I) ∂P := by
+  rw [MeasureTheory.charFun_apply_real]
+  rw [integral_map (chewi127ScalarScaledSum_aemeasurable (P := P) hx N) (by fun_prop)]
+  refine integral_congr_ae <| ae_of_all P fun ω => ?_
+  have hsum_arg :
+      (t : ℂ) * (chewi127ScalarScaledSum x N ω : ℂ) * Complex.I =
+        ∑ k ∈ Finset.range N,
+          (((t * (Real.sqrt (N : ℝ))⁻¹ * x (k + 1) ω : ℝ) : ℂ) *
+            Complex.I) := by
+    simp [chewi127ScalarScaledSum, Finset.mul_sum, mul_comm, mul_left_comm]
+  change Complex.exp ((t : ℂ) * (chewi127ScalarScaledSum x N ω : ℂ) * Complex.I) =
+    ∏ k ∈ Finset.range N,
+      Complex.exp (((t * (Real.sqrt (N : ℝ))⁻¹ * x (k + 1) ω : ℝ) : ℂ) *
+        Complex.I)
+  rw [hsum_arg, Complex.exp_sum]
+
+/--
+One tower/pull-out step for complex martingale products: an
+`m`-measurable prefix can be pulled outside the conditional expectation of the
+next factor, and then the conditional expectation can be integrated away.
+-/
+theorem integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] (m : MeasurableSpace Ω) (hm : m ≤ mΩ)
+    {f g : Ω -> ℂ}
+    (hf : AEStronglyMeasurable[m] f P)
+    (hfg : Integrable (fun ω => f ω * g ω) P)
+    (hg : Integrable g P) :
+    (∫ ω, f ω * g ω ∂P) =
+      ∫ ω, f ω * P[g | m] ω ∂P := by
+  calc
+    (∫ ω, f ω * g ω ∂P)
+        = ∫ ω, P[fun ω => f ω * g ω | m] ω ∂P := by
+          rw [integral_condExp (m := m) (m₀ := mΩ) (μ := P)
+            (f := fun ω => f ω * g ω) hm]
+    _ = ∫ ω, f ω * P[g | m] ω ∂P := by
+          refine integral_congr_ae ?_
+          simpa [ContinuousLinearMap.mul_apply'] using
+            (condExp_bilin_of_aestronglyMeasurable_left
+              (μ := P) (m := m) (B := ContinuousLinearMap.mul ℝ ℂ)
+              hf hfg hg)
+
+/--
 Lévy's characteristic-function theorem specialized to Chewi's scalar scaled
 martingale sums.
 
