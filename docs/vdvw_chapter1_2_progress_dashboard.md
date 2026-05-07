@@ -167,6 +167,15 @@ batch should prove the actual selected-cover Lemma 2.3.7 comparison and the
 eventual positive lower bound for `β_n(x)`, not add another downstream
 convergence wrapper.
 
+2026-05-07 variable-beta source alignment: the selected route now also accepts
+the literal Lemma 2.3.7 shape through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_eventualBeta_scaledSelectedFiniteNetHoeffdingUpper`.
+The source comparison may keep the factor `β_n(epsilon)` varying in `n`; a
+separate eventual lower bound `B <= β_n(epsilon)` freezes it to the compiled
+constant-loss route.  The next target is now sharper: prove the variable-beta
+nonmeasurable probability comparison and the Chebyshev lower bound for the
+normalized fixed-`M` truncated coordinates.
+
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
 block, the theorem that turns

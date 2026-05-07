@@ -146,6 +146,21 @@ centered truncated empirical-process variables.  Do not add another
 probability-loss wrapper before attempting that source theorem or recording a
 precise missing nonmeasurable primitive.
 
+2026-05-07 variable-beta Lemma 2.3.7 handoff:
+search found no existing local or pinned-mathlib theorem proving the
+probability symmetrization comparison itself, but the algebraic interface now
+matches the literal source shape.  `Theorem243.lean` proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_eventualBeta_scaledSelectedFiniteNetHoeffdingUpper`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_eventualBeta_scaledSelectedFiniteNetHoeffdingUpper`.
+These consume `β_n(epsilon) * P_left <= A * P_selected` together with an
+eventual deterministic lower bound `B <= β_n(epsilon)`, then feed the
+constant-beta route.  The next real source proof should therefore split into
+two theorem-facing dependencies: (1) the nonmeasurable selected-cover
+Lemma 2.3.7 probability comparison with the variable `β_n` factor; (2) the
+Chebyshev lower bound making `β_n(epsilon)` eventually bounded below for the
+normalized fixed-`M` centered truncated empirical-process coordinates.
+
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
 infrastructure for selected fixed-radius tail/UI, finite code-set and
