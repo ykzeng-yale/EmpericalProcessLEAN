@@ -94,6 +94,27 @@ This dashboard tracks the Chewi optimization formalization lane for
   `variance_map`, and `covarianceBilinDual_self_eq_variance`, plus the source
   covariance identity `limit_covariance`.  The next martingale CLT packet can
   target the explicit limit `exp (-(S_infty L L) t^2 / 2)` directly.
+- New ASGD charFun-source certificate declarations:
+  `Chewi127BoundedMartingaleCharFunCLTSource`,
+  `Chewi127BoundedMartingaleCharFunCLTSource.projected_gaussian_hasLaw`,
+  `Chewi127BoundedMartingaleCharFunCLTSource.projected_gaussian_charFun_eq`,
+  `Chewi127BoundedMartingaleCharFunCLTSource.projected_scalar_clt`,
+  `Chewi127BoundedMartingaleCharFunCLTSource.projected_clt`,
+  `Chewi127BoundedMartingaleCharFunCLTSource.toBoundedMartingaleCLTSource`,
+  and
+  `Chewi127BoundedMartingaleCharFunCLTSource.toMartingaleCLTCertificate`.
+  This removes the older supplied `projected_clt` field from the new endpoint
+  constructor and replaces it with projected mean-zero plus explicit
+  characteristic-function convergence to
+  `exp (-(S_infty L L)t^2/2)`.  The remaining hard ASGD scalar CLT proof is now
+  exactly the one-step Taylor/product/tower argument that proves that
+  characteristic-function convergence field.
+- Fresh ASGD scalar martingale CLT scout results: no direct pinned mathlib or
+  local martingale CLT was found.  Reuse mathlib conditional-expectation tower
+  and pull-out APIs, characteristic-function Taylor expansion APIs, and product
+  distance/norm estimates; locally reuse the projected conditional mean-zero,
+  projected conditional second-moment, averaged variance convergence,
+  bounded-Lindeberg, scalar Lévy, and new charFun-source certificate layers.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

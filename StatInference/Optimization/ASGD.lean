@@ -908,6 +908,222 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt
     chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum S.martingale.xi L n ω
 
 /--
+Characteristic-function source package for the bounded martingale CLT used in
+Chewi Theorem 12.7.
+
+Compared with `Chewi127BoundedMartingaleCLTSource`, this interface replaces the
+supplied projected scalar CLTs by the explicit projected mean-zero and
+characteristic-function convergence statements that a one-dimensional bounded
+martingale CLT proof should deliver.
+-/
+structure Chewi127BoundedMartingaleCharFunCLTSource
+    (Ω Ω' E : Type*) [mΩ : MeasurableSpace Ω] (P : Measure Ω)
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] (Q : Measure Ω')
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E] where
+  /-- Martingale-difference process for the noise increments. -/
+  martingale : Chewi127MartingaleDifferenceProcess Ω E P
+  /-- Conditional covariance process for the same increments. -/
+  covariance : Chewi127ConditionalCovarianceProcess Ω E P
+  /-- The covariance process uses the martingale increments. -/
+  same_noise : covariance.xi = martingale.xi
+  /-- The covariance and martingale processes use the same filtration. -/
+  same_filtration : covariance.filtration = martingale.filtration
+  /-- Averaged conditional covariance convergence in probability. -/
+  covariance_limit :
+    Chewi127AveragedConditionalCovarianceLimit Ω E P covariance.Xi
+  /-- Uniform boundedness source hypothesis for Chewi's bounded martingale CLT. -/
+  uniform_bound :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ n : ℕ, ∀ᵐ ω ∂P, ‖martingale.xi (n + 1) ω‖ ≤ B
+  /-- The vector Gaussian limit. -/
+  Z : Ω' -> E
+  /-- Projected Gaussian means are zero. -/
+  projected_limit_mean_zero :
+    ∀ L : StrongDual ℝ E, Q[fun ω => L (Z ω)] = 0
+  /--
+  Characteristic-function convergence for each scalar martingale projection.
+  This is the hard one-dimensional bounded martingale CLT conclusion.
+  -/
+  projected_charFun_tendsto_exp : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ))))
+  /-- Cramér-Wold implication from all scalar projections to vector convergence. -/
+  cramerWold_vector_clt :
+    (∀ L : StrongDual ℝ E,
+      TendstoInDistribution (chewi127ScaledProjectedNoiseSum martingale.xi L)
+        atTop (fun ω => L (Z ω)) (fun _ => P) Q) ->
+      TendstoInDistribution (chewi127ScaledNoiseSum martingale.xi)
+        atTop Z (fun _ => P) Q
+  /-- The limit law is Gaussian. -/
+  gaussian_limit : HasGaussianLaw Z Q
+  /-- Square-integrability needed for covariance displays. -/
+  limit_memLp : MemLp id 2 (Q.map Z)
+  /-- Coordinate covariance of the limit matches the limiting conditional covariance. -/
+  limit_covariance : ∀ L K : StrongDual ℝ E,
+    ProbabilityTheory.covarianceBilinDual (Q.map Z) L K =
+      covariance_limit.S_infty L K
+
+/--
+The characteristic-function source package has the scalar Gaussian law for
+each projected limit.
+-/
+theorem Chewi127BoundedMartingaleCharFunCLTSource.projected_gaussian_hasLaw
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCharFunCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) :
+    HasLaw (fun ω => L (S.Z ω))
+      (gaussianReal 0 (S.covariance_limit.S_infty L L).toNNReal) Q := by
+  let Y : Ω' -> ℝ := fun ω => L (S.Z ω)
+  have hY_gaussian : HasGaussianLaw Y Q := S.gaussian_limit.map_fun L
+  refine ⟨hY_gaussian.aemeasurable, ?_⟩
+  have hmap :
+      Q.map Y =
+        gaussianReal (Q.map Y)[id] (Var[id; Q.map Y]).toNNReal :=
+    ProbabilityTheory.IsGaussian.eq_gaussianReal
+      (Q.map Y) hY_gaussian.isGaussian_map
+  calc
+    Q.map (fun ω => L (S.Z ω)) = Q.map Y := rfl
+    _ = gaussianReal (Q.map Y)[id] (Var[id; Q.map Y]).toNNReal := hmap
+    _ = gaussianReal (Q[Y]) (Var[Y; Q]).toNNReal := by
+          rw [integral_map hY_gaussian.aemeasurable (by fun_prop),
+            variance_map (by fun_prop) hY_gaussian.aemeasurable]
+          rfl
+    _ = gaussianReal 0 (S.covariance_limit.S_infty L L).toNNReal := by
+          rw [S.projected_limit_mean_zero L]
+          have hvar_map :
+              Var[L; Q.map S.Z] = Var[Y; Q] := by
+            simpa [Y, Function.comp_def] using
+              (variance_map (X := L) (Y := S.Z) (μ := Q) (by fun_prop)
+                S.gaussian_limit.aemeasurable)
+          have hvar_eq :
+              Var[Y; Q] = S.covariance_limit.S_infty L L := by
+            calc
+              Var[Y; Q] = Var[L; Q.map S.Z] := hvar_map.symm
+              _ = ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L L :=
+                    (ProbabilityTheory.covarianceBilinDual_self_eq_variance
+                      S.limit_memLp L).symm
+              _ = S.covariance_limit.S_infty L L := S.limit_covariance L L
+          rw [hvar_eq]
+
+/--
+Explicit characteristic function of each projected Gaussian target in the
+characteristic-function source package.
+-/
+theorem Chewi127BoundedMartingaleCharFunCLTSource.projected_gaussian_charFun_eq
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCharFunCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ) :
+    MeasureTheory.charFun (Q.map (fun ω => L (S.Z ω))) t =
+      Complex.exp (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)) := by
+  have hLaw := S.projected_gaussian_hasLaw L
+  have hnonneg : 0 ≤ S.covariance_limit.S_infty L L := by
+    rw [← S.limit_covariance L L]
+    exact ProbabilityTheory.covarianceBilinDual_self_nonneg L
+  rw [hLaw.map_eq, ProbabilityTheory.charFun_gaussianReal]
+  rw [Real.coe_toNNReal _ hnonneg]
+  simp
+
+/--
+Each projected scalar martingale CLT follows from the projected
+characteristic-function convergence field.
+-/
+theorem Chewi127BoundedMartingaleCharFunCLTSource.projected_scalar_clt
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCharFunCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) :
+    TendstoInDistribution
+      (chewi127ScalarScaledSum (fun n ω => L (S.martingale.xi n ω)))
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q := by
+  refine chewi127ScalarScaledSum_tendstoInDistribution_of_charFun
+    (P := P) (Q := Q)
+    (x := fun n ω => L (S.martingale.xi n ω))
+    (Z := fun ω => L (S.Z ω)) ?_ ?_ ?_
+  · exact chewi127ScalarScaledSum_aemeasurable
+      (P := P) (x := fun n ω => L (S.martingale.xi n ω))
+      (fun n => (S.martingale.projected_integrable L n).aemeasurable)
+  · exact (S.gaussian_limit.map_fun L).aemeasurable
+  · intro t
+    simpa [S.projected_gaussian_charFun_eq L t] using
+      S.projected_charFun_tendsto_exp L t
+
+/--
+The characteristic-function source package supplies the projected CLT in the
+exact scaled-projection notation used by the Cramér-Wold bridge.
+-/
+theorem Chewi127BoundedMartingaleCharFunCLTSource.projected_clt
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCharFunCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) :
+    TendstoInDistribution (chewi127ScaledProjectedNoiseSum S.martingale.xi L)
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q := by
+  refine (S.projected_scalar_clt L).congr (fun n => ?_) Filter.EventuallyEq.rfl
+  exact Filter.Eventually.of_forall fun ω =>
+    (chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum S.martingale.xi L n ω).symm
+
+/--
+Convert the characteristic-function source package into the older bounded CLT
+source by proving its projected scalar CLT field.
+-/
+def Chewi127BoundedMartingaleCharFunCLTSource.toBoundedMartingaleCLTSource
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCharFunCLTSource Ω Ω' E P Q) :
+    Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q where
+  martingale := S.martingale
+  covariance := S.covariance
+  same_noise := S.same_noise
+  same_filtration := S.same_filtration
+  covariance_limit := S.covariance_limit
+  uniform_bound := S.uniform_bound
+  Z := S.Z
+  projected_clt := S.projected_clt
+  cramerWold_vector_clt := S.cramerWold_vector_clt
+  gaussian_limit := S.gaussian_limit
+  limit_memLp := S.limit_memLp
+  limit_covariance := S.limit_covariance
+
+/--
+Constructor for the Chewi Theorem 12.7 martingale CLT certificate from the
+characteristic-function version of the bounded martingale CLT source.
+-/
+def Chewi127BoundedMartingaleCharFunCLTSource.toMartingaleCLTCertificate
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCharFunCLTSource Ω Ω' E P Q) :
+    Chewi127MartingaleCLTCertificate Ω Ω' E P Q :=
+  S.toBoundedMartingaleCLTSource.toMartingaleCLTCertificate
+
+/--
 Source-facing CLT conclusion accessor for a Chewi Theorem 12.7 certificate.
 -/
 theorem Chewi127MartingaleCLTCertificate.clt_limit

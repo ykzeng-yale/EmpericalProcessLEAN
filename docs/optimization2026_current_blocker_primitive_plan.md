@@ -244,18 +244,24 @@ Stable substrate:
   the scalar scaled sums.  The projected Gaussian limit has a compiled
   source-shaped scalar law and characteristic-function display
   `exp (-(S_infty L L) t^2 / 2)` once the projected Gaussian mean is identified
-  as zero.
+  as zero.  The characteristic-function version of the bounded martingale CLT
+  source is now compiled: it replaces the old `projected_clt` field by
+  projected mean-zero plus explicit projected characteristic-function
+  convergence, then constructs the old bounded source and the source-facing
+  martingale CLT certificate.
 
 Current priority packet sequence:
 
-1. `ASGD-scalar-martingale-CLT`: prove or sharply source-package the actual
-   one-dimensional bounded martingale CLT from the compiled scalar projection
-   data: conditional mean-zero, conditional second moment, averaged conditional
+1. `ASGD-scalar-martingale-CLT`: prove the actual one-dimensional bounded
+   martingale characteristic-function convergence field
+   `projected_charFun_tendsto_exp` from the compiled scalar projection data:
+   conditional mean-zero, conditional second moment, averaged conditional
    variance convergence, uniform boundedness, and the now-compiled scalar
-   Lindeberg a.e.-zero, characteristic-function bridge, and projected Gaussian
-   target layers.  The vector-to-scalar plumbing, Lindeberg bounded-tail
-   discharge, distribution-from-characteristic-functions bridge, and Gaussian
-   target identification are compiled; do not repeat them.
+   Lindeberg a.e.-zero, scalar Lévy bridge, projected Gaussian target, and
+   charFun-source certificate layers.  The vector-to-scalar plumbing,
+   bounded-tail Lindeberg discharge, distribution-from-characteristic-functions
+   bridge, Gaussian target identification, and certificate conversion are
+   compiled; do not repeat them.
 2. `ASGD-endpoint`: connect the exact scaled noise sum, recurrence-derived
    decomposition, and certificate to the source Theorem 12.7/12.3 ASGD limit
    statement.
@@ -263,14 +269,27 @@ Current priority packet sequence:
    identities for Theorem 11.8 only after the current ASGD packet would
    otherwise stall.
 
-Execution rule for the next proof run: spend at most one bounded search pass
-refreshing mathlib/local scalar martingale CLT, Gaussian characteristic
-functions, Taylor remainder, and conditional expectation tower/product APIs;
-then implement the highest-leverage characteristic-function convergence layer
-for scalar martingale arrays.  The reusable projected-sum/Cramér-Wold bridge,
-scalar projection side-condition accessors, boundedness-to-Lindeberg a.e.-zero
-layer, scalar Lévy bridge, and explicit projected Gaussian characteristic target
-are now compiled, so do not repeat them.
+Execution rule for the next proof run: implement the first hard scalar
+martingale characteristic-function theorem rather than another certificate
+wrapper.  Cached scout results found no direct martingale CLT in pinned
+mathlib/local code.  Useful mathlib APIs are
+`MeasureTheory.Filtration.condExp_condExp`,
+`MeasureTheory.condExp_condExp_of_le`, `MeasureTheory.integral_condExp`,
+`condExp_mul_of_aestronglyMeasurable_left/right`,
+`condExp_smul_of_aestronglyMeasurable_left/right`,
+`MeasureTheory.taylorWithinEval_charFun_two_zero`,
+`MeasureTheory.taylor_charFun_two`,
+`Complex.tendsto_pow_exp_of_isLittleO_sub_add_div`,
+`Finset.norm_prod_le`, and `Finset.dist_prod_prod_le`.  Local reuse includes
+`Chewi127MartingaleDifferenceProcess.condExp_linear_next_eq_zero`,
+`Chewi127ConditionalCovarianceProcess.condExp_projected_square_eq`,
+`Chewi127AveragedConditionalCovarianceLimit.variance_tendstoInMeasure`,
+`chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound`,
+`chewi127ScalarScaledSum_tendstoInDistribution_of_charFun`, and the new
+`Chewi127BoundedMartingaleCharFunCLTSource` conversion layer.  The next packet
+should target the conditional one-step characteristic-function expansion or the
+finite product/telescoping inequality that feeds
+`projected_charFun_tendsto_exp`.
 
 Keep exercise statements and cheap reusable exercise proofs in
 `StatInference/Optimization/Exercises.lean`, but never let exercises block the
