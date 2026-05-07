@@ -468,6 +468,10 @@ Initial modules:
   `vaart1998_theorem_5_9_zEstimator_consistent_of_outerProbabilityUniformErrors`,
   and
   `vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_real_outerProbabilityUniformErrors`.
+  The empirical-average notation layer now also includes the real-normed-vector
+  average `empiricalAverageVector`, consumed by
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_vector_outerProbabilityUniformErrors`
+  for vector-valued estimating equations `P_n psi_theta`.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

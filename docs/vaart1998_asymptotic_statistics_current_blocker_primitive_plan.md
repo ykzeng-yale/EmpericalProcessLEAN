@@ -721,22 +721,25 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_theorem_5_9_zEstimator_consistent_of_outerProbabilityUniformErrors`.
 238. Theorem 5.9 scalar empirical-average estimating-equation endpoint:
    `vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_real_outerProbabilityUniformErrors`.
+239. Vector-valued empirical average notation:
+   `empiricalAverageVector` and
+   `empiricalAverageVector_eq_inv_smul_sum`.
+240. Theorem 5.9 vector empirical-average estimating-equation endpoint:
+   `vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_vector_outerProbabilityUniformErrors`.
 
-Latest remote base before this packet: `787df2c`.
-Latest pushed Vaart packet before this packet: `a2b8620`
-(`Add Vaart chapter 5 random uniform-error endpoints`).
+Latest remote base before this packet: `d0cd769`.
+Latest pushed Vaart packet before this packet: `0c3f190`
+(`Add Vaart chapter 5 outer probability endpoints`).
 
-The current theorem-sized packet connects the Chapter 5 random-error endpoints
-to the VdV&W empirical-process language: random uniform criterion or
-estimating-function errors that converge to zero in outer probability now feed
-the Theorem 5.7 and 5.9 consistency wrappers, and the real-valued sample-average
-notation layer exposes criteria `P_n m_theta` and scalar equations
-`P_n psi_theta`.
+The current theorem-sized packet extends the sample-average notation layer from
+real criteria to real-normed-vector estimating equations.  Vector empirical
+averages `P_n psi_theta` now feed the VdV&W outer-probability Theorem 5.9
+endpoint directly.
 
-The next aggressive packet should add vector-valued empirical-average notation
-for estimating equations, then build source-shaped GC/outer-probability
-constructors that turn existing VdV&W class-level uniform laws directly into the
-new Chapter 5 empirical-average endpoints.
+The next aggressive packet should build source-shaped GC/outer-probability
+constructors that turn existing VdV&W class-level uniform laws directly into
+the Chapter 5 empirical-average M/Z endpoints, rather than asking future users
+to supply the random uniform-error process manually.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

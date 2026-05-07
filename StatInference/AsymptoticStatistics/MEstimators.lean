@@ -952,5 +952,50 @@ theorem vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_real_out
     uniformError approxError h_uniform h_near_zero
     h_uniform_outer h_approx_outer h_zero h_separated
 
+/--
+van der Vaart 1998, Theorem 5.9, vector empirical-average estimating-equation
+endpoint.
+
+This is the `P_n psi_theta` notation layer for estimating equations whose
+values lie in a real normed vector space.  It reuses the VdV&W
+outer-probability random-error wrapper after expanding `P_n` as the
+vector-valued empirical average of the estimating function.
+-/
+theorem vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_vector_outerProbabilityUniformErrors
+    {Ω : Type u} {Observation : Type*} {Θ : Type v} {E : Type*}
+    [MeasurableSpace Ω] [PseudoMetricSpace Θ]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (estimatingFunction : Θ -> Observation -> E)
+    {Psi : Θ -> E} {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (uniformError approxError : ℕ -> Ω -> ℝ)
+    (h_uniform :
+      ∀ n : ℕ, ∀ omega : Ω, ∀ theta : Θ,
+        ‖empiricalAverageVector (samples n omega) (estimatingFunction theta) -
+          Psi theta‖ ≤ uniformError n omega)
+    (h_near_zero :
+      ∀ n : ℕ, ∀ omega : Ω,
+        ‖empiricalAverageVector (samples n omega)
+          (estimatingFunction (thetaHat n omega))‖ ≤ approxError n omega)
+    (h_uniform_outer :
+      VdVWConvergesInOuterProbability P uniformError atTop (fun _ : Ω => 0))
+    (h_approx_outer :
+      VdVWConvergesInOuterProbability P approxError atTop (fun _ : Ω => 0))
+    (h_zero : Psi theta0 = 0)
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            eta ≤ ‖Psi theta‖) :
+    TendstoInMeasure P thetaHat atTop (fun _ : Ω => theta0) :=
+  vaart1998_theorem_5_9_zEstimator_consistent_of_outerProbabilityUniformErrors
+    (Psi := Psi)
+    (Psi_n := fun n omega theta =>
+      empiricalAverageVector (samples n omega) (estimatingFunction theta))
+    (theta0 := theta0) (thetaHat := thetaHat)
+    uniformError approxError h_uniform h_near_zero
+    h_uniform_outer h_approx_outer h_zero h_separated
+
 end AsymptoticStatistics
 end StatInference

@@ -35,6 +35,26 @@ theorem empiricalAverage_eq_sum_div {Observation : Type u} {n : ℕ}
       (∑ i : Fin n, statistic (sample i)) / (n : ℝ) :=
   rfl
 
+/--
+Empirical average of a vector-valued statistic over a fixed-size sample.
+
+This is the notation layer needed for estimating equations `P_n psi_theta`
+when `psi_theta` takes values in a real normed vector space.
+-/
+noncomputable def empiricalAverageVector {Observation : Type u} {E : Type v}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] {n : ℕ}
+    (sample : SampleAt Observation n) (statistic : Observation -> E) : E :=
+  ((n : ℝ)⁻¹) • ∑ i : Fin n, statistic (sample i)
+
+/-- Unfolding lemma for vector-valued empirical averages. -/
+theorem empiricalAverageVector_eq_inv_smul_sum
+    {Observation : Type u} {E : Type v}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] {n : ℕ}
+    (sample : SampleAt Observation n) (statistic : Observation -> E) :
+    empiricalAverageVector sample statistic =
+      ((n : ℝ)⁻¹) • ∑ i : Fin n, statistic (sample i) :=
+  rfl
+
 /-- Empirical risk induced by a candidate-indexed loss over one sample. -/
 noncomputable def empiricalRiskOfLoss {Observation : Type u} {Candidate : Type v}
     {n : ℕ} (sample : SampleAt Observation n)

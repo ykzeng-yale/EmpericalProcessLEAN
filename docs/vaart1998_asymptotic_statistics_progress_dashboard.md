@@ -531,10 +531,16 @@ Chapter 4 handoff:
   bridge empirical-process outer-probability uniform-error controls into the
   Chapter 5.7 and 5.9 consistency endpoints, including `P_n m_theta` criteria
   and scalar `P_n psi_theta` estimating equations.
+- Vector empirical-average estimating equations:
+  `empiricalAverageVector`,
+  `empiricalAverageVector_eq_inv_smul_sum`, and
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_vector_outerProbabilityUniformErrors`
+  extend the sample-average route to real-normed-vector equations
+  `P_n psi_theta`.
 
-Latest remote base before this packet: `787df2c`.  Latest pushed Vaart packet
-before this packet: `a2b8620`
-(`Add Vaart chapter 5 random uniform-error endpoints`).
+Latest remote base before this packet: `d0cd769`.  Latest pushed Vaart packet
+before this packet: `0c3f190`
+(`Add Vaart chapter 5 outer probability endpoints`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -547,10 +553,10 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Add vector-valued empirical-average notation for estimating equations, then
-build source-shaped GC/outer-probability constructors that turn existing VdV&W
-class-level uniform laws directly into the Chapter 5 empirical-average
-endpoints.
+Build source-shaped GC/outer-probability constructors that turn existing VdV&W
+class-level uniform laws directly into the Chapter 5 empirical-average M/Z
+endpoints, rather than asking future users to supply the random uniform-error
+process manually.
 
 ## Reuse Dependencies
 
