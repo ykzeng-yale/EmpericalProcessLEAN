@@ -3062,3 +3062,20 @@ carry one fewer artificial side condition.  This does not claim the generic
 textbook theorem: the remaining high-priority source bridge is still the
 outer-entropy-to-selected-tail/UI or scaled selected finite-net event
 comparison.
+
+2026-05-07 recalibration: the VdV&W lane is continuing from the clean
+`/private/tmp/ep-vdvw-selected-log-route` worktree because the original Desktop
+workspace is readable again but dirty with unrelated Matching-lane files and is
+far behind `origin/main`.  The compact active target is now the generic
+Theorem 2.4.3 source bridge only: prove selected normalized-log tail/UI or the
+fixed-radius selected finite-net outer-probability/a.e. comparison from the
+textbook entropy/symmetrization argument.  Avoid more endpoint aliases unless a
+new upstream theorem is consumed.
+
+`Theorem243.lean` now also proves
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbabilityComparison`.
+This takes the proof-carrying fixed-radius finite-net outer-probability
+comparison at every positive truncation level and immediately reaches the
+untruncated centered convergence through the existing large-`M` envelope-tail
+handoff.  Next work should prove that comparison primitive itself, not another
+downstream wrapper.

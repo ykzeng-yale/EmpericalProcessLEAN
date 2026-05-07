@@ -7613,3 +7613,43 @@ generic VdV&W 2.4.3 blocker is unchanged and remains source-side: prove
 selected normalized-log tail/UI or a direct scaled selected finite-net event
 comparison from the textbook outer-probability entropy hypothesis, without
 smuggling in ordinary mean/UI assumptions.
+
+2026-05-07 iCloud/worktree and `/goal` recalibration: after the local iCloud
+download finished, the original Desktop workspace was readable but still dirty
+and far behind `origin/main`, with unrelated `StatInference/Matching/* 2.lean`
+files and Matching-lane edits.  The VdV&W proof lane therefore remains on the
+clean synced worktree `/private/tmp/ep-vdvw-selected-log-route` to avoid
+cross-agent interference; no Lean/code change should be reverted merely
+because it was made while diagnosing the earlier iCloud/symlink issue.
+
+The active `/goal` prompt should now be the following compact target, replacing
+the older long automation-style prompt:
+
+> Formalize/prove VdV&W Chapters 1-2 in dependency order.  Current verified
+> frontier is exact Theorem 2.4.3 at the generic random-entropy bridge.  Do not
+> add endpoint aliases or more side-condition packaging unless they consume a
+> new upstream theorem.  Search local `StatInference`, `StatInference/ProbabilityMeasure`,
+> pinned mathlib, and recorded Lean checkouts first.  Primary task: prove the
+> source theorem converting the textbook fixed-radius outer-probability entropy
+> hypothesis into either selected normalized-log tail/UI/ordinary-mean control
+> or a direct fixed-radius selected finite-net outer-probability/a.e. comparison
+> from ghost samples, Rademacher signs, and selected empirical covers.  If that
+> fails after real Lean/search attempts, register exactly one precise VdVW
+> nonmeasurable selected-entropy primitive matching this source shape.  Keep
+> Chapter 1 arbitrary-map/asymptotic-measurability/process blockers active only
+> when needed by this theorem line.  Verify in the clean `/private/tmp` Lake
+> lane, scan for `sorry`/`admit`/`axiom`/`unsafe` and secrets, update this plan,
+> commit/push only verified progress.
+
+2026-05-07 Theorem 2.4.3 fixed-radius comparison untruncation consumer:
+search showed that `Theorem243.lean` already had the proof-carrying fixed-`M`
+consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbabilityComparison`,
+but no direct all-positive-`M` untruncated consumer for the same exact
+outer-probability comparison primitive.  `Theorem243.lean` now proves
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbabilityComparison`.
+It composes the fixed-`M` comparison route with the existing large-`M`
+envelope-tail handoff.  This is the preferred source target for the next proof:
+prove `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison` for every
+positive truncation level from the textbook ghost/Rademacher selected-cover
+argument, rather than adding more final consumers.
