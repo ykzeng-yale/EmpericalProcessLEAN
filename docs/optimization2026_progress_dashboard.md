@@ -462,9 +462,20 @@ remainder term with coefficient `M_k^n - Ainv`.  The next packet compiles
 continuous mapping, Gaussian linear-map closure, and additive Slutsky to prove
 that the scaled averaged ASGD error has the `-Ainv`-pushed weak limit once the
 martingale CLT term is supplied and the initial/remainder terms are `o_P(1)`.
-The active Chapter 12 blocker is now conditional mean-zero/covariance
-packaging, a supplied martingale CLT certificate matching Chewi Theorem 12.7,
-and the finite-dimensional covariance-pushforward display.
+The newest ASGD packet compiles `Chewi127MartingaleDifferenceProcess`,
+`Chewi127ConditionalCovarianceProcess`,
+`Chewi127MartingaleCLTCertificate`,
+`Chewi127MartingaleDifferenceProcess.integral_next_eq_zero`,
+`Chewi127MartingaleCLTCertificate.asgd_distribution_limit`,
+`Chewi127MartingaleCLTCertificate.neg_linear_covarianceBilinDual`,
+`Chewi127MartingaleCLTCertificate.neg_linear_covarianceTable`, and
+`chewi123_asgd_limit_package_of_martingale_certificate`.  This packages Chewi
+Theorem 12.7 as a supplied martingale CLT certificate and reuses the Vaart
+covarianceBilinDual/table pullback primitives to identify the `-Ainv` pushed
+Gaussian covariance.  The active Chapter 12 blocker is now a bounded
+martingale CLT certificate constructor from the process/covariance interfaces,
+averaged conditional covariance convergence, and exact quadratic ASGD
+recurrence assembly.
 
 ## Initial Reuse Audit
 

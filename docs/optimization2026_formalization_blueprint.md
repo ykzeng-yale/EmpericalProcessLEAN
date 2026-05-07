@@ -421,10 +421,20 @@ compiles `chewi123_asgd_neg_linear_noise_clt`,
 `chewi123_asgd_distribution_limit_of_noise_and_remainders`, reusing mathlib's
 continuous-mapping theorem, Gaussian linear-map closure, and Slutsky additive
 handoff to turn Chewi's martingale CLT term plus two `o_P(1)` remainders into
-the scaled averaged-iterate weak limit.  The next ASGD target is conditional
-mean-zero/covariance packaging, a supplied martingale CLT certificate matching
-Theorem 12.7, and the finite-dimensional covariance-pushforward display
-`A^{-1} S_infty A^{-1}`.
+the scaled averaged-iterate weak limit.  The next packet compiles
+`Chewi127MartingaleDifferenceProcess`,
+`Chewi127ConditionalCovarianceProcess`,
+`Chewi127MartingaleCLTCertificate`,
+`Chewi127MartingaleDifferenceProcess.integral_next_eq_zero`,
+`Chewi127MartingaleCLTCertificate.asgd_distribution_limit`,
+`Chewi127MartingaleCLTCertificate.neg_linear_covarianceBilinDual`,
+`Chewi127MartingaleCLTCertificate.neg_linear_covarianceTable`, and
+`chewi123_asgd_limit_package_of_martingale_certificate`, reusing the Vaart
+covarianceBilinDual/table pullback primitives for the Chewi `-A^{-1}` pushed
+Gaussian limit.  The next ASGD target is a bounded martingale CLT certificate
+constructor from the process/covariance interfaces, convergence in probability
+of averaged conditional covariances, and exact quadratic ASGD recurrence
+assembly.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

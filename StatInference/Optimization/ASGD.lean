@@ -1,5 +1,7 @@
+import StatInference.AsymptoticStatistics.MomentEstimators
 import StatInference.Optimization.StochasticGradient
 import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
+import Mathlib.Probability.Process.Adapted
 
 /-!
 # Chewi Chapter 12 averaged SGD algebra
@@ -14,6 +16,10 @@ The second packet is the probabilistic handoff used immediately after that
 display: if the scaled martingale sum has a Gaussian weak limit and the initial
 condition and coefficient-remainder terms vanish in probability, then the
 scaled averaged iterate has the pushed-forward Gaussian weak limit.
+
+The third packet packages the supplied martingale-CLT interface from Chewi
+Theorem 12.7 and connects it to the covariance-pushforward display used in
+Theorem 12.3.
 -/
 
 noncomputable section
@@ -22,8 +28,108 @@ namespace StatInference
 namespace Optimization
 
 open Filter MeasureTheory ProbabilityTheory
+open StatInference.AsymptoticStatistics
 open Finset
 open scoped BigOperators
+
+/--
+Process-level martingale-difference interface for Chewi Theorem 12.7.
+
+The fields are intentionally source-shaped: `xi` is adapted to a filtration
+and its next increment has conditional expectation zero given the previous
+filtration level.  Later theorem packets can derive the supplied CLT
+certificate from this structure plus the conditional-covariance assumptions.
+-/
+structure Chewi127MartingaleDifferenceProcess
+    (Ω E : Type*) [mΩ : MeasurableSpace Ω] (P : Measure Ω)
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] where
+  /-- The noise increments `xi_n`. -/
+  xi : ℕ -> Ω -> E
+  /-- The information available up to each iteration. -/
+  filtration : Filtration ℕ mΩ
+  /-- The noise process is adapted to the filtration. -/
+  adapted : StronglyAdapted filtration xi
+  /-- Integrability required for conditional expectations. -/
+  integrable : ∀ n, Integrable (xi n) P
+  /-- Martingale-difference condition `E[xi_{n+1} | F_n] = 0`. -/
+  condExp_zero : ∀ n, P[xi (n + 1) | filtration n] =ᵐ[P] fun _ => 0
+
+/--
+Conditional-covariance interface for the martingale CLT route.
+
+For continuous linear coordinates `L` and `K`, the supplied field records the
+conditional second moment of the next noise increment.  Under the
+mean-zero field in `Chewi127MartingaleDifferenceProcess`, this is the
+coordinate form of Chewi's `Xi_{n+1}`.
+-/
+structure Chewi127ConditionalCovarianceProcess
+    (Ω E : Type*) [mΩ : MeasurableSpace Ω] (P : Measure Ω)
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] where
+  /-- The noise increments `xi_n`. -/
+  xi : ℕ -> Ω -> E
+  /-- The information available up to each iteration. -/
+  filtration : Filtration ℕ mΩ
+  /-- Conditional covariance kernel, tested against continuous linear maps. -/
+  Xi : ℕ -> Ω -> StrongDual ℝ E -> StrongDual ℝ E -> ℝ
+  /-- Conditional second-moment identity defining `Xi_{n+1}` coordinatewise. -/
+  conditional_second_moment : ∀ n L K,
+    P[fun ω => L (xi (n + 1) ω) * K (xi (n + 1) ω) | filtration n]
+      =ᵐ[P] fun ω => Xi (n + 1) ω L K
+
+/--
+Chewi Theorem 12.7, represented as a reusable supplied certificate.
+
+The actual martingale CLT proof can later populate these fields from
+`Chewi127MartingaleDifferenceProcess`,
+`Chewi127ConditionalCovarianceProcess`, boundedness/Lindeberg assumptions, and
+the convergence in probability of averaged conditional covariances.
+-/
+structure Chewi127MartingaleCLTCertificate
+    (Ω Ω' E : Type*) [MeasurableSpace Ω] (P : Measure Ω)
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] (Q : Measure Ω')
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [OpensMeasurableSpace E] [BorelSpace E] where
+  /-- The scaled martingale sum, e.g. `n^{-1/2} sum_{k=1}^n xi_k`. -/
+  noiseScaled : ℕ -> Ω -> E
+  /-- The Gaussian limit random vector. -/
+  Z : Ω' -> E
+  /-- The source martingale CLT conclusion. -/
+  clt : TendstoInDistribution noiseScaled atTop Z (fun _ => P) Q
+  /-- The limit law is Gaussian. -/
+  gaussian_limit : HasGaussianLaw Z Q
+  /-- The covarianceBilinDual display is available for the limit law. -/
+  limit_memLp : MemLp id 2 (Q.map Z)
+
+/--
+A martingale-difference increment has unconditional mean zero.
+
+This is the same conditional-to-unconditional expectation handoff used in the
+SMPGD wrappers, specialized to Chewi's ASGD noise process.
+-/
+theorem Chewi127MartingaleDifferenceProcess.integral_next_eq_zero
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (M : Chewi127MartingaleDifferenceProcess Ω E P) (n : ℕ) :
+    (∫ ω, M.xi (n + 1) ω ∂P) = 0 :=
+  integral_eq_const_of_filtration_condExp_ae_eq_const
+    (μ := P) M.filtration n (M.xi (n + 1)) 0 (M.condExp_zero n)
+
+/--
+Source-facing CLT conclusion accessor for a Chewi Theorem 12.7 certificate.
+-/
+theorem Chewi127MartingaleCLTCertificate.clt_limit
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [OpensMeasurableSpace E] [BorelSpace E]
+    (C : Chewi127MartingaleCLTCertificate Ω Ω' E P Q) :
+    TendstoInDistribution C.noiseScaled atTop C.Z (fun _ => P) Q :=
+  C.clt
 
 /--
 Finite-sum algebra behind the ASGD display `(12.5)`: any coefficient family
@@ -192,6 +298,123 @@ theorem chewi123_asgd_distribution_limit_of_noise_and_remainders
   · filter_upwards [hDecomp n] with ω hω
     simpa [Pi.add_apply] using hω
   · exact ae_of_all _ fun ω => by simp
+
+/--
+Chewi Theorem 12.3 handoff from a supplied martingale CLT certificate.
+
+This wraps the proof step after `(12.5)`: the source martingale CLT supplies
+the limit for the scaled noise sum, while the initial and coefficient-remainder
+terms vanish in probability.
+-/
+theorem Chewi127MartingaleCLTCertificate.asgd_distribution_limit
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [SecondCountableTopology E] [BorelSpace E] [OpensMeasurableSpace E]
+    (C : Chewi127MartingaleCLTCertificate Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω => (-Ainv (C.noiseScaled n ω) + initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+      (fun ω => -Ainv (C.Z ω)) (fun _ => P) Q :=
+  chewi123_asgd_distribution_limit_of_noise_and_remainders
+    (Ainv := Ainv) (noiseScaled := C.noiseScaled) (Z := C.Z)
+    C.clt hInitial hRemainder hInitial_meas hRemainder_meas hDecomp
+
+/--
+CovarianceBilinDual pullback for the `-A^{-1}` Gaussian limit in Chewi
+Theorem 12.3.
+
+This reuses the existing van der Vaart covariance-pullback primitive rather
+than duplicating covariance foundations in the optimization lane.
+-/
+theorem Chewi127MartingaleCLTCertificate.neg_linear_covarianceBilinDual
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (C : Chewi127MartingaleCLTCertificate Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E) (L K : StrongDual ℝ E) :
+    ProbabilityTheory.covarianceBilinDual
+        (Q.map fun ω => -Ainv (C.Z ω)) L K =
+      vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+        (fun L0 K0 =>
+          ProbabilityTheory.covarianceBilinDual (Q.map C.Z) L0 K0) L K := by
+  simpa using
+    vaart1998_covarianceBilinDual_inverseDerivative_map_apply_of_memLp
+      (Z := C.Z) (Q := Q) (Dinv := -Ainv)
+      C.clt.aemeasurable_limit C.limit_memLp L K
+
+/--
+Finite-coordinate covariance table for the `-A^{-1}` Gaussian limit in Chewi
+Theorem 12.3.
+-/
+theorem Chewi127MartingaleCLTCertificate.neg_linear_covarianceTable
+    {I Ω Ω' E : Type*} [Fintype I] [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (C : Chewi127MartingaleCLTCertificate Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E) (coordinates : I -> StrongDual ℝ E) (i j : I) :
+    vaart1998_covarianceTable coordinates
+        (fun L K =>
+          ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (C.Z ω)) L K) i j =
+      vaart1998_covarianceTable
+        (fun k => (coordinates k).comp (-Ainv))
+        (fun L K => ProbabilityTheory.covarianceBilinDual (Q.map C.Z) L K)
+        i j := by
+  simpa using
+    vaart1998_covarianceBilinDual_inverseDerivative_table_apply_of_memLp
+      (Z := C.Z) (Q := Q) (Dinv := -Ainv)
+      (coordinates := coordinates) C.clt.aemeasurable_limit C.limit_memLp i j
+
+/--
+Source-shaped Chewi Theorem 12.3 probability/covariance package from a supplied
+Theorem 12.7 martingale CLT certificate and the two `o_P(1)` remainder
+discharges.
+-/
+theorem chewi123_asgd_limit_package_of_martingale_certificate
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (C : Chewi127MartingaleCLTCertificate Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω => (-Ainv (C.noiseScaled n ω) + initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (C.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (C.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (C.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map C.Z) L0 K0) L K :=
+  ⟨C.asgd_distribution_limit Ainv hInitial hRemainder
+      hInitial_meas hRemainder_meas hDecomp,
+    chewi123_asgd_neg_linear_gaussian_limit (Ainv := Ainv) C.gaussian_limit,
+    fun L K => C.neg_linear_covarianceBilinDual Ainv L K⟩
 
 end Optimization
 end StatInference
