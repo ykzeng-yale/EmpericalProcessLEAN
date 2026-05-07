@@ -378,9 +378,11 @@ Compiled Section 3.2 packets:
 
 Next packet candidates:
 
-- Section 3.4 Lindeberg-Feller analytic estimates: prove the
-  Lindeberg-implied max-row-variance smallness, the one-factor
-  Taylor/Lindeberg row-sum estimate, and the Exercise 3.1.1 quadratic-product
+- Section 3.4 Lindeberg-Feller analytic estimates: first package the
+  source-shaped variance-tail split bridge proving the Lindeberg-implied
+  max-row-variance smallness from a supplied Durrett inequality
+  `variance <= cutoff ^ 2 + tail row sum`; then prove the one-factor
+  Taylor/Lindeberg row-sum estimate and the Exercise 3.1.1 quadratic-product
   convergence statement.
 - Section 3.3 inversion or uniqueness support, only when it is directly needed
   for the convergence theorem route.

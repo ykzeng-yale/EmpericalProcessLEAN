@@ -109,6 +109,44 @@ micro-packets that do not move a source theorem.
     authorization, and keep all file/code text in English while using bilingual
     chat updates.
 
+## Process Audit And Efficiency Corrections
+
+This audit records the current operating improvements for future Durrett
+cycles.  It should be treated as the practical runbook whenever the app-level
+`/goal` wording is older than the verified route docs.
+
+Observed risks:
+
+- stale-goal drift: the app-level `/goal` may still mention an older Chapter 2
+  target even though the verified frontier is Chapter 3.4.10;
+- automation drift: the user asked for an in-thread goal, not a recurring
+  automation;
+- over-delegation drift: subagents are useful only when explicitly authorized
+  for a bounded parallel task;
+- search churn: broad source/mathlib searches after every compaction waste time
+  when the current theorem already has cached anchors;
+- packet fragmentation: small algebra packets are useful only when they remove
+  a named source-facing blocker.
+
+Corrections for the next cycle:
+
+1. Route from this file, the dashboard, the blueprint, and the latest pushed
+   commit before trusting the app-level objective.
+2. Start with one sync pass, one route-doc read, and one focused source/API
+   check for the current theorem; avoid whole-chapter rereads unless the route
+   changes.
+3. Choose the first proof packet that removes a named theorem blocker, then
+   stop expanding scope until it compiles.
+4. Prefer a Durrett-shaped assumption or certificate bridge when the underlying
+   measure-theoretic primitive would otherwise consume the whole cycle.
+5. Use an isolated worktree only when this main checkout would be blocked by a
+   long build, dirty unrelated local work, or disjoint authorized agent work.
+6. Verify at the narrowest sound tier first, then promote only as needed:
+   focused Lean for touched Lean files, targeted `lake build` for theorem
+   packets, root build only when imports or shared modules changed.
+7. Commit docs-only protocol changes only when they encode a user correction or
+   a blocker discovery that materially improves the next handoff.
+
 ## Current Blocker
 
 The Durrett source assets are present locally, and the Durrett-specific Lean
@@ -340,6 +378,13 @@ layer before moving to multivariate CLT reuse:
   is the Exercise 3.1.1 finite-product-to-exponential part for
   `c_{n,m} = -t^2 sigma_{n,m}^2 / 2`.  Their assembly into the row-product
   approximation and the final analytic certificate now compiles.
+  The immediate high-throughput first packet is the variance-tail split bridge:
+  package Durrett's source inequality
+  `variance <= cutoff ^ 2 + tail row sum` as a supplied theorem-shaped
+  predicate, then prove that the Lindeberg condition implies
+  `durrett2019_lindebergFellerVarianceRowsEventuallySmall` from that predicate.
+  This removes the max-row-variance blocker without spending a whole cycle on
+  the lower-level integral/truncation proof.
 - Section 3.10 characteristic-function convergence, Cramer-Wold, and
   multivariate CLT: search `StatInference/AsymptoticStatistics` and local
   weak-convergence files before adding new primitives.

@@ -273,3 +273,14 @@ Before choosing, apply the high-accuracy protocol from the current blocker
 plan: sync remote once, check whether other-agent work changed the route,
 reuse cached source/API anchors, and pick one theorem-sized packet rather than
 a search-only cycle.
+
+Process correction for the next cycle: treat the route docs and latest pushed
+commit as the live target when the app-level `/goal` wording lags.  Do not
+create an automation or spawn subagents unless the user explicitly asks for
+parallel agent work.  The next efficient first packet is the source-shaped
+variance-tail split bridge proving
+`durrett2019_lindebergFellerVarianceRowsEventuallySmall` from the Lindeberg
+condition plus a supplied Durrett inequality
+`variance <= cutoff ^ 2 + tail row sum`; after that, return to the
+one-factor Taylor/Lindeberg row-sum estimate and the Exercise 3.1.1
+quadratic-product convergence.
