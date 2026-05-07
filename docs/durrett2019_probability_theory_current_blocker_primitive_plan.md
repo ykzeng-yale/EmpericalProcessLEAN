@@ -14,10 +14,10 @@ Continue Durrett 2019 Probability Theory formalization from the latest synced
 finite-dimensional limit theory in
 `StatInference/ProbabilityTheory/Multivariate.lean`.
 Preserve the compiled Theorem 3.10.6 Cramér-Wold law wrapper and the compiled
-Theorem 3.10.7 projected scalar/summand CLT wrappers.  Next theorem-sized
-packet: source-shaped covariance/Gaussian packaging for Theorem 3.10.7, using
-the local Vaart projected one-dimensional CLT constructors and finite-coordinate
-Cramér-Wold bridge.
+Theorem 3.10.7 projected scalar/summand and covariance/Gaussian source
+wrappers.  Next theorem-sized packet: exact Durrett covariance-table and
+Gaussian characteristic-function display for Theorem 3.10.7, plus a centered
+source wrapper only if it directly discharges those display assumptions.
 
 Operating loop: fetch/rebase, inspect only APIs/source anchors needed for this
 theorem, reuse mathlib/local/GitHub contributions, write one compiled
@@ -269,6 +269,8 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto`
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedScalarCLT`
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedSummandCLT`
+- `durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianSource`
+- `durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianSource`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -392,11 +394,11 @@ layer before moving to multivariate CLT reuse:
   `durrett2019_lindebergFellerVarianceSplitByTailRowSum_of_integrableSq`.
 - Section 3.10 characteristic-function convergence, Cramér-Wold, and
   multivariate CLT: the finite-coordinate law-level Cramér-Wold wrapper and the
-  Durrett Theorem 3.10.7 projected scalar/summand CLT wrappers now compile in
+  Durrett Theorem 3.10.7 projected scalar/summand and covariance/Gaussian
+  source wrappers now compile in
   `StatInference/ProbabilityTheory/Multivariate.lean`.  Next, package the
-  textbook covariance/Gaussian-limit source assumptions by reusing local Vaart
-  projected one-dimensional CLT constructors before adding any new vector
-  probability primitives.
+  textbook covariance-table and Gaussian characteristic-function display for
+  Durrett's statement before adding any new vector probability primitives.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
