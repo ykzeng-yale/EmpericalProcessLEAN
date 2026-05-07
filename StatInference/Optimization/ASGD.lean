@@ -388,6 +388,69 @@ theorem chewi127_integral_product_sub_product_tendsto_zero_of_integral_sum_norm
             N (fun k => z N k ω) (fun k => w N k ω) hzω hwω
 
 /--
+Expected products of factors `1 + r_{N,k}` converge to one if the factors are
+eventually bounded by one almost surely and the expected row-sum of
+one-factor errors tends to zero.  This is the deterministic product-to-one
+bound lifted to the `L1` form needed by the compensated martingale iteration.
+-/
+theorem chewi127_integral_product_one_add_tendsto_one_of_integral_sum_norm
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    (r : ℕ -> ℕ -> Ω -> ℂ)
+    (hr_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N, ‖1 + r N k ω‖ ≤ 1)
+    (hprod_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω => ∏ k ∈ Finset.range N, (1 + r N k ω)) P)
+    (herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω => ∑ k ∈ Finset.range N, ‖r N k ω‖) P)
+    (herror :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∑ k ∈ Finset.range N, ‖r N k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω, ∏ k ∈ Finset.range N, (1 + r N k ω) ∂P)
+      atTop (𝓝 1) := by
+  have hdiff :
+      Tendsto
+        (fun N : ℕ =>
+          (∫ ω, ∏ k ∈ Finset.range N, (1 + r N k ω) ∂P) - 1)
+        atTop (𝓝 0) := by
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ herror
+    filter_upwards [hr_bound] with N hN
+    have hconst : (∫ _ω : Ω, (1 : ℂ) ∂P) = (1 : ℂ) := by
+      simp
+      change (1 : ℝ) • (1 : ℂ) = (1 : ℂ)
+      exact one_smul ℝ (1 : ℂ)
+    calc
+      ‖(∫ ω, ∏ k ∈ Finset.range N, (1 + r N k ω) ∂P) - 1‖
+          = ‖(∫ ω, ∏ k ∈ Finset.range N, (1 + r N k ω) ∂P) -
+              ∫ _ω, (1 : ℂ) ∂P‖ := by
+            rw [hconst]
+      _ = ‖∫ ω, (∏ k ∈ Finset.range N, (1 + r N k ω)) - 1 ∂P‖ := by
+            rw [integral_sub (hprod_int N) (integrable_const (1 : ℂ))]
+      _ ≤ ∫ ω, ‖(∏ k ∈ Finset.range N, (1 + r N k ω)) - 1‖ ∂P :=
+            norm_integral_le_integral_norm _
+      _ ≤ ∫ ω, ∑ k ∈ Finset.range N, ‖r N k ω‖ ∂P := by
+            refine integral_mono_of_nonneg
+              (Eventually.of_forall fun _ => norm_nonneg _) (herror_int N) ?_
+            filter_upwards [hN] with ω hω
+            exact norm_prod_one_add_sub_one_le_sum_norm
+              (Finset.range N) (fun k => r N k ω) hω
+  have hone : Tendsto (fun _ : ℕ => (1 : ℂ)) atTop (𝓝 (1 : ℂ)) :=
+    tendsto_const_nhds
+  have hcombined := hdiff.add hone
+  simpa only [zero_add] using
+    hcombined.congr' (Eventually.of_forall fun N => by
+      ring)
+
+/--
 Random product convergence with additive remainder factors.  The expected
 variance-only product gives the Gaussian exponential limit, and the expected
 row-sum of conditional Taylor remainders makes the full product share that
@@ -2414,6 +2477,53 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_compensated_taylor_
             A ω * (1 + S.projectedCompensatedTaylorErrorFactor L N t n ω)
           rw [S.one_add_projectedCompensatedTaylorErrorFactor L N t n ω]
           ring
+
+/--
+Expected products of the projected compensated one-step errors converge to one
+once their factors are bounded by one and their expected row-sum vanishes.
+This is the product-to-one half of Chewi's compensated martingale iteration.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hbound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖1 + S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ≤ 1)
+    (hprod_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω)) P)
+    (herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (herror :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          ∏ k ∈ Finset.range N,
+            (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) ∂P)
+      atTop (𝓝 1) :=
+  chewi127_integral_product_one_add_tendsto_one_of_integral_sum_norm
+    (P := P)
+    (fun N k ω =>
+      S.projectedCompensatedTaylorErrorFactor L N t k ω)
+    hbound hprod_int herror_int herror
 
 /--
 Projected characteristic-function convergence from the finite product model

@@ -74,6 +74,59 @@ theorem norm_prod_sub_prod_le_sum_norm_sub
             simp [Finset.sum_insert ha]
 
 /--
+If each factor `1 + r i` is bounded by one in norm, then the product is close
+to one with error bounded by the row-sum of the one-factor errors.
+-/
+theorem norm_prod_one_add_sub_one_le_sum_norm
+    {ι : Type v} [DecidableEq ι] (s : Finset ι) (r : ι -> ℂ)
+    (hr : ∀ i ∈ s, ‖1 + r i‖ ≤ 1) :
+    ‖(∏ i ∈ s, (1 + r i)) - 1‖ ≤ ∑ i ∈ s, ‖r i‖ := by
+  calc
+    ‖(∏ i ∈ s, (1 + r i)) - 1‖
+        = ‖(∏ i ∈ s, (1 + r i)) - ∏ i ∈ s, (fun _ => (1 : ℂ)) i‖ := by
+          simp
+    _ ≤ ∑ i ∈ s, ‖(1 + r i) - (fun _ => (1 : ℂ)) i‖ :=
+          norm_prod_sub_prod_le_sum_norm_sub s
+            (fun i => 1 + r i) (fun _ => (1 : ℂ)) hr
+            (fun _ _ => by simp)
+    _ = ∑ i ∈ s, ‖r i‖ := by
+          refine Finset.sum_congr rfl ?_
+          intro i _hi
+          have hterm : (1 + r i) - (fun _ => (1 : ℂ)) i = r i := by
+            abel
+          rw [hterm]
+
+/--
+Rows of products `∏ (1 + r_{N,k})` converge to one if their factors are
+eventually bounded by one and their row-sums of one-factor errors vanish.
+-/
+theorem product_one_add_tendsto_one_of_sum_norm
+    (r : ℕ -> ℕ -> ℂ)
+    (hr_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ k ∈ Finset.range N, ‖1 + r N k‖ ≤ 1)
+    (hr_sum :
+      Tendsto
+        (fun N : ℕ => ∑ k ∈ Finset.range N, ‖r N k‖)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ => ∏ k ∈ Finset.range N, (1 + r N k))
+      atTop (𝓝 1) := by
+  have hdiff :
+      Tendsto
+        (fun N : ℕ => (∏ k ∈ Finset.range N, (1 + r N k)) - 1)
+      atTop (𝓝 0) := by
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ hr_sum
+    filter_upwards [hr_bound] with N hN
+    exact norm_prod_one_add_sub_one_le_sum_norm (Finset.range N) (r N) hN
+  have hone : Tendsto (fun _ : ℕ => (1 : ℂ)) atTop (𝓝 (1 : ℂ)) :=
+    tendsto_const_nhds
+  have hcombined := hdiff.add hone
+  simpa only [zero_add] using
+    hcombined.congr' (Eventually.of_forall fun N => by
+      ring)
+
+/--
 If a row of bounded complex product factors is perturbed by additive errors
 whose row-sum of norms tends to zero, then the product perturbation tends to
 zero.
