@@ -168,17 +168,25 @@ plus the variance-only discharge
 `chewi127_complex_exp_mul_one_sub_sub_one_norm_le`,
 `projectedCompensationVarianceError_norm_le_of_variance_abs_le`,
 `projectedCompensationVarianceError_row_integral_tendsto_zero`, and
-`projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance`.
+`projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance`,
+plus the normalized compensated-product bridge:
+`projectedInverseCompensationFactor`,
+`projectedNormalizedTaylorFactor`,
+`projectedInverseCompensationFactor_mul_compensationFactor`,
+`projectedNormalizedTaylorFactor_eq_taylorModel`,
+`projected_charFun_normalized_taylor_step_mul_scaled`,
+`projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
+and `projected_charFun_tendsto_exp_of_normalized_product_model`.
 
-Next theorem packet: use the compensated step and product-to-one bridge to
-prove the finite compensated iteration endpoint under the exact source
-measurability/integrability side conditions, reusing
-`projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance`
-for the accumulated row-error term.  After that, prove the
-variance/convergence comparison from
+Next theorem packet: prove the finite martingale tower representation into the
+normalized product model required by
+`projected_charFun_tendsto_exp_of_normalized_product_model`.  The one-step
+normalized peel is already compiled; do not prove another compensation
+algebra wrapper.  In parallel or immediately after, prove the inverse-
+compensation variance/convergence comparison from
 `n⁻¹ ∑ Xi_k -> S_infty` in probability to the Gaussian
-`exp (-(S_infty L L) t^2 / 2)` characteristic-function limit and wire the
-result into the existing Theorem 12.7/12.3 certificate constructors.
+`exp (-(S_infty L L) t^2 / 2)` characteristic-function limit, then wire both
+pieces into the existing Theorem 12.7/12.3 certificate constructors.
 
 Reuse boundary: do not redo scaled-sum definitions, Cramér-Wold plumbing,
 bounded-tail/Lindeberg, Taylor expansion, conditional mean-zero/quadratic
@@ -192,8 +200,8 @@ the product-to-one, row-error, and compensation-bound bridges,
 `integral_norm_condExp_le_integral_norm`,
 `chewi127ScalarCharFunProduct` lemmas, and local product perturbation bridges.
 One bounded API search is allowed only for the exact finite compensated
-iteration measurability side condition or bounded-continuous
-variance-convergence estimate; after that, prove.
+iteration measurability side condition, normalized-product induction shape, or
+bounded-continuous variance-convergence estimate; after that, prove.
 
 Execution gate: use `/private/tmp/chewi-smpgd-probability`; before Lean edits
 state the exact theorem-sized target and fallback blocker.  Verify with

@@ -2215,6 +2215,24 @@ noncomputable def Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor
         S.covariance.Xi (k + 1) ω L L) / 2 : ℝ) : ℂ))
 
 /--
+The inverse scalar compensation factor.  In Chewi's finite compensated
+iteration this is the predictable multiplier left after rewriting one
+conditional Taylor step as
+`rawFactor = inverseCompensation * (1 + compensatedError)`.
+-/
+noncomputable def Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) (ω : Ω) : ℂ :=
+  Complex.exp
+    (-(((((t * (Real.sqrt (N : ℝ))⁻¹) ^ 2 *
+        S.covariance.Xi (k + 1) ω L L) / 2 : ℝ) : ℂ)))
+
+/--
 The one-step compensated error after multiplying the Taylor model by the
 variance compensation factor.
 -/
@@ -2228,6 +2246,21 @@ noncomputable def Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorE
     (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) (ω : Ω) : ℂ :=
   S.projectedCompensationFactor L N t k ω *
       S.projectedTaylorModelFactor L N t k ω - 1
+
+/--
+The normalized model factor appearing in the finite compensated iteration:
+`inverseCompensation * (1 + compensatedError)`.
+-/
+noncomputable def Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) (ω : Ω) : ℂ :=
+  S.projectedInverseCompensationFactor L N t k ω *
+    (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω)
 
 /--
 The compensated factor is exactly `1 +` the named one-step error.  This small
@@ -2246,6 +2279,44 @@ theorem Chewi127BoundedMartingaleCLTSource.one_add_projectedCompensatedTaylorErr
       S.projectedCompensationFactor L N t k ω *
         S.projectedTaylorModelFactor L N t k ω := by
   simp [Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorFactor]
+
+/--
+The inverse compensation factor cancels the compensation factor.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_mul_compensationFactor
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) (ω : Ω) :
+    S.projectedInverseCompensationFactor L N t k ω *
+        S.projectedCompensationFactor L N t k ω = 1 := by
+  simp [Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor,
+    Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor,
+    ← Complex.exp_add]
+
+/--
+The normalized model factor is algebraically the Taylor model itself.  Keeping
+both names is useful: `projectedTaylorModelFactor` is the one-step Taylor
+output, while `projectedNormalizedTaylorFactor` is the product factor used in
+Chewi's compensated iteration.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_eq_taylorModel
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) (ω : Ω) :
+    S.projectedNormalizedTaylorFactor L N t k ω =
+      S.projectedTaylorModelFactor L N t k ω := by
+  rw [Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor,
+    S.one_add_projectedCompensatedTaylorErrorFactor L N t k ω]
+  rw [← mul_assoc, S.projectedInverseCompensationFactor_mul_compensationFactor L N t k ω]
+  simp
 
 /--
 Pointwise norm split for the compensated one-step error.  It separates the
@@ -3033,6 +3104,85 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_compensated_taylor_
           ring
 
 /--
+Normalized one-step tower peel.  This is the exact algebraic form needed for
+the finite compensated iteration: after multiplying the multiplier by the
+inverse compensation factor, the raw characteristic-function factor is
+replaced by the normalized Taylor factor
+`inverseCompensation * (1 + compensatedError)`.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_normalized_taylor_step_mul_scaled
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N n : ℕ) (t : ℝ) (A : Ω -> ℂ)
+    (hAcomp_meas :
+      AEStronglyMeasurable[S.martingale.filtration n]
+        (fun ω =>
+          A ω * S.projectedInverseCompensationFactor L N t n ω *
+            S.projectedCompensationFactor L N t n ω) P)
+    (hAcomp_int :
+      Integrable
+        (fun ω =>
+          A ω * S.projectedInverseCompensationFactor L N t n ω *
+            S.projectedCompensationFactor L N t n ω) P)
+    (hsq : Integrable
+      (fun ω => (L (S.martingale.xi (n + 1) ω)) ^ 2) P)
+    (hremainder : Integrable
+      (chewi127ScalarCharFunTaylorRemainder
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        (fun ω => L (S.martingale.xi (n + 1) ω))) P) :
+    (∫ ω,
+        A ω *
+          chewi127ScalarCharFunFactor
+            (t * (Real.sqrt (N : ℝ))⁻¹)
+            (fun ω => L (S.martingale.xi (n + 1) ω)) ω ∂P) =
+      ∫ ω,
+        A ω * S.projectedNormalizedTaylorFactor L N t n ω ∂P := by
+  have hstep :=
+    S.projected_charFun_compensated_taylor_step_mul_scaled L N n t
+      (fun ω => A ω * S.projectedInverseCompensationFactor L N t n ω)
+      hAcomp_meas hAcomp_int hsq hremainder
+  calc
+    (∫ ω,
+        A ω *
+          chewi127ScalarCharFunFactor
+            (t * (Real.sqrt (N : ℝ))⁻¹)
+            (fun ω => L (S.martingale.xi (n + 1) ω)) ω ∂P)
+        = ∫ ω,
+            (A ω * S.projectedInverseCompensationFactor L N t n ω) *
+              S.projectedCompensationFactor L N t n ω *
+              chewi127ScalarCharFunFactor
+                (t * (Real.sqrt (N : ℝ))⁻¹)
+                (fun ω => L (S.martingale.xi (n + 1) ω)) ω ∂P := by
+          refine integral_congr_ae <| ae_of_all P fun ω => ?_
+          change A ω *
+              chewi127ScalarCharFunFactor
+                (t * (Real.sqrt (N : ℝ))⁻¹)
+                (fun ω => L (S.martingale.xi (n + 1) ω)) ω =
+            (A ω * S.projectedInverseCompensationFactor L N t n ω) *
+              S.projectedCompensationFactor L N t n ω *
+              chewi127ScalarCharFunFactor
+                (t * (Real.sqrt (N : ℝ))⁻¹)
+                (fun ω => L (S.martingale.xi (n + 1) ω)) ω
+          rw [mul_assoc (A ω)
+            (S.projectedInverseCompensationFactor L N t n ω)
+            (S.projectedCompensationFactor L N t n ω),
+            S.projectedInverseCompensationFactor_mul_compensationFactor L N t n ω]
+          ring
+    _ = ∫ ω,
+          (A ω * S.projectedInverseCompensationFactor L N t n ω) *
+            (1 + S.projectedCompensatedTaylorErrorFactor L N t n ω) ∂P :=
+          hstep
+    _ = ∫ ω,
+          A ω * S.projectedNormalizedTaylorFactor L N t n ω ∂P := by
+          refine integral_congr_ae <| ae_of_all P fun ω => ?_
+          simp [Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor]
+          ring
+
+/--
 Expected products of the projected compensated one-step errors converge to one
 once their factors are bounded by one and their expected row-sum vanishes.
 This is the product-to-one half of Chewi's compensated martingale iteration.
@@ -3078,6 +3228,205 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduc
     (fun N k ω =>
       S.projectedCompensatedTaylorErrorFactor L N t k ω)
     hbound hprod_int herror_int herror
+
+/--
+Source-facing product-to-one theorem for the compensated one-step errors.  The
+expected row-sum convergence is discharged from the bounded martingale source
+via the variance-only row bound and the conditional Taylor-remainder row bound.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hbound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖1 + S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ≤ 1)
+    (hprod_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω)) P)
+    (herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedRemainderFactor L N t k ω‖) P) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          ∏ k ∈ Finset.range N,
+            (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) ∂P)
+      atTop (𝓝 1) :=
+  S.projectedCompensatedTaylorErrorProduct_integral_tendsto_one L t
+    hbound hprod_int herror_int
+    (S.projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance
+      L t hvariance_error_int hremainder_int)
+
+/--
+Characteristic-function convergence from the normalized compensated product
+model.  This is the forward bridge for the finite compensated iteration:
+once the martingale tower proves the normalized product representation, it
+remains only to compare that product with the inverse-compensation product and
+then prove the inverse-compensation variance limit.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hproduct_model :
+      ∀ᶠ N : ℕ in atTop,
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t =
+          ∫ ω, ∏ k ∈ Finset.range N,
+            S.projectedNormalizedTaylorFactor L N t k ω ∂P)
+    (hnormalized_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖S.projectedNormalizedTaylorFactor L N t k ω‖ ≤ 1)
+    (hinverse_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖S.projectedInverseCompensationFactor L N t k ω‖ ≤ 1)
+    (hnormalized_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hinverse_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω) P)
+    (hdiff_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  S.projectedInverseCompensationFactor L N t k ω‖) P)
+    (herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (herror :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0))
+    (hinverse_product :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N,
+            S.projectedInverseCompensationFactor L N t k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ))))) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+  have hdiff_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  S.projectedInverseCompensationFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0) := by
+    refine squeeze_zero'
+      (Eventually.of_forall fun N =>
+        integral_nonneg fun ω =>
+          Finset.sum_nonneg fun k _hk => norm_nonneg
+            (S.projectedNormalizedTaylorFactor L N t k ω -
+              S.projectedInverseCompensationFactor L N t k ω))
+      ?_ herror
+    filter_upwards [hinverse_bound] with N hN
+    refine integral_mono_ae (hdiff_int N) (herror_int N) ?_
+    filter_upwards [hN] with ω hω
+    refine Finset.sum_le_sum ?_
+    intro k hk
+    have hsplit :
+        S.projectedNormalizedTaylorFactor L N t k ω -
+            S.projectedInverseCompensationFactor L N t k ω =
+          S.projectedInverseCompensationFactor L N t k ω *
+            S.projectedCompensatedTaylorErrorFactor L N t k ω := by
+      simp [Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor]
+      ring
+    calc
+      ‖S.projectedNormalizedTaylorFactor L N t k ω -
+          S.projectedInverseCompensationFactor L N t k ω‖
+          = ‖S.projectedInverseCompensationFactor L N t k ω *
+              S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+            rw [hsplit]
+      _ = ‖S.projectedInverseCompensationFactor L N t k ω‖ *
+            ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+            rw [norm_mul]
+      _ ≤ 1 * ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ :=
+            mul_le_mul_of_nonneg_right (hω k hk)
+              (norm_nonneg
+                (S.projectedCompensatedTaylorErrorFactor L N t k ω))
+      _ = ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+            simp
+  have hdiff :
+      Tendsto
+        (fun N : ℕ =>
+          (∫ ω, ∏ k ∈ Finset.range N,
+              S.projectedNormalizedTaylorFactor L N t k ω ∂P) -
+            ∫ ω, ∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω ∂P)
+        atTop (𝓝 0) :=
+    chewi127_integral_product_sub_product_tendsto_zero_of_integral_sum_norm
+      (fun N k ω => S.projectedNormalizedTaylorFactor L N t k ω)
+      (fun N k ω => S.projectedInverseCompensationFactor L N t k ω)
+      hnormalized_bound hinverse_bound hnormalized_int hinverse_int
+      hdiff_int hdiff_error
+  have hnormalized_product := hdiff.add hinverse_product
+  have hnormalized_limit :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N,
+            S.projectedNormalizedTaylorFactor L N t k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+    simpa only [zero_add] using
+      hnormalized_product.congr' (Eventually.of_forall fun N => by
+        ring)
+  exact hnormalized_limit.congr' (hproduct_model.mono fun _ hN => hN.symm)
 
 /--
 Projected characteristic-function convergence from the finite product model

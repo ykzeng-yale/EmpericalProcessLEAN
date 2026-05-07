@@ -247,6 +247,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedCompensationVarianceError_norm_le_of_variance_abs_le`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensationVarianceError_row_integral_tendsto_zero`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance`,
+  `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor`,
+  `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_mul_compensationFactor`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_eq_taylorModel`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_normalized_taylor_step_mul_scaled`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   and
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_concrete_random_product_model`.
   These name the actual row factors with `a = t / sqrt N` and specialize the
@@ -266,10 +273,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   a uniform compensation-factor bound.  The compensation-bound and
   variance-only packets now discharge those analytic row-error terms from
   uniform boundedness of the martingale increments, modulo the displayed
-  routine integrability hypotheses.  The next ASGD packet should prove the
-  finite compensated iteration under the exact source measurability side
-  conditions and close the variance/convergence comparison to the Gaussian
-  characteristic-function limit.
+  routine integrability hypotheses.  The normalized-product packet now gives
+  the inverse-compensation factor, the normalized one-step peel, source-facing
+  product-to-one from bounded martingale variance control, and a final
+  normalized-product characteristic-function bridge.  The next ASGD packet
+  should prove the finite martingale tower representation into that normalized
+  product model, then close the inverse-compensation variance/convergence
+  comparison to the Gaussian characteristic-function limit.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
@@ -820,8 +830,8 @@ wrappers as stable infrastructure.  The live manual `/goal` frontier is now
 scalar bounded martingale characteristic-function convergence behind
 `projected_charFun_tendsto_exp`, then wire Chewi Theorem 12.7/12.3 through the
 existing ASGD certificate constructors.  The remaining proof obligations are
-the finite compensated iteration under exact measurability/integrability side
-conditions and the variance/convergence comparison to
+the finite martingale tower representation into the normalized compensated
+product model and the inverse-compensation variance/convergence comparison to
 `exp (-(S_infty L L) t^2 / 2)`.  Do not return to old Chapter 3, SMPGD source
 probability packaging, or raw tower-peel tasks unless a regression makes them
 relevant.
