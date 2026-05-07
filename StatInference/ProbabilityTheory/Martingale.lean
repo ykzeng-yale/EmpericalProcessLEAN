@@ -1,6 +1,7 @@
 import Mathlib.Probability.BorelCantelli
 import Mathlib.Probability.Martingale.Basic
 import Mathlib.Probability.Martingale.OptionalStopping
+import Mathlib.Probability.Martingale.Upcrossing
 import StatInference.ProbabilityTheory.ConditionalExpectation
 
 /-!
@@ -603,6 +604,51 @@ theorem durrett2019_theorem_4_2_9_martingale_stoppedProcess
         hX.supermartingale hN,
       durrett2019_theorem_4_2_9_submartingale_stoppedProcess
         hX.submartingale hN⟩
+
+/--
+Durrett 2019, Theorem 4.2.10: Doob's upcrossing inequality in the compiled
+mathlib positive-part form.
+-/
+theorem durrett2019_theorem_4_2_10_upcrossing_inequality
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ μ)
+    (a b : ℝ) (n : ℕ) :
+    (b - a) * ∫ ω, (upcrossingsBefore a b X n ω : ℝ) ∂μ ≤
+      ∫ ω, (X n ω - a)⁺ ∂μ := by
+  simpa using hX.mul_integral_upcrossingsBefore_le_integral_pos_part a b n
+
+/--
+Durrett 2019, Theorem 4.2.10, textbook display: for `a < b`, the upcrossing
+bound can be written with the initial positive-part term subtracted.
+-/
+theorem durrett2019_theorem_4_2_10_upcrossing_inequality_sub_initial
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ μ)
+    {a b : ℝ} (hab : a < b) (n : ℕ) :
+    (b - a) * ∫ ω, (upcrossingsBefore a b X n ω : ℝ) ∂μ ≤
+      (∫ ω, (X n ω - a)⁺ ∂μ) - ∫ ω, (X 0 ω - a)⁺ ∂μ := by
+  let Y : ℕ -> Ω -> ℝ := fun n ω => (X n ω - a)⁺
+  have hY : Submartingale Y ℱ μ := by
+    have hshift : Submartingale (X - fun _ _ => a) ℱ μ :=
+      hX.sub_martingale (martingale_const ℱ μ a)
+    simpa [Y, Pi.sub_apply] using hshift.pos
+  have hfirst :
+      (b - a) * ∫ ω, (upcrossingsBefore a b X n ω : ℝ) ∂μ ≤
+        ∫ ω, (∑ k ∈ Finset.range n,
+          upcrossingStrat 0 (b - a) Y n k * (Y (k + 1) - Y k)) ω ∂μ := by
+    rw [← integral_const_mul]
+    refine integral_mono_of_nonneg ?_ ((hY.sum_upcrossingStrat_mul 0 (b - a) n).integrable n) ?_
+    · exact Eventually.of_forall fun ω => mul_nonneg (sub_nonneg.2 hab.le) (Nat.cast_nonneg _)
+    · filter_upwards with ω
+      have hpos : 0 < b - a := sub_pos.2 hab
+      have hpoint :=
+        mul_upcrossingsBefore_le (f := Y) (a := 0) (b := b - a) (N := n) (ω := ω)
+          (posPart_nonneg _) hpos
+      rw [upcrossingsBefore_pos_eq (f := X) (N := n) (ω := ω) hab] at hpoint
+      simpa [sub_zero, Finset.sum_apply, Pi.mul_apply, Pi.sub_apply] using hpoint
+  exact hfirst.trans (hY.sum_mul_upcrossingStrat_le (a := 0) (b := b - a) (N := n) (n := n))
 
 /-! ## Durrett, Example 4.2.1 -/
 

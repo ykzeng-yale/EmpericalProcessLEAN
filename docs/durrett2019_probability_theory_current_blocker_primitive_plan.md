@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V30
+## Live In-Thread Goal Prompt V31
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -13,7 +13,7 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane only: Durrett Chapter 4.2 martingales in
 `StatInference/ProbabilityTheory/Martingale.lean`.  Treat compiled Chapter 2,
 Chapter 3, Chapter 4.1 through Theorem 4.1.15, Examples 4.2.1-4.2.3, and
-Theorems 4.2.4-4.2.9 as closed dependencies.  Theorem 4.1.16 remains deferred
+Theorems 4.2.4-4.2.10 as closed dependencies.  Theorem 4.1.16 remains deferred
 unless a future targeted kernel search finds a direct source-shaped API.
 
 Current compiled Chapter 4.2 frontier: Durrett-facing martingale,
@@ -24,18 +24,19 @@ quadratic, product, and normalized exponential martingales; Theorems
 and minimum-truncation consequences; and Theorem 4.2.8 predictable-transform
 wrappers for submartingales, supermartingales, and nonnegative martingale
 transforms; and Theorem 4.2.9 stopped-process wrappers for submartingales,
-supermartingales, and martingales.
+supermartingales, and martingales; and Theorem 4.2.10 upcrossing inequality
+wrappers, including the textbook initial-positive-part subtraction display.
 
-Next theorem-sized packet: package Theorem 4.2.10, the upcrossing inequality.
-First reuse mathlib `Probability/Martingale/Upcrossing.lean` APIs:
-`upcrossingStrat`, `upcrossingsBefore`,
-`Submartingale.sum_upcrossingStrat_mul`, and
-`Submartingale.mul_integral_upcrossingsBefore_le_integral_pos_part`.  Add a
-Durrett-facing wrapper for the textbook inequality, including the exact
-positive-part display if it is direct; otherwise add the compiled mathlib
-upcrossing estimate and document the remaining initial-positive-part display
-gap as the next narrow target.  Do not revisit solved Chapter 4.1 facts,
-examples, or Theorems 4.2.4-4.2.9.
+Next theorem-sized packet: package Theorem 4.2.11, the almost-sure martingale
+convergence theorem for submartingales with bounded positive parts.  First
+reuse mathlib `Probability/Martingale/Convergence.lean` APIs:
+`Submartingale.exists_ae_tendsto_of_bdd`,
+`Submartingale.ae_tendsto_limitProcess`, and the eLpNorm/L1 positive-part
+boundedness bridges.  If the exact Durrett assumption
+`sup_n E X_n^+ < ∞` is not direct, add a source-shaped wrapper from the
+mathlib `∀ n, eLpNorm (X n) 1 μ ≤ R` hypothesis and document the positive-part
+to L1-bound bridge as the next narrow target.  Do not revisit solved Chapter
+4.1 facts, examples, or Theorems 4.2.4-4.2.10.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -398,9 +399,9 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should package Theorem 4.2.10 upcrossing inequality,
-starting with a local/mathlib API search in
-`Mathlib/Probability/Martingale/Upcrossing.lean`.  Keep Theorem 4.1.16
+The next likely packet should package Theorem 4.2.11 almost-sure martingale
+convergence, starting with a local/mathlib API search in
+`Mathlib/Probability/Martingale/Convergence.lean`.  Keep Theorem 4.1.16
 deferred unless a targeted kernel search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
@@ -513,6 +514,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V30` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V31` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
