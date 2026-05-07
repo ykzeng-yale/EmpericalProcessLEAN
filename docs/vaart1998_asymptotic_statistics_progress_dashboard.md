@@ -516,10 +516,16 @@ Chapter 4 handoff:
   turn full-class deterministic uniform-deviation, GC, finite-GC, and
   estimating-function bounds into the all-good-event certificates consumed by
   Theorems 5.7 and 5.9.
+- Chapter 5 random uniform-error source endpoints:
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_randomUniformErrors` and
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_randomUniformErrors` prove
+  consistency directly from convergence in probability of random uniform
+  criterion/estimating-function errors and random approximate-max/near-zero
+  errors, using tail-union high-probability events.
 
-Latest remote base before this packet: `a3b0e80`.  Latest pushed Vaart packet
-before this packet: `979778d`
-(`Add Vaart theorem 5.9 Z-estimator consistency`).
+Latest remote base before this packet: `e228a75`.  Latest pushed Vaart packet
+before this packet: `11b852e`
+(`Add Vaart chapter 5 GC source wrappers`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -532,10 +538,10 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Move from deterministic all-good interfaces to genuinely random empirical
-criteria: construct high-probability good events from convergence in
-probability of uniform suprema, then specialize to available empirical-process
-GC/outer-probability statements.
+Specialize the random-uniform-error endpoints to empirical-process
+outer-probability/GC statements already available in the VdV&W lane, with
+source-shaped wrappers for sample averages `P_n m_theta` and estimating
+equations `P_n psi_theta`.
 
 ## Reuse Dependencies
 

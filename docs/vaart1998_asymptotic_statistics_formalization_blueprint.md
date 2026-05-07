@@ -456,7 +456,11 @@ Initial modules:
   layer now supplies all-good-event constructors/endpoints from full-class
   empirical deviation sequences, local `GlivenkoCantelliClass` records,
   `FiniteClassUniformConvergence`, and deterministic estimating-function
-  uniform-deviation bounds.
+  uniform-deviation bounds.  The random source layer adds
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_randomUniformErrors` and
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_randomUniformErrors`, which
+  convert convergence in probability of random uniform-error controls and
+  approximate-max/near-zero errors into consistency via tail-union good events.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

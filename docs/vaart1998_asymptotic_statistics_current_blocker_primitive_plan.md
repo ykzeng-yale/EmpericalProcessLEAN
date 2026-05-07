@@ -709,22 +709,25 @@ Chapter 3 theorem-facing wrappers compiling:
    `Vaart1998ZEstimatorUniformConsistencyCertificate.of_deterministicUniformDeviation_univ`
    and
    `vaart1998_theorem_5_9_zEstimator_consistent_of_deterministicUniformDeviation_univ`.
+233. Theorem 5.7 random uniform-error source endpoint:
+   `vaart1998_theorem_5_7_mEstimator_consistent_of_randomUniformErrors`.
+234. Theorem 5.9 random uniform-error source endpoint:
+   `vaart1998_theorem_5_9_zEstimator_consistent_of_randomUniformErrors`.
 
-Latest remote base before this packet: `a3b0e80`.
-Latest pushed Vaart packet before this packet: `979778d`
-(`Add Vaart theorem 5.9 Z-estimator consistency`).
+Latest remote base before this packet: `e228a75`.
+Latest pushed Vaart packet before this packet: `11b852e`
+(`Add Vaart chapter 5 GC source wrappers`).
 
-The current theorem-sized packet connects the Chapter 5.7 and 5.9 consistency
-certificates to deterministic source interfaces: full-class empirical
-deviation sequences, Glivenko-Cantelli classes, finite-class uniform
-convergence, and deterministic estimating-function uniform deviation all
-produce the all-good-event certificates consumed by the theorem endpoints.
+The current theorem-sized packet moves beyond deterministic all-good interfaces:
+random uniform criterion or estimating-function error bounds that converge to
+zero in probability, together with a random approximate-max/near-zero error
+also converging to zero in probability, now directly imply the Chapter 5.7 and
+5.9 consistency conclusions via tail-union good events.
 
-The next aggressive packet should move from deterministic all-good interfaces
-to genuinely random empirical criteria: build high-probability good events
-from convergence in probability of uniform suprema, then specialize those
-events to empirical-process GC/outer-probability statements already available
-in the VdV&W lane.
+The next aggressive packet should specialize the random-uniform-error endpoints
+to empirical-process outer-probability/GC statements already available in the
+VdV&W lane, with source-shaped wrappers for sample averages `P_n m_theta` and
+estimating equations `P_n psi_theta`.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

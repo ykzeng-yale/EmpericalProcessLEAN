@@ -332,6 +332,116 @@ theorem vaart1998_theorem_5_7_mEstimator_consistent_of_finiteClassUniformConverg
       finite_gc approxError h_approx h_approx_tendsto h_separated)
 
 /--
+van der Vaart 1998, Theorem 5.7, random uniform-error source endpoint.
+
+This is the source-facing form for genuinely random empirical criteria.  A
+uniform criterion error and an approximate-maximizer error that both converge
+to zero in probability imply consistency under the separated-maximum condition.
+-/
+theorem vaart1998_theorem_5_7_mEstimator_consistent_of_randomUniformErrors
+    {Ω : Type u} {Θ : Type v} [MeasurableSpace Ω] [PseudoMetricSpace Θ]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {M : Θ -> ℝ} {Mn : ℕ -> Ω -> Θ -> ℝ}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (uniformError approxError : ℕ -> Ω -> ℝ)
+    (h_uniform :
+      ∀ n : ℕ, ∀ omega : Ω, ∀ theta : Θ,
+        |Mn n omega theta - M theta| ≤ uniformError n omega)
+    (h_approx :
+      ∀ n : ℕ, ∀ omega : Ω,
+        Mn n omega theta0 ≤
+          Mn n omega (thetaHat n omega) + approxError n omega)
+    (h_uniform_tendsto : TendstoInMeasure P uniformError atTop 0)
+    (h_approx_tendsto : TendstoInMeasure P approxError atTop 0)
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            M theta ≤ M theta0 - eta) :
+    TendstoInMeasure P thetaHat atTop (fun _ : Ω => theta0) := by
+  rw [MeasureTheory.tendstoInMeasure_iff_measureReal_dist]
+  intro epsilon hepsilon
+  rcases h_separated epsilon hepsilon with
+    ⟨eta, heta_pos, h_separated_eta⟩
+  have h_eta_quarter : 0 < eta / 4 := by positivity
+  have h_eta_half : 0 < eta / 2 := by positivity
+  have h_uniform_tail :
+      Tendsto
+        (fun n : ℕ =>
+          P.real {omega : Ω | eta / 4 ≤ ‖uniformError n omega - 0‖})
+        atTop (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm).mp
+      h_uniform_tendsto (eta / 4) h_eta_quarter
+  have h_approx_tail :
+      Tendsto
+        (fun n : ℕ =>
+          P.real {omega : Ω | eta / 2 ≤ ‖approxError n omega - 0‖})
+        atTop (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm).mp
+      h_approx_tendsto (eta / 2) h_eta_half
+  have h_tail_sum :
+      Tendsto
+        (fun n : ℕ =>
+          P.real {omega : Ω | eta / 4 ≤ ‖uniformError n omega - 0‖} +
+            P.real {omega : Ω | eta / 2 ≤ ‖approxError n omega - 0‖})
+        atTop (𝓝 0) := by
+    simpa using h_uniform_tail.add h_approx_tail
+  rw [tendsto_order]
+  constructor
+  · intro a ha
+    exact Eventually.of_forall fun _ =>
+      lt_of_lt_of_le ha measureReal_nonneg
+  · intro a ha
+    filter_upwards [h_tail_sum.eventually_lt_const ha] with n htail_lt
+    let uniformTail : Set Ω :=
+      {omega : Ω | eta / 4 ≤ ‖uniformError n omega - 0‖}
+    let approxTail : Set Ω :=
+      {omega : Ω | eta / 2 ≤ ‖approxError n omega - 0‖}
+    have hbad_subset :
+        {omega : Ω | epsilon ≤ dist (thetaHat n omega) theta0} ⊆
+          uniformTail ∪ approxTail := by
+      intro omega hbad
+      by_contra hnot
+      have hnot_uniform : omega ∉ uniformTail := by
+        exact fun hmem => hnot (Or.inl hmem)
+      have hnot_approx : omega ∉ approxTail := by
+        exact fun hmem => hnot (Or.inr hmem)
+      have huniform_norm_lt :
+          ‖uniformError n omega - 0‖ < eta / 4 :=
+        lt_of_not_ge hnot_uniform
+      have happrox_norm_lt :
+          ‖approxError n omega - 0‖ < eta / 2 :=
+        lt_of_not_ge hnot_approx
+      have huniform_lt : uniformError n omega < eta / 4 := by
+        have hle_norm :
+            uniformError n omega ≤ ‖uniformError n omega - 0‖ := by
+          simpa [sub_zero, Real.norm_eq_abs] using
+            (le_abs_self (uniformError n omega))
+        linarith
+      have happrox_lt : approxError n omega < eta / 2 := by
+        have hle_norm :
+            approxError n omega ≤ ‖approxError n omega - 0‖ := by
+          simpa [sub_zero, Real.norm_eq_abs] using
+            (le_abs_self (approxError n omega))
+        linarith
+      have hsmall :
+          2 * uniformError n omega + approxError n omega < eta := by
+        nlinarith
+      have hdist_lt :
+          dist (thetaHat n omega) theta0 < epsilon :=
+        vaart1998_theorem_5_7_dist_lt_of_uniformDeviation_approxMax
+          M (Mn n omega) (thetaHat n omega) theta0
+          (uniformError n omega) (approxError n omega) epsilon eta
+          (h_uniform n omega) (h_approx n omega)
+          h_separated_eta hsmall
+      exact (not_le_of_gt hdist_lt) hbad
+    have hmeasure_le :
+        P.real {omega : Ω | epsilon ≤ dist (thetaHat n omega) theta0} ≤
+          P.real uniformTail + P.real approxTail :=
+      (measureReal_mono hbad_subset).trans (measureReal_union_le _ _)
+    exact lt_of_le_of_lt hmeasure_le htail_lt
+
+/--
 Norm-criterion uniform deviation used to reduce Z-estimator consistency to
 M-estimator consistency.
 
@@ -565,6 +675,117 @@ theorem vaart1998_theorem_5_9_zEstimator_consistent_of_deterministicUniformDevia
     (Vaart1998ZEstimatorUniformConsistencyCertificate.of_deterministicUniformDeviation_univ
       deviation approxError h_deviation h_deviation_tendsto h_near_zero
       h_approx_tendsto h_zero h_separated)
+
+/--
+van der Vaart 1998, Theorem 5.9, random uniform-error source endpoint.
+
+Uniform convergence in probability of the estimating functions, together with a
+near-zero error that converges to zero in probability, implies consistency under
+the separated-zero condition.
+-/
+theorem vaart1998_theorem_5_9_zEstimator_consistent_of_randomUniformErrors
+    {Ω : Type u} {Θ : Type v} {E : Type*} [MeasurableSpace Ω]
+    [PseudoMetricSpace Θ] [NormedAddCommGroup E]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Psi : Θ -> E} {Psi_n : ℕ -> Ω -> Θ -> E}
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (uniformError approxError : ℕ -> Ω -> ℝ)
+    (h_uniform :
+      ∀ n : ℕ, ∀ omega : Ω, ∀ theta : Θ,
+        ‖Psi_n n omega theta - Psi theta‖ ≤ uniformError n omega)
+    (h_near_zero :
+      ∀ n : ℕ, ∀ omega : Ω,
+        ‖Psi_n n omega (thetaHat n omega)‖ ≤ approxError n omega)
+    (h_uniform_tendsto : TendstoInMeasure P uniformError atTop 0)
+    (h_approx_tendsto : TendstoInMeasure P approxError atTop 0)
+    (h_zero : Psi theta0 = 0)
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            eta ≤ ‖Psi theta‖) :
+    TendstoInMeasure P thetaHat atTop (fun _ : Ω => theta0) := by
+  rw [MeasureTheory.tendstoInMeasure_iff_measureReal_dist]
+  intro epsilon hepsilon
+  rcases h_separated epsilon hepsilon with
+    ⟨eta, heta_pos, h_separated_eta⟩
+  have h_eta_quarter : 0 < eta / 4 := by positivity
+  have h_eta_half : 0 < eta / 2 := by positivity
+  have h_uniform_tail :
+      Tendsto
+        (fun n : ℕ =>
+          P.real {omega : Ω | eta / 4 ≤ ‖uniformError n omega - 0‖})
+        atTop (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm).mp
+      h_uniform_tendsto (eta / 4) h_eta_quarter
+  have h_approx_tail :
+      Tendsto
+        (fun n : ℕ =>
+          P.real {omega : Ω | eta / 2 ≤ ‖approxError n omega - 0‖})
+        atTop (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm).mp
+      h_approx_tendsto (eta / 2) h_eta_half
+  have h_tail_sum :
+      Tendsto
+        (fun n : ℕ =>
+          P.real {omega : Ω | eta / 4 ≤ ‖uniformError n omega - 0‖} +
+            P.real {omega : Ω | eta / 2 ≤ ‖approxError n omega - 0‖})
+        atTop (𝓝 0) := by
+    simpa using h_uniform_tail.add h_approx_tail
+  rw [tendsto_order]
+  constructor
+  · intro a ha
+    exact Eventually.of_forall fun _ =>
+      lt_of_lt_of_le ha measureReal_nonneg
+  · intro a ha
+    filter_upwards [h_tail_sum.eventually_lt_const ha] with n htail_lt
+    let uniformTail : Set Ω :=
+      {omega : Ω | eta / 4 ≤ ‖uniformError n omega - 0‖}
+    let approxTail : Set Ω :=
+      {omega : Ω | eta / 2 ≤ ‖approxError n omega - 0‖}
+    have hbad_subset :
+        {omega : Ω | epsilon ≤ dist (thetaHat n omega) theta0} ⊆
+          uniformTail ∪ approxTail := by
+      intro omega hbad
+      by_contra hnot
+      have hnot_uniform : omega ∉ uniformTail := by
+        exact fun hmem => hnot (Or.inl hmem)
+      have hnot_approx : omega ∉ approxTail := by
+        exact fun hmem => hnot (Or.inr hmem)
+      have huniform_norm_lt :
+          ‖uniformError n omega - 0‖ < eta / 4 :=
+        lt_of_not_ge hnot_uniform
+      have happrox_norm_lt :
+          ‖approxError n omega - 0‖ < eta / 2 :=
+        lt_of_not_ge hnot_approx
+      have huniform_lt : uniformError n omega < eta / 4 := by
+        have hle_norm :
+            uniformError n omega ≤ ‖uniformError n omega - 0‖ := by
+          simpa [sub_zero, Real.norm_eq_abs] using
+            (le_abs_self (uniformError n omega))
+        linarith
+      have happrox_lt : approxError n omega < eta / 2 := by
+        have hle_norm :
+            approxError n omega ≤ ‖approxError n omega - 0‖ := by
+          simpa [sub_zero, Real.norm_eq_abs] using
+            (le_abs_self (approxError n omega))
+        linarith
+      have hsmall :
+          2 * uniformError n omega + approxError n omega < eta := by
+        nlinarith
+      have hdist_lt :
+          dist (thetaHat n omega) theta0 < epsilon :=
+        vaart1998_theorem_5_9_dist_lt_of_uniformDeviation_nearZero
+          Psi (Psi_n n omega) (thetaHat n omega) theta0
+          (uniformError n omega) (approxError n omega) epsilon eta
+          (h_uniform n omega) (h_near_zero n omega)
+          h_zero h_separated_eta hsmall
+      exact (not_le_of_gt hdist_lt) hbad
+    have hmeasure_le :
+        P.real {omega : Ω | epsilon ≤ dist (thetaHat n omega) theta0} ≤
+          P.real uniformTail + P.real approxTail :=
+      (measureReal_mono hbad_subset).trans (measureReal_union_le _ _)
+    exact lt_of_le_of_lt hmeasure_le htail_lt
 
 end AsymptoticStatistics
 end StatInference
