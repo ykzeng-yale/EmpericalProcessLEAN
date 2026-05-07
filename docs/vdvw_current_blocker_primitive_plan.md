@@ -7653,3 +7653,16 @@ envelope-tail handoff.  This is the preferred source target for the next proof:
 prove `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison` for every
 positive truncation level from the textbook ghost/Rademacher selected-cover
 argument, rather than adding more final consumers.
+
+2026-05-07 Theorem 2.4.3 symmetrization bound realification: search found the
+finite-sample precursor theorem
+`VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`,
+which outputs an `ENNReal.ofReal` inequality after the outer-expectation
+`Phi(x)=x` comparison, but the fixed-radius event-comparison route consumes
+real pointwise/a.e. inequalities.  `Theorem243.lean` now proves
+`VdVWTheorem243SymmetrizationPrecursor.centered_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`,
+using `ENNReal.ofReal_le_ofReal_iff` and explicit nonnegativity of the
+Hoeffding display scale.  This is not another final endpoint: it reduces the
+next source obligation to proving the actual `hphi_id` symmetrization
+comparison and then feeding the resulting real bound into the existing
+scaled selected finite-net event route.

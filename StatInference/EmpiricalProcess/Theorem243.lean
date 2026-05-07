@@ -15247,6 +15247,86 @@ theorem
         (2 : ℝ≥0∞))
 
 /--
+Real-valued form of
+`VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
+
+The symmetrization precursor naturally produces an `ENNReal.ofReal` inequality
+because it passes through VdV&W outer expectation.  The fixed-radius event
+comparison route later needs a real pointwise bound; this lemma performs only
+that order conversion, with the nonnegativity side conditions made explicit.
+-/
+theorem
+    VdVWTheorem243SymmetrizationPrecursor.centered_le_two_finiteNetHoeffdingUpper_add_of_hphi_id
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} [MeasurableSpace Observation]
+    {Index : Type w} {n : ℕ}
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {cardinality : ℕ}
+    {cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality}
+    {sign : Fin n -> Ω -> ℝ}
+    (precursor :
+      VdVWTheorem243SymmetrizationPrecursor
+        (μ := μ) (P := P) (sample := sample) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M)
+        (epsilon := epsilon) (cover := cover) (sign := sign))
+    (U : VdVWMeasurableCover μ
+      (fun ω => ENNReal.ofReal
+        (vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample)))
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hM_nonneg : 0 ≤ M)
+    (hphi_id :
+      ENNReal.ofReal
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample) ≤
+        (2 : ℝ≥0∞) *
+          VdVWOuterExpectation μ
+            (fun ω => ENNReal.ofReal
+              (vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample))) :
+    vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun observation : Observation =>
+          vdVWTruncatedClassFun classFun envelope M index observation -
+            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+        (fun _ : Fin n => (n : ℝ)⁻¹) sample ≤
+      2 * (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M + epsilon) := by
+  have hfinite_nonneg :
+      0 ≤ vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M :=
+    vdVWTheorem243FiniteNetHoeffdingUpper_nonneg cardinality n hM_nonneg
+  have hright_nonneg :
+      0 ≤ 2 * (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M + epsilon) := by
+    nlinarith
+  have hENN :
+      ENNReal.ofReal
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample) ≤
+        ENNReal.ofReal
+          (2 * (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M +
+            epsilon)) := by
+    have hbase :=
+      VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id
+        (μ := μ) (P := P) (sample := sample) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M)
+        (epsilon := epsilon) (cover := cover) (sign := sign)
+        precursor U hphi_id
+    have htwo : (2 : ℝ≥0∞) = ENNReal.ofReal (2 : ℝ) := by norm_num
+    rw [htwo, ← ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2)] at hbase
+    simpa using hbase
+  exact (ENNReal.ofReal_le_ofReal_iff hright_nonneg).1 hENN
+
+/--
 Construct the finite-sample symmetrization precursor from the existing
 product-copy, random-sign, and finite-cover maximal layers.
 -/

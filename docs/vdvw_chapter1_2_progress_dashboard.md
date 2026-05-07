@@ -3079,3 +3079,10 @@ comparison at every positive truncation level and immediately reaches the
 untruncated centered convergence through the existing large-`M` envelope-tail
 handoff.  Next work should prove that comparison primitive itself, not another
 downstream wrapper.
+
+The symmetrization precursor now also has a real-valued pointwise bridge:
+`VdVWTheorem243SymmetrizationPrecursor.centered_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
+It converts the existing `ENNReal.ofReal` outer-expectation bound from
+`hphi_id` into the real inequality needed by the fixed-radius event-comparison
+route.  The remaining proof target is still upstream: prove the `hphi_id`
+comparison / selected-cover symmetrization source theorem.
