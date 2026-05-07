@@ -316,6 +316,10 @@ Initial modules:
   uses a polarization bridge to convert diagonal variance identities into full
   covarianceBilinDual identities, so the final table can now be displayed
   directly with the common vector law `ν`.
+  `Vaart1998FiniteCoordinateVectorLawSource` now bundles the observation-law
+  coordinate measurability and square-integrability fields, and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`
+  consumes that certificate at the canonical endpoint.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

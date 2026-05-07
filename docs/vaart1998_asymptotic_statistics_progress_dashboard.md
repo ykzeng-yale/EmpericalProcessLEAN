@@ -342,10 +342,18 @@ Chapter 4 handoff:
   and
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSource_real`
   states the final covariance table under the common vector law `ν`.
+- Vector-law source certificate:
+  `Vaart1998FiniteCoordinateVectorLawSource` bundles coordinate evaluation
+  measurability and coordinate `MemLp 2` under `ν`.
+  `Vaart1998FiniteCoordinateVectorLawSource.memLp_id` and
+  `Vaart1998FiniteCoordinateVectorLawSource.canonicalCoordinateSource` expose
+  the reusable consequences, and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`
+  consumes that certificate at the canonical Theorem 4.1 endpoint.
 
-Latest remote base before this packet: `2c1a160`.  Latest pushed Vaart packet
-before this packet: `11a07e3`
-(`Add Vaart canonical mean vector law endpoint`).
+Latest remote base before this packet: `9075e07`.  Latest pushed Vaart packet
+before this packet: `8bc662b`
+(`Add Vaart canonical covariance law endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -366,10 +374,7 @@ projected probability-law Cramér-Wold handoff:
 
 1. attack the remaining inverse-function target event only through a real
    local-inverse/measurability theorem or keep it as a named source certificate;
-2. package coordinate evaluation measurability and coordinate `MemLp` as a
-   reusable vector-law source certificate if that removes repeated caller-side
-   fields;
-3. keep endpoint variants narrow and add them only when they remove a real
+2. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 
 If this blocks, record the exact missing theorem shape for the supplied

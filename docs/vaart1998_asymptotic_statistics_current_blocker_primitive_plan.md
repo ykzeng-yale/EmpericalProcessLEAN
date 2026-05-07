@@ -531,29 +531,35 @@ Chapter 3 theorem-facing wrappers compiling:
 169. Canonical iid product-space Theorem 4.1 covariance-table endpoint whose
    final covariance display is stated under the common vector law `ν`:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSource_real`.
+170. Finite-coordinate vector-law source certificate:
+   `Vaart1998FiniteCoordinateVectorLawSource`.
+171. Vector-law source certificate consumers:
+   `Vaart1998FiniteCoordinateVectorLawSource.memLp_id` and
+   `Vaart1998FiniteCoordinateVectorLawSource.canonicalCoordinateSource`.
+172. Canonical iid product-space Theorem 4.1 covariance-table endpoint using
+   the vector-law source certificate for coordinate measurability and
+   square-integrability:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`.
 
-Latest remote base before this packet: `2c1a160`.
-Latest pushed Vaart packet before this packet: `11a07e3`
-(`Add Vaart canonical mean vector law endpoint`).
+Latest remote base before this packet: `9075e07`.
+Latest pushed Vaart packet before this packet: `8bc662b`
+(`Add Vaart canonical covariance law endpoint`).
 
-The current theorem-sized packet removes the last covariance-table plumbing
-obstacle from the canonical Chapter 4.1 endpoint.  A real polarization lemma
-now turns diagonal projected-variance identities into full off-diagonal
-`covarianceBilinDual` identities, and the newest canonical endpoint reports the
-final covariance table using the common vector law `ν` directly.  The remaining
-non-sample-space source hypotheses are now Gaussian limit law, inverse-function
-target event, coordinate evaluation measurability, and coordinate-projection
-`MemLp` under the vector law.
+The current theorem-sized packet packages the observation-law side conditions.
+The vector-law source certificate bundles coordinate evaluation measurability
+and coordinate `MemLp 2` under `ν`; it also exposes `MemLp id 2 ν` and the
+canonical product coordinate source fields.  The newest canonical endpoint now
+uses that certificate instead of taking coordinate measurability and
+coordinate-projection `MemLp` as separate arguments.  The remaining
+non-sample-space source hypotheses are now Gaussian limit law and the
+inverse-function target event.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
 1. attack the remaining inverse-function target event only through a real
    local-inverse/measurability theorem or keep it as a named source certificate;
-2. package coordinate evaluation measurability and coordinate `MemLp` as a
-   reusable vector-law source certificate if that removes repeated caller-side
-   fields;
-3. keep endpoint variants narrow and add them only when they remove a real
+2. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
