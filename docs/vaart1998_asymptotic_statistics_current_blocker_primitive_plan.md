@@ -6,15 +6,15 @@ manual `/goal` continuation before selecting a proof target.
 
 ## Live Continuation Prompt
 
-Continue the Vaart 1998 Lean formalization from frontier `486cd51`.  Work in
-`StatInference/AsymptoticStatistics/MEstimators.lean` on Theorem 5.41 only.
+Continue the Vaart 1998 Lean formalization from the latest pushed Vaart
+frontier.  Work in `StatInference/AsymptoticStatistics/MEstimators.lean` on
+Theorem 5.41 only.
 
 Next packet: discharge the remaining source Taylor inputs for the compiled
 handoff
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_derivativeLLN_secondDerivativeBound`.
-First derive derivative-residual measurability from empirical-derivative and
-scaled-estimator measurability.  Then prove the textbook Taylor equation
-`score_n + dotPsi_n(theta0) x_n + secondResidual_n = 0` and the
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_measurableDerivativeLLN_secondDerivativeBound`:
+prove the textbook Taylor equation
+`score_n + dotPsi_n(theta0) x_n + secondResidual_n = 0` and the deterministic
 second-derivative residual bound from Taylor's theorem plus the dominated
 second-derivative average.
 
@@ -714,23 +714,30 @@ Chapter 3 theorem-facing wrappers compiling:
 259. Theorem 5.41 source Taylor-equation handoff, splitting
    `dotPsi_n(theta0)` into `P dot psi_theta0` plus derivative residual:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_derivativeLLN_secondDerivativeBound`.
+260. Theorem 5.41 derivative-residual a.e. measurability from empirical
+   derivative operator and scaled-estimator measurability:
+   `vaart1998_theorem_5_41_derivativeResidual_aemeasurable_of_operator`.
+261. Theorem 5.41 source Taylor-equation handoff with derivative-residual
+   measurability discharged:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_measurableDerivativeLLN_secondDerivativeBound`.
 
-Latest verified Vaart frontier before the next packet: `486cd51`
-(`Add Vaart theorem 5.41 Taylor equation handoff`).
+Latest verified Vaart frontier before the next packet: this packet
+(`Add Vaart theorem 5.41 derivative residual measurability`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by letting the main handoff consume
-the textbook-shaped Taylor equation
-`score_n + dotPsi_n(theta0) x_n + secondResidual_n = 0` directly.  It now
-performs the algebraic split
+asymptotic-normality route for Z-estimators by deriving derivative-residual
+measurability from empirical-derivative and scaled-estimator measurability.
+The most advanced handoff still consumes the textbook-shaped Taylor equation
+`score_n + dotPsi_n(theta0) x_n + secondResidual_n = 0`, performs the algebraic
+split
 `dotPsi_n(theta0) x_n =
   (P dot psi_theta0) x_n + (dotPsi_n(theta0) - P dot psi_theta0) x_n`
 internally before applying the derivative and second-derivative residual
 bridge.
 
 The next aggressive packet should prove the remaining source Taylor fields:
-the deterministic/a.e. second-derivative residual bound, residual
-measurability, and the textbook-shaped a.e. Taylor equation
+the deterministic/a.e. second-derivative residual bound and the
+textbook-shaped a.e. Taylor equation
 `sqrt n Psi_n(theta0)
  + dotPsi_n(theta0) (sqrt n (thetaHat_n - theta0))
  + secondResidual_n = 0`.

@@ -1523,6 +1523,36 @@ theorem vaart1998_theorem_5_41_derivativeResidual_tendstoInMeasure_of_opNorm
       using hop
 
 /--
+van der Vaart 1998, Theorem 5.41, derivative residual measurability.
+
+The residual `(dotPsi_n(theta0) - P dot psi_theta0) x_n` is a.e. measurable
+once the empirical derivative and scaled estimator are a.e. measurable.
+-/
+theorem vaart1998_theorem_5_41_derivativeResidual_aemeasurable_of_operator
+    {Ω Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [BorelSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    (V : Θ →L[ℝ] Score)
+    {scaledEstimator : ℕ -> Ω -> Θ}
+    (hEmpiricalDerivative_meas : ∀ n, AEMeasurable (empiricalDerivative n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P) :
+    ∀ n,
+      AEMeasurable
+        (fun ω => (empiricalDerivative n ω - V) (scaledEstimator n ω)) P := by
+  intro n
+  have hDerivative :
+      AEMeasurable (fun ω => empiricalDerivative n ω - V) P :=
+    (continuous_id.sub continuous_const).measurable.comp_aemeasurable
+      (hEmpiricalDerivative_meas n)
+  have hEval :
+      Measurable fun p : (Θ →L[ℝ] Score) × Θ => p.1 p.2 :=
+    (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Θ) (F := Score)).continuous.measurable
+  exact hEval.comp_aemeasurable (hDerivative.prodMk (hScaledEstimator_meas n))
+
+/--
 van der Vaart 1998, Theorem 5.41, second-derivative Taylor residual.
 
 The second-derivative average is bounded in probability, the scaled estimator
@@ -2161,6 +2191,66 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquat
       hLeftInverse hScoreCLT hDerivativeLLN hDelta hCurvatureBounded
       hScaledEstimator hSecondBound hDerivativeResidual_meas
       hSecondResidual_meas hTaylorZero
+
+/--
+van der Vaart 1998, Theorem 5.41, source Taylor-equation handoff with
+derivative-residual measurability discharged.
+
+The derivative residual measurability field is derived from a.e. measurability
+of the empirical derivative operator and the scaled estimator.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_measurableDerivativeLLN_secondDerivativeBound
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {curvatureBound : ℕ -> Ω -> ℝ}
+    {score secondResidual : ℕ -> Ω -> Score}
+    {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω => ‖empiricalDerivative n ω - V‖) atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hCurvatureBounded : StochasticBounded P curvatureBound)
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hSecondBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        ‖delta n ω‖ * (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖))
+    (hEmpiricalDerivative_meas : ∀ n, AEMeasurable (empiricalDerivative n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P)
+    (hSecondResidual_meas : ∀ n, AEMeasurable (secondResidual n) P)
+    (hTaylorEquation : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + empiricalDerivative n ω (scaledEstimator n ω) +
+          secondResidual n ω = 0) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hDerivativeResidual_meas : ∀ n,
+      AEMeasurable
+        (fun ω => (empiricalDerivative n ω - V) (scaledEstimator n ω)) P :=
+    vaart1998_theorem_5_41_derivativeResidual_aemeasurable_of_operator
+      (P := P) (V := V) (empiricalDerivative := empiricalDerivative)
+      (scaledEstimator := scaledEstimator) hEmpiricalDerivative_meas
+      hScaledEstimator_meas
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_derivativeLLN_secondDerivativeBound
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (empiricalDerivative := empiricalDerivative) (delta := delta)
+      (scaledEstimator := scaledEstimator) (curvatureBound := curvatureBound)
+      (score := score) (secondResidual := secondResidual) (Z := Z)
+      hLeftInverse hScoreCLT hDerivativeLLN hDelta hCurvatureBounded
+      hScaledEstimator hSecondBound hDerivativeResidual_meas
+      hSecondResidual_meas hTaylorEquation
 
 end AsymptoticStatistics
 end StatInference
