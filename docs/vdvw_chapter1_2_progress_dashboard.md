@@ -3244,3 +3244,11 @@ and
 This closes the sample-a.e. versus all-sample mismatch for the mean route.
 The remaining mean-route analytic target is the convergence to zero of the
 selected finite-net Hoeffding-upper integral.
+
+The same selected expected-maximal route now also reaches the VdVW
+outer-expectation interface via
+`VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_ae_expectedMaximal`
+and
+`eventually_VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_selectedHalfRadius_expectedMaximal`.
+This prepares the centered symmetrization/Markov route to consume sample-a.e.
+selected covers directly.

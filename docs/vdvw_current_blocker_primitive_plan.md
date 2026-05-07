@@ -7904,3 +7904,14 @@ is to prove the selected finite-net Hoeffding-upper integral tends to zero
 from the existing selected entropy/tail side conditions; the event-route target
 remains the fixed-sample `Phi(x)=x` comparison plus pathwise finite-center
 Hoeffding event.
+
+2026-05-07 selected expected-maximal outer-expectation projection:
+`Theorem243.lean` now proves
+`VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_ae_expectedMaximal`
+and
+`eventually_VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_selectedHalfRadius_expectedMaximal`.
+These provide the outer-expectation interface needed by the centered
+symmetrization/Markov route when the selected-cover expected-maximal input is
+only sample-a.e.  The next proof-facing closure should connect this projected
+bound to centered-truncated convergence, assuming the already isolated
+selected finite-net integral convergence input.

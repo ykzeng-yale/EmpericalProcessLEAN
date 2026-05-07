@@ -15197,6 +15197,226 @@ theorem
       hexpected_n
 
 /--
+Product outer-expectation projection from sample-a.e. expected-maximal
+bounds.
+
+This is the outer-expectation analogue of
+`integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_ae_expectedMaximal`.
+It is the API needed by the centered symmetrization route when the selected
+finite-center expected-maximal theorem is available only sample-a.e.
+-/
+theorem
+    VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_ae_expectedMaximal
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {n : ℕ}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon M : ℝ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+          (cardinality sample))
+    (sign : Fin n -> Ωsign -> ℝ)
+    (U : VdVWMeasurableCover (μsign.prod (vdVWProductMeasure P n))
+      (fun z : Ωsign × SampleAt Observation n =>
+        ENNReal.ofReal
+          (vdVWWeightedClassSupremum indexClass classFun
+            (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2)))
+    (hsign :
+      ∀ᵐ ω ∂μsign, VdVWRademacherSignVector (fun i : Fin n => sign i ω))
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hproductSupIntegrable :
+      Integrable
+        (fun z : Ωsign × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass classFun
+            (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2)
+        (μsign.prod (vdVWProductMeasure P n)))
+    (hsupIntegrable :
+      ∀ sample : SampleAt Observation n,
+        Integrable
+          (fun ω =>
+            vdVWWeightedClassSupremum indexClass classFun
+              (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample)
+          μsign)
+    (hcenterSupIntegrable :
+      ∀ sample : SampleAt Observation n,
+        Integrable
+          (fun ω =>
+            vdVWFiniteCenterWeightedSupremum sample classFun
+              (cover sample).center
+              (vdVWRademacherWeights (fun i : Fin n => sign i ω)))
+          μsign)
+    (hupperIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWTheorem243FiniteNetHoeffdingUpper (cardinality sample) n M +
+            epsilon)
+        (vdVWProductMeasure P n))
+    (hexpected :
+      ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+        VdVWTheorem243FiniteCenterExpectedMaximalBound μsign
+          (fun centerIndex : Fin (cardinality sample) =>
+            fun ω =>
+              vdVWWeightedSampleSum classFun
+                (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+                ((cover sample).center centerIndex) sample)
+          (vdVWTheorem243FiniteNetHoeffdingUpper (cardinality sample) n M)) :
+    VdVWOuterExpectation (μsign.prod (vdVWProductMeasure P n))
+      (fun z : Ωsign × SampleAt Observation n =>
+        ENNReal.ofReal
+          (vdVWWeightedClassSupremum indexClass classFun
+            (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2)) ≤
+      ENNReal.ofReal
+        (∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper (cardinality sample) n M +
+            epsilon ∂(vdVWProductMeasure P n)) := by
+  let randomSup : Ωsign × SampleAt Observation n -> ℝ :=
+    fun z =>
+      vdVWWeightedClassSupremum indexClass classFun
+        (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2
+  have hnonneg : 0 ≤ᵐ[μsign.prod (vdVWProductMeasure P n)] randomSup := by
+    exact ae_of_all _ fun z =>
+      vdVWWeightedClassSupremum_nonneg indexClass classFun
+        (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2
+  have houter :
+      VdVWOuterExpectation (μsign.prod (vdVWProductMeasure P n))
+          (fun z : Ωsign × SampleAt Observation n =>
+            ENNReal.ofReal (randomSup z)) =
+        ENNReal.ofReal
+          (∫ z : Ωsign × SampleAt Observation n,
+            randomSup z ∂(μsign.prod (vdVWProductMeasure P n))) := by
+    exact
+      VdVWOuterExpectation_eq_ofReal_integral_of_cover_integrable_nonneg
+        (μ := μsign.prod (vdVWProductMeasure P n))
+        (by simpa [randomSup] using U)
+        (by simpa [randomSup] using hproductSupIntegrable)
+        hnonneg
+  have hintegral_le :
+      ∫ z : Ωsign × SampleAt Observation n,
+          randomSup z ∂(μsign.prod (vdVWProductMeasure P n)) ≤
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper (cardinality sample) n M +
+            epsilon ∂(vdVWProductMeasure P n) := by
+    simpa [randomSup] using
+      (integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_ae_expectedMaximal
+        (μ := μsign) (P := P) (indexClass := indexClass)
+        (classFun := classFun) (epsilon := epsilon) (M := M)
+        (cardinality := cardinality) cover sign hsign hepsilon_nonneg
+        hproductSupIntegrable hsupIntegrable hcenterSupIntegrable
+        hupperIntegrable hexpected)
+  simpa [randomSup, houter] using ENNReal.ofReal_le_ofReal hintegral_le
+
+/--
+Eventual product outer-expectation projection for selected half-radius
+empirical covers.
+
+This composes the selected half-radius expected-maximal theorem with the
+sample-a.e. outer-expectation projection, giving the mean route the same
+outer-expectation interface as the older all-sample random-cover route.
+-/
+theorem
+    eventually_VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_selectedHalfRadius_expectedMaximal
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
+    (hsign :
+      ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
+        (fun i : Fin n => sign n i ω))
+    (hindep : ∀ n, iIndepFun (sign n) μsign)
+    (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (U :
+      ∀ n, VdVWMeasurableCover (μsign.prod (vdVWProductMeasure P n))
+        (fun z : Ωsign × SampleAt Observation n =>
+          ENNReal.ofReal
+            (vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i z.1)) z.2)))
+    (hproductSupIntegrable :
+      ∀ n,
+        Integrable
+          (fun z : Ωsign × SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i z.1)) z.2)
+          (μsign.prod (vdVWProductMeasure P n)))
+    (hsupIntegrable :
+      ∀ n (sample : SampleAt Observation n),
+        Integrable
+          (fun ω =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i ω)) sample)
+          μsign)
+    (hcenterSupIntegrable :
+      ∀ (eta : ℝ) (heta : 0 < eta) n (sample : SampleAt Observation n),
+        Integrable
+          (fun ω =>
+            vdVWFiniteCenterWeightedSupremum sample
+              (vdVWTruncatedClassFun classFun envelope M)
+              (cover eta heta n sample).center
+              (vdVWRademacherWeights (fun i : Fin n => sign n i ω)))
+          μsign)
+    (hupperIntegrable :
+      ∀ (eta : ℝ) (_ : 0 < eta) n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+                (selectedCardinality eta n sample n) n M +
+              eta / 2)
+          (vdVWProductMeasure P n)) :
+    ∀ (eta : ℝ) (_ : 0 < eta),
+      ∀ᶠ n in atTop,
+        VdVWOuterExpectation (μsign.prod (vdVWProductMeasure P n))
+          (fun z : Ωsign × SampleAt Observation n =>
+            ENNReal.ofReal
+              (vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (fun i : Fin n => sign n i z.1))
+                z.2)) ≤
+          ENNReal.ofReal
+            (∫ sample : SampleAt Observation n,
+              vdVWTheorem243FiniteNetHoeffdingUpper
+                  (selectedCardinality eta n sample n) n M +
+                eta / 2
+              ∂(vdVWProductMeasure P n)) := by
+  intro eta heta
+  have hexpected_eventual :=
+    VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (selectedCardinality := selectedCardinality)
+      hindexClass_nonempty henvelope hM_pos sign hindep hsubG cover eta heta
+  filter_upwards [hexpected_eventual] with n hexpected_n
+  exact
+    VdVWOuterExpectation_prod_vdVWWeightedClassSupremum_le_ofReal_integral_finiteNetHoeffdingUpper_add_of_ae_expectedMaximal
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (epsilon := eta / 2) (M := M)
+      (cardinality := fun sample : SampleAt Observation n =>
+        selectedCardinality eta n sample n)
+      (cover := fun sample => cover eta heta n sample)
+      (sign := sign n) (U := U n) (hsign n) (by linarith)
+      (hproductSupIntegrable n) (hsupIntegrable n)
+      (hcenterSupIntegrable eta heta n) (hupperIntegrable eta heta n)
+      hexpected_n
+
+/--
 Product-space version of the random-sign finite-net handoff.
 
 This is the bridge needed when the original sample is also random: a
