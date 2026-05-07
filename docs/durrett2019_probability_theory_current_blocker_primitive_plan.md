@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V24
+## Live In-Thread Goal Prompt V25
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -32,16 +32,22 @@ natural-random-walk quadratic martingale instantiation now also compiles from
 Example 4.2.3 now has the product process `M_n = ∏_{m ≤ n} Y_m`, its one-step
 product identity, adaptedness, finite-product integrability from independent
 integrable factors, the pull-out conditional-expectation calculation, and the
-natural-filtration mean-one product martingale wrapper.
+natural-filtration mean-one product martingale wrapper.  The normalized
+exponential-martingale display now also compiles: normalized factors
+`exp(θ ξ_i) / φ`, factor independence/measurability/integrability/mean-one
+bridges, the finite-product display
+`∏_{i=1}^n exp(θ ξ_i) / φ = exp(θ S_n) / φ^n`, and the martingale wrapper from
+a nonzero common exponential moment.
 
-Next theorem-sized packet: add the normalized exponential-martingale display in
-Example 4.2.3.  Define the factor `Y_i = exp(θ ξ_i) / φ(θ)` from a supplied
-positive/nonzero normalizer `φ(θ)`, prove the finite-product display
-`∏_{i=1}^n Y_i = exp(θ S_n) / φ(θ)^n` if the algebra is direct, and connect it
-to the compiled mean-one product martingale wrapper from supplied integrability
-and mean-one hypotheses.  Do not repackage solved Chapter 4.1 facts or the
-compiled Chapter 4.2 starter, linear, centered, quadratic, natural quadratic,
-or product-martingale wrappers.
+Next theorem-sized packet: move to Theorems 4.2.4 and 4.2.5.  Package the
+all-times supermartingale, submartingale, and martingale conditional
+expectation consequences for `m ≤ n`, reusing mathlib's all-times
+`condExp_ae_le`, `ae_le_condExp`, and `condExp_ae_eq` APIs already wrapped near
+the start of `Martingale.lean`.  If these are already direct one-line wrappers,
+add the source-facing strict-index `m < n` variants and then continue to
+Theorem 4.2.6 convex-image submartingales.  Do not repackage solved Chapter
+4.1 facts or the compiled Chapter 4.2 starter, examples 4.2.1-4.2.3, or
+normalized exponential wrappers.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -342,8 +348,8 @@ Current aggressive target: continue the Chapter 4.2 martingale spine beyond the
 compiled Example 4.2.1 linear random-walk martingale/supermartingale/
 submartingale and centered-display wrappers and the compiled Example 4.2.2
 quadratic source/natural-random-walk bridges and Example 4.2.3 product
-martingale bridge.  The following Chapter 3, Chapter 4.1, and Chapter 4.2
-packets now compile:
+martingale and normalized-exponential bridges.  The following Chapter 3,
+Chapter 4.1, and Chapter 4.2 packets now compile:
 
 - Durrett Theorem 3.2.9 bounded-continuous test characterization, including
   the `integral_map` bridge from map-law integrals to textbook expectations
@@ -404,10 +410,10 @@ packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should add the normalized exponential-martingale display
-for Example 4.2.3 and feed it into the compiled product martingale wrapper.
-Keep Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
-source-shaped API.
+The next likely packet should package Theorems 4.2.4 and 4.2.5 as
+source-facing strict-index consequences, then move to Theorem 4.2.6 if those
+are immediate.  Keep Theorem 4.1.16 deferred unless a targeted kernel search
+finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -519,6 +525,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V24` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V25` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

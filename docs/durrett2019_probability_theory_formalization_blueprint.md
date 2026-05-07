@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V24`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V25`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -391,7 +391,7 @@ Compiled Section 3.2 packets:
 
 Next packet:
 
-- Chapter 4.1: continue the conditional-expectation layer.  The Section 3.10
+- Chapter 4.2: continue the martingale layer.  The Section 3.10
   multivariate CLT chain, Gaussian-coordinate independence criterion, Exercise
   3.10.8 linear-combination characterization wrappers, Durrett conditional
   expectation version predicate, mathlib-condExp version wrapper, Example 4.1.3
@@ -405,9 +405,12 @@ Next packet:
   martingale/supermartingale/submartingale and centered-display wrappers now
   compile.  The Example 4.2.2 quadratic martingale source bridge and its
   natural-random-walk instantiation now compile.  Example 4.2.3 product
-  martingales now compile for independent integrable mean-one factors.  The
-  next active target is the normalized exponential-martingale display.  Theorem
-  4.1.16 remains deferred unless a direct kernel API appears.
+  martingales now compile for independent integrable mean-one factors, and its
+  normalized exponential display/wrapper now compiles from a nonzero common
+  exponential moment.  The next active target is Theorem 4.2.4 and Theorem
+  4.2.5 strict-index all-times conditional expectation consequences, then
+  Theorem 4.2.6 convex-image submartingales if immediate.  Theorem 4.1.16
+  remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
 

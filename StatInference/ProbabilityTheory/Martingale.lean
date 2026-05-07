@@ -961,5 +961,127 @@ theorem durrett2019_example_4_2_3_productProcess_martingale_of_iIndepFun_meanOne
       n] with ω hω
   simpa [hY_mean_one (n + 1)] using hω
 
+/--
+Durrett 2019, Example 4.2.3, normalized exponential factor
+`Y_i = exp(θ ξ_i) / φ(θ)`.
+-/
+noncomputable def durrett2019_example_4_2_3_normalizedExponentialFactor
+    {Ω : Type*} (theta phi : ℝ) (ξ : ℕ -> Ω -> ℝ) : ℕ -> Ω -> ℝ :=
+  fun n ω => Real.exp (theta * ξ n ω) / phi
+
+/--
+Durrett 2019, Example 4.2.3: normalized exponential factors are strongly
+measurable when the increments are.
+-/
+theorem durrett2019_example_4_2_3_normalizedExponentialFactor_stronglyMeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ξ : ℕ -> Ω -> ℝ}
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n)) (theta phi : ℝ) :
+    ∀ n, StronglyMeasurable
+      (durrett2019_example_4_2_3_normalizedExponentialFactor theta phi ξ n) := by
+  intro n
+  exact ((((hξ_sm n).const_mul theta).measurable.exp).stronglyMeasurable).div
+    stronglyMeasurable_const
+
+/--
+Durrett 2019, Example 4.2.3: coordinatewise measurable normalization preserves
+independence of the exponential factors.
+-/
+theorem durrett2019_example_4_2_3_normalizedExponentialFactor_iIndepFun
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω}
+    {ξ : ℕ -> Ω -> ℝ} (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ μ)
+    (theta phi : ℝ) :
+    _root_.ProbabilityTheory.iIndepFun
+      (durrett2019_example_4_2_3_normalizedExponentialFactor theta phi ξ) μ := by
+  simpa [durrett2019_example_4_2_3_normalizedExponentialFactor,
+    Function.comp_def] using
+    (durrett2019_theorem_2_1_10_iIndepFun_comp
+      (P := μ) (X := ξ) hξ_indep
+      (f := fun _ : ℕ => fun x : ℝ => Real.exp (theta * x) / phi)
+      (fun _ => (Real.measurable_exp.comp (measurable_const.mul measurable_id)).div_const phi))
+
+/--
+Durrett 2019, Example 4.2.3: integrability of normalized exponential factors
+from integrability of the exponential moments.
+-/
+theorem durrett2019_example_4_2_3_normalizedExponentialFactor_integrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω}
+    {ξ : ℕ -> Ω -> ℝ} (theta phi : ℝ)
+    (hξ_exp_int : ∀ n, Integrable (fun ω => Real.exp (theta * ξ n ω)) μ) :
+    ∀ n, Integrable
+      (durrett2019_example_4_2_3_normalizedExponentialFactor theta phi ξ n) μ :=
+  fun n => (hξ_exp_int n).div_const phi
+
+/--
+Durrett 2019, Example 4.2.3: if the common exponential moment is `φ`, then
+the normalized factors have mean one.
+-/
+theorem durrett2019_example_4_2_3_normalizedExponentialFactor_integral_eq_one
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {ξ : ℕ -> Ω -> ℝ} {theta phi : ℝ} (hphi_ne : phi ≠ 0)
+    (hξ_exp_moment : ∀ n, (∫ ω, Real.exp (theta * ξ n ω) ∂μ) = phi) :
+    ∀ n,
+      (∫ ω,
+        durrett2019_example_4_2_3_normalizedExponentialFactor theta phi ξ n ω ∂μ) = 1 := by
+  intro n
+  change (∫ ω, Real.exp (theta * ξ n ω) / phi ∂μ) = 1
+  rw [integral_div]
+  rw [hξ_exp_moment n]
+  exact div_self hphi_ne
+
+/--
+Durrett 2019, Example 4.2.3: finite-product display
+`∏ exp(θ ξ_i) / φ = exp(θ S_n) / φ^n`.
+
+Here `S_n` is the zero-initial random walk `ξ_1 + ... + ξ_n`.
+-/
+theorem durrett2019_example_4_2_3_normalizedExponentialProduct_eq_exp_linearRandomWalk
+    {Ω : Type*} (theta phi : ℝ) (ξ : ℕ -> Ω -> ℝ) (n : ℕ) :
+    durrett2019_example_4_2_3_productProcess
+        (durrett2019_example_4_2_3_normalizedExponentialFactor theta phi ξ) n =
+      fun ω =>
+        Real.exp
+          (theta * durrett2019_example_4_2_1_linearRandomWalk 0 ξ n ω) /
+          phi ^ n := by
+  ext ω
+  simp [durrett2019_example_4_2_3_productProcess,
+    durrett2019_example_4_2_3_normalizedExponentialFactor,
+    durrett2019_example_4_2_1_linearRandomWalk, Finset.prod_div_distrib,
+    Finset.prod_const, Real.exp_sum, Finset.mul_sum]
+
+/--
+Durrett 2019, Example 4.2.3, normalized exponential martingale.
+
+If the increments are independent and the exponential moment at `θ` is the
+nonzero common value `φ`, then the normalized exponential factors form the
+product martingale whose display is
+`exp(θ S_n) / φ^n`.
+-/
+theorem durrett2019_example_4_2_3_normalizedExponentialProduct_martingale_of_iIndepFun
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {ξ : ℕ -> Ω -> ℝ} {theta phi : ℝ}
+    (hphi_ne : phi ≠ 0)
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n))
+    (hξ_exp_int : ∀ n, Integrable (fun ω => Real.exp (theta * ξ n ω)) μ)
+    (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ μ)
+    (hξ_exp_moment : ∀ n, (∫ ω, Real.exp (theta * ξ n ω) ∂μ) = phi) :
+    Martingale
+      (durrett2019_example_4_2_3_productProcess
+        (durrett2019_example_4_2_3_normalizedExponentialFactor theta phi ξ))
+      (Filtration.natural
+        (durrett2019_example_4_2_3_normalizedExponentialFactor theta phi ξ)
+        (durrett2019_example_4_2_3_normalizedExponentialFactor_stronglyMeasurable
+          hξ_sm theta phi)) μ := by
+  refine durrett2019_example_4_2_3_productProcess_martingale_of_iIndepFun_meanOne
+    (Y := durrett2019_example_4_2_3_normalizedExponentialFactor theta phi ξ)
+    (durrett2019_example_4_2_3_normalizedExponentialFactor_stronglyMeasurable
+      hξ_sm theta phi)
+    (durrett2019_example_4_2_3_normalizedExponentialFactor_integrable
+      (μ := μ) theta phi hξ_exp_int)
+    (durrett2019_example_4_2_3_normalizedExponentialFactor_iIndepFun
+      (μ := μ) hξ_indep theta phi)
+    ?_
+  exact durrett2019_example_4_2_3_normalizedExponentialFactor_integral_eq_one
+    (μ := μ) hphi_ne hξ_exp_moment
+
 end ProbabilityTheory
 end StatInference
