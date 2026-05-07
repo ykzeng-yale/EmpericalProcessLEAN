@@ -4,38 +4,32 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V3
+## Live In-Thread Goal Prompt V4
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
-Continue the Durrett 2019 probability-theory Lean formalization from the latest
-pushed commit and these route docs.  Current frontier: Chapter 3.4.10
-Lindeberg-Feller in `StatInference/ProbabilityTheory/Basic.lean`.  Ignore the
-stale app-level wording that routes to Chapter 2; Chapter 2 Glivenko-Cantelli,
-Chapter 2.1 product-law work, Chapter 3.2 weak convergence, Chapter 3.3
-basic characteristic-function wrappers, Theorem 3.4.1, Exercise 3.1.1, and the
-3.4.10 certificate plumbing are already route context, not active targets.
+Continue Durrett 2019 Probability Theory formalization from the latest synced
+`main` and these route docs.  Active frontier only: Section 3.10
+finite-dimensional limit theory in
+`StatInference/ProbabilityTheory/Multivariate.lean`.
+Preserve the compiled Theorem 3.10.6 Cramér-Wold law wrapper, then implement the
+next theorem-sized packet: Theorem 3.10.7 finite-coordinate multivariate CLT,
+turning projected scalar CLTs into vector law convergence through the local
+Vaart Cramér-Wold bridge.
 
-Immediate packet: prove the pure pointwise Durrett Lemma 3.3.19 `n = 2`
-characteristic-function Taylor estimate
-`‖durrett2019_quadraticCharacteristicTaylorPointwiseRemainder t x‖ ≤
-min (|t * x| ^ 3) (2 * |t * x| ^ 2)`, then instantiate
-`durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound`.
-The expectation-level bridge
-`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_pointwiseTaylorRemainderBound`
-and all downstream expansion-bound/final Lindeberg-Feller consumers already
-compile, so skip them unless a new compiler dependency reopens them.  After this
-pointwise chain closes, route directly to Section 3.10 Cramer-Wold and
-multivariate CLT.
+Operating loop: fetch/rebase, inspect only APIs/source anchors needed for this
+theorem, reuse mathlib/local/GitHub contributions, write one compiled
+wrapper/bridge packet, run focused Lean plus targeted build/scans and root build
+when imports changed, update route docs only if the frontier changes, commit,
+and push.
 
-Cycle discipline: fetch/rebase, inspect only relevant remote/local Lean
-contributions and Durrett source anchors, implement one theorem-sized packet,
-run focused Lean plus targeted build and proof/secret scans, update these route
-docs only when the frontier changes, commit, and push.  Use a separate worktree
-only for dirty checkouts, long builds, or disjoint local lanes.  Do not create
-automations or spawn subagents unless the user explicitly asks in the current
-turn.  Keep all code, comments, docs, and commit messages in English.
+Stale-route guard: the app-level `/goal` still mentions Chapter 2; ignore that
+wording.  Treat Chapter 2, Chapter 3.2/3.3, Theorem 3.4.1, Exercise 3.1.1, and
+Theorem 3.4.10 as completed support unless Section 3.10 explicitly needs a
+dependency.  Do not create automations or spawn agents unless the user asks in
+the current turn.  Use worktrees only for dirty, long, or disjoint lanes.  Keep
+all code, comments, docs, and commit messages in English.
 
 ## Minimal Operating Contract
 
@@ -201,7 +195,13 @@ namespace now has a compiled starter module:
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`
 - `durrett2019_quadraticCharacteristicTaylorPointwiseRemainder`
 - `durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound`
+- `durrett2019_quadraticCharacteristicTaylorPointwiseRemainder_norm_le_cubic_of_abs_le_two`
+- `durrett2019_quadraticCharacteristicTaylorPointwiseRemainder_norm_le_quadratic_of_two_le_abs`
+- `durrett2019_quadraticCharacteristicTaylorPointwiseRemainder_norm_le_scalar`
+- `durrett2019_quadraticCharacteristicTaylorPointwiseRemainder_norm_le`
+- `durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound_of_scalar`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_pointwiseTaylorRemainderBound`
+- `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_integrableSq`
 - `durrett2019_lindebergFeller_min_taylor_remainder_le_split`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound_of_remainderBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound_of_expansionBound`
@@ -250,6 +250,7 @@ namespace now has a compiled starter module:
 - `Durrett2019LindebergFellerAnalyticCertificate.of_taylorBound_integrableSq`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_expansionBound_integrableSq`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_remainderBound_integrableSq`
+- `Durrett2019LindebergFellerAnalyticCertificate.of_integrableSq`
 - `durrett2019_theorem_3_4_10_characteristicFunction_rowSum_eq_product`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_product_tendsto`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_exp_of_product_tendsto_exp`
@@ -263,6 +264,8 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_taylorBound_integrableSq`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_expansionBound_integrableSq`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_remainderBound_integrableSq`
+- `durrett2019_theorem_3_4_10_lindebergFeller_of_integrableSq`
+- `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -360,13 +363,11 @@ layer before moving to multivariate CLT reuse:
   then feeds
   `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
   through compiled bridges.  The pointwise truncation split of the minimum term
-  also compiles.  The integrated split bridge from Durrett's (3.3.3) remainder
-  predicate to the scalar expansion-bound predicate now compiles, and the
-  pointwise-to-expectation bridge from Durrett Lemma 3.3.19 now compiles.  The
-  next proof target is the pure scalar pointwise Taylor estimate for
-  `durrett2019_quadraticCharacteristicTaylorPointwiseRemainder`, then the
-  source-facing pointwise predicate
-  `durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound`.
+  also compiles.  Durrett Lemma 3.3.19 `n = 2` now proves the pure scalar
+  minimum-form Taylor estimate, the source-facing pointwise predicate, the
+  pointwise-to-expectation bridge, and the final square-integrable
+  Lindeberg-Feller source wrapper.  Do not route new work back to the
+  (3.3.3) Taylor chain unless a dependency breaks.
   The
   quadratic-product obligation
   `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp` now has
@@ -386,9 +387,12 @@ layer before moving to multivariate CLT reuse:
   `durrett2019_lindebergFellerVarianceSplitByTailRowSum` predicate.  The next
   max-row-variance work should therefore not re-prove this split, but consume
   `durrett2019_lindebergFellerVarianceSplitByTailRowSum_of_integrableSq`.
-- Section 3.10 characteristic-function convergence, Cramer-Wold, and
-  multivariate CLT: search `StatInference/AsymptoticStatistics` and local
-  weak-convergence files before adding new primitives.
+- Section 3.10 characteristic-function convergence, Cramér-Wold, and
+  multivariate CLT: the finite-coordinate law-level Cramér-Wold wrapper now
+  compiles in `StatInference/ProbabilityTheory/Multivariate.lean`.  Next,
+  connect projected scalar CLTs to a Durrett Theorem 3.10.7 finite-coordinate
+  multivariate CLT wrapper, reusing local Vaart Cramér-Wold bridge machinery
+  before adding any new vector probability primitives.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -496,8 +500,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V3` at the top of this file.  This older seed
-is retained only to record that the active route has moved past Chapter 2 and
-past the compiled Chapter 3.2/3.3/3.4.1/Exercise 3.1.1 setup.  Do not replay
-those solved setup tasks unless a new dependency failure explicitly reopens
-one of them.
+Use `Live In-Thread Goal Prompt V4` at the top of this file.  Historical route
+notes below this point are inventory, not instructions for the next proof
+packet.

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V3`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V4`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -382,35 +382,31 @@ Compiled Section 3.2 packets:
   Taylor-bound predicate written with second moments, a scalar expansion-bound
   predicate retaining the linear term, the pointwise truncation split of
   Durrett's minimum term, the pointwise Durrett Lemma 3.3.19 remainder term and
-  predicate, the compiled pointwise-to-expectation bridge to the (3.3.3)
-  remainder predicate, and compiled constructors from the expansion bound to the
-  scalar Taylor bound, one-factor bound, finite-row bound, analytic certificate,
-  and final convergence-in-distribution theorem.
+  predicate, the pure scalar minimum-form Taylor estimate, the compiled
+  pointwise-to-expectation bridge to the (3.3.3) remainder predicate, and
+  compiled constructors from the expansion bound to the scalar Taylor bound,
+  one-factor bound, finite-row bound, analytic certificate, direct
+  square-integrable analytic certificate, and final convergence-in-distribution
+  theorem.
 
-Next packet candidates:
+Next packet:
 
-- Section 3.4 Lindeberg-Feller analytic estimates: prove the pure pointwise
-  Durrett Lemma 3.3.19 `n = 2` estimate for
-  `durrett2019_quadraticCharacteristicTaylorPointwiseRemainder`, then
-  instantiate the source-facing predicate
-  `durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound`.
-  The pointwise truncation split of the minimum term already compiles as
-  `durrett2019_lindebergFeller_min_taylor_remainder_le_split`, and the bridges
-  from the pointwise predicate to the remainder bound, expansion bound, scalar
-  Taylor bound, variance-based one-factor bound, finite-row bound, analytic
-  certificate, and final Lindeberg-Feller source wrapper already compile.  Do
-  not re-prove the integration split, finite-row summation, or limiting epsilon
-  argument.  The
-  lower-level variance-tail split inequality
-  `variance <= cutoff ^ 2 + tail row sum` now compiles from row
-  `AEMeasurable` plus square-integrability assumptions, so it should be
-  consumed rather than reproved in the next route.
-- Section 3.3 inversion or uniqueness support, only when it is directly needed
-  for the convergence theorem route.
-- Section 3.10 Cramer-Wold and multivariate CLT wrappers over existing local
-  asymptotic-statistics finite-dimensional convergence code.
+- Section 3.10 Cramér-Wold and multivariate CLT wrappers over existing local
+  finite-dimensional law-convergence machinery.  The finite-coordinate law-level
+  Durrett Theorem 3.10.6 wrapper now compiles in
+  `StatInference/ProbabilityTheory/Multivariate.lean`; next package Durrett
+  Theorem 3.10.7 by connecting projected scalar CLTs to vector convergence via
+  that Cramér-Wold wrapper and the local Vaart bridge machinery.
 
-Likely initial source items:
+Support-only dependencies:
+
+- Use Section 3.3 inversion or uniqueness support only when it directly blocks
+  the Section 3.10 convergence route.
+- Treat Section 3.4 Lindeberg-Feller analytic estimates, including the direct
+  square-integrable source wrapper and variance-tail split machinery, as closed
+  support to consume rather than re-prove.
+
+Chapter 3 source inventory:
 
 - Section 3.2 weak convergence of random variables.
 - Theorem 3.2.9, bounded-continuous test functions.
@@ -420,7 +416,7 @@ Likely initial source items:
 - Theorem 3.1.2, de Moivre-Laplace local limit.
 - Section 3.3 characteristic functions and inversion formula.
 - Section 3.4 central limit theorems.
-- Section 3.10 limit theorems in `R^d`.
+- Active frontier: Section 3.10 limit theorems in `R^d`.
 
 Source anchors:
 

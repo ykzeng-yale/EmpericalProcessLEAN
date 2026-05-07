@@ -2802,6 +2802,149 @@ def durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBo
       min (|t * X n m ω| ^ 3) (2 * |t * X n m ω| ^ 2)
 
 /--
+Durrett 2019, Lemma 3.3.19 with `n = 2`, cubic side of the scalar
+characteristic-function Taylor remainder estimate.
+-/
+theorem durrett2019_quadraticCharacteristicTaylorPointwiseRemainder_norm_le_cubic_of_abs_le_two
+    (u : ℝ) (hu : |u| ≤ 2) :
+    ‖Complex.exp (((u : ℝ) : ℂ) * Complex.I) -
+        (1 + (((u : ℝ) : ℂ) * Complex.I) - (((u ^ 2 / 2 : ℝ) : ℂ)))‖ ≤
+      |u| ^ 3 := by
+  let z : ℂ := ((u : ℝ) : ℂ) * Complex.I
+  have hnorm : ‖z‖ = |u| := by
+    simp [z, Real.norm_eq_abs]
+  have hz : ‖z‖ / (Nat.succ 3 : ℝ) ≤ 1 / 2 := by
+    rw [hnorm]
+    norm_num
+    nlinarith
+  have hbound := Complex.exp_bound' (x := z) (n := 3) hz
+  have hsum :
+      (∑ m ∈ Finset.range 3, z ^ m / (m.factorial : ℂ)) =
+        1 + (((u : ℝ) : ℂ) * Complex.I) - (((u ^ 2 / 2 : ℝ) : ℂ)) := by
+    have hsq : z ^ 2 / (2 : ℂ) = -(((u ^ 2 / 2 : ℝ) : ℂ)) := by
+      simp [z, mul_pow, Complex.I_sq]
+      ring_nf
+    simp [Finset.sum_range_succ, Nat.factorial, z, hsq, sub_eq_add_neg]
+  have hmain :
+      ‖Complex.exp (((u : ℝ) : ℂ) * Complex.I) -
+          (1 + (((u : ℝ) : ℂ) * Complex.I) - (((u ^ 2 / 2 : ℝ) : ℂ)))‖ ≤
+        |u| ^ 3 / 3 := by
+    calc
+      ‖Complex.exp (((u : ℝ) : ℂ) * Complex.I) -
+          (1 + (((u : ℝ) : ℂ) * Complex.I) - (((u ^ 2 / 2 : ℝ) : ℂ)) )‖
+          = ‖Complex.exp z - ∑ m ∈ Finset.range 3, z ^ m / (m.factorial : ℂ)‖ := by
+            rw [hsum]
+      _ ≤ ‖z‖ ^ 3 / (Nat.factorial 3 : ℝ) * 2 := hbound
+      _ = |u| ^ 3 / 3 := by
+            rw [hnorm]
+            ring_nf
+  have hnonneg : 0 ≤ |u| ^ 3 := by
+    positivity
+  nlinarith
+
+/--
+Durrett 2019, Lemma 3.3.19 with `n = 2`, quadratic side of the scalar
+characteristic-function Taylor remainder estimate.
+-/
+theorem durrett2019_quadraticCharacteristicTaylorPointwiseRemainder_norm_le_quadratic_of_two_le_abs
+    (u : ℝ) (hu : 2 ≤ |u|) :
+    ‖Complex.exp (((u : ℝ) : ℂ) * Complex.I) -
+        (1 + (((u : ℝ) : ℂ) * Complex.I) - (((u ^ 2 / 2 : ℝ) : ℂ)))‖ ≤
+      2 * |u| ^ 2 := by
+  let e : ℂ := Complex.exp (((u : ℝ) : ℂ) * Complex.I)
+  let b : ℂ := (((u : ℝ) : ℂ) * Complex.I)
+  let c : ℂ := (((u ^ 2 / 2 : ℝ) : ℂ))
+  have he_sub_one : ‖e - 1‖ ≤ 2 := by
+    calc
+      ‖e - 1‖ ≤ ‖e‖ + ‖(1 : ℂ)‖ := norm_sub_le e 1
+      _ = 2 := by
+        simp [e, Complex.norm_exp_ofReal_mul_I]
+        norm_num
+  have hb_norm : ‖b‖ = |u| := by
+    simp [b, Real.norm_eq_abs]
+  have hc_norm : ‖c‖ = u ^ 2 / 2 := by
+    simp [c]
+  have hsub : ‖(e - 1) - b‖ ≤ ‖e - 1‖ + ‖b‖ :=
+    norm_sub_le (e - 1) b
+  calc
+    ‖Complex.exp (((u : ℝ) : ℂ) * Complex.I) -
+        (1 + (((u : ℝ) : ℂ) * Complex.I) - (((u ^ 2 / 2 : ℝ) : ℂ)))‖
+        = ‖(e - 1) - b + c‖ := by
+          simp [e, b, c]
+          ring_nf
+    _ ≤ ‖(e - 1) - b‖ + ‖c‖ := norm_add_le _ _
+    _ ≤ (‖e - 1‖ + ‖b‖) + ‖c‖ := by
+          simpa [add_comm, add_left_comm, add_assoc] using add_le_add_right hsub ‖c‖
+    _ ≤ (2 + |u|) + (u ^ 2 / 2) := by
+          rw [hb_norm, hc_norm]
+          gcongr
+    _ ≤ 2 * |u| ^ 2 := by
+          have habs_nonneg : 0 ≤ |u| := abs_nonneg u
+          have hu2 : 0 ≤ u ^ 2 := sq_nonneg u
+          have habs_sq : |u| ^ 2 = u ^ 2 := by
+            rw [sq_abs]
+          nlinarith
+
+/--
+Durrett 2019, Lemma 3.3.19 with `n = 2`, scalar minimum-form estimate for the
+quadratic characteristic-function Taylor remainder.
+-/
+theorem durrett2019_quadraticCharacteristicTaylorPointwiseRemainder_norm_le_scalar
+    (u : ℝ) :
+    ‖Complex.exp (((u : ℝ) : ℂ) * Complex.I) -
+        (1 + (((u : ℝ) : ℂ) * Complex.I) - (((u ^ 2 / 2 : ℝ) : ℂ)))‖ ≤
+      min (|u| ^ 3) (2 * |u| ^ 2) := by
+  by_cases hu : |u| ≤ 2
+  · have hleft : |u| ^ 3 ≤ 2 * |u| ^ 2 := by
+      calc
+        |u| ^ 3 = |u| ^ 2 * |u| := by
+          ring
+        _ ≤ |u| ^ 2 * 2 := by
+          gcongr
+        _ = 2 * |u| ^ 2 := by
+          ring
+    rw [min_eq_left hleft]
+    exact
+      durrett2019_quadraticCharacteristicTaylorPointwiseRemainder_norm_le_cubic_of_abs_le_two
+        u hu
+  · have hge : 2 ≤ |u| := le_of_lt (lt_of_not_ge hu)
+    have hright : 2 * |u| ^ 2 ≤ |u| ^ 3 := by
+      calc
+        2 * |u| ^ 2 ≤ |u| * |u| ^ 2 := by
+          gcongr
+        _ = |u| ^ 3 := by
+          ring
+    rw [min_eq_right hright]
+    exact
+      durrett2019_quadraticCharacteristicTaylorPointwiseRemainder_norm_le_quadratic_of_two_le_abs
+        u hge
+
+/--
+Durrett 2019, Lemma 3.3.19 with `n = 2`, written in the variables used by the
+Lindeberg-Feller row factors.
+-/
+theorem durrett2019_quadraticCharacteristicTaylorPointwiseRemainder_norm_le
+    (t x : ℝ) :
+    ‖durrett2019_quadraticCharacteristicTaylorPointwiseRemainder t x‖ ≤
+      min (|t * x| ^ 3) (2 * |t * x| ^ 2) := by
+  have h := durrett2019_quadraticCharacteristicTaylorPointwiseRemainder_norm_le_scalar
+    (t * x)
+  simpa [durrett2019_quadraticCharacteristicTaylorPointwiseRemainder, mul_comm,
+    mul_left_comm, mul_assoc, sq] using h
+
+/--
+Durrett 2019, Lemma 3.3.19 with `n = 2`, source-facing triangular-array
+pointwise predicate.
+-/
+theorem durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound_of_scalar
+    {Ω : Type u} {X : ℕ -> ℕ -> Ω -> ℝ} :
+    durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound
+      X := by
+  intro t n m ω
+  exact durrett2019_quadraticCharacteristicTaylorPointwiseRemainder_norm_le
+    t (X n m ω)
+
+/--
 Durrett 2019, formula (3.3.3): the pointwise Lemma 3.3.19 quadratic remainder
 bound implies the integrated characteristic-function Taylor remainder bound.
 -/
@@ -2946,6 +3089,22 @@ theorem durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemaind
     _ = ∫ ω, min (|t * X n m ω| ^ 3)
             (2 * |t * X n m ω| ^ 2) ∂P := by
           rfl
+
+/--
+Durrett 2019, formula (3.3.3): the integrated one-factor
+characteristic-function Taylor remainder bound follows from square-integrable
+rows and the scalar Lemma 3.3.19 estimate.
+-/
+theorem durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_integrableSq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hX : ∀ n m : ℕ, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m : ℕ, Integrable (fun ω => (X n m ω) ^ 2) P) :
+    durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound
+      P X :=
+  durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_pointwiseTaylorRemainderBound
+    (P := P) (X := X) hX hX2
+    durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound_of_scalar
 
 /--
 Durrett 2019, Theorem 3.4.10, pointwise truncation split for the scalar
@@ -4354,6 +4513,29 @@ theorem Durrett2019LindebergFellerAnalyticCertificate.of_remainderBound_integrab
       (P := P) (X := X) hX hX2 hmean_zero hremainder)
 
 /--
+Durrett 2019, Theorem 3.4.10, assemble the analytic certificate directly from
+square-integrable rows.  The scalar characteristic-function Taylor estimate is
+supplied by Lemma 3.3.19 above.
+-/
+theorem Durrett2019LindebergFellerAnalyticCertificate.of_integrableSq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m, Integrable (fun ω => X n m ω ^ 2) P)
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X) :
+    Durrett2019LindebergFellerAnalyticCertificate
+      P X varianceLimit :=
+  Durrett2019LindebergFellerAnalyticCertificate.of_remainderBound_integrableSq
+    (P := P) (X := X) (varianceLimit := varianceLimit)
+    hX hX2 hvariance_pos hmean_zero hvariance hlindeberg
+    (durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_integrableSq
+      (P := P) (X := X) hX hX2)
+
+/--
 Durrett 2019, Theorem 3.4.10 proof bridge: row-wise independence gives the
 product formula for the characteristic function of each triangular-array row
 sum.
@@ -4731,6 +4913,35 @@ theorem durrett2019_theorem_3_4_10_lindebergFeller_of_remainderBound_integrableS
     hX hX2 hindep hvariance_pos hmean_zero hvariance hlindeberg
     (durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_remainderBound
       (P := P) (X := X) hX hX2 hmean_zero hremainder)
+    hY
+
+/--
+Durrett 2019, Theorem 3.4.10, source-facing Lindeberg-Feller bridge from
+square-integrable rows, Lindeberg's condition, variance convergence, and the
+scalar Lemma 3.3.19 Taylor estimate.
+-/
+theorem durrett2019_theorem_3_4_10_lindebergFeller_of_integrableSq
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ} {Y : Ω' -> ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m, Integrable (fun ω => X n m ω ^ 2) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (hvariance_pos : 0 < varianceLimit)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 varianceLimit.toNNReal) P') :
+    TendstoInDistribution
+      (fun n => durrett2019_lindebergFellerRowSum X n)
+      atTop Y (fun _ => P) P' :=
+  durrett2019_theorem_3_4_10_lindebergFeller_of_remainderBound_integrableSq
+    hX hX2 hindep hvariance_pos hmean_zero hvariance hlindeberg
+    (durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_integrableSq
+      (P := P) (X := X) hX hX2)
     hY
 
 /--
