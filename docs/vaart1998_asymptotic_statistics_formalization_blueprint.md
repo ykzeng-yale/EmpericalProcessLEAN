@@ -556,8 +556,10 @@ Initial modules:
   `vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_ae_of_unscaled_selectedTaylor`,
   and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_unscaledPointwiseTaylor_envelope`,
-  so the remaining critical path is the analytic per-observation selected
-  second-order Taylor identity for the raw estimating map.
+  and the scalar selected Taylor packet adds
+  `vaart1998_theorem_5_41_scalar_selectedSecondOrderTaylor_of_derivativeTaylor`,
+  so the remaining critical path is lifting the scalar Cauchy-MVT bridge to the
+  sampled raw estimating-map interface, likely coordinatewise.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

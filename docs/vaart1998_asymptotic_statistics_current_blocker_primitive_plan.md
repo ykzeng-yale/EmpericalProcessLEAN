@@ -15,11 +15,12 @@ It already packages the empirical score, derivative, Hessian action,
 estimating equation, envelope hypotheses, and common normalizing scalar into
 the compiled Theorem 5.41 probability handoff.
 
-Next packet only: prove the analytic per-observation selected second-order
-Taylor identity for the raw estimating map.  Do not revisit the solved scaling
-bridge, auxiliary residual, curvature envelope, empirical Taylor aggregation,
-endpoint assembly, Chapter 2-4 substrate, Gaussian endpoints, or generic
-empirical-process plumbing unless a direct dependency is missing.
+Next packet only: lift the scalar Cauchy-MVT Taylor bridge to the sampled raw
+estimating map, preferably coordinatewise.  Do not revisit the solved scalar
+Taylor bridge, scaling bridge, auxiliary residual, curvature envelope,
+empirical Taylor aggregation, endpoint assembly, Chapter 2-4 substrate,
+Gaussian endpoints, or generic empirical-process plumbing unless a direct
+dependency is missing.
 
 Workflow: search local/mathlib APIs first, add one theorem-sized Lean layer,
 run the focused file and target module checks plus hygiene scans, fetch/rebase
@@ -775,19 +776,22 @@ compiling:
 281. Theorem 5.41 empirical-average source handoff from raw per-observation
    Taylor identities:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_unscaledPointwiseTaylor_envelope`.
+282. Theorem 5.41 scalar selected second-order Taylor bridge from Cauchy's
+   mean value theorem:
+   `vaart1998_theorem_5_41_scalar_selectedSecondOrderTaylor_of_derivativeTaylor`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 raw Taylor scaling bridge`).
+(`Add Vaart theorem 5.41 scalar selected Taylor bridge`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by turning the textbook's raw
-single-observation Taylor identity into the scaled pointwise Taylor identity
-consumed by the empirical-average source handoff.  The newest endpoint now
-accepts the raw score and raw estimating equation plus the common normalizing
-scalar proving `scaledEstimator = scale • delta`.
+asymptotic-normality route for Z-estimators by proving the scalar analytic
+selected second-order Taylor bridge with Cauchy's mean value theorem.  It
+turns a first-order Taylor identity for the derivative into a selected
+second-order Taylor identity for the raw scalar estimating map.
 
-The next aggressive packet should prove the analytic selected second-order
-Taylor identity for the raw estimating map itself.
+The next aggressive packet should lift this scalar bridge into the sampled raw
+estimating-map interface, likely by a coordinatewise finite-dimensional
+wrapper.
 
 ## Execution Notes
 

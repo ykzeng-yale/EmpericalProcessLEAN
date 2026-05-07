@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import StatInference.AsymptoticStatistics.Basic
 import StatInference.EmpiricalProcess.Average
 import StatInference.EmpiricalProcess.Basic
@@ -1579,6 +1580,68 @@ theorem vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise_a
       (derivative := derivative n ω)
       (secondDerivative := secondDerivative n ω)
       (delta := delta n ω) (scaledEstimator := scaledEstimator n ω) hω
+
+/--
+van der Vaart 1998, Theorem 5.41, scalar selected second-order Taylor bridge.
+
+This is the one-dimensional analytic core behind the raw pointwise Taylor
+identity.  A Cauchy mean-value argument applied to the residual
+`f x - f a - fderiv a * (x - a)` and the quadratic gauge `(x - a)^2`
+turns a first-order Taylor formula for the derivative into a selected
+second-order Taylor formula for `f`.
+-/
+theorem vaart1998_theorem_5_41_scalar_selectedSecondOrderTaylor_of_derivativeTaylor
+    (f fderiv fsecond : ℝ -> ℝ) {a b : ℝ}
+    (hab : a < b)
+    (hfc : ContinuousOn f (Set.Icc a b))
+    (hff' : ∀ x ∈ Set.Ioo a b, HasDerivAt f (fderiv x) x)
+    (hfderiv_taylor : ∀ x ∈ Set.Ioo a b,
+      fderiv x - fderiv a = fsecond x * (x - a)) :
+    ∃ c ∈ Set.Ioo a b,
+      f a + fderiv a * (b - a) +
+          (1 / 2 : ℝ) * fsecond c * (b - a) ^ 2 =
+        f b := by
+  let residual : ℝ -> ℝ := fun x => f x - f a - fderiv a * (x - a)
+  let quadratic : ℝ -> ℝ := fun x => (x - a) ^ 2
+  have hres_cont : ContinuousOn residual (Set.Icc a b) := by
+    have hlinear : ContinuousOn (fun x : ℝ => fderiv a * (x - a)) (Set.Icc a b) :=
+      continuousOn_const.mul (continuousOn_id.sub continuousOn_const)
+    exact (hfc.sub continuousOn_const).sub hlinear
+  have hquad_cont : ContinuousOn quadratic (Set.Icc a b) := by
+    exact (continuousOn_id.sub continuousOn_const).pow 2
+  have hres_deriv : ∀ x ∈ Set.Ioo a b,
+      HasDerivAt residual (fderiv x - fderiv a) x := by
+    intro x hx
+    have hlinear_deriv :
+        HasDerivAt (fun y : ℝ => fderiv a * (y - a)) (fderiv a) x := by
+      have hsub : HasDerivAt (fun y : ℝ => y - a) 1 x :=
+        (hasDerivAt_id x).sub_const a
+      simpa using hsub.const_mul (fderiv a)
+    simpa [residual] using ((hff' x hx).sub_const (f a)).sub hlinear_deriv
+  have hquad_deriv : ∀ x ∈ Set.Ioo a b,
+      HasDerivAt quadratic (2 * (x - a)) x := by
+    intro x _hx
+    have hsub : HasDerivAt (fun y : ℝ => y - a) 1 x :=
+      (hasDerivAt_id x).sub_const a
+    simpa [quadratic, pow_one, two_mul, mul_comm, mul_left_comm, mul_assoc] using
+      hsub.pow 2
+  obtain ⟨c, hc, hmvt⟩ :=
+    exists_ratio_hasDerivAt_eq_ratio_slope
+      quadratic (fun x : ℝ => 2 * (x - a)) hab hquad_cont hquad_deriv
+      residual (fun x : ℝ => fderiv x - fderiv a) hres_cont hres_deriv
+  have hcpos : 0 < c - a := sub_pos.mpr hc.1
+  have hmvt' :
+      residual b * (2 * (c - a)) =
+        (b - a) ^ 2 * (fsecond c * (c - a)) := by
+    simpa [residual, quadratic, hfderiv_taylor c hc, pow_two,
+      mul_comm, mul_left_comm, mul_assoc] using hmvt
+  have hres_two : residual b * 2 = (b - a) ^ 2 * fsecond c := by
+    nlinarith
+  have hres_half : residual b = (1 / 2 : ℝ) * fsecond c * (b - a) ^ 2 := by
+    nlinarith
+  refine ⟨c, hc, ?_⟩
+  dsimp [residual] at hres_half
+  nlinarith
 
 /--
 van der Vaart 1998, Theorem 5.41, scaled single-observation Taylor identity.
