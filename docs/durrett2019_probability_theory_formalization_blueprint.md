@@ -396,20 +396,22 @@ Compiled Section 3.2 packets:
   Levy-continuity handoff from a supplied analytic certificate to convergence
   in distribution, a named characteristic/quadratic error row sum, a
   source-shaped finite-row Taylor/Lindeberg bound predicate, a compiled bridge
-  from that finite-row bound plus Lindeberg to row-sum error convergence, and a
-  final source-facing constructor from square-integrable rows plus the
-  finite-row bound to the convergence-in-distribution theorem.
+  from that finite-row bound plus Lindeberg to row-sum error convergence, a
+  source-shaped one-factor Taylor/Lindeberg bound predicate, and compiled
+  constructors from the one-factor bound to the finite-row bound, analytic
+  certificate, and final convergence-in-distribution theorem.
 
 Next packet candidates:
 
 - Section 3.4 Lindeberg-Feller analytic estimates: prove or instantiate the
-  finite-row Taylor/Lindeberg bound
-  `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound` from the
-  pointwise characteristic-function Taylor estimate, mean-zero cancellation,
-  and truncated second moments.  The bridge from this finite-row bound to
+  one-factor Taylor/Lindeberg bound
+  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound` from
+  Durrett's scalar characteristic-function Taylor estimate (3.3.3), mean-zero
+  cancellation, and truncated second moments.  The bridges from this one-factor
+  bound to the finite-row bound and
   `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
-  already compiles, so do not re-prove the limiting epsilon argument.  The
-  lower-level variance-tail split inequality
+  already compile, so do not re-prove the finite-row summation or limiting
+  epsilon argument.  The lower-level variance-tail split inequality
   `variance <= cutoff ^ 2 + tail row sum` now compiles from row
   `AEMeasurable` plus square-integrability assumptions, so it should be
   consumed rather than reproved in the next route.
