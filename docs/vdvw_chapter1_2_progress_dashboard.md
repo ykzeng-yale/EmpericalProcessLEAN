@@ -19,10 +19,11 @@ and Theorem 2.4.3 as the current frontier.  The clean VdVW proof lane is
 `/private/tmp/ep-vdvw-selected-log-route` at `origin/main`; the Desktop
 worktree is intentionally avoided for VdVW commits because it contains
 unrelated Matching/WDSM work.  Current next target: prove the selected-cover
-ghost/Rademacher a.e. finite-net domination or exact selected-cardinality
-outer-probability comparison.  Do not spend the next batch on more endpoint
-aliases, code-set/quantizer restatements, finite-index wrappers, or additional
-selected-cardinality transport unless it directly consumes that source proof.
+ghost/Rademacher scaled outer-probability finite-net comparison, or record the
+exact Lemma 2.3.7 nonmeasurable primitive if that proof blocks after search.
+Do not spend the next batch on more endpoint aliases, code-set/quantizer
+restatements, finite-index wrappers, or selected-cardinality transport unless
+it directly consumes that source proof.
 
 Authoritative current `/goal` override, 2026-05-06 after the finite-index
 1.4.8 weak-convergence/tightness iff wrappers: local `main` should equal
@@ -134,6 +135,16 @@ the entropy side use a larger externally recorded cardinality.  The remaining
 Theorem 2.4.3 source gap is the selected-cover ghost/Rademacher a.e.
 finite-net domination or exact selected-cardinality outer-probability
 comparison.
+
+2026-05-07 scaled selected probability route: `Theorem243.lean` now also has
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_scaledSelectedFiniteNetHoeffdingUpper`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_scaledSelectedFiniteNetHoeffdingUpper`.
+This is the scaled probability-level consumer expected from the VdV&W
+Lemma 2.3.7 symmetrization route: once the selected-cover ghost/Rademacher
+argument proves the selected outer-probability bad-event comparison with its
+constant, the existing entropy/Hoeffding machinery closes fixed-`M` centered
+truncated convergence.
 
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely

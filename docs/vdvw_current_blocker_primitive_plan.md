@@ -105,6 +105,20 @@ event itself: prove the VdV&W ghost/Rademacher/random-cover a.e. finite-net
 domination, or construct the exact selected-cardinality fixed-radius
 outer-probability comparison directly.
 
+2026-05-07 scaled selected outer-probability transport: `Theorem243.lean` now
+also proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_scaledSelectedFiniteNetHoeffdingUpper`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_scaledSelectedFiniteNetHoeffdingUpper`.
+These consume the probability-level selected-cover comparison in the scaled
+shape expected from VdV&W Lemma 2.3.7 symmetrization constants, then transport
+the selected finite-net Hoeffding event to the larger entropy-controlled
+cardinality.  The next proof target is therefore precise: formalize the
+selected-cardinality scaled outer-probability comparison from the
+ghost-sample/Rademacher selected-cover argument, or record the exact
+nonmeasurable primitive needed for Lemma 2.3.7 if local/mathlib search still
+finds no reusable proof.
+
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
 infrastructure for selected fixed-radius tail/UI, finite code-set and
