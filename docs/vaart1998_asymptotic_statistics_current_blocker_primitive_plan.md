@@ -434,26 +434,28 @@ Chapter 3 theorem-facing wrappers compiling:
 142. Projected summand CLT source wrapper using coordinatewise `MemLp 2` to
    discharge both finite-coordinate integrability and vector `MemLp`:
    `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_vectorGaussianSource`.
+143. Theorem 4.1 covariance-table endpoint variant consuming coordinatewise
+   `MemLp 2` instead of separate integrability and vector `MemLp` fields:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_vectorGaussianSource_real`.
 
-Latest remote base before this packet: `3890497`.
-Latest pushed Vaart packet before this packet: `3890497`
-(`Add Vaart theorem 4.1 vector Gaussian endpoint`).
+Latest remote base before this packet: `a93ef24`.
+Latest pushed Vaart packet before this packet: `a93ef24`
+(`Add Vaart coordinate MemLp source bridge`).
 
-The current theorem-sized packet starts discharging the remaining vector-source
-fields from coordinate assumptions.  Coordinatewise `MemLp 2` now produces the
-finite-coordinate sample-vector `MemLp` field and also supplies the
-coordinatewise integrability required by the mean and LLN layers.
+The current theorem-sized packet exposes the coordinatewise `MemLp 2` source
+bridge at the Theorem 4.1 covariance-table endpoint.  Callers no longer need to
+separately provide finite-coordinate integrability and the vector `MemLp`
+source field.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. add a Theorem 4.1 covariance-table endpoint variant that consumes
-   coordinatewise `MemLp 2` instead of separate `hX_integrable` and
-   `hX_vector_memLp` fields;
-2. then prove joint/vector-source constructors for `iIndepFun` and
+1. prove joint/vector-source constructors for `iIndepFun` and
    `IdentDistrib` from appropriately strong joint law assumptions.  Do not
    claim that coordinatewise pairwise independence alone implies vector
    independence.
+2. keep endpoint variants narrow and add them only when they remove a real
+   caller-side field.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3
