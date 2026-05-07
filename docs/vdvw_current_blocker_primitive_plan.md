@@ -7952,3 +7952,13 @@ endpoint; the next theorem-facing step is to feed this projection into a clean
 selected-cover convergence consumer only if the selected cover object can be
 kept direct, otherwise return to the genuine source blockers
 (`Phi(x)=x`/pathwise finite-center event or stochastic entropy-to-mean/UI).
+
+That direct-cover consumer is now compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedInvRadiusEntropy_directCover_expectedMaximal`.
+It consumes explicit selected empirical covers in the half-radius syntax,
+the selected inverse-radius entropy package for finite-net mean convergence,
+and the selected expected-maximal Markov handoff.  This avoids reusing the
+older random-cover endpoint when a source proof can provide the cover directly.
+The remaining source work is unchanged: construct those direct selected covers
+from the textbook selected-cover argument with the needed `Phi(x)=x`/pathwise
+finite-center event, or prove the stochastic entropy-to-mean/UI bridge.

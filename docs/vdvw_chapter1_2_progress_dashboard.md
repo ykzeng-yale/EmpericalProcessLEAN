@@ -3275,3 +3275,10 @@ in the exact half-radius syntax needed by the selected Markov theorem via
 This projects the canonical `1 / (n + 1)` additive term as
 `(2 / (n + 1)) / 2`; it prepares, but does not by itself complete, the direct
 selected-cover convergence consumer.
+
+That direct selected-cover consumer is now compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedInvRadiusEntropy_directCover_expectedMaximal`.
+It lets a future source proof provide explicit selected covers directly and
+then uses the selected inverse-radius entropy package only for the mean side.
+The remaining blocker is still upstream: the selected-cover source theorem or
+the stochastic entropy-to-mean/UI theorem.
