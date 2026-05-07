@@ -3,6 +3,7 @@ import StatInference.ProbabilityMeasure.StrongLaw
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.MeasureTheory.Measure.LevyConvergence
+import Mathlib.MeasureTheory.SpecificCodomains.Pi
 import Mathlib.Probability.CentralLimitTheorem
 import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
 import Mathlib.Probability.Moments.CovarianceBilinDual
@@ -925,6 +926,33 @@ noncomputable def vaart1998_finiteCoordinateProjectedSample
   L (fun coordinate => X coordinate i ω)
 
 /--
+Testing the finite-coordinate population moment agrees with the integral of the
+tested first summand.
+-/
+theorem vaart1998_finiteCoordinateProjectedSample_integral_eq_populationMoment
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : Coordinate -> ℕ -> Ω -> ℝ}
+    (L : StrongDual ℝ (Coordinate -> ℝ))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P) :
+    P[vaart1998_finiteCoordinateProjectedSample L X 0] =
+      vaart1998_finiteCoordinateProjectedPopulationMoment L P X := by
+  let Y : Ω -> Coordinate -> ℝ := fun ω coordinate => X coordinate 0 ω
+  have hY : Integrable Y P := Integrable.of_eval (f := Y) hX_integrable
+  have hcomp : ∫ ω, L (Y ω) ∂P = L (∫ ω, Y ω ∂P) :=
+    L.integral_comp_comm hY
+  have hpop : ∫ ω, Y ω ∂P = vaart1998_finiteCoordinatePopulationMoment P X := by
+    ext coordinate
+    exact MeasureTheory.eval_integral (f := Y) hX_integrable coordinate
+  calc
+    P[vaart1998_finiteCoordinateProjectedSample L X 0] =
+        ∫ ω, L (Y ω) ∂P := by
+          rfl
+    _ = L (∫ ω, Y ω ∂P) := hcomp
+    _ = vaart1998_finiteCoordinateProjectedPopulationMoment L P X := by
+          rw [hpop]
+          rfl
+
+/--
 The projected empirical average is the ordinary scalar average of the projected
 sample summands.
 -/
@@ -1119,6 +1147,44 @@ theorem vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT
   intro n
   exact Filter.Eventually.of_forall fun ω => by
     rw [hMean L]
+
+/--
+Mathlib's one-dimensional central limit theorem instantiates the projected
+summand CLT family, with the projected mean field discharged from
+finite-coordinate integrability.
+-/
+theorem vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_integrableMean
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hLimitLaw : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      HasLaw (fun ω => L (Z ω))
+        (gaussianReal 0
+          (Var[vaart1998_finiteCoordinateProjectedSample L X 0; P]).toNNReal) Q)
+    (hMemLp : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      MemLp (vaart1998_finiteCoordinateProjectedSample L X 0) 2 P)
+    (hIndep : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      iIndepFun (vaart1998_finiteCoordinateProjectedSample L X) P)
+    (hIdent : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      ∀ i : ℕ,
+        IdentDistrib
+          (vaart1998_finiteCoordinateProjectedSample L X i)
+          (vaart1998_finiteCoordinateProjectedSample L X 0) P P) :
+    vaart1998_finiteCoordinateProjectedSummandCLT (P := P) (Q := Q) X Z :=
+  vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT
+    (P := P) (Q := Q) (X := X) (Z := Z)
+    (hMean := fun L =>
+      vaart1998_finiteCoordinateProjectedSample_integral_eq_populationMoment
+        (P := P) (X := X) L hX_integrable)
+    (hLimitLaw := hLimitLaw) (hMemLp := hMemLp)
+    (hIndep := hIndep) (hIdent := hIdent)
 
 /--
 The scalar projected CLT family feeds the projected vector CLT family by

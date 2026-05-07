@@ -397,28 +397,30 @@ Chapter 3 theorem-facing wrappers compiling:
 129. Mathlib one-dimensional CLT instantiates the source-shaped projected
    summand scalar CLT family:
    `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT`.
+130. Projected first-summand mean equals the tested population moment under
+   finite-coordinate integrability:
+   `vaart1998_finiteCoordinateProjectedSample_integral_eq_populationMoment`.
+131. Mathlib one-dimensional CLT instantiation with the projected mean field
+   discharged from finite-coordinate integrability:
+   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_integrableMean`.
 
-Latest remote base before this packet: `a14fdcb`.
-Latest pushed Vaart packet before this packet: `a14fdcb`
-(`Add Vaart projected summand CLT bridge`).
+Latest remote base before this packet: `06031c3`.
+Latest pushed Vaart packet before this packet: `e7a9852`
+(`Add Vaart projected summand mathlib CLT`).
 
-The current theorem-sized packet connects mathlib's one-dimensional central
-limit theorem to the Vaart Chapter 4 projected-summand interface.  The new
-source theorem assumes the projected summand mean, `MemLp`, `iIndepFun`,
-`IdentDistrib`, and Gaussian `HasLaw` fields and produces
-`vaart1998_finiteCoordinateProjectedSummandCLT`; the existing projected-scalar,
-Cramér-Wold, and Theorem 4.1 covariance-table consumers then remain internal
-plumbing.
+The current theorem-sized packet removes the ad hoc projected mean hypothesis
+from the mathlib one-dimensional CLT handoff.  Finite-coordinate integrability
+now proves that the integral of the tested first summand equals the tested
+population moment, and the new integrable-mean wrapper feeds that fact into
+`vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT`.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. prove the projected summand mean field from finite-coordinate integrability
-   and the population-moment definition;
-2. prove the projected summand independence/identical-distribution/measurability
+1. prove the projected summand independence/identical-distribution/measurability
    obligations from the existing coordinate assumptions only when they are
    directly needed by that scalar CLT instantiation;
-3. package the Gaussian projected `HasLaw` field from the finite-coordinate
+2. package the Gaussian projected `HasLaw` field from the finite-coordinate
    Gaussian limit and covariance bilinear form, adding covariance-table
    consumers only if they remove a real caller-side hypothesis from an existing
    Theorem 4.1 wrapper.

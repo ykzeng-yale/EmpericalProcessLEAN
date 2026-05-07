@@ -258,9 +258,14 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_real`.
 - Mathlib one-dimensional CLT source theorem for projected summands:
   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT`.
+- Projected mean field from finite-coordinate integrability:
+  `vaart1998_finiteCoordinateProjectedSample_integral_eq_populationMoment`.
+- Mathlib one-dimensional CLT source theorem with the mean field discharged
+  from finite-coordinate integrability:
+  `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_integrableMean`.
 
-Latest remote base before this packet: `a14fdcb`.  Latest pushed Vaart packet
-before this packet: `a14fdcb` (`Add Vaart projected summand CLT bridge`).
+Latest remote base before this packet: `06031c3`.  Latest pushed Vaart packet
+before this packet: `e7a9852` (`Add Vaart projected summand mathlib CLT`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -283,11 +288,9 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. prove the projected summand mean field from finite-coordinate integrability
-   and the population-moment definition;
-2. prove projected summand independence/identical-distribution/measurability
+1. prove projected summand independence/identical-distribution/measurability
    obligations from coordinate assumptions only when they are directly needed;
-3. package the Gaussian projected `HasLaw` field from the finite-coordinate
+2. package the Gaussian projected `HasLaw` field from the finite-coordinate
    Gaussian limit and covariance bilinear form, adding further covariance-table
    consumers only if they remove a real caller-side hypothesis from an existing
    Theorem 4.1 wrapper.

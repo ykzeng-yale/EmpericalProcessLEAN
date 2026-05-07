@@ -239,7 +239,10 @@ Initial modules:
   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT` instantiates
   that projected-summand interface from mathlib's one-dimensional CLT once the
   tested summand mean, `MemLp`, `iIndepFun`, `IdentDistrib`, and Gaussian
-  `HasLaw` fields are available.
+  `HasLaw` fields are available.  The integrable-mean wrapper
+  `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_integrableMean`
+  now discharges the tested mean field from finite-coordinate integrability and
+  `vaart1998_finiteCoordinateProjectedSample_integral_eq_populationMoment`.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
