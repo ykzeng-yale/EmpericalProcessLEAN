@@ -52,6 +52,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   one bounded search pass, one theorem-sized Lean packet, focused module
   verification, route-doc update only when material, then one final
   fetch/rebase/scan/commit/push gate.
+- Manual operating loop: each `/goal` run should orient once from the current
+  frontier contract, state one theorem-sized packet before edits, keep the main
+  thread on proof integration, use subagents only for explicitly authorized
+  read-only scouting or disjoint adjacent files, verify in focused tiers, push
+  once after a final rebase, and record a sharp Lean blocker if the endpoint
+  cannot close.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

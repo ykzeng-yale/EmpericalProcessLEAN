@@ -106,6 +106,43 @@ micro-packet overhead.
    must not consume the main theorem packet budget unless it unlocks a
    main-text theorem.
 
+## Manual Run Operating Loop
+
+Use this shorter loop for each live `/goal` turn.  It is stricter than the
+archived automation prompts and should override them when they conflict.
+
+1. Orient once.  Check the worktree status, `origin/main`, the latest local
+   Optimization commit, and this file's `Current Frontier Contract`.  Do not
+   spend the proof budget rereading old archived prompts unless a named
+   dependency is missing.
+2. State the packet.  Before editing Lean, name one primary theorem-sized
+   target, the exact module to edit, the expected verification command, and the
+   fallback blocker statement if the proof does not close.
+3. Reuse before invention.  Read cached search notes here first.  Then run at
+   most one bounded search pass for the active blocker.  Record only search
+   results that change the route or prevent duplicate primitives.
+4. Keep the main thread on the proof.  If subagents are explicitly authorized,
+   use them for read-only scouting or disjoint adjacent proof files; the main
+   thread owns the active theorem, integration, and final verification.
+5. Prefer endpoint packets.  Bundle small algebra/interface lemmas into the
+   theorem packet that uses them.  A wrapper-only packet is acceptable only if
+   it removes a blocker for the current endpoint or replaces a supplied
+   interface with verified assumptions.
+6. Verify in tiers.  Run focused `lake env lean` repeatedly while proving,
+   then `lake build StatInference.Optimization.<Module>` after the public
+   theorem layer compiles.  Use root `lake build StatInference` only after
+   root-import or broad cross-module changes.
+7. Push once.  After code, material docs, proof-hole scan, and secret scan pass,
+   fetch/rebase once immediately before pushing.  If the push is rejected,
+   rebase once, rerun the focused build and scans, then push again.  If it is
+   rejected again because other textbook lanes are racing, keep the verified
+   local packet and report the exact commit/base instead of restarting the
+   search loop.
+8. Block sharply.  If the primary proof cannot close, leave behind a precise
+   blocker: the theorem statement attempted, the failing Lean subgoal shape or
+   missing API, the APIs already searched, and the next two viable routes.
+   Avoid vague "next small gap" language.
+
 ## Current Frontier Contract
 
 This is the authoritative manual route after pushed frontier `2c1a160`
