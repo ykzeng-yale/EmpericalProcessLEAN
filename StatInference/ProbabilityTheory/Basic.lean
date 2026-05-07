@@ -959,6 +959,30 @@ theorem durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover
   exists_finset_realOpenInterval_punctured_cover_Icc_measureReal_lt P hepsilon
 
 /--
+Durrett 2019, Theorem 2.4.9 atom-aware monotone-subdivision ingredient.
+
+The finite punctured compact cover can be refined into a monotone subdivision
+of the compact interval.  This packages the arbitrary-law compactness and
+Lebesgue-number step; the remaining center-insertion step must prove the
+selected centers occur as subdivision values.
+-/
+theorem durrett2019_theorem_2_4_9_monotone_subdivision_punctured_cover
+    {P : Measure ℝ} [IsFiniteMeasureOnCompacts P]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) (hab : a ≤ b) :
+    ∃ centers : Finset ℝ, ∃ l r : ℝ -> ℝ, ∃ t : ℕ -> Set.Icc a b,
+      (∀ x ∈ centers, x ∈ Set.Icc a b) ∧
+      (∀ x ∈ centers,
+        l x < x ∧ x < r x ∧ P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) ∧
+      (t 0 : ℝ) = a ∧
+      Monotone t ∧
+      (∃ m, ∀ n ≥ m, (t n : ℝ) = b) ∧
+      ∀ n, ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon :=
+  exists_monotone_subdivision_Icc_punctured_measureReal_lt P hepsilon hab
+
+/--
 Durrett 2019, Theorem 2.4.9 non-atomic local grid ingredient.
 
 For non-atomic locally finite real measures, every point has an open

@@ -101,6 +101,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_center_mem_cover`
 - `durrett2019_theorem_2_4_9_punctured_small_open_interval`
 - `durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`
+- `durrett2019_theorem_2_4_9_monotone_subdivision_punctured_cover`
 - `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`
 - `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`
 - `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`
@@ -159,6 +160,7 @@ compile, via
 `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_center_mem_cover`,
 `durrett2019_theorem_2_4_9_punctured_small_open_interval`,
 `durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`,
+`durrett2019_theorem_2_4_9_monotone_subdivision_punctured_cover`,
 `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`,
 `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`,
 `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`,
@@ -205,7 +207,12 @@ Consequently the non-atomic half-line GC wrapper
 For arbitrary laws, the atom-aware local primitives
 `exists_realOpenInterval_diff_singleton_measureReal_lt` and
 `exists_finset_realOpenInterval_punctured_cover_Icc_measureReal_lt` now provide
-finite punctured neighborhoods with small mass, and
+finite punctured neighborhoods with small mass.  The subdivision constructor
+`exists_monotone_subdivision_Icc_punctured_measureReal_lt` and its Durrett
+wrapper `durrett2019_theorem_2_4_9_monotone_subdivision_punctured_cover` now
+refine that finite punctured cover into a mathlib-shaped monotone subdivision
+with punctured small-mass assignments, but without yet proving the selected
+centers occur as subdivision values.  Additionally,
 `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_punctured_cover_refinement`
 is the compiled consumer once strict endpoints are ordered so each open cell
 avoids its selected atom center.  The convenience bridge

@@ -218,8 +218,11 @@ Compiled first source wrappers:
 - Durrett Theorem 2.4.9 arbitrary-law atom-aware local ingredients:
   `exists_realOpenInterval_diff_singleton_measureReal_lt`,
   `exists_finset_realOpenInterval_punctured_cover_Icc_measureReal_lt`,
-  `durrett2019_theorem_2_4_9_punctured_small_open_interval`, and
-  `durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`.
+  `exists_monotone_subdivision_of_finset_realOpenInterval_punctured_cover_Icc`,
+  `exists_monotone_subdivision_Icc_punctured_measureReal_lt`,
+  `durrett2019_theorem_2_4_9_punctured_small_open_interval`,
+  `durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`, and
+  `durrett2019_theorem_2_4_9_monotone_subdivision_punctured_cover`.
 - Durrett Theorem 2.4.9 non-atomic local grid ingredient:
   `exists_realOpenInterval_measureReal_lt_of_noAtoms` and
   `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`.

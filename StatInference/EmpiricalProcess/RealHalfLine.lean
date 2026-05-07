@@ -528,6 +528,77 @@ theorem exists_monotone_subdivision_of_finset_realOpenInterval_cover_Icc
   exact ⟨i.1, i.2, hi, (hsmall i.1 i.2).2.2⟩
 
 /--
+A finite cover of `[a, b]` by open real intervals whose punctured versions have
+small measure supplies a monotone closed-subinterval subdivision whose cells
+refine the unpunctured cover intervals.
+
+This is the arbitrary-law analogue of
+`exists_monotone_subdivision_of_finset_realOpenInterval_cover_Icc`; the only
+remaining atom-aware work is to insert the selected centers as subdivision
+values so adjacent open cells avoid those centers.
+-/
+theorem exists_monotone_subdivision_of_finset_realOpenInterval_punctured_cover_Icc
+    {μ : Measure ℝ} {epsilon a b : ℝ} (hab : a ≤ b)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hsmall : ∀ x ∈ centers,
+      l x < x ∧ x < r x ∧ μ.real (Set.Ioo (l x) (r x) \ {x}) < epsilon)
+    (hcover : Set.Icc a b ⊆ ⋃ x ∈ centers, Set.Ioo (l x) (r x)) :
+    ∃ t : ℕ -> Set.Icc a b,
+      (t 0 : ℝ) = a ∧
+      Monotone t ∧
+      (∃ m, ∀ n ≥ m, (t n : ℝ) = b) ∧
+      ∀ n, ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        μ.real (Set.Ioo (l x) (r x) \ {x}) < epsilon := by
+  classical
+  let cover : {x // x ∈ centers} -> Set (Set.Icc a b) := fun x =>
+    {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x.1) (r x.1)}
+  have hopen : ∀ i, IsOpen (cover i) := by
+    intro i
+    exact isOpen_Ioo.preimage continuous_subtype_val
+  have huniv : Set.univ ⊆ ⋃ i, cover i := by
+    intro y _hy
+    rcases Set.mem_iUnion₂.mp (hcover y.2) with ⟨x, hx, hyx⟩
+    exact Set.mem_iUnion.mpr ⟨⟨x, hx⟩, hyx⟩
+  rcases exists_monotone_Icc_subset_open_cover_Icc hab (c := cover) hopen huniv with
+    ⟨t, ht0, hmono, heventually, hrefine⟩
+  refine ⟨t, ht0, hmono, heventually, ?_⟩
+  intro n
+  rcases hrefine n with ⟨i, hi⟩
+  exact ⟨i.1, i.2, hi, (hsmall i.1 i.2).2.2⟩
+
+/--
+Every compact interval for a locally finite real measure has a monotone
+subdivision whose closed cells refine finite punctured-cover neighborhoods.
+
+This packages the arbitrary-law compactness and Lebesgue-number steps.  It
+does not yet insert the selected centers into the subdivision range; that is
+the next ordering/splitting primitive needed for the full Durrett 2.4.9 proof.
+-/
+theorem exists_monotone_subdivision_Icc_punctured_measureReal_lt
+    (μ : Measure ℝ) [IsFiniteMeasureOnCompacts μ]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) (hab : a ≤ b) :
+    ∃ centers : Finset ℝ, ∃ l r : ℝ -> ℝ, ∃ t : ℕ -> Set.Icc a b,
+      (∀ x ∈ centers, x ∈ Set.Icc a b) ∧
+      (∀ x ∈ centers,
+        l x < x ∧ x < r x ∧ μ.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) ∧
+      (t 0 : ℝ) = a ∧
+      Monotone t ∧
+      (∃ m, ∀ n ≥ m, (t n : ℝ) = b) ∧
+      ∀ n, ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        μ.real (Set.Ioo (l x) (r x) \ {x}) < epsilon := by
+  rcases exists_finset_realOpenInterval_punctured_cover_Icc_measureReal_lt
+      μ hepsilon with
+    ⟨centers, l, r, hcenters, hsmall, hcover⟩
+  rcases exists_monotone_subdivision_of_finset_realOpenInterval_punctured_cover_Icc
+      (μ := μ) (epsilon := epsilon) hab hsmall hcover with
+    ⟨t, ht0, hmono, heventually, hrefine⟩
+  exact ⟨centers, l, r, t, hcenters, hsmall, ht0, hmono, heventually, hrefine⟩
+
+/--
 For a non-atomic locally finite real measure, every compact real interval has a
 monotone closed-subinterval subdivision whose cells refine small-measure open
 intervals.
