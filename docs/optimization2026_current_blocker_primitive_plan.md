@@ -148,25 +148,28 @@ Active packet: Chapter 12 ASGD Theorem 12.7/12.3 in
 the concrete scaled factors, random product bridge, characteristic-product
 integrability, the arbitrary `F_n`-measurable multiplier tower step
 `Chewi127BoundedMartingaleCLTSource.projected_charFun_taylor_step_mul_scaled`,
-and the conditional-remainder row comparison
-`Chewi127BoundedMartingaleCLTSource.projected_remainder_row_integral_le`.
+and the proved conditional Taylor-remainder row convergence
+`Chewi127BoundedMartingaleCLTSource.projected_remainder_row_integral_tendsto_zero`.
 
 Next endpoint: formalize Chewi's compensated martingale characteristic-function
 iteration
 `E exp(i X_N + compensated conditional variance) -> 1` using the arbitrary
 multiplier step; do not return to the exact random full-product model unless an
 extra future-factor measurability hypothesis is explicitly supplied.  Then
-close the concrete conditional Taylor-remainder row-sum convergence from the
-row comparison plus the uniform boundedness remainder envelope.
+close the remaining variance/convergence comparison from
+`n⁻¹ ∑ Xi_k -> S_infty` in probability to the Gaussian characteristic-function
+limit.
 
 Reuse boundary: start from
 `StatInference.norm_prod_sub_prod_le_sum_norm_sub`,
 `chewi127_norm_prod_sub_prod_le_sum_norm_sub`, `integral_norm_condExp_le_integral_norm`,
-the `chewi127ScalarCharFunProduct` measurability/integrability/norm lemmas,
-the named Chewi 12.7 factor definitions, and mathlib conditional Jensen
+`chewi127ScalarCharFunTaylorRemainder_row_integral_le_of_uniform_bound`,
+`chewi127ScalarCharFunTaylorRemainder_row_bound_tendsto_zero`, the
+`chewi127ScalarCharFunProduct` measurability/integrability/norm lemmas, the
+named Chewi 12.7 factor definitions, and mathlib conditional Jensen
 `norm_condExp_le`.  Run at most one bounded API search for the exact missing
-compensated-iteration, variance-convergence, or remainder-envelope estimate;
-then prove instead of re-planning.
+compensated-iteration or variance-convergence estimate; then prove instead of
+re-planning.
 
 Execution gate: work in `/private/tmp/chewi-smpgd-probability`; state the exact
 Lean theorem before editing; run

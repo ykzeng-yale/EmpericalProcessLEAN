@@ -225,6 +225,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_taylor_step_mul`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_taylor_step_mul_scaled`,
   `Chewi127BoundedMartingaleCLTSource.projected_remainder_row_integral_le`,
+  `chewi127ScalarCharFunTaylorRemainder_row_integral_le_of_uniform_bound`,
+  `chewi127ScalarCharFunTaylorRemainder_row_bound_tendsto_zero`,
+  `Chewi127BoundedMartingaleCLTSource.projected_remainder_row_integral_tendsto_zero`,
   and
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_concrete_random_product_model`.
   These name the actual row factors with `a = t / sqrt N` and specialize the
@@ -232,9 +235,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   also discharges the characteristic-product integrability side condition.  The
   arbitrary-multiplier tower step is the correct source interface for Chewi's
   compensated iteration, while the row comparison reduces conditional
-  Taylor-remainder control to the unconditioned bounded-remainder envelope.
-  The next ASGD packet should formalize the finite compensated iteration and
-  then prove the concrete remainder-envelope convergence.
+  Taylor-remainder control to the unconditioned bounded-remainder envelope; the
+  concrete row convergence now follows from uniform boundedness and the
+  `N * (|t|B/sqrt N)^3 exp(|t|B/sqrt N) -> 0` rate.  The next ASGD packet
+  should formalize the finite compensated iteration and then close the
+  variance/convergence comparison to the Gaussian characteristic-function
+  limit.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

@@ -827,6 +827,148 @@ theorem chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
     gcongr)
 
 /--
+Row-wise expected bound for the scalar Taylor remainders under a uniform
+almost-sure bound.
+-/
+theorem chewi127ScalarCharFunTaylorRemainder_row_integral_le_of_uniform_bound
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] {x : ℕ -> Ω -> ℝ}
+    (hx : ∀ k : ℕ, AEMeasurable (x (k + 1)) P)
+    {B : ℝ} (hB_nonneg : 0 ≤ B)
+    (hbound : ∀ k : ℕ, ∀ᵐ ω ∂P, |x (k + 1) ω| ≤ B)
+    (N : ℕ) (t : ℝ) :
+    (∫ ω,
+        ∑ k ∈ Finset.range N,
+          ‖chewi127ScalarCharFunTaylorRemainder
+            (t * (Real.sqrt (N : ℝ))⁻¹) (x (k + 1)) ω‖ ∂P) ≤
+      (N : ℝ) *
+        (((|t * (Real.sqrt (N : ℝ))⁻¹| * B) ^ 3) *
+          Real.exp (|t * (Real.sqrt (N : ℝ))⁻¹| * B)) := by
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  let C : ℝ := (|a| * B) ^ 3 * Real.exp (|a| * B)
+  have hterm_int :
+      ∀ k ∈ Finset.range N,
+        Integrable
+          (fun ω => ‖chewi127ScalarCharFunTaylorRemainder a (x (k + 1)) ω‖) P := by
+    intro k _hk
+    exact (chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
+      (P := P) (x := x (k + 1)) (hx k) a
+      ⟨B, hB_nonneg, hbound k⟩).norm
+  rw [integral_finsetSum (Finset.range N) hterm_int]
+  calc
+    (∑ k ∈ Finset.range N,
+        ∫ ω, ‖chewi127ScalarCharFunTaylorRemainder a (x (k + 1)) ω‖ ∂P)
+        ≤ ∑ k ∈ Finset.range N, C := by
+          refine Finset.sum_le_sum ?_
+          intro k _hk
+          have hrem_int :
+              Integrable
+                (fun ω =>
+                  ‖chewi127ScalarCharFunTaylorRemainder a (x (k + 1)) ω‖) P :=
+            hterm_int k _hk
+          have hmono :
+              (∫ ω, ‖chewi127ScalarCharFunTaylorRemainder a (x (k + 1)) ω‖ ∂P) ≤
+                ∫ _ω : Ω, C ∂P := by
+            refine integral_mono_ae hrem_int (integrable_const C) ?_
+            filter_upwards [hbound k] with ω hω
+            have hax_le : |a * x (k + 1) ω| ≤ |a| * B := by
+              rw [abs_mul]
+              exact mul_le_mul_of_nonneg_left hω (abs_nonneg a)
+            exact
+              (chewi127ScalarCharFunTaylorRemainder_norm_le a (x (k + 1)) ω).trans
+                (by
+                  have hax_nonneg : 0 ≤ |a * x (k + 1) ω| := abs_nonneg _
+                  have hD_nonneg : 0 ≤ |a| * B :=
+                    mul_nonneg (abs_nonneg a) hB_nonneg
+                  exact mul_le_mul
+                    (pow_le_pow_left₀ hax_nonneg hax_le 3)
+                    (Real.exp_le_exp.mpr hax_le)
+                    (Real.exp_nonneg _)
+                    (pow_nonneg hD_nonneg 3))
+          simpa using hmono
+    _ = (N : ℝ) * C := by
+          simp [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+    _ =
+      (N : ℝ) *
+        (((|t * (Real.sqrt (N : ℝ))⁻¹| * B) ^ 3) *
+          Real.exp (|t * (Real.sqrt (N : ℝ))⁻¹| * B)) := by
+          rfl
+
+/--
+The scalar row envelope for bounded Taylor remainders is `o(1)`.
+-/
+theorem chewi127ScalarCharFunTaylorRemainder_row_bound_tendsto_zero
+    {B t : ℝ} (hB_nonneg : 0 ≤ B) :
+    Tendsto
+      (fun N : ℕ =>
+        (N : ℝ) *
+          (((|t * (Real.sqrt (N : ℝ))⁻¹| * B) ^ 3) *
+            Real.exp (|t * (Real.sqrt (N : ℝ))⁻¹| * B)))
+      atTop (𝓝 0) := by
+  let D : ℝ := |t| * B
+  have hD_nonneg : 0 ≤ D := mul_nonneg (abs_nonneg t) hB_nonneg
+  have hinv_sqrt_tendsto :
+      Tendsto (fun N : ℕ => (Real.sqrt (N : ℝ))⁻¹) atTop (𝓝 0) :=
+    tendsto_inv_atTop_zero.comp vaart1998_sqrt_nat_tendsto_atTop
+  have hD_sqrt_tendsto :
+      Tendsto (fun N : ℕ => D * (Real.sqrt (N : ℝ))⁻¹) atTop (𝓝 0) := by
+    simpa using (tendsto_const_nhds.mul hinv_sqrt_tendsto : Tendsto
+      (fun N : ℕ => D * (Real.sqrt (N : ℝ))⁻¹) atTop (𝓝 (D * 0)))
+  have hexp :
+      Tendsto
+        (fun N : ℕ => Real.exp (D * (Real.sqrt (N : ℝ))⁻¹))
+        atTop (𝓝 1) := by
+    have h := Real.continuous_exp.continuousAt.tendsto.comp hD_sqrt_tendsto
+    simpa using h
+  have hmodel :
+      Tendsto
+        (fun N : ℕ =>
+          D ^ 3 * (Real.sqrt (N : ℝ))⁻¹ *
+            Real.exp (D * (Real.sqrt (N : ℝ))⁻¹))
+        atTop (𝓝 0) := by
+    have hfirst :
+        Tendsto
+          (fun N : ℕ => D ^ 3 * (Real.sqrt (N : ℝ))⁻¹)
+          atTop (𝓝 0) := by
+      simpa using (tendsto_const_nhds.mul hinv_sqrt_tendsto : Tendsto
+        (fun N : ℕ => D ^ 3 * (Real.sqrt (N : ℝ))⁻¹)
+        atTop (𝓝 (D ^ 3 * 0)))
+    simpa using hfirst.mul hexp
+  refine hmodel.congr' ?_
+  filter_upwards [eventually_gt_atTop (0 : ℕ)] with N hN_nat
+  have hN : 0 < (N : ℝ) := by exact_mod_cast hN_nat
+  have hsqrt_pos : 0 < Real.sqrt (N : ℝ) := Real.sqrt_pos.2 hN
+  have hsqrt_ne : Real.sqrt (N : ℝ) ≠ 0 := ne_of_gt hsqrt_pos
+  have hinv_nonneg : 0 ≤ (Real.sqrt (N : ℝ))⁻¹ :=
+    inv_nonneg.mpr (Real.sqrt_nonneg _)
+  have hscale :
+      |t * (Real.sqrt (N : ℝ))⁻¹| * B =
+        D * (Real.sqrt (N : ℝ))⁻¹ := by
+    rw [abs_mul, abs_of_nonneg hinv_nonneg]
+    change |t| * (Real.sqrt (N : ℝ))⁻¹ * B =
+      (|t| * B) * (Real.sqrt (N : ℝ))⁻¹
+    ring
+  have hNu3 :
+      (N : ℝ) * ((Real.sqrt (N : ℝ))⁻¹) ^ 3 =
+        (Real.sqrt (N : ℝ))⁻¹ := by
+    have hsq : (Real.sqrt (N : ℝ)) ^ (2 : ℕ) = (N : ℝ) :=
+      Real.sq_sqrt hN.le
+    field_simp [hsqrt_ne]
+    nlinarith [hsq]
+  symm
+  rw [hscale]
+  calc
+    (N : ℝ) *
+        (((D * (Real.sqrt (N : ℝ))⁻¹) ^ 3) *
+          Real.exp (D * (Real.sqrt (N : ℝ))⁻¹))
+        = D ^ 3 * ((N : ℝ) * ((Real.sqrt (N : ℝ))⁻¹) ^ 3) *
+            Real.exp (D * (Real.sqrt (N : ℝ))⁻¹) := by
+          ring
+    _ = D ^ 3 * (Real.sqrt (N : ℝ))⁻¹ *
+          Real.exp (D * (Real.sqrt (N : ℝ))⁻¹) := by
+          rw [hNu3]
+
+/--
 Conditional one-step Taylor expansion for a scalar characteristic-function
 factor.  This is the conditional-expectation algebraic core used before the
 martingale mean-zero and conditional-variance identities are substituted.
@@ -1875,6 +2017,70 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_remainder_row_integral_le
         (P := P) (m := S.martingale.filtration k)
         (hm := S.martingale.filtration.le k) (f := rem k)
         (hremainder k hk)
+
+/--
+The conditional Taylor-remainder row sum vanishes for the source package under
+Chewi's uniform boundedness hypothesis.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_remainder_row_integral_tendsto_zero
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          ∑ k ∈ Finset.range N,
+            ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+      atTop (𝓝 0) := by
+  rcases S.martingale.projected_uniform_bound L S.uniform_bound with
+    ⟨B, hB_nonneg, hbound⟩
+  let x : ℕ -> Ω -> ℝ := fun n ω => L (S.martingale.xi n ω)
+  have hx : ∀ k : ℕ, AEMeasurable (x (k + 1)) P := by
+    intro k
+    exact (S.martingale.projected_integrable L (k + 1)).aemeasurable
+  have hbound_x : ∀ k : ℕ, ∀ᵐ ω ∂P, |x (k + 1) ω| ≤ B := by
+    intro k
+    simpa [x] using hbound k
+  refine squeeze_zero
+    (fun N : ℕ => integral_nonneg fun ω =>
+      Finset.sum_nonneg fun k _hk => norm_nonneg
+        (S.projectedRemainderFactor L N t k ω))
+    ?_
+    (chewi127ScalarCharFunTaylorRemainder_row_bound_tendsto_zero
+      (B := B) (t := t) hB_nonneg)
+  intro N
+  have hremainder_int :
+      ∀ k ∈ Finset.range N,
+        Integrable
+          (chewi127ScalarCharFunTaylorRemainder
+            (t * (Real.sqrt (N : ℝ))⁻¹)
+            (fun ω => L (S.martingale.xi (k + 1) ω))) P := by
+    intro k _hk
+    simpa [x] using
+      chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
+        (P := P) (x := x (k + 1)) (hx k)
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        ⟨B, hB_nonneg, hbound_x k⟩
+  calc
+    (∫ ω,
+        ∑ k ∈ Finset.range N,
+          ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+        ≤ ∫ ω,
+            ∑ k ∈ Finset.range N,
+              ‖chewi127ScalarCharFunTaylorRemainder
+                (t * (Real.sqrt (N : ℝ))⁻¹)
+                (fun ω => L (S.martingale.xi (k + 1) ω)) ω‖ ∂P :=
+          S.projected_remainder_row_integral_le L N t hremainder_int
+    _ ≤ (N : ℝ) *
+        (((|t * (Real.sqrt (N : ℝ))⁻¹| * B) ^ 3) *
+          Real.exp (|t * (Real.sqrt (N : ℝ))⁻¹| * B)) := by
+          simpa [x] using
+            chewi127ScalarCharFunTaylorRemainder_row_integral_le_of_uniform_bound
+              (P := P) (x := x) hx hB_nonneg hbound_x N t
 
 /--
 The full variance-plus-remainder factor produced by the projected tower peel.
