@@ -559,6 +559,47 @@ noncomputable def vaart1998_finiteCoordinateEmpiricalMoment
     (∑ i ∈ Finset.range n, X coordinate i ω) / n
 
 /--
+Source-shaped certificate that finite-coordinate empirical moments enter the
+inverse-function-theorem target with probability tending to one.
+-/
+structure Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+    (Coordinate Ω Θ : Type*) [Fintype Coordinate] [MeasurableSpace Ω]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (P : Measure Ω)
+    (e : Θ -> Coordinate -> ℝ) (theta0 : Θ)
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ) where
+  empiricalMoment_mem_target_probability :
+    Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          vaart1998_finiteCoordinateEmpiricalMoment X n ω ∈
+            (he.toOpenPartialHomeomorph e).target})
+      atTop (𝓝 1)
+
+/--
+Turn the finite-coordinate target-probability certificate into the generic
+moment-local-range probability certificate.
+-/
+def Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.to_momentEstimatorLocalRangeProbabilityCertificate
+    {Coordinate Ω Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    {P : Measure Ω}
+    {e : Θ -> Coordinate -> ℝ} {theta0 : Θ}
+    {De : Θ ≃L[ℝ] (Coordinate -> ℝ)}
+    {he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0}
+    {X : Coordinate -> ℕ -> Ω -> ℝ}
+    (C :
+      Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+        Coordinate Ω Θ P e theta0 De he X) :
+    Vaart1998MomentEstimatorLocalRangeProbabilityCertificate
+      Ω (Coordinate -> ℝ) P where
+  empiricalMoment := fun n => vaart1998_finiteCoordinateEmpiricalMoment X n
+  momentRange := (he.toOpenPartialHomeomorph e).target
+  localRange_probability := C.empiricalMoment_mem_target_probability
+
+/--
 Finite-coordinate population moment vector for the empirical moment sequence.
 -/
 noncomputable def vaart1998_finiteCoordinatePopulationMoment
@@ -2568,6 +2609,76 @@ def vaart1998_momentEstimatorLocalRangeProbabilityCertificate_of_hasStrictFDeriv
   localRange_probability :=
     vaart1998_theorem_4_1_open_local_range_probability_of_hasStrictFDerivAt
       e De he hconv hmeas
+
+/--
+Finite-coordinate target-probability localization certificate from convergence
+in probability of empirical moments to the true moment.
+-/
+def Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_tendstoInMeasure_real
+    {Coordinate Ω Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hconv : TendstoInMeasure P
+      (fun n : ℕ => vaart1998_finiteCoordinateEmpiricalMoment X n)
+      atTop (fun _ : Ω => e theta0))
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i)) :
+    Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+      Coordinate Ω Θ P e theta0 De he X where
+  empiricalMoment_mem_target_probability :=
+    vaart1998_theorem_4_1_open_local_range_probability_of_hasStrictFDerivAt
+      (P := P) e De he hconv
+      (fun n => by
+        simpa [vaart1998_finiteCoordinateEmpiricalMoment] using
+          vaart1998_finiteCoordinate_empiricalMoment_measurable_real X hX_meas n)
+
+/--
+Finite-coordinate target-probability localization certificate from the
+coordinatewise strong law.
+-/
+def Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_finiteCoordinateStrongLaw_real
+    {Coordinate Ω Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 = vaart1998_finiteCoordinatePopulationMoment P X)
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i)) :
+    Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+      Coordinate Ω Θ P e theta0 De he X :=
+  Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_tendstoInMeasure_real
+    (P := P) (e := e) (theta0 := theta0) (De := De) (he := he)
+    (X := X)
+    (hconv := by
+      simpa [vaart1998_finiteCoordinateEmpiricalMoment,
+        vaart1998_finiteCoordinatePopulationMoment, heta0] using
+        vaart1998_finiteCoordinate_empiricalMoment_tendstoInMeasure_real
+          X hX_integrable hX_indep hX_ident
+          (vaart1998_finiteCoordinate_empiricalMoment_aestronglyMeasurable_real
+            X hX_meas))
+    (hX_meas := hX_meas)
 
 /--
 Open inverse-function-theorem local-range probability from almost-sure

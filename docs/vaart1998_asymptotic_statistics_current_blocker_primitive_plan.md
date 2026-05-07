@@ -584,21 +584,32 @@ Chapter 3 theorem-facing wrappers compiling:
 186. Canonical iid product-space covariance-table endpoint consuming the named
    target-localization certificate:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_targetLocalization_real`.
+187. Finite-coordinate target-probability localization certificate:
+   `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate`.
+188. Bridge from the finite-coordinate target-probability certificate to the
+   generic local-range probability certificate:
+   `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.to_momentEstimatorLocalRangeProbabilityCertificate`.
+189. Constructors for target-probability localization from convergence in
+   probability and from the finite-coordinate strong law:
+   `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_tendstoInMeasure_real`
+   and
+   `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_finiteCoordinateStrongLaw_real`.
 
-Latest remote base before this packet: `26fefe9`.
+Latest remote base before this packet: `ff791d1`.
 Latest pushed Vaart packet before this packet: `232407b`
 (`Add Vaart empirical local inverse certificate`).
 
-The current theorem-sized packet names the target-localization obligation
-itself.  The localization route now has a source-shaped certificate, a bridge
-into the empirical local-inverse measurability certificate, and a canonical
-source-certificate endpoint that consumes the named target-localization
-certificate.
+The current theorem-sized packet separates target-probability localization from
+the stronger a.e. target-localization needed for local-inverse measurability.
+It packages Vaart's existence/local-range probability conclusion as a named
+finite-coordinate certificate and discharges it from either convergence in
+probability of empirical moments or the finite-coordinate strong law.
 
-The next aggressive packet should continue Chapter 4 by deriving the named
-target-localization certificate from the local-range/existence probability
-machinery where possible, or by proving a measurable extension of the local
-inverse when that is available from mathlib.
+The next aggressive packet should continue Chapter 4 by connecting this
+probability-localization certificate to a localized measurable estimator route
+or by proving a measurable extension of the local inverse when that is
+available from mathlib.  Do not use probability tending to one as a substitute
+for per-`n` a.e. target membership.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

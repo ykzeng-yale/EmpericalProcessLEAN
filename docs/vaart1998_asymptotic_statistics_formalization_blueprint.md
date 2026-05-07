@@ -354,6 +354,17 @@ Initial modules:
   bridges it into the local-inverse measurability certificate, and
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_targetLocalization_real`
   consumes it at the canonical source boundary.
+  The target-probability localization certificate
+  `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate`
+  records Vaart's existence/local-range probability conclusion separately from
+  the stronger a.e. target-localization certificate.  Its constructors
+  `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_tendstoInMeasure_real`
+  and
+  `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_finiteCoordinateStrongLaw_real`
+  discharge it from convergence in probability and from the finite-coordinate
+  strong law, and
+  `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.to_momentEstimatorLocalRangeProbabilityCertificate`
+  bridges it back to the generic local-range probability certificate.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

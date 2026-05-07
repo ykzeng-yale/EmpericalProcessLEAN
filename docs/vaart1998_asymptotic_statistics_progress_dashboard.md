@@ -391,8 +391,18 @@ Chapter 4 handoff:
   bridges it into the local-inverse measurability certificate, and
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_targetLocalization_real`
   consumes it at the canonical source boundary.
+- Target-probability localization certificate:
+  `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate`
+  packages the Vaart existence/local-range probability conclusion that
+  empirical moments enter the inverse-function-theorem target with probability
+  tending to one.
+  `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_tendstoInMeasure_real`
+  and
+  `.of_finiteCoordinateStrongLaw_real`
+  construct it from convergence in probability and from the coordinatewise
+  strong law.
 
-Latest remote base before this packet: `26fefe9`.  Latest pushed Vaart packet
+Latest remote base before this packet: `ff791d1`.  Latest pushed Vaart packet
 before this packet: `232407b`
 (`Add Vaart empirical local inverse certificate`).
 Current packet verification passed for:
@@ -407,10 +417,10 @@ for this packet is the focused Lean check and targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled named target-localization
-certificate route.  The next useful proof step is to derive that certificate
-from the local-range/existence probability machinery where possible, or prove a
-measurable extension of the local inverse if mathlib supports it.
+Continue Vaart Chapter 4.1 from the compiled target-probability localization
+certificate route.  The next useful proof step is to connect probability
+localization to a localized measurable estimator/asymptotic-equivalence route,
+or prove a measurable extension of the local inverse if mathlib supports it.
 
 ## Reuse Dependencies
 
