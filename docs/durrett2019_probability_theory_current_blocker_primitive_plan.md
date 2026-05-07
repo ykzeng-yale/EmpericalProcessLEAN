@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V9
+## Live In-Thread Goal Prompt V10
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -18,17 +18,17 @@ theta-projection Gaussian display, finite-coordinate dual representation,
 all-dual mean/covariance handoffs, coordinatewise-zero-mean to theta-mean
 handoff, covariance-table handoff from scalar coordinate covariance, centered
 product-to-covariance handoff, vector Gaussian CLT wrappers from literal
-coordinate covariance/product assumptions, and the common-vector-law
-coordinate-covariance wrapper.
+coordinate covariance/product assumptions, common-vector-law
+coordinate-covariance wrapper, and canonical i.i.d. product-sample endpoints
+from scalar coordinate covariance or centered products.
 
-Next packet only: close the canonical i.i.d. product-sample endpoint for
-Theorem 3.10.7 if it is direct.  Use existing Chapter 2.1/product-law and
-Vaart finite-coordinate support to discharge the common-vector-law hypotheses
-for the canonical sample space `ℕ -> Coordinate -> ℝ`, then feed the compiled
-coordinate-mean/coordinate-covariance CLT wrappers.  Do not revisit
-theta/display, all-dual algebra, coordinate-mean handoff, covariance-table
-handoff, or centered-product algebra unless this canonical endpoint exposes a
-missing lemma.
+Next packet only: move to the Durrett Section 3.10 Gaussian-coordinate
+independence criterion from the source anchor: if a finite-coordinate vector has
+a multivariate Gaussian law and covariance table `Gamma`, prove/package that
+zero off-diagonal entries imply independence of the coordinate random
+variables, reusing mathlib `HasGaussianLaw.iIndepFun_of_covariance_eq_zero`.
+Do not revisit CLT/canonical-product plumbing unless this independence wrapper
+exposes a missing covariance-table lemma.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -514,6 +514,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V9` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V10` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V9`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V10`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -391,15 +391,15 @@ Compiled Section 3.2 packets:
 
 Next packet:
 
-- Section 3.10, Durrett Theorem 3.10.7 only: close the canonical i.i.d.
-  product-sample endpoint if it is direct.  The theta-projection display,
-  finite-coordinate dual representation, all-dual handoffs, coordinatewise
-  zero-mean handoff, scalar coordinate covariance and centered-product source
-  endpoints, vector Gaussian coordinate-covariance CLT wrappers, and
-  common-vector-law coordinate-covariance wrapper now compile.  Next use
-  existing product-law and Vaart finite-coordinate support to discharge the
-  common-vector-law hypotheses for the canonical sample space and feed the
-  compiled coordinate-covariance CLT wrappers.
+- Section 3.10: package Durrett's Gaussian-coordinate independence criterion.
+  The theta-projection display, finite-coordinate dual representation,
+  all-dual handoffs, coordinatewise zero-mean handoff, scalar coordinate
+  covariance and centered-product source endpoints, vector Gaussian
+  coordinate-covariance CLT wrappers, common-vector-law coordinate-covariance
+  wrapper, and canonical i.i.d. product-sample endpoints now compile.  Next
+  prove/package that a finite-coordinate multivariate Gaussian vector with zero
+  off-diagonal covariance table has independent coordinate variables, reusing
+  mathlib `HasGaussianLaw.iIndepFun_of_covariance_eq_zero`.
 
 Support-only dependencies:
 
