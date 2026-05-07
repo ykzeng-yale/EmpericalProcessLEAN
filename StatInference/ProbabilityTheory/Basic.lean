@@ -2781,6 +2781,173 @@ def durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBo
       ∫ ω, min (|t * X n m ω| ^ 3) (2 * |t * X n m ω| ^ 2) ∂P
 
 /--
+Durrett 2019, Lemma 3.3.19 with `n = 2`, written as a pointwise quadratic
+Taylor remainder for the characteristic-function factor.
+-/
+noncomputable def durrett2019_quadraticCharacteristicTaylorPointwiseRemainder
+    (t x : ℝ) : ℂ :=
+  Complex.exp (((t * x : ℝ) : ℂ) * Complex.I) -
+    (1 + (((x * t : ℝ) : ℂ) * Complex.I) -
+      (((x ^ 2 * t ^ 2 / 2 : ℝ) : ℂ)))
+
+/--
+Durrett 2019, Lemma 3.3.19, pointwise source shape used before taking
+expectations in formula (3.3.3).
+-/
+def durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound
+    {Ω : Type u} (X : ℕ -> ℕ -> Ω -> ℝ) : Prop :=
+  ∀ t : ℝ, ∀ n m : ℕ, ∀ ω : Ω,
+    ‖durrett2019_quadraticCharacteristicTaylorPointwiseRemainder
+        t (X n m ω)‖ ≤
+      min (|t * X n m ω| ^ 3) (2 * |t * X n m ω| ^ 2)
+
+/--
+Durrett 2019, formula (3.3.3): the pointwise Lemma 3.3.19 quadratic remainder
+bound implies the integrated characteristic-function Taylor remainder bound.
+-/
+theorem durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_pointwiseTaylorRemainderBound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hX : ∀ n m : ℕ, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m : ℕ, Integrable (fun ω => (X n m ω) ^ 2) P)
+    (hpoint :
+      durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound
+        X) :
+    durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound
+      P X := by
+  intro t n m
+  let Xnm : Ω -> ℝ := X n m
+  let linear : Ω -> ℂ := fun ω =>
+    (((Xnm ω * t : ℝ) : ℂ) * Complex.I)
+  let quadratic : Ω -> ℂ := fun ω =>
+    (((Xnm ω ^ 2 * t ^ 2 / 2 : ℝ) : ℂ))
+  let model : Ω -> ℂ := fun ω => 1 + linear ω - quadratic ω
+  let remainder : Ω -> ℂ := fun ω =>
+    durrett2019_quadraticCharacteristicTaylorPointwiseRemainder t (Xnm ω)
+  let bound : Ω -> ℝ := fun ω =>
+    min (|t * Xnm ω| ^ 3) (2 * |t * Xnm ω| ^ 2)
+  have hXnm : AEMeasurable Xnm P := hX n m
+  have hXnm2 : Integrable (fun ω => (Xnm ω) ^ 2) P := hX2 n m
+  have hXnm_memLp : MemLp Xnm 2 P :=
+    (memLp_two_iff_integrable_sq hXnm.aestronglyMeasurable).2 hXnm2
+  have hXnm_int : Integrable Xnm P :=
+    hXnm_memLp.integrable one_le_two
+  have hExp_int :
+      Integrable
+        (fun ω : Ω => Complex.exp (((t * Xnm ω : ℝ) : ℂ) * Complex.I)) P := by
+    refine (integrable_const (1 : ℝ)).mono' (by fun_prop) ?_
+    exact Eventually.of_forall fun ω => by
+      rw [Complex.norm_exp]
+      simp
+  have hlinear_int :
+      Integrable linear P := by
+    dsimp [linear]
+    exact (hXnm_int.mul_const t).ofReal.mul_const Complex.I
+  have hquadratic_real_int :
+      Integrable (fun ω : Ω => Xnm ω ^ 2 * t ^ 2 / 2) P := by
+    simpa [div_eq_mul_inv, mul_assoc] using
+      hXnm2.mul_const (t ^ 2 / 2)
+  have hquadratic_int :
+      Integrable quadratic P := by
+    dsimp [quadratic]
+    exact hquadratic_real_int.ofReal
+  have hmodel_int : Integrable model P := by
+    dsimp [model]
+    exact (integrable_const (1 : ℂ)).add hlinear_int |>.sub hquadratic_int
+  have hdom_int :
+      Integrable (fun ω : Ω => 2 * t ^ 2 * Xnm ω ^ 2) P := by
+    simpa using hXnm2.const_mul (2 * t ^ 2)
+  have hbound_int : Integrable bound P := by
+    refine hdom_int.mono_nonneg (by fun_prop)
+      (Eventually.of_forall fun ω => ?_)
+      (Eventually.of_forall fun ω => ?_)
+    · exact le_min (by positivity) (by positivity)
+    · calc
+        min (|t * Xnm ω| ^ 3) (2 * |t * Xnm ω| ^ 2)
+            ≤ 2 * |t * Xnm ω| ^ 2 := min_le_right _ _
+        _ = 2 * t ^ 2 * Xnm ω ^ 2 := by
+          rw [abs_mul, mul_pow, sq_abs, sq_abs]
+          ring
+  have hnorm_le : ∀ᵐ ω ∂P, ‖remainder ω‖ ≤ bound ω := by
+    exact Eventually.of_forall fun ω => by
+      simpa [remainder, bound, Xnm] using hpoint t n m ω
+  have hnorm_integral_le :
+      ‖∫ ω, remainder ω ∂P‖ ≤ ∫ ω, bound ω ∂P :=
+    norm_integral_le_of_norm_le hbound_int hnorm_le
+  have hchar_eq :
+      durrett2019_characteristicFunction (P.map (X n m)) t =
+        ∫ ω, Complex.exp (((t * Xnm ω : ℝ) : ℂ) * Complex.I) ∂P := by
+    rw [durrett2019_characteristicFunction, MeasureTheory.charFun_apply_real]
+    rw [integral_map hXnm (by fun_prop)]
+    exact integral_congr_ae <| Eventually.of_forall fun ω => by
+      simp [Complex.ofReal_mul, mul_assoc]
+  have hlinear_integral_eq :
+      (∫ ω, linear ω ∂P) =
+        (((∫ ω, Xnm ω ∂P) * t : ℝ) : ℂ) * Complex.I := by
+    dsimp [linear]
+    calc
+      (∫ ω, (((Xnm ω * t : ℝ) : ℂ) * Complex.I) ∂P) =
+          (∫ ω, ((Xnm ω * t : ℝ) : ℂ) ∂P) * Complex.I := by
+            simpa using
+              (integral_mul_const (μ := P) (r := Complex.I)
+                (f := fun ω : Ω => ((Xnm ω * t : ℝ) : ℂ)))
+      _ = (((∫ ω, Xnm ω * t ∂P : ℝ) : ℂ) * Complex.I) := by
+            norm_cast
+      _ = (((∫ ω, Xnm ω ∂P) * t : ℝ) : ℂ) * Complex.I := by
+            rw [integral_mul_const]
+  have hquadratic_integral_eq :
+      (∫ ω, quadratic ω ∂P) =
+        (((∫ ω, Xnm ω ^ 2 ∂P) * t ^ 2 / 2 : ℝ) : ℂ) := by
+    dsimp [quadratic]
+    calc
+      (∫ ω, (((Xnm ω ^ 2 * t ^ 2 / 2 : ℝ) : ℂ)) ∂P) =
+          ((∫ ω, Xnm ω ^ 2 * t ^ 2 / 2 ∂P : ℝ) : ℂ) := by
+            norm_cast
+      _ = ((∫ ω, Xnm ω ^ 2 * (t ^ 2 / 2) ∂P : ℝ) : ℂ) := by
+            congr 1
+            refine integral_congr_ae <| Eventually.of_forall fun ω => by ring
+      _ = (((∫ ω, Xnm ω ^ 2 ∂P) * (t ^ 2 / 2) : ℝ) : ℂ) := by
+            rw [integral_mul_const]
+      _ = (((∫ ω, Xnm ω ^ 2 ∂P) * t ^ 2 / 2 : ℝ) : ℂ) := by
+            ring_nf
+  have hmodel_integral_eq :
+      (∫ ω, model ω ∂P) =
+        1 + (((∫ ω, Xnm ω ∂P) * t : ℝ) : ℂ) * Complex.I -
+          (((∫ ω, Xnm ω ^ 2 ∂P) * t ^ 2 / 2 : ℝ) : ℂ) := by
+    calc
+      (∫ ω, model ω ∂P) =
+          ∫ ω, ((1 : ℂ) + linear ω) - quadratic ω ∂P := by
+            rfl
+      _ =
+          (∫ ω, (1 : ℂ) + linear ω ∂P) -
+            ∫ ω, quadratic ω ∂P := by
+            simpa using
+              (integral_sub ((integrable_const (1 : ℂ)).add hlinear_int)
+                hquadratic_int)
+      _ =
+          ((∫ ω, (1 : ℂ) ∂P) +
+              ∫ ω, linear ω ∂P) -
+            ∫ ω, quadratic ω ∂P := by
+            rw [integral_add (integrable_const (1 : ℂ)) hlinear_int]
+      _ =
+          1 + (((∫ ω, Xnm ω ∂P) * t : ℝ) : ℂ) * Complex.I -
+            (((∫ ω, Xnm ω ^ 2 ∂P) * t ^ 2 / 2 : ℝ) : ℂ) := by
+            rw [hlinear_integral_eq, hquadratic_integral_eq]
+            simp
+  calc
+    ‖durrett2019_characteristicFunction (P.map (X n m)) t -
+        (1 + (((∫ ω, X n m ω ∂P) * t : ℝ) : ℂ) * Complex.I -
+          (((∫ ω, (X n m ω) ^ 2 ∂P) * t ^ 2 / 2 : ℝ) : ℂ))‖
+        = ‖∫ ω, remainder ω ∂P‖ := by
+          rw [hchar_eq, ← hmodel_integral_eq]
+          rw [← integral_sub hExp_int hmodel_int]
+          rfl
+    _ ≤ ∫ ω, bound ω ∂P := hnorm_integral_le
+    _ = ∫ ω, min (|t * X n m ω| ^ 3)
+            (2 * |t * X n m ω| ^ 2) ∂P := by
+          rfl
+
+/--
 Durrett 2019, Theorem 3.4.10, pointwise truncation split for the scalar
 Taylor remainder in (3.3.3).
 -/

@@ -17,15 +17,17 @@ Chapter 2.1 product-law work, Chapter 3.2 weak convergence, Chapter 3.3
 basic characteristic-function wrappers, Theorem 3.4.1, Exercise 3.1.1, and the
 3.4.10 certificate plumbing are already route context, not active targets.
 
-Immediate packet: close the earliest uncompiled link in Durrett formula (3.3.3)
-for the Lindeberg-Feller proof.  Search mathlib/local code first, then prove the
-largest theorem-sized bridge that compiles in this chain:
-`durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound`
-from Durrett Lemma 3.3.19 with `n = 2`, its expectation-level bridge
-`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_pointwiseTaylorRemainderBound`,
-then the existing expansion-bound/final Lindeberg-Feller consumers.  If any
-link already compiles, skip it and move to the next uncompiled link.  After this
-chain closes, route directly to Section 3.10 Cramer-Wold and multivariate CLT.
+Immediate packet: prove the pure pointwise Durrett Lemma 3.3.19 `n = 2`
+characteristic-function Taylor estimate
+`‖durrett2019_quadraticCharacteristicTaylorPointwiseRemainder t x‖ ≤
+min (|t * x| ^ 3) (2 * |t * x| ^ 2)`, then instantiate
+`durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound`.
+The expectation-level bridge
+`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_pointwiseTaylorRemainderBound`
+and all downstream expansion-bound/final Lindeberg-Feller consumers already
+compile, so skip them unless a new compiler dependency reopens them.  After this
+pointwise chain closes, route directly to Section 3.10 Cramer-Wold and
+multivariate CLT.
 
 Cycle discipline: fetch/rebase, inspect only relevant remote/local Lean
 contributions and Durrett source anchors, implement one theorem-sized packet,
@@ -197,6 +199,9 @@ namespace now has a compiled starter module:
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`
+- `durrett2019_quadraticCharacteristicTaylorPointwiseRemainder`
+- `durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound`
+- `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_pointwiseTaylorRemainderBound`
 - `durrett2019_lindebergFeller_min_taylor_remainder_le_split`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound_of_remainderBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound_of_expansionBound`
@@ -356,9 +361,12 @@ layer before moving to multivariate CLT reuse:
   `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
   through compiled bridges.  The pointwise truncation split of the minimum term
   also compiles.  The integrated split bridge from Durrett's (3.3.3) remainder
-  predicate to the scalar expansion-bound predicate now compiles, so the next
-  proof target is the characteristic-function Taylor remainder primitive itself:
-  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`.
+  predicate to the scalar expansion-bound predicate now compiles, and the
+  pointwise-to-expectation bridge from Durrett Lemma 3.3.19 now compiles.  The
+  next proof target is the pure scalar pointwise Taylor estimate for
+  `durrett2019_quadraticCharacteristicTaylorPointwiseRemainder`, then the
+  source-facing pointwise predicate
+  `durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound`.
   The
   quadratic-product obligation
   `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp` now has

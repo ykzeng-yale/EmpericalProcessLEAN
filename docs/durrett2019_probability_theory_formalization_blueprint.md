@@ -381,25 +381,26 @@ Compiled Section 3.2 packets:
   source-shaped one-factor Taylor/Lindeberg bound predicate, a scalar
   Taylor-bound predicate written with second moments, a scalar expansion-bound
   predicate retaining the linear term, the pointwise truncation split of
-  Durrett's minimum term, and compiled constructors from the expansion bound to
-  the scalar Taylor bound, one-factor bound, finite-row bound, analytic
-  certificate, and final convergence-in-distribution theorem.
+  Durrett's minimum term, the pointwise Durrett Lemma 3.3.19 remainder term and
+  predicate, the compiled pointwise-to-expectation bridge to the (3.3.3)
+  remainder predicate, and compiled constructors from the expansion bound to the
+  scalar Taylor bound, one-factor bound, finite-row bound, analytic certificate,
+  and final convergence-in-distribution theorem.
 
 Next packet candidates:
 
-- Section 3.4 Lindeberg-Feller analytic estimates: prove or instantiate the
-  scalar expansion-bound predicate
-  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
-  from the named (3.3.3) Taylor remainder predicate.  The pointwise truncation
-  split of the minimum term already compiles as
+- Section 3.4 Lindeberg-Feller analytic estimates: prove the pure pointwise
+  Durrett Lemma 3.3.19 `n = 2` estimate for
+  `durrett2019_quadraticCharacteristicTaylorPointwiseRemainder`, then
+  instantiate the source-facing predicate
+  `durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound`.
+  The pointwise truncation split of the minimum term already compiles as
   `durrett2019_lindebergFeller_min_taylor_remainder_le_split`, and the bridges
-  from the remainder bound to the expansion bound, scalar Taylor bound,
-  variance-based one-factor bound, finite-row bound, analytic certificate, and
-  final Lindeberg-Feller source wrapper already compile.  Next prove or
-  instantiate
-  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`
-  from Durrett Lemma 3.3.19 / formula (3.3.3), so do not re-prove the
-  integration split, finite-row summation, or limiting epsilon argument.  The
+  from the pointwise predicate to the remainder bound, expansion bound, scalar
+  Taylor bound, variance-based one-factor bound, finite-row bound, analytic
+  certificate, and final Lindeberg-Feller source wrapper already compile.  Do
+  not re-prove the integration split, finite-row summation, or limiting epsilon
+  argument.  The
   lower-level variance-tail split inequality
   `variance <= cutoff ^ 2 + tail row sum` now compiles from row
   `AEMeasurable` plus square-integrability assumptions, so it should be

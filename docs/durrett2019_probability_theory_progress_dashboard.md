@@ -35,11 +35,12 @@ must reuse Billingsley/local probability primitives whenever possible.
 Route from `Live In-Thread Goal Prompt V3` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3.4.10 Lindeberg-Feller in
-`StatInference/ProbabilityTheory/Basic.lean`: close the earliest uncompiled
-link in the Durrett Lemma 3.3.19 / formula (3.3.3) Taylor-remainder chain, then
-move to Section 3.10 Cramer-Wold and multivariate CLT.  The compiled
-declaration inventory below is dependency context only; it is not a prompt to
-revisit solved Chapter 2 or early Chapter 3 work.
+`StatInference/ProbabilityTheory/Basic.lean`: prove the pure pointwise Durrett
+Lemma 3.3.19 `n = 2` Taylor-remainder estimate, then move to Section 3.10
+Cramer-Wold and multivariate CLT.  The expectation-level bridge and downstream
+Lindeberg-Feller consumers already compile.  The compiled declaration inventory
+below is dependency context only; it is not a prompt to revisit solved Chapter 2
+or early Chapter 3 work.
 
 Current verified Durrett Lean frontier: `StatInference/ProbabilityTheory/Basic.lean`
 compiles and root-imports the new namespace.  Compiled declarations:
@@ -255,9 +256,16 @@ Current proof route:
     `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`,
     the integrated split bridge to the scalar expansion-bound predicate, and
     compiled consumers through the analytic certificate and final
-    convergence-in-distribution source wrapper.  Next prove or instantiate this
-    remainder predicate from Durrett Lemma 3.3.19 / formula (3.3.3); after that,
-    search Section 3.10 Cramer-Wold/multivariate CLT anchors.
+    convergence-in-distribution source wrapper.
+27. Durrett Lemma 3.3.19 now has the pointwise remainder term
+    `durrett2019_quadraticCharacteristicTaylorPointwiseRemainder`, the
+    source-facing pointwise predicate
+    `durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound`,
+    and the compiled expectation-level bridge
+    `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound_of_pointwiseTaylorRemainderBound`.
+    Next prove the pure scalar pointwise inequality and instantiate the
+    pointwise predicate; after that, search Section 3.10
+    Cramer-Wold/multivariate CLT anchors.
 
 The route should not duplicate raw measure theory from Chapter 1 unless an
 exact source theorem needs a missing local theorem.  Chapter 1 is currently
@@ -315,16 +323,18 @@ Use the current blocker plan's live prompt as the active `/goal` replacement
 whenever the app-level wording lags.  Current frontier: Chapter 3.4.10
 Lindeberg-Feller in `StatInference/ProbabilityTheory/Basic.lean`.
 
-The next proof packet is:
-`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorRemainderBound`
-from Durrett Lemma 3.3.19 / formula (3.3.3), using local or mathlib
-characteristic-function Taylor machinery if available.
+The next proof packet is the pure pointwise Durrett Lemma 3.3.19 `n = 2`
+estimate for
+`durrett2019_quadraticCharacteristicTaylorPointwiseRemainder`, then the
+source-facing predicate
+`durrett2019_lindebergFellerCharacteristicQuadraticPointwiseTaylorRemainderBound`,
+using local or mathlib characteristic-function Taylor machinery if available.
 
 Already closed and not part of the live target unless reopened by a dependency:
 Chapter 2.4 Glivenko-Cantelli wrappers, Chapter 2.1 product-law/iid wrappers,
 Exercise 3.1.1, variance-tail split, row-bound-to-row-sum convergence,
-one-factor cancellation, the integrated split bridge, and downstream
-remainder-bound consumers.
+one-factor cancellation, the integrated split bridge, the
+pointwise-to-expectation bridge, and downstream remainder-bound consumers.
 
 Cycle rule: sync GitHub, inspect only relevant source/API anchors, implement
 one theorem-sized Lean packet, verify focused Lean plus targeted build and
