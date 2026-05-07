@@ -340,6 +340,13 @@ Initial modules:
   measurability of `he.localInverse e De theta0`, and
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_measurableLocalInverse_real`
   packages that route at the canonical source-certificate boundary.
+  The named certificate
+  `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate`
+  now packages the empirical local-inverse a.e.-measurability family, with
+  constructors from global local-inverse measurability and from a.e. target
+  localization.  The canonical endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_localInverseCertificate_real`
+  consumes that certificate directly.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

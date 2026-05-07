@@ -563,22 +563,37 @@ Chapter 3 theorem-facing wrappers compiling:
    source certificate and global measurability of
    `he.localInverse e De theta0`:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_measurableLocalInverse_real`.
+180. Finite-coordinate empirical local-inverse measurability constructor from
+   coordinatewise sample measurability plus a.e. localization in the
+   inverse-function-theorem target:
+   `vaart1998_finiteCoordinate_localInverse_comp_empiricalMoment_aemeasurable_of_ae_mem_open_momentRange_real`.
+181. Named empirical local-inverse measurability certificate:
+   `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate`.
+182. Certificate constructors from global local-inverse measurability and from
+   a.e. target localization:
+   `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_measurableLocalInverse_real`
+   and
+   `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_ae_mem_open_momentRange_real`.
+183. Canonical iid product-space covariance-table endpoint consuming the named
+   empirical local-inverse measurability certificate:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_localInverseCertificate_real`.
 
-Latest remote base before this packet: `652b72c`.
-Latest pushed Vaart packet before this packet: `edea17f`
-(`Add Vaart canonical aemeasurable source endpoint`).
+Latest remote base before this packet: `1839670`.
+Latest pushed Vaart packet before this packet: `1839670`
+(`Add Vaart measurable local inverse source endpoint`).
 
-The current theorem-sized packet discharges the canonical empirical
-local-inverse `AEMeasurable` field from global measurability of
-`he.localInverse e De theta0`.  This keeps the direct-a.e.-measurable source
-route alive without requiring callers to provide the raw `hInvEmpirical`
-function family by hand.
+The current theorem-sized packet introduces a named empirical local-inverse
+measurability certificate and constructors for the two honest proof routes
+available so far: global local-inverse measurability and a.e. localization in
+the inverse-function-theorem target.  The canonical source-certificate endpoint
+can now consume this named certificate directly instead of exposing a raw
+`hInvEmpirical` family.
 
-The next aggressive packet should continue Chapter 4 by reducing the
-local-inverse measurability obligation from global measurability to an honest
-local/on-target localization certificate when possible.  Do not collapse that
-obligation back into an unnamed target-event assumption; keep the older
-target-event route as a separate explicit certificate path.
+The next aggressive packet should continue Chapter 4 by making the target
+localization route easier to instantiate from the actual local-range/existence
+proof, or by proving a measurable extension of the local inverse when that is
+available from mathlib.  Do not collapse the obligation back into an unnamed
+target-event assumption; keep localization as a named certificate field.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

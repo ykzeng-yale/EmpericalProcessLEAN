@@ -373,10 +373,20 @@ Chapter 4 handoff:
 - Canonical measurable-local-inverse endpoint:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_measurableLocalInverse_real`
   feeds those constructors into the canonical vector-law source certificate.
+- Named empirical local-inverse measurability certificate:
+  `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate`
+  packages the empirical local-inverse `AEMeasurable` family.
+  `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_measurableLocalInverse_real`
+  and
+  `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_ae_mem_open_momentRange_real`
+  build it from the two current source routes.
+- Canonical local-inverse-certificate endpoint:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_localInverseCertificate_real`
+  consumes the named certificate at the canonical source boundary.
 
-Latest remote base before this packet: `652b72c`.  Latest pushed Vaart packet
-before this packet: `edea17f`
-(`Add Vaart canonical aemeasurable source endpoint`).
+Latest remote base before this packet: `1839670`.  Latest pushed Vaart packet
+before this packet: `1839670`
+(`Add Vaart measurable local inverse source endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -389,11 +399,11 @@ for this packet is the focused Lean check and targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled canonical
-measurable-local-inverse endpoint.  The next useful proof step is to replace or
-weaken global local-inverse measurability by an honest local/on-target
-localization certificate where possible, keeping the target-event route
-separate as an explicit certificate path.
+Continue Vaart Chapter 4.1 from the compiled named empirical local-inverse
+certificate route.  The next useful proof step is to make the target
+localization certificate easier to instantiate from the actual local-range
+existence proof, or prove a measurable extension of the local inverse if the
+mathlib inverse-function API supports it.
 
 ## Reuse Dependencies
 
