@@ -285,6 +285,12 @@ Initial modules:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_commonVectorLawCoordinateSource_real`
   consumes the same source package at the Theorem 4.1 covariance-table
   boundary while leaving plain coordinate measurability explicit.
+  The canonical product-sample coordinate constructors
+  `vaart1998_finiteCoordinateCanonicalSample_coordinate_measurable`,
+  `vaart1998_finiteCoordinateCanonicalSample_coordinate_memLp`, and
+  `vaart1998_finiteCoordinateCanonicalSample_coordinateSource` provide the
+  remaining coordinate measurability and `MemLp` fields for the canonical iid
+  sample space.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

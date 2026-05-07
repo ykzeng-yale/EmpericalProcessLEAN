@@ -474,26 +474,32 @@ Chapter 3 theorem-facing wrappers compiling:
    sequence, and coordinate evaluation measurability to discharge both vector
    and coordinate LLN source fields:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_coordinateMemLp_commonVectorLawCoordinateSource_real`.
+156. Canonical iid product-sample coordinate measurability from coordinate
+   evaluation measurability:
+   `vaart1998_finiteCoordinateCanonicalSample_coordinate_measurable`.
+157. Canonical iid product-sample coordinate `MemLp` from coordinate-projection
+   `MemLp` under the common vector law:
+   `vaart1998_finiteCoordinateCanonicalSample_coordinate_memLp`.
+158. Canonical iid product-sample coordinate source package for Theorem 4.1:
+   `vaart1998_finiteCoordinateCanonicalSample_coordinateSource`.
 
-Latest remote base before this packet: `4ae19cd`.
-Latest pushed Vaart packet before this packet: `bd7b8fb`
-(`Add Vaart coordinate LLN source projections`).
+Latest remote base before this packet: `2b1488e`.
+Latest pushed Vaart packet before this packet: `2b1488e`
+(`Add Vaart theorem 4.1 coordinate source endpoint`).
 
-The current theorem-sized packet exposes the common-vector-law and
-coordinate-evaluation-measurability source package at the Theorem 4.1
-covariance-table boundary.  It removes the caller-side vector source fields and
-the caller-side coordinate LLN independence/identical-distribution fields,
-while still keeping plain coordinate measurability explicit.
+The current theorem-sized packet supplies canonical product-space coordinate
+measurability and coordinate `MemLp` source fields.  This is the concrete
+sample-space layer needed before a canonical-product Theorem 4.1 endpoint.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
 1. instantiate the Theorem 4.1 endpoint for the canonical product sample space
-   only if the remaining coordinate `MemLp`, measurability, and LLN fields can
-   be supplied without adding opaque assumptions;
-2. prove reusable coordinate `MemLp` and coordinate measurability constructors
-   from concrete product-law/sample-space hypotheses, not from opaque endpoint
-   assumptions;
+   using the canonical vector-law source and the new coordinate source package;
+2. keep the endpoint assumption list honest: the Gaussian limit, covariance
+   identity, inverse-function target event, true-moment identity, coordinate
+   evaluation measurability, and coordinate-projection `MemLp` under the vector
+   law still remain source hypotheses;
 3. keep endpoint variants narrow and add them only when they remove a real
    caller-side field.
 

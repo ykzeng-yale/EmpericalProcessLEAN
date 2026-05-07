@@ -1125,6 +1125,65 @@ theorem vaart1998_finiteCoordinateCanonicalSampleVector_commonVectorLawSource
     vaart1998_finiteCoordinateCanonicalSampleVector_sequence_hasLaw (ν := ν)⟩
 
 /--
+Canonical iid finite-coordinate samples are coordinatewise measurable when
+coordinate evaluation on the vector state space is measurable.
+-/
+theorem vaart1998_finiteCoordinateCanonicalSample_coordinate_measurable
+    {Coordinate : Type*} [MeasurableSpace (Coordinate -> ℝ)]
+    (coordinate : Coordinate) (i : ℕ)
+    (hcoordinate_meas :
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate)) :
+    Measurable
+      ((fun coordinate i sample => sample i coordinate) coordinate i :
+        (ℕ -> Coordinate -> ℝ) -> ℝ) := by
+  simpa using hcoordinate_meas.comp (measurable_pi_apply i)
+
+/--
+Canonical iid finite-coordinate samples are coordinatewise `MemLp` when the
+coordinate projection is `MemLp` under the common vector law.
+-/
+theorem vaart1998_finiteCoordinateCanonicalSample_coordinate_memLp
+    {Coordinate : Type*} [MeasurableSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν]
+    (coordinate : Coordinate) (i : ℕ)
+    (hν_coordinate_memLp :
+      MemLp (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate) 2 ν) :
+    MemLp
+      ((fun coordinate i sample => sample i coordinate) coordinate i :
+        (ℕ -> Coordinate -> ℝ) -> ℝ)
+      2 (Measure.infinitePi (fun _ : ℕ => ν)) := by
+  simpa [Function.comp_def] using
+    hν_coordinate_memLp.comp_measurePreserving
+      (measurePreserving_eval_infinitePi (μ := fun _ : ℕ => ν) i)
+
+/--
+Canonical iid finite-coordinate samples provide the coordinate `MemLp` and
+plain coordinate measurability source fields needed by Theorem 4.1 endpoints.
+-/
+theorem vaart1998_finiteCoordinateCanonicalSample_coordinateSource
+    {Coordinate : Type*} [MeasurableSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν]
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate))
+    (hν_coordinate_memLp : ∀ coordinate,
+      MemLp (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate) 2 ν) :
+    (∀ coordinate,
+      MemLp
+        ((fun coordinate i sample => sample i coordinate) coordinate 0 :
+          (ℕ -> Coordinate -> ℝ) -> ℝ)
+        2 (Measure.infinitePi (fun _ : ℕ => ν))) ∧
+    (∀ coordinate i,
+      Measurable
+        ((fun coordinate i sample => sample i coordinate) coordinate i :
+          (ℕ -> Coordinate -> ℝ) -> ℝ)) :=
+  ⟨fun coordinate =>
+      vaart1998_finiteCoordinateCanonicalSample_coordinate_memLp
+        (ν := ν) coordinate 0 (hν_coordinate_memLp coordinate),
+    fun coordinate i =>
+      vaart1998_finiteCoordinateCanonicalSample_coordinate_measurable
+        coordinate i (hcoordinate_meas coordinate)⟩
+
+/--
 Scalar summand obtained by testing one finite-coordinate sample vector with a
 continuous linear functional.
 -/
