@@ -132,6 +132,20 @@ and a scaled selected finite-net event.  The next primitive should therefore
 be the exact selected-cover Lemma 2.3.7 comparison plus the eventual lower
 bound on `β_n(x)`, not another downstream convergence wrapper.
 
+2026-05-07 beta-weighted Lemma 2.3.7 algebraic handoff:
+`Theorem243.lean` now also proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_beta_scaledSelectedFiniteNetHoeffdingUpper`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_beta_scaledSelectedFiniteNetHoeffdingUpper`.
+These declarations absorb a source inequality of the form
+`B * P_left <= A * P_selected` with `A < ∞`, `B ≠ 0`, and `B < ∞` by dividing
+through to the already compiled constant-loss route.  The next theorem-facing
+source task is now exactly the VdV&W Lemma 2.3.7 selected-cover comparison
+and the eventual positive lower bound `0 < B <= β_n(x)` for the fixed-`M`
+centered truncated empirical-process variables.  Do not add another
+probability-loss wrapper before attempting that source theorem or recording a
+precise missing nonmeasurable primitive.
+
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
 infrastructure for selected fixed-radius tail/UI, finite code-set and

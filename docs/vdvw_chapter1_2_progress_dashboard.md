@@ -156,6 +156,17 @@ This matches Lemma 2.3.7 more closely: the next proof should establish the
 selected-cover probability symmetrization comparison with its `β_n(x)` lower
 bound, rather than forcing a lossless event comparison.
 
+2026-05-07 beta-weighted Lemma 2.3.7 handoff: `Theorem243.lean` now compiles
+the beta-loss consumers
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_beta_scaledSelectedFiniteNetHoeffdingUpper`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_beta_scaledSelectedFiniteNetHoeffdingUpper`.
+They convert a future source inequality
+`B * P_left <= A * P_selected` into the finite constant-loss route.  The next
+batch should prove the actual selected-cover Lemma 2.3.7 comparison and the
+eventual positive lower bound for `β_n(x)`, not add another downstream
+convergence wrapper.
+
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
 block, the theorem that turns
